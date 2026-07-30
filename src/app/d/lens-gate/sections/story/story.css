@@ -6,7 +6,7 @@
    container, so the whole section reflows at 390px.
    ============================================================ */
 
-.toolchain-root .tc-story-grid {
+.lensgate-root .tc-story-grid {
   /* The height both scenes are held to. Desktop only — folded above the beats
      on a phone, the stage has to be as short as its content. Sized to the
      diff scene at full unified-diff chrome (file pair + hunk + 12 lines). */
@@ -17,7 +17,7 @@
   border-top: 1px solid var(--tc-hair);
 }
 
-.toolchain-root .tc-story-beats {
+.lensgate-root .tc-story-beats {
   grid-column: 1;
   grid-row: 1;
   list-style: none;
@@ -25,7 +25,7 @@
   padding: 0 var(--tc-gut) clamp(30px, 3.4vw, 44px);
 }
 
-.toolchain-root .tc-story-side {
+.lensgate-root .tc-story-side {
   grid-column: 2;
   grid-row: 1;
   border-left: 1px solid var(--tc-hair);
@@ -39,7 +39,7 @@
    end of a column. Hung high, the whole remainder falls below the stage, where
    it reads as the margin before the next section instead of as a gap. The stage
    also grew (see `--tcs-win-h`) so there is less remainder to place. */
-.toolchain-root .tc-story-sticky {
+.lensgate-root .tc-story-sticky {
   position: sticky;
   top: 76px;
   padding: clamp(14px, 1.6vw, 20px) 0 clamp(18px, 2vw, 24px);
@@ -53,7 +53,7 @@
 /* No index column: numbered rails are the founder's verbatim ban, and the
    active beat is already said twice — ink weight here, the rail under the
    stage. */
-.toolchain-root .tcs-beat {
+.lensgate-root .tcs-beat {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
@@ -61,23 +61,23 @@
   border-top: 1px solid var(--tc-hair-2);
 }
 
-.toolchain-root .tcs-beat:first-child {
+.lensgate-root .tcs-beat:first-child {
   border-top: 0;
   padding-top: clamp(18px, 2.1vw, 26px);
 }
 
-.toolchain-root .tcs-beat h3 {
+.lensgate-root .tcs-beat h3 {
   font-size: 1.02rem;
   letter-spacing: -0.018em;
   color: var(--tc-ink-2);
   transition: color 0.3s ease;
 }
 
-.toolchain-root .tcs-beat[data-on='true'] h3 {
+.lensgate-root .tcs-beat[data-on='true'] h3 {
   color: var(--tc-ink);
 }
 
-.toolchain-root .tcs-beat p {
+.lensgate-root .tcs-beat p {
   margin-top: 9px;
   font-size: 13.5px;
   line-height: 1.6;
@@ -86,26 +86,26 @@
   transition: color 0.3s ease;
 }
 
-.toolchain-root .tcs-beat[data-on='true'] p {
+.lensgate-root .tcs-beat[data-on='true'] p {
   color: var(--tc-ink-2);
 }
 
 /* ---------- the stage: the page's own nested frame ---------- */
 
-.toolchain-root .tcs-mat {
+.lensgate-root .tcs-mat {
   border: 1px solid var(--tc-mat-edge);
   border-radius: 5px;
   padding: 2px;
   background: var(--tc-mat);
 }
 
-.toolchain-root .tcs-card {
+.lensgate-root .tcs-card {
   border-radius: 2px;
   padding: var(--tc-card-pad);
   background: var(--tc-card);
 }
 
-.toolchain-root .tcs-annot {
+.lensgate-root .tcs-annot {
   margin-top: 13px;
   font-family: var(--tc-mono);
   font-size: 11px;
@@ -116,13 +116,13 @@
 
 /* ---------- the pipeline, as its own band ---------- */
 
-.toolchain-root .tcs-rail {
+.lensgate-root .tcs-rail {
   margin-top: 13px;
   display: flex;
   gap: 8px;
 }
 
-.toolchain-root .tcs-rail-step {
+.lensgate-root .tcs-rail-step {
   flex: 1 1 auto;
   min-width: 0;
   padding-top: 7px;
@@ -137,13 +137,13 @@
     border-color 0.3s ease;
 }
 
-.toolchain-root .tcs-rail-step[data-done='true'] {
+.lensgate-root .tcs-rail-step[data-done='true'] {
   border-top-color: var(--tc-ink-4);
   color: var(--tc-ink-3);
 }
 
 /* The live stage is ink and weight — the accent belongs to the diagrams. */
-.toolchain-root .tcs-rail-step[data-on='true'] {
+.lensgate-root .tcs-rail-step[data-on='true'] {
   border-top-color: var(--tc-ink);
   color: var(--tc-ink);
   font-weight: 500;
@@ -155,8 +155,8 @@
    the sticky column is filled rather than being a small panel adrift in it. A
    window with room left under its last line is what an editor pane looks like
    anyway, so the slack costs nothing. */
-.toolchain-root .tcs-page,
-.toolchain-root .tcs-code {
+.lensgate-root .tcs-page,
+.lensgate-root .tcs-code {
   display: flex;
   flex-direction: column;
   min-height: var(--tcs-win-h, 0px);
@@ -167,19 +167,19 @@
 }
 
 /* The editor is a code surface, and code never sits on paper here. */
-.toolchain-root .tcs-code {
+.lensgate-root .tcs-code {
   border-color: var(--tc-panel);
   background: var(--tc-panel);
 }
 
-.toolchain-root .tcs-page-body,
-.toolchain-root .tcs-code-body {
+.lensgate-root .tcs-page-body,
+.lensgate-root .tcs-code-body {
   flex: 1;
 }
 
 /* One dark chrome for both windows — the browser and the editor share the
    page's panel tone, so every story still carries a toned surface. */
-.toolchain-root .tcs-page-bar {
+.lensgate-root .tcs-page-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -192,23 +192,23 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
-.toolchain-root .tcs-code .tcs-page-bar {
+.lensgate-root .tcs-code .tcs-page-bar {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.toolchain-root .tcs-page-loc {
+.lensgate-root .tcs-page-loc {
   color: rgba(255, 255, 255, 0.38);
 }
 
 /* ---------- act one: the page ---------- */
 
-.toolchain-root .tcs-page-body {
+.lensgate-root .tcs-page-body {
   display: flex;
   flex-direction: column;
   padding: 15px 15px 13px;
 }
 
-.toolchain-root .tcs-page-nav {
+.lensgate-root .tcs-page-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 6px 15px;
@@ -216,7 +216,7 @@
   color: var(--tc-ink-3);
 }
 
-.toolchain-root .tcs-page-h {
+.lensgate-root .tcs-page-h {
   margin-top: 15px;
   font-family: var(--tc-disp);
   font-weight: 500;
@@ -226,7 +226,7 @@
   color: var(--tc-ink);
 }
 
-.toolchain-root .tcs-page-p {
+.lensgate-root .tcs-page-p {
   margin-top: 9px;
   font-size: 12.5px;
   line-height: 1.55;
@@ -234,7 +234,7 @@
   max-width: 44ch;
 }
 
-.toolchain-root .tcs-page-acts {
+.lensgate-root .tcs-page-acts {
   margin-top: 15px;
   display: flex;
   flex-direction: column;
@@ -242,7 +242,7 @@
   gap: 8px;
 }
 
-.toolchain-root .tcs-page-btn {
+.lensgate-root .tcs-page-btn {
   display: inline-flex;
   align-items: center;
   height: 30px;
@@ -254,18 +254,18 @@
   transition: box-shadow 0.3s ease;
 }
 
-.toolchain-root .tcs-page-btn[data-focus='true'] {
+.lensgate-root .tcs-page-btn[data-focus='true'] {
   box-shadow: 0 0 0 2px rgba(15, 17, 19, 0.22);
 }
 
 /* The English box, re-laid out at the same type and padding as the live one. */
-.toolchain-root .tcs-ghost {
+.lensgate-root .tcs-ghost {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.toolchain-root .tcs-ghost-btn {
+.lensgate-root .tcs-ghost-btn {
   display: inline-flex;
   align-items: center;
   height: 30px;
@@ -276,7 +276,7 @@
   color: var(--tc-ink-4);
 }
 
-.toolchain-root .tcs-ghost-tag {
+.lensgate-root .tcs-ghost-tag {
   font-family: var(--tc-mono);
   font-size: 11px;
   color: var(--tc-ink-4);
@@ -284,7 +284,7 @@
 
 /* The rest of the page: two feature teasers and a footer row, so the mock is
    a full page for GT to read rather than a header over a void. */
-.toolchain-root .tcs-page-feats {
+.lensgate-root .tcs-page-feats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -293,7 +293,7 @@
   border-top: 1px solid var(--tc-hair-2);
 }
 
-.toolchain-root .tcs-page-feats b {
+.lensgate-root .tcs-page-feats b {
   display: block;
   font-family: var(--tc-disp);
   font-weight: 500;
@@ -302,7 +302,7 @@
   color: var(--tc-ink);
 }
 
-.toolchain-root .tcs-page-feats span {
+.lensgate-root .tcs-page-feats span {
   display: block;
   margin-top: 4px;
   font-size: 11.5px;
@@ -310,7 +310,7 @@
   color: var(--tc-ink-3);
 }
 
-.toolchain-root .tcs-page-legal {
+.lensgate-root .tcs-page-legal {
   margin-top: 15px;
   padding-top: 11px;
   border-top: 1px solid var(--tc-hair-2);
@@ -320,7 +320,7 @@
 }
 
 /* State is type weight, not a colored pill. */
-.toolchain-root .tcs-page-flag {
+.lensgate-root .tcs-page-flag {
   margin-inline-start: 8px;
   font-family: var(--tc-mono);
   font-size: 11px;
@@ -329,13 +329,13 @@
   color: var(--tc-ink);
 }
 
-.toolchain-root .tcs-page-flag::before {
+.lensgate-root .tcs-page-flag::before {
   content: '· ';
   font-weight: 400;
   color: var(--tc-ink-4);
 }
 
-.toolchain-root .tcs-page-foot {
+.lensgate-root .tcs-page-foot {
   display: flex;
   align-items: baseline;
   gap: 14px;
@@ -346,27 +346,27 @@
   color: var(--tc-ink-3);
 }
 
-.toolchain-root .tcs-page-foot > span:first-child {
+.lensgate-root .tcs-page-foot > span:first-child {
   margin-right: auto;
   color: var(--tc-ink-4);
 }
 
 /* A picked-up text node: the dashed measure GT draws under everything it
    reads. No chips, no numbers — the underline is the annotation. */
-.toolchain-root .tcs-node[data-on='true'] {
+.lensgate-root .tcs-node[data-on='true'] {
   text-decoration: underline dashed;
   text-decoration-color: var(--tc-ink-3);
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 }
 
-.toolchain-root .tcs-page-btn .tcs-node[data-on='true'] {
+.lensgate-root .tcs-page-btn .tcs-node[data-on='true'] {
   text-decoration-color: rgba(255, 255, 255, 0.55);
 }
 
 /* ---------- the review ping ---------- */
 
-.toolchain-root .tcs-review {
+.lensgate-root .tcs-review {
   margin-top: 15px;
   border: 1px solid var(--tc-hair);
   border-radius: 4px;
@@ -374,13 +374,13 @@
   background: var(--tc-sunk);
 }
 
-.toolchain-root .tcs-review-head {
+.lensgate-root .tcs-review-head {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.toolchain-root .tcs-review-ava {
+.lensgate-root .tcs-review-ava {
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -394,14 +394,14 @@
   color: var(--tc-ink-3);
 }
 
-.toolchain-root .tcs-review-head b {
+.lensgate-root .tcs-review-head b {
   display: block;
   font-size: 12px;
   font-weight: 500;
   color: var(--tc-ink);
 }
 
-.toolchain-root .tcs-review-sub {
+.lensgate-root .tcs-review-sub {
   display: block;
   margin-top: 2px;
   font-family: var(--tc-mono);
@@ -409,14 +409,14 @@
   color: var(--tc-ink-4);
 }
 
-.toolchain-root .tcs-review-msg {
+.lensgate-root .tcs-review-msg {
   margin-top: 10px;
   font-size: 12px;
   line-height: 1.5;
   color: var(--tc-ink-2);
 }
 
-.toolchain-root .tcs-review-acts {
+.lensgate-root .tcs-review-acts {
   margin-top: 11px;
   display: flex;
   align-items: center;
@@ -424,14 +424,14 @@
   font-size: 11.5px;
 }
 
-.toolchain-root .tcs-review-acts span {
+.lensgate-root .tcs-review-acts span {
   border: 1px solid var(--tc-hair);
   border-radius: 4px;
   padding: 3px 9px;
   color: var(--tc-ink-2);
 }
 
-.toolchain-root .tcs-review-acts em {
+.lensgate-root .tcs-review-acts em {
   margin-inline-start: auto;
   font-style: normal;
   font-family: var(--tc-mono);
@@ -441,7 +441,7 @@
 
 /* ---------- act two: the editor ---------- */
 
-.toolchain-root .tcs-code-body {
+.lensgate-root .tcs-code-body {
   /* Held in variables because the scan rule is positioned in lines, so it has to
      be able to count them in the same units the code is set in. */
   --tcs-code-top: 15px;
@@ -457,33 +457,33 @@
   scrollbar-width: none;
 }
 
-.toolchain-root .tcs-code-body::-webkit-scrollbar {
+.lensgate-root .tcs-code-body::-webkit-scrollbar {
   display: none;
 }
 
 /* The dark panel's own token set. */
-.toolchain-root .tcs-code .tc-t-kw {
+.lensgate-root .tcs-code .tc-t-kw {
   color: rgba(255, 255, 255, 0.52);
 }
 
-.toolchain-root .tcs-code .tc-t-str {
+.lensgate-root .tcs-code .tc-t-str {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.toolchain-root .tcs-code .tc-t-num {
+.lensgate-root .tcs-code .tc-t-num {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.toolchain-root .tcs-code .tc-t-com {
+.lensgate-root .tcs-code .tc-t-com {
   color: rgba(255, 255, 255, 0.35);
 }
 
-.toolchain-root .tcs-code .tc-t-gt {
+.lensgate-root .tcs-code .tc-t-gt {
   color: #ffffff;
   font-weight: 500;
 }
 
-.toolchain-root .tcs-code-line {
+.lensgate-root .tcs-code-line {
   position: relative;
   display: grid;
   grid-template-columns: 28px 15px minmax(0, 1fr);
@@ -494,27 +494,27 @@
 /* The diff's opening lines — the `---`/`+++` file pair and the hunk header,
    exactly as `git diff` prints them. A diff shows its chrome or it is a
    drawing of one. */
-.toolchain-root .tcs-code-file {
+.lensgate-root .tcs-code-file {
   padding: 0 12px 0 43px;
   color: rgba(255, 255, 255, 0.55);
   font-weight: 500;
   white-space: pre;
 }
 
-.toolchain-root .tcs-code-hunk {
+.lensgate-root .tcs-code-hunk {
   padding: 2px 12px 4px 43px;
   color: rgba(255, 255, 255, 0.45);
   white-space: pre;
 }
 
-.toolchain-root .tcs-code-n {
+.lensgate-root .tcs-code-n {
   text-align: right;
   padding-right: 8px;
   color: rgba(255, 255, 255, 0.28);
   user-select: none;
 }
 
-.toolchain-root .tcs-code-s {
+.lensgate-root .tcs-code-s {
   text-align: center;
   color: rgba(255, 255, 255, 0.5);
   user-select: none;
@@ -522,46 +522,48 @@
 
 /* The two diff hues, gutters only (the REDLINE grammar): the sign column says
    added/removed in the reader's own vocabulary; the line itself stays in the
-   panel's tones. */
-.toolchain-root .tcs-code-line[data-mark='add'] {
-  background: rgba(125, 216, 158, 0.09);
+   panel's tones. The hues are the page-wide diff tokens (--tc-diff-add /
+   --tc-diff-del, declared in sections/logos-icons.css) so every diff artifact
+   on the page reads with one vocabulary. */
+.lensgate-root .tcs-code-line[data-mark='add'] {
+  background: color-mix(in srgb, var(--tc-diff-add) 9%, transparent);
 }
 
-.toolchain-root .tcs-code-line[data-mark='add'] .tcs-code-s {
-  color: #7dd89e;
+.lensgate-root .tcs-code-line[data-mark='add'] .tcs-code-s {
+  color: var(--tc-diff-add);
   font-weight: 500;
 }
 
-.toolchain-root .tcs-code-line[data-mark='del'] {
-  background: rgba(235, 130, 125, 0.08);
+.lensgate-root .tcs-code-line[data-mark='del'] {
+  background: color-mix(in srgb, var(--tc-diff-del) 8%, transparent);
 }
 
-.toolchain-root .tcs-code-line[data-mark='del'] .tcs-code-s {
-  color: #eb827d;
+.lensgate-root .tcs-code-line[data-mark='del'] .tcs-code-s {
+  color: var(--tc-diff-del);
   font-weight: 500;
 }
 
-.toolchain-root .tcs-code-line[data-mark='del'] code {
+.lensgate-root .tcs-code-line[data-mark='del'] code {
   color: rgba(255, 255, 255, 0.36);
   text-decoration: line-through;
   text-decoration-color: rgba(255, 255, 255, 0.36);
 }
 
-.toolchain-root .tcs-code-line[data-mark='del'] .tc-t-str,
-.toolchain-root .tcs-code-line[data-mark='del'] .tc-t-kw,
-.toolchain-root .tcs-code-line[data-mark='del'] .tc-t-gt {
+.lensgate-root .tcs-code-line[data-mark='del'] .tc-t-str,
+.lensgate-root .tcs-code-line[data-mark='del'] .tc-t-kw,
+.lensgate-root .tcs-code-line[data-mark='del'] .tc-t-gt {
   color: inherit;
   font-weight: 400;
 }
 
 /* A finding: the line lights, the gutter carries the diagnostic mark — no
    numbered chips. */
-.toolchain-root .tcs-code-line[data-find='true'] {
+.lensgate-root .tcs-code-line[data-find='true'] {
   background: rgba(255, 255, 255, 0.06);
   box-shadow: inset 2px 0 0 rgba(255, 255, 255, 0.85);
 }
 
-.toolchain-root .tcs-find {
+.lensgate-root .tcs-find {
   font-style: normal;
   font-weight: 600;
   color: #ffffff;
@@ -570,7 +572,7 @@
 /* The scan, drawn as a rule with the read region falling away above it. Its
    offset is counted in lines rather than percent so it always lands in a
    leading gap — a rule struck through a line of code reads as a deletion. */
-.toolchain-root .tcs-scan {
+.lensgate-root .tcs-scan {
   position: absolute;
   left: 0;
   right: 0;
@@ -579,7 +581,7 @@
   background: rgba(255, 255, 255, 0.75);
 }
 
-.toolchain-root .tcs-scan::before {
+.lensgate-root .tcs-scan::before {
   content: '';
   position: absolute;
   left: 0;
@@ -589,33 +591,33 @@
   background: linear-gradient(to top, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0));
 }
 
-.toolchain-root .tcs-pr {
+.lensgate-root .tcs-pr {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding: 12px 14px 13px;
   background: rgba(255, 255, 255, 0.04);
 }
 
-.toolchain-root .tcs-pr-head {
+.lensgate-root .tcs-pr-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
 }
 
-.toolchain-root .tcs-pr-head b {
+.lensgate-root .tcs-pr-head b {
   font-size: 13px;
   font-weight: 500;
   color: #ffffff;
 }
 
-.toolchain-root .tcs-pr-num {
+.lensgate-root .tcs-pr-num {
   flex: none;
   font-family: var(--tc-mono);
   font-size: 11.5px;
   color: rgba(255, 255, 255, 0.45);
 }
 
-.toolchain-root .tcs-pr-meta {
+.lensgate-root .tcs-pr-meta {
   margin-top: 6px;
   font-family: var(--tc-mono);
   font-size: 11.5px;
@@ -628,13 +630,13 @@
    ============================================================ */
 
 @media (max-width: 1000px) {
-  .toolchain-root .tc-story-grid {
+  .lensgate-root .tc-story-grid {
     --tcs-win-h: 0px;
 
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .toolchain-root .tc-story-side {
+  .lensgate-root .tc-story-side {
     position: sticky;
     top: 57px;
     z-index: 3;
@@ -646,55 +648,55 @@
     background: var(--tc-paper);
   }
 
-  .toolchain-root .tc-story-sticky {
+  .lensgate-root .tc-story-sticky {
     position: static;
     padding: 16px 0 18px;
   }
 
-  .toolchain-root .tc-story-beats {
+  .lensgate-root .tc-story-beats {
     grid-column: 1;
     grid-row: 2;
   }
 
-  .toolchain-root .tcs-card {
+  .lensgate-root .tcs-card {
     padding: 13px;
   }
 
-  .toolchain-root .tcs-page-body {
+  .lensgate-root .tcs-page-body {
     padding: 13px 13px 15px;
   }
 
-  .toolchain-root .tcs-annot,
-  .toolchain-root .tcs-rail {
+  .lensgate-root .tcs-annot,
+  .lensgate-root .tcs-rail {
     margin-top: 10px;
   }
 }
 
 @media (max-width: 620px) {
-  .toolchain-root .tcs-beat {
+  .lensgate-root .tcs-beat {
     grid-template-columns: minmax(0, 1fr);
   }
 
   /* 11px is the floor an artifact string is ever set at. */
-  .toolchain-root .tcs-code-body {
+  .lensgate-root .tcs-code-body {
     font-size: 11px;
   }
 
-  .toolchain-root .tcs-code-line {
+  .lensgate-root .tcs-code-line {
     grid-template-columns: 22px 13px minmax(0, 1fr);
     padding-right: 8px;
   }
 
-  .toolchain-root .tcs-code-hunk,
-  .toolchain-root .tcs-code-file {
+  .lensgate-root .tcs-code-hunk,
+  .lensgate-root .tcs-code-file {
     padding-left: 35px;
   }
 
-  .toolchain-root .tcs-rail {
+  .lensgate-root .tcs-rail {
     gap: 6px;
   }
 
-  .toolchain-root .tcs-rail-step {
+  .lensgate-root .tcs-rail-step {
     font-size: 11px;
     letter-spacing: 0;
   }

@@ -1,5 +1,6 @@
 'use client';
 
+import { Send } from 'lucide-react';
 import { useRef } from 'react';
 
 import CodeBlock from './code';
@@ -39,6 +40,7 @@ export default function Delivery() {
   return (
     <section className='tc-sec' id='delivery' ref={root}>
       <div className='tc-head'>
+        <Send className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>From your editor to the edge.</h2>
         <p data-reveal>
           Preview translations as you type, fix live strings without a deploy, and route every

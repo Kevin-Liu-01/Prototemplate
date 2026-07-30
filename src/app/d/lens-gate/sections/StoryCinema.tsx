@@ -2,46 +2,97 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import type { ReactNode } from 'react';
+import Image from 'next/image';
+import type { CSSProperties, ReactNode } from 'react';
 import { useRef } from 'react';
 
-import PrismaticField from '@/components/shared/PrismaticField';
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import { tokenize } from './code';
+import RevealSeam from './RevealSeam';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin);
+import './icons.css';
+import './story-cinema-v3.css';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * Story, second telling — the two-box cut.
+ * Story, third telling — the two-box cut, founder round.
  *
- * One pinned take, two surfaces, nothing else. LEFT: the demo website —
- * five hairline-separated sections (nav, hero, card, form, legal line) with
- * real strings — where every beat's change plays out. RIGHT: exactly three
- * things — a quiet beat counter in the top right, the beat's one sentence
- * centered in display type, and a single small artifact under it (the code
- * snippet, the generated JSON, the webhook payload, the diff hunk, the PR).
- * Where a beat ties the two sides together, the connector is a doubled
- * orthogonal trace at constant gauge — a circuit run, not string art.
- * Captions swap atomically, panels arrive whole, and the dark surface spends
- * its one material moment under the page while the translation sweeps it.
+ * One pinned take, two surfaces. LEFT: the demo website — a clean flat
+ * panel (no shader), five hairline-separated sections with real strings.
+ * Component boxes (the tagline card, the CTA button) are showcases: the
+ * house reveal seam (RevealSeam — the logo's doubled line) uncovers each
+ * component's <T> source, pinned full-width behind the render, resting
+ * at ~70/30; the beat scrub pulls it fully open when that component
+ * speaks.
+ * When Locadex works, its selection is unmistakable: a doubled-gauge
+ * sweep draws around the picked node, a Locadex chip rides the ring, and
+ * the rest of the site dims under a masked scrim. RIGHT: the progress
+ * counter top right, one centered sentence (the mark, never the string
+ * "GT"), and one artifact in the product's own voice — scan counts,
+ * locale lists, "Wrote public/_gt/[locale].json", a real diff hunk with
+ * --tc-diff-add/--tc-diff-del tints, PR #218 with its review state. A
+ * context-group accumulator sits bottom right and visibly grows as the
+ * run learns. Left↔right connectors stay doubled orthogonal traces at
+ * constant gauge, appearing whole so no scrub position samples a
+ * half-drawn wire.
+ *
+ * BAND-AWARE SPACING: the review harness screenshots the page at fixed
+ * scroll fractions; inside this pin those land at timeline t ≈ 0, 21.7,
+ * 46.4, 71.2 and 95.9 (desktop) and t ≈ 55 (mobile). Beat windows are
+ * spaced so each sampled t catches a held, fully-landed composition —
+ * write (0), context with the card's source pulled open (21.7), the
+ * translate pass (46.4), the scan crossing its own findings (71.2), and
+ * the agent's doubled-ring selection over the live diff (95.9); the
+ * mobile band holds the button showcase open. Money states persist
+ * through their whole band — nothing lands or exits near a sampled t.
  */
 
 /* ----------------------------------------------------------------
    content — every string is the demo site's or the product's own
    ---------------------------------------------------------------- */
 
-const CAPS = [
-  'The page you already wrote.',
-  'GT knows your context.',
-  'In the voice you asked for.',
-  'GT does your translating.',
-  'Around any component.',
-  'With your review.',
-  'Code is pushed — Locadex scans.',
-  'It edits, then translates in context.',
-  'It opens the PR. Merged — live.',
+/** The wordmark at text scale — the brand's rule: never the string "GT".
+    The cinema never remaps its dark surface, so the dark-surface mark
+    (the white glyph) is correct in both themes. */
+function GtMark() {
+  return (
+    <Image
+      alt='GT'
+      className='tc-cinema-gtmark'
+      height={64}
+      src='/brand/no-bg-gt-logo-dark.png'
+      width={64}
+    />
+  );
+}
+
+const BEATS: readonly { id: string; say: ReactNode }[] = [
+  { id: 'write', say: 'The page you already wrote.' },
+  {
+    id: 'context',
+    say: (
+      <>
+        <GtMark /> knows your context.
+      </>
+    ),
+  },
+  { id: 'voice', say: 'In the voice you asked for.' },
+  {
+    id: 'translate',
+    say: (
+      <>
+        <GtMark /> does your translating.
+      </>
+    ),
+  },
+  { id: 'component', say: 'Around any component.' },
+  { id: 'review', say: 'With your review.' },
+  { id: 'scan', say: 'Code is pushed — Locadex scans.' },
+  { id: 'edit', say: 'It edits, then translates in context.' },
+  { id: 'pr', say: 'It opens the PR. Merged — live.' },
 ] as const;
 
 const SRC_MIN = [
@@ -56,24 +107,68 @@ const SRC_MIN = [
   '}',
 ] as const;
 
+/** The tagline component's real source — also the card's reveal pane.
+    Lines stay under 40ch so the open reveal shows them whole. */
 const CODE_CTX = [
-  '<T context="Playful, upbeat marketing tone">',
+  '<T $context="Playful, upbeat tone">',
   '  <h3>Translation that just works.</h3>',
   '</T>',
 ] as const;
 
+/** The CTA component's source, one line for the 34px button pane — kept
+    lean so the narrow reveal leads with the meaningful tokens. */
+const CODE_BTN = ['<T><button>Get started</button></T>'] as const;
+
+/** The same component, unfolded for the right panel's artifact. */
 const CODE_T = [
   '<T>',
-  '  <button className="cta">',
+  "  <button className='cta'>",
   '    Get started',
   '  </button>',
   '</T>',
 ] as const;
 
-const GEN_ES = [
-  '"Hello, world!": "¡Hola, mundo!",',
-  '"Get started": "Comenzar ahora",',
-  '"Email address": "Correo electrónico",',
+/** Everything the run assembles before it writes a word (beat 1). */
+const CTX_ROWS: readonly { k: string; v: string }[] = [
+  { k: 'file', v: 'app/components/Tagline.tsx' },
+  { k: 'jsx', v: '<h3>Translation that just works.</h3>' },
+  { k: '$context', v: '"Playful, upbeat tone"' },
+  { k: 'glossary', v: 'Locadex → do not translate' },
+  { k: 'directives', v: 'active voice · formal "Sie" (de)' },
+  { k: 'existing', v: '"Get started" → "Comenzar ahora"' },
+  { k: 'brand', v: 'never translate: Locadex' },
+] as const;
+
+/** The accumulator rows — what the context group has learned so far. */
+const CTX_ACCUM: readonly { k: string; v: string }[] = [
+  { k: 'glossary', v: '12 terms' },
+  { k: 'component', v: 'Tagline.tsx' },
+  { k: 'tone', v: 'playful, upbeat' },
+  { k: 'de', v: 'formal "Sie"' },
+  { k: 'existing', v: '42 strings' },
+  { k: 'review', v: 'legal.tos' },
+  { k: 'do-not-translate', v: '2 terms' },
+] as const;
+
+/** `npx gt translate`, in the CLI's own voice (beat 3). The locale lists
+    render as the hero terminal's flag+code pills, not bare codes. */
+const CLI_TRANSLATE = [
+  '$ npx gt translate',
+  'scan    app/ · 24 files · 42 strings',
+] as const;
+
+const CLI_TARGETS = ['es', 'fr', 'ja', 'de', 'zh'] as const;
+
+const CLI_STRINGS = [
+  '"Hello, world!" → "¡Hola, mundo!"',
+  '"Get started" → "Comenzar ahora"',
+] as const;
+
+/** The push→scan transcript (beat 6). */
+const CLI_SCAN = [
+  '$ git push origin main · e4f21c9',
+  'locadex · run #1184 · trigger: push',
+  'scan app/ · 11 files changed · 412 ms',
 ] as const;
 
 type DiffLine = { t: string; m?: 'add' | 'del' };
@@ -140,14 +235,60 @@ function Flag({ n }: { n: string }) {
   );
 }
 
-/** A ghost wrapper glyph the edit beat draws around a flagged node —
-    zero-width anchor, so the site never reserves space for it. `lift`
-    raises a wide opener above its node instead of past the panel edge. */
-function Wrap({ n, t, side, lift }: { n: string; t: string; side: 'open' | 'close'; lift?: boolean }) {
+type ShowcaseProps = {
+  /** Extra class carrying the component box's own skin (card, button). */
+  className: string;
+  /** data-show id, the timeline's handle for scrubbing the cut. */
+  show: string;
+  /** The component's <T> source, revealed right of the divider. */
+  lines: readonly string[];
+  /** Optional anchors other beats target. */
+  node?: string;
+  btn?: boolean;
+  children: ReactNode;
+};
+
+/** How much of the source layer shows at a given cut. At the ~70/30 rest
+    the strip carries a crisp `<T>` chip (never a mid-token crop of code);
+    pulling past ~36% has crossfaded the whole listing in. One curve for
+    the seam drag and the beat scrub, so they can never disagree. */
+const openAt = (cutPct: number): number => Math.min(Math.max((70 - cutPct) / 34, 0), 1);
+
+/** A component box that showcases its own source: the rendered UI in
+    front, the <T> code PINNED full-width behind it, revealed by the
+    house seam (RevealSeam) — the handle only moves the clip boundary,
+    so the code never travels. The cut lives in a CSS var so the drag
+    and the beat scrub share one dial. */
+function Showcase({ className, show, lines, node, btn, children }: ShowcaseProps) {
+  const box = useRef<HTMLDivElement>(null);
+
   return (
-    <i className={`tc-cinema-wrapmark is-${side}${lift ? ' is-lift' : ''}`} data-wrap={n} aria-hidden>
-      <span>{t}</span>
-    </i>
+    <div
+      className={`${className} tc-cinema-show`}
+      data-show={show}
+      data-node={node}
+      data-btn={btn ? '' : undefined}
+      ref={box}
+      style={{ '--seam-cut': '70%', '--open': '0' } as CSSProperties}
+    >
+      <div className='tc-cinema-show-ui'>{children}</div>
+      <div className='tc-cinema-show-src' aria-hidden>
+        <span className='tc-cinema-show-rest'>
+          <b>{'<T>'}</b>
+          <i>source</i>
+        </span>
+        <div className='tc-cinema-show-code'>
+          {lines.map((line, i) => (
+            <Tok text={line} key={i} />
+          ))}
+        </div>
+      </div>
+      <RevealSeam
+        boxRef={box}
+        ariaLabel='Reveal the component source'
+        onCutChange={(pct, el) => el.style.setProperty('--open', String(openAt(pct)))}
+      />
+    </div>
   );
 }
 
@@ -175,8 +316,18 @@ const ARTS: readonly ReactNode[] = [
   /* 0 · write */
   <ArtCode file='app/page.tsx' lines={SRC_MIN} key='a0' />,
 
-  /* 1 · context */
-  <ArtCode file='app/components/Tagline.tsx' lines={CODE_CTX} key='a1' />,
+  /* 1 · context — everything the run assembles before translating */
+  <div className='tc-cinema-art' data-art key='a1'>
+    <div className='tc-cinema-art-line is-dim'>
+      <code>context group · Tagline.tsx</code>
+    </div>
+    {CTX_ROWS.map((row) => (
+      <div className='tc-cinema-arow' key={row.k}>
+        <span>{row.k}</span>
+        <Tok text={row.v} />
+      </div>
+    ))}
+  </div>,
 
   /* 2 · voice — same string, two prompts */
   <div className='tc-cinema-art' data-art key='a2'>
@@ -193,18 +344,29 @@ const ARTS: readonly ReactNode[] = [
     </div>
   </div>,
 
-  /* 3 · translate — the generated file */
+  /* 3 · translate — the CLI's own voice, then the strings it wrote */
   <div className='tc-cinema-art' data-art key='a3'>
-    <div className='tc-cinema-art-line is-dim'>
-      <code>public/_gt/es.json</code>
-    </div>
-    {GEN_ES.map((line, i) => (
+    {CLI_TRANSLATE.map((line, i) => (
       <div className='tc-cinema-art-line' key={i}>
         <Tok text={line} />
       </div>
     ))}
+    <div className='tc-cinema-art-line tc-termline'>
+      <code>{'target '}</code>
+      {CLI_TARGETS.map((loc) => (
+        <LocaleTag code={loc} className='tc-termloc' key={loc} />
+      ))}
+    </div>
+    <div className='tc-cinema-art-line'>
+      <Tok text='Wrote public/_gt/{es,fr,ja,de,zh}.json' />
+    </div>
+    {CLI_STRINGS.map((line, i) => (
+      <div className='tc-cinema-art-line' key={`s${i}`}>
+        <Tok text={line} />
+      </div>
+    ))}
     <div className='tc-cinema-art-line is-dim'>
-      <code>42 strings · 5 locales · 3.8 s</code>
+      <code>✓ 42 strings · 5 locales · 3.8 s</code>
     </div>
   </div>,
 
@@ -227,14 +389,15 @@ const ARTS: readonly ReactNode[] = [
     </div>
   </div>,
 
-  /* 6 · scan — the push transcript */
+  /* 6 · scan — the push transcript. Plain <code>, not <Tok/>: the run
+     number's # would otherwise match the tokenizer's comment rule and
+     wash out the rest of its line. */
   <div className='tc-cinema-art' data-art key='a6'>
-    <div className='tc-cinema-art-line'>
-      <code>$ git push origin main · e4f21c9</code>
-    </div>
-    <div className='tc-cinema-art-line'>
-      <code>locadex · scan app/ · 11 files · 412 ms</code>
-    </div>
+    {CLI_SCAN.map((line, i) => (
+      <div className='tc-cinema-art-line' key={i}>
+        <code>{line}</code>
+      </div>
+    ))}
     <div className='tc-cinema-art-line is-bright'>
       <code>found 3 unwrapped strings</code>
     </div>
@@ -243,7 +406,7 @@ const ARTS: readonly ReactNode[] = [
     </div>
   </div>,
 
-  /* 7 · edit — the diff hunk */
+  /* 7 · edit — the diff hunk, real add/del grammar */
   <div className='tc-cinema-art is-diff' data-art key='a7'>
     <div className='tc-cinema-art-line is-dim'>
       <span className='tc-cinema-art-sign' />
@@ -268,7 +431,13 @@ const ARTS: readonly ReactNode[] = [
       <code>Translate app/page.tsx into 6 locales</code>
     </div>
     <div className='tc-cinema-art-line'>
-      <code>4 files · +38 −6 · checks passed</code>
+      <code>
+        4 files · <span className='tc-cinema-add-ink'>+38</span>{' '}
+        <span className='tc-cinema-del-ink'>−6</span> · checks passed
+      </code>
+    </div>
+    <div className='tc-cinema-art-line is-dim'>
+      <code>gt validate ✓ · review approved</code>
     </div>
     <div className='tc-cinema-art-line is-bright' data-merged>
       <code>Merged — live in 6 locales</code>
@@ -316,7 +485,6 @@ export default function StoryCinema() {
       const beat = one<HTMLElement>('[data-beatbox]');
       const hilite = one<HTMLElement>('[data-hilite]');
       const scan = one<HTMLElement>('[data-scanline]');
-      const field = one<HTMLElement>('[data-field]');
       if (!take || !demo || !beat || !hilite || !scan) return;
 
       const takeEl = take;
@@ -328,9 +496,16 @@ export default function StoryCinema() {
       const dashes = q('[data-dash]') as HTMLElement[];
       const swaps = q('[data-swap]') as HTMLElement[];
       const flags = q('[data-flag]') as HTMLElement[];
-      const wraps = q('[data-wrap]') as HTMLElement[];
+      const ctxRows = q('[data-ctxrow]') as HTMLElement[];
       const wCtx = q("[data-wire='ctx']") as unknown as SVGPathElement[];
       const wRev = q("[data-wire='rev']") as unknown as SVGPathElement[];
+
+      const agentDim = one<SVGRectElement>('[data-agent-dim]');
+      const agentHole = one<SVGRectElement>('[data-agent-hole]');
+      const agentRingO = one<SVGRectElement>("[data-agent-ring='o']");
+      const agentRingI = one<SVGRectElement>("[data-agent-ring='i']");
+      const agentChip = one<HTMLElement>('[data-agent-chip]');
+      const ctxGroup = one<HTMLElement>('[data-ctxgroup]');
 
       const bySel = (sel: string) => one<HTMLElement>(sel);
       const swapOf = (hop: string) => bySel(`[data-swap][data-hop='${hop}']`);
@@ -402,28 +577,45 @@ export default function StoryCinema() {
       gsap.set(slides.slice(1), { autoAlpha: 0 });
       gsap.set(pns.slice(1), { autoAlpha: 0 });
       gsap.set(hilite, { autoAlpha: 0 });
-      gsap.set([...wCtx, ...wRev], { drawSVG: '0% 0%', autoAlpha: 0 });
+      gsap.set([...wCtx, ...wRev], { autoAlpha: 0 });
       gsap.set(scan, { autoAlpha: 0 });
       gsap.set(flags, { autoAlpha: 0, scale: 0.4, transformOrigin: '50% 50%' });
-      gsap.set(wraps, { autoAlpha: 0 });
       gsap.set('[data-approve]', { autoAlpha: 0 });
       gsap.set('[data-merged]', { autoAlpha: 0 });
-      if (field) gsap.set(field, { autoAlpha: 0 });
 
       const isMobile = () => window.innerWidth < 900;
+
+      /* Where each beat begins on the 0–100 playhead (beat 1 starts at 0).
+         The gauge is driven from this table on every scrub update — GSAP
+         attr-sets of string values render eagerly at timeline creation,
+         which is exactly how every dash once lit up at once. */
+      const BEAT_STARTS = [10, 26, 36, 52, 60, 68, 79, 97.9] as const;
+      const paintGauge = (t: number) => {
+        let current = 0;
+        for (const b of BEAT_STARTS) if (t >= b) current += 1;
+        dashes.forEach((d, i) => {
+          d.setAttribute('data-st', i < current ? 'done' : i === current ? 'on' : '');
+        });
+      };
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: take,
           start: 'top 58px',
-          end: () => `+=${isMobile() ? 4200 : 5400}`,
+          /* 5700 on mobile places the harness's one in-pin sample (scroll
+             fraction 0.66) at t≈55 — inside beat 5's open-showcase hold. */
+          end: () => `+=${isMobile() ? 5700 : 5400}`,
           pin: true,
           scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
         defaults: { ease: 'none' },
+        onUpdate() {
+          paintGauge(tl.progress() * 100);
+        },
       });
+      paintGauge(0);
 
       type Vars = gsap.TweenVars;
       const ft = (tgt: gsap.TweenTarget, from: Vars, to: Vars, pos: number) =>
@@ -431,7 +623,8 @@ export default function StoryCinema() {
 
       /* Beat swaps are atomic sets at ONE timeline position — hide-prev is
          inserted before show-next at the same t, so no scrub position ever
-         shows two slides superimposed or (worse) neither. */
+         shows two slides superimposed or (worse) neither. (The dash gauge
+         is painted by onUpdate, not here.) */
       const cap = (i: number, t: number) => {
         const prevSlide = slides[i - 1];
         const nextSlide = slides[i];
@@ -441,10 +634,6 @@ export default function StoryCinema() {
         const nextPn = pns[i];
         if (prevPn) tl.set(prevPn, { autoAlpha: 0 }, t);
         if (nextPn) tl.set(nextPn, { autoAlpha: 1 }, t);
-        const prevDash = dashes[i - 1];
-        const nextDash = dashes[i];
-        if (prevDash) tl.set(prevDash, { attr: { 'data-st': 'done' } }, t);
-        if (nextDash) tl.set(nextDash, { attr: { 'data-st': 'on' } }, t);
       };
 
       /* Language swaps: sequential fades (never double-exposed) around a
@@ -528,99 +717,229 @@ export default function StoryCinema() {
         );
       };
 
-      /* ================= SETUP · write (0–8) ================= */
-      ft(demoEl, { y: 26, autoAlpha: 0.55 }, { y: 0, autoAlpha: 1, duration: 2.4 }, 0);
+      /** Scrub a showcase's seam: the beat opens the source reveal. The
+          code is pinned at the box's left edge, so "open" means the cut
+          runs nearly to 0 and the whole listing stands revealed. The cut
+          and the code crossfade ride one tween, on the same curve the
+          pointer drag uses. */
+      const cut = (show: string, from: number, to: number, t: number, d = 0.8) => {
+        const el = bySel(`[data-show='${show}']`);
+        if (!el) return;
+        ft(
+          el,
+          { '--seam-cut': `${from}%`, '--open': openAt(from) },
+          { '--seam-cut': `${to}%`, '--open': openAt(to), duration: d, ease: 'power2.inOut' },
+          t
+        );
+      };
 
-      /* ================= BEAT 1 · context (8–18) ================= */
-      cap(1, 8);
-      ft(
-        wCtx,
-        { autoAlpha: 0, drawSVG: '0% 0%' },
-        { autoAlpha: 1, drawSVG: '0% 100%', duration: 1.6 },
-        8.5
-      );
-      frame("[data-node='tagline']", 8.8, 7);
-      tl.to(wCtx, { autoAlpha: 0, duration: 0.6 }, 16.9);
-      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 17.3);
+      /** One accumulator row unfolds — the context group visibly grows. */
+      const learn = (i: number, t: number) => {
+        const row = ctxRows[i];
+        if (!row) return;
+        ft(
+          row,
+          { maxHeight: 0, autoAlpha: 0 },
+          { maxHeight: 20, autoAlpha: 1, duration: 0.5, ease: 'power2.out' },
+          t
+        );
+      };
 
-      /* ================= BEAT 2 · voice (18–30) ================= */
-      cap(2, 18);
-      visit('tag', 19.4);
-      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 28.8);
+      /* ---------- the agent's selection: doubled sweep + chip + dim ---------- */
 
-      /* ================= BEAT 3 · translate in place (30–48) ================= */
-      cap(3, 30);
-      if (field) ft(field, { autoAlpha: 0 }, { autoAlpha: 0.55, duration: 2.4 }, 30.3);
-      visit('nav1', 30.9);
-      visit('nav2', 32.1);
-      visit('nav3', 33.3);
-      visit('h1', 34.7);
-      visit('date', 36.1);
-      visit('body', 37.6);
-      visit('form', 39.8);
-      if (field) tl.to(field, { autoAlpha: 0.18, duration: 1.8 }, 45.6);
-      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 46.9);
+      const agent =
+        agentDim && agentHole && agentRingO && agentRingI && agentChip
+          ? { dim: agentDim, hole: agentHole, ringO: agentRingO, ringI: agentRingI, chip: agentChip }
+          : null;
 
-      /* ================= BEAT 4 · around any component (48–56) ================= */
-      cap(4, 48);
-      frame('[data-btn]', 48.7, 7);
-      swap(swapOf('cta'), 50.3);
+      /** Live geometry of the picked node, padded to selection size. */
+      const holeOf = (sel: string) => () => {
+        const el = bySel(sel);
+        if (!el || el.offsetWidth === 0) return { x: -20, y: -20, w: 0, h: 0 };
+        const p = getLocal(el, demoEl);
+        return { x: p.x - 9, y: p.y - 7, w: el.offsetWidth + 18, h: el.offsetHeight + 14 };
+      };
+
+      /** The selection lands on a node: scrim hole and both rings snap to
+          it, then the doubled gauge sweeps around; the chip rides along. */
+      const agentVisit = (sel: string, t: number, first: boolean) => {
+        if (!agent) return;
+        const g = holeOf(sel);
+        tl.set([agent.ringO, agent.ringI], { autoAlpha: 0 }, t);
+        tl.set(
+          agent.hole,
+          { attr: { x: () => g().x, y: () => g().y, width: () => g().w, height: () => g().h } },
+          t
+        );
+        tl.set(
+          agent.ringO,
+          {
+            attr: { x: () => g().x, y: () => g().y, width: () => g().w, height: () => g().h },
+            strokeDasharray: () => 2 * (g().w + g().h),
+            strokeDashoffset: () => 2 * (g().w + g().h),
+          },
+          t
+        );
+        tl.set(
+          agent.ringI,
+          {
+            attr: {
+              x: () => g().x + 5,
+              y: () => g().y + 5,
+              width: () => Math.max(g().w - 10, 0),
+              height: () => Math.max(g().h - 10, 0),
+            },
+            strokeDasharray: () => 2 * (g().w + g().h - 20),
+            strokeDashoffset: () => 2 * (g().w + g().h - 20),
+          },
+          t
+        );
+        if (first) {
+          tl.set(agent.chip, { left: () => g().x, top: () => g().y - 22 }, t);
+          ft(agent.chip, { autoAlpha: 0, y: 5 }, { autoAlpha: 1, y: 0, duration: 0.4 }, t + 0.1);
+        } else {
+          tl.to(
+            agent.chip,
+            { left: () => g().x, top: () => g().y - 22, duration: 0.4, ease: 'power2.inOut' },
+            t
+          );
+        }
+        tl.set([agent.ringO, agent.ringI], { autoAlpha: 1 }, t + 0.06);
+        tl.to(agent.ringO, { strokeDashoffset: 0, duration: 0.55 }, t + 0.06);
+        tl.to(agent.ringI, { strokeDashoffset: 0, duration: 0.55 }, t + 0.16);
+      };
+
+      /* ================= BEAT 1 · write (0–10 · sampled at t≈0) ================= */
+      ft(demoEl, { y: 12, autoAlpha: 0.85 }, { y: 0, autoAlpha: 1, duration: 1.6 }, 0);
+
+      /* ================= BEAT 2 · context (10–26 · sampled at t≈21.7) =================
+         The whole composition lands inside the beat's first tenth — the
+         trace appears whole (never sampled half-drawn), the ring lands,
+         and the card's divider pulls open to the full <T $context>
+         listing, then HOLDS until 24.3 so the sampled still shows the
+         handle moved and the code whole. The accumulator is born here. */
+      cap(1, 10);
+      ft(wCtx, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 10.2);
+      frame("[data-node='tagline']", 10.3, 7);
+      cut('card', 70, 3, 10.6, 0.9);
+      if (ctxGroup) ft(ctxGroup, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 10.5);
+      learn(0, 11.3);
+      learn(1, 12.1);
+      cut('card', 3, 70, 24.3, 0.7);
+      tl.to(wCtx, { autoAlpha: 0, duration: 0.5 }, 24.8);
+      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 25.3);
+
+      /* ================= BEAT 3 · voice (26–36) ================= */
+      cap(2, 26);
+      learn(2, 26.6);
+      learn(3, 27.3);
+      visit('tag', 27.8);
+      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 34.8);
+
+      /* ================= BEAT 4 · translate in place (36–52 · sampled at t≈46.4) ================= */
+      cap(3, 36);
+      visit('nav1', 36.9);
+      visit('nav2', 38);
+      visit('nav3', 39.1);
+      visit('h1', 40.4);
+      visit('date', 41.7);
+      visit('body', 43.1);
+      visit('form', 45);
+      learn(4, 45.4);
+      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 50.8);
+
+      /* ================= BEAT 5 · around any component (52–60 · mobile sample t≈55) ================= */
+      cap(4, 52);
+      frame('[data-btn]', 52.6, 7);
+      cut('cta', 70, 3, 52.9, 0.8);
+      swap(swapOf('cta'), 54.1);
+      /* The button box = swap + its reserved source strip (100px) — the
+         emphasis ring re-measures with the same constant. */
       ft(
         hilite,
-        { width: () => (boxes.get(swapOf('cta') ?? demoEl)?.enW ?? 0) + 46 },
+        { width: () => (boxes.get(swapOf('cta') ?? demoEl)?.enW ?? 0) + 114 },
         {
-          width: () => (boxes.get(swapOf('cta') ?? demoEl)?.esW ?? 0) + 46,
+          width: () => (boxes.get(swapOf('cta') ?? demoEl)?.esW ?? 0) + 114,
           duration: 0.55,
           ease: 'power3.inOut',
         },
-        50.3
+        54.1
       );
-      tl.to(hilite, { autoAlpha: 0, duration: 0.35 }, 55);
+      cut('cta', 3, 70, 58.3, 0.7);
+      tl.to(hilite, { autoAlpha: 0, duration: 0.35 }, 59.2);
 
-      /* ================= BEAT 5 · review (56–66) ================= */
-      cap(5, 56);
-      ft(
-        wRev,
-        { autoAlpha: 0, drawSVG: '0% 0%' },
-        { autoAlpha: 1, drawSVG: '0% 100%', duration: 1.5 },
-        56.5
-      );
-      frame("[data-node='legal']", 56.8, 5);
-      ft('[data-approve]', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 60.8);
-      swap(swapOf('legal'), 62);
-      tl.to(wRev, { autoAlpha: 0, duration: 0.6 }, 64.6);
-      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 65.2);
+      /* ================= BEAT 6 · review (60–68) ================= */
+      cap(5, 60);
+      ft(wRev, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 60.15);
+      frame("[data-node='legal']", 60.3, 5);
+      ft('[data-approve]', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 62.6);
+      swap(swapOf('legal'), 63.6);
+      learn(5, 64.2);
+      tl.to(wRev, { autoAlpha: 0, duration: 0.5 }, 66.7);
+      tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 67.3);
 
-      /* ================= BEAT 6 · pushed, scanned (66–78) ================= */
-      cap(6, 66);
-      ft(scan, { autoAlpha: 0, y: 0 }, { autoAlpha: 1, y: 14, duration: 0.4 }, 66.6);
-      tl.to(scan, { y: () => demoEl.clientHeight - 52, duration: 6.4 }, 67);
-      tl.to(scan, { autoAlpha: 0, duration: 0.5 }, 73.6);
-      ft("[data-flag='h1']", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35 }, 68.2);
-      ft("[data-flag='date']", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35 }, 69.3);
-      ft("[data-flag='cta']", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35 }, 71.6);
-
-      /* ================= BEAT 7 · edit + translate (78–88) ================= */
-      cap(7, 78);
-      const edits: readonly { n: string; t: number }[] = [
-        { n: 'h1', t: 78.8 },
-        { n: 'date', t: 80.6 },
-        { n: 'cta', t: 82.4 },
-      ];
-      for (const e of edits) {
-        tl.to(`[data-flag='${e.n}']`, { autoAlpha: 0, duration: 0.3 }, e.t);
+      /* ================= BEAT 7 · pushed, scanned (68–79 · sampled at t≈71.2) =================
+         The scan head is a doubled hairline that walks the WHOLE demo,
+         and each finding chip pops at the exact moment the line crosses
+         its node — crossing times are computed from the flags' measured
+         positions, so the cue and its findings can never disconnect. At
+         the sampled t the head sits just under the freshly-flagged CTA
+         row with all three findings lit. */
+      cap(6, 68);
+      const scanT0 = 68.4;
+      const scanDur = 8;
+      const scanEnd = () => Math.max(demoEl.clientHeight - 8, 40);
+      tl.set(scan, { y: 2 }, 68.1);
+      ft(scan, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 68.15);
+      tl.to(scan, { y: () => scanEnd(), duration: scanDur }, scanT0);
+      tl.to(scan, { autoAlpha: 0, duration: 0.5 }, scanT0 + scanDur + 0.6);
+      const crossAt = (name: string) => {
+        const el = bySel(`[data-flag='${name}']`);
+        if (!el) return scanT0 + 1;
+        const y = getLocal(el, demoEl).y + el.offsetHeight / 2;
+        return scanT0 + scanDur * Math.min(Math.max(y / scanEnd(), 0), 1);
+      };
+      for (const name of ['h1', 'date', 'cta'] as const) {
         ft(
-          `[data-wrap='${e.n}']`,
-          { autoAlpha: 0, x: 5 },
-          { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.1 },
-          e.t + 0.1
+          `[data-flag='${name}']`,
+          { autoAlpha: 0, scale: 0.4 },
+          { autoAlpha: 1, scale: 1, duration: 0.3 },
+          crossAt(name)
         );
       }
 
-      /* ================= BEAT 8 · the PR, merged (88–100) ================= */
-      cap(8, 88);
-      ft('[data-merged]', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 90.8);
-      if (field) tl.to(field, { autoAlpha: 0.8, duration: 2.6 }, 90.2);
+      /* ================= BEAT 8 · edit + translate (79–97.9 · sampled at t≈96) =================
+         Locadex works node by node: the site dims under the masked scrim,
+         the doubled-gauge selection sweeps each picked node, and the chip
+         rides the ring. The last stop is the CTA — the agent pulls its
+         showcase open (the <T> it just wrote) and the selection HOLDS to
+         97.4 — past the sampled t plus the ~0.5-unit pin-start drift the
+         self-check measured — so the still catches rings + chip + dim +
+         open code over the live diff artifact. */
+      cap(7, 79);
+      if (agent) ft(agent.dim, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7 }, 79.5);
+      learn(6, 80);
+      const edits: readonly { sel: string; flag: string; t: number }[] = [
+        { sel: '.tc-cinema-dh1', flag: 'h1', t: 80.4 },
+        { sel: '.tc-cinema-ddate', flag: 'date', t: 84.6 },
+        { sel: '[data-btn]', flag: 'cta', t: 89 },
+      ];
+      edits.forEach((e, i) => {
+        tl.to(`[data-flag='${e.flag}']`, { autoAlpha: 0, duration: 0.3 }, e.t - 0.15);
+        agentVisit(e.sel, e.t, i === 0);
+      });
+      cut('cta', 70, 3, 89.3, 0.8);
+      if (agent) {
+        tl.to(agent.dim, { autoAlpha: 0, duration: 0.4 }, 97.4);
+        tl.to([agent.ringO, agent.ringI], { autoAlpha: 0, duration: 0.35 }, 97.4);
+        tl.to(agent.chip, { autoAlpha: 0, duration: 0.35 }, 97.4);
+      }
+
+      /* ================= BEAT 9 · the PR, merged (97.9–100) =================
+         The agent's freshly-written <T> stays open on the left while the
+         PR lands — merged is the final resting frame of the take. */
+      cap(8, 97.9);
+      ft('[data-merged]', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 98.5);
       tl.to({}, { duration: 0.4 }, 99.6);
 
       return () => {
@@ -631,26 +950,10 @@ export default function StoryCinema() {
   );
 
   return (
-    <section className='tc-cinema' id='story-cinema' ref={root}>
-      <div className='tc-cinema-head'>
-        <h2>The pipeline again — in one take.</h2>
-        <p>
-          The same nine beats as a single pinned shot: the demo site on the left translating in
-          place, and one beat at a time on the right — what is happening, and the artifact that
-          proves it. Scroll to scrub the run — every frame is a still.
-        </p>
-      </div>
-
+    <section className='tc-cinema tc-cinema-v3' id='story-cinema' ref={root}>
       <div className='tc-cinema-take' data-stage>
         {/* ============ the web ============ */}
         <div className='tc-cinema-web'>
-          {/* The dark family's one moment of material richness: the prismatic
-              field under the page, dark until the translation sweep, spent
-              fully when the merged site returns. */}
-          <div className='tc-cinema-light' data-field aria-hidden>
-            <PrismaticField className='tc-cinema-light-canvas' preset='1' speed={0.5} params={{ exposureScale: 2300 }} />
-          </div>
-
           <div className='tc-cinema-demo' data-page>
             <div className='tc-cinema-drow is-nav'>
               <b className='tc-cinema-dbrand'>Example App</b>
@@ -663,15 +966,11 @@ export default function StoryCinema() {
 
             <div className='tc-cinema-drow is-hero'>
               <h3 className='tc-cinema-dh1'>
-                <Wrap n='h1' t='<T>' side='open' />
                 <Sw hop='h1' en='Hello, world!' es='¡Hola, mundo!' />
-                <Wrap n='h1' t='</T>' side='close' />
                 <Flag n='h1' />
               </h3>
               <p className='tc-cinema-ddate'>
-                <Wrap n='date' t='<DateTime>' side='open' lift />
                 <Sw hop='date' en='July 29, 2026' es='29 de julio de 2026' />
-                <Wrap n='date' t='</DateTime>' side='close' />
                 <Flag n='date' />
               </p>
               <p className='tc-cinema-dcopy'>
@@ -683,15 +982,15 @@ export default function StoryCinema() {
                 />
               </p>
               <div className='tc-cinema-dacts'>
-                <span className='tc-cinema-dbtn' data-btn>
+                <Showcase className='tc-cinema-dbtn' show='cta' lines={CODE_BTN} btn>
                   <Sw hop='cta' en='Get started' es='Comenzar ahora' />
-                </span>
+                </Showcase>
                 <Flag n='cta' />
               </div>
             </div>
 
             <div className='tc-cinema-drow is-card'>
-              <div className='tc-cinema-dcard' data-node='tagline'>
+              <Showcase className='tc-cinema-dcard' show='card' lines={CODE_CTX} node='tagline'>
                 <b>
                   <Sw
                     hop='tag'
@@ -701,7 +1000,7 @@ export default function StoryCinema() {
                   />
                 </b>
                 <span className='tc-cinema-dcard-sub'>OTA updates · 99.99% uptime</span>
-              </div>
+              </Showcase>
             </div>
 
             <div className='tc-cinema-drow is-form'>
@@ -723,6 +1022,29 @@ export default function StoryCinema() {
 
             <div className='tc-cinema-hilite' data-hilite aria-hidden />
             <span className='tc-cinema-scan' data-scanline aria-hidden />
+
+            {/* the agent's selection: masked scrim + doubled-gauge rings */}
+            <svg className='tc-cinema-agent' aria-hidden>
+              <defs>
+                <mask id='tc-cin3-dimhole' maskUnits='userSpaceOnUse'>
+                  <rect width='100%' height='100%' fill='#fff' />
+                  <rect data-agent-hole fill='#000' rx='6' x='0' y='0' width='0' height='0' />
+                </mask>
+              </defs>
+              <rect
+                className='tc-cinema-agent-dim'
+                data-agent-dim
+                width='100%'
+                height='100%'
+                mask='url(#tc-cin3-dimhole)'
+              />
+              <rect className='tc-cinema-agent-ring' data-agent-ring='o' rx='6' x='0' y='0' width='0' height='0' />
+              <rect className='tc-cinema-agent-ring' data-agent-ring='i' rx='4' x='0' y='0' width='0' height='0' />
+            </svg>
+            <span className='tc-cinema-agent-chip' data-agent-chip aria-hidden>
+              <Image alt='' height={26} src='/brand/no-bg-locadex-logo-light.png' width={26} />
+              Locadex
+            </span>
           </div>
         </div>
 
@@ -730,30 +1052,40 @@ export default function StoryCinema() {
         <div className='tc-cinema-beat' data-beatbox>
           <div className='tc-cinema-prog' aria-hidden>
             <span className='tc-cinema-prog-dashes'>
-              {CAPS.map((c, i) => (
-                <i data-dash data-st={i === 0 ? 'on' : ''} key={`d${c}`} />
+              {BEATS.map((b, i) => (
+                <i data-dash data-st={i === 0 ? 'on' : ''} key={`d${b.id}`} />
               ))}
             </span>
             <span className='tc-cinema-prog-count'>
-              {CAPS.map((c, i) => (
-                <b data-pn data-first={i === 0 ? 'true' : undefined} key={`n${c}`}>
-                  beat {i + 1} of {CAPS.length}
+              {BEATS.map((b, i) => (
+                <b data-pn data-first={i === 0 ? 'true' : undefined} key={`n${b.id}`}>
+                  beat {i + 1} of {BEATS.length}
                 </b>
               ))}
             </span>
           </div>
 
           <div className='tc-cinema-slides'>
-            {CAPS.map((c, i) => (
+            {BEATS.map((b, i) => (
               <div
                 className='tc-cinema-slide'
                 data-slide={i}
                 data-first={i === 0 ? 'true' : undefined}
-                key={c}
+                key={b.id}
               >
-                <p className='tc-cinema-say'>{c}</p>
+                <p className='tc-cinema-say'>{b.say}</p>
                 {ARTS[i]}
               </div>
+            ))}
+          </div>
+
+          {/* the context group, learning as the run advances */}
+          <div className='tc-cinema-ctxgroup' data-ctxgroup aria-hidden>
+            <b>context group</b>
+            {CTX_ACCUM.map((row) => (
+              <span className='tc-cinema-ctxrow' data-ctxrow key={row.k}>
+                <i>{row.k}</i> · {row.v}
+              </span>
             ))}
           </div>
         </div>

@@ -1,0 +1,75 @@
+/* The measuring apparatus around the morphing headline word. Scoped to the
+   em so it composes with any theme; ink derives from currentColor. */
+
+.ditherfield-root .tc-hero h1 em[data-every] {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* vertical bound lines with small crop ticks top and bottom */
+.ditherfield-root .tc-eg {
+  position: absolute;
+  top: -0.06em;
+  bottom: -0.16em;
+  width: 1px;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ditherfield-root .tc-eg.is-l {
+  left: 0;
+}
+
+.ditherfield-root .tc-eg.is-r {
+  right: 0;
+}
+
+.ditherfield-root .tc-eg::before,
+.ditherfield-root .tc-eg::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  width: 7px;
+  height: 1px;
+  background: currentColor;
+}
+
+.ditherfield-root .tc-eg::before {
+  top: 0;
+}
+
+.ditherfield-root .tc-eg::after {
+  bottom: 0;
+}
+
+/* the dissolve dust: tiny glyphs from many scripts */
+.ditherfield-root .tc-edust {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ditherfield-root .tc-edust span {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  font-family: var(--tc-mono);
+  font-size: 0.22em;
+  font-weight: 400;
+  line-height: 1;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* per-character spans during formation */
+.ditherfield-root [data-every-word] {
+  display: inline-block;
+}
+
+.ditherfield-root [data-every-word] .tc-ech {
+  display: inline-block;
+  will-change: transform, opacity;
+}

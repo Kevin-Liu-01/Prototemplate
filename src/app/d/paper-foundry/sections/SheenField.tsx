@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { RefObject } from 'react';
 import { useRef } from 'react';
 
-import { createGraphiteSheen, type SheenHandle, type SheenParams } from '../lib/graphite-sheen';
+import { createGraphiteSheen, SHEEN_DEFAULTS, type SheenHandle, type SheenParams } from '../lib/graphite-sheen';
 
 export type SheenFieldProps = {
   className?: string;
@@ -17,6 +17,21 @@ export type SheenFieldProps = {
    * under the headline cell's hairlines at every viewport.
    */
   flipRef?: RefObject<HTMLElement | null>;
+};
+
+/**
+ * Dark-theme retune (P2): brushed graphite on ink-black is this material's
+ * home turf, so the sheet does not stand down in dark mode — it re-exposes.
+ * The shader is achromatic (`paper × lum`), so the whole flip is three
+ * numbers: the paper term drops to a graphite a step above the page's
+ * #0a0b0f, the grain cuts deeper so the brushing survives the dark ground,
+ * and the specular band lifts harder so one raked light still reads. Tuned
+ * against the ink-black one-surface family, not inverted mechanically.
+ */
+const DARK_TUNE: Pick<SheenParams, 'paper' | 'grainDepth' | 'bandGain'> = {
+  paper: [0.088, 0.092, 0.106],
+  grainDepth: 0.22,
+  bandGain: 0.3,
 };
 
 /**
@@ -33,6 +48,25 @@ export default function SheenField({ className, params, speed = 1, dpr, flipRef 
 
     const field: SheenHandle | null = createGraphiteSheen(canvas, { params, speed, dpr });
     if (!field) return;
+
+    /* ---- theme: re-tune the material when <html data-theme> flips ----
+       The light values are re-asserted from the defaults (plus any caller
+       overrides) so a dark → light flip restores exactly the tuned sheet. */
+    const applyTheme = () => {
+      const dark = document.documentElement.dataset.theme === 'dark';
+      field.setParams(
+        dark
+          ? DARK_TUNE
+          : {
+              paper: params?.paper ?? SHEEN_DEFAULTS.paper,
+              grainDepth: params?.grainDepth ?? SHEEN_DEFAULTS.grainDepth,
+              bandGain: params?.bandGain ?? SHEEN_DEFAULTS.bandGain,
+            }
+      );
+    };
+    applyTheme();
+    const themeWatch = new MutationObserver(applyTheme);
+    themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     const measure = () => {
       const cell = flipRef?.current;
@@ -90,6 +124,7 @@ export default function SheenField({ className, params, speed = 1, dpr, flipRef 
 
     return () => {
       cancelAnimationFrame(raf);
+      themeWatch.disconnect();
       observer?.disconnect();
       field.destroy();
     };

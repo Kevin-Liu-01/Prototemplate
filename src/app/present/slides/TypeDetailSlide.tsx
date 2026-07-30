@@ -146,21 +146,6 @@ export default function TypeDetailSlide() {
         return;
       }
 
-      gsap.from('.pr-detail-head', {
-        autoAlpha: 0,
-        y: 40,
-        duration: 0.7,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: root.current, start: 'top 65%' },
-      });
-      gsap.from('.pr-detail-col', {
-        autoAlpha: 0,
-        y: 46,
-        stagger: 0.16,
-        duration: 0.65,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: root.current, start: 'top 45%' },
-      });
 
       // The convergence is driven by a proxy so the target can be re-measured
       // on every frame: cached end values go stale when fonts or refreshes
@@ -251,6 +236,20 @@ export default function TypeDetailSlide() {
         },
       });
 
+      // The fun fact leads: headline first, then the two specimen cards,
+      // then the comparison builds row by row.
+      tl.fromTo(
+        '.pr-detail-head',
+        { autoAlpha: 0, y: 40 },
+        { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' },
+        0.05
+      ).fromTo(
+        '.pr-detail-col',
+        { autoAlpha: 0, y: 46 },
+        { autoAlpha: 1, y: 0, stagger: 0.16, duration: 0.5, ease: 'power3.out' },
+        0.6
+      );
+
       // Build: each comparison row lands as a matched pair, left and right
       // together, so the two builds can be read line against line...
       const googleRows = gsap.utils.toArray<HTMLElement>(
@@ -265,7 +264,7 @@ export default function TypeDetailSlide() {
           pair,
           { autoAlpha: 0, y: 22 },
           { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
-          0.2 + i * 0.55
+          1.3 + i * 0.55
         );
       });
 

@@ -1,14 +1,17 @@
 'use client';
 
+import { Check, Copy } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 /**
- * A four-tone highlighter — comment, string, keyword, GT symbol — and nothing
- * else. The page has one accent colour and spends it here on GT's own API, so
- * a reader's eye lands on `<T>` and `useGT()` rather than on syntax confetti.
+ * A five-tone highlighter — comment, string, keyword, tag, GT symbol — and
+ * nothing else (the code-surface spec's restrained set). Strings carry the
+ * most color, because strings are the product; the page's one accent is still
+ * spent on GT's own API, so a reader's eye lands on `<T>` and `useGT()`
+ * rather than on syntax confetti.
  */
 
-type TokenKind = 'plain' | 'com' | 'str' | 'kw' | 'gt' | 'num';
+type TokenKind = 'plain' | 'com' | 'str' | 'kw' | 'gt' | 'num' | 'tag';
 
 export type Token = { k: TokenKind; v: string };
 
@@ -19,11 +22,13 @@ const PATTERN = new RegExp(
     '\\b(import|from|export|default|const|function|return|new|async|await|def|class)\\b',
     '\\b(T|Num|DateTime|GTProvider|LocaleSelector|useGT|getGT|initializeGT|withGTConfig|initialize_gt)\\b',
     '\\b(\\d[\\d_]*)\\b',
+    /* lowercase host elements only: GT components stay the `gt` kind above */
+    '(</?[a-z][\\w-]*)',
   ].join('|'),
   'g'
 );
 
-const KIND: TokenKind[] = ['com', 'str', 'kw', 'gt', 'num'];
+const KIND: TokenKind[] = ['com', 'str', 'kw', 'gt', 'num', 'tag'];
 
 /** Tokenised one line at a time, so line numbers stay trivial to render. */
 export function tokenize(line: string): Token[] {
@@ -118,6 +123,7 @@ export default function CodeBlock({ file, code, numbers = true }: CodeBlockProps
       <div className='tc-code-bar'>
         <span>{file}</span>
         <button className='tc-code-copy' type='button' onClick={copy}>
+          {copied ? <Check className='tc-ico' aria-hidden /> : <Copy className='tc-ico' aria-hidden />}
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>

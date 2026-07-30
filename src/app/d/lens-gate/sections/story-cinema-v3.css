@@ -1,0 +1,520 @@
+/* ============================================================
+   STORY CINEMA v3 — founder round (six directives)
+   Additive skin over the base .tc-cinema block in styles.css.
+   Every rule here carries the extra .tc-cinema-v3 hook so it
+   outranks the base rules regardless of CSS chunk order.
+
+   1 · no shader — the demo site is a clean flat surface
+   2 · code-surface craft: one restrained token set on every
+       dark panel (strings carry the most color), and real diff
+       grammar via --tc-diff-add / --tc-diff-del (gutter marks
+       and line tints ONLY inside diff artifacts)
+   3 · agent selection: doubled-gauge sweep + Locadex chip +
+       the rest of the site dimming under a masked scrim
+   4 · context accumulator chip that grows across beats
+   5 · the GT wordmark is the mark, never the string "GT"
+   6 · component showcases: the house reveal seam (RevealSeam)
+       — the <T> source pinned full-width behind the render,
+       uncovered by a clip boundary (~70/30 default, 0–100 travel)
+   7 · founder round: the pinned take is FULL-BLEED — the stage
+       breaks out of the ruled column to the viewport edges, its
+       two halves on the page's own dark tokens
+   ============================================================ */
+
+.lensgate-root .tc-cinema.tc-cinema-v3 {
+  /* the section's code inks — the same ramp the page's other dark
+     panels use (logos-icons.css --tc-tok-*), restated here so the
+     cinema cannot drift from them */
+  --cin-str: #a7c2f2; /* strings: the most color — strings are the product */
+  --cin-kw: rgba(255, 255, 255, 0.5);
+  --cin-tag: rgba(255, 255, 255, 0.74);
+  --cin-num: rgba(255, 255, 255, 0.78);
+
+  /* real diff semantics, muted tints; spent only inside diffs */
+  --tc-diff-add: #7fca9f;
+  --tc-diff-del: #d99a9a;
+  --tc-diff-add-tint: rgba(127, 202, 159, 0.11);
+  --tc-diff-del-tint: rgba(217, 154, 154, 0.1);
+
+  /* inset code plates one step below the beat panel */
+  --cin-plate: rgba(0, 0, 0, 0.34);
+  --art-px: 20px;
+}
+
+/* ---------- 7 · the pinned stage is FULL-BLEED (founder) ----------
+   The section breaks out of the 1170px ruled column with the delivery
+   band's own margin trick, so while the take is pinned no light page
+   ground shows at either edge. The two halves split the full width in
+   the page's token family — the demo web on the deepest ink black,
+   the beat panel one step raised — meeting at the base hairline
+   (.tc-cinema-beat's border-left in styles.css). Neither token remaps
+   under [data-theme='dark'], so both themes hold identically. */
+.lensgate-root .tc-cinema.tc-cinema-v3 {
+  margin-inline: calc(50% - 50vw);
+  /* Above the rail's doubled-thread overlay (.tc-rail::before, z-index 2):
+     the threads pass BEHIND the full-bleed stage and resume below it —
+     no light hairline crosses the dark take while it is pinned. */
+  position: relative;
+  z-index: 3;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-take,
+.lensgate-root .tc-cinema-v3 .tc-cinema-web {
+  background: var(--tc-dark);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-beat {
+  background: var(--tc-panel);
+}
+
+/* ---------- 1 · the demo website: a clean flat surface ---------- */
+
+/* Capped and optically centered: the tall desktop column no longer
+   stretches the five rows sparse — the box hugs its content and sits
+   on the dark matting like a mounted print. (Mobile columns are shorter
+   than the cap, so this is a desktop-only tightening.) The panel sits
+   one step raised off the ink-black half, in the page's own token. */
+.lensgate-root .tc-cinema-v3 .tc-cinema-demo {
+  max-height: 620px;
+  margin-block: auto;
+  background: var(--tc-panel);
+  border-radius: 3px;
+}
+
+/* the hero keeps a firm rhythm inside the tightened box */
+.lensgate-root .tc-cinema-v3 .tc-cinema-drow.is-hero {
+  gap: clamp(14px, 1.9vh, 20px);
+}
+
+/* ---------- 2 · the token set, on every panel of the section ---------- */
+
+.lensgate-root .tc-cinema-v3 .tc-t-str {
+  color: var(--cin-str);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-t-kw {
+  color: var(--cin-kw);
+}
+
+/* host-element tags — logos-icons.css paints these ink-2 for light
+   panels; the cinema is always dark, so restate them here */
+.lensgate-root .tc-cinema-v3 .tc-t-tag {
+  color: var(--cin-tag);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-t-gt {
+  color: var(--cin-bright);
+  font-weight: 500;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-t-num {
+  color: var(--cin-num);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-t-com {
+  color: var(--cin-faint);
+}
+
+/* artifact plates: darker, flush, no internal borders */
+.lensgate-root .tc-cinema-v3 .tc-cinema-art {
+  padding: 15px var(--art-px);
+  background: var(--cin-plate);
+  border-color: var(--cin-edge);
+}
+
+/* translated strings outside code fences (the voice compare)
+   carry the string ink — they are the product */
+.lensgate-root .tc-cinema-v3 .tc-cinema-arow > code {
+  color: var(--cin-str);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-arow.is-dim > code {
+  color: var(--cin-dim);
+}
+
+/* ---------- 2 · diff grammar: gutter marks + line tints,
+               only inside .is-diff artifacts ---------- */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art.is-diff .tc-cinema-art-line {
+  margin-inline: calc(var(--art-px) * -1);
+  padding-inline: var(--art-px);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-add {
+  color: var(--cin-ink);
+  background: var(--tc-diff-add-tint);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-add .tc-t-str {
+  color: var(--cin-str);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-add .tc-t-kw {
+  color: var(--cin-kw);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-add .tc-t-num {
+  color: var(--cin-num);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-add .tc-t-tag {
+  color: var(--cin-tag);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-del {
+  color: var(--cin-dim);
+  background: var(--tc-diff-del-tint);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-del > code:last-child {
+  text-decoration: none;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art.is-diff .tc-cinema-art-sign {
+  width: 17px;
+  font-weight: 500;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-add .tc-cinema-art-sign {
+  color: var(--tc-diff-add);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-art-line.is-del .tc-cinema-art-sign {
+  color: var(--tc-diff-del);
+}
+
+/* PR stat counters reuse the diff inks — add/remove semantics only */
+.lensgate-root .tc-cinema-v3 .tc-cinema-add-ink {
+  color: var(--tc-diff-add);
+  font-weight: 500;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-del-ink {
+  color: var(--tc-diff-del);
+  font-weight: 500;
+}
+
+/* ---------- 4 · the context-assembly table (beat 1) ---------- */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-arow > span {
+  white-space: nowrap;
+}
+
+/* ---------- 6 · component showcases: the house reveal seam ----------
+   Founder-corrected mechanic: the source layer is PINNED — full-width,
+   aligned under the rendered UI — and the seam only moves the clip
+   boundary, so dragging reveals the code in place; it never travels.
+   Full 0–100 travel: at 0% the source owns the box, at 100% the UI. */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-show {
+  --seam-cut: 70%;
+  --open: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* the tagline card's rendered copy stays clear of the resting strip */
+.lensgate-root .tc-cinema-v3 .tc-cinema-dcard > .tc-cinema-show-ui > b {
+  display: block;
+  max-width: 62%;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.32;
+  letter-spacing: -0.014em;
+  color: var(--cin-bright);
+}
+
+/* wide enough that the pulled-open pane shows every source line whole */
+.lensgate-root .tc-cinema-v3 .tc-cinema-dcard.tc-cinema-show {
+  width: min(100%, 420px);
+}
+
+/* the source pane: the component's <T> code, pinned full-width UNDER
+   the render — only the clip boundary rides the seam */
+.lensgate-root .tc-cinema-v3 .tc-cinema-show-src {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--tc-dark);
+  clip-path: inset(0 0 0 var(--seam-cut, 70%));
+  overflow: hidden;
+}
+
+/* Two layers crossfaded by --open. At the ~70/30 rest the visible strip
+   carries a crisp `<T> · source` chip — never a mid-token crop of code;
+   pulling the seam open fades the full listing in. The chip is pinned
+   inside the resting strip (the right 30% of the box), so it too stays
+   put while the clip window moves across it. */
+.lensgate-root .tc-cinema-v3 .tc-cinema-show-rest {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-family: var(--tc-mono);
+  opacity: calc(1 - var(--open));
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-show-rest > b {
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1.2;
+  color: var(--cin-bright);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-show-rest > i {
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--cin-dim);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-show-code {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  padding: 6px 10px 6px 13px;
+  opacity: var(--open);
+  /* any line still longer than the pane exits through a soft fade,
+     never a hard mid-glyph crop */
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent 100%);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-show-code code {
+  display: block;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  white-space: pre;
+  color: var(--cin-ink);
+}
+
+/* The handle itself is the shared seam (RevealSeam.tsx / reveal-seam.css):
+   the logo's doubled line plus one grabber pill — no chrome. Only the
+   inks are local: both of the cinema's surfaces are dark, so both
+   threads are white, the source side a step brighter. */
+.lensgate-root .tc-cinema-v3 .tc-cinema-show .tc-seam {
+  --seam-ink-l: rgba(255, 255, 255, 0.4);
+  --seam-ink-r: rgba(255, 255, 255, 0.62);
+}
+
+/* The button showcase reserves a fixed 84px strip for its one-line
+   source, so the box still visibly widens when the language swaps.
+   (The beat-5 ring re-measure assumes this 100px of ui padding.) */
+.lensgate-root .tc-cinema-v3 .tc-cinema-dbtn.tc-cinema-show {
+  display: inline-flex;
+  align-items: stretch;
+  padding: 0;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-dbtn .tc-cinema-show-ui {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 84px 0 16px;
+}
+
+/* the 34px button strip carries the bare <T> chip only */
+.lensgate-root .tc-cinema-v3 .tc-cinema-dbtn .tc-cinema-show-rest > i {
+  display: none;
+}
+
+/* ---------- the progress gauge: done fills, current burns, future waits ----------
+   Convention-true left-to-right fill: completed beats are solid bars,
+   the current beat is the one white segment, unreached beats stay as
+   empty doubled hairlines — the count is legible at a glance. */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-prog-dashes i {
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  background: transparent;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-prog-dashes i[data-st='done'] {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-prog-dashes i[data-st='on'] {
+  border-color: var(--cin-bright);
+  background: var(--cin-bright);
+}
+
+/* ---------- the scan head: a doubled hairline walking the demo ----------
+   Replaces the broad gradient band — the head is the thread pair at the
+   page's constant gauge with a short breath of light above it and the
+   product's own label riding underneath, so the line that flags a node
+   is unmistakably the thing doing the flagging. */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-scan {
+  height: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+  background: none;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-scan::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 26px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.07), transparent);
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-scan::after {
+  content: 'locadex · scan';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ---------- 3 · agent selection: dim scrim, doubled sweep, chip ---------- */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-agent {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-agent-dim {
+  fill: rgba(4, 5, 8, 0.62);
+  opacity: 0;
+}
+
+/* two rects at the thread gauge — the doubled selection */
+.lensgate-root .tc-cinema-v3 .tc-cinema-agent-ring {
+  fill: none;
+  stroke: var(--cin-bright);
+  stroke-width: var(--thread-gauge);
+  opacity: 0;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-agent-chip {
+  position: absolute;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 9px 0 7px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px 4px 4px 0;
+  background: var(--tc-panel);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--cin-bright);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the Locadex mark ships as a dark glyph — invert it for the dark panel */
+.lensgate-root .tc-cinema-v3 .tc-cinema-agent-chip img {
+  display: block;
+  width: 13px;
+  height: 13px;
+  filter: invert(1);
+}
+
+/* ---------- 4 · the context-group accumulator ---------- */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-ctxgroup {
+  position: absolute;
+  right: 22px;
+  bottom: 18px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 21ch;
+  padding: 8px 12px 9px;
+  border: 1px solid var(--cin-edge);
+  border-radius: 4px;
+  background: var(--cin-plate);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--cin-ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-ctxgroup > b {
+  font-weight: 400;
+  color: var(--cin-dim);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-ctxrow {
+  display: block;
+  max-height: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-ctxrow > i {
+  font-style: normal;
+  color: var(--cin-dim);
+}
+
+/* ---------- 5 · the mark at text scale ---------- */
+
+.lensgate-root .tc-cinema-v3 .tc-cinema-gtmark {
+  display: inline-block;
+  width: 0.94em;
+  height: 0.94em;
+  vertical-align: -0.09em;
+  object-fit: contain;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .lensgate-root .tc-cinema-v3 .tc-cinema-ctxgroup {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-v3 .tc-cinema-art {
+    --art-px: 13px;
+    padding: 11px var(--art-px);
+  }
+
+  .lensgate-root .tc-cinema-v3 .tc-cinema-dbtn .tc-cinema-show-ui {
+    padding: 0 64px 0 14px;
+  }
+}
+
+/* ---------- reduced motion: showcases hold their 70/30 still;
+             the agent overlay and accumulator are animation-only ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .lensgate-root .tc-cinema-v3 .tc-cinema-agent,
+  .lensgate-root .tc-cinema-v3 .tc-cinema-agent-chip,
+  .lensgate-root .tc-cinema-v3 .tc-cinema-ctxgroup {
+    display: none;
+  }
+}

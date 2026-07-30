@@ -217,24 +217,29 @@ const FLAGS: readonly { flag: string; name: string }[] = [
   { flag: '🇹🇷', name: 'Türkçe' },
 ];
 
-/* ---------- grid construction ----------
-   Each side is a conveyor of adjacent columns (a sheet, not floating cards):
-   COLS_PER_SET column templates repeated SETS times so the track can wrap by
-   exactly one set width with no visible seam. Column templates stagger the
-   pair list so neighbouring columns never repeat a component on the same row.
-   Every cell has the SAME fixed height (--eh-rowh) — but that flat layout is
-   only the SOURCE PLANE. Per frame, every card is pushed through the same
-   point-mass lens the shader uses (source radius ρs images at
-   ρ = (ρs + √(ρs² + 4r²))/2, the exact inverse of the shader's rs = r − 1/r
-   law), so the whole sheet lives in one curvilinear field: row courses bow
-   around the horizon — gently at the screen edges, wrapping hard at the rim —
-   columns fan into meridians, and the map's Jacobian tilts each card tangent
-   to its course and compresses it as it nears the rim. */
-const COLS_PER_SET = 4;
-const SETS = 3;
-const CARDS_PER_COL = 10;
-/** Conveyor speed, px/s — one column width in roughly ten seconds. */
-const SPEED = 24;
+/* ---------- wall construction ----------
+   Each side is one dense WALL of cards: PHYS_COLUMNS depth columns of
+   ROWS_PER_COLUMN shared row courses, every 312px column cut into four 78px
+   vertical strips. Each strip is a flat chord placed along a curved plan-view
+   rail (translate3d + rotateY under the stage's real perspective), so the
+   wall is a piecewise-planar sweep — the fabric read: cards shear and tilt
+   with the local surface orientation, compress along the sweep, and stay
+   packed tight on row lines shared across every column of BOTH walls. The
+   machinery is the hourglass corridor's strip-chord rail with its curvature
+   flipped the founder's way (see the suction rail below). */
+const ROWS_PER_COLUMN = 5;
+const STRIPS_PER_COLUMN = 4;
+const PHYS_COLUMNS = 6;
+const COLUMN_W = 312;
+const COLUMN_PITCH = 330;
+const STRIP_W = COLUMN_W / STRIPS_PER_COLUMN;
+const WRAP_SPAN = COLUMN_PITCH * PHYS_COLUMNS;
+/* Keeps every column's arc inside one wrap period; enough headroom behind
+   the screen edge for the entrance pull, tight enough that the deepest
+   visible chord never outruns the rail LUT before the fade retires it. */
+const ARC_MIN = -360;
+/** Conveyor arc speed along the rail, px/s. */
+const ARC_SPEED = 9;
 /** Clock offset so the very first painted frame is already mid-flow. */
 const T0 = 4;
 /** Flag-orbit radius as a multiple of the horizon radius (wide mode). */
@@ -243,15 +248,29 @@ const ORBIT_K = 1.36;
 const ORBIT_DUR = 130;
 /** Vertical squash of the flag orbit — a slightly inclined orbital plane. */
 const ORBIT_TILT = 0.94;
-/** Extra lens mass for the card sheet — the shader's law with a slightly
-    deeper well, so the whole-sheet curvature reads at the screen edges. */
-const LENS_GAIN = 1.18;
+
+/* ---------- the suction rail ----------
+   Plan-view geometry of one wall: x across the screen measured from the
+   hole's center, z toward the viewer, arc length s from the screen edge. The
+   heading phi eases from PHI_EDGE (~3° — the wall lies almost in the screen
+   plane, a plain flat grid) to PHI_DEEP (~87° — diving straight away behind
+   the portal), and the turn is deliberately BACK-LOADED (PHI_SHAPE), so the
+   courses run near-flat for most of the sweep and then whip inward: a
+   concave suction curve, the grid lines pulled INTO the mass — the opposite
+   read of the hourglass corridor's barrel, per the founder's sketch. */
+const PHI_EDGE = 0.05;
+const PHI_DEEP = 1.52;
+const PHI_SHAPE = 2.7;
+/** The rail starts this far off the screen edge, slightly toward the viewer,
+    so the frame crops the near columns the way it crops the flat baseline. */
+const EDGE_OUT = 90;
+const EDGE_Z = 120;
+/** The stage's CSS perspective, px — must match .eh-stage. */
+const PERSPECTIVE = 750;
+const RAIL_STEP = 4;
+const RAIL_START = -560;
 
 const TAU = Math.PI * 2;
-
-/* Per-column start offsets into the pair list, chosen so a repeated component
-   never lands within five rows of itself in a neighbouring column. */
-const COL_OFFSETS: readonly number[] = [0, 6, 11, 4];
 
 const pairAt = (index: number): Pair => PAIRS[index % PAIRS.length] ?? PAIRS[0];
 
@@ -260,6 +279,89 @@ const smooth01 = (t: number) => {
   const c = clamp01(t);
   return c * c * (3 - 2 * c);
 };
+
+const phiAt = (u: number): number =>
+  PHI_EDGE + (PHI_DEEP - PHI_EDGE) * Math.pow(clamp01(u), PHI_SHAPE);
+
+/* Mean of cos(phi) over the sweep — a pure profile constant that converts a
+   plan-view x reach into the arc span that covers it. */
+const SWEEP_COS = (() => {
+  let sum = 0;
+  for (let i = 0; i < 256; i++) sum += Math.cos(phiAt((i + 0.5) / 256));
+  return sum / 256;
+})();
+
+type WallRail = {
+  /** Stage width the LUT was built for. */
+  view: number;
+  /** Arc length of the sweep — screen edge to the dive behind the rim. */
+  span: number;
+  xs: Float64Array;
+  zs: Float64Array;
+};
+
+function buildRail(view: number, r: number): WallRail {
+  /* The dive lands a third of a radius past the rim, so the last visible
+     chords are already behind the disc when the fade extinguishes them. */
+  const reach = view / 2 + EDGE_OUT - r * 0.35;
+  const span = Math.min(Math.max(reach / SWEEP_COS, 520), 1140);
+  const count = Math.ceil((span * 1.5 - RAIL_START) / RAIL_STEP) + 1;
+  const xs = new Float64Array(count);
+  const zs = new Float64Array(count);
+  const zero = Math.round(-RAIL_START / RAIL_STEP);
+  xs[zero] = -view / 2 - EDGE_OUT;
+  zs[zero] = EDGE_Z;
+  /* Midpoint-sampled Euler both ways from the screen edge; beyond the ends
+     phi is clamped, so the rail extends straight and off-screen strips stay
+     finite. */
+  for (let i = zero + 1; i < count; i++) {
+    const s = RAIL_START + (i - 1) * RAIL_STEP;
+    const a = phiAt((s + RAIL_STEP / 2) / span);
+    xs[i] = (xs[i - 1] ?? 0) + Math.cos(a) * RAIL_STEP;
+    zs[i] = (zs[i - 1] ?? 0) - Math.sin(a) * RAIL_STEP;
+  }
+  for (let i = zero - 1; i >= 0; i--) {
+    const s = RAIL_START + (i + 1) * RAIL_STEP;
+    const a = phiAt((s - RAIL_STEP / 2) / span);
+    xs[i] = (xs[i + 1] ?? 0) - Math.cos(a) * RAIL_STEP;
+    zs[i] = (zs[i + 1] ?? 0) + Math.sin(a) * RAIL_STEP;
+  }
+  return { view, span, xs, zs };
+}
+
+function railPoint(rail: WallRail, s: number): { x: number; z: number } {
+  const f = (s - RAIL_START) / RAIL_STEP;
+  const i = Math.min(Math.max(Math.floor(f), 0), rail.xs.length - 2);
+  const t = Math.min(Math.max(f - i, 0), 1);
+  return {
+    x: (rail.xs[i] ?? 0) * (1 - t) + (rail.xs[i + 1] ?? 0) * t,
+    z: (rail.zs[i] ?? 0) * (1 - t) + (rail.zs[i + 1] ?? 0) * t,
+  };
+}
+
+/* Keeps every column's arc inside one wrap period, [ARC_MIN, ARC_MIN+WRAP). */
+function wrapArc(v: number): number {
+  return ((((v - ARC_MIN) % WRAP_SPAN) + WRAP_SPAN) % WRAP_SPAN) + ARC_MIN;
+}
+
+/* Three depth-column patterns of five row courses, dealt so no row or column
+   repeats a component shape next to itself (the two action buttons never
+   share a row course) and the RTL Arabic toast stays in rotation. */
+const PATTERNS: readonly (readonly Pair[])[] = [
+  [0, 1, 2, 3, 4],
+  [8, 5, 6, 7, 9],
+  [10, 11, 12, 0, 2],
+].map((rows) => rows.map((i) => pairAt(i)));
+
+/* Depth grading. The veil (--ehd) is the paper fog that dims the wall along
+   the sweep; the two fades govern extinction by PROJECTED distance from the
+   hole center in rim units: a dip through the flag-orbit lane keeps the
+   chips legible, then the rim fade extinguishes the wall as it slips under
+   the disc — behind the portal — leaving the glow annulus clean. */
+const veilAt = (mid: number): number => 0.55 * smooth01((mid - 0.4) / 0.58);
+const rimFadeAt = (q: number): number => smooth01((q - 0.78) / 0.55);
+const laneFadeAt = (q: number, laneQ: number): number =>
+  0.62 + 0.38 * smooth01((q - laneQ + 0.04) / 0.42);
 
 function CardBody({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
   const face = side === 'en' ? pair.en : pair.tr;
@@ -418,84 +520,64 @@ function DemoCard({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
   );
 }
 
-function GridSide({
-  side,
-  trackRef,
-  gridRef,
-}: {
-  side: 'en' | 'tr';
-  trackRef: React.RefObject<HTMLDivElement | null>;
-  gridRef: React.RefObject<HTMLDivElement | null>;
-}) {
+/* One wall: PHYS_COLUMNS depth columns, each dealt as STRIPS_PER_COLUMN flat
+   chords. Each strip is a 78px window onto its column's 312px five-row grid;
+   on the translated wall the strip's local x runs deep→near, so the windows
+   are dealt from the far side of the content instead. The translated wall
+   also runs its pattern sequence reversed after the first ([c0, c2, c1]): at
+   the mirror phase every occupied arc slot carries the SAME pattern on both
+   walls — English face left, translated face right, same row lines — so a
+   pair that enters near-left exits near-right. */
+function Wall({ side }: { side: 'en' | 'tr' }) {
+  const order = side === 'tr' ? [0, 2, 1] : [0, 1, 2];
   return (
-    <div
-      className={`eh-grid is-${side}`}
-      ref={gridRef}
-      role='group'
-      aria-label={
-        side === 'en'
-          ? 'English source components drifting into the event horizon'
-          : 'The same components emerging translated and locale-stamped'
-      }
-    >
-      <div className='eh-track' ref={trackRef}>
-        {Array.from({ length: COLS_PER_SET * SETS }, (_, c) => (
-          <div className='eh-col' key={c}>
-            {Array.from({ length: CARDS_PER_COL }, (_, row) => {
-              const pair = pairAt((COL_OFFSETS[c % COLS_PER_SET] ?? 0) + row);
-              return (
-                <div className='eh-cell' key={row}>
-                  <DemoCard pair={pair} side={side} />
+    <div className={`eh-wall is-${side}`}>
+      {Array.from({ length: PHYS_COLUMNS }, (_, col) => {
+        const pattern = PATTERNS[order[col % order.length] ?? 0];
+        if (!pattern) return null;
+        return Array.from({ length: STRIPS_PER_COLUMN }, (_, strip) => {
+          const shift = side === 'en' ? -strip * STRIP_W : (strip + 1) * STRIP_W - COLUMN_W;
+          return (
+            <div className='eh-strip' data-col={col} data-strip={strip} key={`${col}-${strip}`}>
+              <div className='eh-strip-in' style={{ transform: `translateX(${shift}px)` }}>
+                <div className='eh-col'>
+                  {pattern.map((pair, row) => (
+                    <DemoCard key={`${pair.id}-${row}`} pair={pair} side={side} />
+                  ))}
                 </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+              </div>
+            </div>
+          );
+        });
+      })}
     </div>
   );
 }
 
-type CellGeom = { el: HTMLElement; cy: number };
-type ColGeom = {
-  cx: number;
-  cells: CellGeom[];
-};
-type SideGeom = {
-  track: HTMLElement;
-  /** −1 = source side (left / top band), +1 = translated side. */
-  sign: -1 | 1;
-  /** Track world-x at conveyor offset 0. */
-  base: number;
-  /** Track world-y offset (0 in wide mode; the band top in stack mode). */
-  top: number;
-  cols: ColGeom[];
-};
-
 /**
- * Kevin's sketch, built literally: two dense component sheets fill the screen
- * from its edges and are pulled into a REAL event horizon at center. The
- * horizon is a purpose-built lensing shader (lib/horizon-field.ts): an
+ * Kevin's sketch, built literally: two dense mirrored card WALLS fill the
+ * screen from its edges and are pulled into a REAL event horizon at center.
+ * The horizon is a purpose-built lensing shader (lib/horizon-field.ts): an
  * accretion streak field whose sampling coordinates bend around the rim into
  * a brilliant photon ring, the page's own ruled hairlines warping with it,
- * over a genuinely dark core. The sheets are conveyors of adjacent columns
- * sliding on one shared clock — but the layout is only the source plane: per
- * frame every card images through the SAME point-mass lens the shader uses,
- * so the entire sheet obeys one curvilinear perspective. Row courses bow
- * around the hole (gently far out, wrapping at the rim), columns fan like
- * meridians, and each card rides tangent to its course, compressing as it
- * approaches the glow. The dark core holds the mark, headline, CTAs and the
- * npx chip light-on-dark; the locale flag chips ride a slightly inclined
- * orbit around the horizon, each oriented tangent to the ring like a
- * satellite belt.
+ * over a genuinely dark core. The walls carry the hourglass corridor's
+ * strip-chord treatment with the curvature flipped his way: near-FLAT at the
+ * screen edges — a plain component grid facing the viewer — then
+ * accelerating inward as they approach the portal (concave suction curves,
+ * the grid lines pulled into the mass) and diving BEHIND it, where the disc
+ * occludes them and the fade leaves the rim glow and the flag-orbit lane
+ * clean. Five row courses are shared across every column of both walls, and
+ * because each strip is a flat chord under one real perspective, cards
+ * deform with the wall like printed fabric — shearing, tilting and
+ * compressing with the local surface. The dark core holds the mark,
+ * headline, CTAs and the npx chip light-on-dark; the locale flag chips ride
+ * a slightly inclined orbit around the horizon, each oriented tangent to the
+ * ring like a satellite belt.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const gridEnRef = useRef<HTMLDivElement>(null);
-  const gridTrRef = useRef<HTMLDivElement>(null);
-  const trackEnRef = useRef<HTMLDivElement>(null);
-  const trackTrRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const horizonRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLCanvasElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
@@ -514,15 +596,11 @@ export default function Hero() {
   useGSAP(
     () => {
       const hero = heroRef.current;
-      const trackEn = trackEnRef.current;
-      const trackTr = trackTrRef.current;
-      const gridEn = gridEnRef.current;
-      const gridTr = gridTrRef.current;
+      const stage = stageRef.current;
       const fieldCanvas = fieldRef.current;
       const orbit = orbitRef.current;
       const rail = railRef.current;
-      if (!hero || !trackEn || !trackTr || !gridEn || !gridTr || !fieldCanvas || !orbit || !rail)
-        return;
+      if (!hero || !stage || !fieldCanvas || !orbit || !rail) return;
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -541,99 +619,98 @@ export default function Hero() {
         attributeFilter: ['data-theme'],
       });
 
-      let sides: SideGeom[] = [];
-      let wide = true;
-      let cx = 0;
-      let cy = 0;
-      let r = 240;
-      let orbitR = 320;
-      let setW = 1;
-      let heroW = 1;
+      type StripSlot = {
+        el: HTMLElement;
+        out: boolean;
+        col: number;
+        strip: number;
+        shown: boolean;
+      };
+      const slots: StripSlot[] = Array.from(
+        stage.querySelectorAll<HTMLElement>('.eh-strip')
+      ).map((el) => ({
+        el,
+        out: el.closest('.eh-wall')?.classList.contains('is-tr') ?? false,
+        col: Number(el.dataset.col ?? '0'),
+        strip: Number(el.dataset.strip ?? '0'),
+        shown: false,
+      }));
 
       /* The flag chips, driven directly each frame — no wrapper rotation, no
          counter-rotation: each chip is seated on the (slightly inclined)
          orbit and oriented TANGENT to it, satellites riding the ring. */
       const chips = Array.from(orbit.querySelectorAll<HTMLElement>('.eh-chip'));
 
-      /* One conveyor frame. The sheets slide in flat coordinates on a shared
-         clock; every card is then imaged through the point-mass lens — the
-         same law the shader bends the page's rules with — so cards travel
-         ALONG their curved courses, tilt tangent to them, and compress as
-         they near the rim, where the glow extinguishes them. */
-      const frame = (timeSec: number) => {
-        const offset = ((timeSec * SPEED) % setW + setW) % setW;
-        /* The bands sit close to the hole on phones; soften the field so the
-           fold reads as a tidy curved grid, not a smeared one. */
-        const gain = wide ? 1 : 0.5;
-        const rl = r * LENS_GAIN;
-        const r2x4 = 4 * rl * rl;
-        const margin = r + 340;
-        for (const side of sides) {
-          const baseX = side.base + offset;
-          side.track.style.transform = `translate3d(${baseX.toFixed(2)}px, 0, 0)`;
-          for (const col of side.cols) {
-            const colX = baseX + col.cx;
-            /* Offscreen columns skip their writes; the margin is wider than
-               any lens displacement, so transforms are current before entry. */
-            if (colX < -margin || colX > heroW + margin) continue;
-            const dx = colX - cx;
-            for (const cell of col.cells) {
-              const dy = side.top + cell.cy - cy;
-              const rs = Math.hypot(dx, dy);
-              if (rs < 2) {
-                cell.el.style.opacity = '0';
-                continue;
-              }
-              /* Source radius ρs images at ρ = (ρs + √(ρs² + 4rl²)) / 2 — the
-                 inverse of the shader's rs = r − 1/r point-mass lens (with
-                 the slightly deeper LENS_GAIN well), so the card field and
-                 the shader's bent rules belong to one curvature. */
-              const root = Math.sqrt(rs * rs + r2x4);
-              const rho = (rs + root) / 2;
-              /* Jacobian of the radial map: mr compresses radially (→ ½ at
-                 the rim), mt magnifies tangentially (the lens's arc-stretch). */
-              const mr = 0.5 * (1 + rs / root);
-              const mt = rho / rs;
-              const ddx = dx * ((rho - rs) / rs) * gain;
-              const ddy = dy * ((rho - rs) / rs) * gain;
-              /* Course tangent = the image of the flat +x direction. Cards
-                 rotate to sit tangent on their course; scales are the mapped
-                 lengths of the card's own axes, capped so cards only ever
-                 compress (the lens may stretch space, never the card). */
-              const vx = (mr * dx * dx + mt * dy * dy) / (rs * rs);
-              const vy = (dx * dy * (mr - mt)) / (rs * rs);
-              const rot = Math.atan2(vy, vx) * gain;
-              const sAlong = 1 + (Math.min(Math.hypot(mr * dx, mt * dy) / rs, 1) - 1) * gain;
-              const sAcross = 1 + (Math.min(Math.hypot(mr * dy, mt * dx) / rs, 1) - 1) * gain;
-              const fx = dx + ddx;
-              const fy = dy + ddy;
-              const d = Math.hypot(fx, fy);
-              /* Extinction rides the flag orbit — the last stable orbit.
-                 Courses visibly bow toward the ring and evaporate with a
-                 small standoff just OUTSIDE it, so the chips keep a truly
-                 clear lane, the glow annulus stays clean, and the fade is
-                 monotone (no banding of half-ghosts between lane and rim). */
-              const fade = smooth01((d - orbitR * 1.06) / (r * 0.18));
-              let alpha = 1 - (1 - fade) * (wide ? 1 : 0.55);
-              if (wide) {
-                /* The side gate keeps each track on its own half. */
-                alpha *= smooth01((side.sign * fx) / (r * 0.55));
-              }
-              cell.el.style.transform = `translate3d(${ddx.toFixed(2)}px, ${ddy.toFixed(
-                2
-              )}px, 0) rotate(${rot.toFixed(4)}rad) scale(${sAlong.toFixed(3)}, ${sAcross.toFixed(
-                3
-              )})`;
-              cell.el.style.opacity = alpha.toFixed(3);
-            }
-          }
-        }
+      let wallRail: WallRail | null = null;
+      let wide = true;
+      let cy = 0;
+      let r = 240;
+      let orbitR = 320;
+      let laneQ = ORBIT_K;
 
-        /* The flag orbit: chips revolve on a slightly inclined ellipse, each
-           oriented tangent to it. Chips on the lower arc take a 180° roll
-           (snapped at the sides, where they stand vertical) so the text
-           never inverts — the circular-seal read. Far-side chips (top arc)
-           shrink and dim as if passing behind the rim glow. */
+      /* e = entrance progress: the walls slide a last stretch of arc INTO
+         place while fading up — the suction announcing itself. */
+      const flow = { e: 1 };
+
+      const hideSlot = (slot: StripSlot) => {
+        if (!slot.shown) return;
+        slot.el.style.visibility = 'hidden';
+        slot.shown = false;
+      };
+
+      /* Places every strip as a flat chord on the suction rail: sample the
+         chord's endpoints, seat it with translate3d + rotateY (the source
+         wall's arcs advance INTO the hole, the translated wall's retreat OUT
+         of it — mirrored x and heading), and grade the paper veil by depth
+         and the extinction by projected distance from the hole. Both walls
+         share the same row grid at every frame. */
+      const placeWalls = (d: number) => {
+        const wr = wallRail;
+        if (!wide || !wr) return;
+        const half = wr.view / 2;
+        const pull = (1 - flow.e) * 220;
+        for (const slot of slots) {
+          const colArc = slot.out
+            ? wrapArc(-slot.col * COLUMN_PITCH - d - pull)
+            : wrapArc(slot.col * COLUMN_PITCH + d - pull);
+          const a0 = colArc + slot.strip * STRIP_W;
+          const mid = (a0 + STRIP_W / 2) / wr.span;
+          if (a0 + STRIP_W < -40 || mid > 1.42) {
+            hideSlot(slot);
+            continue;
+          }
+          const p0 = railPoint(wr, a0);
+          const p1 = railPoint(wr, a0 + STRIP_W);
+          /* Projected distance from the hole center, in rim units — the
+             extinction coordinate, so the fade tracks what the eye sees no
+             matter how deep the chord has dived. */
+          const zm = (p0.z + p1.z) / 2;
+          const k = PERSPECTIVE / (PERSPECTIVE - zm);
+          const q = (-(p0.x + p1.x) / 2) * k / r;
+          const alpha = flow.e * laneFadeAt(q, laneQ) * rimFadeAt(q);
+          if (alpha < 0.012) {
+            hideSlot(slot);
+            continue;
+          }
+          const turn = Math.atan2(p0.z - p1.z, p1.x - p0.x);
+          const sign = slot.out ? -1 : 1;
+          const style = slot.el.style;
+          slot.shown = true;
+          style.visibility = 'visible';
+          style.opacity = alpha.toFixed(3);
+          style.setProperty('--ehd', veilAt(mid).toFixed(3));
+          style.transform = `translate3d(${(sign * (p0.x + half)).toFixed(2)}px, 0px, ${p0.z.toFixed(
+            2
+          )}px) rotateY(${(sign * turn).toFixed(5)}rad)`;
+        }
+      };
+
+      /* The flag orbit: chips revolve on a slightly inclined ellipse, each
+         oriented tangent to it. Chips on the lower arc take a 180° roll
+         (snapped at the sides, where they stand vertical) so the text
+         never inverts — the circular-seal read. Far-side chips (top arc)
+         shrink and dim as if passing behind the rim glow. */
+      const placeChips = (timeSec: number) => {
         const phase = (timeSec / ORBIT_DUR) * TAU;
         const n = chips.length || 1;
         for (let i = 0; i < chips.length; i++) {
@@ -655,71 +732,36 @@ export default function Hero() {
         }
       };
 
+      /* One shared clock drives both the wall conveyors and the orbit. */
+      const frame = (timeSec: number) => {
+        placeWalls(timeSec * ARC_SPEED);
+        placeChips(timeSec);
+      };
+
       const measure = () => {
         const w = hero.clientWidth;
         const h = hero.clientHeight;
         if (w < 10 || h < 10) return;
-        heroW = w;
         wide = w >= 760;
         r = wide
           ? Math.min(Math.max(w * 0.19, 228), 300, h * 0.36)
           : Math.min(w * 0.4, 168, h * 0.26);
-        cx = w / 2;
-
-        /* Reset every conveyor transform before reading geometry, so rects are
-           unpolluted by the previous frame. */
-        for (const track of [trackEn, trackTr]) {
-          track.style.transform = 'none';
-          for (const col of Array.from(track.children)) {
-            if (!(col instanceof HTMLElement)) continue;
-            for (const cell of Array.from(col.children)) {
-              if (cell instanceof HTMLElement) cell.style.transform = 'none';
-            }
-          }
-        }
-
-        /* Stack mode folds the grids into two dense bands; their height is the
-           first column's visible content (CSS hides rows past the second). */
-        let bandH = 0;
-        if (!wide) {
-          const probe = trackEn.querySelector('.eh-col');
-          if (probe instanceof HTMLElement) {
-            let sum = 0;
-            let count = 0;
-            for (const cell of Array.from(probe.children)) {
-              if (cell instanceof HTMLElement && cell.offsetHeight > 0) {
-                sum += cell.offsetHeight;
-                count += 1;
-              }
-            }
-            bandH = sum + Math.max(0, count - 1) * 12;
-          }
-        }
-
-        /* Stack bands stand off the rim far enough for the orbit chips. */
-        const bandGap = 52;
+        const cx = w / 2;
+        /* Stack mode leaves head/foot room for the static card bands. */
         cy = wide
           ? Math.max(Math.min(h * 0.47, h - r - 148), r + 96)
-          : Math.max(Math.min(h * 0.42, h - r - bandH - 104), r + bandH + 26);
+          : Math.max(Math.min(h * 0.46, h - r - 232), r + 238);
         orbitR = wide ? r * ORBIT_K : Math.min(r + 36, w / 2 - 20);
+        laneQ = orbitR / r;
 
         hero.style.setProperty('--eh-cx', `${cx.toFixed(1)}px`);
         hero.style.setProperty('--eh-cy', `${cy.toFixed(1)}px`);
         hero.style.setProperty('--eh-r', `${r.toFixed(1)}px`);
         hero.dataset.ehMode = wide ? 'wide' : 'stack';
 
-        if (wide) {
-          trackEn.style.top = '0px';
-          trackEn.style.height = '100%';
-          trackTr.style.top = '0px';
-          trackTr.style.height = '100%';
-        } else {
-          const topBand = cy - r - bandGap - bandH;
-          trackEn.style.top = `${topBand.toFixed(1)}px`;
-          trackEn.style.height = `${bandH.toFixed(1)}px`;
-          trackTr.style.top = `${(cy + r + bandGap).toFixed(1)}px`;
-          trackTr.style.height = `${bandH.toFixed(1)}px`;
-        }
+        /* The stage's vanishing point is the hole itself: every diving chord
+           converges INTO the horizon, not the viewport center. */
+        stage.style.perspectiveOrigin = `50% ${cy.toFixed(1)}px`;
 
         /* The shader canvas covers the disc plus a generous annulus: big
            enough that the outermost guide ring bends inside it, small enough
@@ -745,46 +787,17 @@ export default function Hero() {
         rail.style.width = `${(orbitR * 2).toFixed(1)}px`;
         rail.style.height = `${(orbitR * ORBIT_TILT * 2).toFixed(1)}px`;
 
-        const readSide = (track: HTMLElement, sign: -1 | 1): SideGeom => {
-          const trackRect = track.getBoundingClientRect();
-          const cols: ColGeom[] = [];
-          for (const colEl of Array.from(track.children)) {
-            if (!(colEl instanceof HTMLElement)) continue;
-            const colRect = colEl.getBoundingClientRect();
-            const cells: CellGeom[] = [];
-            for (const cellEl of Array.from(colEl.children)) {
-              if (!(cellEl instanceof HTMLElement) || cellEl.offsetHeight === 0) continue;
-              const rect = cellEl.getBoundingClientRect();
-              cells.push({ el: cellEl, cy: rect.top - trackRect.top + rect.height / 2 });
-            }
-            cols.push({
-              cx: colRect.left - trackRect.left + colRect.width / 2,
-              cells,
-            });
-          }
-          return { track, sign, base: 0, top: trackRect.top - hero.getBoundingClientRect().top, cols };
-        };
+        /* The suction rail is pure geometry — no DOM reads: rebuilt for the
+           new width so the sweep always spans screen edge to behind the rim.
+           Stack mode retires the stage (CSS swaps in the static bands). */
+        wallRail = wide ? buildRail(w, r) : null;
+        if (!wide) for (const slot of slots) hideSlot(slot);
 
-        const en = readSide(trackEn, -1);
-        const tr = readSide(trackTr, 1);
-        const first = en.cols[0];
-        const second = en.cols[1];
-        const colStep = first && second ? second.cx - first.cx : 248;
-        setW = Math.max(1, colStep * COLS_PER_SET);
-        /* Source columns run in from the left screen edge; translated columns
-           surface at the rim and run out to the right edge. Both tracks share
-           the conveyor clock, so the flow reads as one continuous current. */
-        en.base = -setW;
-        tr.base = cx - setW;
-        sides = [en, tr];
-
-        /* Reduced motion: one composed still, both grids full, warp applied. */
-        frame(reduced ? setW * 0.38 : gsap.ticker.time + T0);
+        /* Reduced motion: one composed still, walls mid-flow, chips seated. */
+        frame(reduced ? 42 : gsap.ticker.time + T0);
       };
 
       measure();
-      /* Card heights settle once webfonts arrive; re-measure then. */
-      void document.fonts?.ready.then(() => measure());
 
       const ro = new ResizeObserver(measure);
       ro.observe(hero);
@@ -814,6 +827,12 @@ export default function Hero() {
       };
       gsap.ticker.add(tick);
 
+      /* Entrance: the walls slide their last stretch of rail INTO the hole
+         while fading up (flow.e gates every strip's alpha; the ticker is
+         already running, so no onUpdate is needed). */
+      flow.e = 0;
+      gsap.to(flow, { e: 1, duration: 1.3, ease: 'power3.out' });
+
       gsap.from('[data-hero-in]', {
         y: 14,
         autoAlpha: 0,
@@ -829,7 +848,6 @@ export default function Hero() {
           ease: 'power3.out',
         });
       }
-      gsap.from([gridEn, gridTr], { autoAlpha: 0, duration: 0.9, delay: 0.2, ease: 'none' });
       gsap.from([orbit, rail, capRef.current], {
         autoAlpha: 0,
         duration: 0.9,
@@ -876,8 +894,36 @@ export default function Hero() {
         <span className='eh-tag is-in'>in — English source</span>
         <span className='eh-tag is-out'>out — translated · stamped</span>
 
-        <GridSide side='en' gridRef={gridEnRef} trackRef={trackEnRef} />
-        <GridSide side='tr' gridRef={gridTrRef} trackRef={trackTrRef} />
+        <p className='sr-only'>
+          English source components — search fields, toasts, buttons, review rows — sweep in from
+          the left edge of the screen and are pulled behind the event horizon; the same components
+          emerge on the right translated and locale-stamped: Japanese, Spanish, Korean, Arabic, and
+          a hundred more.
+        </p>
+
+        {/* The two card walls: flat chords seated on the suction rail per
+            frame, under ONE real perspective whose vanishing point is the
+            hole. Left wall carries the English faces in; right wall carries
+            the translated faces out. Strips stay hidden until placed. */}
+        <div className='eh-stage' ref={stageRef} aria-hidden>
+          <Wall side='en' />
+          <Wall side='tr' />
+        </div>
+
+        {/* Stack mode folds the walls into two static tilted bands — the
+            same before/after pairs above and below the horizon. */}
+        <div className='eh-m is-en' aria-hidden>
+          <div className='eh-m-strip'>
+            <DemoCard pair={pairAt(0)} side='en' />
+            <DemoCard pair={pairAt(7)} side='en' />
+          </div>
+        </div>
+        <div className='eh-m is-tr' aria-hidden>
+          <div className='eh-m-strip'>
+            <DemoCard pair={pairAt(0)} side='tr' />
+            <DemoCard pair={pairAt(7)} side='tr' />
+          </div>
+        </div>
 
         {/* The event horizon. The DOM carries only the fallback disc (WebGL
             unavailable → a plain dark circle with a hairline rim keeps the

@@ -2,7 +2,10 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { Waypoints } from 'lucide-react';
 import { useRef, useState } from 'react';
+
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import { useQuietReveal } from './reveal';
 
@@ -98,7 +101,7 @@ function StationArt({ index }: { index: number }) {
           <div className='cf-lg-chips'>
             {LOCALE_CHIPS.map((locale, i) => (
               <span data-fill={i < 3} key={locale}>
-                {locale}
+                <LocaleTag code={locale} />
               </span>
             ))}
           </div>
@@ -176,6 +179,7 @@ export default function PipelineRail() {
   return (
     <section className='tc-sec' id='pipeline' ref={root}>
       <div className='tc-head'>
+        <Waypoints className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Ship it the way you wrote it.</h2>
         <p data-reveal>
           Source in your repo, translations in your repo, review in the dashboard, delivery at the

@@ -1,28 +1,49 @@
 'use client';
 
-import { ArrowUpRight } from 'lucide-react';
-import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import {
+  ArrowUpRight,
+  BookMarked,
+  Briefcase,
+  Eye,
+  Hash,
+  RadioTower,
+  Route,
+  ShieldCheck,
+  type LucideIcon,
+} from 'lucide-react';
+import { useRef, type RefObject } from 'react';
 
-import EdgeGlobe from '../diagrams/EdgeGlobe';
+import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
 import PrismaticField from '@/components/shared/PrismaticField';
-import LocaleRouting from '../diagrams/LocaleRouting';
-import SdkLedger from '../diagrams/SdkLedger';
-import StatRow from '../diagrams/StatRow';
-import TranslationFlow from '../diagrams/TranslationFlow';
-import ContextResolve from '../diagrams/lang/ContextResolve';
-import ExpansionBars from '../diagrams/lang/ExpansionBars';
-import PluralForms from '../diagrams/lang/PluralForms';
-import RtlMirror from '../diagrams/lang/RtlMirror';
-import ScriptSampler from '../diagrams/lang/ScriptSampler';
-import SentenceWidth from '../diagrams/lang/SentenceWidth';
-import WordMorph from '../diagrams/lang/WordMorph';
-import CustomSurface from '../diagrams/surface/CustomSurface';
-import GlossarySurface from '../diagrams/surface/GlossarySurface';
-import LiveSurface from '../diagrams/surface/LiveSurface';
-import PreviewSurface from '../diagrams/surface/PreviewSurface';
+import LocaleRouting from '@/app/d/toolchain/diagrams/LocaleRouting';
+import SdkLedger from '@/app/d/toolchain/diagrams/SdkLedger';
+import StatRow from '@/app/d/toolchain/diagrams/StatRow';
+import TranslationFlow from '@/app/d/toolchain/diagrams/TranslationFlow';
+import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
+import ExpansionBars from '@/app/d/toolchain/diagrams/lang/ExpansionBars';
+import PluralForms from '@/app/d/toolchain/diagrams/lang/PluralForms';
+import RtlMirror from '@/app/d/toolchain/diagrams/lang/RtlMirror';
+import ScriptSampler from '@/app/d/toolchain/diagrams/lang/ScriptSampler';
+import SentenceWidth from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
+import WordMorph from '@/app/d/toolchain/diagrams/lang/WordMorph';
+import CustomSurface from '@/app/d/toolchain/diagrams/surface/CustomSurface';
+import GlossarySurface from '@/app/d/toolchain/diagrams/surface/GlossarySurface';
+import LiveSurface from '@/app/d/toolchain/diagrams/surface/LiveSurface';
+import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 
 import CodeBlock from './code';
 import { useQuietReveal } from './reveal';
+import './bento-motion.css';
+/* surface.css is the one diagram sheet scoped by ROOT class, not by diagram
+   class — toolchain's copy targets .toolchain-root and is inert here, so the
+   fork's rescoped copy has to stay in the CSS graph now that the surface
+   components themselves import from toolchain. */
+import '../diagrams/surface/surface.css';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /* Both file buckets, not just the SDK one — the CLI reads the same config for
    loose JSON content, and saying so is also what lets this panel end level with
@@ -54,14 +75,234 @@ const TRANSLATE_RUN: readonly { tone: 'cmd' | 'dim' | 'out'; key?: string; text:
   { tone: 'dim', text: '  Done in 12.4s — 640 translations' },
 ];
 
-const GROUNDWORK = [
-  'SEO-friendly locale paths, with no configuration',
-  'ICU plurals, numbers, currencies, and dates',
-  'Dev previews before anything reaches production',
-  'Over-the-air updates without a redeploy',
-  'Glossaries and per-locale style rules',
-  'SOC 2 Type II, GDPR, ISO 27001',
+/* Founder pick: each groundwork item is a bordered node with a matching
+   lucide icon — functional identification, never ornament — and the nodes
+   are wired to one another through a doubled-gauge trunk (bento-motion.css). */
+const GROUNDWORK: readonly { icon: LucideIcon; text: string }[] = [
+  { icon: Route, text: 'SEO-friendly locale paths, with no configuration' },
+  { icon: Hash, text: 'ICU plurals, numbers, currencies, and dates' },
+  { icon: Eye, text: 'Dev previews before anything reaches production' },
+  { icon: RadioTower, text: 'Over-the-air updates without a redeploy' },
+  { icon: BookMarked, text: 'Glossaries and per-locale style rules' },
+  { icon: ShieldCheck, text: 'SOC 2 Type II, GDPR, ISO 27001' },
 ];
+
+/* ------------------------------------------------------------------
+   Founder pick: the four-across artifacts each run a purposeful loop.
+   The timelines live here (the surface components stay presentational
+   markup); each loop's t=0 state IS the server-rendered still, every
+   in-between frame is legible, and under prefers-reduced-motion no
+   timeline is ever built — the markup is the final frame.
+   ------------------------------------------------------------------ */
+
+/** Types `text` into `el` character by character over `duration`s. */
+function typeInto(tl: gsap.core.Timeline, el: HTMLElement, text: string, at: number, duration: number): void {
+  const cursor = { n: 0 };
+  tl.fromTo(
+    cursor,
+    { n: 0 },
+    {
+      n: text.length,
+      duration,
+      ease: 'none',
+      immediateRender: false,
+      onUpdate: () => {
+        el.textContent = text.slice(0, Math.round(cursor.n));
+      },
+    },
+    at,
+  );
+}
+
+function useQuadMotion(scope: RefObject<HTMLElement | null>) {
+  useGSAP(
+    () => {
+      const rootEl = scope.current;
+      if (!rootEl) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const quad = rootEl.querySelector<HTMLElement>('.tc-quad');
+      if (!quad) return;
+
+      const loops: gsap.core.Timeline[] = [];
+      /* Clearing typed text collapses line boxes and pumps the row's
+         layout, so the elements that empty out get their settled heights
+         pinned right before the loops start (fonts are in by then). */
+      const heightLocks: HTMLElement[] = [];
+
+      /* -- Previews: the en pane lands first, the es preview types in
+            after it, and the footer blinks 'not in main' → 'merged'. -- */
+      (() => {
+        const panes = gsap.utils.toArray<HTMLElement>('.tcx-preview .tcx-pane', quad);
+        const foot = quad.querySelector<HTMLElement>('.tcx-preview .tcx-foot');
+        const footState = quad.querySelector<HTMLElement>('.tcx-preview .tcx-foot em');
+        const footNote = quad.querySelector<HTMLElement>('.tcx-preview .tcx-foot span');
+        const en = panes[0];
+        const es = panes[1];
+        if (!en || !es || !foot || !footState || !footNote) return;
+        const esTag = es.querySelector<HTMLElement>('.tcx-pane-tag');
+        const esHeading = es.querySelector<HTMLElement>('.tcx-h');
+        const esButton = es.querySelector<HTMLElement>('.tcx-btn');
+        if (!esTag || !esHeading || !esButton) return;
+        const heading = esHeading.textContent ?? '';
+        heightLocks.push(es, esHeading);
+
+        const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 1.1, defaults: { ease: 'power2.out' } });
+        /* Neither pane frame ever leaves. The en pane dims like a refresh
+           and lands back first; the es pane keeps its tag as a label (only
+           dimmed) while its content resets — so every frame still reads as
+           a labeled dev window with the preview pending. */
+        tl.to([esHeading, esButton], { autoAlpha: 0, duration: 0.45, ease: 'power2.in' }, 2.2)
+          .to(esTag, { autoAlpha: 0.45, duration: 0.45, ease: 'power2.in' }, 2.2)
+          .to(en, { autoAlpha: 0.35, duration: 0.45, ease: 'power2.in' }, 2.2)
+          .call(
+            () => {
+              esHeading.textContent = '';
+            },
+            [],
+            2.68,
+          )
+          .to(en, { autoAlpha: 1, duration: 0.5 }, 2.8)
+          .to(esTag, { autoAlpha: 1, duration: 0.35 }, 3.3)
+          .set(esHeading, { autoAlpha: 1, attr: { 'data-tcm-typing': 1 } }, 3.6);
+        typeInto(tl, esHeading, heading, 3.65, 1.5);
+        tl.set(esHeading, { attr: { 'data-tcm-typing': '' } }, 5.35)
+          .fromTo(esButton, { y: 4 }, { autoAlpha: 1, y: 0, duration: 0.45, immediateRender: false }, 5.5)
+          /* merge beat: the footer blinks, and the branch state flips */
+          .to(foot, { autoAlpha: 0.25, duration: 0.22, ease: 'power1.in' }, 7.3)
+          .call(
+            () => {
+              footState.textContent = 'merged';
+              footNote.textContent = 'in main';
+            },
+            [],
+            7.53,
+          )
+          .to(foot, { autoAlpha: 1, duration: 0.3 }, 7.55)
+          .to(foot, { autoAlpha: 0.25, duration: 0.22, ease: 'power1.in' }, 9.9)
+          .call(
+            () => {
+              footState.textContent = 'preview';
+              footNote.textContent = 'not in main';
+            },
+            [],
+            10.13,
+          )
+          .to(foot, { autoAlpha: 1, duration: 0.3 }, 10.15);
+        loops.push(tl);
+      })();
+
+      /* -- Live Translation: the POST card fires, the pt-BR response
+            types in while the latency counts up to its measured 38 ms. -- */
+      (() => {
+        const live = quad.querySelector<HTMLElement>('.tcx-live');
+        if (!live) return;
+        const req = live.querySelector<HTMLElement>('.tcx-req');
+        const hop = live.querySelector<HTMLElement>('.tcx-hop');
+        const out = live.querySelector<HTMLElement>('.tcx-out');
+        const ms = live.querySelector<HTMLElement>('.tcx-ms');
+        const msValue = live.querySelector<HTMLElement>('.tcx-ms b');
+        if (!req || !hop || !out || !ms || !msValue) return;
+        const response = out.textContent ?? '';
+        heightLocks.push(out);
+
+        const latency = { n: 0 };
+        const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2.6, defaults: { ease: 'power2.out' } });
+        tl.to(out, { autoAlpha: 0, duration: 0.4, ease: 'power2.in' }, 2.4)
+          .to(ms, { autoAlpha: 0.4, duration: 0.4 }, 2.4)
+          .call(
+            () => {
+              out.textContent = '';
+              msValue.textContent = '0 ms';
+            },
+            [],
+            2.85,
+          )
+          .to(req, { color: '#ffffff', duration: 0.28, yoyo: true, repeat: 1, ease: 'power1.inOut' }, 3.0)
+          .to(hop, { color: 'rgba(255, 255, 255, 0.95)', duration: 0.3, yoyo: true, repeat: 1 }, 3.35)
+          .set(out, { autoAlpha: 1, attr: { 'data-tcm-typing': 1 } }, 3.6);
+        typeInto(tl, out, response, 3.65, 1.7);
+        tl.fromTo(
+          latency,
+          { n: 0 },
+          {
+            n: 38,
+            duration: 1.7,
+            ease: 'none',
+            immediateRender: false,
+            onUpdate: () => {
+              msValue.textContent = `${Math.round(latency.n)} ms`;
+            },
+          },
+          3.65,
+        )
+          .set(out, { attr: { 'data-tcm-typing': '' } }, 5.45)
+          .to(ms, { autoAlpha: 1, duration: 0.4 }, 5.5);
+        loops.push(tl);
+      })();
+
+      /* -- Customization: a cursor steps the hook cookie → header →
+            fallback; the resolved value lights up. States are data
+            attributes; bento-motion.css draws them. -- */
+      (() => {
+        const lines = gsap.utils.toArray<HTMLElement>('.tcx-custom .tcx-slab > div', quad);
+        const cookie = lines[1];
+        const header = lines[2];
+        const fallback = lines[3];
+        if (!cookie || !header || !fallback) return;
+
+        const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 1.3 });
+        tl.set(cookie, { attr: { 'data-tcm-live': 1 } }, 1.7)
+          .set(cookie, { attr: { 'data-tcm-live': '', 'data-tcm-done': 1 } }, 2.95)
+          .set(header, { attr: { 'data-tcm-live': 1 } }, 2.95)
+          .set(header, { attr: { 'data-tcm-live': '', 'data-tcm-done': 1 } }, 4.2)
+          .set(fallback, { attr: { 'data-tcm-live': 1 } }, 4.2)
+          .set(fallback, { attr: { 'data-tcm-hit': 1 } }, 4.55)
+          .set(fallback, { attr: { 'data-tcm-live': '', 'data-tcm-hit': '' } }, 7.1)
+          .set([cookie, header], { attr: { 'data-tcm-done': '' } }, 7.1);
+        loops.push(tl);
+      })();
+
+      /* -- Glossaries: rows stamp in one by one and the corrections
+            strike themselves through. -- */
+      (() => {
+        const gloss = quad.querySelector<HTMLElement>('.tcx-glossary');
+        if (!gloss) return;
+        const rows = gsap.utils.toArray<HTMLElement>('.tcx-rows li', gloss);
+        const strikes = gsap.utils.toArray<HTMLElement>('.tcx-rows s', gloss);
+        if (rows.length === 0) return;
+
+        const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2.9 });
+        tl.to(rows, { autoAlpha: 0, duration: 0.32, stagger: 0.04, ease: 'power2.in' }, 2.6);
+        if (strikes.length > 0) tl.set(strikes, { '--tcm-strike': '0%' }, 3.1);
+        rows.forEach((row, i) => {
+          const at = 3.35 + i * 0.5;
+          tl.fromTo(
+            row,
+            { autoAlpha: 0, y: -7, scale: 1.03, transformOrigin: 'left center' },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(2)', immediateRender: false },
+            at,
+          );
+          const strike = row.querySelector<HTMLElement>('s');
+          if (strike) tl.to(strike, { '--tcm-strike': '100%', duration: 0.55, ease: 'power1.inOut' }, at + 0.3);
+        });
+        loops.push(tl);
+      })();
+
+      if (loops.length === 0) return;
+      ScrollTrigger.create({
+        trigger: quad,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          heightLocks.forEach((el) => gsap.set(el, { minHeight: el.offsetHeight }));
+          loops.forEach((tl) => tl.play(0));
+        },
+      });
+    },
+    { scope },
+  );
+}
 
 /**
  * CURATION LEDGER — the dark directions' eight-cell feature grid
@@ -114,10 +355,12 @@ const GROUNDWORK = [
 export default function Bento() {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
+  useQuadMotion(root);
 
   return (
     <section className='tc-sec' id='platform' ref={root}>
       <div className='tc-head'>
+        <Briefcase className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Everything localization needs.</h2>
         <p data-reveal>
           What translation does to a layout, the libraries you write against, the platform that holds your
@@ -271,10 +514,12 @@ export default function Bento() {
         <div className='tc-cell is-framed' data-reveal>
           <div className='tc-card'>
             <h3>Built for your next billion users</h3>
-            <div className='tc-stats'>
-              <StatRow value='118' label='locales, all production-ready' />
+            {/* The heading already says one billion — repeating it as a row
+                was saying it twice. Four numbers, none redundant. */}
+            <div className='tc-stats is-grid'>
+              <StatRow value='118' label='locales, ready today' />
               <StatRow value='6' label='first-party SDKs' />
-              <StatRow value='1,000,000,000' label='users you have not met yet' />
+              <StatRow value='<1s' label='over-the-air updates' />
               <StatRow value='$0' label='to start' />
             </div>
           </div>
@@ -364,7 +609,9 @@ export default function Bento() {
           border level shallower for the panels inside it. Each panel still carries
           a real artifact rather than a drawing: the dev window, one round trip,
           the hook you write, and a glossary entry with the translation it
-          overrules. */}
+          overrules. Founder pick: each artifact runs its feature as a slow loop
+          (useQuadMotion above) — the es preview typing in, the request round
+          trip, the stepping detection cursor, the stamping glossary rows. */}
       <div className='tc-row is-one'>
         <div className='tc-cell is-framed' data-reveal>
           <div className='tc-card'>
@@ -405,17 +652,27 @@ export default function Bento() {
         </div>
       </div>
 
-      {/* ---- shell 9: no illustration at all ---- */}
+      {/* ---- shell 9: the groundwork, wired as one system ----
+          Founder pick: not a floating list. Each item is a small bordered
+          node in the bento grammar — hair border, card face, filled corner
+          notches — with a matching lucide icon, and every node is rung to a
+          doubled-gauge trunk running the group's center, so the six read as
+          one connected system. */}
       <div className='tc-row is-one'>
         <div className='tc-cell' data-reveal>
-          <div className='tc-plain'>
+          <div className='tcm-ground'>
             <div>
               <h3>And the parts nobody demos</h3>
               <p>Everything above assumes the unglamorous things already work. They do.</p>
             </div>
-            <ul>
-              {GROUNDWORK.map((item) => (
-                <li key={item}>{item}</li>
+            <ul className='tcm-net'>
+              {GROUNDWORK.map(({ icon: Icon, text }) => (
+                <li className='tcm-node' key={text}>
+                  <span className='tcm-node-in'>
+                    <Icon className='tcm-node-ico' strokeWidth={1.25} aria-hidden />
+                    <span>{text}</span>
+                  </span>
+                </li>
               ))}
             </ul>
           </div>

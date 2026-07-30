@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowUpRight } from 'lucide-react';
 import { useRef } from 'react';
 
 import FlapPhrase from './FlapPhrase';
@@ -54,7 +55,10 @@ export default function Pricing() {
       </div>
 
       <div className='tc-compare' data-reveal>
-        <a href='#top'>Compare plans and usage pricing</a>
+        <a href='#top'>
+          Compare plans and usage pricing
+          <ArrowUpRight className='tc-ico-arrow' aria-hidden />
+        </a>
       </div>
     </section>
   );

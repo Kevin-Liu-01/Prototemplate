@@ -270,26 +270,23 @@
 
 /* ============================================================
    HERO — EVENT HORIZON
-   Dense component sheets run full-bleed from both screen edges
-   into a real event horizon: a purpose-built lensing shader
+   Two dense mirrored card WALLS run full-bleed from both screen
+   edges into a real event horizon: a purpose-built lensing shader
    (lib/horizon-field.ts) wraps an accretion streak field around
    a photon ring and bends the page's own ruled structure into
-   the hole. The sheets themselves live in the SAME curved field:
-   the fixed-height rows below are only the source plane — every
-   card is imaged per-frame through the shader's point-mass lens
-   (Hero.tsx), so row courses bow around the horizon and columns
-   fan like meridians. All geometry (--eh-cx/--eh-cy/--eh-r,
-   sheet and card transforms) is measured and driven from Hero.tsx.
+   the hole. The walls are the hourglass corridor's strip-chord
+   sweep with the curvature flipped: near-flat at the screen edges,
+   then whipping INWARD on a concave suction rail and diving behind
+   the disc (Hero.tsx seats every strip per frame with translate3d
+   + rotateY under the stage's one real perspective, whose
+   vanishing point is the hole). All geometry (--eh-cx/--eh-cy/
+   --eh-r, strip transforms) is measured and driven from Hero.tsx.
    ============================================================ */
 
 .eventhorizon-root .eh-hero {
   --eh-cx: 50%;
   --eh-cy: 47%;
   --eh-r: 270px;
-  --eh-colw: clamp(200px, 15vw, 248px);
-  --eh-gap: 12px;
-  /* One fixed row course for every cell — the alignment the sheet is built on. */
-  --eh-rowh: 86px;
   /* The handoff mask: the DOM's flat page structure opens a feathered hole
      under the shader canvas, which redraws that structure bent through the
      lens. Inner edge 1.46r, outer 1.66r — matching uRuleFadeIn/Out. */
@@ -383,43 +380,92 @@
   text-align: right;
 }
 
-/* ---------- the conveyor grids ---------- */
+/* ---------- the wall stage ---------- */
 
-.eventhorizon-root .eh-grid {
+/* ONE real perspective for both walls; its origin is moved to the hole
+   center by Hero.tsx, so every diving chord converges INTO the horizon.
+   The perspective length must match PERSPECTIVE in Hero.tsx. */
+.eventhorizon-root .eh-stage {
   position: absolute;
   inset: 0;
   z-index: 1;
+  perspective: 750px;
+  perspective-origin: 50% 47%;
   pointer-events: none;
 }
 
-.eventhorizon-root .eh-track {
+/* Walls bleed past the hero's top and bottom edges (the sketch's grids run
+   off every screen edge), so the near columns fill their full sweep and only
+   the horizon interrupts them. A wall is a preserve-3d group of strip chords
+   that Hero.tsx places along the suction rail — the piecewise plane that
+   makes the row courses CURVE. It must stay free of overflow/opacity/filter
+   so the strips keep the stage's shared perspective. */
+.eventhorizon-root .eh-wall {
   position: absolute;
-  left: 0;
+  inset: -4% 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+/* One flat chord of the curved wall: a 78px window clipped over its column,
+   oriented by JS (translate3d + rotateY, origin on the chord's near edge).
+   Hidden until placed, so there is no unstyled flash before hydration. */
+.eventhorizon-root .eh-strip {
+  position: absolute;
   top: 0;
-  height: 100%;
-  display: flex;
-  align-items: stretch;
-  gap: var(--eh-gap);
-  will-change: transform;
+  bottom: 0;
+  left: 0;
+  width: 79px; /* 1px past the chord pitch — hides GPU seams between chords */
+  overflow: hidden;
+  transform-origin: 0 50%;
+  visibility: hidden;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
-/* Columns overfill the hero's height on purpose — the sheet of components
-   reads as continuing past both folds; the hero's overflow crops it. */
+.eventhorizon-root .eh-wall.is-tr .eh-strip {
+  left: auto;
+  right: 0;
+  transform-origin: 100% 50%;
+}
+
+/* The depth veil: paper fog that dims the wall along the sweep, stepped per
+   chord by Hero.tsx (--ehd), which the eye reads as a smooth recession. */
+.eventhorizon-root .eh-strip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: rgb(251 251 250 / var(--ehd, 0));
+}
+
+/* The strip's window onto its column content; Hero.tsx sets the inline
+   translateX that deals each strip its 78px slice of the 312px grid. */
+.eventhorizon-root .eh-strip-in {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 312px;
+  padding: 24px 0;
+}
+
+/* A depth column is a strict grid of equal row cells — five row courses
+   shared across every strip of BOTH walls, so the rows sweep toward the
+   horizon together, bending with the rail. The repeat() count matches
+   ROWS_PER_COLUMN in Hero.tsx. */
 .eventhorizon-root .eh-col {
-  width: var(--eh-colw);
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--eh-gap);
+  width: 312px;
+  height: 100%;
+  display: grid;
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  gap: 18px;
 }
 
-/* Every cell is one fixed row in the flat SOURCE plane; same-row cards share
-   a course. Hero.tsx images each cell through the lens per frame, so on
-   screen the shared courses read as smooth arcs bowing around the horizon. */
-.eventhorizon-root .eh-cell {
-  flex: none;
-  height: var(--eh-rowh);
+/* Stack mode's static bands — hidden on wide screens. */
+.eventhorizon-root .eh-m {
+  display: none;
 }
 
 /* ---------- demo cards (the shell's card language, miniature) ---------- */
@@ -996,9 +1042,6 @@
 
 @media (max-width: 760px) {
   .eventhorizon-root .eh-hero {
-    --eh-colw: 176px;
-    --eh-gap: 10px;
-    --eh-rowh: 78px;
     min-height: clamp(640px, calc(100svh - 58px), 800px);
   }
 
@@ -1006,15 +1049,47 @@
     display: none;
   }
 
-  /* The grids fold into two dense bands — English above the horizon,
-     translations below — each column keeping only its first two rows.
-     Hero.tsx positions and sizes the band tracks. */
-  .eventhorizon-root .eh-col {
-    justify-content: flex-start;
+  /* The walls fold away; two static tilted bands carry the before/after
+     pairs — English above the horizon, translations below — leaning toward
+     the hole the way the walls dive on wide screens. */
+  .eventhorizon-root .eh-stage {
+    display: none;
   }
 
-  .eventhorizon-root .eh-col > :nth-child(n + 3) {
-    display: none;
+  .eventhorizon-root .eh-m {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding: 0 14px;
+    pointer-events: none;
+  }
+
+  .eventhorizon-root .eh-m.is-en {
+    top: calc(var(--eh-cy) - var(--eh-r) - 46px);
+    transform: translateY(-100%);
+  }
+
+  .eventhorizon-root .eh-m.is-tr {
+    top: calc(var(--eh-cy) + var(--eh-r) + 46px);
+  }
+
+  .eventhorizon-root .eh-m-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    transform: perspective(640px) rotateX(-10deg);
+    transform-origin: 50% 100%;
+  }
+
+  .eventhorizon-root .eh-m.is-tr .eh-m-strip {
+    transform: perspective(640px) rotateX(10deg);
+    transform-origin: 50% 0;
+  }
+
+  .eventhorizon-root .eh-m .eh-card {
+    height: 84px;
   }
 
   .eventhorizon-root .eh-core h1 {
@@ -3687,6 +3762,11 @@
 
 [data-theme='dark'] .eventhorizon-root .eh-orbit-rail {
   color: rgba(255, 255, 255, 0.34);
+}
+
+/* the wall's depth veil fogs to the dark paper */
+[data-theme='dark'] .eventhorizon-root .eh-strip::after {
+  background: rgb(22 23 29 / var(--ehd, 0));
 }
 
 [data-theme='dark'] .eventhorizon-root .eh-tag {

@@ -1,0 +1,209 @@
+/* ============================================================
+   TERMINUS BOARD — locale iconography (toolchain icons.css,
+   rescoped). LocaleTag's own stylesheet is scoped to
+   .toolchain-root, so this fork carries the same rules under its
+   root: the flag+code tag, the transcript locale pill, and the
+   capability marquee rows. Functional identification only.
+   ============================================================ */
+
+/* ---------- locale tag: flag first, code in mono ---------- */
+
+.terminusboard-root .lct {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-style: normal;
+}
+
+.terminusboard-root .lct-flag {
+  font-size: 0.95em;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+/* Hosts sized for a bare two-letter code get the flag's width back:
+   the hero table's chips grew ~1.5ch each, which squeezed the minmax
+   source column under its 19ch spec — the gap returns the difference. */
+.terminusboard-root .tct-body .tct-table {
+  column-gap: 12px;
+}
+
+/* WordMorph's key column, re-measured for flag + code. */
+.terminusboard-root .lang-wm {
+  --lang-wm-key: 54px;
+}
+
+/* The other locale-keyed key columns, re-measured the same way: every
+   column that was sized for a bare two-letter code gets the flag's
+   width back, so the sweep is page-wide rather than module-by-module.
+   SentenceWidth's dashed measuring guide sits at the key column's edge,
+   so it moves with it — at both breakpoints, since these outrank the
+   plain-class mobile rules in lang.css. */
+.terminusboard-root .lang-sw-row {
+  grid-template-columns: 104px minmax(0, 1fr);
+}
+
+.terminusboard-root .lang-sw-guide {
+  left: 104px;
+}
+
+@media (max-width: 560px) {
+  .terminusboard-root .lang-sw-row {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .terminusboard-root .lang-sw-guide {
+    left: 84px;
+  }
+}
+
+.terminusboard-root .lang-eb-row {
+  grid-template-columns: 110px minmax(0, 1fr) 58px;
+}
+
+.terminusboard-root .tcx-glossary .tcx-rows li {
+  grid-template-columns: 44px minmax(0, 1fr);
+}
+
+/* One convention for terminal output (the hero terminal set it): a locale
+   in a transcript is a bordered flag+code pill on the panel's own ink, at
+   the hero chip's 11px/17px scale. Used by the dark band's `gt translate`
+   run and the story cinema's CLI beat. */
+.terminusboard-root .tc-termloc {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 0 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 17px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* The cinema art lines are flex rows (whitespace between children is
+   dropped), so the chip run spaces itself with a gap. */
+.terminusboard-root .tc-cinema-art-line.tc-termline {
+  gap: 5px;
+}
+
+/* At the dark band's mobile size the ✓-row pills shave their side padding
+   so the widest transcript line stays inside the panel (code stays 11px —
+   the floor holds). */
+@media (max-width: 700px) {
+  .terminusboard-root .tcb .tc-termloc {
+    padding: 0 4px;
+  }
+}
+
+/* ---------- capability rows: glyph column + infinite scroll ----------
+   The old 3×3 grid becomes single rows on a doubled track; the container
+   keeps the pane's stretched height (flex: 1 from styles.css) so nothing
+   around it shifts while the loop runs. */
+
+.terminusboard-root .tc-caps.is-marquee {
+  position: relative;
+  display: block;
+  min-height: 230px;
+  padding: 0;
+  background: var(--tc-plate);
+  overflow: hidden;
+}
+
+/* The viewport is absolute so the rows never dictate the pane's height;
+   soft fades mask the seam where rows enter and leave. */
+.terminusboard-root .tc-caps-view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    #000 26px,
+    #000 calc(100% - 26px),
+    rgba(0, 0, 0, 0)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    #000 26px,
+    #000 calc(100% - 26px),
+    rgba(0, 0, 0, 0)
+  );
+}
+
+.terminusboard-root .tc-caps-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.terminusboard-root .tc-caps.is-marquee .tc-cap {
+  display: grid;
+  grid-template-columns: 13px auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 9px;
+  height: 37px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.terminusboard-root .tc-cap-ico {
+  width: 13px;
+  height: 13px;
+  color: var(--tc-ink-3);
+}
+
+.terminusboard-root .tc-caps.is-marquee .tc-cap b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.terminusboard-root .tc-caps.is-marquee .tc-cap code {
+  justify-self: end;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.terminusboard-root .tc-cap-flag {
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+/* Reduced motion: no loop — the single full list stands, unmasked, and the
+   container takes whatever height that needs. */
+@media (prefers-reduced-motion: reduce) {
+  .terminusboard-root .tc-caps.is-marquee {
+    min-height: 0;
+  }
+
+  .terminusboard-root .tc-caps-view {
+    position: static;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .terminusboard-root .tc-caps-list[aria-hidden='true'] {
+    display: none;
+  }
+}
+
+/* The SDK-ledger mark rules from toolchain's icons.css are omitted here:
+   they are unscoped (`.sdkl …`) globals that toolchain's own copy already
+   ships, and this fork renders no SdkLedger. */

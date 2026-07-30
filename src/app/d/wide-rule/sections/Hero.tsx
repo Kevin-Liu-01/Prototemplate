@@ -8,7 +8,9 @@ import type { CSSProperties } from 'react';
 import { useRef, useState } from 'react';
 
 import InterferenceField from './InterferenceField';
-import { HERO_STATS, ROTATIONS, SLOTS, type WrCard } from './wr-content';
+import { HERO_STATS, SLOTS, type WrCard } from './wr-content';
+
+import './hero-every.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -29,6 +31,14 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
   { name: 'Partiful', mark: 'is-partiful' },
   { name: 'ClickHouse', mark: 'is-clickhouse' },
 ];
+
+/* "language" across maximally different writing systems — Latin, Japanese,
+   Arabic, Devanagari, Cyrillic, Han, Hangul, Greek — short tokens so the
+   re-measured line never wraps. */
+const EVERY: readonly string[] = ['language', '言語', 'لغة', 'भाषा', 'язык', '语言', '언어', 'γλώσσα'];
+
+/* the dissolve dust pool: small glyphs sampled across the same scripts */
+const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
 
 /**
  * One product surface adrift on a shelf. Every variant is a paper-filled
@@ -78,7 +88,9 @@ function CardView({ card }: { card: WrCard }) {
  * calm is the physics' own doing (see ../lib/interference.ts). Everything
  * else is doctrine from the source still: mirrored EN/translated shelves, a
  * 1.5s power3 settle, 16–29s unsynchronized drifts, and nothing ever caught
- * mid-gesture.
+ * mid-gesture. The null's one live word is the headline hinge — the accented
+ * word morphs through real languages as a measuring instrument, the same
+ * bound-guide/dust grammar the toolchain hero runs.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -173,28 +185,209 @@ export default function Hero() {
         scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true },
       });
 
-      /* D. the one live word — ~3s cadence, out faster than in. The fade
-         floors at 0.25 instead of 0: the swap happens at the dim point, so a
-         frame grabbed mid-swap still shows a word, never a hole in the
-         sentence — film-still doctrine applied to 0.75 seconds. */
-      const rot = root.current?.querySelector<HTMLElement>('[data-rot]');
-      if (rot) {
+      /* D. the headline hinge — the accented word is a measuring instrument.
+         Each cycle: bound guides appear around the current word; the word
+         dissolves into small glyphs from many scripts; the bounds tween to
+         the NEXT word's measured width first — scoping the layout shift
+         before any text exists — then the dust converges onto the incoming
+         letterforms and the characters fill the silhouette in. The doubled
+         underline re-measures with the em at constant gauge. The copy block's
+         outer box never moves, so the shader's null stays aimed. */
+      const em = root.current?.querySelector<HTMLElement>('[data-every]');
+      const word = root.current?.querySelector<HTMLElement>('[data-every-word]');
+      const compactEvery = window.matchMedia('(max-width: 720px)').matches;
+      if (em && word && compactEvery) {
+        /* At mobile scale 26 particles cannot breathe: a clean measured
+           crossfade tells the same story. */
+        let ci = 0;
+        const compactSwap = () => {
+          if (!root.current || !root.current.isConnected) return;
+          ci = (ci + 1) % EVERY.length;
+          const w0 = em.offsetWidth;
+          gsap.to(word, { autoAlpha: 0, duration: 0.2, ease: 'power2.in', onComplete: () => {
+            word.textContent = EVERY[ci] ?? 'language';
+            em.style.width = 'auto';
+            const w1 = em.offsetWidth;
+            gsap.fromTo(em, { width: w0 }, { width: w1, duration: 0.35, ease: 'power3.inOut',
+              onComplete: () => { em.style.width = 'auto'; } });
+            gsap.to(word, { autoAlpha: 1, duration: 0.24, ease: 'power2.out', delay: 0.12 });
+            gsap.delayedCall(2.4, compactSwap);
+          } });
+        };
+        em.style.display = 'inline-block';
+        em.style.whiteSpace = 'nowrap';
+        gsap.delayedCall(3.4, compactSwap);
+      }
+      if (em && word && !compactEvery) {
+        const guideL = document.createElement('span');
+        guideL.className = 'tc-eg is-l';
+        const guideR = document.createElement('span');
+        guideR.className = 'tc-eg is-r';
+        const dust = document.createElement('span');
+        dust.className = 'tc-edust';
+        for (let i = 0; i < 26; i++) {
+          const g = document.createElement('span');
+          g.textContent = DUST[i % DUST.length] ?? '';
+          dust.appendChild(g);
+        }
+        em.append(guideL, guideR, dust);
+        const dustGlyphs = Array.from(dust.children) as HTMLElement[];
+
+        const setChars = (text: string) => {
+          word.innerHTML = '';
+          for (const ch of text) {
+            const c = document.createElement('span');
+            c.className = 'tc-ech';
+            c.textContent = ch;
+            word.appendChild(c);
+          }
+          return Array.from(word.children) as HTMLElement[];
+        };
+
+        /* Sample the incoming word's letterforms: draw it on an offscreen
+           canvas at the em's own font and collect dark-pixel positions. The
+           dust converges onto these points, so the glyphs sketch the shapes
+           of the characters before the characters themselves fill in. */
+        const sampleShape = (text: string, width: number, height: number, count: number) => {
+          const style = getComputedStyle(word);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(width, 10);
+          canvas.height = Math.max(height, 10);
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return [];
+          ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+          ctx.textBaseline = 'middle';
+          ctx.fillText(text, 0, canvas.height / 2);
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          const pts: { x: number; y: number }[] = [];
+          const step = 3;
+          for (let y = 0; y < canvas.height; y += step) {
+            for (let x = 0; x < canvas.width; x += step) {
+              if ((img[(y * canvas.width + x) * 4 + 3] ?? 0) > 128) pts.push({ x, y });
+            }
+          }
+          // spread the picks across the whole word rather than clustering
+          const picked: { x: number; y: number }[] = [];
+          if (pts.length) {
+            const stride = Math.max(1, Math.floor(pts.length / count));
+            for (let i = 0; i < pts.length && picked.length < count; i += stride) {
+              const pt = pts[i];
+              if (pt) picked.push(pt);
+            }
+          }
+          return picked;
+        };
+
+        const measure = (text: string) => {
+          const probe = document.createElement('span');
+          probe.style.visibility = 'hidden';
+          probe.style.position = 'absolute';
+          probe.style.whiteSpace = 'nowrap';
+          probe.textContent = text;
+          em.appendChild(probe);
+          const w = probe.offsetWidth;
+          probe.remove();
+          return w;
+        };
+
         let idx = 0;
         const swap = () => {
           if (!root.current || !root.current.isConnected) return;
-          gsap.to(rot, {
-            opacity: 0.25,
-            duration: 0.3,
-            ease: 'power2.in',
+          idx = (idx + 1) % EVERY.length;
+          const nextText = EVERY[idx] ?? 'language';
+          const w0 = em.offsetWidth;
+          const w1 = measure(nextText);
+          const outChars = Array.from(word.children) as HTMLElement[];
+          const tl = gsap.timeline({
             onComplete: () => {
-              idx = (idx + 1) % ROTATIONS.length;
-              rot.textContent = ROTATIONS[idx] ?? 'Spanish';
-              gsap.to(rot, { opacity: 1, duration: 0.45, ease: 'power2.out' });
+              em.style.width = 'auto';
+              gsap.delayedCall(2.2, swap);
             },
           });
-          gsap.delayedCall(2.8, swap);
+
+          // 1. the instrument appears around the current word
+          tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' });
+
+          // 2. the word dissolves into small glyphs
+          tl.to(outChars, {
+            scale: 0.25,
+            autoAlpha: 0,
+            y: () => gsap.utils.random(-14, 14),
+            x: () => gsap.utils.random(-18, 18),
+            duration: 0.3,
+            stagger: 0.02,
+            ease: 'power2.in',
+          }, '+=0.05');
+          /* the cloud separates SYMMETRICALLY about the word's centre: each
+             glyph takes an evenly-spread angle on a jittered ring, so the
+             scatter is balanced instead of clumping off to one side */
+          const h0 = em.offsetHeight;
+          const ring = (w: number) => (g: HTMLElement, i: number) => {
+            const angle = (i / dustGlyphs.length) * Math.PI * 2 + gsap.utils.random(-0.2, 0.2);
+            const rx = gsap.utils.random(0.18, 0.44) * w;
+            const ry = gsap.utils.random(6, h0 * 0.26);
+            return {
+              // clamped so no glyph ever leaves the measured bounds
+              x: gsap.utils.clamp(3, w - 3, w / 2 + Math.cos(angle) * rx),
+              y: gsap.utils.clamp(-h0 * 0.02, h0 * 0.32, h0 * 0.1 + Math.sin(angle) * ry),
+            };
+          };
+          const place0 = ring(Math.max(w0, 30));
+          tl.to(dustGlyphs, {
+            autoAlpha: () => gsap.utils.random(0.35, 0.8),
+            x: (i, g) => place0(g as HTMLElement, i).x,
+            y: (i, g) => place0(g as HTMLElement, i).y,
+            duration: 0.26,
+            stagger: 0.012,
+            ease: 'power1.out',
+          }, '<+=0.1');
+
+          // 3. the bounds scope the coming layout shift — before any text
+          tl.fromTo(em, { width: w0 }, { width: w1, duration: 0.42, ease: 'power3.inOut' });
+          const place1 = ring(Math.max(w1, 30));
+          tl.to(dustGlyphs, {
+            x: (i, g) => place1(g as HTMLElement, i).x,
+            y: (i, g) => place1(g as HTMLElement, i).y,
+            duration: 0.42,
+            ease: 'power3.inOut',
+          }, '<');
+
+          // 4. the dust assembles the SHAPES of the incoming characters —
+          //    each glyph flies to a sampled point on the new letterforms —
+          //    and only then do the actual characters fill the silhouette in.
+          tl.add(() => {
+            const h = em.offsetHeight;
+            const pts = sampleShape(nextText, w1, h, dustGlyphs.length);
+            dustGlyphs.forEach((g, i) => {
+              const pt = pts[i % Math.max(pts.length, 1)] || { x: w1 / 2, y: h / 2 };
+              gsap.to(g, {
+                x: pt.x,
+                y: pt.y - h * 0.4,
+                autoAlpha: 0.9,
+                duration: 0.38,
+                ease: 'power3.inOut',
+                delay: i * 0.008,
+              });
+            });
+            gsap.delayedCall(0.42, () => {
+              const inChars = setChars(nextText);
+              gsap.fromTo(inChars,
+                { autoAlpha: 0 },
+                { autoAlpha: 1, duration: 0.3, stagger: 0.03, ease: 'power1.inOut' });
+              gsap.to(dustGlyphs, { autoAlpha: 0, duration: 0.26, stagger: 0.006, ease: 'power1.out', delay: 0.08 });
+            });
+          });
+          tl.to({}, { duration: 0.85 });
+
+          // 5. the instrument withdraws
+          tl.to([guideL, guideR], { opacity: 0, duration: 0.24, ease: 'none' }, '>-0.05');
         };
-        gsap.delayedCall(2.8, swap);
+
+        setChars('language');
+        /* The first dissolve waits out the settle and the first-fold capture
+           window: any still taken while the composition lands shows the word
+           whole, not dust. */
+        gsap.delayedCall(5.6, swap);
       }
     },
     { scope: root }
@@ -226,20 +419,22 @@ export default function Hero() {
               haloRadius: 110,
               bloomRadius: 38,
             }}
-            /* The dark exposure is the same event re-photographed: white ink
-               rides a lifted-slate corridor (dark paper has headroom, so the
-               band of light can sit ~10% up where paper only allows ~2%), the
+            /* The dark exposure is the same event re-photographed on the
+               ink-black surface family: white ink rides a lifted-slate
+               corridor (near-black paper has even more headroom than the old
+               #16171d plate, so the glow comes down a step to stay calm), the
                bloom cools toward the plate's own blue-white, and the pressed
-               frame needs a deeper multiplicative bite to register against
-               near-black. */
+               frame keeps its deeper multiplicative bite to register against
+               near-black. Paper matches --tc-paper (#0a0b0f) exactly, so the
+               canvas never seams against the page. */
             darkParams={{
               ink: [1, 1, 1],
-              paper: [0.086, 0.09, 0.114],
+              paper: [0.039, 0.043, 0.059],
               inkAlpha: 0.5,
               accentAmt: 0.7,
               coreLift: 0.5,
               shimmer: 0.11,
-              glow: [0.3, 0.33, 0.43],
+              glow: [0.26, 0.29, 0.39],
               bloomColor: [0.94, 0.96, 1.0],
               bloom: 0.85,
               press: 0.24,
@@ -300,22 +495,22 @@ export default function Hero() {
             the null, stats hung off the 50% rule to the right. */}
         <div className='wr-lower'>
           <div className='wr-copy' ref={copyRef}>
+            {/* Two authored lines; the accented word closes the sentence, on
+                the hinge, where the morph only ever re-measures the line's
+                own tail. */}
             <h1 data-settle>
               <span>Launch in</span>
               <span>
-                <em>every</em> language.
+                every{' '}
+                <em data-every>
+                  <span data-every-word>language</span>
+                </em>
+                .
               </span>
             </h1>
-            {/* The live word ends the sentence so its 2.8s swaps only grow the
-                last line — mid-sentence it re-wrapped the subhead, which is
-                exactly the mid-gesture flicker this frame is not allowed. */}
             <p className='wr-sub' data-settle>
               General Translation builds full-stack infrastructure for localizing apps, docs, and
-              websites — live on day one in{' '}
-              <span className='wr-rot' data-rot>
-                Spanish
-              </span>
-              .
+              websites.
             </p>
             <div className='wr-acts' data-settle>
               <a className='tc-btn tc-btn-solid' href='#pricing'>
