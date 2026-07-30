@@ -272,28 +272,33 @@ export default function TypeDetailSlide() {
           },
           '>-0.05'
         )
-        // ...the specimens fade out with their cards and reappear already
-        // centered on the anchor as one stacked line: no travel across the
-        // screen, the morph happens in place...
-        .to('.pr-detail-big', { autoAlpha: 0, duration: 0.25 }, '>-0.1')
-        .addLabel('flight', '>')
+        .addLabel('flight', '>-0.05')
+        // ...the two specimens converge on the center, merging into one
+        // line as they travel: rewriting into the comparison text, growing
+        // to overlay size, the Google build turning red and drifting out of
+        // register as its metrics diverge. Red sits above white from the
+        // start, exactly as it will rest in the overlay...
         .set('.pr-col-google', { zIndex: 2 }, 'flight')
         .set('.pr-col-rsms', { zIndex: 1 }, 'flight')
         .set('.pr-detail-big', { fontFeatureSettings: OVERLAY_FEATURES }, 'flight')
-        .set(
+        .to(
           '.pr-col-rsms .pr-detail-big',
-          landing('.pr-col-rsms .pr-detail-big'),
+          {
+            ...landing('.pr-col-rsms .pr-detail-big'),
+            duration: 1.2,
+            ease: 'power2.inOut',
+          },
           'flight'
         )
-        .set(
+        .to(
           '.pr-col-google .pr-detail-big',
-          landing('.pr-col-google .pr-detail-big', true),
+          {
+            ...landing('.pr-col-google .pr-detail-big', true),
+            duration: 1.2,
+            ease: 'power2.inOut',
+          },
           'flight'
         )
-        .to('.pr-detail-big', { autoAlpha: 1, duration: 0.3 }, 'flight+=0.05')
-        // ...where it morphs into the comparison: rewriting into the line,
-        // growing to overlay size, the Google build turning red and drifting
-        // out of register as its metrics diverge...
         .to(
           '.pr-detail-big',
           {
