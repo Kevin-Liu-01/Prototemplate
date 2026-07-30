@@ -165,15 +165,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   right: -96px;
   z-index: -1;
   background: linear-gradient(
-    to right,
-    rgba(7, 7, 7, 0.82) 0%,
-    rgba(7, 7, 7, 0.74) 26%,
-    rgba(7, 7, 7, 0.58) 46%,
-    rgba(7, 7, 7, 0.38) 63%,
-    rgba(7, 7, 7, 0.2) 77%,
-    rgba(7, 7, 7, 0.08) 89%,
-    rgba(7, 7, 7, 0.02) 96%,
-    transparent 100%
+    to right in oklch,
+    oklch(0.13 0 0 / 0.85) 0%,
+    oklch(0.13 0 0 / 0.55) 52%,
+    oklch(0.13 0 0 / 0.18) 80%,
+    oklch(0.13 0 0 / 0) 100%
   );
   opacity: 0.8;
   transition: opacity 0.35s ease;
