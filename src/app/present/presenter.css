@@ -154,38 +154,20 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   padding: 26px 0;
 }
 
-/* Scrim so the rail never fights the content behind it: fades left to
-   right in oklch, and feathers out top and bottom through a mask, so no
-   edge is ever visible. Deepens slightly while in use. */
+/* Scrim so the rail never fights the content behind it: one solid ink
+   shape heavily blurred, so it falls off smoothly on every side with no
+   gradient banding. Deepens slightly while in use. */
 .pr-hud-rail::before {
   content: '';
   position: absolute;
-  top: -90px;
-  bottom: -90px;
-  left: -24px;
-  right: -110px;
+  top: -18px;
+  bottom: -18px;
+  left: -70px;
+  right: -22px;
   z-index: -1;
-  background: linear-gradient(
-    to right in oklch,
-    oklch(0.13 0 0 / 0.88) 0%,
-    oklch(0.13 0 0 / 0.58) 52%,
-    oklch(0.13 0 0 / 0.2) 80%,
-    oklch(0.13 0 0 / 0) 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    #000 22%,
-    #000 78%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    #000 22%,
-    #000 78%,
-    transparent 100%
-  );
+  background: rgba(7, 7, 7, 0.92);
+  border-radius: 44px;
+  filter: blur(38px);
   opacity: 0.85;
   transition: opacity 0.35s ease;
   pointer-events: none;
