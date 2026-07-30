@@ -399,14 +399,12 @@ function CardBody({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
 }
 
 /* Every card is stamped with its locale — 'en' going in, the BCP-47 tag
-   coming out — so a still reads as a before/after ledger, not decoration.
-   Each fabric cell stacks BOTH faces; CSS shows the source face until the
-   cell's column crosses the mass (.is-out), then the translated one. */
+   coming out — so a still reads as a before/after ledger, not decoration. */
 function DemoCard({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
   const tr = side === 'tr';
   return (
     <article
-      className={`eh-card is-${pair.variant} is-face-${side}`}
+      className={`eh-card is-${pair.variant}`}
       dir={tr && pair.rtl ? 'rtl' : undefined}
       lang={tr ? pair.lang : undefined}
     >
@@ -460,17 +458,16 @@ function GridSide({
 
 type CellGeom = { el: HTMLElement; cy: number };
 type ColGeom = {
-  el: HTMLElement;
   cx: number;
-  /** Which face the column currently shows; null until the first frame. */
-  out: boolean | null;
   cells: CellGeom[];
 };
-type ClothGeom = {
+type SideGeom = {
   track: HTMLElement;
+  /** −1 = source side (left / top band), +1 = translated side. */
+  sign: -1 | 1;
   /** Track world-x at conveyor offset 0. */
   base: number;
-  /** Track world-y offset within the hero. */
+  /** Track world-y offset (0 in wide mode; the band top in stack mode). */
   top: number;
   cols: ColGeom[];
 };
@@ -495,12 +492,6 @@ type ClothGeom = {
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const gridEnRef = useRef<HTMLDivElement>(null);
-  const gridTrRef = useRef<HTMLDivElement>(null);
-  const trackEnRef = useRef<HTMLDivElement>(null);
-  const trackTrRef = useRef<HTMLDivElement>(null);
-  // The card-grid refs survived the in-progress hero rework as JSX call
-  // sites; declared here so the grids render while that rework lands.
   const gridEnRef = useRef<HTMLDivElement>(null);
   const gridTrRef = useRef<HTMLDivElement>(null);
   const trackEnRef = useRef<HTMLDivElement>(null);

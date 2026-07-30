@@ -24,10 +24,11 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * navigating. Pinned slides scrub their content in from scroll progress 0, so
  * landing exactly on the top shows an empty stage — the offset drops you on
  * the slide's first fully-revealed beat instead. `subs` are the beats inside
- * a pinned slide, as viewport-height offsets past the slide top, so the rail
- * can represent every moment of the deck.
+ * a pinned slide, each positioned as a FRACTION of the slide's pin length
+ * (matching where that beat sits in the scrubbed timeline), so highlighting
+ * and jumps stay accurate at any viewport size.
  */
-type SlideSub = { label: string; at: number };
+type SlideSub = { label: string; f: number };
 
 const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] = [
   { id: 'intro', label: 'Intro', jump: 0 },
@@ -36,8 +37,8 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
     label: 'Why',
     jump: 0.6,
     subs: [
-      { label: 'Why?', at: 0.6 },
-      { label: 'Three reasons', at: 2.4 },
+      { label: 'Why?', f: 0.06 },
+      { label: 'Three reasons', f: 0.35 },
     ],
   },
   {
@@ -45,11 +46,11 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
     label: 'What we need',
     jump: 0.35,
     subs: [
-      { label: 'First principles', at: 0.35 },
-      { label: 'A barbell audience', at: 1.6 },
-      { label: 'Show, don’t define', at: 3.6 },
-      { label: 'End to end', at: 5.4 },
-      { label: 'Context Groups', at: 6.3 },
+      { label: 'First principles', f: 0.02 },
+      { label: 'A barbell audience', f: 0.17 },
+      { label: 'Show, don’t define', f: 0.49 },
+      { label: 'End to end', f: 0.74 },
+      { label: 'Context Groups', f: 0.87 },
     ],
   },
   {
@@ -57,11 +58,11 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
     label: 'How',
     jump: 0.3,
     subs: [
-      { label: 'Guidelines', at: 0.5 },
-      { label: 'Sketches', at: 1.8 },
-      { label: 'Color', at: 3.1 },
-      { label: 'Type', at: 4.3 },
-      { label: 'Motion', at: 4.6 },
+      { label: 'Guidelines', f: 0.02 },
+      { label: 'Sketches', f: 0.17 },
+      { label: 'Color', f: 0.42 },
+      { label: 'Type', f: 0.66 },
+      { label: 'Motion', f: 0.9 },
     ],
   },
   {
@@ -69,9 +70,9 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
     label: 'Details',
     jump: 0,
     subs: [
-      { label: 'Two Inters', at: 0.3 },
-      { label: 'The overlay', at: 3.7 },
-      { label: 'So I built 20', at: 4.9 },
+      { label: 'Two Inters', f: 0.04 },
+      { label: 'The overlay', f: 0.65 },
+      { label: 'So I built 20', f: 0.88 },
     ],
   },
   { id: 'prototypes', label: 'Prototypes', jump: 0.05 },
@@ -96,20 +97,6 @@ export default function PresenterApp() {
     () => {
       const sections = gsap.utils.toArray<HTMLElement>('[data-slide]');
 
-      const activeRef = { current: 0 };
-      sections.forEach((section, i) => {
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top center',
-          end: 'bottom center',
-          onToggle: (self) => {
-            if (!self.isActive) return;
-            activeRef.current = i;
-            setActive(i);
-          },
-        });
-      });
-
       // The slide dock hides exactly when the viewer dock expands in its
       // place, so the two read as one dock morphing.
       ScrollTrigger.create({
@@ -125,37 +112,57 @@ export default function PresenterApp() {
         ScrollTrigger.create({ trigger: section, start: 'top top' })
       );
 
-      // Track which beat within the active slide the playhead is on, so the
-      // rail can mark the exact subsection.
-      const subState = { current: -1 };
+      // One source of truth for both highlights: section and beat are derived
+      // together from the scroll position against the slides' real geometry,
+      // so the two can never disagree. A slide is active once its top passes
+      // mid-viewport; the beat is its position within the slide's pin length,
+      // matched against the subs' timeline fractions.
+      const activeRef = { current: 0 };
+      const subRef = { current: -1 };
+      const pinLength = (i: number) =>
+        Math.max(1, (sections[i]?.offsetHeight ?? 0) - window.innerHeight);
+      const syncPosition = () => {
+        const pos = window.scrollY;
+        const bias = window.innerHeight * 0.45;
+        let slide = 0;
+        for (let i = 0; i < sections.length; i++) {
+          if (pos >= (navTriggers[i]?.start ?? 0) - bias) slide = i;
+        }
+        const subs = SLIDES[slide]?.subs;
+        let sub = -1;
+        if (subs) {
+          const fraction =
+            (pos - (navTriggers[slide]?.start ?? 0)) / pinLength(slide);
+          for (let j = 0; j < subs.length; j++) {
+            if (fraction >= subs[j]!.f - 0.015) sub = j;
+          }
+          if (sub === -1) sub = 0;
+        }
+        if (slide !== activeRef.current) {
+          activeRef.current = slide;
+          setActive(slide);
+        }
+        if (sub !== subRef.current) {
+          subRef.current = sub;
+          setActiveSub(sub);
+        }
+      };
       ScrollTrigger.create({
         trigger: root.current,
         start: 0,
         end: 'max',
-        onUpdate: () => {
-          const slide = activeRef.current;
-          const subs = SLIDES[slide]?.subs;
-          const base = navTriggers[slide]?.start ?? 0;
-          let next = -1;
-          if (subs) {
-            const offset = (window.scrollY - base) / window.innerHeight;
-            for (let i = 0; i < subs.length; i++) {
-              if (offset >= subs[i]!.at - 0.25) next = i;
-            }
-            if (next === -1) next = 0;
-          }
-          if (next !== subState.current) {
-            subState.current = next;
-            setActiveSub(next);
-          }
-        },
+        onUpdate: syncPosition,
+        onRefresh: syncPosition,
       });
+      syncPosition();
 
-      const goTo = (slide: number, atOverride?: number) => {
+      const goTo = (slide: number, subFraction?: number) => {
         const clamped = Math.max(0, Math.min(sections.length - 1, slide));
         const y =
           navTriggers[clamped]!.start +
-          (atOverride ?? SLIDES[clamped]?.jump ?? 0) * window.innerHeight;
+          (subFraction !== undefined
+            ? subFraction * pinLength(clamped)
+            : (SLIDES[clamped]?.jump ?? 0) * window.innerHeight);
         const lenis = getLenis();
         if (lenis) lenis.scrollTo(y, { duration: 1.2 });
         else window.scrollTo({ top: y, behavior: 'smooth' });
@@ -230,7 +237,7 @@ export default function PresenterApp() {
                         className={
                           i === active && j === activeSub ? 'is-here' : ''
                         }
-                        onClick={() => goToRef.current(i, sub.at)}
+                        onClick={() => goToRef.current(i, sub.f)}
                       >
                         <i />
                         <em>{sub.label}</em>
