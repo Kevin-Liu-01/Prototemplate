@@ -129,6 +129,19 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.pr-hud-author {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 90;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  mix-blend-mode: difference;
+}
+
 .pr-hud-rail {
   position: fixed;
   left: 24px;
@@ -476,7 +489,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* ---------- What we need ---------- */
 
 .pr-need {
-  height: 620vh;
+  height: 780vh;
 }
 
 .pr-need-head h2 {
@@ -826,6 +839,153 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 .pr-term-check {
   font-style: normal;
   color: #b9ffd9;
+}
+
+/* Beat D: the end-to-end pipeline and the Context Groups fan-out. */
+
+.pr-need-d .pr-sub {
+  margin-top: 14px;
+}
+
+.pr-pipe {
+  position: relative;
+  width: min(1120px, 92vw);
+  margin-top: 6vh;
+}
+
+.pr-pipe-line {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  z-index: 0;
+}
+
+.pr-pipe-path {
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.pr-pipe-pulse {
+  fill: #b9ffd9;
+}
+
+.pr-pipe-nodes {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pr-pipe-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 176px;
+  padding: 14px 10px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--color-ink);
+  text-align: center;
+}
+
+.pr-pipe-node svg {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.pr-pipe-node strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+}
+
+.pr-pipe-node em {
+  font-style: normal;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-pipe-node.is-hot {
+  border-color: rgba(185, 255, 217, 0.55);
+}
+
+.pr-pipe-node.is-hot svg,
+.pr-pipe-node.is-hot strong {
+  color: #b9ffd9;
+}
+
+.pr-ctx {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6vh;
+  width: min(760px, 90vw);
+}
+
+.pr-ctx-root {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 18px;
+  border: 1px solid rgba(185, 255, 217, 0.5);
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.pr-ctx-root svg {
+  color: #b9ffd9;
+  flex: 0 0 auto;
+}
+
+.pr-ctx-tree {
+  width: min(600px, 100%);
+  height: 66px;
+}
+
+.pr-ctx-tree path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1.5;
+}
+
+.pr-ctx-leaves {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pr-ctx-leaf {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  padding: 11px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  min-width: 168px;
+}
+
+.pr-ctx-leaf-surface {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pr-ctx-leaf strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  color: #b9ffd9;
+}
+
+.pr-ctx-note {
+  margin-top: 3.5vh;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* ---------- Craft ---------- */

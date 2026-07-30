@@ -133,8 +133,9 @@ export default function PresenterApp() {
         <div className='pr-hud'>
           <div className='pr-hud-brand'>
             <img src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' />
-            <span>Redesign review</span>
+            <span>Redesign</span>
           </div>
+          <div className='pr-hud-author'>Kevin Liu</div>
           <nav className='pr-hud-rail' aria-label='Slides'>
             {SLIDES.map((slide, i) => (
               <button

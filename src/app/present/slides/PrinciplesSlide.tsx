@@ -88,6 +88,22 @@ const DEMOS: {
   },
 ];
 
+/** The full-stack pipeline, left to right. */
+const PIPELINE: { icon: IconName; label: string; detail: string; hot?: boolean }[] = [
+  { icon: 'code', label: '<T> in code', detail: 'components stay components' },
+  { icon: 'activity', label: 'CLI', detail: 'scan, translate, validate' },
+  { icon: 'layers', label: 'Context Groups', detail: 'inherited meaning', hot: true },
+  { icon: 'users', label: 'Review', detail: 'edit, approve, publish' },
+  { icon: 'globe', label: 'Edge', detail: 'served per locale' },
+];
+
+/** One glossary decision fanning out to every surface. */
+const CTX_LEAVES = [
+  { f: '🇫🇷', surface: 'App', term: '« Portefeuille »' },
+  { f: '🇩🇪', surface: 'Docs', term: '„Wallet“' },
+  { f: '🇯🇵', surface: 'Checkout', term: '「ウォレット」' },
+];
+
 const TERMS: { label: string; icon: IconName }[] = [
   { label: 'translation', icon: 'globe' },
   { label: 'localization', icon: 'layers' },
@@ -245,7 +261,43 @@ export default function PrinciplesSlide() {
           },
           '>-0.1'
         )
-        .to({}, { duration: 0.7 });
+        .to({}, { duration: 0.7 })
+
+        // Beat D — the whole system draws itself, then Context Groups fan
+        // one glossary decision out to every surface.
+        .to('.pr-need-c', { autoAlpha: 0, y: -60, duration: 0.7, ease: 'power2.in' }, '+=0.4')
+        .fromTo('.pr-need-d', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 })
+        .from('.pr-need-d .pr-beat-title', { autoAlpha: 0, y: 40, duration: 0.5 }, '<0.1')
+        .from('.pr-need-d .pr-sub', { autoAlpha: 0, y: 20, duration: 0.4 }, '<0.15')
+        .fromTo(
+          '.pr-pipe-path',
+          { drawSVG: '0%' },
+          { drawSVG: '100%', duration: 0.9, ease: 'power1.inOut' },
+          '>-0.1'
+        )
+        .from(
+          '.pr-pipe-node',
+          { autoAlpha: 0, y: 22, stagger: 0.16, duration: 0.4, ease: 'back.out(1.7)' },
+          '<0.1'
+        )
+        // A signal runs the full line, code to edge.
+        .fromTo(
+          '.pr-pipe-pulse',
+          { attr: { cx: 8 }, autoAlpha: 0 },
+          { attr: { cx: 992 }, autoAlpha: 1, duration: 1.1, ease: 'power1.inOut' },
+          '>'
+        )
+        .to('.pr-pipe-pulse', { autoAlpha: 0, duration: 0.2 }, '>-0.15')
+        .from('.pr-ctx-root', { autoAlpha: 0, y: 24, duration: 0.45 }, '>-0.1')
+        .fromTo(
+          '.pr-ctx-tree path',
+          { drawSVG: '0%' },
+          { drawSVG: '100%', stagger: 0.14, duration: 0.5, ease: 'power1.inOut' },
+          '>-0.1'
+        )
+        .from('.pr-ctx-leaf', { autoAlpha: 0, y: 18, stagger: 0.14, duration: 0.4 }, '>-0.2')
+        .from('.pr-ctx-note', { autoAlpha: 0, duration: 0.4 }, '>')
+        .to({}, { duration: 0.8 });
     },
     { scope: root }
   );
@@ -410,6 +462,66 @@ export default function PrinciplesSlide() {
                 </span>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* Beat D — the system, end to end, and Context Groups */}
+        <div className='pr-phase pr-need-d'>
+          <h3 className='pr-beat-title'>End to end, or it doesn&rsquo;t hold.</h3>
+          <p className='pr-sub'>
+            Not a widget over the site: code, pipeline, context, review, and
+            delivery are one framework.
+          </p>
+
+          <div className='pr-pipe'>
+            <svg
+              className='pr-pipe-line'
+              viewBox='0 0 1000 12'
+              preserveAspectRatio='none'
+              aria-hidden
+            >
+              <line className='pr-pipe-path' x1='8' y1='6' x2='992' y2='6' />
+              <circle className='pr-pipe-pulse' cx='8' cy='6' r='5' />
+            </svg>
+            <div className='pr-pipe-nodes'>
+              {PIPELINE.map((node) => (
+                <span
+                  key={node.label}
+                  className={node.hot ? 'pr-pipe-node is-hot' : 'pr-pipe-node'}
+                >
+                  <Icon name={node.icon} size={16} />
+                  <strong>{node.label}</strong>
+                  <em>{node.detail}</em>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className='pr-ctx'>
+            <div className='pr-ctx-root'>
+              <Icon name='layers' size={15} />
+              Context Group: Payments — glossary and tone every translation
+              inherits. &ldquo;wallet&rdquo; means one thing.
+            </div>
+            <svg className='pr-ctx-tree' viewBox='0 0 600 80' aria-hidden>
+              <path d='M 300 4 C 300 44 100 40 100 76' />
+              <path d='M 300 4 L 300 76' />
+              <path d='M 300 4 C 300 44 500 40 500 76' />
+            </svg>
+            <div className='pr-ctx-leaves'>
+              {CTX_LEAVES.map((leaf) => (
+                <span key={leaf.surface} className='pr-ctx-leaf'>
+                  <span className='pr-ctx-leaf-surface'>
+                    {leaf.f} {leaf.surface}
+                  </span>
+                  <strong>{leaf.term}</strong>
+                </span>
+              ))}
+            </div>
+            <p className='pr-ctx-note'>
+              The hardest thing to explain is the thing that keeps it
+              consistent.
+            </p>
           </div>
         </div>
       </div>
