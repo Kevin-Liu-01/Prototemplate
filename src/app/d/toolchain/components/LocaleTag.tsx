@@ -23,8 +23,9 @@ export const LOCALE_FLAGS: Record<string, string> = {
   pl: '🇵🇱',
 };
 
+/** Region subtags resolve through their base language (pt-BR → the pt flag). */
 export function localeFlag(code: string): string | undefined {
-  return LOCALE_FLAGS[code];
+  return LOCALE_FLAGS[code] ?? LOCALE_FLAGS[code.split('-')[0] ?? ''];
 }
 
 export type LocaleTagProps = {
@@ -38,7 +39,7 @@ export type LocaleTagProps = {
  * code for flag + code. Unknown codes render codewise, flagless.
  */
 export default function LocaleTag({ code, className }: LocaleTagProps) {
-  const flag = LOCALE_FLAGS[code];
+  const flag = localeFlag(code);
   return (
     <span className={className ? `lct ${className}` : 'lct'}>
       {flag ? (

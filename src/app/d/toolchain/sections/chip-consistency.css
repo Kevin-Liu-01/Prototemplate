@@ -1,0 +1,143 @@
+/* ============================================================
+   TOOLCHAIN — CHIP CONSISTENCY (one locale-chip grammar)
+   Every locale token on the page is the same chip: a bordered
+   flag+code pill in the surface's own ink — LocaleTag content,
+   1px hairline box, radius 4, mono code at 11px. This file
+   carries the hosts that were still speaking dialects of it:
+
+   1. the Frameworks capability marquee — its LocaleTags were
+      borderless flag+code text, a chip in name only beside the
+      bordered pills every dark surface uses; the light rows now
+      draw the same box in the light ink ramp,
+   2. the hero terminal's Source line — the source speaks the
+      target chips' exact grammar, in a quieter neutral voice,
+   3. the hero terminal at mobile — the wizard and translation
+      rows keep the desktop's two-column ledger instead of
+      letting chips pile flush-left under their labels,
+   4. the framework tab strip's React Native mark — the real
+      saved knockout badge, mask-rendered, so the two React
+      rows are distinct where they sit adjacent (the same
+      plated/bare distinction the SDK ledger draws).
+
+   New rules only — styles.css is never appended to.
+   ============================================================ */
+
+/* ---------- frameworks capability marquee: the chip proper ---------- */
+
+/* The tag opens the row's demo cell as the light-surface print of the
+   dark pills: hairline box on the ink-4 tone, hair-2 wash, flag + code.
+   The code identifies the demo's locale in the secondary ink; the value
+   keeps the lit ink — the artifact stays the heavier half of the pair.
+   All four tokens remap under [data-theme='dark'], so the box holds in
+   both themes.
+
+   The selectors run at three classes + one type because the legacy
+   capability-grid rule (`.tc-caps span`, styles.css) styles every
+   descendant span as a padded column-flex cell — the LocaleTag pair
+   has to win that fight and re-assert its own one-line box. */
+.toolchain-root .tc-cap code .lct {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  padding: 0 5px;
+  border: 1px solid var(--tc-ink-4);
+  border-radius: 4px;
+  background: var(--tc-hair-2);
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.toolchain-root .tc-cap code .lct-flag {
+  display: inline;
+  padding: 0;
+  background: none;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.toolchain-root .tc-cap code .lct-code {
+  display: inline;
+  padding: 0;
+  background: none;
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- hero terminal: the source chip ---------- */
+
+/* Same grammar as the target chips — flag + code in the bordered
+   pill — in the plate's own neutrals instead of the translation hue:
+   en is the thread the targets are measured against, not one of
+   them. The terminal plate is the same #111 in both themes, so like
+   the rest of the window's palette this never remaps under
+   [data-theme]. Outranks the base .tct-chip rule on specificity. */
+.toolchain-root .tct-chip.is-src {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ---------- hero terminal at mobile: the ledger holds ---------- */
+
+/* Under 760px the transcript wraps, and the wizard's Locales chips
+   used to pile flush-left beneath their key — a loose heap where the
+   desktop draws a two-column ledger. The wizard rows become the same
+   two columns (the padded key is column one; every key is padEnd'd to
+   the same measure, so the seam aligns), and the chip run wraps
+   inside its own column with a hanging indent. */
+@media (max-width: 760px) {
+  .toolchain-root .tct-body .tct-line[data-tw] {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: baseline;
+  }
+
+  .toolchain-root .tct-body .tct-locset {
+    flex-wrap: wrap;
+    row-gap: 5px;
+  }
+
+  /* The translation rows: one locale per line under its source, every
+     chip at the same 2ch indent — a chip column and a string column,
+     the table's grammar at transcript width. Outranks the block-layout
+     mobile rules in hero-terminal.css on specificity. */
+  .toolchain-root .tct-body .tct-table .tct-cell {
+    display: flex;
+    margin-right: 0;
+  }
+
+  .toolchain-root .tct-body .tct-table .tct-cyc {
+    display: grid;
+    margin-right: 0;
+  }
+}
+
+/* ---------- framework tabs: the React Native mark ---------- */
+
+/* The real /public knockout badge (squircle, atom cut out), rendered
+   the way the SDK ledger renders its file-based marks: currentColor
+   is the paint, the mask's alpha is the artwork — so it lands in the
+   tab's own ink and inherits the resting/active opacity states from
+   logos-icons.css. One step larger than its 13px siblings so the
+   1.1-unit cutout survives 1x rendering (the ledger's is-rn metric). */
+.toolchain-root .tc-tabs .tc-tab .tc-tab-mark.is-rn-badge {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  background: currentColor;
+  -webkit-mask: var(--mark) center / contain no-repeat;
+  mask: var(--mark) center / contain no-repeat;
+}
+
+/* ---------- SDK ledger: the React Native mark ---------- */
+
+/* The same badge on the panel ink — at the column's 13px the cutout
+   seals shut on 1x screens, so this mark runs a step larger. */
+.sdkl .sdkl-mark.is-rn {
+  width: 15px;
+  height: 15px;
+}

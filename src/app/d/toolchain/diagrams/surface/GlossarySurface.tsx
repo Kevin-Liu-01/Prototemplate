@@ -1,3 +1,5 @@
+import LocaleTag from '../../components/LocaleTag';
+
 import { surfaceA11y, surfaceClass, type SurfaceProps } from './surface';
 import './surface.css';
 
@@ -43,7 +45,9 @@ export default function GlossarySurface({ className, title }: SurfaceProps) {
       <ul className='tcx-rows'>
         {ENTRIES.map((entry) => (
           <li key={entry.tag}>
-            <i>{entry.tag}</i>
+            <i>
+              <LocaleTag code={entry.tag} />
+            </i>
             <span>
               {entry.instead ? <s>{entry.instead}</s> : null}
               {entry.ships}
@@ -55,7 +59,9 @@ export default function GlossarySurface({ className, title }: SurfaceProps) {
       <ul className='tcx-rows tcx-dirs'>
         {DIRECTIVES.map((directive) => (
           <li key={directive.tag}>
-            <i>{directive.tag}</i>
+            <i>
+              <LocaleTag code={directive.tag} />
+            </i>
             <span>{directive.rule}</span>
           </li>
         ))}

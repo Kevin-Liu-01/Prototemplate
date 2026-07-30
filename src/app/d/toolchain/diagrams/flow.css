@@ -94,6 +94,19 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* The transfer window: the same accent chain ContextResolve's live branch
+   resolves (`--iso-accent` → the page's `--tc-accent` blue), stroked at the
+   full sandwich gauge and layered under the core, so the traveling segment
+   tints both hairlines and never reads as a filled band. Hidden until the
+   loop configures it — under reduced motion it simply never appears. */
+.tflow .tf-pulse {
+  fill: none;
+  stroke: var(--iso-accent, #2f5ce0);
+  stroke-width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+}
+
 .tflow .tf-core {
   fill: none;
   stroke: var(--tf-ground);

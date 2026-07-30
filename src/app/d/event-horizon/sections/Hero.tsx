@@ -217,25 +217,76 @@ const FLAGS: readonly { flag: string; name: string }[] = [
   { flag: '🇹🇷', name: 'Türkçe' },
 ];
 
-/* ---------- grid construction ----------
-   Each side is a conveyor of adjacent columns (a sheet, not floating cards):
-   COLS_PER_SET column templates repeated SETS times so the track can wrap by
-   exactly one set width with no visible seam. Column templates stagger the
-   pair list so neighbouring columns never repeat a component on the same row.
-   Every cell has the SAME fixed height (--eh-rowh), so row lines run straight
-   across the whole sheet — the brick-wall read — and the only motion is the
-   sheet itself sliding sideways, which preserves those courses exactly. */
+/* ---------- fabric construction ----------
+   ONE cloth, not two side galleries: a single conveyor of adjacent columns
+   spans the full hero width and passes BEHIND the horizon. COLS_PER_SET
+   column templates repeated SETS times let the track wrap by exactly one
+   set width with no visible seam; the templates stagger the pair list so
+   neighbouring columns never repeat a component on the same row. Every cell
+   sits on one of FIVE fixed row courses at a tight uniform pitch (--eh-rowh
+   + --eh-rowgap) — a woven grid, cards adjacent, shared row and column
+   lines — and carries BOTH faces of its component: the English source shows
+   while the cell rides the left half, the BCP-47-stamped translation from
+   the moment its column crosses the mass. The swap happens while the cell
+   is occluded behind the disc, so the horizon IS the seam where the cloth's
+   content changes language. That flat layout is only the SOURCE PLANE. Per
+   frame, every card is seated on a RUBBER SHEET deformed by the mass
+   (Kevin's sketch): a gravity-well height-field h = AMP·R·f(ρ/R) dimples
+   the paper around the hole, and each card is displaced vertically toward —
+   and slightly UNDER — the mass, so row courses read as draped curves
+   dipping into the well from both sides. The card's pitch and yaw come from
+   the height-field's gradient (rotateX from ∂h/∂y, rotateY from ∂h/∂x —
+   the sheet's local slope, not hand-tuned per card), its in-plane rotation
+   follows the draped course's tangent, and vertical compression follows the
+   map's own packing (∂F/∂y) as courses crowd toward the rim. */
 const COLS_PER_SET = 4;
-const SETS = 3;
-const CARDS_PER_COL = 10;
-/** Conveyor speed, px/s — one column width in roughly ten seconds. */
-const SPEED = 24;
+const SETS = 4;
+const CARDS_PER_COL = 5;
+/** Conveyor speed, px/s — one column width in roughly fifteen seconds. */
+const SPEED = 18;
 /** Clock offset so the very first painted frame is already mid-flow. */
 const T0 = 4;
 /** Flag-orbit radius as a multiple of the horizon radius (wide mode). */
 const ORBIT_K = 1.36;
 /** Seconds per full revolution of the flag orbit. */
 const ORBIT_DUR = 130;
+/** Vertical squash of the flag orbit — a slightly inclined orbital plane. */
+const ORBIT_TILT = 0.94;
+
+/* ---------- the rubber sheet ----------
+   One height-field drives everything that bends: the card courses, the DOM
+   rules/rings (SVG paths rebuilt on measure), and the shader's own draped
+   hairlines near the rim (lib/horizon-field.ts inverts the same law, so the
+   handoff across the mask band is invisible). */
+/** Drape depth as a fraction of the rim radius. With the fabric's tight
+    course pitch, amp·SAT must stay below ~0.9 or adjacent courses would
+    cross (fold through each other) in the visible flank band. */
+const SHEET_AMP = 0.78;
+/** Downward bias so courses crest just UNDER the mass, never through it. */
+const SHEET_BIAS = 0.14;
+/** How fast the pull saturates with a course's offset from the mass (rim
+    units). Saturation is what makes a WHOLE row rise or dip as one coherent
+    draped curve — the sketch's hill — rather than scaling with the local
+    direction cosine. Mirrored by SHEET_SAT in lib/horizon-field.ts. */
+const SHEET_SAT = 1.1;
+/** Pitch gain: sheet slope → rotateX. The drape is rotateX-dominant. */
+const TILT_X = 2.4;
+/** Yaw gain: lateral slope → rotateY, the sheet folding at the sides. */
+const TILT_Y = 1.4;
+/** Cards sink into the well — a mild scale-away as the sheet deepens. */
+const SINK = 0.2;
+/** Perspective for the per-card 3D tilts, px. */
+const PERSP = 1100;
+/** The page's ruled-hairline pitch, px — must match the shader's uPitch. */
+const RULE_PITCH = 44;
+/** Source radii (rim units) and ink of the three draped guide rings. */
+const GUIDE_RINGS: readonly [number, number][] = [
+  [1.24, 0.9],
+  [1.55, 0.64],
+  [1.94, 0.38],
+];
+
+const TAU = Math.PI * 2;
 
 /* Per-column start offsets into the pair list, chosen so a repeated component
    never lands within five rows of itself in a neighbouring column. */
@@ -387,12 +438,14 @@ function CardBody({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
 }
 
 /* Every card is stamped with its locale — 'en' going in, the BCP-47 tag
-   coming out — so a still reads as a before/after ledger, not decoration. */
+   coming out — so a still reads as a before/after ledger, not decoration.
+   Each fabric cell stacks BOTH faces; CSS shows the source face until the
+   cell's column crosses the mass (.is-out), then the translated one. */
 function DemoCard({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
   const tr = side === 'tr';
   return (
     <article
-      className={`eh-card is-${pair.variant}`}
+      className={`eh-card is-${pair.variant} is-face-${side}`}
       dir={tr && pair.rtl ? 'rtl' : undefined}
       lang={tr ? pair.lang : undefined}
     >
@@ -445,40 +498,62 @@ function GridSide({
 }
 
 type CellGeom = { el: HTMLElement; cy: number };
-type ColGeom = { el: HTMLElement; cx: number; near: boolean; cells: CellGeom[] };
-type SideGeom = {
+type ColGeom = {
+  el: HTMLElement;
+  cx: number;
+  /** Which face the column currently shows; null until the first frame. */
+  out: boolean | null;
+  cells: CellGeom[];
+};
+type ClothGeom = {
   track: HTMLElement;
-  /** −1 = source side (left / top band), +1 = translated side. */
-  sign: -1 | 1;
   /** Track world-x at conveyor offset 0. */
   base: number;
-  /** Track world-y offset (0 in wide mode; the band top in stack mode). */
+  /** Track world-y offset within the hero. */
   top: number;
   cols: ColGeom[];
 };
 
 /**
- * Kevin's sketch, built literally: two dense component sheets fill the screen
- * from its edges — courses of identical-height rows, aligned across every
- * column like brickwork — and are pulled into a REAL event horizon at center.
- * The horizon is a purpose-built lensing shader (lib/horizon-field.ts): an
- * accretion streak field whose sampling coordinates bend around the rim into
- * a brilliant photon ring, the page's own ruled hairlines warping with it,
- * over a genuinely dark core. The sheets are conveyors of adjacent columns
- * sliding on one shared clock; near the hole a smooth radial field pulls,
- * foreshortens and extinguishes cards, so the rows bend coherently around the
- * opening without ever losing their shared course lines. The dark core holds
- * the mark, headline, CTAs and the npx chip light-on-dark; the locale flag
- * chips ORBIT the horizon on a dashed rail just outside the glow.
+ * Kevin's sketch, built literally: ONE component fabric — a dense woven grid
+ * of UI cards — spans the hero and is DEFORMED by the mass at center, the
+ * general-relativity rubber-sheet embedding diagram, not rings drawn around
+ * a disc. The horizon itself is a purpose-built shader (lib/horizon-field.ts):
+ * an accretion streak field wrapping a brilliant photon ring over a genuinely
+ * dark core. The fabric is a single conveyor of adjacent columns drifting
+ * rightward on one clock, passing BEHIND the horizon: the left half carries
+ * the English sources feeding toward the portal, the right half the same
+ * components emerging translated and locale-stamped — each cell swaps its
+ * face while occluded by the disc, so the horizon is the seam where the
+ * cloth changes language. The flat layout is only the source plane: per
+ * frame every card is seated on a gravity-well height-field centered on the
+ * hole, displaced toward and slightly UNDER the mass, pitched and yawed by
+ * the sheet's local slope (rotateX-dominant), and compressed as courses pack
+ * toward the rim, where the glow dims them and the disc swallows them. Five
+ * row courses read as draped curves dipping into the well from both sides —
+ * the sketch's crosshatch sagging under the circle's weight. The page's own
+ * ruled hairlines and guide rings ride the same sheet (SVG paths rebuilt on
+ * measure; the shader inverts the identical law near the rim), so paper,
+ * cards and horizon belong to one fabric. The dark core holds the mark,
+ * headline, CTAs and the npx chip light-on-dark; the locale flag chips ride
+ * a slightly inclined orbit around the horizon, each oriented tangent to the
+ * ring like a satellite belt.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const fabricRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  // The card-grid refs survived the in-progress hero rework as JSX call
+  // sites; declared here so the grids render while that rework lands.
   const gridEnRef = useRef<HTMLDivElement>(null);
   const gridTrRef = useRef<HTMLDivElement>(null);
   const trackEnRef = useRef<HTMLDivElement>(null);
   const trackTrRef = useRef<HTMLDivElement>(null);
   const horizonRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<SVGSVGElement>(null);
+  const rulesRef = useRef<SVGGElement>(null);
+  const ringsRef = useRef<SVGGElement>(null);
   const fieldRef = useRef<HTMLCanvasElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<SVGSVGElement>(null);
@@ -496,95 +571,234 @@ export default function Hero() {
   useGSAP(
     () => {
       const hero = heroRef.current;
-      const trackEn = trackEnRef.current;
-      const trackTr = trackTrRef.current;
-      const gridEn = gridEnRef.current;
-      const gridTr = gridTrRef.current;
+      const fabric = fabricRef.current;
+      const track = trackRef.current;
       const fieldCanvas = fieldRef.current;
       const orbit = orbitRef.current;
       const rail = railRef.current;
-      if (!hero || !trackEn || !trackTr || !gridEn || !gridTr || !fieldCanvas || !orbit || !rail)
+      const sheetSvg = sheetRef.current;
+      const rulesG = rulesRef.current;
+      const ringsG = ringsRef.current;
+      if (
+        !hero ||
+        !fabric ||
+        !track ||
+        !fieldCanvas ||
+        !orbit ||
+        !rail ||
+        !sheetSvg ||
+        !rulesG ||
+        !ringsG
+      )
         return;
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       const field: HorizonFieldHandle | null = createHorizonField(fieldCanvas, { speed: 0.5 });
 
-      let sides: SideGeom[] = [];
+      /* The shader's ink must follow the page theme: its bent rules and rings
+         hand off to CSS-drawn ones at the mask edge, so both flip together. */
+      const applyTheme = () => {
+        const dark = document.documentElement.dataset.theme === 'dark';
+        field?.setParams({ ink: dark ? [1, 1, 1] : [0.059, 0.067, 0.075] });
+      };
+      applyTheme();
+      const themeWatch = new MutationObserver(applyTheme);
+      themeWatch.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+
+      let cloth: ClothGeom | null = null;
       let wide = true;
       let cx = 0;
       let cy = 0;
       let r = 240;
       let orbitR = 320;
       let setW = 1;
+      let heroW = 1;
+      /* Sheet state, set by measure(): effective drape depth (softened in
+         stack mode) and the well's footprint, sized so the bend dies gently
+         by the screen edges. */
+      let amp = SHEET_AMP;
+      let qEnd = 2.7;
 
-      /* One conveyor frame: the whole sheet slides on a shared clock, and
-         cards inside the rim's gravity get pulled, foreshortened, dimmed and
-         finally extinguished as they cross into the glow. The displacement is
-         one smooth radial field of distance-to-center only, so row courses
-         bend coherently around the opening instead of scattering. */
+      /* Well footprint: 1 inside the rim, easing to 0 by qEnd (rim units) —
+         a broad smoothstep ramp, so the hill starts rising from the screen
+         corners the way the sketch's does. The shader evaluates the same f
+         (sheetDispY in lib/horizon-field.ts). */
+      const wellF = (q: number) => {
+        const u = clamp01((q - 1) / Math.max(qEnd - 1, 1e-3));
+        return 1 - u * u * (3 - 2 * u);
+      };
+
+      /** Depth of the sheet below flat paper at (dx, dy) from the mass, px. */
+      const depthAt = (dx: number, dy: number) => amp * r * wellF(Math.hypot(dx, dy) / r);
+
+      /** Vertical drape of a source point: attraction toward the mass plus
+          the slight under-bias, so paper above dips toward the hole and paper
+          below crests just beneath it — never through it. The pull saturates
+          with the course's offset (tanh), so rows bend as whole draped
+          curves. Mirrored exactly by sheetDispY in lib/horizon-field.ts. */
+      const dispYAt = (dx: number, dy: number) => {
+        const rr = Math.max(Math.hypot(dx, dy), 1e-4);
+        return amp * r * wellF(rr / r) * (SHEET_BIAS - Math.tanh((SHEET_SAT * dy) / r));
+      };
+
+      /* The flag chips, driven directly each frame — no wrapper rotation, no
+         counter-rotation: each chip is seated on the (slightly inclined)
+         orbit and oriented TANGENT to it, satellites riding the ring. */
+      const chips = Array.from(orbit.querySelectorAll<HTMLElement>('.eh-chip'));
+
+      /* One conveyor frame. The cloth slides rightward in flat coordinates —
+         the left half feeding toward the portal, the right half emerging —
+         and every card is then seated on the draped sheet: displaced toward
+         (and slightly under) the mass, pitched and yawed by the local slope
+         of the height-field, aligned to its course's tangent, and compressed
+         as courses pack toward the rim, where the glow dims it and the disc
+         (z-above the fabric) swallows it. Each column swaps to its
+         translated face the instant it crosses the mass — invisibly, since
+         the crossing happens behind the disc. */
       const frame = (timeSec: number) => {
+        if (!cloth) return;
         const offset = ((timeSec * SPEED) % setW + setW) % setW;
-        for (const side of sides) {
-          const baseX = side.base + offset;
-          side.track.style.transform = `translate3d(${baseX.toFixed(2)}px, 0, 0)`;
-          for (const col of side.cols) {
-            const colX = baseX + col.cx;
-            const dxc = colX - cx;
-            const near = Math.abs(dxc) < r * 2.9;
-            if (!near) {
-              if (col.near) {
-                for (const cell of col.cells) {
-                  cell.el.style.transform = 'translate3d(0, 0, 0)';
-                  cell.el.style.opacity = '1';
-                }
-                col.near = false;
-              }
+        const margin = r + 340;
+        /* Finite-difference step for the sheet's Jacobian, px. */
+        const e = 3;
+        const baseX = cloth.base + offset;
+        cloth.track.style.transform = `translate3d(${baseX.toFixed(2)}px, 0, 0)`;
+        for (const col of cloth.cols) {
+          const colX = baseX + col.cx;
+          /* The language seam. Toggled even offscreen, so a column that
+             wraps re-enters already wearing the correct face. */
+          const out = colX >= cx;
+          if (out !== col.out) {
+            col.out = out;
+            col.el.classList.toggle('is-out', out);
+          }
+          /* Offscreen columns skip their writes; the margin is wider than
+             any drape displacement, so transforms are current before entry. */
+          if (colX < -margin || colX > heroW + margin) continue;
+          const dx = colX - cx;
+          for (const cell of col.cells) {
+            const dy = cloth.top + cell.cy - cy;
+            const rr = Math.hypot(dx, dy);
+            if (rr < 2) {
+              cell.el.style.opacity = '0';
               continue;
             }
-            col.near = true;
-            /* The bands sit close to the hole on phones; soften the field so
-               the fold reads as a tidy grid, not a smeared one. */
-            const fieldGain = wide ? 1 : 0.45;
-            for (const cell of col.cells) {
-              const dx = colX - cx;
-              const dy = side.top + cell.cy - cy;
-              const d = Math.hypot(dx, dy) || 1;
-              const infl = (1 - smooth01((d - r) / (r * 1.15))) * fieldGain;
-              const pull = 88 * Math.pow(infl, 1.6);
-              const tz = -260 * infl;
-              const s = 1 - 0.28 * infl;
-              const sx = s * (1 - 0.22 * infl);
-              const sy = s * (1 + 0.1 * infl);
-              /* Extinction lands just past the rim glow, so cards visibly slip
-                 under the light instead of littering the ring; a soft gaussian
-                 channel around the flag orbit keeps that lane clear. */
-              const fade = smooth01((d - r * 1.08) / (r * 0.5));
-              let alpha = 1 - (1 - fade) * (wide ? 1 : 0.55);
-              if (wide) {
-                const dOrbit = (d - orbitR) / (r * 0.13);
-                alpha *= 1 - 0.9 * Math.exp(-0.5 * dOrbit * dOrbit);
-                alpha *= smooth01((side.sign * dx) / (r * 0.7));
-              }
-              cell.el.style.transform = `translate3d(${((-dx / d) * pull).toFixed(2)}px, ${(
-                (-dy / d) *
-                pull
-              ).toFixed(2)}px, ${tz.toFixed(1)}px) scale(${sx.toFixed(3)}, ${sy.toFixed(3)})`;
-              cell.el.style.opacity = alpha.toFixed(3);
-            }
+            /* The drape and its Jacobian at this card's seat. */
+            const ty = dispYAt(dx, dy);
+            const slope = (dispYAt(dx + e, dy) - dispYAt(dx - e, dy)) / (2 * e);
+            const pack = 1 + (dispYAt(dx, dy + e) - ty) / e;
+            const h0 = depthAt(dx, dy);
+            const gx = (depthAt(dx + e, dy) - h0) / e;
+            const gy = (depthAt(dx, dy + e) - h0) / e;
+            /* Pitch/yaw from the height-field's gradient: the edge facing
+               the mass dips into the well (rotateX-dominant), the sides
+               fold in via rotateY. In-plane rotation rides the course's
+               own tangent, so rows stay aligned ALONG the draped curves. */
+            const rx = -Math.atan(gy * TILT_X);
+            const ry = Math.atan(gx * TILT_Y);
+            const rz = Math.atan(slope);
+            /* Compression: the map's own course-packing vertically, plus a
+               mild sink-away scale as the sheet deepens under the card. */
+            const sink = 1 - SINK * (h0 / r);
+            const sy = Math.min(Math.max(pack, 0.55), 1) * sink;
+            const fy = dy + ty;
+            const d = Math.hypot(dx, fy);
+            /* Extinction hugs the rim: cards ride at full ink through the
+               flag lane, dim as they slip under the photon ring's glow, and
+               reach zero right where the disc occludes them — the cloth is
+               visibly swallowed by the hole, never cut off in open paper. */
+            const fade = smooth01((d - r * 0.99) / (r * (wide ? 0.45 : 0.26)));
+            cell.el.style.transform = `translate3d(0px, ${ty.toFixed(2)}px, 0) rotate(${rz.toFixed(
+              4
+            )}rad) perspective(${PERSP}px) rotateX(${rx.toFixed(4)}rad) rotateY(${ry.toFixed(
+              4
+            )}rad) scale(${sink.toFixed(3)}, ${sy.toFixed(3)})`;
+            cell.el.style.opacity = fade.toFixed(3);
           }
         }
+
+        /* The flag orbit: chips revolve on a slightly inclined ellipse, each
+           oriented tangent to it. Chips on the lower arc take a 180° roll
+           (snapped at the sides, where they stand vertical) so the text
+           never inverts — the circular-seal read. Far-side chips (top arc)
+           shrink and dim as if passing behind the rim glow. */
+        const phase = (timeSec / ORBIT_DUR) * TAU;
+        const n = chips.length || 1;
+        for (let i = 0; i < chips.length; i++) {
+          const chip = chips[i];
+          if (!chip) continue;
+          const a = phase + (i / n) * TAU;
+          const sin = Math.sin(a);
+          const cos = Math.cos(a);
+          const x = orbitR * sin;
+          const y = -orbitR * ORBIT_TILT * cos;
+          let rot = Math.atan2(ORBIT_TILT * sin, cos);
+          if (cos < 0) rot += Math.PI;
+          const scale = 1 - 0.075 * cos;
+          const dim = 1 - 0.45 * smooth01((cos - 0.4) / 0.45);
+          chip.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(
+            2
+          )}px) translate(-50%, -50%) rotate(${rot.toFixed(4)}rad) scale(${scale.toFixed(3)})`;
+          chip.style.opacity = dim.toFixed(3);
+        }
+      };
+
+      /* The DOM half of the draped page: the ruled hairlines and guide rings
+         as SVG paths pushed through the SAME forward map as the cards. The
+         mask opens a feathered hole where the shader takes over with the
+         inverted law, so the two halves meet on identical curves. */
+      const buildSheet = (w: number, h: number) => {
+        sheetSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        /* Courses just outside the viewport drape into it; overscan by the
+           largest displacement the well can produce. */
+        const reach = amp * r * (1 + SHEET_BIAS);
+        const rules: string[] = [];
+        const firstK = Math.floor(-reach / RULE_PITCH);
+        const lastK = Math.ceil((h + reach) / RULE_PITCH);
+        for (let k = firstK; k <= lastK; k++) {
+          /* Lattice matches the shader: line centers at k·pitch + gauge/2. */
+          const y0 = k * RULE_PITCH + 0.5;
+          let dPath = '';
+          for (let x = -8; x <= w + 8; x += 14) {
+            const y = y0 + dispYAt(x - cx, y0 - cy);
+            dPath += `${dPath ? 'L' : 'M'}${x} ${y.toFixed(2)}`;
+          }
+          rules.push(`<path d="${dPath}"/>`);
+        }
+        rulesG.innerHTML = rules.join('');
+        const rings: string[] = [];
+        for (const [kR, ink] of GUIDE_RINGS) {
+          const sR = r * kR;
+          let dPath = '';
+          for (let s = 0; s <= 144; s++) {
+            const a = (s / 144) * TAU;
+            const px = cx + sR * Math.cos(a);
+            const py = cy + sR * Math.sin(a);
+            const y = py + dispYAt(px - cx, py - cy);
+            dPath += `${dPath ? 'L' : 'M'}${px.toFixed(1)} ${y.toFixed(2)}`;
+          }
+          rings.push(`<path d="${dPath}" opacity="${ink}"/>`);
+        }
+        ringsG.innerHTML = rings.join('');
       };
 
       const measure = () => {
         const w = hero.clientWidth;
         const h = hero.clientHeight;
         if (w < 10 || h < 10) return;
+        heroW = w;
         wide = w >= 760;
         r = wide
           ? Math.min(Math.max(w * 0.19, 228), 300, h * 0.36)
           : Math.min(w * 0.4, 168, h * 0.26);
         cx = w / 2;
+        /* The bands sit close to the hole on phones; soften the drape so the
+           fold reads as a tidy draped grid, not a smeared one. */
+        amp = SHEET_AMP * (wide ? 1 : 0.55);
 
         /* Reset every conveyor transform before reading geometry, so rects are
            unpolluted by the previous frame. */
@@ -622,13 +836,14 @@ export default function Hero() {
           ? Math.max(Math.min(h * 0.47, h - r - 148), r + 96)
           : Math.max(Math.min(h * 0.42, h - r - bandH - 104), r + bandH + 26);
         orbitR = wide ? r * ORBIT_K : Math.min(r + 36, w / 2 - 20);
+        /* The well's footprint reaches the screen corners — the sketch's rows
+           start rising from the corners — and is exactly flat there. */
+        qEnd = Math.min(4.4, Math.max(2.6, Math.hypot(w * 0.5, Math.max(cy, h - cy)) / r));
 
         hero.style.setProperty('--eh-cx', `${cx.toFixed(1)}px`);
         hero.style.setProperty('--eh-cy', `${cy.toFixed(1)}px`);
         hero.style.setProperty('--eh-r', `${r.toFixed(1)}px`);
         hero.dataset.ehMode = wide ? 'wide' : 'stack';
-        gridEn.style.perspectiveOrigin = `${cx.toFixed(1)}px ${cy.toFixed(1)}px`;
-        gridTr.style.perspectiveOrigin = `${cx.toFixed(1)}px ${cy.toFixed(1)}px`;
 
         if (wide) {
           trackEn.style.top = '0px';
@@ -655,24 +870,23 @@ export default function Hero() {
           center: [half, half],
           radius: r,
           worldOrigin: [cx - half, cy - half],
+          sheetAmp: amp,
+          sheetEnd: qEnd,
+          sheetBias: SHEET_BIAS,
         });
 
-        /* Seat every flag chip on the orbit. Angles are fixed at even pitch;
-           only the radius is re-measured. The rail matches. */
+        /* Re-drape the DOM rules and rings around the (re)measured well. */
+        buildSheet(w, h);
+
+        /* The orbit origin; chips are seated per-frame at even pitch. The
+           dashed rail is the same inclined ellipse the chips ride — its
+           square viewBox stretches into the orbit's squashed box. */
         orbit.style.left = `${cx.toFixed(1)}px`;
         orbit.style.top = `${cy.toFixed(1)}px`;
-        const seats = Array.from(orbit.children);
-        seats.forEach((seat, i) => {
-          if (!(seat instanceof HTMLElement)) return;
-          const ang = (360 / seats.length) * i;
-          seat.style.transform = `rotate(${ang}deg) translate(0px, ${-orbitR.toFixed(1)}px)`;
-        });
-        /* Positioned by its own box (no CSS translate) so the GSAP rotation
-           below owns the transform outright. */
         rail.style.left = `${(cx - orbitR).toFixed(1)}px`;
-        rail.style.top = `${(cy - orbitR).toFixed(1)}px`;
+        rail.style.top = `${(cy - orbitR * ORBIT_TILT).toFixed(1)}px`;
         rail.style.width = `${(orbitR * 2).toFixed(1)}px`;
-        rail.style.height = `${(orbitR * 2).toFixed(1)}px`;
+        rail.style.height = `${(orbitR * ORBIT_TILT * 2).toFixed(1)}px`;
 
         const readSide = (track: HTMLElement, sign: -1 | 1): SideGeom => {
           const trackRect = track.getBoundingClientRect();
@@ -687,9 +901,7 @@ export default function Hero() {
               cells.push({ el: cellEl, cy: rect.top - trackRect.top + rect.height / 2 });
             }
             cols.push({
-              el: colEl,
               cx: colRect.left - trackRect.left + colRect.width / 2,
-              near: true,
               cells,
             });
           }
@@ -713,13 +925,6 @@ export default function Hero() {
         frame(reduced ? setW * 0.38 : gsap.ticker.time + T0);
       };
 
-      /* Chips stay upright: each counter-rotates its seat angle now, and the
-         orbit tween below pairs with an equal counter-tween on the chips. */
-      const chips = Array.from(orbit.querySelectorAll<HTMLElement>('.eh-chip'));
-      chips.forEach((chip, i) => {
-        gsap.set(chip, { xPercent: -50, yPercent: -50, rotation: -(360 / chips.length) * i });
-      });
-
       measure();
       /* Card heights settle once webfonts arrive; re-measure then. */
       void document.fonts?.ready.then(() => measure());
@@ -730,6 +935,7 @@ export default function Hero() {
       if (reduced) {
         return () => {
           ro.disconnect();
+          themeWatch.disconnect();
           field?.destroy();
         };
       }
@@ -775,17 +981,22 @@ export default function Hero() {
       });
       gsap.from('.eh-tag', { autoAlpha: 0, duration: 0.6, delay: 0.6, ease: 'none' });
 
-      /* The orbit: the wrapper revolves, every chip counter-revolves in step
-         so the labels stay upright; the dashed rail creeps the other way. */
-      gsap.to(orbit, { rotation: 360, duration: ORBIT_DUR, ease: 'none', repeat: -1 });
-      chips.forEach((chip) => {
-        gsap.to(chip, { rotation: '-=360', duration: ORBIT_DUR, ease: 'none', repeat: -1 });
-      });
-      gsap.to(rail, { rotation: -360, duration: ORBIT_DUR * 2.4, ease: 'none', repeat: -1 });
+      /* The chips revolve inside frame(); the dashed rail creeps the other
+         way via dash offset (the inclined ellipse cannot simply rotate). */
+      const railStroke = rail.querySelector('circle');
+      if (railStroke) {
+        gsap.to(railStroke, {
+          attr: { 'stroke-dashoffset': 48 },
+          duration: 96,
+          ease: 'none',
+          repeat: -1,
+        });
+      }
 
       return () => {
         ro.disconnect();
         io.disconnect();
+        themeWatch.disconnect();
         gsap.ticker.remove(tick);
         field?.destroy();
       };
@@ -796,14 +1007,14 @@ export default function Hero() {
   return (
     <section className='tc-sec' id='top' ref={root}>
       <div className='eh-hero' ref={heroRef} data-eh-mode='wide'>
-        {/* The page's concentric guide rings. A CSS mask opens a feathered
-            hole under the shader canvas, which redraws their inner arcs bent
-            through the lens — the same handoff the ruled hairlines use. */}
-        <div className='eh-guides' aria-hidden>
-          <span />
-          <span />
-          <span />
-        </div>
+        {/* The page's ruled hairlines and concentric guide rings, drawn as
+            paths draped over the same height-field the cards ride (rebuilt in
+            measure()). A CSS mask opens a feathered hole under the shader
+            canvas, which re-renders the same draped structure near the rim. */}
+        <svg className='eh-sheet' ref={sheetRef} aria-hidden>
+          <g className='eh-sheet-rules' ref={rulesRef} />
+          <g className='eh-sheet-rings' ref={ringsRef} />
+        </svg>
 
         <span className='eh-tag is-in'>in — English source</span>
         <span className='eh-tag is-out'>out — translated · stamped</span>
@@ -821,9 +1032,18 @@ export default function Hero() {
         </div>
         <canvas className='eh-field' ref={fieldRef} aria-hidden />
 
-        {/* The locale chips orbit the horizon on a dashed rail. The layer is
-            inert (pointer-events: none) so it never blocks the core's CTAs. */}
-        <svg className='eh-orbit-rail' viewBox='0 0 100 100' ref={railRef} aria-hidden>
+        {/* The locale chips orbit the horizon on a dashed rail — a slightly
+            inclined ellipse, chips tangent to it like a satellite belt. The
+            layer is inert (pointer-events: none) so it never blocks the
+            core's CTAs. preserveAspectRatio='none' squashes the circle into
+            the same ellipse the chips ride. */}
+        <svg
+          className='eh-orbit-rail'
+          viewBox='0 0 100 100'
+          preserveAspectRatio='none'
+          ref={railRef}
+          aria-hidden
+        >
           <circle
             cx='50'
             cy='50'

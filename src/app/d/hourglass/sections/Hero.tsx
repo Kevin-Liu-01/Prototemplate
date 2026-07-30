@@ -9,20 +9,36 @@ import { useRef, useState } from 'react';
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * The hourglass hero: two corridor walls of real product UI recede in
- * one-point perspective toward a vanishing point at screen center. The left
- * wall carries English source strings drifting INTO the point; the right wall
- * carries their locale-stamped translations drifting OUT of it — the
- * translation pipeline as motion. The negative space between the walls is the
- * hourglass: wide at the edges, pinched to a waist that holds the mark,
- * headline, CTAs, the languages row, and the customer wordmarks.
+ * The hourglass hero, bent the way the founder drew it: the product UI is a
+ * FABRIC DEFORMED BY THE MASS at the waist. ONE continuous cloth of
+ * component cards spans the hero's lower bulb — a dense grid whose top
+ * silhouette is the sketch's hill, rising from off-screen at the lower
+ * left, cresting just under the GT mark, and falling away to the lower
+ * right, with seven row courses draped in parallel under that curve (the
+ * relativity rubber-sheet, viewed from slightly above). The cloth passes
+ * BEHIND the waist stack: at the seam under the mark it dives into the
+ * dark and re-emerges on the far side translated — English source strings
+ * ride in from the left, their locale-stamped translations ride out on the
+ * right. The open dark ABOVE the hill is the hourglass's upper bulb:
+ * negative space pinched to a waist where the crest meets the stack.
  *
- * The walls are dense mirrored grids, not drifting confetti: every string is
- * a PAIR that occupies the same row on both walls — English face left,
- * translated face right — so a row reads as entering the point on one side
- * and exiting at the same height on the other. Rows share row lines (uniform
- * cell heights), columns sit at one fixed depth pitch, and both conveyors run
- * the identical loop, so the row correspondence never drifts.
+ * Implementation: CSS cannot bend a plane, so the cloth is a
+ * piecewise-planar sweep — every 300px course column is split into three
+ * 100px strips, and each strip is a flat chord hung on a 3D rail via
+ * matrix3d: its width axis lies along the chord, its rows fall along one
+ * shared drape direction (down-screen and toward the viewer — the
+ * rotateX-flavored pitch), and real perspective comes from the stage. The
+ * rail is a height-field path spanning the full stage: x runs edge to
+ * edge, y eases up a hill whose slope dies at the ends and the crest, z
+ * dips behind the glass as the course nears the waist — so every projected
+ * course is a draped curve that climbs, banks and foreshortens toward the
+ * mass. Adjacent strips share chord endpoints and the one fall-line, so
+ * rows and columns stay woven — no card ever moves alone. The conveyor is
+ * the same placement math with a moving arc offset: one shared drift
+ * carries the whole cloth through the waist, and each strip stacks both
+ * language faces, swapping en → tr while it crosses the seam at zero
+ * opacity — a pair that enters lower-left exits lower-right translated,
+ * at the mirrored height on the symmetric hill.
  */
 
 type WallUi =
@@ -80,13 +96,14 @@ const SAVED_KO_PAIR: Pair = {
 /**
  * Vetted string pairs from the PortalHero prototype — real UI components with
  * real human translations. Listed column-major: each run of ROWS_PER_COLUMN
- * pairs is one depth column, ordered so no row or column repeats a component
- * shape next to itself. Numbers, times and RTL localize too (2,814 → 2.814;
- * name@company.com → nome@azienda.it; the Arabic toast and Hebrew status
- * mirror), so the walls demonstrate the product rather than decorate.
+ * pairs is one course column, ordered so no course or column repeats a
+ * component shape next to itself. Numbers, times and RTL localize too
+ * (2,814 → 2.814; name@company.com → nome@azienda.it; the Arabic toast and
+ * Hebrew status mirror), so the sheet demonstrates the product rather than
+ * decorates. Seven pairs per column — the sketch's seven draped courses.
  */
 const PAIRS: readonly Pair[] = [
-  /* ---- depth column one ---- */
+  /* ---- course column one ---- */
   SEARCH_PAIR,
   {
     ui: 'row',
@@ -136,16 +153,7 @@ const PAIRS: readonly Pair[] = [
     en: { text: 'Ready for review', detail: '12 strings · Legal' },
     tr: { text: 'Bereit zur Prüfung', detail: '12 Strings · Rechtliches' },
   },
-  {
-    ui: 'button',
-    kind: 'Button',
-    stamp: 'zh-CN',
-    lang: 'zh-Hans',
-    en: { text: 'Open workspace' },
-    tr: { text: '打开工作区' },
-  },
-
-  /* ---- depth column two ---- */
+  /* ---- course column two ---- */
   {
     ui: 'banner',
     kind: 'Banner',
@@ -203,16 +211,7 @@ const PAIRS: readonly Pair[] = [
     en: { text: 'English (US)', detail: 'Source locale' },
     tr: { text: '简体中文', detail: '目标语言' },
   },
-  {
-    ui: 'switch',
-    kind: 'Switch',
-    stamp: 'nl-NL',
-    lang: 'nl',
-    en: { text: 'Auto-detect locale', detail: 'Browser language' },
-    tr: { text: 'Taal automatisch detecteren', detail: 'Browsertaal' },
-  },
-
-  /* ---- depth column three ---- */
+  /* ---- course column three ---- */
   {
     ui: 'tabs',
     kind: 'Tabs',
@@ -270,14 +269,6 @@ const PAIRS: readonly Pair[] = [
     en: { text: 'Friendly and concise', detail: 'Voice directive' },
     tr: { text: 'Przyjazny i zwięzły', detail: 'Dyrektywa głosu' },
   },
-  {
-    ui: 'row',
-    kind: 'Checkbox',
-    stamp: 'vi-VN',
-    lang: 'vi',
-    en: { text: 'Legal review required', detail: 'Workflow rule' },
-    tr: { text: 'Cần xem xét pháp lý', detail: 'Quy tắc quy trình' },
-  },
 ];
 
 const FLAGS: readonly string[] = ['🇪🇸', '🇫🇷', '🇩🇪', '🇯🇵', '🇰🇷', '🇨🇳', '🇮🇳', '🇸🇦', '🇧🇷', '🇮🇹', '🇳🇱', '🇹🇷'];
@@ -289,12 +280,168 @@ const WORDMARKS: readonly { name: string; mark: string }[] = [
   { name: 'Profound', mark: 'is-profound' },
 ];
 
-/* Grid constants. ROWS_PER_COLUMN must match the repeat() count on .hg-col;
-   the column pitch lives on .hg-col/.hg-track. Three identical sets per track
-   so the conveyor loop is seamless at any frame — the track always overlaps
-   the visible plane by at least one full set. */
-const ROWS_PER_COLUMN = 8;
-const SETS_PER_TRACK = 3;
+/* Grid constants. ROWS_PER_COLUMN must match the repeat() count on .hg-col.
+   Each 300px course column is cut into three 100px strips — the flat chords
+   that approximate the draped cloth — and twelve physical columns tile the
+   arc axis completely (12 × 312 = one wrap period, sized past the longest
+   rail plus both off-screen tails so nothing pops mid-wrap even on very
+   wide stages). The 12px pitch gap is the cloth's weave: uniform hairline
+   gutters between adjacent cells, matching the 12px row gap on .hg-col.
+   PHYS_COLUMNS stays a multiple of the three-column pattern period: a wrap
+   jump then always lands a column on a slot expecting its own pattern. */
+const ROWS_PER_COLUMN = 7;
+const STRIPS_PER_COLUMN = 3;
+const PHYS_COLUMNS = 12;
+const COLUMN_W = 300;
+const COLUMN_PITCH = 312;
+const STRIP_W = COLUMN_W / STRIPS_PER_COLUMN;
+const WRAP_SPAN = COLUMN_PITCH * PHYS_COLUMNS;
+const ARC_MIN = -420;
+/* One pattern period (three columns) per loop — after it, column n hands its
+   arc slot to column n+3, which carries the same pattern, so the reset is
+   invisible. */
+const LOOP_ARC = COLUMN_PITCH * 3;
+
+/* ---------- the draped rail ---------- */
+
+/* Elevation geometry of the cloth (x across the screen, y down it, z into
+   it; arc length s from the rail's start past the lower-left corner). The
+   rail is the cloth's TOP course — the sketch's hill. It enters off-screen
+   at the lower left (EDGE_OUT past the frame, Y_LOW_F down it), rises along
+   a raised-cosine whose slope dies at the ends and the crest, peaks at
+   screen center just under the mark (Y_CREST_F up it), and falls
+   symmetrically to the lower right. Depth runs with the climb: z starts
+   slightly proud of the glass at the corners and dips behind it as the
+   course nears the waist (DIVE_POW), so the crest both rises and recedes —
+   the fabric sags toward the mass and slides behind the stack, and cards
+   bank and foreshorten as they approach it. The curve is sampled
+   parametrically, resampled into an arc-length LUT, and extended straight
+   along its end tangents so off-screen strips stay finite. Rows hang from
+   the rail along ONE shared fall-line (DRAPE: down-screen and toward the
+   viewer), which keeps adjacent chords seam-free and makes the seven
+   courses parallel draped curves that crest under the waist together. */
+const EDGE_OUT = 120;
+const DIVE_POW = 1.25;
+const Y_LOW_F = 0.31;
+const Y_CREST_F = 0.17;
+const Z_EDGE = 40;
+const Z_CREST = -340;
+const DRAPE = (52 * Math.PI) / 180;
+const DRAPE_Y = Math.cos(DRAPE);
+const DRAPE_Z = Math.sin(DRAPE);
+const RAIL_STEP = 4;
+const RAIL_PAD = 480;
+const CURVE_SAMPLES = 768;
+
+type Rail = {
+  /** Stage size the LUT was built for. */
+  view: number;
+  height: number;
+  /** Arc length of the visible sweep — left screen edge to right. */
+  span: number;
+  xs: Float64Array;
+  ys: Float64Array;
+  zs: Float64Array;
+};
+
+function buildRail(view: number, height: number): Rail {
+  const xSpan = view / 2 + EDGE_OUT;
+  const yLow = height * Y_LOW_F;
+  const yCrest = -height * Y_CREST_F;
+  const n = CURVE_SAMPLES;
+  const px = new Float64Array(n + 1);
+  const py = new Float64Array(n + 1);
+  const pz = new Float64Array(n + 1);
+  const pl = new Float64Array(n + 1);
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    /* 0 at both corners, 1 at the crest, zero slope at all three. */
+    const hill = 0.5 - 0.5 * Math.cos(2 * Math.PI * t);
+    px[i] = -xSpan + 2 * xSpan * t;
+    py[i] = yLow + (yCrest - yLow) * hill;
+    pz[i] = Z_EDGE + (Z_CREST - Z_EDGE) * Math.pow(hill, DIVE_POW);
+    pl[i] =
+      i === 0
+        ? 0
+        : (pl[i - 1] ?? 0) +
+          Math.hypot(
+            (px[i] ?? 0) - (px[i - 1] ?? 0),
+            (py[i] ?? 0) - (py[i - 1] ?? 0),
+            (pz[i] ?? 0) - (pz[i - 1] ?? 0)
+          );
+  }
+  const span = pl[n] ?? 1;
+  const count = Math.ceil((span + RAIL_PAD * 2) / RAIL_STEP) + 1;
+  const xs = new Float64Array(count);
+  const ys = new Float64Array(count);
+  const zs = new Float64Array(count);
+  let seg = 0;
+  for (let k = 0; k < count; k++) {
+    const s = -RAIL_PAD + k * RAIL_STEP;
+    if (s <= 0) {
+      const d = pl[1] || 1;
+      const f = s / d;
+      xs[k] = (px[0] ?? 0) + ((px[1] ?? 0) - (px[0] ?? 0)) * f;
+      ys[k] = (py[0] ?? 0) + ((py[1] ?? 0) - (py[0] ?? 0)) * f;
+      zs[k] = (pz[0] ?? 0) + ((pz[1] ?? 0) - (pz[0] ?? 0)) * f;
+    } else if (s >= span) {
+      const d = span - (pl[n - 1] ?? 0) || 1;
+      const f = (s - span) / d;
+      xs[k] = (px[n] ?? 0) + ((px[n] ?? 0) - (px[n - 1] ?? 0)) * f;
+      ys[k] = (py[n] ?? 0) + ((py[n] ?? 0) - (py[n - 1] ?? 0)) * f;
+      zs[k] = (pz[n] ?? 0) + ((pz[n] ?? 0) - (pz[n - 1] ?? 0)) * f;
+    } else {
+      while ((pl[seg + 1] ?? span) < s) seg++;
+      const d = (pl[seg + 1] ?? 0) - (pl[seg] ?? 0) || 1;
+      const f = (s - (pl[seg] ?? 0)) / d;
+      xs[k] = (px[seg] ?? 0) * (1 - f) + (px[seg + 1] ?? 0) * f;
+      ys[k] = (py[seg] ?? 0) * (1 - f) + (py[seg + 1] ?? 0) * f;
+      zs[k] = (pz[seg] ?? 0) * (1 - f) + (pz[seg + 1] ?? 0) * f;
+    }
+  }
+  return { view, height, span, xs, ys, zs };
+}
+
+function railPoint(rail: Rail, s: number): { x: number; y: number; z: number } {
+  const f = (s + RAIL_PAD) / RAIL_STEP;
+  const i = Math.min(Math.max(Math.floor(f), 0), rail.xs.length - 2);
+  const t = Math.min(Math.max(f - i, 0), 1);
+  return {
+    x: (rail.xs[i] ?? 0) * (1 - t) + (rail.xs[i + 1] ?? 0) * t,
+    y: (rail.ys[i] ?? 0) * (1 - t) + (rail.ys[i + 1] ?? 0) * t,
+    z: (rail.zs[i] ?? 0) * (1 - t) + (rail.zs[i + 1] ?? 0) * t,
+  };
+}
+
+/* Keeps every column's arc inside one wrap period, [ARC_MIN, ARC_MIN+WRAP). */
+function wrapArc(v: number): number {
+  return ((((v - ARC_MIN) % WRAP_SPAN) + WRAP_SPAN) % WRAP_SPAN) + ARC_MIN;
+}
+
+/* Depth grading, by m — the strip's distance from the waist seam as a
+   fraction of the half-sweep (1 at the lower corners, 0 at the seam). The
+   cloth stays legible almost all the way up the hill; only a hard notch at
+   the seam swallows it entirely, ~60px of arc each side, so the fabric
+   visibly dives INTO the waist and re-emerges translated — and the en→tr
+   face swap happens inside that notch at zero opacity, so it can never
+   pop. Dim deepens toward the mass and the hairline brightens toward the
+   crest, tracing the hill's silhouette; all three are stepped per 100px
+   strip, which the eye reads as smooth. */
+function fadeAt(m: number): number {
+  const base = m >= 0.5 ? 1 : 0.55 + 0.9 * m;
+  if (m <= 0.06) return 0;
+  if (m >= 0.2) return base;
+  return base * ((m - 0.06) / 0.14);
+}
+
+function dimAt(m: number): number {
+  if (m >= 0.55) return 0;
+  return ((0.55 - m) / 0.55) * 0.42;
+}
+
+function railGlowAt(m: number): number {
+  return 0.08 + 0.18 * (1 - Math.min(Math.max(m, 0), 1));
+}
 
 function CardBody({ ui, text, detail }: { ui: WallUi; text: string; detail?: string }) {
   switch (ui) {
@@ -440,36 +587,39 @@ function Card({ pair, face }: { pair: Pair; face: 'en' | 'tr' }) {
   );
 }
 
-function Wall({ side }: { side: 'src' | 'out' }) {
-  const columns: Pair[][] = [];
+function Fabric() {
+  const patterns: Pair[][] = [];
   for (let i = 0; i < PAIRS.length; i += ROWS_PER_COLUMN) {
-    columns.push(PAIRS.slice(i, i + ROWS_PER_COLUMN));
+    patterns.push(PAIRS.slice(i, i + ROWS_PER_COLUMN));
   }
 
-  /* The right wall's near edge is its DOM end, so its columns run deep→near:
-     first column kept, the rest reversed ([c0, c2, c1] for three). Tiled and
-     phase-locked with the left conveyor, the nearest column on the right then
-     carries the translations of the nearest column on the left — a pair
-     enters near-left and exits near-right — and every pair keeps the same
-     row index (the same height) on both planes at every frame. */
-  const [firstColumn, ...restColumns] = columns;
-  const ordered = side === 'out' && firstColumn ? [firstColumn, ...restColumns.reverse()] : columns;
-
+  /* Each strip is a 100px window onto its column's 300px grid, and stacks
+     BOTH language faces of that window: the English course grid and its
+     locale-stamped twin, cell for cell. Hero.tsx flips data-face while the
+     column crosses the seam notch under the mark, so the same physical
+     cloth that rode in from the left rides out on the right translated. */
   return (
-    <div className={`hg-wall is-${side}`}>
-      <div className='hg-wall-in'>
-        <div className='hg-track'>
-          {Array.from({ length: SETS_PER_TRACK }, (_, set) =>
-            ordered.map((column, c) => (
-              <div className='hg-col' key={`${set}-${c}`}>
-                {column.map((pair) => (
-                  <Card face={side === 'src' ? 'en' : 'tr'} key={`${set}-${c}-${pair.stamp}-${pair.en.text}`} pair={pair} />
+    <div className='hg-fabric'>
+      {Array.from({ length: PHYS_COLUMNS }, (_, col) => {
+        const pattern = patterns[col % patterns.length];
+        if (!pattern) return null;
+        return Array.from({ length: STRIPS_PER_COLUMN }, (_, strip) => (
+          <div className='hg-strip' data-col={col} data-strip={strip} key={`${col}-${strip}`}>
+            <div className='hg-strip-in' style={{ transform: `translateX(${-strip * STRIP_W}px)` }}>
+              <div className='hg-col is-en'>
+                {pattern.map((pair) => (
+                  <Card face='en' key={`${pair.stamp}-${pair.en.text}`} pair={pair} />
                 ))}
               </div>
-            ))
-          )}
-        </div>
-      </div>
+              <div className='hg-col is-tr'>
+                {pattern.map((pair) => (
+                  <Card face='tr' key={`${pair.stamp}-${pair.en.text}`} pair={pair} />
+                ))}
+              </div>
+            </div>
+          </div>
+        ));
+      })}
     </div>
   );
 }
@@ -488,18 +638,102 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const stage = root.current?.querySelector<HTMLElement>('.hg-stage');
+      if (!stage) return;
 
-      /* Walls assemble from the screen edges along their own rays. */
-      gsap.from('.hg-wall-in', {
-        x: (i: number) => (i === 0 ? -150 : 150),
-        autoAlpha: 0,
-        duration: 1.15,
-        stagger: 0.1,
-        ease: 'power3.out',
-      });
+      type StripSlot = {
+        el: HTMLElement;
+        col: number;
+        strip: number;
+        shown: boolean;
+        face: 'en' | 'tr';
+      };
 
-      /* The waist stack rises once the walls are moving. */
+      const slots: StripSlot[] = gsap.utils.toArray<HTMLElement>('.hg-strip', stage).map((el) => ({
+        el,
+        col: Number(el.dataset.col ?? '0'),
+        strip: Number(el.dataset.strip ?? '0'),
+        shown: true,
+        face: 'en',
+      }));
+
+      let rail = buildRail(stage.clientWidth, stage.clientHeight);
+
+      /* d = conveyor arc offset; e = entrance progress (the cloth slides in
+         along its own arc from the lower left while fading up). */
+      const flow = { d: 0, e: 1 };
+
+      /* Hangs every strip as a flat chord on the draped rail: sample the
+         chord's endpoints, aim the width axis along the chord, drop the rows
+         along the shared fall-line, and grade opacity, dim and silhouette
+         hairline by distance from the seam. ONE arc offset drives the whole
+         cloth left to right, and a column's face flips to its translations
+         while its center crosses the seam — inside the zero-opacity notch,
+         so the swap is never seen. */
+      const place = () => {
+        const halfW = rail.view / 2;
+        const halfH = rail.height / 2;
+        const seam = rail.span / 2;
+        const pull = (1 - flow.e) * 260;
+        for (const slot of slots) {
+          const colArc = wrapArc(slot.col * COLUMN_PITCH + flow.d - pull);
+          const a0 = colArc + slot.strip * STRIP_W;
+          const m = Math.min(Math.abs((a0 + STRIP_W / 2) / rail.span - 0.5) * 2, 1);
+          const alpha = flow.e * fadeAt(m);
+          if (a0 + STRIP_W < -30 || a0 > rail.span + 30 || alpha < 0.012) {
+            if (slot.shown) {
+              slot.el.style.visibility = 'hidden';
+              slot.shown = false;
+            }
+            continue;
+          }
+          const face: 'en' | 'tr' = colArc + COLUMN_W / 2 >= seam ? 'tr' : 'en';
+          if (slot.face !== face) {
+            slot.face = face;
+            slot.el.dataset.face = face;
+          }
+          const p0 = railPoint(rail, a0);
+          const p1 = railPoint(rail, a0 + STRIP_W);
+          const wx = (p1.x - p0.x) / STRIP_W;
+          const wy = (p1.y - p0.y) / STRIP_W;
+          const wz = (p1.z - p0.z) / STRIP_W;
+          /* Unit normal (width × fall-line) completes the basis; the content
+             is flat, so only its direction matters. */
+          let nx = wy * DRAPE_Z - wz * DRAPE_Y;
+          let ny = -wx * DRAPE_Z;
+          let nz = wx * DRAPE_Y;
+          const nl = Math.hypot(nx, ny, nz) || 1;
+          nx /= nl;
+          ny /= nl;
+          nz /= nl;
+          const style = slot.el.style;
+          slot.shown = true;
+          style.visibility = 'visible';
+          style.opacity = alpha.toFixed(3);
+          style.setProperty('--hgd', dimAt(m).toFixed(3));
+          style.setProperty('--hgr', railGlowAt(m).toFixed(3));
+          style.transform = `matrix3d(${wx.toFixed(5)},${wy.toFixed(5)},${wz.toFixed(5)},0,0,${DRAPE_Y.toFixed(5)},${DRAPE_Z.toFixed(5)},0,${nx.toFixed(5)},${ny.toFixed(5)},${nz.toFixed(5)},0,${(p0.x + halfW).toFixed(2)},${(p0.y + halfH).toFixed(2)},${p0.z.toFixed(2)},1)`;
+        }
+      };
+
+      const onResize = () => {
+        rail = buildRail(stage.clientWidth, stage.clientHeight);
+        place();
+      };
+      window.addEventListener('resize', onResize);
+
+      /* Reduced motion keeps the composed still: the mirror phase (d = 0),
+         placed once, no ticking. */
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        place();
+        return () => window.removeEventListener('resize', onResize);
+      }
+
+      flow.e = 0;
+      place();
+      gsap.to(flow, { e: 1, duration: 1.3, ease: 'power3.out', onUpdate: place });
+
+      /* The waist stack rises once the sheet is moving. */
       gsap.from('[data-hg-in]', {
         y: 16,
         autoAlpha: 0,
@@ -509,19 +743,13 @@ export default function Hero() {
         delay: 0.2,
       });
 
-      /* The pipeline: both tracks drift in their plane's +x — which the left
-         wall's rotation reads as INTO the vanishing point and the right
-         wall's as OUT of it. The tweens are identical (same span, same
-         duration, no ease), so the two conveyors stay phase-locked and the
-         mirrored row structure never drifts. Three identical sets mean a
-         one-set translate loops seamlessly and any grabbed frame is
-         composed. */
-      const drift = gsap.utils.toArray<HTMLElement>('.hg-track').map((track) =>
-        gsap.fromTo(
-          track,
-          { xPercent: -100 / SETS_PER_TRACK },
-          { xPercent: 0, duration: 110, ease: 'none', repeat: -1 }
-        )
+      /* The pipeline: one shared arc offset carries the whole cloth through
+         the waist — in from the left as English, out on the right
+         translated. One pattern period per loop makes the reset invisible. */
+      const drift = gsap.fromTo(
+        flow,
+        { d: 0 },
+        { d: LOOP_ARC, duration: 105, ease: 'none', repeat: -1, onUpdate: place }
       );
 
       /* Nothing ticks while the hero is off screen. */
@@ -530,12 +758,12 @@ export default function Hero() {
         start: 'top bottom',
         end: 'bottom top',
         onToggle: (self) => {
-          for (const tween of drift) {
-            if (self.isActive) tween.play();
-            else tween.pause();
-          }
+          if (self.isActive) drift.play();
+          else drift.pause();
         },
       });
+
+      return () => window.removeEventListener('resize', onResize);
     },
     { scope: root }
   );
@@ -543,20 +771,20 @@ export default function Hero() {
   return (
     <section className='hg-hero' id='top' ref={root}>
       <p className='sr-only'>
-        English source strings on the left — search fields, toasts, buttons, review rows — stream toward the
-        center and come out the right side translated and locale-stamped: French, German, Japanese, Korean,
-        Spanish, Arabic, and a hundred more.
+        English source strings on the left — search fields, toasts, buttons, review rows — ride a draped
+        sheet of interface up to the mark at the center and come down the right side translated and
+        locale-stamped: French, German, Japanese, Korean, Spanish, Arabic, and a hundred more.
       </p>
 
       <div className='hg-glow' aria-hidden='true' />
 
       <div className='hg-stage' aria-hidden='true'>
-        <Wall side='src' />
-        <Wall side='out' />
+        <Fabric />
       </div>
 
-      {/* Mobile: the corridor folds into a vertical pipeline — source cards
-          above the waist, their translations below it. */}
+      {/* Mobile: the drape folds into a vertical pipeline — source cards
+          above the waist, their translations below it, each pair bending
+          toward the mass between them. */}
       <div className='hg-m is-src' aria-hidden='true'>
         <div className='hg-m-strip'>
           <Card face='en' pair={SEARCH_PAIR} />

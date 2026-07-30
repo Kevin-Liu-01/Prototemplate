@@ -1,0 +1,81 @@
+/* ============================================================
+   REVEAL SEAM — the house slide-to-reveal handle (RevealSeam.tsx)
+
+   The layers it divides are BOTH full-width and pinned; the seam
+   only moves the clip boundary (--seam-cut on the box), so the
+   source layer is REVEALED in place — its text never travels a
+   pixel with the handle. Travel is the full 0–100%: at either
+   extreme one layer owns the whole box cleanly.
+
+   The handle is the logo motif: the brand's doubled line — two
+   REAL 1px borders (crisp at any zoom, never a scaled background)
+   running the full height at the house gap — bridged at mid-height
+   by one quiet grabber pill. No chrome, nothing outside the box.
+
+   Per-surface inks arrive by CSS var from the host stylesheet:
+     --seam-ink-l   the left thread (over the rendered layer)
+     --seam-ink-r   the right thread (over the source layer)
+   ============================================================ */
+
+.toolchain-root .tc-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--seam-cut, 70%);
+  z-index: 3;
+  width: 18px;
+  transform: translateX(-50%);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+/* the doubled thread: two parallel 1px lines, full height, 5px apart —
+   the GT gauge grammar (1px + gap), each thread in its surface's ink */
+.toolchain-root .tc-seam::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(var(--seam-gap, 5px) + 2px);
+  transform: translateX(-50%);
+  border-left: 1px solid var(--seam-ink-l, rgba(255, 255, 255, 0.45));
+  border-right: 1px solid var(--seam-ink-r, rgba(255, 255, 255, 0.6));
+}
+
+/* the grabber: one quiet pill spanning the two lines at mid-height —
+   the only pointer affordance beyond the cursor itself */
+.toolchain-root .tc-seam::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--seam-gap, 5px) + 6px);
+  height: 26px;
+  transform: translate(-50%, -50%);
+  border-radius: 6px;
+  background: var(--seam-grab, #867e8e);
+  opacity: 0.8;
+  transition: opacity 0.16s ease, height 0.16s ease, box-shadow 0.16s ease;
+}
+
+.toolchain-root .tc-seam:hover::after,
+.toolchain-root .tc-seam:focus-visible::after {
+  opacity: 1;
+  height: 34px;
+}
+
+/* the focus ring rides the grabber, inside the box */
+.toolchain-root .tc-seam:focus-visible {
+  outline: none;
+}
+
+.toolchain-root .tc-seam:focus-visible::after {
+  box-shadow: 0 0 0 2px var(--seam-ring, rgba(157, 185, 255, 0.85));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .tc-seam::after {
+    transition: none;
+  }
+}

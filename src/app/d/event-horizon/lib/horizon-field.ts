@@ -3,27 +3,31 @@
  * bending around a circular horizon, rendered in ONE canvas that covers the
  * dark disc plus a generous annulus of the surrounding paper.
  *
- * The optics are a stylised point-mass lens with the Einstein radius pinned to
- * the rim. Every pixel at image radius r (in rim units) samples the source
- * plane at rs = r − w(r)/r: at the rim rs → 0, so light from the whole
- * accretion field piles onto a thin brilliant photon ring; just outside, the
- * tangential magnification r/|rs| stretches the streak field into arcs that
- * visibly WRAP the horizon; just inside, rs goes negative and the flipped
- * secondary image forms a fainter ghost band before the core swallows
- * everything. w(r) is 1 inside and decays smoothly to 0 by uDeflEnd, so the
- * warp has compact support and the canvas composites seamlessly with the flat
- * paper around it.
+ * TWO geometries share this canvas, one for light and one for paper. The LIGHT
+ * (accretion arcs, photon ring) keeps the stylised point-mass lens with the
+ * Einstein radius pinned to the rim: every pixel at image radius r (in rim
+ * units) samples the source plane at rs = r − w(r)/r, so light piles onto a
+ * thin brilliant photon ring at the rim, arcs visibly WRAP the horizon just
+ * outside it, and the flipped secondary image ghosts just inside. w(r) decays
+ * smoothly to 0 by uDeflEnd so the light warp has compact support.
+ *
+ * The PAGE STRUCTURE (ruled hairlines, guide rings) instead follows the
+ * RUBBER-SHEET drape the hero's card field rides (Kevin's sketch): a gravity-
+ * well height-field centered on the hole pulls the paper toward the mass and
+ * slightly UNDER it, so rules dip toward the rim from above, crest just under
+ * it from below, and finally dive beneath the disc — fabric deformed by a
+ * mass, not arcs drawn around a disc. The drape's forward map lives in
+ * Hero.tsx (cards, DOM-drawn rules); this shader renders the SAME map by
+ * fixed-point inversion, so the two hand off invisibly across the mask band.
  *
  * Layers, back to front:
- *   1. the PAGE, bent — the hero's ruled hairlines are re-rendered here at the
- *      lensed coordinate, so the paper's own structure bows and finally wraps
- *      into arcs against the rim (a CSS mask on the hero's rule layer opens a
- *      feathered hole under this canvas; shader rules fade back in over the
- *      same band, where the deflection is already ~0, so the handoff is
- *      invisible). Where lensing compresses many rules together the coverage
- *      collapses to a low ink wash instead of a false solid;
- *   2. the hero's three concentric guide rings, sampled through the same lens
- *      so they shift outward and crowd toward the ring;
+ *   1. the PAGE, draped — the hero's ruled hairlines re-rendered at the
+ *      sheet-inverted coordinate (a CSS mask on the hero's rule layer opens a
+ *      feathered hole under this canvas; shader rules fade back out over the
+ *      same band, where both maps agree, so the handoff is invisible). Where
+ *      the drape packs many rules together the coverage collapses to a low
+ *      ink wash instead of a false solid;
+ *   2. the hero's three concentric guide rings, draped the same way;
  *   3. the dark core — genuinely dark, holding the white center stack;
  *   4. the accretion streak field: thin-film cosine palette (the house trace
  *      palette), tone-mapped with the prismatic tanh curve, doppler-weighted so
@@ -65,12 +69,20 @@ export type HorizonParams = {
   ringAlpha: [number, number, number];
   /** Deflection support ends here (rim units); beyond it the paper is flat. */
   deflEnd: number;
+  /** Drape depth of the rubber sheet, as a fraction of the rim radius. */
+  sheetAmp: number;
+  /** Drape support ends here (rim units); must match Hero's card field. */
+  sheetEnd: number;
+  /** Downward bias so courses crest just UNDER the mass, not through it. */
+  sheetBias: number;
   /** Frame-drag twist of the streak field near the ring. */
   swirl: number;
   /** HDR gain on the accretion field before tone mapping. */
   lightGain: number;
   /** Tone-map knee — higher pushes the field back under content. */
   exposure: number;
+  /** Spectral saturation of the arcs: 0 pure white, 1 full trace palette. */
+  chroma: number;
   /** Doppler beaming weight: 0 symmetric, ~0.5 one flank brighter/warmer. */
   doppler: number;
   /** Direction of the approaching (bright) flank, radians, y-down screen. */
@@ -108,10 +120,14 @@ export const HORIZON_DEFAULTS: HorizonParams = {
   ringRadii: [1.24, 1.55, 1.94],
   ringAlpha: [0.09, 0.063, 0.037],
   deflEnd: 1.55,
+  sheetAmp: 1.0,
+  sheetEnd: 3.4,
+  sheetBias: 0.14,
   swirl: 1.15,
-  lightGain: 34,
-  exposure: 30,
-  doppler: 0.5,
+  lightGain: 1.0,
+  exposure: 2.1,
+  chroma: 0.55,
+  doppler: 0.62,
   /* Lower-left flank approaches — the Gargantua read, y-down screen angle. */
   dopplerAngle: 2.55,
   breathe: 0.006,
@@ -147,9 +163,13 @@ uniform float uRuleFadeOut;
 uniform vec3 uRingRadii;
 uniform vec3 uRingAlpha;
 uniform float uDeflEnd;
+uniform float uSheetAmp;
+uniform float uSheetEnd;
+uniform float uSheetBias;
 uniform float uSwirl;
 uniform float uLightGain;
 uniform float uExposure;
+uniform float uChroma;
 uniform float uDoppler;
 uniform vec2 uDopplerDir;
 uniform float uBreathe;
@@ -184,6 +204,28 @@ float stroke(float distPx, float gaugePx) {
   return 1.0 - smoothstep(gaugePx * 0.5 - 0.35, gaugePx * 0.5 + 0.9, distPx);
 }
 
+/* ---- the rubber-sheet drape (the same law as Hero.tsx's card field) ----
+   Vertical drape of a SOURCE point (rim units, center-relative, y-down):
+   attraction toward the mass plus the slight under-bias, so paper above dips
+   toward the hole and paper below crests just beneath it. The pull saturates
+   with the course's offset (tanh — Hero's SHEET_SAT), so rows bend as whole
+   draped curves. Returns the displacement AND its ∂/∂y, so the inverse map
+   can Newton-step — the well is deep enough that plain fixed-point iteration
+   converges too slowly. */
+const float SHEET_SAT = 1.1;
+vec2 sheetDispY(vec2 p) {
+  float q = max(length(p), 1e-4);
+  float span = max(uSheetEnd - 1.0, 1e-3);
+  float u = clamp((q - 1.0) / span, 0.0, 1.0);
+  float f = 1.0 - u * u * (3.0 - 2.0 * u);
+  float df = -6.0 * u * (1.0 - u) / span;
+  float pull = tanh(SHEET_SAT * p.y);
+  float disp = uSheetAmp * f * (uSheetBias - pull);
+  float ddisp = uSheetAmp *
+    (df * (p.y / q) * (uSheetBias - pull) - f * SHEET_SAT * (1.0 - pull * pull));
+  return vec2(disp, ddisp);
+}
+
 void main() {
   /* y-down pixel coords so DOM measurements map directly. */
   vec2 px = vec2(gl_FragCoord.x, uResolution.y - gl_FragCoord.y);
@@ -196,22 +238,32 @@ void main() {
   vec2 nd = d / max(rc, 1e-4);
   float theta = atan(d.y, d.x);
 
-  /* Point-mass lens with the Einstein radius pinned to the rim. Outside, the
-     deflection decays with compact support so the paper is exactly flat again
-     before the canvas edge; inside, the full map produces the flipped
+  /* Point-mass lens with the Einstein radius pinned to the rim — the LIGHT's
+     geometry only (accretion arcs, photon ring). Outside, the deflection
+     decays with compact support; inside, the full map produces the flipped
      secondary image. */
   float wOut = pow(1.0 - smoothstep(1.0, uDeflEnd, r), 1.6);
   float w = mix(wOut, 1.0, step(r, 1.0)) * on;
   float rs = r - w / max(r, 1e-3);
 
-  /* ---- layer 1: the page's ruled hairlines, seen through the lens ---- */
-  vec2 ps = nd * rs;
+  /* The PAPER's geometry: invert the sheet's forward map (image = source +
+     drape) by Newton, so the shader draws exactly the courses Hero.tsx
+     displaces and the handoff to the DOM-drawn sheet is seamless. */
+  vec2 pr = d / R;
+  float ysrc = pr.y;
+  for (int i = 0; i < 4; i++) {
+    vec2 dd = sheetDispY(vec2(pr.x, ysrc));
+    ysrc -= (ysrc + dd.x - pr.y) / max(1.0 + dd.y, 0.2);
+  }
+  vec2 ps = vec2(pr.x, ysrc);
+
+  /* ---- layer 1: the page's ruled hairlines, riding the draped sheet ---- */
   float worldY = uWorldOrigin.y + uCenter.y + ps.y * R;
   float rho = (worldY - uGauge * 0.5) / uPitch;
   float gpx = max(length(vec2(dFdx(rho), dFdy(rho))), 1e-6);
   float rulePx = abs(rho - floor(rho + 0.5)) / gpx;
   float ruleCover = stroke(rulePx, uGauge);
-  /* Where lensing packs many rules per pixel, resolve to their mean ink
+  /* Where the drape packs many rules per pixel, resolve to their mean ink
      coverage instead of a false solid: crowd → gauge/spacing wash. */
   float density = clamp(uGauge * gpx, 0.0, 1.0);
   float crowd = smoothstep(0.3, 0.75, density);
@@ -219,17 +271,18 @@ void main() {
   ruleA *= 1.0 - smoothstep(uRuleFadeIn, uRuleFadeOut, r);
   ruleA *= on;
 
-  /* ---- layer 2: the hero's concentric guide rings, lensed the same way ---- */
-  float grs = max(length(vec2(dFdx(rs), dFdy(rs))), 1e-6);
+  /* ---- layer 2: the hero's concentric guide rings, draped the same way ---- */
+  float srcQ = length(ps);
+  float grs = max(length(vec2(dFdx(srcQ), dFdy(srcQ))), 1e-6);
   float ringsA = 0.0;
   for (int i = 0; i < 3; i++) {
     float srcR = i == 0 ? uRingRadii.x : (i == 1 ? uRingRadii.y : uRingRadii.z);
     float aI = i == 0 ? uRingAlpha.x : (i == 1 ? uRingAlpha.y : uRingAlpha.z);
-    float distPx = abs(rs - srcR) / grs;
+    float distPx = abs(srcQ - srcR) / grs;
     ringsA = max(ringsA, stroke(distPx, uGauge) * aI);
   }
-  /* Same handoff as the rules: the DOM draws the flat outer arcs of these
-     rings under a matching CSS mask, the shader owns the bent inner parts. */
+  /* Same handoff as the rules: the DOM draws the draped outer parts of these
+     rings under a matching CSS mask, the shader owns the parts near the rim. */
   ringsA *= on * step(1.0, r) * (1.0 - smoothstep(uRuleFadeIn, uRuleFadeOut, r));
 
   /* ---- layer 4 ingredients: the accretion streak field, source plane ---- */
@@ -241,27 +294,43 @@ void main() {
   float band2 = sin(thS * 7.0 - sw * 1.6 - s * 9.0 + t * 0.74);
   float band3 = sin(thS * 13.0 + s * 16.0 - t * 1.12 + 4.1);
   float streak = 0.5 + 0.5 * (0.56 * band1 + 0.30 * band2 + 0.14 * band3);
-  streak = streak * streak * streak;
-  float prof = exp(-s * s * 1.35);
-  float mu = clamp(1.0 / (s + 0.05), 0.0, 13.0);
+  streak = streak * streak;
+  streak = streak * streak;
+  float prof = exp(-s * s * 2.0);
+  float mu = clamp(1.0 / (s + 0.06), 0.0, 10.0);
   float flank = dot(nd, uDopplerDir);
   float dop = 1.0 + uDoppler * flank;
-  /* Inside: hold the core genuinely dark under the center stack; outside:
-     the arcs hug the rim and die within a fraction of a radius. */
-  float env = mix(exp(-(r - 1.0) * 5.2), smoothstep(0.34, 0.82, r), step(r, 1.0));
-  float I = prof * (0.3 + 0.95 * streak) * mu * dop * env * on;
-  vec3 hdr = pal(s * 2.6 + thS * 0.7 + streak * 2.1 + 0.35 * flank + 0.4) * I * uLightGain;
+  float ringPx = rc - R;
+  /* Inside: only a thin flipped secondary-image band survives against the
+     rim — held off the ring itself by a dark notch so the hairline stays
+     crisp — and the core under the center stack stays genuinely dark;
+     outside: the arcs hug the rim and die within a fraction of a radius. */
+  float notch = smoothstep(-2.0 * uGauge, -9.0 * uGauge, ringPx);
+  float env = mix(
+    exp(-(r - 1.0) * 5.4),
+    smoothstep(0.6, 0.97, r) * 0.38 * notch,
+    step(r, 1.0)
+  );
+  float I = prof * (0.16 + 1.55 * streak) * mu * dop * env * on;
+  /* Pearl, not neon: the spectral trace palette is folded most of the way
+     back toward white, so the arcs read as dispersed light, not rainbow. */
+  vec3 tint = mix(
+    vec3(1.0),
+    clamp(pal(s * 2.6 + thS * 0.7 + streak * 2.1 + 0.35 * flank + 0.4), 0.0, 2.0),
+    uChroma
+  );
+  vec3 hdr = tint * I * uLightGain;
 
   /* ---- layer 5 ingredients: the photon ring ---- */
-  float ringPx = rc - R;
-  float hair = exp(-0.5 * pow(ringPx / (1.35 * uGauge), 2.0));
+  float hair = exp(-0.5 * pow(ringPx / (1.6 * uGauge), 2.0));
   float glow = exp(-abs(ringPx) / (7.5 * uGauge));
-  float bleed = exp(-abs(ringPx) / (27.0 * uGauge));
-  float rdop = 1.0 + 0.55 * uDoppler * flank;
-  hdr += (hair * 3.4 * vec3(1.0, 0.985, 0.95) +
-          glow * 1.05 * (0.62 + 0.38 * pal(0.5 * flank + 1.9)) +
-          bleed * 0.22 * vec3(1.0, 0.9, 0.76)) *
-         rdop * uLightGain * on;
+  float bleed = exp(-abs(ringPx) / (26.0 * uGauge));
+  float rdop = 1.0 + 0.6 * uDoppler * flank;
+  vec3 warm = mix(vec3(1.0, 0.9, 0.74), clamp(pal(0.5 * flank + 1.9), 0.0, 2.0), 0.35);
+  hdr += (hair * 10.0 * vec3(1.0, 0.99, 0.96) +
+          glow * 1.5 * warm +
+          bleed * 0.3 * vec3(1.0, 0.88, 0.7)) *
+         rdop * on;
 
   vec3 light = toneMap(hdr);
   float lightA = max(light.r, max(light.g, light.b));
@@ -393,9 +462,13 @@ function getEngine(): Engine | null {
   const uRingRadii = loc('uRingRadii');
   const uRingAlpha = loc('uRingAlpha');
   const uDeflEnd = loc('uDeflEnd');
+  const uSheetAmp = loc('uSheetAmp');
+  const uSheetEnd = loc('uSheetEnd');
+  const uSheetBias = loc('uSheetBias');
   const uSwirl = loc('uSwirl');
   const uLightGain = loc('uLightGain');
   const uExposure = loc('uExposure');
+  const uChroma = loc('uChroma');
   const uDoppler = loc('uDoppler');
   const uDopplerDir = loc('uDopplerDir');
   const uBreathe = loc('uBreathe');
@@ -430,9 +503,13 @@ function getEngine(): Engine | null {
       ctx.uniform3f(uRingRadii, params.ringRadii[0], params.ringRadii[1], params.ringRadii[2]);
       ctx.uniform3f(uRingAlpha, params.ringAlpha[0], params.ringAlpha[1], params.ringAlpha[2]);
       ctx.uniform1f(uDeflEnd, params.deflEnd);
+      ctx.uniform1f(uSheetAmp, params.sheetAmp);
+      ctx.uniform1f(uSheetEnd, params.sheetEnd);
+      ctx.uniform1f(uSheetBias, params.sheetBias);
       ctx.uniform1f(uSwirl, params.swirl);
       ctx.uniform1f(uLightGain, params.lightGain);
       ctx.uniform1f(uExposure, params.exposure);
+      ctx.uniform1f(uChroma, params.chroma);
       ctx.uniform1f(uDoppler, params.doppler);
       ctx.uniform2f(uDopplerDir, Math.cos(params.dopplerAngle), Math.sin(params.dopplerAngle));
       ctx.uniform1f(uBreathe, params.breathe);

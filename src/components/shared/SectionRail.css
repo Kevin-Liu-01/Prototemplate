@@ -1,0 +1,96 @@
+/*
+ * Section rail — shared chrome for the direction pages, ported verbatim from
+ * the presenter HUD rail (.pr-hud-rail in app/present/presenter.css): fixed
+ * left-edge column of thin line markers, active line grows 16px→28px,
+ * uppercase micro-labels slide in on hover/active. mix-blend-mode: difference
+ * keeps it legible on any surface, light or dark, in both themes.
+ *
+ * z-index sits below the direction dock (9999) and its grid overlay (9998)
+ * so page-level modals and the dock always win.
+ */
+
+.srail {
+  position: fixed;
+  left: 24px;
+  top: 50%;
+  z-index: 9990;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transform: translateY(-50%);
+  mix-blend-mode: difference;
+}
+
+.srail button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+}
+
+.srail button:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 4px;
+}
+
+/* Section markers are short lines; the active section's line grows. */
+.srail button i {
+  width: 16px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  transition:
+    background 0.25s,
+    width 0.25s;
+}
+
+.srail button.is-active i {
+  width: 28px;
+  background: #fff;
+}
+
+/* Presenter labels are 9.5px; the repo's 11px type floor bumps them here. */
+.srail button em {
+  font-style: normal;
+  font-family: var(--font-mono, ui-monospace, 'SF Mono', 'Menlo', monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.srail:hover button em,
+.srail button:focus-visible em,
+.srail button.is-active em {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .srail {
+    display: none;
+  }
+}
+
+@media print {
+  .srail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .srail button i,
+  .srail button em {
+    transition: none;
+  }
+}

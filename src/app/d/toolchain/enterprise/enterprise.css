@@ -1,0 +1,1176 @@
+/* ============================================================
+   TOOLCHAIN / ENTERPRISE
+   Page-specific classes only (tce-*). Everything structural —
+   the rail, rows, mats, cards, hatch spacers, the dark band,
+   the trust band — comes verbatim from ../styles.css. All type
+   sits at or above the 11px floor; every color is a token, so
+   the [data-theme='dark'] remap re-skins the page for free.
+   ============================================================ */
+
+/* ---------- hero ---------- */
+
+.toolchain-root .tce-hero {
+  justify-content: center;
+  padding-top: clamp(48px, 6vw, 84px);
+  padding-bottom: clamp(44px, 5.4vw, 76px);
+}
+
+.toolchain-root .tce-hero h1 {
+  font-size: clamp(1.9rem, 3.6vw, 2.85rem);
+  line-height: 1.05;
+  letter-spacing: -0.034em;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+
+/* The break is authored; the rag is a decision. */
+.toolchain-root .tce-hero h1 span {
+  display: block;
+}
+
+/* The emphasis is the brand's own device: the two threads — source and
+   translation at constant gauge — running under the words, in ink. */
+.toolchain-root .tce-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+/* Outranks the shell's `.tc-cell > p` element rule. */
+.toolchain-root .tce-hero p.tce-hero-sub {
+  margin-top: 18px;
+  max-width: 52ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tce-hero-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* The hero trust caption keeps the shell's own padding (the hero section
+   here is a plain tc-sec, so none of the hero-stack overrides fire). */
+.toolchain-root .tce-trust-lead {
+  padding-top: 22px;
+}
+
+/* ---------- the ledger (compliance, controls) ----------
+   The LEDGER material: every diagram is a table, the invariant column is
+   the diagram. Keys mono muted, values ink at 500, one hairline per row. */
+
+.toolchain-root .tce-ledger {
+  flex: 1;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .tce-ledger-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-ledger-head a {
+  color: var(--tc-ink-3);
+  border-bottom: 1px solid var(--tc-hair);
+  padding-bottom: 1px;
+}
+
+.toolchain-root .tce-ledger-head a:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-lrow {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-lrow:last-child {
+  border-bottom: 0;
+}
+
+.toolchain-root .tce-lrow > span {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.toolchain-root .tce-lrow > b {
+  font-weight: 500;
+  font-size: 13.5px;
+  letter-spacing: -0.008em;
+  color: var(--tc-ink);
+  text-align: right;
+}
+
+/* ---------- permission matrix ---------- */
+
+.toolchain-root .tce-perm {
+  flex: 1;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.toolchain-root .tce-perm-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) repeat(6, 34px);
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-perm-row.is-head {
+  border-top: 0;
+  padding: 0 0 8px;
+}
+
+.toolchain-root .tce-perm-row.is-head .tce-perm-who {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-perm-loc {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  text-align: center;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-perm-who {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.toolchain-root .tce-perm-who b {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-perm-who i {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.toolchain-root .tce-perm-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Write access is a filled square; no access is a hollow one. The single
+   scoped grant — @jun's ja — is the page's one accent spend. */
+.toolchain-root .tce-perm-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 1.5px;
+  border: 1px solid var(--tc-ink-4);
+}
+
+.toolchain-root .tce-perm-dot.is-on {
+  border-color: var(--tc-ink);
+  background: var(--tc-ink);
+}
+
+.toolchain-root .tce-perm-dot.is-only {
+  border-color: var(--tc-accent);
+  background: var(--tc-accent);
+}
+
+.toolchain-root .tce-perm-keys {
+  margin-top: 14px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tce-perm-key {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-perm-key:last-child {
+  border-bottom: 0;
+}
+
+.toolchain-root .tce-perm-key code {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-perm-key span {
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ---------- context group panel ---------- */
+
+.toolchain-root .tce-group {
+  flex: 1;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .tce-group-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tce-group-bar > b {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-group-bar > span {
+  font-size: 12px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-group-pri {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.toolchain-root .tce-group-sec {
+  padding: 12px 0 4px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-grow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-grow > b {
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.toolchain-root .tce-grow > span {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  text-align: right;
+}
+
+.toolchain-root .tce-grow > span i {
+  font-style: normal;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-grow.is-dir {
+  justify-content: flex-start;
+}
+
+.toolchain-root .tce-grow.is-dir > span {
+  text-align: left;
+  color: var(--tc-ink);
+}
+
+/* ---------- before / after ---------- */
+
+.toolchain-root .tce-ba {
+  flex: 1;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toolchain-root .tce-ba-src {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tce-ba-row {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-ba-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-bottom: 6px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-ba-row s {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+  text-decoration-thickness: 1px;
+}
+
+.toolchain-root .tce-ba-row b {
+  font-weight: 500;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-ba-note {
+  margin-top: 12px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- the review gate ----------
+   The two threads at constant gauge: a 6px box whose top and bottom borders
+   are the pair (1.5 + 3 + 1.5). Solid outside the gate, dashed while held
+   inside it. The gate itself is the doubled rectangle. */
+
+.toolchain-root .tce-gate {
+  position: relative;
+  margin-top: 22px;
+  padding-top: 96px;
+}
+
+.toolchain-root .tce-gate-thread {
+  position: absolute;
+  top: 44px;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  border-top: var(--thread-gauge) solid var(--thread-ink);
+  border-bottom: var(--thread-gauge) solid var(--thread-ink);
+  pointer-events: none;
+}
+
+.toolchain-root .tce-gate-thread.is-l {
+  left: 0;
+  width: 36%;
+}
+
+.toolchain-root .tce-gate-thread.is-m {
+  left: 36%;
+  width: 28%;
+  border-top-style: dashed;
+  border-bottom-style: dashed;
+}
+
+.toolchain-root .tce-gate-thread.is-r {
+  left: 64%;
+  right: 0;
+}
+
+/* the gate: a doubled rectangle the threads pass through */
+.toolchain-root .tce-gate-box {
+  position: absolute;
+  left: 36%;
+  width: 28%;
+  top: 12px;
+  height: 70px;
+  border: var(--thread-gauge) solid var(--tc-ink);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.toolchain-root .tce-gate-box::before {
+  content: '';
+  position: absolute;
+  inset: var(--thread-gap);
+  border: var(--thread-gauge) solid var(--tc-ink);
+  border-radius: 1px;
+}
+
+.toolchain-root .tce-gate-box > span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7px;
+  text-align: center;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-gate-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.toolchain-root .tce-gate-st {
+  position: relative;
+  text-align: center;
+  padding: 0 8px;
+}
+
+/* the station tick: a doubled vertical pair crossing the thread */
+.toolchain-root .tce-gate-st::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 3px);
+  top: -56px;
+  height: 18px;
+  width: 6px;
+  border-inline: var(--thread-gauge) solid var(--tc-ink);
+}
+
+/* hairline extension from tick to label — scaffolding, so hairline weight */
+.toolchain-root .tce-gate-st::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -36px;
+  height: 26px;
+  width: 1px;
+  background: var(--tc-hair);
+}
+
+.toolchain-root .tce-gate-st b {
+  display: block;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-gate-st span {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-gate-st code {
+  font-family: var(--tc-mono);
+  color: var(--tc-ink-2);
+}
+
+/* per-locale scoping under the gate: the asymmetry is the feature */
+.toolchain-root .tce-gate-locales {
+  margin-top: 22px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tce-glo {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-glo:last-child {
+  border-bottom: 0;
+}
+
+.toolchain-root .tce-glo i {
+  font-style: normal;
+  font-size: 13.5px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-glo.is-held i {
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-glo > span:last-child {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-glo:not(.is-held) > span:last-child {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* narrow: the journey re-hangs off a vertical doubled rail */
+@media (max-width: 680px) {
+  .toolchain-root .tce-gate {
+    padding-top: 0;
+  }
+
+  .toolchain-root .tce-gate-thread,
+  .toolchain-root .tce-gate-box {
+    display: none;
+  }
+
+  .toolchain-root .tce-gate-cols {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-left: 24px;
+  }
+
+  .toolchain-root .tce-gate-cols::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+    border-inline: var(--thread-gauge) solid var(--thread-ink);
+  }
+
+  .toolchain-root .tce-gate-st {
+    text-align: left;
+    padding: 0;
+  }
+
+  .toolchain-root .tce-gate-st::before,
+  .toolchain-root .tce-gate-st::after {
+    display: none;
+  }
+}
+
+/* ---------- editor entry (annotations) ---------- */
+
+.toolchain-root .tce-entry {
+  flex: 1;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .tce-entry-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-entry-bar b {
+  font-weight: 500;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-erow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-erow-loc {
+  flex: none;
+  width: 58px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-erow i {
+  font-style: normal;
+  font-size: 13.5px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-erow.is-src i {
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tce-labs {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* State is type weight inside a quiet bordered chip — never a colored pill. */
+.toolchain-root .tce-lab {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  padding: 1px 6px 2px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tce-lab.is-ok {
+  border-color: var(--tc-ink-3);
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.toolchain-root .tce-enote {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tce-enote > span {
+  flex: none;
+  width: 82px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-enote b {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-efoot {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* the code cell's one-line runtime twin, on the panel's own ledger row */
+.toolchain-root .tce-code-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-code-foot code {
+  font-family: var(--tc-mono);
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tc-cell.is-panel .tc-code {
+  margin-top: 16px;
+}
+
+/* ---------- the guarded PR ----------
+   The one artifact the references never leave on paper: the diff sits on
+   the page's dark panel, states carried by the ± gutter and type weight. */
+
+.toolchain-root .tce-pr {
+  margin-top: 16px;
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.toolchain-root .tce-pr-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tce-pr-bar b {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .tce-pr-bar > span {
+  margin-left: auto;
+}
+
+.toolchain-root .tce-pr-diff {
+  padding: 12px 0;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  overflow-x: auto;
+}
+
+.toolchain-root .tce-pr-diff > div {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  padding-right: 16px;
+  white-space: pre;
+}
+
+.toolchain-root .tce-pr-diff i {
+  font-style: normal;
+  text-align: center;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+.toolchain-root .tce-pr-diff code {
+  font-family: var(--tc-mono);
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tce-pr-diff .is-hunk code {
+  color: var(--tc-panel-faint);
+}
+
+/* Diffs print line for line — the ± gutter and the tone carry the state,
+   never a strike. */
+.toolchain-root .tce-pr-diff .is-del code {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.toolchain-root .tce-pr-diff .is-add code {
+  color: var(--tc-panel-ink);
+  font-weight: 500;
+}
+
+.toolchain-root .tce-pr-meta {
+  border-top: 1px solid var(--tc-panel-rule);
+  padding: 4px 16px 10px;
+}
+
+.toolchain-root .tce-pr-meta > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 7px 0 0;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tce-pr-meta b {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .tce-pr-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* the real Locadex mark, inverted for the dark panel */
+.toolchain-root .tce-pr-agent {
+  filter: invert(1);
+  opacity: 0.8;
+}
+
+/* ---------- Locadex controls form + monorepo tree ---------- */
+
+.toolchain-root .tce-form {
+  flex: 1;
+  margin-top: 16px;
+}
+
+.toolchain-root .tce-frow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-frow > span {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+}
+
+.toolchain-root .tce-frow > b {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--tc-ink-2);
+  text-align: right;
+}
+
+/* the guard rails carry the weight */
+.toolchain-root .tce-frow.is-guard > b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-tree {
+  margin-top: 14px;
+  border-top: 1px solid var(--tc-hair);
+  padding-top: 4px;
+}
+
+.toolchain-root .tce-tree > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.toolchain-root .tce-tree code {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-tree span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-tree .is-target code,
+.toolchain-root .tce-tree .is-target span {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---------- automation templates: one ruled band, three columns ---------- */
+
+.toolchain-root .tce-tri {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.toolchain-root .tce-tri > div {
+  min-width: 0;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.toolchain-root .tce-tri > div + div {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tce-tri h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.toolchain-root .tce-tri p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tce-tri-foot {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-tri-foot b {
+  font-weight: 400;
+  color: var(--tc-ink-2);
+}
+
+@media (max-width: 860px) {
+  .toolchain-root .tce-tri {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .toolchain-root .tce-tri > div {
+    padding-right: 0;
+  }
+
+  .toolchain-root .tce-tri > div + div {
+    padding-left: 0;
+    padding-top: 16px;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+/* ---------- version rail ----------
+   The rollout timeline hangs off a doubled hairline rail — structure, so it
+   runs at hairline weight, the page rail's own device. */
+
+.toolchain-root .tce-vers {
+  position: relative;
+  flex: 1;
+  margin-top: 16px;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .tce-vers::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 2px;
+  width: 5px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+.toolchain-root .tce-vrow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tce-vrow > b {
+  flex: none;
+  width: 44px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tce-vrow.is-live > b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-vnote {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tce-vrow.is-live .tce-vnote {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-vstate {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  white-space: nowrap;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-vrow.is-live .tce-vstate {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tce-vcmd {
+  margin-top: 12px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.toolchain-root .tce-vcmd span {
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tce-vnote-foot {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- edge latency ledger, on the night card ----------
+   The card surface is --tc-panel, which never remaps, so every ink here is
+   from the panel set — identical in both themes. */
+
+.toolchain-root .tce-night-sub {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  max-width: 46ch;
+}
+
+.toolchain-root .tc-cell.is-night .tc-card > p.tce-night-sub {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.toolchain-root .tce-lat {
+  flex: 1;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.toolchain-root .tce-lat-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-panel-faint);
+}
+
+.toolchain-root .tce-lrow-lat {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-panel-rule);
+}
+
+.toolchain-root .tce-lat-code {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tce-lrow-lat.is-home .tce-lat-code {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+/* the measured bar: the drawing stroke, white on the panel */
+.toolchain-root .tce-lat-bar {
+  display: block;
+  height: 4px;
+}
+
+.toolchain-root .tce-lat-bar i {
+  display: block;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.toolchain-root .tce-lrow-lat.is-home .tce-lat-bar i {
+  background: #ffffff;
+}
+
+.toolchain-root .tce-lrow-lat > b {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 400;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tce-lrow-lat.is-home > b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .tce-lat-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding-top: 10px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-panel-faint);
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 680px) {
+  .toolchain-root .tce-perm-row {
+    grid-template-columns: minmax(0, 1fr) repeat(6, 24px);
+  }
+
+  .toolchain-root .tce-perm-who i {
+    display: none;
+  }
+
+  .toolchain-root .tce-labs {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .toolchain-root .tce-glo i {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

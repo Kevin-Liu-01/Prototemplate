@@ -13,8 +13,12 @@
        the rest of the site dimming under a masked scrim
    4 · context accumulator chip that grows across beats
    5 · the GT wordmark is the mark, never the string "GT"
-   6 · component showcases: pointer-draggable divider that
-       reveals each component's <T> source (~70/30 default)
+   6 · component showcases: the house reveal seam (RevealSeam)
+       — the <T> source pinned full-width behind the render,
+       uncovered by a clip boundary (~70/30 default, 0–100 travel)
+   7 · founder round: the pinned take is FULL-BLEED — the stage
+       breaks out of the ruled column to the viewport edges, its
+       two halves on the page's own dark tokens
    ============================================================ */
 
 .toolchain-root .tc-cinema.tc-cinema-v3 {
@@ -37,16 +41,43 @@
   --art-px: 20px;
 }
 
+/* ---------- 7 · the pinned stage is FULL-BLEED (founder) ----------
+   The section breaks out of the 1170px ruled column with the delivery
+   band's own margin trick, so while the take is pinned no light page
+   ground shows at either edge. The two halves split the full width in
+   the page's token family — the demo web on the deepest ink black,
+   the beat panel one step raised — meeting at the base hairline
+   (.tc-cinema-beat's border-left in styles.css). Neither token remaps
+   under [data-theme='dark'], so both themes hold identically. */
+.toolchain-root .tc-cinema.tc-cinema-v3 {
+  margin-inline: calc(50% - 50vw);
+  /* Above the rail's doubled-thread overlay (.tc-rail::before, z-index 2):
+     the threads pass BEHIND the full-bleed stage and resume below it —
+     no light hairline crosses the dark take while it is pinned. */
+  position: relative;
+  z-index: 3;
+}
+
+.toolchain-root .tc-cinema-v3 .tc-cinema-take,
+.toolchain-root .tc-cinema-v3 .tc-cinema-web {
+  background: var(--tc-dark);
+}
+
+.toolchain-root .tc-cinema-v3 .tc-cinema-beat {
+  background: var(--tc-panel);
+}
+
 /* ---------- 1 · the demo website: a clean flat surface ---------- */
 
 /* Capped and optically centered: the tall desktop column no longer
    stretches the five rows sparse — the box hugs its content and sits
    on the dark matting like a mounted print. (Mobile columns are shorter
-   than the cap, so this is a desktop-only tightening.) */
+   than the cap, so this is a desktop-only tightening.) The panel sits
+   one step raised off the ink-black half, in the page's own token. */
 .toolchain-root .tc-cinema-v3 .tc-cinema-demo {
   max-height: 620px;
   margin-block: auto;
-  background: #14171d;
+  background: var(--tc-panel);
   border-radius: 3px;
 }
 
@@ -169,10 +200,14 @@
   white-space: nowrap;
 }
 
-/* ---------- 6 · component showcases: draggable source reveal ---------- */
+/* ---------- 6 · component showcases: the house reveal seam ----------
+   Founder-corrected mechanic: the source layer is PINNED — full-width,
+   aligned under the rendered UI — and the seam only moves the clip
+   boundary, so dragging reveals the code in place; it never travels.
+   Full 0–100 travel: at 0% the source owns the box, at 100% the UI. */
 
 .toolchain-root .tc-cinema-v3 .tc-cinema-show {
-  --cut: 70%;
+  --seam-cut: 70%;
   --open: 0;
   position: relative;
   overflow: hidden;
@@ -195,24 +230,28 @@
   width: min(100%, 420px);
 }
 
-/* the source pane: the component's <T> code, anchored at the cut */
+/* the source pane: the component's <T> code, pinned full-width UNDER
+   the render — only the clip boundary rides the seam */
 .toolchain-root .tc-cinema-v3 .tc-cinema-show-src {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--tc-dark);
+  clip-path: inset(0 0 0 var(--seam-cut, 70%));
+  overflow: hidden;
+}
+
+/* Two layers crossfaded by --open. At the ~70/30 rest the visible strip
+   carries a crisp `<T> · source` chip — never a mid-token crop of code;
+   pulling the seam open fades the full listing in. The chip is pinned
+   inside the resting strip (the right 30% of the box), so it too stays
+   put while the clip window moves across it. */
+.toolchain-root .tc-cinema-v3 .tc-cinema-show-rest {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  left: var(--cut);
-  z-index: 1;
-  background: #0d1015;
-  overflow: hidden;
-}
-
-/* Two layers crossfaded by --open. At the ~70/30 rest the narrow strip
-   carries a crisp `<T> · source` chip — never a mid-token crop of code;
-   pulling the handle fades the full listing in as the pane widens. */
-.toolchain-root .tc-cinema-v3 .tc-cinema-show-rest {
-  position: absolute;
-  inset: 0;
+  width: 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -263,47 +302,13 @@
   color: var(--cin-ink);
 }
 
-/* the crisp metallic handle */
-.toolchain-root .tc-cinema-v3 .tc-cinema-show-handle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--cut);
-  z-index: 2;
-  width: 16px;
-  transform: translateX(-8px);
-  cursor: ew-resize;
-  touch-action: none;
-}
-
-.toolchain-root .tc-cinema-v3 .tc-cinema-show-handle::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 5px;
-  transform: translateX(-50%);
-  border-radius: 3px;
-  background: linear-gradient(90deg, #565d68 0%, #cfd6e0 32%, #8a919c 55%, #3f454e 100%);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.55),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.45);
-}
-
-.toolchain-root .tc-cinema-v3 .tc-cinema-show-handle::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 9px;
-  height: 22px;
-  transform: translate(-50%, -50%);
-  border-radius: 4px;
-  background: linear-gradient(90deg, #6b7280 0%, #e5eaf1 34%, #9aa1ac 60%, #4b515a 100%);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.55);
+/* The handle itself is the shared seam (RevealSeam.tsx / reveal-seam.css):
+   the logo's doubled line plus one grabber pill — no chrome. Only the
+   inks are local: both of the cinema's surfaces are dark, so both
+   threads are white, the source side a step brighter. */
+.toolchain-root .tc-cinema-v3 .tc-cinema-show .tc-seam {
+  --seam-ink-l: rgba(255, 255, 255, 0.4);
+  --seam-ink-r: rgba(255, 255, 255, 0.62);
 }
 
 /* The button showcase reserves a fixed 84px strip for its one-line

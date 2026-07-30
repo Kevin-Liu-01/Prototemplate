@@ -1,0 +1,790 @@
+/* ============================================================
+   TOOLCHAIN / LOCADEX — the agent's product page
+   Everything here rides the shell in ../styles.css: same tokens,
+   same hairline grammar, same doubled thread at constant gauge.
+   New classes only (ldx-*); nothing in the shell is overridden
+   for the home page — every rule is scoped to this page's own
+   section classes.
+   ============================================================ */
+
+/* ---------- hero: the white card in the section reveal ----------
+   The founder overlay in styles.css already grounds any section
+   holding a .tc-hero (hair ground, zero padding, 1px seams); the
+   card treatment itself lives with the home hero's own stylesheet,
+   so this page carries its own copy of the same decision. */
+
+.toolchain-root .ldx-hero-sec > .tc-hero {
+  background: var(--tc-white);
+  border-radius: 12px;
+}
+
+.toolchain-root .ldx-hero-mark {
+  display: block;
+  margin: 0 auto 24px;
+  opacity: 0.92;
+}
+
+/* the lambda ships as dark ink on transparent — brand rule: invert on dark */
+[data-theme='dark'] .toolchain-root .ldx-hero-mark {
+  filter: invert(1);
+}
+
+/* ---------- the agent terminal: one run, printed ----------
+   Lines are a two-column ledger: stage key in the gutter, artifact
+   on the right — the mono ledger the whole page keeps returning to. */
+
+.toolchain-root .ldx-t {
+  display: grid;
+  grid-template-columns: 10.5ch minmax(0, 1fr);
+  white-space: pre;
+}
+
+.toolchain-root .ldx-t.is-full {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.toolchain-root .ldx-t-stage {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .ldx-t-dim {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .ldx-t-hash {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+/* the two threads inside the transcript: the removed line and the
+   line that replaces it */
+.toolchain-root .ldx-t-del {
+  color: rgba(255, 255, 255, 0.44);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.35);
+}
+
+.toolchain-root .ldx-t-add {
+  color: #ffffff;
+}
+
+.toolchain-root .ldx-t-add b {
+  font-weight: 500;
+}
+
+.toolchain-root .ldx-t-locs {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.toolchain-root .ldx-caret {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .ldx-caret {
+    display: none;
+  }
+}
+
+/* ============================================================
+   PIPELINE — the run as five stages, then four artifacts
+   ============================================================ */
+
+/* the stage strip: the five verbatim step labels, joined by the
+   doubled-gauge thread pair (source and translation, in step) */
+.toolchain-root .ldx-stages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 17px var(--tc-gut) 19px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-stages b {
+  font-weight: 500;
+}
+
+.toolchain-root .ldx-joint {
+  flex: none;
+  display: block;
+}
+
+.toolchain-root .ldx-joint path {
+  stroke: var(--tc-ink-3);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.toolchain-root .ldx-joint .ldx-joint-head {
+  fill: var(--tc-ink-3);
+  stroke: none;
+}
+
+/* a mounted pair shares a baseline (shell doctrine): both mats in the
+   even row stretch to the taller one */
+.toolchain-root .tc-row.ldx-stretch {
+  align-items: stretch;
+}
+
+/* ---------- shared: the dark artifact panel ----------
+   Same surface, radius and bar measures as the shell's tc-code —
+   redrawn here because these panels hold ledgers, not CodeBlocks. */
+
+.toolchain-root .ldx-panel {
+  margin-top: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.toolchain-root .ldx-panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+/* ---------- scan: the file tree, with counts ---------- */
+
+.toolchain-root .ldx-tree {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 0 16px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--tc-panel-ink);
+  overflow-x: auto;
+}
+
+.toolchain-root .ldx-tree-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 3px 18px;
+  white-space: nowrap;
+}
+
+.toolchain-root .ldx-tree-row > span:last-child {
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .ldx-tree-row.is-child > span:first-child {
+  padding-left: 2ch;
+}
+
+.toolchain-root .ldx-tree-row.is-dim {
+  color: var(--tc-panel-dim);
+}
+
+/* the bill of findings sits on the panel's floor; slack lives above it */
+.toolchain-root .ldx-tree-row.is-sum {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--tc-panel-rule);
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .ldx-tree-row.is-sum::before {
+  content: '';
+  display: block;
+  height: 9px;
+  grid-column: 1 / -1;
+}
+
+.toolchain-root .ldx-tree-row.is-sum b {
+  font-weight: 400;
+  color: var(--tc-panel-ink);
+}
+
+/* ---------- map: the inference ledger, on paper ---------- */
+
+.toolchain-root .ldx-map {
+  margin-top: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+  overflow: hidden;
+}
+
+.toolchain-root .ldx-map-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 16px;
+  align-items: baseline;
+  padding: 9px 14px 10px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-map-row + .ldx-map-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .ldx-map-row.is-head {
+  padding: 8px 14px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-3);
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .ldx-map-row > code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolchain-root .ldx-map-row > span {
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ldx-map-row > span b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-map-file {
+  display: block;
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- edit: the unified diff ---------- */
+
+.toolchain-root .ldx-diff {
+  margin-top: 14px;
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.toolchain-root .ldx-diff pre {
+  margin: 0;
+  padding: 13px 0 16px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.toolchain-root .ldx-dl {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.toolchain-root .ldx-dl > i {
+  font-style: normal;
+  text-align: center;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+.toolchain-root .ldx-dl.is-hunk {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .ldx-dl.is-ctx {
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.toolchain-root .ldx-dl.is-del {
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .ldx-dl.is-del > code {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.34);
+}
+
+.toolchain-root .ldx-dl.is-add {
+  color: #ffffff;
+}
+
+.toolchain-root .ldx-dl.is-add b {
+  font-weight: 500;
+}
+
+/* THREAD_MOTIF, spent where the spec says it lands: the doubled pair
+   binds everything between <T> and </T> — the same bracket the shell
+   draws on its framework sample, built at the same gauge. */
+.toolchain-root .ldx-bind {
+  position: relative;
+}
+
+.toolchain-root .ldx-bind::before,
+.toolchain-root .ldx-bind::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.toolchain-root .ldx-bind::before {
+  left: 8px;
+  top: 3px;
+  bottom: 3px;
+  width: 9px;
+}
+
+.toolchain-root .ldx-bind::after {
+  left: calc(8px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(9px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* ---------- open PR: the review gate, drawn as the real page ---------- */
+
+.toolchain-root .ldx-prwrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.toolchain-root .ldx-pr {
+  width: 100%;
+  max-width: 940px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  overflow: hidden;
+}
+
+.toolchain-root .ldx-pr-head {
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .ldx-pr-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 16.5px;
+  letter-spacing: -0.014em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-pr-title > span {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .ldx-pr-meta {
+  margin-top: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ldx-bot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolchain-root .ldx-bot img {
+  display: block;
+}
+
+[data-theme='dark'] .toolchain-root .ldx-bot img {
+  filter: invert(1);
+}
+
+.toolchain-root .ldx-pr-meta .ldx-joint {
+  margin: 0 2px;
+}
+
+.toolchain-root .ldx-pr-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
+}
+
+.toolchain-root .ldx-pr-body > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .ldx-pr-files {
+  padding: 6px 0 10px;
+}
+
+.toolchain-root .ldx-pr-file {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 14px;
+  padding: 8px 20px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-pr-file + .ldx-pr-file {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .ldx-pr-file .is-plus {
+  color: var(--tc-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .ldx-pr-file .is-minus {
+  color: var(--tc-ink-3);
+  font-variant-numeric: tabular-nums;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.toolchain-root .ldx-pr-checks {
+  border-top: 1px solid var(--tc-hair);
+  padding: 4px 0 8px;
+}
+
+.toolchain-root .ldx-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-check + .ldx-check {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .ldx-check > i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 3px;
+  font-style: normal;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-check > span:last-child {
+  margin-left: auto;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .ldx-pr-gate {
+  padding: 16px 20px 15px;
+}
+
+.toolchain-root .ldx-pr-gate > b {
+  display: block;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-pr-gate > p {
+  margin-top: 7px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.toolchain-root .ldx-gate-acts {
+  margin-top: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* mock controls: state is weight and hairline, never a colored pill */
+.toolchain-root .ldx-gate-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 5px;
+  border: 1px solid var(--tc-ink-3);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-gate-btn.is-locked {
+  border: 1px solid var(--tc-hair);
+  font-weight: 400;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .ldx-pr-times {
+  border-top: 1px solid var(--tc-hair);
+  padding: 6px 0 9px;
+}
+
+.toolchain-root .ldx-time {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 12px;
+  padding: 6px 20px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-time > span:first-child {
+  color: var(--tc-ink-4);
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .ldx-time.is-open {
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ldx-time b {
+  font-weight: 500;
+}
+
+/* ---------- templates: one mount, three columns ---------- */
+
+.toolchain-root .ldx-tpl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .ldx-tpl > div {
+  padding: clamp(22px, 2.6vw, 30px) var(--tc-gut) clamp(24px, 2.8vw, 32px);
+}
+
+.toolchain-root .ldx-tpl > div + div {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .ldx-tpl h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.toolchain-root .ldx-tpl p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.toolchain-root .ldx-tpl-trig {
+  margin-top: 14px;
+  padding-top: 11px;
+  border-top: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .ldx-tpl-trig b {
+  font-weight: 400;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-supported {
+  padding: 18px var(--tc-gut) 20px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .ldx-supported b {
+  font-weight: 400;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ldx-supported .ldx-nowrap {
+  white-space: nowrap;
+}
+
+/* ============================================================
+   THE DARK BAND — connect, metered honestly
+   ============================================================ */
+
+/* the run summary: the band's one artifact, a boring itemised bill */
+.toolchain-root .ldx-run {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.toolchain-root .ldx-run-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .ldx-run-body {
+  padding: 8px 0 12px;
+}
+
+.toolchain-root .ldx-run-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 7px 18px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.toolchain-root .ldx-run-row > b {
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.toolchain-root .ldx-run-row.is-total {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolchain-root .ldx-run-row.is-total > b {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ============================================================
+   RESPONSIVE + REDUCED MOTION
+   ============================================================ */
+
+@media (max-width: 1000px) {
+  .toolchain-root .ldx-tpl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .ldx-tpl > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .ldx-pr-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .ldx-pr-body > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 620px) {
+  .toolchain-root .ldx-tree,
+  .toolchain-root .ldx-diff pre {
+    font-size: 11px;
+  }
+
+  .toolchain-root .ldx-map-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+
+  .toolchain-root .ldx-map-row > span {
+    text-align: left;
+  }
+
+  .toolchain-root .ldx-dl {
+    grid-template-columns: 26px minmax(0, 1fr);
+  }
+
+  .toolchain-root .ldx-bind::before {
+    left: 4px;
+    width: 8px;
+  }
+
+  .toolchain-root .ldx-bind::after {
+    left: calc(4px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+
+  .toolchain-root .ldx-pr-file,
+  .toolchain-root .ldx-check,
+  .toolchain-root .ldx-time {
+    padding-inline: 14px;
+  }
+
+  .toolchain-root .ldx-pr-head,
+  .toolchain-root .ldx-pr-gate {
+    padding-inline: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* every printed artifact stands whole; the stills carry the argument */
+  .toolchain-root .ldx-t,
+  .toolchain-root .ldx-tree-row,
+  .toolchain-root .ldx-map-row,
+  .toolchain-root .ldx-dl,
+  .toolchain-root .ldx-check {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+}

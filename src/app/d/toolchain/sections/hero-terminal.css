@@ -408,7 +408,7 @@
 
 /* the rendered app card: paper on the plate, same ring grammar as the window */
 .toolchain-root .tct-app {
-  --tct-cut: 70%;
+  --seam-cut: 70%;
   position: relative;
   width: min(460px, 100%);
   border-radius: 8px;
@@ -477,10 +477,11 @@
   line-height: 1;
 }
 
-/* the toast keeps clear of the payload curtain: its right edge tracks the cut */
+/* the toast is part of the pinned render — nothing in either layer moves
+   with the seam; at a deep cut the payload simply covers it */
 .toolchain-root .tct-app-toast {
   position: absolute;
-  right: calc(100% - var(--tct-cut) + 14px);
+  left: 18px;
   bottom: 12px;
   display: flex;
   align-items: center;
@@ -502,25 +503,31 @@
 }
 
 /* ---------- slide-to-reveal: the served payload under the render ----------
-   The house mechanic: dragging the divider pulls the rendered card back to
-   the artifact that produced it — the hashed-key JSON gt wrote to
-   public/_gt/[locale].json. The pane is anchored at the cut, so at rest it
-   teases the hash column and the drag reveals the translated leaves. */
+   The house mechanic, founder-corrected: the payload layer is PINNED —
+   full-width, aligned edge to edge under the render — and the seam only
+   moves a clip boundary, so dragging REVEALS the hashed-key JSON gt wrote
+   to public/_gt/[locale].json in place, the way a before/after comparison
+   reveals its underside. Travel is the whole card: at 0% the artifact owns
+   the box, at 100% the render does. Nothing in this layer ever translates
+   with the handle. */
 
 .toolchain-root .tct-payload {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: var(--tct-cut);
+  inset: 0;
   z-index: 2;
-  padding: 10px 12px;
+  padding: 30px 12px 10px;
   background: #101014;
+  clip-path: inset(0 0 0 var(--seam-cut, 70%));
   overflow: hidden;
 }
 
+/* the file label is pinned top-RIGHT, inside the resting strip — the one
+   piece of the artifact the 70/30 rest is guaranteed to tease */
 .toolchain-root .tct-payload-file {
-  margin: 0 0 5px;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  margin: 0;
   font-family: var(--tc-mono);
   font-size: 11px;
   line-height: 1.5;
@@ -547,59 +554,14 @@
   color: var(--tct-tr);
 }
 
-/* The divider: the house doubled hairline at constant gauge, each thread in
-   its surface's own ink — the source thread dark on the rendered card, the
-   translation thread light on the payload pane. No chrome, nothing outside
-   the card's bounds. */
-.toolchain-root .tct-cutline {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--tct-cut);
-  z-index: 3;
-  width: 18px;
-  transform: translateX(-9px);
-  cursor: col-resize;
-  touch-action: none;
-}
-
-.toolchain-root .tct-cutline::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
-  transform: translateX(-50%);
-  background:
-    linear-gradient(rgba(15, 17, 19, 0.62), rgba(15, 17, 19, 0.62)) 0 0 / var(--thread-gauge) 100% no-repeat,
-    linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)) 100% 0 / var(--thread-gauge) 100% no-repeat;
-}
-
-/* the contained notch: a short muted thickening at mid-height, discovered on
-   hover rather than shouting */
-.toolchain-root .tct-cutline::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 3px;
-  height: 24px;
-  transform: translate(-50%, -50%);
-  border-radius: 2px;
-  background: #867e8e;
-  opacity: 0.75;
-  transition: opacity 0.16s ease, height 0.16s ease;
-}
-
-.toolchain-root .tct-cutline:hover::after,
-.toolchain-root .tct-cutline:focus-visible::after {
-  opacity: 1;
-  height: 34px;
-}
-
-.toolchain-root .tct-cutline:focus-visible {
-  outline: none;
+/* The seam handle itself lives in RevealSeam.tsx / reveal-seam.css — the
+   logo's doubled line plus one grabber pill. Only the inks are local:
+   the source thread dark on the rendered card, the translation thread
+   light on the payload plate. Neither surface remaps under [data-theme],
+   so neither do these. */
+.toolchain-root .tct-app .tc-seam {
+  --seam-ink-l: rgba(15, 17, 19, 0.62);
+  --seam-ink-r: rgba(255, 255, 255, 0.55);
 }
 
 /* the receipt line tying the render back to the artifact it came from */

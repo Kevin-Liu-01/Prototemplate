@@ -20,12 +20,14 @@ export const metadata = {
 
 /**
  * Version 22 — Hourglass. From the founder's sketch over the dark PortalHero
- * prototype: a full-bleed dark hero where two walls of product-UI cards recede
- * in one-point perspective toward a central vanishing point — English source
- * strings flowing in on the left, locale-stamped translations flowing out on
- * the right — and the negative space between the walls reads as an hourglass
- * pinched to a waist that holds the mark, headline, CTAs, languages, and
- * customer wordmarks. After the hero, the light toolchain shell continues.
+ * prototype: a full-bleed dark hero where a draped sheet of product-UI cards
+ * sags under the mark like a net under a mass — its courses rise from the
+ * lower corners, crest just under the GT circle, and dive away behind the
+ * stack — English source strings riding up the left half, locale-stamped
+ * translations sliding down the right. The open dark above the hill is the
+ * hourglass's upper bulb, pinched to a waist that holds the mark, headline,
+ * CTAs, languages, and customer wordmarks. After the hero, the light
+ * toolchain shell continues.
  */
 export default function HourglassPage() {
   return (

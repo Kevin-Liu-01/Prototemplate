@@ -3,18 +3,15 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import {
-  useRef,
-  useState,
-  type CSSProperties,
-  type KeyboardEvent as ReactKeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
-} from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 
 import LocaleTag from '../components/LocaleTag';
 
+import RevealSeam from './RevealSeam';
+
+import './chip-consistency.css';
 import './hero-every.css';
 import './hero-terminal.css';
 
@@ -44,10 +41,13 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
    (es / fr / ja / de / zh). 128 strings × 5 locales = 640.
    ------------------------------------------------------------------ */
 
-/** The wizard's summary block: detection, source, locale set, files written. */
-const WIZARD: readonly { key: string; text?: string; locs?: readonly string[] }[] = [
+/** The wizard's summary block: detection, source, locale set, files written.
+    `src` renders the page's one locale chip like `locs` does — the source is
+    a locale token too, so it speaks the same flag+code grammar as the
+    targets, in the plate's quieter neutral voice. */
+const WIZARD: readonly { key: string; text?: string; src?: string; locs?: readonly string[] }[] = [
   { key: 'Detected', text: 'Next.js · App Router' },
-  { key: 'Source', text: 'en' },
+  { key: 'Source', src: 'en' },
   { key: 'Locales', locs: ['es', 'fr', 'ja', 'de', 'zh'] },
   { key: 'Wrote', text: 'gt.config.json · .env.local' },
 ];
@@ -216,41 +216,18 @@ export default function Hero() {
   };
 
   /* ---- the slide-to-reveal cut ----
-     Lives in a CSS var on the app card so the drag, the keyboard, and the
-     one-time intro tween all turn the same dial without re-rendering. */
+     Lives in a CSS var on the app card, so the seam's own drag/keys and
+     the one-time intro tween all turn the same dial without re-rendering.
+     The payload layer is pinned full-width under the render; the var only
+     moves its clip boundary (hero-terminal.css), never its content. */
   const app = useRef<HTMLDivElement>(null);
-  const cut = useRef(70);
-  const dragging = useRef(false);
   const dragged = useRef(false);
   const setCut = (pct: number) => {
-    cut.current = Math.min(88, Math.max(16, pct));
     const el = app.current;
     if (!el) return;
-    el.style.setProperty('--tct-cut', `${cut.current}%`);
-    el.querySelector('.tct-cutline')?.setAttribute('aria-valuenow', String(Math.round(cut.current)));
-  };
-  const cutDown = (e: ReactPointerEvent<HTMLElement>) => {
-    endTour();
-    dragging.current = true;
-    dragged.current = true;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    e.preventDefault();
-  };
-  const cutMove = (e: ReactPointerEvent<HTMLElement>) => {
-    if (!dragging.current || !app.current) return;
-    const r = app.current.getBoundingClientRect();
-    if (r.width === 0) return;
-    setCut(((e.clientX - r.left) / r.width) * 100);
-  };
-  const cutUp = () => {
-    dragging.current = false;
-  };
-  const cutKey = (e: ReactKeyboardEvent<HTMLElement>) => {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    e.preventDefault();
-    endTour();
-    dragged.current = true;
-    setCut(cut.current + (e.key === 'ArrowLeft' ? -6 : 6));
+    const next = Math.min(100, Math.max(0, pct));
+    el.style.setProperty('--seam-cut', `${next}%`);
+    el.querySelector('.tc-seam')?.setAttribute('aria-valuenow', String(Math.round(next)));
   };
 
   const copy = () => {
@@ -372,7 +349,7 @@ export default function Hero() {
           ci = (ci + 1) % EVERY.length;
           const w0 = em.offsetWidth;
           gsap.to(word, { autoAlpha: 0, duration: 0.2, ease: 'power2.in', onComplete: () => {
-            word.textContent = EVERY[ci];
+            word.textContent = EVERY[ci] ?? 'language';
             em.style.width = 'auto';
             const w1 = em.offsetWidth;
             gsap.fromTo(em, { width: w0 }, { width: w1, duration: 0.35, ease: 'power3.inOut',
@@ -680,6 +657,12 @@ export default function Hero() {
                           </i>
                         ))}
                       </span>
+                    ) : line.src ? (
+                      <span className='tct-locset'>
+                        <i className='tct-chip is-src'>
+                          <LocaleTag code={line.src} />
+                        </i>
+                      </span>
                     ) : (
                       line.text
                     )}
@@ -768,10 +751,11 @@ export default function Hero() {
               </div>
 
               {/* The rendered card carries the house slide-to-reveal: the
-                  divider (doubled hairline, each thread in its surface's own
-                  ink) pulls the render back to the hashed-key payload gt
-                  wrote — the same strings, as the artifact that serves them. */}
-              <div className='tct-app' ref={app} style={{ '--tct-cut': '70%' } as CSSProperties}>
+                  payload gt wrote sits pinned full-width UNDER the render,
+                  and the seam (the logo's doubled line, each thread in its
+                  surface's own ink) only moves the clip boundary — dragging
+                  reveals the artifact in place, edge to edge. */}
+              <div className='tct-app' ref={app} style={{ '--seam-cut': '70%' } as CSSProperties}>
                 <div className='tct-app-addr'>
                   example.com/<b data-swap>{ploc}</b>
                 </div>
@@ -799,20 +783,13 @@ export default function Hero() {
                   <PayloadJson loc={ploc} />
                 </div>
 
-                <span
-                  className='tct-cutline'
-                  role='slider'
-                  aria-label='Reveal the served translation file'
-                  aria-orientation='vertical'
-                  aria-valuemin={16}
-                  aria-valuemax={88}
-                  aria-valuenow={70}
-                  tabIndex={0}
-                  onPointerDown={cutDown}
-                  onPointerMove={cutMove}
-                  onPointerUp={cutUp}
-                  onPointerCancel={cutUp}
-                  onKeyDown={cutKey}
+                <RevealSeam
+                  boxRef={app}
+                  ariaLabel='Reveal the served translation file'
+                  onInteract={() => {
+                    endTour();
+                    dragged.current = true;
+                  }}
                 />
               </div>
 

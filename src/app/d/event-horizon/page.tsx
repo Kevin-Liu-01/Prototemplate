@@ -21,15 +21,17 @@ export const metadata = {
 };
 
 /**
- * Event Horizon — the toolchain shell whose hero is Kevin's sketch: dense
- * component sheets fill the screen from both edges — row courses locked
- * across every column — and warp into a real event horizon, a purpose-built
- * lensing shader that wraps accretion light around a photon ring and bends
- * the page's own ruled structure into the hole. English source UI drifts in
- * on the left and slips under the ring's glow; the same components emerge on
- * the right translated and locale-stamped — passage through the hole IS the
- * translation. The dark core holds the mark, headline and CTAs light-on-dark,
- * and the locale flag chips orbit the horizon on a dashed rail.
+ * Event Horizon — the toolchain shell whose hero is Kevin's sketch: component
+ * sheets fill the screen from both edges — five row courses locked across
+ * every column — and DRAPE over a real event horizon like a net sagging under
+ * the mass's weight: a rubber-sheet height-field pulls the courses, the ruled
+ * hairlines and the guide rings toward and under the hole, while a purpose-
+ * built shader wraps accretion light around a photon ring at its rim. English
+ * source UI drifts in on the left and slips under the ring's glow; the same
+ * components emerge on the right translated and locale-stamped — passage
+ * through the hole IS the translation. The dark core holds the mark, headline
+ * and CTAs light-on-dark, and the locale flag chips orbit the horizon on a
+ * dashed rail.
  */
 export default function EventHorizonPage() {
   return (

@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import LocaleTag from '../../components/LocaleTag';
+
 import { langA11y, langClass, prefersReducedMotion, type LangProps } from './lang';
 import './lang.css';
 
@@ -98,7 +100,9 @@ export default function ScriptSampler({ className, accent = true, title }: LangP
                 {sample.text}
               </span>
               <span className='lang-ss-meta'>
-                <span className='lang-tag'>{sample.tag}</span>
+                <span className='lang-tag'>
+                  <LocaleTag code={sample.tag} />
+                </span>
                 <span className='lang-ss-script'>{sample.script}</span>
               </span>
             </div>

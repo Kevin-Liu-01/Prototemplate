@@ -2,6 +2,7 @@ import { SiNodedotjs, SiNpm } from '@icons-pack/react-simple-icons';
 import type { CSSProperties } from 'react';
 
 import '../components/icons.css';
+import '../sections/chip-consistency.css';
 import './flow.css';
 
 /**
@@ -17,6 +18,12 @@ import './flow.css';
  * hexagon from simple-icons on the same currentColor. The corner tag is the
  * real npm mark beside the word.
  *
+ * React Native included: the real saved badge (react-native-no-bg.svg, the
+ * squircle with the atom knocked out), mask-rendered like its siblings. The
+ * invented stroke-drawn "atom in a squircle" it replaces read identical to
+ * gt-react's atom at this size; the knockout badge is distinct at a glance,
+ * and runs one step larger (chip-consistency.css) so the cutout stays open.
+ *
  * No accent. The API names carry weight instead — white at 500 on the panel,
  * the same treatment every other code surface on the page gives them.
  */
@@ -26,8 +33,10 @@ type Sdk = {
   runtime: string;
   /** The named exports the import line shows, comma-joined. */
   api: string;
-  /** The runtime's mark in /public, mask-rendered; absent → the Node mark. */
+  /** The runtime's mark in /public, mask-rendered. */
   markSrc?: string;
+  /** Extra class on the mark, when one mark needs its own metric. */
+  markClass?: string;
 };
 
 const SDKS: readonly Sdk[] = [
@@ -48,6 +57,7 @@ const SDKS: readonly Sdk[] = [
     runtime: 'iOS · Android',
     api: 'T, useLocale',
     markSrc: '/logos/react-native-no-bg.svg',
+    markClass: 'is-rn',
   },
   { pkg: 'gt-node', runtime: 'Node — Express, Hono, workers', api: 'gt' },
 ];
@@ -79,7 +89,7 @@ export default function SdkLedger({ className, title }: SdkLedgerProps) {
             <b>
               {sdk.markSrc ? (
                 <i
-                  className='sdkl-mark'
+                  className={sdk.markClass ? `sdkl-mark ${sdk.markClass}` : 'sdkl-mark'}
                   style={{ '--mark': `url(${sdk.markSrc})` } as CSSProperties}
                   aria-hidden='true'
                 />

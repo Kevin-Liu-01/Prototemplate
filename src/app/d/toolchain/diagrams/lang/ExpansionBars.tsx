@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import LocaleTag from '../../components/LocaleTag';
+
 import { langA11y, langClass, prefersReducedMotion, type LangProps } from './lang';
 import './lang.css';
 
@@ -102,7 +104,9 @@ export default function ExpansionBars({ className, accent = true, title }: LangP
           return (
             <div className={rowClass} key={row.tag}>
               <span className='lang-eb-name'>
-                <span className='lang-tag'>{row.tag}</span>
+                <span className='lang-tag'>
+                  <LocaleTag code={row.tag} />
+                </span>
                 {row.name}
               </span>
 

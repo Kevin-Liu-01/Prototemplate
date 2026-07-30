@@ -3067,17 +3067,20 @@
    Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
    panel #14121A). Everything downstream re-skins from these. */
 [data-theme='dark'] .toolchain-root {
-  --tc-paper: #16171d;
-  --tc-sunk: #16171d;
-  --tc-white: #1e1f26;
-  --tc-card: #1e1f26;
+  /* One surface family in the dark, the way light mode is one white: every
+     card, plate and sunk surface lands on the same ink black, in the dark
+     band's own family, so the page never shifts grey between sections. */
+  --tc-paper: #0a0b0f;
+  --tc-sunk: #0d0e12;
+  --tc-white: #0d0e12;
+  --tc-card: #0d0e12;
   --tc-ink: #ffffff;
   --tc-ink-2: rgba(255, 255, 255, 0.66);
   --tc-ink-3: rgba(255, 255, 255, 0.48);
   --tc-ink-4: rgba(255, 255, 255, 0.3);
   --tc-hair: #3b3440;
   --tc-hair-2: #2b2731;
-  --tc-plate: #1e1f26;
+  --tc-plate: #0d0e12;
   --tc-hatch: rgba(255, 255, 255, 0.07);
 }
 
@@ -4012,9 +4015,9 @@
 
 .toolchain-root .tc-sec:has(> .tc-hero) {
   background: var(--tc-hair) !important;
-  /* top seam only: the rail borders are the side lines and the next
-     section's rule is the bottom line — no adjacent duplicates */
-  padding: 1px 0 0 !important;
+  /* the nav's full-width rule is the top divider; ground shows only in the
+     card corner notches */
+  padding: 0 !important;
 }
 
 .toolchain-root .tc-nav {
@@ -4132,8 +4135,64 @@
 }
 
 
-/* the ring is the divider under the nav — no second hairline */
-.toolchain-root .tc-nav {
-  border-bottom: 0 !important;
-  box-shadow: none !important;
+/* Hatch spacers: reveal tweens leave transforms on the framed cards above,
+   whose stacking contexts otherwise paint over the hatch's top rule. */
+.toolchain-root .tc-hatch {
+  position: relative;
+  z-index: 2;
+}
+
+/* Founder: the quad's column rules touch the card's top and bottom edges.
+   The card's padding is a single token, so the rules extend by exactly it. */
+.toolchain-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.toolchain-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Nav theme switch, left of Sign in: token ink, quiet until hover. */
+.toolchain-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.toolchain-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand mark carries both variants; the theme picks one. */
+.toolchain-root .tc-logo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root .tc-logo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .toolchain-root .tc-logo-light {
+  display: none;
+}
+
+/* The trust band's lower rule. The blanket border-zeroing above (which cured
+   the doubled edges at the nav junction) also erased the one line that should
+   survive — under the brands. Appended later, so border-bottom wins by order. */
+.toolchain-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  border-bottom: 1px solid var(--tc-hair) !important;
+  border-radius: 12px 12px 0 0;
 }

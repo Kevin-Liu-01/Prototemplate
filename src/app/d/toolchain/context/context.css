@@ -1,0 +1,809 @@
+/* ============================================================
+   TOOLCHAIN — CONTEXT PRODUCT PAGE
+   New classes only (ctx-*); styles.css is never appended to.
+   Everything reads the shell's tokens, so the dark remap holds
+   without a second palette. The doubled thread renders at the
+   page constants (--thread-gauge / --thread-gap / --thread-ink)
+   everywhere it appears.
+   ============================================================ */
+
+/* ---------- hero ---------- */
+
+.toolchain-root .ctx-hero {
+  padding: clamp(56px, 6.6vw, 88px) var(--tc-gut) clamp(36px, 4.2vw, 52px);
+}
+
+.toolchain-root .ctx-hero h1 {
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: 1.04;
+  letter-spacing: -0.034em;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+/* The emphasis is the brand's own device — the two threads under the word,
+   at constant gauge, in the surface's ink. Never the accent. */
+.toolchain-root .ctx-hero h1 em,
+.toolchain-root .ctx-cta h2 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.toolchain-root .ctx-hero > p {
+  margin-top: 18px;
+  max-width: 58ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- shared ledger vocabulary ---------- */
+
+/* The card's mono tag line: names the condition the artifact below runs under. */
+.toolchain-root .ctx-tag {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .ctx-tag code {
+  font-family: inherit;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ctx-hero-code {
+  margin-top: 12px;
+}
+
+/* One locale-chip grammar, page-wide: the light-surface print of the dark
+   pills — hairline box, flag + code, 11px mono (chip-consistency's spec). */
+.toolchain-root .ctx-loc,
+.toolchain-root .ctx-scope .lct {
+  padding: 0 5px;
+  border: 1px solid var(--tc-ink-4);
+  border-radius: 4px;
+  background: var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ctx-loc .lct-flag,
+.toolchain-root .ctx-scope .lct-flag {
+  font-size: 10px;
+}
+
+/* Verdict line: the card's one-sentence reading, in the ledger's voice. The
+   artifact zones above it carry flex: 1, so in a stretched pair the verdicts
+   sit flush at both cards' feet. */
+.toolchain-root .tc-card > p.ctx-verdict {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+  max-width: none;
+}
+
+/* All-mounted pair rows share a baseline: the mats stretch, the artifact
+   zones inside them absorb the slack. */
+.toolchain-root .tc-row.is-even.ctx-pair {
+  align-items: stretch;
+}
+
+/* ---------- the rendered toast (hero) ---------- */
+
+.toolchain-root .ctx-render {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 16px 15px;
+  border: 1px solid var(--tc-hair-2);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+.toolchain-root .ctx-toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 8px;
+  background: var(--tc-white);
+}
+
+.toolchain-root .ctx-toast p {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ctx-toast-btn {
+  appearance: none;
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+  font-family: var(--tc-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: default;
+}
+
+/* The wrong sense ships washed out — state is tone and weight, never a pill. */
+.toolchain-root .ctx-toast-btn.is-wrong {
+  background: var(--tc-hair-2);
+  border-color: var(--tc-hair);
+  color: var(--tc-ink-3);
+}
+
+/* Output ledger row: locale chip, the word that shipped, its gloss. */
+.toolchain-root .ctx-out {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ctx-out b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* The page's one accent: the kept sense on the runtime card. */
+.toolchain-root .ctx-out b.is-accent {
+  color: var(--tc-accent);
+}
+
+.toolchain-root .ctx-out s {
+  color: var(--tc-ink-3);
+  text-decoration-thickness: 1px;
+}
+
+.toolchain-root .ctx-out-gloss {
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- glossary table ---------- */
+
+.toolchain-root .ctx-gloss {
+  margin-top: 14px;
+  flex: 1;
+}
+
+.toolchain-root .ctx-gloss-row {
+  display: grid;
+  grid-template-columns: minmax(0, 148px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .ctx-gloss-row.is-head {
+  border-top: 0;
+  padding-bottom: 5px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .ctx-gloss-row > b {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+  overflow-wrap: break-word;
+}
+
+.toolchain-root .ctx-gloss-pins {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px 12px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ctx-pin {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.toolchain-root .ctx-pin-note {
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- directives ---------- */
+
+.toolchain-root .ctx-dirs {
+  margin-top: 14px;
+}
+
+.toolchain-root .ctx-dirs-row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .ctx-scope {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .ctx-dirs-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink);
+}
+
+/* The consequence pair: the same product's voice, per locale. */
+.toolchain-root .ctx-tone {
+  margin-top: 14px;
+  padding: 4px 13px;
+  border: 1px solid var(--tc-hair-2);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+.toolchain-root .ctx-tone-row {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  padding: 9px 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+}
+
+.toolchain-root .ctx-tone-row + .ctx-tone-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .ctx-tone-key {
+  width: 38px;
+  flex: none;
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .ctx-tone-val {
+  flex: 1;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ctx-tone-val b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---------- file + markup signals ---------- */
+
+.toolchain-root .ctx-sig {
+  margin-top: 14px;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) 26px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.toolchain-root .ctx-sig-tree {
+  display: grid;
+  gap: 7px;
+  padding: 14px 14px 15px;
+  border: 1px solid var(--tc-hair-2);
+  border-radius: 4px;
+  background: var(--tc-plate);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.toolchain-root .ctx-sig-tree .ind-1 {
+  padding-left: 13px;
+}
+
+.toolchain-root .ctx-sig-tree .ind-2 {
+  padding-left: 26px;
+}
+
+.toolchain-root .ctx-sig-tree .is-live {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* The doubled thread, horizontal: source file feeding the signal ledger. */
+.toolchain-root .ctx-sig-thread {
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+  opacity: 0.75;
+}
+
+.toolchain-root .ctx-sig-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-top: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+}
+
+.toolchain-root .ctx-sig-row:first-child {
+  border-top: 0;
+}
+
+.toolchain-root .ctx-sig-key {
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .ctx-sig-val {
+  font-family: inherit;
+  color: var(--tc-ink);
+  overflow-wrap: break-word;
+}
+
+/* ---------- runtime options ---------- */
+
+.toolchain-root .ctx-opts {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.toolchain-root .ctx-hero-code + .ctx-out {
+  margin-top: 12px;
+}
+
+/* ============================================================
+   THE GROUP BAND — dark, full-bleed, the accumulator
+   ============================================================ */
+
+.toolchain-root .ctx-flow {
+  margin-top: clamp(36px, 4.6vw, 56px);
+}
+
+.toolchain-root .ctx-flow-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.toolchain-root .ctx-flow-svg text {
+  font-family: var(--tc-mono);
+}
+
+.toolchain-root .ctxb-cap {
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  fill: rgba(255, 255, 255, 0.45);
+}
+
+/* Node boxes: the terminal-chip grammar at cell scale. */
+.toolchain-root .ctxb-box {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1;
+}
+
+.toolchain-root .ctxb-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  fill: rgba(255, 255, 255, 0.9);
+}
+
+.toolchain-root .ctxb-val {
+  font-size: 11.5px;
+  fill: rgba(255, 255, 255, 0.45);
+}
+
+.toolchain-root .ctxb-key {
+  font-size: 11.5px;
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .ctxb-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  fill: #ffffff;
+}
+
+.toolchain-root .ctxb-rule {
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 1;
+}
+
+/* The group wears the doubled contour: two rects, constant gauge. */
+.toolchain-root .ctxb-group-fill {
+  fill: var(--tc-panel);
+}
+
+.toolchain-root .ctxb-group-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.82);
+  stroke-width: var(--thread-gauge);
+}
+
+/* The threads: source and translation running together — 1.5px strokes,
+   3px apart, white wire on the band. */
+.toolchain-root .ctxb-thread {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.62);
+  stroke-width: var(--thread-gauge);
+}
+
+.toolchain-root .ctxb-mark {
+  filter: invert(1);
+  opacity: 0.92;
+}
+
+/* ---- narrow-screen fallback: same ledger, stacked ---- */
+
+.toolchain-root .ctx-flow-stack {
+  display: none;
+}
+
+.toolchain-root .ctx-stack-list,
+.toolchain-root .ctx-stack-group {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 14px;
+}
+
+.toolchain-root .ctx-stack-group {
+  background: var(--tc-panel);
+  box-shadow: 0 0 0 4.5px var(--tc-dark), 0 0 0 6px rgba(255, 255, 255, 0.5);
+  padding-top: 12px;
+  padding-bottom: 10px;
+}
+
+.toolchain-root .ctx-stack-group > b {
+  display: block;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .ctx-stack-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+}
+
+.toolchain-root .ctx-stack-row + .ctx-stack-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.toolchain-root .ctx-stack-group > b + .ctx-stack-row {
+  border-top: 0;
+}
+
+.toolchain-root .ctx-stack-row b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.toolchain-root .ctx-stack-row span {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11.5px;
+}
+
+/* Vertical doubled thread between the stacked ledgers. */
+.toolchain-root .ctx-vthread {
+  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  height: 34px;
+  margin: 10px auto;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62)),
+    linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62));
+  background-repeat: no-repeat;
+  background-size:
+    var(--thread-gauge) 100%,
+    var(--thread-gauge) 100%;
+  background-position:
+    0 0,
+    100% 0;
+}
+
+@media (max-width: 820px) {
+  .toolchain-root .ctx-flow-svg {
+    display: none;
+  }
+
+  .toolchain-root .ctx-flow-stack {
+    display: block;
+  }
+}
+
+/* ---- the growth ledger ---- */
+
+.toolchain-root .ctx-growth-cap {
+  margin-top: clamp(34px, 4.4vw, 52px);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.toolchain-root .ctx-growth {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.toolchain-root .ctx-growth > div {
+  padding: 18px 18px 2px 0;
+}
+
+.toolchain-root .ctx-growth > div + div {
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.toolchain-root .ctx-growth b {
+  display: block;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .ctx-growth span {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.toolchain-root .ctx-growth em {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+@media (max-width: 720px) {
+  .toolchain-root .ctx-growth {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* `div + div` matches the base rule's specificity so the fold's reset
+     actually wins; evens then re-draw the one column rule. */
+  .toolchain-root .ctx-growth > div,
+  .toolchain-root .ctx-growth > div + div {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .toolchain-root .ctx-growth > div:nth-child(even) {
+    padding-left: 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .toolchain-root .ctx-growth > div:nth-child(n + 3) {
+    margin-top: 14px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+}
+
+/* ============================================================
+   CONTROLS — apply / priority / rate
+   ============================================================ */
+
+.toolchain-root .ctx-apply {
+  margin-top: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.toolchain-root .ctx-apply-acts {
+  display: flex;
+  gap: 8px;
+}
+
+/* Mock chrome: the buttons are artifact, not navigation. */
+.toolchain-root .ctx-apply-acts .tc-btn {
+  cursor: default;
+  pointer-events: none;
+}
+
+.toolchain-root .ctx-ledger {
+  margin-top: 12px;
+}
+
+.toolchain-root .ctx-ledger-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+}
+
+.toolchain-root .ctx-ledger-row > span:first-child {
+  flex: none;
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .ctx-ledger-row > span:last-child {
+  color: var(--tc-ink);
+  text-align: right;
+}
+
+.toolchain-root .ctx-ledger.is-rate {
+  margin-top: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.toolchain-root .ctx-ledger.is-rate .ctx-ledger-row {
+  padding: 11px 0;
+}
+
+.toolchain-root .ctx-ledger.is-rate .ctx-ledger-row > span:last-child {
+  font-weight: 500;
+}
+
+/* Priority: two stacked groups, order explicit, the lower one quieter. */
+.toolchain-root .ctx-prio {
+  margin-top: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.toolchain-root .ctx-prio-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ctx-prio-row b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .ctx-prio-row + .ctx-prio-row {
+  margin-top: 7px;
+  border-color: var(--tc-hair-2);
+  background: var(--tc-plate);
+}
+
+.toolchain-root .ctx-prio-row + .ctx-prio-row b {
+  font-weight: 400;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .ctx-prio-n {
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- CTA ---------- */
+
+.toolchain-root .ctx-cta {
+  padding: clamp(64px, 8vw, 104px) var(--tc-gut) clamp(70px, 8.6vw, 112px);
+  text-align: center;
+}
+
+.toolchain-root .ctx-cta h2 {
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  letter-spacing: -0.032em;
+}
+
+.toolchain-root .ctx-cta > p {
+  margin: 16px auto 0;
+  max-width: 54ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ctx-cta-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- narrow screens, light sections ---------- */
+
+@media (max-width: 620px) {
+  .toolchain-root .ctx-sig {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The thread turns vertical between the stacked halves. */
+  .toolchain-root .ctx-sig-thread {
+    width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+    height: 26px;
+    margin-inline: auto;
+    background-size:
+      var(--thread-gauge) 100%,
+      var(--thread-gauge) 100%;
+    background-position:
+      0 0,
+      100% 0;
+  }
+
+  .toolchain-root .ctx-gloss-row {
+    grid-template-columns: minmax(0, 108px) minmax(0, 1fr);
+  }
+}

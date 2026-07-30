@@ -12,7 +12,7 @@ type Theme = 'light' | 'dark';
  * persisted to localStorage and pre-applied by an inline script in the root
  * layout so a reload never flashes the wrong theme.
  */
-export default function ThemeToggle() {
+export default function ThemeToggle({ className }: { className?: string }) {
   const [theme, setTheme] = useState<Theme>('light');
 
   useMountEffect(() => {
@@ -35,7 +35,7 @@ export default function ThemeToggle() {
     <button
       type='button'
       onClick={toggle}
-      className='rounded-lg px-2.5 py-1.5 text-white/55 transition-colors hover:bg-white/10 hover:text-white'
+      className={className ?? 'rounded-lg px-2.5 py-1.5 text-white/55 transition-colors hover:bg-white/10 hover:text-white'}
       aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
       title={theme === 'light' ? 'Dark mode' : 'Light mode'}
     >

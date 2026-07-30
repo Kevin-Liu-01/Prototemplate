@@ -1,3 +1,5 @@
+import LocaleTag from '../../components/LocaleTag';
+
 import { surfaceA11y, surfaceClass, type SurfaceProps } from './surface';
 import './surface.css';
 
@@ -19,8 +21,8 @@ import './surface.css';
  * The live pane is marked by type weight on its tag, nothing else.
  */
 const PANES = [
-  { tag: 'en · main', heading: 'Launch your product', button: 'Get started', live: false },
-  { tag: 'es · preview', heading: 'Lanza tu producto', button: 'Comenzar ahora', live: true },
+  { loc: 'en', role: 'main', heading: 'Launch your product', button: 'Get started', live: false },
+  { loc: 'es', role: 'preview', heading: 'Lanza tu producto', button: 'Comenzar ahora', live: true },
 ] as const;
 
 export default function PreviewSurface({ className, title }: SurfaceProps) {
@@ -29,12 +31,16 @@ export default function PreviewSurface({ className, title }: SurfaceProps) {
       <div className='tcx-win'>
         <div className='tcx-bar'>
           <span>localhost:3000</span>
-          <span>es · dev</span>
+          <span>
+            <LocaleTag code='es' /> · dev
+          </span>
         </div>
 
         {PANES.map((pane) => (
-          <div className='tcx-pane' key={pane.tag}>
-            <span className={pane.live ? 'tcx-pane-tag is-on' : 'tcx-pane-tag'}>{pane.tag}</span>
+          <div className='tcx-pane' key={pane.loc}>
+            <span className={pane.live ? 'tcx-pane-tag is-on' : 'tcx-pane-tag'}>
+              <LocaleTag code={pane.loc} /> · {pane.role}
+            </span>
             <div className='tcx-h' lang={pane.live ? 'es' : 'en'}>
               {pane.heading}
             </div>

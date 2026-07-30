@@ -33,6 +33,72 @@
   --lang-wm-key: 54px;
 }
 
+/* The other locale-keyed key columns, re-measured the same way: every
+   column that was sized for a bare two-letter code gets the flag's
+   width back, so the sweep is page-wide rather than module-by-module.
+   SentenceWidth's dashed measuring guide sits at the key column's edge,
+   so it moves with it — at both breakpoints, since these outrank the
+   plain-class mobile rules in lang.css. */
+.toolchain-root .lang-sw-row {
+  grid-template-columns: 104px minmax(0, 1fr);
+}
+
+.toolchain-root .lang-sw-guide {
+  left: 104px;
+}
+
+@media (max-width: 560px) {
+  .toolchain-root .lang-sw-row {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .toolchain-root .lang-sw-guide {
+    left: 84px;
+  }
+}
+
+.toolchain-root .lang-eb-row {
+  grid-template-columns: 110px minmax(0, 1fr) 58px;
+}
+
+.toolchain-root .tcx-glossary .tcx-rows li {
+  grid-template-columns: 44px minmax(0, 1fr);
+}
+
+/* One convention for terminal output (the hero terminal set it): a locale
+   in a transcript is a bordered flag+code pill on the panel's own ink, at
+   the hero chip's 11px/17px scale. Used by the dark band's `gt translate`
+   run and the story cinema's CLI beat. */
+.toolchain-root .tc-termloc {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 0 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 17px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* The cinema art lines are flex rows (whitespace between children is
+   dropped), so the chip run spaces itself with a gap. */
+.toolchain-root .tc-cinema-art-line.tc-termline {
+  gap: 5px;
+}
+
+/* At the dark band's mobile size the ✓-row pills shave their side padding
+   so the widest transcript line stays inside the panel (code stays 11px —
+   the floor holds). */
+@media (max-width: 700px) {
+  .toolchain-root .tcb .tc-termloc {
+    padding: 0 4px;
+  }
+}
+
 /* ---------- capability rows: glyph column + infinite scroll ----------
    The old 3×3 grid becomes single rows on a doubled track; the container
    keeps the pane's stretched height (flex: 1 from styles.css) so nothing

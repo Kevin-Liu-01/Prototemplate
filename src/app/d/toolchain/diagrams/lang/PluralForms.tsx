@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import LocaleTag from '../../components/LocaleTag';
+
 import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from './lang';
 import './lang.css';
 
@@ -163,7 +165,9 @@ export default function PluralForms({ className, accent = true, title }: LangPro
         {COLUMNS.map((column) => (
           <div className='lang-pf-col' key={column.tag}>
             <p className='lang-pf-head'>
-              <span className='lang-tag'>{column.tag}</span>
+              <span className='lang-tag'>
+                <LocaleTag code={column.tag} />
+              </span>
               <span className='lang-pf-forms'>{column.formsLabel}</span>
             </p>
 

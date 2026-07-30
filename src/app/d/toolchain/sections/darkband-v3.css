@@ -1,0 +1,937 @@
+/* ============================================================
+   DARK BAND v3 — the calm cut
+   The v2 bento grammar kept (dark cards on a darker ground, 1px
+   seams, 12px radius), recut for calm: every cell is heading +
+   one line + one quiet artifact, with real air — fewer transcript
+   lines, fewer list rows, taller line-heights, wider padding.
+
+   New in v3: the stack cell is an instrument. The seven planes
+   are hover/focus/tap targets wired two-way to an HTML caption
+   column; the left connector is a doubled vertical rail (two 1px
+   lines at constant gauge) that each plane taps off with a
+   small-radius corner leader — circuitry, not scaffolding.
+
+   Every selector is prefixed `.toolchain-root .tcb` — this file is
+   imported by the component and therefore loads BEFORE styles.css,
+   so the extra class is what wins the cascade, deliberately.
+   ============================================================ */
+
+.toolchain-root .tcb {
+  /* surfaces */
+  --tcb-seam: rgba(255, 255, 255, 0.14);
+  --tcb-card: #121419;
+  --tcb-lift: rgba(255, 255, 255, 0.045);
+  --tcb-rule: rgba(255, 255, 255, 0.1);
+
+  /* inks */
+  --tcb-ink: rgba(255, 255, 255, 0.92);
+  --tcb-body: rgba(255, 255, 255, 0.58);
+  --tcb-dim: rgba(255, 255, 255, 0.42);
+  --tcb-faint: rgba(255, 255, 255, 0.26);
+
+  /* THE code token set — one restrained ramp, identical on every
+     panel in the band. Strings carry the only hue, because strings
+     are the product; keywords and markup are structure. */
+  --tcb-t-str: #a7bff3;
+  --tcb-t-kw: rgba(255, 255, 255, 0.5);
+  --tcb-t-tag: #ffffff;
+  --tcb-t-dim: rgba(255, 255, 255, 0.38);
+
+  /* Diff semantics — muted tints for line fills, one legible ink
+     each for the gutter mark. Spent ONLY inside diff artifacts. */
+  --tc-diff-add: rgba(96, 190, 130, 0.13);
+  --tc-diff-add-ink: #85cfa1;
+  --tc-diff-del: rgba(222, 110, 110, 0.1);
+  --tc-diff-del-ink: #d29090;
+}
+
+.toolchain-root .tcb .tcb-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(60px, 7vw, 96px) var(--tc-gut) clamp(56px, 7vw, 88px);
+}
+
+/* ---------- header: heading + one line, nothing else ---------- */
+
+.toolchain-root .tcb .tcb-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+
+.toolchain-root .tcb .tcb-head p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tcb-body);
+  max-width: 44ch;
+}
+
+/* ---------- the grid: dark cards, 1px seams, light-bento radius ---------- */
+
+.toolchain-root .tcb .tcb-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: var(--tcb-seam);
+  border-radius: 13px;
+}
+
+.toolchain-root .tcb .tcb-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--tcb-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.toolchain-root .tcb .tcb-cap {
+  padding: 22px 24px 0;
+}
+
+.toolchain-root .tcb .tcb-cell h3 {
+  font-size: 15.5px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.toolchain-root .tcb .tcb-cap p,
+.toolchain-root .tcb .tcb-svc-cap p {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--tcb-body);
+}
+
+/* ============================================================
+   CELL: the stack instrument
+   Drawing left, caption column right. Both sides are targets:
+   plane ↔ caption, two-way, GSAP-driven, no layout shift.
+   ============================================================ */
+
+.toolchain-root .tcb .tcb-cell-stack {
+  grid-column: span 7;
+}
+
+.toolchain-root .tcb .tcb-stack {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(10px, 2vw, 26px);
+  padding: 20px 24px 24px 16px;
+  min-height: 0;
+}
+
+.toolchain-root .tcb .tcb-stack-fig {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolchain-root .tcb .tcb-stack-fig .tcstack {
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+}
+
+/* -- the planes: pointer targets with focus parity ------------------- */
+
+.toolchain-root .tcb .tcs-layer {
+  cursor: pointer;
+  outline: none;
+}
+
+.toolchain-root .tcb .tcs-layer:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 4px;
+}
+
+/* the doubled top edge, revealed on the active plane only (GSAP) */
+.toolchain-root .tcb .tcs-dbl {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+/* -- the glass plates (founder pick) ----------------------------------
+   Frosted surfaces, not wireframes: a near-opaque dark hull occludes the
+   planes beneath while its 0.94 alpha keeps a hint of depth; the three
+   face tints hold the family's upper-left light; the sheen is the one
+   shared diagonal gradient (#tcsFrost); the white edge strokes carry
+   per-plane depth as inline alphas set by the drawing itself. */
+
+.toolchain-root .tcb .tcs-glass-base {
+  fill: rgba(13, 15, 21, 0.94);
+}
+
+.toolchain-root .tcb .tcs-glass-left {
+  fill: rgba(255, 255, 255, 0.06);
+}
+
+.toolchain-root .tcb .tcs-glass-right {
+  fill: rgba(3, 5, 9, 0.45);
+}
+
+.toolchain-root .tcb .tcs-glass-topfill {
+  fill: rgba(255, 255, 255, 0.07);
+}
+
+.toolchain-root .tcb .tcs-glass-sheen {
+  fill: url(#tcsFrost);
+}
+
+.toolchain-root .tcb .tcs-glass-rim,
+.toolchain-root .tcb .tcs-glass-edge {
+  fill: none;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+}
+
+.toolchain-root .tcb .tcs-glass-front {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linecap: round;
+}
+
+/* content marks read against the frosted plate, not the old wireframe */
+.toolchain-root .tcb .tcstack .iso-face-mark {
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+/* -- the left connector: the full-height doubled rail ------------------
+   Two real 1px borders with the page's 3px gap (crisp at any zoom),
+   spanning the cell's top edge to its bottom edge. `left` is a fallback;
+   DarkBand measures the drawing and pins the inner line to the tap x. */
+
+.toolchain-root .tcb .tcb-stack-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 48px;
+  width: 5px;
+  border-inline: 1px solid rgba(255, 255, 255, 0.34);
+  pointer-events: none;
+}
+
+/* the heading steps right of the rail so it crosses clean air (the JS
+   measure refines this the same way it refines the rail's own x) */
+.toolchain-root .tcb .tcb-cell-stack > .tcb-cap {
+  padding-left: 76px;
+}
+
+.toolchain-root .tcb .tcs-leader {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1px;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+
+/* -- the caption column: the drawing's legend, row per plane ---------
+   The ledger runs the cell's full height (founder pick): the column
+   stretches, and the seven rows divide it into seven equal ruled
+   slices — first row at the top, last at the bottom, mirroring the
+   leaders' even spacing down the drawing. */
+
+.toolchain-root .tcb .tcb-stack-caps {
+  flex: 0 0 238px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.toolchain-root .tcb .tcb-stack-cap {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  padding: 10px 12px 11px;
+  text-align: left;
+  font-family: var(--tc-mono);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.toolchain-root .tcb .tcb-stack-cap + .tcb-stack-cap {
+  position: relative;
+}
+
+.toolchain-root .tcb .tcb-stack-cap + .tcb-stack-cap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.toolchain-root .tcb .tcb-stack-cap > b {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+/* direct child only — the LocaleTag chip inside stays inline */
+.toolchain-root .tcb .tcb-stack-cap > span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--tcb-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.toolchain-root .tcb .tcb-stack-cap.is-hot {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.toolchain-root .tcb .tcb-stack-cap.is-hot > b {
+  color: #ffffff;
+}
+
+.toolchain-root .tcb .tcb-stack-cap.is-hot > span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.toolchain-root .tcb .tcb-stack-cap.is-cold {
+  opacity: 0.55;
+}
+
+.toolchain-root .tcb .tcb-stack-cap:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: -1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .tcb .tcb-stack-cap,
+  .toolchain-root .tcb .tcb-stack-cap > b,
+  .toolchain-root .tcb .tcb-stack-cap > span {
+    transition: none;
+  }
+}
+
+/* ---------- cell: the CLI on the band's one light surface ---------- */
+
+.toolchain-root .tcb .tcb-cell-cli {
+  grid-column: span 5;
+  background: #08090c;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  min-height: 420px;
+}
+
+.toolchain-root .tcb .tcb-cli-field {
+  position: absolute;
+  inset: -12% -10%;
+  width: 120%;
+  height: 124%;
+  z-index: 0;
+}
+
+.toolchain-root .tcb .tcb-term {
+  position: relative;
+  z-index: 1;
+  width: min(400px, calc(100% - clamp(36px, 5vw, 64px)));
+  margin: clamp(28px, 3.2vw, 44px) 0;
+  border-radius: 6px;
+  background: #0d0e10;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.toolchain-root .tcb .tcb-term-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tcb-rule);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+}
+
+.toolchain-root .tcb .tcb-term-body {
+  padding: 18px 20px 20px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 2.15;
+  color: var(--tcb-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.toolchain-root .tcb .tcb-term-body [data-tone='prompt'] {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.toolchain-root .tcb .tcb-term-body [data-tone='dim'] {
+  color: var(--tcb-dim);
+}
+
+.toolchain-root .tcb .tcb-term-body i {
+  font-style: normal;
+  color: var(--tcb-dim);
+}
+
+/* ---------- the four service cells ---------- */
+
+.toolchain-root .tcb .tcb-svc {
+  grid-column: span 3;
+  min-height: 290px;
+}
+
+.toolchain-root .tcb .tcb-svc-cap {
+  padding: 20px 20px 0;
+}
+
+.toolchain-root .tcb .tcb-svc-cap h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 15px;
+}
+
+/* real tool marks, quiet: they identify, they never decorate */
+.toolchain-root .tcb .tcb-marks {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--tcb-dim);
+}
+
+/* the artifact zone: flush to the cell's three lower edges */
+.toolchain-root .tcb .tcb-art {
+  margin-top: 16px;
+  border-top: 1px solid var(--tcb-rule);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--tc-mono);
+  min-height: 0;
+}
+
+.toolchain-root .tcb .tcb-art-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px 9px;
+  border-bottom: 1px solid var(--tcb-rule);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+  white-space: nowrap;
+}
+
+.toolchain-root .tcb .tcb-art-bar .is-on {
+  color: var(--tcb-ink);
+}
+
+.toolchain-root .tcb .tcb-art-bar .tcb-marks {
+  margin-left: auto;
+}
+
+.toolchain-root .tcb .tcb-art-bar b {
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+.toolchain-root .tcb .tcb-pre {
+  margin: 14px 0 0;
+  padding: 0 16px;
+  font-size: 12px;
+  line-height: 2.05;
+  color: var(--tcb-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* the shared token set, spent identically on every panel */
+.toolchain-root .tcb .tk-kw {
+  color: var(--tcb-t-kw);
+}
+
+.toolchain-root .tcb .tk-str {
+  color: var(--tcb-t-str);
+}
+
+.toolchain-root .tcb .tk-tag {
+  color: var(--tcb-t-tag);
+  font-weight: 500;
+}
+
+.toolchain-root .tcb .tk-dim {
+  color: var(--tcb-t-dim);
+}
+
+/* the pinned output band every service plate ends on */
+.toolchain-root .tcb .tcb-out {
+  margin-top: auto;
+  padding: 11px 16px 13px;
+  background: var(--tcb-lift);
+  display: grid;
+  gap: 6px;
+}
+
+.toolchain-root .tcb .tcb-out-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.toolchain-root .tcb .tcb-out-row span {
+  color: var(--tcb-dim);
+}
+
+.toolchain-root .tcb .tcb-out-row b {
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+/* the runtime response: status line + the translated string itself */
+.toolchain-root .tcb .tcb-resp {
+  margin-top: auto;
+  background: var(--tcb-lift);
+  padding: 11px 16px 14px;
+}
+
+.toolchain-root .tcb .tcb-resp-status {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+}
+
+.toolchain-root .tcb .tcb-resp-body {
+  margin-top: 6px;
+  font-size: 11.5px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--tcb-t-dim);
+}
+
+.toolchain-root .tcb .tcb-resp-body b {
+  font-weight: 500;
+  color: var(--tcb-t-str);
+}
+
+/* dashboard rows — product UI, not code */
+.toolchain-root .tcb .tcb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 16px 0;
+}
+
+/* direct child only — LocaleTag's own inner spans must not re-box */
+.toolchain-root .tcb .tcb-chips > span {
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.toolchain-root .tcb .tcb-ledger {
+  margin-top: 14px;
+  padding: 0 16px;
+  display: grid;
+  gap: 11px;
+}
+
+.toolchain-root .tcb .tcb-ledger .tcb-out-row {
+  font-size: 12px;
+}
+
+/* diff lines — gutter mark + muted line tint, nowhere else */
+.toolchain-root .tcb .tcb-diff {
+  margin-top: 14px;
+  font-size: 11.5px;
+  line-height: 2.05;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.toolchain-root .tcb .tcb-diff > div {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  padding-right: 14px;
+}
+
+.toolchain-root .tcb .tcb-diff i {
+  font-style: normal;
+  text-align: center;
+  color: var(--tcb-faint);
+  user-select: none;
+}
+
+.toolchain-root .tcb .tcb-diff .is-hunk {
+  color: var(--tcb-t-dim);
+}
+
+.toolchain-root .tcb .tcb-diff .is-add {
+  background: var(--tc-diff-add);
+  color: var(--tcb-ink);
+}
+
+.toolchain-root .tcb .tcb-diff .is-add i {
+  color: var(--tc-diff-add-ink);
+}
+
+.toolchain-root .tcb .tcb-diff .is-del {
+  background: var(--tc-diff-del);
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.toolchain-root .tcb .tcb-diff .is-del i {
+  color: var(--tc-diff-del-ink);
+}
+
+/* ---------- cell: context inheritance, org → project → component ---------- */
+
+.toolchain-root .tcb .tcb-cell-ctx {
+  grid-column: span 8;
+}
+
+.toolchain-root .tcb .tcb-ctx {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 0.95fr) 34px minmax(0, 1.22fr);
+  align-items: stretch;
+  gap: 0;
+  padding: 18px 24px 22px;
+}
+
+.toolchain-root .tcb .tcb-ctx-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .tcb .tcb-ctx-tag {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--tcb-dim);
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--tcb-rule);
+  margin-bottom: 12px;
+}
+
+.toolchain-root .tcb .tcb-ctx-k {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+.toolchain-root .tcb .tcb-ctx-k + .tcb-ctx-k,
+.toolchain-root .tcb .tcb-ctx-rule + .tcb-ctx-k {
+  margin-top: 12px;
+}
+
+.toolchain-root .tcb .tcb-ctx-rule {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.62;
+  color: var(--tcb-body);
+}
+
+/* a locale chip inside a directive rule: the page's one locale system */
+.toolchain-root .tcb .tcb-ctx-loc {
+  margin-left: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tcb-dim);
+}
+
+.toolchain-root .tcb .tcb-ctx-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5.5px 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tcb-ink);
+}
+
+.toolchain-root .tcb .tcb-ctx-row .tcb-pri {
+  width: 14px;
+  color: var(--tcb-faint);
+}
+
+.toolchain-root .tcb .tcb-ctx-row b {
+  font-weight: 500;
+}
+
+.toolchain-root .tcb .tcb-ctx-row .tcb-scope {
+  margin-left: auto;
+  color: var(--tcb-dim);
+  font-size: 11px;
+}
+
+.toolchain-root .tcb .tcb-ctx-rule s {
+  color: var(--tcb-dim);
+  text-decoration-thickness: 1px;
+}
+
+.toolchain-root .tcb .tcb-ctx-code {
+  margin: 0;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.9;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--tcb-ink);
+}
+
+/* the rendered result: the toast that is a notification, not bread */
+.toolchain-root .tcb .tcb-ctx-res {
+  margin-top: auto;
+  padding-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.toolchain-root .tcb .tcb-ctx-res .tcb-ctx-res-loc {
+  color: var(--tcb-dim);
+  font-size: 11.5px;
+}
+
+.toolchain-root .tcb .tcb-ctx-res b {
+  font-weight: 500;
+  color: var(--tcb-t-str);
+}
+
+.toolchain-root .tcb .tcb-ctx-res s {
+  color: var(--tcb-faint);
+  text-decoration-thickness: 1px;
+}
+
+/* the inheritance joints: the doubled thread, pointing down the cascade */
+.toolchain-root .tcb .tcb-ctx-joint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolchain-root .tcb .tcb-ctx-joint svg {
+  display: block;
+}
+
+.toolchain-root .tcb .tcb-ctx-joint path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: var(--thread-gauge, 1.5px);
+}
+
+.toolchain-root .tcb .tcb-ctx-joint .tcb-joint-head {
+  fill: rgba(255, 255, 255, 0.72);
+  stroke: none;
+}
+
+/* ---------- cell: the trace, one commit on the clock ---------- */
+
+.toolchain-root .tcb .tcb-cell-trace {
+  grid-column: span 4;
+}
+
+.toolchain-root .tcb .tcb-trace {
+  position: relative;
+  flex: 1;
+  margin: 18px 24px 22px;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* the doubled rail the rows hang from — two real 1px borders at the
+   page's 3px gap, running the card's FULL height, top edge to bottom
+   edge (founder pick); scroll still draws it top-down. It sits 26px in
+   (the trace margin + its old 2px), so every row tick still crosses it. */
+.toolchain-root .tcb .tcb-trace-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 26px;
+  width: 5px;
+  border-inline: 1px solid rgba(255, 255, 255, 0.62);
+  transform-origin: top center;
+  pointer-events: none;
+}
+
+/* the heading steps right of the full-height rail, level with the rows */
+.toolchain-root .tcb .tcb-cell-trace > .tcb-cap {
+  padding-left: 48px;
+}
+
+.toolchain-root .tcb .tcb-trace-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 78px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.toolchain-root .tcb .tcb-trace-row::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 0.65em;
+  width: 14px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.toolchain-root .tcb .tcb-trace-row > span:first-child {
+  color: var(--tcb-faint);
+}
+
+.toolchain-root .tcb .tcb-trace-row b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .tcb .tcb-trace-val {
+  color: var(--tcb-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- CTAs ---------- */
+
+.toolchain-root .tcb .tcb-acts {
+  margin-top: clamp(28px, 3.2vw, 40px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1020px) {
+  .toolchain-root .tcb .tcb-cell-stack,
+  .toolchain-root .tcb .tcb-cell-cli,
+  .toolchain-root .tcb .tcb-cell-ctx,
+  .toolchain-root .tcb .tcb-cell-trace {
+    grid-column: span 12;
+  }
+
+  .toolchain-root .tcb .tcb-svc {
+    grid-column: span 6;
+  }
+
+  /* the instrument folds: drawing above, captions below, both full targets */
+  .toolchain-root .tcb .tcb-stack {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 20px 20px;
+  }
+
+  .toolchain-root .tcb .tcb-stack-fig .tcstack {
+    max-width: 300px;
+  }
+
+  .toolchain-root .tcb .tcb-stack-caps {
+    flex: none;
+    width: 100%;
+    max-width: 440px;
+    align-self: center;
+  }
+
+  /* folded, the ledger sits under the drawing — rows return to content
+     height; the full-height distribution is the side-by-side layout's */
+  .toolchain-root .tcb .tcb-stack-cap {
+    flex: 0 0 auto;
+  }
+
+  .toolchain-root .tcb .tcb-ctx {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 14px;
+  }
+
+  /* the cascade folds vertical: the same joint, turned down */
+  .toolchain-root .tcb .tcb-ctx-joint svg {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .toolchain-root .tcb .tcb-svc {
+    grid-column: span 12;
+    min-height: 0;
+  }
+
+  .toolchain-root .tcb .tcb-cell-cli {
+    min-height: 380px;
+  }
+
+  .toolchain-root .tcb .tcb-term-body {
+    font-size: 11px;
+  }
+
+  .toolchain-root .tcb .tcb-stack-cap {
+    grid-template-columns: 76px minmax(0, 1fr);
+    padding: 10px 8px;
+  }
+
+  .toolchain-root .tcb .tcb-trace-row {
+    grid-template-columns: 60px 72px minmax(0, 1fr);
+    font-size: 11px;
+  }
+}

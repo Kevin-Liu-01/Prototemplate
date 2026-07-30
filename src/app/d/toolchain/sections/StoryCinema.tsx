@@ -4,11 +4,15 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
-import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useRef } from 'react';
 
-import { tokenize } from './code';
+import LocaleTag from '../components/LocaleTag';
 
+import { tokenize } from './code';
+import RevealSeam from './RevealSeam';
+
+import '../components/icons.css';
 import './story-cinema-v3.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -18,9 +22,11 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  *
  * One pinned take, two surfaces. LEFT: the demo website — a clean flat
  * panel (no shader), five hairline-separated sections with real strings.
- * Component boxes (the tagline card, the CTA button) are showcases: a
- * pointer-draggable metallic divider reveals each component's <T> source
- * at ~70/30; the beat scrub opens it wider when that component speaks.
+ * Component boxes (the tagline card, the CTA button) are showcases: the
+ * house reveal seam (RevealSeam — the logo's doubled line) uncovers each
+ * component's <T> source, pinned full-width behind the render, resting
+ * at ~70/30; the beat scrub pulls it fully open when that component
+ * speaks.
  * When Locadex works, its selection is unmistakable: a doubled-gauge
  * sweep draws around the picked node, a Locadex chip rides the ring, and
  * the rest of the site dims under a masked scrim. RIGHT: the progress
@@ -144,12 +150,16 @@ const CTX_ACCUM: readonly { k: string; v: string }[] = [
   { k: 'do-not-translate', v: '2 terms' },
 ] as const;
 
-/** `npx gt translate`, in the CLI's own voice (beat 3). */
+/** `npx gt translate`, in the CLI's own voice (beat 3). The locale lists
+    render as the hero terminal's flag+code pills, not bare codes. */
 const CLI_TRANSLATE = [
   '$ npx gt translate',
   'scan    app/ · 24 files · 42 strings',
-  'target  es · fr · ja · de · zh',
-  'Wrote public/_gt/es.json · fr · ja · de · zh',
+] as const;
+
+const CLI_TARGETS = ['es', 'fr', 'ja', 'de', 'zh'] as const;
+
+const CLI_STRINGS = [
   '"Hello, world!" → "¡Hola, mundo!"',
   '"Get started" → "Comenzar ahora"',
 ] as const;
@@ -241,32 +251,16 @@ type ShowcaseProps = {
 /** How much of the source layer shows at a given cut. At the ~70/30 rest
     the strip carries a crisp `<T>` chip (never a mid-token crop of code);
     pulling past ~36% has crossfaded the whole listing in. One curve for
-    the pointer drag and the beat scrub, so they can never disagree. */
+    the seam drag and the beat scrub, so they can never disagree. */
 const openAt = (cutPct: number): number => Math.min(Math.max((70 - cutPct) / 34, 0), 1);
 
-/** A component box that showcases its own source: rendered UI left, the
-    <T> code right, split by a pointer-draggable metallic divider. The
-    cut lives in a CSS var so the drag and the beat scrub share one dial. */
+/** A component box that showcases its own source: the rendered UI in
+    front, the <T> code PINNED full-width behind it, revealed by the
+    house seam (RevealSeam) — the handle only moves the clip boundary,
+    so the code never travels. The cut lives in a CSS var so the drag
+    and the beat scrub share one dial. */
 function Showcase({ className, show, lines, node, btn, children }: ShowcaseProps) {
   const box = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
-
-  const down = (e: ReactPointerEvent<HTMLSpanElement>) => {
-    dragging.current = true;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    e.preventDefault();
-  };
-  const move = (e: ReactPointerEvent<HTMLSpanElement>) => {
-    if (!dragging.current || !box.current) return;
-    const r = box.current.getBoundingClientRect();
-    if (r.width === 0) return;
-    const pct = Math.min(86, Math.max(14, ((e.clientX - r.left) / r.width) * 100));
-    box.current.style.setProperty('--cut', `${pct}%`);
-    box.current.style.setProperty('--open', String(openAt(pct)));
-  };
-  const up = () => {
-    dragging.current = false;
-  };
 
   return (
     <div
@@ -275,7 +269,7 @@ function Showcase({ className, show, lines, node, btn, children }: ShowcaseProps
       data-node={node}
       data-btn={btn ? '' : undefined}
       ref={box}
-      style={{ '--cut': '70%', '--open': '0' } as CSSProperties}
+      style={{ '--seam-cut': '70%', '--open': '0' } as CSSProperties}
     >
       <div className='tc-cinema-show-ui'>{children}</div>
       <div className='tc-cinema-show-src' aria-hidden>
@@ -289,15 +283,10 @@ function Showcase({ className, show, lines, node, btn, children }: ShowcaseProps
           ))}
         </div>
       </div>
-      <span
-        className='tc-cinema-show-handle'
-        data-handle
-        role='separator'
-        aria-orientation='vertical'
-        onPointerDown={down}
-        onPointerMove={move}
-        onPointerUp={up}
-        onPointerCancel={up}
+      <RevealSeam
+        boxRef={box}
+        ariaLabel='Reveal the component source'
+        onCutChange={(pct, el) => el.style.setProperty('--open', String(openAt(pct)))}
       />
     </div>
   );
@@ -359,6 +348,20 @@ const ARTS: readonly ReactNode[] = [
   <div className='tc-cinema-art' data-art key='a3'>
     {CLI_TRANSLATE.map((line, i) => (
       <div className='tc-cinema-art-line' key={i}>
+        <Tok text={line} />
+      </div>
+    ))}
+    <div className='tc-cinema-art-line tc-termline'>
+      <code>{'target '}</code>
+      {CLI_TARGETS.map((loc) => (
+        <LocaleTag code={loc} className='tc-termloc' key={loc} />
+      ))}
+    </div>
+    <div className='tc-cinema-art-line'>
+      <Tok text='Wrote public/_gt/{es,fr,ja,de,zh}.json' />
+    </div>
+    {CLI_STRINGS.map((line, i) => (
+      <div className='tc-cinema-art-line' key={`s${i}`}>
         <Tok text={line} />
       </div>
     ))}
@@ -714,16 +717,18 @@ export default function StoryCinema() {
         );
       };
 
-      /** Scrub a showcase's divider: the beat opens the source reveal.
-          The cut and the code crossfade ride one tween, on the same
-          curve the pointer drag uses. */
+      /** Scrub a showcase's seam: the beat opens the source reveal. The
+          code is pinned at the box's left edge, so "open" means the cut
+          runs nearly to 0 and the whole listing stands revealed. The cut
+          and the code crossfade ride one tween, on the same curve the
+          pointer drag uses. */
       const cut = (show: string, from: number, to: number, t: number, d = 0.8) => {
         const el = bySel(`[data-show='${show}']`);
         if (!el) return;
         ft(
           el,
-          { '--cut': `${from}%`, '--open': openAt(from) },
-          { '--cut': `${to}%`, '--open': openAt(to), duration: d, ease: 'power2.inOut' },
+          { '--seam-cut': `${from}%`, '--open': openAt(from) },
+          { '--seam-cut': `${to}%`, '--open': openAt(to), duration: d, ease: 'power2.inOut' },
           t
         );
       };
@@ -816,11 +821,11 @@ export default function StoryCinema() {
       cap(1, 10);
       ft(wCtx, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 10.2);
       frame("[data-node='tagline']", 10.3, 7);
-      cut('card', 70, 26, 10.6, 0.9);
+      cut('card', 70, 3, 10.6, 0.9);
       if (ctxGroup) ft(ctxGroup, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 10.5);
       learn(0, 11.3);
       learn(1, 12.1);
-      cut('card', 26, 70, 24.3, 0.7);
+      cut('card', 3, 70, 24.3, 0.7);
       tl.to(wCtx, { autoAlpha: 0, duration: 0.5 }, 24.8);
       tl.to(hilite, { autoAlpha: 0, duration: 0.4 }, 25.3);
 
@@ -846,7 +851,7 @@ export default function StoryCinema() {
       /* ================= BEAT 5 · around any component (52–60 · mobile sample t≈55) ================= */
       cap(4, 52);
       frame('[data-btn]', 52.6, 7);
-      cut('cta', 70, 30, 52.9, 0.8);
+      cut('cta', 70, 3, 52.9, 0.8);
       swap(swapOf('cta'), 54.1);
       /* The button box = swap + its reserved source strip (100px) — the
          emphasis ring re-measures with the same constant. */
@@ -860,7 +865,7 @@ export default function StoryCinema() {
         },
         54.1
       );
-      cut('cta', 30, 70, 58.3, 0.7);
+      cut('cta', 3, 70, 58.3, 0.7);
       tl.to(hilite, { autoAlpha: 0, duration: 0.35 }, 59.2);
 
       /* ================= BEAT 6 · review (60–68) ================= */
@@ -923,7 +928,7 @@ export default function StoryCinema() {
         tl.to(`[data-flag='${e.flag}']`, { autoAlpha: 0, duration: 0.3 }, e.t - 0.15);
         agentVisit(e.sel, e.t, i === 0);
       });
-      cut('cta', 70, 32, 89.3, 0.8);
+      cut('cta', 70, 3, 89.3, 0.8);
       if (agent) {
         tl.to(agent.dim, { autoAlpha: 0, duration: 0.4 }, 97.4);
         tl.to([agent.ringO, agent.ringI], { autoAlpha: 0, duration: 0.35 }, 97.4);
@@ -946,15 +951,6 @@ export default function StoryCinema() {
 
   return (
     <section className='tc-cinema tc-cinema-v3' id='story-cinema' ref={root}>
-      <div className='tc-cinema-head'>
-        <h2>The pipeline again — in one take.</h2>
-        <p>
-          The same nine beats as a single pinned shot: the demo site on the left translating in
-          place, and one beat at a time on the right — what is happening, and the artifact that
-          proves it. Scroll to scrub the run — every frame is a still.
-        </p>
-      </div>
-
       <div className='tc-cinema-take' data-stage>
         {/* ============ the web ============ */}
         <div className='tc-cinema-web'>
