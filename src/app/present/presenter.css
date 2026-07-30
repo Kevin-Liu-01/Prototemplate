@@ -151,7 +151,26 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   flex-direction: column;
   gap: 13px;
   transform: translateY(-50%);
-  mix-blend-mode: difference;
+  padding: 26px 0;
+}
+
+/* Scrim so the rail never fights the content behind it. */
+.pr-hud-rail::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  bottom: -30px;
+  left: -24px;
+  right: -76px;
+  z-index: -1;
+  background: linear-gradient(
+    to right,
+    rgba(7, 7, 7, 0.94) 0%,
+    rgba(7, 7, 7, 0.82) 52%,
+    rgba(7, 7, 7, 0.45) 78%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
 .pr-hud-rail button {
