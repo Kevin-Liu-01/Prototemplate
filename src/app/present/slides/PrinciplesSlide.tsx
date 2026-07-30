@@ -17,7 +17,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, MorphSVGPlugin);
  * the bar drawn only where the plates don't cover it. One stroked path so
  * the audience curve can morph into it.
  */
-const BARBELL_D = [
+const PLATE_SHAPES = [
   // left plates: small, big, small
   'M 105 88 H 111 a 9 9 0 0 1 9 9 V 183 a 9 9 0 0 1 -9 9 H 105 a 9 9 0 0 1 -9 -9 V 97 a 9 9 0 0 1 9 -9 Z',
   'M 138 58 H 150 a 12 12 0 0 1 12 12 V 210 a 12 12 0 0 1 -12 12 H 138 a 12 12 0 0 1 -12 -12 V 70 a 12 12 0 0 1 12 -12 Z',
@@ -26,9 +26,19 @@ const BARBELL_D = [
   'M 497 88 H 503 a 9 9 0 0 1 9 9 V 183 a 9 9 0 0 1 -9 9 H 497 a 9 9 0 0 1 -9 -9 V 97 a 9 9 0 0 1 9 -9 Z',
   'M 530 58 H 542 a 12 12 0 0 1 12 12 V 210 a 12 12 0 0 1 -12 12 H 530 a 12 12 0 0 1 -12 -12 V 70 a 12 12 0 0 1 12 -12 Z',
   'M 569 88 H 575 a 9 9 0 0 1 9 9 V 183 a 9 9 0 0 1 -9 9 H 569 a 9 9 0 0 1 -9 -9 V 97 a 9 9 0 0 1 9 -9 Z',
+];
+
+const BARBELL_D = [
+  ...PLATE_SHAPES,
   // bar: sleeve, center span, sleeve
   'M 40 140 H 96 M 192 140 H 488 M 584 140 H 640',
 ].join(' ');
+
+/** Hatched area under the curve; morphs into the plates' shading. */
+const AREA_FILL_D =
+  'M 20 206 C 80 200 120 72 170 72 C 220 72 290 176 340 176 C 390 176 460 72 510 72 C 560 72 600 200 660 206 L 660 207 L 20 207 Z';
+
+const PLATES_FILL_D = PLATE_SHAPES.join(' ');
 
 type DemoAfter = { t: string; f?: string };
 
@@ -199,6 +209,12 @@ export default function PrinciplesSlide() {
           { drawSVG: '0% 100%', duration: 0.9 },
           '<0.2'
         )
+        .fromTo(
+          '.pr-barbell-fill',
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.7, ease: 'power1.inOut' },
+          '<0.35'
+        )
         .from('.pr-tail-left', { autoAlpha: 0, x: -34, duration: 0.55 }, '>-0.5')
         .from('.pr-tail-right', { autoAlpha: 0, x: 34, duration: 0.55 }, '<0.2')
         .from('.pr-tail-mid', { autoAlpha: 0, y: 14, duration: 0.45 }, '<0.25')
@@ -208,7 +224,21 @@ export default function PrinciplesSlide() {
           { autoAlpha: 0, y: 18, stagger: 0.14, duration: 0.4 },
           '<0.15'
         )
-        // The audience curve resolves into the thing it was named after.
+        // Each promise checks off as it is made.
+        .fromTo(
+          '.pr-infra-chip .pr-term-check',
+          { scale: 0, autoAlpha: 0 },
+          {
+            scale: 1,
+            autoAlpha: 1,
+            stagger: 0.3,
+            duration: 0.35,
+            ease: 'back.out(2.4)',
+          },
+          '+=0.3'
+        )
+        // The audience curve resolves into the thing it was named after,
+        // its shading condensing into the plates.
         .to(
           '.pr-barbell-path',
           {
@@ -217,6 +247,15 @@ export default function PrinciplesSlide() {
             ease: 'power2.inOut',
           },
           '+=0.5'
+        )
+        .to(
+          '.pr-barbell-fill',
+          {
+            morphSVG: { shape: PLATES_FILL_D },
+            duration: 1.1,
+            ease: 'power2.inOut',
+          },
+          '<'
         )
         .to('.pr-barbell-base', { autoAlpha: 0, duration: 0.4 }, '<')
         .to({}, { duration: 0.7 })
@@ -318,6 +357,18 @@ export default function PrinciplesSlide() {
           <h3 className='pr-beat-title'>A barbell audience.</h3>
           <div className='pr-need-barbell'>
             <svg viewBox='0 0 680 250' aria-hidden>
+              <defs>
+                <pattern
+                  id='pr-hatch'
+                  patternUnits='userSpaceOnUse'
+                  width='7'
+                  height='7'
+                  patternTransform='rotate(45)'
+                >
+                  <line x1='0' y1='0' x2='0' y2='7' />
+                </pattern>
+              </defs>
+              <path className='pr-barbell-fill' d={AREA_FILL_D} />
               <path
                 className='pr-barbell-base'
                 d='M 20 208 L 660 208'
@@ -371,14 +422,17 @@ export default function PrinciplesSlide() {
             <p>Both tails read the same signal:</p>
             <div className='pr-infra-row'>
               <span className='pr-infra-chip'>
+                <i className='pr-term-check'>✓</i>
                 <Icon name='server' size={15} />
                 INFRASTRUCTURE-GRADE
               </span>
               <span className='pr-infra-chip'>
+                <i className='pr-term-check'>✓</i>
                 <Icon name='zap' size={15} />
                 FAST
               </span>
               <span className='pr-infra-chip'>
+                <i className='pr-term-check'>✓</i>
                 <Icon name='shield' size={15} />
                 RELIABLE
               </span>

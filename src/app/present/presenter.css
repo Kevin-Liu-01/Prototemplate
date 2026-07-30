@@ -149,29 +149,44 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   z-index: 90;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 3px;
   transform: translateY(-50%);
   padding: 26px 0;
 }
 
-/* Scrim so the rail never fights the content behind it: a restrained,
-   eased fade with no visible edge, deepening slightly while in use. */
+/* Scrim so the rail never fights the content behind it: fades left to
+   right in oklch, and feathers out top and bottom through a mask, so no
+   edge is ever visible. Deepens slightly while in use. */
 .pr-hud-rail::before {
   content: '';
   position: absolute;
-  top: -44px;
-  bottom: -44px;
+  top: -90px;
+  bottom: -90px;
   left: -24px;
-  right: -96px;
+  right: -110px;
   z-index: -1;
   background: linear-gradient(
     to right in oklch,
-    oklch(0.13 0 0 / 0.85) 0%,
-    oklch(0.13 0 0 / 0.55) 52%,
-    oklch(0.13 0 0 / 0.18) 80%,
+    oklch(0.13 0 0 / 0.88) 0%,
+    oklch(0.13 0 0 / 0.58) 52%,
+    oklch(0.13 0 0 / 0.2) 80%,
     oklch(0.13 0 0 / 0) 100%
   );
-  opacity: 0.8;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 22%,
+    #000 78%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 22%,
+    #000 78%,
+    transparent 100%
+  );
+  opacity: 0.85;
   transition: opacity 0.35s ease;
   pointer-events: none;
 }
@@ -180,13 +195,14 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   opacity: 1;
 }
 
+/* Generous hitboxes: padding carries the hit area, not the layout. */
 .pr-hud-rail button {
   display: flex;
   align-items: center;
   gap: 10px;
   background: none;
   border: 0;
-  padding: 0;
+  padding: 6px 16px 6px 2px;
   cursor: pointer;
   color: #fff;
 }
@@ -196,7 +212,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 .pr-hud-subs {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
@@ -207,11 +223,15 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     margin 0.35s ease;
 }
 
+.pr-hud-subs button {
+  padding: 5px 16px 5px 2px;
+}
+
 .pr-hud-item:hover .pr-hud-subs,
 .pr-hud-item.is-active .pr-hud-subs {
-  max-height: 220px;
+  max-height: 260px;
   opacity: 1;
-  margin-top: 9px;
+  margin-top: 3px;
 }
 
 .pr-hud-subs button i {
@@ -224,6 +244,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   font-size: 8.5px;
   letter-spacing: 0.14em;
   color: rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+.pr-hud-rail:hover .pr-hud-subs button em {
   opacity: 1;
   transform: none;
 }
@@ -236,7 +261,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* The beat the playhead is currently on. */
+/* The beat the playhead is currently on: tick grows and its title shows
+   even when the rail is not hovered. */
 .pr-hud-subs button.is-here i {
   width: 16px;
   background: #fff;
@@ -244,6 +270,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-hud-subs button.is-here em {
   color: #fff;
+  opacity: 1;
+  transform: none;
 }
 
 .pr-hud-subs button i {
@@ -634,6 +662,17 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   stroke: rgba(255, 255, 255, 0.18);
   stroke-width: 1;
   stroke-dasharray: 4 6;
+}
+
+/* Diagonal hatch under the curve, becoming the plates' shading. */
+.pr-barbell-fill {
+  fill: url(#pr-hatch);
+  stroke: none;
+}
+
+#pr-hatch line {
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 1;
 }
 
 .pr-tail {
