@@ -128,36 +128,59 @@ export default function TypeDetailSlide() {
         scrollTrigger: { trigger: root.current, start: 'top 45%' },
       });
 
-      // Landing position vars: measured when they first render, so the
-      // deltas account for the fonts actually loaded by then. Both specimens
-      // are placed exactly on the overlay anchor; the Google one additionally
-      // inherits the anchor red layer's measured baseline correction. The
-      // getters can re-run on a mid-pin refresh while the element is already
-      // translated, so the current transform is backed out of the
-      // measurement to always compute from clean geometry.
-      const landing = (
-        selector: string,
-        matchRedCorrection = false
-      ): gsap.TweenVars => {
-        const el = document.querySelector<HTMLElement>(selector);
-        const target = () =>
-          document
-            .querySelector<HTMLElement>('.pr-overlay-rsms')!
-            .getBoundingClientRect();
-        const redCorrection = () =>
-          matchRedCorrection
-            ? Number(gsap.getProperty('.pr-overlay-google', 'y')) || 0
-            : 0;
-        const clean = () => {
+      // The convergence is driven by a proxy so the target can be re-measured
+      // on every frame: cached end values go stale when fonts or refreshes
+      // shift the anchor, which used to land the pair off-register and then
+      // visibly snap. With a live target, the flight ends exactly on the
+      // anchor, every time, with nothing left to correct. Origins are
+      // captured on the first moving frame (transforms backed out) and reset
+      // whenever the scrub returns to the start.
+      const fly = { p: 0 };
+      const flightEls = () => [
+        document.querySelector<HTMLElement>('.pr-col-rsms .pr-detail-big'),
+        document.querySelector<HTMLElement>('.pr-col-google .pr-detail-big'),
+      ];
+      // The rendered translation, from the DOM itself. GSAP's property cache
+      // resets across fast-refresh while stale inline transforms survive, so
+      // gsap.getProperty can report 0 for a visibly translated element and
+      // poison every measurement built on it.
+      const renderedOffset = (el: Element) => {
+        const transform = getComputedStyle(el).transform;
+        if (!transform || transform === 'none') return { x: 0, y: 0 };
+        const matrix = new DOMMatrix(transform);
+        return { x: matrix.m41, y: matrix.m42 };
+      };
+      // No cached origins: every frame re-derives each element's natural
+      // position from that same frame's rect minus its rendered transform.
+      // Origin and anchor are therefore always measured in the same
+      // coordinate space at the same instant, which survives pin reverts,
+      // refreshes, and late font loads. At p=1 this converges exactly onto
+      // the anchor, so nothing is left to snap afterwards.
+      const placePair = () => {
+        const els = flightEls();
+        if (els.some((el) => !el)) return;
+        if (fly.p <= 0.001) {
+          els.forEach((el) => gsap.set(el, { x: 0, y: 0 }));
+          return;
+        }
+        const anchor = document
+          .querySelector<HTMLElement>('.pr-overlay-rsms')!
+          .getBoundingClientRect();
+        const redCorrection = renderedOffset(
+          document.querySelector('.pr-overlay-google')!
+        ).y;
+        els.forEach((el, i) => {
           const rect = el!.getBoundingClientRect();
-          const x = Number(gsap.getProperty(el, 'x')) || 0;
-          const y = Number(gsap.getProperty(el, 'y')) || 0;
-          return { left: rect.left - x, top: rect.top - y };
-        };
-        return {
-          x: () => (el ? target().left - clean().left : 0),
-          y: () => (el ? target().top - clean().top + redCorrection() : 0),
-        };
+          const offset = renderedOffset(el!);
+          const naturalLeft = rect.left - offset.x;
+          const naturalTop = rect.top - offset.y;
+          gsap.set(el, {
+            x: (anchor.left - naturalLeft) * fly.p,
+            y:
+              (anchor.top - naturalTop + (i === 1 ? redCorrection : 0)) *
+              fly.p,
+          });
+        });
       };
 
       // The size match is a real font-size tween, not a transform scale: the
@@ -176,39 +199,11 @@ export default function TypeDetailSlide() {
       // nothing to hand off or misalign.
       gsap.set('.pr-overlay-stack', { autoAlpha: 0 });
 
-      // Belt and braces for the landing: right after the flight, measure the
-      // actual on-screen error against the anchor and nudge it to zero. This
-      // self-corrects any upstream drift (late fonts, mid-pin refreshes),
-      // because it works from the rendered result, not from predictions.
-      const settle = (selector: string, useRedCorrection = false): gsap.TweenVars => {
-        const el = document.querySelector<HTMLElement>(selector);
-        const anchor = () =>
-          document
-            .querySelector<HTMLElement>('.pr-overlay-rsms')!
-            .getBoundingClientRect();
-        return {
-          x: () => {
-            if (!el) return 0;
-            return (
-              (Number(gsap.getProperty(el, 'x')) || 0) +
-              (anchor().left - el.getBoundingClientRect().left)
-            );
-          },
-          y: () => {
-            if (!el) return 0;
-            const correction = useRedCorrection
-              ? Number(gsap.getProperty('.pr-overlay-google', 'y')) || 0
-              : 0;
-            return (
-              (Number(gsap.getProperty(el, 'y')) || 0) +
-              (anchor().top - el.getBoundingClientRect().top) +
-              correction
-            );
-          },
-          duration: 0.15,
-          ease: 'power1.out',
-        };
-      };
+      // Kill any styles a previous mount left inline (fast-refresh keeps the
+      // DOM), so this run starts from clean geometry.
+      gsap.set('.pr-detail-big', {
+        clearProps: 'transform,fontSize,opacity,visibility,color,zIndex',
+      });
 
       const tl = gsap.timeline({
         defaults: { ease: 'power2.inOut' },
@@ -282,20 +277,12 @@ export default function TypeDetailSlide() {
         .set('.pr-col-rsms', { zIndex: 1 }, 'flight')
         .set('.pr-detail-big', { fontFeatureSettings: OVERLAY_FEATURES }, 'flight')
         .to(
-          '.pr-col-rsms .pr-detail-big',
+          fly,
           {
-            ...landing('.pr-col-rsms .pr-detail-big'),
+            p: 1,
             duration: 1.2,
             ease: 'power2.inOut',
-          },
-          'flight'
-        )
-        .to(
-          '.pr-col-google .pr-detail-big',
-          {
-            ...landing('.pr-col-google .pr-detail-big', true),
-            duration: 1.2,
-            ease: 'power2.inOut',
+            onUpdate: placePair,
           },
           'flight'
         )
@@ -323,17 +310,6 @@ export default function TypeDetailSlide() {
           { drawSVG: '50% 50%' },
           { drawSVG: '0% 100%', duration: 0.7, stagger: 0.09, ease: 'power2.out' },
           'flight+=0.45'
-        )
-        // ...they settle to pixel-zero against the anchor...
-        .to(
-          '.pr-col-rsms .pr-detail-big',
-          settle('.pr-col-rsms .pr-detail-big'),
-          'flight+=1.25'
-        )
-        .to(
-          '.pr-col-google .pr-detail-big',
-          settle('.pr-col-google .pr-detail-big', true),
-          'flight+=1.25'
         )
         // ...the guides undraw, leaving only a faint baseline...
         .to(
@@ -390,6 +366,9 @@ export default function TypeDetailSlide() {
         alignBaselines();
         tl.invalidate();
         ScrollTrigger.refresh();
+        // If the viewer is resting mid-dwell when fonts land, no scroll tick
+        // will re-run the placement, so do it once here.
+        placePair();
       });
     },
     { scope: root }
