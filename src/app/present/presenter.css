@@ -177,6 +177,16 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   opacity: 1;
 }
 
+/* The intro's shader stays unshaded: no scrim on the first section unless
+   the rail is actually being used. */
+.pr-hud-rail.no-scrim::before {
+  opacity: 0;
+}
+
+.pr-hud-rail.no-scrim:hover::before {
+  opacity: 1;
+}
+
 /* Generous hitboxes: padding carries the hit area, not the layout. */
 .pr-hud-rail button {
   display: flex;

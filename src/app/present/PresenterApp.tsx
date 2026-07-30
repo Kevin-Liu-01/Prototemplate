@@ -208,7 +208,10 @@ export default function PresenterApp() {
             <span>Redesign</span>
           </div>
           <div className='pr-hud-author'>Kevin Liu</div>
-          <nav className='pr-hud-rail' aria-label='Slides'>
+          <nav
+            className={active === 0 ? 'pr-hud-rail no-scrim' : 'pr-hud-rail'}
+            aria-label='Slides'
+          >
             {SLIDES.map((slide, i) => (
               <div
                 key={slide.id}

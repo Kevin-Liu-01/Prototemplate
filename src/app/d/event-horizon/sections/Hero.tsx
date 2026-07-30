@@ -217,33 +217,24 @@ const FLAGS: readonly { flag: string; name: string }[] = [
   { flag: '🇹🇷', name: 'Türkçe' },
 ];
 
-/* ---------- fabric construction ----------
-   ONE cloth, not two side galleries: a single conveyor of adjacent columns
-   spans the full hero width and passes BEHIND the horizon. COLS_PER_SET
-   column templates repeated SETS times let the track wrap by exactly one
-   set width with no visible seam; the templates stagger the pair list so
-   neighbouring columns never repeat a component on the same row. Every cell
-   sits on one of FIVE fixed row courses at a tight uniform pitch (--eh-rowh
-   + --eh-rowgap) — a woven grid, cards adjacent, shared row and column
-   lines — and carries BOTH faces of its component: the English source shows
-   while the cell rides the left half, the BCP-47-stamped translation from
-   the moment its column crosses the mass. The swap happens while the cell
-   is occluded behind the disc, so the horizon IS the seam where the cloth's
-   content changes language. That flat layout is only the SOURCE PLANE. Per
-   frame, every card is seated on a RUBBER SHEET deformed by the mass
-   (Kevin's sketch): a gravity-well height-field h = AMP·R·f(ρ/R) dimples
-   the paper around the hole, and each card is displaced vertically toward —
-   and slightly UNDER — the mass, so row courses read as draped curves
-   dipping into the well from both sides. The card's pitch and yaw come from
-   the height-field's gradient (rotateX from ∂h/∂y, rotateY from ∂h/∂x —
-   the sheet's local slope, not hand-tuned per card), its in-plane rotation
-   follows the draped course's tangent, and vertical compression follows the
-   map's own packing (∂F/∂y) as courses crowd toward the rim. */
+/* ---------- grid construction ----------
+   Each side is a conveyor of adjacent columns (a sheet, not floating cards):
+   COLS_PER_SET column templates repeated SETS times so the track can wrap by
+   exactly one set width with no visible seam. Column templates stagger the
+   pair list so neighbouring columns never repeat a component on the same row.
+   Every cell has the SAME fixed height (--eh-rowh) — but that flat layout is
+   only the SOURCE PLANE. Per frame, every card is pushed through the same
+   point-mass lens the shader uses (source radius ρs images at
+   ρ = (ρs + √(ρs² + 4r²))/2, the exact inverse of the shader's rs = r − 1/r
+   law), so the whole sheet lives in one curvilinear field: row courses bow
+   around the horizon — gently at the screen edges, wrapping hard at the rim —
+   columns fan into meridians, and the map's Jacobian tilts each card tangent
+   to its course and compresses it as it nears the rim. */
 const COLS_PER_SET = 4;
-const SETS = 4;
-const CARDS_PER_COL = 5;
-/** Conveyor speed, px/s — one column width in roughly fifteen seconds. */
-const SPEED = 18;
+const SETS = 3;
+const CARDS_PER_COL = 10;
+/** Conveyor speed, px/s — one column width in roughly ten seconds. */
+const SPEED = 24;
 /** Clock offset so the very first painted frame is already mid-flow. */
 const T0 = 4;
 /** Flag-orbit radius as a multiple of the horizon radius (wide mode). */
@@ -252,39 +243,9 @@ const ORBIT_K = 1.36;
 const ORBIT_DUR = 130;
 /** Vertical squash of the flag orbit — a slightly inclined orbital plane. */
 const ORBIT_TILT = 0.94;
-
-/* ---------- the rubber sheet ----------
-   One height-field drives everything that bends: the card courses, the DOM
-   rules/rings (SVG paths rebuilt on measure), and the shader's own draped
-   hairlines near the rim (lib/horizon-field.ts inverts the same law, so the
-   handoff across the mask band is invisible). */
-/** Drape depth as a fraction of the rim radius. With the fabric's tight
-    course pitch, amp·SAT must stay below ~0.9 or adjacent courses would
-    cross (fold through each other) in the visible flank band. */
-const SHEET_AMP = 0.78;
-/** Downward bias so courses crest just UNDER the mass, never through it. */
-const SHEET_BIAS = 0.14;
-/** How fast the pull saturates with a course's offset from the mass (rim
-    units). Saturation is what makes a WHOLE row rise or dip as one coherent
-    draped curve — the sketch's hill — rather than scaling with the local
-    direction cosine. Mirrored by SHEET_SAT in lib/horizon-field.ts. */
-const SHEET_SAT = 1.1;
-/** Pitch gain: sheet slope → rotateX. The drape is rotateX-dominant. */
-const TILT_X = 2.4;
-/** Yaw gain: lateral slope → rotateY, the sheet folding at the sides. */
-const TILT_Y = 1.4;
-/** Cards sink into the well — a mild scale-away as the sheet deepens. */
-const SINK = 0.2;
-/** Perspective for the per-card 3D tilts, px. */
-const PERSP = 1100;
-/** The page's ruled-hairline pitch, px — must match the shader's uPitch. */
-const RULE_PITCH = 44;
-/** Source radii (rim units) and ink of the three draped guide rings. */
-const GUIDE_RINGS: readonly [number, number][] = [
-  [1.24, 0.9],
-  [1.55, 0.64],
-  [1.94, 0.38],
-];
+/** Extra lens mass for the card sheet — the shader's law with a slightly
+    deeper well, so the whole-sheet curvature reads at the screen edges. */
+const LENS_GAIN = 1.18;
 
 const TAU = Math.PI * 2;
 
@@ -515,35 +476,29 @@ type ClothGeom = {
 };
 
 /**
- * Kevin's sketch, built literally: ONE component fabric — a dense woven grid
- * of UI cards — spans the hero and is DEFORMED by the mass at center, the
- * general-relativity rubber-sheet embedding diagram, not rings drawn around
- * a disc. The horizon itself is a purpose-built shader (lib/horizon-field.ts):
- * an accretion streak field wrapping a brilliant photon ring over a genuinely
- * dark core. The fabric is a single conveyor of adjacent columns drifting
- * rightward on one clock, passing BEHIND the horizon: the left half carries
- * the English sources feeding toward the portal, the right half the same
- * components emerging translated and locale-stamped — each cell swaps its
- * face while occluded by the disc, so the horizon is the seam where the
- * cloth changes language. The flat layout is only the source plane: per
- * frame every card is seated on a gravity-well height-field centered on the
- * hole, displaced toward and slightly UNDER the mass, pitched and yawed by
- * the sheet's local slope (rotateX-dominant), and compressed as courses pack
- * toward the rim, where the glow dims them and the disc swallows them. Five
- * row courses read as draped curves dipping into the well from both sides —
- * the sketch's crosshatch sagging under the circle's weight. The page's own
- * ruled hairlines and guide rings ride the same sheet (SVG paths rebuilt on
- * measure; the shader inverts the identical law near the rim), so paper,
- * cards and horizon belong to one fabric. The dark core holds the mark,
- * headline, CTAs and the npx chip light-on-dark; the locale flag chips ride
- * a slightly inclined orbit around the horizon, each oriented tangent to the
- * ring like a satellite belt.
+ * Kevin's sketch, built literally: two dense component sheets fill the screen
+ * from its edges and are pulled into a REAL event horizon at center. The
+ * horizon is a purpose-built lensing shader (lib/horizon-field.ts): an
+ * accretion streak field whose sampling coordinates bend around the rim into
+ * a brilliant photon ring, the page's own ruled hairlines warping with it,
+ * over a genuinely dark core. The sheets are conveyors of adjacent columns
+ * sliding on one shared clock — but the layout is only the source plane: per
+ * frame every card images through the SAME point-mass lens the shader uses,
+ * so the entire sheet obeys one curvilinear perspective. Row courses bow
+ * around the hole (gently far out, wrapping at the rim), columns fan like
+ * meridians, and each card rides tangent to its course, compressing as it
+ * approaches the glow. The dark core holds the mark, headline, CTAs and the
+ * npx chip light-on-dark; the locale flag chips ride a slightly inclined
+ * orbit around the horizon, each oriented tangent to the ring like a
+ * satellite belt.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const fabricRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const gridEnRef = useRef<HTMLDivElement>(null);
+  const gridTrRef = useRef<HTMLDivElement>(null);
+  const trackEnRef = useRef<HTMLDivElement>(null);
+  const trackTrRef = useRef<HTMLDivElement>(null);
   // The card-grid refs survived the in-progress hero rework as JSX call
   // sites; declared here so the grids render while that rework lands.
   const gridEnRef = useRef<HTMLDivElement>(null);
@@ -551,9 +506,6 @@ export default function Hero() {
   const trackEnRef = useRef<HTMLDivElement>(null);
   const trackTrRef = useRef<HTMLDivElement>(null);
   const horizonRef = useRef<HTMLDivElement>(null);
-  const sheetRef = useRef<SVGSVGElement>(null);
-  const rulesRef = useRef<SVGGElement>(null);
-  const ringsRef = useRef<SVGGElement>(null);
   const fieldRef = useRef<HTMLCanvasElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<SVGSVGElement>(null);
@@ -571,25 +523,14 @@ export default function Hero() {
   useGSAP(
     () => {
       const hero = heroRef.current;
-      const fabric = fabricRef.current;
-      const track = trackRef.current;
+      const trackEn = trackEnRef.current;
+      const trackTr = trackTrRef.current;
+      const gridEn = gridEnRef.current;
+      const gridTr = gridTrRef.current;
       const fieldCanvas = fieldRef.current;
       const orbit = orbitRef.current;
       const rail = railRef.current;
-      const sheetSvg = sheetRef.current;
-      const rulesG = rulesRef.current;
-      const ringsG = ringsRef.current;
-      if (
-        !hero ||
-        !fabric ||
-        !track ||
-        !fieldCanvas ||
-        !orbit ||
-        !rail ||
-        !sheetSvg ||
-        !rulesG ||
-        !ringsG
-      )
+      if (!hero || !trackEn || !trackTr || !gridEn || !gridTr || !fieldCanvas || !orbit || !rail)
         return;
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -609,7 +550,7 @@ export default function Hero() {
         attributeFilter: ['data-theme'],
       });
 
-      let cloth: ClothGeom | null = null;
+      let sides: SideGeom[] = [];
       let wide = true;
       let cx = 0;
       let cy = 0;
@@ -617,107 +558,83 @@ export default function Hero() {
       let orbitR = 320;
       let setW = 1;
       let heroW = 1;
-      /* Sheet state, set by measure(): effective drape depth (softened in
-         stack mode) and the well's footprint, sized so the bend dies gently
-         by the screen edges. */
-      let amp = SHEET_AMP;
-      let qEnd = 2.7;
-
-      /* Well footprint: 1 inside the rim, easing to 0 by qEnd (rim units) —
-         a broad smoothstep ramp, so the hill starts rising from the screen
-         corners the way the sketch's does. The shader evaluates the same f
-         (sheetDispY in lib/horizon-field.ts). */
-      const wellF = (q: number) => {
-        const u = clamp01((q - 1) / Math.max(qEnd - 1, 1e-3));
-        return 1 - u * u * (3 - 2 * u);
-      };
-
-      /** Depth of the sheet below flat paper at (dx, dy) from the mass, px. */
-      const depthAt = (dx: number, dy: number) => amp * r * wellF(Math.hypot(dx, dy) / r);
-
-      /** Vertical drape of a source point: attraction toward the mass plus
-          the slight under-bias, so paper above dips toward the hole and paper
-          below crests just beneath it — never through it. The pull saturates
-          with the course's offset (tanh), so rows bend as whole draped
-          curves. Mirrored exactly by sheetDispY in lib/horizon-field.ts. */
-      const dispYAt = (dx: number, dy: number) => {
-        const rr = Math.max(Math.hypot(dx, dy), 1e-4);
-        return amp * r * wellF(rr / r) * (SHEET_BIAS - Math.tanh((SHEET_SAT * dy) / r));
-      };
 
       /* The flag chips, driven directly each frame — no wrapper rotation, no
          counter-rotation: each chip is seated on the (slightly inclined)
          orbit and oriented TANGENT to it, satellites riding the ring. */
       const chips = Array.from(orbit.querySelectorAll<HTMLElement>('.eh-chip'));
 
-      /* One conveyor frame. The cloth slides rightward in flat coordinates —
-         the left half feeding toward the portal, the right half emerging —
-         and every card is then seated on the draped sheet: displaced toward
-         (and slightly under) the mass, pitched and yawed by the local slope
-         of the height-field, aligned to its course's tangent, and compressed
-         as courses pack toward the rim, where the glow dims it and the disc
-         (z-above the fabric) swallows it. Each column swaps to its
-         translated face the instant it crosses the mass — invisibly, since
-         the crossing happens behind the disc. */
+      /* One conveyor frame. The sheets slide in flat coordinates on a shared
+         clock; every card is then imaged through the point-mass lens — the
+         same law the shader bends the page's rules with — so cards travel
+         ALONG their curved courses, tilt tangent to them, and compress as
+         they near the rim, where the glow extinguishes them. */
       const frame = (timeSec: number) => {
-        if (!cloth) return;
         const offset = ((timeSec * SPEED) % setW + setW) % setW;
+        /* The bands sit close to the hole on phones; soften the field so the
+           fold reads as a tidy curved grid, not a smeared one. */
+        const gain = wide ? 1 : 0.5;
+        const rl = r * LENS_GAIN;
+        const r2x4 = 4 * rl * rl;
         const margin = r + 340;
-        /* Finite-difference step for the sheet's Jacobian, px. */
-        const e = 3;
-        const baseX = cloth.base + offset;
-        cloth.track.style.transform = `translate3d(${baseX.toFixed(2)}px, 0, 0)`;
-        for (const col of cloth.cols) {
-          const colX = baseX + col.cx;
-          /* The language seam. Toggled even offscreen, so a column that
-             wraps re-enters already wearing the correct face. */
-          const out = colX >= cx;
-          if (out !== col.out) {
-            col.out = out;
-            col.el.classList.toggle('is-out', out);
-          }
-          /* Offscreen columns skip their writes; the margin is wider than
-             any drape displacement, so transforms are current before entry. */
-          if (colX < -margin || colX > heroW + margin) continue;
-          const dx = colX - cx;
-          for (const cell of col.cells) {
-            const dy = cloth.top + cell.cy - cy;
-            const rr = Math.hypot(dx, dy);
-            if (rr < 2) {
-              cell.el.style.opacity = '0';
-              continue;
+        for (const side of sides) {
+          const baseX = side.base + offset;
+          side.track.style.transform = `translate3d(${baseX.toFixed(2)}px, 0, 0)`;
+          for (const col of side.cols) {
+            const colX = baseX + col.cx;
+            /* Offscreen columns skip their writes; the margin is wider than
+               any lens displacement, so transforms are current before entry. */
+            if (colX < -margin || colX > heroW + margin) continue;
+            const dx = colX - cx;
+            for (const cell of col.cells) {
+              const dy = side.top + cell.cy - cy;
+              const rs = Math.hypot(dx, dy);
+              if (rs < 2) {
+                cell.el.style.opacity = '0';
+                continue;
+              }
+              /* Source radius ρs images at ρ = (ρs + √(ρs² + 4rl²)) / 2 — the
+                 inverse of the shader's rs = r − 1/r point-mass lens (with
+                 the slightly deeper LENS_GAIN well), so the card field and
+                 the shader's bent rules belong to one curvature. */
+              const root = Math.sqrt(rs * rs + r2x4);
+              const rho = (rs + root) / 2;
+              /* Jacobian of the radial map: mr compresses radially (→ ½ at
+                 the rim), mt magnifies tangentially (the lens's arc-stretch). */
+              const mr = 0.5 * (1 + rs / root);
+              const mt = rho / rs;
+              const ddx = dx * ((rho - rs) / rs) * gain;
+              const ddy = dy * ((rho - rs) / rs) * gain;
+              /* Course tangent = the image of the flat +x direction. Cards
+                 rotate to sit tangent on their course; scales are the mapped
+                 lengths of the card's own axes, capped so cards only ever
+                 compress (the lens may stretch space, never the card). */
+              const vx = (mr * dx * dx + mt * dy * dy) / (rs * rs);
+              const vy = (dx * dy * (mr - mt)) / (rs * rs);
+              const rot = Math.atan2(vy, vx) * gain;
+              const sAlong = 1 + (Math.min(Math.hypot(mr * dx, mt * dy) / rs, 1) - 1) * gain;
+              const sAcross = 1 + (Math.min(Math.hypot(mr * dy, mt * dx) / rs, 1) - 1) * gain;
+              const fx = dx + ddx;
+              const fy = dy + ddy;
+              const d = Math.hypot(fx, fy);
+              /* Extinction rides the flag orbit — the last stable orbit.
+                 Courses visibly bow toward the ring and evaporate with a
+                 small standoff just OUTSIDE it, so the chips keep a truly
+                 clear lane, the glow annulus stays clean, and the fade is
+                 monotone (no banding of half-ghosts between lane and rim). */
+              const fade = smooth01((d - orbitR * 1.06) / (r * 0.18));
+              let alpha = 1 - (1 - fade) * (wide ? 1 : 0.55);
+              if (wide) {
+                /* The side gate keeps each track on its own half. */
+                alpha *= smooth01((side.sign * fx) / (r * 0.55));
+              }
+              cell.el.style.transform = `translate3d(${ddx.toFixed(2)}px, ${ddy.toFixed(
+                2
+              )}px, 0) rotate(${rot.toFixed(4)}rad) scale(${sAlong.toFixed(3)}, ${sAcross.toFixed(
+                3
+              )})`;
+              cell.el.style.opacity = alpha.toFixed(3);
             }
-            /* The drape and its Jacobian at this card's seat. */
-            const ty = dispYAt(dx, dy);
-            const slope = (dispYAt(dx + e, dy) - dispYAt(dx - e, dy)) / (2 * e);
-            const pack = 1 + (dispYAt(dx, dy + e) - ty) / e;
-            const h0 = depthAt(dx, dy);
-            const gx = (depthAt(dx + e, dy) - h0) / e;
-            const gy = (depthAt(dx, dy + e) - h0) / e;
-            /* Pitch/yaw from the height-field's gradient: the edge facing
-               the mass dips into the well (rotateX-dominant), the sides
-               fold in via rotateY. In-plane rotation rides the course's
-               own tangent, so rows stay aligned ALONG the draped curves. */
-            const rx = -Math.atan(gy * TILT_X);
-            const ry = Math.atan(gx * TILT_Y);
-            const rz = Math.atan(slope);
-            /* Compression: the map's own course-packing vertically, plus a
-               mild sink-away scale as the sheet deepens under the card. */
-            const sink = 1 - SINK * (h0 / r);
-            const sy = Math.min(Math.max(pack, 0.55), 1) * sink;
-            const fy = dy + ty;
-            const d = Math.hypot(dx, fy);
-            /* Extinction hugs the rim: cards ride at full ink through the
-               flag lane, dim as they slip under the photon ring's glow, and
-               reach zero right where the disc occludes them — the cloth is
-               visibly swallowed by the hole, never cut off in open paper. */
-            const fade = smooth01((d - r * 0.99) / (r * (wide ? 0.45 : 0.26)));
-            cell.el.style.transform = `translate3d(0px, ${ty.toFixed(2)}px, 0) rotate(${rz.toFixed(
-              4
-            )}rad) perspective(${PERSP}px) rotateX(${rx.toFixed(4)}rad) rotateY(${ry.toFixed(
-              4
-            )}rad) scale(${sink.toFixed(3)}, ${sy.toFixed(3)})`;
-            cell.el.style.opacity = fade.toFixed(3);
           }
         }
 
@@ -747,45 +664,6 @@ export default function Hero() {
         }
       };
 
-      /* The DOM half of the draped page: the ruled hairlines and guide rings
-         as SVG paths pushed through the SAME forward map as the cards. The
-         mask opens a feathered hole where the shader takes over with the
-         inverted law, so the two halves meet on identical curves. */
-      const buildSheet = (w: number, h: number) => {
-        sheetSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-        /* Courses just outside the viewport drape into it; overscan by the
-           largest displacement the well can produce. */
-        const reach = amp * r * (1 + SHEET_BIAS);
-        const rules: string[] = [];
-        const firstK = Math.floor(-reach / RULE_PITCH);
-        const lastK = Math.ceil((h + reach) / RULE_PITCH);
-        for (let k = firstK; k <= lastK; k++) {
-          /* Lattice matches the shader: line centers at k·pitch + gauge/2. */
-          const y0 = k * RULE_PITCH + 0.5;
-          let dPath = '';
-          for (let x = -8; x <= w + 8; x += 14) {
-            const y = y0 + dispYAt(x - cx, y0 - cy);
-            dPath += `${dPath ? 'L' : 'M'}${x} ${y.toFixed(2)}`;
-          }
-          rules.push(`<path d="${dPath}"/>`);
-        }
-        rulesG.innerHTML = rules.join('');
-        const rings: string[] = [];
-        for (const [kR, ink] of GUIDE_RINGS) {
-          const sR = r * kR;
-          let dPath = '';
-          for (let s = 0; s <= 144; s++) {
-            const a = (s / 144) * TAU;
-            const px = cx + sR * Math.cos(a);
-            const py = cy + sR * Math.sin(a);
-            const y = py + dispYAt(px - cx, py - cy);
-            dPath += `${dPath ? 'L' : 'M'}${px.toFixed(1)} ${y.toFixed(2)}`;
-          }
-          rings.push(`<path d="${dPath}" opacity="${ink}"/>`);
-        }
-        ringsG.innerHTML = rings.join('');
-      };
-
       const measure = () => {
         const w = hero.clientWidth;
         const h = hero.clientHeight;
@@ -796,9 +674,6 @@ export default function Hero() {
           ? Math.min(Math.max(w * 0.19, 228), 300, h * 0.36)
           : Math.min(w * 0.4, 168, h * 0.26);
         cx = w / 2;
-        /* The bands sit close to the hole on phones; soften the drape so the
-           fold reads as a tidy draped grid, not a smeared one. */
-        amp = SHEET_AMP * (wide ? 1 : 0.55);
 
         /* Reset every conveyor transform before reading geometry, so rects are
            unpolluted by the previous frame. */
@@ -836,9 +711,6 @@ export default function Hero() {
           ? Math.max(Math.min(h * 0.47, h - r - 148), r + 96)
           : Math.max(Math.min(h * 0.42, h - r - bandH - 104), r + bandH + 26);
         orbitR = wide ? r * ORBIT_K : Math.min(r + 36, w / 2 - 20);
-        /* The well's footprint reaches the screen corners — the sketch's rows
-           start rising from the corners — and is exactly flat there. */
-        qEnd = Math.min(4.4, Math.max(2.6, Math.hypot(w * 0.5, Math.max(cy, h - cy)) / r));
 
         hero.style.setProperty('--eh-cx', `${cx.toFixed(1)}px`);
         hero.style.setProperty('--eh-cy', `${cy.toFixed(1)}px`);
@@ -870,13 +742,7 @@ export default function Hero() {
           center: [half, half],
           radius: r,
           worldOrigin: [cx - half, cy - half],
-          sheetAmp: amp,
-          sheetEnd: qEnd,
-          sheetBias: SHEET_BIAS,
         });
-
-        /* Re-drape the DOM rules and rings around the (re)measured well. */
-        buildSheet(w, h);
 
         /* The orbit origin; chips are seated per-frame at even pitch. The
            dashed rail is the same inclined ellipse the chips ride — its
@@ -1007,14 +873,14 @@ export default function Hero() {
   return (
     <section className='tc-sec' id='top' ref={root}>
       <div className='eh-hero' ref={heroRef} data-eh-mode='wide'>
-        {/* The page's ruled hairlines and concentric guide rings, drawn as
-            paths draped over the same height-field the cards ride (rebuilt in
-            measure()). A CSS mask opens a feathered hole under the shader
-            canvas, which re-renders the same draped structure near the rim. */}
-        <svg className='eh-sheet' ref={sheetRef} aria-hidden>
-          <g className='eh-sheet-rules' ref={rulesRef} />
-          <g className='eh-sheet-rings' ref={ringsRef} />
-        </svg>
+        {/* The page's concentric guide rings. A CSS mask opens a feathered
+            hole under the shader canvas, which redraws their inner arcs bent
+            through the lens — the same handoff the ruled hairlines use. */}
+        <div className='eh-guides' aria-hidden>
+          <span />
+          <span />
+          <span />
+        </div>
 
         <span className='eh-tag is-in'>in — English source</span>
         <span className='eh-tag is-out'>out — translated · stamped</span>

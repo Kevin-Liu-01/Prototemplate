@@ -270,33 +270,29 @@
 
 /* ============================================================
    HERO — EVENT HORIZON
-   Component sheets run full-bleed from both screen edges and are
-   DEFORMED by a real event horizon: a purpose-built shader
+   Dense component sheets run full-bleed from both screen edges
+   into a real event horizon: a purpose-built lensing shader
    (lib/horizon-field.ts) wraps an accretion streak field around
-   a photon ring over a dark core, while the page itself — five
-   card courses, the ruled hairlines, the guide rings — rides ONE
-   rubber-sheet height-field dimpled by the mass (Kevin's sketch:
-   a net sagging under the circle's weight). The fixed-height rows
-   below are only the source plane — Hero.tsx seats every card on
-   the sheet per frame (vertical drape toward/under the mass,
-   pitch/yaw from the local slope) and rebuilds the draped SVG
-   rules on measure. All geometry (--eh-cx/--eh-cy/--eh-r, sheet
-   and card transforms) is measured and driven from Hero.tsx.
+   a photon ring and bends the page's own ruled structure into
+   the hole. The sheets themselves live in the SAME curved field:
+   the fixed-height rows below are only the source plane — every
+   card is imaged per-frame through the shader's point-mass lens
+   (Hero.tsx), so row courses bow around the horizon and columns
+   fan like meridians. All geometry (--eh-cx/--eh-cy/--eh-r,
+   sheet and card transforms) is measured and driven from Hero.tsx.
    ============================================================ */
 
 .eventhorizon-root .eh-hero {
   --eh-cx: 50%;
   --eh-cy: 47%;
   --eh-r: 270px;
-  --eh-colw: clamp(212px, 16.5vw, 268px);
-  --eh-gap: 14px;
-  /* One fixed row course for every cell — the alignment the sheet is built
-     on. FIVE courses per column; the row gap spreads them over the hero. */
-  --eh-rowh: 98px;
-  --eh-rowgap: clamp(26px, 6.5vh, 58px);
-  /* The handoff mask: the DOM's draped page structure opens a feathered hole
-     under the shader canvas, which re-renders the same draped structure via
-     the inverse map. Inner edge 1.46r, outer 1.66r — matching uRuleFadeIn/Out. */
+  --eh-colw: clamp(200px, 15vw, 248px);
+  --eh-gap: 12px;
+  /* One fixed row course for every cell — the alignment the sheet is built on. */
+  --eh-rowh: 86px;
+  /* The handoff mask: the DOM's flat page structure opens a feathered hole
+     under the shader canvas, which redraws that structure bent through the
+     lens. Inner edge 1.46r, outer 1.66r — matching uRuleFadeIn/Out. */
   --eh-mask: radial-gradient(
     circle calc(var(--eh-r) * 1.66) at var(--eh-cx) var(--eh-cy),
     transparent 87.9%,
@@ -308,32 +304,59 @@
   background: var(--tc-paper);
 }
 
-/* The page's ruled hairlines and concentric guide rings, as SVG paths draped
-   over the same height-field the cards ride (rebuilt in Hero.tsx measure()).
-   The shader re-renders the same structure (same pitch, gauge, phase and
-   drape) inside the mask hole. */
-.eventhorizon-root .eh-sheet {
+/* The page's ruled hairlines — the structure the horizon visibly bends. The
+   shader re-renders these same rules (same pitch, gauge and phase) at the
+   lensed coordinate inside the mask hole. */
+.eventhorizon-root .eh-hero::before {
+  content: '';
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(15, 17, 19, 0.07) 0 1px,
+    transparent 1px 44px
+  );
+  mask-image: var(--eh-mask);
+  -webkit-mask-image: var(--eh-mask);
+}
+
+/* the page's concentric guide rings — flat outside, lensed inside the mask */
+.eventhorizon-root .eh-guides {
+  position: absolute;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
   mask-image: var(--eh-mask);
   -webkit-mask-image: var(--eh-mask);
 }
 
-.eventhorizon-root .eh-sheet g {
-  fill: none;
-  stroke-width: 1;
+.eventhorizon-root .eh-guides span {
+  position: absolute;
+  left: var(--eh-cx);
+  top: var(--eh-cy);
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--tc-hair);
+  border-radius: 50%;
 }
 
-.eventhorizon-root .eh-sheet-rules {
-  stroke: rgba(15, 17, 19, 0.07);
+.eventhorizon-root .eh-guides span:nth-child(1) {
+  width: calc(var(--eh-r) * 2.48);
+  height: calc(var(--eh-r) * 2.48);
+  opacity: 0.9;
 }
 
-.eventhorizon-root .eh-sheet-rings {
-  stroke: var(--tc-hair);
+.eventhorizon-root .eh-guides span:nth-child(2) {
+  width: calc(var(--eh-r) * 3.1);
+  height: calc(var(--eh-r) * 3.1);
+  opacity: 0.64;
+}
+
+.eventhorizon-root .eh-guides span:nth-child(3) {
+  width: calc(var(--eh-r) * 3.88);
+  height: calc(var(--eh-r) * 3.88);
+  opacity: 0.38;
 }
 
 /* in/out gallery labels — chipped so they stay legible over the grid */
@@ -380,20 +403,20 @@
   will-change: transform;
 }
 
-/* Five row courses per column, spread across the hero's height — bigger,
-   calmer cards than a dense wall, so each draped course reads clearly. */
+/* Columns overfill the hero's height on purpose — the sheet of components
+   reads as continuing past both folds; the hero's overflow crops it. */
 .eventhorizon-root .eh-col {
   width: var(--eh-colw);
   flex: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: var(--eh-rowgap);
+  gap: var(--eh-gap);
 }
 
 /* Every cell is one fixed row in the flat SOURCE plane; same-row cards share
-   a course. Hero.tsx seats each cell on the draped sheet per frame, so on
-   screen the shared courses read as smooth curves dipping toward the mass. */
+   a course. Hero.tsx images each cell through the lens per frame, so on
+   screen the shared courses read as smooth arcs bowing around the horizon. */
 .eventhorizon-root .eh-cell {
   flex: none;
   height: var(--eh-rowh);
@@ -976,8 +999,6 @@
     --eh-colw: 176px;
     --eh-gap: 10px;
     --eh-rowh: 78px;
-    /* Must match the 12px band-gap constant in Hero.tsx's measure(). */
-    --eh-rowgap: 12px;
     min-height: clamp(640px, calc(100svh - 58px), 800px);
   }
 

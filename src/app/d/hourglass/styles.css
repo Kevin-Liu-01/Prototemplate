@@ -4010,16 +4010,14 @@
 
 /* ============================================================
    HG — THE HOURGLASS HERO
-   A draped sheet of product UI sags under the mark at the
-   waist: courses rise from the lower corners, crest just under
-   the mark, and dive away behind the stack. All values literal
-   (the hero holds under both shell themes).
+   One-point perspective; vanishing point at hero center. All
+   values literal (the hero holds under both shell themes).
    ============================================================ */
 
 .hourglass-root .hg-hero {
   --hg-bg: #0c0e11;
-  --hg-card: #161a21;
-  --hg-hair: rgba(255, 255, 255, 0.12);
+  --hg-card: #14171d;
+  --hg-hair: rgba(255, 255, 255, 0.1);
   --hg-ink: rgba(255, 255, 255, 0.92);
   --hg-dim: rgba(255, 255, 255, 0.55);
   --hg-faint: rgba(255, 255, 255, 0.34);
@@ -4050,55 +4048,56 @@
     radial-gradient(closest-side, rgba(139, 110, 255, 0.21) 0%, rgba(139, 110, 255, 0.08) 44%, rgba(12, 14, 17, 0) 72%);
 }
 
-/* ---------- the cloth ---------- */
+/* ---------- the corridor ---------- */
 
-/* The camera sits slightly above the sheet: the vanishing center rides above
-   the waist, so the drape reads like a net seen from above — near courses
-   spread down past the frame, deep courses gather under the mark. */
 .hourglass-root .hg-stage {
   position: absolute;
   inset: 0;
   z-index: 1;
   perspective: 1000px;
-  perspective-origin: 50% 40%;
+  perspective-origin: 50% 50%;
   pointer-events: none;
 }
 
-/* The one draped cloth — a preserve-3d group of strip chords that Hero.tsx
-   hangs on the full-span 3D rail (the piecewise plane that makes the courses
-   CURVE). Courses that overrun the frame simply fall out of view at the
-   lower corners. It must stay free of overflow/opacity/filter so the strips
-   keep the stage's shared perspective. */
-.hourglass-root .hg-fabric {
+/* Walls bleed past the hero's top and bottom edges (the sketch's galleries
+   run off every screen edge), so the near columns fill their full sweep and
+   only the pinch stays open. A wall is no longer one rotated plane: it is a
+   preserve-3d group of strip chords that Hero.tsx places along a curved rail
+   — the piecewise plane that makes the perspective lines CURVE. It must stay
+   free of overflow/opacity/filter so the strips keep the stage's shared
+   perspective. */
+.hourglass-root .hg-wall {
   position: absolute;
-  inset: 0;
+  inset: -6% 0;
   transform-style: preserve-3d;
   pointer-events: none;
 }
 
-/* One flat chord of the draped cloth: a 100px window clipped over its course
-   column, hung by JS (matrix3d — width along the chord, rows down the shared
-   fall-line, origin on the chord's top-left corner at the rail). Its height
-   is the full seven-course fabric, scaled loosely with the viewport so the
-   near courses always overrun the bottom of the frame. Hidden until placed,
-   so there is no unstyled flash before hydration. */
+/* One flat chord of the curved wall: a 100px window clipped over its column,
+   oriented by JS (translate3d + rotateY, origin on the chord's near edge).
+   Hidden until placed, so there is no unstyled flash before hydration. */
 .hourglass-root .hg-strip {
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
   width: 101px; /* 1px past the chord pitch — hides GPU seams between chords */
-  height: clamp(900px, 114svh, 1380px);
   overflow: hidden;
-  transform-origin: 0 0;
+  transform-origin: 0 50%;
   visibility: hidden;
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
 
+.hourglass-root .hg-wall.is-out .hg-strip {
+  left: auto;
+  right: 0;
+  transform-origin: 100% 50%;
+}
+
 /* Depth grading, per strip: --hgr draws the top/bottom silhouette hairlines
-   (the top one traces the hill's crest line), --hgd is the depth dim that
-   darkens a course column as it nears the waist. Both are stepped per chord
-   by Hero.tsx. */
+   (they trace the curved courses), --hgd is the depth dim that darkens the
+   deep rows first. Both are stepped per chord by Hero.tsx. */
 .hourglass-root .hg-strip::after {
   content: '';
   position: absolute;
@@ -4120,30 +4119,19 @@
   bottom: 0;
   left: 0;
   width: 300px;
+  padding: 20px 0;
 }
 
-/* A course column is a strict grid of equal row cells — shared course lines
-   across every strip of the cloth, so the seven courses drape together as
-   parallel curves cresting under the waist. The repeat() count matches
-   ROWS_PER_COLUMN in Hero.tsx, and the 12px gap matches the 12px column
-   pitch gap — the uniform gutters of the weave. Each strip stacks the
-   English grid and its translated twin; Hero.tsx flips data-face while the
-   column crosses the zero-opacity seam notch under the mark. The inactive
-   face hides with `visibility: hidden` (never `visible` on the active one —
-   that would defeat the strip-level cull, since visibility overrides upward
-   through hidden ancestors). */
+/* A depth column is a strict grid of equal row cells — shared row lines
+   across every strip of BOTH walls, so the rows converge on the point
+   together like the floors of a corridor, bending with the rail. The
+   repeat() count matches ROWS_PER_COLUMN in Hero.tsx. */
 .hourglass-root .hg-col {
-  position: absolute;
-  inset: 0;
   width: 300px;
+  height: 100%;
   display: grid;
-  grid-template-rows: repeat(7, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.hourglass-root .hg-strip:not([data-face='tr']) .hg-col.is-tr,
-.hourglass-root .hg-strip[data-face='tr'] .hg-col.is-en {
-  visibility: hidden;
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  gap: 14px;
 }
 
 /* ---------- the cards ---------- */
@@ -4746,8 +4734,9 @@
 /* ---------- responsive ---------- */
 
 @media (max-width: 1080px) {
-  /* the rail's hill scales with the stage (buildRail() in Hero.tsx), so the
-     crest fade keeps the waist clear of the narrower stack on its own */
+  /* the shallower-wall clamp for this width lives in railSpan() in Hero.tsx:
+     the far ends stop further from center, keeping the waist clear of the
+     narrower stack */
   .hourglass-root .hg-core-in {
     width: min(560px, 100%);
   }
@@ -4780,8 +4769,8 @@
     gap: 12px;
   }
 
-  /* the drape folds vertical: source cards pitch toward the waist below,
-     translated cards pitch away from it */
+  /* the corridor folds vertical: source cards tip toward the waist below,
+     translated cards tip away from it */
   .hourglass-root .hg-m-strip {
     transform-style: preserve-3d;
   }
@@ -4796,28 +4785,17 @@
     transform-origin: 50% 0%;
   }
 
-  /* the desktop drape, in miniature: each pair of cards bends toward the
-     mass between them — the source row dips down toward the waist below it,
-     the emitted row crests up toward the waist above it — so the fold reads
-     as fabric sagging toward the mark rather than a flat tilt */
-  .hourglass-root .hg-m.is-src .hg-m-strip .hg-card:first-child {
-    transform: rotate(2.5deg);
-    transform-origin: 0 50%;
-  }
-
-  .hourglass-root .hg-m.is-src .hg-m-strip .hg-card:last-child {
-    transform: rotate(-2.5deg);
+  /* the desktop corridor's curvature, in miniature: each card bows toward
+     the viewer at its outer edge and recedes at the center seam, so the fold
+     reads as a shallow barrel rather than a flat tilt */
+  .hourglass-root .hg-m-strip .hg-card:first-child {
+    transform: rotateY(9deg);
     transform-origin: 100% 50%;
   }
 
-  .hourglass-root .hg-m.is-out .hg-m-strip .hg-card:first-child {
-    transform: rotate(-2.5deg);
+  .hourglass-root .hg-m-strip .hg-card:last-child {
+    transform: rotateY(-9deg);
     transform-origin: 0 50%;
-  }
-
-  .hourglass-root .hg-m.is-out .hg-m-strip .hg-card:last-child {
-    transform: rotate(2.5deg);
-    transform-origin: 100% 50%;
   }
 
   .hourglass-root .hg-core {
@@ -4859,9 +4837,9 @@
 
 /* ---------- reduced motion: the composed still ---------- */
 
-/* The sheet itself is safe by construction: under reduced motion Hero.tsx
-   places the strips once at the mirror phase and never ticks, so the draped
-   sheet stands as a composed still. This guard only pins the waist stack. */
+/* The corridor itself is safe by construction: under reduced motion Hero.tsx
+   places the strips once at the mirror phase and never ticks, so the curved
+   walls stand as a composed still. This guard only pins the waist stack. */
 @media (prefers-reduced-motion: reduce) {
   .hourglass-root [data-hg-in] {
     opacity: 1 !important;
