@@ -40,6 +40,15 @@ export default function IntroSlide() {
         .from('.pr-intro-cue', { autoAlpha: 0, duration: 0.8 }, 1.6);
 
       // The mouse wheel dot drips downward on a loop.
+      // The liquid glass slowly undulates: the displacement field breathes.
+      gsap.to('#pr-liquid-turb', {
+        attr: { baseFrequency: '0.014 0.02' },
+        duration: 7,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+
       gsap.fromTo(
         '.pr-cue-wheel',
         { y: 0, autoAlpha: 1 },
@@ -71,6 +80,27 @@ export default function IntroSlide() {
 
   return (
     <section ref={root} className='pr-slide pr-intro' data-slide='intro'>
+      {/* Backdrop displacement for the liquid glass logo window. */}
+      <svg width='0' height='0' aria-hidden style={{ position: 'absolute' }}>
+        <filter id='pr-liquid'>
+          <feTurbulence
+            id='pr-liquid-turb'
+            type='fractalNoise'
+            baseFrequency='0.008 0.012'
+            numOctaves='2'
+            seed='7'
+            result='noise'
+          />
+          <feGaussianBlur in='noise' stdDeviation='2.2' result='soft' />
+          <feDisplacementMap
+            in='SourceGraphic'
+            in2='soft'
+            scale='72'
+            xChannelSelector='R'
+            yChannelSelector='G'
+          />
+        </filter>
+      </svg>
       <PrismaticField
         className='pr-intro-field'
         preset='1'
