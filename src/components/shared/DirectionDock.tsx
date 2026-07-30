@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { DIRECTIONS } from '@/lib/directions';
-import SectionRail from '@/components/shared/SectionRail';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
 /**
@@ -52,9 +51,6 @@ export default function DirectionDock({ slug }: { slug: string }) {
 
   return (
     <>
-      {/* Rendered here (after the chrome=0 / bad-slug guard above) so the
-          section rail shares the dock's exact hide behavior. */}
-      <SectionRail />
       <div
         data-dock
         className='fixed bottom-4 left-1/2 z-[9999] flex -translate-x-1/2 items-center gap-1 rounded-2xl border border-white/15 bg-black/80 p-1.5 text-white opacity-30 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100 print:hidden'
