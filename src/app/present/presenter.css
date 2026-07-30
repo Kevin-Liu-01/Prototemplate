@@ -483,6 +483,20 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: rgba(255, 255, 255, 0.6);
 }
 
+.pr-intro-byline {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.pr-intro-byline img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
 /* Sits above the bottom-center slide dock. */
 .pr-intro-cue {
   position: absolute;

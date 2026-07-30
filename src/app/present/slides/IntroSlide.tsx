@@ -140,8 +140,9 @@ export default function IntroSlide() {
             <span className='pr-title-piece pr-title-redesign'>Redesign</span>
           </span>
         </h1>
-        <p className='pr-intro-sub'>
-          The case for a new site, told through twenty living prototypes.
+        <p className='pr-intro-sub pr-intro-byline'>
+          <img src='https://github.com/Kevin-Liu-01.png' alt='' />
+          Presented by Kevin Liu
         </p>
       </div>
       <div className='pr-intro-cue' aria-hidden>
