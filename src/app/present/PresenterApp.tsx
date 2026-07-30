@@ -23,14 +23,57 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * `jump` is the extra viewport-heights to land past a slide's top when
  * navigating. Pinned slides scrub their content in from scroll progress 0, so
  * landing exactly on the top shows an empty stage — the offset drops you on
- * the slide's first fully-revealed beat instead.
+ * the slide's first fully-revealed beat instead. `subs` are the beats inside
+ * a pinned slide, as viewport-height offsets past the slide top, so the rail
+ * can represent every moment of the deck.
  */
-const SLIDES = [
+type SlideSub = { label: string; at: number };
+
+const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] = [
   { id: 'intro', label: 'Intro', jump: 0 },
-  { id: 'why', label: 'Why', jump: 0.6 },
-  { id: 'need', label: 'What we need', jump: 0.35 },
-  { id: 'craft', label: 'How', jump: 0.3 },
-  { id: 'detail', label: 'Details', jump: 0 },
+  {
+    id: 'why',
+    label: 'Why',
+    jump: 0.6,
+    subs: [
+      { label: 'Why?', at: 0.6 },
+      { label: 'Three reasons', at: 2.4 },
+    ],
+  },
+  {
+    id: 'need',
+    label: 'What we need',
+    jump: 0.35,
+    subs: [
+      { label: 'First principles', at: 0.35 },
+      { label: 'A barbell audience', at: 1.6 },
+      { label: 'Show, don’t define', at: 3.6 },
+      { label: 'End to end', at: 5.4 },
+      { label: 'Context Groups', at: 6.3 },
+    ],
+  },
+  {
+    id: 'craft',
+    label: 'How',
+    jump: 0.3,
+    subs: [
+      { label: 'Guidelines', at: 0.5 },
+      { label: 'Sketches', at: 1.8 },
+      { label: 'Color', at: 3.1 },
+      { label: 'Type', at: 4.3 },
+      { label: 'Motion', at: 4.6 },
+    ],
+  },
+  {
+    id: 'detail',
+    label: 'Details',
+    jump: 0,
+    subs: [
+      { label: 'Two Inters', at: 0.3 },
+      { label: 'The overlay', at: 3.7 },
+      { label: 'So I built 20', at: 4.9 },
+    ],
+  },
   { id: 'prototypes', label: 'Prototypes', jump: 0.05 },
   { id: 'scoreboard', label: 'Verdict', jump: 0 },
 ];
@@ -44,7 +87,9 @@ export default function PresenterApp() {
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [navHidden, setNavHidden] = useState(false);
-  const goToRef = useRef<(slide: number) => void>(() => {});
+  const goToRef = useRef<(slide: number, atOverride?: number) => void>(
+    () => {}
+  );
 
   useGSAP(
     () => {
@@ -79,11 +124,11 @@ export default function PresenterApp() {
         ScrollTrigger.create({ trigger: section, start: 'top top' })
       );
 
-      const goTo = (slide: number) => {
+      const goTo = (slide: number, atOverride?: number) => {
         const clamped = Math.max(0, Math.min(sections.length - 1, slide));
         const y =
           navTriggers[clamped]!.start +
-          (SLIDES[clamped]?.jump ?? 0) * window.innerHeight;
+          (atOverride ?? SLIDES[clamped]?.jump ?? 0) * window.innerHeight;
         const lenis = getLenis();
         if (lenis) lenis.scrollTo(y, { duration: 1.2 });
         else window.scrollTo({ top: y, behavior: 'smooth' });
@@ -138,15 +183,29 @@ export default function PresenterApp() {
           <div className='pr-hud-author'>Kevin Liu</div>
           <nav className='pr-hud-rail' aria-label='Slides'>
             {SLIDES.map((slide, i) => (
-              <button
+              <div
                 key={slide.id}
-                type='button'
-                className={i === active ? 'is-active' : ''}
-                onClick={() => goToRef.current(i)}
+                className={i === active ? 'pr-hud-item is-active' : 'pr-hud-item'}
               >
-                <i />
-                <em>{slide.label}</em>
-              </button>
+                <button type='button' onClick={() => goToRef.current(i)}>
+                  <i />
+                  <em>{slide.label}</em>
+                </button>
+                {slide.subs && (
+                  <div className='pr-hud-subs'>
+                    {slide.subs.map((sub) => (
+                      <button
+                        key={sub.label}
+                        type='button'
+                        onClick={() => goToRef.current(i, sub.at)}
+                      >
+                        <i />
+                        <em>{sub.label}</em>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
           <div className={navHidden ? 'pr-hud-nav is-hidden' : 'pr-hud-nav'}>
