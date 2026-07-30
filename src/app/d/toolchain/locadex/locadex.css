@@ -137,6 +137,19 @@
   align-items: stretch;
 }
 
+/* ---------- the guard cell's plate, dark theme ----------
+   A flat cell in a framed row sits on the row's mortar — var(--tc-hair).
+   As a 1px seam the mortar's hue is invisible; as the full plate of the
+   page's tallest flat cell, the dark remap's #3b3440 reads plum against
+   an otherwise neutral ink family. The dark remap's own doctrine is one
+   surface family ("every card, plate and sunk surface lands on the same
+   ink black"), so in the dark the plate joins the card surface and the
+   mortar stays where it belongs: in the seams around the cell. Light
+   mode is untouched. */
+[data-theme='dark'] .toolchain-root .tc-cell.ldx-guard {
+  background: var(--tc-card);
+}
+
 /* ---------- shared: the dark artifact panel ----------
    Same surface, radius and bar measures as the shell's tc-code —
    redrawn here because these panels hold ledgers, not CodeBlocks. */
@@ -736,6 +749,28 @@
 }
 
 @media (max-width: 620px) {
+  /* ---------- the hero transcript, phone-width ----------
+     Mono does not reflow and `pre` does not wrap, so at 390px the long
+     ledger lines ran out through the terminal's right edge mid-glyph —
+     a clipped still reads as broken layout, not as a scrollable pane.
+     The transcript soft-wraps instead, the way a real terminal does:
+     continuation lines stay inside their own ledger column, the stage
+     gutter narrows to what `translate` needs, and the body's side
+     padding hands the ledger the room it saves. Nothing overflows, so
+     the still needs no fade and no scroll affordance. */
+  .toolchain-root .ldx-hero-sec .tc-term-body {
+    padding: 20px 16px 26px;
+  }
+
+  .toolchain-root .ldx-t {
+    grid-template-columns: 9.5ch minmax(0, 1fr);
+    white-space: pre-wrap;
+  }
+
+  .toolchain-root .ldx-t-locs {
+    flex-wrap: wrap;
+  }
+
   .toolchain-root .ldx-tree,
   .toolchain-root .ldx-diff pre {
     font-size: 11px;

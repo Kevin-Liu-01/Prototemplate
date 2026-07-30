@@ -264,7 +264,7 @@ export default function Pipeline() {
           </div>
         </div>
 
-        <div className='tc-cell is-tall' data-reveal>
+        <div className='tc-cell is-tall ldx-guard' data-reveal>
           <h3>Guarded by default</h3>
           <p>
             An agent that edits code earns trust by stopping at the review gate. Every Locadex run ends at
@@ -295,8 +295,8 @@ export default function Pipeline() {
             <div className='tc-bleed-head'>
               <h3>Open PR</h3>
               <p>
-                Pull request created for review — red is your bare JSX, green is the same JSX wrapped in{' '}
-                <code className='tc-chip'>&lt;T&gt;</code>. The merge stays yours.
+                Pull request created for review — the struck lines are your bare JSX, the added lines the
+                same JSX wrapped in <code className='tc-chip'>&lt;T&gt;</code>. The merge stays yours.
               </p>
             </div>
             <div className='tc-bleed-art'>
@@ -425,10 +425,12 @@ export default function Pipeline() {
         </div>
       </div>
 
+      {/* all ten runtimes carry the same ink — a two-tier list with no key
+          reads as supported/unsupported, which the inventory does not say */}
       <div className='ldx-supported' data-reveal>
-        Runs on <b>Next.js</b> · <b>Mintlify</b> · <b>Fern</b> · <b>Docusaurus</b> · Vite · Gatsby · React ·
-        Redwood · React Router · TanStack Start — or locally,{' '}
-        <b className='ldx-nowrap'>$ npx locadex@latest start</b>
+        Runs on <b>Next.js</b> · <b>Mintlify</b> · <b>Fern</b> · <b>Docusaurus</b> · <b>Vite</b> ·{' '}
+        <b>Gatsby</b> · <b>React</b> · <b>Redwood</b> · <b>React Router</b> · <b>TanStack Start</b> — or
+        locally, <b className='ldx-nowrap'>$ npx locadex@latest start</b>
       </div>
     </section>
   );

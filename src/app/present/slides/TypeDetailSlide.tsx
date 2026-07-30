@@ -368,6 +368,21 @@ export default function TypeDetailSlide() {
           'flight+=2.1'
         )
         .to('.pr-col-google .pr-detail-big', { opacity: 0.95, duration: 0.6 }, '>')
+        // ...then the comparison rewrites into the name it actually matters
+        // for: the two builds, still out of register, on our own wordmark...
+        .to(
+          '.pr-detail-big',
+          {
+            duration: 0.8,
+            scrambleText: {
+              text: 'General Translation',
+              chars: 'lowerCase',
+              speed: 0.5,
+            },
+          },
+          '+=0.35'
+        )
+        .to({}, { duration: 0.45 })
         // Finally the comparison yields to the handoff line.
         .to(
           '.pr-overlay-stage, .pr-overlay-legend',
@@ -414,7 +429,13 @@ export default function TypeDetailSlide() {
       <div ref={pin} className='pr-pin pr-detail-inner'>
         <div className='pr-detail-main'>
           <div className='pr-detail-head'>
-            <h2>Fun fact: this deck runs two Inters.</h2>
+            <h2>
+              Fun fact: We were using the{' '}
+              <span className='pr-wrong-inter'>
+                wrong <em className='pr-glitch-inter'>Inter</em>
+              </span>
+              .
+            </h2>
             <p className='pr-sub'>
               The Inter that Google Fonts serves is not quite the Inter that
               Rasmus Andersson ships. The official build keeps its OpenType

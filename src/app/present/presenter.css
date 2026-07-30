@@ -1306,7 +1306,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* ---------- Type detail interlude ---------- */
 
 .pr-detail {
-  height: 640vh;
+  height: 700vh;
 }
 
 .pr-detail-inner {
@@ -1529,6 +1529,49 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-detail-head .pr-sub {
   max-width: 640px;
+}
+
+/* “wrong Inter”: red, with the word Inter glitching between the two
+   builds, features on so the glyph swaps are visible. */
+.pr-wrong-inter {
+  color: #ff3b30;
+}
+
+.pr-glitch-inter {
+  font-style: normal;
+  font-feature-settings: 'ss02', 'zero', 'cv05', 'cv11';
+  animation: pr-inter-glitch 2.8s steps(1, end) infinite;
+}
+
+@keyframes pr-inter-glitch {
+  0%,
+  100% {
+    font-family: 'InterVariable', var(--font-inter), sans-serif;
+  }
+  11% {
+    font-family: var(--font-inter), sans-serif;
+  }
+  16% {
+    font-family: 'InterVariable', var(--font-inter), sans-serif;
+  }
+  21% {
+    font-family: var(--font-inter), sans-serif;
+  }
+  26% {
+    font-family: 'InterVariable', var(--font-inter), sans-serif;
+  }
+  58% {
+    font-family: var(--font-inter), sans-serif;
+  }
+  63% {
+    font-family: 'InterVariable', var(--font-inter), sans-serif;
+  }
+  67% {
+    font-family: var(--font-inter), sans-serif;
+  }
+  74% {
+    font-family: 'InterVariable', var(--font-inter), sans-serif;
+  }
 }
 
 .pr-detail-grid {
