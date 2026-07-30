@@ -3,8 +3,8 @@
    Full-bleed dark hero from the founder's sketch: two corridor
    walls of product-UI cards sweep toward a central vanishing
    point in CURVILINEAR perspective — the convergence lines are
-   curves, fisheye-style, drawn by strip chords placed along a
-   curved rail — English source strings in on the left, locale-
+   concave curves sucked into the waist, drawn by strip chords
+   placed along a curved rail — English source in on the left, locale-
    stamped translations out on the right — and the negative space
    between them is an hourglass pinched to a waist that holds the
    brand stack. Below the hero, the light toolchain shell continues:
@@ -4785,17 +4785,17 @@
     transform-origin: 50% 0%;
   }
 
-  /* the desktop corridor's curvature, in miniature: each card bows toward
-     the viewer at its outer edge and recedes at the center seam, so the fold
-     reads as a shallow barrel rather than a flat tilt */
+  /* the desktop corridor's curvature, in miniature: each card sits flat at
+     its outer edge and recedes at the center seam, so the fold reads as a
+     shallow pinch — pulled in at the middle — rather than a flat tilt */
   .hourglass-root .hg-m-strip .hg-card:first-child {
     transform: rotateY(9deg);
-    transform-origin: 100% 50%;
+    transform-origin: 0 50%;
   }
 
   .hourglass-root .hg-m-strip .hg-card:last-child {
     transform: rotateY(-9deg);
-    transform-origin: 0 50%;
+    transform-origin: 100% 50%;
   }
 
   .hourglass-root .hg-core {

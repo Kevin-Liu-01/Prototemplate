@@ -200,30 +200,48 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 /* Subsections: every beat of a slide, revealed on hover and for the
-   active section. */
+   active section. Grid-rows animation gives an exact-height, eased
+   expansion; items cascade in with a per-row delay. */
 .pr-hud-subs {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  max-height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
   opacity: 0;
-  overflow: hidden;
   margin-left: 10px;
   transition:
-    max-height 0.35s ease,
+    grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.3s ease,
-    margin 0.35s ease;
+    margin 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pr-hud-subs-inner {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .pr-hud-subs button {
   padding: 5px 16px 5px 2px;
+  opacity: 0;
+  transform: translateX(-7px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0s;
 }
 
 .pr-hud-item:hover .pr-hud-subs,
 .pr-hud-item.is-active .pr-hud-subs {
-  max-height: 260px;
+  grid-template-rows: 1fr;
   opacity: 1;
   margin-top: 3px;
+}
+
+.pr-hud-item:hover .pr-hud-subs button,
+.pr-hud-item.is-active .pr-hud-subs button {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i, 0) * 45ms + 60ms);
 }
 
 .pr-hud-subs button i {
@@ -1306,7 +1324,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* ---------- Type detail interlude ---------- */
 
 .pr-detail {
-  height: 700vh;
+  height: 740vh;
 }
 
 .pr-detail-inner {
@@ -1537,7 +1555,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: #ff3b30;
 }
 
+/* Fixed-width box sized to the wider build, so the font flips can never
+   reflow the headline. */
 .pr-glitch-inter {
+  display: inline-block;
+  width: 2.42em;
   font-style: normal;
   font-feature-settings: 'ss02', 'zero', 'cv05', 'cv11';
   animation: pr-inter-glitch 2.8s steps(1, end) infinite;

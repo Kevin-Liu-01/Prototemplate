@@ -71,8 +71,8 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
     jump: 0,
     subs: [
       { label: 'Two Inters', f: 0.04 },
-      { label: 'The overlay', f: 0.51 },
-      { label: 'General Translation', f: 0.7 },
+      { label: 'The overlay', f: 0.47 },
+      { label: 'General Translation', f: 0.64 },
       { label: 'So I built 20', f: 0.86 },
     ],
   },
@@ -231,19 +231,22 @@ export default function PresenterApp() {
                 </button>
                 {slide.subs && (
                   <div className='pr-hud-subs'>
-                    {slide.subs.map((sub, j) => (
-                      <button
-                        key={sub.label}
-                        type='button'
-                        className={
-                          i === active && j === activeSub ? 'is-here' : ''
-                        }
-                        onClick={() => goToRef.current(i, sub.f)}
-                      >
-                        <i />
-                        <em>{sub.label}</em>
-                      </button>
-                    ))}
+                    <div className='pr-hud-subs-inner'>
+                      {slide.subs.map((sub, j) => (
+                        <button
+                          key={sub.label}
+                          type='button'
+                          className={
+                            i === active && j === activeSub ? 'is-here' : ''
+                          }
+                          style={{ '--i': j } as React.CSSProperties}
+                          onClick={() => goToRef.current(i, sub.f)}
+                        >
+                          <i />
+                          <em>{sub.label}</em>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

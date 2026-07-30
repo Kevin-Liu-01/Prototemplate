@@ -283,7 +283,15 @@ export default function TypeDetailSlide() {
           { autoAlpha: 0, y: -16, stagger: 0.08, duration: 0.35 },
           '+=0.2'
         )
-        .to('.pr-detail-head', { autoAlpha: 0, y: -40, duration: 0.5 }, '<')
+        // Explicit start: the real-time entrance tween may still be fading
+        // the head in when a fast scroll initializes this teardown, and a
+        // captured mid-fade value would strand the headline dim forever.
+        .fromTo(
+          '.pr-detail-head',
+          { autoAlpha: 1, y: 0 },
+          { autoAlpha: 0, y: -40, duration: 0.5, immediateRender: false },
+          '<'
+        )
         .to(
           '.pr-detail-note, .pr-detail-col header',
           { autoAlpha: 0, duration: 0.35 },
@@ -382,6 +390,10 @@ export default function TypeDetailSlide() {
           },
           '+=0.35'
         )
+        // ...and breathes again so the two builds can be compared on the
+        // wordmark itself...
+        .to('.pr-col-google .pr-detail-big', { opacity: 0.15, duration: 0.6 }, '+=0.25')
+        .to('.pr-col-google .pr-detail-big', { opacity: 0.95, duration: 0.6 }, '>')
         .to({}, { duration: 0.45 })
         // Finally the comparison yields to the handoff line.
         .to(

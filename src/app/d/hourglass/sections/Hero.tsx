@@ -11,12 +11,14 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 /**
  * The hourglass hero: two corridor walls of real product UI sweep toward a
  * vanishing point at screen center — in CURVILINEAR perspective. The walls
- * are not flat wedges: each one follows a curved rail (plan view: nearly
- * parallel to the glass at the screen edge, easing to nearly straight into
- * the depth at the waist), so every convergence line — the top and bottom
- * courses and all eight row lines — projects as a curve bowing outward at
- * the edges and accelerating into the point, the way a fisheye lens draws a
- * hallway. The left wall carries English source strings flowing INTO the
+ * are not flat wedges: each one follows a curved rail (plan view: running
+ * nearly straight into the depth at the screen edge — the two walls almost
+ * parallel, an ordinary hallway — then bending inward with accelerating
+ * curvature to hook across the point at the waist), so every convergence
+ * line — the top and bottom courses and all eight row lines — projects as a
+ * CONCAVE curve: steep off the screen edge, sagging toward the waist level
+ * and gliding into the pinch, grid lines pulled into a central mass. The
+ * left wall carries English source strings flowing INTO the
  * point; the right wall carries their locale-stamped translations flowing
  * OUT of it — the translation pipeline as motion. The negative space between
  * the walls is the hourglass: wide at the edges, pinched to a waist that
@@ -319,21 +321,23 @@ const LOOP_ARC = COLUMN_PITCH * 3;
 /* ---------- the curved rail ---------- */
 
 /* Plan-view geometry of one wall (x across the screen, z into it, arc length
-   s from the rail's start). The heading phi eases from PHI_NEAR (~20deg —
-   nearly parallel to the glass) to PHI_DEEP (~89deg — diving straight for
-   the vanishing point). The rail STARTS off-screen and slightly toward the
-   viewer (EDGE_OUT/EDGE_Z): the barrel's bulge is cut by the frame edge the
-   way a fisheye photo crops its own distortion, so the wall enters the
-   viewport oversized, already visibly turning. Integrating the unit tangent
-   gives an arc-length LUT; strips are flat chords sampled from it. Because
-   depth grows along a curve instead of a line, every projected course — the
-   silhouette rails and all eight row lines — is a curve that accelerates
+   s from the rail's start). The heading phi eases from PHI_NEAR (~74deg —
+   diving almost straight into the depth, the two walls entering parallel)
+   to PHI_DEEP (~24deg — hooked inward, gliding across toward the vanishing
+   point). PHI_SHAPE > 1 keeps the near rail unbent and concentrates the
+   turn at the waist, so the bend reads as acceleration into the pinch —
+   suction, not fisheye. The rail starts just off-screen at near-neutral
+   depth (EDGE_OUT/EDGE_Z): the walls arrive as flat frontal-size corridor
+   walls and only then get pulled in. Integrating the unit tangent gives an
+   arc-length LUT; strips are flat chords sampled from it. Because depth
+   grows along a curve instead of a line, every projected course — the
+   silhouette rails and all eight row lines — is a CONCAVE curve sucked
    into the waist. */
-const PHI_NEAR = 0.35;
-const PHI_DEEP = 1.55;
-const PHI_SHAPE = 1.25;
-const EDGE_OUT = 115;
-const EDGE_Z = 80;
+const PHI_NEAR = 1.3;
+const PHI_DEEP = 0.42;
+const PHI_SHAPE = 1.35;
+const EDGE_OUT = 60;
+const EDGE_Z = 20;
 const RAIL_STEP = 4;
 const RAIL_START = -520;
 
