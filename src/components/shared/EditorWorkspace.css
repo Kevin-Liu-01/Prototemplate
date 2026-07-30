@@ -1,0 +1,246 @@
+/* ============================================================
+   SHARED EDITOR WORKSPACE
+   Source beside translation, with revision and edit states carried
+   by type weight, strikethrough and hairlines — never by colour.
+   ============================================================ */
+
+.gte {
+  --_line: var(--gte-line, rgba(255, 255, 255, 0.1));
+  --_line2: var(--gte-line-2, rgba(255, 255, 255, 0.055));
+  --_t1: var(--gte-title, rgba(255, 255, 255, 0.94));
+  --_t2: var(--gte-body, rgba(255, 255, 255, 0.64));
+  --_t3: var(--gte-label, rgba(255, 255, 255, 0.4));
+  --_t4: var(--gte-quiet, rgba(255, 255, 255, 0.24));
+  --_display: var(--gte-display, var(--font-switzer), 'Switzer', system-ui, sans-serif);
+  --_text: var(--gte-text, var(--font-inter), 'Inter', system-ui, sans-serif);
+  --_mono: var(--gte-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+
+  position: relative;
+  padding: var(--gte-pad, 104px 0);
+  font-family: var(--_text);
+}
+
+.gte *,
+.gte *::before,
+.gte *::after {
+  box-sizing: border-box;
+}
+
+.gte-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: var(--gte-wrap, 1180px);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.gte-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.gte-grid[data-layout='stacked'] {
+  grid-template-columns: 1fr;
+  gap: 34px;
+  align-items: start;
+}
+
+.gte h2 {
+  font-family: var(--_display);
+  font-size: var(--gte-head-size, clamp(2rem, 3.6vw, 3.1rem));
+  font-weight: var(--gte-head-weight, 700);
+  letter-spacing: -0.04em;
+  line-height: 1.03;
+  margin: 0 0 14px;
+  color: var(--gte-head-color, var(--_t1));
+}
+
+.gte-sub {
+  color: var(--_t2);
+  max-width: 460px;
+  margin: 0;
+  font-size: var(--gte-sub-size, 16px);
+  line-height: 1.6;
+}
+
+.gte-notes {
+  margin: 22px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+}
+
+.gte-notes li {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  color: var(--_t2);
+  font-size: 14.5px;
+}
+
+.gte-notes li::before {
+  content: '—';
+  color: var(--_t3);
+  font-family: var(--_mono);
+  font-size: 11px;
+}
+
+.gte-ws {
+  position: relative;
+  border-radius: var(--gte-radius, 12px);
+  background: var(--gte-ws-bg, #101214);
+  border: 1px solid var(--_line);
+  overflow: clip;
+  box-shadow: var(--gte-ws-shadow, 0 30px 90px rgba(0, 0, 0, 0.5));
+}
+
+.gte-bar {
+  height: 42px;
+  border-bottom: 1px solid var(--_line2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  font-family: var(--_mono);
+  /* 11px is the label floor (DESIGN_STANDARD §2) — nothing on the plate
+     renders below it */
+  font-size: 11px;
+  color: var(--_t3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* One grid, two cells per string: a source cell and its translation share a
+   grid row, so they share a height — the columns end together and every row
+   hairline runs straight across the plate. */
+.gte-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  padding: 18px 0 22px;
+  min-height: 300px;
+}
+
+.gte-cell-t {
+  border-left: 1px solid var(--_line2);
+}
+
+.gte-lab {
+  font-family: var(--_mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--_t3);
+  padding: 0 20px 14px;
+}
+
+.gte-row {
+  position: relative;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--_line2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--_t2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  min-height: 44px;
+}
+
+.gte-prev {
+  display: block;
+  width: 100%;
+  text-decoration: line-through;
+  color: var(--_t4);
+  font-size: 12px;
+}
+
+.gte-row[data-state='revised'] .gte-text {
+  font-weight: 600;
+  color: var(--gte-revised, var(--_t1));
+}
+
+.gte-act {
+  margin-left: auto;
+  font-family: var(--_mono);
+  font-size: 11px;
+  color: var(--_t4);
+  border: 1px solid var(--_line2);
+  border-radius: 4px;
+  padding: 2px 8px;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.gte-row:hover .gte-act {
+  color: var(--_t1);
+  border-color: var(--gte-act-hover, rgba(255, 255, 255, 0.3));
+}
+
+.gte-row[data-state='approved'] .gte-act {
+  border-color: transparent;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* status strip: real counts along the plate's bottom edge */
+.gte-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  padding: 12px 20px 13px;
+  border-top: 1px solid var(--_line2);
+  font-family: var(--_mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--_t3);
+}
+
+.gte-foot span:first-child {
+  color: var(--_t2);
+}
+
+@media (max-width: 920px) {
+  .gte-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* one column: each source sits directly above its translation as a pair */
+  .gte-cols {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .gte-lab.gte-cell-t {
+    display: none;
+  }
+
+  .gte-cell-t {
+    border-left: 0;
+  }
+
+  .gte-row.gte-cell-s {
+    border-bottom: 0;
+    padding-bottom: 0;
+    min-height: 0;
+  }
+
+  .gte-row.gte-cell-s .gte-text {
+    font-size: 12px;
+    color: var(--_t3);
+  }
+}
+
+@media (max-width: 767px) {
+  .gte {
+    padding: var(--gte-pad-sm, 68px 0);
+  }
+}

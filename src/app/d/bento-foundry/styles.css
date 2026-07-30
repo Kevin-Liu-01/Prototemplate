@@ -1,0 +1,1509 @@
+/* ============================================================
+   BENTO FOUNDRY — machined monochrome, everything under one root
+   ============================================================ */
+
+@property --bf-a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 140deg;
+}
+
+.bento-foundry-root {
+  --bf-bg: #070708;
+  --bf-panel: #0e0e10;
+  --bf-panel2: #101013;
+  --bf-ln: rgba(255, 255, 255, 0.1);
+  --bf-ln2: rgba(255, 255, 255, 0.17);
+  --bf-t1: rgba(255, 255, 255, 0.93);
+  --bf-t2: rgba(255, 255, 255, 0.65);
+  --bf-t3: rgba(255, 255, 255, 0.42);
+  --bf-t4: rgba(255, 255, 255, 0.25);
+  /* the plate the story is milled from — the foundry's answer to paper */
+  --bf-mill: #17181c;
+  --bf-mill-2: #1e1f24;
+  --bf-mill-ink: rgba(255, 255, 255, 0.94);
+  --bf-mill-ink2: rgba(255, 255, 255, 0.62);
+  --bf-mill-ink3: rgba(255, 255, 255, 0.4);
+  --bf-mill-rule: rgba(255, 255, 255, 0.13);
+  --bf-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --bf-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --bf-mono: ui-monospace, 'SF Mono', 'Menlo', monospace;
+  --bf-rad: 12px;
+
+  position: relative;
+  background: var(--bf-bg);
+  color: var(--bf-t1);
+  font-family: var(--bf-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.bento-foundry-root ::selection {
+  background: #fff;
+  color: #0a0a0a;
+}
+.bento-foundry-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.bento-foundry-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.bento-foundry-root :focus-visible {
+  outline: 1.5px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- ambient: satin light bands + grain (never flat black) ---------- */
+.bento-foundry-root .bf-satin {
+  position: fixed;
+  inset: -30% -20%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1300px 720px at 18% 26%, rgba(255, 255, 255, 0.05), transparent 62%),
+    radial-gradient(1100px 860px at 84% 68%, rgba(255, 255, 255, 0.04), transparent 60%),
+    linear-gradient(112deg, transparent 28%, rgba(255, 255, 255, 0.032) 44%, transparent 58%),
+    linear-gradient(248deg, transparent 30%, rgba(255, 255, 255, 0.026) 52%, transparent 66%);
+  animation: bf-satin 22s ease-in-out infinite alternate;
+}
+@keyframes bf-satin {
+  from {
+    transform: translate3d(-2.5%, -1.5%, 0);
+  }
+  to {
+    transform: translate3d(2.5%, 2%, 0);
+  }
+}
+.bento-foundry-root .bf-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: bf-grain 0.9s steps(6) infinite;
+}
+@keyframes bf-grain {
+  0% { transform: translate3d(0, 0, 0); }
+  17% { transform: translate3d(-4%, 2%, 0); }
+  33% { transform: translate3d(2%, -3%, 0); }
+  50% { transform: translate3d(-3%, -2%, 0); }
+  67% { transform: translate3d(3%, 3%, 0); }
+  83% { transform: translate3d(-2%, 4%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ---------- type utilities ---------- */
+/* Machined foil: achromatic silver with specular banding. Every stop is a true
+   grey (R=G=B) — a foil that picks up a hue is a rainbow text fill, not metal. */
+.bento-foundry-root .bf-foil {
+  background: linear-gradient(
+    104deg,
+    #8c8c8c 0%, #d4d4d4 11%, #ffffff 18%, #b0b0b0 25%, #767676 34%,
+    #e8e8e8 45%, #ffffff 52%, #a2a2a2 61%, #6e6e6e 71%, #dcdcdc 83%, #8c8c8c 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: bf-foil 7s ease-in-out infinite;
+}
+@keyframes bf-foil {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.bento-foundry-root .bf-h2 {
+  font-family: var(--bf-disp);
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+/* second line of a two-tone machined headline */
+.bento-foundry-root .bf-dim {
+  color: var(--bf-t3);
+}
+
+/* ---------- machined cell language ---------- */
+.bento-foundry-root .bf-cell {
+  position: relative;
+  background:
+    radial-gradient(420px circle at var(--bf-mx, 30%) var(--bf-my, 20%), rgba(255, 255, 255, 0.07), transparent 55%),
+    var(--bf-panel);
+  border: 1px solid var(--bf-ln);
+  border-radius: var(--bf-rad);
+  overflow: clip;
+}
+.bento-foundry-root .bf-cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+.bento-foundry-root .bf-sheen {
+  position: absolute;
+  inset: -4% -30%;
+  pointer-events: none;
+  filter: blur(7px);
+  background: linear-gradient(
+    105deg,
+    transparent 40%, rgba(210, 218, 232, 0.05) 46%, rgba(255, 255, 255, 0.12) 50%,
+    rgba(226, 218, 204, 0.05) 54%, transparent 60%
+  );
+  transform: translateX(-130%);
+}
+.bento-foundry-root .bf-rim::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: calc(var(--bf-rad) + 1px);
+  padding: 1px;
+  z-index: 2;
+  background: conic-gradient(from var(--bf-a), #777, #fff 25%, #555 50%, #eee 75%, #777);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .bento-foundry-root .bf-rim:hover::before { opacity: 0.85; }
+}
+
+/* ---------- buttons ---------- */
+.bento-foundry-root .bf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-family: var(--bf-disp);
+  font-weight: 500;
+  font-size: 15px;
+  min-height: 44px;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.bento-foundry-root .bf-btn-solid {
+  position: relative;
+  overflow: clip;
+  background: linear-gradient(180deg, #ffffff, #d9d9d9);
+  color: #0a0a0a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.45);
+}
+.bento-foundry-root .bf-irid {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(125deg, #fff, #b2b2b2, #ededed, #8d8d8d, #fff);
+  background-size: 300% 300%;
+  mix-blend-mode: color-dodge;
+  transition: opacity 0.35s ease;
+  animation: bf-irid 4s linear infinite;
+}
+@keyframes bf-irid {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .bento-foundry-root .bf-btn-solid:hover .bf-irid { opacity: 0.35; }
+  .bento-foundry-root .bf-btn-line:hover { background: rgba(255, 255, 255, 0.06); }
+}
+.bento-foundry-root .bf-btn-line {
+  border: 1px solid var(--bf-ln2);
+  color: var(--bf-t1);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ---------- nav ---------- */
+.bento-foundry-root .bf-nav-dock {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 800;
+  width: min(1180px, calc(100vw - 28px));
+}
+.bento-foundry-root .bf-nav {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 9px 10px 9px 16px;
+  border-radius: 13px;
+  background: rgba(11, 11, 13, 0.74);
+  border: 1px solid var(--bf-ln);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.bento-foundry-root .bf-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--bf-disp);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 15px;
+}
+.bento-foundry-root .bf-logomark {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+.bento-foundry-root .bf-logomark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.bento-foundry-root .bf-nav-links {
+  display: flex;
+  gap: 4px;
+  margin-left: 6px;
+}
+.bento-foundry-root .bf-nav-links a {
+  font-size: 13.5px;
+  color: var(--bf-t2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+}
+@media (hover: hover) {
+  .bento-foundry-root .bf-nav-links a:hover {
+    color: var(--bf-t1);
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+.bento-foundry-root .bf-nav-cta {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.bento-foundry-root .bf-nav-cta .bf-btn {
+  padding: 8px 16px;
+  font-size: 13.5px;
+  border-radius: 9px;
+  min-height: 36px;
+}
+
+/* ============================ HERO ============================ */
+.bento-foundry-root .bf-hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: clip;
+  isolation: isolate;
+}
+.bento-foundry-root .bf-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.95;
+  z-index: 0;
+}
+.bento-foundry-root .bf-hero-vin {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 112%, transparent 42%, rgba(7, 7, 8, 0.8) 82%),
+    linear-gradient(180deg, rgba(7, 7, 8, 0.72), rgba(7, 7, 8, 0.1) 26%, rgba(7, 7, 8, 0) 56%, rgba(7, 7, 8, 0.62));
+}
+
+/* the perspective world: rays radiate from the same centre the shader does */
+.bento-foundry-root .bf-hero-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  pointer-events: none;
+}
+.bento-foundry-root .bf-stream {
+  position: absolute;
+  inset: 0;
+}
+.bento-foundry-root .bf-lane {
+  position: absolute;
+  inset: 0;
+}
+
+.bento-foundry-root .bf-scard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max-content;
+  max-width: 320px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 11px 15px;
+  border-radius: 11px;
+  background: rgba(12, 12, 15, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  color: var(--bf-t1);
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: nowrap;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 16px 44px rgba(0, 0, 0, 0.62);
+}
+.bento-foundry-root .bf-sc-tag {
+  font-family: var(--bf-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bf-t3);
+}
+.bento-foundry-root .bf-sc-btn {
+  background: linear-gradient(180deg, #fff, #d6d6d6);
+  color: #0a0a0a;
+  font-family: var(--bf-disp);
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 7px 15px;
+  font-size: 13.5px;
+  text-align: center;
+}
+.bento-foundry-root .bf-sc-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bento-foundry-root .bf-sc-tick {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  color: #000;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  font-style: normal;
+}
+.bento-foundry-root .bf-sc-field {
+  border: 1px solid var(--bf-ln2);
+  border-radius: 8px;
+  padding: 7px 13px;
+  color: var(--bf-t2);
+  font-size: 13px;
+  min-width: 158px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.bento-foundry-root .bf-sc-nav,
+.bento-foundry-root .bf-sc-copy,
+.bento-foundry-root .bf-sc-welcome {
+  font-size: 13.5px;
+}
+.bento-foundry-root .bf-sc-welcome {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.bento-foundry-root .bf-sc-price {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+.bento-foundry-root .bf-sc-price b {
+  font-family: var(--bf-disp);
+  font-size: 15px;
+}
+.bento-foundry-root .bf-sc-price em {
+  font-style: normal;
+  color: var(--bf-t2);
+  font-size: 13px;
+}
+.bento-foundry-root .bf-scard-quote {
+  white-space: normal;
+  width: 264px;
+}
+.bento-foundry-root .bf-sc-quote {
+  font-size: 11.8px;
+  line-height: 1.5;
+  color: var(--bf-t2);
+}
+.bento-foundry-root .bf-sc-who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+}
+.bento-foundry-root .bf-sc-av {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  font-style: normal;
+  color: #0a0a0a;
+  background: conic-gradient(from 200deg, #bdbdbd, #fff 30%, #8a8a8a 60%, #e8e8e8);
+}
+
+/* ---------- the gate: the shared machined dial, milled for the foundry ----------
+   Cold graphite bezel with two hard specular quadrants (the way a turned metal
+   ring catches a shop light), a white sweep, and the real mark on a black core. */
+.bento-foundry-root .bf-gate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* seated below centre so the CTA row clears its collar */
+  margin-top: 40px;
+  --gtw-size: clamp(196px, 21vw, 272px);
+  --gtw-bezel: conic-gradient(
+    from 208deg,
+    #2b2c30 0deg,
+    #6e7076 34deg,
+    #f4f5f7 62deg,
+    #56585e 96deg,
+    #212226 150deg,
+    #4a4c52 214deg,
+    #e8eaee 246deg,
+    #3d3f44 292deg,
+    #2b2c30 360deg
+  );
+  --gtw-track: rgba(255, 255, 255, 0.1);
+  --gtw-track-width: 1;
+  --gtw-sweep: #ffffff;
+  --gtw-sweep-width: 2;
+  --gtw-halo: rgba(196, 206, 228, 0.18);
+  --gtw-core: radial-gradient(circle at 34% 26%, #17181c, #060607 72%);
+  --gtw-core-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -14px 32px rgba(0, 0, 0, 0.85),
+    0 0 64px rgba(158, 174, 214, 0.2);
+  --gtw-mark-glow: rgba(190, 204, 240, 0.4);
+  --gtw-glyph: rgba(220, 227, 242, 0.72);
+  --gtw-glyph-size: 12px;
+  --gtw-mono: var(--bf-mono);
+}
+/* a milled outer collar: the dial sits in the plate, it is not pasted onto it */
+.bento-foundry-root .bf-gate::before {
+  content: '';
+  position: absolute;
+  inset: -8.5%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+    0 26px 80px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+/* ---------- hero copy + foot ---------- */
+.bento-foundry-root .bf-hero-inner {
+  position: relative;
+  z-index: 5;
+  width: min(1180px, calc(100vw - 32px));
+  margin: 0 auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 84px;
+  pointer-events: none;
+}
+.bento-foundry-root .bf-hero-inner a,
+.bento-foundry-root .bf-hero-inner button {
+  pointer-events: auto;
+}
+.bento-foundry-root .bf-hero-copy {
+  text-align: center;
+}
+.bento-foundry-root .bf-npx {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--bf-mono);
+  font-size: 12.5px;
+  color: var(--bf-t2);
+  border: 1px solid var(--bf-ln);
+  background: rgba(10, 10, 12, 0.55);
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: color 0.2s, border-color 0.2s;
+}
+@media (hover: hover) {
+  .bento-foundry-root .bf-npx:hover {
+    color: var(--bf-t1);
+    border-color: var(--bf-ln2);
+  }
+}
+.bento-foundry-root .bf-npx-d {
+  color: var(--bf-t4);
+}
+.bento-foundry-root .bf-h1 {
+  font-family: var(--bf-disp);
+  font-size: clamp(2.6rem, 6.2vw, 5.2rem);
+  font-weight: 600;
+  letter-spacing: -0.042em;
+  line-height: 1.01;
+  margin: 0 0 12px;
+}
+.bento-foundry-root .bf-hero-sub {
+  color: var(--bf-t2);
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  max-width: 560px;
+  margin: 0 auto;
+}
+.bento-foundry-root .bf-rot {
+  color: var(--bf-t1);
+  border-bottom: 1px solid var(--bf-ln2);
+  font-weight: 500;
+  white-space: nowrap;
+  display: inline-block;
+}
+.bento-foundry-root .bf-hero-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  /* The copy stack is tight and the dial hangs below it: the air belongs
+     between the CTA row and the bezel, not above the buttons. */
+  margin-top: 18px;
+}
+.bento-foundry-root .bf-hero-foot {
+  margin-top: auto;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bento-foundry-root .bf-stats {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: clamp(16px, 3vw, 40px);
+  flex-wrap: wrap;
+  font-family: var(--bf-mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--bf-t3);
+}
+.bento-foundry-root .bf-stat b {
+  font-family: var(--bf-disp);
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: var(--bf-t1);
+  margin-right: 8px;
+  font-weight: 600;
+}
+.bento-foundry-root .bf-marq {
+  overflow: clip;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.bento-foundry-root .bf-marq-track {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+}
+.bento-foundry-root .bf-fchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--bf-t2);
+  border: 1px solid var(--bf-ln);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 999px;
+  padding: 6px 14px;
+  white-space: nowrap;
+}
+.bento-foundry-root .bf-trusted {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(16px, 3vw, 32px);
+}
+.bento-foundry-root .bf-trusted-lab {
+  font-family: var(--bf-mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--bf-t4);
+}
+.bento-foundry-root .bf-trusted-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(18px, 3.4vw, 40px);
+  flex-wrap: wrap;
+}
+.bento-foundry-root .bf-tw {
+  font-family: var(--bf-disp);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: var(--bf-t3);
+  transition: color 0.25s;
+}
+@media (hover: hover) {
+  .bento-foundry-root .bf-tw:hover { color: var(--bf-t1); }
+}
+
+/* ==================== SECTIONS ==================== */
+.bento-foundry-root .bf-sec {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: clamp(84px, 10vw, 150px) 0;
+}
+/* The bento's own bottom padding already carries this boundary; stacking a
+   second full section pad on top of it opened a void the page read as a
+   failed load. */
+.bento-foundry-root #bf-pricing { padding-top: clamp(36px, 4.4vw, 64px); padding-bottom: 200px; }
+.bento-foundry-root .bf-sec-head {
+  max-width: 760px;
+  margin-bottom: 48px;
+}
+.bento-foundry-root .bf-sec-head p {
+  color: var(--bf-t2);
+  margin-top: 16px;
+  max-width: 560px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ==================== PRICING / CLOSING / FOOTER ==================== */
+.bento-foundry-root .bf-pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 900px;
+}
+.bento-foundry-root .bf-pcard {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+}
+.bento-foundry-root .bf-pcard h3 {
+  font-family: var(--bf-disp);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--bf-t2);
+  margin: 0;
+}
+.bento-foundry-root .bf-amount {
+  font-family: var(--bf-disp);
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  margin: 10px 0 2px;
+}
+.bento-foundry-root .bf-amount small {
+  font-family: var(--bf-sans);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--bf-t3);
+  letter-spacing: 0;
+}
+.bento-foundry-root .bf-pdesc {
+  color: var(--bf-t2);
+  font-size: 13.5px;
+  margin-bottom: 16px;
+}
+.bento-foundry-root .bf-pcard ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--bf-t2);
+  margin-bottom: 22px;
+}
+.bento-foundry-root .bf-pcard li {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+}
+.bento-foundry-root .bf-pcard li::before {
+  content: '—';
+  color: var(--bf-t4);
+  font-family: var(--bf-mono);
+  font-size: 11px;
+}
+.bento-foundry-root .bf-pcard .bf-btn {
+  margin-top: auto;
+  justify-content: center;
+}
+.bento-foundry-root .bf-closing {
+  text-align: center;
+  /* black between the light's last luminance and the footer rule */
+  padding-bottom: 26px;
+}
+.bento-foundry-root .bf-closing h2 {
+  font-family: var(--bf-disp);
+  font-size: clamp(2.4rem, 5.4vw, 4.2rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.03;
+  margin: 6px 0 12px;
+}
+.bento-foundry-root .bf-closing p {
+  color: var(--bf-t2);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+}
+/* the closing light: a horizon, not a picture — full-bleed, no rim, no radius.
+   Two nested masks instead of one composited pair: the outer ellipse drops the
+   light off in every direction, the inner one takes the top and bottom to
+   nothing well before the footer rule, so there is no straight cut anywhere. */
+.bento-foundry-root .bf-cta-band {
+  position: relative;
+  width: 100vw;
+  margin: 26px 0 0 calc(50% - 50vw);
+  height: 320px;
+  overflow: clip;
+  -webkit-mask-image: radial-gradient(
+    62% 96% at 50% 50%,
+    #000 24%,
+    rgba(0, 0, 0, 0.58) 56%,
+    rgba(0, 0, 0, 0.16) 76%,
+    transparent 92%
+  );
+  mask-image: radial-gradient(
+    62% 96% at 50% 50%,
+    #000 24%,
+    rgba(0, 0, 0, 0.58) 56%,
+    rgba(0, 0, 0, 0.16) 76%,
+    transparent 92%
+  );
+}
+.bento-foundry-root .bf-cb-in {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 12%,
+    #000 34%,
+    #000 54%,
+    rgba(0, 0, 0, 0.22) 78%,
+    transparent 94%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 12%,
+    #000 34%,
+    #000 54%,
+    rgba(0, 0, 0, 0.22) 78%,
+    transparent 94%
+  );
+}
+.bento-foundry-root .bf-cb-fallback {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 120% at 12% 50%, rgba(84, 96, 124, 0.3), transparent 58%),
+    radial-gradient(120% 120% at 88% 50%, rgba(124, 108, 78, 0.26), transparent 58%),
+    radial-gradient(80% 76% at 50% 50%, transparent 30%, rgba(5, 5, 6, 0.92) 76%);
+}
+.bento-foundry-root .bf-cb-canvas {
+  position: absolute;
+  left: 0;
+  top: -20%;
+  width: 100%;
+  height: 140%;
+  display: block;
+}
+.bento-foundry-root .bf-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--bf-ln);
+  padding: 52px 0 34px;
+  background: #060607;
+}
+.bento-foundry-root .bf-foot-in {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 0 auto;
+}
+.bento-foundry-root .bf-foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 28px;
+  margin-bottom: 34px;
+}
+.bento-foundry-root .bf-foot-col h3 {
+  font-family: var(--bf-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--bf-t3);
+  margin: 0 0 14px;
+}
+.bento-foundry-root .bf-foot-col a {
+  display: block;
+  font-size: 13px;
+  color: var(--bf-t2);
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+@media (hover: hover) {
+  .bento-foundry-root .bf-foot-col a:hover { color: var(--bf-t1); }
+}
+.bento-foundry-root .bf-foot-brand p {
+  font-size: 12.5px;
+  color: var(--bf-t3);
+  margin-top: 12px;
+  max-width: 280px;
+}
+.bento-foundry-root .bf-foot-brand p.bf-compliance {
+  font-family: var(--bf-mono);
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--bf-t4);
+  margin-top: 18px;
+}
+.bento-foundry-root .bf-foot-base {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border-top: 1px solid var(--bf-ln);
+  padding-top: 22px;
+  font-size: 12px;
+  color: var(--bf-t4);
+  flex-wrap: wrap;
+  font-family: var(--bf-mono);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1023px) {
+  .bento-foundry-root .bf-foot-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 767px) {
+  .bento-foundry-root .bf-nav { gap: 10px; padding: 8px 8px 8px 14px; }
+  .bento-foundry-root .bf-nav-links,
+  .bento-foundry-root .bf-nav-cta .bf-btn-line { display: none; }
+  .bento-foundry-root .bf-hero-inner { padding-top: 84px; }
+  /* the dial drops below the copy stack so the install chip never rides its collar */
+  .bento-foundry-root .bf-gate { --gtw-size: 152px; --gtw-glyph-size: 10px; top: 56%; margin-top: 0; }
+  .bento-foundry-root .bf-hero-ctas { gap: 10px; }
+  .bento-foundry-root .bf-npx { flex-basis: 100%; justify-content: center; padding: 10px 16px; }
+  .bento-foundry-root .bf-scard { font-size: 11.5px; max-width: 186px; padding: 9px 12px; }
+  .bento-foundry-root .bf-scard-quote { width: 168px; }
+  .bento-foundry-root .bf-sc-quote { font-size: 10px; }
+  .bento-foundry-root .bf-pricing-grid { grid-template-columns: 1fr; }
+
+  /* The last frame of the page is the closing act, so it has to fit inside one
+     phone viewport above the footer: headline, line, both buttons, and the
+     light — with the nav pill already retired by NavGuard. */
+  .bento-foundry-root #bf-pricing { padding-bottom: 124px; }
+  .bento-foundry-root .bf-closing { padding-top: 76px; }
+  .bento-foundry-root .bf-closing h2 { margin: 0 0 10px; }
+  .bento-foundry-root .bf-cta-band { height: 208px; margin-top: 16px; }
+  .bento-foundry-root .bf-footer { padding: 30px 0 22px; }
+  .bento-foundry-root .bf-foot-grid { gap: 18px 20px; margin-bottom: 22px; }
+  .bento-foundry-root .bf-foot-brand p { margin-top: 9px; font-size: 11.5px; }
+  .bento-foundry-root .bf-foot-brand p.bf-compliance { margin-top: 11px; }
+  .bento-foundry-root .bf-foot-col h3 { margin-bottom: 9px; }
+  .bento-foundry-root .bf-foot-col a { font-size: 12px; padding: 2px 0; }
+  .bento-foundry-root .bf-foot-base { padding-top: 16px; }
+}
+
+/* ==================== REDUCED MOTION ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .bento-foundry-root .bf-satin,
+  .bento-foundry-root .bf-grain,
+  .bento-foundry-root .bf-foil,
+  .bento-foundry-root .bf-irid {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   StorySection / FeatureBento / EditorWorkspace / diagrams read
+   these. The foundry's identity is the machined plate: cold
+   graphite panels, a bright top hairline, a black under-shadow,
+   12px milled corners, and one wide cell that breaks the grid.
+   ============================================================ */
+
+.bento-foundry-root .bf-story,
+.bento-foundry-root .bf-features,
+.bento-foundry-root .bf-review {
+  /* The story window is a machined graphite plate, not a sheet of paper: the
+     site is milled into the same stock as the bento tray and the workspace, so
+     the longest stretch of the page carries the direction instead of the
+     donor's off-white canvas. `--gts-paper` is read by JS for the plate→editor
+     flip, so it stays a real colour. */
+  --gts-bg: var(--bf-bg);
+  --gts-paper: #17181c;
+  --gts-ink: var(--bf-mill-ink);
+  --gts-ink-2: var(--bf-mill-ink2);
+  --gts-ink-3: var(--bf-mill-ink3);
+  --gts-paper-rule: var(--bf-mill-rule);
+  --gts-paper-rule-strong: rgba(255, 255, 255, 0.21);
+  --gts-paper-dot: rgba(255, 255, 255, 0.05);
+  --gts-paper-guide: rgba(255, 255, 255, 0.045);
+  --gts-paper-card: var(--bf-mill-2);
+  --gts-paper-halo: var(--bf-mill);
+  --gts-paper-edge: rgba(255, 255, 255, 0.12);
+  --gts-paper-vignette: rgba(0, 0, 0, 0.55);
+  --gts-paper-input: rgba(255, 255, 255, 0.24);
+  --gts-paper-tick: rgba(255, 255, 255, 0.46);
+  --gts-hilite: rgba(255, 255, 255, 0.62);
+  --gts-shell: #0a0a0c;
+  --gts-shell-text: #ffffff;
+  --gts-shell-line: rgba(255, 255, 255, 0.18);
+  /* the editor plate is translucent so the light field reads *behind* the code;
+     the paper stays fully opaque, which is what keeps the field off white pages */
+  --gts-code-bg: rgba(9, 9, 11, 0.72);
+  --gts-code-text: rgba(232, 234, 238, 0.86);
+  --gts-line: var(--bf-ln);
+  --gts-line-2: rgba(255, 255, 255, 0.06);
+  --gts-t1: var(--bf-t1);
+  --gts-t2: var(--bf-t2);
+  --gts-t3: var(--bf-t3);
+  --gts-t4: var(--bf-t4);
+  --gts-display: var(--bf-disp);
+  --gts-text: var(--bf-sans);
+  --gts-mono: var(--bf-mono);
+  --gts-radius: var(--bf-rad);
+  --gts-head-weight: 600;
+  --gts-head-size: clamp(2rem, 4.6vw, 3.4rem);
+
+  --gtb-line: var(--bf-ln);
+  --gtb-line-2: rgba(255, 255, 255, 0.07);
+  --gtb-title: var(--bf-t1);
+  --gtb-body: var(--bf-t2);
+  --gtb-label: var(--bf-t3);
+  --gtb-display: var(--bf-disp);
+  --gtb-text: var(--bf-sans);
+  --gtb-mono: var(--bf-mono);
+  --gtb-radius: var(--bf-rad);
+  --gtb-grid-bg: var(--bf-panel);
+  --gtb-mock-bg: #08080a;
+  --gtb-spotlight: rgba(255, 255, 255, 0.07);
+  --gtb-head-weight: 600;
+  --gtb-head-size: clamp(2rem, 4.6vw, 3.4rem);
+  --gtb-cell-min: 274px;
+  --gtb-cell-pad: 28px 26px 30px;
+  --gtb-title-size: 20px;
+  --gtb-body-size: 13px;
+  --gtb-mock-h: 112px;
+  --gtb-pad: clamp(58px, 6.5vw, 100px) 0 clamp(64px, 7vw, 104px);
+
+  --gte-line: var(--bf-ln);
+  --gte-line-2: rgba(255, 255, 255, 0.06);
+  --gte-title: var(--bf-t1);
+  --gte-body: var(--bf-t2);
+  --gte-label: var(--bf-t3);
+  --gte-quiet: var(--bf-t4);
+  --gte-display: var(--bf-disp);
+  --gte-text: var(--bf-sans);
+  --gte-mono: var(--bf-mono);
+  --gte-radius: var(--bf-rad);
+  --gte-ws-bg: var(--bf-panel2);
+  --gte-ws-shadow: 0 34px 96px rgba(0, 0, 0, 0.62);
+  --gte-act-hover: var(--bf-ln2);
+  --gte-head-weight: 600;
+  --gte-head-size: clamp(1.9rem, 3.6vw, 3rem);
+  --gte-pad: clamp(120px, 14vw, 210px) 0 clamp(60px, 6.5vw, 96px);
+
+  --gtd-line: rgba(255, 255, 255, 0.32);
+  --gtd-fill: rgba(255, 255, 255, 0.12);
+  --gtd-accent: #f2f3f6;
+  --gtd-label: rgba(255, 255, 255, 0.46);
+  --gtd-mono: var(--bf-mono);
+  --gtd-node-fill: #08080a;
+  --gtd-node-stroke: rgba(255, 255, 255, 0.44);
+  --gtd-wire: rgba(255, 255, 255, 0.26);
+  --gtd-pulse: #ffffff;
+  --gtd-glyph: rgba(255, 255, 255, 0.72);
+}
+
+/* ---------- story ---------- */
+.bento-foundry-root .bf-story {
+  z-index: 2;
+  --bf-plate: min(820px, 58vw); /* width of the fixed code plate */
+}
+.bento-foundry-root .bf-story .gts-head {
+  width: min(1180px, calc(100vw - 32px));
+  padding: clamp(84px, 10vw, 150px) 0 52px;
+}
+
+/* The plate paints above the light field until the flip turns it translucent
+   (see --gts-code-bg), at which point the field burns in behind the code,
+   on black, where it belongs. */
+.bento-foundry-root .bf-story .gts-window {
+  z-index: 7;
+}
+.bento-foundry-root .bf-story .gts-code {
+  background: transparent;
+}
+
+/* ---------- the plate surface ----------
+   Brushed milling under the work, a raking highlight down the top edge and a
+   shadowed base — the same stock as the bento tray. Both layers ride
+   [data-paperfx], so the flip to the editor takes the machining with it. */
+.bento-foundry-root .bf-story .gts-win-dots {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 26%),
+    radial-gradient(130% 70% at 50% 122%, rgba(0, 0, 0, 0.4), transparent 62%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.024) 0 1px, transparent 1px 4px);
+  background-size: auto;
+}
+/* the milled window edge: a bright top hairline over a black under-shadow */
+.bento-foundry-root .bf-story .gts-win-frame {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.17),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.85),
+    inset 0 0 170px rgba(0, 0, 0, 0.5);
+}
+/* the site chip clears the returning nav pill instead of printing through it */
+.bento-foundry-root .bf-story .gts-win-chip {
+  top: 96px;
+  border-radius: 0 16px 16px 0;
+  padding: 10px 20px 11px 18px;
+  background: linear-gradient(180deg, #212228, #101014);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.bento-foundry-root .bf-story .gts-win-chip::after {
+  display: none;
+}
+
+/* ---------- parts seated on the plate ----------
+   The shared sheet assumes ink on paper: these are the few places it hard-codes
+   white, which on graphite would print white-on-white. */
+.bento-foundry-root .bf-story .gts-site-card {
+  background: linear-gradient(180deg, #1f2025 0%, #17181c 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 26px rgba(0, 0, 0, 0.42);
+}
+.bento-foundry-root .bf-story .gts-review-card {
+  background: linear-gradient(180deg, #212228 0%, #16161a 100%);
+  border-color: rgba(255, 255, 255, 0.17);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+.bento-foundry-root .bf-story .gts-r-approved {
+  background: #16161a;
+}
+.bento-foundry-root .bf-story .gts-r-ava,
+.bento-foundry-root .bf-story .gts-r-btn.gts-ok {
+  color: #0c0c0e;
+}
+.bento-foundry-root .bf-story .gts-r-btn {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+.bento-foundry-root .bf-story .gts-chip-tone {
+  color: #101014;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.bento-foundry-root .bf-story .gts-hilite {
+  background: rgba(255, 255, 255, 0.07);
+}
+/* One chip per link. The shared rule is a descendant selector, so it boxes the
+   wrapper, the dual-language span and the visible face — three nested outlines
+   around every nav item, which on a phone also cost the row two extra lines. */
+.bento-foundry-root .bf-story .gts-site-nav span span {
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+}
+/* a badge restating the caption dock two hundred pixels below it */
+.bento-foundry-root .bf-story .gts-chip-flag {
+  display: none;
+}
+
+/* ---------- the code reveal: a fixed plate, never a mid-word cut ----------
+   The plate is sized so the longest line always fits, and the wipe is over
+   within a frame of the panel fading up (0.012 of a 0.6 sweep) — at any scroll
+   depth the code is whole, and it is the seam that travels, not the text. */
+.bento-foundry-root .bf-story .gts-xray {
+  right: auto;
+  width: var(--bf-plate);
+  clip-path: inset(0 calc((1 - min(1, var(--gts-split) / 0.012)) * 100%) 0 0);
+}
+.bento-foundry-root .bf-story .gts-xray-inner {
+  left: clamp(28px, 3.4vw, 56px);
+  max-width: min(620px, 44vw);
+}
+.bento-foundry-root .bf-story .gts-xray pre {
+  font-size: clamp(13px, 1.32vw, 19px);
+}
+.bento-foundry-root .bf-story .gts-xray-note {
+  max-width: min(430px, 34vw);
+}
+/* the seam rides the plate edge — a white hairline and a machined handle */
+.bento-foundry-root .bf-story .gts-split {
+  left: calc(min(1, var(--gts-split) / 0.012) * var(--bf-plate));
+}
+/* no chromatic fringe: the only sanctioned colour is the light field itself */
+.bento-foundry-root .bf-story .gts-split-ca {
+  display: none;
+}
+
+/* the caption is the story's voice — it clears the direction switcher */
+.bento-foundry-root .bf-story .gts-dock {
+  bottom: 126px;
+}
+/* The stage rail (PUSH / SCAN / EDIT / TRANSLATE / OPEN PR) is a third
+   text-and-graphic layer over code the caption dock already narrates, and it
+   lands on the closing lines of the file. Retired, not restyled. */
+.bento-foundry-root .bf-story .gts-pipeline {
+  display: none;
+}
+
+/* ---------- the bento: separate machined plates seated in a graphite tray ----
+   Not a table. Every cell is a discrete milled part with its own rim, bright
+   top edge and black under-shadow, lifted off a brushed tray by a real gutter.
+   The first part is cut to double width — it is the piece on the bench. */
+.bento-foundry-root .bf-features {
+  position: relative;
+  z-index: 1;
+}
+.bento-foundry-root .bf-features .gtb-wrap {
+  width: min(1180px, calc(100vw - 32px));
+  padding: 0;
+}
+.bento-foundry-root .bf-features .gtb-grid {
+  position: relative;
+  gap: var(--bf-gut, 16px);
+  padding: var(--bf-gut, 16px);
+  border: 1px solid var(--bf-ln);
+  border-radius: 20px;
+  background:
+    radial-gradient(940px 460px at 50% -14%, rgba(255, 255, 255, 0.045), transparent 62%),
+    linear-gradient(180deg, #131317 0%, #0a0a0c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.75),
+    0 44px 120px rgba(0, 0, 0, 0.55);
+}
+/* brushed tray: fine vertical milling under the plates, never over them */
+.bento-foundry-root .bf-features .gtb-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.022) 0 1px,
+    transparent 1px 4px
+  );
+}
+.bento-foundry-root .bf-features .gtb-grid[data-columns='3'] .gtb-cell:first-child {
+  grid-column: span 2;
+}
+/* each plate: milled rim, specular top edge, shadowed base */
+.bento-foundry-root .bf-features .gtb-cell {
+  border: 1px solid rgba(255, 255, 255, 0.085) !important;
+  border-radius: 13px;
+  background:
+    radial-gradient(
+      320px circle at var(--gtb-mx, 50%) var(--gtb-my, -40%),
+      var(--gtb-spotlight),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #18181c 0%, #101013 62%, #0d0d10 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.075),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+    0 14px 30px rgba(0, 0, 0, 0.45);
+  overflow: clip;
+}
+.bento-foundry-root .bf-features .gtb-cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  /* the chamfer catch: a short bright arc along the top-left of the milled edge */
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0.075) 0%,
+    transparent 26%
+  );
+}
+/* A cell is a heading and its drawing. Features.tsx empties the shared
+   `category` kicker; this collapses the box it left behind. */
+.bento-foundry-root .bf-features .gtb-cell h3 small {
+  display: none;
+}
+/* the double cell gets the display treatment — it is the part on the bench */
+.bento-foundry-root .bf-features .gtb-cell:first-child h3 {
+  font-size: 27px;
+}
+.bento-foundry-root .bf-features .gtb-cell:first-child p {
+  max-width: 52ch;
+  font-size: 14px;
+}
+.bento-foundry-root .bf-features .gtb-cell:first-child .gtb-mock {
+  height: 152px;
+}
+.bento-foundry-root .bf-features .gtb-mock {
+  border-radius: 9px;
+  padding: 12px;
+  border-color: rgba(255, 255, 255, 0.075);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+}
+
+@media (max-width: 1023px) {
+  .bento-foundry-root .bf-features .gtb-grid[data-columns='3'] .gtb-cell:first-child {
+    grid-column: span 2;
+  }
+  .bento-foundry-root .bf-features .gtb-cell:first-child h3 { font-size: 22px; }
+  .bento-foundry-root .bf-features .gtb-cell:first-child .gtb-mock { height: 124px; }
+}
+@media (max-width: 560px) {
+  .bento-foundry-root .bf-features { --bf-gut: 11px; }
+  .bento-foundry-root .bf-features .gtb-grid[data-columns='3'] .gtb-cell:first-child {
+    grid-column: auto;
+  }
+}
+
+/* ---------- editor workspace ---------- */
+.bento-foundry-root .bf-review {
+  position: relative;
+  z-index: 1;
+}
+.bento-foundry-root .bf-review .gte-wrap {
+  width: min(1180px, calc(100vw - 32px));
+  padding: 0;
+}
+/* the workspace is one more machined plate, cut from the same stock as the bento */
+.bento-foundry-root .bf-review .gte-ws {
+  border-radius: 18px;
+  background:
+    radial-gradient(680px 340px at 72% -12%, rgba(255, 255, 255, 0.055), transparent 62%),
+    linear-gradient(180deg, #16161a 0%, #0f0f12 60%, #0c0c0f 100%);
+}
+.bento-foundry-root .bf-review .gte-ws::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+}
+/* no plotter label across the panel: a section starts with its heading */
+.bento-foundry-root .bf-review .gte-bar {
+  display: none;
+}
+/* “Source beside translation, row by row” has to be true: both columns lay
+   their label and five rows onto one shared row track, so every hairline
+   crosses the divider and neither column dead-ends above the other.
+   (label + 5 rows = 6 tracks; the section ships the default row set.) */
+.bento-foundry-root .bf-review .gte-cols {
+  grid-template-rows: repeat(6, auto);
+}
+.bento-foundry-root .bf-review .gte-col {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: 1 / -1;
+  align-content: start;
+}
+.bento-foundry-root .bf-review .gte-row {
+  align-content: start;
+}
+@media (max-width: 640px) {
+  /* stacked columns have no divider to align across */
+  .bento-foundry-root .bf-review .gte-col {
+    display: block;
+  }
+}
+
+/* ============================================================
+   MOBILE STORY RE-FRAME
+   The page is composed for the 390px frame instead of being shrunk
+   into a corner of it. The headline, its date and the lede sit in a
+   left measure; the counsel card drops into the corner reserved
+   beside them (the shared timeline pins its webhook curve to
+   top-right, so that corner has to be kept clear); everything below
+   — nav, CTA, terms, stats and the three cards — runs the full
+   width of the plate. The depth-of-field blur is dropped for
+   dimming, because a 390px frame of gaussian mush says nothing.
+   ============================================================ */
+@media (max-width: 900px) {
+  .bento-foundry-root .bf-story [data-block] {
+    filter: none !important;
+  }
+  .bento-foundry-root .bf-story .gts-site {
+    padding: 118px 18px 148px;
+    gap: 16px;
+  }
+  .bento-foundry-root .bf-story .gts-site-left {
+    max-width: none;
+    display: grid;
+    /* the measure stops 14px short of the counsel card's edge */
+    grid-template-columns: minmax(0, 168px) 1fr;
+    align-content: start;
+  }
+  .bento-foundry-root .bf-story .gts-site-left > * {
+    grid-column: 1 / -1;
+  }
+  /* the three blocks that share the frame with the counsel card */
+  .bento-foundry-root .bf-story .gts-site-h1,
+  .bento-foundry-root .bf-story .gts-site-date,
+  .bento-foundry-root .bf-story .gts-site-p {
+    grid-column: 1;
+  }
+  .bento-foundry-root .bf-story .gts-site-h1 {
+    font-size: 24px;
+  }
+  .bento-foundry-root .bf-story .gts-site-date {
+    font-size: 8.5px;
+    margin-bottom: 10px;
+  }
+  /* the extra leading keeps the nav row clear of the counsel card's corner */
+  .bento-foundry-root .bf-story .gts-site-p {
+    font-size: 11px;
+    max-width: none;
+    margin-bottom: 22px;
+  }
+  .bento-foundry-root .bf-story .gts-site-nav {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .bento-foundry-root .bf-story .gts-site-nav span {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+  .bento-foundry-root .bf-story .gts-site-btn {
+    font-size: 11.5px;
+    padding: 9px 16px;
+    justify-self: start;
+  }
+  /* clearance for the “requires review” pin, which hangs 30px above this line */
+  .bento-foundry-root .bf-story .gts-site-legal {
+    font-size: 9.5px;
+    max-width: none;
+    margin-top: 40px;
+  }
+  .bento-foundry-root .bf-story .gts-site-stats {
+    gap: 22px;
+    margin-top: 16px;
+  }
+  .bento-foundry-root .bf-story .gts-site-stats b {
+    font-size: 15px;
+  }
+  /* the cards run across the plate: the tagline over a two-up row */
+  .bento-foundry-root .bf-story .gts-site-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-content: start;
+    gap: 10px;
+  }
+  .bento-foundry-root .bf-story .gts-site-card {
+    max-width: none;
+    padding: 10px 12px;
+  }
+  .bento-foundry-root .bf-story .gts-site-card:first-child {
+    grid-column: 1 / -1;
+  }
+  .bento-foundry-root .bf-story .gts-tagline {
+    font-size: 12.5px;
+  }
+  .bento-foundry-root .bf-story .gts-site-toast {
+    font-size: 10.5px;
+    gap: 7px;
+  }
+  .bento-foundry-root .bf-story .gts-site-form label {
+    font-size: 8px;
+    margin-bottom: 5px;
+  }
+  .bento-foundry-root .bf-story .gts-fbox {
+    font-size: 9.5px;
+    padding: 6px 9px;
+  }
+  .bento-foundry-root .bf-story .gts-site-foot {
+    left: 18px;
+    right: 18px;
+  }
+  /* the code plate takes the frame on a phone; the seam parks at its edge */
+  .bento-foundry-root .bf-story {
+    --bf-plate: 88vw;
+  }
+  .bento-foundry-root .bf-story .gts-xray-inner {
+    left: 15px;
+    max-width: 76vw;
+  }
+  .bento-foundry-root .bf-story .gts-xray pre {
+    font-size: 10.5px;
+  }
+  .bento-foundry-root .bf-story .gts-xray-note {
+    max-width: 72vw;
+    font-size: 9px;
+  }
+  .bento-foundry-root .bf-story .gts-win-chip {
+    top: 74px;
+    padding: 8px 14px 9px 12px;
+    font-size: 11.5px;
+  }
+  .bento-foundry-root .bf-story .gts-dock {
+    bottom: 112px;
+  }
+  /* Milled down to fit the reserved corner, and squared to the site chip's top
+     edge — the shared timeline lands the webhook curve 56px below this. */
+  .bento-foundry-root .bf-story .gts-review-card {
+    top: 74px;
+    width: 176px;
+    padding: 12px;
+  }
+  .bento-foundry-root .bf-story .gts-r-head {
+    margin-bottom: 8px;
+  }
+  .bento-foundry-root .bf-story .gts-r-ava {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    font-size: 9px;
+  }
+  .bento-foundry-root .bf-story .gts-r-name {
+    font-size: 11px;
+  }
+  .bento-foundry-root .bf-story .gts-r-sub {
+    font-size: 8px;
+  }
+  .bento-foundry-root .bf-story .gts-r-msg {
+    font-size: 10px;
+    line-height: 1.45;
+    margin-bottom: 10px;
+  }
+  .bento-foundry-root .bf-story .gts-r-btn {
+    font-size: 8px;
+    padding: 5px 9px;
+  }
+  .bento-foundry-root .bf-story .gts-r-approved {
+    font-size: 9px;
+  }
+}

@@ -1,0 +1,1434 @@
+/* ============================================================
+   BLUEPRINT ATLAS — GT-009
+   Engineering schematic on graphite. Everything is scoped under
+   .blueprint-atlas-root so directions cannot leak into each other.
+   ============================================================ */
+
+@property --ba-split {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.blueprint-atlas-root {
+  --bg: #0a0c0e;
+  --bg2: #0e1114;
+  --line: rgba(255, 255, 255, 0.1);
+  --line2: rgba(255, 255, 255, 0.055);
+  --silver: #c9ccd1;
+  --steel: #8d939b;
+  --t1: rgba(255, 255, 255, 0.94);
+  --t2: rgba(255, 255, 255, 0.64);
+  --t3: rgba(255, 255, 255, 0.4);
+  --t4: rgba(255, 255, 255, 0.24);
+  --paper: #f2f1ec;
+  --ink: #16181a;
+  --pt2: rgba(22, 24, 26, 0.62);
+  --pt3: rgba(22, 24, 26, 0.4);
+  --pline: rgba(22, 24, 26, 0.14);
+  --display: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --text: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* one heading scale for every section, shared components included */
+  --ba-head: clamp(2.15rem, 4.3vw, 3.7rem);
+
+  position: relative;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: var(--text);
+  font-size: 17px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.blueprint-atlas-root *,
+.blueprint-atlas-root *::before,
+.blueprint-atlas-root *::after {
+  box-sizing: border-box;
+}
+
+.blueprint-atlas-root ::selection {
+  background: #fff;
+  color: #0a0c0e;
+}
+
+.blueprint-atlas-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blueprint-atlas-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.blueprint-atlas-root a:focus-visible,
+.blueprint-atlas-root button:focus-visible {
+  outline: 1px solid var(--silver);
+  outline-offset: 3px;
+}
+
+/* ---------- drafting furniture ---------- */
+
+/* Ambient lighting. The base is never flat black: five enormous, very soft
+   bands rake the document at different heights and sides, so every section
+   below the fold sits on a lit surface. Absolute (not fixed) so each band
+   belongs to a place on the page rather than to the viewport. */
+.blueprint-atlas-root .ba-amb {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(128% 8% at 8% 28%, rgba(255, 255, 255, 0.15), transparent 66%),
+    radial-gradient(104% 6% at 92% 39%, rgba(255, 255, 255, 0.125), transparent 68%),
+    radial-gradient(150% 10% at 22% 54%, rgba(255, 255, 255, 0.11), transparent 68%),
+    radial-gradient(112% 7% at 88% 67%, rgba(255, 255, 255, 0.11), transparent 68%),
+    radial-gradient(160% 11% at 38% 81%, rgba(255, 255, 255, 0.09), transparent 70%),
+    radial-gradient(130% 8% at 72% 93%, rgba(255, 255, 255, 0.08), transparent 68%),
+    linear-gradient(96deg, rgba(255, 255, 255, 0.03) 0%, transparent 34%, transparent 66%, rgba(255, 255, 255, 0.026) 100%);
+}
+
+/* A constant key from the upper left and a fill from the lower right, fixed to
+   the viewport: whatever a reader stops on, the surface under it is lit from
+   somewhere rather than painted flat. */
+.blueprint-atlas-root .ba-amb::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 58% at 16% -12%, rgba(255, 255, 255, 0.055), transparent 62%),
+    radial-gradient(104% 54% at 94% 110%, rgba(255, 255, 255, 0.04), transparent 66%);
+}
+
+/* Monochrome by construction: the turbulence is desaturated before it lands, so
+   the film grain never tints anything. Colour on this page is the field alone. */
+.blueprint-atlas-root .ba-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: ba-grain 0.9s steps(6) infinite;
+}
+
+@keyframes ba-grain {
+  0% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-4%, 2%, 0); }
+  40% { transform: translate3d(2%, -3%, 0); }
+  60% { transform: translate3d(-3%, -2%, 0); }
+  80% { transform: translate3d(3%, 3%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blueprint-atlas-root .ba-grain { animation: none; }
+}
+
+.blueprint-atlas-root .ba-body {
+  max-width: 620px;
+  margin: 16px 0 0;
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--t2);
+}
+
+.blueprint-atlas-root .ba-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.blueprint-atlas-root .ba-kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t3);
+}
+
+.blueprint-atlas-root .ba-sheet {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.blueprint-atlas-root section,
+.blueprint-atlas-root footer { position: relative; }
+
+.blueprint-atlas-root .ba-pad { padding: 104px 0; }
+
+/* ---------- metallic recipes ---------- */
+
+/* Chrome has to read BRIGHTER than the flat white it sits under, or the word
+   recedes. The ramp never drops below ~74% luminance, the two specular bands
+   are pure white, the baseline end stays white so descenders do not dissolve,
+   and the whole fill carries its own bloom — which is what buys the extra stop
+   over flat #fff that a metal surface needs. */
+.blueprint-atlas-root .ba-brushed {
+  background:
+    repeating-linear-gradient(94deg, rgba(255, 255, 255, 0.2) 0 1px, rgba(255, 255, 255, 0) 1px 3px),
+    linear-gradient(
+      179deg,
+      #ffffff 0%,
+      #ffffff 15%,
+      #d3d9e0 30%,
+      #ffffff 44%,
+      #ffffff 54%,
+      #bcc3cb 64%,
+      #f4f7fa 78%,
+      #ffffff 92%,
+      #ffffff 100%
+    );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 26px rgba(255, 255, 255, 0.34)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.22));
+}
+
+.blueprint-atlas-root .ba-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 26px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: 1px solid var(--line);
+  color: var(--t1);
+  transition: border-color 0.2s, background 0.2s;
+  min-height: 44px;
+}
+
+.blueprint-atlas-root .ba-btn:hover { border-color: rgba(255, 255, 255, 0.3); }
+
+.blueprint-atlas-root .ba-btn-solid {
+  background: linear-gradient(180deg, #f6f6f6, #cfcfcf);
+  color: #0a0c0e;
+  border: 1px solid #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.blueprint-atlas-root .ba-btn-solid:hover { background: linear-gradient(180deg, #fff, #dcdcdc); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+.blueprint-atlas-root .ba-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: linear-gradient(180deg, rgba(10, 12, 14, 0.98), rgba(10, 12, 14, 0.9));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(14px);
+}
+
+.blueprint-atlas-root .ba-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 15.5px;
+}
+
+.blueprint-atlas-root .ba-logo-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.blueprint-atlas-root .ba-nav-links {
+  display: flex;
+  gap: 28px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t2);
+}
+
+.blueprint-atlas-root .ba-nav-links a { padding: 6px 2px; position: relative; }
+
+.blueprint-atlas-root .ba-nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.blueprint-atlas-root .ba-nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.blueprint-atlas-root .ba-nav-cta { display: flex; gap: 10px; align-items: center; }
+.blueprint-atlas-root .ba-nav-cta .ba-btn { padding: 9px 16px; min-height: 36px; font-size: 10.5px; }
+
+/* A fixed bar guillotines whatever scrolls under it. The scrim gives the bar a
+   soft lower edge so type passing beneath fades out instead of being sliced
+   through its x-height at an arbitrary scroll position. */
+.blueprint-atlas-root .ba-nav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 34px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(10, 12, 14, 0.92), rgba(10, 12, 14, 0));
+}
+
+@media (max-width: 940px) {
+  .blueprint-atlas-root .ba-nav-links { display: none; }
+  .blueprint-atlas-root .ba-nav-ghost { display: none; }
+}
+
+.blueprint-atlas-root .ba-morph-proxy {
+  position: fixed;
+  z-index: 210;
+  top: 0;
+  left: 0;
+  background: #101214;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transform-origin: 0 0;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   HERO — perspective ray-fan + gravitational lens
+   ============================================================ */
+
+.blueprint-atlas-root .ba-hero {
+  position: relative;
+  height: 100svh;
+  min-height: 720px;
+  overflow: clip;
+}
+
+/* Dispersed light, committed. The mask is one ellipse centred on the dial, so
+   the burst's lobes are pulled INBOARD and converge on the mark; the corners
+   fall to nothing, which is where the old version left flat olive mud. The
+   streaks are allowed to run right up to the bezel — the dial's own dark core
+   is the void the light bends around. */
+.blueprint-atlas-root .ba-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 1;
+  mask-image: radial-gradient(
+    72% 40% at 50% 58%,
+    #000 0%,
+    #000 30%,
+    rgba(0, 0, 0, 0.82) 54%,
+    rgba(0, 0, 0, 0.34) 78%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    72% 40% at 50% 58%,
+    #000 0%,
+    #000 30%,
+    rgba(0, 0, 0, 0.82) 54%,
+    rgba(0, 0, 0, 0.34) 78%,
+    transparent 100%
+  );
+}
+
+/* Just enough scrim to seat the headline and the foot on the burst. The core
+   pocket is small and soft now — it holds the dial, not the whole middle. */
+.blueprint-atlas-root .ba-hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(23% 20% at 50% 58%, rgba(10, 12, 14, 0.82) 0%, rgba(10, 12, 14, 0.34) 62%, transparent 100%),
+    linear-gradient(180deg, rgba(10, 12, 14, 0.9) 0%, rgba(10, 12, 14, 0.52) 22%, rgba(10, 12, 14, 0.12) 48%, rgba(10, 12, 14, 0.42) 78%, rgba(10, 12, 14, 0.9) 100%);
+}
+
+/* the 3D stage: everything below rides rays out of the vanishing point */
+.blueprint-atlas-root .ba-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  perspective: 1150px;
+  perspective-origin: 50% 57%;
+  pointer-events: none;
+}
+
+.blueprint-atlas-root .ba-rays {
+  position: absolute;
+  left: 50%;
+  top: 57%;
+  width: 0;
+  height: 0;
+  z-index: 1;
+}
+
+.blueprint-atlas-root .ba-ray {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+  transform-origin: 0 50%;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.13) 0 8px,
+    rgba(255, 255, 255, 0) 8px 16px
+  );
+  /* the guides clear the dial: nothing is drawn inside the void */
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 26%, #000 40%, #000 76%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 26%, #000 40%, #000 76%, transparent 100%);
+}
+
+.blueprint-atlas-root .ba-flow {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  z-index: 2;
+}
+
+/* --- the flowing components: solid, legible, machined --- */
+
+.blueprint-atlas-root .ba-node {
+  position: absolute;
+  left: 50%;
+  top: 57%;
+  will-change: transform, opacity, filter;
+}
+
+.blueprint-atlas-root .ba-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(23, 27, 31, 0.97), rgba(12, 15, 18, 0.97));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 9px;
+  padding: 12px 18px;
+  font-family: var(--text);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.95);
+  white-space: nowrap;
+  box-shadow:
+    0 20px 54px rgba(0, 0, 0, 0.68),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.blueprint-atlas-root .ba-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(112deg, transparent 34%, rgba(255, 255, 255, 0.09) 48%, transparent 60%);
+}
+
+/* The translated twin of a pair: same component, same offset, other language.
+   Its box is animated from the English width to its own, so the container is
+   seen growing to fit the translation as the pair leaves the lens. */
+.blueprint-atlas-root .ba-card-out {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blueprint-atlas-root .ba-mini-btn {
+  background: linear-gradient(180deg, #f4f4f4, #cdcdcd);
+  color: #111;
+  border-radius: 6px;
+  padding: 9px 18px;
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+}
+
+/* form-label chips stay lowercase mono — §2, no uppercase stamps */
+.blueprint-atlas-root .ba-mini-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  font-size: 11px;
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.blueprint-atlas-root .ba-mini-field .ba-box {
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 5px;
+  padding: 7px 13px;
+  font-size: 13.5px;
+  font-family: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.8);
+  min-width: 168px;
+  text-align: left;
+}
+
+.blueprint-atlas-root .ba-mini-nav {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.blueprint-atlas-root .ba-price b { font-size: 17px; font-weight: 700; }
+
+/* --- the language wheel: the shared component, skinned --- */
+
+.blueprint-atlas-root .ba-wheel {
+  position: absolute;
+  left: 50%;
+  top: 57%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+
+  --gtw-size: 236px;
+  /* machined graphite bezel — the same steel as the rest of the sheet */
+  --gtw-bezel: conic-gradient(from 206deg, #4a4e54, #dfe3e8 19%, #63686e 41%, #ffffff 64%, #55595f 82%, #4a4e54);
+  --gtw-track: rgba(255, 255, 255, 0.14);
+  --gtw-track-width: 1;
+  --gtw-sweep: #ffffff;
+  --gtw-sweep-width: 2.2;
+  --gtw-halo: rgba(255, 255, 255, 0.08);
+  --gtw-core: radial-gradient(circle at 50% 42%, rgba(14, 17, 20, 0.6) 0%, rgba(6, 7, 9, 0.95) 62%, #040506 100%);
+  --gtw-core-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -12px 30px rgba(0, 0, 0, 0.8),
+    0 0 34px 2px rgba(0, 0, 0, 0.55);
+  --gtw-mark-glow: rgba(255, 255, 255, 0.4);
+  --gtw-glyph: rgba(255, 255, 255, 0.26);
+  --gtw-glyph-size: 11px;
+  --gtw-mono: var(--mono);
+}
+
+/* --- hero copy --- */
+
+.blueprint-atlas-root .ba-hero-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 88px;
+  z-index: 4;
+  text-align: center;
+  padding: 0 24px;
+  pointer-events: none;
+}
+
+.blueprint-atlas-root .ba-hero-copy > * { pointer-events: auto; }
+
+/* the section starts at its heading — nothing sits above the H1 */
+.blueprint-atlas-root .ba-hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2.7rem, 6.4vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  /* Switzer's negative tracking eats the word gap at display size — "Launch in
+     every" collapsed to "Launchin every". The letters stay tight; the space
+     gets its width back (and a little more) so the line still parses as words. */
+  word-spacing: 0.115em;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+.blueprint-atlas-root .ba-hero-sub {
+  font-size: clamp(0.98rem, 1.25vw, 1.15rem);
+  color: var(--t2);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.blueprint-atlas-root .ba-rot {
+  color: var(--t1);
+  border-bottom: 1px solid var(--t4);
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+.blueprint-atlas-root .ba-hero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+/* --- hero footer meta --- */
+
+.blueprint-atlas-root .ba-hero-meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 66px;
+  z-index: 4;
+  text-align: center;
+}
+
+.blueprint-atlas-root .ba-flags {
+  overflow: clip;
+  position: relative;
+  margin-top: 11px;
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+
+.blueprint-atlas-root .ba-flags-track { display: flex; gap: 10px; width: max-content; will-change: transform; }
+
+.blueprint-atlas-root .ba-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line2);
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--t2);
+  white-space: nowrap;
+  /* the strip now crosses the burst, so the chips carry their own ground */
+  background: rgba(10, 12, 14, 0.86);
+  backdrop-filter: blur(6px);
+}
+
+/* Monochrome by law (§5): the chip's mark is the lowercase locale code in
+   mono, not a colored flag emoji — the only multi-color light on this page
+   is the prismatic field itself. */
+.blueprint-atlas-root .ba-flag-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--t3);
+}
+
+.blueprint-atlas-root .ba-trusted { margin-top: 16px; }
+
+/* The logo wall carries itself (gt d00): full contrast and scale, and its
+   label is a quiet sentence-case line — not an uppercase kicker lost in the
+   burst. */
+.blueprint-atlas-root .ba-trusted .ba-kicker {
+  display: block;
+  margin-bottom: 12px;
+  font-family: var(--text);
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--t2);
+}
+
+.blueprint-atlas-root .ba-trusted-row {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.blueprint-atlas-root .ba-trusted-row span {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  font-size: 19px;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.55);
+  transition: color 0.25s;
+}
+
+.blueprint-atlas-root .ba-trusted-row span:hover { color: #fff; }
+
+@media (max-width: 1100px) {
+  .blueprint-atlas-root .ba-wheel { --gtw-size: 208px; }
+}
+
+@media (max-width: 767px) {
+  .blueprint-atlas-root .ba-hero-copy { top: 74px; }
+  /* On a phone frame a pair only fits beside the dial if the cards are small,
+     so they are — the alternative is components sliced by the bezel. */
+  .blueprint-atlas-root .ba-card { font-size: 11.5px; padding: 7px 11px; border-radius: 7px; }
+  .blueprint-atlas-root .ba-mini-field { font-size: 9.5px; gap: 4px; }
+  .blueprint-atlas-root .ba-mini-field .ba-box { min-width: 84px; font-size: 11px; padding: 5px 9px; }
+  .blueprint-atlas-root .ba-mini-btn { font-size: 11.5px; padding: 6px 11px; }
+  .blueprint-atlas-root .ba-mini-nav { font-size: 9.5px; letter-spacing: 0.06em; }
+  .blueprint-atlas-root .ba-trusted-row { gap: 18px; }
+  .blueprint-atlas-root .ba-trusted-row span { font-size: 15px; }
+}
+
+/* ============================================================
+   TYPE METRICS (D4)
+   ============================================================ */
+
+.blueprint-atlas-root .ba-metrics h2 {
+  font-family: var(--display);
+  font-size: var(--ba-head);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin: 0;
+  max-width: 860px;
+}
+
+/* drawing on the left, its readout on the right — the panel is sized to the
+   drawing so the sheet never carries a half-empty field */
+.blueprint-atlas-root .ba-metrics-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 34px;
+  align-items: start;
+  margin-top: 38px;
+}
+
+.blueprint-atlas-root .ba-metrics-stage {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #0e1114, #0a0c0e);
+  overflow: hidden;
+}
+
+.blueprint-atlas-root .ba-metrics-stage svg { width: 100%; height: auto; display: block; }
+.blueprint-atlas-root .ba-metrics-stage .ba-guide { stroke: var(--steel); stroke-width: 1.1; stroke-dasharray: 5 5; opacity: 0.6; }
+.blueprint-atlas-root .ba-metrics-stage .ba-guide-base { stroke-dasharray: none; stroke: rgba(233, 233, 233, 0.85); opacity: 1; }
+/* lowercase mono rail — §2 bans uppercase diagram labeling */
+.blueprint-atlas-root .ba-metrics-stage .ba-guide-lab { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em; fill: var(--t3); }
+.blueprint-atlas-root .ba-metrics-stage .ba-row-code { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.05em; fill: var(--t2); }
+.blueprint-atlas-root .ba-metrics-stage .ba-refline { stroke: rgba(255, 255, 255, 0.42); stroke-width: 1; stroke-dasharray: 2 5; fill: none; }
+.blueprint-atlas-root .ba-metrics-stage .ba-edge { stroke: rgba(255, 255, 255, 0.34); stroke-width: 1; stroke-dasharray: 3 4; }
+.blueprint-atlas-root .ba-metrics-stage .ba-sb { fill: rgba(255, 255, 255, 0.07); stroke: rgba(255, 255, 255, 0.28); stroke-width: 1; }
+.blueprint-atlas-root .ba-metrics-stage .ba-word { font-family: var(--display); font-weight: 700; fill: #d8dbdf; letter-spacing: -0.03em; }
+/* control points are 3px squares on the line (§2), drawn solid — no halo ring */
+.blueprint-atlas-root .ba-metrics-stage .ba-ctrl { fill: #e9e9e9; stroke: none; }
+.blueprint-atlas-root .ba-metrics-stage .ba-dim { stroke: rgba(233, 233, 233, 0.75); stroke-width: 1.2; fill: none; transition: stroke 0.4s; }
+.blueprint-atlas-root .ba-metrics-stage .ba-ann-big { font-family: var(--mono); font-size: 17px; font-weight: 500; fill: var(--t1); }
+.blueprint-atlas-root .ba-metrics-stage .ba-ann-sub { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; fill: var(--t3); }
+.blueprint-atlas-root .ba-metrics-stage g[data-active='true'] .ba-dim { stroke: #ffffff; stroke-width: 2; }
+.blueprint-atlas-root .ba-metrics-stage g[data-active='true'] .ba-word { fill: #ffffff; }
+.blueprint-atlas-root .ba-metrics-stage .ba-tickrow { stroke: rgba(255, 255, 255, 0.16); stroke-width: 1; }
+
+/* the four-locale ledger beside the drawing — every row always on screen */
+.blueprint-atlas-root .ba-readout-all {
+  margin: 4px 0 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+
+.blueprint-atlas-root .ba-lrow {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--line2);
+  text-align: left;
+  transition: background 0.25s;
+}
+
+.blueprint-atlas-root .ba-lrow[data-active='true'] {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.blueprint-atlas-root .ba-lrow-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--t2);
+}
+
+.blueprint-atlas-root .ba-lrow-top b {
+  font-weight: 500;
+  color: var(--t1);
+}
+
+.blueprint-atlas-root .ba-lrow[data-active='true'] .ba-lrow-top { color: var(--t1); }
+
+.blueprint-atlas-root .ba-lrow-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--t4);
+}
+
+.blueprint-atlas-root .ba-metrics-note {
+  margin: 18px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--t2);
+}
+
+@media (max-width: 900px) {
+  .blueprint-atlas-root .ba-metrics-grid { grid-template-columns: 1fr; gap: 20px; }
+  /* the drawing scales with the frame, so the labels are re-authored in user
+     units at this size — a diagram that cannot be read is worse than none */
+  .blueprint-atlas-root .ba-metrics-stage .ba-guide-lab { display: none; }
+  .blueprint-atlas-root .ba-metrics-stage .ba-row-code { font-size: 22px; }
+  .blueprint-atlas-root .ba-metrics-stage .ba-ann-big { font-size: 27px; }
+  .blueprint-atlas-root .ba-metrics-stage .ba-ann-sub { font-size: 20px; }
+  .blueprint-atlas-root .ba-metrics-stage .ba-tickrow { display: none; }
+}
+
+/* ============================================================
+   PRICING + CLOSE + FOOTER
+   ============================================================ */
+
+.blueprint-atlas-root .ba-pgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  max-width: 880px;
+  margin: 46px auto 0;
+  text-align: left;
+}
+
+@media (max-width: 767px) {
+  .blueprint-atlas-root .ba-pgrid { grid-template-columns: 1fr; }
+}
+
+.blueprint-atlas-root .ba-plan {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 34px 32px;
+  background: var(--bg2);
+}
+
+.blueprint-atlas-root .ba-plan.ba-starter { background: linear-gradient(180deg, #14171a, #0e1114); }
+.blueprint-atlas-root .ba-p-name { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--t2); }
+.blueprint-atlas-root .ba-p-price { font-family: var(--display); font-size: 44px; font-weight: 700; letter-spacing: -0.04em; margin: 14px 0 2px; }
+.blueprint-atlas-root .ba-p-price small { font-size: 13px; color: var(--t3); font-weight: 400; letter-spacing: 0; }
+.blueprint-atlas-root .ba-p-sub { font-size: 12.5px; color: var(--t3); margin-bottom: 20px; }
+.blueprint-atlas-root .ba-plan ul { margin: 0 0 26px; padding: 0; }
+.blueprint-atlas-root .ba-plan li {
+  list-style: none;
+  padding: 7px 0;
+  font-size: 13.5px;
+  color: var(--t2);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+  display: flex;
+  gap: 10px;
+}
+.blueprint-atlas-root .ba-phil {
+  text-align: center;
+  max-width: 520px;
+  margin: 16px auto 0;
+  color: var(--t2);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.blueprint-atlas-root .ba-close { text-align: center; }
+.blueprint-atlas-root .ba-close h2 {
+  font-family: var(--display);
+  font-size: clamp(2.6rem, 6vw, 5.2rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin: 18px 0 16px;
+}
+.blueprint-atlas-root .ba-close .ba-body { margin: 18px auto 34px; }
+
+.blueprint-atlas-root .ba-foot { border-top: 1px solid var(--line); padding: 56px 0 36px; position: relative; z-index: 1; }
+.blueprint-atlas-root .ba-foot-grid { display: flex; flex-wrap: wrap; gap: 48px; justify-content: space-between; }
+.blueprint-atlas-root .ba-foot-brand { max-width: 250px; }
+.blueprint-atlas-root .ba-compliance {
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--t4);
+  letter-spacing: 0.1em;
+  line-height: 2;
+}
+.blueprint-atlas-root .ba-foot-col h5 {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--t4);
+  margin-bottom: 14px;
+}
+.blueprint-atlas-root .ba-foot-col a { display: block; font-size: 13px; color: var(--t2); padding: 4px 0; }
+.blueprint-atlas-root .ba-foot-col a:hover { color: var(--t1); }
+.blueprint-atlas-root .ba-foot-bottom {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line2);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--t4);
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 767px) {
+  .blueprint-atlas-root .ba-pad { padding: 68px 0; }
+}
+
+/* ---------- hero: small-viewport dial + meta compaction ---------- */
+@media (max-width: 767px) {
+  .blueprint-atlas-root .ba-hero { min-height: 640px; }
+  /* A phone frame is 390px wide: the dial has to leave room for a component
+     pair either side of it, or every card is either behind the bezel or
+     sliced by the bezel. */
+  .blueprint-atlas-root .ba-wheel { --gtw-size: 112px; --gtw-glyph-size: 7.5px; }
+  .blueprint-atlas-root .ba-hero-meta { bottom: 14px; }
+  .blueprint-atlas-root .ba-trusted { margin-top: 12px; }
+  .blueprint-atlas-root .ba-flags { margin-top: 8px; }
+  .blueprint-atlas-root .ba-hero h1 { word-spacing: 0.08em; }
+}
+
+@media (max-width: 400px) {
+  .blueprint-atlas-root .ba-hero h1 { font-size: 2.35rem; }
+}
+
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   StorySection / FeatureBento / EditorWorkspace / diagrams all
+   resolve their palette from here. Blueprint Atlas reads as a
+   drafting sheet on graphite: 3px square corners, hairline rules,
+   a strong dot-and-guide paper, and a code surface with NO syntax
+   hues at all — pure steel, so the only colour on the page is the
+   prismatic field in the hero.
+   ============================================================ */
+
+.blueprint-atlas-root .ba-story,
+.blueprint-atlas-root .ba-features,
+.blueprint-atlas-root .ba-editor {
+  /* --- StorySection --- */
+  --gts-bg: var(--bg);
+  --gts-paper: #f2f1ec;
+  --gts-ink: var(--ink);
+  --gts-ink-2: var(--pt2);
+  --gts-ink-3: var(--pt3);
+  --gts-paper-rule: var(--pline);
+  --gts-paper-dot: rgba(22, 24, 26, 0.17);
+  --gts-paper-guide: rgba(22, 24, 26, 0.12);
+  --gts-paper-card: rgba(255, 255, 255, 0.62);
+  --gts-shell: #0e1114;
+  --gts-shell-text: #ffffff;
+  --gts-shell-line: rgba(255, 255, 255, 0.18);
+  --gts-code-bg: #0b0d10;
+  --gts-code-text: var(--silver);
+  --gts-line: var(--line);
+  --gts-line-2: var(--line2);
+  --gts-t1: var(--t1);
+  --gts-t2: var(--t2);
+  --gts-t3: var(--t3);
+  --gts-t4: var(--t4);
+  --gts-display: var(--display);
+  --gts-text: var(--text);
+  --gts-mono: var(--mono);
+  --gts-radius: 3px;
+  --gts-head-size: var(--ba-head);
+  --gts-head-weight: 700;
+  /* Also the pin's start offset, which sets where the sampled scroll depths
+     fall inside the nine-beat timeline — see the scrollLength in Story.tsx. */
+  --gts-head-pad: 132px 0 3px;
+  --gts-head-pad-sm: 60px 0 32px;
+  --gts-sub-size: 16.5px;
+
+  /* a drafting sheet has no syntax highlighting — only line weight */
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: #aeb5bd;
+  --gts-tok-attr: #d5d8dc;
+  --gts-tok-str: #e7e9eb;
+  --gts-tok-text: #f0f1f2;
+  --gts-tok-kw: #c1c7cd;
+  --gts-tok-fn: #ffffff;
+  --gts-tok-punct: #6d747c;
+
+  /* --- FeatureBento --- */
+  --gtb-line: var(--line);
+  --gtb-line-2: var(--line2);
+  --gtb-title: var(--t1);
+  --gtb-body: var(--t2);
+  --gtb-label: var(--t3);
+  --gtb-display: var(--display);
+  --gtb-text: var(--text);
+  --gtb-mono: var(--mono);
+  --gtb-radius: 3px;
+  --gtb-wrap: 1180px;
+  --gtb-pad: 112px 0 48px;
+  --gtb-head-size: var(--ba-head);
+  --gtb-head-weight: 700;
+  --gtb-sub-size: 16.5px;
+  /* a committed flat surface — the page-wide grid is gone (§5), so the cells
+     carry their own tone instead of borrowing texture from behind */
+  --gtb-grid-bg: #0e1114;
+  --gtb-mock-bg: rgba(255, 255, 255, 0.016);
+  --gtb-spotlight: rgba(255, 255, 255, 0.05);
+  --gtb-cell-min: 288px;
+  --gtb-title-size: 20px;
+  --gtb-body-size: 14px;
+
+  /* --- EditorWorkspace --- */
+  --gte-line: var(--line);
+  --gte-line-2: var(--line2);
+  --gte-title: var(--t1);
+  --gte-body: var(--t2);
+  --gte-label: var(--t3);
+  --gte-quiet: var(--t4);
+  --gte-display: var(--display);
+  --gte-text: var(--text);
+  --gte-mono: var(--mono);
+  --gte-wrap: 1180px;
+  --gte-pad: 112px 0;
+  --gte-radius: 3px;
+  --gte-ws-bg: #0c0f12;
+  --gte-ws-shadow: 0 34px 96px rgba(0, 0, 0, 0.62);
+  --gte-head-size: clamp(1.9rem, 3.2vw, 2.85rem);
+  --gte-head-weight: 700;
+  --gte-sub-size: 16.5px;
+  --gte-revised: var(--t4);
+  --gte-act-hover: rgba(255, 255, 255, 0.09);
+
+  /* --- diagrams ---
+     These drawings are the best asset on the sheet, so they are inked, not
+     ghosted. Three voices (DESIGN_STANDARD §2): hairline structure at 30%,
+     the ink/thread drawing stroke near-white, and one accent element at pure
+     white. Artifact text renders at ~11px — the label floor — and captions
+     sit a step under the ink. Pen weight is a prop, not a property — the
+     frame writes --gtd-stroke inline — so it is set in Features.tsx. */
+  --gtd-line: rgba(255, 255, 255, 0.3);
+  --gtd-fill: rgba(255, 255, 255, 0.23);
+  --gtd-ink: rgba(255, 255, 255, 0.92);
+  --gtd-thread: rgba(255, 255, 255, 0.88);
+  --gtd-panel: rgba(255, 255, 255, 0.03);
+  --gtd-accent: #ffffff;
+  --gtd-label: rgba(255, 255, 255, 0.58);
+  --gtd-label-size: 9.5px;
+  --gtd-code-size: 9.5px;
+  --gtd-mono: var(--mono);
+  --gtd-node-fill: #0b0d10;
+  --gtd-node-stroke: var(--steel);
+  --gtd-wire: #5a6067;
+  --gtd-pulse: #ffffff;
+  --gtd-pulse-glow: rgba(255, 255, 255, 0.7);
+  --gtd-glyph: #aeb5bd;
+}
+
+/* the story sits above the fixed graph paper, the drawn sections in front of it */
+.blueprint-atlas-root .ba-story { z-index: 2; }
+
+/* Section G: no kicker above a title. The items already ship with an empty
+   `category`; this removes the element it would render into as well, so a cell
+   begins at its heading with nothing above it. */
+.blueprint-atlas-root .ba-features .gtb-cell h3 small { display: none; }
+
+/* One shared baseline for the drawings. Grid rows already stretch every cell to
+   the same height; making the cell a column and letting the copy take up the
+   slack drops all four drawings in a row onto the same line, so a five-line
+   body ("Code") no longer pushes its diagram 30px below its neighbours'.
+
+   The mock is a committed dark panel — one flat material, no gradient — and
+   it carries zero padding: the drawings are authored to fill their 200×74
+   drafting frame edge to edge, and the frame's width-fit scale is what holds
+   the artifact text at the 11px label floor. Any padding here shrinks the
+   whole artifact below that floor. */
+.blueprint-atlas-root .ba-features .gtb-cell {
+  display: flex;
+  flex-direction: column;
+  --gtb-mock-h: 96px;
+}
+
+.blueprint-atlas-root .ba-features .gtb-cell p { flex: 1 0 auto; }
+
+.blueprint-atlas-root .ba-features .gtb-mock {
+  margin-top: 20px;
+  padding: 0;
+  /* the sheet's second surface, one step off the ground, so the artifact
+     plate separates the way a drafting appliqué does */
+  background: #10141a;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* The grid's one second-material moment: the Delivery rail rides an inset
+   prismatic crop (§3.4 — dark surfaces only, masked inside a panel, dimmed
+   under content). The mask banks the light toward the upper right so the POP
+   codes and latencies at the frame's foot sit on the dark side of it, and the
+   file chip gets a solid plate so its path stays legible over the flare. */
+.blueprint-atlas-root .ba-features .ba-prism-mock {
+  position: absolute;
+  inset: 0;
+}
+
+.blueprint-atlas-root .ba-features .ba-prism-mock-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: radial-gradient(
+    130% 150% at 84% 0%,
+    #000 0%,
+    rgba(0, 0, 0, 0.72) 42%,
+    rgba(0, 0, 0, 0.26) 74%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    130% 150% at 84% 0%,
+    #000 0%,
+    rgba(0, 0, 0, 0.72) 42%,
+    rgba(0, 0, 0, 0.26) 74%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+}
+
+.blueprint-atlas-root .ba-features .ba-prism-mock .gtd {
+  position: relative;
+  z-index: 1;
+}
+
+.blueprint-atlas-root .ba-features .ba-prism-mock .gtd-box {
+  fill: rgba(8, 10, 12, 0.78);
+}
+
+/* ---------- the band's material moment (§3.4, oxc d06) ----------
+   A full-bleed prismatic field runs the whole features band and the opaque
+   eight-panel plate floats on it. The mask banks the light hard to the right
+   and lets it wash the flanks; the heading's left column stays on dark ground
+   and the light never crosses the band's top or bottom joint, which remain
+   clean hairlines. */
+
+.blueprint-atlas-root .ba-features-band {
+  position: relative;
+}
+
+.blueprint-atlas-root .ba-features-band-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  /* two full-height light columns flanking the plate, a wash under its foot —
+     every lobe fades out before the band's own joints */
+  mask-image:
+    radial-gradient(46% 92% at 100% 44%, #000 0%, rgba(0, 0, 0, 0.9) 50%, rgba(0, 0, 0, 0.3) 80%, transparent 98%),
+    radial-gradient(42% 84% at 0% 58%, #000 0%, rgba(0, 0, 0, 0.8) 48%, rgba(0, 0, 0, 0.25) 80%, transparent 98%),
+    radial-gradient(64% 16% at 50% 86%, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.35) 62%, transparent 100%);
+  -webkit-mask-image:
+    radial-gradient(46% 92% at 100% 44%, #000 0%, rgba(0, 0, 0, 0.9) 50%, rgba(0, 0, 0, 0.3) 80%, transparent 98%),
+    radial-gradient(42% 84% at 0% 58%, #000 0%, rgba(0, 0, 0, 0.8) 48%, rgba(0, 0, 0, 0.25) 80%, transparent 98%),
+    radial-gradient(64% 16% at 50% 86%, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.35) 62%, transparent 100%);
+}
+
+/* the plate is one committed flat surface — the field stays outside it */
+.blueprint-atlas-root .ba-features .gtb-grid {
+  background: #0c0f12;
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+}
+
+/* The shared slider's split edge fringes cyan/magenta to read as chromatic
+   aberration. Those two colours have no custom property to skin, and on this
+   direction they are the only saturated pixels left outside the hero field —
+   so they are overridden here, from our own scope, to a pure white lens edge.
+   The component is untouched; every other direction keeps its own fringe. */
+.blueprint-atlas-root .gts-split-ca.gts-ca-l {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.blueprint-atlas-root .gts-split-ca.gts-ca-r {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ---------- story: composition overrides, all from our own scope ---------- */
+
+/* §5, founder ban: no dot/graph-paper behind content. The story paper is one
+   flat material; the code half of the reveal is one flat dark plate. */
+.blueprint-atlas-root .ba-story .gts-win-dots,
+.blueprint-atlas-root .ba-story .gts-win-guides {
+  display: none;
+}
+
+.blueprint-atlas-root .ba-story .gts-xray-surface::before {
+  content: none;
+}
+
+/* Beat 5 must not blank its own card. The shared approved state is a full-bleed
+   white cover; here it is demoted to the action strip, so the counsel avatar,
+   name, webhook sub-label and the message they are approving all stay on screen
+   while the state changes underneath them. */
+.blueprint-atlas-root .ba-story .gts-review-card { padding-bottom: 54px; }
+
+.blueprint-atlas-root .ba-story .gts-r-approved {
+  inset: auto 16px 14px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 0 0;
+  border-radius: 0;
+  border-top: 1px solid rgba(22, 24, 26, 0.18);
+  background: none;
+  letter-spacing: 0.16em;
+}
+
+.blueprint-atlas-root .ba-story .gts-r-approved::before {
+  content: '✓';
+  margin-right: 9px;
+  font-size: 12px;
+}
+
+/* Beat 4 frames the whole card column right of the split now, so the tagline
+   reads as the card's own headline: measured, left-set, two lines. */
+.blueprint-atlas-root .ba-story .gts-tagline {
+  max-width: 320px;
+  line-height: 1.18;
+}
+
+/* the code block starts further left so it clears a partly-open reveal */
+.blueprint-atlas-root .ba-story .gts-xray-inner {
+  left: clamp(30px, 5vw, 84px);
+}
+
+/* The code plate reads as a centred sheet rather than a left-hugging column,
+   and the whole listing clears the signal rail beneath it. */
+.blueprint-atlas-root .ba-story .gts-code-body {
+  font-size: clamp(13px, 1.4vw, 20px);
+  line-height: 1.9;
+  padding: 38px 0 40px;
+}
+
+.blueprint-atlas-root .ba-story .gts-cl {
+  padding-left: max(24px, calc((100% - 800px) / 2));
+}
+
+/* Section G, two deletions in the code act.
+
+   The `translations: es · fr · ja · de · zh` pill is a tag chip carrying no
+   information the frame does not already hold — the diff panel beside it lists
+   the same five locales in its stat line.
+
+   The PUSH · SCAN · EDIT · TRANSLATE · OPEN PR rail is an index strip used as
+   ornament: a third element in a section that is already heading + subheading +
+   window, narrating in five words exactly what the dock caption directly
+   beneath it is saying in a sentence. The caption carries the beat. */
+.blueprint-atlas-root .ba-story .gts-chip-tbadge,
+.blueprint-atlas-root .ba-story .gts-pipeline {
+  display: none;
+}
+
+/* The merge-moment flare. The shared timeline only raises the field through the
+   diff and the merge; this holds it to a low, wide band so it glows out from
+   under the code plate and never crosses the listing's own type. The band is
+   fully contained — it ends BEFORE the stage's bottom rule, so the story/metrics
+   joint below stays a clean hairline instead of catching a white smear. */
+.blueprint-atlas-root .ba-story .gts-field {
+  mask-image: radial-gradient(88% 22% at 50% 75%, #000 0%, rgba(0, 0, 0, 0.6) 52%, transparent 100%);
+  -webkit-mask-image: radial-gradient(88% 22% at 50% 75%, #000 0%, rgba(0, 0, 0, 0.6) 52%, transparent 100%);
+}
+
+/* ---------- §2 casing: no uppercase stamps anywhere on the sheet ----------
+   The shared skins ship uppercase mono labels; this direction reads state from
+   type weight and keeps every locale code lowercase, so the transforms are
+   removed here, from our own scope. */
+
+.blueprint-atlas-root .ba-story .gts-chip-flag,
+.blueprint-atlas-root .ba-story .gts-chip-tone,
+.blueprint-atlas-root .ba-story .gts-mk-b,
+.blueprint-atlas-root .ba-story .gts-site-stats small,
+.blueprint-atlas-root .ba-story .gts-site-form label,
+.blueprint-atlas-root .ba-story .gts-site-foot,
+.blueprint-atlas-root .ba-story .gts-r-btn,
+.blueprint-atlas-root .ba-story .gts-r-approved,
+.blueprint-atlas-root .ba-story .gts-openpr,
+.blueprint-atlas-root .ba-editor .gte-bar,
+.blueprint-atlas-root .ba-editor .gte-lab,
+.blueprint-atlas-root .ba-editor .gte-row[data-state='approved'] .gte-act {
+  text-transform: none;
+  letter-spacing: 0.05em;
+}
+
+/* the agent cursor's name tag — DOM text is uppercase, so it is folded down */
+.blueprint-atlas-root .ba-story .gts-cursor-label { text-transform: lowercase; letter-spacing: 0.06em; }
+
+/* lowercase labels hold the 11px floor (§2) */
+.blueprint-atlas-root .ba-story .gts-site-stats small,
+.blueprint-atlas-root .ba-story .gts-site-form label,
+.blueprint-atlas-root .ba-story .gts-site-foot { font-size: 11px; }
+
+/* approved state reads as weight, not a badge */
+.blueprint-atlas-root .ba-editor .gte-row[data-state='approved'] .gte-act { font-weight: 600; color: var(--t2); }
+
+/* ---------- diff plate at reference contrast (oxc d02: every line crisp) ---------- */
+
+.blueprint-atlas-root .ba-story .gts-diff-lines {
+  font-size: 13px;
+  line-height: 2;
+}
+
+.blueprint-atlas-root .ba-story .gts-dl { color: rgba(255, 255, 255, 0.68); }
+.blueprint-atlas-root .ba-story .gts-dl.gts-h { color: rgba(255, 255, 255, 0.48); }
+.blueprint-atlas-root .ba-story .gts-dl.gts-d { color: rgba(255, 255, 255, 0.44); }
+.blueprint-atlas-root .ba-story .gts-dl.gts-a { color: rgba(255, 255, 255, 0.96); }
+.blueprint-atlas-root .ba-story .gts-diff-head .gts-diffstats { color: rgba(255, 255, 255, 0.55); }
+
+/* ---------- no depth-of-field smudges (§3: blur is not a material) ----------
+   The shared camera blurs off-focus page blocks; on this sheet every block
+   stays a legible rendered artifact at any sampled still. */
+.blueprint-atlas-root .ba-story [data-block] { filter: none !important; }
+
+/* ---------- pellets ride the threads as caliper squares, not 11px dots ---------- */
+.blueprint-atlas-root .ba-story .gts-pellet {
+  width: 5px;
+  height: 5px;
+  border-radius: 0;
+  box-shadow: 0 0 0 2px rgba(242, 241, 236, 0.9);
+}
+
+@media (max-width: 900px) {
+  /* marker 4's badge hangs 30px above the legal line; on one column that put it
+     inside the CTA button, so the line is given room to hang into */
+  .blueprint-atlas-root .ba-story .gts-site-legal { margin-top: 46px; }
+  .blueprint-atlas-root .ba-story .gts-tagline { max-width: none; }
+
+  /* Fit the window to the phone, rather than cropping the desktop stage.
+
+     The counsel card is a desktop-width panel pinned top-right; at 390px it
+     landed straight across the demo headline and its date line. On a phone it
+     becomes what it actually is — an incoming notification — docked across the
+     bottom of the frame, clear of the copy and of the dock. Its webhook curve
+     is a desktop drawing: the pin and the card are 40px apart here, so the
+     curve has nothing to describe and is dropped rather than scribbled. */
+  .blueprint-atlas-root .ba-story .gts-review-card {
+    top: auto;
+    right: 14px;
+    left: 14px;
+    bottom: 92px;
+    width: auto;
+  }
+
+  .blueprint-atlas-root .ba-story .gts-review-line { display: none; }
+
+  /* the four-item nav row is wider than the frame: let it wrap instead of
+     running a half-cut fourth card off the right edge */
+  .blueprint-atlas-root .ba-story .gts-site-nav {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  /* the demo copy keeps clear of the docked card */
+  .blueprint-atlas-root .ba-story .gts-site { padding-bottom: 232px; }
+}
+
+/* ---------- review workspace: the panel carries the viewport ----------
+   The workspace is the section's artifact, so it takes the wider column and
+   fills it: eight real rows, an 11px-floor label system, and a status strip
+   along the bottom so no corner of the plate is dead. The doubled thread —
+   source and translation running side by side — underlines the bar, which is
+   exactly what the two columns beneath it are. */
+
+.blueprint-atlas-root .ba-editor {
+  --gte-wrap: 1280px;
+  --gte-pad: 96px 0 116px;
+}
+
+.blueprint-atlas-root .ba-editor .gte-grid {
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 52px;
+}
+
+.blueprint-atlas-root .ba-editor .gte-bar {
+  position: relative;
+  height: 44px;
+  justify-content: space-between;
+  /* the thread pair below replaces the single rule — never both (§4) */
+  border-bottom: 0;
+}
+
+.blueprint-atlas-root .ba-editor .gte-bar::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -1px;
+  height: 6px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55) 0 1.5px,
+    transparent 1.5px 4.5px,
+    rgba(255, 255, 255, 0.55) 4.5px 6px
+  );
+}
+
+@media (max-width: 920px) {
+  .blueprint-atlas-root .ba-editor .gte-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- display type: word-space restored at scale ----------
+   Every heading on this page is Switzer at -0.045em. The tracking is what makes
+   the letterforms sit tight, but at 60–150px it also eats the word gap, so
+   "Language infrastructure, drafted end to end" starts closing up. The space
+   gets its width back on every display line, not just the hero's. */
+
+.blueprint-atlas-root .ba-metrics h2,
+.blueprint-atlas-root .ba-close h2,
+.blueprint-atlas-root .ba-pricing h2,
+.blueprint-atlas-root .ba-story .gts-head h2,
+.blueprint-atlas-root .ba-features h2,
+.blueprint-atlas-root .ba-editor h2,
+.blueprint-atlas-root .ba-story .gts-site-h1 {
+  word-spacing: 0.1em;
+}
+
+/* ---------- the closing lamp ---------- */
+
+.blueprint-atlas-root .ba-close-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.72;
+  pointer-events: none;
+  mask-image: radial-gradient(86% 44% at 50% 76%, #000 0%, rgba(0, 0, 0, 0.6) 46%, transparent 100%);
+  -webkit-mask-image: radial-gradient(86% 44% at 50% 76%, #000 0%, rgba(0, 0, 0, 0.6) 46%, transparent 100%);
+}
+
+/* ---------- page rhythm ---------- */
+
+/* The story/metrics joint is a single hairline (§4) and the band starts close
+   under it. The trims here also tune where the fixed sampled scroll depths
+   land inside the story's pinned timeline — the climax still (diff open,
+   cursor on "Open PR") depends on the page height below the pin, so change
+   these paddings deliberately. */
+.blueprint-atlas-root .ba-metrics.ba-pad { padding-top: 46px; border-top: 1px solid var(--line2); }
+.blueprint-atlas-root .ba-editor { --gte-pad: 64px 0 116px; }
+.blueprint-atlas-root .ba-pricing.ba-pad { padding-top: 56px; }
+.blueprint-atlas-root .ba-close.ba-pad { padding-bottom: 82px; }
+
+@media (max-width: 767px) {
+  .blueprint-atlas-root .ba-pricing.ba-pad { padding-top: 48px; }
+  .blueprint-atlas-root .ba-close.ba-pad { padding: 56px 0 34px; }
+  .blueprint-atlas-root .ba-foot { padding: 34px 0 28px; }
+}

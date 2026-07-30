@@ -1,0 +1,3331 @@
+/* ============================================================
+   VERSION 10 — TOOLCHAIN
+   The minimalist direction. Structure comes from hairlines only:
+   two vertical rules framing a 1170px column, horizontal rules
+   between sections. No grid fields, no dot paper, no ornament.
+   Light-dominant, with exactly one full-bleed dark band.
+   ============================================================ */
+
+.aurorapaper-root {
+  --tc-paper: #fbfbfa;
+  --tc-sunk: #ffffff;
+  --tc-white: #ffffff;
+  --tc-ink: #0f1113;
+  --tc-ink-2: rgba(15, 17, 19, 0.63);
+  --tc-ink-3: rgba(15, 17, 19, 0.45);
+  --tc-ink-4: rgba(15, 17, 19, 0.27);
+  --tc-hair: rgba(15, 17, 19, 0.11);
+  --tc-hair-2: rgba(15, 17, 19, 0.06);
+  --tc-accent: #2f5ce0;
+  /* the same accent, one stop brighter, for the one dark product surface */
+  --tc-accent-bright: #6f9bff;
+  --tc-dark: #0c0e11;
+
+  /* The LEDGER beige — the second sheet the human documents sit on (review
+     card, dashboard ledger, glossary, the proof band). Ink marks on this
+     surface are the light sections' mass. */
+  --tc-beige: #f4f3ec;
+
+  /* The second surface — the LEDGER beige every light diagram sits on. A light
+     cell's artifact zone is never bare card: the plate is the material that
+     carries it, the way the references never leave a diagram on paper. */
+  --tc-plate: #ffffff;
+
+  /* The one dark artifact surface for code, config and diffs — the inset panel
+     every reference draws its code on. Light cells place it on the card; the
+     page keeps its mass between the hero terminal and the dark band. */
+  --tc-panel: #14121a;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame. The mat has to be a step you can see at 1x, not one that
+     only survives a 4x crop — at 2% luminance the reveal reads as a soft single
+     border and the box-inside-a-box, which is this direction's whole signature
+     detail, never announces itself. This is ~11% off both the page and the card,
+     with its own edge a shade darker than the page's hairline. */
+  --tc-mat: #232327;
+  --tc-mat-edge: #232327;
+  --tc-card: #ffffff;
+  --tc-mat-inset: clamp(10px, 1.2vw, 14px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+  --tc-hatch: rgba(15, 17, 19, 0.085);
+
+  --tc-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: rgba(15, 17, 19, 0.8);
+  --iso-ink-soft: rgba(15, 17, 19, 0.44);
+  --iso-ink-hair: rgba(15, 17, 19, 0.2);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.aurorapaper-root *,
+.aurorapaper-root *::before,
+.aurorapaper-root *::after {
+  box-sizing: border-box;
+}
+
+.aurorapaper-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.aurorapaper-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+}
+
+.aurorapaper-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-sec:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- type ---------- */
+
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.aurorapaper-root h1,
+.aurorapaper-root h2,
+.aurorapaper-root h3,
+.aurorapaper-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+.aurorapaper-root p {
+  margin: 0;
+}
+
+.aurorapaper-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
+
+.aurorapaper-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.aurorapaper-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- buttons ---------- */
+
+.aurorapaper-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.aurorapaper-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: #fbfbfa;
+}
+
+.aurorapaper-root .tc-btn-solid:hover {
+  background: #23282c;
+}
+
+.aurorapaper-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.aurorapaper-root .tc-btn-line:hover {
+  border-color: rgba(15, 17, 19, 0.28);
+  background: rgba(15, 17, 19, 0.03);
+}
+
+.aurorapaper-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.aurorapaper-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+.aurorapaper-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.aurorapaper-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tc-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.aurorapaper-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .aurorapaper-root .tc-nav-links,
+  .aurorapaper-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO — the aurora specimen
+   The section is one washed surface: the shader canvas covers it and masks
+   back into plain paper before the trust band, so the first viewport is a
+   sheet of paper the light is passing through. Type is left-set; the
+   cascade below is the visualization, aligned to the wash's diagonal axis.
+   ============================================================ */
+
+.aurorapaper-root .tc-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.aurorapaper-root .ap-wash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 76%,
+    rgba(0, 0, 0, 0.45) 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(180deg, #000 0%, #000 76%, rgba(0, 0, 0, 0.45) 92%, transparent 100%);
+}
+
+.aurorapaper-root .ap-hero-top {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 220px);
+  gap: clamp(24px, 4vw, 72px);
+  align-items: start;
+  padding: clamp(50px, 5.8vw, 76px) var(--tc-gut) 0;
+}
+
+.aurorapaper-root .ap-hero-mark {
+  display: block;
+  margin-bottom: 22px;
+  opacity: 0.9;
+}
+
+.aurorapaper-root .ap-hero-copy h1 {
+  font-size: clamp(2.3rem, 5vw, 3.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.aurorapaper-root .ap-hero-copy h1 span {
+  display: block;
+}
+
+.aurorapaper-root .ap-hero-sub {
+  margin-top: 18px;
+  max-width: 44ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-hero-sub .tc-chip {
+  font-size: 13px;
+}
+
+.aurorapaper-root .ap-hero-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* The fine print stands in the composition's quiet corner, right-set against
+   the column's right rule, where the wash is already falling off. */
+.aurorapaper-root .ap-hero-note {
+  justify-self: end;
+  max-width: 220px;
+  padding-top: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.75;
+  color: var(--tc-ink-3);
+  text-align: right;
+}
+
+.aurorapaper-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.aurorapaper-root .tc-copy:hover {
+  border-color: rgba(15, 17, 19, 0.26);
+}
+
+.aurorapaper-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- the specimen cascade ----------
+   One real string from public/_gt/[locale].json, five locales, stair-set
+   along the wash's diagonal axis. Each line sits on its own baseline rule;
+   the English source's baseline is the brand's doubled thread. Every line
+   carries a CALIPER dimension bracket under its glyphs and a delta measured
+   by the browser at render — the layout problem of localization, above the
+   fold, with no product chrome at all. */
+
+.aurorapaper-root .ap-casc {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(38px, 4.4vw, 58px);
+}
+
+.aurorapaper-root .ap-casc-cap {
+  padding: 0 var(--tc-gut) 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-casc-row {
+  --casc-pb: clamp(12px, 1.5vw, 18px);
+  --casc-step: clamp(18px, 4vw, 60px);
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(14px, 1.6vw, 24px);
+  min-width: 0;
+  padding: clamp(11px, 1.4vw, 17px) var(--tc-gut) var(--casc-pb);
+  padding-left: calc(var(--tc-gut) + var(--casc-i, 0) * var(--casc-step));
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .ap-casc-row:first-of-type {
+  border-top: 1px solid var(--tc-hair);
+}
+
+/* The source line's baseline is the two threads at constant gauge. */
+.aurorapaper-root .ap-casc-row[data-src] {
+  border-bottom: 0;
+}
+
+/* The threads enter the page here: a vertical pair descending out of the top
+   edge through the wash's brightest field, turning into the source line's
+   doubled baseline where they meet it. Same gauge as everywhere else — the
+   hero's counter-space is held by light plus the brand's line, not left
+   blank. Clipped by the hero's own overflow. */
+.aurorapaper-root .ap-casc-row[data-src]::before {
+  content: '';
+  position: absolute;
+  /* the column gap between the hero copy and its mono note — crosses nothing */
+  right: clamp(220px, 24vw, 290px);
+  /* R3: terminate ON the doubled baseline — flush to its top rule, a clean
+     T-junction, no orphan stub running past the band */
+  bottom: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  height: 120vh;
+  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    var(--thread-gauge) 100%,
+    var(--thread-gauge) 100%;
+  background-position:
+    0 0,
+    100% 0;
+  pointer-events: none;
+}
+
+.aurorapaper-root .ap-casc-row[data-src]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+.aurorapaper-root .ap-casc-tag {
+  flex: none;
+  width: 30px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+/* All five rows at equal ink. R3: the r2 presence-falloff faded exactly the
+   two non-Latin rows — reading as de-emphasis of what the product sells. The
+   cascade's hierarchy is carried by the stair-step and the source row's
+   doubled baseline, not by fading scripts. */
+.aurorapaper-root .ap-casc-text {
+  position: relative;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(27px, 4.3vw, 53px);
+  line-height: 1.16;
+  letter-spacing: -0.032em;
+  white-space: nowrap;
+  color: var(--tc-ink);
+}
+
+/* The dimension bracket: end ticks and a center line, spanning exactly the
+   glyphs' advance — the measurement the delta label reads from. */
+.aurorapaper-root .ap-casc-text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-right: 1.5px solid var(--tc-ink-3);
+  background: linear-gradient(var(--tc-ink-3), var(--tc-ink-3)) 0 50% / 100% 1px no-repeat;
+}
+
+.aurorapaper-root .ap-casc-delta {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-casc-row[data-src] .ap-casc-delta {
+  color: var(--tc-ink-4);
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.aurorapaper-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.aurorapaper-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+.aurorapaper-root .tc-wm {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-wm.is-cursor {
+  font-weight: 600;
+  letter-spacing: -0.032em;
+}
+
+.aurorapaper-root .tc-wm.is-ramp {
+  font-weight: 800;
+  font-size: 16.5px;
+  letter-spacing: -0.012em;
+}
+
+.aurorapaper-root .tc-wm.is-mintlify {
+  font-weight: 300;
+  font-size: 17px;
+  letter-spacing: -0.008em;
+}
+
+.aurorapaper-root .tc-wm.is-profound {
+  font-weight: 500;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.135em;
+}
+
+.aurorapaper-root .tc-wm.is-partiful {
+  font-weight: 700;
+  font-size: 16.5px;
+  letter-spacing: -0.038em;
+}
+
+.aurorapaper-root .tc-wm.is-clickhouse {
+  font-family: var(--tc-sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.006em;
+}
+
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.aurorapaper-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.aurorapaper-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.aurorapaper-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.aurorapaper-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.aurorapaper-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.aurorapaper-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.aurorapaper-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.aurorapaper-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+}
+
+.aurorapaper-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.aurorapaper-root .tc-caps {
+  flex: 1;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.aurorapaper-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-fw-run {
+  margin-top: 20px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.aurorapaper-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.aurorapaper-root .tc-fw-link {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.aurorapaper-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.aurorapaper-root .tc-mount {
+  /* The 2px reveal is the nested frame's whole signature: mat visible all the
+     way around the card, not just as a border. */
+  padding: 2px;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.aurorapaper-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 3px;
+  background: var(--tc-card);
+  overflow: hidden;
+}
+
+.aurorapaper-root .tc-mount.is-beige > .tc-card {
+  background: var(--tc-beige);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#14121A`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.aurorapaper-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.aurorapaper-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.aurorapaper-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.aurorapaper-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.aurorapaper-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.aurorapaper-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.aurorapaper-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.aurorapaper-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.aurorapaper-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set — the story's editor mock highlights on paper. */
+.aurorapaper-root .tc-t-str {
+  color: #5c6470;
+}
+
+.aurorapaper-root .tc-t-kw {
+  color: rgba(15, 17, 19, 0.52);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.aurorapaper-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.aurorapaper-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .tc-t-num {
+  color: #5c6470;
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.aurorapaper-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aurorapaper-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.aurorapaper-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.aurorapaper-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.aurorapaper-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.aurorapaper-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-row.is-lead,
+.aurorapaper-root .tc-row.is-three,
+.aurorapaper-root .tc-row.is-wide-left,
+.aurorapaper-root .tc-row.is-tilt,
+.aurorapaper-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.aurorapaper-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.aurorapaper-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.aurorapaper-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.aurorapaper-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.aurorapaper-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.aurorapaper-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.aurorapaper-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.aurorapaper-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.aurorapaper-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.aurorapaper-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.aurorapaper-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.aurorapaper-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.aurorapaper-root .tc-cell > p,
+.aurorapaper-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.aurorapaper-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.aurorapaper-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   A cell that carries something visual becomes a box inside a box: the grid
+   cell is a mat with a hairline edge and exactly 2px of padding, and the card
+   sits inside it, so a precise 2px reveal runs all the way around the content.
+   Text-only cells never get this — the contrast is the whole point, and it is
+   also why the vertical rule is dropped wherever a mat provides the edge. */
+
+.aurorapaper-root .tc-cell.is-framed {
+  margin: var(--tc-mat-inset);
+  padding: 2px;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+}
+
+/* the human-document cells sit on the ledger's second sheet */
+.aurorapaper-root .tc-cell.is-framed.is-beige > .tc-card {
+  background: var(--tc-beige);
+}
+
+.aurorapaper-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border-radius: 2px;
+  background: var(--tc-card);
+}
+
+.aurorapaper-root .tc-row > .is-framed + *,
+.aurorapaper-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- diagonal spacer band ----------
+   Bounded, content-free breathing room between specific rows. Not a field
+   behind content — a ruled strip between subjects. */
+
+.aurorapaper-root .tc-hatch {
+  height: clamp(28px, 3.4vw, 40px);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: repeating-linear-gradient(45deg, var(--tc-hatch) 0 1px, transparent 1px 8px);
+}
+
+.aurorapaper-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.aurorapaper-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aurorapaper-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.aurorapaper-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.aurorapaper-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.aurorapaper-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars) gets the same
+   plate the language diagrams sit on: white chips on the second surface, the
+   viteplus grammar, instead of white bars lost on a white card. */
+.aurorapaper-root .tc-surface.is-plated {
+  margin-top: 20px;
+  padding: clamp(16px, 2vw, 22px) clamp(14px, 1.8vw, 20px);
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.aurorapaper-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.aurorapaper-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.aurorapaper-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.aurorapaper-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.aurorapaper-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.aurorapaper-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.aurorapaper-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.aurorapaper-root .tc-bleed-art {
+  margin-top: 22px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.aurorapaper-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.aurorapaper-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.aurorapaper-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.aurorapaper-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.aurorapaper-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.aurorapaper-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.aurorapaper-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.aurorapaper-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.aurorapaper-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.aurorapaper-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.aurorapaper-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tc-cell-act {
+  margin-top: 24px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.aurorapaper-root .tc-stats {
+  flex: 1;
+  margin-top: 24px;
+  padding: 6px clamp(14px, 1.8vw, 20px) clamp(16px, 2vw, 22px);
+  display: grid;
+  align-content: space-between;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+.aurorapaper-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.aurorapaper-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.aurorapaper-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.aurorapaper-root .tc-cell.is-panel .tc-code {
+  margin-top: 22px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.aurorapaper-root .tc-lang {
+  flex: 1;
+  margin-top: 22px;
+  padding: clamp(18px, 2.2vw, 26px) clamp(14px, 1.8vw, 22px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+
+  --lang-ground: var(--tc-plate);
+}
+
+.aurorapaper-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.aurorapaper-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.aurorapaper-root .tc-lang.is-lead .lang-sw-name,
+.aurorapaper-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.aurorapaper-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.aurorapaper-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.aurorapaper-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.aurorapaper-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.aurorapaper-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #86a8ff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+/* The field is the band's material, not a rumour of one: a committed light
+   field at the band's edges, held off the type by a dark center — content
+   sits in the dark, the light owns the edges (AESTHETIC_ADDENDUM 2b). */
+.aurorapaper-root .tc-band-field {
+  position: absolute;
+  inset: -12% -6% auto;
+  height: 124%;
+  width: 112%;
+  z-index: 0;
+  opacity: 1;
+  mix-blend-mode: screen;
+  /* R3: the r2 radial mask left the light directionless — violet smoke. The
+     shader now draws one tight aurora arc descending from the top-left corner
+     toward the upper right (ink preset, envelope 0.30), and this mask only
+     confirms it: full strength across the band's top, falling to near-black
+     where the headline, terminal and grid sit — content in the dark center,
+     light on one axis. */
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 24%,
+    rgba(0, 0, 0, 0.42) 48%,
+    rgba(0, 0, 0, 0.12) 74%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+.aurorapaper-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(56px, 7vw, 92px);
+}
+
+/* thread pair #4: the two lines cross the night surface at the band's top —
+   the same gauge the hero's baseline carries, drawn in white here */
+.aurorapaper-root .tc-band-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62)),
+    linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+/* Copy left, artifact right: the transcript is the band's object, standing in
+   the dark center the field leaves for it. */
+.aurorapaper-root .tc-band-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+.aurorapaper-root .tc-band-term {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.aurorapaper-root .tc-band-term-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.aurorapaper-root .tc-band-term-body {
+  padding: 16px 18px 18px;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.aurorapaper-root .tc-band-term-body [data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.aurorapaper-root .tc-band-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.aurorapaper-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.aurorapaper-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aurorapaper-root .tc-band-grid {
+  margin-top: clamp(40px, 5vw, 62px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.aurorapaper-root .tc-band-grid > div {
+  padding: 26px 22px 30px 0;
+}
+
+.aurorapaper-root .tc-band-grid > div + div {
+  padding-left: 22px;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.aurorapaper-root .tc-band-grid h3 {
+  font-size: 15px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.aurorapaper-root .tc-band-grid p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.aurorapaper-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.aurorapaper-root .tc-band .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.aurorapaper-root .tc-band .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.aurorapaper-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.aurorapaper-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.aurorapaper-root .tc-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.aurorapaper-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.aurorapaper-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.aurorapaper-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.aurorapaper-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.aurorapaper-root .tc-plan .tc-list {
+  margin-top: 20px;
+}
+
+.aurorapaper-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.aurorapaper-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.aurorapaper-root .tc-foot {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+/* thread pair #5: the two lines converge on the footer, where the GT mark —
+   the only place the whole logo appears — closes them out */
+.aurorapaper-root .tc-foot::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+.aurorapaper-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.aurorapaper-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
+}
+
+.aurorapaper-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.aurorapaper-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.aurorapaper-root .tc-foot-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.aurorapaper-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
+
+.aurorapaper-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-mat);
+  --gte-ws-shadow: none;
+  /* The mat's radius, because the workspace IS a mat now — see below. */
+  --gte-radius: 5px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 600;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
+}
+
+.aurorapaper-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
+}
+
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.aurorapaper-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.aurorapaper-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+.aurorapaper-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
+}
+
+.aurorapaper-root .tc-review .gte-notes {
+  margin-top: 22px;
+}
+
+/* ---------- the workspace, mounted ----------
+   This is the biggest product mock on the page and it was the one surface
+   outside the frame system: a single border at the page hairline rather than the
+   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
+   the most prominent thing in the section read as an import.
+
+   The borrowed markup has no card element to wrap, so the mat is the workspace
+   shell itself and the two blocks inside it carry the card: the bar takes the
+   top corners, the columns take the bottom, and because they are adjacent with
+   no gap the pair reads as one white card with a 2px reveal around it. Same
+   material, same radii, same 2px as every other mount here. */
+.aurorapaper-root .tc-review .gte-ws {
+  padding: 2px;
+  border-color: var(--tc-mat-edge);
+}
+
+.aurorapaper-root .tc-review .gte-bar {
+  border-radius: 2px 2px 0 0;
+  background: var(--tc-card);
+}
+
+.aurorapaper-root .tc-review .gte-cols {
+  border-radius: 0 0 2px 2px;
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.aurorapaper-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurorapaper-root [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .aurorapaper-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aurorapaper-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .aurorapaper-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .aurorapaper-root .tc-fw,
+  .aurorapaper-root .tc-row.is-split,
+  .aurorapaper-root .tc-row.is-lead,
+  .aurorapaper-root .tc-row.is-three,
+  .aurorapaper-root .tc-row.is-wide-left,
+  .aurorapaper-root .tc-row.is-wide-right,
+  .aurorapaper-root .tc-row.is-even,
+  .aurorapaper-root .tc-row.is-tilt,
+  .aurorapaper-root .tc-row.is-grammar,
+  .aurorapaper-root .tc-plans,
+  .aurorapaper-root .tc-plain,
+  .aurorapaper-root .tc-band-top,
+  .aurorapaper-root .tc-band-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aurorapaper-root .tc-row > * + *,
+  .aurorapaper-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .aurorapaper-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .aurorapaper-root .tc-band-grid > div + div {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .aurorapaper-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .aurorapaper-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .aurorapaper-root .tc-row > .is-framed + *,
+  .aurorapaper-root .tc-row > * + .is-framed,
+  .aurorapaper-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .aurorapaper-root .tc-cell.is-tall,
+  .aurorapaper-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .aurorapaper-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aurorapaper-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .aurorapaper-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .aurorapaper-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .aurorapaper-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .aurorapaper-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aurorapaper-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .aurorapaper-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .aurorapaper-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aurorapaper-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .aurorapaper-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .aurorapaper-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .aurorapaper-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .aurorapaper-root .tc-rail,
+  .aurorapaper-root .tc-nav-in,
+  .aurorapaper-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .aurorapaper-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aurorapaper-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .aurorapaper-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .aurorapaper-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .aurorapaper-root .tc-code-n {
+    padding-right: 9px;
+  }
+}
+
+/* ============================================================
+   WORKSPACE SECTIONS — editor grid, review flow, dashboard
+   ledger, context groups, proof. All `ap-` classes; the frame
+   (rail, mounts, rows, cells) is inherited unchanged.
+   ============================================================ */
+
+.aurorapaper-root .ap-ws-wrap {
+  padding: 0 var(--tc-gut) clamp(36px, 4.4vw, 56px);
+}
+
+/* ---------- the editor workspace ---------- */
+
+.aurorapaper-root .ap-ws-bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 22px);
+  flex-wrap: wrap;
+  min-height: 46px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .ap-ws-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.aurorapaper-root .ap-ws-tabs button {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 7px 10px;
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+/* Accent appearance #2 of the page's budget: the active view, same device as
+   the framework tab bar. */
+.aurorapaper-root .ap-ws-tabs button[data-on='true'] {
+  color: var(--tc-ink);
+  box-shadow: inset 0 -2px 0 var(--tc-accent);
+}
+
+.aurorapaper-root .ap-ws-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 30px;
+  padding: 0 10px;
+  min-width: 180px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 5px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-ws-search kbd {
+  margin-left: auto;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-ws-locales {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.aurorapaper-root .ap-ws-locales span {
+  padding: 3px 8px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-ws-locales span[data-on='true'] {
+  color: var(--tc-ink);
+  border-color: rgba(15, 17, 19, 0.34);
+}
+
+.aurorapaper-root .ap-ws-acts {
+  display: flex;
+  gap: 14px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-grid {
+  position: relative;
+  --ap-grid-cols: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.12fr) minmax(0, 1.05fr);
+}
+
+.aurorapaper-root .ap-grid-head {
+  display: grid;
+  grid-template-columns: var(--ap-grid-cols);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .ap-grid-head span {
+  padding: 9px 14px 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-grid-head span + span {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-grid-row {
+  display: grid;
+  grid-template-columns: var(--ap-grid-cols);
+}
+
+.aurorapaper-root .ap-grid-row + .ap-grid-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-cell {
+  min-width: 0;
+  padding: 13px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.aurorapaper-root .ap-grid-row .ap-cell + .ap-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-cell-text {
+  font-size: 13px;
+  line-height: 1.58;
+  color: var(--tc-ink);
+}
+
+/* The source column is the grid's invariant: present, quieter. */
+.aurorapaper-root .ap-cell.is-src .ap-cell-text {
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-cell-key {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* Review state is type, not a colored pill: what needs attention carries
+   weight and an underline; what is settled recedes to a checked whisper. */
+.aurorapaper-root .ap-state {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+
+.aurorapaper-root .ap-state[data-state='approved'] {
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-state[data-state='approved']::before {
+  content: '✓ ';
+}
+
+.aurorapaper-root .ap-state[data-state='review'] {
+  color: var(--tc-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--tc-ink-3);
+  text-underline-offset: 3px;
+}
+
+/* the mid-edit cell */
+.aurorapaper-root .ap-edit {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1.5px solid var(--tc-ink);
+  border-radius: 4px;
+  background: var(--tc-white);
+}
+
+.aurorapaper-root .ap-edit-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--tc-ink);
+  vertical-align: text-bottom;
+  animation: ap-blink 1.1s steps(1) infinite;
+}
+
+@keyframes ap-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.aurorapaper-root .ap-edit-acts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.aurorapaper-root .ap-save {
+  height: 26px;
+  padding: 0 12px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.aurorapaper-root .ap-edit-hint {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* the ⌘K palette, half-open over the grid's top rows — a paper object lit
+   above the dimmed night grid. R3: it hangs below the header row and inside
+   the Source column, the one column whose content the palette itself repeats
+   (source strings + keys) — every column header and every locale's states
+   stay legible in the still. */
+.aurorapaper-root .ap-k {
+  position: absolute;
+  top: 48px;
+  left: 16px;
+  width: min(400px, 27%);
+  padding: 2px;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.52);
+  z-index: 2;
+}
+
+.aurorapaper-root .ap-k-input {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 3px 3px 0 0;
+  background: var(--tc-white);
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+/* key under string, so both read in full at the palette's column width */
+.aurorapaper-root .ap-k-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 8px 12px;
+  background: var(--tc-white);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-k-row + .ap-k-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-k-row:first-of-type {
+  background: rgba(15, 17, 19, 0.04);
+}
+
+.aurorapaper-root .ap-k-row:last-of-type {
+  border-radius: 0 0 3px 3px;
+}
+
+.aurorapaper-root .ap-k-row span {
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.aurorapaper-root .ap-k-row b {
+  flex: none;
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-ws-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- the workspace's night register ----------
+   The page's biggest product surface is its one deep panel: the grid's
+   strings are white ink on #14121A — the resend move, a whole artifact on a
+   whole tone — and the single mid-edit cell inverts back to paper, so the
+   moment you touch is literally the lit one. */
+
+.aurorapaper-root .ap-ws.is-night {
+  background: var(--tc-panel);
+  border-radius: 3px;
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-bar {
+  position: relative;
+  border-bottom: 0;
+  padding-bottom: 12px;
+}
+
+/* thread pair #2: source above, translation below, under the workspace bar */
+.aurorapaper-root .ap-ws.is-night .ap-ws-bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)),
+    linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-tabs button {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-tabs button[data-on='true'] {
+  color: #ffffff;
+  box-shadow: inset 0 -2px 0 var(--tc-accent-bright);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-search {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-search kbd {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-locales span {
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-locales span[data-on='true'] {
+  border-color: rgba(255, 255, 255, 0.42);
+  color: #ffffff;
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-acts {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-grid-head {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-grid-head span {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-grid-head span + span,
+.aurorapaper-root .ap-ws.is-night .ap-grid-row .ap-cell + .ap-cell {
+  border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-grid-row + .ap-grid-row {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-cell-text {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-cell.is-src .ap-cell-text {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-cell-key {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-state[data-state='approved'] {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-state[data-state='review'] {
+  color: #ffffff;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+/* the inverted mid-edit cell: a piece of paper set into the night panel */
+.aurorapaper-root .ap-ws.is-night .ap-edit {
+  border-color: transparent;
+  background: var(--tc-white);
+}
+
+.aurorapaper-root .ap-ws.is-night .ap-ws-foot {
+  border-top-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.38);
+}
+
+/* the palette's scrim: the grid dims behind the open ⌘K, exactly as the
+   product dims it — the overlay is a moment, not an occlusion */
+.aurorapaper-root .ap-k-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(5, 6, 10, 0.55);
+  pointer-events: none;
+}
+
+/* ---------- the regeneration diff ----------
+   A real unified diff on the page's dark artifact panel: hunk header, two
+   thread lines (one removed, one added), the neighbouring entries as
+   context. 14/24-adjacent mono, wrapped — never clipped. */
+
+.aurorapaper-root .ap-diff {
+  margin-top: 26px;
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.aurorapaper-root .ap-diff-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 36px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.aurorapaper-root .ap-diff pre {
+  margin: 0;
+  padding: 12px 16px 16px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--tc-panel-ink);
+}
+
+.aurorapaper-root .ap-diff-line {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.aurorapaper-root .ap-diff-line:first-child {
+  color: var(--tc-panel-dim);
+}
+
+.aurorapaper-root .ap-diff-g {
+  user-select: none;
+  color: var(--tc-panel-faint);
+}
+
+/* state is weight and tone, not hue: the removed line recedes, the added
+   line is the whitest thing on the panel */
+.aurorapaper-root .ap-diff-line[data-d='-'] {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.aurorapaper-root .ap-diff-line[data-d='-'] .ap-diff-g,
+.aurorapaper-root .ap-diff-line[data-d='+'] .ap-diff-g {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.aurorapaper-root .ap-diff-line[data-d='+'] {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.aurorapaper-root .ap-diff.is-ctx {
+  margin-top: 0;
+}
+
+/* ---------- the config artifact ----------
+   gt.config.json on the same dark artifact panel the diff uses — the page's
+   one grammar for "a real file". The locales line is the hot one: it is the
+   ledger beside it, stated as config. */
+
+.aurorapaper-root .ap-cfg {
+  margin-top: 26px;
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.aurorapaper-root .ap-cfg-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 36px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.aurorapaper-root .ap-cfg pre {
+  margin: 0;
+  padding: 12px 16px 16px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+
+.aurorapaper-root .ap-cfg-line {
+  white-space: pre;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.aurorapaper-root .ap-cfg-line[data-hot] {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ---------- the review panel ---------- */
+
+.aurorapaper-root .ap-rev {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.aurorapaper-root .ap-rev-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aurorapaper-root .ap-rev-src {
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-rev-loc {
+  flex: none;
+  padding: 1px 6px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-rev-tr {
+  margin-top: 10px;
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-rev-labels {
+  margin-top: 14px;
+  display: flex;
+  gap: 6px;
+}
+
+.aurorapaper-root .ap-rev-labels span {
+  padding: 3px 8px;
+  border: 1px solid rgba(15, 17, 19, 0.22);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-rev-note {
+  margin-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-rev-note b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-rev-thread {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--tc-hair);
+  display: grid;
+  gap: 10px;
+}
+
+.aurorapaper-root .ap-rev-msg {
+  display: grid;
+  gap: 3px;
+  font-size: 12.5px;
+}
+
+.aurorapaper-root .ap-rev-msg b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-rev-msg span {
+  color: var(--tc-ink-2);
+  line-height: 1.55;
+}
+
+.aurorapaper-root .ap-rev-resolve {
+  justify-self: start;
+  appearance: none;
+  cursor: pointer;
+  height: 26px;
+  padding: 0 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 5px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-hist {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .ap-hist-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-hist-row + .ap-hist-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-hist-row b {
+  font-family: var(--tc-mono);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-hist-row span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.aurorapaper-root .ap-hist-row i {
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-hist-row button {
+  appearance: none;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background: none;
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .ap-hist-cmd {
+  margin-top: 10px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- the dashboard ledger ---------- */
+
+.aurorapaper-root .ap-led {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.aurorapaper-root .ap-led-bar {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+}
+
+/* thread pair #3, under the project bar — same gauge, ink on the beige sheet */
+.aurorapaper-root .ap-led-bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+.aurorapaper-root .ap-led-proj {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-led-meta {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-led-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  padding: 10px 0 8px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* Rows share the card's spare height evenly (flex: 1), so the ledger always
+   fills its sheet — no dead beige between the last row and the integrations
+   footer when the neighbour cell runs taller. */
+.aurorapaper-root .ap-led-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  align-content: center;
+  flex: 1;
+  padding: 11px 0;
+}
+
+.aurorapaper-root .ap-led-row + .ap-led-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-led-loc {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-led-loc b {
+  width: 22px;
+  font-family: var(--tc-mono);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-led-done {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: clamp(14px, 2vw, 30px);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink-2);
+}
+
+/* the per-locale gauge: a filled ink bar on the sheet's own hairline track —
+   the ja row's 98.4% is the one visible gap in the ink */
+.aurorapaper-root .ap-led-gauge {
+  flex: 1;
+  max-width: 116px;
+  height: 4px;
+  background: rgba(15, 17, 19, 0.13);
+  overflow: hidden;
+}
+
+.aurorapaper-root .ap-led-gauge b {
+  display: block;
+  height: 100%;
+  background: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-led-state {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* the row that needs a human is the loud one */
+.aurorapaper-root .ap-led-row[data-review] .ap-led-state {
+  color: var(--tc-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--tc-ink-3);
+  text-underline-offset: 3px;
+}
+
+.aurorapaper-root .ap-led-int {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--tc-hair);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.aurorapaper-root .ap-led-int span {
+  display: grid;
+  gap: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-led-int b {
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---------- context groups ---------- */
+
+.aurorapaper-root .ap-ctx-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.aurorapaper-root .ap-ctx-col {
+  min-width: 0;
+  padding: 18px 20px 20px;
+}
+
+.aurorapaper-root .ap-ctx-col + .ap-ctx-col {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .ap-ctx-h {
+  margin-bottom: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .ap-ctx-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px 0;
+}
+
+.aurorapaper-root .ap-ctx-row + .ap-ctx-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-ctx-row b {
+  flex: none;
+  min-width: 158px;
+  font-family: var(--tc-mono);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-ctx-row span {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.aurorapaper-root .ap-ctx-row.is-dir span {
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+}
+
+.aurorapaper-root .ap-ctx-split .tc-cell {
+  min-height: 0;
+  padding-top: clamp(26px, 3vw, 36px);
+  justify-content: center;
+}
+
+/* the corrected paragraph sits under the rejected one, ruled apart */
+.aurorapaper-root .ap-ctx-para.is-after {
+  margin-top: 22px;
+  padding-top: 24px;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .ap-ctx-para {
+  font-size: clamp(17px, 1.9vw, 21px);
+  line-height: 1.7;
+  color: var(--tc-ink);
+  max-width: 44ch;
+}
+
+.aurorapaper-root .ap-ctx-para mark {
+  background-color: transparent;
+  color: inherit;
+}
+
+/* the rejected draft: struck through, receding */
+.aurorapaper-root .ap-wrong {
+  color: var(--tc-ink-3);
+  background-image: linear-gradient(var(--tc-ink), var(--tc-ink));
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  background-position: 0 58%;
+}
+
+/* the ruled correction */
+.aurorapaper-root .ap-right {
+  background-image: linear-gradient(var(--tc-ink), var(--tc-ink));
+  background-repeat: no-repeat;
+  background-size: 100% 1.5px;
+  background-position: 0 100%;
+}
+
+.aurorapaper-root .ap-ctx-rule {
+  margin: 0 2px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+  vertical-align: super;
+}
+
+.aurorapaper-root .ap-ctx-cap {
+  margin-top: 16px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-ctx-notes {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 14px var(--tc-gut) 18px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- proof ---------- */
+
+/* Even the quiet depth carries a surface: the whole band is the beige second
+   sheet, ink type on tone — no viewport between hero and footer is bare paper. */
+.aurorapaper-root .tc-sec.is-proof {
+  background: var(--tc-beige);
+}
+
+.aurorapaper-root .ap-proof {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: clamp(56px, 6.4vw, 84px) var(--tc-gut) clamp(54px, 6vw, 78px);
+  text-align: center;
+}
+
+.aurorapaper-root .ap-proof blockquote {
+  margin: 0;
+  font-size: clamp(19px, 2.2vw, 24px);
+  line-height: 1.55;
+  letter-spacing: -0.008em;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-proof-who {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13.5px;
+}
+
+.aurorapaper-root .ap-proof-who b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .ap-proof-who span {
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-proof-second {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .ap-proof-second b {
+  font-weight: 500;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- new-section responsive ---------- */
+
+@media (max-width: 1000px) {
+  .aurorapaper-root .ap-hero-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aurorapaper-root .ap-hero-note {
+    justify-self: start;
+    text-align: left;
+    padding-top: 0;
+    max-width: 40ch;
+  }
+
+  .aurorapaper-root .ap-ctx-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aurorapaper-root .ap-ctx-col + .ap-ctx-col {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .aurorapaper-root .ap-ctx-split .tc-cell + .tc-cell {
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 860px) {
+  /* Four columns of prose cannot fold; the grid scrolls in its own frame
+     instead, per the page's own wide-content rule. */
+  .aurorapaper-root .ap-grid {
+    overflow-x: auto;
+  }
+
+  .aurorapaper-root .ap-grid-head,
+  .aurorapaper-root .ap-grid-row {
+    min-width: 720px;
+  }
+
+  .aurorapaper-root .ap-k,
+  .aurorapaper-root .ap-k-scrim {
+    display: none;
+  }
+
+  .aurorapaper-root .ap-led-int {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  /* the vertical thread needs the desktop counter-space to make sense */
+  .aurorapaper-root .ap-casc-row[data-src]::before {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .aurorapaper-root .ap-casc-text {
+    font-size: clamp(21px, 6.2vw, 27px);
+  }
+
+  .aurorapaper-root .ap-casc-row {
+    --casc-step: 12px;
+    gap: 10px;
+  }
+
+  .aurorapaper-root .ap-casc-delta {
+    font-size: 11px;
+  }
+
+  .aurorapaper-root .ap-ws-search {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurorapaper-root .ap-caret {
+    animation: none;
+  }
+}
+
+
+/* ---- dark mode ----
+   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
+   panel #14121A). Everything downstream re-skins from these. */
+[data-theme='dark'] .aurorapaper-root {
+  --tc-paper: #16171d;
+  --tc-sunk: #16171d;
+  --tc-white: #1e1f26;
+  --tc-card: #1e1f26;
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.66);
+  --tc-ink-3: rgba(255, 255, 255, 0.48);
+  --tc-ink-4: rgba(255, 255, 255, 0.3);
+  --tc-hair: #3b3440;
+  --tc-hair-2: #2b2731;
+  --tc-plate: #1e1f26;
+  --tc-hatch: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-btn-solid {
+  background: #ffffff;
+  color: #16171d;
+}
+
+
+
+
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.aurorapaper-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.aurorapaper-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}

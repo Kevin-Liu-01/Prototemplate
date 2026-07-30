@@ -1,0 +1,1442 @@
+/* ==========================================================================
+   WIDE FIELD — a film still: one horizontal band of dispersed light across the
+   full page width, enormous quiet black above and below it, and a hairline gate
+   where the crosshairs meet.
+
+   The direction's grammar, applied everywhere: squared corners (radius 0), 1px
+   hairlines at very low alpha, wide-tracked mono labels, and huge uppercase
+   Switzer display against small quiet prose. Every rule is nested under
+   .archive-press-root so nothing leaks into another direction.
+   ========================================================================== */
+
+.archive-press-root {
+  --ink: #040405;
+  --ink2: #0a0a0c;
+
+  --w98: rgba(255, 255, 255, 0.98);
+  --w88: rgba(255, 255, 255, 0.88);
+  --w60: rgba(255, 255, 255, 0.6);
+  --w40: rgba(255, 255, 255, 0.4);
+  --w26: rgba(255, 255, 255, 0.26);
+
+  --hair: rgba(255, 255, 255, 0.09);
+  --hair2: rgba(255, 255, 255, 0.045);
+
+  --disp: var(--font-display);
+  --mono: var(--font-mono);
+  --sans: var(--font-sans);
+
+  /* the gate's axis — the band, the crosshair and the gate all read off it */
+  --axis: 36%;
+
+  /* A chrome ramp, not a fade — and metal reads through its EDGES, not through
+     a grey fill. With `line-height: 0.86` Switzer's caps land at roughly
+     10–93% of the line box, so the ramp is authored against that window:
+
+       9%   a crisp white cap-top edge (the sky the metal catches)
+       34–52%  one broad dark band in the UPPER-MIDDLE — the horizon
+       88–96%  a bright lip that puts pure white exactly on the baseline
+       100% one dark step below the baseline so that lip reads as a hairline
+
+     No stop moves more than ~30% luminance across less than 6% of the box:
+     the previous ramp put a razor step at the x-height and let the base sink
+     to mid-grey, which is what turned the line into an extruded drop shadow. */
+  --steel: linear-gradient(
+    180deg,
+    #e6e6ea 0%,
+    #ffffff 6%,
+    #f6f6f9 20%,
+    #d8d8df 28%,
+    #7c7d85 34%,
+    #3e3f45 39%,
+    #34353b 47%,
+    #4d4e56 53%,
+    #8e8f97 61%,
+    #c8c8cf 70%,
+    #eaeaef 78%,
+    #fbfbfc 85%,
+    #ffffff 92%,
+    #ffffff 96%,
+    #9d9da5 100%
+  );
+
+  position: relative;
+  background: var(--ink);
+  color: var(--w88);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: clip;
+}
+
+.archive-press-root *,
+.archive-press-root *::before,
+.archive-press-root *::after {
+  box-sizing: border-box;
+}
+
+.archive-press-root ::selection {
+  background: #fff;
+  color: var(--ink);
+}
+.archive-press-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.archive-press-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.archive-press-root :focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 4px;
+}
+.archive-press-root img,
+.archive-press-root svg,
+.archive-press-root canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* ---- shared type primitives ---- */
+
+.archive-press-root .ap-sec-title {
+  font-family: var(--disp);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.1rem, 4.4vw, 3.9rem);
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  /* tight tracking is the look; the word space has to be opened back out by
+     more than the tracking takes away or the words fuse at display size */
+  word-spacing: 0.1em;
+  color: var(--w98);
+  margin: 0;
+  max-width: 15ch;
+}
+
+.archive-press-root .ap-sec-sub {
+  margin: 20px 0 0;
+  max-width: 52ch;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--w60);
+}
+
+/* brushed steel fill with one slow specular pass — metal as material, never a
+   colour ramp. This is the only "gradient" on the page besides the real light.
+   Both layers carry an explicit size: `auto` on a gradient layer is a coin
+   flip once `background-clip: text` is in play, and a flattened steel layer is
+   what turns chrome back into a fade. */
+.archive-press-root .chrome {
+  background:
+    linear-gradient(102deg, transparent 40%, rgba(255, 255, 255, 0.98) 50%, transparent 60%),
+    var(--steel);
+  background-size: 260% 100%, 100% 100%;
+  background-position: -160% 0, 0 0;
+  background-repeat: no-repeat, no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ap-foil 9s ease-in-out infinite;
+}
+@keyframes ap-foil {
+  0%,
+  62% {
+    background-position: -160% 0, 0 0;
+  }
+  100% {
+    background-position: 160% 0, 0 0;
+  }
+}
+
+/* a whisper of film grain over the whole frame */
+.archive-press-root .ap-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 400;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ================================ NAV ================================ */
+
+.archive-press-root .ap-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  padding: 0 clamp(20px, 3.4vw, 54px);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  /* content scrolls under this on the way into the pinned story, so the top of
+     the bar has to be effectively opaque while the tail still feathers out */
+  background: linear-gradient(
+    180deg,
+    rgba(4, 4, 5, 0.97) 0%,
+    rgba(4, 4, 5, 0.93) 58%,
+    rgba(4, 4, 5, 0) 100%
+  );
+  backdrop-filter: blur(6px);
+}
+
+.archive-press-root .ap-nav-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--w88);
+  letter-spacing: 0.16em;
+}
+.archive-press-root .ap-nav-mark img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.archive-press-root .ap-nav-links {
+  display: flex;
+  gap: 26px;
+  margin-left: auto;
+  color: var(--w40);
+}
+.archive-press-root .ap-nav-links a:hover {
+  color: var(--w88);
+}
+
+.archive-press-root .ap-nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--w40);
+}
+.archive-press-root .ap-nav-cta a:hover {
+  color: var(--w88);
+}
+.archive-press-root .ap-nav-cta .solid {
+  padding: 7px 14px;
+  background: #fff;
+  color: var(--ink);
+  letter-spacing: 0.16em;
+}
+.archive-press-root .ap-nav-cta .solid:hover {
+  background: var(--w88);
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .archive-press-root .ap-nav-links,
+  .archive-press-root .ap-nav-meta {
+    display: none;
+  }
+  .archive-press-root .ap-nav-cta {
+    margin-left: auto;
+  }
+}
+
+/* =============================== HERO =============================== */
+
+.archive-press-root .ap-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 62px 0 clamp(10px, 1.5vh, 16px);
+  overflow: clip;
+  isolation: isolate;
+}
+
+/* ---- the band: full page width, quiet black above and below ----
+
+   The whole composition is this measurement. Light lives between roughly 25%
+   and 47% of the frame and the corridor of scattered surfaces lives inside it.
+   Above — from the nav down to a quarter of the frame — and below, from the
+   light's lower fringe to the command chip, is black and stays black. That
+   emptiness is the direction; everything else is placed around it. */
+
+.archive-press-root .ap-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--axis) - 14svh);
+  height: 28svh;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 20%,
+    #000 60%,
+    transparent 94%
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 60%, transparent 94%);
+}
+.archive-press-root .ap-band .ap-field {
+  width: 100%;
+  height: 100%;
+  /* thin-film dispersion, not candy: pull the saturation back until the streaks
+     read as light broken by a prism rather than as a colour gradient */
+  filter: saturate(0.62) contrast(1.06);
+}
+/* the darkness in the middle is the design — the light frames a void */
+.archive-press-root .ap-band-core {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    42% 74% at 50% 50%,
+    rgba(4, 4, 5, 0.96) 0%,
+    rgba(4, 4, 5, 0.66) 44%,
+    rgba(4, 4, 5, 0) 78%
+  );
+}
+
+/* the type always sits on black, never on the light — the scrim starts below
+   the band's lower fringe so it deepens the quiet instead of eating the light */
+.archive-press-root .ap-hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(4, 4, 5, 0) 0%,
+    rgba(4, 4, 5, 0.78) 22%,
+    var(--ink) 44%
+  );
+}
+
+/* ---- viewfinder crosshairs ---- */
+
+/* The vertical rule runs the whole frame because the stat block is hung off it
+   down in the lower fold — it has to be one continuous line from the gate to
+   the numbers, not two unrelated marks. */
+.archive-press-root .ap-guide-v {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  /* above the lower scrim (z 1) so the line does not dim out halfway between
+     the gate and the stat block it is supposed to be carrying */
+  z-index: 3;
+  background: linear-gradient(
+    to bottom,
+    transparent 8%,
+    var(--hair) 22%,
+    var(--hair) 58%,
+    var(--hair2) 66%,
+    var(--hair2) 88%,
+    transparent 94%
+  );
+}
+.archive-press-root .ap-guide-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--axis);
+  height: 1px;
+  z-index: 1;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--hair) 10%,
+    var(--hair) 90%,
+    transparent 100%
+  );
+}
+
+/* ---- the scattered surfaces ---- */
+
+.archive-press-root .ap-scatter {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.archive-press-root .ap-slot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  will-change: transform;
+}
+.archive-press-root .ap-slot-in {
+  position: relative;
+  transform: scale(var(--sc, 1));
+  transform-origin: 50% 50%;
+}
+.archive-press-root .ap-slot--glyph .ap-slot-in {
+  font-family: var(--sans);
+  color: #fff;
+  line-height: 1;
+}
+
+.archive-press-root .ap-slot-loc {
+  position: absolute;
+  top: -15px;
+  right: 0;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.28em;
+  color: var(--w40);
+}
+
+/* ---- the surfaces themselves: hairlines and squared corners only ---- */
+
+.archive-press-root .ap-c {
+  font-family: var(--sans);
+  white-space: nowrap;
+  color: var(--w88);
+}
+
+.archive-press-root .ap-c-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border: 1px solid var(--hair);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+}
+.archive-press-root .ap-c-sep {
+  font-style: normal;
+  color: var(--w26);
+  margin-right: 10px;
+}
+
+.archive-press-root .ap-c-line {
+  font-family: var(--disp);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--w98);
+}
+
+.archive-press-root .ap-c-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 208px;
+}
+.archive-press-root .ap-c-lab {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--w40);
+}
+.archive-press-root .ap-c-input {
+  padding: 9px 12px;
+  border: 1px solid var(--hair);
+  font-size: 12.5px;
+  color: var(--w60);
+}
+
+.archive-press-root .ap-c-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.archive-press-root .ap-c-arrow {
+  font-style: normal;
+  opacity: 0.5;
+}
+
+.archive-press-root .ap-c-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 15px;
+  border: 1px solid var(--hair);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 12.5px;
+}
+.archive-press-root .ap-c-tick {
+  width: 5px;
+  height: 5px;
+  background: var(--w60);
+}
+
+.archive-press-root .ap-c-plan {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 16px;
+  border: 1px solid var(--hair);
+}
+.archive-press-root .ap-c-plan-n {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  color: var(--w40);
+}
+.archive-press-root .ap-c-plan-p {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--w98);
+}
+
+.archive-press-root .ap-c-quote {
+  width: 268px;
+  padding: 15px 16px;
+  border: 1px solid var(--hair);
+  white-space: normal;
+}
+.archive-press-root .ap-c-q-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.archive-press-root .ap-c-ava {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--hair);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--w60);
+}
+.archive-press-root .ap-c-q-head b {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.archive-press-root .ap-c-role {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--w40);
+}
+.archive-press-root .ap-c-quote p {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--w60);
+}
+
+/* ---- the gate: a hairline circle, the real mark, nothing else ---- */
+
+.archive-press-root .ap-gate {
+  position: absolute;
+  left: 50%;
+  top: var(--axis);
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  display: grid;
+  place-items: center;
+  background: rgba(4, 4, 5, 0.6);
+  backdrop-filter: blur(2px);
+}
+.archive-press-root .ap-gate::after {
+  content: '';
+  position: absolute;
+  inset: -13px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.archive-press-root .ap-gate img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  opacity: 0.95;
+}
+
+/* ---- the headline, anchored low and left ---- */
+
+/* Two columns split on exactly 50% of the frame — the same line the vertical
+   crosshair is drawn on. The container carries no horizontal padding so the
+   split really is 50%; the padding lives on the two columns instead. */
+.archive-press-root .ap-hero-lower {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+}
+
+.archive-press-root .ap-hero-copy {
+  max-width: 900px;
+  padding-left: clamp(20px, 3.4vw, 54px);
+}
+
+/* The stat block hangs off the vertical rule: its left border sits on the 50%
+   line and continues it, and the numbers run across the right half on one
+   baseline instead of stacking against the far margin. */
+.archive-press-root .ap-hero-stats {
+  margin: 0;
+  margin-right: clamp(20px, 3.4vw, 54px);
+  padding: 14px 0 0 clamp(22px, 2.6vw, 44px);
+  display: flex;
+  justify-content: flex-start;
+  gap: clamp(26px, 3.6vw, 64px);
+  border-left: 1px solid var(--hair2);
+  border-top: 1px solid var(--hair);
+}
+.archive-press-root .ap-stat {
+  min-width: 0;
+}
+.archive-press-root .ap-hero-stats dt {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--w26);
+  white-space: nowrap;
+}
+.archive-press-root .ap-hero-stats dd {
+  margin: 7px 0 0;
+  font-family: var(--disp);
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: var(--w88);
+}
+
+.archive-press-root .ap-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 13px;
+  /* the chip can land on the tail of the light, so it carries its own dark
+     plate rather than relying on the scrim beneath it */
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(4, 4, 5, 0.66);
+  backdrop-filter: blur(4px);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--w60);
+}
+.archive-press-root .ap-cmd:hover {
+  border-color: var(--w26);
+  color: var(--w88);
+}
+.archive-press-root .ap-cmd .dim {
+  color: var(--w26);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 9px;
+}
+
+.archive-press-root .ap-h1 {
+  margin: 13px 0 0;
+  font-family: var(--disp);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.4rem, 5.1vw, 4.7rem);
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+  /* at this size the tracking closes the word space to nothing —
+     "LAUNCHIN EVERY" — so it is opened back out past neutral */
+  word-spacing: 0.11em;
+}
+.archive-press-root .ap-h1 .l1,
+.archive-press-root .ap-h1 .l2 {
+  display: block;
+}
+.archive-press-root .ap-h1 .l1 {
+  color: var(--w98);
+}
+
+.archive-press-root .ap-sub {
+  margin: 15px 0 0;
+  max-width: 66ch;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--w60);
+}
+.archive-press-root .ap-sub .rot {
+  color: var(--w98);
+  border-bottom: 1px solid var(--w40);
+  padding-bottom: 1px;
+}
+
+.archive-press-root .ap-ctas {
+  display: flex;
+  gap: 12px;
+  margin-top: 19px;
+}
+.archive-press-root .ap-ctas a {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 25px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.archive-press-root .ap-ctas .solid {
+  background: #fff;
+  color: var(--ink);
+}
+.archive-press-root .ap-ctas .solid:hover {
+  background: var(--w88);
+}
+.archive-press-root .ap-ctas .outline {
+  border: 1px solid var(--w26);
+  color: var(--w88);
+}
+.archive-press-root .ap-ctas .outline:hover {
+  border-color: #fff;
+}
+
+/* ---- the compact bottom band ---- */
+
+.archive-press-root .ap-bottom {
+  position: relative;
+  z-index: 4;
+  margin-top: clamp(18px, 2.4vh, 30px);
+  padding: 0 clamp(20px, 3.4vw, 54px);
+}
+
+.archive-press-root .ap-marq {
+  overflow: hidden;
+  padding: 10px 0;
+  border-top: 1px solid var(--hair2);
+  border-bottom: 1px solid var(--hair2);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.archive-press-root .ap-marq-track {
+  display: flex;
+  gap: 34px;
+  width: max-content;
+}
+.archive-press-root .ap-flag {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--w40);
+  white-space: nowrap;
+}
+
+.archive-press-root .ap-trust {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding-top: 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.archive-press-root .ap-trust-lab {
+  color: var(--w26);
+}
+.archive-press-root .ap-wm {
+  color: var(--w60);
+}
+
+@media (max-width: 900px) {
+  .archive-press-root {
+    --axis: 34%;
+  }
+  /* the still holds at one column: type under the band, stats out of the way */
+  .archive-press-root .ap-hero-lower {
+    grid-template-columns: 1fr;
+  }
+  .archive-press-root .ap-hero-copy {
+    padding-right: clamp(20px, 3.4vw, 54px);
+  }
+  .archive-press-root .ap-hero-stats {
+    display: none;
+  }
+  /* Narrow viewports keep ONE mirrored pair and the gate. The wide field does
+     not survive compression — squeezed to 390px it stops reading as sparse and
+     deep and starts reading as a cluttered strip, which is the opposite of the
+     whole idea, so everything else is dropped rather than shrunk. */
+  .archive-press-root .ap-slot--wide {
+    display: none;
+  }
+  .archive-press-root .ap-slot {
+    left: var(--mx);
+    top: var(--my);
+  }
+  .archive-press-root .ap-slot-in {
+    transform: scale(var(--msc, 1));
+  }
+  .archive-press-root .ap-nav-mark span {
+    display: none;
+  }
+  .archive-press-root .ap-nav-cta a:not(.solid) {
+    display: none;
+  }
+  .archive-press-root .ap-band {
+    top: calc(var(--axis) - 12svh);
+    height: 24svh;
+  }
+  .archive-press-root .ap-gate {
+    width: 56px;
+    height: 56px;
+  }
+  .archive-press-root .ap-gate img {
+    width: 25px;
+    height: 25px;
+  }
+  .archive-press-root .ap-c-quote {
+    width: 220px;
+  }
+  .archive-press-root .ap-trust {
+    font-size: 9px;
+    gap: 8px 16px;
+  }
+}
+
+/* ========================= SHARED PAGE SECTIONS ========================= */
+
+.archive-press-root .ap-section {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(96px, 12vh, 150px) clamp(20px, 3.4vw, 54px);
+}
+
+.archive-press-root .ap-sec-head {
+  border-top: 1px solid var(--hair);
+  padding-top: 42px;
+}
+
+/* ---- pricing ---- */
+
+.archive-press-root .ap-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 62px;
+  border: 1px solid var(--hair);
+}
+.archive-press-root .ap-plan {
+  padding: 40px clamp(24px, 3vw, 42px) 38px;
+}
+.archive-press-root .ap-plan + .ap-plan {
+  border-left: 1px solid var(--hair);
+}
+.archive-press-root .ap-plan .p-name {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--w40);
+}
+.archive-press-root .ap-plan .p-price {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--w60);
+}
+.archive-press-root .ap-plan .p-price b {
+  font-family: var(--disp);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--w98);
+  margin: 0 6px;
+}
+.archive-press-root .ap-plan ul {
+  list-style: none;
+  padding: 0;
+  margin: 28px 0 32px;
+}
+.archive-press-root .ap-plan li {
+  padding: 13px 0;
+  border-top: 1px solid var(--hair2);
+  font-size: 14px;
+  color: var(--w60);
+}
+.archive-press-root .ap-plan a.solid {
+  display: inline-flex;
+  padding: 13px 26px;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.archive-press-root .ap-plan a.solid:hover {
+  background: var(--w88);
+}
+
+@media (max-width: 800px) {
+  .archive-press-root .ap-plans {
+    grid-template-columns: 1fr;
+  }
+  .archive-press-root .ap-plan + .ap-plan {
+    border-left: 0;
+    border-top: 1px solid var(--hair);
+  }
+}
+
+/* ---- the closing frame ---- */
+
+.archive-press-root .ap-closing {
+  position: relative;
+  padding: clamp(200px, 30vh, 330px) clamp(20px, 3.4vw, 54px) clamp(96px, 12vh, 150px);
+  overflow: clip;
+  isolation: isolate;
+}
+.archive-press-root .ap-closing-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4%;
+  height: 72%;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 26%, #000 64%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 26%, #000 64%, transparent);
+}
+.archive-press-root .ap-closing-band .ap-field {
+  width: 100%;
+  height: 100%;
+  filter: saturate(0.6) contrast(1.06);
+}
+/* the light blooms off to the right; the closing type keeps its void */
+.archive-press-root .ap-closing-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--ink) 0%,
+    rgba(4, 4, 5, 0.92) 26%,
+    rgba(4, 4, 5, 0.5) 46%,
+    rgba(4, 4, 5, 0.14) 68%
+  );
+}
+.archive-press-root .ap-closing-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.archive-press-root .ap-closing .ap-sec-title {
+  font-size: clamp(2.4rem, 6vw, 5.4rem);
+  max-width: none;
+}
+.archive-press-root .ap-closing .ap-ctas {
+  margin-top: 36px;
+}
+
+/* ---- footer ---- */
+
+.archive-press-root .ap-footer {
+  border-top: 1px solid var(--hair);
+  padding: 72px clamp(20px, 3.4vw, 54px) 34px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.archive-press-root .ap-foot-grid {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(4, 1fr);
+  gap: 44px;
+}
+.archive-press-root .ap-foot-brand img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+.archive-press-root .ap-foot-brand p {
+  margin: 18px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--w60);
+  max-width: 30ch;
+}
+.archive-press-root .ap-foot-comp {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--w26);
+}
+.archive-press-root .ap-foot-col {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  font-size: 13px;
+  color: var(--w60);
+}
+.archive-press-root .ap-foot-col a:hover {
+  color: var(--w98);
+}
+.archive-press-root .ap-foot-lab {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--w26);
+  margin-bottom: 4px;
+}
+.archive-press-root .ap-foot-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 62px;
+  padding-top: 22px;
+  border-top: 1px solid var(--hair2);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w26);
+}
+
+@media (max-width: 900px) {
+  .archive-press-root .ap-foot-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 34px;
+  }
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   StorySection / FeatureBento / EditorWorkspace / diagrams read
+   these. Squared, hairline, wide — the same grammar as the hero.
+   ============================================================ */
+
+.archive-press-root .ap-story,
+.archive-press-root .ap-features,
+.archive-press-root .ap-editor {
+  --gts-bg: var(--ink);
+  --gts-paper: #ebebe7;
+  --gts-ink: #101012;
+  --gts-ink-2: rgba(16, 16, 18, 0.62);
+  --gts-ink-3: rgba(16, 16, 18, 0.38);
+  --gts-paper-rule: rgba(16, 16, 18, 0.13);
+  --gts-paper-dot: rgba(16, 16, 18, 0.1);
+  --gts-paper-guide: rgba(16, 16, 18, 0.08);
+  --gts-shell: #0a0a0c;
+  --gts-shell-line: rgba(255, 255, 255, 0.14);
+  --gts-code-bg: #060608;
+  --gts-code-text: rgba(238, 238, 240, 0.84);
+  --gts-line: var(--hair);
+  --gts-line-2: var(--hair2);
+  --gts-t1: var(--w98);
+  --gts-t2: var(--w60);
+  --gts-t3: var(--w40);
+  --gts-t4: var(--w26);
+  --gts-display: var(--disp);
+  --gts-text: var(--sans);
+  --gts-mono: var(--mono);
+  --gts-radius: 0px;
+  --gts-head-size: clamp(2.1rem, 4.4vw, 3.9rem);
+  --gts-head-weight: 800;
+
+  --gtb-line: var(--hair);
+  --gtb-line-2: var(--hair2);
+  --gtb-title: var(--w98);
+  --gtb-body: var(--w60);
+  --gtb-label: var(--w40);
+  --gtb-display: var(--disp);
+  --gtb-text: var(--sans);
+  --gtb-mono: var(--mono);
+  --gtb-radius: 0px;
+  --gtb-grid-bg: transparent;
+  --gtb-mock-bg: rgba(255, 255, 255, 0.014);
+  --gtb-spotlight: rgba(255, 255, 255, 0.05);
+  --gtb-wrap: 1240px;
+  --gtb-pad: clamp(64px, 7vh, 96px) 0 clamp(56px, 6.4vh, 88px);
+  --gtb-head-size: clamp(2.1rem, 4.4vw, 3.9rem);
+  --gtb-head-weight: 800;
+  --gtb-head-gap: 22px;
+  --gtb-cell-min: 300px;
+  --gtb-cell-pad: 34px 34px 36px;
+  --gtb-title-size: 23px;
+  --gtb-body-size: 14px;
+  --gtb-mock-h: 140px;
+
+  /* The workspace is the one surface on the page that has to read as MACHINED
+     GRAPHITE rather than as a rectangle of the page background: a dark face, a
+     specular top edge, a slow sheen down the plate and rules you can actually
+     see. `--gte-ws-bg` is fed a layered background (sheen over solid) because
+     the shared component assigns it straight to `background`. */
+  --gte-line: rgba(255, 255, 255, 0.2);
+  --gte-line-2: rgba(255, 255, 255, 0.085);
+  --gte-title: var(--w98);
+  --gte-body: var(--w60);
+  --gte-label: var(--w40);
+  --gte-quiet: var(--w26);
+  --gte-display: var(--disp);
+  --gte-text: var(--sans);
+  --gte-mono: var(--mono);
+  --gte-radius: 0px;
+  --gte-ws-bg:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.022) 16%,
+      rgba(255, 255, 255, 0.006) 46%,
+      rgba(255, 255, 255, 0) 74%,
+      rgba(255, 255, 255, 0.026) 100%
+    ),
+    #0b0b0e;
+  --gte-ws-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 44px 96px rgba(0, 0, 0, 0.72);
+  --gte-wrap: 1240px;
+  /* Act IV opens out of the pinned story on a short black run-up — three
+     consecutive empty frames is pacing failure, not atmosphere */
+  --gte-pad: clamp(72px, 7vh, 108px) 0 clamp(56px, 6.4vh, 84px);
+  --gte-head-size: clamp(2.1rem, 4.4vw, 3.9rem);
+  --gte-head-weight: 800;
+
+  --gtd-line: rgba(255, 255, 255, 0.34);
+  --gtd-fill: rgba(255, 255, 255, 0.1);
+  --gtd-accent: #ffffff;
+  --gtd-label: var(--w40);
+  /* the wide cells draw each 200×74 frame at roughly 2×, so the label has to
+     be authored small to land at a normal reading size on screen */
+  --gtd-label-size: 5px;
+  --gtd-mono: var(--mono);
+  --gtd-node-fill: #060608;
+  --gtd-node-stroke: rgba(255, 255, 255, 0.4);
+  --gtd-wire: rgba(255, 255, 255, 0.22);
+  --gtd-glyph: rgba(255, 255, 255, 0.72);
+
+  /* the code window is syntax-highlighted by weight and value, not by hue —
+     the same greyscale discipline the rest of the direction holds to */
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: rgba(255, 255, 255, 0.66);
+  --gts-tok-attr: rgba(255, 255, 255, 0.54);
+  --gts-tok-str: rgba(255, 255, 255, 0.82);
+  --gts-tok-text: rgba(255, 255, 255, 0.94);
+  --gts-tok-kw: rgba(255, 255, 255, 0.7);
+  --gts-tok-fn: rgba(255, 255, 255, 0.9);
+  --gts-tok-punct: rgba(255, 255, 255, 0.34);
+}
+
+/* ---- the story's exit: a dissolve, not three empty frames ----
+
+   The stage is pinned, so the section reserves a full viewport of scroll for it
+   to travel off the fold. Story.tsx cuts the light on the frame in the first
+   fifth of that travel (the tail would otherwise be a squashed sliver of the
+   demo site), which used to leave ~80vh of pure black before Act IV started —
+   a whole sampled depth of nothing. Act IV is pulled up under that travel and
+   the story is given the higher paint order, so the film frame dissolves and
+   the workspace is revealed THROUGH it instead of after it. */
+.archive-press-root .ap-story {
+  z-index: 2;
+  margin-bottom: -62svh;
+}
+/* with reduced motion the shared story is a static storyboard with no pin and
+   no travel, so there is nothing to pull Act IV up under */
+@media (prefers-reduced-motion: reduce) {
+  .archive-press-root .ap-story {
+    margin-bottom: 0;
+  }
+}
+
+/* Section rhythm: every shared heading gets the same hairline above it and the
+   same cinematic breathing room as the hand-built sections. */
+.archive-press-root .ap-story .gts-head {
+  width: min(1240px, 100%);
+  padding: clamp(96px, 12vh, 150px) clamp(20px, 3.4vw, 54px) 52px;
+}
+.archive-press-root .ap-story .gts-head h2,
+.archive-press-root .ap-features h2,
+.archive-press-root .ap-editor h2 {
+  text-transform: uppercase;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+  max-width: 15ch;
+}
+.archive-press-root .ap-features .gtb-wrap,
+.archive-press-root .ap-editor .gte-wrap {
+  padding: 42px clamp(20px, 3.4vw, 54px) 0;
+}
+.archive-press-root .ap-story .gts-head,
+.archive-press-root .ap-features .gtb-wrap,
+.archive-press-root .ap-editor .gte-wrap {
+  position: relative;
+}
+/* one hairline above every heading on the page, hand-built or shared */
+.archive-press-root .ap-story .gts-head::before,
+.archive-press-root .ap-features .gtb-wrap::before,
+.archive-press-root .ap-editor .gte-wrap::before {
+  content: '';
+  position: absolute;
+  left: clamp(20px, 3.4vw, 54px);
+  right: clamp(20px, 3.4vw, 54px);
+  top: 0;
+  height: 1px;
+  background: var(--hair);
+}
+.archive-press-root .ap-story .gts-head::before {
+  top: calc(clamp(96px, 12vh, 150px) - 42px);
+}
+
+/* ---- every section head is a composed row, not a left-hand stack ----
+
+   Display heading in the left column, its one supporting line in the right, on
+   a shared hairline. Four sections running left-column-only read as an
+   unfinished page; the right half now carries the sentence. */
+.archive-press-root .ap-story .gts-head,
+.archive-press-root .ap-features .gtb-wrap,
+.archive-press-root .ap-editor .gte-copy,
+.archive-press-root .ap-sec-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.78fr);
+  column-gap: clamp(28px, 5vw, 88px);
+  align-items: end;
+}
+.archive-press-root .ap-story .gts-head h2,
+.archive-press-root .ap-features .gtb-wrap > h2,
+.archive-press-root .ap-editor .gte-copy > h2,
+.archive-press-root .ap-sec-head .ap-sec-title {
+  grid-column: 1;
+  margin: 0;
+  /* display type has to hold its own word spaces at this scale */
+  word-spacing: 0.1em;
+}
+.archive-press-root .ap-story .gts-head p,
+.archive-press-root .ap-features .gtb-sub,
+.archive-press-root .ap-editor .gte-sub,
+.archive-press-root .ap-sec-head .ap-sec-sub {
+  grid-column: 2;
+  margin: 0;
+  padding-bottom: 7px;
+  max-width: 44ch;
+}
+.archive-press-root .ap-features .gtb-wrap > .gtb-grid {
+  grid-column: 1 / -1;
+  margin-top: clamp(44px, 6vh, 72px);
+}
+.archive-press-root .ap-editor .gte-copy {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .archive-press-root .ap-story .gts-head,
+  .archive-press-root .ap-features .gtb-wrap,
+  .archive-press-root .ap-editor .gte-copy,
+  .archive-press-root .ap-sec-head {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 18px;
+  }
+  .archive-press-root .ap-story .gts-head p,
+  .archive-press-root .ap-features .gtb-sub,
+  .archive-press-root .ap-editor .gte-sub,
+  .archive-press-root .ap-sec-head .ap-sec-sub {
+    grid-column: 1;
+    padding-bottom: 0;
+  }
+}
+
+/* the last bento row and the pricing rule were 300px of nothing apart */
+.archive-press-root .ap-pricing-sec {
+  padding-top: clamp(56px, 6.4vh, 86px);
+}
+
+/* The story window is a film frame: squared, hairline, no soft edges. */
+.archive-press-root .ap-story .gts-window {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* the intro breathes the window up past its own frame, so the browser chip
+   holds its content clear of the left edge instead of being sliced by it */
+.archive-press-root .ap-story .gts-win-chip {
+  padding-left: 78px;
+  border-radius: 0;
+}
+.archive-press-root .ap-story .gts-win-chip::after {
+  display: none;
+}
+
+/* ---- Section G, enforced on the shared story ---- */
+
+/* the seam is white light, not a chromatic-aberration novelty: the cyan and
+   magenta bars are the only saturated colour on the page that is not real
+   dispersed light, so they go */
+.archive-press-root .ap-story .gts-split-ca {
+  display: none;
+}
+
+/* the signal path reads as label text on a lit hairline. The five boxed
+   glyphs (an arrow, three bars, "+ −", 文A, a squiggle) carried nothing the
+   words PUSH / SCAN / EDIT / TRANSLATE / OPEN PR did not already carry. */
+.archive-press-root .ap-story .gtd-pnode,
+.archive-press-root .ap-story .gtd-pglyph,
+.archive-press-root .ap-story .gtd-pg {
+  display: none;
+}
+.archive-press-root .ap-story .gts-pipeline::before {
+  content: '';
+  position: absolute;
+  left: 3.3%;
+  right: 3.3%;
+  top: 44.8%;
+  height: 1px;
+  background: var(--gtd-wire);
+}
+
+/* the caption bar and the review harness's version dock were sharing one set of
+   coordinates, so six of seven beats were unreadable in a static frame. Lifted
+   just clear of it — and no further, because the ingested pellets still fly to
+   the frame's bottom centre and have to disappear behind this bar. */
+.archive-press-root .ap-story .gts-dock {
+  bottom: 96px;
+}
+.archive-press-root .ap-story .gts-pipeline {
+  bottom: 200px;
+}
+
+/* the burst is a flare around the frame, not a lamp behind the code: it burns
+   in the gutters and is masked out of the column the code lives in */
+.archive-press-root .ap-story .gts-field {
+  filter: saturate(0.68) contrast(1.04);
+  -webkit-mask-image: radial-gradient(
+    124% 74% at 50% 44%,
+    transparent 0%,
+    transparent 34%,
+    rgba(0, 0, 0, 0.58) 58%,
+    #000 84%
+  );
+  mask-image: radial-gradient(
+    124% 74% at 50% 44%,
+    transparent 0%,
+    transparent 34%,
+    rgba(0, 0, 0, 0.58) 58%,
+    #000 84%
+  );
+}
+
+/* beat 4 zooms this card to 2.7×: at the shared tagline size the string ran off
+   both edges mid-word, so it is set to fit its container inside the frame */
+.archive-press-root .ap-story .gts-tagline {
+  font-size: 15px;
+  max-width: 21ch;
+  margin-inline: auto;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  /* mobile beat 5: the counsel card is a real object with a real z-stack, and
+     the site reserves the top of the frame for it instead of printing through */
+  .archive-press-root .ap-story .gts-site {
+    padding: 204px 24px 28px;
+    gap: 13px;
+  }
+  .archive-press-root .ap-story .gts-site-nav {
+    margin-bottom: 14px;
+  }
+  .archive-press-root .ap-story .gts-site-stats {
+    margin-top: 10px;
+  }
+  .archive-press-root .ap-story .gts-review-card {
+    top: 24px;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    z-index: 12;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgba(22, 24, 26, 0.28),
+      0 26px 64px rgba(0, 0, 0, 0.5);
+  }
+  /* at 390px the webhook curve can only cross live copy on its way up */
+  .archive-press-root .ap-story .gts-review-line {
+    display: none;
+  }
+  /* marker 4's badge hangs 30px above its paragraph — give it the room */
+  .archive-press-root .ap-story .gts-site-legal {
+    margin-top: 42px;
+  }
+  .archive-press-root .ap-story .gts-dock {
+    bottom: 110px;
+  }
+  .archive-press-root .ap-story .gts-pipeline {
+    bottom: 176px;
+  }
+}
+
+/* squared corners are the direction's grammar — the drawing frames follow */
+.archive-press-root .ap-features .gtb-mock {
+  border-radius: 0;
+}
+
+/* the bento cell is a heading and its drawing: the `category` slot is fed an
+   empty string in Features.tsx and the node it leaves behind is dropped */
+.archive-press-root .ap-features .gtb-cell h3 small {
+  display: none;
+}
+
+/* ---- Act IV: the review workspace ---- */
+
+/* A side-by-side panel exists so the eye can pair rows across the divider, and
+   the revised row is two lines tall on the translation side — which shunted
+   every row under it ~25px out of register and the columns never recovered.
+   Both columns are subgridded onto ONE set of row tracks, so a taller row on
+   either side grows its partner to match and the pairing survives to the last
+   line. The track count is the shared component's default row set (one label +
+   five rows); the fallback if `subgrid` is ever unavailable is the old
+   independent-stack behaviour, not a broken layout. */
+.archive-press-root .ap-editor .gte-cols {
+  grid-template-rows: repeat(6, auto);
+}
+.archive-press-root .ap-editor .gte-col {
+  display: grid;
+  grid-row: 1 / -1;
+  grid-template-rows: subgrid;
+  align-content: start;
+}
+
+/* the rules have to be visible for the pairing to read as a grid at all */
+.archive-press-root .ap-editor .gte-row {
+  align-content: start;
+}
+
+/* the edit affordance is a real machined chip, not a dark smudge */
+.archive-press-root .ap-editor .gte-act {
+  border-radius: 0;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--w60);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+}
+.archive-press-root .ap-editor .gte-row[data-state='approved'] .gte-act {
+  background: none;
+  border-color: transparent;
+  color: var(--w40);
+}
+
+/* the workspace bar is the plate's top edge: it gets the brighter rule */
+.archive-press-root .ap-editor .gte-bar {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.022);
+}
+.archive-press-root .ap-editor .gte-col + .gte-col {
+  border-left-color: rgba(255, 255, 255, 0.12);
+}

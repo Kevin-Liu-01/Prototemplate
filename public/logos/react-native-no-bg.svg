@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <!-- React Native mark: rounded square with the React atom knocked out, so it
+       stays distinct from the React atom when rendered monochrome via the
+       currentColor CSS mask in coloredImg() (src/lib/source.ts). Alpha is what
+       matters: black mask areas become transparent negative space. -->
+  <mask id="atom-cutout">
+    <rect width="24" height="24" rx="5.5" fill="#fff"/>
+    <g transform="translate(12 12)" fill="none" stroke="#000" stroke-width="1.1">
+      <ellipse rx="8" ry="3.05"/>
+      <ellipse rx="8" ry="3.05" transform="rotate(60)"/>
+      <ellipse rx="8" ry="3.05" transform="rotate(120)"/>
+    </g>
+    <circle cx="12" cy="12" r="1.45" fill="#000"/>
+  </mask>
+  <rect width="24" height="24" rx="5.5" fill="#000" mask="url(#atom-cutout)"/>
+</svg>

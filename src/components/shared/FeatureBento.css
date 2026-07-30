@@ -1,0 +1,188 @@
+/* ============================================================
+   SHARED FEATURE BENTO
+   Eight modules on one sheet, each cell carrying a line-art
+   technical diagram. Skin through --gtb-* custom properties.
+   ============================================================ */
+
+.gtb {
+  --_line: var(--gtb-line, rgba(255, 255, 255, 0.1));
+  --_line2: var(--gtb-line-2, rgba(255, 255, 255, 0.055));
+  --_t1: var(--gtb-title, rgba(255, 255, 255, 0.94));
+  --_t2: var(--gtb-body, rgba(255, 255, 255, 0.64));
+  --_t3: var(--gtb-label, rgba(255, 255, 255, 0.4));
+  --_display: var(--gtb-display, var(--font-switzer), 'Switzer', system-ui, sans-serif);
+  --_text: var(--gtb-text, var(--font-inter), 'Inter', system-ui, sans-serif);
+  --_mono: var(--gtb-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+
+  position: relative;
+  padding: var(--gtb-pad, 104px 0);
+  font-family: var(--_text);
+}
+
+.gtb *,
+.gtb *::before,
+.gtb *::after {
+  box-sizing: border-box;
+}
+
+.gtb-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: var(--gtb-wrap, 1180px);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.gtb h2 {
+  font-family: var(--_display);
+  font-size: var(--gtb-head-size, clamp(2.2rem, 4.2vw, 3.8rem));
+  font-weight: var(--gtb-head-weight, 700);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin: 0 0 var(--gtb-head-gap, 30px);
+  max-width: 820px;
+  color: var(--gtb-head-color, var(--_t1));
+}
+
+.gtb-sub {
+  margin: -14px 0 30px;
+  max-width: 620px;
+  font-size: var(--gtb-sub-size, 16px);
+  line-height: 1.6;
+  color: var(--_t2);
+}
+
+.gtb-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--_line);
+  border-radius: var(--gtb-radius, 4px);
+  background: var(--gtb-grid-bg, rgba(14, 17, 20, 0.45));
+}
+
+.gtb-grid[data-columns='3'] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.gtb-grid[data-columns='2'] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.gtb-cell {
+  position: relative;
+  padding: var(--gtb-cell-pad, 26px 24px 30px);
+  border-right: 1px solid var(--_line2);
+  border-bottom: 1px solid var(--_line2);
+  min-height: var(--gtb-cell-min, 268px);
+  background: radial-gradient(
+    320px circle at var(--gtb-mx, 50%) var(--gtb-my, -40%),
+    var(--gtb-spotlight, rgba(255, 255, 255, 0.07)),
+    transparent 60%
+  );
+}
+
+.gtb-grid[data-columns='4'] .gtb-cell:nth-child(4n) {
+  border-right: 0;
+}
+
+.gtb-grid[data-columns='4'] .gtb-cell:nth-child(n + 5) {
+  border-bottom: 0;
+}
+
+.gtb-grid[data-columns='3'] .gtb-cell:nth-child(3n) {
+  border-right: 0;
+}
+
+.gtb-grid[data-columns='3'] .gtb-cell:nth-child(n + 7) {
+  border-bottom: 0;
+}
+
+.gtb-grid[data-columns='2'] .gtb-cell:nth-child(2n) {
+  border-right: 0;
+}
+
+.gtb-grid[data-columns='2'] .gtb-cell:nth-child(n + 7) {
+  border-bottom: 0;
+}
+
+.gtb-cell h3 {
+  font-family: var(--_display);
+  font-size: var(--gtb-title-size, 19px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  color: var(--_t1);
+}
+
+.gtb-cell h3 small {
+  display: block;
+  font-family: var(--_mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--_t3);
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.gtb-cell p {
+  font-size: var(--gtb-body-size, 12.5px);
+  line-height: 1.6;
+  color: var(--_t2);
+  margin: 0;
+}
+
+.gtb-mock {
+  height: var(--gtb-mock-h, 74px);
+  margin: 14px 0 0;
+  border: 1px solid var(--_line2);
+  border-radius: 6px;
+  background: var(--gtb-mock-bg, rgba(8, 10, 12, 0.6));
+  overflow: hidden;
+  position: relative;
+}
+
+@media (max-width: 1023px) {
+  .gtb-grid,
+  .gtb-grid[data-columns='3'],
+  .gtb-grid[data-columns='4'] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gtb-cell {
+    border-right: 1px solid var(--_line2) !important;
+    border-bottom: 1px solid var(--_line2) !important;
+  }
+
+  .gtb-cell:nth-child(2n) {
+    border-right: 0 !important;
+  }
+
+  .gtb-cell:nth-child(n + 7) {
+    border-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .gtb-grid,
+  .gtb-grid[data-columns='2'],
+  .gtb-grid[data-columns='3'],
+  .gtb-grid[data-columns='4'] {
+    grid-template-columns: 1fr;
+  }
+
+  .gtb-cell {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--_line2) !important;
+    min-height: 0;
+  }
+
+  .gtb-cell:last-child {
+    border-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .gtb {
+    padding: var(--gtb-pad-sm, 68px 0);
+  }
+}

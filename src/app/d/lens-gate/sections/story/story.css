@@ -1,0 +1,701 @@
+/* ============================================================
+   TOOLCHAIN — THE STORY
+   A read, not a ride. Beats on one side, a stage on the other,
+   and the pipeline as a band under the stage rather than a
+   layer over the code. Everything is flow layout inside a fluid
+   container, so the whole section reflows at 390px.
+   ============================================================ */
+
+.toolchain-root .tc-story-grid {
+  /* The height both scenes are held to. Desktop only — folded above the beats
+     on a phone, the stage has to be as short as its content. Sized to the
+     diff scene at full unified-diff chrome (file pair + hunk + 12 lines). */
+  --tcs-win-h: 440px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tc-story-beats {
+  grid-column: 1;
+  grid-row: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--tc-gut) clamp(30px, 3.4vw, 44px);
+}
+
+.toolchain-root .tc-story-side {
+  grid-column: 2;
+  grid-row: 1;
+  border-left: 1px solid var(--tc-hair);
+  padding: 0 var(--tc-gut);
+}
+
+/* Hung just under the nav, not centred.
+   Centring was the wrong answer to the void: it split the leftover room in half
+   and put a third of a screen of nothing ABOVE the stage, with three beats
+   visible beside it — a hole in the middle of the page rather than air at the
+   end of a column. Hung high, the whole remainder falls below the stage, where
+   it reads as the margin before the next section instead of as a gap. The stage
+   also grew (see `--tcs-win-h`) so there is less remainder to place. */
+.toolchain-root .tc-story-sticky {
+  position: sticky;
+  top: 76px;
+  padding: clamp(14px, 1.6vw, 20px) 0 clamp(18px, 2vw, 24px);
+}
+
+/* ---------- the beats ---------- */
+
+/* Tightened. Nine beats at the old spacing ran a whole screen height longer than
+   the sticky stage beside them needed, which is the other half of why the right
+   column read as air. */
+/* No index column: numbered rails are the founder's verbatim ban, and the
+   active beat is already said twice — ink weight here, the rail under the
+   stage. */
+.toolchain-root .tcs-beat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  padding: clamp(17px, 2vw, 25px) 0;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tcs-beat:first-child {
+  border-top: 0;
+  padding-top: clamp(18px, 2.1vw, 26px);
+}
+
+.toolchain-root .tcs-beat h3 {
+  font-size: 1.02rem;
+  letter-spacing: -0.018em;
+  color: var(--tc-ink-2);
+  transition: color 0.3s ease;
+}
+
+.toolchain-root .tcs-beat[data-on='true'] h3 {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcs-beat p {
+  margin-top: 9px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+  max-width: 46ch;
+  transition: color 0.3s ease;
+}
+
+.toolchain-root .tcs-beat[data-on='true'] p {
+  color: var(--tc-ink-2);
+}
+
+/* ---------- the stage: the page's own nested frame ---------- */
+
+.toolchain-root .tcs-mat {
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  padding: 2px;
+  background: var(--tc-mat);
+}
+
+.toolchain-root .tcs-card {
+  border-radius: 2px;
+  padding: var(--tc-card-pad);
+  background: var(--tc-card);
+}
+
+.toolchain-root .tcs-annot {
+  margin-top: 13px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- the pipeline, as its own band ---------- */
+
+.toolchain-root .tcs-rail {
+  margin-top: 13px;
+  display: flex;
+  gap: 8px;
+}
+
+.toolchain-root .tcs-rail-step {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--tc-ink-4);
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.toolchain-root .tcs-rail-step[data-done='true'] {
+  border-top-color: var(--tc-ink-4);
+  color: var(--tc-ink-3);
+}
+
+/* The live stage is ink and weight — the accent belongs to the diagrams. */
+.toolchain-root .tcs-rail-step[data-on='true'] {
+  border-top-color: var(--tc-ink);
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+/* ---------- shared window strip ----------
+   Both scenes are held to one height, and it is a tall one. Two things follow
+   from that: the stage stops resizing under the reader as the beats change, and
+   the sticky column is filled rather than being a small panel adrift in it. A
+   window with room left under its last line is what an editor pane looks like
+   anyway, so the slack costs nothing. */
+.toolchain-root .tcs-page,
+.toolchain-root .tcs-code {
+  display: flex;
+  flex-direction: column;
+  min-height: var(--tcs-win-h, 0px);
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--tc-white);
+}
+
+/* The editor is a code surface, and code never sits on paper here. */
+.toolchain-root .tcs-code {
+  border-color: var(--tc-panel);
+  background: var(--tc-panel);
+}
+
+.toolchain-root .tcs-page-body,
+.toolchain-root .tcs-code-body {
+  flex: 1;
+}
+
+/* One dark chrome for both windows — the browser and the editor share the
+   page's panel tone, so every story still carries a toned surface. */
+.toolchain-root .tcs-page-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 31px;
+  padding: 0 12px;
+  background: var(--tc-panel);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.toolchain-root .tcs-code .tcs-page-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolchain-root .tcs-page-loc {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+/* ---------- act one: the page ---------- */
+
+.toolchain-root .tcs-page-body {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 15px 13px;
+}
+
+.toolchain-root .tcs-page-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 15px;
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcs-page-h {
+  margin-top: 15px;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(16px, 1.5vw, 21px);
+  line-height: 1.14;
+  letter-spacing: -0.026em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcs-page-p {
+  margin-top: 9px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+  max-width: 44ch;
+}
+
+.toolchain-root .tcs-page-acts {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.toolchain-root .tcs-page-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 5px;
+  background: var(--tc-ink);
+  font-size: 12px;
+  color: #fbfbfa;
+  transition: box-shadow 0.3s ease;
+}
+
+.toolchain-root .tcs-page-btn[data-focus='true'] {
+  box-shadow: 0 0 0 2px rgba(15, 17, 19, 0.22);
+}
+
+/* The English box, re-laid out at the same type and padding as the live one. */
+.toolchain-root .tcs-ghost {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.toolchain-root .tcs-ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 13px 0 31px;
+  border: 1px dashed var(--tc-ink-4);
+  border-radius: 5px;
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcs-ghost-tag {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* The rest of the page: two feature teasers and a footer row, so the mock is
+   a full page for GT to read rather than a header over a void. */
+.toolchain-root .tcs-page-feats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tcs-page-feats b {
+  display: block;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: -0.015em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcs-page-feats span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcs-page-legal {
+  margin-top: 15px;
+  padding-top: 11px;
+  border-top: 1px solid var(--tc-hair-2);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+/* State is type weight, not a colored pill. */
+.toolchain-root .tcs-page-flag {
+  margin-inline-start: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcs-page-flag::before {
+  content: '· ';
+  font-weight: 400;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcs-page-foot {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair-2);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcs-page-foot > span:first-child {
+  margin-right: auto;
+  color: var(--tc-ink-4);
+}
+
+/* A picked-up text node: the dashed measure GT draws under everything it
+   reads. No chips, no numbers — the underline is the annotation. */
+.toolchain-root .tcs-node[data-on='true'] {
+  text-decoration: underline dashed;
+  text-decoration-color: var(--tc-ink-3);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.toolchain-root .tcs-page-btn .tcs-node[data-on='true'] {
+  text-decoration-color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- the review ping ---------- */
+
+.toolchain-root .tcs-review {
+  margin-top: 15px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  padding: 11px 12px 12px;
+  background: var(--tc-sunk);
+}
+
+.toolchain-root .tcs-review-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.toolchain-root .tcs-review-ava {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 50%;
+  font-family: var(--tc-mono);
+  font-size: 9px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcs-review-head b {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcs-review-sub {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcs-review-msg {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcs-review-acts {
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+}
+
+.toolchain-root .tcs-review-acts span {
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  padding: 3px 9px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcs-review-acts em {
+  margin-inline-start: auto;
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- act two: the editor ---------- */
+
+.toolchain-root .tcs-code-body {
+  /* Held in variables because the scan rule is positioned in lines, so it has to
+     be able to count them in the same units the code is set in. */
+  --tcs-code-top: 15px;
+  --tcs-code-lh: 1.9;
+
+  position: relative;
+  padding: var(--tcs-code-top) 0 17px;
+  font-family: var(--tc-mono);
+  font-size: clamp(12px, 0.95vw, 13px);
+  line-height: var(--tcs-code-lh);
+  color: rgba(255, 255, 255, 0.88);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.toolchain-root .tcs-code-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* The dark panel's own token set. */
+.toolchain-root .tcs-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.toolchain-root .tcs-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.toolchain-root .tcs-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.toolchain-root .tcs-code .tc-t-com {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.toolchain-root .tcs-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.toolchain-root .tcs-code-line {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 15px minmax(0, 1fr);
+  padding-right: 12px;
+  white-space: pre;
+}
+
+/* The diff's opening lines — the `---`/`+++` file pair and the hunk header,
+   exactly as `git diff` prints them. A diff shows its chrome or it is a
+   drawing of one. */
+.toolchain-root .tcs-code-file {
+  padding: 0 12px 0 43px;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 500;
+  white-space: pre;
+}
+
+.toolchain-root .tcs-code-hunk {
+  padding: 2px 12px 4px 43px;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: pre;
+}
+
+.toolchain-root .tcs-code-n {
+  text-align: right;
+  padding-right: 8px;
+  color: rgba(255, 255, 255, 0.28);
+  user-select: none;
+}
+
+.toolchain-root .tcs-code-s {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  user-select: none;
+}
+
+/* The two diff hues, gutters only (the REDLINE grammar): the sign column says
+   added/removed in the reader's own vocabulary; the line itself stays in the
+   panel's tones. */
+.toolchain-root .tcs-code-line[data-mark='add'] {
+  background: rgba(125, 216, 158, 0.09);
+}
+
+.toolchain-root .tcs-code-line[data-mark='add'] .tcs-code-s {
+  color: #7dd89e;
+  font-weight: 500;
+}
+
+.toolchain-root .tcs-code-line[data-mark='del'] {
+  background: rgba(235, 130, 125, 0.08);
+}
+
+.toolchain-root .tcs-code-line[data-mark='del'] .tcs-code-s {
+  color: #eb827d;
+  font-weight: 500;
+}
+
+.toolchain-root .tcs-code-line[data-mark='del'] code {
+  color: rgba(255, 255, 255, 0.36);
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.36);
+}
+
+.toolchain-root .tcs-code-line[data-mark='del'] .tc-t-str,
+.toolchain-root .tcs-code-line[data-mark='del'] .tc-t-kw,
+.toolchain-root .tcs-code-line[data-mark='del'] .tc-t-gt {
+  color: inherit;
+  font-weight: 400;
+}
+
+/* A finding: the line lights, the gutter carries the diagnostic mark — no
+   numbered chips. */
+.toolchain-root .tcs-code-line[data-find='true'] {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 2px 0 0 rgba(255, 255, 255, 0.85);
+}
+
+.toolchain-root .tcs-find {
+  font-style: normal;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* The scan, drawn as a rule with the read region falling away above it. Its
+   offset is counted in lines rather than percent so it always lands in a
+   leading gap — a rule struck through a line of code reads as a deletion. */
+.toolchain-root .tcs-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--tcs-code-top) + 5 * var(--tcs-code-lh) * 1em);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.toolchain-root .tcs-scan::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0));
+}
+
+.toolchain-root .tcs-pr {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 12px 14px 13px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.toolchain-root .tcs-pr-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.toolchain-root .tcs-pr-head b {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .tcs-pr-num {
+  flex: none;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.toolchain-root .tcs-pr-meta {
+  margin-top: 6px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+  overflow-wrap: anywhere;
+}
+
+/* ============================================================
+   RESPONSIVE — the stage moves above the beats and stays put
+   ============================================================ */
+
+@media (max-width: 1000px) {
+  .toolchain-root .tc-story-grid {
+    --tcs-win-h: 0px;
+
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .tc-story-side {
+    position: sticky;
+    top: 57px;
+    z-index: 3;
+    grid-column: 1;
+    grid-row: 1;
+    border-left: 0;
+    border-bottom: 1px solid var(--tc-hair);
+    padding: 0 var(--tc-gut);
+    background: var(--tc-paper);
+  }
+
+  .toolchain-root .tc-story-sticky {
+    position: static;
+    padding: 16px 0 18px;
+  }
+
+  .toolchain-root .tc-story-beats {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .toolchain-root .tcs-card {
+    padding: 13px;
+  }
+
+  .toolchain-root .tcs-page-body {
+    padding: 13px 13px 15px;
+  }
+
+  .toolchain-root .tcs-annot,
+  .toolchain-root .tcs-rail {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 620px) {
+  .toolchain-root .tcs-beat {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* 11px is the floor an artifact string is ever set at. */
+  .toolchain-root .tcs-code-body {
+    font-size: 11px;
+  }
+
+  .toolchain-root .tcs-code-line {
+    grid-template-columns: 22px 13px minmax(0, 1fr);
+    padding-right: 8px;
+  }
+
+  .toolchain-root .tcs-code-hunk,
+  .toolchain-root .tcs-code-file {
+    padding-left: 35px;
+  }
+
+  .toolchain-root .tcs-rail {
+    gap: 6px;
+  }
+
+  .toolchain-root .tcs-rail-step {
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+}

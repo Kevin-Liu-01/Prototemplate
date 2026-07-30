@@ -1,0 +1,2537 @@
+/* ============================================================
+   FIELD MAGNET — every rule scoped to .field-magnet-root
+   ============================================================ */
+
+.field-magnet-root {
+  --bg: #08080a;
+  --paper: #f4f4f2;
+  --ink: #141416;
+  --w92: rgba(255, 255, 255, 0.92);
+  --w64: rgba(255, 255, 255, 0.64);
+  --w40: rgba(255, 255, 255, 0.4);
+  --w24: rgba(255, 255, 255, 0.24);
+  --w12: rgba(255, 255, 255, 0.12);
+  --k92: rgba(16, 16, 18, 0.92);
+  --k64: rgba(16, 16, 18, 0.64);
+  --k40: rgba(16, 16, 18, 0.44);
+  --khair: rgba(16, 16, 18, 0.13);
+  --sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  /* one dial size, shared by the hero wheel and its engraving overlay */
+  --fm-dial: 244px;
+
+  position: relative;
+  z-index: 1;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(120, 132, 160, 0.07), transparent 60%),
+    radial-gradient(90% 60% at 8% 40%, rgba(150, 140, 170, 0.05), transparent 62%), var(--bg);
+  color: var(--w92);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.field-magnet-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.field-magnet-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+.field-magnet-root h1,
+.field-magnet-root h2,
+.field-magnet-root h3 {
+  font-family: var(--disp);
+  font-weight: 800;
+}
+.field-magnet-root ::selection {
+  background: #fff;
+  color: #000;
+}
+.field-magnet-root a:focus-visible,
+.field-magnet-root button:focus-visible {
+  outline: 1.5px solid var(--w64);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- shared bits ---------- */
+.field-magnet-root .fm-wrap {
+  width: min(1240px, 92vw);
+  margin-inline: auto;
+  position: relative;
+  z-index: 2;
+}
+/* One quiet supporting line under a band of content. Not an eyebrow: it is the
+   only text those bands carry. */
+.field-magnet-root .fm-band-label {
+  margin: 0;
+  font-size: 13px;
+  color: var(--w40);
+  letter-spacing: -0.005em;
+}
+.field-magnet-root .fm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 26px;
+  border-radius: 99px;
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  min-height: 44px;
+}
+.field-magnet-root .fm-btn-sm {
+  padding: 9px 18px;
+  font-size: 13px;
+  min-height: 38px;
+}
+.field-magnet-root .fm-btn-solid {
+  background: linear-gradient(180deg, #ffffff, #d7d7db);
+  color: #0a0a0b;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 30px rgba(0, 0, 0, 0.45);
+}
+.field-magnet-root .fm-btn-ghost {
+  color: var(--w92);
+  box-shadow: inset 0 0 0 1px var(--w24);
+}
+.field-magnet-root .fm-btn-ghost:hover {
+  box-shadow: inset 0 0 0 1px var(--w64);
+}
+.field-magnet-root .fm-arr {
+  font-family: var(--mono);
+  font-weight: 400;
+}
+
+/* ---------- field canvas, grain, cursor ---------- */
+.field-magnet-root .fm-filings {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.field-magnet-root .fm-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: fm-grain 0.9s steps(6) infinite;
+}
+@keyframes fm-grain {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-3%, 2%, 0);
+  }
+  50% {
+    transform: translate3d(2%, -3%, 0);
+  }
+  75% {
+    transform: translate3d(-2%, -2%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.field-magnet-root .fm-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff 0%, #dcdcdc 34%, #8f8f8f 62%, #4c4c4c 100%);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 70;
+  opacity: 0;
+}
+@media (hover: none), (pointer: coarse) {
+  .field-magnet-root .fm-cursor {
+    display: none;
+  }
+}
+
+/* ============================ NAV ============================ */
+.field-magnet-root .fm-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  padding: 18px 0;
+}
+.field-magnet-root .fm-nav::before {
+  content: '';
+  position: absolute;
+  inset: -1px 0 -18px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(8, 8, 10, 0.95) 0%, rgba(8, 8, 10, 0.82) 58%, transparent 100%);
+  backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent);
+  mask-image: linear-gradient(180deg, #000 62%, transparent);
+  transition: opacity 0.35s;
+}
+.field-magnet-root .fm-nav-scrim::before {
+  opacity: 1;
+}
+.field-magnet-root .fm-nav-in {
+  width: min(1240px, 92vw);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  position: relative;
+  z-index: 1;
+}
+.field-magnet-root .fm-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--disp);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: 16.5px;
+}
+.field-magnet-root .fm-brand-mark {
+  border-radius: 6px;
+}
+.field-magnet-root .fm-nav-links {
+  display: flex;
+  gap: 34px;
+  margin-left: 20px;
+  font-size: 13.5px;
+  color: var(--w64);
+  font-weight: 500;
+}
+.field-magnet-root .fm-nav-links a {
+  position: relative;
+  padding: 6px 2px;
+}
+.field-magnet-root .fm-nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.field-magnet-root .fm-nav-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.field-magnet-root .fm-nav-cta {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ============================ HERO ============================ */
+/* No stacking context here on purpose: the prism canvas screen-blends against
+   the fixed iron-filing field painted below it. */
+.field-magnet-root .fm-hero {
+  position: relative;
+  min-height: 96svh;
+  padding-top: calc(56px + 0.4vh);
+  /* the foot band is the composition's base — it gets real bottom air rather
+     than being pushed against the fold */
+  padding-bottom: clamp(20px, 3.4vh, 40px);
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+}
+.field-magnet-root .fm-hero-head {
+  text-align: center;
+  z-index: 6;
+}
+.field-magnet-root .fm-cmdchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--w64);
+  padding: 9px 18px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px var(--w12);
+  min-height: 38px;
+}
+.field-magnet-root .fm-cmdchip:hover {
+  box-shadow: inset 0 0 0 1px var(--w24);
+}
+.field-magnet-root .fm-cmd-dollar,
+.field-magnet-root .fm-cmd-state {
+  color: var(--w40);
+}
+.field-magnet-root .fm-cmd-state {
+  font-size: 11px;
+}
+
+@property --gx {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 32%;
+}
+.field-magnet-root .fm-h1 {
+  margin-top: 10px;
+  font-size: clamp(2.9rem, 7.2vw, 6.4rem);
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  background: linear-gradient(
+    100deg,
+    #989ca4 0%,
+    #e6e8ec calc(var(--gx) - 14%),
+    #ffffff var(--gx),
+    #c6c9cf calc(var(--gx) + 14%),
+    #8f939b 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.field-magnet-root .fm-hero-sub {
+  margin-top: 12px;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--w64);
+  font-weight: 500;
+}
+.field-magnet-root .fm-rot {
+  color: var(--w92);
+  font-weight: 700;
+  display: inline-block;
+  min-width: 5.4ch;
+  text-align: left;
+}
+.field-magnet-root .fm-caret {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  background: var(--w64);
+  vertical-align: -2px;
+  animation: fm-caret 1.1s steps(1) infinite;
+}
+@keyframes fm-caret {
+  50% {
+    opacity: 0;
+  }
+}
+.field-magnet-root .fm-ctas {
+  margin-top: 18px;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ---------- the band: prismatic light + the ray fan ---------- */
+/* Sized so the fold lands just below the ray fan: the flag strip and the
+   trusted row start the next screen instead of being sliced by it. */
+.field-magnet-root .fm-hero-band {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: clamp(232px, 29svh, 330px);
+  /* Pulled up hard under the CTAs. The gate sits at the band's centre, so
+     closing this gap is what moves the gate up out of the lower third and
+     releases the height the foot band needs. */
+  margin-top: -4.6vh;
+}
+/* The shader normalises screen space by canvas HEIGHT, so a 150vh canvas draws
+   every filament 1.5x too fat and the field reads as airbrushed patches instead
+   of diffraction. Height is pinned to the viewport (matching the story's
+   instance, which renders correctly); only the width is oversized, which just
+   shows more of the same burst. */
+.field-magnet-root .fm-prism-holder {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 164vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.field-magnet-root .fm-prism {
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen;
+  opacity: 1;
+  -webkit-mask-image: radial-gradient(116% 84% at 50% 50%, #000 40%, transparent 86%);
+  mask-image: radial-gradient(116% 84% at 50% 50%, #000 40%, transparent 86%);
+}
+/* Two jobs: a tight horizontal trough that dims the field exactly along the
+   band the artifacts travel (so English/translated components read against it),
+   and no dimming above or below it, where the diffraction stays at full
+   brightness and the streak texture is the point. */
+.field-magnet-root .fm-hero-vig {
+  position: absolute;
+  left: -20vw;
+  right: -20vw;
+  top: -30vh;
+  bottom: -30vh;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      62% 17% at 50% 50%,
+      rgba(0, 0, 0, 0.94),
+      rgba(0, 0, 0, 0.74) 48%,
+      rgba(0, 0, 0, 0.34) 76%,
+      transparent 92%
+    ),
+    radial-gradient(32% 24% at 50% 50%, rgba(0, 0, 0, 0.9), transparent 74%);
+}
+.field-magnet-root .fm-scene {
+  position: absolute;
+  inset: -16vh -9vw;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  pointer-events: none;
+}
+/* The page's two threads (THREAD_MOTIF): a pair of parallel lines at constant
+   gauge — 1.5px stroke, 3px gap — entering the well down the hero's axis. The
+   same gauge repeats on the language band's rule, the wrapped range in the
+   bento code plates, and the footer's top rule: one object, one gauge. */
+.field-magnet-root .fm-scene-hair {
+  position: absolute;
+  left: calc(50% - 3px);
+  top: 22%;
+  bottom: 22%;
+  width: 6px;
+}
+.field-magnet-root .fm-scene-hair::before,
+.field-magnet-root .fm-scene-hair::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: linear-gradient(180deg, transparent, var(--w24) 22%, var(--w24) 78%, transparent);
+}
+.field-magnet-root .fm-scene-hair::before {
+  left: 0;
+}
+.field-magnet-root .fm-scene-hair::after {
+  right: 0;
+}
+
+/* ---------- flowing artifacts ---------- */
+.field-magnet-root .fm-art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity, filter;
+}
+.field-magnet-root .fm-art-shell {
+  position: relative;
+}
+.field-magnet-root .fm-art-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+}
+.field-magnet-root .fm-a-btn {
+  display: inline-block;
+  padding: 11px 22px;
+  border-radius: 99px;
+  font-family: var(--disp);
+  font-weight: 700;
+  color: #0a0a0b;
+  font-size: 15px;
+  background: linear-gradient(180deg, #f7f7f7, #cdcdd2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 26px rgba(0, 0, 0, 0.45);
+}
+.field-magnet-root .fm-a-toast,
+.field-magnet-root .fm-a-field,
+.field-magnet-root .fm-a-price,
+.field-magnet-root .fm-a-nav,
+.field-magnet-root .fm-a-copy,
+.field-magnet-root .fm-a-chip,
+.field-magnet-root .fm-a-theo {
+  display: inline-block;
+  /* opaque, with a hard rim and a deep drop: these plates fly through the
+     brightest part of the burst and have to stay legible objects, not ghosts */
+  background: #0b0b0e;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 22px 54px rgba(0, 0, 0, 0.78);
+  border-radius: 12px;
+  color: var(--w92);
+  /* 15px base: at the ray's deepest point the perspective renders 0.74x, so
+     the smallest a plate's body ever draws is ~11px — the label floor. */
+  font-size: 15px;
+}
+.field-magnet-root .fm-a-toast {
+  padding: 11px 16px;
+}
+.field-magnet-root .fm-a-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 9px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+.field-magnet-root .fm-a-field {
+  padding: 11px 16px;
+  width: 208px;
+}
+/* Lowercase, like the artifact itself — §2 bans ornamental uppercase, and the
+   r2 still printed CORREO ELECTRÓNICO across the hero. */
+.field-magnet-root .fm-a-field b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+}
+.field-magnet-root .fm-a-input {
+  display: block;
+  margin-top: 7px;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+.field-magnet-root .fm-a-input::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 1px;
+  bottom: 1px;
+  width: 1px;
+  background: var(--w64);
+}
+.field-magnet-root .fm-a-price {
+  padding: 14px 18px;
+  width: 210px;
+}
+.field-magnet-root .fm-a-price b {
+  display: block;
+  font-family: var(--disp);
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+.field-magnet-root .fm-a-price i {
+  display: block;
+  margin-top: 7px;
+  font-style: normal;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.72);
+}
+.field-magnet-root .fm-a-nav {
+  padding: 11px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
+}
+/* logical margins: the nav lane re-emerges in Arabic, where the gap between
+   items has to fall on the other side */
+.field-magnet-root .fm-a-nav i {
+  font-style: normal;
+  margin-inline-end: 16px;
+}
+.field-magnet-root .fm-a-nav i:last-child {
+  margin-inline-end: 0;
+}
+.field-magnet-root .fm-a-copy {
+  padding: 10px 16px;
+  font-family: var(--disp);
+  font-size: 16px;
+  font-weight: 600;
+}
+.field-magnet-root .fm-a-chip {
+  padding: 9px 16px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.78);
+  border-radius: 99px;
+}
+.field-magnet-root .fm-a-theo {
+  padding: 16px 18px;
+  /* wide enough that the one-sentence quote sets on a single line — the card's
+     height budget comes from its altitude lane (see ../data.ts) */
+  width: 430px;
+  white-space: normal;
+}
+.field-magnet-root .fm-a-who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.field-magnet-root .fm-a-av {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 12px;
+  color: #0a0a0b;
+  background: linear-gradient(160deg, #f0f0f0, #a8a8a8);
+  flex: none;
+}
+.field-magnet-root .fm-a-who b {
+  display: block;
+  font-size: 13.5px;
+}
+.field-magnet-root .fm-a-who em {
+  display: block;
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--w64);
+}
+.field-magnet-root .fm-a-quote {
+  display: block;
+  margin-top: 9px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+
+/* ---------- flags, trusted by, stats ---------- */
+/* One label, then three rows of content under it at an even rhythm — the foot
+   is a single band, not five stacked blocks. The intervals below are all one
+   value: three rows crushed into 130px was the composition breathing in the
+   wrong place, with a corridor of black above and no leading at the base. */
+.field-magnet-root .fm-langband {
+  margin-top: clamp(18px, 3vh, 40px);
+  text-align: center;
+}
+/* the two threads leave the well and run the band's top rule */
+.field-magnet-root .fm-langband::before {
+  content: '';
+  display: block;
+  width: min(1240px, 92vw);
+  margin: 0 auto clamp(16px, 2.4vh, 26px);
+  height: 6px;
+  border-top: 1.5px solid var(--w12);
+  border-bottom: 1.5px solid var(--w12);
+}
+.field-magnet-root .fm-langband .fm-band-label {
+  margin-bottom: clamp(14px, 2vh, 22px);
+}
+.field-magnet-root .fm-flagstrip {
+  overflow: clip;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.field-magnet-root .fm-flagtrack {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  padding: 2px 0;
+}
+.field-magnet-root .fm-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  color: var(--w64);
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px var(--w12);
+  white-space: nowrap;
+}
+.field-magnet-root .fm-flag em {
+  font-style: normal;
+  font-size: 14px;
+}
+.field-magnet-root .fm-trusted {
+  margin-top: clamp(18px, 2.8vh, 34px);
+  text-align: center;
+}
+.field-magnet-root .fm-tlogos {
+  display: flex;
+  gap: clamp(20px, 3.4vw, 52px);
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--w40);
+  font-family: var(--disp);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(14px, 1.4vw, 19px);
+}
+.field-magnet-root .fm-tlogos span {
+  transition: color 0.25s;
+}
+.field-magnet-root .fm-tlogos span:hover {
+  color: var(--w92);
+}
+.field-magnet-root .fm-stats {
+  margin-top: clamp(18px, 2.8vh, 34px);
+  display: flex;
+  justify-content: center;
+  gap: clamp(24px, 4vw, 64px);
+  flex-wrap: wrap;
+  font-family: var(--mono);
+}
+.field-magnet-root .fm-stat b {
+  color: var(--w92);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.field-magnet-root .fm-stat i {
+  font-style: normal;
+  margin-left: 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--w40);
+}
+
+/* ======================= SECTIONS (Acts IV + V) ======================= */
+/* Section rhythm: one interval everywhere. The bento already carries its own
+   bottom padding, so pricing opening on another 12vh left a hole between them
+   that read as unfinished rather than generous. */
+.field-magnet-root .fm-sec {
+  position: relative;
+  z-index: 2;
+  padding: clamp(72px, 8.4vh, 116px) 0;
+}
+.field-magnet-root .fm-sec-head {
+  max-width: 760px;
+}
+.field-magnet-root .fm-sec-head h2 {
+  margin-top: 16px;
+  font-size: clamp(1.9rem, 3.6vw, 3.2rem);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--w92);
+}
+.field-magnet-root .fm-sec-head p {
+  margin-top: 14px;
+  color: var(--w64);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  max-width: 56ch;
+}
+
+
+/* ---------- pricing, close, footer ---------- */
+.field-magnet-root .fm-pricing {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 64px;
+}
+.field-magnet-root .fm-plan {
+  border-radius: 18px;
+  padding: 34px 34px 38px;
+  background: #0f0f12;
+  box-shadow: inset 0 0 0 1px var(--w12);
+  position: relative;
+}
+.field-magnet-root .fm-plan-starter {
+  background: linear-gradient(180deg, #141417, #0e0e10);
+}
+.field-magnet-root .fm-plan-starter::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #6d6d6d, #f0f0f0 22%, #525252 48%, #d9d9d9 76%, #6d6d6d);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.field-magnet-root .fm-plan h3 {
+  font-size: 26px;
+  letter-spacing: -0.03em;
+}
+.field-magnet-root .fm-plan-price {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--w64);
+}
+.field-magnet-root .fm-plan-price b {
+  color: var(--w92);
+  font-family: var(--disp);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.field-magnet-root .fm-plan ul {
+  margin-top: 20px;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  padding: 0;
+}
+.field-magnet-root .fm-plan li {
+  font-size: 13px;
+  color: var(--w64);
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.field-magnet-root .fm-plan li::before {
+  content: '—';
+  font-family: var(--mono);
+  color: var(--w24);
+  flex: none;
+}
+.field-magnet-root .fm-plan .fm-btn {
+  margin-top: 28px;
+}
+.field-magnet-root .fm-philosophy {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--w40);
+}
+.field-magnet-root .fm-close {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: clamp(92px, 11vh, 142px) 0 clamp(72px, 8.6vh, 112px);
+}
+/* Brushed-metal fill. The heading is line-split for its reveal and the split
+   wrappers are unclassed divs, so the fill has to be re-declared on every
+   descendant box or the type clips to nothing and the heading disappears.
+   Vertical ramp, so each line carries the identical sheen. */
+.field-magnet-root .fm-close-h {
+  margin-top: 0;
+  font-size: clamp(2.4rem, 5.6vw, 4.8rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+.field-magnet-root .fm-close-h,
+.field-magnet-root .fm-close-h div {
+  background-image: linear-gradient(180deg, #ffffff 0%, #e4e4e8 38%, #a9a9ae 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.field-magnet-root .fm-close p {
+  margin-top: 18px;
+  color: var(--w64);
+}
+.field-magnet-root .fm-close .fm-ctas {
+  margin-top: 32px;
+}
+.field-magnet-root .fm-foot {
+  position: relative;
+  z-index: 2;
+  border-top: 1.5px solid var(--w12);
+  padding: 56px 0 40px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.4));
+}
+/* the threads' last run before they converge into the mark below */
+.field-magnet-root .fm-foot::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--w12);
+}
+.field-magnet-root .fm-foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 32px;
+}
+.field-magnet-root .fm-foot-h {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--w40);
+  margin-bottom: 14px;
+}
+.field-magnet-root .fm-foot-col a {
+  display: block;
+  font-size: 13px;
+  color: var(--w64);
+  padding: 4.5px 0;
+}
+.field-magnet-root .fm-foot-col a:hover {
+  color: var(--w92);
+}
+.field-magnet-root .fm-foot-brand p {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--w40);
+  max-width: 30ch;
+}
+.field-magnet-root .fm-compliance {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--w40);
+}
+.field-magnet-root .fm-foot-bottom {
+  margin-top: 52px;
+  padding-top: 22px;
+  border-top: 1px solid var(--w12);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--w40);
+  flex-wrap: wrap;
+}
+.field-magnet-root .fm-copyright {
+  margin-left: auto;
+}
+
+/* ============================ RESPONSIVE ============================ */
+@media (max-width: 1100px) {
+  .field-magnet-root .fm-foot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 767px) {
+  .field-magnet-root .fm-nav-links,
+  .field-magnet-root .fm-nav-cta .fm-btn-ghost {
+    display: none;
+  }
+  /* The phone hero is taller than one screen by design, so what matters is
+     WHERE it breaks: sized so the fold lands after the flag strip rather than
+     through the middle of it. */
+  .field-magnet-root .fm-hero {
+    padding-top: calc(74px + 2vh);
+    min-height: 112svh;
+  }
+  .field-magnet-root .fm-hero-band {
+    min-height: 268px;
+  }
+  .field-magnet-root {
+    --fm-dial: 150px;
+  }
+  /* at 150px the engraved strings would render under the 11px floor — the
+     metalwork stays, the type goes */
+  .field-magnet-root .fm-dial-text {
+    display: none;
+  }
+  /* A 390px frame cannot hold the ray fan: any plate travelling to its far
+     radius clips the viewport edge, and a clipped card is a composition
+     defect (§the r2 verdict). On phones the machined gate carries the hero
+     alone — the same reduction resend makes. */
+  .field-magnet-root .fm-art {
+    display: none;
+  }
+  .field-magnet-root .fm-pricing {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================ REDUCED MOTION ============================ */
+@media (prefers-reduced-motion: reduce) {
+  .field-magnet-root .fm-grain,
+  .field-magnet-root .fm-caret {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   LanguageWheel / StorySection / FeatureBento / EditorWorkspace.
+   ============================================================ */
+
+.field-magnet-root .fm-lens {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 60;
+  --gtw-size: var(--fm-dial);
+  /* ---- the machined base (item: milled metal, not a vector ring) ----
+     Three layers, top to bottom: concentric turning grooves (the lathe
+     finish), the ring's turned profile (chamfer highlights and recesses
+     across its width — the metal band lives at 61–70.7% of the mask
+     radius), and the conic anisotropic sweep that was always there. */
+  --gtw-bezel: repeating-radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.05) 0 0.8px,
+      rgba(6, 6, 8, 0.17) 1.4px 2.1px,
+      transparent 2.1px 3.1px
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 60.4%,
+      rgba(0, 0, 0, 0.55) 61.4%,
+      rgba(255, 255, 255, 0.17) 63.4%,
+      rgba(22, 22, 26, 0.32) 66%,
+      rgba(255, 255, 255, 0.13) 68.4%,
+      rgba(0, 0, 0, 0.58) 70.3%,
+      rgba(0, 0, 0, 0.62) 100%
+    ),
+    conic-gradient(from 210deg, #38383d, #c9c9cf 20%, #55555a 43%, #eeeef1 66%, #74747a 78%, #38383d);
+  /* the core face is turned too: a faint record-groove finish and one
+     angled environment band under the mark */
+  --gtw-core: linear-gradient(
+      132deg,
+      rgba(255, 255, 255, 0.05),
+      transparent 30%,
+      transparent 62%,
+      rgba(190, 205, 235, 0.035) 80%,
+      transparent
+    ),
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.018) 0 1.4px,
+      transparent 1.4px 4.6px
+    ),
+    radial-gradient(circle at 36% 30%, #17171b, #050506 74%);
+  /* pure white specular only — no tinted glow on the mark */
+  --gtw-mark-glow: rgba(255, 255, 255, 0.3);
+}
+/* No progress arc: a rotating bright sweep reads as a loading ring, which
+   cheapens the one hero object (r3 verdict, cmp-1). The dial is hardware. */
+.field-magnet-root .fm-lens .gtw-arc {
+  display: none;
+}
+/* Machined hardware, not a glow: the two threads orbit the gate as a pair of
+   concentric channel rings at the page's constant gauge (1.5px / 3px), … */
+.field-magnet-root .fm-lens::before {
+  content: '';
+  position: absolute;
+  inset: -8.6%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  outline: 1.5px solid rgba(255, 255, 255, 0.15);
+  outline-offset: 3px;
+  pointer-events: none;
+}
+/* …and the milled detail rides an SVG overlay (DialEngraving): a recessed
+   graduation channel with 3° ticks, the engraved locale ring and legend,
+   environment reflections on the rim, dust on the metal. */
+.field-magnet-root .fm-lens-detail {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--fm-dial);
+  height: var(--fm-dial);
+  transform: translate(-50%, -50%);
+  z-index: 61;
+  pointer-events: none;
+  overflow: visible;
+}
+/* engraved marks catch the light on their lower edge */
+.field-magnet-root .fm-dial-ticks {
+  filter: drop-shadow(0 0.6px 0 rgba(255, 255, 255, 0.28));
+}
+.field-magnet-root .fm-dial-loc,
+.field-magnet-root .fm-dial-legend {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  fill: rgba(255, 255, 255, 0.38);
+  filter: drop-shadow(0 -0.7px 0.2px rgba(0, 0, 0, 0.85));
+}
+.field-magnet-root .fm-dial-legend {
+  letter-spacing: 0.1em;
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+.field-magnet-root .fm-story,
+.field-magnet-root .fm-features,
+.field-magnet-root .fm-review-sec {
+  /* --- StorySection ---
+     Field Magnet has no paper. The demo site is a machined graphite plate
+     lifted off the page and lit from the well behind it, so the whole story
+     stays inside this direction's one material. The flip to the editor is a
+     darkening of that same plate rather than a change of substance. */
+  --gts-bg: var(--bg);
+  --gts-paper: #1a1c22;
+  --gts-ink: #f4f6f9;
+  --gts-ink-2: rgba(244, 246, 249, 0.62);
+  --gts-ink-3: rgba(244, 246, 249, 0.38);
+  --gts-paper-rule: rgba(255, 255, 255, 0.11);
+  --gts-paper-rule-strong: rgba(255, 255, 255, 0.2);
+  --gts-paper-card: rgba(255, 255, 255, 0.045);
+  --gts-paper-input: rgba(255, 255, 255, 0.22);
+  --gts-paper-edge: rgba(255, 255, 255, 0.16);
+  --gts-paper-vignette: rgba(0, 0, 0, 0.62);
+  --gts-paper-halo: #1a1c22;
+  --gts-paper-tick: rgba(255, 255, 255, 0.45);
+  --gts-hilite: rgba(255, 255, 255, 0.8);
+  /* the paper texture is replaced below — these only exist so nothing prints */
+  --gts-paper-dot: transparent;
+  --gts-paper-guide: transparent;
+  --gts-shell: #24262e;
+  --gts-shell-text: #ffffff;
+  --gts-shell-line: rgba(255, 255, 255, 0.18);
+  /* the measured oxc panel tone, and body type held at near-white — the r3
+     verdict caught the code body a full contrast step dimmer than resend's
+     at the same size ('values never lighter than ink', cmp-2) */
+  --gts-code-bg: #14121a;
+  --gts-code-text: #f2f5fa;
+  --gts-line: var(--w12);
+  --gts-line-2: rgba(255, 255, 255, 0.07);
+  --gts-t1: var(--w92);
+  --gts-t2: var(--w64);
+  --gts-t3: var(--w40);
+  --gts-t4: var(--w24);
+  --gts-display: var(--disp);
+  --gts-text: var(--sans);
+  --gts-mono: var(--mono);
+  --gts-radius: 18px;
+  --gts-head-weight: 800;
+  --gts-head-size: clamp(1.9rem, 3.6vw, 3.2rem);
+  --gts-sub-size: 16px;
+  /* no syntax hues — the only colour on this page is the field itself.
+     Every token holds a step brighter than r3: greys carry structure, never
+     the body values. */
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: #adb5c1;
+  --gts-tok-attr: #f0f3f7;
+  --gts-tok-str: #dae0e8;
+  --gts-tok-text: #f8fafc;
+  --gts-tok-kw: #e6eaef;
+  --gts-tok-fn: #ffffff;
+  --gts-tok-punct: #79808a;
+
+  --gtb-line: var(--w12);
+  --gtb-line-2: rgba(255, 255, 255, 0.07);
+  --gtb-title: var(--w92);
+  --gtb-body: var(--w64);
+  --gtb-label: var(--w40);
+  --gtb-display: var(--disp);
+  --gtb-text: var(--sans);
+  --gtb-mono: var(--mono);
+  --gtb-radius: 18px;
+  --gtb-wrap: 1240px;
+  --gtb-grid-bg: rgba(255, 255, 255, 0.022);
+  --gtb-mock-bg: rgba(255, 255, 255, 0.015);
+  --gtb-spotlight: rgba(255, 255, 255, 0.07);
+  --gtb-cell-min: 336px;
+  --gtb-title-size: 21px;
+  --gtb-body-size: 13.5px;
+  --gtb-head-weight: 800;
+  --gtb-head-size: clamp(1.9rem, 3.6vw, 3.2rem);
+  --gtb-sub-size: 16px;
+  /* the artifact plates are the heavier half of this act (standard 1.5): the
+     approach band above the grid is trimmed so a viewport that catches the
+     heading also catches the anchor plates, not their top seven lines */
+  --gtb-pad: 36px 0 clamp(72px, 8.4vh, 116px);
+  --gtb-head-gap: 20px;
+
+  --gte-line: var(--w12);
+  --gte-line-2: rgba(255, 255, 255, 0.07);
+  --gte-title: var(--w92);
+  --gte-body: var(--w64);
+  --gte-label: var(--w40);
+  --gte-quiet: var(--w24);
+  --gte-display: var(--disp);
+  --gte-text: var(--sans);
+  --gte-mono: var(--mono);
+  --gte-radius: 18px;
+  --gte-wrap: 1240px;
+  --gte-ws-bg: #16171c;
+  --gte-ws-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 40px 110px rgba(0, 0, 0, 0.66);
+  --gte-revised: var(--w24);
+  --gte-act-hover: rgba(255, 255, 255, 0.1);
+  --gte-head-weight: 800;
+  --gte-head-size: clamp(1.9rem, 3.6vw, 3.2rem);
+  --gte-sub-size: 16px;
+  --gte-pad: clamp(72px, 8.4vh, 116px) 0 44px;
+
+  --gtd-line: rgba(255, 255, 255, 0.3);
+  --gtd-fill: rgba(255, 255, 255, 0.09);
+  --gtd-accent: #ffffff;
+  --gtd-label: var(--w40);
+  --gtd-label-size: 7.5px;
+  --gtd-mono: var(--mono);
+  --gtd-node-fill: #0d0d11;
+  --gtd-node-stroke: rgba(255, 255, 255, 0.46);
+  --gtd-wire: rgba(255, 255, 255, 0.24);
+  --gtd-pulse: #ffffff;
+  --gtd-pulse-glow: rgba(255, 255, 255, 0.72);
+  --gtd-glyph: rgba(255, 255, 255, 0.72);
+}
+
+.field-magnet-root .fm-story {
+  z-index: 3;
+}
+
+/* Section G: nothing stacked above a heading. The bento cells' category label
+   sits above each title, so this direction drops it — the titles and their copy
+   carry the module on their own. */
+.field-magnet-root .fm-features .gtb-cell h3 small {
+  display: none;
+}
+
+/* The drawings are the best asset in the set, so the cell gives them the room:
+   the copy sits at the top, the drawing is pushed to the foot of the cell (so
+   every drawing in a row shares a baseline), and the frame takes the drawing's
+   own 200:74 proportion. A fixed frame height letterboxed every diagram inside
+   a dead margin; matching the aspect makes the drawing fill its frame
+   edge-to-edge at whatever width the cell happens to be. */
+.field-magnet-root .fm-features .gtb-cell {
+  display: flex;
+  flex-direction: column;
+}
+.field-magnet-root .fm-features .gtb-mock {
+  height: auto;
+  aspect-ratio: 200 / 74;
+  margin-top: auto;
+}
+
+/* ---------- an actual bento ----------
+   Eight identical cells in a flat 4x2 is a table, not a bento: nothing to latch
+   onto and no scan order. On a six-column track the two ideas that carry the
+   product take a half each across the top, and the six supporting modules run
+   as two rows of thirds beneath them — one anchor row, two service rows. The
+   drawings in the top row render ~1.6x larger, which is why their stroke
+   weights are dialled down in Features.tsx. */
+@media (min-width: 1024px) {
+  .field-magnet-root .fm-features .gtb-grid,
+  .field-magnet-root .fm-features .gtb-grid[data-columns='3'] {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .field-magnet-root .fm-features .gtb-cell {
+    grid-column: span 2;
+    border-right: 1px solid var(--gtb-line-2);
+    border-bottom: 1px solid var(--gtb-line-2);
+    min-height: 0;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) {
+    grid-column: span 3;
+    padding: 28px 34px 34px;
+  }
+  /* The two anchor cells read plate-first — figure, then caption. A viewport
+     that catches the top of the grid catches twelve lines of real artifact
+     instead of a headline block with a plate's first rows under the fold. */
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) .gtb-mock {
+    order: -1;
+    margin: 0 0 20px;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) p {
+    margin-bottom: 0;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) h3 {
+    font-size: 27px;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) p {
+    font-size: 14.5px;
+    max-width: 46ch;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(2),
+  .field-magnet-root .fm-features .gtb-cell:nth-child(5),
+  .field-magnet-root .fm-features .gtb-cell:nth-child(8) {
+    border-right: 0;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(n + 6) {
+    border-bottom: 0;
+  }
+}
+
+.field-magnet-root .fm-story .gts-head {
+  max-width: 1240px;
+  width: 100%;
+  padding: clamp(52px, 5.6vh, 84px) 32px 30px;
+}
+
+/* ---------- the entry frame ----------
+   The stage pins at its own top, so the scroll interval between the heading
+   and the pin can only ever show the heading plus the first slice of the
+   plate. The shared intro holds the plate at 0.4 alpha and 1.09 scale through
+   that interval, which turns a whole tenth of the page into a fade-in with a
+   ghost in it — a beat a reader can skip. The floor below keeps the plate at
+   full contrast for the whole approach; the rise is carried by the scale and
+   the y-offset, which still animate. */
+.field-magnet-root .fm-story .gts-window {
+  opacity: 1 !important;
+  /* the measured reference ring: a hairline held 2px off the plate edge */
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+  outline-offset: 2px;
+}
+
+/* And with the plate oversized during that rise, a corner-anchored tab is
+   dragged off the left edge and sliced. Centred, it is stable at any scale —
+   and it reads as the plate's own machined tab rather than a browser chrome
+   quotation. */
+.field-magnet-root .fm-story .gts-win-chip {
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 0 0 16px 16px;
+  background: linear-gradient(180deg, #2b2d36, #171820);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.field-magnet-root .fm-story .gts-win-chip::after {
+  display: none;
+}
+
+/* ---------- the act's one material moment ----------
+   The story used to be flat graphite panels on flat dark for eight of its nine
+   beats, with the field only fading up at the finale — 'same species, cheaper'
+   against oxc's full-bleed prismatic plates. The wash now idles over the plate
+   for the whole act (dim, stopped down hard by the filter, so the site type
+   keeps its contrast), and the timeline's own beat-8/9 tweens still take the
+   inline style over for the payoff. Beat 9 at full strength washed out the
+   Spanish h1 it was lighting, hence the two-thirds stop. */
+.field-magnet-root .fm-story .gts-field {
+  opacity: 0.55;
+  filter: brightness(0.5) saturate(0.94);
+  /* composed per AESTHETIC 2b: the dark centre is where the artifacts sit —
+     the code plates and popups keep their full contrast step (r3 cmp-2) while
+     the arc's streaks stay luminous at the window's flanks (r3 cmp-5) */
+  -webkit-mask-image: radial-gradient(56% 60% at 50% 50%, rgba(0, 0, 0, 0.32), #000 80%);
+  mask-image: radial-gradient(56% 60% at 50% 50%, rgba(0, 0, 0, 0.32), #000 80%);
+}
+
+/* ---------- Section G: the pipeline rail is deleted, not restyled ----------
+   Five boxed glyphs captioned PUSH / SCAN / EDIT / TRANSLATE / OPEN PR is a
+   third stacked element under the code window and the caption dock, and every
+   label only repeats what the dock already says. The dock carries the stage. */
+.field-magnet-root .fm-story .gts-pipeline {
+  display: none;
+}
+
+/* ---------- the plate, in place of blueprint's drafting paper ----------
+   One soft well of light where the components fall, and a single vertical
+   axis through it. No dot grid: this direction reads as a lit surface. */
+.field-magnet-root .fm-story .gts-win-dots {
+  background-image: radial-gradient(58% 54% at 50% 52%, rgba(255, 255, 255, 0.055), transparent 72%);
+  background-size: auto;
+}
+.field-magnet-root .fm-story .gts-win-guides {
+  background-image: linear-gradient(
+    90deg,
+    transparent calc(50% - 0.5px),
+    rgba(255, 255, 255, 0.06) calc(50% - 0.5px),
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 50%
+  );
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* Surfaces the shared sheet paints white outright: on this plate they invert to
+   graphite so their type (which follows --gts-ink) keeps its contrast. */
+.field-magnet-root .fm-story .gts-review-card {
+  background: linear-gradient(180deg, #292b33, #15161b);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 30px 72px rgba(0, 0, 0, 0.62);
+  /* a reserved strip at the foot of the card for the resolution */
+  padding-bottom: 62px;
+}
+
+/* Resolved state, not a hollow rectangle. The shared approval is a full-card
+   cover, so once it fades up the card becomes an empty box with two words
+   floating in it. Here it is a footer plate landing in reserved space: the
+   request that was approved stays on screen above it, nothing is ever
+   overlapped, and a half-faded plate still reads as a plate. */
+.field-magnet-root .fm-story .gts-r-approved {
+  inset: auto 0 0 0;
+  height: 46px;
+  border-radius: 0 0 var(--gts-radius) var(--gts-radius);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, #23252d, #14151a);
+  box-shadow: none;
+}
+.field-magnet-root .fm-story .gts-r-ava,
+.field-magnet-root .fm-story .gts-r-btn.gts-ok {
+  color: #15161b;
+}
+.field-magnet-root .fm-story .gts-r-btn {
+  border-color: rgba(255, 255, 255, 0.26);
+}
+.field-magnet-root .fm-story .gts-chip-tone {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: transparent;
+  color: #15161b;
+}
+.field-magnet-root .fm-story .gts-hilite {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ---------- mass in the right column (r3 cmp-5) ----------
+   The widget cards were near-invisible washes (4.5% white on the plate), so
+   the story viewport's right-centre read as empty dim field. Each card is now
+   a machined slab — opaque graphite, specular top edge, real drop — the same
+   material family as the popup, so the zone carries objects, not wash. */
+.field-magnet-root .fm-story .gts-site-card {
+  background: linear-gradient(180deg, #262932, #171921 58%, #131419);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 22px 54px rgba(0, 0, 0, 0.55);
+}
+
+/* the context fan is structural: regular-weight rails, not hairlines (§2) */
+.field-magnet-root .fm-story .gts-ctx-lines path {
+  stroke-width: 1.5;
+  stroke: rgba(255, 255, 255, 0.55);
+}
+
+/* demo-site micro labels up to the floor */
+.field-magnet-root .fm-story .gts-site-stats small,
+.field-magnet-root .fm-story .gts-site-form label {
+  font-size: 11px;
+}
+.field-magnet-root .fm-story .gts-site-foot {
+  font-size: 11px;
+}
+
+/* ---------- the webhook connector is the brand's doubled thread ----------
+   THREAD_MOTIF: any structural stroke that can be doubled is doubled. The
+   drop-shadow clones the drawn path 4.5px below itself — two 1.5px rails with
+   a 3px gap, the same gauge as the hero baseline and the bento wrap rails —
+   and because the clone is a filter it draws in step with the DrawSVG sweep. */
+.field-magnet-root .fm-story .gts-review-line {
+  color: rgba(255, 255, 255, 0.66);
+  filter: drop-shadow(0 4.5px 0 rgba(255, 255, 255, 0.38));
+}
+.field-magnet-root .fm-story .gts-review-line path {
+  stroke-width: 1.5px;
+}
+
+/* ---------- markers: the product's own <T> pin, never a count chip ----------
+   (§G bans numbered index marks; the shared mark is the <T> tag itself.)
+   Only the label floor is raised here. */
+.field-magnet-root .fm-story .gts-mk-n {
+  font-size: 11px;
+  height: 22px;
+}
+.field-magnet-root .fm-story .gts-mk-b {
+  font-size: 11px;
+  /* as the artifact writes it — lowercase, not an ornamental all-caps pill */
+  text-transform: none;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+}
+.field-magnet-root .fm-story .gts-mk-tick::before {
+  top: 4.5px;
+}
+/* Beat 3 parks the button at 76% of the frame and zooms 3.2x — the pin's
+   authored 44px offset lands its ring past the right edge and a still catches
+   half a ring. 24px keeps the whole ring inside the frame at full zoom. */
+.field-magnet-root .fm-story [data-btn] .gts-mk {
+  right: -24px !important;
+}
+
+/* counsel card: mono labels at the 11px floor, sized for the larger text */
+.field-magnet-root .fm-story .gts-review-card {
+  width: 312px;
+}
+.field-magnet-root .fm-story .gts-r-sub {
+  font-size: 11px;
+}
+.field-magnet-root .fm-story .gts-r-name {
+  font-size: 13px;
+}
+.field-magnet-root .fm-story .gts-r-msg {
+  font-size: 12.5px;
+}
+.field-magnet-root .fm-story .gts-r-btn {
+  font-size: 10.5px;
+}
+.field-magnet-root .fm-story .gts-r-ava {
+  font-size: 11px;
+}
+.field-magnet-root .fm-story .gts-r-approved {
+  font-size: 11px;
+}
+
+/* field magnet is a pill language — the demo UI inherits it */
+.field-magnet-root .fm-story .gts-site-btn,
+.field-magnet-root .fm-story .gts-site-nav > span {
+  border-radius: 99px;
+}
+/* the nav's border rule reaches every descendant span, which draws a box inside
+   a box once the language-swap wrappers are in there — only the item is a chip */
+.field-magnet-root .fm-story .gts-site-nav span span {
+  border: 0;
+}
+.field-magnet-root .fm-story .gts-site-card {
+  border-radius: 14px;
+}
+.field-magnet-root .fm-story .gts-fbox {
+  border-radius: 99px;
+}
+
+/* ---------- the demo page: proportion and safe-area framing ----------
+   Two problems solved by one set of columns.
+
+   (1) The plate used to leave its lower 40% empty while a 480px paragraph sat
+   in a 640px column — the copy is widened and the vertical intervals opened so
+   the page fills its own window.
+
+   (2) Beat 4 parks the tagline card's CENTRE at 78% of the frame and blows it
+   up 2.7x. Anything wider than ~210px runs off the right edge at that anchor
+   (that is exactly how "funcionan" got sliced), so the right-hand widget column
+   is sized to the zoom rather than the zoom being left to overflow. The same
+   column at 1x reads as a sidebar of real UI next to the page copy. */
+@media (min-width: 901px) {
+  /* The gutter is sized for the entry, not just the hold: the shared intro
+     oversizes the plate 1.09x on the approach, which pushes ~65px of it past
+     each frame edge. A gutter that wide keeps the hanging markers inside the
+     frame for the whole rise instead of slicing marker 2 against x=0. */
+  .field-magnet-root .fm-story .gts-site {
+    grid-template-columns: 1fr 210px;
+    gap: clamp(40px, 5.5vw, 92px);
+    padding: 84px clamp(76px, 8.4vw, 132px) 96px;
+  }
+  .field-magnet-root .fm-story [data-para] .gts-mk {
+    left: -40px !important;
+  }
+  .field-magnet-root .fm-story .gts-site-left {
+    max-width: 820px;
+  }
+  .field-magnet-root .fm-story .gts-site-p {
+    max-width: 620px;
+    margin-bottom: 30px;
+  }
+  .field-magnet-root .fm-story .gts-site-nav {
+    margin-bottom: 30px;
+  }
+  .field-magnet-root .fm-story .gts-site-legal {
+    margin-top: 66px;
+  }
+  .field-magnet-root .fm-story .gts-site-stats {
+    margin-top: 58px;
+    gap: 42px;
+  }
+  .field-magnet-root .fm-story .gts-site-right {
+    gap: 20px;
+  }
+  .field-magnet-root .fm-story .gts-site-card {
+    padding: 16px 17px;
+  }
+  .field-magnet-root .fm-story .gts-tagline {
+    font-size: 17px;
+    line-height: 1.28;
+  }
+}
+
+/* Beat 1 is the pellets — they have to read as light being drawn out of every
+   marker, not as 11px dots the sampler can miss. */
+.field-magnet-root .fm-story .gts-pellet {
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 0 20px 5px rgba(255, 255, 255, 0.5);
+}
+
+/* The editor act lost its rail, so the code plate owns the whole window: a
+   larger setting fills the width that used to sit empty on the right and the
+   block centres in the height the rail used to occupy. */
+.field-magnet-root .fm-story .gts-code-body {
+  font-size: clamp(13.5px, 1.86vw, 25px);
+  line-height: 1.98;
+  padding: 5vh 0 5.5vh;
+}
+.field-magnet-root .fm-story .gts-cl {
+  padding-left: clamp(10px, 16vw, 250px);
+}
+.field-magnet-root .fm-story .gts-cl .gts-ln {
+  width: 74px;
+  flex-basis: 74px;
+}
+
+/* A real unified diff shows its hunk header (DESIGN_STANDARD 1.3). The editor
+   plate states the range Locadex is rewriting — same vocabulary as the PR
+   panel and the bento diff — set into the code block's own top margin. */
+.field-magnet-root .fm-story .gts-code-body::before {
+  content: '@@ -1,11 +1,14 @@ · push a4f2c19';
+  position: absolute;
+  left: calc(clamp(10px, 16vw, 250px) + 74px);
+  top: calc(2.5vh - 0.6em);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/* The translations chip used to sit under the direction dock at the frame's
+   bottom-left corner, which cropped it to “slations: …” in stills. It docks
+   clear of the overlay, at the label floor. */
+.field-magnet-root .fm-story .gts-chip-tbadge {
+  left: 104px;
+  bottom: 24px;
+  font-size: 11px;
+}
+.field-magnet-root .fm-story .gts-code-bar .gts-fname {
+  font-size: 12px;
+}
+.field-magnet-root .fm-story .gts-chip {
+  font-size: 11px;
+}
+
+/* Line notes, pulled into the code plate so the sliding PR panel never halves
+   them against the frame edge. The mark is a drawn ring, not a filled badge,
+   and it is never unexplained: a mono label and hairline leader run left from
+   the ring (§2 — oxc labels every mark it draws; the r2 still showed three
+   bare '!' dots floating at the row edges). */
+.field-magnet-root .fm-story .gts-lmk {
+  right: 96px;
+  width: 22px;
+  height: 22px;
+  margin-top: -11px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #101116;
+  color: rgba(255, 255, 255, 0.92);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+}
+.field-magnet-root .fm-story .gts-lmk .gts-tip {
+  right: 24px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+@media (min-width: 901px) {
+  .field-magnet-root .fm-story .gts-lmk::before {
+    content: '';
+    position: absolute;
+    right: calc(100% + 6px);
+    top: 50%;
+    width: 22px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.32);
+  }
+  .field-magnet-root .fm-story .gts-lmk::after {
+    position: absolute;
+    right: calc(100% + 34px);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+  }
+  .field-magnet-root .fm-story .gts-lmk[data-note='1']::after {
+    content: 'unwrapped string';
+  }
+  .field-magnet-root .fm-story .gts-lmk[data-note='2']::after {
+    content: 'unlocalized date';
+  }
+  .field-magnet-root .fm-story .gts-lmk[data-note='3']::after {
+    content: 'glossary term';
+  }
+}
+
+/* ---------- the PR panel: a machined plate that can be caught mid-slide ----------
+   A scroll still can sample the panel part-way through its entrance. Its left
+   64px is therefore a blank land carrying only the doubled thread rail — the
+   removed/added pair — so a partially entered plate crops to a composed metal
+   edge instead of truncated strings. */
+.field-magnet-root .fm-story .gts-diff {
+  width: min(520px, 46%);
+}
+.field-magnet-root .fm-story .gts-diff::before {
+  content: '';
+  position: absolute;
+  left: 26px;
+  top: 18px;
+  bottom: 18px;
+  width: 6px;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.32);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.32);
+  pointer-events: none;
+}
+.field-magnet-root .fm-story .gts-diff-head,
+.field-magnet-root .fm-story .gts-diff-foot {
+  padding-left: 64px;
+}
+.field-magnet-root .fm-story .gts-dl {
+  padding-left: 64px;
+  font-size: 12px;
+}
+.field-magnet-root .fm-story .gts-diff-lines {
+  font-size: 12px;
+}
+.field-magnet-root .fm-story .gts-diff-head .gts-branch {
+  font-size: 12px;
+}
+.field-magnet-root .fm-story .gts-diff-head .gts-diffstats {
+  font-size: 11px;
+}
+.field-magnet-root .fm-story .gts-openpr {
+  font-size: 11px;
+}
+.field-magnet-root .fm-story .gts-prtoast {
+  font-size: 11px;
+}
+
+/* ---------- the accent, spent (r3 cmp-3) ----------
+   The direction's one accent is the prismatic light; where a diagram earns a
+   colour it is the field's own pale cyan, and it lands exactly where oxc
+   spends its aqua: the diff's ADDED lines — gutter marks and the row tint,
+   never headings, borders, or buttons. Three sites page-wide (editor adds,
+   PR-panel adds, bento diff adds), inside the ≤6 budget, one per diagram. */
+.field-magnet-root .fm-story .gts-cl.gts-add {
+  background: rgba(139, 216, 255, 0.07);
+}
+.field-magnet-root .fm-story .gts-cl.gts-add .gts-ln {
+  color: #9bdcff;
+}
+.field-magnet-root .fm-story .gts-dl.gts-a {
+  background: rgba(139, 216, 255, 0.08);
+  box-shadow: inset 2.5px 0 0 rgba(155, 220, 255, 0.6);
+}
+.field-magnet-root .fm-story .gts-plus {
+  color: #9bdcff;
+}
+
+/* ============================================================
+   THE POPUP CODE REVEAL — this direction's version-specific role
+   Everywhere else the `<T>` surface is a full-bleed wipe. Here it is a
+   floating card anchored to the component the camera just zoomed: a
+   machined slab that grows out of its own anchor point, joined to the
+   component by a hairline leader ending in a ring. The component stays
+   visible behind and beside it.
+   ============================================================ */
+
+.field-magnet-root .fm-story .gts-pop-wrap {
+  /* grow out of the anchor edge, not the middle of the window */
+  transform-origin: 42% 50%;
+}
+
+.field-magnet-root .fm-story .gts-pop {
+  --fm-lead: clamp(38px, 3.6vw, 92px);
+  /* Solid metal, not glass: the r3 verdict caught the code body washed by the
+     field through a translucent panel (cmp-2). The slab is opaque so its
+     near-white type owns its full contrast step. */
+  background: linear-gradient(178deg, #262a32, #16171d 46%, #0d0e12);
+  /* A machined slab has three edges, not one hairline: a hard specular on the
+     lit top, a graphite land on the sides, and a lifted bottom bevel catching
+     the bounce. One low-alpha outline plus a soft shadow read as a flat
+     rectangle, which is what made the leader line do all the work. */
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -1.5px 0 rgba(255, 255, 255, 0.16),
+    inset 1px 0 0 rgba(255, 255, 255, 0.1),
+    inset -1px 0 0 rgba(255, 255, 255, 0.1),
+    inset 0 14px 26px -14px rgba(255, 255, 255, 0.24),
+    0 0 0 1px rgba(0, 0, 0, 0.8),
+    0 60px 130px rgba(0, 0, 0, 0.78),
+    0 10px 26px rgba(0, 0, 0, 0.56);
+}
+
+/* The rolled edge itself: bright at the top-left where the burst is, falling
+   to nothing on the shadowed side. Overrides the shared flat-ramp border. */
+.field-magnet-root .fm-story .gts-pop::before {
+  background: linear-gradient(
+    148deg,
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(255, 255, 255, 0.3) 16%,
+    rgba(255, 255, 255, 0.05) 44%,
+    rgba(255, 255, 255, 0.14) 74%,
+    rgba(255, 255, 255, 0.44) 100%
+  );
+}
+
+/* The leader: card edge → component. A structural stroke, so it is the
+   doubled thread — two 1.5px rails with a 3px gap (the page's one gauge),
+   fading toward the ring like source and translation running to the plate. */
+.field-magnet-root .fm-story .gts-pop::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: var(--fm-lead);
+  height: 6px;
+  margin-top: -3px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.14));
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0 1.5px,
+    transparent 1.5px 4.5px,
+    #000 4.5px 6px
+  );
+  mask-image: linear-gradient(180deg, #000 0 1.5px, transparent 1.5px 4.5px, #000 4.5px 6px);
+}
+
+/* the ring where the leader lands on the component */
+.field-magnet-root .fm-story .gts-pop-note::after {
+  content: '';
+  position: absolute;
+  left: calc(100% + var(--fm-lead) - 5px);
+  top: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 0 14px rgba(255, 255, 255, 0.3);
+}
+
+/* Both reveals are framed by the same rule, because the camera anchors both
+   beats the same way: the component is parked right of centre and blown up, so
+   the card is right-aligned into the empty left half and the leader crosses the
+   gap into a ring on the live component. The right-hand percentage is set so
+   the card's edge always stops one leader-length short of the zoomed element —
+   never overlapping it, never jammed into a corner. */
+.field-magnet-root .fm-story [data-xray='btn'] .gts-pop {
+  left: auto;
+  right: 44%;
+  top: 50%;
+  width: min(600px, 46vw);
+}
+
+.field-magnet-root .fm-story [data-xray='tag'] .gts-pop {
+  left: auto;
+  right: 46%;
+  /* beat 4's camera parks the card on the 46% eye-line, not the 50% one */
+  top: 46%;
+  width: min(600px, 46vw);
+}
+
+/* ---------- density inside the focus frames (DESIGN_STANDARD 1.1/1.5) ----------
+   Beats 3 and 4 used to read as one small card floating in fog: the shared
+   depth-of-field blurs every unfocused block to 6px, which on this dark plate
+   turns real content into empty vapour. The dimming (opacity) stays — the blur
+   goes, so the zoomed page around the popup remains legible artifact instead of
+   background mist, and the frame's information-per-pixel holds up as a still. */
+.field-magnet-root .fm-story [data-block] {
+  filter: none !important;
+}
+
+/* The reveal card itself steps up to artifact scale: 14px-floor mono code at
+   editor line-height, an 11px file chip, and a 12px note — nothing in the
+   frame's hero surface renders below the label floor. */
+.field-magnet-root .fm-story .gts-pop {
+  padding: 26px 30px 24px;
+}
+.field-magnet-root .fm-story .gts-pop pre {
+  position: relative;
+  font-size: clamp(14px, 1.3vw, 18.5px);
+  line-height: 1.9;
+  padding-left: 20px;
+}
+/* the wrapped range carries the doubled thread — source and translation rails
+   at the page's constant gauge (1.5px stroke / 3px gap) */
+.field-magnet-root .fm-story .gts-pop pre::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  bottom: 0.3em;
+  width: 6px;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.5);
+}
+/* File chips, artifact captions, chips and buttons render as the artifact
+   writes them — lowercase paths, sentence-case labels, no ornamental
+   uppercase (§2). Only strings authored uppercase (the mock site's date
+   kicker) keep their case. */
+.field-magnet-root .fm-story .gts-pop-file,
+.field-magnet-root .fm-story .gts-gen-cap,
+.field-magnet-root .fm-story .gts-site-stats small,
+.field-magnet-root .fm-story .gts-site-form label,
+.field-magnet-root .fm-story .gts-site-foot,
+.field-magnet-root .fm-story .gts-chip-flag,
+.field-magnet-root .fm-story .gts-chip-tone,
+.field-magnet-root .fm-story .gts-r-btn,
+.field-magnet-root .fm-story .gts-r-approved,
+.field-magnet-root .fm-story .gts-openpr {
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+.field-magnet-root .fm-story .gts-pop-file {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.field-magnet-root .fm-story .gts-pop-note {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+@media (max-width: 900px) {
+  /* 390px cannot hold a 2.7x component beside a code card, so the card goes
+     full width along the bottom. The scrim under it only has to separate the
+     two planes — pushed to 0.94 it inverted the hierarchy, leaving the popup
+     (the annotation) brighter than the component it annotates. It is now a
+     bottom-weighted gradient that clears the upper half entirely, so the zoomed
+     plate stays the brightest thing in the frame. */
+  .field-magnet-root .fm-story .gts-pop-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -12%;
+    background: linear-gradient(
+      180deg,
+      transparent 52%,
+      rgba(7, 7, 10, 0.38) 64%,
+      rgba(7, 7, 10, 0.84) 78%
+    );
+  }
+
+  /* the counsel beat is the one that composes at 390px, so it gets the room:
+     the card clears the headline, and the review badge stops landing on the
+     button above it */
+  .field-magnet-root .fm-story .gts-review-card {
+    top: 150px;
+  }
+  .field-magnet-root .fm-story .gts-site-legal {
+    margin-top: 46px;
+  }
+  .field-magnet-root .fm-story [data-xray='btn'] .gts-pop,
+  .field-magnet-root .fm-story [data-xray='tag'] .gts-pop {
+    left: 14px;
+    right: 14px;
+    top: auto;
+    bottom: 92px;
+    transform: none;
+    width: auto;
+  }
+  .field-magnet-root .fm-story .gts-pop::after,
+  .field-magnet-root .fm-story .gts-pop-note::after {
+    display: none;
+  }
+
+  /* --- keeping the zoomed components inside a 390px frame ---
+     The camera parks each component's BOX centre at 76–78% of the frame width
+     and scales it 2.7–3.2x, which on a phone throws the plate off both edges at
+     once. So on mobile the box is padded out to the right while the visible
+     plate is drawn by a pseudo-element pinned to its left: the box centre still
+     lands where the camera puts it, and the plate lands back inside the safe
+     area. Nothing about the timeline changes — only what the box measures. */
+  .field-magnet-root .fm-story .gts-site-card[data-tag] {
+    width: 204px;
+    padding: 10px 86px 10px 12px;
+    background: none;
+    border-color: transparent;
+  }
+  .field-magnet-root .fm-story .gts-site-card[data-tag]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 130px;
+    border: 1px solid var(--gts-paper-rule);
+    border-radius: 12px;
+    background: var(--gts-paper-card);
+    z-index: -1;
+  }
+  .field-magnet-root .fm-story [data-tag] .gts-tagline {
+    font-size: 9.5px;
+    line-height: 1.42;
+  }
+  /* The tone chip and the marker are positioned by inline style from the shared
+     demo site (`right: 12`, `left: -10`), which outranks a stylesheet rule — so
+     `right: auto` silently lost and the chip stretched across the whole padded
+     box, 186px of it, and the 2.7x zoom threw the far end off the frame. These
+     two need the flag to land. Both are re-anchored to the visible plate's own
+     left edge, inside the safe area. */
+  .field-magnet-root .fm-story [data-tag] .gts-chip-tone {
+    right: auto !important;
+    left: 6px;
+    bottom: -26px;
+    font-size: 6.5px;
+    padding: 4px 8px;
+  }
+  .field-magnet-root .fm-story [data-tag] .gts-mk {
+    left: -4px !important;
+    top: -9px !important;
+  }
+
+  .field-magnet-root .fm-story .gts-site-btn {
+    background: none;
+    padding: 8px 62px 8px 16px;
+    font-size: 11px;
+  }
+  .field-magnet-root .fm-story .gts-site-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: calc(100% - 46px);
+    border-radius: 99px;
+    background: var(--gts-ink);
+    z-index: -1;
+  }
+
+  /* the desktop artifact-scale overrides, stepped back for a 390px frame */
+  .field-magnet-root .fm-story .gts-diff {
+    width: 84%;
+  }
+  .field-magnet-root .fm-story .gts-diff-head,
+  .field-magnet-root .fm-story .gts-diff-foot {
+    padding-left: 20px;
+  }
+  .field-magnet-root .fm-story .gts-dl {
+    padding-left: 20px;
+  }
+  .field-magnet-root .fm-story .gts-diff::before {
+    display: none;
+  }
+  .field-magnet-root .fm-story .gts-review-card {
+    width: 248px;
+  }
+  .field-magnet-root .fm-story .gts-code-body::before {
+    left: calc(clamp(10px, 16vw, 250px) + 40px);
+    font-size: 11px;
+  }
+  .field-magnet-root .fm-story .gts-lmk {
+    right: 18px;
+  }
+  .field-magnet-root .fm-story .gts-chip-tbadge {
+    left: 84px;
+  }
+}
+
+/* ============================================================
+   BENTO ARTIFACTS — real code, real diffs, real strings
+   The cell's drawing is an opaque machined plate that spans the
+   cell. One material per plate: flat graphite + hairline rules +
+   white ink. Mono labels floor at 11px. The doubled thread rail
+   (1.5px stroke / 3px gap, constant gauge) marks the wrapped
+   range in code plates — source and translation running together.
+   ============================================================ */
+
+.field-magnet-root .fm-features .gtb-mock {
+  aspect-ratio: auto;
+  height: auto;
+  /* pinned to the cell foot so every plate in a row shares a baseline */
+  margin-top: auto;
+  border: 0;
+  border-radius: 12px;
+  /* the measured oxc panel tone (#14121A), opaque over the band's light */
+  background: #14121a;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 26px 60px rgba(0, 0, 0, 0.5);
+}
+/* the two anchor plates carry the measured reference ring — a hairline held
+   2px off the plate edge — so the wrap→diff pair reads as the page's lifted
+   hardware rather than two more grid panels (r3 cmp-6) */
+@media (min-width: 1024px) {
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) .gtb-mock {
+    outline: 1px solid rgba(255, 255, 255, 0.22);
+    outline-offset: 2px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 34px 80px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* ---------- the act's full-bleed light (r3 cmp-4) ----------
+   One dimmed prismatic band behind the bento's anchor row — the page's light
+   reappearing at the transformation the grid exists to explain. The plates
+   are opaque, so the field lives in the seams and margins around them. */
+.field-magnet-root .fm-featzone {
+  position: relative;
+}
+.field-magnet-root .fm-featzone .gtb {
+  position: relative;
+  z-index: 1;
+}
+.field-magnet-root .fm-feat-light {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: clamp(150px, 16vh, 230px);
+  height: min(640px, 64vh);
+  z-index: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+.field-magnet-root .fm-feat-prism {
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 16%, #000 78%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 16%, #000 78%, transparent);
+}
+
+.field-magnet-root .fm-features .gtb-cell p {
+  margin-bottom: 16px;
+}
+.field-magnet-root .fm-features .gtb-sub {
+  margin-bottom: 24px;
+}
+/* pre-formatted artifact lines must never widen the grid track: the plate
+   clips to its cell and wide code scrolls inside its own surface */
+.field-magnet-root .fm-features .gtb-cell {
+  min-width: 0;
+}
+.field-magnet-root .fmba pre,
+.field-magnet-root .fmba-diffbody {
+  overflow-x: auto;
+}
+
+.field-magnet-root .fmba {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--w64);
+}
+/* the config plate runs 43ch lines; one step down keeps them whole */
+.field-magnet-root .fmba-config {
+  font-size: 11px;
+}
+.field-magnet-root .fmba-config .fmba-n {
+  width: 32px;
+}
+.field-magnet-root .fmba b {
+  font-weight: 500;
+  color: var(--w92);
+}
+.field-magnet-root .fmba em {
+  font-style: normal;
+  color: var(--w40);
+}
+.field-magnet-root .fmba-head,
+.field-magnet-root .fmba-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  padding: 9px 14px;
+  /* plate captions sized to their container, not parked at the floor —
+     oxc's equivalent annotations run 14px (r3 cmp-4) */
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.52);
+}
+.field-magnet-root .fmba-head {
+  border-bottom: 1px solid var(--w12);
+}
+.field-magnet-root .fmba-foot {
+  border-top: 1px solid var(--w12);
+  margin-top: auto;
+}
+.field-magnet-root .fmba-head b,
+.field-magnet-root .fmba-foot b {
+  color: var(--w64);
+}
+.field-magnet-root .fmba-file {
+  color: var(--w64);
+}
+
+/* --- code + config plates --- */
+.field-magnet-root .fmba pre {
+  margin: 0;
+  padding: 12px 0 14px;
+  font: inherit;
+  overflow: hidden;
+}
+.field-magnet-root .fmba-l {
+  display: flex;
+  padding-right: 14px;
+  white-space: pre;
+}
+.field-magnet-root .fmba-l code {
+  font: inherit;
+  color: rgba(255, 255, 255, 0.92);
+}
+.field-magnet-root .fmba-n {
+  flex: none;
+  width: 40px;
+  padding-right: 14px;
+  text-align: right;
+  color: var(--w24);
+  user-select: none;
+}
+.field-magnet-root .fmba-l i {
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.52);
+}
+.field-magnet-root .fmba-l u {
+  text-decoration: none;
+  color: var(--w92);
+}
+.field-magnet-root .fmba-l em {
+  color: rgba(255, 255, 255, 0.8);
+}
+.field-magnet-root .fmba-l b {
+  color: #ffffff;
+}
+/* the wrapped range: a doubled thread rail at constant gauge */
+.field-magnet-root .fmba-wrapzone {
+  position: relative;
+  background: rgba(255, 255, 255, 0.045);
+}
+.field-magnet-root .fmba-wrapzone::before,
+.field-magnet-root .fmba-wrapzone::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.field-magnet-root .fmba-wrapzone::before {
+  left: 4px;
+}
+.field-magnet-root .fmba-wrapzone::after {
+  left: 8.5px;
+}
+
+/* --- the agent diff --- */
+.field-magnet-root .fmba-branch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.field-magnet-root .fmba-branch b {
+  padding: 2px 8px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--w24);
+  color: var(--w92);
+}
+.field-magnet-root .fmba-into {
+  color: var(--w40);
+}
+.field-magnet-root .fmba-diff s {
+  text-decoration: none;
+  color: var(--w40);
+}
+.field-magnet-root .fmba-diffbody {
+  padding: 10px 0 12px;
+}
+.field-magnet-root .fmba-d {
+  display: flex;
+  white-space: pre;
+  padding-right: 14px;
+}
+.field-magnet-root .fmba-d code {
+  font: inherit;
+}
+.field-magnet-root .fmba-gut {
+  flex: none;
+  width: 40px;
+  padding-right: 14px;
+  text-align: right;
+  color: var(--w40);
+  user-select: none;
+}
+.field-magnet-root .fmba-hunk code {
+  color: var(--w40);
+}
+.field-magnet-root .fmba-ctx code {
+  color: var(--w64);
+}
+/* the diagram's one accent: the field's pale cyan on the added lines,
+   gutter marks and row tint only (r3 cmp-3 / oxc's aqua diff hues) */
+.field-magnet-root .fmba-add {
+  background: rgba(139, 216, 255, 0.08);
+}
+.field-magnet-root .fmba-add code {
+  color: var(--w92);
+}
+.field-magnet-root .fmba-add .fmba-gut {
+  color: #9bdcff;
+}
+.field-magnet-root .fmba-del code {
+  color: var(--w24);
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.28);
+}
+
+/* --- glossary --- */
+.field-magnet-root .fmba-gh {
+  padding: 8px 14px 2px;
+  font-size: 12px;
+  color: var(--w40);
+}
+.field-magnet-root .fmba-g {
+  display: grid;
+  grid-template-columns: 108px 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 6.5px 14px;
+}
+.field-magnet-root .fmba-g + .fmba-g {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.field-magnet-root .fmba-g span {
+  color: var(--w64);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.field-magnet-root .fmba-g em {
+  font-size: 12px;
+}
+
+/* --- routing --- */
+.field-magnet-root .fmba-url {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 14px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--w12);
+  background: rgba(255, 255, 255, 0.025);
+}
+.field-magnet-root .fmba-url:last-of-type {
+  margin-bottom: 12px;
+}
+.field-magnet-root .fmba-lock {
+  flex: none;
+  width: 7px;
+  height: 9px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px var(--w40);
+  position: relative;
+}
+.field-magnet-root .fmba-lock::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  top: -4px;
+  height: 5px;
+  border: 1px solid var(--w40);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+}
+.field-magnet-root .fmba-url code {
+  font: inherit;
+  color: var(--w40);
+  white-space: nowrap;
+}
+.field-magnet-root .fmba-url code u {
+  text-decoration: none;
+  color: var(--w64);
+}
+.field-magnet-root .fmba-url code b {
+  color: #ffffff;
+}
+.field-magnet-root .fmba-url em {
+  margin-left: auto;
+  font-size: 12px;
+}
+.field-magnet-root .fmba-loc {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.55);
+}
+
+/* --- edge delivery --- */
+.field-magnet-root .fmba-e {
+  display: grid;
+  grid-template-columns: 34px 86px 1fr 50px;
+  gap: 12px;
+  align-items: center;
+  padding: 7px 14px;
+}
+.field-magnet-root .fmba-e + .fmba-e {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.field-magnet-root .fmba-e span {
+  color: var(--w40);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.field-magnet-root .fmba-e em {
+  text-align: right;
+  color: var(--w92);
+  font-size: 12px;
+}
+.field-magnet-root .fmba-track {
+  height: 10px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+}
+.field-magnet-root .fmba-fill {
+  display: block;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.38);
+}
+.field-magnet-root .fmba-best {
+  background: #ffffff;
+}
+
+/* --- previews --- */
+.field-magnet-root .fmba-btop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--w12);
+}
+.field-magnet-root .fmba-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+.field-magnet-root .fmba-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--w24);
+}
+.field-magnet-root .fmba-urlpill {
+  flex: 1;
+  font: inherit;
+  font-size: 12px;
+  color: var(--w64);
+  text-align: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.field-magnet-root .fmba-btop em {
+  font-size: 12px;
+}
+.field-magnet-root .fmba-page {
+  padding: 16px 16px 14px;
+  font-family: var(--sans);
+}
+.field-magnet-root .fmba-page-h {
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: var(--w92);
+}
+.field-magnet-root .fmba-page p {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--w64);
+}
+
+/* --- runtime chat --- */
+.field-magnet-root .fmba-chat {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 16px;
+  gap: 10px;
+}
+.field-magnet-root .fmba-m {
+  max-width: 82%;
+  padding: 8px 12px;
+  border-radius: 12px 12px 12px 4px;
+  box-shadow: inset 0 0 0 1px var(--w12);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--w92);
+}
+.field-magnet-root .fmba-m-tr {
+  box-shadow: inset 0 0 0 1px var(--w24);
+  background: rgba(255, 255, 255, 0.06);
+}
+.field-magnet-root .fmba-m-out {
+  margin-left: auto;
+  border-radius: 12px 12px 4px 12px;
+  background: rgba(255, 255, 255, 0.09);
+}
+.field-magnet-root .fmba-meta {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.48);
+}
+.field-magnet-root .fmba-meta b {
+  color: var(--w64);
+}
+
+/* --- the two anchor cells render their plates a step larger --- */
+@media (min-width: 1024px) {
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) .fmba {
+    font-size: 13px;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) .fmba-head,
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) .fmba-foot {
+    padding: 11px 18px;
+    /* the anchor plates run the measured oxc annotation size */
+    font-size: 14px;
+  }
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) .fmba-n,
+  .field-magnet-root .fm-features .gtb-cell:nth-child(-n + 2) .fmba-gut {
+    width: 48px;
+  }
+}
+@media (max-width: 560px) {
+  .field-magnet-root .fmba {
+    font-size: 11px;
+  }
+  .field-magnet-root .fmba-n,
+  .field-magnet-root .fmba-gut {
+    width: 30px;
+    padding-right: 10px;
+  }
+  .field-magnet-root .fmba-g {
+    grid-template-columns: 92px 1fr auto;
+  }
+  .field-magnet-root .fmba-head,
+  .field-magnet-root .fmba-foot {
+    white-space: normal;
+  }
+}
+
+/* ============================================================
+   REVIEW WORKSPACE — machined plate + mono label floor
+   ============================================================ */
+.field-magnet-root .fm-review-sec .gte-ws {
+  outline: 1px solid rgba(255, 255, 255, 0.18);
+  outline-offset: 2px;
+}
+.field-magnet-root .fm-review-sec .gte-bar {
+  font-size: 11px;
+}
+.field-magnet-root .fm-review-sec .gte-lab {
+  font-size: 11px;
+}
+.field-magnet-root .fm-review-sec .gte-act {
+  font-size: 10.5px;
+}
+
+/* the preview page's rendered CTA — the same machined pill the product ships */
+.field-magnet-root .fmba-page-btn {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 7px 18px;
+  border-radius: 99px;
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #0a0a0b;
+  background: linear-gradient(180deg, #f7f7f7, #cdcdd2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}

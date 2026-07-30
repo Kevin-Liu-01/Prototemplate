@@ -1,0 +1,176 @@
+/* ============================================================
+   TOOLCHAIN — ISOMETRIC ILLUSTRATION FAMILY
+   One stylesheet for every object in this folder.
+
+   Ink is derived from `currentColor`, so an illustration inherits the
+   surface it is placed on: thin dark strokes on the near-white page,
+   thin light strokes inside the page's one dark band. Override any of
+   the custom properties below on any ancestor to re-skin the set.
+
+   Accent: `--iso-accent` is a single cool hue and each illustration
+   spends it on exactly one element. On the dark band, raise it
+   (e.g. `--iso-accent: #86a8ff`) so it keeps its weight.
+   ============================================================ */
+
+.iso {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ---------- ink ---------- */
+
+.iso .iso-line,
+.iso .iso-soft,
+.iso .iso-hair,
+.iso .iso-accent {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.iso .iso-line {
+  stroke: var(--iso-ink, currentColor);
+  stroke-width: var(--iso-sw, 1.2);
+}
+
+.iso .iso-soft {
+  stroke: var(--iso-ink-soft, color-mix(in srgb, currentColor 55%, transparent));
+  stroke-width: var(--iso-sw, 1.2);
+}
+
+.iso .iso-hair {
+  stroke: var(--iso-ink-hair, color-mix(in srgb, currentColor 30%, transparent));
+  stroke-width: calc(var(--iso-sw, 1.2) * 0.82);
+}
+
+.iso .iso-accent {
+  stroke: var(--iso-accent-ink);
+  stroke-width: calc(var(--iso-sw, 1.2) * 1.15);
+}
+
+/* ---------- faces: light from the upper left, always ----------
+   Ink stands in for shadow, so the lit top face carries the least of it and
+   the +x face, turned away from the light, carries the most. Never reorder
+   these three: the light direction is what holds the family together. */
+
+.iso .iso-face-top {
+  fill: var(--iso-face-top, color-mix(in srgb, currentColor 4%, transparent));
+}
+
+.iso .iso-face-left {
+  fill: var(--iso-face-left, color-mix(in srgb, currentColor 9%, transparent));
+}
+
+.iso .iso-face-right {
+  fill: var(--iso-face-right, color-mix(in srgb, currentColor 15%, transparent));
+}
+
+/* Content marks sitting on a top face — rule lines, code lines, nodes. */
+.iso .iso-face-mark {
+  fill: var(--iso-mark, color-mix(in srgb, currentColor 26%, transparent));
+}
+
+/* The accent solid keeps the same light direction as every neutral one. */
+.iso .iso-face-accent {
+  fill: color-mix(in srgb, var(--iso-accent-ink) 11%, transparent);
+}
+
+.iso .iso-face-accent-mid {
+  fill: color-mix(in srgb, var(--iso-accent-ink) 18%, transparent);
+}
+
+.iso .iso-face-accent-low {
+  fill: color-mix(in srgb, var(--iso-accent-ink) 27%, transparent);
+}
+
+.iso .iso-fill-accent {
+  fill: var(--iso-accent-ink);
+}
+
+/* A node sitting on the drawing rather than on a face — a junction, a point of
+   presence. Quieter than the accent, heavier than a content mark. */
+.iso .iso-fill-soft {
+  fill: var(--iso-ink-soft, color-mix(in srgb, currentColor 55%, transparent));
+}
+
+.iso .iso-face-none {
+  fill: none;
+}
+
+/* ---------- accent switch ---------- */
+
+.iso-accent-on {
+  --iso-accent-ink: var(--iso-accent, #3f6dfa);
+}
+
+.iso-accent-off {
+  --iso-accent-ink: var(--iso-ink, currentColor);
+}
+
+/* ---------- type inside the drawings ---------- */
+
+.iso .iso-label {
+  font-family: var(--iso-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  font-size: var(--iso-label-size, 9px);
+  letter-spacing: 0.02em;
+  fill: var(--iso-label-color, color-mix(in srgb, currentColor 62%, transparent));
+}
+
+.iso .iso-label-strong {
+  fill: var(--iso-ink, currentColor);
+}
+
+/* Benchmark rows carry more text than the drawings, so they get their own scale. */
+.iso .iso-bench-name {
+  font-family: var(--iso-ui, inherit);
+  font-size: var(--iso-bench-name-size, 11px);
+  fill: var(--iso-ink, currentColor);
+}
+
+.iso .iso-bench-time {
+  font-family: var(--iso-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  font-size: var(--iso-bench-time-size, 10px);
+  fill: var(--iso-label-color, color-mix(in srgb, currentColor 62%, transparent));
+}
+
+/* ============================================================
+   STAT ROW — the one primitive that is HTML, so the number can
+   use the page's own display face rather than SVG text.
+   ============================================================ */
+
+.iso-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--iso-stat-gap, 14px);
+  color: inherit;
+}
+
+.iso-stat-icon {
+  flex: none;
+  width: var(--iso-stat-icon-size, 38px);
+  height: var(--iso-stat-icon-size, 38px);
+}
+
+.iso-stat-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.iso-stat-value {
+  font-family: var(--iso-display, inherit);
+  font-size: var(--iso-stat-value-size, 30px);
+  font-weight: var(--iso-stat-value-weight, 600);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--iso-stat-value-color, currentColor);
+}
+
+.iso-stat-label {
+  font-size: var(--iso-stat-label-size, 12px);
+  line-height: 1.3;
+  color: var(--iso-stat-label-color, color-mix(in srgb, currentColor 58%, transparent));
+}

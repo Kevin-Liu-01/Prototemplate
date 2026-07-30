@@ -1,0 +1,1626 @@
+/* Kinetic Verba — every rule scoped to .kinetic-verba-root. */
+
+.kinetic-verba-root {
+  --kv-ink: #08080a;
+  --kv-ink2: #0d0d10;
+  --kv-paper: #f4f4f2;
+  --kv-w92: rgba(255, 255, 255, 0.92);
+  --kv-w64: rgba(255, 255, 255, 0.64);
+  --kv-w40: rgba(255, 255, 255, 0.4);
+  --kv-w24: rgba(255, 255, 255, 0.24);
+  --kv-w12: rgba(255, 255, 255, 0.12);
+  --kv-w08: rgba(255, 255, 255, 0.08);
+  --kv-mono: ui-monospace, 'SF Mono', 'Menlo', monospace;
+  --kv-display: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --kv-text: var(--font-inter), 'Inter', system-ui, sans-serif;
+
+  position: relative;
+  background: var(--kv-ink);
+  color: var(--kv-w92);
+  font-family: var(--kv-text);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.kinetic-verba-root ::selection {
+  background: #fff;
+  color: #000;
+}
+
+.kinetic-verba-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.kinetic-verba-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.kinetic-verba-root :focus-visible {
+  outline: 1.5px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- texture ---------- */
+.kinetic-verba-root .kv-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: kv-grain 0.9s steps(6) infinite;
+}
+
+@keyframes kv-grain {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  17% {
+    transform: translate3d(-4%, 2%, 0);
+  }
+  33% {
+    transform: translate3d(2%, -3%, 0);
+  }
+  50% {
+    transform: translate3d(-3%, -2%, 0);
+  }
+  67% {
+    transform: translate3d(3%, 3%, 0);
+  }
+  83% {
+    transform: translate3d(-2%, 4%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ---------- kinetic type ----------
+   One treatment, used by every display line on the page. Three axes run per
+   character — weight (font masters), width (--kv-cw) and rise (--kv-cy) — so a
+   still frame already shows the line flexing rather than a uniform display
+   face. Each character is also its own gradient box, so the machined ramp AND
+   the travelling specular band are clipped to the glyph: there is no overlay,
+   and therefore no rectangle. */
+.kinetic-verba-root .kv-kword {
+  display: inline-block;
+}
+
+.kinetic-verba-root .kv-kchar {
+  display: inline-block;
+  transform: translateY(var(--kv-cy, 0)) scaleX(var(--kv-cw, 1));
+  transform-origin: 50% 78%;
+  will-change: transform, font-weight, background-position;
+  font-variant-ligatures: none;
+}
+
+/* The ramp's floor is a light grey and its three whites are never more than
+   half a tile apart, so whichever 31%-tall window a character samples it keeps
+   a specular highlight and never opens on a dead mid-grey. Both ends are the
+   same white, so the tile repeats seamlessly however far the sweep has run. */
+.kinetic-verba-root .kv-h1 .kv-kchar,
+.kinetic-verba-root .kv-display .kv-kchar,
+.kinetic-verba-root .kv-kin .kv-kchar {
+  background-image: linear-gradient(
+    174deg,
+    #ffffff 0%,
+    #f6f6f9 10%,
+    #dcdce3 20%,
+    #b0b0ba 28%,
+    #dedee5 38%,
+    #ffffff 50%,
+    #f7f7fa 60%,
+    #cdcdd6 72%,
+    #b6b6c0 80%,
+    #ebebf1 90%,
+    #ffffff 100%
+  );
+  background-size: 100% 320%;
+  background-position: 0 calc(var(--kv-gsweep, 6%) + var(--kv-ci, 0) * 3.1%);
+  background-repeat: repeat-y;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ---------- buttons ---------- */
+.kinetic-verba-root .kv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  font-family: var(--kv-display);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 9px 18px;
+  transition: transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.kinetic-verba-root .kv-btn:active {
+  transform: scale(0.97);
+}
+
+.kinetic-verba-root .kv-btn-ghost {
+  border: 1px solid var(--kv-w24);
+  color: var(--kv-w92);
+}
+
+.kinetic-verba-root .kv-btn-ghost:hover {
+  border-color: var(--kv-w64);
+}
+
+.kinetic-verba-root .kv-btn-solid {
+  position: relative;
+  overflow: clip;
+  background: #f2f2f2;
+  color: #0a0a0a;
+  box-shadow:
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 #fff;
+}
+
+.kinetic-verba-root .kv-iri {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0) 34%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0) 66%
+  );
+  background-size: 300% 300%;
+  transition: opacity 0.5s;
+  animation: kv-iri 4s linear infinite;
+}
+
+.kinetic-verba-root .kv-btn-solid:hover .kv-iri {
+  opacity: 0.35;
+}
+
+@keyframes kv-iri {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ---------- nav ---------- */
+.kinetic-verba-root .kv-nav {
+  position: fixed;
+  top: 16px;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+/* One scrim, every frame. Display type, stat rows and bento diagrams all run
+   under the fixed pill at some scroll depth; the pill is opaque enough to cut
+   them and the band above it takes the rest, so nothing ever half-shows. */
+.kinetic-verba-root .kv-nav::before {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 146px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 8, 10, 0.985) 0%,
+    rgba(8, 8, 10, 0.9) 40%,
+    rgba(8, 8, 10, 0.5) 72%,
+    transparent 100%
+  );
+}
+
+.kinetic-verba-root .kv-nav-pill {
+  position: relative;
+  pointer-events: auto;
+  width: min(1120px, 100%);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 0 10px 0 16px;
+  border: 1px solid var(--kv-w12);
+  border-radius: 999px;
+  background: rgba(11, 11, 13, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.kinetic-verba-root .kv-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--kv-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.kinetic-verba-root .kv-brand-mark {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: radial-gradient(circle at 32% 26%, #26262c, #0a0a0c 76%);
+  border: 1px solid var(--kv-w12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.kinetic-verba-root .kv-brand-mark img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.kinetic-verba-root .kv-nav-links {
+  display: flex;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--kv-w64);
+}
+
+.kinetic-verba-root .kv-nav-links a {
+  position: relative;
+  padding: 4px 0;
+}
+
+.kinetic-verba-root .kv-nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.kinetic-verba-root .kv-nav-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.kinetic-verba-root .kv-nav-cta {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .kinetic-verba-root .kv-nav-links,
+  .kinetic-verba-root .kv-nav-cta .kv-btn-ghost {
+    display: none;
+  }
+  .kinetic-verba-root .kv-brand-name {
+    display: none;
+  }
+
+  /* A 146px scrim is a sixth of a phone viewport, and it was landing on live
+     content — it greyed the closing button and the top of the stat row into a
+     half-lit smear. Cut it to the pill plus a hair, and steepen the fall-off,
+     so nothing below the pill is ever half-painted. */
+  .kinetic-verba-root .kv-nav::before {
+    height: 92px;
+    background: linear-gradient(
+      180deg,
+      rgba(8, 8, 10, 0.985) 0%,
+      rgba(8, 8, 10, 0.94) 52%,
+      rgba(8, 8, 10, 0.46) 80%,
+      transparent 100%
+    );
+  }
+}
+
+/* ---------- hero shell ----------
+   Three bands, top to bottom: the type block, the light band, the strip. The
+   type never enters the light band and the light band carries nothing but the
+   mark and the pairs it emits, so no control ever sits on the dial. */
+.kinetic-verba-root .kv-hero {
+  --kv-gutter: clamp(20px, 4.6vw, 62px);
+  position: relative;
+  background: var(--kv-ink);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+  padding-top: 104px;
+}
+
+.kinetic-verba-root .kv-prism {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: saturate(0.84);
+}
+
+/* The type band is pulled down hard so the headline reads as cut metal on a
+   dark plate; the light band keeps its full exposure. */
+.kinetic-verba-root .kv-hero-dim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 62% at 50% 62%, transparent 24%, rgba(8, 8, 10, 0.6) 78%),
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 10, 0.9) 0%,
+      rgba(8, 8, 10, 0.78) 26%,
+      rgba(8, 8, 10, 0.16) 44%,
+      rgba(8, 8, 10, 0.5) 82%,
+      rgba(8, 8, 10, 0.94) 100%
+    );
+}
+
+.kinetic-verba-root .kv-hero-lead {
+  position: relative;
+  z-index: 5;
+  padding: 0 var(--kv-gutter);
+}
+
+/* One rule under the headline: the line on the left, the two actions on the
+   right, both far above the dial. */
+.kinetic-verba-root .kv-hero-say {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--kv-w08);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(20px, 4vw, 56px);
+}
+
+.kinetic-verba-root .kv-hero-mid {
+  position: relative;
+  z-index: 4;
+  flex: 1 1 auto;
+  min-height: 268px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The burst's dark centre, made explicit and sized to the mark, so the dial
+   is read as the void in the light rather than a disc laid on top of it. */
+.kinetic-verba-root .kv-hero-mid::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(880px, 76vw);
+  height: 340px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgba(8, 8, 10, 0.94),
+    rgba(8, 8, 10, 0.6) 38%,
+    rgba(8, 8, 10, 0.18) 62%,
+    transparent 80%
+  );
+}
+
+.kinetic-verba-root .kv-hero-bottom {
+  position: relative;
+  z-index: 5;
+  background: linear-gradient(180deg, transparent, rgba(8, 8, 10, 0.78) 34%, rgba(8, 8, 10, 0.94));
+  padding-top: 22px;
+}
+
+.kinetic-verba-root .kv-npx {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--kv-mono);
+  font-size: 12.5px;
+  color: var(--kv-w64);
+  border: 1px solid var(--kv-w12);
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: rgba(10, 10, 11, 0.55);
+}
+
+.kinetic-verba-root .kv-npx:hover {
+  border-color: var(--kv-w40);
+  color: var(--kv-w92);
+}
+
+.kinetic-verba-root .kv-npx-dollar {
+  color: var(--kv-w40);
+}
+
+.kinetic-verba-root .kv-npx svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.55;
+}
+
+.kinetic-verba-root .kv-h1 {
+  margin-top: 16px;
+  font-family: var(--kv-display);
+  font-size: clamp(2.5rem, 8.2vw, 7.4rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.kinetic-verba-root .kv-hero-sub {
+  max-width: 60ch;
+  font-size: clamp(1rem, 1.35vw, 1.14rem);
+  color: var(--kv-w64);
+}
+
+.kinetic-verba-root .kv-rotor {
+  color: var(--kv-w92);
+  border-bottom: 1px solid var(--kv-w24);
+  font-weight: 600;
+  display: inline-block;
+  min-width: 5.5ch;
+  text-align: left;
+}
+
+.kinetic-verba-root .kv-caret {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  background: var(--kv-w64);
+  vertical-align: -2px;
+  margin-left: 1px;
+  animation: kv-caret 1s steps(1) infinite;
+}
+
+@keyframes kv-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.kinetic-verba-root .kv-hero-ctas {
+  display: flex;
+  gap: 12px;
+  flex: none;
+}
+
+.kinetic-verba-root .kv-hero-ctas .kv-btn {
+  font-size: 14.5px;
+  padding: 12px 24px;
+}
+
+/* ---------- M1 · the paired stream ---------- */
+.kinetic-verba-root .kv-field {
+  position: absolute;
+  inset: -80px calc(-1 * var(--kv-gutter));
+  z-index: 1;
+  perspective: 1300px;
+  perspective-origin: 50% 50%;
+  pointer-events: none;
+}
+
+.kinetic-verba-root .kv-pairstream {
+  position: absolute;
+  inset: 0;
+}
+
+.kinetic-verba-root .kv-lane {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max-content;
+  will-change: transform, opacity, filter;
+}
+
+.kinetic-verba-root .kv-card {
+  position: relative;
+  background: rgba(13, 14, 17, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  box-shadow:
+    0 20px 46px rgba(0, 0, 0, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14.5px;
+  line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.kinetic-verba-root .kv-card-layer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 11px 15px;
+}
+
+.kinetic-verba-root .kv-card-layer-tr {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.kinetic-verba-root .kv-card-button .kv-card-layer {
+  padding: 9px 10px;
+}
+
+.kinetic-verba-root .kv-c-btn {
+  display: inline-block;
+  background: #ededed;
+  color: #0a0a0a;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-family: var(--kv-display);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.kinetic-verba-root .kv-c-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--kv-w92);
+  font-size: 14px;
+}
+
+.kinetic-verba-root .kv-c-ok {
+  color: var(--kv-w92);
+}
+
+.kinetic-verba-root .kv-c-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--kv-w40);
+  font-family: var(--kv-mono);
+}
+
+.kinetic-verba-root .kv-c-input {
+  border: 1px solid var(--kv-w12);
+  border-radius: 7px;
+  padding: 7px 10px;
+  color: var(--kv-w64);
+  font-size: 13px;
+  min-width: 172px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.kinetic-verba-root .kv-c-price,
+.kinetic-verba-root .kv-c-nav {
+  font-family: var(--kv-mono);
+  font-size: 12.5px;
+  color: var(--kv-w64);
+}
+
+.kinetic-verba-root .kv-c-line {
+  font-size: 14px;
+  color: var(--kv-w92);
+}
+
+/* ---------- M1b · the pairs, laid out as rows on a phone ---------- */
+.kinetic-verba-root .kv-pairs {
+  display: none;
+}
+
+.kinetic-verba-root .kv-pairarrow {
+  font-family: var(--kv-mono);
+  font-size: 12px;
+  color: var(--kv-w40);
+  flex: none;
+}
+
+/* ---------- M2 · the language wheel ----------
+   THE shared LanguageWheel, sitting on the burst's dark centre — the point
+   every lane radiates from. Nothing about the dial is reimplemented here; the
+   direction speaks only through --gtw-*. The core carries alpha so the light
+   behind it reads through, and there is no halo: the mark is the void in the
+   burst, not a lamp laid on it. */
+.kinetic-verba-root .kv-wheel {
+  --kv-swell: 1;
+  --kv-charge: 0;
+  --gtw-size: 168px;
+  --gtw-bezel: conic-gradient(from 208deg, #26262b, #d5d5da 20%, #47474c 44%, #f6f6f8 66%, #26262b);
+  --gtw-sweep: #fbfbfd;
+  --gtw-sweep-width: 2.8;
+  --gtw-track: rgba(255, 255, 255, 0.16);
+  --gtw-core: radial-gradient(circle at 34% 27%, rgba(34, 34, 40, 0.9), rgba(6, 6, 8, 0.74) 76%);
+  --gtw-core-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, calc(0.13 + var(--kv-charge) * 0.16)),
+    inset 0 -10px 24px rgba(0, 0, 0, 0.8);
+  --gtw-halo: transparent;
+  --gtw-mark-glow: rgba(255, 255, 255, 0.4);
+  --gtw-glyph: rgba(232, 234, 244, 0.8);
+  --gtw-glyph-size: 11px;
+  --gtw-mono: var(--kv-mono);
+
+  position: relative;
+  z-index: 2;
+  transform: scale(var(--kv-swell));
+}
+
+@media (min-width: 768px) {
+  .kinetic-verba-root .kv-wheel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(var(--kv-swell));
+  }
+}
+
+/* A long, soft fall-off from the mark's rim out into the burst's dark core —
+   the two share one gradient, so a viewer reads one object rather than a disc
+   laid on a photograph. */
+.kinetic-verba-root .kv-wheel-void {
+  position: absolute;
+  inset: -128%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(8, 8, 10, 0.66) 22%,
+    rgba(8, 8, 10, 0.4) 38%,
+    rgba(8, 8, 10, 0.14) 58%,
+    transparent 76%
+  );
+}
+
+
+/* ---------- flags + trusted ---------- */
+.kinetic-verba-root .kv-langs {
+  position: relative;
+  padding: 10px 0 6px;
+  border-top: 1px solid var(--kv-w08);
+}
+
+.kinetic-verba-root .kv-langs-label {
+  text-align: center;
+  font-family: var(--kv-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--kv-w40);
+  margin-bottom: 10px;
+}
+
+.kinetic-verba-root .kv-marq {
+  overflow: clip;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.kinetic-verba-root .kv-marq-track {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  padding: 2px 0;
+}
+
+.kinetic-verba-root .kv-lchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--kv-w12);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--kv-w64);
+  white-space: nowrap;
+  background: rgba(12, 12, 14, 0.5);
+}
+
+.kinetic-verba-root .kv-lflag {
+  font-size: 13px;
+}
+
+.kinetic-verba-root .kv-trusted {
+  padding: 18px 20px 24px;
+  text-align: center;
+}
+
+.kinetic-verba-root .kv-trusted-label {
+  display: block;
+  font-family: var(--kv-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--kv-w40);
+  margin-bottom: 10px;
+}
+
+.kinetic-verba-root .kv-trusted-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3.4vw, 44px);
+  flex-wrap: wrap;
+}
+
+.kinetic-verba-root .kv-wordmark {
+  font-family: var(--kv-display);
+  font-weight: 700;
+  font-size: 15.5px;
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: -0.01em;
+  transition: color 0.3s;
+}
+
+.kinetic-verba-root .kv-wordmark:hover {
+  color: var(--kv-w92);
+}
+
+.kinetic-verba-root .kv-wm-cursor {
+  font-family: var(--kv-mono);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.kinetic-verba-root .kv-wm-ramp {
+  font-weight: 800;
+}
+
+.kinetic-verba-root .kv-wm-mintlify {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.kinetic-verba-root .kv-wm-profound {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 13.5px;
+}
+
+.kinetic-verba-root .kv-wm-partiful {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.kinetic-verba-root .kv-wm-clickhouse {
+  font-family: var(--kv-mono);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- hero, on a phone ----------
+   The fan cannot survive a 390px column, so it is replaced outright: the mark
+   sits at the top of the light band and the same six pairs are laid down as
+   rows beneath it, English on the left of the rule and the translation on the
+   right. Nothing is pushed off canvas and nothing sits on the dial. */
+@media (max-width: 767px) {
+  .kinetic-verba-root .kv-hero {
+    padding-top: 96px;
+    min-height: 0;
+  }
+
+  .kinetic-verba-root .kv-hero-say {
+    display: block;
+  }
+
+  .kinetic-verba-root .kv-hero-ctas {
+    margin-top: 18px;
+  }
+
+  .kinetic-verba-root .kv-field {
+    display: none;
+  }
+
+  .kinetic-verba-root .kv-hero-mid {
+    min-height: 0;
+    padding: 30px 0 12px;
+    width: 100%;
+  }
+
+  .kinetic-verba-root .kv-hero-mid::before {
+    width: 150vw;
+    height: 210px;
+    top: 118px;
+  }
+
+  .kinetic-verba-root .kv-wheel {
+    --gtw-size: 132px;
+    --gtw-glyph-size: 9.5px;
+    margin-bottom: 26px;
+  }
+
+  .kinetic-verba-root .kv-pairs {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 0 var(--kv-gutter);
+  }
+
+  .kinetic-verba-root .kv-pairrow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kinetic-verba-root .kv-pairrow .kv-card {
+    font-size: 11.5px;
+    overflow: clip;
+  }
+
+  .kinetic-verba-root .kv-pairrow .kv-card-layer {
+    padding: 8px 10px;
+  }
+
+  .kinetic-verba-root .kv-pairrow .kv-c-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  .kinetic-verba-root .kv-pairrow .kv-c-input {
+    min-width: 0;
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  .kinetic-verba-root .kv-pairrow .kv-c-toast,
+  .kinetic-verba-root .kv-pairrow .kv-c-line {
+    font-size: 11.5px;
+  }
+
+  .kinetic-verba-root .kv-pairrow .kv-c-price,
+  .kinetic-verba-root .kv-pairrow .kv-c-nav {
+    font-size: 10.5px;
+  }
+}
+
+/* ---------- the lit room ----------
+   The background is never flat. A fixed pair of enormous, very soft bands sits
+   behind everything, so the plate the page is printed on always has a
+   direction of light; each section then adds its own raking band on top, at a
+   different angle, so two sections never read as the same painted black. */
+.kinetic-verba-root .kv-lume {
+  position: fixed;
+  inset: -10% -10% -10% -10%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 46% at 8% 16%, rgba(255, 255, 255, 0.062), transparent 64%),
+    radial-gradient(96% 40% at 96% 62%, rgba(255, 255, 255, 0.045), transparent 62%),
+    linear-gradient(196deg, rgba(255, 255, 255, 0.026) 0%, transparent 38%);
+  filter: blur(2px);
+}
+
+/* ================= shared sections =================
+   Section light is radial only, and every ellipse is placed so its reach dies
+   well inside the section box. A linear band — even one that starts
+   transparent — resolves along a tilted axis, so its zero line crosses the
+   section's top edge diagonally and prints a step across part of the page
+   width. Radials that never touch an edge cannot draw one. */
+.kinetic-verba-root .kv-sect {
+  position: relative;
+  padding: clamp(88px, 10vw, 150px) clamp(20px, 6vw, 72px);
+  background-image:
+    radial-gradient(64% 52% at 50% 32%, rgba(255, 255, 255, 0.05), transparent 74%),
+    radial-gradient(78% 54% at 104% 72%, rgba(255, 255, 255, 0.035), transparent 66%);
+}
+
+.kinetic-verba-root .kv-sect-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.kinetic-verba-root .kv-head {
+  position: relative;
+}
+
+.kinetic-verba-root .kv-head-center {
+  text-align: center;
+}
+
+.kinetic-verba-root .kv-display {
+  position: relative;
+  font-family: var(--kv-display);
+  font-size: clamp(2.4rem, 6vw, 5.2rem);
+  font-weight: 700;
+  letter-spacing: -0.038em;
+  line-height: 1;
+}
+
+.kinetic-verba-root .kv-display-xl {
+  font-size: clamp(2.6rem, 7vw, 6.2rem);
+}
+
+.kinetic-verba-root .kv-lede {
+  margin-top: 18px;
+  max-width: 580px;
+  color: var(--kv-w64);
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+}
+
+.kinetic-verba-root .kv-lede-center {
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+/* ---------- the wall ----------
+   The direction's own section, and the one asset that has to make a still
+   frame of this page identifiable: display-scale type in twelve scripts,
+   counter-running, cut rows against drawn rows, its weight and width driven by
+   scroll velocity. It is content, not texture, so it is painted at content
+   contrast. */
+.kinetic-verba-root .kv-manifesto-sect {
+  overflow: clip;
+  /* The pin releases straight into this section, so the breath after the
+     story's payoff is taken here — a long lit stretch of dark before the
+     statement, then the wall. */
+  padding-top: clamp(200px, 74vw, 1080px);
+  padding-bottom: clamp(120px, 13vw, 200px);
+}
+
+.kinetic-verba-root .kv-manifesto {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: var(--kv-display);
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.32;
+}
+
+.kinetic-verba-root .kv-wall {
+  --kv-mqw: 560;
+  --kv-mqx: 1;
+  margin: clamp(76px, 9.5vw, 140px) calc(-1 * clamp(20px, 6vw, 72px)) 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.1vw, 16px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.kinetic-verba-root .kv-wall-row {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  font-family: var(--kv-display);
+  font-size: clamp(2.3rem, 5.6vw, 4.8rem);
+  font-weight: var(--kv-mqw);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+/* cut rows: solid metal, the same ramp the display headings are cut from.
+   The ramp is set on the words rather than the row because each word carries
+   its own width scale, and a transformed descendant is not included in an
+   ancestor's background-clip:text mask. */
+.kinetic-verba-root .kv-wall-cut span {
+  background-image: linear-gradient(
+    172deg,
+    #ffffff 0%,
+    #dcdce2 24%,
+    #9a9aa3 46%,
+    #d6d6dd 68%,
+    #f6f6f9 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* drawn rows: hairline outline only, so the wall has two densities */
+.kinetic-verba-root .kv-wall-drawn span {
+  color: transparent;
+  -webkit-text-stroke: 1.4px rgba(255, 255, 255, 0.52);
+}
+
+.kinetic-verba-root .kv-wall-row span {
+  padding-right: 0.62em;
+  display: inline-block;
+  transform: scaleX(var(--kv-mqx));
+  transform-origin: 0 50%;
+}
+
+.kinetic-verba-root .kv-statrow {
+  max-width: 1180px;
+  margin: clamp(80px, 9.5vw, 140px) auto 0;
+  padding-top: clamp(36px, 4vw, 58px);
+  border-top: 1px solid var(--kv-w12);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  text-align: center;
+}
+
+.kinetic-verba-root .kv-statrow b {
+  display: block;
+  font-family: var(--kv-display);
+  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  /* bright enough to survive the reveal and a small phone: the floor of the
+     sheen is a light grey, never a mid-grey */
+  background: linear-gradient(180deg, #ffffff, #ffffff 38%, #cfcfd6 84%, #f0f0f4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.kinetic-verba-root .kv-statrow span {
+  display: block;
+  margin-top: 6px;
+  font: 500 9.5px var(--kv-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--kv-w64);
+}
+
+@media (max-width: 767px) {
+  .kinetic-verba-root .kv-statrow {
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 12px;
+  }
+
+  .kinetic-verba-root .kv-wall-drawn span {
+    -webkit-text-stroke-width: 1px;
+  }
+}
+
+/* pricing */
+.kinetic-verba-root .kv-pricing {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--kv-w12);
+  border-radius: 16px;
+  overflow: clip;
+}
+
+.kinetic-verba-root .kv-plan {
+  padding: 38px 36px 42px;
+  background: var(--kv-ink2);
+}
+
+.kinetic-verba-root .kv-plan + .kv-plan {
+  border-left: 1px solid var(--kv-w12);
+}
+
+.kinetic-verba-root .kv-plan-name {
+  font: 600 11px var(--kv-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--kv-w40);
+}
+
+.kinetic-verba-root .kv-plan-price {
+  margin-top: 14px;
+  font-family: var(--kv-display);
+  font-size: clamp(2.6rem, 4.5vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  background: linear-gradient(
+    110deg,
+    #ffffff 0%,
+    #e9e9ee 16%,
+    #ffffff 26%,
+    #c6c6ce 38%,
+    #b0b0b9 50%,
+    #dedee4 62%,
+    #ffffff 74%,
+    #c9c9d1 88%,
+    #ffffff 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: kv-foil 7s ease-in-out infinite;
+}
+
+.kinetic-verba-root .kv-plan-price-sm {
+  font-size: clamp(2rem, 3.4vw, 2.7rem);
+}
+
+@keyframes kv-foil {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.kinetic-verba-root .kv-plan-note {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--kv-w40);
+  font-family: var(--kv-mono);
+}
+
+.kinetic-verba-root .kv-plan ul {
+  list-style: none;
+  margin-top: 22px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kinetic-verba-root .kv-plan li {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--kv-w64);
+}
+
+.kinetic-verba-root .kv-plan li::before {
+  content: '—';
+  color: var(--kv-w24);
+  flex: none;
+}
+
+.kinetic-verba-root .kv-plan .kv-btn {
+  margin-top: 28px;
+}
+
+@media (max-width: 767px) {
+  .kinetic-verba-root .kv-pricing {
+    grid-template-columns: 1fr;
+  }
+  .kinetic-verba-root .kv-plan + .kv-plan {
+    border-left: 0;
+    border-top: 1px solid var(--kv-w12);
+  }
+}
+
+/* closing + footer */
+.kinetic-verba-root .kv-closing {
+  text-align: center;
+  overflow: clip;
+  padding-top: clamp(120px, 13vw, 190px);
+  padding-bottom: clamp(72px, 8vw, 118px);
+  background-image: none;
+}
+
+.kinetic-verba-root .kv-prism-cta {
+  filter: saturate(0.8);
+}
+
+/* The top stop is held down to the tone of the section above it: this dim is
+   the last thing painted over the plate, so a hard value here reads as a step
+   across the whole page width at the pricing boundary. */
+.kinetic-verba-root .kv-closing-dim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(150% 34% at 50% 0%, rgba(255, 255, 255, 0.019), transparent 76%),
+    radial-gradient(96% 76% at 50% 58%, transparent 18%, rgba(8, 8, 10, 0.8) 76%),
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 10, 0.66) 0%,
+      rgba(8, 8, 10, 0.74) 14%,
+      rgba(8, 8, 10, 0.28) 44%,
+      rgba(8, 8, 10, 0.6) 100%
+    );
+}
+
+.kinetic-verba-root .kv-closing .kv-sect-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.kinetic-verba-root .kv-hero-ctas-center {
+  margin-top: 32px;
+  justify-content: center;
+}
+
+.kinetic-verba-root .kv-footer {
+  border-top: 1px solid var(--kv-w12);
+  padding: 46px clamp(20px, 6vw, 72px) 26px;
+}
+
+.kinetic-verba-root .kv-foot-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr repeat(4, 1fr);
+  gap: 32px;
+}
+
+.kinetic-verba-root .kv-foot-brand .kv-brand {
+  margin-bottom: 14px;
+}
+
+.kinetic-verba-root .kv-foot-brand p {
+  font: 500 10px var(--kv-mono);
+  letter-spacing: 0.1em;
+  color: var(--kv-w40);
+  line-height: 2;
+}
+
+.kinetic-verba-root .kv-foot-col h4 {
+  font: 600 10px var(--kv-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kv-w40);
+  margin-bottom: 12px;
+}
+
+.kinetic-verba-root .kv-foot-col a {
+  display: block;
+  font-size: 13.5px;
+  color: var(--kv-w64);
+  padding: 3px 0;
+}
+
+.kinetic-verba-root .kv-foot-col a:hover {
+  color: var(--kv-w92);
+}
+
+.kinetic-verba-root .kv-foot-bottom {
+  max-width: 1180px;
+  margin: 30px auto 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--kv-w08);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  font: 400 11px var(--kv-mono);
+  color: var(--kv-w40);
+}
+
+@media (max-width: 900px) {
+  .kinetic-verba-root .kv-foot-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-verba-root .kv-grain,
+  .kinetic-verba-root .kv-iri,
+  .kinetic-verba-root .kv-caret,
+  .kinetic-verba-root .kv-plan-price {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   StorySection, FeatureBento, EditorWorkspace and the line-art
+   diagrams read every colour, rule and radius from these
+   properties. Nothing here forks the components — the direction
+   is carried entirely by the values.
+   ============================================================ */
+
+.kinetic-verba-root .kv-story-sec,
+.kinetic-verba-root .kv-features-sec,
+.kinetic-verba-root .kv-review-sec {
+  /* story */
+  --gts-bg: var(--kv-ink);
+  --gts-paper: var(--kv-paper);
+  --gts-ink: #101013;
+  --gts-ink-2: rgba(16, 16, 19, 0.62);
+  --gts-ink-3: rgba(16, 16, 19, 0.4);
+  --gts-paper-rule: rgba(16, 16, 19, 0.12);
+  --gts-paper-dot: rgba(16, 16, 19, 0.13);
+  --gts-paper-guide: rgba(16, 16, 19, 0.08);
+  --gts-paper-card: rgba(255, 255, 255, 0.6);
+  --gts-shell: var(--kv-ink2);
+  --gts-shell-text: #ffffff;
+  --gts-shell-line: var(--kv-w12);
+  /* carries alpha so the field lights the editor act from behind the plate */
+  --gts-code-bg: rgba(9, 9, 11, 0.8);
+  --gts-code-text: rgba(238, 238, 242, 0.85);
+  --gts-line: var(--kv-w12);
+  --gts-line-2: var(--kv-w08);
+  --gts-t1: var(--kv-w92);
+  --gts-t2: var(--kv-w64);
+  --gts-t3: var(--kv-w40);
+  --gts-t4: var(--kv-w24);
+  --gts-display: var(--kv-display);
+  --gts-text: var(--kv-text);
+  --gts-mono: var(--kv-mono);
+  --gts-radius: 22px;
+  --gts-head-size: clamp(2.4rem, 6vw, 5.2rem);
+  --gts-head-weight: 700;
+  --gts-sub-size: clamp(1rem, 1.3vw, 1.1rem);
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: rgba(255, 255, 255, 0.72);
+  --gts-tok-attr: rgba(255, 255, 255, 0.6);
+  --gts-tok-str: rgba(255, 255, 255, 0.82);
+  --gts-tok-text: rgba(255, 255, 255, 0.94);
+  --gts-tok-kw: rgba(255, 255, 255, 0.66);
+  --gts-tok-fn: rgba(255, 255, 255, 0.9);
+  --gts-tok-punct: rgba(255, 255, 255, 0.34);
+
+  /* bento */
+  --gtb-line: var(--kv-w12);
+  --gtb-line-2: var(--kv-w08);
+  --gtb-title: var(--kv-w92);
+  --gtb-body: var(--kv-w64);
+  --gtb-label: var(--kv-w40);
+  --gtb-display: var(--kv-display);
+  --gtb-text: var(--kv-text);
+  --gtb-mono: var(--kv-mono);
+  --gtb-radius: 22px;
+  --gtb-grid-bg: rgba(255, 255, 255, 0.016);
+  --gtb-mock-bg: rgba(255, 255, 255, 0.022);
+  --gtb-spotlight: rgba(255, 255, 255, 0.075);
+  --gtb-head-size: clamp(2.4rem, 6vw, 5.2rem);
+  --gtb-head-weight: 700;
+  --gtb-head-gap: 26px;
+  --gtb-sub-size: clamp(1rem, 1.3vw, 1.1rem);
+  --gtb-pad: clamp(88px, 10vw, 150px) 0 clamp(72px, 8vw, 120px);
+  --gtb-pad-sm: clamp(64px, 12vw, 96px) 0 clamp(36px, 8vw, 56px);
+  --gtb-cell-min: 258px;
+  --gtb-cell-pad: 34px 38px 38px;
+  --gtb-title-size: 1.8rem;
+  --gtb-body-size: 14px;
+  --gtb-mock-h: 130px;
+
+  /* editor */
+  --gte-line: var(--kv-w12);
+  --gte-line-2: var(--kv-w08);
+  --gte-title: var(--kv-w92);
+  --gte-body: var(--kv-w64);
+  --gte-label: var(--kv-w40);
+  --gte-quiet: var(--kv-w24);
+  --gte-display: var(--kv-display);
+  --gte-text: var(--kv-text);
+  --gte-mono: var(--kv-mono);
+  --gte-radius: 22px;
+  --gte-ws-bg: var(--kv-ink2);
+  --gte-ws-shadow: 0 40px 120px rgba(0, 0, 0, 0.62);
+  --gte-revised: var(--kv-w92);
+  --gte-act-hover: var(--kv-w40);
+  --gte-head-size: clamp(2.4rem, 6vw, 5.2rem);
+  --gte-head-weight: 700;
+  --gte-sub-size: clamp(1rem, 1.3vw, 1.1rem);
+  --gte-pad: clamp(150px, 18vw, 270px) 0 clamp(96px, 10vw, 150px);
+
+  /* diagrams */
+  --gtd-line: rgba(255, 255, 255, 0.34);
+  --gtd-fill: rgba(255, 255, 255, 0.13);
+  --gtd-accent: #ffffff;
+  --gtd-label: var(--kv-w40);
+  --gtd-label-size: 7.4px;
+  --gtd-mono: var(--kv-mono);
+  --gtd-node-fill: #0a0a0c;
+  --gtd-node-stroke: rgba(255, 255, 255, 0.46);
+  --gtd-wire: rgba(255, 255, 255, 0.24);
+  --gtd-pulse: #ffffff;
+  --gtd-pulse-glow: rgba(255, 255, 255, 0.55);
+  --gtd-glyph: rgba(255, 255, 255, 0.74);
+}
+
+/* The page measure: one gutter for every section, shared or local. */
+.kinetic-verba-root .kv-story-sec .gts-head {
+  width: min(1180px, calc(100% - 2 * clamp(20px, 6vw, 72px)));
+  padding: clamp(88px, 10vw, 150px) 0 clamp(40px, 4vw, 58px);
+}
+
+.kinetic-verba-root .kv-features-sec .gtb-wrap,
+.kinetic-verba-root .kv-review-sec .gte-wrap {
+  padding: 0 clamp(20px, 6vw, 72px);
+  max-width: calc(1180px + 2 * clamp(20px, 6vw, 72px));
+}
+
+/* Each section takes the light from a different quarter, so the plate reads as
+   lit hardware rather than a dark theme. */
+.kinetic-verba-root .kv-review-sec {
+  background-image:
+    radial-gradient(78% 40% at 34% 32%, rgba(255, 255, 255, 0.08), transparent 70%),
+    radial-gradient(64% 34% at 96% 76%, rgba(255, 255, 255, 0.032), transparent 64%);
+}
+
+.kinetic-verba-root .kv-features-sec {
+  background-image:
+    radial-gradient(80% 46% at 88% 32%, rgba(255, 255, 255, 0.058), transparent 68%),
+    radial-gradient(70% 40% at 4% 74%, rgba(255, 255, 255, 0.034), transparent 62%);
+}
+
+.kinetic-verba-root .kv-manifesto-sect {
+  background-image:
+    radial-gradient(96% 56% at 50% 44%, rgba(255, 255, 255, 0.055), transparent 68%),
+    radial-gradient(58% 30% at 12% 76%, rgba(255, 255, 255, 0.03), transparent 66%);
+}
+
+/* Header + content: the cell is its title, its line, and its drawing. */
+.kinetic-verba-root .kv-features-sec .gtb-cell h3 small {
+  display: none;
+}
+
+.kinetic-verba-root .kv-features-sec .gtb-cell h3 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.kinetic-verba-root .kv-features-sec .gtb-cell p {
+  max-width: 40ch;
+}
+
+.kinetic-verba-root .kv-features-sec .gtb-mock {
+  margin-top: 22px;
+  border-radius: 14px;
+}
+
+/* A bento, not a table. The cells on one diagonal are set as leads — larger
+   title, a drawing at nearly twice the height, more air — so the eye has
+   somewhere to land first and the grid reads as a rhythm rather than a
+   uniform table of eight. */
+.kinetic-verba-root .kv-features-sec .gtb-cell:nth-child(4n + 1),
+.kinetic-verba-root .kv-features-sec .gtb-cell:nth-child(4n) {
+  --gtb-title-size: 2.5rem;
+  --gtb-mock-h: 190px;
+  --gtb-body-size: 15px;
+  --gtb-cell-pad: 42px 46px 46px;
+}
+
+.kinetic-verba-root .kv-features-sec .gtb-cell:nth-child(4n + 2),
+.kinetic-verba-root .kv-features-sec .gtb-cell:nth-child(4n + 3) {
+  --gtb-title-size: 1.5rem;
+  --gtb-mock-h: 112px;
+}
+
+.kinetic-verba-root .kv-review-sec .gte-ws {
+  margin-top: 44px;
+}
+
+.kinetic-verba-root .kv-review-sec .gte-sub {
+  max-width: 62ch;
+}
+
+/* ---------- story: the colour rule, enforced on the shared stage ----------
+   The prismatic field is real dispersed light and it stays, but it belongs
+   BEHIND the sheet, not screened over it. Screened on top it tinted every dark
+   surface on the returned page — the CTA, the toast disc, the headline. Behind
+   a code plate that carries a little alpha it does the one job it should:
+   light the editor act from underneath. The paper is opaque, so the payoff
+   frame is bone-neutral. */
+.kinetic-verba-root .kv-story-sec .gts-field {
+  z-index: 0;
+  mix-blend-mode: normal;
+}
+
+.kinetic-verba-root .kv-story-sec .gts-window {
+  z-index: 1;
+}
+
+/* the plate's alpha lives on the window; the code layer stays clear */
+.kinetic-verba-root .kv-story-sec .gts-code {
+  background: transparent;
+}
+
+/* No tinted UI chrome: the split reads by its own edge light alone. */
+.kinetic-verba-root .kv-story-sec .gts-split-ca {
+  display: none;
+}
+
+/* ---------- beat 5: the counsel card ----------
+   The approved state is docked into a strip at the foot of the card instead of
+   covering it, so the request and its resolution are never printed on top of
+   each other — at full opacity or at any point in the cross-fade the card
+   reads top to bottom: who asked, what they asked, the two actions, the
+   outcome. */
+.kinetic-verba-root .kv-story-sec .gts-review-card {
+  padding-bottom: 56px;
+  border-color: rgba(22, 24, 26, 0.26);
+  box-shadow: 0 26px 64px rgba(22, 24, 26, 0.34);
+}
+
+.kinetic-verba-root .kv-story-sec .gts-r-approved {
+  inset: auto 1px 1px 1px;
+  height: 42px;
+  background: #ededea;
+  border-top: 1px solid rgba(22, 24, 26, 0.16);
+  border-radius: 0 0 calc(var(--gts-radius) - 1px) calc(var(--gts-radius) - 1px);
+  font-weight: 600;
+}
+
+/* The nav→dock proxy is the one shape on the stage with nothing written on it.
+   Given the shell fill it read as a dead black slab whenever a frame caught it
+   mid-morph; as machined chrome with a lit top edge it reads as the pill it
+   actually is, travelling. */
+.kinetic-verba-root .kv-story-sec .gts-proxy {
+  background: rgba(13, 13, 16, 0.82);
+  border-color: rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    0 18px 50px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* The tone card is framed at 2.7× in beat 4, so it has to be narrow enough to
+   survive that crop — and its chip has to sit on the inboard edge. */
+.kinetic-verba-root .kv-story-sec .gts-site-right {
+  max-width: 238px;
+}
+
+/* Beat 4 frames this card at 2.7×, with the wipe divider landing just left of
+   it — the inset keeps the first letter clear of that edge at full zoom. */
+.kinetic-verba-root .kv-story-sec .gts-tagline {
+  font-size: 17px;
+  padding-left: 9px;
+}
+
+.kinetic-verba-root .kv-story-sec .gts-chip-tone {
+  right: 40px;
+}
+
+@media (max-width: 900px) {
+  .kinetic-verba-root .kv-story-sec,
+  .kinetic-verba-root .kv-features-sec,
+  .kinetic-verba-root .kv-review-sec {
+    --gtb-cell-pad: 26px 24px 30px;
+    --gtb-title-size: 1.4rem;
+    --gtb-mock-h: 104px;
+    --gts-radius: 16px;
+    --gtb-radius: 16px;
+    --gte-radius: 16px;
+  }
+
+  /* Mobile beat 5: the counsel card docks to the foot of the sheet instead of
+     landing across the headline, the paragraph and the nav row, and the
+     webhook wire — which has nowhere to run on a 390px plate — is dropped. */
+  .kinetic-verba-root .kv-story-sec .gts-review-card {
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: 80px;
+    width: auto;
+    z-index: 9;
+    background: #fff;
+    box-shadow: 0 -12px 44px rgba(10, 10, 12, 0.45);
+  }
+
+  .kinetic-verba-root .kv-story-sec .gts-review-line {
+    display: none;
+  }
+
+  /* room for the “requires review” pin above the legal line, so it stops
+     printing itself inside the call-to-action */
+  .kinetic-verba-root .kv-story-sec .gts-site-legal {
+    margin-top: 44px;
+  }
+
+  .kinetic-verba-root .kv-story-sec .gts-site-p .gts-mk {
+    left: auto;
+    right: -4px;
+    top: -22px;
+  }
+
+  .kinetic-verba-root .kv-story-sec .gts-site-right {
+    max-width: none;
+  }
+}

@@ -1,0 +1,1569 @@
+/* ============================================================
+   04 — WHITE GALLERY · museum light on paper
+   Every rule is nested under .white-gallery-root so this
+   direction can never leak into another one.
+
+   Structure below the hero is the shared StorySection /
+   EditorWorkspace / FeatureBento, skinned to paper at the
+   bottom of this file. Nothing is forked locally.
+   ============================================================ */
+
+@property --wg-a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 140deg;
+}
+
+.white-gallery-root {
+  --wg-wall: #faf9f6;
+  --wg-paper: #f4f3ef;
+  --wg-ink: #141413;
+  --wg-ink2: rgba(20, 20, 19, 0.66);
+  --wg-ink3: rgba(20, 20, 19, 0.44);
+  --wg-ink4: rgba(20, 20, 19, 0.3);
+  --wg-hair: rgba(20, 20, 19, 0.12);
+  --wg-hair2: rgba(20, 20, 19, 0.07);
+  --wg-night: #0a0a0b;
+
+  --wg-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --wg-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --wg-mono: ui-monospace, 'SF Mono', 'Menlo', Consolas, monospace;
+
+  --wg-frame-sh: 0 1.5px 0 rgba(255, 255, 255, 0.9) inset,
+    0 30px 60px -30px rgba(20, 20, 18, 0.28), 0 8px 18px -10px rgba(20, 20, 18, 0.18);
+
+  /* the machined silver ramp every framed object is edged with */
+  --wg-chrome: conic-gradient(
+    from var(--wg-a),
+    #767673,
+    #ffffff 18%,
+    #5c5c59 38%,
+    #f4f4f0 52%,
+    #8b8b88 66%,
+    #ffffff 82%,
+    #9f9f9c 92%,
+    #767673
+  );
+
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
+  background: var(--wg-wall);
+  color: var(--wg-ink);
+  font-family: var(--wg-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.white-gallery-root *,
+.white-gallery-root *::before,
+.white-gallery-root *::after {
+  box-sizing: border-box;
+}
+
+/* Zero-specificity so the shared components keep their own box metrics: a
+   blanket `* { margin: 0; padding: 0 }` here would strip every `margin: 0 auto`
+   and every cell padding out of StorySection / FeatureBento / EditorWorkspace. */
+:where(.white-gallery-root) :where(h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dd, figure, blockquote, pre) {
+  margin: 0;
+  padding: 0;
+}
+
+:where(.white-gallery-root) :where(ul, ol) {
+  list-style: none;
+}
+
+.white-gallery-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.white-gallery-root button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.white-gallery-root ::selection {
+  background: var(--wg-ink);
+  color: #fff;
+}
+
+/* paper tooth */
+.white-gallery-root .wg-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 8000;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: wg-grain 0.9s steps(6) infinite;
+}
+
+@keyframes wg-grain {
+  0% { transform: translate3d(0, 0, 0); }
+  17% { transform: translate3d(-4%, 2%, 0); }
+  33% { transform: translate3d(2%, -3%, 0); }
+  50% { transform: translate3d(-3%, -2%, 0); }
+  67% { transform: translate3d(3%, 3%, 0); }
+  83% { transform: translate3d(-2%, 4%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .white-gallery-root .wg-grain { animation: none; }
+}
+
+/* ---------- gallery vocabulary ---------- */
+
+/* an inline leader that introduces a row on the SAME line — never a stacked
+   label above a heading */
+.white-gallery-root .wg-lead {
+  font-family: var(--wg-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wg-ink4);
+  white-space: nowrap;
+}
+
+/* a framed object: paper, a machined silver edge, a shadow that gives it depth */
+.white-gallery-root .wg-frame {
+  position: relative;
+  border-radius: 16px;
+  background: var(--wg-paper);
+  box-shadow: 0 0 0 1px rgba(20, 20, 19, 0.16), var(--wg-frame-sh);
+}
+
+.white-gallery-root .wg-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2.5px;
+  z-index: 3;
+  pointer-events: none;
+  background: var(--wg-chrome);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.white-gallery-root .wg-plinth {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -26px;
+  height: 26px;
+  pointer-events: none;
+  background: radial-gradient(50% 100% at 50% 0, rgba(20, 20, 18, 0.16), transparent 70%);
+}
+
+/* Chrome, not dirt. Cool steel with real white speculars, read against the
+   band's black — a warm grey ramp on warm paper was the thing that looked
+   like a smudge.
+
+   The span is an inline-block with genuine headroom under the baseline: a
+   text-clipped background paints inside the PADDING box, and an inline box
+   ends at the baseline, which is what amputated both descenders of `g`. The
+   negative side margins give the padding back so the letterfit is unchanged,
+   and there is no drop-shadow — the emboss was a cheap letterpress. */
+.white-gallery-root .wg-foil {
+  display: inline-block;
+  line-height: 1;
+  padding: 0.08em 0.05em 0.22em;
+  margin: 0 -0.05em;
+  background: linear-gradient(
+    102deg,
+    #6f7880 0%,
+    #ffffff 8%,
+    #aeb6bd 16%,
+    #5c656e 26%,
+    #e8ecef 36%,
+    #ffffff 42%,
+    #78818a 52%,
+    #4e5760 62%,
+    #cdd4da 73%,
+    #ffffff 80%,
+    #8b949c 90%,
+    #616a73 100%
+  );
+  background-size: 210% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: wg-foil 6.5s ease-in-out infinite;
+}
+
+@keyframes wg-foil {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .white-gallery-root .wg-foil { animation: none; }
+}
+
+.white-gallery-root .wg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  min-height: 44px;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.white-gallery-root .wg-btn:active { transform: scale(0.98); }
+
+.white-gallery-root .wg-btn-ink {
+  background: var(--wg-ink);
+  color: #fbfbf9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 22px -12px rgba(20, 20, 18, 0.5);
+}
+
+.white-gallery-root .wg-btn-ink:hover { background: #000; }
+
+.white-gallery-root .wg-btn-line {
+  border: 1px solid var(--wg-hair);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.white-gallery-root .wg-btn-line:hover { border-color: rgba(20, 20, 19, 0.3); }
+
+.white-gallery-root .wg-arr {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.white-gallery-root .wg-btn:hover .wg-arr { transform: translateX(3px); }
+
+/* ---------- nav ---------- */
+.white-gallery-root .wg-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(16px, 3.4vw, 44px);
+  background: color-mix(in srgb, var(--wg-wall) 84%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--wg-hair2);
+}
+
+.white-gallery-root .wg-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 15px;
+  font-family: var(--wg-disp);
+}
+
+.white-gallery-root .wg-brand img { display: block; }
+
+.white-gallery-root .wg-nav-links {
+  display: flex;
+  gap: 26px;
+  font-size: 13.5px;
+  color: var(--wg-ink2);
+}
+
+.white-gallery-root .wg-nav-links a {
+  position: relative;
+  padding: 6px 0;
+}
+
+.white-gallery-root .wg-nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.white-gallery-root .wg-nav-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.white-gallery-root .wg-nav-cta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.white-gallery-root .wg-nav .wg-btn {
+  padding: 9px 16px;
+  min-height: 36px;
+  font-size: 13px;
+}
+
+@media (max-width: 880px) {
+  .white-gallery-root .wg-nav-links { display: none; }
+  .white-gallery-root .wg-nav .wg-btn-line { display: none; }
+}
+
+/* ============================================================
+   HERO — one object
+   The burst, the crosshair, the gate and the title are a single
+   composition: the band's horizontal axis runs through the dial,
+   and the title hangs off the vertical rule dropped out of it.
+   Only the install line stays on the paper.
+   ============================================================ */
+.white-gallery-root .wg-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 74px clamp(14px, 3vw, 40px) 18px;
+  overflow: clip;
+}
+
+/* wall text: what you type, printed on the wall beside the work */
+.white-gallery-root .wg-wall {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  padding: 0 clamp(4px, 1.4vw, 22px) 15px;
+}
+
+/* the tombstone label under the work: what it is, in numbers */
+.white-gallery-root .wg-placard {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--wg-hair);
+  border-bottom: 1px solid var(--wg-hair2);
+}
+
+.white-gallery-root .wg-placard > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px clamp(12px, 1.8vw, 26px) 10px 0;
+  border-right: 1px solid var(--wg-hair2);
+}
+
+.white-gallery-root .wg-placard > div:last-child {
+  border-right: 0;
+  padding-right: 0;
+}
+
+.white-gallery-root .wg-placard dt {
+  font-family: var(--wg-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wg-ink3);
+  white-space: nowrap;
+}
+
+.white-gallery-root .wg-placard dd {
+  margin: 0;
+  font-family: var(--wg-disp);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.15vw, 1.18rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.white-gallery-root .wg-npx {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--wg-mono);
+  font-size: 12.5px;
+  color: var(--wg-ink2);
+  border: 1px solid var(--wg-hair);
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.white-gallery-root .wg-npx .wg-dollar { color: var(--wg-ink3); }
+.white-gallery-root .wg-npx svg { width: 13px; height: 13px; opacity: 0.5; }
+
+/* the title, inside the work, hanging off the gate's vertical rule */
+.white-gallery-root .wg-work-copy {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--wg-axis) + var(--wg-dial) / 2 + 26px);
+  z-index: 12;
+  width: min(780px, 90%);
+  transform: translateX(-50%);
+  text-align: center;
+  color: #fbfbf9;
+}
+
+.white-gallery-root .wg-hero h1 {
+  font-family: var(--wg-disp);
+  font-size: clamp(1.95rem, 4.2vw, 3.55rem);
+  line-height: 0.97;
+  letter-spacing: -0.045em;
+  font-weight: 600;
+  color: #fbfbf9;
+}
+
+.white-gallery-root .wg-hero-sub {
+  margin: 10px auto 0;
+  max-width: 44ch;
+  font-size: clamp(0.94rem, 1.15vw, 1.06rem);
+  color: rgba(255, 255, 255, 0.68);
+  letter-spacing: -0.01em;
+}
+
+.white-gallery-root .wg-rot-wrap { white-space: nowrap; }
+
+.white-gallery-root .wg-rot {
+  display: inline-block;
+  min-width: 5.6ch;
+  text-align: left;
+  color: #ffffff;
+  font-family: var(--wg-disp);
+  font-weight: 500;
+}
+
+.white-gallery-root .wg-caret {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  background: #ffffff;
+  vertical-align: -0.14em;
+  margin-left: 1px;
+  animation: wg-caret 1s steps(1) infinite;
+}
+
+@keyframes wg-caret { 50% { opacity: 0; } }
+
+.white-gallery-root .wg-hero-cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---------- the work: a dark plate hung on the wall ---------- */
+.white-gallery-root .wg-stage-wrap {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+.white-gallery-root .wg-stage {
+  /* the band's horizontal axis — the gate, the crosshair, the lanes and the
+     title's hang point are all derived from this one number */
+  --wg-axis: 37%;
+  --wg-dial: clamp(122px, 12vw, 156px);
+
+  position: relative;
+  height: clamp(452px, 68svh, 660px);
+  width: 100%;
+  border-radius: 5px;
+  background: radial-gradient(122% 150% at 50% 37%, #101013 0%, #08080a 60%, #040405 100%);
+  overflow: clip;
+  isolation: isolate;
+  box-shadow:
+    0 0 0 1px rgba(20, 20, 19, 0.55),
+    0 44px 90px -44px rgba(20, 20, 18, 0.55),
+    0 12px 30px -16px rgba(20, 20, 18, 0.32);
+}
+
+/* the machined edge every framed object in this gallery carries */
+.white-gallery-root .wg-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+  background: var(--wg-chrome);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0.5;
+}
+
+.white-gallery-root .wg-stage-field {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* the shader's own bright axis is its vertical centre, so the canvas is hung
+     on the band's axis rather than on the plate — otherwise the light band and
+     the crosshair sit at two different heights */
+  top: calc(var(--wg-axis) - 50%);
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.94;
+  /* saturation UP, not down: desaturating a spectrum collapses it toward its
+     mean, and the mean of this shader is olive. Contrast does the deepening. */
+  filter: saturate(1.1) contrast(1.18) brightness(0.84);
+}
+
+/* thin-film, not tea: hue and saturation come from this ramp, luminance stays
+   the shader's, so the band is steel blue / violet / sea-green oil-slick */
+.white-gallery-root .wg-stage-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: color;
+  opacity: 0.66;
+  background: linear-gradient(
+    94deg,
+    #2f4f80 0%,
+    #3b2f78 17%,
+    #17575c 36%,
+    #46346f 54%,
+    #23477f 72%,
+    #1d5f5a 87%,
+    #33407c 100%
+  );
+}
+
+/* the viewfinder: one rule through the convergence point on each axis */
+.white-gallery-root .wg-cross-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--wg-axis);
+  height: 1px;
+  z-index: 2;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.14) 9%,
+    rgba(255, 255, 255, 0.46) 50%,
+    rgba(255, 255, 255, 0.14) 91%,
+    transparent
+  );
+}
+
+.white-gallery-root .wg-cross-v {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  z-index: 2;
+  pointer-events: none;
+  transform-origin: 50% 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.32) 32%,
+    rgba(255, 255, 255, 0.14) 56%,
+    rgba(255, 255, 255, 0.09) 78%,
+    rgba(255, 255, 255, 0.16)
+  );
+}
+
+.white-gallery-root .wg-stage-vign {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  /* Outer falloff, plus a floor under the title: the type sits in the light's
+     own falloff instead of floating on top of it. */
+  background:
+    linear-gradient(180deg, transparent 42%, rgba(4, 4, 6, 0.5) 70%, rgba(4, 4, 6, 0.82) 100%),
+    radial-gradient(78% 128% at 50% 37%, transparent 32%, rgba(4, 4, 6, 0.72) 100%);
+}
+
+/* --- the gate: a zero-size anchor on the axis, so the dial, the lanes and the
+   title all read their geometry from the same point --- */
+.white-gallery-root .wg-gate {
+  position: absolute;
+  left: 50%;
+  top: var(--wg-axis);
+  width: 0;
+  height: 0;
+  z-index: 6;
+}
+
+/* buttons and rules inside the work are lit from the other side */
+.white-gallery-root .wg-stage .wg-btn-ink {
+  background: #fbfbf9;
+  color: var(--wg-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 12px 28px -12px rgba(0, 0, 0, 0.8);
+}
+
+.white-gallery-root .wg-stage .wg-btn-ink:hover { background: #fff; }
+
+.white-gallery-root .wg-stage .wg-btn-line {
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fbfbf9;
+}
+
+.white-gallery-root .wg-stage .wg-btn-line:hover { border-color: rgba(255, 255, 255, 0.55); }
+
+/* the shared LanguageWheel, machined in gallery silver. Its own lens shells do
+   the refracting, so nothing else sits between the dial and the light band. */
+.white-gallery-root .wg-wheel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  transform: translate(-50%, -50%);
+
+  --gtw-size: var(--wg-dial);
+  /* brushed metal: a fine anisotropic comb over a hard specular ramp, so the
+     bezel reads as turned aluminium rather than a soft grey donut */
+  --gtw-bezel: repeating-conic-gradient(
+      from 0deg,
+      rgba(255, 255, 255, 0.09) 0deg 0.7deg,
+      rgba(0, 0, 0, 0.11) 0.7deg 1.7deg
+    ),
+    conic-gradient(
+      from 208deg,
+      #4a4a48,
+      #ffffff 9%,
+      #8f8f8c 17%,
+      #35353a 27%,
+      #dededa 41%,
+      #ffffff 46%,
+      #5b5b58 57%,
+      #2c2c30 66%,
+      #c8c8c4 78%,
+      #ffffff 84%,
+      #6d6d6a 92%,
+      #4a4a48
+    );
+  --gtw-core: radial-gradient(7% 5.5% at 33% 24%, rgba(255, 255, 255, 0.95) 0 42%, transparent 100%),
+    radial-gradient(120% 86% at 50% -20%, rgba(255, 255, 255, 0.18), transparent 58%),
+    radial-gradient(58% 30% at 50% 102%, rgba(255, 255, 255, 0.24) 0%, transparent 76%),
+    radial-gradient(closest-side at 50% 50%, #303033 0%, #1e1e21 54%, #0d0d0f 80%, #26262a 100%);
+  /* a tight, machined seat — no soft black bloom smudging the light band */
+  --gtw-core-shadow: inset 0 1.5px 1px rgba(255, 255, 255, 0.48),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 0 0 2px rgba(255, 255, 255, 0.14);
+  --gtw-halo: rgba(255, 255, 255, 0.1);
+  --gtw-track: rgba(0, 0, 0, 0.55);
+  --gtw-track-width: 2.4;
+  --gtw-sweep: #ffffff;
+  --gtw-sweep-width: 3.4;
+  --gtw-glyph: rgba(255, 255, 255, 0.72);
+  --gtw-glyph-size: 13px;
+  --gtw-mono: var(--wg-disp);
+  --gtw-mark-glow: rgba(255, 255, 255, 0.22);
+}
+
+/* a wider ring of metal: the shared mask leaves a hairline of bezel, which on a
+   bright field disappears. Opened up, the dial has a real machined face. */
+.white-gallery-root .wg-wheel .gtw-bezel {
+  -webkit-mask-image: radial-gradient(circle, transparent 53%, #000 55%, #000 100%);
+  mask-image: radial-gradient(circle, transparent 53%, #000 55%, #000 100%);
+}
+
+/* the crisp specular edge — one bright hairline on the rim, one dark line
+   outside it, so the metal cuts cleanly against the light band behind it */
+.white-gallery-root .wg-wheel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1.2px rgba(255, 255, 255, 0.82),
+    inset 0 0 0 2.6px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+/* --- the mirrored pairs ---
+   Zero-size anchors on the axis: GSAP places each face at ±r from the gate on
+   its lane, so the two faces of a pair are always at matching offsets, and the
+   radius it solves can never reach the dial or an edge. */
+.white-gallery-root .wg-piece {
+  position: absolute;
+  left: 50%;
+  top: var(--wg-axis);
+  width: 0;
+  height: 0;
+  z-index: 5;
+  will-change: transform, opacity, filter;
+  opacity: 0;
+}
+
+.white-gallery-root .wg-piece-body {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: max-content;
+  transform: translate(-50%, -50%);
+}
+
+.white-gallery-root .wg-card {
+  display: inline-block;
+  background: #fbfbf9;
+  border: 1px solid rgba(20, 20, 19, 0.14);
+  border-radius: 10px;
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  font-size: 12.5px;
+  color: var(--wg-ink);
+  padding: 10px 13px;
+  white-space: nowrap;
+}
+
+.white-gallery-root .wg-card-btn {
+  display: inline-block;
+  background: #fbfbf9;
+  color: var(--wg-ink);
+  border-radius: 9px;
+  padding: 11px 20px;
+  font-size: 13.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  border: 1px solid rgba(20, 20, 19, 0.16);
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.white-gallery-root .wg-field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 172px;
+}
+
+.white-gallery-root .wg-field label {
+  font-size: 9.5px;
+  color: var(--wg-ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--wg-mono);
+}
+
+.white-gallery-root .wg-field span {
+  border: 1px solid var(--wg-hair);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--wg-ink3);
+  font-size: 12px;
+  background: #fff;
+}
+
+.white-gallery-root .wg-theo {
+  display: block;
+  max-width: 252px;
+  white-space: normal;
+  padding: 12px 14px;
+}
+
+.white-gallery-root .wg-theo-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 7px;
+}
+
+.white-gallery-root .wg-theo-av {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #4a4a48, #e9e9e5 30%, #777774 60%, #fdfdfa 85%, #4a4a48);
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+}
+
+.white-gallery-root .wg-theo-av i {
+  font-style: normal;
+  background: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--wg-disp);
+}
+
+.white-gallery-root .wg-theo-name {
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.white-gallery-root .wg-theo-name span {
+  display: block;
+  font-weight: 400;
+  color: var(--wg-ink3);
+  font-size: 10.5px;
+}
+
+.white-gallery-root .wg-theo-q {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--wg-ink2);
+}
+
+/* The bloom text carries while it is still resolving out of the lens: white
+   specular only. A tinted fringe here would be the same CSS chroma the seam
+   in the story just lost. */
+.white-gallery-root .wg-refract {
+  --wg-ab: 0;
+  text-shadow: 0 0 calc(var(--wg-ab) * 1.6px) rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- the plinth: the label, the locale rail, the names ---------- */
+.white-gallery-root .wg-rail {
+  position: relative;
+  z-index: 5;
+  margin-top: clamp(13px, 2vh, 20px);
+  padding: 0 clamp(4px, 1.4vw, 22px);
+}
+
+.white-gallery-root .wg-langs {
+  position: relative;
+  margin-top: 11px;
+}
+
+.white-gallery-root .wg-marquee {
+  overflow: clip;
+  -webkit-mask: linear-gradient(90deg, #000 0, #000 86%, transparent);
+  mask: linear-gradient(90deg, #000 0, #000 86%, transparent);
+}
+
+.white-gallery-root .wg-locale-track {
+  display: flex;
+  gap: clamp(16px, 1.8vw, 26px);
+  width: max-content;
+}
+
+/* catalogue entries, not chips: a locale code and its endonym, no colour */
+.white-gallery-root .wg-locale {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--wg-ink2);
+  white-space: nowrap;
+}
+
+.white-gallery-root .wg-locale i {
+  font-style: normal;
+  font-family: var(--wg-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--wg-ink4);
+}
+
+.white-gallery-root .wg-trusted {
+  position: relative;
+  z-index: 5;
+  margin-top: 11px;
+  padding-top: 11px;
+  border-top: 1px solid var(--wg-hair2);
+  display: flex;
+  gap: clamp(14px, 2.6vw, 34px);
+  align-items: baseline;
+  flex-wrap: wrap;
+  color: var(--wg-ink2);
+  font-family: var(--wg-disp);
+}
+
+.white-gallery-root .wg-wm {
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.white-gallery-root .wg-wm:hover { opacity: 1; }
+.white-gallery-root .wg-wm-cursor { font-weight: 600; }
+.white-gallery-root .wg-wm-ramp { font-weight: 800; letter-spacing: 0.01em; }
+.white-gallery-root .wg-wm-mintlify { font-weight: 300; font-size: 16.5px; }
+.white-gallery-root .wg-wm-profound {
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.white-gallery-root .wg-wm-partiful { font-weight: 400; font-size: 16.5px; letter-spacing: -0.02em; }
+.white-gallery-root .wg-wm-clickhouse { font-family: var(--wg-mono); font-size: 13px; font-weight: 600; }
+
+/* ============================================================
+   PRICING · CLOSE · FOOTER
+   ============================================================ */
+.white-gallery-root .wg-pricing {
+  padding: clamp(96px, 11vh, 134px) clamp(16px, 4vw, 56px) clamp(116px, 14vh, 176px);
+  text-align: center;
+}
+
+.white-gallery-root .wg-pricing h2 {
+  font-family: var(--wg-disp);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -0.045em;
+  font-weight: 600;
+  line-height: 1.02;
+}
+
+.white-gallery-root .wg-pricing .phil {
+  color: var(--wg-ink2);
+  margin: 16px auto 0;
+  max-width: 560px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.white-gallery-root .wg-plans {
+  display: flex;
+  gap: clamp(24px, 3.5vw, 54px);
+  justify-content: center;
+  margin-top: 58px;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.white-gallery-root .wg-plan {
+  width: min(380px, 92vw);
+  text-align: left;
+  padding: 34px 32px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.white-gallery-root .wg-plan .p-k {
+  font-family: var(--wg-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wg-ink3);
+}
+
+.white-gallery-root .wg-plan .p-price {
+  font-family: var(--wg-disp);
+  font-size: 44px;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  margin-top: 10px;
+}
+
+.white-gallery-root .wg-plan .p-price span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--wg-ink3);
+  letter-spacing: 0;
+}
+
+.white-gallery-root .wg-plan ul { list-style: none; margin-top: 16px; color: var(--wg-ink2); font-size: 13.5px; }
+.white-gallery-root .wg-plan li { padding: 8px 0; border-bottom: 1px solid var(--wg-hair2); }
+.white-gallery-root .wg-plan .wg-btn { margin-top: auto; width: 100%; justify-content: center; }
+.white-gallery-root .wg-plan ul + .wg-btn { margin-top: 26px; }
+
+/* The closing band is the hero's composition, closed: the same crosshair, the
+   same axis, the type centred ON it. It used to sit in the top third over 450px
+   of dead black — the band is now sized to its content. */
+.white-gallery-root .wg-close {
+  --wg-axis: 50%;
+
+  position: relative;
+  min-height: clamp(440px, 58svh, 580px);
+  display: grid;
+  place-items: center;
+  padding: clamp(84px, 11vh, 132px) clamp(16px, 4vw, 56px);
+  text-align: center;
+  overflow: clip;
+  isolation: isolate;
+  background: var(--wg-night);
+  color: #fbfbf9;
+}
+
+.white-gallery-root .wg-close-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+  filter: saturate(1.1) contrast(1.16) brightness(0.86);
+}
+
+.white-gallery-root .wg-close-inner { position: relative; z-index: 3; }
+
+.white-gallery-root .wg-close h2 {
+  font-family: var(--wg-disp);
+  font-size: clamp(2.2rem, 5.4vw, 4.6rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.white-gallery-root .wg-close .rot2 { font-weight: 300; }
+.white-gallery-root .wg-close p { margin-top: 18px; color: rgba(255, 255, 255, 0.62); }
+.white-gallery-root .wg-close .wg-hero-cta { margin-top: 30px; }
+
+.white-gallery-root .wg-close .wg-btn-ink {
+  background: #fbfbf9;
+  color: var(--wg-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 26px -10px rgba(0, 0, 0, 0.7);
+}
+
+.white-gallery-root .wg-close .wg-btn-ink:hover { background: #fff; }
+
+.white-gallery-root .wg-close .wg-btn-line {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fbfbf9;
+}
+
+.white-gallery-root .wg-close .wg-btn-line:hover { border-color: rgba(255, 255, 255, 0.5); }
+
+.white-gallery-root .wg-footer {
+  border-top: 1px solid var(--wg-hair);
+  padding: 60px clamp(16px, 4vw, 56px) 96px;
+  background: #f6f5f2;
+}
+
+.white-gallery-root .wg-foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 28px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.white-gallery-root .wg-foot-brand p {
+  color: var(--wg-ink3);
+  font-size: 14px;
+  margin-top: 12px;
+  max-width: 26ch;
+}
+
+.white-gallery-root .wg-foot-col h5 {
+  font-family: var(--wg-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wg-ink3);
+  margin-bottom: 12px;
+}
+
+.white-gallery-root .wg-foot-col a { display: block; font-size: 13px; color: var(--wg-ink2); padding: 4px 0; }
+.white-gallery-root .wg-foot-col a:hover { color: var(--wg-ink); }
+
+.white-gallery-root .wg-foot-bottom {
+  max-width: 1180px;
+  margin: 44px auto 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--wg-hair2);
+  padding-top: 20px;
+  font-family: var(--wg-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--wg-ink3);
+}
+
+@media (max-width: 880px) {
+  .white-gallery-root .wg-foot-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   StorySection / EditorWorkspace / FeatureBento and the diagram
+   library read these. Ink on paper, silver edges, no colour.
+   ============================================================ */
+
+.white-gallery-root .wg-story,
+.white-gallery-root .wg-review,
+.white-gallery-root .wg-features {
+  /* — story — */
+  /* the gallery floor, a shade under the wall: the sheet rises out of the pin
+     at 40% alpha, and against a wall of its own colour that read as nothing */
+  --gts-bg: #edebe5;
+  /* a lit gallery sheet, not a drafting canvas: brighter than the wall, and the
+     grid is dialled almost out so the paper reads as clean stock */
+  --gts-paper: #ffffff;
+  --gts-ink: var(--wg-ink);
+  --gts-ink-2: var(--wg-ink2);
+  --gts-ink-3: var(--wg-ink3);
+  --gts-paper-rule: var(--wg-hair);
+  --gts-paper-rule-strong: rgba(20, 20, 19, 0.18);
+  --gts-paper-dot: rgba(20, 20, 19, 0.05);
+  --gts-paper-guide: rgba(20, 20, 19, 0.035);
+  --gts-paper-card: rgba(255, 255, 255, 0.72);
+  --gts-paper-edge: rgba(20, 20, 19, 0.1);
+  --gts-paper-vignette: rgba(20, 20, 19, 0.05);
+  --gts-paper-halo: rgba(246, 245, 241, 0.94);
+  --gts-paper-input: rgba(20, 20, 19, 0.22);
+  --gts-paper-tick: rgba(20, 20, 19, 0.45);
+  --gts-hilite: rgba(20, 20, 19, 0.7);
+  --gts-shell: var(--wg-ink);
+  --gts-shell-text: #fbfbf9;
+  --gts-shell-line: rgba(255, 255, 255, 0.14);
+  --gts-code-bg: #0a0a0b;
+  --gts-code-text: #d6d5d0;
+  --gts-line: rgba(255, 255, 255, 0.11);
+  --gts-line-2: rgba(255, 255, 255, 0.055);
+  --gts-t1: rgba(255, 255, 255, 0.95);
+  --gts-t2: rgba(255, 255, 255, 0.66);
+  --gts-t3: rgba(255, 255, 255, 0.42);
+  --gts-t4: rgba(255, 255, 255, 0.24);
+  --gts-display: var(--wg-disp);
+  --gts-text: var(--wg-sans);
+  --gts-mono: var(--wg-mono);
+  --gts-radius: 14px;
+  /* the editor act is lit like the gallery: warm silvers, no syntax rainbow */
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: #b3b2ad;
+  --gts-tok-attr: #cfc9b8;
+  --gts-tok-str: #e9e5da;
+  --gts-tok-text: #f4f3ef;
+  --gts-tok-kw: #b7b6b1;
+  --gts-tok-fn: #ececea;
+  --gts-tok-punct: #6f6e6a;
+
+  /* — editor workspace — */
+  --gte-line: var(--wg-hair);
+  --gte-line-2: var(--wg-hair2);
+  --gte-title: var(--wg-ink);
+  --gte-body: var(--wg-ink2);
+  --gte-label: var(--wg-ink3);
+  --gte-quiet: var(--wg-ink4);
+  --gte-display: var(--wg-disp);
+  --gte-text: var(--wg-sans);
+  --gte-mono: var(--wg-mono);
+  --gte-ws-bg: #ffffff;
+  --gte-ws-shadow: var(--wg-frame-sh);
+  --gte-radius: 16px;
+  --gte-revised: var(--wg-ink);
+  --gte-act-hover: rgba(20, 20, 19, 0.34);
+
+  /* — feature bento — */
+  --gtb-line: rgba(20, 20, 19, 0.15);
+  --gtb-line-2: var(--wg-hair2);
+  --gtb-title: var(--wg-ink);
+  --gtb-body: var(--wg-ink2);
+  --gtb-label: var(--wg-ink3);
+  --gtb-display: var(--wg-disp);
+  --gtb-text: var(--wg-sans);
+  --gtb-mono: var(--wg-mono);
+  --gtb-grid-bg: #ffffff;
+  --gtb-mock-bg: var(--wg-paper);
+  --gtb-spotlight: rgba(20, 20, 19, 0.045);
+  --gtb-radius: 16px;
+
+  /* — line-art diagrams: ink drawings, not white-on-black — */
+  --gtd-line: rgba(20, 20, 19, 0.4);
+  --gtd-fill: rgba(20, 20, 19, 0.07);
+  --gtd-accent: var(--wg-ink);
+  --gtd-label: rgba(20, 20, 19, 0.42);
+  --gtd-mono: var(--wg-mono);
+}
+
+/* The field crosses the editor act at up to 50% alpha in screen blend — as a
+   warm mid-saturation smear it sat straight under the code lines and ate them.
+   Rotated cold and dropped to half brightness it is a steel sheen behind the
+   plate instead of a stain on it. */
+.white-gallery-root .wg-story .gts-field {
+  filter: saturate(1.05) hue-rotate(146deg) contrast(1.1) brightness(0.26);
+}
+
+/* The nav→dock morph crosses the sheet as a full-width shell; on paper that
+   read as a black bar laid over the copy. As a hairline it reads as what it is:
+   the bar collapsing into the caption dock. */
+.white-gallery-root .wg-story .gts-proxy {
+  background: transparent;
+  border-color: rgba(20, 20, 19, 0.3);
+  box-shadow: none;
+}
+
+/* the note the numbered marks carry stays open once Locadex has mapped the
+   file — the marks alone do not say what was found */
+.white-gallery-root .wg-story .gts-notes .gts-lmk[data-note='2'] .gts-tip {
+  opacity: 1;
+}
+
+/* ---------- story: the sheet is hung, not bled ----------
+   The window used to fill the stage, so a 1.09× rise pushed its chip and cards
+   off the left edge as clipped fragments. Inset inside a paper mat it reads as
+   the same framed object the hero is, and nothing can leave the frame. */
+.white-gallery-root .wg-story .gts-window {
+  inset: clamp(22px, 4vh, 44px) clamp(28px, 5.2vw, 76px);
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 1px rgba(20, 20, 19, 0.16),
+    0 46px 92px -46px rgba(20, 20, 18, 0.5),
+    0 12px 30px -16px rgba(20, 20, 18, 0.24);
+}
+
+/* The wipe opened to 60% over nearly two beats, so a scroll depth that landed
+   early in it showed a sliver of code and nothing else. Remapped, the code
+   surface reaches its full width in the first third of the reveal and holds. */
+.white-gallery-root .wg-story .gts-xray {
+  clip-path: inset(0 calc((1 - min(0.62, var(--gts-split) * 2.4)) * 100%) 0 0);
+}
+
+.white-gallery-root .wg-story .gts-split {
+  left: calc(min(0.62, var(--gts-split) * 2.4) * 100%);
+}
+
+/* the signal path only ever appears over the dark editor act */
+.white-gallery-root .wg-story {
+  --gtd-node-fill: #0a0a0b;
+  --gtd-node-stroke: #9c9b96;
+  --gtd-wire: #5c5b57;
+  --gtd-pulse: #ffffff;
+  --gtd-pulse-glow: rgba(255, 255, 255, 0.9);
+  --gtd-glyph: #c3c2bd;
+  --gtd-line: rgba(255, 255, 255, 0.3);
+  --gtd-label: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- wall text: centred, generous, header + one line ---------- */
+.white-gallery-root .wg-story .gts-head,
+.white-gallery-root .wg-review .gte-copy,
+.white-gallery-root .wg-features .gtb-wrap > h2,
+.white-gallery-root .wg-features .gtb-sub {
+  text-align: center;
+}
+
+/* The head sits directly above a full-viewport pinned stage, so its own air is
+   the stage's. Its height is also the phase of the whole scroll story: it is
+   what decides which beat a sampled depth lands on. */
+.white-gallery-root .wg-story .gts-head {
+  padding: clamp(22px, 2.6vh, 30px) 0 clamp(16px, 2vh, 24px);
+}
+
+.white-gallery-root .wg-story .gts-head h2,
+.white-gallery-root .wg-features .gtb-wrap > h2 {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.white-gallery-root .wg-story .gts-head p,
+.white-gallery-root .wg-features .gtb-sub,
+.white-gallery-root .wg-review .gte-sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.white-gallery-root .wg-story {
+  --gts-head-size: clamp(2rem, 4vw, 3.4rem);
+  --gts-head-weight: 600;
+  --gts-head-color: var(--wg-ink);
+  --gts-sub-color: var(--wg-ink2);
+}
+
+/* ---------- story: the cleanup the shared parts still carry ---------- */
+
+/* Section G deletes colored glows. The seam is edge light and a machined
+   handle; the blurred cyan/magenta bars flanking it are a CSS fringe, not
+   dispersion, so this direction does not draw them. */
+.white-gallery-root .wg-story .gts-split-ca { display: none; }
+
+/* The glyph rail under the code restates the caption dock word for word
+   (SCAN / EDIT / TRANSLATE). A beat is its header and its content. */
+.white-gallery-root .wg-story .gts-pipeline { display: none; }
+
+/* ---------- story: the sheet, measured ---------- */
+
+/* the paper carries a datum: two vertical guides and one hang line, so the
+   whitespace around a beat is placed against something instead of just ending */
+.white-gallery-root .wg-story .gts-win-guides {
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent calc(33% - 1px),
+      var(--gts-paper-guide) calc(33% - 1px),
+      var(--gts-paper-guide) 33%,
+      transparent 33%
+    ),
+    linear-gradient(
+      90deg,
+      transparent calc(66% - 1px),
+      var(--gts-paper-guide) calc(66% - 1px),
+      var(--gts-paper-guide) 66%,
+      transparent 66%
+    ),
+    linear-gradient(
+      180deg,
+      transparent calc(84% - 1px),
+      rgba(20, 20, 19, 0.08) calc(84% - 1px),
+      rgba(20, 20, 19, 0.08) 84%,
+      transparent 84%
+    );
+  background-size: 100% 9px, 100% 9px, 100% 100%;
+  background-repeat: repeat-y, repeat-y, no-repeat;
+}
+
+/* the beat sits on the sheet rather than floating in its top half */
+.white-gallery-root .wg-story .gts-site { padding-bottom: 138px; }
+.white-gallery-root .wg-story .gts-site-p { margin-bottom: 30px; }
+.white-gallery-root .wg-story .gts-site-nav { margin-bottom: 30px; }
+.white-gallery-root .wg-story .gts-site-legal { margin-top: 52px; }
+.white-gallery-root .wg-story .gts-site-stats { margin-top: 52px; }
+.white-gallery-root .wg-story .gts-site-right { gap: 26px; }
+
+/* Beat 4 zooms this card to 2.7×: at the column's full width the line runs off
+   both edges of the frame. Sized to the shot, it lands with air on both sides. */
+.white-gallery-root .wg-story [data-tag] { width: 232px; }
+
+/* ---------- story: beat 5 keeps the ask, not just the outcome ---------- */
+
+/* the approved state is a stamp across the foot of the ping — covering the
+   whole card left a 300px white rectangle carrying three words */
+.white-gallery-root .wg-story .gts-review-card {
+  width: 306px;
+  padding-bottom: 54px;
+}
+
+.white-gallery-root .wg-story .gts-r-msg { font-size: 12.5px; }
+
+.white-gallery-root .wg-story .gts-r-approved {
+  inset: auto 0 0 0;
+  height: 38px;
+  border-radius: 0 0 var(--gts-radius) var(--gts-radius);
+  background: var(--wg-ink);
+  color: #fbfbf9;
+  font-size: 9.5px;
+}
+
+/* ---------- review: the workspace hung as a framed object ---------- */
+.white-gallery-root .wg-review {
+  --gte-pad: clamp(112px, 13vh, 164px) 0 clamp(98px, 11vh, 140px);
+  --gte-wrap: 1020px;
+  --gte-head-size: clamp(2rem, 4vw, 3.4rem);
+  --gte-head-weight: 600;
+}
+
+.white-gallery-root .wg-review .gte-grid { gap: 44px; }
+
+.white-gallery-root .wg-review h2 {
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.white-gallery-root .wg-review h2 em {
+  font-style: normal;
+  font-weight: 300;
+  color: var(--wg-ink2);
+}
+
+.white-gallery-root .wg-review .gte-ws { position: relative; }
+
+.white-gallery-root .wg-review .gte-ws::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: 2.5px;
+  pointer-events: none;
+  background: var(--wg-chrome);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.white-gallery-root .wg-review .gte-col { min-height: 340px; }
+.white-gallery-root .wg-review .gte-row { font-size: 13px; }
+
+/* ---------- features: eight works hung two-up on one sheet ---------- */
+.white-gallery-root .wg-features {
+  --gtb-pad: clamp(104px, 12vh, 152px) 0 clamp(84px, 9vh, 118px);
+  --gtb-wrap: 1020px;
+  --gtb-head-size: clamp(2rem, 4vw, 3.4rem);
+  --gtb-head-weight: 600;
+  --gtb-cell-pad: 34px 34px 36px;
+  --gtb-cell-min: 296px;
+  --gtb-title-size: 22px;
+  --gtb-body-size: 13.5px;
+  --gtb-mock-h: 108px;
+}
+
+.white-gallery-root .wg-features .gtb-grid {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(20, 20, 19, 0.16), var(--wg-frame-sh);
+}
+
+.white-gallery-root .wg-features .gtb-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: 2.5px;
+  pointer-events: none;
+  background: var(--wg-chrome);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.white-gallery-root .wg-features .gtb-cell h3 {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* the cell opens on its title — no mono kicker stacked above it */
+.white-gallery-root .wg-features .gtb-cell h3 small { display: none; }
+
+.white-gallery-root .wg-features .gtb-mock {
+  border-color: var(--wg-hair);
+  border-radius: 10px;
+  background-image: radial-gradient(rgba(20, 20, 19, 0.11) 1px, transparent 1px);
+  background-size: 11px 11px;
+  padding: 10px 14px;
+  margin-top: 20px;
+}
+
+/* ============================================================
+   responsive
+   ============================================================ */
+@media (max-width: 900px) {
+  /* ---------- story: a sheet drawn to phone scale, not a cropped desktop ----------
+     The camera's pushes are fixed at 1.5× / 2.7× / 3.2× and cannot be skinned,
+     so every subject is sized to the frame it will be pushed into. At a 234pt
+     column a 1.5× push lands inside a 358pt sheet with air on both sides; the
+     2.7× card is 116pt and the 3.2× button is ~96pt, which is why nothing is
+     sliced mid-word any more. Small in layout is large under the lens. */
+  .white-gallery-root .wg-story .gts-window {
+    inset: 14px 16px;
+  }
+
+  .white-gallery-root .wg-story .gts-site {
+    padding: 44px 62px 58px;
+    gap: 14px;
+  }
+
+  .white-gallery-root .wg-story .gts-site-h1 { font-size: 23px; }
+  .white-gallery-root .wg-story .gts-site-date { font-size: 9px; margin-bottom: 10px; }
+  .white-gallery-root .wg-story .gts-site-p { font-size: 10.5px; margin-bottom: 13px; }
+  .white-gallery-root .wg-story .gts-site-nav { gap: 6px; margin-bottom: 13px; }
+  .white-gallery-root .wg-story .gts-site-nav span { font-size: 9.5px; padding: 4px 8px; }
+  .white-gallery-root .wg-story .gts-site-btn { font-size: 9.5px; padding: 8px 12px; border-radius: 5px; }
+  /* the counsel badge hangs 30pt above this line — it needs room, or it lands
+     on top of the button and the two occlude each other */
+  .white-gallery-root .wg-story .gts-site-legal { margin-top: 46px; font-size: 9px; }
+  .white-gallery-root .wg-story .gts-site-stats { margin-top: 16px; gap: 12px; }
+  .white-gallery-root .wg-story .gts-site-stats b { font-size: 14px; }
+  .white-gallery-root .wg-story .gts-site-stats small { font-size: 6.5px; }
+  .white-gallery-root .wg-story .gts-site-right { gap: 9px; }
+  .white-gallery-root .wg-story .gts-site-card { padding: 9px 11px; }
+  /* fixed, not full-width: this is the card the camera pushes to 2.7× */
+  .white-gallery-root .wg-story [data-tag] { width: 116px; }
+  .white-gallery-root .wg-story .gts-tagline { font-size: 10.5px; }
+  .white-gallery-root .wg-story .gts-site-foot { left: 16px; right: 16px; bottom: 12px; }
+
+  /* the wipe has no room to split a phone in two: the code opens full frame,
+     which is the one thing on this beat that has to be readable */
+  .white-gallery-root .wg-story .gts-xray { clip-path: none; }
+  .white-gallery-root .wg-story .gts-split { display: none; }
+  .white-gallery-root .wg-story .gts-xray-inner { left: 22px; right: 22px; max-width: none; }
+  .white-gallery-root .wg-story .gts-xray pre { font-size: 11.5px; }
+  .white-gallery-root .wg-story .gts-xray-note { font-size: 9.5px; max-width: none; }
+
+  /* clear of the direction switcher, so the caption is on screen */
+  .white-gallery-root .wg-story .gts-dock { bottom: 92px; }
+  /* Single column on a phone, so the ping is a notification laid over the page
+     rather than beside it. Sized and placed to clear the headline above it and
+     the CTA to its left, so nothing occludes anything that has to be read. */
+  .white-gallery-root .wg-story .gts-review-card {
+    width: 186px;
+    padding: 12px 13px 38px;
+    right: 8px;
+    top: 152px;
+  }
+
+  .white-gallery-root .wg-story .gts-r-head { gap: 7px; }
+  .white-gallery-root .wg-story .gts-r-name { font-size: 11.5px; }
+  .white-gallery-root .wg-story .gts-r-sub { font-size: 8.5px; }
+  .white-gallery-root .wg-story .gts-r-btn { font-size: 8.5px; padding: 6px 10px; }
+  .white-gallery-root .wg-story .gts-r-approved { height: 30px; }
+  .white-gallery-root .wg-story .gts-r-msg { font-size: 10.5px; line-height: 1.45; }
+}
+
+@media (max-width: 767px) {
+  .white-gallery-root .wg-hero { padding: 70px 14px 16px; }
+
+  .white-gallery-root .wg-stage {
+    height: clamp(400px, 55svh, 500px);
+    --wg-dial: 118px;
+  }
+
+  .white-gallery-root .wg-wheel { --gtw-glyph-size: 11px; }
+  .white-gallery-root .wg-work-copy { width: 94%; }
+
+  /* a phone has no room between the dial and the frame for a mirrored pair;
+     the lane solver drops any pair it cannot place clear of both, so the band
+     stays the burst, the gate and the crosshair — never a cropped card */
+  .white-gallery-root .wg-piece {
+    display: none;
+  }
+
+  .white-gallery-root .wg-card { font-size: 10px; padding: 7px 9px; }
+  .white-gallery-root .wg-card-btn { font-size: 10px; padding: 7px 11px; }
+
+  .white-gallery-root .wg-placard {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .white-gallery-root .wg-placard > div:nth-child(2n) {
+    border-right: 0;
+    padding-right: 0;
+  }
+
+  .white-gallery-root .wg-placard > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--wg-hair2);
+  }
+
+  .white-gallery-root .wg-close { padding: 90px 16px; min-height: 420px; }
+  .white-gallery-root .wg-plan { padding: 28px 24px; }
+}
+
+/* reduced motion — everything stays legible, nothing moves */
+@media (prefers-reduced-motion: reduce) {
+  /* the story degrades to a storyboard printed on the wall, not on black */
+  .white-gallery-root .wg-story .gts-static-beat {
+    border-color: var(--wg-hair);
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(20, 20, 19, 0.05);
+  }
+
+  .white-gallery-root .wg-story .gts-static-beat h3 { color: var(--wg-ink); }
+  .white-gallery-root .wg-story .gts-static-beat p { color: var(--wg-ink2); }
+}

@@ -1,0 +1,2035 @@
+/*
+ * Flipboard Terminus — every rule is scoped to .ft-root so directions cannot
+ * leak into one another. Type is Switzer (display/UI) + Inter (text) only;
+ * `--ft-mono` is the sanctioned system mono stack, used for code and labels.
+ */
+
+.ft-root {
+  --ft-bg: #0b0c0d;
+  --ft-bg2: #101214;
+  /* board stock: a warm bone sheet, not drafting paper */
+  --ft-paper: #ebe5d7;
+  --ft-ink: #1b1712;
+  --ft-w92: rgba(255, 255, 255, 0.92);
+  --ft-w64: rgba(255, 255, 255, 0.64);
+  --ft-w40: rgba(255, 255, 255, 0.4);
+  --ft-hair: rgba(255, 255, 255, 0.13);
+  --ft-hair2: rgba(255, 255, 255, 0.07);
+  --ft-mono: ui-monospace, 'SF Mono', 'Menlo', monospace;
+  --ft-tile: clamp(34px, 4.4vw, 62px);
+  /* the flap tile face: lit top leaf, hard seam, shaded bottom leaf */
+  --ft-slab: linear-gradient(180deg, #212326 0%, #1a1c1f 47%, #0e0f11 50%, #191b1e 100%);
+  --ft-brush: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.028) 0 1px,
+    rgba(0, 0, 0, 0.05) 1px 2px,
+    transparent 2px 4px
+  );
+
+  position: relative;
+  background: var(--ft-bg);
+  color: var(--ft-w92);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.ft-root *,
+.ft-root *::before,
+.ft-root *::after {
+  box-sizing: border-box;
+}
+
+.ft-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ft-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.ft-root img,
+.ft-root svg,
+.ft-root canvas {
+  display: block;
+  max-width: 100%;
+}
+
+.ft-root :focus-visible {
+  outline: 1.5px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.ft-root ::selection {
+  background: #fff;
+  color: #000;
+}
+
+.ft-root main {
+  position: relative;
+  z-index: 1;
+}
+
+.ft-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.ft-wrap {
+  width: min(1260px, 92vw);
+  margin: 0 auto;
+}
+
+/* ---------------------------------------------------------------- ambient */
+
+/*
+ * Two light layers. `ft-hall-light` is fixed — the concourse lamps overhead,
+ * drifting slowly. `ft-beams` is document-height, so satin bands travel past
+ * as you scroll and no frame below the hero ever reads as flat black.
+ */
+
+.ft-hall-light {
+  position: fixed;
+  inset: -12%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(110% 52% at 50% -6%, rgba(216, 226, 240, 0.1), transparent 62%),
+    linear-gradient(112deg, transparent 26%, rgba(196, 208, 226, 0.062) 44%, transparent 60%),
+    linear-gradient(64deg, transparent 44%, rgba(174, 186, 206, 0.045) 60%, transparent 76%),
+    radial-gradient(88% 44% at 50% 106%, rgba(164, 176, 194, 0.055), transparent 62%);
+  animation: ft-hall 30s ease-in-out infinite alternate;
+}
+
+@keyframes ft-hall {
+  from {
+    transform: translate3d(-1.4%, -1.2%, 0) scale(1.02);
+  }
+  to {
+    transform: translate3d(1.6%, 1.4%, 0) scale(1.07);
+  }
+}
+
+.ft-beams {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      99deg,
+      rgba(210, 220, 236, 0) 0px,
+      rgba(210, 220, 236, 0.042) 380px,
+      rgba(210, 220, 236, 0) 760px,
+      rgba(210, 220, 236, 0) 1420px
+    ),
+    repeating-linear-gradient(
+      -94deg,
+      rgba(176, 188, 208, 0) 0px,
+      rgba(176, 188, 208, 0.03) 620px,
+      rgba(176, 188, 208, 0) 1180px,
+      rgba(176, 188, 208, 0) 2100px
+    );
+}
+
+.ft-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: ft-grain 0.9s steps(6) infinite;
+}
+
+@keyframes ft-grain {
+  0% { transform: translate3d(0, 0, 0); }
+  17% { transform: translate3d(-4%, 2%, 0); }
+  33% { transform: translate3d(2%, -3%, 0); }
+  50% { transform: translate3d(-3%, -2%, 0); }
+  67% { transform: translate3d(3%, 3%, 0); }
+  83% { transform: translate3d(-2%, 4%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ---------------------------------------------------------------- primitives */
+
+.ft-root .ft-h2 {
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-size: clamp(34px, 4.6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  /* leading opened so a flapped phrase sits on the same rhythm as the type */
+  line-height: 1.2;
+  margin: 0 0 18px;
+}
+
+.ft-root .ft-sect-sub {
+  font-size: clamp(15px, 1.3vw, 18px);
+  color: var(--ft-w64);
+  max-width: 56ch;
+}
+
+.ft-root .ft-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 26px;
+  border-radius: 10px;
+  font-family: var(--ft-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.ft-root .ft-btn:hover {
+  transform: translateY(-1px);
+}
+
+.ft-root .ft-btn-solid {
+  color: #0b0b0c;
+  background: linear-gradient(180deg, #f4f4f4, #c9cbce 55%, #e6e7e9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+.ft-root .ft-btn-line {
+  border: 1px solid var(--ft-hair);
+  color: var(--ft-w92);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ft-root .ft-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ft-root .ft-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: linear-gradient(165deg, #2c2e31, #131416 60%, #232528);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.ft-root .ft-mark img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+/* ---------------------------------------------------------------- split-flap */
+
+.ft-root .ft-board {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.ft-root .ft-board-line {
+  display: inline-flex;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.ft-root .ft-flap {
+  width: calc(var(--ft-tile) * 0.74);
+  height: calc(var(--ft-tile) * 1.02);
+  border-radius: calc(var(--ft-tile) * 0.09);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  flex: none;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0 1px,
+      rgba(0, 0, 0, 0.05) 1px 2px,
+      transparent 2px 4px
+    ),
+    linear-gradient(180deg, #232528 0%, #2b2d31 46%, #0f1012 52%, #1b1d20 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.ft-root .ft-flap::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.75);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.ft-root .ft-flap-face {
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--ft-tile) * 0.56);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #f0f1f2;
+  transform-origin: center;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+/*
+ * A blank is a word space, not a dead slab hung on the board. It also has to
+ * MEASURE like a word space: a full-width blank left "EVERY · LANGUAGE" with a
+ * hole three glyphs wide, which read as a ragged two-line stack rather than a
+ * composed one.
+ */
+.ft-root .ft-flap.is-blank {
+  width: calc(var(--ft-tile) * 0.3);
+  background: none;
+  box-shadow: none;
+}
+
+.ft-root .ft-flap.is-blank::after {
+  display: none;
+}
+
+.ft-root .ft-flap.is-blank .ft-flap-face {
+  opacity: 0;
+}
+
+/* ---------------------------------------------------------------- nav */
+
+.ft-nav {
+  position: fixed;
+  top: 14px;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ft-nav-pill {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 54px;
+  padding: 0 9px 0 16px;
+  border-radius: 15px;
+  background: rgba(13, 14, 16, 0.82);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--ft-hair);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.ft-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.ft-nav-links {
+  display: flex;
+  gap: 20px;
+  font-family: var(--ft-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ft-w64);
+}
+
+.ft-nav-links a {
+  position: relative;
+  padding: 4px 0;
+}
+
+.ft-nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.ft-nav-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.ft-root .ft-nav-cta {
+  height: 36px;
+  padding: 0 15px;
+  border-radius: 10px;
+  font-size: 10.5px;
+}
+
+/* ---------------------------------------------------------------- hero */
+
+.ft-hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: clip;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  padding: 100px 4vw 24px;
+}
+
+/*
+ * No blur and no de-saturation: the filaments are the point. A touch of extra
+ * contrast pushes the dark between the streaks to true black so the field
+ * reads as thousands of thin threads rather than one soft khaki smear.
+ */
+.ft-hero .ft-prism {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 1;
+  filter: contrast(1.22) saturate(1.04);
+}
+
+.ft-hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /*
+   * The radial used to be a tight ellipse whose dark ramp began 60px off the
+   * dial, ringing it in black and killing the light exactly where the beam
+   * converges. It now stays clear until well past the bezel; the linear layer
+   * does the real work of seating the headline and the base band.
+   */
+  background:
+    radial-gradient(152% 118% at 50% 52%, transparent 47%, rgba(11, 12, 13, 0.5) 88%),
+    linear-gradient(
+      180deg,
+      rgba(11, 12, 13, 0.88) 0%,
+      rgba(11, 12, 13, 0.36) 19%,
+      transparent 36%,
+      transparent 63%,
+      rgba(11, 12, 13, 0.92) 88%
+    );
+}
+
+/* the gate band: English lane · dial · translated lane --------------------- */
+
+.ft-gateband {
+  position: relative;
+  z-index: 7;
+  flex: 1 1 auto;
+  min-height: 344px;
+  margin: 10px 0 4px;
+}
+
+/*
+ * The two resident cards. Everything else crosses the gate; these two sit
+ * still, one either side of the seam, so the premise — English in, another
+ * language out — is legible in a frame with no motion at all.
+ */
+.ft-root .ft-si.ft-resident {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: auto;
+  transform: none;
+  opacity: 1;
+  filter: none;
+  width: min(306px, 24vw);
+  white-space: normal;
+  z-index: 8;
+}
+
+.ft-root .ft-si.ft-resident--en {
+  left: max(8px, 2.4vw);
+}
+
+.ft-root .ft-si.ft-resident--tr {
+  right: max(8px, 2.4vw);
+}
+
+/* the four lane tracks, faded out through the dial and at the bezels */
+.ft-gate-rails {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 calc(12.5% - 0.5px),
+    rgba(226, 234, 246, 0.085) calc(12.5% - 0.5px) calc(12.5% + 0.5px),
+    transparent calc(12.5% + 0.5px) 25%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 14%,
+    #000 33%,
+    transparent 45%,
+    transparent 55%,
+    #000 67%,
+    #000 86%,
+    transparent 100%
+  );
+}
+
+/* Ref A's hairline: the source side is left of it, every other language right */
+.ft-gate-seam {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  bottom: 4%;
+  width: 1px;
+  transform: translateX(-0.5px);
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(232, 238, 248, 0.3) 26%,
+    rgba(232, 238, 248, 0.3) 74%,
+    transparent
+  );
+}
+
+.ft-si {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity, filter;
+  white-space: nowrap;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 14px;
+}
+
+.ft-root .ft-si .ft-tr,
+.ft-root [data-bi] .ft-tr {
+  display: none;
+}
+
+.ft-root .ft-si.is-tr .ft-en,
+.ft-root [data-bi].is-tr .ft-en {
+  display: none;
+}
+
+.ft-root .ft-si.is-tr .ft-tr,
+.ft-root [data-bi].is-tr .ft-tr {
+  display: inline;
+}
+
+/* the phone gate: the same component in, above the dial, and out below it */
+.ft-si.is-still {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  opacity: 1;
+  filter: none;
+}
+
+.ft-phonegate {
+  display: none;
+}
+
+.ft-si-locale {
+  display: none;
+  position: absolute;
+  top: -9px;
+  right: -10px;
+  font-family: var(--ft-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--ft-w64);
+  border: 1px solid var(--ft-hair);
+  background: rgba(10, 11, 13, 0.8);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+
+.ft-si.is-tr .ft-si-locale {
+  display: block;
+}
+
+.ft-si--button {
+  background: linear-gradient(180deg, #f3f3f3, #c8cacd);
+  color: #0b0b0c;
+  font-weight: 700;
+  font-size: 14.5px;
+  border-radius: 10px;
+  padding: 11px 20px;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 10px 26px rgba(0, 0, 0, 0.55);
+}
+
+.ft-si--toast,
+.ft-si--field,
+.ft-si--price,
+.ft-si--theo {
+  background: rgba(15, 17, 19, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 11px;
+  color: var(--ft-w92);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.ft-si--toast {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  font-size: 13.5px;
+}
+
+.ft-si--field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 11px 14px;
+  min-width: 190px;
+}
+
+.ft-si-label {
+  font-family: var(--ft-mono);
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ft-w40);
+}
+
+.ft-si-box {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ft-si--price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px;
+}
+
+.ft-si-plan {
+  font-family: var(--ft-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ft-w40);
+}
+
+.ft-si-amount {
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.ft-si--nav {
+  font-family: var(--ft-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
+.ft-si--copy {
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+.ft-si--theo {
+  white-space: normal;
+  width: 320px;
+  padding: 15px 17px;
+}
+
+.ft-theo-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.ft-theo-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #3a3d41, #1a1b1e);
+  font-family: var(--ft-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #e8e9ea;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.ft-theo-name {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.ft-theo-role {
+  display: block;
+  font-family: var(--ft-mono);
+  font-size: 9.5px;
+  color: var(--ft-w40);
+  letter-spacing: 0.06em;
+}
+
+.ft-theo-quote {
+  display: block;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ft-w64);
+}
+
+/* hero copy ---------------------------------------------------------------- */
+
+.ft-hero-copy {
+  position: relative;
+  z-index: 8;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ft-hero-copy::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -60px;
+  width: min(1080px, 98vw);
+  height: 380px;
+  transform: translateX(-50%);
+  z-index: -1;
+  background: radial-gradient(58% 52% at 50% 46%, rgba(9, 10, 11, 0.84), transparent 72%);
+  pointer-events: none;
+}
+
+.ft-root .ft-hero-board {
+  /* Sized so the board and the dial both breathe at 900px viewport height. */
+  --ft-tile: clamp(24px, 3.05vw, 43px);
+  margin-bottom: 15px;
+}
+
+.ft-hero-sub {
+  font-size: clamp(15px, 1.35vw, 18.5px);
+  color: var(--ft-w64);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.ft-root .ft-lang-flap {
+  --ft-tile: 25px;
+  gap: 3px;
+}
+
+.ft-root .ft-lang-flap .ft-flap {
+  border-radius: 4px;
+}
+
+.ft-hero-ctas {
+  position: relative;
+  z-index: 8;
+  flex: 0 0 auto;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 34px;
+}
+
+.ft-hero-base {
+  position: relative;
+  z-index: 8;
+  flex: 0 0 auto;
+}
+
+.ft-boarding-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  margin-bottom: 12px;
+  font-family: var(--ft-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ft-w40);
+}
+
+.ft-marquee {
+  overflow: hidden;
+  position: relative;
+  /* the fade has to finish a whole chip before the bezel, or the strip ends
+     on a legible half-word sheared in two */
+  mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+}
+
+.ft-marquee-track {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  padding: 2px 0;
+}
+
+.ft-flag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--ft-hair2);
+  border-radius: 8px;
+  padding: 7px 13px;
+  font-family: var(--ft-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ft-w64);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  white-space: nowrap;
+}
+
+.ft-trusted {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.ft-trusted-label {
+  font-family: var(--ft-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ft-w40);
+  margin-bottom: 12px;
+}
+
+.ft-trusted-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(20px, 4vw, 52px);
+  flex-wrap: wrap;
+}
+
+.ft-trusted-row span {
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.32);
+  transition: color 0.3s ease;
+}
+
+.ft-trusted-row span:hover {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ---------------------------------------------------------------- sections */
+
+/*
+ * One rhythm for every dark section: the same generous band above and below,
+ * so no transition on the page reads as a hole.
+ */
+.ft-sect {
+  position: relative;
+  padding: clamp(74px, 7.4vw, 110px) 0 clamp(84px, 8.4vw, 124px);
+}
+
+/* a soft band of hall light travelling behind each dark section */
+.ft-sect::before,
+.ft-close::before {
+  content: '';
+  position: absolute;
+  inset: -6% -18%;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    102deg,
+    transparent 28%,
+    rgba(206, 218, 236, 0.055) 47%,
+    transparent 64%
+  );
+}
+
+.ft-sect-head {
+  max-width: 1080px;
+  margin-bottom: clamp(44px, 4.8vw, 66px);
+}
+
+/* pricing + close */
+
+.ft-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--ft-hair2);
+  border: 1px solid var(--ft-hair2);
+  border-radius: 14px;
+  overflow: hidden;
+  /* the plans come first now, so the stat band closes the section */
+  margin-top: 68px;
+}
+
+.ft-stat-cell {
+  background: var(--ft-bg2);
+  padding: 54px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ft-stat-value {
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.ft-stat-label {
+  font-family: var(--ft-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ft-w40);
+}
+
+.ft-price-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 920px;
+}
+
+.ft-price-card {
+  border-radius: 18px;
+  padding: 54px 40px;
+  background: var(--ft-bg2);
+  border: 1px solid var(--ft-hair2);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.ft-price-card.is-featured {
+  background: linear-gradient(180deg, #16191d, #0f1113);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.ft-price-name {
+  font-family: var(--ft-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ft-w64);
+}
+
+.ft-price-num {
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.ft-price-num.is-sm {
+  font-size: 32px;
+  padding-top: 8px;
+}
+
+.ft-price-num small {
+  margin-left: 7px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ft-w40);
+  letter-spacing: 0;
+}
+
+.ft-price-feats {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 13.5px;
+  color: var(--ft-w64);
+  margin: 8px 0 18px;
+  padding: 0;
+}
+
+.ft-price-feats li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.ft-price-feats li::before {
+  content: '';
+  flex: none;
+  width: 12px;
+  height: 1px;
+  background: var(--ft-w40);
+  transform: translateY(-4px);
+}
+
+.ft-price-note {
+  font-family: var(--ft-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  color: var(--ft-w40);
+  margin-top: 26px;
+}
+
+.ft-close {
+  position: relative;
+  text-align: center;
+  padding: clamp(104px, 13vw, 192px) 0 clamp(44px, 4vw, 56px);
+}
+
+.ft-root .ft-close-board {
+  --ft-tile: clamp(24px, 3.2vw, 48px);
+  margin: 34px auto 42px;
+}
+
+.ft-close p {
+  color: var(--ft-w64);
+  margin-bottom: 44px;
+}
+
+.ft-close .ft-hero-ctas {
+  justify-content: center;
+}
+
+/* footer */
+
+.ft-footer {
+  border-top: 1px solid var(--ft-hair2);
+  padding: 96px 0 56px;
+  position: relative;
+  z-index: 2;
+  background: #08090a;
+}
+
+.ft-foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 28px;
+  margin-bottom: 72px;
+}
+
+.ft-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ft-foot-compliance {
+  font-family: var(--ft-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ft-w40);
+  line-height: 2;
+}
+
+.ft-foot-col h5 {
+  font-family: var(--ft-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ft-w40);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.ft-foot-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 13.5px;
+  color: var(--ft-w64);
+  padding: 0;
+}
+
+.ft-foot-col a:hover {
+  color: var(--ft-w92);
+}
+
+.ft-foot-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--ft-hair2);
+  padding-top: 26px;
+  font-family: var(--ft-mono);
+  font-size: 11px;
+  color: var(--ft-w40);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   LanguageWheel / StorySection / EditorWorkspace / FeatureBento,
+   dressed as concourse hardware: brushed graphite slabs, hard
+   seams, lit top leaves. Structure and motion stay shared.
+   ============================================================ */
+
+/* ---- the headline phrase that lands on the board ------------------------ */
+
+/*
+ * The flapped phrase is the tail of the sentence beside it, not a subtitle:
+ * the tile is sized so its glyph carries the same cap height as the Switzer
+ * it continues. `vw` caps the tile so a long phrase still fits a phone.
+ *
+ * The tile is deliberately shorter than the sans cap line. At the old 1.11em
+ * the slab was taller than the line box, so it sliced the descenders of the
+ * line above ("Everythin[g]" over "THE"), and the lift below is what puts the
+ * flap cap baseline on the Switzer baseline instead of a few pixels under it.
+ */
+.ft-root .ft-flapphrase {
+  --ft-tile: min(0.92em, 5.6vw);
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 0.18em;
+  transform: translateY(-0.02em);
+}
+
+.ft-root .ft-flapphrase .ft-board-line {
+  gap: calc(var(--ft-tile) * 0.08);
+}
+
+.ft-root .ft-flapphrase .ft-flap {
+  border-radius: calc(var(--ft-tile) * 0.11);
+}
+
+.ft-root .ft-flapphrase .ft-flap-face {
+  font-size: calc(var(--ft-tile) * 0.74);
+  letter-spacing: -0.03em;
+}
+
+/* ---- the hero dial ------------------------------------------------------ */
+
+/*
+ * Smaller than it was, and machined rather than moulded. The old dial was a
+ * ~500px matte disc that plugged the shader's dark centre, so the "light
+ * frames a void" composition never resolved and the bezel read as rubber. It
+ * is now a narrow ring with hard specular bands and a crisp lit step where
+ * the ring meets the core, sized to leave the void visible around it.
+ */
+.ft-root .ft-gate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  --gtw-size: clamp(178px, 15.2vw, 224px);
+  --gtw-bezel: conic-gradient(
+    from 206deg,
+    #33373c 0deg,
+    #868d95 16deg,
+    #ffffff 38deg,
+    #d2d8de 52deg,
+    #4b5056 82deg,
+    #202226 130deg,
+    #626870 176deg,
+    #ffffff 210deg,
+    #aeb4bc 230deg,
+    #3a3e44 284deg,
+    #33373c 360deg
+  );
+  --gtw-sweep: #ffffff;
+  --gtw-sweep-width: 2.2;
+  --gtw-track: rgba(255, 255, 255, 0.16);
+  --gtw-track-width: 1;
+  --gtw-core: radial-gradient(120% 120% at 32% 24%, #2b2e32 0%, #0e0f11 58%, #1c1e21 100%);
+  --gtw-core-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -3px 12px rgba(0, 0, 0, 0.82),
+    0 0 0 1px rgba(255, 255, 255, 0.44),
+    0 0 0 2.5px rgba(0, 0, 0, 0.62),
+    0 0 44px rgba(190, 205, 225, 0.16);
+  --gtw-halo: rgba(226, 236, 250, 0.04);
+  --gtw-mark-glow: drop-shadow(0 0 12px rgba(228, 234, 244, 0.4));
+  --gtw-glyph: rgba(226, 236, 250, 0.6);
+  --gtw-glyph-size: 12.5px;
+  --gtw-mono: var(--ft-mono);
+}
+
+/*
+ * A real band of metal with a hard outer edge.
+ *
+ * `closest-side` matters: an unsized radial-gradient on a square box measures
+ * to the farthest CORNER, so a stop at 70% lands at 0.99 of the radius and the
+ * ring collapses to a hairline — which is why the dial read as a black tyre.
+ * Sized to the side, 74% is a true 74% of the radius.
+ */
+.ft-root .ft-gate .gtw-bezel {
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    transparent 73%,
+    #000 75.5%,
+    #000 100%
+  );
+  mask-image: radial-gradient(circle closest-side, transparent 73%, #000 75.5%, #000 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.5),
+    inset 0 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.ft-root .ft-gate .gtw-core {
+  inset: 24%;
+}
+
+
+/* ---- shared palette for the three big sections -------------------------- */
+
+.ft-root .ft-story,
+.ft-root .ft-review,
+.ft-root .ft-features {
+  --gts-bg: var(--ft-bg);
+  --gts-paper: var(--ft-paper);
+  --gts-ink: var(--ft-ink);
+  --gts-ink-2: rgba(31, 27, 19, 0.66);
+  --gts-ink-3: rgba(31, 27, 19, 0.42);
+  --gts-paper-rule: rgba(31, 27, 19, 0.16);
+  --gts-paper-rule-strong: rgba(31, 27, 19, 0.22);
+  --gts-paper-card: rgba(255, 253, 246, 0.62);
+  --gts-paper-input: rgba(31, 27, 19, 0.26);
+  --gts-paper-halo: rgba(238, 232, 219, 0.94);
+  --gts-paper-tick: rgba(31, 27, 19, 0.48);
+  --gts-paper-edge: rgba(31, 27, 19, 0.26);
+  --gts-paper-vignette: rgba(46, 40, 28, 0.16);
+  --gts-shell: #191b1e;
+  --gts-shell-text: #f0f1f2;
+  --gts-shell-line: rgba(255, 255, 255, 0.15);
+  --gts-code-bg: #0a0b0d;
+  --gts-code-text: rgba(234, 238, 244, 0.84);
+  /* syntax carries weight and value only — black, white and metal, no hues */
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: rgba(238, 241, 245, 0.8);
+  --gts-tok-attr: rgba(238, 241, 245, 0.6);
+  --gts-tok-str: rgba(238, 241, 245, 0.48);
+  --gts-tok-text: #f3f5f7;
+  --gts-tok-kw: rgba(238, 241, 245, 0.74);
+  --gts-tok-fn: rgba(238, 241, 245, 0.88);
+  --gts-tok-punct: rgba(238, 241, 245, 0.34);
+  --gts-line: var(--ft-hair);
+  --gts-line-2: var(--ft-hair2);
+  --gts-t1: var(--ft-w92);
+  --gts-t2: var(--ft-w64);
+  --gts-t3: var(--ft-w40);
+  --gts-t4: rgba(255, 255, 255, 0.24);
+  --gts-display: var(--font-switzer), system-ui, sans-serif;
+  --gts-text: var(--font-inter), system-ui, sans-serif;
+  --gts-mono: var(--ft-mono);
+  --gts-radius: 14px;
+  --gts-head-size: clamp(34px, 4.6vw, 64px);
+  --gts-head-weight: 800;
+
+  --gte-line: var(--ft-hair);
+  --gte-line-2: var(--ft-hair2);
+  --gte-title: var(--ft-w92);
+  --gte-body: var(--ft-w64);
+  --gte-label: var(--ft-w40);
+  --gte-quiet: rgba(255, 255, 255, 0.26);
+  --gte-display: var(--font-switzer), system-ui, sans-serif;
+  --gte-text: var(--font-inter), system-ui, sans-serif;
+  --gte-mono: var(--ft-mono);
+  --gte-radius: 16px;
+  --gte-ws-bg: #101214;
+  --gte-ws-shadow: 0 34px 90px rgba(0, 0, 0, 0.58);
+  --gte-head-size: clamp(34px, 4.6vw, 60px);
+  --gte-head-weight: 800;
+  --gte-wrap: 1260px;
+  /*
+   * Section rhythm, not section holes. The old 162px floor left ~450px of
+   * dead black under the workspace before the next heading arrived; a
+   * section should be composed top to bottom, not top-loaded.
+   */
+  --gte-pad: clamp(88px, 8vw, 124px) 0 clamp(76px, 6.8vw, 102px);
+  --gte-act-hover: rgba(255, 255, 255, 0.34);
+
+  --gtb-line: var(--ft-hair);
+  --gtb-line-2: rgba(0, 0, 0, 0.55);
+  --gtb-title: var(--ft-w92);
+  --gtb-body: var(--ft-w64);
+  --gtb-label: var(--ft-w40);
+  --gtb-display: var(--font-switzer), system-ui, sans-serif;
+  --gtb-text: var(--font-inter), system-ui, sans-serif;
+  --gtb-mono: var(--ft-mono);
+  --gtb-radius: 14px;
+  --gtb-grid-bg: #101214;
+  --gtb-mock-bg: transparent;
+  --gtb-spotlight: rgba(255, 255, 255, 0.07);
+  --gtb-head-size: clamp(34px, 4.6vw, 64px);
+  --gtb-head-weight: 800;
+  --gtb-wrap: 1260px;
+  --gtb-pad: clamp(76px, 6.8vw, 100px) 0 clamp(68px, 6.2vw, 92px);
+  --gtb-title-size: 20px;
+  --gtb-cell-min: 336px;
+  --gtb-cell-pad: 30px 26px 34px;
+  --gtb-mock-h: 178px;
+  --gtb-head-gap: 42px;
+
+  --gtd-line: rgba(255, 255, 255, 0.3);
+  --gtd-fill: rgba(255, 255, 255, 0.12);
+  --gtd-accent: #f0f1f2;
+  --gtd-label: var(--ft-w40);
+  --gtd-mono: var(--ft-mono);
+  --gtd-node-fill: #0e0f11;
+  --gtd-node-stroke: rgba(255, 255, 255, 0.42);
+  --gtd-wire: rgba(255, 255, 255, 0.24);
+  --gtd-glyph: rgba(255, 255, 255, 0.72);
+}
+
+/* ---- StorySection ------------------------------------------------------- */
+
+.ft-root .ft-story .gts-head {
+  width: min(1260px, 92vw);
+  padding: clamp(30px, 3vw, 44px) 0 clamp(18px, 1.8vw, 26px);
+}
+
+.ft-root .ft-story .gts-head h2 {
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+/*
+ * The sheet is board paper, not drafting paper: a warm bone stock ruled with
+ * flap-leaf slats and folded at the column seams. This is what keeps Act II
+ * recognisable as this direction when the dial is off screen.
+ */
+
+.ft-root .ft-story .gts-win-dots {
+  background-image:
+    linear-gradient(180deg, rgba(38, 32, 20, 0.055) 0 1px, transparent 1px),
+    linear-gradient(180deg, rgba(38, 32, 20, 0.1) 0 1px, transparent 1px);
+  background-size:
+    100% 15px,
+    100% 75px;
+}
+
+.ft-root .ft-story .gts-win-guides {
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent calc(33% - 1px),
+      rgba(38, 32, 20, 0.17) calc(33% - 1px),
+      rgba(38, 32, 20, 0.17) 33%,
+      rgba(255, 255, 255, 0.62) 33%,
+      rgba(255, 255, 255, 0.62) calc(33% + 1px),
+      transparent calc(33% + 1px)
+    ),
+    linear-gradient(
+      90deg,
+      transparent calc(66% - 1px),
+      rgba(38, 32, 20, 0.17) calc(66% - 1px),
+      rgba(38, 32, 20, 0.17) 66%,
+      rgba(255, 255, 255, 0.62) 66%,
+      rgba(255, 255, 255, 0.62) calc(66% + 1px),
+      transparent calc(66% + 1px)
+    );
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* the destination chip on the corner of the board */
+.ft-root .ft-story .gts-win-chip {
+  background-image: var(--ft-brush);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.01em;
+}
+
+/* numbered pins are machined discs, not printed dots */
+.ft-root .ft-story .gts-mk-n {
+  background: linear-gradient(180deg, #2c2e32, #131416);
+  box-shadow:
+    0 0 0 3px var(--gts-paper-halo),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 2px 6px rgba(38, 32, 20, 0.3);
+}
+
+.ft-root .ft-story .gts-mk-b {
+  background: linear-gradient(180deg, #26282c, #131416);
+  border-color: transparent;
+  letter-spacing: 0.18em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+/*
+ * The caption dock reads as one long flap slab, set in gate-board caps — and
+ * it sits ABOVE the bottom-centre band, which is where the version switcher
+ * lives. At the shared 40px it was occluded in seven of the nine beat frames,
+ * which is fatal for the one component whose entire job is to name the beat.
+ */
+.ft-root .ft-story .gts-dock {
+  bottom: 122px;
+  background: var(--ft-brush), var(--ft-slab);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 22px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* the signal rail moves up with it so the two never share a band */
+.ft-root .ft-story .gts-pipeline {
+  bottom: 202px;
+  width: min(880px, 88vw);
+}
+
+/*
+ * Hard cuts, not cross-fades. `Story.tsx` marks the winning face each frame
+ * and these `!important` rules override the inline opacity the shared
+ * timeline writes, so a scrubbed still can never paint two strings on the
+ * same box — no "ITCEDITSHCODE" captions, no Spanish legal line sitting on
+ * top of the English one.
+ */
+.ft-root .ft-story .gts-dock-cap span[data-cap] {
+  opacity: 0 !important;
+}
+
+.ft-root .ft-story .gts-dock-cap span[data-cap][data-cut='1'] {
+  opacity: 1 !important;
+}
+
+.ft-root .ft-story .gts-sw > .gts-en {
+  opacity: 1 !important;
+}
+
+.ft-root .ft-story .gts-sw > .gts-es {
+  opacity: 0 !important;
+}
+
+.ft-root .ft-story .gts-sw[data-cut='1'] > .gts-en {
+  opacity: 0 !important;
+}
+
+.ft-root .ft-story .gts-sw[data-cut='1'] > .gts-es {
+  opacity: 1 !important;
+}
+
+.ft-root .ft-story .gts-review-card {
+  opacity: 0 !important;
+}
+
+.ft-root .ft-story .gts-review-card[data-cut='1'] {
+  opacity: 1 !important;
+}
+
+/*
+ * The pull-request node carried a register glyph that renders as a stray
+ * bracket — pure instrument chrome under a caption that already says "open
+ * pr". Push/scan/edit/translate keep their semantic marks; this one goes.
+ */
+.ft-root .ft-story .gts-pipeline .gtd-pg:nth-of-type(3) {
+  display: none;
+}
+
+.ft-root .ft-story .gts-dock::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.62);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.ft-root .ft-story .gts-dock-cap span {
+  text-transform: uppercase;
+  letter-spacing: 0.17em;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+/* ---- the code reveal ----------------------------------------------------
+   A shade wipes the sheet dark; the code rides an anchored slab that is
+   never clipped, so the panel is whole at every scroll position. */
+
+.ft-root .ft-story .gts-xray {
+  clip-path: none;
+}
+
+.ft-root .ft-story .gts-xray-surface {
+  /* The shade never sits narrower than the code slab it backs, so the panel is
+     whole from the first frame of the wipe; past that it follows the scrub and
+     still stops clear of the zoomed component. */
+  clip-path: inset(
+    0 max(0px, min(calc(100% - 664px), calc((1 - var(--gts-split)) * 100%))) 0 0
+  );
+  background: radial-gradient(120% 92% at 24% 32%, #1b1e22, #0b0c0e 74%), #0a0b0c;
+}
+
+.ft-root .ft-story .gts-xray-surface::before {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px);
+  background-size: 100% 15px;
+}
+
+.ft-root .ft-story .gts-xray-inner {
+  left: clamp(24px, 5vw, 92px);
+  max-width: none;
+  width: min(560px, 54vw);
+  padding: 26px 28px 24px;
+  border-radius: 14px;
+  background: var(--ft-brush), linear-gradient(180deg, #1c1e22, #0f1113);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.075),
+    0 34px 82px rgba(0, 0, 0, 0.68);
+}
+
+.ft-root .ft-story .gts-xray-file {
+  margin-bottom: 13px;
+}
+
+.ft-root .ft-story .gts-xray pre {
+  font-size: clamp(12.5px, 1.12vw, 16px);
+  line-height: 1.78;
+}
+
+.ft-root .ft-story .gts-xray-note {
+  max-width: none;
+  margin-top: 18px;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+/* the edge light rides the shade's real edge, not the raw scrub value */
+.ft-root .ft-story .gts-split {
+  left: max(664px, calc(var(--gts-split) * 100%));
+}
+
+/* the grip sits low so it never crosses the code */
+.ft-root .ft-story .gts-handle {
+  top: 84%;
+}
+
+/* no chromatic fringe: the only colour on this page is the prismatic field */
+.ft-root .ft-story .gts-split-ca {
+  display: none;
+}
+
+/* ---- EditorWorkspace ---------------------------------------------------- */
+
+.ft-root .ft-review .gte h2 {
+  /* the flapped second line needs leading; at 1.03 it sliced the descenders */
+  line-height: 1.2;
+}
+
+.ft-root .ft-review .gte-ws {
+  background: var(--ft-brush), linear-gradient(180deg, #14161a, #0d0e10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    var(--gte-ws-shadow);
+}
+
+.ft-root .ft-review .gte-bar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  letter-spacing: 0.16em;
+}
+
+/* every row divided by a real flap seam: hard shadow, lit leaf below */
+.ft-root .ft-review .gte-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+.ft-root .ft-review .gte-lab {
+  letter-spacing: 0.2em;
+}
+
+.ft-root .ft-review .gte-act {
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ---- FeatureBento ------------------------------------------------------- */
+
+.ft-root .ft-features .gtb h2 {
+  /* room for the flapped phrase's slabs above the descenders of line one */
+  line-height: 1.2;
+}
+
+/*
+ * A real bento, not a table: two wide slabs carry the modules a developer
+ * meets first, six narrower ones run beneath in threes. Six tracks give the
+ * 3 + 3 / 2 + 2 + 2 rhythm; the borders are redrawn to match, since the
+ * shared nth-child rules assume four equal columns.
+ */
+.ft-root .ft-features .gtb-grid {
+  grid-template-columns: repeat(6, 1fr);
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.ft-root .ft-features .gtb-cell:nth-child(-n + 2) {
+  grid-column: span 3;
+  --gtb-mock-h: 252px;
+}
+
+.ft-root .ft-features .gtb-cell:nth-child(n + 3) {
+  grid-column: span 2;
+}
+
+.ft-root .ft-features .gtb-cell:nth-child(-n + 2) h3 {
+  font-size: 27px;
+}
+
+.ft-root .ft-features .gtb-cell {
+  border-right: 1px solid var(--gtb-line-2);
+  border-bottom: 1px solid var(--gtb-line-2);
+}
+
+.ft-root .ft-features .gtb-cell:nth-child(2),
+.ft-root .ft-features .gtb-cell:nth-child(5),
+.ft-root .ft-features .gtb-cell:nth-child(8) {
+  border-right: 0;
+}
+
+.ft-root .ft-features .gtb-cell:nth-child(n + 6) {
+  border-bottom: 0;
+}
+
+/*
+ * Section G: a cell starts at its heading. The shared grid still ships a
+ * category kicker ("LIBRARIES" over "Code", "EDGE" over "Delivery"); the
+ * items passed in blank it and this takes the box out of the flow.
+ */
+.ft-root .ft-features .gtb-cell h3 small {
+  display: none;
+}
+
+/* each module is a slab hanging on the board */
+.ft-root .ft-features .gtb-cell {
+  background:
+    radial-gradient(
+      320px circle at var(--gtb-mx, 50%) var(--gtb-my, -40%),
+      rgba(255, 255, 255, 0.07),
+      transparent 60%
+    ),
+    var(--ft-brush),
+    linear-gradient(180deg, #191b1e, #121315);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.085),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+  transition: background-color 0.3s ease;
+}
+
+
+/* the diagram is printed on a flap face — note the seam behind it */
+.ft-root .ft-features .gtb-mock {
+  border-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.22));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.ft-root .ft-features .gtb-mock::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.045);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-grain {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------- responsive */
+
+@media (max-width: 1080px) {
+  .ft-price-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ft-foot-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .ft-stat-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .ft-si--theo,
+  .ft-si--price {
+    display: none;
+  }
+
+  .ft-root .ft-gate {
+    --gtw-size: 186px;
+  }
+
+  /* clear of the version switcher here too, and of the sheet's own footer */
+  .ft-root .ft-story .gts-dock {
+    bottom: 98px;
+  }
+
+  /*
+   * The phone sheet is far taller than its content, which left ~470px of
+   * empty paper under the last card. Centring the column puts the demo site
+   * in the middle of the frame the camera actually flies around.
+   */
+  .ft-root .ft-story .gts-site {
+    align-content: center;
+  }
+
+  /*
+   * The story sheet gets a phone-scale layout, not a cropped desktop one:
+   * every block is small enough that a zoomed beat still frames the whole
+   * component instead of slicing it at both bezels.
+   */
+  .ft-root .ft-story .gts-site {
+    padding: 56px 15px 92px;
+    gap: 11px;
+  }
+
+  .ft-root .ft-story .gts-site-h1 {
+    font-size: 21px;
+  }
+
+  .ft-root .ft-story .gts-site-date {
+    font-size: 7.5px;
+    margin-bottom: 10px;
+  }
+
+  .ft-root .ft-story .gts-site-p {
+    font-size: 9.5px;
+    margin-bottom: 10px;
+    max-width: 250px;
+  }
+
+  .ft-root .ft-story .gts-site-nav {
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+
+  .ft-root .ft-story .gts-site-nav span {
+    font-size: 8px;
+    padding: 3px 7px;
+    border-radius: 3px;
+  }
+
+  .ft-root .ft-story .gts-site-btn {
+    font-size: 10px;
+    padding: 8px 15px;
+    border-radius: 5px;
+  }
+
+  .ft-root .ft-story .gts-site-legal {
+    font-size: 7.5px;
+    /* room for the pin that hangs above this line at phone scale */
+    margin-top: 34px;
+    max-width: 230px;
+  }
+
+  /*
+   * Two pins are placed off the left edge of their block by the shared demo
+   * site; at phone width that runs them off the sheet, so they swing inboard.
+   */
+  .ft-root .ft-story [data-para] .gts-mk {
+    left: auto !important;
+    right: -24px;
+    top: -1px !important;
+  }
+
+  .ft-root .ft-story [data-legal] .gts-mk {
+    top: -25px !important;
+  }
+
+  .ft-root .ft-story .gts-site-stats {
+    gap: 13px;
+    margin-top: 12px;
+  }
+
+  .ft-root .ft-story .gts-site-stats b {
+    font-size: 13px;
+  }
+
+  .ft-root .ft-story .gts-site-stats small {
+    font-size: 6px;
+  }
+
+  .ft-root .ft-story .gts-site-card {
+    padding: 9px 11px;
+    border-radius: 8px;
+  }
+
+  .ft-root .ft-story .gts-tagline {
+    font-size: 11px;
+  }
+
+  .ft-root .ft-story .gts-site-toast {
+    font-size: 9.5px;
+    gap: 7px;
+  }
+
+  .ft-root .ft-story .gts-tick {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
+    font-size: 7px;
+  }
+
+  .ft-root .ft-story .gts-site-form label {
+    font-size: 6.5px;
+    margin-bottom: 4px;
+  }
+
+  .ft-root .ft-story .gts-fbox {
+    font-size: 9px;
+    padding: 6px 9px;
+  }
+
+  .ft-root .ft-story .gts-site-foot {
+    left: 15px;
+    right: 15px;
+    bottom: 12px;
+    font-size: 6px;
+  }
+
+  .ft-root .ft-story .gts-mk-n {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    font-size: 7px;
+  }
+
+  .ft-root .ft-story .gts-mk-b {
+    font-size: 6px;
+    padding: 2px 6px;
+  }
+
+  .ft-root .ft-story .gts-win-dots {
+    background-size:
+      100% 11px,
+      100% 55px;
+  }
+
+  /* on a phone the slab is full width, so the shade simply takes the sheet */
+  .ft-root .ft-story .gts-xray-surface {
+    clip-path: none;
+  }
+
+  .ft-root .ft-story .gts-split {
+    display: none;
+  }
+
+  .ft-root .ft-story .gts-xray-inner {
+    left: 14px;
+    right: 14px;
+    width: auto;
+    padding: 16px 16px 14px;
+  }
+
+  .ft-root .ft-story .gts-xray pre {
+    font-size: 11px;
+    line-height: 1.72;
+  }
+
+  .ft-root .ft-story .gts-xray-note {
+    font-size: 8.5px;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .ft-root {
+    font-size: 15.5px;
+    --ft-tile: clamp(20px, 6.4vw, 30px);
+  }
+
+  .ft-nav-links {
+    display: none;
+  }
+
+  .ft-nav-pill {
+    gap: 12px;
+  }
+
+  .ft-hero {
+    /* the bottom band clears the version dock so the trusted row still reads */
+    padding: 72px 5vw 92px;
+  }
+
+  .ft-root .ft-hero-board {
+    --ft-tile: clamp(20px, 6.2vw, 30px);
+    margin-bottom: 11px;
+  }
+
+  .ft-hero-sub {
+    font-size: 14px;
+    gap: 7px;
+  }
+
+  .ft-root .ft-lang-flap {
+    --ft-tile: 20px;
+  }
+
+  /* the gate goes vertical: source in above the dial, translated out below */
+  .ft-gateband {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* wide enough that the cards flank the dial instead of resting on its
+       bezel, which is what made them read as stuck to it */
+    gap: 44px;
+    min-height: 252px;
+    margin: 4px 0;
+  }
+
+  .ft-root .ft-si.ft-resident {
+    display: none;
+  }
+
+  .ft-gateband .ft-si[data-row] {
+    display: none;
+  }
+
+  .ft-gate-rails,
+  .ft-gate-seam {
+    display: none;
+  }
+
+  .ft-root .ft-gate {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    --gtw-size: min(138px, 37vw);
+  }
+
+  .ft-phonegate {
+    display: inline-flex;
+    font-size: 13px;
+  }
+
+  .ft-phonegate--en {
+    order: -1;
+  }
+
+  .ft-root .ft-hero-ctas .ft-btn {
+    height: 46px;
+    padding: 0 20px;
+  }
+
+  .ft-hero-ctas {
+    margin-bottom: 20px;
+  }
+
+  .ft-boarding-label {
+    margin-bottom: 9px;
+  }
+
+  /* a chip either reads or it is gone: the old 16% fade still left a legible
+     half-chip sheared off at the left bezel */
+  .ft-marquee {
+    mask-image: linear-gradient(90deg, transparent 0, #000 31%, #000 69%, transparent 100%);
+  }
+
+  .ft-flag-chip {
+    gap: 7px;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .ft-marquee-track {
+    gap: 8px;
+  }
+
+  .ft-trusted {
+    margin-top: 13px;
+  }
+
+  .ft-trusted-row {
+    gap: 16px;
+  }
+
+  .ft-trusted-row span {
+    font-size: 11.5px;
+  }
+
+  .ft-stat-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ft-foot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

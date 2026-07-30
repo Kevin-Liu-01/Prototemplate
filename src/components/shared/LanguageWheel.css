@@ -1,0 +1,130 @@
+/* ============================================================
+   SHARED LANGUAGE WHEEL
+   Machined chrome bezel, bright progress arc, orbiting script
+   glyphs, the real mark at centre. Skin via --gtw-* properties.
+   ============================================================ */
+
+.gtw {
+  position: relative;
+  width: var(--gtw-size, 244px);
+  height: var(--gtw-size, 244px);
+}
+
+.gtw-shell {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.gtw-shell-1 {
+  inset: -28.7%;
+  backdrop-filter: blur(1.6px) hue-rotate(-18deg) saturate(1.2);
+  -webkit-mask-image: radial-gradient(circle, #000 40%, rgba(0, 0, 0, 0.45) 72%, transparent 100%);
+  mask-image: radial-gradient(circle, #000 40%, rgba(0, 0, 0, 0.45) 72%, transparent 100%);
+}
+
+.gtw-shell-2 {
+  inset: -7.4%;
+  backdrop-filter: blur(5px) contrast(1.22) hue-rotate(24deg) saturate(1.5);
+  -webkit-mask-image: radial-gradient(circle, #000 54%, transparent 96%);
+  mask-image: radial-gradient(circle, #000 54%, transparent 96%);
+}
+
+.gtw-shell-3 {
+  inset: 5.74%;
+  backdrop-filter: blur(13px) brightness(1.25) saturate(1.7) hue-rotate(-34deg);
+  -webkit-mask-image: radial-gradient(circle, #000 58%, transparent 98%);
+  mask-image: radial-gradient(circle, #000 58%, transparent 98%);
+}
+
+.gtw-halo {
+  position: absolute;
+  inset: -18.85%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 52%,
+    var(--gtw-halo, rgba(168, 182, 214, 0.16)) 62%,
+    transparent 78%
+  );
+  pointer-events: none;
+}
+
+/* the machined bezel: a conic sweep clipped to a ring, so the specular
+   highlights sit on the metal edge rather than washing the whole disc */
+.gtw-bezel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(
+    --gtw-bezel,
+    conic-gradient(from 210deg, #3c3c40, #cdcdd2 22%, #55555a 45%, #f2f2f4 68%, #3c3c40)
+  );
+  -webkit-mask-image: radial-gradient(circle, transparent 61%, #000 62.5%, #000 100%);
+  mask-image: radial-gradient(circle, transparent 61%, #000 62.5%, #000 100%);
+}
+
+.gtw-arc {
+  position: absolute;
+  inset: -3.28%;
+  width: 106.56%;
+  height: 106.56%;
+  overflow: visible;
+}
+
+.gtw-track {
+  fill: none;
+  stroke: var(--gtw-track, rgba(255, 255, 255, 0.12));
+  stroke-width: var(--gtw-track-width, 1);
+}
+
+.gtw-sweep {
+  fill: none;
+  stroke: var(--gtw-sweep, #fff);
+  stroke-width: var(--gtw-sweep-width, 2.5);
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+.gtw-core {
+  position: absolute;
+  inset: 10.66%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gtw-core, radial-gradient(circle at 36% 30%, #16161a, #050506 74%));
+  box-shadow: var(
+    --gtw-core-shadow,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -12px 28px rgba(0, 0, 0, 0.8),
+    0 0 56px rgba(150, 165, 205, 0.18)
+  );
+}
+
+/* 43.72% of the core is 34.4% of the dial — sized off the core so the mark
+   follows any width the direction gives the wheel, media queries included. */
+.gtw-mark {
+  width: 43.72%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px var(--gtw-mark-glow, rgba(180, 195, 235, 0.35)));
+}
+
+.gtw-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+
+.gtw-glyph {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--gtw-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  font-size: var(--gtw-glyph-size, 13px);
+  color: var(--gtw-glyph, rgba(214, 222, 240, 0.75));
+  opacity: 0;
+  will-change: transform, opacity;
+}

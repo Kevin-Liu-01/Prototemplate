@@ -1,0 +1,940 @@
+/* ============================================================
+   TOOLCHAIN — ANIMATED LANGUAGE DIAGRAMS
+   One stylesheet for every diagram in this folder.
+
+   The isometric family next door draws infrastructure in SVG. This
+   family draws language, so it is built from real HTML text: the
+   browser shapes Arabic, stacks Devanagari, and resolves bidi, none
+   of which SVG text handles reliably.
+
+   Ink is derived from `currentColor` and the accent from the page's
+   own `--iso-accent`, so both families re-skin from the same ancestor
+   and neither can drift from the other.
+   ============================================================ */
+
+.lang {
+  --lang-ink: currentColor;
+  --lang-mid: color-mix(in srgb, currentColor 64%, transparent);
+  --lang-dim: color-mix(in srgb, currentColor 46%, transparent);
+  --lang-faint: color-mix(in srgb, currentColor 30%, transparent);
+  --lang-rule-strong: color-mix(in srgb, currentColor 22%, transparent);
+  --lang-rule: color-mix(in srgb, currentColor 13%, transparent);
+  --lang-rule-2: color-mix(in srgb, currentColor 8%, transparent);
+  --lang-tint: color-mix(in srgb, currentColor 4%, transparent);
+  --lang-bar: color-mix(in srgb, currentColor 26%, transparent);
+
+  --lang-card: var(--tc-card, #ffffff);
+  /* The surface the diagram actually sits on — the plate when the zone is
+     plated. Sandwich strokes (the doubled thread's core) cut against this. */
+  --lang-ground: var(--lang-card);
+
+  --lang-sans: var(--tc-sans, ui-sans-serif, system-ui, sans-serif);
+  --lang-disp: var(--tc-disp, var(--tc-sans, ui-sans-serif, system-ui, sans-serif));
+  --lang-mono: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+
+  /* Per-glyph fallback for the scripts the page's own faces do not cover. */
+  --lang-script: 'Hiragino Sans', 'Noto Sans CJK JP', 'Yu Gothic', 'PingFang SC', 'Noto Sans SC',
+    'Apple SD Gothic Neo', 'Noto Sans KR', 'Geeza Pro', 'Noto Naskh Arabic', 'Kohinoor Devanagari',
+    'Noto Sans Devanagari', 'Thonburi', 'Noto Sans Thai', sans-serif;
+
+  position: relative;
+  width: 100%;
+  color: inherit;
+  font-family: var(--lang-sans);
+}
+
+.lang-accent-on {
+  --lang-accent: var(--iso-accent, #2f5ce0);
+}
+
+.lang-accent-off {
+  --lang-accent: var(--lang-ink);
+}
+
+.lang p {
+  margin: 0;
+}
+
+.lang .lang-tag {
+  font-family: var(--lang-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--lang-faint);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   SENTENCE WIDTH — the signature piece
+   Four locales measured at once against one ruler; the English
+   width drops through the stack as a single guide, so every
+   other row is read against the source in one pass.
+   ============================================================ */
+
+.lang-sw {
+  width: 100%;
+}
+
+.lang-sw-rows {
+  position: relative;
+  display: grid;
+  gap: 15px;
+}
+
+.lang-sw-row {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  align-items: center;
+}
+
+.lang-sw-locale {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+  padding-right: 10px;
+}
+
+.lang-sw-name {
+  font-family: var(--lang-sans), var(--lang-script);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--lang-mid);
+}
+
+/* The measured container and its delta sit in one flow: the label hangs off
+   the measured edge, so the number and the box it describes are one statement.
+   The RTL row reverses the flow, which re-anchors the box to the right edge
+   and hangs the delta off its (left) leading edge — the browser does the
+   mirroring, exactly as it does in the panel diagram two cells away. */
+.lang-sw-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.lang-sw-row.is-rtl .lang-sw-track {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+/* The measured container is the page's own solid button — ink fill, paper
+   label — because that is what the string IS: a button, rendered four times.
+   Four solid plates are also the diagram's mass; a pale outline never was. */
+.lang-sw-box {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: calc(var(--lang-sw-size, 18px) * 1.25 + 24px);
+  max-width: 100%;
+  border: 1.5px solid var(--lang-ink);
+  border-radius: 5px;
+  background: var(--lang-ink);
+}
+
+/* The German edge — the one locale that breaks the layout — is the diagram's
+   single accent element: a 2px caliper mark standing just past the measured
+   edge, clear of the button's rounded corner. */
+.lang-sw-row.is-lit .lang-sw-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-end: -6px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--lang-accent);
+}
+
+.lang-sw-line {
+  padding-inline: 13px;
+  white-space: nowrap;
+  font-family: var(--lang-sans), var(--lang-script);
+  font-size: var(--lang-sw-size, 18px);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: #fbfbfa;
+}
+
+/* CALIPER rule: values are never obscured by scaffolding. The delta rides
+   above the dashed source guide on a chip of the plate's own ground, so the
+   guide breaks behind the number instead of striking through it on the rows
+   the guide overshoots (ja, ar). */
+.lang-sw-delta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 5px;
+  border-radius: 2px;
+  background: var(--lang-ground);
+  white-space: nowrap;
+}
+
+.lang-sw-pct {
+  font-family: var(--lang-mono);
+  font-size: 12px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--lang-ink);
+}
+
+.lang-sw-vs {
+  font-family: var(--lang-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--lang-faint);
+}
+
+/* The English width, dropped through the whole stack as one guide. Drawn in
+   difference blend so the dash reads dark over the plate and light where it
+   crosses the ink buttons — one guide, legible on both surfaces. */
+.lang-sw-guide {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: 86px;
+  width: 0;
+  border-left: 1px dashed #ffffff;
+  mix-blend-mode: difference;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.lang-sw-ruler {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 8px;
+  margin-top: 14px;
+}
+
+.lang-sw-ruler i {
+  width: 1px;
+  height: 3px;
+  background: var(--lang-rule);
+}
+
+.lang-sw-ruler i:nth-child(4n + 1) {
+  height: 8px;
+  background: var(--lang-rule-strong);
+}
+
+.lang-sw-note {
+  margin-top: 9px;
+  font-family: var(--lang-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--lang-faint);
+}
+
+@media (max-width: 560px) {
+  .lang-sw-row {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .lang-sw-guide {
+    left: 64px;
+  }
+}
+
+/* ============================================================
+   WORD MORPH
+   A term ledger: the source ruled off at the top, then every
+   locale it ships in, printed. The step is carried by ink and
+   size — there is no rule and no accent in this one.
+   ============================================================ */
+
+.lang-wm {
+  width: 100%;
+  --lang-wm-key: 30px;
+  --lang-wm-row: 36px;
+}
+
+.lang-wm-source,
+.lang-wm-row {
+  display: grid;
+  grid-template-columns: var(--lang-wm-key) minmax(0, 1fr);
+  align-items: baseline;
+}
+
+.lang-wm-source {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--lang-rule);
+}
+
+.lang-wm-source-text {
+  font-family: var(--lang-disp);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--lang-ink);
+}
+
+.lang-wm-rows {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The six translations ARE the artifact, so every row stays in ink at all
+   times — muted is never the artifact's ink. The reading is carried by scale
+   and the character entry alone. Ruled per row: the term list is a ledger on
+   the plate, not six words adrift. */
+.lang-wm-row {
+  height: var(--lang-wm-row);
+  align-items: center;
+}
+
+.lang-wm-row + .lang-wm-row {
+  border-top: 1px solid var(--lang-rule-2);
+}
+
+.lang-wm-word {
+  display: inline-block;
+  transform-origin: 0 50%;
+  white-space: nowrap;
+  font-family: var(--lang-sans), var(--lang-script);
+  font-size: 15.5px;
+  line-height: var(--lang-wm-row);
+  letter-spacing: -0.01em;
+  color: var(--lang-ink);
+  will-change: transform;
+}
+
+.lang-wm-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* ============================================================
+   SCRIPT SAMPLER
+   Depth is one number per sample: it sets the size, the weight of
+   ink, and how far the sample drifts.
+   ============================================================ */
+
+.lang-ss {
+  width: 100%;
+}
+
+.lang-ss-field {
+  position: relative;
+  height: 196px;
+}
+
+.lang-ss-item {
+  position: absolute;
+  opacity: calc(1 - var(--lang-ss-depth) * 0.5);
+  will-change: transform;
+}
+
+.lang-ss-word {
+  display: block;
+  font-family: var(--lang-disp), var(--lang-script);
+  font-weight: 500;
+  font-size: calc(30px - var(--lang-ss-depth) * 12px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--lang-ink);
+}
+
+/* The source is already the nearest and largest sample in the field, so colour
+   was saying a second time what depth had said first. This diagram spends no
+   accent: eight scripts set correctly is the whole argument. */
+.lang-ss-item.is-source .lang-ss-word {
+  color: var(--lang-ink);
+}
+
+.lang-ss-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 3px;
+}
+
+.lang-ss-script {
+  font-size: 11px;
+  line-height: 1;
+  color: var(--lang-faint);
+}
+
+/* ============================================================
+   EXPANSION BARS
+   The chart is complete in CSS; the loop only reads it.
+   ============================================================ */
+
+.lang-eb {
+  width: 100%;
+}
+
+.lang-eb-rows {
+  position: relative;
+}
+
+/* The reading marker is plain ink. It used to carry the accent, which made the
+   chart claim a different significant locale in every frame. */
+.lang-eb-marker {
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 0;
+  height: 27px;
+  background: var(--lang-tint);
+  border-left: 1px solid var(--lang-rule-strong);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.lang-eb-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 58px;
+  align-items: center;
+  gap: 10px;
+  height: 27px;
+}
+
+.lang-eb-name {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--lang-mid);
+}
+
+.lang-eb-row.is-axis .lang-eb-name {
+  color: var(--lang-ink);
+}
+
+.lang-eb-track {
+  position: relative;
+  height: 13px;
+}
+
+/* The axis, drawn once per row so it reads as one continuous line. */
+.lang-eb-track::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  bottom: -8px;
+  width: 1px;
+  background: var(--lang-rule);
+}
+
+.lang-eb-half {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+}
+
+.lang-eb-half.is-right {
+  left: 50%;
+}
+
+.lang-eb-half.is-left {
+  right: 50%;
+}
+
+/* The bars are the meaning-carrying marks, so they are drawn in ink — muted
+   is never the artifact's ink, and a benchmark chart most of all. */
+.lang-eb-bar {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--lang-ink);
+}
+
+.lang-eb-half.is-right .lang-eb-bar {
+  left: 0;
+  transform-origin: 0 50%;
+}
+
+.lang-eb-half.is-left .lang-eb-bar {
+  right: 0;
+  transform-origin: 100% 50%;
+}
+
+/* German, and only German: the +35% case the copy beside the chart argues. */
+.lang-eb-row.is-lit .lang-eb-bar {
+  background: var(--lang-accent);
+}
+
+.lang-eb-value {
+  font-family: var(--lang-mono);
+  font-size: 11.5px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--lang-ink);
+}
+
+.lang-eb-value.is-base {
+  color: var(--lang-faint);
+}
+
+/* ============================================================
+   PLURAL FORMS
+   Column height is the argument: two rows, four rows, one row.
+   ============================================================ */
+
+.lang-pf {
+  width: 100%;
+}
+
+.lang-pf-count {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 20px;
+}
+
+.lang-pf-key {
+  font-family: var(--lang-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  color: var(--lang-faint);
+}
+
+.lang-pf-n {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 19px;
+}
+
+.lang-pf-num {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--lang-disp);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 19px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--lang-ink);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.lang-pf-num:first-of-type {
+  opacity: 1;
+}
+
+.lang-pf-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 14px;
+}
+
+.lang-pf-col {
+  border-top: 1px solid var(--lang-rule);
+  padding-top: 9px;
+}
+
+.lang-pf-head {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.lang-pf-forms {
+  font-size: 12px;
+  line-height: 1;
+  color: var(--lang-dim);
+}
+
+.lang-pf-result {
+  position: relative;
+  height: 21px;
+  margin: 8px 0 10px;
+}
+
+.lang-pf-rendered {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  font-family: var(--lang-disp), var(--lang-script);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 21px;
+  letter-spacing: -0.015em;
+  color: var(--lang-ink);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.lang-pf-rendered:first-of-type {
+  opacity: 1;
+}
+
+.lang-pf-rules {
+  position: relative;
+  padding-left: 10px;
+}
+
+.lang-pf-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 19px;
+  background: var(--lang-accent);
+  will-change: transform;
+}
+
+.lang-pf-rule {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  height: 19px;
+}
+
+.lang-pf-cat {
+  flex: none;
+  width: 40px;
+  font-family: var(--lang-mono);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--lang-dim);
+}
+
+/* The plural words are the artifact: ink, not a grey reading of it. */
+.lang-pf-word {
+  font-family: var(--lang-sans), var(--lang-script);
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--lang-ink);
+}
+
+/* ============================================================
+   RTL MIRROR
+   Identical markup, one attribute apart. The browser does the
+   mirroring; only the chevron and the underline need telling.
+   ============================================================ */
+
+.lang-rm {
+  width: 100%;
+}
+
+.lang-rm-pair {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.lang-rm-axis {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed var(--lang-rule);
+}
+
+.lang-rm-dir {
+  margin-bottom: 8px;
+}
+
+/* White cards on the plate — the mock is the object, the plate is its ground. */
+.lang-rm-panel {
+  border: 1px solid var(--lang-rule-strong);
+  border-radius: 3px;
+  padding: 12px 13px 13px;
+  background: var(--lang-card);
+  will-change: opacity;
+}
+
+.lang-rm-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-rm-back {
+  display: inline-flex;
+  flex: none;
+  color: var(--lang-dim);
+}
+
+.lang-rm-panel[dir='rtl'] .lang-rm-back {
+  transform: scaleX(-1);
+}
+
+.lang-rm-title {
+  font-family: var(--lang-disp), var(--lang-script);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--lang-ink);
+}
+
+.lang-rm-dots {
+  margin-inline-start: auto;
+  display: inline-flex;
+  gap: 3px;
+}
+
+.lang-rm-dots i {
+  width: 2.5px;
+  height: 2.5px;
+  border-radius: 50%;
+  background: var(--lang-faint);
+}
+
+.lang-rm-rail {
+  position: relative;
+  height: 1px;
+  background: var(--lang-rule-2);
+  margin: 10px 0;
+}
+
+.lang-rm-rule {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--lang-accent);
+  transform: scaleX(0.3);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+.lang-rm-panel[dir='rtl'] .lang-rm-rule {
+  transform-origin: 100% 50%;
+}
+
+.lang-rm-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lang-rm-label {
+  font-family: var(--lang-sans), var(--lang-script);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--lang-ink);
+}
+
+.lang-rm-switch {
+  position: relative;
+  flex: none;
+  margin-inline-start: auto;
+  width: 24px;
+  height: 13px;
+  border: 1px solid var(--lang-rule-strong);
+  border-radius: 7px;
+}
+
+.lang-rm-switch i {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lang-dim);
+}
+
+.lang-rm-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.lang-rm-btn {
+  border: 1px solid var(--lang-rule-strong);
+  border-radius: 3px;
+  padding: 4px 11px;
+  font-family: var(--lang-sans), var(--lang-script);
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--lang-ink);
+  background: var(--lang-card);
+}
+
+/* ============================================================
+   CONTEXT RESOLVE
+   ============================================================ */
+
+/* The diagram owns its plate: source button at the top, branch cards on the
+   bottom edge, and the fork stretched between them — no empty upper half. */
+.lang-cr {
+  width: 100%;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.lang-cr-source {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+/* The source is what the string is in the product: a button. Solid ink, the
+   page's own control, so the fork starts from a real object rather than a
+   floating word. */
+.lang-cr-word {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 5px;
+  /* Concrete ink: `--lang-ink` is currentColor, which a `color` declaration on
+     this same element would re-resolve to the label's own near-white. */
+  background: var(--tc-ink, #0f1113);
+  font-family: var(--lang-sans);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: #fbfbfa;
+}
+
+/* The fork takes whatever height the cell has to give (the viewBox is
+   stretched; `non-scaling-stroke` holds the gauge), so the diagram spans the
+   plate instead of pooling at its centre. */
+.lang-cr-fork {
+  display: block;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 56px;
+  margin-top: 6px;
+}
+
+/* The doubled line, built as a sandwich: a full-gauge ink stroke with a
+   card-colored core leaves two parallel threads at constant gauge along any
+   curve. `non-scaling-stroke` keeps the gauge fixed under the stretched
+   viewBox. */
+.lang-cr-thread {
+  fill: none;
+  stroke: var(--lang-ink);
+  stroke-width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
+  vector-effect: non-scaling-stroke;
+}
+
+.lang-cr-thread.is-live {
+  stroke: var(--lang-accent);
+}
+
+.lang-cr-core {
+  fill: none;
+  stroke: var(--lang-ground, #ffffff);
+  stroke-width: var(--thread-gap, 3px);
+  vector-effect: non-scaling-stroke;
+}
+
+.lang-cr-fork [data-cr-live] {
+  opacity: 0;
+  will-change: opacity;
+}
+
+.lang-cr-branches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Each branch is a white card on the plate, edge to edge in its half — the
+   fork lands on an object, and the pair fills the cell rather than floating
+   at its center. */
+.lang-cr-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 13px 10px 14px;
+  border: 1px solid var(--lang-rule-strong);
+  border-radius: 4px;
+  background: var(--lang-card);
+  will-change: transform, opacity;
+}
+
+/* The context tag as the inline code chip it is in the source. */
+.lang-cr-ctx {
+  font-family: var(--lang-mono);
+  font-size: 11.5px;
+  line-height: 1;
+  padding: 4px 7px 5px;
+  border: 1px solid var(--lang-rule);
+  border-radius: 4px;
+  background: var(--lang-ground);
+  white-space: nowrap;
+}
+
+.lang-cr-attr {
+  color: var(--lang-dim);
+}
+
+.lang-cr-val {
+  color: var(--lang-ink);
+  font-weight: 500;
+}
+
+/* Each resolution is what the string is in the product — the same solid
+   button the source is, rendered in German. The fork runs button to button. */
+.lang-cr-result {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 5px;
+  background: var(--tc-ink, #0f1113);
+  font-family: var(--lang-disp);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: #fbfbfa;
+}
+
+.lang-cr-gloss {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--lang-dim);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 560px) {
+  .lang-pf-cols {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .lang-rm-pair {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .lang-rm-axis {
+    display: none;
+  }
+}

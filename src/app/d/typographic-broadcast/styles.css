@@ -1,0 +1,1457 @@
+/*
+ * Typographic Broadcast — chrome ticker bands, velocity-bound marquees.
+ * Every rule is nested under .tb-root so this direction cannot leak into
+ * the other seven.
+ */
+
+.tb-root {
+  --tb-bg: #08080a;
+  --tb-bg2: #0b0b0e;
+  --tb-bg3: #101014;
+  --w96: rgba(255, 255, 255, 0.96);
+  --w92: rgba(255, 255, 255, 0.92);
+  --w64: rgba(255, 255, 255, 0.64);
+  --w40: rgba(255, 255, 255, 0.4);
+  --w24: rgba(255, 255, 255, 0.24);
+  --w14: rgba(255, 255, 255, 0.14);
+  --w08: rgba(255, 255, 255, 0.08);
+  --paper: #f4f4f2;
+  --ink: #141414;
+  --ink70: rgba(20, 20, 20, 0.7);
+  --ink55: rgba(20, 20, 20, 0.55);
+  --ink30: rgba(20, 20, 20, 0.3);
+  --rule: rgba(255, 255, 255, 0.13);
+
+  position: relative;
+  background: var(--tb-bg);
+  color: var(--w92);
+  font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.tb-root ::selection {
+  background: #fff;
+  color: #000;
+}
+.tb-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.tb-root button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+.tb-root img,
+.tb-root svg,
+.tb-root canvas {
+  display: block;
+}
+.tb-root :focus-visible {
+  outline: 1.5px solid var(--w64);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* chrome foil fill used on every broadcast headline */
+.tb-foil {
+  background: linear-gradient(
+    108deg,
+    #6a6a70 0%,
+    #e8e8ec 16%,
+    #ffffff 25%,
+    #a9a9b1 37%,
+    #74747a 49%,
+    #d6d6dc 61%,
+    #ffffff 73%,
+    #8b8b93 87%,
+    #6a6a70 100%
+  );
+  background-size: 230% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: tb-foil 9s ease-in-out infinite;
+}
+@keyframes tb-foil {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/*
+ * The outlined display cut. Solid against outline is a signature, not a
+ * house style: it now appears twice on the page — once on the story head and
+ * once on the marquee slabs — and nowhere else. Used on five consecutive
+ * sections it read as a tic, and the hairline half sat well under the solid
+ * half's contrast, so the stroke is heavier and brighter wherever it survives.
+ */
+.tb-out {
+  color: transparent;
+  -webkit-text-stroke: 2.6px rgba(255, 255, 255, 0.92);
+  paint-order: stroke fill;
+}
+@supports not (-webkit-text-stroke: 1px #fff) {
+  .tb-out {
+    color: var(--w64);
+  }
+}
+
+/*
+ * Word-space compensation. Every display lockup on this page runs negative
+ * tracking, which pulls the word gap in along with the letter gap until
+ * "DEPLOY TODAY" sets as one word. The gap is opened back up wherever the
+ * tracking is tightened — the single most load-bearing correction on a version
+ * whose whole thesis is typography.
+ */
+.tb-h1,
+.tb-cta h2,
+.tb-chyron h2,
+.tb-bword,
+.tb-plan-price,
+.tb-stat b,
+.tb-price,
+.tb-root .tb-story .gts-head h2,
+.tb-root .tb-review h2,
+.tb-root .tb-features h2 {
+  word-spacing: 0.17em;
+}
+
+.tb-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: tb-grain 0.9s steps(6) infinite;
+}
+@keyframes tb-grain {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-4%, 2%, 0);
+  }
+  50% {
+    transform: translate3d(3%, -3%, 0);
+  }
+  75% {
+    transform: translate3d(-2%, 4%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ============================ NAV ============================ */
+/* The language crawl that used to run above this bar — and drop into the
+   lower third for the whole pinned act — is gone. It carried nothing the hero
+   flag strip does not, its fade mask guillotined words mid-glyph, and stacked
+   against the caption slate it made a two-bar blockade across the bottom of
+   every story frame. The broadcast read lives in the display type and the
+   marquee slabs now. */
+/* Full-width bar rather than a centred, translated box: the pill is centred by
+   flow instead, which lets the masthead scrim span the viewport and lets the
+   whole band — scrim included — fade as one when a section takes the screen. */
+.tb-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding-top: 42px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+/* The masthead scrim. A fixed pill floating on live copy reads as a collision;
+   with a scrim under it the band is deliberate and whatever passes beneath it
+   is legibly subordinate. */
+.tb-nav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 8, 10, 0.97) 0%,
+    rgba(8, 8, 10, 0.94) 46%,
+    rgba(8, 8, 10, 0.66) 74%,
+    transparent 100%
+  );
+}
+/* The masthead stands down over the closing sign-off. */
+.tb-nav::before,
+.tb-nav-pill {
+  transition: opacity 0.35s ease;
+}
+.tb-nav--out::before,
+.tb-nav--out .tb-nav-pill {
+  opacity: 0;
+}
+.tb-nav--out {
+  pointer-events: none;
+}
+@keyframes tb-nav-in {
+  from {
+    transform: translateY(-160%);
+    opacity: 0;
+  }
+}
+.tb-nav-pill {
+  animation: tb-nav-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+  position: relative;
+  width: min(760px, calc(100vw - 28px));
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(10, 10, 13, 0.92);
+  border: 1px solid var(--w14);
+  box-shadow:
+    0 14px 44px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.tb-nav-mark {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 3px 10px 3px 4px;
+  margin-right: auto;
+}
+.tb-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(155deg, #232327, #0a0a0c);
+  border: 1px solid var(--w24);
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  flex: none;
+  overflow: hidden;
+}
+.tb-logo img {
+  width: 74%;
+  height: 74%;
+  object-fit: contain;
+}
+.tb-nav-mark em {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.015em;
+  color: var(--w92);
+}
+.tb-nav-links {
+  display: flex;
+  gap: 2px;
+}
+.tb-nav-links a {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--w64);
+  padding: 7px 11px;
+  border-radius: 999px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+.tb-nav-links a:hover {
+  color: var(--w92);
+  background: var(--w08);
+}
+.tb-nav-signin {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--w64);
+  padding: 7px 11px;
+}
+.tb-nav-cta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #08080a;
+  background: linear-gradient(180deg, #ffffff, #d5d5da);
+  padding: 8px 15px;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* ============================ HERO ============================ */
+.tb-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+  border-bottom: 2px solid var(--rule);
+}
+/* The burst is real dispersed light, so it stays — but it is crushed so the
+   low-value accumulation between the streaks falls to true black rather than
+   pooling into a haze. Light, then void. */
+.tb-hero-field {
+  position: absolute;
+  left: 0;
+  top: -43%;
+  width: 100%;
+  height: 138%;
+  z-index: 0;
+  filter: brightness(0.96) contrast(1.32) saturate(1.1);
+}
+.tb-hero-vig {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 74% 40% at 50% 27%, transparent 22%, rgba(8, 8, 10, 0.66) 68%, rgba(8, 8, 10, 0.96) 100%),
+    linear-gradient(180deg, rgba(8, 8, 10, 0.34) 0%, transparent 11%, transparent 36%, rgba(8, 8, 10, 0.98) 66%);
+}
+
+/* --- the perspective corridor: rays radiate from the dial --- */
+.tb-stage {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  min-height: 236px;
+  z-index: 2;
+  pointer-events: none;
+}
+.tb-rayspace {
+  position: absolute;
+  inset: 0;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+.tb-lane {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+.tb-lane-inner {
+  transform: translate(-50%, -50%);
+}
+.tb-card {
+  position: relative;
+  width: max-content;
+  max-width: 320px;
+  background: linear-gradient(158deg, #1b1b1f 0%, #0e0e12 100%);
+  border: 1px solid rgba(255, 255, 255, 0.19);
+  border-radius: 11px;
+  padding: 11px 14px;
+  font-size: 13px;
+  color: var(--w96);
+  white-space: nowrap;
+  box-shadow:
+    0 16px 44px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.tb-card-k {
+  display: block;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w40);
+  margin-bottom: 4px;
+}
+.tb-card--button {
+  background: linear-gradient(180deg, #ffffff, #c8c8ce);
+  color: #101013;
+  font-weight: 700;
+  border-color: rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-size: 14px;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 12px 30px rgba(0, 0, 0, 0.6);
+}
+.tb-card--field {
+  min-width: 190px;
+}
+.tb-input {
+  border: 1px solid var(--w24);
+  border-radius: 7px;
+  padding: 7px 10px;
+  color: var(--w64);
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.42);
+}
+.tb-card--quote {
+  white-space: normal;
+  width: 272px;
+  padding: 13px 15px;
+}
+.tb-quote-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+.tb-avatar {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #0a0a0b;
+  background: conic-gradient(from 210deg, #8a8a8e, #f0f0f2 30%, #9a9aa0 55%, #ffffff 80%, #8a8a8e);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+.tb-quote-who {
+  font-size: 10.5px;
+  color: var(--w64);
+  line-height: 1.3;
+}
+.tb-quote-who b {
+  display: block;
+  color: var(--w92);
+  font-weight: 600;
+  font-size: 12px;
+}
+.tb-quote-body {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+.tb-card--price {
+  white-space: normal;
+  width: max-content;
+  min-width: 150px;
+}
+.tb-price {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--w96);
+}
+.tb-price-per {
+  font-size: 10.5px;
+  color: var(--w40);
+  margin-top: 3px;
+}
+.tb-card[dir='rtl'] {
+  direction: rtl;
+  text-align: right;
+}
+.tb-glyph {
+  display: block;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 14px rgba(160, 180, 220, 0.5);
+  pointer-events: none;
+}
+
+/* --- the canonical LanguageWheel, skinned to the broadcast palette ---
+   Machined greys and pure white speculars only: the sanctioned colour in this
+   frame is the real dispersed light of the prismatic field behind the dial,
+   which the wheel's own lens shells bend. */
+.tb-wheel {
+  --gtw-size: clamp(196px, 26vh, 250px);
+  --gtw-bezel: conic-gradient(from 212deg, #313135, #d2d2d8 21%, #4a4a4f 44%, #ffffff 67%, #313135);
+  --gtw-track: rgba(255, 255, 255, 0.1);
+  --gtw-track-width: 1;
+  --gtw-sweep: #ffffff;
+  --gtw-sweep-width: 2.4;
+  --gtw-halo: rgba(255, 255, 255, 0.1);
+  --gtw-core: radial-gradient(circle at 34% 26%, #191920 0%, #050507 72%);
+  --gtw-core-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -12px 28px rgba(0, 0, 0, 0.84),
+    0 0 64px rgba(255, 255, 255, 0.1);
+  --gtw-mark-glow: rgba(255, 255, 255, 0.26);
+  --gtw-glyph: rgba(255, 255, 255, 0.58);
+  --gtw-glyph-size: 12.5px;
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* --- hero copy --- */
+.tb-hero-copy {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding: 0 20px;
+  margin-top: calc(44px + 30vh + 0.5vh);
+}
+.tb-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  color: var(--w64);
+  border: 1px solid var(--w14);
+  border-radius: 999px;
+  padding: 8px 16px;
+  margin-top: 16px;
+  background: rgba(11, 11, 14, 0.66);
+  backdrop-filter: blur(8px);
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+.tb-cmd:hover {
+  border-color: var(--w40);
+  color: var(--w92);
+}
+
+/* The headline is the direction. Every other section on this page is set in
+   uppercase display with a metal or outline cut; the hero used to be the one
+   sentence-case lockup on the page, which made the most typographic version in
+   the set the least typographically committed at its opening frame. It is now
+   a two-line broadcast lockup — flat white over chrome foil — sized to run
+   nearly the full measure. */
+.tb-h1 {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.55rem, 9vw, 8rem);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  color: #f3f3f7;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.85);
+}
+.tb-h1 span {
+  display: block;
+}
+.tb-h1-b {
+  text-shadow: none;
+}
+.tb-hero-sub {
+  font-size: clamp(14px, 1.3vw, 16.5px);
+  color: var(--w64);
+  max-width: 560px;
+  margin: 18px auto 0;
+}
+.tb-hero-sub .tb-rot {
+  color: var(--w92);
+  font-weight: 600;
+  border-bottom: 1px solid var(--w24);
+  white-space: nowrap;
+  display: inline-block;
+}
+.tb-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.tb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 12px 24px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+.tb-btn--solid {
+  color: #08080a;
+  background: linear-gradient(180deg, #ffffff 0%, #d4d4d9 100%);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 8px 26px rgba(0, 0, 0, 0.5);
+}
+.tb-btn--solid:hover {
+  transform: translateY(-2px);
+}
+.tb-btn--line {
+  color: var(--w92);
+  border: 1px solid var(--w24);
+  background: rgba(255, 255, 255, 0.03);
+}
+.tb-btn--line:hover {
+  border-color: var(--w64);
+}
+
+.tb-stats {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  gap: clamp(18px, 3.6vw, 52px);
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.tb-stat b {
+  display: block;
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-size: clamp(19px, 2vw, 27px);
+  color: var(--w92);
+  line-height: 1;
+}
+.tb-stat span {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--w40);
+  display: block;
+  margin-top: 6px;
+}
+
+.tb-langs {
+  position: relative;
+  z-index: 4;
+  margin-top: 12px;
+}
+.tb-flagband {
+  overflow: hidden;
+  border-top: 1px solid var(--w08);
+  border-bottom: 1px solid var(--w08);
+  padding: 9px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 11%, #000 89%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 11%, #000 89%, transparent);
+}
+.tb-flagtrack {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+}
+.tb-flagchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--w64);
+  padding: 5px 16px;
+  border-right: 1px solid var(--w08);
+}
+.tb-flagchip i {
+  font-style: normal;
+  font-size: 15px;
+  line-height: 1;
+  filter: grayscale(30%) brightness(1.05);
+}
+.tb-trust {
+  position: relative;
+  z-index: 4;
+  padding: 10px 20px 8px;
+  text-align: center;
+}
+.tb-trust p {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  color: var(--w24);
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+.tb-trust-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(18px, 4vw, 52px);
+  flex-wrap: wrap;
+}
+.tb-trust-row span {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: rgba(255, 255, 255, 0.32);
+  transition: color 0.25s;
+}
+.tb-trust-row span:hover {
+  color: var(--w64);
+}
+
+/* ============================ BANDS ============================ */
+/* The bands are the page's beat marks: tight to the type, so the rhythm stays
+   metronomic instead of leaving dead black on either side. */
+.tb-band {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--rule);
+  background: var(--tb-bg2);
+  padding: clamp(34px, 5vh, 62px) 0;
+}
+.tb-band-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+}
+.tb-band-seg {
+  display: flex;
+  align-items: center;
+}
+.tb-bword {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(3.4rem, 8.4vw, 8rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  padding: 0 2.4vw;
+}
+.tb-band .tb-out {
+  -webkit-text-stroke-width: 4px;
+  -webkit-text-stroke-color: rgba(255, 255, 255, 0.82);
+}
+
+/* ======================= SECTION HEADS ======================= */
+/* Every band below the story now runs on a much longer vertical rhythm. The
+   grid went four-up this round, which is right for the density but which also
+   pulled the whole lower page tight — the sections needed the air back, and
+   generous whitespace is part of the mandate. */
+.tb-chyron {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(150px, 18vh, 210px) 24px 0;
+}
+.tb-chyron h2 {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.2rem, 4.8vw, 4.4rem);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  color: var(--w96);
+}
+.tb-ch-sub {
+  color: var(--w64);
+  max-width: 620px;
+  margin-top: 20px;
+  font-size: clamp(14px, 1.2vw, 16px);
+}
+
+/* ======================= PRICING / CTA / FOOTER ======================= */
+.tb-pricing {
+  border-bottom: 2px solid var(--rule);
+  padding-bottom: clamp(150px, 17vh, 210px);
+}
+.tb-plans {
+  max-width: 940px;
+  margin: clamp(46px, 6.5vh, 78px) auto 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.tb-plan {
+  position: relative;
+  border-radius: 4px;
+  background: #0d0d10;
+  padding: 30px 28px;
+  border: 1px solid var(--w14);
+  display: flex;
+  flex-direction: column;
+  min-height: 336px;
+}
+/* The recommended plan reads as machined metal: a bright hairline edge and a
+   single specular top highlight — no rotating gradient border. */
+.tb-plan--metal {
+  background: #0a0a0d;
+  border: 1px solid var(--w24);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 24px 60px rgba(0, 0, 0, 0.5);
+}
+.tb-plan > p:first-child {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  color: var(--w40);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.tb-plan-price {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-weight: 800;
+  font-size: 54px;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--w96);
+}
+.tb-plan-price small {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--w40);
+  letter-spacing: 0;
+}
+.tb-plan ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.tb-plan li {
+  font-size: 13px;
+  color: var(--w64);
+  padding-left: 20px;
+  position: relative;
+}
+.tb-plan li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--w24);
+}
+.tb-plan .tb-btn {
+  margin-top: auto;
+  justify-content: center;
+}
+/* The letterspaced mono-caps line that used to sit under the two plan cards is
+   gone: it was a fifth stacked text element in the section, set in exactly the
+   voice of the eyebrows this round deleted. */
+.tb-cta {
+  position: relative;
+  text-align: center;
+  padding: clamp(190px, 24vh, 280px) 24px clamp(150px, 18vh, 220px);
+  border-bottom: 2px solid var(--rule);
+  overflow: clip;
+}
+.tb-cta h2 {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.8rem, 7.4vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+.tb-cta p {
+  color: var(--w64);
+  margin: 18px auto 28px;
+  max-width: 460px;
+  font-size: 15px;
+}
+.tb-foot {
+  padding: 120px 24px 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.tb-foot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 34px 60px;
+  justify-content: space-between;
+  margin-bottom: 34px;
+}
+.tb-foot-brand .tb-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+.tb-foot-brand p {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--w40);
+  text-transform: uppercase;
+  max-width: 240px;
+  line-height: 2;
+}
+.tb-foot-cols {
+  display: flex;
+  gap: clamp(28px, 5vw, 70px);
+  flex-wrap: wrap;
+}
+.tb-foot-col p {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--w40);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.tb-foot-col a {
+  display: block;
+  font-size: 12.5px;
+  color: var(--w64);
+  margin-bottom: 9px;
+}
+.tb-foot-col a:hover {
+  color: var(--w92);
+}
+.tb-foot-bottom {
+  border-top: 1px solid var(--w08);
+  padding-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+.tb-foot-bottom span {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--w24);
+  text-transform: uppercase;
+}
+
+/* ======================= RESPONSIVE ======================= */
+/* The hero is re-staged for a phone column rather than shrunk: a smaller dial,
+   narrower component cards that cannot reach the bezel, a burst that reads as
+   a band across the whole upper frame instead of a strip behind the dial, and
+   a flag strip that shows its entries instead of its mask. */
+@media (max-width: 767px) {
+  .tb-nav-links,
+  .tb-nav-signin {
+    display: none;
+  }
+  .tb-stage {
+    top: 40px;
+    height: 27vh;
+    min-height: 196px;
+  }
+  .tb-hero-field {
+    top: -34%;
+    height: 132%;
+  }
+  .tb-hero-vig {
+    background:
+      radial-gradient(ellipse 118% 34% at 50% 24%, transparent 26%, rgba(8, 8, 10, 0.6) 72%, rgba(8, 8, 10, 0.95) 100%),
+      linear-gradient(180deg, rgba(8, 8, 10, 0.34) 0%, transparent 12%, transparent 42%, rgba(8, 8, 10, 0.98) 74%);
+  }
+  .tb-hero-copy {
+    margin-top: calc(40px + 27vh + 1vh);
+  }
+  .tb-wheel {
+    --gtw-size: 116px;
+    --gtw-glyph-size: 9px;
+  }
+  .tb-card {
+    max-width: 168px;
+    padding: 8px 11px;
+    font-size: 11.5px;
+    border-radius: 9px;
+  }
+  .tb-card--button {
+    padding: 8px 15px;
+    font-size: 12px;
+  }
+  .tb-card--field {
+    min-width: 0;
+  }
+  .tb-card--quote {
+    width: 164px;
+  }
+  .tb-card--price {
+    min-width: 0;
+  }
+  .tb-price {
+    font-size: 21px;
+  }
+  .tb-flagchip {
+    padding: 5px 11px;
+    font-size: 11px;
+  }
+  .tb-flagband {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  }
+  .tb-plans {
+    grid-template-columns: 1fr;
+  }
+  /* the long desktop rhythm is halved for a phone column */
+  .tb-chyron {
+    padding-top: 104px;
+  }
+  .tb-pricing {
+    padding-bottom: 96px;
+  }
+  .tb-cta {
+    padding: 118px 20px 86px;
+  }
+  .tb-foot {
+    padding: 74px 20px 48px;
+  }
+  .tb-out {
+    -webkit-text-stroke-width: 1.6px;
+  }
+  .tb-band .tb-out {
+    -webkit-text-stroke-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-root .tb-grain,
+  .tb-root .tb-foil,
+  .tb-root .tb-nav-pill {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   StorySection / EditorWorkspace / FeatureBento / diagrams.
+   One implementation, skinned to the broadcast language: near-black
+   graphite, 4px slate corners, uppercase display heads that pair a
+   solid cut against an outlined one.
+   ============================================================ */
+
+.tb-root .tb-story,
+.tb-root .tb-review,
+.tb-root .tb-features {
+  --gts-bg: var(--tb-bg);
+  --gts-paper: #efefee;
+  --gts-ink: #131315;
+  --gts-ink-2: rgba(19, 19, 21, 0.62);
+  --gts-ink-3: rgba(19, 19, 21, 0.4);
+  --gts-paper-rule: rgba(19, 19, 21, 0.14);
+  --gts-paper-dot: rgba(19, 19, 21, 0.15);
+  --gts-paper-guide: rgba(19, 19, 21, 0.09);
+  --gts-shell: #0d0d10;
+  --gts-shell-text: #ffffff;
+  --gts-shell-line: rgba(255, 255, 255, 0.14);
+  --gts-code-bg: #07070a;
+  --gts-code-text: rgba(233, 233, 238, 0.86);
+  --gts-line: var(--w14);
+  --gts-line-2: var(--w08);
+  --gts-t1: var(--w96);
+  --gts-t2: var(--w64);
+  --gts-t3: var(--w40);
+  --gts-t4: var(--w24);
+  --gts-display: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --gts-text: var(--font-inter), Inter, system-ui, sans-serif;
+  --gts-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --gts-radius: 4px;
+  --gts-head-size: clamp(2.2rem, 4.8vw, 4.4rem);
+  --gts-head-weight: 800;
+  --gts-sub-size: clamp(14px, 1.2vw, 16px);
+
+  /* Syntax tokens run monochrome here. The shared defaults are desaturated
+     editor semantics — warm gold on attributes, steel blue on tags — but on a
+     direction whose mandate is black, white and metal they are still the only
+     hue on screen outside the prismatic field, so they are resolved to the
+     same greyscale ramp the rest of the page is built from. */
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: rgba(255, 255, 255, 0.58);
+  --gts-tok-attr: rgba(255, 255, 255, 0.74);
+  --gts-tok-str: rgba(255, 255, 255, 0.86);
+  --gts-tok-text: rgba(240, 240, 244, 0.95);
+  --gts-tok-kw: rgba(255, 255, 255, 0.66);
+  --gts-tok-fn: rgba(255, 255, 255, 0.9);
+  --gts-tok-punct: rgba(255, 255, 255, 0.36);
+
+  --gtb-line: var(--w14);
+  --gtb-line-2: var(--w08);
+  --gtb-title: var(--w96);
+  --gtb-body: var(--w64);
+  --gtb-label: var(--w40);
+  --gtb-display: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --gtb-text: var(--font-inter), Inter, system-ui, sans-serif;
+  --gtb-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --gtb-radius: 4px;
+  --gtb-wrap: 1200px;
+  --gtb-grid-bg: rgba(255, 255, 255, 0.017);
+  --gtb-mock-bg: rgba(255, 255, 255, 0.022);
+  --gtb-spotlight: rgba(255, 255, 255, 0.06);
+  --gtb-head-size: clamp(2.2rem, 4.8vw, 4.4rem);
+  --gtb-head-weight: 800;
+  --gtb-head-gap: 34px;
+  --gtb-sub-size: clamp(14px, 1.2vw, 16px);
+  /* Four-up: the cells are tighter than the two-up slates were, so the drawing
+     fills its box instead of floating in one. */
+  --gtb-title-size: clamp(20px, 1.7vw, 25px);
+  --gtb-body-size: 13px;
+  --gtb-cell-min: 200px;
+  --gtb-cell-pad: 24px 22px 26px;
+  --gtb-mock-h: 116px;
+  --gtb-pad: clamp(170px, 21vh, 250px) 0 clamp(150px, 18vh, 220px);
+
+  --gte-line: var(--w14);
+  --gte-line-2: var(--w08);
+  --gte-title: var(--w96);
+  --gte-body: var(--w64);
+  --gte-label: var(--w40);
+  --gte-quiet: var(--w24);
+  --gte-display: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --gte-text: var(--font-inter), Inter, system-ui, sans-serif;
+  --gte-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --gte-radius: 4px;
+  --gte-wrap: 1200px;
+  --gte-ws-bg: #101014;
+  --gte-ws-shadow: 0 28px 80px rgba(0, 0, 0, 0.6);
+  --gte-head-size: clamp(2.2rem, 4.8vw, 4.4rem);
+  --gte-head-weight: 800;
+  --gte-sub-size: clamp(14px, 1.2vw, 16px);
+  --gte-pad: clamp(180px, 22vh, 260px) 0 clamp(160px, 19vh, 230px);
+
+  --gtd-line: rgba(255, 255, 255, 0.3);
+  --gtd-fill: rgba(255, 255, 255, 0.12);
+  --gtd-accent: #ffffff;
+  --gtd-label: var(--w40);
+  --gtd-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --gtd-node-fill: #07070a;
+  --gtd-node-stroke: rgba(255, 255, 255, 0.44);
+  --gtd-wire: rgba(255, 255, 255, 0.24);
+  --gtd-pulse: #ffffff;
+  --gtd-glyph: rgba(255, 255, 255, 0.72);
+}
+
+/* Every section head is the same broadcast lockup: huge uppercase display,
+   one supporting line, nothing above it. */
+.tb-root .tb-story .gts-head h2,
+.tb-root .tb-review h2,
+.tb-root .tb-features h2 {
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  max-width: 19ch;
+}
+
+/* The story head is the one section head that still carries the outlined cut. */
+.tb-root .tb-story .gts-head h2 .tb-out {
+  -webkit-text-stroke-width: 3px;
+}
+
+.tb-root .tb-story .gts-head {
+  width: min(1200px, calc(100% - 48px));
+  padding: clamp(96px, 12.5vh, 146px) 0 clamp(40px, 5vh, 58px);
+}
+
+/* ---------------- the story, run as a broadcast segment ----------------
+   The shared StorySection carries all of the structure and motion; this block
+   is the skin that makes it read as this direction and nothing else. */
+
+/* 1. The caption dock becomes the caption slate: a squared black bar with one
+      bright rule down its leading edge and the beat set in display caps, lifted
+      clear of the version switcher's band so the narrative spine is never
+      half-covered. */
+.tb-root .tb-story .gts-dock {
+  bottom: 88px;
+  width: min(880px, calc(100% - 48px));
+  height: 62px;
+  border-radius: 2px;
+  padding: 0 22px 0 18px;
+  gap: 15px;
+  background: linear-gradient(180deg, #17171b 0%, #0a0a0d 100%);
+  border: 1px solid var(--w24);
+  border-left: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 26px 70px rgba(0, 0, 0, 0.62);
+}
+.tb-root .tb-story .gts-dock img {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+}
+.tb-root .tb-story .gts-dock-cap span {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-size: clamp(15px, 1.45vw, 20px);
+  font-weight: 800;
+  letter-spacing: -0.018em;
+  word-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* 2. The prismatic field screens onto the editor plate ONLY, and it screens as
+      light rather than as a wash. `--tb-fieldgate` tracks the plate's own
+      opacity so the field can never smear the paper act; the contrast crush
+      then drops the accumulated low-value haze — the khaki-and-olive smear
+      that sat behind live code across the whole panel — to true black, leaving
+      only the bright spectral streaks. The mask voids the centre of the frame
+      so the light frames the code instead of lying under it. */
+.tb-root .tb-story .gts-field {
+  filter: brightness(0.92) contrast(2.2) saturate(1.3)
+    opacity(calc(var(--tb-fieldgate, 0) * 0.5));
+  -webkit-mask-image: radial-gradient(
+    ellipse 58% 54% at 50% 50%,
+    transparent 0%,
+    rgba(0, 0, 0, 0.16) 48%,
+    rgba(0, 0, 0, 0.7) 74%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 58% 54% at 50% 50%,
+    transparent 0%,
+    rgba(0, 0, 0, 0.16) 48%,
+    rgba(0, 0, 0, 0.7) 74%,
+    #000 100%
+  );
+}
+
+/* The five-glyph signal path restated, in chips, exactly what the caption
+   slate says one beat at a time — a fourth horizontal bar stacked into an
+   already crowded lower third. The caption carries the pipeline now. */
+.tb-root .tb-story .gts-pipeline {
+  display: none;
+}
+
+/* 3. Counsel card: its contents clear just before the approved plate lands, so
+      no frame prints the two states over each other. */
+.tb-root .tb-story .gts-r-head,
+.tb-root .tb-story .gts-r-msg,
+.tb-root .tb-story .gts-r-btns {
+  opacity: calc(1 - var(--tb-approve, 0));
+}
+
+/* 4. The wipe opens on a legible panel and stops short of the subject. The
+      shared timeline fades the code surface up before it starts travelling, so
+      at the head of every reveal the panel used to be a sliver; and at the tail
+      the seam ran past the zoomed component on the paper side and sheared it
+      mid-word. Remapping the seam to 42%→57.5% means the code is legible from
+      its first frame and the paper side always holds the whole component. The
+      handle rides the same remap, so the divider stays welded to its edge. */
+.tb-root .tb-story .gts-xray-wrap {
+  --tb-seam: calc(0.42 + var(--gts-split) * 0.155);
+}
+.tb-root .tb-story .gts-xray {
+  clip-path: inset(0 calc((1 - var(--tb-seam)) * 100%) 0 0);
+}
+.tb-root .tb-story .gts-split {
+  left: calc(var(--tb-seam) * 100%);
+}
+.tb-root .tb-story .gts-xray-inner {
+  left: clamp(30px, 5.2vw, 80px);
+}
+.tb-root .tb-story .gts-xray pre {
+  font-size: clamp(13px, 1.36vw, 19.5px);
+}
+
+/* The chromatic fringe on the seam — a rose band down one side of the divider
+   and a cyan hairline down the other, the full height of the frame — is gone.
+   It was a coloured glow, not dispersed light, and it was the loudest colour
+   on the page. The seam is the white edge light and the machined handle. */
+.tb-root .tb-story .gts-split-ca {
+  display: none;
+}
+
+/* 4b. The demo site's right-hand column is held to a width the camera can
+       actually frame: the tagline beat pushes to 2.7× and anchors the card's
+       centre at 78% of the frame, so anything wider than ~230px is guaranteed
+       to run off the right bezel mid-word. */
+.tb-root .tb-story .gts-site-right {
+  width: min(208px, 100%);
+  justify-self: center;
+}
+
+/* 4c. The editor act is a column, not a left margin. Nine lines of code used
+       to occupy the left 40% of the frame with the line markers stranded at the
+       far right bezel, 1100px from the code they annotate; the body is now a
+       measured column with the markers on its own edge. */
+.tb-root .tb-story .gts-code-body {
+  width: min(760px, calc(100% - 48px));
+  margin: 0 auto;
+  font-size: clamp(13px, 1.28vw, 19px);
+}
+
+/* 4d. The approved plate carries the sign-off in display caps rather than one
+       10px mono line lost in a white rectangle. */
+.tb-root .tb-story .gts-r-approved {
+  font-family: var(--font-switzer), 'Switzer', sans-serif;
+  font-size: clamp(19px, 1.9vw, 26px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  word-spacing: 0.1em;
+  line-height: 1.02;
+  text-align: center;
+  padding: 0 18px;
+}
+
+/* 5. The paper canvas is a broadcast slate, not a dot grid: fine horizontal
+      rules that hold their scale through every camera push. */
+.tb-root .tb-story .gts-win-dots {
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(19, 19, 21, 0.055) 0 1px,
+    transparent 1px 6px
+  );
+  background-size: auto;
+}
+.tb-root .tb-story .gts-win-chip {
+  border-radius: 0 0 4px 0;
+}
+
+.tb-root .tb-review,
+.tb-root .tb-features {
+  border-bottom: 2px solid var(--rule);
+}
+
+.tb-root .tb-review .gte-sub,
+.tb-root .tb-features .gtb-sub {
+  max-width: 640px;
+}
+
+.tb-root .tb-features .gtb-sub {
+  margin: -18px 0 38px;
+}
+
+/* Each cell is a heading and its drawing. The mono taxonomy label above the
+   cell title is the last eyebrow in the set, so it comes off here too — the
+   eight categories are already named in the section's supporting line. */
+.tb-root .tb-features .gtb-cell h3 small {
+  display: none;
+}
+
+.tb-root .tb-features .gtb-cell h3 {
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  word-spacing: 0.13em;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.tb-root .tb-features .gtb-cell p {
+  max-width: 34ch;
+}
+
+@media (max-width: 767px) {
+  .tb-root .tb-story .gts-head h2,
+  .tb-root .tb-review h2,
+  .tb-root .tb-features h2 {
+    max-width: none;
+  }
+  .tb-root .tb-review,
+  .tb-root .tb-features {
+    --gtb-pad: 110px 0 90px;
+    --gte-pad: 116px 0 92px;
+  }
+}
+
+/* ---------------- the story, reframed for a 390pt screen ----------------
+   The shared stage is authored against a 1440 frame, where a 1.5×–3.2× camera
+   push still holds a whole component. At phone width the same pushes crop the
+   subject and throw the code surface off-canvas, so the mobile staging changes:
+   the reveal plays as a full-bleed takeover instead of a 60% wipe, and the demo
+   site is set small enough that a pushed component still frames. */
+@media (max-width: 900px) {
+  .tb-root .tb-story .gts-xray {
+    clip-path: none;
+  }
+  .tb-root .tb-story .gts-split {
+    display: none;
+  }
+  .tb-root .tb-story .gts-xray-inner {
+    left: 20px;
+    right: 20px;
+    top: 48%;
+    max-width: none;
+  }
+  .tb-root .tb-story .gts-xray pre {
+    font-size: 13px;
+    line-height: 1.95;
+    white-space: pre-wrap;
+  }
+  .tb-root .tb-story .gts-xray-note {
+    margin-top: 18px;
+    font-size: 9.5px;
+    line-height: 1.75;
+    max-width: none;
+  }
+  .tb-root .tb-story .gts-xray-file {
+    margin-bottom: 12px;
+  }
+
+  .tb-root .tb-story .gts-site {
+    padding: 66px 18px 132px;
+  }
+  .tb-root .tb-story .gts-site-h1 {
+    font-size: 20px;
+  }
+  .tb-root .tb-story .gts-site-p {
+    font-size: 10px;
+    max-width: 260px;
+  }
+  .tb-root .tb-story .gts-site-nav span {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+  .tb-root .tb-story .gts-site-btn {
+    padding: 7px 12px;
+    font-size: 10px;
+    border-radius: 5px;
+  }
+  .tb-root .tb-story .gts-site-legal {
+    font-size: 8px;
+    max-width: 240px;
+  }
+  .tb-root .tb-story .gts-site-stats b {
+    font-size: 13px;
+  }
+  /* A 2.7× push anchors the tagline card's centre at 78% of a 390pt frame, so
+     only ~86pt of frame is left to the right of it: the card box itself cannot
+     be made narrow enough to fit, but its text can. The copy is held to the
+     card's leading edge, and the empty right side of the box is what the bezel
+     takes — so the beat reads whole instead of cutting at "simplem—". */
+  .tb-root .tb-story .gts-tagline {
+    font-size: 9.5px;
+    line-height: 1.26;
+    max-width: 74px;
+  }
+  .tb-root .tb-story .gts-site-toast,
+  .tb-root .tb-story .gts-fbox {
+    font-size: 10px;
+  }
+  .tb-root .tb-story .gts-site-card {
+    padding: 9px 11px;
+  }
+
+  /* the lower third, phone geometry */
+  .tb-root .tb-story .gts-dock {
+    bottom: 76px;
+    height: 54px;
+    width: calc(100% - 28px);
+    padding: 0 14px 0 11px;
+    gap: 11px;
+  }
+  .tb-root .tb-story .gts-dock img {
+    width: 19px;
+    height: 19px;
+    flex-basis: 19px;
+  }
+  .tb-root .tb-story .gts-dock-cap span {
+    font-size: 13px;
+    letter-spacing: -0.012em;
+  }
+  /* the code column takes the whole phone frame */
+  .tb-root .tb-story .gts-code-body {
+    width: 100%;
+    margin: 0;
+    font-size: 12.5px;
+  }
+}

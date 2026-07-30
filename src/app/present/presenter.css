@@ -1,0 +1,1877 @@
+/*
+ * Presenter frame. Everything is prefixed pr- and scoped under .pr-root so
+ * the embedded direction pages (iframes) stay unaffected.
+ *
+ * Layout model: each story slide is a tall section (.pr-slide) whose inner
+ * .pr-pin is pinned by ScrollTrigger while a scrubbed timeline plays through
+ * absolutely-stacked .pr-phase layers. The reduced-motion block at the bottom
+ * collapses that model into a plain vertical document.
+ */
+
+.pr-root {
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-sans);
+  /*
+   * The presenter is set entirely in Inter — no Switzer, no mono. Overriding
+   * the shared variables here re-fonts every label scoped under .pr-root
+   * without touching the direction pages.
+   */
+  --font-display: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-mono: var(--font-inter), 'Inter', system-ui, sans-serif;
+}
+
+/*
+ * Louize Display (205TF) is commercial and not vendored here: it resolves
+ * from a locally installed copy or from public/fonts if the woff2 is dropped
+ * in, and otherwise falls back to Georgia in the title stack.
+ */
+@font-face {
+  font-family: 'Louize Display';
+  src:
+    local('Louize Display'),
+    local('LouizeDisplay'),
+    url('/fonts/louize-display.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Louize Display';
+  src:
+    local('Louize Display Italic'),
+    local('LouizeDisplay-Italic'),
+    url('/fonts/louize-display-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* The browser defaults <code> to monospace; the presenter has none. */
+.pr-root code {
+  font-family: inherit;
+}
+
+/* Presenter-only 1px scrollbar: a hairline thumb on a bare track. Scoped so
+   the embedded direction pages keep their own scrollbars. */
+html:has(.pr-root) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+html:has(.pr-root)::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+}
+
+html:has(.pr-root)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html:has(.pr-root)::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.pr-slide {
+  position: relative;
+}
+
+.pr-pin {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pr-phase {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6vh 8vw;
+  text-align: center;
+}
+
+.pr-sub {
+  max-width: 560px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- HUD ---------- */
+
+.pr-hud-brand {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  mix-blend-mode: difference;
+}
+
+.pr-hud-brand img {
+  height: 20px;
+  width: auto;
+  display: block;
+}
+
+.pr-hud-brand span {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pr-hud-rail {
+  position: fixed;
+  left: 24px;
+  top: 50%;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transform: translateY(-50%);
+  mix-blend-mode: difference;
+}
+
+.pr-hud-rail button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Slide markers are short lines; the active slide's line grows. */
+.pr-hud-rail button i {
+  width: 16px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  transition:
+    background 0.25s,
+    width 0.25s;
+}
+
+.pr-hud-rail button.is-active i {
+  width: 28px;
+  background: #fff;
+}
+
+.pr-hud-rail button em {
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.pr-hud-rail:hover button em,
+.pr-hud-rail button.is-active em {
+  opacity: 1;
+  transform: none;
+}
+
+/* Bottom-center slide dock: one pill with both arrows and the counter. It
+   yields to the prototype viewer's own dock while that slide is active. */
+.pr-hud-nav {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.25s;
+}
+
+.pr-hud-nav.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pr-hud-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.pr-hud-nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pr-hud-count {
+  margin-left: 5px;
+  padding: 0 11px 0 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- Intro ---------- */
+
+.pr-intro {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pr-intro-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pr-intro-core {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 62% 46% at 50% 52%,
+    rgba(7, 7, 7, 0.82),
+    rgba(7, 7, 7, 0.25) 60%,
+    transparent 100%
+  );
+}
+
+.pr-intro-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+  padding: 0 6vw;
+}
+
+/* Mixed lockup: The [GT logo] website Redesign, one face per piece. */
+.pr-intro-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: 0.24em;
+  font-size: clamp(44px, 6.6vw, 104px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.pr-title-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.pr-title-piece {
+  display: inline-block;
+}
+
+.pr-title-the {
+  font-family: var(--font-sora), var(--font-inter), sans-serif;
+  font-weight: 400;
+}
+
+/* Square shader stage around the mark, alternating between two moods. */
+.pr-title-logo-box {
+  position: relative;
+  width: 1.34em;
+  height: 1.34em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0.09em;
+  overflow: hidden;
+  background: #0b0b0c;
+  transform: translateY(0.07em);
+}
+
+.pr-logo-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.pr-logo-field.is-on {
+  opacity: 1;
+}
+
+.pr-title-logo-box img {
+  position: relative;
+  width: 68%;
+  height: auto;
+}
+
+.pr-title-website {
+  font-family: var(--font-instrument), var(--font-inter), sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.pr-title-redesign {
+  font-family: var(--font-switzer), var(--font-inter), sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.pr-intro-sub {
+  max-width: 480px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Sits above the bottom-center slide dock. */
+.pr-intro-cue {
+  position: absolute;
+  bottom: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- Why ---------- */
+
+.pr-why {
+  height: 420vh;
+}
+
+.pr-why-big {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(90px, 16vw, 240px);
+  letter-spacing: -0.045em;
+}
+
+.pr-why-list {
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+  max-width: 900px;
+  margin: 0 auto;
+  gap: 8px;
+}
+
+.pr-why-list ol {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.6vh, 26px);
+  margin-top: 4vh;
+  width: min(860px, 100%);
+}
+
+.pr-why-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.pr-why-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.pr-why-item h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(24px, 3.2vw, 42px);
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.pr-why-item-body {
+  margin-top: 8px;
+  max-width: 560px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.pr-aura {
+  background: linear-gradient(
+    100deg,
+    #fff 0%,
+    #b9a7ff 28%,
+    #7fe3ff 48%,
+    #b9ffd9 66%,
+    #fff 90%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- What we need ---------- */
+
+.pr-need {
+  height: 620vh;
+}
+
+.pr-need-head h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(38px, 5.4vw, 72px);
+  letter-spacing: -0.035em;
+}
+
+.pr-need-head .pr-sub {
+  margin-top: 18px;
+}
+
+.pr-beat-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 3.4vw, 46px);
+  letter-spacing: -0.025em;
+}
+
+.pr-need-barbell {
+  position: relative;
+  width: min(880px, 86vw);
+  margin-top: 13vh;
+}
+
+.pr-need-barbell svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.pr-barbell-path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.pr-barbell-base {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+}
+
+.pr-tail {
+  position: absolute;
+  max-width: 250px;
+  text-align: left;
+}
+
+.pr-tail-icon {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pr-tail strong {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
+.pr-tail p {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.pr-tail code {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pr-tail-left {
+  left: 0;
+  top: -22%;
+}
+
+.pr-tail-right {
+  right: 0;
+  top: -22%;
+}
+
+.pr-tail-right {
+  text-align: right;
+}
+
+.pr-tail-mid {
+  left: 50%;
+  bottom: -6%;
+  transform: translateX(-50%);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.pr-infra {
+  margin-top: 7vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.pr-infra p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pr-infra-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pr-infra-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  padding: 9px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.pr-infra-chip svg {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pr-need-c-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.pr-demo-grid {
+  margin-top: 5vh;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: min(1220px, 94vw);
+}
+
+.pr-demo-card {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 24px 22px 26px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pr-demo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pr-demo-title svg {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Before on top, the localized result below it in resolved-state mint.
+   Stretches so the rolling content fills the whole card. */
+.pr-demo-swap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+}
+
+.pr-demo-swap > span {
+  line-height: 1.5;
+}
+
+.pr-demo-before {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.pr-demo-after {
+  display: block;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  font-size: clamp(17px, 1.6vw, 22px);
+  font-weight: 500;
+  color: #b9ffd9;
+  clip-path: inset(0 0% 0 0);
+}
+
+/* Actual code renders as code: mono chip, with the GT wrapper highlighted.
+   Scoped under .pr-root to out-rank the presenter's code reset. */
+.pr-root .pr-code {
+  display: inline-block;
+  font-family: ui-monospace, 'SF Mono', 'Menlo', monospace;
+  font-size: 0.82em;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pr-demo-after .pr-code {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.pr-demo-after .pr-code em {
+  font-style: normal;
+  color: #b9ffd9;
+}
+
+.pr-demo-flag {
+  margin-right: 9px;
+  font-size: 0.85em;
+}
+
+.pr-code-block {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+.pr-code-line {
+  display: block;
+}
+
+.pr-code-inner {
+  display: block;
+  padding: 3px 0;
+}
+
+.pr-code-inner .pr-code-line {
+  padding-left: 16px;
+}
+
+.pr-code-inner .pr-code-expr {
+  padding-left: 32px;
+  color: #b9ffd9;
+}
+
+/* Continuous vertical ticker: the track holds two copies of the item stack
+   and drifts up by exactly one copy per loop, so it never seams. */
+.pr-vmarquee {
+  display: block;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 14%,
+    #000 86%,
+    transparent
+  );
+}
+
+.pr-vmarquee-code {
+  height: 10.5em;
+}
+
+/* Fills the card's remaining space without contributing intrinsic height,
+   so the code card alone decides the row height. */
+.pr-vmarquee-text {
+  position: absolute;
+  inset: 0;
+}
+
+.pr-vmarquee-track {
+  display: block;
+  animation: pr-vmarquee 14s linear infinite;
+  will-change: transform;
+}
+
+.pr-vmarquee-track > span {
+  display: block;
+}
+
+.pr-vmarquee-item {
+  display: block;
+  padding: 4px 0;
+  unicode-bidi: plaintext;
+}
+
+@keyframes pr-vmarquee {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.pr-demo-after .pr-code-block {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.pr-terms {
+  margin-top: 5vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.pr-terms p {
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-terms-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pr-term {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14.5px;
+  padding: 12px 19px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pr-term svg {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pr-term-check {
+  font-style: normal;
+  color: #b9ffd9;
+}
+
+/* ---------- Craft ---------- */
+
+.pr-craft {
+  height: 560vh;
+}
+
+.pr-craft-header {
+  position: absolute;
+  top: 6vh;
+  left: 8vw;
+  z-index: 2;
+}
+
+.pr-craft-header h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 3.4vw, 46px);
+  letter-spacing: -0.03em;
+}
+
+.pr-craft-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6vw;
+  /* The first plate starts just offscreen right, past the reveal trigger
+     line, so every plate's reveal plays while it rides in. */
+  padding: 0 12vw 0 96vw;
+  will-change: transform;
+}
+
+.pr-plate {
+  flex: 0 0 auto;
+  width: min(720px, 62vw);
+  padding-top: 10vh;
+}
+
+.pr-plate-icon {
+  display: inline-flex;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pr-plate h3 {
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(26px, 3vw, 40px);
+  letter-spacing: -0.025em;
+}
+
+.pr-plate-note {
+  margin-top: 18px;
+  max-width: 460px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pr-craft-rules {
+  list-style: none;
+  padding: 0;
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pr-craft-rule {
+  padding: 15px 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.pr-craft-rule:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pr-sketch-stage {
+  margin-top: 26px;
+}
+
+.pr-sketch svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.pr-sketch svg * {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1.5;
+}
+
+.pr-swatch-row {
+  margin-top: 30px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.pr-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 110px;
+}
+
+.pr-swatch i {
+  display: block;
+  height: 120px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.pr-swatch strong {
+  font-size: 13px;
+}
+
+.pr-swatch span {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.pr-spectral-band {
+  margin-top: 22px;
+  height: 10px;
+  width: min(482px, 100%);
+  background: linear-gradient(
+    90deg,
+    #070707,
+    #6d5bd0 22%,
+    #7fe3ff 46%,
+    #b9ffd9 68%,
+    #fff6e8 88%,
+    #070707
+  );
+}
+
+.pr-weights {
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pr-weight-row {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 40px);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+}
+
+.pr-weight-row span {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.35);
+  width: 34px;
+}
+
+.pr-tech-grid {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 520px;
+}
+
+.pr-tech-chip {
+  font-size: 12.5px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ---------- Type detail interlude ---------- */
+
+.pr-detail {
+  height: 640vh;
+}
+
+.pr-detail-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 8vw;
+  text-align: center;
+}
+
+.pr-detail-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5vh;
+}
+
+/* Overlay stage: the two builds stacked in one place, Google build in red.
+   Stage plus legend center together as one assembly. */
+.pr-detail-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4.5vh;
+  padding: 0 6vw;
+}
+
+/* Specimen guides (cap, mean, baseline, descender) draw around the overlay. */
+.pr-overlay-stage {
+  position: relative;
+  padding: 30px 0;
+}
+
+.pr-overlay-guides {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -7vw;
+  right: -7vw;
+  width: calc(100% + 14vw);
+  height: 100%;
+  pointer-events: none;
+}
+
+.pr-guide {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.28);
+}
+
+.pr-detail-close {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.pr-detail-close h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(38px, 5vw, 66px);
+  letter-spacing: -0.035em;
+}
+
+/* Contact sheet of every direction, fading to black toward the viewer. */
+.pr-close-gallery {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  width: min(1040px, 90vw);
+  margin-top: 2vh;
+  mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+}
+
+.pr-close-tile {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.pr-close-tile:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.pr-close-ph {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1440 / 900;
+  border-radius: 6px;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.015)
+  );
+}
+
+.pr-close-ph span {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.pr-close-tile-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 8px 5px;
+}
+
+.pr-close-tile-num {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pr-close-tile strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1020px) {
+  .pr-close-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.pr-overlay-stack {
+  display: grid;
+  justify-items: start;
+}
+
+/* Both builds must share an exact origin: fixed to their own content width,
+   start-aligned, left-set text, so nothing inherited can nudge either layer. */
+.pr-overlay-line {
+  grid-area: 1 / 1;
+  justify-self: start;
+  align-self: start;
+  width: max-content;
+  text-align: left;
+  font-size: clamp(40px, 7.4vw, 120px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.pr-overlay-rsms {
+  color: #fff;
+}
+
+.pr-overlay-google {
+  color: #ff3b30;
+}
+
+.pr-overlay-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 26px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pr-overlay-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  margin-right: 7px;
+  vertical-align: baseline;
+}
+
+.pr-overlay-dot-red {
+  background: #ff3b30;
+}
+
+.pr-overlay-hint {
+  flex-basis: 100%;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-detail-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.pr-detail-head h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(30px, 4vw, 54px);
+  letter-spacing: -0.03em;
+}
+
+.pr-detail-head .pr-sub {
+  max-width: 640px;
+}
+
+.pr-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: min(980px, 100%);
+}
+
+/* Outline is a drawn SVG frame so it can undraw during the morph. */
+.pr-detail-col {
+  position: relative;
+  padding: 26px 28px 30px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pr-col-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.pr-col-frame rect {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.18);
+}
+
+.pr-detail-col header {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Never wraps: it scramble-rewrites into a longer line mid-flight, and the
+   flight math assumes a single line box. Overflow is fine while flying. */
+.pr-detail-big {
+  position: relative;
+  font-size: clamp(40px, 4.6vw, 64px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.pr-detail-row span {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pr-detail-row p {
+  margin-top: 4px;
+  font-size: clamp(20px, 2vw, 27px);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.pr-detail-note {
+  max-width: 560px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+@media (max-width: 860px) {
+  .pr-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pr-overlay-line {
+    white-space: normal;
+  }
+}
+
+/* ---------- Prototype viewer ---------- */
+
+/* Entry transition (~100vh), then a long dwell that maps onto the embedded
+   site's full scroll height, then a 100vh exit. */
+.pr-proto {
+  height: 800vh;
+}
+
+.pr-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pr-stage-caption {
+  position: absolute;
+  top: 7vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+}
+
+.pr-stage-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-ink-raised);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  will-change: transform;
+}
+
+.pr-stage-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.pr-stage-frame iframe.is-loaded {
+  opacity: 1;
+}
+
+.pr-stage-veil {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: rgba(255, 255, 255, 0.45);
+  animation: pr-veil-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pr-veil-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Carousel roll: one quiet panel, rows split by hairlines, and the current
+   row marked with the same line motif as the HUD rail. */
+
+.pr-roll {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 238px;
+  max-height: 76vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+.pr-roll-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+  padding: 11px 12px 12px 16px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pr-roll-card + .pr-roll-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pr-roll-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pr-roll-card.is-current {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pr-roll-card.is-current::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: #fff;
+}
+
+.pr-roll-card.is-current::after,
+.pr-roll-card.is-current + .pr-roll-card::after {
+  background: transparent;
+}
+
+.pr-roll-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pr-roll-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.pr-dot-light {
+  background: #f5f5f3;
+  border-color: transparent;
+}
+
+.pr-dot-alt {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: transparent;
+}
+
+.pr-roll-num {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-roll-card strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+}
+
+.pr-roll-sig {
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-roll-stars {
+  margin-top: 2px;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: #ffd77a;
+}
+
+/* Dock */
+
+.pr-dock {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+  /* Recedes like the direction dock it replaces, so the design gets judged, not the chrome. */
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.pr-dock:hover,
+.pr-dock:focus-within {
+  opacity: 1;
+}
+
+.pr-roll {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.pr-roll:hover,
+.pr-roll:focus-within {
+  opacity: 1;
+}
+
+.pr-dock button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 0 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.pr-dock button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pr-dock button.pr-dock-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 180px;
+  height: auto;
+  padding: 3px 12px;
+}
+
+.pr-dock-label span {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-dock-label strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+}
+
+.pr-dock-sep {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 0 5px;
+}
+
+.pr-dock-notes.is-active {
+  color: #fff;
+}
+
+.pr-dock-summary {
+  letter-spacing: 0.02em;
+}
+
+/* Grid overlay — the direction dock's G-grid, absorbed into the presenter. */
+
+.pr-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-content: start;
+  padding: 6vh 5vw;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(24px);
+}
+
+.pr-grid > button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.pr-grid > button:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-grid > button.is-current {
+  border-color: #fff;
+}
+
+.pr-grid > button strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.pr-grid > button p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 1020px) {
+  .pr-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Stars */
+
+.pr-stars {
+  display: flex;
+}
+
+.pr-stars button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.22);
+  font-size: 16px;
+  padding: 4px 3px;
+  transition:
+    color 0.15s,
+    transform 0.15s;
+}
+
+.pr-stars button:hover {
+  transform: scale(1.2);
+}
+
+.pr-stars button.is-on {
+  color: #ffd77a;
+}
+
+.pr-stars-sm button {
+  font-size: 14px;
+  padding: 2px 2px;
+}
+
+/* Notes */
+
+.pr-notes {
+  position: absolute;
+  bottom: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  width: min(540px, 92vw);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.pr-notes header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pr-notes header button {
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.pr-notes textarea {
+  width: 100%;
+  height: 128px;
+  padding: 12px 14px;
+  border: 0;
+  resize: none;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  outline: none;
+}
+
+/* ---------- Scoreboard gallery ---------- */
+
+.pr-score {
+  min-height: 100vh;
+  padding: 12vh 6vw 14vh;
+}
+
+.pr-score-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(26px, 3vw, 40px);
+  letter-spacing: -0.025em;
+}
+
+.pr-gallery {
+  margin-top: 5vh;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.pr-gal-preview {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* Sized by its grid cell; LazyFrame measures it and scales the iframe. */
+.pr-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1440 / 900;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--color-ink-raised);
+  display: grid;
+  place-items: center;
+  transition: border-color 0.2s;
+}
+
+.pr-gal-preview:hover .pr-thumb {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.pr-thumb iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1440px;
+  height: 900px;
+  border: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.pr-thumb-empty {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.pr-gal-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1020px) {
+  .pr-demo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pr-roll {
+    display: none;
+  }
+
+  .pr-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pr-tail {
+    position: static;
+    max-width: none;
+    text-align: left;
+    margin-top: 14px;
+    transform: none;
+  }
+
+  .pr-hud-rail button em {
+    display: none;
+  }
+}
+
+/* ---------- Reduced motion: a plain vertical document ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-slide {
+    height: auto !important;
+  }
+
+  .pr-pin {
+    height: auto;
+    overflow: visible;
+  }
+
+  .pr-phase,
+  .pr-why-big,
+  .pr-craft-header,
+  .pr-craft-track {
+    position: static;
+    padding: 10vh 8vw;
+  }
+
+  .pr-why-big {
+    font-size: clamp(60px, 10vw, 140px);
+  }
+
+  .pr-craft-track {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10vh;
+    height: auto;
+  }
+
+  .pr-proto {
+    height: 100vh;
+  }
+
+  .pr-stage-caption {
+    display: none;
+  }
+
+  /* Static fallback: main columns and the red/white overlay stack in flow. */
+  .pr-detail-overlay {
+    position: static;
+    margin-top: 8vh;
+  }
+
+  .pr-detail-close {
+    position: static;
+    margin-top: 8vh;
+  }
+}

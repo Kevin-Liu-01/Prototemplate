@@ -1,0 +1,268 @@
+/* ============================================================
+   TOOLCHAIN — THE FOUR SMALL SURFACES
+   One stylesheet for the four-across row. Page tokens, not a
+   family of their own: these panels are the same hairline
+   material as the story's mock, at a quarter of the column.
+
+   Each panel has its own shape on purpose — a window, a flow,
+   a config slab, a table — so four narrow columns never read as
+   the same drawing with four captions.
+
+   NO accent in this band at all: the page's six accent places are
+   all diagram states elsewhere. State here is type weight and
+   strikethrough; mass comes from the two dark panels (the request
+   exchange and the detection hook), which keep this depth from
+   reading as a sheet of paper.
+   ============================================================ */
+
+/* The cap only bites once the band folds to two columns; at four across the
+   column is narrower than this and the panel simply takes the column. */
+.aurorapaper-root .tcx {
+  width: 100%;
+  max-width: 320px;
+  font-family: var(--tc-sans);
+}
+
+/* ---------- 1 · previews: a window you can only see in dev ---------- */
+
+.aurorapaper-root .tcx-win {
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--tc-white);
+}
+
+.aurorapaper-root .tcx-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 27px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .tcx-bar span:last-child {
+  color: var(--tc-ink-4);
+}
+
+.aurorapaper-root .tcx-win-body {
+  padding: 11px 11px 13px;
+}
+
+.aurorapaper-root .tcx-h {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 14.5px;
+  line-height: 1.16;
+  letter-spacing: -0.022em;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tcx-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  margin-top: 10px;
+  padding: 0 11px;
+  border-radius: 4px;
+  background: var(--tc-ink);
+  font-size: 12px;
+  color: #fbfbfa;
+}
+
+.aurorapaper-root .tcx-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 9px;
+  border-top: 1px solid var(--tc-hair-2);
+  background: var(--tc-sunk);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.aurorapaper-root .tcx-foot em {
+  font-style: normal;
+  color: var(--tc-ink);
+}
+
+/* ---------- 2 · live: one request, one response, one timing ----------
+   A round trip belongs on the wire's own surface: the exchange is a dark
+   inset panel, white 13px mono/sans — the same panel every reference draws
+   its network artifacts on. */
+
+.aurorapaper-root .tcx-live .tcx-flow {
+  display: grid;
+  gap: 8px;
+  padding: 13px 14px 14px;
+  border-radius: 4px;
+  background: var(--tc-panel);
+}
+
+.aurorapaper-root .tcx-req {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* `.tcx` doubled so these outrank the ruled band's own `.tc-quad p` ink. */
+.aurorapaper-root .tcx.tcx-live .tcx-say {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* The hop between the two strings: a locale tag on a hairline, so the pair
+   reads as one exchange rather than two quotations. */
+.aurorapaper-root .tcx-hop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.aurorapaper-root .tcx-hop::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.aurorapaper-root .tcx.tcx-live .tcx-out {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #ffffff;
+}
+
+.aurorapaper-root .tcx-ms {
+  margin-top: 3px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.aurorapaper-root .tcx-ms b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* ---------- 3 · customization: the detection function you write ----------
+   Code never sits on paper: the hook is a dark panel like every other code
+   surface on the page, file bar and all. */
+
+.aurorapaper-root .tcx-custom {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  padding: 12px 14px 13px;
+}
+
+.aurorapaper-root .tcx-file {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.aurorapaper-root .tcx-slab {
+  margin-top: 10px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.aurorapaper-root .tcx-slab::-webkit-scrollbar {
+  display: none;
+}
+
+.aurorapaper-root .tcx-slab .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.aurorapaper-root .tcx-slab .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aurorapaper-root .tcx-slab b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* ---------- 4 · glossaries: the term, and what it stays ---------- */
+
+.aurorapaper-root .tcx-term {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tcx-term b {
+  font-family: var(--tc-disp);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--tc-ink);
+}
+
+/* State is type weight, never a colored badge — and the page's accent budget
+   is all spent on diagram states elsewhere. */
+.aurorapaper-root .tcx-term span {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tcx-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aurorapaper-root .tcx-rows li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  padding: 7px 0;
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.aurorapaper-root .tcx-rows li + li {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.aurorapaper-root .tcx-rows i {
+  font-family: var(--tc-mono);
+  font-style: normal;
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+/* The translation a glossary rules out, kept visible so the rule has a subject. */
+.aurorapaper-root .tcx-rows s {
+  margin-right: 6px;
+  text-decoration-color: var(--tc-ink-4);
+  color: var(--tc-ink-4);
+}

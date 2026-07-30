@@ -1,0 +1,2368 @@
+/* ==========================================================================
+   CONCRETE MONO — brutalist monospace slabs, hard-cut stamps (DARK)
+   Every rule is nested under .concrete-origin-root so directions cannot leak.
+   Type is Switzer (slab display) + system mono (the concrete texture) + Inter
+   (running prose). No other families.
+   ========================================================================== */
+
+.concrete-origin-root {
+  --ink: #060606;
+  --ink2: #0d0d0d;
+  --ink3: #131313;
+  --paper: #f1f1ee;
+  --paper2: #e6e6e2;
+
+  --w96: rgba(255, 255, 255, 0.96);
+  --w72: rgba(255, 255, 255, 0.72);
+  --w48: rgba(255, 255, 255, 0.48);
+  --w26: rgba(255, 255, 255, 0.26);
+  --w13: rgba(255, 255, 255, 0.13);
+
+  --b88: rgba(6, 6, 6, 0.88);
+  --b58: rgba(6, 6, 6, 0.58);
+  --b36: rgba(6, 6, 6, 0.36);
+  --b14: rgba(6, 6, 6, 0.14);
+
+  --slab: var(--font-display);
+  --mono: var(--font-mono);
+  --prose: var(--font-sans);
+
+  --rule: 2px solid rgba(255, 255, 255, 0.9);
+  --steel: linear-gradient(
+    180deg,
+    #d8d8d8 0%,
+    #f6f6f6 20%,
+    #b0b0b0 47%,
+    #e2e2e2 55%,
+    #8f8f8f 100%
+  );
+
+  position: relative;
+  background: var(--ink);
+  color: var(--w96);
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.concrete-origin-root *,
+.concrete-origin-root *::before,
+.concrete-origin-root *::after {
+  box-sizing: border-box;
+}
+
+.concrete-origin-root ::selection {
+  background: #fff;
+  color: #060606;
+}
+.concrete-origin-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.concrete-origin-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.concrete-origin-root :focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+.concrete-origin-root img,
+.concrete-origin-root svg,
+.concrete-origin-root canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* the slab display face: Switzer 800, uppercase, hard tracking */
+.concrete-origin-root .slab {
+  font-family: var(--slab);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.042em;
+}
+.concrete-origin-root .k {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+
+/* brushed-steel fill + hard foil glint — metal as material, never a gray ramp */
+.concrete-origin-root .chrome {
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.95) 50%, transparent 58%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.16) 0 1px,
+      rgba(0, 0, 0, 0.22) 1px 2px,
+      transparent 2px 4px
+    ),
+    var(--steel);
+  background-size: 240% 100%, auto, auto;
+  background-position: -140% 0, 0 0, 0 0;
+  background-repeat: no-repeat, repeat, repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: cm-foil 6s steps(24) infinite;
+}
+@keyframes cm-foil {
+  0%,
+  55% {
+    background-position: -140% 0, 0 0, 0 0;
+  }
+  100% {
+    background-position: 140% 0, 0 0, 0 0;
+  }
+}
+
+/* film grain — the concrete surface */
+.concrete-origin-root .cm-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 400;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: cm-grain 0.9s steps(6) infinite;
+}
+@keyframes cm-grain {
+  0% { transform: translate3d(0, 0, 0); }
+  17% { transform: translate3d(-4%, 2%, 0); }
+  33% { transform: translate3d(2%, -3%, 0); }
+  50% { transform: translate3d(-3%, -2%, 0); }
+  67% { transform: translate3d(3%, 3%, 0); }
+  83% { transform: translate3d(-2%, 4%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ============================= NAV ============================= */
+.concrete-origin-root .cm-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  height: 52px;
+  display: flex;
+  align-items: stretch;
+  background: rgba(6, 6, 6, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: var(--rule);
+}
+.concrete-origin-root .cm-nav-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-right: 2px solid var(--w26);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.concrete-origin-root .cm-nav-mark img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+.concrete-origin-root .cm-nav-meta {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border-right: 2px solid var(--w13);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--w48);
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-nav-links {
+  display: flex;
+  align-items: stretch;
+  margin-left: auto;
+}
+.concrete-origin-root .cm-nav-links a,
+.concrete-origin-root .cm-nav-cta a {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-left: 2px solid var(--w13);
+  color: var(--w72);
+  transition: background 0.1s steps(1), color 0.1s steps(1);
+}
+.concrete-origin-root .cm-nav-cta a {
+  border-left: 2px solid var(--w26);
+  color: var(--w96);
+}
+.concrete-origin-root .cm-nav-cta a.solid {
+  background: #fff;
+  color: #060606;
+  font-weight: 700;
+}
+.concrete-origin-root .cm-nav-links a:hover,
+.concrete-origin-root .cm-nav-cta a:hover {
+  background: #fff;
+  color: #060606;
+}
+.concrete-origin-root .cm-nav-cta a.solid:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* nav → dock morph clone */
+.concrete-origin-root .cm-morph {
+  position: fixed;
+  z-index: 320;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  border: 2px solid #fff;
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ============================= HERO ============================= */
+.concrete-origin-root .cm-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 52px;
+  border-bottom: var(--rule);
+  overflow: hidden;
+}
+.concrete-origin-root .cm-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.95;
+}
+/* keeps the type readable and reproduces the reference's dark core */
+.concrete-origin-root .cm-hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 44% at 50% 42%, rgba(0, 0, 0, 0.86), transparent 72%),
+    linear-gradient(180deg, rgba(6, 6, 6, 0.72) 0%, transparent 22%, transparent 46%, rgba(6, 6, 6, 0.94) 74%);
+}
+.concrete-origin-root .cm-hero-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- M1: the perspective stage. Components ride rays from the same dark
+   center the shader converges on, so depth reads as real depth. ---- */
+.concrete-origin-root .cm-stage {
+  position: relative;
+  flex: 1;
+  min-height: 340px;
+  perspective: 1200px;
+  perspective-origin: 50% 47%;
+  border-bottom: 2px solid var(--w13);
+  overflow: hidden;
+}
+.concrete-origin-root .cm-rays {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  z-index: 1;
+}
+.concrete-origin-root .cm-hairline-v {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--w26);
+  z-index: 2;
+}
+.concrete-origin-root .cm-hairline-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 47%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--w13) 18%, var(--w13) 82%, transparent);
+  z-index: 2;
+}
+.concrete-origin-root .cm-stage-tag {
+  position: absolute;
+  z-index: 4;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+.concrete-origin-root .cm-stage-tag.left {
+  left: 16px;
+  top: 14px;
+}
+.concrete-origin-root .cm-stage-tag.right {
+  right: 16px;
+  top: 14px;
+}
+
+/* a ray item: absolutely centred, transform written per frame by GSAP */
+.concrete-origin-root .cm-ray {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity, filter;
+  pointer-events: none;
+}
+
+/* ---- the components themselves: solid, bordered, legible at 1440 ---- */
+.concrete-origin-root .cm-card {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  background: #0b0b0b;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 9px 13px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.concrete-origin-root .cm-card--button {
+  background: #fff;
+  color: #060606;
+  border-color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 11px 20px;
+}
+.concrete-origin-root .cm-card--toast::before {
+  content: '✓';
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  background: #fff;
+  color: #060606;
+  font-size: 10px;
+  font-weight: 700;
+  flex: none;
+}
+.concrete-origin-root .cm-card--field {
+  display: block;
+  padding: 7px 11px 8px;
+  min-width: 190px;
+}
+.concrete-origin-root .cm-card--field .cm-fl {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--w48);
+  margin-bottom: 5px;
+}
+.concrete-origin-root .cm-card--field .cm-fv {
+  display: block;
+  border: 1px solid var(--w26);
+  background: #050505;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: var(--w72);
+}
+.concrete-origin-root .cm-card--field .cm-fv::after {
+  content: '▏';
+  color: #fff;
+}
+.concrete-origin-root .cm-card .cm-lead {
+  background: #fff;
+  color: #060606;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  flex: none;
+}
+.concrete-origin-root .cm-card--theo {
+  display: block;
+  width: 320px;
+  white-space: normal;
+  font-size: 11px;
+  line-height: 1.55;
+  padding: 12px 14px;
+  color: var(--w72);
+}
+.concrete-origin-root .cm-theo-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--w13);
+}
+.concrete-origin-root .cm-theo-av {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  background: #fff;
+  color: #060606;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 12px;
+}
+.concrete-origin-root .cm-theo-name {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.06em;
+}
+.concrete-origin-root .cm-theo-role {
+  display: block;
+  font-size: 9px;
+  color: var(--w48);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+/* locale stamp on every emitted (translated) card */
+.concrete-origin-root .cm-locale {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  background: #fff;
+  color: #060606;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  padding: 2px 6px;
+  border: 1px solid #060606;
+}
+.concrete-origin-root .cm-ray--tr .cm-card {
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- M2: the gravitational lens around the real GT logo ---- */
+.concrete-origin-root .cm-lens {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  width: var(--lens, 268px);
+  height: var(--lens, 268px);
+  margin: calc(var(--lens, 268px) / -2) 0 0 calc(var(--lens, 268px) / -2);
+  z-index: 3;
+  pointer-events: none;
+}
+/* light bent around the core: a counter-rotating thin-film spectrum */
+.concrete-origin-root .cm-lens-swirl {
+  position: absolute;
+  inset: 4%;
+  clip-path: circle(50% at 50% 50%);
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  background: conic-gradient(
+    from 0deg,
+    rgba(120, 160, 220, 0.5),
+    rgba(220, 190, 120, 0.42) 18%,
+    rgba(120, 210, 190, 0.34) 36%,
+    rgba(190, 130, 220, 0.44) 55%,
+    rgba(230, 150, 190, 0.3) 72%,
+    rgba(120, 160, 220, 0.5) 100%
+  );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 34%, #000 62%, transparent 96%);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 34%, #000 62%, transparent 96%);
+}
+/* concentric refraction shells — each genuinely resamples what passes behind */
+.concrete-origin-root .cm-lens-shell {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(50% at 50% 50%);
+}
+.concrete-origin-root .cm-lens-shell.s1 {
+  backdrop-filter: blur(1.5px) contrast(1.28) saturate(1.5) hue-rotate(-16deg);
+}
+.concrete-origin-root .cm-lens-shell.s2 {
+  inset: 13%;
+  clip-path: circle(50% at 50% 50%);
+  backdrop-filter: blur(4px) contrast(1.5) saturate(1.9) hue-rotate(26deg) brightness(1.12);
+}
+.concrete-origin-root .cm-lens-shell.s3 {
+  inset: 28%;
+  clip-path: circle(50% at 50% 50%);
+  backdrop-filter: blur(9px) contrast(1.9) saturate(2.2) hue-rotate(-52deg) brightness(0.72);
+}
+.concrete-origin-root .cm-lens-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    inset 0 0 34px rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 0 46px rgba(120, 150, 200, 0.16);
+}
+.concrete-origin-root .cm-lens-ring {
+  position: absolute;
+  inset: -12%;
+  overflow: visible;
+}
+.concrete-origin-root .cm-lens-ring .track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+}
+.concrete-origin-root .cm-lens-ring .arc {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-dasharray: 84 381;
+}
+/* accretion glyphs, warped by a real displacement map as they fall in */
+.concrete-origin-root .cm-accretion {
+  position: absolute;
+  inset: -34%;
+  filter: url(#cm-lens-warp);
+}
+.concrete-origin-root .cm-accretion i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.55);
+  will-change: transform, opacity;
+}
+.concrete-origin-root .cm-lens-core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 4;
+}
+.concrete-origin-root .cm-lens-core img {
+  width: 46%;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
+}
+/* the optical transit: RGB split resolving into the translated string */
+.concrete-origin-root .cm-transit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-transit span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-transit .tc {
+  color: #6fe8ff;
+  mix-blend-mode: screen;
+}
+.concrete-origin-root .cm-transit .tm {
+  color: #ff67d4;
+  mix-blend-mode: screen;
+}
+.concrete-origin-root .cm-transit .tw {
+  color: #fff;
+}
+.concrete-origin-root .cm-gate-num {
+  position: absolute;
+  font-size: 9px;
+  color: var(--w48);
+  z-index: 5;
+}
+
+/* ---- hero copy band ---- */
+.concrete-origin-root .cm-hero-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: end;
+  padding: clamp(16px, 2vw, 26px) clamp(16px, 4vw, 54px) clamp(14px, 1.6vw, 22px);
+  border-bottom: 2px solid var(--w13);
+}
+.concrete-origin-root .cm-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--w26);
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--w72);
+  margin-bottom: 14px;
+}
+.concrete-origin-root .cm-cmd:hover {
+  background: #fff;
+  color: #060606;
+}
+.concrete-origin-root .cm-cmd .dim {
+  color: var(--w48);
+}
+.concrete-origin-root .cm-hero h1 {
+  font-size: clamp(2.1rem, 5.4vw, 5rem);
+  color: #fff;
+}
+.concrete-origin-root .cm-hero h1 .ch {
+  display: inline-block;
+}
+.concrete-origin-root .cm-hero-sub {
+  margin-top: 14px;
+  max-width: 60ch;
+  font-family: var(--prose);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--w72);
+}
+.concrete-origin-root .cm-hero-sub .rot {
+  font-family: var(--mono);
+  color: #fff;
+  border-bottom: 2px solid #fff;
+  padding: 0 2px;
+}
+.concrete-origin-root .cm-hero-ctas {
+  display: flex;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.concrete-origin-root .cm-hero-ctas a {
+  border: 2px solid #fff;
+  padding: 11px 24px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.concrete-origin-root .cm-hero-ctas a.primary {
+  background: #fff;
+  color: #060606;
+}
+.concrete-origin-root .cm-hero-ctas a.primary:hover {
+  background: var(--ink);
+  color: #fff;
+}
+.concrete-origin-root .cm-hero-ctas a.ghost {
+  border-left: none;
+}
+.concrete-origin-root .cm-hero-ctas a.ghost:hover {
+  background: #fff;
+  color: #060606;
+}
+/* D3 mono stat block */
+.concrete-origin-root .cm-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  border: 1px solid var(--w26);
+}
+.concrete-origin-root .cm-hero-stats div {
+  padding: 10px 16px;
+  border-right: 1px solid var(--w13);
+  border-bottom: 1px solid var(--w13);
+}
+.concrete-origin-root .cm-hero-stats div:nth-child(2n) {
+  border-right: none;
+}
+.concrete-origin-root .cm-hero-stats div:nth-child(n + 3) {
+  border-bottom: none;
+}
+.concrete-origin-root .cm-hero-stats b {
+  display: block;
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.concrete-origin-root .cm-hero-stats span {
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+
+/* ---- flags + trust ---- */
+.concrete-origin-root .cm-flags {
+  border-bottom: 2px solid var(--w13);
+  padding: 9px 0 10px;
+  overflow: hidden;
+}
+.concrete-origin-root .cm-flags .k {
+  display: block;
+  padding: 0 clamp(16px, 4vw, 54px) 7px;
+}
+.concrete-origin-root .cm-marq {
+  overflow: hidden;
+}
+.concrete-origin-root .cm-marq-track {
+  display: flex;
+  width: max-content;
+}
+.concrete-origin-root .cm-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--w13);
+  padding: 6px 14px;
+  margin-right: 8px;
+  font-size: 12px;
+  color: var(--w72);
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-trust {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0 clamp(16px, 4vw, 54px);
+  min-height: 50px;
+}
+.concrete-origin-root .cm-trust .k {
+  margin-right: 22px;
+}
+.concrete-origin-root .cm-trust span.wm {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w48);
+  padding: 15px 16px;
+  border-left: 1px solid var(--w13);
+}
+.concrete-origin-root .cm-trust span.wm:last-child {
+  border-right: 1px solid var(--w13);
+}
+
+/* ================== ACT II + III — FULL-BLEED STORY ================== */
+.concrete-origin-root .cm-story {
+  position: relative;
+  background: var(--ink);
+}
+.concrete-origin-root .cm-story-pin {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  overflow: hidden;
+}
+/* M3: the demo screen is edge to edge — no letterbox, no margin, no radius */
+.concrete-origin-root .cm-win {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.14) 1px, transparent 1px);
+  background-size: 20px 20px;
+  color: #111;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+}
+.concrete-origin-root .cm-win-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(12.5% - 1px),
+    rgba(0, 0, 0, 0.08) calc(12.5% - 1px) 12.5%
+  );
+}
+.concrete-origin-root .cm-win-guides::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px dashed rgba(0, 0, 0, 0.16);
+}
+.concrete-origin-root .cm-win-chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 26;
+  background: #090909;
+  color: #fff;
+  padding: 9px 20px 9px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.concrete-origin-root .cm-win-chip img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
+.concrete-origin-root .cm-win-pill {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 26;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  background: var(--paper);
+  padding: 5px 11px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.6);
+}
+.concrete-origin-root .cm-story-head {
+  position: absolute;
+  top: 44px;
+  left: 14px;
+  right: 14px;
+  z-index: 25;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.42);
+}
+.concrete-origin-root .cm-story-head b {
+  color: rgba(0, 0, 0, 0.78);
+}
+
+/* the camera */
+.concrete-origin-root .cm-vp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 5;
+}
+.concrete-origin-root .cm-camera {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.concrete-origin-root .cm-demo-wrap {
+  position: relative;
+}
+.concrete-origin-root .cm-demo {
+  width: min(860px, 74vw);
+  background: #fff;
+  border: 2px solid #111;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.22);
+  font-family: var(--mono);
+  color: #151515;
+  position: relative;
+}
+/* focus-pull: non-subject blocks defocus so a zoom reads as focus, not scale */
+.concrete-origin-root .cm-blk {
+  position: relative;
+  will-change: filter;
+}
+.concrete-origin-root .cm-ds-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 2px solid #111;
+  font-size: 11px;
+}
+.concrete-origin-root .cm-ds-logo {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.concrete-origin-root .cm-ds-links {
+  display: flex;
+  gap: 14px;
+  color: var(--b58);
+  margin-left: auto;
+}
+.concrete-origin-root .cm-ds-cta {
+  background: #111;
+  color: #fff;
+  padding: 5px 11px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-ds-body {
+  padding: 24px 26px 22px;
+  position: relative;
+}
+.concrete-origin-root .cm-ds-h1 {
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  display: inline-block;
+  position: relative;
+}
+.concrete-origin-root .cm-ds-date {
+  font-size: 9.5px;
+  color: var(--b36);
+  margin-top: 8px;
+  letter-spacing: 0.14em;
+}
+.concrete-origin-root .cm-ds-p {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--b58);
+  max-width: 54ch;
+  margin-top: 14px;
+  position: relative;
+}
+.concrete-origin-root .cm-ds-row {
+  display: flex;
+  gap: 26px;
+  align-items: flex-start;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.concrete-origin-root .cm-ds-btn {
+  position: relative;
+  background: #111;
+  color: #fff;
+  border: 2px solid #111;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.concrete-origin-root .cm-ds-copy {
+  position: relative;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--b58);
+  max-width: 32ch;
+}
+.concrete-origin-root .cm-ds-copy b {
+  color: #111;
+}
+.concrete-origin-root .cm-ds-stat {
+  position: relative;
+  margin-top: 12px;
+}
+.concrete-origin-root .cm-ds-stat .num {
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  display: block;
+}
+.concrete-origin-root .cm-ds-stat .lbl {
+  font-size: 9.5px;
+  color: var(--b36);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.concrete-origin-root .cm-ds-legal {
+  position: relative;
+  font-size: 9.5px;
+  color: var(--b36);
+  margin-top: 20px;
+  border-top: 1px dashed var(--b14);
+  padding-top: 10px;
+  max-width: 62ch;
+}
+
+/* bilingual pair — .es layered over .en; containers get measured size tweens */
+.concrete-origin-root .cm-bi {
+  position: relative;
+  display: inline-block;
+}
+.concrete-origin-root .cm-bi > .es {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+.concrete-origin-root .cm-bi > .en,
+.concrete-origin-root .cm-bi > .es {
+  display: inline-block;
+  white-space: inherit;
+}
+.concrete-origin-root .cm-demo.measure-es .cm-bi > .en {
+  display: none;
+}
+.concrete-origin-root .cm-demo.measure-es .cm-bi > .es {
+  position: static;
+  opacity: 0;
+}
+
+/* numbered marker pins */
+.concrete-origin-root .cm-mk {
+  position: absolute;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+}
+.concrete-origin-root .cm-mk .pin {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  background: #111;
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+.concrete-origin-root .cm-mk .tag {
+  font-size: 7.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: #fff;
+  border: 1px solid #111;
+  padding: 1px 5px;
+  color: #111;
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-mk .tag.warn {
+  background: #111;
+  color: #fff;
+}
+.concrete-origin-root .cm-pellet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  background: #fff;
+  border: 2px solid #111;
+  z-index: 22;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* scene chips */
+.concrete-origin-root .cm-scn {
+  position: absolute;
+  z-index: 9;
+  background: #111;
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  opacity: 0;
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-scn.lite {
+  background: #fff;
+  color: #111;
+  border: 1px solid #111;
+}
+
+/* the labelled Locadex cursor that hops the DOM */
+.concrete-origin-root .cm-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 24;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: 0 0;
+}
+.concrete-origin-root .cm-cursor svg {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.5));
+}
+.concrete-origin-root .cm-cursor .tag {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  background: #fff;
+  color: #060606;
+  border: 1px solid #060606;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  padding: 2px 6px;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+/* invisible camera targets: framing points the subjects alone can't give */
+.concrete-origin-root .cm-focus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.concrete-origin-root .cm-focus[data-focus='body'] {
+  left: 50%;
+  top: 50%;
+}
+.concrete-origin-root .cm-focus[data-focus='review'] {
+  left: 44%;
+  top: 84%;
+}
+.concrete-origin-root .cm-halo {
+  position: absolute;
+  z-index: 7;
+  border: 2px solid #111;
+  background: rgba(255, 255, 255, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, width, height;
+}
+
+/* ---- M3: the code-reveal splitter ---- */
+.concrete-origin-root .cm-split {
+  --split: 0%;
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(760px, 74vw);
+  border: 2px solid #060606;
+  background: #0a0a0a;
+  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: auto;
+}
+.concrete-origin-root .cm-split-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--w13);
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w48);
+  background: #0e0e0e;
+}
+.concrete-origin-root .cm-split-head b {
+  color: #fff;
+}
+.concrete-origin-root .cm-split-head .right {
+  margin-left: auto;
+}
+.concrete-origin-root .cm-split-body {
+  position: relative;
+  height: 172px;
+  overflow: hidden;
+}
+/* left of the divider: the rendered component */
+.concrete-origin-root .cm-split-render {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(120% 120% at 30% 20%, #f6f6f4, #dededa);
+  color: #111;
+}
+/* right of the divider: the real code surface */
+.concrete-origin-root .cm-split-code {
+  position: absolute;
+  inset: 0;
+  background: #08080a;
+  padding: 14px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.85;
+  white-space: pre;
+  text-align: left;
+  overflow: hidden;
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.028) 0 1px,
+    transparent 1px 4px
+  );
+  clip-path: inset(0 calc(100% - var(--split)) 0 0);
+}
+.concrete-origin-root .tok-tag { color: #8f8f8f; }
+.concrete-origin-root .tok-cmp { color: #fff; font-weight: 700; }
+.concrete-origin-root .tok-attr { color: #b9c6d8; }
+.concrete-origin-root .tok-str { color: #d8cfa8; font-style: italic; }
+.concrete-origin-root .tok-txt { color: #cfcfcf; }
+.concrete-origin-root .tok-kw { color: #9fd0c8; font-weight: 700; }
+.concrete-origin-root .tok-dim { color: #5a5a5a; }
+/* the divider: bright edge-light + chromatic fringe + machined handle */
+.concrete-origin-root .cm-split-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split);
+  width: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.concrete-origin-root .cm-split-line::before,
+.concrete-origin-root .cm-split-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  mix-blend-mode: screen;
+}
+.concrete-origin-root .cm-split-line::before {
+  left: -4px;
+  background: rgba(90, 220, 255, 0.75);
+  filter: blur(1.4px);
+}
+.concrete-origin-root .cm-split-line::after {
+  left: 2px;
+  background: rgba(255, 90, 210, 0.75);
+  filter: blur(1.4px);
+}
+.concrete-origin-root .cm-split-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: #fff;
+  box-shadow: 0 0 22px 3px rgba(255, 255, 255, 0.75), 0 0 60px 8px rgba(140, 190, 255, 0.32);
+}
+.concrete-origin-root .cm-split-handle {
+  position: absolute;
+  top: 50%;
+  left: -14px;
+  width: 28px;
+  height: 54px;
+  margin-top: -27px;
+  background: var(--steel);
+  border: 1px solid #050505;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5), 0 6px 20px rgba(0, 0, 0, 0.7);
+  pointer-events: auto;
+  cursor: ew-resize;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 3px;
+}
+.concrete-origin-root .cm-split-handle i {
+  display: block;
+  width: 12px;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.concrete-origin-root .cm-split-foot {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--w13);
+  background: #0e0e0e;
+}
+.concrete-origin-root .cm-split-foot span {
+  padding: 6px 12px;
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--w48);
+  border-right: 1px solid var(--w13);
+}
+.concrete-origin-root .cm-split-foot span.hot {
+  color: #060606;
+  background: #fff;
+  font-weight: 700;
+}
+
+/* review webhook */
+.concrete-origin-root .cm-hooksvg {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0;
+}
+.concrete-origin-root .cm-hookline {
+  stroke: #111;
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 6 4;
+}
+.concrete-origin-root .cm-notif {
+  position: absolute;
+  z-index: 12;
+  left: 56%;
+  top: 72%;
+  width: 268px;
+  background: #fff;
+  border: 2px solid #111;
+  box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  color: #111;
+}
+.concrete-origin-root .cm-notif .n-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #111;
+  color: #fff;
+  padding: 8px 11px;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.concrete-origin-root .cm-notif .n-dot {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  animation: cm-blink 1s steps(1) infinite;
+}
+@keyframes cm-blink {
+  50% { opacity: 0.2; }
+}
+.concrete-origin-root .cm-notif .n-body {
+  padding: 11px 13px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.concrete-origin-root .cm-notif .n-body b {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.concrete-origin-root .cm-notif .n-quote {
+  border-left: 2px solid #111;
+  padding-left: 9px;
+  color: var(--b58);
+  font-size: 9px;
+  margin: 7px 0 0;
+}
+.concrete-origin-root .cm-notif .n-actions {
+  display: flex;
+  border-top: 2px solid #111;
+}
+.concrete-origin-root .cm-notif .n-actions span {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.concrete-origin-root .cm-notif .n-approve {
+  background: #111;
+  color: #fff;
+  position: relative;
+}
+.concrete-origin-root .cm-notif .n-ok {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  color: #111;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+}
+
+/* the vignette that tightens as the camera pushes in */
+.concrete-origin-root .cm-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 14;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(70% 60% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* ---------------- ACT III — the code window ---------------- */
+.concrete-origin-root .cm-editor {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  background: #080808;
+  color: #dcdcdc;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+}
+.concrete-origin-root .cm-ed-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 2px solid var(--w13);
+  padding: 10px 16px;
+  font-size: 10px;
+  color: var(--w48);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.concrete-origin-root .cm-ed-bar .dots {
+  display: flex;
+  gap: 5px;
+}
+.concrete-origin-root .cm-ed-bar .dots i {
+  width: 9px;
+  height: 9px;
+  background: var(--w26);
+  display: block;
+}
+.concrete-origin-root .cm-ed-chips {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+.concrete-origin-root .cm-ed-chip {
+  border: 1px solid var(--w26);
+  padding: 4px 10px;
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  color: var(--w72);
+  opacity: 0;
+  white-space: nowrap;
+}
+.concrete-origin-root .cm-ed-chip.commit {
+  background: #fff;
+  color: #060606;
+  font-weight: 700;
+  border-color: #fff;
+}
+.concrete-origin-root .cm-ed-main {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+.concrete-origin-root .cm-ed-code {
+  flex: 1;
+  padding: 20px 0;
+  font-size: clamp(11px, 1.15vw, 16px);
+  line-height: 2.15;
+  position: relative;
+  overflow: hidden;
+}
+.concrete-origin-root .cm-cl {
+  display: flex;
+  gap: 16px;
+  padding: 0 24px;
+  white-space: pre;
+  position: relative;
+}
+.concrete-origin-root .cm-cl .ln {
+  width: 2ch;
+  text-align: right;
+  color: var(--w26);
+  flex: none;
+  user-select: none;
+}
+.concrete-origin-root .cm-cl.add {
+  background: rgba(255, 255, 255, 0.1);
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+  opacity: 0;
+}
+.concrete-origin-root .cm-cl.add .ln {
+  color: var(--w72);
+}
+.concrete-origin-root .cm-cl .strike {
+  position: absolute;
+  left: 62px;
+  right: 42%;
+  top: 50%;
+  height: 2px;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+.concrete-origin-root .cm-cl .lmark {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 21px;
+  height: 21px;
+  background: #fff;
+  color: #060606;
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+}
+.concrete-origin-root .cm-story.notes-live .cm-cl .lmark {
+  cursor: help;
+}
+.concrete-origin-root .cm-cl .ltip {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 264px;
+  background: #fff;
+  color: #0a0a0a;
+  border: 2px solid #fff;
+  padding: 9px 11px;
+  font-size: 9.5px;
+  line-height: 1.5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s steps(2);
+  z-index: 4;
+  text-align: left;
+  white-space: normal;
+}
+.concrete-origin-root .cm-cl .ltip b {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.concrete-origin-root .cm-story.notes-live .lmark:hover + .ltip,
+.concrete-origin-root .cm-cl .ltip.pinned {
+  opacity: 1;
+}
+.concrete-origin-root .cm-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6%;
+  height: 38px;
+  z-index: 3;
+  opacity: 0;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 255, 255, 0.16) 45%,
+    rgba(255, 255, 255, 0.34) 50%,
+    rgba(255, 255, 255, 0.16) 55%,
+    transparent
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+.concrete-origin-root .cm-tr-chips {
+  position: absolute;
+  left: 24px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+.concrete-origin-root .cm-tr-chip {
+  border: 1px solid var(--w26);
+  background: #0f0f0f;
+  padding: 5px 10px;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--w72);
+  opacity: 0;
+}
+.concrete-origin-root .cm-tr-chip b {
+  color: #fff;
+}
+.concrete-origin-root .cm-diffwin {
+  position: absolute;
+  top: 8%;
+  right: 0;
+  bottom: 8%;
+  width: min(420px, 42%);
+  background: #0f0f0f;
+  border: 2px solid #fff;
+  border-right: none;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -10px 10px 0 rgba(0, 0, 0, 0.5);
+}
+.concrete-origin-root .cm-dw-head {
+  padding: 11px 14px;
+  border-bottom: 2px solid var(--w13);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--w72);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.concrete-origin-root .cm-dw-head b {
+  color: #fff;
+}
+.concrete-origin-root .cm-dw-stats {
+  padding: 8px 14px;
+  font-size: 9.5px;
+  color: var(--w48);
+  border-bottom: 1px solid var(--w13);
+}
+.concrete-origin-root .cm-dw-stats .plus {
+  color: #fff;
+  font-weight: 700;
+}
+.concrete-origin-root .cm-dw-files {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 10px;
+  line-height: 2;
+  color: var(--w72);
+  overflow: hidden;
+}
+.concrete-origin-root .cm-dw-files span {
+  color: var(--w48);
+}
+.concrete-origin-root .cm-dw-foot {
+  border-top: 2px solid var(--w13);
+  padding: 12px 14px;
+  position: relative;
+}
+.concrete-origin-root .cm-openpr {
+  width: 100%;
+  background: #fff;
+  color: #060606;
+  border: 2px solid #fff;
+  padding: 11px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+.concrete-origin-root .cm-pr-done {
+  position: absolute;
+  inset: 0;
+  background: #060606;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  opacity: 0;
+}
+.concrete-origin-root .cm-click-flash {
+  position: absolute;
+  inset: -6px;
+  border: 2px solid #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.concrete-origin-root .cm-merged {
+  position: absolute;
+  top: -52px;
+  left: 50%;
+  border: 3px solid #fff;
+  color: #fff;
+  background: rgba(6, 6, 6, 0.72);
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: 18px;
+  padding: 5px 16px;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* the dock (the nav's morph target) */
+.concrete-origin-root .cm-dock {
+  position: absolute;
+  left: 50%;
+  bottom: 5%;
+  transform: translateX(-50%);
+  z-index: 40;
+  background: #090909;
+  border: 2px solid #fff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  min-width: min(700px, 84vw);
+  max-width: 92vw;
+  height: 50px;
+  box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.4);
+  opacity: 0;
+}
+.concrete-origin-root .cm-dock .d-mark {
+  flex: none;
+  width: 50px;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border-right: 2px solid var(--w26);
+  background: #fff;
+}
+.concrete-origin-root .cm-dock .d-mark img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.concrete-origin-root .cm-dock .d-cap {
+  flex: 1;
+  padding: 0 16px;
+  font-size: clamp(9.5px, 1.2vw, 12.5px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.concrete-origin-root .cm-dock .d-idx {
+  flex: none;
+  padding: 0 14px;
+  border-left: 2px solid var(--w26);
+  font-size: 10px;
+  color: var(--w72);
+  letter-spacing: 0.16em;
+}
+.concrete-origin-root .cm-dock .d-ticks {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -8px;
+  height: 4px;
+  display: flex;
+  gap: 2px;
+}
+.concrete-origin-root .cm-dock .d-ticks i {
+  flex: 1;
+  background: var(--w26);
+}
+.concrete-origin-root .cm-dock .d-ticks i.lit {
+  background: #fff;
+}
+
+.concrete-origin-root .cm-beats-static {
+  display: none;
+}
+
+/* ================== TAIL SECTIONS ================== */
+.concrete-origin-root .cm-section {
+  border-bottom: var(--rule);
+  padding: clamp(48px, 7vw, 100px) clamp(16px, 4vw, 54px);
+  position: relative;
+  z-index: 1;
+  background: var(--ink);
+}
+.concrete-origin-root .cm-sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: clamp(22px, 3vw, 40px);
+  flex-wrap: wrap;
+}
+.concrete-origin-root .cm-sec-idx {
+  font-size: 11px;
+  color: var(--w48);
+  letter-spacing: 0.16em;
+}
+.concrete-origin-root .cm-sec-title {
+  font-size: clamp(1.7rem, 4vw, 3.6rem);
+}
+.concrete-origin-root .cm-sec-sub {
+  width: 100%;
+  max-width: 66ch;
+  color: var(--w72);
+  font-family: var(--prose);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+/* ACT IV — review workspace */
+.concrete-origin-root .cm-ws {
+  border: 2px solid #fff;
+  background: var(--ink2);
+  box-shadow: 9px 9px 0 rgba(255, 255, 255, 0.12);
+}
+.concrete-origin-root .cm-ws-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 2px solid var(--w26);
+  padding: 9px 16px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--w72);
+  flex-wrap: wrap;
+}
+.concrete-origin-root .cm-ws-bar .live {
+  margin-left: auto;
+  background: #fff;
+  color: #060606;
+  font-weight: 700;
+  padding: 3px 10px;
+  font-size: 9px;
+}
+.concrete-origin-root .cm-ws-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 250px;
+}
+.concrete-origin-root .cm-ws-pane {
+  padding: 16px 18px;
+  border-right: 2px solid var(--w13);
+  font-size: 12px;
+  line-height: 1.75;
+}
+.concrete-origin-root .cm-ws-pane:last-child {
+  border-right: none;
+}
+.concrete-origin-root .cm-ws-pane .k {
+  display: block;
+  margin-bottom: 12px;
+}
+.concrete-origin-root .cm-ws-line {
+  display: block;
+  padding: 3px 9px;
+  color: var(--w72);
+}
+.concrete-origin-root .cm-ws-line.sel {
+  background: #fff;
+  color: #060606;
+}
+.concrete-origin-root .cm-ws-line.del {
+  color: var(--w26);
+  text-decoration: line-through;
+  font-size: 11px;
+}
+.concrete-origin-root .cm-ws-line.add {
+  outline: 1px solid var(--w48);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+.concrete-origin-root .cm-caret {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: #fff;
+  vertical-align: -2px;
+  margin-left: 2px;
+  animation: cm-blink 1s steps(1) infinite;
+}
+.concrete-origin-root .cm-ws-foot {
+  display: flex;
+  border-top: 2px solid var(--w26);
+  flex-wrap: wrap;
+}
+.concrete-origin-root .cm-ws-foot span {
+  padding: 11px 18px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-right: 2px solid var(--w13);
+  color: var(--w72);
+}
+.concrete-origin-root .cm-ws-foot .approve {
+  background: #fff;
+  color: #060606;
+  font-weight: 700;
+}
+
+/* ACT V — feature grid */
+.concrete-origin-root .cm-feat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 2px solid #fff;
+}
+.concrete-origin-root .cm-feat {
+  padding: 22px 20px 26px;
+  border-right: 2px solid var(--w26);
+  border-bottom: 2px solid var(--w26);
+  min-height: 196px;
+}
+.concrete-origin-root .cm-feat:nth-child(4n) {
+  border-right: none;
+}
+.concrete-origin-root .cm-feat:nth-child(n + 5) {
+  border-bottom: none;
+}
+.concrete-origin-root .cm-feat .cat {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+.concrete-origin-root .cm-feat h3 {
+  font-size: 17px;
+  margin: 8px 0 10px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.concrete-origin-root .cm-feat p {
+  font-family: var(--prose);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--w72);
+}
+.concrete-origin-root .cm-feat:hover {
+  background: #fff;
+}
+.concrete-origin-root .cm-feat:hover .cat {
+  color: var(--b36);
+}
+.concrete-origin-root .cm-feat:hover h3 {
+  color: #060606;
+}
+.concrete-origin-root .cm-feat:hover p {
+  color: var(--b58);
+}
+.concrete-origin-root .cm-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 2px solid #fff;
+  border-top: none;
+}
+.concrete-origin-root .cm-stat-row .stat {
+  padding: 16px 20px;
+  border-right: 2px solid var(--w26);
+}
+.concrete-origin-root .cm-stat-row .stat:last-child {
+  border-right: none;
+}
+.concrete-origin-root .cm-stat-row b {
+  display: block;
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: clamp(1.3rem, 2.4vw, 2.1rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.concrete-origin-root .cm-stat-row span {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+
+/* pricing */
+.concrete-origin-root .cm-pricing {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 2px solid #fff;
+}
+.concrete-origin-root .cm-plan {
+  padding: clamp(16px, 1.8vw, 26px);
+  border-right: 2px solid var(--w26);
+}
+.concrete-origin-root .cm-plan:last-child {
+  border-right: none;
+}
+.concrete-origin-root .cm-plan .p-name {
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+.concrete-origin-root .cm-plan .p-price {
+  font-size: 12px;
+  color: var(--w72);
+  margin: 8px 0 12px;
+}
+.concrete-origin-root .cm-plan .p-price b {
+  color: #fff;
+  font-size: 21px;
+}
+.concrete-origin-root .cm-plan ul {
+  list-style: none;
+  padding: 0;
+  font-size: 11.5px;
+  color: var(--w72);
+  line-height: 1.8;
+}
+.concrete-origin-root .cm-plan ul li::before {
+  content: '+ ';
+  color: #fff;
+  font-weight: 700;
+}
+.concrete-origin-root .cm-plan a {
+  display: inline-block;
+  margin-top: 12px;
+  border: 2px solid #fff;
+  padding: 9px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.concrete-origin-root .cm-plan a.solid {
+  background: #fff;
+  color: #060606;
+}
+.concrete-origin-root .cm-plan.steel {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0 1px,
+      rgba(0, 0, 0, 0.06) 1px 2px,
+      transparent 2px 4px
+    ),
+    var(--steel);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+  color: #101010;
+}
+.concrete-origin-root .cm-plan.steel .p-price,
+.concrete-origin-root .cm-plan.steel ul {
+  color: rgba(0, 0, 0, 0.62);
+}
+.concrete-origin-root .cm-plan.steel .p-price b {
+  color: #060606;
+}
+.concrete-origin-root .cm-plan.steel ul li::before {
+  color: #060606;
+}
+.concrete-origin-root .cm-plan.steel a {
+  border-color: #060606;
+  color: #060606;
+}
+.concrete-origin-root .cm-plan.steel a.solid {
+  background: #060606;
+  color: #fff;
+}
+.concrete-origin-root .cm-price-note {
+  margin-top: 10px;
+  font-size: 10.5px;
+  color: var(--w48);
+  letter-spacing: 0.14em;
+}
+
+/* closing */
+.concrete-origin-root .cm-closing {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(44px, 7vw, 100px) clamp(16px, 4vw, 54px);
+  border-bottom: var(--rule);
+  background: var(--ink);
+  z-index: 1;
+}
+.concrete-origin-root .cm-closing-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.concrete-origin-root .cm-closing > *:not(canvas) {
+  position: relative;
+  z-index: 2;
+}
+.concrete-origin-root .cm-closing h2 {
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  color: #fff;
+  margin-top: 8px;
+}
+.concrete-origin-root .cm-closing .cm-sec-sub {
+  margin: 10px 0 16px;
+}
+
+/* footer */
+.concrete-origin-root .cm-footer {
+  padding: clamp(20px, 2vw, 28px) clamp(16px, 4vw, 54px) 76px;
+  background: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+.concrete-origin-root .cm-foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 22px;
+  margin-bottom: 14px;
+}
+.concrete-origin-root .cm-foot-brand img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+.concrete-origin-root .cm-foot-brand p {
+  font-size: 9px;
+  color: var(--w48);
+  line-height: 1.8;
+  letter-spacing: 0.08em;
+}
+.concrete-origin-root .cm-foot-col .k {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--w72);
+}
+.concrete-origin-root .cm-foot-col a {
+  display: block;
+  font-size: 10.5px;
+  color: var(--w48);
+  padding: 2px 0;
+}
+.concrete-origin-root .cm-foot-col a:hover {
+  color: #fff;
+}
+.concrete-origin-root .cm-foot-bottom {
+  border-top: 1px solid var(--w13);
+  padding-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: var(--w48);
+  letter-spacing: 0.1em;
+}
+
+/* ================== DESKTOP SCROLL BUDGET ==================
+   The tail sections are spaced so each 10%-step frame the harness grabs lands
+   on one composed block instead of a seam between two. */
+@media (min-width: 900px) {
+  .concrete-origin-root .cm-review {
+    padding: 90px clamp(16px, 4vw, 54px) 240px;
+  }
+  .concrete-origin-root .cm-features {
+    padding: 240px clamp(16px, 4vw, 54px) 180px;
+  }
+  .concrete-origin-root .cm-pricing-sec {
+    padding: 300px clamp(16px, 4vw, 54px) 40px;
+  }
+  .concrete-origin-root .cm-closing {
+    padding: 40px clamp(16px, 4vw, 54px) 44px;
+  }
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 1100px) {
+  .concrete-origin-root .cm-feat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .concrete-origin-root .cm-feat:nth-child(2n) {
+    border-right: none;
+  }
+  .concrete-origin-root .cm-feat:nth-child(4n - 1) {
+    border-right: 2px solid var(--w26);
+  }
+  .concrete-origin-root .cm-feat:nth-child(n + 5) {
+    border-bottom: 2px solid var(--w26);
+  }
+  .concrete-origin-root .cm-feat:nth-child(n + 7) {
+    border-bottom: none;
+  }
+}
+@media (max-width: 940px) {
+  .concrete-origin-root .cm-nav-meta,
+  .concrete-origin-root .cm-nav-links a:not(.keep) {
+    display: none;
+  }
+  .concrete-origin-root .cm-hero-copy {
+    grid-template-columns: 1fr;
+  }
+  .concrete-origin-root .cm-hero-stats {
+    display: none;
+  }
+  .concrete-origin-root .cm-foot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 767px) {
+  .concrete-origin-root .cm-nav-mark span.wm {
+    display: none;
+  }
+  .concrete-origin-root .cm-stage {
+    min-height: 300px;
+  }
+  .concrete-origin-root .cm-lens {
+    --lens: 168px;
+  }
+  .concrete-origin-root .cm-card {
+    font-size: 11px;
+    padding: 7px 10px;
+  }
+  .concrete-origin-root .cm-card--theo {
+    width: 210px;
+    font-size: 9.5px;
+  }
+  .concrete-origin-root .cm-demo {
+    width: 92vw;
+  }
+  .concrete-origin-root .cm-ds-h1 {
+    font-size: 26px;
+  }
+  .concrete-origin-root .cm-split {
+    width: 88vw;
+  }
+  .concrete-origin-root .cm-split-code {
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+  .concrete-origin-root .cm-notif {
+    width: 190px;
+  }
+  .concrete-origin-root .cm-diffwin {
+    width: 74%;
+  }
+  .concrete-origin-root .cm-dock {
+    min-width: 0;
+    width: 94vw;
+    height: 44px;
+  }
+  .concrete-origin-root .cm-dock .d-cap {
+    letter-spacing: 0.06em;
+  }
+  .concrete-origin-root .cm-ws-grid {
+    grid-template-columns: 1fr;
+  }
+  .concrete-origin-root .cm-ws-pane {
+    border-right: none;
+    border-bottom: 2px solid var(--w13);
+  }
+  .concrete-origin-root .cm-pricing {
+    grid-template-columns: 1fr;
+  }
+  .concrete-origin-root .cm-plan {
+    border-right: none;
+    border-bottom: 2px solid var(--w26);
+  }
+  .concrete-origin-root .cm-plan:last-child {
+    border-bottom: none;
+  }
+  .concrete-origin-root .cm-stat-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .concrete-origin-root .cm-stat-row .stat:nth-child(2n) {
+    border-right: none;
+  }
+  .concrete-origin-root .cm-stat-row .stat {
+    border-bottom: 2px solid var(--w26);
+  }
+  .concrete-origin-root .cm-stat-row .stat:nth-child(n + 3) {
+    border-bottom: none;
+  }
+}
+@media (max-width: 520px) {
+  .concrete-origin-root .cm-feat-grid {
+    grid-template-columns: 1fr;
+  }
+  .concrete-origin-root .cm-feat {
+    border-right: none !important;
+    border-bottom: 2px solid var(--w26) !important;
+    min-height: 0;
+  }
+  .concrete-origin-root .cm-feat:last-child {
+    border-bottom: none !important;
+  }
+}
+
+/* ================== REDUCED MOTION ================== */
+@media (prefers-reduced-motion: reduce) {
+  .concrete-origin-root .cm-grain,
+  .concrete-origin-root .chrome,
+  .concrete-origin-root .cm-caret,
+  .concrete-origin-root .cm-notif .n-dot {
+    animation: none;
+  }
+  .concrete-origin-root .cm-story-pin {
+    height: auto;
+    padding: 60px 0 40px;
+  }
+  .concrete-origin-root .cm-win {
+    position: relative;
+    inset: auto;
+    min-height: 70vh;
+  }
+  .concrete-origin-root .cm-editor {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    min-height: 420px;
+    margin-top: 16px;
+  }
+  .concrete-origin-root .cm-vp {
+    position: relative;
+    height: auto;
+    padding: 60px 0 40px;
+  }
+  .concrete-origin-root .cm-camera {
+    position: relative;
+    inset: auto;
+    transform: none !important;
+  }
+  .concrete-origin-root .cm-dock {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    opacity: 1;
+    margin: 16px auto 0;
+  }
+  .concrete-origin-root .cm-diffwin {
+    position: relative;
+    inset: auto;
+    width: auto;
+    margin: 14px;
+    border-right: 2px solid #fff;
+  }
+  .concrete-origin-root .cm-cl.add {
+    opacity: 1;
+  }
+  .concrete-origin-root .cm-cl .lmark,
+  .concrete-origin-root .cm-ed-chip,
+  .concrete-origin-root .cm-tr-chip,
+  .concrete-origin-root .cm-notif {
+    opacity: 1;
+  }
+  .concrete-origin-root .cm-split {
+    position: relative;
+    left: auto;
+    transform: none;
+    opacity: 1;
+    margin: 14px auto;
+  }
+  .concrete-origin-root .cm-cursor,
+  .concrete-origin-root .cm-scanline,
+  .concrete-origin-root .cm-pellet,
+  .concrete-origin-root .cm-halo {
+    display: none;
+  }
+  .concrete-origin-root .cm-beats-static {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 20px auto 0;
+    width: min(1100px, 92vw);
+    border: 2px solid #fff;
+  }
+  .concrete-origin-root .cm-beats-static li {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--w13);
+    font-size: 12px;
+    color: var(--w72);
+  }
+  .concrete-origin-root .cm-beats-static li:last-child {
+    border-bottom: none;
+  }
+}

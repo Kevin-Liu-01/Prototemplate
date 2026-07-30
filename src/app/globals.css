@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #070707;
+  --color-ink-raised: #101010;
+  --color-paper: #f5f5f3;
+
+  --font-display: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Menlo', monospace;
+}
+
+/*
+ * Each direction owns its own look, so this file stays close to a reset.
+ * Direction-specific type, color, and texture live in the direction's own
+ * stylesheet under src/app/d/<slug>/.
+ */
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--color-ink);
+  color: #fff;
+}
+
+/* Lenis owns the scrollport; without this the native smooth behavior fights it. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

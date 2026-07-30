@@ -1,0 +1,1492 @@
+/* ============================================================
+   SHARED STORY SECTION
+   The pinned, full-bleed nine-beat scroll story. Every colour, rule
+   and radius resolves through a --gts-* custom property, so a
+   direction skins the whole sequence from its own stylesheet.
+   ============================================================ */
+
+@property --gts-split {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.gts {
+  --_paper: var(--gts-paper, #f2f1ec);
+  --_ink: var(--gts-ink, #16181a);
+  --_ink2: var(--gts-ink-2, rgba(22, 24, 26, 0.62));
+  --_ink3: var(--gts-ink-3, rgba(22, 24, 26, 0.4));
+  --_prule: var(--gts-paper-rule, rgba(22, 24, 26, 0.14));
+  --_shell: var(--gts-shell, #101214);
+  --_shell-text: var(--gts-shell-text, #ffffff);
+  --_shell-line: var(--gts-shell-line, rgba(255, 255, 255, 0.16));
+  --_code-bg: var(--gts-code-bg, #0b0d10);
+  --_code-text: var(--gts-code-text, #c9ccd1);
+  --_t1: var(--gts-t1, rgba(255, 255, 255, 0.94));
+  --_t2: var(--gts-t2, rgba(255, 255, 255, 0.64));
+  --_t3: var(--gts-t3, rgba(255, 255, 255, 0.4));
+  --_t4: var(--gts-t4, rgba(255, 255, 255, 0.24));
+  --_line: var(--gts-line, rgba(255, 255, 255, 0.1));
+  --_line2: var(--gts-line-2, rgba(255, 255, 255, 0.055));
+  --_display: var(--gts-display, var(--font-switzer), 'Switzer', system-ui, sans-serif);
+  --_text: var(--gts-text, var(--font-inter), 'Inter', system-ui, sans-serif);
+  --_mono: var(--gts-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  --_radius: var(--gts-radius, 12px);
+
+  position: relative;
+  z-index: 2;
+}
+
+.gts *,
+.gts *::before,
+.gts *::after {
+  box-sizing: border-box;
+}
+
+/* ---------- header + content ---------- */
+
+.gts-head {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: var(--gts-head-pad, 104px 0 56px);
+}
+
+.gts-head h2 {
+  font-family: var(--_display);
+  font-size: var(--gts-head-size, clamp(2.2rem, 4.2vw, 3.8rem));
+  font-weight: var(--gts-head-weight, 700);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin: 0;
+  max-width: 900px;
+  color: var(--gts-head-color, var(--_t1));
+}
+
+.gts-head p {
+  margin: 16px 0 0;
+  max-width: 560px;
+  font-family: var(--_text);
+  font-size: var(--gts-sub-size, 16px);
+  line-height: 1.6;
+  color: var(--gts-sub-color, var(--_t2));
+}
+
+/* ---------- the pinned stage ---------- */
+
+.gts-stage {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: clip;
+  background: var(--gts-bg, #0a0c0e);
+  font-family: var(--_text);
+}
+
+.gts-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.gts-proxy {
+  position: fixed;
+  z-index: 210;
+  top: 0;
+  left: 0;
+  background: var(--_shell);
+  border: 1px solid var(--_shell-line);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transform-origin: 0 0;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+.gts-window {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  background: var(--_paper);
+  color: var(--_ink);
+  transform-origin: 50% 60%;
+  isolation: isolate;
+}
+
+.gts-win-dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(var(--gts-paper-dot, rgba(22, 24, 26, 0.13)) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.gts-win-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent calc(33% - 1px),
+      var(--gts-paper-guide, rgba(22, 24, 26, 0.09)) calc(33% - 1px),
+      var(--gts-paper-guide, rgba(22, 24, 26, 0.09)) 33%,
+      transparent 33%
+    ),
+    linear-gradient(
+      90deg,
+      transparent calc(66% - 1px),
+      var(--gts-paper-guide, rgba(22, 24, 26, 0.09)) calc(66% - 1px),
+      var(--gts-paper-guide, rgba(22, 24, 26, 0.09)) 66%,
+      transparent 66%
+    );
+  background-size: 100% 9px;
+  background-repeat: repeat-y;
+}
+
+.gts-win-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px var(--gts-paper-edge, rgba(22, 24, 26, 0.24)),
+    inset 0 0 130px var(--gts-paper-vignette, rgba(22, 24, 26, 0.14));
+}
+
+.gts-win-chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  background: var(--_shell);
+  color: var(--_shell-text);
+  border-radius: 0 0 16px 0;
+  padding: 12px 22px 13px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--_display);
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+.gts-win-chip img {
+  width: 19px;
+  height: 19px;
+  object-fit: contain;
+}
+
+.gts-win-chip::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle at 100% 100%, transparent 16px, var(--_shell) 16.5px);
+}
+
+/* ---------- the demo site ---------- */
+
+.gts-cam {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  will-change: transform;
+  transform-origin: 0 0;
+}
+
+.gts-site {
+  position: absolute;
+  inset: 0;
+  padding: 92px clamp(40px, 7vw, 108px) 108px;
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: clamp(32px, 5vw, 72px);
+  align-content: center;
+}
+
+.gts-site-left {
+  max-width: 640px;
+}
+
+.gts-site-h1 {
+  font-family: var(--_display);
+  font-size: clamp(34px, 4.4vw, 62px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+  margin: 0 0 6px;
+  position: relative;
+  display: table;
+}
+
+.gts-site-date {
+  font-family: var(--_mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--_ink3);
+  margin: 0 0 18px;
+  position: relative;
+  display: table;
+}
+
+.gts-site-p {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--_ink2);
+  max-width: 480px;
+  position: relative;
+  margin: 0 0 22px;
+}
+
+/* The demo nav is a REAL link row — plain text links with an active-page
+   underline — never bordered wireframe boxes standing in for links. */
+.gts-site-nav {
+  display: flex;
+  gap: 26px;
+  margin-bottom: 24px;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.gts-site-nav > span {
+  position: relative;
+  padding: 2px 0;
+  font-size: 13.5px;
+  color: var(--_ink2);
+  white-space: nowrap;
+}
+
+.gts-site-nav > span:first-child {
+  color: var(--_ink);
+  font-weight: 500;
+}
+
+.gts-site-nav > span:first-child::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+}
+
+.gts-site-btn {
+  position: relative;
+  display: inline-block;
+  background: var(--_ink);
+  color: var(--_paper);
+  border-radius: 7px;
+  padding: 13px 26px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.gts-site-legal {
+  position: relative;
+  margin: 44px 0 0;
+  font-size: 11.5px;
+  color: var(--_ink3);
+  max-width: 380px;
+}
+
+.gts-site-stats {
+  display: flex;
+  gap: 34px;
+  margin-top: 28px;
+}
+
+.gts-site-stats b {
+  display: block;
+  font-family: var(--_display);
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.gts-site-stats small {
+  font-family: var(--_mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--_ink3);
+}
+
+.gts-site-right {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+}
+
+.gts-site-card {
+  position: relative;
+  border: 1px solid var(--_prule);
+  border-radius: 11px;
+  padding: 18px 20px;
+  background: var(--gts-paper-card, rgba(255, 255, 255, 0.55));
+}
+
+.gts-tagline {
+  font-family: var(--_display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.24;
+  margin: 0;
+}
+
+.gts-site-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.gts-tick {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--_ink);
+  color: var(--_paper);
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  flex: 0 0 18px;
+}
+
+.gts-site-form label {
+  display: block;
+  font-family: var(--_mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--_ink3);
+  margin-bottom: 7px;
+}
+
+.gts-fbox {
+  border: 1px solid var(--gts-paper-input, rgba(22, 24, 26, 0.25));
+  border-radius: 6px;
+  padding: 9px 13px;
+  font-size: 13px;
+  color: var(--_ink3);
+}
+
+.gts-site-foot {
+  position: absolute;
+  left: clamp(40px, 7vw, 108px);
+  right: clamp(40px, 7vw, 108px);
+  bottom: 34px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  border-top: 1px solid var(--_prule);
+  padding-top: 13px;
+  font-family: var(--_mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--_ink3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* dual-language spans */
+.gts-sw {
+  position: relative;
+  display: inline-block;
+}
+
+.gts-sw .gts-es {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  opacity: 0;
+}
+
+.gts-sw .gts-en,
+.gts-sw .gts-es {
+  display: inline-block;
+  white-space: inherit;
+}
+
+.gts-site-btn .gts-sw,
+.gts-site-date .gts-sw,
+.gts-site-nav .gts-sw,
+.gts-site-h1 .gts-sw,
+.gts-site-toast .gts-sw,
+.gts-site-form .gts-sw {
+  white-space: nowrap;
+}
+
+.gts-site-p .gts-sw,
+.gts-site-legal .gts-sw,
+.gts-tagline .gts-sw {
+  display: block;
+}
+
+.gts-site-p .gts-sw .gts-es,
+.gts-site-legal .gts-sw .gts-es,
+.gts-tagline .gts-sw .gts-es {
+  display: block;
+}
+
+/* translation pins — the mark is the product's own <T> tag, never a
+   numbered count chip (§5) */
+.gts-mk {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--_mono);
+}
+
+.gts-mk-n {
+  height: 20px;
+  border-radius: 4px;
+  background: var(--_ink);
+  color: var(--_paper);
+  display: grid;
+  place-items: center;
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 0 0 3px var(--gts-paper-halo, rgba(242, 241, 236, 0.92));
+}
+
+.gts-mk-b {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--_ink);
+  border-radius: 99px;
+  padding: 3px 8px;
+  background: var(--_ink);
+  color: var(--_paper);
+  white-space: nowrap;
+}
+
+.gts-mk-tick::before {
+  content: '';
+  position: absolute;
+  right: calc(100% + 3px);
+  top: 10px;
+  width: 16px;
+  height: 1px;
+  background: var(--gts-paper-tick, rgba(22, 24, 26, 0.45));
+}
+
+/* the context fan: doubled threads (constant gauge) from every <T> pin to the
+   dock — the lines the pellets ride, so a still never shows loose ink dots */
+.gts-ctx-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.gts-ctx-lines path {
+  fill: none;
+  stroke: var(--gts-paper-tick, rgba(22, 24, 26, 0.38));
+  stroke-width: 1.1;
+}
+
+.gts-pellet-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.gts-pellet {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--_ink);
+  z-index: 7;
+  opacity: 0;
+  box-shadow:
+    0 0 0 2.5px var(--gts-paper-halo, rgba(242, 241, 236, 0.9)),
+    0 2px 8px rgba(22, 24, 26, 0.35);
+}
+
+/* ---------- the Locadex cursor ---------- */
+
+.gts-cursor {
+  position: absolute;
+  z-index: 12;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.gts-cursor svg {
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.gts-cursor-label {
+  position: absolute;
+  left: 18px;
+  top: 20px;
+  background: var(--_ink);
+  color: var(--_paper);
+  font-family: var(--_mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  border-radius: 99px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.gts-cursor-agent .gts-cursor-label {
+  background: #e9e9e9;
+  color: #0b0d10;
+}
+
+.gts-hilite {
+  position: absolute;
+  z-index: 4;
+  border: 1.5px solid var(--gts-hilite, rgba(22, 24, 26, 0.7));
+  border-radius: 5px;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(22, 24, 26, 0.06);
+}
+
+.gts-chip-flag,
+.gts-chip-tone {
+  position: absolute;
+  z-index: 6;
+  font-family: var(--_mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 99px;
+  padding: 5px 11px;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.gts-chip-flag {
+  background: var(--_ink);
+  color: var(--_paper);
+}
+
+.gts-chip-tone {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(22, 24, 26, 0.4);
+  color: var(--_ink);
+}
+
+/* ---------- code reveal: slide mode ---------- */
+
+.gts-xray-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gts-xray {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc((1 - var(--gts-split)) * 100%) 0 0);
+}
+
+.gts-xray-surface {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 22% 30%, rgba(28, 34, 40, 0.98), rgba(8, 10, 12, 0.99)), #08090b;
+}
+
+.gts-xray-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+.gts-xray-inner {
+  position: absolute;
+  left: clamp(40px, 8vw, 130px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: min(720px, 74vw);
+}
+
+/* File paths are lowercase artifacts — never uppercase-transformed (§2). */
+.gts-xray-file {
+  font-family: var(--_mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.46);
+  margin-bottom: 16px;
+}
+
+.gts-xray pre {
+  font-family: var(--_mono);
+  font-size: clamp(14px, 1.5vw, 21px);
+  line-height: 1.85;
+  color: var(--_code-text);
+  white-space: pre;
+  margin: 0;
+}
+
+.gts-xray-note {
+  margin: 22px 0 0;
+  font-family: var(--_mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.48);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding-left: 14px;
+  max-width: 470px;
+  line-height: 1.8;
+}
+
+/* the generated artifact under the code: real locale JSON, real measures */
+.gts-xray-gen {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  max-width: 560px;
+}
+
+.gts-xray-gen .gts-gen-cap {
+  font-family: var(--_mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.44);
+  margin-bottom: 10px;
+}
+
+/* a second artifact block inside one reveal gets its own composed gap */
+.gts-xray-gen .gts-gen-cap:not(:first-child) {
+  margin-top: 18px;
+}
+
+.gts-gen-row {
+  display: flex;
+  gap: 20px;
+  align-items: baseline;
+  font-family: var(--_mono);
+  font-size: 12.5px;
+  line-height: 2.1;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+}
+
+.gts-gen-row .gts-gen-file {
+  color: rgba(255, 255, 255, 0.42);
+  min-width: 62px;
+}
+
+.gts-gen-row .gts-gen-m {
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* the split line: edge light + chromatic fringe + machined handle */
+.gts-split {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--gts-split) * 100%);
+  width: 0;
+  z-index: 11;
+  pointer-events: none;
+}
+
+.gts-split-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: #fff;
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.85),
+    0 0 44px rgba(255, 255, 255, 0.35);
+}
+
+.gts-split-ca {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+}
+
+.gts-split-ca.gts-ca-l {
+  left: -6px;
+  background: rgba(90, 200, 255, 0.55);
+  filter: blur(2px);
+}
+
+.gts-split-ca.gts-ca-r {
+  left: 3px;
+  background: rgba(255, 110, 190, 0.5);
+  filter: blur(2px);
+}
+
+.gts-handle {
+  position: absolute;
+  top: 50%;
+  left: -19px;
+  width: 38px;
+  height: 78px;
+  margin-top: -39px;
+  border-radius: 8px;
+  background: linear-gradient(
+    180deg,
+    #f4f6f8 0%,
+    #b9bfc6 22%,
+    #74797f 50%,
+    #c3c8ce 74%,
+    #eef1f4 100%
+  );
+  box-shadow:
+    0 8px 26px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  align-content: center;
+}
+
+.gts-handle i {
+  display: block;
+  width: 14px;
+  height: 1px;
+  background: rgba(20, 24, 28, 0.55);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- code reveal: popup mode ---------- */
+
+.gts-pop-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gts-pop {
+  position: absolute;
+  left: clamp(20px, 5vw, 88px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(560px, 46vw);
+  padding: 24px 26px 22px;
+  border-radius: var(--_radius);
+  background:
+    linear-gradient(180deg, rgba(24, 28, 33, 0.98), rgba(9, 11, 13, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 40px 90px rgba(0, 0, 0, 0.62),
+    0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.gts-pop::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.04) 42%, rgba(255, 255, 255, 0.24));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* File paths are lowercase artifacts — never uppercase-transformed (§2). */
+.gts-pop-file {
+  font-family: var(--_mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.44);
+  margin-bottom: 14px;
+}
+
+.gts-pop pre {
+  font-family: var(--_mono);
+  font-size: clamp(12px, 1.05vw, 15.5px);
+  line-height: 1.85;
+  color: var(--_code-text);
+  white-space: pre;
+  margin: 0;
+  overflow-x: auto;
+}
+
+.gts-pop-note {
+  margin: 18px 0 0;
+  font-family: var(--_mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.46);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 13px;
+  line-height: 1.75;
+}
+
+/* ---------- code tokens ---------- */
+
+.gts-tok-t {
+  color: var(--gts-tok-component, #ffffff);
+  font-weight: 700;
+}
+.gts-tok-tag {
+  color: var(--gts-tok-tag, #9fb3c8);
+}
+.gts-tok-attr {
+  color: var(--gts-tok-attr, #cbb98f);
+}
+.gts-tok-str {
+  color: var(--gts-tok-str, #e8e2d0);
+}
+.gts-tok-txt {
+  color: var(--gts-tok-text, #eceef0);
+}
+.gts-tok-kw {
+  color: var(--gts-tok-kw, #b8c4d0);
+}
+.gts-tok-fn {
+  color: var(--gts-tok-fn, #e9e9e9);
+}
+.gts-tok-p {
+  color: var(--gts-tok-punct, #6d747c);
+}
+
+/* ---------- counsel review ---------- */
+
+.gts-review-line {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--_ink);
+}
+
+.gts-review-card {
+  position: absolute;
+  z-index: 7;
+  right: 46px;
+  top: 96px;
+  width: 286px;
+  background: #fff;
+  border: 1px solid rgba(22, 24, 26, 0.2);
+  border-radius: var(--_radius);
+  padding: 16px;
+  box-shadow: 0 24px 60px rgba(22, 24, 26, 0.28);
+  opacity: 0;
+}
+
+.gts-r-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 9px;
+}
+
+.gts-r-ava {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--_ink);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--_mono);
+  font-size: 10px;
+  font-weight: 700;
+  flex: 0 0 30px;
+}
+
+.gts-r-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--_ink);
+}
+
+.gts-r-sub {
+  font-family: var(--_mono);
+  font-size: 9px;
+  color: var(--_ink3);
+}
+
+.gts-r-msg {
+  font-size: 12px;
+  color: var(--_ink2);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.gts-r-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.gts-r-btn {
+  font-family: var(--_mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(22, 24, 26, 0.3);
+  border-radius: 6px;
+  padding: 7px 13px;
+  color: var(--_ink);
+}
+
+.gts-r-btn.gts-ok {
+  background: var(--_ink);
+  color: #fff;
+}
+
+.gts-r-approved {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  border-radius: var(--_radius);
+  display: grid;
+  place-items: center;
+  font-family: var(--_mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--_ink);
+  opacity: 0;
+}
+
+/* ---------- the editor act ---------- */
+
+.gts-code {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--_code-bg);
+  color: var(--_code-text);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.gts-code-bar {
+  height: 46px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+}
+
+.gts-code-bar .gts-dots {
+  display: flex;
+  gap: 7px;
+}
+
+.gts-code-bar .gts-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.gts-code-bar .gts-fname {
+  font-family: var(--_mono);
+  font-size: 11px;
+  color: var(--_t3);
+}
+
+.gts-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--_shell-line);
+  border-radius: 6px;
+  padding: 5px 11px;
+  font-family: var(--_mono);
+  font-size: 11px;
+  color: var(--_t2);
+  opacity: 0;
+}
+
+.gts-chip-tbadge {
+  position: absolute;
+  left: 22px;
+  bottom: 20px;
+  z-index: 4;
+}
+
+.gts-code-body {
+  position: relative;
+  padding: 34px 0 70px;
+  font-family: var(--_mono);
+  font-size: clamp(12.5px, 1.32vw, 18px);
+  line-height: 2.25;
+  overflow: clip;
+  height: calc(100% - 46px);
+}
+
+.gts-cl {
+  position: relative;
+  display: flex;
+  padding: 0 24px 0 0;
+  white-space: pre;
+}
+
+.gts-cl .gts-ln {
+  width: 64px;
+  flex: 0 0 64px;
+  text-align: right;
+  padding-right: 18px;
+  color: rgba(255, 255, 255, 0.22);
+  user-select: none;
+}
+
+.gts-cl.gts-add {
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 0;
+}
+
+.gts-cl.gts-add .gts-ln {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.gts-cl.gts-add .gts-code-txt {
+  color: #f4f6f8;
+}
+
+.gts-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 60px;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.1) 55%,
+    transparent
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.gts-lmk {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  margin-top: -13px;
+  transform: scale(0);
+  z-index: 4;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e9e9e9;
+  color: #0b0d10;
+  display: grid;
+  place-items: center;
+  font-family: var(--_mono);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 0 0 3px rgba(233, 233, 233, 0.15);
+}
+
+.gts-lmk .gts-tip {
+  position: absolute;
+  right: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 280px;
+  background: #16181a;
+  color: #e6e8ea;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9px;
+  padding: 11px 13px;
+  font-size: 11.5px;
+  line-height: 1.65;
+  font-weight: 400;
+  font-family: var(--_mono);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+
+.gts-lmk .gts-tip b {
+  color: #fff;
+}
+
+.gts-notes .gts-lmk {
+  cursor: pointer;
+}
+
+.gts-notes .gts-lmk:hover .gts-tip {
+  opacity: 1;
+}
+
+.gts-tip2 .gts-lmk[data-note='2'] .gts-tip {
+  opacity: 1;
+}
+
+.gts-diff {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  bottom: 60px;
+  width: min(500px, 46%);
+  z-index: 5;
+  background: var(--_shell);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px 0 0 14px;
+  box-shadow: -28px 0 70px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+}
+
+.gts-diff-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--_line);
+}
+
+.gts-diff-head .gts-branch {
+  font-family: var(--_mono);
+  font-size: 12.5px;
+  color: var(--_t1);
+}
+
+.gts-diff-head .gts-diffstats {
+  font-family: var(--_mono);
+  font-size: 11.5px;
+  margin-top: 6px;
+  color: var(--_t3);
+}
+
+.gts-plus {
+  color: var(--_t1);
+}
+
+.gts-minus {
+  color: var(--_t3);
+}
+
+.gts-diff-lines {
+  flex: 1;
+  padding: 14px 0;
+  font-family: var(--_mono);
+  font-size: 12.5px;
+  line-height: 1.95;
+  overflow: clip;
+}
+
+.gts-dl {
+  padding: 0 18px;
+  white-space: pre;
+  color: var(--_t3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gts-dl.gts-a {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--_t1);
+}
+
+.gts-dl.gts-d {
+  color: rgba(255, 255, 255, 0.32);
+  text-decoration: line-through;
+}
+
+/* hunk headers — the unified diff's own structure lines */
+.gts-dl.gts-h {
+  color: var(--_t4);
+  letter-spacing: 0.04em;
+}
+
+.gts-dl.gts-h + .gts-dl.gts-h {
+  margin-top: 0;
+}
+
+.gts-dl.gts-h:not(:first-child) {
+  margin-top: 8px;
+}
+
+.gts-diff-foot {
+  padding: 16px 20px;
+  border-top: 1px solid var(--_line);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gts-openpr {
+  background: linear-gradient(180deg, #f5f5f5, #cfcfcf);
+  color: #0a0c0e;
+  border-radius: 7px;
+  padding: 11px 22px;
+  font-family: var(--_mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.gts-prtoast {
+  font-family: var(--_mono);
+  font-size: 11px;
+  color: var(--_t2);
+  opacity: 0;
+  line-height: 1.6;
+}
+
+.gts-prtoast .gts-merged {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ---------- the dock ---------- */
+
+.gts-dock {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 13;
+  width: min(560px, 84%);
+  height: 56px;
+  background: var(--_shell);
+  border: 1px solid var(--_shell-line);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 13px;
+  color: var(--_shell-text);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+}
+
+.gts-dock img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: 0 0 22px;
+}
+
+.gts-dock-cap {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  overflow: clip;
+}
+
+.gts-dock-cap span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  font-family: var(--_mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+}
+
+.gts-dock-cap span:first-child {
+  opacity: 1;
+}
+
+/* ---------- the signal path ---------- */
+
+.gts-pipeline {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 122px;
+  width: min(980px, 92vw);
+  z-index: 7;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- reduced-motion storyboard ---------- */
+
+.gts-static {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gts-stage {
+    display: none;
+  }
+
+  .gts-static {
+    display: block;
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 0 0 90px;
+  }
+}
+
+.gts-static-beat {
+  border: 1px solid var(--_line);
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 14px;
+}
+
+.gts-static-beat h3 {
+  font-family: var(--_display);
+  font-size: 18px;
+  margin: 0 0 8px;
+  color: var(--_t1);
+}
+
+.gts-static-beat p {
+  margin: 0;
+  color: var(--_t2);
+  font-size: 14.5px;
+  font-family: var(--_text);
+}
+
+@media (max-width: 900px) {
+  .gts-head {
+    padding: var(--gts-head-pad-sm, 68px 0 40px);
+  }
+
+  .gts-site {
+    grid-template-columns: 1fr;
+    padding: 78px 24px 120px;
+    gap: 18px;
+    align-content: start;
+  }
+
+  .gts-site-h1 {
+    font-size: 30px;
+    margin: 0 0 4px;
+  }
+
+  .gts-site-p {
+    font-size: 12.5px;
+    margin-bottom: 14px;
+  }
+
+  .gts-site-legal {
+    margin-top: 14px;
+    font-size: 10px;
+  }
+
+  .gts-site-stats {
+    gap: 18px;
+    margin-top: 16px;
+  }
+
+  .gts-site-stats b {
+    font-size: 17px;
+  }
+
+  .gts-site-card {
+    padding: 12px 14px;
+  }
+
+  .gts-tagline {
+    font-size: 15px;
+  }
+
+  .gts-site-foot {
+    left: 24px;
+    right: 24px;
+    bottom: 16px;
+    font-size: 9px;
+  }
+
+  .gts-review-card {
+    right: 14px;
+    top: 70px;
+    width: 226px;
+  }
+
+  .gts-diff {
+    width: 84%;
+  }
+
+  .gts-cl .gts-ln {
+    width: 40px;
+    flex-basis: 40px;
+    padding-right: 12px;
+  }
+
+  .gts-pipeline {
+    display: none;
+  }
+
+  .gts-lmk .gts-tip {
+    width: 180px;
+    font-size: 9px;
+  }
+
+  .gts-dock {
+    height: 48px;
+    bottom: 20px;
+    padding: 0 13px;
+  }
+
+  .gts-dock-cap span {
+    font-size: 10px;
+  }
+
+  .gts-xray pre {
+    font-size: 13px;
+  }
+
+  .gts-xray-inner {
+    left: 24px;
+    max-width: 84vw;
+  }
+
+  .gts-pop {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    padding: 18px 18px 16px;
+  }
+}

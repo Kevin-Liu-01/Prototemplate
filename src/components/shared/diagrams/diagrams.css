@@ -1,0 +1,172 @@
+/* ============================================================
+   SHARED LINE-ART TECHNICAL DIAGRAMS
+   One stylesheet for every diagram in src/components/shared/diagrams.
+   Skin by redefining the custom properties on any ancestor.
+
+   The stroke system is fixed page-wide (DESIGN_STANDARD §2):
+   - hairline  — structure only: panes, rules, guides, ticks
+   - regular   — the drawing stroke: contours, connectors
+   - thread    — the doubled brand line: every diagram draws its
+                 structural connector as TWO parallel paths at
+                 constant gauge (source and translation), never one,
+                 never three
+   - emphasis  — the single accent element a diagram is allowed
+   All in-diagram text is mono. Artifact text uses --gtd-code-size
+   (floor: 11px rendered), captions use --gtd-label.
+   ============================================================ */
+
+.gtd {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---------- strokes ---------- */
+
+/* hairline: structure only — never draws the artifact */
+.gtd .gtd-rule {
+  fill: none;
+  stroke: var(--gtd-line, rgba(255, 255, 255, 0.3));
+  stroke-width: calc(var(--gtd-stroke, 1.4) * 0.55);
+}
+
+/* regular: the drawing stroke */
+.gtd .gtd-line {
+  fill: none;
+  stroke: var(--gtd-line, rgba(255, 255, 255, 0.3));
+  stroke-width: var(--gtd-stroke, 1.4);
+}
+
+/* the doubled thread — always drawn as a PAIR of these */
+.gtd .gtd-thread {
+  fill: none;
+  stroke: var(--gtd-thread, var(--gtd-ink, var(--gtd-accent, #e9e9e9)));
+  stroke-width: var(--gtd-stroke, 1.4);
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
+/* emphasis: the one accent element per diagram */
+.gtd .gtd-hot {
+  fill: none;
+  stroke: var(--gtd-accent, #e9e9e9);
+  stroke-width: var(--gtd-accent-stroke, 1.6);
+}
+
+/* node dot riding a thread or rail */
+.gtd .gtd-dot {
+  fill: var(--gtd-ink, var(--gtd-accent, #e9e9e9));
+  stroke: none;
+}
+
+.gtd .gtd-dot-hot {
+  fill: var(--gtd-accent, #e9e9e9);
+  stroke: none;
+}
+
+/* ---------- surfaces ---------- */
+
+.gtd .gtd-fill {
+  fill: var(--gtd-fill, rgba(255, 255, 255, 0.14));
+}
+
+/* a hairline-ringed panel (pane, chip, bubble) */
+.gtd .gtd-box {
+  fill: var(--gtd-panel, rgba(255, 255, 255, 0.045));
+  stroke: var(--gtd-line, rgba(255, 255, 255, 0.3));
+  stroke-width: calc(var(--gtd-stroke, 1.4) * 0.55);
+}
+
+.gtd .gtd-box-hot {
+  fill: var(--gtd-panel, rgba(255, 255, 255, 0.045));
+  stroke: var(--gtd-accent, #e9e9e9);
+  stroke-width: calc(var(--gtd-accent-stroke, 1.6) * 0.75);
+}
+
+/* ---------- type ---------- */
+
+/* artifact body text: code lines, strings, values — the real thing */
+.gtd .gtd-code {
+  font-family: var(--gtd-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  font-size: var(--gtd-code-size, 9.5px);
+  fill: var(--gtd-ink, var(--gtd-accent, #e9e9e9));
+  letter-spacing: 0;
+}
+
+/* muted contextual text: locale codes, captions, keys */
+.gtd .gtd-mut {
+  font-family: var(--gtd-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  font-size: var(--gtd-code-size, 9.5px);
+  fill: var(--gtd-label, rgba(255, 255, 255, 0.5));
+  letter-spacing: 0;
+}
+
+/* accent text — counts against the diagram's single accent element */
+.gtd .gtd-acc {
+  font-family: var(--gtd-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  font-size: var(--gtd-code-size, 9.5px);
+  fill: var(--gtd-accent, #e9e9e9);
+  letter-spacing: 0;
+}
+
+.gtd .gtd-w500 {
+  font-weight: 500;
+}
+
+/* legacy label class — kept for older drawings and the signal path */
+.gtd .gtd-txt {
+  font-family: var(--gtd-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  font-size: var(--gtd-label-size, 9.5px);
+  fill: var(--gtd-label, rgba(255, 255, 255, 0.5));
+  letter-spacing: 0.02em;
+}
+
+/* ---------- signal path (wider frame, animated) ---------- */
+
+.gtd-signal {
+  height: auto;
+}
+
+.gtd-signal text {
+  font-family: var(--gtd-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  letter-spacing: 0.08em;
+  fill: var(--gtd-label, rgba(255, 255, 255, 0.4));
+}
+
+.gtd-signal .gtd-plab {
+  font-size: 12px;
+}
+
+.gtd-signal .gtd-pnode {
+  fill: var(--gtd-node-fill, #0b0d10);
+  stroke: var(--gtd-node-stroke, #8d939b);
+  stroke-width: calc(var(--gtd-stroke, 1.4) * 0.93);
+}
+
+/* the wires are the two threads: a doubled pair at constant gauge */
+.gtd-signal .gtd-pwire {
+  fill: none;
+  stroke: var(--gtd-wire, #5a6067);
+  stroke-width: var(--gtd-stroke, 1.4);
+}
+
+.gtd-signal .gtd-ppulse {
+  fill: none;
+  stroke: var(--gtd-pulse, #ffffff);
+  stroke-width: var(--gtd-pulse-stroke, 2.8);
+  opacity: 0;
+  filter: drop-shadow(0 0 7px var(--gtd-pulse-glow, rgba(255, 255, 255, 0.9)));
+}
+
+.gtd-signal .gtd-pglyph {
+  fill: none;
+  stroke: var(--gtd-node-stroke, #8d939b);
+  stroke-width: calc(var(--gtd-stroke, 1.4) * 0.86);
+}
+
+.gtd-signal .gtd-pg {
+  font-size: 11px;
+  fill: var(--gtd-glyph, #aeb5bd);
+  letter-spacing: 0;
+}

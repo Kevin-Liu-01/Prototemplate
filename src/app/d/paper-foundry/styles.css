@@ -1,0 +1,3590 @@
+/* ============================================================
+   PAPER FOUNDRY — toolchain fork
+   The machine shop translated onto paper. Same ruled column,
+   hairline-only structure and weight cap 500 as the toolchain
+   shell; the hero is a machined plate — hairline bento cells
+   over an anisotropic brushed-graphite sheen (lib/graphite-
+   sheen.ts), the headline cell's grain flipped 90°, and the
+   direction-wide entrance is the plate cascade: parts rise in
+   reading order, one gloss sweep each. Fork-specific classes
+   carry the pf- prefix; everything inherited keeps tc-.
+   ============================================================ */
+
+.paperfoundry-root {
+  /* language-diagram rules follow the shell's line colour */
+  --lang-rule-strong: var(--tc-hair);
+  --lang-rule: var(--tc-hair);
+
+  --tc-paper: #fbfbfa;
+  --tc-sunk: #ffffff;
+  --tc-white: #ffffff;
+  --tc-ink: #0f1113;
+  --tc-ink-2: rgba(15, 17, 19, 0.63);
+  --tc-ink-3: rgba(15, 17, 19, 0.45);
+  --tc-ink-4: rgba(15, 17, 19, 0.27);
+  --tc-hair: #e4e4e6;
+  --tc-hair-2: #f1f1f3;
+  --tc-accent: #2f5ce0;
+  --tc-dark: #0c0e11;
+
+  /* The second surface — the LEDGER beige every light diagram sits on. A light
+     cell's artifact zone is never bare card: the plate is the material that
+     carries it, the way the references never leave a diagram on paper. */
+  --tc-plate: #ffffff;
+
+  /* The one dark artifact surface for code, config and diffs — the inset panel
+     every reference draws its code on. Light cells place it on the card; the
+     page keeps its mass between the hero terminal and the dark band. */
+  --tc-panel: #14121a;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame. The mat has to be a step you can see at 1x, not one that
+     only survives a 4x crop — at 2% luminance the reveal reads as a soft single
+     border and the box-inside-a-box, which is this direction's whole signature
+     detail, never announces itself. This is ~11% off both the page and the card,
+     with its own edge a shade darker than the page's hairline. */
+  --tc-mat: var(--tc-hair);
+  --tc-mat-edge: var(--tc-hair);
+  --tc-card: #ffffff;
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+  --tc-hatch: rgba(15, 17, 19, 0.085);
+
+  --tc-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: rgba(15, 17, 19, 0.8);
+  --iso-ink-soft: rgba(15, 17, 19, 0.44);
+  --iso-ink-hair: rgba(15, 17, 19, 0.2);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.paperfoundry-root *,
+.paperfoundry-root *::before,
+.paperfoundry-root *::after {
+  box-sizing: border-box;
+}
+
+.paperfoundry-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.paperfoundry-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+}
+
+.paperfoundry-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-sec:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- type ---------- */
+
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.paperfoundry-root h1,
+.paperfoundry-root h2,
+.paperfoundry-root h3,
+.paperfoundry-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+.paperfoundry-root p {
+  margin: 0;
+}
+
+.paperfoundry-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
+
+.paperfoundry-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.paperfoundry-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- buttons ---------- */
+
+.paperfoundry-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.paperfoundry-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: #fbfbfa;
+}
+
+.paperfoundry-root .tc-btn-solid:hover {
+  background: #23282c;
+}
+
+.paperfoundry-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.paperfoundry-root .tc-btn-line:hover {
+  border-color: rgba(15, 17, 19, 0.28);
+  background: rgba(15, 17, 19, 0.03);
+}
+
+.paperfoundry-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.paperfoundry-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+.paperfoundry-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.paperfoundry-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.paperfoundry-root .tc-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.paperfoundry-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .paperfoundry-root .tc-nav-links,
+  .paperfoundry-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO — THE MACHINED PLATE
+   One brushed-graphite sheet (the shader canvas) with a hairline
+   bento plate set into it. Cells are transparent — the sheet's
+   grain and its single specular sweep pass beneath every part —
+   and each cell carries the parts read: bright top hairline,
+   soft under-shadow. The headline cell is the shader's grain
+   flip. Seams: the plate owns the top/left border, every cell
+   owns its right/bottom, so no hairline is ever doubled.
+   ============================================================ */
+
+.paperfoundry-root .pf-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(30px, 4.2vw, 54px) var(--tc-gut) clamp(34px, 4.6vw, 58px);
+}
+
+.paperfoundry-root .pf-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Single column by default; the six-cell plate is composed at width (below).
+   Folded, the cells stack in the same reading order the cascade uses. */
+.paperfoundry-root .pf-plate {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 1px solid var(--tc-hair);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .pf-cell {
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  padding: clamp(18px, 2.1vw, 26px);
+  /* a whisper of white lifts the parts off the sheet without hiding the
+     grain — at 0.4 the flip cell stopped reading as brushed at all */
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* The machined edge pair: bright top hairline, soft under-shadow. */
+.paperfoundry-root .pf-cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -10px 12px -11px rgba(15, 17, 19, 0.16);
+}
+
+/* Twelve columns so the bottom row can seat FOUR parts (stats, plurals,
+   toast, bidi) under the 8-column headline + 4-column right stack. */
+@media (min-width: 1001px) {
+  .paperfoundry-root .pf-plate {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: 1fr 1fr auto;
+  }
+
+  .paperfoundry-root .pf-cell.is-head {
+    grid-column: 1 / 9;
+    grid-row: 1 / 3;
+  }
+
+  .paperfoundry-root .pf-plate > .pf-cell:nth-child(2) {
+    grid-column: 9 / 13;
+    grid-row: 1;
+  }
+
+  .paperfoundry-root .pf-plate > .pf-cell:nth-child(3) {
+    grid-column: 9 / 13;
+    grid-row: 2;
+  }
+
+  .paperfoundry-root .pf-plate > .pf-cell:nth-child(4) {
+    grid-column: 1 / 4;
+    grid-row: 3;
+  }
+
+  .paperfoundry-root .pf-plate > .pf-cell:nth-child(5) {
+    grid-column: 4 / 7;
+    grid-row: 3;
+  }
+
+  .paperfoundry-root .pf-plate > .pf-cell:nth-child(6) {
+    grid-column: 7 / 10;
+    grid-row: 3;
+  }
+
+  .paperfoundry-root .pf-plate > .pf-cell:nth-child(7) {
+    grid-column: 10 / 13;
+    grid-row: 3;
+  }
+}
+
+/* Tablet: headline full width, then six parts two-up — an even plate, no
+   missing tooth. */
+@media (min-width: 640px) and (max-width: 1000px) {
+  .paperfoundry-root .pf-plate {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .paperfoundry-root .pf-cell.is-head {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- the headline cell ---------- */
+
+.paperfoundry-root .pf-cell.is-head {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(26px, 3.6vw, 50px);
+}
+
+.paperfoundry-root .pf-mark {
+  display: block;
+  margin-bottom: clamp(18px, 2.4vw, 28px);
+  opacity: 0.9;
+}
+
+.paperfoundry-root .pf-cell.is-head h1 {
+  font-size: clamp(2.05rem, 4.4vw, 3.45rem);
+  line-height: 1.03;
+  letter-spacing: -0.038em;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.paperfoundry-root .pf-cell.is-head h1 span {
+  display: block;
+}
+
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink. */
+.paperfoundry-root .pf-cell.is-head h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.paperfoundry-root .pf-sub {
+  margin-top: 18px;
+  max-width: 46ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .pf-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- the part cells ---------- */
+
+.paperfoundry-root .pf-cell.is-part {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 148px;
+}
+
+/* mono file-path identity per part; the right slot names the translated leg */
+.paperfoundry-root .pf-cell-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: var(--tc-ink-4);
+}
+
+.paperfoundry-root .pf-pair {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-block: auto;
+}
+
+.paperfoundry-root .pf-ui {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 15px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-size: 13.5px;
+  color: var(--tc-ink);
+  white-space: nowrap;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 0 rgba(15, 17, 19, 0.05);
+}
+
+.paperfoundry-root .pf-arr {
+  display: inline-flex;
+  align-items: center;
+  height: 34px; /* the chip's own height, so the arrow centres on the chips */
+  color: var(--tc-ink-4);
+  font-size: 13px;
+}
+
+/* The translated leg plus its caliper: the chip's box is width-animated per
+   locale, and the dimension line under it stretches with the box while the
+   readout counts the live measurement. */
+.paperfoundry-root .pf-measure {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.paperfoundry-root .pf-measure .pf-ui {
+  justify-content: center;
+}
+
+.paperfoundry-root .pf-dim {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 11px;
+}
+
+.paperfoundry-root .pf-dim i {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: var(--tc-hair);
+}
+
+/* end ticks — the drawing convention, one at each extremity */
+.paperfoundry-root .pf-dim i:first-child::before,
+.paperfoundry-root .pf-dim i:last-child::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  width: 1px;
+  height: 5px;
+  background: var(--tc-ink-4);
+}
+
+.paperfoundry-root .pf-dim i:first-child::before {
+  left: 0;
+}
+
+.paperfoundry-root .pf-dim i:last-child::after {
+  right: 0;
+}
+
+.paperfoundry-root .pf-dim b {
+  min-width: 4ch;
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink-4);
+  text-align: center;
+}
+
+.paperfoundry-root .pf-fan {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: auto;
+}
+
+.paperfoundry-root .pf-fan path {
+  fill: none;
+  stroke: var(--tc-ink-4);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.paperfoundry-root .pf-fan text {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  dominant-baseline: middle;
+}
+
+/* the source file is the thing you wrote; the outputs are produced — a step
+   softer, the same ink logic as the ledger diagrams */
+.paperfoundry-root .pf-fan .pf-fan-src {
+  fill: var(--tc-ink);
+}
+
+.paperfoundry-root .pf-fan .pf-fan-dst {
+  fill: var(--tc-ink-3);
+}
+
+.paperfoundry-root .pf-stats {
+  display: flex;
+  margin-block: auto;
+}
+
+.paperfoundry-root .pf-stats span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.paperfoundry-root .pf-stats span + span {
+  margin-left: clamp(16px, 1.8vw, 26px);
+  padding-left: clamp(16px, 1.8vw, 26px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .pf-stats b {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(20px, 1.9vw, 24px);
+  letter-spacing: -0.02em;
+}
+
+.paperfoundry-root .pf-stats i {
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+  color: var(--tc-ink-3);
+  white-space: nowrap; /* 'to start' must never break into a ragged stack */
+}
+
+/* ---------- the plural-forms cell ---------- */
+
+/* Three counts, three rendered strings, and the CLDR category each count
+   resolved to — the count column and category column are the machine, the
+   middle column is the product. */
+.paperfoundry-root .pf-plu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-block: auto;
+}
+
+.paperfoundry-root .pf-plu-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.paperfoundry-root .pf-plu-row i {
+  width: 3.5ch;
+  flex: none;
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+.paperfoundry-root .pf-plu-row span {
+  color: var(--tc-ink);
+}
+
+.paperfoundry-root .pf-plu-row em {
+  margin-left: auto;
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--tc-ink-4);
+}
+
+.paperfoundry-root .pf-toasts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-block: auto;
+}
+
+.paperfoundry-root .pf-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 8px;
+  background: var(--tc-white);
+  font-size: 13px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 0 rgba(15, 17, 19, 0.05);
+}
+
+/* the received state — a diagram state, which is where the accent is spent */
+.paperfoundry-root .pf-toast i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tc-accent);
+}
+
+.paperfoundry-root .pf-bidi {
+  align-self: stretch;
+  margin-block: auto;
+  border: 1px solid var(--tc-hair);
+  border-radius: 8px;
+  background: var(--tc-white);
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 0 rgba(15, 17, 19, 0.05);
+}
+
+.paperfoundry-root .pf-bidi span {
+  display: block;
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
+.paperfoundry-root .pf-bidi span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+/* ---------- the cascade ---------- */
+
+/* Every plate is a sheen stage: relative for the sweep span the cascade hook
+   appends, hidden so the gloss never escapes the part's own edges. */
+.paperfoundry-root [data-plate] {
+  position: relative;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+/* A white band alone disappears over the bento's white cards, so the gloss is
+   a specular core with two faint ink fringes — the same read as light raking
+   matte paper. On the hero's graphite sheet the core dominates. */
+.paperfoundry-root .pf-sheen {
+  position: absolute;
+  inset: -4% -30%;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(15, 17, 19, 0.04) 44%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(15, 17, 19, 0.04) 56%,
+    transparent 62%
+  );
+  filter: blur(6px);
+  /* parked off-stage: a sheen whose sweep never runs shows nothing */
+  transform: translateX(-130%);
+}
+
+/* On the headline cell the gloss runs UNDER the type: a white core crossing
+   the h1 dropped runs of characters below comfortable contrast, and a frame
+   grabbed mid-sweep read as a rendering fault ('uage.' half-washed) rather
+   than a material. The part cells keep the over-sweep — raked light across
+   small parts reads as intended there. */
+.paperfoundry-root .pf-cell.is-head > :not(.pf-sheen) {
+  position: relative;
+  z-index: 1;
+}
+
+.paperfoundry-root .pf-cell.is-head .pf-sheen {
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paperfoundry-root [data-plate] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+
+  .paperfoundry-root .pf-sheen {
+    display: none;
+  }
+}
+
+/* In dark mode the light sheet would read as a glowing plate, so the shader
+   stands down and the hairline plate carries the hero on the dark paper. */
+[data-theme='dark'] .paperfoundry-root .pf-hero-field {
+  display: none;
+}
+
+[data-theme='dark'] .paperfoundry-root .pf-cell {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='dark'] .paperfoundry-root .pf-cell::after {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -10px 12px -11px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='dark'] .paperfoundry-root .pf-ui,
+[data-theme='dark'] .paperfoundry-root .pf-toast,
+[data-theme='dark'] .paperfoundry-root .pf-bidi {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.paperfoundry-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.paperfoundry-root .tc-copy:hover {
+  border-color: rgba(15, 17, 19, 0.26);
+}
+
+.paperfoundry-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.paperfoundry-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.paperfoundry-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.paperfoundry-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+.paperfoundry-root .tc-wm {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-wm.is-cursor {
+  font-weight: 600;
+  letter-spacing: -0.032em;
+}
+
+.paperfoundry-root .tc-wm.is-ramp {
+  font-weight: 800;
+  font-size: 16.5px;
+  letter-spacing: -0.012em;
+}
+
+.paperfoundry-root .tc-wm.is-mintlify {
+  font-weight: 300;
+  font-size: 17px;
+  letter-spacing: -0.008em;
+}
+
+.paperfoundry-root .tc-wm.is-profound {
+  font-weight: 500;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.135em;
+}
+
+.paperfoundry-root .tc-wm.is-partiful {
+  font-weight: 700;
+  font-size: 16.5px;
+  letter-spacing: -0.038em;
+}
+
+.paperfoundry-root .tc-wm.is-clickhouse {
+  font-family: var(--tc-sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.006em;
+}
+
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.paperfoundry-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.paperfoundry-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.paperfoundry-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.paperfoundry-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.paperfoundry-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.paperfoundry-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.paperfoundry-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.paperfoundry-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.paperfoundry-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+}
+
+.paperfoundry-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.paperfoundry-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.paperfoundry-root .tc-caps {
+  flex: 1;
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.paperfoundry-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.paperfoundry-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-fw-run {
+  margin-top: 12px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.paperfoundry-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.paperfoundry-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.paperfoundry-root .tc-fw-link {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.paperfoundry-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.paperfoundry-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.paperfoundry-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#14121A`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.paperfoundry-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.paperfoundry-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.paperfoundry-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.paperfoundry-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.paperfoundry-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.paperfoundry-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.paperfoundry-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.paperfoundry-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.paperfoundry-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set — the story's editor mock highlights on paper. */
+.paperfoundry-root .tc-t-str {
+  color: #5c6470;
+}
+
+.paperfoundry-root .tc-t-kw {
+  color: rgba(15, 17, 19, 0.52);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.paperfoundry-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.paperfoundry-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.paperfoundry-root .tc-t-num {
+  color: #5c6470;
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.paperfoundry-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.paperfoundry-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.paperfoundry-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.paperfoundry-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.paperfoundry-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.paperfoundry-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-row.is-lead,
+.paperfoundry-root .tc-row.is-three,
+.paperfoundry-root .tc-row.is-wide-left,
+.paperfoundry-root .tc-row.is-tilt,
+.paperfoundry-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.paperfoundry-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.paperfoundry-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.paperfoundry-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.paperfoundry-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.paperfoundry-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.paperfoundry-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.paperfoundry-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.paperfoundry-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.paperfoundry-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.paperfoundry-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.paperfoundry-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.paperfoundry-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.paperfoundry-root .tc-cell > p,
+.paperfoundry-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.paperfoundry-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.paperfoundry-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   A cell that carries something visual becomes a box inside a box: the grid
+   cell is a mat with a hairline edge and exactly 2px of padding, and the card
+   sits inside it, so a precise 2px reveal runs all the way around the content.
+   Text-only cells never get this — the contrast is the whole point, and it is
+   also why the vertical rule is dropped wherever a mat provides the edge. */
+
+.paperfoundry-root .tc-cell.is-framed {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--tc-hair);
+  display: flex;
+}
+
+/* The ground behind the white cards is the shell line colour, so a row of
+   framed cells reads as white cards on the shell's own grey. */
+.paperfoundry-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-hair);
+}
+
+.paperfoundry-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border: 0;
+  border-radius: 12px;
+  background: var(--tc-card);
+}
+
+.paperfoundry-root .tc-row > .is-framed + *,
+.paperfoundry-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- diagonal spacer band ----------
+   Bounded, content-free breathing room between specific rows. Not a field
+   behind content — a ruled strip between subjects. */
+
+.paperfoundry-root .tc-hatch {
+  height: clamp(28px, 3.4vw, 40px);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: repeating-linear-gradient(45deg, var(--tc-hatch) 0 1px, transparent 1px 8px);
+}
+
+.paperfoundry-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.paperfoundry-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paperfoundry-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.paperfoundry-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.paperfoundry-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.paperfoundry-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars) gets the same
+   plate the language diagrams sit on: white chips on the second surface, the
+   viteplus grammar, instead of white bars lost on a white card. */
+.paperfoundry-root .tc-surface.is-plated {
+  margin-top: 12px;
+}
+
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.paperfoundry-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.paperfoundry-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.paperfoundry-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.paperfoundry-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.paperfoundry-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.paperfoundry-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.paperfoundry-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.paperfoundry-root .tc-bleed-art {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.paperfoundry-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.paperfoundry-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.paperfoundry-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.paperfoundry-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.paperfoundry-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.paperfoundry-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.paperfoundry-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.paperfoundry-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.paperfoundry-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.paperfoundry-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.paperfoundry-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.paperfoundry-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.paperfoundry-root .tc-cell-act {
+  margin-top: 12px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.paperfoundry-root .tc-stats {
+  flex: 1;
+  margin-top: 12px;
+  padding: 0;
+  display: grid;
+  align-content: space-between;
+}
+
+.paperfoundry-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.paperfoundry-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.paperfoundry-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.paperfoundry-root .tc-cell.is-panel .tc-code {
+  margin-top: 12px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.paperfoundry-root .tc-lang {
+  flex: 1;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --lang-ground: var(--tc-white);
+}
+
+
+.paperfoundry-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.paperfoundry-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.paperfoundry-root .tc-lang.is-lead .lang-sw-name,
+.paperfoundry-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.paperfoundry-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.paperfoundry-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.paperfoundry-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.paperfoundry-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.paperfoundry-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #86a8ff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+/* The field is the band's material, not a rumour of one: a committed light
+   field at the band's edges, held off the type by a dark center — content
+   sits in the dark, the light owns the edges (AESTHETIC_ADDENDUM 2b). */
+.paperfoundry-root .tc-band-field {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 130%;
+  width: 120%;
+  z-index: 0;
+  opacity: 0.85;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(
+    88% 78% at 50% 40%,
+    rgba(0, 0, 0, 0.12) 0%,
+    rgba(0, 0, 0, 0.34) 36%,
+    rgba(0, 0, 0, 0.68) 58%,
+    #000 74%
+  );
+  pointer-events: none;
+}
+
+.paperfoundry-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(56px, 7vw, 92px);
+}
+
+/* Copy left, artifact right: the transcript is the band's object, standing in
+   the dark center the field leaves for it. */
+.paperfoundry-root .tc-band-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+.paperfoundry-root .tc-band-term {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.paperfoundry-root .tc-band-term-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.paperfoundry-root .tc-band-term-body {
+  padding: 16px 18px 18px;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.paperfoundry-root .tc-band-term-body [data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-band-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.paperfoundry-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.paperfoundry-root .tc-band-grid {
+  margin-top: clamp(40px, 5vw, 62px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.paperfoundry-root .tc-band-grid > div {
+  padding: 26px 22px 30px 0;
+}
+
+.paperfoundry-root .tc-band-grid > div + div {
+  padding-left: 22px;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.paperfoundry-root .tc-band-grid h3 {
+  font-size: 15px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-band-grid p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.paperfoundry-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.paperfoundry-root .tc-band .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.paperfoundry-root .tc-band .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.paperfoundry-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.paperfoundry-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.paperfoundry-root .tc-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.paperfoundry-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.paperfoundry-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.paperfoundry-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.paperfoundry-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.paperfoundry-root .tc-plan .tc-list {
+  margin-top: 12px;
+}
+
+.paperfoundry-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.paperfoundry-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.paperfoundry-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.paperfoundry-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.paperfoundry-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.paperfoundry-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
+}
+
+.paperfoundry-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.paperfoundry-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.paperfoundry-root .tc-foot-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.paperfoundry-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.paperfoundry-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
+
+.paperfoundry-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-mat);
+  --gte-ws-shadow: none;
+  /* The mat's radius, because the workspace IS a mat now — see below. */
+  --gte-radius: 5px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 600;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
+}
+
+.paperfoundry-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
+}
+
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.paperfoundry-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.paperfoundry-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+.paperfoundry-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
+}
+
+.paperfoundry-root .tc-review .gte-notes {
+  margin-top: 12px;
+}
+
+/* ---------- the workspace, mounted ----------
+   This is the biggest product mock on the page and it was the one surface
+   outside the frame system: a single border at the page hairline rather than the
+   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
+   the most prominent thing in the section read as an import.
+
+   The borrowed markup has no card element to wrap, so the mat is the workspace
+   shell itself and the two blocks inside it carry the card: the bar takes the
+   top corners, the columns take the bottom, and because they are adjacent with
+   no gap the pair reads as one white card with a 2px reveal around it. Same
+   material, same radii, same 2px as every other mount here. */
+.paperfoundry-root .tc-review .gte-ws {
+  padding: 2px;
+  border-color: var(--tc-mat-edge);
+}
+
+.paperfoundry-root .tc-review .gte-bar {
+  border-radius: 2px 2px 0 0;
+  background: var(--tc-card);
+}
+
+.paperfoundry-root .tc-review .gte-cols {
+  border-radius: 0 0 2px 2px;
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.paperfoundry-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paperfoundry-root [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .paperfoundry-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .paperfoundry-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .paperfoundry-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .paperfoundry-root .tc-fw,
+  .paperfoundry-root .tc-row.is-split,
+  .paperfoundry-root .tc-row.is-lead,
+  .paperfoundry-root .tc-row.is-three,
+  .paperfoundry-root .tc-row.is-wide-left,
+  .paperfoundry-root .tc-row.is-wide-right,
+  .paperfoundry-root .tc-row.is-even,
+  .paperfoundry-root .tc-row.is-tilt,
+  .paperfoundry-root .tc-row.is-grammar,
+  .paperfoundry-root .tc-plans,
+  .paperfoundry-root .tc-plain,
+  .paperfoundry-root .tc-band-top,
+  .paperfoundry-root .tc-band-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperfoundry-root .tc-row > * + *,
+  .paperfoundry-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .paperfoundry-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .paperfoundry-root .tc-band-grid > div + div {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .paperfoundry-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .paperfoundry-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .paperfoundry-root .tc-row > .is-framed + *,
+  .paperfoundry-root .tc-row > * + .is-framed,
+  .paperfoundry-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .paperfoundry-root .tc-cell.is-tall,
+  .paperfoundry-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .paperfoundry-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperfoundry-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .paperfoundry-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .paperfoundry-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .paperfoundry-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .paperfoundry-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperfoundry-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .paperfoundry-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 12px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .paperfoundry-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .paperfoundry-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .paperfoundry-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .paperfoundry-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .paperfoundry-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .paperfoundry-root .tc-rail,
+  .paperfoundry-root .tc-nav-in,
+  .paperfoundry-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .paperfoundry-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperfoundry-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .paperfoundry-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .paperfoundry-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .paperfoundry-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  /* the plate tightens: phone gutters, and the stat rail gives up its clamp
+     minimums so three columns still fit at 390px */
+  .paperfoundry-root .pf-hero {
+    padding-inline: 12px;
+  }
+
+  .paperfoundry-root .pf-cell {
+    padding: 16px 14px;
+  }
+
+  .paperfoundry-root .pf-cell.is-head {
+    padding: 26px 18px 28px;
+  }
+
+  .paperfoundry-root .pf-stats span + span {
+    margin-left: 14px;
+    padding-left: 14px;
+  }
+
+  .paperfoundry-root .pf-fan {
+    max-width: 260px;
+  }
+}
+
+
+/* ---- full-stack band ---- */
+
+/* The centerpiece: seven planes on the family's 30° axis — the whole stack as
+   one assembly, the doubled thread climbing its flank from source to screen. */
+.paperfoundry-root .tc-band-stack {
+  margin-top: clamp(46px, 5vw, 70px);
+  display: grid;
+  justify-items: center;
+  overflow-x: auto;
+}
+
+.paperfoundry-root .tc-band-stack .tcstack {
+  width: 100%;
+  max-width: 680px;
+  min-width: 520px;
+}
+
+.paperfoundry-root .tcstack .iso-label {
+  font-size: 9.5px;
+}
+
+.paperfoundry-root .tcstack .tcstack-name {
+  font-size: 10.5px;
+  letter-spacing: 0.01em;
+}
+
+/* The brand's pair: constant gauge everywhere, so the strokes never scale. */
+.paperfoundry-root .tcstack .tcstack-thread {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: var(--thread-gauge, 1.5px);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---- the four service minis: dark shells, flush content, no internal rules ---- */
+
+.paperfoundry-root .tcm {
+  margin-top: 18px;
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  padding: 12px 14px 13px;
+  font-family: var(--tc-mono);
+  overflow: hidden;
+}
+
+.paperfoundry-root .tcm-file {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.paperfoundry-root .tcm-pre {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.paperfoundry-root .tcm-dim {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.paperfoundry-root .tcm-kw {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.paperfoundry-root .tcm-str {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* GT's own API carries weight, not hue — same rule as every code panel. */
+.paperfoundry-root .tcm-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.paperfoundry-root .tcm-add {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.paperfoundry-root .tcm-del {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.paperfoundry-root .tcm-rows {
+  margin-top: 9px;
+  display: grid;
+  gap: 5px;
+}
+
+.paperfoundry-root .tcm-rows.is-ledger {
+  margin-top: 10px;
+  gap: 9px;
+}
+
+.paperfoundry-root .tcm-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.paperfoundry-root .tcm-rows.is-ledger .tcm-row {
+  font-size: 12px;
+}
+
+.paperfoundry-root .tcm-row span {
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.paperfoundry-root .tcm-row b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+/* ---- the context-layers model: org → project → component ---- */
+
+.paperfoundry-root .tc-band-ctx {
+  margin-top: clamp(50px, 5.4vw, 76px);
+}
+
+.paperfoundry-root .tc-band-ctx-head h3 {
+  font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-band-ctx-head p {
+  margin: 10px 0 0;
+  max-width: 66ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.paperfoundry-root .tcctx {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px minmax(0, 1fr) 104px minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.paperfoundry-root .tcctx-panel {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  padding: 20px 22px 22px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.paperfoundry-root .tcctx-panel h4 {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tcctx-cap {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.paperfoundry-root .tcctx-split {
+  margin-top: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.paperfoundry-root .tcctx-k {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tcctx-k span {
+  margin-left: 8px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.paperfoundry-root .tcctx-note {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.paperfoundry-root .tcctx-note.is-foot {
+  margin-top: 14px;
+}
+
+.paperfoundry-root .tcctx-rule {
+  margin-top: 7px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.paperfoundry-root .tcctx-groups {
+  margin-top: 18px;
+  display: grid;
+  gap: 9px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+}
+
+.paperfoundry-root .tcctx-grow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.paperfoundry-root .tcctx-pri {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.paperfoundry-root .tcctx-grow b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tcctx-tag {
+  margin-left: auto;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.paperfoundry-root .tcctx-code {
+  margin: 18px 0 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* The punchline: with context, Spanish picks the notification, not the bread. */
+.paperfoundry-root .tcctx-res {
+  margin-top: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+}
+
+.paperfoundry-root .tcctx-res > span {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.paperfoundry-root .tcctx-yes {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tcctx-no {
+  color: rgba(255, 255, 255, 0.38);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* The inheritance joints: the doubled thread with one directional mark. */
+.paperfoundry-root .tcctx-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 6px;
+}
+
+.paperfoundry-root .tcctx-link svg {
+  display: block;
+  flex: none;
+}
+
+.paperfoundry-root .tcctx-link span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.48);
+  white-space: nowrap;
+}
+
+.paperfoundry-root .tcctx-arrow {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.66);
+  stroke-width: var(--thread-gauge, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+
+.paperfoundry-root .tcctx-head {
+  fill: rgba(255, 255, 255, 0.66);
+}
+
+@media (max-width: 1000px) {
+  .paperfoundry-root .tcctx {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperfoundry-root .tcctx-link {
+    flex-direction: row;
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .paperfoundry-root .tcctx-link svg {
+    transform: rotate(90deg);
+  }
+
+  .paperfoundry-root .tc-band-stack {
+    justify-items: start;
+  }
+}
+
+
+/* ---- full-stack band ---- */
+/* Round 2. Appended overrides only — the r1 band rules above stay untouched
+   so this block always wins by order. The recomposition: the prismatic light
+   becomes ONE committed texture panel in the header (viteplus d06 grammar)
+   instead of a wash under the whole band; the stack zone splits into trace +
+   assembly; the service grid loses its internal verticals and lands all four
+   plates on one bottom line; the context model stacks vertically, the way
+   inheritance actually flows. */
+
+/* -- header: full-height text/texture split -- */
+
+.paperfoundry-root .tc-band-top {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  align-items: stretch;
+  gap: clamp(32px, 4.4vw, 68px);
+}
+
+.paperfoundry-root .tc-band-lede {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(6px, 1vw, 14px) 0 clamp(4px, 0.8vw, 10px);
+}
+
+/* the lede's foot: what "buildtime, runtime, and review" concretely are */
+.paperfoundry-root .tc-band-index {
+  margin-top: auto;
+  padding-top: clamp(26px, 3vw, 40px);
+}
+
+.paperfoundry-root .tc-band-index-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.paperfoundry-root .tc-band-index-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.paperfoundry-root .tc-band-index-row span {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-band-index-row b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* The band's one light moment: a full-height texture panel bleeding past the
+   band's top edge and out to the right rail, the shader run bright enough to
+   read as directional light, the terminal floating in its dark centre. */
+.paperfoundry-root .tc-band-panel {
+  position: relative;
+  overflow: hidden;
+  margin-top: calc(-1 * clamp(66px, 8vw, 108px));
+  margin-right: calc(-1 * var(--tc-gut));
+  border-radius: 0 0 0 8px;
+  background: #08090b;
+  min-height: clamp(430px, 42vw, 560px);
+  display: grid;
+  place-items: center;
+}
+
+.paperfoundry-root .tc-band-panel-field {
+  position: absolute;
+  left: -10%;
+  top: -12%;
+  width: 120%;
+  height: 124%;
+}
+
+.paperfoundry-root .tc-band-panel .tc-band-term {
+  position: relative;
+  z-index: 1;
+  width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
+  margin: clamp(40px, 4.6vw, 64px) 0;
+  background: #0d0e10;
+  outline-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* -- stack zone: the trace beside the assembly -- */
+
+.paperfoundry-root .tc-band-flow {
+  margin-top: clamp(54px, 6vw, 88px);
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.45fr);
+  gap: clamp(30px, 4vw, 64px);
+  align-items: center;
+}
+
+.paperfoundry-root .tc-band-flow-copy {
+  min-width: 0;
+}
+
+.paperfoundry-root .tc-band-flow-copy h3 {
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  letter-spacing: -0.018em;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-band-flow-copy > p {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 46ch;
+}
+
+/* the trace plate: the drawing's journey, on the clock */
+.paperfoundry-root .tc-trace {
+  margin-top: 12px;
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  overflow: hidden;
+  font-family: var(--tc-mono);
+}
+
+.paperfoundry-root .tc-trace-bar {
+  padding: 10px 16px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.paperfoundry-root .tc-trace-rows {
+  padding: 12px 16px 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.paperfoundry-root .tc-trace-row {
+  display: grid;
+  grid-template-columns: 62px 86px minmax(0, 1fr);
+  gap: 11px;
+  align-items: baseline;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.paperfoundry-root .tc-trace-time {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.paperfoundry-root .tc-trace-row b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-trace-val {
+  color: rgba(255, 255, 255, 0.58);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* the assembly now owns the zone's right two-thirds at full size */
+.paperfoundry-root .tc-band-stack {
+  margin-top: 0;
+  overflow: visible;
+  justify-items: stretch;
+}
+
+.paperfoundry-root .tc-band-stack .tcstack {
+  max-width: none;
+  min-width: 0;
+}
+
+.paperfoundry-root .tcstack .iso-label {
+  font-size: 8.6px;
+}
+
+.paperfoundry-root .tcstack .tcstack-name {
+  font-size: 9.6px;
+}
+
+/* -- service grid: one sheet, four different objects, one bottom line -- */
+
+.paperfoundry-root .tc-band-grid {
+  column-gap: clamp(20px, 2.6vw, 34px);
+}
+
+.paperfoundry-root .tc-band-grid > div {
+  padding: 26px 0 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.paperfoundry-root .tc-band-grid > div + div {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.paperfoundry-root .tcm {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 218px;
+}
+
+.paperfoundry-root .tcm-file {
+  padding: 11px 14px 0;
+}
+
+.paperfoundry-root .tcm-pre {
+  padding: 0 14px;
+}
+
+.paperfoundry-root .tcm-rows {
+  padding: 0 14px 13px;
+}
+
+/* the pinned band every plate ends on — a tinted fill, not a rule */
+.paperfoundry-root .tcm-bottom {
+  margin-top: auto;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Code: an editor — tab strip on top, gutter numbers in the code */
+.paperfoundry-root .tcm-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.paperfoundry-root .tcm-tabs span {
+  padding: 10px 14px 8px;
+  color: rgba(255, 255, 255, 0.38);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.paperfoundry-root .tcm-tabs .is-on {
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.9);
+}
+
+.paperfoundry-root .tcm-ln {
+  display: inline-block;
+  width: 16px;
+  margin-right: 10px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.24);
+}
+
+/* Content: an exchange — request block, doubled thread, tinted response */
+.paperfoundry-root .tcm-tail {
+  margin-top: auto;
+}
+
+.paperfoundry-root .tcm-wire {
+  display: block;
+  margin: 2px 0 6px 26px;
+}
+
+.paperfoundry-root .tcm-wire path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: var(--thread-gauge, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+
+.paperfoundry-root .tcm-wire .tcm-wire-head {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: none;
+}
+
+.paperfoundry-root .tcm-resp {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 9px 0 12px;
+}
+
+.paperfoundry-root .tcm-resp-status {
+  padding: 0 14px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.paperfoundry-root .tcm-resp .tcm-pre {
+  margin-top: 4px;
+}
+
+.paperfoundry-root .tcm-resp b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Dashboard: product UI — lighter card, locale chip strip, publish footer */
+.paperfoundry-root .tcm.is-dash {
+  background: #17171b;
+}
+
+.paperfoundry-root .tcm-dash-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.paperfoundry-root .tcm-dash-bar span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.paperfoundry-root .tcm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px 2px;
+}
+
+.paperfoundry-root .tcm-chips span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.paperfoundry-root .tcm.is-dash .tcm-rows.is-ledger {
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.paperfoundry-root .tcm-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.045);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
+.paperfoundry-root .tcm-foot b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.paperfoundry-root .tcm-foot span {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Locadex: a diff sheet — full-bleed tinted added lines under the hunk */
+.paperfoundry-root .tcm-diffbody {
+  padding: 0;
+  margin-top: 9px;
+}
+
+.paperfoundry-root .tcm-diffbody > div {
+  padding: 0 14px;
+}
+
+.paperfoundry-root .tcm-diffbody > .is-add {
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.paperfoundry-root .tcm-diffbody > .is-del {
+  color: rgba(255, 255, 255, 0.36);
+}
+
+/* -- context layers: the cascade, stacked the way inheritance flows -- */
+
+.paperfoundry-root .tcctx {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.paperfoundry-root .tcctx-panel {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.62fr) minmax(0, 2fr);
+  gap: clamp(20px, 3vw, 44px);
+  padding: 22px 26px 24px;
+}
+
+.paperfoundry-root .tcctx-title h4 {
+  font-size: 16px;
+}
+
+.paperfoundry-root .tcctx-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 2.6vw, 36px);
+  align-items: start;
+  min-width: 0;
+}
+
+/* the joint carries the model's weight: bright doubled thread, real head */
+.paperfoundry-root .tcctx-link {
+  flex-direction: row;
+  align-items: center;
+  gap: 13px;
+  padding: 5px 0;
+  margin-left: clamp(20px, 2.4vw, 34px);
+}
+
+.paperfoundry-root .tcctx-link svg {
+  transform: none;
+}
+
+.paperfoundry-root .tcctx-arrow {
+  stroke: rgba(255, 255, 255, 0.82);
+}
+
+.paperfoundry-root .tcctx-head {
+  fill: rgba(255, 255, 255, 0.82);
+}
+
+.paperfoundry-root .tcctx-link span {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.paperfoundry-root .tcctx-split {
+  margin-top: 18px;
+}
+
+/* priority overlap: the org directive winning, the loser struck */
+.paperfoundry-root .tcctx-clash {
+  margin-top: 10px;
+  display: grid;
+  gap: 7px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.paperfoundry-root .tcctx-clash .tcctx-pri {
+  margin-right: 8px;
+}
+
+.paperfoundry-root .tcctx-clash .is-win {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.paperfoundry-root .tcctx-clash .is-win b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tcctx-clash .is-lose {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.paperfoundry-root .tcctx-clash .is-lose s {
+  text-decoration-thickness: 1px;
+}
+
+.paperfoundry-root .tcctx-groups {
+  margin-top: 10px;
+  max-width: 250px;
+}
+
+.paperfoundry-root .tcctx-code {
+  margin-top: 0;
+  align-self: center;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+/* the punchline, actually rendered: the Spanish toast */
+.paperfoundry-root .tcctx-toast {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 14px;
+  border-radius: 6px;
+  background: #1b1b20;
+  outline: 1px solid rgba(255, 255, 255, 0.18);
+  outline-offset: 2px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 360px;
+}
+
+.paperfoundry-root .tcctx-toast i {
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.paperfoundry-root .tcctx-res {
+  margin-top: 12px;
+}
+
+.paperfoundry-root .tc-band-ctx {
+  padding-bottom: 6px;
+}
+
+/* -- responsive: the band folds to one column below 1000px -- */
+
+@media (max-width: 1000px) {
+  .paperfoundry-root .tc-band-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperfoundry-root .tc-band-panel {
+    margin-top: 6px;
+    margin-left: calc(-1 * var(--tc-gut));
+    border-radius: 0;
+    min-height: 420px;
+  }
+
+  .paperfoundry-root .tc-band-index-row b {
+    white-space: normal;
+    text-align: right;
+  }
+
+  .paperfoundry-root .tc-band-flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperfoundry-root .tc-band-stack {
+    overflow-x: auto;
+  }
+
+  .paperfoundry-root .tc-band-stack .tcstack {
+    min-width: 560px;
+  }
+
+  .paperfoundry-root .tcstack .iso-label {
+    font-size: 9.5px;
+  }
+
+  .paperfoundry-root .tcstack .tcstack-name {
+    font-size: 10.5px;
+  }
+
+  .paperfoundry-root .tcm {
+    min-height: 0;
+  }
+
+  /* stacked, each cell needs its own foot before the next cell's top rule */
+  .paperfoundry-root .tc-band-grid > div {
+    padding-bottom: 26px;
+  }
+
+  .paperfoundry-root .tcctx-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .paperfoundry-root .tcctx-two {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .paperfoundry-root .tcctx-link {
+    padding: 12px 0;
+  }
+
+  .paperfoundry-root .tcctx-link svg {
+    transform: none;
+  }
+
+  .paperfoundry-root .tcctx-code {
+    align-self: start;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
+
+/* the status transcript steps down before its longest line can clip */
+@media (max-width: 620px) {
+  .paperfoundry-root .tc-band-term-body {
+    font-size: 11.5px;
+  }
+}
+
+
+/* ---- delivery band ----
+   Delivery inverts: a full-viewport-width black band inside the bento flow
+   (margin breakout), the prismatic field behind it in the band grammar —
+   light at the edges, a dark centre the content stands in. */
+.paperfoundry-root .tc-delivery-band {
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  /* the globe draws with the night inks it had in its old framed cell */
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+.paperfoundry-root .tc-delivery-field {
+  position: absolute;
+  inset: -18% -8% auto;
+  height: 132%;
+  width: 116%;
+  z-index: 0;
+  opacity: 0.8;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(
+    86% 76% at 50% 42%,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.32) 38%,
+    rgba(0, 0, 0, 0.66) 60%,
+    #000 76%
+  );
+  pointer-events: none;
+}
+
+.paperfoundry-root .tc-delivery-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(52px, 6.4vw, 88px) var(--tc-gut);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(28px, 3.4vw, 56px);
+  align-items: center;
+}
+
+.paperfoundry-root .tc-delivery-art .tc-art-globe {
+  margin-inline: auto;
+}
+
+.paperfoundry-root .tc-delivery-art .tc-night-note {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.paperfoundry-root .tc-delivery-copy h3 {
+  font-size: clamp(24px, 2.2vw, 30px);
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.paperfoundry-root .tc-delivery-copy > p {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.paperfoundry-root .tc-delivery-copy .tc-list li {
+  color: rgba(255, 255, 255, 0.82);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.paperfoundry-root .tc-delivery-copy .tc-list li::before {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.paperfoundry-root .tc-delivery-art .tc-night-note {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: none;
+}
+
+@media (max-width: 860px) {
+  .paperfoundry-root .tc-delivery-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of ground; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.paperfoundry-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.paperfoundry-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+.paperfoundry-root .tc-row + .tc-row {
+  margin-top: -1px;
+}
+
+
+/* ---- dark mode ----
+   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
+   panel #14121A). Everything downstream re-skins from these. */
+[data-theme='dark'] .paperfoundry-root {
+  --tc-paper: #16171d;
+  --tc-sunk: #16171d;
+  --tc-white: #1e1f26;
+  --tc-card: #1e1f26;
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.66);
+  --tc-ink-3: rgba(255, 255, 255, 0.48);
+  --tc-ink-4: rgba(255, 255, 255, 0.3);
+  --tc-hair: #3b3440;
+  --tc-hair-2: #2b2731;
+  --tc-plate: #1e1f26;
+  --tc-hatch: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme='dark'] .paperfoundry-root .tc-btn-solid {
+  background: #ffffff;
+  color: #16171d;
+}
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.paperfoundry-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  right: -6px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.paperfoundry-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  right: -6px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+
+/* ============================================================
+   ANCHOR: tc-curation-r1 — dark-grid diagram adaptations
+   Three adoptions from the dark directions' eight-cell feature
+   grid, redrawn in this page's system (decisions logged atop
+   sections/Bento.tsx). New classes only; nothing above is
+   overridden.
+   ============================================================ */
+
+/* -- (1) the <T> wrap thread --------------------------------------
+   The dark CodeWrapDiagram's doubled bracket, adopted into the real
+   framework sample: the brand's two lines (THREAD_MOTIF — constant
+   gauge, never merging) run the sample's own left margin from <T>
+   to </T>, feet turned toward the code they bind. Two nested
+   L-strokes, both at the page's thread gauge with its 3px gap; the
+   feet of both stop on the same vertical, as the source drawing's
+   did. Panel-dim white, so the pair reads in light and dark theme
+   alike — the panel itself never remaps. */
+.paperfoundry-root .tc-code-wrap {
+  position: relative;
+}
+
+.paperfoundry-root .tc-code-wrap::before,
+.paperfoundry-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.paperfoundry-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.paperfoundry-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .paperfoundry-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .paperfoundry-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+/* -- (2) glossary directives --------------------------------------
+   The second half of the dark GlossaryDiagram: per-locale style
+   rules under the pinned entries. The group divider is the page's
+   stronger hairline — the same weight the dark table drew between
+   its halves — against the hair-2 rules inside each half. */
+.paperfoundry-root .tcx-dirs {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tcx-dirs li span {
+  font-size: 12.5px;
+}
+
+/* -- (6) the source/preview pane pair -----------------------------
+   The dark PreviewPanesDiagram's pairing, moved inside the dev
+   window: two panes on the window's own surface, split by the
+   in-window hairline. State is type weight on the live pane's tag —
+   no accent in this band, no pills. */
+.paperfoundry-root .tcx-pane {
+  padding: 10px 11px 13px;
+}
+
+.paperfoundry-root .tcx-pane + .tcx-pane {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.paperfoundry-root .tcx-pane-tag {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.paperfoundry-root .tcx-pane-tag.is-on {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* Dark theme: the window buttons fill with --tc-ink, which remaps to white,
+   but their label was hard-coded light — white on white. The same inversion
+   the dark remap gives .tc-btn-solid. (Predates this round; the pane pair
+   made it twice as visible.) */
+[data-theme='dark'] .paperfoundry-root .tcx-btn {
+  color: #16171d;
+}

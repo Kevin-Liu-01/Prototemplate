@@ -1,0 +1,678 @@
+/* ============================================================
+   DELIVERY DIAGRAMS — prism-light fork
+   Three artifacts for the delivery story: the hot-reload split,
+   the greyed-out deploy, and the routing ladder. Grammar follows
+   the page: dark #14121A panels for anything that is code, paper
+   panes with hairline rings for anything that is a browser, mono
+   at 11px floor, hairlines for structure and 1.5px for meaning.
+   ============================================================ */
+
+/* ---------- shared panes ---------- */
+
+.prismlight-root .dlv-panel {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.prismlight-root .dlv-panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 34px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-panel-dim);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-page {
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+  overflow: hidden;
+}
+
+.prismlight-root .dlv-page-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-page-bar b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.prismlight-root .dlv-loc {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink);
+}
+
+/* ---------- hot-reload split ---------- */
+
+.prismlight-root .dlv-hot {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-top: 18px;
+}
+
+.prismlight-root .dlv-hot-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) 44px minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.prismlight-root .dlv-hot-code {
+  padding: 13px 16px 16px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* the two threads crossing the gap between editor and browser */
+.prismlight-root .dlv-hot-link {
+  align-self: center;
+  width: 100%;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+.prismlight-root .dlv-hot-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 16px;
+}
+
+.prismlight-root .dlv-hot-h {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+}
+
+.prismlight-root .dlv-hot-p {
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.prismlight-root .dlv-hot-btn {
+  align-self: flex-start;
+  padding: 7px 13px;
+  border-radius: 5px;
+  background: var(--tc-ink);
+  color: #fbfbfa;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.prismlight-root .dlv-hot-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-caret {
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  margin: 0 1px -2px;
+  background: #ffffff;
+}
+
+/* the fork under the split: the two key paths, each led by the thread pair */
+.prismlight-root .dlv-fork {
+  margin-top: 16px;
+  border-top: 1px solid var(--tc-hair);
+  padding-top: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.prismlight-root .dlv-fork-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.prismlight-root .dlv-fork-row i {
+  flex: none;
+  width: 34px;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background-image: linear-gradient(currentColor, currentColor),
+    linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+.prismlight-root .dlv-fork-row[data-on] {
+  color: var(--tc-ink);
+}
+
+.prismlight-root .dlv-fork-row b {
+  font-weight: 500;
+}
+
+/* ---------- the greyed-out deploy ---------- */
+
+.prismlight-root .dlv-ota {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  margin-top: 18px;
+}
+
+.prismlight-root .dlv-ota-rows {
+  padding: 6px 0 10px;
+}
+
+.prismlight-root .dlv-ota-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 14px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-ota-row > span:first-child {
+  color: var(--tc-panel-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prismlight-root .dlv-ota-row > span:nth-child(2) {
+  color: var(--tc-panel-ink);
+  overflow: hidden;
+}
+
+.prismlight-root .dlv-ota-state {
+  font-size: 11px;
+  color: var(--tc-panel-faint);
+}
+
+.prismlight-root .dlv-ota-save {
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #14121a;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.prismlight-root .dlv-caret-d {
+  display: inline-block;
+  width: 6px;
+  height: 13px;
+  margin: 0 1px -2px;
+  background: #ffffff;
+}
+
+/* the pipeline with the middle struck out */
+.prismlight-root .dlv-pipe {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 2px 2px;
+}
+
+.prismlight-root .dlv-pipe-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+  background: var(--tc-plate);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-pipe-join {
+  flex: none;
+  width: 22px;
+  height: 1px;
+  background: var(--tc-hair);
+}
+
+.prismlight-root .dlv-pipe-stage[data-skip] {
+  opacity: 0.25;
+}
+
+/* one 1.5px strike crossing exactly the two skipped stages */
+.prismlight-root .dlv-pipe-strike {
+  position: absolute;
+  top: 50%;
+  height: 1.5px;
+  background: var(--tc-ink);
+  pointer-events: none;
+}
+
+.prismlight-root .dlv-ota-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.prismlight-root .dlv-phone-body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px 14px;
+}
+
+.prismlight-root .dlv-phone-h {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 15.5px;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+}
+
+.prismlight-root .dlv-phone-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 19px;
+  padding: 0 7px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink);
+}
+
+/* the trade-off, stated rather than claimed */
+.prismlight-root .dlv-tradeoff {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 9px;
+  padding: 4px 2px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+}
+
+.prismlight-root .dlv-tradeoff b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---------- routing ladder ----------
+   The whole artifact zone is one dark panel — the same `#14121A` the
+   middleware file sits on across the gutter, so the row reads as a matched
+   pair of toned surfaces (the oxc d04 grammar). The three address bars are
+   inset panes on it; the detection ladder runs in white with the winning rung
+   carrying the doubled thread underline. */
+
+.prismlight-root .dlv-route {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) 1px minmax(0, 1fr);
+  gap: 0 clamp(16px, 2vw, 26px);
+  align-items: center;
+  margin-top: 18px;
+  padding: clamp(16px, 1.9vw, 24px) clamp(16px, 1.9vw, 22px);
+  border-radius: 4px;
+  background: var(--tc-panel);
+}
+
+.prismlight-root .dlv-route-rule {
+  align-self: stretch;
+  background: var(--tc-panel-rule);
+}
+
+.prismlight-root .dlv-urls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prismlight-root .dlv-url {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-panel-dim);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.prismlight-root .dlv-url b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* the localized pathname is the money shot: the page's accent, spent once */
+.prismlight-root .dlv-url em {
+  font-style: normal;
+  font-weight: 500;
+  color: #ffffff;
+  padding-bottom: 2px;
+  background-image: linear-gradient(var(--tc-accent), var(--tc-accent));
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: 0 100%;
+}
+
+.prismlight-root .dlv-url span:last-child {
+  margin-left: auto;
+  padding-left: 12px;
+  font-size: 11.5px;
+  color: var(--tc-panel-faint);
+}
+
+.prismlight-root .dlv-ladder-cap {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-panel-dim);
+  padding-bottom: 8px;
+}
+
+.prismlight-root .dlv-ladder {
+  display: flex;
+  flex-direction: column;
+}
+
+.prismlight-root .dlv-rung {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-rung:last-child {
+  border-bottom: 1px solid var(--tc-panel-rule);
+}
+
+.prismlight-root .dlv-rung span:last-child {
+  font-size: 11.5px;
+  color: var(--tc-panel-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prismlight-root .dlv-rung[data-won] {
+  color: #ffffff;
+}
+
+.prismlight-root .dlv-rung[data-won] b {
+  font-weight: 500;
+  padding-bottom: 3px;
+  background-image: linear-gradient(#ffffff, #ffffff), linear-gradient(#ffffff, #ffffff);
+  background-repeat: no-repeat;
+  background-size:
+    100% 1px,
+    100% 1px;
+  background-position:
+    0 calc(100% - 3px),
+    0 100%;
+}
+
+.prismlight-root .dlv-rung[data-won] span:last-child {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* the panel's base: what routing emits for free, stated on the artifact */
+.prismlight-root .dlv-route-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: clamp(14px, 1.6vw, 20px);
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-faint);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-route-foot span:last-child {
+  color: var(--tc-panel-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- the edge request ledger ----------
+   Lives on the night card. Structure is hairline rules; meaning is white
+   mono; the two v215 rows carry weight, not color. The columns are one grid
+   so time/pop/path/version/cache/ms stay a table, not six ragged stacks. */
+
+.prismlight-root .dlv-ledger {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.prismlight-root .dlv-ledger-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 0 12px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-ledger-head,
+.prismlight-root .dlv-ledger-row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto 44px;
+  gap: 0 clamp(10px, 1.3vw, 18px);
+  align-items: baseline;
+  padding: 8px 0;
+  white-space: nowrap;
+}
+
+.prismlight-root .dlv-ledger-head {
+  padding: 10px 0 6px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-panel-faint);
+}
+
+.prismlight-root .dlv-ledger-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prismlight-root .dlv-ledger-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prismlight-root .dlv-ledger .is-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The fix from two shells up, serving: white and weighted, nothing else. */
+.prismlight-root .dlv-ledger-row[data-hot] {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.prismlight-root .dlv-ledger-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .prismlight-root .dlv-hot-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prismlight-root .dlv-hot-link {
+    width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+    height: 26px;
+    margin: 0 auto;
+    background-size:
+      var(--thread-gauge) 100%,
+      var(--thread-gauge) 100%;
+    background-position:
+      0 0,
+      100% 0;
+  }
+
+  .prismlight-root .dlv-route {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px 0;
+  }
+
+  .prismlight-root .dlv-route-rule {
+    display: none;
+  }
+
+  .prismlight-root .dlv-ota-bottom {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prismlight-root .dlv-ota-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .prismlight-root .dlv-ota-row > span:first-child {
+    display: none;
+  }
+
+  /* The timestamp column folds first; the table keeps pop/path/version/cache/ms. */
+  .prismlight-root .dlv-ledger-head,
+  .prismlight-root .dlv-ledger-row {
+    grid-template-columns: auto minmax(0, 1fr) auto auto 40px;
+  }
+
+  .prismlight-root .dlv-ledger-head > span:first-child,
+  .prismlight-root .dlv-ledger-row > span:first-child {
+    display: none;
+  }
+}
+
+/* dark-panel token tones for the hot-reload editor (the page's tc-code set is
+   scoped to .tc-code, and this pane is its own panel) */
+.prismlight-root .dlv-hot-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prismlight-root .dlv-hot-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.prismlight-root .dlv-hot-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.prismlight-root .dlv-hot-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.prismlight-root .dlv-hot-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* the browser pane fills its column so the foot rests on the pane's floor */
+.prismlight-root .dlv-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.prismlight-root .dlv-hot-body {
+  flex: 1;
+}

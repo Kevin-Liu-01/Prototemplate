@@ -1,0 +1,6013 @@
+/* ============================================================
+   LENS GATE — toolchain fork
+   The ruled shell with one optical event: the hero's hairlines
+   run as a WebGL field and refract through a single breathing
+   glass lens. Everything inherited keeps its tc- name; every
+   fork-specific block is lg-.
+   ============================================================ */
+
+.lensgate-root {
+  /* language-diagram rules follow the shell's line colour */
+  --lang-rule-strong: var(--tc-hair);
+  --lang-rule: var(--tc-hair);
+
+  --tc-paper: #fbfbfa;
+  --tc-sunk: #ffffff;
+  --tc-white: #ffffff;
+  --tc-ink: #0f1113;
+  --tc-ink-2: rgba(15, 17, 19, 0.63);
+  --tc-ink-3: rgba(15, 17, 19, 0.45);
+  --tc-ink-4: rgba(15, 17, 19, 0.27);
+  --tc-hair: #e4e4e6;
+  --tc-hair-2: #f1f1f3;
+  --tc-accent: #2f5ce0;
+  --tc-dark: #0c0e11;
+
+  /* The second surface — the LEDGER beige every light diagram sits on. A light
+     cell's artifact zone is never bare card: the plate is the material that
+     carries it, the way the references never leave a diagram on paper. */
+  --tc-plate: #ffffff;
+
+  /* The one dark artifact surface for code, config and diffs — the inset panel
+     every reference draws its code on. Light cells place it on the card; the
+     page keeps its mass between the hero terminal and the dark band. */
+  --tc-panel: #14121a;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame. The mat has to be a step you can see at 1x, not one that
+     only survives a 4x crop — at 2% luminance the reveal reads as a soft single
+     border and the box-inside-a-box, which is this direction's whole signature
+     detail, never announces itself. This is ~11% off both the page and the card,
+     with its own edge a shade darker than the page's hairline. */
+  --tc-mat: var(--tc-hair);
+  --tc-mat-edge: var(--tc-hair);
+  --tc-card: #ffffff;
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+  --tc-hatch: rgba(15, 17, 19, 0.085);
+
+  --tc-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: rgba(15, 17, 19, 0.8);
+  --iso-ink-soft: rgba(15, 17, 19, 0.44);
+  --iso-ink-hair: rgba(15, 17, 19, 0.2);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.lensgate-root *,
+.lensgate-root *::before,
+.lensgate-root *::after {
+  box-sizing: border-box;
+}
+
+.lensgate-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.lensgate-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+}
+
+.lensgate-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-sec:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- type ---------- */
+
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.lensgate-root h1,
+.lensgate-root h2,
+.lensgate-root h3,
+.lensgate-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+.lensgate-root p {
+  margin: 0;
+}
+
+.lensgate-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
+
+.lensgate-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.lensgate-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- buttons ---------- */
+
+.lensgate-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.lensgate-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: #fbfbfa;
+}
+
+.lensgate-root .tc-btn-solid:hover {
+  background: #23282c;
+}
+
+.lensgate-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.lensgate-root .tc-btn-line:hover {
+  border-color: rgba(15, 17, 19, 0.28);
+  background: rgba(15, 17, 19, 0.03);
+}
+
+.lensgate-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.lensgate-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+.lensgate-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.lensgate-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.lensgate-root .tc-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.lensgate-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .lensgate-root .tc-nav-links,
+  .lensgate-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* The hero IS the ruled page. The canvas draws the page's own hairlines at a
+   28px pitch and refracts them through one breathing glass lens right-of-
+   center; the DOM in front only ever ADDS to that geometry — the type on the
+   flat pane at the left (the one region the glass never crosses), the GT mark
+   at the core, the traffic lanes seated with their bottom hairlines exactly
+   on rule lines, and the endonym ledger on the last rule. All --lg-* and
+   per-row lane geometry is measured and written by Hero.tsx before first
+   paint; the literals below are only the pre-measure fallback frame. */
+.lensgate-root .lg-hero {
+  --lg-cx: 66%;
+  --lg-cy: 52%;
+  --lg-r: 245px;
+  position: relative;
+  min-height: clamp(620px, 88vh, 780px);
+  overflow: hidden;
+}
+
+@media (max-width: 1059px) {
+  /* Narrow: the lens drops below the copy, so the band needs the height of
+     both — the traffic rows straddle the equator of the glass there. */
+  .lensgate-root .lg-hero {
+    min-height: clamp(620px, 92svh, 800px);
+  }
+}
+
+.lensgate-root .lg-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The origin's IN // OUT corner tags, in the shell's mono voice. They sit
+   above the first drawn rule (y = 28px). */
+.lensgate-root .lg-hero-tag {
+  position: absolute;
+  top: 9px;
+  z-index: 1;
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+.lensgate-root .lg-hero-tag.is-in {
+  left: var(--tc-gut);
+}
+
+.lensgate-root .lg-hero-tag.is-out {
+  right: var(--tc-gut);
+}
+
+.lensgate-root .lg-hero-in {
+  position: relative;
+  z-index: 1;
+  padding: clamp(64px, 10vh, 104px) var(--tc-gut) 0;
+}
+
+/* The flat pane. Width is capped so the measured lens always clears it —
+   the pane plus glass plus exit cards have to share 1170px. */
+.lensgate-root .lg-hero-core {
+  max-width: 440px;
+}
+
+.lensgate-root .lg-hero[data-lens-narrow='true'] .lg-hero-core {
+  max-width: 560px;
+}
+
+.lensgate-root .lg-hero h1 {
+  font-size: clamp(2.15rem, 3.55vw, 3.35rem);
+  line-height: 1.04;
+  letter-spacing: -0.038em;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.lensgate-root .lg-hero h1 span {
+  display: block;
+}
+
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink. */
+.lensgate-root .lg-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.lensgate-root .lg-hero-sub {
+  margin: 18px 0 0;
+  max-width: 40ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .lg-hero-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lensgate-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.lensgate-root .tc-copy:hover {
+  border-color: rgba(15, 17, 19, 0.26);
+}
+
+.lensgate-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- the glass core ---------- */
+
+/* The GT mark holds the lens center — the product is the glass. The rim and
+   its breathing live in the shader; the DOM contributes only the mark. */
+.lensgate-root .lg-lens-core {
+  position: absolute;
+  left: var(--lg-cx);
+  top: var(--lg-cy);
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.92;
+}
+
+/* The mark scales with the measured glass — small at the core, per the spec,
+   never the origin's 46%-of-lens medallion. */
+.lensgate-root .lg-lens-core img {
+  display: block;
+  width: clamp(30px, calc(var(--lg-r) * 0.15), 42px);
+  height: auto;
+}
+
+/* ---------- traffic on the rules ---------- */
+
+.lensgate-root .lg-pairs {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Each row owns two lanes seated on one rule line: the EN approach running
+   up to the lens meridian, and the exit lane running from the meridian out.
+   Both are clipped containers whose mask is the TRUE disc of the glass (a
+   16px feather inside the rim), so a traveling card disappears — and later
+   re-emerges — along the curve of the lens itself, not at a straight edge.
+   All geometry vars are written per row by Hero.tsx. */
+.lensgate-root .lg-lane {
+  position: absolute;
+  top: var(--lane-t, -500px);
+  height: var(--lane-h, 48px);
+  overflow: hidden;
+}
+
+.lensgate-root .lg-lane.is-en {
+  left: var(--en-l, 0px);
+  width: var(--en-w, 0px);
+  -webkit-mask-image: radial-gradient(
+    circle at var(--mx-en, -9999px) var(--my, 0px),
+    transparent calc(var(--rr, 0px) - 16px),
+    #000 calc(var(--rr, 0px) + 3px)
+  );
+  mask-image: radial-gradient(
+    circle at var(--mx-en, -9999px) var(--my, 0px),
+    transparent calc(var(--rr, 0px) - 16px),
+    #000 calc(var(--rr, 0px) + 3px)
+  );
+}
+
+.lensgate-root .lg-lane.is-tr {
+  left: var(--tr-l, 100%);
+  width: var(--tr-w, 0px);
+  -webkit-mask-image: radial-gradient(
+    circle at var(--mx-tr, -9999px) var(--my, 0px),
+    transparent calc(var(--rr, 0px) - 16px),
+    #000 calc(var(--rr, 0px) + 3px)
+  );
+  mask-image: radial-gradient(
+    circle at var(--mx-tr, -9999px) var(--my, 0px),
+    transparent calc(var(--rr, 0px) - 16px),
+    #000 calc(var(--rr, 0px) + 3px)
+  );
+}
+
+/* Travelers are positioned entirely by the conveyor timelines; hidden until
+   the loop (or the reduced-motion parked frame) places them. Their bottom
+   hairlines land exactly on the row's rule. */
+.lensgate-root .lg-traveler {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  opacity: 0;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* The shell's card language at chip scale: white face, hairline edge, square
+   bottom corners because the card STANDS on the rule (the terminal's 8/8/0/0
+   grammar, one size down). */
+.lensgate-root .lg-card {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px 6px 0 0;
+  background: var(--tc-white);
+  font-family: var(--tc-sans);
+  font-size: 12.5px;
+  line-height: 1;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.lensgate-root .lg-card.is-button {
+  font-weight: 500;
+}
+
+.lensgate-root .lg-card.is-toast {
+  color: var(--tc-ink-2);
+}
+
+/* A state dot, so the accent spend stays a diagram state — never type. */
+.lensgate-root .lg-card-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tc-accent);
+}
+
+/* A miniature nav bar: the active item carries ink, the rest recede — a real
+   navigation surface, not a sentence. */
+.lensgate-root .lg-card.is-nav {
+  gap: 0;
+  color: var(--tc-ink-3);
+}
+
+.lensgate-root .lg-nav-part:first-child {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.lensgate-root .lg-nav-part + .lg-nav-part::before {
+  content: '·';
+  margin: 0 8px;
+  color: var(--tc-ink-4);
+}
+
+/* Currency and date read in the mono voice — a formatted value is an
+   artifact string, and locale formatting is part of what crosses the glass. */
+.lensgate-root .lg-card.is-meter {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .lg-stamp {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  padding: 2px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- the coverage ledger ---------- */
+
+/* One ruled line at the foot of the hero: endonyms with their coverage
+   ticks, the long tail counted. Hairline-quiet — mono at tag scale, no
+   borders, the rule it seats on is the page's own. */
+.lensgate-root .lg-ledger {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--lg-ledger-b, 24px);
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 0 var(--tc-gut) 7px;
+  pointer-events: none;
+}
+
+.lensgate-root .lg-ledger-cap {
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  white-space: nowrap;
+}
+
+/* Whatever endonyms the width holds; the rest dissolve under a fade so the
+   list never wraps off its rule. */
+.lensgate-root .lg-ledger-list {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 64px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 64px), transparent);
+}
+
+.lensgate-root .lg-ledger-item {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+  transition: color 0.45s ease;
+}
+
+.lensgate-root .lg-ledger-item > i {
+  font-style: normal;
+  font-size: 8.5px;
+  color: var(--tc-ink-4);
+  transition: color 0.45s ease;
+}
+
+/* The quiet pulse: one endonym at a time takes ink. */
+.lensgate-root .lg-ledger-item.is-on {
+  color: var(--tc-ink);
+}
+
+.lensgate-root .lg-ledger-item.is-on > i {
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .lg-ledger-count {
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  white-space: nowrap;
+}
+
+/* Visually-hidden narrative twin of the aria-hidden traffic. */
+.lensgate-root .lg-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.lensgate-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.lensgate-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.lensgate-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+.lensgate-root .tc-wm {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-wm.is-cursor {
+  font-weight: 600;
+  letter-spacing: -0.032em;
+}
+
+.lensgate-root .tc-wm.is-ramp {
+  font-weight: 800;
+  font-size: 16.5px;
+  letter-spacing: -0.012em;
+}
+
+.lensgate-root .tc-wm.is-mintlify {
+  font-weight: 300;
+  font-size: 17px;
+  letter-spacing: -0.008em;
+}
+
+.lensgate-root .tc-wm.is-profound {
+  font-weight: 500;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.135em;
+}
+
+.lensgate-root .tc-wm.is-partiful {
+  font-weight: 700;
+  font-size: 16.5px;
+  letter-spacing: -0.038em;
+}
+
+.lensgate-root .tc-wm.is-clickhouse {
+  font-family: var(--tc-sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.006em;
+}
+
+/* ============================================================
+   TRANSIT — the ray narrative as a ledger strip
+   One vertical seam (the lens meridian in section), rows of
+   real strings crossing it: EN arrives right-aligned, the
+   locale-stamped translation leaves left-aligned.
+   ============================================================ */
+
+.lensgate-root .lg-transit {
+  padding: clamp(30px, 3.6vw, 44px) var(--tc-gut) clamp(36px, 4.2vw, 52px);
+}
+
+.lensgate-root .lg-transit-head {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 13px;
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+.lensgate-root .lg-transit-rows {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .lg-transit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 52px;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.lensgate-root .lg-transit-row:last-child {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .lg-transit-en {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+/* Per-row seam segments join into one continuous rule; the node is the glass
+   seen edge-on — the page's circle, echoed at ledger scale. */
+.lensgate-root .lg-transit-gate {
+  position: relative;
+}
+
+.lensgate-root .lg-transit-gate::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--tc-hair);
+}
+
+.lensgate-root .lg-transit-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--tc-ink-3);
+  border-radius: 50%;
+  background: var(--tc-paper);
+}
+
+.lensgate-root .lg-transit-tr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 20px;
+  font-size: 13.5px;
+  color: var(--tc-ink);
+}
+
+.lensgate-root .lg-transit-loc {
+  padding: 2px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--tc-ink-3);
+}
+
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.lensgate-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lensgate-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.lensgate-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.lensgate-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.lensgate-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.lensgate-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.lensgate-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.lensgate-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.lensgate-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+}
+
+.lensgate-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.lensgate-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.lensgate-root .tc-caps {
+  flex: 1;
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.lensgate-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.lensgate-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-fw-run {
+  margin-top: 12px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.lensgate-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.lensgate-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.lensgate-root .tc-fw-link {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.lensgate-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.lensgate-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#14121A`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.lensgate-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.lensgate-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.lensgate-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.lensgate-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.lensgate-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.lensgate-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.lensgate-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.lensgate-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set — the story's editor mock highlights on paper. */
+.lensgate-root .tc-t-str {
+  color: #5c6470;
+}
+
+.lensgate-root .tc-t-kw {
+  color: rgba(15, 17, 19, 0.52);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.lensgate-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.lensgate-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.lensgate-root .tc-t-num {
+  color: #5c6470;
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.lensgate-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lensgate-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.lensgate-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.lensgate-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.lensgate-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.lensgate-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-row.is-lead,
+.lensgate-root .tc-row.is-three,
+.lensgate-root .tc-row.is-wide-left,
+.lensgate-root .tc-row.is-tilt,
+.lensgate-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.lensgate-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.lensgate-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.lensgate-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.lensgate-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.lensgate-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.lensgate-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.lensgate-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.lensgate-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.lensgate-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.lensgate-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.lensgate-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.lensgate-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.lensgate-root .tc-cell > p,
+.lensgate-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.lensgate-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.lensgate-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   A cell that carries something visual becomes a box inside a box: the grid
+   cell is a mat with a hairline edge and exactly 2px of padding, and the card
+   sits inside it, so a precise 2px reveal runs all the way around the content.
+   Text-only cells never get this — the contrast is the whole point, and it is
+   also why the vertical rule is dropped wherever a mat provides the edge. */
+
+.lensgate-root .tc-cell.is-framed {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--tc-hair);
+  display: flex;
+}
+
+/* The ground behind the white cards is the shell line colour, so a row of
+   framed cells reads as white cards on the shell's own grey. */
+.lensgate-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-hair);
+}
+
+.lensgate-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border: 0;
+  border-radius: 12px;
+  background: var(--tc-card);
+}
+
+.lensgate-root .tc-row > .is-framed + *,
+.lensgate-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- diagonal spacer band ----------
+   Bounded, content-free breathing room between specific rows. Not a field
+   behind content — a ruled strip between subjects. */
+
+.lensgate-root .tc-hatch {
+  height: clamp(28px, 3.4vw, 40px);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: repeating-linear-gradient(45deg, var(--tc-hatch) 0 1px, transparent 1px 8px);
+}
+
+.lensgate-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.lensgate-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lensgate-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.lensgate-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.lensgate-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.lensgate-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars) gets the same
+   plate the language diagrams sit on: white chips on the second surface, the
+   viteplus grammar, instead of white bars lost on a white card. */
+.lensgate-root .tc-surface.is-plated {
+  margin-top: 12px;
+}
+
+
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.lensgate-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.lensgate-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.lensgate-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.lensgate-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.lensgate-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.lensgate-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.lensgate-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.lensgate-root .tc-bleed-art {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.lensgate-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.lensgate-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.lensgate-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.lensgate-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.lensgate-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.lensgate-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.lensgate-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.lensgate-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.lensgate-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.lensgate-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.lensgate-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.lensgate-root .tc-cell-act {
+  margin-top: 12px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.lensgate-root .tc-stats {
+  flex: 1;
+  margin-top: 12px;
+  padding: 0;
+  display: grid;
+  align-content: space-between;
+}
+
+.lensgate-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.lensgate-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.lensgate-root .tc-cell.is-panel .tc-code {
+  margin-top: 12px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.lensgate-root .tc-lang {
+  flex: 1;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --lang-ground: var(--tc-white);
+}
+
+
+
+.lensgate-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.lensgate-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.lensgate-root .tc-lang.is-lead .lang-sw-name,
+.lensgate-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.lensgate-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.lensgate-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.lensgate-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.lensgate-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.lensgate-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #86a8ff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+/* The field is the band's material, not a rumour of one: a committed light
+   field at the band's edges, held off the type by a dark center — content
+   sits in the dark, the light owns the edges (AESTHETIC_ADDENDUM 2b). */
+.lensgate-root .tc-band-field {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 130%;
+  width: 120%;
+  z-index: 0;
+  opacity: 0.85;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(
+    88% 78% at 50% 40%,
+    rgba(0, 0, 0, 0.12) 0%,
+    rgba(0, 0, 0, 0.34) 36%,
+    rgba(0, 0, 0, 0.68) 58%,
+    #000 74%
+  );
+  pointer-events: none;
+}
+
+.lensgate-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(56px, 7vw, 92px);
+}
+
+/* Copy left, artifact right: the transcript is the band's object, standing in
+   the dark center the field leaves for it. */
+.lensgate-root .tc-band-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+.lensgate-root .tc-band-term {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-band-term-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lensgate-root .tc-band-term-body {
+  padding: 16px 18px 18px;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.lensgate-root .tc-band-term-body [data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.lensgate-root .tc-band-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lensgate-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lensgate-root .tc-band-grid {
+  margin-top: clamp(40px, 5vw, 62px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.lensgate-root .tc-band-grid > div {
+  padding: 26px 22px 30px 0;
+}
+
+.lensgate-root .tc-band-grid > div + div {
+  padding-left: 22px;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lensgate-root .tc-band-grid h3 {
+  font-size: 15px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-band-grid p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.lensgate-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lensgate-root .tc-band .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.lensgate-root .tc-band .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.lensgate-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.lensgate-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.lensgate-root .tc-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.lensgate-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.lensgate-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.lensgate-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.lensgate-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.lensgate-root .tc-plan .tc-list {
+  margin-top: 12px;
+}
+
+.lensgate-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.lensgate-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.lensgate-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.lensgate-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.lensgate-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lensgate-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
+}
+
+.lensgate-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.lensgate-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.lensgate-root .tc-foot-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.lensgate-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.lensgate-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.lensgate-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
+
+.lensgate-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-mat);
+  --gte-ws-shadow: none;
+  /* The mat's radius, because the workspace IS a mat now — see below. */
+  --gte-radius: 5px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 600;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
+}
+
+.lensgate-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
+}
+
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.lensgate-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.lensgate-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+.lensgate-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
+}
+
+.lensgate-root .tc-review .gte-notes {
+  margin-top: 12px;
+}
+
+/* ---------- the workspace, mounted ----------
+   This is the biggest product mock on the page and it was the one surface
+   outside the frame system: a single border at the page hairline rather than the
+   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
+   the most prominent thing in the section read as an import.
+
+   The borrowed markup has no card element to wrap, so the mat is the workspace
+   shell itself and the two blocks inside it carry the card: the bar takes the
+   top corners, the columns take the bottom, and because they are adjacent with
+   no gap the pair reads as one white card with a 2px reveal around it. Same
+   material, same radii, same 2px as every other mount here. */
+.lensgate-root .tc-review .gte-ws {
+  padding: 2px;
+  border-color: var(--tc-mat-edge);
+}
+
+.lensgate-root .tc-review .gte-bar {
+  border-radius: 2px 2px 0 0;
+  background: var(--tc-card);
+}
+
+.lensgate-root .tc-review .gte-cols {
+  border-radius: 0 0 2px 2px;
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.lensgate-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lensgate-root [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .lensgate-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lensgate-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .lensgate-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .lensgate-root .tc-fw,
+  .lensgate-root .tc-row.is-split,
+  .lensgate-root .tc-row.is-lead,
+  .lensgate-root .tc-row.is-three,
+  .lensgate-root .tc-row.is-wide-left,
+  .lensgate-root .tc-row.is-wide-right,
+  .lensgate-root .tc-row.is-even,
+  .lensgate-root .tc-row.is-tilt,
+  .lensgate-root .tc-row.is-grammar,
+  .lensgate-root .tc-plans,
+  .lensgate-root .tc-plain,
+  .lensgate-root .tc-band-top,
+  .lensgate-root .tc-band-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-row > * + *,
+  .lensgate-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .lensgate-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .lensgate-root .tc-band-grid > div + div {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .lensgate-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .lensgate-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .lensgate-root .tc-row > .is-framed + *,
+  .lensgate-root .tc-row > * + .is-framed,
+  .lensgate-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .lensgate-root .tc-cell.is-tall,
+  .lensgate-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .lensgate-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .lensgate-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lensgate-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .lensgate-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .lensgate-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .lensgate-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 12px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .lensgate-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lensgate-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .lensgate-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .lensgate-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .lensgate-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .lensgate-root .tc-rail,
+  .lensgate-root .tc-nav-in,
+  .lensgate-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .lensgate-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .lensgate-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .lensgate-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .lensgate-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  .lensgate-root .lg-hero-tag {
+    font-size: 9px;
+  }
+
+  /* Phone-scale traffic: the artifacts step down with the mono floor, and
+     the ledger drops its caption — the endonyms and the count carry it. */
+  .lensgate-root .lg-card {
+    height: 28px;
+    padding: 0 10px;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .lensgate-root .lg-card.is-meter {
+    font-size: 11px;
+  }
+
+  .lensgate-root .lg-nav-part + .lg-nav-part::before {
+    margin: 0 6px;
+  }
+
+  .lensgate-root .lg-stamp {
+    top: -8px;
+    right: -8px;
+    font-size: 8px;
+  }
+
+  .lensgate-root .lg-ledger {
+    gap: 12px;
+  }
+
+  .lensgate-root .lg-ledger-cap {
+    display: none;
+  }
+
+  .lensgate-root .lg-ledger-list {
+    gap: 13px;
+  }
+
+  .lensgate-root .lg-transit-row {
+    grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+    min-height: 48px;
+  }
+
+  .lensgate-root .lg-transit-en {
+    padding-right: 12px;
+    font-size: 12.5px;
+  }
+
+  .lensgate-root .lg-transit-tr {
+    padding-left: 12px;
+    gap: 8px;
+    font-size: 12.5px;
+  }
+
+}
+
+/* ============================================================
+   STORY — THE CINEMA CUT
+   The page's one other dark surface: a full-width cell inside
+   the ruled column. The shell is the mat (#232327); the three
+   internal plates sit flush against it with no borders — the
+   site on terminal black, the channel and rail on the deep
+   panel tone — and every artifact inside them is real.
+   ============================================================ */
+
+.lensgate-root .tc-cinema {
+  background: var(--tc-mat);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-cinema-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
+
+.lensgate-root .tc-cinema-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 24ch;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-head p {
+  margin-top: 13px;
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- the stage ---------- */
+
+.lensgate-root .tc-cinema-stage {
+  position: relative;
+  height: calc(100svh - 58px);
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.52fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) 62px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-site {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  background: #111111;
+  overflow: hidden;
+  perspective: 1400px;
+}
+
+.lensgate-root .tc-cinema-flip {
+  position: absolute;
+  inset: 0;
+}
+
+.lensgate-root .tc-cinema-channel {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-rail {
+  position: relative;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 26px);
+  padding: 0 clamp(16px, 2.2vw, 28px) 10px;
+  background: var(--tc-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* ---------- the mini-site ---------- */
+
+.lensgate-root .tc-cinema-pbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 40px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lensgate-root .tc-cinema-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.lensgate-root .tc-cinema-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.lensgate-root .tc-cinema-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.lensgate-root .tc-cinema-tabs {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 12px;
+}
+
+.lensgate-root .tc-cinema-tabs b {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.lensgate-root .tc-cinema-tabs b[data-on='true'] {
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #111111;
+}
+
+.lensgate-root .tc-cinema-pbody {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(12px, 1.6vh, 22px);
+  padding: clamp(16px, 2.2vh, 26px) clamp(20px, 2.6vw, 36px) clamp(12px, 1.6vh, 20px);
+  color: rgba(255, 255, 255, 0.88);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-phead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: clamp(10px, 1.4vh, 16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lensgate-root .tc-cinema-brand {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-pnav {
+  display: inline-flex;
+  gap: 18px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lensgate-root .tc-cinema-pgrid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(18px, 2.6vw, 34px);
+  align-content: center;
+}
+
+.lensgate-root .tc-cinema-pleft {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(10px, 1.5vh, 18px);
+  min-width: 0;
+}
+
+.lensgate-root .tc-cinema-ph1 {
+  font-size: clamp(24px, 2.4vw, 33px);
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-pdate {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.lensgate-root .tc-cinema-pcopy {
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.74);
+  max-width: 46ch;
+}
+
+.lensgate-root .tc-cinema-pscale {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 46ch;
+}
+
+.lensgate-root .tc-cinema-pacts {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lensgate-root .tc-cinema-pbtn {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-plegal {
+  position: relative;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-pright {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(10px, 1.5vh, 16px);
+  min-width: 0;
+}
+
+.lensgate-root .tc-cinema-pcard,
+.lensgate-root .tc-cinema-ptoast,
+.lensgate-root .tc-cinema-pform {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  padding: 13px 15px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.lensgate-root .tc-cinema-pcard b {
+  display: block;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.3;
+  letter-spacing: -0.014em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-pcard-sub {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-ptoast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lensgate-root .tc-cinema-ptoast > i {
+  font-style: normal;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lensgate-root .tc-cinema-pform label {
+  display: block;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tc-cinema-pinput {
+  display: block;
+  margin-top: 8px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-pfoot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: clamp(10px, 1.4vh, 14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-pfoot > span:first-child {
+  margin-right: auto;
+}
+
+/* ---------- swaps: two languages, one measured box ---------- */
+
+.lensgate-root .tc-cinema-swap {
+  position: relative;
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.lensgate-root .tc-cinema-swap[data-mode='w'] {
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-swap[data-mode='h'] {
+  display: block;
+}
+
+.lensgate-root .tc-cinema-es {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  white-space: inherit;
+}
+
+.lensgate-root .tc-cinema-swap[data-mode='h'] .tc-cinema-es {
+  width: 100%;
+}
+
+/* ---------- markers: keys anchored to their nodes ---------- */
+
+.lensgate-root .tc-cinema-mk {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 12px;
+  padding: 2px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.lensgate-root .tc-cinema-mk::before {
+  content: '';
+  position: absolute;
+  left: -11px;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lensgate-root .tc-cinema-mk {
+  position: relative;
+}
+
+.lensgate-root .tc-cinema-mk.is-block {
+  display: inline-flex;
+  margin-left: 0;
+  margin-bottom: 6px;
+}
+
+.lensgate-root .tc-cinema-mk.is-block::before {
+  left: 6px;
+  top: 100%;
+  width: 1px;
+  height: 7px;
+}
+
+.lensgate-root .tc-cinema-mk.is-abs {
+  position: absolute;
+  top: -9px;
+  right: 10px;
+  margin: 0;
+  background: #111111;
+}
+
+.lensgate-root .tc-cinema-mk.is-abs::before {
+  display: none;
+}
+
+/* ---------- cursor + highlight ---------- */
+
+.lensgate-root .tc-cinema-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 7;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-cursor-tag {
+  margin-top: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #111111;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.lensgate-root .tc-cinema-hilite {
+  position: absolute;
+  z-index: 3;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* ---------- the editor ---------- */
+
+.lensgate-root .tc-cinema-editor {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--tc-panel);
+}
+
+.lensgate-root .tc-cinema-branch {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lensgate-root .tc-cinema-ebody {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-code {
+  position: absolute;
+  inset: 0;
+  padding: 14px 0 10px;
+  font-family: var(--tc-mono);
+  font-size: 13.5px;
+  line-height: 24px;
+  color: var(--tc-panel-ink);
+}
+
+.lensgate-root .tc-cinema-code-tag {
+  display: none;
+}
+
+.lensgate-root .tc-cinema-line {
+  display: grid;
+  grid-template-columns: 46px 22px minmax(0, 1fr);
+  padding-right: 16px;
+  white-space: pre;
+}
+
+.lensgate-root .tc-cinema-line.is-meta code {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-ln {
+  text-align: right;
+  padding-right: 14px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+.lensgate-root .tc-cinema-sym {
+  position: relative;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lensgate-root .tc-cinema-line[data-mark='add'] .tc-cinema-sym {
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-find {
+  position: absolute;
+  top: 4px;
+  left: -2px;
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  font-style: normal;
+  font-size: 10.5px;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-del {
+  position: relative;
+  color: var(--tc-panel-ink);
+}
+
+.lensgate-root .tc-cinema-strike {
+  position: absolute;
+  left: 0;
+  right: 16px;
+  top: 52%;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.lensgate-root .tc-cinema-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 46px;
+  background: linear-gradient(rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0));
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+/* ---------- the side channel ---------- */
+
+.lensgate-root .tc-cinema-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lensgate-root .tc-cinema-panel-bar {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  flex: none;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lensgate-root .tc-cinema-panel-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(12px, 1.8vh, 20px) 18px;
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-panel-foot {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/* the context ledger */
+
+.lensgate-root .tc-cinema-led {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-led-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  padding: 6px 0;
+}
+
+.lensgate-root .tc-cinema-led-row + .tc-cinema-led-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.lensgate-root .tc-cinema-led-key {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.lensgate-root .tc-cinema-led-meta {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.34);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-led-en {
+  grid-column: 1 / -1;
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lensgate-root .tc-cinema-led-es {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* the two code panels */
+
+.lensgate-root .tc-cinema-mini {
+  padding: 4px 0 12px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 21px;
+  color: var(--tc-panel-ink);
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-mini-line {
+  white-space: pre;
+}
+
+.lensgate-root .tc-cinema-gen {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lensgate-root .tc-cinema-gen.is-tall {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.lensgate-root .tc-cinema-gen-cap {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 6px;
+}
+
+.lensgate-root .tc-cinema-gen-row {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  column-gap: 10px;
+  align-items: baseline;
+  padding: 5px 4px;
+  border-radius: 3px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.lensgate-root .tc-cinema-gen.is-tall .tc-cinema-gen-row {
+  font-size: 12px;
+  padding: 8px 6px;
+}
+
+.lensgate-root .tc-cinema-gen-f {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.lensgate-root .tc-cinema-gen-s {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lensgate-root .tc-cinema-gen-d {
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+/* the review card */
+
+.lensgate-root .tc-cinema-rev {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.lensgate-root .tc-cinema-rev-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lensgate-root .tc-cinema-rev-ava {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-rev-head b {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-rev-sub {
+  display: block;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tc-cinema-rev-msg {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.lensgate-root .tc-cinema-rev-src {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-rev-acts {
+  display: flex;
+  gap: 8px;
+}
+
+.lensgate-root .tc-cinema-rev-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lensgate-root .tc-cinema-rev-btn.is-solid {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #111111;
+}
+
+.lensgate-root .tc-cinema-rev-ok {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: #ffffff;
+}
+
+/* the scan log + findings */
+
+.lensgate-root .tc-cinema-log {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lensgate-root .tc-cinema-log-row {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  column-gap: 10px;
+  padding: 5px 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lensgate-root .tc-cinema-log-k {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lensgate-root .tc-cinema-findings {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding-top: 8px;
+}
+
+.lensgate-root .tc-cinema-find-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 10px;
+  padding: 9px 6px;
+  border-radius: 3px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lensgate-root .tc-cinema-find-l {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: #ffffff;
+}
+
+/* the PR */
+
+.lensgate-root .tc-cinema-pr {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.lensgate-root .tc-cinema-pr-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lensgate-root .tc-cinema-pr-title b {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-pr-title span {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tc-cinema-pr-meta {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.lensgate-root .tc-cinema-pr-checks {
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lensgate-root .tc-cinema-pr-check {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 3px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.lensgate-root .tc-cinema-pr-pass {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-pr-act {
+  position: relative;
+  margin-top: 4px;
+}
+
+.lensgate-root .tc-cinema-pr-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.lensgate-root .tc-cinema-pr-done {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* ---------- the beat rail ---------- */
+
+.lensgate-root .tc-cinema-rail-mark {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-cap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.lensgate-root .tc-cinema-cap span {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(calc(-50% - 4px));
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.lensgate-root .tc-cinema-cap span:first-child {
+  opacity: 1;
+}
+
+.lensgate-root .tc-cinema-stations {
+  display: inline-flex;
+  gap: clamp(10px, 1.5vw, 20px);
+  margin-bottom: 8px;
+}
+
+.lensgate-root .tc-cinema-stations b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.lensgate-root .tc-cinema-thread {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 13px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.75);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.lensgate-root .tc-cinema-thread.is-lower {
+  bottom: 8.5px;
+}
+
+/* ---------- overlays ---------- */
+
+.lensgate-root .tc-cinema-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-wires path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1.5;
+}
+
+.lensgate-root .tc-cinema-pellets {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-pellet {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  opacity: 0;
+}
+
+.lensgate-root .tc-cinema-cursor.is-agent {
+  z-index: 8;
+}
+
+/* ---------- pre-JS + reduced-motion states ---------- */
+
+.lensgate-root .tc-cinema-panel {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.lensgate-root .tc-cinema-panel[data-first='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lensgate-root .tc-cinema-editor,
+.lensgate-root .tc-cinema-cursor,
+.lensgate-root .tc-cinema-hilite,
+.lensgate-root .tc-cinema-rev-ok,
+.lensgate-root .tc-cinema-pr-done {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.lensgate-root .tc-cinema-code[data-code='diff'] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.lensgate-root .tc-cinema-scanline {
+  opacity: 0;
+}
+
+/* The take unrolls: pin and scrub gone, the stage becomes a labeled
+   storyboard — the site, the editor states and every channel panel stacked
+   in flow, each named by its own bar. Nothing depends on the timeline. */
+@media (prefers-reduced-motion: reduce) {
+  .lensgate-root .tc-cinema-stage {
+    height: auto;
+    min-height: 0;
+    display: block;
+  }
+
+  .lensgate-root .tc-cinema-site {
+    position: relative;
+  }
+
+  .lensgate-root .tc-cinema-flip,
+  .lensgate-root .tc-cinema-page,
+  .lensgate-root .tc-cinema-editor,
+  .lensgate-root .tc-cinema-code,
+  .lensgate-root .tc-cinema-panel {
+    position: static;
+  }
+
+  .lensgate-root .tc-cinema-page {
+    min-height: 0;
+  }
+
+  .lensgate-root .tc-cinema-pbody {
+    gap: 18px;
+  }
+
+  .lensgate-root .tc-cinema-editor,
+  .lensgate-root .tc-cinema-panel,
+  .lensgate-root .tc-cinema-code[data-code='diff'],
+  .lensgate-root .tc-cinema-rev-ok,
+  .lensgate-root .tc-cinema-pr-done {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .lensgate-root .tc-cinema-pr-done {
+    position: static;
+    display: block;
+    margin-top: 10px;
+    transform: none;
+  }
+
+  .lensgate-root .tc-cinema-code {
+    padding: 16px 0;
+  }
+
+  .lensgate-root .tc-cinema-code + .tc-cinema-code {
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .lensgate-root .tc-cinema-code-tag {
+    display: block;
+    padding: 0 18px 8px 46px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .lensgate-root .tc-cinema-find {
+    transform: none !important;
+  }
+
+  .lensgate-root .tc-cinema-panel + .tc-cinema-panel .tc-cinema-panel-bar {
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .lensgate-root .tc-cinema-led,
+  .lensgate-root .tc-cinema-led-row,
+  .lensgate-root .tc-cinema-led-es {
+    opacity: 1 !important;
+  }
+
+  .lensgate-root .tc-cinema-wires,
+  .lensgate-root .tc-cinema-pellets,
+  .lensgate-root .tc-cinema-cursor,
+  .lensgate-root .tc-cinema-hilite,
+  .lensgate-root .tc-cinema-scanline,
+  .lensgate-root .tc-cinema-rail {
+    display: none;
+  }
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .lensgate-root .tc-cinema-stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1.28fr) minmax(0, 1fr) 56px;
+  }
+
+  .lensgate-root .tc-cinema-site {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .lensgate-root .tc-cinema-channel {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .lensgate-root .tc-cinema-rail {
+    grid-row: 3;
+  }
+
+  .lensgate-root .tc-cinema-pgrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .lensgate-root .tc-cinema-pright {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .lensgate-root .tc-cinema-pform {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-ph1 {
+    font-size: 22px;
+  }
+
+  .lensgate-root .tc-cinema-code {
+    font-size: 11px;
+    line-height: 18px;
+  }
+
+  .lensgate-root .tc-cinema-line {
+    grid-template-columns: 32px 18px minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-cinema-ln {
+    padding-right: 8px;
+  }
+
+  .lensgate-root .tc-cinema-led-row:nth-child(n + 7) {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-stations {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-pfoot > :nth-child(n + 4) {
+    display: none;
+  }
+}
+
+/* ---- full-stack band ---- */
+
+/* The centerpiece: seven planes on the family's 30° axis — the whole stack as
+   one assembly, the doubled thread climbing its flank from source to screen. */
+.lensgate-root .tc-band-stack {
+  margin-top: clamp(46px, 5vw, 70px);
+  display: grid;
+  justify-items: center;
+  overflow-x: auto;
+}
+
+.lensgate-root .tc-band-stack .tcstack {
+  width: 100%;
+  max-width: 680px;
+  min-width: 520px;
+}
+
+.lensgate-root .tcstack .iso-label {
+  font-size: 9.5px;
+}
+
+.lensgate-root .tcstack .tcstack-name {
+  font-size: 10.5px;
+  letter-spacing: 0.01em;
+}
+
+/* The brand's pair: constant gauge everywhere, so the strokes never scale. */
+.lensgate-root .tcstack .tcstack-thread {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: var(--thread-gauge, 1.5px);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---- the four service minis: dark shells, flush content, no internal rules ---- */
+
+.lensgate-root .tcm {
+  margin-top: 18px;
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  padding: 12px 14px 13px;
+  font-family: var(--tc-mono);
+  overflow: hidden;
+}
+
+.lensgate-root .tcm-file {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lensgate-root .tcm-pre {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.lensgate-root .tcm-dim {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lensgate-root .tcm-kw {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lensgate-root .tcm-str {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* GT's own API carries weight, not hue — same rule as every code panel. */
+.lensgate-root .tcm-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.lensgate-root .tcm-add {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.lensgate-root .tcm-del {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tcm-rows {
+  margin-top: 9px;
+  display: grid;
+  gap: 5px;
+}
+
+.lensgate-root .tcm-rows.is-ledger {
+  margin-top: 10px;
+  gap: 9px;
+}
+
+.lensgate-root .tcm-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.lensgate-root .tcm-rows.is-ledger .tcm-row {
+  font-size: 12px;
+}
+
+.lensgate-root .tcm-row span {
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.lensgate-root .tcm-row b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+/* ---- the context-layers model: org → project → component ---- */
+
+.lensgate-root .tc-band-ctx {
+  margin-top: clamp(50px, 5.4vw, 76px);
+}
+
+.lensgate-root .tc-band-ctx-head h3 {
+  font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-band-ctx-head p {
+  margin: 10px 0 0;
+  max-width: 66ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lensgate-root .tcctx {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px minmax(0, 1fr) 104px minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.lensgate-root .tcctx-panel {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  padding: 20px 22px 22px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lensgate-root .tcctx-panel h4 {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.lensgate-root .tcctx-cap {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lensgate-root .tcctx-split {
+  margin-top: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.lensgate-root .tcctx-k {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.lensgate-root .tcctx-k span {
+  margin-left: 8px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lensgate-root .tcctx-note {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.lensgate-root .tcctx-note.is-foot {
+  margin-top: 14px;
+}
+
+.lensgate-root .tcctx-rule {
+  margin-top: 7px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lensgate-root .tcctx-groups {
+  margin-top: 18px;
+  display: grid;
+  gap: 9px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+}
+
+.lensgate-root .tcctx-grow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.lensgate-root .tcctx-pri {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tcctx-grow b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.lensgate-root .tcctx-tag {
+  margin-left: auto;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tcctx-code {
+  margin: 18px 0 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* The punchline: with context, Spanish picks the notification, not the bread. */
+.lensgate-root .tcctx-res {
+  margin-top: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+}
+
+.lensgate-root .tcctx-res > span {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tcctx-yes {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.lensgate-root .tcctx-no {
+  color: rgba(255, 255, 255, 0.38);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* The inheritance joints: the doubled thread with one directional mark. */
+.lensgate-root .tcctx-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 6px;
+}
+
+.lensgate-root .tcctx-link svg {
+  display: block;
+  flex: none;
+}
+
+.lensgate-root .tcctx-link span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.48);
+  white-space: nowrap;
+}
+
+.lensgate-root .tcctx-arrow {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.66);
+  stroke-width: var(--thread-gauge, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+
+.lensgate-root .tcctx-head {
+  fill: rgba(255, 255, 255, 0.66);
+}
+
+@media (max-width: 1000px) {
+  .lensgate-root .tcctx {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lensgate-root .tcctx-link {
+    flex-direction: row;
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .lensgate-root .tcctx-link svg {
+    transform: rotate(90deg);
+  }
+
+  .lensgate-root .tc-band-stack {
+    justify-items: start;
+  }
+}
+
+/* ---------- cinema, round 2: dark tokens, fills, mobile ---------- */
+
+/* Every code artifact in the cinema sits on a dark plate, so the token set is
+   the dark panel's — the light set above would print ink on near-black. */
+.lensgate-root .tc-cinema .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lensgate-root .tc-cinema .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.lensgate-root .tc-cinema .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.lensgate-root .tc-cinema .tc-t-com {
+  color: rgba(255, 255, 255, 0.26);
+}
+
+.lensgate-root .tc-cinema .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* the editor code centers in its plate instead of leaving a dead band below */
+.lensgate-root .tc-cinema-code {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* the demo site's stat strip — the row that fills the band over the footer */
+.lensgate-root .tc-cinema-pstats {
+  display: flex;
+  gap: clamp(24px, 3.4vw, 56px);
+  padding-top: clamp(10px, 1.4vh, 16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lensgate-root .tc-cinema-pstats > span {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.lensgate-root .tc-cinema-pstats b {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-pstats .tc-cinema-swap {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/* the note line that keeps a code panel from ending in dead plate */
+.lensgate-root .tc-cinema-note {
+  margin: 10px 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 44ch;
+}
+
+/* the webhook payload the review card answers */
+.lensgate-root .tc-cinema-payload {
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: pre;
+  overflow-x: hidden;
+}
+
+.lensgate-root .tc-cinema-mini {
+  font-size: 13px;
+  line-height: 22px;
+}
+
+.lensgate-root .tc-cinema-pleft,
+.lensgate-root .tc-cinema-pright {
+  justify-content: space-evenly;
+}
+
+.lensgate-root .tc-cinema-cap {
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-cap span {
+  font-size: 14.5px;
+}
+
+/* nothing in the take may compress and overprint its neighbour */
+.lensgate-root .tc-cinema-pbody > * {
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .lensgate-root .tc-cinema-stage {
+    grid-template-rows: minmax(0, 1.55fr) minmax(0, 1fr) 48px;
+  }
+
+  .lensgate-root .tc-cinema-pnav > .tc-cinema-swap:nth-child(3),
+  .lensgate-root .tc-cinema-pcard-sub,
+  .lensgate-root .tc-cinema-pdate + .tc-cinema-mk,
+  .lensgate-root [data-node='scale'] {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-mk {
+    max-width: 118px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+  }
+
+  .lensgate-root .tc-cinema-brand {
+    white-space: nowrap;
+  }
+
+  .lensgate-root .tc-cinema-phead {
+    gap: 12px;
+  }
+
+  .lensgate-root .tc-cinema-pnav {
+    gap: 12px;
+    font-size: 11.5px;
+  }
+
+  .lensgate-root .tc-cinema-pbody {
+    gap: 10px;
+    padding: 12px 16px;
+  }
+
+  .lensgate-root .tc-cinema-pcopy {
+    font-size: 12px;
+  }
+
+  .lensgate-root .tc-cinema-pstats b {
+    font-size: 16px;
+  }
+
+  .lensgate-root .tc-cinema-pstats {
+    gap: 18px;
+  }
+
+  .lensgate-root .tc-cinema-payload {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-note {
+    display: none;
+  }
+}
+
+/* ---------- cinema, round 3: full-height fills ---------- */
+
+/* the two page columns spread across the whole band between nav and stats */
+.lensgate-root .tc-cinema-pgrid {
+  align-content: stretch;
+}
+
+/* the code panels distribute their three blocks instead of pooling at the top */
+.lensgate-root [data-panel='code-t'] .tc-cinema-panel-body,
+.lensgate-root [data-panel='code-ctx'] .tc-cinema-panel-body {
+  justify-content: space-evenly;
+}
+
+.lensgate-root [data-panel='code-t'] .tc-cinema-gen,
+.lensgate-root [data-panel='code-ctx'] .tc-cinema-gen {
+  margin-top: 0;
+}
+
+/* the PR's file list — the diffstat the checks are judging */
+.lensgate-root .tc-cinema-pr-files {
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lensgate-root .tc-cinema-pr-file {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.lensgate-root .tc-cinema-pr-file span:last-child {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+@media (max-width: 900px) {
+  .lensgate-root .tc-cinema-plegal {
+    white-space: normal;
+  }
+
+  .lensgate-root .tc-cinema-pstats {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .lensgate-root .tc-cinema-pr-files {
+    display: none;
+  }
+}
+
+/* findings cluster at reading rhythm rather than drifting apart */
+.lensgate-root .tc-cinema-findings {
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ---- full-stack band ---- */
+/* Round 2. Appended overrides only — the r1 band rules above stay untouched
+   so this block always wins by order. The recomposition: the prismatic light
+   becomes ONE committed texture panel in the header (viteplus d06 grammar)
+   instead of a wash under the whole band; the stack zone splits into trace +
+   assembly; the service grid loses its internal verticals and lands all four
+   plates on one bottom line; the context model stacks vertically, the way
+   inheritance actually flows. */
+
+/* -- header: full-height text/texture split -- */
+
+.lensgate-root .tc-band-top {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  align-items: stretch;
+  gap: clamp(32px, 4.4vw, 68px);
+}
+
+.lensgate-root .tc-band-lede {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(6px, 1vw, 14px) 0 clamp(4px, 0.8vw, 10px);
+}
+
+/* the lede's foot: what "buildtime, runtime, and review" concretely are */
+.lensgate-root .tc-band-index {
+  margin-top: auto;
+  padding-top: clamp(26px, 3vw, 40px);
+}
+
+.lensgate-root .tc-band-index-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lensgate-root .tc-band-index-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lensgate-root .tc-band-index-row span {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-band-index-row b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* The band's one light moment: a full-height texture panel bleeding past the
+   band's top edge and out to the right rail, the shader run bright enough to
+   read as directional light, the terminal floating in its dark centre. */
+.lensgate-root .tc-band-panel {
+  position: relative;
+  overflow: hidden;
+  margin-top: calc(-1 * clamp(66px, 8vw, 108px));
+  margin-right: calc(-1 * var(--tc-gut));
+  border-radius: 0 0 0 8px;
+  background: #08090b;
+  min-height: clamp(430px, 42vw, 560px);
+  display: grid;
+  place-items: center;
+}
+
+.lensgate-root .tc-band-panel-field {
+  position: absolute;
+  left: -10%;
+  top: -12%;
+  width: 120%;
+  height: 124%;
+}
+
+.lensgate-root .tc-band-panel .tc-band-term {
+  position: relative;
+  z-index: 1;
+  width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
+  margin: clamp(40px, 4.6vw, 64px) 0;
+  background: #0d0e10;
+  outline-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* -- stack zone: the trace beside the assembly -- */
+
+.lensgate-root .tc-band-flow {
+  margin-top: clamp(54px, 6vw, 88px);
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.45fr);
+  gap: clamp(30px, 4vw, 64px);
+  align-items: center;
+}
+
+.lensgate-root .tc-band-flow-copy {
+  min-width: 0;
+}
+
+.lensgate-root .tc-band-flow-copy h3 {
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  letter-spacing: -0.018em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-band-flow-copy > p {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 46ch;
+}
+
+/* the trace plate: the drawing's journey, on the clock */
+.lensgate-root .tc-trace {
+  margin-top: 12px;
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  overflow: hidden;
+  font-family: var(--tc-mono);
+}
+
+.lensgate-root .tc-trace-bar {
+  padding: 10px 16px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lensgate-root .tc-trace-rows {
+  padding: 12px 16px 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.lensgate-root .tc-trace-row {
+  display: grid;
+  grid-template-columns: 62px 86px minmax(0, 1fr);
+  gap: 11px;
+  align-items: baseline;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-trace-time {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-trace-row b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-trace-val {
+  color: rgba(255, 255, 255, 0.58);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* the assembly now owns the zone's right two-thirds at full size */
+.lensgate-root .tc-band-stack {
+  margin-top: 0;
+  overflow: visible;
+  justify-items: stretch;
+}
+
+.lensgate-root .tc-band-stack .tcstack {
+  max-width: none;
+  min-width: 0;
+}
+
+.lensgate-root .tcstack .iso-label {
+  font-size: 8.6px;
+}
+
+.lensgate-root .tcstack .tcstack-name {
+  font-size: 9.6px;
+}
+
+/* -- service grid: one sheet, four different objects, one bottom line -- */
+
+.lensgate-root .tc-band-grid {
+  column-gap: clamp(20px, 2.6vw, 34px);
+}
+
+.lensgate-root .tc-band-grid > div {
+  padding: 26px 0 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lensgate-root .tc-band-grid > div + div {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.lensgate-root .tcm {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 218px;
+}
+
+.lensgate-root .tcm-file {
+  padding: 11px 14px 0;
+}
+
+.lensgate-root .tcm-pre {
+  padding: 0 14px;
+}
+
+.lensgate-root .tcm-rows {
+  padding: 0 14px 13px;
+}
+
+/* the pinned band every plate ends on — a tinted fill, not a rule */
+.lensgate-root .tcm-bottom {
+  margin-top: auto;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Code: an editor — tab strip on top, gutter numbers in the code */
+.lensgate-root .tcm-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.lensgate-root .tcm-tabs span {
+  padding: 10px 14px 8px;
+  color: rgba(255, 255, 255, 0.38);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.lensgate-root .tcm-tabs .is-on {
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.9);
+}
+
+.lensgate-root .tcm-ln {
+  display: inline-block;
+  width: 16px;
+  margin-right: 10px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.24);
+}
+
+/* Content: an exchange — request block, doubled thread, tinted response */
+.lensgate-root .tcm-tail {
+  margin-top: auto;
+}
+
+.lensgate-root .tcm-wire {
+  display: block;
+  margin: 2px 0 6px 26px;
+}
+
+.lensgate-root .tcm-wire path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: var(--thread-gauge, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+
+.lensgate-root .tcm-wire .tcm-wire-head {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: none;
+}
+
+.lensgate-root .tcm-resp {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 9px 0 12px;
+}
+
+.lensgate-root .tcm-resp-status {
+  padding: 0 14px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lensgate-root .tcm-resp .tcm-pre {
+  margin-top: 4px;
+}
+
+.lensgate-root .tcm-resp b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Dashboard: product UI — lighter card, locale chip strip, publish footer */
+.lensgate-root .tcm.is-dash {
+  background: #17171b;
+}
+
+.lensgate-root .tcm-dash-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.lensgate-root .tcm-dash-bar span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tcm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px 2px;
+}
+
+.lensgate-root .tcm-chips span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.lensgate-root .tcm.is-dash .tcm-rows.is-ledger {
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.lensgate-root .tcm-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.045);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
+.lensgate-root .tcm-foot b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.lensgate-root .tcm-foot span {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Locadex: a diff sheet — full-bleed tinted added lines under the hunk */
+.lensgate-root .tcm-diffbody {
+  padding: 0;
+  margin-top: 9px;
+}
+
+.lensgate-root .tcm-diffbody > div {
+  padding: 0 14px;
+}
+
+.lensgate-root .tcm-diffbody > .is-add {
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.lensgate-root .tcm-diffbody > .is-del {
+  color: rgba(255, 255, 255, 0.36);
+}
+
+/* -- context layers: the cascade, stacked the way inheritance flows -- */
+
+.lensgate-root .tcctx {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.lensgate-root .tcctx-panel {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.62fr) minmax(0, 2fr);
+  gap: clamp(20px, 3vw, 44px);
+  padding: 22px 26px 24px;
+}
+
+.lensgate-root .tcctx-title h4 {
+  font-size: 16px;
+}
+
+.lensgate-root .tcctx-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 2.6vw, 36px);
+  align-items: start;
+  min-width: 0;
+}
+
+/* the joint carries the model's weight: bright doubled thread, real head */
+.lensgate-root .tcctx-link {
+  flex-direction: row;
+  align-items: center;
+  gap: 13px;
+  padding: 5px 0;
+  margin-left: clamp(20px, 2.4vw, 34px);
+}
+
+.lensgate-root .tcctx-link svg {
+  transform: none;
+}
+
+.lensgate-root .tcctx-arrow {
+  stroke: rgba(255, 255, 255, 0.82);
+}
+
+.lensgate-root .tcctx-head {
+  fill: rgba(255, 255, 255, 0.82);
+}
+
+.lensgate-root .tcctx-link span {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.lensgate-root .tcctx-split {
+  margin-top: 18px;
+}
+
+/* priority overlap: the org directive winning, the loser struck */
+.lensgate-root .tcctx-clash {
+  margin-top: 10px;
+  display: grid;
+  gap: 7px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.lensgate-root .tcctx-clash .tcctx-pri {
+  margin-right: 8px;
+}
+
+.lensgate-root .tcctx-clash .is-win {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.lensgate-root .tcctx-clash .is-win b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.lensgate-root .tcctx-clash .is-lose {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tcctx-clash .is-lose s {
+  text-decoration-thickness: 1px;
+}
+
+.lensgate-root .tcctx-groups {
+  margin-top: 10px;
+  max-width: 250px;
+}
+
+.lensgate-root .tcctx-code {
+  margin-top: 0;
+  align-self: center;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+/* the punchline, actually rendered: the Spanish toast */
+.lensgate-root .tcctx-toast {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 14px;
+  border-radius: 6px;
+  background: #1b1b20;
+  outline: 1px solid rgba(255, 255, 255, 0.18);
+  outline-offset: 2px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 360px;
+}
+
+.lensgate-root .tcctx-toast i {
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.lensgate-root .tcctx-res {
+  margin-top: 12px;
+}
+
+.lensgate-root .tc-band-ctx {
+  padding-bottom: 6px;
+}
+
+/* -- responsive: the band folds to one column below 1000px -- */
+
+@media (max-width: 1000px) {
+  .lensgate-root .tc-band-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-band-panel {
+    margin-top: 6px;
+    margin-left: calc(-1 * var(--tc-gut));
+    border-radius: 0;
+    min-height: 420px;
+  }
+
+  .lensgate-root .tc-band-index-row b {
+    white-space: normal;
+    text-align: right;
+  }
+
+  .lensgate-root .tc-band-flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-band-stack {
+    overflow-x: auto;
+  }
+
+  .lensgate-root .tc-band-stack .tcstack {
+    min-width: 560px;
+  }
+
+  .lensgate-root .tcstack .iso-label {
+    font-size: 9.5px;
+  }
+
+  .lensgate-root .tcstack .tcstack-name {
+    font-size: 10.5px;
+  }
+
+  .lensgate-root .tcm {
+    min-height: 0;
+  }
+
+  /* stacked, each cell needs its own foot before the next cell's top rule */
+  .lensgate-root .tc-band-grid > div {
+    padding-bottom: 26px;
+  }
+
+  .lensgate-root .tcctx-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .lensgate-root .tcctx-two {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .lensgate-root .tcctx-link {
+    padding: 12px 0;
+  }
+
+  .lensgate-root .tcctx-link svg {
+    transform: none;
+  }
+
+  .lensgate-root .tcctx-code {
+    align-self: start;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
+/* ============================================================
+   CINEMA — round 2. Appended overrides only; earlier cinema
+   rules stay untouched so this block wins by document order.
+   The round's brief: spend the dark family's material moment
+   (prismatic light under the page at translate + merge), kill
+   every dead dark run with real artifacts (context facts, run
+   ledger, review queue, problems dock, status bar), carry the
+   doubled thread as a station rail inside the channel, and fix
+   the marker-chip and mobile collisions.
+   ============================================================ */
+
+/* ---------- the material moment (DESIGN_STANDARD material 4) ---------- */
+
+.lensgate-root .tc-cinema-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-field-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.lensgate-root .tc-cinema-flip {
+  z-index: 1;
+}
+
+/* the page plate goes transparent so the light can rise beneath it;
+   the site cell's #111111 stays the base tone */
+.lensgate-root .tc-cinema-page {
+  background: transparent;
+}
+
+/* ---------- marker chips: anchored, never crossed by the ring ---------- */
+
+/* block chips sit clear of the highlight ring (ring pads 4–6px) */
+.lensgate-root .tc-cinema-mk.is-block {
+  margin-bottom: 12px;
+}
+
+.lensgate-root .tc-cinema-mk.is-block::before {
+  left: 6px;
+  top: 100%;
+  width: 1px;
+  height: 11px;
+}
+
+/* card chips move fully above the card, tied down by a drawn tick */
+.lensgate-root .tc-cinema-mk.is-abs {
+  top: -29px;
+  right: 12px;
+  background: transparent;
+}
+
+/* the review column composes its height instead of pooling at the centre */
+.lensgate-root .tc-cinema-rev {
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
+/* the PR column too — nothing pools, nothing hoards */
+.lensgate-root .tc-cinema-pr {
+  justify-content: space-evenly;
+  gap: 8px;
+}
+
+.lensgate-root .tc-cinema-mk.is-abs::before {
+  display: block;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ---------- channel panels: no block pools, no dead runs ---------- */
+
+.lensgate-root .tc-cinema-panel-body.is-even {
+  justify-content: space-between;
+}
+
+/* space-between owns the distribution — the foot must not hoard the slack */
+.lensgate-root .tc-cinema-panel-body.is-even .tc-cinema-panel-foot {
+  margin-top: 0;
+}
+
+/* what the agent is actually told — the context facts ledger */
+.lensgate-root .tc-cinema-ctx-row {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  column-gap: 10px;
+  padding: 5px 4px;
+  border-radius: 3px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.lensgate-root .tc-cinema-ctx-row span:first-child {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.lensgate-root .tc-cinema-ctx-row span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lensgate-root .tc-cinema-gen.is-tone .tc-cinema-gen-row {
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+}
+
+.lensgate-root .tc-cinema-gen.is-tone,
+.lensgate-root .tc-cinema-gen.is-queue {
+  margin-top: 0;
+}
+
+/* the run ledger under the findings */
+.lensgate-root .tc-cinema-log.is-run {
+  border-bottom: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 12px 0 0;
+  flex: none;
+}
+
+.lensgate-root .tc-cinema-log.is-run .tc-cinema-gen-cap {
+  margin: 2px 0 6px;
+}
+
+/* ---------- the station rail: the doubled thread inside the channel ---------- */
+
+.lensgate-root .tc-cinema-steps {
+  display: flex;
+  align-items: flex-start;
+  flex: none;
+  margin-top: 14px;
+  padding: 14px 6px 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lensgate-root .tc-cinema-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+}
+
+.lensgate-root .tc-cinema-step > i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+
+.lensgate-root .tc-cinema-step b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+/* the pair at constant gauge — stroke 1.5, gap 3 */
+.lensgate-root .tc-cinema-step-wire {
+  flex: 1;
+  height: 7.5px;
+  min-width: 14px;
+  margin: 2.5px 7px 0;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.38);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-step[data-st='done'] > i {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-step[data-st='done'] b {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lensgate-root .tc-cinema-step[data-st='active'] > i {
+  background: #ffffff;
+  border-color: #ffffff;
+  outline: 1px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 2.5px;
+}
+
+.lensgate-root .tc-cinema-step[data-st='active'] b {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ---------- the editor composes its full height ---------- */
+
+/* the run's status bar, under the code */
+.lensgate-root .tc-cinema-estatus {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: none;
+  height: 34px;
+  padding: 0 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-estatus [data-est] {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* with the problems dock and status bar composing the editor's bottom, the
+   code reads top-aligned like a real buffer — no dead band above line 1 */
+.lensgate-root .tc-cinema-code {
+  justify-content: flex-start;
+  padding-top: 18px;
+}
+
+/* the problems dock the scan writes into */
+.lensgate-root .tc-cinema-eprob {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 11px 18px 12px 46px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--tc-panel);
+  white-space: normal;
+}
+
+.lensgate-root .tc-cinema-eprob-cap {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 6px;
+}
+
+.lensgate-root .tc-cinema-eprob-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 10px;
+  padding: 4px 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.lensgate-root .tc-cinema-eprob-row span:first-child {
+  color: #ffffff;
+}
+
+/* ---------- the PR tells its whole story ---------- */
+
+.lensgate-root .tc-cinema-pr-desc {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* chips above the right-column cards need standing room */
+.lensgate-root .tc-cinema-pright {
+  padding-top: 26px;
+}
+
+/* ---------- reduced motion: the storyboard keeps the new artifacts ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .lensgate-root .tc-cinema-field {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-page {
+    background: #111111;
+  }
+
+  .lensgate-root .tc-cinema-eprob {
+    position: static;
+    background: transparent;
+    padding: 12px 18px 4px 46px;
+  }
+
+  .lensgate-root .tc-cinema-eprob-row {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+/* ---------- mobile: one column of site, nothing overprints ---------- */
+
+@media (max-width: 900px) {
+  /* the right rail of cards is the collision source at 375px — the mock
+     becomes the site's own mobile rendering: nav, hero, cta, legal, stats */
+  .lensgate-root .tc-cinema-pright {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-pstats {
+    gap: 14px;
+  }
+
+  .lensgate-root .tc-cinema-pstats .tc-cinema-swap {
+    font-size: 10px;
+  }
+
+  /* channel panels keep only what fits the short dock */
+  .lensgate-root .tc-cinema-ctx,
+  .lensgate-root .tc-cinema-log.is-run,
+  .lensgate-root .tc-cinema-gen.is-queue,
+  .lensgate-root .tc-cinema-panel-foot,
+  .lensgate-root .tc-cinema-pr-desc,
+  .lensgate-root .tc-cinema-eprob,
+  .lensgate-root .tc-cinema-estatus [data-est] {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-mini-line:nth-child(n + 6) {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-log:not(.is-run) .tc-cinema-log-row:nth-child(n + 5) {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-gen.is-tall .tc-cinema-gen-row:nth-child(n + 7) {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-pr-check:nth-child(n + 3) {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-steps {
+    padding-top: 12px;
+  }
+}
+
+/* the status transcript steps down before its longest line can clip */
+@media (max-width: 620px) {
+  .lensgate-root .tc-band-term-body {
+    font-size: 11.5px;
+  }
+}
+
+
+/* ---- delivery band ----
+   Delivery inverts: a full-viewport-width black band inside the bento flow
+   (margin breakout), the prismatic field behind it in the band grammar —
+   light at the edges, a dark centre the content stands in. */
+.lensgate-root .tc-delivery-band {
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  /* the globe draws with the night inks it had in its old framed cell */
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+.lensgate-root .tc-delivery-field {
+  position: absolute;
+  inset: -18% -8% auto;
+  height: 132%;
+  width: 116%;
+  z-index: 0;
+  opacity: 0.8;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(
+    86% 76% at 50% 42%,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.32) 38%,
+    rgba(0, 0, 0, 0.66) 60%,
+    #000 76%
+  );
+  pointer-events: none;
+}
+
+.lensgate-root .tc-delivery-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(52px, 6.4vw, 88px) var(--tc-gut);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(28px, 3.4vw, 56px);
+  align-items: center;
+}
+
+.lensgate-root .tc-delivery-art .tc-art-globe {
+  margin-inline: auto;
+}
+
+.lensgate-root .tc-delivery-art .tc-night-note {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.lensgate-root .tc-delivery-copy h3 {
+  font-size: clamp(24px, 2.2vw, 30px);
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-delivery-copy > p {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.lensgate-root .tc-delivery-copy .tc-list li {
+  color: rgba(255, 255, 255, 0.82);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.lensgate-root .tc-delivery-copy .tc-list li::before {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lensgate-root .tc-delivery-art .tc-night-note {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: none;
+}
+
+@media (max-width: 860px) {
+  .lensgate-root .tc-delivery-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+
+
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of ground; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.lensgate-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.lensgate-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+.lensgate-root .tc-row + .tc-row {
+  margin-top: -1px;
+}
+
+
+/* ---- dark mode ----
+   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
+   panel #14121A). Everything downstream re-skins from these. */
+[data-theme='dark'] .lensgate-root {
+  --tc-paper: #16171d;
+  --tc-sunk: #16171d;
+  --tc-white: #1e1f26;
+  --tc-card: #1e1f26;
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.66);
+  --tc-ink-3: rgba(255, 255, 255, 0.48);
+  --tc-ink-4: rgba(255, 255, 255, 0.3);
+  --tc-hair: #3b3440;
+  --tc-hair-2: #2b2731;
+  --tc-plate: #1e1f26;
+  --tc-hatch: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme='dark'] .lensgate-root .tc-btn-solid {
+  background: #ffffff;
+  color: #16171d;
+}
+
+/* The GT mark is dark ink baked into a PNG; on dark paper it vanished — the
+   glass read as empty. Invert it (the mark is monochrome, so inversion IS the
+   dark-theme mark) wherever it fronts the dark page. */
+[data-theme='dark'] .lensgate-root .lg-lens-core img,
+[data-theme='dark'] .lensgate-root .tc-nav-brand img,
+[data-theme='dark'] .lensgate-root .tc-foot-brand img {
+  filter: invert(1);
+}
+
+
+
+
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.lensgate-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  right: -6px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.lensgate-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  right: -6px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+
+/* ============================================================
+   ANCHOR: tc-curation-r1 — dark-grid diagram adaptations
+   Three adoptions from the dark directions' eight-cell feature
+   grid, redrawn in this page's system (decisions logged atop
+   sections/Bento.tsx). New classes only; nothing above is
+   overridden.
+   ============================================================ */
+
+/* -- (1) the <T> wrap thread --------------------------------------
+   The dark CodeWrapDiagram's doubled bracket, adopted into the real
+   framework sample: the brand's two lines (THREAD_MOTIF — constant
+   gauge, never merging) run the sample's own left margin from <T>
+   to </T>, feet turned toward the code they bind. Two nested
+   L-strokes, both at the page's thread gauge with its 3px gap; the
+   feet of both stop on the same vertical, as the source drawing's
+   did. Panel-dim white, so the pair reads in light and dark theme
+   alike — the panel itself never remaps. */
+.lensgate-root .tc-code-wrap {
+  position: relative;
+}
+
+.lensgate-root .tc-code-wrap::before,
+.lensgate-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.lensgate-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.lensgate-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .lensgate-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .lensgate-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+/* -- (2) glossary directives --------------------------------------
+   The second half of the dark GlossaryDiagram: per-locale style
+   rules under the pinned entries. The group divider is the page's
+   stronger hairline — the same weight the dark table drew between
+   its halves — against the hair-2 rules inside each half. */
+.lensgate-root .tcx-dirs {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tcx-dirs li span {
+  font-size: 12.5px;
+}
+
+/* -- (6) the source/preview pane pair -----------------------------
+   The dark PreviewPanesDiagram's pairing, moved inside the dev
+   window: two panes on the window's own surface, split by the
+   in-window hairline. State is type weight on the live pane's tag —
+   no accent in this band, no pills. */
+.lensgate-root .tcx-pane {
+  padding: 10px 11px 13px;
+}
+
+.lensgate-root .tcx-pane + .tcx-pane {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.lensgate-root .tcx-pane-tag {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.lensgate-root .tcx-pane-tag.is-on {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* Dark theme: the window buttons fill with --tc-ink, which remaps to white,
+   but their label was hard-coded light — white on white. The same inversion
+   the dark remap gives .tc-btn-solid. (Predates this round; the pane pair
+   made it twice as visible.) */
+[data-theme='dark'] .lensgate-root .tcx-btn {
+  color: #16171d;
+}
+
+
+/* ============================================================
+   CINEMA — THE TWO-BOX CUT (context-beat r1)
+   The pinned take reduced to two surfaces. LEFT: the demo
+   website — five hairline-separated sections (nav, hero, card,
+   form, legal line), real strings, no browser chrome, no locale
+   row, no footer strip. RIGHT: exactly three things — a quiet
+   beat counter top right (thread-gauge dashes + mono count),
+   the beat's one sentence centered in display type, and one
+   small artifact under it. Left↔right connectors are doubled
+   orthogonal traces at constant 1px gauge (THREAD_MOTIF as
+   circuit runs). Panel tokens + white-alpha inks only; holds
+   under [data-theme='dark'] because every surface is literal.
+   ============================================================ */
+
+/* the section sits on the page's dark band tone in both themes —
+   the old mat backdrop printed the white head on light grey */
+.lensgate-root .tc-cinema {
+  background: var(--tc-dark);
+}
+
+.lensgate-root .tc-cinema-take {
+  position: relative;
+  height: calc(100svh - 58px);
+  min-height: 640px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  background: #111111;
+  overflow: hidden;
+}
+
+/* ---------- left: the web ---------- */
+
+.lensgate-root .tc-cinema-web {
+  position: relative;
+  min-width: 0;
+  background: #111111;
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-light {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-light-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* the demo site: an inset panel with the measured hairline ring;
+   transparent plate so the light can rise beneath it */
+.lensgate-root .tc-cinema-demo {
+  position: absolute;
+  inset: clamp(20px, 2.8vh, 32px) clamp(20px, 2.4vw, 34px);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+  outline-offset: 2px;
+  border-radius: 2px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.lensgate-root .tc-cinema-drow {
+  position: relative;
+  padding: clamp(10px, 1.5vh, 16px) clamp(16px, 1.9vw, 28px);
+}
+
+.lensgate-root .tc-cinema-drow + .tc-cinema-drow {
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lensgate-root .tc-cinema-drow.is-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.lensgate-root .tc-cinema-dbrand {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-dnav {
+  display: inline-flex;
+  gap: clamp(12px, 1.6vw, 22px);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-drow.is-hero {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(10px, 1.6vh, 18px);
+}
+
+.lensgate-root .tc-cinema-dh1 {
+  font-size: clamp(25px, 2.5vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-ddate {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-dcopy {
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 46ch;
+}
+
+.lensgate-root .tc-cinema-dacts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(2px, 0.6vh, 8px);
+}
+
+.lensgate-root .tc-cinema-dbtn {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-dcard {
+  display: inline-block;
+  width: min(100%, 340px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  padding: 13px 16px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.lensgate-root .tc-cinema-dcard > b {
+  display: block;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.32;
+  letter-spacing: -0.014em;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-dcard-sub {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tc-cinema-dlabel {
+  display: block;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.lensgate-root .tc-cinema-dinput {
+  display: block;
+  margin-top: 8px;
+  max-width: 300px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-drow.is-legal {
+  padding-bottom: clamp(12px, 1.8vh, 18px);
+}
+
+.lensgate-root .tc-cinema-dlegal {
+  display: inline-block;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+
+/* the ring: the one emphasis stroke on the site */
+.lensgate-root .tc-cinema-demo .tc-cinema-hilite {
+  position: absolute;
+  z-index: 3;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 3px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the scan pass */
+.lensgate-root .tc-cinema-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 44px;
+  background: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the scan's findings — state drawn with a hairline square, no pills */
+.lensgate-root .tc-cinema-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  margin-left: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  font-family: var(--tc-mono);
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1;
+  color: #ffffff;
+  vertical-align: middle;
+  opacity: 0;
+}
+
+/* zero-width anchors: the edit's ghost <T> wrappers never reserve space */
+.lensgate-root .tc-cinema-wrapmark {
+  position: relative;
+  display: inline-block;
+  width: 0;
+  height: 0.9em;
+  vertical-align: baseline;
+  font-style: normal;
+  opacity: 0;
+}
+
+.lensgate-root .tc-cinema-wrapmark > span {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+.lensgate-root .tc-cinema-wrapmark.is-open > span {
+  right: 5px;
+}
+
+.lensgate-root .tc-cinema-wrapmark.is-close > span {
+  left: 5px;
+}
+
+/* ---------- right: the beat panel ---------- */
+
+.lensgate-root .tc-cinema-beat {
+  position: relative;
+  min-width: 0;
+  background: var(--tc-panel);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+/* (1) progress, top right: thread-gauge dashes + a mono count */
+.lensgate-root .tc-cinema-prog {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lensgate-root .tc-cinema-prog-dashes {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lensgate-root .tc-cinema-prog-dashes i {
+  width: 13px;
+  height: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.lensgate-root .tc-cinema-prog-dashes i[data-st='done'] {
+  border-color: rgba(255, 255, 255, 0.44);
+}
+
+.lensgate-root .tc-cinema-prog-dashes i[data-st='on'] {
+  border-color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-prog-count {
+  position: relative;
+  width: 11ch;
+  height: 15px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lensgate-root .tc-cinema-prog-count b {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.lensgate-root .tc-cinema-prog-count b[data-first='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* (2)+(3) the sentence, centered, and the one artifact under it */
+.lensgate-root .tc-cinema-slides {
+  position: absolute;
+  inset: 0;
+}
+
+.lensgate-root .tc-cinema-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 72px clamp(24px, 3vw, 48px) 48px;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.lensgate-root .tc-cinema-slide[data-first='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lensgate-root .tc-cinema-say {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(20px, 1.9vw, 27px);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 17ch;
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-art {
+  margin-top: clamp(22px, 3.4vh, 36px);
+  max-width: 100%;
+  padding: 15px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: pre;
+  overflow: hidden;
+}
+
+.lensgate-root .tc-cinema-art-line {
+  display: flex;
+  align-items: baseline;
+}
+
+.lensgate-root .tc-cinema-art-line.is-dim {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tc-cinema-art-line.is-bright {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.lensgate-root .tc-cinema-art-line.is-del {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lensgate-root .tc-cinema-art-line.is-del > code:last-child {
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+  text-decoration-thickness: 1px;
+}
+
+.lensgate-root .tc-cinema-art-line.is-add,
+.lensgate-root .tc-cinema-art-line.is-add .tc-t-str,
+.lensgate-root .tc-cinema-art-line.is-add .tc-t-kw,
+.lensgate-root .tc-cinema-art-line.is-add .tc-t-num {
+  color: #ffffff;
+}
+
+.lensgate-root .tc-cinema-art-sign {
+  flex: none;
+  width: 0;
+}
+
+.lensgate-root .tc-cinema-art.is-diff .tc-cinema-art-sign {
+  width: 17px;
+}
+
+.lensgate-root .tc-cinema-arow {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: baseline;
+}
+
+.lensgate-root .tc-cinema-arow > span {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.lensgate-root .tc-cinema-arow.is-dim > code {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- the traces: circuit runs at constant 1px gauge ---------- */
+
+.lensgate-root .tc-cinema-take .tc-cinema-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.lensgate-root .tc-cinema-take .tc-cinema-wires path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+/* ---------- reduced motion: the take unrolls as a storyboard ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .lensgate-root .tc-cinema-take {
+    height: auto;
+    min-height: 0;
+    display: block;
+  }
+
+  .lensgate-root .tc-cinema-web {
+    min-height: 72svh;
+  }
+
+  .lensgate-root .tc-cinema-beat {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .lensgate-root .tc-cinema-slides {
+    position: static;
+  }
+
+  .lensgate-root .tc-cinema-slide {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    padding: clamp(30px, 4vh, 46px) clamp(20px, 3vw, 44px);
+  }
+
+  .lensgate-root .tc-cinema-slide + .tc-cinema-slide {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .lensgate-root .tc-cinema-prog,
+  .lensgate-root .tc-cinema-take .tc-cinema-wires,
+  .lensgate-root .tc-cinema-demo .tc-cinema-hilite,
+  .lensgate-root .tc-cinema-scan,
+  .lensgate-root .tc-cinema-flag,
+  .lensgate-root .tc-cinema-wrapmark,
+  .lensgate-root .tc-cinema-light,
+  .lensgate-root .tc-cinema-es {
+    display: none;
+  }
+}
+
+/* ---------- responsive: the boxes stack ---------- */
+
+@media (max-width: 900px) {
+  .lensgate-root .tc-cinema-take {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1.18fr) minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-cinema-beat {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .lensgate-root .tc-cinema-take .tc-cinema-wires {
+    display: none;
+  }
+
+  .lensgate-root .tc-cinema-demo {
+    inset: 12px;
+  }
+
+  .lensgate-root .tc-cinema-drow {
+    padding: 9px 14px;
+  }
+
+  .lensgate-root .tc-cinema-dh1 {
+    font-size: 21px;
+  }
+
+  .lensgate-root .tc-cinema-dcopy {
+    font-size: 12px;
+  }
+
+  .lensgate-root .tc-cinema-dbtn {
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .lensgate-root .tc-cinema-dcard {
+    padding: 10px 12px;
+  }
+
+  .lensgate-root .tc-cinema-dcard > b {
+    font-size: 13.5px;
+  }
+
+  .lensgate-root .tc-cinema-dinput {
+    margin-top: 6px;
+    padding: 5px 8px;
+  }
+
+  .lensgate-root .tc-cinema-drow.is-hero {
+    gap: 8px;
+  }
+
+  .lensgate-root .tc-cinema-prog {
+    top: 12px;
+    right: 14px;
+  }
+
+  .lensgate-root .tc-cinema-prog-dashes i {
+    width: 9px;
+  }
+
+  .lensgate-root .tc-cinema-slide {
+    padding: 52px 18px 20px;
+  }
+
+  .lensgate-root .tc-cinema-say {
+    font-size: 18.5px;
+  }
+
+  .lensgate-root .tc-cinema-art {
+    margin-top: 18px;
+    padding: 11px 13px;
+    font-size: 11px;
+    line-height: 1.75;
+  }
+
+  .lensgate-root .tc-cinema-arow {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+
+  .lensgate-root .tc-cinema-arow > span {
+    font-size: 11px;
+  }
+}
+
+/* a wide open-wrapper (the date's <DateTime>) lifts above its node
+   instead of running past the panel's left edge */
+.lensgate-root .tc-cinema-wrapmark.is-lift > span {
+  right: auto;
+  left: 0;
+  top: auto;
+  bottom: calc(100% + 4px);
+  transform: none;
+}
+
+/* the voice beat's comparison rows wrap inside the artifact box
+   instead of running past its edge */
+.lensgate-root .tc-cinema-arow > code {
+  white-space: normal;
+  line-height: 1.6;
+}
+
+.lensgate-root .tc-cinema-arow + .tc-cinema-arow {
+  margin-top: 6px;
+}
+
+/* the ghost wrappers need the desktop hero's breathing room —
+   in the stacked mobile hero they collide with the line above */
+@media (max-width: 900px) {
+  .lensgate-root .tc-cinema-wrapmark {
+    display: none;
+  }
+}

@@ -1,0 +1,2656 @@
+/* ============================================================
+   VERSION 10 — TOOLCHAIN
+   The minimalist direction. Structure comes from hairlines only:
+   two vertical rules framing a 1170px column, horizontal rules
+   between sections. No grid fields, no dot paper, no ornament.
+   Light-dominant, with exactly one full-bleed dark band.
+   ============================================================ */
+
+.prismlight-root {
+  --tc-paper: #fbfbfa;
+  --tc-sunk: #ffffff;
+  --tc-white: #ffffff;
+  --tc-ink: #0f1113;
+  --tc-ink-2: rgba(15, 17, 19, 0.63);
+  --tc-ink-3: rgba(15, 17, 19, 0.45);
+  --tc-ink-4: rgba(15, 17, 19, 0.27);
+  --tc-hair: rgba(15, 17, 19, 0.11);
+  --tc-hair-2: rgba(15, 17, 19, 0.06);
+  --tc-accent: #2f5ce0;
+  --tc-dark: #0c0e11;
+
+  /* The second surface — the LEDGER beige every light diagram sits on. A light
+     cell's artifact zone is never bare card: the plate is the material that
+     carries it, the way the references never leave a diagram on paper. */
+  --tc-plate: #ffffff;
+
+  /* The one dark artifact surface for code, config and diffs — the inset panel
+     every reference draws its code on. Light cells place it on the card; the
+     page keeps its mass between the hero terminal and the dark band. */
+  --tc-panel: #14121a;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame. The mat has to be a step you can see at 1x, not one that
+     only survives a 4x crop — at 2% luminance the reveal reads as a soft single
+     border and the box-inside-a-box, which is this direction's whole signature
+     detail, never announces itself. This is ~11% off both the page and the card,
+     with its own edge a shade darker than the page's hairline. */
+  --tc-mat: #232327;
+  --tc-mat-edge: #232327;
+  --tc-card: #ffffff;
+  --tc-mat-inset: clamp(10px, 1.2vw, 14px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+  --tc-hatch: rgba(15, 17, 19, 0.085);
+
+  --tc-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: rgba(15, 17, 19, 0.8);
+  --iso-ink-soft: rgba(15, 17, 19, 0.44);
+  --iso-ink-hair: rgba(15, 17, 19, 0.2);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.prismlight-root *,
+.prismlight-root *::before,
+.prismlight-root *::after {
+  box-sizing: border-box;
+}
+
+.prismlight-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.prismlight-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+}
+
+.prismlight-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-sec:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- type ---------- */
+
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.prismlight-root h1,
+.prismlight-root h2,
+.prismlight-root h3,
+.prismlight-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+.prismlight-root p {
+  margin: 0;
+}
+
+.prismlight-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
+
+.prismlight-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.prismlight-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- buttons ---------- */
+
+.prismlight-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.prismlight-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: #fbfbfa;
+}
+
+.prismlight-root .tc-btn-solid:hover {
+  background: #23282c;
+}
+
+.prismlight-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.prismlight-root .tc-btn-line:hover {
+  border-color: rgba(15, 17, 19, 0.28);
+  background: rgba(15, 17, 19, 0.03);
+}
+
+.prismlight-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.prismlight-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+.prismlight-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.prismlight-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.prismlight-root .tc-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.prismlight-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .prismlight-root .tc-nav-links,
+  .prismlight-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* Trimmed a step so the terminal owns more of the first viewport instead of
+   being cut at the fold. */
+.prismlight-root .tc-hero {
+  text-align: center;
+  padding: clamp(44px, 5.6vw, 72px) var(--tc-gut) 0;
+}
+
+.prismlight-root .tc-hero-mark {
+  display: block;
+  margin: 0 auto 26px;
+  opacity: 0.9;
+}
+
+.prismlight-root .tc-hero h1 {
+  font-size: clamp(2.05rem, 4.9vw, 3.7rem);
+  line-height: 1.03;
+  letter-spacing: -0.038em;
+  max-width: 20ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.prismlight-root .tc-hero h1 span {
+  display: block;
+}
+
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink. */
+.prismlight-root .tc-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.prismlight-root .tc-hero-sub {
+  margin: 20px auto 0;
+  max-width: 54ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-hero-acts {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.prismlight-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.prismlight-root .tc-copy:hover {
+  border-color: rgba(15, 17, 19, 0.26);
+}
+
+.prismlight-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- full-bleed hero visual cell ---------- */
+
+/* The terminal sits flush to the bottom of its band — a panel standing on the
+   section rule rather than an object floating in a wash. The band itself is
+   the page's first committed material: a dark plate carrying the prismatic
+   field, lit at the flanks and dark in the centre column under the transcript
+   (AESTHETIC_ADDENDUM 2b — content sits in the dark, the light owns the
+   edges), so the first viewport has the same mass the references open with. */
+.prismlight-root .tc-hero-cell {
+  position: relative;
+  margin-top: clamp(36px, 4.4vw, 54px);
+  border-top: 1px solid var(--tc-hair);
+  padding: clamp(28px, 3.8vw, 48px) clamp(14px, 3vw, 44px) 0;
+  background: var(--tc-dark);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.prismlight-root .tc-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.92;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 10%,
+    rgba(0, 0, 0, 0.28) 30%,
+    rgba(0, 0, 0, 0.18) 50%,
+    rgba(0, 0, 0, 0.28) 70%,
+    #000 90%,
+    #000 100%
+  );
+  pointer-events: none;
+}
+
+/* The measured hero ring from the references: 1px white at .30, offset 2px. */
+.prismlight-root .tc-term {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin-inline: auto;
+  border-radius: 8px 8px 0 0;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  overflow: hidden;
+}
+
+.prismlight-root .tc-term-bar {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.prismlight-root .tc-term-body {
+  padding: 24px 28px 30px;
+  font-family: var(--tc-mono);
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.74);
+  overflow-x: auto;
+}
+
+.prismlight-root .tc-term-line {
+  white-space: pre;
+}
+
+.prismlight-root .tc-term-line[data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.prismlight-root .tc-term-line[data-tone='dim'] {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.prismlight-root .tc-term-line[data-tone='gap'] {
+  height: 12px;
+}
+
+.prismlight-root .tc-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.prismlight-root .tc-swap {
+  display: grid;
+  grid-template-columns: minmax(0, auto) 18px minmax(0, 1fr);
+  gap: 0 8px;
+  white-space: nowrap;
+}
+
+.prismlight-root .tc-swap-src {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.prismlight-root .tc-swap-arrow {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.prismlight-root .tc-swap-out {
+  display: grid;
+}
+
+.prismlight-root .tc-swap-out > i {
+  grid-area: 1 / 1;
+  font-style: normal;
+  color: #ffffff;
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.prismlight-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.prismlight-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.prismlight-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+.prismlight-root .tc-wm {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-wm.is-cursor {
+  font-weight: 600;
+  letter-spacing: -0.032em;
+}
+
+.prismlight-root .tc-wm.is-ramp {
+  font-weight: 800;
+  font-size: 16.5px;
+  letter-spacing: -0.012em;
+}
+
+.prismlight-root .tc-wm.is-mintlify {
+  font-weight: 300;
+  font-size: 17px;
+  letter-spacing: -0.008em;
+}
+
+.prismlight-root .tc-wm.is-profound {
+  font-weight: 500;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.135em;
+}
+
+.prismlight-root .tc-wm.is-partiful {
+  font-weight: 700;
+  font-size: 16.5px;
+  letter-spacing: -0.038em;
+}
+
+.prismlight-root .tc-wm.is-clickhouse {
+  font-family: var(--tc-sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.006em;
+}
+
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.prismlight-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.prismlight-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.prismlight-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.prismlight-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.prismlight-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.prismlight-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.prismlight-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.prismlight-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.prismlight-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+}
+
+.prismlight-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.prismlight-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.prismlight-root .tc-caps {
+  flex: 1;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.prismlight-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.prismlight-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-fw-run {
+  margin-top: 20px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.prismlight-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.prismlight-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.prismlight-root .tc-fw-link {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.prismlight-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.prismlight-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.prismlight-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#14121A`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.prismlight-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.prismlight-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.prismlight-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.prismlight-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.prismlight-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.prismlight-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.prismlight-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.prismlight-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.prismlight-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set — the story's editor mock highlights on paper. */
+.prismlight-root .tc-t-str {
+  color: #5c6470;
+}
+
+.prismlight-root .tc-t-kw {
+  color: rgba(15, 17, 19, 0.52);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.prismlight-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.prismlight-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.prismlight-root .tc-t-num {
+  color: #5c6470;
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.prismlight-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prismlight-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.prismlight-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.prismlight-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.prismlight-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.prismlight-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-row.is-lead,
+.prismlight-root .tc-row.is-three,
+.prismlight-root .tc-row.is-wide-left,
+.prismlight-root .tc-row.is-tilt,
+.prismlight-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.prismlight-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.prismlight-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.prismlight-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.prismlight-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.prismlight-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.prismlight-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.prismlight-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.prismlight-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.prismlight-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.prismlight-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.prismlight-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.prismlight-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.prismlight-root .tc-cell > p,
+.prismlight-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.prismlight-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.prismlight-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   A cell that carries something visual becomes a box inside a box: the grid
+   cell is a mat with a hairline edge and exactly 2px of padding, and the card
+   sits inside it, so a precise 2px reveal runs all the way around the content.
+   Text-only cells never get this — the contrast is the whole point, and it is
+   also why the vertical rule is dropped wherever a mat provides the edge. */
+
+.prismlight-root .tc-cell.is-framed {
+  margin: var(--tc-mat-inset);
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+}
+
+.prismlight-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border-radius: 2px;
+  background: var(--tc-card);
+}
+
+.prismlight-root .tc-row > .is-framed + *,
+.prismlight-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- diagonal spacer band ----------
+   Bounded, content-free breathing room between specific rows. Not a field
+   behind content — a ruled strip between subjects. */
+
+.prismlight-root .tc-hatch {
+  height: clamp(28px, 3.4vw, 40px);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: repeating-linear-gradient(45deg, var(--tc-hatch) 0 1px, transparent 1px 8px);
+}
+
+.prismlight-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.prismlight-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prismlight-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.prismlight-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.prismlight-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.prismlight-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars) gets the same
+   plate the language diagrams sit on: white chips on the second surface, the
+   viteplus grammar, instead of white bars lost on a white card. */
+.prismlight-root .tc-surface.is-plated {
+  margin-top: 20px;
+  padding: clamp(16px, 2vw, 22px) clamp(14px, 1.8vw, 20px);
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.prismlight-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.prismlight-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.prismlight-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.prismlight-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.prismlight-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.prismlight-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.prismlight-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.prismlight-root .tc-bleed-art {
+  margin-top: 22px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.prismlight-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.prismlight-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.prismlight-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.prismlight-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.prismlight-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.prismlight-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.prismlight-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.prismlight-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.prismlight-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.prismlight-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.prismlight-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.prismlight-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.prismlight-root .tc-cell-act {
+  margin-top: 24px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.prismlight-root .tc-stats {
+  flex: 1;
+  margin-top: 24px;
+  padding: 6px clamp(14px, 1.8vw, 20px) clamp(16px, 2vw, 22px);
+  display: grid;
+  align-content: space-between;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+.prismlight-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.prismlight-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.prismlight-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.prismlight-root .tc-cell.is-panel .tc-code {
+  margin-top: 22px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.prismlight-root .tc-lang {
+  flex: 1;
+  margin-top: 22px;
+  padding: clamp(18px, 2.2vw, 26px) clamp(14px, 1.8vw, 22px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+
+  --lang-ground: var(--tc-plate);
+}
+
+.prismlight-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.prismlight-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.prismlight-root .tc-lang.is-lead .lang-sw-name,
+.prismlight-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.prismlight-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.prismlight-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.prismlight-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.prismlight-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.prismlight-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #86a8ff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+/* The light, composed around the band's object: the mask is a halo whose
+   core sits behind the status transcript (right column of the top grid,
+   ~66% across, ~30% down) and decays to nothing well inside the frame —
+   the corners are ink, the transcript stands in the eye of the light
+   (AESTHETIC_ADDENDUM 2b). The wrapper is band-sized so these percents are
+   the band's own geometry; the canvas inside is oversized and lifted so its
+   bright horizontal axis passes through the halo's center. */
+.prismlight-root .tc-band-light {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(
+    40% 26% at 66% 32%,
+    #000 0%,
+    rgba(0, 0, 0, 0.78) 42%,
+    rgba(0, 0, 0, 0.22) 70%,
+    transparent 90%
+  );
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.prismlight-root .tc-band-field {
+  position: absolute;
+  left: -8%;
+  width: 116%;
+  top: -70%;
+  height: 200%;
+  display: block;
+}
+
+.prismlight-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(56px, 7vw, 92px);
+}
+
+/* Copy left, artifact right: the transcript is the band's object, standing in
+   the dark center the field leaves for it. */
+.prismlight-root .tc-band-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+.prismlight-root .tc-band-term {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.prismlight-root .tc-band-term-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.prismlight-root .tc-band-term-body {
+  padding: 16px 18px 18px;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.prismlight-root .tc-band-term-body [data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.prismlight-root .tc-band-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.prismlight-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.prismlight-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prismlight-root .tc-band-grid {
+  margin-top: clamp(40px, 5vw, 62px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.prismlight-root .tc-band-grid > div {
+  padding: 26px 22px 30px 0;
+}
+
+.prismlight-root .tc-band-grid > div + div {
+  padding-left: 22px;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.prismlight-root .tc-band-grid h3 {
+  font-size: 15px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.prismlight-root .tc-band-grid p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.prismlight-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.prismlight-root .tc-band .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.prismlight-root .tc-band .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.prismlight-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.prismlight-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.prismlight-root .tc-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.prismlight-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.prismlight-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.prismlight-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.prismlight-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.prismlight-root .tc-plan .tc-list {
+  margin-top: 20px;
+}
+
+.prismlight-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.prismlight-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.prismlight-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.prismlight-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.prismlight-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.prismlight-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
+}
+
+.prismlight-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.prismlight-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.prismlight-root .tc-foot-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.prismlight-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.prismlight-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
+
+.prismlight-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-mat);
+  --gte-ws-shadow: none;
+  /* The mat's radius, because the workspace IS a mat now — see below. */
+  --gte-radius: 5px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 600;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
+}
+
+.prismlight-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
+}
+
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.prismlight-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.prismlight-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+.prismlight-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
+}
+
+.prismlight-root .tc-review .gte-notes {
+  margin-top: 22px;
+}
+
+/* ---------- the workspace, mounted ----------
+   This is the biggest product mock on the page and it was the one surface
+   outside the frame system: a single border at the page hairline rather than the
+   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
+   the most prominent thing in the section read as an import.
+
+   The borrowed markup has no card element to wrap, so the mat is the workspace
+   shell itself and the two blocks inside it carry the card: the bar takes the
+   top corners, the columns take the bottom, and because they are adjacent with
+   no gap the pair reads as one white card with a 2px reveal around it. Same
+   material, same radii, same 2px as every other mount here. */
+.prismlight-root .tc-review .gte-ws {
+  padding: 2px;
+  border-color: var(--tc-mat-edge);
+}
+
+.prismlight-root .tc-review .gte-bar {
+  border-radius: 2px 2px 0 0;
+  background: var(--tc-card);
+}
+
+.prismlight-root .tc-review .gte-cols {
+  border-radius: 0 0 2px 2px;
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.prismlight-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prismlight-root [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .prismlight-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .prismlight-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .prismlight-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .prismlight-root .tc-fw,
+  .prismlight-root .tc-row.is-split,
+  .prismlight-root .tc-row.is-lead,
+  .prismlight-root .tc-row.is-three,
+  .prismlight-root .tc-row.is-wide-left,
+  .prismlight-root .tc-row.is-wide-right,
+  .prismlight-root .tc-row.is-even,
+  .prismlight-root .tc-row.is-tilt,
+  .prismlight-root .tc-row.is-grammar,
+  .prismlight-root .tc-plans,
+  .prismlight-root .tc-plain,
+  .prismlight-root .tc-band-top,
+  .prismlight-root .tc-band-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prismlight-root .tc-row > * + *,
+  .prismlight-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .prismlight-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .prismlight-root .tc-band-grid > div + div {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .prismlight-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .prismlight-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .prismlight-root .tc-row > .is-framed + *,
+  .prismlight-root .tc-row > * + .is-framed,
+  .prismlight-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .prismlight-root .tc-cell.is-tall,
+  .prismlight-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .prismlight-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prismlight-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .prismlight-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .prismlight-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .prismlight-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .prismlight-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prismlight-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .prismlight-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .prismlight-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .prismlight-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .prismlight-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .prismlight-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .prismlight-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .prismlight-root .tc-rail,
+  .prismlight-root .tc-nav-in,
+  .prismlight-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .prismlight-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prismlight-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .prismlight-root .tc-term-body {
+    font-size: 11px;
+  }
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .prismlight-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .prismlight-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .prismlight-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  .prismlight-root .tc-hero-cell {
+    padding-inline: 12px;
+  }
+}
+
+/* ============================================================
+   PRISM-LIGHT FORK — THE EDGE HORIZON HERO
+   The burst never touches the paper. Both canvases run with
+   mix-blend-mode: lighten over an isolated paper group, so the
+   light exists only inside the ink geometry beneath them: the
+   display line's letterforms, the two thread ribbons, and the
+   horizon band. White survives lighten untouched; ink fills
+   with dispersed spectrum. No WebGL → shapes stay solid ink.
+   ============================================================ */
+
+.prismlight-root .plh {
+  position: relative;
+  isolation: isolate;
+  background: var(--tc-paper);
+}
+
+.prismlight-root .plh-top {
+  position: relative;
+  padding: clamp(36px, 4.2vw, 54px) var(--tc-gut) 0;
+}
+
+.prismlight-root .plh-chip {
+  margin-bottom: clamp(20px, 2.4vw, 28px);
+}
+
+.prismlight-root .plh-h1 {
+  margin: 0;
+}
+
+/* Both lines of the headline are one material: a single inline-block group
+   carries the two lines and one lighten wrapper fills them both, so 'Launch
+   in' and 'every language.' read as the same prism-filled near-black ink —
+   no line is lighter than the other. */
+.prismlight-root .plh-block {
+  position: relative;
+  display: inline-block;
+  font-size: clamp(2.4rem, 6.1vw, 5.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  color: #0c0e11;
+  white-space: nowrap;
+  padding-bottom: 0.06em;
+}
+
+.prismlight-root .plh-line {
+  display: block;
+}
+
+/* Blend and mask live on wrapper DIVs, not on the canvas itself: Chromium
+   composites an accelerated canvas layer without honoring mix-blend-mode in
+   some paths, and a plain div group blends reliably. */
+.prismlight-root .plh-block-light {
+  position: absolute;
+  left: -2%;
+  top: -6%;
+  width: 104%;
+  height: 112%;
+  z-index: 1;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* The deliberate exposure ramp, drawn instead of hoped for. Layer one is the
+   burst's dark eye at the block's center; layer two is the EXPOSURE FLOOR —
+   a minimum ink density over the entire fill, deepening to near-ink at both
+   ends — so no streak anywhere in the letter mask approaches paper luminance
+   and every glyph keeps a hard edge against the white. */
+.prismlight-root .plh-block-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      26% 44% at 50% 52%,
+      rgba(0, 0, 0, 0.56) 0%,
+      rgba(0, 0, 0, 0.28) 55%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.86) 0%,
+      rgba(0, 0, 0, 0.5) 10%,
+      rgba(0, 0, 0, 0.4) 26%,
+      rgba(0, 0, 0, 0.4) 74%,
+      rgba(0, 0, 0, 0.5) 90%,
+      rgba(0, 0, 0, 0.86) 100%
+    );
+}
+
+.prismlight-root .plh-field-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Each half of the block clips one copy of the field; the right copy is
+   mirrored, so the seam at the block's center is continuous and the profile
+   edge→ring→core reads identically on both sides. */
+.prismlight-root .plh-block-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+}
+
+.prismlight-root .plh-block-half.is-l {
+  left: 0;
+}
+
+.prismlight-root .plh-block-half.is-r {
+  right: 0;
+}
+
+/* The canvas runs ~2× taller than the block so both lines sample around the
+   burst's bright horizontal axis, and 2× wider than its half so block-edge →
+   block-center spans field-edge → field-core. */
+.prismlight-root .plh-field-word {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  top: -52%;
+  height: 204%;
+  display: block;
+}
+
+.prismlight-root .plh-block-half.is-r .plh-field-word {
+  left: -100%;
+  transform: scaleX(-1);
+}
+
+.prismlight-root .plh-lede {
+  margin-top: clamp(20px, 2.4vw, 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 560px;
+}
+
+.prismlight-root .plh-sub {
+  max-width: 46ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.prismlight-root .plh-acts {
+  display: flex;
+  gap: 10px;
+}
+
+/* ---------- the prism specimen ----------
+   The hero's counterweight object, upper right: a bounded ink plate with the
+   burst dispersing inside it. One white `en` beam enters at the left edge;
+   six locale ticks leave the right — the sentence under the headline, drawn
+   as a physical object. Shader stays inside ink (lighten group over the
+   plate), per this fork's material law. */
+
+.prismlight-root .plh-spec {
+  position: absolute;
+  top: clamp(96px, 10vw, 132px);
+  right: var(--tc-gut);
+  width: clamp(250px, 25vw, 330px);
+  margin: 0;
+}
+
+.prismlight-root .plh-spec-box {
+  position: relative;
+  height: clamp(180px, 17.5vw, 232px);
+  background: #0c0e11;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* The dispersion wedge: narrow at the entry beam, wide at the locale fan.
+   Clip on the lighten wrapper, not the canvas, so the cone edge is exact. */
+.prismlight-root .plh-spec-light {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  clip-path: polygon(0 46%, 0 54%, 100% 96%, 100% 4%);
+  overflow: hidden;
+}
+
+.prismlight-root .plh-spec-field {
+  position: absolute;
+  left: -14%;
+  width: 148%;
+  top: -46%;
+  height: 192%;
+  display: block;
+}
+
+/* Dark at the entry, opening toward the fan: the beam gathers spectrum as it
+   crosses the plate, and the wedge's mouth is the brightest thing in it. */
+.prismlight-root .plh-spec-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.42) 26%,
+    rgba(0, 0, 0, 0.1) 55%,
+    rgba(0, 0, 0, 0) 78%
+  );
+}
+
+/* The one white thing on the plate: the source beam entering. */
+.prismlight-root .plh-spec-beam {
+  position: absolute;
+  left: 0;
+  top: calc(50% - 1px);
+  width: 21%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+}
+
+.prismlight-root .plh-spec-en {
+  position: absolute;
+  left: 11px;
+  top: calc(50% - 24px);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+}
+
+/* The fan: locale codes stacked on the plate's right edge, each tick flush
+   to the rule the way the band's POP ticks cross theirs. */
+.prismlight-root .plh-spec-outs {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+
+.prismlight-root .plh-spec-outs span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.85);
+}
+
+.prismlight-root .plh-spec-outs i {
+  display: block;
+  width: 14px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.prismlight-root .plh-spec-cap {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+/* ---------- the horizon ---------- */
+
+.prismlight-root .plh-horizon {
+  --plh-band-h: clamp(96px, 9vw, 118px);
+  position: relative;
+  margin-top: clamp(24px, 3.2vw, 42px);
+  height: clamp(230px, 25vw, 320px);
+  overflow: hidden;
+}
+
+.prismlight-root .plh-threads {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* The response leader, as HTML: its foot stands on fra's tick (the cross mark
+   at 53% / 60% of the horizon) and its arm runs right to the annotation. The
+   percent anchors are the same at every viewport, so the elbow survives the
+   mobile fold that used to delete it. */
+.prismlight-root .plh-leader {
+  position: absolute;
+  left: 53%;
+  right: 16.5%;
+  top: 46.25%;
+  bottom: 40%;
+  border-left: 1px solid rgba(15, 17, 19, 0.35);
+  border-top: 1px solid rgba(15, 17, 19, 0.35);
+  pointer-events: none;
+}
+
+/* The light inside the doubled threads. The wrapper is masked to the exact
+   ribbon geometry of the ink strokes above (same viewBox, same paths, same
+   non-uniform stretch), and blends lighten — so the spectrum exists only
+   where the ink ribbons are, and appears stroke-by-stroke as the threads
+   draw themselves in. */
+.prismlight-root .plh-t-light {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  overflow: hidden;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1170 320' preserveAspectRatio='none'%3E%3Cpath d='M150 64C340 110 500 148 600 208' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3Cpath d='M150 76C340 122 504 160 614 222' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1170 320' preserveAspectRatio='none'%3E%3Cpath d='M150 64C340 110 500 148 600 208' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3Cpath d='M150 76C340 122 504 160 614 222' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* Oversized and rotated so the field's bright horizontal axis runs along the
+   threads' dive toward fra rather than across it. */
+.prismlight-root .plh-field-thread {
+  position: absolute;
+  left: -12%;
+  top: -32%;
+  width: 124%;
+  height: 164%;
+  display: block;
+  transform: translateY(7%) rotate(12deg);
+}
+
+/* The ribbons stay ink where they leave the headline and gather spectrum on
+   the way down — the exposure ramp runs along the dive, toward the burst. */
+.prismlight-root .plh-t-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    112deg,
+    rgba(0, 0, 0, 0.78) 8%,
+    rgba(0, 0, 0, 0.45) 26%,
+    rgba(0, 0, 0, 0.14) 44%,
+    rgba(0, 0, 0, 0) 56%
+  );
+}
+
+.prismlight-root .plh-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--plh-band-h);
+  background: #0c0e11;
+}
+
+.prismlight-root .plh-band-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 var(--tc-gut);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
+}
+
+/* Points of presence: caliper ticks crossing the band's top rule — ink above
+   the rule on paper, white below it on the band. */
+.prismlight-root .plh-pops {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.prismlight-root .plh-pop {
+  position: absolute;
+  top: -12px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow:
+    0 0 8px rgba(0, 0, 0, 0.95),
+    0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.prismlight-root .plh-pop i {
+  display: block;
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(#0c0e11 0 12px, rgba(255, 255, 255, 0.55) 12px 24px);
+}
+
+.prismlight-root .plh-pop-l {
+  white-space: nowrap;
+}
+
+/* Every node carries its measured value; the code leads, the value follows. */
+.prismlight-root .plh-pop-l b {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.prismlight-root .plh-pop[data-hit] {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.prismlight-root .plh-pop[data-hit] .plh-pop-l b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.prismlight-root .plh-pop[data-hit] i {
+  background: linear-gradient(#0c0e11 0 12px, #ffffff 12px 24px);
+}
+
+/* Request and response annotations, in ink on the paper above the band. */
+.prismlight-root .plh-req {
+  position: absolute;
+  left: var(--tc-gut);
+  top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+}
+
+.prismlight-root .plh-req b,
+.prismlight-root .plh-res b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* Sits at the far end of the elbow leader whose foot is on fra's tick —
+   percent-anchored to the leader's horizontal run (y=148 of the 320 viewBox),
+   so the pair stays attached at every viewport height. */
+.prismlight-root .plh-res {
+  position: absolute;
+  left: 83.5%;
+  top: calc(46.25% - 52px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+/* The horizon burst: centered on the band's own centerline, its dark
+   convergence eye at the serving POP (52%), light streaming along the band. */
+.prismlight-root .plh-h-light {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 480px;
+  bottom: calc(var(--plh-band-h) / 2 - 240px);
+  z-index: 1;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  mask-image: radial-gradient(58% 55% at 52% 50%, #000 42%, transparent 100%);
+  -webkit-mask-image: radial-gradient(58% 55% at 52% 50%, #000 42%, transparent 100%);
+}
+
+/* The band's typography lanes, kept out of the streaks. The wrapper is 480px
+   tall and centered on the band's centerline (50%); the band itself spans
+   roughly 38%–62% of it. Shade caps the field under the POP-label strip at the
+   top rule and under the caption row at the floor, and leaves the centerline
+   core — where nothing but light lives — at full exposure. */
+.prismlight-root .plh-h-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 34%,
+    rgba(0, 0, 0, 0.62) 39%,
+    rgba(0, 0, 0, 0.62) 44.5%,
+    rgba(0, 0, 0, 0.08) 48.5%,
+    rgba(0, 0, 0, 0.08) 52%,
+    rgba(0, 0, 0, 0.55) 56.5%,
+    rgba(0, 0, 0, 0.85) 60%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+}
+
+@media (max-width: 860px) {
+  .prismlight-root .plh-block {
+    font-size: clamp(2rem, 9.6vw, 3.6rem);
+    letter-spacing: -0.04em;
+  }
+
+  /* The counterweight object yields; the connective geometry does not. The
+     threads, the leader and the band keep the same percent anchors, so the
+     request still visibly rides into fra on a phone. */
+  .prismlight-root .plh-spec {
+    display: none;
+  }
+
+  /* The five codes keep their ticks; only the serving node keeps its value —
+     five full labels collide at 390px. */
+  .prismlight-root .plh-pop:not([data-hit]) .plh-pop-l b {
+    display: none;
+  }
+
+  .prismlight-root .plh-horizon {
+    height: 250px;
+  }
+
+  .prismlight-root .plh-req {
+    font-size: 11px;
+  }
+
+  .prismlight-root .plh-res {
+    left: auto;
+    right: 10px;
+    transform: none;
+    text-align: right;
+    font-size: 11px;
+  }
+
+  .prismlight-root .plh-band-row {
+    font-size: 11px;
+    overflow: hidden;
+  }
+}
+
+/* delivery shells: a code panel that breathes below its copy, and the phone
+   pane never stretching past its content */
+.prismlight-root .tc-cell-code {
+  margin-top: 18px;
+}
+
+.prismlight-root .dlv-page {
+  align-self: stretch;
+}
+
+@media (max-width: 640px) {
+  .prismlight-root .plh-band-row span:last-child {
+    display: none;
+  }
+}
+
+
+/* ---- dark mode ----
+   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
+   panel #14121A). Everything downstream re-skins from these. */
+[data-theme='dark'] .prismlight-root {
+  --tc-paper: #16171d;
+  --tc-sunk: #16171d;
+  --tc-white: #1e1f26;
+  --tc-card: #1e1f26;
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.66);
+  --tc-ink-3: rgba(255, 255, 255, 0.48);
+  --tc-ink-4: rgba(255, 255, 255, 0.3);
+  --tc-hair: #3b3440;
+  --tc-hair-2: #2b2731;
+  --tc-plate: #1e1f26;
+  --tc-hatch: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme='dark'] .prismlight-root .tc-btn-solid {
+  background: #ffffff;
+  color: #16171d;
+}
+
+
+
+
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.prismlight-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.prismlight-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}

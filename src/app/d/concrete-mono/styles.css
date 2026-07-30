@@ -1,0 +1,2877 @@
+/* ==========================================================================
+   CONCRETE MONO — brutalist monospace slabs, hard-cut stamps (DARK)
+   Every rule is nested under .concrete-mono-root so directions cannot leak.
+   Type is Switzer (slab display) + system mono (the concrete texture) + Inter
+   (running prose). No other families.
+   ========================================================================== */
+
+.concrete-mono-root {
+  --ink: #060606;
+  --ink2: #0d0d0d;
+  --ink3: #131313;
+  --paper: #f1f1ee;
+
+  --w96: rgba(255, 255, 255, 0.96);
+  --w72: rgba(255, 255, 255, 0.72);
+  --w48: rgba(255, 255, 255, 0.48);
+  --w26: rgba(255, 255, 255, 0.26);
+  --w13: rgba(255, 255, 255, 0.13);
+
+  --slab: var(--font-display);
+  --mono: var(--font-mono);
+  --prose: var(--font-sans);
+
+  --rule: 2px solid rgba(255, 255, 255, 0.9);
+
+  position: relative;
+  background: var(--ink);
+  color: var(--w96);
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.concrete-mono-root *,
+.concrete-mono-root *::before,
+.concrete-mono-root *::after {
+  box-sizing: border-box;
+}
+
+.concrete-mono-root ::selection {
+  background: #fff;
+  color: #060606;
+}
+.concrete-mono-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.concrete-mono-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.concrete-mono-root :focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+.concrete-mono-root img,
+.concrete-mono-root svg,
+.concrete-mono-root canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* the slab display face: Switzer 800, uppercase, hard tracking */
+.concrete-mono-root .slab {
+  font-family: var(--slab);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.042em;
+}
+
+/* the rotating locale line: one clean tone, no material on letterforms —
+   display type never carries a decorative fill (DESIGN_STANDARD §5/§6) */
+.concrete-mono-root .chrome {
+  color: #fff;
+}
+
+/* film grain — the concrete surface */
+.concrete-mono-root .cm-grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 400;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: cm-grain 0.9s steps(6) infinite;
+}
+@keyframes cm-grain {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  17% {
+    transform: translate3d(-4%, 2%, 0);
+  }
+  33% {
+    transform: translate3d(2%, -3%, 0);
+  }
+  50% {
+    transform: translate3d(-3%, -2%, 0);
+  }
+  67% {
+    transform: translate3d(3%, 3%, 0);
+  }
+  83% {
+    transform: translate3d(-2%, 4%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ============================= NAV ============================= */
+.concrete-mono-root .cm-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  height: 52px;
+  display: flex;
+  align-items: stretch;
+  /* the bar runs edge to edge; the plate inside it stops short, so the nav has
+     a terminus instead of bleeding off the viewport */
+  padding-right: clamp(10px, 1.4vw, 20px);
+  background: rgba(6, 6, 6, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: var(--rule);
+  overflow: hidden;
+}
+.concrete-mono-root .cm-nav-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-right: 2px solid var(--w26);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.concrete-mono-root .cm-nav-mark img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+.concrete-mono-root .cm-nav-links {
+  display: flex;
+  align-items: stretch;
+  margin-left: auto;
+}
+/* without this the two CTAs stack and overrun the 52px bar, clipping SIGN IN
+   against the top of the viewport */
+.concrete-mono-root .cm-nav-cta {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+}
+.concrete-mono-root .cm-nav-links a,
+.concrete-mono-root .cm-nav-cta a {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 0 16px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-left: 2px solid var(--w13);
+  color: var(--w72);
+  transition: background 0.1s steps(1), color 0.1s steps(1);
+}
+.concrete-mono-root .cm-nav-cta a {
+  border-left: 2px solid var(--w26);
+  color: var(--w96);
+}
+.concrete-mono-root .cm-nav-cta a.solid {
+  background: #fff;
+  color: #060606;
+  font-weight: 700;
+}
+.concrete-mono-root .cm-nav-links a:hover,
+.concrete-mono-root .cm-nav-cta a:hover {
+  background: #fff;
+  color: #060606;
+}
+.concrete-mono-root .cm-nav-cta a.solid:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ============================= HERO ============================= */
+.concrete-mono-root .cm-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 52px;
+  border-bottom: var(--rule);
+  overflow: hidden;
+  background: var(--ink);
+}
+.concrete-mono-root .cm-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.96;
+  /* oil-slick, not tan: the dome preset pushed for spectral separation instead
+     of the low-contrast smear the wide burst produced under the wall */
+  filter: saturate(1.26) contrast(1.24) brightness(0.98);
+}
+/* The burst is a lamp on one axis, not a flood. Brightness peaks just off the
+   mark and falls away to black at the flanks, so the columns furthest from the
+   gate sit on unlit graphite and stay readable; the dark core keeps the gate
+   and the burst reading as a single object. */
+.concrete-mono-root .cm-hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(19% 24% at 50% 40%, rgba(6, 6, 6, 0.97), rgba(6, 6, 6, 0) 78%),
+    linear-gradient(
+      90deg,
+      rgba(6, 6, 6, 0.97) 0%,
+      rgba(6, 6, 6, 0.93) 13%,
+      rgba(6, 6, 6, 0.7) 26%,
+      rgba(6, 6, 6, 0.3) 39%,
+      rgba(6, 6, 6, 0.2) 50%,
+      rgba(6, 6, 6, 0.3) 61%,
+      rgba(6, 6, 6, 0.7) 74%,
+      rgba(6, 6, 6, 0.93) 87%,
+      rgba(6, 6, 6, 0.97) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(6, 6, 6, 0.82) 0%,
+      rgba(6, 6, 6, 0.14) 17%,
+      rgba(6, 6, 6, 0) 44%,
+      rgba(6, 6, 6, 0.66) 70%,
+      rgba(6, 6, 6, 0.97) 86%
+    );
+}
+
+/* ---- the component wall ---- */
+.concrete-mono-root .cm-wall {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-height: 280px;
+  display: grid;
+  /* the mark is lifted out of the flow and centred in the seam, so the two
+     halves of the wall run wide and the mass reads composed, not gutter-bound */
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: clamp(112px, 12.5vw, 186px);
+  padding: clamp(10px, 1.6vw, 20px) clamp(20px, 2.6vw, 40px) clamp(6px, 1vw, 14px);
+  /* the wall dissolves at its own top and bottom edges instead of being
+     guillotined by the nav or the hero copy — an edge crop that reads chosen,
+     the way resend's cube crop does */
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 26px,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 26px,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
+}
+.concrete-mono-root .cm-wall-side {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+  /* grid items default to min-width:auto; without this the widest card pushes
+     its half of the wall into the mark's well */
+  min-width: 0;
+}
+.concrete-mono-root .cm-wall-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 7px;
+  min-width: 0;
+  height: 100%;
+}
+.concrete-mono-root .cm-wall-side--tr .cm-wall-col {
+  align-items: flex-end;
+}
+
+/* the gate: the mark is a machine the wall is routed through, not a logo
+   sitting on a background */
+.concrete-mono-root .cm-wall-core {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(112px, 13vw, 172px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+.concrete-mono-root .cm-wall-core::before {
+  content: '';
+  position: absolute;
+  inset: -108%;
+  background: radial-gradient(closest-side, rgba(6, 6, 6, 0.97), rgba(6, 6, 6, 0) 70%);
+}
+/* The rings are struck from the mark's own centre. `inset` + `width` was
+   over-constrained and the global `svg { max-width: 100% }` then clamped the
+   box to the core width while the height stayed at 152%, so the viewBox
+   letterboxed and the rings sat 45px left of the logo. Centring by transform
+   makes registration independent of any width clamp. */
+.concrete-mono-root .cm-gate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 152%;
+  height: 152%;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  fill: none;
+  z-index: 2;
+}
+/* the doubled contour — stroke and gap sized to land at the thread gauge at
+   the rendered scale; the outer pair floats just off the disc edge, the inner
+   pair is engraved into the milled face */
+.concrete-mono-root .cm-gate-ring {
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1.3;
+}
+.concrete-mono-root .cm-gate-ring--in {
+  stroke: rgba(255, 255, 255, 0.2);
+}
+/* the milled disc: brushed radial graphite, a bright specular crown at the
+   upper-left, a crisp hairline rim — the same machining as the wall's faces */
+.concrete-mono-root .cm-wall-core::after {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  z-index: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      120% 120% at 32% 20%,
+      rgba(255, 255, 255, 0.16),
+      rgba(255, 255, 255, 0.03) 38%,
+      rgba(255, 255, 255, 0) 62%
+    ),
+    conic-gradient(
+      from 214deg,
+      #0a0a0b 0%,
+      #17181a 22%,
+      #0b0c0d 47%,
+      #151618 71%,
+      #0a0a0b 100%
+    );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.28),
+    inset 0 2px 3px rgba(255, 255, 255, 0.38),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.9),
+    0 26px 60px rgba(0, 0, 0, 0.72);
+}
+/* the aperture bar crossing the mark */
+.concrete-mono-root .cm-gate-scan {
+  position: absolute;
+  z-index: 2;
+  left: -14%;
+  width: 128%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+.concrete-mono-root .cm-gate-flash {
+  position: absolute;
+  z-index: 2;
+  width: 240%;
+  aspect-ratio: 1;
+  opacity: 0;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 68%);
+}
+.concrete-mono-root .cm-wall-core img {
+  position: relative;
+  z-index: 2;
+  width: 84%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* the carriers: one per translation in flight, source → gate → translated twin */
+.concrete-mono-root .cm-wall-flow {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.concrete-mono-root .cm-carrier {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 2px;
+  margin-top: -1px;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+}
+
+/* ---- one wall component ----
+   Milled graphite, not a wireframe cell: a brushed face with fine vertical
+   striations, a crisp specular top edge, a black bottom edge and a cast
+   shadow. The face stays a few percent translucent so the burst behind it
+   tints the metal instead of being blocked by it. */
+.concrete-mono-root .cm-wc {
+  position: relative;
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.014) 36%,
+      rgba(255, 255, 255, 0) 64%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 0 1px,
+      rgba(0, 0, 0, 0.2) 1px 2px,
+      rgba(255, 255, 255, 0.008) 2px 3px
+    ),
+    linear-gradient(177deg, rgba(23, 24, 26, 0.93) 0%, rgba(13, 14, 15, 0.94) 48%, rgba(7, 8, 9, 0.95) 100%);
+  backdrop-filter: blur(3px);
+  font-family: var(--mono);
+  /* DESIGN_STANDARD §2: the wall is the hero artifact — body 12px, no label
+     below the 11px floor */
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--w96);
+  padding: 7px 9px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 1px 0 0 rgba(255, 255, 255, 0.1),
+    inset -1px 0 0 rgba(255, 255, 255, 0.045),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.9),
+    0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 26px rgba(0, 0, 0, 0.58);
+}
+
+/* the glint: a hard specular band crosses one face at a time, never the wall */
+.concrete-mono-root .cm-wc::after {
+  content: '';
+  position: absolute;
+  inset: -60% -70%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    104deg,
+    transparent 44%,
+    rgba(255, 255, 255, 0.1) 48.5%,
+    rgba(255, 255, 255, 0.34) 50%,
+    rgba(255, 255, 255, 0.1) 51.5%,
+    transparent 56%
+  );
+  transform: translateX(-150%);
+  animation: cm-glint 11s cubic-bezier(0.42, 0, 0.2, 1) infinite;
+}
+@keyframes cm-glint {
+  0%,
+  84% {
+    transform: translateX(-150%);
+  }
+  94%,
+  100% {
+    transform: translateX(150%);
+  }
+}
+/* the sweep is staggered by column and detuned by row, so no two faces flash
+   together and the wall never reads as one blinking sheet */
+.concrete-mono-root .cm-wall-col.c0 .cm-wc::after {
+  animation-delay: -0.9s;
+}
+.concrete-mono-root .cm-wall-col.c1 .cm-wc::after {
+  animation-delay: -4.6s;
+}
+.concrete-mono-root .cm-wall-col.c2 .cm-wc::after {
+  animation-delay: -8.2s;
+}
+.concrete-mono-root .cm-wall-col .cm-wc:nth-child(2)::after {
+  animation-duration: 12.4s;
+}
+.concrete-mono-root .cm-wall-col .cm-wc:nth-child(3)::after {
+  animation-duration: 9.7s;
+}
+.concrete-mono-root .cm-wall-col .cm-wc:nth-child(4)::after {
+  animation-duration: 13.8s;
+}
+.concrete-mono-root .cm-wall-col .cm-wc:nth-child(5)::after {
+  animation-duration: 10.6s;
+}
+.concrete-mono-root .cm-wall-col .cm-wc:nth-child(6)::after {
+  animation-duration: 14.3s;
+}
+/* room for the corner locale tag: first-line text may never run under it */
+.concrete-mono-root .cm-wc.is-tr {
+  padding-right: 30px;
+}
+.concrete-mono-root .cm-wc.is-morph {
+  animation: cm-wc-flash 0.42s steps(3) 1;
+}
+/* the English twin lights when its string is picked up by the gate */
+.concrete-mono-root .cm-wc.is-source {
+  border-color: rgba(255, 255, 255, 0.85);
+}
+/* bright enough to mark the stamp, dim enough that a frozen frame still reads
+   the new string (r1: the KO toast was caught as a washed grey plate) */
+@keyframes cm-wc-flash {
+  0% {
+    box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.14);
+  }
+  100% {
+    box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0);
+  }
+}
+/* a label, not a badge: no plate, no rule, no reserved inset — bare mono type
+   sitting quietly in the corner of the translated card */
+.concrete-mono-root .cm-wc-loc {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 3;
+  background: none;
+  color: rgba(255, 255, 255, 0.44);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  padding: 0;
+  line-height: 1;
+  pointer-events: none;
+  /* DESIGN_STANDARD §2: locale codes are lowercase */
+  text-transform: lowercase;
+}
+
+/* buttons and action rows drop the shell — the control IS the component */
+.concrete-mono-root .cm-wc--button,
+.concrete-mono-root .cm-wc--actions {
+  border: none;
+  background: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  padding: 0;
+  gap: 6px;
+  overflow: visible;
+}
+.concrete-mono-root .cm-wc--button::after,
+.concrete-mono-root .cm-wc--actions::after {
+  display: none;
+}
+.concrete-mono-root .cm-wc--button.is-tr,
+.concrete-mono-root .cm-wc--actions.is-tr {
+  padding: 0 26px 0 0;
+}
+/* the solid key is a milled cap: bright crown, shaded skirt, seated shadow */
+.concrete-mono-root .cm-wc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f4f4 44%, #d6d6d6 100%);
+  color: #060606;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 15px;
+  text-align: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 5px 14px rgba(0, 0, 0, 0.55);
+}
+.concrete-mono-root .cm-wc-btn--ghost {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 58%);
+  color: var(--w96);
+  border: 1px solid var(--w48);
+  padding: 7px 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* search */
+.concrete-mono-root .cm-wc--search .cm-wc-input {
+  flex: 1 1 auto;
+  color: var(--w48);
+}
+.concrete-mono-root .cm-wc--search kbd {
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 11px;
+  border: 1px solid var(--w26);
+  padding: 1px 5px;
+  color: var(--w48);
+}
+
+/* toast */
+.concrete-mono-root .cm-wc--toast {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  border-left: 3px solid #fff;
+}
+.concrete-mono-root .cm-wc--toast b {
+  font-weight: 700;
+  font-size: 12px;
+}
+.concrete-mono-root .cm-wc--toast i {
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+
+/* checkbox */
+.concrete-mono-root .cm-wc-box {
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  border: 1px solid #fff;
+  background: #fff;
+  color: #060606;
+  display: grid;
+  place-items: center;
+}
+.concrete-mono-root .cm-wc-box svg {
+  width: 9px;
+  height: 9px;
+}
+
+/* pricing card */
+.concrete-mono-root .cm-wc--card {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+.concrete-mono-root .cm-wc--card b {
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+.concrete-mono-root .cm-wc--card em {
+  font-style: normal;
+  font-size: 12px;
+  color: #fff;
+}
+.concrete-mono-root .cm-wc--card [data-slot='c'] {
+  font-size: 11px;
+  color: var(--w48);
+}
+
+/* progress */
+.concrete-mono-root .cm-wc--progress {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+.concrete-mono-root .cm-wc-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.concrete-mono-root .cm-wc-row i {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--w48);
+  flex: 0 0 auto;
+}
+.concrete-mono-root .cm-wc-track {
+  display: block;
+  height: 5px;
+  border: 1px solid var(--w26);
+}
+.concrete-mono-root .cm-wc-track i {
+  display: block;
+  width: 68%;
+  height: 100%;
+  background: #fff;
+}
+
+/* select + field */
+.concrete-mono-root .cm-wc--select,
+.concrete-mono-root .cm-wc--field {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+}
+.concrete-mono-root .cm-wc-lab {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+.concrete-mono-root .cm-wc-ctl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--w26);
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--w96);
+}
+.concrete-mono-root .cm-wc-ctl b {
+  font-weight: 400;
+  color: var(--w48);
+  flex: 0 0 auto;
+}
+
+/* switch */
+.concrete-mono-root .cm-wc--switch {
+  justify-content: space-between;
+}
+.concrete-mono-root .cm-wc-sw {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 13px;
+  border: 1px solid #fff;
+  display: flex;
+  justify-content: flex-end;
+  padding: 1px;
+}
+.concrete-mono-root .cm-wc-sw i {
+  display: block;
+  width: 9px;
+  height: 100%;
+  background: #fff;
+}
+
+/* tabs + nav + segment */
+.concrete-mono-root .cm-wc-tabs,
+.concrete-mono-root .cm-wc-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+}
+.concrete-mono-root .cm-wc-tabs b {
+  font-weight: 400;
+  color: var(--w48);
+  padding-bottom: 3px;
+}
+.concrete-mono-root .cm-wc-tabs b:first-child {
+  color: #fff;
+  font-weight: 700;
+  border-bottom: 2px solid #fff;
+}
+.concrete-mono-root .cm-wc-nav b {
+  font-weight: 400;
+  color: var(--w72);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+}
+.concrete-mono-root .cm-wc--segment {
+  padding: 3px;
+}
+.concrete-mono-root .cm-wc-seg {
+  display: flex;
+  gap: 0;
+}
+.concrete-mono-root .cm-wc-seg b {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 11px;
+  color: var(--w48);
+}
+.concrete-mono-root .cm-wc-seg b:first-child {
+  background: #fff;
+  color: #060606;
+}
+
+/* textarea */
+.concrete-mono-root .cm-wc--textarea {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 7px;
+  width: 100%;
+  min-height: 56px;
+}
+.concrete-mono-root .cm-wc-ta {
+  color: var(--w48);
+}
+.concrete-mono-root .cm-wc-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.concrete-mono-root .cm-wc-rules i {
+  display: block;
+  height: 1px;
+  background: var(--w13);
+}
+.concrete-mono-root .cm-wc-rules i:last-child {
+  width: 62%;
+}
+
+/* api action row */
+.concrete-mono-root .cm-wc--api {
+  justify-content: space-between;
+}
+.concrete-mono-root .cm-wc--api code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--w48);
+  letter-spacing: 0.02em;
+}
+
+/* banner */
+.concrete-mono-root .cm-wc--banner {
+  border-left: 3px solid #fff;
+}
+
+/* stat */
+.concrete-mono-root .cm-wc--stat {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+.concrete-mono-root .cm-wc--stat b {
+  font-size: 19px;
+  line-height: 1;
+}
+.concrete-mono-root .cm-wc--stat [data-slot='a'] {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+
+/* testimonial */
+.concrete-mono-root .cm-wc--quote {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+}
+.concrete-mono-root .cm-wc-q {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--w72);
+}
+.concrete-mono-root .cm-wc-by {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-top: 1px solid var(--w13);
+  padding-top: 7px;
+}
+.concrete-mono-root .cm-wc-av {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  color: #060606;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.concrete-mono-root .cm-wc-by b {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.concrete-mono-root .cm-wc-by i {
+  display: block;
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+
+/* ---- hero copy ---- */
+.concrete-mono-root .cm-hero-copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(6px, 1vw, 16px) clamp(16px, 4vw, 54px) clamp(14px, 2vw, 26px);
+}
+.concrete-mono-root .cm-hero h1 {
+  font-size: clamp(1.95rem, 5.2vw, 4.6rem);
+  color: #fff;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.6);
+}
+.concrete-mono-root .cm-hero h1 .ch,
+.concrete-mono-root .cm-hero h1 .wd {
+  display: inline-block;
+}
+.concrete-mono-root .cm-hero-sub {
+  margin-top: 10px;
+  max-width: 62ch;
+  font-family: var(--prose);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--w72);
+}
+.concrete-mono-root .cm-hero-sub .rot {
+  font-family: var(--mono);
+  color: #fff;
+  border-bottom: 2px solid #fff;
+  padding: 0 2px;
+}
+.concrete-mono-root .cm-hero-ctas {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.concrete-mono-root .cm-hero-ctas a {
+  border: 2px solid #fff;
+  padding: 11px 24px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.concrete-mono-root .cm-hero-ctas a.primary {
+  background: #fff;
+  color: #060606;
+}
+.concrete-mono-root .cm-hero-ctas a.primary:hover {
+  background: var(--ink);
+  color: #fff;
+}
+.concrete-mono-root .cm-hero-ctas a.ghost {
+  border-left: none;
+}
+.concrete-mono-root .cm-hero-ctas a.ghost:hover {
+  background: #fff;
+  color: #060606;
+}
+.concrete-mono-root .cm-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid var(--w26);
+  border-left: none;
+  padding: 0 16px;
+  font-size: 12px;
+  color: var(--w72);
+}
+.concrete-mono-root .cm-cmd:hover {
+  background: #fff;
+  color: #060606;
+}
+.concrete-mono-root .cm-cmd .dim {
+  color: var(--w48);
+}
+
+/* ---- hero bands: 100+ languages, then trusted by ---- */
+.concrete-mono-root .cm-band {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: stretch;
+  border-top: 2px solid var(--w26);
+  background: rgba(6, 6, 6, 0.78);
+}
+.concrete-mono-root .cm-band-key {
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(14px, 2.4vw, 26px);
+  border-right: 2px solid var(--w26);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w72);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+/* the strip runs off both ends behind a gradient mask — a marquee that stops
+   hard at a border reads as a broken row */
+.concrete-mono-root .cm-marq {
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 7px 0;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 clamp(52px, 6.6vw, 96px),
+    #000 calc(100% - clamp(56px, 8vw, 116px)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 clamp(52px, 6.6vw, 96px),
+    #000 calc(100% - clamp(56px, 8vw, 116px)),
+    transparent 100%
+  );
+}
+.concrete-mono-root .cm-marq-track {
+  display: flex;
+  width: max-content;
+}
+.concrete-mono-root .cm-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--w13);
+  padding: 4px 14px 4px 5px;
+  margin-right: 8px;
+  font-size: 12px;
+  color: var(--w72);
+  white-space: nowrap;
+}
+/* the locale, struck as a hairline key — the flags were the only saturated
+   colour on the page and read as pasted in */
+.concrete-mono-root .cm-flag-k {
+  font-style: normal;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: var(--w48);
+  border: 1px solid var(--w26);
+  padding: 4px 5px 3px;
+  text-transform: lowercase;
+}
+.concrete-mono-root .cm-trust {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.concrete-mono-root .cm-trust .wm {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--w48);
+  padding: 13px 18px;
+  border-right: 1px solid var(--w13);
+}
+
+/* ============================= STAT BLOCK ============================= */
+.concrete-mono-root .cm-stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: var(--rule);
+  background: var(--ink);
+}
+.concrete-mono-root .cm-stat {
+  padding: clamp(16px, 2vw, 24px) clamp(16px, 3vw, 40px);
+  border-right: 2px solid var(--w13);
+}
+@media (min-width: 900px) {
+  /* the numbers get a block of their own instead of a thin strip — sized to
+     the type it holds, not padded out into a void */
+  .concrete-mono-root .cm-stat {
+    padding: 48px clamp(16px, 3vw, 40px) 52px;
+  }
+}
+.concrete-mono-root .cm-stat:last-child {
+  border-right: none;
+}
+.concrete-mono-root .cm-stat b {
+  display: block;
+  font-size: clamp(1.3rem, 2.6vw, 2.4rem);
+  line-height: 1;
+}
+.concrete-mono-root .cm-stat span {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--w48);
+}
+
+/* ============================= TAIL SECTIONS ============================= */
+.concrete-mono-root .cm-section {
+  border-bottom: var(--rule);
+  padding: clamp(48px, 7vw, 100px) clamp(16px, 4vw, 54px);
+  position: relative;
+  z-index: 1;
+  background: var(--ink);
+}
+.concrete-mono-root .cm-sec-head {
+  margin-bottom: clamp(18px, 2vw, 28px);
+}
+.concrete-mono-root .cm-sec-title {
+  font-size: clamp(1.7rem, 4vw, 3.6rem);
+}
+.concrete-mono-root .cm-sec-sub {
+  max-width: 66ch;
+  color: var(--w72);
+  font-family: var(--prose);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 14px;
+}
+
+/* pricing */
+.concrete-mono-root .cm-pricing {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 2px solid #fff;
+}
+.concrete-mono-root .cm-plan {
+  padding: clamp(16px, 1.8vw, 26px);
+  border-right: 2px solid var(--w26);
+}
+.concrete-mono-root .cm-plan:last-child {
+  border-right: none;
+}
+.concrete-mono-root .cm-plan .p-name {
+  font-family: var(--slab);
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+.concrete-mono-root .cm-plan .p-price {
+  font-size: 12px;
+  color: var(--w72);
+  margin: 8px 0 12px;
+}
+.concrete-mono-root .cm-plan .p-price b {
+  color: #fff;
+  font-size: 21px;
+}
+.concrete-mono-root .cm-plan ul {
+  list-style: none;
+  padding: 0;
+  font-size: 11.5px;
+  color: var(--w72);
+  line-height: 1.8;
+}
+.concrete-mono-root .cm-plan ul li::before {
+  content: '+ ';
+  color: #fff;
+  font-weight: 700;
+}
+.concrete-mono-root .cm-plan a {
+  display: inline-block;
+  margin-top: 12px;
+  border: 2px solid #fff;
+  padding: 9px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.concrete-mono-root .cm-plan a.solid {
+  background: #fff;
+  color: #060606;
+}
+/* Enterprise: a flat graphite plate one step off the page ink, edged with the
+   same bright hairline the hero's machined faces carry — a surface from the
+   family's ramp, not a gradient (DESIGN_STANDARD §3: flat tone-on-tone). */
+.concrete-mono-root .cm-plan.steel {
+  background: #101011;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+/* closing */
+.concrete-mono-root .cm-closing {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(44px, 7vw, 100px) clamp(16px, 4vw, 54px);
+  border-bottom: var(--rule);
+  background: var(--ink);
+  z-index: 1;
+}
+.concrete-mono-root .cm-closing-field {
+  position: absolute;
+  /* the copy owns the dark left of the band, resend-style: the burst is
+     pushed aside into the right 60% and its trailing edge dissolves before
+     it reaches the type (AESTHETIC_ADDENDUM 2b — content sits in the dark,
+     the light is composed around it) */
+  inset: 0 0 0 auto;
+  z-index: 0;
+  width: 60%;
+  height: 100%;
+  opacity: 0.92;
+  pointer-events: none;
+  /* the same spectral commitment as the hero lamp — this band is the page's
+     one full-strength accent moment */
+  filter: saturate(1.22) contrast(1.18);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 34%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 34%);
+}
+/* thin ink seams top and bottom so the burst reads as a bounded band of
+   light, never a bleed into the neighbouring plates */
+.concrete-mono-root .cm-closing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 6, 6, 0.66) 0%,
+    rgba(6, 6, 6, 0) 22%,
+    rgba(6, 6, 6, 0) 74%,
+    rgba(6, 6, 6, 0.7) 100%
+  );
+}
+.concrete-mono-root .cm-closing > *:not(canvas) {
+  position: relative;
+  z-index: 2;
+}
+.concrete-mono-root .cm-closing h2 {
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  color: #fff;
+}
+.concrete-mono-root .cm-closing .cm-sec-sub {
+  margin: 14px 0 16px;
+}
+
+/* footer */
+.concrete-mono-root .cm-footer {
+  padding: clamp(20px, 2vw, 28px) clamp(16px, 4vw, 54px) 76px;
+  background: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+.concrete-mono-root .cm-foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 22px;
+  margin-bottom: 14px;
+}
+.concrete-mono-root .cm-foot-brand img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+.concrete-mono-root .cm-foot-brand p {
+  font-size: 9px;
+  color: var(--w48);
+  line-height: 1.8;
+  letter-spacing: 0.08em;
+}
+.concrete-mono-root .cm-foot-col .k {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--w72);
+}
+.concrete-mono-root .cm-foot-col a {
+  display: block;
+  font-size: 10.5px;
+  color: var(--w48);
+  padding: 2px 0;
+}
+.concrete-mono-root .cm-foot-col a:hover {
+  color: #fff;
+}
+.concrete-mono-root .cm-foot-bottom {
+  border-top: 1px solid var(--w13);
+  padding-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: var(--w48);
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN
+   StorySection / FeatureBento / EditorWorkspace / diagrams read these.
+   Concrete pours in: square corners, 2px white rules, mono labels,
+   uppercase slab headings, no soft shadow anywhere.
+   ============================================================ */
+.concrete-mono-root .cm-story,
+.concrete-mono-root .cm-features,
+.concrete-mono-root .cm-editor {
+  --gts-bg: #060606;
+  --gts-paper: #f1f1ee;
+  --gts-ink: #060606;
+  --gts-ink-2: rgba(6, 6, 6, 0.64);
+  --gts-ink-3: rgba(6, 6, 6, 0.4);
+  --gts-paper-rule: rgba(6, 6, 6, 0.18);
+  --gts-shell: #0d0d0d;
+  --gts-shell-text: #ffffff;
+  --gts-shell-line: rgba(255, 255, 255, 0.3);
+  --gts-code-bg: #0d0d0d;
+  --gts-code-text: rgba(255, 255, 255, 0.84);
+  --gts-line: rgba(255, 255, 255, 0.28);
+  --gts-line-2: rgba(255, 255, 255, 0.14);
+  --gts-t1: rgba(255, 255, 255, 0.96);
+  --gts-t2: rgba(255, 255, 255, 0.72);
+  --gts-t3: rgba(255, 255, 255, 0.48);
+  --gts-t4: rgba(255, 255, 255, 0.26);
+  --gts-display: var(--slab);
+  --gts-text: var(--prose);
+  --gts-mono: var(--mono);
+  --gts-radius: 0px;
+  --gts-head-size: clamp(1.7rem, 4vw, 3.6rem);
+  --gts-head-weight: 800;
+
+  /* Section G: the only colour on this page is the prismatic field. The shared
+     syntax palette ships a warm sand for attributes and a steel blue for tags;
+     both are struck out here for a pure white-to-graphite ramp, so hierarchy
+     comes from value alone. */
+  --gts-tok-component: #ffffff;
+  --gts-tok-tag: rgba(255, 255, 255, 0.6);
+  --gts-tok-attr: rgba(255, 255, 255, 0.82);
+  --gts-tok-str: rgba(255, 255, 255, 0.62);
+  --gts-tok-text: #ffffff;
+  --gts-tok-kw: rgba(255, 255, 255, 0.7);
+  --gts-tok-fn: rgba(255, 255, 255, 0.88);
+  --gts-tok-punct: rgba(255, 255, 255, 0.34);
+
+  --gtb-line: rgba(255, 255, 255, 0.92);
+  --gtb-line-2: rgba(255, 255, 255, 0.26);
+  --gtb-title: rgba(255, 255, 255, 0.96);
+  --gtb-body: rgba(255, 255, 255, 0.72);
+  --gtb-label: rgba(255, 255, 255, 0.48);
+  --gtb-display: var(--slab);
+  --gtb-text: var(--prose);
+  --gtb-mono: var(--mono);
+  --gtb-radius: 0px;
+  --gtb-wrap: 1320px;
+  --gtb-grid-bg: rgba(13, 13, 13, 0.8);
+  --gtb-mock-bg: rgba(6, 6, 6, 0.86);
+  --gtb-spotlight: rgba(255, 255, 255, 0.09);
+  --gtb-head-size: clamp(1.7rem, 4vw, 3.6rem);
+  --gtb-head-weight: 800;
+  --gtb-cell-min: 236px;
+  --gtb-title-size: 17px;
+  --gtb-body-size: 12.5px;
+
+  --gte-line: rgba(255, 255, 255, 0.92);
+  --gte-line-2: rgba(255, 255, 255, 0.2);
+  --gte-title: rgba(255, 255, 255, 0.96);
+  --gte-body: rgba(255, 255, 255, 0.72);
+  --gte-label: rgba(255, 255, 255, 0.48);
+  --gte-quiet: rgba(255, 255, 255, 0.3);
+  --gte-display: var(--slab);
+  --gte-text: var(--prose);
+  --gte-mono: var(--mono);
+  --gte-ws-bg: #0d0d0d;
+  --gte-ws-shadow: 9px 9px 0 rgba(255, 255, 255, 0.12);
+  --gte-radius: 0px;
+  --gte-wrap: 1320px;
+  --gte-head-size: clamp(1.7rem, 3.6vw, 3.2rem);
+  --gte-head-weight: 800;
+  --gte-revised: #ffffff;
+  --gte-act-hover: rgba(255, 255, 255, 0.9);
+
+  --gtd-line: rgba(255, 255, 255, 0.55);
+  --gtd-fill: rgba(255, 255, 255, 0.2);
+  --gtd-accent: #ffffff;
+  --gtd-label: rgba(255, 255, 255, 0.62);
+  --gtd-mono: var(--mono);
+  --gtd-node-fill: #0d0d0d;
+  --gtd-node-stroke: rgba(255, 255, 255, 0.62);
+  --gtd-wire: rgba(255, 255, 255, 0.4);
+  --gtd-glyph: #ffffff;
+  --gtd-pulse: #ffffff;
+  --gtd-pulse-glow: rgba(255, 255, 255, 0.55);
+}
+
+/* every shared heading takes the slab treatment */
+.concrete-mono-root .cm-story .gts-head h2,
+.concrete-mono-root .cm-features h2,
+.concrete-mono-root .cm-editor h2 {
+  text-transform: uppercase;
+  letter-spacing: -0.042em;
+  line-height: 0.92;
+}
+.concrete-mono-root .cm-story .gts-head p,
+.concrete-mono-root .cm-features .gtb-sub,
+.concrete-mono-root .cm-editor .gte-sub {
+  font-size: 14px;
+}
+
+.concrete-mono-root .cm-story {
+  background: var(--ink);
+  border-bottom: var(--rule);
+}
+/* One rhythm above and below the heading — the old 168/240 split left two
+   arbitrary voids either side of a two-line block. */
+.concrete-mono-root .cm-story .gts-head {
+  max-width: 1320px;
+  padding: clamp(40px, 7.2vw, 104px) 0 clamp(28px, 9.2vw, 132px);
+}
+
+/* concrete has no fillets: every corner in the shared machinery is squared off,
+   including the numbered pins, the dock and the code chips */
+.concrete-mono-root .cm-story *,
+.concrete-mono-root .cm-story *::before,
+.concrete-mono-root .cm-story *::after,
+.concrete-mono-root .cm-features *,
+.concrete-mono-root .cm-features *::before,
+.concrete-mono-root .cm-features *::after,
+.concrete-mono-root .cm-editor *,
+.concrete-mono-root .cm-editor *::before,
+.concrete-mono-root .cm-editor *::after {
+  border-radius: 0 !important;
+}
+
+/* the paper canvas is ruled, not tinted — harder dots, harder guides */
+.concrete-mono-root .cm-story {
+  --gts-paper-dot: rgba(6, 6, 6, 0.2);
+  --gts-paper-guide: rgba(6, 6, 6, 0.14);
+  --gts-paper-card: #ffffff;
+}
+/* the burst still fires behind the code act, dimmed so the source stays read */
+.concrete-mono-root .cm-story .gts-field {
+  filter: saturate(0.62) brightness(0.5);
+}
+
+/* the grid is stamped, not drawn: 2px rules, square corners, hard hover */
+.concrete-mono-root .cm-features {
+  border-bottom: var(--rule);
+  background: var(--ink);
+  --gtb-pad: clamp(36px, 3.6vw, 52px) 0 clamp(32px, 3vw, 44px);
+  --gtb-head-gap: 18px;
+  --gtb-cell-min: 236px;
+  --gtb-cell-pad: 24px 22px 26px;
+}
+/* every cell hangs its drawing off one baseline, so the second row cannot
+   read as though it carries more air under its diagram than the first */
+.concrete-mono-root .cm-features .gtb-cell {
+  display: flex;
+  flex-direction: column;
+}
+.concrete-mono-root .cm-features .gtb-mock {
+  margin-top: auto;
+}
+.concrete-mono-root .cm-features .gtb-grid {
+  border-width: 2px;
+}
+.concrete-mono-root .cm-features .gtb-cell {
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  transition: background 0.1s steps(1);
+}
+/* in-cell headings obey the in-diagram weight cap: Switzer 500, sentence
+   case — the slab voice belongs to section display type only (§6) */
+.concrete-mono-root .cm-features .gtb-cell h3 {
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+.concrete-mono-root .cm-features .gtb-mock {
+  border-width: 2px;
+  border-radius: 0;
+}
+
+.concrete-mono-root .cm-editor {
+  border-bottom: var(--rule);
+  background: var(--ink);
+}
+.concrete-mono-root .cm-editor .gte-ws {
+  border-width: 2px;
+}
+.concrete-mono-root .cm-editor .gte-col + .gte-col {
+  border-left-width: 2px;
+}
+.concrete-mono-root .cm-editor .gte-act {
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.concrete-mono-root .cm-editor .gte-bar {
+  border-bottom-width: 2px;
+}
+
+/* ---- section G: a cell starts at its heading, never above it ---- */
+.concrete-mono-root .cm-features .gtb-cell h3 small {
+  display: none;
+}
+
+/* ---- the only colour on this page is the prismatic field itself. The wipe's
+   chromatic fringes bled a lilac rule down the left edge of the paper sheet and
+   a magenta seam down the mobile reveal; both are gone. ---- */
+.concrete-mono-root .cm-story .gts-split-ca {
+  display: none;
+}
+
+/* ---- the <T> reveal holds the frame, and so does its subject ----
+   The code surface stops at 44% and only creeps to 56%, so the component the
+   beat is about sits whole in the right half instead of being sliced by the
+   divider. Inside it the source is a framed drawing plate — file header, code
+   band, note band, each on its own 2px rule — rather than one paragraph
+   floating in a black field. */
+.concrete-mono-root .cm-story .gts-xray {
+  clip-path: inset(0 calc((0.56 - var(--gts-split) * 0.12) * 100%) 0 0);
+}
+.concrete-mono-root .cm-story .gts-split {
+  left: calc((0.44 + var(--gts-split) * 0.12) * 100%);
+}
+/* the reveal is a stamped plate: hard grid, no radial haze */
+.concrete-mono-root .cm-story .gts-xray-surface {
+  background: #0b0b0b;
+}
+.concrete-mono-root .cm-story .gts-xray-inner {
+  left: clamp(20px, 3.2vw, 54px);
+  right: calc(56% + clamp(20px, 3.2vw, 54px));
+  top: 50%;
+  width: auto;
+  max-width: none;
+  transform: translateY(-50%);
+  border: 2px solid rgba(255, 255, 255, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 44%),
+    rgba(6, 6, 6, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 26px 64px rgba(0, 0, 0, 0.62);
+}
+.concrete-mono-root .cm-story .gts-xray-file {
+  margin: 0;
+  padding: 13px 18px 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.5);
+}
+.concrete-mono-root .cm-story .gts-xray pre {
+  padding: 26px 18px 28px;
+  font-size: clamp(12px, 1.12vw, 16px);
+  line-height: 1.95;
+  overflow-x: auto;
+}
+.concrete-mono-root .cm-story .gts-xray-note {
+  margin: 0;
+  padding: 13px 18px 14px;
+  border-left: 0;
+  border-top: 2px solid rgba(255, 255, 255, 0.24);
+  max-width: none;
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+/* The card the fourth beat zooms is sized so the whole of it clears both the
+   divider and the right edge at 2.7×; at its old width the Spanish line ran
+   straight off the viewport. */
+.concrete-mono-root .cm-story [data-tag] {
+  width: 228px;
+  margin-left: auto;
+  padding: 13px 15px;
+}
+.concrete-mono-root .cm-story [data-tag] .gts-tagline {
+  font-size: 15.5px;
+  line-height: 1.3;
+}
+
+/* ---- the sheet does not fade in ----
+   The setup tween opens the window at 40% alpha, so any depth sampled at the
+   pin boundary caught a half-transparent grey page. Concrete's sheet is
+   already on the table; the arrival is travel and scale, never opacity. */
+.concrete-mono-root .cm-story .gts-window {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+/* the site chip is a tab inset from the corner, so the 1.09 push-in at the
+   start of the pin can never crop it against the viewport edge */
+.concrete-mono-root .cm-story .gts-win-chip {
+  left: clamp(16px, 5.6vw, 80px);
+  padding: 11px 20px 12px;
+}
+.concrete-mono-root .cm-story .gts-win-chip::after {
+  display: none;
+}
+
+/* ---- beat 1 reads as ingestion, not a stray dot ----
+   Heavier slugs with a drawn trail, so a frozen frame shows context travelling
+   from the markers down into the dock even with only two or three in flight. */
+.concrete-mono-root .cm-story .gts-pellet {
+  /* a control-point square in flight, not a probe on a stem: the r1 critic
+     read the 82px trailing stalks as instrument chrome dangling over blank
+     plate. The bead is small, the wake is short and fades fast. */
+  width: 8px;
+  height: 8px;
+  background: #060606;
+  box-shadow:
+    0 0 0 2px rgba(241, 241, 238, 0.9),
+    0 2px 8px rgba(6, 6, 6, 0.35);
+}
+.concrete-mono-root .cm-story .gts-pellet::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 1.5px;
+  height: 26px;
+  margin-left: -1px;
+  background: linear-gradient(180deg, rgba(6, 6, 6, 0) 0%, rgba(6, 6, 6, 0.4) 100%);
+}
+
+/* ---- the demo page is a page, not a stack of full-bleed bars ---- */
+.concrete-mono-root .cm-story .gts-site {
+  grid-template-columns: 1.06fr 0.62fr;
+  gap: clamp(28px, 4vw, 64px);
+  padding: 96px clamp(40px, 6vw, 96px) 104px;
+}
+.concrete-mono-root .cm-story .gts-site-right {
+  gap: 18px;
+}
+.concrete-mono-root .cm-story .gts-site-card {
+  padding: 16px 18px;
+}
+.concrete-mono-root .cm-story .gts-site-legal {
+  margin-top: 34px;
+}
+
+/* ---- act IV: heading, one line, then the machine at full width ----
+   The split layout hung the workspace off the right and left the lower third
+   of the act empty; stacked puts everything on the one left axis the rest of
+   the page is built on. */
+.concrete-mono-root .cm-editor {
+  --gte-pad: clamp(32px, 3vw, 44px) 0 clamp(34px, 3.4vw, 48px);
+}
+.concrete-mono-root .cm-editor .gte-grid {
+  align-items: start;
+  gap: 28px;
+}
+.concrete-mono-root .cm-editor .gte-copy {
+  padding-top: 2px;
+  max-width: 66ch;
+}
+
+/* ---- the close sets one axis: everything hangs off the left margin ---- */
+.concrete-mono-root .cm-closing .cm-hero-ctas {
+  justify-content: flex-start;
+}
+
+/* ================== DESKTOP SCROLL BUDGET ==================
+   The tail sections are spaced so each 10%-step frame the harness grabs lands
+   on one composed block instead of a seam between two. */
+@media (min-width: 900px) {
+  .concrete-mono-root .cm-pricing-sec {
+    padding: 36px clamp(16px, 4vw, 54px) 32px;
+  }
+  .concrete-mono-root .cm-closing {
+    padding: 34px clamp(16px, 4vw, 54px) 36px;
+    /* room for the burst to read as a composed band of light, not a sliver
+       behind the CTA (r2 item 6) */
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .concrete-mono-root .cm-footer {
+    padding: 20px clamp(16px, 4vw, 54px) 26px;
+  }
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 1199px) {
+  .concrete-mono-root .cm-wall-side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .concrete-mono-root .cm-wall-col.c2 {
+    display: none;
+  }
+  .concrete-mono-root .cm-wall {
+    gap: clamp(96px, 11vw, 140px);
+  }
+}
+@media (max-width: 899px) {
+  .concrete-mono-root .cm-wall-side {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .concrete-mono-root .cm-wall-col.c1 {
+    display: none;
+  }
+  .concrete-mono-root .cm-wall {
+    gap: clamp(96px, 26vw, 116px);
+  }
+  .concrete-mono-root .cm-wall-core {
+    width: clamp(56px, 15vw, 76px);
+  }
+  .concrete-mono-root .cm-wall-side {
+    gap: 6px;
+  }
+  .concrete-mono-root .cm-gate {
+    width: 136%;
+    height: 136%;
+  }
+}
+@media (max-width: 940px) {
+  /* The link rail collapses outright and the nameplate takes the span it
+     leaves. An empty ruled cell between the wordmark and SIGN IN reads as a
+     missing element, not as restraint. */
+  .concrete-mono-root .cm-nav-links {
+    display: none;
+  }
+  .concrete-mono-root .cm-nav-mark {
+    flex: 1 1 auto;
+  }
+  .concrete-mono-root .cm-foot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .concrete-mono-root .cm-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .concrete-mono-root .cm-stat:nth-child(2n) {
+    border-right: none;
+  }
+  .concrete-mono-root .cm-stat:nth-child(-n + 2) {
+    border-bottom: 2px solid var(--w13);
+  }
+}
+@media (max-width: 767px) {
+  /* the nameplate stays — it is what makes the widened mark cell read as a
+     nameplate instead of a hole */
+  .concrete-mono-root .cm-nav-mark span.wm {
+    font-size: 9.5px;
+    letter-spacing: 0.05em;
+  }
+  /* the seam has to stay wider than the gate, or the wall runs under the mark */
+  .concrete-mono-root .cm-wall {
+    gap: clamp(96px, 26vw, 116px);
+    padding: 10px 12px 4px;
+    min-height: 240px;
+  }
+  .concrete-mono-root .cm-wall-col {
+    gap: 6px;
+  }
+  .concrete-mono-root .cm-wc {
+    font-size: 10.5px;
+    padding: 5px 7px;
+  }
+  .concrete-mono-root .cm-wc.is-tr {
+    padding-right: 20px;
+  }
+  .concrete-mono-root .cm-wc-loc {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+  .concrete-mono-root .cm-wc-btn {
+    font-size: 9.5px;
+    padding: 6px 10px;
+  }
+  .concrete-mono-root .cm-wc--card b {
+    font-size: 12px;
+  }
+  .concrete-mono-root .cm-wc--stat b {
+    font-size: 15px;
+  }
+  .concrete-mono-root .cm-band {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .concrete-mono-root .cm-band-key {
+    border-right: none;
+    border-bottom: 2px solid var(--w13);
+    padding: 8px 16px;
+  }
+  .concrete-mono-root .cm-trust .wm {
+    padding: 10px 12px;
+    font-size: 10px;
+  }
+  .concrete-mono-root .cm-hero-ctas a,
+  .concrete-mono-root .cm-cmd {
+    padding: 10px 16px;
+    font-size: 11px;
+  }
+  .concrete-mono-root .cm-cmd {
+    border-left: 2px solid var(--w26);
+    margin-top: 8px;
+  }
+  .concrete-mono-root .cm-pricing {
+    grid-template-columns: 1fr;
+  }
+  .concrete-mono-root .cm-plan {
+    border-right: none;
+    border-bottom: 2px solid var(--w26);
+  }
+  .concrete-mono-root .cm-plan:last-child {
+    border-bottom: none;
+  }
+}
+@media (max-width: 560px) {
+  .concrete-mono-root .cm-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ================== MOBILE STORY ==================
+   A 390px frame cannot hold a vertical wipe — the code ran off the clip edge
+   and every line truncated mid-word — but a full-bleed takeover left the beat
+   as a black screen with a code block and no subject. On phones the frame
+   splits horizontally instead: the component the beat is about holds the top,
+   the code plate rises over the bottom, and the divider is the same machined
+   handle laid on its side. */
+@media (max-width: 899px) {
+  .concrete-mono-root .cm-story .gts-xray {
+    clip-path: inset(calc((0.63 - var(--gts-split) * 0.05) * 100%) 0 0 0);
+  }
+  .concrete-mono-root .cm-story .gts-split {
+    display: block;
+    left: 0;
+    right: 0;
+    top: calc((0.63 - var(--gts-split) * 0.05) * 100%);
+    bottom: auto;
+    width: auto;
+    height: 0;
+  }
+  .concrete-mono-root .cm-story .gts-split-line {
+    left: 0;
+    right: 0;
+    top: -1px;
+    width: auto;
+    height: 2px;
+  }
+  .concrete-mono-root .cm-story .gts-handle {
+    left: 50%;
+    top: -17px;
+    margin: 0 0 0 -31px;
+    width: 62px;
+    height: 34px;
+    grid-auto-flow: column;
+  }
+  .concrete-mono-root .cm-story .gts-handle i {
+    width: 1px;
+    height: 13px;
+  }
+  .concrete-mono-root .cm-story .gts-xray-inner {
+    left: 14px;
+    right: 14px;
+    top: calc(63% + 14px);
+    bottom: auto;
+    max-width: none;
+    width: auto;
+    transform: none;
+  }
+  .concrete-mono-root .cm-story .gts-xray pre {
+    font-size: 11px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding: 15px 14px 17px;
+  }
+  .concrete-mono-root .cm-story .gts-xray-note {
+    max-width: none;
+    font-size: 9px;
+    line-height: 1.7;
+    padding: 10px 14px 11px;
+  }
+  .concrete-mono-root .cm-story .gts-xray-file {
+    padding: 10px 14px 9px;
+  }
+  /* Beat 4 zooms this card to 2.7x with its centre pinned at 78% of a 390px
+     frame, so a full-width measure would run straight off the right edge. The
+     copy is set narrow and the card padded out to its right, which puts the
+     whole translated line inside the frame at the zoom. */
+  .concrete-mono-root .cm-story [data-tag] {
+    padding: 12px 84px 12px 15px;
+  }
+  .concrete-mono-root .cm-story [data-tag] .gts-tagline {
+    max-width: 127px;
+    font-size: 12.5px;
+    line-height: 1.34;
+  }
+  /* nav: the CTA pair has to terminate inside a 390px viewport */
+  .concrete-mono-root .cm-nav-links a,
+  .concrete-mono-root .cm-nav-cta a {
+    padding: 0 11px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+  .concrete-mono-root .cm-nav-mark {
+    padding: 0 11px;
+  }
+  .concrete-mono-root .cm-story .gts-site {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 420px) {
+  .concrete-mono-root .cm-nav-links a,
+  .concrete-mono-root .cm-nav-cta a {
+    padding: 0 8px;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+  }
+  .concrete-mono-root .cm-nav-mark {
+    padding: 0 8px;
+    gap: 8px;
+  }
+  .concrete-mono-root .cm-nav-mark span.wm {
+    font-size: 8.5px;
+    letter-spacing: 0.02em;
+  }
+  .concrete-mono-root .cm-nav-mark img {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* ================== REDUCED MOTION ================== */
+@media (prefers-reduced-motion: reduce) {
+  .concrete-mono-root .cm-grain,
+  .concrete-mono-root .chrome {
+    animation: none;
+  }
+  .concrete-mono-root .cm-gate-scan,
+  .concrete-mono-root .cm-wall-flow {
+    display: none;
+  }
+  .concrete-mono-root .cm-wc::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   THE TWO THREADS (THREAD_MOTIF, mandatory)
+   Source and translation run as a pair of parallel lines at constant
+   gauge — stroke 1.5px, gap 3px — defined once and reused verbatim.
+   They replace the single slab rule at every major section seam and
+   enter the page at the hero baseline.
+   ============================================================ */
+.concrete-mono-root {
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: rgba(255, 255, 255, 0.92);
+  --thread-h: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  --thread-pair: linear-gradient(
+    180deg,
+    var(--thread-ink) 0 var(--thread-gauge),
+    transparent var(--thread-gauge) calc(var(--thread-h) - var(--thread-gauge)),
+    var(--thread-ink) calc(var(--thread-h) - var(--thread-gauge)) var(--thread-h)
+  );
+  --thread-pair-v: linear-gradient(
+    90deg,
+    var(--thread-ink) 0 var(--thread-gauge),
+    transparent var(--thread-gauge) calc(var(--thread-h) - var(--thread-gauge)),
+    var(--thread-ink) calc(var(--thread-h) - var(--thread-gauge)) var(--thread-h)
+  );
+}
+
+/* section seams: the single 2px rule becomes the doubled pair */
+.concrete-mono-root .cm-hero,
+.concrete-mono-root .cm-stats,
+.concrete-mono-root .cm-story,
+.concrete-mono-root .cm-features,
+.concrete-mono-root .cm-editor,
+.concrete-mono-root .cm-section,
+.concrete-mono-root .cm-closing {
+  border-bottom: 0;
+  position: relative;
+}
+.concrete-mono-root .cm-hero::after,
+.concrete-mono-root .cm-stats::after,
+.concrete-mono-root .cm-story::after,
+.concrete-mono-root .cm-features::after,
+.concrete-mono-root .cm-editor::after,
+.concrete-mono-root .cm-section::after,
+.concrete-mono-root .cm-closing::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--thread-h);
+  background: var(--thread-pair);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* the threads enter at the hero baseline, under the headline */
+.concrete-mono-root .cm-thread-base {
+  width: min(620px, 74vw);
+  height: var(--thread-h);
+  margin: 12px auto 0;
+  background: var(--thread-pair);
+}
+
+/* ============================================================
+   FEATURE PANELS — the eight real artifacts (DESIGN_STANDARD §1)
+   Each panel spans its cell: dark inset surface, mono at the 11px
+   floor, hairlines for structure only, white regular strokes for
+   every meaning-bearing mark.
+   ============================================================ */
+.concrete-mono-root .cm-features {
+  --gtb-cell-min: 0px;
+  --gtb-mock-bg: #0b0b0b;
+}
+/* grid items default to min-width:auto — a `pre` artifact would otherwise
+   stretch its cell and push the whole grid off the viewport */
+.concrete-mono-root .cm-features .gtb-cell {
+  min-width: 0;
+}
+.concrete-mono-root .cm-features .gtb-mock {
+  height: auto;
+  min-height: 216px;
+  min-width: 0;
+  display: flex;
+}
+
+.concrete-mono-root .cmf {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--w96);
+}
+.concrete-mono-root .cmf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--w13);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--w72);
+}
+.concrete-mono-root .cmf-head i {
+  font-style: normal;
+  color: var(--w48);
+  white-space: nowrap;
+}
+.concrete-mono-root .cmf-foot {
+  margin-top: auto;
+  padding: 7px 12px 8px;
+  border-top: 1px solid var(--w13);
+  font-size: 11px;
+  color: var(--w48);
+}
+
+/* --- code artifacts (Code, Customization) --- */
+.concrete-mono-root .cmf-code {
+  margin: 0;
+  padding: 10px 12px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.85;
+  white-space: pre;
+  overflow: hidden;
+  color: var(--w72);
+}
+.concrete-mono-root .cmf-code b {
+  color: #fff;
+  font-weight: 500;
+}
+.concrete-mono-root .cmf-code .dim {
+  color: var(--w48);
+}
+.concrete-mono-root .cmf-code .str {
+  color: var(--w72);
+}
+.concrete-mono-root .cmf-code .key {
+  color: rgba(255, 255, 255, 0.88);
+}
+.concrete-mono-root .cmf-code .ln {
+  display: inline-block;
+  width: 16px;
+  margin-right: 10px;
+  color: var(--w26);
+  text-align: right;
+}
+
+/* --- table rows (Context, Routing) --- */
+.concrete-mono-root .cmf-rows {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 12px 10px;
+}
+.concrete-mono-root .cmf-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5.5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.concrete-mono-root .cmf-row:last-child {
+  border-bottom: 0;
+}
+.concrete-mono-root .cmf-en {
+  color: var(--w96);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.concrete-mono-root .cmf-es {
+  margin-left: auto;
+  color: var(--w72);
+  white-space: nowrap;
+}
+.concrete-mono-root .cmf-row i {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--w48);
+  white-space: nowrap;
+}
+.concrete-mono-root .cmf-row .cmf-loc {
+  margin-left: auto;
+}
+
+/* --- the fan (Translation): doubled trunk, single branch stubs --- */
+.concrete-mono-root .cmf-src {
+  padding: 8px 12px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+}
+.concrete-mono-root .cmf-fan {
+  position: relative;
+  margin: 0 12px 10px 18px;
+  padding-left: 16px;
+}
+.concrete-mono-root .cmf-fan::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -4px;
+  bottom: 12px;
+  width: var(--thread-h);
+  background: var(--thread-pair-v);
+}
+.concrete-mono-root .cmf-fan-row {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 4.5px 0;
+}
+.concrete-mono-root .cmf-fan-row::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 12px;
+  height: 1.5px;
+  background: var(--thread-ink);
+}
+.concrete-mono-root .cmf-loc {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--w48);
+  border: 1px solid var(--w26);
+  padding: 1px 6px 2px;
+  line-height: 1.4;
+}
+.concrete-mono-root .cmf-val {
+  color: var(--w96);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- the request head (Routing) --- */
+.concrete-mono-root .cmf-req {
+  margin: 10px 12px 8px;
+  padding: 8px 10px 9px;
+  border: 1px solid var(--w13);
+  font-size: 11px;
+  line-height: 1.8;
+  white-space: pre;
+  overflow: hidden;
+  color: var(--w72);
+}
+.concrete-mono-root .cmf-req b {
+  color: #fff;
+  font-weight: 500;
+}
+.concrete-mono-root .cmf-req .dim {
+  color: var(--w48);
+}
+
+/* --- latency bars (Delivery): white data marks on hairline tracks --- */
+.concrete-mono-root .cmf-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px 12px 12px;
+}
+.concrete-mono-root .cmf-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.concrete-mono-root .cmf-track {
+  flex: 1 1 auto;
+  height: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 1px;
+}
+.concrete-mono-root .cmf-track i {
+  display: block;
+  height: 100%;
+  background: #fff;
+}
+.concrete-mono-root .cmf-bar-row b {
+  flex: 0 0 26px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--w96);
+  text-align: right;
+}
+
+/* --- preview panes (Previews) --- */
+.concrete-mono-root .cmf-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 12px 10px;
+}
+.concrete-mono-root .cmf-pane {
+  border: 1px solid var(--w13);
+  padding: 8px 9px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.concrete-mono-root .cmf-pane-loc {
+  font-size: 11px;
+  color: var(--w48);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 5px;
+}
+.concrete-mono-root .cmf-pane b {
+  font-size: 11.5px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--w96);
+}
+.concrete-mono-root .cmf-btn {
+  align-self: flex-start;
+  margin-top: auto;
+  background: #fff;
+  color: #060606;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 9px;
+  white-space: nowrap;
+}
+
+/* --- runtime transcript (Live Translation) --- */
+.concrete-mono-root .cmf-chat {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px 12px;
+}
+.concrete-mono-root .cmf-msg {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'src src'
+    'out meta';
+  column-gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.concrete-mono-root .cmf-msg:last-child {
+  border-bottom: 0;
+}
+.concrete-mono-root .cmf-msg-src {
+  grid-area: src;
+  color: var(--w72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.concrete-mono-root .cmf-msg b {
+  grid-area: out;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.concrete-mono-root .cmf-msg-meta {
+  grid-area: meta;
+  font-size: 11px;
+  color: var(--w48);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   SHARED-SKIN LABEL FLOOR (DESIGN_STANDARD §2: nothing under 11px)
+   ============================================================ */
+.concrete-mono-root .cm-band-key {
+  font-size: 11px;
+}
+.concrete-mono-root .cm-flag-k {
+  font-size: 10.5px;
+  padding: 3px 5px 2px;
+}
+.concrete-mono-root .cm-story .gts-xray-note {
+  font-size: 11px;
+}
+.concrete-mono-root .cm-story .gts-mk-tick::before {
+  height: 1.5px;
+  background: rgba(6, 6, 6, 0.66);
+}
+.concrete-mono-root .cm-story .gts-cursor-label,
+.concrete-mono-root .cm-story .gts-chip-flag,
+.concrete-mono-root .cm-story .gts-chip-tone {
+  font-size: 11px;
+}
+.concrete-mono-root .cm-editor .gte-lab {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.concrete-mono-root .cm-editor .gte-bar {
+  font-size: 11px;
+}
+.concrete-mono-root .cm-editor .gte-act {
+  font-size: 10.5px;
+  padding: 3px 8px;
+}
+.concrete-mono-root .cm-foot-brand p {
+  font-size: 10.5px;
+}
+
+/* ============================================================
+   ROUND 2 — story-skin craft pass (critic items 1, 2, 3, 4, 7, 8)
+   The plate loses its banned instrument chrome: no dot lattice
+   behind content, no numbered index chips, no filled state badge.
+   Every callout is a labeled key that reappears, verbatim, in the
+   generated es.json the editor act shows — the two acts now
+   cross-reference each other instead of counting themselves.
+   ============================================================ */
+
+/* ---- SS5: no grid/dot/graph-paper behind content. The current site stages
+   its product card on plain paper; so does this plate — and the code reveal's
+   drafting grid goes with it. ---- */
+.concrete-mono-root .cm-story .gts-win-dots,
+.concrete-mono-root .cm-story .gts-win-guides,
+.concrete-mono-root .cm-story .gts-xray-surface::before {
+  display: none;
+}
+
+/* ---- markers become labeled callouts: a 9px control-point square (CALIPER
+   vocabulary) plus the string's key in mono at the 11px floor. The pellet
+   timeline still reads marker geometry off .gts-mk-n, so the box survives —
+   only the digit dies. ---- */
+.concrete-mono-root .cm-story .gts-mk {
+  align-items: center;
+  gap: 7px;
+}
+.concrete-mono-root .cm-story .gts-mk-n {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  font-size: 0;
+  color: transparent;
+  background: transparent;
+  border: 1.5px solid rgba(6, 6, 6, 0.92);
+  box-shadow: none;
+}
+.concrete-mono-root .cm-story .gts-mk::after {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: rgba(6, 6, 6, 0.72);
+  white-space: nowrap;
+}
+.concrete-mono-root .cm-story [data-h1] .gts-mk::after {
+  content: 'hero.title';
+}
+.concrete-mono-root .cm-story [data-para] .gts-mk::after {
+  content: 'hero.body';
+}
+.concrete-mono-root .cm-story [data-btn] .gts-mk::after {
+  content: 'cta.label';
+}
+.concrete-mono-root .cm-story [data-legal] .gts-mk::after {
+  content: 'legal.tos';
+}
+.concrete-mono-root .cm-story [data-tag] .gts-mk::after {
+  content: 'card.tagline';
+}
+.concrete-mono-root .cm-story [data-toast] .gts-mk::after {
+  content: 'toast.payment';
+}
+.concrete-mono-root .cm-story [data-form] .gts-mk::after {
+  content: 'form.email';
+}
+
+/* placement: each callout hangs in its own clear margin, tick nearest the
+   thing it names, label growing away from the copy — never across it */
+.concrete-mono-root .cm-story [data-h1] .gts-mk {
+  left: calc(100% + 18px) !important;
+  right: auto !important;
+}
+/* below the paragraph, in the clear band before the nav row — the slot above
+   it belongs to the date line */
+.concrete-mono-root .cm-story [data-para] .gts-mk {
+  left: 0 !important;
+  top: calc(100% + 9px) !important;
+}
+.concrete-mono-root .cm-story [data-btn] .gts-mk {
+  left: 0 !important;
+  right: auto !important;
+  top: -20px !important;
+}
+.concrete-mono-root .cm-story [data-btn] .gts-mk-tick::before {
+  display: none;
+}
+.concrete-mono-root .cm-story [data-toast] .gts-mk,
+.concrete-mono-root .cm-story [data-form] .gts-mk {
+  flex-direction: row-reverse;
+}
+
+/* ---- state is type, not a filled pill: “requires review” runs after the key
+   as plain muted mono, exactly the grammar the review act's APPROVED uses ---- */
+.concrete-mono-root .cm-story .gts-mk-b {
+  order: 2;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  color: rgba(6, 6, 6, 0.55);
+}
+.concrete-mono-root .cm-story .gts-mk-b::before {
+  content: '· ';
+}
+
+/* the in-flight indicator obeys the same grammar: hairline chip on paper,
+   ink mono type — not a filled status pill */
+.concrete-mono-root .cm-story .gts-chip-flag {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(6, 6, 6, 0.5);
+  color: rgba(6, 6, 6, 0.82);
+  text-transform: lowercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---- the plate's own footer becomes an ink band flush to its bottom edge,
+   so the sliver a mid-handoff frame catches under the nav is a composed dark
+   rule, not a squashed paper remnant (r1 item 7) — and the 9px footer type
+   rises to the floor while it's at it ---- */
+.concrete-mono-root .cm-story .gts-site-foot {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: none;
+  padding: 18px clamp(40px, 6vw, 96px) 22px;
+  background: #0d0d0d;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+}
+.concrete-mono-root .cm-story .gts-site-stats small {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+/* footer language pairs stack in one grid cell sized to the wider twin, so the
+   Spanish strings can never overrun their separators mid-swap */
+.concrete-mono-root .cm-story .gts-site-foot .gts-sw {
+  display: inline-grid;
+}
+.concrete-mono-root .cm-story .gts-site-foot .gts-sw > span {
+  grid-area: 1 / 1;
+  position: static !important;
+  white-space: nowrap;
+}
+
+/* ---- the scan is a drawn instrument band, not a smeared metal bar ---- */
+.concrete-mono-root .cm-story .gts-scanline {
+  height: 44px;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.65);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.65);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.09),
+    rgba(255, 255, 255, 0.02) 55%,
+    rgba(255, 255, 255, 0.09)
+  );
+}
+
+/* ---- the editor's line notes: labeled callouts on a notes rail, not
+   numbered chips (r1 item 1). Same finding text the hover tips carry. ---- */
+.concrete-mono-root .cm-story .gts-lmk {
+  width: auto;
+  height: auto;
+  margin-top: -12px;
+  padding: 4px 9px 5px;
+  display: inline-flex;
+  align-items: center;
+  background: #0d0d0d;
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.concrete-mono-root .cm-story .gts-lmk > span:first-child {
+  display: none;
+}
+.concrete-mono-root .cm-story .gts-lmk::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 16px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.4);
+}
+.concrete-mono-root .cm-story .gts-lmk[data-note='1']::after {
+  content: 'unwrapped copy';
+}
+.concrete-mono-root .cm-story .gts-lmk[data-note='2']::after {
+  content: 'unlocalized date';
+}
+.concrete-mono-root .cm-story .gts-lmk[data-note='3']::after {
+  content: 'cta · glossary term';
+}
+.concrete-mono-root .cm-story .gts-lmk .gts-tip {
+  left: auto;
+  right: calc(100% + 14px);
+}
+
+/* ---- the right half of the code surface carries the run's own artifacts
+   (r1 item 4): the generated es.json — its keys are the plate's callouts —
+   and the run ledger, mirroring resend's SDK band. Desktop only; the phone
+   frame has no right band to compose. ---- */
+@media (min-width: 1200px) {
+  .concrete-mono-root .cm-story .gts-lmk {
+    right: auto;
+    left: clamp(560px, 42vw, 720px);
+  }
+  .concrete-mono-root .cm-story .gts-code-body::before,
+  .concrete-mono-root .cm-story .gts-code-body::after {
+    position: absolute;
+    left: 57%;
+    right: 34px;
+    z-index: 1;
+    padding: 14px 18px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.028);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.9;
+    color: rgba(255, 255, 255, 0.72);
+    white-space: pre;
+    overflow: hidden;
+  }
+  .concrete-mono-root .cm-story .gts-code-body::before {
+    top: 40px;
+    content: 'public/_gt/es.json · generated by locadex\A \A {\A   "hero.title":    "¡Hola, mundo!",\A   "hero.body":     "General Translation construye…",\A   "nav.home":      "Inicio",\A   "nav.pricing":   "Precios",\A   "nav.docs":      "Documentación",\A   "nav.contact":   "Contacto",\A   "cta.label":     "Comenzar ahora",\A   "toast.payment": "Pago recibido",\A   "form.email":    "Correo electrónico",\A   "legal.tos":     "Al continuar, aceptas nuestros…"\A }';
+  }
+  /* every \A is closed with its terminator space — an unterminated \A before
+     a hex-ish letter (edit, check) would swallow it into the escape */
+  .concrete-mono-root .cm-story .gts-code-body::after {
+    top: 404px;
+    content: 'locadex · run #482 · push a4f2c19\A \A scan       11 files                412 ms\A edit       app/page.tsx            +38 −12\A translate  42 strings × 5 locales  3.8 s\A check      icu · bidi · lengths    ok\A open pr    locadex/i18n-sweep → main';
+  }
+}
+
+/* ============================================================
+   ROUND 3 — the light story beats gain their surface mass, the
+   mock nav becomes the real thing, the review plate fills its
+   frame, the editor act completes its diff grammar.
+   ============================================================ */
+
+/* ---- R3 item 2: the demo site's nav is a real product nav, not wireframe
+   boxes-in-boxes. The shared `.gts-site-nav span` rule cascades onto the
+   nested language spans and drew a border around every one of them; here the
+   links are bare type on one rule, and the active page carries the brand's
+   doubled underline at thread gauge. ---- */
+.concrete-mono-root .cm-story .gts-site-nav {
+  gap: 30px;
+  margin-bottom: 26px;
+  padding: 12px 0 14px;
+  border-top: 1px solid rgba(6, 6, 6, 0.16);
+  border-bottom: 1px solid rgba(6, 6, 6, 0.16);
+}
+.concrete-mono-root .cm-story .gts-site-nav span {
+  border: none;
+  padding: 0;
+  font-size: 13.5px;
+  color: rgba(6, 6, 6, 0.6);
+}
+/* the language spans nested inside each link follow their link, not the
+   shared rule that boxed them */
+.concrete-mono-root .cm-story .gts-site-nav span span {
+  font-size: inherit;
+  color: inherit;
+}
+.concrete-mono-root .cm-story .gts-site-nav > span:first-child {
+  position: relative;
+  color: #060606;
+  font-weight: 600;
+}
+.concrete-mono-root .cm-story .gts-site-nav > span:first-child::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: var(--thread-h);
+  background: linear-gradient(
+    180deg,
+    rgba(6, 6, 6, 0.92) 0 var(--thread-gauge),
+    transparent var(--thread-gauge) calc(var(--thread-h) - var(--thread-gauge)),
+    rgba(6, 6, 6, 0.92) calc(var(--thread-h) - var(--thread-gauge)) var(--thread-h)
+  );
+}
+
+/* ---- R3 item 1: surface mass on the paper beats. The site chip grows into
+   the full browser bar it stands for — brand at the left, the live locale rail
+   at the right — so every light viewport opens on a real toned surface, the
+   way the current site's story browser does. ---- */
+.concrete-mono-root .cm-story .gts-win-chip {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 48px;
+  padding: 0 22px 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: #0d0d0d;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.14);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+}
+.concrete-mono-root .cm-story .gts-win-chip::before {
+  content: 'https://example.com';
+  display: block;
+  margin-left: clamp(10px, 3vw, 46px);
+  padding: 5px 14px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.55);
+}
+.concrete-mono-root .cm-story .gts-win-chip::after {
+  content: 'en · es · fr · ja · de · zh — 118 locales';
+  display: block;
+  position: static;
+  width: auto;
+  height: auto;
+  margin-left: auto;
+  background: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* the sheet's content pulls in from the bleed: the two columns sit beside
+   each other instead of at opposite ends of a 500px void, and the whole
+   composition rides above the ink footer band */
+.concrete-mono-root .cm-story .gts-site {
+  grid-template-columns: 1.02fr 0.6fr;
+  gap: clamp(44px, 6vw, 110px);
+  padding: 112px clamp(56px, 9.5vw, 168px) 118px;
+}
+
+/* ---- R3 item 3: the review plate fills its frame. Both columns flex their
+   rows into the shared height, so SOURCE can never end in dead panel space
+   while TRANSLATION runs on. ---- */
+.concrete-mono-root .cm-editor .gte-col {
+  display: flex;
+  flex-direction: column;
+}
+.concrete-mono-root .cm-editor .gte-row {
+  flex: 1 0 auto;
+  align-content: center;
+}
+/* the queue ledger sits in the heading band's right side — the strip that ran
+   ~60% empty dark. Bare mono rows on a hairline frame, same grammar as the
+   plate below. */
+.concrete-mono-root .cm-editor .gte-copy {
+  position: relative;
+  max-width: none;
+}
+.concrete-mono-root .cm-editor .gte-notes {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  margin: 0;
+  width: min(320px, 30vw);
+  border: 1px solid var(--w26);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px 18px 15px;
+  gap: 9px;
+}
+.concrete-mono-root .cm-editor .gte-notes li {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  color: var(--w72);
+}
+.concrete-mono-root .cm-editor .gte-notes li::before {
+  color: var(--w48);
+}
+@media (max-width: 1099px) {
+  .concrete-mono-root .cm-editor .gte-notes {
+    display: none;
+  }
+}
+
+/* ---- R3 item 4: the editor act's working pane opens with its own hunk
+   header — the +/- gutter promised a unified diff and the information floor
+   (§1.3) requires the header line that completes it ---- */
+.concrete-mono-root .cm-story .gts-scanline + .gts-cl {
+  flex-wrap: wrap;
+}
+.concrete-mono-root .cm-story .gts-scanline + .gts-cl::before {
+  content: '@@ -1,6 +1,9 @@ · app/page.tsx';
+  flex: 0 0 100%;
+  padding-left: 64px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ---- R3 item 5: the translations chip rises clear of the viewport corner
+   where the direction dock and the caption band overlapped it ---- */
+.concrete-mono-root .cm-story .gts-chip-tbadge {
+  left: 22px;
+  bottom: 96px;
+}
+
+/* ---- R3 mobile: the browser bar keeps only its brand cell, and the sheet's
+   pull-in relaxes back to a phone measure ---- */
+@media (max-width: 899px) {
+  .concrete-mono-root .cm-story .gts-win-chip::before,
+  .concrete-mono-root .cm-story .gts-win-chip::after {
+    display: none;
+  }
+  .concrete-mono-root .cm-story .gts-win-chip {
+    height: 42px;
+    padding: 0 16px;
+  }
+  .concrete-mono-root .cm-story .gts-site {
+    padding: 68px 22px 122px;
+  }
+  .concrete-mono-root .cm-story .gts-site-nav {
+    gap: 18px;
+  }
+  .concrete-mono-root .cm-story .gts-site-nav span {
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
+   ROUND 4 — the canonical stills carry the argument cleanly:
+   the scan stays on the code it scans, the code runs at the
+   measured 14/24 artifact size, and the context fan is ink that
+   ducks behind the copy instead of pale grey drawn across it.
+   ============================================================ */
+
+/* ---- R4 item 5: the primary code window reads at the reference's own
+   density — 14/24 mono (the measured resend/oxc artifact value), so the
+   main artifact carries more real text per pixel than its side panels ---- */
+.concrete-mono-root .cm-story .gts-code-body {
+  font-size: 14px;
+  line-height: 24px;
+  padding: 30px 0 64px;
+}
+/* …and the file continues past the component: the page's real metadata
+   export, five more lines at the same gauge, numbered like the gutter */
+.concrete-mono-root .cm-story .gts-code-body .gts-cl:last-child {
+  flex-wrap: wrap;
+}
+.concrete-mono-root .cm-story .gts-code-body .gts-cl:last-child::after {
+  content: "\A     12  export const metadata = {\A     13    title: 'Hello, world!',\A     14    description:\A     15      'General Translation builds full-stack…',\A     16  };";
+  flex: 0 0 100%;
+  white-space: pre;
+  padding-left: 4.6px;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+/* ---- R4 item 4: the scan wipe belongs to the artifact it scans. It stops
+   at the code column's edge, so a frozen frame can never slice the run-log
+   or the generated es.json with stray full-width rules ---- */
+@media (min-width: 1200px) {
+  .concrete-mono-root .cm-story .gts-scanline {
+    left: 0;
+    right: 45%;
+  }
+}
+
+/* ---- R4 item 6: the context fan obeys the thread law. Meaningful strokes
+   are regular ink, never pale grey — and they never cross the copy: the
+   fan runs UNDER the sheet's content plane, each copy block sits on its own
+   paper, so the threads surface only in the clear margins on their way from
+   the <T> pins to the dock ---- */
+.concrete-mono-root .cm-story .gts-ctx-lines {
+  z-index: 0;
+}
+.concrete-mono-root .cm-story .gts-ctx-lines path {
+  stroke: rgba(6, 6, 6, 0.85);
+  stroke-width: 1.5;
+}
+.concrete-mono-root .cm-story .gts-site-left [data-block]:not(.gts-site-btn) {
+  background: #f1f1ee;
+}
+/* the callout labels own a tight paper plate too, so a thread from another
+   pin can never strike through their type */
+.concrete-mono-root .cm-story .gts-mk::after,
+.concrete-mono-root .cm-story .gts-mk-b {
+  background: #f1f1ee;
+  box-shadow: 0 0 0 3px #f1f1ee;
+}
+
+/* ---- R4 item 7 (cmp-4): the review plate's column labels and revised
+   value obey the same cap — 500, sentence case, no ornamental uppercase ---- */
+.concrete-mono-root .cm-editor .gte-lab {
+  text-transform: none;
+  letter-spacing: 0.05em;
+}
+.concrete-mono-root .cm-editor .gte-row[data-state='revised'] .gte-text {
+  font-weight: 500;
+}
+
+/* on phones the copy runs the full measure, so the burst retreats further
+   right and fades earlier — the words keep their dark ground */
+@media (max-width: 767px) {
+  .concrete-mono-root .cm-closing-field {
+    width: 78%;
+    opacity: 0.8;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 52%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 52%);
+  }
+}

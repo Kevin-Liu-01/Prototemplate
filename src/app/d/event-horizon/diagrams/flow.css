@@ -1,0 +1,329 @@
+/* ============================================================
+   TOOLCHAIN — REAL-ARTIFACT FLOW DIAGRAMS
+   The translation fan-out and the routing bars. Both are built
+   from the thing they describe — a real file, real outputs,
+   real URLs — never from stand-in geometry. Structural strokes
+   are the brand's doubled line at constant gauge.
+   ============================================================ */
+
+.tflow {
+  --tf-panel: var(--tc-panel, #14121a);
+  --tf-ground: var(--tc-plate, #f4f3ec);
+
+  display: grid;
+  /* The output ledger is the wider pane: three real pairs per file, and the
+     Japanese line is the widest string in the diagram — values are never
+     clipped, so the columns are balanced around that line. */
+  grid-template-columns: minmax(0, 1fr) clamp(36px, 5vw, 56px) minmax(0, 1.06fr);
+  align-items: stretch;
+  width: 100%;
+  max-width: 680px;
+}
+
+/* ---------- the source: a dark inset panel, line for line ---------- */
+
+.tflow .tf-src {
+  border-radius: 4px;
+  background: var(--tf-panel);
+  overflow: hidden;
+}
+
+.tflow .tf-src-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono, ui-monospace, monospace);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.tflow .tf-src pre {
+  margin: 0;
+  padding: 12px 0 14px;
+  overflow-x: auto;
+  font-family: var(--tc-mono, ui-monospace, monospace);
+  font-size: 12.5px;
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.88);
+  tab-size: 2;
+}
+
+.tflow .tf-src-line {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  padding-right: 12px;
+  white-space: pre;
+}
+
+.tflow .tf-src-n {
+  text-align: right;
+  padding-right: 11px;
+  color: rgba(255, 255, 255, 0.26);
+  user-select: none;
+}
+
+.tflow .tf-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.tflow .tf-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* GT's own API carries weight, not hue — the page's accent stays under its
+   six-place cap and none of those places is a syntax token. */
+.tflow .tf-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ---------- the fork: doubled threads at constant gauge ---------- */
+
+.tflow .tf-fork {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tflow .tf-thread {
+  fill: none;
+  stroke: var(--thread-ink, currentColor);
+  stroke-width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
+  vector-effect: non-scaling-stroke;
+}
+
+.tflow .tf-core {
+  fill: none;
+  stroke: var(--tf-ground);
+  stroke-width: var(--thread-gap, 3px);
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- the outputs: the files the config names ---------- */
+
+.tflow .tf-outs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.tflow .tf-out {
+  border: 1px solid var(--tc-hair, rgba(15, 17, 19, 0.11));
+  border-radius: 4px;
+  background: var(--tc-card, #ffffff);
+  overflow: hidden;
+}
+
+.tflow .tf-out-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px 7px;
+  border-bottom: 1px solid var(--tc-hair-2, rgba(15, 17, 19, 0.06));
+  font-family: var(--tc-mono, ui-monospace, monospace);
+  font-size: 11px;
+  color: var(--tc-ink-3, rgba(15, 17, 19, 0.45));
+}
+
+.tflow .tf-out.is-lit .tf-out-file {
+  color: var(--tc-ink, #0f1113);
+  font-weight: 500;
+}
+
+.tflow .tf-out-tag {
+  color: var(--tc-ink-4, rgba(15, 17, 19, 0.27));
+}
+
+/* Three pairs per file, source key against translated value — the ledger the
+   JSON actually is, not one row standing for it. */
+.tflow .tf-out-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 12px 11px;
+}
+
+.tflow .tf-pair {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tflow .tf-pair-key {
+  font-family: var(--tc-mono, ui-monospace, monospace);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--tc-ink-3, rgba(15, 17, 19, 0.45));
+  white-space: nowrap;
+}
+
+.tflow .tf-pair-val {
+  font-family: var(--tc-mono, ui-monospace, monospace);
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--tc-ink, #0f1113);
+  white-space: nowrap;
+}
+
+@media (max-width: 620px) {
+  .tflow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .tflow .tf-fork {
+    display: none;
+  }
+}
+
+/* ============================================================
+   SDK LEDGER — the first-party packages, line for line
+   A dark inset panel: package, target runtime, and the import
+   you write. Real strings only; the panel is the mass of the
+   cell it sits in.
+   ============================================================ */
+
+.sdkl {
+  width: 100%;
+  border-radius: 4px;
+  background: var(--tc-panel, #14121a);
+  overflow: hidden;
+  font-family: var(--tc-mono, ui-monospace, monospace);
+}
+
+.sdkl .sdkl-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+}
+
+.sdkl .sdkl-row {
+  padding: 13px 18px 14px;
+}
+
+.sdkl .sdkl-row + .sdkl-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sdkl .sdkl-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.sdkl .sdkl-top b {
+  font-weight: 500;
+  font-size: 13.5px;
+  color: #ffffff;
+}
+
+.sdkl .sdkl-top span {
+  font-family: var(--tc-sans, ui-sans-serif, system-ui, sans-serif);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.48);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sdkl .sdkl-line {
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.sdkl .sdkl-kw {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.sdkl .sdkl-api {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.sdkl .sdkl-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   LOCALE ROUTING — three real URL bars and the detection order
+   ============================================================ */
+
+.rt {
+  display: grid;
+  gap: 9px;
+  width: 100%;
+}
+
+.rt .rt-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--tc-hair, rgba(15, 17, 19, 0.11));
+  border-radius: 4px;
+  background: var(--tc-card, #ffffff);
+  font-family: var(--tc-mono, ui-monospace, monospace);
+  font-size: 12.5px;
+  white-space: nowrap;
+  color: var(--tc-ink, #0f1113);
+}
+
+.rt .rt-dom {
+  color: var(--tc-ink-4, rgba(15, 17, 19, 0.27));
+}
+
+.rt .rt-seg {
+  font-weight: 500;
+}
+
+/* The localized pathname — the one thing here a reader has not seen an i18n
+   library do — is underscored in ink. The page's accent budget is already
+   spent by the diagrams around this cell. */
+.rt .rt-path.is-lit {
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--tc-ink, #0f1113);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.rt .rt-loc {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--tc-ink-4, rgba(15, 17, 19, 0.27));
+}
+
+.rt .rt-ladder {
+  margin: 4px 0 0;
+  font-family: var(--tc-mono, ui-monospace, monospace);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--tc-ink-3, rgba(15, 17, 19, 0.45));
+}
+
+.rt .rt-ladder b {
+  font-weight: 500;
+  color: var(--tc-ink, #0f1113);
+}

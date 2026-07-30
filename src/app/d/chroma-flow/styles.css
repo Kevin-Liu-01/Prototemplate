@@ -1,0 +1,3066 @@
+/* ============================================================
+   VERSION 10 — TOOLCHAIN
+   The minimalist direction. Structure comes from hairlines only:
+   two vertical rules framing a 1170px column, horizontal rules
+   between sections. No grid fields, no dot paper, no ornament.
+   Light-dominant, with exactly one full-bleed dark band.
+   ============================================================ */
+
+.chromaflow-root {
+  --tc-paper: #fbfbfa;
+  --tc-sunk: #ffffff;
+  --tc-white: #ffffff;
+  --tc-ink: #0f1113;
+  --tc-ink-2: rgba(15, 17, 19, 0.63);
+  --tc-ink-3: rgba(15, 17, 19, 0.45);
+  --tc-ink-4: rgba(15, 17, 19, 0.27);
+  --tc-hair: rgba(15, 17, 19, 0.11);
+  --tc-hair-2: rgba(15, 17, 19, 0.06);
+  --tc-accent: #2f5ce0;
+  --tc-dark: #0c0e11;
+
+  /* The second surface — the LEDGER beige every light diagram sits on. A light
+     cell's artifact zone is never bare card: the plate is the material that
+     carries it, the way the references never leave a diagram on paper. */
+  --tc-plate: #ffffff;
+
+  /* The one dark artifact surface for code, config and diffs — the inset panel
+     every reference draws its code on. Light cells place it on the card; the
+     page keeps its mass between the hero terminal and the dark band. */
+  --tc-panel: #14121a;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame. The mat has to be a step you can see at 1x, not one that
+     only survives a 4x crop — at 2% luminance the reveal reads as a soft single
+     border and the box-inside-a-box, which is this direction's whole signature
+     detail, never announces itself. This is ~11% off both the page and the card,
+     with its own edge a shade darker than the page's hairline. */
+  --tc-mat: #232327;
+  --tc-mat-edge: #232327;
+  --tc-card: #ffffff;
+  --tc-mat-inset: clamp(10px, 1.2vw, 14px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+  --tc-hatch: rgba(15, 17, 19, 0.085);
+
+  --tc-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: rgba(15, 17, 19, 0.8);
+  --iso-ink-soft: rgba(15, 17, 19, 0.44);
+  --iso-ink-hair: rgba(15, 17, 19, 0.2);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.chromaflow-root *,
+.chromaflow-root *::before,
+.chromaflow-root *::after {
+  box-sizing: border-box;
+}
+
+.chromaflow-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.chromaflow-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+}
+
+.chromaflow-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-sec:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- type ---------- */
+
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.chromaflow-root h1,
+.chromaflow-root h2,
+.chromaflow-root h3,
+.chromaflow-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+.chromaflow-root p {
+  margin: 0;
+}
+
+.chromaflow-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
+
+.chromaflow-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.chromaflow-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- buttons ---------- */
+
+.chromaflow-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.chromaflow-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: #fbfbfa;
+}
+
+.chromaflow-root .tc-btn-solid:hover {
+  background: #23282c;
+}
+
+.chromaflow-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.chromaflow-root .tc-btn-line:hover {
+  border-color: rgba(15, 17, 19, 0.28);
+  background: rgba(15, 17, 19, 0.03);
+}
+
+.chromaflow-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.chromaflow-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+.chromaflow-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.chromaflow-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .tc-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.chromaflow-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .chromaflow-root .tc-nav-links,
+  .chromaflow-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* The hero IS the field. A full-bleed flow of curl-noise streamlines — every
+   one a doubled ink thread at constant gauge — and the type sits in the calm
+   the physics leaves around it: the shader measures the real headline box
+   (carveRef) and the streamlines part around it at every viewport. The one
+   chroma pass appears where the current squeezes past the flanks. */
+.chromaflow-root .cf-hero {
+  position: relative;
+  min-height: clamp(580px, 88vh, 820px);
+  display: grid;
+  overflow: hidden;
+}
+
+.chromaflow-root .cf-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.chromaflow-root .cf-hero-in {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(44px, 5.6vw, 72px) var(--tc-gut) 96px;
+}
+
+/* The measured obstacle: the flow parts around this box, so it stays compact —
+   the narrower the box, the more river on either side. */
+.chromaflow-root .cf-hero-core {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.chromaflow-root .cf-hero-mark {
+  display: block;
+  margin: 0 auto 22px;
+  opacity: 0.9;
+}
+
+.chromaflow-root .cf-hero h1 {
+  font-size: clamp(2.2rem, 5.1vw, 3.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.chromaflow-root .cf-hero h1 span {
+  display: block;
+}
+
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink; the same pair every streamline outside is
+   drawn with. */
+.chromaflow-root .cf-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.chromaflow-root .cf-hero-sub {
+  margin: 18px auto 0;
+  max-width: 42ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .cf-hero-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chromaflow-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.chromaflow-root .tc-copy:hover {
+  border-color: rgba(15, 17, 19, 0.26);
+}
+
+.chromaflow-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- the journey's five stations, on the hero's bottom rule ---------- */
+
+/* A solid paper strip: the streamlines run under it, so the strip's top rule
+   reads as the waterline the flow passes beneath. Five ruled cells — the same
+   grammar as the trust band below — naming the journey the page then walks. */
+.chromaflow-root .cf-hero-run {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+}
+
+.chromaflow-root .cf-hero-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 6px 16px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--tc-ink-3);
+}
+
+.chromaflow-root .cf-hero-stage + .cf-hero-stage {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.chromaflow-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.chromaflow-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.chromaflow-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+.chromaflow-root .tc-wm {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-wm.is-cursor {
+  font-weight: 600;
+  letter-spacing: -0.032em;
+}
+
+.chromaflow-root .tc-wm.is-ramp {
+  font-weight: 800;
+  font-size: 16.5px;
+  letter-spacing: -0.012em;
+}
+
+.chromaflow-root .tc-wm.is-mintlify {
+  font-weight: 300;
+  font-size: 17px;
+  letter-spacing: -0.008em;
+}
+
+.chromaflow-root .tc-wm.is-profound {
+  font-weight: 500;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.135em;
+}
+
+.chromaflow-root .tc-wm.is-partiful {
+  font-weight: 700;
+  font-size: 16.5px;
+  letter-spacing: -0.038em;
+}
+
+.chromaflow-root .tc-wm.is-clickhouse {
+  font-family: var(--tc-sans);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.006em;
+}
+
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.chromaflow-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chromaflow-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.chromaflow-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.chromaflow-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.chromaflow-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.chromaflow-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.chromaflow-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.chromaflow-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+}
+
+.chromaflow-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.chromaflow-root .tc-caps {
+  flex: 1;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.chromaflow-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-fw-run {
+  margin-top: 20px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.chromaflow-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.chromaflow-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.chromaflow-root .tc-fw-link {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.chromaflow-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.chromaflow-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.chromaflow-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#14121A`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.chromaflow-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.chromaflow-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.chromaflow-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.chromaflow-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.chromaflow-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.chromaflow-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.chromaflow-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.chromaflow-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.chromaflow-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set — the story's editor mock highlights on paper. */
+.chromaflow-root .tc-t-str {
+  color: #5c6470;
+}
+
+.chromaflow-root .tc-t-kw {
+  color: rgba(15, 17, 19, 0.52);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.chromaflow-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.chromaflow-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.chromaflow-root .tc-t-num {
+  color: #5c6470;
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.chromaflow-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.chromaflow-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.chromaflow-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.chromaflow-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.chromaflow-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.chromaflow-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-row.is-lead,
+.chromaflow-root .tc-row.is-three,
+.chromaflow-root .tc-row.is-wide-left,
+.chromaflow-root .tc-row.is-tilt,
+.chromaflow-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.chromaflow-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.chromaflow-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.chromaflow-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.chromaflow-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.chromaflow-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.chromaflow-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.chromaflow-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.chromaflow-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.chromaflow-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.chromaflow-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.chromaflow-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.chromaflow-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.chromaflow-root .tc-cell > p,
+.chromaflow-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.chromaflow-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.chromaflow-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   A cell that carries something visual becomes a box inside a box: the grid
+   cell is a mat with a hairline edge and exactly 2px of padding, and the card
+   sits inside it, so a precise 2px reveal runs all the way around the content.
+   Text-only cells never get this — the contrast is the whole point, and it is
+   also why the vertical rule is dropped wherever a mat provides the edge. */
+
+.chromaflow-root .tc-cell.is-framed {
+  margin: var(--tc-mat-inset);
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+}
+
+.chromaflow-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border-radius: 2px;
+  background: var(--tc-card);
+}
+
+.chromaflow-root .tc-row > .is-framed + *,
+.chromaflow-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- diagonal spacer band ----------
+   Bounded, content-free breathing room between specific rows. Not a field
+   behind content — a ruled strip between subjects. */
+
+.chromaflow-root .tc-hatch {
+  height: clamp(28px, 3.4vw, 40px);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: repeating-linear-gradient(45deg, var(--tc-hatch) 0 1px, transparent 1px 8px);
+}
+
+.chromaflow-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.chromaflow-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chromaflow-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.chromaflow-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.chromaflow-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.chromaflow-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars) gets the same
+   plate the language diagrams sit on: white chips on the second surface, the
+   viteplus grammar, instead of white bars lost on a white card. */
+.chromaflow-root .tc-surface.is-plated {
+  margin-top: 20px;
+  padding: clamp(16px, 2vw, 22px) clamp(14px, 1.8vw, 20px);
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.chromaflow-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.chromaflow-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.chromaflow-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.chromaflow-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.chromaflow-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.chromaflow-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.chromaflow-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.chromaflow-root .tc-bleed-art {
+  margin-top: 22px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.chromaflow-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.chromaflow-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.chromaflow-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.chromaflow-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.chromaflow-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.chromaflow-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.chromaflow-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.chromaflow-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.chromaflow-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.chromaflow-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.chromaflow-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.chromaflow-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .tc-cell-act {
+  margin-top: 24px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.chromaflow-root .tc-stats {
+  flex: 1;
+  margin-top: 24px;
+  padding: 6px clamp(14px, 1.8vw, 20px) clamp(16px, 2vw, 22px);
+  display: grid;
+  align-content: space-between;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+}
+
+.chromaflow-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.chromaflow-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.chromaflow-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.chromaflow-root .tc-cell.is-panel .tc-code {
+  margin-top: 22px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.chromaflow-root .tc-lang {
+  flex: 1;
+  margin-top: 22px;
+  padding: clamp(18px, 2.2vw, 26px) clamp(14px, 1.8vw, 22px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-plate);
+
+  --lang-ground: var(--tc-plate);
+}
+
+.chromaflow-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.chromaflow-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.chromaflow-root .tc-lang.is-lead .lang-sw-name,
+.chromaflow-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.chromaflow-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.chromaflow-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.chromaflow-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.chromaflow-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.chromaflow-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #86a8ff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+/* The band's material is the page's own ribbons, inverted: the same doubled
+   streamlines cross the dark as light, spectral where they run fast, fading
+   out before the PR frame so the artefact sits on plain dark. */
+.chromaflow-root .cf-lb-field {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 420px;
+  width: 100%;
+  z-index: 0;
+  opacity: 0.85;
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.8) 46%,
+    rgba(0, 0, 0, 0.3) 78%,
+    transparent 98%
+  );
+  pointer-events: none;
+}
+
+.chromaflow-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(56px, 7vw, 92px);
+}
+
+/* Copy left, the agent's method right: the five-step stepper spined by the
+   two threads, and the three standing workflow templates beneath it. */
+.chromaflow-root .cf-lb-top {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+.chromaflow-root .cf-lb-marks {
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.chromaflow-root .cf-lb-marks li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.64);
+}
+
+.chromaflow-root .cf-lb-marks li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.46);
+}
+
+.chromaflow-root .cf-lb-steps {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(17, 17, 20, 0.78);
+  border-radius: 6px;
+  padding: clamp(18px, 2vw, 24px);
+}
+
+.chromaflow-root .cf-lb-steps ol {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 24px;
+  list-style: none;
+  display: grid;
+  gap: 15px;
+}
+
+/* The stepper's spine is the thread pair, vertical. */
+.chromaflow-root .cf-lb-steps ol::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background:
+    linear-gradient(#fff, #fff) left / var(--thread-gauge) 100% no-repeat,
+    linear-gradient(#fff, #fff) right / var(--thread-gauge) 100% no-repeat;
+  opacity: 0.28;
+}
+
+.chromaflow-root .cf-lb-steps li b {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.chromaflow-root .cf-lb-steps li span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.chromaflow-root .cf-lb-templates {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  gap: 9px;
+}
+
+.chromaflow-root .cf-lb-templates div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chromaflow-root .cf-lb-templates b {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.chromaflow-root .cf-lb-templates span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+}
+
+.chromaflow-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.chromaflow-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- the PR, at full width ----------
+   The largest single object on the site: a pull-request frame flush to both
+   side rules (negative margin swallows the band's gutter), zero radius, no
+   side borders — the full-bleed dark-shell grammar. */
+.chromaflow-root .cf-pr {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(38px, 4.8vw, 60px);
+  margin-inline: calc(-1 * var(--tc-gut));
+  background: var(--tc-panel);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.chromaflow-root .cf-pr-head {
+  padding: 22px var(--tc-gut) 0;
+}
+
+.chromaflow-root .cf-pr-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chromaflow-root .cf-pr-title h3 {
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  letter-spacing: -0.015em;
+  color: #ffffff;
+}
+
+/* State is type and hairline, never a colored pill. */
+.chromaflow-root .cf-pr-state {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  padding: 3px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.chromaflow-root .cf-pr-meta {
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.chromaflow-root .cf-pr-branch {
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.chromaflow-root .cf-pr-into {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.chromaflow-root .cf-pr-stat {
+  margin-left: 8px;
+}
+
+.chromaflow-root .cf-pr-stat b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* The two diff hues appear inside this frame and nowhere else on the page. */
+.chromaflow-root .cf-pr-stat i {
+  font-style: normal;
+}
+
+.chromaflow-root .cf-pr-stat .is-add {
+  color: #6fd08c;
+}
+
+.chromaflow-root .cf-pr-stat .is-del {
+  color: #e5788a;
+}
+
+.chromaflow-root .cf-pr-tabs {
+  margin-top: 16px;
+  display: flex;
+  gap: 2px;
+}
+
+.chromaflow-root .cf-pr-tabs span {
+  padding: 10px 14px 11px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.chromaflow-root .cf-pr-tabs span[data-on] {
+  color: #ffffff;
+  box-shadow: inset 0 -2px 0 #ffffff;
+}
+
+.chromaflow-root .cf-pr-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 268px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chromaflow-root .cf-pr-file {
+  min-width: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chromaflow-root .cf-pr-filebar {
+  padding: 10px var(--tc-gut);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: #111114;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.chromaflow-root .cf-diff {
+  padding: 12px 0 20px;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 20px;
+  overflow-x: auto;
+}
+
+.chromaflow-root .cf-diff-line {
+  display: grid;
+  grid-template-columns: 48px 48px 24px minmax(0, 1fr);
+  white-space: pre;
+}
+
+.chromaflow-root .cf-diff-n {
+  text-align: right;
+  padding-right: 12px;
+  font-size: 11.5px;
+  line-height: 20px;
+  color: rgba(255, 255, 255, 0.26);
+  user-select: none;
+}
+
+.chromaflow-root .cf-diff-sign {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.chromaflow-root .cf-diff-line code {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.chromaflow-root .cf-diff-line[data-kind='hunk'] {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.chromaflow-root .cf-diff-line[data-kind='hunk'] code {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.chromaflow-root .cf-diff-line[data-kind='add'] {
+  background: rgba(63, 185, 80, 0.13);
+}
+
+.chromaflow-root .cf-diff-line[data-kind='add'] code {
+  color: #ffffff;
+}
+
+.chromaflow-root .cf-diff-line[data-kind='add'] .cf-diff-sign {
+  color: #6fd08c;
+}
+
+.chromaflow-root .cf-diff-line[data-kind='del'] {
+  background: rgba(229, 83, 75, 0.12);
+}
+
+.chromaflow-root .cf-diff-line[data-kind='del'] code {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.chromaflow-root .cf-diff-line[data-kind='del'] .cf-diff-sign {
+  color: #e5788a;
+}
+
+/* The checks rail: the module's safety argument lives here, inside the
+   artefact, as a muted line — not in the marketing copy. */
+.chromaflow-root .cf-pr-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 16px 20px 20px;
+  background: #111114;
+}
+
+.chromaflow-root .cf-pr-checks-head {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.chromaflow-root .cf-pr-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.chromaflow-root .cf-pr-check i {
+  font-style: normal;
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* A second filebar mid-column separates the two diffs the way the Files
+   changed view does — one rule, no gap, the diff column stays one surface. */
+.chromaflow-root .cf-pr-file > div + div .cf-pr-filebar {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* The PR's file tree, in the rail: real paths, real counts, the file being
+   read marked by weight. The diff hues stay inside the PR frame. */
+.chromaflow-root .cf-pr-tree {
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 8px;
+}
+
+.chromaflow-root .cf-pr-tree-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.chromaflow-root .cf-pr-tree-row > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.chromaflow-root .cf-pr-tree-row[data-here='true'] {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.chromaflow-root .cf-pr-tree-row b {
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.chromaflow-root .cf-pr-tree-row i {
+  font-style: normal;
+}
+
+.chromaflow-root .cf-pr-tree-more {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Seated under the tree, not anchored to the column's bottom: with the note
+   floated to the foot the rail read as two islands with a dark hole between
+   them. One block of content, then quiet surface — the way a real PR rail
+   runs out. */
+.chromaflow-root .cf-pr-note {
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.chromaflow-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chromaflow-root .tc-band .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.chromaflow-root .tc-band .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.chromaflow-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.chromaflow-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.chromaflow-root .tc-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.chromaflow-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.chromaflow-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.chromaflow-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.chromaflow-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.chromaflow-root .tc-plan .tc-list {
+  margin-top: 20px;
+}
+
+.chromaflow-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+/* ---------- the published rate ledger ----------
+   The pricing depth's toned artifact surface (surface cadence, standard §4):
+   the closed set of published rates as a dark ruled table, flush to both
+   side rules, zero radius — the same dark-shell grammar as the rail ledger.
+   Values in white mono; the workflow column muted; variants fainter still. */
+.chromaflow-root .cf-rates {
+  border-top: 1px solid var(--tc-hair);
+  background: var(--tc-panel);
+}
+
+.chromaflow-root .cf-rates-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px var(--tc-gut) 12px;
+  font-size: 12.5px;
+  color: var(--tc-panel-dim);
+}
+
+.chromaflow-root .cf-rates-credits {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-faint);
+}
+
+.chromaflow-root .cf-rates-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 220px) minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 10px var(--tc-gut) 11px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+}
+
+.chromaflow-root .cf-rates-flow {
+  color: var(--tc-panel-dim);
+}
+
+.chromaflow-root .cf-rates-row b {
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.chromaflow-root .cf-rates-variant {
+  color: var(--tc-panel-faint);
+}
+
+.chromaflow-root .cf-rates-note {
+  padding: 12px var(--tc-gut) 16px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+@media (max-width: 620px) {
+  .chromaflow-root .cf-rates-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 3px;
+  }
+
+  .chromaflow-root .cf-rates-variant {
+    grid-column: 1 / -1;
+  }
+
+  .chromaflow-root .cf-rates-variant:empty {
+    display: none;
+  }
+}
+
+.chromaflow-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.chromaflow-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.chromaflow-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.chromaflow-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chromaflow-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
+}
+
+.chromaflow-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.chromaflow-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.chromaflow-root .tc-foot-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.chromaflow-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
+
+.chromaflow-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-card);
+  --gte-ws-shadow: none;
+  /* Inset-panel radius — the workspace is a UI mock, and the standard's ring
+     for a UI mock is a hairline, not a mat. */
+  --gte-radius: 4px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 600;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
+}
+
+.chromaflow-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
+}
+
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.chromaflow-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.chromaflow-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+.chromaflow-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
+}
+
+.chromaflow-root .tc-review .gte-notes {
+  margin-top: 22px;
+}
+
+/* ---------- the workspace, ringed ----------
+   The standard's inset panel for a UI mock is paper with a hairline ring —
+   the r2 build mounted it on the ink mat instead and the 1px edge + 2px
+   reveal read as a ~4px picture-frame, the only heavy-stroked object on the
+   page. One hairline, small radius, nothing else. */
+.chromaflow-root .tc-review .gte-ws {
+  border-color: var(--tc-hair);
+}
+
+.chromaflow-root .tc-review .gte-bar,
+.chromaflow-root .tc-review .gte-cols {
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   PIPELINE RAIL — six stations on the doubled thread (M05)
+   ============================================================ */
+
+.chromaflow-root .cf-rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+  padding-bottom: clamp(22px, 2.6vw, 30px);
+}
+
+/* Every station draws its own segment of the rail, and the rail is the thread
+   pair. The last segment is dashed: Update is the only station that happens
+   after your build has shipped, and the line style says so without a label. */
+.chromaflow-root .cf-station {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 50px 18px 0;
+}
+
+.chromaflow-root .cf-station::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 28px;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  background:
+    linear-gradient(var(--thread-ink), var(--thread-ink)) top / 100% var(--thread-gauge) no-repeat,
+    linear-gradient(var(--thread-ink), var(--thread-ink)) bottom / 100% var(--thread-gauge)
+      no-repeat;
+  opacity: 0.75;
+}
+
+.chromaflow-root .cf-station[data-last='true']::before {
+  background:
+    repeating-linear-gradient(90deg, var(--thread-ink) 0 6px, transparent 6px 12px) top / 100%
+      var(--thread-gauge) no-repeat,
+    repeating-linear-gradient(90deg, var(--thread-ink) 0 6px, transparent 6px 12px) bottom / 100%
+      var(--thread-gauge) no-repeat;
+}
+
+/* The chapter-joint tick, seated on the rail at the column's centre. */
+.chromaflow-root .cf-station-tick {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--tc-ink);
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.chromaflow-root .cf-station[data-on='true'] .cf-station-tick {
+  opacity: 1;
+}
+
+.chromaflow-root .cf-rail-dot {
+  position: absolute;
+  top: 31px;
+  left: 41.666%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--tc-ink);
+  box-shadow: 0 0 0 3px var(--tc-paper);
+  z-index: 1;
+}
+
+.chromaflow-root .cf-station h3 {
+  font-size: 15.5px;
+  letter-spacing: -0.01em;
+}
+
+.chromaflow-root .cf-station p {
+  margin-top: 8px;
+  padding-bottom: 14px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- the ledger ----------
+   One dark surface under all six stations, flush to the side rules and the
+   section's bottom rule. Each cell carries the station's real artifact in
+   white mono at 12px — the visual is the heavier half of every column. */
+
+.chromaflow-root .cf-ledger {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  background: var(--tc-panel);
+}
+
+.chromaflow-root .cf-ledger-cell {
+  min-width: 0;
+  padding: 16px 15px 22px;
+  transition: background-color 0.35s ease;
+}
+
+.chromaflow-root .cf-ledger-cell + .cf-ledger-cell {
+  border-left: 1px solid var(--tc-panel-rule);
+}
+
+/* The dot overhead lights the cell it stands over. */
+.chromaflow-root .cf-ledger-cell[data-on='true'] {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.chromaflow-root .cf-lg-at {
+  display: block;
+  margin-bottom: 11px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--tc-panel-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chromaflow-root .cf-lg-code {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.55;
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+  white-space: pre;
+  overflow: hidden;
+}
+
+.chromaflow-root .cf-lg-code .is-hot {
+  color: #ffffff;
+}
+
+.chromaflow-root .cf-lg-code .is-dim {
+  color: var(--tc-panel-dim);
+  font-weight: 400;
+}
+
+.chromaflow-root .cf-lg-scanline {
+  position: absolute;
+  left: 0;
+  right: 14%;
+  top: 46%;
+  height: 1.5px;
+  background: #ffffff;
+}
+
+.chromaflow-root .cf-lg-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.chromaflow-root .cf-lg-chips span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  padding: 1px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 4px;
+  color: var(--tc-panel-ink);
+}
+
+.chromaflow-root .cf-lg-chips span[data-fill='true'] {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--tc-panel);
+}
+
+.chromaflow-root .cf-lg-review {
+  display: grid;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+}
+
+.chromaflow-root .cf-lg-review > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 4.5px 0;
+}
+
+.chromaflow-root .cf-lg-review > div + div {
+  border-top: 1px solid var(--tc-panel-rule);
+}
+
+.chromaflow-root .cf-lg-review i {
+  font-style: normal;
+  color: var(--tc-panel-dim);
+}
+
+.chromaflow-root .cf-lg-review span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+.chromaflow-root .cf-lg-review b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.chromaflow-root .cf-lg-review b[data-state='wait'] {
+  color: var(--tc-panel-dim);
+}
+
+.chromaflow-root .cf-lg-url {
+  justify-self: start;
+  padding: 2px 9px;
+  margin-bottom: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  color: #ffffff;
+}
+
+.chromaflow-root .cf-lg-live {
+  justify-self: start;
+  padding: 1px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 4px;
+  color: var(--tc-panel-ink);
+}
+
+/* ============================================================
+   DELIVERY — dev preview, no-deploy, routing (M11)
+   ============================================================ */
+
+/* The hot-reload stack: editor above, ja preview below, the thread pair
+   carrying the keystroke between them. One column, no voids. */
+.chromaflow-root .cf-dl-stack {
+  margin-top: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The editor absorbs whatever height the row's tallest card imposes — extra
+   room becomes dark surface, never leftover paper. */
+.chromaflow-root .cf-dl-editor {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--tc-panel);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.chromaflow-root .cf-dl-editor > .cf-dl-editor-body {
+  flex: 1;
+}
+
+.chromaflow-root .cf-dl-editor-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.chromaflow-root .cf-dl-editor-bar span {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.chromaflow-root .cf-dl-editor-body {
+  padding: 11px 12px 13px;
+  display: grid;
+  gap: 2px;
+  /* Top-aligned like a real editor: flexed height becomes dark surface below
+     the code, never inflated leading. */
+  align-content: start;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow: hidden;
+}
+
+/* The keystroke's path down to the preview — the doubled thread, vertical,
+   with the honest label of what rides it. */
+.chromaflow-root .cf-dl-relay {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 2px;
+}
+
+.chromaflow-root .cf-dl-relay i {
+  display: block;
+  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  height: 22px;
+  margin-left: 18px;
+  background:
+    linear-gradient(var(--thread-ink), var(--thread-ink)) left / var(--thread-gauge) 100% no-repeat,
+    linear-gradient(var(--thread-ink), var(--thread-ink)) right / var(--thread-gauge) 100%
+      no-repeat;
+}
+
+.chromaflow-root .cf-dl-relay span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+.chromaflow-root .cf-dl-t {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.chromaflow-root .cf-dl-dim {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.chromaflow-root .cf-dl-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1em;
+  margin-left: 1px;
+  background: currentColor;
+  vertical-align: text-bottom;
+}
+
+.chromaflow-root .cf-dl-browser {
+  min-width: 0;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  overflow: hidden;
+}
+
+.chromaflow-root .cf-dl-url {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+.chromaflow-root .cf-dl-url b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .cf-dl-page {
+  padding: 12px 13px 13px;
+  display: grid;
+  gap: 8px;
+}
+
+.chromaflow-root .cf-dl-page-p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .cf-dl-page b {
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .cf-dl-live {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+/* The trade-off pairs, as ruled ledger rows: chip column, then the terms. */
+.chromaflow-root .cf-dl-fork {
+  margin-top: auto;
+  padding-top: 16px;
+  display: grid;
+}
+
+.chromaflow-root .cf-dl-fork div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 2px;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.chromaflow-root .cf-dl-fork code {
+  flex-shrink: 0;
+  min-width: 86px;
+  text-align: center;
+}
+
+.chromaflow-root .cf-dl-fork span {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .cf-dl-edit {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+}
+
+.chromaflow-root .cf-dl-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
+.chromaflow-root .cf-dl-edit-src {
+  color: var(--tc-ink-3);
+}
+
+.chromaflow-root .cf-dl-edit-arrow {
+  color: var(--tc-ink-4);
+}
+
+.chromaflow-root .cf-dl-edit-val {
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .cf-dl-save {
+  margin-left: auto;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* commit → [build → deploy struck through] → live */
+.chromaflow-root .cf-dl-pipe {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .cf-dl-pipe > span:not(.cf-dl-pipe-strike),
+.chromaflow-root .cf-dl-pipe-strike span {
+  padding: 4px 9px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+}
+
+.chromaflow-root .cf-dl-pipe-strike {
+  position: relative;
+  display: flex;
+  gap: 8px;
+}
+
+.chromaflow-root .cf-dl-pipe-strike::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  top: 50%;
+  height: 1px;
+  background: var(--tc-ink-3);
+}
+
+.chromaflow-root .cf-dl-pipe-strike span[data-off] {
+  opacity: 0.35;
+}
+
+/* What the running app fetches after the save — the edge's answer, on the
+   page's one dark artifact surface. Like the editor above, it absorbs the
+   row's flexible height as dark surface. */
+.chromaflow-root .cf-dl-cdn {
+  margin-top: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--tc-panel);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.chromaflow-root .cf-dl-cdn > .cf-dl-cdn-body {
+  flex: 1;
+}
+
+.chromaflow-root .cf-dl-cdn-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.chromaflow-root .cf-dl-cdn-bar span {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.chromaflow-root .cf-dl-cdn-body {
+  padding: 11px 12px 13px;
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow: hidden;
+}
+
+/* The fixed string is the one bright line in the response. */
+.chromaflow-root .cf-dl-cdn-body .is-new {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.chromaflow-root .cf-dl-urls {
+  margin-top: 16px;
+  display: grid;
+  gap: 6px;
+}
+
+.chromaflow-root .cf-dl-urlbar {
+  padding: 6px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 999px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-2);
+}
+
+.chromaflow-root .cf-dl-urlbar b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* The localized pathname is the money shot; it takes the page's accent. */
+.chromaflow-root .cf-dl-urlbar em {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--tc-ink);
+  padding-bottom: 2px;
+  background: linear-gradient(var(--tc-accent), var(--tc-accent)) 0 100% / 100% 1.5px no-repeat;
+}
+
+.chromaflow-root .cf-dl-ladder {
+  margin: 14px 0 16px;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.chromaflow-root .cf-dl-ladder > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.chromaflow-root .cf-dl-ladder > div[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.chromaflow-root .cf-dl-ladder-n {
+  width: 14px;
+  color: var(--tc-ink-4);
+}
+
+.chromaflow-root .cf-dl-ladder-hit {
+  margin-left: auto;
+  padding: 1px 8px;
+  border: 1px solid var(--tc-ink-4);
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.chromaflow-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chromaflow-root [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .chromaflow-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chromaflow-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .chromaflow-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .chromaflow-root .tc-fw,
+  .chromaflow-root .tc-row.is-split,
+  .chromaflow-root .tc-row.is-lead,
+  .chromaflow-root .tc-row.is-three,
+  .chromaflow-root .tc-row.is-wide-left,
+  .chromaflow-root .tc-row.is-wide-right,
+  .chromaflow-root .tc-row.is-even,
+  .chromaflow-root .tc-row.is-tilt,
+  .chromaflow-root .tc-row.is-grammar,
+  .chromaflow-root .tc-plans,
+  .chromaflow-root .tc-plain,
+  .chromaflow-root .cf-lb-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The rail folds to two stations across; the dot has no straight line to
+     walk any more, so it stands down and the active strip carries the beat. */
+  .chromaflow-root .cf-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 26px;
+  }
+
+  .chromaflow-root .cf-rail-dot {
+    display: none;
+  }
+
+  .chromaflow-root .cf-pr-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chromaflow-root .cf-pr-file {
+    border-right: 0;
+  }
+
+  .chromaflow-root .cf-pr-checks {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .chromaflow-root .tc-row > * + *,
+  .chromaflow-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .chromaflow-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+
+  .chromaflow-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .chromaflow-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .chromaflow-root .tc-row > .is-framed + *,
+  .chromaflow-root .tc-row > * + .is-framed,
+  .chromaflow-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .chromaflow-root .tc-cell.is-tall,
+  .chromaflow-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .chromaflow-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chromaflow-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .chromaflow-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .chromaflow-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .chromaflow-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .chromaflow-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chromaflow-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .chromaflow-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .chromaflow-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chromaflow-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .chromaflow-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .chromaflow-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .chromaflow-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .chromaflow-root .tc-rail,
+  .chromaflow-root .tc-nav-in,
+  .chromaflow-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .chromaflow-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chromaflow-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .chromaflow-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .chromaflow-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .chromaflow-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  .chromaflow-root .cf-diff {
+    font-size: 11px;
+    line-height: 18px;
+  }
+
+  .chromaflow-root .cf-diff-line {
+    grid-template-columns: 30px 30px 18px minmax(0, 1fr);
+  }
+
+  .chromaflow-root .cf-diff-n {
+    padding-right: 7px;
+    line-height: 18px;
+  }
+
+  .chromaflow-root .cf-hero-stage {
+    padding: 12px 4px 13px;
+    font-size: 11px;
+    letter-spacing: 0.01em;
+  }
+
+  .chromaflow-root .cf-rail {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 22px;
+  }
+
+  .chromaflow-root .cf-ledger {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chromaflow-root .cf-ledger-cell {
+    border-top: 1px solid var(--tc-panel-rule);
+  }
+
+  .chromaflow-root .cf-ledger-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .chromaflow-root .cf-ledger-cell:nth-child(-n + 2) {
+    border-top: 0;
+  }
+}
+
+
+/* ---- dark mode ----
+   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
+   panel #14121A). Everything downstream re-skins from these. */
+[data-theme='dark'] .chromaflow-root {
+  --tc-paper: #16171d;
+  --tc-sunk: #16171d;
+  --tc-white: #1e1f26;
+  --tc-card: #1e1f26;
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.66);
+  --tc-ink-3: rgba(255, 255, 255, 0.48);
+  --tc-ink-4: rgba(255, 255, 255, 0.3);
+  --tc-hair: #3b3440;
+  --tc-hair-2: #2b2731;
+  --tc-plate: #1e1f26;
+  --tc-hatch: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme='dark'] .chromaflow-root .tc-btn-solid {
+  background: #ffffff;
+  color: #16171d;
+}
+
+
+
+
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.chromaflow-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.chromaflow-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.chromaflow-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}

@@ -1,0 +1,670 @@
+/* ============================================================
+   HERO TERMINAL — the real gt CLI session, plus the rendered result
+   One window, two faces. The terminal face replays an actual
+   `npx gt@latest` → `npx gt translate` run: wizard detection, the
+   locale set, the scan count, per-string translations landing with
+   their locale chips, the public/_gt write, the timing. The preview
+   face renders the same three strings as UI — heading, button,
+   toast — in es / ja / de, switched by a segmented control in the
+   window bar, with the house slide-to-reveal divider pulling back
+   the rendered card to the served _gt/[locale].json payload.
+
+   THE STACK (founder: square band under a rounded white card):
+   the hero section sits on a second-surface ground; the headline
+   block is a genuine white card — radius 12, hairline edge — and
+   the trust row below the band is its twin. The dark band between
+   them stays SQUARE and full-width; only the window inside it
+   keeps the measured 8px top corners and viteplus ring.
+
+   Color is a closed four-token set, declared once here:
+   ink/dim (the neutrals), one blue for locale chips + translated
+   strings (strings are the product, so they carry the weight), one
+   green for completed work (✓, the timing). Nothing else on the
+   plate is colored, and none of these remap under [data-theme] —
+   the plate is the same #111 in both themes.
+   ============================================================ */
+
+/* ---------- the hero stack: white card / square band / white card ----------
+   These rules override styles.css declarations of equal specificity, and this
+   file is bundled BEFORE styles.css (page.tsx imports sections first), so the
+   root class is doubled to win on specificity rather than on order. */
+
+/* the ground: the sanctioned second surface, so the white card reads as white
+   instead of dissolving into the page's near-white paper */
+.toolchain-root.toolchain-root .tc-sec.tch-hero-sec {
+  --tch-ground: #f4f3ec;
+  --tch-inset: clamp(10px, 1.1vw, 14px);
+  background: var(--tch-ground);
+}
+
+[data-theme='dark'] .toolchain-root.toolchain-root .tc-sec.tch-hero-sec {
+  --tch-ground: #101015;
+}
+
+/* the white hero card — the only rounded surface above the band */
+.toolchain-root.toolchain-root .tc-hero.tch-card {
+  margin: var(--tch-inset) var(--tch-inset) 0;
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+  background: var(--tc-card);
+  padding: clamp(24px, 2.6vw, 34px) var(--tc-gut) clamp(20px, 2.2vw, 26px);
+}
+
+/* the card trades a step of air for the band: the run's completion line has
+   to land inside a 900px first fold */
+.toolchain-root.toolchain-root .tch-card .tc-hero-mark {
+  margin-bottom: 10px;
+}
+
+/* the light mark's ink strokes vanish on the dark card — brand rule: invert */
+[data-theme='dark'] .toolchain-root.toolchain-root .tch-card .tc-hero-mark {
+  filter: invert(1);
+}
+
+.toolchain-root.toolchain-root .tch-card .tc-hero-sub {
+  margin-top: 12px;
+}
+
+.toolchain-root.toolchain-root .tch-card .tc-hero-acts {
+  margin-top: 18px;
+}
+
+/* the band: SQUARE, full rail width, no top hairline — its edges against the
+   ground are its own. Only the inset shrinks so the window sits higher. */
+.toolchain-root.toolchain-root .tc-hero-cell.tch-band {
+  margin-top: var(--tch-inset);
+  border-top: 0;
+  border-radius: 0;
+  padding: clamp(14px, 1.7vw, 22px) clamp(14px, 3vw, 44px) 0;
+}
+
+/* Aurora restraint: the flanks stay lit but never run at full saturation —
+   the mask caps the edges and the opacity drops so the light reads as a wash
+   behind the plate instead of two rainbow slabs beside it. */
+.toolchain-root.toolchain-root .tc-hero-field.tch-field {
+  opacity: 0.55;
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.5) 14%,
+    rgba(0, 0, 0, 0.2) 34%,
+    rgba(0, 0, 0, 0.12) 50%,
+    rgba(0, 0, 0, 0.2) 66%,
+    rgba(0, 0, 0, 0.5) 86%,
+    rgba(0, 0, 0, 0.72) 100%
+  );
+}
+
+/* the trust row: the card grammar repeated below the band — same radius,
+   same hairline, same inset, so the band is bracketed by two white cards */
+.toolchain-root.toolchain-root .tch-hero-sec > .tc-trust.tch-trustcard {
+  margin: var(--tch-inset);
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+  background: var(--tc-card);
+  overflow: hidden;
+}
+
+/* ---------- the window ---------- */
+
+.toolchain-root .tct-win {
+  --tct-ink: rgba(255, 255, 255, 0.87);
+  --tct-dim: rgba(255, 255, 255, 0.45);
+  --tct-faint: rgba(255, 255, 255, 0.3);
+  --tct-rule: rgba(255, 255, 255, 0.09);
+  /* the translation hue — chips bordered, strings lit */
+  --tct-loc: #9db9ff;
+  --tct-loc-line: rgba(157, 185, 255, 0.38);
+  --tct-loc-wash: rgba(120, 156, 255, 0.09);
+  --tct-tr: #cfe0ff;
+  /* completed work only: the ✓ and the timing */
+  --tct-ok: #7ed3a2;
+
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin-inline: auto;
+  border-radius: 8px 8px 0 0;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  overflow: hidden;
+}
+
+/* ---------- the window bar: title left, view switch right ---------- */
+
+.toolchain-root .tct-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 42px;
+  padding: 0 10px 0 18px;
+  border-bottom: 1px solid var(--tct-rule);
+  font-family: var(--tc-mono);
+}
+
+.toolchain-root .tct-title {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--tct-dim);
+}
+
+/* Segmented control: a hairline box; the active segment is a solid white
+   chip — an unmistakable state at hero scale, not a 12% tint. */
+.toolchain-root .tct-seg {
+  display: flex;
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+}
+
+.toolchain-root .tct-seg button {
+  appearance: none;
+  margin: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  padding: 4px 13px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--tct-dim);
+  cursor: pointer;
+  transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.toolchain-root .tct-seg button:hover {
+  color: var(--tct-ink);
+}
+
+.toolchain-root .tct-seg button[data-on='true'] {
+  background: rgba(255, 255, 255, 0.92);
+  color: #111111;
+  font-weight: 500;
+}
+
+/* ---------- the two faces ---------- */
+
+/* The terminal face is in-flow and sets the window's height; the preview
+   face overlays it, so switching views never moves the band. */
+.toolchain-root .tct-stage {
+  position: relative;
+}
+
+.toolchain-root .tct-face {
+  transition:
+    opacity 0.34s ease,
+    transform 0.34s ease,
+    visibility 0.34s ease;
+}
+
+.toolchain-root .tct-face[data-on='false'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.toolchain-root .tct-face-prev {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 22px 28px 24px;
+}
+
+.toolchain-root .tct-face-prev[data-on='false'] {
+  transform: translateY(10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .tct-face {
+    transition: none;
+  }
+}
+
+/* ---------- terminal face: the transcript ---------- */
+
+/* 14/24 — the measured reference value for artifact body text. The gaps sit
+   at 10px so the whole run, completion line included, fits the first fold. */
+.toolchain-root .tct-body {
+  padding: 16px 28px 22px;
+  font-family: var(--tc-mono);
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--tct-ink);
+  overflow-x: auto;
+}
+
+.toolchain-root .tct-line {
+  white-space: pre;
+}
+
+.toolchain-root .tct-gap {
+  height: 9px;
+}
+
+.toolchain-root .tct-dollar {
+  color: var(--tct-faint);
+}
+
+.toolchain-root .tct-type {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.toolchain-root .tct-key {
+  color: var(--tct-dim);
+}
+
+.toolchain-root .tct-meta {
+  color: var(--tct-dim);
+}
+
+.toolchain-root .tct-strong {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* the public/_gt write: path plain, the locale glob in the translation hue */
+.toolchain-root .tct-glob {
+  color: var(--tct-loc);
+}
+
+.toolchain-root .tct-ok {
+  color: var(--tct-ok);
+  font-weight: 500;
+}
+
+/* locale chip — mono, hairline in the translation hue, lowercase tag */
+.toolchain-root .tct-chip {
+  display: inline-block;
+  padding: 0 6px;
+  border: 1px solid var(--tct-loc-line);
+  border-radius: 4px;
+  background: var(--tct-loc-wash);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 17px;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--tct-loc);
+}
+
+/* the wizard's Locales row sets its chips inline with the keys */
+.toolchain-root .tct-locset {
+  display: inline-flex;
+  gap: 6px;
+  vertical-align: -3px;
+}
+
+/* ---------- per-string rows: source left, three locale cells across ---------- */
+
+.toolchain-root .tct-table {
+  margin-left: 2ch;
+  display: grid;
+  grid-template-columns: minmax(0, 19ch) max-content max-content max-content;
+  column-gap: 20px;
+  row-gap: 3px;
+  align-items: baseline;
+}
+
+.toolchain-root .tct-row {
+  display: contents;
+}
+
+.toolchain-root .tct-src {
+  color: var(--tct-dim);
+  white-space: pre;
+}
+
+.toolchain-root .tct-cell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.toolchain-root .tct-cell .tct-chip {
+  flex: none;
+  transform: translateY(-1px);
+}
+
+/* translated strings carry the weight: same hue as the chips, lit */
+.toolchain-root .tct-tr {
+  font-weight: 500;
+  color: var(--tct-tr);
+}
+
+/* the long-tail cell: variants stacked in one grid slot, cross-faded */
+.toolchain-root .tct-cyc {
+  display: grid;
+  align-self: baseline;
+}
+
+.toolchain-root .tct-cyc > span {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+/* the idle prompt: a caret that keeps the session alive */
+.toolchain-root .tct-caret {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  transform: translateY(2px);
+  background: rgba(255, 255, 255, 0.65);
+  animation: tct-blink 1.15s steps(1, end) infinite;
+}
+
+@keyframes tct-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .tct-caret {
+    animation: none;
+  }
+}
+
+/* ---------- preview face: the same strings, rendered ---------- */
+
+.toolchain-root .tct-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.toolchain-root .tct-tabs button {
+  appearance: none;
+  margin: 0;
+  padding: 1px 9px;
+  border: 1px solid var(--tct-loc-line);
+  border-radius: 4px;
+  background: var(--tct-loc-wash);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--tct-loc);
+  cursor: pointer;
+  transition: color 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.toolchain-root .tct-tabs button[data-on='true'] {
+  background: var(--tct-loc);
+  border-color: var(--tct-loc);
+  color: #111111;
+  font-weight: 500;
+}
+
+/* the rendered app card: paper on the plate, same ring grammar as the window */
+.toolchain-root .tct-app {
+  --tct-cut: 70%;
+  position: relative;
+  width: min(460px, 100%);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f1113;
+  text-align: left;
+  outline: 1px solid rgba(255, 255, 255, 0.25);
+  outline-offset: 2px;
+  overflow: hidden;
+}
+
+.toolchain-root .tct-app-addr {
+  padding: 8px 16px;
+  border-bottom: 1px solid #e9e9ec;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+
+.toolchain-root .tct-app-addr b {
+  font-weight: 500;
+  color: #2f5ce0;
+}
+
+.toolchain-root .tct-app-main {
+  padding: 18px 18px 52px;
+}
+
+.toolchain-root .tct-app-h {
+  margin: 0;
+  font-family: var(--tc-disp);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: #0f1113;
+}
+
+.toolchain-root .tct-app-date {
+  margin: 6px 0 0;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+
+.toolchain-root .tct-app-copy {
+  margin: 10px 0 0;
+  max-width: 46ch;
+  font-family: var(--tc-sans);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(15, 17, 19, 0.63);
+}
+
+/* the button is intentionally shrink-wrapped: its width re-measures per locale */
+.toolchain-root .tct-app-btn {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #0f1113;
+  color: #ffffff;
+  font-family: var(--tc-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* the toast keeps clear of the payload curtain: its right edge tracks the cut */
+.toolchain-root .tct-app-toast {
+  position: absolute;
+  right: calc(100% - var(--tct-cut) + 14px);
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 1px solid #e4e4e6;
+  border-radius: 6px;
+  background: #ffffff;
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  white-space: nowrap;
+  color: #0f1113;
+}
+
+.toolchain-root .tct-app-toast i {
+  font-style: normal;
+  font-weight: 500;
+  color: #2e9e63;
+}
+
+/* ---------- slide-to-reveal: the served payload under the render ----------
+   The house mechanic: dragging the divider pulls the rendered card back to
+   the artifact that produced it — the hashed-key JSON gt wrote to
+   public/_gt/[locale].json. The pane is anchored at the cut, so at rest it
+   teases the hash column and the drag reveals the translated leaves. */
+
+.toolchain-root .tct-payload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: var(--tct-cut);
+  z-index: 2;
+  padding: 10px 12px;
+  background: #101014;
+  overflow: hidden;
+}
+
+.toolchain-root .tct-payload-file {
+  margin: 0 0 5px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .tct-payload-code {
+  margin: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: pre;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* same restraint as the transcript: keys dim, punctuation faint, and the
+   translated leaves are the only lit strings on the pane */
+.toolchain-root .tct-payload-code .pl-k {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.toolchain-root .tct-payload-code .pl-s {
+  color: var(--tct-tr);
+}
+
+/* The divider: the house doubled hairline at constant gauge, each thread in
+   its surface's own ink — the source thread dark on the rendered card, the
+   translation thread light on the payload pane. No chrome, nothing outside
+   the card's bounds. */
+.toolchain-root .tct-cutline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--tct-cut);
+  z-index: 3;
+  width: 18px;
+  transform: translateX(-9px);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.toolchain-root .tct-cutline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  transform: translateX(-50%);
+  background:
+    linear-gradient(rgba(15, 17, 19, 0.62), rgba(15, 17, 19, 0.62)) 0 0 / var(--thread-gauge) 100% no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)) 100% 0 / var(--thread-gauge) 100% no-repeat;
+}
+
+/* the contained notch: a short muted thickening at mid-height, discovered on
+   hover rather than shouting */
+.toolchain-root .tct-cutline::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  border-radius: 2px;
+  background: #867e8e;
+  opacity: 0.75;
+  transition: opacity 0.16s ease, height 0.16s ease;
+}
+
+.toolchain-root .tct-cutline:hover::after,
+.toolchain-root .tct-cutline:focus-visible::after {
+  opacity: 1;
+  height: 34px;
+}
+
+.toolchain-root .tct-cutline:focus-visible {
+  outline: none;
+}
+
+/* the receipt line tying the render back to the artifact it came from */
+.toolchain-root .tct-prev-note {
+  margin: 0;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tct-dim);
+}
+
+.toolchain-root .tct-prev-note b {
+  font-weight: 400;
+  color: var(--tct-loc);
+}
+
+/* ---------- narrow: rows stack, one locale cell per line ---------- */
+
+@media (max-width: 760px) {
+  .toolchain-root .tct-body {
+    padding: 16px 16px 20px;
+    font-size: 12.5px;
+    line-height: 21px;
+  }
+
+  .toolchain-root .tct-line {
+    white-space: pre-wrap;
+  }
+
+  .toolchain-root .tct-table {
+    display: block;
+    margin-left: 0;
+  }
+
+  .toolchain-root .tct-row {
+    display: block;
+    margin-bottom: 9px;
+  }
+
+  .toolchain-root .tct-src {
+    display: block;
+  }
+
+  .toolchain-root .tct-cell,
+  .toolchain-root .tct-cyc {
+    margin-left: 2ch;
+    margin-right: 12px;
+  }
+
+  .toolchain-root .tct-cyc {
+    display: inline-grid;
+  }
+
+  .toolchain-root .tct-bar {
+    padding: 0 8px 0 14px;
+  }
+
+  .toolchain-root .tct-seg button {
+    padding: 4px 10px;
+  }
+
+  .toolchain-root .tct-face-prev {
+    padding: 18px 14px 20px;
+  }
+
+  .toolchain-root .tct-app-main {
+    padding: 16px 14px 52px;
+  }
+}

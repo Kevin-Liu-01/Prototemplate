@@ -1,0 +1,839 @@
+'use client';
+
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import Image from 'next/image';
+import {
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
+
+import PrismaticField from '@/components/shared/PrismaticField';
+
+import LocaleTag from '../components/LocaleTag';
+
+import './hero-every.css';
+import './hero-terminal.css';
+
+gsap.registerPlugin(useGSAP);
+
+/**
+ * Six names in one weight read as a word list, so each is set as its own
+ * typographic mark — weight, case, size and tracking are the only variables,
+ * and they stay inside the page's two faces. The row is ruled into six cells so
+ * the two hairlines bracketing the band bound a table rather than a sentence.
+ */
+const CUSTOMERS: readonly { name: string; mark: string }[] = [
+  { name: 'Cursor', mark: 'is-cursor' },
+  { name: 'Ramp', mark: 'is-ramp' },
+  { name: 'Mintlify', mark: 'is-mintlify' },
+  { name: 'Profound', mark: 'is-profound' },
+  { name: 'Partiful', mark: 'is-partiful' },
+  { name: 'ClickHouse', mark: 'is-clickhouse' },
+];
+
+/* ------------------------------------------------------------------
+   The gt CLI session. Two commands, replayed the way the product runs
+   them: the wizard detects the framework and writes the config, then
+   `gt translate` scans, translates per string, and writes public/_gt.
+   Every string below is real — sources are the site's own UI copy;
+   translations are verbatim from the landing demo's shipped table
+   (es / fr / ja / de / zh). 128 strings × 5 locales = 640.
+   ------------------------------------------------------------------ */
+
+/** The wizard's summary block: detection, source, locale set, files written. */
+const WIZARD: readonly { key: string; text?: string; locs?: readonly string[] }[] = [
+  { key: 'Detected', text: 'Next.js · App Router' },
+  { key: 'Source', text: 'en' },
+  { key: 'Locales', locs: ['es', 'fr', 'ja', 'de', 'zh'] },
+  { key: 'Wrote', text: 'gt.config.json · .env.local' },
+];
+
+type Variant = { loc: string; text: string };
+
+/** One translated cell; more than one variant means the cell cycles the long tail. */
+type Cell = readonly Variant[];
+
+type Row = { src: string; cells: readonly Cell[] };
+
+const ROWS: readonly Row[] = [
+  {
+    src: '"Hello, world!"',
+    cells: [
+      [{ loc: 'es', text: '¡Hola, mundo!' }],
+      [{ loc: 'ja', text: 'こんにちは、世界！' }],
+      [
+        { loc: 'de', text: 'Hallo, Welt!' },
+        { loc: 'fr', text: 'Bonjour le monde !' },
+        { loc: 'zh', text: '你好，世界！' },
+      ],
+    ],
+  },
+  {
+    src: '"Get started"',
+    cells: [
+      [{ loc: 'es', text: 'Comenzar ahora' }],
+      [{ loc: 'ja', text: '始める' }],
+      [{ loc: 'de', text: 'Jetzt starten' }],
+    ],
+  },
+  {
+    src: '"Payment received"',
+    cells: [
+      [{ loc: 'es', text: 'Pago recibido' }],
+      [{ loc: 'ja', text: '支払いを受領しました' }],
+      [{ loc: 'de', text: 'Zahlung erhalten' }],
+    ],
+  },
+];
+
+/* ------------------------------------------------------------------
+   The preview face: the same three strings rendered as UI — heading,
+   button, toast — plus the demo copy's first sentence, in the three
+   locales the transcript shows. Dates are real Intl output at render
+   time, from a fixed day so server and client agree.
+   ------------------------------------------------------------------ */
+
+type PreviewLoc = 'es' | 'ja' | 'de';
+
+const PREVIEW_LOCS: readonly PreviewLoc[] = ['es', 'ja', 'de'];
+
+const PREVIEWS: Record<PreviewLoc, { title: string; body: string; button: string; toast: string }> = {
+  es: {
+    title: '¡Hola, mundo!',
+    body: 'General Translation crea infraestructura full-stack para localizar apps, documentación y sitios web.',
+    button: 'Comenzar ahora',
+    toast: 'Pago recibido',
+  },
+  ja: {
+    title: 'こんにちは、世界！',
+    body: 'General Translationは、アプリ、ドキュメント、Webサイトをローカライズするためのフルスタックインフラを構築しています。',
+    button: '始める',
+    toast: '支払いを受領しました',
+  },
+  de: {
+    title: 'Hallo, Welt!',
+    body: 'General Translation entwickelt Full-Stack-Infrastruktur für die Lokalisierung von Apps, Dokumentation und Websites.',
+    button: 'Jetzt starten',
+    toast: 'Zahlung erhalten',
+  },
+};
+
+const PREVIEW_DATE = new Date(2026, 6, 30);
+
+/* ------------------------------------------------------------------
+   The payload under the render: the hashed-key JSON `gt translate`
+   writes to public/_gt/[locale].json (the real file shape — hash of
+   the source resolves to the translated string, JSX trees keep their
+   structure and only the leaves change). Keys are constant across
+   locales because they hash the SOURCE. The slide-to-reveal divider
+   pulls the rendered card back to this artifact.
+   ------------------------------------------------------------------ */
+
+const HASHES = {
+  title: '039ccefb7f335e27',
+  button: '32b8f2a917c40de6',
+  toast: 'b54ce01d97f2a683',
+  body: 'df0269bad214a097',
+} as const;
+
+/** One locale's _gt payload, tokenized with the plate's own restraint:
+    keys dim, punctuation faint, translated leaves lit. */
+function PayloadJson({ loc }: { loc: PreviewLoc }) {
+  const p = PREVIEWS[loc];
+  const K = ({ k }: { k: string }) => <span className='pl-k'>&quot;{k}&quot;</span>;
+  const S = ({ s }: { s: string }) => <span className='pl-s'>&quot;{s}&quot;</span>;
+  return (
+    <pre className='tct-payload-code'>
+      {'{\n  '}
+      <K k={HASHES.title} />
+      {': '}
+      <S s={p.title} />
+      {',\n  '}
+      <K k={HASHES.button} />
+      {': '}
+      <S s={p.button} />
+      {',\n  '}
+      <K k={HASHES.toast} />
+      {': '}
+      <S s={p.toast} />
+      {',\n  '}
+      <K k={HASHES.body} />
+      {': { "c": [{\n    "c": '}
+      <S s={p.body} />
+      {',\n    "i": 5, "t": "p"\n  }] }\n}'}
+    </pre>
+  );
+}
+
+/** Command lines type in character by character; static DOM stays complete. */
+function Cmd({ text, mark }: { text: string; mark: string }) {
+  return (
+    <div className='tct-line'>
+      <span className='tct-dollar'>$ </span>
+      <span className={`tct-type ${mark}`}>
+        {[...text].map((ch, i) => (
+          <span key={`c${i}`}>{ch}</span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
+/* "every" across maximally different writing systems — Latin, Japanese,
+   Arabic, Devanagari, Cyrillic, Han, Hangul, Greek — short tokens so the
+   re-measured line never wraps. */
+const EVERY: readonly string[] = ['language', '言語', 'لغة', 'भाषा', 'язык', '语言', '언어', 'γλώσσα'];
+
+/* the dissolve dust pool: small glyphs sampled across the same scripts */
+const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
+
+export default function Hero() {
+  const root = useRef<HTMLElement>(null);
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  /* the terminal window's two faces + the preview's locale */
+  const [view, setView] = useState<'term' | 'preview'>('term');
+  const [ploc, setPloc] = useState<PreviewLoc>('es');
+  /* One guided pass flips to the preview and walks the locales; the first
+     manual interaction kills it for good — the reader has taken the controls. */
+  const tour = useRef<gsap.core.Timeline | null>(null);
+  const endTour = () => {
+    tour.current?.kill();
+    tour.current = null;
+  };
+  const pickView = (next: 'term' | 'preview') => {
+    endTour();
+    setView(next);
+  };
+  const pickLoc = (next: PreviewLoc) => {
+    endTour();
+    setPloc(next);
+  };
+
+  /* ---- the slide-to-reveal cut ----
+     Lives in a CSS var on the app card so the drag, the keyboard, and the
+     one-time intro tween all turn the same dial without re-rendering. */
+  const app = useRef<HTMLDivElement>(null);
+  const cut = useRef(70);
+  const dragging = useRef(false);
+  const dragged = useRef(false);
+  const setCut = (pct: number) => {
+    cut.current = Math.min(88, Math.max(16, pct));
+    const el = app.current;
+    if (!el) return;
+    el.style.setProperty('--tct-cut', `${cut.current}%`);
+    el.querySelector('.tct-cutline')?.setAttribute('aria-valuenow', String(Math.round(cut.current)));
+  };
+  const cutDown = (e: ReactPointerEvent<HTMLElement>) => {
+    endTour();
+    dragging.current = true;
+    dragged.current = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  };
+  const cutMove = (e: ReactPointerEvent<HTMLElement>) => {
+    if (!dragging.current || !app.current) return;
+    const r = app.current.getBoundingClientRect();
+    if (r.width === 0) return;
+    setCut(((e.clientX - r.left) / r.width) * 100);
+  };
+  const cutUp = () => {
+    dragging.current = false;
+  };
+  const cutKey = (e: ReactKeyboardEvent<HTMLElement>) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    endTour();
+    dragged.current = true;
+    setCut(cut.current + (e.key === 'ArrowLeft' ? -6 : 6));
+  };
+
+  const copy = () => {
+    void navigator.clipboard?.writeText('npx gt@latest');
+    setCopied(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setCopied(false), 1600);
+  };
+
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        /* the still must carry the whole argument: divider parked mid, both
+           panes of the reveal legible */
+        setCut(50);
+        return;
+      }
+
+      gsap.from('[data-hero-in]', {
+        y: 14,
+        autoAlpha: 0,
+        duration: 0.7,
+        stagger: 0.07,
+        ease: 'power2.out',
+      });
+
+      /* ---- the terminal session replays ----
+         The DOM is complete before any tween runs (every animation is a
+         `from`), so reduced motion and the no-JS still both show the whole
+         finished transcript. The replay settles inside ~2.5s: any screenshot
+         taken three seconds in reads as a finished run, completion line,
+         timing and all. */
+      const counter = (sel: string, to: number, duration: number, decimals: number) => {
+        const el = root.current?.querySelector<HTMLElement>(sel);
+        if (!el) return gsap.to({}, { duration: 0 });
+        const state = { v: 0 };
+        el.textContent = (0).toFixed(decimals);
+        return gsap.to(state, {
+          v: to,
+          duration,
+          ease: 'power1.out',
+          onUpdate: () => {
+            el.textContent = state.v.toFixed(decimals);
+          },
+        });
+      };
+
+      /* One run, one clock: the ✓ timing here is the same 12.4s the Content
+         section's terminal reports for this exact 640-translation run. */
+      const run = gsap.timeline({ delay: 0.25, defaults: { ease: 'none' } });
+      run
+        .from('.tct-cmd1 span', { autoAlpha: 0, duration: 0.01, stagger: 0.012 })
+        .from('[data-tw]', { autoAlpha: 0, duration: 0.16, stagger: 0.07 }, '+=0.06')
+        .from('.tct-cmd2 span', { autoAlpha: 0, duration: 0.01, stagger: 0.012 }, '+=0.07')
+        .from('[data-ts]', { autoAlpha: 0, duration: 0.16, stagger: 0.09 }, '+=0.06')
+        .add(counter('[data-count-scan]', 128, 0.4, 0), '<')
+        .from('[data-tr-src]', { autoAlpha: 0, duration: 0.14, stagger: 0.06 }, '+=0.05')
+        .from('.tct-cell', { autoAlpha: 0, y: 5, duration: 0.22, ease: 'power1.out', stagger: 0.05 }, '<+=0.08')
+        .from('[data-td]', { autoAlpha: 0, duration: 0.16, stagger: 0.09 }, '+=0.06')
+        .add(counter('[data-count-time]', 12.4, 0.4, 1), '<');
+
+      /* ---- the long tail keeps arriving ----
+         One cell cycles de → fr → zh: the outgoing variant is fully gone
+         before the incoming one lands, so a still never catches two scripts
+         printed through each other. */
+      const variants = gsap.utils.toArray<HTMLElement>('[data-cyc]', root.current);
+      if (variants.length > 1) {
+        const cyc = gsap.timeline({ repeat: -1, delay: run.duration() + 2.2 });
+        variants.forEach((el, i) => {
+          const next = variants[(i + 1) % variants.length];
+          if (!next) return;
+          cyc
+            .to(el, { autoAlpha: 0, duration: 0.24, ease: 'power1.in' }, '+=2.7')
+            .to(next, { autoAlpha: 1, duration: 0.28, ease: 'power1.out' }, '>');
+        });
+      }
+
+      /* ---- one guided pass through the preview ----
+         After the run settles — and after the finished transcript has owned
+         the window long enough to be the first fold's still — the window
+         shows the result as UI once, es → ja → de, then hands the terminal
+         back. Any manual input kills this timeline before it acts. */
+      const guided = gsap.timeline({ delay: run.duration() + 4.2 });
+      guided
+        .call(() => setView('preview'))
+        .to({}, { duration: 2.1 })
+        .call(() => setPloc('ja'))
+        .to({}, { duration: 2.1 })
+        .call(() => setPloc('de'))
+        .to({}, { duration: 2.3 })
+        .call(() => {
+          setView('term');
+          setPloc('es');
+          tour.current = null;
+        });
+      tour.current = guided;
+
+      /* The one loop on the page: the output column cycles locales, slowly.
+         The two strings share a grid cell, so the outgoing one has to be gone
+         before the incoming one arrives — crossfaded, a still catches 日本語
+         printed through Spanish, which is the glyph soup this page is otherwise
+         careful never to show. */
+      /* The headline hinge is a measuring instrument. Each cycle: the bound
+         guides appear around the current word; the word dissolves into small
+         glyphs from many scripts; the bounds tween to the NEXT word's
+         measured width first — scoping the layout shift before any text
+         exists — then the dust converges and the new word's characters form
+         inside the prepared bounds. The doubled underline re-measures with
+         the em at constant gauge. */
+      const em = root.current?.querySelector<HTMLElement>('[data-every]');
+      const word = root.current?.querySelector<HTMLElement>('[data-every-word]');
+      const compactEvery = window.matchMedia('(max-width: 720px)').matches;
+      if (em && word && compactEvery) {
+        /* At mobile scale 26 particles cannot breathe: a clean measured
+           crossfade tells the same story. */
+        let ci = 0;
+        const compactSwap = () => {
+          if (!root.current || !root.current.isConnected) return;
+          ci = (ci + 1) % EVERY.length;
+          const w0 = em.offsetWidth;
+          gsap.to(word, { autoAlpha: 0, duration: 0.2, ease: 'power2.in', onComplete: () => {
+            word.textContent = EVERY[ci];
+            em.style.width = 'auto';
+            const w1 = em.offsetWidth;
+            gsap.fromTo(em, { width: w0 }, { width: w1, duration: 0.35, ease: 'power3.inOut',
+              onComplete: () => { em.style.width = 'auto'; } });
+            gsap.to(word, { autoAlpha: 1, duration: 0.24, ease: 'power2.out', delay: 0.12 });
+            gsap.delayedCall(2.4, compactSwap);
+          } });
+        };
+        em.style.display = 'inline-block';
+        em.style.whiteSpace = 'nowrap';
+        gsap.delayedCall(3.4, compactSwap);
+      }
+      if (em && word && !compactEvery) {
+        const guideL = document.createElement('span');
+        guideL.className = 'tc-eg is-l';
+        const guideR = document.createElement('span');
+        guideR.className = 'tc-eg is-r';
+        const dust = document.createElement('span');
+        dust.className = 'tc-edust';
+        for (let i = 0; i < 26; i++) {
+          const g = document.createElement('span');
+          g.textContent = DUST[i % DUST.length] ?? '';
+          dust.appendChild(g);
+        }
+        em.append(guideL, guideR, dust);
+        const dustGlyphs = Array.from(dust.children) as HTMLElement[];
+
+        const setChars = (text: string) => {
+          word.innerHTML = '';
+          for (const ch of text) {
+            const c = document.createElement('span');
+            c.className = 'tc-ech';
+            c.textContent = ch;
+            word.appendChild(c);
+          }
+          return Array.from(word.children) as HTMLElement[];
+        };
+
+        /* Sample the incoming word's letterforms: draw it on an offscreen
+           canvas at the em's own font and collect dark-pixel positions. The
+           dust converges onto these points, so the glyphs sketch the shapes
+           of the characters before the characters themselves fill in. */
+        const sampleShape = (text: string, width: number, height: number, count: number) => {
+          const style = getComputedStyle(word);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(width, 10);
+          canvas.height = Math.max(height, 10);
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return [];
+          ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+          ctx.textBaseline = 'middle';
+          ctx.fillText(text, 0, canvas.height / 2);
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          const pts: { x: number; y: number }[] = [];
+          const step = 3;
+          for (let y = 0; y < canvas.height; y += step) {
+            for (let x = 0; x < canvas.width; x += step) {
+              if ((img[(y * canvas.width + x) * 4 + 3] ?? 0) > 128) pts.push({ x, y });
+            }
+          }
+          // spread the picks across the whole word rather than clustering
+          const picked: { x: number; y: number }[] = [];
+          if (pts.length) {
+            const stride = Math.max(1, Math.floor(pts.length / count));
+            for (let i = 0; i < pts.length && picked.length < count; i += stride) {
+              const pt = pts[i];
+              if (pt) picked.push(pt);
+            }
+          }
+          return picked;
+        };
+
+        const measure = (text: string) => {
+          const probe = document.createElement('span');
+          probe.style.visibility = 'hidden';
+          probe.style.position = 'absolute';
+          probe.style.whiteSpace = 'nowrap';
+          probe.textContent = text;
+          em.appendChild(probe);
+          const w = probe.offsetWidth;
+          probe.remove();
+          return w;
+        };
+
+        let idx = 0;
+        const swap = () => {
+          if (!root.current || !root.current.isConnected) return;
+          idx = (idx + 1) % EVERY.length;
+          const nextText = EVERY[idx] ?? 'every';
+          const w0 = em.offsetWidth;
+          const w1 = measure(nextText);
+          const outChars = Array.from(word.children) as HTMLElement[];
+          const tl = gsap.timeline({
+            onComplete: () => {
+              em.style.width = 'auto';
+              gsap.delayedCall(2.2, swap);
+            },
+          });
+
+          // 1. the instrument appears around the current word
+          tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' });
+
+          // 2. the word dissolves into small glyphs
+          tl.to(outChars, {
+            scale: 0.25,
+            autoAlpha: 0,
+            y: () => gsap.utils.random(-14, 14),
+            x: () => gsap.utils.random(-18, 18),
+            duration: 0.3,
+            stagger: 0.02,
+            ease: 'power2.in',
+          }, '+=0.05');
+          /* the cloud separates SYMMETRICALLY about the word's centre: each
+             glyph takes an evenly-spread angle on a jittered ring, so the
+             scatter is balanced instead of clumping off to one side */
+          const h0 = em.offsetHeight;
+          const ring = (w: number) => (g: HTMLElement, i: number) => {
+            const angle = (i / dustGlyphs.length) * Math.PI * 2 + gsap.utils.random(-0.2, 0.2);
+            const rx = gsap.utils.random(0.18, 0.44) * w;
+            const ry = gsap.utils.random(6, h0 * 0.26);
+            return {
+              // clamped so no glyph ever leaves the measured bounds
+              x: gsap.utils.clamp(3, w - 3, w / 2 + Math.cos(angle) * rx),
+              y: gsap.utils.clamp(-h0 * 0.02, h0 * 0.32, h0 * 0.1 + Math.sin(angle) * ry),
+            };
+          };
+          const place0 = ring(Math.max(w0, 30));
+          tl.to(dustGlyphs, {
+            autoAlpha: () => gsap.utils.random(0.35, 0.8),
+            x: (i, g) => place0(g as HTMLElement, i).x,
+            y: (i, g) => place0(g as HTMLElement, i).y,
+            duration: 0.26,
+            stagger: 0.012,
+            ease: 'power1.out',
+          }, '<+=0.1');
+
+          // 3. the bounds scope the coming layout shift — before any text
+          tl.fromTo(em, { width: w0 }, { width: w1, duration: 0.42, ease: 'power3.inOut' });
+          const place1 = ring(Math.max(w1, 30));
+          tl.to(dustGlyphs, {
+            x: (i, g) => place1(g as HTMLElement, i).x,
+            y: (i, g) => place1(g as HTMLElement, i).y,
+            duration: 0.42,
+            ease: 'power3.inOut',
+          }, '<');
+
+          // 4. the dust assembles the SHAPES of the incoming characters —
+          //    each glyph flies to a sampled point on the new letterforms —
+          //    and only then do the actual characters fill the silhouette in.
+          tl.add(() => {
+            const h = em.offsetHeight;
+            const pts = sampleShape(nextText, w1, h, dustGlyphs.length);
+            dustGlyphs.forEach((g, i) => {
+              const pt = pts[i % Math.max(pts.length, 1)] || { x: w1 / 2, y: h / 2 };
+              gsap.to(g, {
+                x: pt.x,
+                y: pt.y - h * 0.4,
+                autoAlpha: 0.9,
+                duration: 0.38,
+                ease: 'power3.inOut',
+                delay: i * 0.008,
+              });
+            });
+            gsap.delayedCall(0.42, () => {
+              const inChars = setChars(nextText);
+              gsap.fromTo(inChars,
+                { autoAlpha: 0 },
+                { autoAlpha: 1, duration: 0.3, stagger: 0.03, ease: 'power1.inOut' });
+              gsap.to(dustGlyphs, { autoAlpha: 0, duration: 0.26, stagger: 0.006, ease: 'power1.out', delay: 0.08 });
+            });
+          });
+          tl.to({}, { duration: 0.85 });
+
+          // 5. the instrument withdraws
+          tl.to([guideL, guideR], { opacity: 0, duration: 0.24, ease: 'none' }, '>-0.05');
+        };
+
+        setChars('language');
+        /* The first dissolve waits out the first-fold capture window: any
+           still taken while the run settles shows the word whole, not dust. */
+        gsap.delayedCall(5.6, swap);
+      }
+
+    },
+    { scope: root }
+  );
+
+  /* The preview strings re-settle when the locale changes — a short rise from
+     dim, never a crossfade of two scripts. Skipped under reduced motion. */
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      gsap.fromTo(
+        '[data-swap]',
+        { autoAlpha: 0.25 },
+        { autoAlpha: 1, duration: 0.32, ease: 'power1.out' }
+      );
+    },
+    { scope: root, dependencies: [ploc] }
+  );
+
+  /* The reveal announces itself once per entry: the payload pane eases open
+     to its 70/30 rest. Skipped after the reader has taken the divider, and
+     under reduced motion (where the cut is parked mid, statically). */
+  useGSAP(
+    () => {
+      if (view !== 'preview' || dragged.current) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const dial = { v: 96 };
+      gsap.to(dial, {
+        v: 70,
+        duration: 0.85,
+        delay: 0.25,
+        ease: 'power3.out',
+        onUpdate: () => setCut(dial.v),
+      });
+    },
+    { scope: root, dependencies: [view] }
+  );
+
+  return (
+    <section className='tc-sec tch-hero-sec' id='top' ref={root}>
+      {/* The founder's stack: a genuine white card — radius 12, hairline edge,
+          inset on the section's second-surface ground — above the SQUARE
+          full-width band; the trust row repeats the card below it. */}
+      <div className='tc-hero tch-card'>
+        <Image
+          className='tc-hero-mark'
+          data-hero-in
+          src='/brand/no-bg-gt-logo-light.png'
+          alt='General Translation'
+          width={34}
+          height={34}
+        />
+
+        {/* Two authored lines rather than a wrap. "Launch in every / language"
+            hung a nine-character line under a fifteen-character one and left the
+            accent trailing off the end of line one; here the measures are close
+            and the accented word opens line two, on the hinge of the sentence. */}
+        <h1 data-hero-in>
+          <span>Your product speaks</span>
+          <span>
+            every{' '}
+            <em data-every>
+              <span data-every-word>language</span>
+            </em>
+            .
+          </span>
+        </h1>
+
+        <p className='tc-hero-sub' data-hero-in>
+          General Translation builds full-stack infrastructure for localizing apps, docs, and websites.
+        </p>
+
+        <div className='tc-hero-acts' data-hero-in>
+          <a className='tc-btn tc-btn-solid' href='#pricing'>
+            Get started
+          </a>
+          <a className='tc-btn tc-btn-line' href='#frameworks'>
+            Docs
+          </a>
+          <button className='tc-copy' type='button' onClick={copy}>
+            <span>$ npx gt@latest</span>
+            <span>{copied ? 'Copied' : 'Copy'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* The first viewport commits to a material the way the references do:
+          the terminal band is a dark plate washed with the prismatic field —
+          lit at the flanks, dark in the centre column where the transcript
+          sits (the viteplus grammar: a #111 terminal flanked by lit panels).
+          The band itself stays square and full-width; only the window inside
+          it keeps the measured top corners and ring. exposureScale is raised
+          (= dimmer) so the flanks wash rather than saturate. */}
+      <div className='tc-hero-cell tch-band'>
+        <PrismaticField className='tc-hero-field tch-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
+        <div className='tct-win' data-hero-in>
+          <div className='tct-bar'>
+            <span className='tct-title'>gt — translate</span>
+            <div className='tct-seg' role='group' aria-label='Show the run as'>
+              <button type='button' data-on={view === 'term'} onClick={() => pickView('term')}>
+                terminal
+              </button>
+              <button type='button' data-on={view === 'preview'} onClick={() => pickView('preview')}>
+                preview
+              </button>
+            </div>
+          </div>
+
+          <div className='tct-stage'>
+            {/* face 1 — the session */}
+            <div className='tct-face tct-face-term' data-on={view === 'term'} aria-hidden={view !== 'term'}>
+              <div className='tct-body'>
+                <Cmd text='npx gt@latest' mark='tct-cmd1' />
+                <div className='tct-gap' />
+                {WIZARD.map((line) => (
+                  <div className='tct-line' data-tw key={line.key}>
+                    <span className='tct-key'>{`  ${line.key.padEnd(11)}`}</span>
+                    {line.locs ? (
+                      <span className='tct-locset'>
+                        {line.locs.map((loc) => (
+                          <i className='tct-chip' key={loc}>
+                            <LocaleTag code={loc} />
+                          </i>
+                        ))}
+                      </span>
+                    ) : (
+                      line.text
+                    )}
+                  </div>
+                ))}
+                <div className='tct-gap' />
+
+                <Cmd text='npx gt translate' mark='tct-cmd2' />
+                <div className='tct-gap' />
+                <div className='tct-line tct-meta' data-ts>
+                  {'  Scanning src — '}
+                  <b className='tct-strong' data-count-scan>
+                    128
+                  </b>
+                  {' strings found'}
+                </div>
+                <div className='tct-line tct-meta' data-ts>
+                  {'  Translating with project context'}
+                </div>
+                <div className='tct-gap' />
+
+                <div className='tct-table'>
+                  {ROWS.map((row) => (
+                    <div className='tct-row' key={row.src}>
+                      <span className='tct-src' data-tr-src>
+                        {row.src}
+                      </span>
+                      {row.cells.map((cell, c) => {
+                        const only = cell.length === 1 ? cell[0] : undefined;
+                        return only ? (
+                          <span className='tct-cell' key={only.loc}>
+                            <i className='tct-chip'>
+                              <LocaleTag code={only.loc} />
+                            </i>
+                            <b className='tct-tr'>{only.text}</b>
+                          </span>
+                        ) : (
+                          <span className='tct-cell tct-cyc' key={`cyc${c}`}>
+                            {cell.map((v, i) => (
+                              <span data-cyc key={v.loc} style={{ opacity: i === 0 ? 1 : 0 }}>
+                                <i className='tct-chip'>
+                                  <LocaleTag code={v.loc} />
+                                </i>
+                                <b className='tct-tr'>{v.text}</b>
+                              </span>
+                            ))}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+                <div className='tct-gap' />
+
+                <div className='tct-line tct-meta' data-td>
+                  {'  Wrote public/_gt/'}
+                  <span className='tct-glob'>{'{es,fr,ja,de,zh}'}</span>
+                  {'.json'}
+                </div>
+                <div className='tct-line tct-meta' data-td>
+                  {'  '}
+                  <span className='tct-ok'>✓</span>
+                  {' '}
+                  <b className='tct-strong'>640</b>
+                  {' translations · 5 locales · '}
+                  <span className='tct-ok'>
+                    <b data-count-time>12.4</b>s
+                  </span>
+                </div>
+                <div className='tct-gap' />
+                <div className='tct-line' data-td>
+                  <span className='tct-dollar'>$ </span>
+                  <span className='tct-caret' />
+                </div>
+              </div>
+            </div>
+
+            {/* face 2 — the same strings, rendered */}
+            <div className='tct-face tct-face-prev' data-on={view === 'preview'} aria-hidden={view !== 'preview'}>
+              <div className='tct-tabs' role='group' aria-label='Preview locale'>
+                {PREVIEW_LOCS.map((loc) => (
+                  <button type='button' data-on={ploc === loc} key={loc} onClick={() => pickLoc(loc)}>
+                    <LocaleTag code={loc} />
+                  </button>
+                ))}
+              </div>
+
+              {/* The rendered card carries the house slide-to-reveal: the
+                  divider (doubled hairline, each thread in its surface's own
+                  ink) pulls the render back to the hashed-key payload gt
+                  wrote — the same strings, as the artifact that serves them. */}
+              <div className='tct-app' ref={app} style={{ '--tct-cut': '70%' } as CSSProperties}>
+                <div className='tct-app-addr'>
+                  example.com/<b data-swap>{ploc}</b>
+                </div>
+                <div className='tct-app-main'>
+                  <h3 className='tct-app-h' data-swap lang={ploc}>
+                    {PREVIEWS[ploc].title}
+                  </h3>
+                  <p className='tct-app-date' data-swap>
+                    {new Intl.DateTimeFormat(ploc, { dateStyle: 'medium' }).format(PREVIEW_DATE)}
+                  </p>
+                  <p className='tct-app-copy' data-swap lang={ploc}>
+                    {PREVIEWS[ploc].body}
+                  </p>
+                  <span className='tct-app-btn' data-swap lang={ploc}>
+                    {PREVIEWS[ploc].button}
+                  </span>
+                  <div className='tct-app-toast' data-swap lang={ploc}>
+                    <i>✓</i>
+                    {PREVIEWS[ploc].toast}
+                  </div>
+                </div>
+
+                <div className='tct-payload' data-swap aria-hidden>
+                  <div className='tct-payload-file'>public/_gt/{ploc}.json</div>
+                  <PayloadJson loc={ploc} />
+                </div>
+
+                <span
+                  className='tct-cutline'
+                  role='slider'
+                  aria-label='Reveal the served translation file'
+                  aria-orientation='vertical'
+                  aria-valuemin={16}
+                  aria-valuemax={88}
+                  aria-valuenow={70}
+                  tabIndex={0}
+                  onPointerDown={cutDown}
+                  onPointerMove={cutMove}
+                  onPointerUp={cutUp}
+                  onPointerCancel={cutUp}
+                  onKeyDown={cutKey}
+                />
+              </div>
+
+              <p className='tct-prev-note'>
+                served from <b>public/_gt/{ploc}.json</b> — drag the seam
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className='tc-trust tch-trustcard'>
+        <p className='tc-trust-lead'>Trusted by the world&rsquo;s best companies</p>
+        <div className='tc-trust-row'>
+          {CUSTOMERS.map((customer) => (
+            <span className='tc-trust-cell' key={customer.name}>
+              <b className={`tc-wm ${customer.mark}`}>{customer.name}</b>
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
