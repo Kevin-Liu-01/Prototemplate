@@ -154,23 +154,34 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   padding: 26px 0;
 }
 
-/* Scrim so the rail never fights the content behind it. */
+/* Scrim so the rail never fights the content behind it: a restrained,
+   eased fade with no visible edge, deepening slightly while in use. */
 .pr-hud-rail::before {
   content: '';
   position: absolute;
-  top: -30px;
-  bottom: -30px;
+  top: -44px;
+  bottom: -44px;
   left: -24px;
-  right: -76px;
+  right: -96px;
   z-index: -1;
   background: linear-gradient(
     to right,
-    rgba(7, 7, 7, 0.94) 0%,
-    rgba(7, 7, 7, 0.82) 52%,
-    rgba(7, 7, 7, 0.45) 78%,
+    rgba(7, 7, 7, 0.82) 0%,
+    rgba(7, 7, 7, 0.74) 26%,
+    rgba(7, 7, 7, 0.58) 46%,
+    rgba(7, 7, 7, 0.38) 63%,
+    rgba(7, 7, 7, 0.2) 77%,
+    rgba(7, 7, 7, 0.08) 89%,
+    rgba(7, 7, 7, 0.02) 96%,
     transparent 100%
   );
+  opacity: 0.8;
+  transition: opacity 0.35s ease;
   pointer-events: none;
+}
+
+.pr-hud-rail:hover::before {
+  opacity: 1;
 }
 
 .pr-hud-rail button {
@@ -227,6 +238,22 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-hud-subs button:hover em {
   color: rgba(255, 255, 255, 0.9);
+}
+
+/* The beat the playhead is currently on. */
+.pr-hud-subs button.is-here i {
+  width: 16px;
+  background: #fff;
+}
+
+.pr-hud-subs button.is-here em {
+  color: #fff;
+}
+
+.pr-hud-subs button i {
+  transition:
+    background 0.25s,
+    width 0.25s;
 }
 
 /* Slide markers are short lines; the active slide's line grows. */

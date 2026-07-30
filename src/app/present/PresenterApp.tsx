@@ -86,6 +86,7 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
 export default function PresenterApp() {
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [activeSub, setActiveSub] = useState(-1);
   const [navHidden, setNavHidden] = useState(false);
   const goToRef = useRef<(slide: number, atOverride?: number) => void>(
     () => {}
@@ -123,6 +124,32 @@ export default function PresenterApp() {
       const navTriggers = sections.map((section) =>
         ScrollTrigger.create({ trigger: section, start: 'top top' })
       );
+
+      // Track which beat within the active slide the playhead is on, so the
+      // rail can mark the exact subsection.
+      const subState = { current: -1 };
+      ScrollTrigger.create({
+        trigger: root.current,
+        start: 0,
+        end: 'max',
+        onUpdate: () => {
+          const slide = activeRef.current;
+          const subs = SLIDES[slide]?.subs;
+          const base = navTriggers[slide]?.start ?? 0;
+          let next = -1;
+          if (subs) {
+            const offset = (window.scrollY - base) / window.innerHeight;
+            for (let i = 0; i < subs.length; i++) {
+              if (offset >= subs[i]!.at - 0.25) next = i;
+            }
+            if (next === -1) next = 0;
+          }
+          if (next !== subState.current) {
+            subState.current = next;
+            setActiveSub(next);
+          }
+        },
+      });
 
       const goTo = (slide: number, atOverride?: number) => {
         const clamped = Math.max(0, Math.min(sections.length - 1, slide));
@@ -193,10 +220,13 @@ export default function PresenterApp() {
                 </button>
                 {slide.subs && (
                   <div className='pr-hud-subs'>
-                    {slide.subs.map((sub) => (
+                    {slide.subs.map((sub, j) => (
                       <button
                         key={sub.label}
                         type='button'
+                        className={
+                          i === active && j === activeSub ? 'is-here' : ''
+                        }
                         onClick={() => goToRef.current(i, sub.at)}
                       >
                         <i />
