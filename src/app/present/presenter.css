@@ -341,21 +341,6 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   transform: translateY(0.07em);
 }
 
-/* Diagonal glass streak. */
-.pr-title-logo-box::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    115deg,
-    transparent 28%,
-    rgba(255, 255, 255, 0.17) 44%,
-    rgba(255, 255, 255, 0.05) 52%,
-    transparent 64%
-  );
-  pointer-events: none;
-}
-
 .pr-logo-field {
   position: absolute;
   inset: 0;
