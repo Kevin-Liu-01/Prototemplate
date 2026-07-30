@@ -1,5 +1,6 @@
 'use client';
 
+import { SpellCheck } from 'lucide-react';
 import { useRef } from 'react';
 
 import PluralForms from '../diagrams/lang/PluralForms';
@@ -36,6 +37,7 @@ export default function Grammar() {
   return (
     <section className='tc-sec' id='grammar' ref={root}>
       <div className='tc-head'>
+        <SpellCheck className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Grammar the string table can&rsquo;t see.</h2>
         <p data-reveal>
           English has two plural forms, Polish four, Japanese one — and Arabic reads the other way.

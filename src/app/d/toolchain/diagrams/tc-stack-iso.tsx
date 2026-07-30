@@ -44,19 +44,21 @@ export type StackLayer = {
   /** Stable id, shared with the caption rows in DarkBand. */
   id: string;
   name: string;
+  /** The caption row's display name — regular sans, proper capitalization. */
+  label: string;
   /** The live value the caption row prints — real product output. */
   value: string;
 };
 
 /** Bottom plane first — the string starts in the codebase. */
 export const STACK_LAYERS: readonly StackLayer[] = [
-  { id: 'app-code', name: 'app code', value: '<T>Hello, world!</T>' },
-  { id: 'gt-cli', name: 'gt cli', value: 'gt translate · 128 strings' },
-  { id: 'locadex', name: 'locadex', value: 'PR #218 · +38 −6' },
-  { id: 'context', name: 'context', value: 'glossary 24 · directives 6' },
-  { id: 'review', name: 'review', value: '2 approved · 0 waiting' },
-  { id: 'edge-cdn', name: 'edge cdn', value: 'fra · 12 ms · v214 live' },
-  { id: 'runtime', name: 'runtime', value: 'Hallo, Welt! · de' },
+  { id: 'app-code', name: 'app code', label: 'App code', value: '<T>Hello, world!</T>' },
+  { id: 'gt-cli', name: 'gt cli', label: 'GT CLI', value: 'gt translate · 128 strings' },
+  { id: 'locadex', name: 'locadex', label: 'Locadex', value: 'PR #218 · +38 −6' },
+  { id: 'context', name: 'context', label: 'Context', value: 'glossary 24 · directives 6' },
+  { id: 'review', name: 'review', label: 'Review', value: '2 approved · 0 waiting' },
+  { id: 'edge-cdn', name: 'edge cdn', label: 'Edge CDN', value: 'fra · 12 ms · v214 live' },
+  { id: 'runtime', name: 'runtime', label: 'Runtime', value: 'Hallo, Welt! · de' },
 ];
 
 /** Depth cue, spent on paint: 0 at the bottom plane, 1 at the runtime plane. */

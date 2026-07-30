@@ -310,40 +310,6 @@
   color: var(--tc-ink-3);
 }
 
-/* The page's own dark stats band — real landing-page furniture, so the mock
-   interior carries a toned surface at every beat and the numbers give GT three
-   more nodes to read. Values stay values; only the labels translate. */
-.prismlight-root .tcs-page-stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
-  padding: 13px 14px 14px;
-  border-radius: 4px;
-  background: var(--tc-panel);
-}
-
-.prismlight-root .tcs-page-stats b {
-  display: block;
-  font-family: var(--tc-mono);
-  font-weight: 500;
-  font-size: 15px;
-  letter-spacing: -0.01em;
-  color: #ffffff;
-}
-
-.prismlight-root .tcs-page-stats span {
-  display: block;
-  margin-top: 4px;
-  font-size: 11px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.prismlight-root .tcs-page-stats .tcs-node[data-on='true'] {
-  text-decoration-color: rgba(255, 255, 255, 0.5);
-}
-
 .prismlight-root .tcs-page-legal {
   margin-top: 15px;
   padding-top: 11px;
@@ -556,22 +522,24 @@
 
 /* The two diff hues, gutters only (the REDLINE grammar): the sign column says
    added/removed in the reader's own vocabulary; the line itself stays in the
-   panel's tones. */
+   panel's tones. The hues are the page-wide diff tokens (--tc-diff-add /
+   --tc-diff-del, declared in sections/logos-icons.css) so every diff artifact
+   on the page reads with one vocabulary. */
 .prismlight-root .tcs-code-line[data-mark='add'] {
-  background: rgba(125, 216, 158, 0.09);
+  background: color-mix(in srgb, var(--tc-diff-add) 9%, transparent);
 }
 
 .prismlight-root .tcs-code-line[data-mark='add'] .tcs-code-s {
-  color: #7dd89e;
+  color: var(--tc-diff-add);
   font-weight: 500;
 }
 
 .prismlight-root .tcs-code-line[data-mark='del'] {
-  background: rgba(235, 130, 125, 0.08);
+  background: color-mix(in srgb, var(--tc-diff-del) 8%, transparent);
 }
 
 .prismlight-root .tcs-code-line[data-mark='del'] .tcs-code-s {
-  color: #eb827d;
+  color: var(--tc-diff-del);
   font-weight: 500;
 }
 

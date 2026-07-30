@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
+import ThemeToggle from '@/components/shared/ThemeToggle';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
@@ -33,13 +35,12 @@ export default function TopNav() {
   return (
     <header className='tc-nav hg-nav' data-lit={lit ? '' : undefined} data-tc-nav ref={root}>
       <div className='tc-nav-in'>
+        {/* Both marks ship; CSS picks one. Theme chooses on the lit (shell)
+            bar, and the unlit dark-frame state forces the white mark in both
+            themes — the hero plate never remaps. */}
         <a className='tc-nav-brand' href='#top'>
-          <Image
-            src={lit ? '/brand/no-bg-gt-logo-light.png' : '/brand/no-bg-gt-logo-dark.png'}
-            alt=''
-            width={22}
-            height={22}
-          />
+          <Image className='tc-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={22} height={22} />
+          <Image className='tc-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={22} height={22} />
           General Translation
         </a>
 
@@ -51,6 +52,7 @@ export default function TopNav() {
         </nav>
 
         <div className='tc-nav-right'>
+          <ThemeToggle className='tc-nav-theme' />
           <a href='#pricing'>Sign in</a>
           <a className='tc-btn tc-btn-solid tc-btn-sm' href='#pricing'>
             Get a demo

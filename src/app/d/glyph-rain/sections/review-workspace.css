@@ -1,0 +1,301 @@
+/* ============================================================
+   REVIEW WORKSPACE — toolchain-local editor (Act IV)
+   A fork of the shared EditorWorkspace, cut down to four strong
+   rows and rebuilt on this page's own grammar: the mount (mat +
+   2px reveal), hairline rows, mono artifact strings, state as
+   type — chips and case, never colour. The animation types one
+   row at a time; every other row sits complete, so any freeze
+   frame reads as a finished editor still.
+   ============================================================ */
+
+.glyphrain-root .tcr {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(56px, 6vw, 76px);
+}
+
+.glyphrain-root .tcr-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.45fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* ---------- copy column: the page's own head rhythm ---------- */
+
+.glyphrain-root .tcr-copy h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.glyphrain-root .tcr-sub {
+  margin-top: 13px;
+  max-width: 40ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.glyphrain-root .tcr-notes {
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.glyphrain-root .tcr-notes li {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.glyphrain-root .tcr-notes li::before {
+  content: '—';
+  flex: none;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- the workspace, mounted ----------
+   Same mat and reveal as every other mounted surface on the page:
+   1px edge, 5px radius, 2px of mat showing around a 3px card. */
+
+.glyphrain-root .tcr-mat {
+  padding: 2px;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-hair);
+}
+
+.glyphrain-root .tcr-ws {
+  border-radius: 3px;
+  background: var(--tc-card);
+  overflow: hidden;
+}
+
+/* workspace chrome: WORKSPACE · ES-419, string count on the right */
+.glyphrain-root .tcr-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 42px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.glyphrain-root .tcr-bar > span:last-child {
+  letter-spacing: 0.08em;
+  color: var(--tc-ink-4);
+}
+
+/* One grid, two cells per string: each source shares its grid row (and so
+   its height) with its translation, so every row hairline runs straight
+   across the plate. The translation column runs a little wider — Spanish
+   does too, and the stamp lives there. */
+.glyphrain-root .tcr-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);
+}
+
+.glyphrain-root .tcr-lab {
+  padding: 13px 18px 11px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.glyphrain-root .tcr-cell {
+  padding: 14px 18px 15px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* the last row's hairline would stack on the footer's top rule */
+.glyphrain-root .tcr-cols > .tcr-cell:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.glyphrain-root .tcr-cell.is-s {
+  color: var(--tc-ink-2);
+}
+
+.glyphrain-root .tcr-cell.is-t,
+.glyphrain-root .tcr-lab.is-t {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+.glyphrain-root .tcr-cell.is-t {
+  display: flex;
+  flex-direction: column;
+  color: var(--tc-ink);
+}
+
+/* the revised row's current line reads a step firmer, as the shared editor's did */
+.glyphrain-root .tcr-cell[data-state='revised'] .tcr-text {
+  font-weight: 500;
+}
+
+/* ---------- the typed text ----------
+   The ghost holds the finished string's box; the live copy paints over it
+   and is the only thing the animation mutates. Same font, same width, so
+   the typed text wraps exactly where the finished text will — no row ever
+   changes height while it is being written. */
+
+.glyphrain-root .tcr-text {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.glyphrain-root .tcr-ghost {
+  visibility: hidden;
+}
+
+.glyphrain-root .tcr-live {
+  position: absolute;
+  inset: 0;
+}
+
+/* the monospace block caret; GSAP owns its visibility */
+.glyphrain-root .tcr-caret {
+  display: inline-block;
+  width: 6px;
+  height: 0.95em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: var(--tc-ink);
+  opacity: 0;
+}
+
+/* ---------- the regeneration row (the star) ----------
+   The replaced line stays above the current one, struck through. The
+   strike is a drawn line rather than a text-decoration so the loop can
+   draw it in; at rest it sits at full width. One line, ellipsized — the
+   editor clips the old value, it does not reflow for it. */
+
+.glyphrain-root .tcr-prev {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 3px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-4);
+}
+
+.glyphrain-root .tcr-strike {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + 1px);
+  height: 1px;
+  background: var(--tc-ink-3);
+  transform-origin: left center;
+}
+
+/* ---------- the stamp ----------
+   State is carried by type alone: `translated` and the quiet `edit`
+   affordance are hairline chips; `approved` retires the chip and settles
+   into letterspaced caps. It sits under the string on its own line so a
+   swap never rewraps the text above it. */
+
+.glyphrain-root .tcr-stamp {
+  align-self: flex-end;
+  margin-top: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.glyphrain-root .tcr-stamp[data-kind='chip'] {
+  padding: 4px 8px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  color: var(--tc-ink-3);
+}
+
+.glyphrain-root .tcr-stamp[data-kind='ok'] {
+  padding: 5px 0 4px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+/* status strip: real editor affordances, no state claims */
+.glyphrain-root .tcr-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  padding: 11px 18px 12px;
+  border-top: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--tc-ink-4);
+}
+
+.glyphrain-root .tcr-foot .is-right {
+  margin-left: auto;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 980px) {
+  .glyphrain-root .tcr-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 34px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* one column: each source sits directly above its translation as a pair */
+  .glyphrain-root .tcr-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .glyphrain-root .tcr-lab {
+    display: none;
+  }
+
+  .glyphrain-root .tcr-cell.is-t {
+    border-left: 0;
+  }
+
+  .glyphrain-root .tcr-cell.is-s {
+    border-bottom: 0;
+    padding-bottom: 0;
+    font-size: 11.5px;
+    color: var(--tc-ink-3);
+  }
+}
+
+/* ---------- reduced motion: the finished still ----------
+   The DOM's resting state is the fully populated table, so nothing needs
+   replacing — only the carets are retired outright. */
+
+@media (prefers-reduced-motion: reduce) {
+  .glyphrain-root .tcr-caret {
+    display: none;
+  }
+}

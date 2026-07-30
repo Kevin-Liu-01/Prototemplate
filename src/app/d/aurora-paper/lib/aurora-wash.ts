@@ -57,8 +57,10 @@ export type AuroraHandle = {
   destroy: () => void;
 };
 
+export type AuroraPresetName = 'paper' | 'ink' | 'paper-dark';
+
 export type AuroraOptions = {
-  preset?: 'paper' | 'ink';
+  preset?: AuroraPresetName;
   dpr?: number;
   speed?: number;
   params?: Partial<AuroraParams>;
@@ -79,7 +81,13 @@ export type AuroraOptions = {
    (envelope 0.30) descending from the top-left corner toward the upper
    right, so the headline and terminal align to a lit horizon and the body
    of the band stays true dark. */
-export const AURORA_PRESETS: Record<'paper' | 'ink', AuroraParams> = {
+/* 'paper-dark' is the paper wash under [data-theme='dark']: the same field on
+   the page's ink-black paper (#0a0b0f), read as a northern sky — the tints go
+   to true aurora hues (steel blue / violet / green), the wash holds its
+   strength instead of dimming (don't neuter it — retune it), and the grain
+   runs a step coarser so the night surface keeps its tooth. The keep-zone is
+   opened up: the dark hero band is all sky, no quiet corner. */
+export const AURORA_PRESETS: Record<AuroraPresetName, AuroraParams> = {
   paper: {
     base: [0.984, 0.984, 0.98],
     tintA: [0.596, 0.718, 0.918], // steel blue
@@ -110,6 +118,23 @@ export const AURORA_PRESETS: Record<'paper' | 'ink', AuroraParams> = {
     axisSlope: -0.1,
     axisLift: 0.92,
     envelope: 0.3,
+    quiet: 1.0,
+    quietLo: 0.0,
+    quietHi: 1.0,
+  },
+  'paper-dark': {
+    base: [0.039, 0.043, 0.059], // the dark theme's paper, #0a0b0f
+    tintA: [0.34, 0.52, 0.8], // steel blue, lifted for night
+    tintB: [0.44, 0.34, 0.66], // violet
+    tintC: [0.22, 0.56, 0.46], // aurora green
+    wash: 1.3,
+    grain: 0.028,
+    scale: 1.9,
+    drift: 0.05,
+    breathe: 0.18,
+    axisSlope: -0.3,
+    axisLift: 0.78,
+    envelope: 1.1,
     quiet: 1.0,
     quietLo: 0.0,
     quietHi: 1.0,
@@ -345,11 +370,11 @@ function getEngine(): Engine | null {
   const timeLoc = ctx.getUniformLocation(program, 'uTime');
   const scalarLocs = new Map<ScalarKey, WebGLUniformLocation | null>();
   SCALAR_KEYS.forEach((key) => {
-    scalarLocs.set(key, ctx.getUniformLocation(program, `u${key[0].toUpperCase()}${key.slice(1)}`));
+    scalarLocs.set(key, ctx.getUniformLocation(program, `u${key.charAt(0).toUpperCase()}${key.slice(1)}`));
   });
   const vec3Locs = new Map<Vec3Key, WebGLUniformLocation | null>();
   VEC3_KEYS.forEach((key) => {
-    vec3Locs.set(key, ctx.getUniformLocation(program, `u${key[0].toUpperCase()}${key.slice(1)}`));
+    vec3Locs.set(key, ctx.getUniformLocation(program, `u${key.charAt(0).toUpperCase()}${key.slice(1)}`));
   });
 
   // Contexts are lost on GPU resets and tab recovery; rebuild on next frame.

@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+
 import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from './lang';
 import './lang.css';
 
@@ -115,14 +117,18 @@ export default function WordMorph({ className, accent = true, title }: LangProps
   return (
     <div className={langClass('lang-wm', accent, className)} ref={root} {...langA11y(title)}>
       <p className='lang-wm-source'>
-        <span className='lang-tag'>en</span>
+        <span className='lang-tag'>
+          <LocaleTag code='en' />
+        </span>
         <span className='lang-wm-source-text'>{SOURCE}</span>
       </p>
 
       <ul className='lang-wm-rows'>
         {WORDS.map((word) => (
           <li className='lang-wm-row' data-wm-row='' key={word.tag}>
-            <span className='lang-tag'>{word.tag}</span>
+            <span className='lang-tag'>
+              <LocaleTag code={word.tag} />
+            </span>
             <span className='lang-wm-word' data-wm-word='' lang={word.lang}>
               {Array.from(word.text, (char, i) => (
                 <span className='lang-wm-char' data-wm-char='' key={`${word.tag}-${i}`}>

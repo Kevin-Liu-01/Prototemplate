@@ -44,10 +44,10 @@
      border and the box-inside-a-box, which is this direction's whole signature
      detail, never announces itself. This is ~11% off both the page and the card,
      with its own edge a shade darker than the page's hairline. */
-  --tc-mat: #232327;
-  --tc-mat-edge: #232327;
+  --tc-mat: var(--tc-hair);
+  --tc-mat-edge: var(--tc-hair);
   --tc-card: #ffffff;
-  --tc-mat-inset: clamp(10px, 1.2vw, 14px);
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
   --tc-card-pad: clamp(17px, 1.9vw, 21px);
   --tc-hatch: rgba(15, 17, 19, 0.085);
 
@@ -605,7 +605,7 @@
    name over a real output in mono — nine artifacts, not nine words. */
 .glyphrain-root .tc-caps {
   flex: 1;
-  margin-top: 20px;
+  margin-top: 12px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: minmax(52px, 1fr);
@@ -672,7 +672,7 @@
 }
 
 .glyphrain-root .tc-fw-link {
-  margin-top: 20px;
+  margin-top: 12px;
   font-size: 13px;
   color: var(--tc-ink-2);
   border-bottom: 1px solid var(--tc-hair);
@@ -956,11 +956,18 @@
    also why the vertical rule is dropped wherever a mat provides the edge. */
 
 .glyphrain-root .tc-cell.is-framed {
-  margin: var(--tc-mat-inset);
+  margin: 0;
   padding: 0;
-  border: 1px solid var(--tc-mat-edge);
-  border-radius: 5px;
-  background: var(--tc-mat);
+  border: 0;
+  background: var(--tc-hair);
+  display: flex;
+}
+
+/* The ground behind the white cards is the shell line colour, so a row of
+   framed cells reads as white cards on the shell's own grey — the bento
+   corner effect: the grey fills the radius-12 notches. */
+.glyphrain-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-hair);
 }
 
 .glyphrain-root .tc-cell.is-framed > .tc-card {
@@ -969,7 +976,8 @@
   display: flex;
   flex-direction: column;
   padding: var(--tc-card-pad);
-  border-radius: 2px;
+  border: 0;
+  border-radius: 12px;
   background: var(--tc-card);
 }
 
@@ -1035,15 +1043,10 @@
   justify-content: center;
 }
 
-/* A surface zone that holds light objects (the routing bars) gets the same
-   plate the language diagrams sit on: white chips on the second surface, the
-   viteplus grammar, instead of white bars lost on a white card. */
+/* A surface zone that holds light objects (the routing bars) sits on the
+   card's own paper now — the plates died with the corner grammar. */
 .glyphrain-root .tc-surface.is-plated {
-  margin-top: 20px;
-  padding: clamp(16px, 2vw, 22px) clamp(14px, 1.8vw, 20px);
-  border: 1px solid var(--tc-hair);
-  border-radius: 4px;
-  background: var(--tc-plate);
+  margin-top: 12px;
 }
 
 /* ---------- the ruled band ----------
@@ -1236,7 +1239,7 @@
 }
 
 .glyphrain-root .tc-cell-act {
-  margin-top: 24px;
+  margin-top: 12px;
 }
 
 /* stat cell — a ruled ledger on the second surface. The isometric glyphs that
@@ -1246,13 +1249,10 @@
    spread over whatever height the script field beside them settles on. */
 .glyphrain-root .tc-stats {
   flex: 1;
-  margin-top: 24px;
-  padding: 6px clamp(14px, 1.8vw, 20px) clamp(16px, 2vw, 22px);
+  margin-top: 12px;
+  padding: 0;
   display: grid;
   align-content: space-between;
-  border: 1px solid var(--tc-hair);
-  border-radius: 4px;
-  background: var(--tc-plate);
 }
 
 .glyphrain-root .tc-stat {
@@ -1288,7 +1288,7 @@
 
 /* inset panel cell — the frame now does what the sunk surface used to */
 .glyphrain-root .tc-cell.is-panel .tc-code {
-  margin-top: 22px;
+  margin-top: 12px;
 }
 
 /* ---------- the animated language diagrams ----------
@@ -1304,25 +1304,23 @@
 
 .glyphrain-root .tc-lang {
   flex: 1;
-  margin-top: 22px;
-  padding: clamp(18px, 2.2vw, 26px) clamp(14px, 1.8vw, 22px);
+  margin-top: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--tc-hair);
-  border-radius: 4px;
-  background: var(--tc-plate);
 
-  --lang-ground: var(--tc-plate);
+  --lang-ground: var(--tc-white);
 }
 
 /* The night plate — a language diagram on the page's dark panel. The whole
    lang family derives every stroke, chip and label from currentColor, so one
    color swap re-skins the diagram; only the mock cards need their own tint
    and ring (the measured viteplus ring on dark plates). This is the inset
-   panel that gives the grammar cells their surface mass. */
+   panel that gives the grammar cells their surface mass. The base zone lost
+   its plate box, so the night variant carries its own inset and radius. */
 .glyphrain-root .tc-lang.is-night {
-  border-color: transparent;
+  padding: clamp(18px, 2.2vw, 26px) clamp(14px, 1.8vw, 22px);
+  border-radius: 4px;
   background: var(--tc-panel);
   color: var(--tc-panel-ink);
 
@@ -2201,25 +2199,33 @@
 
 
 /* ---- dark mode ----
-   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
-   panel #14121A). Everything downstream re-skins from these. */
+   Token remap only: one surface family in the dark, the way light mode is
+   one white — every card, plate and sunk surface lands on the same ink
+   black, in the dark band's own family, so the page never shifts grey
+   between sections. Everything downstream re-skins from these. */
 [data-theme='dark'] .glyphrain-root {
-  --tc-paper: #16171d;
-  --tc-sunk: #16171d;
-  --tc-white: #1e1f26;
-  --tc-card: #1e1f26;
+  --tc-paper: #0a0b0f;
+  --tc-sunk: #0d0e12;
+  --tc-white: #0d0e12;
+  --tc-card: #0d0e12;
   --tc-ink: #ffffff;
   --tc-ink-2: rgba(255, 255, 255, 0.66);
   --tc-ink-3: rgba(255, 255, 255, 0.48);
   --tc-ink-4: rgba(255, 255, 255, 0.3);
   --tc-hair: #3b3440;
   --tc-hair-2: #2b2731;
-  --tc-plate: #1e1f26;
+  --tc-plate: #0d0e12;
   --tc-hatch: rgba(255, 255, 255, 0.07);
 }
 
 [data-theme='dark'] .glyphrain-root .tc-btn-solid {
   background: #ffffff;
+  color: #16171d;
+}
+
+/* Dark theme: the window buttons fill with --tc-ink, which remaps to white,
+   but their label was hard-coded light — white on white. */
+[data-theme='dark'] .glyphrain-root .tcx-btn {
   color: #16171d;
 }
 
@@ -2265,4 +2271,169 @@
   border-inline: 1px solid var(--tc-hair);
   pointer-events: none;
   z-index: 2;
+}
+
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of ground; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.glyphrain-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.glyphrain-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+
+/* -- the <T> wrap thread --------------------------------------
+   The brand's two lines (constant gauge, never merging) run the
+   sample's own left margin from <T> to </T>, feet turned toward
+   the code they bind. Panel-dim white, so the pair reads in light
+   and dark theme alike — the panel itself never remaps. */
+.glyphrain-root .tc-code-wrap {
+  position: relative;
+}
+
+.glyphrain-root .tc-code-wrap::before,
+.glyphrain-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.glyphrain-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.glyphrain-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .glyphrain-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .glyphrain-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+
+/* ---- founder picks: head icons, hatch paint order, quad rules ---- */
+
+/* Huge quiet section icons, bleeding off the right edge. */
+.glyphrain-root .tc-head {
+  position: relative;
+  overflow: hidden;
+}
+
+.glyphrain-root .tc-head-icon {
+  position: absolute;
+  right: -48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 240px;
+  height: 240px;
+  color: var(--tc-ink);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+/* Hatch spacers: reveal tweens leave transforms on the framed cards above,
+   whose stacking contexts otherwise paint over the hatch's top rule. */
+.glyphrain-root .tc-hatch {
+  position: relative;
+  z-index: 2;
+}
+
+/* Founder: the quad's column rules touch the card's top and bottom edges.
+   The card's padding is a single token, so the rules extend by exactly it. */
+.glyphrain-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.glyphrain-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Nav theme switch, left of Sign in: token ink, quiet until hover. */
+.glyphrain-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.glyphrain-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand mark carries both variants; the theme picks one. */
+.glyphrain-root .tc-logo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .glyphrain-root .tc-logo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .glyphrain-root .tc-logo-light {
+  display: none;
+}
+
+/* The footer's Locadex mark is a drawn dark glyph, not currentColor ink —
+   dark mode flips it the way the story chip does. */
+[data-theme='dark'] .glyphrain-root .tc-foot-mark.is-locadex {
+  filter: invert(1);
+}
+
+/* The doubled rail continues through the full-bleed dark band: the band sits
+   outside the .tc-rail wrappers, so it draws the same column's line pairs
+   itself — inner pair at the column edges, outer pair at the ±10px gauge —
+   in the band's own rule ink (the band is dark in both themes). */
+.glyphrain-root .tc-band {
+  position: relative;
+}
+
+.glyphrain-root .tc-band::before,
+.glyphrain-root .tc-band::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: min(var(--tc-rail), 100%);
+  transform: translateX(-50%);
+  border-inline: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.glyphrain-root .tc-band::after {
+  width: calc(min(var(--tc-rail), 100%) + 20px);
 }

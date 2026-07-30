@@ -1,0 +1,261 @@
+/* ============================================================
+   BENTO — FOUNDER PICKS, ROUND 1
+   Two additions, both scoped to sections/Bento.tsx:
+
+   1 · MOTION STATES for the four-across artifacts (Previews /
+       Live Translation / Customization / Glossaries). The loops
+       themselves are GSAP timelines in Bento.tsx; this file only
+       carries the states those timelines flip — a typing caret,
+       the stepping cursor inside the detection hook, a
+       strikethrough that can draw itself. Every state is also a
+       legible still, and under prefers-reduced-motion no timeline
+       ever starts: the server markup is the final frame, plus the
+       one resolved state markup alone cannot carry (the hook's
+       fallback lighting up), set statically below.
+
+   2 · THE GROUNDWORK NETWORK. The "parts nobody demos" list as
+       six bordered nodes in the bento grammar — 1px hair border,
+       card face, the ground filling the corner notches — joined
+       to a doubled-gauge trunk by single hairline rungs. The
+       trunk is structure, so it runs at hairline weight (the
+       rail's doubled-line motif, not the ink thread's).
+   ============================================================ */
+
+/* ---- 1a · the typing caret ----
+   One block caret for both typed surfaces: the es heading (ink on
+   the dev window) and the pt-BR response (white on the request
+   panel). currentColor keeps it honest on either surface. */
+.aurorapaper-root .tc-quad [data-tcm-typing='1']::after {
+  content: '';
+  display: inline-block;
+  width: 0.45em;
+  height: 0.95em;
+  margin-left: 2px;
+  vertical-align: -0.1em;
+  background: currentColor;
+  animation: tcm-caret 0.9s steps(2, jump-none) infinite;
+}
+
+@keyframes tcm-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurorapaper-root .tc-quad [data-tcm-typing='1']::after {
+    animation: none;
+  }
+}
+
+/* ---- 1b · the detection hook's stepping cursor ----
+   The timeline walks cookie → header → fallback by flipping data
+   attributes; the CSS renders each stop as a quiet row highlight
+   with a block cursor at the end of the line — a cursor reading
+   the function, not a colored pill. A line already checked dims;
+   the resolved value brightens to full white on its own pad. */
+.aurorapaper-root .tc-quad .tcx-slab > div {
+  transition:
+    background-color 0.28s ease,
+    opacity 0.28s ease;
+}
+
+.aurorapaper-root .tc-quad .tcx-slab > div[data-tcm-live='1'] {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.aurorapaper-root .tc-quad .tcx-slab > div[data-tcm-live='1']::after {
+  content: '';
+  display: inline-block;
+  width: 0.45em;
+  height: 0.95em;
+  margin-left: 3px;
+  vertical-align: -0.1em;
+  background: rgba(255, 255, 255, 0.8);
+  animation: tcm-caret 0.9s steps(2, jump-none) infinite;
+}
+
+.aurorapaper-root .tc-quad .tcx-slab > div[data-tcm-done='1'] {
+  opacity: 0.42;
+}
+
+/* the resolved value: full white on its own small pad, zero layout
+   shift (the pad is padding pulled back out by margin) */
+.aurorapaper-root .tc-quad .tcx-slab .tc-t-str {
+  transition:
+    color 0.28s ease,
+    background-color 0.28s ease;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin: -1px -3px;
+}
+
+.aurorapaper-root .tc-quad .tcx-slab > div[data-tcm-hit='1'] .tc-t-str {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* reduced motion: the loop never runs, so the canonical still is
+   the resolved state — the fallback line lit, 'en' at full white.
+   (The hook panel never remaps between themes, so neither do these.) */
+@media (prefers-reduced-motion: reduce) {
+  .aurorapaper-root .tc-quad .tcx-slab > div:nth-child(4) {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .aurorapaper-root .tc-quad .tcx-slab > div:nth-child(4) .tc-t-str {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.16);
+  }
+}
+
+/* ---- 1c · the drawable strikethrough ----
+   The glossary's rejected words keep their strike, but as a
+   background line whose width the timeline can draw from 0 to
+   100%. Default is 100%, so the server markup, reduced motion
+   and any stray frame all show the finished correction. */
+.aurorapaper-root .tc-quad .tcx-rows s {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 56%;
+  background-size: var(--tcm-strike, 100%) 1px;
+}
+
+/* ============================================================
+   2 · THE GROUNDWORK NETWORK
+   ============================================================ */
+
+.aurorapaper-root .tcm-ground {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.aurorapaper-root .tcm-ground > div > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+/* two columns of nodes with the trunk running the center gap */
+.aurorapaper-root .tcm-net {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 48px;
+  row-gap: 18px;
+}
+
+/* the trunk: two 1px lines at constant gauge, cropped by the group —
+   the same doubled-hairline device as the page rail's outer pair */
+.aurorapaper-root .tcm-net::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 2.5px);
+  width: 5px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Founder pick: on the side-by-side layout the trunk runs the FULL height
+   of its containing cell, top edge to bottom edge. The net's box sits at
+   the cell's content edges there, so the overshoot is exactly the cell's
+   own vertical padding (mirrors .tc-cell in styles.css — keep in step). */
+@media (min-width: 1001px) {
+  .aurorapaper-root .tcm-net::before {
+    top: calc(-1 * clamp(26px, 3vw, 36px));
+    bottom: calc(-1 * clamp(30px, 3.4vw, 40px));
+  }
+}
+
+/* each node is the bento grammar at list scale: hair border, card
+   face, the ground filling the corner notches */
+.aurorapaper-root .tcm-node {
+  position: relative;
+  display: flex;
+  border: 1px solid var(--tc-hair);
+  background: var(--tc-hair);
+}
+
+.aurorapaper-root .tcm-node-in {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px 12px;
+  border-radius: 6px;
+  background: var(--tc-card);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* functional identification only: hairline-weight glyph, muted ink */
+.aurorapaper-root .tcm-node-ico {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  color: var(--tc-ink-3);
+}
+
+/* the rung: one hairline from the node's edge to the trunk's near
+   line, at the icon's own height so every junction lands on the
+   same drafting line. Rung meets trunk at a right angle — the
+   corner is the junction. */
+.aurorapaper-root .tcm-node::after {
+  content: '';
+  position: absolute;
+  top: 21px;
+  height: 1px;
+  width: 22.5px;
+  background: var(--tc-hair);
+  pointer-events: none;
+}
+
+.aurorapaper-root .tcm-net > .tcm-node:nth-child(odd)::after {
+  right: -23.5px;
+}
+
+.aurorapaper-root .tcm-net > .tcm-node:nth-child(even)::after {
+  left: -23.5px;
+}
+
+/* the section folds to one column with the rest of the page */
+@media (max-width: 1000px) {
+  .aurorapaper-root .tcm-ground {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* narrow: one column of nodes, the trunk moves to the left edge and
+   every rung reaches it from the node's left side */
+@media (max-width: 620px) {
+  .aurorapaper-root .tcm-net {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 14px;
+    padding-left: 26px;
+  }
+
+  .aurorapaper-root .tcm-net::before {
+    left: 0;
+  }
+
+  .aurorapaper-root .tcm-node::after,
+  .aurorapaper-root .tcm-net > .tcm-node:nth-child(odd)::after,
+  .aurorapaper-root .tcm-net > .tcm-node:nth-child(even)::after {
+    left: -22px;
+    right: auto;
+    top: 21px;
+    width: 21px;
+  }
+}

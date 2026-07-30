@@ -252,6 +252,13 @@
   color: var(--tc-ink-2);
 }
 
+/* the cinema plate keeps its own closed ink set: its token ramp predates the
+   tag kind, so tags there stay exactly the ink their line already carries —
+   plain, add-bright, or del-struck — as if never tokenized */
+.eventhorizon-root .tc-cinema .tc-t-tag {
+  color: inherit;
+}
+
 /* ============================================================
    5 · THE CONFIG CELL'S RUN — `npx gt translate`, then the files
    One dark surface: the config panel keeps its box; the transcript

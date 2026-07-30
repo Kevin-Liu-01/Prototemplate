@@ -676,3 +676,12 @@
 .prismlight-root .dlv-hot-body {
   flex: 1;
 }
+
+/* ---- dark mode ----
+   The dlv panels (#14121A) and the night ledger never remap — permanent
+   plates. Only the theme-following browser panes need care: their solid
+   button fills with --tc-ink, which remaps to white, and its label was
+   hard-coded light — the same inversion styles.css gives .tc-btn-solid. */
+[data-theme='dark'] .prismlight-root .dlv-hot-btn {
+  color: #16171d;
+}

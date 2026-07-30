@@ -1,0 +1,321 @@
+/* ============================================================
+   LOGOS & ICONS + THE CODE-SURFACE TOKEN SET
+   Real wordmarks in the trust band, monochrome framework marks
+   in the tab bar, functional icon affordances (copy/check/arrow,
+   brand marks where a cell names a tool), and the one syntax
+   ramp every dark code panel on the page shares.
+
+   New file, imported once by sections/Frameworks.tsx (global CSS,
+   so it dresses the trust row, bento, pricing and footer too).
+   Nothing here fights styles.css at equal specificity: every
+   override wins by one extra class or element, so bundle order
+   cannot flip a rule.
+   ============================================================ */
+
+.aurorapaper-root {
+  /* -- the code-surface token set (dark panels only) ------------
+     Four roles: keyword, string, tag, dim. One hue, spent where
+     the product lives — strings are what GT translates, so
+     strings carry the most color; keywords and tags stay in the
+     panel's own greys. The hue is the page accent's light end,
+     so code panels and the page share one blue. */
+  --tc-tok-str: #a7c2f2;
+  --tc-tok-kw: rgba(255, 255, 255, 0.5);
+  --tc-tok-tag: rgba(255, 255, 255, 0.74);
+  --tc-tok-dim: rgba(255, 255, 255, 0.34);
+
+  /* -- diff semantics --------------------------------------------
+     Muted tints, defined once. Gutter marks and line tints appear
+     ONLY inside diff artifacts — never as status color anywhere
+     else on the page. */
+  --tc-diff-add: #7dd89e;
+  --tc-diff-del: #e8918c;
+}
+
+/* ============================================================
+   1 · TRUST ROW — the six customers as their real wordmarks
+   The lettered stand-ins become the actual SVG marks, greyed to
+   the band's muted step and cap-height aligned: each mark gets
+   its own height so the six baselines read as one line of type
+   rather than six stickers. Markup stays (the name remains as
+   accessible text); the pixels come from /public/logos.
+   ============================================================ */
+
+.aurorapaper-root .tc-trust-row .tc-wm {
+  display: block;
+  overflow: hidden;
+  /* the brand name stays for screen readers and find-in-page */
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  /* muted to ~60%, and held to the page's achromatic ramp — the
+     one green wordmark would otherwise be the page's loudest color */
+  filter: grayscale(1);
+  opacity: 0.62;
+}
+
+.aurorapaper-root .tc-trust-row .tc-wm.is-cursor {
+  height: 23px;
+  aspect-ratio: 739 / 186;
+  background-image: url('/logos/cursor.light.svg');
+}
+
+.aurorapaper-root .tc-trust-row .tc-wm.is-ramp {
+  height: 15.5px;
+  aspect-ratio: 643.93 / 170.94;
+  background-image: url('/logos/ramp.light.svg');
+}
+
+.aurorapaper-root .tc-trust-row .tc-wm.is-mintlify {
+  height: 16.5px;
+  aspect-ratio: 2191 / 484;
+  background-image: url('/logos/mintlify.light.svg');
+}
+
+.aurorapaper-root .tc-trust-row .tc-wm.is-profound {
+  height: 14.5px;
+  aspect-ratio: 166 / 28;
+  background-image: url('/logos/profound.light.svg');
+}
+
+.aurorapaper-root .tc-trust-row .tc-wm.is-partiful {
+  height: 17.5px;
+  aspect-ratio: 204 / 46;
+  background-image: url('/logos/partiful.light.svg');
+}
+
+.aurorapaper-root .tc-trust-row .tc-wm.is-clickhouse {
+  height: 18px;
+  aspect-ratio: 600 / 110;
+  background-image: url('/logos/clickhouse.light.svg');
+}
+
+/* dark theme: the drawn-for-dark variants, same geometry */
+[data-theme='dark'] .aurorapaper-root .tc-trust-row .tc-wm.is-cursor {
+  background-image: url('/logos/cursor.dark.svg');
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-trust-row .tc-wm.is-ramp {
+  background-image: url('/logos/ramp.dark.svg');
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-trust-row .tc-wm.is-mintlify {
+  background-image: url('/logos/mintlify.dark.svg');
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-trust-row .tc-wm.is-profound {
+  background-image: url('/logos/profound.dark.svg');
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-trust-row .tc-wm.is-partiful {
+  background-image: url('/logos/partiful.dark.svg');
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-trust-row .tc-wm.is-clickhouse {
+  background-image: url('/logos/clickhouse.dark.svg');
+}
+
+/* ============================================================
+   2 · FRAMEWORK TAB BAR — monochrome marks at text size
+   The mark sits beside its label in the tab's own ink: muted
+   with the resting label, full ink when the tab is active.
+   ============================================================ */
+
+.aurorapaper-root .tc-tabs .tc-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.aurorapaper-root .tc-tab .tc-tab-mark {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  opacity: 0.52;
+  transition: opacity 0.18s ease;
+}
+
+.aurorapaper-root .tc-tab:hover .tc-tab-mark {
+  opacity: 0.72;
+}
+
+.aurorapaper-root .tc-tab[data-on='true'] .tc-tab-mark {
+  opacity: 1;
+}
+
+/* ============================================================
+   3 · FUNCTIONAL ICON AFFORDANCES
+   copy/check/arrow only, at text size, in the text's own ink.
+   ============================================================ */
+
+/* the copy affordance on every code panel */
+.aurorapaper-root .tc-code .tc-code-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.aurorapaper-root .tc-code-copy .tc-ico {
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.75;
+}
+
+/* arrows on navigational text links — the label says where,
+   the arrow says "this one leaves the section" */
+.aurorapaper-root .tc-fw-link,
+.aurorapaper-root .tc-compare a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.aurorapaper-root .tc-cell-act .tc-btn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.aurorapaper-root .tc-ico-arrow {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  stroke-width: 1.75;
+  opacity: 0.72;
+}
+
+/* footer: a brand mark where a cell names a tool, muted with the
+   link it belongs to */
+.aurorapaper-root .tc-foot-cols a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aurorapaper-root .tc-foot-mark {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   4 · THE CODE SURFACE — one syntax ramp for every dark panel
+   Strings carry the color; keywords and tags stay grey; GT's own
+   API stays the white emphasis it already was. The `pre` in the
+   selector out-specifies the base rules in styles.css without
+   depending on bundle order.
+   ============================================================ */
+
+.aurorapaper-root .tc-code pre .tc-t-str,
+.aurorapaper-root .tc-code pre .tc-t-num {
+  color: var(--tc-tok-str);
+}
+
+.aurorapaper-root .tc-code pre .tc-t-kw {
+  color: var(--tc-tok-kw);
+}
+
+.aurorapaper-root .tc-code pre .tc-t-tag {
+  color: var(--tc-tok-tag);
+}
+
+.aurorapaper-root .tc-code pre .tc-t-com {
+  color: var(--tc-tok-dim);
+}
+
+/* the story's editor panel joins the same ramp */
+.aurorapaper-root .tcs-code .tcs-code-body .tc-t-str,
+.aurorapaper-root .tcs-code .tcs-code-body .tc-t-num {
+  color: var(--tc-tok-str);
+}
+
+.aurorapaper-root .tcs-code .tcs-code-body .tc-t-tag {
+  color: var(--tc-tok-tag);
+}
+
+/* a removed diff line surrenders its syntax color with the rest —
+   stated at this file's own specificity so bundle order between
+   this file and story.css can never flip it */
+.aurorapaper-root .tcs-code .tcs-code-body .tcs-code-line[data-mark='del'] .tc-t-str,
+.aurorapaper-root .tcs-code .tcs-code-body .tcs-code-line[data-mark='del'] .tc-t-num,
+.aurorapaper-root .tcs-code .tcs-code-body .tcs-code-line[data-mark='del'] .tc-t-tag {
+  color: inherit;
+  font-weight: 400;
+}
+
+/* the light token set never colors: tags on paper stay in ink-2 */
+.aurorapaper-root .tc-t-tag {
+  color: var(--tc-ink-2);
+}
+
+/* the cinema plate keeps its own closed ink set: its token ramp predates the
+   tag kind, so tags there stay exactly the ink their line already carries —
+   plain, add-bright, or del-struck — as if never tokenized */
+.aurorapaper-root .tc-cinema .tc-t-tag {
+  color: inherit;
+}
+
+/* ============================================================
+   5 · THE CONFIG CELL'S RUN — `npx gt translate`, then the files
+   One dark surface: the config panel keeps its box; the transcript
+   continues it below a single panel-rule hairline (the page's
+   flush, no-internal-border grammar). Locales in, files out.
+   ============================================================ */
+
+.aurorapaper-root .tc-code-run .tc-code {
+  border-radius: 4px 4px 0 0;
+}
+
+.aurorapaper-root .tc-cli {
+  border-top: 1px solid var(--tc-panel-rule);
+  border-radius: 0 0 4px 4px;
+  background: var(--tc-panel);
+  padding: 13px 18px 15px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--tc-panel-ink);
+  white-space: pre;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.aurorapaper-root .tc-cli::-webkit-scrollbar {
+  display: none;
+}
+
+.aurorapaper-root .tc-cli-line[data-tone='cmd'] {
+  color: #ffffff;
+}
+
+.aurorapaper-root .tc-cli-line[data-tone='dim'] {
+  color: var(--tc-panel-dim);
+}
+
+.aurorapaper-root .tc-cli-line[data-tone='out'] {
+  color: var(--tc-panel-ink);
+}
+
+.aurorapaper-root .tc-cli-key {
+  color: var(--tc-panel-dim);
+}
+
+/* ============================================================
+   6 · FOOTER BRAND — the mark follows the theme
+   ============================================================ */
+
+.aurorapaper-root .tc-foot-logo.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .aurorapaper-root .tc-foot-logo.is-dark {
+  display: block;
+}

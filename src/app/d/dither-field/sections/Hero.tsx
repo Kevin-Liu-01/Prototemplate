@@ -2,27 +2,38 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 import DitherWordmark, { type WordmarkSpec } from '../diagrams/DitherWordmark';
 import { heroBroadcast, useDitherField } from '../fields';
 
+import './hero-every.css';
+
 gsap.registerPlugin(useGSAP);
 
 /**
- * THE BROADCAST HERO.
+ * THE BROADCAST HERO, on the founder stack.
  *
- * One composition, not a layout over a texture: a breathing 1-bit radial
- * burst — pure ink cells on paper, rendered by the Bayer engine at a cell
- * size chunky enough to read as print texture — converging on a deliberate
- * paper core, and the type block sits exactly inside that core. Two hairline
- * crosshair rules pass through the convergence point, so the alignment is
- * explicit: the headline, the burst and the rules share one center.
+ * Three surfaces on the shell-grey ground, separated by 1px seams: the white
+ * hero card (mark, two authored headline lines with the morphing `language`
+ * hinge, sub, acts) — then the fork's signature visual as the full-width
+ * band — then the trust card.
  *
- * The trust band beneath runs the same material through a glyph mask: all
- * six customer wordmarks rasterised to 1-bit fields (M03's HALFTONE form),
- * so the first viewport is one process applied twice — to energy and to
- * letterforms — with no grey anywhere.
+ * The band keeps the Bayer broadcast: a breathing 1-bit radial burst, ink
+ * cells on paper, rings and needle rays converging on a deliberate paper
+ * core. The type block that used to sit in that core moved up into the card,
+ * so the core now holds the page's dev-first device instead: the real,
+ * copyable command. The broadcast source is `npx gt@latest`. Two hairline
+ * crosshair rules pass under the field through the same convergence point.
+ *
+ * The field is 1-bit and theme-following (P2): its ink is the canvas's
+ * computed `color` (var(--tc-ink)), re-sampled when data-theme flips — dark
+ * mode prints light dust on the ink-black paper, never a white flash.
+ *
+ * The trust card runs the same material through a glyph mask: all six
+ * customer wordmarks rasterised to 1-bit fields, so the first viewport is
+ * one process applied twice — to energy and to letterforms.
  */
 
 /* One weight for the whole wall. At 1-bit the cell budget is the type design:
@@ -37,17 +48,29 @@ const CUSTOMERS: readonly { name: string; spec: WordmarkSpec }[] = [
   { name: 'ClickHouse', spec: { text: 'ClickHouse', weight: 600 } },
 ];
 
+/* "language" across maximally different writing systems — Latin, Japanese,
+   Arabic, Devanagari, Cyrillic, Han, Hangul, Greek — short tokens so the
+   re-measured line never wraps. */
+const EVERY: readonly string[] = ['language', '言語', 'لغة', 'भाषा', 'язык', '语言', '언어', 'γλώσσα'];
+
+/* the dissolve dust pool: small glyphs sampled across the same scripts */
+const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
+
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const canvasRef = useDitherField(heroBroadcast, {
+  /* The band composition: the original broadcast, recentred for a band
+     (cy 0.5 — the crosshair crosses mid-band) and with the well tightened
+     so the paper core hugs the one command line instead of a headline. */
+  const canvasRef = useDitherField((aspect) => heroBroadcast(aspect, { cy: 0.5, wellScale: 0.55 }), {
     scale: 4,
     ink: '#0f1113',
     paper: 'transparent',
     fps: 24,
     reducedMotionTime: 3,
+    themeInk: true,
   });
 
   const copy = () => {
@@ -65,62 +88,284 @@ export default function Hero() {
         y: 14,
         autoAlpha: 0,
         duration: 0.7,
-        stagger: 0.08,
+        stagger: 0.07,
         ease: 'power2.out',
         delay: 0.1,
       });
+
+      /* The headline hinge is a measuring instrument. Each cycle: the bound
+         guides appear around the current word; the word dissolves into small
+         glyphs from many scripts; the bounds tween to the NEXT word's
+         measured width first — scoping the layout shift before any text
+         exists — then the dust converges and the new word's characters form
+         inside the prepared bounds. The doubled underline re-measures with
+         the em at constant gauge. */
+      const em = root.current?.querySelector<HTMLElement>('[data-every]');
+      const word = root.current?.querySelector<HTMLElement>('[data-every-word]');
+      const compactEvery = window.matchMedia('(max-width: 720px)').matches;
+      if (em && word && compactEvery) {
+        /* At mobile scale 26 particles cannot breathe: a clean measured
+           crossfade tells the same story. */
+        let ci = 0;
+        const compactSwap = () => {
+          if (!root.current || !root.current.isConnected) return;
+          ci = (ci + 1) % EVERY.length;
+          const w0 = em.offsetWidth;
+          gsap.to(word, { autoAlpha: 0, duration: 0.2, ease: 'power2.in', onComplete: () => {
+            word.textContent = EVERY[ci] ?? 'language';
+            em.style.width = 'auto';
+            const w1 = em.offsetWidth;
+            gsap.fromTo(em, { width: w0 }, { width: w1, duration: 0.35, ease: 'power3.inOut',
+              onComplete: () => { em.style.width = 'auto'; } });
+            gsap.to(word, { autoAlpha: 1, duration: 0.24, ease: 'power2.out', delay: 0.12 });
+            gsap.delayedCall(2.4, compactSwap);
+          } });
+        };
+        em.style.display = 'inline-block';
+        em.style.whiteSpace = 'nowrap';
+        gsap.delayedCall(3.4, compactSwap);
+      }
+      if (em && word && !compactEvery) {
+        const guideL = document.createElement('span');
+        guideL.className = 'tc-eg is-l';
+        const guideR = document.createElement('span');
+        guideR.className = 'tc-eg is-r';
+        const dust = document.createElement('span');
+        dust.className = 'tc-edust';
+        for (let i = 0; i < 26; i++) {
+          const g = document.createElement('span');
+          g.textContent = DUST[i % DUST.length] ?? '';
+          dust.appendChild(g);
+        }
+        em.append(guideL, guideR, dust);
+        const dustGlyphs = Array.from(dust.children) as HTMLElement[];
+
+        const setChars = (text: string) => {
+          word.innerHTML = '';
+          for (const ch of text) {
+            const c = document.createElement('span');
+            c.className = 'tc-ech';
+            c.textContent = ch;
+            word.appendChild(c);
+          }
+          return Array.from(word.children) as HTMLElement[];
+        };
+
+        /* Sample the incoming word's letterforms: draw it on an offscreen
+           canvas at the em's own font and collect dark-pixel positions. The
+           dust converges onto these points, so the glyphs sketch the shapes
+           of the characters before the characters themselves fill in. */
+        const sampleShape = (text: string, width: number, height: number, count: number) => {
+          const style = getComputedStyle(word);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(width, 10);
+          canvas.height = Math.max(height, 10);
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return [];
+          ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+          ctx.textBaseline = 'middle';
+          ctx.fillText(text, 0, canvas.height / 2);
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          const pts: { x: number; y: number }[] = [];
+          const step = 3;
+          for (let y = 0; y < canvas.height; y += step) {
+            for (let x = 0; x < canvas.width; x += step) {
+              if ((img[(y * canvas.width + x) * 4 + 3] ?? 0) > 128) pts.push({ x, y });
+            }
+          }
+          // spread the picks across the whole word rather than clustering
+          const picked: { x: number; y: number }[] = [];
+          if (pts.length) {
+            const stride = Math.max(1, Math.floor(pts.length / count));
+            for (let i = 0; i < pts.length && picked.length < count; i += stride) {
+              const pt = pts[i];
+              if (pt) picked.push(pt);
+            }
+          }
+          return picked;
+        };
+
+        const measure = (text: string) => {
+          const probe = document.createElement('span');
+          probe.style.visibility = 'hidden';
+          probe.style.position = 'absolute';
+          probe.style.whiteSpace = 'nowrap';
+          probe.textContent = text;
+          em.appendChild(probe);
+          const w = probe.offsetWidth;
+          probe.remove();
+          return w;
+        };
+
+        let idx = 0;
+        const swap = () => {
+          if (!root.current || !root.current.isConnected) return;
+          idx = (idx + 1) % EVERY.length;
+          const nextText = EVERY[idx] ?? 'every';
+          const w0 = em.offsetWidth;
+          const w1 = measure(nextText);
+          const outChars = Array.from(word.children) as HTMLElement[];
+          const tl = gsap.timeline({
+            onComplete: () => {
+              em.style.width = 'auto';
+              gsap.delayedCall(2.2, swap);
+            },
+          });
+
+          // 1. the instrument appears around the current word
+          tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' });
+
+          // 2. the word dissolves into small glyphs
+          tl.to(outChars, {
+            scale: 0.25,
+            autoAlpha: 0,
+            y: () => gsap.utils.random(-14, 14),
+            x: () => gsap.utils.random(-18, 18),
+            duration: 0.3,
+            stagger: 0.02,
+            ease: 'power2.in',
+          }, '+=0.05');
+          /* the cloud separates SYMMETRICALLY about the word's centre: each
+             glyph takes an evenly-spread angle on a jittered ring, so the
+             scatter is balanced instead of clumping off to one side */
+          const h0 = em.offsetHeight;
+          const ring = (w: number) => (g: HTMLElement, i: number) => {
+            const angle = (i / dustGlyphs.length) * Math.PI * 2 + gsap.utils.random(-0.2, 0.2);
+            const rx = gsap.utils.random(0.18, 0.44) * w;
+            const ry = gsap.utils.random(6, h0 * 0.26);
+            return {
+              // clamped so no glyph ever leaves the measured bounds
+              x: gsap.utils.clamp(3, w - 3, w / 2 + Math.cos(angle) * rx),
+              y: gsap.utils.clamp(-h0 * 0.02, h0 * 0.32, h0 * 0.1 + Math.sin(angle) * ry),
+            };
+          };
+          const place0 = ring(Math.max(w0, 30));
+          tl.to(dustGlyphs, {
+            autoAlpha: () => gsap.utils.random(0.35, 0.8),
+            x: (i, g) => place0(g as HTMLElement, i).x,
+            y: (i, g) => place0(g as HTMLElement, i).y,
+            duration: 0.26,
+            stagger: 0.012,
+            ease: 'power1.out',
+          }, '<+=0.1');
+
+          // 3. the bounds scope the coming layout shift — before any text
+          tl.fromTo(em, { width: w0 }, { width: w1, duration: 0.42, ease: 'power3.inOut' });
+          const place1 = ring(Math.max(w1, 30));
+          tl.to(dustGlyphs, {
+            x: (i, g) => place1(g as HTMLElement, i).x,
+            y: (i, g) => place1(g as HTMLElement, i).y,
+            duration: 0.42,
+            ease: 'power3.inOut',
+          }, '<');
+
+          // 4. the dust assembles the SHAPES of the incoming characters —
+          //    each glyph flies to a sampled point on the new letterforms —
+          //    and only then do the actual characters fill the silhouette in.
+          tl.add(() => {
+            const h = em.offsetHeight;
+            const pts = sampleShape(nextText, w1, h, dustGlyphs.length);
+            dustGlyphs.forEach((g, i) => {
+              const pt = pts[i % Math.max(pts.length, 1)] || { x: w1 / 2, y: h / 2 };
+              gsap.to(g, {
+                x: pt.x,
+                y: pt.y - h * 0.4,
+                autoAlpha: 0.9,
+                duration: 0.38,
+                ease: 'power3.inOut',
+                delay: i * 0.008,
+              });
+            });
+            gsap.delayedCall(0.42, () => {
+              const inChars = setChars(nextText);
+              gsap.fromTo(inChars,
+                { autoAlpha: 0 },
+                { autoAlpha: 1, duration: 0.3, stagger: 0.03, ease: 'power1.inOut' });
+              gsap.to(dustGlyphs, { autoAlpha: 0, duration: 0.26, stagger: 0.006, ease: 'power1.out', delay: 0.08 });
+            });
+          });
+          tl.to({}, { duration: 0.85 });
+
+          // 5. the instrument withdraws
+          tl.to([guideL, guideR], { opacity: 0, duration: 0.24, ease: 'none' }, '>-0.05');
+        };
+
+        setChars('language');
+        /* The first dissolve waits out the first-fold capture window: any
+           still taken while the page settles shows the word whole, not dust. */
+        gsap.delayedCall(5.6, swap);
+      }
     },
     { scope: root }
   );
 
   return (
-    <section className='tc-sec' id='top' ref={root}>
-      <div className='df-hero'>
-        {/* The crosshairs sit under the field, the type over it. */}
+    <section className='tc-sec tch-hero-sec' id='top' ref={root}>
+      {/* The founder's stack: a genuine white card — radius 12, inset on the
+          section's shell-grey ground — above the SQUARE full-width band; the
+          trust row repeats the card below it. */}
+      <div className='tc-hero tch-card'>
+        <Image
+          className='tc-hero-mark'
+          data-hero-in
+          src='/brand/no-bg-gt-logo-light.png'
+          alt='General Translation'
+          width={34}
+          height={34}
+        />
+
+        {/* Two authored lines rather than a wrap; the accented word opens
+            line two, on the hinge of the sentence. */}
+        <h1 data-hero-in>
+          <span>Your product speaks</span>
+          <span>
+            every{' '}
+            <em data-every>
+              <span data-every-word>language</span>
+            </em>
+            .
+          </span>
+        </h1>
+
+        <p className='tc-hero-sub' data-hero-in>
+          General Translation builds full-stack infrastructure for localizing apps, docs, and
+          websites.
+        </p>
+
+        <div className='tc-hero-acts' data-hero-in>
+          <a className='tc-btn tc-btn-solid' href='#pricing'>
+            Get started
+          </a>
+          <a className='tc-btn tc-btn-line' href='#frameworks'>
+            Docs
+          </a>
+        </div>
+      </div>
+
+      {/* The band: the Bayer broadcast on paper. The crosshairs sit under the
+          field; the command — the current site's own dev-first device, real
+          and copyable — floats in the field's deliberate paper core, so the
+          broadcast source is the command that starts everything. */}
+      <div className='tc-hero-cell df-hero' data-hero-in>
         <span className='df-hero-axis is-x' aria-hidden />
         <span className='df-hero-axis is-y' aria-hidden />
         <canvas className='df-hero-field' ref={canvasRef} aria-hidden />
 
         <div className='df-hero-core'>
-          {/* The current site's own dev-first device: the command before the
-              headline. Real command, copyable. */}
-          <button className='tc-copy df-hero-cmd' data-hero-in type='button' onClick={copy}>
+          <button className='tc-copy df-hero-cmd' type='button' onClick={copy}>
             <span>$ npx gt@latest</span>
             <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
-
-          <h1 data-hero-in>
-            <span>Launch in</span>
-            <span>
-              <em>every</em> language.
-            </span>
-          </h1>
-
-          <p className='df-hero-sub' data-hero-in>
-            General Translation builds full-stack infrastructure for localizing apps, docs, and
-            websites.
-          </p>
-
-          <div className='df-hero-acts' data-hero-in>
-            <a className='tc-btn tc-btn-solid' href='#pricing'>
-              Get started
-            </a>
-            <a className='tc-btn tc-btn-line' href='#frameworks'>
-              Docs
-            </a>
-          </div>
         </div>
       </div>
 
-      {/* M03 — six wordmarks through the same 1-bit process as the field
-          above. The claim is the heading; the restraint is the diagram. */}
-      <div className='df-trust'>
-        <div className='df-trust-claim'>
-          <h2>Cursor, Ramp and Profound ship in over thirty languages</h2>
-        </div>
-        <div className='df-trust-row'>
+      {/* The trust card — six wordmarks through the same 1-bit process as the
+          field above. The claim is the lead; the restraint is the diagram. */}
+      <div className='tc-trust tch-trustcard'>
+        <p className='tc-trust-lead'>Cursor, Ramp and Profound ship in over thirty languages</p>
+        <div className='tc-trust-row'>
           {CUSTOMERS.map((customer) => (
-            <span className='df-trust-cell' key={customer.name}>
+            <span className='tc-trust-cell' key={customer.name}>
               <DitherWordmark spec={customer.spec} />
             </span>
           ))}

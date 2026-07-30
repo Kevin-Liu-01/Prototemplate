@@ -654,15 +654,6 @@ export default function StoryCinema() {
 
   return (
     <section className='tc-cinema' id='story-cinema' ref={root}>
-      <div className='tc-cinema-head'>
-        <h2>The pipeline again — in one take.</h2>
-        <p>
-          The same nine beats as a single pinned shot: the demo site on the left translating in
-          place, and one beat at a time on the right — what is happening, and the artifact that
-          proves it. Scroll to scrub the run — every frame is a still.
-        </p>
-      </div>
-
       <div className='tc-cinema-take' data-stage>
         {/* ============ the web ============ */}
         <div className='tc-cinema-web'>

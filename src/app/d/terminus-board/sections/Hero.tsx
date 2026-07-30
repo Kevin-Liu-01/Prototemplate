@@ -173,8 +173,12 @@ export default function Hero() {
   );
 
   return (
-    <section className='tc-sec' id='top' ref={root}>
-      <div className='tb-hero'>
+    <section className='tc-sec tbh-hero-sec' id='top' ref={root}>
+      {/* The founder stack, this fork's way: the departure board is ONE white
+          card — radius 12, no border, the shell-grey ground filling its corner
+          notches — carrying the field, the flap headline and the rail; the
+          trust card repeats the grammar below it at a 1px seam. */}
+      <div className='tb-hero tbh-card'>
         <BoardField className='tb-hero-field' gapRef={core} maskRefs={[run]} />
 
         <div className='tb-hero-in'>
@@ -257,7 +261,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className='tc-trust'>
+      <div className='tc-trust tbh-trustcard'>
         <p className='tc-trust-lead'>Trusted by the world&rsquo;s best companies</p>
         <div className='tc-trust-row'>
           {CUSTOMERS.map((customer) => (

@@ -95,6 +95,13 @@ const COND_PITCH = 9;
 const COND_ROW = 3;
 const ATLAS_ROWS = 4;
 const CELL = 30;
+/**
+ * The field's resting ink — the page's light-mode `--tc-ink`, kept as the
+ * fallback. At init (and on every `data-theme` flip) the engine re-resolves
+ * the live token off the canvas, so in dark mode the rain, the printed word,
+ * the threads and the caliper all flip to the white ramp while light mode
+ * renders byte-for-byte what this constant always drew.
+ */
 const INK = '#0f1113';
 /** The rain's column pitch: the field is set, not scattered. */
 const COL_PITCH = 34;
@@ -209,6 +216,13 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   const mono = options.monoFamily || "ui-monospace, 'SF Mono', Menlo, Consolas, monospace";
   const reduced =
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* The ink follows the theme: `--tc-ink` resolves to the printed constant on
+     paper and to the white ramp under [data-theme='dark']. Resolved off the
+     canvas so the value is the page's own, never a guess. */
+  const resolveInk = (): string =>
+    getComputedStyle(canvas).getPropertyValue('--tc-ink').trim() || INK;
+  let ink = resolveInk();
 
   /* ---------- the pool ---------- */
 
@@ -343,7 +357,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     atlas.height = Math.max(1, Math.round(ATLAS_ROWS * CELL * dpr));
     atlasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     atlasCtx.clearRect(0, 0, GLYPHS.length * CELL, ATLAS_ROWS * CELL);
-    atlasCtx.fillStyle = INK;
+    atlasCtx.fillStyle = ink;
     atlasCtx.textAlign = 'center';
     atlasCtx.textBaseline = 'middle';
     /* Rows 0–2 are the rain tiers; row 3 is the flight size at native px,
@@ -590,7 +604,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     /* The two threads: the rail the word stands on, at brand gauge and full
        ink. They enter from under the type column and run out the edge. */
     const railX = narrow ? 0 : fadeB;
-    ctx.fillStyle = INK;
+    ctx.fillStyle = ink;
     ctx.globalAlpha = 1;
     ctx.fillRect(railX, railY, w - railX, 1.5);
     ctx.fillRect(railX, railY + 4.5, w - railX, 1.5);
@@ -739,7 +753,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     /* The words themselves — real typography, machined contours. The
        incoming word prints in behind its front; the outgoing word peels
        away ahead of its own. Hard clip edges: ink or paper, never a fade. */
-    ctx.fillStyle = INK;
+    ctx.fillStyle = ink;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
     if (morph < 0) {
@@ -771,7 +785,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       if (a > 0) {
         const by = Math.min(railY - 9, baselineY + maxFont * 0.24);
         ctx.globalAlpha = a;
-        ctx.fillStyle = INK;
+        ctx.fillStyle = ink;
         ctx.fillRect(formedLeft, by, formedRight - formedLeft, 1.5);
         ctx.fillRect(formedLeft, by - 5, 1.5, 5);
         ctx.fillRect(formedRight - 1.5, by - 5, 1.5, 5);
@@ -842,6 +856,18 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   );
   io.observe(canvas);
 
+  /* Theme flips re-ink the field: the atlas is rebuilt in the new ink and a
+     paused field re-prints its still. Cheap — one attribute on the root,
+     observed only while the field lives. */
+  const themeMo = new MutationObserver(() => {
+    const next = resolveInk();
+    if (next === ink) return;
+    ink = next;
+    buildAtlas();
+    if (reduced || !running) draw();
+  });
+  themeMo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
   /* Boot mid-hold: the word already printed, the caliper already set, so
      the first paint — and any screenshot — carries the whole argument. */
   simT = 1.3;
@@ -874,6 +900,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       cancelAnimationFrame(resizeRaf);
       ro.disconnect();
       io.disconnect();
+      themeMo.disconnect();
     },
   };
 }

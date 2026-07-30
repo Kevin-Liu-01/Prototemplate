@@ -21,11 +21,13 @@ export const metadata = {
 
 /**
  * Paper Foundry — the machine shop translated onto paper. The toolchain shell
- * (ruled column, hairline structure, weight cap 500) carries a hero cut as one
- * machined plate: hairline bento cells over an anisotropic brushed-graphite
- * sheen, the headline cell's grain flipped 90°, parts seated in reading order
- * with one gloss sweep each. Features-forward: the bento leads right after the
- * hero, entering under the same cascade discipline.
+ * (ruled column, hairline structure, weight cap 500) carries the founder hero
+ * stack — white headline card with the morphing-word hinge, then the visual
+ * band cut as one machined plate: hairline bento cells over an anisotropic
+ * brushed-graphite sheen, the lead cell's grain flipped 90°, parts seated in
+ * reading order with one gloss sweep each — then the trust card. Features-
+ * forward: the bento leads right after the hero, entering under the same
+ * cascade discipline.
  */
 export default function PaperFoundryPage() {
   return (

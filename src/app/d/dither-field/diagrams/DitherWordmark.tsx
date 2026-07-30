@@ -141,8 +141,21 @@ export default function DitherWordmark({ spec, capHeight = 22, scale = 2 }: Prop
       render();
     }
 
+    // The mark's ink is read off the live element (var(--tc-ink)), so a theme
+    // flip needs one re-render: 1-bit means exactly two colors, and in dark
+    // the wall prints paper-on-ink instead of holding a stale dark frame.
+    let themeObserver: MutationObserver | undefined;
+    if (typeof MutationObserver !== 'undefined') {
+      themeObserver = new MutationObserver(render);
+      themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+    }
+
     return () => {
       cancelled = true;
+      themeObserver?.disconnect();
     };
   }, [spec, capHeight, scale]);
 

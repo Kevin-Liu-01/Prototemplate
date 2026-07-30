@@ -2,6 +2,7 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { Quote } from 'lucide-react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 
@@ -60,6 +61,7 @@ export default function Story() {
   return (
     <section className='tc-sec tc-story' id='story' ref={root}>
       <div className='tc-head'>
+        <Quote className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>How a string becomes a shipped translation.</h2>
         <p data-reveal>
           Nine beats, from the JSX you already wrote to the pull request that ships it in six

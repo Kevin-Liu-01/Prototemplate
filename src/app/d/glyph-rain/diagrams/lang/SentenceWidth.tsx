@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+
 import { langA11y, langClass, onFontsReady, type LangProps } from './lang';
 import './lang.css';
 
@@ -150,7 +152,9 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
             key={sample.tag}
           >
             <span className='lang-sw-locale'>
-              <span className='lang-tag'>{sample.tag}</span>
+              <span className='lang-tag'>
+                <LocaleTag code={sample.tag} />
+              </span>
               <span className='lang-sw-name' lang={sample.lang} dir={sample.rtl ? 'rtl' : undefined}>
                 {sample.name}
               </span>

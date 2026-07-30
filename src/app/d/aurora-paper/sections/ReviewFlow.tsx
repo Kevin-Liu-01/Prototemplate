@@ -1,7 +1,9 @@
 'use client';
 
+import { Stamp } from 'lucide-react';
 import { useRef } from 'react';
 
+import ReviewWorkspace from './ReviewWorkspace';
 import { useQuietReveal } from './reveal';
 
 /**
@@ -33,11 +35,19 @@ export default function ReviewFlow() {
   return (
     <section className='tc-sec' id='review' ref={root}>
       <div className='tc-head'>
+        <Stamp className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Agents write. You approve.</h2>
         <p data-reveal>
           Review state is scoped per entry and per locale — approve the Spanish translation while the
           Japanese one is still in review.
         </p>
+      </div>
+
+      {/* The typing workspace (toolchain's founder-batch review primitive),
+          integrated as this section's live surface: agents writing, stamps
+          settling — then the fork's own diff and review card detail it. */}
+      <div className='ap-ws-wrap'>
+        <ReviewWorkspace />
       </div>
 
       <div className='tc-row is-split'>
@@ -69,7 +79,7 @@ export default function ReviewFlow() {
           </div>
         </div>
 
-        <div className='tc-cell is-tall is-framed is-beige' data-reveal>
+        <div className='tc-cell is-tall is-framed' data-reveal>
           <div className='tc-card'>
             <div className='ap-rev'>
               <div className='ap-rev-head'>

@@ -1,3 +1,5 @@
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+
 import { surfaceA11y, surfaceClass, type SurfaceProps } from './surface';
 import './surface.css';
 
@@ -16,7 +18,9 @@ export default function LiveSurface({ className, title }: SurfaceProps) {
         <p className='tcx-say' lang='en'>
           &ldquo;Great seats, worth every peso.&rdquo;
         </p>
-        <div className='tcx-hop'>pt-BR</div>
+        <div className='tcx-hop'>
+          <LocaleTag code='pt-BR' />
+        </div>
         <p className='tcx-out' lang='pt-BR'>
           &ldquo;Ótimos lugares, valeu cada peso.&rdquo;
         </p>

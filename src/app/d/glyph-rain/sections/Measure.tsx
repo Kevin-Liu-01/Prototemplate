@@ -1,5 +1,6 @@
 'use client';
 
+import { Ruler } from 'lucide-react';
 import { useRef } from 'react';
 
 import ExpansionBars from '../diagrams/lang/ExpansionBars';
@@ -32,6 +33,7 @@ export default function Measure() {
   return (
     <section className='tc-sec' id='platform' ref={root}>
       <div className='tc-head'>
+        <Ruler className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Your layout has to survive translation.</h2>
         <p data-reveal>
           Get started is 11 characters in English, 13 in German and 3 in Japanese. Every one of them

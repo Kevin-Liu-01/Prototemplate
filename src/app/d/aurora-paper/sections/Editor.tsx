@@ -1,5 +1,6 @@
 'use client';
 
+import { SquarePen } from 'lucide-react';
 import { useRef } from 'react';
 
 import { useQuietReveal } from './reveal';
@@ -111,6 +112,7 @@ export default function Editor() {
   return (
     <section className='tc-sec' id='editor' ref={root}>
       <div className='tc-head'>
+        <SquarePen className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Every locale on one screen.</h2>
         <p data-reveal>
           Agents write the translations. You open one grid — the source beside every target locale —

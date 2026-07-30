@@ -1,5 +1,6 @@
 'use client';
 
+import { Languages } from 'lucide-react';
 import { useRef } from 'react';
 
 import DitherGlobe from '../diagrams/DitherGlobe';
@@ -35,6 +36,7 @@ export default function Locales() {
   return (
     <section className='tc-sec' id='locales' ref={root}>
       <div className='tc-head'>
+        <Languages className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>100+ languages, and the variants that matter</h2>
         <p data-reveal>zh-Hant is not zh-Hans. Both ship.</p>
       </div>

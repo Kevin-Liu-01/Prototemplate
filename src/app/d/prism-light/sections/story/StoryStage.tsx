@@ -53,14 +53,6 @@ const FEATURES: readonly { h: Copy; p: Copy }[] = [
   },
 ];
 
-/** The page's own dark band — the kind of section every real landing page
-    carries. Its labels are text nodes like any other, so GT reads them too. */
-const STATS: readonly { v: string; l: Copy }[] = [
-  { v: '40+', l: { en: 'languages served', es: 'idiomas disponibles' } },
-  { v: '12k', l: { en: 'teams shipping', es: 'equipos lanzando' } },
-  { v: '99.99%', l: { en: 'uptime, every region', es: 'disponibilidad total' } },
-];
-
 const FOOT: readonly Copy[] = [
   { en: 'Terms', es: 'Términos' },
   { en: 'Privacy', es: 'Privacidad' },
@@ -180,17 +172,6 @@ function PageScene({ beat }: { beat: number }) {
               </b>
               <span>
                 <Node on={reading}>{es ? feature.p.es : feature.p.en}</Node>
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <div className='tcs-page-stats'>
-          {STATS.map((stat) => (
-            <div key={stat.l.en}>
-              <b>{stat.v}</b>
-              <span>
-                <Node on={reading}>{es ? stat.l.es : stat.l.en}</Node>
               </span>
             </div>
           ))}

@@ -73,9 +73,17 @@ type PulseTrace = {
   points: readonly { x: number; y: number }[];
 };
 
-/** Dense user-space samples (1u apart) of a path, taken once per mount. */
-function tracePath(el: SVGPathElement): PulseTrace {
+/** Dense user-space samples (1u apart) of a path. The source `d` is cached
+    on the element the first time through: the animation blanks `d` every
+    tick, so a re-run of the effect (strict mode, hot reload, resize) would
+    otherwise trace an emptied path — which has no length and throws. */
+function tracePath(el: SVGPathElement): PulseTrace | null {
+  const source = el.dataset.traceD ?? el.getAttribute('d') ?? '';
+  if (!source) return null;
+  el.dataset.traceD = source;
+  if (el.getAttribute('d') !== source) el.setAttribute('d', source);
   const length = el.getTotalLength();
+  if (!Number.isFinite(length) || length <= 0) return null;
   const step = 1;
   const count = Math.max(2, Math.ceil(length / step) + 1);
   const points = Array.from({ length: count }, (_, i) => {

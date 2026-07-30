@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { PlaneTakeoff } from 'lucide-react';
 import { useRef } from 'react';
 
 import { blankLine, flipUp } from '../lib/flap';
@@ -84,6 +85,7 @@ export default function Departures() {
   return (
     <section className='tc-sec' id='departures' ref={root}>
       <div className='tc-head'>
+        <PlaneTakeoff className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>
           Ship on schedule, <FlapPhrase text='in every locale.' />
         </h2>

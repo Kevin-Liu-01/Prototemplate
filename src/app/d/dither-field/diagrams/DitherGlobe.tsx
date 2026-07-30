@@ -47,6 +47,9 @@ function atlasGlobe(aspect: AspectBox): FieldFn {
 }
 
 export default function DitherGlobe({ title }: { title: string }) {
+  // The plate is 1-bit and theme-following: the ink is the cell's computed
+  // `color` (var(--tc-ink) via .df-globe), so the atlas prints ink-on-paper
+  // in light and paper-on-ink in dark — themeInk re-resolves it on flip.
   const ref = useDitherField(atlasGlobe, {
     scale: 3,
     ink: '#0f1113',
@@ -54,6 +57,7 @@ export default function DitherGlobe({ title }: { title: string }) {
     fps: 24,
     reducedMotionTime: 8,
     gamma: 1.25,
+    themeInk: true,
   });
 
   return <canvas className='df-globe' ref={ref} role='img' aria-label={title} />;

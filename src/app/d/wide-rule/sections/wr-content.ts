@@ -165,17 +165,3 @@ export const HERO_STATS: { value: string; label: string }[] = [
   { value: '<1s', label: 'OTA updates' },
   { value: '99.99%', label: 'Uptime' },
 ];
-
-/** The one live word in the subhead — ~3s cadence, out faster than in. */
-export const ROTATIONS = [
-  'Spanish',
-  'Japanese',
-  'German',
-  'French',
-  'Portuguese',
-  'Korean',
-  'Chinese',
-  'Italian',
-  'Hindi',
-  'Arabic',
-];

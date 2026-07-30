@@ -1,9 +1,15 @@
 'use client';
 
+import { Languages } from 'lucide-react';
 import { useRef } from 'react';
 
-import EdgeGlobe from '../diagrams/EdgeGlobe';
-import LocaleRouting from '../diagrams/LocaleRouting';
+/* EdgeGlobe and LocaleRouting were stale snapshots of toolchain's — the
+   imports point at the source of truth now (v2 globe, LocaleTag chips ride
+   along). The lang family stays fork-local: its lang.css carries this
+   fork's larger diagram sizes. */
+import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
+import LocaleRouting from '@/app/d/toolchain/diagrams/LocaleRouting';
+
 import ContextResolve from '../diagrams/lang/ContextResolve';
 import LocaleVariants from '../diagrams/lang/LocaleVariants';
 import ScriptSampler from '../diagrams/lang/ScriptSampler';
@@ -25,6 +31,7 @@ export default function Scripts() {
   return (
     <section className='tc-sec' id='locales' ref={root}>
       <div className='tc-head'>
+        <Languages className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>100+ languages, and the variants that matter.</h2>
         <p data-reveal>
           zh-Hant is not zh-Hans. Both ship — 78 base languages expand into 129 distinct locale tags,

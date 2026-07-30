@@ -74,26 +74,32 @@ export function flipUp(line: HTMLElement, options: FlipOptions = {}): gsap.core.
     const sub = gsap.timeline();
     const steps = cycles + (i % 2);
     for (let c = 0; c < steps; c++) {
-      const glyph = c === steps - 1 ? target : cycleGlyph(i, c);
-      sub
-        .to(face, {
-          scaleY: 0.08,
-          duration: 0.028,
-          ease: 'power1.in',
-          onComplete: () => {
-            face.textContent = glyph;
-          },
-        })
-        .to(face, { scaleY: 1, duration: 0.034, ease: 'power1.out' });
+      const last = c === steps - 1;
+      const glyph = last ? target : cycleGlyph(i, c);
+      sub.to(face, {
+        scaleY: 0.08,
+        duration: 0.026,
+        ease: 'power1.in',
+        onComplete: () => {
+          face.textContent = glyph;
+        },
+      });
+      /* Mid-riffle glyphs unfold mechanically; the LANDING glyph settles —
+         a slightly longer unfold that over-rotates past flat and snaps
+         back, the flap hitting its stop. */
+      if (last) {
+        sub.to(face, { scaleY: 1, duration: 0.09, ease: 'back.out(2.1)' });
+      } else {
+        sub.to(face, { scaleY: 1, duration: 0.03, ease: 'power1.out' });
+      }
     }
     if (flash) {
-      /* the phosphor moment: the landed glyph glows and cools */
-      sub.fromTo(
-        face,
-        { color: amber },
-        { color: ink, duration: 0.5, ease: 'power2.out', clearProps: 'color' },
-        '>-0.02'
-      );
+      /* The phosphor moment: the landed glyph holds hot for a beat, then
+         cools on a decay curve — a fast fall out of amber with a long warm
+         tail, emission dying rather than a linear crossfade. */
+      sub
+        .set(face, { color: amber }, '>-0.06')
+        .to(face, { color: ink, duration: 0.85, ease: 'power3.out', clearProps: 'color' }, '>+0.12');
     }
     tl.add(sub, i * per);
   });

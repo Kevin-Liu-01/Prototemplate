@@ -273,21 +273,97 @@
 }
 
 /* ============================================================
-   HERO — THE MACHINED PLATE
-   One brushed-graphite sheet (the shader canvas) with a hairline
-   bento plate set into it. Cells are transparent — the sheet's
-   grain and its single specular sweep pass beneath every part —
-   and each cell carries the parts read: bright top hairline,
-   soft under-shadow. The headline cell is the shader's grain
-   flip. Seams: the plate owns the top/left border, every cell
-   owns its right/bottom, so no hairline is ever doubled.
+   HERO — THE MACHINED STACK
+   The founder stack: white card (mark, two authored headline
+   lines with the morphing hinge, sub, acts) → full-width visual
+   band → trust card — three surfaces on the shell-grey ground,
+   1px seams, radius-12 corners with the ground filling the
+   notches. The band is this fork's material: one brushed-
+   graphite sheet (the shader canvas) with a hairline bento
+   plate of six machined parts set into it. Cells are
+   transparent — the sheet's grain and its single specular sweep
+   pass beneath every part — and each cell carries the parts
+   read: bright top hairline, soft under-shadow. The lead part
+   is the shader's grain flip. Seams: the plate owns the
+   top/left border, every cell owns its right/bottom, so no
+   hairline is ever doubled.
    ============================================================ */
 
-.paperfoundry-root .pf-hero {
+/* ---------- the white hero card ---------- */
+
+.paperfoundry-root .tc-hero {
+  text-align: center;
+  padding: clamp(24px, 2.6vw, 34px) var(--tc-gut) clamp(20px, 2.2vw, 26px);
+  border-radius: 12px;
+  background: var(--tc-card);
+}
+
+.paperfoundry-root .tc-hero-mark {
+  display: block;
+  margin: 0 auto 10px;
+  opacity: 0.9;
+}
+
+.paperfoundry-root .tc-hero h1 {
+  font-size: clamp(2.05rem, 4.9vw, 3.7rem);
+  line-height: 1.03;
+  letter-spacing: -0.038em;
+  max-width: 20ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.paperfoundry-root .tc-hero h1 span {
+  display: block;
+}
+
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink. */
+.paperfoundry-root .tc-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.paperfoundry-root .tc-hero-sub {
+  margin: 12px auto 0;
+  max-width: 54ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.paperfoundry-root .tc-hero-acts {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- the band: the graphite sheet, square and full-width ---------- */
+
+.paperfoundry-root .tc-hero-cell {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  padding: clamp(30px, 4.2vw, 54px) var(--tc-gut) clamp(34px, 4.6vw, 58px);
+  /* WebGL fallback: plain paper under the plate, never the shell grey */
+  background: var(--tc-paper);
+}
+
+.paperfoundry-root .pf-hero {
+  padding: clamp(26px, 3.4vw, 44px) var(--tc-gut) clamp(30px, 3.8vw, 48px);
 }
 
 .paperfoundry-root .pf-hero-field {
@@ -332,119 +408,45 @@
     inset 0 -10px 12px -11px rgba(15, 17, 19, 0.16);
 }
 
-/* Twelve columns so the bottom row can seat FOUR parts (stats, plurals,
-   toast, bidi) under the 8-column headline + 4-column right stack. */
+/* Twelve columns, two ranks: the lead part (the grain flip, with the live
+   caliper) takes five, the fan four, the stat rail three; below them the
+   three grammar parts split the plate evenly. Different widths, one plate —
+   the bento read without a missing tooth. */
 @media (min-width: 1001px) {
   .paperfoundry-root .pf-plate {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: 1fr 1fr auto;
   }
 
-  .paperfoundry-root .pf-cell.is-head {
-    grid-column: 1 / 9;
-    grid-row: 1 / 3;
+  .paperfoundry-root .pf-plate > .pf-cell:nth-child(1) {
+    grid-column: 1 / 6;
   }
 
   .paperfoundry-root .pf-plate > .pf-cell:nth-child(2) {
-    grid-column: 9 / 13;
-    grid-row: 1;
+    grid-column: 6 / 10;
   }
 
   .paperfoundry-root .pf-plate > .pf-cell:nth-child(3) {
-    grid-column: 9 / 13;
-    grid-row: 2;
+    grid-column: 10 / 13;
   }
 
   .paperfoundry-root .pf-plate > .pf-cell:nth-child(4) {
-    grid-column: 1 / 4;
-    grid-row: 3;
+    grid-column: 1 / 5;
   }
 
   .paperfoundry-root .pf-plate > .pf-cell:nth-child(5) {
-    grid-column: 4 / 7;
-    grid-row: 3;
+    grid-column: 5 / 9;
   }
 
   .paperfoundry-root .pf-plate > .pf-cell:nth-child(6) {
-    grid-column: 7 / 10;
-    grid-row: 3;
-  }
-
-  .paperfoundry-root .pf-plate > .pf-cell:nth-child(7) {
-    grid-column: 10 / 13;
-    grid-row: 3;
+    grid-column: 9 / 13;
   }
 }
 
-/* Tablet: headline full width, then six parts two-up — an even plate, no
-   missing tooth. */
+/* Tablet: six parts two-up — an even plate. */
 @media (min-width: 640px) and (max-width: 1000px) {
   .paperfoundry-root .pf-plate {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .paperfoundry-root .pf-cell.is-head {
-    grid-column: 1 / -1;
-  }
-}
-
-/* ---------- the headline cell ---------- */
-
-.paperfoundry-root .pf-cell.is-head {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: clamp(26px, 3.6vw, 50px);
-}
-
-.paperfoundry-root .pf-mark {
-  display: block;
-  margin-bottom: clamp(18px, 2.4vw, 28px);
-  opacity: 0.9;
-}
-
-.paperfoundry-root .pf-cell.is-head h1 {
-  font-size: clamp(2.05rem, 4.4vw, 3.45rem);
-  line-height: 1.03;
-  letter-spacing: -0.038em;
-}
-
-/* The break is authored, so the rag is a decision rather than a measurement. */
-.paperfoundry-root .pf-cell.is-head h1 span {
-  display: block;
-}
-
-/* The accent never touches a heading. The emphasis is the brand's own device
-   instead: the two threads — source and translation at constant gauge —
-   running under the word, in ink. */
-.paperfoundry-root .pf-cell.is-head h1 em {
-  font-style: normal;
-  padding-bottom: 0.06em;
-  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
-    linear-gradient(var(--thread-ink), var(--thread-ink));
-  background-repeat: no-repeat;
-  background-size:
-    100% var(--thread-gauge),
-    100% var(--thread-gauge);
-  background-position:
-    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
-    0 100%;
-}
-
-.paperfoundry-root .pf-sub {
-  margin-top: 18px;
-  max-width: 46ch;
-  font-size: 15.5px;
-  line-height: 1.6;
-  color: var(--tc-ink-2);
-}
-
-.paperfoundry-root .pf-acts {
-  margin-top: 26px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
 }
 
 /* ---------- the part cells ---------- */
@@ -743,20 +745,6 @@
   transform: translateX(-130%);
 }
 
-/* On the headline cell the gloss runs UNDER the type: a white core crossing
-   the h1 dropped runs of characters below comfortable contrast, and a frame
-   grabbed mid-sweep read as a rendering fault ('uage.' half-washed) rather
-   than a material. The part cells keep the over-sweep — raked light across
-   small parts reads as intended there. */
-.paperfoundry-root .pf-cell.is-head > :not(.pf-sheen) {
-  position: relative;
-  z-index: 1;
-}
-
-.paperfoundry-root .pf-cell.is-head .pf-sheen {
-  z-index: 0;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .paperfoundry-root [data-plate] {
     opacity: 1 !important;
@@ -769,14 +757,13 @@
   }
 }
 
-/* In dark mode the light sheet would read as a glowing plate, so the shader
-   stands down and the hairline plate carries the hero on the dark paper. */
-[data-theme='dark'] .paperfoundry-root .pf-hero-field {
-  display: none;
-}
-
+/* Dark mode: the sheet does NOT stand down — brushed graphite on ink-black
+   is this material's home turf. SheenField re-exposes the shader itself
+   (dark paper term, deeper grain, brighter band — sections/SheenField.tsx);
+   here the cells drop to a whisper of white above the dark sheet and the
+   machined edge pair flips to a faint highlight over a true shadow. */
 [data-theme='dark'] .paperfoundry-root .pf-cell {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 [data-theme='dark'] .paperfoundry-root .pf-cell::after {
@@ -789,6 +776,20 @@
 [data-theme='dark'] .paperfoundry-root .pf-toast,
 [data-theme='dark'] .paperfoundry-root .pf-bidi {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* The gloss sweep re-inks for the dark sheet: a soft silver core between two
+   true shadows — raked light on dark metal — instead of the light theme's
+   white flash, which read as a specular error on ink black. */
+[data-theme='dark'] .paperfoundry-root .pf-sheen {
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(0, 0, 0, 0.18) 44%,
+    rgba(255, 255, 255, 0.13) 50%,
+    rgba(0, 0, 0, 0.18) 56%,
+    transparent 62%
+  );
 }
 
 .paperfoundry-root .tc-copy {
@@ -2350,10 +2351,6 @@
     padding: 16px 14px;
   }
 
-  .paperfoundry-root .pf-cell.is-head {
-    padding: 26px 18px 28px;
-  }
-
   .paperfoundry-root .pf-stats span + span {
     margin-left: 14px;
     padding-left: 14px;
@@ -3415,26 +3412,24 @@
   border-left: 0;
 }
 
-.paperfoundry-root .tc-row + .tc-row {
-  margin-top: -1px;
-}
-
 
 /* ---- dark mode ----
-   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
-   panel #14121A). Everything downstream re-skins from these. */
+   Token remap only: everything downstream re-skins from these. */
 [data-theme='dark'] .paperfoundry-root {
-  --tc-paper: #16171d;
-  --tc-sunk: #16171d;
-  --tc-white: #1e1f26;
-  --tc-card: #1e1f26;
+  /* One surface family in the dark, the way light mode is one white: every
+     card, plate and sunk surface lands on the same ink black, in the dark
+     band's own family, so the page never shifts grey between sections. */
+  --tc-paper: #0a0b0f;
+  --tc-sunk: #0d0e12;
+  --tc-white: #0d0e12;
+  --tc-card: #0d0e12;
   --tc-ink: #ffffff;
   --tc-ink-2: rgba(255, 255, 255, 0.66);
   --tc-ink-3: rgba(255, 255, 255, 0.48);
   --tc-ink-4: rgba(255, 255, 255, 0.3);
   --tc-hair: #3b3440;
   --tc-hair-2: #2b2731;
-  --tc-plate: #1e1f26;
+  --tc-plate: #0d0e12;
   --tc-hatch: rgba(255, 255, 255, 0.07);
 }
 
@@ -3459,8 +3454,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -6px;
-  right: -6px;
+  left: -10px;
+  right: -10px;
   border-inline: 1px solid var(--tc-hair);
   pointer-events: none;
   z-index: 2;
@@ -3476,8 +3471,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -6px;
-  right: -6px;
+  left: -10px;
+  right: -10px;
   border-inline: 1px solid var(--tc-hair);
   pointer-events: none;
   z-index: 2;
@@ -3587,4 +3582,223 @@
    made it twice as visible.) */
 [data-theme='dark'] .paperfoundry-root .tcx-btn {
   color: #16171d;
+}
+
+/* ============================================================
+   FOUNDER PICKS — the hero stack seams, stats grid, head icons,
+   quad rules, nav theme switch, trust card. Copied from
+   toolchain's founder-approved tail (rescoped); order matters —
+   later rules refine earlier ones exactly as in the source.
+   ============================================================ */
+
+.paperfoundry-root .tc-sec:has(> .tc-hero) > *:last-child {
+  margin-bottom: 0;
+}
+
+
+/* the trust row completes the hero stack: third card, same seam */
+.paperfoundry-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  background: var(--tc-white);
+  border-radius: 12px;
+  margin-top: 1px;
+}
+
+
+/* ---- founder emergency overlay: no cream, ever ----
+   The shell grammar is law: grounds are the shell grey, reveals are 1px.
+   Token-level override so whatever consumes these vars re-skins correctly;
+   the !important pair pins the hero surround. */
+.paperfoundry-root {
+  --tch-ground: var(--tc-hair);
+  --tf-ground: var(--tc-white);
+}
+
+.paperfoundry-root .tc-sec:has(> .tc-hero) {
+  background: var(--tc-hair) !important;
+  /* the nav's full-width rule is the top divider; ground shows only in the
+     card corner notches */
+  padding: 0 !important;
+}
+
+.paperfoundry-root .tc-nav {
+  margin-bottom: 0;
+}
+
+/* the hero card sits in the section's 1px reveal — no extra surround,
+   no border, no outline: the rounding and the ground do all the work */
+.paperfoundry-root .tc-sec:has(> .tc-hero) > .tc-hero {
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+
+/* ---- punch list: stats grid + guide headroom ----
+   Numeral above label, two per row, tabular figures on a shared baseline,
+   doubled-hairline separators; the old value-left/label-right stretch dies. */
+.paperfoundry-root .tc-stats.is-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.paperfoundry-root .tc-stats.is-grid .tc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 16px 16px;
+  border-top: 1px double var(--tc-hair);
+  border-top-width: 3px;
+  border-top-style: double;
+}
+
+.paperfoundry-root .tc-stats.is-grid .tc-stat:nth-child(-n + 2) {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.paperfoundry-root .tc-stats.is-grid .tc-stat:nth-child(2n) {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-stats.is-grid .tc-stat-value {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.paperfoundry-root .tc-stats.is-grid .tc-stat-label {
+  text-align: left;
+  color: var(--tc-ink-3);
+}
+
+.paperfoundry-root .tc-eg {
+  top: -0.02em;
+}
+
+
+/* founder picks: the band sits at the 1px seam (no gap above), and the
+   trust card carries zero padding of its own */
+.paperfoundry-root .tc-sec:has(> .tc-hero) > .tc-hero-cell {
+  margin-top: 1px !important;
+  border-top: 0 !important;
+}
+
+.paperfoundry-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  margin-top: 1px !important;
+  padding: 0 !important;
+}
+
+
+/* the morphing word carries no box of its own — the guides are the only frame */
+.paperfoundry-root .tc-hero h1 em[data-every] {
+  outline: 0 !important;
+  border: 0 !important;
+}
+
+
+/* trust lead: no side or bottom padding */
+.paperfoundry-root .tc-trust .tc-trust-lead {
+  padding: 24px 0 0 !important;
+}
+
+
+/* ---- founder picks: corner concentricity, trust full-bleed, head icons ---- */
+/* Trust card: lead padding restored; the card itself bleeds over the
+   section's 1px pad so no grey shows under or beside the logos. */
+.paperfoundry-root .tc-trust .tc-trust-lead {
+  padding: 24px 36px 18px !important;
+}
+
+.paperfoundry-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  margin: 1px 0 -1px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 12px;
+}
+
+/* Huge quiet section icons, bleeding off the right edge. */
+.paperfoundry-root .tc-head {
+  position: relative;
+  overflow: hidden;
+}
+
+.paperfoundry-root .tc-head-icon {
+  position: absolute;
+  right: -48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 240px;
+  height: 240px;
+  color: var(--tc-ink);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+
+/* Hatch spacers: reveal tweens leave transforms on the framed cards above,
+   whose stacking contexts otherwise paint over the hatch's top rule. */
+.paperfoundry-root .tc-hatch {
+  position: relative;
+  z-index: 2;
+}
+
+/* Founder: the quad's column rules touch the card's top and bottom edges.
+   The card's padding is a single token, so the rules extend by exactly it. */
+.paperfoundry-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.paperfoundry-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Nav theme switch, left of Sign in: token ink, quiet until hover. */
+.paperfoundry-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.paperfoundry-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand mark carries both variants; the theme picks one. */
+.paperfoundry-root .tc-logo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .paperfoundry-root .tc-logo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .paperfoundry-root .tc-logo-light {
+  display: none;
+}
+
+/* The trust band's lower rule. The blanket border-zeroing above (which cured
+   the doubled edges at the nav junction) also erased the one line that should
+   survive — under the brands. Appended later, so border-bottom wins by order. */
+.paperfoundry-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  border-bottom: 1px solid var(--tc-hair) !important;
+  border-radius: 12px 12px 0 0;
+}
+
+/* The footer's Locadex mark is a drawn dark glyph, not currentColor ink —
+   dark mode flips it the way the story chip does. */
+[data-theme='dark'] .paperfoundry-root .tc-foot-mark.is-locadex {
+  filter: invert(1);
 }

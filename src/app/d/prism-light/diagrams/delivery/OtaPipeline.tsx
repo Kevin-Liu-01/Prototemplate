@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+
 import './delivery.css';
 
 /**
@@ -54,6 +56,7 @@ export default function OtaPipeline({ className, title }: OtaPipelineProps) {
         if (skipped.length < 2) return;
         const first = skipped[0];
         const last = skipped[skipped.length - 1];
+        if (!first || !last) return;
         const left = first.offsetLeft - 8;
         const right = last.offsetLeft + last.offsetWidth + 8;
         strike.style.left = `${left}px`;
@@ -115,7 +118,9 @@ export default function OtaPipeline({ className, title }: OtaPipelineProps) {
         <div className='dlv-page'>
           <div className='dlv-page-bar'>
             <b>acme.com/es</b>
-            <span className='dlv-loc'>es</span>
+            <span className='dlv-loc'>
+              <LocaleTag code='es' />
+            </span>
           </div>
           <div className='dlv-phone-body'>
             <div className='dlv-phone-h'>Pago recibido</div>

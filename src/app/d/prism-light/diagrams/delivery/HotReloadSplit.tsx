@@ -1,3 +1,5 @@
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+
 import { tokenize } from '../../sections/code';
 
 import './delivery.css';
@@ -81,7 +83,9 @@ export default function HotReloadSplit({ className, title }: HotReloadSplitProps
         <div className='dlv-page'>
           <div className='dlv-page-bar'>
             <b>localhost:3000/ja</b>
-            <span className='dlv-loc'>ja</span>
+            <span className='dlv-loc'>
+              <LocaleTag code='ja' />
+            </span>
             <span style={{ marginLeft: 'auto' }}>dev</span>
           </div>
           <div className='dlv-hot-body'>

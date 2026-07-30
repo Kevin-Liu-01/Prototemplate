@@ -8,6 +8,10 @@
    ============================================================ */
 
 .ditherfield-root {
+  /* language-diagram rules follow the shell's line colour */
+  --lang-rule-strong: var(--tc-hair);
+  --lang-rule: var(--tc-hair);
+
   --tc-paper: #fbfbfa;
   --tc-sunk: #ffffff;
   --tc-white: #ffffff;
@@ -15,8 +19,10 @@
   --tc-ink-2: rgba(15, 17, 19, 0.63);
   --tc-ink-3: rgba(15, 17, 19, 0.45);
   --tc-ink-4: rgba(15, 17, 19, 0.27);
-  --tc-hair: rgba(15, 17, 19, 0.11);
-  --tc-hair-2: rgba(15, 17, 19, 0.06);
+  /* Opaque hairlines (the founder corner grammar stacks the hair as mats AND
+     grounds — a translucent hair would double-tint where they overlap). */
+  --tc-hair: #e4e4e6;
+  --tc-hair-2: #f1f1f3;
   /* HALFTONE is achromatic: the "accent" is ink. State is weight, not hue. */
   --tc-accent: #0f1113;
   --tc-dark: #0c0e11;
@@ -41,22 +47,13 @@
   --thread-gap: 3px;
   --thread-ink: var(--tc-ink);
 
-  /* The nested frame. The mat has to be a step you can see at 1x, not one that
-     only survives a 4x crop — at 2% luminance the reveal reads as a soft single
-     border and the box-inside-a-box, which is this direction's whole signature
-     detail, never announces itself. This is ~11% off both the page and the card,
-     with its own edge a shade darker than the page's hairline. */
-  --tc-mat: #232327;
-  --tc-mat-edge: #232327;
-  /* The light nest. On this fork the dark mat is reserved for surfaces that ARE
-     dark chrome (the framework window, the story stages, code mounts). A light
-     content cell gets a hairline-weight mat instead — one step off paper with a
-     rule-tone edge — so the bento reads as one sheet with quiet reveals, never
-     as a rank of ink-boxed cards competing with the hairline grid. */
-  --tc-mat-lite: #ececeb;
-  --tc-mat-lite-edge: rgba(15, 17, 19, 0.16);
+  /* The nested frame, on the founder's corner grammar: the mat IS the shell
+     line colour, the card is radius-12 white on it, and the grey ground fills
+     the corner notches — ONE ring, never doubled edges. */
+  --tc-mat: var(--tc-hair);
+  --tc-mat-edge: var(--tc-hair);
   --tc-card: #ffffff;
-  --tc-mat-inset: clamp(10px, 1.2vw, 14px);
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
   --tc-card-pad: clamp(17px, 1.9vw, 21px);
   --tc-hatch: rgba(15, 17, 19, 0.085);
 
@@ -657,7 +654,7 @@
    name over a real output in mono — nine artifacts, not nine words. */
 .ditherfield-root .tc-caps {
   flex: 1;
-  margin-top: 20px;
+  margin-top: 12px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: minmax(52px, 1fr);
@@ -696,7 +693,7 @@
 }
 
 .ditherfield-root .tc-fw-run {
-  margin-top: 20px;
+  margin-top: 12px;
   display: grid;
   border-top: 1px solid var(--tc-hair);
   border-bottom: 1px solid var(--tc-hair);
@@ -724,7 +721,7 @@
 }
 
 .ditherfield-root .tc-fw-link {
-  margin-top: 20px;
+  margin-top: 12px;
   font-size: 13px;
   color: var(--tc-ink-2);
   border-bottom: 1px solid var(--tc-hair);
@@ -1001,18 +998,25 @@
 }
 
 /* ---------- the nested frame ----------
-   A cell that carries something visual becomes a box inside a box: the grid
-   cell is a mat with a hairline edge and exactly 2px of padding, and the card
-   sits inside it, so a precise 2px reveal runs all the way around the content.
-   Text-only cells never get this — the contrast is the whole point, and it is
-   also why the vertical rule is dropped wherever a mat provides the edge. */
+   The founder's corner grammar: a cell that carries something visual is a
+   MAT — the shell line colour, zero padding — and the card inside it is
+   radius-12 white, so the grey ground fills the corner notches. ONE ring,
+   never doubled edges. Text-only cells never get this — the contrast is the
+   whole point, and it is also why the vertical rule is dropped wherever a
+   mat provides the edge. */
 
 .ditherfield-root .tc-cell.is-framed {
-  margin: var(--tc-mat-inset);
+  margin: 0;
   padding: 0;
-  border: 1px solid var(--tc-mat-lite-edge);
-  border-radius: 5px;
-  background: var(--tc-mat-lite);
+  border: 0;
+  background: var(--tc-hair);
+  display: flex;
+}
+
+/* The ground behind the white cards is the shell line colour, so a row of
+   framed cells reads as white cards on the shell's own grey. */
+.ditherfield-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-hair);
 }
 
 .ditherfield-root .tc-cell.is-framed > .tc-card {
@@ -1021,7 +1025,8 @@
   display: flex;
   flex-direction: column;
   padding: var(--tc-card-pad);
-  border-radius: 2px;
+  border: 0;
+  border-radius: 12px;
   background: var(--tc-card);
 }
 
@@ -1087,15 +1092,10 @@
   justify-content: center;
 }
 
-/* A surface zone that holds light objects (the routing bars) gets the same
-   plate the language diagrams sit on: white chips on the second surface, the
-   viteplus grammar, instead of white bars lost on a white card. */
+/* A surface zone that holds light objects (the routing bars): the plate is
+   the card's own white now — the frame carries the edge work. */
 .ditherfield-root .tc-surface.is-plated {
-  margin-top: 20px;
-  padding: clamp(16px, 2vw, 22px) clamp(14px, 1.8vw, 20px);
-  border: 1px solid var(--tc-hair);
-  border-radius: 4px;
-  background: var(--tc-plate);
+  margin-top: 12px;
 }
 
 /* ---------- the ruled band ----------
@@ -1157,7 +1157,7 @@
 }
 
 .ditherfield-root .tc-bleed-art {
-  margin-top: 22px;
+  margin-top: 12px;
   flex: 1;
   display: flex;
   align-items: center;
@@ -1234,7 +1234,7 @@
   padding-top: 12px;
   border-top: 1px solid var(--tc-panel-rule);
   font-family: var(--tc-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.5;
   max-width: none;
   color: var(--tc-panel-dim);
@@ -1288,7 +1288,7 @@
 }
 
 .ditherfield-root .tc-cell-act {
-  margin-top: 24px;
+  margin-top: 12px;
 }
 
 /* stat cell — a ruled ledger on the second surface. The isometric glyphs that
@@ -1298,13 +1298,10 @@
    spread over whatever height the script field beside them settles on. */
 .ditherfield-root .tc-stats {
   flex: 1;
-  margin-top: 24px;
-  padding: 6px clamp(14px, 1.8vw, 20px) clamp(16px, 2vw, 22px);
+  margin-top: 12px;
+  padding: 0;
   display: grid;
   align-content: space-between;
-  border: 1px solid var(--tc-hair);
-  border-radius: 4px;
-  background: var(--tc-plate);
 }
 
 .ditherfield-root .tc-stat {
@@ -1340,7 +1337,7 @@
 
 /* inset panel cell — the frame now does what the sunk surface used to */
 .ditherfield-root .tc-cell.is-panel .tc-code {
-  margin-top: 22px;
+  margin-top: 12px;
 }
 
 /* ---------- the animated language diagrams ----------
@@ -1356,16 +1353,12 @@
 
 .ditherfield-root .tc-lang {
   flex: 1;
-  margin-top: 22px;
-  padding: clamp(18px, 2.2vw, 26px) clamp(14px, 1.8vw, 22px);
+  margin-top: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--tc-hair);
-  border-radius: 4px;
-  background: var(--tc-plate);
 
-  --lang-ground: var(--tc-plate);
+  --lang-ground: var(--tc-white);
 }
 
 .ditherfield-root .tc-lang.is-lead {
@@ -2356,16 +2349,31 @@
 }
 
 /* ============================================================
-   DF — THE BROADCAST HERO
-   A breathing 1-bit radial burst, ink on paper, with the type
-   block sitting inside the field's deliberate paper core. The
-   crosshair rules pass through the convergence point, under the
-   field; the type sits over it.
+   DF — THE BROADCAST BAND (the hero stack's visual cell)
+   The breathing 1-bit radial burst, ink on paper, is the full-
+   width band between the white hero card and the trust card.
+   The type moved up into the card; the field's deliberate paper
+   core holds the page's dev-first device instead — the real,
+   copyable command. Crosshair rules pass under the field through
+   the same convergence point (50%, 50%).
+
+   The plate is 1-bit and theme-following: the canvas ink is its
+   computed `color` (var(--tc-ink), re-sampled on theme flip), so
+   dark mode prints light dust on the ink-black paper — never a
+   white flash. The axes stay on the hairline token, one family
+   with the #3b3440 rules; the field runs at cell scale 4 so the
+   Bayer structure never beats against those 1px lines.
    ============================================================ */
 
-.ditherfield-root .df-hero {
+.ditherfield-root .tc-hero-cell.df-hero {
   position: relative;
-  min-height: clamp(540px, 82vh, 800px);
+  margin-top: 1px;
+  border-top: 0;
+  border-radius: 0;
+  padding: 0;
+  /* the band is PAPER: the ink is the field, and both follow the theme */
+  background: var(--tc-white);
+  min-height: clamp(360px, 46vh, 520px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2377,10 +2385,17 @@
   position: absolute;
   inset: 0;
   z-index: 1;
+  color: var(--tc-ink);
   pointer-events: none;
 }
 
-/* The convergence point is (50%, 46%) — the same constants the field bakes
+/* Dark mode: same two inks, flipped by themeInk; the exposure comes down a
+   step so the white dust reads as print, not glow. */
+[data-theme='dark'] .ditherfield-root .df-hero-field {
+  opacity: 0.82;
+}
+
+/* The convergence point is (50%, 50%) — the same constants the field bakes
    in. The rules are structure (hairline), never the drawing. */
 .ditherfield-root .df-hero-axis {
   position: absolute;
@@ -2392,7 +2407,7 @@
 .ditherfield-root .df-hero-axis.is-x {
   left: 0;
   right: 0;
-  top: 46%;
+  top: 50%;
   height: 1px;
 }
 
@@ -2407,105 +2422,24 @@
   position: relative;
   z-index: 2;
   text-align: center;
-  padding: clamp(40px, 5vw, 64px) var(--tc-gut);
   /* The core is paper by construction; no halo needed over the field. */
 }
 
+/* The broadcast source: one step up from the button scale, mono, quiet. */
 .ditherfield-root .df-hero-cmd {
-  margin-bottom: 26px;
-}
-
-.ditherfield-root .df-hero-core h1 {
-  font-size: clamp(2.3rem, 5.4vw, 4.1rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  margin-inline: auto;
-  text-wrap: balance;
-}
-
-.ditherfield-root .df-hero-core h1 span {
-  display: block;
-}
-
-/* The emphasis is the brand's device, not a hue: the two threads — source
-   and translation at constant gauge — running under the word, in ink. */
-.ditherfield-root .df-hero-core h1 em {
-  font-style: normal;
-  padding-bottom: 0.06em;
-  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
-    linear-gradient(var(--thread-ink), var(--thread-ink));
-  background-repeat: no-repeat;
-  background-size:
-    100% var(--thread-gauge),
-    100% var(--thread-gauge);
-  background-position:
-    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
-    0 100%;
-}
-
-.ditherfield-root .df-hero-sub {
-  margin: 20px auto 0;
-  max-width: 46ch;
-  font-size: 15.5px;
-  line-height: 1.6;
-  color: var(--tc-ink-2);
-}
-
-.ditherfield-root .df-hero-acts {
-  margin-top: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  height: 44px;
+  padding: 0 18px;
+  gap: 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
 }
 
 /* ============================================================
-   DF — TRUST WALL (M03, glyph-masked)
-   The claim is the heading; the six wordmarks are 1-bit fields
-   from the same engine as the hero above them.
+   DF — TRUST CARD (M03, glyph-masked)
+   The stack's third surface. The claim is the lead; the six
+   wordmarks are 1-bit fields from the same engine as the band
+   above them, in the ruled six-cell row.
    ============================================================ */
-
-.ditherfield-root .df-trust {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2.1fr);
-  border-top: 1px solid var(--tc-hair);
-}
-
-.ditherfield-root .df-trust-claim {
-  padding: clamp(26px, 3vw, 40px) var(--tc-gut);
-  border-right: 1px solid var(--tc-hair);
-  display: flex;
-  align-items: center;
-}
-
-.ditherfield-root .df-trust-claim h2 {
-  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
-  line-height: 1.17;
-  letter-spacing: -0.02em;
-  max-width: 17ch;
-}
-
-.ditherfield-root .df-trust-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.ditherfield-root .df-trust-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 12px;
-}
-
-.ditherfield-root .df-trust-cell:nth-child(3n + 2),
-.ditherfield-root .df-trust-cell:nth-child(3n) {
-  border-left: 1px solid var(--tc-hair-2);
-}
-
-.ditherfield-root .df-trust-cell:nth-child(n + 4) {
-  border-top: 1px solid var(--tc-hair-2);
-}
 
 .ditherfield-root .df-wm {
   font-family: var(--tc-disp);
@@ -2725,20 +2659,9 @@
    DF — RESPONSIVE
    ============================================================ */
 
-@media (max-width: 1000px) {
-  .ditherfield-root .df-trust {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .ditherfield-root .df-trust-claim {
-    border-right: 0;
-    border-bottom: 1px solid var(--tc-hair);
-  }
-}
-
 @media (max-width: 700px) {
-  .ditherfield-root .df-hero {
-    min-height: clamp(480px, 78vh, 640px);
+  .ditherfield-root .tc-hero-cell.df-hero {
+    min-height: clamp(320px, 52vh, 440px);
   }
 
   .ditherfield-root .df-loc-row {
@@ -2764,46 +2687,38 @@
   .ditherfield-root .df-globe-well {
     min-height: 300px;
   }
-
-  .ditherfield-root .df-trust-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .ditherfield-root .df-trust-cell:nth-child(3n + 2),
-  .ditherfield-root .df-trust-cell:nth-child(3n) {
-    border-left: 0;
-  }
-
-  .ditherfield-root .df-trust-cell:nth-child(2n) {
-    border-left: 1px solid var(--tc-hair-2);
-  }
-
-  .ditherfield-root .df-trust-cell:nth-child(n + 3) {
-    border-top: 1px solid var(--tc-hair-2);
-  }
 }
 
 
 /* ---- dark mode ----
-   Token remap only: the measured oxc palette (bg #16171D, rules #3B3440,
-   panel #14121A). Everything downstream re-skins from these. */
+   Token remap only. Everything downstream re-skins from these. */
 [data-theme='dark'] .ditherfield-root {
-  --tc-paper: #16171d;
-  --tc-sunk: #16171d;
-  --tc-white: #1e1f26;
-  --tc-card: #1e1f26;
+  /* One surface family in the dark, the way light mode is one white: every
+     card, plate and sunk surface lands on the same ink black, in the dark
+     band's own family, so the page never shifts grey between sections. */
+  --tc-paper: #0a0b0f;
+  --tc-sunk: #0d0e12;
+  --tc-white: #0d0e12;
+  --tc-card: #0d0e12;
   --tc-ink: #ffffff;
   --tc-ink-2: rgba(255, 255, 255, 0.66);
   --tc-ink-3: rgba(255, 255, 255, 0.48);
   --tc-ink-4: rgba(255, 255, 255, 0.3);
   --tc-hair: #3b3440;
   --tc-hair-2: #2b2731;
-  --tc-plate: #1e1f26;
+  --tc-plate: #0d0e12;
   --tc-hatch: rgba(255, 255, 255, 0.07);
 }
 
 [data-theme='dark'] .ditherfield-root .tc-btn-solid {
   background: #ffffff;
+  color: #16171d;
+}
+
+/* Dark theme: the window buttons fill with --tc-ink, which remaps to white,
+   but their label was hard-coded light — white on white. The same inversion
+   the dark remap gives .tc-btn-solid. */
+[data-theme='dark'] .ditherfield-root .tcx-btn {
   color: #16171d;
 }
 
@@ -2849,4 +2764,359 @@
   border-inline: 1px solid var(--tc-hair);
   pointer-events: none;
   z-index: 2;
+}
+
+/* ============================================================
+   ANCHOR: tc-curation-r1 — dark-grid diagram adaptations
+   (propagated from toolchain; rescoped) New classes only.
+   ============================================================ */
+
+/* -- (1) the <T> wrap thread --------------------------------------
+   The brand's two lines (THREAD_MOTIF — constant gauge, never merging)
+   run the sample's own left margin from <T> to </T>, feet turned toward
+   the code they bind. Panel-dim white, so the pair reads in light and
+   dark theme alike — the panel itself never remaps. */
+.ditherfield-root .tc-code-wrap {
+  position: relative;
+}
+
+.ditherfield-root .tc-code-wrap::before,
+.ditherfield-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.ditherfield-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.ditherfield-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .ditherfield-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .ditherfield-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+/* -- (2) glossary directives --------------------------------------
+   Per-locale style rules under the pinned entries. The group divider is
+   the page's stronger hairline against the hair-2 rules inside each half. */
+.ditherfield-root .tcx-dirs {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.ditherfield-root .tcx-dirs li span {
+  font-size: 12.5px;
+}
+
+/* -- (6) the source/preview pane pair -----------------------------
+   Two panes on the dev window's own surface, split by the in-window
+   hairline. State is type weight on the live pane's tag. */
+.ditherfield-root .tcx-pane {
+  padding: 10px 11px 13px;
+}
+
+.ditherfield-root .tcx-pane + .tcx-pane {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.ditherfield-root .tcx-pane-tag {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.ditherfield-root .tcx-pane-tag.is-on {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of ground; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.ditherfield-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.ditherfield-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+/* ---- the dark band's bloom canvas ----
+   The v3 CLI cell's field, drawn by this page's own engine: the canvas takes
+   the shader's box (darkband-v3.css .tcb-cli-field) and adds the 1-bit
+   upscale discipline. Paper-on-ink, permanently dark — never remaps. */
+.ditherfield-root .tcb .tcb-cli-field.df-cli-bloom {
+  display: block;
+  image-rendering: pixelated;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ============================================================
+   DF — THE HERO STACK (founder grammar)
+   White card above the broadcast band above the trust card:
+   three surfaces on the shell-grey ground, 1px seams, radius-12
+   corners with the ground filling the notches. The founder
+   overlay below pins the seams; these set the surfaces.
+   ============================================================ */
+
+.ditherfield-root .tc-sec.tch-hero-sec {
+  --tch-inset: clamp(10px, 1.1vw, 14px);
+  background: var(--tc-hair);
+}
+
+/* the white hero card — the only rounded surface above the band */
+.ditherfield-root .tc-hero.tch-card {
+  border-radius: 12px;
+  background: var(--tc-card);
+  padding: clamp(24px, 2.6vw, 34px) var(--tc-gut) clamp(20px, 2.2vw, 26px);
+}
+
+/* the card trades a step of air for the band: the broadcast has to land
+   inside a 900px first fold */
+.ditherfield-root .tch-card .tc-hero-mark {
+  margin-bottom: 10px;
+}
+
+/* the light mark's ink strokes vanish on the dark card — brand rule: invert */
+[data-theme='dark'] .ditherfield-root .tch-card .tc-hero-mark {
+  filter: invert(1);
+}
+
+.ditherfield-root .tch-card .tc-hero-sub {
+  margin-top: 12px;
+}
+
+.ditherfield-root .tch-card .tc-hero-acts {
+  margin-top: 18px;
+}
+
+/* the trust row: the card grammar repeated below the band */
+.ditherfield-root .tch-hero-sec > .tc-trust.tch-trustcard {
+  border-radius: 12px;
+  background: var(--tc-card);
+  overflow: hidden;
+}
+
+/* ============================================================
+   FOUNDER PICKS (propagated from toolchain's tail; rescoped)
+   ============================================================ */
+
+.ditherfield-root .tc-sec:has(> .tc-hero) > *:last-child {
+  margin-bottom: 0;
+}
+
+/* the trust row completes the hero stack: third card, same seam */
+.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  background: var(--tc-white);
+  border-radius: 12px;
+  margin-top: 1px;
+}
+
+/* ---- founder emergency overlay: no cream, ever ----
+   Grounds are the shell grey, reveals are 1px. Token-level override so
+   whatever consumes these vars re-skins correctly. */
+.ditherfield-root {
+  --tch-ground: var(--tc-hair);
+  --tf-ground: var(--tc-white);
+}
+
+.ditherfield-root .tc-sec:has(> .tc-hero) {
+  background: var(--tc-hair) !important;
+  /* the nav's full-width rule is the top divider; ground shows only in the
+     card corner notches */
+  padding: 0 !important;
+}
+
+.ditherfield-root .tc-nav {
+  margin-bottom: 0;
+}
+
+/* the hero card sits in the section's 1px reveal — no extra surround,
+   no border, no outline: the rounding and the ground do all the work */
+.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-hero {
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* ---- punch list: stats grid + guide headroom ----
+   Numeral above label, two per row, tabular figures on a shared baseline,
+   doubled-hairline separators; the old value-left/label-right stretch dies. */
+.ditherfield-root .tc-stats.is-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.ditherfield-root .tc-stats.is-grid .tc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 16px 16px;
+  border-top: 1px double var(--tc-hair);
+  border-top-width: 3px;
+  border-top-style: double;
+}
+
+.ditherfield-root .tc-stats.is-grid .tc-stat:nth-child(-n + 2) {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.ditherfield-root .tc-stats.is-grid .tc-stat:nth-child(2n) {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.ditherfield-root .tc-stats.is-grid .tc-stat-value {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.ditherfield-root .tc-stats.is-grid .tc-stat-label {
+  text-align: left;
+  color: var(--tc-ink-3);
+}
+
+.ditherfield-root .tc-eg {
+  top: -0.02em;
+}
+
+/* founder picks: the band sits at the 1px seam (no gap above), and the
+   trust card carries zero padding of its own */
+.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-hero-cell {
+  margin-top: 1px !important;
+  border-top: 0 !important;
+}
+
+.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  margin-top: 1px !important;
+  padding: 0 !important;
+}
+
+/* the morphing word carries no box of its own — the guides are the only frame */
+.ditherfield-root .tc-hero h1 em[data-every] {
+  outline: 0 !important;
+  border: 0 !important;
+}
+
+/* trust lead: no side or bottom padding */
+.ditherfield-root .tc-trust .tc-trust-lead {
+  padding: 24px 0 0 !important;
+}
+
+/* ---- founder picks: corner concentricity, trust full-bleed, head icons ---- */
+/* Trust card: lead padding restored; the card itself bleeds over the
+   section's 1px pad so no grey shows under or beside the logos. */
+.ditherfield-root .tc-trust .tc-trust-lead {
+  padding: 24px 36px 18px !important;
+}
+
+.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  margin: 1px 0 -1px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 12px;
+}
+
+/* Huge quiet section icons, bleeding off the right edge. */
+.ditherfield-root .tc-head {
+  position: relative;
+  overflow: hidden;
+}
+
+.ditherfield-root .tc-head-icon {
+  position: absolute;
+  right: -48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 240px;
+  height: 240px;
+  color: var(--tc-ink);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+/* Hatch spacers: reveal tweens leave transforms on the framed cards above,
+   whose stacking contexts otherwise paint over the hatch's top rule. */
+.ditherfield-root .tc-hatch {
+  position: relative;
+  z-index: 2;
+}
+
+/* Founder: the quad's column rules touch the card's top and bottom edges.
+   The card's padding is a single token, so the rules extend by exactly it. */
+.ditherfield-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.ditherfield-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Nav theme switch, left of Sign in: token ink, quiet until hover. */
+.ditherfield-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.ditherfield-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand mark carries both variants; the theme picks one. */
+.ditherfield-root .tc-logo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .ditherfield-root .tc-logo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .ditherfield-root .tc-logo-light {
+  display: none;
+}
+
+/* The trust band's lower rule. The blanket border-zeroing above (which cured
+   the doubled edges at the nav junction) also erased the one line that should
+   survive — under the brands. Appended later, so border-bottom wins by order. */
+.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+  border-bottom: 1px solid var(--tc-hair) !important;
+  border-radius: 12px 12px 0 0;
 }

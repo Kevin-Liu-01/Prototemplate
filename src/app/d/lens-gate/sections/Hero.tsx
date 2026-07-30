@@ -9,6 +9,8 @@ import { useRef, useState } from 'react';
 import type { LensFieldHandle } from '../lib/lens-field';
 import LensField from './LensField';
 
+import './hero-every.css';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const CUSTOMERS: readonly { name: string; mark: string }[] = [
@@ -39,10 +41,11 @@ type LensPair = {
  * prototype and the portal hero's pair data) — what leaves the glass has to be
  * correct copy, so glyph soup would break the premise. Three rule rows, two
  * artifacts each; a row's traffic alternates between its two pairs so the loop
- * never reads mechanical. Row order matters: rows nearer the lens equator have
- * the least room past the exit rim, so they carry the shortest translations;
- * the bottom row (widest exit chord) carries the nav bar and the
- * currency/date reading — localization surface beyond words.
+ * never reads mechanical. Row order matters: the middle row rides the lens
+ * equator where the exit chord is widest, so it carries the nav bar — the
+ * longest artifact; the flanking rows carry the shorter strings, and the
+ * bottom row keeps the currency/date reading — localization surface beyond
+ * words.
  */
 const ROWS: readonly (readonly LensPair[])[] = [
   [
@@ -62,24 +65,24 @@ const ROWS: readonly (readonly LensPair[])[] = [
   ],
   [
     {
+      id: 'nav',
+      locale: 'JA',
+      en: { kind: 'nav', label: 'Home · Docs · Pricing' },
+      tr: { kind: 'nav', label: 'ホーム · ドキュメント · 料金' },
+    },
+    {
       id: 'toast',
       locale: 'DE',
       en: { kind: 'toast', label: 'Payment received' },
       tr: { kind: 'toast', label: 'Zahlung erhalten' },
     },
+  ],
+  [
     {
       id: 'review',
       locale: 'KO',
       en: { kind: 'chip', label: 'Ready for review' },
       tr: { kind: 'chip', label: '검토 준비 완료' },
-    },
-  ],
-  [
-    {
-      id: 'nav',
-      locale: 'JA',
-      en: { kind: 'nav', label: 'Home · Docs · Pricing' },
-      tr: { kind: 'nav', label: 'ホーム · ドキュメント · 料金' },
     },
     {
       id: 'meter',
@@ -90,7 +93,7 @@ const ROWS: readonly (readonly LensPair[])[] = [
   ],
 ];
 
-/** Endonyms seated on the hero's bottom rule — 12 listed of the 118 covered. */
+/** Endonyms seated on the band's bottom rule — 12 listed of the 118 covered. */
 const ENDONYMS: readonly string[] = [
   'Español',
   '日本語',
@@ -112,6 +115,15 @@ const PITCH = 28;
 /** Initial loop phases per row, staggered unevenly so no still reads timed. */
 const SEEDS: readonly number[] = [0.15, 0.52, 0.8];
 
+/* "language" across maximally different writing systems — Latin, Japanese,
+   Arabic, Devanagari, Cyrillic, Han, Hangul, Greek — short tokens so the
+   re-measured line never wraps. The headline hinge morphs through them; the
+   band below shows the same story as traffic through the glass. */
+const EVERY: readonly string[] = ['language', '言語', 'لغة', 'भाषा', 'язык', '语言', '언어', 'γλώσσα'];
+
+/* the dissolve dust pool: small glyphs sampled across the same scripts */
+const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
+
 /* The glass material per theme. On paper the lifts (caustic, pool, specular)
    only have ~1.6% of headroom to pure white, so they lean on contrast with the
    body tint and on washing the rules; on dark paper the same lifts are potent,
@@ -131,11 +143,12 @@ const LIGHT = {
   shadowAlpha: 0.07,
 };
 
-/* #16171d / #ffffff — the dark-theme remap, mirrored into the shader so the
-   canvas follows the token flip instead of staying a paper rectangle. */
+/* #0a0b0f / #ffffff — the ink-black dark remap (the one-surface family),
+   mirrored into the shader so the canvas follows the token flip instead of
+   staying a paper rectangle. */
 const DARK = {
   ink: [1, 1, 1] as [number, number, number],
-  paper: [0.0863, 0.0902, 0.1137] as [number, number, number],
+  paper: [0.0392, 0.0431, 0.0588] as [number, number, number],
   ruleAlpha: 0.13,
   ringAlpha: 0.3,
   spectral: 0.34,
@@ -184,24 +197,26 @@ function CardView({ card, stamp }: { card: LensCard; stamp?: string }) {
 }
 
 /**
- * The hero IS the ruled page. Its own hairlines run as a WebGL field, and one
- * circular glass lens sits right-of-center: rules magnify and bow through it,
- * snap perfectly straight outside it, and carry the page's single chroma
- * moment as a sub-pixel fringe on the rim. The headline sits on the flat pane
- * to the left — the one region the glass never crosses.
+ * The founder stack, with the lens as the band: a white hero card (mark, the
+ * two authored headline lines with the morphing hinge, sub, acts) over the
+ * full-width ruled band, over the trust card — three surfaces on the shell
+ * ground separated by 1px seams.
  *
- * Translation is continuous traffic: English artifacts travel along the rule
- * lines, slip under the rim (each lane is masked by the true lens disc, so a
- * card follows the curve of the glass as it disappears), and emerge on the far
- * side translated and locale-stamped. Three rows loop out of phase, each
- * alternating two artifacts, so any still frame catches at least one pair
- * mid-story. The GT mark holds the core — the product is the glass — and a
- * quiet endonym ledger seats on the hero's bottom rule.
+ * The band IS the ruled page. Its canvas draws the page's own hairlines at a
+ * 28px pitch and refracts them through one breathing glass lens at the band's
+ * center; rules magnify and bow through it, snap perfectly straight outside
+ * it, and carry the page's single chroma moment as a sub-pixel fringe on the
+ * rim. Translation is continuous traffic: English artifacts travel along the
+ * rule lines, slip under the rim (each lane is masked by the true lens disc,
+ * so a card follows the curve of the glass as it disappears), and emerge on
+ * the far side translated and locale-stamped. Three rows loop out of phase,
+ * each alternating two artifacts, so any still frame catches at least one
+ * pair mid-story. The GT mark holds the core — the product is the glass —
+ * and a quiet endonym ledger seats on the band's last rule.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const coreRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<LensFieldHandle | null>(null);
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -216,8 +231,7 @@ export default function Hero() {
   useGSAP(
     () => {
       const hero = heroRef.current;
-      const core = coreRef.current;
-      if (!hero || !core) return;
+      if (!hero) return;
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const rowEls = gsap.utils.toArray<HTMLElement>('.lg-row', hero);
@@ -226,75 +240,54 @@ export default function Hero() {
       let gate: ScrollTrigger | null = null;
       let buildTimer: ReturnType<typeof setTimeout> | undefined;
 
-      /* Lens placement policy. Everything derives from two measured boxes:
-         the hero (canvas) and the flat pane. The glass must clear the pane by
-         layout, the whole circle must stay inside the hero, and every traffic
-         row must be a rule line whose full card height crosses the glass —
-         the constraint order below (rows first, then center from the last
-         row) is what keeps all three true at every viewport. */
+      /* Lens placement policy. With the type on its own card above, the band
+         is free geometry: the glass holds the band's center, and every
+         traffic row is a rule line whose full card height crosses the glass —
+         desktop runs three rows (the middle one riding the equator, where the
+         exit chord is widest), phones two, hugging it one rule out. */
       const measure = () => {
         const hb = hero.getBoundingClientRect();
-        const cb = core.getBoundingClientRect();
-        if (hb.width < 2 || cb.width < 2) return;
+        if (hb.width < 2 || hb.height < 2) return;
         const w = hb.width;
         const h = hb.height;
-        const flatRight = cb.right - hb.left;
-        const flatBottom = cb.bottom - hb.top;
-
-        /* Below this the flat pane and the glass cannot share a band, so the
-           lens drops under the copy and the traffic rows cross it there. */
-        const narrow = w < 1060;
         /* Below the rail's borderless cut, cards may enter and exit through
            the screen edges; inside a bordered rail they never cross it. */
         const phone = w <= 620;
-        hero.dataset.lensNarrow = narrow ? 'true' : 'false';
 
         const px = (value: number) => `${Math.round(value * 100) / 100}px`;
         const setVar = (name: string, value: number) => {
           hero.style.setProperty(name, px(value));
         };
 
-        const heroIn = hero.querySelector<HTMLElement>('.lg-hero-in');
-        const gut = heroIn ? parseFloat(getComputedStyle(heroIn).paddingLeft) || 24 : 24;
+        /* The page gutter, read off the ledger — the band's one padded child. */
+        const ledger = hero.querySelector<HTMLElement>('.lg-ledger');
+        const gut = ledger ? parseFloat(getComputedStyle(ledger).paddingLeft) || 24 : 24;
         const cardH = phone ? 28 : 34;
         const laneH = cardH + 14;
 
-        let cx: number;
-        let cy: number;
-        let r: number;
+        const cx = w / 2;
+        const cy = h / 2;
+        /* Rows snap to rule lines; the equator row is the nearest rule. */
+        const cyRule = Math.round(cy / PITCH) * PITCH;
         const rowYs: number[] = [];
-
-        if (narrow) {
-          r = Math.min(
-            clampNum(w * 0.3, 104, 148),
-            h * 0.28,
-            Math.max((h - flatBottom - 120) / 2, 60)
-          );
-          cx = w / 2;
-          cy = clampNum(flatBottom + 40 + r, r + 24, h - r - 60);
-          /* Two rows hugging the equator (one rule out), snapped to rules —
-             near the equator the rim crossing is steep, so a traveling card
-             cuts cleanly under the glass instead of smearing along a
-             near-tangent arc. */
-          const cyRule = Math.round(cy / PITCH) * PITCH;
+        let r: number;
+        if (phone) {
+          r = Math.min(clampNum(w * 0.3, 104, 148), h * 0.3);
+          /* Two rows hugging the equator (one rule out) — near the equator
+             the rim crossing is steep, so a traveling card cuts cleanly
+             under the glass instead of smearing along a near-tangent arc. */
           rowYs.push(cyRule - PITCH, cyRule + PITCH);
         } else {
-          r = Math.min(clampNum(w * 0.205, 200, 250), h * 0.37);
-          /* Rows are rule indices two apart (56px). The first row clears the
-             flat pane by a full lane, so every approach run starts at the
-             gutter and passes beneath the pane's baseline — never under it. */
-          const first = Math.ceil((flatBottom + laneH + 6) / PITCH);
-          rowYs.push(first * PITCH, (first + 2) * PITCH, (first + 4) * PITCH);
-          cx = clampNum(flatRight + r + 28, w * 0.56, w - r - 120);
-          const lastRow = rowYs[rowYs.length - 1] ?? flatBottom + 112;
-          /* Pull the center down until the bottom row still cuts the glass. */
-          cy = clampNum(Math.max(h * 0.47, lastRow + 24 - r), r + 24, h - r - 26);
+          r = Math.min(clampNum(w * 0.205, 200, 250), h * 0.4);
+          /* Three rows, rule indices two apart (56px), symmetric about the
+             equator — all three cut the glass at every band height. */
+          rowYs.push(cyRule - 2 * PITCH, cyRule, cyRule + 2 * PITCH);
         }
 
         setVar('--lg-cx', cx);
         setVar('--lg-cy', cy);
         setVar('--lg-r', r);
-        /* The endonym ledger seats on the last drawn rule of the hero. */
+        /* The endonym ledger seats on the last drawn rule of the band. */
         setVar('--lg-ledger-b', h - Math.floor((h - 18) / PITCH) * PITCH);
 
         const geos: RowGeo[] = [];
@@ -338,7 +331,7 @@ export default function Hero() {
           geos.push({ enW, trW, trVisW, chordMax, chordMin, enPad: gut - enL, phone });
         });
 
-        /* Rows beyond this breakpoint's count (the third row on narrow) park
+        /* Rows beyond this breakpoint's count (the third row on phones) park
            off-canvas; the builder also zeroes their travelers. */
         for (let i = rowYs.length; i < rowEls.length; i++) {
           const spare = rowEls[i];
@@ -485,7 +478,6 @@ export default function Hero() {
         scheduleBuild();
       });
       observer.observe(hero);
-      observer.observe(core);
       void document.fonts?.ready.then(() => {
         measure();
         scheduleBuild();
@@ -499,7 +491,7 @@ export default function Hero() {
 
       if (!reduced) {
         /* The loops are cheap, but there is no reason to run them while the
-           hero is scrolled away. */
+           band is scrolled away. */
         gate = ScrollTrigger.create({
           trigger: hero,
           start: 'top bottom',
@@ -545,6 +537,211 @@ export default function Hero() {
           });
           rot.add(() => {}, items.length * step);
         }
+
+        /* ---- the headline hinge (the toolchain instrument) ----
+           Each cycle: the bound guides appear around the current word; the
+           word dissolves into small glyphs from many scripts; the bounds
+           tween to the NEXT word's measured width first — scoping the layout
+           shift before any text exists — then the dust converges onto the
+           incoming letterforms (canvas-sampled) and the characters fill the
+           silhouette in. The doubled underline re-measures with the em at
+           constant gauge. Under 720px, a clean measured crossfade tells the
+           same story. */
+        const em = root.current?.querySelector<HTMLElement>('[data-every]');
+        const word = root.current?.querySelector<HTMLElement>('[data-every-word]');
+        const compactEvery = window.matchMedia('(max-width: 720px)').matches;
+        if (em && word && compactEvery) {
+          /* At mobile scale 26 particles cannot breathe: a clean measured
+             crossfade tells the same story. */
+          let ci = 0;
+          const compactSwap = () => {
+            if (!root.current || !root.current.isConnected) return;
+            ci = (ci + 1) % EVERY.length;
+            const w0 = em.offsetWidth;
+            gsap.to(word, { autoAlpha: 0, duration: 0.2, ease: 'power2.in', onComplete: () => {
+              word.textContent = EVERY[ci] ?? 'language';
+              em.style.width = 'auto';
+              const w1 = em.offsetWidth;
+              gsap.fromTo(em, { width: w0 }, { width: w1, duration: 0.35, ease: 'power3.inOut',
+                onComplete: () => { em.style.width = 'auto'; } });
+              gsap.to(word, { autoAlpha: 1, duration: 0.24, ease: 'power2.out', delay: 0.12 });
+              gsap.delayedCall(2.4, compactSwap);
+            } });
+          };
+          em.style.display = 'inline-block';
+          em.style.whiteSpace = 'nowrap';
+          gsap.delayedCall(3.4, compactSwap);
+        }
+        if (em && word && !compactEvery) {
+          const guideL = document.createElement('span');
+          guideL.className = 'tc-eg is-l';
+          const guideR = document.createElement('span');
+          guideR.className = 'tc-eg is-r';
+          const dust = document.createElement('span');
+          dust.className = 'tc-edust';
+          for (let i = 0; i < 26; i++) {
+            const g = document.createElement('span');
+            g.textContent = DUST[i % DUST.length] ?? '';
+            dust.appendChild(g);
+          }
+          em.append(guideL, guideR, dust);
+          const dustGlyphs = Array.from(dust.children) as HTMLElement[];
+
+          const setChars = (text: string) => {
+            word.innerHTML = '';
+            for (const ch of text) {
+              const c = document.createElement('span');
+              c.className = 'tc-ech';
+              c.textContent = ch;
+              word.appendChild(c);
+            }
+            return Array.from(word.children) as HTMLElement[];
+          };
+
+          /* Sample the incoming word's letterforms: draw it on an offscreen
+             canvas at the em's own font and collect dark-pixel positions. The
+             dust converges onto these points, so the glyphs sketch the shapes
+             of the characters before the characters themselves fill in. */
+          const sampleShape = (text: string, width: number, height: number, count: number) => {
+            const style = getComputedStyle(word);
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(width, 10);
+            canvas.height = Math.max(height, 10);
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return [];
+            ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 0, canvas.height / 2);
+            const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const pts: { x: number; y: number }[] = [];
+            const step = 3;
+            for (let y = 0; y < canvas.height; y += step) {
+              for (let x = 0; x < canvas.width; x += step) {
+                if ((img[(y * canvas.width + x) * 4 + 3] ?? 0) > 128) pts.push({ x, y });
+              }
+            }
+            // spread the picks across the whole word rather than clustering
+            const picked: { x: number; y: number }[] = [];
+            if (pts.length) {
+              const stride = Math.max(1, Math.floor(pts.length / count));
+              for (let i = 0; i < pts.length && picked.length < count; i += stride) {
+                const pt = pts[i];
+                if (pt) picked.push(pt);
+              }
+            }
+            return picked;
+          };
+
+          const measureWord = (text: string) => {
+            const probe = document.createElement('span');
+            probe.style.visibility = 'hidden';
+            probe.style.position = 'absolute';
+            probe.style.whiteSpace = 'nowrap';
+            probe.textContent = text;
+            em.appendChild(probe);
+            const w = probe.offsetWidth;
+            probe.remove();
+            return w;
+          };
+
+          let idx = 0;
+          const swap = () => {
+            if (!root.current || !root.current.isConnected) return;
+            idx = (idx + 1) % EVERY.length;
+            const nextText = EVERY[idx] ?? 'language';
+            const w0 = em.offsetWidth;
+            const w1 = measureWord(nextText);
+            const outChars = Array.from(word.children) as HTMLElement[];
+            const tl = gsap.timeline({
+              onComplete: () => {
+                em.style.width = 'auto';
+                gsap.delayedCall(2.2, swap);
+              },
+            });
+
+            // 1. the instrument appears around the current word
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' });
+
+            // 2. the word dissolves into small glyphs
+            tl.to(outChars, {
+              scale: 0.25,
+              autoAlpha: 0,
+              y: () => gsap.utils.random(-14, 14),
+              x: () => gsap.utils.random(-18, 18),
+              duration: 0.3,
+              stagger: 0.02,
+              ease: 'power2.in',
+            }, '+=0.05');
+            /* the cloud separates SYMMETRICALLY about the word's centre: each
+               glyph takes an evenly-spread angle on a jittered ring, so the
+               scatter is balanced instead of clumping off to one side */
+            const h0 = em.offsetHeight;
+            const ring = (w: number) => (g: HTMLElement, i: number) => {
+              const angle = (i / dustGlyphs.length) * Math.PI * 2 + gsap.utils.random(-0.2, 0.2);
+              const rx = gsap.utils.random(0.18, 0.44) * w;
+              const ry = gsap.utils.random(6, h0 * 0.26);
+              return {
+                // clamped so no glyph ever leaves the measured bounds
+                x: gsap.utils.clamp(3, w - 3, w / 2 + Math.cos(angle) * rx),
+                y: gsap.utils.clamp(-h0 * 0.02, h0 * 0.32, h0 * 0.1 + Math.sin(angle) * ry),
+              };
+            };
+            const place0 = ring(Math.max(w0, 30));
+            tl.to(dustGlyphs, {
+              autoAlpha: () => gsap.utils.random(0.35, 0.8),
+              x: (i, g) => place0(g as HTMLElement, i).x,
+              y: (i, g) => place0(g as HTMLElement, i).y,
+              duration: 0.26,
+              stagger: 0.012,
+              ease: 'power1.out',
+            }, '<+=0.1');
+
+            // 3. the bounds scope the coming layout shift — before any text
+            tl.fromTo(em, { width: w0 }, { width: w1, duration: 0.42, ease: 'power3.inOut' });
+            const place1 = ring(Math.max(w1, 30));
+            tl.to(dustGlyphs, {
+              x: (i, g) => place1(g as HTMLElement, i).x,
+              y: (i, g) => place1(g as HTMLElement, i).y,
+              duration: 0.42,
+              ease: 'power3.inOut',
+            }, '<');
+
+            // 4. the dust assembles the SHAPES of the incoming characters —
+            //    each glyph flies to a sampled point on the new letterforms —
+            //    and only then do the actual characters fill the silhouette in.
+            tl.add(() => {
+              const h = em.offsetHeight;
+              const pts = sampleShape(nextText, w1, h, dustGlyphs.length);
+              dustGlyphs.forEach((g, i) => {
+                const pt = pts[i % Math.max(pts.length, 1)] || { x: w1 / 2, y: h / 2 };
+                gsap.to(g, {
+                  x: pt.x,
+                  y: pt.y - h * 0.4,
+                  autoAlpha: 0.9,
+                  duration: 0.38,
+                  ease: 'power3.inOut',
+                  delay: i * 0.008,
+                });
+              });
+              gsap.delayedCall(0.42, () => {
+                const inChars = setChars(nextText);
+                gsap.fromTo(inChars,
+                  { autoAlpha: 0 },
+                  { autoAlpha: 1, duration: 0.3, stagger: 0.03, ease: 'power1.inOut' });
+                gsap.to(dustGlyphs, { autoAlpha: 0, duration: 0.26, stagger: 0.006, ease: 'power1.out', delay: 0.08 });
+              });
+            });
+            tl.to({}, { duration: 0.85 });
+
+            // 5. the instrument withdraws
+            tl.to([guideL, guideR], { opacity: 0, duration: 0.24, ease: 'none' }, '>-0.05');
+          };
+
+          setChars('language');
+          /* The first dissolve waits out the first-fold capture window: any
+             still taken while the traffic settles shows the word whole. */
+          gsap.delayedCall(5.6, swap);
+        }
       }
 
       return () => {
@@ -560,7 +757,50 @@ export default function Hero() {
 
   return (
     <section className='tc-sec' id='top' ref={root}>
-      <div className='lg-hero' ref={heroRef} data-lens-narrow='false'>
+      {/* The white hero card: mark, two authored lines with the accented word
+          opening line two on the hinge of the sentence, sub, acts. */}
+      <div className='tc-hero'>
+        <Image
+          className='tc-hero-mark'
+          data-hero-in
+          src='/brand/no-bg-gt-logo-light.png'
+          alt='General Translation'
+          width={34}
+          height={34}
+        />
+
+        <h1 data-hero-in>
+          <span>Your product speaks</span>
+          <span>
+            every{' '}
+            <em data-every>
+              <span data-every-word>language</span>
+            </em>
+            .
+          </span>
+        </h1>
+
+        <p className='tc-hero-sub' data-hero-in>
+          General Translation builds full-stack infrastructure for localizing apps, docs, and
+          websites.
+        </p>
+
+        <div className='tc-hero-acts' data-hero-in>
+          <a className='tc-btn tc-btn-solid' href='#pricing'>
+            Get started
+          </a>
+          <a className='tc-btn tc-btn-line' href='#frameworks'>
+            Docs
+          </a>
+          <button className='tc-copy' type='button' onClick={copy}>
+            <span>$ npx gt@latest</span>
+            <span>{copied ? 'Copied' : 'Copy'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* The full-width band between the cards: the ruled page and its glass. */}
+      <div className='tc-hero-cell lg-hero' ref={heroRef}>
         <LensField
           className='lg-hero-field'
           speed={1}
@@ -575,37 +815,6 @@ export default function Hero() {
         <span className='lg-hero-tag is-out' data-hero-in>
           out — 118 locales
         </span>
-
-        <div className='lg-hero-in'>
-          {/* The flat pane: the one region of the page the glass never
-              crosses, so the type sits on optically straight rules. */}
-          <div className='lg-hero-core' ref={coreRef}>
-            <h1 data-hero-in>
-              <span>Launch in</span>
-              <span>
-                <em>every</em> language.
-              </span>
-            </h1>
-
-            <p className='lg-hero-sub' data-hero-in>
-              General Translation builds full-stack infrastructure for localizing apps, docs, and
-              websites.
-            </p>
-
-            <div className='lg-hero-acts' data-hero-in>
-              <a className='tc-btn tc-btn-solid' href='#pricing'>
-                Get started
-              </a>
-              <a className='tc-btn tc-btn-line' href='#frameworks'>
-                Docs
-              </a>
-              <button className='tc-copy' type='button' onClick={copy}>
-                <span>$ npx gt@latest</span>
-                <span>{copied ? 'Copied' : 'Copy'}</span>
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* The traffic: EN in on the left rules, translated out on the right,
             every lane clipped by the true disc of the glass. Decorative to
@@ -641,7 +850,7 @@ export default function Hero() {
           <Image src='/brand/no-bg-gt-logo-light.png' alt='' width={38} height={38} />
         </div>
 
-        {/* The coverage ledger, seated on the hero's last rule: endonyms with
+        {/* The coverage ledger, seated on the band's last rule: endonyms with
             their ticks, the long tail counted. */}
         <div className='lg-ledger' data-hero-in>
           <span className='lg-ledger-cap'>coverage</span>

@@ -1,0 +1,120 @@
+/* ============================================================
+   HERO — THE AURORA STACK
+   The founder's hero grammar (toolchain hero-terminal.css, stack
+   §) carried over into this fork's material: a white card above a
+   SQUARE full-width band above the trust card, three surfaces on
+   the shell-grey ground, 1px seams, radius-12 corners with the
+   ground filling the notches (the overlay rules in styles.css —
+   `:has(> .tc-hero)` — do the seam/notch work; this file seats
+   the fork's two wash layers and the specimen cascade).
+
+   The material: the aurora wash breathes through the hero card's
+   paper at a whisper, and owns the band at full exposure. In dark
+   mode both re-tune to the ink-black northern sky ('paper-dark'
+   preset) — retuned, never neutered.
+
+   These rules override styles.css declarations of equal
+   specificity, and this file is bundled BEFORE styles.css
+   (page.tsx imports sections first), so the root class is doubled
+   to win on specificity rather than on order.
+   ============================================================ */
+
+/* the ground: the shell grey (set with !important by the founder overlay in
+   styles.css); the inset token still seats the pre-overlay geometry */
+.aurorapaper-root.aurorapaper-root .tc-sec.tch-hero-sec {
+  --tch-ground: var(--tc-hair);
+  --tch-inset: clamp(10px, 1.1vw, 14px);
+  background: var(--tch-ground);
+}
+
+[data-theme='dark'] .aurorapaper-root.aurorapaper-root .tc-sec.tch-hero-sec {
+  --tch-ground: #101015;
+}
+
+/* the white hero card — the only rounded surface above the band. It clips
+   its own wash, so the radius is real on the canvas too. */
+.aurorapaper-root.aurorapaper-root .tc-hero.tch-card {
+  position: relative;
+  margin: var(--tch-inset) var(--tch-inset) 0;
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+  background: var(--tc-card);
+  padding: clamp(28px, 3vw, 40px) var(--tc-gut) clamp(24px, 2.6vw, 32px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* the card's whisper of aurora: behind everything, base = the card's paper */
+.aurorapaper-root .aph-card-wash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.aurorapaper-root .aph-card-in {
+  position: relative;
+  z-index: 1;
+}
+
+.aurorapaper-root.aurorapaper-root .tch-card .tc-hero-mark {
+  margin-bottom: 14px;
+}
+
+/* the light mark's ink strokes vanish on the dark card — brand rule: invert */
+[data-theme='dark'] .aurorapaper-root.aurorapaper-root .tch-card .tc-hero-mark {
+  filter: invert(1);
+}
+
+.aurorapaper-root.aurorapaper-root .tch-card .tc-hero-sub {
+  margin-top: 14px;
+}
+
+.aurorapaper-root.aurorapaper-root .tch-card .tc-hero-acts {
+  margin-top: 22px;
+}
+
+/* the band: SQUARE, full rail width, no top hairline — the 1px seam against
+   the ground is its edge. The wash owns it; the base color under the canvas
+   is the page's own paper, so a lost WebGL context degrades to plain paper. */
+.aurorapaper-root.aurorapaper-root .tc-hero-cell.tch-band {
+  margin-top: var(--tch-inset);
+  border-top: 0;
+  border-radius: 0;
+  padding: 0;
+  background: var(--tc-paper);
+}
+
+.aurorapaper-root .aph-band-wash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* the specimen cascade seats on the band's own surface */
+.aurorapaper-root.aurorapaper-root .tch-band .ap-casc {
+  margin-top: 0;
+  padding-top: clamp(26px, 3.2vw, 42px);
+  padding-bottom: 10px;
+}
+
+/* the band's bottom edge is the 1px seam to the trust card — the last row's
+   own rule would double it */
+.aurorapaper-root.aurorapaper-root .tch-band .ap-casc-row:last-of-type {
+  border-bottom: 0;
+}
+
+/* the trust row: the card grammar repeated below the band (the founder
+   overlay in styles.css squares its seams and restores its lower rule) */
+.aurorapaper-root.aurorapaper-root .tch-hero-sec > .tc-trust.tch-trustcard {
+  margin: var(--tch-inset);
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+  background: var(--tc-card);
+  overflow: hidden;
+}

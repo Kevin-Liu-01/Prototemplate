@@ -1,6 +1,7 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
+import Bento from './sections/Bento';
 import ContextGroups from './sections/ContextGroups';
 import DarkBand from './sections/DarkBand';
 import Editor from './sections/Editor';
@@ -24,9 +25,11 @@ export const metadata = {
 /**
  * AURORA PAPER — the toolchain frame with a new identity. The material is a
  * soft aurora on paper (lib/aurora-wash.ts): barely-there chroma breathing
- * behind the hero's measured type cascade, the same field turned to ink for
- * the one dark band. The sections are workspace-led: the editor grid, the
- * review flow, the dashboard ledger, and context groups.
+ * through the hero card, at full exposure on the specimen band, the same
+ * field turned to ink for the one dark band (and, in dark mode, retuned to a
+ * northern sky on ink-black paper). The sections are workspace-led — the
+ * editor grid, the review flow, the dashboard ledger, and context groups —
+ * with the founder-batch bento carrying the systems story between them.
  */
 export default function AuroraPaperPage() {
   return (
@@ -37,6 +40,7 @@ export default function AuroraPaperPage() {
         <div className='tc-rail'>
           <Hero />
           <Frameworks />
+          <Bento />
           <Editor />
           <ReviewFlow />
           <Platform />

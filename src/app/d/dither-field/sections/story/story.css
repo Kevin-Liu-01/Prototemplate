@@ -522,22 +522,24 @@
 
 /* The two diff hues, gutters only (the REDLINE grammar): the sign column says
    added/removed in the reader's own vocabulary; the line itself stays in the
-   panel's tones. */
+   panel's tones. The hues are the page-wide diff tokens (--tc-diff-add /
+   --tc-diff-del, declared in sections/logos-icons.css) so every diff artifact
+   on the page reads with one vocabulary. */
 .ditherfield-root .tcs-code-line[data-mark='add'] {
-  background: rgba(125, 216, 158, 0.09);
+  background: color-mix(in srgb, var(--tc-diff-add) 9%, transparent);
 }
 
 .ditherfield-root .tcs-code-line[data-mark='add'] .tcs-code-s {
-  color: #7dd89e;
+  color: var(--tc-diff-add);
   font-weight: 500;
 }
 
 .ditherfield-root .tcs-code-line[data-mark='del'] {
-  background: rgba(235, 130, 125, 0.08);
+  background: color-mix(in srgb, var(--tc-diff-del) 8%, transparent);
 }
 
 .ditherfield-root .tcs-code-line[data-mark='del'] .tcs-code-s {
-  color: #eb827d;
+  color: var(--tc-diff-del);
   font-weight: 500;
 }
 

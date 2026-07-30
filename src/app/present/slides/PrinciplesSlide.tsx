@@ -34,9 +34,22 @@ const BARBELL_D = [
   'M 40 140 H 96 M 192 140 H 488 M 584 140 H 640',
 ].join(' ');
 
-/** Hatched area under the curve; morphs into the plates' shading. */
-const AREA_FILL_D =
-  'M 20 206 C 80 200 120 72 170 72 C 220 72 290 176 340 176 C 390 176 460 72 510 72 C 560 72 600 200 660 206 L 660 207 L 20 207 Z';
+/**
+ * Hatched area under the curve, pre-sliced into six closed regions that
+ * partition it at the dip: the three left slices condense into the left
+ * plates and the three right slices into the right plates, so the shading
+ * splits down the middle during the morph instead of sliding one way.
+ * Slice edges reuse the same de Casteljau pieces as the stroke, so adjacent
+ * slices share edges and the hatch still reads as one region.
+ */
+const AREA_FILL_D = [
+  'M 20 206 C 50.5 202.9 75.9 168.3 100 135 C 115.2 114.1 129.8 93.7 145 82 L 145 207 L 20 207 Z',
+  'M 145 82 C 153.1 75.8 161.4 72 170 72 C 177.9 72 186.3 74.6 195 78.9 L 195 207 L 145 207 Z',
+  'M 195 78.9 C 209.3 86.1 224.5 98 240 111.1 C 274.8 140.6 310.8 176 340 176 L 340 207 L 195 207 Z',
+  'M 340 176 C 369.2 176 405.2 140.6 440 111.1 C 455.5 98 470.7 86.1 485 78.9 L 485 207 L 340 207 Z',
+  'M 485 78.9 C 493.7 74.6 502.1 72 510 72 C 518.6 72 526.9 75.8 535 82 L 535 207 L 485 207 Z',
+  'M 535 82 C 550.2 93.7 564.8 114.1 580 135 C 604.1 168.3 629.5 202.9 660 206 L 660 207 L 535 207 Z',
+].join(' ');
 
 const PLATES_FILL_D = PLATE_SHAPES.join(' ');
 

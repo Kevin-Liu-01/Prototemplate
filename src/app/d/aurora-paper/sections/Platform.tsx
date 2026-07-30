@@ -1,5 +1,6 @@
 'use client';
 
+import { LayoutDashboard } from 'lucide-react';
 import { useRef } from 'react';
 
 import { useQuietReveal } from './reveal';
@@ -49,6 +50,7 @@ export default function Platform() {
   return (
     <section className='tc-sec' id='platform' ref={root}>
       <div className='tc-head'>
+        <LayoutDashboard className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>One dashboard holds the context.</h2>
         <p data-reveal>
           Curate glossaries, style rules, and project context — with editing, versioning, and
@@ -57,10 +59,10 @@ export default function Platform() {
       </div>
 
       <div className='tc-row is-wide-left'>
-        {/* The dashboard is a ledger, so it sits on the ledger's surface: the
-            beige second sheet, ink marks, a filled gauge per locale — the one
-            open row (ja) is the only gap in the ink. */}
-        <div className='tc-cell is-tall is-framed is-beige' data-reveal>
+        {/* The dashboard is a ledger: ink marks on the card surface, a filled
+            gauge per locale — the one open row (ja) is the only gap in the
+            ink. (The ledger beige retired with the founder batch: NO CREAM.) */}
+        <div className='tc-cell is-tall is-framed' data-reveal>
           <div className='tc-card'>
             <div className='ap-led'>
               <div className='ap-led-bar'>

@@ -45,6 +45,18 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
  */
 export type AspectBox = { value: number };
 
+export type HeroBroadcastOptions = {
+  /** Vertical centre of the composition, 0..1. Default 0.46. */
+  cy?: number;
+  /**
+   * Scale on the paper well (and therefore the whole figure, which is drawn
+   * in well-distance units). 1 is the original 82vh composition; the hero
+   * BAND runs it tighter so the core hugs one command line instead of a
+   * headline block.
+   */
+  wellScale?: number;
+};
+
 /**
  * THE BROADCAST — the hero field.
  *
@@ -57,9 +69,10 @@ export type AspectBox = { value: number };
  * before the edge. The type block sits in the paper core; the well multiplies
  * the whole field so legibility is a guarantee rather than a hope.
  */
-export function heroBroadcast(aspect: AspectBox): FieldFn {
+export function heroBroadcast(aspect: AspectBox, opts: HeroBroadcastOptions = {}): FieldFn {
   const CX = 0.5;
-  const CY = 0.46;
+  const CY = opts.cy ?? 0.46;
+  const WS = opts.wellScale ?? 1;
   /** Vertical squash: the composition is wider than tall, so is the energy. */
   const VS = 1.35;
 
@@ -73,9 +86,9 @@ export function heroBroadcast(aspect: AspectBox): FieldFn {
     // from the headline block: <1 inside (always paper), ~1 at the fringe.
     // Everything radiates from this fringe, so the type block itself is the
     // broadcast source and the alignment is one system, not two.
-    const wx = Math.min(0.56, Math.max(0.36, 0.27 * a));
+    const wx = Math.min(0.56, Math.max(0.36, 0.27 * a)) * WS;
     const qx = Math.abs(dx) / wx;
-    const qy = Math.abs(dy) / (0.29 * VS);
+    const qy = Math.abs(dy) / (0.29 * WS * VS);
     const q = Math.pow(Math.pow(qx, 2.4) + Math.pow(qy, 2.4), 1 / 2.4);
     if (q <= 0.88) return 0;
     const well = smoothstep(0.88, 1.18, q);
@@ -179,7 +192,19 @@ export function floorDissolve(aspect: AspectBox): FieldFn {
   };
 }
 
-export type UseDitherFieldOptions = Omit<DitherLoopOptions, 'cssWidth' | 'cssHeight'>;
+export type UseDitherFieldOptions = Omit<DitherLoopOptions, 'cssWidth' | 'cssHeight'> & {
+  /**
+   * Resolve the field's ink from the canvas's own computed CSS `color` at
+   * mount, and re-resolve whenever the document's `data-theme` attribute
+   * flips. A 1-bit field is exactly two colors, so following the theme means
+   * flipping the ink, not blending it: style the canvas with
+   * `color: var(--tc-ink)` (or any theme-mapped ink) and the dark theme gets
+   * light dust on ink-black paper instead of a stale dark-on-dark frame.
+   * Fields that live on permanently-dark plates (the band bloom, the floor
+   * dissolve) never opt in — their literals are the point.
+   */
+  themeInk?: boolean;
+};
 
 /**
  * Mount an animated dither field on a canvas. Builds the field from a factory
@@ -206,8 +231,30 @@ export function useDitherField(
     };
     measure();
 
+    const { themeInk, ...loopOptions } = optsRef.current;
+
     let loop: DitherLoopHandle | null = null;
-    loop = createDitherLoop(canvas, factory(box), optsRef.current);
+    loop = createDitherLoop(canvas, factory(box), loopOptions);
+
+    // Theme-following ink: the canvas's computed `color` IS the ink. Resolved
+    // once at mount (after the loop's first synchronous frame) and again on
+    // every data-theme flip; a static (reduced-motion) loop repaints inside
+    // setOptions, a running one picks the new ink up next frame.
+    let themeObserver: MutationObserver | undefined;
+    if (themeInk) {
+      const applyInk = () => {
+        const ink = getComputedStyle(canvas).color;
+        if (ink) loop?.setOptions({ ink });
+      };
+      applyInk();
+      if (typeof MutationObserver !== 'undefined') {
+        themeObserver = new MutationObserver(applyInk);
+        themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-theme'],
+        });
+      }
+    }
 
     const ro =
       typeof ResizeObserver !== 'undefined'
@@ -222,6 +269,7 @@ export function useDitherField(
 
     return () => {
       ro?.disconnect();
+      themeObserver?.disconnect();
       loop?.destroy();
       loop = null;
     };

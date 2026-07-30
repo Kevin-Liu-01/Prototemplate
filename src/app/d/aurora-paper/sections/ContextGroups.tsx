@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { BookMarked } from 'lucide-react';
 import { useRef } from 'react';
 
 import { useQuietReveal } from './reveal';
@@ -58,6 +59,7 @@ export default function ContextGroups() {
   return (
     <section className='tc-sec' id='context' ref={root}>
       <div className='tc-head'>
+        <BookMarked className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Say it once, and every translation obeys.</h2>
         <p data-reveal>
           A glossary and a set of directives, defined once at the organization level and assigned to
@@ -67,8 +69,8 @@ export default function ContextGroups() {
 
       <div className='ap-ws-wrap' data-reveal>
         {/* The group is the organization's house style, so it reads as a
-            document: the beige ledger sheet, six terms, five directives. */}
-        <div className='tc-mount is-beige'>
+            document: one mounted sheet, six terms, five directives. */}
+        <div className='tc-mount'>
           <div className='tc-card'>
             <div className='ap-ctx-group'>
               <div className='ap-ctx-col'>

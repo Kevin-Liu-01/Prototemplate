@@ -228,7 +228,7 @@ const FLAGS: readonly { flag: string; name: string }[] = [
    machinery is the hourglass corridor's strip-chord rail with its curvature
    flipped the founder's way (see the suction rail below). */
 const ROWS_PER_COLUMN = 5;
-const STRIPS_PER_COLUMN = 4;
+const STRIPS_PER_COLUMN = 6;
 const PHYS_COLUMNS = 6;
 const COLUMN_W = 312;
 const COLUMN_PITCH = 330;
@@ -258,13 +258,17 @@ const ORBIT_TILT = 0.94;
    courses run near-flat for most of the sweep and then whip inward: a
    concave suction curve, the grid lines pulled INTO the mass — the opposite
    read of the hourglass corridor's barrel, per the founder's sketch. */
+/* PHI_DEEP stops short of edge-on (~77°): every chord stays a readable
+   surface (no sliver stacking, no per-strip alpha seams), and because the
+   clamped tail still advances inward at cos(PHI_DEEP), the diving wall
+   visibly TRAVELS under the glow instead of freezing at the turn. */
 const PHI_EDGE = 0.05;
-const PHI_DEEP = 1.52;
-const PHI_SHAPE = 2.7;
+const PHI_DEEP = 1.35;
+const PHI_SHAPE = 2.1;
 /** The rail starts this far off the screen edge, slightly toward the viewer,
     so the frame crops the near columns the way it crops the flat baseline. */
-const EDGE_OUT = 90;
-const EDGE_Z = 120;
+const EDGE_OUT = 60;
+const EDGE_Z = 70;
 /** The stage's CSS perspective, px — must match .eh-stage. */
 const PERSPECTIVE = 750;
 const RAIL_STEP = 4;
@@ -301,11 +305,14 @@ type WallRail = {
 };
 
 function buildRail(view: number, r: number): WallRail {
-  /* The dive lands a third of a radius past the rim, so the last visible
-     chords are already behind the disc when the fade extinguishes them. */
-  const reach = view / 2 + EDGE_OUT - r * 0.35;
-  const span = Math.min(Math.max(reach / SWEEP_COS, 520), 1140);
-  const count = Math.ceil((span * 1.5 - RAIL_START) / RAIL_STEP) + 1;
+  /* The whip lands at the flag-orbit lane — OUTSIDE the rim glow, so the
+     concave turn reads against open paper — and the clamped-phi tail past
+     u = 1 dives there: the perspective converges the diving chords into the
+     hole (their projected position glides under the glow and behind the
+     disc) while the fade extinguishes them. */
+  const reach = view / 2 + EDGE_OUT - r * 1.3;
+  const span = Math.min(Math.max(reach / SWEEP_COS, 480), 1000);
+  const count = Math.ceil((span * 1.7 - RAIL_START) / RAIL_STEP) + 1;
   const xs = new Float64Array(count);
   const zs = new Float64Array(count);
   const zero = Math.round(-RAIL_START / RAIL_STEP);
@@ -354,14 +361,16 @@ const PATTERNS: readonly (readonly Pair[])[] = [
 ].map((rows) => rows.map((i) => pairAt(i)));
 
 /* Depth grading. The veil (--ehd) is the paper fog that dims the wall along
-   the sweep; the two fades govern extinction by PROJECTED distance from the
-   hole center in rim units: a dip through the flag-orbit lane keeps the
-   chips legible, then the rim fade extinguishes the wall as it slips under
-   the disc — behind the portal — leaving the glow annulus clean. */
-const veilAt = (mid: number): number => 0.55 * smooth01((mid - 0.4) / 0.58);
-const rimFadeAt = (q: number): number => smooth01((q - 0.78) / 0.55);
-const laneFadeAt = (q: number, laneQ: number): number =>
-  0.62 + 0.38 * smooth01((q - laneQ + 0.04) / 0.42);
+   the sweep — the fabric's depth dimming. Extinction itself is ONE narrow
+   monotone band keyed to PROJECTED distance from the hole center in rim
+   units (the baseline's crisp read): cards hold full presence across the
+   field and through the flag-orbit lane, then die sharply under the rim
+   glow as the wall slips behind the disc — no half-ghosts anywhere else. */
+/* Both ramps are WIDE on purpose: they are sampled per strip chord, and a
+   ramp narrower than a few chords steps visibly between neighbours — the
+   banding that plagued the first cut of this wall. */
+const veilAt = (mid: number): number => 0.4 * smooth01((mid - 0.5) / 0.9);
+const rimFadeAt = (q: number): number => smooth01((q - 0.6) / 0.45);
 
 function CardBody({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
   const face = side === 'en' ? pair.en : pair.tr;
@@ -646,7 +655,6 @@ export default function Hero() {
       let cy = 0;
       let r = 240;
       let orbitR = 320;
-      let laneQ = ORBIT_K;
 
       /* e = entrance progress: the walls slide a last stretch of arc INTO
          place while fading up — the suction announcing itself. */
@@ -675,7 +683,7 @@ export default function Hero() {
             : wrapArc(slot.col * COLUMN_PITCH + d - pull);
           const a0 = colArc + slot.strip * STRIP_W;
           const mid = (a0 + STRIP_W / 2) / wr.span;
-          if (a0 + STRIP_W < -40 || mid > 1.42) {
+          if (a0 + STRIP_W < -40 || mid > 1.5) {
             hideSlot(slot);
             continue;
           }
@@ -687,7 +695,7 @@ export default function Hero() {
           const zm = (p0.z + p1.z) / 2;
           const k = PERSPECTIVE / (PERSPECTIVE - zm);
           const q = (-(p0.x + p1.x) / 2) * k / r;
-          const alpha = flow.e * laneFadeAt(q, laneQ) * rimFadeAt(q);
+          const alpha = flow.e * rimFadeAt(q);
           if (alpha < 0.012) {
             hideSlot(slot);
             continue;
@@ -752,7 +760,6 @@ export default function Hero() {
           ? Math.max(Math.min(h * 0.47, h - r - 148), r + 96)
           : Math.max(Math.min(h * 0.46, h - r - 232), r + 238);
         orbitR = wide ? r * ORBIT_K : Math.min(r + 36, w / 2 - 20);
-        laneQ = orbitR / r;
 
         hero.style.setProperty('--eh-cx', `${cx.toFixed(1)}px`);
         hero.style.setProperty('--eh-cy', `${cy.toFixed(1)}px`);

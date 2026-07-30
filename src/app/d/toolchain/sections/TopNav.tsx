@@ -15,9 +15,10 @@ export default function TopNav() {
 
         <nav className='tc-nav-links'>
           <a href='#frameworks'>Docs</a>
+          <a href='/d/toolchain/locadex'>Locadex</a>
+          <a href='/d/toolchain/context'>Context</a>
           <a href='#pricing'>Pricing</a>
-          <a href='#platform'>Blog</a>
-          <a href='#platform'>Enterprise</a>
+          <a href='/d/toolchain/enterprise'>Enterprise</a>
         </nav>
 
         <div className='tc-nav-right'>

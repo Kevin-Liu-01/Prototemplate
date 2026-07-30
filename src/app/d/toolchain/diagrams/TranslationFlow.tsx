@@ -145,8 +145,13 @@ type PulseTrace = {
 };
 
 /** Dense user-space samples (1u apart) of a path, taken once per mount. */
-function tracePath(el: SVGPathElement): PulseTrace {
+function tracePath(el: SVGPathElement): PulseTrace | null {
+  const source = el.dataset.traceD ?? el.getAttribute('d') ?? '';
+  if (!source) return null;
+  el.dataset.traceD = source;
+  if (el.getAttribute('d') !== source) el.setAttribute('d', source);
   const length = el.getTotalLength();
+  if (!Number.isFinite(length) || length <= 0) return null;
   const step = 1;
   const count = Math.max(2, Math.ceil(length / step) + 1);
   const points = Array.from({ length: count }, (_, i) => {
@@ -208,6 +213,7 @@ export default function TranslationFlow({ className, title }: TranslationFlowPro
       if (!firstTrunk || branchPulses.length !== FORK.length || trunkPulses.length !== FORK.length) return;
 
       const trunk = tracePath(firstTrunk);
+      if (!trunk) return;
       const cycle = PULSE_STAGGER * FORK.length;
 
       branchPulses.forEach((branchPulse, k) => {
@@ -215,6 +221,7 @@ export default function TranslationFlow({ className, title }: TranslationFlowPro
         if (!trunkPulse) return;
 
         const branch = tracePath(branchPulse);
+        if (!branch) return;
         /* ~20% of the branch, hard-clamped: the fork column renders narrow
            (~56px), so anything shorter reads as a tick rather than a
            transfer, and anything longer stops reading as a segment. */
