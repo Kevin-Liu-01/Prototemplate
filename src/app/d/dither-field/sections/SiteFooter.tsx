@@ -7,6 +7,7 @@ type MarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean }
 
 type FooterLink = {
   label: string;
+  href?: string;
   /** Brand mark, only where the cell names a tool. Functional, never ornament. */
   mark?: ComponentType<MarkProps>;
 };
@@ -30,7 +31,7 @@ const COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [
   {
     title: 'Guides',
     links: [
-      { label: 'Locadex Agent', mark: LocadexMark },
+      { label: 'Locadex Agent', href: '/d/toolchain/locadex', mark: LocadexMark },
       { label: 'Next.js', mark: SiNextdotjs },
       { label: 'React', mark: SiReact },
       { label: 'React Native', mark: SiReact },
@@ -98,7 +99,7 @@ export default function SiteFooter() {
                   const Mark = link.mark;
                   return (
                     <li key={link.label}>
-                      <a href='#top'>
+                      <a href={link.href ?? '#top'}>
                         {Mark ? (
                           <Mark className='tc-foot-mark' color='currentColor' aria-hidden />
                         ) : null}

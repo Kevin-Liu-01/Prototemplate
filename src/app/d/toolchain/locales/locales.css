@@ -1,0 +1,520 @@
+/* ============================================================
+   TOOLCHAIN — SUPPORTED LOCALES (the data monument)
+   New classes only (lcl-*); styles.css is never appended to.
+   Everything reads the shell's tokens, so the dark remap holds
+   without a second palette. The doubled thread renders at the
+   page constants (--thread-gauge / --thread-gap) between the
+   name column and the endonym column: source and translation,
+   side by side, the full height of the ledger.
+   ============================================================ */
+
+/* ---------- hero ---------- */
+
+.toolchain-root .lcl-hero {
+  padding: clamp(56px, 6.6vw, 88px) var(--tc-gut) clamp(36px, 4.2vw, 52px);
+}
+
+.toolchain-root .lcl-hero h1 {
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: 1.04;
+  letter-spacing: -0.034em;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+/* The emphasis is the brand's own device — the two threads under the count,
+   at constant gauge, in the surface's ink. Never the accent. */
+.toolchain-root .lcl-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.toolchain-root .lcl-hero > p {
+  margin-top: 18px;
+  max-width: 58ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Provenance, in the ledger's own voice: the package and call the rows
+   below are printed from. */
+.toolchain-root .lcl-hero .lcl-src {
+  margin-top: 16px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- the stat band ----------
+   Four figures in one ruled band (the tc-quad idea, one border level
+   shallower than cards). Every number is derived from the rows. */
+
+.toolchain-root .lcl-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .lcl-stat {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(22px, 2.6vw, 30px) var(--tc-gut) clamp(24px, 2.8vw, 32px);
+}
+
+.toolchain-root .lcl-stat + .lcl-stat {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .lcl-stat-n {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .lcl-stat-l {
+  margin-top: 7px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .lcl-stat-s {
+  margin-top: 7px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+@media (max-width: 880px) {
+  .toolchain-root .lcl-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toolchain-root .lcl-stat + .lcl-stat {
+    border-left: 0;
+  }
+
+  .toolchain-root .lcl-stat:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .lcl-stat:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+/* ---------- filter ---------- */
+
+.toolchain-root .lcl-filter {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 var(--tc-gut) 18px;
+}
+
+.toolchain-root .lcl-filter-in {
+  width: min(430px, 100%);
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-sunk);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .lcl-filter-in::placeholder {
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .lcl-filter-in:focus {
+  outline: none;
+  border-color: rgba(15, 17, 19, 0.28);
+}
+
+[data-theme='dark'] .toolchain-root .lcl-filter-in:focus {
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+.toolchain-root .lcl-filter-count {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- the ledger ----------
+   One shared grid template keeps the sticky column-header row and every
+   line on the same tracks. The fixed-track sum and the lead (tracks left
+   of the name column) are declared as vars so the thread overlay can be
+   placed with plain calc at every breakpoint. */
+
+.toolchain-root .lcl-table {
+  /* idx · locale · name · endonym · region · script · dir */
+  --lcl-cols: 48px 118px minmax(0, 1fr) minmax(0, 1fr) 148px 64px 48px;
+  --lcl-fixed: 426px;
+  --lcl-lead: 166px;
+}
+
+.toolchain-root .lcl-row {
+  display: grid;
+  grid-template-columns: var(--lcl-cols);
+  align-items: center;
+  padding-inline: var(--tc-gut);
+}
+
+.toolchain-root .lcl-row > * {
+  min-width: 0;
+  padding-right: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolchain-root .lcl-row > .lcl-native {
+  padding-left: 16px;
+}
+
+.toolchain-root .lcl-row > .lcl-dir {
+  padding-right: 0;
+}
+
+/* -- the column-header row: sticky under the 58px nav, on the page's own
+   paper so lines pass beneath it. -- */
+.toolchain-root .lcl-cols {
+  position: sticky;
+  top: 58px;
+  z-index: 5;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+  padding-block: 9px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* -- body + the two threads -- */
+
+.toolchain-root .lcl-body {
+  position: relative;
+}
+
+/* Source and translation: the doubled line at the page's constant gauge,
+   running the body's full height between the two name columns. Overlay,
+   so the ledger's row rules pass under it unbroken. */
+.toolchain-root .lcl-thread {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(
+    var(--tc-gut) + var(--lcl-lead) +
+      (100% - var(--tc-gut) * 2 - var(--lcl-fixed)) / 2 - 3px
+  );
+  width: var(--thread-gap);
+  border-inline: var(--thread-gauge) solid var(--tc-ink-3);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* -- lines -- */
+
+.toolchain-root a.lcl-line {
+  border-top: 1px solid var(--tc-hair-2);
+  padding-block: 8px;
+  transition: background-color 0.14s ease;
+}
+
+.toolchain-root a.lcl-line:hover {
+  background: var(--tc-hair-2);
+}
+
+/* The header row's bottom rule is the first line's top rule. */
+.toolchain-root .lcl-body > a.lcl-line:first-of-type {
+  border-top: 0;
+}
+
+/* A new language block opens on the page's stronger rule — 71 groups
+   carried by rule weight alone, no header rows. */
+.toolchain-root a.lcl-line.is-lead {
+  border-top-color: var(--tc-hair);
+}
+
+.toolchain-root .lcl-idx {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The LocaleTag pattern at the ctx-loc chip spec: hairline box, flag
+   first, code in the surface's mono. */
+.toolchain-root .lcl-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 0 5px;
+  border: 1px solid var(--tc-ink-4);
+  border-radius: 4px;
+  background: var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .lcl-flag {
+  font-style: normal;
+  font-size: 10px;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+.toolchain-root .lcl-line .lcl-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .lcl-line .lcl-native {
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+/* RTL endonyms read from the right; the ellipsis moves with them. */
+.toolchain-root .lcl-line .lcl-native[dir='rtl'] {
+  text-align: right;
+}
+
+.toolchain-root .lcl-line .lcl-region {
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+/* Region resolved from likely-subtags rather than written in the code:
+   present, but a register down. */
+.toolchain-root .lcl-line .lcl-region.is-inferred {
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .lcl-line .lcl-script {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .lcl-line .lcl-dir {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-4);
+}
+
+/* State is type weight (no pills): the ten right-to-left rows carry their
+   direction in ink. */
+.toolchain-root a.lcl-line.is-rtl .lcl-dir {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .lcl-empty {
+  border-top: 1px solid var(--tc-hair);
+  padding: 30px var(--tc-gut) 38px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+/* -- ledger breakpoints: columns drop, the thread re-derives -- */
+
+@media (max-width: 980px) {
+  .toolchain-root .lcl-table {
+    /* idx · locale · name · endonym · script · dir */
+    --lcl-cols: 40px 108px minmax(0, 1fr) minmax(0, 1fr) 60px 44px;
+    --lcl-fixed: 252px;
+    --lcl-lead: 148px;
+  }
+
+  .toolchain-root .lcl-row > .lcl-region {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .toolchain-root .lcl-table {
+    /* locale · name · endonym · dir */
+    --lcl-cols: 100px minmax(0, 1fr) minmax(0, 1fr) 38px;
+    --lcl-fixed: 138px;
+    --lcl-lead: 100px;
+  }
+
+  .toolchain-root .lcl-row > .lcl-idx,
+  .toolchain-root .lcl-row > .lcl-script {
+    display: none;
+  }
+
+  .toolchain-root .lcl-row > .lcl-native {
+    padding-left: 12px;
+  }
+
+  .toolchain-root .lcl-filter {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+/* ---------- writing systems — the dark ledger panel ----------
+   The page's one dark artifact surface (the inset panel every reference
+   draws its tables on). Panel tokens never remap, so the section is
+   identical under [data-theme='dark']. */
+
+.toolchain-root .lcl-sys-cell {
+  padding: clamp(4px, 0.8vw, 10px) var(--tc-gut) clamp(34px, 4vw, 48px);
+}
+
+.toolchain-root .lcl-sys {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.toolchain-root .lcl-sys-cap {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .lcl-sys-row {
+  display: grid;
+  grid-template-columns: 84px 168px 52px 44px minmax(0, 1fr);
+  align-items: baseline;
+  padding: 11px 18px;
+  border-top: 1px solid var(--tc-panel-rule);
+}
+
+.toolchain-root .lcl-sys-row:first-of-type {
+  border-top: 0;
+}
+
+.toolchain-root .lcl-sys-row > * {
+  min-width: 0;
+  padding-right: 14px;
+}
+
+.toolchain-root .lcl-sys-row.is-cap {
+  border-top: 0;
+  padding-block: 9px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-panel-faint);
+}
+
+.toolchain-root .lcl-sys-code {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .lcl-sys-name {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .lcl-sys-dir {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-faint);
+}
+
+/* The two right-to-left scripts, marked by weight in the panel's ink. */
+.toolchain-root .lcl-sys-row.is-rtl .lcl-sys-dir {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .lcl-sys-n {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--tc-panel-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .lcl-sys-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 10px;
+  padding-right: 0;
+}
+
+.toolchain-root .lcl-sys-codes code {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 17px;
+  letter-spacing: 0.01em;
+  color: var(--tc-panel-dim);
+}
+
+@media (max-width: 880px) {
+  .toolchain-root .lcl-sys-row {
+    grid-template-columns: 64px 118px 44px 36px minmax(0, 1fr);
+    padding-inline: 14px;
+  }
+
+  .toolchain-root .lcl-sys-cap {
+    padding-inline: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .toolchain-root .lcl-sys-row {
+    grid-template-columns: 64px minmax(0, 1fr) 44px 36px;
+  }
+
+  .toolchain-root .lcl-sys-row > .lcl-sys-codes {
+    grid-column: 1 / -1;
+    padding-top: 7px;
+  }
+
+  .toolchain-root .lcl-sys-row.is-cap > .lcl-sys-codes {
+    display: none;
+  }
+}

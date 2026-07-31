@@ -1,0 +1,452 @@
+/* ============================================================
+   TOOLCHAIN — CONTACT PAGE
+   New classes only (tcc-*); styles.css is never appended to.
+   Everything reads the shell's tokens so the dark remap holds
+   without a second palette; the one fixed-dark surface is the
+   wire panel, which stays --tc-panel in both themes the way
+   every code surface on this direction does.
+   ============================================================ */
+
+/* ---------- hero ---------- */
+
+.toolchain-root .tcc-hero {
+  padding: clamp(56px, 6.6vw, 88px) var(--tc-gut) clamp(36px, 4.2vw, 52px);
+}
+
+.toolchain-root .tcc-hero h1 {
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: 1.04;
+  letter-spacing: -0.034em;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+/* The emphasis is the brand's own device — the two threads under the word,
+   at constant gauge, in the surface's ink. Never the accent. */
+.toolchain-root .tcc-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.toolchain-root .tcc-hero > p {
+  margin-top: 18px;
+  max-width: 58ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The old page's two feature blurbs, as ruled cells instead of icon bullets.
+   Text-only, so never framed. */
+.toolchain-root .tcc-kind {
+  padding-top: clamp(22px, 2.4vw, 28px);
+  padding-bottom: clamp(24px, 2.6vw, 30px);
+}
+
+.toolchain-root .tcc-kind h3 {
+  font-size: 15.5px;
+  letter-spacing: -0.012em;
+}
+
+.toolchain-root .tcc-kind > p {
+  margin-top: 7px;
+  font-size: 13.5px;
+  max-width: 44ch;
+}
+
+/* ---------- shared card vocabulary ---------- */
+
+/* The card's mono tag line: names what the artifact below is. */
+.toolchain-root .tcc-tag {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- the form ---------- */
+
+.toolchain-root .tcc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 18px;
+  flex: 1;
+}
+
+.toolchain-root .tcc-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.toolchain-root .tcc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.toolchain-root .tcc-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcc-field input,
+.toolchain-root .tcc-field textarea {
+  width: 100%;
+  appearance: none;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-sunk);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  color-scheme: light;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+[data-theme='dark'] .toolchain-root .tcc-field input,
+[data-theme='dark'] .toolchain-root .tcc-field textarea {
+  color-scheme: dark;
+}
+
+.toolchain-root .tcc-field textarea {
+  resize: none;
+}
+
+.toolchain-root .tcc-field input::placeholder,
+.toolchain-root .tcc-field textarea::placeholder {
+  color: var(--tc-ink-3);
+}
+
+/* Focus is ink, not accent — the accent never touches a border. */
+.toolchain-root .tcc-field input:focus-visible,
+.toolchain-root .tcc-field textarea:focus-visible {
+  outline: none;
+  border-color: rgba(15, 17, 19, 0.45);
+  box-shadow: 0 0 0 3px rgba(15, 17, 19, 0.07);
+}
+
+[data-theme='dark'] .toolchain-root .tcc-field input:focus-visible,
+[data-theme='dark'] .toolchain-root .tcc-field textarea:focus-visible {
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.09);
+}
+
+/* The honest state: submitting a design study sends nothing, and says so. */
+.toolchain-root .tcc-notice {
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-hair-2);
+  padding: 10px 13px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcc-notice a {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.toolchain-root .tcc-acts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 2px;
+}
+
+.toolchain-root .tcc-terms {
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+  max-width: 40ch;
+}
+
+.toolchain-root .tcc-terms a {
+  color: var(--tc-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.18s ease;
+}
+
+.toolchain-root .tcc-terms a:hover {
+  color: var(--tc-ink);
+}
+
+/* ---------- the channel ledger ---------- */
+
+.toolchain-root .tcc-chan-card h3 {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.toolchain-root .tcc-chan-ledger {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.toolchain-root .tcc-chan-title {
+  display: block;
+  padding: 8px 0 4px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcc-chan {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px 0;
+  padding: 9px 8px 9px 2px;
+  margin: 0 -2px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  border-radius: 4px;
+  transition: background-color 0.16s ease;
+}
+
+.toolchain-root .tcc-chan:hover {
+  background: color-mix(in srgb, var(--tc-ink) 4%, transparent);
+}
+
+.toolchain-root .tcc-chan-glyph {
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcc-chan-id {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  padding-right: 12px;
+}
+
+.toolchain-root .tcc-chan-id b {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+  letter-spacing: -0.008em;
+}
+
+.toolchain-root .tcc-chan-id > span {
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolchain-root .tcc-chan-addr {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-2);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.toolchain-root .tcc-chan-addr > span {
+  color: var(--tc-ink-4);
+}
+
+/* ---------- the wire panel ---------- */
+
+.toolchain-root .tcc-wire-body {
+  padding: 0 var(--tc-gut) clamp(54px, 6vw, 78px);
+}
+
+/* One inset dark surface for the whole trace — the same panel every code
+   sample on this direction sits on, in both themes. */
+.toolchain-root .tcc-panel {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.toolchain-root .tcc-panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 38px;
+  padding: 6px 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tcc-panel-note {
+  color: var(--tc-panel-faint);
+  text-align: right;
+}
+
+.toolchain-root .tcc-req {
+  margin: 0;
+  padding: 16px 18px 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.toolchain-root .tcc-req-line {
+  display: block;
+}
+
+.toolchain-root .tcc-req-line.is-dim {
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tcc-req-m {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .tcc-req-key {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+/* What you type is the product: values run at full white. */
+.toolchain-root .tcc-req-val {
+  color: #ffffff;
+}
+
+.toolchain-root .tcc-req-val.is-empty {
+  color: var(--tc-panel-faint);
+}
+
+/* ---------- the gates ---------- */
+
+/* The message's path is the brand's doubled thread, running the gutter
+   through every gate at constant gauge. */
+.toolchain-root .tcc-gates {
+  position: relative;
+  padding: 8px 18px 16px 34px;
+}
+
+.toolchain-root .tcc-gates::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  bottom: 58px;
+  left: 15px;
+  width: calc(2 * var(--thread-gauge) + var(--thread-gap));
+  border-inline: var(--thread-gauge) solid rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.toolchain-root .tcc-gate {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.toolchain-root .tcc-gate.is-head {
+  color: var(--tc-panel-faint);
+  font-size: 11.5px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+}
+
+.toolchain-root .tcc-gate-name {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.toolchain-root .tcc-gate-rule {
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .tcc-gate-res {
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tcc-gate-foot {
+  padding: 12px 0 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-panel-dim);
+  max-width: 74ch;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 760px) {
+  .toolchain-root .tcc-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .tcc-acts {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .toolchain-root .tcc-acts .tc-btn {
+    width: 100%;
+  }
+
+  .toolchain-root .tcc-terms {
+    max-width: none;
+  }
+
+  .toolchain-root .tcc-chan-addr {
+    grid-column: 2;
+    text-align: left;
+    white-space: normal;
+    word-break: break-all;
+  }
+
+  .toolchain-root .tcc-gate {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+
+  .toolchain-root .tcc-gate.is-head {
+    display: none;
+  }
+
+  .toolchain-root .tcc-gates {
+    padding-left: 30px;
+  }
+
+  .toolchain-root .tcc-gates::before {
+    bottom: 96px;
+  }
+}

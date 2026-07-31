@@ -496,6 +496,7 @@ export default function DarkBand() {
                   <span>2 min ago</span>
                 </div>
               </div>
+              </div>
             </div>
           </div>
 
@@ -505,6 +506,7 @@ export default function DarkBand() {
               <p>The agent that internationalizes your repo in guarded PRs.</p>
             </div>
             <div className='tcb-art'>
+              <div className='tcb-art-in'>
               <div className='tcb-art-bar'>
                 <span className='is-on'>PR #218</span>
                 <span>locadex → main</span>
@@ -540,6 +542,7 @@ export default function DarkBand() {
                   <b>+38 −6 · checks passed</b>
                 </div>
               </div>
+              </div>
             </div>
           </div>
 
@@ -548,16 +551,21 @@ export default function DarkBand() {
           <div className='tcb-cell tcb-cell-ctx' data-cell>
             <div className='tcb-cap'>
               <h3>Context, defined once — inherited all the way down</h3>
+              <p>Glossary and tone set at the top; every project and component below inherits them.</p>
             </div>
             <div className='tcb-ctx'>
-              <div className='tcb-ctx-col'>
-                <div className='tcb-ctx-tag'>organization</div>
-                <div className='tcb-ctx-k'>Glossary</div>
-                <p className='tcb-ctx-rule'>“Locadex is the GT agent — do not translate.”</p>
-                <div className='tcb-ctx-k'>Directives</div>
-                <p className='tcb-ctx-rule'>
-                  “Active voice. Use formal ‘Sie.’” <LocaleTag code='de' className='tcb-ctx-loc' />
-                </p>
+              <div className='tcb-ctx-stage'>
+                <div className='tcb-ctx-tag'>Organization</div>
+                <div className='tcb-ctx-box'>
+                  <div className='tcb-ctx-card'>
+                    <div className='tcb-ctx-k'>Glossary</div>
+                    <p className='tcb-ctx-rule'>“Locadex is the GT agent — do not translate.”</p>
+                    <div className='tcb-ctx-k'>Directives</div>
+                    <p className='tcb-ctx-rule'>
+                      “Active voice. Use formal ‘Sie.’” <LocaleTag code='de' className='tcb-ctx-loc' />
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className='tcb-ctx-joint' aria-label='inherited by'>
@@ -568,26 +576,30 @@ export default function DarkBand() {
                 </svg>
               </div>
 
-              <div className='tcb-ctx-col'>
-                <div className='tcb-ctx-tag'>project</div>
-                <div className='tcb-ctx-row'>
-                  <span className='tcb-pri'>1</span>
-                  <b>brand-core</b>
-                  <span className='tcb-scope'>org</span>
+              <div className='tcb-ctx-stage'>
+                <div className='tcb-ctx-tag'>Project</div>
+                <div className='tcb-ctx-box'>
+                  <div className='tcb-ctx-card'>
+                    <div className='tcb-ctx-row'>
+                      <span className='tcb-pri'>1</span>
+                      <b>brand-core</b>
+                      <span className='tcb-scope'>org</span>
+                    </div>
+                    <div className='tcb-ctx-row'>
+                      <span className='tcb-pri'>2</span>
+                      <b>docs-style</b>
+                      <span className='tcb-scope'>org</span>
+                    </div>
+                    <div className='tcb-ctx-row'>
+                      <span className='tcb-pri'>3</span>
+                      <b>checkout-copy</b>
+                      <span className='tcb-scope'>project</span>
+                    </div>
+                    <p className='tcb-ctx-rule tcb-ctx-verdict'>
+                      On overlap the top group wins: formal ‘Sie’ holds, <s>casual tone</s> loses.
+                    </p>
+                  </div>
                 </div>
-                <div className='tcb-ctx-row'>
-                  <span className='tcb-pri'>2</span>
-                  <b>docs-style</b>
-                  <span className='tcb-scope'>org</span>
-                </div>
-                <div className='tcb-ctx-row'>
-                  <span className='tcb-pri'>3</span>
-                  <b>checkout-copy</b>
-                  <span className='tcb-scope'>project</span>
-                </div>
-                <p className='tcb-ctx-rule'>
-                  On overlap the top group wins: formal ‘Sie’ holds, <s>casual tone</s> loses.
-                </p>
               </div>
 
               <div className='tcb-ctx-joint' aria-label='inherited by'>
@@ -598,29 +610,33 @@ export default function DarkBand() {
                 </svg>
               </div>
 
-              <div className='tcb-ctx-col'>
-                <div className='tcb-ctx-tag'>component</div>
-                <pre className='tcb-ctx-code'>
-                  <div>
-                    <span className='tk-dim'>{'<'}</span>
-                    <span className='tk-tag'>T</span> <span className='tk-kw'>$context</span>
-                    <span className='tk-dim'>=</span>
-                    <span className='tk-str'>&quot;popup, not bread&quot;</span>
-                    <span className='tk-dim'>{'>'}</span>
+              <div className='tcb-ctx-stage'>
+                <div className='tcb-ctx-tag'>Component</div>
+                <div className='tcb-ctx-box'>
+                  <div className='tcb-ctx-card'>
+                    <pre className='tcb-ctx-code'>
+                      <div>
+                        <span className='tk-dim'>{'<'}</span>
+                        <span className='tk-tag'>T</span> <span className='tk-kw'>$context</span>
+                        <span className='tk-dim'>=</span>
+                        <span className='tk-str'>&quot;popup, not bread&quot;</span>
+                        <span className='tk-dim'>{'>'}</span>
+                      </div>
+                      <div>{'  Click the toast to dismiss'}</div>
+                      <div>
+                        <span className='tk-dim'>{'</'}</span>
+                        <span className='tk-tag'>T</span>
+                        <span className='tk-dim'>{'>'}</span>
+                      </div>
+                    </pre>
+                    <div className='tcb-ctx-res'>
+                      <span className='tcb-ctx-res-loc'>
+                        <LocaleTag code='es' />
+                      </span>
+                      <b lang='es'>la notificación</b>
+                      <s lang='es'>la tostada</s>
+                    </div>
                   </div>
-                  <div>{'  Click the toast to dismiss'}</div>
-                  <div>
-                    <span className='tk-dim'>{'</'}</span>
-                    <span className='tk-tag'>T</span>
-                    <span className='tk-dim'>{'>'}</span>
-                  </div>
-                </pre>
-                <div className='tcb-ctx-res'>
-                  <span className='tcb-ctx-res-loc'>
-                    <LocaleTag code='es' />
-                  </span>
-                  <b lang='es'>la notificación</b>
-                  <s lang='es'>la tostada</s>
                 </div>
               </div>
             </div>

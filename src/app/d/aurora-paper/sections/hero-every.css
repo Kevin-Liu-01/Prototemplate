@@ -5,6 +5,9 @@
   position: relative;
   display: inline-block;
   white-space: nowrap;
+  /* a bidi isolate: the Arabic word's RTL run resolves inside the em and
+     can never reorder or push the sentence's trailing period */
+  unicode-bidi: isolate;
 }
 
 /* vertical bound lines with small crop ticks top and bottom */
@@ -64,12 +67,13 @@
   will-change: transform, opacity;
 }
 
-/* per-character spans during formation */
+/* the live word: ONE shaped text node — never per-character spans, which
+   disconnect Arabic joining and split Devanagari matras — animated only
+   with transform/opacity/clip-path, so it can never shift the line; the
+   em's tweened width is the single layout-affecting property */
 .aurorapaper-root [data-every-word] {
   display: inline-block;
-}
-
-.aurorapaper-root [data-every-word] .tc-ech {
-  display: inline-block;
+  white-space: nowrap;
+  unicode-bidi: isolate;
   will-change: transform, opacity;
 }

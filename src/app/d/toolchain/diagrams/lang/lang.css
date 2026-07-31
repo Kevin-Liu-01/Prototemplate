@@ -156,7 +156,10 @@
   font-size: var(--lang-sw-size, 18px);
   letter-spacing: -0.01em;
   line-height: 1.2;
-  color: #fbfbfa;
+  /* The plate's own ground, not a spelled-out near-white: the box behind this
+     is filled with `--lang-ink`, which the dark remap turns white — the label
+     must invert with it (the same pairing the dark theme gives .tc-btn-solid). */
+  color: var(--lang-ground, #fbfbfa);
 }
 
 /* CALIPER rule: values are never obscured by scaffolding. The delta rides
@@ -775,19 +778,27 @@
    ============================================================ */
 
 /* The diagram owns its plate: source button at the top, branch cards on the
-   bottom edge, and the fork stretched between them — no empty upper half. */
+   bottom edge, and the fork stretched between them — no empty upper half.
+   The gap is one shared number: the card grid opens by it, and the fork
+   bleeds half of it per side, which is what pins the fork's 25%/75%
+   landings to the two cards' centers at every width. */
 .lang-cr {
+  --lang-cr-gap: 12px;
+
   width: 100%;
   align-self: stretch;
   display: flex;
   flex-direction: column;
 }
 
+/* Tag over button, one centered column — the button's own center is the
+   diagram's axis. (Inline, the tag's width pushed the button off-axis and
+   the whole fork read lopsided against the symmetric cards below.) */
 .lang-cr-source {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 9px;
+  gap: 7px;
 }
 
 /* The source is what the string is in the product: a button. Solid ink, the
@@ -807,15 +818,21 @@
   font-size: 15px;
   letter-spacing: -0.01em;
   line-height: 1;
-  color: #fbfbfa;
+  /* Ground, not spelled near-white: `--tc-ink` remaps to white in dark theme,
+     so the label rides the same inversion (dark on the now-white plate). */
+  color: var(--lang-ground, #fbfbfa);
 }
 
 /* The fork takes whatever height the cell has to give (the viewBox is
    stretched; `non-scaling-stroke` holds the gauge), so the diagram spans the
-   plate instead of pooling at its centre. */
+   plate instead of pooling at its centre. It bleeds half the card gap per
+   side: the cards' centers then sit at exactly 25% and 75% of the fork's
+   span — where the paths land — and the stem stays on the diagram's axis.
+   Nothing paints in the bleed itself; the outermost path x is 25%. */
 .lang-cr-fork {
   display: block;
-  width: 100%;
+  width: calc(100% + var(--lang-cr-gap, 12px));
+  margin-inline: calc(var(--lang-cr-gap, 12px) / -2);
   flex: 1 1 auto;
   min-height: 56px;
   margin-top: 6px;
@@ -864,7 +881,7 @@
 .lang-cr-branches {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--lang-cr-gap, 12px);
 }
 
 /* Each branch is a white card on the plate, edge to edge in its half — the
@@ -920,7 +937,9 @@
   line-height: 1;
   letter-spacing: -0.02em;
   white-space: nowrap;
-  color: #fbfbfa;
+  /* Same inversion as .lang-cr-word: the plate is `--tc-ink`, which the dark
+     remap turns white, so the label keeps to the plate's ground. */
+  color: var(--lang-ground, #fbfbfa);
 }
 
 .lang-cr-gloss {

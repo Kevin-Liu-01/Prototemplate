@@ -1,0 +1,551 @@
+/* ============================================================
+   TOOLCHAIN / PRICING
+   The pricing page's own classes (tcp-*). Everything sits on the
+   base sheet's tokens; dark mode comes for free from the token
+   remap. Rules of the house: hairlines structure, regular strokes
+   draw, mono floor 11px, no pills, no badges, no gradients.
+   ============================================================ */
+
+/* ---------- hero: philosophy left, dry-run receipt right ---------- */
+
+.toolchain-root .tcp-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+  padding: clamp(48px, 5.8vw, 78px) var(--tc-gut) clamp(40px, 5vw, 64px);
+}
+
+.toolchain-root .tcp-hero-copy h1 {
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.036em;
+  text-wrap: balance;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.toolchain-root .tcp-hero-copy h1 span {
+  display: block;
+}
+
+/* The emphasis is the brand's own device, never the accent: the two threads —
+   source and translation at constant gauge — running under the word. */
+.toolchain-root .tcp-hero-copy h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.toolchain-root .tcp-hero-sub {
+  margin-top: 18px;
+  max-width: 52ch;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcp-hero-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- the dry-run receipt ----------
+   The page's first artifact: a terminal transcript that becomes a ruled
+   receipt. It sits on the house dark panel (tc-code supplies the surface);
+   this block only draws the rows. */
+
+.toolchain-root .tcp-receipt {
+  max-width: 560px;
+  justify-self: end;
+  width: 100%;
+}
+
+.toolchain-root .tcp-rc-body {
+  padding: 18px 20px 20px;
+}
+
+.toolchain-root .tcp-rc-line {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--tc-panel-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolchain-root .tcp-rc-line[data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.toolchain-root .tcp-rc-line[data-tone='dim'] {
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tcp-rc-rows {
+  margin: 12px 0;
+  border-top: 1px solid var(--tc-panel-rule);
+}
+
+.toolchain-root .tcp-rc-row {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+}
+
+.toolchain-root .tcp-rc-row > span:first-child {
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tcp-rc-row > span:nth-child(2) {
+  color: var(--tc-panel-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolchain-root .tcp-rc-row > b {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The total is the line being read: both value and label step up to white. */
+.toolchain-root .tcp-rc-row.is-total > span:first-child,
+.toolchain-root .tcp-rc-row.is-total > b {
+  color: #ffffff;
+}
+
+/* ---------- the comparison ledger ----------
+   Plans as columns, capabilities as rows, every rule edge to edge. The
+   vertical hairlines run through group rows too, so the three columns read
+   as one continuous ruled sheet. */
+
+.toolchain-root .tcp-tbl {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tcp-trow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.toolchain-root .tcp-trow > * + * {
+  align-self: stretch;
+  border-left: 1px solid var(--tc-hair-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The pinned plan header: the columns keep their names all the way down.
+   Sits just under the sticky nav; paper background so rows pass beneath it. */
+.toolchain-root .tcp-tbl-head {
+  position: sticky;
+  top: 58px;
+  z-index: 5;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tcp-tcap {
+  padding: 14px var(--tc-gut);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcp-tplan {
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 10px;
+  text-align: center;
+}
+
+.toolchain-root .tcp-tplan b {
+  font-family: var(--tc-disp);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.014em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcp-tplan i {
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+/* Group rows: a mono area label on its own ruled line. The two empty spans
+   keep the vertical hairlines running. */
+.toolchain-root .tcp-trow.is-group {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tcp-tgroup:first-of-type .tcp-trow.is-group {
+  border-top: 0;
+}
+
+.toolchain-root .tcp-tlabel {
+  padding: 22px var(--tc-gut) 10px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcp-trow:not(.is-group):not(.tcp-tbl-head) {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tcp-tgroup .tcp-trow:nth-child(2) {
+  border-top: 0;
+}
+
+.toolchain-root .tcp-tname {
+  min-width: 0;
+  padding: 11px var(--tc-gut);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.toolchain-root .tcp-tname b {
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcp-tname i {
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.toolchain-root .tcp-tcell {
+  padding: 11px 10px;
+  min-height: 100%;
+}
+
+/* Included: the house checkmark stroke — regular weight, ink, no pill. */
+.toolchain-root .tcp-yes {
+  width: 9px;
+  height: 5.5px;
+  border-left: 1.5px solid var(--tc-ink-2);
+  border-bottom: 1.5px solid var(--tc-ink-2);
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+.toolchain-root .tcp-no {
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcp-val {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--tc-ink);
+}
+
+/* ---------- usage rates: dark rate card + light credits ledger ---------- */
+
+.toolchain-root .tcp-usage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.6vw, 34px);
+  align-items: stretch;
+  padding: 0 var(--tc-gut) clamp(40px, 4.6vw, 58px);
+}
+
+.toolchain-root .tcp-rates-body {
+  padding: 8px 20px 12px;
+}
+
+.toolchain-root .tcp-rate {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+}
+
+.toolchain-root .tcp-rate:last-child {
+  border-bottom: 0;
+}
+
+.toolchain-root .tcp-rate-w {
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .tcp-rate-d {
+  color: var(--tc-panel-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolchain-root .tcp-rate > b {
+  font-weight: 500;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.toolchain-root .tcp-usage-side {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The light ledger: keys mono muted, values ink at 500, one hairline per
+   row — the LEDGER grammar, same as the enterprise page's control tables. */
+.toolchain-root .tcp-led {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .tcp-led-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcp-lrow {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tcp-lrow > span {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.toolchain-root .tcp-lrow > b {
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.008em;
+  color: var(--tc-ink);
+  text-align: right;
+}
+
+.toolchain-root .tcp-usage-link {
+  margin-top: 16px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcp-usage-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- the proof row ----------
+   Theo's quote against the doubled thread: two parallel strokes at the
+   house gauge stand in for the usual quote bar. */
+
+.toolchain-root .tcp-quote {
+  margin: 0;
+  padding: clamp(44px, 5.4vw, 68px) var(--tc-gut);
+}
+
+.toolchain-root .tcp-quote blockquote {
+  position: relative;
+  margin: 0;
+  padding-left: clamp(20px, 2.6vw, 30px);
+  max-width: 44ch;
+}
+
+.toolchain-root .tcp-quote blockquote::before,
+.toolchain-root .tcp-quote blockquote::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: var(--thread-gauge);
+  background: var(--thread-ink);
+}
+
+.toolchain-root .tcp-quote blockquote::before {
+  left: 0;
+}
+
+.toolchain-root .tcp-quote blockquote::after {
+  left: calc(var(--thread-gauge) + var(--thread-gap));
+}
+
+.toolchain-root .tcp-quote blockquote p {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(1.24rem, 2vw, 1.62rem);
+  line-height: 1.28;
+  letter-spacing: -0.022em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcp-quote blockquote p + p {
+  margin-top: 12px;
+}
+
+.toolchain-root .tcp-quote figcaption {
+  margin-top: 18px;
+  padding-left: clamp(20px, 2.6vw, 30px);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.toolchain-root .tcp-quote figcaption b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcp-quote figcaption span {
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcp-quote figcaption a {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+  border-bottom: 1px solid var(--tc-hair);
+  padding-bottom: 1px;
+}
+
+.toolchain-root .tcp-quote figcaption a:hover {
+  color: var(--tc-ink-2);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- FAQ ledger ---------- */
+
+.toolchain-root .tcp-faq {
+  margin: 0;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tcp-faq-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(20px, 3vw, 48px);
+  padding: 20px var(--tc-gut) 22px;
+}
+
+.toolchain-root .tcp-faq-row + .tcp-faq-row {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tcp-faq-row dt {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 15.5px;
+  line-height: 1.4;
+  letter-spacing: -0.014em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcp-faq-row dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 64ch;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1000px) {
+  .toolchain-root .tcp-hero,
+  .toolchain-root .tcp-usage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .tcp-receipt {
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .toolchain-root .tcp-faq-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  .toolchain-root .tcp-trow {
+    grid-template-columns: minmax(0, 1.35fr) minmax(64px, 0.62fr) minmax(64px, 0.62fr);
+  }
+
+  .toolchain-root .tcp-tname i {
+    display: block;
+    margin-left: 0;
+    margin-top: 2px;
+    white-space: normal;
+  }
+
+  .toolchain-root .tcp-val {
+    white-space: normal;
+  }
+
+  .toolchain-root .tcp-rate {
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    gap: 8px;
+    font-size: 11.5px;
+  }
+
+  .toolchain-root .tcp-rc-row {
+    grid-template-columns: 62px minmax(0, 1fr) auto;
+    gap: 8px;
+    font-size: 11.5px;
+  }
+
+  .toolchain-root .tcp-rc-line {
+    font-size: 11.5px;
+  }
+}

@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import { SiGithub, SiNextdotjs, SiNodedotjs, SiReact } from '@icons-pack/react-simple-icons';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { CheckCircle, Code2, Globe, Layers, Play, Terminal } from 'lucide-react';
 import { useRef, type ReactNode } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
@@ -37,16 +38,35 @@ const TRACE: readonly (readonly [string, string, ReactNode])[] = [
   ],
 ];
 
+/** Ledger icon props: identification at caption size, drawn in currentColor. */
+const CAP_ICON = { size: 14, strokeWidth: 1.75, 'aria-hidden': true } as const;
+
+/**
+ * One functional mark per caption row (founder directive): a small lucide
+ * glyph that means its stage — except Locadex, which is always the REAL
+ * lambda mark (brand law), CSS-inverted for the dark panel.
+ */
+const CAP_MARKS: Record<string, ReactNode> = {
+  runtime: <Play {...CAP_ICON} />,
+  'edge-cdn': <Globe {...CAP_ICON} />,
+  review: <CheckCircle {...CAP_ICON} />,
+  context: <Layers {...CAP_ICON} />,
+  locadex: <img className='tcb-cap-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' />,
+  'gt-cli': <Terminal {...CAP_ICON} />,
+  'app-code': <Code2 {...CAP_ICON} />,
+};
+
 /**
  * Caption rows for the stack, top plane first so the list mirrors the
- * geometry. The runtime row swaps its bare locale code for the LocaleTag
- * chip; every other value prints verbatim from the shared layer table.
+ * geometry. Labels are the layer table's proper-case names in the page's
+ * regular sans; the runtime row swaps its bare locale code for the
+ * LocaleTag chip; every other value prints verbatim from the layer table.
  */
-const STACK_CAPS: readonly { id: string; i: number; name: string; node: ReactNode }[] = STACK_LAYERS.map(
+const STACK_CAPS: readonly { id: string; i: number; label: string; node: ReactNode }[] = STACK_LAYERS.map(
   (layer, i) => ({
     id: layer.id,
     i,
-    name: layer.name,
+    label: layer.label,
     node:
       layer.id === 'runtime' ? (
         <>
@@ -64,26 +84,23 @@ const STACK_CAPS: readonly { id: string; i: number; name: string; node: ReactNod
 const MARK = { size: 12, color: 'currentColor' } as const;
 
 /**
- * The page's one full-bleed dark band, on toolchain's calm v3 cut: every
- * cell is heading + one line + one quiet artifact; the centerpiece is the
- * seven-plane hoverable/focusable stack instrument; the trace ledger keeps
- * the clock.
- *
- * Fork material: where toolchain washes the CLI cell with its prismatic
- * shader, this page draws the same grammar with its own engine — the
- * paper-on-ink halftone bloom (panelBloom), white rings dissolving into
- * loose Bayer cells around a committed dark core the terminal floats in.
- * The dissolve strip along the band's floor is the page's one loose dither,
- * mounted in padding no type can enter. Neither field ever remaps with the
- * theme: the band is permanently dark by law.
+ * The page's one full-bleed dark band, recut for calm: every cell is
+ * heading + one line + one quiet artifact. The centerpiece is the seven-
+ * plane stack, now a real instrument — each plane and each caption row is
+ * a two-way hover/focus/tap target (GSAP raises and brightens the plane,
+ * pulls its leader to full ink, and lights its caption), and the left
+ * connector is a doubled rail the planes tap off with radiused corners.
+ * Scroll reveals are one-shot and legible at any stop; reduced motion gets
+ * the finished still with instant hover states.
  */
 export default function DarkBand() {
   const root = useRef<HTMLElement>(null);
 
-  // applyStyles is off for both canvases: the engine's default inline
-  // `width/height: 100%` would override the fixed CSS boxes that confine
-  // these fields to their zones — the texture stays architecturally fenced
-  // away from type.
+  // Fork material: the CLI cell's wash and the band's floor are drawn by
+  // this page's own engine — paper-on-ink Bayer fields on permanently dark
+  // plates (they never remap with the theme). applyStyles is off for both:
+  // the engine's default inline `width/height: 100%` would override the
+  // fixed CSS boxes that fence the texture away from type.
   const bloomRef = useDitherField(panelBloom, {
     scale: 3,
     ink: '#f2f1ec',
@@ -329,10 +346,15 @@ export default function DarkBand() {
                     type='button'
                     className='tcb-stack-cap'
                     data-stack-cap={cap.i}
-                    aria-label={`Highlight the ${cap.name} layer`}
+                    aria-label={`Highlight the ${cap.label} layer`}
                   >
-                    <b>{cap.name}</b>
-                    <span>{cap.node}</span>
+                    <span className='tcb-cap-ic' aria-hidden='true'>
+                      {CAP_MARKS[cap.id]}
+                    </span>
+                    <span className='tcb-cap-tx'>
+                      <b>{cap.label}</b>
+                      <span>{cap.node}</span>
+                    </span>
                   </button>
                 ))}
               </div>
@@ -374,14 +396,15 @@ export default function DarkBand() {
               <p>Mark up JSX once — every locale ships from your build.</p>
             </div>
             <div className='tcb-art'>
-              <div className='tcb-art-bar'>
-                <span className='is-on'>page.tsx</span>
-                <span className='tcb-marks' aria-label='Next.js and React'>
-                  <SiNextdotjs {...MARK} />
-                  <SiReact {...MARK} />
-                </span>
-              </div>
-              <pre className='tcb-pre'>
+              <div className='tcb-art-in'>
+                <div className='tcb-art-bar'>
+                  <span className='is-on'>page.tsx</span>
+                  <span className='tcb-marks' aria-label='Next.js and React'>
+                    <SiNextdotjs {...MARK} />
+                    <SiReact {...MARK} />
+                  </span>
+                </div>
+                <pre className='tcb-pre'>
                 <div>
                   <span className='tk-kw'>import</span> {'{ '}
                   <span className='tk-tag'>T</span>
@@ -419,6 +442,7 @@ export default function DarkBand() {
                   <b lang='ja'>こんにちは世界！</b>
                 </div>
               </div>
+              </div>
             </div>
           </div>
 
@@ -428,6 +452,7 @@ export default function DarkBand() {
               <p>User-generated content, translated on demand at runtime.</p>
             </div>
             <div className='tcb-art'>
+              <div className='tcb-art-in'>
               <div className='tcb-art-bar'>
                 <span className='is-on'>notify.ts</span>
                 <span>runtime</span>
@@ -453,6 +478,7 @@ export default function DarkBand() {
                   {' }'}
                 </div>
               </div>
+              </div>
             </div>
           </div>
 
@@ -462,6 +488,7 @@ export default function DarkBand() {
               <p>Glossaries, directives, and review in one workspace.</p>
             </div>
             <div className='tcb-art'>
+              <div className='tcb-art-in'>
               <div className='tcb-art-bar'>
                 <b>acme/web</b>
                 <span>production</span>
@@ -493,6 +520,7 @@ export default function DarkBand() {
                   <span>2 min ago</span>
                 </div>
               </div>
+              </div>
             </div>
           </div>
 
@@ -502,6 +530,7 @@ export default function DarkBand() {
               <p>The agent that internationalizes your repo in guarded PRs.</p>
             </div>
             <div className='tcb-art'>
+              <div className='tcb-art-in'>
               <div className='tcb-art-bar'>
                 <span className='is-on'>PR #218</span>
                 <span>locadex → main</span>
@@ -537,6 +566,7 @@ export default function DarkBand() {
                   <b>+38 −6 · checks passed</b>
                 </div>
               </div>
+              </div>
             </div>
           </div>
 
@@ -545,16 +575,21 @@ export default function DarkBand() {
           <div className='tcb-cell tcb-cell-ctx' data-cell>
             <div className='tcb-cap'>
               <h3>Context, defined once — inherited all the way down</h3>
+              <p>Glossary and tone set at the top; every project and component below inherits them.</p>
             </div>
             <div className='tcb-ctx'>
-              <div className='tcb-ctx-col'>
-                <div className='tcb-ctx-tag'>organization</div>
-                <div className='tcb-ctx-k'>Glossary</div>
-                <p className='tcb-ctx-rule'>“Locadex is the GT agent — do not translate.”</p>
-                <div className='tcb-ctx-k'>Directives</div>
-                <p className='tcb-ctx-rule'>
-                  “Active voice. Use formal ‘Sie.’” <LocaleTag code='de' className='tcb-ctx-loc' />
-                </p>
+              <div className='tcb-ctx-stage'>
+                <div className='tcb-ctx-tag'>Organization</div>
+                <div className='tcb-ctx-box'>
+                  <div className='tcb-ctx-card'>
+                    <div className='tcb-ctx-k'>Glossary</div>
+                    <p className='tcb-ctx-rule'>“Locadex is the GT agent — do not translate.”</p>
+                    <div className='tcb-ctx-k'>Directives</div>
+                    <p className='tcb-ctx-rule'>
+                      “Active voice. Use formal ‘Sie.’” <LocaleTag code='de' className='tcb-ctx-loc' />
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className='tcb-ctx-joint' aria-label='inherited by'>
@@ -565,26 +600,30 @@ export default function DarkBand() {
                 </svg>
               </div>
 
-              <div className='tcb-ctx-col'>
-                <div className='tcb-ctx-tag'>project</div>
-                <div className='tcb-ctx-row'>
-                  <span className='tcb-pri'>1</span>
-                  <b>brand-core</b>
-                  <span className='tcb-scope'>org</span>
+              <div className='tcb-ctx-stage'>
+                <div className='tcb-ctx-tag'>Project</div>
+                <div className='tcb-ctx-box'>
+                  <div className='tcb-ctx-card'>
+                    <div className='tcb-ctx-row'>
+                      <span className='tcb-pri'>1</span>
+                      <b>brand-core</b>
+                      <span className='tcb-scope'>org</span>
+                    </div>
+                    <div className='tcb-ctx-row'>
+                      <span className='tcb-pri'>2</span>
+                      <b>docs-style</b>
+                      <span className='tcb-scope'>org</span>
+                    </div>
+                    <div className='tcb-ctx-row'>
+                      <span className='tcb-pri'>3</span>
+                      <b>checkout-copy</b>
+                      <span className='tcb-scope'>project</span>
+                    </div>
+                    <p className='tcb-ctx-rule tcb-ctx-verdict'>
+                      On overlap the top group wins: formal ‘Sie’ holds, <s>casual tone</s> loses.
+                    </p>
+                  </div>
                 </div>
-                <div className='tcb-ctx-row'>
-                  <span className='tcb-pri'>2</span>
-                  <b>docs-style</b>
-                  <span className='tcb-scope'>org</span>
-                </div>
-                <div className='tcb-ctx-row'>
-                  <span className='tcb-pri'>3</span>
-                  <b>checkout-copy</b>
-                  <span className='tcb-scope'>project</span>
-                </div>
-                <p className='tcb-ctx-rule'>
-                  On overlap the top group wins: formal ‘Sie’ holds, <s>casual tone</s> loses.
-                </p>
               </div>
 
               <div className='tcb-ctx-joint' aria-label='inherited by'>
@@ -595,29 +634,33 @@ export default function DarkBand() {
                 </svg>
               </div>
 
-              <div className='tcb-ctx-col'>
-                <div className='tcb-ctx-tag'>component</div>
-                <pre className='tcb-ctx-code'>
-                  <div>
-                    <span className='tk-dim'>{'<'}</span>
-                    <span className='tk-tag'>T</span> <span className='tk-kw'>$context</span>
-                    <span className='tk-dim'>=</span>
-                    <span className='tk-str'>&quot;popup, not bread&quot;</span>
-                    <span className='tk-dim'>{'>'}</span>
+              <div className='tcb-ctx-stage'>
+                <div className='tcb-ctx-tag'>Component</div>
+                <div className='tcb-ctx-box'>
+                  <div className='tcb-ctx-card'>
+                    <pre className='tcb-ctx-code'>
+                      <div>
+                        <span className='tk-dim'>{'<'}</span>
+                        <span className='tk-tag'>T</span> <span className='tk-kw'>$context</span>
+                        <span className='tk-dim'>=</span>
+                        <span className='tk-str'>&quot;popup, not bread&quot;</span>
+                        <span className='tk-dim'>{'>'}</span>
+                      </div>
+                      <div>{'  Click the toast to dismiss'}</div>
+                      <div>
+                        <span className='tk-dim'>{'</'}</span>
+                        <span className='tk-tag'>T</span>
+                        <span className='tk-dim'>{'>'}</span>
+                      </div>
+                    </pre>
+                    <div className='tcb-ctx-res'>
+                      <span className='tcb-ctx-res-loc'>
+                        <LocaleTag code='es' />
+                      </span>
+                      <b lang='es'>la notificación</b>
+                      <s lang='es'>la tostada</s>
+                    </div>
                   </div>
-                  <div>{'  Click the toast to dismiss'}</div>
-                  <div>
-                    <span className='tk-dim'>{'</'}</span>
-                    <span className='tk-tag'>T</span>
-                    <span className='tk-dim'>{'>'}</span>
-                  </div>
-                </pre>
-                <div className='tcb-ctx-res'>
-                  <span className='tcb-ctx-res-loc'>
-                    <LocaleTag code='es' />
-                  </span>
-                  <b lang='es'>la notificación</b>
-                  <s lang='es'>la tostada</s>
                 </div>
               </div>
             </div>

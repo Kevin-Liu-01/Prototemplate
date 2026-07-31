@@ -1,0 +1,177 @@
+/* ============================================================
+   TOOLCHAIN / LOCADEX — side-by-side hero
+   Founder directive: "make the locadex hero side by side just
+   like the enterprise page." The row grammar is the enterprise
+   hero's, verbatim: a mixed `tc-row is-lead` (1.32fr text /
+   1fr artifact), the text column sitting on the row's mat
+   ground, the artifact in a framed card on the right. Every
+   measure in the text column mirrors enterprise.css's tce-hero
+   block; the artifact card swaps the white ledger surface for
+   the page's own dark terminal plate — the live agent
+   transcript, kept exactly as it was.
+   New classes only (ldx2-*); nothing in ../styles.css or
+   ./locadex.css is rewritten.
+   ============================================================ */
+
+/* ---------- text column (mirrors .tce-hero) ---------- */
+
+.toolchain-root .ldx2-hero {
+  justify-content: center;
+  padding-top: clamp(48px, 6vw, 84px);
+  padding-bottom: clamp(44px, 5.4vw, 76px);
+}
+
+.toolchain-root .ldx2-hero h1 {
+  font-size: clamp(1.9rem, 3.6vw, 2.85rem);
+  line-height: 1.05;
+  letter-spacing: -0.034em;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+
+/* The break is authored; the rag is a decision. */
+.toolchain-root .ldx2-hero h1 span {
+  display: block;
+}
+
+/* The doubled-underline moment — the two threads, source and
+   translation at constant gauge, running under the promise. */
+.toolchain-root .ldx2-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+/* The mark leads the column, left-set — the centered hero died
+   with the stack layout. */
+.toolchain-root .ldx2-mark {
+  display: block;
+  margin: 0 0 24px;
+  opacity: 0.92;
+}
+
+/* the lambda ships as dark ink on transparent — brand rule: invert on dark */
+[data-theme='dark'] .toolchain-root .ldx2-mark {
+  filter: invert(1);
+}
+
+/* Outranks the shell's `.tc-cell > p` element rule. */
+.toolchain-root .ldx2-hero p.ldx2-sub {
+  margin-top: 18px;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .ldx2-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* The mixed row's mat ground is the shell hairline token; in the
+   dark theme that token is the plum seam color, and a full hero
+   plate of it breaks the one-surface-family doctrine (see the
+   ldx-guard note in locadex.css). Same fix, same reasoning: the
+   plate joins the card family, the seams keep the mortar. */
+[data-theme='dark'] .toolchain-root .ldx-hero-sec .tc-row.is-lead {
+  background: var(--tc-card);
+}
+
+/* ---------- artifact column: the agent terminal, kept alive ---------- */
+
+/* The framed card trades the white ledger surface for the page's
+   dark plate: prismatic light owns the headroom, the terminal
+   stands flush on the card's bottom edge (the house terminal
+   posture — radius 8 8 0 0, panel on the rule, ring clipped at
+   the seam). Fixed dark in both themes, like every terminal
+   surface on the page. */
+.toolchain-root .ldx-hero-sec .tc-cell.ldx2-cell > .tc-card.ldx2-art {
+  position: relative;
+  padding: clamp(26px, 3.2vw, 46px) clamp(16px, 2vw, 26px) 0;
+  background: var(--tc-dark);
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.toolchain-root .ldx2-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  /* light owns the headroom and the flanks; the transcript sits
+     in the dark floor (AESTHETIC_ADDENDUM 2b) */
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.55) 32%,
+    rgba(0, 0, 0, 0.14) 64%,
+    rgba(0, 0, 0, 0.26) 100%
+  );
+  pointer-events: none;
+}
+
+/* the shell caps the hero terminal at 820px for the full-bleed
+   band; inside a half-rail card the cap is the card itself */
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term {
+  max-width: none;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* the column is ~500px where the band was ~820: the ledger keeps
+   its two-column grammar but drops a step so no line clips */
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term-body {
+  padding: 20px 18px 26px;
+  font-size: 13px;
+}
+
+/* `:not(.is-full)` matters: this selector outranks the shell's
+   `.ldx-t.is-full` single-column rule, and without the guard the
+   full-width prompt lines fall into the 9.5ch stage gutter and
+   wrap word-by-word on phones */
+.toolchain-root .ldx-hero-sec .ldx2-art .ldx-t:not(.is-full) {
+  grid-template-columns: 9.5ch minmax(0, 1fr);
+}
+
+@media (max-width: 1240px) {
+  .toolchain-root .ldx-hero-sec .ldx2-art .tc-term-body {
+    font-size: 11.5px;
+  }
+}
+
+/* stacked below 1000px (the shell collapses is-lead): the art
+   cell needs its own height once nothing stretches it */
+@media (max-width: 1000px) {
+  .toolchain-root .ldx-hero-sec .tc-cell.ldx2-cell > .tc-card.ldx2-art {
+    min-height: clamp(360px, 62vw, 520px);
+  }
+
+  .toolchain-root .ldx2-hero {
+    padding-top: clamp(40px, 7vw, 60px);
+    padding-bottom: clamp(36px, 6vw, 56px);
+  }
+}
+
+@media (max-width: 620px) {
+  .toolchain-root .ldx-hero-sec .ldx2-art .tc-term-body {
+    font-size: 11px;
+  }
+}

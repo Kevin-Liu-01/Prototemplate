@@ -1,0 +1,470 @@
+/* ============================================================
+   PRICING v2 + PROOF + CLOSE — the page's conversion run.
+
+   Three sections, one file, all rendered from Pricing.tsx:
+
+   1. `.tcpv`  — the plans. The nested-frame grammar at full
+      confidence: one grey mat, two cards with the 12px radius so
+      the mat fills the corner notches; the Starter card's mat is
+      INK (white in dark mode) — the notch colour itself is the
+      emphasis, not a badge or a shadow. $0 at display scale, a
+      doubled-thread rule as the plan-defining line.
+   2. `.tcpq`  — Theo's quote as a landmark: a dark plate mounted
+      in the light mat, display-type quote, quiet metadata. The
+      plate uses the constant panel tokens so it reads identically
+      under both themes.
+   3. `.tcpx`  — the closing band. Full-bleed dark inside the rail,
+      the doubled thread standing at the copy's left flank (source
+      and translation, two lines at constant gauge).
+
+   Every selector is prefixed `.toolchain-root .tcp*`; this file is
+   imported by the component and loads BEFORE styles.css, so the
+   extra class carries the cascade wherever the two overlap.
+   ============================================================ */
+
+/* ---------- 1. plans ---------- */
+
+.toolchain-root .tcpv-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.toolchain-root .tcpv-head-meta {
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+/* the mat: one grey ground, 1px seam between the two cards */
+.toolchain-root .tcpv-plans {
+  display: grid;
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
+  gap: 1px;
+  padding: 1px;
+  margin: 0 var(--tc-gut) clamp(26px, 3vw, 36px);
+  background: var(--tc-hair);
+  border-radius: 16px;
+}
+
+/* each plan is a 2px inner mat of its own; Starter's is ink, so the
+   featured card is ringed by the page's strongest colour and the
+   corner notches fill with it — emphasis in the grammar's own voice */
+.toolchain-root .tcpv-plan {
+  display: flex;
+  min-width: 0;
+  padding: 2px;
+  border-radius: 15px;
+}
+
+.toolchain-root .tcpv-plan.is-star {
+  background: var(--tc-ink);
+}
+
+.toolchain-root .tcpv-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 38px) clamp(24px, 2.8vw, 36px) clamp(28px, 3.2vw, 38px);
+  border-radius: 12px;
+  background: var(--tc-card);
+}
+
+.toolchain-root .tcpv-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.toolchain-root .tcpv-top h3 {
+  font-size: 1.15rem;
+}
+
+.toolchain-root .tcpv-tag {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tc-accent);
+  border: 1px solid color-mix(in srgb, var(--tc-accent) 34%, transparent);
+  border-radius: 4px;
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .toolchain-root .tcpv-tag {
+  color: #93aaf1;
+  border-color: rgba(147, 170, 241, 0.34);
+}
+
+/* the number gets the room a hero gets; both cards share the block
+   height so the defining rules land on one line across the seam */
+.toolchain-root .tcpv-price {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: clamp(18px, 2.2vw, 28px);
+  min-height: clamp(58px, 6.4vw, 88px);
+}
+
+.toolchain-root .tcpv-num {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(56px, 6.2vw, 88px);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcpv-num.is-custom {
+  font-size: clamp(30px, 3.4vw, 46px);
+  letter-spacing: -0.035em;
+}
+
+.toolchain-root .tcpv-per {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcpv-per b {
+  font-weight: 500;
+  color: var(--tc-ink-2);
+}
+
+/* the plan-defining line: the statement, over the doubled thread on
+   Starter — two true 1px+ borders at the page's constant gauge — and
+   a single hairline on Enterprise. The rule weight IS the hierarchy. */
+.toolchain-root .tcpv-def {
+  margin-top: clamp(16px, 2vw, 22px);
+  padding-top: 14px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 14px;
+  line-height: 1.58;
+  color: var(--tc-ink-2);
+  max-width: 44ch;
+}
+
+.toolchain-root .tcpv-plan.is-star .tcpv-def {
+  position: relative;
+  border-top: var(--thread-gauge, 1.5px) solid var(--tc-ink);
+  padding-top: 17px;
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+/* the second line of the pair, one gap below the border it doubles */
+.toolchain-root .tcpv-plan.is-star .tcpv-def::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--thread-gap, 3px);
+  border-top: var(--thread-gauge, 1.5px) solid var(--tc-ink);
+}
+
+/* tightened checklist: Starter runs two columns where there is room */
+.toolchain-root .tcpv-card .tc-list {
+  margin-top: 18px;
+  gap: 10px;
+}
+
+.toolchain-root .tcpv-card .tc-list li {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.toolchain-root .tcpv-plan.is-star .tc-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 18px;
+}
+
+.toolchain-root .tcpv-plan.is-star .tc-list li {
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcpv-plan.is-star .tc-list li::before {
+  border-color: var(--tc-ink);
+}
+
+.toolchain-root .tcpv-acts {
+  margin-top: auto;
+  padding-top: clamp(22px, 2.6vw, 30px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolchain-root .tcpv-acts .tc-btn {
+  align-self: auto;
+}
+
+/* compare row: unchanged grammar, new destination */
+.toolchain-root .tcpv-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tcpv-compare a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tcpv-compare a:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 880px) {
+  .toolchain-root .tcpv-plans {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .tcpv-price {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .toolchain-root .tcpv-plan.is-star .tc-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- 2. the proof plate ---------- */
+
+.toolchain-root .tcpq-wrap {
+  padding: clamp(40px, 5vw, 64px) var(--tc-gut);
+}
+
+/* the same box-inside-a-box as the bento, scaled to a landmark: light
+   mat, 2px reveal, dark plate. Panel tokens are constant, so the plate
+   is the one surface that never shifts between themes. */
+.toolchain-root .tcpq-mat {
+  margin: 0;
+  padding: 2px;
+  border-radius: 15px;
+  background: var(--tc-hair);
+}
+
+.toolchain-root .tcpq-plate {
+  position: relative;
+  border-radius: 13px;
+  background: var(--tc-panel);
+  padding: clamp(34px, 4.4vw, 56px) clamp(26px, 4.4vw, 64px) clamp(30px, 3.6vw, 44px);
+  overflow: hidden;
+}
+
+.toolchain-root .tcpq-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tcpq-meta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--tc-panel-dim);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  transition: color 0.18s ease;
+}
+
+.toolchain-root .tcpq-meta a:hover {
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .tcpq-meta a svg {
+  width: 12px;
+  height: 12px;
+}
+
+.toolchain-root .tcpq-quote {
+  position: relative;
+  margin: clamp(30px, 4vw, 48px) 0 0;
+  max-width: 58ch;
+}
+
+/* the mark of the genre, oversized and nearly off: ornament, not ink */
+.toolchain-root .tcpq-quote::before {
+  content: '\201C';
+  position: absolute;
+  top: clamp(-30px, -2.6vw, -18px);
+  left: -0.06em;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(84px, 9vw, 128px);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.toolchain-root .tcpq-quote p {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(23px, 2.5vw, 38px);
+  line-height: 1.22;
+  letter-spacing: -0.022em;
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .tcpq-quote p + p {
+  margin-top: 0.55em;
+}
+
+/* the two quoted fragments are strings, and strings carry the band's
+   only hue — the same token the dark band spends on code strings */
+.toolchain-root .tcpq-quote em {
+  font-style: normal;
+  color: #a7bff3;
+}
+
+.toolchain-root .tcpq-attr {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: clamp(28px, 3.4vw, 40px);
+  padding-top: 18px;
+  border-top: 1px solid var(--tc-panel-rule);
+}
+
+.toolchain-root .tcpq-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .tcpq-role {
+  font-size: 13px;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .tcpq-attr a {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--tc-panel-dim);
+  transition: color 0.18s ease;
+}
+
+.toolchain-root .tcpq-attr a:hover {
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .tcpq-attr a svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---------- 3. the closing band ---------- */
+
+.toolchain-root .tcpx {
+  background: var(--tc-dark);
+}
+
+/* the band never goes borderless into the footer: in dark mode the two
+   surfaces are near-identical, so the seam has to be drawn. Doubled
+   class outruns styles.css's `.tc-sec:last-child` reset if the DOM
+   order ever changes. */
+.toolchain-root .tc-sec.tcpx.tcpx {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tcpx-in {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(28px, 4vw, 56px);
+  flex-wrap: wrap;
+  padding: clamp(60px, 7.4vw, 100px) var(--tc-gut) clamp(56px, 6.8vw, 92px);
+}
+
+/* the doubled thread stands at the copy's flank — two lines, constant
+   gauge, the same pair the rail and the hero baseline carry */
+.toolchain-root .tcpx-copy {
+  position: relative;
+  min-width: 0;
+  padding-left: clamp(22px, 2.6vw, 34px);
+}
+
+.toolchain-root .tcpx-copy::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
+  border-inline: var(--thread-gauge, 1.5px) solid rgba(255, 255, 255, 0.62);
+}
+
+.toolchain-root .tcpx-kick {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.toolchain-root .tcpx h2 {
+  margin-top: 14px;
+  font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+  color: #ffffff;
+  max-width: 17ch;
+}
+
+.toolchain-root .tcpx-sub {
+  margin-top: 13px;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 50ch;
+}
+
+.toolchain-root .tcpx-acts {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 5px;
+}
+
+.toolchain-root .tcpx .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.toolchain-root .tcpx .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.toolchain-root .tcpx .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.toolchain-root .tcpx .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}

@@ -189,9 +189,13 @@
 /* ---------- the two faces ---------- */
 
 /* The terminal face is in-flow and sets the window's height; the preview
-   face overlays it, so switching views never moves the band. */
+   face overlays it, so switching views never moves the band. The stage
+   also clips the app card's full-reach frame rules, so they terminate at
+   the stage's edges: the window bar's rule above, the plate's edges on
+   the other three sides. */
 .toolchain-root .tct-stage {
   position: relative;
+  overflow: clip;
 }
 
 .toolchain-root .tct-face {
@@ -406,18 +410,51 @@
   font-weight: 500;
 }
 
-/* the rendered app card: paper on the plate, same ring grammar as the window */
+/* the rendered app card: paper on the plate, ruled onto it (founder round:
+   no floating ring, no rounding — the frame is four 1px rules at the ring
+   ink, run to the stage's edges by two full-bleed pseudo bands and clipped
+   by .tct-stage. The card carries no border or outline of its own, so no
+   line stacks to 2px; the payload's clip-path keeps it inside the box, so
+   losing overflow:hidden leaks nothing.) */
 .toolchain-root .tct-app {
   --seam-cut: 70%;
+  --tct-frame: rgba(255, 255, 255, 0.25);
   position: relative;
   width: min(460px, 100%);
-  border-radius: 8px;
+  border-radius: 0;
   background: #ffffff;
   color: #0f1113;
   text-align: left;
-  outline: 1px solid rgba(255, 255, 255, 0.25);
-  outline-offset: 2px;
-  overflow: hidden;
+}
+
+.toolchain-root .tct-app::before,
+.toolchain-root .tct-app::after {
+  content: '';
+  position: absolute;
+  /* above the payload plate (2) and the seam (3): the frame rules stay
+     legible at the card's edges whatever the seam cut */
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, the stage's full width */
+.toolchain-root .tct-app::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tct-frame);
+  border-bottom: 1px solid var(--tct-frame);
+}
+
+/* the two vertical rules, the stage's full height */
+.toolchain-root .tct-app::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tct-frame);
+  border-right: 1px solid var(--tct-frame);
 }
 
 .toolchain-root .tct-app-addr {

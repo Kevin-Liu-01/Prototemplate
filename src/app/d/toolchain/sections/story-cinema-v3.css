@@ -73,12 +73,49 @@
    stretches the five rows sparse — the box hugs its content and sits
    on the dark matting like a mounted print. (Mobile columns are shorter
    than the cap, so this is a desktop-only tightening.) The panel sits
-   one step raised off the ink-black half, in the page's own token. */
+   one step raised off the ink-black half, in the page's own token.
+
+   Founder round: no floating ring, no rounding. The frame is four 1px
+   rules at the ring ink that run the web half's FULL width and height —
+   drawn by two full-bleed pseudo bands on the demo and clipped by
+   .tc-cinema-web's overflow, so each line terminates at the half's
+   edges. The element itself carries no border or outline, so nothing
+   stacks to 2px. */
 .toolchain-root .tc-cinema-v3 .tc-cinema-demo {
   max-height: 620px;
   margin-block: auto;
   background: var(--tc-panel);
-  border-radius: 3px;
+  border-radius: 0;
+  outline: 0;
+}
+
+.toolchain-root .tc-cinema-v3 .tc-cinema-demo::before,
+.toolchain-root .tc-cinema-v3 .tc-cinema-demo::after {
+  content: '';
+  position: absolute;
+  /* above the rows, below the hilite ring (3) and the agent overlay (4) */
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, edge to edge of the web half */
+.toolchain-root .tc-cinema-v3 .tc-cinema-demo::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--cin-ring);
+  border-bottom: 1px solid var(--cin-ring);
+}
+
+/* the two vertical rules, the take's full height */
+.toolchain-root .tc-cinema-v3 .tc-cinema-demo::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--cin-ring);
+  border-right: 1px solid var(--cin-ring);
 }
 
 /* the hero keeps a firm rhythm inside the tightened box */

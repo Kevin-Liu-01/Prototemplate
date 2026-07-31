@@ -6,6 +6,8 @@ import { useRef } from 'react';
 import LocaleTag from '../components/LocaleTag';
 import { useQuietReveal } from '../sections/reveal';
 
+import GovernedColumn from './GovernedColumn';
+
 /**
  * Governance: one Context Group at the organization, and the difference it
  * makes. The glossary and directive strings are the docs' own examples —
@@ -104,6 +106,13 @@ export default function Governance() {
           </div>
         </div>
       </div>
+
+      <div className='tc-hatch' aria-hidden='true' />
+
+      {/* The governed column: the section's closer and the bridge into the
+          review and delivery sections — the whole chain the page walks next,
+          as one isometric instrument (founder ask). */}
+      <GovernedColumn />
     </section>
   );
 }

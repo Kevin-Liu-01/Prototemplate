@@ -9,6 +9,10 @@
    ============================================================ */
 
 .toolchain-root .tcr {
+  /* the section is the workspace frame's sheet: its box clips the frame's
+     full-reach rules, so every line terminates at the section's edges */
+  position: relative;
+  overflow: clip;
   padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(56px, 6vw, 76px);
 }
 
@@ -20,6 +24,15 @@
 }
 
 /* ---------- copy column: the page's own head rhythm ---------- */
+
+/* The workspace's top rule now runs the full sheet width, crossing this
+   column at the grid's top edge — the copy sits under it like a cell's
+   content, so the heading clears the line instead of grazing it. */
+@media (min-width: 981px) {
+  .toolchain-root .tcr-copy {
+    padding-top: clamp(20px, 2.4vw, 30px);
+  }
+}
 
 .toolchain-root .tcr-copy h2 {
   font-size: clamp(1.62rem, 2.5vw, 2.2rem);
@@ -59,19 +72,47 @@
   color: var(--tc-ink-4);
 }
 
-/* ---------- the workspace, mounted ----------
-   Same mat and reveal as every other mounted surface on the page:
-   1px edge, 5px radius, 2px of mat showing around a 3px card. */
+/* ---------- the workspace, ruled onto the sheet ----------
+   Founder round: no mat, no reveal, no rounding. The frame is four 1px
+   rules that run the section's full width and full height — the ruled-
+   sheet grammar — drawn by two full-bleed pseudo bands and clipped by
+   the section box (.tcr overflow). The element itself carries NO border,
+   so no line can stack to 2px where band and box coincide. */
 
 .toolchain-root .tcr-mat {
-  padding: 2px;
-  border: 1px solid var(--tc-mat-edge);
-  border-radius: 5px;
-  background: var(--tc-hair);
+  position: relative;
+  background: var(--tc-card);
+}
+
+.toolchain-root .tcr-mat::before,
+.toolchain-root .tcr-mat::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, full sheet width */
+.toolchain-root .tcr-mat::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-mat-edge);
+  border-bottom: 1px solid var(--tc-mat-edge);
+}
+
+/* the two vertical rules, full sheet height */
+.toolchain-root .tcr-mat::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-mat-edge);
+  border-right: 1px solid var(--tc-mat-edge);
 }
 
 .toolchain-root .tcr-ws {
-  border-radius: 3px;
   background: var(--tc-card);
   overflow: hidden;
 }

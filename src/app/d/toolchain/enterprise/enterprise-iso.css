@@ -1,0 +1,295 @@
+/* ============================================================
+   TOOLCHAIN / ENTERPRISE — THE GOVERNED COLUMN (tcei-*)
+   The page's bespoke isometric instrument: the enterprise story
+   as an exploded stack of the dark band's glass plates, wired to
+   a caption ledger by corner-routed leader pairs at the page's
+   doubled gauge. Every surface tone here comes from the panel
+   set (--tc-panel never remaps), so the cell is identical in
+   both themes; the glass paint values are the dark band's own
+   (darkband-v3.css), copied verbatim so the two stacks read as
+   siblings. New classes only — nothing in enterprise.css or the
+   shell is overridden except the night card's accent, below.
+   ============================================================ */
+
+/* The one deliberate override: the night-card recipe whitewashes the iso
+   accent for the wire globe; this drawing spends a real accent on the live
+   version chip, raised for the dark surface the way iso.css prescribes. */
+.toolchain-root .tc-cell.is-night.tcei-cell > .tc-card {
+  --iso-accent: #86a8ff;
+}
+
+/* ---------- head: the night card's own type scale ---------- */
+
+.toolchain-root .tcei-head h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.toolchain-root .tcei-cell .tc-card > .tcei-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  max-width: 68ch;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- the instrument body: drawing · wire · ledger ---------- */
+
+.toolchain-root .tcei-body {
+  position: relative;
+  flex: 1;
+  margin-top: 20px;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(18px, 3vw, 48px);
+  min-height: 0;
+}
+
+.toolchain-root .tcei-fig {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolchain-root .tcei-fig .tcei-iso {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+/* ---------- the planes: pointer targets with focus parity ---------- */
+
+.toolchain-root .tcei-cell .tcei-layer {
+  cursor: pointer;
+  outline: none;
+}
+
+.toolchain-root .tcei-cell .tcei-layer:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 4px;
+}
+
+/* the doubled top edge, held by the active plane (GSAP-driven) */
+.toolchain-root .tcei-cell .tcei-dbl {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+/* ---------- the glass plates: the dark band's material, verbatim ---------- */
+
+.toolchain-root .tcei-cell .tcei-glass-base {
+  fill: rgba(13, 15, 21, 0.94);
+}
+
+.toolchain-root .tcei-cell .tcei-glass-left {
+  fill: rgba(255, 255, 255, 0.06);
+}
+
+.toolchain-root .tcei-cell .tcei-glass-right {
+  fill: rgba(3, 5, 9, 0.45);
+}
+
+.toolchain-root .tcei-cell .tcei-glass-topfill {
+  fill: rgba(255, 255, 255, 0.07);
+}
+
+.toolchain-root .tcei-cell .tcei-glass-sheen {
+  fill: url(#tceiFrost);
+}
+
+.toolchain-root .tcei-cell .tcei-glass-rim,
+.toolchain-root .tcei-cell .tcei-glass-edge {
+  fill: none;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+}
+
+.toolchain-root .tcei-cell .tcei-glass-front {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linecap: round;
+}
+
+/* content marks read against the frosted plate (the dark band's value) */
+.toolchain-root .tcei-cell .iso-face-mark {
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+/* tier joints: the doubled pair, structure weight */
+.toolchain-root .tcei-cell .tcei-tick path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.38);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* leader anchors: measured, never seen */
+.toolchain-root .tcei-cell .tcei-a {
+  fill: none;
+  stroke: none;
+}
+
+/* ---------- the leader overlay: plane → caption, doubled gauge ---------- */
+
+.toolchain-root .tcei-wire {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.toolchain-root .tcei-lead {
+  opacity: 0.42;
+}
+
+.toolchain-root .tcei-lead path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.66);
+  stroke-width: 1px;
+  stroke-linecap: round;
+}
+
+/* ---------- the caption ledger: one row per plane, grouped by tier ---------- */
+
+.toolchain-root .tcei-caps {
+  flex: 0 0 min(320px, 34%);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.toolchain-root .tcei-tier {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.34);
+  padding: 10px 12px 7px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+}
+
+.toolchain-root .tcei-cap {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  padding: 9px 12px 10px;
+  text-align: left;
+  font-family: var(--tc-mono);
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.toolchain-root .tcei-cap + .tcei-cap {
+  position: relative;
+}
+
+.toolchain-root .tcei-cap + .tcei-cap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.toolchain-root .tcei-cap > b {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+/* direct child only — the LocaleTag chips inside stay inline */
+.toolchain-root .tcei-cap > span {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.toolchain-root .tcei-cap.is-hot {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.toolchain-root .tcei-cap.is-hot > b {
+  color: #ffffff;
+}
+
+.toolchain-root .tcei-cap.is-hot > span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.toolchain-root .tcei-cap.is-cold {
+  opacity: 0.55;
+}
+
+.toolchain-root .tcei-cap:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: -1px;
+}
+
+/* ---------- folded: drawing above, ledger below, no wires ---------- */
+
+@media (max-width: 940px) {
+  .toolchain-root .tcei-body {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toolchain-root .tcei-fig .tcei-iso {
+    max-width: 330px;
+  }
+
+  /* the overlay is display-managed by the component; belt and braces */
+  .toolchain-root .tcei-wire {
+    display: none;
+  }
+
+  .toolchain-root .tcei-caps {
+    flex: none;
+    width: 100%;
+    max-width: 460px;
+    align-self: center;
+  }
+
+  .toolchain-root .tcei-cap {
+    flex: 0 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .tcei-cap,
+  .toolchain-root .tcei-cap > b,
+  .toolchain-root .tcei-cap > span {
+    transition: none;
+  }
+}

@@ -1,0 +1,330 @@
+/* ============================================================
+   PROTOTEMPLATE — the index page.
+   Ink ground, Switzer display, one measured type moment up top,
+   then the directions as a ruled ledger. Scoped under .pt-root
+   so no direction stylesheet can bleed in or out.
+   ============================================================ */
+
+.pt-root {
+  --pt-ink: #ffffff;
+  --pt-ink-2: rgba(255, 255, 255, 0.62);
+  --pt-ink-3: rgba(255, 255, 255, 0.42);
+  --pt-ink-4: rgba(255, 255, 255, 0.26);
+  --pt-hair: rgba(255, 255, 255, 0.14);
+  --pt-hair-2: rgba(255, 255, 255, 0.08);
+  --pt-raised: #101013;
+  min-height: 100vh;
+  background: #070707;
+  color: var(--pt-ink);
+  font-family: var(--font-sans);
+}
+
+.pt-frame {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding: 0 clamp(20px, 4vw, 44px);
+}
+
+/* ---------- hero ---------- */
+
+.pt-hero {
+  position: relative;
+  min-height: clamp(480px, 72vh, 760px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.pt-mast {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--pt-ink-3);
+}
+
+/* the two source constructions */
+.pt-word {
+  position: absolute;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pt-word.is-proto {
+  left: clamp(2%, 6vw, 10%);
+  top: 21%;
+}
+
+.pt-word.is-template {
+  right: clamp(2%, 6vw, 10%);
+  bottom: 24%;
+}
+
+.pt-word .pt-letters {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 4.6vw, 58px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pt-letters > span {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* measuring guides: a hairline with crop ticks at both ends */
+.pt-guide {
+  position: relative;
+  display: block;
+  height: 1px;
+  background: var(--pt-ink-4);
+  transform-origin: left center;
+}
+
+.pt-guide::before,
+.pt-guide::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: var(--pt-ink-4);
+}
+
+.pt-guide::before {
+  left: 0;
+}
+
+.pt-guide::after {
+  right: 0;
+}
+
+.pt-spec {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--pt-ink-3);
+  white-space: nowrap;
+}
+
+/* the settled nameplate — the layout's ground truth */
+.pt-final {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin: 0;
+}
+
+.pt-final .pt-letters {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(46px, 9vw, 128px);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* the doubled baseline — two 1px threads at constant gauge */
+.pt-final-rule {
+  display: block;
+  align-self: stretch;
+  height: 7px;
+  border-top: 1px solid var(--pt-ink);
+  border-bottom: 1px solid var(--pt-ink);
+  transform-origin: center;
+}
+
+.pt-final-spec {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pt-ink-2);
+}
+
+/* ---------- the ledger ---------- */
+
+.pt-index-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0 12px;
+  border-top: 1px solid var(--pt-ink);
+}
+
+.pt-index-head h2 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.pt-index-head span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--pt-ink-3);
+}
+
+.pt-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1.35fr) 78px minmax(0, 1fr);
+  gap: clamp(14px, 2.4vw, 30px);
+  align-items: baseline;
+  padding: 17px 10px 18px;
+  margin: 0 -10px;
+  border-top: 1px solid var(--pt-hair);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.16s ease;
+}
+
+.pt-rows > .pt-row:last-child {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.pt-row:hover,
+.pt-row:focus-visible {
+  background: var(--pt-raised);
+}
+
+/* the doubled thread appears on the row's left edge when it wakes */
+.pt-row::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 10px;
+  bottom: 10px;
+  width: 5px;
+  border-left: 1px solid var(--pt-ink);
+  border-right: 1px solid var(--pt-ink);
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+
+.pt-row:hover::before,
+.pt-row:focus-visible::before {
+  opacity: 1;
+}
+
+.pt-row-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--pt-ink-3);
+}
+
+.pt-row-main h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.pt-row-main p {
+  margin-top: 4px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--pt-ink-2);
+  max-width: 52ch;
+}
+
+.pt-row-tone {
+  justify-self: start;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pt-ink-3);
+  border: 1px solid var(--pt-hair);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.pt-row-sig {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--pt-ink-3);
+}
+
+/* ---------- the two standing links ---------- */
+
+.pt-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 26px 0 8px;
+}
+
+.pt-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-top: 1px solid var(--pt-ink);
+  border-bottom: 1px solid var(--pt-ink);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pt-ink);
+  text-decoration: none;
+  transition: background 0.16s ease;
+}
+
+.pt-link:hover,
+.pt-link:focus-visible {
+  background: var(--pt-raised);
+}
+
+.pt-link small {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--pt-ink-3);
+}
+
+.pt-foot {
+  padding: 40px 0 46px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pt-ink-4);
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 760px) {
+  .pt-word.is-proto {
+    top: 14%;
+  }
+
+  .pt-word.is-template {
+    bottom: 16%;
+  }
+
+  .pt-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    row-gap: 8px;
+  }
+
+  .pt-row-tone {
+    grid-column: 2;
+  }
+
+  .pt-row-sig {
+    grid-column: 2;
+  }
+}

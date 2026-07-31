@@ -321,34 +321,79 @@ export default function PrinciplesSlide() {
         .fromTo('.pr-need-d', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 })
         .from('.pr-need-d .pr-beat-title', { autoAlpha: 0, y: 40, duration: 0.5 }, '<0.1')
         .from('.pr-need-d .pr-sub', { autoAlpha: 0, y: 20, duration: 0.4 }, '<0.15')
-        .fromTo(
-          '.pr-pipe-path',
-          { drawSVG: '0%' },
-          { drawSVG: '100%', duration: 0.9, ease: 'power1.inOut' },
-          '>-0.1'
-        )
-        .from(
+        .addLabel('pipe', '>-0.1');
+
+      // The system assembles itself: each node pops in and the wire draws
+      // onward to the next, one continuous gesture left to right.
+      const pipeNodes = gsap.utils.toArray<HTMLElement>('.pr-pipe-node');
+      const pipeSegs = gsap.utils.toArray<SVGLineElement>('.pr-pipe-seg');
+      pipeNodes.forEach((node, i) => {
+        tl.fromTo(
+          node,
+          { autoAlpha: 0, y: 26, scale: 0.92 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.8)' },
+          `pipe+=${i * 0.32}`
+        );
+        if (pipeSegs[i]) {
+          tl.fromTo(
+            pipeSegs[i]!,
+            { drawSVG: '0%' },
+            { drawSVG: '100%', duration: 0.28, ease: 'power1.inOut' },
+            `pipe+=${i * 0.32 + 0.16}`
+          );
+        }
+      });
+
+      // A signal runs the assembled line, code to edge, and each node lifts
+      // as it passes...
+      tl.fromTo(
+        ['.pr-pipe-pulse', '.pr-pipe-halo'],
+        { attr: { cx: 88 }, autoAlpha: 0 },
+        { attr: { cx: 912 }, autoAlpha: 1, duration: 1.2, ease: 'power1.inOut' },
+        'pipe+=1.8'
+      )
+        .to(
           '.pr-pipe-node',
-          { autoAlpha: 0, y: 22, stagger: 0.16, duration: 0.4, ease: 'back.out(1.7)' },
-          '<0.1'
+          {
+            y: -6,
+            duration: 0.2,
+            yoyo: true,
+            repeat: 1,
+            stagger: { each: 0.24 },
+            ease: 'power2.out',
+          },
+          'pipe+=1.82'
         )
-        // A signal runs the full line, code to edge.
+        .to(['.pr-pipe-pulse', '.pr-pipe-halo'], { autoAlpha: 0, duration: 0.2 }, '>-0.1')
+        // ...then Context Groups feeds the spotlight: the stem drops out of
+        // the hot node, the group lands, and one glossary decision fans out
+        // to every surface.
         .fromTo(
-          '.pr-pipe-pulse',
-          { attr: { cx: 8 }, autoAlpha: 0 },
-          { attr: { cx: 992 }, autoAlpha: 1, duration: 1.1, ease: 'power1.inOut' },
-          '>'
+          '.pr-ctx-stem line',
+          { drawSVG: '0%' },
+          { drawSVG: '100%', duration: 0.4, ease: 'power1.in' },
+          'pipe+=3.15'
         )
-        .to('.pr-pipe-pulse', { autoAlpha: 0, duration: 0.2 }, '>-0.15')
-        .from('.pr-ctx-root', { autoAlpha: 0, y: 24, duration: 0.45 }, '>-0.1')
+        .from('.pr-ctx-root', { autoAlpha: 0, y: -16, duration: 0.45 }, 'pipe+=3.45')
         .fromTo(
           '.pr-ctx-tree path',
           { drawSVG: '0%' },
-          { drawSVG: '100%', stagger: 0.14, duration: 0.5, ease: 'power1.inOut' },
-          '>-0.1'
+          { drawSVG: '100%', stagger: 0.13, duration: 0.5, ease: 'power1.inOut' },
+          'pipe+=3.8'
         )
-        .from('.pr-ctx-leaf', { autoAlpha: 0, y: 18, stagger: 0.14, duration: 0.4 }, '>-0.2')
-        .from('.pr-ctx-note', { autoAlpha: 0, duration: 0.4 }, '>')
+        .from(
+          '.pr-ctx-leaf',
+          {
+            autoAlpha: 0,
+            y: 20,
+            scale: 0.95,
+            stagger: 0.15,
+            duration: 0.45,
+            ease: 'back.out(1.6)',
+          },
+          'pipe+=4.05'
+        )
+        .from('.pr-ctx-note', { autoAlpha: 0, y: 12, duration: 0.4 }, 'pipe+=4.6')
         .to({}, { duration: 0.8 });
     },
     { scope: root }
@@ -547,8 +592,12 @@ export default function PrinciplesSlide() {
               preserveAspectRatio='none'
               aria-hidden
             >
-              <line className='pr-pipe-path' x1='8' y1='6' x2='992' y2='6' />
-              <circle className='pr-pipe-pulse' cx='8' cy='6' r='5' />
+              <line className='pr-pipe-seg' x1='88' y1='6' x2='294' y2='6' />
+              <line className='pr-pipe-seg' x1='294' y1='6' x2='500' y2='6' />
+              <line className='pr-pipe-seg' x1='500' y1='6' x2='706' y2='6' />
+              <line className='pr-pipe-seg' x1='706' y1='6' x2='912' y2='6' />
+              <circle className='pr-pipe-halo' cx='88' cy='6' r='10' />
+              <circle className='pr-pipe-pulse' cx='88' cy='6' r='4.5' />
             </svg>
             <div className='pr-pipe-nodes'>
               {PIPELINE.map((node) => (
@@ -564,6 +613,11 @@ export default function PrinciplesSlide() {
             </div>
           </div>
 
+          {/* The stem: Context Groups feeding the spotlight below. */}
+          <svg className='pr-ctx-stem' viewBox='0 0 2 56' aria-hidden>
+            <line x1='1' y1='0' x2='1' y2='56' />
+          </svg>
+
           <div className='pr-ctx'>
             <div className='pr-ctx-root'>
               <Icon name='layers' size={15} />
@@ -571,9 +625,9 @@ export default function PrinciplesSlide() {
               inherits. &ldquo;wallet&rdquo; means one thing.
             </div>
             <svg className='pr-ctx-tree' viewBox='0 0 600 80' aria-hidden>
-              <path d='M 300 4 C 300 44 100 40 100 76' />
-              <path d='M 300 4 L 300 76' />
-              <path d='M 300 4 C 300 44 500 40 500 76' />
+              <path d='M 292 3 C 292 42 100 36 100 77' />
+              <path d='M 300 3 L 300 77' />
+              <path d='M 308 3 C 308 42 500 36 500 77' />
             </svg>
             <div className='pr-ctx-leaves'>
               {CTX_LEAVES.map((leaf) => (

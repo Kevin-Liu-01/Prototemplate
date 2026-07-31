@@ -1,0 +1,340 @@
+/* ============================================================
+   TOOLCHAIN — CAREERS PAGE
+   New classes only (crs-*); styles.css is never appended to.
+   Everything reads the shell's tokens, so the dark remap holds
+   without a second palette. The one dark surface is the posting
+   record, on the artifact panel tone that never remaps; the
+   doubled thread renders at the page constants everywhere.
+   ============================================================ */
+
+/* ---------- hero ---------- */
+
+.toolchain-root .crs-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+  padding: clamp(54px, 6.4vw, 86px) var(--tc-gut) clamp(40px, 4.6vw, 60px);
+}
+
+.toolchain-root .crs-hero h1 {
+  font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.032em;
+  max-width: 17ch;
+  text-wrap: balance;
+}
+
+/* The emphasis is the brand's own device — the two threads under the words,
+   at constant gauge, in the surface's ink. Never the accent. */
+.toolchain-root .crs-hero h1 em,
+.toolchain-root .crs-cta h2 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.toolchain-root .crs-hero-copy > p {
+  margin-top: 18px;
+  max-width: 44ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .crs-hero-acts {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- the posting record ----------
+   The hero's one artifact: the live Ashby board, rendered as a record card
+   on the page's dark panel surface, inside the direction's nested frame.
+   The frame is the signature 2px-reveal mat at its own scale; the panel
+   tokens never remap, so the record is identical in both themes. */
+
+.toolchain-root .crs-frame {
+  padding: 3px;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 9px;
+  background: var(--tc-mat);
+}
+
+.toolchain-root .crs-board {
+  border-radius: 6px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.toolchain-root .crs-board-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-panel-dim);
+  white-space: nowrap;
+}
+
+.toolchain-root .crs-board-bar b {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+.toolchain-root .crs-rec {
+  margin: 0;
+  padding: 13px 16px 15px;
+}
+
+.toolchain-root .crs-rec + .crs-rec {
+  border-top: 1px solid var(--tc-panel-rule);
+}
+
+.toolchain-root .crs-rec > div {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 0 12px;
+  padding: 3.5px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.toolchain-root .crs-rec dt {
+  color: var(--tc-panel-faint);
+}
+
+.toolchain-root .crs-rec dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+/* The old page's empty state, on the record surface. */
+.toolchain-root .crs-board-empty {
+  padding: 18px 16px 20px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--tc-panel-dim);
+  max-width: 40ch;
+}
+
+.toolchain-root .crs-board-more {
+  padding: 0 16px 13px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-faint);
+}
+
+.toolchain-root .crs-board-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 16px 13px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-panel-dim);
+}
+
+.toolchain-root .crs-board-foot b {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+}
+
+/* ---------- the openings ledger ----------
+   Ruled rows on the sheet itself — partial borders only, the grid reads as
+   one surface. The role sits in the display face; team, location and type
+   are the mono columns the old cards carried as icon rows. The whole row is
+   the link, as it was on the old page. */
+
+.toolchain-root .crs-openings {
+  scroll-margin-top: 76px;
+}
+
+.toolchain-root .crs-ledger {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .crs-ledger > * + * {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .crs-lrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.75fr) minmax(0, 0.95fr) minmax(0, 0.65fr) 96px;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 18px var(--tc-gut) 20px;
+}
+
+.toolchain-root .crs-lrow.is-head {
+  padding: 12px var(--tc-gut) 13px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root a.crs-lrow {
+  transition: background-color 0.16s ease;
+}
+
+.toolchain-root a.crs-lrow:hover {
+  background: var(--tc-hair-2);
+}
+
+.toolchain-root .crs-lrole {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .crs-lcol {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .crs-lapply {
+  justify-self: end;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+  transition: color 0.16s ease;
+}
+
+.toolchain-root a.crs-lrow:hover .crs-lapply {
+  color: var(--tc-ink);
+}
+
+/* The mobile meta line lives inside the role cell; desktop hides it. */
+.toolchain-root .crs-lsub {
+  display: none;
+  margin-top: 6px;
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 11.5px;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+}
+
+/* The old page's empty state, in the ledger's own row. */
+.toolchain-root .crs-lempty {
+  padding: 26px var(--tc-gut) 30px;
+}
+
+.toolchain-root .crs-lempty p {
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 52ch;
+}
+
+/* Provenance, stated once: where every row above comes from. */
+.toolchain-root .crs-lsrc {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px var(--tc-gut) 14px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- quiet close ---------- */
+
+.toolchain-root .crs-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(64px, 7.8vw, 108px) var(--tc-gut) clamp(68px, 8.2vw, 112px);
+}
+
+.toolchain-root .crs-cta h2 {
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  letter-spacing: -0.03em;
+}
+
+.toolchain-root .crs-cta > p {
+  margin-top: 14px;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .crs-cta-acts {
+  margin-top: 26px;
+  display: flex;
+  gap: 10px;
+}
+
+.toolchain-root .crs-cta-mail {
+  margin-top: 16px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 940px) {
+  .toolchain-root .crs-hero {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+@media (max-width: 720px) {
+  .toolchain-root .crs-lrow {
+    grid-template-columns: minmax(0, 1fr) 72px;
+  }
+
+  .toolchain-root .crs-lcol {
+    display: none;
+  }
+
+  .toolchain-root .crs-lsub {
+    display: block;
+  }
+
+  .toolchain-root .crs-board-bar span:last-child {
+    display: none;
+  }
+
+  /* Stack the two-ended mono lines instead of letting them wrap mid-phrase. */
+  .toolchain-root .crs-board-foot,
+  .toolchain-root .crs-lsrc {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+}

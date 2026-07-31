@@ -43,6 +43,15 @@
   --tc-diff-add-ink: #85cfa1;
   --tc-diff-del: rgba(222, 110, 110, 0.1);
   --tc-diff-del-ink: #d29090;
+
+  /* The nested frame, in the dark (founder directive): the light bento's
+     box-inside-a-box — hairline-edged mat, 2px reveal, card with a tighter
+     radius so the mat fills the corner notches — remapped to this band's
+     surfaces. The mat is the seam tone; the card sits a step DARKER than
+     the cell, so the artifact reads as its own mounted panel. */
+  --tcb-mat: rgba(255, 255, 255, 0.11);
+  --tcb-mat-edge: rgba(255, 255, 255, 0.17);
+  --tcb-box: #0c0e13;
 }
 
 .glyphrain-root .tcb .tcb-in {
@@ -254,6 +263,9 @@
   align-self: stretch;
 }
 
+/* One row = icon + label + value. Labels and values run in the page's
+   regular sans with proper capitalization (founder directive) — mono
+   survives only inside the flag chips, which keep their form. */
 .glyphrain-root .tcb .tcb-stack-cap {
   appearance: none;
   background: none;
@@ -261,18 +273,49 @@
   border-radius: 6px;
   margin: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: 11px;
   flex: 1 1 0;
   min-height: 0;
   width: 100%;
   padding: 10px 12px 11px;
   text-align: left;
-  font-family: var(--tc-mono);
+  font-family: var(--tc-sans);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
     opacity 0.2s ease;
+}
+
+/* the functional mark: one lucide glyph per stage, dim until its row is hot */
+.glyphrain-root .tcb .tcb-cap-ic {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s ease;
+}
+
+/* Locadex is never a generic icon: the real lambda mark, inverted for the
+   dark panel (brand law). */
+.glyphrain-root .tcb .tcb-cap-lx {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  filter: invert(1);
+  opacity: 0.56;
+  transition: opacity 0.2s ease;
+}
+
+.glyphrain-root .tcb .tcb-cap-tx {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .glyphrain-root .tcb .tcb-stack-cap + .tcb-stack-cap {
@@ -289,21 +332,21 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.glyphrain-root .tcb .tcb-stack-cap > b {
+.glyphrain-root .tcb .tcb-cap-tx > b {
   display: block;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 500;
-  letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: -0.004em;
+  color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   transition: color 0.2s ease;
 }
 
 /* direct child only — the LocaleTag chip inside stays inline */
-.glyphrain-root .tcb .tcb-stack-cap > span {
+.glyphrain-root .tcb .tcb-cap-tx > span {
   display: block;
-  margin-top: 4px;
-  font-size: 11.5px;
+  margin-top: 3px;
+  font-size: 12px;
   line-height: 1.5;
   color: var(--tcb-dim);
   white-space: nowrap;
@@ -312,16 +355,30 @@
   transition: color 0.2s ease;
 }
 
+/* the flag chip keeps its form: locale codes stay mono at chip size */
+.glyphrain-root .tcb .tcb-cap-tx .lct-code {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
 .glyphrain-root .tcb .tcb-stack-cap.is-hot {
   background: rgba(255, 255, 255, 0.06);
 }
 
-.glyphrain-root .tcb .tcb-stack-cap.is-hot > b {
+.glyphrain-root .tcb .tcb-stack-cap.is-hot .tcb-cap-tx > b {
   color: #ffffff;
 }
 
-.glyphrain-root .tcb .tcb-stack-cap.is-hot > span {
+.glyphrain-root .tcb .tcb-stack-cap.is-hot .tcb-cap-tx > span {
   color: rgba(255, 255, 255, 0.78);
+}
+
+.glyphrain-root .tcb .tcb-stack-cap.is-hot .tcb-cap-ic {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.glyphrain-root .tcb .tcb-stack-cap.is-hot .tcb-cap-lx {
+  opacity: 1;
 }
 
 .glyphrain-root .tcb .tcb-stack-cap.is-cold {
@@ -335,8 +392,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .glyphrain-root .tcb .tcb-stack-cap,
-  .glyphrain-root .tcb .tcb-stack-cap > b,
-  .glyphrain-root .tcb .tcb-stack-cap > span {
+  .glyphrain-root .tcb .tcb-cap-ic,
+  .glyphrain-root .tcb .tcb-cap-lx,
+  .glyphrain-root .tcb .tcb-cap-tx > b,
+  .glyphrain-root .tcb .tcb-cap-tx > span {
     transition: none;
   }
 }
@@ -439,22 +498,40 @@
   color: var(--tcb-dim);
 }
 
-/* the artifact zone: flush to the cell's three lower edges */
+/* The artifact zone is its OWN nested box now (founder directive): the
+   light bento's frame grammar — hairline-edged mat, 2px reveal, card with
+   a tighter radius so the mat fills the corner notches — in the band's
+   dark surfaces. Heading and one-liner stay outside, on the cell. */
 .glyphrain-root .tcb .tcb-art {
-  margin-top: 16px;
-  border-top: 1px solid var(--tcb-rule);
+  margin: 14px 10px 10px;
+  border: 1px solid var(--tcb-mat-edge);
+  border-radius: 8px;
+  padding: 2px;
+  background: var(--tcb-mat);
   flex: 1;
   display: flex;
-  flex-direction: column;
   font-family: var(--tc-mono);
   min-height: 0;
+  min-width: 0;
+}
+
+/* the card inside the mat: the artifact's own surface, a step darker than
+   the cell, carrying the panel content edge to edge */
+.glyphrain-root .tcb .tcb-art-in {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background: var(--tcb-box);
+  overflow: hidden;
 }
 
 .glyphrain-root .tcb .tcb-art-bar {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 16px 9px;
+  gap: 12px;
+  padding: 10px 14px 9px;
   border-bottom: 1px solid var(--tcb-rule);
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -477,7 +554,7 @@
 
 .glyphrain-root .tcb .tcb-pre {
   margin: 14px 0 0;
-  padding: 0 16px;
+  padding: 0 14px;
   font-size: 12px;
   line-height: 2.05;
   color: var(--tcb-ink);
@@ -506,7 +583,7 @@
 /* the pinned output band every service plate ends on */
 .glyphrain-root .tcb .tcb-out {
   margin-top: auto;
-  padding: 11px 16px 13px;
+  padding: 11px 14px 13px;
   background: var(--tcb-lift);
   display: grid;
   gap: 6px;
@@ -535,13 +612,15 @@
 .glyphrain-root .tcb .tcb-resp {
   margin-top: auto;
   background: var(--tcb-lift);
-  padding: 11px 16px 14px;
+  padding: 11px 14px 14px;
 }
 
 .glyphrain-root .tcb .tcb-resp-status {
   font-size: 11px;
-  letter-spacing: 0.02em;
   color: var(--tcb-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .glyphrain-root .tcb .tcb-resp-body {
@@ -563,7 +642,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  padding: 14px 16px 0;
+  padding: 14px 14px 0;
 }
 
 /* direct child only — LocaleTag's own inner spans must not re-box */
@@ -578,7 +657,7 @@
 
 .glyphrain-root .tcb .tcb-ledger {
   margin-top: 14px;
-  padding: 0 16px;
+  padding: 0 14px;
   display: grid;
   gap: 11px;
 }
@@ -590,7 +669,7 @@
 /* diff lines — gutter mark + muted line tint, nowhere else */
 .glyphrain-root .tcb .tcb-diff {
   margin-top: 14px;
-  font-size: 11.5px;
+  font-size: 11px;
   line-height: 2.05;
   white-space: pre;
   overflow-x: auto;
@@ -598,8 +677,8 @@
 
 .glyphrain-root .tcb .tcb-diff > div {
   display: grid;
-  grid-template-columns: 26px minmax(0, 1fr);
-  padding-right: 14px;
+  grid-template-columns: 20px minmax(0, 1fr);
+  padding-right: 10px;
 }
 
 .glyphrain-root .tcb .tcb-diff i {
@@ -631,7 +710,12 @@
   color: var(--tc-diff-del-ink);
 }
 
-/* ---------- cell: context inheritance, org → project → component ---------- */
+/* ---------- cell: context inheritance, org → project → component ----------
+   Recut for legibility (founder directive): each inheritance stage is its
+   own nested box in the band's frame grammar — mat, 2px reveal, darker
+   card — its label standing OUTSIDE the box in the page's regular sans
+   with proper capitalization; the doubled-thread arrows still join the
+   stages; every line inside runs a step larger, with real air. */
 
 .glyphrain-root .tcb .tcb-cell-ctx {
   grid-column: span 8;
@@ -640,51 +724,74 @@
 .glyphrain-root .tcb .tcb-ctx {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 0.95fr) 34px minmax(0, 1.22fr);
+  grid-template-columns: minmax(0, 0.94fr) 28px minmax(0, 1.04fr) 28px minmax(0, 1.3fr);
   align-items: stretch;
   gap: 0;
-  padding: 18px 24px 22px;
+  padding: 18px 20px 20px;
 }
 
-.glyphrain-root .tcb .tcb-ctx-col {
+.glyphrain-root .tcb .tcb-ctx-stage {
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
+/* the stage label, outside its box: sans, proper case, quietly bright */
 .glyphrain-root .tcb .tcb-ctx-tag {
-  font-family: var(--tc-mono);
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--tcb-dim);
-  padding-bottom: 9px;
-  border-bottom: 1px solid var(--tcb-rule);
-  margin-bottom: 12px;
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 9px;
+  padding-left: 3px;
+}
+
+/* the stage box: the same nested frame the service artifacts wear */
+.glyphrain-root .tcb .tcb-ctx-box {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  border: 1px solid var(--tcb-mat-edge);
+  border-radius: 8px;
+  padding: 2px;
+  background: var(--tcb-mat);
+}
+
+.glyphrain-root .tcb .tcb-ctx-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background: var(--tcb-box);
+  padding: 14px 14px 14px;
+  overflow: hidden;
 }
 
 .glyphrain-root .tcb .tcb-ctx-k {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--tcb-ink);
+  color: #ffffff;
 }
 
 .glyphrain-root .tcb .tcb-ctx-k + .tcb-ctx-k,
 .glyphrain-root .tcb .tcb-ctx-rule + .tcb-ctx-k {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .glyphrain-root .tcb .tcb-ctx-rule {
-  margin-top: 4px;
-  font-size: 12px;
-  line-height: 1.62;
-  color: var(--tcb-body);
+  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.66;
+  color: rgba(255, 255, 255, 0.68);
 }
 
 /* a locale chip inside a directive rule: the page's one locale system */
 .glyphrain-root .tcb .tcb-ctx-loc {
   margin-left: 4px;
   font-family: var(--tc-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--tcb-dim);
 }
 
@@ -692,14 +799,20 @@
   display: flex;
   align-items: baseline;
   gap: 8px;
-  padding: 5.5px 0;
+  padding: 6px 0;
   font-family: var(--tc-mono);
   font-size: 12px;
   color: var(--tcb-ink);
+  white-space: nowrap;
+}
+
+.glyphrain-root .tcb .tcb-ctx-row + .tcb-ctx-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .glyphrain-root .tcb .tcb-ctx-row .tcb-pri {
-  width: 14px;
+  width: 12px;
+  flex: none;
   color: var(--tcb-faint);
 }
 
@@ -709,41 +822,54 @@
 
 .glyphrain-root .tcb .tcb-ctx-row .tcb-scope {
   margin-left: auto;
+  padding-left: 8px;
   color: var(--tcb-dim);
   font-size: 11px;
 }
 
+/* the precedence verdict sits apart from the group list, pinned low */
+.glyphrain-root .tcb .tcb-ctx-verdict {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+/* Calm strikethrough: the losing term dims and its strike is a quiet
+   hairline — legible as "overruled" without shouting. */
 .glyphrain-root .tcb .tcb-ctx-rule s {
   color: var(--tcb-dim);
+  text-decoration-line: line-through;
   text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
 }
 
 .glyphrain-root .tcb .tcb-ctx-code {
   margin: 0;
   font-family: var(--tc-mono);
   font-size: 11.5px;
-  line-height: 1.9;
+  line-height: 1.95;
   white-space: pre;
   overflow-x: auto;
   color: var(--tcb-ink);
 }
 
 /* the rendered result: the toast that is a notification, not bread */
+/* The verdict line wraps rather than clips: the losing term may drop to
+   its own line, but every word stays readable at every width. */
 .glyphrain-root .tcb .tcb-ctx-res {
   margin-top: auto;
   padding-top: 14px;
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px;
+  column-gap: 8px;
+  row-gap: 2px;
   font-family: var(--tc-mono);
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
+  font-size: 12.5px;
 }
 
 .glyphrain-root .tcb .tcb-ctx-res .tcb-ctx-res-loc {
   color: var(--tcb-dim);
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .glyphrain-root .tcb .tcb-ctx-res b {
@@ -753,14 +879,18 @@
 
 .glyphrain-root .tcb .tcb-ctx-res s {
   color: var(--tcb-faint);
+  text-decoration-line: line-through;
   text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.26);
 }
 
-/* the inheritance joints: the doubled thread, pointing down the cascade */
+/* the inheritance joints: the doubled thread, pointing down the cascade —
+   padded past the stage labels so the arrow centers on the boxes */
 .glyphrain-root .tcb .tcb-ctx-joint {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 27px;
 }
 
 .glyphrain-root .tcb .tcb-ctx-joint svg {
@@ -902,10 +1032,15 @@
 
   .glyphrain-root .tcb .tcb-ctx {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 14px;
+    row-gap: 12px;
   }
 
-  /* the cascade folds vertical: the same joint, turned down */
+  /* the cascade folds vertical: the same joint, turned down; the label
+     offset no longer applies between stacked boxes */
+  .glyphrain-root .tcb .tcb-ctx-joint {
+    padding-top: 0;
+  }
+
   .glyphrain-root .tcb .tcb-ctx-joint svg {
     transform: rotate(90deg);
   }
@@ -926,7 +1061,7 @@
   }
 
   .glyphrain-root .tcb .tcb-stack-cap {
-    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 9px;
     padding: 10px 8px;
   }
 

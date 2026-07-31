@@ -1,0 +1,468 @@
+/* ============================================================
+   TOOLCHAIN — USAGE PRICING PAGE
+   New classes only (up-*); styles.css is never appended to.
+   Light sections read the shell's tokens so the dark remap
+   holds; the meter panel and the band's invoice live on the
+   fixed panel surfaces (--tc-panel / #111) that never remap,
+   the same way every tc-code sample does. The doubled thread
+   appears at the page constants (--thread-gauge / --thread-gap)
+   under the hero's key word and as the invoice's total rule.
+   ============================================================ */
+
+/* ---------- hero ---------- */
+
+.toolchain-root .up-hero {
+  padding: clamp(56px, 6.6vw, 88px) var(--tc-gut) clamp(34px, 4vw, 48px);
+}
+
+.toolchain-root .up-hero h1 {
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: 1.04;
+  letter-spacing: -0.034em;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+/* The emphasis is the brand's own device — the two threads under the word,
+   at constant gauge, in the surface's ink. Never the accent. */
+.toolchain-root .up-hero h1 em,
+.toolchain-root .up-cta h2 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.toolchain-root .up-hero > p {
+  margin-top: 18px;
+  max-width: 58ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- the meter panel ----------
+   Four meters on one dark instrument — the page's first artifact surface,
+   in the family's inset-panel grammar (fixed dark, white 14-down mono).
+   One panel, three hairline dividers: a spec table, never a card rank. */
+
+.toolchain-root .up-meters-wrap {
+  padding: 0 var(--tc-gut) clamp(46px, 5.4vw, 68px);
+}
+
+.toolchain-root .up-meters {
+  border-radius: 6px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.toolchain-root .up-meters-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .up-meters-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.toolchain-root .up-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 20px 20px 24px;
+}
+
+.toolchain-root .up-meter + .up-meter {
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.toolchain-root .up-meter-k {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.toolchain-root .up-meter-rate {
+  margin-top: 13px;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.toolchain-root .up-meter-rate small {
+  margin-left: 7px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* The command that spins this meter — the references' bordered code chip. */
+.toolchain-root .up-meter-chip {
+  margin-top: 13px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.toolchain-root .up-meter-note {
+  margin-top: 11px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+/* ---------- the rate ledger ---------- */
+
+.toolchain-root .up-ledger-wrap {
+  padding: 0 var(--tc-gut) clamp(40px, 4.6vw, 58px);
+}
+
+.toolchain-root .up-ledger {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .up-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.55fr) minmax(0, 224px);
+  gap: 6px 16px;
+  align-items: baseline;
+  padding: 11px 0 12px;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .up-row b {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tc-ink);
+  overflow-wrap: break-word;
+}
+
+.toolchain-root .up-row span {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .up-row em {
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--tc-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .up-row.is-head {
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .up-row.is-head b,
+.toolchain-root .up-row.is-head span,
+.toolchain-root .up-row.is-head em {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+/* The zero table is the quiet mirror: same grammar, muted amounts. */
+.toolchain-root .up-ledger.is-zero {
+  margin-top: 10px;
+}
+
+.toolchain-root .up-ledger.is-zero .up-row em {
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .up-ledger-note {
+  margin-top: 12px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .up-zero-cap {
+  margin-top: clamp(34px, 4.2vw, 48px);
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-3);
+}
+
+/* Arrowed section-leaving link — same grammar the main page's compare strip
+   draws; declared here so the route carries its own copy of the rules. */
+.toolchain-root .tc-compare a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.toolchain-root .tc-ico-arrow {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  stroke-width: 1.75;
+  opacity: 0.72;
+}
+
+/* ---------- the band's invoice ----------
+   The run-summary grammar (§20's "real, boring, itemised") at statement
+   scale: label and amount on the top line, the printed arithmetic beneath,
+   so every row can be checked by hand. */
+
+.toolchain-root .up-invoice {
+  border-radius: 6px;
+  background: #111111;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.toolchain-root .up-invoice-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 36px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+}
+
+.toolchain-root .up-invoice-bar span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolchain-root .up-invoice-body {
+  padding: 4px 18px 18px;
+}
+
+.toolchain-root .up-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 16px;
+  row-gap: 2px;
+  padding: 10px 0 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+}
+
+.toolchain-root .up-line b {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  overflow-wrap: break-word;
+}
+
+.toolchain-root .up-line em {
+  grid-column: 2;
+  grid-row: 1;
+  font-style: normal;
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: right;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .up-line span {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* The total's rule is the brand's doubled line at constant gauge —
+   source and translation, added up. */
+.toolchain-root .up-total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 16px;
+  row-gap: 3px;
+  margin-top: 12px;
+  padding-top: 13px;
+  font-family: var(--tc-mono);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62)),
+    linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 0,
+    0 calc(var(--thread-gauge) + var(--thread-gap));
+}
+
+.toolchain-root .up-total b {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* The page's one accent: the number the whole page exists to make checkable. */
+.toolchain-root .up-total em {
+  grid-column: 2;
+  grid-row: 1;
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--iso-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .up-total span {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- the caps grid ---------- */
+
+.toolchain-root .up-caps .up-cap-val {
+  display: block;
+  margin-top: 11px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ---------- CTA ---------- */
+
+.toolchain-root .up-cta {
+  padding: clamp(64px, 8vw, 104px) var(--tc-gut) clamp(70px, 8.6vw, 112px);
+  text-align: center;
+}
+
+.toolchain-root .up-cta h2 {
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  letter-spacing: -0.032em;
+}
+
+.toolchain-root .up-cta > p {
+  margin: 16px auto 0;
+  max-width: 54ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .up-cta-acts {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 900px) {
+  .toolchain-root .up-meters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* the two-up fold: evens keep the column rule, the lower row gets a top one */
+  .toolchain-root .up-meter + .up-meter {
+    border-left: 0;
+  }
+
+  .toolchain-root .up-meter:nth-child(even) {
+    border-left: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .toolchain-root .up-meter:nth-child(n + 3) {
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+}
+
+@media (max-width: 720px) {
+  .toolchain-root .up-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .toolchain-root .up-row b {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .toolchain-root .up-row em {
+    grid-column: 2;
+    grid-row: 1;
+    white-space: nowrap;
+  }
+
+  .toolchain-root .up-row span {
+    grid-column: 1 / -1;
+  }
+
+  .toolchain-root .up-row.is-head span {
+    display: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .toolchain-root .up-meters-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .up-meter:nth-child(even) {
+    border-left: 0;
+  }
+
+  .toolchain-root .up-meter:nth-child(n + 2) {
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  /* the long rates ("+$0.10 / 10k input tokens") get the full line back */
+  .toolchain-root .up-row em {
+    white-space: normal;
+    text-align: right;
+  }
+}

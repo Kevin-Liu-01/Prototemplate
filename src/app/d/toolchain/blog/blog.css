@@ -1,0 +1,338 @@
+/* ============================================================
+   TOOLCHAIN — BLOG INDEX
+   New classes only (blg-*); styles.css is never appended to.
+   Everything reads the shell's tokens, so the dark remap holds
+   without a second palette. The doubled thread renders at the
+   page constants (--thread-gauge / --thread-gap / --thread-ink)
+   wherever it appears: under the masthead word, and as the rule
+   that closes each ledger's column header.
+   ============================================================ */
+
+/* ---------- masthead ---------- */
+
+.toolchain-root .blg-hero {
+  padding: clamp(56px, 6.6vw, 88px) var(--tc-gut) clamp(36px, 4.2vw, 52px);
+}
+
+.toolchain-root .blg-hero h1 {
+  font-size: clamp(2.2rem, 4.6vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.034em;
+}
+
+/* The emphasis is the brand's own device — the two threads under the word,
+   at constant gauge, in the surface's ink. Never the accent. */
+.toolchain-root .blg-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.08em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.toolchain-root .blg-hero > p {
+  margin-top: 16px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The index's colophon: real counts, real range, spread to the rail's edges
+   like a ruled ledger's header line. */
+.toolchain-root .blg-colophon {
+  margin-top: clamp(26px, 3vw, 38px);
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- the feature cell ---------- */
+
+.toolchain-root .blg-feat {
+  align-items: stretch;
+}
+
+.toolchain-root .blg-feat-meta {
+  justify-content: center;
+  padding-top: clamp(30px, 3.6vw, 46px);
+  padding-bottom: clamp(34px, 3.8vw, 48px);
+}
+
+.toolchain-root .blg-featline {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--tc-ink-3);
+}
+
+/* The entry's pointer: the doubled thread, cropped to a short pair. */
+.toolchain-root .blg-featmark {
+  width: 18px;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  border-top: var(--thread-gauge) solid var(--thread-ink);
+  border-bottom: var(--thread-gauge) solid var(--thread-ink);
+}
+
+.toolchain-root .blg-feat-meta h2 {
+  margin-top: 14px;
+  font-size: clamp(1.55rem, 2.6vw, 2.15rem);
+  line-height: 1.08;
+  letter-spacing: -0.028em;
+  max-width: 17ch;
+  text-wrap: balance;
+}
+
+.toolchain-root .blg-feat-meta h2 a:hover {
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tc-cell.blg-feat-meta > p.blg-feat-dek {
+  margin-top: 13px;
+  font-size: 15px;
+  max-width: 40ch;
+}
+
+.toolchain-root .blg-byline {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .blg-tags {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.toolchain-root .blg-feat-act {
+  margin-top: 22px;
+}
+
+/* The artifact card: the essay's own two panels, stacked with their captions.
+   The code panels carry the mass; the quote between them is the author's. */
+.toolchain-root .blg-feat-art {
+  gap: 0;
+}
+
+.toolchain-root .blg-tag {
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .blg-tag code {
+  font-family: inherit;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .blg-feat-art .tc-code {
+  margin-top: 9px;
+}
+
+.toolchain-root .blg-feat-art .blg-tag + .tc-code {
+  margin-bottom: 0;
+}
+
+.toolchain-root .blg-feat-art > .blg-tag:not(:first-child) {
+  margin-top: 16px;
+}
+
+.toolchain-root .tc-card > p.blg-verdict {
+  margin-top: 12px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-3);
+  max-width: none;
+}
+
+/* ---------- the ledgers ---------- */
+
+.toolchain-root .blg-head {
+  padding-bottom: clamp(20px, 2.4vw, 28px);
+}
+
+.toolchain-root .blg-ledger {
+  display: grid;
+}
+
+/* Column header: mono, 11.5px, closed by the doubled thread at constant
+   gauge — the one place each ledger spends the brand's line. */
+.toolchain-root .blg-cols {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr) minmax(0, 300px);
+  gap: 18px;
+  padding: 0 var(--tc-gut) 9px;
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .blg-thread {
+  position: relative;
+}
+
+.toolchain-root .blg-thread::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  border-top: var(--thread-gauge) solid var(--thread-ink);
+  border-bottom: var(--thread-gauge) solid var(--thread-ink);
+  pointer-events: none;
+}
+
+.toolchain-root .blg-row {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr) minmax(0, 300px);
+  gap: 18px;
+  align-items: baseline;
+  padding: 19px var(--tc-gut) 21px;
+  border-top: 1px solid var(--tc-hair);
+  transition: background-color 0.16s ease;
+}
+
+.toolchain-root .blg-row:first-of-type,
+.toolchain-root .blg-cols + .blg-row {
+  border-top: 0;
+}
+
+.toolchain-root .blg-row:hover {
+  background: rgba(15, 17, 19, 0.03);
+}
+
+[data-theme='dark'] .toolchain-root .blg-row:hover {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.toolchain-root .blg-c-date {
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.toolchain-root .blg-c-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.toolchain-root .blg-row-title {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 16.5px;
+  line-height: 1.25;
+  letter-spacing: -0.014em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .blg-row:hover .blg-row-title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.toolchain-root .blg-row-dek {
+  margin-top: 5px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+  max-width: 62ch;
+}
+
+.toolchain-root .blg-row-by {
+  margin-top: 7px;
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .blg-c-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+  align-content: baseline;
+}
+
+/* Release rows are denser — the ledger is the diagram, eighteen rows deep. */
+.toolchain-root .blg-row.is-release {
+  padding-top: 15px;
+  padding-bottom: 17px;
+}
+
+.toolchain-root .blg-row.is-release .blg-row-title {
+  font-size: 15px;
+}
+
+.toolchain-root .blg-row.is-release .blg-row-dek {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .toolchain-root .blg-cols,
+  .toolchain-root .blg-row {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .toolchain-root .blg-cols .blg-c-tags {
+    display: none;
+  }
+
+  .toolchain-root .blg-row .blg-c-tags {
+    grid-column: 2;
+    margin-top: 9px;
+  }
+}
+
+@media (max-width: 860px) {
+  .toolchain-root .tc-row.blg-feat {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .tc-row.blg-feat > * + * {
+    border-left: 0;
+  }
+
+  .toolchain-root .blg-feat-meta {
+    padding-top: 30px;
+  }
+}
+
+@media (max-width: 560px) {
+  .toolchain-root .blg-cols,
+  .toolchain-root .blg-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .toolchain-root .blg-cols .blg-c-date {
+    display: none;
+  }
+
+  .toolchain-root .blg-row .blg-c-date {
+    margin-bottom: 6px;
+  }
+
+  .toolchain-root .blg-row .blg-c-tags {
+    grid-column: 1;
+  }
+}
+
+/* Reduced motion: the reveal hook already exits before animating; nothing
+   here moves on its own, so the stills carry the whole page. */

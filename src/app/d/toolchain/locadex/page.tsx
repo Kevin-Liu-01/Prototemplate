@@ -12,6 +12,10 @@ import AgentBand from './AgentBand';
 import LocadexHero from './LocadexHero';
 import Pipeline from './Pipeline';
 import './locadex.css';
+/* the side-by-side hero and the exploded-run isometric ride their own
+   sheets, imported after locadex.css so their overrides win the cascade */
+import './locadex-hero2.css';
+import './locadex-iso.css';
 
 export const metadata = {
   title: 'Locadex — the localization agent · GT Toolchain',

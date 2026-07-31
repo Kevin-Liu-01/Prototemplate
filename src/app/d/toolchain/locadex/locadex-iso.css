@@ -1,0 +1,305 @@
+/* ============================================================
+   TOOLCHAIN / LOCADEX — the exploded-run isometric (ldxi-*)
+   One dark panel in the pipeline section: the drawing left, its
+   legend right. The material values are the dark band's stack
+   verbatim — same glass hull, same face tints, same frost, same
+   leader ink — so the two drawings read as siblings; only the
+   scoping class differs, because sections/darkband-v3.css is
+   scoped to `.tcb` and is not this page's to touch.
+   New classes only; nothing in ../styles.css is rewritten.
+   ============================================================ */
+
+/* the panel: a framed card gone dark, in the terminal family.
+   Fixed dark in both themes, like every dark plate on the page. */
+.toolchain-root .tc-cell.ldxi-cell > .tc-card.ldxi-card {
+  padding: 0;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  /* the drawing's one accent, raised for the dark surface the way
+     the band raises it (iso.css guidance) */
+  --iso-accent: #86a8ff;
+}
+
+/* ---------- the panel bar ---------- */
+
+.toolchain-root .ldxi-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .ldxi-bar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* the lambda ships as dark ink on transparent; this bar is always dark */
+.toolchain-root .ldxi-bar-brand img {
+  display: block;
+  filter: invert(1);
+  opacity: 0.75;
+}
+
+/* ---------- the body: drawing left, legend right ---------- */
+
+.toolchain-root .ldxi-body {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(10px, 2vw, 26px);
+  padding: 18px 0 22px 16px;
+}
+
+.toolchain-root .ldxi-fig {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --ldxi-w: clamp(300px, 32vw, 384px);
+}
+
+.toolchain-root .ldxi-iso {
+  width: var(--ldxi-w);
+  max-width: 100%;
+  height: auto;
+  flex: none;
+}
+
+/* ---------- the full-height doubled rail ----------
+   Two real 1px borders with the house 3px gap (crisp at any zoom),
+   running the figure's full height. Its inner line sits on the
+   leaders' tap x: the leaders start at viewBox x = 20 of 204, and
+   the drawing is centered, so the tap line lands at
+   50% − (0.5 − 20/204) × drawing-width. */
+.toolchain-root .ldxi-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - var(--ldxi-w) * 0.402 - 5px);
+  width: 5px;
+  border-inline: 1px solid rgba(255, 255, 255, 0.34);
+  pointer-events: none;
+}
+
+/* ---------- leaders and planes ---------- */
+
+.toolchain-root .ldxi-leader {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1px;
+  stroke-linecap: round;
+  opacity: 0.4;
+  transition: opacity 0.25s ease;
+}
+
+.toolchain-root .ldxi-leader[data-active='true'] {
+  opacity: 1;
+}
+
+.toolchain-root .ldxi-layer {
+  cursor: pointer;
+  outline: none;
+}
+
+/* the doubled top edge — the brand's two lines at constant gauge —
+   revealed on the active plane only */
+.toolchain-root .ldxi-dbl {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.toolchain-root .ldxi-layer[data-active='true'] .ldxi-dbl {
+  opacity: 1;
+}
+
+/* the active plane's own contour brightens to full ink (the inline
+   depth alpha is the resting state, so this needs the bang) */
+.toolchain-root .ldxi-layer[data-active='true'] .ldxi-glass-edge {
+  stroke: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* ---------- the glass plates (dark band values, verbatim) ---------- */
+
+.toolchain-root .ldxi-glass-base {
+  fill: rgba(13, 15, 21, 0.94);
+}
+
+.toolchain-root .ldxi-glass-left {
+  fill: rgba(255, 255, 255, 0.06);
+}
+
+.toolchain-root .ldxi-glass-right {
+  fill: rgba(3, 5, 9, 0.45);
+}
+
+.toolchain-root .ldxi-glass-topfill {
+  fill: rgba(255, 255, 255, 0.07);
+}
+
+.toolchain-root .ldxi-glass-sheen {
+  fill: url(#ldxiFrost);
+}
+
+.toolchain-root .ldxi-glass-rim,
+.toolchain-root .ldxi-glass-edge {
+  fill: none;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+  transition: stroke 0.25s ease;
+}
+
+.toolchain-root .ldxi-glass-front {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linecap: round;
+}
+
+/* content marks read against the frosted plate */
+.toolchain-root .ldxi-card .iso-face-mark {
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+/* the agent's mark, printed flat into the top plane's glass */
+.toolchain-root .ldxi-stamp {
+  filter: invert(1);
+  opacity: 0.85;
+}
+
+/* ---------- the legend: one ruled row per plane ---------- */
+
+.toolchain-root .ldxi-caps {
+  flex: 0 0 clamp(240px, 27vw, 320px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolchain-root .ldxi-cap {
+  appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 18px 13px;
+  text-align: left;
+  font-family: var(--tc-mono);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.toolchain-root .ldxi-cap + .ldxi-cap {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolchain-root .ldxi-cap:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: -3px;
+}
+
+.toolchain-root .ldxi-cap > b {
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.52);
+  transition: color 0.2s ease;
+}
+
+.toolchain-root .ldxi-cap > span {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.38);
+  transition: color 0.2s ease;
+}
+
+.toolchain-root .ldxi-cap[data-active='true'] {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.toolchain-root .ldxi-cap[data-active='true'] > b {
+  color: #ffffff;
+}
+
+.toolchain-root .ldxi-cap[data-active='true'] > span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1000px) {
+  .toolchain-root .ldxi-body {
+    flex-direction: column;
+    padding: 18px 16px 8px;
+    gap: 4px;
+  }
+
+  .toolchain-root .ldxi-fig {
+    --ldxi-w: min(320px, 78vw);
+    padding-block: 8px;
+  }
+
+  .toolchain-root .ldxi-caps {
+    flex: none;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    align-self: auto;
+  }
+
+  .toolchain-root .ldxi-cap {
+    flex: none;
+    padding: 11px 4px 12px;
+  }
+}
+
+@media (max-width: 620px) {
+  .toolchain-root .ldxi-fig {
+    --ldxi-w: min(280px, 86vw);
+  }
+
+  .toolchain-root .ldxi-bar {
+    font-size: 11px;
+  }
+}
+
+/* ---------- reduced motion: the still carries the argument ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .ldxi-layer {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .toolchain-root .ldxi-leader,
+  .toolchain-root .ldxi-dbl,
+  .toolchain-root .ldxi-cap,
+  .toolchain-root .ldxi-cap > b,
+  .toolchain-root .ldxi-cap > span,
+  .toolchain-root .ldxi-glass-rim,
+  .toolchain-root .ldxi-glass-edge {
+    transition: none !important;
+  }
+}

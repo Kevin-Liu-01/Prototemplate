@@ -179,7 +179,9 @@ const POPS: readonly Pop[] = [
 /** The reader: not infrastructure, so not snapped to the grid. Sitting
  *  east of fra keeps the great circle off the sphere's centre, so the
  *  route projects as a visible arc instead of a straight chord. */
-const ORIGIN = { lat: -8, lon: 30, elbow: [92, 190], tickTo: 78, iconX: 36, textX: 48 } as const;
+/* The reader's row lives in the right ledger, between sin and syd, so the
+   hollow dot is unmistakably "user" — same leader grammar as the PoPs. */
+const ORIGIN = { lat: -8, lon: 30, elbow: [272, 172], tickTo: 284, iconX: 288, textX: 300 } as const;
 
 const HOME = POPS.find((p) => p.home) ?? POPS[0];
 

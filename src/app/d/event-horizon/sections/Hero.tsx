@@ -219,7 +219,7 @@ const FLAGS: readonly { flag: string; name: string }[] = [
 
 /* ---------- wall construction ----------
    Each side is one dense WALL of cards: PHYS_COLUMNS depth columns of
-   ROWS_PER_COLUMN shared row courses, every 312px column cut into four 78px
+   ROWS_PER_COLUMN shared row courses, every 312px column cut into six 52px
    vertical strips. Each strip is a flat chord placed along a curved plan-view
    rail (translate3d + rotateY under the stage's real perspective), so the
    wall is a piecewise-planar sweep — the fabric read: cards shear and tilt
@@ -253,8 +253,8 @@ const ORBIT_TILT = 0.94;
    Plan-view geometry of one wall: x across the screen measured from the
    hole's center, z toward the viewer, arc length s from the screen edge. The
    heading phi eases from PHI_EDGE (~3° — the wall lies almost in the screen
-   plane, a plain flat grid) to PHI_DEEP (~87° — diving straight away behind
-   the portal), and the turn is deliberately BACK-LOADED (PHI_SHAPE), so the
+   plane, a plain flat grid) to PHI_DEEP (~77° — diving away behind the
+   portal), and the turn is deliberately BACK-LOADED (PHI_SHAPE), so the
    courses run near-flat for most of the sweep and then whip inward: a
    concave suction curve, the grid lines pulled INTO the mass — the opposite
    read of the hourglass corridor's barrel, per the founder's sketch. */

@@ -8,6 +8,8 @@ import { useRef } from 'react';
 
 import { useQuietReveal } from '../sections/reveal';
 
+import LocadexIso from './LocadexIso';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /** The doubled-gauge joint: two threads travelling together, never merging. */
@@ -20,9 +22,6 @@ function Joint() {
     </svg>
   );
 }
-
-/** The five step labels, verbatim from the product's own flowchart. */
-const STAGES = ['Push to repo', 'Scan codebase', 'Edit code', 'Translate content', 'Open PR'] as const;
 
 /** Scan: run #1184's file tree, counts per file, the sibling app skipped. */
 const TREE: readonly { name: string; note: string; child?: boolean; dim?: boolean }[] = [
@@ -112,14 +111,11 @@ export default function Pipeline() {
         </p>
       </div>
 
-      <div className='ldx-stages' data-reveal>
-        {STAGES.map((stage, i) => (
-          <span key={stage} style={{ display: 'contents' }}>
-            {i > 0 ? <Joint /> : null}
-            <b>{stage}</b>
-          </span>
-        ))}
-      </div>
+      {/* The run as one object before it is shown as artifacts: the exploded
+          isometric stack (founder directive) replaces the old five-label
+          strip — the same five stages, but each plane now carries its
+          artifact and its measured line instead of a bare word. */}
+      <LocadexIso />
 
       {/* ---- scan + map: what changed, and what it means ---- */}
       <div className='tc-row is-even ldx-stretch'>

@@ -4227,3 +4227,149 @@
 .toolchain-root .tc-band::after {
   width: calc(min(var(--tc-rail), 100%) + 20px);
 }
+
+/* The split row's mat is the one broad --tc-hair expanse on the page — as a
+   1px seam the plum remap is invisible, but here it carries whole text
+   cells, and body ink goes muddy on it. In the dark the row joins the
+   panel family instead, and its unframed text steps up one ink level. */
+[data-theme='dark'] .toolchain-root .tc-row.is-split {
+  background: var(--tc-panel);
+}
+
+[data-theme='dark'] .toolchain-root .tc-row.is-split > .tc-cell:not(.is-framed) > p,
+[data-theme='dark'] .toolchain-root .tc-row.is-split > .tc-cell:not(.is-framed) .tc-list li {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ---------- nav mega-menus ----------
+   Resources and Docs open ruled panels on hover or keyboard focus —
+   :focus-within keeps them server-rendered and still keyboard-usable. */
+.toolchain-root .tc-nav-drop {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toolchain-root .tc-nav-drop-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: none;
+  padding: 6px 2px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.toolchain-root .tc-nav-drop-trigger svg {
+  transition: transform 0.18s ease;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tc-nav-drop:hover .tc-nav-drop-trigger svg,
+.toolchain-root .tc-nav-drop:focus-within .tc-nav-drop-trigger svg {
+  transform: rotate(180deg);
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tc-nav-panel {
+  position: absolute;
+  top: 100%;
+  left: -18px;
+  z-index: 60;
+  display: none;
+  gap: 36px;
+  padding: 20px 22px;
+  background: var(--tc-white);
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+  box-shadow: 0 18px 44px rgba(10, 11, 15, 0.12);
+  width: max-content;
+}
+
+/* Fixed subcolumn widths: fr tracks inside an auto-sized flyout collapse. */
+.toolchain-root .tc-nav-panel.is-wide .tc-nav-col:first-child {
+  display: grid;
+  grid-template-columns: repeat(2, 226px);
+  gap: 0 28px;
+}
+
+.toolchain-root .tc-nav-panel.is-wide .tc-nav-col:first-child h5 {
+  grid-column: 1 / -1;
+}
+
+.toolchain-root .tc-nav-drop:hover .tc-nav-panel,
+.toolchain-root .tc-nav-drop:focus-within .tc-nav-panel {
+  display: flex;
+}
+
+.toolchain-root .tc-nav-col {
+  min-width: 220px;
+}
+
+.toolchain-root .tc-nav-col h5 {
+  margin: 0 0 10px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .tc-nav-col a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 8px;
+  margin: 0 -8px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.toolchain-root .tc-nav-col a:hover,
+.toolchain-root .tc-nav-col a:focus-visible {
+  background: var(--tc-hair-2);
+}
+
+.toolchain-root .tc-menu-plate {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  background: var(--tc-sunk);
+  border: 1px solid var(--tc-hair);
+  border-radius: 8px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tc-menu-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.toolchain-root .tc-menu-text b {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.toolchain-root .tc-menu-text small {
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .toolchain-root .tc-menu-glyph.is-inverting {
+  filter: invert(1);
+}
+
+[data-theme='dark'] .toolchain-root .tc-nav-panel {
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+}
