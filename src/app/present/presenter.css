@@ -12,6 +12,12 @@
   background: var(--color-ink);
   color: #fff;
   font-family: var(--font-sans);
+  /* The roll parks translated past the right edge between prototypes, and
+     transformed boxes still count toward scrollable overflow — without this
+     a trackpad swipe scrolls the whole deck sideways into the void. clip
+     (not hidden) so no scroll container is created and sticky pins keep
+     working. */
+  overflow-x: clip;
   /* Stage width: wide content clears the HUD rail's label gutter on
      mid-size screens; below 1020px the labels hide, so content can take
      the viewport again. */
