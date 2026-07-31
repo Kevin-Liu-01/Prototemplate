@@ -3085,8 +3085,10 @@
   --tc-ink-2: rgba(255, 255, 255, 0.66);
   --tc-ink-3: rgba(255, 255, 255, 0.48);
   --tc-ink-4: rgba(255, 255, 255, 0.3);
-  --tc-hair: rgba(138, 143, 152, 0.38);
-  --tc-hair-2: rgba(138, 143, 152, 0.3);
+  /* Strong enough to survive as a 1px seam between two ink surfaces — the
+     bento's mat gaps and row seams are drawn IN this color. */
+  --tc-hair: rgba(138, 143, 152, 0.5);
+  --tc-hair-2: rgba(138, 143, 152, 0.4);
   --tc-plate: #070707;
   --tc-hatch: rgba(255, 255, 255, 0.07);
 }
@@ -4392,4 +4394,35 @@
    block sits tight under its frame's top rule. */
 .toolchain-root .tcm-ruled-panel .tc-code-run .tc-code {
   margin-top: 0;
+}
+
+/* ============================================================
+   DARK STRUCTURE — instrument lines never glare.
+   In dark mode --tc-ink flips to pure white, which is right for
+   TYPE but wrong for structural lines drawn in ink (the pricing
+   sheet's doubled rule, the story rail's steps, the proof rule,
+   the section seams): those drop to the band hairline family, so
+   every structural stroke on the page shares one color system.
+   Artifact internals on the permanently-dark plates keep their
+   own panel ink and never remap.
+   ============================================================ */
+[data-theme='dark'] .toolchain-root .tcpv-def,
+[data-theme='dark'] .toolchain-root .tcpv-def::before {
+  border-color: var(--tc-hair-band-strong);
+}
+
+[data-theme='dark'] .toolchain-root .tcs-rail-step {
+  border-color: var(--tc-hair-band-strong);
+}
+
+[data-theme='dark'] .toolchain-root .tcpx-copy::before {
+  border-color: var(--tc-hair-band-strong);
+}
+
+[data-theme='dark'] .toolchain-root .tcpq-face {
+  outline-color: var(--tc-hair-band);
+}
+
+[data-theme='dark'] .toolchain-root .tc-seam::before {
+  border-color: var(--tc-hair);
 }

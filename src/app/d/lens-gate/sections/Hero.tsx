@@ -725,7 +725,7 @@ export default function Hero() {
             guideR.className = 'tc-eg is-r';
             const dust = document.createElement('span');
             dust.className = 'tc-edust';
-            for (let i = 0; i < 26; i++) {
+            for (let i = 0; i < 44; i++) {
               const g = document.createElement('span');
               g.textContent = DUST[i % DUST.length] ?? '';
               dust.appendChild(g);

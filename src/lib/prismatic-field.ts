@@ -179,7 +179,9 @@ float beamProfile(float angle, float t) {
 
 vec3 applyBeams(vec3 hdrColor, vec2 screenPosition) {
   float radius = length(screenPosition);
-  float angle = atan(screenPosition.y, screenPosition.x);
+  // Mirrored angle: the left and right lobes carve IDENTICALLY, so the two
+  // bursts read as one symmetric pair of prisms.
+  float angle = atan(screenPosition.y, abs(screenPosition.x));
   float t = uTime * 0.12;
   float dispersion = 0.035 + 0.05 * radius;
   vec3 beams = vec3(
@@ -187,8 +189,12 @@ vec3 applyBeams(vec3 hdrColor, vec2 screenPosition) {
     beamProfile(angle, t),
     beamProfile(angle - dispersion, t)
   );
+  // The rays stream from the SIDES: the carve fades to nothing toward
+  // vertical, so no beam ever points down from the top or up from the
+  // bottom — those regions keep only the base field's calm.
+  float horizontality = pow(max(cos(angle), 0.0), 2.4);
   // The center keeps its calm; the beams own everything outward of it.
-  float radial = smoothstep(0.05, 0.6, radius);
+  float radial = smoothstep(0.05, 0.6, radius) * horizontality;
   vec3 gain = mix(vec3(1.0), 0.22 + beams * 1.55, radial);
   vec3 carved = hdrColor * gain;
   // Absolute-light cores: where all three channels agree a beam is hot,

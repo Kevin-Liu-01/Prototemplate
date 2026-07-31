@@ -106,22 +106,24 @@ const INK = '#070707';
 /** The rain's column pitch: the field is set, not scattered. */
 const COL_PITCH = 34;
 
-/* The loop, in seconds: print, hold, peel, fly. */
-const HOLD = 4.6;
-const MORPH = 1.5;
+/* The loop, in seconds: print, hold, peel, fly. The field is mostly IN
+   MOTION by design — each formed word rests for about a second, then
+   dissolves, spreads, reorganizes and forms the next, one continuous
+   movement. */
+const HOLD = 1.2;
+const MORPH = 2.4;
 const CYCLE = HOLD + MORPH;
 /**
- * The first hold runs long: a fresh page (and any screenshot taken in its
- * first seconds) is guaranteed to be looking at the printed word with its
- * caliper set, never at a mid-flight swarm. The loop's clock also freezes
- * while the hero is offscreen, so a return to the top re-enters on a hold.
+ * The first word starts dissolving after roughly a second — the field
+ * should be alive almost immediately. (Reduced motion still renders the
+ * printed word as a still.)
  */
-const FIRST_HOLD = 14;
+const FIRST_HOLD = 1.2;
 const FIRST_CYCLE = FIRST_HOLD + MORPH;
 /** The print front's sweep at the start of a hold. */
 const PRINT = 0.5;
 /** The peel front's sweep at the start of a morph. */
-const PEEL = 0.55;
+const PEEL = 0.7;
 /** Each particle's own flight time inside the morph. */
 const FLIGHT = MORPH - PEEL;
 

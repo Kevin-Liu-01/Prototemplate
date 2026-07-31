@@ -14,6 +14,45 @@ import './shell.css';
  * the same selectors it always did; only the head gains a shared wrapper
  * (.shell-cell-head).
  */
+/**
+ * A bento row: owns the seams (1px hair gaps), the column template, and
+ * head alignment. Cells inside draw NO outer borders — the row is the only
+ * thing that ever draws a structural line, which is what makes doubled or
+ * off-color seams impossible. `cols` is any grid-template-columns value;
+ * below 1020px the row collapses to one column and the same gaps carry the
+ * stacked seams.
+ */
+export function BentoRow({
+  cols,
+  className = '',
+  eqHeads = true,
+  headH,
+  children,
+}: {
+  /** grid-template-columns for the row (e.g. '7fr 5fr') */
+  cols?: string;
+  /** page variant classes (is-lead, is-split, ...) */
+  className?: string;
+  /** align every cell head in the row to one height */
+  eqHeads?: boolean;
+  /** override the aligned head height (e.g. '96px') */
+  headH?: string;
+  children?: ReactNode;
+}) {
+  const style: CSSProperties = {};
+  if (cols) style['--shell-cols' as never] = cols as never;
+  if (headH) style['--shell-head-h' as never] = headH as never;
+  return (
+    <div
+      className={`tc-row shell-row${className ? ` ${className}` : ''}`}
+      data-eq-heads={eqHeads ? '' : undefined}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function BentoCell({
   cell = '',
   framed = true,

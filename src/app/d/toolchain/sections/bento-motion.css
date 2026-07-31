@@ -256,16 +256,11 @@
    Its other three rules are the sheet's own: the hatch rule above,
    the next row's rule below, the rail line at its left — all
    already 1px and edge to edge, so nothing is drawn twice. */
+/* The law of lines (shell.css): the ROW owns the seam between these cells
+   — the mat gap draws it. The cell keeps only its surface. */
 .toolchain-root .tc-cell.tcm-ruled {
   align-self: stretch;
   background: var(--tc-card);
-  border-right: 1px solid var(--tc-hair);
-}
-
-/* the neighbour's suppressed seam stays suppressed — the cell's own
-   border-right is the one line between them */
-.toolchain-root .tc-row > .tcm-ruled + .tc-cell.is-framed {
-  border-left: 0;
 }
 
 /* ---- 3b · the COPY-chip code panel ("One config file") ----
@@ -280,11 +275,8 @@
   overflow: clip;
 }
 
-/* outranks styles.css's framed-neighbour seam suppression (which loads
-   after this file and would win a specificity tie) */
-.toolchain-root .tc-row > .tc-cell.is-framed.tcm-ruled-panel {
-  border-left: 1px solid var(--tc-hair);
-}
+/* No cell-side border here: the row's mat seam is the line between this
+   panel and its neighbour (a second stroke doubled it). */
 
 .toolchain-root .tc-cell.tcm-ruled-panel > .tc-card {
   border-radius: 0;
@@ -323,14 +315,11 @@
   border-bottom: 1px solid var(--tc-hair);
 }
 
-/* the two vertical rules, the cell's full height */
+/* The vertical pair was retired: with the row seams visible it doubled the
+   cell's own edges. The horizontals above remain — they are the code
+   panel's unique lines. */
 .toolchain-root .tcm-ruled-panel .tc-code-run::after {
-  left: 0;
-  right: 0;
-  top: -100vh;
-  bottom: -100vh;
-  border-left: 1px solid var(--tc-hair);
-  border-right: 1px solid var(--tc-hair);
+  content: none;
 }
 
 /* ---- 3c · the EdgeGlobe's cell on the delivery band ----

@@ -479,8 +479,8 @@
   bottom: 0;
   left: -100vw;
   right: -100vw;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid var(--tc-hair-band);
+  border-bottom: 1px solid var(--tc-hair-band);
 }
 
 /* the two vertical rules, the cell's full height */
