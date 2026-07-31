@@ -26,6 +26,12 @@
   --tc-hair-band: rgba(138, 143, 152, 0.34);
   --tc-hair-band-2: rgba(138, 143, 152, 0.22);
   --tc-hair-band-strong: rgba(138, 143, 152, 0.6);
+  /* The outer rail pair's TOTAL extra width beyond the column. The .tc-rail
+     wrapper gets this implicitly (its ::before insets -10px from the padding
+     box, which sits 1px inside the border ⇒ ±9px effective); every band
+     pseudo and the shell <Rails> component must use THIS so the outer rails
+     land on the same pixel at every junction. */
+  --tc-rail-outer: 18px;
   --tc-accent: #2f5ce0;
   --tc-dark: #070707;
 
@@ -4229,21 +4235,20 @@
   position: relative;
 }
 
-.toolchain-root .tc-band::before,
+/* Only the OUTER pair here: the inner pair is drawn exactly once, by the
+   band's own column (.tcb-in / .tc-band-in / .tc-delivery-in border-inline).
+   Drawing it twice stacked the alphas and the coincident segment rendered
+   brighter than every other rail. */
 .toolchain-root .tc-band::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: min(var(--tc-rail), 100%);
+  width: calc(min(var(--tc-rail), 100%) + var(--tc-rail-outer, 18px));
   transform: translateX(-50%);
   border-inline: 1px solid var(--tc-hair-band);
   pointer-events: none;
-}
-
-.toolchain-root .tc-band::after {
-  width: calc(min(var(--tc-rail), 100%) + 20px);
 }
 
 /* The split row's mat is the one broad --tc-hair expanse on the page — as a

@@ -28,7 +28,10 @@ export function Rails({ outer = true }: { outer?: boolean }) {
       {outer ? (
         <div
           aria-hidden
-          className={cn(pair, 'w-[calc(min(var(--tc-rail),100%)+20px)]')}
+          className={cn(
+            pair,
+            'w-[calc(min(var(--tc-rail),100%)+var(--tc-rail-outer,18px))]'
+          )}
         />
       ) : null}
     </>
