@@ -48,6 +48,16 @@
   }
 }
 
+/* The motion layer's own tokens (lint:shell forbids raw literals below):
+   fills and brights for artifacts that live on the dark panel and never
+   remap between themes. */
+.toolchain-root {
+  --tcm-fill: rgba(255, 255, 255, 0.07);
+  --tcm-fill-2: rgba(255, 255, 255, 0.16);
+  --tcm-bright: rgba(255, 255, 255, 0.8);
+  --tcm-white: #ffffff;
+}
+
 /* ---- 1b · the detection hook's stepping cursor ----
    The timeline walks cookie → header → fallback by flipping data
    attributes; the CSS renders each stop as a quiet row highlight
@@ -61,7 +71,7 @@
 }
 
 .toolchain-root .tc-quad .tcx-slab > div[data-tcm-live='1'] {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--tcm-fill);
 }
 
 .toolchain-root .tc-quad .tcx-slab > div[data-tcm-live='1']::after {
@@ -71,7 +81,7 @@
   height: 0.95em;
   margin-left: 3px;
   vertical-align: -0.1em;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--tcm-bright);
   animation: tcm-caret 0.9s steps(2, jump-none) infinite;
 }
 
@@ -91,8 +101,8 @@
 }
 
 .toolchain-root .tc-quad .tcx-slab > div[data-tcm-hit='1'] .tc-t-str {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.16);
+  color: var(--tcm-white);
+  background: var(--tcm-fill-2);
 }
 
 /* reduced motion: the loop never runs, so the canonical still is
@@ -100,12 +110,12 @@
    (The hook panel never remaps between themes, so neither do these.) */
 @media (prefers-reduced-motion: reduce) {
   .toolchain-root .tc-quad .tcx-slab > div:nth-child(4) {
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--tcm-fill);
   }
 
   .toolchain-root .tc-quad .tcx-slab > div:nth-child(4) .tc-t-str {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.16);
+    color: var(--tcm-white);
+    background: var(--tcm-fill-2);
   }
 }
 
@@ -286,8 +296,8 @@
   border-radius: 0;
 }
 
-.toolchain-root .tcm-ruled-panel > .tc-card > h3,
-.toolchain-root .tcm-ruled-panel > .tc-card > p {
+.toolchain-root .tcm-ruled-panel .shell-cell-head > h3,
+.toolchain-root .tcm-ruled-panel .shell-cell-head > p {
   padding-left: clamp(14px, 1.6vw, 18px);
 }
 
@@ -352,8 +362,8 @@
   bottom: 0;
   left: -100vw;
   right: -100vw;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
 }
 
 /* the two vertical rules, the band's full height */
@@ -362,8 +372,8 @@
   right: 0;
   top: -100vh;
   bottom: -100vh;
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid var(--tc-hair);
+  border-right: 1px solid var(--tc-hair);
 }
 
 /* the section folds to one column with the rest of the page */

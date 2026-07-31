@@ -20,6 +20,12 @@
   --tc-ink-4: rgba(7, 7, 7, 0.27);
   --tc-hair: rgba(138, 143, 152, 0.26);
   --tc-hair-2: rgba(138, 143, 152, 0.15);
+  /* Hairlines on the ink bands (dark in both themes): ONE family at three
+     weights. Bands must never invent their own per-section alphas — that is
+     how the outer rails ended up four different colors. */
+  --tc-hair-band: rgba(138, 143, 152, 0.34);
+  --tc-hair-band-2: rgba(138, 143, 152, 0.22);
+  --tc-hair-band-strong: rgba(138, 143, 152, 0.6);
   --tc-accent: #2f5ce0;
   --tc-dark: #070707;
 
@@ -977,7 +983,8 @@
 }
 
 .toolchain-root .tc-cell > p,
-.toolchain-root .tc-card > p {
+.toolchain-root .tc-card > p,
+.toolchain-root .shell-cell-head > p {
   margin-top: 11px;
   font-size: 14px;
   line-height: 1.62;
@@ -1458,7 +1465,7 @@
   z-index: 1;
   width: min(var(--tc-rail), 100%);
   margin-inline: auto;
-  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  border-inline: 1px solid var(--tc-hair-band);
   padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(56px, 7vw, 92px);
 }
 
@@ -1537,7 +1544,7 @@
 
 .toolchain-root .tc-band-grid > div + div {
   padding-left: 22px;
-  border-left: 1px solid rgba(255, 255, 255, 0.09);
+  border-left: 1px solid var(--tc-hair-band-2);
 }
 
 .toolchain-root .tc-band-grid h3 {
@@ -2992,7 +2999,7 @@
   z-index: 1;
   width: min(var(--tc-rail), 100%);
   margin-inline: auto;
-  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  border-inline: 1px solid var(--tc-hair-band);
   padding: clamp(52px, 6.4vw, 88px) var(--tc-gut);
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
@@ -4204,16 +4211,21 @@
   filter: invert(1);
 }
 
-/* The doubled rail continues through the full-bleed dark band: the band sits
-   outside the .tc-rail wrappers, so it draws the same column's line pairs
-   itself — inner pair at the column edges, outer pair at the +-10px gauge —
-   in the band's own rule ink (the band is dark in both themes). */
-.toolchain-root .tc-band {
+/* The doubled rail continues through EVERY full-bleed dark band: bands sit
+   outside the .tc-rail wrappers, so they draw the same column's line pairs
+   themselves — inner pair at the column edges, outer pair at the +-10px
+   gauge — all in the ONE band hairline. The pricing section was the odd one
+   out (its sheet frame sat a gutter inward and read as a broken, off-color
+   rail); it now carries the page rails like every other band. */
+.toolchain-root .tc-band,
+.toolchain-root .tcpv-sec {
   position: relative;
 }
 
 .toolchain-root .tc-band::before,
-.toolchain-root .tc-band::after {
+.toolchain-root .tc-band::after,
+.toolchain-root .tcpv-sec::before,
+.toolchain-root .tcpv-sec::after {
   content: '';
   position: absolute;
   top: 0;
@@ -4221,11 +4233,12 @@
   left: 50%;
   width: min(var(--tc-rail), 100%);
   transform: translateX(-50%);
-  border-inline: 1px solid rgba(255, 255, 255, 0.12);
+  border-inline: 1px solid var(--tc-hair-band);
   pointer-events: none;
 }
 
-.toolchain-root .tc-band::after {
+.toolchain-root .tc-band::after,
+.toolchain-root .tcpv-sec::after {
   width: calc(min(var(--tc-rail), 100%) + 20px);
 }
 

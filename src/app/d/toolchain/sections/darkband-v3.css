@@ -59,7 +59,7 @@
   z-index: 1;
   width: min(var(--tc-rail), 100%);
   margin-inline: auto;
-  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  border-inline: 1px solid var(--tc-hair-band);
   padding: clamp(60px, 7vw, 96px) var(--tc-gut) clamp(56px, 7vw, 88px);
   /* clips the grid's full-reach rule extensions at the column's rails */
   overflow: clip;
@@ -262,7 +262,7 @@
   bottom: 0;
   left: 48px;
   width: 5px;
-  border-inline: 1px solid rgba(255, 255, 255, 0.34);
+  border-inline: 1px solid var(--tc-hair-band);
   pointer-events: none;
 }
 
@@ -489,8 +489,8 @@
   right: 0;
   top: -100vh;
   bottom: -100vh;
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  border-left: 1px solid var(--tc-hair-band);
+  border-right: 1px solid var(--tc-hair-band);
 }
 
 .toolchain-root .tcb .tcb-term-bar {
@@ -995,7 +995,7 @@
   bottom: 0;
   left: 26px;
   width: 5px;
-  border-inline: 1px solid rgba(255, 255, 255, 0.62);
+  border-inline: 1px solid var(--tc-hair-band-strong);
   transform-origin: top center;
   pointer-events: none;
 }

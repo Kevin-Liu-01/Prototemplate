@@ -34,6 +34,8 @@ import GlossarySurface from '@/app/d/toolchain/diagrams/surface/GlossarySurface'
 import LiveSurface from '@/app/d/toolchain/diagrams/surface/LiveSurface';
 import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 
+import { BentoCell } from '@/components/shell/Bento';
+
 import CodeBlock from './code';
 import { useQuietReveal } from './reveal';
 import './bento-motion.css';
@@ -201,6 +203,14 @@ function useQuadMotion(scope: RefObject<HTMLElement | null>) {
         const response = out.textContent ?? '';
         heightLocks.push(out);
 
+        /* GSAP color tweens need concrete values: read them off the motion
+           tokens so even the flashes draw the shell system's colors. */
+        const tokens = getComputedStyle(req);
+        const flashWhite =
+          tokens.getPropertyValue('--tcm-white').trim() || '#ffffff'; /* lint-shell: allow */
+        const flashBright =
+          tokens.getPropertyValue('--tcm-bright').trim() ||
+          'rgba(255, 255, 255, 0.8)'; /* lint-shell: allow */
         const latency = { n: 0 };
         const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2.6, defaults: { ease: 'power2.out' } });
         tl.to(out, { autoAlpha: 0, duration: 0.4, ease: 'power2.in' }, 2.4)
@@ -213,8 +223,8 @@ function useQuadMotion(scope: RefObject<HTMLElement | null>) {
             [],
             2.85,
           )
-          .to(req, { color: '#ffffff', duration: 0.28, yoyo: true, repeat: 1, ease: 'power1.inOut' }, 3.0)
-          .to(hop, { color: 'rgba(255, 255, 255, 0.95)', duration: 0.3, yoyo: true, repeat: 1 }, 3.35)
+          .to(req, { color: flashWhite, duration: 0.28, yoyo: true, repeat: 1, ease: 'power1.inOut' }, 3.0)
+          .to(hop, { color: flashBright, duration: 0.3, yoyo: true, repeat: 1 }, 3.35)
           .set(out, { autoAlpha: 1, attr: { 'data-tcm-typing': 1 } }, 3.6);
         typeInto(tl, out, response, 3.65, 1.7);
         tl.fromTo(
@@ -364,29 +374,26 @@ export default function Bento() {
       </div>
 
       {/* ---- shell 1: the signature diagram, and the data behind it ---- */}
-      <div className='tc-row is-lead'>
-        <div className='tc-cell is-tall is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Every locale is a different length</h3>
-            <p>
-              One button in four languages, measured by the browser rather than estimated. German runs
-              long, Japanese runs short, and Arabic re-anchors the whole line.
-            </p>
-            <div className='tc-lang is-lead'>
-              <SentenceWidth title='The same sentence measured in English, German, Japanese and Arabic' />
-            </div>
+      <div className='tc-row is-lead' data-eq-heads>
+        <BentoCell
+          cell='is-tall is-framed'
+          title='Every locale is a different length'
+          sub='One button in four languages, measured by the browser rather than estimated. German runs long, Japanese runs short, and Arabic re-anchors the whole line.'
+        >
+          <div className='tc-lang is-lead'>
+            <SentenceWidth title='The same sentence measured in English, German, Japanese and Arabic' />
           </div>
-        </div>
+        </BentoCell>
 
-        <div className='tc-cell is-tall is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Ranked against English</h3>
-            <p>A layout that only fits the source string breaks somewhere near the top of this list.</p>
-            <div className='tc-lang'>
-              <ExpansionBars title='Text expansion by locale, relative to English' />
-            </div>
+        <BentoCell
+          cell='is-tall is-framed'
+          title='Ranked against English'
+          sub='A layout that only fits the source string breaks somewhere near the top of this list.'
+        >
+          <div className='tc-lang'>
+            <ExpansionBars title='Text expansion by locale, relative to English' />
           </div>
-        </div>
+        </BentoCell>
       </div>
 
       <div className='tc-hatch' aria-hidden='true' />
@@ -395,12 +402,12 @@ export default function Bento() {
       <div className='tc-row is-split'>
         {/* founder round: the Code cell is a ruled cell of the sheet — its
             right seam restored at full row height in bento-motion.css */}
-        <div className='tc-cell is-tall tcm-ruled' data-reveal>
-          <h3>Code</h3>
-          <p>
-            Developer-first libraries for React, Next.js, and more, battle-tested in production apps with
-            millions of users.
-          </p>
+        <BentoCell
+          cell='is-tall tcm-ruled'
+          framed={false}
+          title='Code'
+          sub='Developer-first libraries for React, Next.js, and more, battle-tested in production apps with millions of users.'
+        >
           <ul className='tc-list'>
             <li>
               <code className='tc-chip'>&lt;T&gt;</code> wraps any JSX — nested elements and all
@@ -419,123 +426,115 @@ export default function Bento() {
               <ArrowUpRight className='tc-ico-arrow' aria-hidden />
             </a>
           </div>
-        </div>
+        </BentoCell>
 
-        <div className='tc-cell is-tall is-framed' data-reveal>
-          <div className='tc-card'>
-            <div className='tc-art-center'>
-              <SdkLedger title='The four first-party SDKs, each with its runtime and the import you write' />
-            </div>
+        <BentoCell cell='is-tall is-framed'>
+          <div className='tc-art-center'>
+            <SdkLedger title='The four first-party SDKs, each with its runtime and the import you write' />
           </div>
-        </div>
+        </BentoCell>
       </div>
 
       {/* ---- shell 3: three narrow cells, one small visual each ---- */}
-      <div className='tc-row is-three'>
-        <div className='tc-cell is-short is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Context</h3>
-            <p>One word, two meanings. A context tag decides which translation ships.</p>
-            <div className='tc-lang'>
-              <ContextResolve title='Save resolving to speichern or sparen by context' />
-            </div>
+      <div className='tc-row is-three' data-eq-heads>
+        <BentoCell
+          cell='is-short is-framed'
+          title='Context'
+          sub='One word, two meanings. A context tag decides which translation ships.'
+        >
+          <div className='tc-lang'>
+            <ContextResolve title='Save resolving to speichern or sparen by context' />
           </div>
-        </div>
+        </BentoCell>
 
-        <div className='tc-cell is-short is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Terminology</h3>
-            <p>
-              One term, six locales, decided once. Per-locale style rules keep the wording identical
-              everywhere it appears.
-            </p>
-            <div className='tc-lang'>
-              <WordMorph title='The term Settings printed in six locales' />
-            </div>
+        <BentoCell
+          cell='is-short is-framed'
+          title='Terminology'
+          sub='One term, six locales, decided once. Per-locale style rules keep the wording identical everywhere it appears.'
+        >
+          <div className='tc-lang'>
+            <WordMorph title='The term Settings printed in six locales' />
           </div>
-        </div>
+        </BentoCell>
 
-        <div className='tc-cell is-short is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Routing</h3>
-            <p>Automatic detection and locale-based routing, on SEO-friendly paths you never configure.</p>
-            <div className='tc-surface is-plated'>
-              <LocaleRouting title='The same page routed for all six configured locales, /fr/a-propos localized, with the detection order beneath' />
-            </div>
+        <BentoCell
+          cell='is-short is-framed'
+          title='Routing'
+          sub='Automatic detection and locale-based routing, on SEO-friendly paths you never configure.'
+        >
+          <div className='tc-surface is-plated'>
+            <LocaleRouting title='The same page routed for all six configured locales, /fr/a-propos localized, with the detection order beneath' />
           </div>
-        </div>
+        </BentoCell>
       </div>
 
-      {/* ---- shell 4: full-bleed visual beside an inset code panel ---- */}
-      <div className='tc-row is-wide-left'>
-        <div className='tc-cell is-bleed is-framed' data-reveal>
-          <div className='tc-card'>
-            <div className='tc-bleed-head'>
-              <h3>Translation</h3>
-              <p>
-                AI agents that understand your project structure and localize your content in context.
-              </p>
-            </div>
-            <div className='tc-bleed-art'>
-              <TranslationFlow title='app/page.tsx fanned into public/_gt/es.json, ja.json and de.json, each holding its three real translations' />
-            </div>
+      {/* ---- shell 4: full-bleed visual beside an inset code panel ----
+          data-eq-heads is what keeps the Translation plate edge and the
+          config panel's first rule on ONE shared line. */}
+      <div className='tc-row is-wide-left' data-eq-heads>
+        <BentoCell
+          cell='is-bleed is-framed'
+          headClass='tc-bleed-head'
+          title='Translation'
+          sub='AI agents that understand your project structure and localize your content in context.'
+        >
+          <div className='tc-bleed-art'>
+            <TranslationFlow title='app/page.tsx fanned into public/_gt/es.json, ja.json and de.json, each holding its three real translations' />
           </div>
-        </div>
+        </BentoCell>
 
         {/* founder round: the COPY-chip code panel is ruled onto the sheet —
             square, 1px, its frame rules run to the cell's edges (bento-motion.css) */}
-        <div className='tc-cell is-panel is-framed tcm-ruled-panel' data-reveal>
-          <div className='tc-card'>
-            <h3>One config file</h3>
-            <p>Locales in, output path out. The CLI and every SDK read the same file.</p>
-            {/* One dark surface, two artifacts: the config, then the run it
-                produces — `[locale].json` above resolving to five real files
-                below, in the CLI's own voice. */}
-            <div className='tc-code-run'>
-              <CodeBlock file='gt.config.json' code={CONFIG} numbers={false} />
-              <div className='tc-cli'>
-                {TRANSLATE_RUN.map((line) => (
-                  <div className='tc-cli-line' data-tone={line.tone} key={line.text}>
-                    {line.key ? <span className='tc-cli-key'>{line.key}</span> : null}
-                    {line.text}
-                  </div>
-                ))}
-              </div>
+        {/* the bleed neighbour carries its card padding INSIDE its head, this
+            cell outside — 10px off the head height compensates, so the config
+            panel's first rule sits exactly on the Translation plate's line */}
+        <BentoCell
+          cell='is-panel is-framed tcm-ruled-panel'
+          title='One config file'
+          sub='Locales in, output path out. The CLI and every SDK read the same file.'
+          style={{ '--shell-head-h': '102px' } as React.CSSProperties}
+        >
+          {/* One dark surface, two artifacts: the config, then the run it
+              produces — `[locale].json` above resolving to five real files
+              below, in the CLI's own voice. */}
+          <div className='tc-code-run'>
+            <CodeBlock file='gt.config.json' code={CONFIG} numbers={false} />
+            <div className='tc-cli'>
+              {TRANSLATE_RUN.map((line) => (
+                <div className='tc-cli-line' data-tone={line.tone} key={line.text}>
+                  {line.key ? <span className='tc-cli-key'>{line.key}</span> : null}
+                  {line.text}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        </BentoCell>
       </div>
 
       <div className='tc-hatch' aria-hidden='true' />
 
       {/* ---- shell 5: stat rows beside a field of scripts, tipped off centre ---- */}
       <div className='tc-row is-tilt'>
-        <div className='tc-cell is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Built for your next billion users</h3>
-            {/* The heading already says one billion — repeating it as a row
-                was saying it twice. Four numbers, none redundant. */}
-            <div className='tc-stats is-grid'>
-              <StatRow value='118' label='locales, ready today' />
-              <StatRow value='6' label='first-party SDKs' />
-              <StatRow value='<1s' label='over-the-air updates' />
-              <StatRow value='$0' label='to start' />
-            </div>
+        <BentoCell cell='is-framed' title='Built for your next billion users'>
+          {/* The heading already says one billion — repeating it as a row
+              was saying it twice. Four numbers, none redundant. */}
+          <div className='tc-stats is-grid'>
+            <StatRow value='118' label='locales, ready today' />
+            <StatRow value='6' label='first-party SDKs' />
+            <StatRow value='<1s' label='over-the-air updates' />
+            <StatRow value='$0' label='to start' />
           </div>
-        </div>
+        </BentoCell>
 
-        <div className='tc-cell is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Every writing system</h3>
-            <p>
-              Latin, Cyrillic, Greek, Arabic, Devanagari, Han, Hangul, Thai — joined, stacked and
-              bidi-resolved by the browser, with per-script fallbacks in the SDK.
-            </p>
-            <div className='tc-lang'>
-              <ScriptSampler title='The word “language” in eight writing systems' />
-            </div>
+        <BentoCell
+          cell='is-framed'
+          title='Every writing system'
+          sub='Latin, Cyrillic, Greek, Arabic, Devanagari, Han, Hangul, Thai — joined, stacked and bidi-resolved by the browser, with per-script fallbacks in the SDK.'
+        >
+          <div className='tc-lang'>
+            <ScriptSampler title='The word “language” in eight writing systems' />
           </div>
-        </div>
+        </BentoCell>
       </div>
 
       {/* ---- shell 6: delivery as a full-bleed inverse band, the field behind it ---- */}
@@ -568,33 +567,31 @@ export default function Bento() {
       </div>
 
       {/* ---- shell 7: a pair leaning left-light, both cells grammar ---- */}
-      <div className='tc-row is-grammar'>
-        <div className='tc-cell is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Counting is not concatenation</h3>
-            <p>
-              English has two plural forms, Polish four, Japanese one. GT ships ICU plurals, so the number
-              picks the form instead of the string.
-            </p>
-            <div className='tc-lang'>
-              <PluralForms accent={false} title='One count under English, Polish and Japanese plural rules' />
-            </div>
+      <div className='tc-row is-grammar' data-eq-heads>
+        <BentoCell
+          cell='is-framed'
+          title='Counting is not concatenation'
+          sub='English has two plural forms, Polish four, Japanese one. GT ships ICU plurals, so the number picks the form instead of the string.'
+        >
+          <div className='tc-lang'>
+            <PluralForms accent={false} title='One count under English, Polish and Japanese plural rules' />
           </div>
-        </div>
+        </BentoCell>
 
-        <div className='tc-cell is-framed' data-reveal>
-          <div className='tc-card'>
-            <h3>Both directions, one markup</h3>
-            <p>
-              Set <code className='tc-chip'>dir</code> and the browser mirrors rows, alignment and controls.
-              Nothing about the panel is written twice.
-            </p>
-            <div className='tc-lang'>
-              <RtlMirror accent={false} title='The same panel rendered left-to-right and right-to-left' />
-            </div>
+        <BentoCell
+          cell='is-framed'
+          title='Both directions, one markup'
+          sub={
+            <>
+              Set <code className='tc-chip'>dir</code> and the browser mirrors rows, alignment and
+              controls. Nothing about the panel is written twice.
+            </>
+          }
+        >
+          <div className='tc-lang'>
+            <RtlMirror accent={false} title='The same panel rendered left-to-right and right-to-left' />
           </div>
-        </div>
-
+        </BentoCell>
       </div>
 
       <div className='tc-hatch' aria-hidden='true' />

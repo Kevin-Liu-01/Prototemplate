@@ -1,0 +1,98 @@
+/* ============================================================
+   SHELL PRIMITIVES
+   The bento grammar's shared bones: the cell head, equal-height
+   head rows, the hairline rule, the doubled rail, and corner
+   marks. Every stroke draws ONE color — var(--shell-hair),
+   falling back to the page family's --tc-hair — so shells,
+   outer rails and section rules can never drift apart again.
+
+   Token discipline is enforced by scripts/lint-shell.mjs
+   (pnpm lint:shell): no raw color literals may appear in this
+   layer outside the token fallbacks below.
+   ============================================================ */
+
+.shell-cell-head {
+  display: flex;
+  flex-direction: column;
+  /* margins on h3/p carry the rhythm exactly as before */
+  gap: 0;
+}
+
+/* Rows that declare data-eq-heads give every cell's head the same height,
+   so the first structural line under each head (plate edge, code header,
+   list rule) lands at ONE shared y across the row. */
+[data-eq-heads] .shell-cell-head {
+  min-height: var(--shell-head-h, 112px);
+}
+
+@media (max-width: 1020px) {
+  /* stacked cells: alignment across a row no longer exists */
+  [data-eq-heads] .shell-cell-head {
+    min-height: 0;
+  }
+}
+
+/* The one hairline. */
+.shell-rule {
+  height: 1px;
+  background: var(--shell-hair, var(--tc-hair));
+}
+
+/* The brand's doubled rail at constant gauge, vertical by default. */
+.shell-rail {
+  --rail-gauge: var(--shell-gauge, 1.5px);
+  --rail-gap: var(--shell-gap, 3px);
+  width: calc(var(--rail-gauge) * 2 + var(--rail-gap));
+  background-image:
+    linear-gradient(var(--shell-hair, var(--tc-hair)), var(--shell-hair, var(--tc-hair))),
+    linear-gradient(var(--shell-hair, var(--tc-hair)), var(--shell-hair, var(--tc-hair)));
+  background-repeat: no-repeat;
+  background-size:
+    var(--rail-gauge) 100%,
+    var(--rail-gauge) 100%;
+  background-position:
+    0 0,
+    100% 0;
+}
+
+.shell-rail.is-h {
+  width: auto;
+  height: calc(var(--rail-gauge) * 2 + var(--rail-gap));
+  background-size:
+    100% var(--rail-gauge),
+    100% var(--rail-gauge);
+  background-position:
+    0 0,
+    0 100%;
+}
+
+/* Corner mark: the + at a cell junction, in the same hairline. */
+.shell-corner {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+
+.shell-corner::before,
+.shell-corner::after {
+  content: '';
+  position: absolute;
+  background: var(--shell-hair, var(--tc-hair));
+}
+
+.shell-corner::before {
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  margin-top: -0.5px;
+}
+
+.shell-corner::after {
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: 1px;
+  margin-left: -0.5px;
+}

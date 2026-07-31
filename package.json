@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack --port 3005",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint:shell": "node scripts/lint-shell.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
