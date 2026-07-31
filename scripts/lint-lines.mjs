@@ -31,6 +31,7 @@ const ALLOW = [
   'tc-eg',
   'tc-hatch',
   'lang-sw', // the sentence-width measuring instrument draws guide boxes
+  'lang-rm', // the re-measure instrument: bright extents drawn on faint axes
   'tc-tab-bar', // the active-tab accent deliberately rides the tabs seam
   'is-marquee', // marquee rows fade under a mask-image the audit can't see
 ];
@@ -46,6 +47,7 @@ await page.waitForTimeout(3000);
 
 const audit = await page.evaluate((ALLOW) => {
   const segs = [];
+  const els = [];
   const label = (el) =>
     (typeof el.className === 'string' ? el.className : el.tagName)
       .split(' ')
@@ -57,7 +59,7 @@ const audit = await page.evaluate((ALLOW) => {
     const parts = m[1].split(',').map(parseFloat);
     return (parts[3] ?? 1) > 0.05;
   };
-  const pushBorders = (rect, cs, owner) => {
+  const pushBorders = (rect, cs, owner, elIdx) => {
     const sides = [
       ['Top', 'h', rect.top, rect.left, rect.right],
       ['Bottom', 'h', rect.bottom, rect.left, rect.right],
@@ -67,7 +69,7 @@ const audit = await page.evaluate((ALLOW) => {
     for (const [side, orient, pos, from, to] of sides) {
       const w = parseFloat(cs[`border${side}Width`]);
       if (w >= 1 && w <= 2.5 && visible(cs[`border${side}Color`]) && to - from > 24)
-        segs.push({ orient, pos: Math.round(pos * 2) / 2, from, to, owner });
+        segs.push({ orient, pos: Math.round(pos * 2) / 2, from, to, owner, el: elIdx });
     }
   };
   document.querySelectorAll('body *').forEach((el) => {
@@ -78,13 +80,14 @@ const audit = await page.evaluate((ALLOW) => {
     const cs = getComputedStyle(el);
     if (cs.display === 'none' || cs.visibility === 'hidden') return;
     if (parseFloat(cs.opacity) <= 0.05) return; // hover-woken devices rest invisible
-    pushBorders(rect, cs, owner);
+    const elIdx = els.push(el) - 1;
+    pushBorders(rect, cs, owner, elIdx);
     // thin filled boxes are lines too
     if (visible(cs.backgroundColor)) {
       if (rect.height <= 2.5 && rect.width > 24)
-        segs.push({ orient: 'h', pos: Math.round((rect.top + rect.height / 2) * 2) / 2, from: rect.left, to: rect.right, owner });
+        segs.push({ orient: 'h', pos: Math.round((rect.top + rect.height / 2) * 2) / 2, from: rect.left, to: rect.right, owner, el: elIdx });
       if (rect.width <= 2.5 && rect.height > 24)
-        segs.push({ orient: 'v', pos: Math.round((rect.left + rect.width / 2) * 2) / 2, from: rect.top, to: rect.bottom, owner });
+        segs.push({ orient: 'v', pos: Math.round((rect.left + rect.width / 2) * 2) / 2, from: rect.top, to: rect.bottom, owner, el: elIdx });
     }
     // absolutely-positioned pseudo rails/rules
     for (const pseudo of ['::before', '::after']) {
@@ -120,17 +123,50 @@ const audit = await page.evaluate((ALLOW) => {
         if (width < 1 || height < 1) continue;
       }
       const prect = { top, bottom: top + height, left, right: left + width, width, height };
-      pushBorders(prect, ps, `${pseudo}${label(el)}`);
+      const hostIdx = els.push(el) - 1;
+      pushBorders(prect, ps, `${pseudo}${label(el)}`, hostIdx);
       if (visible(ps.backgroundColor)) {
-        if (height <= 2.5 && width > 24) segs.push({ orient: 'h', pos: Math.round((top + height / 2) * 2) / 2, from: left, to: left + width, owner: `${pseudo}${label(el)}` });
-        if (width <= 2.5 && height > 24) segs.push({ orient: 'v', pos: Math.round((left + width / 2) * 2) / 2, from: top, to: top + height, owner: `${pseudo}${label(el)}` });
+        if (height <= 2.5 && width > 24) segs.push({ orient: 'h', pos: Math.round((top + height / 2) * 2) / 2, from: left, to: left + width, owner: `${pseudo}${label(el)}`, el: hostIdx });
+        if (width <= 2.5 && height > 24) segs.push({ orient: 'v', pos: Math.round((left + width / 2) * 2) / 2, from: top, to: top + height, owner: `${pseudo}${label(el)}`, el: hostIdx });
       }
     }
   });
 
   const allowed = (owner) => ALLOW.some((frag) => owner.includes(frag));
 
-  // 1 · doubles: cross-owner parallel pairs 1..4px apart, 70%+ overlap
+  /* Coincident strokes (gap < 1) are only a bug if BOTH actually render:
+     when one drawer is an ancestor of the other and an opaque background
+     sits between them (including the descendant's own — backgrounds paint
+     to the border box, under any translucent border), the lower stroke is
+     hidden and no alpha stacks. */
+  const opaqueBg = (node) => {
+    const m = getComputedStyle(node).backgroundColor.match(/rgba?\(([^)]+)\)/);
+    if (!m) return false;
+    const parts = m[1].split(',').map(parseFloat);
+    return (parts[3] ?? 1) >= 0.98;
+  };
+  const coveredCoincidence = (a, b) => {
+    const A = els[a.el], B = els[b.el];
+    if (!A || !B || A === B) return false;
+    let inner = null, outer = null;
+    if (A.contains(B)) { outer = A; inner = B; }
+    else if (B.contains(A)) { outer = B; inner = A; }
+    if (!outer) return false;
+    const pos = a.pos, from = Math.max(a.from, b.from), to = Math.min(a.to, b.to);
+    for (let n = inner; n && n !== outer; n = n.parentElement) {
+      if (!opaqueBg(n)) continue;
+      const r = n.getBoundingClientRect();
+      const hit = a.orient === 'h'
+        ? r.top <= pos + 1 && r.bottom >= pos - 1 && r.left <= from + 1 && r.right >= to - 1
+        : r.left <= pos + 1 && r.right >= pos - 1 && r.top <= from + 1 && r.bottom >= to - 1;
+      if (hit) return true;
+    }
+    return false;
+  };
+
+  // 1 · doubles: cross-owner parallel pairs 0..4px apart, 70%+ overlap.
+  // gap 0 is the worst case, not an exemption: two coincident translucent
+  // strokes stack alpha and render a brighter line than either alone.
   const doubles = [];
   const seen = new Set();
   for (const [orient, axisFrom] of [['h', 'from'], ['v', 'from']]) {
@@ -140,11 +176,11 @@ const audit = await page.evaluate((ALLOW) => {
       for (let j = i + 1; j < pool.length && pool[j].pos - pool[i].pos <= 4; j++) {
         const a = pool[i], b = pool[j];
         const gap = b.pos - a.pos;
-        if (gap < 1) continue;
         if (a.owner === b.owner) continue;
         const overlap = Math.min(a.to, b.to) - Math.max(a.from, b.from);
         const shorter = Math.min(a.to - a.from, b.to - b.from);
         if (overlap < shorter * 0.75 || overlap < 80) continue;
+        if (gap < 1 && coveredCoincidence(a, b)) continue;
         const key = `${orient}:${Math.round(a.pos)}:${a.owner}|${b.owner}`;
         if (seen.has(key)) continue;
         seen.add(key);

@@ -8,7 +8,6 @@ import Hero from './sections/Hero';
 import Pricing from './sections/Pricing';
 import Review from './sections/Review';
 import SiteFooter from './sections/SiteFooter';
-import Story from './sections/Story';
 import StoryCinema from './sections/StoryCinema';
 import TopNav from './sections/TopNav';
 
@@ -34,7 +33,6 @@ export default function ToolchainPage() {
           <Hero />
           <Frameworks />
           <Bento />
-          <Story />
           <StoryCinema />
           <Review />
         </div>

@@ -39,7 +39,8 @@ export const DIRECTIONS: Direction[] = [
     label: '02',
     slug: 'chroma-flow',
     name: 'Chroma Flow',
-    concept: 'Toolchain fork: curl-noise flow-field shader hero, pipeline-led product sections.',
+    concept:
+      'A curl-noise flow field pulls streaming color through the nameplate, and the product story reads as one continuous pipeline beneath it.',
     tone: 'light',
     signature: 'A double-line ribbon of flowing chroma carries the hero.',
   },
@@ -48,7 +49,8 @@ export const DIRECTIONS: Direction[] = [
     label: '03',
     slug: 'dither-field',
     name: 'Dither Field',
-    concept: 'Toolchain fork: animated 1-bit Bayer hero, data-led product sections.',
+    concept:
+      'Hellos in eight scripts resolve out of Bayer noise and dissolve back, pixel by pixel, above data-led product rows.',
     tone: 'light',
     signature: 'The hero is an ordered-dither field breathing at 1 bit.',
   },
@@ -57,7 +59,8 @@ export const DIRECTIONS: Direction[] = [
     label: '04',
     slug: 'aurora-paper',
     name: 'Aurora Paper',
-    concept: 'Toolchain fork: grainy aurora wash on paper, workspace-led product sections.',
+    concept:
+      'A grainy aurora drifts behind an otherwise disciplined paper page, and the product story is told as one working workspace.',
     tone: 'light',
     signature: 'A Resend-grade light wash behind a paper page.',
   },
@@ -66,7 +69,8 @@ export const DIRECTIONS: Direction[] = [
     label: '05',
     slug: 'glyph-rain',
     name: 'Glyph Rain',
-    concept: 'Toolchain fork: multilingual glyph particle hero, script-led product sections.',
+    concept:
+      'A particle rain of world-script glyphs gathers into each word of the headline, holds, and re-scatters, above script-led product sections.',
     tone: 'light',
     signature: 'Characters from eight scripts condense into the headline.',
   },
@@ -75,7 +79,8 @@ export const DIRECTIONS: Direction[] = [
     label: '06',
     slug: 'prism-light',
     name: 'Prism Light',
-    concept: 'Toolchain fork: the prismatic engine re-tuned for a light hero, delivery-led sections.',
+    concept:
+      'One white beam splits through a glass prism and the translations ride the dispersion fan out, above delivery-led sections.',
     tone: 'light',
     signature: 'The burst re-exposed for paper, masked into the thread.',
   },
@@ -85,7 +90,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'lens-gate',
     name: 'Lens Gate',
     concept:
-      "Toolchain fork: the origin's lens gate on ruled paper — hairline rules refract through one breathing glass and components exit translated.",
+      'The ruled paper itself passes through one breathing glass — components enter in English, refract, and exit translated on the far side.',
     tone: 'light',
     signature: "The page's own rules bend through the lens and snap straight at the rim.",
   },
@@ -95,7 +100,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'paper-foundry',
     name: 'Paper Foundry',
     concept:
-      "Toolchain fork: the foundry's bento machined into paper — hairline cells set into a brushed-graphite sheet.",
+      'The bento machined into paper — hairline cells set into a brushed-graphite sheet, finished in strict reading order.',
     tone: 'light',
     signature: 'One anisotropic sheen sweep over a reading-order cell cascade.',
   },
@@ -105,7 +110,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'terminus-board',
     name: 'Terminus Board',
     concept:
-      'Toolchain fork: the departure hall on paper — a split-flap headline over a flip-wave cell grid, locales as departures.',
+      'A departure hall for locales — a split-flap headline over a flip-wave cell grid that lists languages the way a terminus lists trains.',
     tone: 'light',
     signature: 'The headline riffles through world scripts, settles into English, and cools through amber.',
   },
@@ -115,7 +120,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'wide-rule',
     name: 'Wide Rule',
     concept:
-      'Toolchain fork: the wide field on paper — one analytic interference band crossing enormous quiet space.',
+      'One analytic interference band crosses enormous quiet space, and the whole product story is set in the calm around it.',
     tone: 'light',
     signature: 'A film still — fringes dissolve into the null that holds the gate and the headline.',
   },
@@ -125,7 +130,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'event-horizon',
     name: 'Event Horizon',
     concept:
-      "Kevin's sketch: component walls dive with curved perspective into a black-hole gate; English falls in, translations emerge; flags orbit the horizon.",
+      'Component walls dive with curved perspective into a black-hole gate — English falls in, translations emerge, and flags orbit the horizon.',
     tone: 'light',
     signature: 'Collinear pairs cross the horizon — in as English, out translated.',
   },
@@ -135,7 +140,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'hourglass',
     name: 'Hourglass',
     concept:
-      "Kevin's sketch: dark corridor walls of UI cards sweep concavely into a vanishing point, pinching an hourglass waist that holds the mark, flags, and CTAs.",
+      'Dark corridor walls of UI cards sweep concavely into a vanishing point, pinching at an hourglass waist that holds the mark, the flags, and the CTAs.',
     tone: 'dark',
     signature: 'The English wall flows into the waist; the translated wall flows out.',
   },

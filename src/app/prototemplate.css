@@ -590,8 +590,8 @@
   position: absolute;
   top: 16px;
   right: clamp(16px, 3vw, 36px);
-  width: 320px;
-  aspect-ratio: 16 / 10;
+  width: 272px;
+  aspect-ratio: 5 / 4;
   overflow: hidden;
   border: 1px solid var(--pt-hair);
   background: var(--pt-white);
@@ -626,8 +626,8 @@
 
 @media (min-width: 1150px) {
   .pt-row {
-    padding-right: 396px;
-    min-height: 118px;
+    padding-right: 344px;
+    min-height: 128px;
   }
 
   .pt-row-shot {

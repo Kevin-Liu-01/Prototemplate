@@ -1009,17 +1009,17 @@
 }
 
 /* ---------- the nested frame ----------
-   A cell that carries something visual becomes a box inside a box: the grid
-   cell is a mat with a hairline edge and exactly 2px of padding, and the card
-   sits inside it, so a precise 2px reveal runs all the way around the content.
-   Text-only cells never get this — the contrast is the whole point, and it is
-   also why the vertical rule is dropped wherever a mat provides the edge. */
+   A cell that carries something visual becomes a box inside a box: the card
+   sits in the grid cell and its radius exposes the ground at the corners.
+   The cell itself stays TRANSPARENT — the row paints the one hair ground
+   (gaps, perimeter, corner notches alike), because two stacked translucent
+   hair layers read brighter than any 1px line drawn from the same token. */
 
 .toolchain-root .tc-cell.is-framed {
   margin: 0;
   padding: 0;
   border: 0;
-  background: var(--tc-hair);
+  background: transparent;
   display: flex;
 }
 

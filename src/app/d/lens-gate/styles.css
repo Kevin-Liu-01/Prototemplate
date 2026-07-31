@@ -1443,7 +1443,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  background: var(--tc-hair);
+  background: transparent;
   display: flex;
 }
 
