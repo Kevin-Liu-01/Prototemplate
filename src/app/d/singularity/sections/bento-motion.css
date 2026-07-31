@@ -183,6 +183,7 @@
   display: flex;
   border: 1px solid var(--tc-hair);
   background: var(--tc-hair);
+  background-clip: padding-box;
 }
 
 .singularity-root .tcm-node-in {

@@ -4207,28 +4207,24 @@
 }
 
 /* The doubled rail continues through the full-bleed dark band: the band sits
-   outside the .tc-rail wrappers, so it draws the same column's line pairs
-   itself — inner pair at the column edges, outer pair at the +-10px gauge —
-   in the band's own rule ink (the band is dark in both themes). */
+   outside the .tc-rail wrappers, so it draws the OUTER pair itself at the
+   +-10px gauge. The inner pair is the .tcb-in column's own border-inline —
+   drawn once by the column, never repeated here (coincident translucent
+   strokes stack alpha and read brighter than the rest of the rail). */
 .aurorapaper-root .tc-band {
   position: relative;
 }
 
-.aurorapaper-root .tc-band::before,
 .aurorapaper-root .tc-band::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: min(var(--tc-rail), 100%);
+  width: calc(min(var(--tc-rail), 100%) + 20px);
   transform: translateX(-50%);
   border-inline: 1px solid rgba(255, 255, 255, 0.12);
   pointer-events: none;
-}
-
-.aurorapaper-root .tc-band::after {
-  width: calc(min(var(--tc-rail), 100%) + 20px);
 }
 
 
@@ -5356,9 +5352,11 @@
 /* ---------- proof ---------- */
 
 /* Founder batch retired the ledger beige (NO CREAM): the quiet depth sits on
-   the card surface now — white in light mode, the ink-black family in dark. */
+   the card surface now — white in light mode, the ink-black family in dark.
+   The section closes like every other — the band below meets a ruled edge. */
 .aurorapaper-root .tc-sec.is-proof {
   background: var(--tc-white);
+  border-bottom: 1px solid var(--tc-hair);
 }
 
 .aurorapaper-root .ap-proof {
@@ -5513,4 +5511,28 @@
 
 .aurorapaper-root .tc-band.tcb {
   border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.aurorapaper-root .tc-row:has(> .tc-cell.is-framed),
+.aurorapaper-root .tc-mount,
+.aurorapaper-root .tcs-mat,
+.aurorapaper-root .tcr-mat,
+.aurorapaper-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* the hero ground is pinned with !important upstream, which resets the
+   clip — pin the clip the same way so the close rule never stacks */
+.aurorapaper-root .tc-sec.tch-hero-sec,
+.aurorapaper-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box !important;
+}
+
+/* aurora keycaps: the translucent cap face stops at its border */
+.aurorapaper-root .ap-k {
+  background-clip: padding-box;
 }

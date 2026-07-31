@@ -3812,3 +3812,33 @@
 .paperfoundry-root .tc-band.tcb {
   border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
 }
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.paperfoundry-root .tc-row:has(> .tc-cell.is-framed),
+.paperfoundry-root .tc-mount,
+.paperfoundry-root .tcs-mat,
+.paperfoundry-root .tcr-mat,
+.paperfoundry-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* the hero ground is pinned with !important upstream, which resets the
+   clip — pin the clip the same way so the close rule never stacks */
+.paperfoundry-root .tc-sec.tch-hero-sec,
+.paperfoundry-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box !important;
+}
+
+/* one stroke per line: part cells' translucent faces stop at their borders */
+.paperfoundry-root .pf-cell.is-part {
+  background-clip: padding-box;
+}
+
+/* the story page mock sat 1px under the caps strip — two frames whose
+   borders read as one doubled line; give the junction real air */
+.paperfoundry-root .tcs-page {
+  margin-top: 8px;
+}

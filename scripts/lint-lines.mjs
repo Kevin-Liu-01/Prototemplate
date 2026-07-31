@@ -35,6 +35,8 @@ const ALLOW = [
   'tc-tab-bar', // the active-tab accent deliberately rides the tabs seam
   'is-marquee', // marquee rows fade under a mask-image the audit can't see
   'eh-chip', // orbiting locale chips sweep the hero; any parallelism is transient
+  'tcb-term', // the band terminal wears the doubled frame: border + offset outline
+  'lg-card', // lens-gate's refracting cards drift each frame; parallelism is transient
 ];
 
 const browser = await chromium.launch({ executablePath: EXEC, headless: true });
@@ -49,6 +51,7 @@ await page.waitForTimeout(3000);
 const audit = await page.evaluate((ALLOW) => {
   const segs = [];
   const els = [];
+  const selfStacks = [];
   const label = (el) =>
     (typeof el.className === 'string' ? el.className : el.tagName)
       .split(' ')
@@ -60,17 +63,63 @@ const audit = await page.evaluate((ALLOW) => {
     const parts = m[1].split(',').map(parseFloat);
     return (parts[3] ?? 1) > 0.05;
   };
+  const alphaOf = (color) => {
+    const m = color.match(/rgba?\(([^)]+)\)/);
+    if (!m) return color === 'transparent' ? 0 : 1;
+    return m[1].split(',').map(parseFloat)[3] ?? 1;
+  };
+  /* Straight-run spans stop where the corner radius begins — arcs are not
+     parallel to anything and must not extend a segment's overlap. */
+  const radii = (cs) => ({
+    tl: parseFloat(cs.borderTopLeftRadius) || 0,
+    tr: parseFloat(cs.borderTopRightRadius) || 0,
+    bl: parseFloat(cs.borderBottomLeftRadius) || 0,
+    br: parseFloat(cs.borderBottomRightRadius) || 0,
+  });
   const pushBorders = (rect, cs, owner, elIdx) => {
+    const rd = radii(cs);
     const sides = [
-      ['Top', 'h', rect.top, rect.left, rect.right],
-      ['Bottom', 'h', rect.bottom, rect.left, rect.right],
-      ['Left', 'v', rect.left, rect.top, rect.bottom],
-      ['Right', 'v', rect.right, rect.top, rect.bottom],
+      ['Top', 'h', rect.top, rect.left + rd.tl, rect.right - rd.tr],
+      ['Bottom', 'h', rect.bottom, rect.left + rd.bl, rect.right - rd.br],
+      ['Left', 'v', rect.left, rect.top + rd.tl, rect.bottom - rd.bl],
+      ['Right', 'v', rect.right, rect.top + rd.tr, rect.bottom - rd.br],
     ];
     for (const [side, orient, pos, from, to] of sides) {
       const w = parseFloat(cs[`border${side}Width`]);
       if (w >= 1 && w <= 2.5 && visible(cs[`border${side}Color`]) && to - from > 24)
         segs.push({ orient, pos: Math.round(pos * 2) / 2, from, to, owner, el: elIdx });
+    }
+    /* Outline rings are borders drawn outside the box. */
+    const ow = parseFloat(cs.outlineWidth);
+    if (cs.outlineStyle !== 'none' && ow >= 1 && ow <= 2.5 && visible(cs.outlineColor)) {
+      const off = (parseFloat(cs.outlineOffset) || 0) + ow / 2;
+      if (rect.width > 24) {
+        segs.push({ orient: 'h', pos: Math.round((rect.top - off) * 2) / 2, from: rect.left, to: rect.right, owner: `outline:${owner}`, el: elIdx });
+        segs.push({ orient: 'h', pos: Math.round((rect.bottom + off) * 2) / 2, from: rect.left, to: rect.right, owner: `outline:${owner}`, el: elIdx });
+      }
+      if (rect.height > 24) {
+        segs.push({ orient: 'v', pos: Math.round((rect.left - off) * 2) / 2, from: rect.top, to: rect.bottom, owner: `outline:${owner}`, el: elIdx });
+        segs.push({ orient: 'v', pos: Math.round((rect.right + off) * 2) / 2, from: rect.top, to: rect.bottom, owner: `outline:${owner}`, el: elIdx });
+      }
+    }
+    /* box-shadow rings: `0 0 0 Npx color` spread-only shadows are borders
+       by other means — same geometry as an outline at offset 0. */
+    if (cs.boxShadow && cs.boxShadow !== 'none') {
+      for (const shadow of cs.boxShadow.split(/\),\s*/)) {
+        const m = shadow.match(/(-?[\d.]+)px\s+(-?[\d.]+)px\s+([\d.]+)px\s+([\d.]+)px/);
+        if (!m) continue;
+        const [, sx, sy, blur, spread] = m.map(Number);
+        if (sx !== 0 || sy !== 0 || blur > 1.5 || spread < 1 || spread > 2.5) continue;
+        const p = spread / 2;
+        if (rect.width > 24) {
+          segs.push({ orient: 'h', pos: Math.round((rect.top - p) * 2) / 2, from: rect.left, to: rect.right, owner: `shadow:${owner}`, el: elIdx });
+          segs.push({ orient: 'h', pos: Math.round((rect.bottom + p) * 2) / 2, from: rect.left, to: rect.right, owner: `shadow:${owner}`, el: elIdx });
+        }
+        if (rect.height > 24) {
+          segs.push({ orient: 'v', pos: Math.round((rect.left - p) * 2) / 2, from: rect.top, to: rect.bottom, owner: `shadow:${owner}`, el: elIdx });
+          segs.push({ orient: 'v', pos: Math.round((rect.right + p) * 2) / 2, from: rect.top, to: rect.bottom, owner: `shadow:${owner}`, el: elIdx });
+        }
+      }
     }
   };
   /* Elements under a 3D transform (perspective stages, rotateY conveyors)
@@ -104,6 +153,45 @@ const audit = await page.evaluate((ALLOW) => {
         segs.push({ orient: 'h', pos: Math.round((rect.top + rect.height / 2) * 2) / 2, from: rect.left, to: rect.right, owner, el: elIdx });
       if (rect.width <= 2.5 && rect.height > 24)
         segs.push({ orient: 'v', pos: Math.round((rect.left + rect.width / 2) * 2) / 2, from: rect.top, to: rect.bottom, owner, el: elIdx });
+    }
+    /* Exposed-ground strips: a big box with visible bg and a 1-2px padding
+       reveal draws a LINE along that edge (the framed-row perimeter). It is
+       a line like any other and must obey the one-stroke law. */
+    if (visible(cs.backgroundColor) && rect.width > 24 && rect.height > 24) {
+      const pads = [
+        ['Top', 'h', (p) => rect.top + p / 2, rect.left, rect.right],
+        ['Bottom', 'h', (p) => rect.bottom - p / 2, rect.left, rect.right],
+        ['Left', 'v', (p) => rect.left + p / 2, rect.top, rect.bottom],
+        ['Right', 'v', (p) => rect.right - p / 2, rect.top, rect.bottom],
+      ];
+      for (const [side, orient, at, from, to] of pads) {
+        const p = parseFloat(cs[`padding${side}`]);
+        const bw = parseFloat(cs[`border${side}Width`]) || 0;
+        /* A strip under a real border is the sanctioned mat-reveal sandwich
+           (hairline edge, toned reveal, content) — only borderless-side
+           strips are structural lines in their own right. */
+        if (p >= 1 && p <= 2.5 && bw < 1 && to - from > 24)
+          segs.push({ orient, pos: Math.round(at(p) * 2) / 2, from, to, owner: `ground:${owner}`, el: elIdx });
+      }
+      /* Self-stack: a translucent border over the element's own visible
+         background (backgrounds paint to the border box) composites darker
+         than either — the same line drawn twice by one element. */
+      for (const side of ['Top', 'Bottom', 'Left', 'Right']) {
+        const bw = parseFloat(cs[`border${side}Width`]);
+        const bc = cs[`border${side}Color`];
+        const bgA = alphaOf(cs.backgroundColor);
+        if (
+          bw >= 1 && visible(bc) && alphaOf(bc) < 0.95 &&
+          bgA >= 0.12 && bgA < 0.95 &&
+          cs.backgroundClip !== 'padding-box' && cs.backgroundClip !== 'content-box'
+        )
+          selfStacks.push({
+            owner,
+            side: side.toLowerCase(),
+            at: Math.round(side === 'Top' ? rect.top : side === 'Bottom' ? rect.bottom : side === 'Left' ? rect.left : rect.right),
+            len: Math.round(side === 'Top' || side === 'Bottom' ? rect.width : rect.height),
+          });
+      }
     }
     // absolutely-positioned pseudo rails/rules
     for (const pseudo of ['::before', '::after']) {
@@ -222,9 +310,13 @@ const audit = await page.evaluate((ALLOW) => {
       });
   }
 
-  return { total: segs.length, doubles: doubles.slice(0, 40), missing };
+  return { total: segs.length, doubles: doubles.slice(0, 40), missing, selfStacks: selfStacks.slice(0, 24) };
 }, ALLOW);
 
 console.log(JSON.stringify(audit, null, 1));
 await browser.close();
-if (!reportOnly && (audit.doubles.length || audit.missing.length)) process.exit(1);
+/* chip-scale self-stacks (short edges) are reported but do not gate — the
+   structural ones (long seams reading darker than their neighbours) do. */
+const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
+if (!reportOnly && (audit.doubles.length || audit.missing.length || structuralStacks.length))
+  process.exit(1);

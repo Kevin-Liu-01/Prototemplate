@@ -193,6 +193,9 @@
   display: flex;
   border: 1px solid var(--tc-hair);
   background: var(--tc-hair);
+  /* the translucent face must not extend under the translucent border —
+     stacked, the node's edge reads darker than every other hairline */
+  background-clip: padding-box;
 }
 
 .toolchain-root .tcm-node-in {
@@ -404,4 +407,58 @@
     top: 21px;
     width: 21px;
   }
+}
+
+/* ============================================================
+   THE CODE CELL'S RULED BOX (founder round)
+   The list sits in a box whose four 1px rules extend to the
+   cell's edges — the workspace-panel read: extended borders
+   emphasizing the content, the extensions clipped by the cell
+   so they terminate exactly at the sheet's own lines. The box
+   draws no fill and no border of its own; the two full-reach
+   pseudo bands own all four rules.
+   ============================================================ */
+.toolchain-root .tc-cell.tcm-ruled {
+  position: relative;
+  overflow: clip;
+}
+
+.toolchain-root .tcm-ruledbox {
+  position: relative;
+  margin-top: 20px;
+  padding: 20px 22px 18px;
+}
+
+.toolchain-root .tcm-ruledbox .tc-list {
+  margin: 0;
+}
+
+.toolchain-root .tcm-ruledbox .tc-cell-act {
+  margin-top: 18px;
+}
+
+.toolchain-root .tcm-ruledbox::before,
+.toolchain-root .tcm-ruledbox::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.toolchain-root .tcm-ruledbox::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tcm-ruledbox::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-hair);
+  border-right: 1px solid var(--tc-hair);
 }

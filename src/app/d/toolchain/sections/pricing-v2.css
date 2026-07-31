@@ -586,11 +586,14 @@
 }
 
 /* the line button stands on the burst's brightest flank: a translucent
-   ink plate under it keeps the label legible in any freeze frame */
+   ink plate under it keeps the label legible in any freeze frame. The
+   plate stops at the border (the shorthand would reset the clip and
+   stack the plate under the translucent border). */
 .toolchain-root .tcpx .tc-btn-line {
   border-color: rgba(255, 255, 255, 0.3);
   color: rgba(255, 255, 255, 0.92);
   background: rgba(7, 7, 7, 0.55);
+  background-clip: padding-box;
 }
 
 .toolchain-root .tcpx .tc-btn-line:hover {

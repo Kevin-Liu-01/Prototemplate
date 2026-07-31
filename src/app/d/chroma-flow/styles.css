@@ -3400,3 +3400,40 @@
 .chromaflow-root .tc-band.tcb {
   border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
 }
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.chromaflow-root .tc-row:has(> .tc-cell.is-framed),
+.chromaflow-root .tc-mount,
+.chromaflow-root .tcs-mat,
+.chromaflow-root .tcr-mat,
+.chromaflow-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* the hero ground is pinned with !important upstream, which resets the
+   clip — pin the clip the same way so the close rule never stacks */
+.chromaflow-root .tc-sec.tch-hero-sec,
+.chromaflow-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box !important;
+}
+
+/* one stroke per line: fork tails. The locadex ladder's translucent faces
+   stop at their borders; sections with translucent grounds likewise; and
+   the frameworks/locadex sections close like every other. */
+.chromaflow-root .cf-lb-steps,
+.chromaflow-root .tc-sec {
+  background-clip: padding-box;
+}
+
+.chromaflow-root #frameworks,
+.chromaflow-root #locadex {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+/* the hero ground is set by a shorthand that resets the clip — pin it */
+.chromaflow-root .tc-sec {
+  background-clip: padding-box !important;
+}

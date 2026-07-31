@@ -2412,21 +2412,16 @@
   position: relative;
 }
 
-.widerule-root .tc-band::before,
 .widerule-root .tc-band::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: min(var(--tc-rail), 100%);
+  width: calc(min(var(--tc-rail), 100%) + 20px);
   transform: translateX(-50%);
   border-inline: 1px solid rgba(255, 255, 255, 0.12);
   pointer-events: none;
-}
-
-.widerule-root .tc-band::after {
-  width: calc(min(var(--tc-rail), 100%) + 20px);
 }
 
 /* Every section closes with its bottom rule — the sheet grammar
@@ -2437,4 +2432,38 @@
 
 .widerule-root .tc-band.tcb {
   border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.widerule-root .tc-row:has(> .tc-cell.is-framed),
+.widerule-root .tc-mount,
+.widerule-root .tcs-mat,
+.widerule-root .tcr-mat,
+.widerule-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* the hero ground is pinned with !important upstream, which resets the
+   clip — pin the clip the same way so the close rule never stacks */
+.widerule-root .tc-sec.tch-hero-sec,
+.widerule-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box !important;
+}
+
+/* one stroke per line: translucent section grounds stop at their borders */
+.widerule-root .tc-sec {
+  background-clip: padding-box;
+}
+
+/* section grounds are set by shorthands that reset the clip — pin it */
+.widerule-root .tc-sec {
+  background-clip: padding-box !important;
+}
+
+/* same junction as paper-foundry: the page mock's frame needs air */
+.widerule-root .tcs-page {
+  margin-top: 8px;
 }

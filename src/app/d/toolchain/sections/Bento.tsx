@@ -400,31 +400,37 @@ export default function Bento() {
 
       {/* ---- shell 2: split row — ruled copy cell left, mounted object right ---- */}
       <div className='tc-row is-split'>
-        {/* founder round: the Code cell is a ruled cell of the sheet — its
-            right seam restored at full row height in bento-motion.css */}
+        {/* founder round: the Code cell is a ruled cell of the sheet — the
+            list sits in a ruled box whose four 1px rules EXTEND to the
+            cell's edges (the workspace-panel grammar: extended borders
+            emphasizing the content, clipped by the cell). */}
         <BentoCell
           cell='is-tall tcm-ruled'
           framed={false}
           title='Code'
           sub='Developer-first libraries for React, Next.js, and more, battle-tested in production apps with millions of users.'
         >
-          <ul className='tc-list'>
-            <li>
-              <code className='tc-chip'>&lt;T&gt;</code> wraps any JSX — nested elements and all
-            </li>
-            <li>
-              <code className='tc-chip'>useGT()</code> returns strings for anything that is not JSX
-            </li>
-            <li>
-              <code className='tc-chip'>&lt;Num&gt;</code> and <code className='tc-chip'>&lt;DateTime&gt;</code>{' '}
-              format to the reader&rsquo;s locale
-            </li>
-          </ul>
-          <div className='tc-cell-act'>
-            <a className='tc-btn tc-btn-line tc-btn-sm' href='#frameworks'>
-              Read the docs
-              <ArrowUpRight className='tc-ico-arrow' aria-hidden />
-            </a>
+          <div className='tcm-ruledbox'>
+            <ul className='tc-list'>
+              <li>
+                <code className='tc-chip'>&lt;T&gt;</code> wraps any JSX — nested elements and all
+              </li>
+              <li>
+                <code className='tc-chip'>useGT()</code> returns strings for anything that is not
+                JSX
+              </li>
+              <li>
+                <code className='tc-chip'>&lt;Num&gt;</code> and{' '}
+                <code className='tc-chip'>&lt;DateTime&gt;</code> format to the reader&rsquo;s
+                locale
+              </li>
+            </ul>
+            <div className='tc-cell-act'>
+              <a className='tc-btn tc-btn-line tc-btn-sm' href='#frameworks'>
+                Read the docs
+                <ArrowUpRight className='tc-ico-arrow' aria-hidden />
+              </a>
+            </div>
           </div>
         </BentoCell>
 

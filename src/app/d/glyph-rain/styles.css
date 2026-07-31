@@ -2421,21 +2421,16 @@
   position: relative;
 }
 
-.glyphrain-root .tc-band::before,
 .glyphrain-root .tc-band::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: min(var(--tc-rail), 100%);
+  width: calc(min(var(--tc-rail), 100%) + 20px);
   transform: translateX(-50%);
   border-inline: 1px solid rgba(255, 255, 255, 0.12);
   pointer-events: none;
-}
-
-.glyphrain-root .tc-band::after {
-  width: calc(min(var(--tc-rail), 100%) + 20px);
 }
 
 /* Every section closes with its bottom rule — the sheet grammar
@@ -2446,4 +2441,23 @@
 
 .glyphrain-root .tc-band.tcb {
   border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.glyphrain-root .tc-row:has(> .tc-cell.is-framed),
+.glyphrain-root .tc-mount,
+.glyphrain-root .tcs-mat,
+.glyphrain-root .tcr-mat,
+.glyphrain-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* the hero ground is pinned with !important upstream, which resets the
+   clip — pin the clip the same way so the close rule never stacks */
+.glyphrain-root .tc-sec.tch-hero-sec,
+.glyphrain-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box !important;
 }

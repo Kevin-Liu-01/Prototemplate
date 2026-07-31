@@ -172,6 +172,9 @@
   padding: 0 17px;
   border-radius: 6px;
   border: 1px solid transparent;
+  /* translucent fills stop at the border — a hair border over a hair fill
+     would composite darker than the page's other hairlines */
+  background-clip: padding-box;
   font-family: var(--tc-sans);
   font-size: 13.5px;
   font-weight: 500;
@@ -1024,13 +1027,30 @@
 }
 
 /* The ground behind the white cards is the shell line colour, so a row of
-   framed cells reads as white cards on the shell's own grey. The 1px
-   padding lets that same ground draw the row's PERIMETER hairline — one
-   system outlines every card's outer edge (critical in dark, where card
-   ink on page ink is otherwise edgeless), with zero double-drawn lines. */
+   framed cells reads as white cards on the shell's own grey. The exposed
+   1px ground strip IS the row's perimeter hairline, so the row draws no
+   border of its own (a translucent border over the translucent ground
+   composites darker than every other line on the page), the sides yield
+   to the rail's border-inline, and where two framed rows meet only the
+   first row's strip survives — one stroke per line, everywhere. */
 .toolchain-root .tc-row:has(> .tc-cell.is-framed) {
   background: var(--tc-hair);
-  padding: 1px;
+  border-top: 0;
+  padding: 1px 0;
+}
+
+.toolchain-root .tc-row:has(> .tc-cell.is-framed) + .tc-row:has(> .tc-cell.is-framed) {
+  padding-top: 0;
+}
+
+/* The hatch band already rules both of its edges. */
+.toolchain-root .tc-hatch + .tc-row:has(> .tc-cell.is-framed) {
+  padding-top: 0;
+}
+
+.toolchain-root .tc-row:has(> .tc-cell.is-framed) + .tc-hatch,
+.toolchain-root .tc-row:has(> .tc-cell.is-framed) + .tc-row {
+  border-top: 0;
 }
 
 .toolchain-root .tc-cell.is-framed > .tc-card {
@@ -4041,6 +4061,9 @@
 
 .toolchain-root .tc-sec:has(> .tc-hero) {
   background: var(--tc-hair) !important;
+  /* the translucent ground must not extend under the section's own close
+     rule — border over own background composites a darker line */
+  background-clip: padding-box !important;
   /* the nav's full-width rule is the top divider; ground shows only in the
      card corner notches */
   padding: 0 !important;

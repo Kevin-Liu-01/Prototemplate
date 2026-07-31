@@ -364,7 +364,11 @@
 
 .pt-feature-sec {
   background: var(--pt-hair);
-  padding: 1px;
+  /* the ground never extends under the section's own close rule */
+  background-clip: padding-box;
+  /* every edge line already exists once — hatch above, rails beside, the
+     section close below — so the ground draws no reveal strips of its own */
+  padding: 0;
 }
 
 /* The feature is the page's one dark panel in BOTH themes — the special

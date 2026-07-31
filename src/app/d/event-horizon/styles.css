@@ -365,6 +365,7 @@
   border: 1px solid var(--tc-hair);
   border-radius: 5px;
   background: rgba(245, 245, 243, 0.92);
+  background-clip: padding-box;
   font-family: var(--tc-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -3770,6 +3771,7 @@
 
 [data-theme='dark'] .eventhorizon-root .eh-tag {
   background: rgba(7, 7, 7, 0.92);
+  background-clip: padding-box;
 }
 
 [data-theme='dark'] .eventhorizon-root .eh-meta-dot {
@@ -4809,4 +4811,23 @@
 
 .eventhorizon-root .tc-band.tcb {
   border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.eventhorizon-root .tc-row:has(> .tc-cell.is-framed),
+.eventhorizon-root .tc-mount,
+.eventhorizon-root .tcs-mat,
+.eventhorizon-root .tcr-mat,
+.eventhorizon-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* the hero ground is pinned with !important upstream, which resets the
+   clip — pin the clip the same way so the close rule never stacks */
+.eventhorizon-root .tc-sec.tch-hero-sec,
+.eventhorizon-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box !important;
 }
