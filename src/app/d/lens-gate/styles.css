@@ -4736,3 +4736,13 @@
     font-size: 12.5px;
   }
 }
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.lensgate-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.lensgate-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}

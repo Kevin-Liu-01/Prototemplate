@@ -3802,3 +3802,13 @@
 [data-theme='dark'] .paperfoundry-root .tc-foot-mark.is-locadex {
   filter: invert(1);
 }
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.paperfoundry-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.paperfoundry-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}

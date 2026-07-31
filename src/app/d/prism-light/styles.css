@@ -4903,3 +4903,13 @@
 [data-theme='dark'] .prismlight-root .plh-panel-box {
   outline: 1px solid var(--tc-hair);
 }
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.prismlight-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.prismlight-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}

@@ -1,0 +1,1072 @@
+/* ============================================================
+   DARK BAND v3 — the calm cut
+   The v2 bento grammar kept (dark cards on a darker ground, 1px
+   seams, 12px radius), recut for calm: every cell is heading +
+   one line + one quiet artifact, with real air — fewer transcript
+   lines, fewer list rows, taller line-heights, wider padding.
+
+   New in v3: the stack cell is an instrument. The seven planes
+   are hover/focus/tap targets wired two-way to an HTML caption
+   column; the left connector is a doubled vertical rail (two 1px
+   lines at constant gauge) that each plane taps off with a
+   small-radius corner leader — circuitry, not scaffolding.
+
+   Every selector is prefixed `.singularity-root .tcb` — this file is
+   imported by the component and therefore loads BEFORE styles.css,
+   so the extra class is what wins the cascade, deliberately.
+   ============================================================ */
+
+.singularity-root .tcb {
+  /* surfaces */
+  --tcb-seam: rgba(255, 255, 255, 0.14);
+  --tcb-card: #101010;
+  --tcb-lift: rgba(255, 255, 255, 0.045);
+  --tcb-rule: rgba(255, 255, 255, 0.1);
+
+  /* inks */
+  --tcb-ink: rgba(255, 255, 255, 0.92);
+  --tcb-body: rgba(255, 255, 255, 0.58);
+  --tcb-dim: rgba(255, 255, 255, 0.42);
+  --tcb-faint: rgba(255, 255, 255, 0.26);
+
+  /* THE code token set — one restrained ramp, identical on every
+     panel in the band. Strings carry the only hue, because strings
+     are the product; keywords and markup are structure. */
+  --tcb-t-str: #a7bff3;
+  --tcb-t-kw: rgba(255, 255, 255, 0.5);
+  --tcb-t-tag: #ffffff;
+  --tcb-t-dim: rgba(255, 255, 255, 0.38);
+
+  /* Diff semantics — muted tints for line fills, one legible ink
+     each for the gutter mark. Spent ONLY inside diff artifacts. */
+  --tc-diff-add: rgba(96, 190, 130, 0.13);
+  --tc-diff-add-ink: #85cfa1;
+  --tc-diff-del: rgba(222, 110, 110, 0.1);
+  --tc-diff-del-ink: #d29090;
+
+  /* The nested frame, in the dark (founder directive): the light bento's
+     box-inside-a-box — hairline-edged mat, 2px reveal, card with a tighter
+     radius so the mat fills the corner notches — remapped to this band's
+     surfaces. The mat is the seam tone; the card sits a step DARKER than
+     the cell, so the artifact reads as its own mounted panel. */
+  --tcb-mat: rgba(255, 255, 255, 0.11);
+  --tcb-mat-edge: rgba(255, 255, 255, 0.17);
+  --tcb-box: #070707;
+}
+
+.singularity-root .tcb .tcb-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(60px, 7vw, 96px) var(--tc-gut) clamp(56px, 7vw, 88px);
+}
+
+/* ---------- header: heading + one line, nothing else ---------- */
+
+.singularity-root .tcb .tcb-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+
+.singularity-root .tcb .tcb-head p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tcb-body);
+  max-width: 44ch;
+}
+
+/* ---------- the grid: dark cards, 1px seams, light-bento radius ---------- */
+
+.singularity-root .tcb .tcb-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: var(--tcb-seam);
+  border-radius: 13px;
+}
+
+.singularity-root .tcb .tcb-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--tcb-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.singularity-root .tcb .tcb-cap {
+  padding: 22px 24px 0;
+}
+
+.singularity-root .tcb .tcb-cell h3 {
+  font-size: 15.5px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.singularity-root .tcb .tcb-cap p,
+.singularity-root .tcb .tcb-svc-cap p {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--tcb-body);
+}
+
+/* ============================================================
+   CELL: the stack instrument
+   Drawing left, caption column right. Both sides are targets:
+   plane ↔ caption, two-way, GSAP-driven, no layout shift.
+   ============================================================ */
+
+.singularity-root .tcb .tcb-cell-stack {
+  grid-column: span 7;
+}
+
+.singularity-root .tcb .tcb-stack {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(10px, 2vw, 26px);
+  padding: 20px 24px 24px 16px;
+  min-height: 0;
+}
+
+.singularity-root .tcb .tcb-stack-fig {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.singularity-root .tcb .tcb-stack-fig .tcstack {
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+}
+
+/* -- the planes: pointer targets with focus parity ------------------- */
+
+.singularity-root .tcb .tcs-layer {
+  cursor: pointer;
+  outline: none;
+}
+
+.singularity-root .tcb .tcs-layer:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 4px;
+}
+
+/* the doubled top edge, revealed on the active plane only (GSAP) */
+.singularity-root .tcb .tcs-dbl {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+/* -- the glass plates (founder pick) ----------------------------------
+   Frosted surfaces, not wireframes: a near-opaque dark hull occludes the
+   planes beneath while its 0.94 alpha keeps a hint of depth; the three
+   face tints hold the family's upper-left light; the sheen is the one
+   shared diagonal gradient (#tcsFrost); the white edge strokes carry
+   per-plane depth as inline alphas set by the drawing itself. */
+
+.singularity-root .tcb .tcs-glass-base {
+  fill: rgba(7, 7, 7, 0.94);
+}
+
+.singularity-root .tcb .tcs-glass-left {
+  fill: rgba(255, 255, 255, 0.06);
+}
+
+.singularity-root .tcb .tcs-glass-right {
+  fill: rgba(7, 7, 7, 0.45);
+}
+
+.singularity-root .tcb .tcs-glass-topfill {
+  fill: rgba(255, 255, 255, 0.07);
+}
+
+.singularity-root .tcb .tcs-glass-sheen {
+  fill: url(#tcsFrost);
+}
+
+.singularity-root .tcb .tcs-glass-rim,
+.singularity-root .tcb .tcs-glass-edge {
+  fill: none;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+}
+
+.singularity-root .tcb .tcs-glass-front {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linecap: round;
+}
+
+/* content marks read against the frosted plate, not the old wireframe */
+.singularity-root .tcb .tcstack .iso-face-mark {
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+/* -- the left connector: the full-height doubled rail ------------------
+   Two real 1px borders with the page's 3px gap (crisp at any zoom),
+   spanning the cell's top edge to its bottom edge. `left` is a fallback;
+   DarkBand measures the drawing and pins the inner line to the tap x. */
+
+.singularity-root .tcb .tcb-stack-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 48px;
+  width: 5px;
+  border-inline: 1px solid rgba(255, 255, 255, 0.34);
+  pointer-events: none;
+}
+
+/* the heading steps right of the rail so it crosses clean air (the JS
+   measure refines this the same way it refines the rail's own x) */
+.singularity-root .tcb .tcb-cell-stack > .tcb-cap {
+  padding-left: 76px;
+}
+
+.singularity-root .tcb .tcs-leader {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1px;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+
+/* -- the caption column: the drawing's legend, row per plane ---------
+   The ledger runs the cell's full height (founder pick): the column
+   stretches, and the seven rows divide it into seven equal ruled
+   slices — first row at the top, last at the bottom, mirroring the
+   leaders' even spacing down the drawing. */
+
+.singularity-root .tcb .tcb-stack-caps {
+  flex: 0 0 238px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+/* One row = icon + label + value. Labels and values run in the page's
+   regular sans with proper capitalization (founder directive) — mono
+   survives only inside the flag chips, which keep their form. */
+.singularity-root .tcb .tcb-stack-cap {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 11px;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  padding: 10px 12px 11px;
+  text-align: left;
+  font-family: var(--tc-sans);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* the functional mark: one lucide glyph per stage, dim until its row is hot */
+.singularity-root .tcb .tcb-cap-ic {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s ease;
+}
+
+/* Locadex is never a generic icon: the real lambda mark, inverted for the
+   dark panel (brand law). */
+.singularity-root .tcb .tcb-cap-lx {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  filter: invert(1);
+  opacity: 0.56;
+  transition: opacity 0.2s ease;
+}
+
+.singularity-root .tcb .tcb-cap-tx {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.singularity-root .tcb .tcb-stack-cap + .tcb-stack-cap {
+  position: relative;
+}
+
+.singularity-root .tcb .tcb-stack-cap + .tcb-stack-cap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.singularity-root .tcb .tcb-cap-tx > b {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -0.004em;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+/* direct child only — the LocaleTag chip inside stays inline */
+.singularity-root .tcb .tcb-cap-tx > span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tcb-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+/* the flag chip keeps its form: locale codes stay mono at chip size */
+.singularity-root .tcb .tcb-cap-tx .lct-code {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
+.singularity-root .tcb .tcb-stack-cap.is-hot {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.singularity-root .tcb .tcb-stack-cap.is-hot .tcb-cap-tx > b {
+  color: #ffffff;
+}
+
+.singularity-root .tcb .tcb-stack-cap.is-hot .tcb-cap-tx > span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.singularity-root .tcb .tcb-stack-cap.is-hot .tcb-cap-ic {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.singularity-root .tcb .tcb-stack-cap.is-hot .tcb-cap-lx {
+  opacity: 1;
+}
+
+.singularity-root .tcb .tcb-stack-cap.is-cold {
+  opacity: 0.55;
+}
+
+.singularity-root .tcb .tcb-stack-cap:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: -1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .singularity-root .tcb .tcb-stack-cap,
+  .singularity-root .tcb .tcb-cap-ic,
+  .singularity-root .tcb .tcb-cap-lx,
+  .singularity-root .tcb .tcb-cap-tx > b,
+  .singularity-root .tcb .tcb-cap-tx > span {
+    transition: none;
+  }
+}
+
+/* ---------- cell: the CLI on the band's one light surface ---------- */
+
+.singularity-root .tcb .tcb-cell-cli {
+  grid-column: span 5;
+  background: #070707;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  min-height: 420px;
+}
+
+.singularity-root .tcb .tcb-cli-field {
+  position: absolute;
+  inset: -12% -10%;
+  width: 120%;
+  height: 124%;
+  z-index: 0;
+}
+
+.singularity-root .tcb .tcb-term {
+  position: relative;
+  z-index: 1;
+  width: min(400px, calc(100% - clamp(36px, 5vw, 64px)));
+  margin: clamp(28px, 3.2vw, 44px) 0;
+  border-radius: 6px;
+  background: #070707;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.singularity-root .tcb .tcb-term-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tcb-rule);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-term-body {
+  padding: 18px 20px 20px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 2.15;
+  color: var(--tcb-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.singularity-root .tcb .tcb-term-body [data-tone='prompt'] {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.singularity-root .tcb .tcb-term-body [data-tone='dim'] {
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-term-body i {
+  font-style: normal;
+  color: var(--tcb-dim);
+}
+
+/* ---------- the four service cells ---------- */
+
+.singularity-root .tcb .tcb-svc {
+  grid-column: span 3;
+  min-height: 290px;
+}
+
+.singularity-root .tcb .tcb-svc-cap {
+  padding: 20px 20px 0;
+}
+
+.singularity-root .tcb .tcb-svc-cap h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 15px;
+}
+
+/* real tool marks, quiet: they identify, they never decorate */
+.singularity-root .tcb .tcb-marks {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--tcb-dim);
+}
+
+/* The artifact zone is its OWN nested box now (founder directive): the
+   light bento's frame grammar — hairline-edged mat, 2px reveal, card with
+   a tighter radius so the mat fills the corner notches — in the band's
+   dark surfaces. Heading and one-liner stay outside, on the cell. */
+.singularity-root .tcb .tcb-art {
+  margin: 14px 10px 10px;
+  border: 1px solid var(--tcb-mat-edge);
+  border-radius: 8px;
+  padding: 2px;
+  background: var(--tcb-mat);
+  flex: 1;
+  display: flex;
+  font-family: var(--tc-mono);
+  min-height: 0;
+  min-width: 0;
+}
+
+/* the card inside the mat: the artifact's own surface, a step darker than
+   the cell, carrying the panel content edge to edge */
+.singularity-root .tcb .tcb-art-in {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background: var(--tcb-box);
+  overflow: hidden;
+}
+
+.singularity-root .tcb .tcb-art-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 9px;
+  border-bottom: 1px solid var(--tcb-rule);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+  white-space: nowrap;
+}
+
+.singularity-root .tcb .tcb-art-bar .is-on {
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-art-bar .tcb-marks {
+  margin-left: auto;
+}
+
+.singularity-root .tcb .tcb-art-bar b {
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-pre {
+  margin: 14px 0 0;
+  padding: 0 14px;
+  font-size: 12px;
+  line-height: 2.05;
+  color: var(--tcb-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* the shared token set, spent identically on every panel */
+.singularity-root .tcb .tk-kw {
+  color: var(--tcb-t-kw);
+}
+
+.singularity-root .tcb .tk-str {
+  color: var(--tcb-t-str);
+}
+
+.singularity-root .tcb .tk-tag {
+  color: var(--tcb-t-tag);
+  font-weight: 500;
+}
+
+.singularity-root .tcb .tk-dim {
+  color: var(--tcb-t-dim);
+}
+
+/* the pinned output band every service plate ends on */
+.singularity-root .tcb .tcb-out {
+  margin-top: auto;
+  padding: 11px 14px 13px;
+  background: var(--tcb-lift);
+  display: grid;
+  gap: 6px;
+}
+
+.singularity-root .tcb .tcb-out-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.singularity-root .tcb .tcb-out-row span {
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-out-row b {
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+/* the runtime response: status line + the translated string itself */
+.singularity-root .tcb .tcb-resp {
+  margin-top: auto;
+  background: var(--tcb-lift);
+  padding: 11px 14px 14px;
+}
+
+.singularity-root .tcb .tcb-resp-status {
+  font-size: 11px;
+  color: var(--tcb-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.singularity-root .tcb .tcb-resp-body {
+  margin-top: 6px;
+  font-size: 11.5px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--tcb-t-dim);
+}
+
+.singularity-root .tcb .tcb-resp-body b {
+  font-weight: 500;
+  color: var(--tcb-t-str);
+}
+
+/* dashboard rows — product UI, not code */
+.singularity-root .tcb .tcb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 14px 0;
+}
+
+/* direct child only — LocaleTag's own inner spans must not re-box */
+.singularity-root .tcb .tcb-chips > span {
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.singularity-root .tcb .tcb-ledger {
+  margin-top: 14px;
+  padding: 0 14px;
+  display: grid;
+  gap: 11px;
+}
+
+.singularity-root .tcb .tcb-ledger .tcb-out-row {
+  font-size: 12px;
+}
+
+/* diff lines — gutter mark + muted line tint, nowhere else */
+.singularity-root .tcb .tcb-diff {
+  margin-top: 14px;
+  font-size: 11px;
+  line-height: 2.05;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.singularity-root .tcb .tcb-diff > div {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  padding-right: 10px;
+}
+
+.singularity-root .tcb .tcb-diff i {
+  font-style: normal;
+  text-align: center;
+  color: var(--tcb-faint);
+  user-select: none;
+}
+
+.singularity-root .tcb .tcb-diff .is-hunk {
+  color: var(--tcb-t-dim);
+}
+
+.singularity-root .tcb .tcb-diff .is-add {
+  background: var(--tc-diff-add);
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-diff .is-add i {
+  color: var(--tc-diff-add-ink);
+}
+
+.singularity-root .tcb .tcb-diff .is-del {
+  background: var(--tc-diff-del);
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.singularity-root .tcb .tcb-diff .is-del i {
+  color: var(--tc-diff-del-ink);
+}
+
+/* ---------- cell: context inheritance, org → project → component ----------
+   Recut for legibility (founder directive): each inheritance stage is its
+   own nested box in the band's frame grammar — mat, 2px reveal, darker
+   card — its label standing OUTSIDE the box in the page's regular sans
+   with proper capitalization; the doubled-thread arrows still join the
+   stages; every line inside runs a step larger, with real air. */
+
+.singularity-root .tcb .tcb-cell-ctx {
+  grid-column: span 8;
+}
+
+.singularity-root .tcb .tcb-ctx {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) 28px minmax(0, 1.04fr) 28px minmax(0, 1.3fr);
+  align-items: stretch;
+  gap: 0;
+  padding: 18px 20px 20px;
+}
+
+.singularity-root .tcb .tcb-ctx-stage {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* the stage label, outside its box: sans, proper case, quietly bright */
+.singularity-root .tcb .tcb-ctx-tag {
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 9px;
+  padding-left: 3px;
+}
+
+/* the stage box: the same nested frame the service artifacts wear */
+.singularity-root .tcb .tcb-ctx-box {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  border: 1px solid var(--tcb-mat-edge);
+  border-radius: 8px;
+  padding: 2px;
+  background: var(--tcb-mat);
+}
+
+.singularity-root .tcb .tcb-ctx-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background: var(--tcb-box);
+  padding: 14px 14px 14px;
+  overflow: hidden;
+}
+
+.singularity-root .tcb .tcb-ctx-k {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.singularity-root .tcb .tcb-ctx-k + .tcb-ctx-k,
+.singularity-root .tcb .tcb-ctx-rule + .tcb-ctx-k {
+  margin-top: 14px;
+}
+
+.singularity-root .tcb .tcb-ctx-rule {
+  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.66;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* a locale chip inside a directive rule: the page's one locale system */
+.singularity-root .tcb .tcb-ctx-loc {
+  margin-left: 4px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-ctx-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tcb-ink);
+  white-space: nowrap;
+}
+
+.singularity-root .tcb .tcb-ctx-row + .tcb-ctx-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.singularity-root .tcb .tcb-ctx-row .tcb-pri {
+  width: 12px;
+  flex: none;
+  color: var(--tcb-faint);
+}
+
+.singularity-root .tcb .tcb-ctx-row b {
+  font-weight: 500;
+}
+
+.singularity-root .tcb .tcb-ctx-row .tcb-scope {
+  margin-left: auto;
+  padding-left: 8px;
+  color: var(--tcb-dim);
+  font-size: 11px;
+}
+
+/* the precedence verdict sits apart from the group list, pinned low */
+.singularity-root .tcb .tcb-ctx-verdict {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+/* Calm strikethrough: the losing term dims and its strike is a quiet
+   hairline — legible as "overruled" without shouting. */
+.singularity-root .tcb .tcb-ctx-rule s {
+  color: var(--tcb-dim);
+  text-decoration-line: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+}
+
+.singularity-root .tcb .tcb-ctx-code {
+  margin: 0;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.95;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--tcb-ink);
+}
+
+/* the rendered result: the toast that is a notification, not bread */
+/* The verdict line wraps rather than clips: the losing term may drop to
+   its own line, but every word stays readable at every width. */
+.singularity-root .tcb .tcb-ctx-res {
+  margin-top: auto;
+  padding-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 8px;
+  row-gap: 2px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+}
+
+.singularity-root .tcb .tcb-ctx-res .tcb-ctx-res-loc {
+  color: var(--tcb-dim);
+  font-size: 12px;
+}
+
+.singularity-root .tcb .tcb-ctx-res b {
+  font-weight: 500;
+  color: var(--tcb-t-str);
+}
+
+.singularity-root .tcb .tcb-ctx-res s {
+  color: var(--tcb-faint);
+  text-decoration-line: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.26);
+}
+
+/* the inheritance joints: the doubled thread, pointing down the cascade —
+   padded past the stage labels so the arrow centers on the boxes */
+.singularity-root .tcb .tcb-ctx-joint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 27px;
+}
+
+.singularity-root .tcb .tcb-ctx-joint svg {
+  display: block;
+}
+
+.singularity-root .tcb .tcb-ctx-joint path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: var(--thread-gauge, 1.5px);
+}
+
+.singularity-root .tcb .tcb-ctx-joint .tcb-joint-head {
+  fill: rgba(255, 255, 255, 0.72);
+  stroke: none;
+}
+
+/* ---------- cell: the trace, one commit on the clock ---------- */
+
+.singularity-root .tcb .tcb-cell-trace {
+  grid-column: span 4;
+}
+
+.singularity-root .tcb .tcb-trace {
+  position: relative;
+  flex: 1;
+  margin: 18px 24px 22px;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* the doubled rail the rows hang from — two real 1px borders at the
+   page's 3px gap, running the card's FULL height, top edge to bottom
+   edge (founder pick); scroll still draws it top-down. It sits 26px in
+   (the trace margin + its old 2px), so every row tick still crosses it. */
+.singularity-root .tcb .tcb-trace-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 26px;
+  width: 5px;
+  border-inline: 1px solid rgba(255, 255, 255, 0.62);
+  transform-origin: top center;
+  pointer-events: none;
+}
+
+/* the heading steps right of the full-height rail, level with the rows */
+.singularity-root .tcb .tcb-cell-trace > .tcb-cap {
+  padding-left: 48px;
+}
+
+.singularity-root .tcb .tcb-trace-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 78px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.singularity-root .tcb .tcb-trace-row::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 0.65em;
+  width: 14px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.singularity-root .tcb .tcb-trace-row > span:first-child {
+  color: var(--tcb-faint);
+}
+
+.singularity-root .tcb .tcb-trace-row b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.singularity-root .tcb .tcb-trace-val {
+  color: var(--tcb-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- CTAs ---------- */
+
+.singularity-root .tcb .tcb-acts {
+  margin-top: clamp(28px, 3.2vw, 40px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1020px) {
+  .singularity-root .tcb .tcb-cell-stack,
+  .singularity-root .tcb .tcb-cell-cli,
+  .singularity-root .tcb .tcb-cell-ctx,
+  .singularity-root .tcb .tcb-cell-trace {
+    grid-column: span 12;
+  }
+
+  .singularity-root .tcb .tcb-svc {
+    grid-column: span 6;
+  }
+
+  /* the instrument folds: drawing above, captions below, both full targets */
+  .singularity-root .tcb .tcb-stack {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 20px 20px;
+  }
+
+  .singularity-root .tcb .tcb-stack-fig .tcstack {
+    max-width: 300px;
+  }
+
+  .singularity-root .tcb .tcb-stack-caps {
+    flex: none;
+    width: 100%;
+    max-width: 440px;
+    align-self: center;
+  }
+
+  /* folded, the ledger sits under the drawing — rows return to content
+     height; the full-height distribution is the side-by-side layout's */
+  .singularity-root .tcb .tcb-stack-cap {
+    flex: 0 0 auto;
+  }
+
+  .singularity-root .tcb .tcb-ctx {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 12px;
+  }
+
+  /* the cascade folds vertical: the same joint, turned down; the label
+     offset no longer applies between stacked boxes */
+  .singularity-root .tcb .tcb-ctx-joint {
+    padding-top: 0;
+  }
+
+  .singularity-root .tcb .tcb-ctx-joint svg {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .singularity-root .tcb .tcb-svc {
+    grid-column: span 12;
+    min-height: 0;
+  }
+
+  .singularity-root .tcb .tcb-cell-cli {
+    min-height: 380px;
+  }
+
+  .singularity-root .tcb .tcb-term-body {
+    font-size: 11px;
+  }
+
+  .singularity-root .tcb .tcb-stack-cap {
+    gap: 9px;
+    padding: 10px 8px;
+  }
+
+  .singularity-root .tcb .tcb-trace-row {
+    grid-template-columns: 60px 72px minmax(0, 1fr);
+    font-size: 11px;
+  }
+}

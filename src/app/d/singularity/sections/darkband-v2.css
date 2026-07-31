@@ -1,0 +1,697 @@
+/* ============================================================
+   DARK BAND v2 — the bento cut
+   The band recomposed in the page's own bento grammar, inverted:
+   dark cards on a darker ground, 1px seams, 12px radius (matching
+   the light bentos), every artifact flush to its cell. All copy
+   reduced to heading + one line; the artifacts carry the argument.
+
+   Every selector is prefixed `.singularity-root .tcb` — this file is
+   imported by the component and therefore loads BEFORE styles.css,
+   so the extra class is what wins the cascade, deliberately.
+   ============================================================ */
+
+.singularity-root .tcb {
+  /* surfaces */
+  --tcb-seam: rgba(255, 255, 255, 0.14);
+  --tcb-card: #101010;
+  --tcb-lift: rgba(255, 255, 255, 0.045);
+  --tcb-rule: rgba(255, 255, 255, 0.1);
+
+  /* inks */
+  --tcb-ink: rgba(255, 255, 255, 0.92);
+  --tcb-body: rgba(255, 255, 255, 0.58);
+  --tcb-dim: rgba(255, 255, 255, 0.42);
+  --tcb-faint: rgba(255, 255, 255, 0.26);
+
+  /* THE code token set — one restrained ramp, identical on every
+     panel in the band. Strings carry the only hue, because strings
+     are the product; keywords and markup are structure. */
+  --tcb-t-str: #a7bff3;
+  --tcb-t-kw: rgba(255, 255, 255, 0.5);
+  --tcb-t-tag: #ffffff;
+  --tcb-t-dim: rgba(255, 255, 255, 0.38);
+
+  /* Diff semantics — muted tints for line fills, one legible ink
+     each for the gutter mark. Spent ONLY inside diff artifacts. */
+  --tc-diff-add: rgba(96, 190, 130, 0.13);
+  --tc-diff-add-ink: #85cfa1;
+  --tc-diff-del: rgba(222, 110, 110, 0.1);
+  --tc-diff-del-ink: #d29090;
+}
+
+.singularity-root .tcb .tcb-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(60px, 7vw, 96px) var(--tc-gut) clamp(56px, 7vw, 88px);
+}
+
+/* ---------- header: heading + one line, nothing else ---------- */
+
+.singularity-root .tcb .tcb-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+
+.singularity-root .tcb .tcb-head p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tcb-body);
+  max-width: 44ch;
+}
+
+/* ---------- the grid: dark cards, 1px seams, light-bento radius ---------- */
+
+.singularity-root .tcb .tcb-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: var(--tcb-seam);
+  border-radius: 13px;
+}
+
+.singularity-root .tcb .tcb-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--tcb-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.singularity-root .tcb .tcb-cap {
+  padding: 20px 22px 0;
+}
+
+.singularity-root .tcb .tcb-cell h3 {
+  font-size: 15.5px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.singularity-root .tcb .tcb-cap p,
+.singularity-root .tcb .tcb-svc-cap p {
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--tcb-body);
+}
+
+/* ---------- cell: the stack assembly ---------- */
+
+.singularity-root .tcb .tcb-cell-stack {
+  grid-column: span 7;
+}
+
+.singularity-root .tcb .tcb-stack {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 14px 4px;
+}
+
+.singularity-root .tcb .tcb-stack .tcstack {
+  width: 100%;
+  height: auto;
+  max-width: none;
+}
+
+.singularity-root .tcb .tcb-stack .tcstack .iso-label {
+  font-size: 8.6px;
+}
+
+.singularity-root .tcb .tcb-stack .tcstack .tcstack-name {
+  font-size: 9.6px;
+}
+
+/* ---------- cell: the CLI on the band's one light surface ---------- */
+
+.singularity-root .tcb .tcb-cell-cli {
+  grid-column: span 5;
+  background: #070707;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  min-height: 430px;
+}
+
+.singularity-root .tcb .tcb-cli-field {
+  position: absolute;
+  inset: -12% -10%;
+  width: 120%;
+  height: 124%;
+  z-index: 0;
+}
+
+.singularity-root .tcb .tcb-term {
+  position: relative;
+  z-index: 1;
+  width: min(408px, calc(100% - clamp(36px, 5vw, 64px)));
+  margin: clamp(28px, 3.2vw, 44px) 0;
+  border-radius: 6px;
+  background: #070707;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.singularity-root .tcb .tcb-term-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 33px;
+  padding: 0 15px;
+  border-bottom: 1px solid var(--tcb-rule);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-term-body {
+  padding: 14px 16px 16px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.95;
+  color: var(--tcb-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.singularity-root .tcb .tcb-term-body [data-tone='prompt'] {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.singularity-root .tcb .tcb-term-body [data-tone='dim'] {
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-term-body i {
+  font-style: normal;
+  color: var(--tcb-dim);
+}
+
+/* ---------- the four service cells ---------- */
+
+.singularity-root .tcb .tcb-svc {
+  grid-column: span 3;
+  min-height: 316px;
+}
+
+.singularity-root .tcb .tcb-svc-cap {
+  padding: 18px 18px 0;
+}
+
+.singularity-root .tcb .tcb-svc-cap h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 15px;
+}
+
+/* real tool marks, quiet: they identify, they never decorate */
+.singularity-root .tcb .tcb-marks {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--tcb-dim);
+}
+
+/* the artifact zone: flush to the cell's three lower edges */
+.singularity-root .tcb .tcb-art {
+  margin-top: 15px;
+  border-top: 1px solid var(--tcb-rule);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--tc-mono);
+  min-height: 0;
+}
+
+.singularity-root .tcb .tcb-art-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 14px 8px;
+  border-bottom: 1px solid var(--tcb-rule);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+  white-space: nowrap;
+}
+
+.singularity-root .tcb .tcb-art-bar .is-on {
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-art-bar .tcb-marks {
+  margin-left: auto;
+}
+
+.singularity-root .tcb .tcb-art-bar b {
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-pre {
+  margin: 10px 0 0;
+  padding: 0 14px;
+  font-size: 11.5px;
+  line-height: 1.85;
+  color: var(--tcb-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.singularity-root .tcb .tcb-ln {
+  display: inline-block;
+  width: 14px;
+  margin-right: 10px;
+  text-align: right;
+  color: var(--tcb-faint);
+  user-select: none;
+}
+
+/* the shared token set, spent identically on every panel */
+.singularity-root .tcb .tk-kw {
+  color: var(--tcb-t-kw);
+}
+
+.singularity-root .tcb .tk-str {
+  color: var(--tcb-t-str);
+}
+
+.singularity-root .tcb .tk-tag {
+  color: var(--tcb-t-tag);
+  font-weight: 500;
+}
+
+.singularity-root .tcb .tk-dim {
+  color: var(--tcb-t-dim);
+}
+
+/* the pinned output band every service plate ends on */
+.singularity-root .tcb .tcb-out {
+  margin-top: auto;
+  padding: 9px 14px 11px;
+  background: var(--tcb-lift);
+  display: grid;
+  gap: 4px;
+}
+
+.singularity-root .tcb .tcb-out-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.singularity-root .tcb .tcb-out-row span {
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-out-row b {
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+/* the runtime response: status line + the translated string itself */
+.singularity-root .tcb .tcb-resp {
+  margin-top: auto;
+  background: var(--tcb-lift);
+  padding: 9px 14px 12px;
+}
+
+.singularity-root .tcb .tcb-resp-status {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-resp-body {
+  margin-top: 5px;
+  font-size: 11.5px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--tcb-t-dim);
+}
+
+.singularity-root .tcb .tcb-resp-body b {
+  font-weight: 500;
+  color: var(--tcb-t-str);
+}
+
+/* dashboard rows — product UI, not code */
+.singularity-root .tcb .tcb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px 0;
+}
+
+.singularity-root .tcb .tcb-chips span {
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.singularity-root .tcb .tcb-ledger {
+  margin-top: 12px;
+  padding: 0 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.singularity-root .tcb .tcb-ledger .tcb-out-row {
+  font-size: 12px;
+}
+
+/* diff lines — gutter mark + muted line tint, nowhere else */
+.singularity-root .tcb .tcb-diff {
+  margin-top: 10px;
+  font-size: 11.5px;
+  line-height: 1.85;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.singularity-root .tcb .tcb-diff > div {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  padding-right: 14px;
+}
+
+.singularity-root .tcb .tcb-diff i {
+  font-style: normal;
+  text-align: center;
+  color: var(--tcb-faint);
+  user-select: none;
+}
+
+.singularity-root .tcb .tcb-diff .is-hunk {
+  color: var(--tcb-t-dim);
+}
+
+.singularity-root .tcb .tcb-diff .is-add {
+  background: var(--tc-diff-add);
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-diff .is-add i {
+  color: var(--tc-diff-add-ink);
+}
+
+.singularity-root .tcb .tcb-diff .is-del {
+  background: var(--tc-diff-del);
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.singularity-root .tcb .tcb-diff .is-del i {
+  color: var(--tc-diff-del-ink);
+}
+
+/* ---------- cell: context inheritance, org → project → component ---------- */
+
+.singularity-root .tcb .tcb-cell-ctx {
+  grid-column: span 8;
+}
+
+.singularity-root .tcb .tcb-ctx {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1.06fr);
+  align-items: stretch;
+  gap: 0;
+  padding: 16px 22px 20px;
+}
+
+.singularity-root .tcb .tcb-ctx-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.singularity-root .tcb .tcb-ctx-tag {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--tcb-dim);
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--tcb-rule);
+  margin-bottom: 11px;
+}
+
+.singularity-root .tcb .tcb-ctx-k {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-ctx-k + .tcb-ctx-k,
+.singularity-root .tcb .tcb-ctx-rule + .tcb-ctx-k {
+  margin-top: 11px;
+}
+
+.singularity-root .tcb .tcb-ctx-rule {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--tcb-body);
+}
+
+.singularity-root .tcb .tcb-ctx-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4.5px 0;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tcb-ink);
+}
+
+.singularity-root .tcb .tcb-ctx-row .tcb-pri {
+  width: 14px;
+  color: var(--tcb-faint);
+}
+
+.singularity-root .tcb .tcb-ctx-row b {
+  font-weight: 500;
+}
+
+.singularity-root .tcb .tcb-ctx-row .tcb-scope {
+  margin-left: auto;
+  color: var(--tcb-dim);
+  font-size: 11px;
+}
+
+.singularity-root .tcb .tcb-ctx-row s {
+  color: var(--tcb-dim);
+  text-decoration-thickness: 1px;
+}
+
+.singularity-root .tcb .tcb-ctx-code {
+  margin: 0;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.8;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--tcb-ink);
+}
+
+/* the rendered result: the toast that is a notification, not bread */
+.singularity-root .tcb .tcb-ctx-res {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.singularity-root .tcb .tcb-ctx-res span {
+  color: var(--tcb-dim);
+}
+
+.singularity-root .tcb .tcb-ctx-res b {
+  font-weight: 500;
+  color: var(--tcb-t-str);
+}
+
+.singularity-root .tcb .tcb-ctx-res s {
+  color: var(--tcb-faint);
+  text-decoration-thickness: 1px;
+}
+
+/* the inheritance joints: the doubled thread, pointing down the cascade */
+.singularity-root .tcb .tcb-ctx-joint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.singularity-root .tcb .tcb-ctx-joint svg {
+  display: block;
+}
+
+.singularity-root .tcb .tcb-ctx-joint path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: var(--thread-gauge, 1.5px);
+}
+
+.singularity-root .tcb .tcb-ctx-joint .tcb-joint-head {
+  fill: rgba(255, 255, 255, 0.72);
+  stroke: none;
+}
+
+/* ---------- cell: the trace, one commit on the clock ---------- */
+
+.singularity-root .tcb .tcb-cell-trace {
+  grid-column: span 4;
+}
+
+.singularity-root .tcb .tcb-trace {
+  position: relative;
+  flex: 1;
+  margin: 16px 22px 20px;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 7px;
+}
+
+/* the doubled rail the rows hang from — constant gauge, drawn by scroll */
+.singularity-root .tcb .tcb-trace-rail {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 2px;
+  width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
+  border-inline: var(--thread-gauge, 1.5px) solid rgba(255, 255, 255, 0.62);
+  transform-origin: top center;
+}
+
+.singularity-root .tcb .tcb-trace-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 78px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.singularity-root .tcb .tcb-trace-row::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 0.65em;
+  width: 14px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.singularity-root .tcb .tcb-trace-row > span:first-child {
+  color: var(--tcb-faint);
+}
+
+.singularity-root .tcb .tcb-trace-row b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.singularity-root .tcb .tcb-trace-val {
+  color: var(--tcb-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- CTAs ---------- */
+
+.singularity-root .tcb .tcb-acts {
+  margin-top: clamp(28px, 3.2vw, 40px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1020px) {
+  .singularity-root .tcb .tcb-cell-stack,
+  .singularity-root .tcb .tcb-cell-cli,
+  .singularity-root .tcb .tcb-cell-ctx,
+  .singularity-root .tcb .tcb-cell-trace {
+    grid-column: span 12;
+  }
+
+  .singularity-root .tcb .tcb-svc {
+    grid-column: span 6;
+  }
+
+  .singularity-root .tcb .tcb-stack {
+    overflow-x: auto;
+    align-items: center;
+  }
+
+  .singularity-root .tcb .tcb-stack .tcstack {
+    min-width: 560px;
+  }
+
+  .singularity-root .tcb .tcb-ctx {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 14px;
+  }
+
+  /* the cascade folds vertical: the same joint, turned down */
+  .singularity-root .tcb .tcb-ctx-joint svg {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .singularity-root .tcb .tcb-svc {
+    grid-column: span 12;
+    min-height: 0;
+  }
+
+  .singularity-root .tcb .tcb-cell-cli {
+    min-height: 380px;
+  }
+
+  .singularity-root .tcb .tcb-term-body {
+    font-size: 11px;
+  }
+
+  .singularity-root .tcb .tcb-trace-row {
+    grid-template-columns: 60px 72px minmax(0, 1fr);
+    font-size: 11px;
+  }
+}

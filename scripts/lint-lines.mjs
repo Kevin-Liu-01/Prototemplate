@@ -34,6 +34,7 @@ const ALLOW = [
   'lang-rm', // the re-measure instrument: bright extents drawn on faint axes
   'tc-tab-bar', // the active-tab accent deliberately rides the tabs seam
   'is-marquee', // marquee rows fade under a mask-image the audit can't see
+  'eh-chip', // orbiting locale chips sweep the hero; any parallelism is transient
 ];
 
 const browser = await chromium.launch({ executablePath: EXEC, headless: true });
@@ -72,6 +73,20 @@ const audit = await page.evaluate((ALLOW) => {
         segs.push({ orient, pos: Math.round(pos * 2) / 2, from, to, owner, el: elIdx });
     }
   };
+  /* Elements under a 3D transform (perspective stages, rotateY conveyors)
+     have bounding boxes that are projections, not page lines — skip them. */
+  const tf3dMemo = new Map();
+  const in3d = (el) => {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+      let v = tf3dMemo.get(n);
+      if (v === undefined) {
+        v = getComputedStyle(n).transform.startsWith('matrix3d');
+        tf3dMemo.set(n, v);
+      }
+      if (v) return true;
+    }
+    return false;
+  };
   document.querySelectorAll('body *').forEach((el) => {
     if (el.closest('svg') || el.closest('canvas')) return;
     const rect = el.getBoundingClientRect();
@@ -80,6 +95,7 @@ const audit = await page.evaluate((ALLOW) => {
     const cs = getComputedStyle(el);
     if (cs.display === 'none' || cs.visibility === 'hidden') return;
     if (parseFloat(cs.opacity) <= 0.05) return; // hover-woken devices rest invisible
+    if (in3d(el)) return;
     const elIdx = els.push(el) - 1;
     pushBorders(rect, cs, owner, elIdx);
     // thin filled boxes are lines too

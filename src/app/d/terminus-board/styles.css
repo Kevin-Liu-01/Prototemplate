@@ -3674,3 +3674,13 @@
 .terminusboard-root .tc-band::after {
   width: calc(min(var(--tc-rail), 100%) + 20px);
 }
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.terminusboard-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.terminusboard-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}

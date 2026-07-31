@@ -5022,3 +5022,13 @@
 [data-theme='dark'] .hourglass-root .tc-foot-mark.is-locadex {
   filter: invert(1);
 }
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.hourglass-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.hourglass-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}

@@ -5504,3 +5504,13 @@
 [data-theme='dark'] .aurorapaper-root .ap-k {
   box-shadow: 0 22px 52px rgba(0, 0, 0, 0.8);
 }
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.aurorapaper-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.aurorapaper-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}

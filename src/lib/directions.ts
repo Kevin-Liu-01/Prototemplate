@@ -144,6 +144,16 @@ export const DIRECTIONS: Direction[] = [
     tone: 'dark',
     signature: 'The English wall flows into the waist; the translated wall flows out.',
   },
+  {
+    n: 23,
+    label: '13',
+    slug: 'singularity',
+    name: 'Singularity',
+    concept:
+      'The event horizon alone on open paper — no component walls, just the lensing gate bending the page into a photon ring while the locale belt orbits it.',
+    tone: 'light',
+    signature: 'Nothing competes with the mass: rules bend in, locales orbit.',
+  },
 ];
 
 export function getDirection(slug: string): Direction | undefined {
