@@ -136,9 +136,10 @@ export default function PrismScene({
        silhouette is the classic triangle, gaining depth as it breathes. */
     const prismGroup = new THREE.Group();
     const prismGeo = new THREE.CylinderGeometry(1, 1, 1.1, 3, 1);
-    /* bake the pose: extrusion axis toward the camera, apex up */
+    /* bake the pose: extrusion axis toward the camera, then spin the
+       cross-section so the triangle reads /_\ — apex up, base flat */
     prismGeo.rotateX(Math.PI / 2);
-    prismGeo.rotateZ(Math.PI / 2);
+    prismGeo.rotateZ(Math.PI);
     const prismMat = new THREE.MeshPhysicalMaterial({
       roughness: 0.06,
       metalness: 0,
@@ -174,10 +175,10 @@ export default function PrismScene({
     core.scale.set(1.6, 1.6, 1);
     scene.add(core);
 
-    /* ---- the incident beam, made of words ---- */
+    /* ---- the incident beam, made of words: a dense, fast stream ---- */
     const inWords: Word[] = [];
     const inTexture = makeTextTexture(sourceRef.current, null, 84);
-    const IN_COUNT = 7;
+    const IN_COUNT = 18;
     for (let i = 0; i < IN_COUNT; i++) {
       const material = new THREE.MeshBasicMaterial({
         map: inTexture.texture,
@@ -193,11 +194,13 @@ export default function PrismScene({
         mesh,
         material,
         aspect: inTexture.aspect,
-        phase: i / IN_COUNT,
-        speed: 0.095,
-        /* a whisper of lateral spread so the stream reads as a beam of
-           words rather than one word overdrawn */
-        angleRad: (i % 2 === 0 ? 1 : -1) * (0.012 + 0.01 * (i % 3)),
+        /* tight, even packing with a whisper of jitter — a stream, not a
+           procession */
+        phase: (i + (i % 3) * 0.13) / IN_COUNT,
+        speed: 0.16,
+        /* hair-thin lateral spread: the words overdraw additively into one
+           bright filament */
+        angleRad: (i % 2 === 0 ? 1 : -1) * (0.004 + 0.004 * (i % 3)),
       });
     }
 
@@ -243,12 +246,14 @@ export default function PrismScene({
       halfW = halfH * camera.aspect;
       const px = fracX(PRISM_X);
       const py = fracY(PRISM_Y);
-      /* centroid a touch left of the fan origin so the dispersal leaves the
-         glass's right face */
-      const prismR = halfH * 0.55;
-      prismGroup.position.set(px - prismR * 0.2, py, 0);
+      /* apex-up triangle: place the centroid so the midpoint of the RIGHT
+         face sits on the fan's origin — beam in the left face, fan out the
+         right, base level with the ground */
+      const prismR = halfH * 0.58;
+      prismGroup.position.set(px - prismR * 0.433, py - prismR * 0.25, 0);
       prismGroup.scale.set(prismR, prismR, prismR);
-      core.position.set(px, py, 0.2);
+      /* the gather point sits INSIDE the glass; the stream strikes it */
+      core.position.set(px - prismR * 0.5, py - prismR * 0.18, 0.2);
     };
     layout();
     const sizer = new ResizeObserver(layout);
@@ -265,7 +270,11 @@ export default function PrismScene({
       const py = fracY(PRISM_Y);
       const bx = fracX(BEAM_START_X);
       const by = fracY(BEAM_START_Y);
-      const beamAngle = Math.atan2(py - by, px - bx);
+      /* the stream's target is the gather point inside the glass */
+      const prismR = halfH * 0.58;
+      const tx = px - prismR * 0.5;
+      const ty = py - prismR * 0.18;
+      const beamAngle = Math.atan2(ty - by, tx - bx);
 
       /* the glass breathes: a slow lean in depth, never leaving its post */
       prismGroup.rotation.y = Math.sin(elapsed * 0.3) * 0.16;
@@ -274,14 +283,15 @@ export default function PrismScene({
       for (const word of inWords) {
         word.phase = (word.phase + dt * word.speed) % 1;
         const t = word.phase;
-        const x = THREE.MathUtils.lerp(bx, px, t);
-        const y = THREE.MathUtils.lerp(by, py, t) + word.angleRad * halfH * 6 * (1 - t);
+        const x = THREE.MathUtils.lerp(bx, tx, t);
+        const y = THREE.MathUtils.lerp(by, ty, t) + word.angleRad * halfH * 6 * (1 - t);
         word.mesh.position.set(x, y, 0.3);
         word.mesh.rotation.z = beamAngle;
-        /* converge: words shrink into the apex like gathered light */
-        const scaleH = halfH * (0.105 - t * 0.05);
+        /* converge hard: the words pack down into the gather point */
+        const scaleH = halfH * (0.085 - t * 0.052);
         word.mesh.scale.set(scaleH * word.aspect, scaleH, 1);
-        word.material.opacity = Math.min(easeOut(t / 0.2), 1 - easeOut(Math.max(0, (t - 0.8) / 0.2))) * 0.75;
+        /* stay lit all the way in — the stream visibly STRIKES the core */
+        word.material.opacity = Math.min(easeOut(t / 0.14), 1 - easeOut(Math.max(0, (t - 0.93) / 0.07))) * 0.95;
       }
 
       for (const word of outWords) {
