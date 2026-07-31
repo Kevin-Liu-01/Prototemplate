@@ -1457,23 +1457,14 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-.pr-close-ph {
-  display: grid;
-  place-items: center;
+.pr-close-shot {
+  display: block;
+  width: 100%;
   aspect-ratio: 1440 / 900;
+  object-fit: cover;
   border-radius: 6px;
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.055),
-    rgba(255, 255, 255, 0.015)
-  );
-}
-
-.pr-close-ph span {
-  font-size: 21px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--color-ink-raised);
 }
 
 .pr-close-tile-meta {
@@ -1734,21 +1725,6 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   overflow: hidden;
 }
 
-.pr-stage-caption {
-  position: absolute;
-  top: 7vh;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.65);
-  white-space: nowrap;
-}
-
 .pr-stage-frame {
   position: absolute;
   inset: 0;
@@ -1765,15 +1741,17 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: block;
   opacity: 0;
   transition: opacity 0.45s ease;
-  /* The iframe never captures the wheel: the deck's scroll drives the
-     embedded page through the scroll mapping. A hover over the frame taking
-     the wheel would strand the presenter (half-docked on entry, or stuck once
-     the inner page bottoms out). */
+  /* Until the page is in, nothing to interact with. */
   pointer-events: none;
 }
 
+/* Once loaded the frame takes the pointer so the embedded page's hover
+   states (the iso stack's layers, marquee pauses) work in presenter mode.
+   The deck still owns the WHEEL: PrototypeViewer forwards wheel events out
+   of the same-origin frame to Lenis, so scroll-driving never strands. */
 .pr-stage-frame iframe.is-loaded {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .pr-stage-veil {
@@ -2208,11 +2186,46 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   padding: 12vh 6vw 14vh;
 }
 
+.pr-score-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .pr-score-title {
   font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(26px, 3vw, 40px);
   letter-spacing: -0.025em;
+}
+
+/* Light/dark switch for the previews below. */
+.pr-score-theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 11px;
+  background: var(--color-ink-raised);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.pr-score-theme:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pr-score-theme i {
+  font-style: normal;
+  font-size: 13px;
 }
 
 .pr-gallery {

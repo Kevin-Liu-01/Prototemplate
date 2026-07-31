@@ -525,10 +525,12 @@ export default function TypeDetailSlide() {
                   )
                 }
               >
-                {/* Placeholder stage; swap in real capture images later. */}
-                <span className='pr-close-ph'>
-                  <span>{direction.label}</span>
-                </span>
+                <img
+                  className='pr-close-shot'
+                  src={`/shots/dark/${direction.slug}.jpg`}
+                  alt={`${direction.name} in dark mode`}
+                  loading='lazy'
+                />
                 <span className='pr-close-tile-meta'>
                   <span className='pr-close-tile-num'>{direction.label}</span>
                   <strong>{direction.name}</strong>

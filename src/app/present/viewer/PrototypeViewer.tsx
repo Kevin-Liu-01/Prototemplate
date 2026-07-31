@@ -71,8 +71,7 @@ export default function PrototypeViewer() {
           '.pr-stage-frame',
           { scale: 0.55, borderRadius: 20 },
           { scale: 1, borderRadius: 0, ease: 'none' }
-        )
-        .to('.pr-stage-caption', { autoAlpha: 0 }, 0.55);
+        );
 
       // The slide dock hands off here: the viewer dock appears in the slide
       // dock's exact footprint and grows to its full width, the extra
@@ -209,6 +208,25 @@ export default function PrototypeViewer() {
     return () => el.removeEventListener('load', markLoaded);
   }, [current.slug]);
 
+  // The frame takes the pointer once loaded (hover states inside the
+  // prototype must work in presenter mode), but the deck keeps the wheel:
+  // wheel events inside the same-origin frame are cancelled there and
+  // replayed on the deck's Lenis, so scroll-driving never strands.
+  useEffect(() => {
+    if (!isLoaded) return;
+    const win = frame.current?.contentWindow;
+    if (!win) return;
+    const forward = (e: WheelEvent) => {
+      e.preventDefault();
+      const lenis = getLenis();
+      if (lenis) lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: true });
+      else window.scrollBy(0, e.deltaY);
+    };
+    win.addEventListener('wheel', forward, { passive: false, capture: true });
+    return () =>
+      win.removeEventListener('wheel', forward, { capture: true });
+  }, [isLoaded]);
+
   // Keep the roll scrolled so the current card sits mid-rail.
   useEffect(() => {
     const container = roll.current;
@@ -231,10 +249,6 @@ export default function PrototypeViewer() {
   return (
     <section ref={root} className='pr-slide pr-proto' data-slide='prototypes'>
       <div className='pr-stage'>
-        <p className='pr-stage-caption'>
-          Twenty-two directions. Scroll each one, rate it, leave notes.
-        </p>
-
         <div className='pr-stage-frame'>
           <iframe
             ref={frame}

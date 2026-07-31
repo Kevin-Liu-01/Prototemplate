@@ -162,11 +162,14 @@ export default function PresenterApp() {
         onRefresh: syncPosition,
       });
       syncPosition();
+
       /* A client-side navigation can run that first sync against the
-         previous page's scroll position and pre-pin geometry — re-derive
-         once the reset scroll and settled pin spacers are real. */
-      const prSettleRaf = requestAnimationFrame(syncPosition);
-      const prSettle = window.setTimeout(() => {
+         PREVIOUS page's scroll position (Next resets scroll a beat later)
+         and against pre-pin geometry — which sticks the rail on a phantom
+         slide while the viewer is actually at the top. Re-derive once the
+         reset scroll and the settled pin spacers are real. */
+      const raf = requestAnimationFrame(syncPosition);
+      const settle = window.setTimeout(() => {
         ScrollTrigger.refresh();
         syncPosition();
       }, 150);
@@ -210,8 +213,8 @@ export default function PresenterApp() {
       window.addEventListener('keydown', onKey);
       return () => {
         window.removeEventListener('keydown', onKey);
-        cancelAnimationFrame(prSettleRaf);
-        window.clearTimeout(prSettle);
+        cancelAnimationFrame(raf);
+        window.clearTimeout(settle);
       };
     },
     { scope: root }

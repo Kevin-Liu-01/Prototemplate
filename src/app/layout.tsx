@@ -20,6 +20,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "try{var t=localStorage.getItem('gt-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}",
           }}
         />
+        {/* rAF gate: an embedding parent can freeze/resume this page's
+            animation loops with postMessage({type:'gt:freeze',frozen}) —
+            queued callbacks flush on resume, so shaders and scroll loops
+            pick up where they left off. The presenter uses it to idle its
+            wall of live thumbnails. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){var n=window.requestAnimationFrame.bind(window);var q=[];var f=false;window.requestAnimationFrame=function(cb){if(f){q.push(cb);return -1}return n(cb)};window.addEventListener('message',function(e){var d=e&&e.data;if(!d||d.type!=='gt:freeze')return;f=!!d.frozen;if(!f){var p=q;q=[];for(var i=0;i<p.length;i++)n(p[i])}})})();",
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>

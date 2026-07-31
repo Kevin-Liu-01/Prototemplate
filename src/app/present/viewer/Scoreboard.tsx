@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { DIRECTIONS } from '@/lib/directions';
 
@@ -21,6 +21,33 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export default function Scoreboard() {
   const root = useRef<HTMLElement>(null);
   const reviews = useReviews();
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('gt-theme') === 'dark') setTheme('dark');
+    } catch {
+      // private mode: previews just start light
+    }
+  }, []);
+
+  // The previews are same-origin, so their theme can be flipped live: persist
+  // the choice (new frames boot with it) and restamp every mounted frame.
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    try {
+      localStorage.setItem('gt-theme', next);
+    } catch {
+      // private mode: mounted frames still flip below
+    }
+    document
+      .querySelectorAll<HTMLIFrameElement>('.pr-root iframe')
+      .forEach((el) => {
+        const doc = el.contentDocument;
+        if (doc?.documentElement) doc.documentElement.dataset.theme = next;
+      });
+  };
 
   useGSAP(
     () => {
@@ -50,7 +77,22 @@ export default function Scoreboard() {
       className='pr-slide pr-score'
       data-slide='scoreboard'
     >
-      <h2 className='pr-score-title'>The verdict.</h2>
+      <header className='pr-score-head'>
+        <h2 className='pr-score-title'>The verdict.</h2>
+        <button
+          type='button'
+          className='pr-score-theme'
+          onClick={toggleTheme}
+          aria-label={
+            theme === 'light'
+              ? 'View previews in dark mode'
+              : 'View previews in light mode'
+          }
+        >
+          <i>{theme === 'light' ? '◐' : '◑'}</i>
+          {theme === 'light' ? 'Light' : 'Dark'}
+        </button>
+      </header>
 
       <div className='pr-gallery'>
         {DIRECTIONS.map((direction) => (
