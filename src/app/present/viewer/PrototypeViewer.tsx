@@ -78,7 +78,21 @@ export default function PrototypeViewer() {
       // dock's exact footprint and grows to its full width, the extra
       // controls revealed by the expanding clip — a resize, not a crossfade.
       // Visibility flips instantly in onToggle so nothing ever fades.
+      // Both widths are measured up front (the dock is hidden, not
+      // display:none, so it measures fine) and the park is a direct style
+      // write: the very first visible frame is already the slide dock's
+      // pill, and the morph stretches out of it.
+      const dockEl = document.querySelector<HTMLElement>('.pr-dock');
+      const navEl = document.querySelector<HTMLElement>('.pr-hud-nav');
+      const navWidth = navEl?.offsetWidth ?? 140;
+      const navHeight = navEl?.offsetHeight ?? 44;
+      const dockWidth = (dockEl?.scrollWidth ?? 900) + 2;
+      const dockHeight = (dockEl?.scrollHeight ?? 52) + 2;
       gsap.set('.pr-bottom', { visibility: 'hidden' });
+      if (dockEl) {
+        dockEl.style.maxWidth = `${navWidth}px`;
+        dockEl.style.maxHeight = `${navHeight}px`;
+      }
       gsap.set('.pr-side', { y: 0, yPercent: -50, xPercent: 118, visibility: 'hidden' });
 
       gsap
@@ -93,17 +107,11 @@ export default function PrototypeViewer() {
               }),
           },
         })
-        .fromTo(
+        .to(
           '.pr-dock',
           {
-            maxWidth: () =>
-              document.querySelector<HTMLElement>('.pr-hud-nav')?.offsetWidth ??
-              140,
-          },
-          {
-            maxWidth: () =>
-              (document.querySelector<HTMLElement>('.pr-dock')?.scrollWidth ??
-                900) + 2,
+            maxWidth: dockWidth,
+            maxHeight: dockHeight,
             duration: 0.6,
             ease: 'power3.inOut',
           },

@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 
 import SmoothScroll from '@/components/shared/SmoothScroll';
@@ -211,10 +212,10 @@ export default function PresenterApp() {
         <Scoreboard />
 
         <div className='pr-hud'>
-          <div className='pr-hud-brand'>
+          <Link href='/' className='pr-hud-brand' aria-label='Back to the index'>
             <img src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' />
             <span>Redesign</span>
-          </div>
+          </Link>
           <div className='pr-hud-author'>Kevin Liu</div>
           <nav
             className={`pr-hud-rail${active === 0 ? ' no-scrim' : ''}${navHidden ? ' is-hidden' : ''}`}

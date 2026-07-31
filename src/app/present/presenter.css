@@ -113,6 +113,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   align-items: center;
   gap: 12px;
   mix-blend-mode: difference;
+  text-decoration: none;
 }
 
 .pr-hud-brand img {
@@ -1808,9 +1809,10 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   z-index: 5;
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
+/* The collapse tab is attached to the roll's left edge: rounded only on its
+   outer side, borderless where it meets the roll. */
 .pr-side-toggle {
   display: flex;
   align-items: center;
@@ -1819,7 +1821,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   height: 54px;
   flex: 0 0 auto;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 9px;
+  border-right: 0;
+  border-radius: 9px 0 0 9px;
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(16px);
   color: rgba(255, 255, 255, 0.6);
@@ -1827,6 +1830,12 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   transition:
     background 0.15s,
     color 0.15s;
+}
+
+/* Collapsed, the roll's border goes transparent, so the tab closes its own
+   right edge. */
+.pr-side.is-closed .pr-side-toggle {
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .pr-side-toggle:hover {
@@ -2145,8 +2154,13 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 /* Notes */
 
+/* Out of flow so the textarea's intrinsic width can never widen the
+   wrapper: the dock alone sets the width, and the notes span it exactly. */
 .pr-notes {
-  min-width: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 10px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.88);
