@@ -97,14 +97,28 @@ const baseline = existsSync(BASELINE_PATH)
   ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
   : {};
 
+/* Ratchet on PER-FILE COUNTS, not line numbers: unrelated edits shift
+   lines constantly (two sessions work this tree in parallel), but a file's
+   violation count only rises when someone actually adds a violation. */
+const byFile = (locations) => {
+  const counts = {};
+  for (const loc of locations) {
+    const file = loc.slice(0, loc.lastIndexOf(':'));
+    counts[file] = (counts[file] ?? 0) + 1;
+  }
+  return counts;
+};
+
 let fresh = 0;
 for (const [check, locations] of Object.entries(found)) {
-  const known = new Set(baseline[check] ?? []);
-  const news = locations.filter((loc) => !known.has(loc));
-  if (news.length) {
-    fresh += news.length;
-    console.error(`\n${check} — ${news.length} NEW violation(s):`);
-    news.slice(0, 20).forEach((loc) => console.error(`  ${loc}`));
+  const knownCounts = byFile(baseline[check] ?? []);
+  const nowCounts = byFile(locations);
+  for (const [file, count] of Object.entries(nowCounts)) {
+    const known = knownCounts[file] ?? 0;
+    if (count > known) {
+      fresh += count - known;
+      console.error(`\n${check} — ${file}: ${count} (baseline ${known})`);
+    }
   }
 }
 

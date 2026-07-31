@@ -8,6 +8,7 @@
     "start": "next start",
     "lint:shell": "node scripts/lint-shell.mjs",
     "lint:practices": "node scripts/lint-practices.mjs",
+    "lint:lines": "node scripts/lint-lines.mjs",
     "lint:all": "pnpm lint:shell && pnpm lint:practices"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
     "@types/node": "24.5.2",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "playwright-core": "^1.62.0",
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.9.2",

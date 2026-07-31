@@ -510,6 +510,7 @@
   align-items: baseline;
   padding: 16px var(--pt-gut) 17px;
   border-top: 1px solid var(--pt-hair);
+  overflow: hidden;
   transition: background 0.15s ease;
 }
 
@@ -580,6 +581,58 @@
   font-size: 11.5px;
   line-height: 1.6;
   color: var(--pt-ink-3);
+}
+
+/* each direction's capture, pinned to the row's bottom-right and cut off
+   by the row's own bounds — a contact print sliding out of the sleeve */
+.pt-row-shot {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: clamp(16px, 3vw, 36px);
+  width: 320px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-white);
+  opacity: 0.9;
+  transition: opacity 0.15s ease;
+}
+
+.pt-row:hover .pt-row-shot,
+.pt-row:focus-visible .pt-row-shot {
+  opacity: 1;
+}
+
+.pt-row-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.pt-row-shot img.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-row-shot img.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-row-shot img.is-dark {
+  display: block;
+}
+
+@media (min-width: 1150px) {
+  .pt-row {
+    padding-right: 396px;
+    min-height: 118px;
+  }
+
+  .pt-row-shot {
+    display: block;
+  }
 }
 
 /* ---------- foot ---------- */

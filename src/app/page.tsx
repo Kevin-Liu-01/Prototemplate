@@ -108,6 +108,10 @@ export default function IndexPage() {
                 </span>
                 <span className='pt-row-tone'>{direction.tone}</span>
                 <span className='pt-row-sig'>{direction.signature}</span>
+                <span aria-hidden='true' className='pt-row-shot'>
+                  <img alt='' className='is-light' loading='lazy' src={`/shots/light/${direction.slug}.jpg`} />
+                  <img alt='' className='is-dark' loading='lazy' src={`/shots/dark/${direction.slug}.jpg`} />
+                </span>
               </Link>
             ))}
           </div>
