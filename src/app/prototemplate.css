@@ -419,7 +419,9 @@
   max-width: 46ch;
 }
 
-.pt-feature-cta {
+/* `.pt-root a`'s color: inherit outranks a lone class — anchor the CTA
+   under the root so its ink survives the dark panel. */
+.pt-root .pt-feature-cta {
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -434,7 +436,7 @@
   transition: opacity 0.15s ease;
 }
 
-.pt-feature-cta:hover {
+.pt-root .pt-feature-cta:hover {
   opacity: 0.88;
 }
 
