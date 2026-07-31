@@ -516,52 +516,6 @@
 
 /* Each mark is lettered rather than listed: the only variables are weight,
    case, size and tracking, and both faces are the page's own. */
-.ditherfield-root .tc-wm {
-  font-family: var(--tc-disp);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--tc-ink-2);
-}
-
-.ditherfield-root .tc-wm.is-cursor {
-  font-weight: 600;
-  letter-spacing: -0.032em;
-}
-
-.ditherfield-root .tc-wm.is-ramp {
-  font-weight: 800;
-  font-size: 16.5px;
-  letter-spacing: -0.012em;
-}
-
-.ditherfield-root .tc-wm.is-mintlify {
-  font-weight: 300;
-  font-size: 17px;
-  letter-spacing: -0.008em;
-}
-
-.ditherfield-root .tc-wm.is-profound {
-  font-weight: 500;
-  font-size: 12.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.135em;
-}
-
-.ditherfield-root .tc-wm.is-partiful {
-  font-weight: 700;
-  font-size: 16.5px;
-  letter-spacing: -0.038em;
-}
-
-.ditherfield-root .tc-wm.is-clickhouse {
-  font-family: var(--tc-sans);
-  font-weight: 600;
-  font-size: 14.5px;
-  letter-spacing: -0.006em;
-}
-
 /* ============================================================
    FRAMEWORK TABS
    ============================================================ */

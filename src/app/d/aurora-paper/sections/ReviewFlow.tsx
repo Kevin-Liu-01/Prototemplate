@@ -119,13 +119,13 @@ export default function ReviewFlow() {
                   <b>v2.1.0</b>
                   <span>Added checkout page translations</span>
                   <i>3f2c41a</i>
-                  <button type='button'>Restore</button>
+                  <button>Restore</button>
                 </div>
                 <div className='ap-hist-row'>
                   <b>v2.0.0</b>
                   <span>Initial translations</span>
                   <i>9b81d02</i>
-                  <button type='button'>Restore</button>
+                  <button>Restore</button>
                 </div>
                 <p className='ap-hist-cmd'>
                   $ npx gt translate --tag v2.1.0 -m &ldquo;Added checkout page translations&rdquo;

@@ -75,7 +75,7 @@ const HELLOS: readonly HelloWord[] = [
 /** A greeting rasterised to a binary coverage grid, ready for field sampling. */
 type WordMask = { data: Uint8Array; w: number; h: number };
 
-const WORD_RASTER_PX = 48;
+const WORD_RASTER_PX = 64;
 
 /**
  * Scripts whose glyphs pack strokes densely (Han, kana, Hangul, Devanagari).

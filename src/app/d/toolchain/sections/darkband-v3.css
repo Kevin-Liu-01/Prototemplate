@@ -18,7 +18,7 @@
 
 .toolchain-root .tcb {
   /* surfaces */
-  --tcb-seam: rgba(255, 255, 255, 0.14);
+  --tcb-seam: var(--tc-hair-band);
   --tcb-card: #101010;
   --tcb-lift: rgba(255, 255, 255, 0.045);
   --tcb-rule: rgba(255, 255, 255, 0.1);

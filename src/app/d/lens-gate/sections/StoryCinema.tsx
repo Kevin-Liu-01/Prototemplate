@@ -122,7 +122,7 @@ const CODE_BTN = ['<T><button>Get started</button></T>'] as const;
 /** The same component, unfolded for the right panel's artifact. */
 const CODE_T = [
   '<T>',
-  "  <button className='cta'>",
+  "  <button type='button' className='cta'>",
   '    Get started',
   '  </button>',
   '</T>',

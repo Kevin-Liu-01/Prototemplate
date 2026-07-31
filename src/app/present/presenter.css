@@ -2058,57 +2058,121 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 /* Grid overlay — the direction dock's G-grid, absorbed into the presenter. */
 
+/* The switcher overlay: a centered sheet on a blurred scrim rather than a
+   wall of floating cards. One quick pop, no lingering fades. */
 .pr-grid {
   position: absolute;
   inset: 0;
   z-index: 7;
   overflow-y: auto;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  align-content: start;
-  padding: 6vh 5vw;
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(24px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(24px, 7vh, 72px) 4vw;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(22px);
 }
 
-.pr-grid > button {
+.pr-grid-panel {
+  width: min(1060px, 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(10, 10, 10, 0.92);
+  padding: 18px;
+  animation: pr-grid-pop 0.16s ease-out;
+}
+
+@keyframes pr-grid-pop {
+  from {
+    transform: scale(0.985);
+    opacity: 0;
+  }
+}
+
+.pr-grid-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 6px 14px;
+}
+
+.pr-grid-head strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.pr-grid-head span {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-titanium);
+}
+
+.pr-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pr-grid-cards > button {
   display: flex;
   flex-direction: column;
   gap: 6px;
   text-align: left;
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 14px 15px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  background: none;
+  background: var(--color-ink-raised);
   color: #fff;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.18s,
+    background 0.18s;
 }
 
-.pr-grid > button:hover {
-  border-color: rgba(255, 255, 255, 0.45);
+.pr-grid-cards > button:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: #161616;
 }
 
-.pr-grid > button.is-current {
-  border-color: #fff;
+.pr-grid-cards > button.is-current {
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
-.pr-grid > button strong {
+.pr-grid-cards > button strong {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
 }
 
-.pr-grid > button p {
-  font-size: 12px;
+.pr-grid-cards > button p {
+  font-size: 11.5px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-titanium);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pr-grid-cards .pr-roll-num {
+  color: var(--color-titanium);
 }
 
 @media (max-width: 1020px) {
-  .pr-grid {
+  .pr-grid-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .pr-grid-cards {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

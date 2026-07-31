@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack --port 3005",
     "build": "next build",
     "start": "next start",
-    "lint:shell": "node scripts/lint-shell.mjs"
+    "lint:shell": "node scripts/lint-shell.mjs",
+    "lint:practices": "node scripts/lint-practices.mjs",
+    "lint:all": "pnpm lint:shell && pnpm lint:practices"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

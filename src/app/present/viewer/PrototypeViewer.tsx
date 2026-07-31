@@ -361,27 +361,37 @@ export default function PrototypeViewer() {
 
         {gridOpen && (
           <div className='pr-grid' onClick={() => setGridOpen(false)}>
-            {DIRECTIONS.map((direction, i) => {
-              const rating = reviews[direction.slug]?.rating ?? 0;
-              return (
-                <button
-                  key={direction.slug}
-                  type='button'
-                  className={i === index ? 'is-current' : ''}
-                  onClick={() => {
-                    goTo(i);
-                    setGridOpen(false);
-                  }}
-                >
-                  <span className='pr-roll-num'>{direction.label}</span>
-                  <strong>{direction.name}</strong>
-                  <p>{direction.concept}</p>
-                  {rating > 0 && (
-                    <span className='pr-roll-stars'>{'★'.repeat(rating)}</span>
-                  )}
-                </button>
-              );
-            })}
+            <div className='pr-grid-panel' onClick={(event) => event.stopPropagation()}>
+              <div className='pr-grid-head'>
+                <strong>All prototypes</strong>
+                <span>
+                  {DIRECTIONS.length} directions · G or Esc to close
+                </span>
+              </div>
+              <div className='pr-grid-cards'>
+                {DIRECTIONS.map((direction, i) => {
+                  const rating = reviews[direction.slug]?.rating ?? 0;
+                  return (
+                    <button
+                      key={direction.slug}
+                      type='button'
+                      className={i === index ? 'is-current' : ''}
+                      onClick={() => {
+                        goTo(i);
+                        setGridOpen(false);
+                      }}
+                    >
+                      <span className='pr-roll-num'>{direction.label}</span>
+                      <strong>{direction.name}</strong>
+                      <p>{direction.concept}</p>
+                      {rating > 0 && (
+                        <span className='pr-roll-stars'>{'★'.repeat(rating)}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         )}
 

@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
-import DitherWordmark, { type WordmarkSpec } from '../diagrams/DitherWordmark';
+import './logos-icons.css';
 import { heroTransmission, useDitherField } from '../fields';
 
 import './hero-every.css';
@@ -41,16 +41,16 @@ gsap.registerPlugin(useGSAP);
  * one process applied twice — to energy and to letterforms.
  */
 
-/* One weight for the whole wall. At 1-bit the cell budget is the type design:
-   light cuts shed strokes and heavy cuts flood counters, so every mark runs
-   at the same middleweight and keeps only its own tracking/case. */
-const CUSTOMERS: readonly { name: string; spec: WordmarkSpec }[] = [
-  { name: 'Cursor', spec: { text: 'Cursor', weight: 600, tracking: -0.02 } },
-  { name: 'Ramp', spec: { text: 'Ramp', weight: 600, tracking: -0.01 } },
-  { name: 'Mintlify', spec: { text: 'Mintlify', weight: 600 } },
-  { name: 'Profound', spec: { text: 'Profound', weight: 600, tracking: 0.1, uppercase: true } },
-  { name: 'Partiful', spec: { text: 'Partiful', weight: 600, tracking: -0.02 } },
-  { name: 'ClickHouse', spec: { text: 'ClickHouse', weight: 600 } },
+/* Founder edit: the trust row shows the ACTUAL logo lockups (shared
+   logos-icons grammar), undithered — the 1-bit process belongs to the
+   transmission plate, not to the customers' marks. */
+const CUSTOMERS: readonly { name: string; mark: string }[] = [
+  { name: 'Cursor', mark: 'is-cursor' },
+  { name: 'Ramp', mark: 'is-ramp' },
+  { name: 'Mintlify', mark: 'is-mintlify' },
+  { name: 'Profound', mark: 'is-profound' },
+  { name: 'Partiful', mark: 'is-partiful' },
+  { name: 'ClickHouse', mark: 'is-clickhouse' },
 ];
 
 /* "language" across maximally different writing systems — Latin, Japanese,
@@ -87,7 +87,7 @@ export default function Hero() {
      mid-plate with a third fading at the far corner, one greeting held
      solid, one mid-dissolve, one mid-assembly. */
   const canvasRef = useDitherField(
-    (aspect) => heroTransmission(aspect, { cellScale: 4 }),
+    (aspect) => heroTransmission(aspect, { cellScale: 3 }),
     {
       scale: 4,
       ink: '#070707',
@@ -454,7 +454,7 @@ export default function Hero() {
         <div className='tc-trust-row'>
           {CUSTOMERS.map((customer) => (
             <span className='tc-trust-cell' key={customer.name}>
-              <DitherWordmark spec={customer.spec} />
+              <b className={`tc-wm ${customer.mark}`}>{customer.name}</b>
             </span>
           ))}
         </div>
