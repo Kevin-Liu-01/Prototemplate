@@ -4,8 +4,10 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { DIRECTIONS } from '@/lib/directions';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import Icon from '../icons';
 import { getLenis } from '../lenis';
@@ -32,7 +34,31 @@ export default function PrototypeViewer() {
   const [notesOpen, setNotesOpen] = useState(false);
   const [gridOpen, setGridOpen] = useState(false);
   const [rollOpen, setRollOpen] = useState(true);
+  const [dockSlot, setDockSlot] = useState<HTMLElement | null>(null);
+  const [notesSlot, setNotesSlot] = useState<HTMLElement | null>(null);
   const reviews = useReviews();
+
+  // The dock is one shared pill in the presenter HUD; this viewer portals
+  // its controls (and the notes panel) into the pill's slots. If the URL
+  // names a direction (/present?d=slug — the index rows link this way),
+  // land docked on it once the pins have settled.
+  useMountEffect(() => {
+    setDockSlot(document.getElementById('pr-dock-viewer-slot'));
+    setNotesSlot(document.getElementById('pr-notes-slot'));
+    const slug = new URLSearchParams(window.location.search).get('d');
+    const found = DIRECTIONS.findIndex((direction) => direction.slug === slug);
+    if (found < 0) return;
+    setIndex(found);
+    const timer = window.setTimeout(() => {
+      if (!root.current) return;
+      const y =
+        root.current.getBoundingClientRect().top +
+        window.scrollY +
+        window.innerHeight * 0.3;
+      window.scrollTo(0, Math.round(y));
+    }, 450);
+    return () => window.clearTimeout(timer);
+  });
 
   const current = DIRECTIONS[index]!;
   const review = reviews[current.slug];
@@ -75,41 +101,21 @@ export default function PrototypeViewer() {
           { scale: 1, borderRadius: 0, ease: 'none' }
         );
 
-      // The slide dock hands off here: the viewer dock appears in the slide
-      // dock's exact footprint and grows to its full width, the extra
-      // controls revealed by the expanding clip — a resize, not a crossfade.
-      // Visibility flips instantly in onToggle so nothing ever fades.
-      // Both widths are measured up front (the dock is hidden, not
-      // display:none, so it measures fine) and the park is a direct style
-      // write: the very first visible frame is already the slide dock's
-      // pill, and the morph stretches out of it.
-      const dockEl = document.querySelector<HTMLElement>('.pr-dock');
-      const navEl = document.querySelector<HTMLElement>('.pr-hud-nav');
-      const navWidth = navEl?.offsetWidth ?? 140;
-      const navHeight = navEl?.offsetHeight ?? 44;
-      const dockWidth = (dockEl?.scrollWidth ?? 900) + 2;
-      const dockHeight = (dockEl?.scrollHeight ?? 52) + 2;
-      gsap.set('.pr-bottom', { visibility: 'hidden' });
-      if (dockEl) {
-        dockEl.style.maxWidth = `${navWidth}px`;
-        dockEl.style.maxHeight = `${navHeight}px`;
-      }
+      // The dock is the presenter's shared pill: this viewer only announces
+      // mode over pr:chrome and the pill morphs itself. Entering docked, the
+      // pill expands while the roll slides in; leaving back up, the pill
+      // contracts while the roll slides away; leaving down into the verdict
+      // the chrome just cuts as the stage scrolls off.
+      const setChrome = (on: boolean) => {
+        if (!on) setNotesOpen(false);
+        window.dispatchEvent(new CustomEvent('pr:chrome', { detail: on }));
+      };
       gsap.set('.pr-side', { y: 0, yPercent: -50, xPercent: 118, visibility: 'hidden' });
 
-      // The slide dock is told when to yield/return via pr:chrome, so its
-      // swap always lands exactly on this timeline's edges. Scrolling back
-      // up plays the morph in reverse ON SCREEN — the dock shrinks back to
-      // the slide pill and the roll slides away — and only then does the
-      // chrome hide and the slide dock return. Leaving downward (into the
-      // verdict) just cuts the chrome as the stage scrolls away.
-      const setChrome = (on: boolean) =>
-        window.dispatchEvent(new CustomEvent('pr:chrome', { detail: on }));
       gsap
         .timeline({
-          onReverseComplete: () => {
-            gsap.set(['.pr-bottom', '.pr-side'], { visibility: 'hidden' });
-            setChrome(false);
-          },
+          onReverseComplete: () =>
+            gsap.set('.pr-side', { visibility: 'hidden' }),
           scrollTrigger: {
             trigger: root.current,
             start: 'top top+=8',
@@ -117,29 +123,16 @@ export default function PrototypeViewer() {
             toggleActions: 'play none none reverse',
             onToggle: (self) => {
               if (self.isActive) {
-                gsap.set(['.pr-bottom', '.pr-side'], {
-                  visibility: 'visible',
-                });
+                gsap.set('.pr-side', { visibility: 'visible' });
                 setChrome(true);
-              } else if (self.direction === 1) {
-                gsap.set(['.pr-bottom', '.pr-side'], {
-                  visibility: 'hidden',
-                });
+              } else {
                 setChrome(false);
+                if (self.direction === 1)
+                  gsap.set('.pr-side', { visibility: 'hidden' });
               }
             },
           },
         })
-        .to(
-          '.pr-dock',
-          {
-            maxWidth: dockWidth,
-            maxHeight: dockHeight,
-            duration: 0.6,
-            ease: 'power3.inOut',
-          },
-          0
-        )
         .fromTo(
           '.pr-side',
           { xPercent: 118 },
@@ -358,73 +351,80 @@ export default function PrototypeViewer() {
           </div>
         )}
 
-        <div className='pr-bottom'>
-          {notesOpen && (
-            <div className='pr-notes' data-lenis-prevent>
-              <header>
-                NOTES · {current.label} {current.name.toUpperCase()}
-                <button type='button' onClick={() => setNotesOpen(false)} aria-label='Close notes'>
-                  ✕
-                </button>
-              </header>
-              <textarea
-                // eslint-disable-next-line jsx-a11y/no-autofocus -- opened by an explicit click; focus should land in the field
-                autoFocus
-                value={review?.note ?? ''}
-                placeholder='What works, what doesn’t…'
-                onChange={(event) =>
-                  setReview(current.slug, { note: event.target.value })
-                }
-              />
-            </div>
-          )}
-
-          <div className='pr-dock' data-lenis-prevent>
-          <button type='button' onClick={() => goTo(index - 1)} aria-label='Previous prototype'>
-            <Icon name='arrow-left' size={15} />
-          </button>
-          <button
-            type='button'
-            className='pr-dock-label'
-            onClick={() => setGridOpen((open) => !open)}
-          >
-            <span>
-              {current.label} · {String(index + 1).padStart(2, '0')}/
-              {DIRECTIONS.length}
-            </span>
-            <strong>{current.name}</strong>
-          </button>
-          <button type='button' onClick={() => goTo(index + 1)} aria-label='Next prototype'>
-            <Icon name='arrow-right' size={15} />
-          </button>
-          <button
-            type='button'
-            onClick={() => setGridOpen((open) => !open)}
-            aria-label='All prototypes'
-          >
-            <Icon name='grid' size={14} />
-          </button>
-          <i className='pr-dock-sep' />
-          <RatingStars
-            value={review?.rating ?? 0}
-            onChange={(rating) => setReview(current.slug, { rating })}
-          />
-          <button
-            type='button'
-            className={notesOpen || review?.note ? 'pr-dock-notes is-active' : 'pr-dock-notes'}
-            onClick={() => setNotesOpen((open) => !open)}
-          >
-            <Icon name='pencil' size={13} />
-            Notes{review?.note ? ' •' : ''}
-          </button>
-          <i className='pr-dock-sep' />
-          <button type='button' className='pr-dock-summary' onClick={scrollToScoreboard}>
-            Verdict
-            <Icon name='arrow-down' size={13} />
-          </button>
-          </div>
-        </div>
       </div>
+
+      {/* The viewer's controls live in the presenter's shared dock pill. */}
+      {dockSlot &&
+        createPortal(
+          <>
+            <button type='button' onClick={() => goTo(index - 1)} aria-label='Previous prototype'>
+              <Icon name='arrow-left' size={15} />
+            </button>
+            <button
+              type='button'
+              className='pr-dock-label'
+              onClick={() => setGridOpen((open) => !open)}
+            >
+              <span>
+                {current.label} · {String(index + 1).padStart(2, '0')}/
+                {DIRECTIONS.length}
+              </span>
+              <strong>{current.name}</strong>
+            </button>
+            <button type='button' onClick={() => goTo(index + 1)} aria-label='Next prototype'>
+              <Icon name='arrow-right' size={15} />
+            </button>
+            <button
+              type='button'
+              onClick={() => setGridOpen((open) => !open)}
+              aria-label='All prototypes'
+            >
+              <Icon name='grid' size={14} />
+            </button>
+            <i className='pr-dock-sep' />
+            <RatingStars
+              value={review?.rating ?? 0}
+              onChange={(rating) => setReview(current.slug, { rating })}
+            />
+            <button
+              type='button'
+              className={notesOpen || review?.note ? 'pr-dock-notes is-active' : 'pr-dock-notes'}
+              onClick={() => setNotesOpen((open) => !open)}
+            >
+              <Icon name='pencil' size={13} />
+              Notes{review?.note ? ' •' : ''}
+            </button>
+            <i className='pr-dock-sep' />
+            <button type='button' className='pr-dock-summary' onClick={scrollToScoreboard}>
+              Verdict
+              <Icon name='arrow-down' size={13} />
+            </button>
+          </>,
+          dockSlot
+        )}
+
+      {notesSlot &&
+        notesOpen &&
+        createPortal(
+          <div className='pr-notes'>
+            <header>
+              NOTES · {current.label} {current.name.toUpperCase()}
+              <button type='button' onClick={() => setNotesOpen(false)} aria-label='Close notes'>
+                ✕
+              </button>
+            </header>
+            <textarea
+              // eslint-disable-next-line jsx-a11y/no-autofocus -- opened by an explicit click; focus should land in the field
+              autoFocus
+              value={review?.note ?? ''}
+              placeholder='What works, what doesn’t…'
+              onChange={(event) =>
+                setReview(current.slug, { note: event.target.value })
+              }
+            />
+          </div>,
+          notesSlot
+        )}
     </section>
   );
 }

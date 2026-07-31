@@ -54,7 +54,7 @@ export default function IndexPage() {
           <div className='pt-nav-right'>
             <ThemeToggle className='pt-nav-theme' />
             <Link href='/present'>Present</Link>
-            <Link href='/d/toolchain'>Toolchain</Link>
+            <Link href='/present?d=toolchain'>Toolchain</Link>
           </div>
         </header>
 
@@ -100,7 +100,7 @@ export default function IndexPage() {
 
           <div className='pt-rows'>
             {DIRECTIONS.map((direction) => (
-              <Link className='pt-row' href={`/d/${direction.slug}`} key={direction.slug}>
+              <Link className='pt-row' href={`/present?d=${direction.slug}`} key={direction.slug}>
                 <span className='pt-row-label'>{direction.label}</span>
                 <span className='pt-row-main'>
                   <h3>{direction.name}</h3>

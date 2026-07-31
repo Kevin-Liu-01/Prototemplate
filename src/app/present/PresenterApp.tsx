@@ -90,8 +90,8 @@ export default function PresenterApp() {
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [activeSub, setActiveSub] = useState(-1);
-  const [navHidden, setNavHidden] = useState(false);
   const [railHidden, setRailHidden] = useState(false);
+  const dock = useRef<HTMLDivElement>(null);
   const goToRef = useRef<(slide: number, atOverride?: number) => void>(
     () => {}
   );
@@ -100,12 +100,24 @@ export default function PresenterApp() {
     () => {
       const sections = gsap.utils.toArray<HTMLElement>('[data-slide]');
 
-      // The viewer owns the dock swap's exact timing (its dock morphs out of
-      // and back into this one's footprint), so the slide dock follows the
-      // viewer's pr:chrome events rather than a trigger of its own — on the
-      // way back up it must reappear only once the reverse morph lands.
-      const onChrome = (event: Event) =>
-        setNavHidden(!!(event as CustomEvent<boolean>).detail);
+      // One dock, two faces. The viewer announces mode via pr:chrome; the
+      // pill FLIPs between its measured sizes — content swaps instantly,
+      // the box eases, the clip reveals or swallows the extra controls.
+      const onChrome = (event: Event) => {
+        const on = !!(event as CustomEvent<boolean>).detail;
+        const el = dock.current;
+        if (!el || (el.dataset.mode === 'viewer') === on) return;
+        const before = { width: el.offsetWidth, height: el.offsetHeight };
+        el.dataset.mode = on ? 'viewer' : 'slides';
+        const after = { width: el.offsetWidth, height: el.offsetHeight };
+        gsap.fromTo(el, before, {
+          ...after,
+          duration: 0.55,
+          ease: 'power3.inOut',
+          overwrite: 'auto',
+          clearProps: 'width,height',
+        });
+      };
       window.addEventListener('pr:chrome', onChrome);
 
       // The rail hides for the whole prototypes run and returns at the
@@ -283,25 +295,36 @@ export default function PresenterApp() {
               </div>
             ))}
           </nav>
-          <div className={navHidden ? 'pr-hud-nav is-hidden' : 'pr-hud-nav'}>
-            <button
-              type='button'
-              onClick={() => goToRef.current(active - 1)}
-              aria-label='Previous slide'
-            >
-              <Icon name='arrow-up' size={15} />
-            </button>
-            <button
-              type='button'
-              onClick={() => goToRef.current(active + 1)}
-              aria-label='Next slide'
-            >
-              <Icon name='arrow-down' size={15} />
-            </button>
-            <span className='pr-hud-count'>
-              {String(active + 1).padStart(2, '0')} /{' '}
-              {String(SLIDES.length).padStart(2, '0')}
-            </span>
+          {/* The one dock. Slide paging normally; the prototype viewer
+              portals its controls into the viewer slot and flips data-mode
+              via pr:chrome, so the same pill expands into the viewer dock
+              and contracts back. Notes render through the slot above so
+              they always share this pill's width. */}
+          <div className='pr-bottom'>
+            <div id='pr-notes-slot' className='pr-notes-slot' />
+            <div ref={dock} className='pr-dock' data-mode='slides'>
+              <div className='pr-dock-set pr-dock-set-slides'>
+                <button
+                  type='button'
+                  onClick={() => goToRef.current(active - 1)}
+                  aria-label='Previous slide'
+                >
+                  <Icon name='arrow-up' size={15} />
+                </button>
+                <button
+                  type='button'
+                  onClick={() => goToRef.current(active + 1)}
+                  aria-label='Next slide'
+                >
+                  <Icon name='arrow-down' size={15} />
+                </button>
+                <span className='pr-hud-count'>
+                  {String(active + 1).padStart(2, '0')} /{' '}
+                  {String(SLIDES.length).padStart(2, '0')}
+                </span>
+              </div>
+              <div id='pr-dock-viewer-slot' className='pr-dock-set pr-dock-set-viewer' />
+            </div>
           </div>
         </div>
       </div>

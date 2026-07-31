@@ -344,52 +344,9 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   transform: none;
 }
 
-/* Bottom-center slide dock: one pill with both arrows and the counter. It
-   yields to the prototype viewer's own dock while that slide is active. */
-.pr-hud-nav {
-  position: fixed;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 90;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(16px);
-}
-
-/* Swaps instantly with the viewer dock, which appears in this exact
-   footprint and grows — the swap itself must not fade. */
-.pr-hud-nav.is-hidden {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.pr-hud-nav button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 0;
-  border-radius: 9px;
-  background: none;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s;
-}
-
-.pr-hud-nav button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
+/* The dock itself lives with the viewer chrome styles (one shared pill,
+   two content sets — see the Dock section). Only the slide counter is
+   HUD-specific. */
 .pr-hud-count {
   margin-left: 5px;
   padding: 0 11px 0 12px;
@@ -1960,39 +1917,53 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: #ffd77a;
 }
 
-/* Dock: notes and dock share a bottom-center wrapper so the notes panel
-   always matches the dock's width. */
+/* THE dock: one pill for the whole presenter, rendered by the HUD. It holds
+   two content sets — slide paging and the viewer controls — and data-mode
+   picks which one shows while the pill FLIPs between their sizes. Notes
+   render through the slot above it so they always share its width. */
 
 .pr-bottom {
-  /* Fixed, not absolute: the reverse morph plays while the stage is already
-     scrolling away, and the dock must stay glued to the viewport bottom
-     where the slide dock will take its place. */
   position: fixed;
   bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 6;
+  z-index: 90;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.pr-notes-slot {
+  display: contents;
 }
 
 .pr-dock {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
   padding: 5px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(16px);
-  /* The grow from the slide dock's footprint clips symmetrically. */
+  /* The morph between modes clips symmetrically. */
   overflow: hidden;
 }
 
+.pr-dock-set {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pr-dock-set > *,
 .pr-dock > * {
   flex-shrink: 0;
+}
+
+.pr-dock[data-mode='slides'] .pr-dock-set-viewer,
+.pr-dock[data-mode='viewer'] .pr-dock-set-slides {
+  display: none;
 }
 
 .pr-dock button {
