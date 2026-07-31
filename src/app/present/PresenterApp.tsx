@@ -217,7 +217,7 @@ export default function PresenterApp() {
           </div>
           <div className='pr-hud-author'>Kevin Liu</div>
           <nav
-            className={active === 0 ? 'pr-hud-rail no-scrim' : 'pr-hud-rail'}
+            className={`pr-hud-rail${active === 0 ? ' no-scrim' : ''}${navHidden ? ' is-hidden' : ''}`}
             aria-label='Slides'
           >
             {SLIDES.map((slide, i) => (

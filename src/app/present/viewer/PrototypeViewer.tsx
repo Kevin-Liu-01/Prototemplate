@@ -31,6 +31,7 @@ export default function PrototypeViewer() {
   const [loadedSlug, setLoadedSlug] = useState<string | null>(null);
   const [notesOpen, setNotesOpen] = useState(false);
   const [gridOpen, setGridOpen] = useState(false);
+  const [rollOpen, setRollOpen] = useState(true);
   const reviews = useReviews();
 
   const current = DIRECTIONS[index]!;
@@ -73,32 +74,46 @@ export default function PrototypeViewer() {
         )
         .to('.pr-stage-caption', { autoAlpha: 0 }, 0.55);
 
-      // The slide dock hands off here: this dock expands from its footprint
-      // at the same bottom-center spot, contents fading in a beat later.
-      const chromeIn = gsap.timeline({
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top+=8',
-          toggleActions: 'play none none reverse',
-        },
-      });
-      chromeIn
+      // The slide dock hands off here: the viewer dock appears in the slide
+      // dock's exact footprint and grows to its full width, the extra
+      // controls revealed by the expanding clip — a resize, not a crossfade.
+      // Visibility flips instantly in onToggle so nothing ever fades.
+      gsap.set('.pr-bottom', { visibility: 'hidden' });
+      gsap.set('.pr-side', { y: 0, yPercent: -50, xPercent: 118, visibility: 'hidden' });
+
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: root.current,
+            start: 'top top+=8',
+            toggleActions: 'play none none reverse',
+            onToggle: (self) =>
+              gsap.set(['.pr-bottom', '.pr-side'], {
+                visibility: self.isActive ? 'visible' : 'hidden',
+              }),
+          },
+        })
         .fromTo(
           '.pr-dock',
-          { autoAlpha: 0, scaleX: 0.3, scaleY: 0.8, transformOrigin: '50% 100%' },
-          { autoAlpha: 1, scaleX: 1, scaleY: 1, duration: 0.55, ease: 'power3.out' }
+          {
+            maxWidth: () =>
+              document.querySelector<HTMLElement>('.pr-hud-nav')?.offsetWidth ??
+              140,
+          },
+          {
+            maxWidth: () =>
+              (document.querySelector<HTMLElement>('.pr-dock')?.scrollWidth ??
+                900) + 2,
+            duration: 0.6,
+            ease: 'power3.inOut',
+          },
+          0
         )
         .fromTo(
-          '.pr-dock > *',
-          { autoAlpha: 0 },
-          { autoAlpha: 1, stagger: 0.035, duration: 0.3 },
-          0.2
-        )
-        .fromTo(
-          '.pr-roll',
-          { autoAlpha: 0, x: 24 },
-          { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power2.out' },
-          0.25
+          '.pr-side',
+          { xPercent: 118 },
+          { xPercent: 0, duration: 0.55, ease: 'power2.out' },
+          0.12
         );
 
       // While the stage is docked, presenter scroll drives the embedded
@@ -229,52 +244,43 @@ export default function PrototypeViewer() {
           )}
         </div>
 
-        <aside ref={roll} className='pr-roll' data-lenis-prevent aria-label='All prototypes'>
-          {DIRECTIONS.map((direction, i) => {
-            const rating = reviews[direction.slug]?.rating ?? 0;
-            return (
-              <button
-                key={direction.slug}
-                type='button'
-                className={`pr-roll-card${i === index ? ' is-current' : ''}`}
-                onClick={() => goTo(i)}
-              >
-                <span className='pr-roll-top'>
-                  <span className='pr-roll-num'>{direction.label}</span>
-                  <i
-                    className={`pr-roll-dot pr-dot-${direction.tone}`}
-                    title={`${direction.tone} direction`}
-                  />
-                </span>
-                <strong>{direction.name}</strong>
-                <span className='pr-roll-sig'>{direction.signature}</span>
-                {rating > 0 && (
-                  <span className='pr-roll-stars'>{'★'.repeat(rating)}</span>
-                )}
-              </button>
-            );
-          })}
-        </aside>
+        <div className={rollOpen ? 'pr-side' : 'pr-side is-closed'}>
+          <button
+            type='button'
+            className='pr-side-toggle'
+            onClick={() => setRollOpen((open) => !open)}
+            aria-label={rollOpen ? 'Collapse prototype list' : 'Expand prototype list'}
+          >
+            <Icon name={rollOpen ? 'arrow-right' : 'arrow-left'} size={13} />
+          </button>
+          <aside ref={roll} className='pr-roll' data-lenis-prevent aria-label='All prototypes'>
+            {DIRECTIONS.map((direction, i) => {
+              const rating = reviews[direction.slug]?.rating ?? 0;
+              return (
+                <button
+                  key={direction.slug}
+                  type='button'
+                  className={`pr-roll-card${i === index ? ' is-current' : ''}`}
+                  onClick={() => goTo(i)}
+                >
+                  <span className='pr-roll-top'>
+                    <span className='pr-roll-num'>{direction.label}</span>
+                    <i
+                      className={`pr-roll-dot pr-dot-${direction.tone}`}
+                      title={`${direction.tone} direction`}
+                    />
+                  </span>
+                  <strong>{direction.name}</strong>
+                  <span className='pr-roll-sig'>{direction.signature}</span>
+                  {rating > 0 && (
+                    <span className='pr-roll-stars'>{'★'.repeat(rating)}</span>
+                  )}
+                </button>
+              );
+            })}
+          </aside>
+        </div>
 
-        {notesOpen && (
-          <div className='pr-notes' data-lenis-prevent>
-            <header>
-              NOTES · {current.label} {current.name.toUpperCase()}
-              <button type='button' onClick={() => setNotesOpen(false)} aria-label='Close notes'>
-                ✕
-              </button>
-            </header>
-            <textarea
-              // eslint-disable-next-line jsx-a11y/no-autofocus -- opened by an explicit click; focus should land in the field
-              autoFocus
-              value={review?.note ?? ''}
-              placeholder='What works, what doesn’t…'
-              onChange={(event) =>
-                setReview(current.slug, { note: event.target.value })
-              }
-            />
-          </div>
-        )}
 
         {gridOpen && (
           <div className='pr-grid' onClick={() => setGridOpen(false)}>
@@ -302,7 +308,28 @@ export default function PrototypeViewer() {
           </div>
         )}
 
-        <div className='pr-dock' data-lenis-prevent>
+        <div className='pr-bottom'>
+          {notesOpen && (
+            <div className='pr-notes' data-lenis-prevent>
+              <header>
+                NOTES · {current.label} {current.name.toUpperCase()}
+                <button type='button' onClick={() => setNotesOpen(false)} aria-label='Close notes'>
+                  ✕
+                </button>
+              </header>
+              <textarea
+                // eslint-disable-next-line jsx-a11y/no-autofocus -- opened by an explicit click; focus should land in the field
+                autoFocus
+                value={review?.note ?? ''}
+                placeholder='What works, what doesn’t…'
+                onChange={(event) =>
+                  setReview(current.slug, { note: event.target.value })
+                }
+              />
+            </div>
+          )}
+
+          <div className='pr-dock' data-lenis-prevent>
           <button type='button' onClick={() => goTo(index - 1)} aria-label='Previous prototype'>
             <Icon name='arrow-left' size={15} />
           </button>
@@ -345,6 +372,7 @@ export default function PrototypeViewer() {
             Verdict
             <Icon name='arrow-down' size={13} />
           </button>
+          </div>
         </div>
       </div>
     </section>

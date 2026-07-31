@@ -152,6 +152,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   gap: 3px;
   transform: translateY(-50%);
   padding: 26px 0;
+  transition: opacity 0.3s ease;
 }
 
 /* Scrim so the rail never fights the content behind it: one solid ink
@@ -175,6 +176,13 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-hud-rail:hover::before {
   opacity: 1;
+}
+
+/* The rail steps aside while the prototype viewer owns the screen, and
+   returns once every prototype has been walked. */
+.pr-hud-rail.is-hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* The intro's shader stays unshaded: no scrim on the first section unless
@@ -341,12 +349,12 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
-  transition: opacity 0.25s;
 }
 
+/* Swaps instantly with the viewer dock, which appears in this exact
+   footprint and grows — the swap itself must not fade. */
 .pr-hud-nav.is-hidden {
-  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -1005,10 +1013,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-pipe-line {
   position: absolute;
-  top: 24px;
+  top: 50%;
   left: 0;
   width: 100%;
   height: 12px;
+  margin-top: -6px;
   z-index: 0;
 }
 
@@ -1019,11 +1028,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 .pr-pipe-pulse {
-  fill: #b9ffd9;
+  fill: #fff;
 }
 
 .pr-pipe-halo {
-  fill: rgba(185, 255, 217, 0.22);
+  fill: rgba(255, 255, 255, 0.22);
 }
 
 .pr-pipe-nodes {
@@ -1039,13 +1048,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   flex-direction: column;
   align-items: center;
   gap: 7px;
-  width: 180px;
-  padding: 17px 12px 18px;
+  width: 186px;
+  padding: 18px 12px 19px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012) 70%),
-    var(--color-ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  background: var(--color-ink-raised);
   text-align: center;
 }
 
@@ -1057,26 +1064,23 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 .pr-pipe-node strong {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 14.5px;
-  letter-spacing: -0.01em;
+  font-size: 17.5px;
+  letter-spacing: -0.015em;
 }
 
 .pr-pipe-node em {
   font-style: normal;
-  font-size: 11.5px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.45);
 }
 
 .pr-pipe-node.is-hot {
-  border-color: rgba(185, 255, 217, 0.5);
-  box-shadow:
-    inset 0 1px 0 rgba(185, 255, 217, 0.15),
-    0 0 34px rgba(185, 255, 217, 0.1);
+  border-color: rgba(255, 255, 255, 0.55);
 }
 
 .pr-pipe-node.is-hot svg,
 .pr-pipe-node.is-hot strong {
-  color: #b9ffd9;
+  color: #fff;
 }
 
 /* Stem from the hot node down into the Context Group spotlight. */
@@ -1087,7 +1091,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 .pr-ctx-stem line {
-  stroke: rgba(185, 255, 217, 0.5);
+  stroke: rgba(255, 255, 255, 0.5);
   stroke-width: 2;
   stroke-dasharray: 3 5;
   fill: none;
@@ -1105,16 +1109,16 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 20px;
-  border: 1px solid rgba(185, 255, 217, 0.45);
-  background: rgba(185, 255, 217, 0.05);
-  box-shadow: 0 0 30px rgba(185, 255, 217, 0.07);
-  font-size: 13.5px;
+  padding: 13px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 14.5px;
   color: rgba(255, 255, 255, 0.88);
 }
 
 .pr-ctx-root svg {
-  color: #b9ffd9;
+  color: #fff;
   flex: 0 0 auto;
 }
 
@@ -1143,10 +1147,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   align-items: center;
   padding: 13px 20px 14px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01) 70%),
-    var(--color-ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  background: var(--color-ink-raised);
   min-width: 176px;
 }
 
@@ -1159,8 +1161,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 .pr-ctx-leaf strong {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 16px;
-  color: #b9ffd9;
+  font-size: 18px;
+  color: #fff;
 }
 
 .pr-ctx-note {
@@ -1762,6 +1764,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: block;
   opacity: 0;
   transition: opacity 0.45s ease;
+  /* The iframe never captures the wheel: the deck's scroll drives the
+     embedded page through the scroll mapping. A hover over the frame taking
+     the wheel would strand the presenter (half-docked on entry, or stuck once
+     the inner page bottoms out). */
+  pointer-events: none;
 }
 
 .pr-stage-frame iframe.is-loaded {
@@ -1790,15 +1797,47 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* Carousel roll: one quiet panel, rows split by hairlines, and the current
    row marked with the same line motif as the HUD rail. */
 
-.pr-roll {
+/* Right-side rail: a collapse tab plus the roll. GSAP slides the wrapper in;
+   the collapse is a width change on the roll itself, so the two transforms
+   never fight. */
+.pr-side {
   position: absolute;
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pr-side-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 54px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.pr-side-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pr-roll {
   width: 238px;
   max-height: 76vh;
-  overflow-y: auto;
+  overflow: hidden auto;
   display: flex;
   flex-direction: column;
   padding: 6px;
@@ -1806,9 +1845,18 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  transition:
+    width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    padding 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    border-color 0.45s ease;
+}
+
+.pr-side.is-closed .pr-roll {
+  width: 0;
+  padding-inline: 0;
+  border-color: transparent;
 }
 
 .pr-roll-card {
@@ -1817,6 +1865,9 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   flex-direction: column;
   gap: 3px;
   text-align: left;
+  /* Fixed width so cards clip instead of reflowing while the roll
+     collapses. */
+  min-width: 224px;
   padding: 11px 12px 12px 16px;
   border: 0;
   border-radius: 9px;
@@ -1909,41 +1960,36 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: #ffd77a;
 }
 
-/* Dock */
+/* Dock: notes and dock share a bottom-center wrapper so the notes panel
+   always matches the dock's width. */
 
-.pr-dock {
+.pr-bottom {
   position: absolute;
   bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 6;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pr-dock {
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 2px;
   padding: 5px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
-  /* Recedes like the direction dock it replaces, so the design gets judged, not the chrome. */
-  opacity: 0.4;
-  transition: opacity 0.2s;
+  /* The grow from the slide dock's footprint clips symmetrically. */
+  overflow: hidden;
 }
 
-.pr-dock:hover,
-.pr-dock:focus-within {
-  opacity: 1;
-}
-
-.pr-roll {
-  opacity: 0.5;
-  transition: opacity 0.2s;
-}
-
-.pr-roll:hover,
-.pr-roll:focus-within {
-  opacity: 1;
+.pr-dock > * {
+  flex-shrink: 0;
 }
 
 .pr-dock button {
@@ -2100,17 +2146,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* Notes */
 
 .pr-notes {
-  position: absolute;
-  bottom: 82px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 6;
-  width: min(540px, 92vw);
+  min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 }
 
@@ -2223,7 +2263,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .pr-roll {
+  .pr-side {
     display: none;
   }
 
