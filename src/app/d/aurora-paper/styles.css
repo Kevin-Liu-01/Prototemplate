@@ -4283,55 +4283,9 @@
   border-top: 1px solid var(--tc-hair);
 }
 
-/* The source line's baseline is the two threads at constant gauge. */
-.aurorapaper-root .ap-casc-row[data-src] {
-  border-bottom: 0;
-}
-
-/* The threads enter the page here: a vertical pair descending out of the top
-   edge through the wash's brightest field, turning into the source line's
-   doubled baseline where they meet it. Same gauge as everywhere else — the
-   hero's counter-space is held by light plus the brand's line, not left
-   blank. Clipped by the hero's own overflow. */
-.aurorapaper-root .ap-casc-row[data-src]::before {
-  content: '';
-  position: absolute;
-  /* the column gap between the hero copy and its mono note — crosses nothing */
-  right: clamp(220px, 24vw, 290px);
-  /* R3: terminate ON the doubled baseline — flush to its top rule, a clean
-     T-junction, no orphan stub running past the band */
-  bottom: calc(var(--thread-gauge) * 2 + var(--thread-gap));
-  height: 120vh;
-  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
-  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
-    linear-gradient(var(--thread-ink), var(--thread-ink));
-  background-repeat: no-repeat;
-  background-size:
-    var(--thread-gauge) 100%,
-    var(--thread-gauge) 100%;
-  background-position:
-    0 0,
-    100% 0;
-  pointer-events: none;
-}
-
-.aurorapaper-root .ap-casc-row[data-src]::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
-  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
-    linear-gradient(var(--thread-ink), var(--thread-ink));
-  background-repeat: no-repeat;
-  background-size:
-    100% var(--thread-gauge),
-    100% var(--thread-gauge);
-  background-position:
-    0 0,
-    0 100%;
-}
+/* The doubled threads are gone from the hero — the vertical pair diving
+   from the top edge and the doubled baseline read as stray rules over the
+   wash. The source row keeps the same hairline as every other row. */
 
 .aurorapaper-root .ap-casc-tag {
   flex: none;
@@ -4356,9 +4310,19 @@
   color: var(--tc-ink);
 }
 
-/* The dimension bracket under each string was retired: the delta labels
-   carry the measurement story on their own, and the brackets read as stray
-   rules over the wash (worst in dark mode). */
+/* The dimension bracket: end ticks and a center line, spanning exactly the
+   glyphs' advance — the measurement the delta label reads from. */
+.aurorapaper-root .ap-casc-text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-right: 1.5px solid var(--tc-ink-3);
+  background: linear-gradient(var(--tc-ink-3), var(--tc-ink-3)) 0 50% / 100% 1px no-repeat;
+}
 
 .aurorapaper-root .ap-casc-delta {
   margin-left: auto;
@@ -4370,13 +4334,6 @@
 
 .aurorapaper-root .ap-casc-row[data-src] .ap-casc-delta {
   color: var(--tc-ink-4);
-}
-
-/* Dark: the doubled threads stay, but as a whisper — near-white strokes at
-   full strength glare over the northern-sky wash. */
-[data-theme='dark'] .aurorapaper-root .aph-panel .ap-casc-row[data-src]::before,
-[data-theme='dark'] .aurorapaper-root .aph-panel .ap-casc-row[data-src]::after {
-  opacity: 0.38;
 }
 
 /* ============================================================

@@ -4511,6 +4511,20 @@
     );
 }
 
+/* The 3D optics layer: transparent canvas over the fan light. */
+.prismlight-root .plh-p-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.prismlight-root .plh-p-scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* The translations ARE the rays: each label rotated to its dispersion angle
    about the prism's heart, flung along the ray by its own distance (the
    padding resolves against the plate's width, so the fan scales with it). */

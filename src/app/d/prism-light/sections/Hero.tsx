@@ -7,6 +7,8 @@ import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 
+import PrismScene from './PrismScene';
+
 import './chip-consistency.css';
 import './hero-every.css';
 import './hero-terminal.css';
@@ -135,46 +137,12 @@ export default function Hero() {
         clearProps: 'all',
       });
 
-      /* The request beam draws itself once, labels to glass. Not a loop —
-         the page's restraint budget is spent on the light itself. The fan
-         arrives with the draw: the beam strikes, the dispersal blooms. Only
-         opacity ever animates on the lighten wrapper — a transform would
-         isolate the blend group and flood the plate. */
-      const beams = gsap.utils.toArray<SVGPathElement>('.plh-beam', root.current);
-      for (const path of beams) {
-        /* The beam is a straight ray in a non-uniformly stretched viewBox with
-           a non-scaling stroke, so its dash pattern lives in SCREEN units —
-           getTotalLength()'s user units would leave the resting stroke dashed.
-           Measure the rendered diagonal instead, and drop the dash entirely
-           once drawn so later resizes can never re-break the ray. */
-        const box = path.getBoundingClientRect();
-        const len = Math.ceil(Math.hypot(box.width, box.height)) + 4;
-        gsap.fromTo(
-          path,
-          { strokeDasharray: `${len} ${len}`, strokeDashoffset: len },
-          {
-            strokeDashoffset: 0,
-            duration: 1.1,
-            ease: 'power2.inOut',
-            delay: 0.4,
-            onComplete: () => {
-              gsap.set(path, { strokeDasharray: 'none', clearProps: 'strokeDashoffset' });
-            },
-          }
-        );
-      }
-      gsap.from('.plh-p-light', { autoAlpha: 0, duration: 1.3, ease: 'power1.inOut', delay: 0.9 });
-
-      /* The translations leave the glass in dispersion order: nearest the
-         axis first, the widest angles last — the fan visibly opens. */
-      gsap.from('.plh-ray-text', {
-        autoAlpha: 0,
-        x: -26,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: 'power2.out',
-        delay: 1.1,
-      });
+      /* The fan blooms in once; the 3D scene above it (beam-of-words, glass,
+         translation flights) runs its own loop. Only opacity ever animates
+         on the lighten wrapper — a transform would isolate the blend group
+         and flood the plate. */
+      gsap.from('.plh-p-light', { autoAlpha: 0, duration: 1.3, ease: 'power1.inOut', delay: 0.6 });
+      gsap.from('.plh-p-scene', { autoAlpha: 0, duration: 1.0, ease: 'power1.inOut', delay: 0.3 });
 
       /* ---- the headline hinge: a measuring instrument ----
          Each cycle: the bound guides appear around the current word; the word
@@ -566,29 +534,6 @@ export default function Hero() {
         aria-label='A drawn glass prism on a wide dark plate turns one string into every language: a white beam carrying "Hello, world!" enters the glass and disperses into a spectral fan whose rays read Hallo Welt, Hola mundo, Bonjour le monde, Privet mir, Konnichiwa sekai, Ni hao shijie, Annyeonghaseyo segye, Namaste duniya. Captions read translation edge, one string in, every language out'
       >
         <div className='plh-panel-box is-band' aria-hidden>
-          <svg className='plh-p-rays' viewBox='0 0 100 100' preserveAspectRatio='none'>
-            <defs>
-              <linearGradient id='plh-beam-fade' x1='0' y1='0' x2='1' y2='0'>
-                <stop offset='0' stopColor='#ffffff' stopOpacity='0.95' />
-                <stop offset='0.8' stopColor='#ffffff' stopOpacity='0.85' />
-                <stop offset='1' stopColor='#ffffff' stopOpacity='0' />
-              </linearGradient>
-            </defs>
-            <path
-              className='plh-beam'
-              d='M 2.5 16 L 26.2 49'
-              fill='none'
-              stroke='url(#plh-beam-fade)'
-              strokeWidth='2'
-              vectorEffect='non-scaling-stroke'
-            />
-          </svg>
-
-          {/* The glass: luminous edges, translucent near-plate fill. */}
-          <span className='plh-p-prism'>
-            <i />
-          </span>
-
           {/* The dispersal light, its dark convergence eye parked at the
               prism's heart so it gathers in the glass and blooms rightward. */}
           <div className='plh-p-light'>
@@ -601,27 +546,19 @@ export default function Hero() {
             <span className='plh-p-shade' />
           </div>
 
-          {/* The source string, riding its own beam. */}
+          {/* The 3D optics: the beam is a stream of source words, the glass
+              is a physical prism, and the translations fly the dispersion
+              rays with real perspective. */}
+          <PrismScene
+            className='plh-p-scene'
+            source='“Hello, world!”'
+            rays={RAYS}
+          />
+
+          {/* The source string, named at the beam's origin. */}
           <div className='plh-p-req' data-hero-in>
             <b>&ldquo;Hello, world!&rdquo;</b>
             <span>en · one source string</span>
-          </div>
-
-          {/* The translations ARE the rays: each rotated to its dispersion
-              angle, flung farther the brighter its lane. */}
-          <div className='plh-p-out'>
-            {RAYS.map((ray) => (
-              <span
-                className='plh-ray'
-                key={ray.lang}
-                style={{ '--ang': ray.ang, '--d': `${ray.d}%` } as React.CSSProperties}
-              >
-                <span className='plh-ray-text' lang={ray.lang} dir={ray.rtl ? 'rtl' : 'ltr'}>
-                  {ray.text}
-                  <i>{ray.lang}</i>
-                </span>
-              </span>
-            ))}
           </div>
 
           {/* The caption grammar, kept as the plate's floor. */}
