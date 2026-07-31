@@ -203,22 +203,22 @@ type StationSpec = {
    a top rank, the mid field, and two standing on the ground limb — so the
    payload inhabits the whole plate the field fills. */
 const STATIONS_PLATE: readonly StationSpec[] = [
-  { u: 0.16, v: 0.5, hv: 0.095, seed: 0, source: true },
-  { u: 0.56, v: 0.24, hv: 0.105, seed: 0 },
-  { u: 0.8, v: 0.1, hv: 0.085, seed: 5, delay: 1.3 },
-  { u: 0.8, v: 0.46, hv: 0.112, seed: 1, delay: 0.7 },
-  { u: 0.5, v: 0.68, hv: 0.1, seed: 2, delay: 0.35 },
-  { u: 0.28, v: 0.87, hv: 0.098, seed: 3, delay: 1.1 },
-  { u: 0.78, v: 0.82, hv: 0.102, seed: 4, delay: 1.6 },
+  { u: 0.22, v: 0.5, hv: 0.135, seed: 0, source: true },
+  { u: 0.5, v: 0.23, hv: 0.125, seed: 0 },
+  { u: 0.83, v: 0.09, hv: 0.105, seed: 5, delay: 1.3 },
+  { u: 0.74, v: 0.4, hv: 0.13, seed: 1, delay: 0.7 },
+  { u: 0.47, v: 0.68, hv: 0.12, seed: 2, delay: 0.35 },
+  { u: 0.28, v: 0.88, hv: 0.11, seed: 3, delay: 1.1 },
+  { u: 0.8, v: 0.85, hv: 0.115, seed: 4, delay: 1.6 },
 ];
 
 /* Compact plate (stacked mobile): the source plus three stations on a
    diagonal cascade, sized for a ~380px-wide panel. */
 const STATIONS_COMPACT: readonly StationSpec[] = [
-  { u: 0.2, v: 0.5, hv: 0.082, seed: 0, source: true },
-  { u: 0.62, v: 0.2, hv: 0.095, seed: 0 },
-  { u: 0.7, v: 0.62, hv: 0.098, seed: 1, delay: 0.8 },
-  { u: 0.4, v: 0.86, hv: 0.09, seed: 2, delay: 0.4 },
+  { u: 0.26, v: 0.5, hv: 0.12, seed: 0, source: true },
+  { u: 0.6, v: 0.2, hv: 0.13, seed: 0 },
+  { u: 0.66, v: 0.64, hv: 0.13, seed: 1, delay: 0.8 },
+  { u: 0.4, v: 0.87, hv: 0.12, seed: 2, delay: 0.4 },
 ];
 
 /** Per-frame runtime state for one station. Mutated in place, never per-pixel. */
@@ -404,7 +404,9 @@ export function heroTransmission(
       st.wu = (hv * (st.mask.w / st.mask.h)) / a;
       st.u0 = spec.u - st.wu / 2;
       st.v0 = spec.v - hv / 2;
-      st.padV = hv * 0.6;
+      // The source's margin runs tighter: it already sits half in the paper
+      // pocket, and the full margin punched a hard slot through the rings.
+      st.padV = hv * (spec.source ? 0.42 : 0.6);
       const padU = st.padV / a;
       st.cu0 = st.u0 - padU;
       st.cu1 = st.u0 + st.wu + padU;
@@ -505,7 +507,7 @@ export function heroTransmission(
         const ph = q * 2.6 - t * 0.85;
         const s = ph - Math.floor(ph);
         const tick = smoothstep(0.04, 0.2, s) * (1 - smoothstep(0.55, 0.75, s));
-        rays = n4 * rayZone * weight * (0.62 + 0.5 * tick);
+        rays = n4 * rayZone * weight * (0.72 + 0.5 * tick);
       }
 
       // ZONE 3 — the wavefronts: a crisp crest with a dithered wake trailing

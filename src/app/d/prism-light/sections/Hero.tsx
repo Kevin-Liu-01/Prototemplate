@@ -14,46 +14,42 @@ import './hero-terminal.css';
 gsap.registerPlugin(useGSAP);
 
 /**
- * THE EDGE HORIZON — this fork's hero, recut on the founder stack.
+ * THE PRISM DELIVERY PANEL — this fork's hero, recomposed side by side.
  *
  * The prismatic burst never touches the paper. Every canvas here runs behind
  * a `mix-blend-mode: lighten` group over pure ink geometry, so anything white
  * stays white and the dispersed light exists only *inside* the black shapes:
- * the two-line display headline, the prism specimen at the card's right, the
- * doubled thread ribbons, and the horizon band. At arm's length the page is
- * ink on paper; up close the ink is full of light.
+ * the two-line display headline on the left, and the delivery panel's ink
+ * plate on the right. At arm's length the page is ink on paper; up close the
+ * ink is full of light.
  *
- * The stack: white card (mark, two authored lines, sub, acts) → the horizon
- * as the full-width visual band → the trust card, three surfaces at 1px
- * seams with the shell ground filling the corner notches. The headline keeps
- * this fork's authored lines — 'Launch in / every language.' — and adopts the
- * morph hinge on the accent word: guides, multilingual dust, measured bounds.
- * The hinge lives INSIDE the prism material, so the incoming scripts fill
- * with the same dispersed light as the letters they replace.
+ * The stack: one white card split in two columns — copy left ('Launch in /
+ * every language.', sub, acts, npx chip), the delivery-as-optics panel right
+ * — then the trust card closes the hero at a 1px seam. The headline keeps
+ * the morph hinge on the accent word: guides, multilingual dust, measured
+ * bounds. The hinge lives INSIDE the prism material, so incoming scripts
+ * fill with the same dispersed light as the letters they replace.
  *
- * R4 exposure law: the ink now comes from the FIELD, not the veil. R3 hid a
- * bright field under heavy drawn floors and the burst read as faint mud; R4
- * gives each line its own mirrored pair of windows aimed at the burst's
- * wing band — where the streaks carry their own dark lanes between them —
- * and drops the drawn floor to a thin safeguard (0.14 mid-block, diving
- * deep only at the ends), so the interior visibly STREAMS with spectrum at
- * first glance while the field's own lanes keep the material reading as
- * ink. No streak ever approaches paper luminance, both lines are the same
- * material, and the letter edge never softens. Dark mode inverts the law,
- * not the layout: white letterforms under a `darken` group with the floors
- * flipped from ink to paper (styles.css).
+ * R4 exposure law (kept verbatim): the ink comes from the FIELD, not the
+ * veil. Each headline line gets its own mirrored pair of windows aimed at
+ * the burst's wing band — where the streaks carry their own dark lanes —
+ * and the drawn floor is a thin safeguard (0.14 mid-block, diving deep at
+ * the ends), so the interior visibly STREAMS with spectrum while reading as
+ * ink. No streak approaches paper luminance and the letter edge never
+ * softens. Dark mode inverts the law, not the layout: white letterforms
+ * under a `darken` group with the floors flipped to paper (styles.css).
  *
- * The composition reads top-left to bottom-right along the light's own axis:
- * a French reader's request leaves the headline, rides the two threads —
- * source and translation, constant gauge — into the horizon band at the
- * `fra` point of presence, and the response annotation comes back off the
- * band's top rule at 12 ms. A single pulse of light travels the thread on a
- * loop — the request as a visible packet — and the band underneath runs as
- * a long dawn line of moving spectrum. The card's right column is
- * counterweighted by the prism specimen: one white `en` beam enters a drawn
- * glass prism standing on a bounded ink plate and leaves its far face as a
- * full-height spectral fan that lands on the locale ticks — the product's
- * whole argument as one optical event.
+ * The panel fuses the old horizon diagram with the old specimen's optics —
+ * one optical event that is also the delivery story: a French reader's
+ * request enters as the one white beam on the plate (`GET
+ * example.com/fr/a-propos`, `accept-language: fr-FR` riding it), dives into
+ * a drawn glass prism, and the far face disperses it into a full-height
+ * spectral fan. The fan's light carries the outputs: the response callout
+ * (`200 · served from fra · 12 ms · no origin hit`) and the five edge nodes
+ * with their measured p50s standing at the fan's mouth, `fra` lit as the
+ * serving node on the fan's bright axis. The plate's floor keeps the band's
+ * caption grammar — translation edge · anycast · versioned per locale.
+ * One request in — every locale served from the edge, as optics.
  */
 
 const CUSTOMERS: readonly { name: string; mark: string }[] = [
@@ -65,18 +61,16 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
   { name: 'ClickHouse', mark: 'is-clickhouse' },
 ];
 
-/** Points of presence on the horizon band, each with its measured p50. `fra`
-    is the one serving this reader. */
-const POPS: readonly { code: string; ms: number; x: string; hit?: boolean }[] = [
-  { code: 'sfo', ms: 17, x: '12%' },
-  { code: 'iad', ms: 21, x: '31%' },
-  { code: 'fra', ms: 12, x: '52%', hit: true },
-  { code: 'sin', ms: 41, x: '72%' },
-  { code: 'gru', ms: 29, x: '88%' },
+/** Points of presence standing at the fan's mouth, each with its measured
+    p50. `fra` — the one serving this reader — sits on the fan's bright axis,
+    the same height the beam entered at. */
+const POPS: readonly { code: string; ms: number; y: string; hit?: boolean }[] = [
+  { code: 'sfo', ms: 17, y: '13%' },
+  { code: 'iad', ms: 21, y: '30%' },
+  { code: 'fra', ms: 12, y: '47%', hit: true },
+  { code: 'sin', ms: 41, y: '65%' },
+  { code: 'gru', ms: 29, y: '82%' },
 ];
-
-/** The locales fanning out of the prism specimen's right edge. */
-const SPEC_OUT: readonly string[] = ['fr', 'es', 'de', 'ja', 'zh', '+113'];
 
 /* "language" across maximally different writing systems — Latin, Japanese,
    Arabic, Devanagari, Cyrillic, Han, Hangul, Greek — short tokens so the
@@ -131,21 +125,21 @@ export default function Hero() {
         clearProps: 'all',
       });
 
-      /* The threads draw themselves once, headline to horizon. Not a loop —
-         the page's restraint budget is spent on the light itself. The masked
-         light group arrives with the draw: over paper it is invisible until
-         ink exists beneath it; over the ink-black paper of dark mode the fade
-         is what keeps the ribbons from popping in fully lit. */
-      const paths = gsap.utils.toArray<SVGPathElement>('.plh-thread', root.current);
-      for (const path of paths) {
+      /* The request beam draws itself once, labels to glass. Not a loop —
+         the page's restraint budget is spent on the light itself. The fan
+         arrives with the draw: the beam strikes, the dispersal blooms. Only
+         opacity ever animates on the lighten wrapper — a transform would
+         isolate the blend group and flood the plate. */
+      const beams = gsap.utils.toArray<SVGPathElement>('.plh-beam', root.current);
+      for (const path of beams) {
         const len = path.getTotalLength();
         gsap.fromTo(
           path,
           { strokeDasharray: len, strokeDashoffset: len },
-          { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', delay: 0.5 }
+          { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut', delay: 0.4 }
         );
       }
-      gsap.from('.plh-t-light', { autoAlpha: 0, duration: 1.2, ease: 'power1.inOut', delay: 0.5 });
+      gsap.from('.plh-p-light', { autoAlpha: 0, duration: 1.3, ease: 'power1.inOut', delay: 0.9 });
 
       gsap.from('.plh-pop', {
         autoAlpha: 0,
@@ -153,7 +147,7 @@ export default function Hero() {
         duration: 0.5,
         stagger: 0.07,
         ease: 'power2.out',
-        delay: 1.1,
+        delay: 1.2,
       });
 
       /* ---- the headline hinge: a measuring instrument ----

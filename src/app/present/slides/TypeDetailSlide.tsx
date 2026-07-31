@@ -512,7 +512,7 @@ export default function TypeDetailSlide() {
         </div>
 
         <div className='pr-detail-close'>
-          <h3>So I built 20.</h3>
+          <h3>So I built 12.</h3>
           <div className='pr-close-gallery'>
             {DIRECTIONS.map((direction) => (
               <button

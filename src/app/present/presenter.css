@@ -1430,10 +1430,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   letter-spacing: -0.035em;
 }
 
-/* Contact sheet of every direction, fading to black toward the viewer. */
+/* Contact sheet of every direction — twelve tiles, three rows of four —
+   fading to black toward the viewer. */
 .pr-close-gallery {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   width: min(1040px, 90vw);
   margin-top: 2vh;

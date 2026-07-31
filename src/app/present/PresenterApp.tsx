@@ -74,7 +74,7 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
       { label: 'Two Inters', f: 0.02 },
       { label: 'The overlay', f: 0.5 },
       { label: 'General Translation', f: 0.67 },
-      { label: 'So I built 20', f: 0.87 },
+      { label: 'So I built 12', f: 0.87 },
     ],
   },
   { id: 'prototypes', label: 'Prototypes', jump: 0.05 },
