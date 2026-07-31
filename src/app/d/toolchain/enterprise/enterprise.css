@@ -1151,6 +1151,95 @@
   color: var(--tc-panel-faint);
 }
 
+/* ============================================================
+   FOUNDER ROUND — the hero wears the ruled frame (the line-
+   touching-border system shipped in ../sections/review-workspace
+   .css, hero-terminal.css and frameworks-ruled.css).
+   The compliance ledger's card stops being a rounded white box on
+   a mat: the mat ground retires, the card squares off and steps
+   inside the row on three sides, and its frame becomes four 1px
+   rules drawn by two full-bleed pseudo bands, clipped by the lead
+   row — the hero's sheet — so every rule runs edge-to-edge of the
+   side it is on. The card's left edge stays ON the column
+   boundary, so the frame's left rule IS the text/artifact
+   boundary, ruled from the nav seam to the trust seam. The
+   horizontals cross the copy column's cleared margins and touch
+   both rail borders; the right vertical runs the gutter's clean
+   air. Rule ink is the token hair in both themes; every line is a
+   device-true 1px border, and the card carries no border of its
+   own, so nothing can stack to 2px where band and box coincide.
+   Doubled root: these override shell rules of equal specificity
+   (`.tc-row:has(> .is-framed)`, `.is-framed > .tc-card`) whatever
+   the bundle order. */
+
+.toolchain-root.toolchain-root .tc-row.is-lead.tce-hero-row {
+  /* the sheet: its box clips the frame's full-reach rules */
+  position: relative;
+  overflow: clip;
+  /* the mat ground retires — rules need paper to sit on */
+  background: transparent;
+}
+
+/* the framed cell keeps the shell's own cell rhythm as the card's
+   inset: top/bottom a cell's padding, right one gutter, left zero —
+   the card's left edge is the column boundary. */
+.toolchain-root.toolchain-root .tc-cell.is-framed.tce-hero-frame {
+  background: transparent;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px) 0;
+}
+
+.toolchain-root.toolchain-root .tc-cell.is-framed.tce-hero-frame > .tc-card {
+  position: relative;
+  border-radius: 0;
+}
+
+.toolchain-root.toolchain-root .tce-hero-frame > .tc-card::before,
+.toolchain-root.toolchain-root .tce-hero-frame > .tc-card::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, the sheet's full width */
+.toolchain-root.toolchain-root .tce-hero-frame > .tc-card::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+/* the two vertical rules, the sheet's full height */
+.toolchain-root.toolchain-root .tce-hero-frame > .tc-card::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-hair);
+  border-right: 1px solid var(--tc-hair);
+}
+
+/* Stacked (≤1000px, the shell collapses is-lead) the cells are rows:
+   full-reach rule extensions would strike the copy above, so the
+   bands retire and the card keeps a plain square 1px frame — the
+   frameworks-ruled precedent. */
+@media (max-width: 1000px) {
+  .toolchain-root.toolchain-root .tc-cell.is-framed.tce-hero-frame {
+    padding: 0 var(--tc-gut) clamp(28px, 5vw, 40px);
+  }
+
+  .toolchain-root.toolchain-root .tc-cell.is-framed.tce-hero-frame > .tc-card {
+    border: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root.toolchain-root .tce-hero-frame > .tc-card::before,
+  .toolchain-root.toolchain-root .tce-hero-frame > .tc-card::after {
+    display: none;
+  }
+}
+
 /* ---------- small screens ---------- */
 
 @media (max-width: 680px) {

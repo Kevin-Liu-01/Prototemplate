@@ -401,19 +401,38 @@ export default function Hero() {
 
   return (
     <section className='tc-sec tch-hero-sec' id='top' ref={root}>
-      {/* The founder's stack, in this fork's material: a genuine white card —
-          radius 12, no border, the shell-grey ground filling the corner
-          notches — with the aurora breathing through its paper; then the
-          SQUARE full-width wash band carrying the specimen cascade; then the
-          trust card repeating the card grammar below. */}
+      {/* The founder's recomposition ("the aurora should fill one component
+          while letting the text lines shine"): the stack is a calm paper card
+          — headline, sub and CTAs as crisp ink on quiet paper — above the ONE
+          framed panel the aurora completely fills, with the specimen cascade
+          living inside the light; then the trust card below. */}
       <div className='tc-hero tch-card'>
+        {/* The card keeps only the paper's materiality: the ambient breath and
+            grain at a whisper, the curtain event OFF — the aurora belongs to
+            the panel below, and the type up here owns clean paper. */}
         <AuroraWash
           className='aph-card-wash'
           preset='paper'
           darkPreset='paper-dark'
-          params={{ wash: 0.6, grain: 0.015, quiet: 0.7, quietLo: 0.2, quietHi: 0.85, envelope: 1.6, axisLift: 0.88 }}
-          darkParams={{ base: [0.051, 0.055, 0.071], wash: 0.85, envelope: 1.4 }}
-          speed={0.55}
+          params={{
+            base: [1, 1, 1],
+            curtain: 0,
+            wash: 0.24,
+            ambient: 0.3,
+            grain: 0.013,
+            breathe: 0.1,
+            bias: 0,
+          }}
+          darkParams={{
+            base: [0.051, 0.055, 0.071],
+            curtain: 0,
+            wash: 0.2,
+            ambient: 0.28,
+            grain: 0.022,
+            breathe: 0.1,
+            bias: 0,
+          }}
+          speed={0.5}
         />
         <div className='aph-card-in'>
           <Image
@@ -460,15 +479,49 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* The band: SQUARE, full rail width, the wash at full exposure — a
-          sheet of paper the light is passing through (ink-black northern sky
-          in dark mode), with the measured specimen cascade printed on it. */}
-      <div className='tc-hero-cell tch-band aph-band'>
+      {/* THE PANEL: the one component the aurora fills. A framed card in the
+          same mat grammar as the hero card, the wash running edge to edge at
+          full richness — sheet of lit paper by day, true northern sky by
+          night — with the measured specimen cascade printed inside it. */}
+      <div className='aph-panel'>
+        {/* The event at full exposure: the lit horizon runs just under the
+            source row — the caption and 'Deploy now' sit in the quiet sky
+            above it — and the rays pour down through the translations. The
+            quiet window now serves the panel's own type: a soft column over
+            the cascade's glyphs (x≈0.42) so the lines stay the cleanest thing
+            in the scene while the flanks and the spine keep the full blaze. */}
         <AuroraWash
-          className='aph-band-wash'
+          className='aph-panel-wash'
           preset='paper'
           darkPreset='paper-dark'
-          params={{ quiet: 1, quietLo: 0, quietHi: 1, axisLift: 0.74, envelope: 1.15 }}
+          params={{
+            axisLift: 0.73,
+            axisSlope: -0.05,
+            axisBow: -0.08,
+            rayLen: 0.9,
+            bias: 0.35,
+            wash: 1.05,
+            fold: 1.0,
+            quiet: 0.62,
+            quietLo: -0.2,
+            quietHi: 0.58,
+            quietW: 0.26,
+            quietX: 0.42,
+          }}
+          darkParams={{
+            axisLift: 0.73,
+            axisSlope: -0.05,
+            axisBow: -0.08,
+            rayLen: 0.95,
+            bias: 0.35,
+            wash: 1.15,
+            fold: 1.0,
+            quiet: 0.5,
+            quietLo: -0.2,
+            quietHi: 0.62,
+            quietW: 0.3,
+            quietX: 0.42,
+          }}
           speed={0.6}
         />
         <div className='ap-casc' data-hero-in>

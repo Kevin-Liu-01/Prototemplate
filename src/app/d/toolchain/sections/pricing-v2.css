@@ -1,21 +1,25 @@
 /* ============================================================
    PRICING v2 + PROOF + CLOSE — the page's conversion run.
 
-   Three sections, one file, all rendered from Pricing.tsx:
+   Three sections, one file, all rendered from Pricing.tsx, all on
+   the ruled-sheet grammar (founder round): frames are four 1px
+   rules drawn by full-bleed pseudo bands and clipped by their
+   sheet, so every line runs edge-to-edge and terminates at the
+   container's edges. Radius 0 on every frame; no mats, no reveals.
 
-   1. `.tcpv`  — the plans. The nested-frame grammar at full
-      confidence: one grey mat, two cards with the 12px radius so
-      the mat fills the corner notches; the Starter card's mat is
-      INK (white in dark mode) — the notch colour itself is the
-      emphasis, not a badge or a shadow. $0 at display scale, a
-      doubled-thread rule as the plan-defining line.
-   2. `.tcpq`  — Theo's quote as a landmark: a dark plate mounted
-      in the light mat, display-type quote, quiet metadata. The
-      plate uses the constant panel tokens so it reads identically
-      under both themes.
-   3. `.tcpx`  — the closing band. Full-bleed dark inside the rail,
-      the doubled thread standing at the copy's left flank (source
-      and translation, two lines at constant gauge).
+   1. `.tcpv` — the plans. One extended frame around two EXACTLY
+      equal columns (1fr / 1fr, seam drawn as its own extended
+      rule); the big numerals stepped down one display step and
+      one weight step — the anchor, not a shout. Starter keeps
+      the doubled-thread rule as its emphasis.
+   2. `.tcpq` — Theo's quote: the dark plate ruled onto the sheet
+      by the same extended frame, his real avatar (github
+      t3dotgg) beside the attribution. Panel tokens are constant,
+      so the plate never shifts between themes.
+   3. `.tcpx` — the closing band: dark ink washed by the page's
+      one light source (the shared prismatic field), the light
+      strongest off the copy so the type sits in the dark and the
+      band reads as directionally lit.
 
    Every selector is prefixed `.toolchain-root .tcp*`; this file is
    imported by the component and loads BEFORE styles.css, so the
@@ -39,39 +43,74 @@
   padding-bottom: 4px;
 }
 
-/* the mat: one grey ground, 1px seam between the two cards */
+/* the sheet: full section width, clips the frame's full-reach rules so
+   each one terminates at the sheet's edges — the rail's inner borders
+   left/right, the section's rules above/below. The top padding is the
+   reach the vertical rules get past the frame's top corner. */
+.toolchain-root .tcpv-sheet {
+  position: relative;
+  overflow: clip;
+  padding-top: clamp(12px, 1.4vw, 18px);
+}
+
+/* two EQUAL columns — same track, no gap; the seam is drawn, not spaced */
 .toolchain-root .tcpv-plans {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
-  gap: 1px;
-  padding: 1px;
-  margin: 0 var(--tc-gut) clamp(26px, 3vw, 36px);
-  background: var(--tc-hair);
-  border-radius: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  margin-inline: var(--tc-gut);
 }
 
-/* each plan is a 2px inner mat of its own; Starter's is ink, so the
-   featured card is ringed by the page's strongest colour and the
-   corner notches fill with it — emphasis in the grammar's own voice */
-.toolchain-root .tcpv-plan {
-  display: flex;
-  min-width: 0;
-  padding: 2px;
-  border-radius: 15px;
+.toolchain-root .tcpv-plans::before,
+.toolchain-root .tcpv-plans::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
 }
 
-.toolchain-root .tcpv-plan.is-star {
-  background: var(--tc-ink);
+/* the frame's two horizontal rules, the sheet's full width */
+.toolchain-root .tcpv-plans::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+/* the frame's two vertical rules, the sheet's full height */
+.toolchain-root .tcpv-plans::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-hair);
+  border-right: 1px solid var(--tc-hair);
 }
 
 .toolchain-root .tcpv-card {
-  flex: 1;
+  position: relative;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  padding: clamp(26px, 3vw, 38px) clamp(24px, 2.8vw, 36px) clamp(28px, 3.2vw, 38px);
-  border-radius: 12px;
+  padding: clamp(26px, 3vw, 36px) clamp(24px, 2.8vw, 36px) clamp(28px, 3.2vw, 38px);
+  border-radius: 0;
   background: var(--tc-card);
+}
+
+/* the column seam between the two plans: one more full-height extended
+   rule at the sheet's exact center, same ink as the frame */
+.toolchain-root .tcpv-card.is-ent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .toolchain-root .tcpv-top {
@@ -102,29 +141,31 @@
   border-color: rgba(147, 170, 241, 0.34);
 }
 
-/* the number gets the room a hero gets; both cards share the block
-   height so the defining rules land on one line across the seam */
+/* the number is still the section's anchor, one display step down and
+   one weight step lighter (founder round) — over the body, under a shout;
+   both cards share the block height so the defining rules land on one
+   line across the seam */
 .toolchain-root .tcpv-price {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  margin-top: clamp(18px, 2.2vw, 28px);
-  min-height: clamp(58px, 6.4vw, 88px);
+  margin-top: clamp(16px, 2vw, 24px);
+  min-height: clamp(48px, 5vw, 66px);
 }
 
 .toolchain-root .tcpv-num {
   font-family: var(--tc-disp);
-  font-weight: 500;
-  font-size: clamp(56px, 6.2vw, 88px);
-  line-height: 0.9;
-  letter-spacing: -0.045em;
+  font-weight: 400;
+  font-size: clamp(44px, 4.8vw, 64px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   color: var(--tc-ink);
 }
 
 .toolchain-root .tcpv-num.is-custom {
-  font-size: clamp(30px, 3.4vw, 46px);
-  letter-spacing: -0.035em;
+  font-size: clamp(27px, 2.9vw, 38px);
+  letter-spacing: -0.025em;
 }
 
 .toolchain-root .tcpv-per {
@@ -142,7 +183,7 @@
 }
 
 /* the plan-defining line: the statement, over the doubled thread on
-   Starter — two true 1px+ borders at the page's constant gauge — and
+   Starter — two true 1.5px borders at the page's constant gauge — and
    a single hairline on Enterprise. The rule weight IS the hierarchy. */
 .toolchain-root .tcpv-def {
   margin-top: clamp(16px, 2vw, 22px);
@@ -154,7 +195,7 @@
   max-width: 44ch;
 }
 
-.toolchain-root .tcpv-plan.is-star .tcpv-def {
+.toolchain-root .tcpv-card.is-star .tcpv-def {
   position: relative;
   border-top: var(--thread-gauge, 1.5px) solid var(--tc-ink);
   padding-top: 17px;
@@ -163,7 +204,7 @@
 }
 
 /* the second line of the pair, one gap below the border it doubles */
-.toolchain-root .tcpv-plan.is-star .tcpv-def::before {
+.toolchain-root .tcpv-card.is-star .tcpv-def::before {
   content: '';
   position: absolute;
   left: 0;
@@ -172,7 +213,7 @@
   border-top: var(--thread-gauge, 1.5px) solid var(--tc-ink);
 }
 
-/* tightened checklist: Starter runs two columns where there is room */
+/* one column each side — six real rows apiece, symmetric across the seam */
 .toolchain-root .tcpv-card .tc-list {
   margin-top: 18px;
   gap: 10px;
@@ -183,16 +224,11 @@
   line-height: 1.5;
 }
 
-.toolchain-root .tcpv-plan.is-star .tc-list {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 18px;
-}
-
-.toolchain-root .tcpv-plan.is-star .tc-list li {
+.toolchain-root .tcpv-card.is-star .tc-list li {
   color: var(--tc-ink-2);
 }
 
-.toolchain-root .tcpv-plan.is-star .tc-list li::before {
+.toolchain-root .tcpv-card.is-star .tc-list li::before {
   border-color: var(--tc-ink);
 }
 
@@ -208,10 +244,12 @@
   align-self: auto;
 }
 
-/* compare row: unchanged grammar, new destination */
+/* compare row: the sheet's footer strip. Its top rule is the frame's own
+   extended bottom rule (never a second stacked hairline); the text is
+   inset to the cards' inner padding so the vertical rules cross clean. */
 .toolchain-root .tcpv-compare {
-  padding: 20px var(--tc-gut);
-  border-top: 1px solid var(--tc-hair);
+  position: relative;
+  padding: 18px calc(var(--tc-gut) + clamp(24px, 2.8vw, 36px)) 20px;
   font-size: 13px;
   color: var(--tc-ink-3);
 }
@@ -233,36 +271,75 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* stacked: the seam turns horizontal — still one extended 1px rule */
+  .toolchain-root .tcpv-card.is-ent::before {
+    left: -100vw;
+    right: -100vw;
+    width: auto;
+    top: 0;
+    bottom: auto;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
   .toolchain-root .tcpv-price {
     min-height: 0;
   }
 }
 
-@media (max-width: 560px) {
-  .toolchain-root .tcpv-plan.is-star .tc-list {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 /* ---------- 2. the proof plate ---------- */
 
-.toolchain-root .tcpq-wrap {
-  padding: clamp(40px, 5vw, 64px) var(--tc-gut);
+/* the section clips the plate's full-reach frame, so each rule
+   terminates at the section's own edges */
+.toolchain-root .tcpq-sec {
+  position: relative;
+  overflow: clip;
 }
 
-/* the same box-inside-a-box as the bento, scaled to a landmark: light
-   mat, 2px reveal, dark plate. Panel tokens are constant, so the plate
-   is the one surface that never shifts between themes. */
+.toolchain-root .tcpq-wrap {
+  padding: clamp(44px, 5.4vw, 72px) var(--tc-gut);
+}
+
+/* the ruled mount (founder round: no mat, no reveal, no rounding): the
+   dark plate is framed by four 1px rules that run the sheet's full
+   width and the section's full height. Panel tokens are constant, so
+   the plate is the one surface that never shifts between themes. */
 .toolchain-root .tcpq-mat {
+  position: relative;
   margin: 0;
-  padding: 2px;
-  border-radius: 15px;
-  background: var(--tc-hair);
+}
+
+.toolchain-root .tcpq-mat::before,
+.toolchain-root .tcpq-mat::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, the sheet's full width */
+.toolchain-root .tcpq-mat::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+/* the two vertical rules, the section's full height */
+.toolchain-root .tcpq-mat::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-hair);
+  border-right: 1px solid var(--tc-hair);
 }
 
 .toolchain-root .tcpq-plate {
   position: relative;
-  border-radius: 13px;
+  border-radius: 0;
   background: var(--tc-panel);
   padding: clamp(34px, 4.4vw, 56px) clamp(26px, 4.4vw, 64px) clamp(30px, 3.6vw, 44px);
   overflow: hidden;
@@ -341,26 +418,46 @@
 
 .toolchain-root .tcpq-attr {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 14px;
   flex-wrap: wrap;
   margin-top: clamp(28px, 3.4vw, 40px);
-  padding-top: 18px;
+  padding-top: 20px;
   border-top: 1px solid var(--tc-panel-rule);
+}
+
+/* the real avatar (github.com/t3dotgg.png), square in the ruled grammar,
+   ringed the way every panel on a dark plate is ringed */
+.toolchain-root .tcpq-face {
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 0;
+  outline: 1px solid rgba(255, 255, 255, 0.25);
+  outline-offset: 2px;
+}
+
+.toolchain-root .tcpq-who {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .toolchain-root .tcpq-name {
   font-size: 14px;
   font-weight: 500;
+  line-height: 1.2;
   color: #ffffff;
 }
 
 .toolchain-root .tcpq-role {
-  font-size: 13px;
+  font-size: 12.5px;
+  line-height: 1.2;
   color: var(--tc-panel-dim);
 }
 
-.toolchain-root .tcpq-attr a {
+.toolchain-root .tcpq-attr > a {
   margin-left: auto;
   display: inline-flex;
   align-items: center;
@@ -370,7 +467,7 @@
   transition: color 0.18s ease;
 }
 
-.toolchain-root .tcpq-attr a:hover {
+.toolchain-root .tcpq-attr > a:hover {
   color: var(--tc-panel-ink);
 }
 
@@ -382,7 +479,10 @@
 /* ---------- 3. the closing band ---------- */
 
 .toolchain-root .tcpx {
+  position: relative;
   background: var(--tc-dark);
+  overflow: hidden;
+  isolation: isolate;
 }
 
 /* the band never goes borderless into the footer: in dark mode the two
@@ -393,7 +493,33 @@
   border-bottom: 1px solid var(--tc-hair);
 }
 
+/* the page's one light source behind the final ask. The mask keeps the
+   copy's flank in the dark and lets the burst carry the band's right —
+   content composed around the light (AESTHETIC_ADDENDUM 2b). screen
+   blend: the field only ever adds light to the ink. */
+.toolchain-root .tcpx-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  mask-image: linear-gradient(
+    97deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.16) 20%,
+    rgba(0, 0, 0, 0.3) 44%,
+    rgba(0, 0, 0, 0.66) 66%,
+    rgba(0, 0, 0, 0.92) 84%,
+    #000 100%
+  );
+}
+
 .toolchain-root .tcpx-in {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -459,12 +585,15 @@
   background: rgba(255, 255, 255, 0.86);
 }
 
+/* the line button stands on the burst's brightest flank: a translucent
+   ink plate under it keeps the label legible in any freeze frame */
 .toolchain-root .tcpx .tc-btn-line {
-  border-color: rgba(255, 255, 255, 0.24);
-  color: rgba(255, 255, 255, 0.86);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(12, 14, 17, 0.55);
 }
 
 .toolchain-root .tcpx .tc-btn-line:hover {
-  border-color: rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(12, 14, 17, 0.72);
 }

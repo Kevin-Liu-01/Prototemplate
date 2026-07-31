@@ -13,25 +13,40 @@
  * THE LIGHT — everything below composes from the same closed-form field, so
  * the render stays analytic end to end (the only time term is a slow
  * low-frequency phase, never noise):
- *  1. A luminous core rides the corridor: a gaussian lift off paper around the
- *     axis (a few % — feathered above, longer below like the band's own tail),
- *     hottest around the source and modulated by cos²(arg C), so soft light
- *     crests sit exactly under the drawn wavefronts — the ink fringes ride ON
- *     the light. A thin-film shimmer tints the lift with the house prismatic
- *     cos-palette (src/lib/prismatic-field.ts), keyed on the slow path-sum
- *     phase (d1+d2), so hue travels outward with the rings.
- *  2. The gate is the SOURCE: a tight bloom at the pair's midpoint lifts even
+ *  1. INVERTED EXPOSURE (light paper): white paper leaves the lift ~2% of
+ *     headroom, so on the light theme the corridor is first PRESSED — a
+ *     graphite strip several % below paper, crisp-edged, its density dying
+ *     before the frame edges exactly like the page's drawn rules — and the
+ *     light is then cut INTO that density. The strip is the film: fringes
+ *     inside it flip polarity and render as light (the ghost tail below stays
+ *     ink-on-paper — negative above the bottom frame line, contact print
+ *     below it), and the drawn frame line at the strip's boundary is the
+ *     film-still's own frame. The dark theme needs none of this — near-black
+ *     paper is already all headroom — so every inverted-exposure term rides
+ *     uniforms that dark params zero out.
+ *  2. A luminous core rides the corridor: a gaussian lift off the pressed
+ *     base around the axis, hottest around the source and modulated by
+ *     cos²(arg C), so soft light crests sit exactly under the wavefronts. A
+ *     thin-film shimmer tints the lift with the house prismatic cos-palette
+ *     (src/lib/prismatic-field.ts), keyed on the slow path-sum phase (d1+d2),
+ *     so hue travels outward with the rings; a selective radial annulus lets
+ *     one or two crest arcs genuinely gleam — a soft luminous swell with real
+ *     pigment, not just a brighter line.
+ *  3. The gate is the SOURCE: a tight bloom at the pair's midpoint lifts even
  *     the ink into light (the brightest pixels on the page), wrapped in a
  *     wider unshadowed halo — the DOM ring and mark sit inside a halo, never a
- *     hole. Fringe ink is intensity-graded by distance from the source, so the
- *     geometry reads as light radiating from the gate and decaying.
- *  3. The null reads as SHADOW: the lift is scaled by the same contrast |C|/2
+ *     hole. Against the pressed strip the bloom finally reads as a true
+ *     bright source: the strip burns to white around the gate and decays to
+ *     graphite along the rails. Fringe intensity is graded by distance from
+ *     the source, so the geometry reads as light radiating and decaying.
+ *  4. The null reads as SHADOW: the lift is scaled by the same contrast |C|/2
  *     that kills the fringes, so along the destructive seam the corridor dims
- *     smoothly to plain paper — the calm is the absence of light.
- *  4. A pressed edge frames the exposed strip: a faint multiplicative
- *     darkening straddling the corridor's feathered boundary (a film still's
- *     frame), fading where the shadow passes and with distance from the hot
- *     center.
+ *     to the unexposed base — on light paper a wedge of raw pressed graphite,
+ *     the shadowed opening the headline sits under. How fast the shade
+ *     develops with distance is a uniform (seamDev), tuned per exposure.
+ *  5. A pressed edge frames the exposed strip: on dark, the original faint
+ *     multiplicative darkening straddling the feathered boundary; on light,
+ *     a crisp gauge-width frame line drawn at the strip's exact boundary.
  *
  * The pair is ANTI-phased and its MIDPOINT SITS ON THE GATE MARK at
  * (50%, axis). That placement is the composition: the fringes of a pair are
@@ -86,8 +101,10 @@ export type WaveParams = {
   /** Carrier phase drift in rad/s. 0.035 ≈ one fringe step every 90s —
       near-still by doctrine; the null and the envelope never move at all. */
   drift: number;
-  /** Peak of the luminous corridor lift, 0..1 — how far the core moves off
-      paper toward `glow`. Keep low: the light is a few % by doctrine. */
+  /** Peak of the luminous corridor lift, 0..1 — how far the core rises off
+      the base toward `glow`. On light paper the base is the pressed strip,
+      so mid values read as real light while leaving density for the cut
+      fringes to register against; flooding it would white the film out. */
   coreLift: number;
   /** Signed chroma amplitude of the thin-film shimmer inside the lift. The
       palette offsets add to `glow` per channel, so on a near-white glow the
@@ -104,8 +121,32 @@ export type WaveParams = {
       are brightest at the source and decay outward on this scale. */
   falloff: number;
   /** Pressed-edge darkening at the corridor boundary, 0..1, multiplicative —
-      the exposed strip's frame. */
+      the exposed strip's soft frame (the dark exposure's device; the light
+      exposure zeroes it and draws the crisp frame line instead). */
   press: number;
+  /** Density of the pressed strip, 0..1 — how far the corridor sinks from
+      paper toward ink before any light lands. The inverted exposure's whole
+      dynamic range hangs on this: several % on light paper, 0 on dark. */
+  pressBase: number;
+  /** 0..1 polarity of the fringes inside the strip: 1 renders them as light
+      cut through the density (light paper), 0 keeps them ink (dark theme,
+      whose ink is already white light on near-black). */
+  lightLine: number;
+  /** Max coverage of a light-polarity fringe line, the inverted twin of
+      inkAlpha. Unused while lightLine is 0. */
+  lightAlpha: number;
+  /** Strength of the crest gleam — a soft luminous swell with real thin-film
+      pigment on the one or two crest arcs the annulus selects, 0..1. */
+  gleam: number;
+  /** Radius of the gleam annulus in CSS px from the gate — outside the halo
+      flood, so the gleaming arcs read against density, not against white. */
+  gleamRadius: number;
+  /** How the null's shade develops with distance from the gate, as fractions
+      of falloff: [start, full]. The dark exposure keeps the original late
+      [0.25, 1] (no smoky blades through the bloom); the light exposure
+      develops earlier so the shadowed opening already reads inside the
+      strip. */
+  seamDev: [number, number];
   ink: [number, number, number];
   paper: [number, number, number];
   /** Color the luminous core lifts toward (near-white and slightly warm on
@@ -143,13 +184,19 @@ export const WAVE_DEFAULTS: WaveParams = {
   inkAlpha: 0.68,
   accentAmt: 0.55,
   drift: 0.035,
-  coreLift: 0.85,
+  coreLift: 0.5,
   shimmer: 0.06,
-  bloom: 0.9,
+  bloom: 1,
   bloomRadius: 46,
   haloRadius: 150,
   falloff: 520,
-  press: 0.032,
+  press: 0,
+  pressBase: 0.17,
+  lightLine: 1,
+  lightAlpha: 1,
+  gleam: 1,
+  gleamRadius: 330,
+  seamDev: [0.07, 0.42],
   ink: [0.059, 0.067, 0.075],
   paper: [0.984, 0.984, 0.98],
   glow: [1.0, 0.998, 0.99],
@@ -187,6 +234,12 @@ uniform float uBloomR;
 uniform float uHaloR;
 uniform float uFalloff;
 uniform float uPress;
+uniform float uPressBase;
+uniform float uLineLight;
+uniform float uLightAlpha;
+uniform float uGleam;
+uniform float uGleamR;
+uniform vec2 uSeamDev;
 uniform vec3 uInk;
 uniform vec3 uPaper;
 uniform vec3 uGlow;
@@ -261,13 +314,25 @@ void main() {
   /* Emission falloff: everything the source casts decays on one scale. */
   float fall = exp(-dGate / uFalloff);
 
+  /* The pressed strip — the inverted exposure's film. Crisp at the band
+     boundary (the frame line lives there), and its density dies before the
+     frame edges on the same schedule as the page's drawn rules, so it reads
+     as drawn on the paper rather than banded across it. All of it scales by
+     uPressBase, which the dark exposure zeroes. */
+  float xn = px.x / uResolution.x;
+  float stripX = smoothstep(0.012, 0.11, xn) * (1.0 - smoothstep(0.89, 0.988, xn));
+  float stripY = 1.0 - smoothstep(uBandHalf * 0.965, uBandHalf * 1.005, ady);
+  float strip = stripY * stripX;
+
   /* The null as shadow: the same contrast that kills the fringes dims the
      exposure, so the seam through the gate is the ABSENCE of light and the
      headline's calm reads as shade, not as a mask. The shade DEVELOPS with
-     distance — near the source its own light floods the seam (no smoky
-     blades through the bloom); by the headline the calm is fully open. */
+     distance on the seamDev schedule — near the source its own light floods
+     the seam (no smoky blades through the bloom); by the headline the calm
+     is fully open. On the pressed strip the developed seam bares the raw
+     graphite: the shadowed opening. */
   float shadow = smoothstep(0.06, 0.52, norm);
-  float seamGrow = smoothstep(0.25, 1.0, dGate / uFalloff);
+  float seamGrow = smoothstep(uSeamDev.x, uSeamDev.y, dGate / uFalloff);
   float seam = mix(1.0, shadow, seamGrow);
 
   /* Luminous corridor: a gaussian exposure around the axis — harder feather
@@ -284,6 +349,17 @@ void main() {
      before gradTheta can alias. */
   float waveBand = 0.5 + 0.5 * cos(2.0 * theta);
   float lift = uCoreLift * corridor * seam * (0.78 + 0.22 * waveBand * vis);
+
+  /* The gleam: a radial annulus outside the halo flood selects one or two
+     antinodal crest arcs and gives them a soft luminous swell — wider than
+     the drawn line (a gaussian on the same screen-space fringe distance),
+     gated by contrast and the seam so it can never gleam through the null. */
+  float crest = 1.0 - mod(floor(idx + 0.5), 2.0);
+  float ringOff = (dGate - uGleamR) / max(uGleamR * 0.2, 1.0);
+  float ringSel = exp(-ringOff * ringOff);
+  float swellProf = exp(-(dpx * dpx) / (uGauge * uGauge * 12.0));
+  float swell = uGleam * crest * ringSel * swellProf * smoothstep(0.72, 0.96, norm) * strip * vis * seam;
+  lift = min(lift + swell, 1.0);
 
   /* The wide halo is the source's own ambience. The seam grazes it — a
      narrow, shallow dimming (tighter window than the corridor's shadow), so
@@ -304,9 +380,16 @@ void main() {
   vec3 film = filmTint(specPh);
   float developed = 1.0 - exp(-dGate / uFalloff);
   vec3 tintOff = film - vec3(dot(film, vec3(1.0 / 3.0)));
-  vec3 glowCol = uGlow + tintOff * (uShimmer * developed);
+  vec3 glowCol = uGlow + tintOff * (uShimmer * developed + swell * 0.5);
 
-  vec3 bg = mix(uPaper, glowCol, clamp(lift, 0.0, 1.0));
+  /* The exposure lands on the pressed base, not on raw paper — that press is
+     the light theme's entire dynamic range (paper→graphite→white instead of
+     white→white). Density rolls slightly deeper toward the frame lines, a
+     film strip's cross-section rather than a flat banner. Dark leaves
+     pressBase at 0 and this is exactly uPaper. */
+  float dens = uPressBase * strip * (1.0 + 0.25 * smoothstep(uBandHalf * 0.5, uBandHalf * 0.98, ady));
+  vec3 base = mix(uPaper, uInk, dens);
+  vec3 bg = mix(base, glowCol, clamp(lift, 0.0, 1.0));
 
   /* Pressed edge: the exposed strip's frame — a faint multiplicative
      darkening peaking exactly where the fringes die (the band boundary), so
@@ -320,18 +403,45 @@ void main() {
   float press = uPress * pressBand * (0.12 + 0.88 * pressX) * (0.2 + 0.8 * shadow);
   bg *= 1.0 - press;
 
-  /* Fringe ink, intensity-graded by the emission falloff — strongest lines
-     at the source, decaying along the corridor. */
-  float grade = mix(0.4, 1.0, fall);
-  float aOut = clamp(cover * vis * envY * uInkAlpha * grade, 0.0, 1.0);
+  /* The frame line: the strip's boundary drawn as a crisp gauge-width rule,
+     top and bottom, printed over whatever the light is doing — the film
+     still's frame holds even through the flood. Derived from pressBase, so
+     the dark exposure (pressBase 0) never sees it. */
+  float dEdge = abs(ady - uBandHalf);
+  float frame = (1.0 - smoothstep(uGauge * 0.6, uGauge * 1.8, dEdge)) * stripX;
+  bg *= 1.0 - frame * min(uPressBase * 2.4, 0.25);
 
-  /* The chroma: antinodal crest lines (every other ring) carry the same
-     thin-film pigment as the shimmer, mixed toward ink so it stays pigment,
-     strongest against the antinodal axis and near the source. */
-  float crest = 1.0 - mod(floor(idx + 0.5), 2.0);
+  /* Fringe lines, intensity-graded by the emission falloff — strongest at
+     the source, decaying along the corridor. Inside the pressed strip the
+     polarity flips (uLineLight): the lines render as LIGHT cut through the
+     density, seated clear of the frame line; outside — the ghost tail and
+     the strip's faded ends — they stay ink on paper. Negative above the
+     bottom frame line, contact print below it. */
+  float grade = mix(0.4, 1.0, fall);
   float accentMask = crest * smoothstep(0.8, 0.99, norm) * uAccentAmt * (0.3 + 0.7 * fall);
   vec3 pigment = mix(film, uInk, 0.42);
-  vec3 lineCol = mix(uInk, pigment, accentMask);
+
+  float wLight = uLineLight * strip;
+  float stripLineEnv = strip * (1.0 - smoothstep(uBandHalf * 0.86, uBandHalf * 0.97, ady));
+  float lineEnv = mix(envY, stripLineEnv, wLight);
+  float lineAlpha = mix(uInkAlpha, uLightAlpha, wLight);
+  /* Light-polarity lines are LIGHT, so they bloom: a soft luminous sheath a
+     few gauges wide wraps the crisp core, and distance dims them on a
+     gentler grade than ink — a decaying beam, not a fading pen stroke. */
+  float sheath = exp(-(dpx * dpx) / (uGauge * uGauge * 9.0)) * (0.35 + 0.65 * fall);
+  float lineCover = mix(cover, max(cover, 0.6 * sheath), wLight);
+  float lineGrade = mix(grade, mix(0.7, 1.0, fall), wLight);
+  float aOut = clamp(lineCover * vis * lineEnv * lineAlpha * lineGrade, 0.0, 1.0);
+
+  /* The chroma: antinodal crest lines (every other ring) carry the same
+     thin-film pigment as the shimmer — mixed toward ink so ink-polarity
+     lines stay pigment, and toward the bloom's white so light-polarity
+     lines stay light. On the light polarity the pigment is confined to the
+     gleam annulus, so ONE OR TWO arcs carry the color and the rest of the
+     cut light stays white — a gleam, not a sample sheet. */
+  vec3 inkLine = mix(uInk, pigment, accentMask);
+  vec3 lightLine = mix(uBloomCol, film, accentMask * 0.55 * ringSel);
+  vec3 lineCol = mix(inkLine, lightLine, wLight);
 
   vec3 col = mix(bg, lineCol, aOut);
 
@@ -453,6 +563,12 @@ function getEngine(): Engine | null {
   const uHaloR = loc('uHaloR');
   const uFalloff = loc('uFalloff');
   const uPress = loc('uPress');
+  const uPressBase = loc('uPressBase');
+  const uLineLight = loc('uLineLight');
+  const uLightAlpha = loc('uLightAlpha');
+  const uGleam = loc('uGleam');
+  const uGleamR = loc('uGleamR');
+  const uSeamDev = loc('uSeamDev');
   const uInk = loc('uInk');
   const uPaper = loc('uPaper');
   const uGlow = loc('uGlow');
@@ -526,6 +642,12 @@ function getEngine(): Engine | null {
       ctx.uniform1f(uHaloR, params.haloRadius * dpr);
       ctx.uniform1f(uFalloff, params.falloff * dpr);
       ctx.uniform1f(uPress, params.press);
+      ctx.uniform1f(uPressBase, params.pressBase);
+      ctx.uniform1f(uLineLight, params.lightLine);
+      ctx.uniform1f(uLightAlpha, params.lightAlpha);
+      ctx.uniform1f(uGleam, params.gleam);
+      ctx.uniform1f(uGleamR, params.gleamRadius * dpr);
+      ctx.uniform2f(uSeamDev, params.seamDev[0], params.seamDev[1]);
       ctx.uniform3f(uInk, params.ink[0], params.ink[1], params.ink[2]);
       ctx.uniform3f(uPaper, params.paper[0], params.paper[1], params.paper[2]);
       ctx.uniform3f(uGlow, params.glow[0], params.glow[1], params.glow[2]);

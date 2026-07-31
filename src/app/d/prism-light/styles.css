@@ -4326,25 +4326,33 @@
    burst's dark eye at the block's center; layer two is the EXPOSURE FLOOR —
    a minimum ink density over the entire fill, deepening to near-ink at both
    ends — so no streak anywhere in the letter mask approaches paper luminance
-   and every glyph keeps a hard edge against the white. */
+   and every glyph keeps a hard edge against the white. R4 learns the r0
+   lesson the other way round: the INK now comes from the field itself —
+   run at the exposure where the wing shows its own dark lanes between
+   streaks — and the drawn floor drops to a thin safeguard (0.14 mid), so
+   the streak highlights keep their full saturation and the local contrast
+   inside every glyph is the field's, not the veil's. The ends still dive
+   deep and the brightest possible streak stays well under paper. */
 .prismlight-root .plh-block-shade {
   position: absolute;
   inset: 0;
   background:
     radial-gradient(
-      26% 44% at 50% 52%,
-      rgba(0, 0, 0, 0.56) 0%,
-      rgba(0, 0, 0, 0.28) 55%,
+      16% 30% at 50% 52%,
+      rgba(0, 0, 0, 0.26) 0%,
+      rgba(0, 0, 0, 0.12) 55%,
       rgba(0, 0, 0, 0) 100%
     ),
     linear-gradient(
       90deg,
-      rgba(0, 0, 0, 0.86) 0%,
-      rgba(0, 0, 0, 0.5) 10%,
-      rgba(0, 0, 0, 0.4) 26%,
-      rgba(0, 0, 0, 0.4) 74%,
-      rgba(0, 0, 0, 0.5) 90%,
-      rgba(0, 0, 0, 0.86) 100%
+      rgba(0, 0, 0, 0.66) 0%,
+      rgba(0, 0, 0, 0.34) 4%,
+      rgba(0, 0, 0, 0.18) 12%,
+      rgba(0, 0, 0, 0.14) 34%,
+      rgba(0, 0, 0, 0.14) 66%,
+      rgba(0, 0, 0, 0.18) 88%,
+      rgba(0, 0, 0, 0.34) 96%,
+      rgba(0, 0, 0, 0.66) 100%
     );
 }
 
@@ -4356,7 +4364,25 @@
   display: block;
 }
 
-/* Each half of the block clips one copy of the field; the right copy is
+/* One sampling row per line of type: the row's center tracks the line's
+   visual middle, so each line carries the burst's bright axis through its
+   own letterforms. The rows only position; the halves clip. */
+.prismlight-root .plh-block-row {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+}
+
+.prismlight-root .plh-block-row.is-1 {
+  top: 0;
+}
+
+.prismlight-root .plh-block-row.is-2 {
+  bottom: 0;
+}
+
+/* Each half of the row clips one copy of the field; the right copy is
    mirrored, so the seam at the block's center is continuous and the profile
    edge→ring→core reads identically on both sides. */
 .prismlight-root .plh-block-half {
@@ -4375,20 +4401,28 @@
   right: 0;
 }
 
-/* The canvas runs ~2× taller than the block so both lines sample around the
-   burst's bright horizontal axis, and 2× wider than its half so block-edge →
-   block-center spans field-edge → field-core. */
+/* The window each row opens on the field, aimed by anatomy (see the
+   field-lab survey): the burst is a bright pinch at the origin flanked by
+   streaming horizontal wings that widen with |x|, dark cones directly
+   above and below the pinch, and the saturated pink/cyan/gold shears at
+   the wing–cone boundaries. Each row's visible sliver rides the wing band
+   (canvas height 275% of the row, centered: y ∈ [−0.36, +0.36]), and
+   width 206% at left 0 runs the window from deep wing (x ≈ −3.2) to just
+   short of the pinch (x ≈ −0.1) at the seam. The right half mirrors about
+   a box center 0.1 units left of its seam edge (left: −106%), keeping the
+   two halves sample-continuous, streaks converging on the block's center
+   from both sides. */
 .prismlight-root .plh-field-word {
   position: absolute;
   left: 0;
-  width: 200%;
-  top: -52%;
-  height: 204%;
+  width: 206%;
+  top: -87.5%;
+  height: 275%;
   display: block;
 }
 
 .prismlight-root .plh-block-half.is-r .plh-field-word {
-  left: -100%;
+  left: -106%;
   transform: scaleX(-1);
 }
 
@@ -4413,48 +4447,87 @@
   isolation: isolate;
 }
 
-/* The dispersion wedge: narrow at the entry beam, wide at the locale fan.
-   Clip on the lighten wrapper, not the canvas, so the cone edge is exact. */
+/* The dispersion fan: it begins INSIDE the drawn prism and opens to the
+   plate's full right edge, so every locale tick stands in the light. Clip on
+   the lighten wrapper, not the canvas, so the fan's edges are exact. */
 .prismlight-root .plh-spec-light {
   position: absolute;
   inset: 0;
   mix-blend-mode: lighten;
   pointer-events: none;
-  clip-path: polygon(0 46%, 0 54%, 100% 96%, 100% 4%);
+  clip-path: polygon(37% 46.5%, 37% 53.5%, 100% 100%, 100% 0%);
   overflow: hidden;
 }
 
+/* The field's dark convergence eye is parked at the fan's origin (37%, the
+   prism's heart) so the light visibly GATHERS in the glass and blooms open
+   across the fan body — brightest in the fan, dark at the apex. */
 .prismlight-root .plh-spec-field {
   position: absolute;
-  left: -14%;
-  width: 148%;
+  left: -28%;
+  width: 130%;
   top: -46%;
   height: 192%;
   display: block;
 }
 
-/* Dark at the entry, opening toward the fan: the beam gathers spectrum as it
-   crosses the plate, and the wedge's mouth is the brightest thing in it. */
+/* Dark at the apex, opening toward the ticks: the beam becomes spectrum as
+   it leaves the glass, and the fan's mouth is the brightest thing on the
+   plate. */
 .prismlight-root .plh-spec-shade {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(0, 0, 0, 0.82) 0%,
-    rgba(0, 0, 0, 0.42) 26%,
-    rgba(0, 0, 0, 0.1) 55%,
-    rgba(0, 0, 0, 0) 78%
+    rgba(0, 0, 0, 0.85) 30%,
+    rgba(0, 0, 0, 0.4) 48%,
+    rgba(0, 0, 0, 0.08) 68%,
+    rgba(0, 0, 0, 0) 84%
   );
 }
 
-/* The one white thing on the plate: the source beam entering. */
+/* The one white thing on the plate: the source beam crossing the dark and
+   dying inside the glass — it enters, the fan leaves. */
 .prismlight-root .plh-spec-beam {
   position: absolute;
   left: 0;
   top: calc(50% - 1px);
-  width: 21%;
+  width: 37%;
   height: 2px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.85) 78%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* The prism itself, drawn as glass: an outer triangle of luminous edge with
+   an inner triangle of near-plate dark inset 2px, so the silhouette reads as
+   1.5–2px glass lines with a glint at the apex. It paints UNDER the lighten
+   wrapper — the fan blooms over its exit face rather than hiding behind it —
+   and the inner fill is slightly translucent so the gathered light shows
+   through the glass. */
+.prismlight-root .plh-spec-prism {
+  position: absolute;
+  left: 28.5%;
+  top: 21%;
+  width: 17%;
+  height: 58%;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  background: linear-gradient(
+    200deg,
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0.16) 55%,
+    rgba(255, 255, 255, 0.34)
+  );
+}
+
+.prismlight-root .plh-spec-prism i {
+  position: absolute;
+  inset: 2px;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  background: rgba(14, 16, 20, 0.82);
 }
 
 .prismlight-root .plh-spec-en {
@@ -4596,6 +4669,93 @@
   );
 }
 
+/* The packet: one pulse of near-white light travelling the thread's own
+   path from the headline into fra. It lives INSIDE the masked lighten group
+   and paints above the shade, so it exists only where ribbon ink is and
+   stays lit through the shaded upper reach. The anchors are sampled off the
+   thread's cubic at t = 0, ¼, ½, ¾, 1; the blob is 140px wide, so the
+   4-segment approximation never visibly leaves the stroke. Peaks at 0.85
+   alpha — a glint riding a hairline, still under paper. */
+.prismlight-root .plh-t-pulse {
+  position: absolute;
+  left: 12.8%;
+  top: 20%;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.prismlight-root .plh-t-pulse::before {
+  content: '';
+  position: absolute;
+  left: -70px;
+  top: -70px;
+  width: 140px;
+  height: 140px;
+  background:
+    radial-gradient(
+      closest-side,
+      rgba(255, 255, 255, 0.85),
+      rgba(255, 255, 255, 0.3) 40%,
+      rgba(255, 255, 255, 0) 70%
+    ),
+    radial-gradient(
+      closest-side at 42% 44%,
+      rgba(150, 185, 255, 0.4),
+      rgba(150, 185, 255, 0) 62%
+    ),
+    radial-gradient(
+      closest-side at 58% 56%,
+      rgba(255, 190, 140, 0.36),
+      rgba(255, 190, 140, 0) 62%
+    );
+}
+
+/* Reduced motion sees the composed still: threads lit, no traffic. */
+@media (prefers-reduced-motion: no-preference) {
+  .prismlight-root .plh-t-pulse {
+    animation: plh-pulse 3.6s linear 2.2s infinite;
+  }
+}
+
+@keyframes plh-pulse {
+  0% {
+    left: 12.8%;
+    top: 20%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  18% {
+    left: 24.5%;
+    top: 30.5%;
+  }
+  34% {
+    left: 34.9%;
+    top: 40.9%;
+  }
+  50% {
+    left: 43.9%;
+    top: 52.1%;
+  }
+  63% {
+    left: 52.5%;
+    top: 68%;
+    opacity: 1;
+  }
+  70% {
+    left: 52.5%;
+    top: 68%;
+    opacity: 0;
+  }
+  100% {
+    left: 52.5%;
+    top: 68%;
+    opacity: 0;
+  }
+}
+
 .prismlight-root .plh-band {
   position: absolute;
   left: 0;
@@ -4718,9 +4878,11 @@
   white-space: nowrap;
 }
 
-/* The horizon burst: prism-light owns it, so it runs a step brighter than
-   toolchain's flanks — centered on the band's own centerline, its dark
-   convergence eye at the serving POP (52%), light streaming along the band. */
+/* The horizon burst: prism-light owns it — centered on the band's own
+   centerline, its dark convergence eye at the serving POP (52%), and the
+   mask drawn WIDE so the light streams along nearly the strip's whole
+   length: a low, long dawn line, brightest at fra, fading into ink before
+   either end. */
 .prismlight-root .plh-h-light {
   position: absolute;
   left: 0;
@@ -4730,8 +4892,8 @@
   z-index: 1;
   mix-blend-mode: lighten;
   pointer-events: none;
-  mask-image: radial-gradient(58% 55% at 52% 50%, #000 42%, transparent 100%);
-  -webkit-mask-image: radial-gradient(58% 55% at 52% 50%, #000 42%, transparent 100%);
+  mask-image: radial-gradient(82% 56% at 52% 50%, #000 34%, transparent 100%);
+  -webkit-mask-image: radial-gradient(82% 56% at 52% 50%, #000 34%, transparent 100%);
 }
 
 /* The band's typography lanes, kept out of the streaks. The wrapper is 480px
@@ -4835,23 +4997,28 @@
 /* The exposure ramp, re-drawn for black paper: the floor becomes a minimum
    PAPER density — white overlays lifting the fill toward white at both ends
    and at the eye — so no streak anywhere in the letter mask approaches the
-   ink-black ground and every glyph keeps a hard edge against it. */
+   ink-black ground and every glyph keeps a hard edge against it. The dark
+   mid floor sits a step above the light one (0.32 vs 0.24): the fields run
+   hot in R4, and the extra floor keeps the glyphs' dimmest passages clearly
+   off the black. */
 [data-theme='dark'] .prismlight-root .plh-block-shade {
   background:
     radial-gradient(
-      26% 44% at 50% 52%,
-      rgba(255, 255, 255, 0.56) 0%,
-      rgba(255, 255, 255, 0.28) 55%,
+      18% 34% at 50% 52%,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.22) 55%,
       rgba(255, 255, 255, 0) 100%
     ),
     linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.86) 0%,
-      rgba(255, 255, 255, 0.5) 10%,
-      rgba(255, 255, 255, 0.4) 26%,
-      rgba(255, 255, 255, 0.4) 74%,
-      rgba(255, 255, 255, 0.5) 90%,
-      rgba(255, 255, 255, 0.86) 100%
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0.44) 4%,
+      rgba(255, 255, 255, 0.32) 12%,
+      rgba(255, 255, 255, 0.28) 34%,
+      rgba(255, 255, 255, 0.28) 66%,
+      rgba(255, 255, 255, 0.32) 88%,
+      rgba(255, 255, 255, 0.44) 96%,
+      rgba(255, 255, 255, 0.8) 100%
     );
 }
 

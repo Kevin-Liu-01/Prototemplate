@@ -80,13 +80,15 @@
   gap: 10px;
 }
 
-/* The mixed row's mat ground is the shell hairline token; in the
-   dark theme that token is the plum seam color, and a full hero
-   plate of it breaks the one-surface-family doctrine (see the
-   ldx-guard note in locadex.css). Same fix, same reasoning: the
-   plate joins the card family, the seams keep the mortar. */
-[data-theme='dark'] .toolchain-root .ldx-hero-sec .tc-row.is-lead {
-  background: var(--tc-card);
+/* Founder round (ruled frame): the mat ground retires in BOTH themes.
+   The row returns to the rail's paper so the sheet's hair rules have
+   ground to sit on — hair-on-hair is invisible, hair-on-paper is the
+   page's grammar. This also supersedes the old dark-theme remap to the
+   card family: paper already is that family in the dark. The doubled
+   root wins the tie against the shell's `:has(> .is-framed)` mat rule
+   whatever the bundle order. */
+.toolchain-root.toolchain-root .ldx-hero-sec .tc-row.is-lead {
+  background: transparent;
 }
 
 /* ---------- artifact column: the agent terminal, kept alive ---------- */
@@ -173,5 +175,96 @@
 @media (max-width: 620px) {
   .toolchain-root .ldx-hero-sec .ldx2-art .tc-term-body {
     font-size: 11px;
+  }
+}
+
+/* ============================================================
+   FOUNDER ROUND — the ruled frame (the line-touching-border
+   system the rest of the page already wears; see the shipped
+   pattern in ../sections/review-workspace.css, hero-terminal.css
+   and frameworks-ruled.css).
+   Two moves, both square, both device-true 1px borders:
+   1. The composition's structural line — the boundary between the
+      text column and the artifact — becomes a drawn rule running
+      the hero's full height, terminating into the nav rule above
+      and the section rule below.
+   2. The agent terminal is framed by four 1px rules drawn by two
+      full-bleed pseudo bands and clipped by the dark card (the
+      stage), so every rule runs edge-to-edge of the plate: the
+      horizontals cross the prismatic headroom to both card edges,
+      the verticals run from the nav seam to the section seam. The
+      window's floating ring (outline, offset 2) and its 8px top
+      corners retire — the element carries no border of its own,
+      so nothing can stack to 2px where band and box coincide.
+   The rule ink on the fixed-dark plate is the measured hero-ring
+   white (rgba .3) — the hairline family this surface already
+   uses; on the paper side of the sheet every line is the token
+   hair, so both themes hold. */
+
+/* 1 — the boundary, ruled to the hero's edges. Outranks the shell's
+   `.tc-row > * + .is-framed { border-left: 0 }` mat exemption. */
+.toolchain-root .ldx-hero-sec .tc-cell.ldx2-cell {
+  border-left: 1px solid var(--tc-hair);
+  /* the mat is retired with the row's; nothing shows behind the
+     squared plate, but the token should say what the ground is */
+  background: transparent;
+}
+
+/* 2 — the stage squares off: the plate's corners join the sheet's
+   ruled edges, and its overflow keeps clipping the frame bands. */
+.toolchain-root .ldx-hero-sec .tc-cell.ldx2-cell > .tc-card.ldx2-art {
+  border-radius: 0;
+}
+
+/* the window, squared and stripped — the bands draw every line */
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term {
+  --ldx2-frame: rgba(255, 255, 255, 0.3);
+  border-radius: 0;
+  outline: 0;
+  box-shadow: none;
+  /* the term's own hidden overflow would clip its bands at the
+     window box; the plate (.ldx2-art) is the clip that counts */
+  overflow: visible;
+}
+
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term::before,
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* The top horizontal rule, the plate's full width. The frame's bottom
+   side is NOT drawn: the window stands flush on the plate's bottom
+   edge, where the section's own border-bottom already rules the sheet —
+   drawing it again would stack a 2px seam (measured 4 device px), and
+   the shipped grammar lets existing sheet rules serve as frame sides
+   (hero-terminal: "the window bar's rule above, the plate's edges on
+   the other three sides"). */
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--ldx2-frame);
+}
+
+/* the two vertical rules, the plate's full height */
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--ldx2-frame);
+  border-right: 1px solid var(--ldx2-frame);
+}
+
+/* stacked, the plate is full-width: a boundary rule at the rail's
+   edge would stack on the rail border, so it retires; the window's
+   frame keeps working — the plate is still the stage. */
+@media (max-width: 1000px) {
+  .toolchain-root .ldx-hero-sec .tc-cell.ldx2-cell {
+    border-left: 0;
   }
 }

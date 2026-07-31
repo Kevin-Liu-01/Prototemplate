@@ -3,6 +3,8 @@
 import { ArrowUpRight } from 'lucide-react';
 import { useRef } from 'react';
 
+import PrismaticField from '@/components/shared/PrismaticField';
+
 import { useQuietReveal } from './reveal';
 
 import './pricing-v2.css';
@@ -26,11 +28,12 @@ const ENTERPRISE_FEATURES = [
 ];
 
 /**
- * The conversion run that closes the page: the plans at full confidence
- * (Starter carries the ink mat — it is the path), then Theo's quote as a
- * mounted dark landmark, then the final ask on the dark band. Three
- * sections from one component so the page shell stays untouched; each
- * gets its own quiet-reveal scope.
+ * The conversion run that closes the page: the plans ruled onto the sheet
+ * (two equal columns inside one fully-extended frame), then Theo's quote as
+ * a dark plate ruled onto the same sheet — his real avatar beside the
+ * attribution — then the final ask on the dark band, lit from behind by the
+ * page's one light source. Three sections from one component so the page
+ * shell stays untouched; each gets its own quiet-reveal scope.
  */
 export default function Pricing() {
   const plansRef = useRef<HTMLElement>(null);
@@ -42,7 +45,7 @@ export default function Pricing() {
 
   return (
     <>
-      <section className='tc-sec' id='pricing' ref={plansRef}>
+      <section className='tc-sec tcpv-sec' id='pricing' ref={plansRef}>
         <div className='tc-head tcpv-head'>
           <div>
             <h2 data-reveal>Pricing for everyone.</h2>
@@ -53,9 +56,12 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className='tcpv-plans' data-reveal>
-          <div className='tcpv-plan is-star'>
-            <article className='tcpv-card'>
+        {/* the ruled sheet: the frame's rules are drawn by full-bleed pseudo
+            bands on .tcpv-plans and clipped here, so every line runs to the
+            sheet's edges */}
+        <div className='tcpv-sheet' data-reveal>
+          <div className='tcpv-plans'>
+            <article className='tcpv-card is-star'>
               <header className='tcpv-top'>
                 <h3>Starter</h3>
                 <span className='tcpv-tag'>Start free</span>
@@ -81,10 +87,8 @@ export default function Pricing() {
                 </a>
               </div>
             </article>
-          </div>
 
-          <div className='tcpv-plan'>
-            <article className='tcpv-card'>
+            <article className='tcpv-card is-ent'>
               <header className='tcpv-top'>
                 <h3>Enterprise</h3>
               </header>
@@ -110,22 +114,21 @@ export default function Pricing() {
               </div>
             </article>
           </div>
-        </div>
 
-        <div className='tcpv-compare' data-reveal>
-          <a href='/d/toolchain/pricing'>
-            Compare plans and usage pricing
-            <ArrowUpRight className='tc-ico-arrow' aria-hidden />
-          </a>
+          <div className='tcpv-compare'>
+            <a href='/d/toolchain/pricing'>
+              Compare plans and usage pricing
+              <ArrowUpRight className='tc-ico-arrow' aria-hidden />
+            </a>
+          </div>
         </div>
       </section>
 
-      <section className='tc-sec' id='proof' ref={proofRef}>
+      <section className='tc-sec tcpq-sec' id='proof' ref={proofRef}>
         <div className='tcpq-wrap' data-reveal>
           <figure className='tcpq-mat'>
             <div className='tcpq-plate'>
               <div className='tcpq-meta'>
-                <span>Proof · Posted on X</span>
                 <a
                   href='https://x.com/theo/status/2008302190168019187'
                   target='_blank'
@@ -143,8 +146,18 @@ export default function Pricing() {
                 </p>
               </blockquote>
               <figcaption className='tcpq-attr'>
-                <span className='tcpq-name'>Theo</span>
-                <span className='tcpq-role'>CEO, T3Chat</span>
+                <img
+                  className='tcpq-face'
+                  src='/brand/theo.png'
+                  alt='Theo'
+                  width={48}
+                  height={48}
+                  loading='lazy'
+                />
+                <span className='tcpq-who'>
+                  <span className='tcpq-name'>Theo</span>
+                  <span className='tcpq-role'>CEO, T3Chat</span>
+                </span>
                 <a
                   href='https://x.com/theo/status/2008302190168019187'
                   target='_blank'
@@ -160,6 +173,10 @@ export default function Pricing() {
       </section>
 
       <section className='tc-sec tcpx' id='start' ref={closeRef}>
+        {/* the page's one light source, burning behind the final ask; the
+            engine is a shared singleton and ships its own reduced-motion
+            still, so the band reads the same as a freeze frame */}
+        <PrismaticField className='tcpx-field' preset='1' speed={0.45} params={{ exposureScale: 1900 }} />
         <div className='tcpx-in'>
           <div className='tcpx-copy'>
             <p className='tcpx-kick' data-reveal>

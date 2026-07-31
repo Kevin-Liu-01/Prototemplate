@@ -112,9 +112,6 @@ const ENDONYMS: readonly string[] = [
 /** The ruled pitch, shared with the shader — rows seat on these lines. */
 const PITCH = 28;
 
-/** Initial loop phases per row, staggered unevenly so no still reads timed. */
-const SEEDS: readonly number[] = [0.15, 0.52, 0.8];
-
 /* "language" across maximally different writing systems — Latin, Japanese,
    Arabic, Devanagari, Cyrillic, Han, Hangul, Greek — short tokens so the
    re-measured line never wraps. The headline hinge morphs through them; the
@@ -150,14 +147,19 @@ const LIGHT = {
   ink: [0.059, 0.067, 0.075] as [number, number, number],
   paper: [0.984, 0.984, 0.98] as [number, number, number],
   ruleAlpha: 0.13,
-  ringAlpha: 0.3,
-  spectral: 0.65,
-  bodyAlpha: 0.05,
+  ringAlpha: 0.38,
+  spectral: 0.72,
+  bodyAlpha: 0.06,
   bodyTint: [0.62, 0.67, 0.66] as [number, number, number],
   specAlpha: 0.38,
   causticAlpha: 0.8,
   poolAlpha: 0.85,
-  shadowAlpha: 0.07,
+  poolFringe: 0.06,
+  shadowAlpha: 0.1,
+  ghostAlpha: 0.04,
+  rimHi: 0.5,
+  focal: 0.5,
+  flareGlint: 0.42,
 };
 
 /* #0a0b0f / #ffffff — the ink-black dark remap (the one-surface family),
@@ -174,7 +176,12 @@ const DARK = {
   specAlpha: 0.055,
   causticAlpha: 0.08,
   poolAlpha: 0.055,
+  poolFringe: 0.03,
   shadowAlpha: 0.35,
+  ghostAlpha: 0.045,
+  rimHi: 0.14,
+  focal: 0.55,
+  flareGlint: 0.12,
 };
 
 /** Per-row geometry measured by the hero, consumed by the conveyor builder. */
@@ -253,6 +260,10 @@ export default function Hero() {
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const rowEls = gsap.utils.toArray<HTMLElement>('.lg-row', hero);
       const conveyors: gsap.core.Timeline[] = [];
+      /* Six flare slots (row i: entry = 2i, exit = 2i+1), packed [x, y, k].
+         measure() writes the rim-crossing positions; the conveyor timelines
+         animate the intensities; the engine reads the array by reference. */
+      const flares = new Float32Array(18);
       let rowGeos: RowGeo[] = [];
       let gate: ScrollTrigger | null = null;
       let buildTimer: ReturnType<typeof setTimeout> | undefined;
@@ -347,7 +358,25 @@ export default function Hero() {
           set(rowEl, '--mx-tr', 0);
 
           geos.push({ enW, trW, trVisW, chordMax, chordMin, enPad: gut - enL, phone });
+
+          /* The row's rim-crossing points — where a card's body cuts the
+             glass edge — anchor the flare slots. Positions are fixed until
+             the next measure; only intensities animate. */
+          const yMid = y - cardH / 2;
+          const dyMid = yMid - cy;
+          const chordMid = Math.sqrt(Math.max(r * r - dyMid * dyMid, 0));
+          flares[i * 6] = cx - chordMid;
+          flares[i * 6 + 1] = yMid;
+          flares[i * 6 + 3] = cx + chordMid;
+          flares[i * 6 + 4] = yMid;
         });
+
+        /* Slots for rows this breakpoint does not run must go fully dark. */
+        for (let s = rowYs.length * 2; s < 6; s++) {
+          flares[s * 3] = -9999;
+          flares[s * 3 + 1] = -9999;
+          flares[s * 3 + 2] = 0;
+        }
 
         /* Rows beyond this breakpoint's count (the third row on phones) park
            off-canvas; the builder also zeroes their travelers. */
@@ -364,8 +393,9 @@ export default function Hero() {
         fieldRef.current?.setParams({
           center: [cx, cy],
           radius: r,
-          fringe: 2.4 * glassScale,
+          fringe: 2.8 * glassScale,
           ringWidth: 3 * glassScale,
+          flares,
         });
       };
 
@@ -373,11 +403,17 @@ export default function Hero() {
          fades onto the approach rule, travels under the rim (the lane's disc
          mask swallows it along the true curve of the glass), holds a beat in
          the glass, then emerges translated on the far side, rests with its
-         locale stamp, and yields to the row's other artifact. Rebuilt on
-         resize because every distance is measured. */
+         locale stamp, and yields to the row's other artifact. Each crossing
+         drives its rim flare slot, so the glass visibly works exactly where
+         the card passes. After building, the row cycles are normalized to
+         one shared period and phased at even fractions, so the six stories
+         per cycle space out evenly — at any instant the eye finds one clear
+         in→out story at the glass. Rebuilt on resize because every distance
+         is measured. */
       const buildConveyor = () => {
         for (const tl of conveyors) tl.kill();
         conveyors.length = 0;
+        for (let s = 0; s < 6; s++) flares[s * 3 + 2] = 0;
 
         rowEls.forEach((rowEl, i) => {
           const geo = rowGeos[i];
@@ -409,6 +445,18 @@ export default function Hero() {
           const tl = gsap.timeline({ repeat: -1, paused: gate ? !gate.isActive : false });
           let t = 0;
 
+          /* One rim-flare pulse: rise into the crossing, decay out of it.
+             Fresh state object per pulse; the writes land in the shared
+             flares buffer the engine reads every frame. */
+          const pulse = (slot: number, at: number, rise: number, fall: number) => {
+            const state = { k: 0 };
+            const write = () => {
+              flares[slot * 3 + 2] = state.k;
+            };
+            tl.to(state, { k: 1, duration: rise, ease: 'power2.in', onUpdate: write }, at);
+            tl.to(state, { k: 0, duration: fall, ease: 'power2.out', onUpdate: write }, at + rise);
+          };
+
           enEls.forEach((en, k) => {
             const tr = trEls[k];
             if (!tr) return;
@@ -419,7 +467,7 @@ export default function Hero() {
                beat pushing an invisible card toward the meridian. */
             const enEnd = geo.enW - geo.chordMin + 12;
             const enStart = geo.phone ? -enWidth - 12 : 0;
-            const durIn = clampNum((enEnd - enStart) / (geo.phone ? 130 : 220), 1.5, 3.4) + i * 0.2;
+            const durIn = clampNum((enEnd - enStart) / (geo.phone ? 130 : 220), 1.5, 3.4);
             /* Rest just clear of the rim; when the viewport is tight the card
                instead rests right-aligned with its tail still under the glass
                — half-emerged is still the story. */
@@ -435,7 +483,7 @@ export default function Hero() {
               Math.max(restX - 40, 16 - trWidth)
             );
 
-            const beat = geo.phone ? 0.25 : 0.45;
+            const beat = geo.phone ? 0.3 : 0.55;
             const emerge = geo.phone ? 1.2 : 1.5;
 
             if (geo.phone) {
@@ -446,8 +494,14 @@ export default function Hero() {
               tl.to(en, { autoAlpha: 1, duration: 0.5, ease: 'none' }, t);
               tl.to(en, { x: enEnd, duration: durIn, ease: 'power1.inOut' }, t);
             }
+            /* Entry flare: builds while the card slips under the rim, peaks
+               at the swallow, dies through the in-glass beat. */
+            pulse(i * 2, t + durIn * 0.62, durIn * 0.38, 0.75 + beat);
             t += durIn + beat;
 
+            /* Exit flare: snaps on as the translation breaks the rim, then
+               lets go while the card glides to rest. */
+            pulse(i * 2 + 1, t - 0.08, 0.2, 1.1);
             tl.set(tr, { x: emergeX, autoAlpha: 1 }, t);
             tl.to(tr, { x: restX, duration: emerge, ease: 'power2.out' }, t);
             t += emerge;
@@ -472,9 +526,22 @@ export default function Hero() {
           });
 
           tl.add(() => {}, t);
-          tl.progress(SEEDS[i] ?? 0);
           conveyors.push(tl);
         });
+
+        /* Normalize the rows to one shared cycle and phase them at even
+           fractions (nudged off exact thirds so no still reads timed): with
+           two stories per row, crossings at the glass space out to roughly
+           one every sixth of the cycle — a steady heartbeat of translation. */
+        if (conveyors.length) {
+          let target = 0;
+          for (const tl of conveyors) target = Math.max(target, tl.duration());
+          const phases = conveyors.length === 2 ? [0.09, 0.57] : [0.03, 0.34, 0.68];
+          conveyors.forEach((tl, k) => {
+            tl.timeScale(tl.duration() / target);
+            tl.progress(phases[k] ?? (k + 0.5) / conveyors.length);
+          });
+        }
       };
 
       const scheduleBuild = () => {

@@ -230,10 +230,157 @@
   left: -23.5px;
 }
 
+/* ============================================================
+   3 · FOUNDER ROUND — RULED FRAMES, FULL REACH
+   Three subjects get the page's new frame grammar: every frame
+   line is a single real 1px rule, square corners, and each rule
+   runs to the edges of its containing surface (clipped there)
+   instead of stopping at a floating box.
+   ============================================================ */
+
+/* ---- 3a · the Code checklist cell (split row) ----
+   Was a flat patch of the row's mat ground with its right seam
+   suppressed by the framed-neighbour rule. Now a ruled cell of the
+   sheet: card surface, stretched to the row's full height, and its
+   right seam restored as a 1px hairline running that full height.
+   Its other three rules are the sheet's own: the hatch rule above,
+   the next row's rule below, the rail line at its left — all
+   already 1px and edge to edge, so nothing is drawn twice. */
+.toolchain-root .tc-cell.tcm-ruled {
+  align-self: stretch;
+  background: var(--tc-card);
+  border-right: 1px solid var(--tc-hair);
+}
+
+/* the neighbour's suppressed seam stays suppressed — the cell's own
+   border-right is the one line between them */
+.toolchain-root .tc-row > .tcm-ruled + .tc-cell.is-framed {
+  border-left: 0;
+}
+
+/* ---- 3b · the COPY-chip code panel ("One config file") ----
+   The cell squares (no radius, no corner notches) and clips; the
+   dark config+run panel inside loses its rounding and gains four
+   full-reach 1px rules drawn by two pseudo bands — each rule runs
+   to the cell's edges. The heading block steps right of the left
+   rule's path so the line crosses clean air, as the band's rail
+   headings do. */
+.toolchain-root .tc-cell.tcm-ruled-panel {
+  position: relative;
+  overflow: clip;
+}
+
+/* outranks styles.css's framed-neighbour seam suppression (which loads
+   after this file and would win a specificity tie) */
+.toolchain-root .tc-row > .tc-cell.is-framed.tcm-ruled-panel {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tc-cell.tcm-ruled-panel > .tc-card {
+  border-radius: 0;
+}
+
+.toolchain-root .tcm-ruled-panel .tc-code,
+.toolchain-root .tcm-ruled-panel .tc-code-run .tc-code,
+.toolchain-root .tcm-ruled-panel .tc-cli {
+  border-radius: 0;
+}
+
+.toolchain-root .tcm-ruled-panel > .tc-card > h3,
+.toolchain-root .tcm-ruled-panel > .tc-card > p {
+  padding-left: clamp(14px, 1.6vw, 18px);
+}
+
+.toolchain-root .tcm-ruled-panel .tc-code-run {
+  position: relative;
+}
+
+.toolchain-root .tcm-ruled-panel .tc-code-run::before,
+.toolchain-root .tcm-ruled-panel .tc-code-run::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, the cell's full width */
+.toolchain-root .tcm-ruled-panel .tc-code-run::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+/* the two vertical rules, the cell's full height */
+.toolchain-root .tcm-ruled-panel .tc-code-run::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-hair);
+  border-right: 1px solid var(--tc-hair);
+}
+
+/* ---- 3c · the EdgeGlobe's cell on the delivery band ----
+   The globe floated frameless on the prismatic band. Its containing
+   cell is framed now: four 1px rules in the band's hairline family,
+   extended to the band column's edges (the inner column clips them
+   at its rails), square corners. (The footer caption was removed by
+   founder edit — the frame holds the globe alone.) */
+.toolchain-root .tc-delivery-in {
+  overflow: clip;
+}
+
+.toolchain-root .tc-delivery-art {
+  --tcm-gpad: clamp(18px, 2.4vw, 30px);
+  position: relative;
+  padding: var(--tcm-gpad);
+}
+
+.toolchain-root .tc-delivery-art::before,
+.toolchain-root .tc-delivery-art::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, rail to rail */
+.toolchain-root .tc-delivery-art::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* the two vertical rules, the band's full height */
+.toolchain-root .tc-delivery-art::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 /* the section folds to one column with the rest of the page */
 @media (max-width: 1000px) {
   .toolchain-root .tcm-ground {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* stacked, the ruled cells' vertical seams retire (they would sit flush
+     against the rail lines and read 2px); the stacked layout's own
+     border-top seams take over, exactly as the sheet grammar does */
+  .toolchain-root .tc-cell.tcm-ruled {
+    border-right: 0;
+  }
+
+  .toolchain-root .tc-row > .tc-cell.is-framed.tcm-ruled-panel {
+    border-left: 0;
   }
 }
 

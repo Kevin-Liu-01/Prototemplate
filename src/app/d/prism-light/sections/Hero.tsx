@@ -31,20 +31,29 @@ gsap.registerPlugin(useGSAP);
  * The hinge lives INSIDE the prism material, so the incoming scripts fill
  * with the same dispersed light as the letters they replace.
  *
- * R3 exposure law: every letter-mask field carries a drawn shade floor — a
- * minimum ink density over the whole fill — so no streak ever approaches
- * paper luminance and the headline reads as one near-black material with
- * light inside it, both lines the same. Dark mode inverts the law, not the
- * layout: white letterforms under a `darken` group with the floors flipped
- * from ink to paper (styles.css).
+ * R4 exposure law: the ink now comes from the FIELD, not the veil. R3 hid a
+ * bright field under heavy drawn floors and the burst read as faint mud; R4
+ * gives each line its own mirrored pair of windows aimed at the burst's
+ * wing band — where the streaks carry their own dark lanes between them —
+ * and drops the drawn floor to a thin safeguard (0.14 mid-block, diving
+ * deep only at the ends), so the interior visibly STREAMS with spectrum at
+ * first glance while the field's own lanes keep the material reading as
+ * ink. No streak ever approaches paper luminance, both lines are the same
+ * material, and the letter edge never softens. Dark mode inverts the law,
+ * not the layout: white letterforms under a `darken` group with the floors
+ * flipped from ink to paper (styles.css).
  *
  * The composition reads top-left to bottom-right along the light's own axis:
  * a French reader's request leaves the headline, rides the two threads —
  * source and translation, constant gauge — into the horizon band at the
  * `fra` point of presence, and the response annotation comes back off the
- * band's top rule at 12 ms. The card's right column is counterweighted by
- * the prism specimen: one `en` beam entering a bounded ink plate and leaving
- * as a fan of locales — the product's whole argument as a physical object.
+ * band's top rule at 12 ms. A single pulse of light travels the thread on a
+ * loop — the request as a visible packet — and the band underneath runs as
+ * a long dawn line of moving spectrum. The card's right column is
+ * counterweighted by the prism specimen: one white `en` beam enters a drawn
+ * glass prism standing on a bounded ink plate and leaves its far face as a
+ * full-height spectral fan that lands on the locale ticks — the product's
+ * whole argument as one optical event.
  */
 
 const CUSTOMERS: readonly { name: string; mark: string }[] = [
@@ -441,25 +450,51 @@ export default function Hero() {
               <span className='plh-block'>
                 <span className='plh-block-light' aria-hidden>
                   {/* The reference anatomy, made deterministic: two lobes of
-                      streaked light converging on a dark eye. The field's one
-                      reliably bright lobe is clipped to each half of the block
-                      and mirrored about its center, and the shade layer above
-                      caps exposure everywhere — floor first, then the eye. */}
-                  <span className='plh-block-half is-l'>
-                    <PrismaticField
-                      className='plh-field-word'
-                      preset='1'
-                      speed={0.35}
-                      params={{ exposureScale: 2200 }}
-                    />
+                      streaked light converging on a dark eye. EACH LINE gets
+                      its own mirrored pair of short, wide windows onto the
+                      field — the burst's bright horizontal axis rides through
+                      the middle of each line of type at the same wide aspect
+                      that makes the horizon band's filaments stream, instead
+                      of one tall window that spends the axis in the line gap
+                      and compresses the streaks to froth. All four windows
+                      share the engine, the params and the single shade layer
+                      above them — floor first, then the eye — so the block
+                      still reads as ONE material. */}
+                  <span className='plh-block-row is-1'>
+                    <span className='plh-block-half is-l'>
+                      <PrismaticField
+                        className='plh-field-word'
+                        preset='1'
+                        speed={0.5}
+                        params={{ exposureScale: 2250 }}
+                      />
+                    </span>
+                    <span className='plh-block-half is-r'>
+                      <PrismaticField
+                        className='plh-field-word'
+                        preset='1'
+                        speed={0.5}
+                        params={{ exposureScale: 2250 }}
+                      />
+                    </span>
                   </span>
-                  <span className='plh-block-half is-r'>
-                    <PrismaticField
-                      className='plh-field-word'
-                      preset='1'
-                      speed={0.35}
-                      params={{ exposureScale: 2200 }}
-                    />
+                  <span className='plh-block-row is-2'>
+                    <span className='plh-block-half is-l'>
+                      <PrismaticField
+                        className='plh-field-word'
+                        preset='1'
+                        speed={0.5}
+                        params={{ exposureScale: 2250 }}
+                      />
+                    </span>
+                    <span className='plh-block-half is-r'>
+                      <PrismaticField
+                        className='plh-field-word'
+                        preset='1'
+                        speed={0.5}
+                        params={{ exposureScale: 2250 }}
+                      />
+                    </span>
                   </span>
                   <span className='plh-block-shade' />
                 </span>
@@ -496,25 +531,32 @@ export default function Hero() {
           </div>
 
           {/* The counterweight object (resend puts a machined cube here; this
-              fork puts the product): a bounded ink plate, one white `en` beam
-              entering on the left, the burst dispersing inside the ink, and a
-              fan of locale ticks leaving the right edge. */}
+              fork puts the product): a bounded ink plate with a drawn glass
+              prism standing on it. One white `en` beam crosses the dark and
+              enters the glass; a full-height spectral fan leaves the far face
+              and lands on the locale ticks — dispersion as the diagram of
+              localization. Paint order matters: beam and prism sit UNDER the
+              lighten wrapper so the fan blooms over the glass edge, and the
+              labels ride above everything. */}
           <figure
             className='plh-spec'
             role='img'
-            aria-label='A prism drawn as a dark plate: one English source beam enters on the left, disperses into spectral light inside, and leaves as ticks labelled fr, es, de, ja, zh and 113 more'
+            aria-label='A drawn glass prism on a dark plate: one white beam labelled en source enters its left face, disperses into a spectral fan inside, and the fan lands on ticks labelled fr, es, de, ja, zh and 113 more'
           >
             <div className='plh-spec-box' aria-hidden>
+              <span className='plh-spec-beam' />
+              <span className='plh-spec-prism'>
+                <i />
+              </span>
               <div className='plh-spec-light'>
                 <PrismaticField
                   className='plh-spec-field'
                   preset='1'
-                  speed={0.45}
-                  params={{ exposureScale: 1700 }}
+                  speed={0.5}
+                  params={{ exposureScale: 1250 }}
                 />
                 <span className='plh-spec-shade' />
               </div>
-              <span className='plh-spec-beam' />
               <span className='plh-spec-en'>en · source</span>
               <div className='plh-spec-outs'>
                 {SPEC_OUT.map((code) => (
@@ -567,16 +609,21 @@ export default function Hero() {
 
           {/* The light inside the threads: a second field clipped to the exact
               ribbon geometry above, its bright axis rotated to run along the
-              dive — dispersed spectrum living inside the ink strokes. */}
+              dive — dispersed spectrum living inside the ink strokes. The
+              pulse rides last in the group, above the shade: one packet of
+              near-white light travelling the thread's own path into fra on a
+              loop (CSS keyframes, curve-sampled anchors, reduced-motion
+              gated) — the request, visible. */}
           <div className='plh-t-light' aria-hidden>
             <PrismaticField
               className='plh-field-thread'
               preset='1'
-              speed={0.55}
-              params={{ exposureScale: 1500 }}
+              speed={0.6}
+              params={{ exposureScale: 1250 }}
             />
             {/* Ink at the request end, spectrum gathering toward the edge. */}
             <span className='plh-t-shade' />
+            <span className='plh-t-pulse' />
           </div>
 
           <div className='plh-req' data-hero-in>
@@ -609,14 +656,16 @@ export default function Hero() {
 
           {/* The burst, masked into the ink: its dark convergence point sits on
               the band at `fra`, light streaming outward along the horizon.
-              prism-light owns the burst, so it runs a step brighter than
-              toolchain's flanks. */}
+              prism-light owns the burst — it runs hot and the mask is wide,
+              so the strip reads as a dawn line: a low, long band of moving
+              spectrum along nearly its whole length, brightest at the
+              serving POP. */}
           <div className='plh-h-light' aria-hidden>
             <PrismaticField
               className='plh-field-fill'
               preset='1'
-              speed={0.5}
-              params={{ exposureScale: 1900 }}
+              speed={0.55}
+              params={{ exposureScale: 1400 }}
             />
             {/* Two quiet strips of shade — one under the POP labels at the top
                 rule, one under the caption row at the floor — so the band's

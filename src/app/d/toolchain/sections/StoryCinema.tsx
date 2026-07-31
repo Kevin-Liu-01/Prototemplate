@@ -29,15 +29,22 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * speaks.
  * When Locadex works, its selection is unmistakable: a doubled-gauge
  * sweep draws around the picked node, a Locadex chip rides the ring, and
- * the rest of the site dims under a masked scrim. RIGHT: the progress
- * counter top right, one centered sentence (the mark, never the string
- * "GT"), and one artifact in the product's own voice — scan counts,
- * locale lists, "Wrote public/_gt/[locale].json", a real diff hunk with
- * --tc-diff-add/--tc-diff-del tints, PR #218 with its review state. A
- * context-group accumulator sits bottom right and visibly grows as the
- * run learns. Left↔right connectors stay doubled orthogonal traces at
- * constant gauge, appearing whole so no scrub position samples a
- * half-drawn wire.
+ * the rest of the site dims under a masked scrim. RIGHT: one ruled sheet
+ * in the demo panel's own square full-reach grammar, four fixed zones at
+ * every scrub position — (1) a header strip with the progress counter,
+ * closed by a full-width hairline; (2) the beat sentence at display
+ * scale, top-anchored in the upper third (the mark, never the string
+ * "GT"); (3) the beat artifact on a fixed-height toned plate whose four
+ * 1px rules run to the panel edges (the construction that frames the
+ * Example App), holding scan counts, locale lists, "Wrote
+ * public/_gt/[locale].json", a real diff hunk with --tc-diff-add/
+ * --tc-diff-del tints, PR #218 with its review state; (4) the
+ * context-group ledger docked under the plate's own bottom rule — its
+ * seven row slots are pre-ruled and the values fill in as the run
+ * learns, so the accumulator visibly grows without ever floating loose.
+ * Left↔right connectors stay doubled orthogonal traces at constant
+ * gauge, landing on the plate's left rule, appearing whole so no scrub
+ * position samples a half-drawn wire.
  *
  * BAND-AWARE SPACING: the review harness screenshots the page at fixed
  * scroll fractions; inside this pin those land at timeline t ≈ 0, 21.7,
@@ -126,6 +133,7 @@ const CODE_T = [
   '    Get started',
   '  </button>',
   '</T>',
+  '',
 ] as const;
 
 /** Everything the run assembles before it writes a word (beat 1). */
@@ -329,10 +337,14 @@ const ARTS: readonly ReactNode[] = [
     ))}
   </div>,
 
-  /* 2 · voice — same string, two prompts */
+  /* 2 · voice — same string, two prompts, the directives that decide it */
   <div className='tc-cinema-art' data-art key='a2'>
     <div className='tc-cinema-art-line is-dim'>
       <code>card.tagline · es</code>
+    </div>
+    <div className='tc-cinema-arow'>
+      <span>source</span>
+      <code>Translation that just works.</code>
     </div>
     <div className='tc-cinema-arow is-dim'>
       <span>no context</span>
@@ -341,6 +353,14 @@ const ARTS: readonly ReactNode[] = [
     <div className='tc-cinema-arow'>
       <span>with context</span>
       <code lang='es'>Traducciones que simplemente funcionan.</code>
+    </div>
+    <div className='tc-cinema-arow'>
+      <span>$context</span>
+      <Tok text='"Playful, upbeat tone"' />
+    </div>
+    <div className='tc-cinema-arow'>
+      <span>directives</span>
+      <code>active voice · formal "Sie" (de)</code>
     </div>
   </div>,
 
@@ -370,10 +390,25 @@ const ARTS: readonly ReactNode[] = [
     </div>
   </div>,
 
-  /* 4 · component */
-  <ArtCode file='app/components/Cta.tsx' lines={CODE_T} key='a4' />,
+  /* 4 · component — the wrapped source, then the payload it produces */
+  <div className='tc-cinema-art' data-art key='a4'>
+    <div className='tc-cinema-art-line is-dim'>
+      <code>app/components/Cta.tsx</code>
+    </div>
+    {CODE_T.map((line, i) => (
+      <div className='tc-cinema-art-line' key={i}>
+        <Tok text={line} />
+      </div>
+    ))}
+    <div className='tc-cinema-art-line is-dim'>
+      <code>public/_gt/es.json</code>
+    </div>
+    <div className='tc-cinema-art-line'>
+      <Tok text='"Get started": "Comenzar ahora"' />
+    </div>
+  </div>,
 
-  /* 5 · review — the webhook payload */
+  /* 5 · review — the webhook payload, carrying the real legal string */
   <div className='tc-cinema-art' data-art key='a5'>
     <div className='tc-cinema-art-line is-dim'>
       <code>POST · hooks.example.com/review</code>
@@ -382,7 +417,13 @@ const ARTS: readonly ReactNode[] = [
       <Tok text='{ "key": "legal.tos", "locale": "es",' />
     </div>
     <div className='tc-cinema-art-line'>
+      <Tok text='  "string": "Al continuar, aceptas…",' />
+    </div>
+    <div className='tc-cinema-art-line'>
       <Tok text='  "status": "needs_approval" }' />
+    </div>
+    <div className='tc-cinema-art-line is-dim'>
+      <code>review · legal · 1 approval required</code>
     </div>
     <div className='tc-cinema-art-line is-bright' data-approve>
       <code>approved — shipped to /es</code>
@@ -403,6 +444,9 @@ const ARTS: readonly ReactNode[] = [
     </div>
     <div className='tc-cinema-art-line is-dim'>
       <code>app/page.tsx · L4 · L5 · L16</code>
+    </div>
+    <div className='tc-cinema-art-line'>
+      <code>branch locadex/i18n · created</code>
     </div>
   </div>,
 
@@ -438,6 +482,12 @@ const ARTS: readonly ReactNode[] = [
     </div>
     <div className='tc-cinema-art-line is-dim'>
       <code>gt validate ✓ · review approved</code>
+    </div>
+    <div className='tc-cinema-art-line tc-termline'>
+      <code>{'live   '}</code>
+      {(['en', ...CLI_TARGETS] as const).map((loc) => (
+        <LocaleTag code={loc} className='tc-termloc' key={loc} />
+      ))}
     </div>
     <div className='tc-cinema-art-line is-bright' data-merged>
       <code>Merged — live in 6 locales</code>
@@ -505,7 +555,6 @@ export default function StoryCinema() {
       const agentRingO = one<SVGRectElement>("[data-agent-ring='o']");
       const agentRingI = one<SVGRectElement>("[data-agent-ring='i']");
       const agentChip = one<HTMLElement>('[data-agent-chip]');
-      const ctxGroup = one<HTMLElement>('[data-ctxgroup]');
 
       const bySel = (sel: string) => one<HTMLElement>(sel);
       const swapOf = (hop: string) => bySel(`[data-swap][data-hop='${hop}']`);
@@ -525,7 +574,8 @@ export default function StoryCinema() {
         const x1 = Math.round(s.x + src.offsetWidth + 12);
         const y1 = Math.round(s.y + src.offsetHeight / 2);
         const a = getLocal(art, takeEl);
-        const x2 = Math.round(a.x - 12);
+        /* the trace lands ON the plate's left rule — the sheet receives it */
+        const x2 = Math.round(a.x - 1);
         const y2 = Math.round(a.y + art.offsetHeight / 2);
         const xm = Math.round(getLocal(beatEl, takeEl).x - 16);
         const sv = y2 >= y1 ? 1 : -1;
@@ -582,6 +632,8 @@ export default function StoryCinema() {
       gsap.set(flags, { autoAlpha: 0, scale: 0.4, transformOrigin: '50% 50%' });
       gsap.set('[data-approve]', { autoAlpha: 0 });
       gsap.set('[data-merged]', { autoAlpha: 0 });
+      /* the ledger's row SLOTS stay ruled from t=0 — only the values hide */
+      gsap.set(q('[data-ctxrow] > *'), { autoAlpha: 0 });
 
       const isMobile = () => window.innerWidth < 900;
 
@@ -602,8 +654,11 @@ export default function StoryCinema() {
         scrollTrigger: {
           trigger: take,
           start: 'top 58px',
-          /* 5700 on mobile places the harness's one in-pin sample (scroll
-             fraction 0.66) at t≈55 — inside beat 5's open-showcase hold. */
+          /* 5700 on mobile aims the harness's one in-pin sample (scroll
+             fraction 0.66) at a held band. The exact t drifts as other
+             sections change the page's total height — the long holds
+             (beat 5's open showcase, beat 8's diff + selection) are wide
+             enough that the sample keeps landing on a money state. */
           end: () => `+=${isMobile() ? 5700 : 5400}`,
           pin: true,
           scrub: 1,
@@ -733,14 +788,15 @@ export default function StoryCinema() {
         );
       };
 
-      /** One accumulator row unfolds — the context group visibly grows. */
+      /** One ledger slot fills in — the context group visibly grows. The
+          slot's rule was always there; only the key/value fade up into it. */
       const learn = (i: number, t: number) => {
         const row = ctxRows[i];
         if (!row) return;
         ft(
-          row,
-          { maxHeight: 0, autoAlpha: 0 },
-          { maxHeight: 20, autoAlpha: 1, duration: 0.5, ease: 'power2.out' },
+          row.children,
+          { autoAlpha: 0, y: 5 },
+          { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' },
           t
         );
       };
@@ -817,12 +873,12 @@ export default function StoryCinema() {
          trace appears whole (never sampled half-drawn), the ring lands,
          and the card's divider pulls open to the full <T $context>
          listing, then HOLDS until 24.3 so the sampled still shows the
-         handle moved and the code whole. The accumulator is born here. */
+         handle moved and the code whole. The ledger's first rows fill
+         here (its ruled slots have been part of the sheet since t=0). */
       cap(1, 10);
       ft(wCtx, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 10.2);
       frame("[data-node='tagline']", 10.3, 7);
       cut('card', 70, 3, 10.6, 0.9);
-      if (ctxGroup) ft(ctxGroup, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 10.5);
       learn(0, 11.3);
       learn(1, 12.1);
       cut('card', 3, 70, 24.3, 0.7);
@@ -1079,12 +1135,14 @@ export default function StoryCinema() {
             ))}
           </div>
 
-          {/* the context group, learning as the run advances */}
+          {/* the context-group ledger, docked under the artifact plate's
+              bottom rule — pre-ruled slots that fill as the run learns */}
           <div className='tc-cinema-ctxgroup' data-ctxgroup aria-hidden>
             <b>context group</b>
             {CTX_ACCUM.map((row) => (
               <span className='tc-cinema-ctxrow' data-ctxrow key={row.k}>
-                <i>{row.k}</i> · {row.v}
+                <i>{row.k}</i>
+                <span>{row.v}</span>
               </span>
             ))}
           </div>

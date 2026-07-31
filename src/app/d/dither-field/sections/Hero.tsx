@@ -6,26 +6,31 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 import DitherWordmark, { type WordmarkSpec } from '../diagrams/DitherWordmark';
-import { heroBroadcast, useDitherField } from '../fields';
+import { heroTransmission, useDitherField } from '../fields';
 
 import './hero-every.css';
 
 gsap.registerPlugin(useGSAP);
 
 /**
- * THE BROADCAST HERO, on the founder stack.
+ * THE BROADCAST HERO, on the founder stack — recomposed so the field FILLS
+ * its component (the founder's directive, verbatim).
  *
- * Three surfaces on the shell-grey ground, separated by 1px seams: the white
- * hero card (mark, two authored headline lines with the morphing `language`
- * hinge, sub, acts) — then the fork's signature visual as the full-width
- * band — then the trust card.
+ * Two ranks of surfaces on the shell-grey ground, separated by 1px seams:
+ * a SPLIT row — the white copy card (mark, two authored headline lines with
+ * the morphing `language` hinge, sub, acts, and the real copyable command)
+ * beside the TRANSMISSION PLATE, the hero's media panel — then the trust
+ * card below, full width. On mobile the plate stacks under the copy.
  *
- * The band keeps the Bayer broadcast: a breathing 1-bit radial burst, ink
- * cells on paper, rings and needle rays converging on a deliberate paper
- * core. The type block that used to sit in that core moved up into the card,
- * so the core now holds the page's dev-first device instead: the real,
- * copyable command. The broadcast source is `npx gt@latest`. Two hairline
- * crosshair rules pass under the field through the same convergence point.
+ * The plate is the Bayer TRANSMISSION, filled edge to edge: the pinned
+ * source greeting docks in a paper pocket on the plate's left edge, squircle
+ * wavefronts launch from its fringe and sweep the full width, a fan of thick
+ * needle rays carries signal ticks, an ambient print fill inks the far
+ * corners, a dithered planet limb grounds the bottom edge — and real
+ * greetings with their locale tags materialise out of the dither across the
+ * whole component as each front reaches them: the localization story printed
+ * by the field itself. One hairline wire passes under the field through the
+ * dock, on the shell's rule grammar.
  *
  * The field is 1-bit and theme-following (P2): its ink is the canvas's
  * computed `color` (var(--tc-ink)), re-sampled when data-theme flips — dark
@@ -77,17 +82,21 @@ export default function Hero() {
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  /* The band composition: the original broadcast, recentred for a band
-     (cy 0.5 — the crosshair crosses mid-band) and with the well tightened
-     so the paper core hugs the one command line instead of a headline. */
-  const canvasRef = useDitherField((aspect) => heroBroadcast(aspect, { cy: 0.5, wellScale: 0.55 }), {
-    scale: 4,
-    ink: '#0f1113',
-    paper: 'transparent',
-    fps: 24,
-    reducedMotionTime: 3,
-    themeInk: true,
-  });
+  /* The plate composition: the transmission docked on the left edge, filling
+     the component. reducedMotionTime 6.8 is a composed still: two fronts
+     mid-plate with a third fading at the far corner, one greeting held
+     solid, one mid-dissolve, one mid-assembly. */
+  const canvasRef = useDitherField(
+    (aspect) => heroTransmission(aspect, { cellScale: 4 }),
+    {
+      scale: 4,
+      ink: '#0f1113',
+      paper: 'transparent',
+      fps: 24,
+      reducedMotionTime: 6.8,
+      themeInk: true,
+    }
+  );
 
   const copy = () => {
     void navigator.clipboard?.writeText('npx gt@latest');
@@ -378,68 +387,68 @@ export default function Hero() {
 
   return (
     <section className='tc-sec tch-hero-sec' id='top' ref={root}>
-      {/* The founder's stack: a genuine white card — radius 12, inset on the
-          section's shell-grey ground — above the SQUARE full-width band; the
-          trust row repeats the card below it. */}
-      <div className='tc-hero tch-card'>
-        <Image
-          className='tc-hero-mark'
-          data-hero-in
-          src='/brand/no-bg-gt-logo-light.png'
-          alt='General Translation'
-          width={34}
-          height={34}
-        />
+      {/* The founder's stack, split: the calm white copy card beside the
+          transmission plate — two cards on the shell-grey ground, one 1px
+          seam between them; the trust row repeats the card grammar below. */}
+      <div className='tch-split'>
+        <div className='tc-hero tch-card tch-copy'>
+          <Image
+            className='tc-hero-mark'
+            data-hero-in
+            src='/brand/no-bg-gt-logo-light.png'
+            alt='General Translation'
+            width={34}
+            height={34}
+          />
 
-        {/* Two authored lines rather than a wrap; the accented word opens
-            line two, on the hinge of the sentence. */}
-        <h1 data-hero-in>
-          <span>Your product speaks</span>
-          <span>
-            every{' '}
-            <em data-every>
-              <span data-every-word lang='en' dir='ltr'>
-                language
-              </span>
-            </em>
-            .
-          </span>
-        </h1>
+          {/* Two authored lines rather than a wrap; the accented word opens
+              line two, on the hinge of the sentence. */}
+          <h1 data-hero-in>
+            <span>Your product speaks</span>
+            <span>
+              every{' '}
+              <em data-every>
+                <span data-every-word lang='en' dir='ltr'>
+                  language
+                </span>
+              </em>
+              .
+            </span>
+          </h1>
 
-        <p className='tc-hero-sub' data-hero-in>
-          General Translation builds full-stack infrastructure for localizing apps, docs, and
-          websites.
-        </p>
+          <p className='tc-hero-sub' data-hero-in>
+            General Translation builds full-stack infrastructure for localizing apps, docs, and
+            websites.
+          </p>
 
-        <div className='tc-hero-acts' data-hero-in>
-          <a className='tc-btn tc-btn-solid' href='#pricing'>
-            Get started
-          </a>
-          <a className='tc-btn tc-btn-line' href='#frameworks'>
-            Docs
-          </a>
+          {/* The acts carry the dev-first device too: the real, copyable
+              command sits with the buttons, on calm paper — outside the
+              plate, so the field keeps the whole component. */}
+          <div className='tc-hero-acts' data-hero-in>
+            <a className='tc-btn tc-btn-solid' href='#pricing'>
+              Get started
+            </a>
+            <a className='tc-btn tc-btn-line' href='#frameworks'>
+              Docs
+            </a>
+            <button className='tc-copy df-hero-cmd' type='button' onClick={copy}>
+              <span>$ npx gt@latest</span>
+              <span>{copied ? 'Copied' : 'Copy'}</span>
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* The band: the Bayer broadcast on paper. The crosshairs sit under the
-          field; the command — the current site's own dev-first device, real
-          and copyable — floats in the field's deliberate paper core, so the
-          broadcast source is the command that starts everything. */}
-      <div className='tc-hero-cell df-hero' data-hero-in>
-        <span className='df-hero-axis is-x' aria-hidden />
-        <span className='df-hero-axis is-y' aria-hidden />
-        <canvas className='df-hero-field' ref={canvasRef} aria-hidden />
-
-        <div className='df-hero-core'>
-          <button className='tc-copy df-hero-cmd' type='button' onClick={copy}>
-            <span>$ npx gt@latest</span>
-            <span>{copied ? 'Copied' : 'Copy'}</span>
-          </button>
+        {/* The plate: the hero's media panel, and the field fills ALL of it —
+            source dock on the left edge, greetings materialising across the
+            component. The one wire passes under the field through the dock. */}
+        <div className='df-plate' data-hero-in>
+          <span className='df-plate-wire' aria-hidden />
+          <canvas className='df-plate-field' ref={canvasRef} aria-hidden />
         </div>
       </div>
 
       {/* The trust card — six wordmarks through the same 1-bit process as the
-          field above. The claim is the lead; the restraint is the diagram. */}
+          plate above. The claim is the lead; the restraint is the diagram. */}
       <div className='tc-trust tch-trustcard'>
         <p className='tc-trust-lead'>Cursor, Ramp and Profound ship in over thirty languages</p>
         <div className='tc-trust-row'>

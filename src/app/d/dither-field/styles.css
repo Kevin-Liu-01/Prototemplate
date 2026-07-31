@@ -2348,91 +2348,8 @@
   }
 }
 
-/* ============================================================
-   DF — THE BROADCAST BAND (the hero stack's visual cell)
-   The breathing 1-bit radial burst, ink on paper, is the full-
-   width band between the white hero card and the trust card.
-   The type moved up into the card; the field's deliberate paper
-   core holds the page's dev-first device instead — the real,
-   copyable command. Crosshair rules pass under the field through
-   the same convergence point (50%, 50%).
-
-   The plate is 1-bit and theme-following: the canvas ink is its
-   computed `color` (var(--tc-ink), re-sampled on theme flip), so
-   dark mode prints light dust on the ink-black paper — never a
-   white flash. The axes stay on the hairline token, one family
-   with the #3b3440 rules; the field runs at cell scale 4 so the
-   Bayer structure never beats against those 1px lines.
-   ============================================================ */
-
-.ditherfield-root .tc-hero-cell.df-hero {
-  position: relative;
-  margin-top: 1px;
-  border-top: 0;
-  border-radius: 0;
-  padding: 0;
-  /* the band is PAPER: the ink is the field, and both follow the theme */
-  background: var(--tc-white);
-  min-height: clamp(360px, 46vh, 520px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.ditherfield-root .df-hero-field {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  color: var(--tc-ink);
-  pointer-events: none;
-}
-
-/* Dark mode: same two inks, flipped by themeInk; the exposure comes down a
-   step so the white dust reads as print, not glow. */
-[data-theme='dark'] .ditherfield-root .df-hero-field {
-  opacity: 0.82;
-}
-
-/* The convergence point is (50%, 50%) — the same constants the field bakes
-   in. The rules are structure (hairline), never the drawing. */
-.ditherfield-root .df-hero-axis {
-  position: absolute;
-  z-index: 0;
-  background: var(--tc-hair);
-  pointer-events: none;
-}
-
-.ditherfield-root .df-hero-axis.is-x {
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-}
-
-.ditherfield-root .df-hero-axis.is-y {
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-}
-
-.ditherfield-root .df-hero-core {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  /* The core is paper by construction; no halo needed over the field. */
-}
-
-/* The broadcast source: one step up from the button scale, mono, quiet. */
-.ditherfield-root .df-hero-cmd {
-  height: 44px;
-  padding: 0 18px;
-  gap: 14px;
-  border-radius: 8px;
-  font-size: 13.5px;
-}
+/* (The hero's transmission plate styles live at the end of this sheet —
+   after the founder-stack block they override.) */
 
 /* ============================================================
    DF — TRUST CARD (M03, glyph-masked)
@@ -2660,10 +2577,6 @@
    ============================================================ */
 
 @media (max-width: 700px) {
-  .ditherfield-root .tc-hero-cell.df-hero {
-    min-height: clamp(320px, 52vh, 440px);
-  }
-
   .ditherfield-root .df-loc-row {
     grid-template-columns: 44px minmax(0, 1fr);
   }
@@ -2879,10 +2792,12 @@
 
 /* ============================================================
    DF — THE HERO STACK (founder grammar)
-   White card above the broadcast band above the trust card:
-   three surfaces on the shell-grey ground, 1px seams, radius-12
-   corners with the ground filling the notches. The founder
-   overlay below pins the seams; these set the surfaces.
+   The split row (white copy card beside the transmission plate)
+   above the trust card: cards on the shell-grey ground, 1px
+   seams, radius-12 corners with the ground filling the notches.
+   The founder overlay below pins the seams; these set the
+   surfaces; the plate block at the end of the sheet sets the
+   split itself.
    ============================================================ */
 
 .ditherfield-root .tc-sec.tch-hero-sec {
@@ -2927,12 +2842,12 @@
    FOUNDER PICKS (propagated from toolchain's tail; rescoped)
    ============================================================ */
 
-.ditherfield-root .tc-sec:has(> .tc-hero) > *:last-child {
+.ditherfield-root .tc-sec.tch-hero-sec > *:last-child {
   margin-bottom: 0;
 }
 
 /* the trust row completes the hero stack: third card, same seam */
-.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+.ditherfield-root .tc-sec.tch-hero-sec > .tc-trust {
   background: var(--tc-white);
   border-radius: 12px;
   margin-top: 1px;
@@ -2946,7 +2861,7 @@
   --tf-ground: var(--tc-white);
 }
 
-.ditherfield-root .tc-sec:has(> .tc-hero) {
+.ditherfield-root .tc-sec.tch-hero-sec {
   background: var(--tc-hair) !important;
   /* the nav's full-width rule is the top divider; ground shows only in the
      card corner notches */
@@ -2957,9 +2872,10 @@
   margin-bottom: 0;
 }
 
-/* the hero card sits in the section's 1px reveal — no extra surround,
+/* the split row sits in the section's 1px reveal — no extra surround,
    no border, no outline: the rounding and the ground do all the work */
-.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-hero {
+.ditherfield-root .tc-sec.tch-hero-sec > .tch-split,
+.ditherfield-root .tch-split > .tc-hero {
   margin: 0 !important;
   border: 0 !important;
   outline: 0 !important;
@@ -3007,14 +2923,9 @@
   top: -0.02em;
 }
 
-/* founder picks: the band sits at the 1px seam (no gap above), and the
-   trust card carries zero padding of its own */
-.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-hero-cell {
-  margin-top: 1px !important;
-  border-top: 0 !important;
-}
-
-.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+/* founder picks: the trust card sits at the 1px seam and carries zero
+   padding of its own */
+.ditherfield-root .tc-sec.tch-hero-sec > .tc-trust {
   margin-top: 1px !important;
   padding: 0 !important;
 }
@@ -3037,7 +2948,7 @@
   padding: 24px 36px 18px !important;
 }
 
-.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+.ditherfield-root .tc-sec.tch-hero-sec > .tc-trust {
   margin: 1px 0 -1px !important;
   border: 0 !important;
   outline: 0 !important;
@@ -3119,7 +3030,7 @@
 /* The trust band's lower rule. The blanket border-zeroing above (which cured
    the doubled edges at the nav junction) also erased the one line that should
    survive — under the brands. Appended later, so border-bottom wins by order. */
-.ditherfield-root .tc-sec:has(> .tc-hero) > .tc-trust {
+.ditherfield-root .tc-sec.tch-hero-sec > .tc-trust {
   border-bottom: 1px solid var(--tc-hair) !important;
   border-radius: 12px 12px 0 0;
 }
@@ -3153,4 +3064,121 @@
 
 .ditherfield-root .tc-band::after {
   width: calc(min(var(--tc-rail), 100%) + 20px);
+}
+
+/* ============================================================
+   DF — THE TRANSMISSION PLATE (the hero's media panel)
+   The founder's directive, verbatim: the dither must FILL UP ITS
+   COMPONENT. So the hero splits: the copy card is calm paper on
+   the left, and the field owns ONE framed plate beside it — a
+   radius-12 card in the stack's mat grammar that the 1-bit
+   transmission fills edge to edge, dense and bold. The source
+   docks on the plate's left edge and radiates rightward; the
+   greetings materialise across the whole component.
+
+   The plate is 1-bit and theme-following: the canvas ink is its
+   computed `color` (var(--tc-ink), re-sampled on theme flip), so
+   dark mode prints light dust on the ink-black card — never a
+   white flash. One hairline wire passes under the field through
+   the dock, on the shell's rule grammar. Appended after the
+   founder stack so these compose over the tch-card defaults.
+   ============================================================ */
+
+.ditherfield-root .tch-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 1px;
+  align-items: stretch;
+}
+
+/* The copy card: the same white card, turned left-aligned and centred on its
+   own axis — the headline no longer has a field to sit in, it has a plate to
+   stand beside. */
+.ditherfield-root .tch-split .tc-hero.tch-copy {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(30px, 3.6vw, 52px) clamp(26px, 3.2vw, 48px);
+}
+
+.ditherfield-root .tch-card.tch-copy .tc-hero-mark {
+  margin: 0 0 24px;
+}
+
+.ditherfield-root .tch-copy h1 {
+  /* A step down from the centred composition: the line must clear the split
+     column, and the plate carries the scale now. */
+  font-size: clamp(2.05rem, 3.4vw, 2.9rem);
+  margin-inline: 0;
+}
+
+.ditherfield-root .tch-card.tch-copy .tc-hero-sub {
+  margin: 18px 0 0;
+  max-width: 44ch;
+}
+
+.ditherfield-root .tch-card.tch-copy .tc-hero-acts {
+  margin-top: 26px;
+  justify-content: flex-start;
+}
+
+/* The command chip joins the acts row at button gauge — same device, calm
+   paper, outside the plate. */
+.ditherfield-root .tch-copy .df-hero-cmd {
+  height: 38px;
+  padding: 0 14px;
+  gap: 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+/* The plate itself: one framed component, and the field is ALL of it. */
+.ditherfield-root .df-plate {
+  position: relative;
+  border-radius: 12px;
+  /* the plate is PAPER: the ink is the field, and both follow the theme */
+  background: var(--tc-white);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: clamp(480px, 60vh, 620px);
+}
+
+.ditherfield-root .df-plate-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: var(--tc-ink);
+  pointer-events: none;
+}
+
+/* Dark mode: same two inks, flipped by themeInk; the exposure comes down a
+   step so the white dust reads as print, not glow. */
+[data-theme='dark'] .ditherfield-root .df-plate-field {
+  opacity: 0.85;
+}
+
+/* The one wire: a hairline through the source dock, under the field — the
+   shell's rule grammar passing through the plate's own composition. */
+.ditherfield-root .df-plate-wire {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--tc-hair);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Stacked: the plate keeps its fill under the copy, edge to edge. */
+@media (max-width: 900px) {
+  .ditherfield-root .tch-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ditherfield-root .df-plate {
+    min-height: clamp(340px, 52vh, 460px);
+  }
 }

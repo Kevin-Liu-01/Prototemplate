@@ -391,9 +391,11 @@ export default function Bento() {
 
       <div className='tc-hatch' aria-hidden='true' />
 
-      {/* ---- shell 2: split row — flat copy left, mounted object right ---- */}
+      {/* ---- shell 2: split row — ruled copy cell left, mounted object right ---- */}
       <div className='tc-row is-split'>
-        <div className='tc-cell is-tall' data-reveal>
+        {/* founder round: the Code cell is a ruled cell of the sheet — its
+            right seam restored at full row height in bento-motion.css */}
+        <div className='tc-cell is-tall tcm-ruled' data-reveal>
           <h3>Code</h3>
           <p>
             Developer-first libraries for React, Next.js, and more, battle-tested in production apps with
@@ -480,7 +482,9 @@ export default function Bento() {
           </div>
         </div>
 
-        <div className='tc-cell is-panel is-framed' data-reveal>
+        {/* founder round: the COPY-chip code panel is ruled onto the sheet —
+            square, 1px, its frame rules run to the cell's edges (bento-motion.css) */}
+        <div className='tc-cell is-panel is-framed tcm-ruled-panel' data-reveal>
           <div className='tc-card'>
             <h3>One config file</h3>
             <p>Locales in, output path out. The CLI and every SDK read the same file.</p>
@@ -547,7 +551,6 @@ export default function Bento() {
             <div className='tc-art-globe'>
               <EdgeGlobe title='A meridian cage with three points of presence and one serving 12 ms away' />
             </div>
-            <p className='tc-night-note'>5 points of presence shown · anycast · versioned per locale</p>
           </div>
 
           <div className='tc-delivery-copy' data-reveal>

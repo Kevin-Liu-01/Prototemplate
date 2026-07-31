@@ -1,0 +1,92 @@
+/* ============================================================
+   FRAMEWORKS — RULED FRAME (founder round)
+   The app/page.tsx sample's mount (CodeBlock with line numbers and
+   the COPY chip) stops being a floating rounded box: the element's
+   own border and 5px radius retire, and the frame becomes four
+   single 1px rules drawn by two full-bleed pseudo bands, clipped
+   by the tab panel (.tc-fw) so each rule terminates at the panel's
+   edges — the ruled-sheet grammar the rest of the page now wears.
+   The companion side pane is already a fully ruled cell (tabs rule
+   above, section rule below, rail right, the stretched .tc-fw-rule
+   between the panes), so it needs no lines of its own — only
+   clearance, so the extended rules cross clean air rather than its
+   first and last text lines (which sat exactly on the mount's
+   edges). Nothing here touches the locale-chip work in icons.css.
+   ============================================================ */
+
+.toolchain-root .tc-fw {
+  position: relative;
+  overflow: clip;
+}
+
+/* the mount, squared and stripped — the pseudo bands draw every line,
+   so nothing can stack to 2px where band and box coincide */
+.toolchain-root .tc-fw-code .tc-mount {
+  position: relative;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  background: var(--tc-card);
+}
+
+.toolchain-root .tc-fw-code .tc-mount::before,
+.toolchain-root .tc-fw-code .tc-mount::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, the tab panel's full width */
+.toolchain-root .tc-fw-code .tc-mount::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-mat-edge);
+  border-bottom: 1px solid var(--tc-mat-edge);
+}
+
+/* the two vertical rules, the tab panel's full height */
+.toolchain-root .tc-fw-code .tc-mount::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-mat-edge);
+  border-right: 1px solid var(--tc-mat-edge);
+}
+
+@media (min-width: 1001px) {
+  /* The side pane bottoms out with the code (align-self: stretch), so its
+     first line sat exactly ON the mount's top rule and its link exactly ON
+     the bottom rule. Step the content 20px inside both rules. */
+  .toolchain-root .tc-fw .tc-fw-side {
+    padding-top: calc(var(--tc-gut) + 20px);
+    padding-bottom: calc(var(--tc-gut) + 20px);
+  }
+
+  /* The capability marquee's floor must leave the side pane shorter than
+     the code pane at every tab, or the pane would overflow the row and the
+     bottom rule would strike its content (react-native and python already
+     overflowed by ~10px at 230px). The viewport is height-flexible
+     (flex: 1, absolute view), so in the normal stretched case nothing
+     changes — the floor only bites where it must. */
+  .toolchain-root .tc-fw-side .tc-caps.is-marquee {
+    min-height: 150px;
+  }
+}
+
+/* Stacked (≤1000px) the panes are rows: full-height rule extensions would
+   strike the other pane's text, so the mount keeps a plain square 1px
+   frame and the stacked sheet's own border-top seams do the rest. */
+@media (max-width: 1000px) {
+  .toolchain-root .tc-fw-code .tc-mount {
+    border: 1px solid var(--tc-mat-edge);
+  }
+
+  .toolchain-root .tc-fw-code .tc-mount::before,
+  .toolchain-root .tc-fw-code .tc-mount::after {
+    display: none;
+  }
+}

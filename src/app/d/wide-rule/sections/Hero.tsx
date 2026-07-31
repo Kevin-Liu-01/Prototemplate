@@ -484,7 +484,9 @@ export default function Hero() {
                their arc length — the accent must come down with the width or
                the phone band reads tinted instead of struck; the light scales
                (falloff, halo, bloom) tighten with it so the phone corridor
-               still decays visibly inside its half-width. */
+               still decays visibly inside its half-width, and the corridor
+               wash comes down a step so the pressed strip keeps its density
+               where the narrow frame leaves the source so little run-out. */
             narrowParams={{
               lambda: 64,
               axis: 0.34,
@@ -494,6 +496,9 @@ export default function Hero() {
               falloff: 320,
               haloRadius: 110,
               bloomRadius: 38,
+              gleamRadius: 190,
+              coreLift: 0.3,
+              pressBase: 0.2,
             }}
             /* The dark exposure is the same event re-photographed on the
                ink-black surface family: white ink rides a lifted-slate
@@ -502,7 +507,11 @@ export default function Hero() {
                bloom cools toward the plate's own blue-white, and the pressed
                frame keeps its deeper multiplicative bite to register against
                near-black. Paper matches --tc-paper (#0a0b0f) exactly, so the
-               canvas never seams against the page. */
+               canvas never seams against the page. The light theme's
+               inverted-exposure machinery (pressed strip, light-polarity
+               fringes, crest gleam, early seam development — see
+               ../lib/interference.ts) is zeroed here: near-black paper is
+               already all headroom, so dark keeps its original exposure. */
             darkParams={{
               ink: [1, 1, 1],
               paper: [0.039, 0.043, 0.059],
@@ -514,6 +523,11 @@ export default function Hero() {
               bloomColor: [0.94, 0.96, 1.0],
               bloom: 0.85,
               press: 0.24,
+              pressBase: 0,
+              lightLine: 0,
+              lightAlpha: 0,
+              gleam: 0,
+              seamDev: [0.25, 1],
             }}
           />
           <span className='wr-guide-h' aria-hidden />

@@ -5,14 +5,15 @@
  *
  * Everything visual on this page that is not type is a 1-bit Bayer field
  * rendered by `src/lib/dither.ts`. This module owns the two big compositions
- * (the hero broadcast and the dark band's ground burst) plus a small React
+ * (the hero transmission and the dark band's ground burst) plus a small React
  * hook that mounts a `createDitherLoop` on a canvas and keeps the field's
  * aspect ratio honest across resizes.
  *
  * The compositional law (AESTHETIC_ADDENDUM 2b) applied to ink instead of
- * light: the field is the armature, not wallpaper. The burst's convergence
- * core is a deliberate paper hole, and the hero's type block sits exactly
- * inside it — one object, not a layout floating over a texture.
+ * light: the field is the armature, not wallpaper. The hero's transmission
+ * FILLS its framed plate edge to edge — the only paper holes are the ones the
+ * composition carves for itself: the source dock on the left edge and each
+ * greeting's own margin.
  */
 
 import { useEffect, useRef } from 'react';
@@ -41,98 +42,515 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
  * the buffer tracks resizes on its own — but a field closure bakes its aspect
  * in. Fields here read aspect through this box and the hook updates it from a
  * ResizeObserver, so rays stay straight at any viewport without tearing the
- * loop down.
+ * loop down. `height` is the canvas's CSS height in px — fields that print
+ * glyph payloads use it to size their box-filter taps to one dither cell.
  */
-export type AspectBox = { value: number };
+export type AspectBox = { value: number; height?: number };
 
-export type HeroBroadcastOptions = {
-  /** Vertical centre of the composition, 0..1. Default 0.46. */
-  cy?: number;
+/* ------------------------------------------------------------------------ *
+ * THE TRANSMISSION's payload — one short greeting per locale.
+ *
+ * Index 0 is the source string (pinned at the dock's edge); the outer
+ * stations cycle through the rest as the wavefronts reach them. Real
+ * translations of one line, because the broadcast is the localization story:
+ * one source, every locale.
+ * ------------------------------------------------------------------------ */
+
+type HelloWord = { text: string; tag: string };
+
+const HELLOS: readonly HelloWord[] = [
+  { text: 'hello', tag: 'en' },
+  { text: 'hola', tag: 'es' },
+  { text: 'こんにちは', tag: 'ja' },
+  { text: 'bonjour', tag: 'fr' },
+  { text: '你好', tag: 'zh' },
+  { text: 'hallo', tag: 'de' },
+  { text: '안녕하세요', tag: 'ko' },
+  { text: 'مرحبا', tag: 'ar' },
+  { text: 'привет', tag: 'ru' },
+  { text: 'नमस्ते', tag: 'hi' },
+  { text: 'olá', tag: 'pt' },
+];
+
+/** A greeting rasterised to a binary coverage grid, ready for field sampling. */
+type WordMask = { data: Uint8Array; w: number; h: number };
+
+const WORD_RASTER_PX = 48;
+
+/**
+ * Scripts whose glyphs pack strokes densely (Han, kana, Hangul, Devanagari).
+ * They are rasterised larger and never stroke-fattened: a 2px stroke that
+ * merely bolds a Latin stem floods a hanzi or a Hangul block solid.
+ */
+const DENSE_SCRIPT = /[ऀ-ॿ぀-ヿ㐀-鿿가-힣]/;
+
+/**
+ * Rasterise `word tag` once into a 1-bit mask (word large, BCP-47 tag at half
+ * size on the same baseline). System mono keeps the raster synchronous — no
+ * webfont wait — and the CJK/Arabic/Devanagari fallbacks are system faces the
+ * canvas resolves immediately. SSR gets null and the field simply prints no
+ * payload until mounted client-side.
+ */
+function rasterizeHello(word: HelloWord): WordMask | null {
+  if (typeof document === 'undefined') return null;
+  const canvas = document.createElement('canvas');
+  const measureCtx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!measureCtx) return null;
+
+  const dense = DENSE_SCRIPT.test(word.text);
+  const px = dense ? Math.round(WORD_RASTER_PX * 1.3) : WORD_RASTER_PX;
+  const tagPx = Math.round(WORD_RASTER_PX * 0.58);
+  const tagText = word.tag.toUpperCase();
+  const family = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+  const wordFont = `600 ${px}px ${family}`;
+  const tagFont = `600 ${tagPx}px ${family}`;
+
+  // Tracking keeps stroke-fattened glyphs from merging into blobs after the
+  // downsample. letterSpacing is not in older lib.dom typings; feature-detect
+  // (the same dance the glyph SDF library does).
+  const spacing = (ctx2d: CanvasRenderingContext2D, em: number) => {
+    const withSpacing = ctx2d as CanvasRenderingContext2D & { letterSpacing?: string };
+    if ('letterSpacing' in withSpacing) withSpacing.letterSpacing = `${em}em`;
+  };
+
+  measureCtx.font = wordFont;
+  spacing(measureCtx, 0.06);
+  const wordW = Math.ceil(measureCtx.measureText(word.text).width);
+  measureCtx.font = tagFont;
+  spacing(measureCtx, 0.14);
+  const tagW = Math.ceil(measureCtx.measureText(tagText).width);
+  const gap = Math.round(px * 0.38);
+
+  const w = wordW + gap + tagW + 6;
+  const h = Math.ceil(px * 1.42);
+  // Resizing resets context state, so the fonts are re-set below.
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return null;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#fff';
+  ctx.strokeStyle = '#fff';
+  ctx.lineJoin = 'round';
+  ctx.textBaseline = 'alphabetic';
+  const base = Math.round(px * 1.06);
+  // Stroke + fill: a thin fixed stroke nudges every stem past one display
+  // cell after downsampling (so words print as solid pixel type, not
+  // sub-cell dust) without flooding the counters the way a heavy weight or a
+  // proportional stroke does. Dense scripts skip the stroke entirely — their
+  // structure IS the tight counters — and rely on the larger raster instead.
+  ctx.font = wordFont;
+  spacing(ctx, 0.06);
+  ctx.lineWidth = 2;
+  if (!dense) ctx.strokeText(word.text, 3, base);
+  ctx.fillText(word.text, 3, base);
+  ctx.font = tagFont;
+  spacing(ctx, 0.14);
+  ctx.strokeText(tagText, 3 + wordW + gap, base);
+  ctx.fillText(tagText, 3 + wordW + gap, base);
+
+  const img = ctx.getImageData(0, 0, w, h).data;
+  const data = new Uint8Array(w * h);
+  for (let i = 0, p = 3; i < data.length; i++, p += 4) {
+    data[i] = (img[p] ?? 0) >= 110 ? 1 : 0;
+  }
+  return { data, w, h };
+}
+
+/** Bilinear sample of a binary mask; 0 outside the [0,1] box. */
+function sampleMask(m: WordMask, su: number, sv: number): number {
+  if (su < 0 || su > 1 || sv < 0 || sv > 1) return 0;
+  const gx = su * (m.w - 1);
+  const gy = sv * (m.h - 1);
+  const x0 = gx | 0;
+  const y0 = gy | 0;
+  const x1 = x0 + 1 < m.w ? x0 + 1 : x0;
+  const y1 = y0 + 1 < m.h ? y0 + 1 : y0;
+  const fx = gx - x0;
+  const fy = gy - y0;
+  const row0 = y0 * m.w;
+  const row1 = y1 * m.w;
+  const top = m.data[row0 + x0]! + (m.data[row0 + x1]! - m.data[row0 + x0]!) * fx;
+  const bottom = m.data[row1 + x0]! + (m.data[row1 + x1]! - m.data[row1 + x0]!) * fx;
+  return top + (bottom - top) * fy;
+}
+
+/**
+ * A payload station: a fixed point in the plate where a greeting materialises
+ * out of the dither when a wavefront passes, then dissolves. Positions are in
+ * field space so the composition re-hangs itself at any aspect.
+ */
+type StationSpec = {
+  u: number;
+  v: number;
+  /** Word box height as a fraction of the plate height. */
+  hv: number;
+  /** Cycle offset so neighbouring stations never show the same word. */
+  seed: number;
   /**
-   * Scale on the paper well (and therefore the whole figure, which is drawn
-   * in well-distance units). 1 is the original 82vh composition; the hero
-   * BAND runs it tighter so the core hugs one command line instead of a
-   * headline block.
+   * Transit latency in seconds between the front crossing and the word
+   * materialising — each locale resolves on its own beat, so the plate never
+   * flashes every word in sync.
    */
-  wellScale?: number;
+  delay?: number;
+  /** The pinned source station: always lit, always HELLOS[0]. */
+  source?: boolean;
+};
+
+/* The plate (desktop): the source docks on the pocket's fringe at the left
+   edge, ON the wire; six greeting stations occupy the rest of the component —
+   a top rank, the mid field, and two standing on the ground limb — so the
+   payload inhabits the whole plate the field fills. */
+const STATIONS_PLATE: readonly StationSpec[] = [
+  { u: 0.16, v: 0.5, hv: 0.095, seed: 0, source: true },
+  { u: 0.56, v: 0.24, hv: 0.105, seed: 0 },
+  { u: 0.8, v: 0.1, hv: 0.085, seed: 5, delay: 1.3 },
+  { u: 0.8, v: 0.46, hv: 0.112, seed: 1, delay: 0.7 },
+  { u: 0.5, v: 0.68, hv: 0.1, seed: 2, delay: 0.35 },
+  { u: 0.28, v: 0.87, hv: 0.098, seed: 3, delay: 1.1 },
+  { u: 0.78, v: 0.82, hv: 0.102, seed: 4, delay: 1.6 },
+];
+
+/* Compact plate (stacked mobile): the source plus three stations on a
+   diagonal cascade, sized for a ~380px-wide panel. */
+const STATIONS_COMPACT: readonly StationSpec[] = [
+  { u: 0.2, v: 0.5, hv: 0.082, seed: 0, source: true },
+  { u: 0.62, v: 0.2, hv: 0.095, seed: 0 },
+  { u: 0.7, v: 0.62, hv: 0.098, seed: 1, delay: 0.8 },
+  { u: 0.4, v: 0.86, hv: 0.09, seed: 2, delay: 0.4 },
+];
+
+/** Per-frame runtime state for one station. Mutated in place, never per-pixel. */
+type StationRt = {
+  spec: StationSpec;
+  mask: WordMask | null;
+  /** Carve strength for the word's paper margin (rises fast, falls with the word). */
+  alpha: number;
+  /** Dissolve multiplier at end-of-life, 0..1. */
+  fall: number;
+  /** Assembly wipe progress, 0..1 — the word prints SOLID behind this edge. */
+  reveal: number;
+  wu: number;
+  u0: number;
+  v0: number;
+  cu0: number;
+  cu1: number;
+  cv0: number;
+  cv1: number;
+  padV: number;
+  du: number;
+  dv: number;
+};
+
+export type HeroTransmissionOptions = {
+  /** Vertical centre of the source dock, 0..1. Default 0.5. */
+  cy?: number;
+  /** Dither cell size the canvas renders at; sizes the glyph box filter. Default 4. */
+  cellScale?: number;
 };
 
 /**
- * THE BROADCAST — the hero field.
+ * THE TRANSMISSION — the hero plate's field.
  *
- * One sculptural figure against composed emptiness: concentric signal rings
- * echoing the type well's shape, and a crown of crisp needle rays radiating
- * from the ring band — every ray an individual, its length and weight set by
- * harmonics of its angle, its tip dissolving into loose Bayer cells. There is
- * no turbulence and no noise mass anywhere: everything the field draws is a
- * deliberate stroke, and the frame's corners resolve to plain paper well
- * before the edge. The type block sits in the paper core; the well multiplies
- * the whole field so legibility is a guarantee rather than a hope.
+ * The broadcast made visible as a broadcast, composed to FILL its framed
+ * plate. The source pocket rides the plate's LEFT edge — a small paper dock
+ * holding the pinned `hello EN` — and everything radiates rightward from it:
+ * squircle wavefronts (contours of the dock's own superellipse metric) launch
+ * every couple of seconds and sweep the full width of the plate, a fan of
+ * needle rays carries signal ticks outward, an ambient print fill keeps the
+ * far corners inked, and a dithered planet limb grounds the bottom edge. The
+ * payload is the language story itself: real greetings with their locale tags
+ * materialise out of the ordered dither at stations spread over the whole
+ * component as each front reaches them, then dissolve — glyphs as
+ * transmission content, at 1 bit. Each lit word carves its own paper margin
+ * (the dock's doctrine applied locally) so payloads stay legible over rings,
+ * rays or ground.
+ *
+ * Everything is a pure function of (u, v, t): fronts and station envelopes
+ * are derived from the clock, never accumulated, so the reduced-motion still
+ * is a composed frame and pause/resume can never drift.
  */
-export function heroBroadcast(aspect: AspectBox, opts: HeroBroadcastOptions = {}): FieldFn {
-  const CX = 0.5;
-  const CY = opts.cy ?? 0.46;
-  const WS = opts.wellScale ?? 1;
-  /** Vertical squash: the composition is wider than tall, so is the energy. */
-  const VS = 1.35;
+export function heroTransmission(
+  aspect: AspectBox,
+  opts: HeroTransmissionOptions = {}
+): FieldFn {
+  const CY = opts.cy ?? 0.5;
+  const CELL = opts.cellScale ?? 4;
+
+  /** The dock's centre sits just off-plate, so the q = 1 fringe cuts a
+      half-squircle pocket into the left edge instead of floating a hole. */
+  const CX = -0.03;
+  /** Vertical stretch on the metric: fronts run wider than tall, so the
+      sweep reads as travel across the plate, not concentric halos. */
+  const VS = 1.18;
+  /** Pocket half-extents in metric units — sized to hug the one source line
+      (the headline lives OUTSIDE the plate now, so the paper stays small). */
+  const WX = 0.21;
+  const WY = 0.15;
+
+  /** The transmission clock: a front is born at the dock fringe every PERIOD
+      seconds and travels outward at SPEED dock-units per second until it has
+      fully dissolved at Q_GONE (past the far corner, q ~ 6). Fronts exist for
+      every integer index, so the plate is already mid-broadcast on the first
+      painted frame. */
+  const PERIOD = 2.4;
+  const SPEED = 0.75;
+  const Q_BORN = 1.0;
+  const Q_GONE = 6.3;
+  const MAX_FRONTS = 6;
+
+  const masks: readonly (WordMask | null)[] = HELLOS.map((w) => rasterizeHello(w));
+  const translationCount = HELLOS.length - 1;
+
+  // ---- per-frame state (recomputed when t or aspect changes, never per-pixel)
+  let lastT = NaN;
+  let lastA = NaN;
+  const frontR = new Float64Array(MAX_FRONTS);
+  const frontA = new Float64Array(MAX_FRONTS);
+  let frontN = 0;
+  let stations: StationRt[] = [];
+  let lastLayout: readonly StationSpec[] | null = null;
+
+  /** Word life after a front reaches a station: the assembly wipe runs for
+      ~0.55s, the word holds SOLID and legible, then dissolves to dust between
+      1.7s and 2.3s — shorter than PERIOD, so every station gets a beat of
+      clear paper before the next front re-lights it. */
+  const revealOf = (ts: number) => clamp01((ts - 0.05) / 0.5);
+  const fallOf = (ts: number) => 1 - smoothstep(1.7, 2.3, ts);
+
+  const updateFrame = (t: number, a: number) => {
+    lastT = t;
+    lastA = a;
+
+    // Live fronts, newest first. R is pure in t and the front index.
+    frontN = 0;
+    const newest = Math.floor(t / PERIOD);
+    for (let k = newest; frontN < MAX_FRONTS; k--) {
+      const r = Q_BORN + SPEED * (t - k * PERIOD);
+      if (r > Q_GONE) break;
+      frontR[frontN] = r;
+      frontA[frontN] =
+        smoothstep(Q_BORN, 1.25, r) * (1 - smoothstep(5.1, Q_GONE, r));
+      frontN++;
+    }
+
+    // Layout by rendered WIDTH, not aspect: the plate is squarish on desktop
+    // (~1.0) and on the stacked mobile panel (~0.9) alike, so aspect cannot
+    // tell them apart — pixel width can.
+    const w = a * (aspect.height ?? 600);
+    const layout = w < 480 ? STATIONS_COMPACT : STATIONS_PLATE;
+    if (layout !== lastLayout) {
+      lastLayout = layout;
+      stations = layout.map((spec) => ({
+        spec,
+        mask: null,
+        alpha: 0,
+        fall: 0,
+        reveal: 0,
+        wu: 0,
+        u0: 0,
+        v0: 0,
+        cu0: 0,
+        cu1: 0,
+        cv0: 0,
+        cv1: 0,
+        padV: 0,
+        du: 0,
+        dv: 0,
+      }));
+    }
+
+    const cellsH = Math.max(40, (aspect.height ?? 480) / CELL);
+    for (const st of stations) {
+      const { spec } = st;
+      const dx = (spec.u - CX) * a;
+      const dy = (spec.v - CY) * VS;
+      const q = Math.pow(
+        Math.pow(Math.abs(dx) / WX, 2.4) + Math.pow(Math.abs(dy) / WY, 2.4),
+        1 / 2.4
+      );
+
+      let wordIdx: number;
+      if (spec.source) {
+        st.reveal = 1;
+        st.fall = 1;
+        st.alpha = 1;
+        wordIdx = 0;
+      } else {
+        // When did the most recent front cross this station's radius (plus
+        // the station's own transit latency)? The life of that crossing IS
+        // the word's life; the crossing index picks which locale
+        // materialises, so the languages rotate.
+        const reachT = (q - Q_BORN) / SPEED + (spec.delay ?? 0);
+        const kStar = Math.floor((t - reachT) / PERIOD);
+        const since = t - (kStar * PERIOD + reachT);
+        st.reveal = revealOf(since);
+        st.fall = fallOf(since);
+        // The paper margin opens quickly ahead of the wipe and leaves with
+        // the word.
+        st.alpha = clamp01(st.reveal * 2.5) * st.fall;
+        const cycle = kStar + spec.seed * 3;
+        wordIdx = 1 + (((cycle % translationCount) + translationCount) % translationCount);
+      }
+
+      st.mask = masks[wordIdx] ?? null;
+      if (!st.mask || st.alpha <= 0.004) {
+        st.alpha = 0;
+        continue;
+      }
+
+      const hv = spec.hv;
+      st.wu = (hv * (st.mask.w / st.mask.h)) / a;
+      st.u0 = spec.u - st.wu / 2;
+      st.v0 = spec.v - hv / 2;
+      st.padV = hv * 0.6;
+      const padU = st.padV / a;
+      st.cu0 = st.u0 - padU;
+      st.cu1 = st.u0 + st.wu + padU;
+      st.cv0 = st.v0 - st.padV;
+      st.cv1 = st.v0 + hv + st.padV;
+      // Half a display cell in mask space, for the 2x2 box sample that keeps
+      // thin strokes from falling between dither cells.
+      st.dv = 0.5 / (hv * cellsH);
+      st.du = 0.5 / (st.wu * cellsH * a);
+    }
+  };
 
   return (u, v, t) => {
     const a = aspect.value;
+    if (t !== lastT || a !== lastA) updateFrame(t, a);
 
     const dx = (u - CX) * a;
     const dy = (v - CY) * VS;
 
-    // The type well — the composition's hub. `q` is superellipse distance
-    // from the headline block: <1 inside (always paper), ~1 at the fringe.
-    // Everything radiates from this fringe, so the type block itself is the
-    // broadcast source and the alignment is one system, not two.
-    const wx = Math.min(0.56, Math.max(0.36, 0.27 * a)) * WS;
-    const qx = Math.abs(dx) / wx;
-    const qy = Math.abs(dy) / (0.29 * WS * VS);
+    // The source dock — the composition's hub, docked on the left edge. `q`
+    // is superellipse distance from it: <1 inside (always paper), ~1 at the
+    // fringe. Everything radiates from this fringe, so the paper pocket
+    // itself is the broadcast source and the alignment is one system.
+    const qx = Math.abs(dx) / WX;
+    const qy = Math.abs(dy) / WY;
     const q = Math.pow(Math.pow(qx, 2.4) + Math.pow(qy, 2.4), 1 / 2.4);
-    if (q <= 0.88) return 0;
-    const well = smoothstep(0.88, 1.18, q);
 
-    // The figure ends before the frame does. Past q~2.5 the paper is empty by
-    // construction, so the corners never collect mass.
-    if (q >= 2.5) return 0;
+    // --- the payload: greetings materialising at their stations -----------
+    let word = 0;
+    let carve = 1;
+    for (let i = 0; i < stations.length; i++) {
+      const st = stations[i]!;
+      if (st.alpha <= 0) continue;
+      if (u < st.cu0 || u > st.cu1 || v < st.cv0 || v > st.cv1) continue;
+      const overX = Math.abs(u - st.spec.u) - st.wu / 2;
+      const overY = Math.abs(v - st.spec.v) - st.spec.hv / 2;
+      const px = (overX > 0 ? overX : 0) * a;
+      const py = overY > 0 ? overY : 0;
+      const d = Math.sqrt(px * px + py * py);
+      // The word's paper margin materialises with the word itself.
+      carve *= 1 - st.alpha * (1 - smoothstep(st.padV * 0.3, st.padV, d));
+      if (d === 0) {
+        const su = (u - st.u0) / st.wu;
+        // The assembly wipe: cells behind the edge print at full value, so a
+        // materialising word is SOLID where it exists and dither-dust only at
+        // the moving edge (and during the end-of-life dissolve). The edge
+        // always enters from the left — the side the front arrives from.
+        const gate = smoothstep(0.02, 0.09, st.reveal * 1.11 - su);
+        if (gate > 0) {
+          const sv = (v - st.v0) / st.spec.hv;
+          const m = st.mask!;
+          const cov =
+            (sampleMask(m, su - st.du, sv - st.dv) +
+              sampleMask(m, su + st.du, sv - st.dv) +
+              sampleMask(m, su - st.du, sv + st.dv) +
+              sampleMask(m, su + st.du, sv + st.dv)) *
+            0.25;
+          const wv = clamp01((cov - 0.13) * 1.9) * gate * st.fall;
+          if (wv > word) word = wv;
+        }
+      }
+    }
 
-    // ZONE 1 — the rings: two solid contour bands hugging the well, breathing
-    // by a few thousandths of q. Explicit centres rather than a sine train, so
-    // each ring is a deliberate drawn stroke — solid ink at its core, a
-    // one-cell dither fringe at its edges — and the zone between rings and
-    // crown stays empty on purpose.
-    const r1 = 1.13 + 0.015 * Math.sin(t * 0.32);
-    const r2 = 1.42 + 0.02 * Math.sin(t * 0.26 + 1.4);
-    const d1 = Math.abs(q - r1);
-    const d2 = Math.abs(q - r2);
-    let rings = (1 - smoothstep(0.014, 0.05, d1)) * 0.95;
-    const ring2 = (1 - smoothstep(0.012, 0.045, d2)) * 0.85;
-    if (ring2 > rings) rings = ring2;
+    // --- the figure --------------------------------------------------------
+    let bg = 0;
+    if (q > 0.88) {
+      const well = smoothstep(0.88, 1.16, q);
 
-    // ZONE 2 — the crown: 26 needle rays, detached from the rings by a clear
-    // paper gap and living in the annulus the frame's own edges crop. Each
-    // ray's reach and weight are fixed harmonics of its angle (integer
-    // multiples, so there is no seam at ±π), with one slow breathing term;
-    // the value tapers toward the tip so the ordered dither dissolves every
-    // needle into loose cells before the corners, which stay paper.
-    const th = Math.atan2(dy, dx);
-    const reach =
-      1.86 +
-      0.26 * Math.sin(3 * th + 1.7) +
-      0.16 * Math.sin(7 * th - 0.6) +
-      0.05 * Math.sin(t * 0.35 + 2 * th);
-    const len = reach < 1.68 ? 1.68 : reach;
+      // ZONE 1 — the rings: two solid contour bands hugging the dock,
+      // breathing by a few hundredths of q. Deliberate drawn strokes: solid
+      // ink at the core, a one-cell dither fringe at the edges.
+      const r1 = 1.32 + 0.02 * Math.sin(t * 0.32);
+      const r2 = 1.74 + 0.025 * Math.sin(t * 0.26 + 1.4);
+      let rings = (1 - smoothstep(0.016, 0.055, Math.abs(q - r1))) * 0.95;
+      const ring2 = (1 - smoothstep(0.014, 0.05, Math.abs(q - r2))) * 0.85;
+      if (ring2 > rings) rings = ring2;
 
-    const needle = 1 - Math.abs(Math.sin(13 * th + t * 0.05));
-    const n2 = needle * needle;
-    const n6 = n2 * n2 * n2;
-    const weight = 0.75 + 0.25 * Math.sin(5 * th + 0.9);
-    const rayZone = smoothstep(1.52, 1.64, q) * (1 - smoothstep(len - 0.3, len, q));
-    const rays = n6 * rayZone * weight;
+      // ZONE 2 — the fan: thick needle rays with signal ticks riding them,
+      // radiating rightward from the dock across most of the plate. Reach and
+      // weight are fixed harmonics of the angle (integer multiples, so there
+      // is no seam at ±π); the tick train flows outward slower than the
+      // fronts, so the two speeds read as carrier and pulse.
+      let rays = 0;
+      if (q > 1.28 && q < 5.2) {
+        const th = Math.atan2(dy, dx);
+        const reach =
+          3.6 +
+          0.9 * Math.sin(3 * th + 1.7) +
+          0.5 * Math.sin(7 * th - 0.6) +
+          0.15 * Math.sin(t * 0.35 + 2 * th);
+        const len = reach < 2.6 ? 2.6 : reach;
+        const needle = 1 - Math.abs(Math.sin(9 * th + t * 0.05));
+        const n2 = needle * needle;
+        const n4 = n2 * n2;
+        const weight = 0.82 + 0.18 * Math.sin(5 * th + 0.9);
+        const rayZone =
+          smoothstep(1.3, 1.5, q) * (1 - smoothstep(len - 0.6, len, q));
+        const ph = q * 2.6 - t * 0.85;
+        const s = ph - Math.floor(ph);
+        const tick = smoothstep(0.04, 0.2, s) * (1 - smoothstep(0.55, 0.75, s));
+        rays = n4 * rayZone * weight * (0.62 + 0.5 * tick);
+      }
 
-    // Screen-blend the zones; the well guarantees the core stays paper.
-    return (1 - (1 - rings) * (1 - rays)) * well;
+      // ZONE 3 — the wavefronts: a crisp crest with a dithered wake trailing
+      // behind it (behind = inside, the direction it came from), so every
+      // front reads as travel, not as another static ring.
+      let front = 0;
+      for (let i = 0; i < frontN; i++) {
+        const behind = frontR[i]! - q;
+        if (behind < -0.08 || behind > 0.6) continue;
+        const crest = 1 - smoothstep(0.02, 0.09, Math.abs(behind));
+        const wake = behind > 0 ? 0.34 * (1 - smoothstep(0.04, 0.58, behind)) : 0;
+        const f = (crest > wake ? crest : wake) * frontA[i]!;
+        if (f > front) front = f;
+      }
+
+      // ZONE 4 — the print fill: a quiet ambient coverage that rises toward
+      // the far corners, so the plate is inked edge to edge (the founder's
+      // directive: the field FILLS its component) instead of dissolving to
+      // bare paper wherever rays and fronts thin out. Low-frequency sway
+      // keeps it reading as material, not a flat tint.
+      const amb =
+        0.055 +
+        0.075 * smoothstep(1.6, 6.2, q) +
+        0.02 * Math.sin(u * 7.3 + t * 0.1) * Math.sin(v * 5.7 - t * 0.07);
+
+      // Screen-blend the zones; the well guarantees the dock stays paper.
+      bg =
+        (1 - (1 - rings) * (1 - rays) * (1 - front) * (1 - clamp01(amb))) *
+        well;
+    }
+
+    // --- the ground: a dithered planet limb along the bottom edge ----------
+    // The limb bows up at the centre (the broadcast stands over a horizon),
+    // dense ink at the bottom dissolving upward through loose dust.
+    const uu = 2 * (u - 0.5);
+    const limb = 0.9 - 0.055 * (1 - uu * uu);
+    if (v > limb - 0.06) {
+      let ground = smoothstep(limb, limb + 0.14, v) * 0.9;
+      const dust = 0.13 * (1 - smoothstep(0, 0.06, limb - v));
+      if (dust > ground) ground = dust;
+      if (ground > bg) bg = ground;
+    }
+
+    const field = bg * carve;
+    return field > word ? field : word;
   };
 }
 
@@ -227,7 +645,10 @@ export function useDitherField(
     const box: AspectBox = { value: 1 };
     const measure = () => {
       const rect = canvas.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) box.value = rect.width / rect.height;
+      if (rect.width > 0 && rect.height > 0) {
+        box.value = rect.width / rect.height;
+        box.height = rect.height;
+      }
     };
     measure();
 

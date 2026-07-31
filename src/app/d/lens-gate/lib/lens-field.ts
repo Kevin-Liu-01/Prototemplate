@@ -8,26 +8,39 @@
  * the lens radius breathing 1.0→1.035 on a slow sine, which the rules answer
  * by sliding through the glass.
  *
- * The glass itself is built from six analytic layers, back to front:
+ * The glass itself is built from analytic layers, back to front:
  *   1. a caustic light pool cast onto the paper below-right of the disc — the
- *      light the lens concentrates past its rim — with rules washing slightly
- *      lighter inside it;
+ *      light the lens concentrates past its rim — warm-white, with rules
+ *      washing slightly lighter inside it and its feathered edge carrying the
+ *      same spectral fringe as the rim that cast it;
  *   2. a contact shadow just outside the lower rim, so the disc has weight;
  *   3. a radial body tint, near-zero at the core (seated cards and the mark
- *      must read) and densest against the rim, like the edge of real crown
- *      glass;
+ *      must read) and densest against the rim, shaded angularly away from the
+ *      light so the disc carries volume, like the edge of real crown glass;
  *   4. a bright caustic ring just inside the rim where the glass concentrates
  *      the light it bends;
  *   5. the refracted rules, whose three channels sample the warp at
  *      diverging strengths toward the rim so a rule visibly separates into
  *      pigment strands (subtractive CMY — print misregistration, not glow),
- *      with the strands' ink deepened right where they split;
- *   6. a wide low-alpha specular arc in the upper-left quadrant (plus a faint
+ *      with the strands' ink deepened right where they split, and the ink
+ *      sharpened a further step along the equatorial focal band the traffic
+ *      rides;
+ *   6. the internal reflection of the rim — a faint off-center ink ghost ring
+ *      just inside the edge, gathered opposite the light — the signature of a
+ *      thick lens;
+ *   7. a wide low-alpha specular arc in the upper-left quadrant (plus a faint
  *      counter-gleam lower-right) that veils the rules it crosses — the
- *      reflection sits OVER the transmitted image — and, at the very edge, the
- *      rim rendered as a dispersive gradient: a thin spectral band (red inside
- *      through green to violet outside, values squared toward pigment) over a
- *      whisper ink hairline for definition.
+ *      reflection sits OVER the transmitted image — then the inner reflection
+ *      highlight hugging the rim's inside, and, at the very edge, the rim
+ *      rendered as a dispersive gradient: a thin spectral band (red inside
+ *      through green to violet outside, values squared toward pigment, the
+ *      outer fringe fanning wider) over a whisper ink hairline for definition.
+ *
+ * The glass also WORKS: the hero registers six flare slots (entry and exit
+ * rim points per traffic row) and raises a slot's intensity while a card
+ * crosses there — locally the dispersion blooms, the spectral band widens,
+ * and a glint collects inside the rim, so translation visibly happens AT the
+ * glass.
  *
  * Only the y-component of the sample point is displaced. A real barrel warp
  * displaces x too, but the content is invariant in x (the rules are
@@ -76,9 +89,27 @@ export type LensParams = {
   causticAlpha: number;
   /** White-lift weight of the light pool cast below-right of the glass. */
   poolAlpha: number;
+  /** Mix weight of the pool's dispersive edge — the cast light's own fringe. */
+  poolFringe: number;
   /** Darkening weight of the contact shadow outside the lower rim. */
   shadowAlpha: number;
-  /** Breathing amplitude of the radius: 0.035 → scale 1.0..1.035. */
+  /** Ink weight of the internal reflection of the rim — the ghost ring a
+      thick lens shows just inside its edge, offset toward the shadow side. */
+  ghostAlpha: number;
+  /** White weight of the inner reflection highlight hugging the rim's
+      upper-left inside — the second bright line of a polished glass edge. */
+  rimHi: number;
+  /** Extra rule ink along the equatorial focal band inside the glass — the
+      chord the traffic rides is where the lens is in focus. */
+  focal: number;
+  /** White-glint weight at an active flare point just inside the rim. */
+  flareGlint: number;
+  /** Six flare slots (per traffic row: entry, exit), packed [x, y, k] in CSS
+      px + intensity 0..1. The hero writes positions on measure and animates
+      the intensities from the conveyor timelines; the engine reads the array
+      by reference every frame. */
+  flares: Float32Array;
+  /** Breathing amplitude of the radius: 0.045 → scale 1.0..1.045. */
   breathe: number;
   /** Seconds per breath. */
   period: number;
@@ -111,19 +142,25 @@ export const LENS_DEFAULTS: LensParams = {
      magnification at 1.23 — unmistakably physical without tipping into the
      fisheye-photo read that 0.26 produced. */
   strength: 0.19,
-  fringe: 2.4,
+  fringe: 2.8,
   ruleAlpha: 0.13,
   boost: 1.55,
-  ringAlpha: 0.3,
-  spectral: 0.65,
+  ringAlpha: 0.38,
+  spectral: 0.72,
   ringWidth: 3,
-  bodyAlpha: 0.05,
+  bodyAlpha: 0.06,
   bodyTint: [0.62, 0.67, 0.66],
   specAlpha: 0.38,
   causticAlpha: 0.8,
   poolAlpha: 0.85,
-  shadowAlpha: 0.07,
-  breathe: 0.035,
+  poolFringe: 0.06,
+  shadowAlpha: 0.1,
+  ghostAlpha: 0.04,
+  rimHi: 0.5,
+  focal: 0.5,
+  flareGlint: 0.42,
+  flares: new Float32Array(18),
+  breathe: 0.045,
   period: 3.4,
   ink: [0.059, 0.067, 0.075],
   paper: [0.984, 0.984, 0.98],
@@ -163,7 +200,13 @@ uniform vec3 uBodyTint;
 uniform float uSpecAlpha;
 uniform float uCausticAlpha;
 uniform float uPoolAlpha;
+uniform float uPoolFringe;
 uniform float uShadowAlpha;
+uniform float uGhostAlpha;
+uniform float uRimHi;
+uniform float uFocal;
+uniform float uFlareGlint;
+uniform vec3 uFlares[6];
 uniform float uBreathe;
 uniform float uPeriod;
 uniform vec3 uInk;
@@ -199,14 +242,30 @@ void main() {
   float q = max(1.0 - rr * rr, 0.0);
   float g = 1.0 - uStrength * q * sqrt(q);
 
+  /* Flare field: while a card crosses the rim the hero raises the intensity
+     of that crossing's slot, and the glass visibly works — the dispersion
+     blooms, the spectral band widens, a glint of concentrated light collects
+     just inside the rim. A gaussian around each active slot keeps the event
+     local to the card. */
+  float flare = 0.0;
+  {
+    float sig = max(R * 0.13, 22.0);
+    for (int i = 0; i < 6; i++) {
+      vec3 f = uFlares[i];
+      vec2 fd = px - f.xy;
+      flare += f.z * exp(-dot(fd, fd) / (sig * sig));
+    }
+    flare = min(flare, 1.2) * lensOn;
+  }
+
   /* Dispersion: the per-channel warp split widens toward the rim on a
      squared ramp gated to the outer band, so the core stays an achromatic
      doublet and the rules comb into pigment strands only against the glass
      edge. delta is in warp units — the screen offset |d.y|·delta tops out at
-     uFringe px right at the rim. */
+     uFringe px right at the rim, and blooms further where a flare is live. */
   float rim = smoothstep(0.72, 1.0, rr);
   rim = rim * rim * (1.0 - smoothstep(0.995, 1.02, rr));
-  float delta = (uFringe / R) * rim;
+  float delta = (uFringe / R) * rim * (1.0 + flare * 1.7);
 
   float rhoG = (uCenter.y + d.y * g) / uPitch;
   float rhoR = (uCenter.y + d.y * (g - delta)) / uPitch;
@@ -216,10 +275,15 @@ void main() {
   /* The glass focuses: rules gain a step of ink deep inside, easing back to
      page strength at the rim so the boundary carries no tonal seam — and the
      split strands take extra pigment right where they separate, so the
-     dispersion reads as saturated print misregistration rather than haze. */
+     dispersion reads as saturated print misregistration rather than haze.
+     Along the equatorial chord — the focal band the traffic rides — the
+     rules sharpen a further step, so the eye lands where the story is. */
   float inside = 1.0 - smoothstep(0.9, 1.0, rr);
   float split = rim * (1.0 - smoothstep(0.985, 1.005, rr));
-  float alpha = uRuleAlpha * mix(1.0, uBoost, inside * lensOn) * (1.0 + split * 2.4);
+  float fy = (px.y - uCenter.y) / (R * 0.36);
+  float focal = exp(-fy * fy) * inside * lensOn;
+  float alpha = uRuleAlpha * mix(1.0, uBoost, inside * lensOn) * (1.0 + uFocal * focal)
+    * (1.0 + split * (2.4 + flare * 2.0));
 
   /* Specular arc, upper-left: a gleam near the rim — an angular window
      against a thin radial band — plus a faint counter-gleam opposite.
@@ -232,13 +296,32 @@ void main() {
   float radBack = smoothstep(0.88, 0.95, rr) * (1.0 - smoothstep(0.95, 0.99, rr));
   float spec = (arcMain * radMain + arcBack * radBack * 0.35) * lensOn;
 
+  /* The inner reflection highlight: the second bright line of a polished
+     edge, two ring-widths inside the rim — an ARC, hard-gated to the grazing
+     light upper-left; run full circle it turned the disc into a plate. */
+  float hiN = (rc - R) / max(uRingWidth, 0.5) + 2.1;
+  float hiArc = 0.04 + 0.96 * smoothstep(0.35, 0.95, dot(nd, vec2(-0.573, -0.819)));
+  float rimHiLine = exp(-hiN * hiN * 3.0) * hiArc * lensOn;
+
+  /* The flare's glint: light the crossing card drags through the rim,
+     collecting just inside it. */
+  float glint = smoothstep(0.88, 0.965, rr) * (1.0 - smoothstep(0.985, 1.01, rr)) * flare;
+
   /* Caustic: a tight bright line hugging the inside of the rim — where the
      glass concentrates the light it bends — and the pool that light casts
      onto the paper below-right of the disc: a feathered ellipse, gated to
-     outside the glass. */
+     outside the glass, its edge carrying the same dispersion as the rim that
+     cast it. */
   float caust = smoothstep(0.94, 0.975, rr) * (1.0 - smoothstep(0.975, 0.998, rr)) * lensOn;
   vec2 pd = (d - R * vec2(0.38, 0.88)) / (R * vec2(0.9, 0.42));
-  float pool = (1.0 - smoothstep(0.2, 1.0, length(pd))) * smoothstep(1.002, 1.05, rr) * lensOn;
+  float poolGate = smoothstep(1.002, 1.05, rr) * lensOn;
+  float pl = length(pd);
+  float pool = (1.0 - smoothstep(0.2, 1.0, pl)) * poolGate;
+  /* The pool's edge disperses like the rim that cast it: a signed band
+     around the feathered boundary, its green middle suppressed so only the
+     warm/violet split shows — a whisper, not a rainbow. */
+  float pn = (pl - 0.92) / 0.09;
+  float poolEdge = exp(-pn * pn) * smoothstep(0.35, 0.85, abs(pn)) * poolGate;
 
   /* Contact shadow: a feathered band outside the rim, weighted hard to the
      lower hemisphere, so the disc has weight on the page. */
@@ -248,39 +331,63 @@ void main() {
 
   /* Body density: near-zero through the core, gathering only against the
      rim — the edge of real crown glass. Dies exactly at the rim so the paper
-     outside is untouched. */
+     outside is untouched. Shaded angularly — denser toward the lower-right,
+     away from the light — so the disc carries volume, not just an edge. */
   float body = smoothstep(0.55, 1.0, rr);
   body = pow(body, 2.8) * (1.0 - smoothstep(0.998, 1.015, rr)) * lensOn;
+  body *= 0.72 + 0.56 * smoothstep(-0.35, 1.0, dot(nd, vec2(0.45, 0.75)));
+
+  /* The internal reflection of the rim: the faint ghost ring a thick lens
+     shows just inside its edge, its center offset toward the shadow side and
+     its weight gathered opposite the light. Ink, not glow — the ghost is a
+     reflection of the dark spine. */
+  vec2 dg = d - R * vec2(0.075, 0.065);
+  float gn = (length(dg) - R * 0.84) / max(uRingWidth * 1.4, 1.0);
+  float ghostArc = 0.1 + 0.9 * smoothstep(0.0, 0.95, dot(normalize(dg), vec2(0.573, 0.819)));
+  float ghost = exp(-gn * gn * 0.9) * ghostArc * (1.0 - smoothstep(0.97, 1.0, rr)) * lensOn;
 
   float cR = ruleCover(rhoR, gpx, uGauge) * alpha;
   float cG = ruleCover(rhoG, gpx, uGauge) * alpha;
   float cB = ruleCover(rhoB, gpx, uGauge) * alpha;
   /* Concentrated light washes the transmitted ink: rules ghost — never
-     vanish — under the specular glare, inside the caustic ring, and across
-     the cast pool. */
-  vec3 cov = vec3(cR, cG, cB) * (1.0 - spec * 0.45) * (1.0 - caust * 0.2) * (1.0 - pool * 0.28);
+     vanish — under the specular glare, the inner highlight, the caustic
+     ring, a live flare's glint, and across the cast pool. */
+  vec3 cov = vec3(cR, cG, cB) * (1.0 - spec * 0.58) * (1.0 - caust * 0.2) * (1.0 - pool * 0.28)
+    * (1.0 - rimHiLine * 0.4) * (1.0 - min(glint * 0.4, 0.4));
 
   /* Composite, back to front. */
   vec3 col = uPaper;
-  col = mix(col, vec3(1.0), pool * uPoolAlpha);
+  col = mix(col, vec3(1.0, 0.996, 0.972), pool * uPoolAlpha);
+  float poolT = clamp(pn * 0.5 + 0.5, 0.0, 1.0);
+  vec3 poolSpec = 0.5 + 0.5 * cos(6.2831853 * (poolT * 0.72 + vec3(0.0, 0.67, 0.33)));
+  poolSpec *= poolSpec;
+  col = mix(col, poolSpec, poolEdge * uPoolFringe);
   col = mix(col, vec3(0.04, 0.045, 0.05), shade * uShadowAlpha);
   col = mix(col, uBodyTint, body * uBodyAlpha);
-  col = mix(col, vec3(1.0), caust * uCausticAlpha);
+  col = mix(col, vec3(1.0, 0.992, 0.962), caust * uCausticAlpha);
   col = mix(col, uInk, cov);
+  col = mix(col, uInk, ghost * uGhostAlpha);
   col = mix(col, vec3(1.0), spec * uSpecAlpha);
+  col = mix(col, vec3(1.0), min(glint * uFlareGlint, 1.0));
+  col = mix(col, vec3(1.0), rimHiLine * uRimHi);
 
   /* The rim as a dispersive edge: a dark glass spine — the disc seen edge-on
      — with the grazing light fanned into two pigment fringes hugging it,
      warm inside, violet-blue outside. The fringes are one continuous
      spectral ramp whose middle (the green that read as marker stroke) is
-     suppressed under the spine, so what shows is the split, not a rainbow. */
-  float rn = (rc - R) / max(uRingWidth, 0.5);
+     suppressed under the spine, so what shows is the split, not a rainbow.
+     The outer fringe fans slightly wider than the inner (dispersion opens
+     outward), and where a card is crossing, the whole band blooms with the
+     flare — the one moment the rim raises its voice. */
+  float sD = rc - R;
+  float rw = max(uRingWidth * (1.0 + flare * 0.9), 0.5) * mix(1.0, 1.3, step(0.0, sD));
+  float rn = sD / rw;
   float band = exp(-rn * rn * 2.0) * smoothstep(0.3, 0.8, abs(rn)) * lensOn;
   float tS = clamp(rn * 0.5 + 0.5, 0.0, 1.0);
   vec3 spectrum = 0.5 + 0.5 * cos(6.2831853 * (tS * 0.72 + vec3(0.0, 0.67, 0.33)));
   spectrum *= spectrum;
-  col = mix(col, uInk, ringCover(abs(rc - R), uGauge * 1.1) * uRingAlpha * lensOn);
-  col = mix(col, spectrum, band * uSpectral);
+  col = mix(col, uInk, ringCover(abs(sD), uGauge * 1.1) * uRingAlpha * lensOn);
+  col = mix(col, spectrum, band * min(uSpectral * (1.0 + flare * 0.8), 1.0));
 
   /* 1/255-amplitude gradient dither — rendering hygiene against banding in
      the feathered lifts, invisible as texture. */
@@ -396,7 +503,16 @@ function getEngine(): Engine | null {
   const uSpecAlpha = loc('uSpecAlpha');
   const uCausticAlpha = loc('uCausticAlpha');
   const uPoolAlpha = loc('uPoolAlpha');
+  const uPoolFringe = loc('uPoolFringe');
   const uShadowAlpha = loc('uShadowAlpha');
+  const uGhostAlpha = loc('uGhostAlpha');
+  const uRimHi = loc('uRimHi');
+  const uFocal = loc('uFocal');
+  const uFlareGlint = loc('uFlareGlint');
+  const uFlares = loc('uFlares');
+  /* Persistent upload buffer for the six flare slots — positions arrive in
+     CSS px and are scaled to device px here, alongside center/radius. */
+  const flareScratch = new Float32Array(18);
   const uBreathe = loc('uBreathe');
   const uPeriod = loc('uPeriod');
   const uInk = loc('uInk');
@@ -434,7 +550,18 @@ function getEngine(): Engine | null {
       ctx.uniform1f(uSpecAlpha, params.specAlpha);
       ctx.uniform1f(uCausticAlpha, params.causticAlpha);
       ctx.uniform1f(uPoolAlpha, params.poolAlpha);
+      ctx.uniform1f(uPoolFringe, params.poolFringe);
       ctx.uniform1f(uShadowAlpha, params.shadowAlpha);
+      ctx.uniform1f(uGhostAlpha, params.ghostAlpha);
+      ctx.uniform1f(uRimHi, params.rimHi);
+      ctx.uniform1f(uFocal, params.focal);
+      ctx.uniform1f(uFlareGlint, params.flareGlint);
+      for (let i = 0; i < 6; i++) {
+        flareScratch[i * 3] = (params.flares[i * 3] ?? 0) * dpr;
+        flareScratch[i * 3 + 1] = (params.flares[i * 3 + 1] ?? 0) * dpr;
+        flareScratch[i * 3 + 2] = params.flares[i * 3 + 2] ?? 0;
+      }
+      ctx.uniform3fv(uFlares, flareScratch);
       ctx.uniform1f(uBreathe, params.breathe);
       ctx.uniform1f(uPeriod, params.period);
       ctx.uniform3f(uInk, params.ink[0], params.ink[1], params.ink[2]);
@@ -507,7 +634,9 @@ export function createLensField(
   const sub: Subscriber = {
     target: canvas,
     blit,
-    params: { ...LENS_DEFAULTS, ...options.params },
+    /* Each subscriber gets its own flares buffer — the module default must
+       never be shared and mutated across fields. */
+    params: { ...LENS_DEFAULTS, flares: new Float32Array(18), ...options.params },
     dpr: options.dpr ?? Math.min(window.devicePixelRatio || 1, 2),
     speed: options.speed ?? 1,
     running: !reduced,

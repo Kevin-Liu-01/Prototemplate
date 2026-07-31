@@ -39,6 +39,7 @@ import { CAP_DEMOS, FRAMEWORKS } from './stacks';
 
 import '../components/icons.css';
 import './chip-consistency.css';
+import './frameworks-ruled.css';
 import './logos-icons.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);

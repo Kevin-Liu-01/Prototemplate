@@ -19,6 +19,14 @@
    7 · founder round: the pinned take is FULL-BLEED — the stage
        breaks out of the ruled column to the viewport edges, its
        two halves on the page's own dark tokens
+   8 · founder round two: the RIGHT PANEL is one ruled sheet.
+       Four fixed zones at every scrub position — header strip
+       (progress), the beat sentence at display scale in the
+       upper third, the artifact on a fixed toned plate framed
+       by four 1px full-reach rules (the same construction that
+       frames the Example App on the left), and the context-
+       group ledger docked under the plate's own bottom rule
+       with pre-ruled slots that fill as the run learns.
    ============================================================ */
 
 .toolchain-root .tc-cinema.tc-cinema-v3 {
@@ -38,7 +46,7 @@
 
   /* inset code plates one step below the beat panel */
   --cin-plate: rgba(0, 0, 0, 0.34);
-  --art-px: 20px;
+  --art-px: 22px;
 }
 
 /* ---------- 7 · the pinned stage is FULL-BLEED (founder) ----------
@@ -123,6 +131,75 @@
   gap: clamp(14px, 1.9vh, 20px);
 }
 
+/* ---------- 8 · the beat panel is ONE RULED SHEET ----------
+   The right half stops being a void with floating cards: it is
+   composed as four fixed zones whose geometry never moves across
+   the nine beats — only the ink inside them changes.
+
+     y0 ─ header strip · the progress counter, right-aligned to
+          the sheet's text axis
+     y1 ─ full-width hairline (the strip's base rule)
+          THE SENTENCE · display scale, top-anchored, left-aligned
+          to the same axis as every artifact line below it
+     y2 ─ the ARTIFACT PLATE · fixed height, toned one step below
+          the panel; its four 1px rules run to the panel edges —
+          the exact construction that frames the Example App —
+          so the plate's verticals double as the sheet's margins
+     y3 ─ the plate's bottom rule, SHARED with the ledger dock
+          THE CONTEXT-GROUP LEDGER · seven pre-ruled row slots
+          under a doubled-gauge header rule; values fill in as
+          the run learns
+
+   All four zone heights live here so the scaffold can be read —
+   and re-tuned — in one place. */
+
+.toolchain-root .tc-cinema-v3 .tc-cinema-beat {
+  --sheet-x: clamp(30px, 3.4vw, 50px);
+  --sheet-head: clamp(56px, 7.6vh, 68px);
+  --say-h: clamp(136px, 20.6vh, 186px);
+  --say-pad: clamp(22px, 3.2vh, 30px);
+  --plate-h: clamp(272px, 37vh, 334px);
+}
+
+/* the header strip's base rule — founder: it stops AT the sheet's
+   vertical lines, like every other horizontal on this panel */
+.toolchain-root .tc-cinema-v3 .tc-cinema-beat::before {
+  content: '';
+  position: absolute;
+  top: var(--sheet-head);
+  left: var(--sheet-x);
+  right: var(--sheet-x);
+  border-top: 1px solid var(--cin-ring);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* progress: centered in the strip, right-aligned to the text axis */
+.toolchain-root .tc-cinema-v3 .tc-cinema-prog {
+  top: 0;
+  right: calc(var(--sheet-x) + var(--art-px));
+  height: var(--sheet-head);
+  align-items: center;
+}
+
+/* each slide lays the same sheet — zones, not centered stacking */
+.toolchain-root .tc-cinema-v3 .tc-cinema-slide {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: var(--sheet-head) var(--sheet-x) 0;
+}
+
+/* (1) the sentence: display scale, one anchor for all nine beats */
+.toolchain-root .tc-cinema-v3 .tc-cinema-say {
+  height: calc(var(--say-h) - var(--say-pad));
+  margin: var(--say-pad) var(--art-px) 0;
+  font-size: clamp(27px, 2.35vw, 34px);
+  line-height: 1.14;
+  letter-spacing: -0.022em;
+  text-align: left;
+  max-width: 19ch;
+}
+
 /* ---------- 2 · the token set, on every panel of the section ---------- */
 
 .toolchain-root .tc-cinema-v3 .tc-t-str {
@@ -152,11 +229,70 @@
   color: var(--cin-faint);
 }
 
-/* artifact plates: darker, flush, no internal borders */
+/* (2) the artifact plate: the panel's substantial second element.
+   Fixed height and width (rule-to-rule), toned one step below the
+   panel, content composed at the reference 14px artifact size and
+   vertically centered so a four-line payload holds the same frame
+   a ten-line diff does. The element carries NO border of its own —
+   its four 1px rules run to the panel's edges (the Example App
+   construction, mirrored). They are drawn by two pseudo bands on
+   the SLIDE, whose geometry pins the plate anyway: the plate's own
+   overflow:hidden (which protects long transcript lines) would
+   clip pseudos drawn on the plate itself. */
 .toolchain-root .tc-cinema-v3 .tc-cinema-art {
-  padding: 15px var(--art-px);
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: var(--plate-h);
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 14px var(--art-px);
+  border: 0;
+  border-radius: 0;
   background: var(--cin-plate);
-  border-color: var(--cin-edge);
+  font-size: clamp(12px, 0.98vw, 14px);
+  line-height: 1.7;
+}
+
+.toolchain-root .tc-cinema-v3 .tc-cinema-slide::before,
+.toolchain-root .tc-cinema-v3 .tc-cinema-slide::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* the plate's horizontal rules — founder: they stop AT the sheet's
+   vertical lines instead of running past them to the panel edges */
+.toolchain-root .tc-cinema-v3 .tc-cinema-slide::before {
+  top: calc(var(--sheet-head) + var(--say-h));
+  height: var(--plate-h);
+  left: var(--sheet-x);
+  right: var(--sheet-x);
+  border-top: 1px solid var(--cin-ring);
+  border-bottom: 1px solid var(--cin-ring);
+}
+
+/* the plate's vertical rules, the panel's full height — these ARE
+   the sheet's left and right margins */
+.toolchain-root .tc-cinema-v3 .tc-cinema-slide::after {
+  left: var(--sheet-x);
+  right: var(--sheet-x);
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--cin-ring);
+  border-right: 1px solid var(--cin-ring);
+}
+
+/* key columns re-measured for the 14px artifact scale */
+.toolchain-root .tc-cinema-v3 .tc-cinema-arow {
+  grid-template-columns: 110px minmax(0, 1fr);
+}
+
+.toolchain-root .tc-cinema-v3 .tc-cinema-arow > span {
+  font-size: 12px;
 }
 
 /* translated strings outside code fences (the voice compare)
@@ -476,45 +612,80 @@
   filter: invert(1);
 }
 
-/* ---------- 4 · the context-group accumulator ---------- */
+/* ---------- 4 · the context-group ledger dock ----------
+   No longer a stray card in the corner: the accumulator is the
+   sheet's fourth zone, docked directly under the artifact plate —
+   the plate's bottom rule IS the dock's top rule (shared, never
+   stacked), and the plate's full-height verticals bound it. Its
+   header carries the one doubled-gauge rule on the sheet (two 1px
+   threads, 3px apart — the brand pair), and its seven row slots
+   are pre-ruled from t=0: the scaffold holds the composition while
+   the values visibly fill in as the run learns. */
 
 .toolchain-root .tc-cinema-v3 .tc-cinema-ctxgroup {
   position: absolute;
-  right: 22px;
-  bottom: 18px;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 21ch;
-  padding: 8px 12px 9px;
-  border: 1px solid var(--cin-edge);
-  border-radius: 4px;
-  background: var(--cin-plate);
+  left: var(--sheet-x);
+  right: var(--sheet-x);
+  top: calc(var(--sheet-head) + var(--say-h) + var(--plate-h));
+  bottom: 0;
+  z-index: 1;
+  padding: 0 var(--art-px);
+  overflow: hidden;
   font-family: var(--tc-mono);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   color: var(--cin-ink);
-  opacity: 0;
   pointer-events: none;
 }
 
+/* the ledger header, closed by the doubled-gauge rule */
 .toolchain-root .tc-cinema-v3 .tc-cinema-ctxgroup > b {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 36px;
   font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.02em;
   color: var(--cin-dim);
   white-space: nowrap;
 }
 
+.toolchain-root .tc-cinema-v3 .tc-cinema-ctxgroup > b::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--art-px) * -1);
+  right: calc(var(--art-px) * -1);
+  bottom: 0;
+  height: 5px;
+  border-top: 1px solid var(--cin-ring);
+  border-bottom: 1px solid var(--cin-ring);
+}
+
+/* one pre-ruled slot per fact the run will learn */
 .toolchain-root .tc-cinema-v3 .tc-cinema-ctxrow {
-  display: block;
-  max-height: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: center;
+  height: 27px;
   overflow: hidden;
   white-space: nowrap;
-  opacity: 0;
+}
+
+.toolchain-root .tc-cinema-v3 .tc-cinema-ctxrow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid var(--cin-rule);
 }
 
 .toolchain-root .tc-cinema-v3 .tc-cinema-ctxrow > i {
   font-style: normal;
+  font-size: 11px;
   color: var(--cin-dim);
 }
 
@@ -531,13 +702,51 @@
 /* ---------- responsive ---------- */
 
 @media (max-width: 900px) {
+  /* the stacked beat panel keeps the sheet, scaled: header strip,
+     sentence, then the plate fills the remaining height; the ledger
+     dock stays desktop-only */
+  .toolchain-root .tc-cinema-v3 .tc-cinema-beat {
+    --sheet-x: 16px;
+    --sheet-head: 42px;
+    --say-h: 76px;
+    --say-pad: 12px;
+  }
+
   .toolchain-root .tc-cinema-v3 .tc-cinema-ctxgroup {
     display: none;
   }
 
+  .toolchain-root .tc-cinema-v3 .tc-cinema-prog {
+    right: calc(var(--sheet-x) + 14px);
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-say {
+    max-width: none;
+    font-size: 20px;
+  }
+
   .toolchain-root .tc-cinema-v3 .tc-cinema-art {
-    --art-px: 13px;
-    padding: 11px var(--art-px);
+    --art-px: 14px;
+    height: auto;
+    flex: 1 1 0;
+    margin-bottom: 16px;
+    padding: 10px var(--art-px);
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+
+  /* the plate fills to 16px above the panel edge — its rule band follows */
+  .toolchain-root .tc-cinema-v3 .tc-cinema-slide::before {
+    height: auto;
+    bottom: 16px;
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-arow {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-arow > span {
+    font-size: 11px;
   }
 
   .toolchain-root .tc-cinema-v3 .tc-cinema-dbtn .tc-cinema-show-ui {
@@ -545,13 +754,40 @@
   }
 }
 
-/* ---------- reduced motion: showcases hold their 70/30 still;
-             the agent overlay and accumulator are animation-only ---------- */
+/* ---------- reduced motion: the take unrolls as a storyboard —
+             each slide keeps its sentence + full artifact (the
+             still-frame law); the fixed sheet geometry and the
+             full-reach rules stand down with the pin ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   .toolchain-root .tc-cinema-v3 .tc-cinema-agent,
   .toolchain-root .tc-cinema-v3 .tc-cinema-agent-chip,
   .toolchain-root .tc-cinema-v3 .tc-cinema-ctxgroup {
     display: none;
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-beat::before {
+    content: none;
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-slide {
+    padding: clamp(30px, 4vh, 46px) clamp(20px, 3vw, 44px);
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-say {
+    height: auto;
+    margin: 0 0 20px;
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-art {
+    height: auto;
+    flex: none;
+    margin-bottom: 0;
+    border: 1px solid var(--cin-edge);
+  }
+
+  .toolchain-root .tc-cinema-v3 .tc-cinema-slide::before,
+  .toolchain-root .tc-cinema-v3 .tc-cinema-slide::after {
+    content: none;
   }
 }

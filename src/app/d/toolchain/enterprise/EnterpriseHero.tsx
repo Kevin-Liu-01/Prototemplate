@@ -40,7 +40,7 @@ export default function EnterpriseHero() {
 
   return (
     <section className='tc-sec' id='top' ref={root}>
-      <div className='tc-row is-lead'>
+      <div className='tc-row is-lead tce-hero-row'>
         <div className='tc-cell tce-hero' data-reveal>
           <h1>
             <span>Launch in every language.</span>
@@ -63,7 +63,7 @@ export default function EnterpriseHero() {
           </div>
         </div>
 
-        <div className='tc-cell is-framed' data-reveal>
+        <div className='tc-cell is-framed tce-hero-frame' data-reveal>
           <div className='tc-card'>
             <h3>The security review, answered</h3>
             <p>The certifications and controls your audit asks for first, in one ledger.</p>

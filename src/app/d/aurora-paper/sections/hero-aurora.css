@@ -1,17 +1,19 @@
 /* ============================================================
-   HERO — THE AURORA STACK
-   The founder's hero grammar (toolchain hero-terminal.css, stack
-   §) carried over into this fork's material: a white card above a
-   SQUARE full-width band above the trust card, three surfaces on
-   the shell-grey ground, 1px seams, radius-12 corners with the
-   ground filling the notches (the overlay rules in styles.css —
-   `:has(> .tc-hero)` — do the seam/notch work; this file seats
-   the fork's two wash layers and the specimen cascade).
+   HERO — PAPER SHELL + ONE GLOWING PANEL
+   The founder's recomposition: "the aurora should fill one
+   component while letting the text lines shine." The stack is a
+   calm paper card (headline, sub, CTAs — crisp ink on quiet
+   paper, only the ambient breath and grain surviving as
+   materiality), then THE PANEL: a framed card in the same mat
+   grammar that the aurora fills edge to edge at full richness,
+   the specimen cascade printed inside the light; then the trust
+   card. The overlay rules in styles.css — `:has(> .tc-hero)` —
+   still do the seam/notch work for the card and trust surfaces;
+   the panel is this file's own object.
 
-   The material: the aurora wash breathes through the hero card's
-   paper at a whisper, and owns the band at full exposure. In dark
-   mode both re-tune to the ink-black northern sky ('paper-dark'
-   preset) — retuned, never neutered.
+   In dark mode both washes re-tune to the ink-black northern sky
+   ('paper-dark' preset) — same composition, the panel truly
+   glowing.
 
    These rules override styles.css declarations of equal
    specificity, and this file is bundled BEFORE styles.css
@@ -44,7 +46,8 @@
   isolation: isolate;
 }
 
-/* the card's whisper of aurora: behind everything, base = the card's paper */
+/* the card's whisper: ambient breath + grain only (curtain off in the
+   params) — the paper stays alive without competing with the panel */
 .aurorapaper-root .aph-card-wash {
   position: absolute;
   inset: 0;
@@ -76,18 +79,22 @@
   margin-top: 22px;
 }
 
-/* the band: SQUARE, full rail width, no top hairline — the 1px seam against
-   the ground is its edge. The wash owns it; the base color under the canvas
-   is the page's own paper, so a lost WebGL context degrades to plain paper. */
-.aurorapaper-root.aurorapaper-root .tc-hero-cell.tch-band {
-  margin-top: var(--tch-inset);
-  border-top: 0;
-  border-radius: 0;
+/* THE PANEL — the one component the aurora fills. Framed in the hero card's
+   own mat grammar (inset margins, radius 12, no border: the rounding and the
+   ground do the work), the wash running edge to edge inside it. The base
+   color under the canvas is the page's own paper, so a lost WebGL context
+   degrades to a plain paper panel. */
+.aurorapaper-root.aurorapaper-root .aph-panel {
+  position: relative;
+  margin: var(--tch-inset);
+  border-radius: 12px;
   padding: 0;
   background: var(--tc-paper);
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.aurorapaper-root .aph-band-wash {
+.aurorapaper-root .aph-panel-wash {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -96,16 +103,17 @@
   pointer-events: none;
 }
 
-/* the specimen cascade seats on the band's own surface */
-.aurorapaper-root.aurorapaper-root .tch-band .ap-casc {
+/* the specimen cascade lives inside the panel, printed on the light itself;
+   the bottom padding leaves a strip of open sky under the last row so the
+   wash reads as the panel's material, not the cascade's backdrop */
+.aurorapaper-root.aurorapaper-root .aph-panel .ap-casc {
   margin-top: 0;
   padding-top: clamp(26px, 3.2vw, 42px);
-  padding-bottom: 10px;
+  padding-bottom: clamp(30px, 3.8vw, 52px);
 }
 
-/* the band's bottom edge is the 1px seam to the trust card — the last row's
-   own rule would double it */
-.aurorapaper-root.aurorapaper-root .tch-band .ap-casc-row:last-of-type {
+/* the frame is the panel's own edge — the last row keeps no rule of its own */
+.aurorapaper-root.aurorapaper-root .aph-panel .ap-casc-row:last-of-type {
   border-bottom: 0;
 }
 

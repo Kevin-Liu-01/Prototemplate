@@ -61,6 +61,8 @@
   margin-inline: auto;
   border-inline: 1px solid rgba(255, 255, 255, 0.11);
   padding: clamp(60px, 7vw, 96px) var(--tc-gut) clamp(56px, 7vw, 88px);
+  /* clips the grid's full-reach rule extensions at the column's rails */
+  overflow: clip;
 }
 
 /* ---------- header: heading + one line, nothing else ---------- */
@@ -81,15 +83,44 @@
   max-width: 44ch;
 }
 
-/* ---------- the grid: dark cards, 1px seams, light-bento radius ---------- */
+/* ---------- the grid: dark cards, 1px seams, ruled square (founder round) ----------
+   The sheet is square now: every seam is exactly 1px (the grid's gap with
+   the seam tone behind it), every cell corner is a crossing of rules, and
+   the sheet's top and bottom rules extend past the gut padding to the
+   column's rails via the two nub pseudos below — lines terminate at the
+   container's edges, never at rounded corners. */
 
 .toolchain-root .tcb .tcb-grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 1px;
   padding: 1px;
   background: var(--tcb-seam);
-  border-radius: 13px;
+  border-radius: 0;
+}
+
+/* the extension nubs live entirely OUTSIDE the grid box (no overlap with
+   the sheet's own 1px ring, so nothing ever stacks to 2px), and .tcb-in's
+   overflow clips them exactly at the rails */
+.toolchain-root .tcb .tcb-grid::before,
+.toolchain-root .tcb .tcb-grid::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100vw;
+  border-top: 1px solid var(--tcb-seam);
+  border-bottom: 1px solid var(--tcb-seam);
+  pointer-events: none;
+}
+
+.toolchain-root .tcb .tcb-grid::before {
+  right: 100%;
+}
+
+.toolchain-root .tcb .tcb-grid::after {
+  left: 100%;
 }
 
 .toolchain-root .tcb .tcb-cell {
@@ -98,7 +129,7 @@
   flex-direction: column;
   min-width: 0;
   background: var(--tcb-card);
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -419,18 +450,47 @@
   z-index: 0;
 }
 
+/* Founder round: the window's stacked border+ring (which read heavier than
+   1px) is replaced by four single 1px rules at the old ring's ink, drawn by
+   two full-bleed pseudo bands and clipped by the cell — each rule runs to
+   the cell's edges, square corners, the window ruled onto the plate. */
 .toolchain-root .tcb .tcb-term {
   position: relative;
   z-index: 1;
   width: min(400px, calc(100% - clamp(36px, 5vw, 64px)));
   margin: clamp(28px, 3.2vw, 44px) 0;
-  border-radius: 6px;
+  border-radius: 0;
   background: #0d0e10;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  outline: 1px solid rgba(255, 255, 255, 0.3);
-  outline-offset: 2px;
+  border: 0;
+  outline: 0;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
+}
+
+.toolchain-root .tcb .tcb-term::before,
+.toolchain-root .tcb .tcb-term::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+/* the two horizontal rules, the cell's full width */
+.toolchain-root .tcb .tcb-term::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* the two vertical rules, the cell's full height */
+.toolchain-root .tcb .tcb-term::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .toolchain-root .tcb .tcb-term-bar {

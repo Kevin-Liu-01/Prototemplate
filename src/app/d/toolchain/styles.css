@@ -3274,7 +3274,8 @@
   --cin-rule: var(--tc-panel-rule);
   --cin-edge: rgba(255, 255, 255, 0.14);
   --cin-fill: rgba(255, 255, 255, 0.02);
-  --cin-ring: rgba(255, 255, 255, 0.2);
+  /* Founder: the extending frame rules carry the artifact's own edge ink. */
+  --cin-ring: var(--cin-edge);
 
   background: var(--tc-dark);
   border-bottom: 1px solid var(--tc-hair);
@@ -4372,4 +4373,10 @@
 
 [data-theme='dark'] .toolchain-root .tc-nav-panel {
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+
+/* Founder: no spacing above gt.config.json — the ruled panel's code
+   block sits tight under its frame's top rule. */
+.toolchain-root .tcm-ruled-panel .tc-code-run .tc-code {
+  margin-top: 0;
 }
