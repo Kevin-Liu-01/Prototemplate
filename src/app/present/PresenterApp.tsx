@@ -91,6 +91,7 @@ export default function PresenterApp() {
   const [active, setActive] = useState(0);
   const [activeSub, setActiveSub] = useState(-1);
   const [navHidden, setNavHidden] = useState(false);
+  const [railHidden, setRailHidden] = useState(false);
   const goToRef = useRef<(slide: number, atOverride?: number) => void>(
     () => {}
   );
@@ -99,13 +100,21 @@ export default function PresenterApp() {
     () => {
       const sections = gsap.utils.toArray<HTMLElement>('[data-slide]');
 
-      // The slide dock hides exactly when the viewer dock expands in its
-      // place, so the two read as one dock morphing.
+      // The viewer owns the dock swap's exact timing (its dock morphs out of
+      // and back into this one's footprint), so the slide dock follows the
+      // viewer's pr:chrome events rather than a trigger of its own — on the
+      // way back up it must reappear only once the reverse morph lands.
+      const onChrome = (event: Event) =>
+        setNavHidden(!!(event as CustomEvent<boolean>).detail);
+      window.addEventListener('pr:chrome', onChrome);
+
+      // The rail hides for the whole prototypes run and returns at the
+      // verdict; its fade is a CSS transition, so a plain trigger is fine.
       ScrollTrigger.create({
         trigger: '[data-slide="prototypes"]',
         start: 'top top+=8',
         end: 'bottom bottom',
-        onToggle: (self) => setNavHidden(self.isActive),
+        onToggle: (self) => setRailHidden(self.isActive),
       });
 
       // Dedicated triggers whose `start` is the exact scroll position of each
@@ -213,6 +222,7 @@ export default function PresenterApp() {
       window.addEventListener('keydown', onKey);
       return () => {
         window.removeEventListener('keydown', onKey);
+        window.removeEventListener('pr:chrome', onChrome);
         cancelAnimationFrame(raf);
         window.clearTimeout(settle);
       };
@@ -238,7 +248,7 @@ export default function PresenterApp() {
           </Link>
           <div className='pr-hud-author'>Kevin Liu</div>
           <nav
-            className={`pr-hud-rail${active === 0 ? ' no-scrim' : ''}${navHidden ? ' is-hidden' : ''}`}
+            className={`pr-hud-rail${active === 0 ? ' no-scrim' : ''}${railHidden ? ' is-hidden' : ''}`}
             aria-label='Slides'
           >
             {SLIDES.map((slide, i) => (

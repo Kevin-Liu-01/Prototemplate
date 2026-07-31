@@ -157,26 +157,36 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 /* Scrim so the rail never fights the content behind it: one solid ink
-   shape heavily blurred, so it falls off smoothly on every side with no
-   gradient banding. Deepens slightly while in use. */
+   shape blurred, so it falls off smoothly with no gradient banding. At rest
+   it only just clears the rail's footprint; it grows with the rail on hover
+   when the subsections unfold. */
 .pr-hud-rail::before {
   content: '';
   position: absolute;
-  top: -18px;
-  bottom: -18px;
-  left: -70px;
-  right: -22px;
+  top: 8px;
+  bottom: 8px;
+  left: -10px;
+  right: -4px;
   z-index: -1;
-  background: rgba(7, 7, 7, 0.92);
-  border-radius: 44px;
-  filter: blur(38px);
-  opacity: 0.85;
-  transition: opacity 0.35s ease;
+  background: rgba(7, 7, 7, 0.9);
+  border-radius: 26px;
+  filter: blur(20px);
+  opacity: 0.65;
+  transition:
+    opacity 0.35s ease,
+    top 0.35s ease,
+    bottom 0.35s ease,
+    left 0.35s ease,
+    right 0.35s ease;
   pointer-events: none;
 }
 
 .pr-hud-rail:hover::before {
-  opacity: 1;
+  top: -14px;
+  bottom: -14px;
+  left: -32px;
+  right: -16px;
+  opacity: 0.95;
 }
 
 /* The rail steps aside while the prototype viewer owns the screen, and
@@ -1954,7 +1964,10 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
    always matches the dock's width. */
 
 .pr-bottom {
-  position: absolute;
+  /* Fixed, not absolute: the reverse morph plays while the stage is already
+     scrolling away, and the dock must stay glued to the viewport bottom
+     where the slide dock will take its place. */
+  position: fixed;
   bottom: 18px;
   left: 50%;
   transform: translateX(-50%);

@@ -96,16 +96,38 @@ export default function PrototypeViewer() {
       }
       gsap.set('.pr-side', { y: 0, yPercent: -50, xPercent: 118, visibility: 'hidden' });
 
+      // The slide dock is told when to yield/return via pr:chrome, so its
+      // swap always lands exactly on this timeline's edges. Scrolling back
+      // up plays the morph in reverse ON SCREEN — the dock shrinks back to
+      // the slide pill and the roll slides away — and only then does the
+      // chrome hide and the slide dock return. Leaving downward (into the
+      // verdict) just cuts the chrome as the stage scrolls away.
+      const setChrome = (on: boolean) =>
+        window.dispatchEvent(new CustomEvent('pr:chrome', { detail: on }));
       gsap
         .timeline({
+          onReverseComplete: () => {
+            gsap.set(['.pr-bottom', '.pr-side'], { visibility: 'hidden' });
+            setChrome(false);
+          },
           scrollTrigger: {
             trigger: root.current,
             start: 'top top+=8',
+            end: 'bottom bottom',
             toggleActions: 'play none none reverse',
-            onToggle: (self) =>
-              gsap.set(['.pr-bottom', '.pr-side'], {
-                visibility: self.isActive ? 'visible' : 'hidden',
-              }),
+            onToggle: (self) => {
+              if (self.isActive) {
+                gsap.set(['.pr-bottom', '.pr-side'], {
+                  visibility: 'visible',
+                });
+                setChrome(true);
+              } else if (self.direction === 1) {
+                gsap.set(['.pr-bottom', '.pr-side'], {
+                  visibility: 'hidden',
+                });
+                setChrome(false);
+              }
+            },
           },
         })
         .to(
