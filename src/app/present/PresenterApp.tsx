@@ -119,8 +119,13 @@ export default function PresenterApp() {
       // so the two can never disagree. A slide is active once its top passes
       // mid-viewport; the beat is its position within the slide's pin length,
       // matched against the subs' timeline fractions.
-      const activeRef = { current: 0 };
-      const subRef = { current: -1 };
+      /* Sentinels, not 0/-1: a remounted effect (strict mode, fast refresh)
+         gets fresh refs while the React state may still hold the previous
+         instance's value — computed from the OLD page's scroll position on
+         a client-side navigation. Starting outside the valid range forces
+         the first sync to push state, so ref and rail can never diverge. */
+      const activeRef = { current: -1 };
+      const subRef = { current: -2 };
       const pinLength = (i: number) =>
         Math.max(1, (sections[i]?.offsetHeight ?? 0) - window.innerHeight);
       const syncPosition = () => {
@@ -157,6 +162,14 @@ export default function PresenterApp() {
         onRefresh: syncPosition,
       });
       syncPosition();
+      /* A client-side navigation can run that first sync against the
+         previous page's scroll position and pre-pin geometry — re-derive
+         once the reset scroll and settled pin spacers are real. */
+      const prSettleRaf = requestAnimationFrame(syncPosition);
+      const prSettle = window.setTimeout(() => {
+        ScrollTrigger.refresh();
+        syncPosition();
+      }, 150);
 
       const goTo = (slide: number, subFraction?: number) => {
         const clamped = Math.max(0, Math.min(sections.length - 1, slide));
@@ -195,7 +208,11 @@ export default function PresenterApp() {
       };
 
       window.addEventListener('keydown', onKey);
-      return () => window.removeEventListener('keydown', onKey);
+      return () => {
+        window.removeEventListener('keydown', onKey);
+        cancelAnimationFrame(prSettleRaf);
+        window.clearTimeout(prSettle);
+      };
     },
     { scope: root }
   );

@@ -1,215 +1,533 @@
 /* ============================================================
-   PROTOTEMPLATE — the index page.
-   Ink ground, Switzer display, one measured type moment up top,
-   then the directions as a ruled ledger. Scoped under .pt-root
-   so no direction stylesheet can bleed in or out.
+   PROTOTEMPLATE — the index page, in the toolchain's grammar.
+   Version 10's material system verbatim: paper ground, a ruled
+   1170px column framed by doubled hairline rails, white cards
+   with the nested-frame mat, mono ledgers, hatch spacers, and
+   the same ink-black dark remap behind [data-theme='dark'].
    ============================================================ */
 
 .pt-root {
-  --pt-ink: #ffffff;
-  --pt-ink-2: rgba(255, 255, 255, 0.62);
-  --pt-ink-3: rgba(255, 255, 255, 0.42);
-  --pt-ink-4: rgba(255, 255, 255, 0.26);
-  --pt-hair: rgba(255, 255, 255, 0.14);
-  --pt-hair-2: rgba(255, 255, 255, 0.08);
-  --pt-raised: #101013;
+  --pt-paper: #fbfbfa;
+  --pt-white: #ffffff;
+  --pt-card: #ffffff;
+  --pt-sunk: #ffffff;
+  --pt-ink: #0f1113;
+  --pt-ink-2: rgba(15, 17, 19, 0.63);
+  --pt-ink-3: rgba(15, 17, 19, 0.45);
+  --pt-ink-4: rgba(15, 17, 19, 0.27);
+  --pt-hair: #e4e4e6;
+  --pt-hair-2: #f1f1f3;
+  --pt-hatch: rgba(15, 17, 19, 0.085);
+  --pt-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --pt-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --pt-gut: clamp(20px, 3.1vw, 36px);
+  --pt-rail: 1170px;
+
   min-height: 100vh;
-  background: #070707;
+  background: var(--pt-paper);
   color: var(--pt-ink);
-  font-family: var(--font-sans);
+  font-family: var(--pt-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-.pt-frame {
-  max-width: 1180px;
+[data-theme='dark'] .pt-root {
+  --pt-paper: #0a0b0f;
+  --pt-white: #0d0e12;
+  --pt-card: #0d0e12;
+  --pt-sunk: #0d0e12;
+  --pt-ink: #ffffff;
+  --pt-ink-2: rgba(255, 255, 255, 0.66);
+  --pt-ink-3: rgba(255, 255, 255, 0.48);
+  --pt-ink-4: rgba(255, 255, 255, 0.3);
+  --pt-hair: #3b3440;
+  --pt-hair-2: #2b2731;
+  --pt-hatch: rgba(255, 255, 255, 0.07);
+}
+
+.pt-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- the ruled column, doubled rails ---------- */
+
+.pt-rail {
+  position: relative;
+  width: min(var(--pt-rail), 100%);
   margin-inline: auto;
-  padding: 0 clamp(20px, 4vw, 44px);
+  border-inline: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
 }
 
-/* ---------- hero ---------- */
+.pt-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--pt-hair);
+  pointer-events: none;
+}
+
+.pt-sec {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+/* ---------- nav ---------- */
+
+.pt-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px var(--pt-gut);
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.pt-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* the mark: the sheet's extending rules crossing into a square, the
+   square they make filled with the diagonal hatch */
+.pt-mark {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+.pt-mark-line {
+  position: absolute;
+  background: var(--pt-ink);
+}
+
+.pt-mark-line.is-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.pt-mark-line.is-h.is-top {
+  top: 5px;
+}
+
+.pt-mark-line.is-h.is-bot {
+  top: 16px;
+}
+
+.pt-mark-line.is-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.pt-mark-line.is-v.is-l {
+  left: 5px;
+}
+
+.pt-mark-line.is-v.is-r {
+  left: 16px;
+}
+
+.pt-mark-fill {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 2px,
+    var(--pt-ink-2) 2px,
+    var(--pt-ink-2) 3px
+  );
+}
+
+/* the wordmark speaks the nameplate's own two voices */
+.pt-brand-word {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 16.5px;
+  line-height: 1;
+}
+
+.pt-brand-word b {
+  font-weight: 600;
+}
+
+.pt-brand-word .pt-face-grot {
+  font-weight: 500;
+}
+
+.pt-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13.5px;
+  color: var(--pt-ink-2);
+}
+
+.pt-nav-right > a:hover {
+  color: var(--pt-ink);
+}
+
+.pt-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--pt-ink-3);
+  cursor: pointer;
+}
+
+.pt-nav-theme:hover {
+  color: var(--pt-ink);
+  background: var(--pt-hair-2);
+}
+
+/* ---------- hero: the letterform merge on paper ---------- */
 
 .pt-hero {
   position: relative;
-  min-height: clamp(480px, 72vh, 760px);
+  min-height: clamp(520px, 76vh, 820px);
   display: grid;
   place-items: center;
   overflow: hidden;
+  padding: 0 var(--pt-gut);
 }
 
-.pt-mast {
-  position: absolute;
-  top: 26px;
-  left: 0;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--pt-ink-3);
-}
-
-/* the two source constructions */
-.pt-word {
-  position: absolute;
-  display: inline-flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.pt-word.is-proto {
-  left: clamp(2%, 6vw, 10%);
-  top: 21%;
-}
-
-.pt-word.is-template {
-  right: clamp(2%, 6vw, 10%);
-  bottom: 24%;
-}
-
-.pt-word .pt-letters {
-  font-family: var(--font-display);
+/* the two voices — neither is Switzer */
+.pt-face-serif {
+  font-family: var(--font-fraunces), Georgia, 'Times New Roman', serif;
   font-weight: 600;
-  font-size: clamp(30px, 4.6vw, 58px);
+  letter-spacing: -0.015em;
+}
+
+.pt-face-grot {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
   letter-spacing: -0.03em;
+}
+
+.pt-hero {
+  --pt-hero-size: clamp(38px, 6.6vw, 92px);
+}
+
+/* frame groups only carry absolutely-placed rules — no grid footprint */
+.pt-frame-group {
+  display: contents;
+}
+
+/* construction lines — every one runs border to border */
+.pt-line {
+  position: absolute;
+  background: var(--pt-ink-3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pt-line.is-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform-origin: center;
+}
+
+.pt-line.is-h i {
+  position: absolute;
+  right: 10px;
+  bottom: 4px;
+  font-family: var(--pt-mono);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pt-ink-4);
+}
+
+.pt-line.is-h.is-faint {
+  background: var(--pt-ink-4);
+}
+
+.pt-line.is-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--pt-ink-4);
+}
+
+/* proto's frame: dashed — a sketch of a frame for the working model */
+.pt-line.is-h.is-dashed {
+  height: 0;
+  background: none;
+  border-top: 1px dashed var(--pt-ink-3);
+}
+
+.pt-line.is-v.is-dashed {
+  width: 0;
+  background: none;
+  border-left: 1px dashed var(--pt-ink-4);
+}
+
+/* the two source words: whole rows, centered, above and below the line */
+.pt-src {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+}
+
+.pt-src.is-proto {
+  top: 7%;
+}
+
+.pt-src.is-template {
+  bottom: 7%;
+}
+
+.pt-src .pt-face-serif,
+.pt-src .pt-face-grot {
+  font-size: var(--pt-hero-size);
   line-height: 1;
   white-space: nowrap;
 }
 
-.pt-letters > span {
+.pt-src [data-pt-type] > span {
   display: inline-block;
   will-change: transform, opacity;
 }
 
-/* measuring guides: a hairline with crop ticks at both ends */
-.pt-guide {
-  position: relative;
-  display: block;
-  height: 1px;
-  background: var(--pt-ink-4);
-  transform-origin: left center;
-}
-
-.pt-guide::before,
-.pt-guide::after {
-  content: '';
-  position: absolute;
-  top: -3px;
-  width: 1px;
-  height: 7px;
-  background: var(--pt-ink-4);
-}
-
-.pt-guide::before {
-  left: 0;
-}
-
-.pt-guide::after {
-  right: 0;
-}
-
-.pt-spec {
-  font-family: var(--font-mono);
+.pt-src-spec {
+  font-family: var(--pt-mono);
   font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--pt-ink-3);
   white-space: nowrap;
 }
 
-/* the settled nameplate — the layout's ground truth */
+/* the destination: empty text first, the filled composite after */
 .pt-final {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
+  position: relative;
+  display: grid;
+  place-items: center;
   margin: 0;
+  z-index: 2;
 }
 
-.pt-final .pt-letters {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(46px, 9vw, 128px);
-  letter-spacing: -0.045em;
+.pt-composite {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: baseline;
+  font-size: var(--pt-hero-size);
   line-height: 1;
   white-space: nowrap;
 }
 
-/* the doubled baseline — two 1px threads at constant gauge */
-.pt-final-rule {
-  display: block;
-  align-self: stretch;
-  height: 7px;
-  border-top: 1px solid var(--pt-ink);
-  border-bottom: 1px solid var(--pt-ink);
-  transform-origin: center;
+.pt-composite.is-ghost > span {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--pt-ink);
 }
 
-.pt-final-spec {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--pt-ink-2);
+
+/* ---------- hatch spacer ---------- */
+
+.pt-hatch {
+  height: 42px;
+  border-bottom: 1px solid var(--pt-hair);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 6px,
+    var(--pt-hatch) 6px,
+    var(--pt-hatch) 7px
+  );
 }
 
-/* ---------- the ledger ---------- */
+/* ---------- the Present feature: a nested-frame cell ---------- */
+
+.pt-feature-sec {
+  background: var(--pt-hair);
+  padding: 1px;
+}
+
+/* The feature is the page's one dark panel in BOTH themes — the special
+   shader is its light, and the content composes over it. */
+.pt-feature {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  min-height: clamp(340px, 30vw, 440px);
+  background: #0c0e11;
+  border-radius: 12px;
+  padding: clamp(26px, 3.4vw, 44px) var(--pt-gut);
+  overflow: hidden;
+}
+
+.pt-feature-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.78;
+}
+
+/* the burst's hotspot sits under the deck ledger — a quiet scrim keeps the
+   rows legible while the field stays full-blaze everywhere else */
+.pt-feature::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(90deg, rgba(12, 14, 17, 0) 42%, rgba(12, 14, 17, 0.6) 74%);
+  pointer-events: none;
+}
+
+.pt-feature > :not(.pt-feature-field) {
+  position: relative;
+  z-index: 1;
+}
+
+.pt-feature h2 {
+  font-family: var(--pt-disp);
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #ffffff;
+}
+
+.pt-feature p {
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 46ch;
+}
+
+.pt-feature-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 22px;
+  padding: 11px 20px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f1113;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s ease;
+}
+
+.pt-feature-cta:hover {
+  opacity: 0.88;
+}
+
+/* the deck's own ledger — seven slides, one ruled table, set in Inter */
+.pt-deck {
+  align-self: center;
+  width: 100%;
+  font-family: var(--pt-sans);
+  font-size: 13px;
+  letter-spacing: -0.005em;
+}
+
+.pt-deck-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.pt-deck-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.pt-deck-row b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.pt-deck-row span {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- the index ledger ---------- */
 
 .pt-index-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0 12px;
-  border-top: 1px solid var(--pt-ink);
+  padding: 22px var(--pt-gut) 14px;
 }
 
 .pt-index-head h2 {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-family: var(--pt-disp);
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .pt-index-head span {
-  font-family: var(--font-mono);
+  font-family: var(--pt-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--pt-ink-3);
 }
 
 .pt-row {
   position: relative;
   display: grid;
-  grid-template-columns: 56px minmax(0, 1.35fr) 78px minmax(0, 1fr);
+  grid-template-columns: 52px minmax(0, 1.35fr) 74px minmax(0, 1fr);
   gap: clamp(14px, 2.4vw, 30px);
   align-items: baseline;
-  padding: 17px 10px 18px;
-  margin: 0 -10px;
+  padding: 16px var(--pt-gut) 17px;
   border-top: 1px solid var(--pt-hair);
-  text-decoration: none;
-  color: inherit;
-  transition: background 0.16s ease;
-}
-
-.pt-rows > .pt-row:last-child {
-  border-bottom: 1px solid var(--pt-hair);
+  transition: background 0.15s ease;
 }
 
 .pt-row:hover,
 .pt-row:focus-visible {
-  background: var(--pt-raised);
+  background: var(--pt-white);
 }
 
-/* the doubled thread appears on the row's left edge when it wakes */
+[data-theme='dark'] .pt-root .pt-row:hover,
+[data-theme='dark'] .pt-root .pt-row:focus-visible {
+  background: var(--pt-hair-2);
+}
+
+/* the doubled thread wakes on the row's left edge */
 .pt-row::before {
   content: '';
   position: absolute;
-  left: -1px;
+  left: 0;
   top: 10px;
   bottom: 10px;
   width: 5px;
   border-left: 1px solid var(--pt-ink);
   border-right: 1px solid var(--pt-ink);
   opacity: 0;
-  transition: opacity 0.16s ease;
+  transition: opacity 0.15s ease;
 }
 
 .pt-row:hover::before,
@@ -218,14 +536,14 @@
 }
 
 .pt-row-label {
-  font-family: var(--font-mono);
+  font-family: var(--pt-mono);
   font-size: 12px;
   color: var(--pt-ink-3);
 }
 
 .pt-row-main h3 {
-  font-family: var(--font-display);
-  font-size: 17px;
+  font-family: var(--pt-disp);
+  font-size: 16.5px;
   font-weight: 600;
   letter-spacing: -0.015em;
 }
@@ -240,7 +558,7 @@
 
 .pt-row-tone {
   justify-self: start;
-  font-family: var(--font-mono);
+  font-family: var(--pt-mono);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -251,79 +569,66 @@
 }
 
 .pt-row-sig {
-  font-family: var(--font-mono);
+  font-family: var(--pt-mono);
   font-size: 11.5px;
   line-height: 1.6;
   color: var(--pt-ink-3);
 }
 
-/* ---------- the two standing links ---------- */
-
-.pt-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 26px 0 8px;
-}
-
-.pt-link {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 18px;
-  border-top: 1px solid var(--pt-ink);
-  border-bottom: 1px solid var(--pt-ink);
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--pt-ink);
-  text-decoration: none;
-  transition: background 0.16s ease;
-}
-
-.pt-link:hover,
-.pt-link:focus-visible {
-  background: var(--pt-raised);
-}
-
-.pt-link small {
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: none;
-  color: var(--pt-ink-3);
-}
+/* ---------- foot ---------- */
 
 .pt-foot {
-  padding: 40px 0 46px;
-  font-family: var(--font-mono);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px var(--pt-gut) 30px;
+  font-family: var(--pt-mono);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--pt-ink-4);
 }
 
+.pt-foot-right {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 22px;
+}
+
+.pt-foot-right a {
+  color: var(--pt-ink-3);
+  text-decoration: none;
+}
+
+.pt-foot-right a:hover,
+.pt-foot-right a:focus-visible {
+  color: var(--pt-ink);
+}
+
 /* ---------- small screens ---------- */
+
+@media (max-width: 900px) {
+  .pt-feature {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 
 @media (max-width: 760px) {
   .pt-word.is-proto {
-    top: 14%;
+    top: 12%;
   }
 
   .pt-word.is-template {
-    bottom: 16%;
+    bottom: 14%;
   }
 
   .pt-row {
-    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-columns: 40px minmax(0, 1fr);
     row-gap: 8px;
   }
 
-  .pt-row-tone {
-    grid-column: 2;
-  }
-
+  .pt-row-tone,
   .pt-row-sig {
     grid-column: 2;
   }
