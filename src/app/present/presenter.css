@@ -1759,6 +1759,12 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   z-index: 5;
   display: flex;
   align-items: center;
+  transition: right 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Collapsed, the tab docks flush against the viewport edge. */
+.pr-side.is-closed {
+  right: 0;
 }
 
 /* The collapse tab is attached to the roll's left edge: rounded only on its
@@ -1808,16 +1814,26 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   backdrop-filter: blur(16px);
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  visibility: visible;
   transition:
     width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
     padding 0.45s cubic-bezier(0.65, 0, 0.35, 1),
-    border-color 0.45s ease;
+    border-width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    visibility 0s linear;
 }
 
+/* Fully gone once collapsed — zero width AND zero border, then hidden, so
+   no sliver (or its backdrop blur) is left smearing the stage. */
 .pr-side.is-closed .pr-roll {
   width: 0;
   padding-inline: 0;
-  border-color: transparent;
+  border-width: 0;
+  visibility: hidden;
+  transition:
+    width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    padding 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    border-width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    visibility 0s linear 0.45s;
 }
 
 .pr-roll-card {

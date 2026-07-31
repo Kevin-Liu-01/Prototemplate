@@ -51,9 +51,6 @@ export default function Pricing() {
             <h2 data-reveal>Pricing for everyone.</h2>
             <p data-reveal>Full-stack localization across buildtime, runtime, and review.</p>
           </div>
-          <p className='tc-mono tcpv-head-meta' data-reveal>
-            Usage-based · Not per seat
-          </p>
         </div>
 
         {/* the ruled sheet: the frame's rules are drawn by full-bleed pseudo
