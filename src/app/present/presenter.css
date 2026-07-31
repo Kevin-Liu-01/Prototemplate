@@ -1826,6 +1826,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   width: 238px;
   max-height: 76vh;
   overflow: hidden auto;
+  /* Native scroll now: don't chain a finished roll-scroll into the deck. */
+  overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   padding: 6px;

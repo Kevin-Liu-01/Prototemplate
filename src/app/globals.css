@@ -30,14 +30,26 @@ body {
   color: #fff;
 }
 
-/* Lenis owns the scrollport; without this the native smooth behavior fights it. */
-html.lenis,
-html.lenis body {
-  height: auto;
+/* House scrollbar everywhere (including embedded direction pages): the
+   presenter's hairline — a bare track with a thin neutral thumb that reads
+   on light and dark pages alike. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(127, 127, 127, 0.45) transparent;
 }
 
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+html::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(127, 127, 127, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -405,15 +405,33 @@ export default function TypeDetailSlide() {
           { autoAlpha: 0, y: '-=50', duration: 0.6, ease: 'power2.in' },
           '<'
         )
+        // Explicit fromTo + immediateRender on both: a bare from() (or a
+        // fromTo without immediateRender) can strand the gallery hidden when
+        // the fonts.ready invalidate() re-captures values with the playhead
+        // already past this span.
         .fromTo(
           '.pr-detail-close',
           { autoAlpha: 0, y: 70 },
-          { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            immediateRender: true,
+          },
           '>-0.1'
         )
-        .from(
+        .fromTo(
           '.pr-close-tile',
-          { autoAlpha: 0, y: 26, stagger: 0.035, duration: 0.4, ease: 'power3.out' },
+          { autoAlpha: 0, y: 26 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            stagger: 0.035,
+            duration: 0.4,
+            ease: 'power3.out',
+            immediateRender: true,
+          },
           '>-0.35'
         )
         .to({}, { duration: 0.5 });

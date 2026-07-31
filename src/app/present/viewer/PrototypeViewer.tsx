@@ -58,13 +58,15 @@ export default function PrototypeViewer() {
       if (reduced) return;
 
       // The frame grows from a slide-sized card into the full viewport.
+      // scrub:true (no lag) so the frame is visually docked at the exact
+      // scroll position where the inner-scroll handoff becomes possible.
       gsap
         .timeline({
           scrollTrigger: {
             trigger: root.current,
             start: 'top 85%',
             end: 'top top',
-            scrub: 0.35,
+            scrub: true,
           },
         })
         .fromTo(
@@ -125,7 +127,10 @@ export default function PrototypeViewer() {
 
       // While the stage is docked, presenter scroll drives the embedded
       // site's own scroll: the dwell maps onto the full page height, so the
-      // deck's scroll becomes the website's scroll.
+      // deck's scroll becomes the website's scroll. The first stretch of the
+      // dwell is a deadzone — you scroll to get INTO the preview, it settles
+      // fully docked, and only then does further scroll move the page inside.
+      const DEADZONE = 0.08;
       ScrollTrigger.create({
         trigger: root.current,
         start: 'top top',
@@ -138,10 +143,11 @@ export default function PrototypeViewer() {
           if (!win || !doc?.documentElement) return;
           const max = doc.documentElement.scrollHeight - win.innerHeight;
           if (max <= 0) return;
-          const y = self.progress * max;
-          const innerLenis = (win as unknown as { lenis?: { scrollTo: (v: number, o?: object) => void } }).lenis;
-          if (innerLenis) innerLenis.scrollTo(y, { immediate: true });
-          else win.scrollTo(0, y);
+          const progress = Math.max(
+            0,
+            (self.progress - DEADZONE) / (1 - DEADZONE)
+          );
+          win.scrollTo(0, progress * max);
         },
       });
     },
