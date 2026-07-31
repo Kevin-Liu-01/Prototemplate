@@ -162,7 +162,7 @@ const LIGHT = {
   flareGlint: 0.42,
 };
 
-/* #0a0b0f / #ffffff — the ink-black dark remap (the one-surface family),
+/* #070707 / #ffffff — the ink-black dark remap (the one-surface family),
    mirrored into the shader so the canvas follows the token flip instead of
    staying a paper rectangle. */
 const DARK = {

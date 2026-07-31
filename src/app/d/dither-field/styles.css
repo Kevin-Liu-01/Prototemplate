@@ -12,20 +12,20 @@
   --lang-rule-strong: var(--tc-hair);
   --lang-rule: var(--tc-hair);
 
-  --tc-paper: #fbfbfa;
+  --tc-paper: #f5f5f3;
   --tc-sunk: #ffffff;
   --tc-white: #ffffff;
-  --tc-ink: #0f1113;
-  --tc-ink-2: rgba(15, 17, 19, 0.63);
-  --tc-ink-3: rgba(15, 17, 19, 0.45);
-  --tc-ink-4: rgba(15, 17, 19, 0.27);
+  --tc-ink: #070707;
+  --tc-ink-2: rgba(7, 7, 7, 0.63);
+  --tc-ink-3: rgba(7, 7, 7, 0.45);
+  --tc-ink-4: rgba(7, 7, 7, 0.27);
   /* Opaque hairlines (the founder corner grammar stacks the hair as mats AND
      grounds — a translucent hair would double-tint where they overlap). */
-  --tc-hair: #e4e4e6;
-  --tc-hair-2: #f1f1f3;
+  --tc-hair: rgba(138, 143, 152, 0.26);
+  --tc-hair-2: rgba(138, 143, 152, 0.15);
   /* HALFTONE is achromatic: the "accent" is ink. State is weight, not hue. */
-  --tc-accent: #0f1113;
-  --tc-dark: #0c0e11;
+  --tc-accent: #070707;
+  --tc-dark: #070707;
 
   /* The second surface — the LEDGER beige every light diagram sits on. A light
      cell's artifact zone is never bare card: the plate is the material that
@@ -35,7 +35,7 @@
   /* The one dark artifact surface for code, config and diffs — the inset panel
      every reference draws its code on. Light cells place it on the card; the
      page keeps its mass between the hero terminal and the dark band. */
-  --tc-panel: #14121a;
+  --tc-panel: #101010;
   --tc-panel-ink: rgba(255, 255, 255, 0.88);
   --tc-panel-dim: rgba(255, 255, 255, 0.42);
   --tc-panel-faint: rgba(255, 255, 255, 0.26);
@@ -55,7 +55,7 @@
   --tc-card: #ffffff;
   --tc-mat-inset: clamp(4px, 0.5vw, 6px);
   --tc-card-pad: clamp(17px, 1.9vw, 21px);
-  --tc-hatch: rgba(15, 17, 19, 0.085);
+  --tc-hatch: rgba(7, 7, 7, 0.085);
 
   --tc-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
   --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
@@ -66,9 +66,9 @@
 
   /* the isometric family inherits the page, not the other way round */
   --iso-accent: var(--tc-accent);
-  --iso-ink: rgba(15, 17, 19, 0.8);
-  --iso-ink-soft: rgba(15, 17, 19, 0.44);
-  --iso-ink-hair: rgba(15, 17, 19, 0.2);
+  --iso-ink: rgba(7, 7, 7, 0.8);
+  --iso-ink-soft: rgba(7, 7, 7, 0.44);
+  --iso-ink-hair: rgba(7, 7, 7, 0.2);
   --iso-mono: var(--tc-mono);
   --iso-ui: var(--tc-sans);
   --iso-display: var(--tc-disp);
@@ -176,11 +176,11 @@
 
 .ditherfield-root .tc-btn-solid {
   background: var(--tc-ink);
-  color: #fbfbfa;
+  color: #f5f5f3;
 }
 
 .ditherfield-root .tc-btn-solid:hover {
-  background: #23282c;
+  background: rgba(138, 143, 152, 0.26);
 }
 
 .ditherfield-root .tc-btn-line {
@@ -190,8 +190,8 @@
 }
 
 .ditherfield-root .tc-btn-line:hover {
-  border-color: rgba(15, 17, 19, 0.28);
-  background: rgba(15, 17, 19, 0.03);
+  border-color: rgba(7, 7, 7, 0.28);
+  background: rgba(7, 7, 7, 0.03);
 }
 
 .ditherfield-root .tc-btn-sm {
@@ -352,7 +352,7 @@
 }
 
 .ditherfield-root .tc-copy:hover {
-  border-color: rgba(15, 17, 19, 0.26);
+  border-color: rgba(7, 7, 7, 0.26);
 }
 
 .ditherfield-root .tc-copy span:last-child {
@@ -408,7 +408,7 @@
   max-width: 820px;
   margin-inline: auto;
   border-radius: 8px 8px 0 0;
-  background: #111111;
+  background: #101010;
   outline: 1px solid rgba(255, 255, 255, 0.3);
   outline-offset: 2px;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
@@ -759,7 +759,7 @@
 /* ---------- the dark inset panel ----------
    Code, config and diffs are the one artifact the references never leave on
    paper: they sit on their own toned surface. Every `tc-code` sample is that
-   surface now — `#14121A`, small radius, white 13.5/24 mono — so the page
+   surface now — `#101010`, small radius, white 13.5/24 mono — so the page
    carries a dark panel at every depth between the hero terminal and the band,
    instead of pale marks on paper. Inside a mount the panel keeps its box: the
    mat frames it, the panel carries the mass, and the two jobs stay distinct. */
@@ -838,11 +838,11 @@
 
 /* The light token set — the story's editor mock highlights on paper. */
 .ditherfield-root .tc-t-str {
-  color: #5c6470;
+  color: #8a8f98;
 }
 
 .ditherfield-root .tc-t-kw {
-  color: rgba(15, 17, 19, 0.52);
+  color: rgba(7, 7, 7, 0.52);
 }
 
 /* GT's API is emphasis, not hue: the accent's six places are all diagram
@@ -857,7 +857,7 @@
 }
 
 .ditherfield-root .tc-t-num {
-  color: #5c6470;
+  color: #8a8f98;
 }
 
 /* Four tones on the dark panel: white for the code, two greys for structure,
@@ -1505,7 +1505,7 @@
   margin-top: calc(-1 * clamp(66px, 8vw, 108px));
   margin-right: calc(-1 * var(--tc-gut));
   border-radius: 0 0 0 8px;
-  background: #0a0b0d;
+  background: #070707;
   min-height: clamp(430px, 42vw, 560px);
   display: grid;
   place-items: center;
@@ -1528,14 +1528,14 @@
   z-index: 1;
   width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
   margin: clamp(40px, 4.6vw, 64px) 0;
-  background: #0d0e10;
+  background: #070707;
   outline-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
 }
 
 .ditherfield-root .tc-band-term {
   border-radius: 6px;
-  background: #111111;
+  background: #101010;
   outline: 1px solid rgba(255, 255, 255, 0.22);
   outline-offset: 2px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -1621,7 +1621,7 @@
 .ditherfield-root .tcm {
   margin-top: 18px;
   border-radius: 6px;
-  background: #111111;
+  background: #101010;
   outline: 1px solid rgba(255, 255, 255, 0.16);
   outline-offset: 2px;
   font-family: var(--tc-mono);
@@ -1790,7 +1790,7 @@
 
 /* Dashboard: product UI — lighter card, locale chip strip, publish footer */
 .ditherfield-root .tcm.is-dash {
-  background: #17171b;
+  background: #101010;
 }
 
 .ditherfield-root .tcm-dash-bar {
@@ -2422,7 +2422,7 @@
 /* The two-second tell: zh-Hans and zh-Hant, adjacent, both real. Emphasis is
    weight and ink — never hue. */
 .ditherfield-root .df-loc-chip.is-tell {
-  border-color: rgba(15, 17, 19, 0.38);
+  border-color: rgba(7, 7, 7, 0.38);
   color: var(--tc-ink);
   font-weight: 600;
 }
@@ -2609,30 +2609,30 @@
   /* One surface family in the dark, the way light mode is one white: every
      card, plate and sunk surface lands on the same ink black, in the dark
      band's own family, so the page never shifts grey between sections. */
-  --tc-paper: #0a0b0f;
-  --tc-sunk: #0d0e12;
-  --tc-white: #0d0e12;
-  --tc-card: #0d0e12;
+  --tc-paper: #070707;
+  --tc-sunk: #070707;
+  --tc-white: #070707;
+  --tc-card: #070707;
   --tc-ink: #ffffff;
   --tc-ink-2: rgba(255, 255, 255, 0.66);
   --tc-ink-3: rgba(255, 255, 255, 0.48);
   --tc-ink-4: rgba(255, 255, 255, 0.3);
-  --tc-hair: #3b3440;
-  --tc-hair-2: #2b2731;
-  --tc-plate: #0d0e12;
+  --tc-hair: rgba(138, 143, 152, 0.38);
+  --tc-hair-2: rgba(138, 143, 152, 0.3);
+  --tc-plate: #070707;
   --tc-hatch: rgba(255, 255, 255, 0.07);
 }
 
 [data-theme='dark'] .ditherfield-root .tc-btn-solid {
   background: #ffffff;
-  color: #16171d;
+  color: #101010;
 }
 
 /* Dark theme: the window buttons fill with --tc-ink, which remaps to white,
    but their label was hard-coded light — white on white. The same inversion
    the dark remap gives .tc-btn-solid. */
 [data-theme='dark'] .ditherfield-root .tcx-btn {
-  color: #16171d;
+  color: #101010;
 }
 
 /* (The language diagrams' measured pills invert their labels with the theme

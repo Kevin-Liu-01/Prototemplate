@@ -125,7 +125,7 @@ export default function Editor() {
           <div className='tc-card'>
             {/* The workspace runs in its night register: the page's one big
                 product surface is a toned panel, not marks on paper — the
-                grid's strings are white ink on #14121A, and the one cell
+                grid's strings are white ink on #101010, and the one cell
                 mid-edit inverts back to paper, so "you edit" is literally the
                 light moment of the surface. */}
             <div className='ap-ws is-night'>

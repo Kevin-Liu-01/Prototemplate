@@ -699,7 +699,7 @@ export default function Hero() {
       {/* The first viewport commits to a material the way the references do:
           the terminal band is a dark plate washed with the prismatic field —
           lit at the flanks, dark in the centre column where the transcript
-          sits (the viteplus grammar: a #111 terminal flanked by lit panels).
+          sits (the viteplus grammar: a #101010 terminal flanked by lit panels).
           The band itself stays square and full-width; only the window inside
           it keeps the measured top corners and ring. exposureScale is raised
           (= dimmer) so the flanks wash rather than saturate. */}

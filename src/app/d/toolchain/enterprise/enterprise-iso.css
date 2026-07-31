@@ -83,7 +83,7 @@
 /* ---------- the glass plates: the dark band's material, verbatim ---------- */
 
 .toolchain-root .tcei-cell .tcei-glass-base {
-  fill: rgba(13, 15, 21, 0.94);
+  fill: rgba(7, 7, 7, 0.94);
 }
 
 .toolchain-root .tcei-cell .tcei-glass-left {
@@ -91,7 +91,7 @@
 }
 
 .toolchain-root .tcei-cell .tcei-glass-right {
-  fill: rgba(3, 5, 9, 0.45);
+  fill: rgba(7, 7, 7, 0.45);
 }
 
 .toolchain-root .tcei-cell .tcei-glass-topfill {

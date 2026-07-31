@@ -101,7 +101,7 @@ export type AuroraOptions = {
   params?: Partial<AuroraParams>;
 };
 
-/* The page's exact paper (#fbfbfa) and dark plate (#0c0e11), so the canvas
+/* The page's exact paper (#f5f5f3) and dark plate (#070707), so the canvas
    fades seamlessly into the surfaces that carry it.
    R4 (the curtain rewrite): the r0–r3 field was an even watercolor haze — no
    axis, no luminance range, no direction. The presets below tune the curtain
@@ -161,7 +161,7 @@ export const AURORA_PRESETS: Record<AuroraPresetName, AuroraParams> = {
     quietX: 0.5,
   },
   'paper-dark': {
-    base: [0.039, 0.043, 0.059], // the dark theme's paper, #0a0b0f
+    base: [0.039, 0.043, 0.059], // the dark theme's paper, #070707
     tintA: [0.45, 0.94, 0.68], // auroral emerald — the bright border
     tintB: [0.28, 0.6, 0.86], // ionized blue
     tintC: [0.52, 0.4, 0.82], // violet tips

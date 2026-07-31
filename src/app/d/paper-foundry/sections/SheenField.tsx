@@ -24,7 +24,7 @@ export type SheenFieldProps = {
  * home turf, so the sheet does not stand down in dark mode — it re-exposes.
  * The shader is achromatic (`paper × lum`), so the whole flip is three
  * numbers: the paper term drops to a graphite a step above the page's
- * #0a0b0f, the grain cuts deeper so the brushing survives the dark ground,
+ * #070707, the grain cuts deeper so the brushing survives the dark ground,
  * and the specular band lifts harder so one raked light still reads. Tuned
  * against the ink-black one-surface family, not inverted mechanically.
  */

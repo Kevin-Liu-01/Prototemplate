@@ -1,8 +1,12 @@
 @import 'tailwindcss';
 
 @theme {
+  /* The four-color system: Ink, Raised, Titanium, Paper. Structural color
+     everywhere comes from these (plus alpha derivatives); each page adds
+     exactly one spectral accent band. */
   --color-ink: #070707;
   --color-ink-raised: #101010;
+  --color-titanium: #8a8f98;
   --color-paper: #f5f5f3;
 
   --font-display: var(--font-switzer), 'Switzer', system-ui, sans-serif;

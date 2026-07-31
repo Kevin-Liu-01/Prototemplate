@@ -39,25 +39,10 @@ export default function PrototypeViewer() {
   const reviews = useReviews();
 
   // The dock is one shared pill in the presenter HUD; this viewer portals
-  // its controls (and the notes panel) into the pill's slots. If the URL
-  // names a direction (/present?d=slug — the index rows link this way),
-  // land docked on it once the pins have settled.
+  // its controls (and the notes panel) into the pill's slots.
   useMountEffect(() => {
     setDockSlot(document.getElementById('pr-dock-viewer-slot'));
     setNotesSlot(document.getElementById('pr-notes-slot'));
-    const slug = new URLSearchParams(window.location.search).get('d');
-    const found = DIRECTIONS.findIndex((direction) => direction.slug === slug);
-    if (found < 0) return;
-    setIndex(found);
-    const timer = window.setTimeout(() => {
-      if (!root.current) return;
-      const y =
-        root.current.getBoundingClientRect().top +
-        window.scrollY +
-        window.innerHeight * 0.3;
-      window.scrollTo(0, Math.round(y));
-    }, 450);
-    return () => window.clearTimeout(timer);
   });
 
   const current = DIRECTIONS[index]!;
@@ -81,7 +66,54 @@ export default function PrototypeViewer() {
         end: 'bottom 40%',
       });
 
-      if (reduced) return;
+      // Deep link (/present?d=slug — the index rows link this way): land
+      // docked on the requested prototype, and KEEP landing it. On a
+      // client-side navigation the document grows while slides lay out (and
+      // in dev, compile), early jumps clamp, Next's late scroll-to-top can
+      // undo one that took, and every ScrollTrigger refresh can move the
+      // target — so re-snap on a timer ladder AND after every refresh.
+      // Only real user input stops the re-snaps.
+      const cleanupDeepLink = (() => {
+        const slug = new URLSearchParams(window.location.search).get('d');
+        const found = DIRECTIONS.findIndex(
+          (direction) => direction.slug === slug
+        );
+        if (found < 0) return () => {};
+        setIndex(found);
+        let userMoved = false;
+        const markUser = () => {
+          userMoved = true;
+        };
+        const snap = () => {
+          if (userMoved || !root.current) return;
+          window.scrollTo(
+            0,
+            Math.round(
+              root.current.getBoundingClientRect().top +
+                window.scrollY +
+                window.innerHeight * 0.3
+            )
+          );
+        };
+        const timers = [150, 500, 1000, 1800, 3000, 4500].map((ms) =>
+          window.setTimeout(snap, ms)
+        );
+        const stop = window.setTimeout(() => markUser(), 5200);
+        ScrollTrigger.addEventListener('refresh', snap);
+        window.addEventListener('wheel', markUser, { passive: true });
+        window.addEventListener('touchstart', markUser, { passive: true });
+        window.addEventListener('keydown', markUser);
+        return () => {
+          timers.forEach((timer) => window.clearTimeout(timer));
+          window.clearTimeout(stop);
+          ScrollTrigger.removeEventListener('refresh', snap);
+          window.removeEventListener('wheel', markUser);
+          window.removeEventListener('touchstart', markUser);
+          window.removeEventListener('keydown', markUser);
+        };
+      })();
+
+      if (reduced) return cleanupDeepLink;
 
       // The frame grows from a slide-sized card into the full viewport.
       // scrub:true (no lag) so the frame is visually docked at the exact
@@ -165,6 +197,8 @@ export default function PrototypeViewer() {
           win.scrollTo(0, progress * max);
         },
       });
+
+      return cleanupDeepLink;
     },
     { scope: root }
   );

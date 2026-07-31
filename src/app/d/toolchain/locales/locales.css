@@ -151,7 +151,7 @@
 
 .toolchain-root .lcl-filter-in:focus {
   outline: none;
-  border-color: rgba(15, 17, 19, 0.28);
+  border-color: rgba(7, 7, 7, 0.28);
 }
 
 [data-theme='dark'] .toolchain-root .lcl-filter-in:focus {

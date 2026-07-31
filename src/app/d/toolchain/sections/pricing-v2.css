@@ -590,10 +590,10 @@
 .toolchain-root .tcpx .tc-btn-line {
   border-color: rgba(255, 255, 255, 0.3);
   color: rgba(255, 255, 255, 0.92);
-  background: rgba(12, 14, 17, 0.55);
+  background: rgba(7, 7, 7, 0.55);
 }
 
 .toolchain-root .tcpx .tc-btn-line:hover {
   border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(12, 14, 17, 0.72);
+  background: rgba(7, 7, 7, 0.72);
 }

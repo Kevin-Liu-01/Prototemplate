@@ -71,7 +71,7 @@
 /* Same grammar as the target chips — flag + code in the bordered
    pill — in the plate's own neutrals instead of the translation hue:
    en is the thread the targets are measured against, not one of
-   them. The terminal plate is the same #111 in both themes, so like
+   them. The terminal plate is the same #101010 in both themes, so like
    the rest of the window's palette this never remaps under
    [data-theme]. Outranks the base .tct-chip rule on specificity. */
 .lensgate-root .tct-chip.is-src {

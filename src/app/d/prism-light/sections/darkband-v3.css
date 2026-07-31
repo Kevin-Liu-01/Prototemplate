@@ -19,7 +19,7 @@
 .prismlight-root .tcb {
   /* surfaces */
   --tcb-seam: rgba(255, 255, 255, 0.14);
-  --tcb-card: #121419;
+  --tcb-card: #101010;
   --tcb-lift: rgba(255, 255, 255, 0.045);
   --tcb-rule: rgba(255, 255, 255, 0.1);
 
@@ -51,7 +51,7 @@
      the cell, so the artifact reads as its own mounted panel. */
   --tcb-mat: rgba(255, 255, 255, 0.11);
   --tcb-mat-edge: rgba(255, 255, 255, 0.17);
-  --tcb-box: #0c0e13;
+  --tcb-box: #070707;
 }
 
 .prismlight-root .tcb .tcb-in {
@@ -182,7 +182,7 @@
    per-plane depth as inline alphas set by the drawing itself. */
 
 .prismlight-root .tcb .tcs-glass-base {
-  fill: rgba(13, 15, 21, 0.94);
+  fill: rgba(7, 7, 7, 0.94);
 }
 
 .prismlight-root .tcb .tcs-glass-left {
@@ -190,7 +190,7 @@
 }
 
 .prismlight-root .tcb .tcs-glass-right {
-  fill: rgba(3, 5, 9, 0.45);
+  fill: rgba(7, 7, 7, 0.45);
 }
 
 .prismlight-root .tcb .tcs-glass-topfill {
@@ -404,7 +404,7 @@
 
 .prismlight-root .tcb .tcb-cell-cli {
   grid-column: span 5;
-  background: #08090c;
+  background: #070707;
   display: grid;
   place-items: center;
   isolation: isolate;
@@ -425,7 +425,7 @@
   width: min(400px, calc(100% - clamp(36px, 5vw, 64px)));
   margin: clamp(28px, 3.2vw, 44px) 0;
   border-radius: 6px;
-  background: #0d0e10;
+  background: #070707;
   border: 1px solid rgba(255, 255, 255, 0.12);
   outline: 1px solid rgba(255, 255, 255, 0.3);
   outline-offset: 2px;

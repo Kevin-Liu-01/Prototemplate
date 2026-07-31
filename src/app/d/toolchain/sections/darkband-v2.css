@@ -13,7 +13,7 @@
 .toolchain-root .tcb {
   /* surfaces */
   --tcb-seam: rgba(255, 255, 255, 0.14);
-  --tcb-card: #121419;
+  --tcb-card: #101010;
   --tcb-lift: rgba(255, 255, 255, 0.045);
   --tcb-rule: rgba(255, 255, 255, 0.1);
 
@@ -136,7 +136,7 @@
 
 .toolchain-root .tcb .tcb-cell-cli {
   grid-column: span 5;
-  background: #08090c;
+  background: #070707;
   display: grid;
   place-items: center;
   isolation: isolate;
@@ -157,7 +157,7 @@
   width: min(408px, calc(100% - clamp(36px, 5vw, 64px)));
   margin: clamp(28px, 3.2vw, 44px) 0;
   border-radius: 6px;
-  background: #0d0e10;
+  background: #070707;
   border: 1px solid rgba(255, 255, 255, 0.12);
   outline: 1px solid rgba(255, 255, 255, 0.3);
   outline-offset: 2px;

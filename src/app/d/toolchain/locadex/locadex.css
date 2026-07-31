@@ -140,7 +140,7 @@
 /* ---------- the guard cell's plate, dark theme ----------
    A flat cell in a framed row sits on the row's mortar — var(--tc-hair).
    As a 1px seam the mortar's hue is invisible; as the full plate of the
-   page's tallest flat cell, the dark remap's #3b3440 reads plum against
+   page's tallest flat cell, the dark remap's rgba(138, 143, 152, 0.38) reads plum against
    an otherwise neutral ink family. The dark remap's own doctrine is one
    surface family ("every card, plate and sunk surface lands on the same
    ink black"), so in the dark the plate joins the card surface and the
@@ -673,7 +673,7 @@
 /* the run summary: the band's one artifact, a boring itemised bill */
 .toolchain-root .ldx-run {
   border-radius: 6px;
-  background: #111111;
+  background: #101010;
   outline: 1px solid rgba(255, 255, 255, 0.22);
   outline-offset: 2px;
   border: 1px solid rgba(255, 255, 255, 0.12);

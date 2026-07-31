@@ -136,7 +136,7 @@
 /* ---------- the glass plates (dark band values, verbatim) ---------- */
 
 .toolchain-root .ldxi-glass-base {
-  fill: rgba(13, 15, 21, 0.94);
+  fill: rgba(7, 7, 7, 0.94);
 }
 
 .toolchain-root .ldxi-glass-left {
@@ -144,7 +144,7 @@
 }
 
 .toolchain-root .ldxi-glass-right {
-  fill: rgba(3, 5, 9, 0.45);
+  fill: rgba(7, 7, 7, 0.45);
 }
 
 .toolchain-root .ldxi-glass-topfill {

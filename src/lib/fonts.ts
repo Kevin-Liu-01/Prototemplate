@@ -1,4 +1,3 @@
-import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 
 /** Display and UI face for every direction. */
@@ -15,9 +14,25 @@ export const switzer = localFont({
   display: 'swap',
 });
 
-/** Text companion — Inter, by Rasmus Andersson. */
-export const inter = Inter({
-  subsets: ['latin'],
+/**
+ * Text companion — the REAL Inter, self-hosted from rsms.me (v4.1 variable
+ * builds, roman + italic). Not the Google Fonts build: the whole point of
+ * the presenter's "wrong Inter" beat is that the two resolve differently —
+ * the rsms variable family carries the opsz axis and the full feature set.
+ */
+export const inter = localFont({
+  src: [
+    {
+      path: '../../public/fonts/InterVariable.woff2',
+      weight: '100 900',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/InterVariable-Italic.woff2',
+      weight: '100 900',
+      style: 'italic',
+    },
+  ],
   variable: '--font-inter',
   display: 'swap',
 });

@@ -90,7 +90,7 @@ export default function Hero() {
     (aspect) => heroTransmission(aspect, { cellScale: 4 }),
     {
       scale: 4,
-      ink: '#0f1113',
+      ink: '#070707',
       paper: 'transparent',
       fps: 24,
       reducedMotionTime: 6.8,

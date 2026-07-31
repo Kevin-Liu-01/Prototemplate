@@ -99,7 +99,7 @@
 /* The user is a hollow dot: not infrastructure, just where the request
    starts. The dark fill punches it out of the route line beneath it. */
 .eg .eg-origin-dot {
-  fill: var(--tc-dark, #0c0e11);
+  fill: var(--tc-dark, #070707);
   stroke: var(--iso-ink, color-mix(in srgb, currentColor 88%, transparent));
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
@@ -156,7 +156,7 @@
 
 /* The chip rides on the page's one dark artifact panel tone. */
 .eg .eg-chip-bg {
-  fill: var(--tc-panel, #14121a);
+  fill: var(--tc-panel, #101010);
   stroke: var(--iso-ink-soft, color-mix(in srgb, currentColor 45%, transparent));
   stroke-width: 1;
   vector-effect: non-scaling-stroke;

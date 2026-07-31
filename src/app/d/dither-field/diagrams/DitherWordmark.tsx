@@ -61,7 +61,7 @@ export default function DitherWordmark({ spec, capHeight = 22, scale = 2 }: Prop
       // The display face as the browser resolved it (next/font hashes the
       // family name, so it is read off the live element, never hardcoded).
       const family = getComputedStyle(canvas).fontFamily || 'system-ui, sans-serif';
-      const ink = getComputedStyle(canvas).color || '#0f1113';
+      const ink = getComputedStyle(canvas).color || '#070707';
       const text = spec.uppercase ? spec.text.toUpperCase() : spec.text;
       const fontTemplate = `${spec.weight} {size}px ${family}`;
 

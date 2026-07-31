@@ -102,7 +102,7 @@ const CELL = 30;
  * the threads and the caliper all flip to the white ramp while light mode
  * renders byte-for-byte what this constant always drew.
  */
-const INK = '#0f1113';
+const INK = '#070707';
 /** The rain's column pitch: the field is set, not scattered. */
 const COL_PITCH = 34;
 

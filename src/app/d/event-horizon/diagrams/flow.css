@@ -7,8 +7,8 @@
    ============================================================ */
 
 .tflow {
-  --tf-panel: var(--tc-panel, #14121a);
-  --tf-ground: var(--tc-plate, #f4f3ec);
+  --tf-panel: var(--tc-panel, #101010);
+  --tf-ground: var(--tc-plate, #f5f5f3);
 
   display: grid;
   /* The output ledger is the wider pane: three real pairs per file, and the
@@ -112,7 +112,7 @@
 }
 
 .tflow .tf-out {
-  border: 1px solid var(--tc-hair, rgba(15, 17, 19, 0.11));
+  border: 1px solid var(--tc-hair, rgba(7, 7, 7, 0.11));
   border-radius: 4px;
   background: var(--tc-card, #ffffff);
   overflow: hidden;
@@ -124,19 +124,19 @@
   justify-content: space-between;
   gap: 8px;
   padding: 8px 12px 7px;
-  border-bottom: 1px solid var(--tc-hair-2, rgba(15, 17, 19, 0.06));
+  border-bottom: 1px solid var(--tc-hair-2, rgba(7, 7, 7, 0.06));
   font-family: var(--tc-mono, ui-monospace, monospace);
   font-size: 11px;
-  color: var(--tc-ink-3, rgba(15, 17, 19, 0.45));
+  color: var(--tc-ink-3, rgba(7, 7, 7, 0.45));
 }
 
 .tflow .tf-out.is-lit .tf-out-file {
-  color: var(--tc-ink, #0f1113);
+  color: var(--tc-ink, #070707);
   font-weight: 500;
 }
 
 .tflow .tf-out-tag {
-  color: var(--tc-ink-4, rgba(15, 17, 19, 0.27));
+  color: var(--tc-ink-4, rgba(7, 7, 7, 0.27));
 }
 
 /* Three pairs per file, source key against translated value — the ledger the
@@ -160,7 +160,7 @@
   font-family: var(--tc-mono, ui-monospace, monospace);
   font-size: 11px;
   line-height: 1.4;
-  color: var(--tc-ink-3, rgba(15, 17, 19, 0.45));
+  color: var(--tc-ink-3, rgba(7, 7, 7, 0.45));
   white-space: nowrap;
 }
 
@@ -169,7 +169,7 @@
   font-weight: 500;
   font-size: 12.5px;
   line-height: 1.4;
-  color: var(--tc-ink, #0f1113);
+  color: var(--tc-ink, #070707);
   white-space: nowrap;
 }
 
@@ -194,7 +194,7 @@
 .sdkl {
   width: 100%;
   border-radius: 4px;
-  background: var(--tc-panel, #14121a);
+  background: var(--tc-panel, #101010);
   overflow: hidden;
   font-family: var(--tc-mono, ui-monospace, monospace);
 }
@@ -281,17 +281,17 @@
   align-items: center;
   height: 34px;
   padding: 0 12px;
-  border: 1px solid var(--tc-hair, rgba(15, 17, 19, 0.11));
+  border: 1px solid var(--tc-hair, rgba(7, 7, 7, 0.11));
   border-radius: 4px;
   background: var(--tc-card, #ffffff);
   font-family: var(--tc-mono, ui-monospace, monospace);
   font-size: 12.5px;
   white-space: nowrap;
-  color: var(--tc-ink, #0f1113);
+  color: var(--tc-ink, #070707);
 }
 
 .rt .rt-dom {
-  color: var(--tc-ink-4, rgba(15, 17, 19, 0.27));
+  color: var(--tc-ink-4, rgba(7, 7, 7, 0.27));
 }
 
 .rt .rt-seg {
@@ -304,7 +304,7 @@
 .rt .rt-path.is-lit {
   font-weight: 500;
   text-decoration: underline;
-  text-decoration-color: var(--tc-ink, #0f1113);
+  text-decoration-color: var(--tc-ink, #070707);
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
 }
@@ -312,7 +312,7 @@
 .rt .rt-loc {
   margin-left: auto;
   font-size: 11px;
-  color: var(--tc-ink-4, rgba(15, 17, 19, 0.27));
+  color: var(--tc-ink-4, rgba(7, 7, 7, 0.27));
 }
 
 .rt .rt-ladder {
@@ -320,10 +320,10 @@
   font-family: var(--tc-mono, ui-monospace, monospace);
   font-size: 11px;
   line-height: 1.5;
-  color: var(--tc-ink-3, rgba(15, 17, 19, 0.45));
+  color: var(--tc-ink-3, rgba(7, 7, 7, 0.45));
 }
 
 .rt .rt-ladder b {
   font-weight: 500;
-  color: var(--tc-ink, #0f1113);
+  color: var(--tc-ink, #070707);
 }

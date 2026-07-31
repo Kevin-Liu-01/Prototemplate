@@ -52,7 +52,7 @@ export default function DitherGlobe({ title }: { title: string }) {
   // in light and paper-on-ink in dark — themeInk re-resolves it on flip.
   const ref = useDitherField(atlasGlobe, {
     scale: 3,
-    ink: '#0f1113',
+    ink: '#070707',
     paper: 'transparent',
     fps: 24,
     reducedMotionTime: 8,

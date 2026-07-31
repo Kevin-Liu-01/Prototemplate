@@ -159,7 +159,7 @@
   /* The plate's own ground, not a spelled-out near-white: the box behind this
      is filled with `--lang-ink`, which the dark remap turns white — the label
      must invert with it (the same pairing the dark theme gives .tc-btn-solid). */
-  color: var(--lang-ground, #fbfbfa);
+  color: var(--lang-ground, #f5f5f3);
 }
 
 /* CALIPER rule: values are never obscured by scaffolding. The delta rides
@@ -812,7 +812,7 @@
   border-radius: 5px;
   /* Concrete ink: `--lang-ink` is currentColor, which a `color` declaration on
      this same element would re-resolve to the label's own near-white. */
-  background: var(--tc-ink, #0f1113);
+  background: var(--tc-ink, #070707);
   font-family: var(--lang-sans);
   font-weight: 500;
   font-size: 15px;
@@ -820,7 +820,7 @@
   line-height: 1;
   /* Ground, not spelled near-white: `--tc-ink` remaps to white in dark theme,
      so the label rides the same inversion (dark on the now-white plate). */
-  color: var(--lang-ground, #fbfbfa);
+  color: var(--lang-ground, #f5f5f3);
 }
 
 /* The fork takes whatever height the cell has to give (the viewBox is
@@ -930,7 +930,7 @@
   height: 38px;
   padding: 0 18px;
   border-radius: 5px;
-  background: var(--tc-ink, #0f1113);
+  background: var(--tc-ink, #070707);
   font-family: var(--lang-disp);
   font-weight: 500;
   font-size: 18px;
@@ -939,7 +939,7 @@
   white-space: nowrap;
   /* Same inversion as .lang-cr-word: the plate is `--tc-ink`, which the dark
      remap turns white, so the label keeps to the plate's ground. */
-  color: var(--lang-ground, #fbfbfa);
+  color: var(--lang-ground, #f5f5f3);
 }
 
 .lang-cr-gloss {

@@ -3,7 +3,7 @@
    New classes only (up-*); styles.css is never appended to.
    Light sections read the shell's tokens so the dark remap
    holds; the meter panel and the band's invoice live on the
-   fixed panel surfaces (--tc-panel / #111) that never remap,
+   fixed panel surfaces (--tc-panel / #101010) that never remap,
    the same way every tc-code sample does. The doubled thread
    appears at the page constants (--thread-gauge / --thread-gap)
    under the hero's key word and as the invoice's total rule.
@@ -252,7 +252,7 @@
 
 .toolchain-root .up-invoice {
   border-radius: 6px;
-  background: #111111;
+  background: #101010;
   outline: 1px solid rgba(255, 255, 255, 0.22);
   outline-offset: 2px;
   border: 1px solid rgba(255, 255, 255, 0.12);

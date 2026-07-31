@@ -12,6 +12,10 @@
   background: var(--color-ink);
   color: #fff;
   font-family: var(--font-sans);
+  /* Stage width: wide content clears the HUD rail's label gutter on
+     mid-size screens; below 1020px the labels hide, so content can take
+     the viewport again. */
+  --pr-stage-w: calc(100vw - 470px);
   /*
    * The presenter is set entirely in Inter — no Switzer, no mono. Overriding
    * the shared variables here re-fonts every label scoped under .pr-root
@@ -554,7 +558,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   flex-direction: column;
   gap: clamp(14px, 2.6vh, 26px);
   margin-top: 4vh;
-  width: min(860px, 100%);
+  width: min(860px, var(--pr-stage-w));
 }
 
 .pr-why-item {
@@ -627,7 +631,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-need-barbell {
   position: relative;
-  width: min(880px, 86vw);
+  width: min(880px, var(--pr-stage-w));
   margin-top: 13vh;
 }
 
@@ -767,7 +771,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  width: min(1220px, 94vw);
+  width: min(1220px, var(--pr-stage-w));
 }
 
 .pr-demo-card {
@@ -975,7 +979,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-pipe {
   position: relative;
-  width: min(1120px, 92vw);
+  width: min(1120px, var(--pr-stage-w));
   margin-top: 6vh;
 }
 
@@ -1070,7 +1074,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   flex-direction: column;
   align-items: center;
   margin-top: 2px;
-  width: min(760px, 90vw);
+  width: min(760px, var(--pr-stage-w));
 }
 
 .pr-ctx-root {
@@ -1403,7 +1407,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
-  width: min(1040px, 90vw);
+  width: min(1040px, var(--pr-stage-w));
   margin-top: 2vh;
   mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
 }
@@ -1593,7 +1597,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-  width: min(980px, 100%);
+  width: min(980px, var(--pr-stage-w));
 }
 
 /* Outline is a drawn SVG frame so it can undraw during the morph. */
@@ -2273,6 +2277,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1020px) {
+  /* Rail labels hide below here, so content can take the viewport again. */
+  .pr-root {
+    --pr-stage-w: 92vw;
+  }
+
   .pr-demo-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2285,6 +2294,10 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .pr-close-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .pr-tail {
     position: static;
     max-width: none;
@@ -2293,8 +2306,90 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     transform: none;
   }
 
-  .pr-hud-rail button em {
+  .pr-hud-rail button em,
+  .pr-hud-subs button em {
     display: none;
+  }
+
+  /* Five nodes can't sit in one row: wrap them and drop the connector. */
+  .pr-pipe-line {
+    display: none;
+  }
+
+  .pr-pipe-nodes {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 700px) {
+  .pr-hud-rail,
+  .pr-hud-author {
+    display: none;
+  }
+
+  .pr-phase {
+    padding: 5vh 5vw;
+  }
+
+  .pr-pipe-node {
+    width: calc(50% - 6px);
+    padding: 13px 8px 14px;
+  }
+
+  .pr-pipe-node strong {
+    font-size: 15px;
+  }
+
+  .pr-demo-grid {
+    gap: 10px;
+  }
+
+  .pr-close-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pr-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pr-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The dock must fit the phone: the label yields (ellipsis) and the
+     verdict shortcut goes — the scoreboard is one scroll away anyway. */
+  .pr-bottom {
+    max-width: calc(100vw - 12px);
+  }
+
+  .pr-dock {
+    max-width: 100%;
+  }
+
+  .pr-dock-set-viewer .pr-dock-label,
+  .pr-dock .pr-dock-label {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .pr-dock-label strong,
+  .pr-dock-label span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .pr-dock-summary {
+    display: none;
+  }
+
+  .pr-dock button {
+    padding: 0 6px;
   }
 }
 

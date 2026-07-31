@@ -209,7 +209,7 @@
 }
 
 .toolchain-root .blg-row:hover {
-  background: rgba(15, 17, 19, 0.03);
+  background: rgba(7, 7, 7, 0.03);
 }
 
 [data-theme='dark'] .toolchain-root .blg-row:hover {
