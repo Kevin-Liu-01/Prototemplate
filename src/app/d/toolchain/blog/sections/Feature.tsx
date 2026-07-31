@@ -44,7 +44,9 @@ export default function Feature() {
         <div className='tc-cell blg-feat-meta' data-reveal>
           <div className='blg-featline tc-mono'>
             <span className='blg-featmark' aria-hidden />
-            {FEATURED.date} &middot; newest
+            {/* One text node: flex item boundaries eat the leading space of
+                a separate " · newest" literal, printing "date· newest". */}
+            <span>{`${FEATURED.date} · newest`}</span>
           </div>
           <h2>
             <a href={postHref(FEATURED.slug)}>{FEATURED.title}</a>

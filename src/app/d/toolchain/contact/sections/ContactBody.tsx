@@ -102,7 +102,7 @@ const CHANNELS: readonly ChannelGroup[] = [
       },
       {
         name: 'LinkedIn',
-        desc: 'company/generaltranslation',
+        desc: 'Company page',
         addr: 'linkedin.com/company/generaltranslation',
         href: 'https://www.linkedin.com/company/generaltranslation',
         icon: LinkedInMark,

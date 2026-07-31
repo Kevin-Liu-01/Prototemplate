@@ -125,8 +125,16 @@
   color-scheme: dark;
 }
 
+/* The message field absorbs whatever height the channel ledger sets, so the
+   form card never ends in dead white below the submit row. */
+.toolchain-root .tcc-field:has(textarea) {
+  flex: 1;
+}
+
 .toolchain-root .tcc-field textarea {
   resize: none;
+  flex: 1;
+  min-height: 132px;
 }
 
 .toolchain-root .tcc-field input::placeholder,
@@ -358,7 +366,7 @@
 .toolchain-root .tcc-gates::before {
   content: '';
   position: absolute;
-  top: 16px;
+  top: 46px;
   bottom: 58px;
   left: 15px;
   width: calc(2 * var(--thread-gauge) + var(--thread-gap));

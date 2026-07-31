@@ -10,6 +10,7 @@ export const metadata = {
   title: 'Prototemplate',
   description:
     'Prototype × template — the working index of General Translation redesign directions.',
+  icons: { icon: '/brand/no-bg-gt-logo-dark.png' },
 };
 
 export default function IndexPage() {

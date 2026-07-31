@@ -47,10 +47,10 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
     jump: 0.35,
     subs: [
       { label: 'First principles', f: 0.02 },
-      { label: 'A barbell audience', f: 0.17 },
-      { label: 'Show, don’t define', f: 0.49 },
-      { label: 'End to end', f: 0.74 },
-      { label: 'Context Groups', f: 0.87 },
+      { label: 'A barbell audience', f: 0.13 },
+      { label: 'Show, don’t define', f: 0.38 },
+      { label: 'End to end', f: 0.62 },
+      { label: 'Context Groups', f: 0.86 },
     ],
   },
   {

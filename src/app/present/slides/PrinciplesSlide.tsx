@@ -331,55 +331,51 @@ export default function PrinciplesSlide() {
         tl.fromTo(
           node,
           { autoAlpha: 0, y: 26, scale: 0.92 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.8)' },
-          `pipe+=${i * 0.32}`
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.8)' },
+          `pipe+=${i * 0.5}`
         );
         if (pipeSegs[i]) {
           tl.fromTo(
             pipeSegs[i]!,
             { drawSVG: '0%' },
-            { drawSVG: '100%', duration: 0.28, ease: 'power1.inOut' },
-            `pipe+=${i * 0.32 + 0.16}`
+            { drawSVG: '100%', duration: 0.42, ease: 'power1.inOut' },
+            `pipe+=${i * 0.5 + 0.25}`
           );
         }
       });
 
-      // A signal runs the assembled line, code to edge, and each node lifts
-      // as it passes...
+      // The walkthrough: scroll IS the signal. The pulse tracks scroll
+      // linearly across the whole line, and each stage lifts and holds
+      // while the pulse is passing through it.
       tl.fromTo(
         ['.pr-pipe-pulse', '.pr-pipe-halo'],
         { attr: { cx: 88 }, autoAlpha: 0 },
-        { attr: { cx: 912 }, autoAlpha: 1, duration: 1.2, ease: 'power1.inOut' },
-        'pipe+=1.8'
-      )
-        .to(
-          '.pr-pipe-node',
-          {
-            y: -6,
-            duration: 0.2,
-            yoyo: true,
-            repeat: 1,
-            stagger: { each: 0.24 },
-            ease: 'power2.out',
-          },
-          'pipe+=1.82'
-        )
-        .to(['.pr-pipe-pulse', '.pr-pipe-halo'], { autoAlpha: 0, duration: 0.2 }, '>-0.1')
+        { attr: { cx: 912 }, autoAlpha: 1, duration: 4, ease: 'none' },
+        'pipe+=2.7'
+      );
+      pipeNodes.forEach((node, i) => {
+        tl.to(
+          node,
+          { y: -7, scale: 1.04, duration: 0.5, yoyo: true, repeat: 1, ease: 'power1.inOut' },
+          `pipe+=${2.7 + i - 0.45}`
+        );
+      });
+      tl.to(['.pr-pipe-pulse', '.pr-pipe-halo'], { autoAlpha: 0, duration: 0.25 }, 'pipe+=6.6')
         // ...then Context Groups feeds the spotlight: the stem drops out of
-        // the hot node, the group lands, and one glossary decision fans out
-        // to every surface.
+        // the hot node, the group lands, branches draw, and one glossary
+        // decision fans out surface by surface as the scroll continues.
         .fromTo(
           '.pr-ctx-stem line',
           { drawSVG: '0%' },
-          { drawSVG: '100%', duration: 0.4, ease: 'power1.in' },
-          'pipe+=3.15'
+          { drawSVG: '100%', duration: 0.5, ease: 'power1.in' },
+          'pipe+=6.9'
         )
-        .from('.pr-ctx-root', { autoAlpha: 0, y: -16, duration: 0.45 }, 'pipe+=3.45')
+        .from('.pr-ctx-root', { autoAlpha: 0, y: -16, duration: 0.5 }, 'pipe+=7.3')
         .fromTo(
           '.pr-ctx-tree path',
           { drawSVG: '0%' },
-          { drawSVG: '100%', stagger: 0.13, duration: 0.5, ease: 'power1.inOut' },
-          'pipe+=3.8'
+          { drawSVG: '100%', stagger: 0.3, duration: 0.55, ease: 'power1.inOut' },
+          'pipe+=7.8'
         )
         .from(
           '.pr-ctx-leaf',
@@ -387,14 +383,14 @@ export default function PrinciplesSlide() {
             autoAlpha: 0,
             y: 20,
             scale: 0.95,
-            stagger: 0.15,
-            duration: 0.45,
+            stagger: 0.42,
+            duration: 0.5,
             ease: 'back.out(1.6)',
           },
-          'pipe+=4.05'
+          'pipe+=8.35'
         )
-        .from('.pr-ctx-note', { autoAlpha: 0, y: 12, duration: 0.4 }, 'pipe+=4.6')
-        .to({}, { duration: 0.8 });
+        .from('.pr-ctx-note', { autoAlpha: 0, y: 12, duration: 0.45 }, 'pipe+=9.9')
+        .to({}, { duration: 0.9 });
     },
     { scope: root }
   );

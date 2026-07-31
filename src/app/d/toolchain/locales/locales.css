@@ -50,6 +50,9 @@
    below are printed from. */
 .toolchain-root .lcl-hero .lcl-src {
   margin-top: 16px;
+  /* outranks the shell's `.lcl-hero > p` 58ch measure, which is set in
+     body ems and wraps this mono line mid-call at full width */
+  max-width: none;
   font-family: var(--tc-mono);
   font-size: 11.5px;
   letter-spacing: 0.01em;
