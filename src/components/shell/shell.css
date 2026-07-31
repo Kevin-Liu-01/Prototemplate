@@ -11,25 +11,17 @@
    layer outside the token fallbacks below.
    ============================================================ */
 
-/* THE LAW OF LINES: the ROW owns every structural line. A row is a grid
-   whose 1px gaps show the hair ground through — those gaps ARE the seams.
-   Cells never draw their own outer borders (no border props exist on
-   BentoCell on purpose), so a doubled border is impossible by
-   construction, and every seam is one color because only one thing ever
-   draws it. On small screens the row collapses to one column and the same
-   gaps become the stacked seams. */
+/* THE LAW OF LINES: the ROW (or a rails wrapper) owns every structural
+   line — see components/shell/Bento.tsx, where BentoRow and Rails draw
+   them with Tailwind utilities. Cells never draw their own outer borders
+   (no border props exist on BentoCell on purpose), so a doubled border is
+   impossible by construction. This file keeps only what utilities cannot
+   express: the column template variable and the head-alignment plumbing. */
 .shell-row {
-  display: grid;
   grid-template-columns: var(--shell-cols, repeat(2, minmax(0, 1fr)));
-  gap: 1px;
-  background: var(--shell-hair, var(--tc-hair));
 }
 
-.shell-row > * {
-  min-width: 0;
-}
-
-@media (max-width: 1020px) {
+@media (max-width: 1023px) {
   .shell-row {
     grid-template-columns: minmax(0, 1fr);
   }

@@ -3089,6 +3089,12 @@
      bento's mat gaps and row seams are drawn IN this color. */
   --tc-hair: rgba(138, 143, 152, 0.5);
   --tc-hair-2: rgba(138, 143, 152, 0.4);
+  /* In dark the whole page is one ink surface, so the band hairline IS the
+     page hairline — the rails run one continuous color through bands and
+     rail-wrapped sections alike. (In light they differ on purpose: an
+     on-ink line needs more alpha than an on-paper one to look equal.) */
+  --tc-hair-band: var(--tc-hair);
+  --tc-hair-band-2: var(--tc-hair-2);
   --tc-plate: #070707;
   --tc-hatch: rgba(255, 255, 255, 0.07);
 }
@@ -4216,18 +4222,15 @@
 /* The doubled rail continues through EVERY full-bleed dark band: bands sit
    outside the .tc-rail wrappers, so they draw the same column's line pairs
    themselves — inner pair at the column edges, outer pair at the +-10px
-   gauge — all in the ONE band hairline. The pricing section was the odd one
-   out (its sheet frame sat a gutter inward and read as a broken, off-color
-   rail); it now carries the page rails like every other band. */
-.toolchain-root .tc-band,
-.toolchain-root .tcpv-sec {
+   gauge — all in the ONE band hairline. LAW: a section inside a .tc-rail
+   wrapper must NOT appear here — the wrapper already owns its rails, and a
+   second pair is the double-rail bug (pricing learned this the hard way). */
+.toolchain-root .tc-band {
   position: relative;
 }
 
 .toolchain-root .tc-band::before,
-.toolchain-root .tc-band::after,
-.toolchain-root .tcpv-sec::before,
-.toolchain-root .tcpv-sec::after {
+.toolchain-root .tc-band::after {
   content: '';
   position: absolute;
   top: 0;
@@ -4239,8 +4242,7 @@
   pointer-events: none;
 }
 
-.toolchain-root .tc-band::after,
-.toolchain-root .tcpv-sec::after {
+.toolchain-root .tc-band::after {
   width: calc(min(var(--tc-rail), 100%) + 20px);
 }
 
