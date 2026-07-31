@@ -61,15 +61,25 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
   { name: 'ClickHouse', mark: 'is-clickhouse' },
 ];
 
-/** Points of presence standing at the fan's mouth, each with its measured
-    p50. `fra` — the one serving this reader — sits on the fan's bright axis,
-    the same height the beam entered at. */
-const POPS: readonly { code: string; ms: number; y: string; hit?: boolean }[] = [
-  { code: 'sfo', ms: 17, y: '13%' },
-  { code: 'iad', ms: 21, y: '30%' },
-  { code: 'fra', ms: 12, y: '47%', hit: true },
-  { code: 'sin', ms: 41, y: '66.5%' },
-  { code: 'gru', ms: 29, y: '83.5%' },
+/** The dispersal, written out: one English string enters the glass and the
+    fan that leaves IS the translations — each ray a language, rotated to its
+    own dispersion angle, farther-flung the farther it sits from the axis.
+    `d` is the flight distance along the ray as a % of the plate's width. */
+const RAYS: readonly {
+  text: string;
+  lang: string;
+  ang: number;
+  d: number;
+  rtl?: boolean;
+}[] = [
+  { text: 'Hallo, Welt!', lang: 'de', ang: -24, d: 30 },
+  { text: '¡Hola, mundo!', lang: 'es', ang: -17, d: 44 },
+  { text: 'Bonjour, le monde !', lang: 'fr', ang: -10.5, d: 36 },
+  { text: 'Привет, мир!', lang: 'ru', ang: -4, d: 50 },
+  { text: 'こんにちは、世界！', lang: 'ja', ang: 3, d: 40 },
+  { text: '你好，世界！', lang: 'zh', ang: 10, d: 52 },
+  { text: '안녕하세요, 세계!', lang: 'ko', ang: 17, d: 38 },
+  { text: 'नमस्ते, दुनिया!', lang: 'hi', ang: 24, d: 31 },
 ];
 
 /* "language" across maximally different writing systems — Latin, Japanese,
@@ -155,13 +165,15 @@ export default function Hero() {
       }
       gsap.from('.plh-p-light', { autoAlpha: 0, duration: 1.3, ease: 'power1.inOut', delay: 0.9 });
 
-      gsap.from('.plh-pop', {
+      /* The translations leave the glass in dispersion order: nearest the
+         axis first, the widest angles last — the fan visibly opens. */
+      gsap.from('.plh-ray-text', {
         autoAlpha: 0,
-        y: 6,
-        duration: 0.5,
-        stagger: 0.07,
+        x: -26,
+        duration: 0.6,
+        stagger: 0.08,
         ease: 'power2.out',
-        delay: 1.2,
+        delay: 1.1,
       });
 
       /* ---- the headline hinge: a measuring instrument ----
@@ -538,94 +550,87 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* The delivery diagram, turned into a prism: one bounded ink plate
-              fusing the old horizon story with the specimen's optics. Paint
-              order matters — beam and glass sit UNDER the lighten wrapper so
-              the fan blooms over the exit face, and every label rides above
-              the light. The plate itself is never transform-animated: it is
-              the blend group's containing block. */}
-          <figure
-            className='plh-panel'
-            role='img'
-            aria-label='A drawn glass prism on a dark plate turns one request into every locale: a white beam labelled GET example.com/fr/a-propos with accept-language fr-FR enters the glass and disperses into a spectral fan; standing in the fan are the response — 200 served from fra, 12 ms, no origin hit — and five edge nodes with latencies: sfo 17 ms, iad 21 ms, fra 12 ms, sin 41 ms, gru 29 ms. Captions read translation edge, anycast, versioned per locale, v214 live'
-          >
-            <div className='plh-panel-box' aria-hidden>
-              {/* Ink geometry first: the incidence ray, straight as light is,
-                  diving from the request labels into the glass and dying
-                  inside it — it enters, the fan leaves. */}
-              <svg className='plh-p-rays' viewBox='0 0 100 100' preserveAspectRatio='none'>
-                <defs>
-                  <linearGradient id='plh-beam-fade' x1='0' y1='0' x2='1' y2='0'>
-                    <stop offset='0' stopColor='#ffffff' stopOpacity='0.95' />
-                    <stop offset='0.8' stopColor='#ffffff' stopOpacity='0.85' />
-                    <stop offset='1' stopColor='#ffffff' stopOpacity='0' />
-                  </linearGradient>
-                </defs>
-                <path
-                  className='plh-beam'
-                  d='M 3.5 16 L 36.4 47'
-                  fill='none'
-                  stroke='url(#plh-beam-fade)'
-                  strokeWidth='2'
-                  vectorEffect='non-scaling-stroke'
-                />
-              </svg>
-
-              {/* The glass, salvaged from the specimen plate: luminous edges,
-                  translucent near-plate fill, drawn under the light. */}
-              <span className='plh-p-prism'>
-                <i />
-              </span>
-
-              {/* The dispersal: the field's dark convergence eye is parked at
-                  the prism's heart, so the light visibly GATHERS in the glass
-                  and blooms open across the fan — dark at the apex, brightest
-                  at the mouth where the nodes stand. */}
-              <div className='plh-p-light'>
-                <PrismaticField
-                  className='plh-p-field'
-                  preset='1'
-                  speed={0.55}
-                  params={{ exposureScale: 1250 }}
-                />
-                <span className='plh-p-shade' />
-              </div>
-
-              {/* The request, riding its own beam. */}
-              <div className='plh-p-req' data-hero-in>
-                <b>GET example.com/fr/a-propos</b>
-                <span>accept-language: fr-FR</span>
-              </div>
-
-              {/* The response, standing in the fan's light below the axis. */}
-              <div className='plh-p-res' data-hero-in>
-                <b>200 · served from fra</b>
-                <span>12 ms · no origin hit</span>
-              </div>
-
-              {/* The edge nodes at the fan's mouth, ticks flush to the plate's
-                  right edge — the fan lands on the network. */}
-              <div className='plh-p-pops'>
-                {POPS.map((pop) => (
-                  <span className='plh-pop' data-hit={pop.hit || undefined} style={{ top: pop.y }} key={pop.code}>
-                    <span className='plh-pop-l'>
-                      {pop.code}
-                      <b> · {pop.ms} ms</b>
-                    </span>
-                    <i />
-                  </span>
-                ))}
-              </div>
-
-              {/* The old band's caption grammar, kept as the panel's floor. */}
-              <div className='plh-p-foot'>
-                <span>translation edge</span>
-                <span>anycast · versioned per locale · v214 live</span>
-              </div>
-            </div>
-          </figure>
         </div>
       </div>
+
+      {/* The optics band, full-bleed under the hero copy: one English string
+          rides the incidence ray into the glass, and the fan that leaves is
+          the translations — every ray a language, printed on the light
+          itself. Paint order matters — beam and glass sit UNDER the lighten
+          wrapper so the fan blooms over the exit face, and every label rides
+          above the light. The plate is never transform-animated: it is the
+          blend group's containing block. */}
+      <figure
+        className='plh-band'
+        role='img'
+        aria-label='A drawn glass prism on a wide dark plate turns one string into every language: a white beam carrying "Hello, world!" enters the glass and disperses into a spectral fan whose rays read Hallo Welt, Hola mundo, Bonjour le monde, Privet mir, Konnichiwa sekai, Ni hao shijie, Annyeonghaseyo segye, Namaste duniya. Captions read translation edge, one string in, every language out'
+      >
+        <div className='plh-panel-box is-band' aria-hidden>
+          <svg className='plh-p-rays' viewBox='0 0 100 100' preserveAspectRatio='none'>
+            <defs>
+              <linearGradient id='plh-beam-fade' x1='0' y1='0' x2='1' y2='0'>
+                <stop offset='0' stopColor='#ffffff' stopOpacity='0.95' />
+                <stop offset='0.8' stopColor='#ffffff' stopOpacity='0.85' />
+                <stop offset='1' stopColor='#ffffff' stopOpacity='0' />
+              </linearGradient>
+            </defs>
+            <path
+              className='plh-beam'
+              d='M 2.5 16 L 26.2 49'
+              fill='none'
+              stroke='url(#plh-beam-fade)'
+              strokeWidth='2'
+              vectorEffect='non-scaling-stroke'
+            />
+          </svg>
+
+          {/* The glass: luminous edges, translucent near-plate fill. */}
+          <span className='plh-p-prism'>
+            <i />
+          </span>
+
+          {/* The dispersal light, its dark convergence eye parked at the
+              prism's heart so it gathers in the glass and blooms rightward. */}
+          <div className='plh-p-light'>
+            <PrismaticField
+              className='plh-p-field'
+              preset='1'
+              speed={0.55}
+              params={{ exposureScale: 1250 }}
+            />
+            <span className='plh-p-shade' />
+          </div>
+
+          {/* The source string, riding its own beam. */}
+          <div className='plh-p-req' data-hero-in>
+            <b>&ldquo;Hello, world!&rdquo;</b>
+            <span>en · one source string</span>
+          </div>
+
+          {/* The translations ARE the rays: each rotated to its dispersion
+              angle, flung farther the brighter its lane. */}
+          <div className='plh-p-out'>
+            {RAYS.map((ray) => (
+              <span
+                className='plh-ray'
+                key={ray.lang}
+                style={{ '--ang': ray.ang, '--d': `${ray.d}%` } as React.CSSProperties}
+              >
+                <span className='plh-ray-text' lang={ray.lang} dir={ray.rtl ? 'rtl' : 'ltr'}>
+                  {ray.text}
+                  <i>{ray.lang}</i>
+                </span>
+              </span>
+            ))}
+          </div>
+
+          {/* The caption grammar, kept as the plate's floor. */}
+          <div className='plh-p-foot'>
+            <span>translation edge</span>
+            <span>one string in · every language out</span>
+          </div>
+        </div>
+      </figure>
 
       {/* Surface three: the trust card completes the stack. */}
       <div className='tc-trust tch-trustcard'>

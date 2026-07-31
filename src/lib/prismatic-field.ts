@@ -162,10 +162,52 @@ vec3 accumulateLight(vec3 palette, float fieldDistance, float rayDepth) {
   return concentratedLight + depthGlow;
 }
 
+/*
+ * Beam carving. The raymarch produces a continuous streak field; this
+ * collects that light into discrete radial beams that sweep slowly around
+ * the dark center — three angular harmonics drifting against each other so
+ * the pattern never repeats readably. Each channel samples the profile at
+ * a slightly rotated angle (dispersion grows with radius), which fringes
+ * every beam edge with spectrum while the cores stay coherent.
+ */
+float beamProfile(float angle, float t) {
+  float sweep = pow(0.5 + 0.5 * cos(angle * 7.0 + t * 1.4 + 1.8 * sin(angle * 3.0 - t * 0.6)), 3.0);
+  float needle = pow(0.5 + 0.5 * cos(angle * 15.0 - t * 2.1 + 1.7), 6.0);
+  float broad = pow(0.5 + 0.5 * cos(angle * 3.0 + t * 0.8), 2.0);
+  return sweep * 0.85 + needle * 0.65 + broad * 0.5;
+}
+
+vec3 applyBeams(vec3 hdrColor, vec2 screenPosition) {
+  float radius = length(screenPosition);
+  float angle = atan(screenPosition.y, screenPosition.x);
+  float t = uTime * 0.12;
+  float dispersion = 0.035 + 0.05 * radius;
+  vec3 beams = vec3(
+    beamProfile(angle + dispersion, t),
+    beamProfile(angle, t),
+    beamProfile(angle - dispersion, t)
+  );
+  // The center keeps its calm; the beams own everything outward of it.
+  float radial = smoothstep(0.05, 0.6, radius);
+  vec3 gain = mix(vec3(1.0), 0.22 + beams * 1.55, radial);
+  vec3 carved = hdrColor * gain;
+  // Absolute-light cores: where all three channels agree a beam is hot,
+  // pour desaturated (white) energy back down the ray so the core reads
+  // as light itself rather than a saturated hue.
+  float core = beams.r * beams.g * beams.b;
+  float luma = dot(hdrColor, vec3(0.2126, 0.7152, 0.0722));
+  carved += vec3(luma) * core * 1.35 * radial;
+  return carved;
+}
+
 vec3 applyToneMapping(vec3 hdrColor) {
   vec3 value = clamp(hdrColor / uExposureScale, vec3(-10.0), vec3(10.0));
   vec3 exponentialValue = exp(2.0 * value);
   vec3 mappedColor = (exponentialValue - 1.0) / max(exponentialValue + 1.0, vec3(uSafeMinimum));
+  // Absolute light: hot cores snap toward pure white instead of saturating
+  // into a hue, so the brightest beam reads as light itself.
+  float luma = dot(mappedColor, vec3(0.2126, 0.7152, 0.0722));
+  mappedColor = mix(mappedColor, vec3(1.0), pow(clamp(luma, 0.0, 1.0), 4.0) * 0.6);
   return clamp(mappedColor, 0.0, 1.0);
 }
 
@@ -190,6 +232,7 @@ void main() {
     rayDepth += fieldDistance;
   }
 
+  accumulatedColor = applyBeams(accumulatedColor, screenPosition);
   gl_FragColor = vec4(applyToneMapping(accumulatedColor), 1.0);
 }
 `;

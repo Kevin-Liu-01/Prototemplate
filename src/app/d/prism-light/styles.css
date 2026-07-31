@@ -4260,9 +4260,11 @@
   isolation: isolate;
 }
 
+/* The card is copy-only now: the optics moved to their own full-width band
+   below (.plh-band). */
 .prismlight-root .plh-card-in {
   display: grid;
-  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(24px, 3vw, 44px);
   align-items: center;
 }
@@ -4430,6 +4432,138 @@
 .prismlight-root .plh-panel {
   width: 100%;
   margin: 0;
+}
+
+/* With the optics gone from the card, the copy holds the whole width:
+   centered, the prism-filled headline as the one object. Specificity is
+   deliberate — the two-column grammar above pinned everything left. */
+.prismlight-root .tc-hero.tch-card.plh-card {
+  text-align: center;
+}
+
+.prismlight-root .plh-card .tc-hero-mark {
+  margin-inline: auto;
+}
+
+.prismlight-root .tc-hero.tch-card h1.plh-h1 {
+  display: flex;
+  justify-content: center;
+  margin-inline: auto;
+}
+
+.prismlight-root .plh-card .tc-hero-sub {
+  margin-inline: auto;
+}
+
+.prismlight-root .plh-card .tc-hero-acts {
+  justify-content: center;
+}
+
+/* ---------- the full-width optics band ---------- */
+
+/* Same mat grammar as the hero card above it: inset margins, hairline,
+   radius 12, card ground — with the wide ink plate inside. */
+.prismlight-root .plh-band {
+  position: relative;
+  margin: clamp(10px, 1.1vw, 14px) clamp(10px, 1.1vw, 14px) 0;
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+  background: var(--tc-card);
+  padding: clamp(10px, 1.1vw, 14px);
+}
+
+.prismlight-root .plh-panel-box.is-band {
+  height: clamp(340px, 30vw, 460px);
+}
+
+/* Wide-plate geometry: the glass moves to the left third and the fan owns
+   the rest of the width. */
+.prismlight-root .is-band .plh-p-prism {
+  left: 22.5%;
+  top: 16%;
+  width: 8.5%;
+  height: 66%;
+}
+
+.prismlight-root .is-band .plh-p-light {
+  clip-path: polygon(26.5% 47.6%, 26.5% 50.4%, 100% 100%, 100% 0%);
+}
+
+.prismlight-root .is-band .plh-p-field {
+  left: -43.5%;
+}
+
+.prismlight-root .is-band .plh-p-shade {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 78%,
+      rgba(0, 0, 0, 0.45) 90%,
+      rgba(0, 0, 0, 0.72) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.85) 23%,
+      rgba(0, 0, 0, 0.4) 38%,
+      rgba(0, 0, 0, 0.08) 60%,
+      rgba(0, 0, 0, 0) 78%
+    );
+}
+
+/* The translations ARE the rays: each label rotated to its dispersion angle
+   about the prism's heart, flung along the ray by its own distance (the
+   padding resolves against the plate's width, so the fan scales with it). */
+.prismlight-root .plh-ray {
+  position: absolute;
+  left: 26.75%;
+  top: 49%;
+  height: 0;
+  padding-left: var(--d, 40%);
+  transform: rotate(calc(var(--ang, 0) * 1deg));
+  transform-origin: 0 50%;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.prismlight-root .plh-ray-text {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  transform: translateY(-50%);
+  font-family: var(--tc-disp);
+  font-size: clamp(13px, 1.5vw, 21px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #fff;
+  /* The glow keeps them part of the light; the dark contour keeps them
+     legible where a ray crosses the fan's brightest lanes. */
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.75),
+    0 0 14px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.prismlight-root .plh-ray-text i {
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  text-shadow: none;
+}
+
+@media (max-width: 720px) {
+  .prismlight-root .plh-panel-box.is-band {
+    height: clamp(280px, 62vw, 360px);
+  }
+
+  /* Eight rays cannot breathe on a phone: keep the four brightest lanes. */
+  .prismlight-root .plh-ray:nth-child(even) {
+    display: none;
+  }
 }
 
 .prismlight-root .plh-panel-box {

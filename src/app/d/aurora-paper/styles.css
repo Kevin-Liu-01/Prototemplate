@@ -4356,19 +4356,9 @@
   color: var(--tc-ink);
 }
 
-/* The dimension bracket: end ticks and a center line, spanning exactly the
-   glyphs' advance — the measurement the delta label reads from. */
-.aurorapaper-root .ap-casc-text::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -7px;
-  height: 5px;
-  border-left: 1.5px solid var(--tc-ink-3);
-  border-right: 1.5px solid var(--tc-ink-3);
-  background: linear-gradient(var(--tc-ink-3), var(--tc-ink-3)) 0 50% / 100% 1px no-repeat;
-}
+/* The dimension bracket under each string was retired: the delta labels
+   carry the measurement story on their own, and the brackets read as stray
+   rules over the wash (worst in dark mode). */
 
 .aurorapaper-root .ap-casc-delta {
   margin-left: auto;
@@ -4380,6 +4370,13 @@
 
 .aurorapaper-root .ap-casc-row[data-src] .ap-casc-delta {
   color: var(--tc-ink-4);
+}
+
+/* Dark: the doubled threads stay, but as a whisper — near-white strokes at
+   full strength glare over the northern-sky wash. */
+[data-theme='dark'] .aurorapaper-root .aph-panel .ap-casc-row[data-src]::before,
+[data-theme='dark'] .aurorapaper-root .aph-panel .ap-casc-row[data-src]::after {
+  opacity: 0.38;
 }
 
 /* ============================================================
