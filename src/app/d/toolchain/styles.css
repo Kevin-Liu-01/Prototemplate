@@ -1024,9 +1024,13 @@
 }
 
 /* The ground behind the white cards is the shell line colour, so a row of
-   framed cells reads as white cards on the shell's own grey. */
+   framed cells reads as white cards on the shell's own grey. The 1px
+   padding lets that same ground draw the row's PERIMETER hairline — one
+   system outlines every card's outer edge (critical in dark, where card
+   ink on page ink is otherwise edgeless), with zero double-drawn lines. */
 .toolchain-root .tc-row:has(> .tc-cell.is-framed) {
   background: var(--tc-hair);
+  padding: 1px;
 }
 
 .toolchain-root .tc-cell.is-framed > .tc-card {
@@ -4432,4 +4436,14 @@
 
 [data-theme='dark'] .toolchain-root .tc-seam::before {
   border-color: var(--tc-hair);
+}
+
+/* Every section closes with its bottom rule — the sheet grammar. These two
+   were the only sections without one, and their junctions read bare. */
+.toolchain-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band);
 }
