@@ -9,17 +9,18 @@ gsap.registerPlugin(useGSAP);
 /**
  * The nameplate as a working type-specimen sheet.
  *
- * `prototype` (serif) stands above the destination line, `template`
- * (grotesk) below it, the destination between them as EMPTY outlined
- * text. Every word is held by a crop frame — four border-touching
- * rules: one above, one below, one left, one right — and the frames
- * move with their words.
+ * `prototype` (serif) stands off the destination line's upper LEFT,
+ * `template` (grotesk) off its lower RIGHT, the destination between
+ * them as EMPTY outlined text. Every word is held by a crop frame —
+ * four border-touching rules: one above, one below, one left, one
+ * right — and the frames move with their words.
  *
  * The take is physical: `type` falls out and the serif frame's right
- * rule slides in to re-hug the shorter word; then `proto` comes DOWN
- * and `template` comes UP, frames traveling with them, until both park
+ * rule slides in to re-hug the shorter word; then both words slide
+ * inward to the line, frames traveling with them, until both park
  * inside the outline — the parked words ARE the nameplate (lowercase,
- * so nothing has to crossfade). The destination frame fades in around
+ * so nothing has to crossfade). The travel deltas are measured from
+ * live rects, so this file never encodes where the sources sit. The destination frame fades in around
  * them: cap rule, the doubled baseline pair, and three verticals —
  * left bound, the serif/grotesk junction, right bound.
  *
@@ -55,10 +56,17 @@ export default function PrototemplateHero() {
       const specs = gsap.utils.toArray<HTMLElement>('.pt-src-spec', rootEl);
       const typeLetters = gsap.utils.toArray<HTMLElement>('[data-pt-type] span', rootEl);
 
-      const frame = (word: 'proto' | 'temp') =>
-        SRC_FRAME.map((side) => q<HTMLElement>(`[data-f-${word}-${side}]`));
-      const [fpTop, fpBot, fpL, fpR] = frame('proto');
-      const [ftTop, ftBot, ftL, ftR] = frame('temp');
+      const frame = (word: 'proto' | 'temp') => {
+        const sides = SRC_FRAME.map((side) => q<HTMLElement>(`[data-f-${word}-${side}]`));
+        return sides.every((el): el is HTMLElement => el !== null)
+          ? (sides as [HTMLElement, HTMLElement, HTMLElement, HTMLElement])
+          : null;
+      };
+      const protoFrame = frame('proto');
+      const tempFrame = frame('temp');
+      if (!protoFrame || !tempFrame) return;
+      const [fpTop, fpBot, fpL, fpR] = protoFrame;
+      const [ftTop, ftBot, ftL, ftR] = tempFrame;
       const lineCap = q<HTMLElement>('[data-line-cap]');
       const lineBase1 = q<HTMLElement>('[data-line-base1]');
       const lineBase2 = q<HTMLElement>('[data-line-base2]');

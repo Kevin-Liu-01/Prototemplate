@@ -217,7 +217,7 @@ export default function Hero() {
         gsap.delayedCall(2.2, () => {
           if (!rot) return;
           wi = (wi + 1) % HERO_ROTATIONS.length;
-          rot.textContent = HERO_ROTATIONS[wi];
+          rot.textContent = HERO_ROTATIONS[wi] ?? null;
           gsap.fromTo(
             rot,
             { backgroundColor: '#fff', color: '#080808' },

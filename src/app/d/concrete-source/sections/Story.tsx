@@ -58,12 +58,16 @@ export default function Story() {
       let lastBeat = -1;
       const setBeat = (p: number) => {
         let bi = 0;
-        for (let i = 0; i < BEATS.length; i++) if (p >= BEATS[i][0]) bi = i;
-        if (bi !== lastBeat) {
+        for (let i = 0; i < BEATS.length; i++) {
+          const beat = BEATS[i];
+          if (beat && p >= beat[0]) bi = i;
+        }
+        const beat = BEATS[bi];
+        if (bi !== lastBeat && beat) {
           lastBeat = bi;
-          dockCap.textContent = BEATS[bi][1];
-          dockIdx.textContent = BEATS[bi][2] + '/09';
-          ticks.forEach((t, i) => t.classList.toggle('lit', i < BEATS[bi][3]));
+          dockCap.textContent = beat[1];
+          dockIdx.textContent = beat[2] + '/09';
+          ticks.forEach((t, i) => t.classList.toggle('lit', i < beat[3]));
           story.classList.toggle('notes-live', p >= 0.845);
         }
         readout.textContent = 'SCRUB ' + String(Math.round(p * 100)).padStart(2, '0') + '%';

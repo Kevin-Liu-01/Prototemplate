@@ -4230,21 +4230,22 @@
 
 
 /* ============================================================
-   PRISM-LIGHT FORK — THE EDGE HORIZON, ON THE FOUNDER STACK
+   PRISM-LIGHT FORK — THE PRISM DELIVERY PANEL, SIDE BY SIDE
    The burst never touches the paper. Every canvas here runs
    behind a `mix-blend-mode: lighten` group over pure ink
    geometry, so anything white stays white and the dispersed
    light exists only *inside* the black shapes: the two-line
-   display headline, the prism specimen, the doubled thread
-   ribbons, and the horizon band. At arm's length the page is
-   ink on paper; up close the ink is full of light.
+   display headline on the left, the delivery panel's ink
+   plate on the right. At arm's length the page is ink on
+   paper; up close the ink is full of light.
 
-   Recut on toolchain's hero stack: the headline block moves
-   onto the white hero card (radius 12, notched corners on the
-   shell ground), the horizon becomes the stack's full-width
-   visual band, and the trust card closes the stack — three
-   surfaces at 1px seams. The specimen keeps its counterweight
-   post in the card's right column.
+   The founder's recomposition: ONE white card, two columns —
+   'Launch in / every language.' with sub and acts on the
+   left, and on the right the old bottom delivery diagram
+   turned into a prism: request beam in, drawn glass, spectral
+   fan out carrying the response callout and the edge nodes,
+   the band's caption grammar as the plate's floor. The trust
+   card closes the hero at the 1px seam; no band below.
 
    Dark mode inverts the material law instead of the layout:
    white letterforms under a `darken` group, shade floors
@@ -4252,7 +4253,7 @@
    inside the glyphs. No WebGL color changes needed.
    ============================================================ */
 
-/* ---------- the hero card: left-aligned copy, specimen counterweight ---------- */
+/* ---------- the hero card: copy left, the delivery panel right ---------- */
 
 .prismlight-root .tc-hero.plh-card {
   text-align: left;
@@ -4261,8 +4262,8 @@
 
 .prismlight-root .plh-card-in {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: clamp(24px, 3.4vw, 56px);
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 44px);
   align-items: center;
 }
 
@@ -4295,7 +4296,7 @@
 .prismlight-root .plh-block {
   position: relative;
   display: inline-block;
-  font-size: clamp(2.35rem, 5.6vw, 4.9rem);
+  font-size: clamp(2.3rem, 4.9vw, 4.4rem);
   line-height: 1.04;
   letter-spacing: -0.045em;
   color: #0c0e11;
@@ -4354,14 +4355,6 @@
       rgba(0, 0, 0, 0.34) 96%,
       rgba(0, 0, 0, 0.66) 100%
     );
-}
-
-.prismlight-root .plh-field-fill {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
 }
 
 /* One sampling row per line of type: the row's center tracks the line's
@@ -4426,94 +4419,52 @@
   transform: scaleX(-1);
 }
 
-/* ---------- the prism specimen ----------
-   The card's counterweight object: a bounded ink plate with the burst
-   dispersing inside it. One white `en` beam enters at the left edge; six
-   locale ticks leave the right — the sentence under the headline, drawn as
-   a physical object. Shader stays inside ink (lighten group over the
-   permanently dark plate), per this fork's material law. */
+/* ---------- the prism delivery panel ----------
+   The old horizon diagram, turned into a prism and stood beside the
+   headline: one bounded ink plate where the request beam strikes a drawn
+   glass prism and the far face disperses into the spectral fan that carries
+   the delivery outputs. Shader stays inside ink (lighten group over the
+   permanently dark plate), per this fork's material law. The plate is the
+   blend group's containing block, so it is never transform-animated. */
 
-.prismlight-root .plh-spec {
-  width: min(100%, 330px);
-  margin: 0 0 0 auto;
+.prismlight-root .plh-panel {
+  width: 100%;
+  margin: 0;
 }
 
-.prismlight-root .plh-spec-box {
+.prismlight-root .plh-panel-box {
   position: relative;
-  height: clamp(180px, 17.5vw, 232px);
+  height: clamp(340px, 30vw, 430px);
   background: #0c0e11;
   border-radius: 8px;
   overflow: hidden;
   isolation: isolate;
 }
 
-/* The dispersion fan: it begins INSIDE the drawn prism and opens to the
-   plate's full right edge, so every locale tick stands in the light. Clip on
-   the lighten wrapper, not the canvas, so the fan's edges are exact. */
-.prismlight-root .plh-spec-light {
+/* The incidence ray: straight, as light is. Drawn in an SVG stretched to the
+   plate (percent geometry survives every viewport); non-scaling stroke keeps
+   the beam at a constant 2px gauge. It dives from the request labels into
+   the glass and its gradient dies inside it — it enters, the fan leaves. */
+.prismlight-root .plh-p-rays {
   position: absolute;
   inset: 0;
-  mix-blend-mode: lighten;
-  pointer-events: none;
-  clip-path: polygon(37% 46.5%, 37% 53.5%, 100% 100%, 100% 0%);
-  overflow: hidden;
-}
-
-/* The field's dark convergence eye is parked at the fan's origin (37%, the
-   prism's heart) so the light visibly GATHERS in the glass and blooms open
-   across the fan body — brightest in the fan, dark at the apex. */
-.prismlight-root .plh-spec-field {
-  position: absolute;
-  left: -28%;
-  width: 130%;
-  top: -46%;
-  height: 192%;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
-/* Dark at the apex, opening toward the ticks: the beam becomes spectrum as
-   it leaves the glass, and the fan's mouth is the brightest thing on the
-   plate. */
-.prismlight-root .plh-spec-shade {
+/* The glass, salvaged from the specimen plate: an outer triangle of luminous
+   edge with an inner triangle of near-plate dark inset 2px, so the
+   silhouette reads as 1.5–2px glass lines with a glint at the apex. It
+   paints UNDER the lighten wrapper — the fan blooms over its exit face
+   rather than hiding behind it — and the inner fill is slightly translucent
+   so the gathered light shows through the glass. */
+.prismlight-root .plh-p-prism {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.85) 30%,
-    rgba(0, 0, 0, 0.4) 48%,
-    rgba(0, 0, 0, 0.08) 68%,
-    rgba(0, 0, 0, 0) 84%
-  );
-}
-
-/* The one white thing on the plate: the source beam crossing the dark and
-   dying inside the glass — it enters, the fan leaves. */
-.prismlight-root .plh-spec-beam {
-  position: absolute;
-  left: 0;
-  top: calc(50% - 1px);
-  width: 37%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.95),
-    rgba(255, 255, 255, 0.85) 78%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-
-/* The prism itself, drawn as glass: an outer triangle of luminous edge with
-   an inner triangle of near-plate dark inset 2px, so the silhouette reads as
-   1.5–2px glass lines with a glint at the apex. It paints UNDER the lighten
-   wrapper — the fan blooms over its exit face rather than hiding behind it —
-   and the inner fill is slightly translucent so the gathered light shows
-   through the glass. */
-.prismlight-root .plh-spec-prism {
-  position: absolute;
-  left: 28.5%;
-  top: 21%;
-  width: 17%;
-  height: 58%;
+  left: 30%;
+  top: 17%;
+  width: 14%;
+  height: 60%;
   clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
   background: linear-gradient(
     200deg,
@@ -4523,296 +4474,131 @@
   );
 }
 
-.prismlight-root .plh-spec-prism i {
+.prismlight-root .plh-p-prism i {
   position: absolute;
   inset: 2px;
   clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
   background: rgba(14, 16, 20, 0.82);
 }
 
-.prismlight-root .plh-spec-en {
+/* The dispersion fan: it begins INSIDE the drawn prism, at the height the
+   beam entered, and opens to the plate's full right edge — so the response
+   and every node tick stand in the light. Clip on the lighten wrapper, not
+   the canvas, so the fan's edges are exact. */
+.prismlight-root .plh-p-light {
   position: absolute;
-  left: 11px;
-  top: calc(50% - 24px);
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+  inset: 0;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  clip-path: polygon(36% 45.2%, 36% 48.8%, 100% 100%, 100% 0%);
+  overflow: hidden;
 }
 
-/* The fan: locale codes stacked on the plate's right edge, each tick flush
-   to the rule the way the band's POP ticks cross theirs. */
-.prismlight-root .plh-spec-outs {
+/* The field's dark convergence eye is parked at the fan's origin (36%, 47%
+   — the prism's heart) so the light visibly GATHERS in the glass and blooms
+   open across the fan body — brightest at the mouth, dark at the apex. */
+.prismlight-root .plh-p-field {
   position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  left: -34%;
+  width: 140%;
+  top: -48%;
+  height: 190%;
+  display: block;
+}
+
+/* The exposure ramp, drawn: dark at the apex, opening toward the nodes —
+   the beam becomes spectrum as it leaves the glass and the fan's mouth is
+   the brightest thing on the plate. A second lane caps the floor so the
+   caption row never has to outshine the streaks. */
+.prismlight-root .plh-p-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 76%,
+      rgba(0, 0, 0, 0.5) 88%,
+      rgba(0, 0, 0, 0.78) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.85) 32%,
+      rgba(0, 0, 0, 0.42) 50%,
+      rgba(0, 0, 0, 0.1) 70%,
+      rgba(0, 0, 0, 0) 86%
+    );
+}
+
+/* The request, riding its own beam: method line lit, header line dim, both
+   in the plate's top-left dark where the ray departs. */
+.prismlight-root .plh-p-req {
+  position: absolute;
+  left: 16px;
+  top: 13px;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  align-items: flex-end;
+  gap: 2px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
 }
 
-.prismlight-root .plh-spec-outs span {
+.prismlight-root .plh-p-req b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* The response, standing in the fan's light just under the bright axis —
+   between fra's row and sin's, in the pocket the node stack leaves open. */
+.prismlight-root .plh-p-res {
+  position: absolute;
+  left: 51%;
+  top: 53.5%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.72);
+  text-shadow:
+    0 0 8px rgba(0, 0, 0, 0.95),
+    0 1px 2px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+.prismlight-root .plh-p-res b {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* The edge nodes at the fan's mouth: code and measured value, tick flush to
+   the plate's right edge the way the specimen's locale ticks were. */
+.prismlight-root .plh-p-pops {
+  position: absolute;
+  inset: 0;
+}
+
+.prismlight-root .plh-pop {
+  position: absolute;
+  right: 0;
+  margin-top: -7px;
   display: flex;
   align-items: center;
   gap: 7px;
   font-family: var(--tc-mono);
   font-size: 11.5px;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.85);
-}
-
-.prismlight-root .plh-spec-outs i {
-  display: block;
-  width: 14px;
-  height: 1.5px;
-  background: rgba(255, 255, 255, 0.85);
-}
-
-.prismlight-root .plh-spec-cap {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 9px;
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  color: var(--tc-ink-3);
-  white-space: nowrap;
-}
-
-/* ---------- the horizon band: the stack's full-width visual cell ---------- */
-
-/* The band is the fork's committed material stated the other way round from
-   toolchain's dark plate: paper that the ink threads cross, ending in the ink
-   horizon strip at the cell's floor. The surface follows the theme; the strip
-   is permanent ink. */
-.prismlight-root .tc-hero-cell.plh-band-cell {
-  padding: 0;
-  background: var(--tc-white);
-}
-
-.prismlight-root .plh-horizon {
-  --plh-band-h: clamp(96px, 9vw, 118px);
-  position: relative;
-  height: clamp(270px, 26vw, 340px);
-  overflow: hidden;
-}
-
-.prismlight-root .plh-threads {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* The response leader, as HTML: its foot stands on fra's tick and its arm
-   runs right to the annotation. The percent anchors are the same at every
-   viewport, so the elbow survives the mobile fold. */
-.prismlight-root .plh-leader {
-  position: absolute;
-  left: 53%;
-  right: 16.5%;
-  top: 46.25%;
-  bottom: 40%;
-  border-left: 1px solid rgba(15, 17, 19, 0.35);
-  border-top: 1px solid rgba(15, 17, 19, 0.35);
-  pointer-events: none;
-}
-
-/* The light inside the doubled threads. The wrapper is masked to the exact
-   ribbon geometry of the ink strokes above (same viewBox, same paths, same
-   non-uniform stretch), and blends lighten — so the spectrum exists only
-   where the ink ribbons are, and appears stroke-by-stroke as the threads
-   draw themselves in. */
-.prismlight-root .plh-t-light {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  mix-blend-mode: lighten;
-  pointer-events: none;
-  overflow: hidden;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1170 320' preserveAspectRatio='none'%3E%3Cpath d='M150 64C340 110 500 148 600 208' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3Cpath d='M150 76C340 122 504 160 614 222' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1170 320' preserveAspectRatio='none'%3E%3Cpath d='M150 64C340 110 500 148 600 208' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3Cpath d='M150 76C340 122 504 160 614 222' fill='none' stroke='%23fff' stroke-width='3.4'/%3E%3C/svg%3E");
-  mask-size: 100% 100%;
-  -webkit-mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-}
-
-/* Oversized and rotated so the field's bright horizontal axis runs along the
-   threads' dive toward fra rather than across it. */
-.prismlight-root .plh-field-thread {
-  position: absolute;
-  left: -12%;
-  top: -32%;
-  width: 124%;
-  height: 164%;
-  display: block;
-  transform: translateY(7%) rotate(12deg);
-}
-
-/* The ribbons stay ink where they leave the headline and gather spectrum on
-   the way down — the exposure ramp runs along the dive, toward the burst. */
-.prismlight-root .plh-t-shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    112deg,
-    rgba(0, 0, 0, 0.78) 8%,
-    rgba(0, 0, 0, 0.45) 26%,
-    rgba(0, 0, 0, 0.14) 44%,
-    rgba(0, 0, 0, 0) 56%
-  );
-}
-
-/* The packet: one pulse of near-white light travelling the thread's own
-   path from the headline into fra. It lives INSIDE the masked lighten group
-   and paints above the shade, so it exists only where ribbon ink is and
-   stays lit through the shaded upper reach. The anchors are sampled off the
-   thread's cubic at t = 0, ¼, ½, ¾, 1; the blob is 140px wide, so the
-   4-segment approximation never visibly leaves the stroke. Peaks at 0.85
-   alpha — a glint riding a hairline, still under paper. */
-.prismlight-root .plh-t-pulse {
-  position: absolute;
-  left: 12.8%;
-  top: 20%;
-  width: 0;
-  height: 0;
-  opacity: 0;
-}
-
-.prismlight-root .plh-t-pulse::before {
-  content: '';
-  position: absolute;
-  left: -70px;
-  top: -70px;
-  width: 140px;
-  height: 140px;
-  background:
-    radial-gradient(
-      closest-side,
-      rgba(255, 255, 255, 0.85),
-      rgba(255, 255, 255, 0.3) 40%,
-      rgba(255, 255, 255, 0) 70%
-    ),
-    radial-gradient(
-      closest-side at 42% 44%,
-      rgba(150, 185, 255, 0.4),
-      rgba(150, 185, 255, 0) 62%
-    ),
-    radial-gradient(
-      closest-side at 58% 56%,
-      rgba(255, 190, 140, 0.36),
-      rgba(255, 190, 140, 0) 62%
-    );
-}
-
-/* Reduced motion sees the composed still: threads lit, no traffic. */
-@media (prefers-reduced-motion: no-preference) {
-  .prismlight-root .plh-t-pulse {
-    animation: plh-pulse 3.6s linear 2.2s infinite;
-  }
-}
-
-@keyframes plh-pulse {
-  0% {
-    left: 12.8%;
-    top: 20%;
-    opacity: 0;
-  }
-  8% {
-    opacity: 1;
-  }
-  18% {
-    left: 24.5%;
-    top: 30.5%;
-  }
-  34% {
-    left: 34.9%;
-    top: 40.9%;
-  }
-  50% {
-    left: 43.9%;
-    top: 52.1%;
-  }
-  63% {
-    left: 52.5%;
-    top: 68%;
-    opacity: 1;
-  }
-  70% {
-    left: 52.5%;
-    top: 68%;
-    opacity: 0;
-  }
-  100% {
-    left: 52.5%;
-    top: 68%;
-    opacity: 0;
-  }
-}
-
-.prismlight-root .plh-band {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: var(--plh-band-h);
-  background: #0c0e11;
-}
-
-.prismlight-root .plh-band-row {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 0 var(--tc-gut);
-  font-family: var(--tc-mono);
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.78);
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.85);
-  white-space: nowrap;
-}
-
-/* Points of presence: caliper ticks crossing the band's top rule — ink above
-   the rule on paper, white below it on the band. */
-.prismlight-root .plh-pops {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-}
-
-.prismlight-root .plh-pop {
-  position: absolute;
-  top: -12px;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
   line-height: 1.25;
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(255, 255, 255, 0.85);
   text-shadow:
     0 0 8px rgba(0, 0, 0, 0.95),
     0 1px 2px rgba(0, 0, 0, 0.7);
-}
-
-.prismlight-root .plh-pop i {
-  display: block;
-  width: 2px;
-  height: 24px;
-  background: linear-gradient(#0c0e11 0 12px, rgba(255, 255, 255, 0.55) 12px 24px);
 }
 
 .prismlight-root .plh-pop-l {
@@ -4822,9 +4608,17 @@
 /* Every node carries its measured value; the code leads, the value follows. */
 .prismlight-root .plh-pop-l b {
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.62);
 }
 
+.prismlight-root .plh-pop i {
+  display: block;
+  width: 15px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* The serving node: pure white at the fan's bright axis. */
 .prismlight-root .plh-pop[data-hit] {
   color: #ffffff;
   font-weight: 500;
@@ -4836,86 +4630,26 @@
 }
 
 .prismlight-root .plh-pop[data-hit] i {
-  background: linear-gradient(#0c0e11 0 12px, #ffffff 12px 24px);
+  height: 2px;
+  background: #ffffff;
 }
 
-/* Request and response annotations, in ink on the paper above the band. */
-.prismlight-root .plh-req {
+/* The old band's caption grammar, kept as the plate's floor. */
+.prismlight-root .plh-p-foot {
   position: absolute;
-  left: var(--tc-gut);
-  top: 14px;
+  left: 16px;
+  right: 16px;
+  bottom: 11px;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  justify-content: space-between;
+  gap: 14px;
   font-family: var(--tc-mono);
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--tc-ink-3);
-}
-
-.prismlight-root .plh-req b,
-.prismlight-root .plh-res b {
-  font-weight: 500;
-  color: var(--tc-ink);
-}
-
-/* Sits at the far end of the elbow leader whose foot is on fra's tick —
-   percent-anchored to the leader's horizontal run, so the pair stays
-   attached at every viewport height. */
-.prismlight-root .plh-res {
-  position: absolute;
-  left: 83.5%;
-  top: calc(46.25% - 52px);
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: center;
-  font-family: var(--tc-mono);
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--tc-ink-3);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.85);
   white-space: nowrap;
-}
-
-/* The horizon burst: prism-light owns it — centered on the band's own
-   centerline, its dark convergence eye at the serving POP (52%), and the
-   mask drawn WIDE so the light streams along nearly the strip's whole
-   length: a low, long dawn line, brightest at fra, fading into ink before
-   either end. */
-.prismlight-root .plh-h-light {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 480px;
-  bottom: calc(var(--plh-band-h) / 2 - 240px);
-  z-index: 1;
-  mix-blend-mode: lighten;
-  pointer-events: none;
-  mask-image: radial-gradient(82% 56% at 52% 50%, #000 34%, transparent 100%);
-  -webkit-mask-image: radial-gradient(82% 56% at 52% 50%, #000 34%, transparent 100%);
-}
-
-/* The band's typography lanes, kept out of the streaks. The wrapper is 480px
-   tall and centered on the band's centerline (50%); the band itself spans
-   roughly 38%–62% of it. Shade caps the field under the POP-label strip at the
-   top rule and under the caption row at the floor, and leaves the centerline
-   core — where nothing but light lives — at full exposure. */
-.prismlight-root .plh-h-shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0) 34%,
-    rgba(0, 0, 0, 0.62) 39%,
-    rgba(0, 0, 0, 0.62) 44.5%,
-    rgba(0, 0, 0, 0.08) 48.5%,
-    rgba(0, 0, 0, 0.08) 52%,
-    rgba(0, 0, 0, 0.55) 56.5%,
-    rgba(0, 0, 0, 0.85) 60%,
-    rgba(0, 0, 0, 0.9) 100%
-  );
+  overflow: hidden;
 }
 
 @media (max-width: 860px) {
@@ -4928,43 +4662,36 @@
     letter-spacing: -0.04em;
   }
 
-  /* The counterweight object yields; the connective geometry does not. The
-     threads, the leader and the band keep the same percent anchors, so the
-     request still visibly rides into fra on a phone. */
-  .prismlight-root .plh-spec {
-    display: none;
+  /* The panel IS the diagram now — it keeps its post below the headline.
+     Percent geometry holds; only the type steps down and the four quiet
+     nodes drop their values so five rows never collide at 390px. */
+  .prismlight-root .plh-panel-box {
+    height: clamp(270px, 82vw, 340px);
   }
 
-  /* The five codes keep their ticks; only the serving node keeps its value —
-     five full labels collide at 390px. */
   .prismlight-root .plh-pop:not([data-hit]) .plh-pop-l b {
     display: none;
   }
 
-  .prismlight-root .plh-horizon {
-    height: 250px;
+  .prismlight-root .plh-p-req,
+  .prismlight-root .plh-p-res {
+    font-size: 10.5px;
   }
 
-  .prismlight-root .plh-req {
-    font-size: 11px;
+  /* The shorter plate compresses the percent grid — the response steps up a
+     hair and tightens its leading so it clears sin's row. */
+  .prismlight-root .plh-p-res {
+    top: 51.5%;
+    line-height: 1.5;
   }
 
-  .prismlight-root .plh-res {
-    left: auto;
-    right: 10px;
-    transform: none;
-    text-align: right;
-    font-size: 11px;
-  }
-
-  .prismlight-root .plh-band-row {
-    font-size: 11px;
-    overflow: hidden;
+  .prismlight-root .plh-p-foot {
+    font-size: 10.5px;
   }
 }
 
 @media (max-width: 640px) {
-  .prismlight-root .plh-band-row span:last-child {
+  .prismlight-root .plh-p-foot span:last-child {
     display: none;
   }
 }
@@ -5022,53 +4749,9 @@
     );
 }
 
-/* the specimen plate is permanent ink — on the ink-black card it keeps its
-   edge with the page's dark hairline ring */
-[data-theme='dark'] .prismlight-root .plh-spec-box {
+/* the delivery panel's plate is permanent ink — on the ink-black card it
+   keeps its edge with the page's dark hairline ring, exactly the way the
+   old specimen plate did */
+[data-theme='dark'] .prismlight-root .plh-panel-box {
   outline: 1px solid var(--tc-hair);
-}
-
-/* the horizon strip's top rule: drawn in light mode by the paper/ink contrast,
-   drawn in dark mode by the hairline family */
-[data-theme='dark'] .prismlight-root .plh-band {
-  border-top: 1px solid var(--tc-hair);
-}
-
-/* the ink halves of the caliper ticks and thread hardware re-ink for black
-   paper; the light ribbons themselves need no remap (lighten over near-black
-   backdrop shows the field only inside the ribbon mask) */
-[data-theme='dark'] .prismlight-root .plh-pop i {
-  background: linear-gradient(rgba(255, 255, 255, 0.4) 0 12px, rgba(255, 255, 255, 0.6) 12px 24px);
-}
-
-[data-theme='dark'] .prismlight-root .plh-pop[data-hit] i {
-  background: linear-gradient(rgba(255, 255, 255, 0.75) 0 12px, #ffffff 12px 24px);
-}
-
-[data-theme='dark'] .prismlight-root .plh-leader {
-  border-color: rgba(255, 255, 255, 0.35);
-}
-
-[data-theme='dark'] .prismlight-root .plh-threads line {
-  stroke: rgba(255, 255, 255, 0.4);
-}
-
-/* On black paper the burst's masked ellipse would flood the whole horizon —
-   cap the halo above the band so it reads as light hugging the strip, and
-   keep the annotation lanes legible. The centerline core stays at full
-   exposure: in dark mode the burst is the page's boldest object. */
-[data-theme='dark'] .prismlight-root .plh-h-shade {
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.66) 0%,
-    rgba(0, 0, 0, 0.5) 22%,
-    rgba(0, 0, 0, 0.28) 34%,
-    rgba(0, 0, 0, 0.62) 39%,
-    rgba(0, 0, 0, 0.62) 44.5%,
-    rgba(0, 0, 0, 0.08) 48.5%,
-    rgba(0, 0, 0, 0.08) 52%,
-    rgba(0, 0, 0, 0.55) 56.5%,
-    rgba(0, 0, 0, 0.85) 60%,
-    rgba(0, 0, 0, 0.9) 100%
-  );
 }

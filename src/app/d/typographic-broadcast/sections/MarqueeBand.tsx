@@ -33,7 +33,9 @@ export default function MarqueeBand({ words, speed = 74, dir = 1, label }: Marqu
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       startScrollVelocity();
       const skewTo = gsap.quickTo(el, 'skewY', { duration: 0.55, ease: 'power2.out' });
-      const drive = () => skewTo(gsap.utils.clamp(-2.4, 2.4, getScrollVelocity() / 900));
+      const drive = () => {
+        skewTo(gsap.utils.clamp(-2.4, 2.4, getScrollVelocity() / 900));
+      };
       gsap.ticker.add(drive);
       return () => gsap.ticker.remove(drive);
     },

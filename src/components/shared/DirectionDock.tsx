@@ -29,7 +29,7 @@ export default function DirectionDock({ slug }: { slug: string }) {
   useEffect(() => {
     const step = (delta: number) => {
       const next = DIRECTIONS[(index + delta + DIRECTIONS.length) % DIRECTIONS.length];
-      router.push(`/d/${next.slug}`);
+      if (next) router.push(`/d/${next.slug}`);
     };
 
     const onKey = (event: KeyboardEvent) => {
@@ -44,10 +44,10 @@ export default function DirectionDock({ slug }: { slug: string }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [index, router]);
 
-  if (!current || hidden) return null;
-
   const prev = DIRECTIONS[(index - 1 + DIRECTIONS.length) % DIRECTIONS.length];
   const next = DIRECTIONS[(index + 1) % DIRECTIONS.length];
+
+  if (!current || !prev || !next || hidden) return null;
 
   return (
     <>

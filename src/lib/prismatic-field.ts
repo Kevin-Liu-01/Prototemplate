@@ -306,7 +306,7 @@ function getEngine(): Engine | null {
   const timeLoc = ctx.getUniformLocation(program, 'uTime');
   const paramLocs = new Map<keyof PrismaticParams, WebGLUniformLocation | null>();
   UNIFORM_KEYS.forEach((key) => {
-    paramLocs.set(key, ctx.getUniformLocation(program, `u${key[0].toUpperCase()}${key.slice(1)}`));
+    paramLocs.set(key, ctx.getUniformLocation(program, `u${key.charAt(0).toUpperCase()}${key.slice(1)}`));
   });
 
   // Contexts are lost on GPU resets and on tab recovery; rebuild on restore

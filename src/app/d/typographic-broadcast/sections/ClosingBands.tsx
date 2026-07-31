@@ -48,7 +48,7 @@ export default function ClosingBands() {
       const cycle = () => {
         gsap.to('#tb-cta-rot', {
           duration: 0.9,
-          scrambleText: { text: CTA_ROTATION[index % CTA_ROTATION.length], chars: 'lowerCase', speed: 0.4 },
+          scrambleText: { text: CTA_ROTATION[index % CTA_ROTATION.length] ?? '', chars: 'lowerCase', speed: 0.4 },
           onComplete: () => {
             index += 1;
             gsap.delayedCall(2.4, cycle);

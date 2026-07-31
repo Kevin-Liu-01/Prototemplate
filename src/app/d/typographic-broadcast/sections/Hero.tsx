@@ -68,7 +68,7 @@ export default function Hero() {
       const rotate = (i: number) => {
         gsap.to('#tb-rot', {
           duration: 0.9,
-          scrambleText: { text: HERO_ROTATION[i % HERO_ROTATION.length], chars: 'lowerCase', speed: 0.4 },
+          scrambleText: { text: HERO_ROTATION[i % HERO_ROTATION.length] ?? '', chars: 'lowerCase', speed: 0.4 },
           onComplete: () => gsap.delayedCall(2.2, () => rotate(i + 1)),
         });
       };

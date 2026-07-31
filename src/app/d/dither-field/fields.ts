@@ -99,7 +99,10 @@ function rasterizeHello(word: HelloWord): WordMask | null {
 
   const dense = DENSE_SCRIPT.test(word.text);
   const px = dense ? Math.round(WORD_RASTER_PX * 1.3) : WORD_RASTER_PX;
-  const tagPx = Math.round(WORD_RASTER_PX * 0.58);
+  // The tag rides at ~0.7 of the word: below that its cap height lands under
+  // six display cells at the plate's word sizes and the letters merge into
+  // blobs — the one thing a locale tag cannot survive.
+  const tagPx = Math.round(WORD_RASTER_PX * 0.72);
   const tagText = word.tag.toUpperCase();
   const family = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
   const wordFont = `600 ${px}px ${family}`;
@@ -147,6 +150,9 @@ function rasterizeHello(word: HelloWord): WordMask | null {
   ctx.fillText(word.text, 3, base);
   ctx.font = tagFont;
   spacing(ctx, 0.14);
+  // The tag runs a lighter stroke: at half the word size, the word's 2px
+  // fattening floods an E's counters and the tag prints as a blob.
+  ctx.lineWidth = 1.3;
   ctx.strokeText(tagText, 3 + wordW + gap, base);
   ctx.fillText(tagText, 3 + wordW + gap, base);
 
@@ -186,7 +192,14 @@ type StationSpec = {
   v: number;
   /** Word box height as a fraction of the plate height. */
   hv: number;
-  /** Cycle offset so neighbouring stations never show the same word. */
+  /**
+   * Word-cycle offset. Not arbitrary: two stations show the same greeting
+   * when their kStar difference matches their offset difference (mod the
+   * word count), and kStar differences are pinned by the stations' front
+   * reach-times — so a bad pair collides EVERY cycle. These offsets were
+   * solved against each layout's reach-times so no two stations can
+   * materialise the same greeting at the same time.
+   */
   seed: number;
   /**
    * Transit latency in seconds between the front crossing and the word
@@ -205,11 +218,11 @@ type StationSpec = {
 const STATIONS_PLATE: readonly StationSpec[] = [
   { u: 0.22, v: 0.5, hv: 0.135, seed: 0, source: true },
   { u: 0.5, v: 0.23, hv: 0.125, seed: 0 },
-  { u: 0.83, v: 0.09, hv: 0.105, seed: 5, delay: 1.3 },
-  { u: 0.74, v: 0.4, hv: 0.13, seed: 1, delay: 0.7 },
-  { u: 0.47, v: 0.68, hv: 0.12, seed: 2, delay: 0.35 },
-  { u: 0.28, v: 0.88, hv: 0.11, seed: 3, delay: 1.1 },
-  { u: 0.8, v: 0.85, hv: 0.115, seed: 4, delay: 1.6 },
+  { u: 0.83, v: 0.09, hv: 0.105, seed: 3, delay: 1.3 },
+  { u: 0.74, v: 0.4, hv: 0.13, seed: 4, delay: 0.7 },
+  { u: 0.47, v: 0.68, hv: 0.12, seed: 5, delay: 0.35 },
+  { u: 0.28, v: 0.88, hv: 0.11, seed: 7, delay: 1.1 },
+  { u: 0.8, v: 0.85, hv: 0.115, seed: 9, delay: 1.6 },
 ];
 
 /* Compact plate (stacked mobile): the source plus three stations on a
@@ -217,8 +230,8 @@ const STATIONS_PLATE: readonly StationSpec[] = [
 const STATIONS_COMPACT: readonly StationSpec[] = [
   { u: 0.26, v: 0.5, hv: 0.12, seed: 0, source: true },
   { u: 0.6, v: 0.2, hv: 0.13, seed: 0 },
-  { u: 0.66, v: 0.64, hv: 0.13, seed: 1, delay: 0.8 },
-  { u: 0.4, v: 0.87, hv: 0.12, seed: 2, delay: 0.4 },
+  { u: 0.66, v: 0.64, hv: 0.13, seed: 2, delay: 0.8 },
+  { u: 0.4, v: 0.87, hv: 0.12, seed: 3, delay: 0.4 },
 ];
 
 /** Per-frame runtime state for one station. Mutated in place, never per-pixel. */
@@ -390,7 +403,7 @@ export function heroTransmission(
         // The paper margin opens quickly ahead of the wipe and leaves with
         // the word.
         st.alpha = clamp01(st.reveal * 2.5) * st.fall;
-        const cycle = kStar + spec.seed * 3;
+        const cycle = kStar + spec.seed;
         wordIdx = 1 + (((cycle % translationCount) + translationCount) % translationCount);
       }
 

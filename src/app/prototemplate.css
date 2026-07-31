@@ -277,24 +277,29 @@
   border-left: 1px dashed var(--pt-ink-4);
 }
 
-/* the two source words: whole rows, centered, above and below the line */
+/* the two source words flank the line: serif upper-LEFT, grotesk
+   lower-RIGHT. Kept clear of the vertical center so neither collides
+   with the destination outline at narrow widths, and positioned with
+   box offsets only — a CSS transform here would be parsed into the
+   words' GSAP travel baseline and skew the measured deltas. */
 .pt-src {
   position: absolute;
-  left: 0;
-  right: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
   z-index: 2;
 }
 
 .pt-src.is-proto {
-  top: 7%;
+  left: 4%;
+  top: 9%;
+  align-items: flex-start;
 }
 
 .pt-src.is-template {
-  bottom: 7%;
+  right: 4%;
+  bottom: 9%;
+  align-items: flex-end;
 }
 
 .pt-src .pt-face-serif,

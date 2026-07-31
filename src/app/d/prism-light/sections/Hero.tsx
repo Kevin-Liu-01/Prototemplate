@@ -68,8 +68,8 @@ const POPS: readonly { code: string; ms: number; y: string; hit?: boolean }[] = 
   { code: 'sfo', ms: 17, y: '13%' },
   { code: 'iad', ms: 21, y: '30%' },
   { code: 'fra', ms: 12, y: '47%', hit: true },
-  { code: 'sin', ms: 41, y: '65%' },
-  { code: 'gru', ms: 29, y: '82%' },
+  { code: 'sin', ms: 41, y: '66.5%' },
+  { code: 'gru', ms: 29, y: '83.5%' },
 ];
 
 /* "language" across maximally different writing systems — Latin, Japanese,
@@ -132,11 +132,25 @@ export default function Hero() {
          isolate the blend group and flood the plate. */
       const beams = gsap.utils.toArray<SVGPathElement>('.plh-beam', root.current);
       for (const path of beams) {
-        const len = path.getTotalLength();
+        /* The beam is a straight ray in a non-uniformly stretched viewBox with
+           a non-scaling stroke, so its dash pattern lives in SCREEN units —
+           getTotalLength()'s user units would leave the resting stroke dashed.
+           Measure the rendered diagonal instead, and drop the dash entirely
+           once drawn so later resizes can never re-break the ray. */
+        const box = path.getBoundingClientRect();
+        const len = Math.ceil(Math.hypot(box.width, box.height)) + 4;
         gsap.fromTo(
           path,
-          { strokeDasharray: len, strokeDashoffset: len },
-          { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut', delay: 0.4 }
+          { strokeDasharray: `${len} ${len}`, strokeDashoffset: len },
+          {
+            strokeDashoffset: 0,
+            duration: 1.1,
+            ease: 'power2.inOut',
+            delay: 0.4,
+            onComplete: () => {
+              gsap.set(path, { strokeDasharray: 'none', clearProps: 'strokeDashoffset' });
+            },
+          }
         );
       }
       gsap.from('.plh-p-light', { autoAlpha: 0, duration: 1.3, ease: 'power1.inOut', delay: 0.9 });
@@ -524,148 +538,92 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* The counterweight object (resend puts a machined cube here; this
-              fork puts the product): a bounded ink plate with a drawn glass
-              prism standing on it. One white `en` beam crosses the dark and
-              enters the glass; a full-height spectral fan leaves the far face
-              and lands on the locale ticks — dispersion as the diagram of
-              localization. Paint order matters: beam and prism sit UNDER the
-              lighten wrapper so the fan blooms over the glass edge, and the
-              labels ride above everything. */}
+          {/* The delivery diagram, turned into a prism: one bounded ink plate
+              fusing the old horizon story with the specimen's optics. Paint
+              order matters — beam and glass sit UNDER the lighten wrapper so
+              the fan blooms over the exit face, and every label rides above
+              the light. The plate itself is never transform-animated: it is
+              the blend group's containing block. */}
           <figure
-            className='plh-spec'
+            className='plh-panel'
             role='img'
-            aria-label='A drawn glass prism on a dark plate: one white beam labelled en source enters its left face, disperses into a spectral fan inside, and the fan lands on ticks labelled fr, es, de, ja, zh and 113 more'
+            aria-label='A drawn glass prism on a dark plate turns one request into every locale: a white beam labelled GET example.com/fr/a-propos with accept-language fr-FR enters the glass and disperses into a spectral fan; standing in the fan are the response — 200 served from fra, 12 ms, no origin hit — and five edge nodes with latencies: sfo 17 ms, iad 21 ms, fra 12 ms, sin 41 ms, gru 29 ms. Captions read translation edge, anycast, versioned per locale, v214 live'
           >
-            <div className='plh-spec-box' aria-hidden>
-              <span className='plh-spec-beam' />
-              <span className='plh-spec-prism'>
+            <div className='plh-panel-box' aria-hidden>
+              {/* Ink geometry first: the incidence ray, straight as light is,
+                  diving from the request labels into the glass and dying
+                  inside it — it enters, the fan leaves. */}
+              <svg className='plh-p-rays' viewBox='0 0 100 100' preserveAspectRatio='none'>
+                <defs>
+                  <linearGradient id='plh-beam-fade' x1='0' y1='0' x2='1' y2='0'>
+                    <stop offset='0' stopColor='#ffffff' stopOpacity='0.95' />
+                    <stop offset='0.8' stopColor='#ffffff' stopOpacity='0.85' />
+                    <stop offset='1' stopColor='#ffffff' stopOpacity='0' />
+                  </linearGradient>
+                </defs>
+                <path
+                  className='plh-beam'
+                  d='M 3.5 16 L 36.4 47'
+                  fill='none'
+                  stroke='url(#plh-beam-fade)'
+                  strokeWidth='2'
+                  vectorEffect='non-scaling-stroke'
+                />
+              </svg>
+
+              {/* The glass, salvaged from the specimen plate: luminous edges,
+                  translucent near-plate fill, drawn under the light. */}
+              <span className='plh-p-prism'>
                 <i />
               </span>
-              <div className='plh-spec-light'>
+
+              {/* The dispersal: the field's dark convergence eye is parked at
+                  the prism's heart, so the light visibly GATHERS in the glass
+                  and blooms open across the fan — dark at the apex, brightest
+                  at the mouth where the nodes stand. */}
+              <div className='plh-p-light'>
                 <PrismaticField
-                  className='plh-spec-field'
+                  className='plh-p-field'
                   preset='1'
-                  speed={0.5}
+                  speed={0.55}
                   params={{ exposureScale: 1250 }}
                 />
-                <span className='plh-spec-shade' />
+                <span className='plh-p-shade' />
               </div>
-              <span className='plh-spec-en'>en · source</span>
-              <div className='plh-spec-outs'>
-                {SPEC_OUT.map((code) => (
-                  <span key={code}>
-                    {code}
+
+              {/* The request, riding its own beam. */}
+              <div className='plh-p-req' data-hero-in>
+                <b>GET example.com/fr/a-propos</b>
+                <span>accept-language: fr-FR</span>
+              </div>
+
+              {/* The response, standing in the fan's light below the axis. */}
+              <div className='plh-p-res' data-hero-in>
+                <b>200 · served from fra</b>
+                <span>12 ms · no origin hit</span>
+              </div>
+
+              {/* The edge nodes at the fan's mouth, ticks flush to the plate's
+                  right edge — the fan lands on the network. */}
+              <div className='plh-p-pops'>
+                {POPS.map((pop) => (
+                  <span className='plh-pop' data-hit={pop.hit || undefined} style={{ top: pop.y }} key={pop.code}>
+                    <span className='plh-pop-l'>
+                      {pop.code}
+                      <b> · {pop.ms} ms</b>
+                    </span>
                     <i />
                   </span>
                 ))}
               </div>
+
+              {/* The old band's caption grammar, kept as the panel's floor. */}
+              <div className='plh-p-foot'>
+                <span>translation edge</span>
+                <span>anycast · versioned per locale · v214 live</span>
+              </div>
             </div>
-            <figcaption className='plh-spec-cap'>
-              <span>one build in · 118 locales out</span>
-              <span>v214</span>
-            </figcaption>
           </figure>
-        </div>
-      </div>
-
-      {/* Surface two: the horizon, this fork's full-width visual band. The
-          first viewport commits to a material the way toolchain's terminal
-          band does — inverted: paper the ink threads cross, ending in the
-          permanent ink strip at the cell's floor, the burst masked into both. */}
-      <div className='tc-hero-cell plh-band-cell'>
-        <div className='plh-horizon'>
-          {/* Ink geometry first; the light is layered over all of it. */}
-          <svg className='plh-threads' viewBox='0 0 1170 320' preserveAspectRatio='none' aria-hidden>
-            {/* the two threads: source and translation, never merging */}
-            <path
-              className='plh-thread'
-              d='M 150 64 C 340 110, 500 148, 600 208'
-              fill='none'
-              stroke='#0c0e11'
-              strokeWidth='3'
-            />
-            <path
-              className='plh-thread'
-              d='M 150 76 C 340 122, 504 160, 614 222'
-              fill='none'
-              stroke='#0c0e11'
-              strokeWidth='3'
-            />
-            <line x1='614' y1='192' x2='626' y2='192' stroke='rgba(15,17,19,0.6)' strokeWidth='1.5' />
-          </svg>
-
-          {/* The response leader: an elbow rising off fra's own tick, drawn in
-              HTML with percent anchors so it survives every viewport — the
-              200 is visibly the answer coming back from the POP the threads
-              just landed on, on mobile too. */}
-          <span className='plh-leader' aria-hidden />
-
-          {/* The light inside the threads: a second field clipped to the exact
-              ribbon geometry above, its bright axis rotated to run along the
-              dive — dispersed spectrum living inside the ink strokes. The
-              pulse rides last in the group, above the shade: one packet of
-              near-white light travelling the thread's own path into fra on a
-              loop (CSS keyframes, curve-sampled anchors, reduced-motion
-              gated) — the request, visible. */}
-          <div className='plh-t-light' aria-hidden>
-            <PrismaticField
-              className='plh-field-thread'
-              preset='1'
-              speed={0.6}
-              params={{ exposureScale: 1250 }}
-            />
-            {/* Ink at the request end, spectrum gathering toward the edge. */}
-            <span className='plh-t-shade' />
-            <span className='plh-t-pulse' />
-          </div>
-
-          <div className='plh-req' data-hero-in>
-            <b>GET example.com/fr/a-propos</b>
-            <span>accept-language: fr-FR</span>
-          </div>
-
-          <div className='plh-res' data-hero-in>
-            <b>200 · served from fra</b>
-            <span>12 ms · no origin hit</span>
-          </div>
-
-          <div className='plh-band'>
-            <div className='plh-band-row'>
-              <span>translation edge</span>
-              <span>anycast · versioned per locale · v214 live</span>
-            </div>
-            <div className='plh-pops'>
-              {POPS.map((pop) => (
-                <span className='plh-pop' data-hit={pop.hit || undefined} style={{ left: pop.x }} key={pop.code}>
-                  <i />
-                  <span className='plh-pop-l'>
-                    {pop.code}
-                    <b> · {pop.ms} ms</b>
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* The burst, masked into the ink: its dark convergence point sits on
-              the band at `fra`, light streaming outward along the horizon.
-              prism-light owns the burst — it runs hot and the mask is wide,
-              so the strip reads as a dawn line: a low, long band of moving
-              spectrum along nearly its whole length, brightest at the
-              serving POP. */}
-          <div className='plh-h-light' aria-hidden>
-            <PrismaticField
-              className='plh-field-fill'
-              preset='1'
-              speed={0.55}
-              params={{ exposureScale: 1400 }}
-            />
-            {/* Two quiet strips of shade — one under the POP labels at the top
-                rule, one under the caption row at the floor — so the band's
-                type is never asked to outshine the streaks. */}
-            <span className='plh-h-shade' />
-          </div>
         </div>
       </div>
 

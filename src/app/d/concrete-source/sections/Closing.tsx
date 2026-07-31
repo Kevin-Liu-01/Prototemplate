@@ -54,7 +54,7 @@ export default function Closing() {
         gsap.delayedCall(2.6, () => {
           if (!rot2) return;
           ci = (ci + 1) % CLOSING_ROTATIONS.length;
-          rot2.textContent = CLOSING_ROTATIONS[ci];
+          rot2.textContent = CLOSING_ROTATIONS[ci] ?? null;
           gsap.fromTo(rot2, { opacity: 0.35 }, { opacity: 1, duration: 0.28, ease: STEP(2) });
           cycleClose();
         });
