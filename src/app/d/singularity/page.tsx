@@ -3,6 +3,7 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
+import EnterpriseContact from './sections/EnterpriseContact';
 import Frameworks from './sections/Frameworks';
 import Hero from './sections/Hero';
 import Pricing from './sections/Pricing';
@@ -35,8 +36,10 @@ export default function SingularityPage() {
         <TopNav />
 
         {/* The hero escapes the 1170px rail — the horizon and its orbit sit
-            on full-bleed paper, like the dark band below. */}
+            on full-bleed paper, and the contact bay lands directly under
+            the gate: the CTAs' destination before anything else. */}
         <Hero />
+        <EnterpriseContact />
 
         <div className='tc-rail'>
           <Frameworks />

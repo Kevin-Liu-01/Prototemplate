@@ -3,12 +3,13 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { createHorizonField, type HorizonFieldHandle } from '../lib/horizon-field';
 
 gsap.registerPlugin(useGSAP);
 
+/* The customers whose marks ride inside the hole, under the CTAs. */
 const CUSTOMERS: readonly { name: string; mark: string }[] = [
   { name: 'Cursor', mark: 'is-cursor' },
   { name: 'Ramp', mark: 'is-ramp' },
@@ -19,8 +20,9 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
 ];
 
 /* The locale chips that orbit the horizon — native names, not English
-   exonyms. Ordered so wide chips never sit next to each other on the ring. */
-const FLAGS: readonly { flag: string; name: string }[] = [
+   exonyms. Scripts whose letters must never be split (joining Arabic,
+   Hebrew, Devanagari matras, Thai clusters) are marked whole. */
+const BELT: readonly { flag: string; name: string; whole?: boolean }[] = [
   { flag: '🇺🇸', name: 'English' },
   { flag: '🇯🇵', name: '日本語' },
   { flag: '🇧🇷', name: 'Português' },
@@ -28,13 +30,13 @@ const FLAGS: readonly { flag: string; name: string }[] = [
   { flag: '🇺🇦', name: 'Українська' },
   { flag: '🇨🇳', name: '简体中文' },
   { flag: '🇫🇷', name: 'Français' },
-  { flag: '🇸🇦', name: 'العربية' },
+  { flag: '🇸🇦', name: 'العربية', whole: true },
   { flag: '🇳🇱', name: 'Nederlands' },
-  { flag: '🇮🇳', name: 'हिन्दी' },
+  { flag: '🇮🇳', name: 'हिन्दी', whole: true },
   { flag: '🇩🇪', name: 'Deutsch' },
-  { flag: '🇹🇭', name: 'ไทย' },
+  { flag: '🇹🇭', name: 'ไทย', whole: true },
   { flag: '🇻🇳', name: 'Tiếng Việt' },
-  { flag: '🇮🇱', name: 'עברית' },
+  { flag: '🇮🇱', name: 'עברית', whole: true },
   { flag: '🇮🇹', name: 'Italiano' },
   { flag: '🇵🇱', name: 'Polski' },
   { flag: '🇸🇪', name: 'Svenska' },
@@ -43,12 +45,22 @@ const FLAGS: readonly { flag: string; name: string }[] = [
   { flag: '🇹🇷', name: 'Türkçe' },
 ];
 
+/** How far a letter steps aside for the flag, px — the flag's seat width. */
+const FLAG_SEAT = 20;
+/** Per-letter stagger of the hop as the flag sweeps past, ms. */
+const SWEEP_STEP = 34;
+/** The flag's own travel time across the pill, ms. */
+const SWEEP_MS = 620;
+
 /** Flag-orbit radius as a multiple of the horizon radius (wide mode). */
 const ORBIT_K = 1.36;
 /** Seconds per full revolution of the flag orbit. */
 const ORBIT_DUR = 130;
 /** Vertical squash of the flag orbit — a slightly inclined orbital plane. */
 const ORBIT_TILT = 0.94;
+/** Gravity pacing: chips whip through the near arc (1+K× speed) and glide
+    across the far side (1−K×) — dθ/dt = 1 − K·cos θ. */
+const KEPLER = 0.22;
 
 const TAU = Math.PI * 2;
 
@@ -59,15 +71,14 @@ const smooth01 = (t: number) => {
 };
 
 /**
- * The event horizon stripped to the mass itself — the parent direction's
- * component walls are gone, and the gate sits alone on open paper. The
- * horizon is the same purpose-built lensing shader (lib/horizon-field.ts):
- * an accretion streak field whose sampling coordinates bend around the rim
- * into a brilliant photon ring, the page's own ruled hairlines warping with
- * it, over a genuinely dark core. The dark core holds the mark, headline,
- * CTAs and the npx chip light-on-dark; the locale flag chips ride a slightly
- * inclined orbit around the horizon, each oriented tangent to the ring like
- * a satellite belt. Nothing else competes with the mass.
+ * The enterprise gate. The event horizon alone on open paper — the lensing
+ * shader (lib/horizon-field.ts) wraps accretion light into a photon ring
+ * and bends the page's own hairlines into a genuinely dark core that holds
+ * the mark, headline and the two enterprise CTAs. No npx chip, no rings, no
+ * rail — aura and the product, nothing else. The belt riding the inclined
+ * orbit mixes locale chips with the customers' own marks, every chip under
+ * the hole's gravity: Kepler pacing, tidal stretch, an animated roll-over
+ * at the sides, blur as it falls behind the glow.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -75,32 +86,21 @@ export default function Hero() {
   const horizonRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLCanvasElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<SVGSVGElement>(null);
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx gt@latest');
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
-  };
 
   useGSAP(
     () => {
       const hero = heroRef.current;
       const fieldCanvas = fieldRef.current;
       const orbit = orbitRef.current;
-      const rail = railRef.current;
-      if (!hero || !fieldCanvas || !orbit || !rail) return;
+      if (!hero || !fieldCanvas || !orbit) return;
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      /* Only the innermost lens-echo ring survives — the two outer guide
-         circles are gone, so nothing draws beyond the orbit belt. */
+      /* No guide rings at all — the hole, its glow, and the belt of chips
+         are the only geometry. */
       const field: HorizonFieldHandle | null = createHorizonField(fieldCanvas, {
         speed: 0.5,
-        params: { ringAlpha: [0.09, 0, 0] },
+        params: { ringAlpha: [0, 0, 0] },
       });
 
       /* The shader's ink must follow the page theme: its bent rules and rings
@@ -126,30 +126,64 @@ export default function Hero() {
       let r = 240;
       let orbitR = 320;
 
-      /* The flag orbit: chips revolve on a slightly inclined ellipse, each
-         oriented tangent to it. Chips on the lower arc take a 180° roll
-         (snapped at the sides, where they stand vertical) so the text
-         never inverts — the circular-seal read. Far-side chips (top arc)
-         shrink and dim as if passing behind the rim glow. */
+      /* The belt, under the hole's gravity — chips stay UPRIGHT the whole
+         revolution (no tangent rotation, nothing ever tilts): they WHIP
+         through the near (front) arc and glide across the far side
+         (Kepler pacing), stretch horizontally with their horizontal speed
+         (the tidal smear), swell as they pass in front, blur and dim as
+         they fall behind the glow. The flag leads the direction of
+         travel: when a chip turns around at the orbit's sides, the flag
+         SLIDES across the pill to the other end, and each letter it
+         passes hops aside in sequence — handled by handoff() below and
+         the .eh-chip CSS transitions. */
+      const leads = new Array<string>(chips.length).fill('');
+
+      const handoff = (chip: HTMLElement, lead: 'l' | 'r') => {
+        const letters = chip.querySelectorAll<HTMLElement>('[data-lt]');
+        const m = letters.length;
+        for (let j = 0; j < m; j++) {
+          const el = letters[j];
+          if (!el) continue;
+          /* the flag sweeps toward its new end — letters hop as it passes:
+             sweeping right, low indices first; sweeping left, high first */
+          const order = lead === 'r' ? j : m - 1 - j;
+          el.style.transitionDelay = `${Math.round((order / Math.max(1, m - 1)) * (SWEEP_MS - 180))}ms`;
+        }
+        chip.dataset.lead = lead;
+      };
+
       const placeChips = (timeSec: number) => {
         const phase = (timeSec / ORBIT_DUR) * TAU;
         const n = chips.length || 1;
         for (let i = 0; i < chips.length; i++) {
           const chip = chips[i];
           if (!chip) continue;
-          const a = phase + (i / n) * TAU;
+          const a0 = phase + (i / n) * TAU;
+          const a = a0 - KEPLER * Math.sin(a0);
           const sin = Math.sin(a);
           const cos = Math.cos(a);
           const x = orbitR * sin;
           const y = -orbitR * ORBIT_TILT * cos;
-          let rot = Math.atan2(ORBIT_TILT * sin, cos);
-          if (cos < 0) rot += Math.PI;
-          const scale = 1 - 0.075 * cos;
-          const dim = 1 - 0.45 * smooth01((cos - 0.4) / 0.45);
+          /* horizontal travel: rightward across the top (cos>0), leftward
+             back across the bottom — the flag rides the leading end */
+          const lead: 'l' | 'r' = cos > 0 ? 'r' : 'l';
+          if (leads[i] !== lead) {
+            leads[i] = lead;
+            handoff(chip, lead);
+          }
+          /* instantaneous angular speed (1−K·cosθ), normalized 0..1,
+             smeared only along x so vertical runs never distort */
+          const whip = (1 - KEPLER * cos - (1 - KEPLER)) / (2 * KEPLER);
+          const horiz = Math.abs(cos) / Math.hypot(cos, ORBIT_TILT * sin);
+          const stretch = 1 + 0.13 * whip * horiz;
+          const scale = 1 - 0.13 * cos;
+          const dim = 1 - 0.5 * smooth01((cos - 0.35) / 0.5);
+          const blur = 0.9 * smooth01((cos - 0.2) / 0.55);
           chip.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(
             2
-          )}px) translate(-50%, -50%) rotate(${rot.toFixed(4)}rad) scale(${scale.toFixed(3)})`;
+          )}px) translate(-50%, -50%) scale(${(scale * stretch).toFixed(3)}, ${scale.toFixed(3)})`;
           chip.style.opacity = dim.toFixed(3);
+          chip.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : '';
         }
       };
 
@@ -188,15 +222,9 @@ export default function Hero() {
           worldOrigin: [cx - half, cy - half],
         });
 
-        /* The orbit origin; chips are seated per-frame at even pitch. The
-           dashed rail is the same inclined ellipse the chips ride — its
-           square viewBox stretches into the orbit's squashed box. */
+        /* The orbit origin; chips are seated per-frame at even pitch. */
         orbit.style.left = `${cx.toFixed(1)}px`;
         orbit.style.top = `${cy.toFixed(1)}px`;
-        rail.style.left = `${(cx - orbitR).toFixed(1)}px`;
-        rail.style.top = `${(cy - orbitR * ORBIT_TILT).toFixed(1)}px`;
-        rail.style.width = `${(orbitR * 2).toFixed(1)}px`;
-        rail.style.height = `${(orbitR * ORBIT_TILT * 2).toFixed(1)}px`;
 
         /* Reduced motion: one composed still, chips seated mid-orbit. */
         placeChips(reduced ? 42 : gsap.ticker.time);
@@ -247,24 +275,12 @@ export default function Hero() {
           ease: 'power3.out',
         });
       }
-      gsap.from([orbit, rail], {
+      gsap.from(orbit, {
         autoAlpha: 0,
         duration: 0.9,
         delay: 0.55,
         ease: 'none',
       });
-
-      /* The chips revolve inside tick(); the dashed rail creeps the other
-         way via dash offset (the inclined ellipse cannot simply rotate). */
-      const railStroke = rail.querySelector('circle');
-      if (railStroke) {
-        gsap.to(railStroke, {
-          attr: { 'stroke-dashoffset': 48 },
-          duration: 96,
-          ease: 'none',
-          repeat: -1,
-        });
-      }
 
       return () => {
         ro.disconnect();
@@ -282,7 +298,8 @@ export default function Hero() {
       <div className='eh-hero' ref={heroRef} data-eh-mode='wide'>
         <p className='sr-only'>
           A dark event horizon sits at the center of otherwise empty ruled paper; locale chips —
-          Japanese, Spanish, Korean, Arabic, and more — orbit it like a satellite belt.
+          Japanese, Spanish, Korean, Arabic, and more — orbit it like a satellite belt, with the
+          wordmarks of Cursor, Ramp, Mintlify, Profound, Partiful and ClickHouse riding among them.
         </p>
 
         {/* The event horizon. The DOM carries only the fallback disc (WebGL
@@ -295,34 +312,30 @@ export default function Hero() {
         </div>
         <canvas className='eh-field' ref={fieldRef} aria-hidden />
 
-        {/* The locale chips orbit the horizon on a dashed rail — a slightly
-            inclined ellipse, chips tangent to it like a satellite belt. The
-            layer is inert (pointer-events: none) so it never blocks the
-            core's CTAs. preserveAspectRatio='none' squashes the circle into
-            the same ellipse the chips ride. */}
-        <svg
-          className='eh-orbit-rail'
-          viewBox='0 0 100 100'
-          preserveAspectRatio='none'
-          ref={railRef}
-          aria-hidden
-        >
-          <circle
-            cx='50'
-            cy='50'
-            r='49.4'
-            fill='none'
-            stroke='currentColor'
-            strokeDasharray='0.6 4.2'
-            vectorEffect='non-scaling-stroke'
-          />
-        </svg>
+        {/* The belt orbits the horizon on a slightly inclined ellipse —
+            chips always upright, no drawn rail, the revolution itself is
+            the line. Each pill reserves a seat at both ends; the flag
+            occupies the leading one and slides across at the turn while
+            the letters hop aside in sequence. Joining scripts ride as one
+            unbreakable span. The layer is inert (pointer-events: none). */}
         <div className='eh-orbit' ref={orbitRef} aria-hidden>
-          {FLAGS.map((entry) => (
+          {BELT.map((entry) => (
             <span className='eh-orbit-seat' key={entry.name}>
-              <span className='eh-chip'>
-                <i>{entry.flag}</i>
-                <b>{entry.name}</b>
+              <span className='eh-chip' data-lead='l'>
+                <i className='eh-chip-flag'>{entry.flag}</i>
+                <b className='eh-chip-word'>
+                  {entry.whole ? (
+                    <span data-lt lang='und'>
+                      {entry.name}
+                    </span>
+                  ) : (
+                    [...entry.name].map((ch, j) => (
+                      <span data-lt key={`${entry.name}-${j}`}>
+                        {ch === ' ' ? ' ' : ch}
+                      </span>
+                    ))
+                  )}
+                </b>
               </span>
             </span>
           ))}
@@ -345,33 +358,23 @@ export default function Hero() {
             </span>
           </h1>
           <p className='eh-sub' data-hero-in>
-            General Translation builds full-stack infrastructure for localizing apps, docs, and
-            websites.
+            The localization platform the world&rsquo;s best engineering teams run in production —
+            apps, docs, and websites, in every market you ship to.
           </p>
           <div className='eh-acts' data-hero-in>
-            <a className='tc-btn tc-btn-solid' href='#pricing'>
-              Get started
+            <a className='tc-btn tc-btn-solid' href='#contact'>
+              Get a demo
             </a>
-            <a className='tc-btn tc-btn-line' href='#frameworks'>
-              Docs
+            <a className='tc-btn tc-btn-line' href='#contact'>
+              Talk to an engineer
             </a>
           </div>
-          <button className='tc-copy' type='button' onClick={copy} data-hero-in>
-            <span>$ npx gt@latest</span>
-            <span>{copied ? 'Copied' : 'Copy'}</span>
-          </button>
-        </div>
-
-      </div>
-
-      <div className='tc-rail eh-trust-rail'>
-        <div className='tc-trust'>
-          <p className='tc-trust-lead'>Trusted by the world&rsquo;s best companies</p>
-          <div className='tc-trust-row'>
+          {/* the customers live INSIDE the hole: quiet marks in the dark */}
+          <div className='eh-core-logos' data-hero-in aria-label='Trusted by'>
             {CUSTOMERS.map((customer) => (
-              <span className='tc-trust-cell' key={customer.name}>
-                <b className={`tc-wm ${customer.mark}`}>{customer.name}</b>
-              </span>
+              <i className={`eh-corewm ${customer.mark}`} key={customer.name}>
+                {customer.name}
+              </i>
             ))}
           </div>
         </div>

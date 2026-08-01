@@ -39,10 +39,15 @@ const ALLOW = [
   'lg-card', // lens-gate's refracting cards drift each frame; parallelism is transient
 ];
 
+/* Audit at two widths: media queries re-arrange the grammar, and a junction
+   clean at 1440 can double or vanish at narrower layouts. */
+const WIDTHS = [1440, 1280];
+
 const browser = await chromium.launch({ executablePath: EXEC, headless: true });
-const ctx = await browser.newContext({ viewport: { width: 1440, height: 4200 } });
-if (theme === 'dark')
-  await ctx.addInitScript(() => localStorage.setItem('gt-theme', 'dark'));
+
+async function auditAt(width) {
+const ctx = await browser.newContext({ viewport: { width, height: 4200 } });
+await ctx.addInitScript((t) => localStorage.setItem('gt-theme', t), theme);
 const page = await ctx.newPage();
 await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
 await page.evaluate(() => document.fonts.ready);
@@ -123,14 +128,16 @@ const audit = await page.evaluate((ALLOW) => {
     }
   };
   /* Elements under a 3D transform (perspective stages, rotateY conveyors)
-     have bounding boxes that are projections, not page lines — skip them. */
-  const tf3dMemo = new Map();
-  const in3d = (el) => {
+     have bounding boxes that are projections, not page lines — and elements
+     under a mask-image fade in ways the geometry can't see. Skip both. */
+  const skipMemo = new Map();
+  const inSkipped = (el) => {
     for (let n = el; n && n !== document.body; n = n.parentElement) {
-      let v = tf3dMemo.get(n);
+      let v = skipMemo.get(n);
       if (v === undefined) {
-        v = getComputedStyle(n).transform.startsWith('matrix3d');
-        tf3dMemo.set(n, v);
+        const cs = getComputedStyle(n);
+        v = cs.transform.startsWith('matrix3d') || (cs.maskImage && cs.maskImage !== 'none') || (cs.webkitMaskImage && cs.webkitMaskImage !== 'none');
+        skipMemo.set(n, v);
       }
       if (v) return true;
     }
@@ -144,7 +151,7 @@ const audit = await page.evaluate((ALLOW) => {
     const cs = getComputedStyle(el);
     if (cs.display === 'none' || cs.visibility === 'hidden') return;
     if (parseFloat(cs.opacity) <= 0.05) return; // hover-woken devices rest invisible
-    if (in3d(el)) return;
+    if (inSkipped(el)) return;
     const elIdx = els.push(el) - 1;
     pushBorders(rect, cs, owner, elIdx);
     // thin filled boxes are lines too
@@ -293,30 +300,47 @@ const audit = await page.evaluate((ALLOW) => {
     }
   }
 
-  // 2 · missing seams at section boundaries
-  const sections = [...document.querySelectorAll('.tc-rail > section, [class*="-root"] > section')];
-  sections.sort((x, y) => x.getBoundingClientRect().top - y.getBoundingClientRect().top);
+  // 2 · missing seams at section boundaries AND adjacent-row boundaries —
+  // every junction between stacked blocks must carry one spanning line
   const missing = [];
-  for (let i = 0; i + 1 < sections.length; i++) {
-    const bottom = sections[i].getBoundingClientRect().bottom;
-    const colW = sections[i].getBoundingClientRect().width;
+  const needSeam = (el, next, kind) => {
+    const r = el.getBoundingClientRect();
+    if (r.height < 8 || r.width < 200) return;
     const hit = segs.some(
-      (s) => s.orient === 'h' && Math.abs(s.pos - bottom) <= 3 && s.to - s.from >= Math.min(colW, 1100) * 0.5
+      (s) => s.orient === 'h' && Math.abs(s.pos - r.bottom) <= 3 && s.to - s.from >= Math.min(r.width, 1100) * 0.5
     );
     if (!hit)
       missing.push({
-        between: `${sections[i].id || label(sections[i])} → ${sections[i + 1].id || label(sections[i + 1])}`,
-        at: Math.round(bottom),
+        kind,
+        between: `${el.id || label(el)} → ${next.id || label(next)}`,
+        at: Math.round(r.bottom),
       });
+  };
+  const sections = [...document.querySelectorAll('.tc-rail > section, [class*="-root"] > section')];
+  sections.sort((x, y) => x.getBoundingClientRect().top - y.getBoundingClientRect().top);
+  for (let i = 0; i + 1 < sections.length; i++) needSeam(sections[i], sections[i + 1], 'section');
+  for (const row of document.querySelectorAll('.tc-row')) {
+    const next = row.nextElementSibling;
+    if (next && (next.matches('.tc-row') || next.matches('.tc-hatch'))) needSeam(row, next, 'row');
   }
 
   return { total: segs.length, doubles: doubles.slice(0, 40), missing, selfStacks: selfStacks.slice(0, 24) };
 }, ALLOW);
 
-console.log(JSON.stringify(audit, null, 1));
+await ctx.close();
+return audit;
+}
+
+let failed = false;
+const out = {};
+for (const width of WIDTHS) {
+  const audit = await auditAt(width);
+  out[width] = audit;
+  /* chip-scale self-stacks (short edges) are reported but do not gate — the
+     structural ones (long seams reading darker than their neighbours) do. */
+  const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
+  if (audit.doubles.length || audit.missing.length || structuralStacks.length) failed = true;
+}
+console.log(JSON.stringify(out, null, 1));
 await browser.close();
-/* chip-scale self-stacks (short edges) are reported but do not gate — the
-   structural ones (long seams reading darker than their neighbours) do. */
-const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
-if (!reportOnly && (audit.doubles.length || audit.missing.length || structuralStacks.length))
-  process.exit(1);
+if (!reportOnly && failed) process.exit(1);

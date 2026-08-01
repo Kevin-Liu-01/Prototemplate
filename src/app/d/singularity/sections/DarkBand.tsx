@@ -12,6 +12,8 @@ import PrismaticField from '@/components/shared/PrismaticField';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import TcStackIso, { STACK_LAYERS } from '@/app/d/toolchain/diagrams/tc-stack-iso';
 
+import GlyphRain from './GlyphRain';
+
 import './darkband-v3.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -292,6 +294,8 @@ export default function DarkBand() {
 
   return (
     <section className='tc-band tcb' id='toolchain' ref={root}>
+      {/* the same rain that falls in the contact bay, quieter */}
+      <GlyphRain className='tcb-rain' intensity={0.55} />
       <div className='tcb-in'>
         <div className='tcb-head' data-cell>
           <h2>Everything you need, in one toolchain.</h2>

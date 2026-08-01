@@ -150,9 +150,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'singularity',
     name: 'Singularity',
     concept:
-      'The event horizon alone on open paper — no component walls, just the lensing gate bending the page into a photon ring while the locale belt orbits it.',
+      'The enterprise gate: the lensing horizon alone on open paper, customers riding the locale belt, and a contact bay beneath it where glyphs rain through the dark.',
     tone: 'light',
-    signature: 'Nothing competes with the mass: rules bend in, locales orbit.',
+    signature: 'Nothing competes with the mass: customers and locales orbit it.',
   },
 ];
 
