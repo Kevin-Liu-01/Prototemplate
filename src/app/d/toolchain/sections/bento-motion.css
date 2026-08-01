@@ -425,7 +425,10 @@
 
 .toolchain-root .tcm-ruledbox {
   position: relative;
-  margin-top: 20px;
+  /* the box's rules sit one gutter OUTSIDE the text column, so the list
+     inside shares the head's exact left edge — same alignment grammar as
+     the config cell's mount */
+  margin: 20px -22px 0;
   padding: 20px 22px 18px;
 }
 
@@ -461,4 +464,24 @@
   bottom: -100vh;
   border-left: 1px solid var(--tc-hair);
   border-right: 1px solid var(--tc-hair);
+}
+
+/* the config panel steps down from its head exactly like the bleed
+   neighbour's art does (12px), so with eq-heads giving both cells the
+   same head height, their first rules share one drafting line at every
+   viewport width — no per-cell pixel compensation */
+.toolchain-root .tcm-ruled-panel .tc-code-run {
+  margin-top: 12px;
+}
+
+/* the panel's head carries the card's top padding INSIDE itself, exactly
+   like tc-bleed-head does — both heads then have identical boxes, so
+   eq-heads equalizes them truly and the 12px step lands both cells'
+   first rules on one drafting line at every width */
+.toolchain-root .tc-cell.is-framed.tcm-ruled-panel > .tc-card {
+  padding-top: 0;
+}
+
+.toolchain-root .tcm-ruled-panel .shell-cell-head {
+  padding-top: var(--tc-card-pad);
 }

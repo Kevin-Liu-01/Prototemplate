@@ -57,6 +57,7 @@ const audit = await page.evaluate((ALLOW) => {
   const segs = [];
   const els = [];
   const selfStacks = [];
+  const invisibles = [];
   const label = (el) =>
     (typeof el.className === 'string' ? el.className : el.tagName)
       .split(' ')
@@ -163,8 +164,26 @@ const audit = await page.evaluate((ALLOW) => {
     }
     /* Exposed-ground strips: a big box with visible bg and a 1-2px padding
        reveal draws a LINE along that edge (the framed-row perimeter). It is
-       a line like any other and must obey the one-stroke law. */
+       a line like any other and must obey the one-stroke law — AND it must
+       actually contrast with the page: an opaque strip within a few RGB
+       steps of the root surface is a seam that exists geometrically but
+       cannot be seen (the panel-on-ink bug class). */
     if (visible(cs.backgroundColor) && rect.width > 24 && rect.height > 24) {
+      const bgA2 = alphaOf(cs.backgroundColor);
+      if (bgA2 >= 0.95) {
+        const own = cs.backgroundColor.match(/\d+/g)?.map(Number) ?? [];
+        const rootBg = getComputedStyle(document.body).backgroundColor.match(/\d+/g)?.map(Number) ?? [];
+        const hasStrip = ['Top', 'Bottom', 'Left', 'Right'].some((side) => {
+          const p = parseFloat(cs[`padding${side}`]);
+          const bw = parseFloat(cs[`border${side}Width`]) || 0;
+          return p >= 1 && p <= 2.5 && bw < 1;
+        });
+        if (
+          hasStrip && own.length >= 3 && rootBg.length >= 3 &&
+          Math.abs(own[0] - rootBg[0]) + Math.abs(own[1] - rootBg[1]) + Math.abs(own[2] - rootBg[2]) < 45
+        )
+          invisibles.push({ owner, at: Math.round(rect.bottom), fill: cs.backgroundColor });
+      }
       const pads = [
         ['Top', 'h', (p) => rect.top + p / 2, rect.left, rect.right],
         ['Bottom', 'h', (p) => rect.bottom - p / 2, rect.left, rect.right],
@@ -319,12 +338,19 @@ const audit = await page.evaluate((ALLOW) => {
   const sections = [...document.querySelectorAll('.tc-rail > section, [class*="-root"] > section')];
   sections.sort((x, y) => x.getBoundingClientRect().top - y.getBoundingClientRect().top);
   for (let i = 0; i + 1 < sections.length; i++) needSeam(sections[i], sections[i + 1], 'section');
-  for (const row of document.querySelectorAll('.tc-row')) {
-    const next = row.nextElementSibling;
-    if (next && (next.matches('.tc-row') || next.matches('.tc-hatch'))) needSeam(row, next, 'row');
+  const BLOCKS = '.tc-row, .tc-hatch, .tc-band, .tc-delivery-band';
+  for (const block of document.querySelectorAll(BLOCKS)) {
+    const next = block.nextElementSibling;
+    if (next && next.matches(BLOCKS)) needSeam(block, next, 'row');
   }
 
-  return { total: segs.length, doubles: doubles.slice(0, 40), missing, selfStacks: selfStacks.slice(0, 24) };
+  return {
+    total: segs.length,
+    doubles: doubles.slice(0, 40),
+    missing,
+    selfStacks: selfStacks.slice(0, 24),
+    invisibles: invisibles.slice(0, 12),
+  };
 }, ALLOW);
 
 await ctx.close();
@@ -339,7 +365,13 @@ for (const width of WIDTHS) {
   /* chip-scale self-stacks (short edges) are reported but do not gate — the
      structural ones (long seams reading darker than their neighbours) do. */
   const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
-  if (audit.doubles.length || audit.missing.length || structuralStacks.length) failed = true;
+  if (
+    audit.doubles.length ||
+    audit.missing.length ||
+    structuralStacks.length ||
+    audit.invisibles.length
+  )
+    failed = true;
 }
 console.log(JSON.stringify(out, null, 1));
 await browser.close();

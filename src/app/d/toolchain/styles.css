@@ -4278,14 +4278,11 @@
   pointer-events: none;
 }
 
-/* The split row's mat is the one broad --tc-hair expanse on the page — as a
-   1px seam the plum remap is invisible, but here it carries whole text
-   cells, and body ink goes muddy on it. In the dark the row joins the
-   panel family instead, and its unframed text steps up one ink level. */
-[data-theme='dark'] .toolchain-root .tc-row.is-split {
-  background: var(--tc-panel);
-}
-
+/* (The old dark override that moved this row onto the panel family is
+   gone: the Code cell paints its own card surface now, so the hair ground
+   only ever shows as the 1px strips, gaps and corner notches — and those
+   MUST be hair, or the row's seams vanish ink-on-ink. The unframed text
+   still steps up one ink level.) */
 [data-theme='dark'] .toolchain-root .tc-row.is-split > .tc-cell:not(.is-framed) > p,
 [data-theme='dark'] .toolchain-root .tc-row.is-split > .tc-cell:not(.is-framed) .tc-list li {
   color: rgba(255, 255, 255, 0.78);

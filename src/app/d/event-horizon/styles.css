@@ -4831,3 +4831,9 @@
 .eventhorizon-root .tc-sec:has(> .tc-hero) {
   background-clip: padding-box !important;
 }
+
+/* the delivery band rules its own top edge — the row above it draws
+   border seams only between rows, and the band is not a row */
+.eventhorizon-root .tc-delivery-band {
+  border-top: 1px solid var(--tc-hair);
+}

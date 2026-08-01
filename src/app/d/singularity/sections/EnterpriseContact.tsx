@@ -62,13 +62,8 @@ export default function EnterpriseContact() {
       <GlyphRain className='sgc-rain' />
       <div className='sgc-in'>
         <div className='sgc-head'>
-          <h2 data-sgc-in>Bring your product to every market.</h2>
-          <p data-sgc-in>
-            Talk to an engineer — not a sales deck. We&rsquo;ll walk your stack, your locales, and
-            your review process, and leave you with a working plan.
-          </p>
-          {/* the condensation field: the swarm prints "language" in script
-              after script — the ink pinned white for the band's dark */}
+          {/* the condensation field leads the column: the swarm prints
+              "language" in script after script, ink pinned white */}
           <div className='sgc-view' data-sgc-in>
             <canvas
               className='sgc-view-canvas'
@@ -77,11 +72,30 @@ export default function EnterpriseContact() {
               aria-hidden
             />
           </div>
+          <h2 data-sgc-in>Bring your product to every market.</h2>
+          <p data-sgc-in>
+            Talk to an engineer — not a sales deck. We&rsquo;ll walk your stack, your locales, and
+            your review process, and leave you with a working plan.
+          </p>
           <ul className='sgc-points' data-sgc-in>
             <li>Forward-deployed engineers on your integration</li>
             <li>Custom workflows for any format or framework</li>
             <li>Security review and procurement, handled</li>
           </ul>
+          {/* PLACEHOLDER QUOTE — swap for Andrew Milich's real words before
+              this copy ships anywhere */}
+          <figure className='sgc-quote' data-sgc-in>
+            <blockquote>
+              <p>
+                We shipped our whole product in new languages faster than any launch I&rsquo;ve
+                run — the review workflow is the part nobody else gets right.
+              </p>
+            </blockquote>
+            <figcaption>
+              <b>Andrew Milich</b>
+              <span>Notion</span>
+            </figcaption>
+          </figure>
         </div>
 
         <form className='sgc-form' data-sgc-in onSubmit={(e) => e.preventDefault()}>

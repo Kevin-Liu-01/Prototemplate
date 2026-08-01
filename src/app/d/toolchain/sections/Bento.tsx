@@ -491,14 +491,14 @@ export default function Bento() {
 
         {/* founder round: the COPY-chip code panel is ruled onto the sheet —
             square, 1px, its frame rules run to the cell's edges (bento-motion.css) */}
-        {/* the bleed neighbour carries its card padding INSIDE its head, this
-            cell outside — 10px off the head height compensates, so the config
-            panel's first rule sits exactly on the Translation plate's line */}
+        {/* Both cells now reach their first rule the same way — equal head
+            heights from the row's eq-heads, then the same 12px step down
+            (bento-motion.css) — so the config panel's rule sits on the
+            Translation plate's line at EVERY width, not just one. */}
         <BentoCell
           cell='is-panel is-framed tcm-ruled-panel'
           title='One config file'
           sub='Locales in, output path out. The CLI and every SDK read the same file.'
-          style={{ '--shell-head-h': '102px' } as React.CSSProperties}
         >
           {/* One dark surface, two artifacts: the config, then the run it
               produces — `[locale].json` above resolving to five real files

@@ -13,7 +13,6 @@ gsap.registerPlugin(useGSAP);
 const CUSTOMERS: readonly { name: string; mark: string }[] = [
   { name: 'Cursor', mark: 'is-cursor' },
   { name: 'Ramp', mark: 'is-ramp' },
-  { name: 'Mintlify', mark: 'is-mintlify' },
   { name: 'Profound', mark: 'is-profound' },
   { name: 'Partiful', mark: 'is-partiful' },
   { name: 'ClickHouse', mark: 'is-clickhouse' },
@@ -45,13 +44,6 @@ const BELT: readonly { flag: string; name: string; whole?: boolean }[] = [
   { flag: '🇹🇷', name: 'Türkçe' },
 ];
 
-/** How far a letter steps aside for the flag, px — the flag's seat width. */
-const FLAG_SEAT = 20;
-/** Per-letter stagger of the hop as the flag sweeps past, ms. */
-const SWEEP_STEP = 34;
-/** The flag's own travel time across the pill, ms. */
-const SWEEP_MS = 620;
-
 /** Flag-orbit radius as a multiple of the horizon radius (wide mode). */
 const ORBIT_K = 1.36;
 /** Seconds per full revolution of the flag orbit. */
@@ -61,6 +53,10 @@ const ORBIT_TILT = 0.94;
 /** Gravity pacing: chips whip through the near arc (1+K× speed) and glide
     across the far side (1−K×) — dθ/dt = 1 − K·cos θ. */
 const KEPLER = 0.22;
+/** Seconds a glyph takes to roll over as it crosses the orbit's side. */
+const ROLL_S = 0.5;
+/** Arc gap between the word's leading edge and its flag, px. */
+const FLAG_PAD = 9;
 
 const TAU = Math.PI * 2;
 
@@ -119,71 +115,118 @@ export default function Hero() {
       /* The flag chips, driven directly each frame — no wrapper rotation, no
          counter-rotation: each chip is seated on the (slightly inclined)
          orbit and oriented TANGENT to it, satellites riding the ring. */
-      const chips = Array.from(orbit.querySelectorAll<HTMLElement>('.eh-chip'));
+      const chips = Array.from(orbit.querySelectorAll<HTMLElement>('.eh-word'));
 
       let wide = true;
       let cy = 0;
       let r = 240;
       let orbitR = 320;
 
-      /* The belt, under the hole's gravity — chips stay UPRIGHT the whole
-         revolution (no tangent rotation, nothing ever tilts): they WHIP
-         through the near (front) arc and glide across the far side
-         (Kepler pacing), stretch horizontally with their horizontal speed
-         (the tidal smear), swell as they pass in front, blur and dim as
-         they fall behind the glow. The flag leads the direction of
-         travel: when a chip turns around at the orbit's sides, the flag
-         SLIDES across the pill to the other end, and each letter it
-         passes hops aside in sequence — handled by handoff() below and
-         the .eh-chip CSS transitions. */
-      const leads = new Array<string>(chips.length).fill('');
-
-      const handoff = (chip: HTMLElement, lead: 'l' | 'r') => {
-        const letters = chip.querySelectorAll<HTMLElement>('[data-lt]');
-        const m = letters.length;
-        for (let j = 0; j < m; j++) {
-          const el = letters[j];
-          if (!el) continue;
-          /* the flag sweeps toward its new end — letters hop as it passes:
-             sweeping right, low indices first; sweeping left, high first */
-          const order = lead === 'r' ? j : m - 1 - j;
-          el.style.transitionDelay = `${Math.round((order / Math.max(1, m - 1)) * (SWEEP_MS - 180))}ms`;
-        }
-        chip.dataset.lead = lead;
+      /* The belt, WRAPPED around the horizon — no pills, no tabs: each
+         word's glyphs sit individually ON the orbit's arc, rotated to its
+         local tangent, so the words themselves curve with the circle. On
+         the far (top) arc a word reads along the outside; as each glyph
+         crosses the orbit's side it ROLLS over (blended, ~0.5s) into the
+         near arc's orientation, so text never hangs upside down and the
+         roll ripples through the word glyph by glyph. The flag always
+         rides the leading (+θ) end of its word: because the glyph order
+         mirrors across the sides, the flag visibly slides from one end of
+         the word to the other at every turn. Kepler pacing, depth swell,
+         far-side dim and blur act on the whole word. */
+      type Glyph = { el: HTMLElement; off: number; blend: number; delay: number };
+      type Word = {
+        root: HTMLElement;
+        glyphs: Glyph[];
+        flag: Glyph | null;
+        side: 0 | 1 | -1;
       };
 
+      const words: Word[] = chips.map((root) => {
+        const parts = Array.from(root.querySelectorAll<HTMLElement>('[data-lt]'));
+        const letters = parts.filter((p) => !p.classList.contains('eh-wflag'));
+        const flagEl = parts.find((p) => p.classList.contains('eh-wflag'));
+        return {
+          root,
+          glyphs: letters.map((el) => ({ el, off: 0, blend: 0, delay: 0 })),
+          flag: flagEl ? { el: flagEl, off: 0, blend: 0, delay: 0 } : null,
+          side: -1,
+        };
+      });
+
+      /* offsetWidth is transform-free, so this works before AND after the
+         glyphs go absolute — and again when the webfont lands. */
+      const buildOffsets = () => {
+        for (const word of words) {
+          const widths = word.glyphs.map((g) => g.el.offsetWidth || 7);
+          const total = widths.reduce((s, v) => s + v, 0);
+          let cum = 0;
+          for (const [j, g] of word.glyphs.entries()) {
+            const w = widths[j] ?? 7;
+            g.off = cum + w / 2 - total / 2;
+            cum += w;
+          }
+          if (word.flag) word.flag.off = total / 2 + FLAG_PAD + 8;
+        }
+      };
+      buildOffsets();
+      orbit.dataset.live = '1';
+      void document.fonts.ready.then(buildOffsets);
+
+      const placeGlyph = (g: Glyph, a: number, target: 0 | 1, scale: number, dt: number, lead = false) => {
+        if (g.delay > 0) g.delay -= dt;
+        else g.blend = clamp01(g.blend + (target > g.blend ? dt / ROLL_S : -dt / ROLL_S));
+        const roll = smooth01(g.blend);
+        const mNow = 1 - 2 * roll;
+        const phi = a + ((lead ? g.off : g.off * mNow) / orbitR);
+        const sin = Math.sin(phi);
+        const cos = Math.cos(phi);
+        const x = orbitR * sin;
+        const y = -orbitR * ORBIT_TILT * cos;
+        /* the flag never spins — it rides screen-upright like a satellite
+           while the word's glyphs morph past it; only TEXT wraps the arc */
+        const rot = lead ? 0 : Math.atan2(ORBIT_TILT * sin, cos) + Math.PI * roll;
+        g.el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(
+          2
+        )}px) translate(-50%, -50%) rotate(${rot.toFixed(4)}rad) scale(${scale.toFixed(3)})`;
+      };
+
+      let lastT = 0;
       const placeChips = (timeSec: number) => {
+        const dt = Math.min(Math.max(timeSec - lastT, 0), 0.06);
+        lastT = timeSec;
         const phase = (timeSec / ORBIT_DUR) * TAU;
-        const n = chips.length || 1;
-        for (let i = 0; i < chips.length; i++) {
-          const chip = chips[i];
-          if (!chip) continue;
+        const n = words.length || 1;
+        for (let i = 0; i < words.length; i++) {
+          const word = words[i];
+          if (!word) continue;
           const a0 = phase + (i / n) * TAU;
           const a = a0 - KEPLER * Math.sin(a0);
-          const sin = Math.sin(a);
           const cos = Math.cos(a);
-          const x = orbitR * sin;
-          const y = -orbitR * ORBIT_TILT * cos;
-          /* horizontal travel: rightward across the top (cos>0), leftward
-             back across the bottom — the flag rides the leading end */
-          const lead: 'l' | 'r' = cos > 0 ? 'r' : 'l';
-          if (leads[i] !== lead) {
-            leads[i] = lead;
-            handoff(chip, lead);
+          /* one coordinated ripple per word: when the word's CENTER crosses
+             the orbit's side, every glyph rolls over in sequence from the
+             leading end — a fast legible wave instead of a long scramble */
+          const side: 0 | 1 = cos < 0 ? 1 : 0;
+          if (word.side !== side) {
+            const first = word.side === -1;
+            word.side = side;
+            const order = [...word.glyphs].sort(
+              (p, q) => (q.off * (side ? 1 : -1)) - (p.off * (side ? 1 : -1))
+            );
+            for (const [rank, g] of order.entries())
+              g.delay = first ? 0 : rank * 0.055;
+            if (word.flag) word.flag.delay = 0;
+            if (first) {
+              for (const g of word.glyphs) g.blend = side;
+              if (word.flag) word.flag.blend = side;
+            }
           }
-          /* instantaneous angular speed (1−K·cosθ), normalized 0..1,
-             smeared only along x so vertical runs never distort */
-          const whip = (1 - KEPLER * cos - (1 - KEPLER)) / (2 * KEPLER);
-          const horiz = Math.abs(cos) / Math.hypot(cos, ORBIT_TILT * sin);
-          const stretch = 1 + 0.13 * whip * horiz;
           const scale = 1 - 0.13 * cos;
           const dim = 1 - 0.5 * smooth01((cos - 0.35) / 0.5);
           const blur = 0.9 * smooth01((cos - 0.2) / 0.55);
-          chip.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(
-            2
-          )}px) translate(-50%, -50%) scale(${(scale * stretch).toFixed(3)}, ${scale.toFixed(3)})`;
-          chip.style.opacity = dim.toFixed(3);
-          chip.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : '';
+          for (const g of word.glyphs) placeGlyph(g, a, side, scale, dt);
+          if (word.flag) placeGlyph(word.flag, a, side, scale, dt, true);
+          word.root.style.opacity = dim.toFixed(3);
+          word.root.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : '';
         }
       };
 
@@ -227,7 +270,12 @@ export default function Hero() {
         orbit.style.top = `${cy.toFixed(1)}px`;
 
         /* Reduced motion: one composed still, chips seated mid-orbit. */
-        placeChips(reduced ? 42 : gsap.ticker.time);
+        if (reduced) {
+          /* settle the per-glyph rolls so the still shows resolved text */
+          for (let k = 0; k <= 12; k++) placeChips(42 + k * 0.06);
+        } else {
+          placeChips(gsap.ticker.time);
+        }
       };
 
       measure();
@@ -297,9 +345,10 @@ export default function Hero() {
     <section className='tc-sec' id='top' ref={root}>
       <div className='eh-hero' ref={heroRef} data-eh-mode='wide'>
         <p className='sr-only'>
-          A dark event horizon sits at the center of otherwise empty ruled paper; locale chips —
-          Japanese, Spanish, Korean, Arabic, and more — orbit it like a satellite belt, with the
-          wordmarks of Cursor, Ramp, Mintlify, Profound, Partiful and ClickHouse riding among them.
+          A dark event horizon sits at the center of otherwise empty ruled paper; the names of
+          languages — Japanese, Spanish, Korean, Arabic, and more — wrap around it like a satellite
+          belt, and the wordmarks of Cursor, Ramp, Profound, Partiful and ClickHouse sit inside the
+          dark core.
         </p>
 
         {/* The event horizon. The DOM carries only the fallback disc (WebGL
@@ -312,31 +361,27 @@ export default function Hero() {
         </div>
         <canvas className='eh-field' ref={fieldRef} aria-hidden />
 
-        {/* The belt orbits the horizon on a slightly inclined ellipse —
-            chips always upright, no drawn rail, the revolution itself is
-            the line. Each pill reserves a seat at both ends; the flag
-            occupies the leading one and slides across at the turn while
-            the letters hop aside in sequence. Joining scripts ride as one
-            unbreakable span. The layer is inert (pointer-events: none). */}
+        {/* The belt WRAPS the horizon — no pills, no tabs: each word's
+            glyphs sit individually on the orbit's arc, rotated to the
+            local tangent, rolling over one by one at the sides so text
+            never inverts. The flag always rides the word's leading end.
+            Joining scripts (Arabic, Hebrew, Devanagari, Thai) travel as
+            one unbreakable glyph. The layer is inert. */}
         <div className='eh-orbit' ref={orbitRef} aria-hidden>
           {BELT.map((entry) => (
-            <span className='eh-orbit-seat' key={entry.name}>
-              <span className='eh-chip' data-lead='l'>
-                <i className='eh-chip-flag'>{entry.flag}</i>
-                <b className='eh-chip-word'>
-                  {entry.whole ? (
-                    <span data-lt lang='und'>
-                      {entry.name}
-                    </span>
-                  ) : (
-                    [...entry.name].map((ch, j) => (
-                      <span data-lt key={`${entry.name}-${j}`}>
-                        {ch === ' ' ? ' ' : ch}
-                      </span>
-                    ))
-                  )}
-                </b>
-              </span>
+            <span className='eh-word' key={entry.name}>
+              <i className='eh-wflag' data-lt>
+                {entry.flag}
+              </i>
+              {entry.whole ? (
+                <b data-lt>{entry.name}</b>
+              ) : (
+                [...entry.name].map((ch, j) => (
+                  <b data-lt key={`${entry.name}-${j}`}>
+                    {ch === ' ' ? ' ' : ch}
+                  </b>
+                ))
+              )}
             </span>
           ))}
         </div>
@@ -352,10 +397,8 @@ export default function Hero() {
             height={34}
           />
           <h1 data-hero-in>
-            <span>Launch in</span>
-            <span>
-              <em>every</em> language.
-            </span>
+            <span>Full-stack localization</span>
+            <span>for enterprises.</span>
           </h1>
           <p className='eh-sub' data-hero-in>
             The localization platform the world&rsquo;s best engineering teams run in production —
