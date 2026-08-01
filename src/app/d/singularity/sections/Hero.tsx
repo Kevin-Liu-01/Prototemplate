@@ -165,31 +165,33 @@ export default function Hero() {
             g.off = cum + w / 2 - total / 2;
             cum += w;
           }
-          if (word.flag) word.flag.off = total / 2 + FLAG_PAD + 8;
+          /* the flag is the word's first glyph: it sits one seat BEFORE the
+             first letter and mirrors with them, so it is always to the left
+             of the text in the text's own reading frame */
+          if (word.flag) word.flag.off = -(total / 2 + FLAG_PAD + 8);
         }
       };
       buildOffsets();
       orbit.dataset.live = '1';
       void document.fonts.ready.then(buildOffsets);
 
-      const placeGlyph = (g: Glyph, a: number, target: 0 | 1, scale: number, dt: number, lead = false) => {
+      const placeGlyph = (g: Glyph, a: number, target: 0 | 1, scale: number, dt: number) => {
         if (g.delay > 0) g.delay -= dt;
         else g.blend = clamp01(g.blend + (target > g.blend ? dt / ROLL_S : -dt / ROLL_S));
         const roll = smooth01(g.blend);
         const mNow = 1 - 2 * roll;
-        /* the flag pins to the word's screen-LEFT end on both arcs (the
-           mirror of the letters' factor), sliding through the word at the
-           crossing; letters mirror so reading order stays left-to-right */
-        const factor = lead ? -mNow : mNow;
-        const phi = a + ((g.off * factor) / orbitR);
+        /* every glyph — flag included — mirrors with the same factor, so
+           the flag (seated before the first letter) is always left of the
+           text IN THE TEXT'S OWN FRAME, top arc or bottom, and travels
+           across the characters at each side crossing */
+        const phi = a + ((g.off * mNow) / orbitR);
         const sin = Math.sin(phi);
         const cos = Math.cos(phi);
         const x = orbitR * sin;
         const y = -orbitR * ORBIT_TILT * cos;
-        /* the flag never spins — it rides screen-upright and horizontal
-           like a satellite while the text morphs past it; only TEXT
-           wraps the arc */
-        const rot = lead ? 0 : Math.atan2(ORBIT_TILT * sin, cos) + Math.PI * roll;
+        /* everything faces the way the text faces: local tangent, plus the
+           upright roll as it crosses the sides */
+        const rot = Math.atan2(ORBIT_TILT * sin, cos) + Math.PI * roll;
         g.el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(
           2
         )}px) translate(-50%, -50%) rotate(${rot.toFixed(4)}rad) scale(${scale.toFixed(3)})`;
@@ -229,7 +231,7 @@ export default function Hero() {
           const dim = 1 - 0.5 * smooth01((cos - 0.35) / 0.5);
           const blur = 0.9 * smooth01((cos - 0.2) / 0.55);
           for (const g of word.glyphs) placeGlyph(g, a, side, scale, dt);
-          if (word.flag) placeGlyph(word.flag, a, side, scale, dt, true);
+          if (word.flag) placeGlyph(word.flag, a, side, scale, dt);
           word.root.style.opacity = dim.toFixed(3);
           word.root.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : '';
         }
