@@ -66,6 +66,34 @@ const smooth01 = (t: number) => {
   return c * c * (3 - 2 * c);
 };
 
+/** A CSS cubic-bezier(x1, y1, x2, y2) as a solvable easing function —
+    Newton's method on the x polynomial, then evaluate y. */
+const cubicBezier = (p1x: number, p1y: number, p2x: number, p2y: number) => {
+  const cx = 3 * p1x;
+  const bx = 3 * (p2x - p1x) - cx;
+  const ax = 1 - cx - bx;
+  const cy = 3 * p1y;
+  const by = 3 * (p2y - p1y) - cy;
+  const ay = 1 - cy - by;
+  const sampleX = (t: number) => ((ax * t + bx) * t + cx) * t;
+  const sampleDX = (t: number) => (3 * ax * t + 2 * bx) * t + cx;
+  return (x: number) => {
+    const c = clamp01(x);
+    let t = c;
+    for (let i = 0; i < 5; i++) {
+      const dx = sampleX(t) - c;
+      const d = sampleDX(t);
+      if (Math.abs(dx) < 1e-4 || Math.abs(d) < 1e-6) break;
+      t -= dx / d;
+    }
+    t = clamp01(t);
+    return ((ay * t + by) * t + cy) * t;
+  };
+};
+
+/** The house ease — the roll and the flag's travel ride this curve. */
+const ROLL_EASE = cubicBezier(0.65, 0.05, 0.35, 1);
+
 /**
  * The enterprise gate. The event horizon alone on open paper — the lensing
  * shader (lib/horizon-field.ts) wraps accretion light into a photon ring
@@ -178,7 +206,7 @@ export default function Hero() {
       const placeGlyph = (g: Glyph, a: number, target: 0 | 1, scale: number, dt: number) => {
         if (g.delay > 0) g.delay -= dt;
         else g.blend = clamp01(g.blend + (target > g.blend ? dt / ROLL_S : -dt / ROLL_S));
-        const roll = smooth01(g.blend);
+        const roll = ROLL_EASE(g.blend);
         const mNow = 1 - 2 * roll;
         /* every glyph — flag included — mirrors with the same factor, so
            the flag (seated before the first letter) is always left of the
