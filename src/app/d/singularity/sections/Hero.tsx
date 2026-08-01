@@ -519,17 +519,9 @@ export default function Hero() {
             <span>Full-stack localization</span>
             <span>for enterprises.</span>
           </h1>
-          <p className='eh-sub' data-hero-in>
-            <span>The localization platform the world&rsquo;s best</span>
-            <span>engineering teams run in production.</span>
-            <span>Apps, docs, and websites, in every market you ship to.</span>
-          </p>
           <div className='eh-acts' data-hero-in>
             <a className='tc-btn tc-btn-solid' href='#contact'>
-              Get a demo
-            </a>
-            <a className='tc-btn tc-btn-line' href='#contact'>
-              Talk to an engineer
+              Talk to Sales
             </a>
           </div>
           {/* the customers live INSIDE the hole: quiet marks in the dark */}
