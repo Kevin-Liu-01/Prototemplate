@@ -254,11 +254,17 @@ export default function PresenterApp() {
         <Scoreboard />
 
         <div className='pr-hud'>
-          <Link href='/' className='pr-hud-brand' aria-label='Back to the index'>
+          {/* brand and author step out with the rail for the prototypes
+              run — the previews get the whole frame */}
+          <Link
+            href='/'
+            className={`pr-hud-brand${railHidden ? ' is-hidden' : ''}`}
+            aria-label='Back to the index'
+          >
             <img src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' />
             <span>Redesign</span>
           </Link>
-          <div className='pr-hud-author'>Kevin Liu</div>
+          <div className={`pr-hud-author${railHidden ? ' is-hidden' : ''}`}>Kevin Liu</div>
           <nav
             className={`pr-hud-rail${active === 0 ? ' no-scrim' : ''}${railHidden ? ' is-hidden' : ''}`}
             aria-label='Slides'

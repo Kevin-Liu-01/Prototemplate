@@ -66,3 +66,51 @@ html::-webkit-scrollbar-thumb {
     scroll-behavior: auto !important;
   }
 }
+
+/* the direction pages' floating back-to-index button, top-left. House
+   grammar: hairline border, card face, no shadow; inverts on hover. */
+.dd-back {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-titanium, #8a8f98);
+  border-radius: 8px;
+  background: var(--color-paper, #ffffff);
+  background-clip: padding-box;
+  color: #070707;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.dd-back svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dd-back:hover {
+  background: #070707;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .dd-back {
+  background: #070707;
+  color: #ffffff;
+  border-color: rgba(138, 143, 152, 0.5);
+}
+
+[data-theme='dark'] .dd-back:hover {
+  background: #ffffff;
+  color: #070707;
+}

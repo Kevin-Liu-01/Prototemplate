@@ -379,6 +379,9 @@
 .toolchain-root .tcpq-quote {
   position: relative;
   margin: clamp(30px, 4vw, 48px) 0 0;
+  /* the text steps DOWN out of the oversized mark's footprint, so the
+     ornament reads whole above the first line instead of hiding under it */
+  padding-top: clamp(44px, 4.6vw, 66px);
   max-width: 58ch;
 }
 
@@ -386,7 +389,7 @@
 .toolchain-root .tcpq-quote::before {
   content: '\201C';
   position: absolute;
-  top: clamp(-30px, -2.6vw, -18px);
+  top: clamp(-8px, -0.6vw, -4px);
   left: -0.06em;
   font-family: var(--tc-disp);
   font-weight: 500;

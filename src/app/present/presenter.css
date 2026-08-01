@@ -119,6 +119,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   top: 20px;
   left: 24px;
   z-index: 90;
+  transition: opacity 0.3s ease;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -145,6 +146,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   top: 20px;
   right: 24px;
   z-index: 90;
+  transition: opacity 0.3s ease;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -201,7 +203,9 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 /* The rail steps aside while the prototype viewer owns the screen, and
    returns once every prototype has been walked. */
-.pr-hud-rail.is-hidden {
+.pr-hud-rail.is-hidden,
+.pr-hud-brand.is-hidden,
+.pr-hud-author.is-hidden {
   opacity: 0;
   pointer-events: none;
 }
