@@ -8,9 +8,8 @@
  * deficit is called out of the visible rain (keeping its rain material
  * until it lands and inks up), and any surplus dust flies home to its own
  * slot in the fall. Nothing spawns mid-air and nothing vanishes mid-flight.
- * The two brand threads run under the word as the rail the composition
- * stands on, and a caliper bracket prints the word's measured advance
- * while it holds.
+ * A caliper bracket prints the word's measured advance while it holds,
+ * fading in after the print front and back out as the peel begins.
  *
  * Craft constraints, in order:
  * - One preallocated pool. Every per-particle number lives in a typed array
@@ -109,19 +108,19 @@ const INK = '#070707';
 /** The rain's column pitch: the field is set, not scattered. */
 const COL_PITCH = 34;
 
-/* The loop, in seconds: print, hold, peel, fly. The field is mostly IN
-   MOTION by design — each formed word rests for about a second, then
-   dissolves, spreads, reorganizes and forms the next, one continuous
-   movement. */
-const HOLD = 1.2;
+/* The loop, in seconds: print, hold, peel, fly. Each formed word rests
+   long enough to be read — the caliper fades in, stands, and fades back
+   out — then the word dissolves, spreads, reorganizes and forms the next,
+   one continuous movement. */
+const HOLD = 2.6;
 const MORPH = 2.4;
 const CYCLE = HOLD + MORPH;
 /**
- * The first word starts dissolving after roughly a second — the field
- * should be alive almost immediately. (Reduced motion still renders the
- * printed word as a still.)
+ * The first word lingers like every other; the boot instant lands mid-hold
+ * with the word already printed and the caliper already in. (Reduced motion
+ * still renders the printed word as a still.)
  */
-const FIRST_HOLD = 1.2;
+const FIRST_HOLD = 2.6;
 const FIRST_CYCLE = FIRST_HOLD + MORPH;
 /** The print front's sweep at the start of a hold. */
 const PRINT = 0.5;
@@ -410,6 +409,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let prevFont = '';
   let prevPx = 0;
   let prevRtl = false;
+  let prevLabel = '';
+  let prevLabelW = 0;
 
   function scan(step: number, sw: number, sh: number, cap: number): number {
     if (!sampleCtx) return 0;
@@ -613,9 +614,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     if (k <= 0) return 0;
     k *= 1 - smoothstep(botA, botB, y);
     if (k <= 0) return 0;
-    /* The doubled rail is the brand's thread — rain never strikes it. */
-    k *= smoothstep(10, 22, Math.abs(y - (railY + 3)));
-    if (k <= 0) return 0;
     if (ptCount > 0 && nextGate > 0) {
       const boxTop = baselineY - formedPx * 1.08;
       const dx = Math.max(formedLeft - 22 - x, x - (formedRight + 22), 0);
@@ -688,6 +686,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         prevFont = formedFont;
         prevPx = formedPx;
         prevRtl = formedRtl;
+        prevLabel = formedLabel;
+        prevLabelW = formedLabelW;
         fx.set(lastX);
         fy.set(lastY);
         inPrev.set(inNext);
@@ -717,14 +717,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     }
 
     const mp = morph < 0 ? 0 : p - holdDur; // seconds into the morph
-
-    /* The two threads: the rail the word stands on, at brand gauge and full
-       ink. They enter from under the type column and run out the edge. */
-    const railX = narrow ? 0 : fadeB;
-    ctx.fillStyle = ink;
-    ctx.globalAlpha = 1;
-    ctx.fillRect(railX, railY, w - railX, 1.5);
-    ctx.fillRect(railX, railY + 4.5, w - railX, 1.5);
 
     /* The print / peel fronts, in x. */
     const printU = morph < 0 ? clamp01(p / PRINT) : 1;
@@ -905,22 +897,30 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     }
 
     /* The caliper: the printed word's measured advance — regular-weight
-       dimension line, 5px end ticks, mono value in ink. */
-    if (morph < 0 && ptCount > 0) {
-      const a = Math.min(1, Math.max(0, (p - PRINT - 0.1) / 0.4));
-      if (a > 0) {
-        const by = Math.min(railY - 9, baselineY + maxFont * 0.24);
-        ctx.globalAlpha = a;
-        ctx.fillStyle = ink;
-        ctx.fillRect(formedLeft, by, formedRight - formedLeft, 1.5);
-        ctx.fillRect(formedLeft, by - 5, 1.5, 5);
-        ctx.fillRect(formedRight - 1.5, by - 5, 1.5, 5);
-        /* The value stands on cleared paper — rain never strikes through it. */
-        ctx.clearRect(formedRight - formedLabelW - 8, by + 4, formedLabelW + 12, 17);
-        ctx.font = `500 11.5px ${mono}`;
-        ctx.textAlign = 'right';
-        ctx.fillText(formedLabel, formedRight, by + 16);
-      }
+       dimension line, 5px end ticks, mono value in ink. It fades in once
+       the print front has swept, stands while the word holds, and fades
+       back out over the outgoing word as the morph begins. */
+    const calIn = morph < 0 && ptCount > 0 ? clamp01((p - PRINT - 0.1) / 0.45) : 0;
+    const calOut = morph >= 0 && prevWord ? 1 - clamp01(mp / 0.45) : 0;
+    const calA = Math.max(calIn, calOut);
+    if (calA > 0) {
+      const cl = calIn > 0 ? formedLeft : prevLeft;
+      const cr = calIn > 0 ? formedRight : prevRight;
+      const label = calIn > 0 ? formedLabel : prevLabel;
+      const labelW = calIn > 0 ? formedLabelW : prevLabelW;
+      const by = Math.min(railY - 9, baselineY + maxFont * 0.24);
+      ctx.globalAlpha = calA;
+      ctx.fillStyle = ink;
+      ctx.fillRect(cl, by, cr - cl, 1.5);
+      ctx.fillRect(cl, by - 5, 1.5, 5);
+      ctx.fillRect(cr - 1.5, by - 5, 1.5, 5);
+      /* The value stands on cleared paper — rain never strikes through it.
+         (clearRect ignores alpha, so only punch the hole at full ink;
+         mid-fade the band is already rain-free via the gated clearing.) */
+      if (calA >= 1) ctx.clearRect(cr - labelW - 8, by + 4, labelW + 12, 17);
+      ctx.font = `500 11.5px ${mono}`;
+      ctx.textAlign = 'right';
+      ctx.fillText(label, cr, by + 16);
     }
 
     ctx.globalAlpha = 1;
