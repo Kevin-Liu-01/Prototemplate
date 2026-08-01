@@ -14,23 +14,20 @@
  * Craft constraints, in order:
  * - One preallocated pool. Every per-particle number lives in a typed array
  *   allocated once at init; the frame loop allocates nothing.
- * - 1-bit material. The page's materials law allows greys only via dither,
- *   so depth is rendered as size + Bayer coverage: near glyphs are solid
- *   ink, mid and far glyphs are ordered-dithered ink at fixed coverages,
- *   thresholded once in the atlas. The frame loop never touches globalAlpha
- *   for the field — every mark is pure ink or absent.
+ * - Depth-faded material. Depth renders as size + Bayer coverage + an
+ *   alpha ramp: near glyphs are solid ink, far glyphs are dithered AND
+ *   faded, so overlapping glyphs separate by depth instead of colliding
+ *   at equal ink. Word material (the condensed row) always prints full.
  * - The rain is set in columns (a 34px pitch with small fixed jitter), so
  *   the field reads as composed typesetting, not static.
  * - The held word is typography, not particles: particles land, the word
- *   prints over them with a hard clip front, and they are absorbed. A small
- *   ring of orbiters keeps visibly condensing into the word through the
- *   hold, so any still carries the "field becomes the word" argument.
+ *   prints over them with a hard clip front, and they are absorbed.
  * - The type column, the held word's own paper, and the bottom seam above
  *   the script ledger are all dithered density falloffs (per-particle
  *   threshold) — no alpha veil ever sits behind content, and the field
  *   ends composed instead of running into the dark band.
- * - prefers-reduced-motion renders exactly one frame — the printed word,
- *   its caliper, and the frozen orbiters — and never starts the loop.
+ * - prefers-reduced-motion renders exactly one frame — the printed word
+ *   and its caliper — and never starts the loop.
  */
 
 export type ScriptSample = {
@@ -108,11 +105,11 @@ const INK = '#070707';
 /** The rain's column pitch: the field is set, not scattered. */
 const COL_PITCH = 34;
 
-/* The loop, in seconds: print, hold, peel, fly. Each formed word rests
-   long enough to be read — the caliper fades in, stands, and fades back
-   out — then the word dissolves, spreads, reorganizes and forms the next,
-   one continuous movement. */
-const HOLD = 2.6;
+/* The loop, in seconds: print, hold, peel, fly. Each formed word LINGERS —
+   the caliper fades in, stands for a beat, and fades back out — then the
+   word dissolves, spreads, reorganizes and forms the next, one continuous
+   movement. */
+const HOLD = 4.0;
 const MORPH = 2.4;
 const CYCLE = HOLD + MORPH;
 /**
@@ -120,7 +117,7 @@ const CYCLE = HOLD + MORPH;
  * with the word already printed and the caliper already in. (Reduced motion
  * still renders the printed word as a still.)
  */
-const FIRST_HOLD = 2.6;
+const FIRST_HOLD = 4.0;
 const FIRST_CYCLE = FIRST_HOLD + MORPH;
 /** The print front's sweep at the start of a hold. */
 const PRINT = 0.5;
@@ -128,9 +125,6 @@ const PRINT = 0.5;
 const PEEL = 0.7;
 /** Each particle's own flight time inside the morph. */
 const FLIGHT = MORPH - PEEL;
-
-/** Number of orbiters — glyphs visibly condensing into the held word. */
-const ORB = 10;
 
 /** Ordered 4×4 Bayer matrix for the atlas's 1-bit tiers. */
 const BAYER: readonly (readonly number[])[] = [
@@ -256,7 +250,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   const order = new Uint16Array(POOL); // draw order, far → near, sorted once
   const pick = new Uint16Array(POOL); // eligible indices, shuffled once
   const cand = new Uint16Array(POOL); // per-resample candidate order (dust first)
-  const slot = new Uint16Array(POOL); // sampled point k → particle index
 
   let eligibleCount = 0;
   for (let i = 0; i < POOL; i++) {
@@ -288,16 +281,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     const a = pick[i] ?? 0;
     pick[i] = pick[j] ?? 0;
     pick[j] = a;
-  }
-
-  /* Orbiters: fixed spawn geometry, one glyph each, cycling forever. */
-  const orbSeedA = new Float32Array(ORB);
-  const orbSeedR = new Float32Array(ORB);
-  const orbGlyph = new Uint16Array(ORB);
-  for (let j = 0; j < ORB; j++) {
-    orbSeedA[j] = rand();
-    orbSeedR[j] = rand();
-    orbGlyph[j] = Math.floor(rand() * GLYPHS.length);
   }
 
   /* ---------- layout ---------- */
@@ -531,7 +514,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       tx[p] = left + (pts[k * 2] ?? 0) - pad;
       ty[p] = baselineY + (pts[k * 2 + 1] ?? 0) - yb;
       inNext[p] = 1;
-      slot[k] = p;
     }
     sampledWord = wordIndex;
   }
@@ -819,6 +801,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
         lastX[i] = x;
         lastY[i] = y;
+        /* Depth fade: farther glyphs recede in alpha as well as size, so
+           overlapping glyphs separate by depth instead of colliding at
+           equal ink. Word material always prints full. */
+        ctx.globalAlpha = row === COND_ROW ? 1 : 1 - 0.6 * (z[i] ?? 0);
         const ds = cs * (px / (row === COND_ROW ? CONDENSED_PX : TIER_SIZE[row] ?? 10));
         ctx.drawImage(
           atlas,
@@ -834,43 +820,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       }
     }
 
-    /* Orbiters: through the hold, a slow ring of glyphs keeps condensing
-       into the word — the argument stays visible in any still. They melt
-       into the fill on arrival (ink over ink). */
-    if (morph < 0 && ptCount > 0) {
-      for (let j = 0; j < ORB; j++) {
-        const f = (simT * 0.16 + j / ORB) % 1;
-        const kIdx = Math.min(ptCount - 1, Math.floor(((j + 0.5) * ptCount) / ORB));
-        const pi = slot[kIdx] ?? 0;
-        const tgx = tx[pi] ?? zoneCx;
-        const tgy = ty[pi] ?? baselineY;
-        /* Spawns bias above the word, so approach paths never cross the
-           caliper annotation beneath it. */
-        const ang = ((orbSeedA[j] ?? 0.5) - 0.5) * 1.4;
-        const r0 = maxFont * (1.4 + (orbSeedR[j] ?? 0.5) * 0.9);
-        const sx = tgx + Math.sin(ang) * r0;
-        let sy = tgy - Math.cos(ang) * r0 * 0.85;
-        sy = Math.max(narrow ? fadeA : 24, sy);
-        const e = easeInOutCubic(f);
-        const ox = sx + (tgx - sx) * e;
-        const oy = sy + (tgy - sy) * e;
-        ctx.drawImage(
-          atlas,
-          (orbGlyph[j] ?? 0) * cs * dpr,
-          COND_ROW * cs * dpr,
-          cs * dpr,
-          cs * dpr,
-          ox - cs / 2,
-          oy - cs / 2,
-          cs,
-          cs,
-        );
-      }
-    }
-
     /* The words themselves — real typography, machined contours. The
        incoming word prints in behind its front; the outgoing word peels
        away ahead of its own. Hard clip edges: ink or paper, never a fade. */
+    ctx.globalAlpha = 1;
     ctx.fillStyle = ink;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
