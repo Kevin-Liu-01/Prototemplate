@@ -177,13 +177,18 @@ export default function Hero() {
         else g.blend = clamp01(g.blend + (target > g.blend ? dt / ROLL_S : -dt / ROLL_S));
         const roll = smooth01(g.blend);
         const mNow = 1 - 2 * roll;
-        const phi = a + ((lead ? g.off : g.off * mNow) / orbitR);
+        /* the flag pins to the word's screen-LEFT end on both arcs (the
+           mirror of the letters' factor), sliding through the word at the
+           crossing; letters mirror so reading order stays left-to-right */
+        const factor = lead ? -mNow : mNow;
+        const phi = a + ((g.off * factor) / orbitR);
         const sin = Math.sin(phi);
         const cos = Math.cos(phi);
         const x = orbitR * sin;
         const y = -orbitR * ORBIT_TILT * cos;
-        /* the flag never spins — it rides screen-upright like a satellite
-           while the word's glyphs morph past it; only TEXT wraps the arc */
+        /* the flag never spins — it rides screen-upright and horizontal
+           like a satellite while the text morphs past it; only TEXT
+           wraps the arc */
         const rot = lead ? 0 : Math.atan2(ORBIT_TILT * sin, cos) + Math.PI * roll;
         g.el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(
           2
