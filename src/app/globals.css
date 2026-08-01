@@ -71,7 +71,8 @@ html::-webkit-scrollbar-thumb {
    grammar: hairline border, card face, no shadow; inverts on hover. */
 .dd-back {
   position: fixed;
-  top: 18px;
+  /* optically centered in the 59px nav band */
+  top: 11px;
   left: 18px;
   z-index: 90;
   display: flex;
