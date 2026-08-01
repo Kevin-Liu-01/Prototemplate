@@ -527,7 +527,7 @@ export default function Hero() {
           />
           <h1 data-hero-in>
             <span>Full-stack localization</span>
-            <span>for enterprises.</span>
+            <span>for enterprises</span>
           </h1>
           <div className='eh-acts' data-hero-in>
             <a className='tc-btn tc-btn-solid' href='#contact'>
