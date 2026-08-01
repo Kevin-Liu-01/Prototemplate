@@ -55,6 +55,10 @@ const ORBIT_TILT = 0.94;
 const KEPLER = 0.22;
 /** Seconds a glyph takes to roll over as it crosses the orbit's side. */
 const ROLL_S = 0.5;
+/** The flag's full sweep across the word at a crossing, seconds. */
+const FLAG_SWEEP_S = 1.0;
+/** One letter's hop, triggered as the flag's front reaches it. */
+const LETTER_S = 0.28;
 /** Arc gap between the word's leading edge and its flag, px. */
 const FLAG_PAD = 9;
 
@@ -165,8 +169,9 @@ export default function Hero() {
         el: HTMLElement;
         off: number;
         blend: number;
-        delay: number;
-        /** seconds this glyph's roll takes — the flag's spans the whole ripple */
+        /** the flag-progress threshold at which this letter's hop begins */
+        thr: number;
+        /** seconds this glyph's roll takes */
         dur: number;
       };
       type Word = {
@@ -182,8 +187,8 @@ export default function Hero() {
         const flagEl = parts.find((p) => p.classList.contains('eh-wflag'));
         return {
           root,
-          glyphs: letters.map((el) => ({ el, off: 0, blend: 0, delay: 0, dur: ROLL_S })),
-          flag: flagEl ? { el: flagEl, off: 0, blend: 0, delay: 0, dur: ROLL_S } : null,
+          glyphs: letters.map((el) => ({ el, off: 0, blend: 0, thr: 0, dur: LETTER_S })),
+          flag: flagEl ? { el: flagEl, off: 0, blend: 0, thr: 0, dur: ROLL_S } : null,
           side: -1,
         };
       });
@@ -210,9 +215,15 @@ export default function Hero() {
       orbit.dataset.live = '1';
       void document.fonts.ready.then(buildOffsets);
 
-      const placeGlyph = (g: Glyph, a: number, target: 0 | 1, scale: number, dt: number) => {
-        if (g.delay > 0) g.delay -= dt;
-        else g.blend = clamp01(g.blend + (target > g.blend ? dt / g.dur : -dt / g.dur));
+      const placeGlyph = (
+        g: Glyph,
+        a: number,
+        target: 0 | 1,
+        scale: number,
+        dt: number,
+        gate = true
+      ) => {
+        if (gate) g.blend = clamp01(g.blend + (target > g.blend ? dt / g.dur : -dt / g.dur));
         const roll = ROLL_EASE(g.blend);
         const mNow = 1 - 2 * roll;
         /* every glyph — flag included — mirrors with the same factor, so
@@ -251,21 +262,19 @@ export default function Hero() {
           if (word.side !== side) {
             const first = word.side === -1;
             word.side = side;
+            /* the flag GUIDES the rewrite: each letter's hop is keyed to a
+               threshold on the flag's own eased progress, so the front of
+               the reorganization is wherever the flag is — the flag lifts
+               off with the first letter and lands as the last one settles */
             const order = [...word.glyphs].sort(
               (p, q) => (q.off * (side ? 1 : -1)) - (p.off * (side ? 1 : -1))
             );
+            const m = order.length;
             for (const [rank, g] of order.entries()) {
-              g.delay = first ? 0 : rank * 0.055;
-              g.dur = ROLL_S;
+              g.thr = first ? 0 : (rank + 0.5) / (m + 1);
+              g.dur = LETTER_S;
             }
-            /* the flag's travel spans the WHOLE reorganization: it starts
-               with the first letter and lands with the last, one window */
-            if (word.flag) {
-              word.flag.delay = 0;
-              word.flag.dur = first
-                ? ROLL_S
-                : Math.max(1, order.length - 1) * 0.055 + ROLL_S;
-            }
+            if (word.flag) word.flag.dur = first ? ROLL_S : FLAG_SWEEP_S;
             if (first) {
               for (const g of word.glyphs) g.blend = side;
               if (word.flag) word.flag.blend = side;
@@ -274,8 +283,12 @@ export default function Hero() {
           const scale = 1 - 0.13 * cos;
           const dim = 1 - 0.5 * smooth01((cos - 0.35) / 0.5);
           const blur = 0.9 * smooth01((cos - 0.2) / 0.55);
-          for (const g of word.glyphs) placeGlyph(g, a, side, scale, dt);
+          /* the flag first — its eased progress is the ripple's clock */
           if (word.flag) placeGlyph(word.flag, a, side, scale, dt);
+          const flagProgress = word.flag
+            ? ROLL_EASE(side === 1 ? word.flag.blend : 1 - word.flag.blend)
+            : 1;
+          for (const g of word.glyphs) placeGlyph(g, a, side, scale, dt, flagProgress >= g.thr);
           word.root.style.opacity = dim.toFixed(3);
           word.root.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : '';
         }
@@ -444,16 +457,17 @@ export default function Hero() {
             data-hero-in
             src='/brand/no-bg-gt-logo-dark.png'
             alt='General Translation'
-            width={34}
-            height={34}
+            width={48}
+            height={48}
           />
           <h1 data-hero-in>
             <span>Full-stack localization</span>
             <span>for enterprises.</span>
           </h1>
           <p className='eh-sub' data-hero-in>
-            The localization platform the world&rsquo;s best engineering teams run in production —
-            apps, docs, and websites, in every market you ship to.
+            <span>The localization platform the world&rsquo;s best</span>
+            <span>engineering teams run in production.</span>
+            <span>Apps, docs, and websites, in every market you ship to.</span>
           </p>
           <div className='eh-acts' data-hero-in>
             <a className='tc-btn tc-btn-solid' href='#contact'>

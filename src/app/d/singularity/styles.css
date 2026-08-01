@@ -908,9 +908,15 @@
 
 .singularity-root .eh-sub {
   margin-top: 12px;
-  max-width: 36ch;
+  max-width: none;
   font-size: 13px;
   line-height: 1.55;
+}
+
+/* three authored lines, no auto-wrap */
+.singularity-root .eh-sub span {
+  display: block;
+  white-space: nowrap;
   color: rgba(255, 255, 255, 0.76);
 }
 
