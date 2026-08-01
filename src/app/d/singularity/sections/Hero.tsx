@@ -161,7 +161,14 @@ export default function Hero() {
          mirrors across the sides, the flag visibly slides from one end of
          the word to the other at every turn. Kepler pacing, depth swell,
          far-side dim and blur act on the whole word. */
-      type Glyph = { el: HTMLElement; off: number; blend: number; delay: number };
+      type Glyph = {
+        el: HTMLElement;
+        off: number;
+        blend: number;
+        delay: number;
+        /** seconds this glyph's roll takes — the flag's spans the whole ripple */
+        dur: number;
+      };
       type Word = {
         root: HTMLElement;
         glyphs: Glyph[];
@@ -175,8 +182,8 @@ export default function Hero() {
         const flagEl = parts.find((p) => p.classList.contains('eh-wflag'));
         return {
           root,
-          glyphs: letters.map((el) => ({ el, off: 0, blend: 0, delay: 0 })),
-          flag: flagEl ? { el: flagEl, off: 0, blend: 0, delay: 0 } : null,
+          glyphs: letters.map((el) => ({ el, off: 0, blend: 0, delay: 0, dur: ROLL_S })),
+          flag: flagEl ? { el: flagEl, off: 0, blend: 0, delay: 0, dur: ROLL_S } : null,
           side: -1,
         };
       });
@@ -205,7 +212,7 @@ export default function Hero() {
 
       const placeGlyph = (g: Glyph, a: number, target: 0 | 1, scale: number, dt: number) => {
         if (g.delay > 0) g.delay -= dt;
-        else g.blend = clamp01(g.blend + (target > g.blend ? dt / ROLL_S : -dt / ROLL_S));
+        else g.blend = clamp01(g.blend + (target > g.blend ? dt / g.dur : -dt / g.dur));
         const roll = ROLL_EASE(g.blend);
         const mNow = 1 - 2 * roll;
         /* every glyph — flag included — mirrors with the same factor, so
@@ -247,9 +254,18 @@ export default function Hero() {
             const order = [...word.glyphs].sort(
               (p, q) => (q.off * (side ? 1 : -1)) - (p.off * (side ? 1 : -1))
             );
-            for (const [rank, g] of order.entries())
+            for (const [rank, g] of order.entries()) {
               g.delay = first ? 0 : rank * 0.055;
-            if (word.flag) word.flag.delay = 0;
+              g.dur = ROLL_S;
+            }
+            /* the flag's travel spans the WHOLE reorganization: it starts
+               with the first letter and lands with the last, one window */
+            if (word.flag) {
+              word.flag.delay = 0;
+              word.flag.dur = first
+                ? ROLL_S
+                : Math.max(1, order.length - 1) * 0.055 + ROLL_S;
+            }
             if (first) {
               for (const g of word.glyphs) g.blend = side;
               if (word.flag) word.flag.blend = side;
