@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import Image from 'next/image';
 import { useRef } from 'react';
 
-import { createHorizonField, type HorizonFieldHandle } from '../lib/horizon-field';
+import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
 
 gsap.registerPlugin(useGSAP);
 

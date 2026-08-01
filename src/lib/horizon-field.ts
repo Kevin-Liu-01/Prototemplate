@@ -134,9 +134,33 @@ void main() {
 }
 `;
 
+/* SHADER NOTES — the narration that used to live inside the GLSL string
+   (hoisted out so it never ships in the bundle; minifiers cannot strip
+   comments inside template literals):
+   - pal/toneMap are the house prismatic-field palette + tanh tone map.
+   - lay() is a standard OVER onto a premultiplied accumulator.
+   - Pixel coords are y-down so DOM measurements map directly.
+   - The lens is a point mass with the Einstein radius pinned to the rim;
+     outside, deflection decays with COMPACT SUPPORT so the paper is
+     exactly flat again before the canvas edge; inside, the full map
+     yields the flipped secondary image (rs < 0).
+   - Layer 1 (rules): where lensing packs many rules per pixel, coverage
+     resolves to the mean ink (crowd -> gauge/spacing wash), and the rules
+     fade between uRuleFadeIn/Out. Layer 2 (guide rings): lensed the same
+     way; the DOM draws their flat outer arcs, the shader owns the bent
+     inner parts (uRingAlpha zeroes them per direction).
+   - Layer 4 (accretion): the streak field is sampled in the SOURCE plane
+     (thS adds pi inside the horizon); the extinction envelope is keyed to
+     PROJECTED distance from the hole in rim units, with a dark notch
+     holding the arcs off the ring hairline; the doppler flank brightens
+     the approaching side. The tint must stay periodic BEFORE pal (pal
+     scales phase by 1.3) — hence sin(thS), never a raw theta multiple.
+   - Layer 5 (photon ring): a near-white hairline over a warm spectral
+     glow and a wide bleed, rim-dopplered.
+   - Every ramp is WIDE on purpose: sampled per pixel they band if
+     narrower than a few device pixels. */
 const FRAG = `#version 300 es
 precision highp float;
-
 uniform vec2 uResolution;
 uniform float uTime;
 uniform vec2 uCenter;
@@ -160,149 +184,105 @@ uniform float uBreathe;
 uniform float uPeriod;
 uniform vec3 uCore;
 uniform vec3 uInk;
-
 out vec4 outColor;
-
 const float PI = 3.14159265;
 const float TAU = 6.2831853;
-
-/* The house thin-film trace palette (prismatic-field's getTracePalette). */
 vec3 pal(float phase) {
-  return 0.9 + sin(phase * 1.3 - vec3(4.8, -0.4, 1.2));
+return 0.9 + sin(phase * 1.3 - vec3(4.8, -0.4, 1.2));
 }
-
-/* The house tanh tone map (prismatic-field's applyToneMapping). */
 vec3 toneMap(vec3 hdr) {
-  vec3 v = clamp(hdr / uExposure, vec3(-10.0), vec3(10.0));
-  vec3 e = exp(2.0 * v);
-  return clamp((e - 1.0) / max(e + 1.0, vec3(1e-4)), 0.0, 1.0);
+vec3 v = clamp(hdr / uExposure, vec3(-10.0), vec3(10.0));
+vec3 e = exp(2.0 * v);
+return clamp((e - 1.0) / max(e + 1.0, vec3(1e-4)), 0.0, 1.0);
 }
-
-/* Standard OVER onto a premultiplied accumulator. */
 void lay(inout vec4 acc, vec3 rgb, float a) {
-  acc.rgb = rgb * a + acc.rgb * (1.0 - a);
-  acc.a = a + acc.a * (1.0 - a);
+acc.rgb = rgb * a + acc.rgb * (1.0 - a);
+acc.a = a + acc.a * (1.0 - a);
 }
-
 float stroke(float distPx, float gaugePx) {
-  return 1.0 - smoothstep(gaugePx * 0.5 - 0.35, gaugePx * 0.5 + 0.9, distPx);
+return 1.0 - smoothstep(gaugePx * 0.5 - 0.35, gaugePx * 0.5 + 0.9, distPx);
 }
-
 void main() {
-  /* y-down pixel coords so DOM measurements map directly. */
-  vec2 px = vec2(gl_FragCoord.x, uResolution.y - gl_FragCoord.y);
-
-  float on = step(2.0, uRadius);
-  float R = max(uRadius, 1.0) * (1.0 + uBreathe * sin(uTime * TAU / uPeriod));
-  vec2 d = px - uCenter;
-  float rc = length(d);
-  float r = rc / R;
-  vec2 nd = d / max(rc, 1e-4);
-  float theta = atan(d.y, d.x);
-
-  /* Point-mass lens with the Einstein radius pinned to the rim. Outside, the
-     deflection decays with compact support so the paper is exactly flat again
-     before the canvas edge; inside, the full map produces the flipped
-     secondary image. */
-  float wOut = pow(1.0 - smoothstep(1.0, uDeflEnd, r), 1.6);
-  float w = mix(wOut, 1.0, step(r, 1.0)) * on;
-  float rs = r - w / max(r, 1e-3);
-
-  /* ---- layer 1: the page's ruled hairlines, seen through the lens ---- */
-  vec2 ps = nd * rs;
-  float worldY = uWorldOrigin.y + uCenter.y + ps.y * R;
-  float rho = (worldY - uGauge * 0.5) / uPitch;
-  float gpx = max(length(vec2(dFdx(rho), dFdy(rho))), 1e-6);
-  float rulePx = abs(rho - floor(rho + 0.5)) / gpx;
-  float ruleCover = stroke(rulePx, uGauge);
-  /* Where lensing packs many rules per pixel, resolve to their mean ink
-     coverage instead of a false solid: crowd → gauge/spacing wash. */
-  float density = clamp(uGauge * gpx, 0.0, 1.0);
-  float crowd = smoothstep(0.3, 0.75, density);
-  float ruleA = uRuleAlpha * mix(ruleCover, density, crowd);
-  ruleA *= 1.0 - smoothstep(uRuleFadeIn, uRuleFadeOut, r);
-  ruleA *= on;
-
-  /* ---- layer 2: the hero's concentric guide rings, lensed the same way ---- */
-  float grs = max(length(vec2(dFdx(rs), dFdy(rs))), 1e-6);
-  float ringsA = 0.0;
-  for (int i = 0; i < 3; i++) {
-    float srcR = i == 0 ? uRingRadii.x : (i == 1 ? uRingRadii.y : uRingRadii.z);
-    float aI = i == 0 ? uRingAlpha.x : (i == 1 ? uRingAlpha.y : uRingAlpha.z);
-    float distPx = abs(rs - srcR) / grs;
-    ringsA = max(ringsA, stroke(distPx, uGauge) * aI);
-  }
-  /* Same handoff as the rules: the DOM draws the flat outer arcs of these
-     rings under a matching CSS mask, the shader owns the bent inner parts. */
-  ringsA *= on * step(1.0, r) * (1.0 - smoothstep(uRuleFadeIn, uRuleFadeOut, r));
-
-  /* ---- layer 4 ingredients: the accretion streak field, source plane ---- */
-  float s = abs(rs);
-  float thS = theta + step(rs, 0.0) * PI;
-  float sw = uSwirl / (s + 0.32);
-  float t = uTime;
-  float band1 = sin(thS * 3.0 + sw + s * 5.0 - t * 0.52 + 1.7);
-  float band2 = sin(thS * 7.0 - sw * 1.6 - s * 9.0 + t * 0.74);
-  float band3 = sin(thS * 13.0 + s * 16.0 - t * 1.12 + 4.1);
-  float streak = 0.5 + 0.5 * (0.56 * band1 + 0.30 * band2 + 0.14 * band3);
-  streak = streak * streak;
-  streak = streak * streak;
-  float prof = exp(-s * s * 2.0);
-  float mu = clamp(1.0 / (s + 0.06), 0.0, 10.0);
-  float flank = dot(nd, uDopplerDir);
-  float dop = 1.0 + uDoppler * flank;
-  float ringPx = rc - R;
-  /* Inside: only a thin flipped secondary-image band survives against the
-     rim — held off the ring itself by a dark notch so the hairline stays
-     crisp — and the core under the center stack stays genuinely dark;
-     outside: the arcs hug the rim and die within a fraction of a radius. */
-  float notch = smoothstep(-2.0 * uGauge, -9.0 * uGauge, ringPx);
-  float env = mix(
-    exp(-(r - 1.0) * 5.4),
-    smoothstep(0.6, 0.97, r) * 0.38 * notch,
-    step(r, 1.0)
-  );
-  float I = prof * (0.16 + 1.55 * streak) * mu * dop * env * on;
-  /* Pearl, not neon: the spectral trace palette is folded most of the way
-     back toward white, so the arcs read as dispersed light, not rainbow.
-     The angular term must be periodic BEFORE it enters pal, because pal
-     scales its phase by 1.3 — a raw theta multiple lands off-period and
-     leaves a hue seam at the atan wrap on the left equator. */
-  vec3 tint = mix(
-    vec3(1.0),
-    clamp(pal(s * 2.6 + 1.4 * sin(thS) + streak * 2.1 + 0.35 * flank + 0.4), 0.0, 2.0),
-    uChroma
-  );
-  vec3 hdr = tint * I * uLightGain;
-
-  /* ---- layer 5 ingredients: the photon ring ---- */
-  float hair = exp(-0.5 * pow(ringPx / (1.6 * uGauge), 2.0));
-  float glow = exp(-abs(ringPx) / (7.5 * uGauge));
-  float bleed = exp(-abs(ringPx) / (26.0 * uGauge));
-  float rdop = 1.0 + 0.6 * uDoppler * flank;
-  vec3 warm = mix(vec3(1.0, 0.9, 0.74), clamp(pal(0.5 * flank + 1.9), 0.0, 2.0), 0.35);
-  hdr += (hair * 10.0 * vec3(1.0, 0.99, 0.96) +
-          glow * 1.5 * warm +
-          bleed * 0.3 * vec3(1.0, 0.88, 0.7)) *
-         rdop * on;
-
-  vec3 light = toneMap(hdr);
-  float lightA = max(light.r, max(light.g, light.b));
-  vec3 lightCol = light / max(lightA, 1e-4);
-
-  /* ---- composite, back to front ---- */
-  vec4 acc = vec4(0.0);
-  lay(acc, uInk, ruleA);
-  lay(acc, uInk, ringsA);
-  float coreA = (1.0 - smoothstep(0.0, 1.6 * uGauge, ringPx)) * on;
-  lay(acc, uCore, coreA);
-  lay(acc, lightCol, lightA);
-
-  /* 1/255 gradient dither — hygiene against banding in the glow falloffs. */
-  float dn = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
-  acc.rgb += vec3((dn - 0.5) / 255.0) * acc.a;
-
-  outColor = acc;
+vec2 px = vec2(gl_FragCoord.x, uResolution.y - gl_FragCoord.y);
+float on = step(2.0, uRadius);
+float R = max(uRadius, 1.0) * (1.0 + uBreathe * sin(uTime * TAU / uPeriod));
+vec2 d = px - uCenter;
+float rc = length(d);
+float r = rc / R;
+vec2 nd = d / max(rc, 1e-4);
+float theta = atan(d.y, d.x);
+float wOut = pow(1.0 - smoothstep(1.0, uDeflEnd, r), 1.6);
+float w = mix(wOut, 1.0, step(r, 1.0)) * on;
+float rs = r - w / max(r, 1e-3);
+vec2 ps = nd * rs;
+float worldY = uWorldOrigin.y + uCenter.y + ps.y * R;
+float rho = (worldY - uGauge * 0.5) / uPitch;
+float gpx = max(length(vec2(dFdx(rho), dFdy(rho))), 1e-6);
+float rulePx = abs(rho - floor(rho + 0.5)) / gpx;
+float ruleCover = stroke(rulePx, uGauge);
+float density = clamp(uGauge * gpx, 0.0, 1.0);
+float crowd = smoothstep(0.3, 0.75, density);
+float ruleA = uRuleAlpha * mix(ruleCover, density, crowd);
+ruleA *= 1.0 - smoothstep(uRuleFadeIn, uRuleFadeOut, r);
+ruleA *= on;
+float grs = max(length(vec2(dFdx(rs), dFdy(rs))), 1e-6);
+float ringsA = 0.0;
+for (int i = 0; i < 3; i++) {
+float srcR = i == 0 ? uRingRadii.x : (i == 1 ? uRingRadii.y : uRingRadii.z);
+float aI = i == 0 ? uRingAlpha.x : (i == 1 ? uRingAlpha.y : uRingAlpha.z);
+float distPx = abs(rs - srcR) / grs;
+ringsA = max(ringsA, stroke(distPx, uGauge) * aI);
+}
+ringsA *= on * step(1.0, r) * (1.0 - smoothstep(uRuleFadeIn, uRuleFadeOut, r));
+float s = abs(rs);
+float thS = theta + step(rs, 0.0) * PI;
+float sw = uSwirl / (s + 0.32);
+float t = uTime;
+float band1 = sin(thS * 3.0 + sw + s * 5.0 - t * 0.52 + 1.7);
+float band2 = sin(thS * 7.0 - sw * 1.6 - s * 9.0 + t * 0.74);
+float band3 = sin(thS * 13.0 + s * 16.0 - t * 1.12 + 4.1);
+float streak = 0.5 + 0.5 * (0.56 * band1 + 0.30 * band2 + 0.14 * band3);
+streak = streak * streak;
+streak = streak * streak;
+float prof = exp(-s * s * 2.0);
+float mu = clamp(1.0 / (s + 0.06), 0.0, 10.0);
+float flank = dot(nd, uDopplerDir);
+float dop = 1.0 + uDoppler * flank;
+float ringPx = rc - R;
+float notch = smoothstep(-2.0 * uGauge, -9.0 * uGauge, ringPx);
+float env = mix(
+exp(-(r - 1.0) * 5.4),
+smoothstep(0.6, 0.97, r) * 0.38 * notch,
+step(r, 1.0)
+);
+float I = prof * (0.16 + 1.55 * streak) * mu * dop * env * on;
+vec3 tint = mix(
+vec3(1.0),
+clamp(pal(s * 2.6 + 1.4 * sin(thS) + streak * 2.1 + 0.35 * flank + 0.4), 0.0, 2.0),
+uChroma
+);
+vec3 hdr = tint * I * uLightGain;
+float hair = exp(-0.5 * pow(ringPx / (1.6 * uGauge), 2.0));
+float glow = exp(-abs(ringPx) / (7.5 * uGauge));
+float bleed = exp(-abs(ringPx) / (26.0 * uGauge));
+float rdop = 1.0 + 0.6 * uDoppler * flank;
+vec3 warm = mix(vec3(1.0, 0.9, 0.74), clamp(pal(0.5 * flank + 1.9), 0.0, 2.0), 0.35);
+hdr += (hair * 10.0 * vec3(1.0, 0.99, 0.96) +
+glow * 1.5 * warm +
+bleed * 0.3 * vec3(1.0, 0.88, 0.7)) *
+rdop * on;
+vec3 light = toneMap(hdr);
+float lightA = max(light.r, max(light.g, light.b));
+vec3 lightCol = light / max(lightA, 1e-4);
+vec4 acc = vec4(0.0);
+lay(acc, uInk, ruleA);
+lay(acc, uInk, ringsA);
+float coreA = (1.0 - smoothstep(0.0, 1.6 * uGauge, ringPx)) * on;
+lay(acc, uCore, coreA);
+lay(acc, lightCol, lightA);
+float dn = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+acc.rgb += vec3((dn - 0.5) / 255.0) * acc.a;
+outColor = acc;
 }
 `;
 
