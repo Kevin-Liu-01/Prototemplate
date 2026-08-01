@@ -218,7 +218,7 @@
 }
 
 .pt-hero {
-  --pt-hero-size: clamp(38px, 6.6vw, 92px);
+  --pt-hero-size: clamp(30px, 4.9vw, 68px);
 }
 
 /* frame groups only carry absolutely-placed rules — no grid footprint */
@@ -245,7 +245,9 @@
   position: absolute;
   right: 10px;
   bottom: 4px;
-  font-family: var(--pt-mono);
+  /* plain words, not numbers — the grotesk voice, never mono */
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
   font-style: normal;
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -315,7 +317,9 @@
 }
 
 .pt-src-spec {
-  font-family: var(--pt-mono);
+  /* plain words, not numbers — the grotesk voice, never mono */
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
   font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--pt-ink-3);
