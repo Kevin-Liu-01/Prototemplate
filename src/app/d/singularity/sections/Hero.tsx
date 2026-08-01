@@ -229,9 +229,19 @@ export default function Hero() {
           /* the flag is the word's first glyph: it sits one seat BEFORE the
              first letter and mirrors with them, so it is always to the left
              of the text in the text's own reading frame */
-          if (word.flag) word.flag.off = -(total / 2 + FLAG_PAD + 8);
-          word.lead = total / 2 + FLAG_PAD + 16;
-          word.span = word.lead + total / 2;
+          const fw = word.flag ? word.flag.el.offsetWidth || 16 : 0;
+          if (word.flag) word.flag.off = -(total / 2 + FLAG_PAD + fw / 2);
+          /* SYMMETRIC extents: the flag end reaches further than the letter
+             end, so every offset shifts by half that difference — the word
+             then occupies ±span/2 around its seat in BOTH mirror states,
+             and the packed gaps hold constant through every roll. */
+          const leadExtent = total / 2 + FLAG_PAD + fw;
+          const trailExtent = total / 2;
+          const shift = (leadExtent - trailExtent) / 2;
+          for (const g of word.glyphs) g.off += shift;
+          if (word.flag) word.flag.off += shift;
+          word.span = leadExtent + trailExtent;
+          word.lead = word.span / 2;
         }
       };
 

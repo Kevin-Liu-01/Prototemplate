@@ -4864,20 +4864,20 @@
    core under the CTAs. The core is ink in both themes, so the dark-surface
    wordmark variants are the only ones that ever load. */
 .singularity-root .eh-core-logos {
-  margin-top: 26px;
+  margin-top: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 18px 22px;
+  gap: 20px 26px;
   flex-wrap: wrap;
   /* three marks to the first row, two to the second */
-  max-width: 300px;
+  max-width: 400px;
 }
 
 .singularity-root .eh-corewm {
   display: block;
-  width: 68px;
-  height: 14px;
+  width: 96px;
+  height: 20px;
   overflow: hidden;
   text-indent: -999px;
   opacity: 0.52;
