@@ -20,6 +20,20 @@ export const metadata = {
   description:
     'Prototype × template — the working index of General Translation redesign directions.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
+  openGraph: {
+    title: 'Prototemplate',
+    description:
+      'Prototype × template — the working index of General Translation redesign directions.',
+    type: 'website',
+    images: [{ url: '/og.png', width: 2400, height: 1260, alt: 'prototype × template' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Prototemplate',
+    description:
+      'Prototype × template — the working index of General Translation redesign directions.',
+    images: ['/og.png'],
+  },
 };
 
 /** The presenter's actual running order. */

@@ -42,6 +42,16 @@ const BELT: readonly { flag: string; name: string; whole?: boolean }[] = [
   { flag: '🇲🇽', name: 'Español' },
   { flag: '🇮🇩', name: 'Bahasa Indonesia' },
   { flag: '🇹🇷', name: 'Türkçe' },
+  { flag: '🇷🇺', name: 'Русский' },
+  { flag: '🇬🇷', name: 'Ελληνικά' },
+  { flag: '🇫🇮', name: 'Suomi' },
+  { flag: '🇳🇴', name: 'Norsk' },
+  { flag: '🇩🇰', name: 'Dansk' },
+  { flag: '🇨🇿', name: 'Čeština' },
+  { flag: '🇷🇴', name: 'Română' },
+  { flag: '🇭🇺', name: 'Magyar' },
+  { flag: '🇵🇭', name: 'Filipino' },
+  { flag: '🇲🇾', name: 'Melayu' },
 ];
 
 /** Flag-orbit radius as a multiple of the horizon radius (wide mode). */
@@ -50,9 +60,9 @@ const ORBIT_K = 1.36;
 const ORBIT_DUR = 130;
 /** Vertical squash of the flag orbit — a slightly inclined orbital plane. */
 const ORBIT_TILT = 0.94;
-/** Gravity pacing: chips whip through the near arc (1+K× speed) and glide
-    across the far side (1−K×) — dθ/dt = 1 − K·cos θ. */
-const KEPLER = 0.22;
+/** The constant arc gap between one word's end and the next word's flag,
+    px along the belt — the same small breath everywhere on the ring. */
+const BELT_GAP = 26;
 /** Seconds a glyph takes to roll over as it crosses the orbit's side. */
 const ROLL_S = 0.5;
 /** The flag's full sweep across the word at a crossing, seconds. */
@@ -179,6 +189,13 @@ export default function Hero() {
         glyphs: Glyph[];
         flag: Glyph | null;
         side: 0 | 1 | -1;
+        /** the word's seat on the ring, radians — set by packBelt() */
+        ang: number;
+        /** arc the word occupies (flag seat + letters), px */
+        span: number;
+        /** px from the word's anchor back to its leading (flag) edge */
+        lead: number;
+        active: boolean;
       };
 
       const words: Word[] = chips.map((root) => {
@@ -190,6 +207,10 @@ export default function Hero() {
           glyphs: letters.map((el) => ({ el, off: 0, blend: 0, thr: 0, dur: LETTER_S })),
           flag: flagEl ? { el: flagEl, off: 0, blend: 0, thr: 0, dur: ROLL_S } : null,
           side: -1,
+          ang: 0,
+          span: 0,
+          lead: 0,
+          active: true,
         };
       });
 
@@ -209,11 +230,42 @@ export default function Hero() {
              first letter and mirrors with them, so it is always to the left
              of the text in the text's own reading frame */
           if (word.flag) word.flag.off = -(total / 2 + FLAG_PAD + 8);
+          word.lead = total / 2 + FLAG_PAD + 16;
+          word.span = word.lead + total / 2;
+        }
+      };
+
+      /* Arc-length packing: every word takes exactly its own span plus ONE
+         constant small gap, measured along the ring — so the breath between
+         any two neighbours is identical. Words that no longer fit at this
+         orbit size sit out (responsive: they return when the ring grows),
+         and whatever arc is left over widens every gap equally. */
+      const packBelt = () => {
+        const C = TAU * orbitR;
+        let fit = 0;
+        let used = 0;
+        for (const word of words) {
+          if (used + word.span + BELT_GAP > C) break;
+          used += word.span + BELT_GAP;
+          fit += 1;
+        }
+        const gap = fit > 0 ? (C - (used - fit * BELT_GAP)) / fit : BELT_GAP;
+        let cum = 0;
+        for (const [i, word] of words.entries()) {
+          word.active = i < fit;
+          word.root.style.visibility = word.active ? 'visible' : 'hidden';
+          if (!word.active) continue;
+          word.ang = ((cum + word.lead) / C) * TAU;
+          cum += word.span + gap;
         }
       };
       buildOffsets();
+      packBelt();
       orbit.dataset.live = '1';
-      void document.fonts.ready.then(buildOffsets);
+      void document.fonts.ready.then(() => {
+        buildOffsets();
+        packBelt();
+      });
 
       const placeGlyph = (
         g: Glyph,
@@ -248,12 +300,12 @@ export default function Hero() {
         const dt = Math.min(Math.max(timeSec - lastT, 0), 0.06);
         lastT = timeSec;
         const phase = (timeSec / ORBIT_DUR) * TAU;
-        const n = words.length || 1;
         for (let i = 0; i < words.length; i++) {
           const word = words[i];
-          if (!word) continue;
-          const a0 = phase + (i / n) * TAU;
-          const a = a0 - KEPLER * Math.sin(a0);
+          if (!word || !word.active) continue;
+          /* uniform revolution over arc-packed seats: any speed warp would
+             stretch and squeeze the gaps the packing just made equal */
+          const a = phase + word.ang;
           const cos = Math.cos(a);
           /* one coordinated ripple per word: when the word's CENTER crosses
              the orbit's side, every glyph rolls over in sequence from the
@@ -309,6 +361,9 @@ export default function Hero() {
           ? Math.max(Math.min(h * 0.47, h - r - 148), r + 96)
           : Math.max(Math.min(h * 0.46, h - r - 172), r + 148);
         orbitR = wide ? r * ORBIT_K : Math.min(r + 36, w / 2 - 20);
+        /* the ring changed size — repack the belt for the new circumference
+           (words that no longer fit sit out; gaps stay equal) */
+        packBelt();
 
         hero.style.setProperty('--eh-cx', `${cx.toFixed(1)}px`);
         hero.style.setProperty('--eh-cy', `${cy.toFixed(1)}px`);
