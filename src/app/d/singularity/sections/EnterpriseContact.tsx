@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { useRef } from 'react';
 
 import GlyphRain from './GlyphRain';
-import { createGlyphField, type GlyphFieldHandle } from './contact/glyphField';
+import { createGlyphField, type GlyphFieldHandle } from '@/lib/glyph-field';
 
 gsap.registerPlugin(useGSAP);
 

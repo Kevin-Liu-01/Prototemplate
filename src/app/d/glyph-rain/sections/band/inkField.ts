@@ -13,7 +13,7 @@
  * veils, and prefers-reduced-motion renders exactly one composed frame.
  */
 
-import { GLYPHS, ditherAtlasRows } from '../hero/glyphField';
+import { GLYPHS, ditherAtlasRows } from '@/lib/glyph-field';
 
 const POOL = 560;
 

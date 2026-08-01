@@ -3,11 +3,14 @@
  * drawn from eight scripts, drifting as depth-sorted ink on paper. The field
  * condenses into the word "language" in one script after another: the held
  * word PRINTS as real solid typography (fillText — machined contours, never
- * a mosaic), then peels back into glyphs left-to-right, the swarm flies to
- * the next word's sample points, and the new word prints in behind the
- * arrival front. The two brand threads run under the word as the rail the
- * composition stands on, and a caliper bracket prints the word's measured
- * advance while it holds.
+ * a mosaic), then crumbles back into the rain at the peel front — every
+ * released glyph flies home to its own slot in the fall — while the next
+ * word calls fresh glyphs out of the visible rain, each keeping its rain
+ * material until it lands on its point and inks up. The rain is the
+ * reservoir: nothing spawns mid-air and nothing vanishes mid-flight. The
+ * two brand threads run under the word as the rail the composition stands
+ * on, and a caliper bracket prints the word's measured advance while it
+ * holds.
  *
  * Craft constraints, in order:
  * - One preallocated pool. Every per-particle number lives in a typed array
@@ -253,6 +256,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   const inNext = new Uint8Array(POOL); // membership in the incoming word
   const order = new Uint16Array(POOL); // draw order, far → near, sorted once
   const pick = new Uint16Array(POOL); // eligible indices, shuffled once
+  const cand = new Uint16Array(POOL); // per-resample candidate order (dust first)
+  const slot = new Uint16Array(POOL); // sampled point k → particle index
 
   let eligibleCount = 0;
   for (let i = 0; i < POOL; i++) {
@@ -430,10 +435,56 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
    * particles. Runs once per cycle (and on resize / font arrival) — the only
    * allocation it makes is getImageData's own buffer, well off the frame loop.
    */
-  function resample(wordIndex: number): void {
+  function resample(wordIndex: number, fresh = false): void {
     if (!sampleCtx || w === 0) return;
     const entry = SCRIPTS[wordIndex];
     if (!entry) return;
+
+    /* MATTER FLOWS THROUGH THE RAIN: a word-to-word resample (`fresh`)
+       recruits glyphs that are actually visible in the fall right now — the
+       eye watches them leave the rain — while the outgoing word's particles
+       are released to fly home to their own rain slots. Re-samples of the
+       word already standing (resize, late fonts) keep its own particles
+       first instead, so the sketch never re-deals mid-hold. Deficits fall
+       back to the outgoing dust, then to culled rain, so a word never
+       starves. (Rain position formula: keep in sync with draw().) */
+    const wrapC = h + 60;
+    let cc = 0;
+    if (!fresh) {
+      for (let k = 0; k < eligibleCount; k++) {
+        const i = pick[k] ?? 0;
+        if (inNext[i] === 1) cand[cc++] = i;
+      }
+    }
+    for (let k = 0; k < eligibleCount; k++) {
+      const i = pick[k] ?? 0;
+      if (inNext[i] === 1) continue;
+      const rx =
+        (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
+      let ry = (hy[i] ?? 0) + simT * (fall[i] ?? 3);
+      ry = ((ry % wrapC) + wrapC) % wrapC;
+      ry -= 30;
+      if (keepAt(rx, ry, true) > (stag[i] ?? 0)) cand[cc++] = i;
+    }
+    if (fresh) {
+      for (let k = 0; k < eligibleCount; k++) {
+        const i = pick[k] ?? 0;
+        if (inNext[i] === 1) cand[cc++] = i;
+      }
+    }
+    if (cc < eligibleCount) {
+      for (let k = 0; k < eligibleCount; k++) {
+        const i = pick[k] ?? 0;
+        if (inNext[i] === 1) continue;
+        let seen = false;
+        for (let q = 0; q < cc; q++)
+          if (cand[q] === i) {
+            seen = true;
+            break;
+          }
+        if (!seen) cand[cc++] = i;
+      }
+    }
 
     let fontPx = maxFont;
     sampleCtx.font = `500 ${fontPx}px ${disp}`;
@@ -483,10 +534,11 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
     inNext.fill(0);
     for (let k = 0; k < ptCount; k++) {
-      const p = pick[k] ?? 0;
+      const p = cand[k] ?? 0;
       tx[p] = left + (pts[k * 2] ?? 0) - pad;
       ty[p] = baselineY + (pts[k * 2 + 1] ?? 0) - yb;
       inNext[p] = 1;
+      slot[k] = p;
     }
     sampledWord = wordIndex;
   }
@@ -494,6 +546,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   /* ---------- the frame ---------- */
 
   let simT = 0;
+  let pendingResample = false;
   let lastTs = -1;
   let raf = 0;
   let running = false;
@@ -501,6 +554,18 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let destroyed = false;
   let announcedWord = -1;
   let morphedCycle = -1;
+
+  /** Where the loop stands at time t — the single phase authority. */
+  function phaseAt(t: number): { cycle: number; p: number; holdDur: number } {
+    if (t < FIRST_CYCLE) return { cycle: 0, p: t, holdDur: FIRST_HOLD };
+    const t2 = t - FIRST_CYCLE;
+    const cycle = 1 + Math.floor(t2 / CYCLE);
+    return { cycle, p: t2 - (cycle - 1) * CYCLE, holdDur: HOLD };
+  }
+  const morphingNow = (): boolean => {
+    const ph = phaseAt(simT);
+    return ph.p >= ph.holdDur;
+  };
 
   function announce(index: number): void {
     if (index === announcedWord) return;
@@ -548,27 +613,19 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
 
-    let cycle: number;
-    let p: number;
-    let holdDur: number;
-    if (simT < FIRST_CYCLE) {
-      cycle = 0;
-      p = simT;
-      holdDur = FIRST_HOLD;
-    } else {
-      const t2 = simT - FIRST_CYCLE;
-      cycle = 1 + Math.floor(t2 / CYCLE);
-      p = t2 - (cycle - 1) * CYCLE;
-      holdDur = HOLD;
-    }
+    const ph = phaseAt(simT);
+    const cycle = ph.cycle;
+    const p = ph.p;
+    const holdDur = ph.holdDur;
     const current = ((cycle % SCRIPTS.length) + SCRIPTS.length) % SCRIPTS.length;
     const next = (current + 1) % SCRIPTS.length;
 
     let morph = -1; // −1: holding; 0…1: flying to `next`
     if (p < holdDur) {
-      if (sampledWord !== current) {
+      if (sampledWord !== current || pendingResample) {
         resample(current);
         inPrev.set(inNext);
+        pendingResample = false;
       }
       announce(current);
     } else {
@@ -586,15 +643,25 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         fx.set(lastX);
         fy.set(lastY);
         inPrev.set(inNext);
-        resample(next);
+        resample(next, true);
         announce(next);
         const span = Math.max(1, prevRight - prevLeft);
+        const nspan = Math.max(1, formedRight - formedLeft);
         for (let i = 0; i < POOL; i++) {
           if (inPrev[i] === 1) {
+            /* a particle that never drew (hidden boot, first frames) lifts
+               off from its own target, never from the canvas origin */
+            if ((fx[i] ?? 0) === 0 && (fy[i] ?? 0) === 0) {
+              fx[i] = tx[i] ?? 0;
+              fy[i] = ty[i] ?? 0;
+            }
             const d = clamp01(((fx[i] ?? 0) - prevLeft) / span);
             dep[i] = prevRtl ? 1 - d : d;
           } else if (inNext[i] === 1) {
-            dep[i] = stag[i] ?? 0;
+            /* recruits are called in print order, so the sketch inks up the
+               way the word will print */
+            const dn = clamp01(((tx[i] ?? 0) - formedLeft) / nspan);
+            dep[i] = formedRtl ? 1 - dn : dn;
           }
         }
       }
@@ -682,21 +749,28 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
             row = COND_ROW;
             px = CONDENSED_PX;
           } else if (inNext[i] === 1) {
-            /* A rain glyph joining the incoming word: it inks up to the
-               flight material at its own midpoint — a quantized swap. */
+            /* Called back from the rain: the glyph keeps its own rain
+               material for the whole flight — nothing brightens mid-air —
+               and inks up to the flight material exactly on landing, where
+               the word absorbs it. */
             x += ((tx[i] ?? 0) - x) * e + arc * 36 * (1 - e);
             y += ((ty[i] ?? 0) - y) * e;
-            if (e >= 0.4) {
+            if (u >= 1) {
               row = COND_ROW;
               px = CONDENSED_PX;
             }
           } else {
-            /* Released back into the rain, shedding the flight material. */
+            /* Released: the fill crumbles to rain material at the peel
+               front and the dust flies home to its own live rain slot.
+               Landing is exact (e = 1 is the rain formula), so the handoff
+               back to plain rain never jumps; once landed it is plain rain,
+               dithered culls and all. */
             x = (fx[i] ?? 0) + (x - (fx[i] ?? 0)) * e + arc * 36 * e;
             y = (fy[i] ?? 0) + (y - (fy[i] ?? 0)) * e;
-            if (e < 0.6) {
-              row = COND_ROW;
-              px = CONDENSED_PX;
+            if (u >= 1 && keepAt(x, y, true) <= (stag[i] ?? 0)) {
+              lastX[i] = x;
+              lastY[i] = y;
+              continue;
             }
           }
         }
@@ -725,7 +799,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       for (let j = 0; j < ORB; j++) {
         const f = (simT * 0.16 + j / ORB) % 1;
         const kIdx = Math.min(ptCount - 1, Math.floor(((j + 0.5) * ptCount) / ORB));
-        const pi = pick[kIdx] ?? 0;
+        const pi = slot[kIdx] ?? 0;
         const tgx = tx[pi] ?? zoneCx;
         const tgy = ty[pi] ?? baselineY;
         /* Spawns bias above the word, so approach paths never cross the
@@ -834,7 +908,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     canvas.height = Math.round(h * dpr);
     layout();
     buildAtlas();
-    sampledWord = -1;
+    if (morphingNow()) pendingResample = true;
+    else sampledWord = -1;
     if (reduced || !running) {
       /* One legible frame: the field printed on its current word. */
       draw();
@@ -870,9 +945,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   });
   themeMo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-  /* Boot mid-hold: the word already printed, the caliper already set, so
-     the first paint — and any screenshot — carries the whole argument. */
-  simT = 1.3;
+  /* Boot mid-hold: the word already printed, the caliper already in, and
+     comfortably BEFORE the first morph — the boot instant must stay inside
+     FIRST_HOLD or the first peel lifts off from uninitialized origins. */
+  simT = Math.min(FIRST_HOLD - 0.15, 1.05);
   resize();
   if (reduced) {
     announce(0);
@@ -887,9 +963,16 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       .then(() => {
         if (destroyed) return;
         buildAtlas();
-        const word = sampledWord;
-        sampledWord = -1;
-        if (word >= 0) resample(word);
+        if (morphingNow()) {
+          /* metrics landed mid-flight: re-sampling now would re-deal the
+             swarm's membership mid-air — take the new metrics at the next
+             hold instead */
+          pendingResample = true;
+        } else {
+          const word = sampledWord;
+          sampledWord = -1;
+          if (word >= 0) resample(word);
+        }
         if (!running) draw();
       })
       .catch(() => undefined);

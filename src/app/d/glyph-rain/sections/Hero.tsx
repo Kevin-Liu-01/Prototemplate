@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef, useState } from 'react';
 
-import { SCRIPTS, createGlyphField, POOL } from './hero/glyphField';
+import { SCRIPTS, createGlyphField, POOL } from '@/lib/glyph-field';
 
 gsap.registerPlugin(useGSAP);
 
