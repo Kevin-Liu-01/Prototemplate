@@ -154,6 +154,56 @@ export const DIRECTIONS: Direction[] = [
     tone: 'light',
     signature: 'Nothing competes with the mass: customers and locales orbit it.',
   },
+  {
+    n: 24,
+    label: '14',
+    slug: 'singularity-dossier',
+    name: 'Singularity · Dossier',
+    concept:
+      'The gate, then the evidence file: sworn customer statements set as exhibits, a dark certificate wall for the controls, and an audit ledger of what actually shipped.',
+    tone: 'light',
+    signature: 'Conversion by paperwork: everything measured, ruled, and signed.',
+  },
+  {
+    n: 24,
+    label: '15',
+    slug: 'singularity-orbit',
+    name: 'Singularity · Orbit',
+    concept:
+      'The gate, then gravity as the argument: telemetry dials, the five customers riding a real orbit around a second horizon, and one witness speaking from inside the well.',
+    tone: 'light',
+    signature: 'The wordmarks orbit a live horizon and never invert.',
+  },
+  {
+    n: 24,
+    label: '16',
+    slug: 'singularity-signal',
+    name: 'Singularity · Signal',
+    concept:
+      'The gate, then the broadcast: intercepted customer transmissions, a rollout log typing itself out over raining glyphs with the beam at its foot, and the assurance strip.',
+    tone: 'light',
+    signature: 'One merge replays forever as a transmission log.',
+  },
+  {
+    n: 24,
+    label: '17',
+    slug: 'singularity-observatory',
+    name: 'Singularity · Observatory',
+    concept:
+      'The gate, then proof measured from a distance: edge delivery on the meridian globe, customers filed as a star catalog on a dotted sky, and the closing readouts row.',
+    tone: 'light',
+    signature: 'Social proof as astronomy: recorded, not shouted.',
+  },
+  {
+    n: 24,
+    label: '18',
+    slug: 'singularity-procession',
+    name: 'Singularity · Procession',
+    concept:
+      'The gate, then the march: the word-swarm prints the manifesto, customers pass one at a time as monuments at architectural scale, and the epilogue hands off to the bay.',
+    tone: 'light',
+    signature: 'Each customer is a monument: giant mark, one sentence, one measure.',
+  },
 ];
 
 export function getDirection(slug: string): Direction | undefined {

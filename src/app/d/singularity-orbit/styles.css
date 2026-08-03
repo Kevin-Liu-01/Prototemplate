@@ -1,0 +1,298 @@
+/* ============================================================
+   SINGULARITY · ORBIT — gravity as the argument.
+   Instrument dials, the customer gravity well, one witness.
+   The physics vocabulary of the hero carried through the page:
+   orbits, sweeps, telemetry — numbers in mono, nothing else.
+   ============================================================ */
+
+/* ---- telemetry dials ---- */
+
+.singularity-root .sgo-instruments {
+  border-top: 1px solid var(--tc-hair);
+  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut) clamp(64px, 7.4vw, 104px);
+}
+
+.singularity-root .sgo-kicker {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .sgo-head h2 {
+  margin-top: 10px;
+  font-family: var(--tc-disp);
+  font-size: clamp(28px, 3.4vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+  color: var(--tc-ink);
+}
+
+.singularity-root .sgo-dials {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: clamp(36px, 4.6vw, 60px);
+}
+
+.singularity-root .sgo-dial {
+  margin: 0;
+  padding: 30px 20px 26px;
+  border: 1px solid var(--tc-hair);
+  text-align: center;
+}
+
+.singularity-root .sgo-dial svg {
+  width: 148px;
+  height: 148px;
+}
+
+.singularity-root .sgo-dial-track {
+  fill: none;
+  stroke: var(--tc-hair);
+  stroke-width: 1;
+}
+
+.singularity-root .sgo-dial-sweep {
+  fill: none;
+  stroke: var(--tc-accent);
+  stroke-width: 2;
+}
+
+.singularity-root .sgo-dial-value {
+  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size: 21px;
+  fill: var(--tc-ink);
+}
+
+.singularity-root .sgo-dial figcaption {
+  margin-top: 14px;
+  font-size: 13.5px;
+  color: var(--tc-ink-3);
+}
+
+/* ---- the gravity well ---- */
+
+.singularity-root .tc-band.sgo-well {
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  background: #070707;
+  color: rgba(255, 255, 255, 0.92);
+  border-block: 1px solid var(--tc-hair);
+  overflow: clip;
+  isolation: isolate;
+}
+
+.singularity-root .sgo-well-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(138, 143, 152, 0.5);
+  padding: clamp(56px, 6.6vw, 92px) var(--tc-gut) clamp(48px, 5.6vw, 76px);
+  text-align: center;
+}
+
+.singularity-root .sgo-well-head h2 {
+  font-family: var(--tc-disp);
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  color: #ffffff;
+}
+
+.singularity-root .sgo-well-head p {
+  margin: 14px auto 0;
+  max-width: 52ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* the stage: core shader at center, dashed orbit line, five satellites */
+.singularity-root .sgo-stage {
+  --sgo-r: clamp(150px, 21vw, 235px);
+  position: relative;
+  width: 100%;
+  height: calc(var(--sgo-r) * 2 + 110px);
+  margin-top: 22px;
+}
+
+.singularity-root .sgo-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(190px, 24vw, 280px);
+  height: clamp(190px, 24vw, 280px);
+  transform: translate(-50%, -50%);
+}
+
+.singularity-root .sgo-orbit-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--sgo-r) * 2);
+  height: calc(var(--sgo-r) * 2);
+  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(138, 143, 152, 0.34);
+  border-radius: 50%;
+}
+
+.singularity-root .sgo-ring {
+  position: absolute;
+  inset: 0;
+  animation: sgo-spin 90s linear infinite;
+}
+
+.singularity-root .sgo-sat {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: rotate(var(--a)) translateX(var(--sgo-r));
+}
+
+/* counter-rotation: undo the placement angle and the ring's spin so the
+   wordmarks ride the orbit without ever inverting */
+.singularity-root .sgo-sat-wm {
+  display: block;
+  transform: rotate(calc(-1 * var(--a)));
+  animation: sgo-spin-reverse 90s linear infinite;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: grayscale(1);
+  opacity: 0.78;
+}
+
+.singularity-root .sgo-sat-wm.is-cursor { width: 86px; height: 22px; background-image: url('/logos/cursor.dark.svg'); }
+.singularity-root .sgo-sat-wm.is-ramp { width: 68px; height: 18px; background-image: url('/logos/ramp.dark.svg'); }
+.singularity-root .sgo-sat-wm.is-profound { width: 104px; height: 18px; background-image: url('/logos/profound.dark.svg'); }
+.singularity-root .sgo-sat-wm.is-partiful { width: 84px; height: 19px; background-image: url('/logos/partiful.dark.svg'); }
+.singularity-root .sgo-sat-wm.is-clickhouse { width: 98px; height: 18px; background-image: url('/logos/clickhouse.dark.svg'); }
+
+@keyframes sgo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* the reverse spin starts from the static counter-angle, so the pair of
+   90s tracks cancels exactly and the marks never invert */
+@keyframes sgo-spin-reverse {
+  to {
+    transform: rotate(calc(-1 * var(--a) - 360deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .singularity-root .sgo-ring,
+  .singularity-root .sgo-sat-wm {
+    animation: none;
+  }
+}
+
+.singularity-root .sgo-well-foot {
+  margin-top: 18px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.44);
+}
+
+/* ---- the witness ---- */
+
+.singularity-root .sgo-witness {
+  position: relative;
+  padding: clamp(72px, 8.4vw, 122px) var(--tc-gut);
+  overflow: clip;
+}
+
+.singularity-root .sgo-witness-arc {
+  position: absolute;
+  right: -18%;
+  top: -62%;
+  width: 60vw;
+  height: 60vw;
+  border: 1px dashed var(--tc-hair);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.singularity-root .sgo-witness-plate {
+  position: relative;
+  margin: 0;
+}
+
+.singularity-root .sgo-witness-plate blockquote {
+  margin: 0;
+}
+
+.singularity-root .sgo-witness-plate blockquote p {
+  max-width: 26ch;
+  font-family: var(--tc-disp);
+  font-size: clamp(26px, 3.3vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  line-height: 1.16;
+  color: var(--tc-ink);
+}
+
+.singularity-root .sgo-witness-plate blockquote p::before {
+  content: '“';
+}
+
+.singularity-root .sgo-witness-plate blockquote p::after {
+  content: '”';
+}
+
+.singularity-root .sgo-witness-plate figcaption {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 26px;
+}
+
+.singularity-root .sgo-witness-plate figcaption span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .sgo-witness-plate figcaption b {
+  font-weight: 600;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .sgo-wm {
+  display: block;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: grayscale(1);
+  opacity: 0.66;
+}
+
+.singularity-root .sgo-wm.is-cursor {
+  height: 18px;
+  aspect-ratio: 739 / 186;
+  background-image: url('/logos/cursor.light.svg');
+}
+
+[data-theme='dark'] .singularity-root .sgo-wm.is-cursor {
+  background-image: url('/logos/cursor.dark.svg');
+}
+
+@media (max-width: 880px) {
+  .singularity-root .sgo-dials {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .singularity-root .sgo-sat-wm {
+    transform: rotate(calc(-1 * var(--a))) scale(0.78);
+  }
+}
