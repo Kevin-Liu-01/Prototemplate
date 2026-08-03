@@ -42,15 +42,6 @@ export const metadata = {
 const SITES = DIRECTIONS.filter((d) => d.site);
 const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
 
-/** The rules the research settled on — the post's only list. */
-const RULES = [
-  'One ruled column carries the page; the rails and hatch spacers do the separating.',
-  'Four colors — ink, raised ink, titanium, paper — plus exactly one spectral accent per page.',
-  'Depth is earned with lines and material, never with shadows.',
-  'Everything on the page is a real artifact — a running terminal, a served file, a measured width — never a picture of one.',
-  'If two borders touch, one of them is wrong.',
-] as const;
-
 /** The presenter's actual running order. */
 const DECK = [
   { n: '01', name: 'Intro', note: 'the nameplate' },
@@ -106,12 +97,6 @@ export default function IndexPage() {
               that judged them, and the five full sites that came out the other end. Everything
               here is live — real pages, not mockups.
             </p>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec'>
-            <h2>Why I started</h2>
             <p>
               The current site grew the way most startup sites do — section by section, launch by
               launch, each addition reasonable and the whole slowly losing its argument. I wanted
@@ -119,57 +104,39 @@ export default function IndexPage() {
               when the answer is built from the ground up?
             </p>
             <p>
-              So instead of one redesign, I built many, and made them compete.
+              So instead of one redesign, I built many, made them compete, and built the tooling
+              to judge them — down to a pixel auditor that walks every rendered line on every
+              page and fails a round on a single doubled rule.
             </p>
           </section>
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
-            <h2>The research</h2>
-            <p>
-              Before opening a file I pulled apart the sites engineers actually respect — the
-              quiet, machined ones that never raise their voice. What they share is not a style,
-              it is discipline. These are the rules I kept:
-            </p>
-            <ul className='pt-post-rules'>
-              {RULES.map((rule) => (
-                <li key={rule}>{rule}</li>
-              ))}
-            </ul>
-            <p>
-              I also built the tooling to hold that bar: a pixel auditor that walks every rendered
-              line on every page, in both themes and at two widths, and fails the round on any
-              doubled, missing, or invisible rule.
-            </p>
+          <section className='pt-sec pt-feature-sec'>
+            <div className='pt-feature'>
+              <PrismaticField className='pt-feature-field' preset='1' speed={0.4} params={{ exposureScale: 4600 }} />
+              <div>
+                <h2>Walk the whole thing</h2>
+                <p>
+                  The full deck — the storyboard, the principles, every live prototype, and the
+                  scoreboard that picked the winners.
+                </p>
+                <Link className='pt-feature-cta' href='/present'>
+                  ▶ Open the deck
+                </Link>
+              </div>
+              <div className='pt-deck'>
+                {DECK.map((slide) => (
+                  <div className='pt-deck-row' key={slide.n}>
+                    <b>
+                      {slide.n} {slide.name}
+                    </b>
+                    <span>{slide.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec'>
-            <h2>What the exploration found</h2>
-            <p>
-              Twenty-plus directions got built; thirteen survived review. Some are quiet
-              evolutions of the current site, some are physics experiments with type. Each row
-              below is a live page.
-            </p>
-          </section>
-
-          <div className='pt-rows pt-post-rows'>
-            {EXPLORATIONS.map((direction) => (
-              <Link className='pt-row' href={`/d/${direction.slug}`} key={direction.slug}>
-                <span className='pt-row-label'>{direction.label}</span>
-                <span className='pt-row-main'>
-                  <h3>{direction.name}</h3>
-                  <p>{direction.concept}</p>
-                </span>
-                <span aria-hidden='true' className='pt-row-shot'>
-                  <img alt='' className='is-light' loading='lazy' src={`/shots/light/${direction.slug}.jpg`} />
-                  <img alt='' className='is-dark' loading='lazy' src={`/shots/dark/${direction.slug}.jpg`} />
-                </span>
-              </Link>
-            ))}
-          </div>
 
           <div className='pt-hatch' aria-hidden='true' />
 
@@ -200,35 +167,43 @@ export default function IndexPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-feature-sec'>
-            <div className='pt-feature'>
-              <PrismaticField className='pt-feature-field' preset='1' speed={0.4} params={{ exposureScale: 4600 }} />
-              <div>
-                <h2>Walk the whole thing</h2>
-                <p>
-                  The full deck — the storyboard, the principles, every live prototype, and the
-                  scoreboard that picked the winners.
-                </p>
-                <Link className='pt-feature-cta' href='/present'>
-                  ▶ Open the deck
-                </Link>
-              </div>
-              <div className='pt-deck'>
-                {DECK.map((slide) => (
-                  <div className='pt-deck-row' key={slide.n}>
-                    <b>
-                      {slide.n} {slide.name}
-                    </b>
-                    <span>{slide.note}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <section className='pt-sec pt-post-sec'>
+            <h2>Every direction</h2>
+            <p>
+              Twenty-plus directions got built; thirteen survived review. Some are quiet
+              evolutions of the current site, some are physics experiments with type. Each row
+              below is a live page.
+            </p>
           </section>
+
+          <div className='pt-rows pt-post-rows'>
+            {EXPLORATIONS.map((direction) => (
+              <Link className='pt-row' href={`/d/${direction.slug}`} key={direction.slug}>
+                <span className='pt-row-label'>{direction.label}</span>
+                <span className='pt-row-main'>
+                  <h3>{direction.name}</h3>
+                  <p>{direction.concept}</p>
+                </span>
+                <span aria-hidden='true' className='pt-row-shot'>
+                  <img alt='' className='is-light' loading='lazy' src={`/shots/light/${direction.slug}.jpg`} />
+                  <img alt='' className='is-dark' loading='lazy' src={`/shots/dark/${direction.slug}.jpg`} />
+                </span>
+              </Link>
+            ))}
+          </div>
         </article>
 
         <footer className='pt-foot'>
-          <span>Prototemplate</span>
+          <span className='pt-foot-brand'>
+            <span className='pt-mark' aria-hidden>
+              <i className='pt-mark-line is-h is-top' />
+              <i className='pt-mark-line is-h is-bot' />
+              <i className='pt-mark-line is-v is-l' />
+              <i className='pt-mark-line is-v is-r' />
+              <i className='pt-mark-fill' />
+            </span>
+            Prototemplate
+          </span>
           <span className='pt-foot-right'>
             prototype × template
             <a

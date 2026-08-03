@@ -1068,3 +1068,33 @@
 .pt-compare-face img {
   -webkit-user-drag: none;
 }
+
+/* ---- footer brand: the mark beside the name ---- */
+.pt-foot-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---- the mark remembers: hovering the HDR core brings back the old
+   hatched fill; leaving restores the chroma ---- */
+.pt-mark-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--pt-paper);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 2px,
+    var(--pt-ink-2) 2px,
+    var(--pt-ink-2) 3px
+  );
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+
+.pt-nav-brand:hover .pt-mark-fill::after,
+.pt-foot-brand:hover .pt-mark-fill::after {
+  opacity: 1;
+}
