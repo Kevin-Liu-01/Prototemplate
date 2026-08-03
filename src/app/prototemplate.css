@@ -624,6 +624,55 @@
   display: none;
 }
 
+/* ---- the full-site rows: the whole row covers the home, and two page
+   links (home / enterprise) sit above the cover ---- */
+.pt-row-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.pt-row.is-site:focus-within {
+  background: var(--pt-white);
+}
+
+[data-theme='dark'] .pt-root .pt-row.is-site:focus-within {
+  background: var(--pt-hair-2);
+}
+
+.pt-row.is-site:focus-within::before {
+  opacity: 1;
+}
+
+.pt-site-pages {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pt-site-pages a {
+  font-family: var(--pt-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pt-ink-2);
+  border: 1px solid var(--pt-hair);
+  border-radius: 999px;
+  padding: 2px 10px;
+  text-decoration: none;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.pt-site-pages a:hover,
+.pt-site-pages a:focus-visible {
+  color: var(--pt-ink);
+  border-color: var(--pt-ink-3);
+}
+
 [data-theme='dark'] .pt-root .pt-row-shot img.is-light {
   display: none;
 }

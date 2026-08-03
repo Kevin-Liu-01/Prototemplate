@@ -36,6 +36,10 @@ export const metadata = {
   },
 };
 
+/** The five full site concepts vs the single-page explorations. */
+const SITES = DIRECTIONS.filter((d) => d.site);
+const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
+
 /** The presenter's actual running order. */
 const DECK = [
   { n: '01', name: 'Intro', note: 'the nameplate' },
@@ -106,14 +110,53 @@ export default function IndexPage() {
 
         <div className='pt-hatch' aria-hidden='true' />
 
+        {/* the five FULL SITES — home + enterprise per concept — get their own
+            shelf above the exploration index: the whole row opens the home,
+            the two page links reach each face directly */}
         <section className='pt-sec'>
           <header className='pt-index-head'>
-            <h2>Every direction.</h2>
-            <span>{DIRECTIONS.length} directions · one storyboard</span>
+            <h2>Five full sites.</h2>
+            <span>{SITES.length} concepts · home + enterprise</span>
           </header>
 
           <div className='pt-rows'>
-            {DIRECTIONS.map((direction) => (
+            {SITES.map((site) => (
+              <div className='pt-row is-site' key={site.slug}>
+                <Link
+                  aria-label={`${site.name} — home`}
+                  className='pt-row-cover'
+                  href={`/d/${site.slug}`}
+                />
+                <span className='pt-row-label'>{site.label}</span>
+                <span className='pt-row-main'>
+                  <h3>{site.name}</h3>
+                  <p>{site.concept}</p>
+                  <span className='pt-site-pages'>
+                    <Link href={`/d/${site.slug}`}>home</Link>
+                    <Link href={`/d/${site.slug}/enterprise`}>enterprise</Link>
+                  </span>
+                </span>
+                <span className='pt-row-tone'>{site.tone}</span>
+                <span className='pt-row-sig'>{site.signature}</span>
+                <span aria-hidden='true' className='pt-row-shot'>
+                  <img alt='' className='is-light' loading='lazy' src={`/shots/light/${site.slug}.jpg`} />
+                  <img alt='' className='is-dark' loading='lazy' src={`/shots/dark/${site.slug}.jpg`} />
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div className='pt-hatch' aria-hidden='true' />
+
+        <section className='pt-sec'>
+          <header className='pt-index-head'>
+            <h2>Every direction.</h2>
+            <span>{EXPLORATIONS.length} directions · one storyboard</span>
+          </header>
+
+          <div className='pt-rows'>
+            {EXPLORATIONS.map((direction) => (
               <Link className='pt-row' href={`/d/${direction.slug}`} key={direction.slug}>
                 <span className='pt-row-label'>{direction.label}</span>
                 <span className='pt-row-main'>

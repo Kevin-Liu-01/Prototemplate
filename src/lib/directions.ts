@@ -16,6 +16,12 @@ export type Direction = {
   tone: Tone;
   /** The one motion moment this direction is built around. */
   signature: string;
+  /**
+   * A full site concept rather than a single exploration page: the slug is a
+   * toolchain-based home and /d/<slug>/enterprise is its enterprise page.
+   * The index lists these in their own section.
+   */
+  site?: boolean;
 };
 
 /**
@@ -158,6 +164,7 @@ export const DIRECTIONS: Direction[] = [
     n: 24,
     label: '14',
     slug: 'singularity-dossier',
+    site: true,
     name: 'Dossier',
     concept:
       'A full site: the toolchain home with the every-stack argument folded INTO the hero terminal (one less section), and a /enterprise page that reads as an evidence file — exhibits, a certificate wall, an audit ledger under the gate.',
@@ -168,6 +175,7 @@ export const DIRECTIONS: Direction[] = [
     n: 24,
     label: '15',
     slug: 'singularity-orbit',
+    site: true,
     name: 'Orbit',
     concept:
       'A full site: the toolchain home compressed — the hero terminal collapses to a one-line session and a slim table strip — and a /enterprise page that argues with gravity: dials, the customers riding a live orbit, one witness.',
@@ -178,6 +186,7 @@ export const DIRECTIONS: Direction[] = [
     n: 24,
     label: '16',
     slug: 'singularity-signal',
+    site: true,
     name: 'Signal',
     concept:
       'A full site: the toolchain home with the terminal split into session and output panes — cause and effect at once — and a /enterprise page as the broadcast: intercepts, a self-typing rollout log, the beam.',
@@ -188,6 +197,7 @@ export const DIRECTIONS: Direction[] = [
     n: 24,
     label: '17',
     slug: 'singularity-observatory',
+    site: true,
     name: 'Observatory',
     concept:
       'A full site: the toolchain home whose terminal walks three stages — 01 install, 02 translate, 03 serve — and a /enterprise page of measured proof: the meridian globe, the star catalog, the readouts.',
@@ -198,6 +208,7 @@ export const DIRECTIONS: Direction[] = [
     n: 24,
     label: '18',
     slug: 'singularity-procession',
+    site: true,
     name: 'Procession',
     concept:
       'A full site: the toolchain home with no hero card at all — the first fold is one full-width console — and a /enterprise page as the march: the word-swarm manifesto and customers as monuments.',
