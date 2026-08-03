@@ -1,45 +1,50 @@
 import DirectionDock from '@/components/shared/DirectionDock';
+import EnterpriseNavRebase from '@/components/shared/EnterpriseNavRebase';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import EnterpriseContact from '../singularity/sections/EnterpriseContact';
-import Hero from '../singularity/sections/Hero';
-import SiteFooter from '../singularity/sections/SiteFooter';
-import TopNav from '../singularity/sections/TopNav';
+import Bento from '../toolchain/sections/Bento';
+import DarkBand from '../toolchain/sections/DarkBand';
+import Frameworks from '../toolchain/sections/Frameworks';
+import Pricing from '../toolchain/sections/Pricing';
+import Review from '../toolchain/sections/Review';
+import SiteFooter from '../toolchain/sections/SiteFooter';
+import StoryCinema from '../toolchain/sections/StoryCinema';
+import TopNav from '../toolchain/sections/TopNav';
 
-import Epilogue from './sections/Epilogue';
-import Manifesto from './sections/Manifesto';
-import Monuments from './sections/Monuments';
+import HomeHero from './sections/HomeHero';
 
-import '../singularity/styles.css';
-import './styles.css';
+import '../toolchain/styles.css';
+import './home.css';
 
 export const metadata = {
-  title: 'Singularity · Procession — GT Redesign',
+  title: 'Procession — GT Redesign',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
 /**
- * Singularity · Procession — the gate, then the march. The word-swarm
- * prints the manifesto, the customers pass one at a time as monuments in
- * the dark — each a giant mark, one sentence, one measured line — and the
- * epilogue points the reader at the contact bay. Pure ceremony, spent on
- * conversion.
+ * Singularity Procession home — the console hero. There is no white card:
+ * the hero IS one full-bleed dark console and the page opens inside it,
+ * headline set light-on-dark above the raw gt CLI transcript.
  */
-export default function SingularityProcessionPage() {
+export default function Page() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgp-root'>
+      <div className='toolchain-root sgph-root'>
         <TopNav />
-        <Hero />
+        <EnterpriseNavRebase href='/d/singularity-procession/enterprise' />
+
         <div className='tc-rail'>
-          <Manifesto />
+          <HomeHero />
+          <Frameworks />
+          <Bento />
+          <StoryCinema />
+          <Review />
         </div>
-        <Monuments />
+
+        <DarkBand />
+
         <div className='tc-rail'>
-          <Epilogue />
-        </div>
-        <EnterpriseContact />
-        <div className='tc-rail'>
+          <Pricing />
           <SiteFooter />
         </div>
       </div>

@@ -20,7 +20,11 @@
  ],
  "any-type": [
   "src/app/d/concrete-source/sections/Hero.tsx:213",
+  "src/app/d/singularity-dossier/sections/HomeHero.tsx:306",
   "src/app/d/wide-rule/sections/Hero.tsx:461",
+  "src/app/d/singularity-procession/sections/HomeHero.tsx:159",
+  "src/app/d/singularity-signal/sections/HomeHero.tsx:162",
+  "src/app/d/singularity-observatory/sections/HomeHero.tsx:239",
   "src/app/d/toolchain/sections/Hero.tsx:276"
  ],
  "raw-hex-in-tsx": [
@@ -43,6 +47,7 @@
   "src/app/d/concrete-mono/sections/Hero.tsx:307",
   "src/app/d/glyph-rain/sections/band/inkField.ts:26",
   "src/app/d/prism-light/sections/PrismScene.tsx:72",
+  "src/app/d/singularity-procession/sections/HomeHero.tsx:477",
   "src/app/d/dither-field/sections/Hero.tsx:93",
   "src/app/d/dither-field/sections/DarkBand.tsx:106",
   "src/app/d/dither-field/sections/DarkBand.tsx:115",
@@ -75,7 +80,7 @@
   "src/components/shared/StorySection.tsx:769",
   "src/components/shared/StorySection.tsx:770",
   "src/components/shared/story/StoryCodeScene.tsx:256",
-  "src/lib/glyph-field.ts:108",
+  "src/lib/glyph-field.ts:104",
   "src/lib/dither.ts:334",
   "src/lib/dither.ts:335"
  ],

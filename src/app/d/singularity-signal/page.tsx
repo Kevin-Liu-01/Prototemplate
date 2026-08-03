@@ -1,45 +1,50 @@
 import DirectionDock from '@/components/shared/DirectionDock';
+import EnterpriseNavRebase from '@/components/shared/EnterpriseNavRebase';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import EnterpriseContact from '../singularity/sections/EnterpriseContact';
-import Hero from '../singularity/sections/Hero';
-import SiteFooter from '../singularity/sections/SiteFooter';
-import TopNav from '../singularity/sections/TopNav';
+import Bento from '../toolchain/sections/Bento';
+import DarkBand from '../toolchain/sections/DarkBand';
+import Frameworks from '../toolchain/sections/Frameworks';
+import Pricing from '../toolchain/sections/Pricing';
+import Review from '../toolchain/sections/Review';
+import SiteFooter from '../toolchain/sections/SiteFooter';
+import StoryCinema from '../toolchain/sections/StoryCinema';
+import TopNav from '../toolchain/sections/TopNav';
 
-import Assurance from './sections/Assurance';
-import Intercepts from './sections/Intercepts';
-import TransmissionLog from './sections/TransmissionLog';
+import HomeHero from './sections/HomeHero';
 
-import '../singularity/styles.css';
-import './styles.css';
+import '../toolchain/styles.css';
+import './home.css';
 
 export const metadata = {
-  title: 'Singularity · Signal — GT Redesign',
+  title: 'Signal — GT Redesign',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
 /**
- * Singularity · Signal — the gate, then the broadcast. What comes out of
- * the horizon is a signal: customer intercepts on paper, a live rollout
- * log typing itself out over raining glyphs with the beam running under
- * it, and the assurance strip for the people who sign. The aura is a
- * control room, not a brochure.
+ * Singularity · Signal home — the input/output split. Cause and effect are
+ * visible at once: one terminal window, two panes. What you type on the
+ * left, what the machine does on the right. No toggle, no preview face.
  */
-export default function SingularitySignalPage() {
+export default function Page() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgs-root'>
+      <div className='toolchain-root sgsh-root'>
         <TopNav />
-        <Hero />
+        <EnterpriseNavRebase href='/d/singularity-signal/enterprise' />
+
         <div className='tc-rail'>
-          <Intercepts />
+          <HomeHero />
+          <Frameworks />
+          <Bento />
+          <StoryCinema />
+          <Review />
         </div>
-        <TransmissionLog />
+
+        <DarkBand />
+
         <div className='tc-rail'>
-          <Assurance />
-        </div>
-        <EnterpriseContact />
-        <div className='tc-rail'>
+          <Pricing />
           <SiteFooter />
         </div>
       </div>

@@ -1,0 +1,159 @@
+/* ============================================================
+   SINGULARITY-ORBIT HOME — "the compact strip"
+   The toolchain hero's argument at ~60% of the height: the white
+   card gains a one-line live session under the CTA row, and the
+   dark band slims to a strip carrying only the translation table —
+   no window chrome, no bar, no faces.
+
+   Every rule is scoped .toolchain-root.sgoh-root so it beats the
+   toolchain's own .toolchain-root rules; the class is doubled
+   where a hero-terminal.css rule already doubles its root.
+   ============================================================ */
+
+/* ---------- the one-line live session (inside the white card) ---------- */
+
+.toolchain-root.sgoh-root .sgoh-cli {
+  margin: 18px auto 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: 14px;
+  row-gap: 4px;
+}
+
+/* the command is terminal code, so it speaks mono; the readout is a UI
+   label, so it speaks sans — only its figures keep the mono voice */
+.toolchain-root.sgoh-root .sgoh-cli-cmd {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--tc-ink);
+  white-space: pre;
+}
+
+.toolchain-root.sgoh-root .sgoh-cli-dollar {
+  color: var(--tc-ink-4);
+}
+
+/* the three states stack in one grid cell sized to the widest, so the
+   line holds its width while the readout swaps — nothing ever reflows */
+.toolchain-root.sgoh-root .sgoh-cli-status {
+  display: inline-grid;
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--tc-ink-2);
+  text-align: left;
+}
+
+.toolchain-root.sgoh-root .sgoh-cli-status > span {
+  grid-area: 1 / 1;
+  justify-self: start;
+  white-space: nowrap;
+}
+
+.toolchain-root.sgoh-root .sgoh-num {
+  font-family: var(--tc-mono);
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* completed work only — the surface is the (theme-mapped) card, so the
+   green flips with it: deep on white, the plate's own mint on ink */
+.toolchain-root.sgoh-root .sgoh-ok {
+  font-style: normal;
+  font-weight: 500;
+  color: #2e9e63;
+}
+
+[data-theme='dark'] .toolchain-root.sgoh-root .sgoh-ok {
+  color: #7ed3a2;
+}
+
+/* ---------- the strip: the band slimmed to the table ---------- */
+
+/* Doubled sgoh-root: hero-terminal.css sets the band's padding at
+   .toolchain-root.toolchain-root, so this must outrank four classes.
+   The tct-* inks normally live on .tct-win; with the window gone the
+   strip carries them for the table's chips and strings. */
+.toolchain-root.sgoh-root.sgoh-root .tc-hero-cell.sgoh-strip {
+  --tct-ink: rgba(255, 255, 255, 0.87);
+  --tct-dim: rgba(255, 255, 255, 0.45);
+  --tct-faint: rgba(255, 255, 255, 0.3);
+  --tct-rule: rgba(255, 255, 255, 0.09);
+  --tct-loc: #9db9ff;
+  --tct-loc-line: rgba(157, 185, 255, 0.38);
+  --tct-loc-wash: rgba(120, 156, 255, 0.09);
+  --tct-tr: #cfe0ff;
+  --tct-ok: #7ed3a2;
+
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  padding: 26px clamp(14px, 3vw, 44px);
+}
+
+/* the table's own type context — what .tct-body provided in the window */
+.toolchain-root.sgoh-root .sgoh-table {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--tct-ink);
+}
+
+/* the 2ch transcript indent has no transcript to hang from */
+.toolchain-root.sgoh-root .sgoh-table .tct-table {
+  margin-left: 0;
+}
+
+/* translucent wash under a translucent hairline on one element: clip the
+   wash to the padding box so the border reads as a single 1px stroke */
+.toolchain-root.sgoh-root .sgoh-table .tct-chip {
+  background-clip: padding-box;
+}
+
+/* ---------- narrow: the strip's rows stack (mirrors the 760px window
+   rules, a step earlier — the centered table runs out of rail sooner) ---------- */
+
+@media (max-width: 920px) {
+  .toolchain-root.sgoh-root.sgoh-root .tc-hero-cell.sgoh-strip {
+    min-height: 0;
+  }
+
+  .toolchain-root.sgoh-root .sgoh-table {
+    font-size: 12.5px;
+    line-height: 21px;
+  }
+
+  .toolchain-root.sgoh-root .sgoh-table .tct-table {
+    display: block;
+  }
+
+  .toolchain-root.sgoh-root .sgoh-table .tct-row {
+    display: block;
+    margin-bottom: 9px;
+  }
+
+  .toolchain-root.sgoh-root .sgoh-table .tct-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .toolchain-root.sgoh-root .sgoh-table .tct-src {
+    display: block;
+  }
+
+  .toolchain-root.sgoh-root .sgoh-table .tct-cell,
+  .toolchain-root.sgoh-root .sgoh-table .tct-cyc {
+    margin-left: 2ch;
+    margin-right: 12px;
+  }
+
+  .toolchain-root.sgoh-root .sgoh-table .tct-cyc {
+    display: inline-grid;
+  }
+}

@@ -1,0 +1,128 @@
+/* ============================================================
+   SINGULARITY · OBSERVATORY HOME — the staged pipeline.
+   The hero terminal presents the product as three stages you can
+   walk: 01 install, 02 translate, 03 serve. Everything here is an
+   override on the toolchain hero's tct-* grammar, scoped under
+   .sgbh-root so it beats the base rules on specificity.
+
+   Only the stage numbers and the terminal artifact are mono; the
+   stage words ride the page's sans.
+   ============================================================ */
+
+/* ---- the stage control: three segments, number + word ---- */
+
+.toolchain-root.sgbh-root .tct-seg.sgbh-stageseg button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 4px 12px;
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+
+.toolchain-root.sgbh-root .sgbh-stageseg .sgbh-num {
+  font-family: var(--tc-mono);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--tct-faint);
+  transition: color 0.16s ease;
+}
+
+.toolchain-root.sgbh-root .sgbh-stageseg button:hover .sgbh-num {
+  color: var(--tct-dim);
+}
+
+.toolchain-root.sgbh-root .sgbh-stageseg button[data-on='true'] .sgbh-num {
+  color: rgba(16, 16, 16, 0.55);
+}
+
+/* ---- the three faces share one grid cell ----
+   The tallest face sets the window's height, so walking the stages
+   never moves the band. Hidden faces keep the base tct-face fade and
+   add the same small rise the toolchain preview face used. */
+
+.toolchain-root.sgbh-root .tct-stage {
+  display: grid;
+}
+
+.toolchain-root.sgbh-root .sgbh-face {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.toolchain-root.sgbh-root .sgbh-face[data-on='false'] {
+  transform: translateY(8px);
+}
+
+/* ---- stage 03: the served artifact ----
+   One plate inside the session's own body inset: the request address
+   on top, the payload gt wrote below it. Translucent wash under a
+   translucent hairline, so the background clips to the padding box;
+   the box's single rule is nowhere near the face's outer edges. */
+
+.toolchain-root.sgbh-root .sgbh-artifact {
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+.toolchain-root.sgbh-root .sgbh-addr {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--tct-dim);
+}
+
+.toolchain-root.sgbh-root .sgbh-addr b {
+  font-weight: 500;
+  color: var(--tct-loc);
+}
+
+.toolchain-root.sgbh-root .sgbh-addr .sgbh-file {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--tct-faint);
+}
+
+/* the payload keeps the transcript's restraint (tct-payload-code sets
+   keys dim, leaves lit); long lines scroll instead of clipping */
+.toolchain-root.sgbh-root .sgbh-payload {
+  padding: 10px 14px 12px;
+  overflow-x: auto;
+}
+
+.toolchain-root.sgbh-root .sgbh-payload .tct-payload-code {
+  font-size: 10.5px;
+}
+
+/* ---- narrow: the control keeps all three segments on one line ---- */
+
+@media (max-width: 760px) {
+  .toolchain-root.sgbh-root .tct-seg.sgbh-stageseg button {
+    gap: 5px;
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 520px) {
+  .toolchain-root.sgbh-root .sgbh-stageseg .sgbh-num {
+    display: none;
+  }
+
+  .toolchain-root.sgbh-root .sgbh-addr .sgbh-file {
+    display: none;
+  }
+}

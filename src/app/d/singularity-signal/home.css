@@ -1,0 +1,137 @@
+/* ============================================================
+   SINGULARITY · SIGNAL HOME — the input/output split.
+   One terminal window, one face, two panes: what you type on the
+   left (the session), what the machine does on the right (the
+   output). No toggle, no preview — cause and effect are visible
+   at once, separated by a single vertical hairline.
+
+   Every rule is scoped .toolchain-root.sgsh-root so it outranks
+   toolchain's own .toolchain-root declarations of equal order.
+   ============================================================ */
+
+/* Two panes need more room than one column did: the window widens
+   inside the band but keeps its ring, radius and plate. */
+.toolchain-root.sgsh-root .tct-win {
+  max-width: 920px;
+}
+
+/* ---- the bar's pane labels: the seg's clothes, nothing to press ----
+   Two static captions in the segmented control's hairline box — same
+   metrics, same mono voice — with a single 1px divider echoing the
+   split below. No hover, no active chip, no cursor: it is a legend,
+   not a control. */
+.toolchain-root.sgsh-root .sgsh-panes {
+  display: flex;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+}
+
+.toolchain-root.sgsh-root .sgsh-panes span {
+  padding: 4px 13px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--tct-dim);
+}
+
+/* the legend's own divider — one stroke, on the second span only */
+.toolchain-root.sgsh-root .sgsh-panes span + span {
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* ---- the split stage: session 0.9fr, output 1.1fr ----
+   The output pane gets the wider column — translations carry chips
+   and three scripts, the session is short commands. The divider is
+   ONE stroke: border-left on the output pane only. */
+.toolchain-root.sgsh-root .tct-stage.sgsh-split {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+.toolchain-root.sgsh-root .sgsh-pane {
+  min-width: 0;
+}
+
+.toolchain-root.sgsh-root .sgsh-pane.is-session {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-right: 22px;
+}
+
+.toolchain-root.sgsh-root .sgsh-pane.is-output {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 24px;
+}
+
+/* the idle prompt sits on the session's floor: the pane stays alive
+   for exactly as long as the output pane is answering */
+.toolchain-root.sgsh-root .sgsh-idle {
+  margin-top: auto;
+}
+
+/* ---- the table, re-set for a pane's measure ----
+   Four columns across ~430px would force a horizontal scroll, so
+   inside the split each row stacks: source on its own line, the
+   locale cells flowing inline beneath it — the same grammar the
+   transcript already uses under 760px. */
+.toolchain-root.sgsh-root .sgsh-split .tct-table {
+  display: block;
+  margin-left: 2ch;
+}
+
+.toolchain-root.sgsh-root .sgsh-split .tct-row {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.toolchain-root.sgsh-root .sgsh-split .tct-row:last-child {
+  margin-bottom: 0;
+}
+
+.toolchain-root.sgsh-root .sgsh-split .tct-src {
+  display: block;
+}
+
+.toolchain-root.sgsh-root .sgsh-split .tct-cell,
+.toolchain-root.sgsh-root .sgsh-split .tct-cyc {
+  margin-left: 2ch;
+  margin-right: 12px;
+}
+
+.toolchain-root.sgsh-root .sgsh-split .tct-cyc {
+  display: inline-grid;
+}
+
+/* ---- narrow: the split stacks, output below session ----
+   The vertical hairline becomes a horizontal one — still a single
+   stroke, still on the output pane only. The session's auto-margin
+   idles out (no free height), so the prompt simply closes the pane. */
+@media (max-width: 880px) {
+  .toolchain-root.sgsh-root .tct-stage.sgsh-split {
+    grid-template-columns: 1fr;
+  }
+
+  .toolchain-root.sgsh-root .sgsh-pane.is-session {
+    padding-right: 28px;
+    padding-bottom: 18px;
+  }
+
+  .toolchain-root.sgsh-root .sgsh-pane.is-output {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 28px;
+  }
+}
+
+@media (max-width: 760px) {
+  .toolchain-root.sgsh-root .sgsh-pane.is-session {
+    padding-right: 16px;
+  }
+
+  .toolchain-root.sgsh-root .sgsh-pane.is-output {
+    padding-left: 16px;
+  }
+}

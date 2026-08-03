@@ -1,45 +1,50 @@
 import DirectionDock from '@/components/shared/DirectionDock';
+import EnterpriseNavRebase from '@/components/shared/EnterpriseNavRebase';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import EnterpriseContact from '../singularity/sections/EnterpriseContact';
-import Hero from '../singularity/sections/Hero';
-import SiteFooter from '../singularity/sections/SiteFooter';
-import TopNav from '../singularity/sections/TopNav';
+import Bento from '../toolchain/sections/Bento';
+import DarkBand from '../toolchain/sections/DarkBand';
+import Frameworks from '../toolchain/sections/Frameworks';
+import Pricing from '../toolchain/sections/Pricing';
+import Review from '../toolchain/sections/Review';
+import SiteFooter from '../toolchain/sections/SiteFooter';
+import StoryCinema from '../toolchain/sections/StoryCinema';
+import TopNav from '../toolchain/sections/TopNav';
 
-import Catalog from './sections/Catalog';
-import Observation from './sections/Observation';
-import Readouts from './sections/Readouts';
+import HomeHero from './sections/HomeHero';
 
-import '../singularity/styles.css';
-import './styles.css';
+import '../toolchain/styles.css';
+import './home.css';
 
 export const metadata = {
-  title: 'Singularity · Observatory — GT Redesign',
+  title: 'Observatory — GT Redesign',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
 /**
- * Singularity · Observatory — the gate, then the evidence measured from a
- * distance. Delivery observed on the meridian globe, the customers filed
- * as a star catalog with their statements as observation notes, and the
- * closing readouts row. The page convinces the way an observatory does:
- * nothing is claimed that was not measured.
+ * Singularity · Observatory home — the staged pipeline. The hero terminal
+ * presents the product as three stages you can walk: 01 install, 02
+ * translate, 03 serve. Everything below the hero is the toolchain SSOT.
  */
-export default function SingularityObservatoryPage() {
+export default function Page() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgb-root'>
+      <div className='toolchain-root sgbh-root'>
         <TopNav />
-        <Hero />
+        <EnterpriseNavRebase href='/d/singularity-observatory/enterprise' />
+
         <div className='tc-rail'>
-          <Observation />
+          <HomeHero />
+          <Frameworks />
+          <Bento />
+          <StoryCinema />
+          <Review />
         </div>
-        <Catalog />
+
+        <DarkBand />
+
         <div className='tc-rail'>
-          <Readouts />
-        </div>
-        <EnterpriseContact />
-        <div className='tc-rail'>
+          <Pricing />
           <SiteFooter />
         </div>
       </div>

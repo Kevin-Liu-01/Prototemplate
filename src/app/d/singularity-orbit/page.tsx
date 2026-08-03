@@ -1,45 +1,51 @@
 import DirectionDock from '@/components/shared/DirectionDock';
+import EnterpriseNavRebase from '@/components/shared/EnterpriseNavRebase';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import EnterpriseContact from '../singularity/sections/EnterpriseContact';
-import Hero from '../singularity/sections/Hero';
-import SiteFooter from '../singularity/sections/SiteFooter';
-import TopNav from '../singularity/sections/TopNav';
+import Bento from '../toolchain/sections/Bento';
+import DarkBand from '../toolchain/sections/DarkBand';
+import Frameworks from '../toolchain/sections/Frameworks';
+import Pricing from '../toolchain/sections/Pricing';
+import Review from '../toolchain/sections/Review';
+import SiteFooter from '../toolchain/sections/SiteFooter';
+import StoryCinema from '../toolchain/sections/StoryCinema';
+import TopNav from '../toolchain/sections/TopNav';
 
-import GravityWell from './sections/GravityWell';
-import Instruments from './sections/Instruments';
-import Witness from './sections/Witness';
+import HomeHero from './sections/HomeHero';
 
-import '../singularity/styles.css';
-import './styles.css';
+import '../toolchain/styles.css';
+import './home.css';
 
 export const metadata = {
-  title: 'Singularity · Orbit — GT Redesign',
+  title: 'Orbit — GT Redesign',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
 /**
- * Singularity · Orbit — the gate, then gravity as the argument. The proof
- * sections stay in the hero's physics: delivery metrics read as instrument
- * dials, the customers ride a real orbit around a second, smaller horizon,
- * and one witness speaks from inside the well. Conversion by gravitational
- * capture.
+ * Singularity-orbit home — "the compact strip". The toolchain hero's full
+ * windowed terminal collapses into two lighter artifacts: a one-line live
+ * session inside the white card, and a slim dark strip carrying only the
+ * translation table. Everything below the hero is the toolchain SSOT.
  */
-export default function SingularityOrbitPage() {
+export default function Page() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgo-root'>
+      <div className='toolchain-root sgoh-root'>
         <TopNav />
-        <Hero />
+        <EnterpriseNavRebase href='/d/singularity-orbit/enterprise' />
+
         <div className='tc-rail'>
-          <Instruments />
+          <HomeHero />
+          <Frameworks />
+          <Bento />
+          <StoryCinema />
+          <Review />
         </div>
-        <GravityWell />
+
+        <DarkBand />
+
         <div className='tc-rail'>
-          <Witness />
-        </div>
-        <EnterpriseContact />
-        <div className='tc-rail'>
+          <Pricing />
           <SiteFooter />
         </div>
       </div>

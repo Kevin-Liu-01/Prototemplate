@@ -1,0 +1,126 @@
+/* ============================================================
+   SINGULARITY · PROCESSION — HOME: the console hero.
+   There is no white card. The hero IS one full-bleed dark console
+   (#101010, the prismatic wash behind — flanks lit, centre dark)
+   and the page opens inside it: headline light-on-dark, then the
+   raw gt session with no window chrome, printed straight onto the
+   plate. The trust card keeps the toolchain grammar on paper below.
+   Every rule is scoped .toolchain-root.sgph-root so it beats the
+   toolchain sheet's own .toolchain-root rules.
+   ============================================================ */
+
+/* The console spans the viewport, so the section behind it only shows as
+   the strip under it (the trust card's ground). Guard the full-bleed pull
+   against a horizontal scrollbar: clip, never a scroll container. */
+.toolchain-root.sgph-root {
+  overflow-x: clip;
+}
+
+/* ---- the console band ---- */
+
+/* Ink flips to white INSIDE the console only: --tc-ink drives the every-word
+   guides and dust (currentColor), --thread-ink must be re-declared because
+   the toolchain sheet resolves it against --tc-ink at the root, not here. */
+.toolchain-root.sgph-root .sgph-console {
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.6);
+  --tc-ink-3: rgba(255, 255, 255, 0.45);
+  --tc-ink-4: rgba(255, 255, 255, 0.3);
+  --thread-ink: #ffffff;
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  padding: clamp(56px, 7vw, 96px) 0;
+  background: #101010;
+  color: #ffffff;
+  /* The one seam this band owns: the junction to the paper below it has no
+     neighboring rule (the trust card sits a full inset away). The top edge
+     adjoins the nav's own border-bottom, so it draws nothing. */
+  border-bottom: 1px solid rgba(138, 143, 152, 0.26);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* the rail-width column the console's content lives in */
+.toolchain-root.sgph-root .sgph-console-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+}
+
+/* ---- the headline block, light-on-dark ---- */
+
+/* The console's own padding owns the top; the block only spaces itself
+   from the transcript below. */
+.toolchain-root.sgph-root .sgph-console .tc-hero.sgph-head {
+  padding: 0 var(--tc-gut) clamp(40px, 5vw, 60px);
+}
+
+/* the light mark's ink strokes vanish on the plate — brand rule: invert.
+   The plate is #101010 in both themes, so this never remaps. */
+.toolchain-root.sgph-root .sgph-head .tc-hero-mark {
+  filter: invert(1);
+}
+
+/* CTA row: the solid button inverts (white plate, dark ink); the line
+   button is a single 1px white-alpha stroke. Translucent hover fills stop
+   at the border via the base .tc-btn background-clip. */
+.toolchain-root.sgph-root .sgph-console .tc-btn-solid {
+  background: #ffffff;
+  color: #101010;
+}
+
+.toolchain-root.sgph-root .sgph-console .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.toolchain-root.sgph-root .sgph-console .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  background: transparent;
+}
+
+.toolchain-root.sgph-root .sgph-console .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* the copy button, dark-styled: mono stays, the fill goes */
+.toolchain-root.sgph-root .sgph-console .tc-copy {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.toolchain-root.sgph-root .sgph-console .tc-copy:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.toolchain-root.sgph-root .sgph-console .tc-copy span:last-child {
+  color: rgba(255, 255, 255, 0.34);
+}
+
+/* ---- the session, chromeless ----
+   The .tct-win element stays for its token vocabulary (--tct-*), but the
+   window dressing goes: no ring, no radius, no plate-on-plate background —
+   the transcript prints straight onto the console. */
+.toolchain-root.sgph-root .sgph-console .tct-win {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  outline: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* ---- theme junctions ----
+   Dark mode: the page family is #070707; the section ground joins it so the
+   #101010 console stays a visibly raised plate rather than dissolving into
+   a #101010 ground. Its bottom seam re-inks for the dark junction. */
+[data-theme='dark'] .toolchain-root.sgph-root.sgph-root .tc-sec.tch-hero-sec {
+  --tch-ground: #070707;
+}
+
+[data-theme='dark'] .toolchain-root.sgph-root .sgph-console {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}

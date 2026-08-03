@@ -1,0 +1,82 @@
+/* ============================================================
+   SINGULARITY · DOSSIER — home overrides
+   One idea: the Frameworks section's argument — one toolchain,
+   every stack — folds into the hero terminal as a stack strip
+   under the window bar, so the page runs one section shorter.
+   The strip is styled as the window's own furniture: same plate,
+   same hairline gauge, sans labels (mono stays reserved for the
+   transcript and numbers).
+   Every rule is scoped .toolchain-root.sgdh-root so it outranks
+   toolchain's own .toolchain-root rules on specificity.
+   ============================================================ */
+
+/* the strip: a full-width row directly under the bar. Its only line is the
+   single 1px bottom hairline — the bar's own border-bottom rules the top,
+   34px away, and the buttons carry no borders between them. */
+.toolchain-root.sgdh-root .sgdh-stacks {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  padding: 0 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolchain-root.sgdh-root .sgdh-stacks button {
+  appearance: none;
+  position: relative;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  padding: 11px 12px 10px;
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: color 0.16s ease;
+}
+
+.toolchain-root.sgdh-root .sgdh-stacks button:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.toolchain-root.sgdh-root .sgdh-stacks button[data-on='true'] {
+  color: #ffffff;
+}
+
+/* the active underline sits exactly ON the strip's hairline (bottom: -1px):
+   one stroke swaps ink where the tab is lit — never a second parallel line */
+.toolchain-root.sgdh-root .sgdh-stacks button[data-on='true']::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 1px;
+  background: #ffffff;
+}
+
+/* the longer window title must never shove the segmented control — it
+   ellipsizes inside the bar's flex row instead */
+.toolchain-root.sgdh-root .tct-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* narrow: the six tabs wrap into rows rather than scrolling out of reach;
+   a wrapped row's underline still reads as the tab's own mark */
+@media (max-width: 760px) {
+  .toolchain-root.sgdh-root .sgdh-stacks {
+    flex-wrap: wrap;
+    padding: 0 2px;
+  }
+
+  .toolchain-root.sgdh-root .sgdh-stacks button {
+    padding: 10px 10px 9px;
+  }
+}
