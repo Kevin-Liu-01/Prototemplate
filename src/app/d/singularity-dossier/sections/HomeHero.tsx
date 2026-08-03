@@ -3,7 +3,15 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef, useState, type CSSProperties } from 'react';
+import { useRef, useState, type ComponentType, type CSSProperties } from 'react';
+
+import {
+  SiNextdotjs,
+  SiNodedotjs,
+  SiPython,
+  SiReact,
+  SiTanstack,
+} from '@icons-pack/react-simple-icons';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 
@@ -59,6 +67,25 @@ const STACKS: readonly Stack[] = [
   { name: 'Node.js', detected: 'Node.js · server' },
   { name: 'Python', detected: 'Python · scripts' },
 ];
+
+type StackMarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean };
+
+/** The saved React Native badge, mask-rendered in the tab's own ink —
+    same reasoning as the Frameworks tab strip: the bare atom would be
+    pixel-identical to the React mark at this size. */
+function ReactNativeStackMark({ className }: StackMarkProps) {
+  return <i className={className ? `${className} is-rn` : 'is-rn'} aria-hidden='true' />;
+}
+
+/** The real framework marks, monochrome at text size beside each label. */
+const STACK_MARKS: Record<string, ComponentType<StackMarkProps>> = {
+  'Next.js': SiNextdotjs,
+  React: SiReact,
+  'React Native': ReactNativeStackMark,
+  'TanStack Start': SiTanstack,
+  'Node.js': SiNodedotjs,
+  Python: SiPython,
+};
 
 const DEFAULT_STACK: Stack = STACKS[0] ?? { name: 'Next.js', detected: 'Next.js · App Router' };
 
@@ -766,11 +793,15 @@ export default function HomeHero() {
               id='frameworks' because it IS this page's frameworks content:
               the shared sections' #frameworks links land here. */}
           <div className='sgdh-stacks' id='frameworks' role='group' aria-label='Choose your stack'>
-            {STACKS.map((s) => (
-              <button type='button' key={s.name} data-on={stack.name === s.name} onClick={() => pickStack(s)}>
-                {s.name}
-              </button>
-            ))}
+            {STACKS.map((s) => {
+              const Mark = STACK_MARKS[s.name];
+              return (
+                <button type='button' key={s.name} data-on={stack.name === s.name} onClick={() => pickStack(s)}>
+                  {Mark ? <Mark className='sgdh-stack-mark' color='currentColor' aria-hidden /> : null}
+                  <span>{s.name}</span>
+                </button>
+              );
+            })}
           </div>
 
           <div className='tct-stage'>

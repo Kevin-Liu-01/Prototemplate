@@ -15,6 +15,7 @@ import HomeHero from './sections/HomeHero';
 
 import '../toolchain/styles.css';
 import './home.css';
+import '@/components/shared/home-terminal-colors.css';
 
 export const metadata = {
   title: 'Procession — GT Redesign',

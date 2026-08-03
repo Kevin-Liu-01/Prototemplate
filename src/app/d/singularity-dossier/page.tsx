@@ -20,6 +20,7 @@ import HomeHero from './sections/HomeHero';
 import '../toolchain/sections/logos-icons.css';
 import '../toolchain/styles.css';
 import './home.css';
+import '@/components/shared/home-terminal-colors.css';
 
 export const metadata = {
   title: 'Dossier — GT Redesign',
