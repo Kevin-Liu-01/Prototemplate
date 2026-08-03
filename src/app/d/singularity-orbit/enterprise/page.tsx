@@ -10,6 +10,9 @@ import GravityWell from '../sections/GravityWell';
 import Instruments from '../sections/Instruments';
 import Witness from '../sections/Witness';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly
+   (the toolchain enterprise subpage precedent) */
+import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
 import '../styles.css';
 

@@ -8,6 +8,8 @@ import Ledger from './sections/Ledger';
 import LocalesHero from './sections/LocalesHero';
 import Systems from './sections/Systems';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly */
+import '../sections/logos-icons.css';
 import '../styles.css';
 import './locales.css';
 

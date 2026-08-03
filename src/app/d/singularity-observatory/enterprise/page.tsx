@@ -10,6 +10,9 @@ import Catalog from '../sections/Catalog';
 import Observation from '../sections/Observation';
 import Readouts from '../sections/Readouts';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly
+   (the toolchain enterprise subpage precedent) */
+import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
 import '../styles.css';
 

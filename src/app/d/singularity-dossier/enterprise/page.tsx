@@ -10,6 +10,9 @@ import Ledger from '../sections/Ledger';
 import Procurement from '../sections/Procurement';
 import Testimony from '../sections/Testimony';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly
+   (the toolchain enterprise subpage precedent) */
+import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
 import '../styles.css';
 

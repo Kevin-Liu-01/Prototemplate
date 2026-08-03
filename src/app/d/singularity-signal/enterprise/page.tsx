@@ -10,6 +10,9 @@ import Assurance from '../sections/Assurance';
 import Intercepts from '../sections/Intercepts';
 import TransmissionLog from '../sections/TransmissionLog';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly
+   (the toolchain enterprise subpage precedent) */
+import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
 import '../styles.css';
 

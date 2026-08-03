@@ -10,6 +10,8 @@ import Controls from './sections/Controls';
 import GroupBand from './sections/GroupBand';
 import Signals from './sections/Signals';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly */
+import '../sections/logos-icons.css';
 import '../styles.css';
 import './context.css';
 

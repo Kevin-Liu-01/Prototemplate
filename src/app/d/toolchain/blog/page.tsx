@@ -9,6 +9,8 @@ import Essays from './sections/Essays';
 import Feature from './sections/Feature';
 import Releases from './sections/Releases';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly */
+import '../sections/logos-icons.css';
 import '../styles.css';
 import './blog.css';
 

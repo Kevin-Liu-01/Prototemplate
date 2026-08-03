@@ -9,6 +9,8 @@ import RateLedger from './sections/RateLedger';
 import UsageCTA from './sections/UsageCTA';
 import UsageHero from './sections/UsageHero';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly */
+import '../../sections/logos-icons.css';
 import '../../styles.css';
 import './usage-pricing.css';
 

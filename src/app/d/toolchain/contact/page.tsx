@@ -7,6 +7,8 @@ import TopNav from '../sections/TopNav';
 import ContactBody from './sections/ContactBody';
 import ContactHero from './sections/ContactHero';
 
+/* no Frameworks on this route — the footer's marks need the sheet directly */
+import '../sections/logos-icons.css';
 import '../styles.css';
 import './contact.css';
 
