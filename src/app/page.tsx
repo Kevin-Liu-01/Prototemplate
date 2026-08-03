@@ -6,12 +6,14 @@ import ThemeToggle from '@/components/shared/ThemeToggle';
 import { DIRECTIONS } from '@/lib/directions';
 
 import PrototemplateHero from './PrototemplateHero';
+import SiteCompare from './SiteCompare';
 
 import './prototemplate.css';
 
 /* The nameplate speaks two voices, neither of them Switzer: Fraunces for the
-   working model, Space Grotesk for the reusable form. The page's CONTENT runs
-   Switzer display with Rasmus Andersson's Inter as the non-primary text face. */
+   working model, Space Grotesk for the reusable form. The POST below it runs
+   TWK Lausanne (locally installed or dropped into public/fonts/lausanne),
+   falling back to Inter. */
 const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
 
@@ -39,6 +41,15 @@ export const metadata = {
 /** The five full site concepts vs the single-page explorations. */
 const SITES = DIRECTIONS.filter((d) => d.site);
 const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
+
+/** The rules the research settled on — the post's only list. */
+const RULES = [
+  'One ruled column carries the page; the rails and hatch spacers do the separating.',
+  'Four colors — ink, raised ink, titanium, paper — plus exactly one spectral accent per page.',
+  'Depth is earned with lines and material, never with shadows.',
+  'Everything on the page is a real artifact — a running terminal, a served file, a measured width — never a picture of one.',
+  'If two borders touch, one of them is wrong.',
+] as const;
 
 /** The presenter's actual running order. */
 const DECK = [
@@ -82,80 +93,69 @@ export default function IndexPage() {
 
         <div className='pt-hatch' aria-hidden='true' />
 
-        <section className='pt-sec pt-feature-sec'>
-          <div className='pt-feature'>
-            <PrismaticField className='pt-feature-field' preset='1' speed={0.4} params={{ exposureScale: 4600 }} />
-            <div>
-              <h2>Present.</h2>
-              <p>
-                The full walkthrough — one deck through the storyboard, the principles, every live
-                prototype, and the scoreboard that picked the winners.
-              </p>
-              <Link className='pt-feature-cta' href='/present'>
-                ▶ Open the deck
-              </Link>
-            </div>
-            <div className='pt-deck'>
-              {DECK.map((slide) => (
-                <div className='pt-deck-row' key={slide.n}>
-                  <b>
-                    {slide.n} {slide.name}
-                  </b>
-                  <span>{slide.note}</span>
-                </div>
+        {/* ---- the post: a short article — motivation, research, discovery,
+             sharing — set in Lausanne at reading scale. No eyebrows, no
+             display sizes; the rails, hatches and hairlines carry the
+             structure the way they do everywhere else. ---- */}
+        <article className='pt-post'>
+          <section className='pt-sec pt-post-sec'>
+            <h1>Redesigning General Translation</h1>
+            <p className='pt-post-byline'>Kevin Liu · August 2026</p>
+            <p>
+              This site is the working file of a redesign: every direction I tried, the tooling
+              that judged them, and the five full sites that came out the other end. Everything
+              here is live — real pages, not mockups.
+            </p>
+          </section>
+
+          <div className='pt-hatch' aria-hidden='true' />
+
+          <section className='pt-sec pt-post-sec'>
+            <h2>Why I started</h2>
+            <p>
+              The current site grew the way most startup sites do — section by section, launch by
+              launch, each addition reasonable and the whole slowly losing its argument. I wanted
+              to stop patching and ask the question properly: what should this company look like
+              when the answer is built from the ground up?
+            </p>
+            <p>
+              So instead of one redesign, I built many, and made them compete.
+            </p>
+          </section>
+
+          <div className='pt-hatch' aria-hidden='true' />
+
+          <section className='pt-sec pt-post-sec'>
+            <h2>The research</h2>
+            <p>
+              Before opening a file I pulled apart the sites engineers actually respect — the
+              quiet, machined ones that never raise their voice. What they share is not a style,
+              it is discipline. These are the rules I kept:
+            </p>
+            <ul className='pt-post-rules'>
+              {RULES.map((rule) => (
+                <li key={rule}>{rule}</li>
               ))}
-            </div>
-          </div>
-        </section>
+            </ul>
+            <p>
+              I also built the tooling to hold that bar: a pixel auditor that walks every rendered
+              line on every page, in both themes and at two widths, and fails the round on any
+              doubled, missing, or invisible rule.
+            </p>
+          </section>
 
-        <div className='pt-hatch' aria-hidden='true' />
+          <div className='pt-hatch' aria-hidden='true' />
 
-        {/* the five FULL SITES — home + enterprise per concept — get their own
-            shelf above the exploration index: the whole row opens the home,
-            the two page links reach each face directly */}
-        <section className='pt-sec'>
-          <header className='pt-index-head'>
-            <h2>Five full sites.</h2>
-            <span>{SITES.length} concepts · home + enterprise</span>
-          </header>
+          <section className='pt-sec pt-post-sec'>
+            <h2>What the exploration found</h2>
+            <p>
+              Twenty-plus directions got built; thirteen survived review. Some are quiet
+              evolutions of the current site, some are physics experiments with type. Each row
+              below is a live page.
+            </p>
+          </section>
 
-          <div className='pt-rows'>
-            {SITES.map((site) => (
-              <div className='pt-row is-site' key={site.slug}>
-                <Link
-                  aria-label={`${site.name} — home`}
-                  className='pt-row-cover'
-                  href={`/d/${site.slug}`}
-                />
-                <span className='pt-row-label'>{site.label}</span>
-                <span className='pt-row-main'>
-                  <h3>{site.name}</h3>
-                  <p>{site.concept}</p>
-                  <span className='pt-site-pages'>
-                    <Link href={`/d/${site.slug}`}>home</Link>
-                    <Link href={`/d/${site.slug}/enterprise`}>enterprise</Link>
-                  </span>
-                </span>
-                <span className='pt-row-tone'>{site.tone}</span>
-                <span className='pt-row-sig'>{site.signature}</span>
-                <span aria-hidden='true' className='pt-row-shot'>
-                  <img alt='' className='is-light' loading='lazy' src={`/shots/light/${site.slug}.jpg`} />
-                  <img alt='' className='is-dark' loading='lazy' src={`/shots/dark/${site.slug}.jpg`} />
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className='pt-hatch' aria-hidden='true' />
-
-        <section className='pt-sec'>
-          <header className='pt-index-head'>
-            <h2>Every direction.</h2>
-            <span>{EXPLORATIONS.length} directions · one storyboard</span>
-          </header>
-
-          <div className='pt-rows'>
+          <div className='pt-rows pt-post-rows'>
             {EXPLORATIONS.map((direction) => (
               <Link className='pt-row' href={`/d/${direction.slug}`} key={direction.slug}>
                 <span className='pt-row-label'>{direction.label}</span>
@@ -163,8 +163,6 @@ export default function IndexPage() {
                   <h3>{direction.name}</h3>
                   <p>{direction.concept}</p>
                 </span>
-                <span className='pt-row-tone'>{direction.tone}</span>
-                <span className='pt-row-sig'>{direction.signature}</span>
                 <span aria-hidden='true' className='pt-row-shot'>
                   <img alt='' className='is-light' loading='lazy' src={`/shots/light/${direction.slug}.jpg`} />
                   <img alt='' className='is-dark' loading='lazy' src={`/shots/dark/${direction.slug}.jpg`} />
@@ -172,7 +170,62 @@ export default function IndexPage() {
               </Link>
             ))}
           </div>
-        </section>
+
+          <div className='pt-hatch' aria-hidden='true' />
+
+          <section className='pt-sec pt-post-sec'>
+            <h2>The five sites</h2>
+            <p>
+              The strongest ideas grew into complete sites: a home built on the toolchain system,
+              each with its own take on the hero terminal, over an enterprise page built on the
+              singularity gate. The two faces of each site are overlaid below — drag the seam to
+              sweep between them.
+            </p>
+          </section>
+
+          <div className='pt-sites'>
+            {SITES.map((site) => (
+              <section className='pt-sec pt-site' key={site.slug}>
+                <h3>{site.name}</h3>
+                <p>{site.signature}</p>
+                <SiteCompare slug={site.slug} name={site.name} />
+                <p className='pt-site-links'>
+                  <Link href={`/d/${site.slug}`}>open the home</Link>
+                  <span aria-hidden> · </span>
+                  <Link href={`/d/${site.slug}/enterprise`}>open the enterprise page</Link>
+                </p>
+              </section>
+            ))}
+          </div>
+
+          <div className='pt-hatch' aria-hidden='true' />
+
+          <section className='pt-sec pt-feature-sec'>
+            <div className='pt-feature'>
+              <PrismaticField className='pt-feature-field' preset='1' speed={0.4} params={{ exposureScale: 4600 }} />
+              <div>
+                <h2>Walk the whole thing</h2>
+                <p>
+                  The full deck — the storyboard, the principles, every live prototype, and the
+                  scoreboard that picked the winners.
+                </p>
+                <Link className='pt-feature-cta' href='/present'>
+                  ▶ Open the deck
+                </Link>
+              </div>
+              <div className='pt-deck'>
+                {DECK.map((slide) => (
+                  <div className='pt-deck-row' key={slide.n}>
+                    <b>
+                      {slide.n} {slide.name}
+                    </b>
+                    <span>{slide.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </article>
 
         <footer className='pt-foot'>
           <span>Prototemplate</span>

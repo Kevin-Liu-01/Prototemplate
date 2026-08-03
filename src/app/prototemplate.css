@@ -750,3 +750,321 @@
     grid-column: 2;
   }
 }
+
+/* ============================================================
+   THE POST — the index below the nameplate reads as a short
+   article: motivation, research, discovery, sharing. Set in TWK
+   Lausanne (locally installed, or dropped into
+   public/fonts/lausanne/), falling back to Inter. Reading scale,
+   normal tracking, no eyebrows — the rails, hatches and
+   hairlines still do all the separating.
+   ============================================================ */
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('TWK Lausanne'), local('TWKLausanne-400'),
+    url('/fonts/lausanne/TWKLausanne-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('TWK Lausanne Medium'), local('TWKLausanne-500'),
+    url('/fonts/lausanne/TWKLausanne-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'TWK Lausanne';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('TWK Lausanne SemiBold'), local('TWKLausanne-600'),
+    url('/fonts/lausanne/TWKLausanne-600.woff2') format('woff2');
+}
+
+.pt-root {
+  --pt-lausanne: 'TWK Lausanne', 'Lausanne', var(--font-inter, 'Inter'), 'Helvetica Neue', Arial,
+    sans-serif;
+}
+
+.pt-post {
+  font-family: var(--pt-lausanne);
+}
+
+.pt-post-sec {
+  padding: clamp(40px, 4.6vw, 64px) var(--pt-gut);
+}
+
+.pt-post h1 {
+  max-width: 30ch;
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.25;
+  color: var(--pt-ink);
+}
+
+.pt-post h2 {
+  max-width: 40ch;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.3;
+  color: var(--pt-ink);
+}
+
+.pt-post-sec p {
+  max-width: 64ch;
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--pt-ink-2);
+}
+
+.pt-post .pt-post-byline {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--pt-ink-3);
+}
+
+/* the research rules: a ruled list, one hairline per rule */
+.pt-post-rules {
+  max-width: 64ch;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pt-post-rules li {
+  padding: 12px 0;
+  border-top: 1px solid var(--pt-hair);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pt-ink-2);
+}
+
+.pt-post-rules li:last-child {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+/* the exploration rows, article-cleaned: number and name and one line —
+   the tone chips and mono signatures step out of the reading flow */
+.pt-post .pt-row {
+  grid-template-columns: 52px minmax(0, 1fr);
+}
+
+.pt-post .pt-row-main h3 {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+
+.pt-post .pt-row-main p {
+  max-width: 62ch;
+}
+
+.pt-post-rows {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+/* the section above the rows already draws the seam — the first row yields */
+.pt-post-rows .pt-row:first-child {
+  border-top: 0;
+}
+
+/* ---- the five sites: title, one line, the seam ---- */
+
+.pt-site {
+  padding: 30px var(--pt-gut) 40px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.pt-sites .pt-site:first-child {
+  border-top: 0;
+}
+
+.pt-site h3 {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: var(--pt-ink);
+}
+
+.pt-site > p {
+  max-width: 64ch;
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pt-ink-2);
+}
+
+.pt-site-links {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--pt-ink-3);
+}
+
+.pt-site-links a {
+  color: var(--pt-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--pt-ink-4);
+}
+
+.pt-site-links a:hover {
+  color: var(--pt-ink);
+  text-decoration-color: var(--pt-ink-2);
+}
+
+/* ---- the compare seam: two pages of one site, overlaid ---- */
+
+.pt-compare {
+  margin-top: 18px;
+}
+
+.pt-compare-stage {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-white);
+  overflow: hidden;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.pt-compare-face {
+  position: absolute;
+  inset: 0;
+}
+
+.pt-compare-face img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* the home rides on top, clipped at the seam */
+.pt-compare-face.is-home {
+  clip-path: inset(0 calc(100% - var(--cut, 55%)) 0 0);
+}
+
+.pt-compare img.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-compare img.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-compare img.is-dark {
+  display: block;
+}
+
+/* the seam is the brand's doubled thread, with a small grip */
+.pt-compare-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--cut, 55%);
+  width: 5px;
+  transform: translateX(-2.5px);
+  border-left: 1px solid var(--pt-ink);
+  border-right: 1px solid var(--pt-ink);
+  pointer-events: none;
+}
+
+.pt-compare-seam::after {
+  content: '↔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--pt-ink);
+  color: var(--pt-paper);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.pt-compare-tag {
+  position: absolute;
+  bottom: 9px;
+  padding: 2px 9px;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+  background-clip: padding-box;
+  font-size: 11.5px;
+  color: var(--pt-ink-2);
+  pointer-events: none;
+}
+
+.pt-compare-tag.is-home {
+  left: 10px;
+}
+
+.pt-compare-tag.is-ent {
+  right: 10px;
+}
+
+/* keyboard control: visually hidden, still focusable — focus lights the frame */
+.pt-compare-stage input[type='range'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.pt-compare-stage:focus-within {
+  outline: 1px solid var(--pt-ink-2);
+  outline-offset: 2px;
+}
+
+/* the deck feature joins the article's voice */
+.pt-post .pt-feature h2 {
+  font-family: inherit;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+
+/* ============================================================
+   THE HDR MARK — the crop frame stays ink; the core it holds
+   becomes the one jewel of chroma, pushed to display-p3 where
+   the screen can carry it.
+   ============================================================ */
+
+.pt-mark-fill {
+  background: linear-gradient(135deg, #4b3bff 0%, #00b3ff 34%, #27d17e 58%, #ffc53b 80%, #ff3b6b 100%);
+}
+
+@supports (color: color(display-p3 1 0 0)) {
+  .pt-mark-fill {
+    background: linear-gradient(
+      135deg,
+      color(display-p3 0.28 0.2 1) 0%,
+      color(display-p3 0 0.72 1) 34%,
+      color(display-p3 0.05 0.9 0.45) 58%,
+      color(display-p3 1 0.78 0.1) 80%,
+      color(display-p3 1 0.15 0.38) 100%
+    );
+  }
+}
+
+.pt-compare-face img {
+  -webkit-user-drag: none;
+}

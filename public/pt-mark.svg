@@ -4,13 +4,25 @@
     @media (prefers-color-scheme: dark) {
       .ink { stroke: #ffffff; }
     }
+    /* the HDR core: wide-gamut chroma where the screen can carry it */
+    @supports (color: color(display-p3 1 0 0)) {
+      #s0 { stop-color: color(display-p3 0.28 0.2 1); }
+      #s1 { stop-color: color(display-p3 0 0.72 1); }
+      #s2 { stop-color: color(display-p3 0.05 0.9 0.45); }
+      #s3 { stop-color: color(display-p3 1 0.78 0.1); }
+      #s4 { stop-color: color(display-p3 1 0.15 0.38); }
+    }
   </style>
   <defs>
-    <pattern id="hatch" width="4" height="4" patternTransform="rotate(-45)" patternUnits="userSpaceOnUse">
-      <line class="ink" x1="0" y1="0" x2="0" y2="4" stroke-width="1.6" opacity="0.6" />
-    </pattern>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1">
+      <stop id="s0" offset="0" stop-color="#4b3bff" />
+      <stop id="s1" offset="0.34" stop-color="#00b3ff" />
+      <stop id="s2" offset="0.58" stop-color="#27d17e" />
+      <stop id="s3" offset="0.8" stop-color="#ffc53b" />
+      <stop id="s4" offset="1" stop-color="#ff3b6b" />
+    </linearGradient>
   </defs>
-  <rect x="9" y="9" width="14" height="14" fill="url(#hatch)" />
+  <rect x="9" y="9" width="14" height="14" fill="url(#core)" />
   <g class="ink" stroke-width="2">
     <line x1="0" y1="9" x2="32" y2="9" />
     <line x1="0" y1="23" x2="32" y2="23" />
