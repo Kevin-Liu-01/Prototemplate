@@ -25,10 +25,15 @@
   border-radius: 0;
 }
 
-/* The Customers lead holds two lines of display — it doesn't need the
-   full section-head altitude. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head {
-  padding-block: clamp(30px, 3.4vw, 44px) clamp(22px, 2.4vw, 30px);
+/* Headers sit at the TOP of their bands: the section-head altitude goes,
+   light heads and dark band columns alike (founder note on the full-stack
+   band's dead air). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-head {
+  padding-top: clamp(26px, 2.8vw, 36px);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in {
+  padding-top: clamp(28px, 3vw, 40px);
 }
 
 /* Procession's console now ENDS the hero: the section seam is its bottom
