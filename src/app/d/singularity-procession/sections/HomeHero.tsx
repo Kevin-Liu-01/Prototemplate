@@ -296,7 +296,7 @@ export default function HomeHero() {
               },
             });
           };
-          gsap.delayedCall(3.4, compactSwap);
+          gsap.delayedCall(1.8, compactSwap);
         } else {
           const guideL = document.createElement('span');
           guideL.className = 'tc-eg is-l';
@@ -461,7 +461,7 @@ export default function HomeHero() {
 
           /* The first dissolve waits out the first-fold capture window: any
              still taken while the run settles shows the word whole, not dust. */
-          gsap.delayedCall(5.6, swap);
+          gsap.delayedCall(1.8, swap);
         }
       }
 
