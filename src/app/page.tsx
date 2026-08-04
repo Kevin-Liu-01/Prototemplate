@@ -201,6 +201,17 @@ export default function IndexPage() {
                   >
                     <line className='pt-funnel-hatchline' x1='0.5' x2='0.5' y1='0' y2='7' />
                   </pattern>
+                  {/* the mirror of the hatch for the LEFT shoulders, so both
+                      sides shade outward from the throat */}
+                  <pattern
+                    height='7'
+                    id='pt-fnl-hatch-l'
+                    patternTransform='rotate(45)'
+                    patternUnits='userSpaceOnUse'
+                    width='7'
+                  >
+                    <line className='pt-funnel-hatchline' x1='0.5' x2='0.5' y1='0' y2='7' />
+                  </pattern>
                 </defs>
 
                 {/* the corridor: two continuous walls, vertical beside each
@@ -210,9 +221,9 @@ export default function IndexPage() {
 
                 {/* the mass that falls away, pocketed in the throat corners —
                     fill only, the wall already draws the diagonal */}
-                <polygon className='pt-funnel-shoulder' points='12,130 68,202 12,202' />
+                <polygon className='pt-funnel-shoulder is-left' points='12,130 68,202 12,202' />
                 <polygon className='pt-funnel-shoulder' points='348,130 292,202 348,202' />
-                <polygon className='pt-funnel-shoulder' points='68,308 112,376 68,376' />
+                <polygon className='pt-funnel-shoulder is-left' points='68,308 112,376 68,376' />
                 <polygon className='pt-funnel-shoulder' points='292,308 248,376 292,376' />
 
                 {/* stage one: the full field, twenty-one sketched cells */}

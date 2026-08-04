@@ -1469,3 +1469,7 @@
 .pt-root .pt-nav-github:hover {
   color: var(--pt-ink);
 }
+
+.pt-funnel-shoulder.is-left {
+  fill: url(#pt-fnl-hatch-l);
+}
