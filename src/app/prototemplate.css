@@ -1098,3 +1098,319 @@
 .pt-foot-brand:hover .pt-mark-fill::after {
   opacity: 1;
 }
+
+/* ---- the opener: copy left, the distillation right, crop-framed ---- */
+.pt-opener {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: stretch;
+  overflow: clip;
+}
+
+/* the frame's rules bound the text too: the copy breathes just inside
+   the band the extenders define */
+.pt-opener-copy {
+  padding-block: 10px;
+}
+
+.pt-opener-fig {
+  position: relative;
+  margin: 0;
+  padding: clamp(18px, 2vw, 28px);
+  display: grid;
+  place-items: center;
+}
+
+.pt-opener-fig .pt-funnel {
+  max-width: 400px;
+}
+
+/* the frame's four rules extend from the box's edges to the section's —
+   clipped by the opener, so they land exactly on the rails and seams */
+.pt-xline {
+  position: absolute;
+  pointer-events: none;
+}
+
+.pt-xline.is-h {
+  left: -100vw;
+  right: -100vw;
+  height: 1px;
+  background: var(--pt-ink-4);
+}
+
+.pt-xline.is-h.is-top {
+  top: 0;
+}
+
+.pt-xline.is-h.is-bot {
+  bottom: 0;
+}
+
+.pt-xline.is-v {
+  top: -100vh;
+  bottom: -100vh;
+  width: 1px;
+  background: var(--pt-ink-4);
+}
+
+.pt-xline.is-v.is-l {
+  left: 0;
+}
+
+.pt-xline.is-v.is-r {
+  right: 0;
+}
+
+.pt-funnel {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pt-funnel-box rect {
+  fill: none;
+  stroke: var(--pt-ink-3);
+  stroke-width: 1;
+}
+
+.pt-funnel-drop line {
+  stroke: var(--pt-ink-4);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.pt-funnel-n text {
+  font-family: var(--pt-mono);
+  font-size: 17px;
+  fill: var(--pt-ink);
+}
+
+.pt-funnel-t text {
+  font-family: var(--pt-lausanne);
+  font-size: 13px;
+  fill: var(--pt-ink-2);
+}
+
+@media (max-width: 880px) {
+  .pt-opener {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pt-opener-fig {
+    max-width: 420px;
+  }
+}
+
+/* ---- nav: Present as the one solid action ---- */
+.pt-root .pt-nav-present {
+  padding: 7px 15px;
+  border: 1px solid var(--pt-ink);
+  background: var(--pt-ink);
+  background-clip: padding-box;
+  color: var(--pt-paper);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pt-root .pt-nav-present:hover {
+  background: transparent;
+  color: var(--pt-ink);
+}
+
+.pt-root .pt-nav-present span {
+  margin-left: 7px;
+  font-size: 9px;
+}
+
+/* ---- nav: the toolchain family dropdown, with live captures ---- */
+.pt-menu {
+  position: relative;
+}
+
+.pt-menu-trigger {
+  border: 0;
+  background: none;
+  padding: 4px 2px;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--pt-ink-2);
+  cursor: pointer;
+}
+
+.pt-menu-trigger span {
+  font-size: 10px;
+  color: var(--pt-ink-4);
+}
+
+.pt-menu:hover .pt-menu-trigger,
+.pt-menu:focus-within .pt-menu-trigger {
+  color: var(--pt-ink);
+}
+
+/* the panel opens flush under the trigger; its padding bridges the hover
+   gap so the pointer never falls through on the way down */
+.pt-menu-panel {
+  position: absolute;
+  top: 100%;
+  right: -8px;
+  padding-top: 12px;
+  display: none;
+  z-index: 60;
+}
+
+.pt-menu:hover .pt-menu-panel,
+.pt-menu:focus-within .pt-menu-panel {
+  display: block;
+}
+
+.pt-menu-card {
+  min-width: 252px;
+  padding: 6px;
+  background: var(--pt-paper);
+  border: 1px solid var(--pt-hair);
+  border-radius: 10px;
+}
+
+.pt-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  font-size: 13.5px;
+  color: var(--pt-ink-2);
+}
+
+.pt-menu-item:hover,
+.pt-menu-item:focus-visible {
+  background: var(--pt-hair-2);
+  color: var(--pt-ink);
+}
+
+.pt-menu-shot {
+  position: relative;
+  width: 92px;
+  height: 58px;
+  flex: none;
+  overflow: hidden;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-white);
+}
+
+.pt-menu-shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.pt-menu-shot img.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-menu-shot img.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-menu-shot img.is-dark {
+  display: block;
+}
+
+/* ---- the five captures, fanned off the section's corner ---- */
+.pt-sites-intro {
+  position: relative;
+  overflow: clip;
+  min-height: 340px;
+}
+
+.pt-sites-fan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pt-sites-fan-shot {
+  position: absolute;
+  top: calc(30px + var(--i) * 20px);
+  right: calc((4 - var(--i)) * 54px - 120px);
+  width: 300px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-white);
+  z-index: calc(1 + var(--i));
+}
+
+.pt-sites-fan-shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  -webkit-user-drag: none;
+}
+
+.pt-sites-fan-shot img.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-sites-fan-shot img.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .pt-root .pt-sites-fan-shot img.is-dark {
+  display: block;
+}
+
+@media (max-width: 1080px) {
+  .pt-sites-fan {
+    display: none;
+  }
+}
+
+/* ---- the craft page's library entries ---- */
+.pt-craft-libs {
+  max-width: 64ch;
+  margin-top: 24px;
+}
+
+.pt-craft-lib {
+  padding: 18px 0 22px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.pt-craft-lib:last-child {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.pt-craft-lib h3 {
+  font-family: var(--pt-mono);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+.pt-craft-lib h3 span {
+  margin-left: 10px;
+  font-family: var(--pt-lausanne);
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--pt-ink-3);
+}
+
+.pt-craft-lib p {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.66;
+  color: var(--pt-ink-2);
+}

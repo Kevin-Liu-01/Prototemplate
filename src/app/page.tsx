@@ -73,8 +73,30 @@ export default function IndexPage() {
           </Link>
           <div className='pt-nav-right'>
             <ThemeToggle className='pt-nav-theme' />
-            <Link href='/present'>Present</Link>
-            <Link href='/present?d=toolchain'>Toolchain</Link>
+            <Link href='/craft'>Craft</Link>
+            {/* the toolchain family as a previewing dropdown: the SSOT and
+                the five sites built on it, each with its live capture */}
+            <div className='pt-menu'>
+              <button className='pt-menu-trigger' type='button'>
+                Toolchain <span aria-hidden>▾</span>
+              </button>
+              <div className='pt-menu-panel'>
+                <div className='pt-menu-card'>
+                  {[{ slug: 'toolchain', name: 'Toolchain' }, ...SITES].map((d) => (
+                    <Link className='pt-menu-item' href={`/d/${d.slug}`} key={d.slug}>
+                      <span aria-hidden className='pt-menu-shot'>
+                        <img alt='' className='is-light' loading='lazy' src={`/shots/light/${d.slug}.jpg`} />
+                        <img alt='' className='is-dark' loading='lazy' src={`/shots/dark/${d.slug}.jpg`} />
+                      </span>
+                      <span>{d.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <Link className='pt-nav-present' href='/present'>
+              Present <span aria-hidden>▶</span>
+            </Link>
           </div>
         </header>
 
@@ -89,25 +111,58 @@ export default function IndexPage() {
              display sizes; the rails, hatches and hairlines carry the
              structure the way they do everywhere else. ---- */}
         <article className='pt-post'>
-          <section className='pt-sec pt-post-sec'>
-            <h1>Redesigning General Translation</h1>
-            <p className='pt-post-byline'>Kevin Liu · August 2026</p>
-            <p>
-              This site is the working file of a redesign: every direction I tried, the tooling
-              that judged them, and the five full sites that came out the other end. Everything
-              here is live — real pages, not mockups.
-            </p>
-            <p>
-              The current site grew the way most startup sites do — section by section, launch by
-              launch, each addition reasonable and the whole slowly losing its argument. I wanted
-              to stop patching and ask the question properly: what should this company look like
-              when the answer is built from the ground up?
-            </p>
-            <p>
-              So instead of one redesign, I built many, made them compete, and built the tooling
-              to judge them — down to a pixel auditor that walks every rendered line on every
-              page and fails a round on a single doubled rule.
-            </p>
+          <section className='pt-sec pt-post-sec pt-opener'>
+            <div className='pt-opener-copy'>
+              <h1>Redesigning General Translation</h1>
+              <p className='pt-post-byline'>Kevin Liu · August 2026</p>
+              <p>
+                This site is the working file of a redesign: every direction I tried, the tooling
+                that judged them, and the five full sites that came out the other end. Everything
+                here is live — real pages, not mockups.
+              </p>
+              <p>
+                The current site grew the way most startup sites do — section by section, launch
+                by launch, each addition reasonable and the whole slowly losing its argument. I
+                wanted to stop patching and ask the question properly: what should this company
+                look like when the answer is built from the ground up?
+              </p>
+              <p>
+                So instead of one redesign, I built many, made them compete, and built the tooling
+                to judge them — down to a pixel auditor that walks every rendered line on every
+                page and fails a round on a single doubled rule.
+              </p>
+            </div>
+
+            {/* the distillation, held in a crop frame: the four rules extend
+                from the diagram's edges to the section's own — the nameplate's
+                frame grammar, one more time */}
+            <figure className='pt-opener-fig' aria-hidden>
+              <i className='pt-xline is-h is-top' />
+              <i className='pt-xline is-h is-bot' />
+              <i className='pt-xline is-v is-l' />
+              <i className='pt-xline is-v is-r' />
+              <svg className='pt-funnel' viewBox='0 0 320 268'>
+                <g className='pt-funnel-box'>
+                  <rect x='10' y='10' width='300' height='58' />
+                  <rect x='40' y='105' width='240' height='58' />
+                  <rect x='70' y='200' width='180' height='58' />
+                </g>
+                <g className='pt-funnel-drop'>
+                  <line x1='160' y1='68' x2='160' y2='105' />
+                  <line x1='160' y1='163' x2='160' y2='200' />
+                </g>
+                <g className='pt-funnel-n'>
+                  <text x='34' y='46'>20+</text>
+                  <text x='64' y='141'>13</text>
+                  <text x='94' y='236'>5</text>
+                </g>
+                <g className='pt-funnel-t'>
+                  <text x='94' y='45'>directions built</text>
+                  <text x='110' y='140'>survived review</text>
+                  <text x='128' y='235'>full sites</text>
+                </g>
+              </svg>
+            </figure>
           </section>
 
           <div className='pt-hatch' aria-hidden='true' />
@@ -140,7 +195,7 @@ export default function IndexPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec pt-sites-intro'>
             <h2>The five sites</h2>
             <p>
               The strongest ideas grew into complete sites: a home built on the toolchain system,
@@ -148,6 +203,16 @@ export default function IndexPage() {
               singularity gate. The two faces of each site are overlaid below — drag the seam to
               sweep between them.
             </p>
+            {/* the five captures fanned at the right edge, absolutely placed
+                and cut off by the section's own corner */}
+            <span aria-hidden className='pt-sites-fan'>
+              {SITES.map((site, i) => (
+                <span className='pt-sites-fan-shot' key={site.slug} style={{ ['--i' as never]: i }}>
+                  <img alt='' className='is-light' draggable={false} loading='lazy' src={`/shots/light/${site.slug}.jpg`} />
+                  <img alt='' className='is-dark' draggable={false} loading='lazy' src={`/shots/dark/${site.slug}.jpg`} />
+                </span>
+              ))}
+            </span>
           </section>
 
           <div className='pt-sites'>

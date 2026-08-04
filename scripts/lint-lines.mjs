@@ -15,7 +15,17 @@ import { chromium } from 'playwright-core';
 const EXEC =
   '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
 const positional = process.argv.slice(2).filter((a, i, all) => !a.startsWith('--') && all[i - 1] !== '--theme');
-const url = positional[0] ?? 'http://localhost:3006/d/toolchain?chrome=0';
+/* EVERY positional URL is audited — for years of shame, an earlier version
+   silently audited only the first and blessed the rest. */
+const urls = positional.length ? positional : ['http://localhost:3006/d/toolchain?chrome=0'];
+for (const u of urls) {
+  /* a URL with whitespace is a shell-quoting accident (zsh does not split
+     unquoted vars) — refuse it rather than auditing a 404 */
+  if (/\s/.test(u)) {
+    console.error(`lint-lines: refusing URL with whitespace (quoting accident?): ${JSON.stringify(u)}`);
+    process.exit(2);
+  }
+}
 const theme = process.argv.includes('--theme')
   ? process.argv[process.argv.indexOf('--theme') + 1]
   : 'dark';
@@ -45,11 +55,17 @@ const WIDTHS = [1440, 1280];
 
 const browser = await chromium.launch({ executablePath: EXEC, headless: true });
 
-async function auditAt(width) {
+async function auditAt(url, width) {
 const ctx = await browser.newContext({ viewport: { width, height: 4200 } });
 await ctx.addInitScript((t) => localStorage.setItem('gt-theme', t), theme);
 const page = await ctx.newPage();
-await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
+const resp = await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
+/* an error page audits clean at ~1 line — that is a blessing nobody asked
+   for. HTTP failures fail the audit loudly. */
+if (resp && resp.status() >= 400) {
+  console.error(`lint-lines: HTTP ${resp.status()} for ${url}`);
+  process.exit(2);
+}
 await page.evaluate(() => document.fonts.ready);
 await page.waitForTimeout(3000);
 
@@ -82,7 +98,7 @@ const audit = await page.evaluate((ALLOW) => {
     bl: parseFloat(cs.borderBottomLeftRadius) || 0,
     br: parseFloat(cs.borderBottomRightRadius) || 0,
   });
-  const pushBorders = (rect, cs, owner, elIdx) => {
+  const pushBorders = (rect, cs, owner, elIdx, edges) => {
     const rd = radii(cs);
     const sides = [
       ['Top', 'h', rect.top, rect.left + rd.tl, rect.right - rd.tr],
@@ -91,6 +107,9 @@ const audit = await page.evaluate((ALLOW) => {
       ['Right', 'v', rect.right, rect.top + rd.tr, rect.bottom - rd.br],
     ];
     for (const [side, orient, pos, from, to] of sides) {
+      /* an edge a clipping ancestor removed from the render must not
+         exist for the audit either */
+      if (edges && edges[side.toLowerCase()] === false) continue;
       const w = parseFloat(cs[`border${side}Width`]);
       if (w >= 1 && w <= 2.5 && visible(cs[`border${side}Color`]) && to - from > 24)
         segs.push({ orient, pos: Math.round(pos * 2) / 2, from, to, owner, el: elIdx });
@@ -154,13 +173,39 @@ const audit = await page.evaluate((ALLOW) => {
     if (parseFloat(cs.opacity) <= 0.05) return; // hover-woken devices rest invisible
     if (inSkipped(el)) return;
     const elIdx = els.push(el) - 1;
-    pushBorders(rect, cs, owner, elIdx);
-    // thin filled boxes are lines too
+    /* Clamp every real element to its clipping ancestor before reading
+       lines off it — the audit must see the geometry the eye does, not
+       the layout box. Edges the clip removes are dropped outright. */
+    let crect = rect;
+    let edges = { top: true, bottom: true, left: true, right: true };
+    {
+      let clipAnc = el.parentElement;
+      while (clipAnc && getComputedStyle(clipAnc).overflow.includes('visible')) clipAnc = clipAnc.parentElement;
+      if (clipAnc) {
+        const cr = clipAnc.getBoundingClientRect();
+        edges = {
+          top: rect.top >= cr.top - 0.5,
+          bottom: rect.bottom <= cr.bottom + 0.5,
+          left: rect.left >= cr.left - 0.5,
+          right: rect.right <= cr.right + 0.5,
+        };
+        const top = Math.max(rect.top, cr.top);
+        const bottom = Math.min(rect.bottom, cr.bottom);
+        const left = Math.max(rect.left, cr.left);
+        const right = Math.min(rect.right, cr.right);
+        if (right - left < 1 || bottom - top < 1) return; // fully clipped away
+        crect = { top, bottom, left, right, width: right - left, height: bottom - top };
+      }
+    }
+    pushBorders(crect, cs, owner, elIdx, edges);
+    // thin filled boxes are lines too — same clamped geometry
     if (visible(cs.backgroundColor)) {
-      if (rect.height <= 2.5 && rect.width > 24)
-        segs.push({ orient: 'h', pos: Math.round((rect.top + rect.height / 2) * 2) / 2, from: rect.left, to: rect.right, owner, el: elIdx });
-      if (rect.width <= 2.5 && rect.height > 24)
-        segs.push({ orient: 'v', pos: Math.round((rect.left + rect.width / 2) * 2) / 2, from: rect.top, to: rect.bottom, owner, el: elIdx });
+      const tw = crect.right - crect.left;
+      const th = crect.bottom - crect.top;
+      if (th > 0 && th <= 2.5 && tw > 24)
+        segs.push({ orient: 'h', pos: Math.round((crect.top + th / 2) * 2) / 2, from: crect.left, to: crect.right, owner, el: elIdx });
+      if (tw > 0 && tw <= 2.5 && th > 24)
+        segs.push({ orient: 'v', pos: Math.round((crect.left + tw / 2) * 2) / 2, from: crect.top, to: crect.bottom, owner, el: elIdx });
     }
     /* Exposed-ground strips: a big box with visible bg and a 1-2px padding
        reveal draws a LINE along that edge (the framed-row perimeter). It is
@@ -359,19 +404,24 @@ return audit;
 
 let failed = false;
 const out = {};
-for (const width of WIDTHS) {
-  const audit = await auditAt(width);
-  out[width] = audit;
-  /* chip-scale self-stacks (short edges) are reported but do not gate — the
-     structural ones (long seams reading darker than their neighbours) do. */
-  const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
-  if (
-    audit.doubles.length ||
-    audit.missing.length ||
-    structuralStacks.length ||
-    audit.invisibles.length
-  )
-    failed = true;
+for (const url of urls) {
+  const per = {};
+  for (const width of WIDTHS) {
+    const audit = await auditAt(url, width);
+    per[width] = audit;
+    /* chip-scale self-stacks (short edges) are reported but do not gate — the
+       structural ones (long seams reading darker than their neighbours) do. */
+    const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
+    if (
+      audit.doubles.length ||
+      audit.missing.length ||
+      structuralStacks.length ||
+      audit.invisibles.length
+    )
+      failed = true;
+  }
+  if (urls.length === 1) Object.assign(out, per);
+  else out[url] = per;
 }
 console.log(JSON.stringify(out, null, 1));
 await browser.close();
