@@ -40,14 +40,15 @@
 }
 
 /* The rail-width column: its inline rules are the page's outer rails
-   carried across the dark plate. Perpendicular to the band's border-block,
-   so no parallel-hairline collision at the corners. */
+   carried across the dark plate, in the band hairline token — the same
+   ink every house band draws its rails in. Perpendicular to the band's
+   border-block, so no parallel-hairline collision at the corners. */
 .toolchain-root .v0-dep-in {
   position: relative;
   z-index: 1;
   width: min(var(--tc-rail), 100%);
   margin-inline: auto;
-  border-inline: 1px solid rgba(138, 143, 152, 0.5);
+  border-inline: 1px solid var(--tc-hair-band);
   padding: clamp(76px, 9vw, 132px) var(--tc-gut);
   display: flex;
   flex-direction: column;

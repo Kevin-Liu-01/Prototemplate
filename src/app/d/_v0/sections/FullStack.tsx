@@ -8,7 +8,9 @@ import { useRef } from 'react';
 import type { ComponentType } from 'react';
 
 import TcStackIso, { STACK_LAYERS } from '@/app/d/toolchain/diagrams/tc-stack-iso';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
+import '@/app/d/toolchain/sections/darkband-v3.css';
 import './fullstack.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -86,19 +88,21 @@ const HOT_PLANES: readonly (readonly number[])[] = BEATS.map((beat) =>
 );
 
 /**
- * V0 Full Stack — "The full stack for localization."
- *
- * The house isometric stack stands sticky on the left of a full-bleed dark
- * band while the four-layer copy rail scrolls beside it. Each beat's block
- * owns a ScrollTrigger; as it crosses the read line the rail's spotlight
- * moves to it and the drawing answers — its planes rise and take full ink
- * (with the brand's doubled top edge) while the rest fall back to glass.
- * Progress-driven, never pinned, so the section composes safely inside any
- * variant's rail column. Reduced motion gets all four beats and the whole
- * drawing, static.
+ * V0 Full Stack — "The full stack for localization." — recomposed in the
+ * toolchain dark-band grammar: tc-band tcb → tcb-in → tcb-head → tcb-grid,
+ * the same sheet DarkBand draws its seams and surfaces from. The house
+ * isometric stack sits in one tcb-cell (sticky while the copy scrolls) and
+ * the four-layer copy rail in the other; the grid owns the one seam between
+ * them and its nub pseudos run the sheet's rules out to the column rails.
+ * Each beat's block owns a ScrollTrigger; as it crosses the read line the
+ * rail's spotlight moves to it and the drawing answers — its planes rise
+ * and take full ink (with the brand's doubled top edge) while the rest fall
+ * back to glass. Progress-driven, never pinned. Reduced motion gets all
+ * four beats and the whole drawing, static.
  */
 export default function V0FullStack() {
   const root = useRef<HTMLElement>(null);
+  useQuietReveal(root);
 
   useGSAP(
     () => {
@@ -164,39 +168,51 @@ export default function V0FullStack() {
   );
 
   return (
-    <section className='v0-stack' ref={root} aria-labelledby='v0-stack-title'>
-      <div className='v0-stack-in'>
-        <div className='v0-stack-head'>
-          <h2 id='v0-stack-title'>The full stack for localization.</h2>
-          <p>Everything you need to reach your next billion global users.</p>
+    <section className='tc-band tcb v0-stack' id='platform' ref={root} aria-labelledby='v0-stack-title'>
+      <div className='tcb-in'>
+        <div className='tcb-head' data-cell>
+          <h2 id='v0-stack-title' data-reveal>
+            The full stack for localization.
+          </h2>
+          <p data-reveal>Everything you need to reach your next billion global users.</p>
         </div>
 
-        <div className='v0-stack-body'>
-          <div className='v0-stack-figcol'>
-            <div className='v0-stack-fig'>
-              <TcStackIso
-                className='v0-stack-iso'
-                title='The GT stack, bottom-up: app code and the GT CLI, the Locadex agent, context, review, the edge CDN, and the translated string at runtime'
-              />
+        <div className='tcb-grid'>
+          {/* The drawing's cell: the house seven-plane stack, sticky while
+              the copy rail beside it scrolls; the scroll spotlight raises
+              each beat's planes in turn. */}
+          <div className='tcb-cell v0-stack-cell-fig' data-cell>
+            <div className='v0-stack-figcol'>
+              <div className='v0-stack-fig' data-reveal>
+                <TcStackIso
+                  className='tcstack v0-stack-iso'
+                  title='The GT stack, bottom-up: app code and the GT CLI, the Locadex agent, context, review, the edge CDN, and the translated string at runtime'
+                />
+              </div>
             </div>
           </div>
 
-          <ol className='v0-stack-rail'>
-            {BEATS.map((beat, i) => {
-              const Icon = beat.icon;
-              return (
-                <li className='v0-stack-beat' data-stack-beat={i} key={beat.id}>
-                  <div className='v0-stack-tag'>
-                    <span className='v0-stack-idx'>{String(i + 1).padStart(2, '0')}</span>
-                    <Icon className='v0-stack-ic' size={14} strokeWidth={1.75} aria-hidden />
-                    <span className='v0-stack-name'>{beat.name}</span>
-                  </div>
-                  <h3>{beat.lead}</h3>
-                  <p>{beat.body}</p>
-                </li>
-              );
-            })}
-          </ol>
+          {/* The copy rail's cell: four beats read bottom-up — Code,
+              Context, Translations, Agents — divided by rules that run the
+              cell edge to edge. */}
+          <div className='tcb-cell v0-stack-cell-rail' data-cell>
+            <ol className='v0-stack-rail'>
+              {BEATS.map((beat, i) => {
+                const Icon = beat.icon;
+                return (
+                  <li className='v0-stack-beat' data-stack-beat={i} data-reveal key={beat.id}>
+                    <div className='v0-stack-tag'>
+                      <span className='v0-stack-idx'>{String(i + 1).padStart(2, '0')}</span>
+                      <Icon className='v0-stack-ic' size={14} strokeWidth={1.75} aria-hidden />
+                      <span className='v0-stack-name'>{beat.name}</span>
+                    </div>
+                    <h3>{beat.lead}</h3>
+                    <p>{beat.body}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
       </div>
     </section>

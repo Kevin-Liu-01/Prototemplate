@@ -1,308 +1,63 @@
 /* ============================================================
-   V0 DEVELOPER — "Built for developers."
-   A three-cell ruled bento on paper: rendered button widths
-   (+ two RTL rows), a bento-within-bento Intl ledger that earns
-   the wide middle track, and localized routing with a hover
-   footnote. Every rule is scoped under .toolchain-root .v0-dev…;
-   tokens only, so the dark remap re-skins it for free.
+   V0 — BUILT FOR DEVELOPERS. Only the thorny-locale Intl ledger
+   is styled here: the section itself is the shell's own grammar
+   (tc-sec / tc-head / tc-row / BentoCell), which already owns
+   every structural line. One artifact, one stylesheet.
    ============================================================ */
 
-.toolchain-root .v0-dev {
-  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
-}
-
-/* ---------- head ---------- */
-
-.toolchain-root .v0-dev-head h2 {
-  font-family: var(--tc-disp);
-  font-weight: 600;
-  font-size: clamp(28px, 3.4vw, 46px);
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  max-width: 18ch;
-}
-
-.toolchain-root .v0-dev-head p {
-  margin-top: 14px;
-  max-width: 56ch;
-  font-size: 15px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-}
-
-/* ---------- the three ruled cells ----------
-   The middle (numbers) cell earns more width than one track
-   (founder note): 1fr / 1.4fr / 1fr. Verticals are single
-   hairlines drawn as border-left on the second and third cell;
-   the cells' own padding keeps every other stroke clear of them. */
-
-.toolchain-root .v0-dev-cells {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
-  margin-top: clamp(36px, 4.4vw, 58px);
-}
-
-.toolchain-root .v0-dev-cell {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding-inline: clamp(22px, 2.4vw, 32px);
-}
-
-.toolchain-root .v0-dev-cell + .v0-dev-cell {
-  border-left: 1px solid var(--tc-hair);
-}
-
-.toolchain-root .v0-dev-cell:first-child {
-  padding-left: 0;
-}
-
-.toolchain-root .v0-dev-cell:last-child {
-  padding-right: 0;
-}
-
-.toolchain-root .v0-dev-cell h3 {
-  font-size: 17px;
-  line-height: 1.35;
-  letter-spacing: -0.015em;
-  max-width: 34ch;
-}
-
-.toolchain-root .v0-dev-cell > p {
-  margin-top: 9px;
-  font-size: 15px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-}
-
-/* Artifacts bottom-align across the row: the grid stretches the
-   cells to one height, the auto margin spends the slack. */
-.toolchain-root .v0-dev-art {
-  margin-top: auto;
-  padding-top: 26px;
-}
-
-/* ---------- shared locale tag sizing ---------- */
-
-.toolchain-root .v0-dev .lct-flag {
-  font-size: 11px;
-}
-
-.toolchain-root .v0-dev .lct-code {
-  font-family: var(--tc-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.01em;
-  color: var(--tc-ink-3);
-}
-
-/* ---------- cell 1: the Save button per locale ----------
-   A fixed key column so every button starts from the same rule;
-   the ar and he rows carry dir='rtl', so the whole row mirrors
-   and the button grows leftward — orientation, not just length. */
-
-.toolchain-root .v0-dev-save {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.toolchain-root .v0-dev-save + .v0-dev-save {
-  margin-top: 9px;
-}
-
-.toolchain-root .v0-dev-save .lct {
-  flex: none;
-  width: 44px;
-}
-
-.toolchain-root .v0-dev-btn {
-  display: inline-flex;
-  align-items: center;
-  height: 30px;
-  padding: 0 13px;
-  border: 1px solid var(--tc-hair);
-  border-radius: 6px;
-  background: var(--tc-paper);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  white-space: nowrap;
-  color: var(--tc-ink);
-}
-
-/* ---------- cell 2: bento-within-bento Intl ledger ----------
-   Four mini-panels in a 2×2; the parent owns the two seams —
-   one border-left on the right column, one border-top on the
-   bottom row, so each hairline is drawn exactly once. */
-
+/* The 2×2 ledger: the PARENT owns the internal seams (nth-child
+   border sides drawn once), the cell's card owns the outer frame —
+   the ledger itself draws no perimeter. */
 .toolchain-root .v0-dev-ledger {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.toolchain-root .v0-dev-mini {
-  min-width: 0;
-  padding: 14px 18px;
+.toolchain-root .v0-dev-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 16px;
 }
 
-.toolchain-root .v0-dev-mini:nth-child(even) {
-  border-left: 1px solid var(--tc-hair-2);
+.toolchain-root .v0-dev-panel:nth-child(even) {
+  border-left: 1px solid var(--tc-hair-2, var(--tc-hair));
 }
 
-.toolchain-root .v0-dev-mini:nth-child(n + 3) {
-  border-top: 1px solid var(--tc-hair-2);
+.toolchain-root .v0-dev-panel:nth-child(n + 3) {
+  border-top: 1px solid var(--tc-hair-2, var(--tc-hair));
 }
 
-/* outer edges align with the cell's own text rule */
-.toolchain-root .v0-dev-mini:nth-child(odd) {
-  padding-left: 0;
-}
-
-.toolchain-root .v0-dev-mini:nth-child(even) {
-  padding-right: 0;
-}
-
-.toolchain-root .v0-dev-mini:nth-child(-n + 2) {
-  padding-top: 0;
-}
-
-.toolchain-root .v0-dev-mini:nth-child(n + 3) {
-  padding-bottom: 0;
-}
-
-.toolchain-root .v0-dev-mini-label {
-  font-size: 11px;
-  letter-spacing: 0.01em;
+.toolchain-root .v0-dev-panel-label {
+  font-size: 12px;
   color: var(--tc-ink-3);
 }
 
-.toolchain-root .v0-dev-lrow {
+.toolchain-root .v0-dev-ledger-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 10px;
 }
 
-/* One consistent value size across all four panels. */
-.toolchain-root .v0-dev-lval {
+/* one value voice: mono, one size — the plural numeral included */
+.toolchain-root .v0-dev-ledger-row b {
   font-family: var(--tc-mono);
   font-size: 12px;
-  letter-spacing: -0.01em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--tc-ink);
   white-space: nowrap;
 }
 
-/* Plural counts: the numeral is mono but rides at the row's own
-   size in the sans run — never a display numeral (founder note). */
-.toolchain-root .v0-dev-lplural {
+.toolchain-root .v0-dev-plural {
   font-size: 12px;
-  color: var(--tc-ink);
+  color: var(--tc-ink-2);
   white-space: nowrap;
 }
 
-.toolchain-root .v0-dev-lplural code {
-  font-family: var(--tc-mono);
-  font-size: 12px;
-  letter-spacing: -0.01em;
-}
-
-/* ---------- cell 3: routed URL paths ----------
-   Same ruled-ledger grammar; paths are code, so they are the
-   cell's only mono at reading size. */
-
-/* the top rule belongs to the first row, so it hugs the ledger
-   instead of floating up into the artifact's breathing room */
-.toolchain-root .v0-dev-route:first-child {
-  border-top: 1px solid var(--tc-hair-2);
-}
-
-.toolchain-root .v0-dev-route {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  border-bottom: 1px solid var(--tc-hair-2);
-}
-
-.toolchain-root .v0-dev-route code {
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  letter-spacing: -0.01em;
-  color: var(--tc-ink);
-  white-space: nowrap;
-}
-
-.toolchain-root .v0-dev-route-arrow {
+.toolchain-root .v0-dev-ledger-row .lct {
   flex: none;
-  width: 13px;
-  height: 13px;
-  color: var(--tc-ink-4);
-}
-
-.toolchain-root .v0-dev-route.is-fr:focus-visible {
-  outline: 1px solid var(--tc-ink-3);
-  outline-offset: -1px;
-}
-
-/* The footnote's space is reserved in flow (opacity only), so the
-   hover reveal causes zero layout shift. */
-.toolchain-root .v0-dev-footnote {
-  margin-top: 10px;
-  font-size: 12px;
-  line-height: 1.55;
-  color: var(--tc-ink-3);
-  opacity: 0;
-  transition: opacity 0.18s ease;
-}
-
-.toolchain-root .v0-dev-route.is-fr:hover ~ .v0-dev-footnote,
-.toolchain-root .v0-dev-route.is-fr:focus-visible ~ .v0-dev-footnote {
-  opacity: 1;
-}
-
-/* Touch surfaces cannot hover — the footnote just reads. */
-@media (hover: none) {
-  .toolchain-root .v0-dev-footnote {
-    opacity: 1;
-  }
-}
-
-/* ---------- stacked ---------- */
-
-@media (max-width: 1020px) {
-  .toolchain-root .v0-dev-cells {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .toolchain-root .v0-dev-cell {
-    padding-inline: 0;
-    padding-block: 30px;
-  }
-
-  .toolchain-root .v0-dev-cell + .v0-dev-cell {
-    border-left: 0;
-    border-top: 1px solid var(--tc-hair);
-  }
-
-  .toolchain-root .v0-dev-cell:first-child {
-    padding-top: 0;
-  }
-
-  .toolchain-root .v0-dev-cell:last-child {
-    padding-bottom: 0;
-  }
-
-  .toolchain-root .v0-dev-art {
-    padding-top: 24px;
-  }
-
-  /* Stacked, the cell runs the full viewport — cap the mirror's span
-     so the RTL rows stay adjacent to the LTR rows instead of flying
-     to the far edge. */
-  .toolchain-root .v0-dev-saves {
-    max-width: 460px;
-  }
 }
 
 @media (max-width: 460px) {
@@ -310,18 +65,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .toolchain-root .v0-dev-mini:nth-child(even) {
+  .toolchain-root .v0-dev-panel:nth-child(even) {
     border-left: 0;
-    padding-right: 0;
-    padding-left: 0;
   }
 
-  .toolchain-root .v0-dev-mini:nth-child(n + 2) {
-    border-top: 1px solid var(--tc-hair-2);
-    padding-top: 14px;
-  }
-
-  .toolchain-root .v0-dev-mini:nth-child(2) {
-    padding-bottom: 14px;
+  .toolchain-root .v0-dev-panel:nth-child(n + 2) {
+    border-top: 1px solid var(--tc-hair-2, var(--tc-hair));
   }
 }

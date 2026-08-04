@@ -1,33 +1,20 @@
 /* ============================================================
-   V0 CUSTOMERS — lead line + logo wall
-   Six ruled cells under one hairline top rule; dividers are
-   border-left between cells only, so no rule ever doubles up.
-   Marks are full ink (no grayscale, no dimming) and swap to the
-   drawn-for-dark variants under [data-theme='dark'].
+   V0 CUSTOMERS — tc-head lead + one tc-row logo wall
+   The section is the shell's own grammar (tc-sec / tc-head /
+   tc-row): the row draws the top rule and the between-cell
+   dividers, the section's border-bottom closes the band, so no
+   rule here ever doubles a seam the shell already owns. This
+   sheet only sets the row's column count, the cells' centring,
+   and the marks — full ink (no grayscale, no dimming), swapping
+   to the drawn-for-dark variants under [data-theme='dark'].
    ============================================================ */
 
-.toolchain-root .v0-cust {
-  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
+.toolchain-root .v0-cust-row {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
-.toolchain-root .v0-cust-lead {
-  margin: 0 0 clamp(30px, 3.6vw, 48px);
-  font-family: var(--tc-disp);
-  font-size: clamp(28px, 3.4vw, 46px);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  color: var(--tc-ink);
-}
-
-/* ---- the wall ------------------------------------------------ */
-
-.toolchain-root .v0-cust-wall {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  border-top: 1px solid var(--tc-hair);
-}
-
+/* Flat linked cells: no borders of their own at any width the
+   shell rules — hover and focus are the only ink they add. */
 .toolchain-root .v0-cust-cell {
   display: flex;
   align-items: center;
@@ -36,10 +23,6 @@
   padding: 16px 12px;
   text-decoration: none;
   transition: background-color 0.18s ease;
-}
-
-.toolchain-root .v0-cust-cell + .v0-cust-cell {
-  border-left: 1px solid var(--tc-hair);
 }
 
 .toolchain-root .v0-cust-cell:hover {
@@ -126,43 +109,54 @@
 }
 
 /* ---- wrap points ----------------------------------------------
-   3x2 on mid widths, 2x3 on small. Row starts drop their left
-   divider; each new row draws exactly one border-top, so no rule
-   ever sits parallel within 4px of another. */
+   The shell stacks every tc-row to one column at 1000px and swaps
+   its `> * + *` divider to border-top; six logos want 3x2 there
+   and 2x3 on small instead, so these re-cut the same seams for
+   those templates — row starts drop their left divider, each new
+   row draws exactly one border-top, no rule ever sits parallel
+   within 4px of another. The 3-class selectors outrank the
+   shell's 2-class swap whichever sheet loads first. */
 
-@media (max-width: 960px) {
-  .toolchain-root .v0-cust-wall {
-    grid-template-columns: repeat(3, 1fr);
+@media (max-width: 1000px) {
+  .toolchain-root .v0-cust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .toolchain-root .v0-cust-cell:nth-child(3n + 1) {
+  .toolchain-root .v0-cust-row > .v0-cust-cell {
     border-left: 0;
+    border-top: 0;
   }
 
-  .toolchain-root .v0-cust-cell:nth-child(n + 4) {
+  .toolchain-root .v0-cust-row > .v0-cust-cell:not(:nth-child(3n + 1)) {
+    border-left: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .v0-cust-row > .v0-cust-cell:nth-child(n + 4) {
     border-top: 1px solid var(--tc-hair);
   }
 }
 
 @media (max-width: 560px) {
-  .toolchain-root .v0-cust-wall {
-    grid-template-columns: repeat(2, 1fr);
+  .toolchain-root .v0-cust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .toolchain-root .v0-cust-cell {
     min-height: 96px;
   }
 
-  /* restore what the 960 block removed, then re-cut for two-up */
-  .toolchain-root .v0-cust-cell:nth-child(3n + 1) {
+  /* re-cut for two-up: zero first, then draw each seam once */
+  .toolchain-root .v0-cust-row > .v0-cust-cell:not(:nth-child(3n + 1)),
+  .toolchain-root .v0-cust-row > .v0-cust-cell:nth-child(n + 4) {
+    border-left: 0;
+    border-top: 0;
+  }
+
+  .toolchain-root .v0-cust-row > .v0-cust-cell:nth-child(2n) {
     border-left: 1px solid var(--tc-hair);
   }
 
-  .toolchain-root .v0-cust-cell:nth-child(2n + 1) {
-    border-left: 0;
-  }
-
-  .toolchain-root .v0-cust-cell:nth-child(n + 3) {
+  .toolchain-root .v0-cust-row > .v0-cust-cell:nth-child(n + 3) {
     border-top: 1px solid var(--tc-hair);
   }
 }

@@ -1,20 +1,24 @@
-import { ArrowUpRight } from 'lucide-react';
-import { Fragment } from 'react';
+'use client';
+
+import { ArrowUpRight, Globe } from 'lucide-react';
+import { Fragment, useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { BentoCell } from '@/components/shell/Bento';
 
 import './global.css';
 
 /**
  * V0Global — "Ship to the world."
  *
- * The global/enterprise beat of the v0 landing: the EdgeGlobe delivery
- * drawing on a permanently-dark plate, a ruled rail of three claims beside
- * it, and the real Theo post as a compact dark card underneath. The first
- * claim carries the spec's combined locale artifact: a ruled panel where a
- * base tag fans into its regional variants while every row speaks the
- * language's own script.
+ * The global/enterprise beat, seated in the shell's own grammar: a tc-head
+ * header band, then one is-lead bento row — the EdgeGlobe on toolchain's
+ * is-night card (the card IS the dark plate; the row owns the frame) beside
+ * a framed cell stacking the three claims as a ruled rail — and the real
+ * Theo post as one quiet full-width night cell. Only the artifacts inside
+ * the cells (globe mount, locale panel, post type) are v0-styled.
  */
 
 type VariantCell = {
@@ -63,136 +67,150 @@ const SCRIPT_BELT: readonly { code: string; native: string }[] = [
 ];
 
 export default function V0Global() {
-  return (
-    <section className='v0-glob' id='infrastructure'>
-      <header className='v0-glob-head'>
-        <h2>Ship to the world.</h2>
-        <p>GT is deployed in production apps with millions of global users</p>
-      </header>
+  const root = useRef<HTMLElement>(null);
+  useQuietReveal(root);
 
-      <div className='v0-glob-grid'>
-        {/* The delivery network as the section's object: the orthographic
-            globe on the section's one permanently-dark plate. */}
-        <figure className='v0-glob-plate'>
+  return (
+    <section className='tc-sec v0-glob' id='infrastructure' ref={root}>
+      <div className='tc-head'>
+        <Globe className='tc-head-icon' strokeWidth={1} aria-hidden />
+        <h2 data-reveal>Ship to the world.</h2>
+        <p data-reveal>GT is deployed in production apps with millions of global users.</p>
+      </div>
+
+      {/* ---- row 1: the globe on its night card, the ruled rail of claims ---- */}
+      <div className='tc-row is-lead' data-eq-heads>
+        {/* The delivery network as the section's object: the night card is
+            the dark plate itself, so the artifact draws no frame of its own —
+            the row's mat ground is the one line around it. */}
+        <BentoCell cell='is-tall is-framed is-night'>
           <div className='v0-glob-art'>
             <EdgeGlobe title='A wireframe globe with five points of presence, the nearest serving a translation 12 ms away' />
           </div>
-        </figure>
+        </BentoCell>
 
-        <div className='v0-glob-rail'>
-          <article className='v0-glob-item'>
-            <h3>120+ languages, in every writing system.</h3>
-            <p>
-              zh is distinct from zh-HK. GT covers every regional variant, with 78 base
-              languages that expand into 129 distinct locale tags.
-            </p>
+        <BentoCell cell='is-tall is-framed'>
+          <div className='v0-glob-rail'>
+            <article className='v0-glob-item'>
+              <h3>120+ languages, in every writing system.</h3>
+              <p>
+                zh is distinct from zh-HK. GT covers every regional variant, with 78 base
+                languages that expand into 129 distinct locale tags.
+              </p>
 
-            {/* The combined artifact: one ruled panel that explains locale
-                codes AND shows scripts — base tags fan into regional
-                variants, every row in the language's own writing system. */}
-            <div className='v0-glob-locales'>
-              {FAMILY_ROWS.map((row) => (
-                <div
-                  className='v0-glob-lrow'
-                  dir={row.rtl ? 'rtl' : undefined}
-                  key={row.base}
-                >
-                  <span className='v0-glob-lbase'>
-                    <span className='v0-glob-chip'>
-                      <LocaleTag code={row.base} />
+              {/* The combined artifact: base tags fan into regional variants,
+                  every row in the language's own writing system. It draws no
+                  perimeter — only the single hairlines between its rows. */}
+              <div className='v0-glob-locales'>
+                {FAMILY_ROWS.map((row) => (
+                  <div
+                    className='v0-glob-lrow'
+                    dir={row.rtl ? 'rtl' : undefined}
+                    key={row.base}
+                  >
+                    <span className='v0-glob-lbase'>
+                      <span className='v0-glob-chip'>
+                        <LocaleTag code={row.base} />
+                      </span>
+                      <span className='v0-glob-native is-base' lang={row.base}>
+                        {row.native}
+                      </span>
                     </span>
-                    <span className='v0-glob-native is-base' lang={row.base}>
-                      {row.native}
+                    <span className='v0-glob-larrow' aria-hidden='true'>
+                      {row.rtl ? '←' : '→'}
                     </span>
-                  </span>
-                  <span className='v0-glob-larrow' aria-hidden='true'>
-                    {row.rtl ? '←' : '→'}
-                  </span>
-                  <span className='v0-glob-lvars'>
-                    {row.variants.map((variant, i) => (
-                      <Fragment key={variant.code}>
-                        {i > 0 ? (
-                          <span className='v0-glob-ldot' aria-hidden='true'>
-                            ·
-                          </span>
-                        ) : null}
-                        <span className='v0-glob-lvar'>
-                          <code className='v0-glob-chip'>{variant.code}</code>
-                          {variant.native ? (
-                            <span className='v0-glob-native' lang={variant.code}>
-                              {variant.native}
+                    <span className='v0-glob-lvars'>
+                      {row.variants.map((variant, i) => (
+                        <Fragment key={variant.code}>
+                          {i > 0 ? (
+                            <span className='v0-glob-ldot' aria-hidden='true'>
+                              ·
                             </span>
                           ) : null}
-                        </span>
-                      </Fragment>
-                    ))}
-                  </span>
-                </div>
-              ))}
-
-              <p className='v0-glob-belt'>
-                {SCRIPT_BELT.map((token, i) => (
-                  <Fragment key={token.code}>
-                    {i > 0 ? (
-                      <span className='v0-glob-ldot' aria-hidden='true'>
-                        ·
-                      </span>
-                    ) : null}
-                    <span className='v0-glob-lvar'>
-                      <span className='v0-glob-chip'>
-                        <LocaleTag code={token.code} />
-                      </span>
-                      <span className='v0-glob-native' lang={token.code}>
-                        {token.native}
-                      </span>
+                          <span className='v0-glob-lvar'>
+                            <code className='v0-glob-chip'>{variant.code}</code>
+                            {variant.native ? (
+                              <span className='v0-glob-native' lang={variant.code}>
+                                {variant.native}
+                              </span>
+                            ) : null}
+                          </span>
+                        </Fragment>
+                      ))}
                     </span>
-                  </Fragment>
+                  </div>
                 ))}
+
+                <p className='v0-glob-belt'>
+                  {SCRIPT_BELT.map((token, i) => (
+                    <Fragment key={token.code}>
+                      {i > 0 ? (
+                        <span className='v0-glob-ldot' aria-hidden='true'>
+                          ·
+                        </span>
+                      ) : null}
+                      <span className='v0-glob-lvar'>
+                        <span className='v0-glob-chip'>
+                          <LocaleTag code={token.code} />
+                        </span>
+                        <span className='v0-glob-native' lang={token.code}>
+                          {token.native}
+                        </span>
+                      </span>
+                    </Fragment>
+                  ))}
+                </p>
+              </div>
+            </article>
+
+            <article className='v0-glob-item'>
+              <h3>Served from the edge.</h3>
+              <p>
+                Translations are served from a low-latency CDN, versioned per locale. Fix a
+                string or roll it back without touching your code.
               </p>
-            </div>
-          </article>
+            </article>
 
-          <article className='v0-glob-item'>
-            <h3>Served from the edge.</h3>
-            <p>
-              Translations are served from a low-latency CDN, versioned per locale. Fix a
-              string or roll it back without touching your code.
-            </p>
-          </article>
-
-          <article className='v0-glob-item'>
-            <h3>Built for the enterprise.</h3>
-            <p>
-              Enterprise plans include custom FDE hours to build any workflow for your use
-              case. Plus SSO, SOC 2 Type II, ISO 27001, and audit logs.
-            </p>
-          </article>
-        </div>
+            <article className='v0-glob-item'>
+              <h3>Built for the enterprise.</h3>
+              <p>
+                Enterprise plans include custom FDE hours to build any workflow for your use
+                case. Plus SSO, SOC 2 Type II, ISO 27001, and audit logs.
+              </p>
+            </article>
+          </div>
+        </BentoCell>
       </div>
 
-      {/* The real post, verbatim — do not edit a word of the quote. The link
-          stays x.com/theo until the exact status URL is supplied. */}
-      <figure className='v0-glob-quote'>
-        <blockquote>
-          Every once in awhile, I see a snippet of code that makes me a bit emotional. Now
-          is one of those moments. Internationalization went from “$%!# this” to “trivial”.
-        </blockquote>
-        <figcaption>
-          <span className='v0-glob-quote-who'>
-            <b>Theo</b>
-            <span>CEO, T3 Chat</span>
-          </span>
-          <a
-            className='v0-glob-quote-link'
-            href='https://x.com/theo'
-            target='_blank'
-            rel='noreferrer'
-          >
-            View the post
-            <ArrowUpRight aria-hidden='true' />
-          </a>
-        </figcaption>
-      </figure>
+      {/* ---- row 2: the real post, one quiet full-width night cell ----
+          The cell is the box — the figure draws no frame of its own. The
+          quote stays verbatim; the link stays x.com/theo until the exact
+          status URL is supplied. */}
+      <div className='tc-row is-one'>
+        <BentoCell cell='is-framed is-night'>
+          <figure className='v0-glob-quote'>
+            <blockquote>
+              Every once in awhile, I see a snippet of code that makes me a bit emotional. Now
+              is one of those moments. Internationalization went from “$%!# this” to “trivial”.
+            </blockquote>
+            <figcaption>
+              <span className='v0-glob-quote-who'>
+                <b>Theo</b>
+                <span>CEO, T3 Chat</span>
+              </span>
+              <a
+                className='v0-glob-quote-link'
+                href='https://x.com/theo'
+                target='_blank'
+                rel='noreferrer'
+              >
+                View the post
+                <ArrowUpRight aria-hidden='true' />
+              </a>
+            </figcaption>
+          </figure>
+        </BentoCell>
+      </div>
     </section>
   );
 }

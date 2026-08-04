@@ -6,6 +6,7 @@ import type { ComponentType, SVGProps } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Bot } from 'lucide-react';
 
 import {
   SiContentful,
@@ -15,10 +16,16 @@ import {
   SiSanity,
 } from '@icons-pack/react-simple-icons';
 
-import IsoFrame from '../../toolchain/diagrams/IsoFrame';
-import { IsoPlane, IsoSlab } from '../../toolchain/diagrams/IsoSolid';
-import { ISO_COS30, ISO_SIN30, polyline, project, segment } from '../../toolchain/diagrams/iso';
+import IsoFrame from '@/app/d/toolchain/diagrams/IsoFrame';
+import { IsoPlane, IsoSlab } from '@/app/d/toolchain/diagrams/IsoSolid';
+import { ISO_COS30, ISO_SIN30, polyline, project, segment } from '@/app/d/toolchain/diagrams/iso';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { BentoCell } from '@/components/shell/Bento';
 
+/* tcm-ruled (the split row's ruled copy cell) is defined by the toolchain
+   bento sheet; the v0 routes don't mount that section, so the sheet rides
+   in here the way the pages import styles.css directly. */
+import '@/app/d/toolchain/sections/bento-motion.css';
 import './locadex.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -31,6 +38,10 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * plate carrying the merged-PR chip — the drawing's one accent, exactly like
  * the delivered-string chip in the stack iso. Below, the integrate block's
  * connector diagram: three source nodes feeding one Locadex plate.
+ *
+ * Both drawings are founder-approved verbatim; the section around them is
+ * the sheet's own grammar — a tc-head band, then two split rows (ruled copy
+ * cell beside a framed artifact cell), whose seams the rows own.
  */
 
 /* ---- geometry, all through the family's 30° projection ------------------ */
@@ -345,6 +356,7 @@ function IntegrateDiagram() {
 
 export default function V0Locadex() {
   const root = useRef<HTMLElement>(null);
+  useQuietReveal(root);
 
   useGSAP(
     () => {
@@ -410,33 +422,49 @@ export default function V0Locadex() {
 
   return (
     <section className='tc-sec v0-ldx' id='locadex' ref={root}>
-      <h2 className='v0-ldx-h2'>
-        The easiest way to localize your full system in native speed and quality.
-      </h2>
-
-      <div className='v0-ldx-grid'>
-        <div className='v0-ldx-copy'>
-          <h3>Run the Locadex agent.</h3>
-          <p>Connect your repository to our custom-built AI agent. Just merge a PR.</p>
-        </div>
-
-        <div className='v0-ldx-plate'>
-          <LocadexIso />
-        </div>
+      <div className='tc-head'>
+        <Bot className='tc-head-icon' strokeWidth={1} aria-hidden />
+        <h2 data-reveal>Locadex.</h2>
+        <p data-reveal>
+          The easiest way to localize your full system in native speed and quality.
+        </p>
       </div>
 
-      <div className='v0-ldx-integrate'>
-        <div className='v0-ldx-copy'>
-          <h3>Integrate with any tool.</h3>
-          <p>
-            Just a few clicks to integrate with your Google Drive, CMS platform, or docs
-            framework.
-          </p>
-        </div>
+      {/* ---- row 1: the agent, run against a repository ----
+          The toolchain 'Code' row's shape: a ruled copy cell of the sheet
+          beside a framed artifact cell. The row owns the seam between them. */}
+      <div className='tc-row is-split'>
+        <BentoCell
+          cell='is-tall tcm-ruled'
+          framed={false}
+          title='Run the Locadex agent.'
+          sub='Connect your repository to our custom-built AI agent. Just merge a PR.'
+        />
 
-        <div className='v0-ldx-int-diagram'>
-          <IntegrateDiagram />
-        </div>
+        {/* is-bleed: the card sheds its padding, so the iso's permanently-dark
+            ground runs to the card's own frame — the cell owns the frame, the
+            plate draws no border or radius of its own. */}
+        <BentoCell cell='is-tall is-bleed is-framed'>
+          <div className='v0-ldx-plate'>
+            <LocadexIso />
+          </div>
+        </BentoCell>
+      </div>
+
+      {/* ---- row 2: the sources, converging ---- */}
+      <div className='tc-row is-split'>
+        <BentoCell
+          cell='is-tall tcm-ruled'
+          framed={false}
+          title='Integrate with any tool.'
+          sub='Just a few clicks to integrate with your Google Drive, CMS platform, or docs framework.'
+        />
+
+        <BentoCell cell='is-tall is-framed'>
+          <div className='tc-art-center'>
+            <IntegrateDiagram />
+          </div>
+        </BentoCell>
       </div>
     </section>
   );

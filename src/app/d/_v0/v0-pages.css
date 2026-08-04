@@ -26,6 +26,38 @@
 }
 
 /* ============================================================
+   SEAM OWNERSHIP AT THE v0 JUNCTIONS — every boundary line
+   drawn once, per the ledger's own rules.
+   ============================================================ */
+
+/* The v0 flow mounts its dark bands INSIDE the page's .tc-rail wrapper,
+   and the band LAW (styles.css) says exactly this case must not draw the
+   band's own outer rail pair — the wrapper's ±10px pseudo already owns
+   it, and the band's +18px pair landed 1px inside it, the double-rail
+   bug for the full band height. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail .tc-band::after {
+  content: none;
+}
+
+/* Sections whose lower neighbour draws the seam yield their tc-sec
+   bottom rule: Customers under the full-stack band's border-top, Global
+   under the deploy band's. Developer's closing line is its last framed
+   row's own ground strip, so its border-bottom goes too. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  :is(.v0-cust, .v0-dev, .v0-glob).tc-sec {
+  border-bottom: 0;
+}
+
+/* Where a framed row ends a section that a BAND border follows, the
+   band's top rule is the seam — the row's bottom ground strip would sit
+   1–2px above it as a second line. (Developer keeps its strip: nothing
+   below it draws.) */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  :is(.v0-ldx, .v0-glob) .tc-row:has(> .tc-cell.is-framed):last-child {
+  padding-bottom: 0;
+}
+
+/* ============================================================
    HERO-LEVEL FIGMA EXPERIMENTS — the five homes only; toolchain
    itself keeps its centered card, mark, and doubled threads.
    ============================================================ */

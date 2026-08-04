@@ -1,27 +1,23 @@
 /* ============================================================
    V0 CONTEXT — "Localize in context."
-   The spec's glyph-rise band: one full-bleed ink plate carrying
-   the whole Context story, GlyphRain falling behind it. The
-   plate is permanently dark in both themes, so every color here
-   is hardcoded (the house dark-plate rule); only the structural
-   tokens — rail, gutter, faces, thread gauge — come from tc.
-   Hairline discipline: white at 0.07–0.12 on the plate, one
-   stroke per line, rules between rows never doubled.
+   The toolchain dark-band grammar (tc-band tcb): the section
+   reuses darkband-v3's tcb-in / tcb-head / tcb-grid / tcb-cell
+   sheet wholesale — this file styles only what lives INSIDE the
+   cells (the fork re-skin, the glossary and directives rows, the
+   review row's ground) plus the cells' grid spans. GlyphRain
+   falls behind the ruled sheet. The plate is permanently dark in
+   both themes, so artifact inks are hardcoded white alphas; the
+   seams stay in the band hairline family.
    ============================================================ */
 
+/* Full-bleed inside the .tc-rail wrapper (house band pattern). */
 .toolchain-root .v0-ctx {
-  position: relative;
   margin-inline: calc(50% - 50vw);
-  background: #070707;
   border-block: 1px solid var(--tc-hair);
-  color: rgba(255, 255, 255, 0.92);
-  overflow: hidden;
-  isolation: isolate;
 }
 
-/* The rain is the band's material, not its subject: it spans the whole
-   plate behind the ruled column and fades at the band's own edges (the
-   canvas handles that itself). */
+/* The rain is the band's material, not its subject: it spans the plate
+   behind the ruled sheet (tcb-in sits above at z-index 1). */
 .toolchain-root .v0-ctx-rain {
   position: absolute;
   inset: 0;
@@ -31,264 +27,90 @@
   pointer-events: none;
 }
 
-/* The rails continue through the band — the inner column redraws them in
-   the band's own line color, per the house full-bleed pattern. */
-.toolchain-root .v0-ctx-in {
-  position: relative;
-  z-index: 1;
-  width: min(var(--tc-rail), 100%);
-  margin-inline: auto;
-  border-inline: 1px solid rgba(138, 143, 152, 0.5);
-  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
-}
-
-/* ---------- section head ---------- */
-
-.toolchain-root .v0-ctx-head h2 {
-  margin: 0;
-  font-family: var(--tc-disp);
-  font-weight: 600;
-  font-size: clamp(28px, 3.4vw, 46px);
-  line-height: 1.06;
-  letter-spacing: -0.025em;
-  color: #ffffff;
-  max-width: 22ch;
-}
-
-.toolchain-root .v0-ctx-head p {
-  margin: 14px 0 0;
-  font-size: 15px;
-  line-height: 1.62;
-  color: rgba(255, 255, 255, 0.6);
-  max-width: 58ch;
-}
-
 /* Locale chips inherit each host's size; the code is always mono. */
 .toolchain-root .v0-ctx .lct-code {
   font-family: var(--tc-mono);
 }
 
-/* ---------- the bento quad ----------
-   Flat divisions on the plate, band-grid grammar: cells flush to the
-   column's text edge, one vertical rule down the middle, one horizontal
-   rule per row — the artifacts are the objects, the cells stay ground. */
+/* ---------- grid spans: the 2×2 quad + the full-width review row ---------- */
 
-.toolchain-root .v0-ctx-bentos {
-  margin-top: clamp(40px, 5vw, 62px);
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+.toolchain-root .v0-ctx .v0-ctx-cell {
+  grid-column: span 6;
 }
 
-.toolchain-root .v0-ctx-cell {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: clamp(24px, 2.6vw, 32px) clamp(20px, 2.6vw, 32px) clamp(28px, 3.2vw, 38px) 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.toolchain-root .v0-ctx .v0-ctx-review {
+  grid-column: span 12;
 }
 
-.toolchain-root .v0-ctx-cell:nth-child(even) {
-  padding-left: clamp(20px, 2.6vw, 32px);
-  padding-right: 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
+/* ---------- the artifact zone inside a cell ----------
+   The cell owns the frame; the zone only lays its artifact out. Forks
+   stretch (ContextResolve spans its plate rather than pooling mid-cell);
+   the ruled row artifacts center themselves. */
 
-.toolchain-root .v0-ctx-cell h3 {
-  margin: 0;
-  font-family: var(--tc-disp);
-  font-weight: 500;
-  font-size: 17px;
-  line-height: 1.3;
-  letter-spacing: -0.015em;
-  color: #ffffff;
-  max-width: 30ch;
-}
-
-.toolchain-root .v0-ctx-cell > p {
-  margin: 9px 0 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.56);
-  max-width: 44ch;
-}
-
-.toolchain-root .v0-ctx-art {
+.toolchain-root .v0-ctx .v0-ctx-art {
   flex: 1;
-  margin-top: 24px;
+  min-height: 0;
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  justify-content: center;
+  padding: 22px 24px 26px;
 }
 
-.toolchain-root .v0-ctx-art > * {
-  width: 100%;
+.toolchain-root .v0-ctx .v0-ctx-art > .lang-cr {
+  max-width: 460px;
 }
 
-/* ---------- the doubled-thread fork ----------
-   Source chip on the axis, the Y stretched between it and the two branch
-   cards. The thread is the sandwich: a full-gauge ink stroke with a
-   plate-colored core leaves two parallel 1.5px lines along any curve;
-   non-scaling-stroke holds the gauge under the stretched viewBox. */
+/* ---------- the fork family, re-skinned for the plate ----------
+   ContextResolve (and the gender fork cut in its drawing) derives every
+   ink from currentColor and its surfaces from these vars, so the dark
+   cell re-skins the diagram without touching the component: white-alpha
+   threads and rules, branch cards a step up from the cell, the sandwich
+   core carved in the cell's own ground, and the solid buttons inverted —
+   white chip, ink label (the dark theme's .tc-btn-solid pairing). */
 
-.toolchain-root .v0-ctx-fork {
-  --v0-ctx-gap: 12px;
-
-  display: flex;
-  flex-direction: column;
+.toolchain-root .v0-ctx .v0-ctx-art .lang {
+  --lang-card: #161616;
+  --lang-ground: #101010;
+  --tc-ink: #f5f5f3;
+  color: rgba(255, 255, 255, 0.92);
 }
 
-.toolchain-root .v0-ctx-fork-src {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--tc-mono);
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* The string as it is in the product — a solid control, inverted for the
-   plate: white chip, ink label. Endpoints of the fork, both ends. */
-.toolchain-root .v0-ctx-word {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  max-width: 100%;
-  height: 34px;
-  padding: 0 16px;
-  border-radius: 5px;
-  background: #f5f5f3;
-  font-family: var(--tc-sans);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  color: #070707;
-}
-
-.toolchain-root .v0-ctx-word code {
+/* The interpolation hole in the source chip stays mono, dim against the
+   inverted (light) button face. */
+.toolchain-root .v0-ctx .lang-cr-word code {
   font-family: var(--tc-mono);
   font-size: 12.5px;
   color: rgba(7, 7, 7, 0.6);
 }
 
-/* Bleeds half the card gap per side so the 25%/75% landings sit exactly on
-   the two cards' centers; nothing paints in the bleed itself. */
-.toolchain-root .v0-ctx-threads {
-  display: block;
-  width: calc(100% + var(--v0-ctx-gap));
-  margin-inline: calc(var(--v0-ctx-gap) / -2);
-  flex: 1 1 auto;
-  min-height: 52px;
-  margin-top: 6px;
+/* ---------- the glossary rows ----------
+   No perimeter — the cell owns the frame. A lift band per term (the
+   tcb-out grammar), then one translated line per locale with the term
+   verbatim inside it; the second band is the rule chip: a term locked
+   against translation entirely. */
+
+.toolchain-root .v0-ctx-glossary,
+.toolchain-root .v0-ctx-dirs {
+  width: 100%;
+  max-width: 420px;
+  align-self: center;
 }
 
-.toolchain-root .v0-ctx-thread {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.78);
-  stroke-width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
-  vector-effect: non-scaling-stroke;
-}
-
-.toolchain-root .v0-ctx-core {
-  fill: none;
-  stroke: #070707;
-  stroke-width: var(--thread-gap, 3px);
-  vector-effect: non-scaling-stroke;
-}
-
-.toolchain-root .v0-ctx-branches {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--v0-ctx-gap);
-}
-
-.toolchain-root .v0-ctx-branch {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 9px;
-  min-width: 0;
-  padding: 13px 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  background: #101010;
-}
-
-.toolchain-root .v0-ctx-branch-top {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  max-width: 100%;
-}
-
-.toolchain-root .v0-ctx-branch-top .lct-code {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.toolchain-root .v0-ctx-branch .v0-ctx-word {
-  height: 32px;
-  padding: 0 14px;
-}
-
-/* The deciding annotation: quiet ink prose, mono spent only on the
-   code-ish key (and on variant keys, which are identifiers themselves). */
-.toolchain-root .v0-ctx-note {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 5px;
-  max-width: 100%;
-  font-size: 12px;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.52);
-}
-
-.toolchain-root .v0-ctx-note code {
-  font-family: var(--tc-mono);
-  font-size: 11px;
-  white-space: nowrap;
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.toolchain-root .v0-ctx-note code.is-val {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* ---------- the glossary card ----------
-   A ruled panel: the pinned term as its head, then one translated line per
-   locale with the term verbatim inside it — that is the point. The second
-   head is the rule chip: a term locked against translation entirely. */
-
-.toolchain-root .v0-ctx-glossary {
-  max-width: 340px;
-  margin-inline: auto;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  background: #101010;
-  overflow: hidden;
-}
-
-.toolchain-root .v0-ctx-glossary-head,
-.toolchain-root .v0-ctx-dirs-head {
+.toolchain-root .v0-ctx-glossary-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 10px 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.04);
 }
 
-.toolchain-root .v0-ctx-glossary-head:first-child,
-.toolchain-root .v0-ctx-dirs-head:first-child {
+.toolchain-root .v0-ctx-glossary-head:first-child {
   border-top: 0;
 }
 
-.toolchain-root .v0-ctx-glossary-head b,
-.toolchain-root .v0-ctx-dirs-head b {
+.toolchain-root .v0-ctx-glossary-head b {
   font-family: var(--tc-disp);
   font-weight: 500;
   font-size: 13.5px;
@@ -314,7 +136,7 @@
   display: flex;
   align-items: baseline;
   gap: 10px;
-  padding: 8px 14px 9px;
+  padding: 8px 12px 9px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   font-size: 12.5px;
 }
@@ -338,20 +160,11 @@
   color: #ffffff;
 }
 
-/* ---------- the directives card (German) ----------
-   Same panel material as the glossary: a locale head, then one quiet ruled
-   row per directive — label against the sentence it sets. The Sie row
-   carries its own before→after pair; the Formatting date is Intl output,
-   so the numerals sit in mono. */
-
-.toolchain-root .v0-ctx-dirs {
-  max-width: 380px;
-  margin-inline: auto;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  background: #101010;
-  overflow: hidden;
-}
+/* ---------- the directives rows (German) ----------
+   Same row material as the glossary: a locale head band, then one quiet
+   ruled row per directive — label against the sentence it sets. The Sie
+   row carries its own before→after pair; the Formatting date is Intl
+   output, so the numerals sit in mono. */
 
 .toolchain-root .v0-ctx-dirs-loc {
   display: inline-flex;
@@ -370,7 +183,7 @@
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
   gap: 12px;
-  padding: 10px 14px 11px;
+  padding: 10px 12px 11px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
@@ -417,265 +230,52 @@
   color: rgba(255, 255, 255, 0.35);
 }
 
-/* ---------- review from one surface ----------
-   Heading over a two-panel row: the "Edit in context." card beside the
-   workspace ledger, both cut from the same panel material. */
+/* ---------- the review row ----------
+   The ORIGINAL ReviewWorkspace mounted whole. Its stylesheet reads the
+   light page's tokens, so the cell carries the ground it needs: the dark
+   theme's remap, pinned — the band is dark in both themes. The workspace
+   surface lands on the tcb nested-box tone (a step darker than the cell),
+   and the frame's full-reach rules stay in the band seam family. */
 
-.toolchain-root .v0-ctx-review {
-  margin-top: clamp(56px, 6.4vw, 88px);
+.toolchain-root .v0-ctx .v0-ctx-review {
+  --tc-card: #070707;
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.66);
+  --tc-ink-3: rgba(255, 255, 255, 0.48);
+  --tc-ink-4: rgba(255, 255, 255, 0.3);
+  --tc-hair: rgba(138, 143, 152, 0.5);
+  --tc-hair-2: rgba(138, 143, 152, 0.4);
+  --tc-mat-edge: var(--tc-hair-band);
 }
 
-.toolchain-root .v0-ctx-review-head h3 {
-  margin: 0;
-  font-family: var(--tc-disp);
-  font-weight: 600;
-  font-size: clamp(22px, 2.4vw, 30px);
-  line-height: 1.12;
-  letter-spacing: -0.022em;
-  color: #ffffff;
-  max-width: 16ch;
+/* The mounted section trades its page-scale padding for the cell's, and
+   never draws the tc-sec bottom rule the grid seam already provides. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr {
+  padding: 14px 24px 30px;
+  border-bottom: 0;
 }
 
-.toolchain-root .v0-ctx-review-head p {
-  margin: 13px 0 0;
-  font-size: 15px;
-  line-height: 1.62;
-  color: rgba(255, 255, 255, 0.6);
-  max-width: 52ch;
+/* Inside a cell the workspace's copy column is the artifact's own caption,
+   not a page heading — it steps down so the cell head keeps the row. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-copy h2 {
+  font-size: clamp(1.15rem, 1.6vw, 1.42rem);
 }
 
-.toolchain-root .v0-ctx-review-grid {
-  margin-top: clamp(26px, 3.2vw, 40px);
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr);
-  gap: clamp(16px, 2.2vw, 28px);
-  align-items: stretch;
-}
-
-.toolchain-root .v0-ctx-edit {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: 22px 24px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  background: #101010;
-}
-
-.toolchain-root .v0-ctx-edit h4 {
-  margin: 0;
-  font-family: var(--tc-disp);
-  font-weight: 500;
-  font-size: 17px;
-  line-height: 1.3;
-  letter-spacing: -0.015em;
-  color: #ffffff;
-}
-
-.toolchain-root .v0-ctx-edit > p {
-  margin: 9px 0 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.56);
-  max-width: 38ch;
-}
-
-/* The three capabilities as quiet ruled line items, not bullets. */
-.toolchain-root .v0-ctx-edit ul {
-  list-style: none;
-  margin: 18px 0 0;
-  padding: 0;
-}
-
-.toolchain-root .v0-ctx-edit li {
-  padding: 10px 0 11px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.toolchain-root .v0-ctx-edit li:last-child {
-  padding-bottom: 0;
-}
-
-/* The workspace ledger: the page's dark artifact surface, ruled inside by
-   the plate's own hairline family. State is type — chips and case, never
-   color. Mono is spent only on codes, counts and ⌘K. */
-.toolchain-root .v0-ctx-ws {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  background: #101010;
-  overflow: hidden;
-}
-
-.toolchain-root .v0-ctx-ws-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  height: 38px;
-  padding: 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.toolchain-root .v0-ctx-ws-bar code,
-.toolchain-root .v0-ctx-ws-foot code {
-  font-family: var(--tc-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.toolchain-root .v0-ctx-ws-cols {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-content: start;
-}
-
-.toolchain-root .v0-ctx-ws-lab {
-  padding: 10px 16px 9px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.38);
-}
-
-.toolchain-root .v0-ctx-ws-lab code {
-  font-family: var(--tc-mono);
-  font-size: 10px;
-  color: inherit;
-}
-
-.toolchain-root .v0-ctx-ws-lab.is-t {
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.toolchain-root .v0-ctx-ws-cell {
-  min-width: 0;
-  padding: 12px 16px 13px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.toolchain-root .v0-ctx-ws-cell.is-t {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* The open row reads as the focused field — a breath of surface, no new
-   lines of its own. */
-.toolchain-root .v0-ctx-ws-cell.is-editing {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.toolchain-root .v0-ctx-ws-text {
-  flex: 1;
-  min-width: 0;
-}
-
-/* The live insertion point, parked after the last word mid-edit. */
-.toolchain-root .v0-ctx-caret {
-  display: inline-block;
-  width: 1px;
-  height: 1.05em;
-  margin-left: 2px;
-  vertical-align: -0.18em;
-  background: rgba(255, 255, 255, 0.9);
-  animation: v0-ctx-blink 1.06s steps(2, jump-none) infinite;
-}
-
-@keyframes v0-ctx-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .toolchain-root .v0-ctx-caret {
-    animation: none;
-  }
-}
-
-.toolchain-root .v0-ctx-stamp {
-  flex: none;
-  margin-top: 1px;
-  padding: 3px 7px 4px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 4px;
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.66);
-}
-
-/* The edit affordance is an action, not a state — lowercase, quieter. */
-.toolchain-root .v0-ctx-stamp.is-edit {
-  border-color: rgba(255, 255, 255, 0.1);
-  font-size: 10px;
-  letter-spacing: 0.01em;
-  text-transform: none;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.toolchain-root .v0-ctx-ws-foot {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 10px 16px 11px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.toolchain-root .v0-ctx-ws-foot .is-right {
-  margin-left: auto;
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-sub {
+  font-size: 14px;
 }
 
 /* ---------- responsive ---------- */
 
-@media (max-width: 900px) {
-  .toolchain-root .v0-ctx-bentos {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .toolchain-root .v0-ctx-cell,
-  .toolchain-root .v0-ctx-cell:nth-child(even) {
-    padding-inline: 0;
-    border-left: 0;
-  }
-
-  .toolchain-root .v0-ctx-review-grid {
-    grid-template-columns: minmax(0, 1fr);
+@media (max-width: 1020px) {
+  .toolchain-root .v0-ctx .v0-ctx-cell {
+    grid-column: span 12;
   }
 }
 
 @media (max-width: 560px) {
-  .toolchain-root .v0-ctx-ws-cell {
-    padding: 10px 12px 11px;
-    font-size: 12px;
-  }
-
-  .toolchain-root .v0-ctx-ws-bar,
-  .toolchain-root .v0-ctx-ws-lab,
-  .toolchain-root .v0-ctx-ws-foot {
-    padding-inline: 12px;
+  .toolchain-root .v0-ctx .v0-ctx-art {
+    padding: 18px 16px 20px;
   }
 
   .toolchain-root .v0-ctx-dir {

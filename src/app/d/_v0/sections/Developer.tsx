@@ -1,25 +1,16 @@
-import { CornerDownRight } from 'lucide-react';
+'use client';
+
+import { Braces } from 'lucide-react';
+import { useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import LocaleRouting from '@/app/d/toolchain/diagrams/LocaleRouting';
+import RtlMirror from '@/app/d/toolchain/diagrams/lang/RtlMirror';
+import SentenceWidth from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { BentoCell } from '@/components/shell/Bento';
 
 import './developer.css';
-
-type SaveDemo = {
-  code: string;
-  label: string;
-  /** dir='rtl' rides the row, not the label — the whole row must mirror */
-  rtl?: boolean;
-};
-
-/** One Save button, five rendered widths — two rows reverse the entire
-    orientation. The widths are the artifact: nothing is equalized. */
-const SAVE_DEMOS: readonly SaveDemo[] = [
-  { code: 'en', label: 'Save changes' },
-  { code: 'de', label: 'Änderungen speichern' },
-  { code: 'ja', label: '変更を保存' },
-  { code: 'ar', label: 'حفظ التغييرات', rtl: true },
-  { code: 'he', label: 'שמור שינויים', rtl: true },
-];
 
 /* Fixed inputs — every displayed value must be real Intl output computed
    at render, never a transcribed string. */
@@ -46,15 +37,12 @@ function formatDate(locale: string): string {
 }
 
 function pluralFormCount(locale: string): number {
-  return new Intl.PluralRules(locale).resolvedOptions().pluralCategories
-    .length;
+  return new Intl.PluralRules(locale).resolvedOptions().pluralCategories.length;
 }
 
 /** Plural rows carry a count instead of a formatted string: the numeral is
-    mono, the words sans, both at the row's one size (founder note). */
-type LedgerRow =
-  | { code: string; value: string }
-  | { code: string; pluralCount: number };
+    mono, the words sans, both at the row's one size. */
+type LedgerRow = { code: string; value: string } | { code: string; pluralCount: number };
 
 type LedgerPanel = {
   label: string;
@@ -93,122 +81,89 @@ const LEDGER_PANELS: readonly LedgerPanel[] = [
   },
 ];
 
-function LedgerValue({ row }: { row: LedgerRow }) {
-  if ('value' in row) {
-    return <code className='v0-dev-lval'>{row.value}</code>;
-  }
-  return (
-    <span className='v0-dev-lplural'>
-      <code>{row.pluralCount}</code> plural{' '}
-      {row.pluralCount === 1 ? 'form' : 'forms'}
-    </span>
-  );
-}
-
-type RouteRow = {
-  code: string;
-  path: string;
-};
-
-/** The pathnames themselves are localized — that is the point. */
-const ROUTE_ROWS: readonly RouteRow[] = [
-  { code: 'de', path: '/de/ueber-uns' },
-  { code: 'fr', path: '/fr/a-propos' },
-];
-
 /**
- * DEVELOPER EXPERIENCE — "Built for developers." A three-cell bento where
- * the middle (numbers) cell earns more width: rendered button widths
- * (incl. two RTL rows), a bento-within-bento Intl ledger, and localized
- * routing. Static server component; copy verbatim from the Figma v0 spec.
+ * Built for developers — the Figma DX beat expressed in the sheet's own
+ * ledger: a tc-head header cell, then framed bento rows whose seams the row
+ * owns, mounting the ORIGINAL diagram components the mock's screenshots were
+ * taken from (SentenceWidth, RtlMirror, LocaleRouting). Only the thorny-
+ * locale Intl ledger is v0-authored, and it lives inside a framed cell like
+ * any other artifact.
  */
 export default function V0Developer() {
+  const root = useRef<HTMLElement>(null);
+  useQuietReveal(root);
+
   return (
-    <section className='tc-sec v0-dev' id='developers'>
-      <div className='v0-dev-head'>
-        <h2>Built for developers.</h2>
-        <p>
-          General Translation handles all the infrastructure, so you no longer
-          need to think about localization.
+    <section className='tc-sec v0-dev' id='developers' ref={root}>
+      <div className='tc-head'>
+        <Braces className='tc-head-icon' strokeWidth={1} aria-hidden />
+        <h2 data-reveal>Built for developers.</h2>
+        <p data-reveal>
+          General Translation handles all the infrastructure, so you no longer need to think about
+          localization.
         </p>
       </div>
 
-      <div className='v0-dev-cells'>
-        <article className='v0-dev-cell'>
-          <h3>Every locale is a different length.</h3>
-          <p>
-            Some change your entire orientation. GT renders components
-            correctly for every locale.
-          </p>
-          <div className='v0-dev-art v0-dev-saves'>
-            {SAVE_DEMOS.map((demo) => (
-              <div
-                className='v0-dev-save'
-                dir={demo.rtl ? 'rtl' : undefined}
-                key={demo.code}
-              >
-                <LocaleTag code={demo.code} />
-                <span className='v0-dev-btn'>{demo.label}</span>
-              </div>
-            ))}
+      {/* ---- row 1: the problem — width, then orientation ---- */}
+      <div className='tc-row is-lead' data-eq-heads>
+        <BentoCell
+          cell='is-tall is-framed'
+          title='Every locale is a different length'
+          sub='One button in four languages, measured by the browser rather than estimated. German runs long, Japanese runs short, and Arabic re-anchors the whole line.'
+        >
+          <div className='tc-lang is-lead'>
+            <SentenceWidth title='The same sentence measured in English, German, Japanese and Arabic' />
           </div>
-        </article>
+        </BentoCell>
 
-        <article className='v0-dev-cell'>
-          <h3>
-            Every locale uses different numbers, currencies, dates, plurals,
-            and more.
-          </h3>
-          <p>GT handles every possible branch and edge case.</p>
-          <div className='v0-dev-art v0-dev-ledger'>
+        <BentoCell
+          cell='is-tall is-framed'
+          title='Some change your entire orientation'
+          sub='GT renders components correctly for every locale — under an RTL locale the whole component mirrors, not just the words.'
+        >
+          <div className='tc-lang'>
+            <RtlMirror title='The same form mirrored under an RTL locale' />
+          </div>
+        </BentoCell>
+      </div>
+
+      {/* ---- row 2: the branches, then the routes ---- */}
+      <div className='tc-row is-lead' data-eq-heads>
+        <BentoCell
+          cell='is-tall is-framed'
+          title='Every locale uses different numbers, currencies, dates, plurals, and more'
+          sub='GT handles every possible branch and edge case.'
+        >
+          <div className='v0-dev-ledger'>
             {LEDGER_PANELS.map((panel) => (
-              <div className='v0-dev-mini' key={panel.label}>
-                <div className='v0-dev-mini-label'>{panel.label}</div>
+              <div className='v0-dev-panel' key={panel.label}>
+                <span className='v0-dev-panel-label'>{panel.label}</span>
                 {panel.rows.map((row) => (
-                  <div className='v0-dev-lrow' key={row.code}>
+                  <span className='v0-dev-ledger-row' key={`${panel.label}-${row.code}`}>
                     <LocaleTag code={row.code} />
-                    <LedgerValue row={row} />
-                  </div>
+                    {'value' in row ? (
+                      <b>{row.value}</b>
+                    ) : (
+                      <span className='v0-dev-plural'>
+                        <b>{row.pluralCount}</b> plural {row.pluralCount === 1 ? 'form' : 'forms'}
+                      </span>
+                    )}
+                  </span>
                 ))}
               </div>
             ))}
           </div>
-        </article>
+        </BentoCell>
 
-        <article className='v0-dev-cell'>
-          <h3>Every locale needs to be routed correctly.</h3>
-          <p>
-            GT automatically routes your users to the correct SEO-friendly URL
-            path.
-          </p>
-          <div className='v0-dev-art v0-dev-routes'>
-            <div className='v0-dev-route is-src'>
-              <LocaleTag code='en' />
-              <code>/about</code>
-            </div>
-            {ROUTE_ROWS.map((route) => (
-              <div
-                className={
-                  route.code === 'fr' ? 'v0-dev-route is-fr' : 'v0-dev-route'
-                }
-                key={route.code}
-                tabIndex={route.code === 'fr' ? 0 : undefined}
-              >
-                <CornerDownRight
-                  className='v0-dev-route-arrow'
-                  strokeWidth={1.5}
-                  aria-hidden
-                />
-                <LocaleTag code={route.code} />
-                <code>{route.path}</code>
-              </div>
-            ))}
-            <p className='v0-dev-footnote'>
-              Localizing in French means translating both the pathname and the
-              page.
-            </p>
+        <BentoCell
+          cell='is-tall is-framed'
+          title='Every locale needs to be routed correctly'
+          sub='GT automatically routes your users to the correct SEO-friendly URL path — localizing in French means translating both the pathname and the page.'
+        >
+          <div className='tc-art-center'>
+            <LocaleRouting title='The same page routed for all six configured locales, /fr/a-propos localized, with the detection order beneath' />
           </div>
-        </article>
+        </BentoCell>
       </div>
     </section>
   );

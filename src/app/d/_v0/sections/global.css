@@ -1,92 +1,58 @@
 /* ============================================================
    V0 GLOBAL — "Ship to the world."
-   The EdgeGlobe on a permanently-dark plate, a ruled rail of
-   three claims beside it, and the real Theo post as a dark
-   quote card below. Every rule scoped: .toolchain-root .v0-glob…
+   The structure is the shell's own grammar (tc-sec / tc-head /
+   tc-row / BentoCell): the row owns every seam and the night
+   card is toolchain's is-night surface. Only the artifacts
+   INSIDE the cells are styled here — the globe mount, the ruled
+   rail of claims, the combined locale panel, the post's type.
    ============================================================ */
 
-.toolchain-root .v0-glob {
-  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
-}
-
-.toolchain-root .v0-glob-head h2 {
-  font-family: var(--tc-disp);
-  font-weight: 600;
-  font-size: clamp(28px, 3.4vw, 46px);
-  line-height: 1.06;
-  letter-spacing: -0.025em;
-  color: var(--tc-ink);
-}
-
-.toolchain-root .v0-glob-head p {
-  margin-top: 13px;
-  max-width: 60ch;
-  font-size: 15px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-}
-
-/* ---------- globe plate + ruled rail ---------- */
-
-.toolchain-root .v0-glob-grid {
-  margin-top: clamp(30px, 3.6vw, 48px);
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 56px);
-  align-items: stretch;
-}
-
-/* The night plate: permanently dark, so its surface and the globe's night
-   inks are hardcoded here — the tc tokens remap in dark mode, this plate
-   must not. The single grey hairline is the family the full-bleed bands
-   already rail dark surfaces with, and it earns its keep in dark mode,
-   where plate and paper land on near-identical inks. */
-.toolchain-root .v0-glob-plate {
-  margin: 0;
-  display: grid;
-  place-items: center;
-  padding: clamp(24px, 3vw, 40px);
-  border: 1px solid var(--tc-hair);
-  border-radius: 10px;
-  background: #101010;
-
-  --iso-ink: rgba(255, 255, 255, 0.9);
-  --iso-ink-soft: rgba(255, 255, 255, 0.55);
-  --iso-ink-hair: rgba(255, 255, 255, 0.28);
-  --iso-accent: #86a8ff;
-  --iso-label-color: rgba(255, 255, 255, 0.78);
-}
-
+/* ---------- the globe mount on the night card ----------
+   The card IS the dark plate, so the mount draws nothing: it centres the
+   cage and carries the v0 overrides. Custom properties inherit, so setting
+   them on the mount outranks the card's own values by proximity, immune to
+   stylesheet order. */
 .toolchain-root .v0-glob-art {
-  width: 100%;
-  max-width: 520px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --iso-accent: #86a8ff;
 }
 
 /* The globe's own stylesheet pins --eg-label-size on .eg itself, so the
    rendered-size override has to outrank it: 9px viewBox units ≈ 11.7px at
-   this plate's ~1.3x render — above the 11px annotation floor. The phone
+   this card's ~1.3x render — above the 11px annotation floor. The phone
    step mirrors the globe's own ≤640px compact rule, which this selector
    would otherwise outrank. */
-.toolchain-root .v0-glob-plate .eg {
+.toolchain-root .v0-glob-art .eg {
+  width: 100%;
+  max-width: 520px;
   --eg-label-size: 9px;
 }
 
 @media (max-width: 640px) {
-  .toolchain-root .v0-glob-plate .eg {
+  .toolchain-root .v0-glob-art .eg {
     --eg-label-size: 12px;
   }
 }
 
-/* The rail: three blocks, one hairline between neighbours, nothing at the
-   ends — the section's edges stay unruled. */
+/* ---------- the ruled rail of claims ----------
+   Three blocks in one framed cell, a single hairline between neighbours,
+   nothing at the ends — the card's frame is the row's, and the blocks
+   spread over whatever height the globe beside them settles on. */
 .toolchain-root .v0-glob-rail {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .toolchain-root .v0-glob-item {
-  padding-block: clamp(18px, 2.1vw, 27px);
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(16px, 1.9vw, 24px);
 }
 
 .toolchain-root .v0-glob-item:first-child {
@@ -98,10 +64,12 @@
 }
 
 .toolchain-root .v0-glob-item + .v0-glob-item {
-  border-top: 1px solid var(--tc-hair);
+  border-top: 1px solid var(--tc-hair-2, var(--tc-hair));
 }
 
-.toolchain-root .v0-glob-item h3 {
+/* Sized here, not by the generic .tc-cell h3 — the .v0-glob prefix keeps
+   this rule ahead of the shell's regardless of sheet order. */
+.toolchain-root .v0-glob .v0-glob-item h3 {
   font-family: var(--tc-disp);
   font-size: 16.5px;
   font-weight: 500;
@@ -110,7 +78,7 @@
   color: var(--tc-ink);
 }
 
-.toolchain-root .v0-glob-item > p {
+.toolchain-root .v0-glob .v0-glob-item > p {
   margin-top: 8px;
   max-width: 54ch;
   font-size: 14px;
@@ -119,14 +87,13 @@
 }
 
 /* ---------- the combined locale artifact ----------
-   One ruled panel: base tags fan into regional variants on one axis while
-   every row speaks its own script. Mono is spent only on the codes; native
-   names stay in the UI face; the chips' blue is the panel's only color. */
+   Base tags fan into regional variants on one axis while every row speaks
+   its own script. No perimeter of its own — the single hairlines between
+   rows are all it draws. Mono is spent only on the codes; native names
+   stay in the UI face; the chips' blue is the panel's only color. */
 
 .toolchain-root .v0-glob-locales {
   margin-top: 14px;
-  border: 1px solid var(--tc-hair);
-  border-radius: 8px;
 }
 
 .toolchain-root .v0-glob-lrow {
@@ -134,12 +101,12 @@
   grid-template-columns: 122px 16px minmax(0, 1fr);
   align-items: center;
   column-gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 0;
 }
 
 .toolchain-root .v0-glob-lrow + .v0-glob-lrow,
 .toolchain-root .v0-glob-belt {
-  border-top: 1px solid var(--tc-hair);
+  border-top: 1px solid var(--tc-hair-2, var(--tc-hair));
 }
 
 .toolchain-root .v0-glob-lbase,
@@ -222,19 +189,15 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 8px;
-  padding: 8px 12px;
+  padding: 8px 0;
 }
 
-/* ---------- the real post: a compact permanently-dark card ----------
-   Body scale, not display — the post is a receipt, not a headline. */
+/* ---------- the real post ----------
+   Type only — the night cell is the box, its ink ground the card's own.
+   Body scale, not display: the post is a receipt, not a headline. */
 
 .toolchain-root .v0-glob-quote {
-  margin: clamp(22px, 2.8vw, 36px) 0 0;
-  padding: clamp(16px, 1.9vw, 22px) clamp(18px, 2.2vw, 28px);
-  border: 1px solid var(--tc-hair);
-  border-radius: 10px;
-  background: #101010;
-  color: rgba(255, 255, 255, 0.92);
+  margin: 0;
 }
 
 .toolchain-root .v0-glob-quote blockquote {
@@ -254,7 +217,7 @@
   gap: 8px 18px;
   margin-top: 12px;
   padding-top: 11px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--tc-panel-rule, rgba(255, 255, 255, 0.1));
 }
 
 .toolchain-root .v0-glob-quote-who {
@@ -292,12 +255,4 @@
 .toolchain-root .v0-glob-quote-link svg {
   width: 13px;
   height: 13px;
-}
-
-/* ---------- narrow screens ---------- */
-
-@media (max-width: 980px) {
-  .toolchain-root .v0-glob-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }

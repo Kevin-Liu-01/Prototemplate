@@ -1,102 +1,85 @@
-import { Fragment } from 'react';
+'use client';
+
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
 
 import GlyphRain from '@/app/d/singularity/sections/GlyphRain';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
+import ReviewWorkspace from '@/app/d/toolchain/sections/ReviewWorkspace';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 import './context.css';
 
 /**
- * V0 CONTEXT — "Localize in context." The section is the spec's one
- * glyph-rise band: a full-bleed ink plate with GlyphRain falling behind
- * the whole story. Four bentos carry the verbatim CONTEXT BENTO ROW copy,
- * each with a built artifact — two doubled-thread forks (application
- * logic, dynamic variants), the glossary card, the German directives
- * card — then the review block: heading, the "Edit in context." card, and
- * the workspace ledger. Root-agnostic: only tc tokens and hardcoded
- * dark-plate colors.
+ * V0 CONTEXT — "Localize in context." The section is the toolchain dark-band:
+ * tc-band tcb → tcb-in → tcb-head cell → tcb-grid of framed tcb-cells, with
+ * GlyphRain falling behind the sheet. The four bentos carry the verbatim
+ * CONTEXT BENTO ROW copy; the application-logic cell mounts the ORIGINAL
+ * ContextResolve fork, and the dynamic cell re-cuts the gender fork in that
+ * same lang-cr drawing so the two forks speak one grammar. The review beat
+ * is the grid's full-width closing row: its head in the cell, the ORIGINAL
+ * ReviewWorkspace mounted beneath on a cell-carried dark ground.
  */
 
-/* ---------- the doubled-thread fork ---------- */
+/* ---------- the gender fork, in ContextResolve's own drawing ----------
+   Same DOM, same classes, same fork paths as the mounted original — a
+   static composition (the fork is the statement, both branches are live),
+   so it never competes with the animated Save fork for attention. */
 
-type ForkBranch = {
-  /** the code-ish key that decides the branch — the only mono in the note */
-  attr: string;
-  value: string;
-  /** variant keys (masculine/feminine) stay mono; prose contexts don't */
-  valueMono?: boolean;
-  word: string;
-  code: string;
-};
-
-/** House fork geometry (ContextResolve): the stem at x=220 of 440 splits
-    into landings at 25% and 75% — the two branch cards' centers once the
-    SVG bleeds half the card gap per side. */
-const FORK_PATHS = [
+const GENDER_FORKS = [
   'M220 0 V14 C220 38 110 28 110 56',
   'M220 0 V14 C220 38 330 28 330 56',
 ] as const;
 
-const SAVE_BRANCHES: readonly [ForkBranch, ForkBranch] = [
-  { attr: 'context', value: 'saving a file', word: 'speichern', code: 'de' },
-  { attr: 'context', value: 'discount', word: 'sparen', code: 'de' },
+type GenderBranch = { value: string; word: string };
+
+const GENDER_BRANCHES: readonly GenderBranch[] = [
+  { value: 'masculine', word: 'Bienvenido' },
+  { value: 'feminine', word: 'Bienvenida' },
 ];
 
-const WELCOME_BRANCHES: readonly [ForkBranch, ForkBranch] = [
-  { attr: 'gender', value: 'masculine', valueMono: true, word: 'Bienvenido', code: 'es' },
-  { attr: 'gender', value: 'feminine', valueMono: true, word: 'Bienvenida', code: 'es' },
-];
-
-type ThreadForkProps = {
-  code: string;
-  source: ReactNode;
-  label: string;
-  branches: readonly [ForkBranch, ForkBranch];
-};
-
-/**
- * Source chip at the top splitting through the brand's doubled thread into
- * two resolved chips: the Y is one full-gauge ink stroke per branch with a
- * plate-colored core, which leaves two parallel 1.5px threads along the
- * whole curve. Static — the fork is the statement, both branches are live.
- */
-function ThreadFork({ code, source, label, branches }: ThreadForkProps) {
+function GenderFork() {
   return (
-    <div className='v0-ctx-fork' role='img' aria-label={label}>
-      <div className='v0-ctx-fork-src'>
-        <LocaleTag code={code} />
-        <span className='v0-ctx-word'>{source}</span>
-      </div>
-      <svg
-        className='v0-ctx-threads'
-        viewBox='0 0 440 56'
-        preserveAspectRatio='none'
-        aria-hidden='true'
-      >
-        {FORK_PATHS.map((d) => (
-          <path className='v0-ctx-thread' d={d} key={`thread-${d}`} />
+    <div
+      className='lang lang-cr lang-accent-off'
+      role='img'
+      aria-label='Welcome, name derives Spanish gender variants: Bienvenido and Bienvenida'
+    >
+      <p className='lang-cr-source'>
+        <span className='lang-tag'>
+          <LocaleTag code='en' />
+        </span>
+        <span className='lang-cr-word'>
+          {'Welcome, '}
+          <code>{'{name}'}</code>
+        </span>
+      </p>
+
+      <svg className='lang-cr-fork' viewBox='0 0 440 56' preserveAspectRatio='none' aria-hidden='true'>
+        {GENDER_FORKS.map((d) => (
+          <path className='lang-cr-thread' d={d} key={`thread-${d}`} />
         ))}
-        {FORK_PATHS.map((d) => (
-          <path className='v0-ctx-core' d={d} key={`core-${d}`} />
+        {GENDER_FORKS.map((d) => (
+          <path className='lang-cr-core' d={d} key={`core-${d}`} />
         ))}
       </svg>
-      <div className='v0-ctx-branches'>
-        {branches.map((branch) => (
-          <div className='v0-ctx-branch' key={branch.value}>
-            <span className='v0-ctx-branch-top'>
-              <LocaleTag code={branch.code} />
-              <span className='v0-ctx-word' lang={branch.code}>
-                {branch.word}
+
+      <div className='lang-cr-branches'>
+        {GENDER_BRANCHES.map((branch) => (
+          <div className='lang-cr-branch' key={branch.value}>
+            <p className='lang-cr-ctx'>
+              <span className='lang-cr-attr'>gender=</span>
+              <span className='lang-cr-val'>&ldquo;{branch.value}&rdquo;</span>
+            </p>
+            <p className='lang-cr-result' lang='es'>
+              {branch.word}
+            </p>
+            <p className='lang-cr-gloss'>
+              <span className='lang-tag'>
+                <LocaleTag code='es' />
               </span>
-            </span>
-            <span className='v0-ctx-note'>
-              <code>{branch.attr}:</code>
-              {branch.valueMono ? (
-                <code className='is-val'>{branch.value}</code>
-              ) : (
-                <span>{`‘${branch.value}’`}</span>
-              )}
-            </span>
+            </p>
           </div>
         ))}
       </div>
@@ -104,7 +87,7 @@ function ThreadFork({ code, source, label, branches }: ThreadForkProps) {
   );
 }
 
-/* ---------- the glossary card ---------- */
+/* ---------- the glossary rows ---------- */
 
 type VaultRow = {
   code: string;
@@ -121,7 +104,7 @@ const VAULT_ROWS: readonly VaultRow[] = [
   { code: 'zh', before: '保存到 ', after: '' },
 ];
 
-/* ---------- the directives card (German) ---------- */
+/* ---------- the directives rows (German) ---------- */
 
 /** The formatting directive's date is real Intl output, never typed in. */
 const DE_DATE = new Intl.DateTimeFormat('de-DE', {
@@ -155,73 +138,38 @@ const DIRECTIVES: readonly Directive[] = [
   },
 ];
 
-/* ---------- the review workspace ---------- */
-
-type WorkspaceRow = {
-  key: string;
-  source: string;
-  translation: string;
-  /** the open row shows an edit affordance and a live caret, not a stamp */
-  stamp: 'approved' | 'edit';
-};
-
-const WORKSPACE_ROWS: readonly WorkspaceRow[] = [
-  {
-    key: 'hello',
-    source: 'Hello, world!',
-    translation: '¡Hola, mundo!',
-    stamp: 'approved',
-  },
-  {
-    key: 'launch',
-    source: 'Launch in every language',
-    translation: 'Lanza en todos los idiomas',
-    stamp: 'approved',
-  },
-  {
-    key: 'meta',
-    source: "End-to-end localization for the world's best companies",
-    translation: 'Localización integral para las mejores empresas del mundo',
-    stamp: 'edit',
-  },
-];
-
-const EDIT_BULLETS: readonly string[] = [
-  'Side-by-side source and translation view',
-  'See diffs when translations are regenerated',
-  'Edit translations before or after they go live',
-];
-
 export default function V0Context() {
+  const root = useRef<HTMLElement>(null);
+  useQuietReveal(root);
+
   return (
-    <section className='tc-sec v0-ctx' id='context'>
+    <section className='tc-band tcb v0-ctx' id='context' ref={root}>
       <GlyphRain className='v0-ctx-rain' intensity={0.4} />
 
-      <div className='v0-ctx-in'>
-        <header className='v0-ctx-head'>
+      <div className='tcb-in'>
+        <div className='tcb-head' data-cell data-reveal>
           <h2>Localize in context.</h2>
           <p>GT connects your code, content, and translations.</p>
-        </header>
+        </div>
 
-        <div className='v0-ctx-bentos'>
-          <div className='v0-ctx-cell'>
-            <h3>Translations that reflect your application logic.</h3>
-            <p>GT translates your content in the context of your codebase.</p>
+        <div className='tcb-grid'>
+          <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
+            <div className='tcb-cap'>
+              <h3>Translations that reflect your application logic.</h3>
+              <p>GT translates your content in the context of your codebase.</p>
+            </div>
             <div className='v0-ctx-art'>
-              <ThreadFork
-                code='en'
-                source='Save'
-                label='The English string Save resolves by context: speichern when it saves a file, sparen when it means a discount'
-                branches={SAVE_BRANCHES}
-              />
+              <ContextResolve title='The English string Save resolves by context: speichern when it saves a file, sparen when it means a discount' />
             </div>
           </div>
 
-          <div className='v0-ctx-cell'>
-            <h3>Translations that reflect your key terminology.</h3>
-            <p>
-              Define a glossary with key product, brand, and feature terms to inherit universally.
-            </p>
+          <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
+            <div className='tcb-cap'>
+              <h3>Translations that reflect your key terminology.</h3>
+              <p>
+                Define a glossary with key product, brand, and feature terms to inherit universally.
+              </p>
+            </div>
             <div className='v0-ctx-art'>
               <div className='v0-ctx-glossary'>
                 <div className='v0-ctx-glossary-head'>
@@ -246,12 +194,14 @@ export default function V0Context() {
             </div>
           </div>
 
-          <div className='v0-ctx-cell'>
-            <h3>Translations that reflect your voice and style.</h3>
-            <p>Define directives to guide tone and style for translations.</p>
+          <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
+            <div className='tcb-cap'>
+              <h3>Translations that reflect your voice and style.</h3>
+              <p>Define directives to guide tone and style for translations.</p>
+            </div>
             <div className='v0-ctx-art'>
               <div className='v0-ctx-dirs'>
-                <div className='v0-ctx-dirs-head'>
+                <div className='v0-ctx-glossary-head'>
                   <b>Directives</b>
                   <span className='v0-ctx-dirs-loc'>
                     <LocaleTag code='de' />
@@ -279,95 +229,28 @@ export default function V0Context() {
             </div>
           </div>
 
-          <div className='v0-ctx-cell'>
-            <h3>Translations that work dynamically.</h3>
-            <p>Generate variants for all possible values and user responses.</p>
+          <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
+            <div className='tcb-cap'>
+              <h3>Translations that work dynamically.</h3>
+              <p>Generate variants for all possible values and user responses.</p>
+            </div>
             <div className='v0-ctx-art'>
-              <ThreadFork
-                code='en'
-                source={
-                  <>
-                    {'Welcome, '}
-                    <code>{'{name}'}</code>
-                  </>
-                }
-                label='Welcome, name derives Spanish gender variants: Bienvenido and Bienvenida'
-                branches={WELCOME_BRANCHES}
-              />
+              <GenderFork />
             </div>
           </div>
-        </div>
 
-        <div className='v0-ctx-review'>
-          <header className='v0-ctx-review-head'>
-            <h3>Review from one surface.</h3>
-            <p>
-              Edit and approve translations with your team in a side-by-side view with diffs and
-              version history.
-            </p>
-          </header>
-
-          <div className='v0-ctx-review-grid'>
-            <aside className='v0-ctx-edit'>
-              <h4>Edit in context.</h4>
-              <p>Agents write translations. You review, edit, and approve in a focused workspace.</p>
-              <ul>
-                {EDIT_BULLETS.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-            </aside>
-
-            <div className='v0-ctx-ws'>
-              <div className='v0-ctx-ws-bar'>
-                <span>
-                  workspace · <code>es</code>
-                </span>
-                <span>
-                  <code>3</code> strings
-                </span>
-              </div>
-
-              <div className='v0-ctx-ws-cols'>
-                <div className='v0-ctx-ws-lab'>
-                  source — <code>en</code>
-                </div>
-                <div className='v0-ctx-ws-lab is-t'>
-                  translation — <code>es</code>
-                </div>
-                {WORKSPACE_ROWS.map((row) => (
-                  <Fragment key={row.key}>
-                    <div className='v0-ctx-ws-cell'>{row.source}</div>
-                    <div
-                      className={
-                        row.stamp === 'edit' ? 'v0-ctx-ws-cell is-t is-editing' : 'v0-ctx-ws-cell is-t'
-                      }
-                    >
-                      <span className='v0-ctx-ws-text' lang='es'>
-                        {row.translation}
-                        {row.stamp === 'edit' ? (
-                          <span className='v0-ctx-caret' aria-hidden='true' />
-                        ) : null}
-                      </span>
-                      <span
-                        className={row.stamp === 'edit' ? 'v0-ctx-stamp is-edit' : 'v0-ctx-stamp'}
-                      >
-                        {row.stamp}
-                      </span>
-                    </div>
-                  </Fragment>
-                ))}
-              </div>
-
-              <div className='v0-ctx-ws-foot'>
-                <span>
-                  <code>⌘K</code> search
-                </span>
-                <span>history</span>
-                <span>download</span>
-                <span className='is-right'>agent · locadex</span>
-              </div>
-            </div>
+          {/* The review beat: the grid's full-width closing row — the
+              ORIGINAL ReviewWorkspace mounted whole, its own left card
+              carrying the beat's copy (the Figma note replaces the card's
+              words, never the workspace), and the cell remapping the
+              light-page tokens to the band's dark family so the mounted
+              section reads native to the plate. */}
+          <div className='tcb-cell v0-ctx-review' data-cell data-reveal>
+            <ReviewWorkspace
+              heading='Review from one surface.'
+              sub='Edit and approve translations with your team in a side-by-side view with diffs and version history.'
+              notes={null}
+            />
           </div>
         </div>
       </div>

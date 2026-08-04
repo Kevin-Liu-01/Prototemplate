@@ -286,8 +286,8 @@ export default function HomeHero() {
             const ctx = canvas.getContext('2d');
             if (!ctx) return [];
             ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-            ctx.textBaseline = 'middle';
-            ctx.fillText(text, 0, canvas.height / 2);
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText(text, 0, canvas.height * 0.85);
             const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             const pts: { x: number; y: number }[] = [];
             const step = 3;
@@ -350,7 +350,7 @@ export default function HomeHero() {
               return {
                 // clamped so no glyph ever leaves the measured bounds
                 x: gsap.utils.clamp(3, w - 3, w / 2 + Math.cos(angle) * rx),
-                y: gsap.utils.clamp(-h0 * 0.02, h0 * 0.32, h0 * 0.1 + Math.sin(angle) * ry),
+                y: gsap.utils.clamp(h0 * 0.04, h0 * 0.4, h0 * 0.22 + Math.sin(angle) * ry),
               };
             };
             const place0 = ring(Math.max(w0, 30));

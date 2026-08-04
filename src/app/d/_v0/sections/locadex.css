@@ -1,60 +1,24 @@
 /* ============================================================
-   V0 LOCADEX — agent iso + integrate row
-   Every selector is scoped `.toolchain-root .v0-ldx…`; paper-side
-   styles ride the tc tokens (they remap in dark), and hardcoded
-   inks appear only inside the permanently-dark plate.
+   V0 LOCADEX — agent iso + integrate connector. The section is
+   the sheet's own grammar (tc-sec / tc-head / tc-row is-split /
+   BentoCell), which already owns every structural line; only the
+   two founder-approved artifacts are styled here. Every selector
+   is scoped `.toolchain-root .v0-ldx…`; paper-side styles ride
+   the tc tokens (they remap in dark), and hardcoded inks appear
+   only inside the permanently-dark plate.
    ============================================================ */
 
-.toolchain-root .v0-ldx {
-  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
-}
-
-.toolchain-root .v0-ldx .v0-ldx-h2 {
-  margin: 0;
-  font-family: var(--tc-disp);
-  font-weight: 600;
-  font-size: clamp(28px, 3.4vw, 46px);
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  color: var(--tc-ink);
-  max-width: 24ch;
-  text-wrap: balance;
-}
-
-/* ---------- run-the-agent: copy beside the dark plate ---------- */
-
-.toolchain-root .v0-ldx .v0-ldx-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-  gap: clamp(28px, 4.5vw, 64px);
-  align-items: center;
-  margin-top: clamp(32px, 4.2vw, 56px);
-}
-
-.toolchain-root .v0-ldx .v0-ldx-copy h3 {
-  margin: 0;
-  font-family: var(--tc-disp);
-  font-weight: 600;
-  font-size: clamp(19px, 1.9vw, 24px);
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-  color: var(--tc-ink);
-}
-
-.toolchain-root .v0-ldx .v0-ldx-copy p {
-  margin: 10px 0 0;
-  font-size: 15px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-  max-width: 36ch;
-}
-
-/* The plate is permanently dark, so its inks are hardcoded: the dark-band
-   iso ink ramp, the raised accent that keeps its weight on #101010. */
+/* ---------- the agent plate: the iso's permanently-dark ground ----------
+   Inside the is-bleed framed cell the CARD owns the frame — its radius
+   clips this ground — so the plate draws no border and no radius of its
+   own. Its inks are hardcoded: the dark-band iso ink ramp, the raised
+   accent that keeps its weight on #101010. */
 .toolchain-root .v0-ldx .v0-ldx-plate {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: #101010;
-  border: 1px solid var(--tc-hair);
-  border-radius: 12px;
   padding: clamp(24px, 3.2vw, 40px) clamp(18px, 2.6vw, 34px);
   color: rgba(255, 255, 255, 0.82);
   --iso-ink: rgba(255, 255, 255, 0.78);
@@ -100,16 +64,6 @@
 }
 
 /* ---------- integrate with any tool: the connector diagram ---------- */
-
-.toolchain-root .v0-ldx .v0-ldx-integrate {
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-  gap: clamp(28px, 4.5vw, 64px);
-  align-items: center;
-  margin-top: clamp(40px, 5.4vw, 72px);
-  border-top: 1px solid var(--tc-hair);
-  padding-top: clamp(28px, 3.6vw, 48px);
-}
 
 .toolchain-root .v0-ldx .v0-ldx-int-svg {
   display: block;
@@ -172,13 +126,4 @@
   font-size: 15px;
   letter-spacing: -0.01em;
   fill: rgba(255, 255, 255, 0.9);
-}
-
-/* ---------- narrow: stack the copy above the artwork ---------- */
-
-@media (max-width: 900px) {
-  .toolchain-root .v0-ldx .v0-ldx-grid,
-  .toolchain-root .v0-ldx .v0-ldx-integrate {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }

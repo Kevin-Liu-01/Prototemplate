@@ -68,7 +68,27 @@ const TR_PACE = 0.046;
  * row sits complete, so the workspace reads as a finished still at any
  * frame; under reduced motion the resting DOM *is* that still.
  */
-export default function ReviewWorkspace() {
+type ReviewWorkspaceProps = {
+  /** Left-card copy overrides — hosts that reframe the workspace (the v0
+      flow's "Review from one surface" beat) swap the words, never the
+      workspace itself. Defaults are toolchain's own card, verbatim. */
+  heading?: string;
+  sub?: string;
+  /** Pass null to drop the notes list entirely. */
+  notes?: readonly string[] | null;
+};
+
+const DEFAULT_NOTES: readonly string[] = [
+  'Side-by-side source and translation view',
+  'See diffs when translations are regenerated',
+  'Edit translations before or after they go live',
+];
+
+export default function ReviewWorkspace({
+  heading = 'Edit in context.',
+  sub = 'Agents write translations. You review, edit, and approve in a focused workspace.',
+  notes = DEFAULT_NOTES,
+}: ReviewWorkspaceProps = {}) {
   const root = useRef<HTMLElement>(null);
 
   useQuietReveal(root);
@@ -233,15 +253,17 @@ export default function ReviewWorkspace() {
     <section className='tcr tc-sec' id='review' ref={root}>
       <div className='tcr-grid'>
         <div className='tcr-copy'>
-          <h2 data-reveal>Edit in context.</h2>
+          <h2 data-reveal>{heading}</h2>
           <p className='tcr-sub' data-reveal>
-            Agents write translations. You review, edit, and approve in a focused workspace.
+            {sub}
           </p>
-          <ul className='tcr-notes' data-reveal>
-            <li>Side-by-side source and translation view</li>
-            <li>See diffs when translations are regenerated</li>
-            <li>Edit translations before or after they go live</li>
-          </ul>
+          {notes && notes.length ? (
+            <ul className='tcr-notes' data-reveal>
+              {notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          ) : null}
         </div>
 
         <div className='tcr-mat' data-reveal>
