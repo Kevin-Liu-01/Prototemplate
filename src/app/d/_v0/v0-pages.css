@@ -183,12 +183,14 @@
   max-width: none;
 }
 
-/* The proof plate rides inside a framed cell here — the pricing page's
-   ±100vw construction pseudos would escape the cell and double against
-   the neighbouring bands' grids. The cell is the frame; they go. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::before,
+/* The proof plate keeps the pricing sheet's extended-borders device —
+   horizontals running past the rails, verticals overshooting the
+   corners — but the verticals are BOUNDED to the overshoot (the stock
+   ±100vh pair reached the neighbouring band's grid and read as doubles;
+   the auditor caught it). */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::after {
-  content: none;
+  top: -34px;
+  bottom: -34px;
 }
 
 /* The proof plate (tcpq) rides in the Global row at two-thirds altitude:
