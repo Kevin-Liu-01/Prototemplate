@@ -1,0 +1,155 @@
+/* ============================================================
+   V0 LOCADEX — agent iso + integrate row
+   Every selector is scoped `.toolchain-root .v0-ldx…`; paper-side
+   styles ride the tc tokens (they remap in dark), and hardcoded
+   inks appear only inside the permanently-dark plate.
+   ============================================================ */
+
+.toolchain-root .v0-ldx {
+  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-h2 {
+  margin: 0;
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--tc-ink);
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+/* ---------- run-the-agent: copy beside the dark plate ---------- */
+
+.toolchain-root .v0-ldx .v0-ldx-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: clamp(28px, 4.5vw, 64px);
+  align-items: center;
+  margin-top: clamp(32px, 4.2vw, 56px);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-copy h3 {
+  margin: 0;
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: clamp(19px, 1.9vw, 24px);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-copy p {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 36ch;
+}
+
+/* The plate is permanently dark, so its inks are hardcoded: the dark-band
+   iso ink ramp, the raised accent that keeps its weight on #101010. */
+.toolchain-root .v0-ldx .v0-ldx-plate {
+  background: #101010;
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+  padding: clamp(24px, 3.2vw, 40px) clamp(18px, 2.6vw, 34px);
+  color: rgba(255, 255, 255, 0.82);
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+  --iso-mark: rgba(255, 255, 255, 0.3);
+  --iso-accent: #86a8ff;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-iso {
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+/* the scan sheet's body — its edges and landing line are iso strokes */
+.toolchain-root .v0-ldx .v0-ldx-beam {
+  fill: rgba(255, 255, 255, 0.05);
+}
+
+/* annotations: labels are sans; mono is spent on the diff numbers only */
+.toolchain-root .v0-ldx .v0-ldx-iso-name {
+  font-family: var(--tc-sans);
+  font-size: 9px;
+  letter-spacing: 0.01em;
+  fill: rgba(255, 255, 255, 0.6);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-chip-read {
+  font-family: var(--tc-sans);
+  font-size: 10px;
+  letter-spacing: 0.01em;
+  fill: rgba(255, 255, 255, 0.66);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-chip-num {
+  font-family: var(--tc-mono);
+  fill: rgba(255, 255, 255, 0.88);
+}
+
+/* ---------- integrate with any tool: the slim ruled row ---------- */
+
+.toolchain-root .v0-ldx .v0-ldx-integrate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px 40px;
+  margin-top: clamp(40px, 5.4vw, 72px);
+  border-top: 1px solid var(--tc-hair);
+  padding-top: clamp(20px, 2.6vw, 30px);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-int-copy {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 52ch;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-int-copy strong {
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-int-marks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-int-marks li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-int-ico {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* ---------- narrow: stack the copy above the plate ---------- */
+
+@media (max-width: 900px) {
+  .toolchain-root .v0-ldx .v0-ldx-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

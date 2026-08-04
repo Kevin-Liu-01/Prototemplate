@@ -1,0 +1,138 @@
+/* ============================================================
+   V0 DEPLOY — the closing band.
+   Full-bleed dark plate (house band pattern) washed with the
+   prismatic field; the mask keeps the center dark for the type
+   and lets the light own the edges. Permanently dark, so the
+   plate's inks are hardcoded; the seams to the paper use the
+   remapping tc tokens.
+   ============================================================ */
+
+.toolchain-root .v0-dep {
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  background: #070707;
+  border-block: 1px solid var(--tc-hair);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* The field is the band's material, not a rumour of one (tc-band-field
+   grammar, rescoped): a committed light field at the edges, held off the
+   type by a dark center — the mask is centered because the band's content
+   is, unlike the hero band's top-weighted cut. */
+.toolchain-root .v0-dep-field {
+  position: absolute;
+  inset: -18% -10% auto;
+  width: 120%;
+  height: 136%;
+  z-index: 0;
+  opacity: 0.85;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(
+    72% 82% at 50% 50%,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.32) 38%,
+    rgba(0, 0, 0, 0.66) 60%,
+    #000 76%
+  );
+  pointer-events: none;
+}
+
+/* The rail-width column: its inline rules are the page's outer rails
+   carried across the dark plate. Perpendicular to the band's border-block,
+   so no parallel-hairline collision at the corners. */
+.toolchain-root .v0-dep-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(138, 143, 152, 0.5);
+  padding: clamp(76px, 9vw, 132px) var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Lead-in: a small sans line in sentence case — not mono, not
+   uppercase-tracked (mono is reserved for numbers, code, locale codes). */
+.toolchain-root .v0-dep-lead {
+  margin: 0;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.toolchain-root .v0-dep h2 {
+  margin: 14px 0 0;
+  max-width: 16ch;
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 46px);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.toolchain-root .v0-dep-sub {
+  margin: 15px 0 0;
+  max-width: 52ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.toolchain-root .v0-dep-acts {
+  margin-top: clamp(28px, 3.2vw, 42px);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* The house button, recut in band ink: solid-inverse and hairline-outline.
+   Translucent hover fills stop at the border — a hair border over a hair
+   fill would composite darker than the page's other hairlines. */
+.toolchain-root .v0-dep-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.toolchain-root .v0-dep-btn-solid {
+  background: #ffffff;
+  color: #070707;
+}
+
+.toolchain-root .v0-dep-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.toolchain-root .v0-dep-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+  background: transparent;
+}
+
+.toolchain-root .v0-dep-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}

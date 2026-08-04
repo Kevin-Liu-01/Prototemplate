@@ -14,7 +14,7 @@ import '../sections/logos-icons.css';
 import './careers.css';
 
 export const metadata = {
-  title: 'Careers — Toolchain',
+  title: 'Careers — Toolchain — GT Redesign',
   // Declared so the browser stops probing for a /favicon.ico this app never ships.
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

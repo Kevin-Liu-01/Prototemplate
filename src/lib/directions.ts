@@ -1,5 +1,3 @@
-import type { Metadata } from 'next';
-
 export type Tone = 'dark' | 'light' | 'alt';
 
 export type Direction = {
@@ -221,44 +219,4 @@ export const DIRECTIONS: Direction[] = [
 
 export function getDirection(slug: string): Direction | undefined {
   return DIRECTIONS.find((d) => d.slug === slug);
-}
-
-/**
- * Metadata for a direction page, built from the registry so titles,
- * descriptions, canonicals, and social cards stay in lockstep with the
- * curated lineup. Pass 'enterprise' for a site concept's /enterprise page.
- * The curated screenshots under public/shots/light are 1440×900.
- */
-export function directionMetadata(slug: string, variant?: 'enterprise'): Metadata {
-  const direction = getDirection(slug);
-  if (!direction) {
-    throw new Error(`directionMetadata: unknown direction slug '${slug}'`);
-  }
-  const enterprise = variant === 'enterprise';
-  const title = enterprise ? `${direction.name} — Enterprise` : direction.name;
-  const description = direction.concept;
-  const path = enterprise ? `/d/${slug}/enterprise` : `/d/${slug}`;
-  const image = enterprise ? `/shots/light/${slug}-enterprise.jpg` : `/shots/light/${slug}.jpg`;
-  const imageAlt = `${direction.name} — ${direction.signature}`;
-  return {
-    title,
-    description,
-    alternates: { canonical: path },
-    openGraph: {
-      siteName: 'Prototemplate',
-      type: 'website',
-      url: path,
-      title: `${title} · Prototemplate`,
-      description,
-      images: [{ url: image, width: 1440, height: 900, alt: imageAlt }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${title} · Prototemplate`,
-      description,
-      images: [{ url: image, alt: imageAlt }],
-    },
-    // Declared per-route so the browser stops probing for a /favicon.ico this app never ships.
-    icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  };
 }

@@ -1,6 +1,5 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
-import { directionMetadata } from '@/lib/directions';
 
 import Delivery from './sections/Delivery';
 import Frameworks from './sections/Frameworks';
@@ -14,7 +13,11 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = directionMetadata('chroma-flow');
+export const metadata = {
+  title: 'chroma-flow — GT Redesign',
+  // Declared so the browser stops probing for a /favicon.ico this app never ships.
+  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
+};
 
 /**
  * CHROMA-FLOW — the toolchain frame carrying a new identity. The hero is a

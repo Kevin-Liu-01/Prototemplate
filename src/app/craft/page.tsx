@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import { Fraunces, Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
 
@@ -9,34 +8,9 @@ import '../prototemplate.css';
 const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
 
-const DESCRIPTION =
-  'Everything built under the redesign: the line law, the rail system, the shaders, and the libraries.';
-
-export const metadata: Metadata = {
-  title: 'Craft',
-  description: DESCRIPTION,
-  alternates: { canonical: '/craft' },
-  openGraph: {
-    siteName: 'Prototemplate',
-    type: 'website',
-    url: '/craft',
-    title: 'Craft · Prototemplate',
-    description: DESCRIPTION,
-    images: [
-      {
-        url: '/og.png',
-        width: 2400,
-        height: 1260,
-        alt: 'Prototemplate — the build log of the General Translation website redesign.',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Craft · Prototemplate',
-    description: DESCRIPTION,
-    images: ['/og.png'],
-  },
+export const metadata = {
+  title: 'Craft — Prototemplate',
+  description: 'Everything built under the redesign: the line law, the rail system, the shaders, and the libraries.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
 };
 

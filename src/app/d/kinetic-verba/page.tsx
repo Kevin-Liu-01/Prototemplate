@@ -13,7 +13,7 @@ import Story from './sections/Story';
 import './styles.css';
 
 export const metadata = {
-  title: 'Kinetic Verba',
+  title: 'Kinetic Verba — GT Redesign',
   description: 'Kinetic variable-font typography over a gravitational GT lens.',
   // Without an explicit icon the browser probes /favicon.ico, which 404s in dev.
   icons: { icon: '/brand/no-bg-gt-logo-dark.png' },

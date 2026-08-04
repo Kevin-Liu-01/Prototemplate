@@ -13,7 +13,7 @@ import TypeMetrics from './sections/TypeMetrics';
 import './styles.css';
 
 export const metadata = {
-  title: 'Blueprint Atlas',
+  title: 'Blueprint Atlas — GT Redesign',
   description: 'End-to-end localization for the world’s best companies.',
   // Without an explicit icon the browser probes /favicon.ico, which 404s in dev.
   icons: { icon: '/brand/no-bg-gt-logo-dark.png' },

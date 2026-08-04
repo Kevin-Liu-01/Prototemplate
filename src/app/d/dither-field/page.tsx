@@ -1,6 +1,5 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
-import { directionMetadata } from '@/lib/directions';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -15,7 +14,11 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = directionMetadata('dither-field');
+export const metadata = {
+  title: 'dither-field — GT Redesign',
+  // Declared so the browser stops probing for a /favicon.ico this app never ships.
+  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
+};
 
 /**
  * DITHER-FIELD — the HALFTONE fork of toolchain. The ruled column and the

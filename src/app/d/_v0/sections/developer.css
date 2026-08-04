@@ -1,0 +1,247 @@
+/* ============================================================
+   V0 DEVELOPER — "Built for developers."
+   Three ruled columns on paper: rendered button widths (+ RTL),
+   an Intl-output mini-table, and locale routing. Every rule is
+   scoped under .toolchain-root .v0-dev…; tokens only, so the
+   dark remap re-skins it for free.
+   ============================================================ */
+
+.toolchain-root .v0-dev {
+  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
+}
+
+/* ---------- head ---------- */
+
+.toolchain-root .v0-dev-head h2 {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  max-width: 18ch;
+}
+
+.toolchain-root .v0-dev-head p {
+  margin-top: 14px;
+  max-width: 56ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- the three ruled columns ----------
+   Verticals are single hairlines drawn as border-left on the
+   second and third column; the columns' own padding keeps every
+   other stroke well clear of them. */
+
+.toolchain-root .v0-dev-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(36px, 4.4vw, 58px);
+}
+
+.toolchain-root .v0-dev-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-inline: clamp(22px, 2.4vw, 32px);
+}
+
+.toolchain-root .v0-dev-col + .v0-dev-col {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .v0-dev-col:first-child {
+  padding-left: 0;
+}
+
+.toolchain-root .v0-dev-col:last-child {
+  padding-right: 0;
+}
+
+.toolchain-root .v0-dev-col h3 {
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  max-width: 30ch;
+}
+
+.toolchain-root .v0-dev-col > p {
+  margin-top: 9px;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+/* Artifacts bottom-align across the row: the grid stretches the
+   columns to one height, the auto margin spends the slack. */
+.toolchain-root .v0-dev-art {
+  margin-top: auto;
+  padding-top: 26px;
+}
+
+/* ---------- shared locale tag sizing ---------- */
+
+.toolchain-root .v0-dev .lct-flag {
+  font-size: 11px;
+}
+
+.toolchain-root .v0-dev .lct-code {
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- artifact 1: the Save button per locale ----------
+   A fixed key column so every button starts from the same rule;
+   the ar row carries dir='rtl', so the whole row mirrors and the
+   button grows leftward — orientation, not just length. */
+
+.toolchain-root .v0-dev-save {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolchain-root .v0-dev-save + .v0-dev-save {
+  margin-top: 9px;
+}
+
+.toolchain-root .v0-dev-save .lct {
+  flex: none;
+  width: 44px;
+}
+
+.toolchain-root .v0-dev-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 13px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-paper);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink);
+}
+
+/* ---------- artifact 2: Intl output mini-table ----------
+   One hairline family: a top rule, then a rule under every row,
+   all at the light weight, ~30px apart. */
+
+.toolchain-root .v0-dev-table {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .v0-dev-frow {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 8px;
+  padding: 8px 0 9px;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .v0-dev-flabel {
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* The en/alt pair splits the remaining width; when a row cannot
+   hold both on one line the second cell wraps under the first
+   instead of clipping. */
+.toolchain-root .v0-dev-fcells {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 14px;
+  row-gap: 4px;
+}
+
+.toolchain-root .v0-dev-fcell {
+  flex: 1 1 0;
+  min-width: max-content;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-dev-fcell code {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+}
+
+/* Plural counts are prose, not code — the numeral rides in the
+   same sans run at the same size (spec note). */
+.toolchain-root .v0-dev-fprose {
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+/* ---------- artifact 3: routed URL paths ----------
+   Same ruled-ledger grammar as the table; paths are code, so
+   they are the column's only mono at reading size. */
+
+.toolchain-root .v0-dev-routes {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .v0-dev-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .v0-dev-route code {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-dev-route-arrow {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- stacked ---------- */
+
+@media (max-width: 1020px) {
+  .toolchain-root .v0-dev-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .v0-dev-col {
+    padding-inline: 0;
+    padding-block: 30px;
+  }
+
+  .toolchain-root .v0-dev-col + .v0-dev-col {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .v0-dev-col:first-child {
+    padding-top: 0;
+  }
+
+  .toolchain-root .v0-dev-col:last-child {
+    padding-bottom: 0;
+  }
+
+  .toolchain-root .v0-dev-art {
+    padding-top: 24px;
+  }
+}

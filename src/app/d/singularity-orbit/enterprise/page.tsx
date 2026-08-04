@@ -1,6 +1,5 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
-import { directionMetadata } from '@/lib/directions';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
 import Hero from '../../singularity/sections/Hero';
@@ -17,7 +16,10 @@ import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
 import '../styles.css';
 
-export const metadata = directionMetadata('singularity-orbit', 'enterprise');
+export const metadata = {
+  title: 'Enterprise — Orbit — GT Redesign',
+  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
+};
 
 /**
  * Singularity · Orbit — the gate, then gravity as the argument. The proof

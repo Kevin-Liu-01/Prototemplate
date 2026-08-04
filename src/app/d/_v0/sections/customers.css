@@ -1,0 +1,168 @@
+/* ============================================================
+   V0 CUSTOMERS — lead line + logo wall
+   Six ruled cells under one hairline top rule; dividers are
+   border-left between cells only, so no rule ever doubles up.
+   Marks are full ink (no grayscale, no dimming) and swap to the
+   drawn-for-dark variants under [data-theme='dark'].
+   ============================================================ */
+
+.toolchain-root .v0-cust {
+  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
+}
+
+.toolchain-root .v0-cust-lead {
+  margin: 0 0 clamp(30px, 3.6vw, 48px);
+  font-family: var(--tc-disp);
+  font-size: clamp(28px, 3.4vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--tc-ink);
+}
+
+/* ---- the wall ------------------------------------------------ */
+
+.toolchain-root .v0-cust-wall {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .v0-cust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: 16px 12px;
+  text-decoration: none;
+  transition: background-color 0.18s ease;
+}
+
+.toolchain-root .v0-cust-cell + .v0-cust-cell {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .v0-cust-cell:hover {
+  background-color: rgba(138, 143, 152, 0.08);
+}
+
+.toolchain-root .v0-cust-cell:focus-visible {
+  outline: 1px solid var(--tc-accent);
+  outline-offset: -1px;
+}
+
+/* ---- the marks ------------------------------------------------
+   Wordmark geometry differs per brand, so each gets its own
+   height, tuned so all six read at the same optical size with the
+   tallest in the ~34px band. Aspect ratios are the SVG viewBoxes. */
+
+.toolchain-root .v0-cust-mark {
+  display: block;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.toolchain-root .v0-cust-mark.is-cursor {
+  height: 34px;
+  aspect-ratio: 739 / 186;
+  background-image: url('/logos/cursor.light.svg');
+}
+
+.toolchain-root .v0-cust-mark.is-ramp {
+  height: 23px;
+  aspect-ratio: 643.93 / 170.94;
+  background-image: url('/logos/ramp.light.svg');
+}
+
+.toolchain-root .v0-cust-mark.is-partiful {
+  height: 26px;
+  aspect-ratio: 204 / 46;
+  background-image: url('/logos/partiful.light.svg');
+}
+
+.toolchain-root .v0-cust-mark.is-profound {
+  height: 21px;
+  aspect-ratio: 166 / 28;
+  background-image: url('/logos/profound.light.svg');
+}
+
+.toolchain-root .v0-cust-mark.is-clickhouse {
+  height: 27px;
+  aspect-ratio: 600 / 110;
+  background-image: url('/logos/clickhouse.light.svg');
+}
+
+/* Sierra has no shipped asset yet: a typographic wordmark in the
+   display face, sized to match the neighbors' cap height. */
+.toolchain-root .v0-cust-word {
+  font-family: var(--tc-disp);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--tc-ink);
+}
+
+/* dark theme: the drawn-for-dark variants, same geometry */
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-cursor {
+  background-image: url('/logos/cursor.dark.svg');
+}
+
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-ramp {
+  background-image: url('/logos/ramp.dark.svg');
+}
+
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-partiful {
+  background-image: url('/logos/partiful.dark.svg');
+}
+
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-profound {
+  background-image: url('/logos/profound.dark.svg');
+}
+
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-clickhouse {
+  background-image: url('/logos/clickhouse.dark.svg');
+}
+
+/* ---- wrap points ----------------------------------------------
+   3x2 on mid widths, 2x3 on small. Row starts drop their left
+   divider; each new row draws exactly one border-top, so no rule
+   ever sits parallel within 4px of another. */
+
+@media (max-width: 960px) {
+  .toolchain-root .v0-cust-wall {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .toolchain-root .v0-cust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .toolchain-root .v0-cust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 560px) {
+  .toolchain-root .v0-cust-wall {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .toolchain-root .v0-cust-cell {
+    min-height: 96px;
+  }
+
+  /* restore what the 960 block removed, then re-cut for two-up */
+  .toolchain-root .v0-cust-cell:nth-child(3n + 1) {
+    border-left: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .v0-cust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .toolchain-root .v0-cust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair);
+  }
+}

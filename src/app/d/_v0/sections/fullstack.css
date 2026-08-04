@@ -1,0 +1,252 @@
+/* ============================================================
+   V0 FULL STACK — "The full stack for localization."
+   One full-bleed dark band: the house isometric stack sticky on
+   the left, the four-layer copy rail scrolling beside it. All
+   rules scoped under .toolchain-root .v0-stack; colors inside
+   the band are hardcoded — it is a permanently-dark plate.
+   ============================================================ */
+
+.toolchain-root .v0-stack {
+  margin-inline: calc(50% - 50vw);
+  background: #070707;
+  border-block: 1px solid var(--tc-hair);
+  color: rgba(255, 255, 255, 0.92);
+
+  /* the isometric family reads the band, not the page */
+  --iso-accent: #86a8ff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+.toolchain-root .v0-stack-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(138, 143, 152, 0.5);
+  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
+}
+
+/* ---------- head ---------- */
+
+.toolchain-root .v0-stack-head h2 {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 46px);
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+  color: #ffffff;
+  max-width: 18ch;
+}
+
+.toolchain-root .v0-stack-head p {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 52ch;
+}
+
+/* ---------- body: sticky figure left, copy rail right ---------- */
+
+.toolchain-root .v0-stack-body {
+  display: grid;
+  grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
+  gap: clamp(36px, 6vw, 110px);
+  align-items: start;
+  margin-top: clamp(44px, 5vw, 72px);
+}
+
+.toolchain-root .v0-stack-figcol {
+  align-self: stretch;
+  min-width: 0;
+}
+
+.toolchain-root .v0-stack-fig {
+  position: sticky;
+  top: clamp(72px, 12vh, 128px);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.toolchain-root .v0-stack-fig .v0-stack-iso {
+  width: 100%;
+  max-width: 384px;
+  height: auto;
+  /* the drawing reserves left room for DarkBand's rail leaders; with the
+     leaders hidden here, recentre on the plane silhouette */
+  transform: translateX(-10.5%);
+}
+
+/* ---------- the glass plates: the band's own copy of the material ----
+   The tcs-* paint lives in darkband-v3.css scoped to .tcb, so this
+   section carries its own. Same recipe: near-opaque dark hull, three
+   face tints under the family's upper-left light, the shared #tcsFrost
+   sheen, white edge strokes whose per-plane alphas the drawing sets
+   inline. */
+
+.toolchain-root .v0-stack .tcs-glass-base {
+  fill: rgba(7, 7, 7, 0.94);
+}
+
+.toolchain-root .v0-stack .tcs-glass-left {
+  fill: rgba(255, 255, 255, 0.06);
+}
+
+.toolchain-root .v0-stack .tcs-glass-right {
+  fill: rgba(7, 7, 7, 0.45);
+}
+
+.toolchain-root .v0-stack .tcs-glass-topfill {
+  fill: rgba(255, 255, 255, 0.07);
+}
+
+.toolchain-root .v0-stack .tcs-glass-sheen {
+  fill: url(#tcsFrost);
+}
+
+.toolchain-root .v0-stack .tcs-glass-rim,
+.toolchain-root .v0-stack .tcs-glass-edge {
+  fill: none;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+}
+
+.toolchain-root .v0-stack .tcs-glass-front {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linecap: round;
+}
+
+/* content marks read against the frosted plate */
+.toolchain-root .v0-stack .v0-stack-iso .iso-face-mark {
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+/* the doubled top edge — revealed on the hot planes only (GSAP) */
+.toolchain-root .v0-stack .tcs-dbl {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: var(--iso-sw, 1.2);
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+/* no HTML rail in this composition, so no leaders to tap off it */
+.toolchain-root .v0-stack .tcs-leader {
+  display: none;
+}
+
+/* the planes stay keyboard-reachable; scroll owns the highlight */
+.toolchain-root .v0-stack .tcs-layer {
+  outline: none;
+}
+
+.toolchain-root .v0-stack .tcs-layer:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 4px;
+}
+
+/* ---------- the copy rail: four beats, bottom of the stack first ---- */
+
+.toolchain-root .v0-stack-rail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.toolchain-root .v0-stack-beat {
+  min-height: clamp(200px, 38vh, 340px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(28px, 3.4vw, 44px);
+  transition: opacity 0.32s ease;
+}
+
+.toolchain-root .v0-stack-beat + .v0-stack-beat {
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* the spotlight: JS-managed classes, so the static (reduced-motion)
+   state is all four beats at full ink */
+.toolchain-root .v0-stack-beat.is-cold {
+  opacity: 0.36;
+}
+
+.toolchain-root .v0-stack-tag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+/* mono is spent on the number only */
+.toolchain-root .v0-stack-idx {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.38);
+  transition: color 0.32s ease;
+}
+
+.toolchain-root .v0-stack-beat.is-hot .v0-stack-idx {
+  color: #86a8ff;
+}
+
+.toolchain-root .v0-stack-ic {
+  flex: none;
+}
+
+.toolchain-root .v0-stack-name {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.toolchain-root .v0-stack-beat h3 {
+  margin-top: 14px;
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(19px, 1.9vw, 25px);
+  line-height: 1.18;
+  letter-spacing: -0.018em;
+  color: rgba(255, 255, 255, 0.94);
+  max-width: 30ch;
+}
+
+.toolchain-root .v0-stack-beat p {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 52ch;
+}
+
+/* ---------- one column ---------- */
+
+@media (max-width: 900px) {
+  .toolchain-root .v0-stack-body {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .toolchain-root .v0-stack-fig {
+    position: static;
+  }
+
+  .toolchain-root .v0-stack-fig .v0-stack-iso {
+    display: block;
+    max-width: 300px;
+    margin-inline: auto;
+    transform: translateX(-8%);
+  }
+
+  .toolchain-root .v0-stack-beat {
+    min-height: 0;
+  }
+}

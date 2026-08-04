@@ -17,58 +17,25 @@ import './prototemplate.css';
 const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
 
-/* Titles, descriptions, OG card, canonical, and icons all come from the root
-   layout's defaults — this page IS the site root. Only the structured data
-   below is page-specific. */
-
-const SITE_URL = 'https://prototemplate.vercel.app';
-
-/**
- * JSON-LD for search and answer engines: the site, and the index as a
- * collection of the curated directions. Serialized server-side; `<` is
- * escaped so page content can never close the script tag.
- */
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      '@id': `${SITE_URL}/#website`,
-      url: `${SITE_URL}/`,
-      name: 'Prototemplate',
-      alternateName: 'GT Website Redesign Explorations',
-      description:
-        'Prototype × template — the working index of General Translation website redesign directions.',
-      publisher: {
-        '@type': 'Organization',
-        name: 'General Translation',
-        url: 'https://generaltranslation.com',
-      },
-    },
-    {
-      '@type': 'CollectionPage',
-      '@id': `${SITE_URL}/#collection`,
-      url: `${SITE_URL}/`,
-      name: 'Prototemplate — GT Website Redesign Explorations',
-      isPartOf: { '@id': `${SITE_URL}/#website` },
-      description:
-        'Eighteen art directions for the General Translation website, each running live: five full site concepts and thirteen single-page explorations.',
-      mainEntity: {
-        '@type': 'ItemList',
-        numberOfItems: DIRECTIONS.length,
-        itemListElement: DIRECTIONS.map((d, i) => ({
-          '@type': 'ListItem',
-          position: i + 1,
-          item: {
-            '@type': 'CreativeWork',
-            name: d.name,
-            description: d.concept,
-            url: `${SITE_URL}/d/${d.slug}`,
-          },
-        })),
-      },
-    },
-  ],
+export const metadata = {
+  title: 'Prototemplate',
+  description:
+    'Prototype × template — the working index of General Translation redesign directions.',
+  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
+  openGraph: {
+    title: 'Prototemplate',
+    description:
+      'Prototype × template — the working index of General Translation redesign directions.',
+    type: 'website',
+    images: [{ url: '/og.png', width: 2400, height: 1260, alt: 'prototype × template' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Prototemplate',
+    description:
+      'Prototype × template — the working index of General Translation redesign directions.',
+    images: ['/og.png'],
+  },
 };
 
 /** The five full site concepts vs the single-page explorations. */
@@ -89,12 +56,6 @@ const DECK = [
 export default function IndexPage() {
   return (
     <main className={`pt-root ${fraunces.variable} ${grotesk.variable}`}>
-      <script
-        type='application/ld+json'
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
-        }}
-      />
       <div className='pt-rail'>
         <header className='pt-nav'>
           <Link className='pt-nav-brand' href='/'>
@@ -136,17 +97,6 @@ export default function IndexPage() {
             <Link className='pt-nav-present' href='/present'>
               Present <span aria-hidden>▶</span>
             </Link>
-            <a
-              aria-label='View the source on GitHub'
-              className='pt-nav-github'
-              href='https://github.com/Kevin-Liu-01/Prototemplate'
-              rel='noreferrer'
-              target='_blank'
-            >
-              <svg aria-hidden fill='currentColor' height='20' viewBox='0 0 16 16' width='20'>
-                <path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z' />
-              </svg>
-            </a>
           </div>
         </header>
 

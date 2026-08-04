@@ -1,0 +1,271 @@
+/* ============================================================
+   V0 GLOBAL — "Ship to the world."
+   The EdgeGlobe on a permanently-dark plate, a ruled rail of
+   three claims beside it, and the real Theo post as a dark
+   quote card below. Every rule scoped: .toolchain-root .v0-glob…
+   ============================================================ */
+
+.toolchain-root .v0-glob {
+  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut);
+}
+
+.toolchain-root .v0-glob-head h2 {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-glob-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- globe plate + ruled rail ---------- */
+
+.toolchain-root .v0-glob-grid {
+  margin-top: clamp(30px, 3.6vw, 48px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: stretch;
+}
+
+/* The night plate: permanently dark, so its surface and the globe's night
+   inks are hardcoded here — the tc tokens remap in dark mode, this plate
+   must not. The single grey hairline is the family the full-bleed bands
+   already rail dark surfaces with, and it earns its keep in dark mode,
+   where plate and paper land on near-identical inks. */
+.toolchain-root .v0-glob-plate {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid var(--tc-hair);
+  border-radius: 10px;
+  background: #101010;
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #86a8ff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+.toolchain-root .v0-glob-art {
+  width: 100%;
+  max-width: 520px;
+}
+
+/* The globe's own stylesheet pins --eg-label-size on .eg itself, so the
+   rendered-size override has to outrank it: 9px viewBox units ≈ 11.7px at
+   this plate's ~1.3x render — above the 11px annotation floor. The phone
+   step mirrors the globe's own ≤640px compact rule, which this selector
+   would otherwise outrank. */
+.toolchain-root .v0-glob-plate .eg {
+  --eg-label-size: 9px;
+}
+
+@media (max-width: 640px) {
+  .toolchain-root .v0-glob-plate .eg {
+    --eg-label-size: 12px;
+  }
+}
+
+/* The rail: three blocks, one hairline between neighbours, nothing at the
+   ends — the section's edges stay unruled. */
+.toolchain-root .v0-glob-rail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toolchain-root .v0-glob-item {
+  padding-block: clamp(18px, 2.1vw, 27px);
+}
+
+.toolchain-root .v0-glob-item:first-child {
+  padding-top: 0;
+}
+
+.toolchain-root .v0-glob-item:last-child {
+  padding-bottom: 0;
+}
+
+.toolchain-root .v0-glob-item + .v0-glob-item {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .v0-glob-item h3 {
+  font-family: var(--tc-disp);
+  font-size: 16.5px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-glob-item > p {
+  margin-top: 8px;
+  max-width: 54ch;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- the locale artifact ----------
+   Three base languages fanning into their locale tags. Mono is spent only
+   where the grammar allows it: on the codes themselves. */
+
+.toolchain-root .v0-glob-locales {
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.toolchain-root .v0-glob-locale-row {
+  display: grid;
+  grid-template-columns: 56px 14px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+}
+
+.toolchain-root .v0-glob-base {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-glob-arrow {
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .v0-glob-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* 5px gaps keep neighbouring chip borders past the 4px parallel floor */
+  gap: 5px;
+}
+
+.toolchain-root .v0-glob-tag {
+  padding: 0 6px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 19px;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .v0-glob-more {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-4);
+}
+
+/* The scripts line: the same word, eight writing systems, each token
+   carrying its lang attribute in the markup. */
+.toolchain-root .v0-glob-scripts {
+  margin-top: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 9px;
+  row-gap: 4px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .v0-glob-scripts-dot {
+  color: var(--tc-ink-4);
+}
+
+/* ---------- the real post: permanently-dark quote card ---------- */
+
+.toolchain-root .v0-glob-quote {
+  margin: clamp(28px, 3.4vw, 44px) 0 0;
+  padding: clamp(24px, 3vw, 38px) clamp(24px, 3.4vw, 44px);
+  border: 1px solid var(--tc-hair);
+  border-radius: 10px;
+  background: #101010;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.toolchain-root .v0-glob-quote blockquote {
+  margin: 0;
+  max-width: 62ch;
+  font-family: var(--tc-disp);
+  font-size: clamp(18px, 1.9vw, 23px);
+  font-weight: 500;
+  line-height: 1.44;
+  letter-spacing: -0.015em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.toolchain-root .v0-glob-quote figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: clamp(18px, 2.2vw, 26px);
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolchain-root .v0-glob-quote-who {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.toolchain-root .v0-glob-quote-who b {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.toolchain-root .v0-glob-quote-who span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.toolchain-root .v0-glob-quote-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.toolchain-root .v0-glob-quote-link:hover {
+  color: #ffffff;
+}
+
+.toolchain-root .v0-glob-quote-link svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 980px) {
+  .toolchain-root .v0-glob-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

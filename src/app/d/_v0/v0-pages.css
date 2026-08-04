@@ -1,0 +1,20 @@
+/* The v0 flow carries the Customers beat as its own full wall directly
+   after the hero — the heroes' built-in trust card would say it twice,
+   so on v0 pages it yields. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-trust {
+  display: none;
+}
+
+/* With the trust card gone the terminal window's outline ring would sit
+   1.5px off the hero section's seam — restore the card's old breathing
+   room below the band. (Orbit's strip has no ring and keeps its rhythm.) */
+.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tch-band {
+  margin-bottom: 30px;
+}
+
+/* Procession's console now ENDS the hero: the section seam is its bottom
+   line — one stroke, not two. */
+.toolchain-root.sgph-root .sgph-console {
+  border-bottom: 0;
+  margin-bottom: 0;
+}

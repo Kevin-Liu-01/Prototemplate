@@ -12,7 +12,7 @@ import TerminusNav from './sections/TerminusNav';
 import './styles.css';
 
 export const metadata = {
-  title: 'Flipboard Terminus',
+  title: 'Flipboard Terminus — GT Redesign',
   description: 'End-to-end localization for the world’s best companies.',
   // Declared so the browser never falls back to requesting /favicon.ico, which
   // the sample app does not ship.

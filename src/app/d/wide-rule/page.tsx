@@ -1,6 +1,5 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
-import { directionMetadata } from '@/lib/directions';
 
 import DarkBand from './sections/DarkBand';
 import Frameworks from './sections/Frameworks';
@@ -13,7 +12,11 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = directionMetadata('wide-rule');
+export const metadata = {
+  title: 'Wide Rule — GT Redesign',
+  // Declared so the browser stops probing for a /favicon.ico this app never ships.
+  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
+};
 
 /**
  * Wide Rule — heir of the Wide Field still, restated in the ruled-column

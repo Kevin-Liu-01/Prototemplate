@@ -13,7 +13,7 @@ import '../styles.css';
 import './contact.css';
 
 export const metadata = {
-  title: 'Contact — Toolchain',
+  title: 'Contact — Toolchain — GT Redesign',
   // Declared so the browser stops probing for a /favicon.ico this app never ships.
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

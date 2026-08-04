@@ -1,6 +1,5 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
-import { directionMetadata } from '@/lib/directions';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -14,7 +13,11 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = directionMetadata('paper-foundry');
+export const metadata = {
+  title: 'Paper Foundry — GT Redesign',
+  // Declared so the browser stops probing for a /favicon.ico this app never ships.
+  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
+};
 
 /**
  * Paper Foundry — the machine shop translated onto paper. The toolchain shell
