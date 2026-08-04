@@ -53,6 +53,35 @@ const DECK = [
   { n: '07', name: 'Scoreboard', note: 'how each round was judged' },
 ] as const;
 
+/* ---- the opener's distillation figure, as data ----
+   One continuous corridor, narrowing in two throats: a 7×3 field of
+   sketched direction cells (the eight retired ones hatched out), the
+   thirteen structured cards that survived review, and the five full
+   sites as cascaded browser windows — fidelity rising as the count
+   falls. Stroke lengths vary deterministically so no two cells read
+   alike. Grids sit 8 units inside the walls so no rule ever doubles. */
+const FUNNEL_RETIRED = new Set([2, 5, 7, 10, 13, 15, 18, 19]);
+
+/** Stage one: 21 direction cells on a 47/37 pitch, 8 hatched retired. */
+const FUNNEL_FIELD = Array.from({ length: 21 }, (_, i) => ({
+  x: 20 + (i % 7) * 47,
+  y: 16 + Math.floor(i / 7) * 37,
+  retired: FUNNEL_RETIRED.has(i),
+  t: 8 + ((i * 5) % 9),
+  b: 18 + ((i * 7) % 9),
+  b2: 11 + ((i * 3) % 11),
+}));
+
+/** Stage two: the 13 survivors as headered cards, rows of 5 / 5 / 3. */
+const FUNNEL_SURVIVORS = [
+  ...Array.from({ length: 5 }, (_, i) => ({ x: 76 + i * 43, y: 208, b: 14 + ((i * 5) % 11), b2: 9 + ((i * 7) % 9) })),
+  ...Array.from({ length: 5 }, (_, i) => ({ x: 76 + i * 43, y: 242, b: 16 + ((i * 7) % 9), b2: 11 + ((i * 5) % 9) })),
+  ...Array.from({ length: 3 }, (_, i) => ({ x: 119 + i * 43, y: 276, b: 15 + ((i * 6) % 10), b2: 10 + ((i * 4) % 9) })),
+];
+
+/** Stage three: the five sites, browser windows cascaded like the fan. */
+const FUNNEL_SITES = Array.from({ length: 5 }, (_, i) => ({ x: 120 + i * 14, y: 382 + i * 8 }));
+
 export default function IndexPage() {
   return (
     <main className={`pt-root ${fraunces.variable} ${grotesk.variable}`}>
@@ -146,32 +175,102 @@ export default function IndexPage() {
 
             {/* the distillation, held in a crop frame: the four rules extend
                 from the diagram's edges to the section's own — the nameplate's
-                frame grammar, one more time */}
-            <figure className='pt-opener-fig' aria-hidden>
+                frame grammar, one more time. Inside, the mass visibly narrows:
+                the field of everything built, hatched shoulders carrying away
+                what fell, down to the five windows fanned like the captures
+                further down the page. */}
+            <figure
+              aria-label='The distillation: more than twenty directions built, thirteen survived review, five became full sites.'
+              className='pt-opener-fig'
+              role='img'
+            >
               <i className='pt-xline is-h is-top' />
               <i className='pt-xline is-h is-bot' />
               <i className='pt-xline is-v is-l' />
               <i className='pt-xline is-v is-r' />
-              <svg className='pt-funnel' viewBox='0 0 320 268'>
-                <g className='pt-funnel-box'>
-                  <rect x='10' y='10' width='300' height='58' />
-                  <rect x='40' y='105' width='240' height='58' />
-                  <rect x='70' y='200' width='180' height='58' />
-                </g>
-                <g className='pt-funnel-drop'>
-                  <line x1='160' y1='68' x2='160' y2='105' />
-                  <line x1='160' y1='163' x2='160' y2='200' />
-                </g>
-                <g className='pt-funnel-n'>
-                  <text x='34' y='46'>20+</text>
-                  <text x='64' y='141'>13</text>
-                  <text x='94' y='236'>5</text>
-                </g>
-                <g className='pt-funnel-t'>
-                  <text x='94' y='45'>directions built</text>
-                  <text x='110' y='140'>survived review</text>
-                  <text x='128' y='235'>full sites</text>
-                </g>
+              <svg aria-hidden className='pt-funnel' viewBox='0 0 360 492'>
+                <defs>
+                  {/* the shell's diagonal hatch, at token color — the one
+                      sanctioned texture for what gets discarded */}
+                  <pattern
+                    height='7'
+                    id='pt-fnl-hatch'
+                    patternTransform='rotate(-45)'
+                    patternUnits='userSpaceOnUse'
+                    width='7'
+                  >
+                    <line className='pt-funnel-hatchline' x1='0.5' x2='0.5' y1='0' y2='7' />
+                  </pattern>
+                </defs>
+
+                {/* the corridor: two continuous walls, vertical beside each
+                    stage, diagonal through each throat — one funnel */}
+                <path className='pt-funnel-wall' d='M12,8 V130 L68,202 V308 L112,376 V486' />
+                <path className='pt-funnel-wall' d='M348,8 V130 L292,202 V308 L248,376 V486' />
+
+                {/* the mass that falls away, pocketed in the throat corners —
+                    fill only, the wall already draws the diagonal */}
+                <polygon className='pt-funnel-shoulder' points='12,130 68,202 12,202' />
+                <polygon className='pt-funnel-shoulder' points='348,130 292,202 348,202' />
+                <polygon className='pt-funnel-shoulder' points='68,308 112,376 68,376' />
+                <polygon className='pt-funnel-shoulder' points='292,308 248,376 292,376' />
+
+                {/* stage one: the full field, twenty-one sketched cells */}
+                {FUNNEL_FIELD.map((c) => (
+                  <g key={`fld-${c.x}-${c.y}`} transform={`translate(${c.x} ${c.y})`}>
+                    <rect
+                      className={c.retired ? 'pt-funnel-cell is-retired' : 'pt-funnel-cell'}
+                      height='28'
+                      width='38'
+                    />
+                    {!c.retired && (
+                      <>
+                        <line className='pt-funnel-stroke' x1='6' x2={6 + c.t} y1='9' y2='9' />
+                        <line className='pt-funnel-stroke' x1='6' x2={6 + c.b} y1='16' y2='16' />
+                        <line className='pt-funnel-stroke' x1='6' x2={6 + c.b2} y1='22' y2='22' />
+                      </>
+                    )}
+                  </g>
+                ))}
+                <text className='pt-funnel-cap' textAnchor='middle' x='180' y='170'>
+                  <tspan className='pt-funnel-n'>20+</tspan>
+                  <tspan className='pt-funnel-t' dx='12'>DIRECTIONS BUILT</tspan>
+                </text>
+
+                {/* stage two: the thirteen survivors, structured cards now */}
+                {FUNNEL_SURVIVORS.map((c) => (
+                  <g key={`srv-${c.x}-${c.y}`} transform={`translate(${c.x} ${c.y})`}>
+                    <rect className='pt-funnel-cell' height='26' width='36' />
+                    <line className='pt-funnel-stroke' x1='0' x2='36' y1='7' y2='7' />
+                    <line className='pt-funnel-stroke' x1='5' x2={5 + c.b} y1='14' y2='14' />
+                    <line className='pt-funnel-stroke' x1='5' x2={5 + c.b2} y1='20' y2='20' />
+                  </g>
+                ))}
+                <text className='pt-funnel-cap' textAnchor='middle' x='180' y='346'>
+                  <tspan className='pt-funnel-n'>13</tspan>
+                  <tspan className='pt-funnel-t' dx='12'>SURVIVED REVIEW</tspan>
+                </text>
+
+                {/* stage three: the five full sites — browser windows,
+                    cascaded the way the captures fan below; only the front
+                    window carries content, the rest show their title bars */}
+                {FUNNEL_SITES.map((c, i) => (
+                  <g key={`sit-${c.x}-${c.y}`} transform={`translate(${c.x} ${c.y})`}>
+                    <rect className='pt-funnel-win' height='46' width='64' />
+                    <line className='pt-funnel-stroke' x1='0' x2='64' y1='11' y2='11' />
+                    {i === FUNNEL_SITES.length - 1 && (
+                      <>
+                        <line className='pt-funnel-stroke' x1='7' x2='34' y1='21' y2='21' />
+                        <line className='pt-funnel-stroke' x1='7' x2='52' y1='28' y2='28' />
+                        <line className='pt-funnel-stroke' x1='7' x2='44' y1='35' y2='35' />
+                      </>
+                    )}
+                  </g>
+                ))}
+                <text className='pt-funnel-cap' textAnchor='middle' x='180' y='480'>
+                  <tspan className='pt-funnel-n'>5</tspan>
+                  <tspan className='pt-funnel-t' dx='12'>FULL SITES</tspan>
+                </text>
               </svg>
             </figure>
           </section>

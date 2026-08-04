@@ -1130,7 +1130,9 @@
 }
 
 .pt-opener-fig .pt-funnel {
-  max-width: 400px;
+  /* 1:1 with the viewBox at desktop, so every hairline lands on a
+     device pixel; below that the strokes hold 1px via vector-effect */
+  max-width: 360px;
 }
 
 /* the frame's four rules extend from the box's edges to the section's —
@@ -1176,27 +1178,52 @@
   height: auto;
 }
 
-.pt-funnel-box rect {
+/* line law: every structural stroke in the figure — the corridor walls,
+   cell frames, window frames, content strokes — is the hairline token,
+   held at a true 1px whatever the svg scales to */
+.pt-funnel-wall,
+.pt-funnel-cell,
+.pt-funnel-win,
+.pt-funnel-stroke {
   fill: none;
   stroke: var(--pt-hair);
   stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
-.pt-funnel-drop line {
-  stroke: var(--pt-hair);
+/* the discarded mass: the shell's diagonal hatch, nothing else — fill
+   only, because the corridor wall already draws each wedge's diagonal */
+.pt-funnel-cell.is-retired,
+.pt-funnel-shoulder {
+  fill: url(#pt-fnl-hatch);
+}
+
+.pt-funnel-shoulder {
+  stroke: none;
+}
+
+.pt-funnel-hatchline {
+  stroke: var(--pt-hatch);
   stroke-width: 1;
-  stroke-dasharray: 3 3;
 }
 
-.pt-funnel-n text {
+/* the windows carry paper so the cascade occludes cleanly */
+.pt-funnel-win {
+  fill: var(--pt-paper);
+}
+
+/* ink enters the figure only here: the ledger numerals and their labels */
+.pt-funnel-n {
   font-family: var(--pt-mono);
-  font-size: 17px;
+  font-size: 21px;
   fill: var(--pt-ink);
 }
 
-.pt-funnel-t text {
-  font-family: var(--pt-lausanne);
-  font-size: 13px;
+.pt-funnel-t {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   fill: var(--pt-ink-2);
 }
 
@@ -1207,6 +1234,13 @@
 
   .pt-opener-fig {
     max-width: 420px;
+    margin-inline: auto;
+  }
+
+  /* stacked: the figure's vertical extenders stop at its own top rule
+     instead of running up through the copy above */
+  .pt-opener-fig .pt-xline.is-v {
+    top: 0;
   }
 }
 
