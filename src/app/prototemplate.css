@@ -1348,8 +1348,8 @@
   position: absolute;
   /* the fan RISES toward the front — later windows step up-right, so the
      stack reads as an ascending / rather than a descending \ */
-  top: calc(30px + (4 - var(--i)) * 20px);
-  right: calc((4 - var(--i)) * 54px - 120px);
+  top: calc(50px + (4 - var(--i)) * 20px);
+  right: calc((4 - var(--i)) * 54px);
   width: 300px;
   aspect-ratio: 16 / 10;
   overflow: hidden;
