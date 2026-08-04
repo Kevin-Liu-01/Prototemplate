@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import Image from 'next/image';
 import { useRef, useState, type ComponentType, type CSSProperties } from 'react';
 
 import {
@@ -125,29 +124,26 @@ const ROWS: readonly Row[] = [
     cells: [
       [{ loc: 'es', text: 'Comenzar ahora' }],
       [{ loc: 'ja', text: '始める' }],
-      [{ loc: 'de', text: 'Jetzt starten' }],
-    ],
-  },
-  {
-    src: '"Payment received"',
-    cells: [
-      [{ loc: 'es', text: 'Pago recibido' }],
-      [{ loc: 'ja', text: '支払いを受領しました' }],
-      [{ loc: 'de', text: 'Zahlung erhalten' }],
+      [
+        { loc: 'de', text: 'Jetzt starten' },
+        { loc: 'fr', text: 'Commencer' },
+        { loc: 'zh', text: '立即开始' },
+      ],
     ],
   },
 ];
 
 /* ------------------------------------------------------------------
    The preview face: the same three strings rendered as UI — heading,
-   button, toast — plus the demo copy's first sentence, in the three
-   locales the transcript shows. Dates are real Intl output at render
-   time, from a fixed day so server and client agree.
+   button, toast — plus the demo copy's first sentence, in all five
+   locales the run writes to public/_gt (the terminal's own glob order).
+   Dates are real Intl output at render time, from a fixed day so server
+   and client agree.
    ------------------------------------------------------------------ */
 
-type PreviewLoc = 'es' | 'ja' | 'de';
+type PreviewLoc = 'es' | 'fr' | 'ja' | 'de' | 'zh';
 
-const PREVIEW_LOCS: readonly PreviewLoc[] = ['es', 'ja', 'de'];
+const PREVIEW_LOCS: readonly PreviewLoc[] = ['es', 'fr', 'ja', 'de', 'zh'];
 
 const PREVIEWS: Record<PreviewLoc, { title: string; body: string; button: string; toast: string }> = {
   es: {
@@ -155,6 +151,12 @@ const PREVIEWS: Record<PreviewLoc, { title: string; body: string; button: string
     body: 'General Translation crea infraestructura full-stack para localizar apps, documentación y sitios web.',
     button: 'Comenzar ahora',
     toast: 'Pago recibido',
+  },
+  fr: {
+    title: 'Bonjour le monde !',
+    body: 'General Translation construit une infrastructure full-stack pour localiser applications, documentation et sites web.',
+    button: 'Commencer',
+    toast: 'Paiement reçu',
   },
   ja: {
     title: 'こんにちは、世界！',
@@ -167,6 +169,12 @@ const PREVIEWS: Record<PreviewLoc, { title: string; body: string; button: string
     body: 'General Translation entwickelt Full-Stack-Infrastruktur für die Lokalisierung von Apps, Dokumentation und Websites.',
     button: 'Jetzt starten',
     toast: 'Zahlung erhalten',
+  },
+  zh: {
+    title: '你好，世界！',
+    body: 'General Translation 为应用、文档和网站的本地化构建全栈基础设施。',
+    button: '立即开始',
+    toast: '已收到付款',
   },
 };
 
@@ -295,6 +303,8 @@ export default function HomeHero() {
      moves its clip boundary (hero-terminal.css), never its content. */
   const app = useRef<HTMLDivElement>(null);
   const dragged = useRef(false);
+  /* the drag hint's dismissal must re-render — the ref can't drive it */
+  const [hinted, setHinted] = useState(false);
   const setCut = (pct: number) => {
     const el = app.current;
     if (!el) return;
@@ -363,19 +373,21 @@ export default function HomeHero() {
         .add(counter('[data-count-time]', 12.4, 0.4, 1), '<');
 
       /* ---- the long tail keeps arriving ----
-         One cell cycles de → fr → zh: the outgoing variant is fully gone
-         before the incoming one lands, so a still never catches two scripts
-         printed through each other. */
-      const variants = gsap.utils.toArray<HTMLElement>('[data-cyc]', root.current);
-      if (variants.length > 1) {
+         Both cycling cells advance IN STEP — one heartbeat for the whole
+         column, de → fr → zh: the outgoing variants are fully gone before
+         the incoming pair lands. */
+      const cycCells = gsap.utils.toArray<HTMLElement>('.tct-cyc', root.current);
+      const cycGroups = cycCells.map((cell) => gsap.utils.toArray<HTMLElement>('[data-cyc]', cell));
+      const steps = cycGroups[0]?.length ?? 0;
+      if (steps > 1) {
         const cyc = gsap.timeline({ repeat: -1, delay: run.duration() + 2.2 });
-        variants.forEach((el, i) => {
-          const next = variants[(i + 1) % variants.length];
-          if (!next) return;
+        for (let i = 0; i < steps; i += 1) {
+          const going = cycGroups.map((g) => g[i]).filter((el): el is HTMLElement => Boolean(el));
+          const coming = cycGroups.map((g) => g[(i + 1) % steps]).filter((el): el is HTMLElement => Boolean(el));
           cyc
-            .to(el, { autoAlpha: 0, duration: 0.24, ease: 'power1.in' }, '+=2.7')
-            .to(next, { autoAlpha: 1, duration: 0.28, ease: 'power1.out' }, '>');
-        });
+            .to(going, { autoAlpha: 0, duration: 0.24, ease: 'power1.in' }, '+=2.7')
+            .to(coming, { autoAlpha: 1, duration: 0.28, ease: 'power1.out' }, '>');
+        }
       }
 
       /* ---- one guided pass through the preview ----
@@ -722,21 +734,10 @@ export default function HomeHero() {
           inset on the section's second-surface ground — above the SQUARE
           full-width band; the trust row repeats the card below it. */}
       <div className='tc-hero tch-card'>
-        <Image
-          className='tc-hero-mark'
-          data-hero-in
-          src='/brand/no-bg-gt-logo-light.png'
-          alt='General Translation'
-          width={34}
-          height={34}
-        />
-
-        {/* Two authored lines rather than a wrap. "Launch in every / language"
-            hung a nine-character line under a fifteen-character one and left the
-            accent trailing off the end of line one; here the measures are close
-            and the accented word opens line two, on the hinge of the sentence. */}
+        {/* Two authored lines rather than a wrap: "Launch in / every language."
+            — the accented word opens line two, on the hinge of the sentence. */}
         <h1 data-hero-in>
-          <span>Your product speaks</span>
+          <span>Launch in</span>
           <span>
             every{' '}
             <em data-every>
@@ -951,12 +952,17 @@ export default function HomeHero() {
                   <PayloadJson loc={ploc} />
                 </div>
 
+                {/* the seam advertises itself until the reader has dragged once */}
+                <span aria-hidden className='tch-drag-hint' data-hide={hinted || undefined}>
+                  ↔ drag
+                </span>
                 <RevealSeam
                   boxRef={app}
                   ariaLabel='Reveal the served translation file'
                   onInteract={() => {
                     endTour();
                     dragged.current = true;
+                    setHinted(true);
                   }}
                 />
               </div>

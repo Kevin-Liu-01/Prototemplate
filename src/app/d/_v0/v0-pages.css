@@ -18,3 +18,108 @@
   border-bottom: 0;
   margin-bottom: 0;
 }
+
+/* ============================================================
+   HERO-LEVEL FIGMA EXPERIMENTS — the five homes only; toolchain
+   itself keeps its centered card, mark, and doubled threads.
+   ============================================================ */
+
+/* The headline loses the doubled-thread underline; the em keeps its
+   measuring apparatus (guides, dust, the tweened width). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 em {
+  padding-bottom: 0;
+  background-image: none;
+}
+
+/* The hero speaks left-aligned (cc cursor.com/home): the logo wall
+   below is left-set black-and-white, so the hero joins the same
+   margin instead of floating centered above it. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero {
+  text-align: left;
+}
+
+/* the headline block is centered by margin, not text-align — pin it to
+   the same left rule as everything under it */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
+  margin-inline: 0;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-sub {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-acts {
+  justify-content: flex-start;
+}
+
+/* Every flag box speaks the same blue box — the Source line included;
+   only the box is blue, the words keep their neutral voice. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-chip.is-src {
+  border-color: var(--tct-loc-line);
+  background: var(--tct-loc-wash);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* …and the developer section's tags stop being the grey dialect: the
+   same blue box in the light surface's own ramp, text never blue. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
+  border: 1px solid rgba(90, 120, 220, 0.34);
+  border-radius: 4px;
+  background: rgba(120, 156, 255, 0.09);
+  line-height: 19px;
+}
+
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev .lct {
+  border-color: rgba(157, 185, 255, 0.3);
+  background: rgba(120, 156, 255, 0.1);
+}
+
+/* The Save-button key column sized itself before it wore a box —
+   widen to keep the ledger's left rule aligned. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev-save .lct {
+  width: 56px;
+}
+
+/* Brighter light-mode band (the paper-foundry experiment): the
+   prismatic plate inverts to the paper's own key in light theme —
+   the wash stays spectral, the ground lifts to near-paper, and the
+   #101010 window sits on it as the one dark object. Dark theme keeps
+   the original plate. */
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-field {
+  filter: invert(1) hue-rotate(180deg) brightness(1.07) saturate(1.15);
+}
+
+/* The preview pane's rendered card breathes more (Figma: "more
+   padding on this text block"). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-app-main {
+  padding: 26px 26px 56px;
+}
+
+/* The seam advertises itself: a small mono chip riding just right of
+   the vertical cut line until the reader has dragged once. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-drag-hint {
+  position: absolute;
+  left: var(--seam-cut, 70%);
+  top: 54%;
+  transform: translate(12px, -50%);
+  z-index: 3;
+  padding: 1px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  background: rgba(10, 10, 10, 0.72);
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-drag-hint[data-hide] {
+  opacity: 0;
+}
