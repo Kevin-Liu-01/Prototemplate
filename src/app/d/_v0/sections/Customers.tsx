@@ -54,16 +54,7 @@ export default function V0Customers() {
             aria-label={customer.name}
             data-reveal
           >
-            {customer.id === 'sierra' ? (
-              /* TODO: swap in the real Sierra SVG wordmark once the asset
-                 lands in /public/logos (sierra.{light,dark}.svg) — until
-                 then this is a typographic stand-in at matched cap height. */
-              <span className='v0-cust-word' aria-hidden='true'>
-                Sierra
-              </span>
-            ) : (
-              <span className={`v0-cust-mark is-${customer.id}`} aria-hidden='true' />
-            )}
+            <span className={`v0-cust-mark is-${customer.id}`} aria-hidden='true' />
           </a>
         ))}
       </div>

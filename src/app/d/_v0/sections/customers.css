@@ -76,15 +76,12 @@
   background-image: url('/logos/clickhouse.light.svg');
 }
 
-/* Sierra has no shipped asset yet: a typographic wordmark in the
-   display face, sized to match the neighbors' cap height. */
-.toolchain-root .v0-cust-word {
-  font-family: var(--tc-disp);
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: var(--tc-ink);
+/* Sierra: the official rosette+wordmark lockup (sierra.ai/using-our-brand),
+   re-inked per theme like every other mark on the wall. */
+.toolchain-root .v0-cust-mark.is-sierra {
+  aspect-ratio: 350 / 94;
+  height: 34px;
+  background-image: url('/logos/sierra.light.svg');
 }
 
 /* dark theme: the drawn-for-dark variants, same geometry */
@@ -106,6 +103,10 @@
 
 [data-theme='dark'] .toolchain-root .v0-cust-mark.is-clickhouse {
   background-image: url('/logos/clickhouse.dark.svg');
+}
+
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-sierra {
+  background-image: url('/logos/sierra.dark.svg');
 }
 
 /* ---- wrap points ----------------------------------------------

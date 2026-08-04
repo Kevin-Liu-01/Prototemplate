@@ -2,6 +2,8 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+
+import { ArrowRight } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
@@ -479,10 +481,14 @@ export default function HomeHero() {
       <div className='tc-hero tch-card'>
         {/* Two authored lines rather than a wrap: "Launch in / every language."
             The accented word opens line two, on the hinge of the sentence. */}
+          <button className='tc-copy tch-npx-top' data-hero-in type='button' onClick={copy}>
+            <span>$ npx gt@latest</span>
+            <span>{copied ? 'Copied' : 'Copy'}</span>
+          </button>
+
         <h1 data-hero-in>
-          <span>Launch in</span>
           <span>
-            every{' '}
+            Launch in every{' '}
             <em data-every>
               <span data-every-word lang='en' dir='ltr'>
                 language
@@ -497,16 +503,15 @@ export default function HomeHero() {
         </p>
 
         <div className='tc-hero-acts' data-hero-in>
-          <a className='tc-btn tc-btn-solid' href='#deploy'>
-            Get started
-          </a>
+          <span className='tch-cta'>
+            <a className='tc-btn tc-btn-solid' href='#deploy'>
+              Get started
+              <ArrowRight aria-hidden size={15} strokeWidth={2} />
+            </a>
+          </span>
           <a className='tc-btn tc-btn-line' href='#frameworks'>
             Docs
           </a>
-          <button className='tc-copy' type='button' onClick={copy}>
-            <span>$ npx gt@latest</span>
-            <span>{copied ? 'Copied' : 'Copy'}</span>
-          </button>
         </div>
       </div>
 
