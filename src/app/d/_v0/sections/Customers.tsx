@@ -32,7 +32,12 @@ const CUSTOMERS: readonly Customer[] = [
  * from /public/logos via a background-image that swaps per theme, and the
  * link's aria-label carries the accessible name.
  */
-export default function V0Customers() {
+type V0CustomersProps = {
+  /** The non-terminal home speaks a different lead. */
+  heading?: string;
+};
+
+export default function V0Customers({ heading = 'Trusted by the best companies.' }: V0CustomersProps) {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
 
@@ -40,7 +45,7 @@ export default function V0Customers() {
     <section className='tc-sec v0-cust' id='customers' ref={root}>
       <div className='tc-head'>
         <Handshake className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>Trusted by the best companies.</h2>
+        <h2 data-reveal>{heading}</h2>
       </div>
 
       <div className='tc-row v0-cust-row'>

@@ -125,15 +125,8 @@ const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
 
 export default function HomeHero() {
   const root = useRef<HTMLElement>(null);
-  const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx gt@latest');
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
-  };
 
   useGSAP(
     () => {
@@ -485,10 +478,6 @@ export default function HomeHero() {
                 language." — the accented word opens line two, on the hinge of
                 the sentence. The every-language morph runs in white — the
                 console's ink. */}
-              <button className='tc-copy tch-npx-top' data-hero-in type='button' onClick={copy}>
-                <span>$ npx gt@latest</span>
-                <span>{copied ? 'Copied' : 'Copy'}</span>
-              </button>
 
             <h1 data-hero-in>
               <span>

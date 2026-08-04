@@ -39,9 +39,12 @@ export default function Page() {
 
         <div className='tc-rail'>
           <HomeHero />
-          <V0Customers />
-          <V0FullStack />
-          <V0Developer />
+          <V0Customers heading='Trusted by companies around the globe.' />
+          <V0FullStack sub='GT connects all the infrastructure you need in a single ecosystem.' />
+          <V0Developer
+            heading='Localization is complex.'
+            sub='We handle everything: different languages, locales, translation, and internationalization.'
+          />
           <V0Locadex />
           <V0ContextSec />
           <V0Global />

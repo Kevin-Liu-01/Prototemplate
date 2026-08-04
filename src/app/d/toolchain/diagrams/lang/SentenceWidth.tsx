@@ -48,6 +48,11 @@ const SAMPLES: readonly Sample[] = [
   { tag: 'ar', name: 'العربية', lang: 'ar', rtl: true, text: 'حفظ التغييرات', hint: '−25%' },
 ];
 
+/* Hosts may extend the ledger (the v0 flow adds Hebrew); the defaults
+   above stay this page's own four. */
+export { SAMPLES as SENTENCE_SAMPLES };
+export type { Sample as SentenceSample };
+
 /** Text inset inside the measured container, per side. */
 const PAD = 13;
 /** Room reserved past the widest box for its delta label. */
@@ -56,7 +61,12 @@ const LABEL_ROOM = 86;
 const MAX_SCALE = 1.5;
 const TICKS = 37;
 
-export default function SentenceWidth({ className, accent = true, title }: LangProps) {
+export default function SentenceWidth({
+  className,
+  accent = true,
+  title,
+  samples = SAMPLES,
+}: LangProps & { samples?: readonly Sample[] }) {
   const root = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -69,7 +79,7 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
       const boxes = gsap.utils.toArray<HTMLElement>('[data-sw-box]', rootEl);
       const pcts = gsap.utils.toArray<HTMLElement>('[data-sw-pct]', rootEl);
       const guide = rootEl.querySelector<HTMLElement>('[data-sw-guide]');
-      if (!guide || lines.length !== SAMPLES.length || boxes.length !== SAMPLES.length) return;
+      if (!guide || lines.length !== samples.length || boxes.length !== samples.length) return;
 
       let disposed = false;
 
@@ -88,8 +98,19 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
         rootEl.style.removeProperty('--lang-sw-size');
         boxes.forEach((el) => el.style.removeProperty('width'));
 
+        /* The TEXT's own width — a range over the contents. The p's
+           offsetWidth would smuggle its 13px-per-side padding into the
+           measurement, and boxW() adds that padding again: every box ran
+           ~26px long on the right and the deltas were ratios of padded
+           runs instead of the languages themselves. */
+        const textWidth = (el: HTMLElement) => {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          return range.getBoundingClientRect().width;
+        };
+
         const nominal = Number.parseFloat(getComputedStyle(first).fontSize) || 18;
-        const natural = Math.max(...lines.map((el) => el.offsetWidth));
+        const natural = Math.max(...lines.map(textWidth));
 
         const track = firstRow.querySelector<HTMLElement>('[data-sw-track]');
         const room = track ? track.clientWidth : rootEl.clientWidth;
@@ -99,7 +120,7 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
         );
         rootEl.style.setProperty('--lang-sw-size', `${Math.round(nominal * scale * 10) / 10}px`);
 
-        const texts = lines.map((el) => el.offsetWidth);
+        const texts = lines.map(textWidth);
         const baseText = texts[0] ?? 1;
         /* Text, the container's inset per side, and the container's own 1.5px
            walls — the box is border-box, so the walls are part of the width. */
@@ -145,7 +166,7 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
     <div className={langClass('lang-sw', accent, className)} ref={root} {...langA11y(title)}>
       <div className='lang-sw-rows'>
         <i className='lang-sw-guide' data-sw-guide='' aria-hidden='true' />
-        {SAMPLES.map((sample, i) => (
+        {samples.map((sample, i) => (
           <div
             className={`lang-sw-row${sample.lit ? ' is-lit' : ''}${sample.rtl ? ' is-rtl' : ''}`}
             data-sw-row=''

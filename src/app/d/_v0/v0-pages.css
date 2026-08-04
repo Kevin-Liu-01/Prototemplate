@@ -25,6 +25,139 @@
   border-radius: 0;
 }
 
+/* ============================================================
+   SINGLE RAIL + CORNER CROSSES. The doubled outer rail retires on
+   the five homes; in its place, registration crosses sit on every
+   section seam where it meets the rail verticals — subtle, but a
+   real mark. One pseudo per section paints both of its bottom
+   corners (the next section's top corners are the same points).
+   ============================================================ */
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail::before {
+  content: none;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-nav-in::before {
+  content: none;
+}
+
+/* Registration crosses mark ONLY the highlighted bands — the dark
+   feature plates (full stack, context, deploy) — at all four of their
+   rail corners. Ordinary sections and the nav stay uncrossed. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in::after,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-in::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  z-index: 2;
+  pointer-events: none;
+  --cross-ink: rgba(255, 255, 255, 0.34);
+  background:
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 0 4px / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 4px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 4px 100% / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 0 calc(100% - 4px) / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 4px) 100% / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 100% calc(100% - 4px) / 9px 1px no-repeat;
+}
+
+/* ============================================================
+   THE FOLD BUDGET: the logo wall's row is visible at 1440×900 —
+   the hero spends less height everywhere it can spare it.
+   ============================================================ */
+
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero.tch-card {
+  padding-top: clamp(26px, 2.8vw, 38px);
+  padding-bottom: clamp(22px, 2.4vw, 32px);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-copy.tch-npx-top {
+  margin-bottom: clamp(12px, 1.3vw, 16px);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-sub {
+  margin-top: 12px;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-acts {
+  margin-top: 20px;
+}
+
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tc-hero-cell.tch-band {
+  padding-top: 12px;
+  padding-bottom: 16px;
+}
+
+/* the transcript tightens one step — same voice, less leading */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-body {
+  font-size: 12px;
+  line-height: 1.55;
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+
+/* the sub runs one line at desktop — the 54ch measure forced two */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-sub {
+  max-width: 72ch;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 3.1rem);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head {
+  padding-top: 16px;
+  padding-bottom: 14px;
+}
+
+/* the wall's lead is a caption over the marks, not a display line */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head h2 {
+  font-size: clamp(14px, 1.15vw, 16px);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tc-hero-cell.tch-band {
+  padding-top: 10px;
+  padding-bottom: 12px;
+}
+
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero.tch-card {
+  padding-top: clamp(16px, 1.8vw, 22px);
+  padding-bottom: clamp(13px, 1.4vw, 18px);
+}
+
+/* The Customers lead reads as one line — the head's 22ch measure cap
+   would wrap it. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head h2 {
+  max-width: none;
+}
+
+/* The proof plate rides inside a framed cell here — the pricing page's
+   ±100vw construction pseudos would escape the cell and double against
+   the neighbouring bands' grids. The cell is the frame; they go. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::after {
+  content: none;
+}
+
+/* The proof plate (tcpq) rides in the Global row at two-thirds altitude:
+   same grammar, less vertical spend. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-plate {
+  padding: clamp(22px, 2.6vw, 34px) clamp(26px, 4.4vw, 64px) clamp(20px, 2.4vw, 30px);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote {
+  margin-top: clamp(14px, 1.8vw, 22px);
+  padding-top: clamp(30px, 3vw, 42px);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote p {
+  font-size: clamp(19px, 2vw, 28px);
+}
+
 /* Headers sit at the TOP of their bands: the section-head altitude goes,
    light heads and dark band columns alike (founder note on the full-stack
    band's dead air). */
@@ -148,11 +281,32 @@
   gap: 7px;
 }
 
-/* The window seg's entries carry an icon beside their capitalized label. */
+/* The window seg's entries carry an icon beside their capitalized label,
+   and the window furniture speaks the page's own face — mono stays inside
+   the transcript, where the code lives. */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-seg button {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  font-family: var(--tc-sans);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-title {
+  font-family: var(--tc-sans);
+  letter-spacing: 0;
+}
+
+/* The thorny-locale ledger, decluttered: the flag and the figure carry
+   each row — the code chips retire (flag boxes stay chips elsewhere). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev-ledger .lct {
+  border: 0;
+  background: none;
+  padding: 0;
+  gap: 0;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev-ledger .lct-code {
+  display: none;
 }
 
 /* Every flag box speaks the same blue box — the Source line included;

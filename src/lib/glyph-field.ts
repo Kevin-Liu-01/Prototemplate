@@ -199,6 +199,10 @@ export type GlyphFieldOptions = {
   monoFamily?: string;
   /** Fired when the field commits to a script (index into SCRIPTS). */
   onScript?: (index: number) => void;
+  /** Ambient drift direction — the library's fall, or a rising field. */
+  drift?: 'fall' | 'rise';
+  /** Multiplier on the rain tiers' glyph sizes (the formed word is untouched). */
+  glyphScale?: number;
 };
 
 export type GlyphFieldHandle = { destroy(): void };
@@ -214,6 +218,11 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   const mono = options.monoFamily || "ui-monospace, 'SF Mono', Menlo, Consolas, monospace";
   const reduced =
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Additive hosts' knobs: drift sign rides the same wrap math (it is
+     negative-safe), the scale multiplies only the rain tiers. */
+  const driftSign = options.drift === 'rise' ? -1 : 1;
+  const glyphScale = options.glyphScale ?? 1;
 
   /* The ink follows the theme: `--tc-ink` resolves to the printed constant on
      paper and to the white ramp under [data-theme='dark']. Resolved off the
@@ -259,7 +268,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     z[i] = depth;
     phase[i] = rand() * Math.PI * 2;
     period[i] = 7 + rand() * 8;
-    fall[i] = 2.2 + (1 - depth) * 7.5;
+    fall[i] = driftSign * (2.2 + (1 - depth) * 7.5);
     sway[i] = 1.5 + (1 - depth) * 2.5;
     stag[i] = rand();
     bow[i] = rand() * 2 - 1;
@@ -352,7 +361,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     /* Rows 0–2 are the rain tiers; row 3 is the flight size at native px,
        so a flying glyph never draws through a downscale. */
     for (let row = 0; row < ATLAS_ROWS; row++) {
-      const px = row === COND_ROW ? CONDENSED_PX : TIER_SIZE[row] ?? 10;
+      const px = row === COND_ROW ? CONDENSED_PX : (TIER_SIZE[row] ?? 10) * glyphScale;
       atlasCtx.font = `500 ${px}px ${disp}`;
       for (let col = 0; col < GLYPHS.length; col++) {
         atlasCtx.fillText(GLYPHS[col] ?? '', col * CELL + CELL / 2, row * CELL + CELL / 2);
@@ -738,7 +747,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         }
 
         let row = t;
-        let px = TIER_SIZE[t] ?? 10;
+        let px = (TIER_SIZE[t] ?? 10) * glyphScale;
 
         if (morph < 0) {
           if (wordBound) {
@@ -805,7 +814,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
            overlapping glyphs separate by depth instead of colliding at
            equal ink. Word material always prints full. */
         ctx.globalAlpha = row === COND_ROW ? 1 : 1 - 0.6 * (z[i] ?? 0);
-        const ds = cs * (px / (row === COND_ROW ? CONDENSED_PX : TIER_SIZE[row] ?? 10));
+        const ds = cs * (px / (row === COND_ROW ? CONDENSED_PX : (TIER_SIZE[row] ?? 10) * glyphScale));
         ctx.drawImage(
           atlas,
           (gi[i] ?? 0) * cs * dpr,

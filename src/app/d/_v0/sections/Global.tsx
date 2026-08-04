@@ -1,6 +1,6 @@
 'use client';
 
-import { Globe } from 'lucide-react';
+import { ArrowUpRight, Globe } from 'lucide-react';
 import { Fragment, useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
@@ -8,7 +8,7 @@ import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { BentoCell } from '@/components/shell/Bento';
 
-import '@/app/d/toolchain/pricing/pricing.css';
+import '@/app/d/toolchain/sections/pricing-v2.css';
 
 import './global.css';
 
@@ -184,26 +184,53 @@ export default function V0Global() {
         </BentoCell>
       </div>
 
-      {/* ---- row 2: the OLD proof row, restored — Theo's real quote set
-          against the brand's doubled thread (the toolchain pricing
-          component's exact figure grammar), with the real status URL. */}
+      {/* ---- row 2: the pricing proof plate (tcpq), verbatim grammar —
+          meta link, oversized mark, accented phrases, avatar attribution —
+          compressed vertically by the v0 overrides in global.css. */}
       <div className='tc-row is-one'>
         <div className='tc-cell' data-reveal>
-          <figure className='tcp-quote'>
-            <blockquote cite='https://x.com/theo/status/2008302190168019187'>
-              <p>Every once in awhile, I see a snippet of code that makes me a bit emotional.</p>
-              <p>
-                Now is one of those moments. Internationalization went from &ldquo;$%!#
-                this&rdquo; to &ldquo;trivial&rdquo;.
-              </p>
-            </blockquote>
-            <figcaption>
-              <b>Theo</b>
-              <span>CEO, T3 Chat</span>
-              <a href='https://x.com/theo/status/2008302190168019187' rel='noreferrer' target='_blank'>
-                x.com/theo
-              </a>
-            </figcaption>
+          <figure className='tcpq-mat'>
+            <div className='tcpq-plate'>
+              <div className='tcpq-meta'>
+                <a
+                  href='https://x.com/theo/status/2008302190168019187'
+                  rel='noreferrer'
+                  target='_blank'
+                >
+                  x.com/theo
+                  <ArrowUpRight aria-hidden />
+                </a>
+              </div>
+              <blockquote className='tcpq-quote'>
+                <p>Every once in awhile, I see a snippet of code that makes me a bit emotional.</p>
+                <p>
+                  Now is one of those moments. Internationalization went from <em>&ldquo;$%!#
+                  this&rdquo;</em> to <em>&ldquo;trivial&rdquo;</em>.
+                </p>
+              </blockquote>
+              <figcaption className='tcpq-attr'>
+                <img
+                  alt='Theo'
+                  className='tcpq-face'
+                  height={48}
+                  loading='lazy'
+                  src='/brand/theo.png'
+                  width={48}
+                />
+                <span className='tcpq-who'>
+                  <span className='tcpq-name'>Theo</span>
+                  <span className='tcpq-role'>CEO, T3 Chat</span>
+                </span>
+                <a
+                  href='https://x.com/theo/status/2008302190168019187'
+                  rel='noreferrer'
+                  target='_blank'
+                >
+                  View the post
+                  <ArrowUpRight aria-hidden />
+                </a>
+              </figcaption>
+            </div>
           </figure>
         </div>
       </div>

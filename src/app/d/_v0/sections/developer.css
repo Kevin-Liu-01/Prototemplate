@@ -5,6 +5,53 @@
    every structural line. One artifact, one stylesheet.
    ============================================================ */
 
+/* The section sheet: 2 columns, the merged problem cell spanning both
+   rows on the left. The grid's 1px hair gaps ARE the internal seams —
+   drawn once by the row's ground, exactly the framed-row mat grammar. */
+.toolchain-root .v0-dev-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+}
+
+/* bento content shares the header's left rule: the cards trade their
+   own pad for the section gutter */
+.toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card {
+  padding-inline: var(--tc-gut);
+}
+
+.toolchain-root .v0-dev-grid > .v0-dev-span {
+  grid-row: span 2;
+}
+
+/* the two artifacts share the tall cell: measured widths above, the
+   mirrored form pinned to the cell's floor so the pair spends the whole
+   column (the span-2 cell's slack lands between them, not under them) */
+.toolchain-root .v0-dev-mirror {
+  margin-top: auto;
+  padding-top: clamp(30px, 3.4vw, 46px);
+}
+
+/* the mirrored panels speak for themselves — the dir captions retire */
+.toolchain-root .v0-dev-mirror .lang-rm-dir {
+  display: none;
+}
+
+/* the panels themselves grow into the freed height */
+.toolchain-root .v0-dev-mirror .lang-rm-panel {
+  min-height: 190px;
+}
+
+@media (max-width: 1000px) {
+  .toolchain-root .v0-dev-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .v0-dev-grid > .v0-dev-span {
+    grid-row: auto;
+  }
+}
+
 /* The 2×2 ledger: the PARENT owns the internal seams (nth-child
    border sides drawn once), the cell's card owns the outer frame —
    the ledger itself draws no perimeter. */

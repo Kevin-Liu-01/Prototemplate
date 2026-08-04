@@ -44,13 +44,19 @@
 
 .toolchain-root .tcb .v0-stack-fig {
   position: sticky;
-  top: clamp(72px, 12vh, 128px);
+  /* seated low enough that the tower composes against the centered
+     beat copy instead of hugging the band's top — every extra px here
+     costs the pin one px of runway, so it moves with the beat
+     min-height above */
+  top: clamp(96px, 14vh, 148px);
   display: flex;
   justify-content: center;
   /* the top pad floors at 42px — above the tower's biggest rise
      (LIFT + OPEN, 38px), so an opened stack never clips against the
-     cell's overflow */
-  padding: clamp(42px, 3.4vw, 48px) 24px clamp(28px, 3.4vw, 48px);
+     cell's overflow. The whole figure is kept SHORT on purpose: its
+     height plus the sticky offset must fit inside the column's
+     travel, or the pin dies before the last beat (the frac-0.8 bug). */
+  padding: clamp(42px, 3.4vw, 46px) 20px clamp(20px, 2.2vw, 24px);
 }
 
 /* ---------- the solid tower ----------
@@ -65,7 +71,10 @@
 
 .toolchain-root .tcb .v0-stack-tower {
   position: relative;
-  width: min(100%, 360px);
+  /* the width bounds the tower's HEIGHT (aspect-locked), and the
+     height bounds how long the figure can stay pinned — grow this
+     and the pin dies before the fourth beat */
+  width: min(100%, 420px);
 }
 
 .toolchain-root .tcb .v0s-slab {
@@ -79,6 +88,23 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* the connective thread's overlay: one SVG spanning the whole frame,
+   behind every plate (the slabs' z-indices start at 1) */
+.toolchain-root .tcb .v0s-railsvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* the doubled vertical rail — two real 1px strokes at constant gauge,
+   the original composition's circuitry */
+.toolchain-root .tcb .v0s-rail-line {
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 1;
 }
 
 /* the plate: opaque hull under three face fills, lit from the
@@ -105,10 +131,12 @@
 }
 
 /* the hairlines, each drawn once: silhouette rim, the one interior
-   front edge, and the top-face contour — the accent's only seat */
+   front edge, and the top-face contour — the accent's only seat. The
+   two alphas step brighter with depth (custom properties set per
+   plate by StackTower), the original stack's stroke voice. */
 .toolchain-root .tcb .v0s-rim {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.12);
+  stroke: rgba(255, 255, 255, var(--v0s-rim-a, 0.12));
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
@@ -121,19 +149,77 @@
 
 .toolchain-root .tcb .v0s-edge {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.14);
+  stroke: rgba(255, 255, 255, var(--v0s-edge-a, 0.14));
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
 
-/* the identifier on the front-left face — mono is sanctioned here
-   because these ARE system identifiers */
+/* the caption at each leader's end, left of the rail — mono is
+   sanctioned here because these ARE the stack's system layers */
 .toolchain-root .tcb .v0s-label {
   font-family: var(--tc-mono);
-  font-size: 8px;
+  font-size: 8.5px;
   letter-spacing: 0.08em;
   fill: rgba(255, 255, 255, 0.42);
   transition: fill 0.3s ease;
+}
+
+/* the tap: up the rail, a small-radius corner, out to the plate's
+   left vertex — static, like the original's; an active plate lifts
+   OFF its leader */
+.toolchain-root .tcb .v0s-leader {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 1;
+  transition: stroke 0.3s ease;
+}
+
+/* ---------- the top-face artifacts ----------
+   The per-stage miniatures from the toolchain stack, kept quiet:
+   flat marks and wires in the plate's own ink, two raised chips
+   (context's pair, and the runtime payload — the drawing's one
+   accent, dimmed until its beat). */
+.toolchain-root .tcb .v0s-g-mark {
+  fill: rgba(255, 255, 255, 0.13);
+  transition: fill 0.3s ease;
+}
+
+/* the quieter second voice: output lines, secondary rows */
+.toolchain-root .tcb .v0s-g-mark-dim {
+  fill: rgba(255, 255, 255, 0.07);
+  transition: fill 0.3s ease;
+}
+
+/* the Locadex mark on the agents slab, in the plate's own ink until
+   its beat lets the accent pick it out */
+.toolchain-root .tcb .v0s-g-ldx {
+  fill: rgba(255, 255, 255, 0.3);
+  transition: fill 0.3s ease;
+}
+
+.toolchain-root .tcb .v0s-g-chip-hull {
+  fill: #1a1a1a;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 0.6;
+  transition:
+    fill 0.3s ease,
+    stroke 0.3s ease;
+}
+
+.toolchain-root .tcb .v0s-g-chip-top {
+  fill: #222222;
+  transition: fill 0.3s ease;
+}
+
+/* the payload chip: accent-tinted faces under an accent contour,
+   at half strength until the runtime slab's beat lights it */
+.toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-hull {
+  fill: color-mix(in srgb, var(--iso-accent) 14%, #101010);
+  stroke: color-mix(in srgb, var(--iso-accent) 45%, transparent);
+}
+
+.toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-top {
+  fill: color-mix(in srgb, var(--iso-accent) 26%, #101010);
 }
 
 /* the hot slab: full ink, brighter rim, and the accent — top edge
@@ -162,8 +248,45 @@
   stroke: var(--iso-accent);
 }
 
-.toolchain-root .tcb .v0s-slab.is-hot .v0s-label {
+/* the hot plate's tap and caption take the accent with it */
+.toolchain-root .tcb .v0s-tap.is-hot .v0s-label {
   fill: var(--iso-accent);
+}
+
+.toolchain-root .tcb .v0s-tap.is-hot .v0s-leader {
+  stroke: color-mix(in srgb, var(--iso-accent) 75%, transparent);
+}
+
+/* the hot slab's artwork lifts to full ink; the payload chip takes
+   the whole accent */
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark {
+  fill: rgba(255, 255, 255, 0.42);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark-dim {
+  fill: rgba(255, 255, 255, 0.2);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-ldx {
+  fill: var(--iso-accent);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-hull {
+  fill: #232323;
+  stroke: rgba(255, 255, 255, 0.28);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-top {
+  fill: #2e2e2e;
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip.is-accent .v0s-g-chip-hull {
+  fill: color-mix(in srgb, var(--iso-accent) 24%, #101010);
+  stroke: var(--iso-accent);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip.is-accent .v0s-g-chip-top {
+  fill: color-mix(in srgb, var(--iso-accent) 42%, #101010);
 }
 
 /* ---------- the copy rail: four beats, bottom of the stack first.
@@ -182,16 +305,18 @@
 
 .toolchain-root .tcb .v0-stack-beat {
   flex: 1;
-  min-height: clamp(190px, 32vh, 296px);
+  /* taller beats than the copy needs, on purpose: the rail is the
+     sticky figure's runway — four of these must outrun the figure's
+     height by enough that the pin holds through the last beat. The
+     copy centers in each window, so the reader meets it mid-viewport
+     beside the pinned figure; the beats separate by rhythm alone, no
+     dividers (founder round 6). */
+  min-height: clamp(250px, 42vh, 420px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: clamp(24px, 3vw, 40px) clamp(22px, 2.6vw, 36px);
   transition: opacity 0.32s ease;
-}
-
-.toolchain-root .tcb .v0-stack-beat + .v0-stack-beat {
-  border-top: 1px solid var(--tcb-rule);
 }
 
 /* the spotlight: JS-managed classes, so the static (reduced-motion)
@@ -262,7 +387,7 @@
   }
 
   .toolchain-root .tcb .v0-stack-tower {
-    width: min(100%, 300px);
+    width: min(100%, 330px);
   }
 
   .toolchain-root .tcb .v0-stack-beat {

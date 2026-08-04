@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import LocaleRouting from '@/app/d/toolchain/diagrams/LocaleRouting';
 import RtlMirror from '@/app/d/toolchain/diagrams/lang/RtlMirror';
-import SentenceWidth from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
+import SentenceWidth, { SENTENCE_SAMPLES } from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { BentoCell } from '@/components/shell/Bento';
 
@@ -89,7 +89,16 @@ const LEDGER_PANELS: readonly LedgerPanel[] = [
  * locale Intl ledger is v0-authored, and it lives inside a framed cell like
  * any other artifact.
  */
-export default function V0Developer() {
+type V0DeveloperProps = {
+  /** The non-terminal home re-heads this beat as "Localization is complex." */
+  heading?: string;
+  sub?: string;
+};
+
+export default function V0Developer({
+  heading = 'Built for the world’s developers.',
+  sub = 'General Translation handles all the infrastructure, so you no longer need to think about localization.',
+}: V0DeveloperProps) {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
 
@@ -97,40 +106,36 @@ export default function V0Developer() {
     <section className='tc-sec v0-dev' id='developers' ref={root}>
       <div className='tc-head'>
         <Braces className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>Built for developers.</h2>
-        <p data-reveal>
-          General Translation handles all the infrastructure, so you no longer need to think about
-          localization.
-        </p>
+        <h2 data-reveal>{heading}</h2>
+        <p data-reveal>{sub}</p>
       </div>
 
-      {/* ---- row 1: the problem — width, then orientation ---- */}
-      <div className='tc-row is-lead' data-eq-heads>
+      {/* ---- one 2×2 sheet: the merged problem cell spans both rows on the
+           left (the Figma's own combined bento, its copy verbatim); the
+           branches ledger sits top-right, the routes beneath it. The grid
+           owns every internal seam through its 1px hair gaps. ---- */}
+      <div className='tc-row v0-dev-grid'>
         <BentoCell
-          cell='is-tall is-framed'
-          title='Every locale is a different length'
-          sub='One button in four languages, measured by the browser rather than estimated. German runs long, Japanese runs short, and Arabic re-anchors the whole line.'
+          cell='is-framed v0-dev-span'
+          title='Every locale is a different length. Some change your entire orientation.'
+          sub='GT renders components correctly for every locale.'
         >
           <div className='tc-lang is-lead'>
-            <SentenceWidth title='The same sentence measured in English, German, Japanese and Arabic' />
+            <SentenceWidth
+              samples={[
+                ...SENTENCE_SAMPLES,
+                { tag: 'he', name: 'עברית', lang: 'he', rtl: true, text: 'שמור שינויים', hint: '−18%' },
+              ]}
+              title='The same sentence measured in English, German, Japanese, Arabic and Hebrew'
+            />
           </div>
-        </BentoCell>
-
-        <BentoCell
-          cell='is-tall is-framed'
-          title='Some change your entire orientation'
-          sub='GT renders components correctly for every locale — under an RTL locale the whole component mirrors, not just the words.'
-        >
-          <div className='tc-lang'>
+          <div className='tc-lang v0-dev-mirror'>
             <RtlMirror title='The same form mirrored under an RTL locale' />
           </div>
         </BentoCell>
-      </div>
 
-      {/* ---- row 2: the branches, then the routes ---- */}
-      <div className='tc-row is-lead' data-eq-heads>
         <BentoCell
-          cell='is-tall is-framed'
+          cell='is-framed'
           title='Every locale uses different numbers, currencies, dates, plurals, and more'
           sub='GT handles every possible branch and edge case.'
         >
@@ -156,7 +161,7 @@ export default function V0Developer() {
         </BentoCell>
 
         <BentoCell
-          cell='is-tall is-framed'
+          cell='is-framed'
           title='Every locale needs to be routed correctly'
           sub='GT automatically routes your users to the correct SEO-friendly URL path — localizing in French means translating both the pathname and the page.'
         >

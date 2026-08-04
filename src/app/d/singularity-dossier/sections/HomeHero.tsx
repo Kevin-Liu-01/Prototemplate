@@ -4,7 +4,14 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 
 import { ArrowRight, Eye, TerminalSquare } from 'lucide-react';
-import { useRef, useState, type ComponentType, type CSSProperties } from 'react';
+import {
+  Fragment,
+  useRef,
+  useState,
+  type ComponentType,
+  type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 
 import {
   SiNextdotjs,
@@ -136,51 +143,118 @@ const ROWS: readonly Row[] = [
 ];
 
 /* ------------------------------------------------------------------
-   The preview face: the same three strings rendered as UI — heading,
-   button, toast — plus the demo copy's first sentence, in all five
-   locales the run writes to public/_gt (the terminal's own glob order).
-   Dates are real Intl output at render time, from a fixed day so server
-   and client agree.
+   The preview face: the run's strings rendered as the product page
+   they ship to — a small localized SaaS screen (in-app chrome, a
+   greeting, live figures, the button and toast the transcript just
+   translated), in all five locales the run writes to public/_gt.
+   English sources: 'Overview' / 'Payments' / 'Reports' · 'Welcome
+   back' · 'Your account activity this week.' · 'Revenue' /
+   'Invoices' / 'Next payout' · 'Get started' · 'Payment received'.
    ------------------------------------------------------------------ */
 
 type PreviewLoc = 'es' | 'fr' | 'ja' | 'de' | 'zh';
 
 const PREVIEW_LOCS: readonly PreviewLoc[] = ['es', 'fr', 'ja', 'de', 'zh'];
 
-const PREVIEWS: Record<PreviewLoc, { title: string; body: string; button: string; toast: string }> = {
+type PreviewCopy = {
+  nav: readonly [string, string, string];
+  heading: string;
+  sub: string;
+  revenue: string;
+  invoices: string;
+  payout: string;
+  button: string;
+  toast: string;
+};
+
+const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
   es: {
-    title: '¡Hola, mundo!',
-    body: 'General Translation crea infraestructura full-stack para localizar apps, documentación y sitios web.',
+    nav: ['Resumen', 'Pagos', 'Informes'],
+    heading: 'Hola de nuevo',
+    sub: 'La actividad de tu cuenta esta semana.',
+    revenue: 'Ingresos',
+    invoices: 'Facturas',
+    payout: 'Próximo pago',
     button: 'Comenzar ahora',
     toast: 'Pago recibido',
   },
   fr: {
-    title: 'Bonjour le monde !',
-    body: 'General Translation construit une infrastructure full-stack pour localiser applications, documentation et sites web.',
+    nav: ['Aperçu', 'Paiements', 'Rapports'],
+    heading: 'Bon retour',
+    sub: 'L’activité de votre compte cette semaine.',
+    revenue: 'Revenus',
+    invoices: 'Factures',
+    payout: 'Prochain virement',
     button: 'Commencer',
     toast: 'Paiement reçu',
   },
   ja: {
-    title: 'こんにちは、世界！',
-    body: 'General Translationは、アプリ、ドキュメント、Webサイトをローカライズするためのフルスタックインフラを構築しています。',
+    nav: ['概要', '支払い', 'レポート'],
+    heading: 'おかえりなさい',
+    sub: '今週のアカウントのアクティビティです。',
+    revenue: '売上',
+    invoices: '請求書',
+    payout: '次回の入金',
     button: '始める',
     toast: '支払いを受領しました',
   },
   de: {
-    title: 'Hallo, Welt!',
-    body: 'General Translation entwickelt Full-Stack-Infrastruktur für die Lokalisierung von Apps, Dokumentation und Websites.',
+    nav: ['Übersicht', 'Zahlungen', 'Berichte'],
+    heading: 'Willkommen zurück',
+    sub: 'Ihre Kontoaktivität in dieser Woche.',
+    revenue: 'Umsatz',
+    invoices: 'Rechnungen',
+    payout: 'Nächste Auszahlung',
     button: 'Jetzt starten',
     toast: 'Zahlung erhalten',
   },
   zh: {
-    title: '你好，世界！',
-    body: 'General Translation 为应用、文档和网站的本地化构建全栈基础设施。',
+    nav: ['概览', '付款', '报表'],
+    heading: '欢迎回来',
+    sub: '您的账户本周动态。',
+    revenue: '收入',
+    invoices: '发票',
+    payout: '下次结算',
     button: '立即开始',
     toast: '已收到付款',
   },
 };
 
-const PREVIEW_DATE = new Date(2026, 6, 30);
+/** The one line the living-file loop re-edits: a second plausible wording
+    for the button per locale — the demo alternates between the two. */
+const BUTTON_ALTS: Record<PreviewLoc, string> = {
+  es: 'Empezar ahora',
+  fr: 'Démarrer',
+  ja: '今すぐ始める',
+  de: 'Loslegen',
+  zh: '开始使用',
+};
+
+/** The stat figures: REAL Intl output per locale — local currency, local
+    grouping, local date order — from fixed inputs so server and client
+    render the same characters. */
+const REVENUE: Record<PreviewLoc, { currency: string; amount: number }> = {
+  es: { currency: 'EUR', amount: 48250 },
+  fr: { currency: 'EUR', amount: 48250 },
+  ja: { currency: 'JPY', amount: 7480000 },
+  de: { currency: 'EUR', amount: 48250 },
+  zh: { currency: 'CNY', amount: 342800 },
+};
+
+const INVOICE_COUNT = 1284;
+const PAYOUT_DATE = new Date(2026, 7, 12);
+
+const fmtRevenue = (loc: PreviewLoc) =>
+  new Intl.NumberFormat(loc, {
+    style: 'currency',
+    currency: REVENUE[loc].currency,
+    maximumFractionDigits: 0,
+  }).format(REVENUE[loc].amount);
+
+const fmtInvoices = (loc: PreviewLoc) => new Intl.NumberFormat(loc).format(INVOICE_COUNT);
+
+const fmtPayout = (loc: PreviewLoc) =>
+  new Intl.DateTimeFormat(loc, { dateStyle: 'medium' }).format(PAYOUT_DATE);
 
 /* ------------------------------------------------------------------
    The payload under the render: the hashed-key JSON `gt translate`
@@ -188,41 +262,175 @@ const PREVIEW_DATE = new Date(2026, 6, 30);
    the source resolves to the translated string, JSX trees keep their
    structure and only the leaves change). Keys are constant across
    locales because they hash the SOURCE. The slide-to-reveal divider
-   pulls the rendered card back to this artifact.
+   pulls the rendered page back to this artifact, and each component's
+   inspector mark names the key its string ships under.
    ------------------------------------------------------------------ */
 
 const HASHES = {
-  title: '039ccefb7f335e27',
+  navOverview: '8c31f0a2b9d47e15',
+  navPayments: 'e5a9c2481f7b03d6',
+  navReports: '4b7de8a20c91f356',
+  heading: 'd41a7c09e82b5f36',
+  sub: '7f8e2c5a90d1b463',
+  revenue: '2a64d90e7c15fb38',
+  invoices: 'c093f7b1e6a2854d',
+  payout: '5e1ba4f68d20c793',
   button: '32b8f2a917c40de6',
   toast: 'b54ce01d97f2a683',
-  body: 'df0269bad214a097',
 } as const;
 
+/* ------------------------------------------------------------------
+   The rewrite ledger: every localized line the locale switch retypes,
+   in document order — the stagger walks the page top to bottom.
+   ------------------------------------------------------------------ */
+
+type RwKey =
+  | 'addr'
+  | 'nav0'
+  | 'nav1'
+  | 'nav2'
+  | 'heading'
+  | 'sub'
+  | 'revenue'
+  | 'invoices'
+  | 'payout'
+  | 'button'
+  | 'toast';
+
+const RW_LINES: readonly { key: RwKey; read: (loc: PreviewLoc) => string }[] = [
+  { key: 'addr', read: (loc) => loc },
+  { key: 'nav0', read: (loc) => PREVIEWS[loc].nav[0] },
+  { key: 'nav1', read: (loc) => PREVIEWS[loc].nav[1] },
+  { key: 'nav2', read: (loc) => PREVIEWS[loc].nav[2] },
+  { key: 'heading', read: (loc) => PREVIEWS[loc].heading },
+  { key: 'sub', read: (loc) => PREVIEWS[loc].sub },
+  { key: 'revenue', read: (loc) => PREVIEWS[loc].revenue },
+  { key: 'invoices', read: (loc) => PREVIEWS[loc].invoices },
+  { key: 'payout', read: (loc) => PREVIEWS[loc].payout },
+  { key: 'button', read: (loc) => PREVIEWS[loc].button },
+  { key: 'toast', read: (loc) => PREVIEWS[loc].toast },
+];
+
+/** The inspector ids: which payload key each component's string ships
+    under — the bridge between the rendered page and the file below it. */
+const INS_IDS: Readonly<Partial<Record<RwKey, string>>> = {
+  nav0: HASHES.navOverview,
+  nav1: HASHES.navPayments,
+  nav2: HASHES.navReports,
+  heading: HASHES.heading,
+  sub: HASHES.sub,
+  revenue: HASHES.revenue,
+  invoices: HASHES.invoices,
+  payout: HASHES.payout,
+  button: HASHES.button,
+  toast: HASHES.toast,
+};
+
+/** A component's inspector mark: the quiet exclamation at its top-right.
+    Hover/focus outlines the component and raises a chip naming the payload
+    key its string ships under. CLICK (or Enter/Space — it is a real
+    button) pins it: the seam rolls open and the matching JSON row lifts;
+    clicking again, clicking elsewhere, or Escape dismisses. The mark is a
+    SIBLING of the rewriting text node, never its child — the typing
+    engine writes textContent, which would erase any nested DOM. */
+function InsMark({
+  id,
+  on,
+  pin,
+  onEnter,
+  onLeave,
+  onToggle,
+}: {
+  id: string;
+  on: boolean;
+  pin: boolean;
+  onEnter: () => void;
+  onLeave: () => void;
+  onToggle: () => void;
+}) {
+  return (
+    <>
+      <button
+        type='button'
+        className='sgdh-ins-mark'
+        data-pin={pin || undefined}
+        aria-label={`String id ${id}`}
+        aria-expanded={pin}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+        onFocus={onEnter}
+        onBlur={onLeave}
+        onClick={onToggle}
+      >
+        !
+      </button>
+      {on ? (
+        <span className='sgdh-ins-chip' aria-hidden>
+          {id}
+        </span>
+      ) : null}
+    </>
+  );
+}
+
 /** One locale's _gt payload, tokenized with the plate's own restraint:
-    keys dim, punctuation faint, translated leaves lit. */
-function PayloadJson({ loc }: { loc: PreviewLoc }) {
+    keys dim, punctuation faint, translated leaves lit. Every row carries
+    its key as data-key; `hl` lifts the one row a pinned inspector points
+    at. The button's value carries the live-edit slot (a bare text node
+    plus caret) that the edit loop retypes in step with the rendered
+    button above it. */
+function PayloadJson({ loc, hl }: { loc: PreviewLoc; hl?: string }) {
   const p = PREVIEWS[loc];
   const K = ({ k }: { k: string }) => <span className='pl-k'>&quot;{k}&quot;</span>;
   const S = ({ s }: { s: string }) => <span className='pl-s'>&quot;{s}&quot;</span>;
+  const flat: readonly (readonly [string, string])[] = [
+    [HASHES.navOverview, p.nav[0]],
+    [HASHES.navPayments, p.nav[1]],
+    [HASHES.navReports, p.nav[2]],
+    [HASHES.heading, p.heading],
+    [HASHES.revenue, p.revenue],
+    [HASHES.invoices, p.invoices],
+    [HASHES.payout, p.payout],
+  ];
   return (
     <pre className='tct-payload-code'>
-      {'{\n  '}
-      <K k={HASHES.title} />
-      {': '}
-      <S s={p.title} />
+      {'{\n'}
+      {flat.map(([k, s]) => (
+        <Fragment key={k}>
+          {'  '}
+          <span className='sgdh-pl-row' data-key={k} data-hl={hl === k || undefined}>
+            <K k={k} />
+            {': '}
+            <S s={s} />
+          </span>
+          {',\n'}
+        </Fragment>
+      ))}
+      {'  '}
+      <span className='sgdh-pl-row' data-key={HASHES.button} data-hl={hl === HASHES.button || undefined}>
+        <K k={HASHES.button} />
+        {': '}
+        <span className='pl-s'>
+          &quot;
+          <span data-edit-json>{p.button}</span>
+          <i className='tct-caret sgdh-json-caret' data-edit-caret aria-hidden />
+          &quot;
+        </span>
+      </span>
       {',\n  '}
-      <K k={HASHES.button} />
-      {': '}
-      <S s={p.button} />
+      <span className='sgdh-pl-row' data-key={HASHES.toast} data-hl={hl === HASHES.toast || undefined}>
+        <K k={HASHES.toast} />
+        {': '}
+        <S s={p.toast} />
+      </span>
       {',\n  '}
-      <K k={HASHES.toast} />
-      {': '}
-      <S s={p.toast} />
-      {',\n  '}
-      <K k={HASHES.body} />
-      {': { "c": [{\n    "c": '}
-      <S s={p.body} />
-      {',\n    "i": 5, "t": "p"\n  }] }\n}'}
+      <span className='sgdh-pl-row' data-key={HASHES.sub} data-hl={hl === HASHES.sub || undefined}>
+        <K k={HASHES.sub} />
+        {': { "c": [{ "c": '}
+        <S s={p.sub} />
+        {', "i": 5, "t": "p" }] }'}
+      </span>
+      {'\n}'}
     </pre>
   );
 }
@@ -267,16 +475,23 @@ const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
 
 export default function HomeHero() {
   const root = useRef<HTMLElement>(null);
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  /* the terminal window's two faces + the preview's locale */
-  const [view, setView] = useState<'term' | 'preview'>('term');
+  /* the terminal window's two faces + the preview's locale. The rendered
+     product page is the DEFAULT face — the first fold leads with what
+     shipping looks like; the transcript that produced it waits one seg
+     click away. Faces only ever change by hand: nothing on the page calls
+     setView except the seg's own pickView. */
+  const [view, setView] = useState<'term' | 'preview'>('preview');
   const [ploc, setPloc] = useState<PreviewLoc>('es');
   /* the stack strip's selection: what the wizard's Detected line reports */
   const [stack, setStack] = useState<Stack>(DEFAULT_STACK);
-  /* One guided pass flips to the preview and walks the locales; the first
-     manual interaction kills it for good — the reader has taken the controls. */
+  /* the open inspector: which component is naming its payload key. Hover
+     opens it transiently (rectangle + chip); a CLICK pins it — the seam
+     rolls open and the matching JSON row lifts until dismissed. */
+  const [ins, setIns] = useState<{ k: RwKey; pin: boolean } | null>(null);
+  const pinned = ins?.pin ? ins.k : null;
+  /* One guided pass walks the preview's locales; the first manual
+     interaction kills it for good — the reader has taken the controls. */
   const tour = useRef<gsap.core.Timeline | null>(null);
   const endTour = () => {
     tour.current?.kill();
@@ -290,13 +505,35 @@ export default function HomeHero() {
     endTour();
     setPloc(next);
   };
-  /* Picking a stack is a request to SEE the detection change, so the window
-     hands the terminal face back if the tour had flipped it to the preview. */
+  /* Picking a stack re-aims the wizard's Detected line. It deliberately
+     does NOT switch faces — the reader alone flips the seg. */
   const pickStack = (next: Stack) => {
     endTour();
-    setView('term');
     setStack(next);
   };
+  const insProps = (k: RwKey) => ({
+    id: INS_IDS[k] ?? '',
+    on: ins?.k === k,
+    pin: pinned === k,
+    /* hover never steals an open pin; unpinning falls back to hover state
+       (the pointer is still on the mark), so the rectangle stays honest */
+    onEnter: () => setIns((cur) => (cur?.pin || cur?.k === k ? cur : { k, pin: false })),
+    onLeave: () => setIns((cur) => (cur && !cur.pin && cur.k === k ? null : cur)),
+    onToggle: () => setIns((cur) => (cur?.pin && cur.k === k ? { k, pin: false } : { k, pin: true })),
+  });
+  /* The WHOLE component is the inspector's hit target — hovering anywhere
+     on it raises the rectangle + chip, clicking anywhere on it pins (the
+     mark stays the visual cue and the keyboard control; these wrappers
+     are plain elements, so no button ever nests inside a button). Clicks
+     that land on the mark itself are left to the mark's own toggle. */
+  const insBox = (k: RwKey) => ({
+    onMouseEnter: () => setIns((cur) => (cur?.pin || cur?.k === k ? cur : { k, pin: false })),
+    onMouseLeave: () => setIns((cur) => (cur && !cur.pin && cur.k === k ? null : cur)),
+    onClick: (e: ReactMouseEvent<HTMLElement>) => {
+      if (e.target instanceof Element && e.target.closest('.sgdh-ins-mark')) return;
+      setIns((cur) => (cur?.pin && cur.k === k ? { k, pin: false } : { k, pin: true }));
+    },
+  });
 
   /* ---- the slide-to-reveal cut ----
      Lives in a CSS var on the app card, so the seam's own drag/keys and
@@ -313,13 +550,6 @@ export default function HomeHero() {
     const next = Math.min(100, Math.max(0, pct));
     el.style.setProperty('--seam-cut', `${next}%`);
     el.querySelector('.tc-seam')?.setAttribute('aria-valuenow', String(Math.round(next)));
-  };
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx gt@latest');
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
   };
 
   useGSAP(
@@ -342,9 +572,10 @@ export default function HomeHero() {
       /* ---- the terminal session replays ----
          The DOM is complete before any tween runs (every animation is a
          `from`), so reduced motion and the no-JS still both show the whole
-         finished transcript. The replay settles inside ~2.5s: any screenshot
-         taken three seconds in reads as a finished run, completion line,
-         timing and all. */
+         finished transcript. The face starts hidden behind the preview,
+         but the replay still runs beneath it and settles inside ~2.5s —
+         whenever the reader flips the seg to Terminal they find a
+         finished run, completion line, timing and all. */
       const counter = (sel: string, to: number, duration: number, decimals: number) => {
         const el = root.current?.querySelector<HTMLElement>(sel);
         if (!el) return gsap.to({}, { duration: 0 });
@@ -392,22 +623,20 @@ export default function HomeHero() {
         }
       }
 
-      /* ---- one guided pass through the preview ----
-         After the run settles — and after the finished transcript has owned
-         the window long enough to be the first fold's still — the window
-         shows the result as UI once, es → ja → de, then hands the terminal
-         back. Any manual input kills this timeline before it acts. */
+      /* ---- one guided pass through the locales ----
+         The preview IS the first fold now, so the tour never touches the
+         seg: after the es page has owned the window long enough to be the
+         first fold's still, it walks the locales — es → ja → de — each
+         step retyping the page line by line, and rests where it lands.
+         It never switches faces; only the reader's own seg click does.
+         Any manual input kills this timeline before it acts. */
       const guided = gsap.timeline({ delay: run.duration() + 4.2 });
       guided
-        .call(() => setView('preview'))
-        .to({}, { duration: 2.1 })
         .call(() => setPloc('ja'))
-        .to({}, { duration: 2.1 })
+        .to({}, { duration: 2.4 })
         .call(() => setPloc('de'))
-        .to({}, { duration: 2.3 })
+        .to({}, { duration: 2.4 })
         .call(() => {
-          setView('term');
-          setPloc('es');
           tour.current = null;
         });
       tour.current = guided;
@@ -684,16 +913,130 @@ export default function HomeHero() {
     { scope: root }
   );
 
-  /* The preview strings re-settle when the locale changes — a short rise from
-     dim, never a crossfade of two scripts. Skipped under reduced motion. */
+  /* ---- language switching rewrites the page, line by line ----
+     When the locale changes, every localized line deletes the string it
+     was showing and types the new one — staggered top to bottom, the
+     whole swap inside ~0.9s (the ReviewWorkspace character-slice
+     pattern). React has already stamped the new locale's full strings
+     into the DOM by the time this layout effect runs, so each line is
+     first restored to what it actually displayed — the `shown` ledger.
+     Interrupts leave partials in that ledger, and the partial is what
+     the next swap deletes: never a torn splice. Slicing is by code
+     points and every line stays ONE text node — no per-character spans,
+     so CJK shaping and direction are untouched. The Intl figures and
+     the payload pane swap as numerals should: no typing, one rise in
+     step. Reduced motion keeps React's own instant swap. */
+  const shown = useRef<Partial<Record<RwKey, string>>>({});
+  const prevLoc = useRef<PreviewLoc>(ploc);
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      gsap.fromTo(
-        '[data-swap]',
-        { autoAlpha: 0.25 },
-        { autoAlpha: 1, duration: 0.32, ease: 'power1.out' }
-      );
+      const scope = root.current;
+      if (!scope) return;
+      const prev = prevLoc.current;
+      prevLoc.current = ploc;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const lineEl = (key: RwKey) => scope.querySelector<HTMLElement>(`[data-rw='${key}']`);
+
+      if (prev === ploc || reduced) {
+        /* first paint, or an instant swap: React's render is the truth */
+        RW_LINES.forEach(({ key, read }) => {
+          shown.current[key] = read(ploc);
+        });
+      } else {
+        const tl = gsap.timeline({ defaults: { ease: 'none' } });
+        RW_LINES.forEach(({ key, read }, i) => {
+          const el = lineEl(key);
+          if (!el) return;
+          const from = Array.from(shown.current[key] ?? read(prev));
+          const to = Array.from(read(ploc));
+          const write = (s: string) => {
+            el.textContent = s;
+            shown.current[key] = s;
+          };
+          /* restore the pre-swap text before paint, then animate */
+          write(from.join(''));
+          const at = i * 0.05;
+          const dial = { n: from.length };
+          tl.to(
+            dial,
+            {
+              n: 0,
+              duration: gsap.utils.clamp(0.06, 0.12, from.length * 0.01),
+              ease: 'power1.in',
+              onUpdate: () => write(from.slice(0, Math.round(dial.n)).join('')),
+            },
+            at
+          );
+          tl.to(
+            dial,
+            {
+              n: to.length,
+              duration: gsap.utils.clamp(0.14, 0.3, to.length * 0.016),
+              onUpdate: () => write(to.slice(0, Math.round(dial.n)).join('')),
+            },
+            '>+0.02'
+          );
+        });
+        tl.fromTo(
+          '[data-rwf]',
+          { autoAlpha: 0.15 },
+          { autoAlpha: 1, duration: 0.3, ease: 'power1.out', stagger: 0.05, immediateRender: false },
+          0.1
+        );
+      }
+
+      if (reduced) return;
+
+      /* ---- the living file: the JSON edits itself, the page follows ----
+         On a quiet cadence one value line in the payload is re-edited in
+         place — the caret rises, the translated string deletes and
+         retypes to a second plausible wording, then back next cycle —
+         and the rendered button rewrites in the SAME tween: one dial
+         writes both text nodes, so the file and the UI can never
+         disagree. Registered in this effect so a locale switch kills it
+         cleanly and rebuilds it with the new locale's pair. */
+      const ui = lineEl('button');
+      const js = scope.querySelector<HTMLElement>('[data-edit-json]');
+      const caret = scope.querySelector<HTMLElement>('[data-edit-caret]');
+      if (!ui || !js || !caret) return;
+      const writeBoth = (s: string) => {
+        ui.textContent = s;
+        js.textContent = s;
+        shown.current.button = s;
+      };
+      const editSwap = (tl: gsap.core.Timeline, fromS: string, toS: string, at: number | string) => {
+        const from = Array.from(fromS);
+        const to = Array.from(toS);
+        const dial = { n: from.length };
+        tl.set(caret, { autoAlpha: 1 }, at);
+        tl.to(
+          dial,
+          {
+            n: 0,
+            duration: Math.max(0.3, from.length * 0.035),
+            ease: 'none',
+            onUpdate: () => writeBoth(from.slice(0, Math.round(dial.n)).join('')),
+          },
+          '>+0.4'
+        );
+        tl.to(
+          dial,
+          {
+            n: to.length,
+            duration: Math.max(0.4, to.length * 0.05),
+            ease: 'none',
+            onUpdate: () => writeBoth(to.slice(0, Math.round(dial.n)).join('')),
+          },
+          '>+0.3'
+        );
+        tl.to({}, { duration: 0.8 });
+        tl.set(caret, { autoAlpha: 0 });
+      };
+      /* first edit waits out the first-fold capture window (a still taken
+         ~3s in must show the resting page, not a half-typed button) */
+      const loop = gsap.timeline({ repeat: -1, delay: 4.9, repeatDelay: 5.5 });
+      editSwap(loop, PREVIEWS[ploc].button, BUTTON_ALTS[ploc], 0);
+      editSwap(loop, BUTTON_ALTS[ploc], PREVIEWS[ploc].button, '+=5.5');
     },
     { scope: root, dependencies: [ploc] }
   );
@@ -730,6 +1073,61 @@ export default function HomeHero() {
     { scope: root, dependencies: [view] }
   );
 
+  /* ---- a pinned inspector rolls the seam open ----
+     Clicking a mark drives the SAME dial RevealSeam's drag writes
+     (setCut: the --seam-cut var + the slider's aria-valuenow), tweened
+     from wherever the seam currently rests to a cut that exposes the
+     payload pane — so the highlighted row is readable the moment it
+     lifts. Dismissing eases the seam back to its 70/30 rest (the pane
+     was borrowed for inspection; the page face is the resting state).
+     Pin-to-pin switches keep the seam open and only move the highlight.
+     While pinned, Escape and any pointer-down outside a mark dismiss.
+     Reduced motion jump-cuts both ways. */
+  const wasPinned = useRef<RwKey | null>(null);
+  useGSAP(
+    () => {
+      const was = wasPinned.current;
+      wasPinned.current = pinned;
+      const el = app.current;
+      if (!el || Boolean(pinned) === Boolean(was)) return;
+      /* the reader is inspecting: the tour must not rewrite the row under
+         them, and the reveal intro must not re-roll a seam they now own */
+      endTour();
+      dragged.current = true;
+      const target = pinned ? 26 : 70;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setCut(target);
+      } else {
+        const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
+        const dial = { v: Number.isFinite(now) ? now : 70 };
+        gsap.to(dial, {
+          v: target,
+          duration: 0.6,
+          ease: 'power2.inOut',
+          onUpdate: () => setCut(dial.v),
+        });
+      }
+      if (!pinned) return;
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setIns(null);
+      };
+      const onDown = (e: PointerEvent) => {
+        const t = e.target;
+        /* clicks on any inspectable component (or the seam) are theirs to
+           handle — only truly-elsewhere pointer-downs dismiss the pin */
+        if (t instanceof Element && (t.closest('.sgdh-ins') || t.closest('.tc-seam'))) return;
+        setIns(null);
+      };
+      document.addEventListener('keydown', onKey);
+      document.addEventListener('pointerdown', onDown);
+      return () => {
+        document.removeEventListener('keydown', onKey);
+        document.removeEventListener('pointerdown', onDown);
+      };
+    },
+    { scope: root, dependencies: [pinned] }
+  );
+
   return (
     <section className='tc-sec tch-hero-sec' id='top' ref={root}>
       {/* The founder's stack: a genuine white card — radius 12, hairline edge,
@@ -738,11 +1136,6 @@ export default function HomeHero() {
       <div className='tc-hero tch-card'>
         {/* Two authored lines rather than a wrap: "Launch in / every language."
             — the accented word opens line two, on the hinge of the sentence. */}
-          <button className='tc-copy tch-npx-top' data-hero-in type='button' onClick={copy}>
-            <span>$ npx gt@latest</span>
-            <span>{copied ? 'Copied' : 'Copy'}</span>
-          </button>
-
         <h1 data-hero-in>
           <span>
             Launch in every{' '}
@@ -784,14 +1177,15 @@ export default function HomeHero() {
         <div className='tct-win' data-hero-in>
           <div className='tct-bar'>
             <span className='tct-title'>GT - Translate</span>
+            {/* Preview leads the seg — it is the window's default face */}
             <div className='tct-seg' role='group' aria-label='Show the run as'>
-              <button type='button' data-on={view === 'term'} onClick={() => pickView('term')}>
-                <TerminalSquare aria-hidden size={13} strokeWidth={1.8} />
-                Terminal
-              </button>
               <button type='button' data-on={view === 'preview'} onClick={() => pickView('preview')}>
                 <Eye aria-hidden size={13} strokeWidth={1.8} />
                 Preview
+              </button>
+              <button type='button' data-on={view === 'term'} onClick={() => pickView('term')}>
+                <TerminalSquare aria-hidden size={13} strokeWidth={1.8} />
+                Terminal
               </button>
             </div>
           </div>
@@ -916,7 +1310,8 @@ export default function HomeHero() {
               </div>
             </div>
 
-            {/* face 2 — the same strings, rendered */}
+            {/* face 2 — the default: the run's strings rendered as the
+                product page they ship to */}
             <div className='tct-face tct-face-prev' data-on={view === 'preview'} aria-hidden={view !== 'preview'}>
               <div className='tct-tabs' role='group' aria-label='Preview locale'>
                 {PREVIEW_LOCS.map((loc) => (
@@ -926,41 +1321,89 @@ export default function HomeHero() {
                 ))}
               </div>
 
-              {/* The rendered card carries the house slide-to-reveal: the
+              {/* The rendered page carries the house slide-to-reveal: the
                   payload gt wrote sits pinned full-width UNDER the render,
                   and the seam (the logo's doubled line, each thread in its
                   surface's own ink) only moves the clip boundary — dragging
-                  reveals the artifact in place, edge to edge. */}
-              <div className='tct-app' ref={app} style={{ '--seam-cut': '70%' } as CSSProperties}>
+                  reveals the artifact in place, edge to edge. Everything
+                  that matters clusters LEFT of the resting cut, so the
+                  payload's teaser strip never covers a line. */}
+              <div className='tct-app' ref={app} lang={ploc} style={{ '--seam-cut': '70%' } as CSSProperties}>
                 <div className='tct-app-addr'>
-                  example.com/<b data-swap>{ploc}</b>
+                  example.com/<b data-rw='addr'>{ploc}</b>
                 </div>
-                <div className='tct-app-main'>
-                  <h3 className='tct-app-h' data-swap lang={ploc}>
-                    {PREVIEWS[ploc].title}
-                  </h3>
-                  <p className='tct-app-date' data-swap>
-                    {new Intl.DateTimeFormat(ploc, { dateStyle: 'medium' }).format(PREVIEW_DATE)}
-                  </p>
-                  <p className='tct-app-copy' data-swap lang={ploc}>
-                    {PREVIEWS[ploc].body}
-                  </p>
-                  <span className='tct-app-btn' data-swap lang={ploc}>
-                    {PREVIEWS[ploc].button}
+
+                {/* the app's own chrome: wordmark + localized nav */}
+                <div className='sgdh-app-chrome'>
+                  <span className='sgdh-app-mark'>
+                    <i aria-hidden />
+                    Acme
                   </span>
-                  <div className='tct-app-toast' data-swap lang={ploc}>
+                  <nav className='sgdh-app-nav' aria-label='Product navigation'>
+                    <span className='sgdh-app-navi is-on sgdh-ins' data-ins-on={ins?.k === 'nav0' || undefined} {...insBox('nav0')}>
+                      <b data-rw='nav0'>{PREVIEWS[ploc].nav[0]}</b>
+                      <InsMark {...insProps('nav0')} />
+                    </span>
+                    <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav1' || undefined} {...insBox('nav1')}>
+                      <b data-rw='nav1'>{PREVIEWS[ploc].nav[1]}</b>
+                      <InsMark {...insProps('nav1')} />
+                    </span>
+                    <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav2' || undefined} {...insBox('nav2')}>
+                      <b data-rw='nav2'>{PREVIEWS[ploc].nav[2]}</b>
+                      <InsMark {...insProps('nav2')} />
+                    </span>
+                  </nav>
+                </div>
+
+                <div className='tct-app-main'>
+                  <h3 className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
+                    <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
+                    <InsMark {...insProps('heading')} />
+                  </h3>
+                  <p className='tct-app-copy sgdh-ins' data-ins-on={ins?.k === 'sub' || undefined} {...insBox('sub')}>
+                    <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
+                    <InsMark {...insProps('sub')} />
+                  </p>
+
+                  {/* the stats row: labels are payload strings, values are
+                      live Intl output — currency, count, date */}
+                  <dl className='sgdh-app-stats'>
+                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'revenue' || undefined} {...insBox('revenue')}>
+                      <dt data-rw='revenue'>{PREVIEWS[ploc].revenue}</dt>
+                      <dd data-rwf>{fmtRevenue(ploc)}</dd>
+                      <InsMark {...insProps('revenue')} />
+                    </div>
+                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'invoices' || undefined} {...insBox('invoices')}>
+                      <dt data-rw='invoices'>{PREVIEWS[ploc].invoices}</dt>
+                      <dd data-rwf>{fmtInvoices(ploc)}</dd>
+                      <InsMark {...insProps('invoices')} />
+                    </div>
+                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'payout' || undefined} {...insBox('payout')}>
+                      <dt data-rw='payout'>{PREVIEWS[ploc].payout}</dt>
+                      <dd data-rwf>{fmtPayout(ploc)}</dd>
+                      <InsMark {...insProps('payout')} />
+                    </div>
+                  </dl>
+
+                  <span className='tct-app-btn sgdh-ins' data-ins-on={ins?.k === 'button' || undefined} {...insBox('button')}>
+                    <span data-rw='button'>{PREVIEWS[ploc].button}</span>
+                    <InsMark {...insProps('button')} />
+                  </span>
+                  <div className='tct-app-toast sgdh-ins' data-ins-on={ins?.k === 'toast' || undefined} {...insBox('toast')}>
                     <i>✓</i>
-                    {PREVIEWS[ploc].toast}
+                    <span data-rw='toast'>{PREVIEWS[ploc].toast}</span>
+                    <InsMark {...insProps('toast')} />
                   </div>
                 </div>
 
-                <div className='tct-payload' data-swap aria-hidden>
+                <div className='tct-payload' data-rwf aria-hidden>
                   <div className='tct-payload-file'>public/_gt/{ploc}.json</div>
-                  <PayloadJson loc={ploc} />
+                  <PayloadJson loc={ploc} hl={pinned ? INS_IDS[pinned] : undefined} />
                 </div>
 
-                {/* the seam advertises itself until the reader has dragged once */}
-                <span aria-hidden className='tch-drag-hint' data-hide={hinted || undefined}>
+                {/* the seam advertises itself until the reader has dragged
+                    once — and steps aside while an inspector holds the pane */}
+                <span aria-hidden className='tch-drag-hint' data-hide={hinted || pinned !== null || undefined}>
                   ↔ drag
                 </span>
                 <RevealSeam
