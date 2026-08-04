@@ -29,16 +29,19 @@ import {
  * mask-rendered in the plate's ink.
  *
  * The original's connective thread is ported: a doubled vertical rail
- * (two 1px strokes at constant gauge) runs the built stack's height at
- * the plates' left, and each plate taps off it with a small-radius corner
- * leader that lands on the plate's left vertex — redrawn here in a
- * full-frame overlay SVG behind the slabs, never imported from DarkBand.
- * The plate labels live at the leaders' ends, left of the rail (a
- * 4-unit-thick plate can't carry face type) — the caption-column grammar
- * of the approved composition. Leaders and labels are static taps: an
- * active plate lifts OFF its leader, exactly as the original's planes
- * rose off theirs; the rail extends and retracts with the build, which
- * FullStack drives through RAIL_SCALE.
+ * (two 1px strokes at constant gauge) runs the FULL height of the frame
+ * at the plates' left — a static thread from the figure's top rule to
+ * its bottom rule (founder: the rail spans the diagram, the plates tap
+ * into it where they sit) — redrawn here in a full-frame overlay SVG
+ * behind the slabs, never imported from DarkBand. The frame carries no
+ * type: the plates' artwork identifies them and the copy rail names
+ * them (founder: no words by the diagram). Each plate taps off the rail
+ * with a small-radius corner leader that lands on its left vertex — a
+ * quiet static tap an active plate lifts OFF, exactly as the original's
+ * planes rose off theirs. The build's motion lives in the channel
+ * BETWEEN the rail's two strokes: an accent fill extends and retracts
+ * with the stack, which FullStack drives through RAIL_SCALE — between
+ * the hairlines, never on them, so no stroke is ever drawn twice.
  *
  * Each slab is its own absolutely-seated HTML element rather than a group
  * in one SVG: the scroll spotlight must put the active slab ABOVE its
@@ -53,16 +56,14 @@ import {
 export type TowerLayer = {
   /** Stable id, shared with the copy rail's beat→slab map. */
   id: string;
-  /** The beat's name, printed in mono at the leader's end. */
-  label: string;
 };
 
 /** Bottom slab first — the stack builds up from the codebase. */
 export const TOWER_LAYERS: readonly TowerLayer[] = [
-  { id: 'code', label: 'code' },
-  { id: 'context', label: 'context' },
-  { id: 'translations', label: 'translations' },
-  { id: 'agents', label: 'agents' },
+  { id: 'code' },
+  { id: 'context' },
+  { id: 'translations' },
+  { id: 'agents' },
 ];
 
 /* ---- the one plate every slab mounts ------------------------------------ */
@@ -84,10 +85,12 @@ const RIGHT = roundedPolygon(rightFace(BOX));
 const [FRONT_A, FRONT_B] = frontEdge(BOX);
 const FRONT = segment(FRONT_A, FRONT_B);
 
-/** Slab viewBox: the silhouette plus stroke air, plus the caption margin on
-    the left — rail, leaders, and labels live there, in the overlay. */
+/** Slab viewBox: the silhouette plus stroke air, plus the rail margin on
+    the left — the doubled rail and its leaders live there, in the overlay.
+    No caption column anymore (the labels are gone), so the margin is only
+    the rail's own air and the drawing spends the width on the plates. */
 const PAD = 2;
-const LEAD = 106;
+const LEAD = 30;
 const VIEW_X = -(SIZE * ISO_COS30 + PAD + LEAD);
 const VIEW_Y = -(HALF + THICK + PAD);
 const VIEW_W = 2 * (SIZE * ISO_COS30 + PAD) + LEAD;
@@ -104,8 +107,9 @@ const TOWER_H = (TOWER_LAYERS.length - 1) * STEP + VIEW_H;
 const VERTEX_X = -(SIZE * ISO_COS30);
 /** The doubled rail's inner line, left of the plates. */
 const RAIL_X = VERTEX_X - 22;
-/** The two rail strokes' spacing — the original's constant gauge. */
-const RAIL_GAUGE = 2.5;
+/** The two rail strokes' spacing — in the denser frame this renders at the
+    original composition's ~3.6px gauge (the units grew when LEAD shrank). */
+const RAIL_GAUGE = 1.85;
 /** The corner radius each leader turns with as it peels off the rail. */
 const CORNER = 6;
 
@@ -115,20 +119,21 @@ function tapY(i: number): number {
   return row * STEP + HALF + PAD;
 }
 
-/** The rail's feet: a short stub below the bottom tap, up to the top tap. */
+/** The accent channel's feet: a short stub below the bottom tap, up to the
+    top tap — the BUILT stack's span, inside the full-height static rail. */
 const RAIL_BOTTOM = tapY(0) + 10;
 const RAIL_TOP = tapY(TOWER_LAYERS.length - 1);
 
 /**
- * How much of the full rail is drawn when `count` slabs are built, as a
- * scaleY on the bottom-anchored rail group. FullStack tweens between these
- * as the stack builds and retracts.
+ * How much of the accent channel is filled when `count` slabs are built,
+ * as a scaleY on the bottom-anchored fill. FullStack tweens between these
+ * as the stack builds and retracts; the rail's strokes never move.
  */
 export const RAIL_SCALE: readonly number[] = TOWER_LAYERS.map(
   (_, i) => (RAIL_BOTTOM - tapY(i)) / (RAIL_BOTTOM - RAIL_TOP)
 );
 
-/** The GSAP svgOrigin the rail group scales from — its bottom end. */
+/** The GSAP svgOrigin the channel fill scales from — its bottom end. */
 export const RAIL_ORIGIN = `${RAIL_X} ${RAIL_BOTTOM}`;
 
 /** One tap: up the rail, a small-radius corner, then out to the vertex. */
@@ -284,48 +289,44 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
       aria-label={title}
       aria-hidden={title ? undefined : true}
     >
-      {/* the connective thread: the doubled rail and its taps, one overlay
-          SVG spanning the whole frame, behind every plate */}
+      {/* the connective thread: the doubled rail, its accent channel, and
+          the taps, one overlay SVG spanning the whole frame, behind every
+          plate. The two strokes run the frame's FULL height and never
+          move; only the channel between them and the taps animate. */}
       <svg className='v0s-railsvg' viewBox={`${VIEW_X} 0 ${VIEW_W} ${TOWER_H}`} aria-hidden>
-        <g data-rail-line>
-          <line
-            className='v0s-rail-line'
-            x1={RAIL_X}
-            y1={RAIL_BOTTOM}
-            x2={RAIL_X}
-            y2={RAIL_TOP}
+        <line
+          className='v0s-rail-line'
+          x1={RAIL_X}
+          y1={0}
+          x2={RAIL_X}
+          y2={TOWER_H}
+          vectorEffect='non-scaling-stroke'
+        />
+        <line
+          className='v0s-rail-line'
+          x1={RAIL_X - RAIL_GAUGE}
+          y1={0}
+          x2={RAIL_X - RAIL_GAUGE}
+          y2={TOWER_H}
+          vectorEffect='non-scaling-stroke'
+        />
+        <rect
+          className='v0s-rail-fill'
+          data-rail-line
+          x={RAIL_X - RAIL_GAUGE}
+          y={RAIL_TOP}
+          width={RAIL_GAUGE}
+          height={RAIL_BOTTOM - RAIL_TOP}
+        />
+        {TOWER_LAYERS.map((layer, i) => (
+          <path
+            key={layer.id}
+            className={born.has(i) ? 'v0s-leader is-hot' : 'v0s-leader'}
+            data-rail-tap={i}
+            d={tapPath(tapY(i))}
             vectorEffect='non-scaling-stroke'
           />
-          <line
-            className='v0s-rail-line'
-            x1={RAIL_X - RAIL_GAUGE}
-            y1={RAIL_BOTTOM}
-            x2={RAIL_X - RAIL_GAUGE}
-            y2={RAIL_TOP}
-            vectorEffect='non-scaling-stroke'
-          />
-        </g>
-        {TOWER_LAYERS.map((layer, i) => {
-          const y = tapY(i);
-          return (
-            <g
-              key={layer.id}
-              className={born.has(i) ? 'v0s-tap is-hot' : 'v0s-tap'}
-              data-rail-tap={i}
-            >
-              <path className='v0s-leader' d={tapPath(y)} vectorEffect='non-scaling-stroke' />
-              <text
-                className='v0s-label'
-                x={RAIL_X - RAIL_GAUGE - 8}
-                y={y}
-                textAnchor='end'
-                dominantBaseline='central'
-              >
-                {layer.label}
-              </text>
-            </g>
-          );
-        })}
+        ))}
       </svg>
 
       {TOWER_LAYERS.map((layer, i) => {

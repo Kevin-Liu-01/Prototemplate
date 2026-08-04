@@ -125,7 +125,7 @@ const DROP = 64;
  * stack BUILDS — only the slabs up to the beat's level exist, and the next
  * level settles in from above as the story advances (and leaves again on
  * the way back up) — and the beat's slab(s) take the tower's highest z,
- * lift up the iso vertical, and light their accent edge and label, while
+ * lift up the iso vertical, and light their accent edge and leader, while
  * the rest stay solid but dimmer. One timeline per transition, never
  * pinned by JS (the figure is CSS sticky). Reduced motion and the no-JS
  * resting markup get the FULL stack with the first beat lit, statically —
@@ -154,7 +154,7 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
       /* class + stacking state, shared by both motion branches: hot slabs
          take full ink, the accent edge, and the tower's highest z — above
          even the slab overhead, so the whole plate reads when it pops. The
-         hot plate's rail tap takes the accent with it. */
+         hot plate's rail leader takes the accent with it. */
       const paint = (active: number) => {
         const hot = new Set(HOT_SLABS[active] ?? []);
         slabs.forEach((slab, i) => {
@@ -232,8 +232,9 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
             shown[i] = visible;
           });
 
-          /* the rail extends to the newest plate's tap (or retracts),
-             threading the built stack together as it settles */
+          /* the rail's accent channel fills to the newest plate's tap (or
+             retracts) inside the static full-height strokes, threading the
+             built stack together as it settles */
           if (rail) {
             const scaleY = RAIL_SCALE[count - 1] ?? 1;
             if (instant) gsap.set(rail, { scaleY, svgOrigin: RAIL_ORIGIN });
@@ -327,7 +328,7 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
                   >
                     <div className='v0-stack-tag'>
                       <span className='v0-stack-idx'>{String(i + 1).padStart(2, '0')}</span>
-                      <Icon className='v0-stack-ic' size={14} strokeWidth={1.75} aria-hidden />
+                      <Icon className='v0-stack-ic' size={16} strokeWidth={1.6} aria-hidden />
                       <span className='v0-stack-name'>{beat.name}</span>
                     </div>
                     <h3>{beat.lead}</h3>

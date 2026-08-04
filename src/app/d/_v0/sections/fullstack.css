@@ -46,21 +46,23 @@
   position: sticky;
   /* seated so the FIGURE'S center rides the viewport's center during
      the pinned pass (founder: "this is in the center of the page") —
-     214px is half the figure's rendered height (~429px: 420px tower at
-     its aspect plus the pads below), floored so a short viewport never
-     tucks the figure under the 58px nav. Every px of seat costs the
-     pin one px of runway, so this moves with the beat min-height:
-     margin ≈ 0.8 × beat − seat − 166px must stay positive through the
-     fourth beat. */
-  top: max(70px, calc(50vh - 214px));
+     259px is half the figure's rendered height (~518px: the ~415px
+     cell-bound tower at its denser aspect plus the pads below),
+     floored so a short viewport never tucks the figure under the 58px
+     nav. Every px of figure height costs the pin half a px of runway
+     (the seat gives back the other half), so re-verify the pin probe
+     (frac 0.3/0.55/0.8 flat) whenever this geometry moves. */
+  top: max(70px, calc(50vh - 259px));
   display: flex;
   justify-content: center;
-  /* the top pad floors at 42px — above the tower's biggest rise
-     (LIFT + OPEN, 38px), so an opened stack never clips against the
-     cell's overflow. The whole figure is kept SHORT on purpose: its
-     height plus the sticky offset must fit inside the column's
-     travel, or the pin dies before the last beat (the frac-0.8 bug). */
-  padding: clamp(42px, 3.4vw, 46px) 20px clamp(20px, 2.2vw, 24px);
+  /* slim pads: the full-height rail should read rule-to-rule of the
+     figure zone (founder round). Lift headroom needs no pad — a hot
+     slab tops out ~8px above the frame and the clipping cell's edges
+     are hundreds of px away during the pin. The whole figure is still
+     kept SHORT on purpose: its height plus the sticky offset must fit
+     inside the column's travel, or the pin dies before the last beat
+     (the frac-0.8 bug). */
+  padding: 16px 20px;
 }
 
 /* ---------- the solid tower ----------
@@ -105,10 +107,18 @@
 }
 
 /* the doubled vertical rail — two real 1px strokes at constant gauge,
-   the original composition's circuitry */
+   the original composition's circuitry, now running the frame's full
+   height, static (founder: the rail spans the diagram) */
 .toolchain-root .tcb .v0s-rail-line {
   stroke: rgba(255, 255, 255, 0.14);
   stroke-width: 1;
+}
+
+/* the live channel between the two strokes: the build's accent, filled
+   to the newest plate's tap (FullStack scales it bottom-up) — a fill
+   between the hairlines, never a stroke on them, so nothing doubles */
+.toolchain-root .tcb .v0s-rail-fill {
+  fill: color-mix(in srgb, var(--iso-accent) 55%, transparent);
 }
 
 /* the plate: opaque hull under three face fills, lit from the
