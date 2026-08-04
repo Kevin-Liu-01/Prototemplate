@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 import { createInkField } from '@/app/d/glyph-rain/sections/band/inkField';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
+import { prefersReducedMotion, target } from '@/app/d/toolchain/diagrams/lang/lang';
 import ReviewWorkspace from '@/app/d/toolchain/sections/ReviewWorkspace';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
@@ -29,16 +30,21 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * (founder cut: the subheadings retired); the application-logic cell mounts
  * the ORIGINAL ContextResolve fork, and the dynamic cell re-cuts the gender
  * fork in that same lang-cr drawing so the two forks speak one grammar —
- * plus an ambient border beam: one accent segment forever circling the
- * cell's own border line. The review beat is the grid's full-width closing
- * row: its head in the cell, the ORIGINAL ReviewWorkspace mounted beneath
- * on a cell-carried dark ground.
+ * animation included: the accent transfer window runs the live branch's
+ * thread on ContextResolve's own clocks (founder note: the blue lives in
+ * the threads, never around the box). The review beat is the grid's
+ * full-width closing row: its head in the cell, the ORIGINAL ReviewWorkspace
+ * mounted beneath on a cell-carried dark ground.
  */
 
 /* ---------- the gender fork, in ContextResolve's own drawing ----------
-   Same DOM, same classes, same fork paths as the mounted original — a
-   static composition (the fork is the statement, both branches are live),
-   so it never competes with the animated Save fork for attention. */
+   Same DOM, same classes, same fork paths as the mounted original — and the
+   same announcement (founder note: the blue goes from the threads to
+   masculine and feminine, same animations as the application-logic fork):
+   once per dwell an accent transfer window runs button → card down the live
+   branch's thread, the branches trading on the beat the cards swap,
+   masculine first, then feminine, forever. The blue lives in the threads
+   and the chip it arrives at, never as a border on the branch boxes. */
 
 const GENDER_FORKS = [
   'M220 0 V14 C220 38 110 28 110 56',
@@ -52,10 +58,191 @@ const GENDER_BRANCHES: readonly GenderBranch[] = [
   { value: 'feminine', word: 'Bienvenida' },
 ];
 
+/* ContextResolve's clocks, verbatim — one dwell per branch, the window's
+   traverse + rest filling it exactly, the swap landing flush on the dwell
+   boundary — so the two forks in the grid breathe on the same beats. */
+const GF_DWELL = 3;
+const GF_SWAP = 0.5;
+const GF_LIFT = -2;
+const GF_PULSE_SEG = 0.15;
+const GF_PULSE_TRAVERSE = 2;
+const GF_PULSE_LEAD = 0.3;
+/** Reduced motion parks the fork on this branch: masculine. */
+const GF_FROZEN = 0;
+
+/* The window is carved from real geometry, not from a dash pattern: under
+   the fork's anisotropic stretch (preserveAspectRatio='none') plus
+   non-scaling-stroke, browsers disagree about which space dash distances
+   live in. Twin of the helpers in ContextResolve.tsx — duplicated because
+   each diagram family owns its own file set, and the original stays
+   untouched. */
+
+type PulseTrace = {
+  length: number;
+  step: number;
+  points: readonly { x: number; y: number }[];
+};
+
+/** Dense user-space samples (1u apart) of a path. The source `d` is cached
+    on the element the first time through: the animation blanks `d` every
+    tick, so a re-run of the effect would otherwise trace an emptied path. */
+function tracePath(el: SVGPathElement): PulseTrace | null {
+  const source = el.dataset.traceD ?? el.getAttribute('d') ?? '';
+  if (!source) return null;
+  el.dataset.traceD = source;
+  if (el.getAttribute('d') !== source) el.setAttribute('d', source);
+  const length = el.getTotalLength();
+  if (!Number.isFinite(length) || length <= 0) return null;
+  const step = 1;
+  const count = Math.max(2, Math.ceil(length / step) + 1);
+  const points = Array.from({ length: count }, (_, i) => {
+    const p = el.getPointAtLength(Math.min(length, i * step));
+    return { x: p.x, y: p.y };
+  });
+  return { length, step, points };
+}
+
+/** The point `at` user units along a trace, interpolated between samples. */
+function pointOn(trace: PulseTrace, at: number): { x: number; y: number } {
+  const t = Math.min(Math.max(at, 0), trace.length) / trace.step;
+  const lo = Math.min(trace.points.length - 1, Math.floor(t));
+  const hi = Math.min(trace.points.length - 1, lo + 1);
+  const a = trace.points[lo];
+  const b = trace.points[hi];
+  if (!a || !b) return { x: 0, y: 0 };
+  const f = t - lo;
+  return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
+}
+
+/** The [from, to] slice of a trace as a path string — empty while the window
+    is off either end, so each traversal enters and exits cleanly. */
+function windowPath(trace: PulseTrace, from: number, to: number): string {
+  const a = Math.max(0, from);
+  const b = Math.min(trace.length, to);
+  if (b - a < 0.5) return '';
+  const start = pointOn(trace, a);
+  const parts = [`M${start.x.toFixed(2)} ${start.y.toFixed(2)}`];
+  for (let i = Math.ceil(a / trace.step); i * trace.step < b; i++) {
+    const p = trace.points[i];
+    if (p) parts.push(`L${p.x.toFixed(2)} ${p.y.toFixed(2)}`);
+  }
+  const end = pointOn(trace, b);
+  parts.push(`L${end.x.toFixed(2)} ${end.y.toFixed(2)}`);
+  return parts.join(' ');
+}
+
 function GenderFork() {
+  const root = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const rootEl = root.current;
+      if (!rootEl) return;
+
+      const lives = gsap.utils.toArray<SVGGElement>('[data-gf-live]', rootEl);
+      const pulses = gsap.utils.toArray<SVGPathElement>('[data-gf-pulse]', rootEl);
+      const cards = gsap.utils.toArray<HTMLElement>('[data-gf-card]', rootEl);
+      if (
+        lives.length !== GENDER_BRANCHES.length ||
+        pulses.length !== GENDER_BRANCHES.length ||
+        cards.length !== GENDER_BRANCHES.length
+      )
+        return;
+
+      /* ContextResolve's settle, verbatim: 0.7 keeps the resting card a
+         quieter card rather than a grey slab; `lift` holds the live card
+         proud so every swap starts from the state the last one ended on. */
+      const settle = (i: number, lift = 0) => {
+        gsap.set(lives, { autoAlpha: 0 });
+        gsap.set(cards, { autoAlpha: 0.7, y: 0 });
+        gsap.set(target(lives, i), { autoAlpha: 1 });
+        gsap.set(target(cards, i), { autoAlpha: 1, y: lift });
+      };
+
+      /* The still frame IS the static accent thread, parked on masculine;
+         the pulse never runs and stays hidden from its stylesheet default. */
+      if (prefersReducedMotion()) {
+        settle(GF_FROZEN);
+        return;
+      }
+
+      /* In motion the static accent thread stands down — announcing the
+         live branch is the pulse's job. Traced before the `d` is blanked. */
+      settle(0, GF_LIFT);
+      gsap.set(lives, { autoAlpha: 0 });
+      const traces = pulses.map(tracePath);
+      pulses.forEach((pulse) => pulse.setAttribute('d', ''));
+      gsap.set(pulses, { autoAlpha: 0 });
+      gsap.set(target(pulses, 0), { autoAlpha: 1 });
+
+      /* The original runs its window clocks and card loop as siblings; here
+         they fold onto ONE paused master so the whole loop can gate on the
+         bento's viewport dwell. Same arithmetic: the period is branches ×
+         dwell, each branch's window makes its VISIBLE run once per period
+         (the original's hidden second run is skipped — it never showed),
+         and every gate flips while both windows rest off-path. */
+      const tl = gsap.timeline({ repeat: -1, paused: true, defaults: { ease: 'power2.inOut' } });
+
+      pulses.forEach((pulse, k) => {
+        const trace = traces[k];
+        if (!trace) return;
+        const seg = trace.length * GF_PULSE_SEG;
+        const journey = trace.length + seg;
+        const state = { head: 0 };
+        tl.fromTo(
+          state,
+          { head: 0 },
+          {
+            head: journey,
+            duration: GF_PULSE_TRAVERSE,
+            ease: 'none',
+            immediateRender: false,
+            onUpdate: () => {
+              pulse.setAttribute('d', windowPath(trace, state.head - seg, state.head));
+            },
+          },
+          k * GF_DWELL + GF_PULSE_LEAD
+        );
+      });
+
+      GENDER_BRANCHES.forEach((_, k) => {
+        const i = (k + 1) % GENDER_BRANCHES.length;
+        const at = (k + 1) * GF_DWELL - GF_SWAP;
+        tl.to(target(pulses, k), { autoAlpha: 0, duration: GF_SWAP }, at)
+          .to(target(pulses, i), { autoAlpha: 1, duration: GF_SWAP }, at)
+          .fromTo(
+            target(cards, k),
+            { autoAlpha: 1, y: GF_LIFT },
+            { autoAlpha: 0.7, y: 0, duration: GF_SWAP, immediateRender: false },
+            at
+          )
+          .fromTo(
+            target(cards, i),
+            { autoAlpha: 0.7, y: 0 },
+            { autoAlpha: 1, y: GF_LIFT, duration: GF_SWAP, immediateRender: false },
+            at
+          );
+      });
+
+      tl.duration(GENDER_BRANCHES.length * GF_DWELL);
+
+      ScrollTrigger.create({
+        trigger: rootEl.closest('.v0-ctx-dyn') ?? rootEl,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: (self) => {
+          if (self.isActive) tl.play();
+          else tl.pause();
+        },
+      });
+    },
+    { scope: root }
+  );
+
   return (
     <div
-      className='lang lang-cr lang-accent-off'
+      className='lang lang-cr lang-accent-on'
+      ref={root}
       role='img'
       aria-label='Welcome, name derives Spanish gender variants: Bienvenido and Bienvenida'
     >
@@ -69,18 +256,31 @@ function GenderFork() {
         </span>
       </p>
 
+      {/* ContextResolve's layer order, verbatim: both inks first, both
+          pulses next, both cores last — the pulse rides between its thread
+          and the carve, so mid-travel the window is two blue hairlines. The
+          static accent pair closes the stack as the reduced-motion still. */}
       <svg className='lang-cr-fork' viewBox='0 0 440 56' preserveAspectRatio='none' aria-hidden='true'>
         {GENDER_FORKS.map((d) => (
           <path className='lang-cr-thread' d={d} key={`thread-${d}`} />
         ))}
         {GENDER_FORKS.map((d) => (
+          <path className='lang-cr-pulse' data-gf-pulse='' d={d} key={`pulse-${d}`} />
+        ))}
+        {GENDER_FORKS.map((d) => (
           <path className='lang-cr-core' d={d} key={`core-${d}`} />
+        ))}
+        {GENDER_FORKS.map((d) => (
+          <g data-gf-live='' key={`live-${d}`}>
+            <path className='lang-cr-thread is-live' d={d} />
+            <path className='lang-cr-core' d={d} />
+          </g>
         ))}
       </svg>
 
       <div className='lang-cr-branches'>
         {GENDER_BRANCHES.map((branch) => (
-          <div className='lang-cr-branch' key={branch.value}>
+          <div className='lang-cr-branch' data-gf-card='' key={branch.value}>
             <p className='lang-cr-ctx'>
               <span className='lang-cr-attr'>gender=</span>
               <span className='lang-cr-val'>&ldquo;{branch.value}&rdquo;</span>
@@ -157,14 +357,9 @@ export default function V0Context() {
   const core = useRef<HTMLDivElement>(null);
   useQuietReveal(root);
 
-  /* The band's material and its one ambient accent. The ink field's rAF,
-     resize, clearing re-measure and reduced-motion still are internal to
-     the engine — destroy() on unmount is ours. The dynamic cell's beam:
-     one blue segment forever circling the cell's border. The rect is
-     100%-based (it re-traces the box at any size) and pathLength-
-     normalized to 100, so a dash of 18/82 is 18% of the perimeter at
-     every width; one lap ≈ 5s, linear, gated to the section's viewport
-     dwell. Reduced motion parks the segment where the path starts. */
+  /* The band's material. The ink field's rAF, resize, clearing re-measure
+     and reduced-motion still are internal to the engine — destroy() on
+     unmount is ours. */
   useGSAP(
     () => {
       const scope = root.current;
@@ -179,24 +374,6 @@ export default function V0Context() {
             displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
           })
         : null;
-
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const beam = scope.querySelector('.v0-ctx-beam rect');
-        if (beam) {
-          gsap.to(beam, {
-            strokeDashoffset: -100,
-            duration: 5,
-            ease: 'none',
-            repeat: -1,
-            scrollTrigger: {
-              trigger: scope,
-              start: 'top bottom',
-              end: 'bottom top',
-              toggleActions: 'play pause resume pause',
-            },
-          });
-        }
-      }
 
       return () => field?.destroy();
     },
@@ -296,11 +473,6 @@ export default function V0Context() {
             <div className='v0-ctx-art'>
               <GenderFork />
             </div>
-            {/* The border beam: a 100%-based rect riding the cell's own 1px
-                seam line (the SVG bleeds 1px so the stroke centers ON it). */}
-            <svg className='v0-ctx-beam' aria-hidden='true'>
-              <rect pathLength={100} vectorEffect='non-scaling-stroke' />
-            </svg>
           </div>
 
           {/* The review beat: the grid's full-width closing row — the

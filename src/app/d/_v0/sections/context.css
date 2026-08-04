@@ -247,39 +247,16 @@
   color: rgba(255, 255, 255, 0.35);
 }
 
-/* ---------- the dynamic cell's border beam ----------
-   One accent segment forever circling the cell's border. The cell's "border"
-   is the sheet's 1px seam ring just OUTSIDE its box (the grid's gap), so the
-   cell un-clips and the SVG bleeds 1px per side: a rect drawn 0.5px inside
-   the bled viewport centers its 1px stroke exactly ON the seam pixel, every
-   corner square like the sheet's. 100%-based geometry re-traces the box at
-   any width; pathLength=100 keeps the dash a constant 18% of the perimeter. */
+/* ---------- the dynamic cell's fork ----------
+   The gender fork replicates ContextResolve's transfer grammar in its own
+   DOM (the blue lives in the threads, never around the box — the old
+   border beam retired). Its static accent pair — the reduced-motion still —
+   parks hidden exactly as lang.css parks the original's [data-cr-live]
+   layer; the loop (or the reduced-motion settle) is what raises it. */
 
-.toolchain-root .v0-ctx .v0-ctx-dyn {
-  overflow: visible;
-}
-
-.toolchain-root .v0-ctx .v0-ctx-beam {
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  width: calc(100% + 2px);
-  height: calc(100% + 2px);
-  z-index: 2;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.toolchain-root .v0-ctx .v0-ctx-beam rect {
-  x: 0.5px;
-  y: 0.5px;
-  width: calc(100% - 1px);
-  height: calc(100% - 1px);
-  fill: none;
-  stroke: #86a8ff;
-  stroke-width: 1px;
-  stroke-dasharray: 18 82;
-  stroke-dashoffset: 0;
+.toolchain-root .v0-ctx .lang-cr-fork [data-gf-live] {
+  opacity: 0;
+  will-change: opacity;
 }
 
 /* ---------- the review row ----------

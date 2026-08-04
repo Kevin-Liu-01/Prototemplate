@@ -149,7 +149,13 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
       const beats = gsap.utils.toArray<HTMLElement>('[data-stack-beat]', scope);
       const taps = gsap.utils.toArray<SVGGElement>('[data-rail-tap]', scope);
       const rail = scope.querySelector<SVGGElement>('[data-rail-line]');
+      const waves = gsap.utils.toArray<SVGPathElement>('[data-ctx-wave]', scope);
+      const orbit = scope.querySelector<SVGPathElement>('[data-agent-orbit]');
       if (slabs.length === 0 || beats.length === 0) return;
+
+      /* how many slabs must exist for each ambient loop's plate */
+      const ctxNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'context') + 1;
+      const agentsNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'agents') + 1;
 
       /* class + stacking state, shared by both motion branches: hot slabs
          take full ink, the accent edge, and the tower's highest z — above
@@ -189,6 +195,39 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
            so entering and leaving slabs can be staged differently */
         const shown = slabs.map(() => false);
 
+        /* the ambient loops (founder round): context's accent waves ride
+           their wires into the <T>, and the agents plate's orbit trace
+           circles its ring — each runs ONLY while its plate is built and
+           the band is on screen, so nothing burns frames below the fold.
+           Until first play they rest at the markup's static offsets. */
+        let built = 0;
+        let inView = false;
+        const waveLoops = waves.map((wave, i) =>
+          gsap.fromTo(
+            wave,
+            { strokeDashoffset: 100 },
+            { strokeDashoffset: 0, duration: 2.8, ease: 'none', repeat: -1, delay: i * 0.9, paused: true }
+          )
+        );
+        const orbitLoop = orbit
+          ? gsap.fromTo(
+              orbit,
+              { strokeDashoffset: 30 },
+              { strokeDashoffset: -70, duration: 7, ease: 'none', repeat: -1, paused: true }
+            )
+          : null;
+        const syncLoops = () => {
+          const wavesOn = inView && built >= ctxNeed;
+          for (const loop of waveLoops) {
+            if (wavesOn) loop.play();
+            else loop.pause();
+          }
+          if (orbitLoop) {
+            if (inView && built >= agentsNeed) orbitLoop.play();
+            else orbitLoop.pause();
+          }
+        };
+
         /* One timeline per beat change coordinates the whole answer:
            slabs the beat brings in settle from DROP above their seat,
            bottom-up and staggered; slabs the beat removes (scrolling
@@ -200,6 +239,8 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
         const setActive = (active: number, instant: boolean) => {
           paint(active);
           const count = VISIBLE_COUNT[active] ?? slabs.length;
+          built = count;
+          syncLoops();
           const hot = HOT_SLABS[active] ?? [];
           const set = new Set(hot);
           const top = hot.length > 0 ? Math.max(...hot) : -1;
@@ -233,8 +274,8 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
           });
 
           /* the rail's accent channel fills to the newest plate's tap (or
-             retracts) inside the static full-height strokes, threading the
-             built stack together as it settles */
+             retracts) inside the cell-height strokes, threading the built
+             stack together as it settles */
           if (rail) {
             const scaleY = RAIL_SCALE[count - 1] ?? 1;
             if (instant) gsap.set(rail, { scaleY, svgOrigin: RAIL_ORIGIN });
@@ -264,7 +305,28 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
           });
         });
 
-        return clear;
+        /* the loops' viewport gate: everything ambient pauses the moment
+           the band leaves the screen */
+        const viewGate = ScrollTrigger.create({
+          trigger: scope,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (self) => {
+            inView = self.isActive;
+            syncLoops();
+          },
+        });
+        inView = viewGate.isActive;
+        syncLoops();
+
+        return () => {
+          viewGate.kill();
+          for (const loop of waveLoops) loop.kill();
+          orbitLoop?.kill();
+          const dashed: SVGPathElement[] = orbit ? [...waves, orbit] : [...waves];
+          if (dashed.length > 0) gsap.set(dashed, { clearProps: 'strokeDashoffset' });
+          clear();
+        };
       });
 
       /* reduced motion: the FULL stack, statically — all four slabs are
@@ -302,6 +364,12 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
               spotlight lifts each beat's slab in turn. Born with the first
               beat hot so the resting frame already tells the story. */}
           <div className='tcb-cell v0-stack-cell-fig' data-cell>
+            {/* the rail itself: two 1px strokes spanning the COMPLETE
+                height of the figure cell, top rule to bottom rule — the
+                sticky figure's leaders and accent channel tap into it at
+                whatever height they ride (founder: the rail must reach
+                the column's top and bottom) */}
+            <div className='v0s-cellrail' aria-hidden />
             <div className='v0-stack-figcol'>
               <div className='v0-stack-fig' data-reveal>
                 <StackTower

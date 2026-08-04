@@ -11,7 +11,6 @@ import {
   segment,
   silhouette,
   topFace,
-  xy,
   type IsoBox,
   type Pt,
 } from '@/app/d/toolchain/diagrams/iso';
@@ -29,19 +28,23 @@ import {
  * mask-rendered in the plate's ink.
  *
  * The original's connective thread is ported: a doubled vertical rail
- * (two 1px strokes at constant gauge) runs the FULL height of the frame
- * at the plates' left — a static thread from the figure's top rule to
- * its bottom rule (founder: the rail spans the diagram, the plates tap
- * into it where they sit) — redrawn here in a full-frame overlay SVG
- * behind the slabs, never imported from DarkBand. The frame carries no
- * type: the plates' artwork identifies them and the copy rail names
- * them (founder: no words by the diagram). Each plate taps off the rail
- * with a small-radius corner leader that lands on its left vertex — a
- * quiet static tap an active plate lifts OFF, exactly as the original's
- * planes rose off theirs. The build's motion lives in the channel
- * BETWEEN the rail's two strokes: an accent fill extends and retracts
- * with the stack, which FullStack drives through RAIL_SCALE — between
- * the hairlines, never on them, so no stroke is ever drawn twice.
+ * (two 1px strokes at constant gauge) runs the COMPLETE height of the
+ * figure CELL — top rule to bottom rule of the column (founder: "the
+ * rail is still not reaching complete top and bottom") — drawn by
+ * FullStack as a cell-spanning element (.v0s-cellrail) behind this
+ * sticky figure, because no frame-bound SVG can outlive its own box.
+ * The frame carries no type: the plates' artwork identifies them and
+ * the copy rail names them (founder: no words by the diagram). What
+ * lives in THIS drawing's overlay is the rail's moving matter — the
+ * parts that must ride the plates as the figure travels the cell: each
+ * plate's small-radius corner leader, tapping off the rail's x to the
+ * plate's left vertex (a quiet static tap an active plate lifts OFF,
+ * exactly as the original's planes rose off theirs), and the accent
+ * CHANNEL between the rail's two strokes — a fill that extends and
+ * retracts with the build, which FullStack drives through RAIL_SCALE —
+ * between the hairlines, never on them, so no stroke is ever drawn
+ * twice. fullstack.css re-derives the rail x in cell space from
+ * RAIL_X / RAIL_GAUGE / VIEW_W; change those numbers together.
  *
  * Each slab is its own absolutely-seated HTML element rather than a group
  * in one SVG: the scroll spotlight must put the active slab ABOVE its
@@ -154,6 +157,87 @@ function markPath(x: number, y: number, w: number, d: number, z = THICK): string
   return roundedPolygon(quad);
 }
 
+/**
+ * Seats flat 2D artwork in the z = const plane: a z-plane projects as the
+ * affine map (x, y) → (cos30·x − cos30·y, sin30·x + sin30·y − z), so one
+ * matrix() carries whole drawings — glyph fills, wire curves, the masked
+ * Locadex mark — into the surface. Strokes inside the group stay 1px via
+ * vectorEffect; fills are drawn in plane coordinates and land foreshortened
+ * like everything else on the face.
+ */
+function plane(z: number): string {
+  return `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} 0 ${-z})`;
+}
+
+/** The chips' gauge, and where art drawn on a chip's top face sits. */
+const CHIP_H = 3.5;
+const CHIP_TOP = THICK + CHIP_H;
+
+/* The bracket glyphs are floor type: STROKED (a filled chevron under the
+   foreshortening reads as an arrow button, a stroked one as a bracket),
+   and drawn in a plan frame rotated 45° so their baseline projects
+   screen-HORIZONTAL and their stems screen-VERTICAL — upright type that
+   still foreshortens with the face (×1.2247 across, ×0.7071 down), the
+   way etched floor lettering does. Strokes stay screen-gauge via
+   vectorEffect, the wires' voice a step heavier. */
+
+const PLANE_U = Math.SQRT2 * ISO_COS30;
+const PLANE_V = Math.SQRT2 * ISO_SIN30;
+
+/** The upright-type frame in a z = const plane, anchored at plan (x, y). */
+function faceType(x: number, y: number, z: number): string {
+  const [sx, sy] = project(x, y, z);
+  return `matrix(${PLANE_U} 0 0 ${PLANE_V} ${sx} ${sy})`;
+}
+
+/** A '<' (dir −1) or '>' (dir 1) bracket, in local type units. */
+function chevron(cx: number, cy: number, dir: 1 | -1, h = 16, d = 5.2): string {
+  const tip = cx + (d / 2) * dir;
+  const back = cx - (d / 2) * dir;
+  return `M${back} ${cy - h / 2}L${tip} ${cy}L${back} ${cy + h / 2}`;
+}
+
+/** The '/' of the closing bracket. */
+function slash(cx: number, cy: number, h = 16, lean = 3.4): string {
+  return `M${cx + lean / 2} ${cy - h / 2}L${cx - lean / 2} ${cy + h / 2}`;
+}
+
+/** The 'T' of the <T>: bar and stem, two strokes in one path. The bar's
+    half-width compensates the frame's anisotropy (×1.73 across vs down). */
+function tee(cx: number, cy: number, h = 14): string {
+  const bw = h * 0.22;
+  return `M${cx - bw} ${cy - h / 2}L${cx + bw} ${cy - h / 2}M${cx} ${cy - h / 2}L${cx} ${cy + h / 2}`;
+}
+
+/**
+ * Context's three incoming threads — glossary, tone, directives — flowing
+ * into the <T> chip's seat, in plane coordinates. Each wire is drawn twice:
+ * a static hairline, and an accent wave riding it (a dash segment FullStack
+ * loops along the path while the plate is built; a resting segment without
+ * JS or with reduced motion).
+ */
+const CTX_WIRES: readonly string[] = [
+  'M-44 -26C-22 -26 -14 -6 7 -6',
+  'M-44 0C-28 0 -16 0 7 0',
+  'M-44 26C-22 26 -14 6 7 6',
+];
+
+/** Translations' fan: source string out to its three locale runs. */
+const FAN_WIRES: readonly string[] = [
+  'M-12 -25C-2 -25 -10 -12 2 -12',
+  'M-12 -25C-4 -25 -12 3.5 2 3.5',
+  'M-12 -25C-2 -25 -12 18.5 2 18.5',
+];
+
+/**
+ * The agents plate's scan energy: an accent trace orbiting the top face on
+ * a ring inset from the rim — its own geometry, so it never doubles the
+ * hot accent edge. FullStack loops the dash while the plate is built.
+ */
+const ORBIT_D = roundedPolygon(
+  topFace({ x: -HALF + 8, y: -HALF + 8, z: 0, w: SIZE - 16, d: SIZE - 16, h: THICK })
+);
+
 type GlyphChipProps = {
   x: number;
   y: number;
@@ -175,55 +259,97 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
   );
 }
 
-/**
- * The Locadex mark lies flat in the agents plate's top face: a z = const
- * plane projects as the 2D affine map (x, y) → (cos30·x − cos30·y,
- * sin30·x + sin30·y − z), so one matrix() seats the masked mark in the
- * plane — the same technique the Locadex iso uses on its agent slab. The
- * mask makes the shape take the surface's ink instead of the asset's
- * baked-in fill.
- */
+/** The Locadex mark's half-size, and its seat in the top face (the mask
+    makes the shape take the surface's ink instead of the asset's fill —
+    the same technique the Locadex iso uses on its agent slab). */
 const MARK_HALF = 20;
-const MARK_PLANE = `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} 0 ${-THICK})`;
+const MARK_PLANE = plane(THICK);
 
 function TopGlyph({ id }: { id: string }) {
   switch (id) {
     case 'code':
-      /* source: a <T> block's rhythm — open, two indented lines, close */
+      /* source: the raised bracket pair — '<' and '/>' each on its own
+         slab, drawn large enough to READ as brackets (founder round) —
+         wrapping three lines of code between them: the <T> block
+         grammar with real bracket forms */
       return (
         <>
-          <path className='v0s-g-mark' d={markPath(-42, -27, 50, 5.5)} />
-          <path className='v0s-g-mark' d={markPath(-30, -13, 38, 5.5)} />
-          <path className='v0s-g-mark' d={markPath(-30, 1, 32, 5.5)} />
-          <path className='v0s-g-mark' d={markPath(-42, 15, 24, 5.5)} />
+          <path className='v0s-g-mark' d={markPath(-16, -9, 30, 5)} />
+          <path className='v0s-g-mark' d={markPath(-16, -1.5, 22, 5)} />
+          <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
+          <GlyphChip x={-42} y={-10} w={20} d={20} h={CHIP_H} />
+          <GlyphChip x={22} y={-10} w={20} d={20} h={CHIP_H} />
+          <g transform={faceType(-32, 0, CHIP_TOP)}>
+            <path className='v0s-g-glyph' d={chevron(0, 0, -1)} vectorEffect='non-scaling-stroke' />
+          </g>
+          <g transform={faceType(32, 0, CHIP_TOP)}>
+            <path className='v0s-g-glyph' d={slash(-2.8, 0)} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-g-glyph' d={chevron(3.2, 0, 1)} vectorEffect='non-scaling-stroke' />
+          </g>
         </>
       );
     case 'context':
-      /* the two halves of a Context Group — glossary and directives —
-         each chip carrying its own entry marks */
+      /* the context flowing IN: three threads — glossary, tone,
+         directives — converge on a raised <T> chip, accent waves
+         rippling along them (founder round) */
       return (
         <>
-          <GlyphChip x={-38} y={-20} w={29} d={19} h={3} />
-          <path className='v0s-g-mark' d={markPath(-33, -15, 15, 3.5, THICK + 3)} />
-          <path className='v0s-g-mark' d={markPath(-33, -8, 19, 3.5, THICK + 3)} />
-          <GlyphChip x={8} y={-20} w={29} d={19} h={3} />
-          <path className='v0s-g-mark' d={markPath(13, -15, 17, 3.5, THICK + 3)} />
-          <path className='v0s-g-mark' d={markPath(13, -8, 13, 3.5, THICK + 3)} />
+          <g transform={plane(THICK)}>
+            {CTX_WIRES.map((d) => (
+              <path key={d} className='v0s-ctx-wire' d={d} vectorEffect='non-scaling-stroke' />
+            ))}
+            {CTX_WIRES.map((d) => (
+              <path
+                key={`wave:${d}`}
+                className='v0s-ctx-wave'
+                data-ctx-wave
+                d={d}
+                pathLength={100}
+                strokeDasharray='16 84'
+                strokeDashoffset={58}
+                vectorEffect='non-scaling-stroke'
+              />
+            ))}
+          </g>
+          <GlyphChip x={8} y={-11} w={30} d={22} h={CHIP_H} />
+          <g transform={faceType(23, 0, CHIP_TOP)}>
+            <path
+              className='v0s-g-glyph'
+              d={chevron(-6.8, 0, -1, 14, 4.6)}
+              vectorEffect='non-scaling-stroke'
+            />
+            <path className='v0s-g-glyph' d={tee(0, 0)} vectorEffect='non-scaling-stroke' />
+            <path
+              className='v0s-g-glyph'
+              d={chevron(6.8, 0, 1, 14, 4.6)}
+              vectorEffect='non-scaling-stroke'
+            />
+          </g>
         </>
       );
     case 'translations':
-      /* the source string and its quiet sibling, and the delivered
-         translation — the payload chip, the drawing's one accent */
+      /* translation OUT, at a glance: the source string fans to three
+         locale runs — a Latin-ish bar, the delivered payload (the
+         drawing's one accent, raised), and a block-script run */
       return (
         <>
-          <path className='v0s-g-mark' d={markPath(-44, -27, 34, 5.5)} />
-          <path className='v0s-g-mark-dim' d={markPath(-44, -14, 24, 5.5)} />
-          <GlyphChip x={-15} y={-1} w={42} d={25} h={5} accent />
+          <path className='v0s-g-mark' d={markPath(-42, -28, 30, 5.5)} />
+          <g transform={plane(THICK)}>
+            {FAN_WIRES.map((d) => (
+              <path key={d} className='v0s-fan-wire' d={d} vectorEffect='non-scaling-stroke' />
+            ))}
+          </g>
+          <path className='v0s-g-mark' d={markPath(3, -15, 26, 5.5)} />
+          <GlyphChip x={3} y={-2} w={32} d={11} h={4} accent />
+          <path className='v0s-g-mark' d={markPath(3, 15, 9, 7)} />
+          <path className='v0s-g-mark' d={markPath(15, 15, 9, 7)} />
+          <path className='v0s-g-mark' d={markPath(27, 15, 9, 7)} />
         </>
       );
     case 'agents':
-      /* the Locadex mark, in the plate's own ink (founder: "show a
-         locadex logo in the layer") */
+      /* the Locadex mark in the plate's own ink, and the scan energy:
+         an accent trace orbiting the layer round and round (founder
+         round), on its own inset ring */
       return (
         <>
           <defs>
@@ -245,6 +371,15 @@ function TopGlyph({ id }: { id: string }) {
               />
             </mask>
           </defs>
+          <path
+            className='v0s-orbit'
+            data-agent-orbit
+            d={ORBIT_D}
+            pathLength={100}
+            strokeDasharray='12 88'
+            strokeDashoffset={30}
+            vectorEffect='non-scaling-stroke'
+          />
           <g transform={MARK_PLANE}>
             <rect
               className='v0s-g-ldx'
@@ -289,27 +424,12 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
       aria-label={title}
       aria-hidden={title ? undefined : true}
     >
-      {/* the connective thread: the doubled rail, its accent channel, and
-          the taps, one overlay SVG spanning the whole frame, behind every
-          plate. The two strokes run the frame's FULL height and never
-          move; only the channel between them and the taps animate. */}
+      {/* the rail's moving matter, one overlay SVG spanning the frame,
+          behind every plate: the accent channel and the leaders, which
+          must ride the plates. The rail's two full-height strokes live
+          OUTSIDE this drawing — FullStack's .v0s-cellrail spans the
+          whole figure cell at the same x. */}
       <svg className='v0s-railsvg' viewBox={`${VIEW_X} 0 ${VIEW_W} ${TOWER_H}`} aria-hidden>
-        <line
-          className='v0s-rail-line'
-          x1={RAIL_X}
-          y1={0}
-          x2={RAIL_X}
-          y2={TOWER_H}
-          vectorEffect='non-scaling-stroke'
-        />
-        <line
-          className='v0s-rail-line'
-          x1={RAIL_X - RAIL_GAUGE}
-          y1={0}
-          x2={RAIL_X - RAIL_GAUGE}
-          y2={TOWER_H}
-          vectorEffect='non-scaling-stroke'
-        />
         <rect
           className='v0s-rail-fill'
           data-rail-line

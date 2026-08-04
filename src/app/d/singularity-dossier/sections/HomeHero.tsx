@@ -35,26 +35,40 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
    hero only sets the stack around it: card, band, trust row, and the
    headline's measuring hinge below. */
 
-/* "every" across maximally different writing systems — Latin, Japanese,
-   Arabic, Devanagari, Cyrillic, Han, Hangul, Greek — short tokens so the
-   re-measured line never wraps. Each word carries its BCP-47 tag so the
-   hidden measurer and the live word shape with the same fonts; Arabic is
-   flagged RTL so its run renders right-to-left inside the em's bidi
-   isolate and can never reorder the sentence's trailing period. */
+/* "language" in each of the window's fifteen belt locales — ONE CLOCK
+   (founder): the belt below reports whichever locale it centres
+   (TranslateWindow's onLocaleChange) and the em morphs to that
+   locale's word, so the headline never runs a timer of its own and the
+   word up here always names the locale on screen. Keyed by locale
+   code; English is the SSR/resting initial only — it is not on the
+   belt. Short native tokens so the re-measured line never wraps. Each
+   word carries its BCP-47 tag so the hidden measurer and the live word
+   shape with the same fonts; none of the fifteen are RTL (the belt's
+   roster excludes ar/he until the seam mirrors), but the rtl wiring —
+   probe dir, bidi isolate, reading-side wipe — stays for the day one
+   arrives. */
 type EveryWord = { text: string; lang: string; rtl?: boolean };
 
-const EVERY: readonly EveryWord[] = [
-  { text: 'language', lang: 'en' },
-  { text: '言語', lang: 'ja' },
-  { text: 'لغة', lang: 'ar', rtl: true },
-  { text: 'भाषा', lang: 'hi' },
-  { text: 'язык', lang: 'ru' },
-  { text: '语言', lang: 'zh' },
-  { text: '언어', lang: 'ko' },
-  { text: 'γλώσσα', lang: 'el' },
-];
+const WORD_EN: EveryWord = { text: 'language', lang: 'en' };
 
-const EVERY_FALLBACK: EveryWord = EVERY[0] ?? { text: 'language', lang: 'en' };
+const WORDS: Record<string, EveryWord> = {
+  en: WORD_EN,
+  es: { text: 'idioma', lang: 'es' },
+  ja: { text: '言語', lang: 'ja' },
+  fr: { text: 'langue', lang: 'fr' },
+  ko: { text: '언어', lang: 'ko' },
+  de: { text: 'Sprache', lang: 'de' },
+  zh: { text: '语言', lang: 'zh' },
+  pt: { text: 'idioma', lang: 'pt' },
+  ru: { text: 'язык', lang: 'ru' },
+  it: { text: 'lingua', lang: 'it' },
+  hi: { text: 'भाषा', lang: 'hi' },
+  nl: { text: 'taal', lang: 'nl' },
+  tr: { text: 'dil', lang: 'tr' },
+  sv: { text: 'språk', lang: 'sv' },
+  id: { text: 'bahasa', lang: 'id' },
+  pl: { text: 'język', lang: 'pl' },
+};
 
 /* the dissolve dust pool: small glyphs sampled across the same scripts */
 const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
@@ -62,12 +76,44 @@ const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
 export default function HomeHero() {
   const root = useRef<HTMLElement>(null);
 
+  /* the belt's hand on the headline: TranslateWindow calls
+     handleBeltLocale once on mount and on every active-locale change;
+     the driver — built inside useGSAP, where the morph apparatus lives —
+     consumes the request. pendingLoc buffers the mount-time call, which
+     lands BEFORE this component's own effect has run (child effects
+     fire first), so the engine picks it up when it boots. */
+  const driver = useRef<{ request: (w: EveryWord) => void } | null>(null);
+  const pendingLoc = useRef<string>(WORD_EN.lang);
+  const handleBeltLocale = (loc: string) => {
+    pendingLoc.current = loc;
+    const w = WORDS[loc];
+    if (w) driver.current?.request(w);
+  };
+
   useGSAP(
     () => {
+      const em = root.current?.querySelector<HTMLElement>('[data-every]');
+      const word = root.current?.querySelector<HTMLElement>('[data-every-word]');
+
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         /* the window parks its own reduced-motion still; the headline
-           simply stands, whole */
-        return;
+           swaps instantly to whatever the (static) belt reports — the
+           one-clock contract holds without a single tween */
+        if (em && word) {
+          const apply = (w: EveryWord) => {
+            word.textContent = w.text;
+            word.setAttribute('lang', w.lang);
+            word.setAttribute('dir', w.rtl ? 'rtl' : 'ltr');
+            /* no measured tween to protect: let the line reflow */
+            em.style.width = '';
+          };
+          driver.current = { request: apply };
+          const init = WORDS[pendingLoc.current];
+          if (init && init.text !== word.textContent) apply(init);
+        }
+        return () => {
+          driver.current = null;
+        };
       }
 
       gsap.from('[data-hero-in]', {
@@ -78,12 +124,31 @@ export default function HomeHero() {
         ease: 'power2.out',
       });
 
-      /* The headline hinge is a measuring instrument. Each cycle: the bound
-         guides appear around the current word; the word dissolves while the
-         dust scatters; the bounds tween to the NEXT word's measured width
-         first — scoping the layout shift before any text exists — then the
-         dust converges and the new word forms inside the prepared bounds.
-         The doubled underline re-measures with the em at constant gauge.
+      /* The headline hinge is a measuring instrument, DRIVEN BY THE BELT
+         (founder: one clock). Each morph — the same dissolve-to-dust /
+         condense cycle, no self-timer left: the bound guides appear
+         around the current word; the word dissolves while the dust
+         scatters; the bounds tween to the NEXT word's measured width
+         first — scoping the layout shift before any text exists — then
+         the dust converges and the new word forms inside the prepared
+         bounds. The doubled underline re-measures with the em at
+         constant gauge. A locale that arrives MID-morph never tears the
+         dust: `pending` keeps only the latest request and `drive`
+         serves it when the running cycle completes — a redirect, not a
+         pile-up. The whole cycle is cut to ~1.2s so it sits inside the
+         belt's 1.5s dwell (the founder's clock) and, since a morph is
+         always shorter than a dwell, no locale is ever skipped — the
+         headline can lag a crossing by at most a fraction of a beat
+         before it catches the belt again.
+
+         Condensation discipline (founder: glyph-field fidelity — see
+         src/lib/glyph-field.ts): the incoming word is rasterized and
+         scanned on a brick lattice at a pitch just under the dust glyph
+         size, every glyph flies to EXACTLY one sampled point (centred
+         on it, no undershoot), landings run in print order, and the
+         real text then PRINTS through the settled swarm behind a hard
+         linear clip front that absorbs each glyph as it passes — dust
+         becomes typography positionally, never a crossfade beside it.
 
          Width discipline (the founder's standard): the width the sentence
          reflows around is always the WHOLE SHAPED word — a hidden probe
@@ -96,8 +161,6 @@ export default function HomeHero() {
          continuous device-pixel-snapped tween per cycle so the trailing
          period only ever glides, and re-measures when the fonts arrive or
          the clamp()ed type resizes. */
-      const em = root.current?.querySelector<HTMLElement>('[data-every]');
-      const word = root.current?.querySelector<HTMLElement>('[data-every-word]');
       const compactEvery = window.matchMedia('(max-width: 720px)').matches;
       let everyCleanup: (() => void) | undefined;
       if (em && word) {
@@ -126,10 +189,15 @@ export default function HomeHero() {
           word.setAttribute('lang', w.lang);
           word.setAttribute('dir', w.rtl ? 'rtl' : 'ltr');
         };
-        let idx = 0;
+        /* the one-clock ledger: what stands, what the belt last asked
+           for, whether a cycle holds the floor, and whether the
+           first-fold capture window has passed */
+        let current: EveryWord = WORD_EN;
+        let pending: EveryWord | null = null;
         let morphing = false;
+        let armed = false;
         const holdWidth = () => {
-          em.style.width = `${measure(EVERY[idx] ?? EVERY_FALLBACK)}px`;
+          em.style.width = `${measure(current)}px`;
         };
         const remeasure = () => {
           if (!em.isConnected) return;
@@ -138,40 +206,64 @@ export default function HomeHero() {
         };
         window.addEventListener('resize', remeasure);
         void document.fonts.ready.then(remeasure);
-        everyCleanup = () => window.removeEventListener('resize', remeasure);
+        everyCleanup = () => {
+          window.removeEventListener('resize', remeasure);
+          driver.current = null;
+        };
         holdWidth();
+
+        /* the branch below installs the actual animation; drive() is the
+           gate both share: nothing runs before the capture window closes,
+           nothing overlaps a running cycle, and only the LATEST request
+           survives a busy spell */
+        let start: (next: EveryWord) => void = () => {};
+        const drive = () => {
+          if (morphing || !armed) return;
+          const next = pending;
+          pending = null;
+          if (!next) return;
+          if (next.text === current.text) {
+            /* es→pt: same word, different tongue — retag, never dissolve */
+            if (next.lang !== current.lang) {
+              current = next;
+              word.setAttribute('lang', next.lang);
+              word.setAttribute('dir', next.rtl ? 'rtl' : 'ltr');
+            }
+            return;
+          }
+          start(next);
+        };
 
         if (compactEvery) {
           /* At mobile scale 26 particles cannot breathe: a clean measured
-             crossfade tells the same story. */
-          const compactSwap = () => {
+             crossfade tells the same story, on the same belt clock. */
+          start = (next) => {
             if (!root.current || !root.current.isConnected) return;
-            idx = (idx + 1) % EVERY.length;
-            const next = EVERY[idx] ?? EVERY_FALLBACK;
             const w1 = measure(next);
+            current = next;
             morphing = true;
             gsap.to(word, {
               autoAlpha: 0,
-              duration: 0.2,
+              duration: 0.18,
               ease: 'power2.in',
               onComplete: () => {
                 showWord(next);
                 gsap.to(em, {
                   width: w1,
-                  duration: 0.5,
+                  duration: 0.4,
                   ease: 'power2.inOut',
                   snap: { width: 1 / dpr },
                   onComplete: () => {
                     morphing = false;
                     holdWidth();
+                    /* a locale that arrived mid-swap is served now */
+                    drive();
                   },
                 });
-                gsap.to(word, { autoAlpha: 1, duration: 0.24, ease: 'power2.out', delay: 0.18 });
-                gsap.delayedCall(2.4, compactSwap);
+                gsap.to(word, { autoAlpha: 1, duration: 0.22, ease: 'power2.out', delay: 0.14 });
               },
             });
           };
-          gsap.delayedCall(1.8, compactSwap);
         } else {
           const guideL = document.createElement('span');
           guideL.className = 'tc-eg is-l';
@@ -221,12 +313,11 @@ export default function HomeHero() {
             return picked;
           };
 
-          const swap = () => {
+          start = (next) => {
             if (!root.current || !root.current.isConnected) return;
-            const w0 = measure(EVERY[idx] ?? EVERY_FALLBACK);
-            idx = (idx + 1) % EVERY.length;
-            const next = EVERY[idx] ?? EVERY_FALLBACK;
+            const w0 = measure(current);
             const w1 = measure(next);
+            current = next;
             morphing = true;
             const tl = gsap.timeline({
               onComplete: () => {
@@ -234,12 +325,13 @@ export default function HomeHero() {
                 /* re-assert from a fresh cache in case fonts or viewport
                    moved mid-morph — otherwise the same value: nothing snaps */
                 holdWidth();
-                gsap.delayedCall(2.2, swap);
+                /* a locale that arrived mid-morph is served now */
+                drive();
               },
             });
 
             // 1. the instrument appears around the current word
-            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' });
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.12, ease: 'none' });
 
             // 2. the word dissolves as ONE shaped run — splitting it into
             //    per-character spans would disconnect Arabic and reflow the
@@ -249,9 +341,9 @@ export default function HomeHero() {
               autoAlpha: 0,
               scale: 0.92,
               transformOrigin: '50% 60%',
-              duration: 0.3,
+              duration: 0.22,
               ease: 'power2.in',
-            }, '+=0.05');
+            }, '+=0.03');
             /* the cloud separates SYMMETRICALLY about the word's centre: each
                glyph takes an evenly-spread angle on a jittered ring, so the
                scatter is balanced instead of clumping off to one side */
@@ -271,20 +363,20 @@ export default function HomeHero() {
               autoAlpha: () => gsap.utils.random(0.35, 0.8),
               x: (i, g) => place0(g as HTMLElement, i).x,
               y: (i, g) => place0(g as HTMLElement, i).y,
-              duration: 0.26,
-              stagger: 0.012,
+              duration: 0.2,
+              stagger: 0.006,
               ease: 'power1.out',
-            }, '<+=0.1');
+            }, '<+=0.06');
 
             // 3. the bounds glide to the incoming word's shaped width — ONE
             //    continuous tween, quantized to device pixels, so the period
             //    and everything after it track without buzz or end snap
-            tl.to(em, { width: w1, duration: 0.7, ease: 'power2.inOut', snap: { width: 1 / dpr } });
+            tl.to(em, { width: w1, duration: 0.45, ease: 'power2.inOut', snap: { width: 1 / dpr } });
             const place1 = ring(Math.max(w1, 30));
             tl.to(dustGlyphs, {
               x: (i, g) => place1(g as HTMLElement, i).x,
               y: (i, g) => place1(g as HTMLElement, i).y,
-              duration: 0.7,
+              duration: 0.45,
               ease: 'power2.inOut',
             }, '<');
 
@@ -301,12 +393,12 @@ export default function HomeHero() {
                   x: pt.x,
                   y: pt.y - h * 0.4,
                   autoAlpha: 0.9,
-                  duration: 0.38,
+                  duration: 0.3,
                   ease: 'power3.inOut',
-                  delay: i * 0.008,
+                  delay: i * 0.005,
                 });
               });
-              gsap.delayedCall(0.42, () => {
+              gsap.delayedCall(0.3, () => {
                 showWord(next);
                 gsap.fromTo(
                   word,
@@ -318,26 +410,42 @@ export default function HomeHero() {
                   {
                     autoAlpha: 1,
                     clipPath: 'inset(-15% 0% -15% 0%)',
-                    duration: 0.34,
+                    duration: 0.28,
                     ease: 'power2.out',
                     onComplete: () => {
                       gsap.set(word, { clearProps: 'clipPath' });
                     },
                   }
                 );
-                gsap.to(dustGlyphs, { autoAlpha: 0, duration: 0.26, stagger: 0.006, ease: 'power1.out', delay: 0.08 });
+                gsap.to(dustGlyphs, { autoAlpha: 0, duration: 0.2, stagger: 0.005, ease: 'power1.out', delay: 0.05 });
               });
             });
-            tl.to({}, { duration: 0.85 });
+            tl.to({}, { duration: 0.6 });
 
             // 5. the instrument withdraws
-            tl.to([guideL, guideR], { opacity: 0, duration: 0.24, ease: 'none' }, '>-0.05');
+            tl.to([guideL, guideR], { opacity: 0, duration: 0.18, ease: 'none' }, '>-0.04');
           };
-
-          /* The first dissolve waits out the first-fold capture window: any
-             still taken while the run settles shows the word whole, not dust. */
-          gsap.delayedCall(1.8, swap);
         }
+
+        /* the engine is built — open the vent. The mount-time report
+           landed before this effect ran, so it is re-staged as pending;
+           the first morph still waits out the first-fold capture window
+           (any still taken while the run settles shows the word whole,
+           not dust), by which time the belt's first crossing has usually
+           re-aimed pending at the SECOND locale — correct by the
+           one-clock rule: the em always names what the belt centres NOW. */
+        driver.current = {
+          request: (w) => {
+            pending = w;
+            drive();
+          },
+        };
+        const init = WORDS[pendingLoc.current];
+        if (init) pending = init;
+        gsap.delayedCall(1.8, () => {
+          armed = true;
+          drive();
+        });
       }
 
       return everyCleanup;
@@ -391,7 +499,9 @@ export default function HomeHero() {
           (= dimmer) so the flanks wash rather than saturate. */}
       <div className='tc-hero-cell tch-band'>
         <PrismaticField className='tc-hero-field tch-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
-        <TranslateWindow />
+        {/* one clock: the window reports its belt's active locale and the
+            headline above morphs to that locale's word for "language" */}
+        <TranslateWindow onLocaleChange={handleBeltLocale} />
       </div>
 
       <div className='tc-trust tch-trustcard'>

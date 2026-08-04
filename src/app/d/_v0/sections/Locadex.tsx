@@ -284,6 +284,10 @@ function IntegrateDiagram() {
             height={INT_MARK}
           />
         </mask>
+        {/* the halo's blur — generous region so the soft edge never clips */}
+        <filter id='v0-ldx-int-glow' x='-30%' y='-60%' width='160%' height='220%'>
+          <feGaussianBlur in='SourceGraphic' stdDeviation='5' />
+        </filter>
       </defs>
 
       {INT_LINKS.map((d) => (
@@ -336,6 +340,21 @@ function IntegrateDiagram() {
         </g>
       ))}
 
+      {/* the arrival glow: an accent-stroked copy of the plate's outline,
+          blurred, sitting BEHIND the plate — its opaque face covers the
+          blur's inner half, leaving a soft halo on the border that GSAP
+          breathes up each time a pulse lands. No vector-effect: the stroke
+          must scale with the geometry it blurs into. */}
+      <rect
+        className='v0-ldx-glow'
+        data-ldx-glow
+        x={INT_PLATE.x}
+        y={INT_PLATE.y}
+        width={INT_PLATE.w}
+        height={INT_PLATE.h}
+        rx={10}
+        filter='url(#v0-ldx-int-glow)'
+      />
       <rect
         className='v0-ldx-int-plate'
         x={INT_PLATE.x}
@@ -343,21 +362,6 @@ function IntegrateDiagram() {
         width={INT_PLATE.w}
         height={INT_PLATE.h}
         rx={10}
-        vectorEffect='non-scaling-stroke'
-      />
-      {/* the arrival lap: the plate's border, redrawn in accent — an arc of
-          30/100 of the perimeter whose offset GSAP runs one full lap each
-          time a pulse lands; CSS parks it invisible */}
-      <rect
-        className='v0-ldx-lap'
-        data-ldx-lap
-        x={INT_PLATE.x}
-        y={INT_PLATE.y}
-        width={INT_PLATE.w}
-        height={INT_PLATE.h}
-        rx={10}
-        pathLength={100}
-        strokeDasharray='30 70'
         vectorEffect='non-scaling-stroke'
       />
       <rect
@@ -420,21 +424,20 @@ export default function V0Locadex() {
          entirely off the path at both endpoints; 22 → −102 carries the dash
          fully across, its tail clearing the port right at the tween's end.
 
-         Each landing answers on the plate itself: the lap rect (the plate's
-         geometry, pathLength 100, a 30/70 dash) runs its offset one full lap
-         per arrival. Arrival of pulse i = its stagger slot + 0.9 of its
-         travel — where the eased dash has all but merged into the plate —
-         and one lap lasts exactly one stagger, so −100 ≡ 0 (mod 100) chains
-         the four laps into a single continuous circuit that fades once the
-         last pulse's lap closes. Everything lives on ONE timeline, so
-         pulses and laps can never drift out of phase. */
+         Each landing answers on the plate itself: the glow (the blurred
+         accent copy behind the plate) breathes up and settles back once per
+         arrival. Arrival of pulse i = its stagger slot + 0.9 of its travel —
+         where the eased dash has all but merged into the plate — and each
+         breath (rise + fall) lasts exactly one stagger, so the four breaths
+         chain edge to edge; the last one settles slower, back to the
+         stylesheet's barely-there resting alpha. Everything lives on ONE
+         timeline, so pulses and breaths can never drift out of phase. */
       const pulses = el.querySelectorAll<SVGPathElement>('[data-ldx-pulse]');
-      const lap = el.querySelector<SVGRectElement>('[data-ldx-lap]');
+      const glow = el.querySelector<SVGRectElement>('[data-ldx-glow]');
       const diagram = el.querySelector<SVGSVGElement>('.v0-ldx-int-svg');
       if (pulses.length > 0 && diagram) {
         const PULSE_DUR = 1.6;
         const PULSE_GAP = 0.45;
-        const LAP_DUR = PULSE_GAP;
         const ARRIVE = PULSE_DUR * 0.9;
         const flow = gsap.timeline({ repeat: -1, repeatDelay: 0.9, paused: true });
         flow.fromTo(
@@ -442,27 +445,22 @@ export default function V0Locadex() {
           { strokeDashoffset: 22 },
           { strokeDashoffset: -102, duration: PULSE_DUR, ease: 'power1.inOut', stagger: PULSE_GAP }
         );
-        if (lap) {
+        if (glow) {
+          /* mirrors the stylesheet's parked opacity — the resting halo */
+          const GLOW_REST = 0.2;
+          const RISE = 0.12;
+          const FALL = PULSE_GAP - RISE;
           pulses.forEach((_, i) => {
             const at = i * PULSE_GAP + ARRIVE;
-            flow.set(lap, { opacity: 1 }, at);
+            const settle = i === pulses.length - 1 ? 0.8 : FALL;
             flow.fromTo(
-              lap,
-              { strokeDashoffset: 0 },
-              {
-                strokeDashoffset: -100,
-                duration: LAP_DUR,
-                ease: 'none',
-                immediateRender: false,
-              },
+              glow,
+              { opacity: GLOW_REST },
+              { opacity: 1, duration: RISE, ease: 'power2.out', immediateRender: false },
               at
             );
+            flow.to(glow, { opacity: GLOW_REST, duration: settle, ease: 'power2.out' }, at + RISE);
           });
-          flow.to(
-            lap,
-            { opacity: 0, duration: 0.4, ease: 'power1.out' },
-            (pulses.length - 1) * PULSE_GAP + ARRIVE + LAP_DUR
-          );
         }
         ScrollTrigger.create({
           trigger: diagram,

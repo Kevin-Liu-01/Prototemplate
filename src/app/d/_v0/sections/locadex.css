@@ -79,6 +79,9 @@
   max-width: 560px;
   height: auto;
   margin-inline: auto;
+  /* the plate's right edge sits 2 units off the viewBox edge — unclip so
+     the arrival glow's bloom breathes evenly on all four sides */
+  overflow: visible;
 }
 
 /* sources: hairline nodes on paper, marks in the muted step */
@@ -112,20 +115,20 @@
   stroke-linecap: round;
 }
 
-/* the arrival lap: the accent arc that circles the plate's border when a
-   pulse lands — GSAP owns its offset and its fade; parked invisible so the
-   plate's own hairline is all that shows between arrivals */
-.toolchain-root .v0-ldx .v0-ldx-lap {
+/* the arrival glow: a blurred accent copy of the plate's outline sitting
+   behind it — the plate's opaque face covers the blur's inner half, so what
+   shows is a soft halo on the border. GSAP breathes it up on each pulse
+   landing and settles it back; this parked alpha is the barely-there
+   resting glow between arrivals, and the reduced-motion still. */
+.toolchain-root .v0-ldx .v0-ldx-glow {
   fill: none;
   stroke: #86a8ff;
-  stroke-width: 2;
-  stroke-linecap: round;
-  opacity: 0;
+  stroke-width: 4;
+  opacity: 0.2;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .toolchain-root .v0-ldx .v0-ldx-pulse,
-  .toolchain-root .v0-ldx .v0-ldx-lap {
+  .toolchain-root .v0-ldx .v0-ldx-pulse {
     display: none;
   }
 }

@@ -110,11 +110,24 @@
 }
 
 /* the doubled vertical rail — two real 1px strokes at constant gauge,
-   the original composition's circuitry, now running the frame's full
-   height, static (founder: the rail spans the diagram) */
-.toolchain-root .tcb .v0s-rail-line {
-  stroke: rgba(255, 255, 255, 0.14);
-  stroke-width: 1;
+   the original composition's circuitry — runs the COMPLETE height of
+   the figure cell, top rule to bottom rule (founder: "still not
+   reaching complete top and bottom"), as a cell-spanning element the
+   sticky figure travels along. Its x re-derives the overlay SVG's rail
+   position in cell space: the tower is centered at width
+   W = min(100% − 40px fig pads, 392px), the inner stroke sits
+   10/214.133 of W right of the tower's left edge and the outer stroke
+   1.85/214.133 of W further left (StackTower's RAIL_X / RAIL_GAUGE /
+   VIEW_W — change them together), so the borders land exactly under
+   the overlay's channel and leaders at any W. */
+.toolchain-root .tcb .v0s-cellrail {
+  --v0s-cellrail-w: min(100% - 40px, 392px);
+  position: absolute;
+  inset-block: 0;
+  left: calc(50% - 0.46194 * var(--v0s-cellrail-w) - 0.5px);
+  width: calc(0.00864 * var(--v0s-cellrail-w) + 1px);
+  border-inline: 1px solid rgba(255, 255, 255, 0.14);
+  pointer-events: none;
 }
 
 /* the live channel between the two strokes: the build's accent, filled
@@ -183,19 +196,59 @@
 }
 
 /* ---------- the top-face artifacts ----------
-   The per-stage miniatures from the toolchain stack, kept quiet:
-   flat marks and wires in the plate's own ink, two raised chips
-   (context's pair, and the runtime payload — the drawing's one
-   accent, dimmed until its beat). */
+   One strong drawing per beat (founder round): code's raised bracket
+   pair wrapping its lines, context's threads flowing into a raised
+   <T> under accent waves, translations' source fanning to its locale
+   runs (the payload chip the one accent), and the agents plate's
+   Locadex mark under an orbiting accent trace. Flat marks and wires
+   stay in the plate's own ink. */
 .toolchain-root .tcb .v0s-g-mark {
   fill: rgba(255, 255, 255, 0.13);
   transition: fill 0.3s ease;
 }
 
-/* the quieter second voice: output lines, secondary rows */
-.toolchain-root .tcb .v0s-g-mark-dim {
-  fill: rgba(255, 255, 255, 0.07);
-  transition: fill 0.3s ease;
+/* the chip-top type — the bracket forms and the <T> — STROKED glyphs
+   (a filled chevron reads as an arrow under the foreshortening; a
+   stroked one reads as a bracket), stepping toward white when the beat
+   spotlights them (the accent budget stays with the payload, waves,
+   and orbit) */
+.toolchain-root .tcb .v0s-g-glyph {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
+}
+
+/* context's incoming threads and translations' fan — screen-space
+   hairlines lying in the top face */
+.toolchain-root .tcb .v0s-ctx-wire,
+.toolchain-root .tcb .v0s-fan-wire {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 1;
+  transition: stroke 0.3s ease;
+}
+
+/* the waves: accent pulses riding the context wires into the <T>
+   (FullStack loops the dash while the plate is built; the markup's
+   offset leaves a resting segment for no-JS and reduced motion) —
+   half voice until the beat is hot */
+.toolchain-root .tcb .v0s-ctx-wave {
+  fill: none;
+  stroke: var(--iso-accent);
+  stroke-width: 1.5;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+/* the agents plate's scan energy: the orbiting accent trace, on its
+   own ring inset from the rim so it never doubles the hot edge */
+.toolchain-root .tcb .v0s-orbit {
+  fill: none;
+  stroke: var(--iso-accent);
+  stroke-width: 1.75;
 }
 
 /* the Locadex mark on the agents slab, in the plate's own ink until
@@ -267,8 +320,17 @@
   fill: rgba(255, 255, 255, 0.42);
 }
 
-.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark-dim {
-  fill: rgba(255, 255, 255, 0.2);
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-glyph {
+  stroke: rgba(255, 255, 255, 0.95);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-ctx-wire,
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-fan-wire {
+  stroke: rgba(255, 255, 255, 0.36);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-ctx-wave {
+  opacity: 1;
 }
 
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-ldx {
@@ -402,6 +464,11 @@
 
   .toolchain-root .tcb .v0-stack-tower {
     width: min(100%, 330px);
+  }
+
+  /* the rail alignment follows the tower's one-column width cap */
+  .toolchain-root .tcb .v0s-cellrail {
+    --v0s-cellrail-w: min(100% - 40px, 330px);
   }
 
   .toolchain-root .tcb .v0-stack-beat {

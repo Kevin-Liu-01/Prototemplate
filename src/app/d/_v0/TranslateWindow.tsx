@@ -47,7 +47,10 @@ gsap.registerPlugin(useGSAP);
    public/_gt/[locale].json. The window is self-contained: its own
    state, timelines and styles ride along (hero-terminal.css is the
    shared window sheet; the window-only rules live in
-   translate-window.css under the .v0-tw root class).
+   translate-window.css under the .v0-tw root class). One additive
+   vent: onLocaleChange reports the belt's active locale to a host
+   that wants to run on the window's clock (the dossier hero's
+   morphing headline); passed nothing, nothing changes.
    ------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------
@@ -451,10 +454,13 @@ const INS_IDS: Readonly<Partial<Record<RwKey, string>>> = {
   button: HASHES.button,
 };
 
-/* ---- belt pacing: each locale owns the centre for DWELL seconds (the
-   settled screen needs reading time); any manual interaction holds the
-   belt and it resumes after IDLE of quiet. */
-const BELT_DWELL = 5;
+/* ---- belt pacing: each locale owns the centre for DWELL seconds.
+   1.5s is the founder's clock ("on each one for 1.5 sec"): the mock's
+   ~0.5s rewrite and the dossier headline's ~1.2s print-morph — slaved
+   to this clock via onLocaleChange — are both cut to sit inside one
+   dwell. Any manual interaction holds the belt and it resumes after
+   IDLE of quiet. */
+const BELT_DWELL = 1.5;
 const BELT_IDLE = 6000;
 
 /* ---- the seam's travel floor: the payload block is inset to the
@@ -634,7 +640,18 @@ function Cmd({ text, mark }: { text: string; mark: string }) {
   );
 }
 
-export default function TranslateWindow() {
+type TranslateWindowProps = {
+  /** ONE CLOCK, exported: called once with the initial locale on mount
+      and again whenever the belt's ACTIVE locale changes — centre
+      crossings and chip clicks alike (every writer funnels through the
+      same state, so nothing can fire twice for one change). Hosts that
+      slave their own furniture to the window's tempo (the dossier
+      hero's morphing headline) listen here; undefined keeps the window
+      fully self-contained, exactly as before. */
+  onLocaleChange?: (loc: string) => void;
+};
+
+export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps) {
   const root = useRef<HTMLDivElement>(null);
 
   /* the terminal window's two faces + the preview's locale. The rendered
@@ -665,6 +682,17 @@ export default function TranslateWindow() {
   const holdBelt = () => {
     beltHold.current = Date.now() + BELT_IDLE;
   };
+
+  /* the exported clock: ploc IS the active locale — the ticker's centre
+     crossing and a chip's click both land in setPloc, so one
+     [ploc]-keyed effect reports the initial locale on mount and every
+     change after it, and no writer can slip past the host unheard */
+  useGSAP(
+    () => {
+      onLocaleChange?.(ploc);
+    },
+    { dependencies: [ploc] }
+  );
 
   const pickView = (next: 'term' | 'preview') => {
     holdBelt();
@@ -971,8 +999,9 @@ export default function TranslateWindow() {
   /* ---- language switching rewrites the page, line by line ----
      When the locale changes, every localized line deletes the string it
      was showing and types the new one — staggered top to bottom, the
-     whole swap inside ~0.9s (the ReviewWorkspace character-slice
-     pattern). Each ledger key writes TWO nodes from ONE dial: the
+     whole swap inside ~0.55s (the ReviewWorkspace character-slice
+     pattern, cut to the belt's 1.5s dwell so the settled screen still
+     owns most of the beat). Each ledger key writes TWO nodes from ONE dial: the
      rendered line (data-rw) and its translated leaf in the payload pane
      (data-rwj) — the file visibly retypes in step with the page, and
      the two can never disagree. React has already stamped the new
@@ -1023,13 +1052,13 @@ export default function TranslateWindow() {
         };
         /* restore the pre-swap text before paint, then animate */
         write(from.join(''));
-        const at = i * 0.05;
+        const at = i * 0.03;
         const dial = { n: from.length };
         tl.to(
           dial,
           {
             n: 0,
-            duration: gsap.utils.clamp(0.06, 0.12, from.length * 0.01),
+            duration: gsap.utils.clamp(0.05, 0.09, from.length * 0.008),
             ease: 'power1.in',
             onUpdate: () => write(from.slice(0, Math.round(dial.n)).join('')),
           },
@@ -1039,17 +1068,17 @@ export default function TranslateWindow() {
           dial,
           {
             n: to.length,
-            duration: gsap.utils.clamp(0.14, 0.3, to.length * 0.016),
+            duration: gsap.utils.clamp(0.1, 0.18, to.length * 0.011),
             onUpdate: () => write(to.slice(0, Math.round(dial.n)).join('')),
           },
-          '>+0.02'
+          '>+0.015'
         );
       });
       tl.fromTo(
         '[data-rwf]',
         { autoAlpha: 0.15 },
-        { autoAlpha: 1, duration: 0.3, ease: 'power1.out', stagger: 0.05, immediateRender: false },
-        0.1
+        { autoAlpha: 1, duration: 0.22, ease: 'power1.out', stagger: 0.03, immediateRender: false },
+        0.08
       );
     },
     { scope: root, dependencies: [ploc] }
