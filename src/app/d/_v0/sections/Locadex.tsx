@@ -10,6 +10,7 @@ import { Bot } from 'lucide-react';
 
 import {
   SiContentful,
+  SiGithub,
   SiGoogledrive,
   SiMarkdown,
   SiNotion,
@@ -214,37 +215,40 @@ type IntSource = {
   icons: readonly { name: string; Icon: ComponentType<MarkProps> }[];
 };
 
-/** Flat ruled coordinates: nodes at left, the Locadex plate at right. */
+/** Flat ruled coordinates, mirrored: the Locadex plate at LEFT, the four
+    source nodes at right — the tools feed the agent. */
 const INT_W = 560;
-const INT_H = 190;
-const NODE_X = 1;
+const INT_H = 234;
+const NODE_X = 373;
 const NODE_W = 186;
 const NODE_H = 44;
-const INT_PLATE = { x: 424, y: 63, w: 134, h: 64 } as const;
+const INT_PLATE = { x: 2, y: 85, w: 134, h: 64 } as const;
 
 const INT_SOURCES: readonly IntSource[] = [
-  { label: 'Google Drive', cy: 24, icons: [{ name: 'Google Drive', Icon: SiGoogledrive }] },
+  { label: 'GitHub', cy: 24, icons: [{ name: 'GitHub', Icon: SiGithub }] },
+  { label: 'Google Drive', cy: 86, icons: [{ name: 'Google Drive', Icon: SiGoogledrive }] },
   {
     label: 'CMS platform',
-    cy: 95,
+    cy: 148,
     icons: [
       { name: 'Notion', Icon: SiNotion },
       { name: 'Contentful', Icon: SiContentful },
       { name: 'Sanity', Icon: SiSanity },
     ],
   },
-  { label: 'Docs framework', cy: 166, icons: [{ name: 'Markdown', Icon: SiMarkdown }] },
+  { label: 'Docs framework', cy: 210, icons: [{ name: 'Markdown', Icon: SiMarkdown }] },
 ];
 
 /**
- * One connector per source, each drawn once: the outer two elbow into the
- * plate's left edge above and below the straight center run, so no two paths
- * ever share a segment.
+ * One connector per source, each drawn once, flowing INTO the plate: the
+ * outer pair's vertical runs sit at one gauge, the inner pair's at another,
+ * so no two paths ever share a segment.
  */
 const INT_LINKS: readonly string[] = [
-  'M187 24H332Q340 24 340 32V73Q340 81 348 81H424',
-  'M187 95H424',
-  'M187 166H332Q340 166 340 158V117Q340 109 348 109H424',
+  'M373 24H228Q220 24 220 32V88Q220 96 212 96H136',
+  'M373 86H260Q252 86 252 94V102Q252 110 244 110H136',
+  'M373 148H260Q252 148 252 140V132Q252 124 244 124H136',
+  'M373 210H228Q220 210 220 202V146Q220 138 212 138H136',
 ];
 
 /** Plate contents: mark then wordmark, centered as one group. */
@@ -258,14 +262,14 @@ function IntegrateDiagram() {
       className='v0-ldx-int-svg'
       viewBox={`0 0 ${INT_W} ${INT_H}`}
       role='img'
-      aria-label='Google Drive, a CMS platform, and a docs framework all feed the Locadex agent'
+      aria-label='GitHub, Google Drive, a CMS platform, and a docs framework all feed the Locadex agent'
     >
       <defs>
         <mask
           id='v0-ldx-int-mark'
           maskUnits='userSpaceOnUse'
           x={INT_MARK_X}
-          y={95 - INT_MARK / 2}
+          y={117 - INT_MARK / 2}
           width={INT_MARK}
           height={INT_MARK}
           style={{ maskType: 'alpha' }}
@@ -273,7 +277,7 @@ function IntegrateDiagram() {
           <image
             href='/brand/locadex-mark.svg'
             x={INT_MARK_X}
-            y={95 - INT_MARK / 2}
+            y={117 - INT_MARK / 2}
             width={INT_MARK}
             height={INT_MARK}
           />
@@ -311,7 +315,7 @@ function IntegrateDiagram() {
             <Icon
               key={name}
               className='v0-ldx-nico'
-              x={18 + i * 21}
+              x={NODE_X + 17 + i * 21}
               y={cy - 7}
               width={14}
               height={14}
@@ -321,7 +325,7 @@ function IntegrateDiagram() {
           ))}
           <text
             className='v0-ldx-nlabel'
-            x={18 + icons.length * 21 + 5}
+            x={NODE_X + 17 + icons.length * 21 + 5}
             y={cy}
             dominantBaseline='central'
           >
@@ -342,12 +346,12 @@ function IntegrateDiagram() {
       <rect
         className='v0-ldx-mark-ink'
         x={INT_MARK_X}
-        y={95 - INT_MARK / 2}
+        y={117 - INT_MARK / 2}
         width={INT_MARK}
         height={INT_MARK}
         mask='url(#v0-ldx-int-mark)'
       />
-      <text className='v0-ldx-int-name' x={INT_NAME_X} y={95} dominantBaseline='central'>
+      <text className='v0-ldx-int-name' x={INT_NAME_X} y={117} dominantBaseline='central'>
         Locadex
       </text>
     </svg>

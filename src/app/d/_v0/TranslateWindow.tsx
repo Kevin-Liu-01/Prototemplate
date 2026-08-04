@@ -6,7 +6,6 @@ import Image from 'next/image';
 
 import { Eye, TerminalSquare } from 'lucide-react';
 import {
-  Fragment,
   useRef,
   useState,
   type ComponentType,
@@ -458,6 +457,13 @@ const INS_IDS: Readonly<Partial<Record<RwKey, string>>> = {
 const BELT_DWELL = 5;
 const BELT_IDLE = 6000;
 
+/* ---- the seam's travel floor: the payload block is inset to the
+   card's 30% mark, so left of its margin there is nothing to reveal —
+   fully open parks the doubled line just clear of the gutter, the SAME
+   composition a pinned inspector drives to (drag stop and pin target
+   are one number, so the two ways of opening the pane agree). */
+const CUT_MIN = 26;
+
 /** The four roster locales the shared flag map doesn't carry yet — kept
     component-local so the belt stays self-contained. */
 const EXTRA_FLAGS: Record<string, string> = {
@@ -531,20 +537,32 @@ function InsMark({
 }
 
 /** One locale's _gt payload, tokenized with the plate's own restraint:
-    keys dim, punctuation faint, translated leaves lit. Every row carries
-    its key as data-key; `hl` lifts the one row a pinned inspector points
-    at. Every translated leaf isolates its string in a data-rwj span —
-    the rewrite engine's mirror node, retyped in the same dial as the
-    rendered line above it (the quotes live outside the node, so typing
-    never eats them). */
+    keys dim, punctuation faint, translated leaves lit. The block reads
+    as the editor pane it stands for: every logical line is a pl-line
+    block that opens with its pl-ln gutter numeral — unselectable
+    furniture, always a SIBLING of the rewrite nodes, never inside one,
+    so the typing engine can only ever touch the leaves. Every row
+    carries its key as data-key; `hl` lifts the one row — numeral
+    included — that a pinned inspector points at. Every translated leaf
+    isolates its string in a data-rwj span — the rewrite engine's
+    mirror node, retyped in the same dial as the rendered line above it
+    (the quotes live outside the node, so typing never eats them). */
+/* The payload's three tokens live at module scope ON PURPOSE: inline
+   component types remount their whole subtree every render, and a
+   remount mid-retype detaches the DOM nodes a running rewrite tween
+   captured — the payload would freeze on a partial while the rendered
+   line typed on. Stable types let React update the same spans in
+   place, so the ledger's node refs survive any re-render. */
+const K = ({ k }: { k: string }) => <span className='pl-k'>&quot;{k}&quot;</span>;
+const S = ({ s, k }: { s: string; k: RwKey }) => (
+  <span className='pl-s'>
+    &quot;<span data-rwj={k}>{s}</span>&quot;
+  </span>
+);
+const Ln = ({ n }: { n: number }) => <span className='pl-ln'>{n}</span>;
+
 function PayloadJson({ loc, hl }: { loc: PreviewLoc; hl?: string }) {
   const p = PREVIEWS[loc];
-  const K = ({ k }: { k: string }) => <span className='pl-k'>&quot;{k}&quot;</span>;
-  const S = ({ s, k }: { s: string; k: RwKey }) => (
-    <span className='pl-s'>
-      &quot;<span data-rwj={k}>{s}</span>&quot;
-    </span>
-  );
   const flat: readonly (readonly [string, string, RwKey])[] = [
     [HASHES.navOverview, p.nav[0], 'nav0'],
     [HASHES.navPayments, p.nav[1], 'nav1'],
@@ -556,32 +574,48 @@ function PayloadJson({ loc, hl }: { loc: PreviewLoc; hl?: string }) {
   ];
   return (
     <pre className='tct-payload-code'>
-      {'{\n'}
-      {flat.map(([k, s, rw]) => (
-        <Fragment key={k}>
+      <span className='pl-line'>
+        <Ln n={1} />
+        {'{'}
+      </span>
+      {flat.map(([k, s, rw], i) => (
+        <span className='pl-line sgdh-pl-row' key={k} data-key={k} data-hl={hl === k || undefined}>
+          <Ln n={i + 2} />
           {'  '}
-          <span className='sgdh-pl-row' data-key={k} data-hl={hl === k || undefined}>
-            <K k={k} />
-            {': '}
-            <S s={s} k={rw} />
-          </span>
-          {',\n'}
-        </Fragment>
+          <K k={k} />
+          {': '}
+          <S s={s} k={rw} />
+          {','}
+        </span>
       ))}
-      {'  '}
-      <span className='sgdh-pl-row' data-key={HASHES.button} data-hl={hl === HASHES.button || undefined}>
+      <span
+        className='pl-line sgdh-pl-row'
+        data-key={HASHES.button}
+        data-hl={hl === HASHES.button || undefined}
+      >
+        <Ln n={flat.length + 2} />
+        {'  '}
         <K k={HASHES.button} />
         {': '}
         <S s={p.button} k='button' />
+        {','}
       </span>
-      {',\n  '}
-      <span className='sgdh-pl-row' data-key={HASHES.sub} data-hl={hl === HASHES.sub || undefined}>
+      <span
+        className='pl-line sgdh-pl-row'
+        data-key={HASHES.sub}
+        data-hl={hl === HASHES.sub || undefined}
+      >
+        <Ln n={flat.length + 3} />
+        {'  '}
         <K k={HASHES.sub} />
         {': { "c": [{ "c": '}
         <S s={p.sub} k='sub' />
         {', "i": 5, "t": "p" }] }'}
       </span>
-      {'\n}'}
+      <span className='pl-line'>
+        <Ln n={flat.length + 4} />
+        {'}'}
+      </span>
     </pre>
   );
 }
@@ -686,7 +720,9 @@ export default function TranslateWindow() {
   const setCut = (pct: number) => {
     const el = app.current;
     if (!el) return;
-    const next = Math.min(100, Math.max(0, pct));
+    /* every writer respects the floor: the dial never opens past the
+       payload block's margin */
+    const next = Math.min(100, Math.max(CUT_MIN, pct));
     el.style.setProperty('--seam-cut', `${next}%`);
     el.querySelector('.tc-seam')?.setAttribute('aria-valuenow', String(Math.round(next)));
   };
@@ -884,9 +920,10 @@ export default function TranslateWindow() {
         };
       }
 
-      /* the first move waits out the first-fold capture window: a still
-         taken ~3s in shows the es screen settled under its centred chip */
-      beltHold.current = Date.now() + 4500;
+      /* the belt is already moving on the first frame — a paused strip
+         reads as broken (founder note); es still owns the opening screen
+         since it starts centred and the first crossing is a dwell away */
+      beltHold.current = 0;
       let hover = false;
       const over = () => {
         hover = true;
@@ -1073,7 +1110,7 @@ export default function TranslateWindow() {
          them — it holds now and resumes after the quiet spell */
       holdBelt();
       dragged.current = true;
-      const target = pinned ? 26 : 70;
+      const target = pinned ? CUT_MIN : 70;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setCut(target);
       } else {
@@ -1373,6 +1410,12 @@ export default function TranslateWindow() {
                 holdBelt();
                 dragged.current = true;
                 setHinted(true);
+              }}
+              /* the seam's own drag/keys write the raw 0–100 dial; any
+                 cut past the block's margin re-clamps to the floor the
+                 same frame it lands */
+              onCutChange={(pct) => {
+                if (pct < CUT_MIN) setCut(CUT_MIN);
               }}
             />
           </div>

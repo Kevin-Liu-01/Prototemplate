@@ -359,12 +359,28 @@
   display: none;
 }
 
-/* Every flag box speaks the same blue box — the Source line included;
-   only the box is blue, the words keep their neutral voice. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-chip.is-src {
-  border-color: var(--tct-loc-line);
-  background: var(--tct-loc-wash);
-  color: rgba(255, 255, 255, 0.62);
+/* LOCALE PILLS SPEAK QUIET GRAY in the page's own face (founder
+   reversal of the blue-box round) — terminal chips, source included. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-chip {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--tc-sans);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lct-code {
+  font-family: var(--tc-sans);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-tw .tct-tabs button {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-tw .tct-tabs button[data-on='true'] {
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* …and the developer section's tags stop being the grey dialect: the
@@ -374,15 +390,15 @@
   align-items: center;
   gap: 5px;
   padding: 0 6px;
-  border: 1px solid rgba(90, 120, 220, 0.34);
+  border: 1px solid rgba(10, 11, 13, 0.16);
   border-radius: 4px;
-  background: rgba(120, 156, 255, 0.09);
+  background: rgba(10, 11, 13, 0.03);
   line-height: 19px;
 }
 
 [data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev .lct {
-  border-color: rgba(157, 185, 255, 0.3);
-  background: rgba(120, 156, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 /* The Save-button key column sized itself before it wore a box —

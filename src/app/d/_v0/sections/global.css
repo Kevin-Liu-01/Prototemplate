@@ -143,9 +143,9 @@
   display: inline-flex;
   align-items: center;
   padding: 0 6px;
-  border: 1px solid rgba(90, 120, 220, 0.34);
+  border: 1px solid rgba(10, 11, 13, 0.16);
   border-radius: 4px;
-  background: rgba(120, 156, 255, 0.09);
+  background: rgba(10, 11, 13, 0.03);
   background-clip: padding-box;
   font-family: var(--tc-mono);
   font-size: 11px;
@@ -156,8 +156,8 @@
 }
 
 [data-theme='dark'] .toolchain-root .v0-glob-chip {
-  border-color: rgba(157, 185, 255, 0.3);
-  background: rgba(120, 156, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 .toolchain-root .v0-glob-chip .lct-flag {

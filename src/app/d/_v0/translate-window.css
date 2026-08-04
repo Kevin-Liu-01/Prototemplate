@@ -4,8 +4,8 @@
    window sheet; this file carries only what the window adds to
    it: the bar's strip zone with its two faces — framework strip
    and infinite locale belt — the preview face's product page
-   furniture, the inspector marks, and the payload's pinned
-   row). Every rule is scoped
+   furniture, the inspector marks, and the payload's inset
+   block: its editor gutter and pinned row). Every rule is scoped
    `.toolchain-root .v0-tw` — the root class the component puts
    on the window — so it outranks hero-terminal's own
    .toolchain-root rules on specificity and travels with the
@@ -359,12 +359,16 @@
   border-color: #2f5ce0;
 }
 
-/* the id chip: the payload key, in the payload's own dark ink */
+/* the id chip: the payload key, in the payload's own dark ink. It
+   annotates the RENDERED layer, so it lives with it: above the app's
+   own content (z1) but under the payload's sweep (z2) and the seam
+   (z3) — when the cut crosses it, the chip is covered like any other
+   line of the card, never floating over the JSON. */
 .toolchain-root .v0-tw .sgdh-ins-chip {
   position: absolute;
   right: -12px;
   bottom: calc(100% + 9px);
-  z-index: 3;
+  z-index: 1;
   padding: 4px 7px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: #101010;
@@ -377,8 +381,72 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+/* ---- the payload block, inset to mirror the mock ----
+   The mock's composition clusters LEFT of the resting cut, so the
+   artifact clusters RIGHT of it: the pane's left padding carries the
+   whole JSON block to the card's 30% mark — the moment the seam moves,
+   keys and values are already under it, and the pinned 26% cut exposes
+   the block whole, clear of the seam's threads. The filename crumb
+   leaves its top-right teaser post and sits on the code column's own
+   left rule: name above body, one line down the artifact. */
+.toolchain-root .v0-tw .tct-payload {
+  --pl-inset: 30%;
+  padding-left: var(--pl-inset);
+}
+
+.toolchain-root .v0-tw .tct-payload-file {
+  right: auto;
+  left: calc(var(--pl-inset) + 38px);
+}
+
+/* ---- the editor gutter: quiet numerals left of the rows ----
+   Each logical line is a block whose hanging indent reserves the
+   gutter: the numeral fills the reserve on the first visual line, and
+   wrapped continuations start at the code column, never under the
+   numbers. Lines may wrap (the sub row's JSX tree runs long) — at the
+   pinned cut the block reads whole instead of running off the card. */
+.toolchain-root .v0-tw .pl-line {
+  display: block;
+  padding-left: 38px;
+  text-indent: -38px;
+  white-space: pre-wrap;
+}
+
+/* the numeral: dim mono furniture, right-aligned against the rule; it
+   is never selectable and never part of any rewrite ledger node */
+.toolchain-root .v0-tw .pl-ln {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 38px;
+  padding-right: 10px;
+  text-align: right;
+  text-indent: 0;
+  -webkit-user-select: none;
+  user-select: none;
+  color: #4a4a4a;
+}
+
+/* the gutter's separation from the code: ONE hairline for the whole
+   block, drawn once on the pre — never per-line strokes */
+.toolchain-root .v0-tw .tct-payload-code {
+  position: relative;
+}
+
+.toolchain-root .v0-tw .tct-payload-code::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 32px;
+  width: 1px;
+  background: #2e2e2e;
+}
+
 /* ---- the pinned row: the JSON line a clicked inspector points at —
-   an accent wash on the one row, its key and value lifted to full ink */
+   an accent wash across the whole line box, gutter numeral included,
+   so the lit row reads as ONE editor row; numeral, key and value all
+   lift toward full ink (the hairline rides over the wash unbroken —
+   positioned strokes paint above the row's background) */
 .toolchain-root .v0-tw .sgdh-pl-row {
   transition: background-color 0.2s ease;
 }
@@ -390,6 +458,10 @@
 .toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] .pl-k,
 .toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] .pl-s {
   color: #ffffff;
+}
+
+.toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] .pl-ln {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 /* ---- narrow: tighter gutters; the stats keep to the card ---- */
