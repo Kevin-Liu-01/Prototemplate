@@ -1414,3 +1414,15 @@
   line-height: 1.66;
   color: var(--pt-ink-2);
 }
+
+/* the repo mark: quiet ink beside Present, full ink on hover */
+.pt-root .pt-nav-github {
+  display: inline-flex;
+  align-items: center;
+  color: var(--pt-ink-3);
+  transition: color 0.15s ease;
+}
+
+.pt-root .pt-nav-github:hover {
+  color: var(--pt-ink);
+}
