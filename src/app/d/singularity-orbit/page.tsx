@@ -6,6 +6,7 @@ import V0Nav from '../_v0/V0Nav';
 
 import V0Customers from '../_v0/sections/Customers';
 import V0Developer from '../_v0/sections/Developer';
+import V0DevWindow from '../_v0/sections/DevWindow';
 import V0Deploy from '../_v0/sections/Deploy';
 import V0FullStack from '../_v0/sections/FullStack';
 import V0ContextSec from '../_v0/sections/ContextSec';
@@ -40,6 +41,7 @@ export default function Page() {
         <div className='tc-rail'>
           <HomeHero />
           <V0Customers heading='Trusted by companies around the globe.' />
+          <V0DevWindow />
           <V0FullStack sub='GT connects all the infrastructure you need in a single ecosystem.' />
           <V0Developer
             heading='Localization is complex.'

@@ -28,9 +28,13 @@ const BARS: readonly {
 export type LocaleRoutingProps = {
   className?: string;
   title?: string;
+  /** Locale rows to render, kept in BARS order; omitted = all six, so the
+      toolchain page's default render is unchanged. */
+  locales?: readonly string[];
 };
 
-export default function LocaleRouting({ className, title }: LocaleRoutingProps) {
+export default function LocaleRouting({ className, title, locales }: LocaleRoutingProps) {
+  const bars = locales ? BARS.filter((bar) => locales.includes(bar.loc)) : BARS;
   return (
     <div
       className={['rt', className].filter(Boolean).join(' ')}
@@ -38,7 +42,7 @@ export default function LocaleRouting({ className, title }: LocaleRoutingProps) 
       aria-label={title}
       aria-hidden={title ? undefined : true}
     >
-      {BARS.map((bar) => (
+      {bars.map((bar) => (
         <div className='rt-bar' key={bar.loc}>
           <span className='rt-dom'>example.com</span>
           {bar.seg ? <b className='rt-seg'>{bar.seg}</b> : null}

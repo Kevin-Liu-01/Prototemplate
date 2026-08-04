@@ -5,7 +5,6 @@ import { useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import LocaleRouting from '@/app/d/toolchain/diagrams/LocaleRouting';
-import RtlMirror from '@/app/d/toolchain/diagrams/lang/RtlMirror';
 import SentenceWidth, { SENTENCE_SAMPLES } from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { BentoCell } from '@/components/shell/Bento';
@@ -85,9 +84,9 @@ const LEDGER_PANELS: readonly LedgerPanel[] = [
  * Built for developers — the Figma DX beat expressed in the sheet's own
  * ledger: a tc-head header cell, then framed bento rows whose seams the row
  * owns, mounting the ORIGINAL diagram components the mock's screenshots were
- * taken from (SentenceWidth, RtlMirror, LocaleRouting). Only the thorny-
- * locale Intl ledger is v0-authored, and it lives inside a framed cell like
- * any other artifact.
+ * taken from (SentenceWidth, LocaleRouting). Only the thorny-locale Intl
+ * ledger is v0-authored, and it lives inside a framed cell like any other
+ * artifact.
  */
 type V0DeveloperProps = {
   /** The non-terminal home re-heads this beat as "Localization is complex." */
@@ -117,8 +116,7 @@ export default function V0Developer({
       <div className='tc-row v0-dev-grid'>
         <BentoCell
           cell='is-framed v0-dev-span'
-          title='Every locale is a different length. Some change your entire orientation.'
-          sub='GT renders components correctly for every locale.'
+          title='GT handles component sizing and orientation.'
         >
           <div className='tc-lang is-lead'>
             <SentenceWidth
@@ -129,15 +127,11 @@ export default function V0Developer({
               title='The same sentence measured in English, German, Japanese, Arabic and Hebrew'
             />
           </div>
-          <div className='tc-lang v0-dev-mirror'>
-            <RtlMirror title='The same form mirrored under an RTL locale' />
-          </div>
         </BentoCell>
 
         <BentoCell
           cell='is-framed'
-          title='Every locale uses different numbers, currencies, dates, plurals, and more'
-          sub='GT handles every possible branch and edge case.'
+          title='GT handles numbers, currencies, dates, plurals, and every edge case.'
         >
           <div className='v0-dev-ledger'>
             {LEDGER_PANELS.map((panel) => (
@@ -160,13 +154,12 @@ export default function V0Developer({
           </div>
         </BentoCell>
 
-        <BentoCell
-          cell='is-framed'
-          title='Every locale needs to be routed correctly'
-          sub='GT automatically routes your users to the correct SEO-friendly URL path — localizing in French means translating both the pathname and the page.'
-        >
+        <BentoCell cell='is-framed' title='GT handles locale routing.'>
           <div className='tc-art-center'>
-            <LocaleRouting title='The same page routed for all six configured locales, /fr/a-propos localized, with the detection order beneath' />
+            <LocaleRouting
+              locales={['en', 'es', 'fr']}
+              title='The same page routed for English, Spanish and French, /fr/a-propos localized, with the detection order beneath'
+            />
           </div>
         </BentoCell>
       </div>

@@ -55,10 +55,8 @@ export default function HomeHero() {
       /* The field draws with the page's own faces and ink, resolved off the
          DOM; its rAF loop, resize, theme re-inking, fonts.ready remeasure and
          reduced-motion still are all internal to the library — destroy() on
-         unmount is ours. The library does not parameterize drift direction
-         or glyph size, so the field keeps its slow settling fall (the
-         closest sanctioned motion to the mock's rising cloud), and the
-         fixed-px glyphs read a step larger against this shorter stage. */
+         unmount is ours. The spec's rising cloud and larger background
+         glyphs ride the library's additive drift/glyphScale options. */
       const h1 = rootEl.querySelector('h1');
       const field = createGlyphField({
         drift: 'rise',

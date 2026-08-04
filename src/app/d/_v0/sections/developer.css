@@ -14,6 +14,14 @@
   gap: 1px;
 }
 
+/* Cells stretch, or the shortest column exposes the row ground as a slab
+   where a 1px seam should be. Needs the tc-row qualifier: tc-row's own
+   `align-items: start` ties specificity and its sheet loads later. Every
+   mounted cell distributes its own slack, so the stretch is safe. */
+.toolchain-root .tc-row.v0-dev-grid {
+  align-items: stretch;
+}
+
 /* bento content shares the header's left rule: the cards trade their
    own pad for the section gutter */
 .toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card {
@@ -24,22 +32,29 @@
   grid-row: span 2;
 }
 
-/* the two artifacts share the tall cell: measured widths above, the
-   mirrored form pinned to the cell's floor so the pair spends the whole
-   column (the span-2 cell's slack lands between them, not under them) */
-.toolchain-root .v0-dev-mirror {
-  margin-top: auto;
-  padding-top: clamp(30px, 3.4vw, 46px);
+/* The lone diagram spends the merged cell's full height: the wrapper
+   stretches its child, the rows grid takes the cell's slack and spaces
+   the measured rows over it, and the ruler + caption keep the floor.
+   The guide is absolutely anchored to the rows box, so it must keep
+   spanning the spread rows without a further offset change. */
+.toolchain-root .v0-dev .tc-lang.is-lead {
+  align-items: stretch;
 }
 
-/* the mirrored panels speak for themselves — the dir captions retire */
-.toolchain-root .v0-dev-mirror .lang-rm-dir {
+.toolchain-root .v0-dev .tc-lang.is-lead .lang-sw {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .v0-dev .tc-lang.is-lead .lang-sw-rows {
+  flex: 1;
+  align-content: space-between;
+}
+
+/* The flag+code chips carry the locale column alone here — the language
+   names retire. display: none keeps the flex gap from stranding. */
+.toolchain-root .v0-dev .lang-sw-name {
   display: none;
-}
-
-/* the panels themselves grow into the freed height */
-.toolchain-root .v0-dev-mirror .lang-rm-panel {
-  min-height: 190px;
 }
 
 @media (max-width: 1000px) {
@@ -58,6 +73,9 @@
 .toolchain-root .v0-dev-ledger {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* the ledger absorbs the stretched card's slack: its auto rows share
+     the extra height, so the internal seams keep spanning the card */
+  flex: 1;
 }
 
 .toolchain-root .v0-dev-panel {

@@ -1,0 +1,29 @@
+/* ============================================================
+   V0 DEV WINDOW — light tc-head over one full-bleed night row
+   The row is the dossier hero band's material verbatim: the
+   #070707 plate, the prismatic field washing the flanks (the
+   shared .tc-hero-field/.tch-field rules carry its mask, blend
+   and light-theme inversion), and the shared TranslateWindow
+   centered on it. Seam ledger: the section's top rule closes
+   the Customers wall above (which yields its bottom); the row's
+   own border-top rules the head/plate junction; the section's
+   tc-sec border-bottom is yielded because the full-stack band
+   below is its own committed material — every line drawn once.
+   ============================================================ */
+
+.toolchain-root .v0-devwin.tc-sec {
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 0;
+}
+
+/* the night row: square, full rail width, breathing room INSIDE the
+   plate (the dossier band's own habit) so the window's outline ring
+   never touches a seam */
+.toolchain-root .v0-devwin-band {
+  position: relative;
+  border-top: 1px solid var(--tc-hair);
+  padding: clamp(26px, 3vw, 40px) clamp(14px, 3vw, 44px) 30px;
+  background: #070707;
+  overflow: hidden;
+  isolation: isolate;
+}
