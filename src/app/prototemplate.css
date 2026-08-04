@@ -399,14 +399,17 @@
   opacity: 0.78;
 }
 
-/* the burst's hotspot sits under the deck ledger — a quiet scrim keeps the
-   rows legible while the field stays full-blaze everywhere else */
+/* the burst's hotspot sits under the copy AND the deck ledger — scrims on
+   both flanks keep the words legible while the field stays full-blaze
+   through the middle */
 .pt-feature::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(90deg, rgba(12, 14, 17, 0) 42%, rgba(12, 14, 17, 0.6) 74%);
+  background:
+    linear-gradient(90deg, rgba(12, 14, 17, 0.66) 0%, rgba(12, 14, 17, 0) 46%),
+    linear-gradient(90deg, rgba(12, 14, 17, 0) 42%, rgba(12, 14, 17, 0.6) 74%);
   pointer-events: none;
 }
 
@@ -1034,12 +1037,15 @@
   outline-offset: 2px;
 }
 
-/* the deck feature joins the article's voice */
+/* the deck feature joins the article's voice — but the plate is
+   permanently dark, so its heading stays white in both themes
+   (.pt-post h2's ink would win by source order otherwise) */
 .pt-post .pt-feature h2 {
   font-family: inherit;
   font-size: 21px;
   font-weight: 500;
   letter-spacing: normal;
+  color: #ffffff;
 }
 
 /* ============================================================
@@ -1340,7 +1346,9 @@
 
 .pt-sites-fan-shot {
   position: absolute;
-  top: calc(30px + var(--i) * 20px);
+  /* the fan RISES toward the front — later windows step up-right, so the
+     stack reads as an ascending / rather than a descending \ */
+  top: calc(30px + (4 - var(--i)) * 20px);
   right: calc((4 - var(--i)) * 54px - 120px);
   width: 300px;
   aspect-ratio: 16 / 10;
