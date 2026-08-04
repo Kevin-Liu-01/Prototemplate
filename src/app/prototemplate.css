@@ -1109,10 +1109,10 @@
   overflow: clip;
 }
 
-/* the frame's rules bound the text too: the copy breathes just inside
+/* the frame's rules bound the text too: the copy breathes well inside
    the band the extenders define */
 .pt-opener-copy {
-  padding-block: 10px;
+  padding-block: clamp(26px, 3.2vw, 48px);
 }
 
 .pt-opener-fig {
