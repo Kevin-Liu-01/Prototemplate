@@ -47,26 +47,123 @@
   top: clamp(72px, 12vh, 128px);
   display: flex;
   justify-content: center;
-  padding: clamp(28px, 3.4vw, 48px) 24px;
+  /* the top pad floors at 42px — above the tower's biggest rise
+     (LIFT + OPEN, 38px), so an opened stack never clips against the
+     cell's overflow */
+  padding: clamp(42px, 3.4vw, 48px) 24px clamp(28px, 3.4vw, 48px);
 }
 
-.toolchain-root .tcb .v0-stack-fig .v0-stack-iso {
+/* ---------- the solid tower ----------
+   Seven opaque extruded slabs (StackTower), each its own absolutely-
+   seated element inside one aspect-locked frame (the aspect ratio is
+   the geometry's, set inline by the component). The slabs' stacking
+   order and lift are FullStack's; every surface and hairline is
+   painted here. The plates live in the band's ink family — tops a
+   step above the card, sides a step below it — with 1px white
+   hairline edges; the page accent is spent ONLY on the active slab's
+   top-face contour and its label. */
+
+.toolchain-root .tcb .v0-stack-tower {
+  position: relative;
+  width: min(100%, 360px);
+}
+
+.toolchain-root .tcb .v0s-slab {
+  position: absolute;
+  left: 0;
   width: 100%;
-  max-width: 360px;
+  will-change: transform;
+}
+
+.toolchain-root .tcb .v0s-slab svg {
+  display: block;
+  width: 100%;
   height: auto;
-  /* the drawing reserves left room for DarkBand's rail leaders; with
-     no rail in this cell, recentre on the plane silhouette */
-  transform: translateX(-10.5%);
 }
 
-/* no HTML rail in this composition, so no leaders to tap off it */
-.toolchain-root .tcb .v0-stack-cell-fig .tcs-leader {
-  display: none;
+/* the plate: opaque hull under three face fills, lit from the
+   family's upper-left — top lightest, front-left mid, front-right
+   darkest (the card behind is #101010, so the sides drop below it
+   and the top rises above it) */
+.toolchain-root .tcb .v0s-hull {
+  fill: #090909;
 }
 
-/* scroll owns the highlight here — the planes are not pointer targets */
-.toolchain-root .tcb .v0-stack-cell-fig .tcs-layer {
-  cursor: default;
+.toolchain-root .tcb .v0s-top {
+  fill: #151515;
+  transition: fill 0.3s ease;
+}
+
+.toolchain-root .tcb .v0s-left {
+  fill: #0d0d0d;
+  transition: fill 0.3s ease;
+}
+
+.toolchain-root .tcb .v0s-right {
+  fill: #090909;
+  transition: fill 0.3s ease;
+}
+
+/* the hairlines, each drawn once: silhouette rim, the one interior
+   front edge, and the top-face contour — the accent's only seat */
+.toolchain-root .tcb .v0s-rim {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 1;
+  transition: stroke 0.3s ease;
+}
+
+.toolchain-root .tcb .v0s-front {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+
+.toolchain-root .tcb .v0s-edge {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 1;
+  transition: stroke 0.3s ease;
+}
+
+/* the identifier on the front-left face — mono is sanctioned here
+   because these ARE system identifiers */
+.toolchain-root .tcb .v0s-label {
+  font-family: var(--tc-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  fill: rgba(255, 255, 255, 0.42);
+  transition: fill 0.3s ease;
+}
+
+/* the hot slab: full ink, brighter rim, and the accent — top edge
+   and label only (FullStack raises its z and lifts it) */
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-top {
+  fill: #1b1b1b;
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-left {
+  fill: #131313;
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-right {
+  fill: #0e0e0e;
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-rim {
+  stroke: rgba(255, 255, 255, 0.24);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-front {
+  stroke: rgba(255, 255, 255, 0.14);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-edge {
+  stroke: var(--iso-accent);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-label {
+  fill: var(--iso-accent);
 }
 
 /* ---------- the copy rail: four beats, bottom of the stack first.
@@ -164,9 +261,8 @@
     position: static;
   }
 
-  .toolchain-root .tcb .v0-stack-fig .v0-stack-iso {
-    max-width: 300px;
-    transform: translateX(-8%);
+  .toolchain-root .tcb .v0-stack-tower {
+    width: min(100%, 300px);
   }
 
   .toolchain-root .tcb .v0-stack-beat {

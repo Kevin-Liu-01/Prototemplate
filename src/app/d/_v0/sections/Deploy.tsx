@@ -1,23 +1,18 @@
-import PrismaticField from '@/components/shared/PrismaticField';
+import GlyphRain from '@/app/d/singularity/sections/GlyphRain';
 
 import './deploy.css';
 
 /**
- * V0 closing band — the "Deploy today." beat, built in the house material
- * instead of the mock's chroma-tunnel gradient: one full-bleed dark band
- * washed with the prismatic field, masked so the light owns the edges and
- * the center stays dark for the type. Two-part copy only (display + sub) —
- * no eyebrow, no mono, no uppercase tracking per house rules.
+ * V0 closing band — the "Deploy today." beat under the house glyph rain:
+ * scripts from every writing system falling the full band, masked so the
+ * rain owns the flanks and thins over the center column where the type
+ * sits. Two-part copy only (display + sub) — no eyebrow, no mono, no
+ * uppercase tracking per house rules.
  */
 export default function Deploy() {
   return (
     <section className='v0-dep' id='deploy'>
-      <PrismaticField
-        className='v0-dep-field'
-        preset='1'
-        speed={0.4}
-        params={{ exposureScale: 3400 }}
-      />
+      <GlyphRain className='v0-dep-rain' intensity={1.1} />
       <div className='v0-dep-in'>
         <h2>Deploy today.</h2>
         <p className='v0-dep-sub'>

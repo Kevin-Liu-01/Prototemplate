@@ -148,6 +148,13 @@
   gap: 7px;
 }
 
+/* The window seg's entries carry an icon beside their capitalized label. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-seg button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
 /* Every flag box speaks the same blue box — the Source line included;
    only the box is blue, the words keep their neutral voice. */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-chip.is-src {

@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Eye, TerminalSquare } from 'lucide-react';
 import { useRef, useState, type ComponentType, type CSSProperties } from 'react';
 
 import {
@@ -783,13 +783,15 @@ export default function HomeHero() {
         <PrismaticField className='tc-hero-field tch-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
         <div className='tct-win' data-hero-in>
           <div className='tct-bar'>
-            <span className='tct-title'>gt — one toolchain, every stack</span>
+            <span className='tct-title'>GT - Translate</span>
             <div className='tct-seg' role='group' aria-label='Show the run as'>
               <button type='button' data-on={view === 'term'} onClick={() => pickView('term')}>
-                terminal
+                <TerminalSquare aria-hidden size={13} strokeWidth={1.8} />
+                Terminal
               </button>
               <button type='button' data-on={view === 'preview'} onClick={() => pickView('preview')}>
-                preview
+                <Eye aria-hidden size={13} strokeWidth={1.8} />
+                Preview
               </button>
             </div>
           </div>

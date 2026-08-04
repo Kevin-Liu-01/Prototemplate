@@ -1,12 +1,14 @@
 'use client';
 
-import { ArrowUpRight, Globe } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { Fragment, useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { BentoCell } from '@/components/shell/Bento';
+
+import '@/app/d/toolchain/pricing/pricing.css';
 
 import './global.css';
 
@@ -182,34 +184,28 @@ export default function V0Global() {
         </BentoCell>
       </div>
 
-      {/* ---- row 2: the real post, one quiet full-width night cell ----
-          The cell is the box — the figure draws no frame of its own. The
-          quote stays verbatim; the link stays x.com/theo until the exact
-          status URL is supplied. */}
+      {/* ---- row 2: the OLD proof row, restored — Theo's real quote set
+          against the brand's doubled thread (the toolchain pricing
+          component's exact figure grammar), with the real status URL. */}
       <div className='tc-row is-one'>
-        <BentoCell cell='is-framed is-night'>
-          <figure className='v0-glob-quote'>
-            <blockquote>
-              Every once in awhile, I see a snippet of code that makes me a bit emotional. Now
-              is one of those moments. Internationalization went from “$%!# this” to “trivial”.
+        <div className='tc-cell' data-reveal>
+          <figure className='tcp-quote'>
+            <blockquote cite='https://x.com/theo/status/2008302190168019187'>
+              <p>Every once in awhile, I see a snippet of code that makes me a bit emotional.</p>
+              <p>
+                Now is one of those moments. Internationalization went from &ldquo;$%!#
+                this&rdquo; to &ldquo;trivial&rdquo;.
+              </p>
             </blockquote>
             <figcaption>
-              <span className='v0-glob-quote-who'>
-                <b>Theo</b>
-                <span>CEO, T3 Chat</span>
-              </span>
-              <a
-                className='v0-glob-quote-link'
-                href='https://x.com/theo'
-                target='_blank'
-                rel='noreferrer'
-              >
-                View the post
-                <ArrowUpRight aria-hidden='true' />
+              <b>Theo</b>
+              <span>CEO, T3 Chat</span>
+              <a href='https://x.com/theo/status/2008302190168019187' rel='noreferrer' target='_blank'>
+                x.com/theo
               </a>
             </figcaption>
           </figure>
-        </BentoCell>
+        </div>
       </div>
     </section>
   );
