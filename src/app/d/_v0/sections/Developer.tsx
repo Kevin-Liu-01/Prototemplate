@@ -7,98 +7,140 @@ import './developer.css';
 type SaveDemo = {
   code: string;
   label: string;
-  /** the RTL row: the whole reading direction flips, not just the label */
+  /** dir='rtl' rides the row, not the label — the whole row must mirror */
   rtl?: boolean;
 };
 
-/** One Save button, four rendered widths — and one row that reverses the
-    entire orientation. The widths are the artifact: nothing is equalized. */
+/** One Save button, five rendered widths — two rows reverse the entire
+    orientation. The widths are the artifact: nothing is equalized. */
 const SAVE_DEMOS: readonly SaveDemo[] = [
   { code: 'en', label: 'Save changes' },
   { code: 'de', label: 'Änderungen speichern' },
-  { code: 'zh', label: '保存更改' },
+  { code: 'ja', label: '変更を保存' },
   { code: 'ar', label: 'حفظ التغييرات', rtl: true },
+  { code: 'he', label: 'שמור שינויים', rtl: true },
 ];
 
-type FormatRow = {
+/* Fixed inputs — every displayed value must be real Intl output computed
+   at render, never a transcribed string. */
+const NUMBER_INPUT = 1234567.89;
+const CURRENCY_INPUT = 1234.5;
+const DATE_INPUT = new Date(Date.UTC(2026, 7, 4));
+
+function formatNumber(locale: string): string {
+  return new Intl.NumberFormat(locale).format(NUMBER_INPUT);
+}
+
+function formatCurrency(locale: string, currency: string): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+  }).format(CURRENCY_INPUT);
+}
+
+function formatDate(locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeZone: 'UTC',
+  }).format(DATE_INPUT);
+}
+
+function pluralFormCount(locale: string): number {
+  return new Intl.PluralRules(locale).resolvedOptions().pluralCategories
+    .length;
+}
+
+/** Plural rows carry a count instead of a formatted string: the numeral is
+    mono, the words sans, both at the row's one size (founder note). */
+type LedgerRow =
+  | { code: string; value: string }
+  | { code: string; pluralCount: number };
+
+type LedgerPanel = {
   label: string;
-  en: string;
-  altCode: string;
-  alt: string;
-  /** plural counts read as prose — the numeral stays text-sized, in sans */
-  prose?: boolean;
+  rows: readonly LedgerRow[];
 };
 
-/** Real Intl outputs, en beside the locale that formats it differently. */
-const FORMAT_ROWS: readonly FormatRow[] = [
-  { label: 'Number', en: '1,234.56', altCode: 'de', alt: '1.234,56' },
-  { label: 'Currency', en: '$10.99', altCode: 'de', alt: '10,99 €' },
-  { label: 'Date', en: 'Aug 4, 2026', altCode: 'fr', alt: '4 août 2026' },
+const LEDGER_PANELS: readonly LedgerPanel[] = [
   {
-    label: 'Plurals',
-    en: '2 plural forms',
-    altCode: 'pl',
-    alt: '4 plural forms',
-    prose: true,
+    label: 'Numbers',
+    rows: ['en-US', 'de-DE', 'ar-EG'].map((locale) => ({
+      code: locale,
+      value: formatNumber(locale),
+    })),
+  },
+  {
+    label: 'Currency',
+    rows: [
+      { code: 'en-US', value: formatCurrency('en-US', 'USD') },
+      { code: 'de-DE', value: formatCurrency('de-DE', 'EUR') },
+      { code: 'ja-JP', value: formatCurrency('ja-JP', 'JPY') },
+    ],
+  },
+  {
+    label: 'Dates',
+    rows: ['en-US', 'de-DE', 'ja-JP'].map((locale) => ({
+      code: locale,
+      value: formatDate(locale),
+    })),
+  },
+  {
+    label: 'Plural forms',
+    rows: ['en', 'ar', 'ja'].map((locale) => ({
+      code: locale,
+      pluralCount: pluralFormCount(locale),
+    })),
   },
 ];
+
+function LedgerValue({ row }: { row: LedgerRow }) {
+  if ('value' in row) {
+    return <code className='v0-dev-lval'>{row.value}</code>;
+  }
+  return (
+    <span className='v0-dev-lplural'>
+      <code>{row.pluralCount}</code> plural{' '}
+      {row.pluralCount === 1 ? 'form' : 'forms'}
+    </span>
+  );
+}
 
 type RouteRow = {
   code: string;
   path: string;
 };
 
+/** The pathnames themselves are localized — that is the point. */
 const ROUTE_ROWS: readonly RouteRow[] = [
-  { code: 'fr', path: 'example.com/fr/tarification' },
-  { code: 'de', path: 'example.com/de/preise' },
-  { code: 'es', path: 'example.com/es/precios' },
+  { code: 'de', path: '/de/ueber-uns' },
+  { code: 'fr', path: '/fr/a-propos' },
 ];
 
-/** A locale-tagged Intl output cell; paths and formatted values are code,
-    the plural-form counts are prose (spec note: numeral same size as text). */
-function FormatCell({
-  code,
-  value,
-  prose,
-}: {
-  code: string;
-  value: string;
-  prose?: boolean;
-}) {
-  return (
-    <span className='v0-dev-fcell'>
-      <LocaleTag code={code} />
-      {prose ? (
-        <span className='v0-dev-fprose'>{value}</span>
-      ) : (
-        <code>{value}</code>
-      )}
-    </span>
-  );
-}
-
 /**
- * DEVELOPER EXPERIENCE — "Built for developers." Three ruled columns, each a
- * messy-part of localization with a small live-looking artifact: rendered
- * button widths (incl. an RTL row), an Intl output mini-table, and locale
+ * DEVELOPER EXPERIENCE — "Built for developers." A three-cell bento where
+ * the middle (numbers) cell earns more width: rendered button widths
+ * (incl. two RTL rows), a bento-within-bento Intl ledger, and localized
  * routing. Static server component; copy verbatim from the Figma v0 spec.
  */
 export default function V0Developer() {
   return (
-    <section className='tc-sec v0-dev'>
+    <section className='tc-sec v0-dev' id='developers'>
       <div className='v0-dev-head'>
         <h2>Built for developers.</h2>
-        <p>General Translation handles all the messy parts of localization.</p>
+        <p>
+          General Translation handles all the infrastructure, so you no longer
+          need to think about localization.
+        </p>
       </div>
 
-      <div className='v0-dev-cols'>
-        <article className='v0-dev-col'>
+      <div className='v0-dev-cells'>
+        <article className='v0-dev-cell'>
           <h3>Every locale is a different length.</h3>
           <p>
             Some change your entire orientation. GT renders components
-            correctly for every language.
+            correctly for every locale.
           </p>
-          <div className='v0-dev-art'>
+          <div className='v0-dev-art v0-dev-saves'>
             {SAVE_DEMOS.map((demo) => (
               <div
                 className='v0-dev-save'
@@ -112,30 +154,28 @@ export default function V0Developer() {
           </div>
         </article>
 
-        <article className='v0-dev-col'>
+        <article className='v0-dev-cell'>
           <h3>
             Every locale uses different numbers, currencies, dates, plurals,
             and more.
           </h3>
           <p>GT handles every possible branch and edge case.</p>
-          <div className='v0-dev-art v0-dev-table'>
-            {FORMAT_ROWS.map((row) => (
-              <div className='v0-dev-frow' key={row.label}>
-                <span className='v0-dev-flabel'>{row.label}</span>
-                <span className='v0-dev-fcells'>
-                  <FormatCell code='en' value={row.en} prose={row.prose} />
-                  <FormatCell
-                    code={row.altCode}
-                    value={row.alt}
-                    prose={row.prose}
-                  />
-                </span>
+          <div className='v0-dev-art v0-dev-ledger'>
+            {LEDGER_PANELS.map((panel) => (
+              <div className='v0-dev-mini' key={panel.label}>
+                <div className='v0-dev-mini-label'>{panel.label}</div>
+                {panel.rows.map((row) => (
+                  <div className='v0-dev-lrow' key={row.code}>
+                    <LocaleTag code={row.code} />
+                    <LedgerValue row={row} />
+                  </div>
+                ))}
               </div>
             ))}
           </div>
         </article>
 
-        <article className='v0-dev-col'>
+        <article className='v0-dev-cell'>
           <h3>Every locale needs to be routed correctly.</h3>
           <p>
             GT automatically routes your users to the correct SEO-friendly URL
@@ -144,10 +184,16 @@ export default function V0Developer() {
           <div className='v0-dev-art v0-dev-routes'>
             <div className='v0-dev-route is-src'>
               <LocaleTag code='en' />
-              <code>example.com/pricing</code>
+              <code>/about</code>
             </div>
             {ROUTE_ROWS.map((route) => (
-              <div className='v0-dev-route' key={route.code}>
+              <div
+                className={
+                  route.code === 'fr' ? 'v0-dev-route is-fr' : 'v0-dev-route'
+                }
+                key={route.code}
+                tabIndex={route.code === 'fr' ? 0 : undefined}
+              >
                 <CornerDownRight
                   className='v0-dev-route-arrow'
                   strokeWidth={1.5}
@@ -157,6 +203,10 @@ export default function V0Developer() {
                 <code>{route.path}</code>
               </div>
             ))}
+            <p className='v0-dev-footnote'>
+              Localizing in French means translating both the pathname and the
+              page.
+            </p>
           </div>
         </article>
       </div>

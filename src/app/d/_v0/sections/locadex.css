@@ -74,6 +74,11 @@
   fill: rgba(255, 255, 255, 0.05);
 }
 
+/* the brand mark on the slab's top face takes the slab's own ink */
+.toolchain-root .v0-ldx .v0-ldx-mark {
+  fill: var(--iso-ink);
+}
+
 /* annotations: labels are sans; mono is spent on the diff numbers only */
 .toolchain-root .v0-ldx .v0-ldx-iso-name {
   font-family: var(--tc-sans);
@@ -94,62 +99,86 @@
   fill: rgba(255, 255, 255, 0.88);
 }
 
-/* ---------- integrate with any tool: the slim ruled row ---------- */
+/* ---------- integrate with any tool: the connector diagram ---------- */
 
 .toolchain-root .v0-ldx .v0-ldx-integrate {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: clamp(28px, 4.5vw, 64px);
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 18px 40px;
   margin-top: clamp(40px, 5.4vw, 72px);
   border-top: 1px solid var(--tc-hair);
-  padding-top: clamp(20px, 2.6vw, 30px);
+  padding-top: clamp(28px, 3.6vw, 48px);
 }
 
-.toolchain-root .v0-ldx .v0-ldx-int-copy {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-  max-width: 52ch;
+.toolchain-root .v0-ldx .v0-ldx-int-svg {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin-inline: auto;
 }
 
-.toolchain-root .v0-ldx .v0-ldx-int-copy strong {
-  font-weight: 600;
-  color: var(--tc-ink);
+/* sources: hairline nodes on paper, marks in the muted step */
+.toolchain-root .v0-ldx .v0-ldx-node {
+  fill: none;
+  stroke: var(--tc-hair);
 }
 
-.toolchain-root .v0-ldx .v0-ldx-int-marks {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 14px 26px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.toolchain-root .v0-ldx .v0-ldx-nico {
   color: var(--tc-ink-3);
 }
 
-.toolchain-root .v0-ldx .v0-ldx-int-marks li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.toolchain-root .v0-ldx .v0-ldx-nlabel {
   font-family: var(--tc-sans);
   font-size: 13px;
-  white-space: nowrap;
+  letter-spacing: 0.01em;
+  fill: var(--tc-ink-2);
 }
 
-.toolchain-root .v0-ldx .v0-ldx-int-ico {
-  width: 16px;
-  height: 16px;
-  flex: none;
+/* connectors: each line drawn once; the pulse is the moving accent dash
+   riding the same geometry, not a second rule */
+.toolchain-root .v0-ldx .v0-ldx-link {
+  fill: none;
+  stroke: var(--tc-hair);
 }
 
-/* ---------- narrow: stack the copy above the plate ---------- */
+.toolchain-root .v0-ldx .v0-ldx-pulse {
+  fill: none;
+  stroke: var(--tc-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .v0-ldx .v0-ldx-pulse {
+    display: none;
+  }
+}
+
+/* the target plate joins the section's permanently-dark surface family */
+.toolchain-root .v0-ldx .v0-ldx-int-plate {
+  fill: #101010;
+  stroke: var(--tc-hair);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-mark-ink {
+  fill: rgba(255, 255, 255, 0.9);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-int-name {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  fill: rgba(255, 255, 255, 0.9);
+}
+
+/* ---------- narrow: stack the copy above the artwork ---------- */
 
 @media (max-width: 900px) {
-  .toolchain-root .v0-ldx .v0-ldx-grid {
+  .toolchain-root .v0-ldx .v0-ldx-grid,
+  .toolchain-root .v0-ldx .v0-ldx-integrate {
     grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -25,7 +25,7 @@ const CUSTOMERS: readonly Customer[] = [
  */
 export default function V0Customers() {
   return (
-    <section className='v0-cust' aria-labelledby='v0-cust-lead'>
+    <section className='v0-cust' id='customers' aria-labelledby='v0-cust-lead'>
       <h2 className='v0-cust-lead' id='v0-cust-lead'>
         Trusted by the best companies
       </h2>

@@ -1,0 +1,233 @@
+/* V0 NAV — the toolchain TopNav shell rebuilt under .v0-nav classes so the
+   toolchain sheet is never edited. Values are copied from
+   toolchain/styles.css; every color is a shared token, so dark mode is the
+   same remap. Panels carry ONE hairline border and no shadow. */
+
+.toolchain-root .v0-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .v0-nav-in {
+  position: relative;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+/* The doubled rail's outer pair — one pseudo box at the same +-10px gauge as
+   the toolchain bar, so the nav's rails land on the page rails' pixels. */
+.toolchain-root .v0-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.toolchain-root .v0-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Brand mark carries both variants; the theme picks one. */
+.toolchain-root .v0-nav-logo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root .v0-nav-logo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .toolchain-root .v0-nav-logo-light {
+  display: none;
+}
+
+.toolchain-root .v0-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .v0-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.toolchain-root .v0-nav-right > a:first-of-type {
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .v0-nav-right > a:first-of-type:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .toolchain-root .v0-nav-links,
+  .toolchain-root .v0-nav-right > a:first-of-type {
+    display: none;
+  }
+}
+
+/* ---------- dropdowns ----------
+   Same interaction as the toolchain menus: panels open on hover or keyboard
+   focus (:focus-within keeps them server-rendered and keyboard-usable). */
+
+.toolchain-root .v0-nav-drop {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toolchain-root .v0-nav-drop-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: none;
+  padding: 6px 2px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.toolchain-root .v0-nav-drop-trigger svg {
+  transition: transform 0.18s ease;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .v0-nav-drop:hover .v0-nav-drop-trigger,
+.toolchain-root .v0-nav-drop:focus-within .v0-nav-drop-trigger {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-nav-drop:hover .v0-nav-drop-trigger svg,
+.toolchain-root .v0-nav-drop:focus-within .v0-nav-drop-trigger svg {
+  transform: rotate(180deg);
+  color: var(--tc-ink);
+}
+
+/* Opaque surface: the panel bg is a solid token, so its hairline border
+   never composites over its own fill. */
+.toolchain-root .v0-nav-panel {
+  position: absolute;
+  top: 100%;
+  left: -18px;
+  z-index: 60;
+  display: none;
+  flex-direction: column;
+  min-width: 176px;
+  width: max-content;
+  padding: 8px;
+  background: var(--tc-white);
+  border: 1px solid var(--tc-hair);
+  border-radius: 12px;
+}
+
+.toolchain-root .v0-nav-drop:hover .v0-nav-panel,
+.toolchain-root .v0-nav-drop:focus-within .v0-nav-panel {
+  display: flex;
+}
+
+.toolchain-root .v0-nav-panel a {
+  display: block;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-nav-panel a:hover,
+.toolchain-root .v0-nav-panel a:focus-visible {
+  background: var(--tc-hair-2);
+}
+
+/* ---------- right-side actions ---------- */
+
+.toolchain-root .v0-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.toolchain-root .v0-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+.toolchain-root .v0-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  /* translucent fills stop at the border — a hair border over a hair fill
+     would composite darker than the page's other hairlines */
+  background-clip: padding-box;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.toolchain-root .v0-btn-solid {
+  background: var(--tc-ink);
+  color: #f5f5f3;
+}
+
+.toolchain-root .v0-btn-solid:hover {
+  background: rgba(138, 143, 152, 0.26);
+}
+
+[data-theme='dark'] .toolchain-root .v0-btn-solid {
+  background: #ffffff;
+  color: #101010;
+}
+
+.toolchain-root .v0-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}

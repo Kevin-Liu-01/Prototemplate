@@ -11,40 +11,60 @@ import './global.css';
  *
  * The global/enterprise beat of the v0 landing: the EdgeGlobe delivery
  * drawing on a permanently-dark plate, a ruled rail of three claims beside
- * it, and the real Theo post as a dark quote card underneath. The first
- * claim carries the spec's combined artifact — base languages fanning out
- * into locale-tag chips, plus the word "language" across eight scripts.
+ * it, and the real Theo post as a compact dark card underneath. The first
+ * claim carries the spec's combined locale artifact: a ruled panel where a
+ * base tag fans into its regional variants while every row speaks the
+ * language's own script.
  */
 
-type LocaleRow = {
-  base: string;
-  tags: readonly string[];
-  /** The family keeps going past what fits on the strip. */
-  more?: boolean;
+type VariantCell = {
+  code: string;
+  /** Native name rendered in the UI face — only where the mock shows one. */
+  native?: string;
 };
 
-/** 78 base languages expand into 129 locale tags; three families stand for the rest. */
-const LOCALE_ROWS: readonly LocaleRow[] = [
-  { base: 'zh', tags: ['zh-CN', 'zh-Hans', 'zh-HK'], more: true },
-  { base: 'es', tags: ['es-ES', 'es-419'], more: true },
-  { base: 'fr', tags: ['fr-FR', 'fr-CA'] },
+type FamilyRow = {
+  base: string;
+  native: string;
+  variants: readonly VariantCell[];
+  /** The ar row flips the whole reading direction, not just its label. */
+  rtl?: boolean;
+};
+
+/** Base languages fanning into regional locale tags, per the mock's rows. */
+const FAMILY_ROWS: readonly FamilyRow[] = [
+  {
+    base: 'zh',
+    native: '中文',
+    variants: [
+      { code: 'zh-HK', native: '中文（香港）' },
+      { code: 'zh-TW', native: '中文（台灣）' },
+    ],
+  },
+  {
+    base: 'en',
+    native: 'English',
+    variants: [{ code: 'en-GB' }, { code: 'en-AU' }],
+  },
+  {
+    base: 'ar',
+    native: 'العربية',
+    variants: [{ code: 'ar-EG' }, { code: 'ar-SA' }],
+    rtl: true,
+  },
 ];
 
-/** The word "language" in eight writing systems, each token tagged with its language. */
-const SCRIPT_TOKENS: readonly { lang: string; word: string }[] = [
-  { lang: 'ru', word: 'язык' },
-  { lang: 'hi', word: 'भाषा' },
-  { lang: 'zh', word: '语言' },
-  { lang: 'en', word: 'language' },
-  { lang: 'el', word: 'γλώσσα' },
-  { lang: 'ar', word: 'لغة' },
-  { lang: 'th', word: 'ภาษา' },
-  { lang: 'ko', word: '언어' },
+/** The script belt: four more writing systems close the panel. */
+const SCRIPT_BELT: readonly { code: string; native: string }[] = [
+  { code: 'hi', native: 'हिन्दी' },
+  { code: 'el', native: 'Ελληνικά' },
+  { code: 'he', native: 'עברית' },
+  { code: 'ko', native: '한국어' },
 ];
 
 export default function V0Global() {
   return (
-    <section className='v0-glob' id='global'>
+    <section className='v0-glob' id='infrastructure'>
       <header className='v0-glob-head'>
         <h2>Ship to the world.</h2>
         <p>GT is deployed in production apps with millions of global users</p>
@@ -67,45 +87,69 @@ export default function V0Global() {
               languages that expand into 129 distinct locale tags.
             </p>
 
-            {/* The spec's two visuals combined into one artifact: base
-                languages fanning into locale tags, scripts line beneath. */}
+            {/* The combined artifact: one ruled panel that explains locale
+                codes AND shows scripts — base tags fan into regional
+                variants, every row in the language's own writing system. */}
             <div className='v0-glob-locales'>
-              {LOCALE_ROWS.map((row) => (
-                <div className='v0-glob-locale-row' key={row.base}>
-                  <code className='v0-glob-base'>
-                    <LocaleTag code={row.base} />
-                  </code>
-                  <span className='v0-glob-arrow' aria-hidden='true'>
-                    →
+              {FAMILY_ROWS.map((row) => (
+                <div
+                  className='v0-glob-lrow'
+                  dir={row.rtl ? 'rtl' : undefined}
+                  key={row.base}
+                >
+                  <span className='v0-glob-lbase'>
+                    <span className='v0-glob-chip'>
+                      <LocaleTag code={row.base} />
+                    </span>
+                    <span className='v0-glob-native is-base' lang={row.base}>
+                      {row.native}
+                    </span>
                   </span>
-                  <span className='v0-glob-tags'>
-                    {row.tags.map((tag) => (
-                      <code className='v0-glob-tag' key={tag}>
-                        {tag}
-                      </code>
+                  <span className='v0-glob-larrow' aria-hidden='true'>
+                    {row.rtl ? '←' : '→'}
+                  </span>
+                  <span className='v0-glob-lvars'>
+                    {row.variants.map((variant, i) => (
+                      <Fragment key={variant.code}>
+                        {i > 0 ? (
+                          <span className='v0-glob-ldot' aria-hidden='true'>
+                            ·
+                          </span>
+                        ) : null}
+                        <span className='v0-glob-lvar'>
+                          <code className='v0-glob-chip'>{variant.code}</code>
+                          {variant.native ? (
+                            <span className='v0-glob-native' lang={variant.code}>
+                              {variant.native}
+                            </span>
+                          ) : null}
+                        </span>
+                      </Fragment>
                     ))}
-                    {row.more ? (
-                      <span className='v0-glob-more' aria-hidden='true'>
-                        …
-                      </span>
-                    ) : null}
                   </span>
                 </div>
               ))}
-            </div>
 
-            <p className='v0-glob-scripts'>
-              {SCRIPT_TOKENS.map((token, i) => (
-                <Fragment key={token.lang}>
-                  {i > 0 ? (
-                    <span className='v0-glob-scripts-dot' aria-hidden='true'>
-                      ·
+              <p className='v0-glob-belt'>
+                {SCRIPT_BELT.map((token, i) => (
+                  <Fragment key={token.code}>
+                    {i > 0 ? (
+                      <span className='v0-glob-ldot' aria-hidden='true'>
+                        ·
+                      </span>
+                    ) : null}
+                    <span className='v0-glob-lvar'>
+                      <span className='v0-glob-chip'>
+                        <LocaleTag code={token.code} />
+                      </span>
+                      <span className='v0-glob-native' lang={token.code}>
+                        {token.native}
+                      </span>
                     </span>
-                  ) : null}
-                  <span lang={token.lang}>{token.word}</span>
-                </Fragment>
-              ))}
-            </p>
+                  </Fragment>
+                ))}
+              </p>
+            </div>
           </article>
 
           <article className='v0-glob-item'>
@@ -126,7 +170,8 @@ export default function V0Global() {
         </div>
       </div>
 
-      {/* The real post, verbatim — do not edit a word of the quote. */}
+      {/* The real post, verbatim — do not edit a word of the quote. The link
+          stays x.com/theo until the exact status URL is supplied. */}
       <figure className='v0-glob-quote'>
         <blockquote>
           Every once in awhile, I see a snippet of code that makes me a bit emotional. Now
@@ -135,9 +180,8 @@ export default function V0Global() {
         <figcaption>
           <span className='v0-glob-quote-who'>
             <b>Theo</b>
-            <span>CEO, T3Chat</span>
+            <span>CEO, T3 Chat</span>
           </span>
-          {/* TODO: replace with the exact status URL of the post */}
           <a
             className='v0-glob-quote-link'
             href='https://x.com/theo'

@@ -19,6 +19,12 @@
   margin-bottom: 0;
 }
 
+/* The context band owns the Locadex/Context seam with its border-block —
+   the section above yields the tc-sec bottom rule it would stack on it. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ldx.tc-sec {
+  border-bottom: 0;
+}
+
 /* ============================================================
    HERO-LEVEL FIGMA EXPERIMENTS — the five homes only; toolchain
    itself keeps its centered card, mark, and doubled threads.

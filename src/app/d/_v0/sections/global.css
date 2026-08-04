@@ -118,85 +118,119 @@
   color: var(--tc-ink-2);
 }
 
-/* ---------- the locale artifact ----------
-   Three base languages fanning into their locale tags. Mono is spent only
-   where the grammar allows it: on the codes themselves. */
+/* ---------- the combined locale artifact ----------
+   One ruled panel: base tags fan into regional variants on one axis while
+   every row speaks its own script. Mono is spent only on the codes; native
+   names stay in the UI face; the chips' blue is the panel's only color. */
 
 .toolchain-root .v0-glob-locales {
   margin-top: 14px;
-  display: grid;
-  gap: 8px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 8px;
 }
 
-.toolchain-root .v0-glob-locale-row {
+.toolchain-root .v0-glob-lrow {
   display: grid;
-  grid-template-columns: 56px 14px minmax(0, 1fr);
+  grid-template-columns: 122px 16px minmax(0, 1fr);
   align-items: center;
   column-gap: 8px;
+  padding: 8px 12px;
 }
 
-.toolchain-root .v0-glob-base {
-  font-family: var(--tc-mono);
-  font-size: 12px;
-  color: var(--tc-ink);
+.toolchain-root .v0-glob-lrow + .v0-glob-lrow,
+.toolchain-root .v0-glob-belt {
+  border-top: 1px solid var(--tc-hair);
 }
 
-.toolchain-root .v0-glob-arrow {
+.toolchain-root .v0-glob-lbase,
+.toolchain-root .v0-glob-lvar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-glob-larrow {
   font-size: 12px;
   line-height: 1;
   text-align: center;
   color: var(--tc-ink-4);
 }
 
-.toolchain-root .v0-glob-tags {
+.toolchain-root .v0-glob-lvars {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  /* 5px gaps keep neighbouring chip borders past the 4px parallel floor */
-  gap: 5px;
+  gap: 4px 8px;
+  min-width: 0;
 }
 
-.toolchain-root .v0-glob-tag {
+.toolchain-root .v0-glob-ldot {
+  color: var(--tc-ink-4);
+}
+
+/* The chip: the page's blue locale box (never blue text). Its wash is
+   translucent under its own translucent border, so the fill clips to the
+   padding box — one stroke, not a rim on a rim. */
+.toolchain-root .v0-glob-chip {
+  display: inline-flex;
+  align-items: center;
   padding: 0 6px;
-  border: 1px solid var(--tc-hair);
+  border: 1px solid rgba(90, 120, 220, 0.34);
   border-radius: 4px;
-  background: var(--tc-white);
+  background: rgba(120, 156, 255, 0.09);
+  background-clip: padding-box;
   font-family: var(--tc-mono);
-  font-size: 11.5px;
+  font-size: 11px;
   line-height: 19px;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   color: var(--tc-ink-2);
 }
 
-.toolchain-root .v0-glob-more {
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  color: var(--tc-ink-4);
+[data-theme='dark'] .toolchain-root .v0-glob-chip {
+  border-color: rgba(157, 185, 255, 0.3);
+  background: rgba(120, 156, 255, 0.1);
 }
 
-/* The scripts line: the same word, eight writing systems, each token
-   carrying its lang attribute in the markup. */
-.toolchain-root .v0-glob-scripts {
-  margin-top: 13px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: 9px;
-  row-gap: 4px;
-  font-size: 15px;
-  line-height: 1.5;
+.toolchain-root .v0-glob-chip .lct-flag {
+  font-size: 11px;
+}
+
+.toolchain-root .v0-glob-chip .lct-code {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.01em;
   color: var(--tc-ink-2);
 }
 
-.toolchain-root .v0-glob-scripts-dot {
-  color: var(--tc-ink-4);
+/* Native names: the UI face, never mono. Base names carry full ink. */
+.toolchain-root .v0-glob-native {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--tc-ink-2);
 }
 
-/* ---------- the real post: permanently-dark quote card ---------- */
+.toolchain-root .v0-glob-native.is-base {
+  color: var(--tc-ink);
+}
+
+/* The script belt closes the panel: four more writing systems, one row. */
+.toolchain-root .v0-glob-belt {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 8px 12px;
+}
+
+/* ---------- the real post: a compact permanently-dark card ----------
+   Body scale, not display — the post is a receipt, not a headline. */
 
 .toolchain-root .v0-glob-quote {
-  margin: clamp(28px, 3.4vw, 44px) 0 0;
-  padding: clamp(24px, 3vw, 38px) clamp(24px, 3.4vw, 44px);
+  margin: clamp(22px, 2.8vw, 36px) 0 0;
+  padding: clamp(16px, 1.9vw, 22px) clamp(18px, 2.2vw, 28px);
   border: 1px solid var(--tc-hair);
   border-radius: 10px;
   background: #101010;
@@ -205,13 +239,11 @@
 
 .toolchain-root .v0-glob-quote blockquote {
   margin: 0;
-  max-width: 62ch;
-  font-family: var(--tc-disp);
-  font-size: clamp(18px, 1.9vw, 23px);
-  font-weight: 500;
-  line-height: 1.44;
-  letter-spacing: -0.015em;
-  color: rgba(255, 255, 255, 0.92);
+  max-width: 68ch;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .toolchain-root .v0-glob-quote figcaption {
@@ -219,9 +251,9 @@
   align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px 18px;
-  margin-top: clamp(18px, 2.2vw, 26px);
-  padding-top: 16px;
+  gap: 8px 18px;
+  margin-top: 12px;
+  padding-top: 11px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 

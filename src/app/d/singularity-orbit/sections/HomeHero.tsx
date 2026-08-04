@@ -459,7 +459,7 @@ export default function HomeHero() {
         </p>
 
         <div className='tc-hero-acts' data-hero-in>
-          <a className='tc-btn tc-btn-solid' href='#pricing'>
+          <a className='tc-btn tc-btn-solid' href='#deploy'>
             Get started
           </a>
           <a className='tc-btn tc-btn-line' href='#frameworks'>

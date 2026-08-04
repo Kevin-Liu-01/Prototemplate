@@ -1,9 +1,8 @@
 import DirectionDock from '@/components/shared/DirectionDock';
-import EnterpriseNavRebase from '@/components/shared/EnterpriseNavRebase';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import SiteFooter from '../toolchain/sections/SiteFooter';
-import TopNav from '../toolchain/sections/TopNav';
+import V0Nav from '../_v0/V0Nav';
 
 import V0Customers from '../_v0/sections/Customers';
 import V0Developer from '../_v0/sections/Developer';
@@ -42,8 +41,7 @@ export default function Page() {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root'>
-        <TopNav />
-        <EnterpriseNavRebase href='/d/singularity-dossier/enterprise' />
+        <V0Nav />
 
         <div className='tc-rail'>
           <HomeHero />

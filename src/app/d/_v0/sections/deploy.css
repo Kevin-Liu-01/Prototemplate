@@ -55,19 +55,8 @@
   text-align: center;
 }
 
-/* Lead-in: a small sans line in sentence case — not mono, not
-   uppercase-tracked (mono is reserved for numbers, code, locale codes). */
-.toolchain-root .v0-dep-lead {
-  margin: 0;
-  font-family: var(--tc-sans);
-  font-size: 13.5px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  color: rgba(255, 255, 255, 0.58);
-}
-
 .toolchain-root .v0-dep h2 {
-  margin: 14px 0 0;
+  margin: 0;
   max-width: 16ch;
   font-family: var(--tc-disp);
   font-weight: 600;

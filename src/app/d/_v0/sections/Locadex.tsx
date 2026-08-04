@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import type { ComponentType } from 'react';
+import type { ComponentType, SVGProps } from 'react';
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -29,8 +29,8 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * left to right: the repository plate with its file grid, the Locadex agent
  * slab hovering over it with a scan beam sweeping the files, and the output
  * plate carrying the merged-PR chip — the drawing's one accent, exactly like
- * the delivered-string chip in the stack iso. Below, a slim ruled row for
- * integrations.
+ * the delivered-string chip in the stack iso. Below, the integrate block's
+ * connector diagram: three source nodes feeding one Locadex plate.
  */
 
 /* ---- geometry, all through the family's 30° projection ------------------ */
@@ -85,6 +85,15 @@ const AGENT_LEADER = `M${(AGENT_VERT_X + 2.2).toFixed(2)} ${AGENT_TOP_Y}H70`;
 /** The output plate's screen center x — the chip's reading hangs beneath it. */
 const PR_CX = (PR.x * 2 + PR.w) * ISO_COS30;
 
+/**
+ * The Locadex mark lies flat in the slab's top face. A z=const plane projects
+ * as the 2D affine map (x,y) → (cos30·x − cos30·y, sin30·x + sin30·y − z), so
+ * one matrix() puts the masked mark in the plane and it inherits the
+ * projection like every other face detail.
+ */
+const MARK_HALF = 16;
+const MARK_PLANE = `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} 0 ${-(A_Z + A_H)})`;
+
 function LocadexIso() {
   return (
     <IsoFrame
@@ -93,6 +102,28 @@ function LocadexIso() {
       viewW={396}
       viewH={164}
     >
+      <defs>
+        {/* the brand mark as an alpha mask, so the shape takes the surface's
+            ink instead of the asset's baked-in fill */}
+        <mask
+          id='v0-ldx-slab-mark'
+          maskUnits='userSpaceOnUse'
+          x={-MARK_HALF}
+          y={-MARK_HALF}
+          width={MARK_HALF * 2}
+          height={MARK_HALF * 2}
+          style={{ maskType: 'alpha' }}
+        >
+          <image
+            href='/brand/locadex-mark.svg'
+            x={-MARK_HALF}
+            y={-MARK_HALF}
+            width={MARK_HALF * 2}
+            height={MARK_HALF * 2}
+          />
+        </mask>
+      </defs>
+
       <g transform='translate(155 97)'>
         {/* the repository: one plate, a grid of files */}
         <IsoSlab x={-R_HALF} y={-R_HALF} z={0} w={R_HALF * 2} d={R_HALF * 2} h={R_H} />
@@ -122,13 +153,18 @@ function LocadexIso() {
           <path className='iso-soft' d={BEAM_LAND} />
         </g>
 
-        {/* the agent slab, hovering, carrying its diff — the house Locadex
-            glyph: gutter mark + removed line, gutter mark + added line */}
+        {/* the agent slab, hovering, carrying the Locadex mark on its top face */}
         <IsoSlab x={-A_HALF} y={-A_HALF} z={A_Z} w={A_HALF * 2} d={A_HALF * 2} h={A_H} />
-        <IsoPlane x={-14} y={-9} z={A_Z + A_H} w={4} d={4} fill='mark' />
-        <IsoPlane x={-7} y={-9} z={A_Z + A_H} w={13} d={4} fill='mark' />
-        <IsoPlane x={-14} y={3} z={A_Z + A_H} w={4} d={4} fill='mark' />
-        <IsoPlane x={-7} y={3} z={A_Z + A_H} w={18} d={4} fill='mark' />
+        <g transform={MARK_PLANE}>
+          <rect
+            className='v0-ldx-mark'
+            x={-MARK_HALF}
+            y={-MARK_HALF}
+            width={MARK_HALF * 2}
+            height={MARK_HALF * 2}
+            mask='url(#v0-ldx-slab-mark)'
+          />
+        </g>
 
         {/* the output plate: two title lines and the PR chip — the accent */}
         <IsoSlab x={PR.x} y={PR.y} z={0} w={PR.w} d={PR.d} h={PR.h} />
@@ -157,22 +193,155 @@ function LocadexIso() {
   );
 }
 
-/* ---- the integrate row's marks ------------------------------------------ */
+/* ---- the integrate diagram: three sources feed one Locadex plate -------- */
 
-type MarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean };
+type MarkProps = SVGProps<SVGSVGElement>;
 
-type IntegrationMark = {
-  name: string;
-  Icon: ComponentType<MarkProps>;
+type IntSource = {
+  label: string;
+  cy: number;
+  icons: readonly { name: string; Icon: ComponentType<MarkProps> }[];
 };
 
-const INTEGRATIONS: readonly IntegrationMark[] = [
-  { name: 'Google Drive', Icon: SiGoogledrive },
-  { name: 'Notion', Icon: SiNotion },
-  { name: 'Contentful', Icon: SiContentful },
-  { name: 'Sanity', Icon: SiSanity },
-  { name: 'Markdown', Icon: SiMarkdown },
+/** Flat ruled coordinates: nodes at left, the Locadex plate at right. */
+const INT_W = 560;
+const INT_H = 190;
+const NODE_X = 1;
+const NODE_W = 186;
+const NODE_H = 44;
+const INT_PLATE = { x: 424, y: 63, w: 134, h: 64 } as const;
+
+const INT_SOURCES: readonly IntSource[] = [
+  { label: 'Google Drive', cy: 24, icons: [{ name: 'Google Drive', Icon: SiGoogledrive }] },
+  {
+    label: 'CMS platform',
+    cy: 95,
+    icons: [
+      { name: 'Notion', Icon: SiNotion },
+      { name: 'Contentful', Icon: SiContentful },
+      { name: 'Sanity', Icon: SiSanity },
+    ],
+  },
+  { label: 'Docs framework', cy: 166, icons: [{ name: 'Markdown', Icon: SiMarkdown }] },
 ];
+
+/**
+ * One connector per source, each drawn once: the outer two elbow into the
+ * plate's left edge above and below the straight center run, so no two paths
+ * ever share a segment.
+ */
+const INT_LINKS: readonly string[] = [
+  'M187 24H332Q340 24 340 32V73Q340 81 348 81H424',
+  'M187 95H424',
+  'M187 166H332Q340 166 340 158V117Q340 109 348 109H424',
+];
+
+/** Plate contents: mark then wordmark, centered as one group. */
+const INT_MARK = 24;
+const INT_MARK_X = INT_PLATE.x + 22;
+const INT_NAME_X = INT_MARK_X + INT_MARK + 11;
+
+function IntegrateDiagram() {
+  return (
+    <svg
+      className='v0-ldx-int-svg'
+      viewBox={`0 0 ${INT_W} ${INT_H}`}
+      role='img'
+      aria-label='Google Drive, a CMS platform, and a docs framework all feed the Locadex agent'
+    >
+      <defs>
+        <mask
+          id='v0-ldx-int-mark'
+          maskUnits='userSpaceOnUse'
+          x={INT_MARK_X}
+          y={95 - INT_MARK / 2}
+          width={INT_MARK}
+          height={INT_MARK}
+          style={{ maskType: 'alpha' }}
+        >
+          <image
+            href='/brand/locadex-mark.svg'
+            x={INT_MARK_X}
+            y={95 - INT_MARK / 2}
+            width={INT_MARK}
+            height={INT_MARK}
+          />
+        </mask>
+      </defs>
+
+      {INT_LINKS.map((d) => (
+        <path key={d} className='v0-ldx-link' d={d} vectorEffect='non-scaling-stroke' />
+      ))}
+      {INT_LINKS.map((d) => (
+        <path
+          key={`pulse-${d}`}
+          className='v0-ldx-pulse'
+          data-ldx-pulse
+          d={d}
+          pathLength={100}
+          strokeDasharray='7 200'
+          strokeDashoffset={7}
+          vectorEffect='non-scaling-stroke'
+        />
+      ))}
+
+      {INT_SOURCES.map(({ label, cy, icons }) => (
+        <g key={label}>
+          <rect
+            className='v0-ldx-node'
+            x={NODE_X}
+            y={cy - NODE_H / 2}
+            width={NODE_W}
+            height={NODE_H}
+            rx={8}
+            vectorEffect='non-scaling-stroke'
+          />
+          {icons.map(({ name, Icon }, i) => (
+            <Icon
+              key={name}
+              className='v0-ldx-nico'
+              x={18 + i * 21}
+              y={cy - 7}
+              width={14}
+              height={14}
+              color='currentColor'
+              aria-hidden
+            />
+          ))}
+          <text
+            className='v0-ldx-nlabel'
+            x={18 + icons.length * 21 + 5}
+            y={cy}
+            dominantBaseline='central'
+          >
+            {label}
+          </text>
+        </g>
+      ))}
+
+      <rect
+        className='v0-ldx-int-plate'
+        x={INT_PLATE.x}
+        y={INT_PLATE.y}
+        width={INT_PLATE.w}
+        height={INT_PLATE.h}
+        rx={10}
+        vectorEffect='non-scaling-stroke'
+      />
+      <rect
+        className='v0-ldx-mark-ink'
+        x={INT_MARK_X}
+        y={95 - INT_MARK / 2}
+        width={INT_MARK}
+        height={INT_MARK}
+        mask='url(#v0-ldx-int-mark)'
+      />
+      <text className='v0-ldx-int-name' x={INT_NAME_X} y={95} dominantBaseline='central'>
+        Locadex
+      </text>
+    </svg>
+  );
+}
 
 export default function V0Locadex() {
   const root = useRef<HTMLElement>(null);
@@ -181,40 +350,66 @@ export default function V0Locadex() {
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const el = root.current;
-      const scan = el?.querySelector<SVGGElement>('[data-ldx-scan]');
-      if (!el || !scan) return;
+      if (!el) return;
 
       /* One quiet pass, back and forth, across the file grid. The tween runs
          only while the section is on screen; with reduced motion the beam
          rests at the plate's center (its drawn position). */
-      const sweep = gsap.fromTo(
-        scan,
-        { x: SWEEP_DX, y: -SWEEP_DY },
-        {
-          x: -SWEEP_DX,
-          y: SWEEP_DY,
-          duration: 3.6,
-          ease: 'sine.inOut',
-          repeat: -1,
-          yoyo: true,
-          paused: true,
-        }
-      );
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top bottom',
-        end: 'bottom top',
-        onToggle: (self) => {
-          if (self.isActive) sweep.play();
-          else sweep.pause();
-        },
-      });
+      const scan = el.querySelector<SVGGElement>('[data-ldx-scan]');
+      if (scan) {
+        const sweep = gsap.fromTo(
+          scan,
+          { x: SWEEP_DX, y: -SWEEP_DY },
+          {
+            x: -SWEEP_DX,
+            y: SWEEP_DY,
+            duration: 3.6,
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true,
+            paused: true,
+          }
+        );
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (self) => {
+            if (self.isActive) sweep.play();
+            else sweep.pause();
+          },
+        });
+      }
+
+      /* The connector pulses: a short normalized dash slides node → plate on
+         each link, staggered, looping only while the diagram is on screen.
+         pathLength=100 with a 200 gap keeps the parked pattern entirely off
+         the path at both endpoints; 7 → −107 carries the dash fully across. */
+      const pulses = el.querySelectorAll<SVGPathElement>('[data-ldx-pulse]');
+      const diagram = el.querySelector<SVGSVGElement>('.v0-ldx-int-svg');
+      if (pulses.length > 0 && diagram) {
+        const flow = gsap.timeline({ repeat: -1, repeatDelay: 0.9, paused: true });
+        flow.fromTo(
+          pulses,
+          { strokeDashoffset: 7 },
+          { strokeDashoffset: -107, duration: 1.6, ease: 'power1.inOut', stagger: 0.45 }
+        );
+        ScrollTrigger.create({
+          trigger: diagram,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (self) => {
+            if (self.isActive) flow.play();
+            else flow.pause();
+          },
+        });
+      }
     },
     { scope: root }
   );
 
   return (
-    <section className='v0-ldx' id='locadex' ref={root}>
+    <section className='tc-sec v0-ldx' id='locadex' ref={root}>
       <h2 className='v0-ldx-h2'>
         The easiest way to localize your full system in native speed and quality.
       </h2>
@@ -231,18 +426,17 @@ export default function V0Locadex() {
       </div>
 
       <div className='v0-ldx-integrate'>
-        <p className='v0-ldx-int-copy'>
-          <strong>Integrate with any tool.</strong> Just a few clicks to integrate with your
-          Google Drive, CMS platform, or docs framework
-        </p>
-        <ul className='v0-ldx-int-marks' aria-label='Integrations'>
-          {INTEGRATIONS.map(({ name, Icon }) => (
-            <li key={name}>
-              <Icon className='v0-ldx-int-ico' color='currentColor' aria-hidden />
-              <span>{name}</span>
-            </li>
-          ))}
-        </ul>
+        <div className='v0-ldx-copy'>
+          <h3>Integrate with any tool.</h3>
+          <p>
+            Just a few clicks to integrate with your Google Drive, CMS platform, or docs
+            framework.
+          </p>
+        </div>
+
+        <div className='v0-ldx-int-diagram'>
+          <IntegrateDiagram />
+        </div>
       </div>
     </section>
   );

@@ -21,6 +21,7 @@ export const LOCALE_FLAGS: Record<string, string> = {
   el: '🇬🇷',
   th: '🇹🇭',
   pl: '🇵🇱',
+  he: '🇮🇱',
 };
 
 /** Region subtags resolve through their base language (pt-BR → the pt flag). */
