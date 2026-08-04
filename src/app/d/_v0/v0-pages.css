@@ -183,14 +183,18 @@
   max-width: none;
 }
 
-/* The proof plate keeps the pricing sheet's extended-borders device —
-   horizontals running past the rails, verticals overshooting the
-   corners — but the verticals are BOUNDED to the overshoot (the stock
-   ±100vh pair reached the neighbouring band's grid and read as doubles;
-   the auditor caught it). */
+/* The proof plate's crop frame, disciplined (founder): the verticals
+   run EXACTLY the plate's height — touching top and bottom, no
+   overshoot — and the horizontals extend only to the rails, never past
+   them (the stock device ran ±100vw/±100vh). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::before {
+  left: calc(var(--tc-gut) * -1);
+  right: calc(var(--tc-gut) * -1);
+}
+
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::after {
-  top: -34px;
-  bottom: -34px;
+  top: 0;
+  bottom: 0;
 }
 
 /* The proof plate (tcpq) rides in the Global row at two-thirds altitude:

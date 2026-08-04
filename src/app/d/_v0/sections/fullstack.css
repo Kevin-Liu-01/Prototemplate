@@ -46,13 +46,14 @@
   position: sticky;
   /* seated so the FIGURE'S center rides the viewport's center during
      the pinned pass (founder: "this is in the center of the page") —
-     259px is half the figure's rendered height (~518px: the ~415px
-     cell-bound tower at its denser aspect plus the pads below),
-     floored so a short viewport never tucks the figure under the 58px
-     nav. Every px of figure height costs the pin half a px of runway
-     (the seat gives back the other half), so re-verify the pin probe
-     (frac 0.3/0.55/0.8 flat) whenever this geometry moves. */
-  top: max(70px, calc(50vh - 259px));
+     242px is half the figure's rendered height (~483px: the 392px
+     tower at its denser aspect plus the pads below), floored so a
+     short viewport never tucks the figure under the 58px nav. The pin
+     ledger: every px of figure height costs HALF a px of pin margin
+     (the centered seat refunds the other half) and every px of beat
+     min-height buys 0.2px back — re-run the pin probe (fig top flat
+     at frac 0.3/0.55/0.8) whenever either moves. */
+  top: max(70px, calc(50vh - 242px));
   display: flex;
   justify-content: center;
   /* slim pads: the full-height rail should read rule-to-rule of the
@@ -62,7 +63,7 @@
      kept SHORT on purpose: its height plus the sticky offset must fit
      inside the column's travel, or the pin dies before the last beat
      (the frac-0.8 bug). */
-  padding: 16px 20px;
+  padding: 12px 20px;
 }
 
 /* ---------- the solid tower ----------
@@ -77,10 +78,12 @@
 
 .toolchain-root .tcb .v0-stack-tower {
   position: relative;
-  /* the width bounds the tower's HEIGHT (aspect-locked), and the
-     height bounds how long the figure can stay pinned — grow this
-     and the pin dies before the fourth beat */
-  width: min(100%, 420px);
+  /* the width bounds the tower's HEIGHT (aspect-locked; the frame got
+     denser when the caption column left, so 392px here draws ~28%
+     bigger plates than the old 420px did), and the height bounds how
+     long the figure can stay pinned — grow this and the pin dies
+     before the fourth beat */
+  width: min(100%, 392px);
 }
 
 .toolchain-root .tcb .v0s-slab {
@@ -168,19 +171,10 @@
   transition: stroke 0.3s ease;
 }
 
-/* the caption at each leader's end, left of the rail — mono is
-   sanctioned here because these ARE the stack's system layers */
-.toolchain-root .tcb .v0s-label {
-  font-family: var(--tc-mono);
-  font-size: 8.5px;
-  letter-spacing: 0.08em;
-  fill: rgba(255, 255, 255, 0.42);
-  transition: fill 0.3s ease;
-}
-
 /* the tap: up the rail, a small-radius corner, out to the plate's
    left vertex — static, like the original's; an active plate lifts
-   OFF its leader */
+   OFF its leader. No caption at its end anymore (founder: no words
+   by the diagram — the plates' artwork identifies them). */
 .toolchain-root .tcb .v0s-leader {
   fill: none;
   stroke: rgba(255, 255, 255, 0.12);
@@ -262,12 +256,8 @@
   stroke: var(--iso-accent);
 }
 
-/* the hot plate's tap and caption take the accent with it */
-.toolchain-root .tcb .v0s-tap.is-hot .v0s-label {
-  fill: var(--iso-accent);
-}
-
-.toolchain-root .tcb .v0s-tap.is-hot .v0s-leader {
+/* the hot plate's leader takes the accent with it */
+.toolchain-root .tcb .v0s-leader.is-hot {
   stroke: color-mix(in srgb, var(--iso-accent) 75%, transparent);
 }
 
@@ -321,15 +311,15 @@
   flex: 1;
   /* taller beats than the copy needs, on purpose: the rail is the
      sticky figure's runway — four of these must outrun the figure's
-     height by enough that the pin holds through the last beat AT THE
-     CENTERED SEAT above (which consumes ~110px more runway than a
-     top-hung one; 60vh keeps ~20–40px of pin margin from 700px to
-     1400px-tall viewports — the seat grows at 0.5vh while runway
-     grows at 0.8 × beat, hence the tall cap). The copy centers in
-     each window, so the reader meets it mid-viewport beside the
-     pinned figure; the beats separate by rhythm alone, no dividers
-     (founder round 6). */
-  min-height: clamp(250px, 60vh, 880px);
+     height by enough that the pin holds through the last beat at the
+     CENTERED seat above. 64vh (up from 60 when the figure grew to
+     ~483px) keeps ~30–40px of pin margin from 700px to ~1450px-tall
+     viewports; the 920px cap is the tall-viewport ceiling that keeps
+     the seat (0.5vh) from outrunning the runway (0.8 × beat). The
+     copy centers in each window, so the reader meets it mid-viewport
+     beside the pinned figure; the beats separate by rhythm alone, no
+     dividers (founder round 6). */
+  min-height: clamp(250px, 64vh, 920px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -346,14 +336,14 @@
 .toolchain-root .tcb .v0-stack-tag {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: var(--tcb-dim);
 }
 
 /* mono is spent on the number only */
 .toolchain-root .tcb .v0-stack-idx {
   font-family: var(--tc-mono);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.08em;
   color: var(--tcb-faint);
   transition: color 0.32s ease;
@@ -369,27 +359,31 @@
 
 .toolchain-root .tcb .v0-stack-name {
   font-family: var(--tc-sans);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.78);
 }
 
+/* the beat headline steps up to the display scale (founder round:
+   "text larger") — balance keeps the two-line breaks even; the column
+   is sized so every lead holds ≤2 lines at 1440 */
 .toolchain-root .tcb .v0-stack-beat h3 {
-  margin-top: 13px;
-  font-size: clamp(17px, 1.6vw, 21px);
-  line-height: 1.22;
-  letter-spacing: -0.014em;
+  margin-top: 18px;
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
   color: var(--tcb-ink);
   max-width: 30ch;
+  text-wrap: balance;
 }
 
 .toolchain-root .tcb .v0-stack-beat p {
-  margin-top: 9px;
-  font-size: 13.5px;
-  line-height: 1.62;
+  margin-top: 14px;
+  font-size: 16.5px;
+  line-height: 1.6;
   color: var(--tcb-body);
-  max-width: 52ch;
+  max-width: 54ch;
 }
 
 /* ---------- one column ---------- */
