@@ -38,11 +38,12 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * slab hovering over it with a scan beam sweeping the files, and the output
  * plate carrying the merged-PR chip — the drawing's one accent, exactly like
  * the delivered-string chip in the stack iso. Below, the integrate block's
- * connector diagram: three source nodes feeding one Locadex plate.
+ * connector diagram: four source nodes feeding one Locadex plate.
  *
  * Both drawings are founder-approved verbatim; the section around them is
- * the sheet's own grammar — a tc-head band, then two split rows (ruled copy
- * cell beside a framed artifact cell), whose seams the rows own.
+ * the sheet's own grammar — a tc-head band, then two split rows (a ruled
+ * copy cell and a framed artifact cell — row 1 words-first, row 2
+ * diagram-first), whose seams the rows own.
  */
 
 /* ---- geometry, all through the family's 30° projection ------------------ */
@@ -205,7 +206,7 @@ function LocadexIso() {
   );
 }
 
-/* ---- the integrate diagram: three sources feed one Locadex plate -------- */
+/* ---- the integrate diagram: four sources feed one Locadex plate --------- */
 
 type MarkProps = SVGProps<SVGSVGElement>;
 
@@ -215,14 +216,14 @@ type IntSource = {
   icons: readonly { name: string; Icon: ComponentType<MarkProps> }[];
 };
 
-/** Flat ruled coordinates, mirrored: the Locadex plate at LEFT, the four
-    source nodes at right — the tools feed the agent. */
+/** Flat ruled coordinates: the four source nodes at LEFT feed the Locadex
+    plate at right — the tools flow into the agent. */
 const INT_W = 560;
 const INT_H = 234;
-const NODE_X = 373;
+const NODE_X = 1;
 const NODE_W = 186;
 const NODE_H = 44;
-const INT_PLATE = { x: 2, y: 85, w: 134, h: 64 } as const;
+const INT_PLATE = { x: 424, y: 85, w: 134, h: 64 } as const;
 
 const INT_SOURCES: readonly IntSource[] = [
   { label: 'GitHub', cy: 24, icons: [{ name: 'GitHub', Icon: SiGithub }] },
@@ -240,15 +241,16 @@ const INT_SOURCES: readonly IntSource[] = [
 ];
 
 /**
- * One connector per source, each drawn once, flowing INTO the plate: the
- * outer pair's vertical runs sit at one gauge, the inner pair's at another,
- * so no two paths ever share a segment.
+ * One connector per source, each drawn once, flowing left → right INTO the
+ * plate: the outer pair's vertical runs sit at one gauge (x 340), the inner
+ * pair's at another (x 308), so no two paths ever share a segment. All four
+ * ports land on the plate's left edge, at y 96/110/124/138.
  */
 const INT_LINKS: readonly string[] = [
-  'M373 24H228Q220 24 220 32V88Q220 96 212 96H136',
-  'M373 86H260Q252 86 252 94V102Q252 110 244 110H136',
-  'M373 148H260Q252 148 252 140V132Q252 124 244 124H136',
-  'M373 210H228Q220 210 220 202V146Q220 138 212 138H136',
+  'M187 24H332Q340 24 340 32V88Q340 96 348 96H424',
+  'M187 86H300Q308 86 308 94V102Q308 110 316 110H424',
+  'M187 148H300Q308 148 308 140V132Q308 124 316 124H424',
+  'M187 210H332Q340 210 340 202V146Q340 138 348 138H424',
 ];
 
 /** Plate contents: mark then wordmark, centered as one group. */
@@ -294,8 +296,8 @@ function IntegrateDiagram() {
           data-ldx-pulse
           d={d}
           pathLength={100}
-          strokeDasharray='7 200'
-          strokeDashoffset={7}
+          strokeDasharray='22 200'
+          strokeDashoffset={22}
           vectorEffect='non-scaling-stroke'
         />
       ))}
@@ -341,6 +343,21 @@ function IntegrateDiagram() {
         width={INT_PLATE.w}
         height={INT_PLATE.h}
         rx={10}
+        vectorEffect='non-scaling-stroke'
+      />
+      {/* the arrival lap: the plate's border, redrawn in accent — an arc of
+          30/100 of the perimeter whose offset GSAP runs one full lap each
+          time a pulse lands; CSS parks it invisible */}
+      <rect
+        className='v0-ldx-lap'
+        data-ldx-lap
+        x={INT_PLATE.x}
+        y={INT_PLATE.y}
+        width={INT_PLATE.w}
+        height={INT_PLATE.h}
+        rx={10}
+        pathLength={100}
+        strokeDasharray='30 70'
         vectorEffect='non-scaling-stroke'
       />
       <rect
@@ -397,19 +414,56 @@ export default function V0Locadex() {
         });
       }
 
-      /* The connector pulses: a short normalized dash slides node → plate on
-         each link, staggered, looping only while the diagram is on screen.
-         pathLength=100 with a 200 gap keeps the parked pattern entirely off
-         the path at both endpoints; 7 → −107 carries the dash fully across. */
+      /* The connector pulses: a long normalized dash (22 of pathLength 100)
+         slides source → plate on each link, staggered, looping only while
+         the diagram is on screen. The 200 gap keeps the parked pattern
+         entirely off the path at both endpoints; 22 → −102 carries the dash
+         fully across, its tail clearing the port right at the tween's end.
+
+         Each landing answers on the plate itself: the lap rect (the plate's
+         geometry, pathLength 100, a 30/70 dash) runs its offset one full lap
+         per arrival. Arrival of pulse i = its stagger slot + 0.9 of its
+         travel — where the eased dash has all but merged into the plate —
+         and one lap lasts exactly one stagger, so −100 ≡ 0 (mod 100) chains
+         the four laps into a single continuous circuit that fades once the
+         last pulse's lap closes. Everything lives on ONE timeline, so
+         pulses and laps can never drift out of phase. */
       const pulses = el.querySelectorAll<SVGPathElement>('[data-ldx-pulse]');
+      const lap = el.querySelector<SVGRectElement>('[data-ldx-lap]');
       const diagram = el.querySelector<SVGSVGElement>('.v0-ldx-int-svg');
       if (pulses.length > 0 && diagram) {
+        const PULSE_DUR = 1.6;
+        const PULSE_GAP = 0.45;
+        const LAP_DUR = PULSE_GAP;
+        const ARRIVE = PULSE_DUR * 0.9;
         const flow = gsap.timeline({ repeat: -1, repeatDelay: 0.9, paused: true });
         flow.fromTo(
           pulses,
-          { strokeDashoffset: 7 },
-          { strokeDashoffset: -107, duration: 1.6, ease: 'power1.inOut', stagger: 0.45 }
+          { strokeDashoffset: 22 },
+          { strokeDashoffset: -102, duration: PULSE_DUR, ease: 'power1.inOut', stagger: PULSE_GAP }
         );
+        if (lap) {
+          pulses.forEach((_, i) => {
+            const at = i * PULSE_GAP + ARRIVE;
+            flow.set(lap, { opacity: 1 }, at);
+            flow.fromTo(
+              lap,
+              { strokeDashoffset: 0 },
+              {
+                strokeDashoffset: -100,
+                duration: LAP_DUR,
+                ease: 'none',
+                immediateRender: false,
+              },
+              at
+            );
+          });
+          flow.to(
+            lap,
+            { opacity: 0, duration: 0.4, ease: 'power1.out' },
+            (pulses.length - 1) * PULSE_GAP + ARRIVE + LAP_DUR
+          );
+        }
         ScrollTrigger.create({
           trigger: diagram,
           start: 'top bottom',
@@ -428,10 +482,9 @@ export default function V0Locadex() {
     <section className='tc-sec v0-ldx' id='locadex' ref={root}>
       <div className='tc-head'>
         <Bot className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>Locadex.</h2>
-        <p data-reveal>
+        <h2 data-reveal>
           The easiest way to localize your full system in native speed and quality.
-        </p>
+        </h2>
       </div>
 
       {/* ---- row 1: the agent, run against a repository ----
@@ -441,8 +494,8 @@ export default function V0Locadex() {
         <BentoCell
           cell='is-tall tcm-ruled'
           framed={false}
-          title='Run the Locadex agent.'
-          sub='Connect your repository to our custom-built AI agent. Just merge a PR.'
+          title='Run Locadex.'
+          sub='Connect your GitHub repository to our localization agent. Locadex internationalizes your code and keeps your app localized on every update. Just merge a PR.'
         />
 
         {/* is-bleed: the card sheds its padding, so the iso's permanently-dark
@@ -455,20 +508,21 @@ export default function V0Locadex() {
         </BentoCell>
       </div>
 
-      {/* ---- row 2: the sources, converging ---- */}
+      {/* ---- row 2: the sources, converging — row 1 mirrored, the diagram
+          leads and the words answer from the right ---- */}
       <div className='tc-row is-split'>
-        <BentoCell
-          cell='is-tall tcm-ruled'
-          framed={false}
-          title='Integrate with any tool.'
-          sub='Just a few clicks to integrate with your Google Drive, CMS platform, or docs framework.'
-        />
-
         <BentoCell cell='is-tall is-framed'>
           <div className='tc-art-center'>
             <IntegrateDiagram />
           </div>
         </BentoCell>
+
+        <BentoCell
+          cell='is-tall tcm-ruled'
+          framed={false}
+          title='Any integration.'
+          sub='Just a few clicks to integrate with your Google Drive, CMS platform, or docs framework.'
+        />
       </div>
     </section>
   );

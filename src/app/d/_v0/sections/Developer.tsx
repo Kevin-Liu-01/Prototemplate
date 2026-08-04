@@ -131,15 +131,15 @@ export default function V0Developer({
 
         <BentoCell
           cell='is-framed'
-          title='GT handles numbers, currencies, dates, plurals, and every edge case.'
+          title='GT handles every branch and edge case.'
         >
           <div className='v0-dev-ledger'>
             {LEDGER_PANELS.map((panel) => (
               <div className='v0-dev-panel' key={panel.label}>
-                <span className='v0-dev-panel-label'>{panel.label}</span>
+              <span className='v0-dev-panel-label'>{panel.label}</span>
+              <div className='v0-dev-panel-rows'>
                 {panel.rows.map((row) => (
                   <span className='v0-dev-ledger-row' key={`${panel.label}-${row.code}`}>
-                    <LocaleTag code={row.code} />
                     {'value' in row ? (
                       <b>{row.value}</b>
                     ) : (
@@ -147,9 +147,11 @@ export default function V0Developer({
                         <b>{row.pluralCount}</b> plural {row.pluralCount === 1 ? 'form' : 'forms'}
                       </span>
                     )}
+                    <LocaleTag code={row.code} />
                   </span>
                 ))}
               </div>
+            </div>
             ))}
           </div>
         </BentoCell>

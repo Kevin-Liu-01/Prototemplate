@@ -350,19 +350,6 @@
   letter-spacing: 0;
 }
 
-/* The thorny-locale ledger, decluttered: the flag and the figure carry
-   each row — the code chips retire (flag boxes stay chips elsewhere). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev-ledger .lct {
-  border: 0;
-  background: none;
-  padding: 0;
-  gap: 0;
-}
-
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev-ledger .lct-code {
-  display: none;
-}
-
 /* LOCALE PILLS SPEAK QUIET GRAY in the page's own face (founder
    reversal of the blue-box round) — terminal chips, source included. */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-chip {

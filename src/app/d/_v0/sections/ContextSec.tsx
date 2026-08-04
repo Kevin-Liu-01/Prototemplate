@@ -1,5 +1,8 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 
@@ -11,15 +14,20 @@ import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 import './context.css';
 
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
 /**
- * V0 CONTEXT — "Localize in context." The section is the toolchain dark-band:
+ * V0 CONTEXT — "Full context on your codebase and product." The section is
+ * the toolchain dark-band:
  * tc-band tcb → tcb-in → tcb-head cell → tcb-grid of framed tcb-cells, with
- * GlyphRain falling behind the sheet. The four bentos carry the verbatim
- * CONTEXT BENTO ROW copy; the application-logic cell mounts the ORIGINAL
- * ContextResolve fork, and the dynamic cell re-cuts the gender fork in that
- * same lang-cr drawing so the two forks speak one grammar. The review beat
- * is the grid's full-width closing row: its head in the cell, the ORIGINAL
- * ReviewWorkspace mounted beneath on a cell-carried dark ground.
+ * GlyphRain falling behind the sheet. The four bentos run title-only
+ * (founder cut: the subheadings retired); the application-logic cell mounts
+ * the ORIGINAL ContextResolve fork, and the dynamic cell re-cuts the gender
+ * fork in that same lang-cr drawing so the two forks speak one grammar —
+ * plus an ambient border beam: one accent segment forever circling the
+ * cell's own border line. The review beat is the grid's full-width closing
+ * row: its head in the cell, the ORIGINAL ReviewWorkspace mounted beneath
+ * on a cell-carried dark ground.
  */
 
 /* ---------- the gender fork, in ContextResolve's own drawing ----------
@@ -142,21 +150,47 @@ export default function V0Context() {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
 
+  /* The dynamic cell's ambient accent: one blue segment forever circling
+     the cell's border. The rect is 100%-based (it re-traces the box at any
+     size) and pathLength-normalized to 100, so a dash of 18/82 is 18% of
+     the perimeter at every width; one lap ≈ 5s, linear, gated to the
+     section's viewport dwell. Reduced motion parks the segment where the
+     path starts. */
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const beam = root.current?.querySelector('.v0-ctx-beam rect');
+      if (!beam) return;
+      gsap.to(beam, {
+        strokeDashoffset: -100,
+        duration: 5,
+        ease: 'none',
+        repeat: -1,
+        scrollTrigger: {
+          trigger: root.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          toggleActions: 'play pause resume pause',
+        },
+      });
+    },
+    { scope: root }
+  );
+
   return (
     <section className='tc-band tcb v0-ctx' id='context' ref={root}>
       <GlyphRain className='v0-ctx-rain' intensity={0.4} />
 
       <div className='tcb-in'>
         <div className='tcb-head' data-cell data-reveal>
-          <h2>Localize in context.</h2>
+          <h2>Full context on your codebase and product.</h2>
           <p>GT connects your code, content, and translations.</p>
         </div>
 
         <div className='tcb-grid'>
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Translations that reflect your application logic.</h3>
-              <p>GT translates your content in the context of your codebase.</p>
+              <h3>Translations know your application logic.</h3>
             </div>
             <div className='v0-ctx-art'>
               <ContextResolve title='The English string Save resolves by context: speichern when it saves a file, sparen when it means a discount' />
@@ -165,10 +199,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Translations that reflect your key terminology.</h3>
-              <p>
-                Define a glossary with key product, brand, and feature terms to inherit universally.
-              </p>
+              <h3>Translations know your key terminology.</h3>
             </div>
             <div className='v0-ctx-art'>
               <div className='v0-ctx-glossary'>
@@ -196,8 +227,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Translations that reflect your voice and style.</h3>
-              <p>Define directives to guide tone and style for translations.</p>
+              <h3>Translations know your voice and style.</h3>
             </div>
             <div className='v0-ctx-art'>
               <div className='v0-ctx-dirs'>
@@ -229,14 +259,18 @@ export default function V0Context() {
             </div>
           </div>
 
-          <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
+          <div className='tcb-cell v0-ctx-cell v0-ctx-dyn' data-cell data-reveal>
             <div className='tcb-cap'>
               <h3>Translations that work dynamically.</h3>
-              <p>Generate variants for all possible values and user responses.</p>
             </div>
             <div className='v0-ctx-art'>
               <GenderFork />
             </div>
+            {/* The border beam: a 100%-based rect riding the cell's own 1px
+                seam line (the SVG bleeds 1px so the stroke centers ON it). */}
+            <svg className='v0-ctx-beam' aria-hidden='true'>
+              <rect pathLength={100} vectorEffect='non-scaling-stroke' />
+            </svg>
           </div>
 
           {/* The review beat: the grid's full-width closing row — the
@@ -247,7 +281,7 @@ export default function V0Context() {
               section reads native to the plate. */}
           <div className='tcb-cell v0-ctx-review' data-cell data-reveal>
             <ReviewWorkspace
-              heading='Review from one surface.'
+              heading='Review and approve from one surface.'
               sub='Edit and approve translations with your team in a side-by-side view with diffs and version history.'
               notes={null}
             />

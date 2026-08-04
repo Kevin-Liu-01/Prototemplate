@@ -95,10 +95,6 @@ export default function V0Global() {
           <div className='v0-glob-rail'>
             <article className='v0-glob-item'>
               <h3>120+ languages, in every writing system.</h3>
-              <p>
-                zh is distinct from zh-HK. GT covers every regional variant, with 78 base
-                languages that expand into 129 distinct locale tags.
-              </p>
 
               {/* The combined artifact: base tags fan into regional variants,
                   every row in the language's own writing system. It draws no
@@ -168,16 +164,16 @@ export default function V0Global() {
             <article className='v0-glob-item'>
               <h3>Served from the edge.</h3>
               <p>
-                Translations are served from a low-latency CDN, versioned per locale. Fix a
-                string or roll it back without touching your code.
+                Low-latency CDN, versioned per locale. Fix a string or roll it back without
+                touching your code.
               </p>
             </article>
 
             <article className='v0-glob-item'>
               <h3>Built for the enterprise.</h3>
               <p>
-                Enterprise plans include custom FDE hours to build any workflow for your use
-                case. Plus SSO, SOC 2 Type II, ISO 27001, and audit logs.
+                Custom FDE hours to build any workflow for your use case. Plus SSO, SOC 2 Type
+                II, ISO 27001, and audit logs.
               </p>
             </article>
           </div>
@@ -191,16 +187,6 @@ export default function V0Global() {
         <div className='tc-cell' data-reveal>
           <figure className='tcpq-mat'>
             <div className='tcpq-plate'>
-              <div className='tcpq-meta'>
-                <a
-                  href='https://x.com/theo/status/2008302190168019187'
-                  rel='noreferrer'
-                  target='_blank'
-                >
-                  x.com/theo
-                  <ArrowUpRight aria-hidden />
-                </a>
-              </div>
               <blockquote className='tcpq-quote'>
                 <p>Every once in awhile, I see a snippet of code that makes me a bit emotional.</p>
                 <p>

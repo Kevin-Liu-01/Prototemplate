@@ -50,17 +50,9 @@ export default function V0Customers({ heading = 'Trusted by the best companies.'
 
       <div className='tc-row v0-cust-row'>
         {CUSTOMERS.map((customer) => (
-          <a
-            className='v0-cust-cell'
-            key={customer.id}
-            href={customer.href}
-            target='_blank'
-            rel='noreferrer'
-            aria-label={customer.name}
-            data-reveal
-          >
+          <span aria-label={customer.name} className='v0-cust-cell' key={customer.id} role='img'>
             <span className={`v0-cust-mark is-${customer.id}`} aria-hidden='true' />
-          </a>
+          </span>
         ))}
       </div>
     </section>

@@ -8,6 +8,14 @@
    only inside the permanently-dark plate.
    ============================================================ */
 
+/* ---------- the head: a sentence, not a name ----------
+   The sheet's 22ch h2 measure is cut for two-word titles; this head IS the
+   section's one line of copy (no sub), so it takes a sentence measure and
+   breaks in two. */
+.toolchain-root .v0-ldx .tc-head h2 {
+  max-width: 38ch;
+}
+
 /* ---------- the agent plate: the iso's permanently-dark ground ----------
    Inside the is-bleed framed cell the CARD owns the frame — its radius
    clips this ground — so the plate draws no border and no radius of its
@@ -104,8 +112,20 @@
   stroke-linecap: round;
 }
 
+/* the arrival lap: the accent arc that circles the plate's border when a
+   pulse lands — GSAP owns its offset and its fade; parked invisible so the
+   plate's own hairline is all that shows between arrivals */
+.toolchain-root .v0-ldx .v0-ldx-lap {
+  fill: none;
+  stroke: #86a8ff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .toolchain-root .v0-ldx .v0-ldx-pulse {
+  .toolchain-root .v0-ldx .v0-ldx-pulse,
+  .toolchain-root .v0-ldx .v0-ldx-lap {
     display: none;
   }
 }

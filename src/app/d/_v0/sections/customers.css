@@ -13,26 +13,16 @@
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
-/* Flat linked cells: no borders of their own at any width the
-   shell rules — hover and focus are the only ink they add. */
+/* Flat cells, inert for now (founder: no hover ability or effect) —
+   no borders of their own at any width; the shell rules. */
 .toolchain-root .v0-cust-cell {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 120px;
   padding: 16px 12px;
-  text-decoration: none;
-  transition: background-color 0.18s ease;
 }
 
-.toolchain-root .v0-cust-cell:hover {
-  background-color: rgba(138, 143, 152, 0.08);
-}
-
-.toolchain-root .v0-cust-cell:focus-visible {
-  outline: 1px solid var(--tc-accent);
-  outline-offset: -1px;
-}
 
 /* ---- the marks ------------------------------------------------
    Wordmark geometry differs per brand, so each gets its own
@@ -161,3 +151,4 @@
     border-top: 1px solid var(--tc-hair);
   }
 }
+

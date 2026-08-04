@@ -1,5 +1,5 @@
 /* ============================================================
-   V0 CONTEXT — "Localize in context."
+   V0 CONTEXT — "Full context on your codebase and product."
    The toolchain dark-band grammar (tc-band tcb): the section
    reuses darkband-v3's tcb-in / tcb-head / tcb-grid / tcb-cell
    sheet wholesale — this file styles only what lives INSIDE the
@@ -27,9 +27,18 @@
   pointer-events: none;
 }
 
-/* Locale chips inherit each host's size; the code is always mono. */
-.toolchain-root .v0-ctx .lct-code {
-  font-family: var(--tc-mono);
+/* Locale chips wear the house pill (the gray grammar the five homes settled
+   on — never blue); each host keeps its own code size, and the code's sans
+   face comes from the v0-pages global override. */
+.toolchain-root .v0-ctx .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.045);
+  line-height: 19px;
 }
 
 /* ---------- grid spans: the 2×2 quad + the full-width review row ---------- */
@@ -141,8 +150,11 @@
   font-size: 12.5px;
 }
 
+/* The ledger's key column: every pill the same fixed box, content centered,
+   so the translated lines all start on one rule. */
 .toolchain-root .v0-ctx-glossary-row .lct {
   flex: none;
+  justify-content: center;
   width: 48px;
 }
 
@@ -228,6 +240,41 @@
 
 .toolchain-root .v0-ctx-dir-pair .is-arrow {
   color: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- the dynamic cell's border beam ----------
+   One accent segment forever circling the cell's border. The cell's "border"
+   is the sheet's 1px seam ring just OUTSIDE its box (the grid's gap), so the
+   cell un-clips and the SVG bleeds 1px per side: a rect drawn 0.5px inside
+   the bled viewport centers its 1px stroke exactly ON the seam pixel, every
+   corner square like the sheet's. 100%-based geometry re-traces the box at
+   any width; pathLength=100 keeps the dash a constant 18% of the perimeter. */
+
+.toolchain-root .v0-ctx .v0-ctx-dyn {
+  overflow: visible;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-beam {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-beam rect {
+  x: 0.5px;
+  y: 0.5px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  fill: none;
+  stroke: #86a8ff;
+  stroke-width: 1px;
+  stroke-dasharray: 18 82;
+  stroke-dashoffset: 0;
 }
 
 /* ---------- the review row ----------

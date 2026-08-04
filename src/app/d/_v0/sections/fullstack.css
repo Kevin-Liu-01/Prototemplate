@@ -384,6 +384,8 @@
   line-height: 1.6;
   color: var(--tcb-body);
   max-width: 54ch;
+  /* no one-word last lines at the bigger size ("Just merge a PR.") */
+  text-wrap: pretty;
 }
 
 /* ---------- one column ---------- */
