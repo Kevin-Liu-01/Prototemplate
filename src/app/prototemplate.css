@@ -229,7 +229,7 @@
 /* construction lines — every one runs border to border */
 .pt-line {
   position: absolute;
-  background: var(--pt-ink-3);
+  background: var(--pt-hair);
   pointer-events: none;
   z-index: 1;
 }
@@ -256,27 +256,27 @@
 }
 
 .pt-line.is-h.is-faint {
-  background: var(--pt-ink-4);
+  background: var(--pt-hair-2);
 }
 
 .pt-line.is-v {
   top: 0;
   bottom: 0;
   width: 1px;
-  background: var(--pt-ink-4);
+  background: var(--pt-hair);
 }
 
 /* proto's frame: dashed — a sketch of a frame for the working model */
 .pt-line.is-h.is-dashed {
   height: 0;
   background: none;
-  border-top: 1px dashed var(--pt-ink-3);
+  border-top: 1px dashed var(--pt-hair);
 }
 
 .pt-line.is-v.is-dashed {
   width: 0;
   background: none;
-  border-left: 1px dashed var(--pt-ink-4);
+  border-left: 1px dashed var(--pt-hair);
 }
 
 /* the two source words flank the line: serif upper-LEFT, grotesk
@@ -468,12 +468,12 @@
   justify-content: space-between;
   gap: 14px;
   padding: 8px 2px;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 1px solid var(--pt-hair);
   color: rgba(255, 255, 255, 0.62);
 }
 
 .pt-deck-row:last-child {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid var(--pt-hair);
 }
 
 .pt-deck-row b {
@@ -1138,7 +1138,7 @@
   left: -100vw;
   right: -100vw;
   height: 1px;
-  background: var(--pt-ink-4);
+  background: var(--pt-hair);
 }
 
 .pt-xline.is-h.is-top {
@@ -1153,7 +1153,7 @@
   top: -100vh;
   bottom: -100vh;
   width: 1px;
-  background: var(--pt-ink-4);
+  background: var(--pt-hair);
 }
 
 .pt-xline.is-v.is-l {
@@ -1172,12 +1172,12 @@
 
 .pt-funnel-box rect {
   fill: none;
-  stroke: var(--pt-ink-3);
+  stroke: var(--pt-hair);
   stroke-width: 1;
 }
 
 .pt-funnel-drop line {
-  stroke: var(--pt-ink-4);
+  stroke: var(--pt-hair);
   stroke-width: 1;
   stroke-dasharray: 3 3;
 }
@@ -1413,4 +1413,16 @@
   font-size: 15px;
   line-height: 1.66;
   color: var(--pt-ink-2);
+}
+
+/* the repo mark: quiet ink beside Present, full ink on hover */
+.pt-root .pt-nav-github {
+  display: inline-flex;
+  align-items: center;
+  color: var(--pt-ink-3);
+  transition: color 0.15s ease;
+}
+
+.pt-root .pt-nav-github:hover {
+  color: var(--pt-ink);
 }
