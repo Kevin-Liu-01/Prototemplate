@@ -41,9 +41,36 @@
   content: none;
 }
 
-/* Registration crosses mark ONLY the highlighted bands — the dark
-   feature plates (full stack, context, deploy) — at all four of their
-   rail corners. Ordinary sections and the nav stay uncrossed. */
+/* Registration crosses on every seam again (founder round-trip): each
+   section's bottom corners at the rails, the nav's bottom pair, and the
+   dark feature bands at all four corners. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .tc-sec {
+  position: relative;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .tc-sec::after,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-nav .v0-nav-in::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  height: 9px;
+  z-index: 2;
+  pointer-events: none;
+  --cross-ink: rgba(10, 11, 13, 0.38);
+  background:
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 0 4px / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 4px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat;
+}
+
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .tc-sec::after,
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-nav .v0-nav-in::after {
+  --cross-ink: rgba(255, 255, 255, 0.34);
+}
+
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in::after,
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-in::after {
   content: '';
@@ -96,6 +123,27 @@
   line-height: 1.55;
   padding-top: 11px;
   padding-bottom: 11px;
+}
+
+/* The sub leads with the drawn mark instead of the words — inline at
+   cap height, baseline-set, theme-paired. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark {
+  display: inline-block;
+  height: 1.02em;
+  width: auto;
+  vertical-align: -0.16em;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark.is-dark {
+  display: inline-block;
 }
 
 /* the sub runs one line at desktop — the 54ch measure forced two */

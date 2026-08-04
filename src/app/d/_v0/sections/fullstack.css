@@ -44,11 +44,15 @@
 
 .toolchain-root .tcb .v0-stack-fig {
   position: sticky;
-  /* seated low enough that the tower composes against the centered
-     beat copy instead of hugging the band's top — every extra px here
-     costs the pin one px of runway, so it moves with the beat
-     min-height above */
-  top: clamp(96px, 14vh, 148px);
+  /* seated so the FIGURE'S center rides the viewport's center during
+     the pinned pass (founder: "this is in the center of the page") —
+     214px is half the figure's rendered height (~429px: 420px tower at
+     its aspect plus the pads below), floored so a short viewport never
+     tucks the figure under the 58px nav. Every px of seat costs the
+     pin one px of runway, so this moves with the beat min-height:
+     margin ≈ 0.8 × beat − seat − 166px must stay positive through the
+     fourth beat. */
+  top: max(70px, calc(50vh - 214px));
   display: flex;
   justify-content: center;
   /* the top pad floors at 42px — above the tower's biggest rise
@@ -307,11 +311,15 @@
   flex: 1;
   /* taller beats than the copy needs, on purpose: the rail is the
      sticky figure's runway — four of these must outrun the figure's
-     height by enough that the pin holds through the last beat. The
-     copy centers in each window, so the reader meets it mid-viewport
-     beside the pinned figure; the beats separate by rhythm alone, no
-     dividers (founder round 6). */
-  min-height: clamp(250px, 42vh, 420px);
+     height by enough that the pin holds through the last beat AT THE
+     CENTERED SEAT above (which consumes ~110px more runway than a
+     top-hung one; 60vh keeps ~20–40px of pin margin from 700px to
+     1400px-tall viewports — the seat grows at 0.5vh while runway
+     grows at 0.8 × beat, hence the tall cap). The copy centers in
+     each window, so the reader meets it mid-viewport beside the
+     pinned figure; the beats separate by rhythm alone, no dividers
+     (founder round 6). */
+  min-height: clamp(250px, 60vh, 880px);
   display: flex;
   flex-direction: column;
   justify-content: center;

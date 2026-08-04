@@ -17,10 +17,10 @@ type Customer = {
 const CUSTOMERS: readonly Customer[] = [
   { id: 'cursor', name: 'Cursor', href: 'https://cursor.com' },
   { id: 'ramp', name: 'Ramp', href: 'https://ramp.com' },
-  { id: 'partiful', name: 'Partiful', href: 'https://partiful.com' },
   { id: 'profound', name: 'Profound', href: 'https://tryprofound.com' },
-  { id: 'sierra', name: 'Sierra', href: 'https://sierra.ai' },
+  { id: 'partiful', name: 'Partiful', href: 'https://partiful.com' },
   { id: 'clickhouse', name: 'ClickHouse', href: 'https://clickhouse.com' },
+  { id: 'sierra', name: 'Sierra', href: 'https://sierra.ai' },
 ];
 
 /**

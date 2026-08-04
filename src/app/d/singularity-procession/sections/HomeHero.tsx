@@ -492,7 +492,7 @@ export default function HomeHero() {
             </h1>
 
             <p className='tc-hero-sub' data-hero-in>
-              General Translation builds full-stack infrastructure for localizing apps, docs, and websites.
+              <img alt='General Translation' className='tch-sub-mark is-light' src='/brand/no-bg-gt-logo-light.png' /><img alt='' aria-hidden className='tch-sub-mark is-dark' src='/brand/no-bg-gt-logo-dark.png' /> builds full-stack infrastructure for localizing apps, docs, and websites.
             </p>
 
             <div className='tc-hero-acts' data-hero-in>

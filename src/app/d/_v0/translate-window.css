@@ -1,25 +1,95 @@
 /* ============================================================
    TRANSLATE WINDOW — the window's own rules, extracted with it
    from the dossier home (hero-terminal.css stays the shared
-   window sheet; this file carries only what the dossier's home
-   overrides added: the stack strip, the preview face's product
-   page furniture, the inspector marks, the payload's live-edit
-   caret and pinned row). Every rule is scoped
+   window sheet; this file carries only what the window adds to
+   it: the bar's strip zone with its two faces — framework strip
+   and infinite locale belt — the preview face's product page
+   furniture, the inspector marks, and the payload's pinned
+   row). Every rule is scoped
    `.toolchain-root .v0-tw` — the root class the component puts
    on the window — so it outranks hero-terminal's own
    .toolchain-root rules on specificity and travels with the
    window to any home that mounts it.
    ============================================================ */
 
-/* the strip: a full-width row directly under the bar. Its only line is the
-   single 1px bottom hairline — the bar's own border-bottom rules the top,
-   34px away, and the buttons carry no borders between them. */
+/* ---- the merged bar: ONE row, no title (founder). The strip zone is
+   the bar's left flex child — it runs from the window's left edge (the
+   bar's own left padding is zeroed here) to just before the
+   right-anchored seg; its contents swap with the face. The framework
+   strip is wizard furniture (it feeds the Detected line), so it rides
+   the Terminal face; the infinite locale belt owns the zone on
+   Preview. The bar's fixed height sizes both faces, so nothing jumps;
+   the bar's own border-bottom is the row's ONE hairline — the zone
+   draws none. x-overflow clips at the zone's edge (nothing ever slides
+   under the seg) while y stays visible: the active tab's underline
+   sits on the hairline's row, 1px below the zone. */
+.toolchain-root .v0-tw .tct-bar {
+  padding-left: 0;
+}
+
+.toolchain-root .v0-tw .v0-tw-strip {
+  position: relative;
+  align-self: stretch;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* the two contents crossfade exactly like the window's faces below */
+.toolchain-root .v0-tw .v0-tw-strip-face {
+  transition:
+    opacity 0.34s ease,
+    visibility 0.34s ease;
+}
+
+.toolchain-root .v0-tw .v0-tw-strip-face[data-on='false'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .v0-tw .v0-tw-strip-face {
+    transition: none;
+  }
+}
+
+/* ---- the infinite locale belt: the preview's face of the strip. A slow
+   conveyor of locale chips — the roster run twice, translateX-wrapped
+   (the house marquee) — clipped and faded at the ZONE's edges: the belt
+   is inset:0 of the strip zone, so the mask's percentages track the
+   zone's width, never the window's — the fade lands cleanly before the
+   seg. The chip crossing the zone's centre is the active locale: the
+   belt, not a timer, drives the rewrite below. */
+.toolchain-root .v0-tw .v0-tw-belt {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+
+/* the track keeps the shared .tct-tabs chip grammar; only its geometry
+   is the belt's own (one long row, chips centred on the bar's height) */
+.toolchain-root .v0-tw .v0-tw-belt-track {
+  position: relative;
+  height: 100%;
+  width: max-content;
+  align-items: center;
+  will-change: transform;
+}
+
+/* the frameworks strip: a full-width row filling the zone's height —
+   the tabs stretch to the bar and centre their labels, so both faces
+   share one height. The buttons carry no borders between them; the
+   bar's hairline rules the bottom. */
 .toolchain-root .v0-tw .sgdh-stacks {
   display: flex;
   align-items: stretch;
   width: 100%;
+  height: 100%;
   padding: 0 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .toolchain-root .v0-tw .sgdh-stacks button {
@@ -28,7 +98,7 @@
   margin: 0;
   border: 0;
   background: transparent;
-  padding: 11px 12px 10px;
+  padding: 0 12px;
   font-family: var(--tc-sans);
   font-size: 11px;
   font-weight: 500;
@@ -48,7 +118,9 @@
   color: #ffffff;
 }
 
-/* the active underline sits exactly ON the strip's hairline (bottom: -1px):
+/* the active underline sits exactly ON the bar's hairline (bottom: -1px —
+   the stretched tab's bottom edge is the bar's content edge, so -1px is
+   the border row; the zone keeps y-overflow visible for exactly this):
    one stroke swaps ink where the tab is lit — never a second parallel line */
 .toolchain-root .v0-tw .sgdh-stacks button[data-on='true']::after {
   content: '';
@@ -60,43 +132,17 @@
   background: #ffffff;
 }
 
-/* the window title speaks the drawn GT mark beside sans text (founder
-   addendum: standalone brand occurrences in the window chrome use the
-   actual logo, never the letters). The mark sits at the title's cap
-   height, centered on the text line; the text keeps the bar's ellipsis
-   discipline so it never shoves the segmented control. */
-.toolchain-root .v0-tw .tct-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 0;
-  font-family: var(--tc-sans);
-}
-
-.toolchain-root .v0-tw .tct-title img {
-  display: block;
-  width: 14px;
-  height: 14px;
-  flex: 0 0 auto;
-}
-
-.toolchain-root .v0-tw .tct-title span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* narrow: the six tabs wrap into rows rather than scrolling out of reach;
-   a wrapped row's underline still reads as the tab's own mark */
+/* narrow: the bar is one fixed row now, so the tabs cannot wrap — they
+   tighten instead, and whatever still runs long clips at the zone's
+   edge, short of the seg */
 @media (max-width: 760px) {
   .toolchain-root .v0-tw .sgdh-stacks {
-    flex-wrap: wrap;
     padding: 0 2px;
   }
 
   .toolchain-root .v0-tw .sgdh-stacks button {
-    padding: 10px 10px 9px;
+    padding: 0 8px;
+    gap: 5px;
   }
 }
 
@@ -136,17 +182,20 @@
    The card never remaps under [data-theme], so neither do these.
    ============================================================ */
 
-/* The product card is taller than the old three-string mock, so the
-   stage takes a floor tall enough to clear the whole preview column
-   (tabs, card, receipt line). The hidden transcript simply gains quiet
-   space under its prompt line. The column is top-anchored: if anything
-   ever overflows again it clips at the bottom, never over the tabs. */
+/* The stage floor sits just over the in-flow transcript (~330px), which
+   is now the window's tallest face: the preview column is only the card
+   (the belt rides the bar, the receipt line and toast are gone), so it
+   centres comfortably inside the transcript's height and the window's
+   bottom edge closes right under the run — no parked void where the
+   note's row sat. The floor still guards the preview column if the
+   card ever outgrows the transcript at narrow widths. */
 .toolchain-root .v0-tw .tct-stage {
-  min-height: 404px;
+  min-height: 334px;
 }
 
+/* the face keeps hero-terminal's centred column — the belt lives in the
+   bar above the stage now, so nothing here needs the top anchor */
 .toolchain-root .v0-tw .tct-face-prev {
-  justify-content: flex-start;
   gap: 11px;
   padding: 12px 28px 14px;
 }
@@ -156,16 +205,15 @@
   width: min(480px, 100%);
 }
 
-/* one gutter for the whole mock: addr, chrome and main all sit on 16px */
+/* one gutter for the whole mock: chrome and main both sit on 16px */
 .toolchain-root .v0-tw .tct-app-main {
   padding: 15px 16px 52px;
 }
 
-.toolchain-root .v0-tw .tct-app-toast {
-  left: 16px;
-}
-
-/* the in-app chrome: wordmark + localized nav on one hairline row */
+/* the in-app chrome: the GT mark + localized nav on one hairline row.
+   The brand is the drawn logo alone (founder addendum) — no wordmark
+   text, so the mark carries no type styles, just the image sized to
+   the nav row's cap height. */
 .toolchain-root .v0-tw .sgdh-app-chrome {
   display: flex;
   align-items: center;
@@ -177,20 +225,13 @@
 .toolchain-root .v0-tw .sgdh-app-mark {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--tc-sans);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  color: #070707;
 }
 
-.toolchain-root .v0-tw .sgdh-app-mark i {
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
-  background: #070707;
+.toolchain-root .v0-tw .sgdh-app-mark img {
+  display: block;
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
 }
 
 .toolchain-root .v0-tw .sgdh-app-nav {
@@ -259,14 +300,9 @@
 /* ---- inspector marks: the quiet exclamation at each component's
    top-right. Hover/focus (or tap) outlines the component and names the
    payload key its string ships under — the bridge to the JSON below
-   the seam. The toast is already absolutely positioned, so it anchors
-   its own mark without the relative override. */
-.toolchain-root .v0-tw .sgdh-ins:not(.tct-app-toast) {
-  position: relative;
-}
-
-/* the WHOLE component is the hit target — the cursor says so */
+   the seam. The WHOLE component is the hit target — the cursor says so. */
 .toolchain-root .v0-tw .sgdh-ins {
+  position: relative;
   cursor: pointer;
 }
 
@@ -339,16 +375,6 @@
   letter-spacing: 0.01em;
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.85);
-}
-
-/* ---- the payload's live-edit caret: the terminal's own caret at the
-   file's 11px gauge, parked invisible until the edit loop raises it */
-.toolchain-root .v0-tw .sgdh-json-caret {
-  width: 6px;
-  height: 11px;
-  transform: translateY(1.5px);
-  visibility: hidden;
-  opacity: 0;
 }
 
 /* ---- the pinned row: the JSON line a clicked inspector points at —
