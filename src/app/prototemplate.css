@@ -1355,7 +1355,8 @@
   overflow: hidden;
   border: 1px solid var(--pt-hair);
   background: var(--pt-white);
-  z-index: calc(1 + var(--i));
+  /* the bottom-left window leads the stack; each one behind tucks up-right */
+  z-index: calc(5 - var(--i));
 }
 
 .pt-sites-fan-shot img {
