@@ -20,7 +20,7 @@ import '../sections/logos-icons.css';
 import './enterprise.css';
 
 export const metadata = {
-  title: 'Enterprise — Toolchain — GT Redesign',
+  title: 'Enterprise — Toolchain',
   // Declared so the browser stops probing for a /favicon.ico this app never ships.
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

@@ -12,7 +12,7 @@ import Story from './sections/Story';
 import './styles.css';
 
 export const metadata = {
-  title: 'Typographic Broadcast — GT Redesign',
+  title: 'Typographic Broadcast',
   description: 'End-to-end localization for the world’s best companies.',
   icons: { icon: '/brand/no-bg-gt-logo-dark.png' },
 };

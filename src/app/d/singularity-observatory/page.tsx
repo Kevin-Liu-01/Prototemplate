@@ -1,6 +1,7 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import EnterpriseNavRebase from '@/components/shared/EnterpriseNavRebase';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionMetadata } from '@/lib/directions';
 
 import Bento from '../toolchain/sections/Bento';
 import DarkBand from '../toolchain/sections/DarkBand';
@@ -17,10 +18,7 @@ import '../toolchain/styles.css';
 import './home.css';
 import '@/components/shared/home-terminal-colors.css';
 
-export const metadata = {
-  title: 'Observatory — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+export const metadata = directionMetadata('singularity-observatory');
 
 /**
  * Singularity · Observatory home — the staged pipeline. The hero terminal

@@ -1,12 +1,86 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import { fontVariables } from '@/lib/fonts';
 
 import './globals.css';
 
+const SITE_URL = 'https://prototemplate.vercel.app';
+
+const SITE_TITLE = 'Prototemplate — GT Website Redesign Explorations';
+
+const SITE_DESCRIPTION =
+  'Eighteen art directions for the General Translation website — a localization-first design lab of GSAP motion and WebGL shader heroes, from ruled-paper minimalism to black-hole light fields, each one live at /d/<slug>.';
+
 export const metadata: Metadata = {
-  title: 'GT Redesign Explorations',
-  description: 'Art directions for the General Translation marketing site.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    template: '%s · Prototemplate',
+    default: SITE_TITLE,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: 'Prototemplate',
+  keywords: [
+    'Prototemplate',
+    'General Translation',
+    'website redesign',
+    'design explorations',
+    'art direction',
+    'landing page design',
+    'localization',
+    'internationalization',
+    'i18n',
+    'WebGL shaders',
+    'GSAP',
+    'creative web design',
+    'design gallery',
+  ],
+  authors: [
+    { name: 'Kevin Liu' },
+    { name: 'General Translation', url: 'https://generaltranslation.com' },
+  ],
+  creator: 'Kevin Liu',
+  publisher: 'General Translation',
+  openGraph: {
+    siteName: 'Prototemplate',
+    type: 'website',
+    url: '/',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: '/og.png',
+        width: 2400,
+        height: 1260,
+        alt: 'Prototemplate — prototype × template, the working index of General Translation redesign directions.',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ['/og.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
+  alternates: { canonical: '/' },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#070707' },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

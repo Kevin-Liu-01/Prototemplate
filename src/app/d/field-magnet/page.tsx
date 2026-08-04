@@ -11,7 +11,7 @@ import Story from './sections/Story';
 import './styles.css';
 
 export const metadata = {
-  title: 'Field Magnet — GT Redesign',
+  title: 'Field Magnet',
   // Without an explicit icon the browser probes /favicon.ico, which 404s in dev.
   icons: { icon: '/brand/no-bg-gt-logo-dark.png' },
 };

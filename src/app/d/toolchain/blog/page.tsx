@@ -15,7 +15,7 @@ import '../styles.css';
 import './blog.css';
 
 export const metadata = {
-  title: 'Blog — Toolchain — GT Redesign',
+  title: 'Blog — Toolchain',
   // Declared so the browser stops probing for a /favicon.ico this app never ships.
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

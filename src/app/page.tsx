@@ -17,25 +17,58 @@ import './prototemplate.css';
 const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
 
-export const metadata = {
-  title: 'Prototemplate',
-  description:
-    'Prototype × template — the working index of General Translation redesign directions.',
-  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-  openGraph: {
-    title: 'Prototemplate',
-    description:
-      'Prototype × template — the working index of General Translation redesign directions.',
-    type: 'website',
-    images: [{ url: '/og.png', width: 2400, height: 1260, alt: 'prototype × template' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Prototemplate',
-    description:
-      'Prototype × template — the working index of General Translation redesign directions.',
-    images: ['/og.png'],
-  },
+/* Titles, descriptions, OG card, canonical, and icons all come from the root
+   layout's defaults — this page IS the site root. Only the structured data
+   below is page-specific. */
+
+const SITE_URL = 'https://prototemplate.vercel.app';
+
+/**
+ * JSON-LD for search and answer engines: the site, and the index as a
+ * collection of the curated directions. Serialized server-side; `<` is
+ * escaped so page content can never close the script tag.
+ */
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: `${SITE_URL}/`,
+      name: 'Prototemplate',
+      alternateName: 'GT Website Redesign Explorations',
+      description:
+        'Prototype × template — the working index of General Translation website redesign directions.',
+      publisher: {
+        '@type': 'Organization',
+        name: 'General Translation',
+        url: 'https://generaltranslation.com',
+      },
+    },
+    {
+      '@type': 'CollectionPage',
+      '@id': `${SITE_URL}/#collection`,
+      url: `${SITE_URL}/`,
+      name: 'Prototemplate — GT Website Redesign Explorations',
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+      description:
+        'Eighteen art directions for the General Translation website, each running live: five full site concepts and thirteen single-page explorations.',
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: DIRECTIONS.length,
+        itemListElement: DIRECTIONS.map((d, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': 'CreativeWork',
+            name: d.name,
+            description: d.concept,
+            url: `${SITE_URL}/d/${d.slug}`,
+          },
+        })),
+      },
+    },
+  ],
 };
 
 /** The five full site concepts vs the single-page explorations. */
@@ -56,6 +89,12 @@ const DECK = [
 export default function IndexPage() {
   return (
     <main className={`pt-root ${fraunces.variable} ${grotesk.variable}`}>
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
+        }}
+      />
       <div className='pt-rail'>
         <header className='pt-nav'>
           <Link className='pt-nav-brand' href='/'>

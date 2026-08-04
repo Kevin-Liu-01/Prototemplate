@@ -1,5 +1,6 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionMetadata } from '@/lib/directions';
 
 import DarkBand from './sections/DarkBand';
 import Frameworks from './sections/Frameworks';
@@ -15,11 +16,7 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'glyph-rain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+export const metadata = directionMetadata('glyph-rain');
 
 /**
  * GLYPH RAIN — the script-led fork of the toolchain frame. The hero is a

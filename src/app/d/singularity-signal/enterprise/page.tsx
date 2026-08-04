@@ -1,5 +1,6 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionMetadata } from '@/lib/directions';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
 import Hero from '../../singularity/sections/Hero';
@@ -16,10 +17,7 @@ import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Enterprise — Signal — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+export const metadata = directionMetadata('singularity-signal', 'enterprise');
 
 /**
  * Singularity · Signal — the gate, then the broadcast. What comes out of

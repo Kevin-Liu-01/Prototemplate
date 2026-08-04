@@ -1,5 +1,6 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionMetadata } from '@/lib/directions';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -15,11 +16,7 @@ import Transit from './sections/Transit';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'Lens Gate — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+export const metadata = directionMetadata('lens-gate');
 
 /**
  * Lens Gate — the toolchain shell with the Concrete Origin identity refracted

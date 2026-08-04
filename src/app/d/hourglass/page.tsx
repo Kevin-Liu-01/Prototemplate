@@ -1,5 +1,6 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionMetadata } from '@/lib/directions';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -12,11 +13,7 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'Hourglass — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+export const metadata = directionMetadata('hourglass');
 
 /**
  * Version 22 — Hourglass. From the founder's sketch over the dark PortalHero

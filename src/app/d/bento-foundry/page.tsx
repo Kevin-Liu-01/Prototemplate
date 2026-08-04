@@ -12,7 +12,7 @@ import Story from './sections/Story';
 import './styles.css';
 
 export const metadata = {
-  title: 'Bento Foundry — GT Redesign',
+  title: 'Bento Foundry',
   description: 'Machined bento grid; muted cells, each holding a line-art technical drawing.',
   /* names a real icon so the browser stops probing for a /favicon.ico we don't ship */
   icons: { icon: '/brand/no-bg-gt-logo-dark.png' },

@@ -11,7 +11,7 @@ import Tail from './sections/Tail';
 import './styles.css';
 
 export const metadata = {
-  title: 'Wide Field — GT Redesign',
+  title: 'Wide Field',
   description: 'End-to-end localization for the world’s best companies.',
   // declared per-route so the browser stops probing the app-wide /favicon.ico
   icons: { icon: '/brand/no-bg-gt-logo-dark.png' },

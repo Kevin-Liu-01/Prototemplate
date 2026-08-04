@@ -20,7 +20,7 @@ import '../sections/logos-icons.css';
 import './pricing.css';
 
 export const metadata = {
-  title: 'Pricing — Toolchain — GT Redesign',
+  title: 'Pricing — Toolchain',
   // Declared so the browser stops probing for a /favicon.ico this app never ships.
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

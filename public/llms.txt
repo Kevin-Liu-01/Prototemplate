@@ -1,0 +1,39 @@
+# Prototemplate
+
+> Prototemplate (https://prototemplate.vercel.app) is the working gallery of website-redesign explorations for General Translation (https://generaltranslation.com), the localization platform for developers. It is a design exploration by Kevin Liu: eighteen curated art directions for the GT marketing site, each one built and running live — GSAP motion, WebGL shader heroes, and a strict ruled-line design system — plus a full-screen presenter and a build log.
+
+Every direction is a real page, not a mockup. Thirteen are single-page hero/landing explorations; five are full site concepts (a home page plus an enterprise page) built on the shared "Toolchain" foundation.
+
+## Routes
+
+- [Index](https://prototemplate.vercel.app/): the working index of all directions, with live captures.
+- [Presenter](https://prototemplate.vercel.app/present): full-screen scroll walkthrough — why, principles, craft, and every prototype live.
+- [Craft](https://prototemplate.vercel.app/craft): the build log — the line law, the rail system, the shaders, and the libraries.
+- Each direction lives at https://prototemplate.vercel.app/d/<slug>; site concepts add /d/<slug>/enterprise.
+
+## Directions
+
+- [Toolchain](https://prototemplate.vercel.app/d/toolchain): the minimalist evolution of the current site — one ruled column, bento rows whose shells never repeat, and isometric line-art diagrams.
+- [Chroma Flow](https://prototemplate.vercel.app/d/chroma-flow): a curl-noise flow field pulls streaming color through the nameplate above one continuous product pipeline.
+- [Dither Field](https://prototemplate.vercel.app/d/dither-field): hellos in eight scripts resolve out of Bayer noise and dissolve back, pixel by pixel.
+- [Aurora Paper](https://prototemplate.vercel.app/d/aurora-paper): a grainy aurora drifts behind an otherwise disciplined paper page.
+- [Glyph Rain](https://prototemplate.vercel.app/d/glyph-rain): a particle rain of world-script glyphs gathers into each word of the headline, holds, and re-scatters.
+- [Prism Light](https://prototemplate.vercel.app/d/prism-light): one white beam splits through a glass prism and the translations ride the dispersion fan out.
+- [Lens Gate](https://prototemplate.vercel.app/d/lens-gate): the ruled paper passes through one breathing glass — components enter in English and exit translated.
+- [Paper Foundry](https://prototemplate.vercel.app/d/paper-foundry): the bento machined into paper — hairline cells set into a brushed-graphite sheet.
+- [Terminus Board](https://prototemplate.vercel.app/d/terminus-board): a departure hall for locales — a split-flap headline over a flip-wave cell grid.
+- [Wide Rule](https://prototemplate.vercel.app/d/wide-rule): one analytic interference band crosses enormous quiet space.
+- [Event Horizon](https://prototemplate.vercel.app/d/event-horizon): component walls dive with curved perspective into a black-hole gate — English falls in, translations emerge.
+- [Hourglass](https://prototemplate.vercel.app/d/hourglass): dark corridor walls of UI cards pinch at an hourglass waist holding the mark, the flags, and the CTAs.
+- [Singularity](https://prototemplate.vercel.app/d/singularity): the enterprise gate — the lensing horizon alone on open paper, customers riding the locale belt.
+- [Dossier](https://prototemplate.vercel.app/d/singularity-dossier): full site — the every-stack argument folded into the hero terminal, and an enterprise page that reads as an evidence file.
+- [Orbit](https://prototemplate.vercel.app/d/singularity-orbit): full site — the home compressed to a one-line terminal session, and an enterprise page that argues with gravity.
+- [Signal](https://prototemplate.vercel.app/d/singularity-signal): full site — the terminal split into session and output panes, and an enterprise page as the broadcast.
+- [Observatory](https://prototemplate.vercel.app/d/singularity-observatory): full site — the terminal walks install, translate, serve; the enterprise page is measured proof.
+- [Procession](https://prototemplate.vercel.app/d/singularity-procession): full site — no hero card at all, the first fold is one full-width console; the enterprise page is the march.
+
+## About
+
+- Built with Next.js, GSAP, Lenis, and hand-written WebGL/canvas field libraries (horizon-field, glyph-field, prismatic-field).
+- Made by Kevin Liu as a design exploration for General Translation.
+- General Translation: https://generaltranslation.com
