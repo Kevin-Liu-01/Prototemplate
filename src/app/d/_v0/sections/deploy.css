@@ -1,10 +1,12 @@
 /* ============================================================
    V0 DEPLOY — the closing band.
-   Full-bleed dark plate (house band pattern) washed with the
-   prismatic field; the mask keeps the center dark for the type
-   and lets the light own the edges. Permanently dark, so the
-   plate's inks are hardcoded; the seams to the paper use the
-   remapping tc tokens.
+   Full-bleed dark plate (house band pattern) carrying the
+   glyph-rain hero's condensation field: copy LEFT, and on the
+   RIGHT the eight-script field condensing into the word
+   "language" — one canvas, the engine's own dithered clearing
+   holding the copy zone (no mask, no veil). Permanently dark,
+   so the plate's inks are hardcoded; the seams to the paper use
+   the remapping tc tokens.
    ============================================================ */
 
 .toolchain-root .v0-dep {
@@ -17,30 +19,21 @@
   isolation: isolate;
 }
 
-/* The field is the band's material, not a rumour of one (tc-band-field
-   grammar, rescoped): a committed light field at the edges, held off the
-   type by a dark center — the mask is centered because the band's content
-   is, unlike the hero band's top-weighted cut. */
-/* The glyph rain fills the band edge to edge; the mask thins it over the
-   center column so the type owns the middle, and fades it off the band's
-   top and bottom rules so the rain never kisses a border. */
-.toolchain-root .v0-dep-rain {
+/* The field is the band's material AND its subject: the hero engine's
+   canvas, mounted INSIDE the rail column so the formed word is never
+   struck by a rail hairline. No CSS mask — the engine's dithered
+   density falloffs (the copy clearing, the bottom seam) are the only
+   edges, per the field's own craft rules. The band is dark in both
+   themes, so --tc-ink pins the dark theme's white ramp here: the engine
+   resolves its ink off this canvas. */
+.toolchain-root .v0-dep-field {
+  --tc-ink: #ffffff;
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
-  mask-image:
-    radial-gradient(
-      58% 78% at 50% 52%,
-      rgba(0, 0, 0, 0.08) 0%,
-      rgba(0, 0, 0, 0.3) 42%,
-      rgba(0, 0, 0, 0.7) 68%,
-      #000 86%
-    ),
-    linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
-  mask-composite: intersect;
-  -webkit-mask-composite: source-in;
+  display: block;
   pointer-events: none;
 }
 
@@ -55,10 +48,16 @@
   margin-inline: auto;
   border-inline: 1px solid var(--tc-hair-band);
   padding: clamp(76px, 9vw, 132px) var(--tc-gut);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+}
+
+/* The copy block, LEFT (founder recomposition): it stands inside the
+   engine's cleared zone — density falls to zero left of 0.43 of the
+   canvas — so the cap keeps the type on quiet ground at every rail
+   width the wide layout serves. */
+.toolchain-root .v0-dep-copy {
+  position: relative;
+  z-index: 1;
+  max-width: min(42%, 440px);
 }
 
 .toolchain-root .v0-dep h2 {
@@ -83,7 +82,7 @@
 .toolchain-root .v0-dep-acts {
   margin-top: clamp(28px, 3.2vw, 42px);
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -130,4 +129,32 @@
 .toolchain-root .v0-dep-btn-line:hover {
   border-color: rgba(255, 255, 255, 0.45);
   background: rgba(255, 255, 255, 0.06);
+}
+
+/* Under 881px the canvas box drops below the engine's 880px wide/narrow
+   cut: the field re-lays itself with the word bottom-centered and the
+   clearing across the TOP — so the copy re-centers up there and the
+   band spends extra bottom padding as the word's stage. */
+@media (max-width: 881px) {
+  .toolchain-root .v0-dep-in {
+    padding-bottom: clamp(240px, 52vw, 300px);
+  }
+
+  .toolchain-root .v0-dep-copy {
+    max-width: 460px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .toolchain-root .v0-dep-copy h2 {
+    margin-inline: auto;
+  }
+
+  .toolchain-root .v0-dep-sub {
+    margin-inline: auto;
+  }
+
+  .toolchain-root .v0-dep-acts {
+    justify-content: center;
+  }
 }

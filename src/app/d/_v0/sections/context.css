@@ -4,10 +4,11 @@
    reuses darkband-v3's tcb-in / tcb-head / tcb-grid / tcb-cell
    sheet wholesale — this file styles only what lives INSIDE the
    cells (the fork re-skin, the glossary and directives rows, the
-   review row's ground) plus the cells' grid spans. GlyphRain
-   falls behind the ruled sheet. The plate is permanently dark in
-   both themes, so artifact inks are hardcoded white alphas; the
-   seams stay in the band hairline family.
+   review row's ground) plus the cells' grid spans. The glyph-rain
+   closer's rising ink field drifts behind the ruled sheet. The
+   plate is permanently dark in both themes, so artifact inks are
+   hardcoded white alphas; the seams stay in the band hairline
+   family.
    ============================================================ */
 
 /* Full-bleed inside the .tc-rail wrapper (house band pattern). */
@@ -16,14 +17,18 @@
   border-block: 1px solid var(--tc-hair);
 }
 
-/* The rain is the band's material, not its subject: it spans the plate
-   behind the ruled sheet (tcb-in sits above at z-index 1). */
+/* The field is the band's material, not its subject: paper glyphs RISING
+   off the ink (the glyph-rain closer's engine), spanning the plate behind
+   the ruled sheet (tcb-in sits above at z-index 1). No mask — the engine
+   holds a dithered clearing measured off the v0-ctx-core box, so glyphs
+   own only the band's margins and padding strips. */
 .toolchain-root .v0-ctx-rain {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
+  display: block;
   pointer-events: none;
 }
 

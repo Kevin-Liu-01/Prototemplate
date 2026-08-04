@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 
-import GlyphRain from '@/app/d/singularity/sections/GlyphRain';
+import { createInkField } from '@/app/d/glyph-rain/sections/band/inkField';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
 import ReviewWorkspace from '@/app/d/toolchain/sections/ReviewWorkspace';
@@ -20,7 +20,12 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * V0 CONTEXT — "Full context on your codebase and product." The section is
  * the toolchain dark-band:
  * tc-band tcb → tcb-in → tcb-head cell → tcb-grid of framed tcb-cells, with
- * GlyphRain falling behind the sheet. The four bentos run title-only
+ * the glyph-rain closer's RISING ink field behind the sheet (founder note:
+ * where glyph rain fell, the glyphs rise now) — paper glyphs off the ink
+ * band, 1-bit dithered depth, held out of the ruled content column by a
+ * dithered clearing measured off the real DOM box, so the type and bento
+ * cells stay exactly as readable as the old mask kept them.
+ * The four bentos run title-only
  * (founder cut: the subheadings retired); the application-logic cell mounts
  * the ORIGINAL ContextResolve fork, and the dynamic cell re-cuts the gender
  * fork in that same lang-cr drawing so the two forks speak one grammar —
@@ -148,40 +153,65 @@ const DIRECTIVES: readonly Directive[] = [
 
 export default function V0Context() {
   const root = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLCanvasElement>(null);
+  const core = useRef<HTMLDivElement>(null);
   useQuietReveal(root);
 
-  /* The dynamic cell's ambient accent: one blue segment forever circling
-     the cell's border. The rect is 100%-based (it re-traces the box at any
-     size) and pathLength-normalized to 100, so a dash of 18/82 is 18% of
-     the perimeter at every width; one lap ≈ 5s, linear, gated to the
-     section's viewport dwell. Reduced motion parks the segment where the
-     path starts. */
+  /* The band's material and its one ambient accent. The ink field's rAF,
+     resize, clearing re-measure and reduced-motion still are internal to
+     the engine — destroy() on unmount is ours. The dynamic cell's beam:
+     one blue segment forever circling the cell's border. The rect is
+     100%-based (it re-traces the box at any size) and pathLength-
+     normalized to 100, so a dash of 18/82 is 18% of the perimeter at
+     every width; one lap ≈ 5s, linear, gated to the section's viewport
+     dwell. Reduced motion parks the segment where the path starts. */
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const beam = root.current?.querySelector('.v0-ctx-beam rect');
-      if (!beam) return;
-      gsap.to(beam, {
-        strokeDashoffset: -100,
-        duration: 5,
-        ease: 'none',
-        repeat: -1,
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          toggleActions: 'play pause resume pause',
-        },
-      });
+      const scope = root.current;
+      if (!scope) return;
+
+      const canvas = stage.current;
+      const h2 = scope.querySelector('h2');
+      const field = canvas
+        ? createInkField({
+            canvas,
+            clearEl: core.current,
+            displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
+          })
+        : null;
+
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const beam = scope.querySelector('.v0-ctx-beam rect');
+        if (beam) {
+          gsap.to(beam, {
+            strokeDashoffset: -100,
+            duration: 5,
+            ease: 'none',
+            repeat: -1,
+            scrollTrigger: {
+              trigger: scope,
+              start: 'top bottom',
+              end: 'bottom top',
+              toggleActions: 'play pause resume pause',
+            },
+          });
+        }
+      }
+
+      return () => field?.destroy();
     },
     { scope: root }
   );
 
   return (
     <section className='tc-band tcb v0-ctx' id='context' ref={root}>
-      <GlyphRain className='v0-ctx-rain' intensity={0.4} />
+      {/* the rising material: paper glyphs off the ink, band edges only */}
+      <canvas className='v0-ctx-rain' ref={stage} aria-hidden='true' />
 
       <div className='tcb-in'>
+        {/* the measuring box for the field's dithered clearing: glyphs own
+            the band's margins and padding strips, never the content */}
+        <div className='v0-ctx-core' ref={core}>
         <div className='tcb-head' data-cell data-reveal>
           <h2>Full context on your codebase and product.</h2>
           <p>GT connects your code, content, and translations.</p>
@@ -286,6 +316,7 @@ export default function V0Context() {
               notes={null}
             />
           </div>
+        </div>
         </div>
       </div>
     </section>
