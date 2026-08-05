@@ -660,32 +660,43 @@ function shineWindow(width: number): string {
    extremes). The floor sits exactly in the translations top-face plane,
    one STEP below the capstone's seat. */
 
-/** The sheet's half-width along world x — inside the capstone's ±45
-    footprint, wide enough to read as a working scan of the plate below. */
-const BEAM_HALF = 34;
+/* The sheet is a TRAPEZOID that LEANS as it sweeps (founder: "make the
+   scanner a trapezoid... like that other diagram" — the Locadex iso's
+   cone): a narrow ±BEAM_TOP_HALF aperture at the capstone's underside
+   flares to a ±BEAM_LAND_HALF landing on the translations plate, and
+   the sweep drives the two edges at different amplitudes — the top
+   pivots ±BEAM_TOP_Y under the capstone while the land line runs
+   ±BEAM_LAND_Y across the plate. A leaning quad cannot be a translated
+   constant, so beamAt(t) projects the corners for a phase t ∈ [−1, 1]
+   and FullStack writes the paths per tick; t = 0 is the drawn rest pose
+   (the reduced-motion still). */
+
+/** The aperture's and the landing's half-widths along world x — the top
+    inside the capstone's ±52 underside, the landing spread on the ±52
+    translations face. */
+const BEAM_TOP_HALF = 26;
+const BEAM_LAND_HALF = 40;
 /** The top edge's overshoot above the capstone's resting underside. */
 const BEAM_TOP_Z = 9;
 /** The translations plate's top face, in the capstone's local z. */
 const BEAM_FLOOR_Z = THICK - STEP;
-const beamTL = project(-BEAM_HALF, 0, BEAM_TOP_Z);
-const beamTR = project(BEAM_HALF, 0, BEAM_TOP_Z);
-const beamBR = project(BEAM_HALF, 0, BEAM_FLOOR_Z);
-const beamBL = project(-BEAM_HALF, 0, BEAM_FLOOR_Z);
-const BEAM_QUAD = polyline([beamTL, beamTR, beamBR, beamBL], true);
-const BEAM_EDGE_L = segment(beamTL, beamBL);
-const BEAM_EDGE_R = segment(beamTR, beamBR);
-const BEAM_LAND = segment(beamBL, beamBR);
+/** The lean: the aperture's and the landing's sweep amplitudes. */
+const BEAM_TOP_Y = 16;
+const BEAM_LAND_Y = 30;
 
-/** Sweep amplitude in world y (founder: "make it go up and down a little
-    more than it currently is" — up from the first pass's ±19): the beam's
-    ±34 × ±27 footprint stays inside the capstone's ±45 underside and
-    lands inside the translations plate's ±52 top face at both extremes,
-    and the top edge's overshoot stays buried behind the lifted hull at
-    both ends of the pass (checked against the silhouette's four bottom
-    edges — the sheet never pokes past the capstone's rim). */
-const BEAM_SWEEP_Y = 27;
-export const BEAM_SWEEP_DX = BEAM_SWEEP_Y * ISO_COS30;
-export const BEAM_SWEEP_DY = BEAM_SWEEP_Y * ISO_SIN30;
+export const beamAt = (t: number) => {
+  const tl = project(-BEAM_TOP_HALF, BEAM_TOP_Y * t, BEAM_TOP_Z);
+  const tr = project(BEAM_TOP_HALF, BEAM_TOP_Y * t, BEAM_TOP_Z);
+  const br = project(BEAM_LAND_HALF, BEAM_LAND_Y * t, BEAM_FLOOR_Z);
+  const bl = project(-BEAM_LAND_HALF, BEAM_LAND_Y * t, BEAM_FLOOR_Z);
+  return {
+    quad: polyline([tl, tr, br, bl], true),
+    edgeL: segment(tl, bl),
+    edgeR: segment(tr, br),
+    land: segment(bl, br),
+  };
+};
+const BEAM_REST = beamAt(0);
 
 /** The beam's seat in the frame overlay: the capstone row's slab-local
     frame, derived by id so a reordering never strands the sheet. */
@@ -1049,10 +1060,10 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
       <svg className='v0s-beamsvg' viewBox={`${VIEW_X} 0 ${VIEW_W} ${TOWER_H}`} aria-hidden>
         <g className='v0s-scan' data-agents-scan transform={`translate(0 ${BEAM_FRAME_TY})`}>
           <g data-agents-sweep>
-            <path className='v0s-beam' d={BEAM_QUAD} />
-            <path className='v0s-beam-edge' d={BEAM_EDGE_L} vectorEffect='non-scaling-stroke' />
-            <path className='v0s-beam-edge' d={BEAM_EDGE_R} vectorEffect='non-scaling-stroke' />
-            <path className='v0s-beam-land' d={BEAM_LAND} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-beam' d={BEAM_REST.quad} />
+            <path className='v0s-beam-edge' d={BEAM_REST.edgeL} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-beam-edge' d={BEAM_REST.edgeR} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-beam-land' d={BEAM_REST.land} vectorEffect='non-scaling-stroke' />
           </g>
         </g>
       </svg>

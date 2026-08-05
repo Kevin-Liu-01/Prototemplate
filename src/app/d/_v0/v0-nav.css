@@ -134,18 +134,21 @@
 }
 
 /* Opaque surface: the panel bg is a solid token, so its hairline border
-   never composites over its own fill. */
+   never composites over its own fill. The sheet hangs straight off the
+   trigger (top: 100% of the short drop box) so there is no dead hover gap
+   between the two — the toolchain trap. Chrome stays v0's own: one hairline
+   border, 12px radius, no shadow. */
 .toolchain-root .v0-nav-panel {
   position: absolute;
   top: 100%;
   left: -18px;
   z-index: 60;
   display: none;
-  flex-direction: column;
-  min-width: 176px;
+  gap: 34px;
   width: max-content;
-  padding: 8px;
+  padding: 19px 22px 20px;
   background: var(--tc-white);
+  background-clip: padding-box;
   border: 1px solid var(--tc-hair);
   border-radius: 12px;
 }
@@ -155,10 +158,91 @@
   display: flex;
 }
 
-.toolchain-root .v0-nav-panel a {
-  display: block;
-  padding: 7px 10px;
+/* Fixed subcolumn widths: fr tracks inside an auto-sized flyout collapse
+   (the solved toolchain trap — keep px tracks, never fr). */
+.toolchain-root .v0-nav-panel.is-wide .v0-nav-col:first-child {
+  display: grid;
+  grid-template-columns: repeat(2, 208px);
+  gap: 0 28px;
+}
+
+.toolchain-root .v0-nav-panel.is-wide .v0-nav-col:first-child h5 {
+  grid-column: 1 / -1;
+}
+
+/* The Docs sheet is the widest object the nav owns; its trigger sits third
+   in the row, so it anchors well left of the trigger to stay inside the
+   rails, and caps to the viewport so its columns wrap rather than run off
+   the right edge. */
+.toolchain-root .v0-nav-panel.is-wide {
+  left: -320px;
+  flex-wrap: wrap;
+  max-width: calc(100vw - 48px);
+}
+
+.toolchain-root .v0-nav-col {
+  min-width: 200px;
+}
+
+.toolchain-root .v0-nav-col h5 {
+  margin: 0 0 10px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .v0-nav-col a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 8px;
+  margin: 0 -8px;
   border-radius: 8px;
+  text-decoration: none;
+}
+
+.toolchain-root .v0-nav-col a:hover,
+.toolchain-root .v0-nav-col a:focus-visible {
+  background: var(--tc-hair-2);
+}
+
+/* Focus wears the system's ink, not the browser's blue: a 1px hairline
+   ring, the same stroke grammar as the page's other outlines. Menu rows
+   pull the ring inset so adjacent rows never collide. */
+.toolchain-root .v0-nav a:focus-visible,
+.toolchain-root .v0-nav button:focus-visible {
+  outline: 1px solid var(--tc-ink-2);
+  outline-offset: 3px;
+}
+
+.toolchain-root .v0-nav-col a:focus-visible {
+  outline: 1px solid var(--tc-ink-2);
+  outline-offset: -1px;
+}
+
+.toolchain-root .v0-menu-plate {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  background: var(--tc-white);
+  border: 1px solid var(--tc-hair);
+  border-radius: 8px;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .v0-menu-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.toolchain-root .v0-menu-text b {
   font-size: 13.5px;
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -166,9 +250,30 @@
   white-space: nowrap;
 }
 
-.toolchain-root .v0-nav-panel a:hover,
-.toolchain-root .v0-nav-panel a:focus-visible {
-  background: var(--tc-hair-2);
+.toolchain-root .v0-menu-text small {
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+/* Drawn-dark glyph files (React Native, TanStack, the Locadex lambda) flip
+   in the dark the way the footer's Locadex mark does. */
+[data-theme='dark'] .toolchain-root .v0-menu-glyph.is-inverting {
+  filter: invert(1);
+}
+
+/* On narrower viewports the wide sheet's fixed anchor runs past the right
+   rail, so it steps left one fixed notch — position math, not motion. */
+@media (max-width: 1120px) {
+  .toolchain-root .v0-nav-panel.is-wide {
+    left: -400px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .v0-nav-drop-trigger svg {
+    transition: none;
+  }
 }
 
 /* ---------- right-side actions ---------- */

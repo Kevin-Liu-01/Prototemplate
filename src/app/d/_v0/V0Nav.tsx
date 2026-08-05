@@ -1,52 +1,176 @@
 'use client';
 
 import Image from 'next/image';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
-import { ChevronDown } from 'lucide-react';
+import {
+  SiDiscord,
+  SiGithub,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiPython,
+  SiReact,
+  SiSanity,
+} from '@icons-pack/react-simple-icons';
+import {
+  BookOpen,
+  Boxes,
+  Briefcase,
+  ChevronDown,
+  Globe,
+  Languages,
+  LayoutDashboard,
+  Layers,
+  Mail,
+  Newspaper,
+  SquareTerminal,
+  Users,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
 import './v0-nav.css';
 
-type NavItem = {
+type IconProps = { className?: string; color?: string; size?: number; strokeWidth?: number; 'aria-hidden'?: boolean };
+
+type MenuItem = {
   label: string;
+  desc: string;
   href: string;
+  icon?: ComponentType<IconProps>;
+  /** Image-file marks (brand glyphs that aren't currentColor components). */
+  img?: string;
+  /** Dark mode inverts drawn-dark glyph files, same trick as the footer. */
+  invertsInDark?: boolean;
   external?: boolean;
 };
 
-/* Anchor targets live on the v0 sections rendered below the nav. */
-const PRODUCT: readonly NavItem[] = [
-  { label: 'Locadex', href: '#locadex' },
-  { label: 'Context', href: '#context' },
-  { label: 'Infrastructure', href: '#infrastructure' },
-];
+/** Single-column menus (Product) skip the column heading. */
+type MenuColumn = { title?: string; items: readonly MenuItem[] };
 
-const RESOURCES: readonly NavItem[] = [
-  { label: 'Customers', href: '#customers' },
-  { label: 'Blog', href: 'https://generaltranslation.com/blog', external: true },
-  { label: 'Careers', href: 'https://generaltranslation.com/careers', external: true },
-];
+const DOCS = 'https://generaltranslation.com/docs';
 
-function Menu({ label, items }: { label: string; items: readonly NavItem[] }) {
+/* The mock's three Product entries, upgraded to menu rows. Locadex and
+   Context link to the final's product pages; Infrastructure keeps its home
+   anchor (it has no subpage — the section IS the page). */
+function product(base: string): readonly MenuColumn[] {
+  return [
+    {
+      items: [
+        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
+        { label: 'Context', desc: 'One source of context', href: `${base}/context`, icon: Layers },
+        { label: 'Infrastructure', desc: 'Global delivery network', href: '#infrastructure', icon: Globe },
+      ],
+    },
+  ];
+}
+
+/* The old flat list (Customers / Blog / Careers) folded into the shared
+   two-column Resources sheet: Customers keeps its home anchor (every final
+   mounts the trusted-by section) and joins the Company column. */
+function resources(base: string): readonly MenuColumn[] {
+  return [
+    {
+      title: 'Company',
+      items: [
+        { label: 'Customers', desc: 'Trusted by global teams', href: '#customers', icon: Users },
+        { label: 'Blog', desc: 'News and updates', href: `${base}/blog`, icon: Newspaper },
+        { label: 'Careers', desc: 'Join our growing team', href: `${base}/careers`, icon: Briefcase },
+        { label: 'Supported Locales', desc: '100+ languages supported', href: `${base}/locales`, icon: Languages },
+      ],
+    },
+    {
+      title: 'Community',
+      items: [
+        { label: 'GitHub', desc: 'Open source libraries', href: 'https://github.com/generaltranslation', icon: SiGithub, external: true },
+        { label: 'Discord', desc: 'Join our developer community', href: 'https://generaltranslation.com/discord', icon: SiDiscord, external: true },
+        { label: 'Contact', desc: 'Get in touch with us', href: `${base}/contact`, icon: Mail },
+      ],
+    },
+  ];
+}
+
+function docsMenu(base: string): readonly MenuColumn[] {
+  return [
+    {
+      title: 'Libraries',
+      items: [
+        { label: 'Translation CLI', desc: 'gt', href: `${DOCS}/cli`, icon: SquareTerminal, external: true },
+        { label: 'Next.js SDK', desc: 'gt-next', href: `${DOCS}/next`, icon: SiNextdotjs, external: true },
+        { label: 'React SDK', desc: 'gt-react', href: `${DOCS}/react`, icon: SiReact, external: true },
+        { label: 'React Native SDK', desc: 'gt-react-native', href: `${DOCS}/react-native`, img: '/logos/react-native-no-bg.svg', invertsInDark: true, external: true },
+        { label: 'TanStack Start SDK', desc: 'gt-tanstack-start', href: `${DOCS}/tanstack-start`, img: '/logos/tanstack-logo.svg', invertsInDark: true, external: true },
+        { label: 'Node.js SDK', desc: 'gt-node', href: `${DOCS}/node`, icon: SiNodedotjs, external: true },
+        { label: 'Python SDK', desc: 'gt-python', href: `${DOCS}/python`, icon: SiPython, external: true },
+        { label: 'Core', desc: 'generaltranslation', href: `${DOCS}/core`, icon: Boxes, external: true },
+      ],
+    },
+    {
+      title: 'Content',
+      items: [
+        { label: 'Sanity', desc: 'gt-sanity', href: `${DOCS}/sanity`, icon: SiSanity, external: true },
+        { label: 'Mintlify', desc: 'Locadex for Mintlify', href: `${DOCS}/locadex/mintlify`, icon: BookOpen, external: true },
+      ],
+    },
+    {
+      title: 'Platform',
+      items: [
+        { label: 'Platform', desc: 'Dashboard', href: 'https://dash.generaltranslation.com', icon: LayoutDashboard, external: true },
+        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
+      ],
+    },
+  ];
+}
+
+function MenuMark({ item }: { item: MenuItem }) {
+  if (item.img) {
+    return (
+      <Image
+        alt=''
+        aria-hidden
+        className={item.invertsInDark ? 'v0-menu-glyph is-inverting' : 'v0-menu-glyph'}
+        height={15}
+        loading='eager'
+        src={item.img}
+        unoptimized
+        width={15}
+      />
+    );
+  }
+  const Icon = item.icon;
+  return Icon ? <Icon aria-hidden className='v0-menu-glyph' color='currentColor' size={15} strokeWidth={1.75} /> : null;
+}
+
+function Menu({ label, columns, wide }: { label: string; columns: readonly MenuColumn[]; wide?: boolean }) {
   return (
     <div className='v0-nav-drop'>
       <button className='v0-nav-drop-trigger' type='button' aria-haspopup='true'>
         {label}
         <ChevronDown aria-hidden size={13} strokeWidth={2} />
       </button>
-      <div className='v0-nav-panel' role='menu'>
-        {items.map((item) => (
-          <a
-            href={item.href}
-            key={item.label}
-            rel={item.external ? 'noreferrer' : undefined}
-            role='menuitem'
-            target={item.external ? '_blank' : undefined}
-          >
-            {item.label}
-          </a>
+      <div className={wide ? 'v0-nav-panel is-wide' : 'v0-nav-panel'} role='menu'>
+        {columns.map((column, index) => (
+          <div className='v0-nav-col' key={column.title ?? index}>
+            {column.title ? <h5>{column.title}</h5> : null}
+            {column.items.map((item) => (
+              <a
+                href={item.href}
+                key={item.label}
+                rel={item.external ? 'noreferrer' : undefined}
+                role='menuitem'
+                target={item.external ? '_blank' : undefined}
+              >
+                <span className='v0-menu-plate'>
+                  <MenuMark item={item} />
+                </span>
+                <span className='v0-menu-text'>
+                  <b>{item.label}</b>
+                  <small>{item.desc}</small>
+                </span>
+              </a>
+            ))}
+          </div>
         ))}
       </div>
     </div>
@@ -55,35 +179,32 @@ function Menu({ label, items }: { label: string; items: readonly NavItem[] }) {
 
 /**
  * The v0 top bar: the toolchain TopNav shell (same height, hairline
- * underline, brand left, actions right) with the mock's sections. Shared by
- * all five singularity homes, so Enterprise and the brand link derive from
- * the pathname — a static relative href resolves against the parent segment
- * and would land every slug on /d/enterprise.
+ * underline, brand left, actions right) with the mock's sections, carrying
+ * the same Resources/Docs mega-menus the singularity subpage nav ships.
+ * Shared by all five singularity homes, so every internal link resolves
+ * against the CURRENT final's base — a static href would land every slug on
+ * one final's routes.
  */
 export default function V0Nav(): ReactNode {
-  const pathname = usePathname() ?? '';
-  const home = pathname.replace(/\/enterprise\/?$/, '').replace(/\/+$/, '');
-  const enterpriseHref = `${home}/enterprise`;
+  // /d/singularity-dossier/... -> /d/singularity-dossier
+  const pathname = usePathname();
+  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '';
 
   return (
     <header className='v0-nav' data-v0-nav>
       <div className='v0-nav-in'>
-        <a className='v0-nav-brand' href={home || '/'}>
+        <a className='v0-nav-brand' href={base || '/'}>
           <Image className='v0-nav-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={22} height={22} />
           <Image className='v0-nav-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={22} height={22} />
           General Translation
         </a>
 
         <nav className='v0-nav-links'>
-          <Menu items={PRODUCT} label='Product' />
-          <Menu items={RESOURCES} label='Resources' />
-          <a href={enterpriseHref}>Enterprise</a>
-          <a href='https://generaltranslation.com/pricing' rel='noreferrer' target='_blank'>
-            Pricing
-          </a>
-          <a href='https://generaltranslation.com/docs' rel='noreferrer' target='_blank'>
-            Docs
-          </a>
+          <Menu columns={product(base)} label='Product' />
+          <Menu columns={resources(base)} label='Resources' />
+          <Menu columns={docsMenu(base)} label='Docs' wide />
+          <a href={`${base}/enterprise`}>Enterprise</a>
+          <a href={`${base}/pricing`}>Pricing</a>
         </nav>
 
         <div className='v0-nav-right'>

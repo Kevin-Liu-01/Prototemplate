@@ -10,8 +10,7 @@ import type { ComponentType, ReactNode } from 'react';
 import GtLogoText from '@/app/d/_v0/GtLogoText';
 
 import StackTower, {
-  BEAM_SWEEP_DX,
-  BEAM_SWEEP_DY,
+  beamAt,
   RAIL_ORIGIN,
   RAIL_SCALE,
   SHINE_FROM,
@@ -450,20 +449,36 @@ export default function V0FullStack() {
            (founder: "make it go up and down a little more than it
            currently is, and a lil faster" — the amplitude lives in
            StackTower's BEAM_SWEEP_Y). */
+        /* the trapezoid LEANS through the pass (founder: the Locadex
+           cone's grammar): one dial drives all four paths through
+           StackTower's beamAt — the aperture pivots under the capstone
+           while the land line runs the plate */
+        const sweepPaths = scanSweep
+          ? {
+              body: scanSweep.querySelector<SVGPathElement>('.v0s-beam'),
+              edges: scanSweep.querySelectorAll<SVGPathElement>('.v0s-beam-edge'),
+              land: scanSweep.querySelector<SVGPathElement>('.v0s-beam-land'),
+            }
+          : null;
+        const sweepDial = { t: 1 };
+        const setSweep = () => {
+          if (!sweepPaths) return;
+          const g = beamAt(sweepDial.t);
+          sweepPaths.body?.setAttribute('d', g.quad);
+          sweepPaths.edges[0]?.setAttribute('d', g.edgeL);
+          sweepPaths.edges[1]?.setAttribute('d', g.edgeR);
+          sweepPaths.land?.setAttribute('d', g.land);
+        };
         const sweepLoop = scanSweep
-          ? gsap.fromTo(
-              scanSweep,
-              { x: BEAM_SWEEP_DX, y: -BEAM_SWEEP_DY },
-              {
-                x: -BEAM_SWEEP_DX,
-                y: BEAM_SWEEP_DY,
-                duration: 2.5,
-                ease: 'sine.inOut',
-                repeat: -1,
-                yoyo: true,
-                paused: true,
-              }
-            )
+          ? gsap.fromTo(sweepDial, { t: 1 }, {
+              t: -1,
+              duration: 2.5,
+              ease: 'sine.inOut',
+              repeat: -1,
+              yoyo: true,
+              paused: true,
+              onUpdate: setSweep,
+            })
           : null;
         /* the beam's shown/hidden ledger, so repeated syncs never restart
            a fade mid-flight */

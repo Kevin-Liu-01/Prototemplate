@@ -656,3 +656,203 @@
     padding-inline: var(--tc-gut);
   }
 }
+
+/* ============================================================
+   LIGHT MODE SHEDS THE INK (founder: on light, no black boxes or
+   sections — "Deploy today." is the ONE exception, and it keeps
+   its own .v0-dep class so nothing here reaches it).
+
+   Two central moves, scoped to the five homes on light:
+
+   1. The dark feature bands (.tc-band.tcb — story, context)
+      follow the theme. The band chrome is tokenized in the SSOT
+      darkband sheets, so the whole family re-inks here; the few
+      hardcoded dark paints in those sheets are re-inked
+      selector-for-selector below. Section-sheet hardcodes
+      (fullstack/context/global/locadex/window sheets) convert in
+      their own files.
+
+   2. The page-level panel family (--tc-panel, the "one dark
+      artifact surface" every code panel, quote plate and night
+      card reads) goes light — panels become white plates that
+      read by their rules, not their mass.
+   ============================================================ */
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
+  --tc-panel: #ffffff;
+  --tc-panel-ink: rgba(7, 7, 7, 0.88);
+  --tc-panel-dim: rgba(7, 7, 7, 0.46);
+  --tc-panel-faint: rgba(7, 7, 7, 0.3);
+  --tc-panel-rule: rgba(7, 7, 7, 0.12);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band.tcb {
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  --iso-accent: var(--tc-accent);
+  --iso-ink: rgba(7, 7, 7, 0.78);
+  --tc-hair-band: var(--tc-hair);
+  --tc-hair-band-2: var(--tc-hair-2);
+  /* surfaces — the light bento grammar: white cards, hairline seams */
+  --tcb-seam: rgba(7, 7, 7, 0.14);
+  --tcb-card: var(--tc-paper);
+  --tcb-lift: rgba(7, 7, 7, 0.04);
+  --tcb-rule: rgba(7, 7, 7, 0.12);
+  --tcb-mat: rgba(7, 7, 7, 0.12);
+  --tcb-mat-edge: rgba(7, 7, 7, 0.18);
+  --tcb-box: var(--tc-paper);
+  /* inks */
+  --tcb-ink: rgba(7, 7, 7, 0.92);
+  --tcb-body: rgba(7, 7, 7, 0.6);
+  --tcb-dim: rgba(7, 7, 7, 0.46);
+  --tcb-faint: rgba(7, 7, 7, 0.3);
+  /* the code ramp — strings keep the one hue, dark enough for paper */
+  --tcb-t-str: #3555b8;
+  --tcb-t-kw: rgba(7, 7, 7, 0.55);
+  --tcb-t-tag: #070707;
+  --tcb-t-dim: rgba(7, 7, 7, 0.4);
+  /* diff semantics re-inked for a light ground */
+  --tc-diff-add: rgba(46, 139, 87, 0.12);
+  --tc-diff-add-ink: #1e7a4b;
+  --tc-diff-del: rgba(200, 84, 84, 0.1);
+  --tc-diff-del-ink: #b25454;
+}
+
+/* The darkband sheets' hardcoded dark paints, re-inked selector for
+   selector (same specificity ladder, one class deeper, light only). */
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in {
+  border-inline-color: var(--tc-hair);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cell h3 {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  :is(.tcb-cell-cli, .tcb-term) {
+  background: var(--tc-paper);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-term {
+  border-color: rgba(7, 7, 7, 0.14);
+  outline-color: rgba(7, 7, 7, 0.25);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  .tcb-term-body
+  [data-tone='prompt'] {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  :is(.tcb-chips span, .tcb-chips > span) {
+  border-color: rgba(7, 7, 7, 0.16);
+  color: rgba(7, 7, 7, 0.72);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-diff .is-del {
+  color: rgba(7, 7, 7, 0.52);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-ctx-joint path {
+  stroke: rgba(7, 7, 7, 0.66);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  .tcb-ctx-joint
+  .tcb-joint-head {
+  fill: rgba(7, 7, 7, 0.66);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-trace-rail {
+  border-inline-color: rgba(7, 7, 7, 0.6);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-trace-row::before {
+  background: rgba(7, 7, 7, 0.24);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-trace-row b {
+  color: #070707;
+}
+
+/* v3's stack-instrument inks (harmless if a home never mounts them) */
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  :is(.tcs-dbl, .tcs-leader) {
+  stroke: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcs-glass-left {
+  fill: rgba(7, 7, 7, 0.05);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcs-glass-topfill {
+  fill: rgba(7, 7, 7, 0.06);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcs-glass-front {
+  stroke: rgba(7, 7, 7, 0.12);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcstack .iso-face-mark {
+  fill: rgba(7, 7, 7, 0.42);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cap-ic {
+  color: rgba(7, 7, 7, 0.5);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  .tcb-stack-cap
+  + .tcb-stack-cap::before {
+  background: rgba(7, 7, 7, 0.08);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cap-tx > b {
+  color: rgba(7, 7, 7, 0.9);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-stack-cap.is-hot {
+  background: rgba(7, 7, 7, 0.05);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  .tcb-stack-cap.is-hot
+  :is(.tcb-cap-tx > b, .tcb-cap-ic) {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  .tcb-stack-cap.is-hot
+  .tcb-cap-tx
+  > span {
+  color: rgba(7, 7, 7, 0.78);
+}
+
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tcb
+  :is(.tcs-layer, .tcb-stack-cap):focus-visible {
+  outline-color: rgba(7, 7, 7, 0.6);
+}
+
+/* The head watermark seats fully INSIDE the head (founder: the clipped
+   glyph read as half an icon) and steps up from a whisper so it is
+   actually visible against the sheet. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-head .tc-head-icon {
+  right: 24px;
+  opacity: 0.07;
+}
+
+/* The Customers head is a caption, not a display band — a 240px glyph
+   slice through a 46px box reads as noise, so the wall runs unmarked. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head-icon {
+  display: none;
+}
