@@ -330,7 +330,7 @@
   width: min(48%, 600px);
   height: 100%;
   color: var(--tc-ink);
-  opacity: 0.1;
+  opacity: 0.06;
   pointer-events: none;
 }
 

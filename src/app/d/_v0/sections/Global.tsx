@@ -177,41 +177,85 @@ function GlobeAtmosphere() {
 
 
 /* ---------- the quote plate's dither field ----------
-   Founder: "a big dither in the right of this specific quote box." The
-   house 1-bit language at plate scale: cells on one grid, the 4x4
-   ordered Bayer matrix thresholded by a radial falloff from the right
-   edge's midpoint — a half-halo of density, dense at the edge, dead
-   before the words. Deterministic (module-level), so SSR and client
-   agree byte-for-byte; ink is currentColor so each theme re-inks the
-   same dots. */
+   Founder rounds: "a big dither in the right of this quote box" — then
+   "more zoomed out, less noticeable, add an angle." The house 1-bit
+   language, screened fine: 2-unit cells on one shared 8-unit grid
+   (~2px dots at render), six ordered-Bayer tiers banded along a 28deg
+   axis out of the TOP-RIGHT corner, so the density falls diagonally
+   and dies long before the words. Patterns + band polygons instead of
+   one giant path — same drawing, a few hundred bytes. Deterministic at
+   module level, so SSR and client agree; currentColor re-inks per
+   theme. */
 const QD_BAYER: readonly (readonly number[])[] = [
   [0, 8, 2, 10],
   [12, 4, 14, 6],
   [3, 11, 1, 9],
   [15, 7, 13, 5],
 ];
-const QD_CELL = 4;
-const QD_W = 480;
-const QD_H = 320;
+const QD_CELL = 2;
+const QD_TILE = QD_CELL * 4;
+const QD_W = 560;
+const QD_H = 360;
 
-const QD_PATH: string = (() => {
-  const parts: string[] = [];
-  const cx = QD_W;
-  const cy = QD_H / 2;
-  const rMax = Math.hypot(QD_W * 0.92, QD_H * 0.8);
-  for (let y = 0; y < QD_H / QD_CELL; y += 1) {
-    for (let x = 0; x < QD_W / QD_CELL; x += 1) {
-      const px = x * QD_CELL + QD_CELL / 2;
-      const py = y * QD_CELL + QD_CELL / 2;
-      const cover = Math.max(0, 16 * (1 - Math.hypot(px - cx, py - cy) / rMax));
-      const row = QD_BAYER[y % 4];
-      if (row && (row[x % 4] ?? 16) < cover) {
-        parts.push(`M${x * QD_CELL} ${y * QD_CELL}h${QD_CELL}v${QD_CELL}h${-QD_CELL}Z`);
+/** One pattern tile at coverage k/16 — every cell whose threshold sits
+    under k, as one path of squares. */
+function qdTile(cover: number): string {
+  const cells: string[] = [];
+  QD_BAYER.forEach((row, y) => {
+    row.forEach((threshold, x) => {
+      if (threshold < cover) {
+        cells.push(`M${x * QD_CELL} ${y * QD_CELL}h${QD_CELL}v${QD_CELL}h${-QD_CELL}Z`);
+      }
+    });
+  });
+  return cells.join('');
+}
+
+/* The falloff axis: depth 0 at the top-right corner, growing down-left
+   at 28deg — bands of constant depth are the angled stripes. */
+const QD_COS = Math.cos((28 * Math.PI) / 180);
+const QD_SIN = Math.sin((28 * Math.PI) / 180);
+const qdDepth = (x: number, y: number): number => (QD_W - x) * QD_COS + y * QD_SIN;
+
+type QdPt = readonly [number, number];
+
+/** The viewBox rect clipped to a <= depth <= b (Sutherland-Hodgman
+    against the two band edges), as one closed path — '' when empty. */
+function qdBand(a: number, b: number): string {
+  let poly: QdPt[] = [
+    [0, 0],
+    [QD_W, 0],
+    [QD_W, QD_H],
+    [0, QD_H],
+  ];
+  const clip = (keep: (p: QdPt) => number) => {
+    const out: QdPt[] = [];
+    for (let i = 0; i < poly.length; i += 1) {
+      const cur = poly[i];
+      const nxt = poly[(i + 1) % poly.length];
+      if (!cur || !nxt) continue;
+      const kc = keep(cur);
+      const kn = keep(nxt);
+      if (kc >= 0) out.push(cur);
+      if (kc >= 0 !== kn >= 0) {
+        const t = kc / (kc - kn);
+        out.push([cur[0] + (nxt[0] - cur[0]) * t, cur[1] + (nxt[1] - cur[1]) * t]);
       }
     }
-  }
-  return parts.join('');
-})();
+    poly = out;
+  };
+  clip((pt) => qdDepth(pt[0], pt[1]) - a);
+  clip((pt) => b - qdDepth(pt[0], pt[1]));
+  if (poly.length < 3) return '';
+  return `M${poly.map((pt) => `${pt[0].toFixed(1)} ${pt[1].toFixed(1)}`).join('L')}Z`;
+}
+
+const QD_STEP = 72;
+const QD_COVERS: readonly number[] = [10, 7, 5, 3, 2, 1];
+const QD_BANDS: readonly { cover: number; d: string }[] = QD_COVERS.map((cover, i) => ({
+  cover,
+  d: qdBand(i * QD_STEP, (i + 1) * QD_STEP),
+})).filter((band) => band.d !== '');
 
 export default function V0Global() {
   const root = useRef<HTMLElement>(null);
@@ -342,7 +386,22 @@ export default function V0Global() {
                 preserveAspectRatio='xMaxYMid slice'
                 viewBox={`0 0 ${QD_W} ${QD_H}`}
               >
-                <path d={QD_PATH} fill='currentColor' shapeRendering='crispEdges' />
+                <defs>
+                  {QD_BANDS.map((band) => (
+                    <pattern
+                      height={QD_TILE}
+                      id={`v0qd-${band.cover}`}
+                      key={band.cover}
+                      patternUnits='userSpaceOnUse'
+                      width={QD_TILE}
+                    >
+                      <path d={qdTile(band.cover)} fill='currentColor' shapeRendering='crispEdges' />
+                    </pattern>
+                  ))}
+                </defs>
+                {QD_BANDS.map((band) => (
+                  <path d={band.d} fill={`url(#v0qd-${band.cover})`} key={band.cover} />
+                ))}
               </svg>
               <blockquote className='tcpq-quote'>
                 <p>Every once in awhile, I see a snippet of code that makes me a bit emotional.</p>
