@@ -480,7 +480,11 @@
   color: #2e9e63;
 }
 
+/* the bar inks live in two dials so the theme remaps ONCE and the
+   per-tier accent rules below never need theme variants */
 .toolchain-root .v0-tw .sgdh-app-bars {
+  --bar-ink: rgba(7, 7, 7, 0.12);
+  --bar-accent: #2f5ce0;
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -491,11 +495,7 @@
 
 .toolchain-root .v0-tw .sgdh-app-bars i {
   flex: 1;
-  background: rgba(7, 7, 7, 0.12);
-}
-
-.toolchain-root .v0-tw .sgdh-app-bars i[data-on] {
-  background: #2f5ce0;
+  background: var(--bar-ink);
 }
 
 .toolchain-root .v0-tw .sgdh-app-months {
@@ -543,6 +543,35 @@
   .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 1),
   .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 1) {
     display: block;
+  }
+}
+
+/* ---- the accent rides the third VISIBLE bar (founder) ----
+   Each tier shows a different suffix of the run, so each tier re-seats
+   the accent on its own third-from-the-left child — and neutralizes the
+   narrower tier's pick first, since every min-width block below also
+   matches at the wider sizes. All selectors tie; order decides. */
+.toolchain-root .v0-tw .sgdh-app-bars i:nth-child(11) {
+  background: var(--bar-accent);
+}
+
+@container (min-width: 260px) {
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(11) {
+    background: var(--bar-ink);
+  }
+
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(6) {
+    background: var(--bar-accent);
+  }
+}
+
+@container (min-width: 400px) {
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(6) {
+    background: var(--bar-ink);
+  }
+
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(3) {
+    background: var(--bar-accent);
   }
 }
 
@@ -924,12 +953,11 @@
   color: #7ed3a2;
 }
 
-[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-bars i {
-  background: rgba(255, 255, 255, 0.16);
-}
-
-[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-bars i[data-on] {
-  background: #6f8ef2;
+/* the dark build re-tempers the two bar dials; the per-tier accent
+   rules above read them and need no dark variants of their own */
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-bars {
+  --bar-ink: rgba(255, 255, 255, 0.16);
+  --bar-accent: #6f8ef2;
 }
 
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-months span {

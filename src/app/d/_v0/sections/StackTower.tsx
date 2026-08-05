@@ -314,13 +314,27 @@ const FAN_WIRES: readonly string[] = [
 ];
 
 /**
- * The agents plate's scan energy: an accent trace orbiting the top face on
- * a ring inset from the rim — its own geometry, so it never doubles the
- * hot accent edge. Inset from the CAPSTONE footprint, since that is the
- * face it rides. FullStack loops the dash whenever the band is on screen.
+ * The agents plate's scan energy: two accent glints riding a ring that
+ * HUGS the top face's edge — a hair inside the rim, just about touching
+ * (founder: "make the lines on its left and right closer to its edges,
+ * just about touching so its like light going around the edge instead of
+ * two worms" — the old ring sat 8 units inside the rim and its dashes
+ * read as floating marks). On the ring the pair reads as light wrapping
+ * around the plate's edge, resting and hot alike: the hot accent edge is
+ * the contour itself, and the glints ride 1.5 units inside it, a
+ * brightening of that edge rather than a second line. FullStack loops
+ * the dashes whenever the plate is built and the band is on screen.
  */
+const ORBIT_INSET = 1.5;
 const ORBIT_D = roundedPolygon(
-  topFace({ x: -CAP_HALF + 8, y: -CAP_HALF + 8, z: 0, w: CAP_SIZE - 16, d: CAP_SIZE - 16, h: THICK })
+  topFace({
+    x: -CAP_HALF + ORBIT_INSET,
+    y: -CAP_HALF + ORBIT_INSET,
+    z: 0,
+    w: CAP_SIZE - ORBIT_INSET * 2,
+    d: CAP_SIZE - ORBIT_INSET * 2,
+    h: THICK,
+  })
 );
 
 type GlyphChipProps = {
@@ -346,15 +360,17 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
 
 /** The Locadex mark's seat in the top face (the mask makes the shape take
     the surface's ink instead of the asset's fill — the same technique the
-    Locadex iso uses on its agent slab), sized to OWN the face (founder:
-    much larger, not a small centered glyph). The asset's 500² viewBox pads
-    its glyph — the drawn form spans only 199×222 of it — so the seat is
-    sized from the GLYPH, not the file: a 54-plan-unit visible mark (~60%
-    of the 90-unit capstone face, glyph corners still ~10 units inside the
-    orbit ring's ±37 inset), which the padding inflates to a ~136-unit
-    image box. The mask's alpha crops everything back to the glyph. The
-    asset is an SVG, so the scale costs no crispness. */
-const MARK_GLYPH_W = 54;
+    Locadex iso uses on its agent slab), stepped DOWN from the earlier
+    face-owning 54 (founder addendum: "make the locadex logo in the layer
+    smaller" — it reads as a badge on the plate now, not a face-filling
+    glyph, and the edge glints get the rim to themselves). The asset's
+    500² viewBox pads its glyph — the drawn form spans only 199×222 of it
+    — so the seat is sized from the GLYPH, not the file: a 40-plan-unit
+    visible mark (~45% of the 90-unit capstone face), which the padding
+    inflates to a ~100-unit image box. The mask's alpha crops everything
+    back to the glyph. The asset is an SVG, so the scale costs no
+    crispness. */
+const MARK_GLYPH_W = 40;
 const MARK_HALF = (MARK_GLYPH_W * (500 / 199)) / 2;
 const MARK_PLANE = plane(THICK);
 
@@ -430,13 +446,14 @@ const SHINE_TIERS: readonly { cover: number; width: number }[] = [
   { cover: 1, width: 36 },
 ];
 
-/** The masked rects' screen-space cover: the capstone glyph projects to
-    ±46.8 × [-31.2, 22.8]; these bounds pad that, and the mask crops the
-    rest back to the mark. */
-const LDX_X = -52;
-const LDX_Y = -38;
-const LDX_W = 104;
-const LDX_H = 66;
+/** The masked rects' screen-space cover: the 40-unit capstone glyph
+    projects to ±36.6 × [-25.4, 17.0]; these bounds pad that, and the
+    mask crops the rest back to the mark. The shimmer's travel derives
+    from these below, so it breathes with the mark's size. */
+const LDX_X = -40;
+const LDX_Y = -29;
+const LDX_W = 80;
+const LDX_H = 50;
 
 /* The sweep's endpoints, DERIVED from the masked cover and the band's
    own rotated geometry (founder round 10: "make it cross the whole
