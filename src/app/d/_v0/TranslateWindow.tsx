@@ -1485,9 +1485,10 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                 dark-ink asset inverts on the dark build (the filter lives in
                 translate-window.css). */}
             <div className='sgdh-app-chrome'>
+              {/* the mark alone (founder: no brand word) — the drawn GT
+                  glyph IS the product's name here */}
               <span className='sgdh-app-mark'>
                 <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={21} height={21} />
-                <b className='sgdh-app-brandword'>Translate</b>
               </span>
               {/* each nav item is a reserved slot (its ladder holds the
                   roster's widest label) with a text-hugging FIT inside:

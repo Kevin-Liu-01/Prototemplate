@@ -1078,12 +1078,3 @@
   color: #101010;
 }
 
-/* the brand pair beside the mock's logo: static, never localized —
-   rebalanced a step up beside the 21px mark */
-.toolchain-root .v0-tw .sgdh-app-brandword {
-  margin-left: 7px;
-  font-weight: 600;
-  font-size: 13.5px;
-  letter-spacing: -0.01em;
-  color: var(--tc-ink);
-}

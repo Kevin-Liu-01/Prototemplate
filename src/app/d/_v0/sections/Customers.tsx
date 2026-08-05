@@ -36,7 +36,9 @@ type V0CustomersProps = {
   heading?: string;
 };
 
-export default function V0Customers({ heading = 'Trusted by the best companies.' }: V0CustomersProps) {
+export default function V0Customers({
+  heading = "Trusted by the world's best companies.",
+}: V0CustomersProps) {
   const root = useRef<HTMLElement>(null);
 
   return (

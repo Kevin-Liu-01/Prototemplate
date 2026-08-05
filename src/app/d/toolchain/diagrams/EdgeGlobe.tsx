@@ -344,10 +344,13 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         .fromTo(userLive, { filter: 'brightness(1)' }, { filter: 'brightness(1.7)', duration: 0.15, ease: 'power2.out' }, 2.35)
         .to(userLive, { filter: 'brightness(1)', duration: 0.45, ease: 'power2.inOut' }, 2.5);
       if (userRingEl) {
+        /* Without immediateRender:false the fromTo paints its start state
+           at cycle start, and the user dot wears a phantom ring for the
+           whole outbound leg. */
         tl.fromTo(
           userRingEl,
           { attr: { r: 4 }, autoAlpha: 0.8 },
-          { attr: { r: 11 }, autoAlpha: 0, duration: 0.7, ease: 'power2.out' },
+          { attr: { r: 11 }, autoAlpha: 0, duration: 0.7, ease: 'power2.out', immediateRender: false },
           2.35,
         );
       }
