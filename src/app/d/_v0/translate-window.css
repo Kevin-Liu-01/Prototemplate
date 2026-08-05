@@ -254,10 +254,11 @@
    one intrinsic block, so the rows can never spread its rhythm apart. */
 .toolchain-root .v0-tw .sgdh-app-cols {
   display: grid;
-  /* the stack keeps its intrinsic measure; the chart spends every
-     remaining pixel of the surface (founder: full empty width) */
+  /* the stack keeps its intrinsic measure — now a CONSTANT (every slot
+     reserves its max locale width) — and the chart spends every
+     remaining pixel of the surface (founder: max width, zero rocking) */
   grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-  column-gap: clamp(24px, 6%, 48px);
+  column-gap: clamp(14px, 2.7%, 24px);
   align-items: center;
   width: 100%;
 }
@@ -376,22 +377,26 @@
 /* the stats row: labels sans, values mono (numbers are the mono's whole
    job on this card). The row rules itself with the card's one hairline
    ink, each line drawn once: top and bottom on the row, one divider per
-   join. Cells cluster left, clear of the resting payload strip. */
+   join. Cells cluster left, clear of the resting payload strip. The row
+   is width: max-content — its box IS its reserved cells, so the rules
+   end exactly at the last cell's corner (where its mark sits) and the
+   whole row is the left column's constant measure. */
 .toolchain-root .v0-tw .sgdh-app-stats {
   display: grid;
   grid-template-columns: repeat(3, auto);
   justify-content: start;
+  width: max-content;
   margin: 16px 0 0;
   border-top: 1px solid rgba(138, 143, 152, 0.2);
   border-bottom: 1px solid rgba(138, 143, 152, 0.2);
 }
 
 .toolchain-root .v0-tw .sgdh-app-stat {
-  padding: 8px 18px 9px 0;
+  padding: 8px 10px 9px 0;
 }
 
 .toolchain-root .v0-tw .sgdh-app-stat + .sgdh-app-stat {
-  padding-left: 14px;
+  padding-left: 8px;
   border-left: 1px solid rgba(138, 143, 152, 0.2);
 }
 
@@ -430,11 +435,19 @@
   border-radius: 8px;
 }
 
+/* the head stacks: the localized label owns the full card width (the
+   card is leaner now that the left column reserves its max — sharing
+   the row ellipsized the longer locales' labels), the Intl delta reads
+   beneath it like a KPI figure */
 .toolchain-root .v0-tw .sgdh-app-chart-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.toolchain-root .v0-tw .sgdh-app-chart-t {
+  max-width: 100%;
 }
 
 .toolchain-root .v0-tw .sgdh-app-chart-t {
@@ -460,7 +473,7 @@
 .toolchain-root .v0-tw .sgdh-app-bars {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 8px;
   flex: 1;
   min-height: 96px;
   margin-top: 12px;
@@ -477,7 +490,7 @@
 
 .toolchain-root .v0-tw .sgdh-app-months {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: 5px;
 }
 
@@ -488,7 +501,7 @@
   flex: 1 1 0;
   min-width: 0;
   font-family: var(--tc-mono);
-  font-size: 8.5px;
+  font-size: 8px;
   line-height: 1;
   text-align: center;
   white-space: nowrap;
@@ -511,22 +524,47 @@
 }
 
 /* block components shrink to their reserved measure (the ladder's max)
-   so their marks sit at the slot's corner — not at the surface's far
-   edge, where the resting payload strip would cover them. The bare text
-   runs (heading, sub, nav items) carry 6px of right padding: the box
-   corner steps clear of the last glyph, so the corner-centred mark can
-   never touch ink at any locale length. */
+   so the slot never reaches the surface's far edge, where the resting
+   payload strip would cover its furniture */
 .toolchain-root .v0-tw .tct-app-h.sgdh-ins,
 .toolchain-root .v0-tw .tct-app-copy.sgdh-ins {
   width: fit-content;
+}
+
+/* the text-hugging FIT inside a reserved text run (nav items, heading,
+   sub): the slot's box holds the layout at the roster's max, but the
+   mark belongs to the WORDS — it rides the fit's corner, so a short
+   locale never shows its badge floating at the slot's far edge (or
+   reading as the next nav item's). The fit's 6px right padding steps
+   the corner clear of the last glyph — the centred mark can never touch
+   ink at any locale length — and the ladder lines carry the same 6px so
+   the slot's reserve still covers the fit at its widest. */
+.toolchain-root .v0-tw .v0-tw-fit {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
   padding-right: 6px;
 }
 
-.toolchain-root .v0-tw .sgdh-app-navi {
+.toolchain-root .v0-tw .v0-tw-fit ~ .v0-tw-ghost i {
   padding-right: 6px;
 }
 
 .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] {
+  outline: 1px solid #2f5ce0;
+  outline-offset: 3px;
+}
+
+/* text runs redirect the hover rectangle to their fit: the slot is the
+   HIT target (its whole reserved area hovers and clicks), but the drawn
+   rectangle hugs the words, like the mark does */
+.toolchain-root .v0-tw .sgdh-app-navi[data-ins-on='true'],
+.toolchain-root .v0-tw .tct-app-h[data-ins-on='true'],
+.toolchain-root .v0-tw .tct-app-copy[data-ins-on='true'] {
+  outline: none;
+}
+
+.toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .v0-tw-fit {
   outline: 1px solid #2f5ce0;
   outline-offset: 3px;
 }
@@ -869,7 +907,8 @@
   border-color: #2f5ce0;
 }
 
-[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] {
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'],
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .v0-tw-fit {
   outline-color: #7d9bff;
 }
 
@@ -924,14 +963,6 @@
   .toolchain-root .v0-tw .sgdh-app-chart {
     justify-self: start;
     margin-top: 18px;
-  }
-
-  .toolchain-root .v0-tw .sgdh-app-stat {
-    padding-right: 12px;
-  }
-
-  .toolchain-root .v0-tw .sgdh-app-stat + .sgdh-app-stat {
-    padding-left: 10px;
   }
 
   .toolchain-root .v0-tw .sgdh-app-stat dd {

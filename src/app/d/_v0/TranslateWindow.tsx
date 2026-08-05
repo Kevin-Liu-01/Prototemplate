@@ -402,8 +402,12 @@ const fmtRevenue = (loc: PreviewLoc) =>
 
 const fmtInvoices = (loc: PreviewLoc) => new Intl.NumberFormat(loc).format(INVOICE_COUNT);
 
+/* day + short month, no year: the product voice for a payout that is
+   always near-term — and the honest way to keep the widest locale's
+   reserve sane (pt's medium dateStyle runs '12 de ago. de 2026', which
+   alone cost the chart card 60px of permanent width) */
 const fmtPayout = (loc: PreviewLoc) =>
-  new Intl.DateTimeFormat(loc, { dateStyle: 'medium' }).format(PAYOUT_DATE);
+  new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short' }).format(PAYOUT_DATE);
 
 /* ---- the chart card: the digestible second block filling the mock's
    right rail. ONE localized string (its "Last 6 months" label — a real
@@ -1106,10 +1110,16 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
         RW_LINES.forEach(({ key, read }) => {
           shown.current[key] = read(ploc);
         });
+        reconcileMarks();
         return;
       }
 
-      const tl = gsap.timeline({ defaults: { ease: 'none' } });
+      /* the text-hugging marks land on new corners when the swap
+         settles — re-file them against the cut once the typing is done */
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        onComplete: reconcileMarks,
+      });
       RW_LINES.forEach(({ key, read }, i) => {
         const nodes = lineEls(key);
         if (nodes.length === 0) return;
@@ -1463,21 +1473,32 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                 <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={21} height={21} />
                 <b className='sgdh-app-brandword'>Translate</b>
               </span>
+              {/* each nav item is a reserved slot (its ladder holds the
+                  roster's widest label) with a text-hugging FIT inside:
+                  the slot fixes the layout, the fit carries the mark at
+                  the words' own corner — a mark that floated at a wide
+                  slot's far edge read as the NEXT item's */}
               <nav className='sgdh-app-nav' aria-label='Product navigation'>
                 <span className='sgdh-app-navi is-on sgdh-ins' data-ins-on={ins?.k === 'nav0' || undefined} {...insBox('nav0')}>
-                  <b data-rw='nav0'>{PREVIEWS[ploc].nav[0]}</b>
+                  <span className='v0-tw-fit'>
+                    <b data-rw='nav0'>{PREVIEWS[ploc].nav[0]}</b>
+                    <InsMark {...insProps('nav0')} />
+                  </span>
                   <Ghost read={(l) => PREVIEWS[l].nav[0]} />
-                  <InsMark {...insProps('nav0')} />
                 </span>
                 <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav1' || undefined} {...insBox('nav1')}>
-                  <b data-rw='nav1'>{PREVIEWS[ploc].nav[1]}</b>
+                  <span className='v0-tw-fit'>
+                    <b data-rw='nav1'>{PREVIEWS[ploc].nav[1]}</b>
+                    <InsMark {...insProps('nav1')} />
+                  </span>
                   <Ghost read={(l) => PREVIEWS[l].nav[1]} />
-                  <InsMark {...insProps('nav1')} />
                 </span>
                 <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav2' || undefined} {...insBox('nav2')}>
-                  <b data-rw='nav2'>{PREVIEWS[ploc].nav[2]}</b>
+                  <span className='v0-tw-fit'>
+                    <b data-rw='nav2'>{PREVIEWS[ploc].nav[2]}</b>
+                    <InsMark {...insProps('nav2')} />
+                  </span>
                   <Ghost read={(l) => PREVIEWS[l].nav[2]} />
-                  <InsMark {...insProps('nav2')} />
                 </span>
               </nav>
             </div>
@@ -1490,22 +1511,28 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
             <div className='tct-app-main'>
               <div className='sgdh-app-cols'>
                 <div className='sgdh-app-stack'>
-                  {/* the one-line clip moved INSIDE (.v0-tw-line): the h3/p
-                      boxes themselves must not clip — their corner marks
-                      straddle the box edge, and overflow there ate them */}
+                  {/* heading and sub: the same reserved-slot + fit grammar
+                      as the nav. The one-line clip lives on .v0-tw-line
+                      INSIDE the fit — the fit itself must not clip, its
+                      corner mark straddles the box edge (overflow on the
+                      h3/p used to eat the marks whole) */}
                   <h3 className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
-                    <span className='v0-tw-line'>
-                      <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
+                    <span className='v0-tw-fit'>
+                      <span className='v0-tw-line'>
+                        <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
+                      </span>
+                      <InsMark {...insProps('heading')} />
                     </span>
                     <Ghost read={(l) => PREVIEWS[l].heading} />
-                    <InsMark {...insProps('heading')} />
                   </h3>
                   <p className='tct-app-copy sgdh-ins' data-ins-on={ins?.k === 'sub' || undefined} {...insBox('sub')}>
-                    <span className='v0-tw-line'>
-                      <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
+                    <span className='v0-tw-fit'>
+                      <span className='v0-tw-line'>
+                        <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
+                      </span>
+                      <InsMark {...insProps('sub')} />
                     </span>
                     <Ghost read={(l) => PREVIEWS[l].sub} />
-                    <InsMark {...insProps('sub')} />
                   </p>
 
                   {/* the stats row: labels are payload strings, values are
