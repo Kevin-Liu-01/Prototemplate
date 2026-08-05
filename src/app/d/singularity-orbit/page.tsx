@@ -42,10 +42,9 @@ export default function Page() {
           <HomeHero />
           <V0Customers heading='Trusted by companies around the globe.' />
           <V0DevWindow />
-          <V0FullStack sub='GT connects all the infrastructure you need in a single ecosystem.' />
+          <V0FullStack />
           <V0Developer
             heading='Localization is complex.'
-            sub='We handle everything: different languages, locales, translation, and internationalization.'
           />
           <V0Locadex />
           <V0ContextSec />

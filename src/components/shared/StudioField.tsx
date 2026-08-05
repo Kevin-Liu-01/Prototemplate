@@ -12,12 +12,11 @@ import {
 
 export type StudioFieldProps = {
   /**
-   * The dither family (print): 'bayer' = the ordered-matrix flow;
-   * 'film' = fine white-noise grain; 'halftone' = the rotated dot screen;
-   * 'diffusion' = organic serpentine dither; 'contour' = dithered
-   * topographic lines. The light family (washes): 'spectral' = the
-   * converging bloom; 'mesh' = two breathing focal blues; 'aurora' =
-   * curtain bands.
+   * The Bayer family: 'bayer' = the founder's pick, the 4×4 matrix over
+   * flow-clouds; the other nine ('bayer8', 'bayerContour', 'bayerRadial',
+   * 'bayerSweep', 'bayerWaves', 'bayerChunk', 'bayerPulse', 'bayerInk',
+   * 'bayerHot') vary matrix order, cell scale, tone field, motion and
+   * palette balance — see src/lib/studio-field.ts for the roster.
    */
   preset?: StudioPreset;
   /** Per-mount overrides on the preset. */
@@ -29,11 +28,11 @@ export type StudioFieldProps = {
 };
 
 /**
- * The glyphfield studio materials in band form (src/lib/studio-field.ts) —
- * the founder's own shader studies, house-tuned to ink grounds and the
- * terminal blues. Drop-in for PrismaticField: renders nothing but a canvas;
- * callers position it and keep their own dark plate behind it, since WebGL
- * absence falls back to a transparent canvas.
+ * The studio Bayer family in band form (src/lib/studio-field.ts) — the
+ * founder's picked dither and its variations, house-tuned to ink grounds
+ * and the terminal blues. Drop-in for PrismaticField: renders nothing but
+ * a canvas; callers position it and keep their own dark plate behind it,
+ * since WebGL absence falls back to a transparent canvas.
  */
 export default function StudioField({ preset = 'bayer', params, dpr, speed = 1, className }: StudioFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

@@ -511,8 +511,8 @@ export default function HomeHero() {
           inside it keeps the measured top corners and ring. exposureScale is
           raised (= dimmer) so the flanks wash rather than saturate. */}
       <div className='tc-hero-cell tch-band'>
-        {/* the band's light engine + the founder's review ladder: ten live
-            variants, default 01 = today's prismatic wash */}
+        {/* the band's field + the founder's review ladder: the ten-slot
+            Bayer family, default 01 = the picked bayer flow */}
         <HeroFieldSwitcher />
         <div className='tct-win' data-hero-in>
           <div className='tct-bar'>

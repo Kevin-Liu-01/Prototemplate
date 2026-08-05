@@ -77,7 +77,6 @@ export default function V0Global() {
       <div className='tc-head'>
         <Globe className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>Ship to the world.</h2>
-        <p data-reveal>GT is deployed in production apps with millions of global users.</p>
       </div>
 
       {/* ---- row 1: the globe on its night card, the ruled rail of claims ---- */}

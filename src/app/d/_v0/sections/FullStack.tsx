@@ -132,12 +132,7 @@ const DROP = 64;
  * resting markup get the FULL stack with the first beat lit, statically —
  * four legible slabs over a truer-but-emptier one.
  */
-type V0FullStackProps = {
-  /** The non-terminal home's subhead differs per its spec. */
-  sub?: string;
-};
-
-export default function V0FullStack({ sub = 'Everything you need to reach your next billion global users.' }: V0FullStackProps) {
+export default function V0FullStack() {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
 
@@ -422,7 +417,6 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
           <h2 id='v0-stack-title' data-reveal>
             The full stack for localization.
           </h2>
-          <p data-reveal>{sub}</p>
         </div>
 
         <div className='tcb-grid'>

@@ -368,10 +368,11 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
+/* the SELECTED chip is the strip's one blue (founder note) */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-tw .tct-tabs button[data-on='true'] {
-  border-color: rgba(255, 255, 255, 0.42);
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.92);
+  border-color: var(--tct-loc, #9db9ff);
+  background: var(--tct-loc, #9db9ff);
+  color: #101010;
 }
 
 /* …and the developer section's tags stop being the grey dialect: the
@@ -448,4 +449,17 @@
 .toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-devwin-band {
   background: transparent;
   border-top: 0;
+}
+
+/* Section heads run ONE line at desktop — the subheads are gone, the
+   header carries the beat alone (founder round). Wrap returns on
+   narrow screens. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) :is(.tc-head h2, .tcb-head h2) {
+  max-width: none;
+}
+
+@media (min-width: 760px) {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) :is(.tc-head h2, .tcb-head h2) {
+    white-space: nowrap;
+  }
 }

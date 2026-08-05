@@ -1,40 +1,41 @@
 /**
- * Studio field — house ports of the founder's glyphfield studio materials
- * (glyphfield.com/studio; the source lives in his own MIT repo, in
- * src/components/LiveMaterialCanvas.tsx and src/lib/shaderPresets.ts).
- * Two families travel here, matching the founder's strategy call:
- *
- * THE DITHER FAMILY (print — the strategy): five genuinely distinct pattern
- * geometries in the house restraint — ink and white with the blue family
- * where it reads well. They read as print on the dark plate and are kin to
- * the glyph field's own Bayer atlas:
- *   - bayer: a 4×4 ordered-dither matrix quantizing a flowing tone field
- *     into three inks at coarse print cells;
- *   - film: the same pigment flow resolved through per-cell white-noise
- *     thresholds at near-pixel scale — film-stock grain, reseeded on a
- *     slow flicker clock;
- *   - halftone: a rotated dot screen (the 14° printer's angle) whose dot
- *     gauge carries the tone, sampled per cell like a real screen;
- *   - diffusion: error-diffusion's organic read — value-noise thresholds
- *     with a serpentine row wobble, so the ink clusters into worms rather
- *     than ordered cells;
- *   - contour: topographic elevation lines pushed through the Bayer
- *     matrix — the ruled-line motif rendered as dithered ink density.
- *
- * THE LIGHT FAMILY (washes): flowing light in the house blues under white
- * crests — flanks lit, center column dark:
- *   - spectral: the studio's featured Spectral Bloom — soft currents
- *     converging into one luminous field;
- *   - mesh: two orbiting focal blues breathing over the ink;
- *   - aurora: soft curtain bands moving through a deep atmospheric field.
- * (The band's other two light slots are the house prismatic engine and the
- * packaged Paper God Rays — see HeroFieldSwitcher.)
+ * Studio field — THE BAYER FAMILY. The rig started as a survey (five dither
+ * geometries, five light washes, ported from the founder's glyphfield studio
+ * — glyphfield.com/studio, his own MIT repo); the founder picked 01 bayer
+ * dither and asked for "a bunch of options based off of this instead", so
+ * the module is now ten Bayer materials: the original flow untouched, and
+ * nine variations that move along real axes rather than nudging knobs —
+ * matrix order (2×2 / 4×4 / 8×8), cell scale (poster chunks ↔ near-grain),
+ * the tone field under the matrix (flow-clouds, contour bands, off-center
+ * radials, diagonal sweeps, interference waves, a breathing field), motion
+ * (laminar drift vs churn, slow vs pulsing), and palette balance
+ * (ink-dominant print, blue-forward, white-hot crests):
+ *   - bayer: THE PICK, byte-identical — the studio's 4×4 ordered matrix
+ *     quantizing a flowing tone field into three inks at print cells;
+ *   - bayer8: the same flow read through an 8×8 matrix at near-grain
+ *     cells — the coarse steps resolve into smooth dithered gradients;
+ *   - bayerContour: quantized elevation bands drifting downslope — the
+ *     topographic motif as terraced ink, not ruled lines;
+ *   - bayerRadial: two radial glows breathing at the FLANKS, centered off
+ *     the window column — the center stays ink; blue-forward;
+ *   - bayerSweep: long diagonal light bands crossing laminar, broken up
+ *     by a slow pigment churn — the pressroom read;
+ *   - bayerWaves: two circular wave systems from opposite corners
+ *     interfering — crests meet as chips, troughs sink to ink;
+ *   - bayerChunk: the 2×2 matrix at coarse poster cells — four thresholds,
+ *     chunky mosaic, the loudest print;
+ *   - bayerPulse: the flow field inhaling and exhaling on a ~16s clock —
+ *     near-ink at rest, full bloom at the crest;
+ *   - bayerInk: the flow biased hard toward ground — sparse blue on ink,
+ *     the quietest print, no bright chip in the palette;
+ *   - bayerHot: wandering heat cores lift the crests to pure white through
+ *     an 8×8 screen — the one variant allowed white.
  *
  * HOUSE TUNING — every preset grounds on near-black so the field renders
  * LIGHT ON INK: the page composites the canvas with its own mix-blend-mode,
  * the ground falls away, and the shared .tch-field mask keeps the center
  * column dark for the window that lives there. In light theme the sg*h
- * homes invert the canvas (v0-pages.css), so both families read as ink
+ * homes invert the canvas (v0-pages.css), so the family reads as ink
  * print on paper — tuned to survive both.
  *
  * ARCHITECTURE — the house rule: exactly ONE WebGL context for this module
@@ -63,7 +64,7 @@ export type StudioParams = {
   frequency: number;
   /** Studio grain scale 0–100: dither cell size, finish sparkle. */
   grain: number;
-  /** Broad geometry: field zoom (contour), radial reach (spectral). */
+  /** Broad geometry: field zoom (contour), ring rate (radial). */
   amplitude: number;
   /** Reserved by the studio grammar; unused by the ported studies. */
   density: number;
@@ -83,13 +84,15 @@ export type StudioFieldHandle = {
 
 export type StudioPreset =
   | 'bayer'
-  | 'film'
-  | 'halftone'
-  | 'diffusion'
-  | 'contour'
-  | 'spectral'
-  | 'mesh'
-  | 'aurora';
+  | 'bayer8'
+  | 'bayerContour'
+  | 'bayerRadial'
+  | 'bayerSweep'
+  | 'bayerWaves'
+  | 'bayerChunk'
+  | 'bayerPulse'
+  | 'bayerInk'
+  | 'bayerHot';
 
 export type StudioOptions = {
   preset?: StudioPreset;
@@ -101,14 +104,15 @@ export type StudioOptions = {
 
 /* The house tones, resolved once (hex in comments — the practices linter
    keeps color literals out of TS): the ink ground, then the terminal's
-   locale blues from the darkest depth to the string light. Both families
-   stay inside this set — ink and white with the blue family where it
-   reads well, never a free palette. */
+   locale blues from the darkest depth to the string light, and the one
+   white the hot variant is allowed to crest into. The family stays inside
+   this set — ink and white with the blue family — never a free palette. */
 const INK_BLUE: StudioVec3 = [0.016, 0.024, 0.04]; // #04060a
 const BLUE: StudioVec3 = [0.184, 0.361, 0.878]; // #2f5ce0
 const BLUE_MID: StudioVec3 = [0.373, 0.525, 0.949]; // #5f86f2
 const BLUE_CHIP: StudioVec3 = [0.616, 0.725, 1.0]; // #9db9ff
 const BLUE_STRING: StudioVec3 = [0.812, 0.878, 1.0]; // #cfe0ff
+const WHITE: StudioVec3 = [1.0, 1.0, 1.0]; // #ffffff
 
 const BASE_PARAMS: Omit<StudioParams, 'colorA' | 'colorB' | 'colorC'> = {
   strength: 0.3,
@@ -122,7 +126,7 @@ const BASE_PARAMS: Omit<StudioParams, 'colorA' | 'colorB' | 'colorC'> = {
 };
 
 export const STUDIO_PRESETS: Record<StudioPreset, StudioParams> = {
-  /* — the dither family: print in the house inks — */
+  /* the pick — byte-identical to the material the founder chose */
   bayer: {
     ...BASE_PARAMS,
     colorA: INK_BLUE,
@@ -134,83 +138,112 @@ export const STUDIO_PRESETS: Record<StudioPreset, StudioParams> = {
     grain: 48,
     rotation: 18,
   },
-  film: {
-    ...BASE_PARAMS,
-    colorA: INK_BLUE,
-    colorB: BLUE,
-    colorC: BLUE_STRING,
-    strength: 0.4,
-    detail: 3.0,
-    frequency: 3.6,
-    grain: 22,
-  },
-  halftone: {
-    ...BASE_PARAMS,
-    colorA: INK_BLUE,
-    colorB: BLUE_MID,
-    colorC: BLUE_STRING,
-    strength: 0.5,
-    detail: 2.8,
-    frequency: 4.2,
-    grain: 40,
-  },
-  diffusion: {
+  /* matrix-order twin: same flow, 8×8 screen at near-grain cells */
+  bayer8: {
     ...BASE_PARAMS,
     colorA: INK_BLUE,
     colorB: BLUE,
     colorC: BLUE_CHIP,
-    strength: 0.46,
-    detail: 3.0,
-    frequency: 4.0,
-    grain: 30,
+    strength: 0.62,
+    detail: 3.6,
+    frequency: 5.8,
+    grain: 45,
+    rotation: 18,
   },
-  contour: {
+  /* terraced elevation bands, laminar downslope drift */
+  bayerContour: {
+    ...BASE_PARAMS,
+    colorA: INK_BLUE,
+    colorB: BLUE,
+    colorC: BLUE_CHIP,
+    strength: 0.5,
+    detail: 3.0,
+    frequency: 3.2,
+    grain: 40,
+    amplitude: 3.2,
+  },
+  /* flank glows off the window column; blue-forward palette */
+  bayerRadial: {
     ...BASE_PARAMS,
     colorA: INK_BLUE,
     colorB: BLUE_MID,
     colorC: BLUE_STRING,
-    strength: 0.5,
+    strength: 0.45,
+    detail: 3.0,
+    frequency: 4.5,
+    grain: 44,
+    amplitude: 3.4,
+  },
+  /* long diagonal beams, laminar; the frame counter-rotated from 01 */
+  bayerSweep: {
+    ...BASE_PARAMS,
+    colorA: INK_BLUE,
+    colorB: BLUE,
+    colorC: BLUE_CHIP,
+    strength: 0.55,
+    detail: 2.6,
+    frequency: 2.3,
+    grain: 52,
+    rotation: -24,
+  },
+  /* two-source interference, the slowest motion in the family */
+  bayerWaves: {
+    ...BASE_PARAMS,
+    colorA: INK_BLUE,
+    colorB: BLUE,
+    colorC: BLUE_CHIP,
+    strength: 0.4,
     detail: 2.8,
-    amplitude: 3.2,
+    frequency: 4.0,
     grain: 36,
   },
-  /* — the light family: house blues under white crests. The band's mask
-     dims the center and shows the FLANKS, and the plate then composites
-     through opacity and blend — smooth washes need the extra gain that the
-     hard-celled dithers never do. — */
-  spectral: {
+  /* 2×2 matrix at poster cells — the coarse end of the scale axis */
+  bayerChunk: {
     ...BASE_PARAMS,
     colorA: INK_BLUE,
     colorB: BLUE,
     colorC: BLUE_CHIP,
-    strength: 0.9,
-    detail: 3.2,
-    frequency: 4.2,
-    grain: 12,
-    amplitude: 3.8,
-    brightness: 1.9,
-  },
-  mesh: {
-    ...BASE_PARAMS,
-    colorA: INK_BLUE,
-    colorB: BLUE,
-    colorC: BLUE_CHIP,
-    strength: 0.35,
-    detail: 2.2,
-    frequency: 2.6,
-    grain: 14,
-    brightness: 2.1,
-  },
-  aurora: {
-    ...BASE_PARAMS,
-    colorA: INK_BLUE,
-    colorB: BLUE,
-    colorC: BLUE_CHIP,
-    strength: 0.5,
+    strength: 0.6,
     detail: 3.0,
-    frequency: 4.0,
-    grain: 14,
-    brightness: 1.85,
+    frequency: 4.6,
+    grain: 60,
+    rotation: 18,
+  },
+  /* the flow field breathing on a slow clock */
+  bayerPulse: {
+    ...BASE_PARAMS,
+    colorA: INK_BLUE,
+    colorB: BLUE,
+    colorC: BLUE_CHIP,
+    strength: 0.6,
+    detail: 3.4,
+    frequency: 5.2,
+    grain: 48,
+  },
+  /* ink-dominant print: tone biased to ground, crest capped at mid blue */
+  bayerInk: {
+    ...BASE_PARAMS,
+    colorA: INK_BLUE,
+    colorB: BLUE,
+    colorC: BLUE_MID,
+    strength: 0.62,
+    detail: 3.6,
+    frequency: 5.4,
+    grain: 46,
+    brightness: 0.92,
+    rotation: 18,
+  },
+  /* white-hot crests through the fine screen — the loudest highlight */
+  bayerHot: {
+    ...BASE_PARAMS,
+    colorA: INK_BLUE,
+    colorB: BLUE,
+    colorC: WHITE,
+    strength: 0.58,
+    detail: 3.4,
+    frequency: 5.0,
+    grain: 40,
+    rotation: 10,
   },
 };
 
@@ -230,31 +263,37 @@ void main() {
    - The preamble is the studio's shared vocabulary, ported from the
      glyphfield repo (MIT): value-noise fbm over a rotating 2×2 basis;
      studioUv() is the aspect-corrected frame (±1 tall, ±aspect wide)
-     rotated by uRotation degrees; colorRamp runs A→B→C; finishColor adds
-     the animated grain sparkle scaled by uGrain/100 and applies
-     uBrightness; inks() quantizes a 3-level tone to the three colors —
-     every dither ends in it.
-   - The dithers share one skeleton: a slow TONE FIELD (fbm pigment plus a
-     sine current under uFrequency/uStrength) quantized to three inks
-     through a THRESHOLD — and the threshold is the whole identity:
-     bayer = the studio's 4×4 ordered matrix at uGrain-scaled cells;
-     film = white-noise per cell, reseeded on a slow flicker clock;
-     halftone = no threshold at all — a rotated dot screen samples the
-     tone at each cell center and carries it as dot gauge (tone under
-     sqrt so gauge tracks perceived coverage);
-     diffusion = value-noise thresholds stretched along serpentine rows
-     (alternate rows wobble opposite ways), clustering ink into the
-     wormy runs error diffusion leaves;
-     contour = the topographic elevation study's line field used AS the
-     tone, then Bayer-quantized — ruled lines as ink density.
-   - spectral: the studio's Spectral Bloom, ported intact — two warped
-     current systems plus a radial pulse, their convergence lifted into
-     a bloom, the crest tinted toward white; the far field falls off so
-     the flanks stay quiet.
-   - mesh: two orbiting exponential foci mixed through the ramp with an
-     fbm warp — the quietest of the set.
-   - aurora: the studio's aurora preset — two crossed wave systems whose
-     product gates a veil between the deep field and the lit bands.
+     rotated by uRotation degrees; colorRamp/finishColor/toneField are the
+     studio grammar the family inherits; inks() quantizes a 3-level tone to
+     the three colors — every variant ends in it.
+   - Every family member is the SAME skeleton as the pick: a tone field
+     quantized to three inks through an ordered-dither threshold at
+     uGrain-scaled cells (floor(clamp(tone + 0.5 - threshold) * 2) / 2 —
+     the crest ink only wins where the matrix cell is low, so lit areas
+     render as a woven checker of body and crest, never a flat fill).
+     What varies is the MATRIX, the CELL, the FIELD, and the CLOCK:
+     bayer = the studio's explicit 4×4 matrix over flow-clouds (uTime*.36,
+     cells 2–10px) — untouched;
+     bayer8 = the recursive 8×8 matrix (bayer2 stacked three octaves:
+     b2(p/4)/16 + b2(p/2)/4 + b2(p), 64 thresholds) over the same flow
+     at 1–4px cells — smooth gradients where 01 steps;
+     bayerContour = fbm+sine elevation, fract() sawtooth bands drifting
+     downslope (time*.45 phase), higher ground lit brighter;
+     bayerRadial = two exp-falloff glows at ±.74·aspect with slow orbiting
+     centers plus expanding rings off the nearer focus — flanks lit,
+     column ink by construction;
+     bayerSweep = sin along a fixed diagonal axis, crests sharpened by
+     pow 1.7, constant phase velocity (laminar), fbm only as breakup;
+     bayerWaves = sin(distance) ripples from two off-corner sources,
+     summed — interference fringes crawling at the family's slowest clock;
+     bayerChunk = the 2×2 matrix (four thresholds) at 8–22px poster cells
+     over a slowed flow;
+     bayerPulse = the flow with a ~16s breath: cloud scale, phase and the
+     whole field's level inhale together (.35 floor to full bloom);
+     bayerInk = the flow pushed through pow 2.4 and capped at .9, printed
+     against a lowered bias (+.4) — coverage stays sparse;
+     bayerHot = the flow plus a second wandering fbm whose top lobes gate
+     heat; heat lifts the tone to the white crest through the 8×8 screen.
    - Ternary chains (level < .25 ? A : level < .75 ? B : C) are the
      studio's own idiom and valid ES 1.00. */
 const PREAMBLE = `
@@ -349,6 +388,19 @@ float bayer4(vec2 position) {
 }
 `;
 
+const BAYER2 = `
+float bayer2(vec2 position) {
+  vec2 cell = mod(floor(position), 2.0);
+  return fract(cell.x * 0.5 + cell.y * 0.75);
+}
+`;
+
+const BAYER8 = `${BAYER2}
+float bayer8(vec2 position) {
+  return bayer2(position * 0.25) * 0.0625 + bayer2(position * 0.5) * 0.25 + bayer2(position);
+}
+`;
+
 const BODIES: Record<StudioPreset, string> = {
   bayer: `${BAYER4}
 void main() {
@@ -361,150 +413,132 @@ void main() {
   gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
 }
 `,
-  film: `
+  bayer8: `${BAYER8}
 void main() {
   vec2 p = studioUv();
-  float time = uTime * 0.3;
-  float tone = toneField(p, time);
-  float cell = mix(1.0, 4.0, uGrain / 100.0);
-  vec2 g = floor(gl_FragCoord.xy / cell);
-  float flicker = floor(time * 8.0);
-  float rnd = hash(g + vec2(flicker * 13.0, flicker * 7.0));
-  float level = clamp(floor(tone * 2.0 + rnd), 0.0, 2.0) / 2.0;
+  float time = uTime * 0.36;
+  float flow = 0.5 + 0.5 * sin((p.x + p.y * 0.38 + fbm(p * max(0.8, uDetail) + time) * uStrength) * uFrequency);
+  float cellSize = mix(1.0, 4.0, uGrain / 100.0);
+  float threshold = bayer8(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(flow + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
   gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
 }
 `,
-  halftone: `
-vec2 screenToStudio(vec2 px) {
-  vec2 uv = px / max(uResolution.xy, vec2(1.0));
-  vec2 p = uv * 2.0 - 1.0;
-  p.x *= uResolution.x / uResolution.y;
-  return rot2(p, radians(uRotation));
-}
-
+  bayerContour: `${BAYER4}
 void main() {
-  float screenAngle = radians(14.0);
-  float cellPx = mix(7.0, 18.0, uGrain / 100.0);
-  vec2 s = rot2(gl_FragCoord.xy, screenAngle) / cellPx;
-  vec2 cellId = floor(s) + 0.5;
-  vec2 samplePx = rot2(cellId * cellPx, -screenAngle);
-  vec2 p = screenToStudio(samplePx);
+  vec2 p = studioUv() * (0.42 + uAmplitude * 0.14);
   float time = uTime * 0.3;
-  float field = fbm(p * max(0.6, uDetail * 0.36) + vec2(time, -time * 0.6));
-  field += sin((p.x + p.y * 0.5) * uFrequency * 0.5 - time) * 0.2 * uStrength;
-  float tone = smoothstep(0.12, 0.94, field);
-  float radius = sqrt(clamp(tone, 0.0, 1.0)) * 0.66;
-  float aa = 1.6 / cellPx;
-  float dist = length(s - cellId);
-  float dotMask = 1.0 - smoothstep(radius - aa, radius + aa, dist);
-  vec3 color = mix(uColorA, uColorB, dotMask);
-  color = mix(color, uColorC, dotMask * smoothstep(0.68, 0.96, tone));
-  gl_FragColor = vec4(max(vec3(0.0), color * uBrightness), 1.0);
-}
-`,
-  diffusion: `
-void main() {
-  vec2 p = studioUv();
-  float time = uTime * 0.24;
-  float tone = toneField(p, time);
-  float cell = mix(1.5, 5.0, uGrain / 100.0);
-  vec2 g = floor(gl_FragCoord.xy / cell);
-  float serp = mod(g.y, 2.0) * 2.0 - 1.0;
-  float wobble = noise(g * vec2(0.11, 0.37));
-  float xw = g.x * 0.53 + serp * wobble * 7.0;
-  float threshold = noise(vec2(xw, g.y * 0.61) + floor(time * 3.0));
-  float level = clamp(floor(tone * 2.0 + threshold), 0.0, 2.0) / 2.0;
-  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
-}
-`,
-  contour: `${BAYER4}
-void main() {
-  vec2 p = studioUv() * (0.4 + uAmplitude * 0.14);
-  float time = uTime * 0.3;
-  float elevation = sin(p.x * 3.2 + time) + cos(p.y * 4.0 - time * 0.8);
-  elevation += sin((p.x + p.y) * 5.0 + time * 0.57) * 0.45;
-  elevation += (fbm(p * max(0.6, uDetail * 0.28) + time * 0.15) - 0.5) * uStrength * 1.6;
-  float contours = 1.0 - smoothstep(0.05, 0.2, abs(fract(elevation * 1.35) - 0.5));
-  float fine = 1.0 - smoothstep(0.02, 0.1, abs(fract(elevation * 4.0) - 0.5));
-  vec2 uv = gl_FragCoord.xy / max(uResolution.xy, vec2(1.0));
-  float tone = uv.y * 0.12 + contours * 0.85 + fine * 0.3;
+  float elevation = fbm(p * max(0.6, uDetail * 0.34) + vec2(time * 0.5, -time * 0.3));
+  elevation += sin(p.x * 2.1 + time * 0.8) * 0.22 + cos(p.y * 2.6 - time * 0.6) * 0.18;
+  float bands = fract(elevation * uFrequency - time * 0.45);
+  float tone = smoothstep(0.06, 0.92, bands) * (0.5 + 0.5 * smoothstep(0.15, 0.85, elevation));
   float cellSize = mix(2.0, 8.0, uGrain / 100.0);
   float threshold = bayer4(gl_FragCoord.xy / cellSize);
   float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
   gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
 }
 `,
-  spectral: `
+  bayerRadial: `${BAYER4}
 void main() {
   vec2 p = studioUv();
-  float time = uTime * 0.72;
-  float strength = clamp(uStrength, 0.0, 1.5);
-  float frequency = 1.25 + uFrequency * 0.22;
-
-  vec2 flow = p;
-  flow.x *= 0.55;
-  flow += vec2(
-    sin(p.y * (1.35 + uDetail * 0.12) + time * 0.62),
-    cos(p.x * (1.15 + uDetail * 0.1) - time * 0.48)
-  ) * (0.1 + strength * 0.075);
-
-  float radius = length(flow);
-  float currentA = 0.5 + 0.5 * sin(
-    (flow.x * 0.72 + flow.y) * frequency
-    + radius * (1.4 + uAmplitude * 0.34)
-    - time
-  );
-  float currentB = 0.5 + 0.5 * sin(
-    (flow.x * 1.08 - flow.y * 0.58) * (frequency * 0.86)
-    - radius * (1.8 + uDetail * 0.18)
-    + time * 0.74
-  );
-  float pulse = 0.5 + 0.5 * sin(radius * (2.2 + uDetail * 0.24) - time * 0.56);
-  float convergence = 1.0 - abs(currentA - currentB);
-  float energy = currentA * 0.42 + currentB * 0.3 + pulse * 0.16 + convergence * 0.12;
-  energy = smoothstep(0.08, 0.94, energy);
-
-  float core = 1.0 - smoothstep(0.04, 1.6, radius);
-  float bloom = smoothstep(0.12, 0.92, energy + core * 0.16);
-  float crest = smoothstep(0.56, 1.08, energy + currentA * 0.14 + core * 0.08);
-  vec3 color = mix(uColorA, uColorB, 0.1 + bloom * 0.74);
-  color = mix(color, uColorC, crest * (0.42 + strength * 0.22));
-  color += mix(uColorB, uColorC, 0.5) * bloom * core * 0.08;
-
-  float falloff = 1.0 - smoothstep(0.72, 1.78, length(vec2(p.x * 0.55, p.y)));
-  color *= mix(0.52, 1.0, falloff);
-  gl_FragColor = vec4(finishColor(color), 1.0);
-}
-`,
-  mesh: `
-void main() {
-  vec2 p = studioUv();
-  float time = uTime * 0.24;
+  float time = uTime * 0.3;
   float ax = uResolution.x / max(uResolution.y, 1.0);
-  vec2 focusA = vec2((-0.52 + sin(time) * 0.18) * ax * 0.7, -0.36 + cos(time * 0.7) * 0.16);
-  vec2 focusB = vec2((0.48 + cos(time * 0.8) * 0.2) * ax * 0.7, 0.4 + sin(time * 0.6) * 0.18);
-  float fieldA = exp(-length((p - focusA) * vec2(0.7, 1.0)) * (1.5 + uFrequency * 0.12));
-  float fieldB = exp(-length((p - focusB) * vec2(0.7, 1.0)) * (1.3 + uFrequency * 0.1));
-  float warp = fbm(p * max(0.65, uDetail * 0.42) + time) * uStrength;
-  vec3 color = mix(uColorA, uColorB, clamp(fieldA + warp * 0.22, 0.0, 1.0));
-  color = mix(color, uColorC, clamp(fieldB + warp * 0.16, 0.0, 1.0));
-  gl_FragColor = vec4(finishColor(color), 1.0);
+  vec2 focusL = vec2(-ax * 0.74, 0.12 + sin(time * 0.7) * 0.14);
+  vec2 focusR = vec2(ax * 0.74, -0.16 + cos(time * 0.56) * 0.14);
+  float distL = length(p - focusL);
+  float distR = length(p - focusR);
+  float glow = exp(-distL * (0.6 + uFrequency * 0.09)) + exp(-distR * (0.55 + uFrequency * 0.08));
+  float rings = 0.5 + 0.5 * sin(min(distL, distR) * (1.8 + uAmplitude * 0.5) - time * 1.3);
+  float tone = smoothstep(0.06, 0.9, glow * (0.62 + rings * 0.5));
+  tone += (fbm(p * max(0.7, uDetail * 0.4) + time * 0.4) - 0.5) * uStrength * 0.5;
+  float cellSize = mix(2.0, 10.0, uGrain / 100.0);
+  float threshold = bayer4(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
 }
 `,
-  aurora: `
-float wave(vec2 p, float offset) {
-  return sin(p.x * 3.2 + sin(p.y * 2.0 + uTime * 0.45) + offset) * 0.5 + 0.5;
-}
-
+  bayerSweep: `${BAYER4}
 void main() {
   vec2 p = studioUv();
-  vec2 uv = gl_FragCoord.xy / max(uResolution.xy, vec2(1.0));
-  float a = wave(p, 0.0);
-  float b = wave(p.yx * 1.35, 2.4);
-  float veil = smoothstep(0.18, 0.9, a * b + 0.18 * sin(uTime + p.y * 4.0));
-  vec3 base = mix(uColorA * 0.16, uColorB * 0.5, uv.y);
-  vec3 color = mix(base, mix(uColorB, uColorC, a * 0.6), veil * 0.82);
-  gl_FragColor = vec4(finishColor(color), 1.0);
+  float time = uTime * 0.3;
+  float axis = p.x * 0.86 + p.y * 0.5;
+  float sweep = 0.5 + 0.5 * sin(axis * uFrequency - time * 1.7);
+  sweep = pow(sweep, 1.7);
+  float breakup = (fbm(p * max(0.7, uDetail * 0.3) + vec2(time * 0.22, -time * 0.13)) - 0.5) * uStrength;
+  float tone = clamp(sweep + breakup, 0.0, 1.0);
+  float cellSize = mix(2.0, 10.0, uGrain / 100.0);
+  float threshold = bayer4(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
+}
+`,
+  bayerWaves: `${BAYER4}
+void main() {
+  vec2 p = studioUv();
+  float time = uTime * 0.22;
+  float ax = uResolution.x / max(uResolution.y, 1.0);
+  vec2 sourceA = vec2(-ax * 0.66, 0.6);
+  vec2 sourceB = vec2(ax * 0.62, -0.55);
+  float waveA = sin(length(p - sourceA) * (2.6 + uFrequency * 0.4) - time * 2.1);
+  float waveB = sin(length(p - sourceB) * (2.2 + uFrequency * 0.34) - time * 1.7);
+  float tone = smoothstep(-1.4, 1.5, waveA + waveB);
+  tone += (fbm(p * max(0.6, uDetail * 0.3) + time * 0.5) - 0.5) * uStrength;
+  tone = clamp(tone, 0.0, 1.0);
+  float cellSize = mix(2.0, 10.0, uGrain / 100.0);
+  float threshold = bayer4(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
+}
+`,
+  bayerChunk: `${BAYER2}
+void main() {
+  vec2 p = studioUv();
+  float time = uTime * 0.26;
+  float flow = 0.5 + 0.5 * sin((p.x * 0.9 + p.y * 0.5 + fbm(p * max(0.7, uDetail * 0.5) + time) * uStrength) * uFrequency);
+  float cellSize = mix(8.0, 22.0, uGrain / 100.0);
+  float threshold = bayer2(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(flow + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
+}
+`,
+  bayerPulse: `${BAYER4}
+void main() {
+  vec2 p = studioUv();
+  float time = uTime * 0.3;
+  float breath = 0.5 + 0.5 * sin(uTime * 0.4);
+  float clouds = fbm(p * max(0.8, uDetail * (0.72 + breath * 0.4)) + vec2(time * 0.4, -time * 0.26));
+  float flow = 0.5 + 0.5 * sin((p.x + p.y * 0.38 + clouds * uStrength) * uFrequency + breath * 1.6);
+  float tone = flow * (0.35 + 0.75 * breath);
+  float cellSize = mix(2.0, 10.0, uGrain / 100.0);
+  float threshold = bayer4(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
+}
+`,
+  bayerInk: `${BAYER4}
+void main() {
+  vec2 p = studioUv();
+  float time = uTime * 0.3;
+  float flow = 0.5 + 0.5 * sin((p.x + p.y * 0.38 + fbm(p * max(0.8, uDetail) + time) * uStrength) * uFrequency);
+  float tone = pow(flow, 2.4) * 0.9;
+  float cellSize = mix(2.0, 10.0, uGrain / 100.0);
+  float threshold = bayer4(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(tone + 0.4 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
+}
+`,
+  bayerHot: `${BAYER8}
+void main() {
+  vec2 p = studioUv();
+  float time = uTime * 0.32;
+  float flow = 0.5 + 0.5 * sin((p.x + p.y * 0.38 + fbm(p * max(0.8, uDetail) + time) * uStrength) * uFrequency);
+  float cores = fbm(p * max(0.5, uDetail * 0.5) - vec2(time * 0.5, time * 0.3));
+  float heat = smoothstep(0.58, 0.86, cores) * smoothstep(0.45, 0.9, flow);
+  float tone = clamp(flow * 0.72 + heat * 0.7, 0.0, 1.0);
+  float cellSize = mix(1.5, 6.0, uGrain / 100.0);
+  float threshold = bayer8(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
 }
 `,
 };

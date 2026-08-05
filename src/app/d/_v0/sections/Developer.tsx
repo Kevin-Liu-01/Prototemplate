@@ -457,13 +457,9 @@ const ROUTES: readonly Route[] = [
 type V0DeveloperProps = {
   /** The non-terminal home re-heads this beat as "Localization is complex." */
   heading?: string;
-  sub?: string;
 };
 
-export default function V0Developer({
-  heading = 'Built for the world’s developers.',
-  sub = 'General Translation handles all the infrastructure, so you no longer need to think about localization.',
-}: V0DeveloperProps) {
+export default function V0Developer({ heading = 'Built for the world’s developers.' }: V0DeveloperProps) {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
 
@@ -472,7 +468,6 @@ export default function V0Developer({
       <div className='tc-head'>
         <Braces className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>{heading}</h2>
-        <p data-reveal>{sub}</p>
       </div>
 
       <div className='tc-row v0-dev-grid' data-eq-heads=''>

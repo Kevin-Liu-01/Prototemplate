@@ -470,8 +470,8 @@ export default function HomeHero() {
           centre dark — and the page opens inside it: headline light-on-dark
           at the top, the raw gt session below it on the same plate. */}
       <div className='sgph-console'>
-        {/* the console's light engine + the founder's review ladder: ten live
-            variants, default 01 = today's prismatic wash */}
+        {/* the console's field + the founder's review ladder: the ten-slot
+            Bayer family, default 01 = the picked bayer flow */}
         <HeroFieldSwitcher />
 
         <div className='sgph-console-in'>

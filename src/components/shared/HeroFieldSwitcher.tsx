@@ -3,143 +3,109 @@
 import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 
-import PaperGodRaysField from '@/components/shared/PaperGodRaysField';
-import { createPrismaticField } from '@/lib/prismatic-field';
-import { createStudioField } from '@/lib/studio-field';
+import { createStudioField, type StudioPreset } from '@/lib/studio-field';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './HeroFieldSwitcher.css';
 
 /**
- * WORKING-REVIEW RIG — not product. Mounts the hero band's light field and a
+ * WORKING-REVIEW RIG — not product. Mounts the hero band's field and a
  * quiet instrumentation ladder (mono indices, hairline pill, color only on
  * the active row) that swaps the field live between ten variants, so the
- * founder can compare engines on the real band. The roster follows the
- * founder's strategy call — "dither is probably the strat": slots 01–05 are
- * five genuinely distinct DITHER patterns (print in the house inks, kin to
- * the glyph field's Bayer atlas), slots 06–10 are five LIGHT washes
- * (prismatic-adjacent flowing light, each a different pattern). The studio
- * materials are the founder's own glyphfield shader studies, ported in
- * src/lib/studio-field.ts; 09 is the packaged Paper God Rays. The pick
- * persists in localStorage under one key shared by every home that carries
- * the rig; the default is 01 — the Bayer flow, the dither that reads best
- * on the dossier band. Exactly one engine is alive at a time: each switch
- * remounts a fresh stage (keyed) and runs the previous engine's destroy();
- * the canvas engines share the libraries' own session-singleton GL contexts
- * and the Paper mount loses its context on unmount, so cycling variants
- * never grows the context count.
+ * founder can compare materials on the real band. The roster is THE BAYER
+ * FAMILY — the founder picked 01 bayer dither from the first survey and
+ * asked for "a bunch of options based off of this instead": slot 01 is that
+ * material untouched, slots 02–10 are nine variations that move along real
+ * axes — matrix order (2×2/4×4/8×8), cell scale (poster ↔ near-grain), the
+ * tone field under the matrix (flow, contours, flank radials, sweeps,
+ * interference, breath), motion, and palette balance (ink-dominant,
+ * blue-forward, white-hot). All ten live in src/lib/studio-field.ts. The
+ * pick persists in localStorage under one key shared by every home that
+ * carries the rig; the default is 01. Exactly one engine is alive at a
+ * time: each switch remounts a fresh keyed stage and runs the previous
+ * field's destroy(), and every variant draws through the studio library's
+ * one session-singleton GL context, so cycling variants never grows the
+ * context count.
  */
 
 const STORE_KEY = 'gt-hero-field-variant';
 
-type Cleanup = () => void;
-
 type Variant = {
   id: string;
   name: string;
-  /** Canvas-engine variants mount a house engine onto the keyed canvas… */
-  mount?: (canvas: HTMLCanvasElement) => Cleanup | undefined;
-  /** …component variants render their own stage (the packaged Paper Warp). */
-  render?: (className: string) => React.ReactElement;
+  preset: StudioPreset;
 };
 
 const VARIANTS: readonly Variant[] = [
-  /* — 01–05: the dither family (print) — */
   {
     id: '01',
     name: 'bayer-flow',
-    // The 4×4 ordered matrix over a flowing tone field, at coarse print
-    // cells — the glyph field's own atlas grammar, and the default.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'bayer' });
-      return field ? () => field.destroy() : undefined;
-    },
+    // THE PICK, byte-identical: the 4×4 ordered matrix over flow-clouds
+    // at coarse print cells — the glyph field's own atlas grammar.
+    preset: 'bayer',
   },
   {
     id: '02',
-    name: 'film-grain',
-    // The same pigment flow through per-cell white-noise thresholds at
-    // near-pixel scale — film stock, reseeded on a slow flicker clock.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'film' });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-8x8',
+    // Matrix-order twin: the same flow through an 8×8 matrix at
+    // near-grain cells — smooth dithered gradients where 01 steps.
+    preset: 'bayer8',
   },
   {
     id: '03',
-    name: 'halftone-drift',
-    // A rotated dot screen (the 14° printer's angle) whose dot gauge
-    // carries the drifting tone — print's own screen.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'halftone' });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-contour',
+    // Quantized elevation bands drifting downslope — the topographic
+    // motif as terraced ink.
+    preset: 'bayerContour',
   },
   {
     id: '04',
-    name: 'diffusion-ink',
-    // Error-diffusion's organic read: serpentine value-noise thresholds
-    // clustering the ink into worms instead of ordered cells.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'diffusion' });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-radial',
+    // Two radial glows breathing at the FLANKS, centered off the window
+    // column; blue-forward palette. The center stays ink by construction.
+    preset: 'bayerRadial',
   },
   {
     id: '05',
-    name: 'contour-dither',
-    // Topographic elevation lines pushed through the Bayer matrix — the
-    // ruled-line motif rendered as dithered ink density.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'contour' });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-sweep',
+    // Long diagonal beams crossing laminar, broken by a slow pigment
+    // churn — the pressroom read, frame counter-rotated from 01.
+    preset: 'bayerSweep',
   },
-  /* — 06–10: the light family (washes) — */
   {
     id: '06',
-    name: 'prismatic',
-    // Yesterday's shipped look, verbatim: the toolchain hero's field —
-    // it earns its light slot.
-    mount: (canvas) => {
-      const field = createPrismaticField(canvas, { preset: '1', speed: 0.5, params: { exposureScale: 3400 } });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-waves',
+    // Two circular wave systems interfering — crests meet as chips,
+    // troughs sink to ink; the slowest clock in the family.
+    preset: 'bayerWaves',
   },
   {
     id: '07',
-    name: 'spectral-bloom',
-    // The studio's featured bloom: soft currents converging into one
-    // luminous field, blues under a white crest.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'spectral' });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-chunk',
+    // The 2×2 matrix at coarse poster cells — four thresholds, chunky
+    // mosaic, the loudest print.
+    preset: 'bayerChunk',
   },
   {
     id: '08',
-    name: 'mesh-wash',
-    // Two orbiting focal blues breathing over the ink — the quietest wash.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'mesh' });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-pulse',
+    // The flow field inhaling and exhaling on a ~16s clock — near-ink at
+    // rest, full bloom at the crest.
+    preset: 'bayerPulse',
   },
   {
     id: '09',
-    name: 'god-rays',
-    // The packaged Paper God Rays: soft volumetric light spilling from
-    // above the band, translucent blues rolling to white.
-    render: (className) => <PaperGodRaysField className={className} />,
+    name: 'bayer-ink',
+    // Ink-dominant print: tone biased hard toward ground, sparse blue,
+    // no bright chip in the palette — the quietest variant.
+    preset: 'bayerInk',
   },
   {
     id: '10',
-    name: 'aurora',
-    // The studio's aurora: curtain bands moving through a deep field.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'aurora' });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'bayer-hot',
+    // Wandering heat cores lift the crests to pure white through the
+    // fine 8×8 screen — the one variant allowed white.
+    preset: 'bayerHot',
   },
 ];
 
@@ -147,19 +113,17 @@ const VARIANTS: readonly Variant[] = [
 function FieldStage({ variant }: { variant: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const def = VARIANTS.find((v) => v.id === variant) ?? VARIANTS[0];
-  const stageClass = 'tc-hero-field tch-field hfs-stage';
 
   useGSAP(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    return def?.mount?.(canvas);
+    if (!canvas || !def) return;
+    const field = createStudioField(canvas, { preset: def.preset });
+    return field ? () => field.destroy() : undefined;
   }, [variant]);
 
-  // Component variants own their stage; the shared classes still carry the
-  // band's mask, blend and light-theme inversion.
-  if (def?.render) return def.render(stageClass);
-
-  return <canvas aria-hidden className={stageClass} key={variant} ref={canvasRef} />;
+  // The shared classes carry the band's mask, blend and light-theme
+  // inversion for every variant alike.
+  return <canvas aria-hidden className='tc-hero-field tch-field hfs-stage' key={variant} ref={canvasRef} />;
 }
 
 export default function HeroFieldSwitcher() {
@@ -188,8 +152,7 @@ export default function HeroFieldSwitcher() {
   return (
     <>
       {/* keyed at the stage: every switch is a full unmount/mount, so the
-          outgoing engine's destroy (or the Paper context release) always
-          runs before the incoming engine draws */}
+          outgoing field's destroy always runs before the incoming one draws */}
       <FieldStage key={variant} variant={variant} />
       <div aria-label='Hero field variant (review rig)' className='hfs' role='group'>
         {VARIANTS.map((v) => (
