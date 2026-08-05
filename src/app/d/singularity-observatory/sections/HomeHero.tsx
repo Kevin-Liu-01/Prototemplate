@@ -418,11 +418,17 @@ export default function HomeHero() {
           const sampleShape = (text: string, width: number, height: number, count: number) => {
             const style = getComputedStyle(word);
             const canvas = document.createElement('canvas');
-            canvas.width = Math.max(width, 10);
+            canvas.width = Math.max(Math.ceil(width * 1.25) + 24, 10);
             canvas.height = Math.max(height, 10);
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext('2d') as
+              | (CanvasRenderingContext2D & { letterSpacing?: string })
+              | null;
             if (!ctx) return [];
             ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            // the DOM word is tracked; an untracked raster runs wide and clips the last glyph
+            if (style.letterSpacing !== 'normal') {
+              ctx.letterSpacing = `${parseFloat(style.letterSpacing)}px`;
+            }
             ctx.textBaseline = 'alphabetic';
             ctx.fillText(text, 0, canvas.height * 0.85);
             const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -432,6 +438,12 @@ export default function HomeHero() {
               for (let x = 0; x < canvas.width; x += step) {
                 if ((img[(y * canvas.width + x) * 4 + 3] ?? 0) > 128) pts.push({ x, y });
               }
+            }
+            let maxX = 0;
+            for (const pt of pts) maxX = Math.max(maxX, pt.x);
+            if (maxX > width) {
+              const fit = width / maxX;
+              for (const pt of pts) pt.x *= fit;
             }
             // spread the picks across the whole word rather than clustering
             const picked: { x: number; y: number }[] = [];

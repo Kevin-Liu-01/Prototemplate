@@ -336,6 +336,12 @@ export default function HomeHero() {
                 if ((img[(y * canvas.width + x) * 4 + 3] ?? 0) > 128) pts.push({ x, y });
               }
             }
+            let maxX = 0;
+            for (const pt of pts) maxX = Math.max(maxX, pt.x);
+            if (maxX > width) {
+              const fit = width / maxX;
+              for (const pt of pts) pt.x *= fit;
+            }
             // spread the picks across the whole word rather than clustering
             const picked: { x: number; y: number }[] = [];
             if (pts.length) {

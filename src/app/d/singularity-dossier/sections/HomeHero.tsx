@@ -337,15 +337,21 @@ export default function HomeHero() {
           const sampleShape = (text: string, width: number, height: number, count: number) => {
             const style = getComputedStyle(word);
             const scale = 2;
-            const cw = Math.max(Math.ceil(width), 10) * scale;
+            const cw = Math.max(Math.ceil(width * 1.25) + 24, 10) * scale;
             const ch = Math.max(Math.ceil(height), 10) * scale;
             const canvas = document.createElement('canvas');
             canvas.width = cw;
             canvas.height = ch;
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const ctx = canvas.getContext('2d', { willReadFrequently: true }) as
+              | (CanvasRenderingContext2D & { letterSpacing?: string })
+              | null;
             if (!ctx) return [] as { x: number; y: number }[];
             const fontPx = parseFloat(style.fontSize) * scale;
             ctx.font = `${style.fontWeight} ${fontPx}px ${style.fontFamily}`;
+            // the DOM word is tracked; an untracked raster runs wide and clips the last glyph
+            if (style.letterSpacing !== 'normal') {
+              ctx.letterSpacing = `${parseFloat(style.letterSpacing) * scale}px`;
+            }
             ctx.textBaseline = 'alphabetic';
             ctx.fillText(text, 0, ch * 0.85);
             const img = ctx.getImageData(0, 0, cw, ch).data;
@@ -365,6 +371,12 @@ export default function HomeHero() {
             while (pts.length > count && step < 60) {
               step = Math.max(step + 1, Math.round(step * Math.sqrt(pts.length / count)));
               pts = scan(step);
+            }
+            let maxX = 0;
+            for (const pt of pts) maxX = Math.max(maxX, pt.x);
+            if (maxX > width) {
+              const fit = width / maxX;
+              for (const pt of pts) pt.x *= fit;
             }
             return pts;
           };
