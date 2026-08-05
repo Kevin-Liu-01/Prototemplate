@@ -77,7 +77,14 @@ export default function MonthBand() {
 
   return (
     <section className='tc-band up-band' id='month' ref={root}>
-      <PrismaticField className='tc-band-field' preset='1' speed={0.4} params={{ exposureScale: 2600 }} />
+      <PrismaticField
+        className='tc-band-field'
+        preset='1'
+        speed={0.4}
+        params={{ exposureScale: 2600 }}
+        effects={['lens', 'dither', 'chroma']}
+        defaultEffect='lens'
+      />
 
       <div className='tc-band-in'>
         <div className='tc-band-top'>

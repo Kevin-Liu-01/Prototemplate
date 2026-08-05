@@ -341,7 +341,18 @@ export default function DarkBand() {
           {/* The band's one light moment: a real `gt translate` run floating
               in the dark centre of the prismatic panel. Five lines, no more. */}
           <div className='tcb-cell tcb-cell-cli' data-cell>
-            <PrismaticField className='tcb-cli-field' preset='1' speed={0.4} params={{ exposureScale: 1600 }} />
+            {/* The conversion band's field opts into cursor effects too; the
+                cell is too tight for the options menu, so it rides the page
+                default (lens) without chrome. */}
+            <PrismaticField
+              className='tcb-cli-field'
+              preset='1'
+              speed={0.4}
+              params={{ exposureScale: 1600 }}
+              effects={['lens', 'dither', 'chroma']}
+              defaultEffect='lens'
+              effectsMenu={false}
+            />
             <div className='tcb-term'>
               <div className='tcb-term-bar'>
                 <span>gt cli</span>

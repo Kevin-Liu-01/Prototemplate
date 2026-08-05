@@ -37,7 +37,14 @@ export default function DemoBand() {
 
   return (
     <section className='tc-band' id='demo' ref={root}>
-      <PrismaticField className='tc-band-field' preset='1' speed={0.4} params={{ exposureScale: 2400 }} />
+      <PrismaticField
+        className='tc-band-field'
+        preset='1'
+        speed={0.4}
+        params={{ exposureScale: 2400 }}
+        effects={['lens', 'dither', 'chroma']}
+        defaultEffect='lens'
+      />
       <div className='tc-band-in'>
         <h2 data-reveal>Get a demo.</h2>
         <p className='tc-band-sub' data-reveal>

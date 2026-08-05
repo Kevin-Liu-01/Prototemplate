@@ -22,10 +22,20 @@ import {
  * plates at the original's gauge — thickness ~4% of the footprint, air
  * between plates ~40% — one per beat of the copy rail, physical order
  * equal to beat order: code, context, translations, agents, bottom up.
- * The stack still BUILDS as the story advances, and each top face carries
- * its section's artifact: the <T> code block, the context chips, the
- * translated strings with the accent payload chip, and the Locadex mark
- * mask-rendered in the plate's ink.
+ * The agents plate steps its footprint down ~13% (founder round 9: the
+ * top layer reads as the CAPSTONE) — same plan center, same seat, the
+ * one projection, just a smaller rhombus. All four plates are PRESENT
+ * AT ALL TIMES now (founder round 9: the build-in/out choreography is
+ * no longer the scroll behavior): the draw — rail rising, bends curling
+ * off the tip, plates settling in sequence — plays ONCE as the tower
+ * first scrolls into view (FullStack's entrance), and from then on the
+ * beats only move the spotlight. Non-hot plates hold a ghost presence
+ * (fullstack.css dims their fills, rims, and artwork to roughly a third
+ * of the hot voice); the hot plate keeps the full treatment. Each top
+ * face carries its section's artifact: the <T> code block, the context
+ * chips, the translated strings with the accent payload chip, and the
+ * Locadex mark mask-rendered in the plate's ink under a Bayer-dithered
+ * specular sweep (the shimmer block below).
  *
  * The original's connective thread is ported as ONE blue rail
  * (founder: "align the lines to the actual layers … same size as our
@@ -35,13 +45,13 @@ import {
  * the figure CELL, top rule to bottom rule (founder: "the rail is
  * still not reaching complete top and bottom"), drawn by FullStack as
  * a cell-spanning element (.v0s-cellrail) behind this sticky figure,
- * because no frame-bound SVG can outlive its own box. The build's
- * accent FILL covers that track exactly — same x, same gauge — and
- * extends and retracts with the build (FullStack drives it through
- * RAIL_SCALE), so there is never a second vertical: one line, blue
- * where the stack has built, rest-ink above. The frame carries no
- * type: the plates' artwork identifies them and the copy rail names
- * them (founder: no words by the diagram).
+ * because no frame-bound SVG can outlive its own box. The entrance's
+ * accent FILL covers that track exactly — same x, same gauge — rising
+ * once from the rail's foot to the top plate's tap (FullStack drives
+ * it through RAIL_SCALE) and holding for good, so there is never a
+ * second vertical: one line, blue where the circuit is lit, rest-ink
+ * above. The frame carries no type: the plates' artwork identifies
+ * them and the copy rail names them (founder: no words by the diagram).
  *
  * Each plate's small-radius corner leader is part of the SAME drawing
  * system: rail gauge, rail ink (opaque, so where it lies on the fill
@@ -53,14 +63,16 @@ import {
  * its plate through every lift, drop, and glide (founder: the lines
  * must stay on the layers); the stub below the elbow runs long enough
  * down the rail that even a lifted plate's leader still roots in the
- * fill. fullstack.css re-derives the rail x in cell space from
+ * fill. The capstone's own vertex sits nearer the center, so its
+ * leader simply runs ~12 units further out from the same rail seat.
+ * fullstack.css re-derives the rail x in cell space from
  * RAIL_X / RAIL_GAUGE / VIEW_W; change those numbers together.
  *
  * Each slab is its own absolutely-seated HTML element rather than a group
  * in one SVG: the scroll spotlight must put the active slab ABOVE its
  * neighbours, and z-index is an HTML privilege SVG paint order doesn't
  * grant. FullStack owns the spotlight — the is-hot classes, the stacking
- * order, the build, and the lift; this file owns only the drawing. All
+ * order, the entrance, and the lift; this file owns only the drawing. All
  * constant paint lives in fullstack.css; the per-plate depth stepping of
  * the stroke voice rides two custom properties, the way the original
  * stepped its rim and edge brightness by depth.
@@ -89,14 +101,13 @@ const THICK = 4.2;
 const GAP = 42;
 const STEP = THICK + GAP;
 
-const BOX: IsoBox = { x: -HALF, y: -HALF, z: 0, w: SIZE, d: SIZE, h: THICK };
-
-const HULL = roundedPolygon(silhouette(BOX));
-const TOP = roundedPolygon(topFace(BOX));
-const LEFT = roundedPolygon(leftFace(BOX));
-const RIGHT = roundedPolygon(rightFace(BOX));
-const [FRONT_A, FRONT_B] = frontEdge(BOX);
-const FRONT = segment(FRONT_A, FRONT_B);
+/** The agents plate's stepped-down footprint, ~13% under SIZE: the top
+    plate reads as the stack's CAPSTONE (founder round 9). Same plan
+    center, same z seat, same thickness — only the rhombus shrinks; the
+    frame, the rows, and the rail all stay SIZE-derived so nothing else
+    in the composition moves. */
+const CAP_SIZE = 90;
+const CAP_HALF = CAP_SIZE / 2;
 
 /** Slab viewBox: the silhouette plus stroke air, plus the rail margin on
     the left — the doubled rail and its leaders live there, in the overlay.
@@ -117,7 +128,9 @@ const TOWER_H = (TOWER_LAYERS.length - 1) * STEP + VIEW_H;
    a slab-local y maps to frame y = row·STEP + (y − VIEW_Y). The taps
    themselves are slab-local (they ride their plates). */
 
-/** Every plate's left vertex projects to this x. */
+/** The BASE plate's left vertex projects to this x — the rail keeps its
+    seat off the full footprint; the capstone's nearer vertex just earns
+    a longer run (plateGeo below). */
 const VERTEX_X = -(SIZE * ISO_COS30);
 /** The rail line's right edge, left of the plates. */
 const RAIL_X = VERTEX_X - 22;
@@ -165,10 +178,12 @@ const RAIL_DROP = 2200;
 const RAIL_FOOT = RAIL_BOTTOM + RAIL_DROP;
 
 /**
- * How much of the accent channel is filled when `count` slabs are built,
- * as a scaleY on the foot-anchored fill. FullStack tweens between these
- * as the stack builds and retracts (and rises from 0 — the empty rail —
- * on beat 01's lock-in); the rail's strokes never move.
+ * The fill's scaleY when the tip stands at slab i's tap, on the
+ * foot-anchored fill. Since founder round 9 the fill neither extends nor
+ * retracts with the beats: FullStack's one-time ENTRANCE rises through
+ * these stops — tipAt() inverts them to the moment the tip passes each
+ * tap, so the bends draw as the blue arrives — and then the fill holds
+ * at the last stop for good; the rail's strokes never move.
  */
 export const RAIL_SCALE: readonly number[] = TOWER_LAYERS.map(
   (_, i) => (RAIL_FOOT - tapY(i)) / (RAIL_FOOT - RAIL_TOP)
@@ -182,19 +197,47 @@ export const RAIL_ORIGIN = `${RAIL_X} ${RAIL_FOOT}`;
     the stub's foot off the accent fill — the lifted leader visibly extends
     the blue rail up to its plate instead of detaching from it. */
 const TAP_STUB = 14;
-/** The run's end, PAST the vertex: the butt end is buried under the opaque
-    hull (drawn after it in the same SVG), so tap and plate meet with no
-    anti-aliasing seam where the rounding recedes. */
-const TAP_END = VERTEX_X + 2;
 
-/** One tap, in slab-local coordinates — identical for every plate. The
-    path STARTS at the plate and ENDS down the rail, because the tap draws
-    itself on the plate's build-in (founder: "animate it coming out of the
-    layer going into the rail") — a dash-offset run from the buried butt
-    end, out through the elbow, into the rail's fill; build-out retracts it
-    the reverse way, rail end first. pathLength is normalized to 100 in the
-    markup, so FullStack's draw targets are percentages of the tap. */
-const TAP_D = `M${TAP_END} ${TAP_Y}L${RAIL_CX + CORNER} ${TAP_Y}Q${RAIL_CX} ${TAP_Y} ${RAIL_CX} ${TAP_Y + CORNER}L${RAIL_CX} ${TAP_Y + TAP_STUB}`;
+/* ---- the plate geometry, once per footprint -------------------------------
+   Two footprints share the one drawing system: the base plate and the
+   agents capstone. Everything derives from the size — hull, the three lit
+   faces, the front edge, and the rail tap. The tap's grammar is unchanged:
+   its run STARTS at the plate and ENDS down the rail, because the tap
+   draws itself out of the layer (founder: "animate it coming out of the
+   layer going into the rail") — a dash-offset run from the buried butt
+   end, out through the elbow, into the rail's fill; pathLength is
+   normalized to 100 in the markup, so FullStack's draw targets are
+   percentages of the tap. The run ends PAST the plate's OWN left vertex
+   (+2, buried under the opaque hull drawn after it in the same SVG), so
+   tap and plate meet with no anti-aliasing seam where the rounding
+   recedes — the capstone's leader lands on the capstone's vertex, never
+   on the base footprint's. */
+type PlateGeo = {
+  hull: string;
+  top: string;
+  left: string;
+  right: string;
+  front: string;
+  tap: string;
+};
+
+function plateGeo(size: number): PlateGeo {
+  const half = size / 2;
+  const box: IsoBox = { x: -half, y: -half, z: 0, w: size, d: size, h: THICK };
+  const [frontA, frontB] = frontEdge(box);
+  const run = -(size * ISO_COS30) + 2;
+  return {
+    hull: roundedPolygon(silhouette(box)),
+    top: roundedPolygon(topFace(box)),
+    left: roundedPolygon(leftFace(box)),
+    right: roundedPolygon(rightFace(box)),
+    front: segment(frontA, frontB),
+    tap: `M${run} ${TAP_Y}L${RAIL_CX + CORNER} ${TAP_Y}Q${RAIL_CX} ${TAP_Y} ${RAIL_CX} ${TAP_Y + CORNER}L${RAIL_CX} ${TAP_Y + TAP_STUB}`,
+  };
+}
+
+const BASE_PLATE = plateGeo(SIZE);
+const CAP_PLATE = plateGeo(CAP_SIZE);
 
 /* ---- the top-face artifacts, one strong drawing per beat ---------------- */
 
@@ -278,10 +321,11 @@ const FAN_WIRES: readonly string[] = [
 /**
  * The agents plate's scan energy: an accent trace orbiting the top face on
  * a ring inset from the rim — its own geometry, so it never doubles the
- * hot accent edge. FullStack loops the dash while the plate is built.
+ * hot accent edge. Inset from the CAPSTONE footprint, since that is the
+ * face it rides. FullStack loops the dash whenever the band is on screen.
  */
 const ORBIT_D = roundedPolygon(
-  topFace({ x: -HALF + 8, y: -HALF + 8, z: 0, w: SIZE - 16, d: SIZE - 16, h: THICK })
+  topFace({ x: -CAP_HALF + 8, y: -CAP_HALF + 8, z: 0, w: CAP_SIZE - 16, d: CAP_SIZE - 16, h: THICK })
 );
 
 type GlyphChipProps = {
@@ -310,15 +354,92 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
     Locadex iso uses on its agent slab), sized to OWN the face (founder:
     much larger, not a small centered glyph). The asset's 500² viewBox pads
     its glyph — the drawn form spans only 199×222 of it — so the seat is
-    sized from the GLYPH, not the file: a 62-plan-unit visible mark (~60%
-    of the 104-unit face, glyph corners still ~9 units inside the orbit
-    ring's ±44 inset), which the padding inflates to a ~156-unit image box.
-    The rect under the mask reaches past the face; the mask's alpha crops
-    everything back to the glyph. The asset is an SVG, so the scale costs
-    no crispness. */
-const MARK_GLYPH_W = 62;
+    sized from the GLYPH, not the file: a 54-plan-unit visible mark (~60%
+    of the 90-unit capstone face, glyph corners still ~10 units inside the
+    orbit ring's ±37 inset), which the padding inflates to a ~136-unit
+    image box. The mask's alpha crops everything back to the glyph. The
+    asset is an SVG, so the scale costs no crispness. */
+const MARK_GLYPH_W = 54;
 const MARK_HALF = (MARK_GLYPH_W * (500 / 199)) / 2;
 const MARK_PLANE = plane(THICK);
+
+/* ---- the mark's dithered shimmer ------------------------------------------
+   Founder round 9: "a special animated shader, like the dithers, to make
+   it look even cooler or metallic." The mark keeps its alpha mask; what
+   sweeps through it is a specular band QUANTIZED by the house 4×4 ordered
+   Bayer matrix (glyph-field's 1-bit falloffs are the reference: density
+   ramps render as dither, never as alpha veils). The band is five NESTED
+   clip windows riding together — a solid core out to a 1/16 fringe — each
+   windowing a static rect filled with that coverage tier's Bayer pattern.
+   Ordered dithering nests by construction (every tier's lit cells are a
+   subset of the next tier's), so the overlap composes exactly the ramp,
+   and because the glint ink is opaque the doubled cells never brighten.
+   The mark's plane transform moved INSIDE the mask so all of this lives
+   in slab screen space: the dither cells stay square screen cells (~2.6px
+   at the resting width) instead of foreshortened rhombi, and crispEdges
+   keeps them 1-bit under zoom. FullStack slides the windows between
+   ±SHINE_SWEEP (~5s a pass, gated to the band being on screen); without
+   JS or with reduced motion the markup's rotate(60) pose — parallel to
+   the plate's projected +y edges — leaves a static band catching light
+   mid-glyph. */
+
+/** Ordered 4×4 Bayer matrix — glyph-field's, verbatim. */
+const BAYER4: readonly (readonly number[])[] = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
+
+/** Dither cell edge, in drawing units: ~2.6 screen px at the figure's
+    392px resting width, ~2.2 at the one-column 330 — the founder's 2-3px
+    window at both. */
+const GLINT_CELL = 1.4;
+const GLINT_TILE = GLINT_CELL * 4;
+
+/** One pattern tile at coverage k/16: every cell whose Bayer threshold
+    sits under k, as one path of squares. */
+function bayerTile(k: number): string {
+  const cells: string[] = [];
+  BAYER4.forEach((row, y) => {
+    row.forEach((threshold, x) => {
+      if (threshold < k) {
+        cells.push(
+          `M${x * GLINT_CELL} ${y * GLINT_CELL}h${GLINT_CELL}v${GLINT_CELL}h${-GLINT_CELL}Z`
+        );
+      }
+    });
+  });
+  return cells.join('');
+}
+
+/** The band's tiers, center-out: clip-window width (drawing units) and
+    Bayer coverage. Each window CONTAINS the previous, so the union is the
+    ordered-dither falloff — solid where every tier lands, sparse at the
+    fringe. */
+const SHINE_TIERS: readonly { cover: number; width: number }[] = [
+  { cover: 16, width: 7 },
+  { cover: 10, width: 12 },
+  { cover: 6, width: 18 },
+  { cover: 3, width: 26 },
+  { cover: 1, width: 36 },
+];
+
+/** The sweep's half-travel, in drawing units. The glyph spans ±47 and
+    the widest window's horizontal footprint adds ±36, so past ~±83 the
+    band has fully cleared — every pass rests dark for a breath before
+    the next catch. FullStack slides the windows -SHINE_SWEEP →
+    +SHINE_SWEEP, rotating about each window's CENTER (GSAP's SVG
+    default is the bbox corner, which would swing the band off-glyph). */
+export const SHINE_SWEEP = 96;
+
+/** The masked rects' screen-space cover: the capstone glyph projects to
+    ±46.8 × [-31.2, 22.8]; these bounds pad that, and the mask crops the
+    rest back to the mark. */
+const LDX_X = -52;
+const LDX_Y = -38;
+const LDX_W = 104;
+const LDX_H = 66;
 
 function TopGlyph({ id }: { id: string }) {
   switch (id) {
@@ -408,29 +529,63 @@ function TopGlyph({ id }: { id: string }) {
         </>
       );
     case 'agents':
-      /* the Locadex mark in the plate's own ink, and the scan energy:
+      /* the Locadex mark in the plate's own ink under the dithered
+         specular sweep (the shimmer block above), and the scan energy:
          an accent trace orbiting the layer round and round (founder
          round), on its own inset ring */
       return (
         <>
           <defs>
+            {/* the glyph's alpha mask. The face-plane transform lives
+                INSIDE the mask now, so the masked rects — the resting
+                ink and the shimmer tiers — sit in slab screen space and
+                the Bayer cells stay square screen pixels. */}
             <mask
               id='v0s-agents-mark'
               maskUnits='userSpaceOnUse'
-              x={-MARK_HALF}
-              y={-MARK_HALF}
-              width={MARK_HALF * 2}
-              height={MARK_HALF * 2}
+              x={-120}
+              y={-80}
+              width={240}
+              height={160}
               style={{ maskType: 'alpha' }}
             >
-              <image
-                href='/brand/locadex-mark.svg'
-                x={-MARK_HALF}
-                y={-MARK_HALF}
-                width={MARK_HALF * 2}
-                height={MARK_HALF * 2}
-              />
+              <g transform={MARK_PLANE}>
+                <image
+                  href='/brand/locadex-mark.svg'
+                  x={-MARK_HALF}
+                  y={-MARK_HALF}
+                  width={MARK_HALF * 2}
+                  height={MARK_HALF * 2}
+                />
+              </g>
             </mask>
+            {SHINE_TIERS.map(({ cover }) => (
+              <pattern
+                key={cover}
+                id={`v0s-ldx-b${cover}`}
+                patternUnits='userSpaceOnUse'
+                width={GLINT_TILE}
+                height={GLINT_TILE}
+              >
+                <path className='v0s-ldx-glint' d={bayerTile(cover)} shapeRendering='crispEdges' />
+              </pattern>
+            ))}
+            {/* the band: one origin-centered window rect per tier, rotated
+                60° (parallel to the plate's projected +y edges) and slid
+                together by FullStack; the markup pose is the reduced-motion
+                and no-JS still */}
+            {SHINE_TIERS.map(({ cover, width }) => (
+              <clipPath key={cover} id={`v0s-ldx-w${cover}`} clipPathUnits='userSpaceOnUse'>
+                <rect
+                  data-ldx-stripe
+                  x={-width / 2}
+                  y={-110}
+                  width={width}
+                  height={220}
+                  transform='rotate(60)'
+                />
+              </clipPath>
+            ))}
           </defs>
           {/* the ring is normalized to 1000 pathLength units, deliberately
               long: the trace's motion is a dash-offset, and offsets that
@@ -447,15 +602,29 @@ function TopGlyph({ id }: { id: string }) {
             strokeDashoffset={300}
             vectorEffect='non-scaling-stroke'
           />
-          <g transform={MARK_PLANE}>
-            <rect
-              className='v0s-g-ldx'
-              x={-MARK_HALF}
-              y={-MARK_HALF}
-              width={MARK_HALF * 2}
-              height={MARK_HALF * 2}
-              mask='url(#v0s-agents-mark)'
-            />
+          <rect
+            className='v0s-g-ldx'
+            x={LDX_X}
+            y={LDX_Y}
+            width={LDX_W}
+            height={LDX_H}
+            mask='url(#v0s-agents-mark)'
+          />
+          {/* the shimmer: static Bayer-tier fills, windowed by the moving
+              band — cells never move, the light does (glyph-field's rule:
+              the screen is fixed, the ramp travels) */}
+          <g className='v0s-ldx-shine' mask='url(#v0s-agents-mark)'>
+            {SHINE_TIERS.map(({ cover }) => (
+              <rect
+                key={cover}
+                x={LDX_X}
+                y={LDX_Y}
+                width={LDX_W}
+                height={LDX_H}
+                fill={`url(#v0s-ldx-b${cover})`}
+                clipPath={`url(#v0s-ldx-w${cover})`}
+              />
+            ))}
           </g>
         </>
       );
@@ -511,6 +680,7 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
       {TOWER_LAYERS.map((layer, i) => {
         const row = TOWER_LAYERS.length - 1 - i;
         const d = depthAt(i);
+        const geo = layer.id === 'agents' ? CAP_PLATE : BASE_PLATE;
         const voice: StyleVars = {
           top: `${((row * STEP) / TOWER_H) * 100}%`,
           zIndex: i + 1,
@@ -534,7 +704,7 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
               <path
                 className={born.has(i) ? 'v0s-leader is-hot' : 'v0s-leader'}
                 data-rail-tap={i}
-                d={TAP_D}
+                d={geo.tap}
                 strokeWidth={RAIL_GAUGE}
                 pathLength={100}
                 strokeDasharray={100}
@@ -543,13 +713,13 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
               {/* the opaque hull — this is what occludes the tower below —
                   then the three face fills keeping the family's upper-left
                   light, then the hairlines, each drawn once */}
-              <path className='v0s-hull' d={HULL} />
-              <path className='v0s-left' d={LEFT} />
-              <path className='v0s-right' d={RIGHT} />
-              <path className='v0s-top' d={TOP} />
-              <path className='v0s-rim' d={HULL} vectorEffect='non-scaling-stroke' />
-              <path className='v0s-front' d={FRONT} vectorEffect='non-scaling-stroke' />
-              <path className='v0s-edge' d={TOP} vectorEffect='non-scaling-stroke' />
+              <path className='v0s-hull' d={geo.hull} />
+              <path className='v0s-left' d={geo.left} />
+              <path className='v0s-right' d={geo.right} />
+              <path className='v0s-top' d={geo.top} />
+              <path className='v0s-rim' d={geo.hull} vectorEffect='non-scaling-stroke' />
+              <path className='v0s-front' d={geo.front} vectorEffect='non-scaling-stroke' />
+              <path className='v0s-edge' d={geo.top} vectorEffect='non-scaling-stroke' />
               <TopGlyph id={layer.id} />
             </svg>
           </div>

@@ -104,7 +104,14 @@ export default function GroupBand() {
 
   return (
     <section className='tc-band ctx-band' id='groups' ref={root}>
-      <PrismaticField className='tc-band-field' preset='1' speed={0.4} params={{ exposureScale: 2600 }} />
+      <PrismaticField
+        className='tc-band-field'
+        preset='1'
+        speed={0.4}
+        params={{ exposureScale: 2600 }}
+        effects={['lens', 'dither', 'chroma']}
+        defaultEffect='lens'
+      />
 
       <div className='tc-band-in'>
         <h2>One group. Every translation.</h2>

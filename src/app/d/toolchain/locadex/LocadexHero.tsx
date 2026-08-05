@@ -103,7 +103,14 @@ export default function LocadexHero() {
 
         <div className='tc-cell is-framed ldx2-cell'>
           <div className='tc-card ldx2-art'>
-            <PrismaticField className='ldx2-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
+            <PrismaticField
+              className='ldx2-field'
+              preset='1'
+              speed={0.5}
+              params={{ exposureScale: 3400 }}
+              effects={['lens', 'dither', 'chroma']}
+              defaultEffect='lens'
+            />
             <div className='tc-term'>
               <div className='tc-term-bar'>
                 <span>locadex — agent</span>

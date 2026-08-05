@@ -93,29 +93,33 @@
 
 .toolchain-root .tcb .v0-stack-fig {
   position: sticky;
-  /* the seat, UNCENTERED (founder: "it can be uncentered" — the 50vh
-     centering formula was what fed the runway math and its voids): the
-     figure rides high, a fixed breath under the 58px nav, and the beats
-     shrink to the story's own rhythm instead of the seat's. The 9vh
-     term keeps a little proportionality on tall viewports without ever
-     re-centering.
+  /* the seat sits the TOWER'S CENTER on the read line (~55% viewport,
+     where every beat's copy crosses when it goes hot): 262 = 242 (half
+     the tower + its top pad) + a small upward bias. THIS is the story
+     locking (founder: "the locking to story sections is broken") — a
+     high fixed seat put the figure a full viewport-third above the hot
+     copy on tall displays, and it fed the settle a descent as deep as
+     vh − 640px (~860px at 1500 tall), so beats 03–04 read against a
+     figure in mid-plunge. Seated at the read line the descent is only
+     0.5vh − 282px (~168px at 900, ~468px at 1500) and begins, sine-slow,
+     exactly at beat 03's read — imperceptible there, finished at rest.
      The endgame ledger: a seat-pinned figure can NEVER put its bottom
      below seat + figure height, so the rest view would strand a black
      run below the tower. The JS settle in FullStack.tsx closes it
      OUTSIDE this seat: across the finale's approach it translates the
      figure from the seat to the column's floor, touching down exactly
-     at the rest view. The seat itself still owns beats 01–03. Two
-     equations survive:
+     at the rest view. Two equations survive:
        release  = seat + figure height + 28px tail — the scroll past
                   the rest view where the native sticky glue takes the
                   figure off the settle's hands (they meet at the same
                   point and velocity, so no pop);
        depth    = 100vh − release — the settle's landing depth, remeasured
                   by FullStack on every refresh (never hardcode it here).
-     A smaller seat DEEPENS the settle's descent — that is the intended
-     trade. Re-run docs/harness/void-probe.mjs at 1440×900 AND 1920×1080
-     whenever the figure, seat, or beat height moves. */
-  top: clamp(64px, 9vh, 96px);
+     A smaller seat DEEPENS the settle's descent — never lower this
+     without re-checking the plunge. Re-run docs/harness/rhythm-probe.mjs
+     at 1440×900, 1920×1080 AND ~2000×1400 whenever the figure, seat, or
+     beat height moves. */
+  top: max(70px, calc(55vh - 262px));
   display: flex;
   justify-content: center;
   /* slim pads above, clearance below: the 44px foot is the end-of-stack
@@ -131,14 +135,20 @@
 }
 
 /* ---------- the solid tower ----------
-   Seven opaque extruded slabs (StackTower), each its own absolutely-
+   Four opaque extruded slabs (StackTower), each its own absolutely-
    seated element inside one aspect-locked frame (the aspect ratio is
    the geometry's, set inline by the component). The slabs' stacking
    order and lift are FullStack's; every surface and hairline is
-   painted here. The plates live in the band's ink family — tops a
-   step above the card, sides a step below it — with 1px white
-   hairline edges; the page accent is spent ONLY on the active slab's
-   top-face contour and its label. */
+   painted here. All four plates are ALWAYS present (founder round 9),
+   so the sheet paints two voices: the DEFAULT rules below are the
+   GHOST — non-hot plates hold roughly a third of the hot presence
+   (fills sunk to the card's own tones, rims and artwork at low alpha)
+   so they read as clearly there without ever competing — and the
+   is-hot block lifts the active plate to the full treatment. Hulls
+   stay opaque in both voices: the occlusion of the tower below is the
+   drawing's depth, never traded for transparency. The page accent is
+   spent on the hot slab's top-face contour, its artwork, and its
+   full-voice leader. */
 
 .toolchain-root .tcb .v0-stack-tower {
   position: relative;
@@ -185,7 +195,8 @@
    bottom rule (founder: "still not reaching complete top and bottom"),
    as a cell-spanning element the sticky figure travels along. The
    accent fill covers it exactly — same x, same width — so the rail
-   reads as one line, blue as far as the stack has built. Its box
+   reads as one line, blue as far as the circuit is lit (the whole
+   tower, once the entrance has risen). Its box
    re-derives the overlay SVG's rail position in cell space: the tower
    is centered at width W = min(100% − 40px fig pads, 392px); the
    rail's left edge sits 8.15/214.133 of W right of the tower's left
@@ -203,29 +214,31 @@
   pointer-events: none;
 }
 
-/* the rail's live fill: the build's accent, filled to the newest
-   plate's tap (FullStack scales it bottom-up), covering the track
-   below that point. The ink is the shared opaque token, so the taps'
-   stubs lying on it are pixel-identical — nothing doubles. */
+/* the rail's live fill: the entrance's accent, risen once to the top
+   plate's tap and holding, covering the track below that point. The
+   ink is the shared opaque token, so the taps' stubs lying on it are
+   pixel-identical — nothing doubles. */
 .toolchain-root .tcb .v0s-rail-fill {
   fill: var(--v0s-rail-ink);
 }
 
 /* the plate: opaque hull under three face fills, lit from the
    family's upper-left — top lightest, front-left mid, front-right
-   darkest (the card behind is #101010, so the sides drop below it
-   and the top rises above it) */
+   darkest (the card behind is #101010, so the sides drop below it).
+   These are the GHOST tones: the resting faces sit a hair around the
+   card's own ink, present but subordinate; the is-hot block below
+   lifts the lit plate a full step above them. */
 .toolchain-root .tcb .v0s-hull {
   fill: #090909;
 }
 
 .toolchain-root .tcb .v0s-top {
-  fill: #151515;
+  fill: #111111;
   transition: fill 0.3s ease;
 }
 
 .toolchain-root .tcb .v0s-left {
-  fill: #0d0d0d;
+  fill: #0c0c0c;
   transition: fill 0.3s ease;
 }
 
@@ -237,23 +250,25 @@
 /* the hairlines, each drawn once: silhouette rim, the one interior
    front edge, and the top-face contour — the accent's only seat. The
    two alphas step brighter with depth (custom properties set per
-   plate by StackTower), the original stack's stroke voice. */
+   plate by StackTower), the original stack's stroke voice — ghosts
+   keep the depth stepping at half strength, so the resting tower
+   still reads front-lit without outshining the hot plate. */
 .toolchain-root .tcb .v0s-rim {
   fill: none;
-  stroke: rgba(255, 255, 255, var(--v0s-rim-a, 0.12));
+  stroke: rgba(255, 255, 255, calc(var(--v0s-rim-a, 0.12) * 0.5));
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
 
 .toolchain-root .tcb .v0s-front {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.08);
+  stroke: rgba(255, 255, 255, 0.05);
   stroke-width: 1;
 }
 
 .toolchain-root .tcb .v0s-edge {
   fill: none;
-  stroke: rgba(255, 255, 255, var(--v0s-edge-a, 0.14));
+  stroke: rgba(255, 255, 255, calc(var(--v0s-edge-a, 0.14) * 0.5));
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
@@ -264,13 +279,24 @@
    and the gauge comes from the markup (strokeWidth = RAIL_GAUGE, in
    drawing units, so it scales with the figure exactly like the fill —
    no stroke-width here, or px would override it). The path lives in
-   its slab's SVG, so it rides the plate through lift and build. No
+   its slab's SVG, so it rides the plate through lift and entrance. No
    caption at its end anymore (founder: no words by the diagram — the
-   plates' artwork identifies them). */
+   plates' artwork identifies them). Ghost leaders keep the ONE ink at
+   a third of its voice — translucent accent over the opaque accent
+   fill composites to the fill's exact pixels, so the stub never reads
+   doubled and only the bend and run quiet down — and the hot plate's
+   leader takes the full voice with it. */
 .toolchain-root .tcb .v0s-leader {
   fill: none;
   stroke: var(--v0s-rail-ink);
-  transition: stroke 0.3s ease;
+  opacity: 0.32;
+  transition:
+    opacity 0.3s ease,
+    stroke 0.3s ease;
+}
+
+.toolchain-root .tcb .v0s-leader.is-hot {
+  opacity: 1;
 }
 
 /* ---------- the top-face artifacts ----------
@@ -278,10 +304,12 @@
    pair wrapping its lines, context's threads flowing into a raised
    <T> under accent waves, translations' source fanning to its locale
    runs (the payload chip the one accent), and the agents plate's
-   Locadex mark under an orbiting accent trace. Flat marks and wires
-   stay in the plate's own ink. */
+   Locadex mark under its dithered shimmer and an orbiting accent
+   trace. Flat marks and wires stay in the plate's own ink; every
+   value here is the GHOST voice — the is-hot block lifts the active
+   plate's artwork to full ink. */
 .toolchain-root .tcb .v0s-g-mark {
-  fill: rgba(255, 255, 255, 0.13);
+  fill: rgba(255, 255, 255, 0.12);
   transition: fill 0.3s ease;
 }
 
@@ -293,7 +321,7 @@
    and orbit) */
 .toolchain-root .tcb .v0s-g-glyph {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.6);
+  stroke: rgba(255, 255, 255, 0.3);
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -305,41 +333,59 @@
 .toolchain-root .tcb .v0s-ctx-wire,
 .toolchain-root .tcb .v0s-fan-wire {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.2);
+  stroke: rgba(255, 255, 255, 0.11);
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
 
 /* the waves: accent pulses riding the context wires into the <T>
-   (FullStack loops the dash while the plate is built; the markup's
-   offset leaves a resting segment for no-JS and reduced motion) —
-   half voice until the beat is hot */
+   (FullStack loops the dash whenever the band is on screen; the
+   markup's offset leaves a resting segment for no-JS and reduced
+   motion) — a ghost murmur until the beat is hot */
 .toolchain-root .tcb .v0s-ctx-wave {
   fill: none;
   stroke: var(--iso-accent);
   stroke-width: 1.5;
-  opacity: 0.5;
+  opacity: 0.16;
   transition: opacity 0.3s ease;
 }
 
 /* the agents plate's scan energy: the orbiting accent trace, on its
-   own ring inset from the rim so it never doubles the hot edge */
+   own ring inset from the rim so it never doubles the hot edge —
+   ghosted with the rest of the plate until its beat */
 .toolchain-root .tcb .v0s-orbit {
   fill: none;
   stroke: var(--iso-accent);
   stroke-width: 1.75;
+  opacity: 0.22;
+  transition: opacity 0.3s ease;
 }
 
 /* the Locadex mark on the agents slab, in the plate's own ink until
    its beat lets the accent pick it out */
 .toolchain-root .tcb .v0s-g-ldx {
-  fill: rgba(255, 255, 255, 0.3);
+  fill: rgba(255, 255, 255, 0.16);
+  transition: fill 0.3s ease;
+}
+
+/* the mark's shimmer (StackTower's Bayer band): silver-white glint
+   cells — brushed metal catching light — quieted to the ghost voice
+   with the rest of the plate, and tinted toward the accent when the
+   agents beat is hot so the metal and the lit mark read as one
+   material */
+.toolchain-root .tcb .v0s-ldx-shine {
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.toolchain-root .tcb .v0s-ldx-glint {
+  fill: #e9edf2;
   transition: fill 0.3s ease;
 }
 
 .toolchain-root .tcb .v0s-g-chip-hull {
-  fill: #1a1a1a;
-  stroke: rgba(255, 255, 255, 0.14);
+  fill: #141414;
+  stroke: rgba(255, 255, 255, 0.08);
   stroke-width: 0.6;
   transition:
     fill 0.3s ease,
@@ -347,23 +393,25 @@
 }
 
 .toolchain-root .tcb .v0s-g-chip-top {
-  fill: #222222;
+  fill: #181818;
   transition: fill 0.3s ease;
 }
 
 /* the payload chip: accent-tinted faces under an accent contour,
-   at half strength until the runtime slab's beat lights it */
+   a ghost tint until the translations beat lights it */
 .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-hull {
-  fill: color-mix(in srgb, var(--iso-accent) 14%, #101010);
-  stroke: color-mix(in srgb, var(--iso-accent) 45%, transparent);
+  fill: color-mix(in srgb, var(--iso-accent) 8%, #101010);
+  stroke: color-mix(in srgb, var(--iso-accent) 24%, transparent);
 }
 
 .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-top {
-  fill: color-mix(in srgb, var(--iso-accent) 26%, #101010);
+  fill: color-mix(in srgb, var(--iso-accent) 15%, #101010);
 }
 
-/* the hot slab: full ink, brighter rim, and the accent — top edge
-   and label only (FullStack raises its z and lifts it) */
+/* the hot slab: the FULL treatment — faces a full step above the
+   ghosts, bright rim, and the accent on the top-face contour
+   (FullStack raises its z and lifts it; its leader's full voice rides
+   the same class on the tap path) */
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-top {
   fill: #1b1b1b;
 }
@@ -388,12 +436,9 @@
   stroke: var(--iso-accent);
 }
 
-/* no hot step for leaders: every tap is the rail's one pure-accent ink
-   (founder round 7), so the hot plate's leader differs only by riding
-   its lifted plate — its long stub keeps it rooted in the fill */
-
 /* the hot slab's artwork lifts to full ink; the payload chip takes
-   the whole accent */
+   the whole accent, the orbit and waves their full energy, and the
+   shimmer its accent-tinted metal */
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark {
   fill: rgba(255, 255, 255, 0.42);
 }
@@ -411,8 +456,20 @@
   opacity: 1;
 }
 
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-orbit {
+  opacity: 1;
+}
+
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-ldx {
   fill: var(--iso-accent);
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-ldx-shine {
+  opacity: 1;
+}
+
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-ldx-glint {
+  fill: color-mix(in srgb, #ffffff 70%, var(--iso-accent));
 }
 
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-hull {
@@ -458,7 +515,10 @@
      the rest view with no per-viewport override. The uncentered seat
      above no longer demands a runway premium; the beats separate by
      rhythm alone, no dividers (founder round 6). */
-  min-height: clamp(240px, 42vh, 560px);
+  /* the 600px cap keeps tall-viewport gaps in check while still clearing
+     the finale's 58%-lock-in bound (windowTop at rest = (vh − 74 − H)/vh
+     stays under 0.58 through ~1600-tall viewports) */
+  min-height: clamp(240px, 42vh, 600px);
   display: flex;
   flex-direction: column;
   justify-content: center;

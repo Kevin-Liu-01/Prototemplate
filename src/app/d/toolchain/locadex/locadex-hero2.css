@@ -268,3 +268,14 @@
     border-left: 0;
   }
 }
+
+/* ============================================================
+   FX MENU CLEARANCE — the singularity's effects chips dock at
+   the plate's bottom-right, inside the terminal's lower margin.
+   The transcript keeps a deeper floor so its last line ("awaiting
+   review" + caret) never runs under the chips; the chips then
+   read as the window's own status row.
+   ============================================================ */
+.toolchain-root .ldx-hero-sec .ldx2-art .tc-term-body {
+  padding-bottom: 48px;
+}
