@@ -304,11 +304,10 @@
 
 /* The mounted section trades its page-scale padding for the cell's, and
    never draws the tc-sec bottom rule the grid seam already provides. The
-   18px bottom is the other half of the band's closing ledger (see the
-   .tcb-in tail above): the foot bar's own inset already breathes, so the
-   cell adds only a card-step before the band tail takes over. */
+   card-step is the SAME above and below the frame (founder note: the two
+   framing rows read as one gauge). */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr {
-  padding: 14px 24px 18px;
+  padding: 14px 24px;
   border-bottom: 0;
 }
 

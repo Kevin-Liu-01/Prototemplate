@@ -166,10 +166,12 @@ type Pop = {
   home?: boolean;
 };
 
-/* The right rail reads top-to-bottom between iad's row and sin's row —
-   fra and nrt sit inside that span, so the ledger lands in latency order. */
+/* The left rail reads iad then fra — the home PoP labels on its own side
+   of the sphere (founder note), one row step below iad, its elbow just
+   clear of the limb (left edge at y=82 is x≈89.2). The right rail keeps
+   nrt/sin/syd top-to-bottom, still in latency order. */
 const POPS: readonly Pop[] = [
-  { code: 'fra', ms: 12, lat: 40, lon: -18, elbow: [272, 108], tickTo: 284, iconX: 288, textX: 300, home: true },
+  { code: 'fra', ms: 12, lat: 40, lon: -18, elbow: [88, 82], tickTo: 76, iconX: 3, textX: 15, home: true },
   { code: 'iad', ms: 21, lat: 40, lon: -54, elbow: [88, 52], tickTo: 76, iconX: 3, textX: 15 },
   { code: 'nrt', ms: 34, lat: 40, lon: 54, elbow: [272, 78], tickTo: 284, iconX: 288, textX: 300 },
   { code: 'sin', ms: 41, lat: 0, lon: 54, elbow: [272, 140], tickTo: 284, iconX: 288, textX: 300 },

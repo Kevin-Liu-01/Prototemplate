@@ -12,8 +12,15 @@ import {
   SiGithub,
   SiGoogledrive,
   SiMarkdown,
+  SiMdx,
+  SiMintlify,
+  SiNextdotjs,
+  SiNodedotjs,
   SiNotion,
+  SiPython,
+  SiReact,
   SiSanity,
+  SiTanstack,
 } from '@icons-pack/react-simple-icons';
 
 import {
@@ -589,6 +596,67 @@ function IntegrateDiagram() {
   );
 }
 
+/* ---- the works ledgers: the copy cells' quiet evidence ------------------ */
+
+type Work = {
+  name: string;
+  Icon?: ComponentType<MarkProps>;
+  /** Marks with no monochrome component render a saved asset as an alpha
+      mask over currentColor — the head watermark's own treatment. */
+  mask?: string;
+};
+
+/** Row 1's marks: the stacks the agent works in — the toolchain's own
+    framework roster (stacks.ts), in its order. React Native takes the saved
+    plated badge, as on the framework tabs: the bare atom is pixel-identical
+    to React's at this size, and the two sit adjacent here too. */
+const STACK_WORKS: readonly Work[] = [
+  { name: 'Next.js', Icon: SiNextdotjs },
+  { name: 'React', Icon: SiReact },
+  { name: 'React Native', mask: '/logos/react-native-no-bg.svg' },
+  { name: 'TanStack', Icon: SiTanstack },
+  { name: 'Node.js', Icon: SiNodedotjs },
+  { name: 'Python', Icon: SiPython },
+];
+
+/** Row 2's marks name what the diagram's trimmed 'CMS' and 'Docs' nodes
+    stand for — the CMSes first, then the docs formats. */
+const SOURCE_WORKS: readonly Work[] = [
+  { name: 'Notion', Icon: SiNotion },
+  { name: 'Contentful', Icon: SiContentful },
+  { name: 'Sanity', Icon: SiSanity },
+  { name: 'Mintlify', Icon: SiMintlify },
+  { name: 'Markdown', Icon: SiMarkdown },
+  { name: 'MDX', Icon: SiMdx },
+];
+
+/** A captioned grid of marks seated at the copy cell's foot (margin-top
+    auto — the cell's slack becomes the air between sub and ledger). Marks
+    at caption scale in the muted steps; no rules of its own — the row owns
+    every line around this cell. */
+function WorksLedger({ caption, works }: { caption: string; works: readonly Work[] }) {
+  return (
+    <div className='v0-ldx-works'>
+      <span className='v0-ldx-works-cap'>{caption}</span>
+      <ul className='v0-ldx-works-grid'>
+        {works.map(({ name, Icon, mask }) => {
+          const seat: StyleVars | undefined = mask ? { '--mark': `url(${mask})` } : undefined;
+          return (
+            <li className='v0-ldx-work' key={name}>
+              {Icon ? (
+                <Icon className='v0-ldx-work-ic' color='currentColor' aria-hidden />
+              ) : (
+                <i className='v0-ldx-work-ic is-mask' style={seat} aria-hidden />
+              )}
+              {name}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 export default function V0Locadex() {
   const root = useRef<HTMLElement>(null);
 
@@ -767,7 +835,9 @@ export default function V0Locadex() {
           framed={false}
           title='Run Locadex.'
           sub='Connect your GitHub repository to our localization agent. Locadex internationalizes your code and keeps your app localized on every update. Just merge a PR.'
-        />
+        >
+          <WorksLedger caption='Works with every stack' works={STACK_WORKS} />
+        </BentoCell>
 
         {/* is-bleed: the card sheds its padding, so the iso's permanently-dark
             ground runs to the card's own frame — the cell owns the frame, the
@@ -793,7 +863,9 @@ export default function V0Locadex() {
           framed={false}
           title='Any integration.'
           sub='Just a few clicks to integrate with GitHub, Google Drive, your CMS, or your docs.'
-        />
+        >
+          <WorksLedger caption='Works with every source' works={SOURCE_WORKS} />
+        </BentoCell>
       </div>
     </section>
   );

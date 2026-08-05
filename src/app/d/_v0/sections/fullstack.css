@@ -514,13 +514,14 @@
   stroke-width: 1;
 }
 
-/* ---------- the scan's evidence: diffs on the code plate ----------
-   The Locadex iso's diff voices verbatim (locadex.css .v0-ldx-chip
-   .is-add/.is-del — the dark band's diff inks, hardcoded because this
-   ground never remaps): del and add slats at roughly half the accent
-   chip's presence, signs at fuller strength so the tiny flat marks
-   read. Hidden at rest — FullStack materializes them while the agents
-   beat is hot; no-JS and reduced motion never see them. */
+/* ---------- the capstone's diff hunk ----------
+   One hunk in the tower — the capstone's (founder round: the diff story
+   concentrates at the top plate). The slats speak the band's own
+   one-accent language, never the iso's red/green pair: additions take
+   the page accent at the payload chip's mix strengths, deletions the
+   dim ink, and each row's margin sign a step fuller than its slat so
+   the tiny flat marks read. Hidden at rest — FullStack scrubs them in
+   across the agents dwell; no-JS and reduced motion never see them. */
 
 .toolchain-root .tcb .v0s-diff {
   opacity: 0;
@@ -532,29 +533,29 @@
 }
 
 .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-hull {
-  fill: color-mix(in srgb, #85cfa1 12%, #101010);
-  stroke: color-mix(in srgb, #85cfa1 38%, transparent);
+  fill: color-mix(in srgb, var(--iso-accent) 14%, #101010);
+  stroke: color-mix(in srgb, var(--iso-accent) 40%, transparent);
 }
 
 .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-top {
-  fill: color-mix(in srgb, #85cfa1 21%, #101010);
+  fill: color-mix(in srgb, var(--iso-accent) 26%, #101010);
 }
 
 .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-hull {
-  fill: color-mix(in srgb, #d29090 10%, #101010);
-  stroke: color-mix(in srgb, #d29090 32%, transparent);
+  fill: color-mix(in srgb, #ffffff 7%, #101010);
+  stroke: rgba(255, 255, 255, 0.2);
 }
 
 .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-top {
-  fill: color-mix(in srgb, #d29090 18%, #101010);
+  fill: color-mix(in srgb, #ffffff 12%, #101010);
 }
 
 .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-sign {
-  fill: color-mix(in srgb, #85cfa1 78%, #101010);
+  fill: var(--iso-accent);
 }
 
 .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-sign {
-  fill: color-mix(in srgb, #d29090 74%, #101010);
+  fill: rgba(255, 255, 255, 0.55);
 }
 
 /* ---------- the copy rail: four beats, bottom of the stack first.
@@ -591,6 +592,16 @@
   justify-content: center;
   padding: clamp(24px, 3vw, 40px) clamp(22px, 2.6vw, 36px);
   transition: opacity 0.32s ease;
+}
+
+/* Beat 01 runs one breath longer than the uniform window (founder: "we
+   should be able to scroll down a littleeee further before the diagram
+   component starts moving") — the assembled code plate holds while the
+   reader scrolls, and beat 02's window reaches the read line ~10vh
+   later. Only the FIRST window stretches; the rhythm of the other three
+   and the finale/runway math above stay untouched. */
+.toolchain-root .tcb .v0-stack-beat:first-child {
+  min-height: clamp(290px, 58vh, 780px);
 }
 
 /* THE AGENTS DWELL (founder: "we make this go stay on agents a lil
@@ -683,6 +694,20 @@
 .toolchain-root .tcb .v0-stack-ic {
   flex: none;
   color: var(--iso-accent);
+}
+
+/* the agents tag wears the product's own mark, not a stock bot glyph
+   (founder): the brand asset as an alpha mask over currentColor — the
+   Locadex head watermark's treatment (locadex.css) at tag scale, so the
+   .v0-stack-ic accent lands on it exactly as on the lucide icons. The
+   asset's 500² canvas pads its 199×222 glyph, so `contain` would draw
+   the mark at ~44% of the box; the 225.23% mask-size is 500/222 — the
+   GLYPH spans the 16px box the lucide icons set, never the padding. */
+.toolchain-root .tcb .v0-stack-ldx {
+  display: inline-block;
+  -webkit-mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
+  mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
+  background-color: currentColor;
 }
 
 .toolchain-root .tcb .v0-stack-name {

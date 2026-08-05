@@ -313,32 +313,18 @@ const FAN_WIRES: readonly string[] = [
   'M-12 -25C-2 -25 -12 18.5 2 18.5',
 ];
 
-/* ---- the scan's evidence: diffs written into the code plate ---------------
-   Founder: "while its scanning, make diffs start appearing in the bottom
-   layer on the left side of the layer" — Locadex writing changes into the
-   codebase. The device is the Locadex iso's diff hunk (Locadex.tsx
-   DIFF_ROWS), ported compactly: thin extruded slats — a del hunk over an
-   add hunk, ragged widths, each signed +/− in its margin — seated on the
-   LEFT region of the code plate's top face, in the plan pocket below the
-   '<' bracket chip (plan y ≥ 18 clears the chip's y ≤ 12 footprint; the
-   slats sit nearer the camera, so painter's order occludes correctly).
-   FullStack materializes them one by one while the agents beat is hot —
-   the same lifecycle as the beam — and they rest hidden (fullstack.css),
-   so no-JS, reduced motion, and every other beat never see them. */
-const DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
-  { w: 14, tone: 'del' },
-  { w: 18, tone: 'del' },
-  { w: 17, tone: 'add' },
-  { w: 11, tone: 'add' },
-  { w: 19, tone: 'add' },
-];
-const DIFF_X = -42;
-const DIFF_Y0 = 18;
+/* ---- the diff slat gauge ---------------------------------------------------
+   The Locadex iso's diff hunk device (Locadex.tsx DIFF_ROWS), ported
+   compactly: thin extruded slats, a del hunk over an add hunk, ragged
+   widths, each signed +/− in its margin. The tower carries ONE hunk — the
+   capstone's (the CAP_DIFF block below): the diff story concentrates at
+   the top plate (founder round: the top layer's diffs take the signs, the
+   bottom layer's hunk leaves), so the code plate reads as source only —
+   brackets and code bands, no add/del semantics. */
 const DIFF_STEP = 5.5;
 const DIFF_GAP = 4;
 const DIFF_D = 3;
 const DIFF_H = 1.4;
-const SIGN_CX = -46.5;
 const SIGN_ARM = 1.7;
 const SIGN_T = 0.55;
 
@@ -359,15 +345,15 @@ const ORBIT_D = CAP_PLATE.top;
 /* ---- the capstone's own diffs: the agent's work, scrubbed by scroll ------
    Founder addendum: "make locadex on teh top left side in a raised square
    as well, and then a bunch of diffs being generated as we scroll on it."
-   The same slat device as the code plate's hunk, seated across the
-   capstone face CLEAR of the mark's chip (plan x ≥ −2 vs the chip's
-   ≤ −10), del hunk over add hunk, ragged. FullStack SCRUBS their reveal
+   The slat device above, seated across the capstone face CLEAR of the
+   mark's chip (rows at plan x ≥ 3, signs at ≥ −3.2, vs the chip's
+   ≤ −8), del hunk over add hunk, ragged. FullStack SCRUBS their reveal
    to scroll — beat 04's lock-in through the band's rest view — so the
    hunk grows as the reader travels the dwell and regenerates in reverse
-   on the way back. No margin signs at this scale: the capstone face also
-   carries the chip, the shimmer, and the edge glints, and the ±1.7-unit
-   marks read as noise beside them (the code plate keeps its signed
-   hunk). */
+   on the way back. Every row is SIGNED in its margin (founder round: the
+   top layer's diffs take the pluses and minuses — the tower's whole diff
+   story lives on this plate now), the sign column riding the air between
+   the chip and the hunk. */
 const CAP_DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
   { w: 16, tone: 'del' },
   { w: 20, tone: 'del' },
@@ -377,8 +363,11 @@ const CAP_DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
   { w: 20, tone: 'add' },
   { w: 15, tone: 'add' },
 ];
-const CAP_DIFF_X = -2;
+const CAP_DIFF_X = 3;
 const CAP_DIFF_Y0 = -24;
+/** The sign column's center, the code hunk's old rhythm kept: 4.5 plan
+    units left of the rows' start, 2.8 clear of both neighbours. */
+const CAP_SIGN_CX = CAP_DIFF_X - 4.5;
 
 type GlyphChipProps = {
   x: number;
@@ -408,13 +397,17 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
     the tower's own GlyphChip extrusion, with the mask-mark lying in the
     CHIP'S top face and taking the surface's ink. The asset's 500²
     viewBox pads its glyph — the drawn form spans only 199×222 of it —
-    so the seat is sized from the GLYPH: an 18-plan-unit visible mark
-    inside the 26-unit chip (4-unit margins), which the padding inflates
-    to a ~45-unit image box the mask crops back. */
-const CAP_CHIP_X = -36;
-const CAP_CHIP_Y = -13;
-const CAP_CHIP_SIZE = 26;
-const MARK_GLYPH_W = 18;
+    so the seat is sized from the GLYPH: a 24-plan-unit visible mark
+    inside the 32-unit chip (4-unit margins; founder round: the mark
+    grows — chip and glyph stepped up together from 26/18, the chip's
+    near corner still 5 plan units clear of the capstone's edge), which
+    the padding inflates to a ~60-unit image box the mask crops back.
+    The LDX cover below and everything the shimmer derives from it
+    follow this seat; move or resize the chip and they recompute. */
+const CAP_CHIP_X = -40;
+const CAP_CHIP_Y = -16;
+const CAP_CHIP_SIZE = 32;
+const MARK_GLYPH_W = 24;
 const MARK_HALF = (MARK_GLYPH_W * (500 / 199)) / 2;
 /** The mark lies in the chip's top face, anchored at the chip's center. */
 const MARK_PLANE = plane(THICK + CHIP_H, CAP_CHIP_X + CAP_CHIP_SIZE / 2, CAP_CHIP_Y + CAP_CHIP_SIZE / 2);
@@ -491,15 +484,15 @@ const SHINE_TIERS: readonly { cover: number; width: number }[] = [
   { cover: 1, width: 36 },
 ];
 
-/** The masked rects' screen-space cover: the 18-unit glyph on the chip's
-    top face projects to x [-36.4, -3.4], y [-28.7, -9.6] (center
-    (-19.9, -19.2)); these bounds pad that, and the mask crops the rest
+/** The masked rects' screen-space cover: the 24-unit glyph on the chip's
+    top face projects to x [-42.8, 1.2], y [-32.4, -7.0] (center
+    (-20.8, -19.7)); these bounds pad that, and the mask crops the rest
     back to the mark. The shimmer's travel derives from these below, so
     it breathes with the mark's seat and size. */
-const LDX_X = -39;
-const LDX_Y = -31;
-const LDX_W = 39;
-const LDX_H = 25;
+const LDX_X = -46;
+const LDX_Y = -35;
+const LDX_W = 51;
+const LDX_H = 31;
 
 /* The sweep's endpoints, DERIVED from the masked cover and the band's
    own rotated geometry (founder round 10: "make it cross the whole
@@ -632,30 +625,6 @@ function TopGlyph({ id }: { id: string }) {
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
           <GlyphChip x={-46} y={-12} w={24} d={24} h={CHIP_H} />
           <GlyphChip x={22} y={-12} w={24} d={24} h={CHIP_H} />
-          {/* the diffs the scan writes (the DIFF block above): drawn after
-              the bracket chip they sit in front of, hidden until FullStack
-              materializes them during the agents beat */}
-          {DIFF_ROWS.map(({ w, tone }, i) => {
-            const y = DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
-            const cy = y + DIFF_D / 2;
-            const box: IsoBox = { x: DIFF_X, y, z: THICK, w, d: DIFF_D, h: DIFF_H };
-            const sign =
-              markPath(SIGN_CX - SIGN_ARM, cy - SIGN_T, SIGN_ARM * 2, SIGN_T * 2) +
-              (tone === 'add'
-                ? ` ${markPath(SIGN_CX - SIGN_T, cy - SIGN_ARM, SIGN_T * 2, SIGN_ARM * 2)}`
-                : '');
-            return (
-              <g
-                key={`diff-${i}`}
-                className={`v0s-diff is-${tone}`}
-                data-code-diff={i}
-              >
-                <path className='v0s-diff-sign' d={sign} />
-                <path className='v0s-diff-hull' d={roundedPolygon(silhouette(box), 1.2)} />
-                <path className='v0s-diff-top' d={roundedPolygon(topFace(box), 1.2)} />
-              </g>
-            );
-          })}
           <g transform={plane(CHIP_TOP, -34, 0)}>
             <path className='v0s-g-glyph' d={chevron(0, 0, -1)} vectorEffect='non-scaling-stroke' />
           </g>
@@ -840,12 +809,20 @@ function TopGlyph({ id }: { id: string }) {
             ))}
           </g>
           {/* the agent's ongoing work: the capstone hunk, scrubbed in by
-              scroll (FullStack drives [data-cap-diff]; hidden at rest) */}
+              scroll (FullStack drives [data-cap-diff]; hidden at rest),
+              each row signed +/− in its margin (the CAP_DIFF block) */}
           {CAP_DIFF_ROWS.map(({ w, tone }, i) => {
             const y = CAP_DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
+            const cy = y + DIFF_D / 2;
             const box: IsoBox = { x: CAP_DIFF_X, y, z: THICK, w, d: DIFF_D, h: DIFF_H };
+            const sign =
+              markPath(CAP_SIGN_CX - SIGN_ARM, cy - SIGN_T, SIGN_ARM * 2, SIGN_T * 2) +
+              (tone === 'add'
+                ? ` ${markPath(CAP_SIGN_CX - SIGN_T, cy - SIGN_ARM, SIGN_T * 2, SIGN_ARM * 2)}`
+                : '');
             return (
               <g key={`cdiff-${i}`} className={`v0s-diff is-${tone}`} data-cap-diff={i}>
+                <path className='v0s-diff-sign' d={sign} />
                 <path className='v0s-diff-hull' d={roundedPolygon(silhouette(box), 1.2)} />
                 <path className='v0s-diff-top' d={roundedPolygon(topFace(box), 1.2)} />
               </g>

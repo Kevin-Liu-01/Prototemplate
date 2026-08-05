@@ -224,7 +224,6 @@ export default function V0FullStack() {
       const stripes2 = gsap.utils.toArray<SVGPathElement>('[data-ldx-stripe2]', scope);
       const scan = scope.querySelector<SVGGElement>('[data-agents-scan]');
       const scanSweep = scope.querySelector<SVGGElement>('[data-agents-sweep]');
-      const diffs = gsap.utils.toArray<SVGGElement>('[data-code-diff]', scope);
       const capDiffs = gsap.utils.toArray<SVGGElement>('[data-cap-diff]', scope);
       if (slabs.length === 0 || beats.length === 0) return;
 
@@ -389,30 +388,6 @@ export default function V0FullStack() {
               }
             )
           : null;
-        /* the scan's evidence (founder: "while its scanning, make diffs
-           start appearing in the bottom layer on the left side"): the
-           code plate's diff slats materialize one by one — a settle-in
-           like the tower's own slab arrivals, staggered so each ~2.5s
-           beam pass reveals one or two — while the agents beat is hot.
-           play(0) on each activation re-runs the write from a clean
-           plate; going cold fades whatever has appeared back out. */
-        const diffTl = diffs.length > 0
-          ? (() => {
-              const tl = gsap.timeline({
-                paused: true,
-                defaults: { overwrite: 'auto' },
-              });
-              diffs.forEach((slat, i) => {
-                tl.fromTo(
-                  slat,
-                  { autoAlpha: 0, y: -7 },
-                  { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
-                  0.9 + i * 1.05
-                );
-              });
-              return tl;
-            })()
-          : null;
         /* the beam's shown/hidden ledger, so repeated syncs never restart
            a fade mid-flight */
         let scanShown = false;
@@ -450,7 +425,6 @@ export default function V0FullStack() {
                 ease: 'power2.out',
                 overwrite: 'auto',
               });
-              diffTl?.play(0);
             } else {
               gsap.to(scan, {
                 autoAlpha: 0,
@@ -460,17 +434,6 @@ export default function V0FullStack() {
                 overwrite: 'auto',
                 onComplete: () => sweepLoop.pause(),
               });
-              /* freeze the write, then fade the written slats out; the
-                 next activation's play(0) re-inits them hidden */
-              diffTl?.pause();
-              if (diffs.length > 0) {
-                gsap.to(diffs, {
-                  autoAlpha: 0,
-                  duration: 0.22,
-                  ease: 'power2.in',
-                  overwrite: 'auto',
-                });
-              }
             }
           }
         };
@@ -526,30 +489,34 @@ export default function V0FullStack() {
               /* arriving: the plate drops in from above its seat,
                  bottom-up; once it settles, its tap DRAWS itself — out of
                  the layer, through the elbow, into the rail (founder) —
-                 timed so the fill's tip has passed this tap before the
-                 draw lands on it. autoRound off: rounded dash offsets
-                 step, fractional ones glide (see the orbit's note). */
+                 and on the arrival the draw begins only AFTER the fill's
+                 tip has passed its junction (founder: the blue extends up
+                 first, THEN the bend flows out of the rail — the two
+                 never meet at the same spot). autoRound off: rounded dash
+                 offsets step, fractional ones glide (see the orbit's
+                 note). */
               const at = entered * 0.14;
               tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, at);
               if (tap) {
                 tl.to(
                   tap,
                   { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
-                  rising ? Math.max(at + 0.5, tipAt(i) - 0.1) : at + 0.5
+                  rising ? Math.max(at + 0.5, tipAt(i) + 0.07) : at + 0.5
                 );
               }
               entered += 1;
             } else if (visible) {
               /* staying: glide to the new seat. The tap normalizes drawn
-                 — parked at −100 it draws RAIL-OUTWARD (the bend turning
-                 off the tip and connecting), and on the arrival that draw
-                 waits for the tip to pass its tap point */
+                 — parked at −100 it draws RAIL-OUTWARD (the bend flowing
+                 off the already-blue track), and on the arrival that draw
+                 starts a breath AFTER the tip clears its tap point — the
+                 rise reads whole before any bend leaves the rail */
               tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.55, ease: 'power3.out' }, 0);
               if (tap) {
                 tl.to(
                   tap,
                   { strokeDashoffset: 0, duration: 0.3, autoRound: false },
-                  rising ? tipAt(i) : 0
+                  rising ? tipAt(i) + 0.07 : 0
                 );
               }
             } else {
@@ -702,11 +669,8 @@ export default function V0FullStack() {
           orbitLoop?.kill();
           for (const loop of shineLoops) loop.kill();
           sweepLoop?.kill();
-          diffTl?.kill();
           if (scan) gsap.set(scan, { clearProps: 'opacity,visibility' });
           if (scanSweep) gsap.set(scanSweep, { clearProps: 'transform' });
-          if (diffs.length > 0)
-            gsap.set(diffs, { clearProps: 'opacity,visibility,transform' });
           if (capDiffs.length > 0)
             gsap.set(capDiffs, { clearProps: 'opacity,visibility,transform' });
           const dashed: SVGPathElement[] = orbit ? [...waves, orbit] : [...waves];
@@ -820,8 +784,8 @@ export default function V0FullStack() {
               {/* the agents dwell's runway, as structural flow INSIDE the
                   rail list — never cell padding: the finale beat is sticky
                   (fullstack.css) and sticky travel is bounded by the
-                  PARENT'S content box, so this spacer is the room "Make it
-                  automatic." spends staying with the viewer while the scan
+                  PARENT'S content box, so this spacer is the room "Automate
+                  it." spends staying with the viewer while the scan
                   beam plays (founder: "make the 'make it automatic'
                   section stay with you for that 260 px"). */}
               <li className='v0-stack-runway' aria-hidden />

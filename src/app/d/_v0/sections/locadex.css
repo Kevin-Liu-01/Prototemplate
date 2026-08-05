@@ -307,6 +307,59 @@
   fill: rgba(255, 255, 255, 0.9);
 }
 
+/* ---------- the works ledgers: the copy cells' quiet evidence ----------
+   A captioned grid of marks seated at each copy cell's foot: margin-top
+   auto spends the cell's slack as air between the sub and the ledger, so
+   the words keep the top and the evidence holds the floor. Everything
+   rides the paper tokens (they remap in dark); marks sit one muted step
+   under their names; no rules — the row owns every line here. */
+.toolchain-root .v0-ldx-works {
+  margin-top: auto;
+  padding-top: clamp(28px, 3.2vw, 40px);
+}
+
+.toolchain-root .v0-ldx-works-cap {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .v0-ldx-works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 18px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 46ch;
+}
+
+.toolchain-root .v0-ldx-work {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .v0-ldx-work-ic {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--tc-ink-3);
+}
+
+/* marks with no monochrome component (the saved React Native badge) render
+   their asset as an alpha mask over currentColor — the watermark's way */
+.toolchain-root .v0-ldx-work-ic.is-mask {
+  -webkit-mask: var(--mark) center / contain no-repeat;
+  mask: var(--mark) center / contain no-repeat;
+  background-color: currentColor;
+}
+
 /* the section watermark is the product's own mark — masked so it takes
    the head icon's ghost ink exactly */
 .toolchain-root .v0-ldx-head-mark {
