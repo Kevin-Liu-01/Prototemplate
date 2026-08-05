@@ -3,7 +3,6 @@
 import { Handshake } from 'lucide-react';
 import { useRef } from 'react';
 
-import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 import './customers.css';
 
@@ -39,7 +38,6 @@ type V0CustomersProps = {
 
 export default function V0Customers({ heading = 'Trusted by the best companies.' }: V0CustomersProps) {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   return (
     <section className='tc-sec v0-cust' id='customers' ref={root}>

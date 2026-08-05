@@ -7,7 +7,6 @@ import { Bot, Code2, Languages, Layers } from 'lucide-react';
 import { useRef } from 'react';
 import type { ComponentType } from 'react';
 
-import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 import StackTower, { RAIL_ORIGIN, RAIL_SCALE, TOWER_LAYERS } from './StackTower';
 
@@ -134,7 +133,6 @@ const DROP = 64;
  */
 export default function V0FullStack() {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   useGSAP(
     () => {

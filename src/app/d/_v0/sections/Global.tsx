@@ -5,7 +5,6 @@ import { Fragment, useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
-import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { BentoCell } from '@/components/shell/Bento';
 
 import '@/app/d/toolchain/sections/pricing-v2.css';
@@ -70,7 +69,6 @@ const SCRIPT_BELT: readonly { code: string; native: string }[] = [
 
 export default function V0Global() {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   return (
     <section className='tc-sec v0-glob' id='infrastructure' ref={root}>

@@ -11,7 +11,6 @@ import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
 import { prefersReducedMotion, target } from '@/app/d/toolchain/diagrams/lang/lang';
 import ReviewWorkspace from '@/app/d/toolchain/sections/ReviewWorkspace';
-import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 import './context.css';
 
@@ -355,7 +354,6 @@ export default function V0Context() {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLCanvasElement>(null);
   const core = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
 
   /* The band's material. The ink field's rAF, resize, clearing re-measure
      and reduced-motion still are internal to the engine — destroy() on

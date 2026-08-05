@@ -22,7 +22,6 @@ import type { ComponentType, ReactNode } from 'react';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import { prefersReducedMotion } from '@/app/d/toolchain/diagrams/lang/lang';
 import SentenceWidth, { SENTENCE_SAMPLES } from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
-import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { BentoCell } from '@/components/shell/Bento';
 
 import './developer.css';
@@ -462,7 +461,6 @@ type V0DeveloperProps = {
 
 export default function V0Developer({ heading = 'Built for the world’s developers.' }: V0DeveloperProps) {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   return (
     <section className='tc-sec v0-dev' id='developers' ref={root}>

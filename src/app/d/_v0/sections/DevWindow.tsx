@@ -4,7 +4,6 @@ import { AppWindow } from 'lucide-react';
 import { useRef } from 'react';
 
 
-import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import StudioField from '@/components/shared/StudioField';
 
 import TranslateWindow from '../TranslateWindow';
@@ -25,7 +24,6 @@ import './devwin.css';
  */
 export default function V0DevWindow() {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   return (
     <section className='tc-sec v0-devwin' id='developers-window' ref={root}>

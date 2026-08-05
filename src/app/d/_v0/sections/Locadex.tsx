@@ -31,7 +31,6 @@ import {
   type IsoBox,
   type Pt,
 } from '@/app/d/toolchain/diagrams/iso';
-import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { BentoCell } from '@/components/shell/Bento';
 
 /* tcm-ruled (the split row's ruled copy cell) is defined by the toolchain
@@ -592,7 +591,6 @@ function IntegrateDiagram() {
 
 export default function V0Locadex() {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   useGSAP(
     () => {
