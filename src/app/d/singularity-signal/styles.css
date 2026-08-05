@@ -254,3 +254,24 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ---- the enterprise file, in signal dress: stamped transmissions ---- */
+
+/* rule labels carry the intercept stamp: mono, spaced, lowercase weight */
+.sgs-root .sge-plate-rule,
+.sgs-root .sge-stories-head {
+  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+/* the pillars' file lines read as channel designators */
+.sgs-root .sge-feat-foot {
+  letter-spacing: 0.14em;
+}
+
+/* the coverage sheet logs its rows like the rollout console */
+.sgs-root .sge-fw-list li > code,
+.sgs-root .sge-story-axis {
+  letter-spacing: 0.08em;
+}

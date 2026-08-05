@@ -168,3 +168,26 @@
     max-width: none;
   }
 }
+
+/* ---- the enterprise file, in procession dress: monument scale ---- */
+
+/* the client marks pass at architectural scale */
+.sgp-root .sge-srow {
+  grid-template-columns: 208px minmax(0, 1fr) auto;
+  padding: 24px 0;
+}
+
+.sgp-root .sge-story-wm {
+  transform: scale(1.28);
+  transform-origin: left center;
+}
+
+/* the statements read at ceremony scale */
+.sgp-root .sge-plates-duo .sge-plate blockquote p {
+  font-size: clamp(21px, 2.3vw, 30px);
+  max-width: 28ch;
+}
+
+.sgp-root .sge-plate-rule {
+  letter-spacing: 0.2em;
+}

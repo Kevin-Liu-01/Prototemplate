@@ -1160,6 +1160,17 @@
   border-bottom: 1px solid var(--tc-hair-2);
 }
 
+/* the narrow columns file the package under the name — nothing truncates */
+.singularity-root .sge-fw-col:not(:first-child) .sge-fw-list li {
+  grid-template-columns: 16px minmax(0, 1fr);
+  row-gap: 3px;
+  padding: 12px 0;
+}
+
+.singularity-root .sge-fw-col:not(:first-child) .sge-fw-list li > code {
+  grid-column: 2;
+}
+
 .singularity-root .sge-fw-list li:last-child {
   border-bottom: 0;
 }

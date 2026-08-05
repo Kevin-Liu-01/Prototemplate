@@ -227,3 +227,27 @@
     border-left: 0;
   }
 }
+
+/* ---- the enterprise file, in observatory dress: readings ---- */
+
+/* ledger rules read as plotted graticule — dotted, never solid */
+.sgb-root .sge-srow,
+.sgb-root .sge-stories-foot {
+  border-top-style: dotted;
+}
+
+.sgb-root .sge-fw-list li {
+  border-bottom-style: dotted;
+}
+
+/* the expansion axis is a reading: brighter mono, wider tracking */
+.sgb-root .sge-story-axis {
+  letter-spacing: 0.1em;
+  color: var(--tc-ink-2);
+}
+
+/* the pillars sit on the catalog's dotted sky */
+.sgb-root .sge-feat {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.4px);
+  background-size: 56px 48px;
+}

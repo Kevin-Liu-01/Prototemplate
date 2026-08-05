@@ -296,3 +296,33 @@
     transform: rotate(calc(-1 * var(--a))) scale(0.78);
   }
 }
+
+/* ---- the enterprise file, in orbit dress: rounded instruments ---- */
+
+.sgo-root .sge-feat,
+.sgo-root .sge-fw,
+.sgo-root .sge-cert,
+.sgo-root .sge-body {
+  border-radius: 12px;
+}
+
+.sgo-root .sge-fieldbox input,
+.sgo-root .sge-fieldbox textarea {
+  border-radius: 8px;
+}
+
+.sgo-root .sge-submit {
+  border-radius: 999px;
+}
+
+/* the toolchain node is a body on the rail — capsule, not a chip */
+.sgo-root .sge-fw-node {
+  border: 1px solid var(--tc-hair);
+  border-radius: 999px;
+  padding: 7px 16px;
+}
+
+/* the client marks ride their rows like satellites: centered dial dots */
+.sgo-root .sge-story-wm {
+  opacity: 0.92;
+}

@@ -21,7 +21,23 @@
   letter-spacing: 0.16em;
 }
 
-/* the record's exhibits carry the seal spacing */
+/* the record's statements carry the seal spacing */
 .sgd-root .sge-plate-rule {
   letter-spacing: 0.18em;
+}
+
+/* the deployment pillars are filed like the certificates */
+.sgd-root .sge-feat {
+  border-style: dashed;
+}
+
+/* ledger columns read like folder tabs */
+.sgd-root .sge-stories-head,
+.sgd-root .sge-fw-colhead b {
+  letter-spacing: 0.18em;
+}
+
+/* the coverage sheet is a filed document: dashed jacket, paper leaf */
+.sgd-root .sge-fw {
+  border-style: dashed;
 }

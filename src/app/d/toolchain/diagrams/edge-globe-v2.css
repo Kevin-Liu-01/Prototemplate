@@ -139,7 +139,6 @@
   fill: var(--iso-label-color, color-mix(in srgb, currentColor 70%, transparent));
 }
 
-
 /* Every callout ships two renderings of the same value — `fra · 12 ms`
    and `fra 12ms`. Exactly one is shown: the wide one wherever the globe
    renders large, the compact one on phones, where the type steps up to
@@ -152,7 +151,6 @@
 .eg .eg-icon {
   color: var(--iso-label-color, color-mix(in srgb, currentColor 62%, transparent));
 }
-
 
 /* ---------- the payload pulse ----------
    Request dot out, payload chip back. Both are hidden until the
