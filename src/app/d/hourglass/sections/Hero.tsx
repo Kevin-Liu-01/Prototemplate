@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -804,7 +806,9 @@ export default function Hero() {
             </p>
             <div className='hg-flags' aria-hidden='true'>
               {FLAGS.map((flag) => (
-                <span key={flag}>{flag}</span>
+                <span key={flag}>
+                  <i className={`fi fi-${flag}`} aria-hidden='true' />
+                </span>
               ))}
               <span className='hg-flag-more'>+88</span>
             </div>

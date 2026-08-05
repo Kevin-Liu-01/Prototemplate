@@ -4617,6 +4617,13 @@
   line-height: 1;
 }
 
+.hourglass-root .hg-flags span .fi {
+  width: 18px;
+  height: 13.5px;
+  border-radius: 1px;
+  background-size: cover;
+}
+
 .hourglass-root .hg-flags .hg-flag-more {
   width: auto;
   padding-inline: 9px;

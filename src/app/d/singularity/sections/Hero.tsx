@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
@@ -499,9 +501,7 @@ export default function Hero() {
         <div className='eh-orbit' ref={orbitRef} aria-hidden>
           {BELT.map((entry) => (
             <span className='eh-word' key={entry.name}>
-              <i className='eh-wflag' data-lt>
-                {entry.flag}
-              </i>
+              <i className={`eh-wflag fi fi-${entry.flag}`} data-lt />
               {entry.whole ? (
                 <b data-lt>{entry.name}</b>
               ) : (

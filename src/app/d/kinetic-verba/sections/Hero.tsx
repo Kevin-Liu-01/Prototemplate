@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
@@ -146,7 +148,7 @@ export default function Hero() {
             <div className='kv-marq-track' data-marquee>
               {[...LANGUAGE_CHIPS, ...LANGUAGE_CHIPS].map((chip, i) => (
                 <span className='kv-lchip' key={`${chip.name}-${i}`}>
-                  <span className='kv-lflag'>{chip.flag}</span>
+                  <span className={`kv-lflag fi fi-${chip.flag}`} aria-hidden='true' />
                   {chip.name}
                 </span>
               ))}

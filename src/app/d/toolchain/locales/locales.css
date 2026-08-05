@@ -291,10 +291,13 @@
 }
 
 .toolchain-root .lcl-flag {
-  font-style: normal;
-  font-size: 10px;
-  line-height: 1;
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  flex: none;
+  align-self: center;
+  width: 14px;
+  height: 10.5px;
+  line-height: 10.5px;
+  border-radius: 1px;
+  background-size: cover;
 }
 
 .toolchain-root .lcl-line .lcl-name {

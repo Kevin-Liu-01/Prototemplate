@@ -19,8 +19,12 @@
 /* ---------- the agent plate: the iso's permanently-dark ground ----------
    Inside the is-bleed framed cell the CARD owns the frame — its radius
    clips this ground — so the plate draws no border and no radius of its
-   own. Its inks are hardcoded: the dark-band iso ink ramp, the raised
-   accent that keeps its weight on #101010. */
+   own. The drawing on it is built from the stack tower's plate material
+   (fullstack.css .v0s-*): opaque extruded slabs in the dark band's
+   #090909–#1b1b1b ink family on the #101010 ground, 1px hairlines whose
+   rim/edge alphas step brighter toward the story's focus (set per solid
+   as --ldx-rim-a / --ldx-edge-a inline), and the accent spent on the
+   merged chip. Its inks are hardcoded: this ground never remaps. */
 .toolchain-root .v0-ldx .v0-ldx-plate {
   flex: 1;
   display: flex;
@@ -29,26 +33,147 @@
   background: #101010;
   padding: clamp(24px, 3.2vw, 40px) clamp(18px, 2.6vw, 34px);
   color: rgba(255, 255, 255, 0.82);
-  --iso-ink: rgba(255, 255, 255, 0.78);
-  --iso-ink-soft: rgba(255, 255, 255, 0.44);
-  --iso-ink-hair: rgba(255, 255, 255, 0.2);
-  --iso-mark: rgba(255, 255, 255, 0.3);
   --iso-accent: #86a8ff;
 }
 
 .toolchain-root .v0-ldx .v0-ldx-iso {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
   max-width: 600px;
   margin-inline: auto;
 }
 
-/* the scan sheet's body — its edges and landing line are iso strokes */
+/* the plates: opaque hull under three face fills, lit from the family's
+   upper-left — top lightest, front-left mid, front-right darkest — then
+   the hairlines, each drawn once, at the tower's exact inks */
+.toolchain-root .v0-ldx .v0-ldx-hull {
+  fill: #090909;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-top {
+  fill: #151515;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-left {
+  fill: #0d0d0d;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-right {
+  fill: #090909;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-rim {
+  fill: none;
+  stroke: rgba(255, 255, 255, var(--ldx-rim-a, 0.13));
+  stroke-width: 1;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-front {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-edge {
+  fill: none;
+  stroke: rgba(255, 255, 255, var(--ldx-edge-a, 0.28));
+  stroke-width: 1;
+}
+
+/* the hovering agent slab: a fill step brighter — the tower's hot-plate
+   ink — because it is the story's actor and the frame's highest surface */
+.toolchain-root .v0-ldx .v0-ldx-solid.is-lift .v0-ldx-top {
+  fill: #1b1b1b;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-solid.is-lift .v0-ldx-left {
+  fill: #131313;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-solid.is-lift .v0-ldx-right {
+  fill: #0e0e0e;
+}
+
+/* the chips — the module grid and the merged artifact — the tower's
+   miniature extrusion: hull with its own hairline, lighter top face */
+.toolchain-root .v0-ldx .v0-ldx-chip-hull {
+  fill: #1a1a1a;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 0.6;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-chip-top {
+  fill: #222222;
+}
+
+/* the merged chip: the payload chip's full accent — contour and tinted
+   faces — the drawing's one hot moment */
+.toolchain-root .v0-ldx .v0-ldx-chip.is-accent .v0-ldx-chip-hull {
+  fill: color-mix(in srgb, var(--iso-accent) 24%, #101010);
+  stroke: var(--iso-accent);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-chip.is-accent .v0-ldx-chip-top {
+  fill: color-mix(in srgb, var(--iso-accent) 42%, #101010);
+}
+
+/* flat marks lying in a top face: the PR plate's string bars, and the
+   quieter content bar each module chip carries */
+.toolchain-root .v0-ldx .v0-ldx-gmark {
+  fill: rgba(255, 255, 255, 0.3);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-fmark {
+  fill: rgba(255, 255, 255, 0.14);
+}
+
+/* the scan sheet: a translucent body, 1px edges, and the landing line —
+   the sweep's white voice (the accent never rides the beam) */
 .toolchain-root .v0-ldx .v0-ldx-beam {
   fill: rgba(255, 255, 255, 0.05);
 }
 
-/* the brand mark on the slab's top face takes the slab's own ink */
+.toolchain-root .v0-ldx .v0-ldx-beam-edge {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.13);
+  stroke-width: 1;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-beam-land {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.38);
+  stroke-width: 1;
+}
+
+/* ground flow into the output plate: one hairline, a soft chevron */
+.toolchain-root .v0-ldx .v0-ldx-flow {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1;
+}
+
+.toolchain-root .v0-ldx .v0-ldx-flow-chev {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* the brand mark on the slab's top face: the slab's own ink at rest —
+   GSAP warms it to the accent as the beam crosses beneath (the tween's
+   from-value mirrors this fill; keep them together) */
 .toolchain-root .v0-ldx .v0-ldx-mark {
-  fill: var(--iso-ink);
+  fill: rgba(255, 255, 255, 0.78);
+}
+
+/* the annotation leaders, at the tower's tap voice */
+.toolchain-root .v0-ldx .v0-ldx-leader {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 1;
 }
 
 /* annotations: labels are sans; mono is spent on the diff numbers only */
@@ -79,9 +204,6 @@
   max-width: 560px;
   height: auto;
   margin-inline: auto;
-  /* the plate's right edge sits 2 units off the viewBox edge — unclip so
-     the arrival glow's bloom breathes evenly on all four sides */
-  overflow: visible;
 }
 
 /* sources: hairline nodes on paper, marks in the muted step */
@@ -115,16 +237,15 @@
   stroke-linecap: round;
 }
 
-/* the arrival glow: a blurred accent copy of the plate's outline sitting
-   behind it — the plate's opaque face covers the blur's inner half, so what
-   shows is a soft halo on the border. GSAP breathes it up on each pulse
-   landing and settles it back; this parked alpha is the barely-there
-   resting glow between arrivals, and the reduced-motion still. */
-.toolchain-root .v0-ldx .v0-ldx-glow {
+/* the arrival ring: the plate's border redrawn in accent at the hairline's
+   own gauge and geometry — the border stays one stroke; only its ink
+   changes. GSAP fills it to solid blue on each pulse landing (the whole
+   perimeter at once) and eases it back; this parked alpha is the quiet
+   accent-tinted border at rest, and the reduced-motion still. */
+.toolchain-root .v0-ldx .v0-ldx-ring {
   fill: none;
   stroke: #86a8ff;
-  stroke-width: 4;
-  opacity: 0.2;
+  opacity: 0.35;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -146,7 +267,7 @@
 .toolchain-root .v0-ldx .v0-ldx-int-name {
   font-family: var(--tc-disp);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 17px;
   letter-spacing: -0.01em;
   fill: rgba(255, 255, 255, 0.9);
 }

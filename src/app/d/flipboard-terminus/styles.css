@@ -832,6 +832,14 @@
   padding: 2px 0;
 }
 
+.ft-flag-chip .fi {
+  flex: none;
+  width: 15px;
+  height: 11px;
+  border-radius: 1px;
+  background-size: cover;
+}
+
 .ft-flag-chip {
   display: inline-flex;
   align-items: center;

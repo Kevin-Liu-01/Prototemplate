@@ -664,9 +664,11 @@
   border-right: 1px solid var(--w08);
 }
 .tb-flagchip i {
-  font-style: normal;
-  font-size: 15px;
-  line-height: 1;
+  flex: none;
+  width: 18px;
+  height: 13.5px;
+  border-radius: 1px;
+  background-size: cover;
   filter: grayscale(30%) brightness(1.05);
 }
 .tb-trust {

@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -292,7 +294,7 @@ export default function Hero() {
           <div className='ap-marq-track' data-marquee>
             {[...FLAGS, ...FLAGS].map((flag, i) => (
               <span className='ap-flag' key={`${flag.name}-${i}`}>
-                {flag.flag} {flag.name}
+                <i className={`fi fi-${flag.flag}`} aria-hidden='true' /> {flag.name}
               </span>
             ))}
           </div>

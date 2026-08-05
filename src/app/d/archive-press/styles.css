@@ -739,6 +739,14 @@
   white-space: nowrap;
 }
 
+.archive-press-root .ap-flag .fi {
+  width: 14px;
+  height: 10.5px;
+  border-radius: 1px;
+  background-size: cover;
+  vertical-align: -1.5px;
+}
+
 .archive-press-root .ap-trust {
   display: flex;
   align-items: center;

@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
@@ -390,7 +392,7 @@ export default function Hero() {
             {[0, 1].map((copyIndex) =>
               LANGUAGES.map((l) => (
                 <span className='fm-flag' key={`${copyIndex}-${l.name}`}>
-                  <em>{l.flag}</em>
+                  <em className={`fi fi-${l.flag}`} aria-hidden='true' />
                   {l.name}
                 </span>
               ))

@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import HeroFieldSwitcher from '@/components/shared/HeroFieldSwitcher';
 
 import '@/app/d/toolchain/sections/chip-consistency.css';
 import '@/app/d/toolchain/sections/hero-every.css';
@@ -469,6 +470,9 @@ export default function HomeHero() {
           centre dark — and the page opens inside it: headline light-on-dark
           at the top, the raw gt session below it on the same plate. */}
       <div className='sgph-console'>
+        {/* the console's light engine + the founder's review ladder: ten live
+            variants, default 01 = today's prismatic wash */}
+        <HeroFieldSwitcher />
 
         <div className='sgph-console-in'>
           <div className='tc-hero sgph-head'>

@@ -732,6 +732,14 @@
   display: flex;
   width: max-content;
 }
+.concrete-origin-root .cm-flag .fi {
+  flex: none;
+  width: 16px;
+  height: 12px;
+  border-radius: 1px;
+  background-size: cover;
+}
+
 .concrete-origin-root .cm-flag {
   display: inline-flex;
   align-items: center;

@@ -9,7 +9,9 @@
 export type LocaleRow = {
   /** canonical BCP-47 code, as listed by the API */
   code: string;
-  /** flag emoji getLocaleProperties resolves for the locale */
+  /** flag-icons class suffix (fi fi-<flag>): the ISO 3166-1 alpha-2 code of
+      the country whose flag getLocaleProperties resolved for the locale —
+      'un' where it resolved a globe (no single country), 'gb-wls' for Welsh */
   flag: string;
   /** English display name */
   name: string;

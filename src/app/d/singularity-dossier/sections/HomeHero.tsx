@@ -8,6 +8,7 @@ import { useRef } from 'react';
 
 
 import TranslateWindow from '@/app/d/_v0/TranslateWindow';
+import HeroFieldSwitcher from '@/components/shared/HeroFieldSwitcher';
 
 import '@/app/d/toolchain/sections/hero-every.css';
 import '@/app/d/toolchain/sections/hero-terminal.css';
@@ -549,6 +550,9 @@ export default function HomeHero() {
           it keeps the measured top corners and ring. exposureScale is raised
           (= dimmer) so the flanks wash rather than saturate. */}
       <div className='tc-hero-cell tch-band'>
+        {/* the band's light engine + the founder's review ladder: ten live
+            variants, default 01 = today's prismatic wash */}
+        <HeroFieldSwitcher />
         {/* one clock: the window reports its belt's active locale and the
             headline above morphs to that locale's word for "language" */}
         <TranslateWindow onLocaleChange={handleBeltLocale} />

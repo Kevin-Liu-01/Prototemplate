@@ -1,0 +1,66 @@
+/* ============================================================
+   HERO FIELD SWITCHER — working-review instrumentation ONLY.
+   A hairline pill ladder tucked at the band's bottom-right that
+   swaps the band's light engine live between ten variants. It
+   reads as instrumentation: mono indices, house hairlines, no
+   color except the active state. Remove when the founder picks.
+   ============================================================ */
+
+.hfs {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 5px;
+  border: 1px solid rgba(138, 143, 152, 0.5);
+  border-radius: 8px;
+  /* opaque — a translucent ground under a translucent border is the
+     self-stack the line law forbids */
+  background: #0d0d0d;
+}
+
+.hfs-chip {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  border: 0;
+  background: none;
+  padding: 2px 7px;
+  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.52);
+  text-align: left;
+  cursor: pointer;
+}
+
+.hfs-chip i {
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.hfs-chip:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* the one colored thing on the strip: the active row, in the ray blue */
+.hfs-chip[data-on='true'],
+.hfs-chip[data-on='true'] i {
+  color: #86a8ff;
+}
+
+/* the reviewer's tool is a desktop instrument */
+@media (max-width: 899px) {
+  .hfs {
+    display: none;
+  }
+}
+
+/* the glyph rain inks itself from --tc-ink resolved off the canvas — on the
+   dark plate that must stay white in BOTH themes */
+.hfs-stage.is-rain {
+  --tc-ink: #ffffff;
+}

@@ -735,7 +735,11 @@
 }
 
 .kinetic-verba-root .kv-lflag {
-  font-size: 13px;
+  flex: none;
+  width: 16px;
+  height: 12px;
+  border-radius: 1px;
+  background-size: cover;
 }
 
 .kinetic-verba-root .kv-trusted {

@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useMemo, useRef, useState } from 'react';
 
 import { useQuietReveal } from '../../sections/reveal';
@@ -111,9 +113,7 @@ export default function Ledger() {
                   </span>
                   <span className='lcl-code'>
                     <span className='lcl-chip'>
-                      <span className='lcl-flag' aria-hidden='true'>
-                        {r.flag}
-                      </span>
+                      <span className={`lcl-flag fi fi-${r.flag}`} aria-hidden='true' />
                       <span className='lcl-cc'>{r.code}</span>
                     </span>
                   </span>

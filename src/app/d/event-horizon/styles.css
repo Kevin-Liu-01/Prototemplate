@@ -1007,9 +1007,11 @@
 }
 
 .eventhorizon-root .eh-chip i {
-  font-style: normal;
-  font-size: 12.5px;
-  line-height: 1;
+  flex: none;
+  width: 15px;
+  height: 11px;
+  border-radius: 1px;
+  background-size: cover;
 }
 
 .eventhorizon-root .eh-chip b {

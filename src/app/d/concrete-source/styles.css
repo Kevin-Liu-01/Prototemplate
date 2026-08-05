@@ -577,6 +577,14 @@
   width: max-content;
   gap: 0;
 }
+.concrete-source-root .flag-chip .fi {
+  flex: none;
+  width: 16px;
+  height: 12px;
+  border-radius: 1px;
+  background-size: cover;
+}
+
 .concrete-source-root .flag-chip {
   display: inline-flex;
   align-items: center;

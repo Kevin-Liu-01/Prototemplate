@@ -860,9 +860,20 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: #b9ffd9;
 }
 
+/* flag-icons spans scale with the slide's own type (the pack's em box);
+   corners barely eased, seated a touch under the baseline */
 .pr-demo-flag {
   margin-right: 9px;
   font-size: 0.85em;
+  border-radius: 1px;
+  background-size: cover;
+  vertical-align: -0.06em;
+}
+
+.pr-ctx-leaf-surface .fi {
+  border-radius: 1px;
+  background-size: cover;
+  vertical-align: -0.12em;
 }
 
 .pr-code-block {

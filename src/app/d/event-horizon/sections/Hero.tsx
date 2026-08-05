@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
@@ -968,7 +970,7 @@ export default function Hero() {
           {FLAGS.map((entry) => (
             <span className='eh-orbit-seat' key={entry.name}>
               <span className='eh-chip'>
-                <i>{entry.flag}</i>
+                <i className={`fi fi-${entry.flag}`} aria-hidden='true' />
                 <b>{entry.name}</b>
               </span>
             </span>

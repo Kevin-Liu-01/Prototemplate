@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
@@ -547,7 +549,10 @@ export default function PrinciplesSlide() {
                         items={(demo.cycle ?? []).map((entry) => (
                           <span key={entry.t}>
                             {entry.f && (
-                              <span className='pr-demo-flag'>{entry.f}</span>
+                              <span
+                                className={`pr-demo-flag fi fi-${entry.f}`}
+                                aria-hidden='true'
+                              />
                             )}
                             {entry.t}
                           </span>
@@ -629,7 +634,7 @@ export default function PrinciplesSlide() {
               {CTX_LEAVES.map((leaf) => (
                 <span key={leaf.surface} className='pr-ctx-leaf'>
                   <span className='pr-ctx-leaf-surface'>
-                    {leaf.f} {leaf.surface}
+                    <span className={`fi fi-${leaf.f}`} aria-hidden='true' /> {leaf.surface}
                   </span>
                   <strong>{leaf.term}</strong>
                 </span>

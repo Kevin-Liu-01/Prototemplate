@@ -46,23 +46,23 @@ export const STREAM_RIGHT: StreamItem[] = [
 
 export const GLYPHS = ['語', '界', 'ñ', 'ü', '한', 'ع', 'अ', '中', 'ß', 'é', 'ル', 'Ж'];
 
-const FLAG_SET = [
-  '🇪🇸 Español',
-  '🇫🇷 Français',
-  '🇯🇵 日本語',
-  '🇩🇪 Deutsch',
-  '🇨🇳 中文',
-  '🇰🇷 한국어',
-  '🇧🇷 Português',
-  '🇮🇹 Italiano',
-  '🇮🇳 हिन्दी',
-  '🇸🇦 العربية',
-  '🇳🇱 Nederlands',
-  '🇵🇱 Polski',
-  '🇸🇪 Svenska',
-  '🇹🇷 Türkçe',
-  '🇻🇳 Tiếng Việt',
-  '🇮🇱 עברית',
+const FLAG_SET: readonly [flag: string, name: string][] = [
+  ['es', 'Español'],
+  ['fr', 'Français'],
+  ['jp', '日本語'],
+  ['de', 'Deutsch'],
+  ['cn', '中文'],
+  ['kr', '한국어'],
+  ['br', 'Português'],
+  ['it', 'Italiano'],
+  ['in', 'हिन्दी'],
+  ['sa', 'العربية'],
+  ['nl', 'Nederlands'],
+  ['pl', 'Polski'],
+  ['se', 'Svenska'],
+  ['tr', 'Türkçe'],
+  ['vn', 'Tiếng Việt'],
+  ['il', 'עברית'],
 ];
 
 /** The marquee track is the set twice over — the loop tweens xPercent -50. */

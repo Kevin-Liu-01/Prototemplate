@@ -1,5 +1,7 @@
 'use client';
 
+import 'flag-icons/css/flag-icons.min.css';
+
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
@@ -20,7 +22,7 @@ function FlagSegment({ hidden }: { hidden?: boolean }) {
     <div style={{ display: 'flex' }} aria-hidden={hidden || undefined}>
       {FLAGS.map(([flag, name]) => (
         <span className='tb-flagchip' key={name}>
-          <i>{flag}</i>
+          <i className={`fi fi-${flag}`} aria-hidden='true' />
           {name}
         </span>
       ))}

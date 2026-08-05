@@ -21,7 +21,7 @@ import {
   SiTanstack,
 } from '@icons-pack/react-simple-icons';
 
-import LocaleTag, { localeFlag } from '@/app/d/toolchain/components/LocaleTag';
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
 
@@ -469,31 +469,6 @@ const BELT_IDLE = 6000;
    composition a pinned inspector drives to (drag stop and pin target
    are one number, so the two ways of opening the pane agree). */
 const CUT_MIN = 26;
-
-/** The four roster locales the shared flag map doesn't carry yet — kept
-    component-local so the belt stays self-contained. */
-const EXTRA_FLAGS: Record<string, string> = {
-  nl: '🇳🇱',
-  tr: '🇹🇷',
-  sv: '🇸🇪',
-  id: '🇮🇩',
-};
-
-/** A belt chip's content: the house flag+code grammar (the lct classes),
-    resolved through the shared map first so the two never disagree. */
-function BeltTag({ code }: { code: PreviewLoc }) {
-  const flag = localeFlag(code) ?? EXTRA_FLAGS[code];
-  return (
-    <span className='lct'>
-      {flag ? (
-        <span className='lct-flag' aria-hidden='true'>
-          {flag}
-        </span>
-      ) : null}
-      <span className='lct-code'>{code}</span>
-    </span>
-  );
-}
 
 /** A component's inspector mark: the quiet exclamation at its top-right.
     Hover/focus outlines the component and raises a chip naming the payload
@@ -1225,7 +1200,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                     aria-hidden={copy === 1 || undefined}
                     onClick={(e) => pickChip(loc, e.currentTarget)}
                   >
-                    <BeltTag code={loc} />
+                    <LocaleTag code={loc} />
                   </button>
                 ))
               )}

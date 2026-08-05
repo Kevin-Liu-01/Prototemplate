@@ -17,6 +17,27 @@
   border-block: 1px solid var(--tc-hair);
 }
 
+/* ---------- rail-to-rail sheet (founder cut: no inline spend) ----------
+   The band keeps tcb-in's block padding but drops the inline gut: the
+   bento grid and the review row run rail to rail, the cells' own card
+   padding carrying the breathing room. With the gut gone the grid's outer
+   verticals would stack on the rails' own 1px lines, so the sheet ring
+   yields its inline sides (block ring only) — the rail IS the outer seam
+   and the junction stays a single line. The head takes the cells' own
+   24px text inset so the band's type sits on one column. */
+
+.toolchain-root .v0-ctx .tcb-in {
+  padding-inline: 0;
+}
+
+.toolchain-root .v0-ctx .tcb-grid {
+  padding-inline: 0;
+}
+
+.toolchain-root .v0-ctx .tcb-head {
+  padding-inline: 24px;
+}
+
 /* The field is the band's material, not its subject: paper glyphs RISING
    off the ink (the glyph-rain closer's engine), spanning the plate behind
    the ruled sheet (tcb-in sits above at z-index 1). No mask — the engine

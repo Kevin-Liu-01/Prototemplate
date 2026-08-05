@@ -669,8 +669,11 @@
   white-space: nowrap;
 }
 .field-magnet-root .fm-flag em {
-  font-style: normal;
-  font-size: 14px;
+  flex: none;
+  width: 17px;
+  height: 12.75px;
+  border-radius: 1px;
+  background-size: cover;
 }
 .field-magnet-root .fm-trusted {
   margin-top: clamp(18px, 2.8vh, 34px);

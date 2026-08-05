@@ -626,6 +626,14 @@
   gap: 10px;
   width: max-content;
 }
+.bento-foundry-root .bf-fchip .fi {
+  flex: none;
+  width: 16px;
+  height: 12px;
+  border-radius: 1px;
+  background-size: cover;
+}
+
 .bento-foundry-root .bf-fchip {
   display: inline-flex;
   align-items: center;

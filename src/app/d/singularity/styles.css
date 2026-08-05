@@ -1032,9 +1032,12 @@
 .singularity-root .eh-wflag {
   display: inline-block;
   margin-right: 5px;
-  font-style: normal;
-  font-size: 13px;
-  line-height: 1;
+  width: 17px;
+  height: 13px;
+  line-height: 13px;
+  border-radius: 1px;
+  background-size: cover;
+  vertical-align: -1.5px;
   will-change: transform;
 }
 
