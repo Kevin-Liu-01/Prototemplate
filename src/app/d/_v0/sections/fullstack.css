@@ -153,17 +153,13 @@
    Four opaque extruded slabs (StackTower), each its own absolutely-
    seated element inside one aspect-locked frame (the aspect ratio is
    the geometry's, set inline by the component). The slabs' stacking
-   order and lift are FullStack's; every surface and hairline is
-   painted here. All four plates are ALWAYS present (founder round 9),
-   so the sheet paints two voices: the DEFAULT rules below are the
-   GHOST — non-hot plates hold roughly a third of the hot presence
-   (fills sunk to the card's own tones, rims and artwork at low alpha)
-   so they read as clearly there without ever competing — and the
-   is-hot block lifts the active plate to the full treatment. Hulls
-   stay opaque in both voices: the occlusion of the tower below is the
-   drawing's depth, never traded for transparency. The page accent is
-   spent on the hot slab's top-face contour, its artwork, and its
-   full-voice leader. */
+   order, build, and lift are FullStack's; every surface and hairline
+   is painted here. The plates live in the band's ink family — tops a
+   step above the card, sides a step below it — with 1px white
+   hairline edges; the page accent is spent ONLY on the active slab's
+   top-face contour and its artwork (round 10 restored the build: only
+   the slabs up to the beat's level exist, so the resting values below
+   are the full resting voice, not a ghost). */
 
 .toolchain-root .tcb .v0-stack-tower {
   position: relative;
@@ -229,31 +225,29 @@
   pointer-events: none;
 }
 
-/* the rail's live fill: the entrance's accent, risen once to the top
-   plate's tap and holding, covering the track below that point. The
-   ink is the shared opaque token, so the taps' stubs lying on it are
-   pixel-identical — nothing doubles. */
+/* the rail's live fill: the build's accent, filled to the newest
+   plate's tap (FullStack scales it bottom-up), covering the track
+   below that point. The ink is the shared opaque token, so the taps'
+   stubs lying on it are pixel-identical — nothing doubles. */
 .toolchain-root .tcb .v0s-rail-fill {
   fill: var(--v0s-rail-ink);
 }
 
 /* the plate: opaque hull under three face fills, lit from the
    family's upper-left — top lightest, front-left mid, front-right
-   darkest (the card behind is #101010, so the sides drop below it).
-   These are the GHOST tones: the resting faces sit a hair around the
-   card's own ink, present but subordinate; the is-hot block below
-   lifts the lit plate a full step above them. */
+   darkest (the card behind is #101010, so the sides drop below it
+   and the top rises above it) */
 .toolchain-root .tcb .v0s-hull {
   fill: #090909;
 }
 
 .toolchain-root .tcb .v0s-top {
-  fill: #111111;
+  fill: #151515;
   transition: fill 0.3s ease;
 }
 
 .toolchain-root .tcb .v0s-left {
-  fill: #0c0c0c;
+  fill: #0d0d0d;
   transition: fill 0.3s ease;
 }
 
@@ -265,25 +259,23 @@
 /* the hairlines, each drawn once: silhouette rim, the one interior
    front edge, and the top-face contour — the accent's only seat. The
    two alphas step brighter with depth (custom properties set per
-   plate by StackTower), the original stack's stroke voice — ghosts
-   keep the depth stepping at half strength, so the resting tower
-   still reads front-lit without outshining the hot plate. */
+   plate by StackTower), the original stack's stroke voice. */
 .toolchain-root .tcb .v0s-rim {
   fill: none;
-  stroke: rgba(255, 255, 255, calc(var(--v0s-rim-a, 0.12) * 0.5));
+  stroke: rgba(255, 255, 255, var(--v0s-rim-a, 0.12));
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
 
 .toolchain-root .tcb .v0s-front {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.05);
+  stroke: rgba(255, 255, 255, 0.08);
   stroke-width: 1;
 }
 
 .toolchain-root .tcb .v0s-edge {
   fill: none;
-  stroke: rgba(255, 255, 255, calc(var(--v0s-edge-a, 0.14) * 0.5));
+  stroke: rgba(255, 255, 255, var(--v0s-edge-a, 0.14));
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
@@ -294,25 +286,18 @@
    and the gauge comes from the markup (strokeWidth = RAIL_GAUGE, in
    drawing units, so it scales with the figure exactly like the fill —
    no stroke-width here, or px would override it). The path lives in
-   its slab's SVG, so it rides the plate through lift and entrance. No
+   its slab's SVG, so it rides the plate through lift and build. No
    caption at its end anymore (founder: no words by the diagram — the
-   plates' artwork identifies them). Ghost leaders keep the ONE ink at
-   a third of its voice — translucent accent over the opaque accent
-   fill composites to the fill's exact pixels, so the stub never reads
-   doubled and only the bend and run quiet down — and the hot plate's
-   leader takes the full voice with it. */
+   plates' artwork identifies them). */
 .toolchain-root .tcb .v0s-leader {
   fill: none;
   stroke: var(--v0s-rail-ink);
-  opacity: 0.32;
-  transition:
-    opacity 0.3s ease,
-    stroke 0.3s ease;
+  transition: stroke 0.3s ease;
 }
 
-.toolchain-root .tcb .v0s-leader.is-hot {
-  opacity: 1;
-}
+/* no hot step for leaders: every tap is the rail's one pure-accent ink
+   (founder round 7), so the hot plate's leader differs only by riding
+   its lifted plate — its long stub keeps it rooted in the fill */
 
 /* ---------- the top-face artifacts ----------
    One strong drawing per beat (founder round): code's raised bracket

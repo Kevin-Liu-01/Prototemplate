@@ -21,13 +21,6 @@
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0.045em;
-  opacity: 0.6;
-  transition: opacity 160ms ease;
-}
-
-.fxm:hover,
-.fxm:focus-within {
-  opacity: 1;
 }
 
 .fxm-k {
@@ -36,14 +29,19 @@
   user-select: none;
 }
 
+/* OPAQUE chips: plates rule hairlines straight through this corner (the
+   locadex terminal frame), and a translucent chip lets the line cross the
+   label. Solid near-black is the terminal family's own ink, so the chip
+   sits ON the chrome instead of ghosting it. The resting quiet comes from
+   dimmed ink, never container alpha. */
 .fxm-chip {
   appearance: none;
   margin: 0;
   padding: 5px 8px 4px;
-  background: rgba(7, 7, 7, 0.55);
-  border: 1px solid rgba(138, 143, 152, 0.34);
+  background: #0c0d0f;
+  border: 1px solid rgba(120, 124, 132, 0.3);
   border-radius: 0; /* square — the page's chips, not pills */
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.48);
   font: inherit;
   letter-spacing: inherit;
   cursor: pointer;
@@ -52,12 +50,19 @@
     color 140ms ease;
 }
 
-.fxm-chip:hover {
+.fxm:hover .fxm-chip,
+.fxm:focus-within .fxm-chip {
+  color: rgba(255, 255, 255, 0.66);
+  border-color: rgba(138, 143, 152, 0.4);
+}
+
+/* Scoped under .fxm so these outrank the group wake rule above. */
+.fxm .fxm-chip:hover {
   color: rgba(255, 255, 255, 0.92);
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-.fxm-chip[aria-pressed='true'] {
+.fxm .fxm-chip[aria-pressed='true'] {
   color: #fff;
   border-color: rgba(255, 255, 255, 0.85);
 }
@@ -70,7 +75,7 @@
 /* Coarse pointers can't hover; the modes read as tap-to-set there and the
    panel stays fully present so it is discoverable at all. */
 @media (hover: none) {
-  .fxm {
-    opacity: 0.85;
+  .fxm .fxm-chip {
+    color: rgba(255, 255, 255, 0.72);
   }
 }

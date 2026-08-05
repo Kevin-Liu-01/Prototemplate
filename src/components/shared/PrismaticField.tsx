@@ -47,6 +47,13 @@ export type PrismaticFieldProps = {
   effectsMenu?: boolean;
   /** localStorage key for the committed mode; defaults to the page's path. */
   persistKey?: string;
+  /**
+   * Showcase point (canvas-box fractions) where a menu chip's hover/focus
+   * preview demonstrates its mode — somewhere the field is actually
+   * exposed, since the menu itself often docks over occluding chrome.
+   * Defaults to the burst's bright left flank at the field's equator.
+   */
+  previewAt?: readonly [number, number];
 };
 
 type MenuState = {
@@ -77,6 +84,7 @@ export default function PrismaticField({
   defaultEffect,
   effectsMenu,
   persistKey,
+  previewAt = [0.24, 0.5],
 }: PrismaticFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const handleRef = useRef<PrismaticFieldHandle | null>(null);
@@ -152,8 +160,21 @@ export default function PrismaticField({
     }
   };
 
+  /* Chip hover/focus: switch to the mode AND demonstrate it at the showcase
+     point — the menu often docks over occluding chrome (a terminal, a bill
+     card), so without the pulse a preview could be invisible. null restores
+     the committed mode and lets the pulse drain. */
   const preview = (mode: PrismaticEffectMode | 'off' | null) => {
-    handleRef.current?.setEffectMode(mode ?? menu?.selected ?? 'off');
+    const handle = handleRef.current;
+    if (!handle) return;
+    if (mode === null) {
+      handle.setEffectMode(menu?.selected ?? 'off');
+      handle.previewRelease();
+    } else {
+      handle.setEffectMode(mode);
+      if (mode === 'off') handle.previewRelease();
+      else handle.previewPulse(previewAt[0], previewAt[1]);
+    }
   };
 
   return (

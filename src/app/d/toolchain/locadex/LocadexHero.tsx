@@ -107,9 +107,10 @@ export default function LocadexHero() {
               className='ldx2-field'
               preset='1'
               speed={0.5}
-              params={{ exposureScale: 3400 }}
+              params={{ exposureScale: 2500 }}
               effects={['lens', 'dither', 'chroma']}
               defaultEffect='lens'
+              previewAt={[0.3, 0.5]}
             />
             <div className='tc-term'>
               <div className='tc-term-bar'>

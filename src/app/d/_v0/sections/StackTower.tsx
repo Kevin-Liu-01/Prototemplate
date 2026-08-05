@@ -24,17 +24,13 @@ import {
  * equal to beat order: code, context, translations, agents, bottom up.
  * The agents plate steps its footprint down ~13% (founder round 9: the
  * top layer reads as the CAPSTONE) — same plan center, same seat, the
- * one projection, just a smaller rhombus. All four plates are PRESENT
- * AT ALL TIMES now (founder round 9: the build-in/out choreography is
- * no longer the scroll behavior): the draw — rail rising, bends curling
- * off the tip, plates settling in sequence — plays ONCE as the tower
- * first scrolls into view (FullStack's entrance), and from then on the
- * beats only move the spotlight. Non-hot plates hold a ghost presence
- * (fullstack.css dims their fills, rims, and artwork to roughly a third
- * of the hot voice); the hot plate keeps the full treatment. Each top
- * face carries its section's artifact: the <T> code block, the context
- * chips, the translated strings with the accent payload chip, and the
- * Locadex mark mask-rendered in the plate's ink under a Bayer-dithered
+ * one projection, just a smaller rhombus. The stack still BUILDS as the
+ * story advances (round 10 reversed round 9's always-visible ghosts:
+ * the layers stack one on top of the other as the beats advance, and
+ * scroll-back tears them down in reverse), and each top face carries
+ * its section's artifact: the <T> code block, the context chips, the
+ * translated strings with the accent payload chip, and the Locadex
+ * mark mask-rendered in the plate's ink under a Bayer-dithered
  * specular sweep (the shimmer block below).
  *
  * The original's connective thread is ported as ONE blue rail
@@ -45,13 +41,13 @@ import {
  * the figure CELL, top rule to bottom rule (founder: "the rail is
  * still not reaching complete top and bottom"), drawn by FullStack as
  * a cell-spanning element (.v0s-cellrail) behind this sticky figure,
- * because no frame-bound SVG can outlive its own box. The entrance's
- * accent FILL covers that track exactly — same x, same gauge — rising
- * once from the rail's foot to the top plate's tap (FullStack drives
- * it through RAIL_SCALE) and holding for good, so there is never a
- * second vertical: one line, blue where the circuit is lit, rest-ink
- * above. The frame carries no type: the plates' artwork identifies
- * them and the copy rail names them (founder: no words by the diagram).
+ * because no frame-bound SVG can outlive its own box. The build's
+ * accent FILL covers that track exactly — same x, same gauge — and
+ * extends and retracts with the build (FullStack drives it through
+ * RAIL_SCALE), so there is never a second vertical: one line, blue
+ * where the stack has built, rest-ink above. The frame carries no
+ * type: the plates' artwork identifies them and the copy rail names
+ * them (founder: no words by the diagram).
  *
  * Each plate's small-radius corner leader is part of the SAME drawing
  * system: rail gauge, rail ink (opaque, so where it lies on the fill
@@ -72,7 +68,7 @@ import {
  * in one SVG: the scroll spotlight must put the active slab ABOVE its
  * neighbours, and z-index is an HTML privilege SVG paint order doesn't
  * grant. FullStack owns the spotlight — the is-hot classes, the stacking
- * order, the entrance, and the lift; this file owns only the drawing. All
+ * order, the build, and the lift; this file owns only the drawing. All
  * constant paint lives in fullstack.css; the per-plate depth stepping of
  * the stroke voice rides two custom properties, the way the original
  * stepped its rim and edge brightness by depth.
@@ -178,12 +174,10 @@ const RAIL_DROP = 2200;
 const RAIL_FOOT = RAIL_BOTTOM + RAIL_DROP;
 
 /**
- * The fill's scaleY when the tip stands at slab i's tap, on the
- * foot-anchored fill. Since founder round 9 the fill neither extends nor
- * retracts with the beats: FullStack's one-time ENTRANCE rises through
- * these stops — tipAt() inverts them to the moment the tip passes each
- * tap, so the bends draw as the blue arrives — and then the fill holds
- * at the last stop for good; the rail's strokes never move.
+ * How much of the accent channel is filled when `count` slabs are built,
+ * as a scaleY on the foot-anchored fill. FullStack tweens between these
+ * as the stack builds and retracts (and rises from 0 — the empty rail —
+ * on beat 01's lock-in); the rail's strokes never move.
  */
 export const RAIL_SCALE: readonly number[] = TOWER_LAYERS.map(
   (_, i) => (RAIL_FOOT - tapY(i)) / (RAIL_FOOT - RAIL_TOP)
@@ -380,10 +374,12 @@ const MARK_PLANE = plane(THICK);
    foreshortened rhombi, and crispEdges keeps them 1-bit under zoom.
    TWO bands ride the loop (founder: "more animated than static"): the
    primary and a slimmer counter-sheen half a lap behind — each tier's
-   clipPath is the UNION of both windows — so some stretch of the glyph
-   is catching light through nearly the whole ~3.4s pass and the metal
-   reads alive, never a texture between rests. FullStack slides the
-   windows between ±SHINE_SWEEP, gated to the band being on screen;
+   clipPath is the UNION of both windows — so a band is crossing the
+   glyph through most of the lap and the metal reads alive, never a
+   texture between rests. FullStack slides the windows SHINE_FROM →
+   SHINE_TO (derived below so every pass fully enters, crosses ALL of
+   the mark, and exits past its right edge before restarting), gated
+   like the orbit to the agents plate being built and on screen;
    without JS or with reduced motion the markup poses — rotate(60),
    parallel to the plate's projected +y edges — leave the primary band
    catching light mid-glyph as a still, the counter-sheen parked clear. */
@@ -432,14 +428,6 @@ const SHINE_TIERS: readonly { cover: number; width: number }[] = [
   { cover: 1, width: 36 },
 ];
 
-/** The sweep's half-travel, in drawing units. The glyph spans ±47 and
-    the widest window's horizontal footprint adds ±36, so past ~±83 the
-    band has fully cleared — every pass rests dark for a breath before
-    the next catch. FullStack slides the windows -SHINE_SWEEP →
-    +SHINE_SWEEP, rotating about each window's CENTER (GSAP's SVG
-    default is the bbox corner, which would swing the band off-glyph). */
-export const SHINE_SWEEP = 96;
-
 /** The masked rects' screen-space cover: the capstone glyph projects to
     ±46.8 × [-31.2, 22.8]; these bounds pad that, and the mask crops the
     rest back to the mark. */
@@ -447,6 +435,44 @@ const LDX_X = -52;
 const LDX_Y = -38;
 const LDX_W = 104;
 const LDX_H = 66;
+
+/* The sweep's endpoints, DERIVED from the masked cover and the band's
+   own rotated geometry (founder round 10: "make it cross the whole
+   locadex all the way to the right and then we can restart it — rn it
+   gets cut off"). A window rotated 60° from vertical has unit normal
+   n = (cos60, sin60); translating its center by x moves it only
+   x·cos60 along that normal — HALF the horizontal distance — so a
+   fixed ±96 stopped while the widest fringe still lay across the mark.
+   The band has fully cleared the cover only when its normal span
+   [x·nx − w/2, x·nx + w/2] sits past the cover's own projection onto
+   n, so the endpoints are that inequality solved for x, one tier
+   half-width plus a breath of margin beyond each edge — at any plate
+   or cover size, never clipped. FullStack slides the windows
+   SHINE_FROM → SHINE_TO at constant speed and restarts only after the
+   full exit; the counter-sheen rides the same path half a lap behind. */
+const SHINE_NX = Math.cos(Math.PI / 3);
+const SHINE_NY = Math.sin(Math.PI / 3);
+const SHINE_W_MAX = Math.max(...SHINE_TIERS.map((tier) => tier.width));
+const SHINE_PAD = 4;
+/** The cover's extent along the band normal (corners at (LDX_X, LDX_Y)
+    and (LDX_X + LDX_W, LDX_Y + LDX_H) are the extremes: nx, ny > 0). */
+const SHINE_N_MIN = SHINE_NX * LDX_X + SHINE_NY * LDX_Y;
+const SHINE_N_MAX = SHINE_NX * (LDX_X + LDX_W) + SHINE_NY * (LDX_Y + LDX_H);
+export const SHINE_FROM = (SHINE_N_MIN - SHINE_W_MAX / 2 - SHINE_PAD) / SHINE_NX;
+export const SHINE_TO = (SHINE_N_MAX + SHINE_W_MAX / 2 + SHINE_PAD) / SHINE_NX;
+
+/** The window's half-length along its own axis. Horizontal translation
+    also SLIDES the finite window along that axis (by x·sin60), so a
+    fixed 110 ran out at the travel's ends — the band's tip visibly
+    shortened off the mark's upper corner before it had exited (the
+    other half of the founder's cut-off). Sized so the window still
+    spans the whole cover diagonal at both endpoints. */
+const SHINE_HALF_LEN = Math.ceil(
+  SHINE_NY * Math.max(Math.abs(SHINE_FROM), Math.abs(SHINE_TO)) +
+    SHINE_NY * (LDX_W / 2) +
+    SHINE_NX * Math.max(Math.abs(LDX_Y), Math.abs(LDX_Y + LDX_H)) +
+    SHINE_PAD
+);
 
 function TopGlyph({ id }: { id: string }) {
   switch (id) {
@@ -588,18 +614,18 @@ function TopGlyph({ id }: { id: string }) {
                 <rect
                   data-ldx-stripe
                   x={-width / 2}
-                  y={-110}
+                  y={-SHINE_HALF_LEN}
                   width={width}
-                  height={220}
+                  height={SHINE_HALF_LEN * 2}
                   transform='rotate(60)'
                 />
                 <rect
                   data-ldx-stripe2
                   x={-(width * 0.62) / 2}
-                  y={-110}
+                  y={-SHINE_HALF_LEN}
                   width={width * 0.62}
-                  height={220}
-                  transform={`translate(${-SHINE_SWEEP} 0) rotate(60)`}
+                  height={SHINE_HALF_LEN * 2}
+                  transform={`translate(${SHINE_FROM} 0) rotate(60)`}
                 />
               </clipPath>
             ))}

@@ -98,10 +98,15 @@
    stands flush on the card's bottom edge (the house terminal
    posture — radius 8 8 0 0, panel on the rule, ring clipped at
    the seam). Fixed dark in both themes, like every terminal
-   surface on the page. */
+   surface on the page.
+   FX ROUND: the headroom is now a real stage — --ldx2-head sizes
+   it, and the field strip below hangs its bright equator inside
+   it, so the singularity is VISIBLE above the terminal and the
+   cursor effects have somewhere to show. */
 .toolchain-root .ldx-hero-sec .tc-cell.ldx2-cell > .tc-card.ldx2-art {
+  --ldx2-head: clamp(84px, 9vw, 144px);
   position: relative;
-  padding: clamp(26px, 3.2vw, 46px) clamp(16px, 2vw, 26px) 0;
+  padding: var(--ldx2-head) clamp(16px, 2vw, 26px) 0;
   background: var(--tc-dark);
   overflow: hidden;
   isolation: isolate;
@@ -110,22 +115,29 @@
   justify-content: flex-end;
 }
 
+/* The strip, not the plate: the burst's bright band lives at its canvas's
+   vertical center, so a plate-covering canvas parks all its light behind
+   the opaque terminal. Sized to 1.7× the headroom, the equator lands at
+   ~85% of the headroom's height — light in the open, tail fading under
+   the terminal's top edge. Pointer tracking still spans the whole plate
+   (the host), and the engine clamps the cursor to this box, so circling
+   anywhere over the card visibly stirs the strip. */
 .toolchain-root .ldx2-field {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
-  height: 100%;
+  height: calc(var(--ldx2-head) * 1.7);
   z-index: 0;
   opacity: 0.9;
   mix-blend-mode: screen;
-  /* light owns the headroom and the flanks; the transcript sits
-     in the dark floor (AESTHETIC_ADDENDUM 2b) */
   mask-image: linear-gradient(
     180deg,
     #000 0%,
-    rgba(0, 0, 0, 0.55) 32%,
-    rgba(0, 0, 0, 0.14) 64%,
-    rgba(0, 0, 0, 0.26) 100%
+    #000 56%,
+    rgba(0, 0, 0, 0.5) 80%,
+    rgba(0, 0, 0, 0.16) 100%
   );
   pointer-events: none;
 }
