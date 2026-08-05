@@ -71,6 +71,13 @@
   --cross-ink: rgba(255, 255, 255, 0.34);
 }
 
+/* the closer's bottom crosses dip 5px into the footer's plate — the band
+   lifts one stacking step so the arms draw complete over it */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep {
+  position: relative;
+  z-index: 1;
+}
+
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in::after,
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-in::after {
   content: '';

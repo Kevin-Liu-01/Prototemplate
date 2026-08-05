@@ -34,12 +34,16 @@
 .toolchain-root .tcb.v0-stack .tcb-in {
   /* the rail's one ink, shared by the accent channel fill and every tap
      (founder: the taps must be the same size and ink as the blue rail and
-     actually meet it). OPAQUE on purpose — mixed over the card instead of
-     over transparent — so a tap's stub lying ON the fill composites to the
-     exact same pixels and nothing ever reads drawn twice. The hot step is
-     the old leader accent, premixed over the same card. */
-  --v0s-rail-ink: color-mix(in srgb, var(--iso-accent) 55%, var(--tcb-card));
-  --v0s-rail-ink-hot: color-mix(in srgb, var(--iso-accent) 75%, var(--tcb-card));
+     actually meet it) — PURE accent now, the same var the hot plate's
+     contour and mark resolve (founder round 7: "the colors aren't close
+     enough here for the layer attacher and the actual line" — the old
+     55/75% premixes read washed beside the true accent). The accent is
+     opaque, so a tap's stub lying ON the fill still composites to the
+     exact same pixels and nothing ever reads drawn twice; hot and resting
+     leaders are the one ink, and only the plate itself marks the hot
+     beat. The unbuilt rail above the fill stays the single grey track
+     token (.v0s-cellrail) — nothing sits between the two. */
+  --v0s-rail-ink: var(--iso-accent);
   padding-inline: 0;
   /* the band ends shortly after beat 04 completes (founder: no tall dead
      area trailing the pinned pass): the sheet's default clamp(56px, 7vw,
@@ -376,11 +380,9 @@
   stroke: var(--iso-accent);
 }
 
-/* the hot plate's leader steps brighter — same system, hotter mix;
-   riding its lifted plate, its long stub keeps it rooted in the fill */
-.toolchain-root .tcb .v0s-leader.is-hot {
-  stroke: var(--v0s-rail-ink-hot);
-}
+/* no hot step for leaders: every tap is the rail's one pure-accent ink
+   (founder round 7), so the hot plate's leader differs only by riding
+   its lifted plate — its long stub keeps it rooted in the fill */
 
 /* the hot slab's artwork lifts to full ink; the payload chip takes
    the whole accent */

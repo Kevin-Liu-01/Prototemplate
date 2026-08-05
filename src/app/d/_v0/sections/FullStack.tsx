@@ -176,7 +176,7 @@ export default function V0FullStack() {
         });
         for (const tap of taps) {
           tap.classList.remove('is-hot');
-          gsap.set(tap, { clearProps: 'opacity,visibility' });
+          gsap.set(tap, { clearProps: 'opacity,visibility,strokeDashoffset' });
         }
         if (rail) gsap.set(rail, { clearProps: 'transform' });
         for (const beat of beats) beat.classList.remove('is-hot', 'is-cold');
@@ -274,22 +274,41 @@ export default function V0FullStack() {
             const tap = taps[i];
             if (instant) {
               gsap.set(slab, { y: visible ? seat : seat - DROP, autoAlpha: visible ? 1 : 0 });
-              if (tap) gsap.set(tap, { autoAlpha: visible ? 1 : 0 });
+              if (tap) gsap.set(tap, { strokeDashoffset: visible ? 0 : 100 });
             } else if (visible && !shown[i]) {
-              /* arriving: drop in from above its seat, bottom-up; the
-                 plate's rail tap fades in with it */
+              /* arriving: the plate drops in from above its seat,
+                 bottom-up; once it settles, its tap DRAWS itself — out of
+                 the layer, through the elbow, into the rail (founder) —
+                 timed so the fill's tip has passed this tap before the
+                 draw lands on it. autoRound off: rounded dash offsets
+                 step, fractional ones glide (see the orbit's note). */
               const at = entered * 0.14;
               tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, at);
-              if (tap) tl.to(tap, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' }, at + 0.1);
+              if (tap) {
+                tl.to(
+                  tap,
+                  { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
+                  at + 0.5
+                );
+              }
               entered += 1;
             } else if (visible) {
-              /* staying: glide to the new seat */
+              /* staying: glide to the new seat, tap normalized drawn */
               tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.55, ease: 'power3.out' }, 0);
-              if (tap) tl.to(tap, { autoAlpha: 1, duration: 0.3 }, 0);
+              if (tap) {
+                tl.to(tap, { strokeDashoffset: 0, duration: 0.3, autoRound: false }, 0);
+              }
             } else {
-              /* leaving: rise back out and fade, tap first */
+              /* leaving: the tap retracts the reverse way — rail end
+                 first, back into the layer — as the plate rises out */
               tl.to(slab, { y: seat - DROP, autoAlpha: 0, duration: 0.35, ease: 'power2.in' }, 0);
-              if (tap) tl.to(tap, { autoAlpha: 0, duration: 0.25, ease: 'power2.in' }, 0);
+              if (tap) {
+                tl.to(
+                  tap,
+                  { strokeDashoffset: 100, duration: 0.25, ease: 'power2.in', autoRound: false },
+                  0
+                );
+              }
             }
             shown[i] = visible;
           });
@@ -309,12 +328,15 @@ export default function V0FullStack() {
             } else {
               const scaleY = RAIL_SCALE[count - 1] ?? 1;
               const rising = railAt === 0;
+              /* the rise is 1.0s, not longer: the deepest entering tap
+                 draws at ~0.78–1.08, and the fill's tip must have passed
+                 every tap before its leader's rail end lands */
               tl.to(
                 rail,
                 {
                   scaleY,
                   svgOrigin: RAIL_ORIGIN,
-                  duration: rising ? 1.15 : 0.6,
+                  duration: rising ? 1.0 : 0.6,
                   ease: rising ? 'power2.out' : 'power2.inOut',
                 },
                 0
@@ -398,7 +420,7 @@ export default function V0FullStack() {
         slabs.forEach((slab, i) => {
           gsap.set(slab, { y: hot.has(i) ? -LIFT : 0, autoAlpha: 1 });
         });
-        for (const tap of taps) gsap.set(tap, { autoAlpha: 1 });
+        for (const tap of taps) gsap.set(tap, { strokeDashoffset: 0 });
         if (rail) gsap.set(rail, { scaleY: 1, svgOrigin: RAIL_ORIGIN });
         return clear;
       });

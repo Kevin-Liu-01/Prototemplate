@@ -2,7 +2,6 @@ import Image from 'next/image';
 import type { ComponentType } from 'react';
 
 import { SiDiscord, SiGithub, SiNextdotjs, SiReact, SiX } from '@icons-pack/react-simple-icons';
-import { ShieldCheck } from 'lucide-react';
 
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
@@ -104,57 +103,120 @@ const COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [
   },
 ];
 
-/* The compliance program, as house marks: hairline-outlined stamps, all
-   three doors into the same trust center. Cert identifiers carry numerals,
-   so they ride in mono under the numbers rule. */
-const BADGES: readonly { label: string; detail?: string }[] = [
-  { label: 'SOC 2', detail: 'AICPA' },
-  { label: 'GDPR' },
-  { label: 'ISO 27001' },
+/* ---------- the compliance seals ----------
+   The actual badge shapes — the AICPA SOC 2 rosette, the GDPR shield and
+   lock, the ISO 27001 rosette — drawn in the sheet's own monochrome ink
+   (currentColor throughout), side by side, all three doors into the same
+   trust center. */
+
+/** A scalloped seal edge: n outward arcs whose endpoints sit on radius r.
+    k ≥ 1 scales each arc's radius from the half-chord — 1 is a semicircle
+    scallop, larger flattens toward the circle. */
+function sealPath(cx: number, cy: number, r: number, n: number, k: number): string {
+  const pts = Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)] as const;
+  });
+  const arcR = r * Math.sin(Math.PI / n) * k;
+  const first = pts[0] ?? ([cx, cy - r] as const);
+  const segs = pts.map((p, i) => {
+    const q = pts[(i + 1) % n] ?? first;
+    return `A${arcR.toFixed(2)} ${arcR.toFixed(2)} 0 0 1 ${q[0].toFixed(2)} ${q[1].toFixed(2)}`;
+  });
+  return `M${first[0].toFixed(2)} ${first[1].toFixed(2)}${segs.join('')}Z`;
+}
+
+const SOC_EDGE = sealPath(24, 24, 22.2, 22, 1.08);
+const ISO_EDGE = sealPath(24, 24, 22.2, 16, 1.04);
+
+function SocSeal() {
+  return (
+    <svg aria-hidden className='v0-fb' viewBox='0 0 48 48'>
+      <path className='v0-fb-line' d={SOC_EDGE} />
+      <circle className='v0-fb-line is-thin' cx='24' cy='24' r='17.4' />
+      <text className='v0-fb-t is-tiny' x='24' y='17'>
+        AICPA
+      </text>
+      <text className='v0-fb-t is-big' x='24' y='27.2'>
+        SOC 2
+      </text>
+      <text className='v0-fb-t is-tiny' x='24' y='34'>
+        TYPE II
+      </text>
+    </svg>
+  );
+}
+
+function GdprShield() {
+  return (
+    <svg aria-hidden className='v0-fb' viewBox='0 0 48 48'>
+      <path
+        className='v0-fb-line'
+        d='M24 4.5 L39.5 10.2 V21.4 C39.5 33 32.9 40.4 24 44 C15.1 40.4 8.5 33 8.5 21.4 V10.2 Z'
+      />
+      <path className='v0-fb-line' d='M20.8 16.4 V13.9 A3.2 3.2 0 0 1 27.2 13.9 V16.4' />
+      <rect className='v0-fb-line' height='8.8' rx='1' width='12.4' x='17.8' y='16.4' />
+      <circle className='v0-fb-dot' cx='24' cy='20.8' r='1' />
+      <text className='v0-fb-t is-big' x='24' y='35.4'>
+        GDPR
+      </text>
+    </svg>
+  );
+}
+
+function IsoSeal() {
+  return (
+    <svg aria-hidden className='v0-fb' viewBox='0 0 48 48'>
+      <path className='v0-fb-line' d={ISO_EDGE} />
+      <circle className='v0-fb-line is-thin' cx='24' cy='24' r='17.4' />
+      <text className='v0-fb-t is-big' x='24' y='23'>
+        ISO
+      </text>
+      <text className='v0-fb-t is-mono' x='24' y='30.6'>
+        27001
+      </text>
+      <text className='v0-fb-t is-stars' x='24.6' y='37'>
+        ★ ★ ★
+      </text>
+    </svg>
+  );
+}
+
+const BADGES: readonly { label: string; Art: ComponentType }[] = [
+  { label: 'AICPA SOC 2 Type II', Art: SocSeal },
+  { label: 'GDPR', Art: GdprShield },
+  { label: 'ISO 27001', Art: IsoSeal },
 ];
 
 /**
- * The v0 close: the production footer's full contents on one ruled sheet.
- * Brand + compliance stamps in the left cell, five link columns beside it —
- * the grid owns every seam — then a closing strip with live status, the
- * copyright line, and the theme switch. Both themes render it; square
- * corners, hairlines only.
+ * The v0 close: the production footer's full contents on one open sheet.
+ * The metal-masked mark and the drawn compliance seals in the left cell,
+ * five link columns beside it — no interior seams (founder note): the
+ * columns separate by rhythm alone, and only the closing strip keeps its
+ * hairline — then live status, the copyright line, and the theme switch.
  */
 export default function V0Footer() {
   return (
     <footer className='tc-sec v0-foot'>
       <div className='v0-foot-grid'>
         <div className='v0-foot-cell v0-foot-brand'>
-          {/* Both drawn marks ship; CSS shows the one the theme calls for. */}
-          <Image
-            className='v0-foot-logo is-light'
-            src='/brand/no-bg-gt-logo-light.png'
-            alt='General Translation'
-            width={26}
-            height={26}
-          />
-          <Image
-            className='v0-foot-logo is-dark'
-            src='/brand/no-bg-gt-logo-dark.png'
-            alt=''
-            width={26}
-            height={26}
-          />
+          {/* The mark in metal: the drawn glyph is a CSS mask over a chromed
+              banding gradient — one asset serves both themes, since only its
+              alpha survives the masking. */}
+          <span aria-label='General Translation' className='v0-foot-gt' role='img' />
           <p>End-to-end localization for the world&rsquo;s best companies.</p>
 
           <div className='v0-foot-badges'>
-            {BADGES.map((badge) => (
+            {BADGES.map(({ label, Art }) => (
               <a
-                aria-label={`${badge.label} compliance — General Translation trust center`}
+                aria-label={`${label} compliance — General Translation trust center`}
                 className='v0-foot-badge'
                 href='https://trust.generaltranslation.com/'
-                key={badge.label}
+                key={label}
                 rel='noreferrer'
                 target='_blank'
               >
-                <ShieldCheck aria-hidden size={12} strokeWidth={1.8} />
-                <span>{badge.label}</span>
-                {badge.detail ? <em>{badge.detail}</em> : null}
+                <Art />
               </a>
             ))}
           </div>

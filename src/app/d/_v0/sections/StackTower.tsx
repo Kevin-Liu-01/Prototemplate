@@ -187,9 +187,14 @@ const TAP_STUB = 14;
     anti-aliasing seam where the rounding recedes. */
 const TAP_END = VERTEX_X + 2;
 
-/** One tap, in slab-local coordinates — identical for every plate: up the
-    rail's own line, a small-radius corner, then out to the left vertex. */
-const TAP_D = `M${RAIL_CX} ${TAP_Y + TAP_STUB}L${RAIL_CX} ${TAP_Y + CORNER}Q${RAIL_CX} ${TAP_Y} ${RAIL_CX + CORNER} ${TAP_Y}L${TAP_END} ${TAP_Y}`;
+/** One tap, in slab-local coordinates — identical for every plate. The
+    path STARTS at the plate and ENDS down the rail, because the tap draws
+    itself on the plate's build-in (founder: "animate it coming out of the
+    layer going into the rail") — a dash-offset run from the buried butt
+    end, out through the elbow, into the rail's fill; build-out retracts it
+    the reverse way, rail end first. pathLength is normalized to 100 in the
+    markup, so FullStack's draw targets are percentages of the tap. */
+const TAP_D = `M${TAP_END} ${TAP_Y}L${RAIL_CX + CORNER} ${TAP_Y}Q${RAIL_CX} ${TAP_Y} ${RAIL_CX} ${TAP_Y + CORNER}L${RAIL_CX} ${TAP_Y + TAP_STUB}`;
 
 /* ---- the top-face artifacts, one strong drawing per beat ---------------- */
 
@@ -531,6 +536,9 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
                 data-rail-tap={i}
                 d={TAP_D}
                 strokeWidth={RAIL_GAUGE}
+                pathLength={100}
+                strokeDasharray={100}
+                strokeDashoffset={0}
               />
               {/* the opaque hull — this is what occludes the tower below —
                   then the three face fills keeping the family's upper-left
