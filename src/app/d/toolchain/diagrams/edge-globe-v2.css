@@ -11,9 +11,9 @@
    The stroke system is the family's three weights:
      hairline  — graticule back arcs (dashed), caps, leader lines
      regular   — graticule front arcs, the limb
-     emphasis  — the highlighted circuit: the route and the serving
-                 pair's (fra + user) leaders, lockups, and markers,
-                 all in the one accent ink (founder)
+     emphasis  — the one highlighted route, user → nearest PoP;
+                 at the landing beats the receiving callout flashes
+                 the same accent through its overlay copy (founder)
    The doubled ring on the serving PoP is the brand's two threads
    at constant gauge (THREAD_MOTIF): source and translation,
    arriving together.
@@ -76,11 +76,27 @@
   stroke: var(--iso-ink-hair, color-mix(in srgb, currentColor 30%, transparent));
 }
 
-/* The serving pair's leaders — fra's and the user's — carry the route's
-   accent ink (founder): the highlighted circuit is node, leader, and
-   lockup in one blue, at the family's unchanged 1px gauge. */
-.eg .eg-lead-live {
+/* Arrival flash overlays (founder revision): each serving-pair callout
+   ships an accent copy of its lockup and leader, registered exactly over
+   the base by sharing its classes, invisible at rest — so the resting
+   drawing shows only the quiet ink, and the timeline breathes the copy in
+   and out at the landing beat. Only the ink differs here; geometry, type,
+   and gauge all come from the base rules. */
+.eg .eg-flash {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.eg .eg-flash .eg-lead {
   stroke: var(--iso-accent-ink, currentColor);
+}
+
+.eg .eg-flash .eg-label {
+  fill: var(--iso-accent-ink, currentColor);
+}
+
+.eg .eg-flash .eg-icon {
+  color: var(--iso-accent-ink, currentColor);
 }
 
 /* The one emphasized element: the great-circle route to the nearest PoP —
@@ -106,11 +122,10 @@
 }
 
 /* The user is a hollow dot: not infrastructure, just where the request
-   starts. The dark fill punches it out of the route line beneath it; the
-   rim speaks the serving pair's accent, like the fra node it talks to. */
+   starts. The dark fill punches it out of the route line beneath it. */
 .eg .eg-origin-dot {
   fill: var(--tc-dark, #070707);
-  stroke: var(--iso-accent-ink, currentColor);
+  stroke: var(--iso-ink, color-mix(in srgb, currentColor 88%, transparent));
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
@@ -124,13 +139,6 @@
   fill: var(--iso-label-color, color-mix(in srgb, currentColor 70%, transparent));
 }
 
-/* The serving pair's lockups ink in the route's accent (founder). Under
-   `accent=false` the switch below folds this back to plain ink, so the
-   drawing still reads on accentless mounts. */
-.eg .eg-label-live {
-  fill: var(--iso-accent-ink, currentColor);
-  font-weight: 500;
-}
 
 /* Every callout ships two renderings of the same value — `fra · 12 ms`
    and `fra 12ms`. Exactly one is shown: the wide one wherever the globe
@@ -145,9 +153,6 @@
   color: var(--iso-label-color, color-mix(in srgb, currentColor 62%, transparent));
 }
 
-.eg .eg-icon-live {
-  color: var(--iso-accent-ink, currentColor);
-}
 
 /* ---------- the payload pulse ----------
    Request dot out, payload chip back. Both are hidden until the
@@ -222,12 +227,11 @@
 }
 
 /* ---------- reduced motion: the still carries the argument ----------
-   The route and the serving pair's accent stay — the static highlight IS
-   the reduced-motion statement — the payload chip rests mid-route (its
-   resting transform is baked into the markup), and the elements that
-   only exist as motion — the request dot and both arrival rings — are
-   removed entirely. The arrival flares never run because no timeline is
-   built. */
+   The route stays emphasized and every callout rests in the quiet ink,
+   the payload chip rests mid-route (its resting transform is baked into
+   the markup), and the elements that only exist as motion — the request
+   dot, both arrival rings, and the accent flash overlays — are removed
+   entirely; no timeline is built to breathe them in. */
 
 @media (prefers-reduced-motion: reduce) {
   .eg .eg-chip {
@@ -235,7 +239,8 @@
   }
 
   .eg .eg-dot,
-  .eg .eg-pulse-ring {
+  .eg .eg-pulse-ring,
+  .eg .eg-flash {
     display: none;
   }
 }

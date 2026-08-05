@@ -3,6 +3,7 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
 import EnterpriseEvidence from '../../singularity/sections/EnterpriseEvidence';
+import EnterpriseFrameworks from '../../singularity/sections/EnterpriseFrameworks';
 import EnterpriseTestimony from '../../singularity/sections/EnterpriseTestimony';
 import Hero from '../../singularity/sections/Hero';
 import SiteFooter from '../../singularity/sections/SiteFooter';
@@ -35,6 +36,7 @@ export default function SingularityOrbitPage() {
         <EnterpriseContact />
         <div className='tc-rail'>
           <EnterpriseEvidence />
+          <EnterpriseFrameworks />
           <EnterpriseTestimony />
           <SiteFooter />
         </div>

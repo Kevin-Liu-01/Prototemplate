@@ -405,50 +405,58 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
       {POPS.map((pop) => {
         const p = point(pop.lat, pop.lon);
         const [ex, ey] = pop.elbow;
-        const labelClass = pop.home ? 'eg-label eg-label-live' : 'eg-label';
+        const leadD = `M${fmt(p.x)} ${fmt(p.y)}L${ex} ${ey}L${pop.tickTo} ${ey}`;
         return (
-          <g key={pop.code} ref={pop.home ? fraCalloutRef : undefined}>
-            <path
-              className={pop.home ? 'eg-lead eg-lead-live' : 'eg-lead'}
-              d={`M${fmt(p.x)} ${fmt(p.y)}L${ex} ${ey}L${pop.tickTo} ${ey}`}
-            />
-            <Server
-              className={pop.home ? 'eg-icon eg-icon-live' : 'eg-icon'}
-              x={pop.iconX}
-              y={ey - 4.5}
-              width={9}
-              height={9}
-              strokeWidth={2}
-              aria-hidden
-            />
-            <text className={`${labelClass} eg-label-wide`} x={pop.textX} y={ey + 2.6}>
+          <g key={pop.code}>
+            <path className='eg-lead' d={leadD} />
+            <Server className='eg-icon' x={pop.iconX} y={ey - 4.5} width={9} height={9} strokeWidth={2} aria-hidden />
+            <text className='eg-label eg-label-wide' x={pop.textX} y={ey + 2.6}>
               {pop.code} · {pop.ms} ms
             </text>
-            <text className={`${labelClass} eg-label-compact`} x={pop.textX} y={ey + 2.6} aria-hidden>
+            <text className='eg-label eg-label-compact' x={pop.textX} y={ey + 2.6} aria-hidden>
               {pop.code} {pop.ms}ms
             </text>
+            {pop.home ? (
+              /* fra's arrival flash: an accent copy of the same lockup and
+                 leader, invisible at rest, breathed in by the timeline when
+                 the request dot lands. Same classes carry the geometry and
+                 type, so the copy registers exactly over the base. */
+              <g className='eg-flash' ref={fraFlashRef} aria-hidden>
+                <path className='eg-lead' d={leadD} />
+                <Server className='eg-icon' x={pop.iconX} y={ey - 4.5} width={9} height={9} strokeWidth={2} aria-hidden />
+                <text className='eg-label eg-label-wide' x={pop.textX} y={ey + 2.6}>
+                  {pop.code} · {pop.ms} ms
+                </text>
+                <text className='eg-label eg-label-compact' x={pop.textX} y={ey + 2.6}>
+                  {pop.code} {pop.ms}ms
+                </text>
+              </g>
+            ) : null}
           </g>
         );
       })}
 
-      {/* the user's callout, in the right ledger — the serving pair's accent */}
-      <g ref={userCalloutRef}>
+      {/* the user's callout, in the right ledger — quiet ink at rest, with
+          its own accent flash copy for the payload chip's landing */}
+      <g>
         <path
-          className='eg-lead eg-lead-live'
+          className='eg-lead'
           d={`M${fmt(ORIGIN_PT.x)} ${fmt(ORIGIN_PT.y)}L${ORIGIN.elbow[0]} ${ORIGIN.elbow[1]}L${ORIGIN.tickTo} ${ORIGIN.elbow[1]}`}
         />
-        <User
-          className='eg-icon eg-icon-live'
-          x={ORIGIN.iconX}
-          y={ORIGIN.elbow[1] - 4.5}
-          width={9}
-          height={9}
-          strokeWidth={2}
-          aria-hidden
-        />
-        <text className='eg-label eg-label-live' x={ORIGIN.textX} y={ORIGIN.elbow[1] + 2.6}>
+        <User className='eg-icon' x={ORIGIN.iconX} y={ORIGIN.elbow[1] - 4.5} width={9} height={9} strokeWidth={2} aria-hidden />
+        <text className='eg-label' x={ORIGIN.textX} y={ORIGIN.elbow[1] + 2.6}>
           user
         </text>
+        <g className='eg-flash' ref={userFlashRef} aria-hidden>
+          <path
+            className='eg-lead'
+            d={`M${fmt(ORIGIN_PT.x)} ${fmt(ORIGIN_PT.y)}L${ORIGIN.elbow[0]} ${ORIGIN.elbow[1]}L${ORIGIN.tickTo} ${ORIGIN.elbow[1]}`}
+          />
+          <User className='eg-icon' x={ORIGIN.iconX} y={ORIGIN.elbow[1] - 4.5} width={9} height={9} strokeWidth={2} aria-hidden />
+          <text className='eg-label' x={ORIGIN.textX} y={ORIGIN.elbow[1] + 2.6}>
+            user
+          </text>
+        </g>
       </g>
 
       {/* the one emphasized element: the route to the nearest PoP */}
@@ -459,12 +467,10 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         const p = point(pop.lat, pop.lon);
         return <circle key={`n-${pop.code}`} className='eg-node' cx={fmt(p.x)} cy={fmt(p.y)} r={2.4} />;
       })}
-      <g ref={fraNodeRef}>
-        <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={4.7} />
-        <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={6.6} />
-        <circle className='eg-node-home' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={3.1} />
-      </g>
-      <circle className='eg-origin-dot' cx={fmt(ORIGIN_PT.x)} cy={fmt(ORIGIN_PT.y)} r={3} ref={userDotRef} />
+      <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={4.7} />
+      <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={6.6} />
+      <circle className='eg-node-home' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={3.1} />
+      <circle className='eg-origin-dot' cx={fmt(ORIGIN_PT.x)} cy={fmt(ORIGIN_PT.y)} r={3} />
 
       {/* the pulse: request dot out, arrival rings at both ends, payload chip back */}
       <circle className='eg-pulse-ring' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={4.6} ref={ringRef} />
