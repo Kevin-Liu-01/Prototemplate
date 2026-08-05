@@ -518,9 +518,14 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     formedRtl = entry.rtl === true;
 
     inNext.fill(0);
+    /* Edge targets pull in by half a condensed glyph: landed glyphs draw
+       centered, so an ink sample at the advance's very edge would bleed
+       past the printed word's own right/left bound. */
+    const inset = advance > CONDENSED_PX * 2 ? CONDENSED_PX / 2 : 0;
     for (let k = 0; k < ptCount; k++) {
       const p = cand[k] ?? 0;
-      tx[p] = left + (pts[k * 2] ?? 0) - pad;
+      const rawX = left + (pts[k * 2] ?? 0) - pad;
+      tx[p] = Math.min(Math.max(rawX, left + inset), left + advance - inset);
       ty[p] = baselineY + (pts[k * 2 + 1] ?? 0) - yb;
       inNext[p] = 1;
     }
@@ -529,14 +534,20 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
   /**
    * Refresh the formed word's fill metrics against newly-loaded font faces
-   * WITHOUT re-dealing the swarm: membership and targets keep their
-   * geometry (one cycle of subtly stale sketch beats teleporting glyphs);
-   * the fill, the caliper and the cleared zone take the true metrics now.
+   * WITHOUT re-dealing the swarm: membership survives, and the standing
+   * targets are remapped AFFINELY from the stale span onto the true one —
+   * a subtle squeeze, never a teleport — so the sketch, the fill, the
+   * caliper and the cleared zone all agree on the same advance. (Leaving
+   * targets stale made the sketch overhang the printed word whenever the
+   * raster ran before the display face arrived.)
    */
   function remeasure(wordIndex: number): void {
     if (!sampleCtx || w === 0) return;
     const entry = SCRIPTS[wordIndex];
     if (!entry) return;
+    const oldLeft = formedLeft;
+    const oldAdvance = formedRight - formedLeft;
+    const oldPx = formedPx;
     let fontPx = maxFont;
     sampleCtx.font = `500 ${fontPx}px ${disp}`;
     let advance = sampleCtx.measureText(entry.word).width;
@@ -546,6 +557,17 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     sampleCtx.font = `500 ${fontPx}px ${disp}`;
     advance = sampleCtx.measureText(entry.word).width;
     const left = zoneCx - advance / 2;
+    if (sampledWord === wordIndex && oldAdvance > 1 && oldPx > 0) {
+      const sx = advance / oldAdvance;
+      const sy = fontPx / oldPx;
+      const inset = advance > CONDENSED_PX * 2 ? CONDENSED_PX / 2 : 0;
+      for (let p = 0; p < POOL; p++) {
+        if (inNext[p] !== 1) continue;
+        const mapped = left + ((tx[p] ?? 0) - oldLeft) * sx;
+        tx[p] = Math.min(Math.max(mapped, left + inset), left + advance - inset);
+        ty[p] = baselineY + ((ty[p] ?? baselineY) - baselineY) * sy;
+      }
+    }
     formedLeft = left;
     formedRight = left + advance;
     formedAdvance = Math.round(advance);
