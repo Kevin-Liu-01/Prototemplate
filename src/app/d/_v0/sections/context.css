@@ -477,8 +477,8 @@
 }
 
 /* ---------- the Bayer aura off the frame ----------
-   The dither comes FROM the workspace box (founder rounds): ordered 4x4
-   tiers on 2px cells, every tile on one shared 8px grid so no cell is
+   The dither comes FROM the workspace box (founder rounds, then "a lot
+   smaller dots and even more transparent"): ordered tiers on 1px cells, every tile on one shared 8px grid so no cell is
    ever painted twice. Right, top and bottom wear the SAME quiet cover-2
    field; the directional fade goes WEST — five 8px columns stepping
    cover 6 -> 4 -> 3 -> 2 -> 1 off the frame's left edge into the copy
@@ -496,8 +496,8 @@
   top: 0;
   bottom: 0;
   width: 24px;
-  opacity: 0.11;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E") repeat;
+  opacity: 0.06;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E") repeat;
 }
 
 /* SAME material as the quiet fields (founder fix: the left read as a
@@ -508,12 +508,12 @@
   top: 0;
   bottom: 0;
   width: 40px;
-  opacity: 0.11;
+  opacity: 0.06;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0Z'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0Z'/%3E%3C/svg%3E");
   background-repeat: repeat-y;
   background-position:
     32px 0,
@@ -535,8 +535,8 @@
      right strip carry the same quiet field */
   right: -24px;
   height: 14px;
-  opacity: 0.11;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E") repeat;
+  opacity: 0.06;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E") repeat;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::before {

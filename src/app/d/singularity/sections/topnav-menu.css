@@ -114,6 +114,21 @@
   background: var(--tc-hair-2);
 }
 
+/* Focus wears the system's ink, not the browser's blue: a 1px hairline ring,
+   the same stroke grammar as the page's other outlines. The generic rule
+   covers the bar's flat links and buttons; menu rows override it with an
+   inset ring so adjacent rows never collide. Tokens remap in the dark. */
+.singularity-root .tc-nav a:focus-visible,
+.singularity-root .tc-nav button:focus-visible {
+  outline: 1px solid var(--tc-ink-2);
+  outline-offset: 3px;
+}
+
+.singularity-root .tc-nav-col a:focus-visible {
+  outline: 1px solid var(--tc-ink-2);
+  outline-offset: -1px;
+}
+
 .singularity-root .tc-menu-plate {
   display: grid;
   place-items: center;

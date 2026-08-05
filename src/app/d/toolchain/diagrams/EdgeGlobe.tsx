@@ -60,7 +60,13 @@ gsap.registerPlugin(useGSAP);
 /* ---------------- projection ---------------- */
 
 const R = 92;
-const CX = 170;
+/* 179, not the frame's optical middle: the left rail's ticks end at 76
+   and the right rail's start at 284, so a 170-centred sphere sat 2px
+   off the left ticks and 22px off the right (founder: "rlly close to
+   fra and so far from the right side names") — 179 splits the air
+   ~11/13. Leaders re-derive from the projection, so only the elbows'
+   crossing margins need a glance when this moves. */
+const CX = 179;
 const CY = 126;
 const VIEW_W = 360;
 const VIEW_H = 240;

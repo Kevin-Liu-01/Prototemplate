@@ -33,6 +33,14 @@
    corners (the next section's top corners are the same points).
    ============================================================ */
 
+/* The crosses hang 5px past the rail on every seam; when the rail IS
+   the viewport (≤ ~1100px) those arms opened a 4px horizontal scroll.
+   The page clips the poke — clip, never hidden: a crop with no scroll
+   container, so the story figures downstream stay sticky. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
+  overflow-x: clip;
+}
+
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail::before {
   content: none;
 }
@@ -125,7 +133,19 @@
 }
 
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-acts {
-  margin-top: 20px;
+  margin-top: 12px;
+}
+
+/* The CTA keeps its spectral ring at rest, but on LIGHT hover the face
+   stays opaque ink: the SSOT's translucent hover let the blurred ring
+   bleed through the button as a rainbow wash (founder: keep the outside
+   coloring; no rainbow in the bg on light hover). Dark keeps its own
+   inverted hover untouched. */
+:root:not([data-theme='dark'])
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tch-cta
+  .tc-btn-solid:hover {
+  background: #2c2f34;
 }
 
 .toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tc-hero-cell.tch-band {
@@ -177,6 +197,25 @@
 
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
   font-size: clamp(1.8rem, 4vw, 3.1rem);
+  /* the SSOT's -0.038em set "ry" in "every" touching at the arm
+     (founder) — one step of air separates them without losing the
+     display cut */
+  letter-spacing: -0.024em;
+}
+
+/* the measuring guides read as BRACKETS, not I-beams (founder: "[ ]
+   instead of the Is"): each crop tick extends INWARD only, off its own
+   upright — the pair encloses the morphing word like [ word ] */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-l::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-l::after {
+  left: 0;
+  width: 4px;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-r::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-r::after {
+  left: -3px;
+  width: 4px;
 }
 
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head {
@@ -543,4 +582,11 @@
   .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) :is(.tc-head h2, .tcb-head h2) {
     white-space: nowrap;
   }
+}
+
+/* The Theo plate's avatar, one step smaller (founder: "a lil too tall")
+   — the attribution row reads caption-height, not card-height. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcpq-face {
+  width: 38px;
+  height: 38px;
 }

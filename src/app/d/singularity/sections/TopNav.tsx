@@ -89,7 +89,7 @@ function docsMenu(base: string): readonly MenuColumn[] {
       title: 'Content',
       items: [
         { label: 'Sanity', desc: 'gt-sanity', href: `${DOCS}/sanity`, icon: SiSanity, external: true },
-        { label: 'Mintlify', desc: 'Locadex for Mintlify', href: `${DOCS}/mintlify`, icon: BookOpen, external: true },
+        { label: 'Mintlify', desc: 'Locadex for Mintlify', href: `${DOCS}/locadex/mintlify`, icon: BookOpen, external: true },
       ],
     },
     {
