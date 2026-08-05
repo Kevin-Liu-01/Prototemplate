@@ -105,14 +105,14 @@ const COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [
   },
 ];
 
-/* The compliance program, as the actual program marks — the AICPA SOC 2
-   seal, the GDPR shield, the ISO 27001 rosette — side by side, all three
-   doors into the same trust center. The assets are transparent-ground, so
-   both themes seat them directly on the sheet. */
-const BADGES: readonly { label: string; src: string }[] = [
-  { label: 'AICPA SOC 2 Type II', src: '/brand/badge-aicpa-soc2.png' },
-  { label: 'GDPR', src: '/brand/badge-gdpr.png' },
-  { label: 'ISO 27001', src: '/brand/badge-iso27001.png' },
+/* The compliance program, as the production shields (the site's own
+   /shields SVGs, vendored) — side by side, all three doors into the same
+   trust center. Inked for the light ground; dark inverts them, exactly the
+   production footer's dark:invert. */
+const BADGES: readonly { alt: string; src: string }[] = [
+  { alt: 'SOC 2 Type II', src: '/shields/soc-2-type-2.svg' },
+  { alt: 'GDPR Compliant', src: '/shields/gdpr.svg' },
+  { alt: 'ISO 27001 Certified', src: '/shields/iso-27001.svg' },
 ];
 
 /**
@@ -134,16 +134,15 @@ export default function V0Footer() {
           <p>End-to-end localization for the world&rsquo;s best companies.</p>
 
           <div className='v0-foot-badges'>
-            {BADGES.map(({ label, src }) => (
+            {BADGES.map(({ alt, src }) => (
               <a
-                aria-label={`${label} compliance — General Translation trust center`}
                 className='v0-foot-badge'
-                href='https://trust.generaltranslation.com/'
-                key={label}
+                href='https://trust.inc/generaltranslation'
+                key={src}
                 rel='noreferrer'
                 target='_blank'
               >
-                <Image alt='' height={46} src={src} width={46} />
+                <img alt={alt} decoding='async' src={src} />
               </a>
             ))}
           </div>

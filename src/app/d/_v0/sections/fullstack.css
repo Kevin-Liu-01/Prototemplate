@@ -90,12 +90,13 @@
      descent and no crop during the read. Both are runway problems:
      without this padding the rest view arrives 0.24·vh − 74px BEFORE
      beat 04's copy reaches the read line, so the finale read against
-     a departing, mid-descent tower. 28vh buys the read a ≥110px
-     margin ahead of the rule at every viewport (74 + 28vh − 0.24vh),
-     and the settle (FullStack.tsx) spends the same stretch on its
-     descent AFTER the read passes. Gated off with the one-column
-     layout below. */
-  padding-block-end: clamp(240px, 28vh, 440px);
+     a departing, mid-descent tower. 36vh buys the read a 74px + 12vh
+     margin ahead of the rule (≥182px at 900), and the settle
+     (FullStack.tsx) spends the same stretch on its descent AFTER the
+     read passes — window = 74px + runway − 28vh, sized to keep the
+     descent rate ≲ 1.1:1 through ~1000-tall viewports. Gated off with
+     the one-column layout below. */
+  padding-block-end: clamp(300px, 36vh, 560px);
 }
 
 /* ---------- the drawing: sticky while the rail scrolls ---------- */

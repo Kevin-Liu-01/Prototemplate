@@ -71,45 +71,17 @@
   --cross-ink: rgba(255, 255, 255, 0.34);
 }
 
-/* the closer's bottom crosses dip 5px into the footer's plate — the band
-   lifts one stacking step so the arms draw complete over it */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep {
-  position: relative;
-  z-index: 1;
-}
-
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in::after,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-in::after {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  z-index: 2;
-  pointer-events: none;
-  --cross-ink: rgba(255, 255, 255, 0.34);
-  background:
-    linear-gradient(var(--cross-ink), var(--cross-ink)) 5px 0 / 1px 9px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) 1px 4px / 9px 1px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 5px) 0 / 1px 9px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 1px) 4px / 9px 1px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) 5px 100% / 1px 9px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) 1px calc(100% - 4px) / 9px 1px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 5px) 100% / 1px 9px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 1px) calc(100% - 4px) / 9px 1px no-repeat;
-}
-
-/* The closer band clips its own pseudo (overflow), so its bottom crosses
-   can never draw complete — that seam's marks move to the UNCLIPPED side:
-   the footer paints its own top pair, and the band keeps only its top
-   gradients so the seam is never double-inked. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-in::after {
-  background:
-    linear-gradient(var(--cross-ink), var(--cross-ink)) 5px 0 / 1px 9px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) 1px 4px / 9px 1px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 5px) 0 / 1px 9px no-repeat,
-    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 1px) 4px / 9px 1px no-repeat;
-}
-
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .v0-foot::before {
+/* The dark bands (.tcb, .v0-dep) CLIP their own pseudos — tcb-in carries
+   overflow: clip and v0-dep overflow: hidden — so a cross drawn BY a band
+   can never reach past its edges, at any offset or z-index. Both of a
+   band's seams therefore belong to its unclipped neighbors: the section
+   above's ::after already draws the top seam, and the section that
+   FOLLOWS a band paints its own top pair here. Bands draw no crosses of
+   their own. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tc-rail
+  > :is(.tcb, .v0-dep)
+  + .tc-sec::before {
   content: '';
   position: absolute;
   left: -5px;
@@ -126,7 +98,11 @@
     linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat;
 }
 
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .v0-foot::before {
+[data-theme='dark']
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tc-rail
+  > :is(.tcb, .v0-dep)
+  + .tc-sec::before {
   --cross-ink: rgba(255, 255, 255, 0.34);
 }
 

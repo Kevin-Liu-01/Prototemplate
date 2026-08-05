@@ -427,65 +427,73 @@ export default function V0FullStack() {
 
         const setY = gsap.quickSetter(fig, 'y', 'px');
 
-        /* the settle's ledger, retaken on every refresh (all terms are
-           doc-space differences, so the current scroll never leaks in):
-           drop   = vh − tail − (seat + figH) — the landing depth, and
-                    ALSO the ride-out's scroll length, because touchdown
-                    happens exactly at the rest view
-           landAt = the descent's share of the trigger's full range */
+        /* THE SETTLE OWNS ITS MATH (founder: "step 4 works the same as
+           steps 1–3" — and a debugging round proved ScrollTrigger's
+           parsed start drifted from the intended read-passed moment, so
+           the profile now runs on explicit doc-space landmarks and the
+           trigger is only a lifecycle net). Landmarks, retaken on every
+           refresh:
+           S0   = beat 04's copy line (the finale window's center)
+                  crossing 51% of the viewport — the 55% read line has
+                  just passed, so the read itself always happens SEATED;
+           REST = the band's rest view (bottom rule at the viewport
+                  bottom) — touchdown, fig bottom on the column's floor;
+           END  = REST + drop — the native sticky release meets the
+                  unwound figure at the same point and velocity;
+           drop = vh − tail − (seat + figH) — the landing depth. The
+                  descent window REST − S0 is bought by the rail cell's
+                  post-read runway (fullstack.css) — keep the two in
+                  step: rate = drop / (REST − S0) must stay ≲ 1.2. */
+        let S0 = 0;
+        let REST = 0;
+        let END = 1;
         let drop = 0;
-        let landAt = 1;
         const measure = () => {
           const vh = window.innerHeight;
+          const sy = window.scrollY;
           const seat = parseFloat(getComputedStyle(fig).top) || 0;
           /* offsetHeight, not a rect: the box height must be transform-free */
           const pinnedBottom = seat + fig.offsetHeight;
-          const secBottom = scope.getBoundingClientRect().bottom;
-          const tail = secBottom - figcol.getBoundingClientRect().bottom;
-          drop = Math.max(0, vh - tail - pinnedBottom);
-          /* descent range: from beat 04's read PASSING (the finale
-             window's center — where the copy sits — crossing 48% of the
-             viewport, just above the read line) down to the rest view
-             (rule at the viewport bottom). The read itself happens
-             seated; only the post-read runway (the rail cell's 28vh
-             padding) is spent on the descent — founder: step 4 works
-             like steps 1–3, and the tower never drops or crops while
-             its copy is being read. */
+          const secBottom = scope.getBoundingClientRect().bottom + sy;
+          const tail = secBottom - (figcol.getBoundingClientRect().bottom + sy);
           const fr = finale.getBoundingClientRect();
-          const approach = Math.max(1, secBottom - (fr.top + fr.height / 2) - 0.52 * vh);
-          landAt = approach / (approach + drop || 1);
+          const copyLine = fr.top + fr.height / 2 + sy;
+          drop = Math.max(0, vh - tail - pinnedBottom);
+          S0 = copyLine - 0.51 * vh;
+          REST = secBottom - vh;
+          END = REST + drop;
         };
 
-        /* piecewise profile over the trigger's progress: sine-in-out to
-           the floor, then a linear 1:1 unwind that holds the figure
-           doc-fixed on the floor while the sticky box catches up */
-        const apply = (p: number) => {
-          if (drop <= 0) {
+        /* piecewise profile in scroll space: sine-in-out from the seat
+           to the floor across [S0, REST], then a linear unwind across
+           [REST, END] that holds the figure doc-fixed on the floor
+           while the sticky box catches up; outside the window the seat
+           (y = 0) owns the figure */
+        const apply = () => {
+          const sy = window.scrollY;
+          if (drop <= 0 || sy <= S0 || sy >= END) {
             setY(0);
-          } else if (p <= landAt) {
-            const t = landAt > 0 ? p / landAt : 1;
+          } else if (sy <= REST) {
+            const t = (sy - S0) / Math.max(REST - S0, 1);
             setY(drop * (0.5 - 0.5 * Math.cos(Math.PI * t)));
           } else {
-            setY(drop * (1 - (p - landAt) / Math.max(1 - landAt, 0.0001)));
+            setY(drop * (1 - (sy - REST) / Math.max(drop, 1)));
           }
         };
 
         const settle = ScrollTrigger.create({
-          trigger: finale,
-          /* the finale's center (its copy) crossing 48% — the read line
-             is ~55%, so the descent begins only once the read has passed */
-          start: 'center 48%',
-          endTrigger: scope,
-          /* the native release: column bottom meets the pinned figure's
-             bottom, `drop` px of scroll past the rest view */
-          end: () => {
+          trigger: scope,
+          start: 'top bottom',
+          end: 'bottom top',
+          onUpdate: apply,
+          onToggle: apply,
+          onRefresh: () => {
             measure();
-            return `bottom bottom-=${drop}`;
+            apply();
           },
-          onUpdate: (self) => apply(self.progress),
-          onToggle: (self) => apply(self.progress),
-          onRefresh: (self) => apply(self.progress),
         });
+        measure();
+        apply();
 
         return () => {
           settle.kill();

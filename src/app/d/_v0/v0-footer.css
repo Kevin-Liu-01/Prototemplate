@@ -110,14 +110,13 @@
   max-width: 24ch;
 }
 
-/* The compliance seals: the actual program marks, side by side — no chip
-   chrome around them; the transparent assets seat straight on the sheet
-   and lift to full presence on hover. */
+/* The compliance shields: the production footer's own marks, side by
+   side — no chip chrome around them, lifting to full presence on hover. */
 .toolchain-root .v0-foot-badges {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-top: 4px;
 }
 
@@ -133,14 +132,14 @@
 
 .toolchain-root .v0-foot-badge img {
   display: block;
-  width: 46px;
-  height: 46px;
+  height: 40px;
+  width: auto;
+  user-select: none;
 }
 
-/* the marks are inked for a light ground — the dark sheet lifts them just
-   enough to read without redrawing them */
+/* inked for the light ground — dark inverts, the production dark:invert */
 [data-theme='dark'] .toolchain-root .v0-foot-badge img {
-  filter: brightness(2.1);
+  filter: invert(1);
 }
 
 /* ---------- link columns ---------- */
