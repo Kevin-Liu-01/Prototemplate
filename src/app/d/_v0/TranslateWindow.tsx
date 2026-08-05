@@ -460,7 +460,7 @@ const INS_IDS: Readonly<Partial<Record<RwKey, string>>> = {
    to this clock via onLocaleChange — are both cut to sit inside one
    dwell. Any manual interaction holds the belt and it resumes after
    IDLE of quiet. */
-const BELT_DWELL = 1.5;
+const BELT_DWELL = 6;
 const BELT_IDLE = 6000;
 
 /* ---- the seam's travel floor: the payload block is inset to the
@@ -1124,7 +1124,9 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
      payload pane — so the highlighted row is readable the moment it
      lifts. Dismissing eases the seam back to its 70/30 rest (the pane
      was borrowed for inspection; the page face is the resting state).
-     Pin-to-pin switches keep the seam open and only move the highlight.
+     EVERY pin drives the seam — switching from one inspector to another
+     re-rolls it to the reveal cut even if the reader dragged the pane
+     shut in between (founder note: consistent behavior per click).
      While pinned, Escape and any pointer-down outside a mark dismiss.
      Reduced motion jump-cuts both ways. */
   const wasPinned = useRef<RwKey | null>(null);
@@ -1134,7 +1136,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       const was = wasPinned.current;
       wasPinned.current = pinned;
       const el = app.current;
-      if (!el || Boolean(pinned) === Boolean(was)) return;
+      if (!el || pinned === was) return;
       /* the reader is inspecting: the belt must not rewrite the row under
          them — it holds now and resumes after the quiet spell */
       holdBelt();

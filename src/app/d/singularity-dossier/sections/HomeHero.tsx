@@ -244,13 +244,13 @@ export default function HomeHero() {
             morphing = true;
             gsap.to(word, {
               autoAlpha: 0,
-              duration: 0.18,
+              duration: 0.12,
               ease: 'power2.in',
               onComplete: () => {
                 showWord(next);
                 gsap.to(em, {
                   width: w1,
-                  duration: 0.4,
+                  duration: 0.3,
                   ease: 'power2.inOut',
                   snap: { width: 1 / dpr },
                   onComplete: () => {
@@ -260,7 +260,7 @@ export default function HomeHero() {
                     drive();
                   },
                 });
-                gsap.to(word, { autoAlpha: 1, duration: 0.22, ease: 'power2.out', delay: 0.14 });
+                gsap.to(word, { autoAlpha: 1, duration: 0.18, ease: 'power2.out', delay: 0.1 });
               },
             });
           };
@@ -271,46 +271,58 @@ export default function HomeHero() {
           guideR.className = 'tc-eg is-r';
           const dust = document.createElement('span');
           dust.className = 'tc-edust';
-          for (let i = 0; i < 44; i++) {
+          for (let i = 0; i < 96; i++) {
             const g = document.createElement('span');
             g.textContent = DUST[i % DUST.length] ?? '';
+            /* glyph-field fidelity at em scale: a denser, finer pool — the
+               sampler's pitch settles just under this glyph size, so the
+               landed swarm traces letterforms instead of scribbling */
+            g.style.fontSize = '0.13em';
             dust.appendChild(g);
           }
           em.append(guideL, guideR, dust);
           const dustGlyphs = Array.from(dust.children) as HTMLElement[];
 
-          /* Sample the incoming word's letterforms: draw it on an offscreen
-             canvas at the em's own font and collect dark-pixel positions. The
-             dust converges onto these points, so the glyphs sketch the shapes
-             of the characters before the characters themselves fill in. */
+          /* Sample the incoming word's letterforms the way glyph-field
+             does: rasterize at 2x resolution (so CJK counters and
+             Devanagari matras survive the alpha threshold), scan a BRICK
+             lattice — alternate rows offset by half a pitch — and adapt
+             the pitch upward until the point count fits the pool. Every
+             returned point is real ink; the swarm traces the word
+             exactly, at a density the pool can actually cover. */
           const sampleShape = (text: string, width: number, height: number, count: number) => {
             const style = getComputedStyle(word);
+            const scale = 2;
+            const cw = Math.max(Math.ceil(width), 10) * scale;
+            const ch = Math.max(Math.ceil(height), 10) * scale;
             const canvas = document.createElement('canvas');
-            canvas.width = Math.max(width, 10);
-            canvas.height = Math.max(height, 10);
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return [];
-            ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            canvas.width = cw;
+            canvas.height = ch;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (!ctx) return [] as { x: number; y: number }[];
+            const fontPx = parseFloat(style.fontSize) * scale;
+            ctx.font = `${style.fontWeight} ${fontPx}px ${style.fontFamily}`;
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText(text, 0, canvas.height * 0.85);
-            const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            const pts: { x: number; y: number }[] = [];
-            const step = 3;
-            for (let y = 0; y < canvas.height; y += step) {
-              for (let x = 0; x < canvas.width; x += step) {
-                if ((img[(y * canvas.width + x) * 4 + 3] ?? 0) > 128) pts.push({ x, y });
+            ctx.fillText(text, 0, ch * 0.85);
+            const img = ctx.getImageData(0, 0, cw, ch).data;
+            const scan = (step: number) => {
+              const out: { x: number; y: number }[] = [];
+              let rowIdx = 0;
+              for (let y = 0; y < ch; y += step, rowIdx++) {
+                const off = rowIdx % 2 === 1 ? step >> 1 : 0;
+                for (let x = off; x < cw; x += step) {
+                  if ((img[(y * cw + x) * 4 + 3] ?? 0) > 140) out.push({ x: x / scale, y: y / scale });
+                }
               }
+              return out;
+            };
+            let step = Math.max(4, Math.round(fontPx / 13));
+            let pts = scan(step);
+            while (pts.length > count && step < 60) {
+              step = Math.max(step + 1, Math.round(step * Math.sqrt(pts.length / count)));
+              pts = scan(step);
             }
-            // spread the picks across the whole word rather than clustering
-            const picked: { x: number; y: number }[] = [];
-            if (pts.length) {
-              const stride = Math.max(1, Math.floor(pts.length / count));
-              for (let i = 0; i < pts.length && picked.length < count; i += stride) {
-                const pt = pts[i];
-                if (pt) picked.push(pt);
-              }
-            }
-            return picked;
+            return pts;
           };
 
           start = (next) => {
@@ -331,7 +343,7 @@ export default function HomeHero() {
             });
 
             // 1. the instrument appears around the current word
-            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.12, ease: 'none' });
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.2, ease: 'none' });
 
             // 2. the word dissolves as ONE shaped run — splitting it into
             //    per-character spans would disconnect Arabic and reflow the
@@ -341,9 +353,9 @@ export default function HomeHero() {
               autoAlpha: 0,
               scale: 0.92,
               transformOrigin: '50% 60%',
-              duration: 0.22,
+              duration: 0.5,
               ease: 'power2.in',
-            }, '+=0.03');
+            }, '+=0.02');
             /* the cloud separates SYMMETRICALLY about the word's centre: each
                glyph takes an evenly-spread angle on a jittered ring, so the
                scatter is balanced instead of clumping off to one side */
@@ -363,67 +375,92 @@ export default function HomeHero() {
               autoAlpha: () => gsap.utils.random(0.35, 0.8),
               x: (i, g) => place0(g as HTMLElement, i).x,
               y: (i, g) => place0(g as HTMLElement, i).y,
-              duration: 0.2,
-              stagger: 0.006,
+              duration: 0.6,
+              stagger: { amount: 0.15 },
               ease: 'power1.out',
-            }, '<+=0.06');
+            }, '<+=0.03');
 
             // 3. the bounds glide to the incoming word's shaped width — ONE
             //    continuous tween, quantized to device pixels, so the period
             //    and everything after it track without buzz or end snap
-            tl.to(em, { width: w1, duration: 0.45, ease: 'power2.inOut', snap: { width: 1 / dpr } });
+            tl.to(em, { width: w1, duration: 0.9, ease: 'power2.inOut', snap: { width: 1 / dpr } });
             const place1 = ring(Math.max(w1, 30));
             tl.to(dustGlyphs, {
               x: (i, g) => place1(g as HTMLElement, i).x,
               y: (i, g) => place1(g as HTMLElement, i).y,
-              duration: 0.45,
+              duration: 0.9,
               ease: 'power2.inOut',
             }, '<');
 
-            // 4. the dust assembles the SHAPES of the incoming characters —
-            //    each glyph flies to a sampled point on the new letterforms —
-            //    then the word fills the silhouette in as one shaped run,
-            //    behind a wipe that enters from the script's reading side.
+            // 4. CONDENSATION at glyph-field fidelity: every glyph owns
+            //    EXACTLY one sampled point and lands centred on it, in
+            //    print order (the sketch inks up the way the word will
+            //    print); the real text then PRINTS through the settled
+            //    swarm behind a hard linear clip front entering from the
+            //    script's reading side, and each glyph is absorbed the
+            //    instant the front passes its point — dust becomes
+            //    typography positionally, never a crossfade beside it.
+            //    Surplus glyphs (points < pool) thin out with the scatter.
             tl.add(() => {
               const h = em.offsetHeight;
               const pts = sampleShape(next.text, w1, h, dustGlyphs.length);
+              const span = Math.max(w1, 1);
+              /* the front's clock: landings finish just ahead of it */
+              const LAND = 0.7;
+              const LAND_SPREAD = 0.25;
+              const PRINT_AT = 0.55;
+              const PRINT = 1.0;
               dustGlyphs.forEach((g, i) => {
-                const pt = pts[i % Math.max(pts.length, 1)] || { x: w1 / 2, y: h / 2 };
+                const pt = pts[i];
+                if (!pt) {
+                  gsap.to(g, { autoAlpha: 0, duration: 0.14, ease: 'power1.out' });
+                  return;
+                }
+                /* reading-side progress: 0 where the front enters */
+                const u = next.rtl ? 1 - pt.x / span : pt.x / span;
                 gsap.to(g, {
-                  x: pt.x,
-                  y: pt.y - h * 0.4,
-                  autoAlpha: 0.9,
-                  duration: 0.3,
+                  x: pt.x - g.offsetWidth / 2,
+                  y: pt.y - h * 0.4 - g.offsetHeight / 2,
+                  autoAlpha: 1,
+                  duration: LAND,
                   ease: 'power3.inOut',
-                  delay: i * 0.005,
+                  delay: u * LAND_SPREAD,
+                });
+                /* the print front absorbs the landed glyph as it passes */
+                gsap.to(g, {
+                  autoAlpha: 0,
+                  duration: 0.08,
+                  ease: 'none',
+                  delay: PRINT_AT + u * PRINT,
                 });
               });
-              gsap.delayedCall(0.3, () => {
+              gsap.delayedCall(PRINT_AT, () => {
                 showWord(next);
                 gsap.fromTo(
                   word,
                   {
-                    autoAlpha: 0,
+                    autoAlpha: 1,
                     scale: 1,
                     clipPath: next.rtl ? 'inset(-15% 0% -15% 100%)' : 'inset(-15% 100% -15% 0%)',
                   },
                   {
-                    autoAlpha: 1,
                     clipPath: 'inset(-15% 0% -15% 0%)',
-                    duration: 0.28,
-                    ease: 'power2.out',
+                    /* linear, like the library's front: the absorb delays
+                       above are computed against this exact sweep */
+                    duration: PRINT,
+                    ease: 'none',
+                    immediateRender: true,
                     onComplete: () => {
                       gsap.set(word, { clearProps: 'clipPath' });
                     },
                   }
                 );
-                gsap.to(dustGlyphs, { autoAlpha: 0, duration: 0.2, stagger: 0.005, ease: 'power1.out', delay: 0.05 });
               });
             });
             tl.to({}, { duration: 0.6 });
 
             // 5. the instrument withdraws
-            tl.to([guideL, guideR], { opacity: 0, duration: 0.18, ease: 'none' }, '>-0.04');
+            tl.to([guideL, guideR], { opacity: 0, duration: 0.16, ease: 'none' }, '>-0.03');
           };
         }
 

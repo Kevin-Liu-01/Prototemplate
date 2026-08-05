@@ -118,8 +118,9 @@ const DROP = 64;
  * toolchain dark-band grammar: tc-band tcb → tcb-in → tcb-head → tcb-grid,
  * the same sheet DarkBand draws its seams and surfaces from. The solid
  * four-slab tower — one slab per beat — sits in one tcb-cell (sticky while
- * the copy scrolls) and the four-layer copy rail in the other; the grid
- * owns the one seam between them. Each beat's block owns a ScrollTrigger;
+ * the copy scrolls) and the four-layer copy rail in the other; the grid's
+ * interior seam is killed in fullstack.css (founder: the two halves read
+ * as one composition). Each beat's block owns a ScrollTrigger;
  * as it crosses the read line
  * the rail's spotlight moves to it and the tower answers twice over: the
  * stack BUILDS — only the slabs up to the beat's level exist, and the next
@@ -395,7 +396,6 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
                     key={beat.id}
                   >
                     <div className='v0-stack-tag'>
-                      <span className='v0-stack-idx'>{String(i + 1).padStart(2, '0')}</span>
                       <Icon className='v0-stack-ic' size={16} strokeWidth={1.6} aria-hidden />
                       <span className='v0-stack-name'>{beat.name}</span>
                     </div>

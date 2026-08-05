@@ -158,54 +158,48 @@ function markPath(x: number, y: number, w: number, d: number, z = THICK): string
 }
 
 /**
- * Seats flat 2D artwork in the z = const plane: a z-plane projects as the
- * affine map (x, y) → (cos30·x − cos30·y, sin30·x + sin30·y − z), so one
- * matrix() carries whole drawings — glyph fills, wire curves, the masked
- * Locadex mark — into the surface. Strokes inside the group stay 1px via
- * vectorEffect; fills are drawn in plane coordinates and land foreshortened
- * like everything else on the face.
+ * Seats flat 2D artwork in the z = const plane, anchored at plan (ox, oy):
+ * a z-plane projects as the affine map (x, y) → (cos30·x − cos30·y,
+ * sin30·x + sin30·y − z), so one matrix() carries whole drawings — glyph
+ * strokes, wire curves, the masked Locadex mark — into the surface.
+ * Strokes inside the group stay 1px via vectorEffect; everything else is
+ * drawn in plane coordinates and lands foreshortened like the face itself.
  */
-function plane(z: number): string {
-  return `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} 0 ${-z})`;
+function plane(z: number, ox = 0, oy = 0): string {
+  const [sx, sy] = project(ox, oy, z);
+  return `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} ${sx} ${sy})`;
 }
 
 /** The chips' gauge, and where art drawn on a chip's top face sits. */
 const CHIP_H = 3.5;
 const CHIP_TOP = THICK + CHIP_H;
 
-/* The bracket glyphs are floor type: STROKED (a filled chevron under the
-   foreshortening reads as an arrow button, a stroked one as a bracket),
-   and drawn in a plan frame rotated 45° so their baseline projects
-   screen-HORIZONTAL and their stems screen-VERTICAL — upright type that
-   still foreshortens with the face (×1.2247 across, ×0.7071 down), the
-   way etched floor lettering does. Strokes stay screen-gauge via
-   vectorEffect, the wires' voice a step heavier. */
+/* The bracket glyphs are STROKED (a filled chevron under the foreshortening
+   reads as an arrow button, a stroked one as a bracket) and lie FLUSH in
+   their chip's top face (founder: the tags sit ON the layers, never
+   billboarded at the viewer): each group is seated with the same face-plane
+   matrix that carries the Locadex mark, so the baseline runs the plate's
+   +x edge and the stems foreshorten with the surface. Proportions are
+   plane-true — the frame is no longer anisotropic — and the forms run
+   larger than the old upright type so the flattened glyphs stay legible
+   (the mark proves the plane can carry a form). Strokes stay screen-gauge
+   via vectorEffect, the wires' voice a step heavier. */
 
-const PLANE_U = Math.SQRT2 * ISO_COS30;
-const PLANE_V = Math.SQRT2 * ISO_SIN30;
-
-/** The upright-type frame in a z = const plane, anchored at plan (x, y). */
-function faceType(x: number, y: number, z: number): string {
-  const [sx, sy] = project(x, y, z);
-  return `matrix(${PLANE_U} 0 0 ${PLANE_V} ${sx} ${sy})`;
-}
-
-/** A '<' (dir −1) or '>' (dir 1) bracket, in local type units. */
-function chevron(cx: number, cy: number, dir: 1 | -1, h = 16, d = 5.2): string {
+/** A '<' (dir −1) or '>' (dir 1) bracket, in face-plane units. */
+function chevron(cx: number, cy: number, dir: 1 | -1, h = 15, d = 8): string {
   const tip = cx + (d / 2) * dir;
   const back = cx - (d / 2) * dir;
   return `M${back} ${cy - h / 2}L${tip} ${cy}L${back} ${cy + h / 2}`;
 }
 
 /** The '/' of the closing bracket. */
-function slash(cx: number, cy: number, h = 16, lean = 3.4): string {
+function slash(cx: number, cy: number, h = 15, lean = 5.2): string {
   return `M${cx + lean / 2} ${cy - h / 2}L${cx - lean / 2} ${cy + h / 2}`;
 }
 
-/** The 'T' of the <T>: bar and stem, two strokes in one path. The bar's
-    half-width compensates the frame's anisotropy (×1.73 across vs down). */
-function tee(cx: number, cy: number, h = 14): string {
-  const bw = h * 0.22;
+/** The 'T' of the <T>: bar and stem, two strokes in one path. */
+function tee(cx: number, cy: number, h = 13): string {
+  const bw = h * 0.38;
   return `M${cx - bw} ${cy - h / 2}L${cx + bw} ${cy - h / 2}M${cx} ${cy - h / 2}L${cx} ${cy + h / 2}`;
 }
 
@@ -269,22 +263,22 @@ function TopGlyph({ id }: { id: string }) {
   switch (id) {
     case 'code':
       /* source: the raised bracket pair — '<' and '/>' each on its own
-         slab, drawn large enough to READ as brackets (founder round) —
-         wrapping three lines of code between them: the <T> block
-         grammar with real bracket forms */
+         slab, drawn large enough to READ as brackets (founder round),
+         lying flush in the chip tops — wrapping three lines of code
+         between them: the <T> block grammar with real bracket forms */
       return (
         <>
           <path className='v0s-g-mark' d={markPath(-16, -9, 30, 5)} />
           <path className='v0s-g-mark' d={markPath(-16, -1.5, 22, 5)} />
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
-          <GlyphChip x={-42} y={-10} w={20} d={20} h={CHIP_H} />
-          <GlyphChip x={22} y={-10} w={20} d={20} h={CHIP_H} />
-          <g transform={faceType(-32, 0, CHIP_TOP)}>
+          <GlyphChip x={-46} y={-12} w={24} d={24} h={CHIP_H} />
+          <GlyphChip x={22} y={-12} w={24} d={24} h={CHIP_H} />
+          <g transform={plane(CHIP_TOP, -34, 0)}>
             <path className='v0s-g-glyph' d={chevron(0, 0, -1)} vectorEffect='non-scaling-stroke' />
           </g>
-          <g transform={faceType(32, 0, CHIP_TOP)}>
-            <path className='v0s-g-glyph' d={slash(-2.8, 0)} vectorEffect='non-scaling-stroke' />
-            <path className='v0s-g-glyph' d={chevron(3.2, 0, 1)} vectorEffect='non-scaling-stroke' />
+          <g transform={plane(CHIP_TOP, 34, 0)}>
+            <path className='v0s-g-glyph' d={slash(-4.6, 0)} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-g-glyph' d={chevron(5, 0, 1)} vectorEffect='non-scaling-stroke' />
           </g>
         </>
       );
@@ -311,17 +305,19 @@ function TopGlyph({ id }: { id: string }) {
               />
             ))}
           </g>
-          <GlyphChip x={8} y={-11} w={30} d={22} h={CHIP_H} />
-          <g transform={faceType(23, 0, CHIP_TOP)}>
+          <GlyphChip x={6} y={-12} w={34} d={24} h={CHIP_H} />
+          {/* open tracking, on purpose: flush type shears its neighbours
+              toward each other, so anything tighter fuses the three forms */}
+          <g transform={plane(CHIP_TOP, 23, 0)}>
             <path
               className='v0s-g-glyph'
-              d={chevron(-6.8, 0, -1, 14, 4.6)}
+              d={chevron(-11, 0, -1, 12, 6.5)}
               vectorEffect='non-scaling-stroke'
             />
-            <path className='v0s-g-glyph' d={tee(0, 0)} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-g-glyph' d={tee(0, 0, 12)} vectorEffect='non-scaling-stroke' />
             <path
               className='v0s-g-glyph'
-              d={chevron(6.8, 0, 1, 14, 4.6)}
+              d={chevron(11, 0, 1, 12, 6.5)}
               vectorEffect='non-scaling-stroke'
             />
           </g>

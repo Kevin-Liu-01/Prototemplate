@@ -24,6 +24,16 @@
 
 /* ---------- cell spans: drawing 5, copy rail 7 ---------- */
 
+/* no seam between the figure and the copy rail (founder: the two halves
+   read as ONE composition): the divider was never a stroke but the grid's
+   1px gap letting the seam-tone ground show through, so the gap itself is
+   killed here — the two cards butt flush and no ground strip is exposed.
+   The sheet's outer 1px ring (the grid's padding) stays. The extra .tcb
+   in the compound outguns darkband-v3's three-class rule. */
+.toolchain-root .tcb.v0-stack .tcb-grid {
+  gap: 0;
+}
+
 .toolchain-root .tcb .v0-stack-cell-fig {
   grid-column: span 5;
   /* clip for the same reason as the section: the sticky figure must
@@ -209,7 +219,8 @@
 
 /* the chip-top type — the bracket forms and the <T> — STROKED glyphs
    (a filled chevron reads as an arrow under the foreshortening; a
-   stroked one reads as a bracket), stepping toward white when the beat
+   stroked one reads as a bracket), lying FLUSH in the chip tops on the
+   Locadex mark's face-plane matrix, stepping toward white when the beat
    spotlights them (the accent budget stays with the payload, waves,
    and orbit) */
 .toolchain-root .tcb .v0s-g-glyph {
@@ -402,21 +413,12 @@
   color: var(--tcb-dim);
 }
 
-/* mono is spent on the number only */
-.toolchain-root .tcb .v0-stack-idx {
-  font-family: var(--tc-mono);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  color: var(--tcb-faint);
-  transition: color 0.32s ease;
-}
-
-.toolchain-root .tcb .v0-stack-beat.is-hot .v0-stack-idx {
-  color: var(--iso-accent);
-}
-
+/* the lead's one mark: the icon carries the band's accent (founder round —
+   no numbers on the leads, the icon in blue); the name beside it stays ink.
+   Cold beats dim it with the whole block via the spotlight's opacity. */
 .toolchain-root .tcb .v0-stack-ic {
   flex: none;
+  color: var(--iso-accent);
 }
 
 .toolchain-root .tcb .v0-stack-name {
