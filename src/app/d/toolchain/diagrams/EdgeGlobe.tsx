@@ -38,10 +38,19 @@ gsap.registerPlugin(useGSAP);
  * identify, never decorate: a server on each PoP label, a user on the
  * origin, and a file on the payload that travels the route.
  *
+ * The serving pair — fra and the user — speak the route's accent: both
+ * label lockups, both leaders, and both markers ink in the same blue the
+ * route already carries (founder), so the conversation reads as one
+ * highlighted circuit and the other four PoPs stay quiet.
+ *
  * Motion is one quiet loop: a request dot rides the route out, a ring
- * lands at fra, and the payload chip rides back. Under reduced motion the
- * chip rests mid-route and the dot and ring are removed — the still frame
- * carries the whole argument.
+ * lands at fra, and the payload chip rides back. Each landing answers with
+ * a pulse — the receiving end's lockup, leader, and marker flare briefly
+ * and settle, and the user's arrival echoes fra's ring device — scheduled
+ * on the same timeline at the landing beats, never on a parallel clock.
+ * Under reduced motion the chip rests mid-route, the dot, rings, and
+ * pulses are removed, and the static accent highlight carries the still
+ * frame's whole argument.
  */
 
 /* ---------------- projection ---------------- */
@@ -167,13 +176,17 @@ type Pop = {
 };
 
 /* The left rail reads iad then fra — the home PoP labels on its own side
-   of the sphere (founder note), well below iad, its elbow at (82, 96) —
-   still outside the limb (x≈83.0 at that height; the sphere widens fast
-   on the way down, which is what pins the elbow this far left) and low
-   enough that the leader clears iad's node dot on the way out. The right
-   rail keeps nrt/sin/syd top-to-bottom, still in latency order. */
+   of the sphere (founder note), well below iad at 47.5% of the frame's
+   height, and with a real 18-unit horizontal arm like the right rail's
+   (founder: the old elbow at (82, 96) was pinned outside the limb, which
+   left it a 6-unit stub that read as one straight diagonal). The elbow
+   now sits just inside the limb (x 78.8 at that height), so the arm
+   crosses the sphere's edge once — the same single limb crossing the old
+   diagonal made — and the derived path clears iad's leader and every
+   node dot by 21+ units. The right rail keeps nrt/sin/syd top-to-bottom,
+   still in latency order. */
 const POPS: readonly Pop[] = [
-  { code: 'fra', ms: 12, lat: 40, lon: -18, elbow: [82, 96], tickTo: 76, iconX: 3, textX: 15, home: true },
+  { code: 'fra', ms: 12, lat: 40, lon: -18, elbow: [94, 114], tickTo: 76, iconX: 3, textX: 15, home: true },
   { code: 'iad', ms: 21, lat: 40, lon: -54, elbow: [88, 52], tickTo: 76, iconX: 3, textX: 15 },
   { code: 'nrt', ms: 34, lat: 40, lon: 54, elbow: [272, 78], tickTo: 284, iconX: 288, textX: 300 },
   { code: 'sin', ms: 41, lat: 0, lon: 54, elbow: [272, 140], tickTo: 284, iconX: 288, textX: 300 },
@@ -267,6 +280,11 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
   const dotRef = useRef<SVGCircleElement>(null);
   const ringRef = useRef<SVGCircleElement>(null);
   const chipRef = useRef<SVGGElement>(null);
+  const fraCalloutRef = useRef<SVGGElement>(null);
+  const fraNodeRef = useRef<SVGGElement>(null);
+  const userCalloutRef = useRef<SVGGElement>(null);
+  const userDotRef = useRef<SVGCircleElement>(null);
+  const userRingRef = useRef<SVGCircleElement>(null);
 
   useGSAP(
     () => {
@@ -308,6 +326,31 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         .to(chipEl, { autoAlpha: 1, duration: 0.22 }, 1.2)
         .to(res, { t: 0, duration: 1.15, ease: 'power1.inOut', onUpdate: () => place(chipEl, res.t) }, 1.2)
         .to(chipEl, { autoAlpha: 0, duration: 0.35 }, 2.5);
+
+      /* Arrival pulses (founder): the receiving end flares when its
+         document lands — fra's lockup, leader, and node as the request
+         dot arrives (1.05, the same beat its ring fires on), the user's
+         as the payload chip settles (2.35, where the return tween ends).
+         Positioned on the one timeline above, so the pulses can never
+         drift from the motion they answer. A brightness flare keeps the
+         hairlines crisp — no gauge change, no glow — and the user's
+         landing echoes fra's ring device at the origin dot. */
+      const fraLive = [fraCalloutRef.current, fraNodeRef.current].filter((el) => el !== null);
+      const userLive = [userCalloutRef.current, userDotRef.current].filter((el) => el !== null);
+      const userRingEl = userRingRef.current;
+
+      tl.fromTo(fraLive, { filter: 'brightness(1)' }, { filter: 'brightness(1.7)', duration: 0.15, ease: 'power2.out' }, 1.05)
+        .to(fraLive, { filter: 'brightness(1)', duration: 0.45, ease: 'power2.inOut' }, 1.2)
+        .fromTo(userLive, { filter: 'brightness(1)' }, { filter: 'brightness(1.7)', duration: 0.15, ease: 'power2.out' }, 2.35)
+        .to(userLive, { filter: 'brightness(1)', duration: 0.45, ease: 'power2.inOut' }, 2.5);
+      if (userRingEl) {
+        tl.fromTo(
+          userRingEl,
+          { attr: { r: 4 }, autoAlpha: 0.8 },
+          { attr: { r: 11 }, autoAlpha: 0, duration: 0.7, ease: 'power2.out' },
+          2.35,
+        );
+      }
     },
     { scope: root },
   );
@@ -347,12 +390,15 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
       {POPS.map((pop) => {
         const p = point(pop.lat, pop.lon);
         const [ex, ey] = pop.elbow;
-        const labelClass = pop.home ? 'eg-label eg-label-strong' : 'eg-label';
+        const labelClass = pop.home ? 'eg-label eg-label-live' : 'eg-label';
         return (
-          <g key={pop.code}>
-            <path className='eg-lead' d={`M${fmt(p.x)} ${fmt(p.y)}L${ex} ${ey}L${pop.tickTo} ${ey}`} />
+          <g key={pop.code} ref={pop.home ? fraCalloutRef : undefined}>
+            <path
+              className={pop.home ? 'eg-lead eg-lead-live' : 'eg-lead'}
+              d={`M${fmt(p.x)} ${fmt(p.y)}L${ex} ${ey}L${pop.tickTo} ${ey}`}
+            />
             <Server
-              className={pop.home ? 'eg-icon eg-icon-strong' : 'eg-icon'}
+              className={pop.home ? 'eg-icon eg-icon-live' : 'eg-icon'}
               x={pop.iconX}
               y={ey - 4.5}
               width={9}
@@ -370,15 +416,25 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         );
       })}
 
-      {/* the user's callout, lower left */}
-      <path
-        className='eg-lead'
-        d={`M${fmt(ORIGIN_PT.x)} ${fmt(ORIGIN_PT.y)}L${ORIGIN.elbow[0]} ${ORIGIN.elbow[1]}L${ORIGIN.tickTo} ${ORIGIN.elbow[1]}`}
-      />
-      <User className='eg-icon' x={ORIGIN.iconX} y={ORIGIN.elbow[1] - 4.5} width={9} height={9} strokeWidth={2} aria-hidden />
-      <text className='eg-label' x={ORIGIN.textX} y={ORIGIN.elbow[1] + 2.6}>
-        user
-      </text>
+      {/* the user's callout, in the right ledger — the serving pair's accent */}
+      <g ref={userCalloutRef}>
+        <path
+          className='eg-lead eg-lead-live'
+          d={`M${fmt(ORIGIN_PT.x)} ${fmt(ORIGIN_PT.y)}L${ORIGIN.elbow[0]} ${ORIGIN.elbow[1]}L${ORIGIN.tickTo} ${ORIGIN.elbow[1]}`}
+        />
+        <User
+          className='eg-icon eg-icon-live'
+          x={ORIGIN.iconX}
+          y={ORIGIN.elbow[1] - 4.5}
+          width={9}
+          height={9}
+          strokeWidth={2}
+          aria-hidden
+        />
+        <text className='eg-label eg-label-live' x={ORIGIN.textX} y={ORIGIN.elbow[1] + 2.6}>
+          user
+        </text>
+      </g>
 
       {/* the one emphasized element: the route to the nearest PoP */}
       <path className='eg-route' d={ROUTE_D} ref={routeRef} />
@@ -388,13 +444,16 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         const p = point(pop.lat, pop.lon);
         return <circle key={`n-${pop.code}`} className='eg-node' cx={fmt(p.x)} cy={fmt(p.y)} r={2.4} />;
       })}
-      <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={4.7} />
-      <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={6.6} />
-      <circle className='eg-node-home' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={3.1} />
-      <circle className='eg-origin-dot' cx={fmt(ORIGIN_PT.x)} cy={fmt(ORIGIN_PT.y)} r={3} />
+      <g ref={fraNodeRef}>
+        <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={4.7} />
+        <circle className='eg-thread' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={6.6} />
+        <circle className='eg-node-home' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={3.1} />
+      </g>
+      <circle className='eg-origin-dot' cx={fmt(ORIGIN_PT.x)} cy={fmt(ORIGIN_PT.y)} r={3} ref={userDotRef} />
 
-      {/* the pulse: request dot out, arrival ring, payload chip back */}
+      {/* the pulse: request dot out, arrival rings at both ends, payload chip back */}
       <circle className='eg-pulse-ring' cx={fmt(homePt.x)} cy={fmt(homePt.y)} r={4.6} ref={ringRef} />
+      <circle className='eg-pulse-ring' cx={fmt(ORIGIN_PT.x)} cy={fmt(ORIGIN_PT.y)} r={4} ref={userRingRef} />
       <circle
         className='eg-dot'
         r={2.2}

@@ -302,12 +302,16 @@
    Locadex mark's face-plane matrix, stepping toward white when the beat
    spotlights them (the accent budget stays with the payload, waves,
    and orbit) */
+/* the bracket voices read as TYPE now (founder: "thicker and better and
+   more like monospace text"): a heavier uniform gauge with squared
+   terminals and mitered vertices — the mono face's own cut, not a
+   hand-drawn wire */
 .toolchain-root .tcb .v0s-g-glyph {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.6);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke: rgba(255, 255, 255, 0.78);
+  stroke-width: 2.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
   transition: stroke 0.3s ease;
 }
 

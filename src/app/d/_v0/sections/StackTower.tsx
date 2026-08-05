@@ -282,8 +282,9 @@ function chevron(cx: number, cy: number, dir: 1 | -1, h = 15, d = 8): string {
   return `M${back} ${cy - h / 2}L${tip} ${cy}L${back} ${cy + h / 2}`;
 }
 
-/** The '/' of the closing bracket. */
-function slash(cx: number, cy: number, h = 15, lean = 5.2): string {
+/** The '/' of the closing bracket — at the mono face's own lean (~0.44
+    of the glyph height, a touch more slanted than the old upright cut). */
+function slash(cx: number, cy: number, h = 15, lean = 6.6): string {
   return `M${cx + lean / 2} ${cy - h / 2}L${cx - lean / 2} ${cy + h / 2}`;
 }
 

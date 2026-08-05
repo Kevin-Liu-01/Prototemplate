@@ -123,8 +123,12 @@
 }
 
 /* ---------- the glossary rows ----------
-   No perimeter — the cell owns the frame. A lift band per term (the
-   tcb-out grammar), then one translated line per locale with the term
+   The ledgers wear a quiet perimeter of their own (founder: "subtle
+   borders and corner rounding to these tables") — artifact chrome at
+   the mock-card radius, NOT a structural surface, so the square-
+   corners law doesn't apply; overflow clips the head bands' washes to
+   the rounded frame. Inside: a lift band per term (the tcb-out
+   grammar), then one translated line per locale with the term
    verbatim inside it; the second band is the rule chip: a term locked
    against translation entirely. */
 
@@ -133,6 +137,9 @@
   width: 100%;
   max-width: 420px;
   align-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .toolchain-root .v0-ctx-glossary-head {
