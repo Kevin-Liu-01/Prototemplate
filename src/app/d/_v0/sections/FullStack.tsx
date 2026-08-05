@@ -417,28 +417,38 @@ export default function V0FullStack() {
           const scanOn = agentsOn && hotBeat === agentsBeat;
           if (scan && sweepLoop && scanOn !== scanShown) {
             scanShown = scanOn;
+            /* EVERY transition clears the sheet's slate first: a rapid
+               up-and-down story scrub stacks delayed risers, running
+               fade-outs and their pause callbacks in every order, and
+               any survivor is a ghost sheet (or a frozen sweep) later */
+            gsap.killTweensOf(scan);
             if (scanOn) {
-              sweepLoop.play();
-              gsap.to(scan, {
+              const riser = gsap.to(scan, {
                 autoAlpha: 1,
                 duration: 0.35,
                 delay: 0.45,
                 ease: 'power2.out',
-                overwrite: 'auto',
+                /* the gate is RE-READ the instant the delayed riser
+                   actually fires — whatever slipped through the ledger
+                   during the delay, the sheet can never rise cold; and
+                   the sweep starts only WITH the visible sheet, so a
+                   stale pause can never freeze a lit sheet */
+                onStart: () => {
+                  if (!(inView && built >= agentsNeed && hotBeat === agentsBeat)) {
+                    riser.kill();
+                    gsap.set(scan, { autoAlpha: 0 });
+                    sweepLoop.pause();
+                    return;
+                  }
+                  sweepLoop.play();
+                },
               });
             } else {
-              /* a quick down-and-up can leave the fade-IN still PENDING
-                 (its 0.45s delay hasn't elapsed): overwrite only kills
-                 tweens that have started, so the delayed riser would
-                 resurrect the sheet after this fade-out lands — kill
-                 everything scheduled on the sheet first */
-              gsap.killTweensOf(scan);
               gsap.to(scan, {
                 autoAlpha: 0,
                 duration: 0.22,
                 delay: 0,
                 ease: 'power2.in',
-                overwrite: 'auto',
                 onComplete: () => sweepLoop.pause(),
               });
             }
