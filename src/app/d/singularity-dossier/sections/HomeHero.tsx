@@ -343,7 +343,7 @@ export default function HomeHero() {
             });
 
             // 1. the instrument appears around the current word
-            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.15, ease: 'none' });
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.2, ease: 'none' });
 
             // 2. the word dissolves as ONE shaped run — splitting it into
             //    per-character spans would disconnect Arabic and reflow the
@@ -353,7 +353,7 @@ export default function HomeHero() {
               autoAlpha: 0,
               scale: 0.92,
               transformOrigin: '50% 60%',
-              duration: 0.38,
+              duration: 0.5,
               ease: 'power2.in',
             }, '+=0.02');
             /* the cloud separates SYMMETRICALLY about the word's centre: each
@@ -375,27 +375,21 @@ export default function HomeHero() {
               autoAlpha: () => gsap.utils.random(0.35, 0.8),
               x: (i, g) => place0(g as HTMLElement, i).x,
               y: (i, g) => place0(g as HTMLElement, i).y,
-              duration: 0.45,
-              stagger: { amount: 0.1 },
+              duration: 0.6,
+              stagger: { amount: 0.15 },
               ease: 'power1.out',
             }, '<+=0.03');
 
             // 3. the bounds glide to the incoming word's shaped width — ONE
             //    continuous tween, quantized to device pixels, so the period
             //    and everything after it track without buzz or end snap
-            tl.to(em, { width: w1, duration: 0.65, ease: 'power2.inOut', snap: { width: 1 / dpr } });
-            /* the cloud CHURNS through the glide — fresh ring targets on the
-               TRANSITION's average width, so the swarm visibly reorganizes
-               (the morph never reads as a fade) without the full shift to
-               the narrow incoming width that used to bunch it at the left
-               edge. The directed flight into the letterforms then carries
-               the real arranging. */
-            const placeMid = ring(Math.max((w0 + w1) / 2, 30));
+            tl.to(em, { width: w1, duration: 0.9, ease: 'power2.inOut', snap: { width: 1 / dpr } });
+            const place1 = ring(Math.max(w1, 30));
             tl.to(dustGlyphs, {
-              x: (i, g) => placeMid(g as HTMLElement, i).x,
-              y: (i, g) => placeMid(g as HTMLElement, i).y,
-              duration: 0.65,
-              ease: 'power1.inOut',
+              x: (i, g) => place1(g as HTMLElement, i).x,
+              y: (i, g) => place1(g as HTMLElement, i).y,
+              duration: 0.9,
+              ease: 'power2.inOut',
             }, '<');
 
             // 4. CONDENSATION at glyph-field fidelity: every glyph owns
@@ -412,10 +406,10 @@ export default function HomeHero() {
               const pts = sampleShape(next.text, w1, h, dustGlyphs.length);
               const span = Math.max(w1, 1);
               /* the front's clock: landings finish just ahead of it */
-              const LAND = 0.65;
-              const LAND_SPREAD = 0.22;
-              const PRINT_AT = 0.4;
-              const PRINT = 0.7;
+              const LAND = 0.7;
+              const LAND_SPREAD = 0.25;
+              const PRINT_AT = 0.55;
+              const PRINT = 1.0;
               dustGlyphs.forEach((g, i) => {
                 const pt = pts[i];
                 if (!pt) {
@@ -468,7 +462,7 @@ export default function HomeHero() {
                 );
               });
             });
-            tl.to({}, { duration: 0.5 });
+            tl.to({}, { duration: 0.6 });
             /* the timeline itself sweeps the pool dark: whatever any
                per-glyph race leaves behind can never park visible into
                the dwell — this lane always plays to completion */
