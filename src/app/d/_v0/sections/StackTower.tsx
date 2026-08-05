@@ -763,16 +763,16 @@ function TopGlyph({ id }: { id: string }) {
               form — the book (terminology), the waveform (voice), the
               palette (style) — the beats' own icon language, lying in
               the chip tops like every other face mark */}
-          <GlyphChip x={-52} y={-31.5} w={13} d={11} h={2.5} />
-          <GlyphChip x={-52} y={-5.5} w={13} d={11} h={2.5} />
-          <GlyphChip x={-52} y={20.5} w={13} d={11} h={2.5} />
-          <ChipIcon z={THICK + 2.5} cx={-45.5} cy={-26} s={0.3} paths={ICON_BOOK} />
-          <ChipIcon z={THICK + 2.5} cx={-45.5} cy={0} s={0.3} paths={ICON_VOICE} />
+          <GlyphChip x={-46} y={-32.5} w={16} d={13} h={2.5} />
+          <GlyphChip x={-46} y={-6.5} w={16} d={13} h={2.5} />
+          <GlyphChip x={-46} y={19.5} w={16} d={13} h={2.5} />
+          <ChipIcon z={THICK + 2.5} cx={-38} cy={-26} s={0.42} paths={ICON_BOOK} />
+          <ChipIcon z={THICK + 2.5} cx={-38} cy={0} s={0.42} paths={ICON_VOICE} />
           <ChipIcon
             z={THICK + 2.5}
-            cx={-45.5}
+            cx={-38}
             cy={26}
-            s={0.3}
+            s={0.42}
             paths={ICON_STYLE}
             dots={ICON_STYLE_DOTS}
           />
@@ -803,9 +803,9 @@ function TopGlyph({ id }: { id: string }) {
           {/* the translate mark itself (founder: "the translate icon"):
               the Languages form on its own raised chip, leading the
               source string into the fan */}
-          <GlyphChip x={-52} y={-34} w={15} d={15} h={CHIP_H} />
-          <ChipIcon z={CHIP_TOP} cx={-44.5} cy={-26.5} s={0.42} paths={ICON_LANGS} />
-          <path className='v0s-g-mark' d={markPath(-33, -28, 21, 5.5)} />
+          <GlyphChip x={-46} y={-38} w={18} d={18} h={CHIP_H} />
+          <ChipIcon z={CHIP_TOP} cx={-37} cy={-29} s={0.52} paths={ICON_LANGS} />
+          <path className='v0s-g-mark' d={markPath(-25, -28, 13, 5.5)} />
           <g transform={plane(THICK)}>
             {FAN_WIRES.map((d) => (
               <path key={d} className='v0s-fan-wire' d={d} vectorEffect='non-scaling-stroke' />

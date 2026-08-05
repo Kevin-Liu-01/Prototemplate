@@ -3,17 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import {
-  Ban,
-  Braces,
-  CalendarDays,
-  PenLine,
-  Pin,
-  SlidersHorizontal,
-  Speech,
-  Split,
-  Users,
-} from 'lucide-react';
+import { Ban, CalendarDays, PenLine, Pin, Speech, Users } from 'lucide-react';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -430,10 +420,6 @@ export default function V0Context() {
             <div className='v0-ctx-art'>
               <ContextResolve title='The English string Save resolves by context: speichern when it saves a file, sparen when it means a discount' />
             </div>
-            <p className='v0-ctx-note'>
-              <Split aria-hidden strokeWidth={1.75} />
-              One string, two meanings — context picks the right word.
-            </p>
           </div>
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
@@ -473,10 +459,6 @@ export default function V0Context() {
                 </div>
               </div>
             </div>
-            <p className='v0-ctx-note'>
-              <Pin aria-hidden strokeWidth={1.75} />
-              Pinned terms render verbatim in every locale.
-            </p>
           </div>
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
@@ -517,10 +499,6 @@ export default function V0Context() {
                 })}
               </div>
             </div>
-            <p className='v0-ctx-note'>
-              <SlidersHorizontal aria-hidden strokeWidth={1.75} />
-              Directives apply to every translated string.
-            </p>
           </div>
 
           <div className='tcb-cell v0-ctx-cell v0-ctx-dyn' data-cell data-reveal>
@@ -530,10 +508,6 @@ export default function V0Context() {
             <div className='v0-ctx-art'>
               <GenderFork />
             </div>
-            <p className='v0-ctx-note'>
-              <Braces aria-hidden strokeWidth={1.75} />
-              Grammatical gender follows the variable.
-            </p>
           </div>
 
           {/* The review beat: the grid's full-width closing row — the
