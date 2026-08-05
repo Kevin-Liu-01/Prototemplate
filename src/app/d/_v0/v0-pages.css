@@ -97,6 +97,39 @@
     linear-gradient(var(--cross-ink), var(--cross-ink)) 100% calc(100% - 4px) / 9px 1px no-repeat;
 }
 
+/* The closer band clips its own pseudo (overflow), so its bottom crosses
+   can never draw complete — that seam's marks move to the UNCLIPPED side:
+   the footer paints its own top pair, and the band keeps only its top
+   gradients so the seam is never double-inked. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-in::after {
+  background:
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 0 4px / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 4px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .v0-foot::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: -5px;
+  height: 9px;
+  z-index: 2;
+  pointer-events: none;
+  --cross-ink: rgba(10, 11, 13, 0.38);
+  background:
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 0 4px / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 4px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat;
+}
+
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .v0-foot::before {
+  --cross-ink: rgba(255, 255, 255, 0.34);
+}
+
 /* ============================================================
    THE FOLD BUDGET: the logo wall's row is visible at 1440×900 —
    the hero spends less height everywhere it can spare it.
@@ -204,15 +237,16 @@
   bottom: 0;
 }
 
-/* The proof plate (tcpq) rides in the Global row at two-thirds altitude:
-   same grammar, less vertical spend. */
+/* The proof plate (tcpq) rides in the Global row at half altitude: same
+   grammar, less vertical spend — the ghost quote glyph is absolute, so
+   the tightened headroom just deepens its designed overlap. */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-plate {
-  padding: clamp(22px, 2.6vw, 34px) clamp(26px, 4.4vw, 64px) clamp(20px, 2.4vw, 30px);
+  padding: clamp(16px, 1.9vw, 24px) clamp(26px, 4.4vw, 64px) clamp(16px, 1.9vw, 24px);
 }
 
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote {
-  margin-top: clamp(14px, 1.8vw, 22px);
-  padding-top: clamp(30px, 3vw, 42px);
+  margin-top: clamp(8px, 1vw, 12px);
+  padding-top: clamp(20px, 2.2vw, 28px);
 }
 
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote p {

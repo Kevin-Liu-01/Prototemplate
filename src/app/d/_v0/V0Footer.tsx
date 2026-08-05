@@ -5,6 +5,8 @@ import { SiDiscord, SiGithub, SiNextdotjs, SiReact, SiX } from '@icons-pack/reac
 
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
+import V0FooterMark from './V0FooterMark';
+
 import './v0-footer.css';
 
 type MarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean };
@@ -125,10 +127,10 @@ export default function V0Footer() {
     <footer className='tc-sec v0-foot'>
       <div className='v0-foot-grid'>
         <div className='v0-foot-cell v0-foot-brand'>
-          {/* The mark in metal: the drawn glyph is a CSS mask over a chromed
-              banding gradient — one asset serves both themes, since only its
-              alpha survives the masking. */}
-          <span aria-label='General Translation' className='v0-foot-gt' role='img' />
+          {/* The mark in living metal: the drawn glyph masks an animated
+              chrome shader (V0FooterMark); the static gradient stays as the
+              no-WebGL and reduced-motion ground. */}
+          <V0FooterMark />
           <p>End-to-end localization for the world&rsquo;s best companies.</p>
 
           <div className='v0-foot-badges'>

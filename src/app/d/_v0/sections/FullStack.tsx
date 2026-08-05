@@ -127,9 +127,12 @@ const DROP = 64;
  * the way back up) — and the beat's slab(s) take the tower's highest z,
  * lift up the iso vertical, and light their accent edge and leader, while
  * the rest stay solid but dimmer. One timeline per transition, never
- * pinned by JS (the figure is CSS sticky). Reduced motion and the no-JS
- * resting markup get the FULL stack with the first beat lit, statically —
- * four legible slabs over a truer-but-emptier one.
+ * pinned by JS (the figure is CSS sticky); the one JS hand on the figure
+ * itself is the SETTLE below — a scroll-locked descent that lands the
+ * tower on the column's floor as the band's bottom rule arrives, so the
+ * rest view has no black run under the figure. Reduced motion and the
+ * no-JS resting markup get the FULL stack with the first beat lit,
+ * statically — four legible slabs over a truer-but-emptier one.
  */
 export default function V0FullStack() {
   const root = useRef<HTMLElement>(null);
@@ -444,6 +447,88 @@ export default function V0FullStack() {
           const dashed: SVGPathElement[] = orbit ? [...waves, orbit] : [...waves];
           if (dashed.length > 0) gsap.set(dashed, { clearProps: 'strokeDashoffset' });
           clear();
+        };
+      });
+
+      /* THE SETTLE (founder: "we literally need that black space gone").
+         The seat centers the figure at ~50vh, so at the band's rest view
+         — bottom rule at the viewport bottom — a pinned figure is stranded
+         mid-viewport over a seat-sized black run (~197px at 900, ~286px
+         at 1080; it grows with the display). No sticky geometry can close
+         it: while pinned, the figure's bottom can never ride below
+         seat + figure height. So the figure LANDS instead: across the
+         finale's approach a scroll-locked translate carries it from the
+         seat down to the column's floor, touching down exactly as the
+         rule meets the viewport bottom; from touchdown it holds the floor
+         doc-fixed — riding beside the finale copy — until the native
+         sticky release takes over at the same velocity, so seated → riding
+         has no jump. Descent is sine-eased (zero slope at both ends): it
+         begins after beat 03's read completes and is ~85% down by beat
+         04's lock-in — the founder trades that dwell for the void.
+         Gated to the two-column, motion-allowed world: below 1021px the
+         figure is static and needs no settle. */
+      mm.add('(prefers-reduced-motion: no-preference) and (min-width: 1021px)', () => {
+        const fig = scope.querySelector<HTMLElement>('.v0-stack-fig');
+        const figcol = scope.querySelector<HTMLElement>('.v0-stack-figcol');
+        const finale = beats[beats.length - 1];
+        if (!fig || !figcol || !finale) return;
+
+        const setY = gsap.quickSetter(fig, 'y', 'px');
+
+        /* the settle's ledger, retaken on every refresh (all terms are
+           doc-space differences, so the current scroll never leaks in):
+           drop   = vh − tail − (seat + figH) — the landing depth, and
+                    ALSO the ride-out's scroll length, because touchdown
+                    happens exactly at the rest view
+           landAt = the descent's share of the trigger's full range */
+        let drop = 0;
+        let landAt = 1;
+        const measure = () => {
+          const vh = window.innerHeight;
+          const seat = parseFloat(getComputedStyle(fig).top) || 0;
+          /* offsetHeight, not a rect: the box height must be transform-free */
+          const pinnedBottom = seat + fig.offsetHeight;
+          const secBottom = scope.getBoundingClientRect().bottom;
+          const tail = secBottom - figcol.getBoundingClientRect().bottom;
+          drop = Math.max(0, vh - tail - pinnedBottom);
+          /* descent range: from the finale window's top at 85vh down to
+             the rest view (rule at the viewport bottom) */
+          const approach = Math.max(1, secBottom - finale.getBoundingClientRect().top - 0.15 * vh);
+          landAt = approach / (approach + drop || 1);
+        };
+
+        /* piecewise profile over the trigger's progress: sine-in-out to
+           the floor, then a linear 1:1 unwind that holds the figure
+           doc-fixed on the floor while the sticky box catches up */
+        const apply = (p: number) => {
+          if (drop <= 0) {
+            setY(0);
+          } else if (p <= landAt) {
+            const t = landAt > 0 ? p / landAt : 1;
+            setY(drop * (0.5 - 0.5 * Math.cos(Math.PI * t)));
+          } else {
+            setY(drop * (1 - (p - landAt) / Math.max(1 - landAt, 0.0001)));
+          }
+        };
+
+        const settle = ScrollTrigger.create({
+          trigger: finale,
+          start: 'top 85%',
+          endTrigger: scope,
+          /* the native release: column bottom meets the pinned figure's
+             bottom, `drop` px of scroll past the rest view */
+          end: () => {
+            measure();
+            return `bottom bottom-=${drop}`;
+          },
+          onUpdate: (self) => apply(self.progress),
+          onToggle: (self) => apply(self.progress),
+          onRefresh: (self) => apply(self.progress),
+        });
+
+        return () => {
+          settle.kill();
+          gsap.set(fig, { clearProps: 'y' });
         };
       });
 
