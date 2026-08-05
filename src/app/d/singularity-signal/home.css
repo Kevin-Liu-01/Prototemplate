@@ -135,3 +135,74 @@
     padding-left: 16px;
   }
 }
+
+/* ============================================================
+   LIGHT THEME: the window follows the page (founder: on light,
+   no black boxes). Scoped :root:not([data-theme='dark']) so the
+   dark build above stays byte-identical. The window's token dial
+   re-inks once — bar rule, title, dim/faint text and the loc hue
+   all follow — and the hardcoded dark paints (hero-terminal.css,
+   the shared role colors, this sheet's own pane strokes) are
+   countered at winning specificity. One hue on paper: the house
+   light string blue; completion green steps to the diff-add ink;
+   commands and counted numbers go full ink.
+   ============================================================ */
+
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .tct-win {
+  --tct-ink: rgba(7, 7, 7, 0.88);
+  --tct-dim: rgba(7, 7, 7, 0.46);
+  --tct-faint: rgba(7, 7, 7, 0.3);
+  --tct-rule: rgba(7, 7, 7, 0.12);
+  --tct-loc: #3555b8;
+  --tct-loc-line: rgba(53, 85, 184, 0.38);
+  --tct-loc-wash: rgba(53, 85, 184, 0.07);
+  --tct-tr: #3555b8;
+  --tct-ok: #1e7a4b;
+  background: #ffffff;
+  outline-color: rgba(7, 7, 7, 0.25);
+  box-shadow: none;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .tct-type {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .tct-strong {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .tct-src {
+  color: rgba(7, 7, 7, 0.56);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .tct-caret {
+  background: rgba(7, 7, 7, 0.65);
+}
+
+/* locale chips: the house light-chip grammar */
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .tct-chip {
+  border-color: rgba(7, 7, 7, 0.16);
+  background: rgba(7, 7, 7, 0.03);
+  color: rgba(7, 7, 7, 0.72);
+}
+
+/* the pane legend and its divider: hairlines to ink (the captions
+   themselves read --tct-dim and follow the token) */
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .sgsh-panes {
+  border-color: rgba(7, 7, 7, 0.22);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .sgsh-panes span + span {
+  border-left-color: rgba(7, 7, 7, 0.22);
+}
+
+/* the split's one internal stroke */
+:root:not([data-theme='dark']) .toolchain-root.sgsh-root .sgsh-pane.is-output {
+  border-left-color: rgba(7, 7, 7, 0.12);
+}
+
+@media (max-width: 880px) {
+  :root:not([data-theme='dark']) .toolchain-root.sgsh-root .sgsh-pane.is-output {
+    border-top-color: rgba(7, 7, 7, 0.12);
+  }
+}

@@ -724,6 +724,12 @@
   border-inline-color: var(--tc-hair);
 }
 
+/* styles.css hardcodes .tc-band h2 to white — on a light band the display
+   head speaks ink (section owners found this gap; the fix is central). */
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band.tcb h2 {
+  color: var(--tc-ink);
+}
+
 :root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cell h3 {
   color: #070707;
 }
@@ -860,4 +866,31 @@
   .v0-cust
   + .v0-hatch.v0-hatch {
   border-bottom: 1px solid var(--tc-hair);
+}
+
+/* The closer's Get started wears the SAME rainbow ring as the hero's
+   (founder round) — one construction, two mounts. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta {
+  position: relative;
+  display: inline-flex;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #db2777, #2563eb, #9333ea, #16a34a);
+  filter: blur(4px);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta:hover::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta:focus-within::before {
+  opacity: 0.9;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta > .v0-dep-btn {
+  position: relative;
 }

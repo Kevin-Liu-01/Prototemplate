@@ -126,3 +126,89 @@
     display: none;
   }
 }
+
+/* ============================================================
+   LIGHT THEME: the window follows the page (founder: on light,
+   no black boxes). Scoped :root:not([data-theme='dark']) so the
+   dark build above stays byte-identical. The window's token dial
+   re-inks once — bar rule, title, stage numbers, the addr's loc
+   hue all follow — and the hardcoded dark paints (hero-terminal,
+   the shared role colors, this sheet's artifact plate) are
+   countered at winning specificity. One hue on paper: the house
+   light string blue; completion green steps to the diff-add ink;
+   commands and counted numbers go full ink.
+   ============================================================ */
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-win {
+  --tct-ink: rgba(7, 7, 7, 0.88);
+  --tct-dim: rgba(7, 7, 7, 0.46);
+  --tct-faint: rgba(7, 7, 7, 0.3);
+  --tct-rule: rgba(7, 7, 7, 0.12);
+  --tct-loc: #3555b8;
+  --tct-loc-line: rgba(53, 85, 184, 0.38);
+  --tct-loc-wash: rgba(53, 85, 184, 0.07);
+  --tct-tr: #3555b8;
+  --tct-ok: #1e7a4b;
+  background: #ffffff;
+  outline-color: rgba(7, 7, 7, 0.25);
+  box-shadow: none;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-type {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-strong {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-src {
+  color: rgba(7, 7, 7, 0.56);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-caret {
+  background: rgba(7, 7, 7, 0.65);
+}
+
+/* locale chips: the house light-chip grammar */
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-chip {
+  border-color: rgba(7, 7, 7, 0.16);
+  background: rgba(7, 7, 7, 0.03);
+  color: rgba(7, 7, 7, 0.72);
+}
+
+/* the stage seg: hairline to ink; the active chip inverts to the dark
+   chip (each theme wears the other's plate), so its stage number
+   re-inks light inside it */
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-seg {
+  border-color: rgba(7, 7, 7, 0.22);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-seg button[data-on='true'] {
+  background: #070707;
+  color: #ffffff;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .sgbh-stageseg button[data-on='true'] .sgbh-num {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* stage 03's served artifact: the translucent wash and hairline flip
+   families; the payload's code ramp re-inks (keys dim toward ink, the
+   translated leaves keep the one hue via --tct-tr above) */
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .sgbh-artifact {
+  border-color: rgba(7, 7, 7, 0.14);
+  background: rgba(7, 7, 7, 0.03);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .sgbh-addr {
+  border-bottom-color: rgba(7, 7, 7, 0.1);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-payload-code {
+  color: rgba(7, 7, 7, 0.4);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgbh-root .tct-payload-code .pl-k {
+  color: rgba(7, 7, 7, 0.5);
+}

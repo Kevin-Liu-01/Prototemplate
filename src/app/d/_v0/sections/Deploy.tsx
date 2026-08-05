@@ -63,9 +63,13 @@ export default function Deploy() {
             Join the world’s best developer teams on General Translation.
           </p>
           <div className='v0-dep-acts'>
-            <a className='v0-dep-btn v0-dep-btn-solid' href='#pricing'>
-              Get started
-            </a>
+            {/* the hero's rainbow ring, verbatim grammar (founder: same
+                effects as the Get started at the very top) */}
+            <span className='v0-dep-cta'>
+              <a className='v0-dep-btn v0-dep-btn-solid' href='#pricing'>
+                Get started
+              </a>
+            </span>
             <a className='v0-dep-btn v0-dep-btn-line' href='#contact'>
               Get a demo
             </a>

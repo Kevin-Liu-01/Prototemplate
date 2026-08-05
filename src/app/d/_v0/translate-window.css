@@ -1142,3 +1142,180 @@
   color: #101010;
 }
 
+/* ============================================================
+   LIGHT THEME: the WINDOW CHROME follows the page (founder: on
+   light, no black boxes or sections — the mock already renders
+   its light build above; now the bar, the window ground, the
+   Terminal transcript and the payload plate go light with it).
+   Everything here is scoped :root:not([data-theme='dark']), so
+   the dark build keeps every rule above byte-for-byte. The
+   window's own token dial re-inks once — every reader of
+   --tct-* (bar rule, title, dim/faint text, the loc hue, the
+   frame rules via --tct-frame) follows — and the hardcoded dark
+   paints (hero-terminal.css, v0-pages.css, the shared role
+   colors) are countered selector-for-selector at winning
+   specificity. The one hue on paper is the house light string
+   blue (#3555b8, the tcb light ramp's own); completion green
+   steps to the diff-add ink; commands and counted numbers go
+   full ink — the light terminal grammar the tcb bands already
+   speak (v0-pages re-inks their prompt lines to #070707).
+   ============================================================ */
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw.tct-win {
+  --tct-ink: rgba(7, 7, 7, 0.88);
+  --tct-dim: rgba(7, 7, 7, 0.46);
+  --tct-faint: rgba(7, 7, 7, 0.3);
+  --tct-rule: rgba(7, 7, 7, 0.12);
+  --tct-loc: #3555b8;
+  --tct-loc-line: rgba(53, 85, 184, 0.38);
+  --tct-loc-wash: rgba(53, 85, 184, 0.07);
+  --tct-tr: #3555b8;
+  --tct-ok: #1e7a4b;
+  background: #ffffff;
+  /* the ring steps to the light window grammar (the tcb terminal's own
+     outline ink); the inset top-light is a dark-plate device — it goes */
+  outline-color: rgba(7, 7, 7, 0.25);
+  box-shadow: none;
+}
+
+/* the shared role colors (home-terminal-colors.css) are a dark-plate
+   dialect: amber commands and white-lifted numbers re-ink to full ink;
+   keys and globs read --tct-loc and follow the token above on their own */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-type {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-strong {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-src {
+  color: rgba(7, 7, 7, 0.56);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-caret {
+  background: rgba(7, 7, 7, 0.65);
+}
+
+/* the seg: hairline to ink; the active chip inverts to the dark chip —
+   the same active grammar, each theme wearing the other's plate */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-seg {
+  border-color: rgba(7, 7, 7, 0.22);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-seg button[data-on='true'] {
+  background: #070707;
+  color: #ffffff;
+}
+
+/* locale chips: the house light-chip grammar (the v0-dev tags' own) */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-chip {
+  border-color: rgba(7, 7, 7, 0.16);
+  background: rgba(7, 7, 7, 0.03);
+  color: rgba(7, 7, 7, 0.72);
+}
+
+/* the frameworks strip re-inks in the same gray family */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-stacks button {
+  color: rgba(7, 7, 7, 0.55);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-stacks button:hover {
+  color: rgba(7, 7, 7, 0.8);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-stacks button[data-on='true'] {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-stacks button[data-on='true']::after {
+  background: #070707;
+}
+
+/* the belt: gray family flipped to light-surface values; the active
+   chip's lift adapts — the loc hue is dark on paper now, so the label
+   inverts to white instead of the dark-plate ink */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .v0-tw-belt-track button {
+  border-color: rgba(7, 7, 7, 0.16);
+  background: rgba(7, 7, 7, 0.03);
+  color: rgba(7, 7, 7, 0.62);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .v0-tw-belt-track button[data-on='true'] {
+  border-color: var(--tct-loc, #3555b8);
+  background: var(--tct-loc, #3555b8);
+  color: #ffffff;
+}
+
+/* ---- the payload plate: the served artifact on the light build ----
+   The render is white, so the artifact takes the house SECOND surface
+   (#f5f5f3, the hero ground's own key): the seam's two materials still
+   read apart — paper against plate — without a black box behind the
+   teaser. The editor gutter re-inks: dim numerals, one hairline rule. */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-payload {
+  background: #f5f5f3;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-payload-file {
+  color: rgba(7, 7, 7, 0.45);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-payload-code {
+  color: rgba(7, 7, 7, 0.4);
+}
+
+/* keys dim toward ink; the translated leaves keep the one hue via
+   --tct-tr above */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-payload-code .pl-k {
+  color: rgba(7, 7, 7, 0.5);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .pl-ln {
+  color: rgba(7, 7, 7, 0.38);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-payload-code::before {
+  background: rgba(7, 7, 7, 0.14);
+}
+
+/* the pinned row: a light accent wash, the row's inks lifting to full
+   ink (the dark build lifts to white; paper lifts to #070707) */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] {
+  background: rgba(47, 92, 224, 0.14);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] .pl-k,
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] .pl-s {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] .pl-ln {
+  color: rgba(7, 7, 7, 0.6);
+}
+
+/* the inspector's id chip annotated the payload's dark ground; on light
+   it speaks the light-chip grammar instead of holding a #101010 slab
+   over the white render */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .sgdh-ins-chip {
+  border-color: rgba(7, 7, 7, 0.25);
+  background: #ffffff;
+  color: rgba(7, 7, 7, 0.85);
+}
+
+/* the seam's right thread sat on a dark plate; on the light plate it
+   steps toward ink so the doubled line keeps both strokes legible (the
+   left thread's #656565 already reads on the white render). The tab
+   keeps its dark chip — the plate's OWN chip grammar, per the seam
+   refit note above. */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-app .tc-seam {
+  --seam-ink-r: #6f6f6f;
+}
+
+/* the drag hint: a light chip on the light plate (v0-pages' dark chip
+   countered here — the hint rides inside the window) */
+:root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-app .tch-drag-hint {
+  border-color: rgba(7, 7, 7, 0.22);
+  background: rgba(255, 255, 255, 0.85);
+  color: rgba(7, 7, 7, 0.72);
+}
+

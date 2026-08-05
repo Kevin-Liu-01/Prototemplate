@@ -124,3 +124,104 @@
 [data-theme='dark'] .toolchain-root.sgph-root .sgph-console {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
+
+/* ============================================================
+   LIGHT THEME: the console follows the page (founder: on light,
+   no black boxes or sections — "Deploy today." keeps the only
+   plate). Scoped :root:not([data-theme='dark']) so the dark
+   build above stays byte-identical. The console sheds the ink:
+   it takes the hero section's own second-surface ground (the
+   prismatic wash already inverts light via the shared .tch-field
+   rule), the ink family flips back to the page's dark ramp —
+   headline, guides and dust all read the re-declared --tc-ink —
+   and the buttons return to the toolchain's own light grammar.
+   The chromeless transcript re-inks on the same dial as the
+   other homes' windows: one hue on paper (the house light string
+   blue), completion green at the diff-add ink, commands and
+   counted numbers full ink.
+   ============================================================ */
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console {
+  --tc-ink: #070707;
+  --tc-ink-2: rgba(7, 7, 7, 0.63);
+  --tc-ink-3: rgba(7, 7, 7, 0.45);
+  --tc-ink-4: rgba(7, 7, 7, 0.27);
+  --thread-ink: #070707;
+  background: var(--tch-ground, #f5f5f3);
+  color: #070707;
+}
+
+/* the CTA row returns to the toolchain light grammar: dark solid chip
+   (v0-pages' light hover ink), hairline line button */
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tc-btn-solid {
+  background: #070707;
+  color: #f5f5f3;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tc-btn-solid:hover {
+  background: #2c2f34;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: #070707;
+  background: transparent;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tc-btn-line:hover {
+  border-color: rgba(7, 7, 7, 0.28);
+  background: rgba(7, 7, 7, 0.03);
+}
+
+/* the copy button: back to the light chip it is everywhere else */
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tc-copy {
+  border-color: var(--tc-hair);
+  background: #ffffff;
+  color: var(--tc-ink-2);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tc-copy:hover {
+  border-color: rgba(7, 7, 7, 0.26);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tc-copy span:last-child {
+  color: var(--tc-ink-4);
+}
+
+/* the chromeless session: the .tct-win keeps no dressing here (the
+   base rules above strip it in both themes) — only its token dial and
+   the role-color hardcodes re-ink for paper */
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tct-win {
+  --tct-ink: rgba(7, 7, 7, 0.88);
+  --tct-dim: rgba(7, 7, 7, 0.46);
+  --tct-faint: rgba(7, 7, 7, 0.3);
+  --tct-rule: rgba(7, 7, 7, 0.12);
+  --tct-loc: #3555b8;
+  --tct-loc-line: rgba(53, 85, 184, 0.38);
+  --tct-loc-wash: rgba(53, 85, 184, 0.07);
+  --tct-tr: #3555b8;
+  --tct-ok: #1e7a4b;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tct-type {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tct-strong {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tct-src {
+  color: rgba(7, 7, 7, 0.56);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tct-caret {
+  background: rgba(7, 7, 7, 0.65);
+}
+
+/* locale chips: the house light-chip grammar */
+:root:not([data-theme='dark']) .toolchain-root.sgph-root .sgph-console .tct-chip {
+  border-color: rgba(7, 7, 7, 0.16);
+  background: rgba(7, 7, 7, 0.03);
+  color: rgba(7, 7, 7, 0.72);
+}

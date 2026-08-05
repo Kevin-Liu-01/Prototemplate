@@ -821,9 +821,9 @@ export default function V0Locadex() {
       <div className='tc-head'>
         <i className='tc-head-icon v0-ldx-head-mark' aria-hidden />
         <h2 data-reveal>
-          The easiest way to localize your full system
+          The easiest way to localize your application
           <br />
-          in native speed and quality.
+          with native speed and quality.
         </h2>
       </div>
 
