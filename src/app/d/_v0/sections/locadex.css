@@ -164,20 +164,21 @@
 }
 
 /* the scan sheet: a translucent body, 1px edges, and the landing line —
-   the sweep's white voice (the accent never rides the beam) */
+   in LIGHT BLUE now (founder: not the grayish white), the band's own
+   accent family at sheet strengths */
 .toolchain-root .v0-ldx .v0-ldx-beam {
-  fill: rgba(255, 255, 255, 0.05);
+  fill: rgba(134, 168, 255, 0.08);
 }
 
 .toolchain-root .v0-ldx .v0-ldx-beam-edge {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.13);
+  stroke: rgba(134, 168, 255, 0.3);
   stroke-width: 1;
 }
 
 .toolchain-root .v0-ldx .v0-ldx-beam-land {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.38);
+  stroke: rgba(134, 168, 255, 0.65);
   stroke-width: 1;
 }
 

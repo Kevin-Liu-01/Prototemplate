@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
   type ComponentType,
-  type CSSProperties,
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 
@@ -546,6 +545,16 @@ const CUT_MIN = 26;
    --seam-cut default and the main zone's right padding in the sheet. */
 const REST_CUT = 88;
 
+/* ---- the narrow build's one media key (the sheet's ≤760 cut). JS only
+   ever reads it at act-time, so ≥761px behavior is untouched. On narrow
+   the seam RESTS fully shut (100): the 12% teaser the desktop rest keeps
+   in frame is a strip of clipped half-words at phone widths, so the
+   payload waits whole behind the seam instead — the drag still reveals
+   it. Must agree with the --seam-cut narrow override in the sheet. */
+const NARROW_MQ = '(max-width: 760px)';
+const isNarrow = () => typeof window !== 'undefined' && window.matchMedia(NARROW_MQ).matches;
+const restCut = () => (isNarrow() ? 100 : REST_CUT);
+
 /** A component's inspector mark: the quiet exclamation pinned to its
     component's top-right CORNER — one fixed inset, centred on the corner
     point, the same on every component (founder: no floating offsets).
@@ -869,8 +878,9 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         /* the still must carry the whole argument: divider parked mid, both
-           panes of the reveal legible */
-        setCut(50);
+           panes of the reveal legible — except on narrow, where a mid cut
+           clips the JSON into half-words: the still rests shut there */
+        setCut(isNarrow() ? 100 : 50);
         return;
       }
 
@@ -1228,6 +1238,9 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     () => {
       viewRef.current = view;
       if (view !== 'preview' || dragged.current) return;
+      /* narrow rests shut (restCut 100): there is no teaser to announce,
+         so the intro stays desktop-only — the sheet's rest already holds */
+      if (isNarrow()) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const dial = { v: 97 };
       gsap.to(dial, {
@@ -1265,7 +1278,8 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
          them — it holds now and resumes after the quiet spell */
       holdBelt();
       dragged.current = true;
-      const target = pinned ? CUT_MIN : REST_CUT;
+      /* unpinning returns to the width's own rest — shut on narrow */
+      const target = pinned ? CUT_MIN : restCut();
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setCut(target);
       } else {
@@ -1307,7 +1321,19 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       const onResize = () => reconcileMarks();
       window.addEventListener('resize', onResize);
       void document.fonts.ready.then(reconcileMarks);
-      return () => window.removeEventListener('resize', onResize);
+      /* crossing the narrow cut re-parks the seam: the two widths rest at
+         different cuts (88 vs 100), and a stale inline cut from the other
+         build would strand the teaser as clipped half-words. A pinned
+         seam is the reader's mid-inspection — leave it; unpin re-parks. */
+      const mq = window.matchMedia(NARROW_MQ);
+      const onCross = () => {
+        if (!pinnedRef.current) setCut(mq.matches ? 100 : REST_CUT);
+      };
+      mq.addEventListener('change', onCross);
+      return () => {
+        window.removeEventListener('resize', onResize);
+        mq.removeEventListener('change', onCross);
+      };
     },
     { scope: root }
   );
@@ -1370,15 +1396,18 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
           </div>
         </div>
 
-        {/* Preview leads the seg — it is the window's default face */}
+        {/* Preview leads the seg — it is the window's default face. The
+            words live in spans so the narrow build (≤760px) can go
+            icon-only without touching the buttons; the aria-labels keep
+            each button's accessible name when the text is display: none. */}
         <div className='tct-seg' role='group' aria-label='Show the run as'>
-          <button type='button' data-on={view === 'preview'} onClick={() => pickView('preview')}>
+          <button type='button' data-on={view === 'preview'} aria-label='Preview' onClick={() => pickView('preview')}>
             <Eye aria-hidden size={13} strokeWidth={1.8} />
-            Preview
+            <span className='v0-tw-seg-t'>Preview</span>
           </button>
-          <button type='button' data-on={view === 'term'} onClick={() => pickView('term')}>
+          <button type='button' data-on={view === 'term'} aria-label='Terminal' onClick={() => pickView('term')}>
             <TerminalSquare aria-hidden size={13} strokeWidth={1.8} />
-            Terminal
+            <span className='v0-tw-seg-t'>Terminal</span>
           </button>
         </div>
       </div>
@@ -1513,7 +1542,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
               light ground. Everything that matters clusters LEFT of the
               resting cut, so the payload's teaser strip never covers a
               line. */}
-          <div className='tct-app' ref={app} lang={ploc} style={{ '--seam-cut': `${REST_CUT}%` } as CSSProperties}>
+          {/* the resting cut is the SHEET's (88 desktop, 100 narrow — the
+              media query knows the width, SSR cannot): no inline seed, so
+              the first paint rests right at every size; every interactive
+              writer (setCut, the seam) sets the inline var from there */}
+          <div className='tct-app' ref={app} lang={ploc}>
             {/* the app's own chrome: the GT mark + "Translate" as the brand,
                 then the localized nav. The brand pair is NOT a translatable
                 string — no rewrite node, no inspector: it never switches

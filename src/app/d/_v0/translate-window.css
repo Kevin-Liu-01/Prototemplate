@@ -1038,18 +1038,68 @@
   border-color: rgba(7, 7, 7, 0.75);
 }
 
-/* ---- narrow: tighter gutters; the stats keep to the surface; the
-   chart card falls under the stack (the face itself needs no narrow
-   rule any more: it is padding 0 at every width — the surface owns
-   its own gutter) */
+/* ---- narrow: the ONE mobile cut (≤760, the sheet's own narrow key —
+   isNarrow() in TranslateWindow.tsx reads the same media query, so JS
+   and sheet agree). Everything here is width-scoped: ≥761px renders
+   from the rules above, untouched. */
 @media (max-width: 760px) {
+  /* the seam RESTS SHUT on narrow (must agree with restCut() in the
+     component): the desktop rest's 12% payload teaser is a strip of
+     clipped half-words at phone widths, so the pane waits whole behind
+     the seam — the drag still reveals it. This later block outranks the
+     88% rest above on order at equal specificity. */
+  .toolchain-root .v0-tw .tct-app.tct-app {
+    --seam-cut: 100%;
+  }
+
+  /* no teaser at rest → no teaser reserve: the main's right padding
+     returns to the plain gutter (must agree with the narrow rest above;
+     the desktop 12% + 26px mirror stays desktop-only) */
+  .toolchain-root .v0-tw .tct-app .tct-app-main {
+    padding: 16px var(--app-gut) 24px;
+  }
+
   .toolchain-root .v0-tw .sgdh-app-cols {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* the card STRETCHES to the column track. It must never be sized to
+     fit-content here (the old justify-self: start): container-type's
+     inline-size containment zeroes the contents' intrinsic width, so
+     fit-content collapsed the card to its padding — a 34px sliver with
+     0-width bars and month labels overprinting each other. The track is
+     the box now: fixed through every locale swap by construction. */
   .toolchain-root .v0-tw .sgdh-app-chart {
-    justify-self: start;
+    justify-self: stretch;
     margin-top: 18px;
+  }
+
+  /* the bar canvas is FIXED on narrow (founder): an explicit height —
+     not the desktop's flex: 1 stretch, which only resolves against the
+     two-rail row — keeps the % bars measurable and the box constant */
+  .toolchain-root .v0-tw .sgdh-app-bars {
+    flex: 0 0 auto;
+    height: 96px;
+  }
+
+  /* …and so is the run: narrow pins the series to its floor — the LAST
+     six months — at every container width, so the phone never re-tiers
+     mid-scroll or between orientations. These later rules outrank the
+     @container tiers above on order (equal specificity throughout). */
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(-n + 8),
+  .toolchain-root .v0-tw .sgdh-app-months span:nth-child(-n + 8) {
+    display: none;
+  }
+
+  /* the accent re-seats on the six-bar tier's own third visible bar;
+     the wider tiers' picks (3, 6) return to ink first */
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(3),
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(6) {
+    background: var(--bar-ink);
+  }
+
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(11) {
+    background: var(--bar-accent);
   }
 
   .toolchain-root .v0-tw .sgdh-app-stat dd {
@@ -1059,6 +1109,20 @@
   /* the value ladders track the dd's narrow size, or the reserve lies */
   .toolchain-root .v0-tw .v0-tw-ghost.is-dd i {
     font-size: 12px;
+  }
+
+  /* the seg goes ICON-ONLY: the words hide, the buttons keep their
+     aria-labels (TranslateWindow.tsx), and the belt zone wins back the
+     bar width the labels were eating */
+  .toolchain-root .v0-tw .tct-seg .v0-tw-seg-t {
+    display: none;
+  }
+
+  /* the drag chip would poke past the window edge at the shut rest —
+     it steps out on narrow; the seam handle itself stays draggable
+     (doubled anchor outranks the v0-pages chip rule on specificity) */
+  .toolchain-root .v0-tw .tct-app .tch-drag-hint {
+    display: none;
   }
 }
 

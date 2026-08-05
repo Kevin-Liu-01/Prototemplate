@@ -145,27 +145,31 @@ const SIGN_T = 0.65;
  * to a constant screen vector (−cos30, +sin30) per unit, so the sweep is
  * one x/y tween.
  */
-/** The landing spreads wider than the slab (founder: "scan the FULL
-    surface") — the sheet flares from the agent's ±22 underside down to a
-    ±34 footprint, a light cone whose land line reaches the module grid's
-    outer columns. */
+/* The sheet LEANS as it sweeps (founder round-trip: a rigid translate
+   sent the top past the slab — "the scanner is going beyond the locadex
+   square"): the top edge travels only ±BEAM_TOP_Y, always under the ±22
+   slab, while the land line travels ±BEAM_LAND_Y so it crosses every
+   module row (the grid spans ±29). A leaning quad cannot be a translated
+   constant, so beamAt(t) projects the four corners for a sweep phase
+   t ∈ [−1, 1] and the loop writes the paths per tick; t = 0 is the drawn
+   rest pose (the reduced-motion still). The landing also spreads wider
+   than the slab (±34): a light cone reaching the grid's outer columns. */
 const BEAM_LAND_HALF = 34;
-const beamTL = project(-A_HALF, 0, A_Z);
-const beamTR = project(A_HALF, 0, A_Z);
-const beamBR = project(BEAM_LAND_HALF, 0, CHIP_TOP);
-const beamBL = project(-BEAM_LAND_HALF, 0, CHIP_TOP);
-const BEAM_QUAD = polyline([beamTL, beamTR, beamBR, beamBL], true);
-const BEAM_EDGE_L = segment(beamTL, beamBL);
-const BEAM_EDGE_R = segment(beamTR, beamBR);
-const BEAM_LAND = segment(beamBL, beamBR);
-
-/** Sweep amplitude in world y — deep enough that the land line crosses
-    every module row (the grid spans ±29); the sheet's top may overhang
-    the slab a breath at the extremes, which reads as the light leading
-    the scan, not a defect. */
-const SWEEP_Y = 28;
-const SWEEP_DX = SWEEP_Y * ISO_COS30;
-const SWEEP_DY = SWEEP_Y * ISO_SIN30;
+const BEAM_TOP_Y = 14;
+const BEAM_LAND_Y = 28;
+const beamAt = (t: number) => {
+  const tl = project(-A_HALF, BEAM_TOP_Y * t, A_Z);
+  const tr = project(A_HALF, BEAM_TOP_Y * t, A_Z);
+  const br = project(BEAM_LAND_HALF, BEAM_LAND_Y * t, CHIP_TOP);
+  const bl = project(-BEAM_LAND_HALF, BEAM_LAND_Y * t, CHIP_TOP);
+  return {
+    quad: polyline([tl, tr, br, bl], true),
+    edgeL: segment(tl, bl),
+    edgeR: segment(tr, br),
+    land: segment(bl, br),
+  };
+};
+const BEAM_REST = beamAt(0);
 
 /** Ground flow from the repository's right vertex toward the output plate. */
 const FLOW_WIRE = segment(project(40, -40, 0), project(54, -54, 0));
@@ -362,10 +366,10 @@ function LocadexIso() {
 
         {/* the scan beam, swept across the module grid */}
         <g data-ldx-scan>
-          <path className='v0-ldx-beam' d={BEAM_QUAD} />
-          <path className='v0-ldx-beam-edge' d={BEAM_EDGE_L} vectorEffect='non-scaling-stroke' />
-          <path className='v0-ldx-beam-edge' d={BEAM_EDGE_R} vectorEffect='non-scaling-stroke' />
-          <path className='v0-ldx-beam-land' d={BEAM_LAND} vectorEffect='non-scaling-stroke' />
+          <path className='v0-ldx-beam' d={BEAM_REST.quad} />
+          <path className='v0-ldx-beam-edge' d={BEAM_REST.edgeL} vectorEffect='non-scaling-stroke' />
+          <path className='v0-ldx-beam-edge' d={BEAM_REST.edgeR} vectorEffect='non-scaling-stroke' />
+          <path className='v0-ldx-beam-land' d={BEAM_REST.land} vectorEffect='non-scaling-stroke' />
         </g>
 
         {/* the agent slab, hovering, carrying the Locadex mark on its top
@@ -687,20 +691,30 @@ export default function V0Locadex() {
          slab's center. */
       const scan = el.querySelector<SVGGElement>('[data-ldx-scan]');
       if (scan) {
+        /* the leaning sweep: one dial drives all four paths through
+           beamAt — the top pivots inside the slab while the land line
+           runs the full surface (see the BEAM block above) */
+        const beamBody = scan.querySelector<SVGPathElement>('.v0-ldx-beam');
+        const beamEdges = scan.querySelectorAll<SVGPathElement>('.v0-ldx-beam-edge');
+        const beamLand = scan.querySelector<SVGPathElement>('.v0-ldx-beam-land');
+        const sweep = { t: 1 };
+        const setBeam = () => {
+          const g = beamAt(sweep.t);
+          beamBody?.setAttribute('d', g.quad);
+          beamEdges[0]?.setAttribute('d', g.edgeL);
+          beamEdges[1]?.setAttribute('d', g.edgeR);
+          beamLand?.setAttribute('d', g.land);
+        };
         const loops: gsap.core.Tween[] = [
-          gsap.fromTo(
-            scan,
-            { x: SWEEP_DX, y: -SWEEP_DY },
-            {
-              x: -SWEEP_DX,
-              y: SWEEP_DY,
-              duration: 3.6,
-              ease: 'sine.inOut',
-              repeat: -1,
-              yoyo: true,
-              paused: true,
-            }
-          ),
+          gsap.fromTo(sweep, { t: 1 }, {
+            t: -1,
+            duration: 3.6,
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true,
+            paused: true,
+            onUpdate: setBeam,
+          }),
         ];
         /* the mark holds its resting ink, full stop — the old warm-to-accent
            pulse read as flashing (founder), so the agent's identity stays
