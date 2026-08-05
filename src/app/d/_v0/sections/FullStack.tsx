@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Bot, Code2, Languages, Layers } from 'lucide-react';
+import { Code2, Languages, Layers } from 'lucide-react';
 import { useRef } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
@@ -30,6 +30,24 @@ type BeatIconProps = {
   className?: string;
   'aria-hidden'?: boolean;
 };
+
+/**
+ * The agents tag's icon: the Locadex mark itself, never a stock bot glyph
+ * (founder) — the brand asset as an alpha mask over currentColor, the head
+ * watermark's treatment (locadex.css) at tag scale, so it takes the tag's
+ * accent exactly like the lucide icons do. Same lucide contract — size in,
+ * square box out — and fullstack.css scales the mask so the GLYPH spans
+ * the box, not the asset's padded canvas.
+ */
+function LocadexMark({ size = 16, className, 'aria-hidden': ariaHidden }: BeatIconProps) {
+  return (
+    <span
+      className={className ? `v0-stack-ldx ${className}` : 'v0-stack-ldx'}
+      style={{ width: size, height: size }}
+      aria-hidden={ariaHidden}
+    />
+  );
+}
 
 /**
  * One marketing layer of the stack, in the founder's four-part grammar:
@@ -108,7 +126,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'agents',
     name: 'Agents',
-    lead: 'Make it automatic.',
+    lead: 'Automate it.',
     points: [
       <>Locadex keeps your app localized with every update. Just merge a PR.</>,
       <>The Locadex agent is the fastest way to localize your app end-to-end.</>,
@@ -117,7 +135,7 @@ const BEATS: readonly StackBeat[] = [
         changes.
       </>,
     ],
-    icon: Bot,
+    icon: LocadexMark,
     slabIds: ['agents'],
   },
 ];

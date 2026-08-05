@@ -38,7 +38,6 @@ export default function Page() {
 
         <div className='tc-rail'>
           <HomeHero />
-          <div aria-hidden className='v0-hatch' />
           <V0Customers />
           <div aria-hidden className='v0-hatch' />
           <V0FullStack />

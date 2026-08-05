@@ -20,6 +20,54 @@
   --iso-accent: #86a8ff;
 }
 
+/* ---------- one black, not two ----------
+   Founder: the globe cell's ground must sit in the house plate family, with
+   no two-blacks seam anywhere in the cell. Two paints disagreed with it:
+   the origin dot punches its route line out in --tc-dark (#070707, the
+   full-bleed band tone) on the #101010 panel, and in dark theme the panel
+   itself held #101010 while every other card in the row and the page lands
+   on the theme's one ink black (#070707) — the row read as two blacks
+   split by its own seam. Both now follow the card's actual ground: the
+   punch ink is the panel tone, and in dark the panel remaps to the card
+   family, which recolors the card AND the payload chip's plate in one
+   move (both read var(--tc-panel)). */
+.toolchain-root .v0-glob .tc-cell.is-night > .tc-card {
+  --tc-dark: var(--tc-panel);
+}
+
+[data-theme='dark'] .toolchain-root .v0-glob .tc-cell.is-night > .tc-card {
+  --tc-panel: var(--tc-card);
+}
+
+/* ---------- the dithered atmosphere ----------
+   The wrapper is the registration frame: it owns the 520px cap the .eg rule
+   also states, and isolates a stacking context so the field's negative
+   z-index sits behind the globe's ink but above the card's ground. */
+.toolchain-root .v0-glob-atmo {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 520px;
+}
+
+.toolchain-root .v0-glob-atmo-field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* The one ink the field spends: the night plate's white at atmosphere
+   opacity (the founder's ~0.05–0.09 window; the plate is dark in both
+   themes, so the ink is the panel's white, not the page's). Density does
+   the fading — this alpha never ramps. */
+.toolchain-root .v0-glob-atmo-field .v0-glob-atmo-dots {
+  fill: rgba(255, 255, 255, 0.07);
+}
+
 /* The globe's own stylesheet pins --eg-label-size on .eg itself, so the
    rendered-size override has to outrank it: 9px viewBox units ≈ 11.7px at
    this card's ~1.3x render — above the 11px annotation floor. The phone
@@ -37,10 +85,24 @@
   }
 }
 
+/* Founder: the globe and the claims rail split the row as equal halves.
+   The shell's is-lead template (1.32fr/1fr) is overridden a class deeper —
+   the .v0-glob scope outranks it whatever the sheet order — and only above
+   the shell's own 1000px collapse, which keeps its single column. */
+@media (min-width: 1001px) {
+  .toolchain-root .v0-glob .tc-row.is-lead {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* ---------- the ruled rail of claims ----------
    Three blocks in one framed cell, a single hairline between neighbours,
    nothing at the ends — the card's frame is the row's, and the blocks
-   spread over whatever height the globe beside them settles on. */
+   spread over whatever height the globe beside them settles on. The
+   blocks bleed through the card's gutters (founder: the rules run edge to
+   edge of the cell's box), with the padding restored inside so the type
+   keeps its seat; the end blocks still draw nothing where the card's own
+   frame already rules the box. */
 .toolchain-root .v0-glob-rail {
   flex: 1;
   display: flex;
@@ -52,7 +114,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-inline: calc(var(--tc-card-pad) * -1);
   padding-block: clamp(16px, 1.9vw, 24px);
+  padding-inline: var(--tc-card-pad);
 }
 
 .toolchain-root .v0-glob-item:first-child {

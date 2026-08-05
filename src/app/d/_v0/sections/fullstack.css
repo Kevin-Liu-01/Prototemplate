@@ -45,11 +45,10 @@
      token (.v0s-cellrail) — nothing sits between the two. */
   --v0s-rail-ink: var(--iso-accent);
   padding-inline: 0;
-  /* the sheet's default clamp(56px, 7vw, 88px) tail is cut to one quiet
-     breath between the grid's bottom rule and the band's own — the
-     interior runway the pin needs lives INSIDE the grid: in the beats'
-     windows and in the rail cell's agents dwell (see the cushion below) */
-  padding-block-end: 28px;
+  /* founder: no tail at all — the grid's bottom rule IS the band's close;
+     the interior runway the pin needs lives INSIDE the grid (the beats'
+     windows and the rail cell's agents dwell) */
+  padding-block-end: 0;
 }
 
 .toolchain-root .tcb.v0-stack .tcb-head {

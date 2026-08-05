@@ -434,7 +434,7 @@ const INT_SOURCES: readonly IntSource[] = [
   { label: 'GitHub', cy: 24, icons: [{ name: 'GitHub', Icon: SiGithub }] },
   { label: 'Google Drive', cy: 86, icons: [{ name: 'Google Drive', Icon: SiGoogledrive }] },
   {
-    label: 'CMS platform',
+    label: 'CMS',
     cy: 148,
     icons: [
       { name: 'Notion', Icon: SiNotion },
@@ -442,7 +442,7 @@ const INT_SOURCES: readonly IntSource[] = [
       { name: 'Sanity', Icon: SiSanity },
     ],
   },
-  { label: 'Docs framework', cy: 210, icons: [{ name: 'Markdown', Icon: SiMarkdown }] },
+  { label: 'Docs', cy: 210, icons: [{ name: 'Markdown', Icon: SiMarkdown }] },
 ];
 
 /**
@@ -474,7 +474,7 @@ function IntegrateDiagram() {
       className='v0-ldx-int-svg'
       viewBox={`0 0 ${INT_W} ${INT_H}`}
       role='img'
-      aria-label='GitHub, Google Drive, a CMS platform, and a docs framework all feed the Locadex agent'
+      aria-label='GitHub, Google Drive, a CMS, and docs all feed the Locadex agent'
     >
       <defs>
         <mask
@@ -752,9 +752,9 @@ export default function V0Locadex() {
       <div className='tc-head'>
         <i className='tc-head-icon v0-ldx-head-mark' aria-hidden />
         <h2 data-reveal>
-          The easiest way to localize your full system
+          The easiest way to localize your application
           <br />
-          in native speed and quality.
+          with native speed and quality.
         </h2>
       </div>
 
@@ -792,7 +792,7 @@ export default function V0Locadex() {
           cell='is-tall tcm-ruled'
           framed={false}
           title='Any integration.'
-          sub='Just a few clicks to integrate with GitHub, Google Drive, your CMS platform, or your docs framework.'
+          sub='Just a few clicks to integrate with GitHub, Google Drive, your CMS, or your docs.'
         />
       </div>
     </section>

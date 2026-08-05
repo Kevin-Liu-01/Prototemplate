@@ -67,6 +67,112 @@ const SCRIPT_BELT: readonly { code: string; native: string }[] = [
   { code: 'ko', native: '한국어' },
 ];
 
+/* ---- the globe's dithered atmosphere ------------------------------------
+   Founder: a low-opacity ordered-dither field behind the globe, in the
+   house Bayer language (glyph-field's 1-bit falloffs; StackTower's mark
+   shimmer) — a radial density falloff hugging the sphere's silhouette and
+   fading out, reading as atmosphere rather than noise. Density carries the
+   whole ramp: four NON-overlapping annuli, each filled with one coverage
+   tier of the 4×4 ordered Bayer matrix, all tiles on one shared grid — so
+   crossing a ring boundary only ever turns dots off (ordered tiers nest by
+   construction) and no cell is painted twice (the ink is translucent, so a
+   doubled cell would brighten into a second grey — the alpha-veil failure
+   the 1-bit language exists to avoid). Static by design, so it is
+   reduced-motion safe by construction; crispEdges keeps the ~1.8px cells
+   1-bit at 1x and 2x alike. */
+
+/** Ordered 4×4 Bayer matrix — glyph-field's, verbatim (StackTower's copy). */
+const ATMO_BAYER: readonly (readonly number[])[] = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
+
+/** Dither cell edge in the globe's viewBox units: ~1.8px on screen at the
+    card's ~1.44x render of the 360-unit drawing — inside the founder's
+    1–2px dot spec at every width this cell reaches. */
+const ATMO_CELL = 1.25;
+const ATMO_TILE = ATMO_CELL * 4;
+
+/** One pattern tile at coverage k/16: every cell whose Bayer threshold
+    sits under k, as one path of squares. */
+function atmoTile(cover: number): string {
+  const cells: string[] = [];
+  ATMO_BAYER.forEach((row, y) => {
+    row.forEach((threshold, x) => {
+      if (threshold < cover) {
+        cells.push(
+          `M${x * ATMO_CELL} ${y * ATMO_CELL}h${ATMO_CELL}v${ATMO_CELL}h${-ATMO_CELL}Z`
+        );
+      }
+    });
+  });
+  return cells.join('');
+}
+
+/** The sphere's projection, mirrored from EdgeGlobe.tsx (R/CX/CY are module
+    constants there, not exported): limb radius 92 centred at (170, 126) in
+    the 360×240 viewBox. The overlay shares that viewBox, so the two
+    coordinate systems coincide exactly at any rendered size. */
+const ATMO_CX = 170;
+const ATMO_CY = 126;
+
+/** The falloff, centre-out: ring bounds (viewBox units) and Bayer coverage.
+    The innermost ring clears the limb by 2 units so the atmosphere never
+    touches the drawing's strongest line; the outermost fade completes at
+    112 — inside the viewBox's 114-unit floor clearance, so no ring is ever
+    cut flat by the viewport edge. */
+const ATMO_RINGS: readonly { cover: number; rIn: number; rOut: number }[] = [
+  { cover: 6, rIn: 94, rOut: 98.5 },
+  { cover: 4, rIn: 98.5, rOut: 103 },
+  { cover: 2, rIn: 103, rOut: 107.5 },
+  { cover: 1, rIn: 107.5, rOut: 112 },
+];
+
+/** A full circle as two arcs; outer + inner subpaths under evenodd make
+    each ring an annulus, so the four tiers tile the halo without overlap. */
+function atmoRing(r: number): string {
+  return `M${ATMO_CX - r} ${ATMO_CY}a${r} ${r} 0 1 0 ${r * 2} 0a${r} ${r} 0 1 0 ${-r * 2} 0Z`;
+}
+
+function GlobeAtmosphere() {
+  return (
+    <svg
+      aria-hidden='true'
+      className='v0-glob-atmo-field'
+      focusable='false'
+      viewBox='0 0 360 240'
+    >
+      <defs>
+        {ATMO_RINGS.map(({ cover }) => (
+          <pattern
+            height={ATMO_TILE}
+            id={`v0ga-${cover}`}
+            key={cover}
+            patternUnits='userSpaceOnUse'
+            width={ATMO_TILE}
+          >
+            <path
+              className='v0-glob-atmo-dots'
+              d={atmoTile(cover)}
+              shapeRendering='crispEdges'
+            />
+          </pattern>
+        ))}
+      </defs>
+      {ATMO_RINGS.map(({ cover, rIn, rOut }) => (
+        <path
+          d={atmoRing(rOut) + atmoRing(rIn)}
+          fill={`url(#v0ga-${cover})`}
+          fillRule='evenodd'
+          key={cover}
+        />
+      ))}
+    </svg>
+  );
+}
+
 export default function V0Global() {
   const root = useRef<HTMLElement>(null);
 
@@ -84,7 +190,13 @@ export default function V0Global() {
             the row's mat ground is the one line around it. */}
         <BentoCell cell='is-tall is-framed is-night'>
           <div className='v0-glob-art'>
-            <EdgeGlobe title='A wireframe globe with five points of presence, the nearest serving a translation 12 ms away' />
+            {/* The atmosphere and the globe share one box (and one viewBox),
+                so the dither's rings stay registered on the sphere's limb at
+                every rendered size; the field sits behind the drawing. */}
+            <div className='v0-glob-atmo'>
+              <GlobeAtmosphere />
+              <EdgeGlobe title='A wireframe globe with five points of presence, the nearest serving a translation 12 ms away' />
+            </div>
           </div>
         </BentoCell>
 

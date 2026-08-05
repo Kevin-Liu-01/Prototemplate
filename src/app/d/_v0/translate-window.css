@@ -77,6 +77,10 @@
   height: 100%;
   width: max-content;
   align-items: center;
+  /* wider than the shared 8px chip gap — fifteen flags in a row read as a
+     wall at tab spacing (founder). runWidth is measured chip-to-chip at
+     runtime, so the wrap stays seamless at any gap. */
+  gap: 14px;
   will-change: transform;
 }
 
