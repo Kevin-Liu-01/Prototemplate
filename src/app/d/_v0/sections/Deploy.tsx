@@ -15,8 +15,9 @@ gsap.registerPlugin(useGSAP);
  * condensation field (founder note): the copy block stands LEFT, and the
  * RIGHT side is the field itself — glyphs from eight scripts drifting in
  * depth, condensing into the word "language" in one script after another
- * (createGlyphField, the hero's own parameters; the default falling drift
- * IS the show). ONE canvas spans the rail column: the engine's own dithered
+ * (createGlyphField with the rising drift: the band launches its glyphs
+ * upward, the closing counterpart to the hero's fall). ONE canvas spans
+ * the rail column: the engine's own dithered
  * copy-clearing keeps the left zone quiet for the type, so no mask and no
  * second ambient field ever fight it. The band is permanently dark, so the
  * canvas pins --tc-ink to the white ramp (deploy.css) and both themes render
@@ -41,6 +42,7 @@ export default function Deploy() {
       const h2 = rootEl.querySelector('h2');
       const field = createGlyphField({
         canvas,
+        drift: 'rise',
         displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
         monoFamily: getComputedStyle(rootEl).getPropertyValue('--tc-mono').trim() || undefined,
       });
