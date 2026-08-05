@@ -3,10 +3,11 @@
 import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 
+import PaperWarpField from '@/components/shared/PaperWarpField';
 import { createGlyphField } from '@/lib/glyph-field';
 import { createHorizonField } from '@/lib/horizon-field';
 import { createPrismaticField } from '@/lib/prismatic-field';
-import { createRayField } from '@/lib/ray-field';
+import { createStudioField } from '@/lib/studio-field';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './HeroFieldSwitcher.css';
@@ -15,13 +16,16 @@ import './HeroFieldSwitcher.css';
  * WORKING-REVIEW RIG — not product. Mounts the hero band's light field and a
  * quiet instrumentation ladder (mono indices, hairline pill, color only on
  * the active row) that swaps the field live between ten variants, so the
- * founder can compare engines on the real band. The pick persists in
- * localStorage under one key shared by every home that carries the rig; the
- * default is 01 — today's prismatic wash — so the shipped look is unchanged
- * until someone switches. Exactly one engine is alive at a time: each switch
- * remounts a fresh canvas (keyed) and runs the previous engine's destroy();
- * the underlying GL contexts are the libraries' own session singletons, so
- * cycling variants never grows the context count.
+ * founder can compare engines on the real band. Slots 04–08 carry the
+ * glyphfield studio materials (the founder's own shader studies, ported in
+ * src/lib/studio-field.ts; 07 is the packaged Paper Warp). The pick persists
+ * in localStorage under one key shared by every home that carries the rig;
+ * the default is 01 — today's prismatic wash — so the shipped look is
+ * unchanged until someone switches. Exactly one engine is alive at a time:
+ * each switch remounts a fresh stage (keyed) and runs the previous engine's
+ * destroy(); the canvas engines share the libraries' own session-singleton
+ * GL contexts and the Paper mount loses its context on unmount, so cycling
+ * variants never grows the context count.
  */
 
 const STORE_KEY = 'gt-hero-field-variant';
@@ -31,7 +35,10 @@ type Cleanup = () => void;
 type Variant = {
   id: string;
   name: string;
-  mount: (canvas: HTMLCanvasElement) => Cleanup | undefined;
+  /** Canvas-engine variants mount a house engine onto the keyed canvas… */
+  mount?: (canvas: HTMLCanvasElement) => Cleanup | undefined;
+  /** …component variants render their own stage (the packaged Paper Warp). */
+  render?: (className: string) => React.ReactElement;
 };
 
 const VARIANTS: readonly Variant[] = [
@@ -62,65 +69,43 @@ const VARIANTS: readonly Variant[] = [
   },
   {
     id: '04',
-    name: 'rays-converge',
+    name: 'line-field',
+    // The studio's line study: ruled lines, warped and lit — the house motif.
     mount: (canvas) => {
-      const field = createRayField(canvas, { preset: 'converge' });
+      const field = createStudioField(canvas, { preset: 'lines' });
       return field ? () => field.destroy() : undefined;
     },
   },
   {
     id: '05',
-    name: 'rays-shafts',
+    name: 'ink-dither',
+    // The Bayer print-dither flow — the glyph field's own atlas grammar.
     mount: (canvas) => {
-      const field = createRayField(canvas, { preset: 'shafts' });
+      const field = createStudioField(canvas, { preset: 'dither' });
       return field ? () => field.destroy() : undefined;
     },
   },
   {
     id: '06',
-    name: 'rays-horizon',
+    name: 'grain-wash',
+    // Pigment drift with paper tooth: ink rising through the blues.
     mount: (canvas) => {
-      const field = createRayField(canvas, { preset: 'horizon' });
+      const field = createStudioField(canvas, { preset: 'grain' });
       return field ? () => field.destroy() : undefined;
     },
   },
   {
     id: '07',
-    name: 'rays-dense',
-    mount: (canvas) => {
-      const field = createRayField(canvas, {
-        preset: 'converge',
-        params: {
-          rayCount: 34,
-          randomness: 0.12,
-          pulseWidth: 0.055,
-          trailLength: 0.5,
-          motionBlur: 0.55,
-          exposure: 1.35,
-        },
-      });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'paper-warp',
+    // The packaged Paper Warp: a ruled stripe field being translated.
+    render: (className) => <PaperWarpField className={className} />,
   },
   {
     id: '08',
-    name: 'rays-quiet',
+    name: 'topo-map',
+    // Animated contour lines — the cartography of a global network.
     mount: (canvas) => {
-      const field = createRayField(canvas, {
-        preset: 'shafts',
-        params: {
-          rayCount: 11,
-          pulseSpeed: 0.09,
-          pulseCount: 2,
-          pulseBrightness: 2.8,
-          colorMix: 0.15,
-          // white-dominant: the dominant pair runs near-white over a pale blue
-          col1Center: [0.93, 0.95, 1.0],
-          col1Edge: [0.62, 0.72, 1.0],
-          glow: 0.7,
-          exposure: 1.4,
-        },
-      });
+      const field = createStudioField(canvas, { preset: 'topo' });
       return field ? () => field.destroy() : undefined;
     },
   },
@@ -176,25 +161,23 @@ const VARIANTS: readonly Variant[] = [
   },
 ];
 
-/** One canvas, one engine: keyed per variant so every switch starts clean. */
+/** One stage, one engine: keyed per variant so every switch starts clean. */
 function FieldStage({ variant }: { variant: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const def = VARIANTS.find((v) => v.id === variant) ?? VARIANTS[0];
+  const stageClass = `tc-hero-field tch-field hfs-stage${variant === '09' ? ' is-rain' : ''}`;
 
   useGSAP(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const def = VARIANTS.find((v) => v.id === variant) ?? VARIANTS[0];
-    return def?.mount(canvas);
+    return def?.mount?.(canvas);
   }, [variant]);
 
-  return (
-    <canvas
-      aria-hidden
-      className={`tc-hero-field tch-field hfs-stage${variant === '09' ? ' is-rain' : ''}`}
-      key={variant}
-      ref={canvasRef}
-    />
-  );
+  // Component variants own their stage; the shared classes still carry the
+  // band's mask, blend and light-theme inversion.
+  if (def?.render) return def.render(stageClass);
+
+  return <canvas aria-hidden className={stageClass} key={variant} ref={canvasRef} />;
 }
 
 export default function HeroFieldSwitcher() {
@@ -222,7 +205,10 @@ export default function HeroFieldSwitcher() {
 
   return (
     <>
-      <FieldStage variant={variant} />
+      {/* keyed at the stage: every switch is a full unmount/mount, so the
+          outgoing engine's destroy (or the Paper context release) always
+          runs before the incoming engine draws */}
+      <FieldStage key={variant} variant={variant} />
       <div aria-label='Hero field variant (review rig)' className='hfs' role='group'>
         {VARIANTS.map((v) => (
           <button

@@ -91,6 +91,38 @@ const CHIP_TOP = R_H + CHIP_H;
 /** The content bars' widths, row-major — ragged like a real file list. */
 const CHIP_BARS: readonly number[] = [8, 6, 7, 5, 8, 6, 6, 7, 5];
 
+/** The front-left module carries the mask-rendered GitHub mark instead of a
+    content bar — this is the repository's one identifying glyph, in the
+    chip's own quiet ink. The corner seat keeps it out of the beam's core
+    path: the sweep's sheet (x ±22, y ±20) only grazes this chip's inner
+    corner at the far end of a pass. */
+const GH_CHIP: readonly [number, number] = [-29, 15];
+const GH_HALF = 4.6;
+
+/** The merged plate's evidence: extruded diff lines stacked beside the
+    chip — a couple of deletes over a few adds, the hunk's own order, so
+    the tints band instead of striping — ragged widths, raised off the
+    face like the payload chip but tinted at the band's diff voices, kept
+    well under the accent's presence. */
+const DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
+  { w: 17, tone: 'del' },
+  { w: 12, tone: 'del' },
+  { w: 22, tone: 'add' },
+  { w: 15, tone: 'add' },
+  { w: 19, tone: 'add' },
+];
+const DIFF_X = 65;
+/** Thin flat-raised lines at a tight rhythm: deep or tall rows shingle —
+    each bar's extrusion laps the next row's face — so the lines stay at
+    3×1.6 with 2.5 air and the stack fuses into ONE striped hunk. The
+    plate then carries three objects (titles, hunk, chip), not eight
+    beads, with a much wider gap under the title bars than the hunk's
+    own rhythm. */
+const DIFF_Y0 = -90;
+const DIFF_STEP = 5.5;
+const DIFF_D = 3;
+const DIFF_H = 1.6;
+
 /**
  * The scan beam is a vertical sheet under the agent — from its underside at
  * z=A_Z down to the module chips' top faces (the grid is extruded now, so
@@ -128,13 +160,20 @@ const AGENT_LEADER = `M${(AGENT_VERT_X + 2.2).toFixed(2)} ${AGENT_TOP_Y}H70`;
 const PR_CX = (PR_BOX.x * 2 + PR_BOX.w) * ISO_COS30;
 
 /**
- * The Locadex mark lies flat in the slab's top face. A z=const plane projects
- * as the 2D affine map (x,y) → (cos30·x − cos30·y, sin30·x + sin30·y − z), so
- * one matrix() puts the masked mark in the plane and it inherits the
- * projection like every other face detail.
+ * Flat artwork lies in a z = const plane, anchored at plan (ox, oy): the
+ * plane projects as the 2D affine map (x,y) → (cos30·x − cos30·y,
+ * sin30·x + sin30·y − z), so one matrix() carries whole drawings — the
+ * masked Locadex mark, the GitHub glyph — into a surface and they inherit
+ * the projection like every other face detail.
  */
+function plane(z: number, ox = 0, oy = 0): string {
+  const [sx, sy] = project(ox, oy, z);
+  return `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} ${sx} ${sy})`;
+}
+
+/** The Locadex mark's half-size, and its seat in the slab's top face. */
 const MARK_HALF = 16;
-const MARK_PLANE = `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} 0 ${-(A_Z + A_H)})`;
+const MARK_PLANE = plane(A_Z + A_H);
 
 /** The iso's frame — the approved composition's bounds. */
 const VIEW_W = 396;
@@ -195,17 +234,21 @@ type ChipProps = {
   w: number;
   d: number;
   h: number;
-  /** The one accent artifact: the merged pull request. */
-  accent?: boolean;
+  /** 'accent' is the one hot artifact (the merged pull request); 'add' and
+      'del' are the diff lines' quiet tints; default is the plate's ink. */
+  tone?: 'ink' | 'accent' | 'add' | 'del';
+  /** Corner radius override: the family default reads as a capsule on the
+      thin diff slats, which take a crisper corner. */
+  r?: number;
 };
 
 /** A miniature extrusion resting on a plate — the tower's glyph chip. */
-function Chip({ x, y, z, w, d, h, accent }: ChipProps) {
+function Chip({ x, y, z, w, d, h, tone = 'ink', r }: ChipProps) {
   const box: IsoBox = { x, y, z, w, d, h };
   return (
-    <g className={accent ? 'v0-ldx-chip is-accent' : 'v0-ldx-chip'}>
-      <path className='v0-ldx-chip-hull' d={roundedPolygon(silhouette(box))} />
-      <path className='v0-ldx-chip-top' d={roundedPolygon(topFace(box))} />
+    <g className={tone === 'ink' ? 'v0-ldx-chip' : `v0-ldx-chip is-${tone}`}>
+      <path className='v0-ldx-chip-hull' d={roundedPolygon(silhouette(box), r)} />
+      <path className='v0-ldx-chip-top' d={roundedPolygon(topFace(box), r)} />
     </g>
   );
 }
@@ -218,8 +261,8 @@ function LocadexIso() {
         passed
       </title>
       <defs>
-        {/* the brand mark as an alpha mask, so the shape takes the surface's
-            ink instead of the asset's baked-in fill */}
+        {/* the brand marks as alpha masks, so the shapes take the surface's
+            ink instead of the assets' baked-in fills */}
         <mask
           id='v0-ldx-slab-mark'
           maskUnits='userSpaceOnUse'
@@ -237,22 +280,58 @@ function LocadexIso() {
             height={MARK_HALF * 2}
           />
         </mask>
+        <mask
+          id='v0-ldx-gh-mark'
+          maskUnits='userSpaceOnUse'
+          x={-GH_HALF}
+          y={-GH_HALF}
+          width={GH_HALF * 2}
+          height={GH_HALF * 2}
+          style={{ maskType: 'alpha' }}
+        >
+          <SiGithub
+            x={-GH_HALF}
+            y={-GH_HALF}
+            width={GH_HALF * 2}
+            height={GH_HALF * 2}
+            color='#fff'
+            aria-hidden
+          />
+        </mask>
       </defs>
 
       <g transform='translate(155 97)'>
         {/* the repository: one plate, a grid of module chips — painter's
-            order back row first, so the small extrusions occlude cleanly */}
+            order back row first, so the small extrusions occlude cleanly.
+            The GitHub-marked chip skips its content bar: one glyph, not
+            a glyph over a bar. */}
         <Solid box={REPO_BOX} rim={0.13} edge={0.28} />
         {CHIP_POS.map((fy, ri) =>
-          CHIP_POS.map((fx, ci) => (
-            <g key={`chip-${fx}-${fy}`}>
-              <Chip x={fx} y={fy} z={R_H} w={CHIP_SIZE} d={CHIP_SIZE} h={CHIP_H} />
-              <path
-                className='v0-ldx-fmark'
-                d={markPath(fx + 3, fy + 4, CHIP_BARS[ri * 3 + ci] ?? 6, 3, CHIP_TOP)}
-              />
-            </g>
-          ))
+          CHIP_POS.map((fx, ci) => {
+            const isGithub = fx === GH_CHIP[0] && fy === GH_CHIP[1];
+            return (
+              <g key={`chip-${fx}-${fy}`}>
+                <Chip x={fx} y={fy} z={R_H} w={CHIP_SIZE} d={CHIP_SIZE} h={CHIP_H} />
+                {isGithub ? (
+                  <g transform={plane(CHIP_TOP, fx + CHIP_SIZE / 2, fy + CHIP_SIZE / 2)}>
+                    <rect
+                      className='v0-ldx-gh'
+                      x={-GH_HALF}
+                      y={-GH_HALF}
+                      width={GH_HALF * 2}
+                      height={GH_HALF * 2}
+                      mask='url(#v0-ldx-gh-mark)'
+                    />
+                  </g>
+                ) : (
+                  <path
+                    className='v0-ldx-fmark'
+                    d={markPath(fx + 3, fy + 4, CHIP_BARS[ri * 3 + ci] ?? 6, 3, CHIP_TOP)}
+                  />
+                )}
+              </g>
+            );
+          })
         )}
 
         {/* ground flow: the repository feeds the output plate */}
@@ -283,12 +362,27 @@ function LocadexIso() {
           />
         </g>
 
-        {/* the output plate: two string bars and the merged chip — the
-            tower's payload chip treatment, the drawing's one accent */}
+        {/* the output plate reads top to bottom: title bars, then the diff
+            stack (the PR's quiet evidence, raised like the chip but at the
+            diff tints), then the merged chip — the tower's payload chip
+            treatment, the drawing's one accent */}
         <Solid box={PR_BOX} rim={0.16} edge={0.36} />
         <path className='v0-ldx-gmark' d={markPath(65, -113, 30, 4.5, PR_BOX.h)} />
         <path className='v0-ldx-gmark' d={markPath(65, -104, 22, 4.5, PR_BOX.h)} />
-        <Chip x={74} y={-97} z={PR_BOX.h} w={30} d={16} h={4} accent />
+        {DIFF_ROWS.map(({ w, tone }, i) => (
+          <Chip
+            key={`diff-${i}`}
+            x={DIFF_X}
+            y={DIFF_Y0 + i * DIFF_STEP}
+            z={PR_BOX.h}
+            w={w}
+            d={DIFF_D}
+            h={DIFF_H}
+            tone={tone}
+            r={1.2}
+          />
+        ))}
+        <Chip x={92} y={-82} z={PR_BOX.h} w={26} d={14} h={4} tone='accent' />
 
         {/* annotations — sans labels, hair leaders */}
         <path className='v0-ldx-leader' d={REPO_LEADER} vectorEffect='non-scaling-stroke' />
@@ -469,13 +563,20 @@ function IntegrateDiagram() {
       />
       <rect
         className='v0-ldx-mark-ink'
+        data-ldx-lockup
         x={INT_MARK_X}
         y={117 - INT_MARK / 2}
         width={INT_MARK}
         height={INT_MARK}
         mask='url(#v0-ldx-int-mark)'
       />
-      <text className='v0-ldx-int-name' x={INT_NAME_X} y={117} dominantBaseline='central'>
+      <text
+        className='v0-ldx-int-name'
+        data-ldx-lockup
+        x={INT_NAME_X}
+        y={117}
+        dominantBaseline='central'
+      >
         Locadex
       </text>
     </svg>
@@ -577,6 +678,25 @@ export default function V0Locadex() {
           { strokeDashoffset: 22 },
           { strokeDashoffset: -102, duration: PULSE_DUR, ease: 'power1.inOut', stagger: PULSE_GAP }
         );
+        /* the fourth landing completes the lap, and the plate ANSWERS: the
+           lockup — mark and wordmark together — flashes to the accent once
+           (ink → blue → ink, ~0.5s), on the same timeline so it can never
+           drift off the last arrival; once per loop cycle */
+        const lockup = el.querySelectorAll<SVGElement>('[data-ldx-lockup]');
+        if (lockup.length > 0) {
+          const lastAt = (pulses.length - 1) * PULSE_GAP + ARRIVE;
+          flow.to(
+            lockup,
+            { fill: 'rgb(134, 168, 255)', duration: 0.22, ease: 'power2.out' },
+            lastAt
+          );
+          flow.to(
+            lockup,
+            /* the stylesheet's resting ink — keep them together */
+            { fill: 'rgba(255, 255, 255, 0.9)', duration: 0.3, ease: 'power2.inOut' },
+            lastAt + 0.22
+          );
+        }
         if (ring) {
           /* mirrors the stylesheet's parked opacity — the resting tint */
           const RING_REST = 0.35;

@@ -200,21 +200,43 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
            their wires into the <T>, and the agents plate's orbit trace
            circles its ring — each runs ONLY while its plate is built and
            the band is on screen, so nothing burns frames below the fold.
-           Until first play they rest at the markup's static offsets. */
+           Until first play they rest at the markup's static offsets.
+           autoRound: false on both, and not as a nicety: GSAP's CSSPlugin
+           integer-rounds every non-transform px-unit property per tick
+           (CSSPlugin's _renderRoundedCSSProp), which froze the dash for
+           ~4 frames then jumped it a whole pathLength unit — the stutter.
+           Fractional offsets on the 1000-unit normalization move the dash
+           a steady sub-pixel step every frame; linear ease, same lap
+           times as before (one wire ride per 2.8s, one orbit per 7s). */
         let built = 0;
         let inView = false;
         const waveLoops = waves.map((wave, i) =>
           gsap.fromTo(
             wave,
-            { strokeDashoffset: 100 },
-            { strokeDashoffset: 0, duration: 2.8, ease: 'none', repeat: -1, delay: i * 0.9, paused: true }
+            { strokeDashoffset: 1000 },
+            {
+              strokeDashoffset: 0,
+              duration: 2.8,
+              ease: 'none',
+              repeat: -1,
+              delay: i * 0.9,
+              paused: true,
+              autoRound: false,
+            }
           )
         );
         const orbitLoop = orbit
           ? gsap.fromTo(
               orbit,
-              { strokeDashoffset: 30 },
-              { strokeDashoffset: -70, duration: 7, ease: 'none', repeat: -1, paused: true }
+              { strokeDashoffset: 300 },
+              {
+                strokeDashoffset: -700,
+                duration: 7,
+                ease: 'none',
+                repeat: -1,
+                paused: true,
+                autoRound: false,
+              }
             )
           : null;
         const syncLoops = () => {
@@ -228,6 +250,11 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
             else orbitLoop.pause();
           }
         };
+
+        /* the channel's ledger: the fill's current scaleY target, so beat
+           01's ARRIVAL (the rise from the rail's empty foot) can be told
+           apart from an ordinary between-beats move */
+        let railAt = 0;
 
         /* One timeline per beat change coordinates the whole answer:
            slabs the beat brings in settle from DROP above their seat,
@@ -274,14 +301,32 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
             shown[i] = visible;
           });
 
-          /* the rail's accent channel fills to the newest plate's tap (or
-             retracts) inside the cell-height strokes, threading the built
-             stack together as it settles */
+          /* the rail's accent channel, inside the cell-height strokes.
+             Born EMPTY (the instant path parks it at 0): beat 01's
+             lock-in is what draws the arrival — the blue RISES from the
+             rail's bottom end, decelerating into the code plate's tap —
+             and because the rise and the build channel are one rect, the
+             arrival hands off to the ordinary extend/retract moves with
+             no seam. Even a deep link rises: the landing beat's trigger
+             fires right after creation and finds the rail at 0. */
           if (rail) {
-            const scaleY = RAIL_SCALE[count - 1] ?? 1;
-            if (instant) gsap.set(rail, { scaleY, svgOrigin: RAIL_ORIGIN });
-            else {
-              tl.to(rail, { scaleY, svgOrigin: RAIL_ORIGIN, duration: 0.6, ease: 'power2.inOut' }, 0);
+            if (instant) {
+              gsap.set(rail, { scaleY: 0, svgOrigin: RAIL_ORIGIN });
+              railAt = 0;
+            } else {
+              const scaleY = RAIL_SCALE[count - 1] ?? 1;
+              const rising = railAt === 0;
+              tl.to(
+                rail,
+                {
+                  scaleY,
+                  svgOrigin: RAIL_ORIGIN,
+                  duration: rising ? 1.15 : 0.6,
+                  ease: rising ? 'power2.out' : 'power2.inOut',
+                },
+                0
+              );
+              railAt = scaleY;
             }
           }
         };
@@ -302,6 +347,19 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
             end: i === beats.length - 1 ? 'bottom top' : 'bottom 58%',
             onToggle: (self) => {
               if (self.isActive) setActive(i, false);
+              else if (i === 0 && self.progress === 0 && rail) {
+                /* scrolled back out above the band: the arrival reverses
+                   — the line retracts down the rail to its foot, ready to
+                   rise again on the next lock-in */
+                gsap.to(rail, {
+                  scaleY: 0,
+                  svgOrigin: RAIL_ORIGIN,
+                  duration: 0.7,
+                  ease: 'power2.in',
+                  overwrite: 'auto',
+                });
+                railAt = 0;
+              }
             },
           });
         });

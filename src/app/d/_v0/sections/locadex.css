@@ -119,6 +119,34 @@
   fill: color-mix(in srgb, var(--iso-accent) 42%, #101010);
 }
 
+/* the diff lines: the merged chip's quiet evidence — the dark band's diff
+   voices (--tc-diff-*-ink, hardcoded here because this ground never
+   remaps), mixed to roughly half the accent chip's presence, contours
+   translucent where the accent's is full */
+.toolchain-root .v0-ldx .v0-ldx-chip.is-add .v0-ldx-chip-hull {
+  fill: color-mix(in srgb, #85cfa1 12%, #101010);
+  stroke: color-mix(in srgb, #85cfa1 38%, transparent);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-chip.is-add .v0-ldx-chip-top {
+  fill: color-mix(in srgb, #85cfa1 21%, #101010);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-chip.is-del .v0-ldx-chip-hull {
+  fill: color-mix(in srgb, #d29090 10%, #101010);
+  stroke: color-mix(in srgb, #d29090 32%, transparent);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-chip.is-del .v0-ldx-chip-top {
+  fill: color-mix(in srgb, #d29090 18%, #101010);
+}
+
+/* the GitHub mark on the repository's front-left module — the grid's one
+   identifying glyph, in the chip's own ink voice, never the accent */
+.toolchain-root .v0-ldx .v0-ldx-gh {
+  fill: rgba(255, 255, 255, 0.45);
+}
+
 /* flat marks lying in a top face: the PR plate's string bars, and the
    quieter content bar each module chip carries */
 .toolchain-root .v0-ldx .v0-ldx-gmark {

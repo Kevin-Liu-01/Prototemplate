@@ -33,6 +33,12 @@
    needs; the head alone keeps the gut so the title never sits ON the rail. */
 .toolchain-root .tcb.v0-stack .tcb-in {
   padding-inline: 0;
+  /* the band ends shortly after beat 04 completes (founder: no tall dead
+     area trailing the pinned pass): the sheet's default clamp(56px, 7vw,
+     88px) tail is cut to one quiet breath between the grid's bottom rule
+     and the band's own — the interior runway the pin needs lives in the
+     beats, not here */
+  padding-block-end: 28px;
 }
 
 .toolchain-root .tcb.v0-stack .tcb-head {
@@ -75,26 +81,31 @@
 
 .toolchain-root .tcb .v0-stack-fig {
   position: sticky;
-  /* seated so the FIGURE'S center rides the viewport's center during
-     the pinned pass (founder: "this is in the center of the page") —
-     242px is half the figure's rendered height (~483px: the 392px
-     tower at its denser aspect plus the pads below), floored so a
-     short viewport never tucks the figure under the 58px nav. The pin
-     ledger: every px of figure height costs HALF a px of pin margin
-     (the centered seat refunds the other half) and every px of beat
-     min-height buys 0.2px back — re-run the pin probe (fig top flat
-     at frac 0.3/0.55/0.8) whenever either moves. */
-  top: max(70px, calc(50vh - 242px));
+  /* the seat: 262 = 242 (half the tower + its top pad, so the TOWER'S
+     center — not the padded box's — is what the seat centers) + a 20px
+     upward bias, the price of the end-of-stack clearance below (founder:
+     the seat may bias up to ~20px if the clearance costs it). The tower
+     center rides ~20px above the viewport's center through the pinned
+     pass; the 70px floor keeps short viewports from tucking the figure
+     under the 58px nav. The pin ledger: margin past beat 04's read =
+     (last beat / 2) + (50vh − seat) − figure height − ~20 — every px of
+     figure height (the clearance pad included) costs a full px, every
+     px of seat bias or last-beat height buys 1 or 0.5 back. Re-run the
+     pin probe (fig top flat at frac 0.3/0.55/0.8) whenever any of the
+     three moves. */
+  top: max(70px, calc(50vh - 262px));
   display: flex;
   justify-content: center;
-  /* slim pads: the full-height rail should read rule-to-rule of the
-     figure zone (founder round). Lift headroom needs no pad — a hot
-     slab tops out ~8px above the frame and the clipping cell's edges
-     are hundreds of px away during the pin. The whole figure is still
-     kept SHORT on purpose: its height plus the sticky offset must fit
-     inside the column's travel, or the pin dies before the last beat
-     (the frac-0.8 bug). */
-  padding: 12px 20px;
+  /* slim pads above, clearance below: the 44px foot is the end-of-stack
+     breathing room — at the pinned end the figure's bottom rides the
+     cell's bottom rule, and the pad is what keeps the bottom plate ~45px
+     off it (founder: 40–60px at a 900 viewport). Lift headroom needs no
+     pad — a hot slab tops out ~8px above the frame and the clipping
+     cell's edges are hundreds of px away during the pin. The whole
+     figure is still kept SHORT on purpose: its height plus the sticky
+     offset must fit inside the column's travel, or the pin dies before
+     the last beat (the frac-0.8 bug). */
+  padding: 12px 20px 44px;
 }
 
 /* ---------- the solid tower ----------
@@ -131,13 +142,18 @@
 }
 
 /* the connective thread's overlay: one SVG spanning the whole frame,
-   behind every plate (the slabs' z-indices start at 1) */
+   behind every plate (the slabs' z-indices start at 1). It overflows
+   on purpose: the accent channel's rect reaches RAIL_DROP units below
+   the frame so beat 01's arrival can rise from the rail's bottom end —
+   the clipping cell crops that reach at the exact edge where the
+   .v0s-cellrail strokes stop, one fill inside two strokes throughout. */
 .toolchain-root .tcb .v0s-railsvg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
+  overflow: visible;
 }
 
 /* the doubled vertical rail — two real 1px strokes at constant gauge,

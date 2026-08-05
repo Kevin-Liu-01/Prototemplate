@@ -464,7 +464,7 @@ const BELT_DWELL = 6;
 const BELT_IDLE = 6000;
 
 /* ---- the seam's travel floor: the payload block is inset to the
-   card's 30% mark, so left of its margin there is nothing to reveal —
+   surface's 30% mark, so left of its margin there is nothing to reveal —
    fully open parks the doubled line just clear of the gutter, the SAME
    composition a pinned inspector drives to (drag stop and pin target
    are one number, so the two ways of opening the pane agree). */
@@ -1326,21 +1326,31 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
         </div>
 
         {/* face 2 — the default: the run's strings rendered as the
-            product page they ship to */}
+            product page they ship to. ONE SCREEN (founder: no
+            website-in-a-terminal): the app surface IS the window body
+            here — its light ground runs edge-to-edge to the window's
+            hairline frame, no mat, no second frame; the window's
+            material simply swaps with the face (app surface here,
+            transcript plate on Terminal). The geometry lives in
+            translate-window.css. */}
         <div className='tct-face tct-face-prev' data-on={view === 'preview'} aria-hidden={view !== 'preview'}>
-          {/* The rendered page carries the house slide-to-reveal: the
-              payload gt wrote sits pinned full-width UNDER the render,
-              and the seam (the logo's doubled line, each thread in its
-              surface's own ink) only moves the clip boundary — dragging
-              reveals the artifact in place, edge to edge. Everything
-              that matters clusters LEFT of the resting cut, so the
-              payload's teaser strip never covers a line. */}
+          {/* The full-bleed surface carries the house slide-to-reveal:
+              the payload gt wrote sits pinned full-width UNDER the
+              render, and the seam (the logo's doubled line, each thread
+              in its surface's own ink) only moves the clip boundary —
+              dragging reveals the artifact in place, across the whole
+              window body. The seam's threads draw the one internal
+              vertical where the payload's dark ground meets the app's
+              light ground. Everything that matters clusters LEFT of the
+              resting cut, so the payload's teaser strip never covers a
+              line. */}
           <div className='tct-app' ref={app} lang={ploc} style={{ '--seam-cut': '70%' } as CSSProperties}>
             {/* the app's own chrome: the GT mark + localized nav. The brand
                 is the drawn logo alone, never a wordmark (founder addendum);
-                the card is permanently white, so the light-context
-                (dark-ink) asset is the one right choice. The logo is not a
-                translatable string — no rewrite node, no inspector. */}
+                the surface keeps its light ground in both themes, so the
+                light-context (dark-ink) asset is the one right choice. The
+                logo is not a translatable string — no rewrite node, no
+                inspector. */}
             <div className='sgdh-app-chrome'>
               <span className='sgdh-app-mark'>
                 <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={15} height={15} />

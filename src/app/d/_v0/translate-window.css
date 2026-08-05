@@ -174,40 +174,79 @@
 
 /* ============================================================
    the preview face's product page — the window's DEFAULT face.
-   The mock rides the white card hero-terminal.css already rules;
-   these rules only add the app's own furniture (in-app chrome,
-   stats row), the inspector marks, and the payload's live-edit
-   caret. Content clusters LEFT of the resting seam cut so the
-   payload's 30% teaser strip never covers a line that matters.
-   The card never remaps under [data-theme], so neither do these.
+   ONE SCREEN (founder: no website-in-a-terminal): the app
+   surface IS the window body on Preview. Its light ground runs
+   edge-to-edge to the window's own hairline frame — no dark mat
+   around it, no second frame — so the window reads as one
+   screen whose MATERIAL swaps with the face: app surface on
+   Preview, transcript plate on Terminal. The payload plate
+   under the seam is that same window material returning, so
+   dragging reads as peeling the rendered skin back to the
+   artifact, inside the one frame. The surface keeps the mock's
+   own light ground in BOTH themes — the product-screenshot
+   look; remapping it would dissolve the very material swap
+   that makes the window one screen — so nothing here remaps
+   under [data-theme].
    ============================================================ */
 
-/* The stage floor sits just over the in-flow transcript (~330px), which
-   is now the window's tallest face: the preview column is only the card
-   (the belt rides the bar, the receipt line and toast are gone), so it
-   centres comfortably inside the transcript's height and the window's
-   bottom edge closes right under the run — no parked void where the
-   note's row sat. The floor still guards the preview column if the
-   card ever outgrows the transcript at narrow widths. */
+/* The stage floor: the in-flow transcript is what actually sizes the
+   stage (so the two faces can never differ in height); the floor only
+   guards the app surface with a usable canvas if the transcript ever
+   shrinks at narrow widths. */
 .toolchain-root .v0-tw .tct-stage {
   min-height: 334px;
 }
 
-/* the face keeps hero-terminal's centred column — the belt lives in the
-   bar above the stage now, so nothing here needs the top anchor */
+/* the face sheds the mat: no padding, no centring — its one child is
+   the surface, stretched to the stage's every edge */
 .toolchain-root .v0-tw .tct-face-prev {
-  gap: 11px;
-  padding: 12px 28px 14px;
+  gap: 0;
+  padding: 0;
+  align-items: stretch;
+  justify-content: flex-start;
 }
 
-/* the card runs a touch wider for the product page */
+/* the material swap is a pure crossfade: a full-bleed surface that
+   also slid would flash the plate in a strip at the top edge mid-swap */
+.toolchain-root .v0-tw .tct-face-prev[data-on='false'] {
+  transform: none;
+}
+
+/* THE SURFACE: the app's ground fills the window body — full width,
+   full height of the stage. It draws no edge of its own (the window's
+   hairline frame is the one perimeter), and its interior re-breathes
+   on its own gutter now that the mat's inset is gone: one % gutter,
+   resolved against the surface itself, rules chrome and main alike. */
 .toolchain-root .v0-tw .tct-app {
-  width: min(480px, 100%);
+  --app-gut: clamp(18px, 3.5%, 32px);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
-/* one gutter for the whole mock: chrome and main both sit on 16px */
-.toolchain-root .v0-tw .tct-app-main {
-  padding: 15px 16px 52px;
+/* the old card's frame: four full-reach 1px rules that redrew a second
+   window inside the window — the screen-in-a-screen itself. Cut whole;
+   nothing replaces them. */
+.toolchain-root .v0-tw .tct-app::before,
+.toolchain-root .v0-tw .tct-app::after {
+  content: none;
+}
+
+/* the app's content re-breathes: the main column composes its block in
+   the full-height canvas — centred with a slight upward bias (top
+   padding under bottom), items shrink-wrapped left, on the surface's
+   own gutter. The doubled anchor (.tct-app .tct-app-main) outranks
+   v0-pages' page-scoped Figma padding, which was tuned for the
+   floating card this surface replaces. */
+.toolchain-root .v0-tw .tct-app .tct-app-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 18px var(--app-gut) 30px;
 }
 
 /* the in-app chrome: the GT mark + localized nav on one hairline row.
@@ -218,7 +257,7 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 9px 16px;
+  padding: 9px var(--app-gut);
   border-bottom: 1px solid rgba(138, 143, 152, 0.2);
 }
 
@@ -307,7 +346,7 @@
 }
 
 /* block components shrink to their text so their marks sit beside the
-   words themselves — not at the card's far edge, where the resting
+   words themselves — not at the surface's far edge, where the resting
    payload strip would cover them */
 .toolchain-root .v0-tw .tct-app-h.sgdh-ins,
 .toolchain-root .v0-tw .tct-app-copy.sgdh-ins {
@@ -363,7 +402,7 @@
    annotates the RENDERED layer, so it lives with it: above the app's
    own content (z1) but under the payload's sweep (z2) and the seam
    (z3) — when the cut crosses it, the chip is covered like any other
-   line of the card, never floating over the JSON. */
+   line of the surface, never floating over the JSON. */
 .toolchain-root .v0-tw .sgdh-ins-chip {
   position: absolute;
   right: -12px;
@@ -384,7 +423,7 @@
 /* ---- the payload block, inset to mirror the mock ----
    The mock's composition clusters LEFT of the resting cut, so the
    artifact clusters RIGHT of it: the pane's left padding carries the
-   whole JSON block to the card's 30% mark — the moment the seam moves,
+   whole JSON block to the surface's 30% mark — the moment the seam moves,
    keys and values are already under it, and the pinned 26% cut exposes
    the block whole, clear of the seam's threads. The filename crumb
    leaves its top-right teaser post and sits on the code column's own
@@ -404,7 +443,7 @@
    gutter: the numeral fills the reserve on the first visual line, and
    wrapped continuations start at the code column, never under the
    numbers. Lines may wrap (the sub row's JSX tree runs long) — at the
-   pinned cut the block reads whole instead of running off the card. */
+   pinned cut the block reads whole instead of running off the surface. */
 .toolchain-root .v0-tw .pl-line {
   display: block;
   padding-left: 38px;
@@ -464,12 +503,10 @@
   color: rgba(255, 255, 255, 0.72);
 }
 
-/* ---- narrow: tighter gutters; the stats keep to the card ---- */
+/* ---- narrow: tighter gutters; the stats keep to the surface ----
+   (the face itself needs no narrow rule any more: it is padding 0 at
+   every width — the surface owns its own gutter) */
 @media (max-width: 760px) {
-  .toolchain-root .v0-tw .tct-face-prev {
-    padding: 12px 12px 14px;
-  }
-
   .toolchain-root .v0-tw .sgdh-app-stat {
     padding-right: 12px;
   }

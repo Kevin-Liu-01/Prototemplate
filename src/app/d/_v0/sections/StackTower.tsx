@@ -122,22 +122,34 @@ function tapY(i: number): number {
   return row * STEP + HALF + PAD;
 }
 
-/** The accent channel's feet: a short stub below the bottom tap, up to the
-    top tap — the BUILT stack's span, inside the full-height static rail. */
+/** The tap span the channel threads: bottom tap's stub to the top tap. */
 const RAIL_BOTTOM = tapY(0) + 10;
 const RAIL_TOP = tapY(TOWER_LAYERS.length - 1);
 
+/** The channel's reach BELOW the frame: beat 01's arrival is DRAWN — the
+    accent rises from the rail's bottom end (the figure cell's bottom rule,
+    however far beneath the traveling sticky figure it sits) up to the code
+    plate's tap. The overlay overflows its box on purpose and the clipping
+    cell crops the fill at the exact edge where .v0s-cellrail's strokes end,
+    so the rise and the build channel are ONE rect — no seam where the rise
+    ends and the channel begins. 2200 units × the one-column tower's
+    lowest px-per-unit still outreaches the tallest runway (three
+    920px-capped beats plus the fixed last beat). */
+const RAIL_DROP = 2200;
+const RAIL_FOOT = RAIL_BOTTOM + RAIL_DROP;
+
 /**
  * How much of the accent channel is filled when `count` slabs are built,
- * as a scaleY on the bottom-anchored fill. FullStack tweens between these
- * as the stack builds and retracts; the rail's strokes never move.
+ * as a scaleY on the foot-anchored fill. FullStack tweens between these
+ * as the stack builds and retracts (and rises from 0 — the empty rail —
+ * on beat 01's lock-in); the rail's strokes never move.
  */
 export const RAIL_SCALE: readonly number[] = TOWER_LAYERS.map(
-  (_, i) => (RAIL_BOTTOM - tapY(i)) / (RAIL_BOTTOM - RAIL_TOP)
+  (_, i) => (RAIL_FOOT - tapY(i)) / (RAIL_FOOT - RAIL_TOP)
 );
 
 /** The GSAP svgOrigin the channel fill scales from — its bottom end. */
-export const RAIL_ORIGIN = `${RAIL_X} ${RAIL_BOTTOM}`;
+export const RAIL_ORIGIN = `${RAIL_X} ${RAIL_FOOT}`;
 
 /** One tap: up the rail, a small-radius corner, then out to the vertex. */
 function tapPath(y: number): string {
@@ -292,15 +304,19 @@ function TopGlyph({ id }: { id: string }) {
             {CTX_WIRES.map((d) => (
               <path key={d} className='v0s-ctx-wire' d={d} vectorEffect='non-scaling-stroke' />
             ))}
+            {/* pathLength 1000, not 100: dash motion lives on this scale,
+                and a coarser one leaves each offset step a visible fraction
+                of the wire — at 1000 even a whole-unit step is sub-pixel,
+                so the ride reads continuous (see the orbit's note) */}
             {CTX_WIRES.map((d) => (
               <path
                 key={`wave:${d}`}
                 className='v0s-ctx-wave'
                 data-ctx-wave
                 d={d}
-                pathLength={100}
-                strokeDasharray='16 84'
-                strokeDashoffset={58}
+                pathLength={1000}
+                strokeDasharray='160 840'
+                strokeDashoffset={580}
                 vectorEffect='non-scaling-stroke'
               />
             ))}
@@ -367,13 +383,19 @@ function TopGlyph({ id }: { id: string }) {
               />
             </mask>
           </defs>
+          {/* the ring is normalized to 1000 pathLength units, deliberately
+              long: the trace's motion is a dash-offset, and offsets that
+              quantize (GSAP integer-rounds px-unit CSS props by default)
+              step the dash a whole unit at a time — at 100 units that was
+              ~6px of rendered jump every few frames; at 1000 a unit is
+              sub-pixel, and FullStack's loop opts out of the rounding too */}
           <path
             className='v0s-orbit'
             data-agent-orbit
             d={ORBIT_D}
-            pathLength={100}
-            strokeDasharray='12 88'
-            strokeDashoffset={30}
+            pathLength={1000}
+            strokeDasharray='120 880'
+            strokeDashoffset={300}
             vectorEffect='non-scaling-stroke'
           />
           <g transform={MARK_PLANE}>
@@ -432,7 +454,7 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
           x={RAIL_X - RAIL_GAUGE}
           y={RAIL_TOP}
           width={RAIL_GAUGE}
-          height={RAIL_BOTTOM - RAIL_TOP}
+          height={RAIL_FOOT - RAIL_TOP}
         />
         {TOWER_LAYERS.map((layer, i) => (
           <path
