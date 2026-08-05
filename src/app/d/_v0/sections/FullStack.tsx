@@ -743,6 +743,8 @@ export default function V0FullStack() {
         return () => {
           viewGate.kill();
           for (const loop of waveLoops) loop.kill();
+          wrapLoop?.kill();
+          for (const loop of fanLoops) loop.kill();
           orbitLoop?.kill();
           for (const loop of shineLoops) loop.kill();
           sweepLoop?.kill();
@@ -750,7 +752,12 @@ export default function V0FullStack() {
           if (scanSweep) gsap.set(scanSweep, { clearProps: 'transform' });
           if (capDiffs.length > 0)
             gsap.set(capDiffs, { clearProps: 'opacity,visibility,transform' });
-          const dashed: SVGPathElement[] = orbit ? [...waves, orbit] : [...waves];
+          const dashed: SVGPathElement[] = [
+            ...waves,
+            ...fanPulses,
+            ...(codeWrap ? [codeWrap] : []),
+            ...(orbit ? [orbit] : []),
+          ];
           if (dashed.length > 0) gsap.set(dashed, { clearProps: 'strokeDashoffset' });
           const bands = [...stripes, ...stripes2];
           if (bands.length > 0) gsap.set(bands, { clearProps: 'transform' });

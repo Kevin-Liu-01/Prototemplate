@@ -570,6 +570,51 @@
   stroke-linecap: round;
 }
 
+/* ---------- the code plate's wrap boundary ----------
+   The block the <T> pair owns: one hairline enclosure between the
+   bracket chips, the wrapped line inside tinted to the accent, and an
+   accent glint lapping the boundary (the agents orbit's device at
+   component scale — FullStack loops [data-code-wrap] whenever the
+   plate exists and the band is on screen). */
+.toolchain-root .tcb .v0s-wrap-box {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1;
+}
+
+.toolchain-root .tcb .v0s-wrap-glint {
+  fill: none;
+  stroke: var(--iso-accent);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.toolchain-root .tcb .v0s-g-mark.is-wrap {
+  fill: color-mix(in srgb, var(--iso-accent) 55%, #101010);
+}
+
+/* the wrapped line keeps its accent when the plate goes hot — the hot
+   .v0s-g-mark lift above ties this selector's specificity, so the wrap
+   variant restates itself after it, a step brighter with the plate */
+.toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark.is-wrap {
+  fill: color-mix(in srgb, var(--iso-accent) 74%, #101010);
+}
+
+/* the layers' identity glyphs: lucide forms lying in the chip tops —
+   one notch under the bracket glyphs' ink so the small chips read as
+   labels, not competing marks; dots are the palette's own filled wells */
+.toolchain-root .tcb .v0s-g-icon {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toolchain-root .tcb .v0s-g-icon-dot {
+  fill: rgba(255, 255, 255, 0.55);
+}
+
 /* ---------- the copy rail: four beats, bottom of the stack first.
    Padding lives on the beats, not the list, so each divider runs the
    cell edge to edge — a rule, not a floating underline. ---------- */

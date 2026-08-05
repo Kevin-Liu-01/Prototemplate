@@ -313,6 +313,67 @@ const CTX_WIRES: readonly string[] = [
 const WRAP_BOX =
   'M-16.5 -12.5H14.5A3 3 0 0 1 17.5 -9.5V10.5A3 3 0 0 1 14.5 13.5H-16.5A3 3 0 0 1 -19.5 10.5V-9.5A3 3 0 0 1 -16.5 -12.5Z';
 
+/* ---- the layers' identity glyphs (founder: "use more icons and
+   examples — terminology, voice, and style … and the translate icon"):
+   the beat tags' own lucide forms, inlined as raw geometry (ISC;
+   lucide-react ships these exact nodes) so they can lie IN the chip
+   tops through the plane transform like every other face mark — never
+   a screen-space icon floating over an iso drawing. Each is a 24-box,
+   scaled to its chip by ChipIcon below. */
+const ICON_BOOK = [
+  'M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20',
+] as const;
+const ICON_VOICE = [
+  'M2 13a2 2 0 0 0 2-2V7a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0V4a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0v-4a2 2 0 0 1 2-2',
+] as const;
+const ICON_STYLE = [
+  'M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z',
+] as const;
+const ICON_STYLE_DOTS: readonly (readonly [number, number])[] = [
+  [13.5, 6.5],
+  [17.5, 10.5],
+  [6.5, 12.5],
+  [8.5, 7.5],
+];
+const ICON_LANGS = [
+  'm5 8 6 6',
+  'm4 14 6-6 2-3',
+  'M2 5h12',
+  'M7 2h1',
+  'm22 22-5-10-5 10',
+  'M14 18h6',
+] as const;
+
+/** A lucide form lying in a chip's top face: the 24-box is centered on
+    (cx, cy) in plan coords at plane z, scaled to s plan units per icon
+    unit — the strokes stay screen-gauge via non-scaling-stroke. */
+function ChipIcon({
+  z,
+  cx,
+  cy,
+  s,
+  paths,
+  dots,
+}: {
+  z: number;
+  cx: number;
+  cy: number;
+  s: number;
+  paths: readonly string[];
+  dots?: readonly (readonly [number, number])[];
+}) {
+  return (
+    <g transform={`${plane(z, cx, cy)} scale(${s}) translate(-12 -12)`}>
+      {paths.map((d) => (
+        <path key={d} className='v0s-g-icon' d={d} vectorEffect='non-scaling-stroke' />
+      ))}
+      {dots?.map(([x, y]) => (
+        <circle key={`${x}:${y}`} className='v0s-g-icon-dot' cx={x} cy={y} r={1.3} />
+      ))}
+    </g>
+  );
+}
+
 /** Translations' fan: source string out to its three locale runs. */
 const FAN_WIRES: readonly string[] = [
   'M-12 -25C-2 -25 -10 -12 2 -12',
@@ -696,17 +757,25 @@ function TopGlyph({ id }: { id: string }) {
               />
             ))}
           </g>
-          {/* the three sources made CONCRETE (founder: the layers speak
-              like the diffs do): glossary, tone and directives as raised
-              mini-chips, each carrying one micro content bar, each wire
-              emerging from under its chip — context has bodies now, not
-              just threads */}
-          <GlyphChip x={-51} y={-30.5} w={10} d={9} h={2.5} />
-          <GlyphChip x={-51} y={-4.5} w={10} d={9} h={2.5} />
-          <GlyphChip x={-51} y={21.5} w={10} d={9} h={2.5} />
-          <path className='v0s-g-mark' d={markPath(-48.5, -27.25, 6, 2.5, THICK + 2.5)} />
-          <path className='v0s-g-mark' d={markPath(-48.5, -1.25, 6, 2.5, THICK + 2.5)} />
-          <path className='v0s-g-mark' d={markPath(-48.5, 24.75, 6, 2.5, THICK + 2.5)} />
+          {/* the three sources made CONCRETE (founder: "more icons and
+              examples for terminology, voice, and style"): each wire now
+              emerges from under a raised mini-chip carrying its lucide
+              form — the book (terminology), the waveform (voice), the
+              palette (style) — the beats' own icon language, lying in
+              the chip tops like every other face mark */}
+          <GlyphChip x={-52} y={-31.5} w={13} d={11} h={2.5} />
+          <GlyphChip x={-52} y={-5.5} w={13} d={11} h={2.5} />
+          <GlyphChip x={-52} y={20.5} w={13} d={11} h={2.5} />
+          <ChipIcon z={THICK + 2.5} cx={-45.5} cy={-26} s={0.3} paths={ICON_BOOK} />
+          <ChipIcon z={THICK + 2.5} cx={-45.5} cy={0} s={0.3} paths={ICON_VOICE} />
+          <ChipIcon
+            z={THICK + 2.5}
+            cx={-45.5}
+            cy={26}
+            s={0.3}
+            paths={ICON_STYLE}
+            dots={ICON_STYLE_DOTS}
+          />
           <GlyphChip x={6} y={-12} w={34} d={24} h={CHIP_H} />
           {/* open tracking, on purpose: flush type shears its neighbours
               toward each other, so anything tighter fuses the three forms */}
@@ -731,7 +800,12 @@ function TopGlyph({ id }: { id: string }) {
          drawing's one accent, raised), and a block-script run */
       return (
         <>
-          <path className='v0s-g-mark' d={markPath(-42, -28, 30, 5.5)} />
+          {/* the translate mark itself (founder: "the translate icon"):
+              the Languages form on its own raised chip, leading the
+              source string into the fan */}
+          <GlyphChip x={-52} y={-34} w={15} d={15} h={CHIP_H} />
+          <ChipIcon z={CHIP_TOP} cx={-44.5} cy={-26.5} s={0.42} paths={ICON_LANGS} />
+          <path className='v0s-g-mark' d={markPath(-33, -28, 21, 5.5)} />
           <g transform={plane(THICK)}>
             {FAN_WIRES.map((d) => (
               <path key={d} className='v0s-fan-wire' d={d} vectorEffect='non-scaling-stroke' />

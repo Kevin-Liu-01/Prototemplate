@@ -1,0 +1,179 @@
+/* ============================================================
+   NAV MEGA-MENUS — ported from the toolchain nav, re-inked.
+   Resources and Docs open ruled sheets on hover or keyboard
+   focus. :focus-within keeps the flyouts CSS-driven (no JS) and
+   still keyboard-usable. The chrome is this system's: paper
+   ground, single hairline edge, the page's own ink ramp — the
+   token names are shared with toolchain, so every var() below
+   resolves to the singularity values set on .singularity-root
+   (and their [data-theme='dark'] remaps) automatically.
+   ============================================================ */
+
+.singularity-root .tc-nav-drop {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.singularity-root .tc-nav-drop-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: none;
+  padding: 6px 2px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.singularity-root .tc-nav-drop-trigger svg {
+  transition: transform 0.18s ease;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .tc-nav-drop:hover .tc-nav-drop-trigger,
+.singularity-root .tc-nav-drop:focus-within .tc-nav-drop-trigger {
+  color: var(--tc-ink);
+}
+
+.singularity-root .tc-nav-drop:hover .tc-nav-drop-trigger svg,
+.singularity-root .tc-nav-drop:focus-within .tc-nav-drop-trigger svg {
+  transform: rotate(180deg);
+  color: var(--tc-ink);
+}
+
+/* The sheet hangs straight off the trigger (top: 100% of the short drop box)
+   so there is no dead hover gap between the two — the toolchain trap. */
+.singularity-root .tc-nav-panel {
+  position: absolute;
+  top: 100%;
+  left: -18px;
+  z-index: 60;
+  display: none;
+  gap: 34px;
+  padding: 19px 22px 20px;
+  background: var(--tc-paper);
+  background-clip: padding-box;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  box-shadow: 0 18px 44px rgba(7, 7, 7, 0.12);
+  width: max-content;
+}
+
+.singularity-root .tc-nav-drop:hover .tc-nav-panel,
+.singularity-root .tc-nav-drop:focus-within .tc-nav-panel {
+  display: flex;
+}
+
+/* Fixed subcolumn widths: fr tracks inside an auto-sized flyout collapse
+   (the solved toolchain trap — keep px tracks, never fr). */
+.singularity-root .tc-nav-panel.is-wide .tc-nav-col:first-child {
+  display: grid;
+  grid-template-columns: repeat(2, 208px);
+  gap: 0 28px;
+}
+
+.singularity-root .tc-nav-panel.is-wide .tc-nav-col:first-child h5 {
+  grid-column: 1 / -1;
+}
+
+/* The Docs sheet is the widest object the nav owns; cap it to the viewport
+   and let its columns wrap rather than run off the right rail. */
+.singularity-root .tc-nav-panel.is-wide {
+  flex-wrap: wrap;
+  max-width: calc(100vw - 48px);
+}
+
+.singularity-root .tc-nav-col {
+  min-width: 200px;
+}
+
+.singularity-root .tc-nav-col h5 {
+  margin: 0 0 10px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .tc-nav-col a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 8px;
+  margin: 0 -8px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.singularity-root .tc-nav-col a:hover,
+.singularity-root .tc-nav-col a:focus-visible {
+  background: var(--tc-hair-2);
+}
+
+.singularity-root .tc-menu-plate {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  background: var(--tc-white);
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .tc-menu-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.singularity-root .tc-menu-text b {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.singularity-root .tc-menu-text small {
+  font-size: 12px;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+/* Drawn-dark glyph files (React Native, the Locadex lambda) flip in the
+   dark the way the footer's Locadex mark does. */
+[data-theme='dark'] .singularity-root .tc-menu-glyph.is-inverting {
+  filter: invert(1);
+}
+
+[data-theme='dark'] .singularity-root .tc-nav-panel {
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+}
+
+/* The wide sheet anchors 18px left of its trigger; on narrower viewports
+   that runs past the right rail, so it steps left in two fixed notches —
+   position math, not motion, so reduced-motion needs no branch here. */
+@media (max-width: 1400px) {
+  .singularity-root .tc-nav-panel.is-wide {
+    left: -240px;
+  }
+}
+
+@media (max-width: 1120px) {
+  .singularity-root .tc-nav-panel.is-wide {
+    left: -300px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .singularity-root .tc-nav-drop-trigger svg {
+    transition: none;
+  }
+}
