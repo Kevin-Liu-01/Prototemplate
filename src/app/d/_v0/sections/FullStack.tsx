@@ -266,6 +266,13 @@ export default function V0FullStack() {
           const set = new Set(hot);
           const top = hot.length > 0 ? Math.max(...hot) : -1;
 
+          /* is this the arrival — the fill rising from the rail's empty
+             foot? Entering taps then wait for the tip: the rise is 1.0s
+             power2.out, so a draw parked at 0.8 lands its rail end in
+             fill that has already arrived (or is a frame from it) even
+             at the very top of the stack. */
+          const rising = rail !== null && railAt === 0;
+
           const tl = gsap.timeline({ defaults: { overwrite: 'auto' } });
           let entered = 0;
           slabs.forEach((slab, i) => {
@@ -288,7 +295,7 @@ export default function V0FullStack() {
                 tl.to(
                   tap,
                   { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
-                  at + 0.5
+                  rising ? Math.max(at + 0.5, 0.8) : at + 0.5
                 );
               }
               entered += 1;
@@ -327,10 +334,9 @@ export default function V0FullStack() {
               railAt = 0;
             } else {
               const scaleY = RAIL_SCALE[count - 1] ?? 1;
-              const rising = railAt === 0;
-              /* the rise is 1.0s, not longer: the deepest entering tap
-                 draws at ~0.78–1.08, and the fill's tip must have passed
-                 every tap before its leader's rail end lands */
+              /* the rise is 1.0s: entering taps park their draws at 0.8+
+                 (above), so the fill's tip has passed every tap before
+                 its leader's rail end lands */
               tl.to(
                 rail,
                 {

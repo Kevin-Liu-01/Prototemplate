@@ -319,7 +319,7 @@
 
 /* Inside the cell the row is a composition, not a page spread (founder
    round: the black space below the copy GONE). Two moves, one ledger:
-   the workspace compresses from its page mount's 506px to ~390px — the
+   the workspace compresses from its page mount's 506px to ~375px — the
    overrides below — and the copy column centers against it, so the
    residual air splits evenly above and below the caption instead of
    pooling under it. The copy's own 30px top inset retires with the
@@ -338,34 +338,40 @@
   font-size: clamp(1.15rem, 1.6vw, 1.42rem);
 }
 
+/* Caption measure: the page's 40ch spreads the two sub lines nearly the
+   column's full width; 30ch folds the paragraph to three, so the caption
+   block stands ~129px tall against the ~375px workspace — the centering
+   ledger below closes on ~123px of air per side. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-sub {
   font-size: 14px;
+  max-width: 30ch;
 }
 
 /* ---------- the workspace, compressed to the cell's scale ----------
    The page mount seats four rows generously (42px bar, 14/15 cell pads,
-   an 8px stamp seat — ~120px for a one-line string). Inside the band's
-   cell that spend IS the founder's void, so the chrome and rows tighten:
-   same rules, same type, less air. The ghost/live overlay keeps typing
-   wrap-stable at any padding, and the chip and caps stamps are cut to ONE
-   height (19px box) so the settle from `translated` to `approved` never
-   moves the rows below it. */
+   an 8px stamp seat — ~120px for a one-line string, 506px for the table).
+   Inside the band's cell that spend IS the founder's void, so the chrome
+   and rows tighten: same rules, same type, less air — 28px bar, 7/8 cell
+   pads, a 3px stamp seat, ~375px for the table. The ghost/live overlay
+   keeps typing wrap-stable at any padding, and the chip and caps stamps
+   are cut to ONE height (19px box) so the settle from `translated` to
+   `approved` never moves the rows below it. */
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-bar {
-  height: 32px;
+  height: 28px;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-lab {
-  padding: 8px 18px 6px;
+  padding: 7px 18px 5px;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-cell {
-  padding: 8px 18px 9px;
-  line-height: 1.5;
+  padding: 7px 18px 8px;
+  line-height: 1.45;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp {
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='chip'] {
@@ -377,7 +383,7 @@
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-foot {
-  padding: 8px 18px 9px;
+  padding: 7px 18px 8px;
 }
 
 /* ---------- responsive ---------- */
