@@ -105,12 +105,10 @@ export type StudioOptions = {
    stay inside this set — ink and white with the blue family where it
    reads well, never a free palette. */
 const INK_BLUE: StudioVec3 = [0.016, 0.024, 0.04]; // #04060a
-const BLUE_DEEP: StudioVec3 = [0.141, 0.251, 0.62]; // #24409e
 const BLUE: StudioVec3 = [0.184, 0.361, 0.878]; // #2f5ce0
 const BLUE_MID: StudioVec3 = [0.373, 0.525, 0.949]; // #5f86f2
 const BLUE_CHIP: StudioVec3 = [0.616, 0.725, 1.0]; // #9db9ff
 const BLUE_STRING: StudioVec3 = [0.812, 0.878, 1.0]; // #cfe0ff
-const NEAR_WHITE: StudioVec3 = [0.93, 0.95, 1.0]; // #edf2ff
 
 const BASE_PARAMS: Omit<StudioParams, 'colorA' | 'colorB' | 'colorC'> = {
   strength: 0.3,
@@ -183,14 +181,14 @@ export const STUDIO_PRESETS: Record<StudioPreset, StudioParams> = {
   spectral: {
     ...BASE_PARAMS,
     colorA: INK_BLUE,
-    colorB: BLUE_MID,
-    colorC: NEAR_WHITE,
+    colorB: BLUE,
+    colorC: BLUE_CHIP,
     strength: 0.9,
     detail: 3.2,
     frequency: 4.2,
     grain: 12,
     amplitude: 3.8,
-    brightness: 1.45,
+    brightness: 1.9,
   },
   mesh: {
     ...BASE_PARAMS,
@@ -201,18 +199,18 @@ export const STUDIO_PRESETS: Record<StudioPreset, StudioParams> = {
     detail: 2.2,
     frequency: 2.6,
     grain: 14,
-    brightness: 1.6,
+    brightness: 2.1,
   },
   aurora: {
     ...BASE_PARAMS,
     colorA: INK_BLUE,
-    colorB: BLUE_MID,
-    colorC: NEAR_WHITE,
+    colorB: BLUE,
+    colorC: BLUE_CHIP,
     strength: 0.5,
     detail: 3.0,
     frequency: 4.0,
     grain: 14,
-    brightness: 1.5,
+    brightness: 1.85,
   },
 };
 

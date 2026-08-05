@@ -527,3 +527,15 @@
     min-height: 0;
   }
 }
+
+/* The band's border-block IS the closing line: the sheet ring's bottom
+   leg and its outward nub extensions yield, so no empty ruled box
+   trails the grid (founder note). */
+.toolchain-root .tcb.v0-stack .tcb-grid {
+  padding-bottom: 0;
+}
+
+.toolchain-root .tcb.v0-stack .tcb-grid::before,
+.toolchain-root .tcb.v0-stack .tcb-grid::after {
+  border-bottom: 0;
+}

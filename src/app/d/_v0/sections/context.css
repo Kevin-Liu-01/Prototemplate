@@ -27,6 +27,7 @@
    24px text inset so the band's type sits on one column. */
 
 .toolchain-root .v0-ctx .tcb-in {
+  padding-bottom: 0;
   padding-inline: 0;
   /* the band closes on the review row, not on dead air (founder cut):
      the sheet's default clamp(56px, 7vw, 88px) tail shrinks to one
@@ -335,4 +336,15 @@
   .toolchain-root .v0-ctx-dir {
     grid-template-columns: 76px minmax(0, 1fr);
   }
+}
+
+/* Same closing-line law as the stack band: the band border alone ends
+   the sheet — ring bottom leg + nub bottoms yield. */
+.toolchain-root .v0-ctx .tcb-grid {
+  padding-bottom: 0;
+}
+
+.toolchain-root .v0-ctx .tcb-grid::before,
+.toolchain-root .v0-ctx .tcb-grid::after {
+  border-bottom: 0;
 }

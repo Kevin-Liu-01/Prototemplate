@@ -401,15 +401,20 @@ export default function HomeHero() {
             //    instant the front passes its point — dust becomes
             //    typography positionally, never a crossfade beside it.
             //    Surplus glyphs (points < pool) thin out with the scatter.
+            /* the front's clock, hoisted: the timeline's hold must cover
+               the whole print sequence, or its closing sweep would wipe the
+               sketch before the front ever arrives */
+            const LAND = 0.7;
+            const LAND_SPREAD = 0.25;
+            /* the front NEVER starts before the last landing: the dust fully
+               sketches the word first, then the print absorbs it — the
+               library's own order */
+            const PRINT_AT = LAND + LAND_SPREAD + 0.08;
+            const PRINT = 1.0;
             tl.add(() => {
               const h = em.offsetHeight;
               const pts = sampleShape(next.text, w1, h, dustGlyphs.length);
               const span = Math.max(w1, 1);
-              /* the front's clock: landings finish just ahead of it */
-              const LAND = 0.7;
-              const LAND_SPREAD = 0.25;
-              const PRINT_AT = 0.55;
-              const PRINT = 1.0;
               dustGlyphs.forEach((g, i) => {
                 const pt = pts[i];
                 if (!pt) {
@@ -462,11 +467,11 @@ export default function HomeHero() {
                 );
               });
             });
-            tl.to({}, { duration: 0.6 });
-            /* the timeline itself sweeps the pool dark: whatever any
-               per-glyph race leaves behind can never park visible into
-               the dwell — this lane always plays to completion */
-            tl.to(dustGlyphs, { autoAlpha: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '<+=0.35');
+            tl.to({}, { duration: PRINT_AT + PRINT + 0.45 });
+            /* the timeline itself sweeps the pool dark AFTER the front has
+               fully passed: whatever any per-glyph race leaves behind can
+               never park visible into the dwell */
+            tl.to(dustGlyphs, { autoAlpha: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
 
             // 5. the instrument withdraws
             tl.to([guideL, guideR], { opacity: 0, duration: 0.16, ease: 'none' }, '>-0.03');
