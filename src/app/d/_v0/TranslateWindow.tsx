@@ -1387,15 +1387,16 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
               resting cut, so the payload's teaser strip never covers a
               line. */}
           <div className='tct-app' ref={app} lang={ploc} style={{ '--seam-cut': '70%' } as CSSProperties}>
-            {/* the app's own chrome: the GT mark + localized nav. The brand
-                is the drawn logo alone, never a wordmark (founder addendum);
-                the mock follows the theme, so the dark-ink asset inverts on
-                the dark build (brand rule — the filter lives in
-                translate-window.css). The logo is not a translatable
-                string — no rewrite node, no inspector. */}
+            {/* the app's own chrome: the GT mark + "Translate" as the brand,
+                then the localized nav. The brand pair is NOT a translatable
+                string — no rewrite node, no inspector: it never switches
+                languages (founder note). The mock follows the theme, so the
+                dark-ink asset inverts on the dark build (the filter lives in
+                translate-window.css). */}
             <div className='sgdh-app-chrome'>
               <span className='sgdh-app-mark'>
                 <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={15} height={15} />
+                <b className='sgdh-app-brandword'>Translate</b>
               </span>
               <nav className='sgdh-app-nav' aria-label='Product navigation'>
                 <span className='sgdh-app-navi is-on sgdh-ins' data-ins-on={ins?.k === 'nav0' || undefined} {...insBox('nav0')}>
