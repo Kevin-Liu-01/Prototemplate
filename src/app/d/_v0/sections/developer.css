@@ -72,8 +72,9 @@
 }
 
 /* ---------- the branching minis ----------
-   Four stacked forks, one hairline between neighbours, no perimeter —
-   the card's frame is the row's. The stack spreads over the cell. */
+   Four compact figures, no perimeter and no separators — each unit's own
+   left key (icon + label riding the source node) is the divider. The
+   stack spreads whatever slack the row leaves it. */
 .toolchain-root .v0-dev-forks {
   flex: 1;
   display: flex;
@@ -86,22 +87,30 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-block: 14px 16px;
+  padding-block: 6px;
 }
 
-.toolchain-root .v0-dev-fork + .v0-dev-fork {
-  border-top: 1px solid var(--tc-hair-2);
+/* the category and its raw value, one right-flushed block on the stem */
+.toolchain-root .v0-dev-key {
+  align-self: center;
+  justify-self: stretch;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
 }
 
 .toolchain-root .v0-dev-fork-label {
-  margin: 0 0 10px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
+  gap: 6px;
+  font-size: 12.5px;
   font-weight: 550;
   letter-spacing: -0.01em;
+  line-height: 1;
   color: var(--tc-ink);
+  white-space: nowrap;
 }
 
 /* the category's one mark: the icon carries the stack rail's blue;
@@ -111,26 +120,24 @@
   color: #86a8ff;
 }
 
-/* source | threads | outputs — the fork body. The columns are fixed so
+/* key | threads | outputs — the fork body. The columns are fixed so
    all four forks start their threads on one shared x. */
 .toolchain-root .v0-dev-fork-body {
   display: grid;
-  grid-template-columns: 92px 36px minmax(0, 1fr);
+  grid-template-columns: 98px 32px minmax(0, 1fr);
   align-items: stretch;
 }
 
 /* the source node: the raw value as a mono chip, its right edge on the
    threads' shared stem */
 .toolchain-root .v0-dev-src {
-  align-self: center;
-  justify-self: end;
   max-width: 100%;
   padding: 4px 7px 5px;
   border: 1px solid var(--tc-hair);
   border-radius: 4px;
   background: var(--tc-card);
   font-family: var(--tc-mono);
-  font-size: 11.5px;
+  font-size: 11px;
   line-height: 1;
   letter-spacing: 0.01em;
   color: var(--tc-ink);
@@ -141,7 +148,7 @@
    can never dictate the row's height — the output rows own that. */
 .toolchain-root .v0-dev-mid {
   position: relative;
-  min-height: 84px;
+  min-height: 72px;
 }
 
 .toolchain-root .v0-dev-threads {
@@ -166,14 +173,16 @@
   stroke: #2f5ce0;
 }
 
-/* The transfer window: the resolving branch's accent at full sandwich
-   gauge, drawn under the cores so the traveling segment is carved into the
-   same two hairlines as the ink it rides over. Hidden until the loop takes
-   it — under reduced motion the static live pair holds the frame instead. */
+/* The transfer window: the resolving branch's accent a shade over full
+   sandwich gauge — the core carve leaves two 1.5px accent threads, enough
+   to read at this scale — drawn under the cores so the traveling segment
+   is carved into the same pair as the ink it rides over. Hidden until the
+   loop takes it — under reduced motion the static live pair holds the
+   frame instead. */
 .toolchain-root .v0-dev-pulse {
   fill: none;
   stroke: #2f5ce0;
-  stroke-width: 4;
+  stroke-width: 5;
   vector-effect: non-scaling-stroke;
   opacity: 0;
   will-change: opacity;
@@ -207,10 +216,13 @@
 
 /* The landing chip sizes itself (the page pills every .v0-dev .lct, and a
    fork's three codes are the same length, so the values still share a left
-   rule within each diagram). */
+   rule within each diagram). flex-basis stays `auto` so a two-line plural
+   row's height reaches the container's intrinsic size — every row in a
+   fork carries the same lines, so the three stay equal and the landings
+   keep their thirds. */
 .toolchain-root .v0-dev-out {
-  flex: 1 1 0;
-  min-height: 30px;
+  flex: 1 1 auto;
+  min-height: 24px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 10px;
@@ -261,9 +273,9 @@
 
 .toolchain-root .v0-dev-note {
   font-family: var(--tc-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   color: var(--tc-ink-3);
   white-space: nowrap;
 }

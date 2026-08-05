@@ -436,3 +436,16 @@
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-drag-hint[data-hide] {
   opacity: 0;
 }
+
+/* Where the hyperspeed lived: no plate at all — the band region shares
+   the hero's own ground, and nothing rules its top edge (founder). */
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-cell.tch-band {
+  background: transparent;
+  border-top: 0;
+}
+
+.toolchain-root:is(.sgoh-root) .v0-devwin-band,
+.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-devwin-band {
+  background: transparent;
+  border-top: 0;
+}

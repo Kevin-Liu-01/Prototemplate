@@ -164,7 +164,7 @@ const FORKS: readonly ForkSpec[] = [
 const DWELL = 3;
 const LEAD = 0.35;
 const TRAVERSE = 1.6;
-const PULSE_SEG = 0.18;
+const PULSE_SEG = 0.3;
 const REST_DIM = 0.55;
 const EASE_IN = 0.35;
 const EASE_OUT = 0.45;
@@ -326,12 +326,17 @@ function BranchForks() {
             aria-label={spec.title}
             key={spec.label}
           >
-            <p className='v0-dev-fork-label'>
-              <Icon className='v0-dev-fork-ic' size={15} strokeWidth={1.6} aria-hidden />
-              {spec.label}
-            </p>
             <div className='v0-dev-fork-body'>
-              <span className='v0-dev-src'>{spec.source}</span>
+              {/* the category and its raw value are ONE unit — the label
+                  rides directly on the source node, and the fork leaves
+                  from the pair (founder round: no separate headers) */}
+              <span className='v0-dev-key'>
+                <span className='v0-dev-fork-label'>
+                  <Icon className='v0-dev-fork-ic' size={14} strokeWidth={1.6} aria-hidden />
+                  {spec.label}
+                </span>
+                <span className='v0-dev-src'>{spec.source}</span>
+              </span>
               <span className='v0-dev-mid'>
                 {/* lang-cr's layer order, miniaturized: threads first, the
                     pulse next, cores last — the traveling window rides

@@ -342,7 +342,7 @@ export default function HomeHero() {
             });
 
             // 1. the instrument appears around the current word
-            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.2, ease: 'none' });
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.15, ease: 'none' });
 
             // 2. the word dissolves as ONE shaped run — splitting it into
             //    per-character spans would disconnect Arabic and reflow the
@@ -352,7 +352,7 @@ export default function HomeHero() {
               autoAlpha: 0,
               scale: 0.92,
               transformOrigin: '50% 60%',
-              duration: 0.5,
+              duration: 0.38,
               ease: 'power2.in',
             }, '+=0.02');
             /* the cloud separates SYMMETRICALLY about the word's centre: each
@@ -374,22 +374,19 @@ export default function HomeHero() {
               autoAlpha: () => gsap.utils.random(0.35, 0.8),
               x: (i, g) => place0(g as HTMLElement, i).x,
               y: (i, g) => place0(g as HTMLElement, i).y,
-              duration: 0.6,
-              stagger: { amount: 0.15 },
+              duration: 0.45,
+              stagger: { amount: 0.1 },
               ease: 'power1.out',
             }, '<+=0.03');
 
             // 3. the bounds glide to the incoming word's shaped width — ONE
             //    continuous tween, quantized to device pixels, so the period
             //    and everything after it track without buzz or end snap
-            tl.to(em, { width: w1, duration: 0.9, ease: 'power2.inOut', snap: { width: 1 / dpr } });
-            const place1 = ring(Math.max(w1, 30));
-            tl.to(dustGlyphs, {
-              x: (i, g) => place1(g as HTMLElement, i).x,
-              y: (i, g) => place1(g as HTMLElement, i).y,
-              duration: 0.9,
-              ease: 'power2.inOut',
-            }, '<');
+            tl.to(em, { width: w1, duration: 0.65, ease: 'power2.inOut', snap: { width: 1 / dpr } });
+            /* the cloud HOLDS its scatter while the box glides — retargeting
+               to the incoming width mid-glide bunched every narrow word's
+               dust at the left edge (the founder saw it peeking). The
+               convergence happens once, at landing, inside the settled box. */
 
             // 4. CONDENSATION at glyph-field fidelity: every glyph owns
             //    EXACTLY one sampled point and lands centred on it, in
@@ -405,10 +402,10 @@ export default function HomeHero() {
               const pts = sampleShape(next.text, w1, h, dustGlyphs.length);
               const span = Math.max(w1, 1);
               /* the front's clock: landings finish just ahead of it */
-              const LAND = 0.7;
-              const LAND_SPREAD = 0.25;
-              const PRINT_AT = 0.55;
-              const PRINT = 1.0;
+              const LAND = 0.5;
+              const LAND_SPREAD = 0.18;
+              const PRINT_AT = 0.4;
+              const PRINT = 0.7;
               dustGlyphs.forEach((g, i) => {
                 const pt = pts[i];
                 if (!pt) {
@@ -425,12 +422,17 @@ export default function HomeHero() {
                   ease: 'power3.inOut',
                   delay: u * LAND_SPREAD,
                 });
-                /* the print front absorbs the landed glyph as it passes */
+                /* the print front absorbs the landed glyph as it passes —
+                   never before its landing tween has released the prop, or
+                   the landing's final autoAlpha:1 wins and the glyph parks
+                   visible at the em's edge */
+                const landEnd = u * LAND_SPREAD + LAND;
                 gsap.to(g, {
                   autoAlpha: 0,
                   duration: 0.08,
                   ease: 'none',
-                  delay: PRINT_AT + u * PRINT,
+                  overwrite: 'auto',
+                  delay: Math.max(landEnd + 0.02, PRINT_AT + u * PRINT),
                 });
               });
               gsap.delayedCall(PRINT_AT, () => {
@@ -456,7 +458,11 @@ export default function HomeHero() {
                 );
               });
             });
-            tl.to({}, { duration: 0.6 });
+            tl.to({}, { duration: 0.5 });
+            /* the timeline itself sweeps the pool dark: whatever any
+               per-glyph race leaves behind can never park visible into
+               the dwell — this lane always plays to completion */
+            tl.to(dustGlyphs, { autoAlpha: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '<+=0.35');
 
             // 5. the instrument withdraws
             tl.to([guideL, guideR], { opacity: 0, duration: 0.16, ease: 'none' }, '>-0.03');

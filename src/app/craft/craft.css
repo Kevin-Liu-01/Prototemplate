@@ -1,0 +1,297 @@
+/* ============================================================
+   CRAFT — the build log's own furniture, in the pt grammar.
+   Figures are SVG in the pt-funnel idiom (hairline strokes held
+   at 1px, grotesk labels, mono numerals); code sits in quiet
+   hairline boxes; the library demos run on the page's one dark
+   plate, ink in both themes. Nothing here draws a line the
+   prototemplate layer already owns.
+   ============================================================ */
+
+/* the libs section runs wider than the reading column so the demo
+   plates have real presence; the prose inside stays at reading width */
+.pt-root .pt-craft-libs {
+  max-width: 860px;
+}
+
+.pt-craft-lib p {
+  max-width: 64ch;
+}
+
+/* ---------- figures: hairlines, grotesk labels, mono numerals ---------- */
+
+.ptc-fig {
+  margin: 26px 0 0;
+  max-width: 780px;
+}
+
+.ptc-fig svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ptc-fig figcaption {
+  margin-top: 12px;
+  max-width: 64ch;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--pt-ink-3);
+}
+
+/* every structural stroke in a figure is the hairline token, held at a
+   true 1px whatever the svg scales to */
+.ptc-hair {
+  fill: none;
+  stroke: var(--pt-hair);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ptc-hair2 {
+  fill: none;
+  stroke: var(--pt-hair-2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ptc-dash {
+  stroke-dasharray: 4 3;
+}
+
+/* ink enters a figure only as the staged defect and the annotation dots */
+.ptc-inkline {
+  fill: none;
+  stroke: var(--pt-ink);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* the invisible-seam demo: geometrically present, tonally absent */
+.ptc-ghost {
+  fill: none;
+  stroke: var(--pt-hair-2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.5;
+}
+
+/* the self-stack demo: a translucent border over its own translucent fill */
+.ptc-stack {
+  fill: var(--pt-hatch);
+  stroke: var(--pt-ink-4);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ptc-leader {
+  fill: none;
+  stroke: var(--pt-hair);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ptc-dot {
+  fill: var(--pt-ink);
+}
+
+/* the grey ground and the paper cells sitting on it */
+.ptc-ground {
+  fill: var(--pt-hair);
+}
+
+.ptc-cell {
+  fill: var(--pt-paper);
+}
+
+/* plain words — the grotesk voice, never mono */
+.ptc-t {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  fill: var(--pt-ink);
+}
+
+.ptc-s {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  fill: var(--pt-ink-4);
+}
+
+/* numbers and tokens only */
+.ptc-n {
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  fill: var(--pt-ink-3);
+}
+
+/* ---------- the second-surface kit ---------- */
+
+.ptc-corner {
+  max-width: 860px;
+}
+
+.ptc-corner-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 44px);
+  align-items: start;
+}
+
+.ptc-kit {
+  display: grid;
+  gap: 26px;
+}
+
+.ptc-part-label {
+  display: block;
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--pt-ink-3);
+}
+
+/* the hatch spacer, sampled: the exact recipe the dividers on this page use */
+.ptc-hatch-strip {
+  height: 42px;
+  margin-top: 8px;
+  border: 1px solid var(--pt-hair);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 6px,
+    var(--pt-hatch) 6px,
+    var(--pt-hatch) 7px
+  );
+  background-clip: padding-box;
+}
+
+.ptc-part-token {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--pt-ink-3);
+}
+
+/* the four-color system: absolute values, not themed — ink is ink in
+   both modes, so the swatches state the system rather than sample the page */
+.ptc-swatches {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ptc-swatch i {
+  display: block;
+  height: 44px;
+  border: 1px solid var(--pt-hair);
+  background-clip: padding-box;
+}
+
+.ptc-swatch.is-ink i {
+  background-color: var(--color-ink);
+}
+
+.ptc-swatch.is-raised i {
+  background-color: var(--color-ink-raised);
+}
+
+.ptc-swatch.is-titanium i {
+  background-color: var(--color-titanium);
+}
+
+.ptc-swatch.is-paper i {
+  background-color: var(--color-paper);
+}
+
+.ptc-swatch b {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+.ptc-swatch span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  color: var(--pt-ink-3);
+}
+
+@media (max-width: 760px) {
+  .ptc-corner-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- house code blocks: mono, quiet, hairline-boxed ---------- */
+
+.ptc-code {
+  margin: 22px 0 0;
+  max-width: 860px;
+  border: 1px solid var(--pt-hair);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ptc-code figcaption {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--pt-hair);
+  font-family: var(--pt-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-3);
+}
+
+.ptc-code pre {
+  margin: 0;
+  padding: 14px 16px 16px;
+  overflow-x: auto;
+  font-family: var(--pt-mono);
+  font-size: 12.5px;
+  line-height: 1.62;
+  color: var(--pt-ink-2);
+}
+
+/* ---------- the demo plates: the page's dark surface in both themes ---------- */
+
+.ptc-plate {
+  /* the engines resolve their ink off this token — pinned to paper-white
+     because the plate is permanently dark */
+  --tc-ink: var(--color-paper);
+
+  position: relative;
+  height: 280px;
+  margin-top: 18px;
+  border-radius: 12px;
+  background: var(--color-ink);
+  overflow: hidden;
+}
+
+.ptc-plate canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ptc-plate-tag {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  font-family: var(--pt-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--color-titanium);
+  pointer-events: none;
+}
