@@ -31,17 +31,9 @@
   flex-direction: column;
   justify-content: center;
   background: #101010;
-  padding: clamp(20px, 2.2vw, 28px) clamp(18px, 2.6vw, 34px);
+  padding: clamp(24px, 3.2vw, 40px) clamp(18px, 2.6vw, 34px);
   color: rgba(255, 255, 255, 0.82);
   --iso-accent: #86a8ff;
-}
-
-/* the ruled copy cells answer their artifact from its middle — the review
-   row's standard (founder: no dead cell bottoms beside tall artifacts) */
-.toolchain-root .v0-ldx .tc-cell.tcm-ruled {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .toolchain-root .v0-ldx .v0-ldx-iso {

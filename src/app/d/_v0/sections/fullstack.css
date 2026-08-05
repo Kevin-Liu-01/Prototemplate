@@ -93,22 +93,18 @@
 
 .toolchain-root .tcb .v0-stack-fig {
   position: sticky;
-  /* the seat: 262 = 242 (half the tower + its top pad, so the TOWER'S
-     center — not the padded box's — is what the seat centers) + a 20px
-     upward bias, the price of the end-of-stack clearance below (founder:
-     the seat may bias up to ~20px if the clearance costs it). The tower
-     center rides ~20px above the viewport's center through beats 01–03;
-     the 70px floor keeps short viewports from tucking the figure under
-     the 58px nav.
-     The endgame ledger (rewritten for the settle — the old dwell math
-     is gone with the dwell): a seat-pinned figure can NEVER put its
-     bottom below seat + figure height (703px at 900, 793 at 1080), so
-     at the band's rest view it stranded a seat-sized black run below
-     the tower (~197px at 900, ~286 at 1080 — the void the founder
-     screenshotted). The JS settle in FullStack.tsx closes it OUTSIDE
-     this seat: across the finale's approach it translates the figure
-     from the seat to the column's floor, touching down exactly at the
-     rest view. The seat itself still owns beats 01–03 unchanged. Two
+  /* the seat, UNCENTERED (founder: "it can be uncentered" — the 50vh
+     centering formula was what fed the runway math and its voids): the
+     figure rides high, a fixed breath under the 58px nav, and the beats
+     shrink to the story's own rhythm instead of the seat's. The 9vh
+     term keeps a little proportionality on tall viewports without ever
+     re-centering.
+     The endgame ledger: a seat-pinned figure can NEVER put its bottom
+     below seat + figure height, so the rest view would strand a black
+     run below the tower. The JS settle in FullStack.tsx closes it
+     OUTSIDE this seat: across the finale's approach it translates the
+     figure from the seat to the column's floor, touching down exactly
+     at the rest view. The seat itself still owns beats 01–03. Two
      equations survive:
        release  = seat + figure height + 28px tail — the scroll past
                   the rest view where the native sticky glue takes the
@@ -116,10 +112,10 @@
                   point and velocity, so no pop);
        depth    = 100vh − release — the settle's landing depth, remeasured
                   by FullStack on every refresh (never hardcode it here).
-     Every px of figure height still costs a full px of both. Re-run
-     docs/harness/void-probe.mjs at 1440×900 AND 1920×1080 whenever the
-     figure, seat, or last-beat height moves. */
-  top: max(70px, calc(50vh - 262px));
+     A smaller seat DEEPENS the settle's descent — that is the intended
+     trade. Re-run docs/harness/void-probe.mjs at 1440×900 AND 1920×1080
+     whenever the figure, seat, or beat height moves. */
+  top: clamp(64px, 9vh, 96px);
   display: flex;
   justify-content: center;
   /* slim pads above, clearance below: the 44px foot is the end-of-stack
@@ -453,15 +449,16 @@
 
 .toolchain-root .tcb .v0-stack-beat {
   flex: 1;
-  /* taller beats than the copy needs, on purpose: the rail is the
-     sticky figure's runway — the beats must outrun the figure's height
-     by enough that the pin holds through the last beat at the biased
-     seat above. The 920px cap is the tall-viewport ceiling that keeps
-     the seat (0.5vh) from outrunning the runway (0.8 × beat). The copy
-     centers in each window, so the reader meets it mid-viewport beside
-     the pinned figure; the beats separate by rhythm alone, no dividers
-     (founder round 6). */
-  min-height: clamp(250px, 64vh, 920px);
+  /* the story's rhythm (founder: the 64vh windows read as messed-up
+     spacing — ~440px of black between copy blocks): four UNIFORM
+     windows at 42vh, copy centered in each, so consecutive reads sit
+     one tight breath apart. 42vh is also the finale's own floor: the
+     lock-in bound is 0.42·vh − tail, so a 42vh window beats it by
+     exactly the 28px tail at EVERY viewport — the last beat is hot at
+     the rest view with no per-viewport override. The uncentered seat
+     above no longer demands a runway premium; the beats separate by
+     rhythm alone, no dividers (founder round 6). */
+  min-height: clamp(240px, 42vh, 560px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -469,31 +466,17 @@
   transition: opacity 0.32s ease;
 }
 
-/* the LAST beat, bottom-anchored (founder: no black void trailing the
-   band). Centering the copy in a pin-sized window stranded it ~220px
-   above the bottom rule — the very runway the pin feeds on read as a
-   dead end. So the finale inverts the grammar: the copy rides its
-   window's FLOOR, ~60px off the band's rule (32px pad + the 28px tail
-   below the grid), and the window's dead half sits ABOVE the copy,
-   where it is the approach from beat 03 — the same stretch the JS
-   settle (FullStack) spends carrying the figure from its seat down to
-   the column's floor, so the approach is the descent, not dead air.
-   The height's one law now: the finale's lock-in (window top crossing
-   the 58% read line) must land BEFORE the band's rest view (bottom
-   rule at the viewport bottom), which needs H > 42vh − 28px tail. The
-   420px floor keeps the 900-viewport rhythm (beat 03 → 04 copy spacing
-   at the centered beats' own); the 46vh term is what clears the law on
-   tall displays — at a bare 420px the lock-in missed the rest view by
-   ~6px at 1080 and the founder's rest frame showed the finale COLD.
-   The figure touches down at the rest view and rides out beside the
-   copy (see the settle ledger in FullStack.tsx). Verify with the void
-   probe at 1440×900 AND 1920×1080 whenever the figure, seat, or this
+/* the LAST beat is a beat like any other (founder: uniform story
+   rhythm — the old bottom-anchored finale in an oversized window put
+   beat 04's copy a different distance from beat 03 than every other
+   pair). The lock-in law (window top crossing the 58% read line before
+   the band's rest view) needs H > 42vh − 28px tail, and the shared
+   42vh window clears it by exactly the tail at every viewport, so the
+   finale is hot at rest with no override here. The figure touches
+   down at the rest view and rides out beside the centered copy (see
+   the settle ledger in FullStack.tsx). Verify with the void probe at
+   1440×900 AND 1920×1080 whenever the figure, seat, or the beat
    height moves. */
-.toolchain-root .tcb .v0-stack-beat:last-child {
-  min-height: max(420px, 46vh);
-  justify-content: flex-end;
-  padding-bottom: 32px;
-}
 
 /* the spotlight: JS-managed classes, so the static (reduced-motion)
    state is all four beats at full ink */
