@@ -559,6 +559,17 @@
   fill: color-mix(in srgb, #d29090 78%, #101010);
 }
 
+/* the write wires: the agent's hand — a quiet accent hairline per row,
+   fanning from the mark's chip to each diff's margin. Undrawn at rest
+   (the inline dash offset parks them); FullStack scrubs each one in
+   just ahead of its slat. */
+.toolchain-root .tcb .v0s-diff-wire {
+  fill: none;
+  stroke: color-mix(in srgb, var(--iso-accent) 55%, transparent);
+  stroke-width: 0.7;
+  stroke-linecap: round;
+}
+
 /* ---------- the copy rail: four beats, bottom of the stack first.
    Padding lives on the beats, not the list, so each divider runs the
    cell edge to edge — a rule, not a floating underline. ---------- */

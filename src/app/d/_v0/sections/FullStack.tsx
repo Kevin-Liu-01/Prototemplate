@@ -225,6 +225,7 @@ export default function V0FullStack() {
       const scan = scope.querySelector<SVGGElement>('[data-agents-scan]');
       const scanSweep = scope.querySelector<SVGGElement>('[data-agents-sweep]');
       const capDiffs = gsap.utils.toArray<SVGGElement>('[data-cap-diff]', scope);
+      const capWires = gsap.utils.toArray<SVGPathElement>('[data-cap-wire]', scope);
       if (slabs.length === 0 || beats.length === 0) return;
 
       /* how many slabs must exist for each ambient loop's plate */
@@ -636,11 +637,24 @@ export default function V0FullStack() {
         if (capDiffs.length > 0 && beats.length > 0) {
           const capTl = gsap.timeline({ paused: true });
           capDiffs.forEach((slat, i) => {
+            /* the write wire leads its slat: the hairline draws OUT of
+               the mark's chip first, then the diff lands at its far end
+               — the agent visibly writing each line (founder). Scrubbed,
+               so scroll-back unwrites in reverse. */
+            const wire = capWires[i];
+            if (wire) {
+              capTl.fromTo(
+                wire,
+                { strokeDashoffset: 100 },
+                { strokeDashoffset: 0, duration: 0.45, ease: 'power1.inOut', autoRound: false },
+                i * 0.8
+              );
+            }
             capTl.fromTo(
               slat,
               { autoAlpha: 0, y: -6 },
               { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-              i * 0.8
+              i * 0.8 + 0.3
             );
           });
           ScrollTrigger.create({

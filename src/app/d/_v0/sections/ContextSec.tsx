@@ -485,6 +485,7 @@ export default function V0Context() {
               section reads native to the plate. */}
           <div className='tcb-cell v0-ctx-review' data-cell data-reveal>
             <ReviewWorkspace
+              chrome='product'
               heading='Review and approve with your team, from one surface.'
               sub={null}
               notes={null}

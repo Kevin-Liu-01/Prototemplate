@@ -403,3 +403,124 @@
 .toolchain-root .v0-ctx .tcb-grid::after {
   border-bottom: 0;
 }
+
+/* ---------- the workspace in product chrome (founder round) ----------
+   Inside the band the frame is the dashboard itself, not a terminal: the
+   type is the house sans (these strings are UI copy, not code), the
+   affordances wear their lucide glyphs, and the agent credit carries the
+   Locadex mark. Mono tracking reads airy in sans, so every letterspaced
+   cap steps one notch tighter. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-bar,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-lab,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-cell,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-foot {
+  font-family: var(--tc-sans);
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-bar {
+  letter-spacing: 0.07em;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-bar > span:last-child {
+  letter-spacing: 0.05em;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-lab {
+  letter-spacing: 0.09em;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-cell {
+  font-size: 13.5px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='ok'] {
+  letter-spacing: 0.08em;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-foot {
+  letter-spacing: 0.01em;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-fico {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+
+/* The mark asset pads its glyph to 222/500 of the box (the StackTower
+   lesson), so the img is sized from the GLYPH — 25px box for an ~11px
+   mark — and the negative margins hand the padding back to the line. The
+   filter inks the dark asset to the band's white; opacity seats it at the
+   footer's dimmed level. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-fmark {
+  width: 25px;
+  height: 25px;
+  margin: -7px;
+  flex: none;
+  display: inline-block;
+  filter: brightness(0) invert(1);
+  opacity: 0.72;
+}
+
+/* ---------- the Bayer aura off the frame ----------
+   The dither comes FROM the workspace box (founder note): ordered 4x4
+   tiers on 2px cells, every tile on one shared 8px grid so no cell is
+   ever painted twice. The right strip is the strong side — three 8px
+   columns stepping cover 6 -> 3 -> 1 away from the frame, filling the
+   24px to the sheet edge — and the 14px strips above and below carry one
+   quiet cover-2 field. The ink is the band's white in both themes; the
+   two <i> hooks come from the workspace's product chrome. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-r,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y {
+  position: absolute;
+  pointer-events: none;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-r {
+  left: 100%;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  opacity: 0.3;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 0h2v2H4ZM2 2h2v2H2ZM0 4h2v2H0ZM4 4h2v2H4ZM6 6h2v2H6Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 0h2v2H4ZM4 4h2v2H4Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0Z'/%3E%3C/svg%3E");
+  background-repeat: repeat-y;
+  background-position:
+    0 0,
+    8px 0,
+    16px 0;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y {
+  inset: 0;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::before,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  /* past the frame to the sheet edge, so the corner cells beside the
+     right strip carry the same quiet field */
+  right: -24px;
+  height: 14px;
+  opacity: 0.16;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E") repeat;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::before {
+  bottom: 100%;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::after {
+  top: 100%;
+}

@@ -98,12 +98,12 @@ const THICK = 4.2;
 const GAP = 42;
 const STEP = THICK + GAP;
 
-/** The agents plate's stepped-down footprint, ~13% under SIZE: the top
-    plate reads as the stack's CAPSTONE (founder round 9). Same plan
-    center, same z seat, same thickness — only the rhombus shrinks; the
-    frame, the rows, and the rail all stay SIZE-derived so nothing else
-    in the composition moves. */
-const CAP_SIZE = 90;
+/** The agents plate's footprint: FULL SIZE again (founder round-trip —
+    round 9 stepped it down ~13% as a "capstone"; the latest round undoes
+    that: "make the top layer the same size as the other"). Same plan
+    center, same z seat, same thickness; everything downstream is
+    CAP_SIZE-derived, so the face composition just gains plan room. */
+const CAP_SIZE = SIZE;
 const CAP_HALF = CAP_SIZE / 2;
 
 /** Slab viewBox: the silhouette plus stroke air, plus the rail margin on
@@ -356,19 +356,28 @@ const ORBIT_D = CAP_PLATE.top;
    the chip and the hunk. */
 const CAP_DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
   { w: 16, tone: 'del' },
-  { w: 20, tone: 'del' },
-  { w: 12, tone: 'del' },
+  { w: 21, tone: 'del' },
+  { w: 13, tone: 'del' },
+  { w: 19, tone: 'del' },
   { w: 18, tone: 'add' },
-  { w: 13, tone: 'add' },
+  { w: 12, tone: 'add' },
   { w: 20, tone: 'add' },
   { w: 15, tone: 'add' },
+  { w: 22, tone: 'add' },
+  { w: 14, tone: 'add' },
 ];
-const CAP_DIFF_X = 12;
-const CAP_DIFF_Y0 = -24;
+const CAP_DIFF_X = 14;
+const CAP_DIFF_Y0 = -28;
 /** The sign column's center, the code hunk's old rhythm kept: 4.5 plan
-    units left of the rows' start, clear of the (larger, right-shifted)
-    chip's edge at plan x = 4. */
+    units left of the rows' start — a clear 11-unit channel now separates
+    the chip's edge (plan x = −4) from the signs, and the write wires
+    below live in that air. */
 const CAP_SIGN_CX = CAP_DIFF_X - 4.5;
+
+/** The write wires' shared origin: just off the chip's right edge, on
+    the face — each wire fans from here to its row's margin, and
+    FullStack draws wire i as slat i arrives (the agent writing it). */
+const WIRE_X0 = -3;
 
 type GlyphChipProps = {
   x: number;
@@ -400,13 +409,13 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
     viewBox pads its glyph — the drawn form spans only 199×222 of it —
     so the seat is sized from the GLYPH: a 28-plan-unit visible mark
     inside the 36-unit chip (4-unit margins; founder rounds: the mark
-    grows again — 26/18 → 32/24 → 36/28 — and the WHOLE assembly steps
-    RIGHT, the chip's near corner now 13 plan units clear of the
-    capstone's left edge instead of kissing it), which the padding
-    inflates to a ~70-unit image box the mask crops back. The LDX cover
-    below and everything the shimmer derives from it follow this seat;
-    move or resize the chip and they recompute. */
-const CAP_CHIP_X = -32;
+    grows again — 26/18 → 32/24 → 36/28 — and the full-size plate seats
+    it at 12 plan units clear of the left edge, an 11-unit channel of
+    bare face between chip and signs for the write wires), which the
+    padding inflates to a ~70-unit image box the mask crops back. The
+    LDX cover below and everything the shimmer derives from it follow
+    this seat; move or resize the chip and they recompute. */
+const CAP_CHIP_X = -40;
 const CAP_CHIP_Y = -18;
 const CAP_CHIP_SIZE = 36;
 const MARK_GLYPH_W = 28;
@@ -487,13 +496,13 @@ const SHINE_TIERS: readonly { cover: number; width: number }[] = [
 ];
 
 /** The masked rects' screen-space cover: the 28-unit glyph on the chip's
-    top face (chip center plan (-14, 0), glyph v-half 15.6 from the
-    asset's 199×222 form) projects to x [-37.8, 13.5], y [-29.5, 0.1];
-    these bounds pad that, and the mask crops the rest back to the mark.
-    The shimmer's travel derives from these below, so it breathes with
-    the mark's seat and size. */
-const LDX_X = -41;
-const LDX_Y = -33;
+    top face (chip center plan (-22, 0) on the full-size plate, glyph
+    v-half 15.6 from the asset's 199×222 form) projects to x
+    [-44.7, 6.6], y [-33.5, -3.9]; these bounds pad that, and the mask
+    crops the rest back to the mark. The shimmer's travel derives from
+    these below, so it breathes with the mark's seat and size. */
+const LDX_X = -48;
+const LDX_Y = -37;
 const LDX_W = 58;
 const LDX_H = 37;
 
@@ -811,6 +820,29 @@ function TopGlyph({ id }: { id: string }) {
               />
             ))}
           </g>
+          {/* the write wires: one hairline per diff, fanning from the
+              mark's chip across the face to each row's margin — FullStack
+              draws wire i just before slat i lands ([data-cap-wire]), so
+              the agent visibly WRITES each line (founder). Parked fully
+              undrawn (offset = dasharray) for no-JS and reduced motion. */}
+          {CAP_DIFF_ROWS.map(({ tone }, i) => {
+            const y = CAP_DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
+            const cy = y + DIFF_D / 2;
+            return (
+              <path
+                key={`cwire-${i}`}
+                className='v0s-diff-wire'
+                data-cap-wire={i}
+                d={segment(
+                  project(WIRE_X0, 0, THICK),
+                  project(CAP_SIGN_CX - SIGN_ARM - 1, cy, THICK)
+                )}
+                pathLength={100}
+                strokeDasharray={100}
+                strokeDashoffset={100}
+              />
+            );
+          })}
           {/* the agent's ongoing work: the capstone hunk, scrubbed in by
               scroll (FullStack drives [data-cap-diff]; hidden at rest),
               each row signed +/− in its margin (the CAP_DIFF block) */}

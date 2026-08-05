@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Download, History, Search, Table2 } from 'lucide-react';
 import { Fragment, useRef } from 'react';
 
 import { useQuietReveal } from './reveal';
@@ -77,6 +78,11 @@ type ReviewWorkspaceProps = {
   sub?: string | null;
   /** Pass null to drop the notes list entirely. */
   notes?: readonly string[] | null;
+  /** 'product' dresses the frame as the dashboard itself: lucide glyphs in
+      the bar and footer, the Locadex mark on the agent credit, and the two
+      aura hooks the host styles into a dither field around the mat. The
+      default renders byte-identical to the original terminal chrome. */
+  chrome?: 'terminal' | 'product';
 };
 
 const DEFAULT_NOTES: readonly string[] = [
@@ -89,6 +95,7 @@ export default function ReviewWorkspace({
   heading = 'Edit in context.',
   sub = 'Agents write translations. You review, edit, and approve in a focused workspace.',
   notes = DEFAULT_NOTES,
+  chrome = 'terminal',
 }: ReviewWorkspaceProps = {}) {
   const root = useRef<HTMLElement>(null);
 
@@ -272,7 +279,14 @@ export default function ReviewWorkspace({
         <div className='tcr-mat' data-reveal>
           <div className='tcr-ws'>
             <div className='tcr-bar'>
-              <span>workspace · es-419</span>
+              {chrome === 'product' ? (
+                <span className='tcr-fact'>
+                  <Table2 className='tcr-fico' aria-hidden />
+                  workspace · es-419
+                </span>
+              ) : (
+                <span>workspace · es-419</span>
+              )}
               <span>{ROWS.length} strings</span>
             </div>
 
@@ -320,13 +334,44 @@ export default function ReviewWorkspace({
               ))}
             </div>
 
-            <div className='tcr-foot'>
-              <span>⌘K search</span>
-              <span>history</span>
-              <span>download</span>
-              <span className='is-right'>agent · locadex</span>
-            </div>
+            {chrome === 'product' ? (
+              <div className='tcr-foot'>
+                <span className='tcr-fact'>
+                  <Search className='tcr-fico' aria-hidden />
+                  search
+                </span>
+                <span className='tcr-fact'>
+                  <History className='tcr-fico' aria-hidden />
+                  history
+                </span>
+                <span className='tcr-fact'>
+                  <Download className='tcr-fico' aria-hidden />
+                  download
+                </span>
+                <span className='is-right tcr-fact'>
+                  agent ·
+                  {/* the mark, not the letter — the house never writes the wordmark plain */}
+                  <img alt='' className='tcr-fmark' src='/brand/locadex-mark.svg' />
+                  locadex
+                </span>
+              </div>
+            ) : (
+              <div className='tcr-foot'>
+                <span>⌘K search</span>
+                <span>history</span>
+                <span>download</span>
+                <span className='is-right'>agent · locadex</span>
+              </div>
+            )}
           </div>
+          {chrome === 'product' ? (
+            <>
+              {/* the aura hooks: zero-ink here — the mounting page styles
+                  them into the dither field breathing off the frame */}
+              <i aria-hidden='true' className='tcr-aura-r' />
+              <i aria-hidden='true' className='tcr-aura-y' />
+            </>
+          ) : null}
         </div>
       </div>
     </section>
