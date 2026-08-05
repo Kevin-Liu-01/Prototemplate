@@ -17,7 +17,7 @@ export default function BlogMasthead() {
   useQuietReveal(root);
 
   return (
-    <section className='tc-sec' id='top' ref={root}>
+    <section className='tc-sec' ref={root}>
       <div className='cp-hero'>
         <span className='cp-kicker' data-reveal>
           The index

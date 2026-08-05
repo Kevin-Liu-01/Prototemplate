@@ -15,7 +15,7 @@ export default function ContactHero() {
   useQuietReveal(root);
 
   return (
-    <section className='tc-sec' id='top' ref={root}>
+    <section className='tc-sec' ref={root}>
       <div className='cp-hero'>
         <span className='cp-kicker' data-reveal>
           Contact

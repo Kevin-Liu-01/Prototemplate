@@ -2,12 +2,29 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import GlyphRain from './GlyphRain';
-import { createGlyphField, type GlyphFieldHandle } from '@/lib/glyph-field';
+import { useQuietReveal } from './reveal';
+import { createGlyphField, SCRIPTS, type GlyphFieldHandle } from '@/lib/glyph-field';
 
 gsap.registerPlugin(useGSAP);
+
+/* The enterprise facts, straight off the old landing's contact page. */
+const FEATURES: readonly { title: string; line: string }[] = [
+  {
+    title: 'Enterprise platform',
+    line: 'Share translation context, glossaries, and custom prompts across every project and content source in your company.',
+  },
+  {
+    title: 'Customized workflows',
+    line: 'Reliable, scalable translation workflows across any file format or framework.',
+  },
+  {
+    title: 'Forward-deployed setup',
+    line: 'Dedicated hours with forward-deployed engineers to bring localization to production.',
+  },
+] as const;
 
 const COMPLIANCE = [
   'SOC 2 Type II',
@@ -18,38 +35,50 @@ const COMPLIANCE = [
   'Custom SLA',
 ] as const;
 
+/* The contact API's stable error codes (apps/landing/src/lib/contactErrorCodes.ts)
+   mapped to the same lines the production form shows. */
+const ERROR_LINES: Readonly<Record<string, string>> = {
+  rate_limited: 'Too many requests. Please try again later.',
+  missing_fields: 'Please fill in all required fields.',
+  invalid_email: 'Please provide a valid email address.',
+  enterprise_email_rejected: 'Please use a company email address.',
+};
+
+const GENERIC_ERROR = 'Something went wrong. Please try again later.';
+
+type SubmitState = 'idle' | 'sending' | 'sent';
+
 /**
- * The contact bay — the section the hero's CTAs land on. A full-bleed ink
- * band directly under the gate: ambient glyphs rain through the dark, and
- * the left column carries the glyph-rain fork's condensation field — the
- * swarm printing "language" in script after script — above the engineer
- * pitch. The right column is a plain hairline form; the compliance row
- * closes the band with the enterprise facts as quiet mono chips.
+ * The contact bay — the section the hero's CTA lands on. A full-bleed ink
+ * band: the pitch and the three enterprise commitments up top, then the
+ * ruled contact sheet — the form written into the sheet's margin while the
+ * glyph rain condenses into the word "language" in script after script on
+ * the paper beside it (the glyph-field engine, panel-scale). Focusing any
+ * field quiets the rain. The form is the old landing's real enterprise
+ * form: same fields, same endpoint, same error codes — success only when
+ * the API says so.
  */
 export default function EnterpriseContact() {
   const root = useRef<HTMLElement>(null);
-  const wordRef = useRef<HTMLCanvasElement>(null);
+  const fieldRef = useRef<HTMLCanvasElement>(null);
+  const [scriptIndex, setScriptIndex] = useState(0);
+  const [submit, setSubmit] = useState<SubmitState>('idle');
+  const [error, setError] = useState<string | null>(null);
+
+  useQuietReveal(root);
 
   useGSAP(
     () => {
-      const wordCanvas = wordRef.current;
+      const canvas = fieldRef.current;
       let field: GlyphFieldHandle | null = null;
-      if (wordCanvas) {
+      if (canvas) {
         field = createGlyphField({
-          canvas: wordCanvas,
+          canvas,
           displayFamily:
-            getComputedStyle(wordCanvas).getPropertyValue('--tc-disp').trim() || undefined,
+            getComputedStyle(canvas).getPropertyValue('--tc-disp').trim() || undefined,
+          onScript: (index) => setScriptIndex(index),
         });
       }
-
-      gsap.from('[data-sgc-in]', {
-        y: 16,
-        autoAlpha: 0,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: 'power2.out',
-      });
-
       return () => {
         field?.destroy();
       };
@@ -57,82 +86,159 @@ export default function EnterpriseContact() {
     { scope: root }
   );
 
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const payload = {
+      name: String(data.get('name') ?? ''),
+      email: String(data.get('email') ?? ''),
+      companyName: String(data.get('companyName') ?? ''),
+      message: String(data.get('message') ?? ''),
+    };
+    setSubmit('sending');
+    setError(null);
+    try {
+      const res = await fetch('/api/contact?type=enterprise', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { code?: string };
+        setError((body.code !== undefined && ERROR_LINES[body.code]) || GENERIC_ERROR);
+        setSubmit('idle');
+        return;
+      }
+      /* The form unmounts on success, so it cannot be resubmitted. */
+      setSubmit('sent');
+    } catch {
+      setError(GENERIC_ERROR);
+      setSubmit('idle');
+    }
+  }
+
+  const script = SCRIPTS[scriptIndex] ?? SCRIPTS[0];
+
   return (
-    <section className='tc-band sgc' id='contact' ref={root}>
-      <GlyphRain className='sgc-rain' />
-      <div className='sgc-in'>
-        <div className='sgc-head'>
-          {/* the condensation field leads the column: the swarm prints
-              "language" in script after script, ink pinned white */}
-          <div className='sgc-view' data-sgc-in>
-            <canvas
-              className='sgc-view-canvas'
-              ref={wordRef}
-              style={{ ['--tc-ink' as never]: '#ffffff' }}
-              aria-hidden
-            />
-          </div>
-          <h2 data-sgc-in>Bring your product to every market.</h2>
-          <p data-sgc-in>
+    <section className='tc-band sge-bay' id='contact' ref={root}>
+      <GlyphRain className='sge-bay-rain' />
+      <div className='sge-bay-in'>
+        <div className='sge-head'>
+          <h2 data-reveal>Bring your product to every market.</h2>
+          <p data-reveal>
             Talk to an engineer — not a sales deck. We&rsquo;ll walk your stack, your locales, and
             your review process, and leave you with a working plan.
           </p>
-          <ul className='sgc-points' data-sgc-in>
-            <li>Forward-deployed engineers on your integration</li>
-            <li>Custom workflows for any format or framework</li>
-            <li>Security review and procurement, handled</li>
-          </ul>
-          {/* PLACEHOLDER QUOTE — swap for Andrew Milich's real words before
-              this copy ships anywhere */}
-          <figure className='sgc-quote' data-sgc-in>
-            <blockquote>
-              <p>
-                We shipped our whole product in new languages faster than any launch I&rsquo;ve
-                run — the review workflow is the part nobody else gets right.
-              </p>
-            </blockquote>
-            <figcaption>
-              <b>Andrew Milich</b>
-              <span>Notion</span>
-            </figcaption>
-          </figure>
         </div>
 
-        <form className='sgc-form' data-sgc-in onSubmit={(e) => e.preventDefault()}>
-          <div className='sgc-row'>
-            <label className='sgc-field'>
-              <span>Name</span>
-              <input name='name' type='text' autoComplete='name' placeholder='Ada Lovelace' />
-            </label>
-            <label className='sgc-field'>
-              <span>Work email</span>
-              <input
-                name='email'
-                type='email'
-                autoComplete='email'
-                placeholder='ada@company.com'
-              />
-            </label>
+        <div className='sge-feats' data-reveal>
+          {FEATURES.map((feature) => (
+            <div key={feature.title}>
+              <h3>{feature.title}</h3>
+              <p>{feature.line}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* The contact sheet. The glyph-field engine owns the whole sheet's
+            canvas: its clearing keeps the rain off the form column, and the
+            word condenses on the ruled paper beside it. */}
+        <div className='sge-body' data-reveal>
+          <canvas
+            className='sge-field'
+            ref={fieldRef}
+            style={{ ['--tc-ink' as never]: '#ffffff' }}
+            aria-hidden
+          />
+          <div className='sge-grid'>
+            <div className='sge-formcol'>
+              {submit === 'sent' ? (
+                <div className='sge-received' role='status'>
+                  <h3>Message received</h3>
+                  <p>Thank you for reaching out. We&rsquo;ll be in touch soon.</p>
+                </div>
+              ) : (
+                <form className='sge-form' onSubmit={onSubmit}>
+                  {error !== null ? (
+                    <div className='sge-error' role='alert'>
+                      {error}
+                    </div>
+                  ) : null}
+                  <div className='sge-row'>
+                    <label className='sge-fieldbox'>
+                      <span>Full name</span>
+                      <input name='name' type='text' autoComplete='name' required placeholder='Your name' />
+                    </label>
+                    <label className='sge-fieldbox'>
+                      <span>Company email</span>
+                      <input
+                        name='email'
+                        type='email'
+                        autoComplete='email'
+                        required
+                        placeholder='you@yourcompany.com'
+                      />
+                    </label>
+                  </div>
+                  <label className='sge-fieldbox'>
+                    <span>Company name</span>
+                    <input
+                      name='companyName'
+                      type='text'
+                      autoComplete='organization'
+                      required
+                      placeholder='Your company'
+                    />
+                  </label>
+                  <label className='sge-fieldbox'>
+                    <span>How can we help?</span>
+                    <textarea
+                      name='message'
+                      rows={5}
+                      required
+                      placeholder='Tell us how we can help with localization, including timeline and requirements.'
+                    />
+                  </label>
+                  <div className='sge-form-foot'>
+                    <p className='sge-terms'>
+                      By submitting you agree to the{' '}
+                      <a
+                        href='https://generaltranslation.com/legal/terms'
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        Terms of Service
+                      </a>{' '}
+                      and acknowledge the{' '}
+                      <a
+                        href='https://generaltranslation.com/legal/privacy-policy'
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        Privacy Policy
+                      </a>
+                      .
+                    </p>
+                    <button className='sge-submit' type='submit' disabled={submit === 'sending'}>
+                      {submit === 'sending' ? 'Sending…' : 'Request a demo'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+            {/* the engine's paper: the rain, the condensed word, its caliper */}
+            <div className='sge-rainzone' aria-hidden>
+              {script !== undefined ? (
+                <span className='sge-readout'>
+                  {script.script} · {script.word}
+                </span>
+              ) : null}
+            </div>
           </div>
-          <label className='sgc-field'>
-            <span>Company</span>
-            <input name='company' type='text' autoComplete='organization' placeholder='Company' />
-          </label>
-          <label className='sgc-field'>
-            <span>What are you localizing?</span>
-            <textarea
-              name='about'
-              rows={4}
-              placeholder='Your app, your docs, the locales you need, the stack you run.'
-            />
-          </label>
-          <button className='sgc-submit' type='submit'>
-            Request a demo
-          </button>
-        </form>
+        </div>
       </div>
 
-      <div className='sgc-compliance' aria-label='Compliance and enterprise controls'>
+      <div className='sge-compliance' aria-label='Compliance and enterprise controls'>
         {COMPLIANCE.map((item) => (
           <span key={item}>{item}</span>
         ))}

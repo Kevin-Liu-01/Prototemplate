@@ -2,18 +2,17 @@ import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
+import EnterpriseEvidence from '../../singularity/sections/EnterpriseEvidence';
+import EnterpriseTestimony from '../../singularity/sections/EnterpriseTestimony';
 import Hero from '../../singularity/sections/Hero';
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
-
-import Ledger from '../sections/Ledger';
-import Procurement from '../sections/Procurement';
-import Testimony from '../sections/Testimony';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
    (the toolchain enterprise subpage precedent) */
 import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
+import '../../singularity/sections/enterprise.css';
 import '../styles.css';
 
 export const metadata = {
@@ -22,11 +21,11 @@ export const metadata = {
 };
 
 /**
- * Singularity · Dossier — the gate, then the evidence file. No spectacle
- * below the horizon: the case for GT is made the way procurement reads it —
- * sworn statements set as machined typography, a certificate wall for the
- * controls, and an audit ledger of what actually shipped. The aura is
- * restraint: everything measured, ruled, and signed.
+ * Singularity · Dossier — the gate, then the file. The shared enterprise
+ * composition under the hero: the contact bay (the ruled form beside the
+ * condensing glyph rain), the evidence cells procurement actually reads,
+ * and the record — set in this final's dossier dress: dashed certificate
+ * frames, filed control numbers, everything measured and signed.
  */
 export default function SingularityDossierPage() {
   return (
@@ -34,15 +33,10 @@ export default function SingularityDossierPage() {
       <div className='singularity-root sgd-root'>
         <TopNav />
         <Hero />
-        <div className='tc-rail'>
-          <Testimony />
-        </div>
-        <Procurement />
-        <div className='tc-rail'>
-          <Ledger />
-        </div>
         <EnterpriseContact />
         <div className='tc-rail'>
+          <EnterpriseEvidence />
+          <EnterpriseTestimony />
           <SiteFooter />
         </div>
       </div>

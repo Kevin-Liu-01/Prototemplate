@@ -1,263 +1,27 @@
 /* ============================================================
-   SINGULARITY · DOSSIER — the evidence file under the gate.
-   Testimony plates, the certificate wall, the audit ledger.
-   Every surface here is ruled paper: single hairlines, no
-   translucent fills under translucent borders, numbers in mono
-   and nothing else.
+   SINGULARITY · DOSSIER — this final's dress over the shared
+   enterprise composition (singularity/sections/enterprise.css).
+   The file grammar: certificates carry dashed frames and filed
+   control numbers; ledger heads read like folder tabs. Accents
+   only — the structure is the shared sheet.
    ============================================================ */
 
-/* ---- shared section head ---- */
-
-/* the first section after the hero owns the junction seam
-   (the hero's own bottom border is suppressed by #top) */
-.singularity-root .sgd-testimony {
-  border-top: 1px solid var(--tc-hair);
+/* certificates are filed, not framed */
+.sgd-root .sge-cert {
+  border-style: dashed;
 }
 
-.singularity-root .sgd-testimony,
-.singularity-root .sgd-ledger {
-  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut) clamp(64px, 7.4vw, 104px);
-}
-
-.singularity-root .sgd-head {
-  margin-bottom: clamp(36px, 4.6vw, 64px);
-}
-
-.singularity-root .sgd-kicker {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
+.sgd-root .sge-cert-file {
   letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--tc-ink-3);
 }
 
-.singularity-root .sgd-head h2 {
-  margin-top: 10px;
-  font-family: var(--tc-disp);
-  font-size: clamp(28px, 3.4vw, 46px);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.06;
-  color: var(--tc-ink);
+/* ledger heads as folder tabs — a shade more official */
+.sgd-root .sge-ledger-head,
+.sgd-root .sge-perm-row.is-head {
+  letter-spacing: 0.16em;
 }
 
-/* ---- the testimony plates ---- */
-
-.singularity-root .sgd-plate {
-  margin: 0;
-  padding: 26px 0 34px;
-}
-
-.singularity-root .sgd-plate + .sgd-plate {
-  padding-top: 30px;
-}
-
-.singularity-root .sgd-plate-rule {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--tc-hair);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--tc-ink-3);
-}
-
-.singularity-root .sgd-plate-brand {
-  color: var(--tc-ink-4);
-}
-
-.singularity-root .sgd-plate blockquote {
-  margin: 0;
-  padding: 28px 0 0;
-}
-
-.singularity-root .sgd-plate blockquote p {
-  max-width: 24ch;
-  font-family: var(--tc-disp);
-  font-size: clamp(24px, 2.9vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.18;
-  color: var(--tc-ink);
-}
-
-.singularity-root .sgd-plate blockquote p::before {
-  content: '“';
-}
-
-.singularity-root .sgd-plate blockquote p::after {
-  content: '”';
-}
-
-.singularity-root .sgd-plate figcaption {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.singularity-root .sgd-plate figcaption span {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 13px;
-  color: var(--tc-ink-3);
-}
-
-.singularity-root .sgd-plate figcaption b {
-  font-weight: 600;
-  color: var(--tc-ink-2);
-}
-
-/* ---- wordmarks (the trust row's marks, re-scoped for the file) ---- */
-
-.singularity-root .sgd-wm {
-  display: block;
-  background-position: left center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  filter: grayscale(1);
-  opacity: 0.66;
-}
-
-.singularity-root .sgd-wm.is-cursor { height: 18px; aspect-ratio: 739 / 186; background-image: url('/logos/cursor.light.svg'); }
-.singularity-root .sgd-wm.is-ramp { height: 15px; aspect-ratio: 643.93 / 170.94; background-image: url('/logos/ramp.light.svg'); }
-.singularity-root .sgd-wm.is-profound { height: 15px; aspect-ratio: 166 / 28; background-image: url('/logos/profound.light.svg'); }
-.singularity-root .sgd-wm.is-partiful { height: 16px; aspect-ratio: 204 / 46; background-image: url('/logos/partiful.light.svg'); }
-.singularity-root .sgd-wm.is-clickhouse { height: 15px; aspect-ratio: 600 / 110; background-image: url('/logos/clickhouse.light.svg'); }
-
-[data-theme='dark'] .singularity-root .sgd-wm.is-cursor { background-image: url('/logos/cursor.dark.svg'); }
-[data-theme='dark'] .singularity-root .sgd-wm.is-ramp { background-image: url('/logos/ramp.dark.svg'); }
-[data-theme='dark'] .singularity-root .sgd-wm.is-profound { background-image: url('/logos/profound.dark.svg'); }
-[data-theme='dark'] .singularity-root .sgd-wm.is-partiful { background-image: url('/logos/partiful.dark.svg'); }
-[data-theme='dark'] .singularity-root .sgd-wm.is-clickhouse { background-image: url('/logos/clickhouse.dark.svg'); }
-
-/* ---- the certificate wall (dark band) ---- */
-
-.singularity-root .tc-band.sgd-proc {
-  position: relative;
-  margin-inline: calc(50% - 50vw);
-  background: #070707;
-  color: rgba(255, 255, 255, 0.92);
-  border-block: 1px solid var(--tc-hair);
-  overflow: clip;
-  isolation: isolate;
-}
-
-.singularity-root .sgd-proc-in {
-  position: relative;
-  z-index: 1;
-  width: min(var(--tc-rail), 100%);
-  margin-inline: auto;
-  border-inline: 1px solid rgba(138, 143, 152, 0.5);
-  padding: clamp(56px, 6.6vw, 92px) var(--tc-gut) clamp(56px, 6.6vw, 88px);
-}
-
-.singularity-root .sgd-proc-head h2 {
-  font-family: var(--tc-disp);
-  font-size: clamp(26px, 3vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.08;
-  color: #ffffff;
-}
-
-.singularity-root .sgd-proc-head p {
-  margin-top: 14px;
-  max-width: 52ch;
-  font-size: 15px;
-  line-height: 1.62;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.singularity-root .sgd-certs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: clamp(32px, 4vw, 52px);
-}
-
-.singularity-root .sgd-cert {
-  border: 1px dashed rgba(138, 143, 152, 0.42);
-  padding: 20px 20px 22px;
-}
-
-.singularity-root .sgd-cert-file {
-  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.singularity-root .sgd-cert h3 {
-  margin-top: 14px;
-  font-family: var(--tc-disp);
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: #ffffff;
-}
-
-.singularity-root .sgd-cert p {
-  margin-top: 8px;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.56);
-}
-
-/* ---- the audit ledger ---- */
-
-.singularity-root .sgd-table {
-  border-top: 1px solid var(--tc-hair);
-}
-
-.singularity-root .sgd-tr {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(0, 0.55fr) minmax(0, 0.75fr);
-  gap: 18px;
-  align-items: center;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--tc-hair);
-  font-size: 14.5px;
-  color: var(--tc-ink-2);
-}
-
-.singularity-root .sgd-tr.is-head {
-  padding: 12px 0;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--tc-ink-3);
-}
-
-.singularity-root .sgd-td-num {
-  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
-  font-size: 13.5px;
-  color: var(--tc-ink-2);
-}
-
-.singularity-root .sgd-ledger-foot {
-  margin-top: 22px;
-  font-size: 14px;
-  color: var(--tc-ink-3);
-}
-
-@media (max-width: 880px) {
-  .singularity-root .sgd-certs {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .singularity-root .sgd-tr {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr) minmax(0, 0.8fr);
-  }
-
-  .singularity-root .sgd-tr > [role='cell']:nth-child(2),
-  .singularity-root .sgd-tr.is-head > [role='columnheader']:nth-child(2) {
-    display: none;
-  }
+/* the record's exhibits carry the seal spacing */
+.sgd-root .sge-plate-rule {
+  letter-spacing: 0.18em;
 }

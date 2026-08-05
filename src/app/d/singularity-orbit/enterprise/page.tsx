@@ -2,18 +2,17 @@ import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
+import EnterpriseEvidence from '../../singularity/sections/EnterpriseEvidence';
+import EnterpriseTestimony from '../../singularity/sections/EnterpriseTestimony';
 import Hero from '../../singularity/sections/Hero';
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
-
-import GravityWell from '../sections/GravityWell';
-import Instruments from '../sections/Instruments';
-import Witness from '../sections/Witness';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
    (the toolchain enterprise subpage precedent) */
 import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
+import '../../singularity/sections/enterprise.css';
 import '../styles.css';
 
 export const metadata = {
@@ -22,11 +21,10 @@ export const metadata = {
 };
 
 /**
- * Singularity · Orbit — the gate, then gravity as the argument. The proof
- * sections stay in the hero's physics: delivery metrics read as instrument
- * dials, the customers ride a real orbit around a second, smaller horizon,
- * and one witness speaks from inside the well. Conversion by gravitational
- * capture.
+ * Singularity · Orbit — the gate, then gravity as the argument. The shared
+ * enterprise composition under the hero, in this final's orbital dress:
+ * rounded instruments, the matrix read as a body chart — conversion by
+ * gravitational capture.
  */
 export default function SingularityOrbitPage() {
   return (
@@ -34,15 +32,10 @@ export default function SingularityOrbitPage() {
       <div className='singularity-root sgo-root'>
         <TopNav />
         <Hero />
-        <div className='tc-rail'>
-          <Instruments />
-        </div>
-        <GravityWell />
-        <div className='tc-rail'>
-          <Witness />
-        </div>
         <EnterpriseContact />
         <div className='tc-rail'>
+          <EnterpriseEvidence />
+          <EnterpriseTestimony />
           <SiteFooter />
         </div>
       </div>

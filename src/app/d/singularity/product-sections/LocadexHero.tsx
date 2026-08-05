@@ -7,6 +7,9 @@ import { useRef, useState } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
+/* the .lct chip base and the terminal locale-pill convention, singularity-scoped */
+import '../components/icons.css';
+
 gsap.registerPlugin(useGSAP);
 
 const LOCALES = ['es', 'fr', 'ja', 'de', 'zh'] as const;
@@ -121,7 +124,7 @@ export default function LocadexHero() {
             <div className='sgx-t' data-tline>
               <span className='sgx-t-stage' aria-hidden='true' />
               <span className='sgx-t-dim'>
-                glossary · 12 terms · <LocaleTag code='de' /> formal “Sie”
+                glossary · 12 terms · <LocaleTag code='de' className='tc-termloc' /> formal “Sie”
               </span>
             </div>
             <div className='sgx-t' data-tline>
@@ -147,7 +150,7 @@ export default function LocadexHero() {
               <span>
                 {LOCALES.map((code) => (
                   <span key={code}>
-                    <LocaleTag code={code} />{' '}
+                    <LocaleTag code={code} className='tc-termloc' />{' '}
                   </span>
                 ))}
                 <span className='sgx-t-dim'>· in context</span>

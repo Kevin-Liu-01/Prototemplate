@@ -254,11 +254,13 @@
   background: rgba(255, 255, 255, 0.7);
 }
 
-/* the transcript's locale chips ride the dark panel */
-.singularity-root .sgx-term-body .tf-tag,
-.singularity-root .sgx-out .tf-tag {
+/* locale chips: mono code beside the flag, at annotation size */
+.singularity-root .sgx-out .lct-code,
+.singularity-root .sgx-pin .lct-code,
+.singularity-root .sgx-scope .lct-code {
   font-family: var(--tc-mono);
   font-size: 11.5px;
+  color: var(--tc-ink-3);
 }
 
 /* ---------- ruled ledgers (the audit-table grammar) ---------- */

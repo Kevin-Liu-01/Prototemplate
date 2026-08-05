@@ -7,6 +7,9 @@ import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import CodeBlock from '../sections/code';
 import { useQuietReveal } from '../sections/reveal';
 
+/* the .lct locale-chip base, singularity-scoped */
+import '../components/icons.css';
+
 /**
  * The page's thesis in one artifact pair: the same four lines of JSX, with
  * and without a context tag, and the German that ships flipping between the

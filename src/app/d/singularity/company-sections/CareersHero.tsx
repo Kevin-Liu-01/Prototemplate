@@ -38,7 +38,7 @@ export default function CareersHero({ positions }: Props) {
   const rest = positions.length - shown.length;
 
   return (
-    <section className='tc-sec' id='top' ref={root}>
+    <section className='tc-sec' ref={root}>
       <div className='cpc-hero'>
         <div className='cpc-hero-copy'>
           <span className='cp-kicker' data-reveal>

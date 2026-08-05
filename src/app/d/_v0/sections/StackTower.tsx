@@ -301,9 +301,9 @@ function tee(cx: number, cy: number, h = 13): string {
  * JS or with reduced motion).
  */
 const CTX_WIRES: readonly string[] = [
-  'M-44 -26C-22 -26 -14 -6 7 -6',
-  'M-44 0C-28 0 -16 0 7 0',
-  'M-44 26C-22 26 -14 6 7 6',
+  'M-36 -26C-18 -26 -13 -6 7 -6',
+  'M-36 0C-24 0 -14 0 7 0',
+  'M-36 26C-18 26 -13 6 7 6',
 ];
 
 /** The code plate's wrap boundary: a flat rounded enclosure spanning the
@@ -763,16 +763,16 @@ function TopGlyph({ id }: { id: string }) {
               form — the book (terminology), the waveform (voice), the
               palette (style) — the beats' own icon language, lying in
               the chip tops like every other face mark */}
-          <GlyphChip x={-46} y={-32.5} w={16} d={13} h={2.5} />
-          <GlyphChip x={-46} y={-6.5} w={16} d={13} h={2.5} />
-          <GlyphChip x={-46} y={19.5} w={16} d={13} h={2.5} />
-          <ChipIcon z={THICK + 2.5} cx={-38} cy={-26} s={0.42} paths={ICON_BOOK} />
-          <ChipIcon z={THICK + 2.5} cx={-38} cy={0} s={0.42} paths={ICON_VOICE} />
+          <GlyphChip x={-40} y={-34} w={20} d={16} h={2.5} />
+          <GlyphChip x={-40} y={-8} w={20} d={16} h={2.5} />
+          <GlyphChip x={-40} y={18} w={20} d={16} h={2.5} />
+          <ChipIcon z={THICK + 2.5} cx={-30} cy={-26} s={0.55} paths={ICON_BOOK} />
+          <ChipIcon z={THICK + 2.5} cx={-30} cy={0} s={0.55} paths={ICON_VOICE} />
           <ChipIcon
             z={THICK + 2.5}
-            cx={-38}
+            cx={-30}
             cy={26}
-            s={0.42}
+            s={0.55}
             paths={ICON_STYLE}
             dots={ICON_STYLE_DOTS}
           />
@@ -803,9 +803,9 @@ function TopGlyph({ id }: { id: string }) {
           {/* the translate mark itself (founder: "the translate icon"):
               the Languages form on its own raised chip, leading the
               source string into the fan */}
-          <GlyphChip x={-46} y={-38} w={18} d={18} h={CHIP_H} />
-          <ChipIcon z={CHIP_TOP} cx={-37} cy={-29} s={0.52} paths={ICON_LANGS} />
-          <path className='v0s-g-mark' d={markPath(-25, -28, 13, 5.5)} />
+          <GlyphChip x={-42} y={-40} w={22} d={22} h={CHIP_H} />
+          <ChipIcon z={CHIP_TOP} cx={-31} cy={-29} s={0.68} paths={ICON_LANGS} />
+          <path className='v0s-g-mark' d={markPath(-19, -27.75, 7, 5.5)} />
           <g transform={plane(THICK)}>
             {FAN_WIRES.map((d) => (
               <path key={d} className='v0s-fan-wire' d={d} vectorEffect='non-scaling-stroke' />
