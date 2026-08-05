@@ -87,7 +87,7 @@ const BEATS: readonly StackBeat[] = [
         Wrap a component in <code>&lt;T&gt;</code> and it’s ready to ship in 120+ locales. No
         translation files needed.
       </>,
-      <em key='code-oss'>Open-source internationalization (i18n) libraries and SDKs for every stack.</em>,
+      'Open-source internationalization (i18n) libraries and SDKs for every stack.',
     ],
     icon: Code2,
     slabIds: ['code'],
