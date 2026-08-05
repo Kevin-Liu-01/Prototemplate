@@ -16,7 +16,21 @@ export default function ThemeToggle({ className }: { className?: string }) {
   const [theme, setTheme] = useState<Theme>('light');
 
   useMountEffect(() => {
-    const current = document.documentElement.dataset.theme as Theme | undefined;
+    let current = document.documentElement.dataset.theme as Theme | undefined;
+    /* Safari: an Intl-driven hydration bailout re-renders <html> WITHOUT
+       the parse-time script's attribute — the persisted theme re-asserts
+       from the client here, so the boot survives any hydration outcome */
+    if (!current) {
+      try {
+        const saved = localStorage.getItem('gt-theme') as Theme | null;
+        if (saved === 'dark' || saved === 'light') {
+          document.documentElement.dataset.theme = saved;
+          current = saved;
+        }
+      } catch {
+        // private mode: the pre-paint script owns the boot when it can
+      }
+    }
     if (current === 'dark') setTheme('dark');
   });
 
