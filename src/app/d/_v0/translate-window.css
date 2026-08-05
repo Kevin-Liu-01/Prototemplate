@@ -836,15 +836,15 @@
   width: 64px;
   /* solid thread inks (the old translucent composites, resolved):
      source-side ink on the white render, light ink on the plate */
-  --seam-ink-l: #656565;
-  --seam-ink-r: #939393;
+  --seam-ink-l: rgba(138, 143, 152, 0.45);
+  --seam-ink-r: rgba(138, 143, 152, 0.38);
 }
 
 /* the fill between the threads: the site's own ground carrying a little
    extra darkness — --tc-paper remaps per theme, so one mix serves the
    light and dark builds alike (founder: never flat black) */
 .toolchain-root .v0-tw .tct-app .tc-seam::before {
-  background: color-mix(in srgb, var(--tc-paper) 86%, #070707);
+  background: color-mix(in srgb, var(--tc-paper) 94%, #070707);
 }
 
 .toolchain-root .v0-tw .tct-app .tc-seam::after {
@@ -1176,6 +1176,7 @@
      the light ground read as a black outline against the dither; the
      inset top-light is a dark-plate device — it goes */
   outline-color: rgba(138, 143, 152, 0.28);
+  outline-offset: 0;
   box-shadow: none;
 }
 
@@ -1309,7 +1310,7 @@
    keeps its dark chip — the plate's OWN chip grammar, per the seam
    refit note above. */
 :root:not([data-theme='dark']) .toolchain-root .v0-tw .tct-app .tc-seam {
-  --seam-ink-r: #6f6f6f;
+  --seam-ink-r: rgba(138, 143, 152, 0.45);
 }
 
 /* the drag hint: a light chip on the light plate (v0-pages' dark chip
