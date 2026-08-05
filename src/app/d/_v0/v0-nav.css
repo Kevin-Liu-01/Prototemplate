@@ -96,8 +96,11 @@
 }
 
 /* ---------- dropdowns ----------
-   Same interaction as the toolchain menus: panels open on hover or keyboard
-   focus (:focus-within keeps them server-rendered and keyboard-usable). */
+   Open state is React-managed and lands here as [data-open] — NOT
+   :hover/:focus-within, which let a hovered sheet stack over a
+   keyboard-opened one and left Escape with nothing to dismiss. Hover and
+   bare keyboard focus still open the sheets (the component wires both into
+   one open slot); CSS only ever paints the single menu the state says. */
 
 .toolchain-root .v0-nav-drop {
   position: relative;
@@ -123,12 +126,11 @@
 }
 
 .toolchain-root .v0-nav-drop:hover .v0-nav-drop-trigger,
-.toolchain-root .v0-nav-drop:focus-within .v0-nav-drop-trigger {
+.toolchain-root .v0-nav-drop[data-open='true'] .v0-nav-drop-trigger {
   color: var(--tc-ink);
 }
 
-.toolchain-root .v0-nav-drop:hover .v0-nav-drop-trigger svg,
-.toolchain-root .v0-nav-drop:focus-within .v0-nav-drop-trigger svg {
+.toolchain-root .v0-nav-drop[data-open='true'] .v0-nav-drop-trigger svg {
   transform: rotate(180deg);
   color: var(--tc-ink);
 }
@@ -153,8 +155,7 @@
   border-radius: 12px;
 }
 
-.toolchain-root .v0-nav-drop:hover .v0-nav-panel,
-.toolchain-root .v0-nav-drop:focus-within .v0-nav-panel {
+.toolchain-root .v0-nav-drop[data-open='true'] .v0-nav-panel {
   display: flex;
 }
 

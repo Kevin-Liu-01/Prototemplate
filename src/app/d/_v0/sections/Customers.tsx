@@ -1,6 +1,5 @@
 'use client';
 
-import { BadgeCheck } from 'lucide-react';
 import { useRef } from 'react';
 
 
@@ -44,10 +43,6 @@ export default function V0Customers({
   return (
     <section className='tc-sec v0-cust' id='customers' ref={root}>
       <div className='tc-head'>
-        {/* the badge, not the handshake (founder: the caption band cuts the
-            glyph hard, so the mark must read from its midsection — the
-            badge's centered check survives the slice) */}
-        <BadgeCheck className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>{heading}</h2>
       </div>
 

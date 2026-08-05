@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRef, useState } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
 import {
@@ -29,6 +30,7 @@ import {
 import { usePathname } from 'next/navigation';
 
 import ThemeToggle from '@/components/shared/ThemeToggle';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './v0-nav.css';
 
@@ -46,8 +48,9 @@ type MenuItem = {
   external?: boolean;
 };
 
-/** Single-column menus (Product) skip the column heading. */
-type MenuColumn = { title?: string; items: readonly MenuItem[] };
+/** Every column carries a small-caps eyebrow so the three sheets share one
+    panel grammar (PRODUCT / COMPANY+COMMUNITY / LIBRARIES+CONTENT+PLATFORM). */
+type MenuColumn = { title: string; items: readonly MenuItem[] };
 
 const DOCS = 'https://generaltranslation.com/docs';
 
@@ -57,6 +60,7 @@ const DOCS = 'https://generaltranslation.com/docs';
 function product(base: string): readonly MenuColumn[] {
   return [
     {
+      title: 'Product',
       items: [
         { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
         { label: 'Context', desc: 'One source of context', href: `${base}/context`, icon: Layers },
@@ -142,17 +146,79 @@ function MenuMark({ item }: { item: MenuItem }) {
   return Icon ? <Icon aria-hidden className='v0-menu-glyph' color='currentColor' size={15} strokeWidth={1.75} /> : null;
 }
 
-function Menu({ label, columns, wide }: { label: string; columns: readonly MenuColumn[]; wide?: boolean }) {
+type MenuProps = {
+  label: string;
+  columns: readonly MenuColumn[];
+  wide?: boolean;
+  /** Open state lives in V0Nav — ONE slot for all three menus, so a
+      keyboard-opened Product can never stack under a hovered Resources. */
+  open: boolean;
+  onOpenChange: (next: boolean) => void;
+};
+
+function Menu({ label, columns, wide, open, onOpenChange }: MenuProps) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  /* Escape refocuses the trigger, which re-fires onFocus; the flag keeps
+     that programmatic refocus from reopening the sheet it just closed. */
+  const refocusing = useRef(false);
+  /* A tap/click focuses the button first — the timestamp lets onClick tell
+     "focus already opened this" (ignore) from a real keyboard Enter toggle. */
+  const focusOpenedAt = useRef(0);
+
   return (
-    <div className='v0-nav-drop'>
-      <button className='v0-nav-drop-trigger' type='button' aria-haspopup='true'>
+    <div
+      className='v0-nav-drop'
+      data-open={open ? 'true' : undefined}
+      onMouseEnter={() => onOpenChange(true)}
+      onMouseLeave={() => onOpenChange(false)}
+      onFocus={() => {
+        if (refocusing.current) {
+          refocusing.current = false;
+          return;
+        }
+        focusOpenedAt.current = Date.now();
+        onOpenChange(true);
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onOpenChange(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== 'Escape' || !open) return;
+        event.preventDefault();
+        if (document.activeElement !== triggerRef.current) {
+          refocusing.current = true;
+          triggerRef.current?.focus();
+        }
+        onOpenChange(false);
+      }}
+    >
+      <button
+        aria-expanded={open}
+        aria-haspopup='true'
+        className='v0-nav-drop-trigger'
+        onClick={() => {
+          if (Date.now() - focusOpenedAt.current < 350) return;
+          onOpenChange(!open);
+        }}
+        ref={triggerRef}
+        type='button'
+      >
         {label}
         <ChevronDown aria-hidden size={13} strokeWidth={2} />
       </button>
-      <div className={wide ? 'v0-nav-panel is-wide' : 'v0-nav-panel'} role='menu'>
-        {columns.map((column, index) => (
-          <div className='v0-nav-col' key={column.title ?? index}>
-            {column.title ? <h5>{column.title}</h5> : null}
+      <div
+        className={wide ? 'v0-nav-panel is-wide' : 'v0-nav-panel'}
+        onClick={(event) => {
+          /* Following a link dismisses the sheet — hash anchors stay on the
+             page, so without this the panel would sit over the scrolled-to
+             section. */
+          if ((event.target as HTMLElement).closest('a')) onOpenChange(false);
+        }}
+        role='menu'
+      >
+        {columns.map((column) => (
+          <div className='v0-nav-col' key={column.title}>
+            <h5>{column.title}</h5>
             {column.items.map((item) => (
               <a
                 href={item.href}
@@ -184,11 +250,34 @@ function Menu({ label, columns, wide }: { label: string; columns: readonly MenuC
  * Shared by all five singularity homes, so every internal link resolves
  * against the CURRENT final's base — a static href would land every slug on
  * one final's routes.
+ *
+ * Open state is React-managed (data-open), not :hover/:focus-within: one
+ * shared slot means hover + keyboard can never stack two sheets, Escape
+ * dismisses, and aria-expanded always matches what's on screen.
  */
 export default function V0Nav(): ReactNode {
   // /d/singularity-dossier/... -> /d/singularity-dossier
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '';
+
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  /* The per-menu Escape handler only hears keys while focus is inside its
+     drop; this catches Escape against a hover-opened sheet too. */
+  useMountEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpenMenu(null);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  });
+
+  const menu = (label: string) => ({
+    label,
+    open: openMenu === label,
+    onOpenChange: (next: boolean) =>
+      setOpenMenu((current) => (next ? label : current === label ? null : current)),
+  });
 
   return (
     <header className='v0-nav' data-v0-nav>
@@ -200,9 +289,9 @@ export default function V0Nav(): ReactNode {
         </a>
 
         <nav className='v0-nav-links'>
-          <Menu columns={product(base)} label='Product' />
-          <Menu columns={resources(base)} label='Resources' />
-          <Menu columns={docsMenu(base)} label='Docs' wide />
+          <Menu columns={product(base)} {...menu('Product')} />
+          <Menu columns={resources(base)} {...menu('Resources')} />
+          <Menu columns={docsMenu(base)} {...menu('Docs')} wide />
           <a href={`${base}/enterprise`}>Enterprise</a>
           <a href={`${base}/pricing`}>Pricing</a>
         </nav>
