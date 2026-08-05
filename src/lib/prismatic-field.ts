@@ -4,6 +4,16 @@
  * original used three.js only as a fullscreen-quad harness, which is why none
  * of it survives here.
  *
+ * CURSOR EFFECTS: fields may opt into per-field cursor-reactive modes (lens,
+ * dither, chroma) driven by four extra uniforms set at that field's draw. The
+ * effects COMPOSE with the burst — they bend its input coordinates or
+ * requantize its output, never replace its GLSL — and every effect path is
+ * uniform-gated so a field with no cursor engaged costs what it always did.
+ * Pointer tracking lives on the field's host element; the cursor and its
+ * strength are eased every frame (exponential critically-damped-feeling
+ * springs) so motion reads as physical. prefers-reduced-motion disables the
+ * whole system.
+ *
  * Anisotropic streaks of thin-film spectrum converge on a deliberate dark
  * center. Brightness accumulates where streaks bunch, so exposureScale is the
  * dimmer: raise it to push the field back under content.
@@ -47,7 +57,22 @@ export type PrismaticFieldHandle = {
   pause: () => void;
   resume: () => void;
   renderStatic: (time?: number) => void;
+  /** Switch the cursor effect. No-op for fields that never opted in. */
+  setEffectMode: (mode: PrismaticEffectMode | 'off') => void;
+  getEffectMode: () => PrismaticEffectMode | 'off';
   destroy: () => void;
+};
+
+/** The cursor-reactive modes the shader implements. */
+export type PrismaticEffectMode = 'lens' | 'dither' | 'chroma';
+
+export type PrismaticEffectsOptions = {
+  /** Element whose pointer drives the effect — the field's host plate/band. */
+  host: HTMLElement;
+  /** Modes this field offers (the menu lists them in this order). */
+  modes: readonly PrismaticEffectMode[];
+  /** Mode engaged on mount. Defaults to the first of `modes`. */
+  initial?: PrismaticEffectMode | 'off';
 };
 
 export type PrismaticOptions = {
@@ -55,6 +80,17 @@ export type PrismaticOptions = {
   dpr?: number;
   speed?: number;
   params?: Partial<PrismaticParams>;
+  /**
+   * Opt this field into cursor-reactive effects. Ignored entirely under
+   * prefers-reduced-motion; fields that omit it behave exactly as before.
+   */
+  effects?: PrismaticEffectsOptions;
+};
+
+const EFFECT_INDEX: Record<PrismaticEffectMode, number> = {
+  lens: 1,
+  dither: 2,
+  chroma: 3,
 };
 
 export const PRISMATIC_PRESETS: Record<'1' | '2', PrismaticParams> = {
@@ -117,6 +153,17 @@ uniform float uDistanceBase;
 uniform float uDistanceDepthFactor;
 uniform float uExposureScale;
 
+/* ---- cursor effects (all zero when no effect is engaged) ----
+   uCursor lives in the same coordinate space getScreenCoordinates()
+   produces; uEffectMode is 0 off · 1 lens · 2 dither · 3 chroma. The modes
+   compose WITH the burst above — bending its inputs or requantizing its
+   output — and every path is gated on uCursorStrength, so an idle field
+   costs what it always did. */
+uniform vec2 uCursor;
+uniform float uCursorStrength;
+uniform float uEffectMode;
+uniform float uCursorVel;
+
 const int TRACE_STEP_COUNT = 50;
 const int TRACE_START_INDEX = 30;
 const int DOMAIN_LAYER_COUNT = 3;
@@ -163,6 +210,76 @@ vec3 accumulateLight(vec3 palette, float fieldDistance, float rayDepth) {
 }
 
 /*
+ * Cursor-effect state. gDist/gFall are evaluated once per fragment (in
+ * warpAroundCursor, which main() always routes through) and read again by
+ * the beam carve and the dither halo; the g* mode flags are derived from a
+ * uniform, so every branch below is coherent across the whole quad.
+ */
+float gDist = 0.0;
+float gFall = 0.0;
+float gLens = 0.0;
+float gDither = 0.0;
+float gChroma = 0.0;
+
+/*
+ * Weak-lensing warp: rays near the cursor are pulled gently inward and swept
+ * tangentially, like light passing a mass. Applied to the screen position
+ * BEFORE the raymarch, so the whole burst — streaks, beams, dark center —
+ * bends and swirls around the cursor rather than hosting an overlay. Chroma
+ * mode keeps a whisper of the swirl so its split feels alive.
+ */
+vec2 warpAroundCursor(vec2 screenPosition) {
+  vec2 toCursor = screenPosition - uCursor;
+  float d = length(toCursor);
+  gDist = d;
+  gFall = exp(-d * d * 3.1);
+  float amount = uCursorStrength * gFall;
+  if (amount < 0.002) return screenPosition;
+  vec2 radial = toCursor / max(d, 0.0001);
+  vec2 tangent = vec2(-radial.y, radial.x);
+  float swirl = amount * (gLens * 0.36 + gChroma * 0.1);
+  float pull = amount * gLens * 0.13;
+  return screenPosition - tangent * swirl - radial * pull;
+}
+
+/*
+ * BAYER_8 from src/lib/dither.ts, ported exactly via its own recursive
+ * construction: M2 = [[0,2],[3,1]] closed over as m2(x,y) = 2x + 3y − 4xy,
+ * and M(2n)(x,y) = 4·M(n)(low bits) + m2(high bits), which unrolls for 8×8
+ * to 16·m2(bit0) + 4·m2(bit1) + m2(bit2). Spot-checked against the TS
+ * table: (1,0)→32, (0,1)→48, (7,7)→21.
+ */
+float bayerCell(vec2 c) {
+  return 2.0 * c.x + 3.0 * c.y - 4.0 * c.x * c.y;
+}
+
+float bayer8(vec2 cell) {
+  vec2 b0 = mod(cell, 2.0);
+  vec2 b1 = mod(floor(cell / 2.0), 2.0);
+  vec2 b2 = mod(floor(cell / 4.0), 2.0);
+  float m = 16.0 * bayerCell(b0) + 4.0 * bayerCell(b1) + bayerCell(b2);
+  return (m + 0.5) / 64.0;
+}
+
+/*
+ * Ordered-dither halo: within a soft radius of the cursor the tone-mapped
+ * field requantizes per channel through the Bayer matrix — the house 1-bit
+ * texture erupting out of the continuous field. The boundary breathes with
+ * cursor velocity: a fast sweep blooms the halo open, a resting cursor lets
+ * it settle. Cells are 2 buffer px so the CSS upscale keeps visible grain.
+ */
+vec3 applyDitherHalo(vec3 mappedColor) {
+  float halo = gDither * uCursorStrength;
+  if (halo < 0.002) return mappedColor;
+  float radius = 0.34 + min(uCursorVel * 0.08, 0.3);
+  float inHalo = (1.0 - smoothstep(radius * 0.35, radius, gDist)) * halo;
+  if (inHalo < 0.002) return mappedColor;
+  float threshold = bayer8(floor(gl_FragCoord.xy / 2.0));
+  vec3 quantized = step(vec3(threshold), mappedColor * 1.08);
+  return mix(mappedColor, quantized, inHalo);
+}
+
+/*
  * Beam carving. The raymarch produces a continuous streak field; this
  * collects that light into discrete radial beams that sweep slowly around
  * the dark center — three angular harmonics drifting against each other so
@@ -184,6 +301,13 @@ vec3 applyBeams(vec3 hdrColor, vec2 screenPosition) {
   float angle = atan(screenPosition.y, abs(screenPosition.x));
   float t = uTime * 0.12;
   float dispersion = 0.035 + 0.05 * radius;
+  /* Cursor effects ride the carve's own per-channel sampling: at the lens'
+     rim the spectrum fringes (weak-lensing chromatic aberration — the ring
+     term peaks halfway down the falloff), and in chroma mode the whole
+     carve shears apart, each channel reading the profile at its own angle
+     so the rays split into R/G/B copies around the cursor. */
+  float rim = gFall * (1.0 - gFall) * 4.0;
+  dispersion += uCursorStrength * (gLens * rim * 0.09 + gChroma * gFall * (0.07 + 0.11 * radius));
   vec3 beams = vec3(
     beamProfile(angle + dispersion, t),
     beamProfile(angle, t),
@@ -218,7 +342,10 @@ vec3 applyToneMapping(vec3 hdrColor) {
 }
 
 void main() {
-  vec2 screenPosition = getScreenCoordinates(gl_FragCoord.xy);
+  gLens = (uEffectMode > 0.5 && uEffectMode < 1.5) ? 1.0 : 0.0;
+  gDither = (uEffectMode > 1.5 && uEffectMode < 2.5) ? 1.0 : 0.0;
+  gChroma = (uEffectMode > 2.5) ? 1.0 : 0.0;
+  vec2 screenPosition = warpAroundCursor(getScreenCoordinates(gl_FragCoord.xy));
   vec3 rayDirection = getViewRay(screenPosition);
   float fieldTime = uTime * uFieldTimeRate;
   float cameraTravel = uTime * uForwardTravelRate;
@@ -239,7 +366,7 @@ void main() {
   }
 
   accumulatedColor = applyBeams(accumulatedColor, screenPosition);
-  gl_FragColor = vec4(applyToneMapping(accumulatedColor), 1.0);
+  gl_FragColor = vec4(applyDitherHalo(applyToneMapping(accumulatedColor)), 1.0);
 }
 `;
 
@@ -265,8 +392,51 @@ type Engine = {
   resolutionLoc: WebGLUniformLocation | null;
   timeLoc: WebGLUniformLocation | null;
   paramLocs: Map<keyof PrismaticParams, WebGLUniformLocation | null>;
-  /** Draws one frame at the given size and returns the GL canvas to blit from. */
-  draw: (width: number, height: number, time: number, params: PrismaticParams) => HTMLCanvasElement;
+  /**
+   * Draws one frame at the given size and returns the GL canvas to blit from.
+   * The trailing five numbers are the cursor-effect uniforms (cursor x/y in
+   * shader screen space, eased strength, mode index, smoothed velocity) —
+   * all zero for a field with no effect engaged.
+   */
+  draw: (
+    width: number,
+    height: number,
+    time: number,
+    params: PrismaticParams,
+    fxX: number,
+    fxY: number,
+    fxStrength: number,
+    fxMode: number,
+    fxVel: number
+  ) => HTMLCanvasElement;
+};
+
+/**
+ * Per-field cursor-effect state. Positions are fractions of the field
+ * canvas's own box (top-left origin); the draw converts them to shader
+ * screen space at the field's current size. `engaged` keeps the shared rAF
+ * alive while a cursor is inside the field or the strength is still
+ * draining after it left — and nothing else.
+ */
+type EffectState = {
+  host: HTMLElement;
+  modes: readonly PrismaticEffectMode[];
+  mode: PrismaticEffectMode | 'off';
+  hovering: boolean;
+  engaged: boolean;
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  strength: number;
+  strengthTarget: number;
+  vel: number;
+  velRaw: number;
+  lastMoveT: number;
+  lastTickT: number;
+  touchTimer: ReturnType<typeof setTimeout> | undefined;
+  engage: () => void;
+  detach: () => void;
 };
 
 type Subscriber = {
@@ -279,12 +449,22 @@ type Subscriber = {
   visible: boolean;
   startTime: number;
   observer?: IntersectionObserver;
+  effect?: EffectState;
 };
 
 let engine: Engine | null = null;
 let engineFailed = false;
 const subscribers = new Set<Subscriber>();
 let frameId = 0;
+
+/**
+ * Debug probe for perf checks (rAF-idle and engagement assertions in the
+ * screenshot harness). One mutated object, no per-frame allocation.
+ */
+const debugProbe = { ticks: 0, strength: 0, mode: 'off' };
+if (typeof window !== 'undefined') {
+  (window as Window & { __prism?: typeof debugProbe }).__prism = debugProbe;
+}
 
 function compile(gl: WebGLRenderingContext, type: number, src: string): WebGLShader {
   const shader = gl.createShader(type);
@@ -353,6 +533,10 @@ function getEngine(): Engine | null {
 
   const resolutionLoc = ctx.getUniformLocation(program, 'uResolution');
   const timeLoc = ctx.getUniformLocation(program, 'uTime');
+  const cursorLoc = ctx.getUniformLocation(program, 'uCursor');
+  const cursorStrengthLoc = ctx.getUniformLocation(program, 'uCursorStrength');
+  const effectModeLoc = ctx.getUniformLocation(program, 'uEffectMode');
+  const cursorVelLoc = ctx.getUniformLocation(program, 'uCursorVel');
   const paramLocs = new Map<keyof PrismaticParams, WebGLUniformLocation | null>();
   UNIFORM_KEYS.forEach((key) => {
     paramLocs.set(key, ctx.getUniformLocation(program, `u${key.charAt(0).toUpperCase()}${key.slice(1)}`));
@@ -371,7 +555,7 @@ function getEngine(): Engine | null {
     resolutionLoc,
     timeLoc,
     paramLocs,
-    draw(width, height, time, params) {
+    draw(width, height, time, params, fxX, fxY, fxStrength, fxMode, fxVel) {
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -379,6 +563,10 @@ function getEngine(): Engine | null {
       ctx.viewport(0, 0, width, height);
       ctx.uniform2f(resolutionLoc, width, height);
       ctx.uniform1f(timeLoc, time);
+      ctx.uniform2f(cursorLoc, fxX, fxY);
+      ctx.uniform1f(cursorStrengthLoc, fxStrength);
+      ctx.uniform1f(effectModeLoc, fxMode);
+      ctx.uniform1f(cursorVelLoc, fxVel);
       UNIFORM_KEYS.forEach((key) => ctx.uniform1f(paramLocs.get(key) ?? null, params[key]));
       ctx.drawArrays(ctx.TRIANGLES, 0, 3);
       return canvas;
@@ -401,18 +589,62 @@ function renderSubscriber(sub: Subscriber, time: number) {
     sub.target.width = width;
     sub.target.height = height;
   }
-  const source = active.draw(width, height, time, sub.params);
+  // Cursor uniforms: canvas-box fractions → the shader's screen space
+  // ((2·frag − res) / res.y), so the GLSL never needs the canvas box.
+  const fx = sub.effect;
+  let fxX = 0;
+  let fxY = 0;
+  let fxStrength = 0;
+  let fxMode = 0;
+  let fxVel = 0;
+  if (fx && fx.mode !== 'off' && fx.strength > 0.001) {
+    fxX = (2 * fx.x - 1) * (width / height);
+    fxY = 1 - 2 * fx.y;
+    fxStrength = fx.strength;
+    fxMode = EFFECT_INDEX[fx.mode];
+    fxVel = fx.vel;
+  }
+  const source = active.draw(width, height, time, sub.params, fxX, fxY, fxStrength, fxMode, fxVel);
   sub.blit.drawImage(source, 0, 0);
+}
+
+/**
+ * Ease the cursor state toward its targets — exponential smoothing tuned to
+ * feel critically damped (no overshoot, fast pursuit). When the strength has
+ * fully drained after a pointerleave the field disengages, which is what
+ * lets the shared rAF loop stop again.
+ */
+function stepEffect(fx: EffectState, now: number) {
+  const dt = Math.min(Math.max((now - fx.lastTickT) / 1000, 0.001), 0.1);
+  fx.lastTickT = now;
+  const posK = 1 - Math.exp(-dt * 13);
+  fx.x += (fx.targetX - fx.x) * posK;
+  fx.y += (fx.targetY - fx.y) * posK;
+  const strengthK = 1 - Math.exp(-dt * (fx.strengthTarget > fx.strength ? 7.5 : 4.5));
+  fx.strength += (fx.strengthTarget - fx.strength) * strengthK;
+  fx.vel += (fx.velRaw - fx.vel) * (1 - Math.exp(-dt * 9));
+  fx.velRaw *= Math.exp(-dt * 5);
+  if (fx.strengthTarget === 0 && fx.strength < 0.004) {
+    fx.strength = 0;
+    fx.vel = 0;
+    fx.velRaw = 0;
+    fx.engaged = false;
+  }
+  debugProbe.strength = fx.strength;
+  debugProbe.mode = fx.mode;
 }
 
 function tick(now: number) {
   frameId = 0;
+  debugProbe.ticks++;
   // Skip everything the viewer cannot see: a paused field, one scrolled out of
   // view, or a backgrounded tab. Most pages mount two fields and show one.
   const hidden = typeof document !== 'undefined' && document.hidden;
   if (!hidden) {
     for (const sub of subscribers) {
-      if (!sub.running || !sub.visible) continue;
+      const engaged = sub.effect !== undefined && sub.effect.engaged;
+      if ((!sub.running && !engaged) || !sub.visible) continue;
+      if (engaged && sub.effect) stepEffect(sub.effect, now);
       renderSubscriber(sub, ((now - sub.startTime) / 1000) * sub.speed);
     }
   }
@@ -423,13 +655,116 @@ function schedule() {
   if (frameId) return;
   let anyActive = false;
   for (const sub of subscribers) {
-    if (sub.running && sub.visible) {
+    // A field draws while it animates — and also while a cursor is engaged
+    // with it (hovering, or the strength still draining after leave).
+    if ((sub.running || sub.effect?.engaged === true) && sub.visible) {
       anyActive = true;
       break;
     }
   }
   // With nothing to draw the loop stops entirely rather than spinning.
   if (anyActive) frameId = requestAnimationFrame(tick);
+}
+
+/**
+ * Wire pointer tracking on the field's host element. Mouse/pen: enter and
+ * move aim the cursor and ease strength up; leave eases it down. Touch: a
+ * tap plants the cursor with a burst of velocity and lets it ripple out.
+ */
+function attachEffects(sub: Subscriber, options: PrismaticEffectsOptions): EffectState {
+  const initial = options.initial ?? options.modes[0] ?? 'off';
+  const state: EffectState = {
+    host: options.host,
+    modes: options.modes,
+    mode: initial === 'off' || options.modes.includes(initial) ? initial : 'off',
+    hovering: false,
+    engaged: false,
+    x: 0.5,
+    y: 0.5,
+    targetX: 0.5,
+    targetY: 0.5,
+    strength: 0,
+    strengthTarget: 0,
+    vel: 0,
+    velRaw: 0,
+    lastMoveT: 0,
+    lastTickT: 0,
+    touchTimer: undefined,
+    engage: () => undefined,
+    detach: () => undefined,
+  };
+
+  const engage = () => {
+    if (state.mode === 'off') return;
+    state.strengthTarget = 1;
+    if (!state.engaged) {
+      state.engaged = true;
+      state.lastTickT = performance.now();
+      // A fresh engagement snaps the cursor to the pointer instead of
+      // flying in from wherever it last drained out.
+      if (state.strength < 0.02) {
+        state.x = state.targetX;
+        state.y = state.targetY;
+      }
+      schedule();
+    }
+  };
+  state.engage = engage;
+
+  /** Update the aim point from a pointer event; returns false off-box. */
+  const aim = (event: PointerEvent): boolean => {
+    const rect = sub.target.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) return false;
+    const nx = (event.clientX - rect.left) / rect.width;
+    const ny = (event.clientY - rect.top) / rect.height;
+    const t = performance.now();
+    const dt = Math.max((t - state.lastMoveT) / 1000, 1 / 240);
+    state.velRaw = Math.min(Math.hypot(nx - state.targetX, ny - state.targetY) / dt, 5);
+    state.targetX = nx;
+    state.targetY = ny;
+    state.lastMoveT = t;
+    return true;
+  };
+
+  const onEnter = (event: PointerEvent) => {
+    if (event.pointerType === 'touch') return;
+    state.hovering = true;
+    if (state.mode === 'off') return;
+    if (aim(event)) engage();
+  };
+  const onMove = (event: PointerEvent) => {
+    if (event.pointerType === 'touch' || state.mode === 'off') return;
+    state.hovering = true;
+    if (aim(event)) engage();
+  };
+  const onLeave = (event: PointerEvent) => {
+    if (event.pointerType === 'touch') return;
+    state.hovering = false;
+    state.strengthTarget = 0;
+  };
+  const onDown = (event: PointerEvent) => {
+    if (event.pointerType !== 'touch' || state.mode === 'off') return;
+    if (!aim(event)) return;
+    state.velRaw = 2.4; // the tap ripples the effect open
+    engage();
+    clearTimeout(state.touchTimer);
+    state.touchTimer = setTimeout(() => {
+      state.strengthTarget = 0;
+    }, 900);
+  };
+
+  options.host.addEventListener('pointerenter', onEnter);
+  options.host.addEventListener('pointermove', onMove);
+  options.host.addEventListener('pointerleave', onLeave);
+  options.host.addEventListener('pointerdown', onDown);
+  state.detach = () => {
+    options.host.removeEventListener('pointerenter', onEnter);
+    options.host.removeEventListener('pointermove', onMove);
+    options.host.removeEventListener('pointerleave', onLeave);
+    options.host.removeEventListener('pointerdown', onDown);
+    clearTimeout(state.touchTimer);
+  };
+  return state;
 }
 
 /**
@@ -459,6 +794,11 @@ export function createPrismaticField(
     visible: true,
     startTime: performance.now(),
   };
+  // Effects are pointer-driven motion: under reduced motion they never
+  // attach, so the field stays exactly the static frame it always was.
+  if (!reduced && options.effects && options.effects.modes.length > 0) {
+    sub.effect = attachEffects(sub, options.effects);
+  }
   subscribers.add(sub);
 
   if (typeof IntersectionObserver !== 'undefined') {
@@ -494,7 +834,21 @@ export function createPrismaticField(
     renderStatic(time = 10) {
       renderSubscriber(sub, time);
     },
+    setEffectMode(mode) {
+      const fx = sub.effect;
+      if (!fx || fx.mode === mode) return;
+      if (mode !== 'off' && !fx.modes.includes(mode)) return;
+      fx.mode = mode;
+      // Switching off drains gracefully; switching modes while the pointer
+      // is already inside re-engages so the new mode shows immediately.
+      if (mode === 'off') fx.strengthTarget = 0;
+      else if (fx.hovering) fx.engage();
+    },
+    getEffectMode() {
+      return sub.effect?.mode ?? 'off';
+    },
     destroy() {
+      sub.effect?.detach();
       sub.observer?.disconnect();
       subscribers.delete(sub);
       // The engine context is deliberately kept for the session: it is a single

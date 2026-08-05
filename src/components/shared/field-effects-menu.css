@@ -1,0 +1,76 @@
+/* ============================================================
+   FIELD EFFECTS MENU — the singularity's instrument panel
+   Docked inside the hero plate's bottom-right corner. Square 1px
+   hairline chips, mono 11px, dark-surface tuned (every prismatic
+   mount is a fixed-dark plate in both themes). Rests at ~60%
+   presence and wakes on approach, like the rest of the chrome.
+   ============================================================ */
+
+.fxm {
+  position: absolute;
+  /* Bands center a --tc-rail column; the menu tucks inside that rail's
+     right edge. On plates narrower than the rail the calc goes negative
+     and the max() falls back to a plain corner inset. */
+  right: max(14px, calc((100% - var(--tc-rail, 100%)) / 2 + 14px));
+  bottom: 12px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.045em;
+  opacity: 0.6;
+  transition: opacity 160ms ease;
+}
+
+.fxm:hover,
+.fxm:focus-within {
+  opacity: 1;
+}
+
+.fxm-k {
+  margin-right: 3px;
+  color: rgba(255, 255, 255, 0.38);
+  user-select: none;
+}
+
+.fxm-chip {
+  appearance: none;
+  margin: 0;
+  padding: 5px 8px 4px;
+  background: rgba(7, 7, 7, 0.55);
+  border: 1px solid rgba(138, 143, 152, 0.34);
+  border-radius: 0; /* square — the page's chips, not pills */
+  color: rgba(255, 255, 255, 0.62);
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.fxm-chip:hover {
+  color: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.fxm-chip[aria-pressed='true'] {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.fxm-chip:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 2px;
+}
+
+/* Coarse pointers can't hover; the modes read as tap-to-set there and the
+   panel stays fully present so it is discoverable at all. */
+@media (hover: none) {
+  .fxm {
+    opacity: 0.85;
+  }
+}
