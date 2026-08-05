@@ -143,6 +143,7 @@ export default function V0FullStack() {
       const waves = gsap.utils.toArray<SVGPathElement>('[data-ctx-wave]', scope);
       const orbit = scope.querySelector<SVGPathElement>('[data-agent-orbit]');
       const stripes = gsap.utils.toArray<SVGRectElement>('[data-ldx-stripe]', scope);
+      const stripes2 = gsap.utils.toArray<SVGRectElement>('[data-ldx-stripe2]', scope);
       if (slabs.length === 0 || beats.length === 0) return;
 
       /* class + stacking state, shared by both motion branches: hot slabs
@@ -200,8 +201,9 @@ export default function V0FullStack() {
            ~4 frames then jumped it a whole pathLength unit — the stutter.
            Fractional offsets on the 1000-unit normalization move the dash
            a steady sub-pixel step every frame; linear ease (one wire ride
-           per 2.8s, one orbit per 7s, one shimmer pass per 5.2s — the
-           sweep is a transform, which never quantizes). */
+           per 2.8s, one orbit per 7s, one shimmer pass per 3.4s with the
+           counter-sheen half a lap behind — the sweep is a transform,
+           which never quantizes). */
         const waveLoops = waves.map((wave, i) =>
           gsap.fromTo(
             wave,
@@ -231,26 +233,31 @@ export default function V0FullStack() {
               }
             )
           : null;
-        const shineLoop =
-          stripes.length > 0
-            ? gsap.fromTo(
-                stripes,
-                { rotation: 60, x: -SHINE_SWEEP, transformOrigin: '50% 50%' },
-                {
-                  rotation: 60,
-                  x: SHINE_SWEEP,
-                  transformOrigin: '50% 50%',
-                  duration: 5.2,
-                  ease: 'none',
-                  repeat: -1,
-                  paused: true,
-                }
-              )
-            : null;
+        const shineBand = (targets: SVGRectElement[]) =>
+          gsap.fromTo(
+            targets,
+            { rotation: 60, x: -SHINE_SWEEP, transformOrigin: '50% 50%' },
+            {
+              rotation: 60,
+              x: SHINE_SWEEP,
+              transformOrigin: '50% 50%',
+              duration: 3.4,
+              ease: 'none',
+              repeat: -1,
+              paused: true,
+            }
+          );
+        const shineLoop = stripes.length > 0 ? shineBand(stripes) : null;
+        /* the counter-sheen rides half a lap behind the primary (founder:
+           the metal must read alive, never a texture between passes) —
+           time(), not progress(): a repeat:-1 tween's total progress is
+           unbounded, but the playhead time within one lap is exact */
+        const shineLoop2 = stripes2.length > 0 ? shineBand(stripes2).time(1.7) : null;
         const loops = [
           ...waveLoops,
           ...(orbitLoop ? [orbitLoop] : []),
           ...(shineLoop ? [shineLoop] : []),
+          ...(shineLoop2 ? [shineLoop2] : []),
         ];
         const syncLoops = () => {
           const on = inView && entered;
@@ -389,7 +396,8 @@ export default function V0FullStack() {
           for (const loop of loops) loop.kill();
           const dashed: SVGPathElement[] = orbit ? [...waves, orbit] : [...waves];
           if (dashed.length > 0) gsap.set(dashed, { clearProps: 'strokeDashoffset' });
-          if (stripes.length > 0) gsap.set(stripes, { clearProps: 'transform' });
+          const bands = [...stripes, ...stripes2];
+          if (bands.length > 0) gsap.set(bands, { clearProps: 'transform' });
           clear();
         };
       });
@@ -435,9 +443,16 @@ export default function V0FullStack() {
           const secBottom = scope.getBoundingClientRect().bottom;
           const tail = secBottom - figcol.getBoundingClientRect().bottom;
           drop = Math.max(0, vh - tail - pinnedBottom);
-          /* descent range: from the finale window's top at 85vh down to
-             the rest view (rule at the viewport bottom) */
-          const approach = Math.max(1, secBottom - finale.getBoundingClientRect().top - 0.15 * vh);
+          /* descent range: from beat 04's read PASSING (the finale
+             window's center — where the copy sits — crossing 48% of the
+             viewport, just above the read line) down to the rest view
+             (rule at the viewport bottom). The read itself happens
+             seated; only the post-read runway (the rail cell's 28vh
+             padding) is spent on the descent — founder: step 4 works
+             like steps 1–3, and the tower never drops or crops while
+             its copy is being read. */
+          const fr = finale.getBoundingClientRect();
+          const approach = Math.max(1, secBottom - (fr.top + fr.height / 2) - 0.52 * vh);
           landAt = approach / (approach + drop || 1);
         };
 
@@ -457,7 +472,9 @@ export default function V0FullStack() {
 
         const settle = ScrollTrigger.create({
           trigger: finale,
-          start: 'top 85%',
+          /* the finale's center (its copy) crossing 48% — the read line
+             is ~55%, so the descent begins only once the read has passed */
+          start: 'center 48%',
           endTrigger: scope,
           /* the native release: column bottom meets the pinned figure's
              bottom, `drop` px of scroll past the rest view */

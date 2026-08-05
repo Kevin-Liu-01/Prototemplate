@@ -375,13 +375,18 @@ const MARK_PLANE = plane(THICK);
    subset of the next tier's), so the overlap composes exactly the ramp,
    and because the glint ink is opaque the doubled cells never brighten.
    The mark's plane transform moved INSIDE the mask so all of this lives
-   in slab screen space: the dither cells stay square screen cells (~2.6px
-   at the resting width) instead of foreshortened rhombi, and crispEdges
-   keeps them 1-bit under zoom. FullStack slides the windows between
-   ±SHINE_SWEEP (~5s a pass, gated to the band being on screen); without
-   JS or with reduced motion the markup's rotate(60) pose — parallel to
-   the plate's projected +y edges — leaves a static band catching light
-   mid-glyph. */
+   in slab screen space: the dither cells stay square screen cells (~1.9px
+   at the resting width — founder: "each dot smaller") instead of
+   foreshortened rhombi, and crispEdges keeps them 1-bit under zoom.
+   TWO bands ride the loop (founder: "more animated than static"): the
+   primary and a slimmer counter-sheen half a lap behind — each tier's
+   clipPath is the UNION of both windows — so some stretch of the glyph
+   is catching light through nearly the whole ~3.4s pass and the metal
+   reads alive, never a texture between rests. FullStack slides the
+   windows between ±SHINE_SWEEP, gated to the band being on screen;
+   without JS or with reduced motion the markup poses — rotate(60),
+   parallel to the plate's projected +y edges — leave the primary band
+   catching light mid-glyph as a still, the counter-sheen parked clear. */
 
 /** Ordered 4×4 Bayer matrix — glyph-field's, verbatim. */
 const BAYER4: readonly (readonly number[])[] = [
@@ -391,10 +396,12 @@ const BAYER4: readonly (readonly number[])[] = [
   [15, 7, 13, 5],
 ];
 
-/** Dither cell edge, in drawing units: ~2.6 screen px at the figure's
-    392px resting width, ~2.2 at the one-column 330 — the founder's 2-3px
-    window at both. */
-const GLINT_CELL = 1.4;
+/** Dither cell edge, in drawing units: ~1.9 screen px at the figure's
+    392px resting width, ~1.6 at the one-column 330 (founder round:
+    "each dot smaller" — stepped down from the first pass's ~2.6px;
+    crispEdges pixel-snaps them, so they stay 1-bit at 1x and 2x alike,
+    never a grey mush). */
+const GLINT_CELL = 1.05;
 const GLINT_TILE = GLINT_CELL * 4;
 
 /** One pattern tile at coverage k/16: every cell whose Bayer threshold
@@ -570,10 +577,12 @@ function TopGlyph({ id }: { id: string }) {
                 <path className='v0s-ldx-glint' d={bayerTile(cover)} shapeRendering='crispEdges' />
               </pattern>
             ))}
-            {/* the band: one origin-centered window rect per tier, rotated
-                60° (parallel to the plate's projected +y edges) and slid
-                together by FullStack; the markup pose is the reduced-motion
-                and no-JS still */}
+            {/* the bands: per tier, the UNION of two origin-centered
+                window rects rotated 60° (parallel to the plate's
+                projected +y edges) — the primary and the slimmer
+                counter-sheen FullStack rides half a lap behind it. The
+                markup poses are the reduced-motion and no-JS still:
+                primary mid-glyph, counter-sheen parked off it. */}
             {SHINE_TIERS.map(({ cover, width }) => (
               <clipPath key={cover} id={`v0s-ldx-w${cover}`} clipPathUnits='userSpaceOnUse'>
                 <rect
@@ -583,6 +592,14 @@ function TopGlyph({ id }: { id: string }) {
                   width={width}
                   height={220}
                   transform='rotate(60)'
+                />
+                <rect
+                  data-ldx-stripe2
+                  x={-(width * 0.62) / 2}
+                  y={-110}
+                  width={width * 0.62}
+                  height={220}
+                  transform={`translate(${-SHINE_SWEEP} 0) rotate(60)`}
                 />
               </clipPath>
             ))}

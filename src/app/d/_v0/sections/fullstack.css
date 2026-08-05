@@ -82,6 +82,20 @@
 
 .toolchain-root .tcb .v0-stack-cell-rail {
   grid-column: span 7;
+  /* THE POST-READ RUNWAY (founder: "the story completely breaks and
+     uncenters itself once we get to agents... go through the first 3
+     steps and make sure step 4 works the same"): beat 04's read must
+     happen with the figure SEATED, exactly like beats 01–03, and must
+     COMPLETE before the band's bottom rule enters the viewport — no
+     descent and no crop during the read. Both are runway problems:
+     without this padding the rest view arrives 0.24·vh − 74px BEFORE
+     beat 04's copy reaches the read line, so the finale read against
+     a departing, mid-descent tower. 28vh buys the read a ≥110px
+     margin ahead of the rule at every viewport (74 + 28vh − 0.24vh),
+     and the settle (FullStack.tsx) spends the same stretch on its
+     descent AFTER the read passes. Gated off with the one-column
+     layout below. */
+  padding-block-end: clamp(240px, 28vh, 440px);
 }
 
 /* ---------- the drawing: sticky while the rail scrolls ---------- */
@@ -596,6 +610,12 @@
   .toolchain-root .tcb .v0-stack-cell-fig,
   .toolchain-root .tcb .v0-stack-cell-rail {
     grid-column: span 12;
+  }
+
+  /* the post-read runway serves the sticky pass; the one-column layout
+     has a static figure and needs none of it */
+  .toolchain-root .tcb .v0-stack-cell-rail {
+    padding-block-end: 0;
   }
 
   .toolchain-root .tcb .v0-stack-fig {
