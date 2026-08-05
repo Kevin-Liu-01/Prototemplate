@@ -254,10 +254,23 @@
    one intrinsic block, so the rows can never spread its rhythm apart. */
 .toolchain-root .v0-tw .sgdh-app-cols {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  /* the stack keeps its intrinsic measure; the chart spends every
+     remaining pixel of the surface (founder: full empty width) */
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   column-gap: clamp(24px, 6%, 48px);
   align-items: center;
   width: 100%;
+}
+
+/* the heading and its supporting line never break — one line each,
+   ellipsized in the rare locale that would overrun */
+.toolchain-root .v0-tw .tct-app-h,
+.toolchain-root .v0-tw .tct-app-copy {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* tighter rhythm down the left rail: sub hugs its heading, the ruled

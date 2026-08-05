@@ -71,6 +71,43 @@ const WORDS: Record<string, EveryWord> = {
 };
 
 /* the dissolve dust pool: small glyphs sampled across the same scripts */
+/* ------------------------------------------------------------------
+   THE WORD'S DITHER: 4×4 Bayer tiles at stepped coverages, used as an
+   alpha mask on the printed word — the library's 1-bit voice at em
+   scale. Level 8 = solid (no mask); level 0 = gone. The tile is 4px
+   so the halftone reads at display sizes.
+   ------------------------------------------------------------------ */
+const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
+const ditherTile = (coverage: number): string => {
+  const cells = BAYER4.map((t, i) => {
+    if (t / 16 >= coverage) return '';
+    const x = i % 4;
+    const y = (i / 4) | 0;
+    return `<rect x='${x}' y='${y}' width='1' height='1'/>`;
+  }).join('');
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4' fill='white'>${cells}</svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+};
+
+/** levels 0..8 — 0 empty, 8 full */
+const DITHER_TILES = Array.from({ length: 9 }, (_, i) => ditherTile(i / 8));
+
+/** step the word's dither mask to a level; 8 clears the mask entirely */
+const setDither = (el: HTMLElement, level: number) => {
+  const lvl = Math.round(gsap.utils.clamp(0, 8, level));
+  if (lvl >= 8) {
+    el.style.webkitMaskImage = '';
+    el.style.maskImage = '';
+    return;
+  }
+  const tile = DITHER_TILES[lvl] ?? DITHER_TILES[0] ?? '';
+  el.style.webkitMaskImage = tile;
+  el.style.maskImage = tile;
+  el.style.webkitMaskSize = '4px 4px';
+  el.style.maskSize = '4px 4px';
+};
+
 const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
 
 export default function HomeHero() {
@@ -349,13 +386,23 @@ export default function HomeHero() {
             //    per-character spans would disconnect Arabic and reflow the
             //    very width the sentence is standing on — while the dust
             //    carries the scatter
+            /* time to go: the word leaves through the dither — coverage
+               steps 8→0 (a true 1-bit dissolve), the alpha tail rides it */
+            const exitDial = { lvl: 8 };
+            tl.to(exitDial, {
+              lvl: 0,
+              duration: 0.5,
+              ease: 'steps(8)',
+              onUpdate: () => setDither(word, exitDial.lvl),
+            }, '+=0.02');
             tl.to(word, {
               autoAlpha: 0,
-              scale: 0.92,
+              scale: 0.98,
               transformOrigin: '50% 60%',
               duration: 0.5,
               ease: 'power2.in',
-            }, '+=0.02');
+              onComplete: () => setDither(word, 8),
+            }, '<');
             /* the cloud separates SYMMETRICALLY about the word's centre: each
                glyph takes an evenly-spread angle on a jittered ring, so the
                scatter is balanced instead of clumping off to one side */
@@ -462,6 +509,18 @@ export default function HomeHero() {
                     immediateRender: true,
                     onComplete: () => {
                       gsap.set(word, { clearProps: 'clipPath' });
+                      /* the print settles through its own dither: coverage
+                         dips coarse and resolves solid — the halftone
+                         moment of a fresh print */
+                      const settleDial = { lvl: 5 };
+                      setDither(word, settleDial.lvl);
+                      gsap.to(settleDial, {
+                        lvl: 8,
+                        duration: 0.5,
+                        ease: 'steps(3)',
+                        onUpdate: () => setDither(word, settleDial.lvl),
+                        onComplete: () => setDither(word, 8),
+                      });
                     },
                   }
                 );

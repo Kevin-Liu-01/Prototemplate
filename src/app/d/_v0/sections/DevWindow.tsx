@@ -41,7 +41,7 @@ export default function V0DevWindow() {
         {/* the studio Bayer dither in lieu of the prismatic wash: the print
             flow at band intensity; the shared .tch-field mask keeps the
             column under the window dark */}
-        <StudioField className='tc-hero-field tch-field' preset='bayer' speed={0.8} />
+        <StudioField className='tc-hero-field tch-field' preset='bayer8' speed={0.8} />
         <TranslateWindow />
       </div>
     </section>

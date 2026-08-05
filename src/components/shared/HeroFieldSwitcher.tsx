@@ -21,7 +21,7 @@ import './HeroFieldSwitcher.css';
  * interference, breath), motion, and palette balance (ink-dominant,
  * blue-forward, white-hot). All ten live in src/lib/studio-field.ts. The
  * pick persists in localStorage under one key shared by every home that
- * carries the rig; the default is 01. Exactly one engine is alive at a
+ * carries the rig; the default is 02 (bayer-8x8, the founder pick). Exactly one engine is alive at a
  * time: each switch remounts a fresh keyed stage and runs the previous
  * field's destroy(), and every variant draws through the studio library's
  * one session-singleton GL context, so cycling variants never grows the
@@ -127,10 +127,10 @@ function FieldStage({ variant }: { variant: string }) {
 }
 
 export default function HeroFieldSwitcher() {
-  const [variant, setVariant] = useState('01');
+  const [variant, setVariant] = useState('02');
 
   /* The saved pick loads after hydration so SSR and the first client frame
-     agree on the 01 default. */
+     agree on the 02 default. */
   useMountEffect(() => {
     try {
       const saved = window.localStorage.getItem(STORE_KEY);

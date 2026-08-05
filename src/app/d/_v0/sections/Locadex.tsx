@@ -457,9 +457,9 @@ const INT_LINKS: readonly string[] = [
 
 /** Plate contents: the mark is the node's anchor — 40px against the 17px
     wordmark — and the lockup is centered in the plate as one group. */
-const INT_MARK = 32;
-const INT_MARK_X = INT_PLATE.x + 20;
-const INT_NAME_X = INT_MARK_X + INT_MARK + 7;
+const INT_MARK = 42;
+const INT_MARK_X = INT_PLATE.x + 14;
+const INT_NAME_X = INT_MARK_X + INT_MARK + 4;
 
 function IntegrateDiagram() {
   return (
@@ -746,7 +746,9 @@ export default function V0Locadex() {
       <div className='tc-head'>
         <i className='tc-head-icon v0-ldx-head-mark' aria-hidden />
         <h2 data-reveal>
-          The easiest way to localize your full system in native speed and quality.
+          The easiest way to localize your full system
+          <br />
+          in native speed and quality.
         </h2>
       </div>
 

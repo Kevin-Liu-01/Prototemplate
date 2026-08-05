@@ -390,7 +390,11 @@ export default function V0Context() {
             the band's margins and padding strips, never the content */}
         <div className='v0-ctx-core' ref={core}>
         <div className='tcb-head' data-cell data-reveal>
-          <h2>Full context on your codebase and product.</h2>
+          <h2>
+            Full context on your
+            <br />
+            codebase and product.
+          </h2>
           <p>GT connects your code, content, and translations.</p>
         </div>
 
