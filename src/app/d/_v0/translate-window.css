@@ -530,21 +530,21 @@
   display: none;
 }
 
-@container (min-width: 300px) {
+@container (min-width: 260px) {
   .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 5),
   .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 5) {
     display: block;
   }
 }
 
-@container (min-width: 420px) {
+@container (min-width: 330px) {
   .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 3),
   .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 3) {
     display: block;
   }
 }
 
-@container (min-width: 540px) {
+@container (min-width: 400px) {
   .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 1),
   .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 1) {
     display: block;

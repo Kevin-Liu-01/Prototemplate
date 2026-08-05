@@ -81,21 +81,19 @@
 
 .toolchain-root .tcb .v0-stack-cell-rail {
   grid-column: span 7;
-  /* THE AGENTS DWELL (founder: "we make this go stay on agents a lil
-     longer as we scroll to show the scanning on locadex, and then be
-     able to see next section"): the post-read runway that keeps the
-     sticky tower SEATED after beat 04's read while the capstone's scan
-     beam sweeps the translations plate — ~260px of seated scroll at a
-     900 viewport, growing with vh. It feeds the grid row, so its
-     length is what sets where the native sticky release lands (the
-     figcol's bottom meeting the seated figure's bottom, shortly after
-     the band's rest view); the release then carries the tower up and
-     out with the band — the figure never translates down, and no JS
-     ever touches it. Beat 04's lock-in itself is guaranteed by the
-     window math (H + 28px tail ≥ 0.42vh, see the beat rule below)
-     independent of this padding. Gated off with the one-column layout
-     below, where the figure is static. */
-  padding-block-end: 36vh;
+  /* the agents dwell's runway does NOT live here as padding: sticky
+     travel is bounded by the parent's CONTENT box, and the finale beat
+     must ride the dwell (founder: "make the 'make it automatic' section
+     stay with you for that 260 px"), so the runway is a structural
+     spacer INSIDE the rail list — .v0-stack-runway below. The grid row
+     ends up the same height either way, so the figure's travel and the
+     lock-in math never moved. */
+  /* clip, not the sheet's hidden, for the same reason as the section
+     and the fig cell: overflow: hidden makes the cell a scroll
+     container and the sticky finale would seat itself to the CELL
+     instead of the viewport — clip is the identical crop without the
+     scroll machinery */
+  overflow: clip;
 }
 
 /* ---------- the drawing: sticky while the rail scrolls ---------- */
@@ -495,22 +493,25 @@
   visibility: hidden;
 }
 
-/* the sheet's inks mirror the iso's (.v0-ldx-beam): a translucent white
-   body, 1px edges, and a brighter landing line — the sweep's white
-   voice; the accent never rides the beam */
+/* the sheet's construction mirrors the iso's (.v0-ldx-beam) — a
+   translucent body, 1px edges, and a brighter landing line — but its
+   ink is BLUISH here by directive (founder: "make the scanning thing
+   bluish tinted"): the accent family at low alphas via color-mix, so
+   it reads as blue-tinted light, never a solid blue block, and follows
+   the page accent wherever it goes */
 .toolchain-root .tcb .v0s-beam {
-  fill: rgba(255, 255, 255, 0.05);
+  fill: color-mix(in srgb, var(--iso-accent) 10%, transparent);
 }
 
 .toolchain-root .tcb .v0s-beam-edge {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.13);
+  stroke: color-mix(in srgb, var(--iso-accent) 34%, transparent);
   stroke-width: 1;
 }
 
 .toolchain-root .tcb .v0s-beam-land {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.38);
+  stroke: color-mix(in srgb, var(--iso-accent) 78%, transparent);
   stroke-width: 1;
 }
 
@@ -550,19 +551,46 @@
   transition: opacity 0.32s ease;
 }
 
-/* the LAST beat is a beat like any other (founder: uniform story
-   rhythm — the old bottom-anchored finale in an oversized window put
-   beat 04's copy a different distance from beat 03 than every other
-   pair). The lock-in law (window top crossing the 58% read line before
-   the band's rest view) needs H > 42vh − 28px tail, and the shared
-   42vh window clears it by exactly the tail at every viewport, so the
-   finale is hot at rest with no override here — and independent of
-   the rail cell's dwell, which only ADDS seated runway after the
-   lock-in: beat 04 goes hot, the scan beam drops, and the tower holds
-   its seat through the dwell before the natural release (founder:
-   stay on agents a little longer to show the scanning, then see the
-   next section). Verify with rhythm-probe at 1440×900, 1926×1002 AND
-   2000×1400 whenever the figure, seat, beat height, or dwell moves. */
+/* THE AGENTS DWELL (founder: "we make this go stay on agents a lil
+   longer as we scroll to show the scanning on locadex, and then be
+   able to see next section" + "make the 'make it automatic' section
+   stay with you for that 260 px"). Two pieces, one mechanism:
+
+   - the RUNWAY: a 36vh spacer at the rail list's end — ~260px of
+     post-read scroll at a 900 viewport, growing with vh — that feeds
+     the grid row, keeps the sticky tower SEATED after beat 04's read
+     while the capstone's scan beam sweeps the translations plate, and
+     sets where the native sticky release lands (shortly after the
+     band's rest view). The release carries tower and copy UP and out
+     with the band; the figure never translates down and no JS ever
+     touches it.
+   - the STICKY FINALE: beat 04 pins at exactly its read pose — copy
+     centered on the ~55% read line means the block's top sits at
+     55vh − half the 42vh window — and spends the runway's room
+     traveling with the viewer, releasing near the figure's own
+     release (a small stagger; nothing pops).
+
+   Beat 04's lock-in itself is guaranteed by the window math (H + 28px
+   tail ≥ 0.42vh, see the beat rule above) independent of the runway.
+   The lock-in law (window top crossing the 58% read line before the
+   band's rest view) needs H > 42vh − 28px tail, and the shared 42vh
+   window clears it by exactly the tail at every viewport, so the
+   finale is hot at rest with no override. Both gated off with the
+   one-column layout below, where the figure is static. Verify with
+   rhythm-probe at 1440×900, 1926×1002 AND 2000×1400 whenever the
+   figure, seat, beat height, or dwell moves. */
+
+.toolchain-root .tcb .v0-stack-beat.is-finale {
+  position: sticky;
+  /* the read pose: 55vh read line minus half the beat window (the
+     window is clamp(240px, 42vh, 600px); its half must track it) */
+  top: calc(55vh - clamp(120px, 21vh, 300px));
+}
+
+.toolchain-root .tcb .v0-stack-runway {
+  flex: none;
+  height: 36vh;
+}
 
 /* the spotlight: JS-managed classes, so the static (reduced-motion)
    state is all four beats at full ink */
@@ -666,10 +694,14 @@
     grid-column: span 12;
   }
 
-  /* the post-read runway serves the sticky pass; the one-column layout
-     has a static figure and needs none of it */
-  .toolchain-root .tcb .v0-stack-cell-rail {
-    padding-block-end: 0;
+  /* the dwell serves the sticky pass; the one-column layout has a
+     static figure, so the runway collapses and the finale flows */
+  .toolchain-root .tcb .v0-stack-runway {
+    display: none;
+  }
+
+  .toolchain-root .tcb .v0-stack-beat.is-finale {
+    position: static;
   }
 
   .toolchain-root .tcb .v0-stack-fig {

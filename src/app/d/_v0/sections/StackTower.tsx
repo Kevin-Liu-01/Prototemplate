@@ -539,10 +539,14 @@ const BEAM_EDGE_L = segment(beamTL, beamBL);
 const BEAM_EDGE_R = segment(beamTR, beamBR);
 const BEAM_LAND = segment(beamBL, beamBR);
 
-/** Sweep amplitude in world y — the beam's footprint stays inside the
-    capstone's underside (±45) and lands well inside the translations
-    plate's ±52 top face at both extremes. */
-const BEAM_SWEEP_Y = 19;
+/** Sweep amplitude in world y (founder: "make it go up and down a little
+    more than it currently is" — up from the first pass's ±19): the beam's
+    ±34 × ±27 footprint stays inside the capstone's ±45 underside and
+    lands inside the translations plate's ±52 top face at both extremes,
+    and the top edge's overshoot stays buried behind the lifted hull at
+    both ends of the pass (checked against the silhouette's four bottom
+    edges — the sheet never pokes past the capstone's rim). */
+const BEAM_SWEEP_Y = 27;
 export const BEAM_SWEEP_DX = BEAM_SWEEP_Y * ISO_COS30;
 export const BEAM_SWEEP_DY = BEAM_SWEEP_Y * ISO_SIN30;
 

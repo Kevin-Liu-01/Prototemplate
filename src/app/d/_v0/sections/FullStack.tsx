@@ -346,7 +346,10 @@ export default function V0FullStack() {
            transform tween (transforms never quantize — no autoRound
            needed). It rides the founder's dwell: the beat stays hot and
            the tower seated through the post-read runway, so this IS what
-           the dwell shows. */
+           the dwell shows. 2.5s a pass, quicker than the iso's 3.6
+           (founder: "make it go up and down a little more than it
+           currently is, and a lil faster" — the amplitude lives in
+           StackTower's BEAM_SWEEP_Y). */
         const sweepLoop = scanSweep
           ? gsap.fromTo(
               scanSweep,
@@ -354,7 +357,7 @@ export default function V0FullStack() {
               {
                 x: -BEAM_SWEEP_DX,
                 y: BEAM_SWEEP_DY,
-                duration: 3.6,
+                duration: 2.5,
                 ease: 'sine.inOut',
                 repeat: -1,
                 yoyo: true,
@@ -694,9 +697,14 @@ export default function V0FullStack() {
             <ol className='v0-stack-rail'>
               {BEATS.map((beat, i) => {
                 const Icon = beat.icon;
+                /* the FINALE wears its own hook (is-finale): the runway
+                   spacer below is the list's literal :last-child, so the
+                   sticky-dwell rule needs a name, not a position */
+                const spotlight = i === 0 ? 'is-hot' : 'is-cold';
+                const finale = i === BEATS.length - 1 ? ' is-finale' : '';
                 return (
                   <li
-                    className={i === 0 ? 'v0-stack-beat is-hot' : 'v0-stack-beat is-cold'}
+                    className={`v0-stack-beat ${spotlight}${finale}`}
                     data-stack-beat={i}
                     data-reveal
                     key={beat.id}
@@ -717,6 +725,14 @@ export default function V0FullStack() {
                   </li>
                 );
               })}
+              {/* the agents dwell's runway, as structural flow INSIDE the
+                  rail list — never cell padding: the finale beat is sticky
+                  (fullstack.css) and sticky travel is bounded by the
+                  PARENT'S content box, so this spacer is the room "Make it
+                  automatic." spends staying with the viewer while the scan
+                  beam plays (founder: "make the 'make it automatic'
+                  section stay with you for that 260 px"). */}
+              <li className='v0-stack-runway' aria-hidden />
             </ol>
           </div>
         </div>
