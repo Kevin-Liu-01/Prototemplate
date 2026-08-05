@@ -524,7 +524,8 @@ export default function V0Locadex() {
               /* the stylesheet's resting ink — the reduced-motion still */
               { fill: 'rgba(255, 255, 255, 0.78)' },
               {
-                fill: '#86a8ff',
+                /* the accent resolved off the stylesheet — hex stays in css */
+                fill: getComputedStyle(mark).getPropertyValue('--ldx-accent').trim() || 'rgb(134, 168, 255)',
                 duration: 1.8,
                 ease: 'sine.inOut',
                 repeat: -1,

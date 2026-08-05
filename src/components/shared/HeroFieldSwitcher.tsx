@@ -226,8 +226,8 @@ export default function HeroFieldSwitcher() {
             className='hfs-chip'
             data-on={variant === v.id}
             key={v.id}
-            onClick={() => pick(v.id)}
             type='button'
+            onClick={() => pick(v.id)}
           >
             <i>{v.id}</i>
             <span>{v.name}</span>

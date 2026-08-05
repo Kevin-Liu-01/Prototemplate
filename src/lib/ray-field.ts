@@ -115,12 +115,12 @@ const HOUSE_COLORS: Pick<
   RayParams,
   'col1Center' | 'col1Edge' | 'col2Center' | 'col2Edge' | 'col3Center' | 'col3Edge' | 'colorMix'
 > = {
-  col1Center: [0.616, 0.725, 1.0], // #9db9ff
+  col1Center: [0.525, 0.659, 1.0], // #86a8ff
   col1Edge: [0.184, 0.361, 0.878], // #2f5ce0
-  col2Center: [0.525, 0.659, 1.0], // #86a8ff
-  col2Edge: [0.153, 0.306, 0.769], // #274ec4
-  col3Center: [0.812, 0.878, 1.0], // #cfe0ff
-  col3Edge: [0.373, 0.525, 0.949], // #5f86f2
+  col2Center: [0.373, 0.525, 0.949], // #5f86f2
+  col2Edge: [0.141, 0.251, 0.62], // #24409e
+  col3Center: [0.616, 0.725, 1.0], // #9db9ff
+  col3Edge: [0.184, 0.361, 0.878], // #2f5ce0
   colorMix: 0.85,
 };
 
@@ -131,7 +131,7 @@ export const RAY_PRESETS: Record<RayPreset, RayParams> = {
      window that lives there. */
   converge: {
     rayCount: 20,
-    rayWidth: 0.008,
+    rayWidth: 0.0065,
     originSpread: 1.25,
     terminusSpread: 0.3,
     lift: 0.1,
@@ -161,12 +161,12 @@ export const RAY_PRESETS: Record<RayPreset, RayParams> = {
   shafts: {
     rayCount: 26,
     rayWidth: 0.0055,
-    originSpread: 1.55,
-    terminusSpread: 1.45,
+    originSpread: 1.5,
+    terminusSpread: 1.5,
     lift: 0.15,
-    cp1X: 0.95,
+    cp1X: 1.0,
     cp1Y: 0.25,
-    cp2X: 0.98,
+    cp2X: 1.0,
     cp2Y: 0.6,
     randomness: 0.2,
     axisCenter: 0.5,
@@ -239,13 +239,19 @@ void main() {
    - Each ray is a cubic bézier: p0 on the origin line spread by
      uOriginSpread, p3 on the terminus line spread by uTerminusSpread,
      p1/p2 steered by the cp uniforms as fractions of the terminus offset —
-     the source shader's exact construction, with uAxisCenter replacing the
-     hardcoded 0.5.
+     the source shader's construction, with uAxisCenter replacing the
+     hardcoded 0.5 and the per-ray jitter applied to the WHOLE path (the
+     source jittered only the origin, which bowed straight shafts into
+     scythes; whole-path jitter keeps them parallel, just unevenly spaced).
    - distanceToBezier is the source's sampled search: 40 coarse samples,
-     then 8 refinements around the winner. closestT doubles as "position
-     along the path" for the pulses.
+     then 8 refinements around the winner, then a projection onto the local
+     CHORD through the refinement window — without it the sampled minimum
+     scallops and every ray wears ladder stripes at band aspect ratios.
+     closestT doubles as "position along the path" for the pulses.
    - Rays are NOT drawn — pulses reveal them: a gaussian bump at pulsePos
-     with a fading trail behind it and 5 motion-blur taps inside the trail;
+     with a fading trail behind it and 5 motion-blur taps inside the trail
+     (the taps are feathered by the trail's own fade — the source cut them
+     hard at the trail end, which parks a visible edge on slow pulses);
      pulses fade in near the origin and out near the terminus so nothing
      pops at either line.
    - The ambient glow is distance-based with two positional weights: one
@@ -327,6 +333,17 @@ float distanceToBezier(vec2 point, vec2 p0, vec2 p1, vec2 p2, vec2 p3, out float
       closestT = t;
     }
   }
+  float ta = max(closestT - refinement, 0.0);
+  float tb = min(closestT + refinement, 1.0);
+  vec2 a = cubicBezier(p0, p1, p2, p3, ta);
+  vec2 b = cubicBezier(p0, p1, p2, p3, tb);
+  vec2 ab = b - a;
+  float tt = clamp(dot(point - a, ab) / max(dot(ab, ab), 1e-8), 0.0, 1.0);
+  float chordDist = distance(point, a + ab * tt);
+  if (chordDist < minDist) {
+    minDist = chordDist;
+    closestT = ta + (tb - ta) * tt;
+  }
   return minDist;
 }
 
@@ -377,10 +394,10 @@ void main() {
 
     vec2 p0 = vec2(xStart, 0.0);
     float centerOffset = rayIndex - 0.5;
-    vec2 p3 = vec2(uAxisCenter + centerOffset * uTerminusSpread, 1.0);
+    vec2 p3 = vec2(uAxisCenter + centerOffset * uTerminusSpread + randomOffset, 1.0);
     float targetOffset = centerOffset * uTerminusSpread;
-    vec2 p1 = vec2(uAxisCenter + targetOffset * uCp1X, uLift + uCp1Y);
-    vec2 p2 = vec2(uAxisCenter + targetOffset * uCp2X, uCp2Y);
+    vec2 p1 = vec2(uAxisCenter + targetOffset * uCp1X + randomOffset, uLift + uCp1Y);
+    vec2 p2 = vec2(uAxisCenter + targetOffset * uCp2X + randomOffset, uCp2Y);
 
     float closestT;
     float dist = distanceToBezier(P, p0, p1, p2, p3, closestT);
@@ -416,7 +433,7 @@ void main() {
           for (int b = 0; b < 5; b++) {
             float blurOffset = trailDist * float(b) / 5.0;
             float blurFade = exp(-blurOffset / (uTrailLength * 0.5)) * uMotionBlur;
-            pulse += blurFade * rayGlow * 0.2;
+            pulse += blurFade * rayGlow * 0.2 * (1.0 - trailDist / uTrailLength);
           }
         }
         pulse *= smoothstep(0.0, 0.2, pulsePos);
@@ -428,7 +445,7 @@ void main() {
           for (int b = 0; b < 5; b++) {
             float blurOffset = trailDist * float(b) / 5.0;
             float blurFade = exp(-blurOffset / (uTrailLength * 0.5)) * uMotionBlur;
-            pulse += blurFade * rayGlow * 0.2;
+            pulse += blurFade * rayGlow * 0.2 * (1.0 - trailDist / uTrailLength);
           }
         }
         pulse *= smoothstep(1.0, 0.8, pulsePos);
