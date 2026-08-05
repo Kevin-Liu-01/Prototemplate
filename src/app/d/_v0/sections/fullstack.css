@@ -1051,3 +1051,272 @@
     opacity: 1;
   }
 }
+
+/* ============================================================
+   LIGHT MODE (founder: on light, no black boxes or sections —
+   the story band follows the theme). v0-pages.css already flips
+   the band's ground, the --tcb-* family, --iso-accent/--iso-ink
+   and the diff tokens centrally; every rule below re-inks ONLY
+   this sheet's own hardcoded dark paints, selector for selector.
+
+   Scope: `:root:not([data-theme='dark'])` — dark sets
+   data-theme='dark' on <html> (app layout), so nothing here can
+   ever match in dark and the dark render stays byte-identical.
+   The block MIRRORS the dark rules' selector ladder one prefix
+   deeper; the few dark hot rules that were already token-routed
+   (hot edge, hot mark = accent) are restated at hot depth, or the
+   light base overrides — later in the cascade at equal-or-higher
+   specificity — would swallow them.
+
+   The material language, inverted: the ground is the band's
+   paper, plate tops the paper family's lightest step, front-left
+   a step under, front-right (and the hull they all sit on) the
+   darkest — the same upper-left light, and INK hairline edges
+   carry the silhouette (the depth-stepped --v0s-*-a alphas ride
+   through calc() so the original per-plate voice survives the
+   re-ink). The accent is untouched everywhere it was already the
+   ink (rail, taps, waves, orbit, beam, wrap glint, diff wires,
+   bullet dashes): those route through --iso-accent and follow
+   the page accent on their own. */
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-cellrail {
+  background: rgba(7, 7, 7, 0.14);
+}
+
+/* the plate: paper faces on an opaque paper hull — the hull keeps
+   the darkest face's tone so the rounding's slivers never flash
+   white between the ink hairlines */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-hull {
+  fill: #e3e1dd;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-top {
+  fill: #f7f6f4;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-left {
+  fill: #edebe8;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-right {
+  fill: #e3e1dd;
+}
+
+/* the hairlines go INK, a fixed step fuller than the white originals
+   (0.12-alpha ink vanishes on paper where 0.12-alpha white read on
+   #101010): the per-plate depth stepping rides through calc() */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-rim {
+  stroke: rgb(7 7 7 / calc(var(--v0s-rim-a, 0.12) + 0.16));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-front {
+  stroke: rgba(7, 7, 7, 0.14);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-edge {
+  stroke: rgb(7 7 7 / calc(var(--v0s-edge-a, 0.14) + 0.1));
+}
+
+/* the top-face artwork: flat marks and wires in the plate's own ink */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-mark {
+  fill: rgba(7, 7, 7, 0.13);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-glyph {
+  stroke: var(--iso-ink);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-ctx-wire,
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-fan-wire {
+  stroke: rgba(7, 7, 7, 0.28);
+}
+
+/* the Locadex mark rests in fuller ink than the dark build's 0.3
+   white (the shimmer below needs a solid ground to read against) */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-ldx {
+  fill: rgba(7, 7, 7, 0.42);
+}
+
+/* THE SHIMMER, RE-INKED (founder: the dithered sweep must still read
+   — the dark build's silver-white glint would sit white-on-white at
+   the mask's fringe and eat the glyph's edge on a light chip). Same
+   Bayer geometry, same windows, same timing; only the glint ink
+   flips: on light the sweep reads as the ink CATCHING DEPTH — an
+   accent-leaned near-black band crossing the grey resting mark —
+   so the metal still moves, dark through the glyph instead of
+   bright across it. */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-ldx-glint {
+  fill: color-mix(in srgb, var(--iso-accent) 30%, #11151c);
+}
+
+/* the chips: raised paper — tops toward white, sides a step under
+   the plate face, ink hairline rings carrying the extrusion */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-chip-hull {
+  fill: #eceae7;
+  stroke: rgba(7, 7, 7, 0.24);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-chip-top {
+  fill: #fdfdfc;
+}
+
+/* the payload chip's accent tint mixes over paper, not #101010 */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-hull {
+  fill: color-mix(in srgb, var(--iso-accent) 16%, #ffffff);
+  stroke: color-mix(in srgb, var(--iso-accent) 55%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-top {
+  fill: color-mix(in srgb, var(--iso-accent) 28%, #ffffff);
+}
+
+/* the hot slab: faces step toward white (the lifted plate catching
+   the family's light), the rim and interior edge go fuller ink, and
+   the accent contour restates itself — the dark rule is token-routed
+   already, but the light base .v0s-edge above would outrank it */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-top {
+  fill: #fdfdfc;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-left {
+  fill: #f4f2ef;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-right {
+  fill: #eae8e4;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-rim {
+  stroke: rgba(7, 7, 7, 0.45);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-front {
+  stroke: rgba(7, 7, 7, 0.24);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-edge {
+  stroke: var(--iso-accent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark {
+  fill: rgba(7, 7, 7, 0.42);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-glyph {
+  stroke: rgba(7, 7, 7, 0.95);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-ctx-wire,
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-fan-wire {
+  stroke: rgba(7, 7, 7, 0.46);
+}
+
+/* token-routed in the dark sheet, restated for the cascade only */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-ldx {
+  fill: var(--iso-accent);
+}
+
+/* the hot shimmer: the mark is full accent now, so the sweep deepens
+   toward ink-navy — same device, one step darker than the mark, the
+   sweep still visibly crossing it (a white-leaning glint here would
+   read as the glyph dissolving into the light chip) */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-ldx-glint {
+  fill: color-mix(in srgb, #070707 58%, var(--iso-accent));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-hull {
+  fill: #f2f0ed;
+  stroke: rgba(7, 7, 7, 0.34);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-top {
+  fill: #ffffff;
+}
+
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-chip.is-accent
+  .v0s-g-chip-hull {
+  fill: color-mix(in srgb, var(--iso-accent) 30%, #ffffff);
+  stroke: var(--iso-accent);
+}
+
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-chip.is-accent
+  .v0s-g-chip-top {
+  fill: color-mix(in srgb, var(--iso-accent) 46%, #ffffff);
+}
+
+/* the capstone's diff hunk keeps its red/green (founder round-trip),
+   spoken through the CENTRAL light diff tokens (v0-pages.css:
+   add #1e7a4b / del #b25454) — tints mix over paper, signs solid */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-hull {
+  fill: color-mix(in srgb, var(--tc-diff-add-ink) 16%, #ffffff);
+  stroke: color-mix(in srgb, var(--tc-diff-add-ink) 55%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-top {
+  fill: color-mix(in srgb, var(--tc-diff-add-ink) 30%, #ffffff);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-hull {
+  fill: color-mix(in srgb, var(--tc-diff-del-ink) 14%, #ffffff);
+  stroke: color-mix(in srgb, var(--tc-diff-del-ink) 50%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-top {
+  fill: color-mix(in srgb, var(--tc-diff-del-ink) 26%, #ffffff);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-sign {
+  fill: var(--tc-diff-add-ink);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-sign {
+  fill: var(--tc-diff-del-ink);
+}
+
+/* the wrap boundary and its wrapped line: ink enclosure, the accent
+   tint mixing over paper (a #101010-based mix reads as a dark slab
+   on the light face) */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-wrap-box {
+  stroke: rgba(7, 7, 7, 0.3);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-mark.is-wrap {
+  fill: color-mix(in srgb, var(--iso-accent) 38%, #ffffff);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark.is-wrap {
+  fill: color-mix(in srgb, var(--iso-accent) 60%, #ffffff);
+}
+
+/* the identity glyphs: one notch under the bracket ink, as in dark */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-icon {
+  stroke: rgba(7, 7, 7, 0.6);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-icon-dot {
+  fill: rgba(7, 7, 7, 0.6);
+}
+
+/* the copy rail's own hardcodes: the tag name and the bullets read in
+   full ink (the founder's WHITE-text directive, inverted with the
+   ground), the code chip's ring and wash flip to ink washes */
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0-stack-name {
+  color: var(--iso-ink);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0-stack-points li {
+  color: var(--tcb-ink);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0-stack-points code {
+  border-color: rgba(7, 7, 7, 0.16);
+  background: rgba(7, 7, 7, 0.05);
+}

@@ -850,3 +850,14 @@
   right: 24px;
   opacity: 0.07;
 }
+
+/* Founder round-trip: the sponsor spacer rules BOTH its edges — the top
+   hair under the wall (with its crosses) and now its own bottom hair
+   before the platform band, whose top rule stays retired so the seam
+   still speaks once. The doubled class outranks the generic
+   before-a-band drop. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .v0-cust
+  + .v0-hatch.v0-hatch {
+  border-bottom: 1px solid var(--tc-hair);
+}

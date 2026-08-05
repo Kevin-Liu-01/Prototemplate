@@ -592,20 +592,13 @@ function IntegrateDiagram() {
       />
       <rect
         className='v0-ldx-mark-ink'
-        data-ldx-lockup
         x={INT_MARK_X}
         y={117 - INT_MARK / 2}
         width={INT_MARK}
         height={INT_MARK}
         mask='url(#v0-ldx-int-mark)'
       />
-      <text
-        className='v0-ldx-int-name'
-        data-ldx-lockup
-        x={INT_NAME_X}
-        y={117}
-        dominantBaseline='central'
-      >
+      <text className='v0-ldx-int-name' x={INT_NAME_X} y={117} dominantBaseline='central'>
         Locadex
       </text>
     </svg>
@@ -763,20 +756,18 @@ export default function V0Locadex() {
         );
         /* the fourth landing completes the lap, and the plate ANSWERS: the
            lockup — mark and wordmark together — flashes to the accent once
-           (ink → blue → ink, ~0.5s), on the same timeline so it can never
-           drift off the last arrival; once per loop cycle */
-        const lockup = el.querySelectorAll<SVGElement>('[data-ldx-lockup]');
-        if (lockup.length > 0) {
+           (ink → accent → ink, ~0.5s), on the same timeline so it can never
+           drift off the last arrival; once per loop cycle. The tween drives
+           only the NUMBER --ldx-flash on the svg — the stylesheet mixes the
+           theme's resting ink and flash accent by it (--ldx-lockup-ink /
+           --ldx-lockup-flash), so both themes flash their own accent and a
+           live theme flip never strands a JS-written color. */
+        {
           const lastAt = (pulses.length - 1) * PULSE_GAP + ARRIVE;
+          flow.to(diagram, { '--ldx-flash': 1, duration: 0.22, ease: 'power2.out' }, lastAt);
           flow.to(
-            lockup,
-            { fill: 'rgb(134, 168, 255)', duration: 0.22, ease: 'power2.out' },
-            lastAt
-          );
-          flow.to(
-            lockup,
-            /* the stylesheet's resting ink — keep them together */
-            { fill: 'rgba(255, 255, 255, 0.9)', duration: 0.3, ease: 'power2.inOut' },
+            diagram,
+            { '--ldx-flash': 0, duration: 0.3, ease: 'power2.inOut' },
             lastAt + 0.22
           );
         }
@@ -849,9 +840,10 @@ export default function V0Locadex() {
           <WorksLedger caption='Works with every stack' works={STACK_WORKS} />
         </BentoCell>
 
-        {/* is-bleed: the card sheds its padding, so the iso's permanently-dark
-            ground runs to the card's own frame — the cell owns the frame, the
-            plate draws no border or radius of its own. */}
+        {/* is-bleed: the card sheds its padding, so the iso's ground (night
+            ink in dark, panel white on light) runs to the card's own frame —
+            the cell owns the frame, the plate draws no border or radius of
+            its own. */}
         <BentoCell cell='is-tall is-bleed is-framed'>
           <div className='v0-ldx-plate'>
             <LocadexIso />

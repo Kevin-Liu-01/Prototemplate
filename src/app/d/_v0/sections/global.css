@@ -291,67 +291,29 @@
   padding: 8px 0;
 }
 
-/* ---------- the real post ----------
-   Type only — the night cell is the box, its ink ground the card's own.
-   Body scale, not display: the post is a receipt, not a headline. */
+/* ---------- the real post, on light ----------
+   The proof plate speaks the tcpq grammar verbatim, and its chrome rides
+   the panel family — which v0-pages flips to paper on light, so the plate,
+   the quote ink, the attribution rule, the role, and the link all convert
+   centrally. Four paints in the SSOT sheet are hardcoded night whites;
+   they get light counter-rules here, one class deeper, same composition:
+   the ornament quote mark at the same near-nothing alpha, the two quoted
+   fragments still the code-string hue (the paper-ramp string blue the
+   light bands already spend), the name at full page ink, the avatar's
+   ring at the same quarter-strength. Dark keeps the SSOT bytes. */
 
-.toolchain-root .v0-glob-quote {
-  margin: 0;
+:root:not([data-theme='dark']) .toolchain-root .v0-glob .tcpq-quote::before {
+  color: rgba(7, 7, 7, 0.08);
 }
 
-.toolchain-root .v0-glob-quote blockquote {
-  margin: 0;
-  max-width: 68ch;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.88);
+:root:not([data-theme='dark']) .toolchain-root .v0-glob .tcpq-quote em {
+  color: #3555b8;
 }
 
-.toolchain-root .v0-glob-quote figcaption {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  margin-top: 12px;
-  padding-top: 11px;
-  border-top: 1px solid var(--tc-panel-rule, rgba(255, 255, 255, 0.1));
+:root:not([data-theme='dark']) .toolchain-root .v0-glob .tcpq-name {
+  color: #070707;
 }
 
-.toolchain-root .v0-glob-quote-who {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.toolchain-root .v0-glob-quote-who b {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #ffffff;
-}
-
-.toolchain-root .v0-glob-quote-who span {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.toolchain-root .v0-glob-quote-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.72);
-  text-decoration: none;
-  transition: color 0.18s ease;
-}
-
-.toolchain-root .v0-glob-quote-link:hover {
-  color: #ffffff;
-}
-
-.toolchain-root .v0-glob-quote-link svg {
-  width: 13px;
-  height: 13px;
+:root:not([data-theme='dark']) .toolchain-root .v0-glob .tcpq-face {
+  outline-color: rgba(7, 7, 7, 0.25);
 }

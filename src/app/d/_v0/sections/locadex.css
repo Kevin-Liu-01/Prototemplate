@@ -4,8 +4,9 @@
    BentoCell), which already owns every structural line; only the
    two founder-approved artifacts are styled here. Every selector
    is scoped `.toolchain-root .v0-ldx…`; paper-side styles ride
-   the tc tokens (they remap in dark), and hardcoded inks appear
-   only inside the permanently-dark plate.
+   the tc tokens (they remap in dark). The rules below ARE the
+   dark drawing (hardcoded night inks); the LIGHT MODE block at
+   the foot re-inks them for paper without touching these.
    ============================================================ */
 
 /* ---------- the head: a sentence, not a name ----------
@@ -16,7 +17,7 @@
   max-width: 38ch;
 }
 
-/* ---------- the agent plate: the iso's permanently-dark ground ----------
+/* ---------- the agent plate: the iso's night ground ----------
    Inside the is-bleed framed cell the CARD owns the frame — its radius
    clips this ground — so the plate draws no border and no radius of its
    own. The drawing on it is built from the stack tower's plate material
@@ -24,7 +25,8 @@
    #090909–#1b1b1b ink family on the #101010 ground, 1px hairlines whose
    rim/edge alphas step brighter toward the story's focus (set per solid
    as --ldx-rim-a / --ldx-edge-a inline), and the accent spent on the
-   merged chip. Its inks are hardcoded: this ground never remaps. */
+   merged chip. These hardcoded inks are the DARK drawing; on light the
+   foot's LIGHT MODE block re-inks the whole plate for paper. */
 .toolchain-root .v0-ldx .v0-ldx-plate {
   flex: 1;
   display: flex;
@@ -239,6 +241,15 @@
   max-width: 560px;
   height: auto;
   margin-inline: auto;
+  /* the lockup's two inks, and the flash DIAL between them. GSAP drives
+     --ldx-flash 0 → 1 → 0 on this svg (a number, no colors in JS) and the
+     lockup fills below mix the two inks by it — so the flash lands on the
+     accent in EITHER theme, and a live theme flip can never strand the
+     lockup in the other theme's ink. At rest (--ldx-flash: 0) the mix is
+     exactly --ldx-lockup-ink. */
+  --ldx-lockup-ink: rgba(255, 255, 255, 0.9);
+  --ldx-lockup-flash: rgb(134, 168, 255);
+  --ldx-flash: 0;
 }
 
 /* sources: hairline nodes on paper, marks in the muted step */
@@ -296,8 +307,11 @@
 }
 
 .toolchain-root .v0-ldx .v0-ldx-mark-ink {
-  --ldx-accent: #86a8ff;
-  fill: rgba(255, 255, 255, 0.9);
+  fill: color-mix(
+    in srgb,
+    var(--ldx-lockup-flash) calc(var(--ldx-flash) * 100%),
+    var(--ldx-lockup-ink)
+  );
 }
 
 .toolchain-root .v0-ldx .v0-ldx-int-name {
@@ -305,7 +319,11 @@
   font-weight: 500;
   font-size: 17px;
   letter-spacing: -0.01em;
-  fill: rgba(255, 255, 255, 0.9);
+  fill: color-mix(
+    in srgb,
+    var(--ldx-lockup-flash) calc(var(--ldx-flash) * 100%),
+    var(--ldx-lockup-ink)
+  );
 }
 
 /* ---------- the works ledgers: the copy cells' quiet evidence ----------
@@ -367,4 +385,198 @@
   -webkit-mask: url('/brand/locadex-mark.svg') center / contain no-repeat;
   mask: url('/brand/locadex-mark.svg') center / contain no-repeat;
   background-color: currentColor;
+}
+
+/* ============================================================
+   LIGHT MODE SHEDS THE INK (founder: on light, no black boxes) —
+   the two dark artifacts convert; DARK IS UNTOUCHED (these
+   overrides never match under [data-theme='dark'], so the dark
+   rendering stays byte-for-byte the rules above).
+
+   1. The agent plate stops being the "permanently-dark ground":
+      it reads the panel surface (white on the five homes) and the
+      iso re-inks to the house LIGHT material — the toolchain
+      paper-iso family's shading (top lightest, right darkest, ink
+      hairlines), the accent back on the page's own #2f5ce0 (the
+      dark plate's #86a8ff is a night ink; it dies on white), and
+      the diff hunks at the light diff voices the band conversion
+      established in v0-pages.css (#1e7a4b / #b25454 — band-scoped
+      tokens, so restated here).
+
+   2. The integrate diagram's Locadex slab goes white-on-paper:
+      panel fill under the same hairline, lockup in ink, and the
+      ring/flash accents on --tc-accent so the lap and the answer
+      stay legible against the light ground.
+   ============================================================ */
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-plate {
+  background: var(--tc-panel);
+  color: var(--tc-panel-ink);
+  --iso-accent: var(--tc-accent);
+}
+
+/* the plate family, lit from the same upper-left: top lightest, left mid,
+   right darkest — the dark stock's shading order, re-milled in paper */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-hull {
+  fill: color-mix(in srgb, #070707 14%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-top {
+  fill: color-mix(in srgb, #070707 5%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-left {
+  fill: color-mix(in srgb, #070707 9%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-right {
+  fill: color-mix(in srgb, #070707 14%, var(--tc-panel));
+}
+
+/* the hairline voice flips to ink at the SAME depth-stepped alphas — the
+   inline --ldx-rim-a / --ldx-edge-a dials ride along unchanged */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-rim {
+  stroke: rgba(7, 7, 7, var(--ldx-rim-a, 0.13));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-front {
+  stroke: rgba(7, 7, 7, 0.08);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-edge {
+  stroke: rgba(7, 7, 7, var(--ldx-edge-a, 0.28));
+}
+
+/* the hovering actor steps toward the light instead of toward white ink:
+   the frame's highest surface is its whitest, and the stronger inline
+   rim/edge alphas keep it the crispest */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-solid.is-lift .v0-ldx-top {
+  fill: color-mix(in srgb, #070707 2%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-solid.is-lift .v0-ldx-left {
+  fill: color-mix(in srgb, #070707 6%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-solid.is-lift .v0-ldx-right {
+  fill: color-mix(in srgb, #070707 11%, var(--tc-panel));
+}
+
+/* module chips: sides a step darker than the plate top, faces a step
+   lighter — raised stock catching the same light */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip-hull {
+  fill: color-mix(in srgb, #070707 9%, var(--tc-panel));
+  stroke: rgba(7, 7, 7, 0.18);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip-top {
+  fill: color-mix(in srgb, #070707 3%, var(--tc-panel));
+}
+
+/* the merged chip keeps the dark plate's accent arithmetic, mixed over
+   paper instead of ink — full contour, tinted faces, still the one hot
+   artifact */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip.is-accent .v0-ldx-chip-hull {
+  fill: color-mix(in srgb, var(--iso-accent) 24%, var(--tc-panel));
+  stroke: var(--iso-accent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip.is-accent .v0-ldx-chip-top {
+  fill: color-mix(in srgb, var(--iso-accent) 42%, var(--tc-panel));
+}
+
+/* diff semantics at the LIGHT diff voices (v0-pages.css's band remap):
+   green adds, red dels, tinted faces under fuller strokes */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip.is-add .v0-ldx-chip-hull {
+  fill: color-mix(in srgb, #1e7a4b 14%, var(--tc-panel));
+  stroke: color-mix(in srgb, #1e7a4b 45%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip.is-add .v0-ldx-chip-top {
+  fill: color-mix(in srgb, #1e7a4b 24%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip.is-del .v0-ldx-chip-hull {
+  fill: color-mix(in srgb, #b25454 12%, var(--tc-panel));
+  stroke: color-mix(in srgb, #b25454 40%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip.is-del .v0-ldx-chip-top {
+  fill: color-mix(in srgb, #b25454 20%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-sign.is-add {
+  fill: color-mix(in srgb, #1e7a4b 85%, var(--tc-panel));
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-sign.is-del {
+  fill: color-mix(in srgb, #b25454 85%, var(--tc-panel));
+}
+
+/* the flat marks in the top faces: the same quiet voices, in ink */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-gh {
+  fill: rgba(7, 7, 7, 0.45);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-fmark {
+  fill: rgba(7, 7, 7, 0.16);
+}
+
+/* the beam keeps its sheet strengths, re-hued to the page accent — the
+   night #86a8ff family has no contrast against paper */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-beam {
+  fill: color-mix(in srgb, var(--iso-accent) 7%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-beam-edge {
+  stroke: color-mix(in srgb, var(--iso-accent) 32%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-beam-land {
+  stroke: color-mix(in srgb, var(--iso-accent) 60%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-flow {
+  stroke: rgba(7, 7, 7, 0.24);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-flow-chev {
+  stroke: rgba(7, 7, 7, 0.5);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-mark {
+  fill: rgba(7, 7, 7, 0.8);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-leader {
+  stroke: rgba(7, 7, 7, 0.2);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-iso-name {
+  fill: rgba(7, 7, 7, 0.62);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip-read {
+  fill: rgba(7, 7, 7, 0.66);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-chip-num {
+  fill: rgba(7, 7, 7, 0.88);
+}
+
+/* ---- the integrate diagram's slab, in the same daylight ---- */
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-int-svg {
+  --ldx-lockup-ink: rgba(7, 7, 7, 0.9);
+  --ldx-lockup-flash: var(--tc-accent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-int-plate {
+  fill: var(--tc-panel);
+}
+
+/* the arrival ring re-inks to the page accent; its opacity choreography
+   (the GSAP landings) is numbers only, so it rides along untouched */
+:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-ring {
+  stroke: var(--tc-accent);
 }

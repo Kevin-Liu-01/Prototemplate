@@ -644,6 +644,15 @@
    these selectors and keeps every rule above byte-for-byte.
    ============================================================ */
 
+/* The band's display lines: the page SSOT hardcodes .tc-band h2 to
+   white (a darkband paint the central flip does not cover) — inside
+   THIS band, on light, the head and the review copy's heading re-ink
+   to the sheet's black, the same key the central flip gives the cell
+   h3s. Scoped to .v0-ctx so no other band is touched. */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx h2 {
+  color: #070707;
+}
+
 /* Locale chips on light surfaces wear the house light chip grammar
    (the rgba(7,7,7,0.16) border / 0.03 wash family). */
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .lct {
