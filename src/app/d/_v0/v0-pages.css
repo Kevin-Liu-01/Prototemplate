@@ -645,3 +645,14 @@
   + .v0-hatch::after {
   --cross-ink: rgba(255, 255, 255, 0.34);
 }
+
+/* MOBILE REVIEW GUTTER: once the review grid stacks, the copy column's
+   left edge lands exactly on the chrome's frame line (both at the
+   section's 24px inset) — the words were touching the rule (founder).
+   The copy takes the house gutter back inside the frame; the workspace
+   mat stays flush, a framed box reads right at the frame. */
+@media (max-width: 980px) {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcr-copy {
+    padding-inline: var(--tc-gut);
+  }
+}

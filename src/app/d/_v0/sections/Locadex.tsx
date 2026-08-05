@@ -110,31 +110,32 @@ const GH_HALF = 4.6;
     off the face like the payload chip but tinted at the band's diff
     voices, kept well under the accent's presence. */
 const DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
+  { w: 24, tone: 'del' },
+  { w: 29, tone: 'del' },
   { w: 17, tone: 'del' },
-  { w: 22, tone: 'del' },
-  { w: 12, tone: 'del' },
-  { w: 20, tone: 'add' },
-  { w: 14, tone: 'add' },
+  { w: 27, tone: 'add' },
+  { w: 19, tone: 'add' },
+  { w: 29, tone: 'add' },
   { w: 22, tone: 'add' },
-  { w: 16, tone: 'add' },
 ];
-const DIFF_X = 65;
-/** Thin flat-raised lines at a tight rhythm: deep or tall rows shingle —
-    each bar's extrusion laps the next row's face — so the lines stay at
-    3×1.6 with 2.5 air and each GROUP fuses into one striped hunk, while
-    DIFF_GAP opens a breath of bare plate where del turns to add. */
-const DIFF_Y0 = -113;
-const DIFF_STEP = 5.5;
-const DIFF_GAP = 4;
-const DIFF_D = 3;
-const DIFF_H = 1.6;
+const DIFF_X = 64;
+/* Grown ~1.4x (founder: "make the diffs larger... and have the blue
+   square take up the rest of the empty space"): the hunk fills the
+   plate's left half up to the upright merged chip. Deep rows still
+   shingle so each GROUP fuses into one striped hunk, while DIFF_GAP
+   opens a breath of bare plate where del turns to add. */
+const DIFF_Y0 = -112;
+const DIFF_STEP = 7;
+const DIFF_GAP = 5;
+const DIFF_D = 4.2;
+const DIFF_H = 2;
 
 /** The margin signs: a flat +/− lying on the plate left of each diff
     line, in the line's own tint — arm half-length and bar half-thickness
     in plan units, seated between the plate's edge and the hunk. */
-const SIGN_CX = 61;
-const SIGN_ARM = 1.7;
-const SIGN_T = 0.55;
+const SIGN_CX = 60;
+const SIGN_ARM = 2.1;
+const SIGN_T = 0.65;
 
 /**
  * The scan beam is a vertical sheet under the agent — from its underside at
@@ -403,7 +404,10 @@ function LocadexIso() {
             </g>
           );
         })}
-        <Chip x={92} y={-82} z={PR_BOX.h} w={26} d={14} h={4} tone='accent' />
+        {/* the merged chip stands UPRIGHT along the plate's right side
+            (founder: "oriented like | instead of _") and spends the face
+            the grown hunk leaves free — a tall accent block, y-deep */}
+        <Chip x={98} y={-115} z={PR_BOX.h} w={17} d={52} h={4} tone='accent' />
 
         {/* annotations — sans labels, hair leaders */}
         <path className='v0-ldx-leader' d={REPO_LEADER} vectorEffect='non-scaling-stroke' />

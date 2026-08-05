@@ -613,7 +613,13 @@ function Ghost({ read, className }: { read: (loc: PreviewLoc) => string; classNa
   return (
     <span className={className ? `v0-tw-ghost ${className}` : 'v0-tw-ghost'} aria-hidden>
       {BELT_LOCS.map((loc) => (
-        <i key={loc}>{read(loc)}</i>
+        /* ladders carry Intl output: Safari's ICU can format a hair apart
+           from the server's, and one mismatched text bails the whole
+           hydration (which costs Safari the theme boot) — mark every
+           Intl-bearing node so React just patches the text */
+        <i key={loc} suppressHydrationWarning>
+          {read(loc)}
+        </i>
       ))}
     </span>
   );
@@ -1589,21 +1595,21 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                   <dl className='sgdh-app-stats'>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'revenue' || undefined} {...insBox('revenue')}>
                       <dt data-rw='revenue'>{PREVIEWS[ploc].revenue}</dt>
-                      <dd data-rwf>{fmtRevenue(ploc)}</dd>
+                      <dd data-rwf suppressHydrationWarning>{fmtRevenue(ploc)}</dd>
                       <Ghost className='is-dt' read={(l) => PREVIEWS[l].revenue} />
                       <Ghost className='is-dd' read={fmtRevenue} />
                       <InsMark {...insProps('revenue')} />
                     </div>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'invoices' || undefined} {...insBox('invoices')}>
                       <dt data-rw='invoices'>{PREVIEWS[ploc].invoices}</dt>
-                      <dd data-rwf>{fmtInvoices(ploc)}</dd>
+                      <dd data-rwf suppressHydrationWarning>{fmtInvoices(ploc)}</dd>
                       <Ghost className='is-dt' read={(l) => PREVIEWS[l].invoices} />
                       <Ghost className='is-dd' read={fmtInvoices} />
                       <InsMark {...insProps('invoices')} />
                     </div>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'payout' || undefined} {...insBox('payout')}>
                       <dt data-rw='payout'>{PREVIEWS[ploc].payout}</dt>
-                      <dd data-rwf>{fmtPayout(ploc)}</dd>
+                      <dd data-rwf suppressHydrationWarning>{fmtPayout(ploc)}</dd>
                       <Ghost className='is-dt' read={(l) => PREVIEWS[l].payout} />
                       <Ghost className='is-dd' read={fmtPayout} />
                       <InsMark {...insProps('payout')} />
@@ -1624,7 +1630,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                 <aside className='sgdh-app-chart sgdh-ins' data-ins-on={ins?.k === 'chart' || undefined} {...insBox('chart')}>
                   <div className='sgdh-app-chart-head'>
                     <span className='sgdh-app-chart-t' data-rw='chart'>{PREVIEWS[ploc].chart}</span>
-                    <b className='sgdh-app-chart-d' data-rwf>{fmtDelta(ploc)}</b>
+                    <b className='sgdh-app-chart-d' data-rwf suppressHydrationWarning>{fmtDelta(ploc)}</b>
                   </div>
                   <div className='sgdh-app-bars' aria-hidden>
                     {CHART_BARS.map((h, i) => (
@@ -1633,7 +1639,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                   </div>
                   <div className='sgdh-app-months' data-rwf>
                     {CHART_MONTHS.map((m) => (
-                      <span key={m}>{fmtMonth(ploc, m)}</span>
+                      <span key={m} suppressHydrationWarning>{fmtMonth(ploc, m)}</span>
                     ))}
                   </div>
                   <InsMark {...insProps('chart')} />

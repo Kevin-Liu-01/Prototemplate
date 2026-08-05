@@ -369,14 +369,23 @@ function BranchForks() {
                   <div className='v0-dev-out' data-dev-out='' key={branch.code}>
                     <LocaleTag code={branch.code} />
                     <span className='v0-dev-out-val'>
+                      {/* real Intl output: Safari's ICU can differ from the
+                          server's by a space or a digit form, and one text
+                          mismatch bails the whole hydration — mark it so
+                          React just patches the text */}
                       <span
                         className={branch.sans ? 'v0-dev-val is-sans' : 'v0-dev-val'}
                         lang={branch.lang}
                         dir={branch.rtl ? 'rtl' : undefined}
+                        suppressHydrationWarning
                       >
                         {branch.value}
                       </span>
-                      {branch.note ? <span className='v0-dev-note'>{branch.note}</span> : null}
+                      {branch.note ? (
+                        <span className='v0-dev-note' suppressHydrationWarning>
+                          {branch.note}
+                        </span>
+                      ) : null}
                     </span>
                   </div>
                 ))}

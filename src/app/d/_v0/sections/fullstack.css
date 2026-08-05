@@ -338,11 +338,14 @@
 }
 
 /* the agents plate's scan energy: the orbiting accent trace, on its
-   own ring inset from the rim so it never doubles the hot edge */
+   own ring inset from the rim so it never doubles the hot edge —
+   FAINT on purpose (founder: "make the worms on the borders far more
+   subtle and not as distracting"): a translucent mix at a thin gauge,
+   light grazing the edge rather than a drawn line */
 .toolchain-root .tcb .v0s-orbit {
   fill: none;
-  stroke: var(--iso-accent);
-  stroke-width: 1.75;
+  stroke: color-mix(in srgb, var(--iso-accent) 38%, transparent);
+  stroke-width: 1.2;
 }
 
 /* the Locadex mark on the agents slab, in the plate's own ink until
