@@ -310,11 +310,26 @@
 /* The mounted section trades its page-scale padding for the cell's, and
    never draws the tc-sec bottom rule the grid seam already provides. The
    18px bottom is the other half of the band's closing ledger (see the
-   .tcb-in tail above): the foot bar's own 12px inset already breathes,
-   so the cell adds only a card-step before the band tail takes over. */
+   .tcb-in tail above): the foot bar's own inset already breathes, so the
+   cell adds only a card-step before the band tail takes over. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr {
   padding: 14px 24px 18px;
   border-bottom: 0;
+}
+
+/* Inside the cell the row is a composition, not a page spread (founder
+   round: the black space below the copy GONE). Two moves, one ledger:
+   the workspace compresses from its page mount's 506px to ~390px — the
+   overrides below — and the copy column centers against it, so the
+   residual air splits evenly above and below the caption instead of
+   pooling under it. The copy's own 30px top inset retires with the
+   top-alignment that needed it. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-grid {
+  align-items: center;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-copy {
+  padding-top: 0;
 }
 
 /* Inside a cell the workspace's copy column is the artifact's own caption,
@@ -325,6 +340,44 @@
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-sub {
   font-size: 14px;
+}
+
+/* ---------- the workspace, compressed to the cell's scale ----------
+   The page mount seats four rows generously (42px bar, 14/15 cell pads,
+   an 8px stamp seat — ~120px for a one-line string). Inside the band's
+   cell that spend IS the founder's void, so the chrome and rows tighten:
+   same rules, same type, less air. The ghost/live overlay keeps typing
+   wrap-stable at any padding, and the chip and caps stamps are cut to ONE
+   height (19px box) so the settle from `translated` to `approved` never
+   moves the rows below it. */
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-bar {
+  height: 32px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-lab {
+  padding: 8px 18px 6px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-cell {
+  padding: 8px 18px 9px;
+  line-height: 1.5;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp {
+  margin-top: 4px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='chip'] {
+  padding: 3px 8px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='ok'] {
+  padding: 4px 0;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-foot {
+  padding: 8px 18px 9px;
 }
 
 /* ---------- responsive ---------- */
