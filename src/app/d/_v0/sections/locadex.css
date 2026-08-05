@@ -141,18 +141,24 @@
   fill: color-mix(in srgb, #d29090 18%, #101010);
 }
 
+/* the margin signs: each diff line's +/− in the line's own tint, at
+   fuller strength than the slat faces so the tiny flat marks read */
+.toolchain-root .v0-ldx .v0-ldx-sign.is-add {
+  fill: color-mix(in srgb, #85cfa1 78%, #101010);
+}
+
+.toolchain-root .v0-ldx .v0-ldx-sign.is-del {
+  fill: color-mix(in srgb, #d29090 74%, #101010);
+}
+
 /* the GitHub mark on the repository's front-left module — the grid's one
    identifying glyph, in the chip's own ink voice, never the accent */
 .toolchain-root .v0-ldx .v0-ldx-gh {
   fill: rgba(255, 255, 255, 0.45);
 }
 
-/* flat marks lying in a top face: the PR plate's string bars, and the
-   quieter content bar each module chip carries */
-.toolchain-root .v0-ldx .v0-ldx-gmark {
-  fill: rgba(255, 255, 255, 0.3);
-}
-
+/* flat marks lying in a top face: the quiet content bar each module
+   chip carries */
 .toolchain-root .v0-ldx .v0-ldx-fmark {
   fill: rgba(255, 255, 255, 0.14);
 }

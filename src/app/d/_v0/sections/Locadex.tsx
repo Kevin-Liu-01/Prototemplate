@@ -98,29 +98,37 @@ const CHIP_BARS: readonly number[] = [8, 6, 7, 5, 8, 6, 6, 7, 5];
 const GH_CHIP: readonly [number, number] = [-29, 15];
 const GH_HALF = 4.6;
 
-/** The merged plate's evidence: extruded diff lines stacked beside the
-    chip — a couple of deletes over a few adds, the hunk's own order, so
-    the tints band instead of striping — ragged widths, raised off the
-    face like the payload chip but tinted at the band's diff voices, kept
-    well under the accent's presence. */
+/** The merged plate's evidence, and now its whole story: the old gray
+    title bars retired so the diff carries the plate alone — a hunk of
+    deletes over a hunk of adds, each group banded, ragged widths, raised
+    off the face like the payload chip but tinted at the band's diff
+    voices, kept well under the accent's presence. */
 const DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
   { w: 17, tone: 'del' },
+  { w: 22, tone: 'del' },
   { w: 12, tone: 'del' },
+  { w: 20, tone: 'add' },
+  { w: 14, tone: 'add' },
   { w: 22, tone: 'add' },
-  { w: 15, tone: 'add' },
-  { w: 19, tone: 'add' },
+  { w: 16, tone: 'add' },
 ];
 const DIFF_X = 65;
 /** Thin flat-raised lines at a tight rhythm: deep or tall rows shingle —
     each bar's extrusion laps the next row's face — so the lines stay at
-    3×1.6 with 2.5 air and the stack fuses into ONE striped hunk. The
-    plate then carries three objects (titles, hunk, chip), not eight
-    beads, with a much wider gap under the title bars than the hunk's
-    own rhythm. */
-const DIFF_Y0 = -90;
+    3×1.6 with 2.5 air and each GROUP fuses into one striped hunk, while
+    DIFF_GAP opens a breath of bare plate where del turns to add. */
+const DIFF_Y0 = -113;
 const DIFF_STEP = 5.5;
+const DIFF_GAP = 4;
 const DIFF_D = 3;
 const DIFF_H = 1.6;
+
+/** The margin signs: a flat +/− lying on the plate left of each diff
+    line, in the line's own tint — arm half-length and bar half-thickness
+    in plan units, seated between the plate's edge and the hunk. */
+const SIGN_CX = 61;
+const SIGN_ARM = 1.7;
+const SIGN_T = 0.55;
 
 /**
  * The scan beam is a vertical sheet under the agent — from its underside at
@@ -183,14 +191,14 @@ type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
 
 /** A flat rounded bar lying in the z = const plane — string lines, file
     contents — the tower's markPath, verbatim. */
-function markPath(x: number, y: number, w: number, d: number, z: number): string {
+function markPath(x: number, y: number, w: number, d: number, z: number, r?: number): string {
   const quad: Pt[] = [
     project(x, y, z),
     project(x + w, y, z),
     project(x + w, y + d, z),
     project(x, y + d, z),
   ];
-  return roundedPolygon(quad);
+  return roundedPolygon(quad, r);
 }
 
 type SolidProps = {
@@ -361,26 +369,26 @@ function LocadexIso() {
           />
         </g>
 
-        {/* the output plate reads top to bottom: title bars, then the diff
-            stack (the PR's quiet evidence, raised like the chip but at the
-            diff tints), then the merged chip — the tower's payload chip
-            treatment, the drawing's one accent */}
+        {/* the output plate reads top to bottom: the del hunk, a breath of
+            bare plate, the add hunk — every line signed +/− in its margin —
+            then the merged chip, the tower's payload chip treatment, the
+            drawing's one accent */}
         <Solid box={PR_BOX} rim={0.16} edge={0.36} />
-        <path className='v0-ldx-gmark' d={markPath(65, -113, 30, 4.5, PR_BOX.h)} />
-        <path className='v0-ldx-gmark' d={markPath(65, -104, 22, 4.5, PR_BOX.h)} />
-        {DIFF_ROWS.map(({ w, tone }, i) => (
-          <Chip
-            key={`diff-${i}`}
-            x={DIFF_X}
-            y={DIFF_Y0 + i * DIFF_STEP}
-            z={PR_BOX.h}
-            w={w}
-            d={DIFF_D}
-            h={DIFF_H}
-            tone={tone}
-            r={1.2}
-          />
-        ))}
+        {DIFF_ROWS.map(({ w, tone }, i) => {
+          const y = DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
+          const cy = y + DIFF_D / 2;
+          const sign =
+            markPath(SIGN_CX - SIGN_ARM, cy - SIGN_T, SIGN_ARM * 2, SIGN_T * 2, PR_BOX.h, 0.4) +
+            (tone === 'add'
+              ? ` ${markPath(SIGN_CX - SIGN_T, cy - SIGN_ARM, SIGN_T * 2, SIGN_ARM * 2, PR_BOX.h, 0.4)}`
+              : '');
+          return (
+            <g key={`diff-${i}`}>
+              <path className={`v0-ldx-sign is-${tone}`} d={sign} />
+              <Chip x={DIFF_X} y={y} z={PR_BOX.h} w={w} d={DIFF_D} h={DIFF_H} tone={tone} r={1.2} />
+            </g>
+          );
+        })}
         <Chip x={92} y={-82} z={PR_BOX.h} w={26} d={14} h={4} tone='accent' />
 
         {/* annotations — sans labels, hair leaders */}

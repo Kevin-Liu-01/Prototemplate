@@ -32,6 +32,14 @@
    (the beats' own padding, the figure's 20px) are all the air the content
    needs; the head alone keeps the gut so the title never sits ON the rail. */
 .toolchain-root .tcb.v0-stack .tcb-in {
+  /* the rail's one ink, shared by the accent channel fill and every tap
+     (founder: the taps must be the same size and ink as the blue rail and
+     actually meet it). OPAQUE on purpose — mixed over the card instead of
+     over transparent — so a tap's stub lying ON the fill composites to the
+     exact same pixels and nothing ever reads drawn twice. The hot step is
+     the old leader accent, premixed over the same card. */
+  --v0s-rail-ink: color-mix(in srgb, var(--iso-accent) 55%, var(--tcb-card));
+  --v0s-rail-ink-hot: color-mix(in srgb, var(--iso-accent) 75%, var(--tcb-card));
   padding-inline: 0;
   /* the band ends shortly after beat 04 completes (founder: no tall dead
      area trailing the pinned pass): the sheet's default clamp(56px, 7vw,
@@ -87,12 +95,14 @@
      the seat may bias up to ~20px if the clearance costs it). The tower
      center rides ~20px above the viewport's center through the pinned
      pass; the 70px floor keeps short viewports from tucking the figure
-     under the 58px nav. The pin ledger: margin past beat 04's read =
-     (last beat / 2) + (50vh − seat) − figure height − ~20 — every px of
-     figure height (the clearance pad included) costs a full px, every
-     px of seat bias or last-beat height buys 1 or 0.5 back. Re-run the
-     pin probe (fig top flat at frac 0.3/0.55/0.8) whenever any of the
-     three moves. */
+     under the 58px nav. The pin ledger (the last beat is BOTTOM-anchored
+     — see :last-child below): margin past beat 04's lock-in = last-beat
+     height + 0.58vh − figure height − seat; with the seat off its floor
+     the vh terms cancel, so the margin is ~one constant (+240 at 900,
+     +231 at 800). Every px of figure height (the clearance pad included)
+     still costs a full px. Re-run the pin probe (fig top flat at frac
+     0.3/0.55/0.8 of the section's pass) whenever the figure, seat, or
+     last-beat height moves. */
   top: max(70px, calc(50vh - 262px));
   display: flex;
   justify-content: center;
@@ -141,12 +151,12 @@
   height: auto;
 }
 
-/* the connective thread's overlay: one SVG spanning the whole frame,
-   behind every plate (the slabs' z-indices start at 1). It overflows
-   on purpose: the accent channel's rect reaches RAIL_DROP units below
-   the frame so beat 01's arrival can rise from the rail's bottom end —
-   the clipping cell crops that reach at the exact edge where the
-   .v0s-cellrail strokes stop, one fill inside two strokes throughout. */
+/* the rail fill's overlay: one SVG spanning the whole frame, behind
+   every plate (the slabs' z-indices start at 1). It overflows on
+   purpose: the accent rect reaches RAIL_DROP units below the frame so
+   beat 01's arrival can rise from the rail's bottom end — the clipping
+   cell crops that reach at the exact edge where the .v0s-cellrail
+   track stops, one line all the way down. */
 .toolchain-root .tcb .v0s-railsvg {
   position: absolute;
   inset: 0;
@@ -156,32 +166,37 @@
   overflow: visible;
 }
 
-/* the doubled vertical rail — two real 1px strokes at constant gauge,
-   the original composition's circuitry — runs the COMPLETE height of
-   the figure cell, top rule to bottom rule (founder: "still not
-   reaching complete top and bottom"), as a cell-spanning element the
-   sticky figure travels along. Its x re-derives the overlay SVG's rail
-   position in cell space: the tower is centered at width
-   W = min(100% − 40px fig pads, 392px), the inner stroke sits
-   10/214.133 of W right of the tower's left edge and the outer stroke
-   1.85/214.133 of W further left (StackTower's RAIL_X / RAIL_GAUGE /
-   VIEW_W — change them together), so the borders land exactly under
-   the overlay's channel and leaders at any W. */
+/* the vertical rail's TRACK — ONE line at the rail's own gauge, in rest
+   ink (founder: no second grey vertical; the old doubled 1px pair read
+   as a grey line beside the blue one, with the taps orphaned on the
+   grey) — runs the COMPLETE height of the figure cell, top rule to
+   bottom rule (founder: "still not reaching complete top and bottom"),
+   as a cell-spanning element the sticky figure travels along. The
+   accent fill covers it exactly — same x, same width — so the rail
+   reads as one line, blue as far as the stack has built. Its box
+   re-derives the overlay SVG's rail position in cell space: the tower
+   is centered at width W = min(100% − 40px fig pads, 392px); the
+   rail's left edge sits 8.15/214.133 of W right of the tower's left
+   edge — i.e. 98.917/214.133 of W left of center — and its width is
+   1.85/214.133 of W (StackTower's RAIL_X / RAIL_GAUGE / VIEW_W —
+   change them together), so the track lands exactly under the
+   overlay's fill at any W. */
 .toolchain-root .tcb .v0s-cellrail {
   --v0s-cellrail-w: min(100% - 40px, 392px);
   position: absolute;
   inset-block: 0;
-  left: calc(50% - 0.46194 * var(--v0s-cellrail-w) - 0.5px);
-  width: calc(0.00864 * var(--v0s-cellrail-w) + 1px);
-  border-inline: 1px solid rgba(255, 255, 255, 0.14);
+  left: calc(50% - 0.46194 * var(--v0s-cellrail-w));
+  width: calc(0.00864 * var(--v0s-cellrail-w));
+  background: rgba(255, 255, 255, 0.12);
   pointer-events: none;
 }
 
-/* the live channel between the two strokes: the build's accent, filled
-   to the newest plate's tap (FullStack scales it bottom-up) — a fill
-   between the hairlines, never a stroke on them, so nothing doubles */
+/* the rail's live fill: the build's accent, filled to the newest
+   plate's tap (FullStack scales it bottom-up), covering the track
+   below that point. The ink is the shared opaque token, so the taps'
+   stubs lying on it are pixel-identical — nothing doubles. */
 .toolchain-root .tcb .v0s-rail-fill {
-  fill: color-mix(in srgb, var(--iso-accent) 55%, transparent);
+  fill: var(--v0s-rail-ink);
 }
 
 /* the plate: opaque hull under three face fills, lit from the
@@ -232,13 +247,17 @@
 }
 
 /* the tap: up the rail, a small-radius corner, out to the plate's
-   left vertex — static, like the original's; an active plate lifts
-   OFF its leader. No caption at its end anymore (founder: no words
-   by the diagram — the plates' artwork identifies them). */
+   left vertex — the RAIL'S OWN stroke (founder: same size and ink as
+   the blue rail, actually meeting it): the shared opaque rail ink,
+   and the gauge comes from the markup (strokeWidth = RAIL_GAUGE, in
+   drawing units, so it scales with the figure exactly like the fill —
+   no stroke-width here, or px would override it). The path lives in
+   its slab's SVG, so it rides the plate through lift and build. No
+   caption at its end anymore (founder: no words by the diagram — the
+   plates' artwork identifies them). */
 .toolchain-root .tcb .v0s-leader {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.12);
-  stroke-width: 1;
+  stroke: var(--v0s-rail-ink);
   transition: stroke 0.3s ease;
 }
 
@@ -357,9 +376,10 @@
   stroke: var(--iso-accent);
 }
 
-/* the hot plate's leader takes the accent with it */
+/* the hot plate's leader steps brighter — same system, hotter mix;
+   riding its lifted plate, its long stub keeps it rooted in the fill */
 .toolchain-root .tcb .v0s-leader.is-hot {
-  stroke: color-mix(in srgb, var(--iso-accent) 75%, transparent);
+  stroke: var(--v0s-rail-ink-hot);
 }
 
 /* the hot slab's artwork lifts to full ink; the payload chip takes
@@ -435,18 +455,25 @@
   transition: opacity 0.32s ease;
 }
 
-/* the LAST beat is cut to exactly what the pin needs, no trailing spend
-   (founder: the band ends shortly after beat 04 completes). The runway
-   equation — margin = beat/2 + (50vh − seat) − figure height − ~20 —
-   has no vh term once the seat leaves its 70px floor (the 0.5vh in the
-   seat cancels the read line's), so the need is one CONSTANT: 560px
-   holds ~5px of margin past beat 04's centered read on every viewport
-   taller than ~664px, where 64vh both overspent tall viewports (the
-   old dead area) and UNDERSHOT short ones (at 800vh the pin died 5px
-   before the read). Verify with the pin probe at 1440×900 AND 1280×800
-   whenever the figure or seat moves. */
+/* the LAST beat, bottom-anchored (founder: no black void trailing the
+   band). Centering the copy in a pin-sized window stranded it ~220px
+   above the bottom rule — the very runway the pin feeds on read as a
+   dead end. So the finale inverts the grammar: the copy rides its
+   window's FLOOR, ~60px off the band's rule (32px pad + the 29px tail
+   below the grid), and the window's dead half sits ABOVE the copy,
+   where it is the approach from beat 03. The height is only rhythm
+   and dwell now — with the copy floor-anchored, the read and the pin's
+   end move together, so H buys lock-in dwell 1:1 and nothing else:
+   420px keeps beat 03 → 04 copy spacing at the centered beats' own
+   (~B at 900) and holds ~+240px of pin past beat 04's lock-in (window
+   top crossing the 58% read line). The figure releases with the last
+   copy fully on screen (center ~65% at 900, ~67% at 800) and the two
+   ride out together. Verify with the pin probe at 1440×900 AND
+   1280×800 whenever the figure, seat, or this height moves. */
 .toolchain-root .tcb .v0-stack-beat:last-child {
-  min-height: 560px;
+  min-height: 420px;
+  justify-content: flex-end;
+  padding-bottom: 32px;
 }
 
 /* the spotlight: JS-managed classes, so the static (reduced-motion)

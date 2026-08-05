@@ -362,3 +362,25 @@
     grid-column: auto;
   }
 }
+
+/* the measured column's provenance, one quiet captioned line — the
+   diagram's own mono note retires for it */
+.toolchain-root .v0-dev .lang-sw-note {
+  display: none;
+}
+
+.toolchain-root .v0-dev-measure {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-dev-measure svg {
+  flex: none;
+  color: var(--tc-ink-3);
+}

@@ -262,15 +262,20 @@
   width: 100%;
 }
 
-/* the heading and its supporting line never break — one line each,
-   ellipsized in the rare locale that would overrun */
+/* the heading and its supporting line never break — one line each. The
+   clip lives on the INNER line box (.v0-tw-line): the h3/p themselves
+   must not clip, or the corner marks straddling their edges get eaten. */
 .toolchain-root .v0-tw .tct-app-h,
 .toolchain-root .v0-tw .tct-app-copy {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.toolchain-root .v0-tw .v0-tw-line {
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
-  max-width: 100%;
 }
 
 /* tighter rhythm down the left rail: sub hugs its heading, the ruled
@@ -284,14 +289,14 @@
 }
 
 /* the in-app chrome: the GT mark + localized nav on one hairline row.
-   The brand is the drawn logo alone (founder addendum) — no wordmark
-   text, so the mark carries no type styles, just the image sized to
-   the nav row's cap height. */
+   The mark leads at 21px (founder: bigger) with the brand word
+   rebalanced beside it; the row's vertical padding gives the 6px the
+   mark grew back, so the chrome's height never moves. */
 .toolchain-root .v0-tw .sgdh-app-chrome {
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 9px var(--app-gut);
+  padding: 6px var(--app-gut);
   border-bottom: 1px solid rgba(138, 143, 152, 0.2);
 }
 
@@ -302,8 +307,8 @@
 
 .toolchain-root .v0-tw .sgdh-app-mark img {
   display: block;
-  width: 15px;
-  height: 15px;
+  width: 21px;
+  height: 21px;
   flex: 0 0 auto;
 }
 
@@ -789,11 +794,12 @@
   color: #101010;
 }
 
-/* the brand pair beside the mock's logo: static, never localized */
+/* the brand pair beside the mock's logo: static, never localized —
+   rebalanced a step up beside the 21px mark */
 .toolchain-root .v0-tw .sgdh-app-brandword {
-  margin-left: 6px;
+  margin-left: 7px;
   font-weight: 600;
-  font-size: 12.5px;
+  font-size: 13.5px;
   letter-spacing: -0.01em;
   color: var(--tc-ink);
 }

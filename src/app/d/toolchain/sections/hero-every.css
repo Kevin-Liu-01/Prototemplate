@@ -77,3 +77,21 @@
   unicode-bidi: isolate;
   will-change: transform, opacity;
 }
+
+/* the dither veil: a blue-shifted twin of the live word behind a
+   Bayer-tile alpha mask (the engine sets the tile inline, and seats the
+   span on the word's own flow offsets); it fades in and out around each
+   print — worn, never stepped */
+.toolchain-root .tc-eveil {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-block;
+  white-space: nowrap;
+  unicode-bidi: isolate;
+  pointer-events: none;
+  user-select: none;
+  color: color-mix(in srgb, currentColor 55%, #2f5ce0);
+  opacity: 0;
+  will-change: opacity;
+}

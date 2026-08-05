@@ -72,10 +72,11 @@ const WORDS: Record<string, EveryWord> = {
 
 /* the dissolve dust pool: small glyphs sampled across the same scripts */
 /* ------------------------------------------------------------------
-   THE WORD'S DITHER: 4×4 Bayer tiles at stepped coverages, used as an
-   alpha mask on the printed word — the library's 1-bit voice at em
-   scale. Level 8 = solid (no mask); level 0 = gone. The tile is 4px
-   so the halftone reads at display sizes.
+   THE WORD'S DITHER: one 4×4 Bayer tile at half coverage, worn as an
+   alpha mask by a blue-shifted twin of the word (the veil). The veil
+   FADES in and out — opacity, never stepped coverage — so the
+   halftone moment lingers on the fresh print and again at departure.
+   The tile is 4px so the halftone reads at display sizes.
    ------------------------------------------------------------------ */
 const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 
@@ -90,23 +91,8 @@ const ditherTile = (coverage: number): string => {
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 };
 
-/** levels 0..8 — 0 empty, 8 full */
-const DITHER_TILES = Array.from({ length: 9 }, (_, i) => ditherTile(i / 8));
-
-/** step the word's dither mask to a level; 8 clears the mask entirely */
-const setDither = (el: HTMLElement, level: number) => {
-  const lvl = Math.round(gsap.utils.clamp(0, 8, level));
-  if (lvl >= 8) {
-    el.style.webkitMaskImage = '';
-    el.style.maskImage = '';
-    return;
-  }
-  const tile = DITHER_TILES[lvl] ?? DITHER_TILES[0] ?? '';
-  el.style.webkitMaskImage = tile;
-  el.style.maskImage = tile;
-  el.style.webkitMaskSize = '4px 4px';
-  el.style.maskSize = '4px 4px';
-};
+/** the veil's one tile: every Bayer cell under the half threshold inked */
+const VEIL_TILE = ditherTile(0.5);
 
 const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
 
@@ -320,6 +306,27 @@ export default function HomeHero() {
           em.append(guideL, guideR, dust);
           const dustGlyphs = Array.from(dust.children) as HTMLElement[];
 
+          /* the dither veil: a blue-shifted twin of the word behind the
+             Bayer-tile alpha mask — it fades in and out around each print
+             (worn, never stepped) and rests on the word between the fades */
+          const veil = document.createElement('span');
+          veil.className = 'tc-eveil';
+          veil.textContent = current.text;
+          veil.setAttribute('lang', current.lang);
+          veil.setAttribute('dir', current.rtl ? 'rtl' : 'ltr');
+          veil.setAttribute('aria-hidden', 'true');
+          veil.style.webkitMaskImage = VEIL_TILE;
+          veil.style.maskImage = VEIL_TILE;
+          veil.style.webkitMaskSize = '4px 4px';
+          veil.style.maskSize = '4px 4px';
+          em.append(veil);
+          gsap.set(veil, { autoAlpha: 0 });
+          /* the veil sits on the word's own flow offsets — re-seated before
+             every fade-in, so font loads and resizes can never unseat it */
+          const seatVeil = () => {
+            gsap.set(veil, { left: word.offsetLeft, top: word.offsetTop, scale: 1 });
+          };
+
           /* Sample the incoming word's letterforms the way glyph-field
              does: rasterize at 2x resolution (so CJK counters and
              Devanagari matras survive the alpha threshold), scan a BRICK
@@ -386,14 +393,14 @@ export default function HomeHero() {
             //    per-character spans would disconnect Arabic and reflow the
             //    very width the sentence is standing on — while the dust
             //    carries the scatter
-            /* time to go: the word leaves through the dither — coverage
-               steps 8→0 (a true 1-bit dissolve), the alpha tail rides it */
-            const exitDial = { lvl: 8 };
-            tl.to(exitDial, {
-              lvl: 0,
-              duration: 0.5,
-              ease: 'steps(8)',
-              onUpdate: () => setDither(word, exitDial.lvl),
+            /* time to go: the blue veil fades in over the word, rests a
+               beat — the dither lingers — then word and veil sink together */
+            seatVeil();
+            tl.to(veil, {
+              autoAlpha: 0.85,
+              duration: 0.35,
+              ease: 'power1.out',
+              overwrite: 'auto',
             }, '+=0.02');
             tl.to(word, {
               autoAlpha: 0,
@@ -401,7 +408,14 @@ export default function HomeHero() {
               transformOrigin: '50% 60%',
               duration: 0.5,
               ease: 'power2.in',
-              onComplete: () => setDither(word, 8),
+            }, '+=0.3');
+            tl.to(veil, {
+              autoAlpha: 0,
+              scale: 0.98,
+              transformOrigin: '50% 60%',
+              duration: 0.5,
+              ease: 'power2.in',
+              overwrite: 'auto',
             }, '<');
             /* the cloud separates SYMMETRICALLY about the word's centre: each
                glyph takes an evenly-spread angle on a jittered ring, so the
@@ -509,18 +523,22 @@ export default function HomeHero() {
                     immediateRender: true,
                     onComplete: () => {
                       gsap.set(word, { clearProps: 'clipPath' });
-                      /* the print settles through its own dither: coverage
-                         dips coarse and resolves solid — the halftone
-                         moment of a fresh print */
-                      const settleDial = { lvl: 5 };
-                      setDither(word, settleDial.lvl);
-                      gsap.to(settleDial, {
-                        lvl: 8,
-                        duration: 0.5,
-                        ease: 'steps(3)',
-                        onUpdate: () => setDither(word, settleDial.lvl),
-                        onComplete: () => setDither(word, 8),
-                      });
+                      /* the fresh print wears the veil: the blue halftone
+                         fades in over the word, rests a beat, and breathes
+                         away — the halftone moment of a fresh print */
+                      veil.textContent = next.text;
+                      veil.setAttribute('lang', next.lang);
+                      veil.setAttribute('dir', next.rtl ? 'rtl' : 'ltr');
+                      seatVeil();
+                      gsap
+                        .timeline()
+                        .to(veil, {
+                          autoAlpha: 0.85,
+                          duration: 0.3,
+                          ease: 'power1.out',
+                          overwrite: 'auto',
+                        })
+                        .to(veil, { autoAlpha: 0, duration: 0.8, ease: 'power1.inOut' }, '+=0.35');
                     },
                   }
                 );

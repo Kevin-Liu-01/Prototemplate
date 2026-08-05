@@ -511,7 +511,9 @@ const BELT_IDLE = 6000;
    are one number, so the two ways of opening the pane agree). */
 const CUT_MIN = 26;
 
-/** A component's inspector mark: the quiet exclamation at its top-right.
+/** A component's inspector mark: the quiet exclamation pinned to its
+    component's top-right CORNER — one fixed inset, centred on the corner
+    point, the same on every component (founder: no floating offsets).
     Hover/focus outlines the component and raises a chip naming the payload
     key its string ships under. CLICK (or Enter/Space — it is a real
     button) pins it: the seam rolls open and the matching JSON row lifts;
@@ -555,6 +557,30 @@ function InsMark({
         </span>
       ) : null}
     </>
+  );
+}
+
+/** A slot's reservation ladder (founder: "figure out the maximum word
+    length and make that the default so we don't have layout shifts and
+    have the graph rocking back and forth"). Every localized slot in the
+    mock's left column renders the WHOLE roster's strings as zero-height,
+    invisible block lines inside the slot itself, so the slot's measure is
+    the max across all fifteen locales BY CONSTRUCTION — the browser is
+    the measuring probe, in the slot's own inherited font, re-measured
+    for free on font arrival, zoom and resize. The left column's total
+    width is therefore a constant, the chart card owns every remaining
+    pixel, and no locale swap moves a box. The ladder is a SIBLING of the
+    rewrite node, never its child — the typing engine writes textContent,
+    which would erase it. Stat cells pass a class (`is-dt` / `is-dd`)
+    because their ladders sit at cell level and must mirror the dt/dd
+    fonts instead of inheriting them. */
+function Ghost({ read, className }: { read: (loc: PreviewLoc) => string; className?: string }) {
+  return (
+    <span className={className ? `v0-tw-ghost ${className}` : 'v0-tw-ghost'} aria-hidden>
+      {BELT_LOCS.map((loc) => (
+        <i key={loc}>{read(loc)}</i>
+      ))}
+    </span>
   );
 }
 
@@ -762,6 +788,31 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
   const dragged = useRef(false);
   /* the drag hint's dismissal must re-render — the ref can't drive it */
   const [hinted, setHinted] = useState(false);
+
+  /* ---- the seam's hit slab vs the inspector marks ----
+     The seam's draggable target is far wider than its drawn line
+     (founder: a real hitbox), so its fringe would swallow any mark that
+     rests near the cut. The marks therefore ride ABOVE the slab (z4 in
+     translate-window.css) — but that also lifts them above the payload
+     sweep, which used to COVER swept marks by paint order alone. This
+     pass restores that contract by geometry: on every cut write, marks
+     whose centre sits right of the cut are filed data-swept (hidden and
+     pointer-inert — indistinguishable from being covered), and marks on
+     the visible render win their own clicks inside the slab's fringe. */
+  const reconcileMarks = () => {
+    const el = app.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0) return;
+    const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
+    const cutX = r.left + (r.width * (Number.isFinite(now) ? now : 70)) / 100;
+    for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
+      const mr = m.getBoundingClientRect();
+      if (mr.left + mr.width / 2 > cutX) m.setAttribute('data-swept', '');
+      else m.removeAttribute('data-swept');
+    }
+  };
+
   const setCut = (pct: number) => {
     const el = app.current;
     if (!el) return;
@@ -770,6 +821,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     const next = Math.min(100, Math.max(CUT_MIN, pct));
     el.style.setProperty('--seam-cut', `${next}%`);
     el.querySelector('.tc-seam')?.setAttribute('aria-valuenow', String(Math.round(next)));
+    reconcileMarks();
   };
 
   useGSAP(
@@ -1192,6 +1244,19 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     { scope: root, dependencies: [pinned] }
   );
 
+  /* marks also re-file on the geometry changes no cut writer sees:
+     viewport resizes and late font arrivals move the MARKS, not the dial */
+  useGSAP(
+    () => {
+      reconcileMarks();
+      const onResize = () => reconcileMarks();
+      window.addEventListener('resize', onResize);
+      void document.fonts.ready.then(reconcileMarks);
+      return () => window.removeEventListener('resize', onResize);
+    },
+    { scope: root }
+  );
+
   return (
     <div className='tct-win v0-tw' data-hero-in ref={root}>
       {/* ONE bar row (founder): no title — the strip ZONE fills the bar
@@ -1395,20 +1460,23 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                 translate-window.css). */}
             <div className='sgdh-app-chrome'>
               <span className='sgdh-app-mark'>
-                <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={15} height={15} />
+                <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={21} height={21} />
                 <b className='sgdh-app-brandword'>Translate</b>
               </span>
               <nav className='sgdh-app-nav' aria-label='Product navigation'>
                 <span className='sgdh-app-navi is-on sgdh-ins' data-ins-on={ins?.k === 'nav0' || undefined} {...insBox('nav0')}>
                   <b data-rw='nav0'>{PREVIEWS[ploc].nav[0]}</b>
+                  <Ghost read={(l) => PREVIEWS[l].nav[0]} />
                   <InsMark {...insProps('nav0')} />
                 </span>
                 <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav1' || undefined} {...insBox('nav1')}>
                   <b data-rw='nav1'>{PREVIEWS[ploc].nav[1]}</b>
+                  <Ghost read={(l) => PREVIEWS[l].nav[1]} />
                   <InsMark {...insProps('nav1')} />
                 </span>
                 <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav2' || undefined} {...insBox('nav2')}>
                   <b data-rw='nav2'>{PREVIEWS[ploc].nav[2]}</b>
+                  <Ghost read={(l) => PREVIEWS[l].nav[2]} />
                   <InsMark {...insProps('nav2')} />
                 </span>
               </nav>
@@ -1422,37 +1490,55 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
             <div className='tct-app-main'>
               <div className='sgdh-app-cols'>
                 <div className='sgdh-app-stack'>
+                  {/* the one-line clip moved INSIDE (.v0-tw-line): the h3/p
+                      boxes themselves must not clip — their corner marks
+                      straddle the box edge, and overflow there ate them */}
                   <h3 className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
-                    <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
+                    <span className='v0-tw-line'>
+                      <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
+                    </span>
+                    <Ghost read={(l) => PREVIEWS[l].heading} />
                     <InsMark {...insProps('heading')} />
                   </h3>
                   <p className='tct-app-copy sgdh-ins' data-ins-on={ins?.k === 'sub' || undefined} {...insBox('sub')}>
-                    <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
+                    <span className='v0-tw-line'>
+                      <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
+                    </span>
+                    <Ghost read={(l) => PREVIEWS[l].sub} />
                     <InsMark {...insProps('sub')} />
                   </p>
 
                   {/* the stats row: labels are payload strings, values are
-                      live Intl output — currency, count, date */}
+                      live Intl output — currency, count, date. Each cell
+                      carries a label ladder AND a value ladder, so the
+                      figures swap freely inside a cell that never moves. */}
                   <dl className='sgdh-app-stats'>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'revenue' || undefined} {...insBox('revenue')}>
                       <dt data-rw='revenue'>{PREVIEWS[ploc].revenue}</dt>
                       <dd data-rwf>{fmtRevenue(ploc)}</dd>
+                      <Ghost className='is-dt' read={(l) => PREVIEWS[l].revenue} />
+                      <Ghost className='is-dd' read={fmtRevenue} />
                       <InsMark {...insProps('revenue')} />
                     </div>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'invoices' || undefined} {...insBox('invoices')}>
                       <dt data-rw='invoices'>{PREVIEWS[ploc].invoices}</dt>
                       <dd data-rwf>{fmtInvoices(ploc)}</dd>
+                      <Ghost className='is-dt' read={(l) => PREVIEWS[l].invoices} />
+                      <Ghost className='is-dd' read={fmtInvoices} />
                       <InsMark {...insProps('invoices')} />
                     </div>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'payout' || undefined} {...insBox('payout')}>
                       <dt data-rw='payout'>{PREVIEWS[ploc].payout}</dt>
                       <dd data-rwf>{fmtPayout(ploc)}</dd>
+                      <Ghost className='is-dt' read={(l) => PREVIEWS[l].payout} />
+                      <Ghost className='is-dd' read={fmtPayout} />
                       <InsMark {...insProps('payout')} />
                     </div>
                   </dl>
 
                   <span className='tct-app-btn sgdh-ins' data-ins-on={ins?.k === 'button' || undefined} {...insBox('button')}>
                     <span data-rw='button'>{PREVIEWS[ploc].button}</span>
+                    <Ghost read={(l) => PREVIEWS[l].button} />
                     <InsMark {...insProps('button')} />
                   </span>
                 </div>
@@ -1507,9 +1593,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
               }}
               /* the seam's own drag/keys write the raw 0–100 dial; any
                  cut past the block's margin re-clamps to the floor the
-                 same frame it lands */
+                 same frame it lands, and every legal cut re-files the
+                 marks against the moved boundary */
               onCutChange={(pct) => {
                 if (pct < CUT_MIN) setCut(CUT_MIN);
+                else reconcileMarks();
               }}
             />
           </div>

@@ -212,6 +212,12 @@
   font-size: clamp(19px, 2vw, 28px);
 }
 
+/* The context band's display line speaks at the section-head scale —
+   the same size as the Locadex head beside it in the flow. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ctx .tcb-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+}
+
 /* Headers sit at the TOP of their bands: the section-head altitude goes,
    light heads and dark band columns alike (founder note on the full-stack
    band's dead air). */

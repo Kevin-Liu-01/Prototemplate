@@ -442,8 +442,11 @@ export default function V0FullStack() {
           </div>
 
           {/* The copy rail's cell: four beats read bottom-up — Code,
-              Context, Translations, Agents — separated by rhythm alone,
-              each block's copy centered in its scroll window. */}
+              Context, Translations, Agents — separated by rhythm alone.
+              Beats 1–3 center their copy in their scroll windows; the
+              LAST beat rides its window's floor (fullstack.css), so the
+              band ends a breath after the finale instead of trailing
+              the pin's runway as a black void. */}
           <div className='tcb-cell v0-stack-cell-rail' data-cell>
             <ol className='v0-stack-rail'>
               {BEATS.map((beat, i) => {

@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Braces,
+  Ruler,
   CalendarDays,
   Coins,
   Cookie,
@@ -484,6 +485,10 @@ export default function V0Developer({ heading = 'Built for the world’s develop
               title='The same sentence measured in English, German, Japanese, Arabic and Hebrew'
             />
           </div>
+          <p className='v0-dev-measure'>
+            <Ruler aria-hidden size={11} strokeWidth={1.8} />
+            Widths measured at render
+          </p>
         </BentoCell>
 
         <BentoCell

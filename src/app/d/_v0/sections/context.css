@@ -29,10 +29,14 @@
 .toolchain-root .v0-ctx .tcb-in {
   padding-bottom: 0;
   padding-inline: 0;
-  /* the band closes on the review row, not on dead air (founder cut):
-     the sheet's default clamp(56px, 7vw, 88px) tail shrinks to one
-     breath, so the row's bottom rule sits ~33px above the band's own */
-  padding-block-end: 32px;
+  /* the band closes on the review row, not on dead air (founder cut,
+     twice): the sheet's default clamp(56px, 7vw, 88px) tail first shrank
+     to 32px, but that breath STACKED on the mounted workspace's own 30px
+     bottom pad (the .tcr override below) into a ~63px void band under
+     'agent · locadex'. The tail is one half of that ledger — 14 here +
+     18 on the .tcr + the grid's 1px = ~33px from the foot's box to the
+     band's bottom rule; trim BOTH or neither. */
+  padding-block-end: 14px;
 }
 
 .toolchain-root .v0-ctx .tcb-grid {
@@ -304,9 +308,12 @@
 }
 
 /* The mounted section trades its page-scale padding for the cell's, and
-   never draws the tc-sec bottom rule the grid seam already provides. */
+   never draws the tc-sec bottom rule the grid seam already provides. The
+   18px bottom is the other half of the band's closing ledger (see the
+   .tcb-in tail above): the foot bar's own 12px inset already breathes,
+   so the cell adds only a card-step before the band tail takes over. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr {
-  padding: 14px 24px 30px;
+  padding: 14px 24px 18px;
   border-bottom: 0;
 }
 
