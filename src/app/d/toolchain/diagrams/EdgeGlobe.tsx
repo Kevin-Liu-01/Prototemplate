@@ -38,19 +38,23 @@ gsap.registerPlugin(useGSAP);
  * identify, never decorate: a server on each PoP label, a user on the
  * origin, and a file on the payload that travels the route.
  *
- * The serving pair — fra and the user — speak the route's accent: both
- * label lockups, both leaders, and both markers ink in the same blue the
- * route already carries (founder), so the conversation reads as one
- * highlighted circuit and the other four PoPs stay quiet.
+ * At rest the serving pair — fra and the user — wear the drawing's normal
+ * quiet ink, indistinguishable from the other callouts (founder revision:
+ * no persistent blue on labels or leaders; the route arc alone holds the
+ * accent). The blue belongs to the arrivals: each callout ships an
+ * invisible accent copy of its lockup and leader (the same overlay device
+ * as the dot and rings — elements that exist only as motion), and the
+ * timeline breathes the copy in and out at the landing beat, so the whole
+ * lockup flashes to the accent and settles back as one gesture.
  *
  * Motion is one quiet loop: a request dot rides the route out, a ring
  * lands at fra, and the payload chip rides back. Each landing answers with
- * a pulse — the receiving end's lockup, leader, and marker flare briefly
- * and settle, and the user's arrival echoes fra's ring device — scheduled
- * on the same timeline at the landing beats, never on a parallel clock.
+ * its blue flash — fra's as the request dot arrives, the user's as the
+ * payload chip settles, echoed by a ring at the origin dot — scheduled on
+ * the same timeline at the landing beats, never on a parallel clock.
  * Under reduced motion the chip rests mid-route, the dot, rings, and
- * pulses are removed, and the static accent highlight carries the still
- * frame's whole argument.
+ * flash overlays are removed, and the still frame rests entirely in the
+ * quiet ink.
  */
 
 /* ---------------- projection ---------------- */
@@ -280,10 +284,8 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
   const dotRef = useRef<SVGCircleElement>(null);
   const ringRef = useRef<SVGCircleElement>(null);
   const chipRef = useRef<SVGGElement>(null);
-  const fraCalloutRef = useRef<SVGGElement>(null);
-  const fraNodeRef = useRef<SVGGElement>(null);
-  const userCalloutRef = useRef<SVGGElement>(null);
-  const userDotRef = useRef<SVGCircleElement>(null);
+  const fraFlashRef = useRef<SVGGElement>(null);
+  const userFlashRef = useRef<SVGGElement>(null);
   const userRingRef = useRef<SVGCircleElement>(null);
 
   useGSAP(
@@ -327,22 +329,32 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         .to(res, { t: 0, duration: 1.15, ease: 'power1.inOut', onUpdate: () => place(chipEl, res.t) }, 1.2)
         .to(chipEl, { autoAlpha: 0, duration: 0.35 }, 2.5);
 
-      /* Arrival pulses (founder): the receiving end flares when its
-         document lands — fra's lockup, leader, and node as the request
-         dot arrives (1.05, the same beat its ring fires on), the user's
-         as the payload chip settles (2.35, where the return tween ends).
-         Positioned on the one timeline above, so the pulses can never
-         drift from the motion they answer. A brightness flare keeps the
-         hairlines crisp — no gauge change, no glow — and the user's
-         landing echoes fra's ring device at the origin dot. */
-      const fraLive = [fraCalloutRef.current, fraNodeRef.current].filter((el) => el !== null);
-      const userLive = [userCalloutRef.current, userDotRef.current].filter((el) => el !== null);
+      /* Arrival flashes (founder revision): the receiving end's lockup and
+         leader flash to the accent and settle back to the quiet ink — fra's
+         as the request dot arrives (1.05, the same beat its ring fires on),
+         the user's as the payload chip settles (2.35, where the return
+         tween ends). The flash is the accent overlay copy breathing in and
+         out, so one alpha tween moves the whole lockup coherently, and it
+         is positioned on the one timeline above so it can never drift from
+         the motion it answers. */
+      const fraFlashEl = fraFlashRef.current;
+      const userFlashEl = userFlashRef.current;
       const userRingEl = userRingRef.current;
 
-      tl.fromTo(fraLive, { filter: 'brightness(1)' }, { filter: 'brightness(1.7)', duration: 0.15, ease: 'power2.out' }, 1.05)
-        .to(fraLive, { filter: 'brightness(1)', duration: 0.45, ease: 'power2.inOut' }, 1.2)
-        .fromTo(userLive, { filter: 'brightness(1)' }, { filter: 'brightness(1.7)', duration: 0.15, ease: 'power2.out' }, 2.35)
-        .to(userLive, { filter: 'brightness(1)', duration: 0.45, ease: 'power2.inOut' }, 2.5);
+      if (fraFlashEl) {
+        tl.to(fraFlashEl, { autoAlpha: 1, duration: 0.15, ease: 'power2.out' }, 1.05).to(
+          fraFlashEl,
+          { autoAlpha: 0, duration: 0.45, ease: 'power2.inOut' },
+          1.2,
+        );
+      }
+      if (userFlashEl) {
+        tl.to(userFlashEl, { autoAlpha: 1, duration: 0.15, ease: 'power2.out' }, 2.35).to(
+          userFlashEl,
+          { autoAlpha: 0, duration: 0.45, ease: 'power2.inOut' },
+          2.5,
+        );
+      }
       if (userRingEl) {
         /* Without immediateRender:false the fromTo paints its start state
            at cycle start, and the user dot wears a phantom ring for the

@@ -67,34 +67,49 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* the three enterprise commitments, ruled like the dark band grid */
+/* the three deployment pillars as artifact cells: hairline-framed on the
+   band's own ink, each closing on a mono file line under its own rule */
 .singularity-root .sge-feats {
   margin-top: clamp(26px, 3.2vw, 40px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid rgba(138, 143, 152, 0.28);
+  gap: 12px;
 }
 
-.singularity-root .sge-feats > div {
-  padding: 20px 22px 24px 0;
+.singularity-root .sge-feat {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(138, 143, 152, 0.32);
+  background: rgba(7, 7, 7, 0.55);
+  background-clip: padding-box;
+  padding: 18px 20px 0;
 }
 
-.singularity-root .sge-feats > div + div {
-  padding-left: 22px;
-  border-left: 1px solid rgba(138, 143, 152, 0.18);
-}
-
-.singularity-root .sge-feats h3 {
+.singularity-root .sge-feat h3 {
   font-size: 14.5px;
   letter-spacing: -0.01em;
   color: #ffffff;
 }
 
-.singularity-root .sge-feats p {
+.singularity-root .sge-feat p {
   margin-top: 8px;
   font-size: 13px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.56);
+}
+
+.singularity-root .sge-feat > p {
+  margin-bottom: 16px;
+}
+
+.singularity-root .sge-feat-foot {
+  margin-top: auto;
+  padding: 11px 0 13px;
+  border-top: 1px solid rgba(138, 143, 152, 0.2);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.44);
 }
 
 /* ---- the contact sheet: the form on ruled ink paper, the rain
@@ -475,12 +490,16 @@
   text-align: center;
 }
 
-.singularity-root .sge-perm-who {
+/* the who column stays left-aligned even in the head row — the head-row
+   center rule above is a higher-specificity span rule, so the head-scoped
+   compound outguns it without !important */
+.singularity-root .sge-perm-who,
+.singularity-root .sge-perm-row.is-head > .sge-perm-who {
   display: flex;
   flex-direction: column;
   gap: 1px;
   padding: 9px 14px;
-  text-align: left !important;
+  text-align: left;
 }
 
 .singularity-root .sge-perm-who b {
@@ -840,34 +859,97 @@
 }
 
 /* ---------------------------------------------------------- */
-/* 3 · THE RECORD — real quotes only, over the trusted-by band */
+/* 3 · THE RECORD — the expansion ledger + the two real quotes */
 /* ---------------------------------------------------------- */
 
-.singularity-root .sge-record {
-  padding: clamp(56px, 6.6vw, 96px) var(--tc-gut) clamp(56px, 6.6vw, 92px);
+/* the ruled expansion ledger: five engagements, verbatim */
+.singularity-root .sge-stories {
+  margin: 0 var(--tc-gut) clamp(40px, 5vw, 64px);
 }
 
-.singularity-root .sge-kicker {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--tc-ink-3);
+.singularity-root .sge-stories-head {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) auto;
+  gap: 22px;
+  padding-bottom: 10px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--tc-ink-4);
 }
 
-.singularity-root .sge-record-head {
-  margin-bottom: clamp(32px, 4vw, 54px);
+.singularity-root .sge-srow {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+  padding: 17px 0;
+  border-top: 1px solid var(--tc-hair);
 }
 
-.singularity-root .sge-record-head h2 {
-  margin-top: 10px;
-  font-family: var(--tc-disp);
-  font-size: clamp(28px, 3.4vw, 46px);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.06;
+.singularity-root .sge-srow p {
+  font-size: 14.5px;
+  line-height: 1.5;
   color: var(--tc-ink);
+}
+
+.singularity-root .sge-story-axis {
+  justify-self: end;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+/* the real client marks, theme-matched */
+.singularity-root .sge-story-wm {
+  display: block;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: grayscale(1);
+  opacity: 0.85;
+}
+
+.singularity-root .sge-story-wm.is-cursor { height: 17px; aspect-ratio: 739 / 186; background-image: url('/logos/cursor.light.svg'); }
+.singularity-root .sge-story-wm.is-ramp { height: 15px; aspect-ratio: 643.93 / 170.94; background-image: url('/logos/ramp.light.svg'); }
+.singularity-root .sge-story-wm.is-profound { height: 14px; aspect-ratio: 166 / 28; background-image: url('/logos/profound.light.svg'); }
+.singularity-root .sge-story-wm.is-partiful { height: 16px; aspect-ratio: 204 / 46; background-image: url('/logos/partiful.light.svg'); }
+.singularity-root .sge-story-wm.is-mintlify { height: 15px; aspect-ratio: 2191 / 484; background-image: url('/logos/mintlify.light.svg'); }
+
+[data-theme='dark'] .singularity-root .sge-story-wm.is-cursor { background-image: url('/logos/cursor.dark.svg'); }
+[data-theme='dark'] .singularity-root .sge-story-wm.is-ramp { background-image: url('/logos/ramp.dark.svg'); }
+[data-theme='dark'] .singularity-root .sge-story-wm.is-profound { background-image: url('/logos/profound.dark.svg'); }
+[data-theme='dark'] .singularity-root .sge-story-wm.is-partiful { background-image: url('/logos/partiful.dark.svg'); }
+[data-theme='dark'] .singularity-root .sge-story-wm.is-mintlify { background-image: url('/logos/mintlify.dark.svg'); }
+
+.singularity-root .sge-stories-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .sge-stories-foot a {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--tc-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* the two statements share the record's ruled row */
+.singularity-root .sge-plates-duo {
+  padding: 0 var(--tc-gut) clamp(48px, 5.6vw, 80px);
 }
 
 .singularity-root .sge-plate {
@@ -959,16 +1041,6 @@
 @media (max-width: 880px) {
   .singularity-root .sge-feats {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .singularity-root .sge-feats > div {
-    padding: 16px 0 18px;
-  }
-
-  .singularity-root .sge-feats > div + div {
-    padding-left: 0;
-    border-left: 0;
-    border-top: 1px solid rgba(138, 143, 152, 0.18);
   }
 
   /* the sheet stacks: form above, the rain condensing below */

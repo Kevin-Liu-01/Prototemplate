@@ -144,14 +144,16 @@
 /* The sub leads with the drawn mark instead of the words — inline,
    theme-paired. The logo PNGs are 1198px squares whose glyph fills only
    the middle 63% of the height (18.4% transparent above and below), so
-   the img box oversizes by 1198/756 and seats 0.234em below the
-   baseline: the VISIBLE mark lands 0.8em tall with its bottom on the
-   line — cap-plus, per the founder's zoom. */
+   the img box oversizes by 1198/756 and seats 0.21em below the
+   baseline: the VISIBLE mark lands 0.72em tall with its bottom on the
+   line — the text face's own cap height, exactly the GtLogoText token's
+   measure (founder round-trip: the old cap-plus 0.8em read a little
+   taller than the line). */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark {
   display: inline-block;
-  height: 1.27em;
+  height: 1.14em;
   width: auto;
-  vertical-align: -0.24em;
+  vertical-align: -0.21em;
 }
 
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark.is-dark {

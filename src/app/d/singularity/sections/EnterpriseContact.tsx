@@ -10,19 +10,24 @@ import { createGlyphField, SCRIPTS, type GlyphFieldHandle } from '@/lib/glyph-fi
 
 gsap.registerPlugin(useGSAP);
 
-/* The enterprise facts, straight off the old landing's contact page. */
-const FEATURES: readonly { title: string; line: string }[] = [
+/* The three deployment pillars, verbatim from the live enterprise page.
+   Each cell closes on a mono file line restating the pillar in the
+   sheet's own ledger voice — drawn from the pillar's own words. */
+const FEATURES: readonly { title: string; line: string; foot: string }[] = [
   {
     title: 'Enterprise platform',
     line: 'Share translation context, glossaries, and custom prompts across every project and content source in your company.',
+    foot: 'context · glossaries · prompts',
   },
   {
     title: 'Customized workflows',
     line: 'Reliable, scalable translation workflows across any file format or framework.',
+    foot: 'any format · any framework',
   },
   {
     title: 'Forward-deployed setup',
     line: 'Dedicated hours with forward-deployed engineers to bring localization to production.',
+    foot: 'dedicated hours · to production',
   },
 ] as const;
 
@@ -124,19 +129,21 @@ export default function EnterpriseContact() {
       <GlyphRain className='sge-bay-rain' />
       <div className='sge-bay-in'>
         <div className='sge-head'>
-          <h2 data-reveal>Bring your product to every market.</h2>
+          <h2 data-reveal>Talk to our team about enterprise deployment.</h2>
           <p data-reveal>
             Talk to an engineer — not a sales deck. We&rsquo;ll walk your stack, your locales, and
             your review process, and leave you with a working plan.
           </p>
         </div>
 
+        {/* the three deployment pillars as artifact cells on the band */}
         <div className='sge-feats' data-reveal>
           {FEATURES.map((feature) => (
-            <div key={feature.title}>
+            <article className='sge-feat' key={feature.title}>
               <h3>{feature.title}</h3>
               <p>{feature.line}</p>
-            </div>
+              <span className='sge-feat-foot'>{feature.foot}</span>
+            </article>
           ))}
         </div>
 
@@ -166,11 +173,11 @@ export default function EnterpriseContact() {
                   ) : null}
                   <div className='sge-row'>
                     <label className='sge-fieldbox'>
-                      <span>Full name</span>
+                      <span>Full Name</span>
                       <input name='name' type='text' autoComplete='name' required placeholder='Your name' />
                     </label>
                     <label className='sge-fieldbox'>
-                      <span>Company email</span>
+                      <span>Company Email</span>
                       <input
                         name='email'
                         type='email'
@@ -181,7 +188,7 @@ export default function EnterpriseContact() {
                     </label>
                   </div>
                   <label className='sge-fieldbox'>
-                    <span>Company name</span>
+                    <span>Company Name</span>
                     <input
                       name='companyName'
                       type='text'
@@ -220,7 +227,7 @@ export default function EnterpriseContact() {
                       .
                     </p>
                     <button className='sge-submit' type='submit' disabled={submit === 'sending'}>
-                      {submit === 'sending' ? 'Sending…' : 'Request a demo'}
+                      {submit === 'sending' ? 'Sending…' : 'Continue'}
                     </button>
                   </div>
                 </form>

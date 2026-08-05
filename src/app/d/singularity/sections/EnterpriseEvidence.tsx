@@ -103,8 +103,8 @@ export default function EnterpriseEvidence() {
       <div className='tc-row is-even'>
         <div className='tc-cell is-framed' data-reveal>
           <div className='tc-card'>
-            <h3>Compliance, on file</h3>
-            <p>The certificates security review asks for first — the full file is public.</p>
+            <h3>Enterprise grade, on file</h3>
+            <p>Built for teams with real launch, security, and operational requirements.</p>
             <div className='sge-certs'>
               {CERTS.map((cert) => (
                 <article className='sge-cert' key={cert.file}>
