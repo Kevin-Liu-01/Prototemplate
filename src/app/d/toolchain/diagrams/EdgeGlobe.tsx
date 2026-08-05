@@ -167,11 +167,13 @@ type Pop = {
 };
 
 /* The left rail reads iad then fra — the home PoP labels on its own side
-   of the sphere (founder note), one row step below iad, its elbow just
-   clear of the limb (left edge at y=82 is x≈89.2). The right rail keeps
-   nrt/sin/syd top-to-bottom, still in latency order. */
+   of the sphere (founder note), well below iad, its elbow at (82, 96) —
+   still outside the limb (x≈83.0 at that height; the sphere widens fast
+   on the way down, which is what pins the elbow this far left) and low
+   enough that the leader clears iad's node dot on the way out. The right
+   rail keeps nrt/sin/syd top-to-bottom, still in latency order. */
 const POPS: readonly Pop[] = [
-  { code: 'fra', ms: 12, lat: 40, lon: -18, elbow: [88, 82], tickTo: 76, iconX: 3, textX: 15, home: true },
+  { code: 'fra', ms: 12, lat: 40, lon: -18, elbow: [82, 96], tickTo: 76, iconX: 3, textX: 15, home: true },
   { code: 'iad', ms: 21, lat: 40, lon: -54, elbow: [88, 52], tickTo: 76, iconX: 3, textX: 15 },
   { code: 'nrt', ms: 34, lat: 40, lon: 54, elbow: [272, 78], tickTo: 284, iconX: 288, textX: 300 },
   { code: 'sin', ms: 41, lat: 0, lon: 54, elbow: [272, 140], tickTo: 284, iconX: 288, textX: 300 },

@@ -346,8 +346,8 @@ const ORBIT_D = CAP_PLATE.top;
    Founder addendum: "make locadex on teh top left side in a raised square
    as well, and then a bunch of diffs being generated as we scroll on it."
    The slat device above, seated across the capstone face CLEAR of the
-   mark's chip (rows at plan x ≥ 3, signs at ≥ −3.2, vs the chip's
-   ≤ −8), del hunk over add hunk, ragged. FullStack SCRUBS their reveal
+   mark's chip (rows at plan x ≥ 12, signs at ≥ 5.8, vs the chip's
+   ≤ 4), del hunk over add hunk, ragged. FullStack SCRUBS their reveal
    to scroll — beat 04's lock-in through the band's rest view — so the
    hunk grows as the reader travels the dwell and regenerates in reverse
    on the way back. Every row is SIGNED in its margin (founder round: the
@@ -363,10 +363,11 @@ const CAP_DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
   { w: 20, tone: 'add' },
   { w: 15, tone: 'add' },
 ];
-const CAP_DIFF_X = 3;
+const CAP_DIFF_X = 12;
 const CAP_DIFF_Y0 = -24;
 /** The sign column's center, the code hunk's old rhythm kept: 4.5 plan
-    units left of the rows' start, 2.8 clear of both neighbours. */
+    units left of the rows' start, clear of the (larger, right-shifted)
+    chip's edge at plan x = 4. */
 const CAP_SIGN_CX = CAP_DIFF_X - 4.5;
 
 type GlyphChipProps = {
@@ -397,17 +398,18 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
     the tower's own GlyphChip extrusion, with the mask-mark lying in the
     CHIP'S top face and taking the surface's ink. The asset's 500²
     viewBox pads its glyph — the drawn form spans only 199×222 of it —
-    so the seat is sized from the GLYPH: a 24-plan-unit visible mark
-    inside the 32-unit chip (4-unit margins; founder round: the mark
-    grows — chip and glyph stepped up together from 26/18, the chip's
-    near corner still 5 plan units clear of the capstone's edge), which
-    the padding inflates to a ~60-unit image box the mask crops back.
-    The LDX cover below and everything the shimmer derives from it
-    follow this seat; move or resize the chip and they recompute. */
-const CAP_CHIP_X = -40;
-const CAP_CHIP_Y = -16;
-const CAP_CHIP_SIZE = 32;
-const MARK_GLYPH_W = 24;
+    so the seat is sized from the GLYPH: a 28-plan-unit visible mark
+    inside the 36-unit chip (4-unit margins; founder rounds: the mark
+    grows again — 26/18 → 32/24 → 36/28 — and the WHOLE assembly steps
+    RIGHT, the chip's near corner now 13 plan units clear of the
+    capstone's left edge instead of kissing it), which the padding
+    inflates to a ~70-unit image box the mask crops back. The LDX cover
+    below and everything the shimmer derives from it follow this seat;
+    move or resize the chip and they recompute. */
+const CAP_CHIP_X = -32;
+const CAP_CHIP_Y = -18;
+const CAP_CHIP_SIZE = 36;
+const MARK_GLYPH_W = 28;
 const MARK_HALF = (MARK_GLYPH_W * (500 / 199)) / 2;
 /** The mark lies in the chip's top face, anchored at the chip's center. */
 const MARK_PLANE = plane(THICK + CHIP_H, CAP_CHIP_X + CAP_CHIP_SIZE / 2, CAP_CHIP_Y + CAP_CHIP_SIZE / 2);
@@ -484,15 +486,16 @@ const SHINE_TIERS: readonly { cover: number; width: number }[] = [
   { cover: 1, width: 36 },
 ];
 
-/** The masked rects' screen-space cover: the 24-unit glyph on the chip's
-    top face projects to x [-42.8, 1.2], y [-32.4, -7.0] (center
-    (-20.8, -19.7)); these bounds pad that, and the mask crops the rest
-    back to the mark. The shimmer's travel derives from these below, so
-    it breathes with the mark's seat and size. */
-const LDX_X = -46;
-const LDX_Y = -35;
-const LDX_W = 51;
-const LDX_H = 31;
+/** The masked rects' screen-space cover: the 28-unit glyph on the chip's
+    top face (chip center plan (-14, 0), glyph v-half 15.6 from the
+    asset's 199×222 form) projects to x [-37.8, 13.5], y [-29.5, 0.1];
+    these bounds pad that, and the mask crops the rest back to the mark.
+    The shimmer's travel derives from these below, so it breathes with
+    the mark's seat and size. */
+const LDX_X = -41;
+const LDX_Y = -33;
+const LDX_W = 58;
+const LDX_H = 37;
 
 /* The sweep's endpoints, DERIVED from the masked cover and the band's
    own rotated geometry (founder round 10: "make it cross the whole

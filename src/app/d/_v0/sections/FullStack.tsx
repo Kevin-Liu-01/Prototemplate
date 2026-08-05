@@ -426,6 +426,12 @@ export default function V0FullStack() {
                 overwrite: 'auto',
               });
             } else {
+              /* a quick down-and-up can leave the fade-IN still PENDING
+                 (its 0.45s delay hasn't elapsed): overwrite only kills
+                 tweens that have started, so the delayed riser would
+                 resurrect the sheet after this fade-out lands — kill
+                 everything scheduled on the sheet first */
+              gsap.killTweensOf(scan);
               gsap.to(scan, {
                 autoAlpha: 0,
                 duration: 0.22,

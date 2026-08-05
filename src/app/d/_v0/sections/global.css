@@ -61,11 +61,12 @@
 }
 
 /* The one ink the field spends: the night plate's white at atmosphere
-   opacity (the founder's ~0.05–0.09 window; the plate is dark in both
-   themes, so the ink is the panel's white, not the page's). Density does
-   the fading — this alpha never ramps. */
+   opacity (founder round: stepped up from the first 0.05–0.09 window —
+   the field should read, not whisper; the plate is dark in both themes,
+   so the ink is the panel's white, not the page's). Density does the
+   fading — this alpha never ramps. */
 .toolchain-root .v0-glob-atmo-field .v0-glob-atmo-dots {
-  fill: rgba(255, 255, 255, 0.07);
+  fill: rgba(255, 255, 255, 0.11);
 }
 
 /* The globe's own stylesheet pins --eg-label-size on .eg itself, so the

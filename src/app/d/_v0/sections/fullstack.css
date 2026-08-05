@@ -516,12 +516,13 @@
 
 /* ---------- the capstone's diff hunk ----------
    One hunk in the tower — the capstone's (founder round: the diff story
-   concentrates at the top plate). The slats speak the band's own
-   one-accent language, never the iso's red/green pair: additions take
-   the page accent at the payload chip's mix strengths, deletions the
-   dim ink, and each row's margin sign a step fuller than its slat so
-   the tiny flat marks read. Hidden at rest — FullStack scrubs them in
-   across the agents dwell; no-JS and reduced motion never see them. */
+   concentrates at the top plate). The slats speak the ISO's red/green
+   diff pair (founder round-trip: the one-accent recolor read wrong —
+   "the diffs need to be green and red"), at the Locadex plate's own
+   mix strengths, and each row's margin sign a step fuller than its
+   slat so the tiny flat marks read. Hidden at rest — FullStack scrubs
+   them in across the agents dwell; no-JS and reduced motion never see
+   them. */
 
 .toolchain-root .tcb .v0s-diff {
   opacity: 0;
@@ -533,29 +534,29 @@
 }
 
 .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-hull {
-  fill: color-mix(in srgb, var(--iso-accent) 14%, #101010);
-  stroke: color-mix(in srgb, var(--iso-accent) 40%, transparent);
+  fill: color-mix(in srgb, #85cfa1 14%, #101010);
+  stroke: color-mix(in srgb, #85cfa1 40%, transparent);
 }
 
 .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-top {
-  fill: color-mix(in srgb, var(--iso-accent) 26%, #101010);
+  fill: color-mix(in srgb, #85cfa1 26%, #101010);
 }
 
 .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-hull {
-  fill: color-mix(in srgb, #ffffff 7%, #101010);
-  stroke: rgba(255, 255, 255, 0.2);
+  fill: color-mix(in srgb, #d29090 12%, #101010);
+  stroke: color-mix(in srgb, #d29090 34%, transparent);
 }
 
 .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-top {
-  fill: color-mix(in srgb, #ffffff 12%, #101010);
+  fill: color-mix(in srgb, #d29090 20%, #101010);
 }
 
 .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-sign {
-  fill: var(--iso-accent);
+  fill: color-mix(in srgb, #85cfa1 82%, #101010);
 }
 
 .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-sign {
-  fill: rgba(255, 255, 255, 0.55);
+  fill: color-mix(in srgb, #d29090 78%, #101010);
 }
 
 /* ---------- the copy rail: four beats, bottom of the stack first.
