@@ -284,8 +284,50 @@
   margin-top: 8px;
 }
 
+/* the action holds the roster's widest label (its ladder reserves it),
+   so shorter locales centre inside the fixed chip instead of leaving a
+   ragged right edge */
 .toolchain-root .v0-tw .tct-app-btn {
   margin-top: 16px;
+  text-align: center;
+}
+
+/* ---- the reservation ladders (founder: reserve every slot at its MAX
+   locale width so the chart never rocks). A ladder is a zero-height,
+   invisible stack of the roster's fifteen strings, one block line each,
+   living INSIDE its slot: the slot's intrinsic measure becomes the max
+   across every locale, measured by the browser itself in the slot's own
+   font. Stat-cell ladders mirror the dt/dd type explicitly — they sit
+   at cell level (the dt is a rewrite node; children would be erased). */
+.toolchain-root .v0-tw .v0-tw-ghost {
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.toolchain-root .v0-tw .v0-tw-ghost i {
+  display: block;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+/* the lit nav item renders at 500 — its ladder must measure at 500 too */
+.toolchain-root .v0-tw .sgdh-app-navi.is-on .v0-tw-ghost i {
+  font-weight: 500;
+}
+
+.toolchain-root .v0-tw .v0-tw-ghost.is-dt i {
+  font-family: var(--tc-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+}
+
+.toolchain-root .v0-tw .v0-tw-ghost.is-dd i {
+  font-family: var(--tc-mono);
+  font-size: 13px;
 }
 
 /* the in-app chrome: the GT mark + localized nav on one hairline row.
@@ -383,6 +425,9 @@
   min-width: 0;
   padding: 14px 16px 12px;
   border: 1px solid rgba(138, 143, 152, 0.28);
+  /* product-real corners on the mock's interior artifacts (founder):
+     the card rounds; the WINDOW frame itself stays square */
+  border-radius: 8px;
 }
 
 .toolchain-root .v0-tw .sgdh-app-chart-head {
@@ -436,8 +481,12 @@
   margin-top: 5px;
 }
 
+/* month labels share the bars' own flex geometry (flex:1 + the same
+   gap), so every label centres under its bar and a locale's longer
+   month names redistribute inside the fixed card — no box ever moves */
 .toolchain-root .v0-tw .sgdh-app-months span {
-  width: 18px;
+  flex: 1 1 0;
+  min-width: 0;
   font-family: var(--tc-mono);
   font-size: 8.5px;
   line-height: 1;
@@ -461,12 +510,20 @@
   cursor: pointer;
 }
 
-/* block components shrink to their text so their marks sit beside the
-   words themselves — not at the surface's far edge, where the resting
-   payload strip would cover them */
+/* block components shrink to their reserved measure (the ladder's max)
+   so their marks sit at the slot's corner — not at the surface's far
+   edge, where the resting payload strip would cover them. The bare text
+   runs (heading, sub, nav items) carry 6px of right padding: the box
+   corner steps clear of the last glyph, so the corner-centred mark can
+   never touch ink at any locale length. */
 .toolchain-root .v0-tw .tct-app-h.sgdh-ins,
 .toolchain-root .v0-tw .tct-app-copy.sgdh-ins {
   width: fit-content;
+  padding-right: 6px;
+}
+
+.toolchain-root .v0-tw .sgdh-app-navi {
+  padding-right: 6px;
 }
 
 .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] {
@@ -474,11 +531,20 @@
   outline-offset: 3px;
 }
 
+/* ONE placement system for every mark (founder): the 11px badge is
+   CENTRED ON the component's top-right corner point — half over the
+   box, half outside, the same fixed inset everywhere. Slots are
+   reserved at their max locale measure, so the corner (and the mark)
+   never moves. z4 lifts the mark above the payload sweep (z2) and the
+   seam's widened hit slab (z3): a mark near the resting cut still takes
+   its own hover/click; the sweep contract that z-order used to give is
+   restored by reconcileMarks (data-swept, below). */
 .toolchain-root .v0-tw .sgdh-ins-mark {
   appearance: none;
   position: absolute;
-  top: -7px;
-  right: -12px;
+  top: -6px;
+  right: -6px;
+  z-index: 4;
   width: 11px;
   height: 11px;
   margin: 0;
@@ -497,6 +563,14 @@
     opacity 0.15s ease,
     color 0.15s ease,
     border-color 0.15s ease;
+}
+
+/* a swept mark sits right of the cut: the payload pane owns that ground,
+   so the mark steps out entirely — visibility, not paint order, keeps
+   it off the JSON */
+.toolchain-root .v0-tw .sgdh-ins-mark[data-swept] {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .toolchain-root .v0-tw .sgdh-ins-mark:hover,
@@ -521,7 +595,7 @@
    line of the surface, never floating over the JSON. */
 .toolchain-root .v0-tw .sgdh-ins-chip {
   position: absolute;
-  right: -12px;
+  right: -6px;
   bottom: calc(100% + 9px);
   z-index: 1;
   padding: 4px 7px;
@@ -617,6 +691,72 @@
 
 .toolchain-root .v0-tw .sgdh-pl-row[data-hl='true'] .pl-ln {
   color: rgba(255, 255, 255, 0.72);
+}
+
+/* ============================================================
+   THE SEAM, REFIT FOR THE MOCK (founder addenda) — three moves,
+   all in v0 scope; RevealSeam.tsx stays SSOT-untouched:
+   1. THE HITBOX: the draggable target is the SPAN's own box, so
+      widening the span to 64px gives ≥32px of grab either side
+      of the line (≥24 mouse / ≥32 touch), full stage height. The
+      slab is transparent — only the line and tab paint. Marks
+      ride above it (z4 + reconcileMarks), so an inspector click
+      near the cut never feeds the drag instead.
+   2. THE LINE: solid for its full height — the doubled threads
+      keep their two single-stroke edges but go OPAQUE, and the
+      run between them fills with the payload plate's own ink; no
+      see-through stretches, and the fill runs continuously
+      behind the tab (the tab paints over it, never breaks it).
+   3. THE TAB: the pill becomes a rectangular tab — 16×40, 2px
+      corners — spanning the line, hairline-edged, two quiet grip
+      lines, lifting (ink + slight scale) on hover/drag. Light
+      theme wears the plate's dark chip; dark theme inverts to
+      the light chip, the seg's own active grammar.
+   ============================================================ */
+
+.toolchain-root .v0-tw .tct-app .tc-seam {
+  width: 64px;
+  /* solid thread inks (the old translucent composites, resolved):
+     source-side ink on the white render, light ink on the plate */
+  --seam-ink-l: #656565;
+  --seam-ink-r: #939393;
+}
+
+/* the fill between the threads: the plate's ink, opaque, full height */
+.toolchain-root .v0-tw .tct-app .tc-seam::before {
+  background: #101010;
+}
+
+.toolchain-root .v0-tw .tct-app .tc-seam::after {
+  width: 16px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 2px;
+  background-color: #101010;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)),
+    linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75));
+  background-size: 1px 14px, 1px 14px;
+  background-position: calc(50% - 2px) 50%, calc(50% + 2px) 50%;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.toolchain-root .v0-tw .tct-app .tc-seam:hover::after,
+.toolchain-root .v0-tw .tct-app .tc-seam:focus-visible::after,
+.toolchain-root .v0-tw .tct-app .tc-seam:active::after {
+  transform: translate(-50%, -50%) scale(1.08);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .v0-tw .tct-app .tc-seam::after {
+    transition: none;
+  }
 }
 
 /* ============================================================
@@ -747,8 +887,29 @@
 }
 
 [data-theme='dark'] .toolchain-root .v0-tw .tct-app .tc-seam {
-  --seam-ink-l: rgba(255, 255, 255, 0.5);
-  --seam-ink-r: rgba(255, 255, 255, 0.65);
+  --seam-ink-l: #8a8a8a;
+  --seam-ink-r: #a8a8a8;
+}
+
+/* the fill steps to the dark payload's deeper ink; the tab inverts to
+   the light chip (the seg's active grammar), dark grips and a dark
+   hairline edging it against both dark grounds */
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app .tc-seam::before {
+  background: #070707;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app .tc-seam::after {
+  border-color: rgba(7, 7, 7, 0.45);
+  background-color: #f2f2f2;
+  background-image:
+    linear-gradient(rgba(7, 7, 7, 0.6), rgba(7, 7, 7, 0.6)),
+    linear-gradient(rgba(7, 7, 7, 0.6), rgba(7, 7, 7, 0.6));
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app .tc-seam:hover::after,
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app .tc-seam:focus-visible::after,
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app .tc-seam:active::after {
+  border-color: rgba(7, 7, 7, 0.75);
 }
 
 /* ---- narrow: tighter gutters; the stats keep to the surface; the
@@ -774,6 +935,11 @@
   }
 
   .toolchain-root .v0-tw .sgdh-app-stat dd {
+    font-size: 12px;
+  }
+
+  /* the value ladders track the dd's narrow size, or the reserve lies */
+  .toolchain-root .v0-tw .v0-tw-ghost.is-dd i {
     font-size: 12px;
   }
 }
