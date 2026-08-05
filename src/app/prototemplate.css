@@ -982,8 +982,10 @@
   left: var(--cut, 55%);
   width: 5px;
   transform: translateX(-2.5px);
-  border-left: 1px solid var(--pt-ink);
-  border-right: 1px solid var(--pt-ink);
+  /* the seam's doubled thread in the hairline family — full ink read
+     as heavy black bars against the quiet compare plate */
+  border-left: 1px solid var(--pt-hair);
+  border-right: 1px solid var(--pt-hair);
   pointer-events: none;
 }
 

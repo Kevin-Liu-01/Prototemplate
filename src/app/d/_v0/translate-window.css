@@ -1172,9 +1172,10 @@
   --tct-tr: #3555b8;
   --tct-ok: #1e7a4b;
   background: #ffffff;
-  /* the ring steps to the light window grammar (the tcb terminal's own
-     outline ink); the inset top-light is a dark-plate device — it goes */
-  outline-color: rgba(7, 7, 7, 0.25);
+  /* the ring speaks the window's own hairline grammar — an ink ring on
+     the light ground read as a black outline against the dither; the
+     inset top-light is a dark-plate device — it goes */
+  outline-color: rgba(138, 143, 152, 0.28);
   box-shadow: none;
 }
 
