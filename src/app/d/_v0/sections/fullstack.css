@@ -898,3 +898,156 @@
 .toolchain-root .tcb.v0-stack .tcb-grid::after {
   border-bottom: 0;
 }
+
+/* ============================================================
+   THE MOBILE STAGE (founder: "you see the diagram on top, 60%
+   available height, and it's growing — and see the text for it at
+   bottom, 40% available height for the story section — and the text
+   just fades in and out of each other with the layers growing").
+
+   The grid itself becomes a CSS-sticky, viewport-filling stage: fig
+   zone the top 60%, text zone the bottom 40%, the beats absolutely
+   stacked in the zone and crossfaded by FullStack's master scrub.
+   Sticky, never JS-positioned — the desktop figure's own law — and
+   the travel is the .v0sm-runway spacer after the grid (sticky is
+   bounded by the PARENT'S content box, the agents dwell's lesson).
+   The runway's 'top bottom'→'bottom bottom' ScrollTrigger window
+   equals the sticky engage→release span exactly, because the stage
+   is sized so its bottom rides the viewport bottom while stuck:
+   top + height = 100svh.
+
+   Everything here keys on .is-stage, which ONLY the staged JS branch
+   sets — under the same media cut (FullStack's STAGE_MEDIA: this
+   width, and a height floor so the text zone can always hold the
+   longest beat). No JS, or prefers-reduced-motion, never sees the
+   class and keeps the one-column flow above: full tower on top, the
+   beats' copy readable below. The two cuts must stay identical —
+   change one, change both.
+   ============================================================ */
+
+/* parked everywhere the stage isn't: desktop, no-JS, reduced motion */
+.toolchain-root .tcb.v0-stack .v0sm-runway {
+  display: none;
+}
+
+@media (max-width: 1020px) and (min-height: 640px) {
+  .toolchain-root .tcb.v0-stack.is-stage {
+    /* the stage's seat: the sticky nav's 58px bar + its 1px hairline */
+    --v0sm-top: 59px;
+    /* svh, deliberately: the SMALL viewport unit is stable under mobile
+       browser chrome, so the stage never resizes mid-story; when the
+       real viewport runs taller (dvh > svh) the band's own ink shows
+       below the stage and the scrub just starts a breath later */
+    --v0sm-stage-h: calc(100svh - var(--v0sm-top));
+    /* the tower must FIT the 60% fig zone, never clip: its width from
+       the zone's height × VIEW_W/TOWER_H (StackTower: 214.133/250.8 =
+       0.8538 — change them together), minus the fig pads and the
+       STAGE_DROP headroom an arriving plate falls through (20 + 32 +
+       a 4px breath) */
+    --v0sm-tw: calc((0.6 * var(--v0sm-stage-h) - 56px) * 0.8538);
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .tcb-grid {
+    position: sticky;
+    top: var(--v0sm-top);
+    height: var(--v0sm-stage-h);
+    /* one column, 60/40 rows — the seam ring's 1px padding stays */
+    grid-template-columns: 100%;
+    grid-template-rows: minmax(0, 6fr) minmax(0, 4fr);
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-cell-fig {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-height: 0;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-cell-rail {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-height: 0;
+  }
+
+  /* the figure seats at the zone's FOOT: the slack rides above the
+     tower, where arriving plates fall through it (STAGE_DROP), and the
+     drawing sits shoulder to shoulder with the copy it narrates */
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-fig {
+    height: 100%;
+    align-items: flex-end;
+    padding: 8px 16px 12px;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-tower {
+    width: min(100%, var(--v0sm-tw));
+  }
+
+  /* the cell-height rail track follows the stage tower's width (its
+     100% is the CELL, the tower's is the fig content box — 32px of
+     fig pads apart, the one-column block's own pattern) */
+  .toolchain-root .tcb.v0-stack.is-stage .v0s-cellrail {
+    --v0s-cellrail-w: min(100% - 32px, var(--v0sm-tw));
+  }
+
+  /* ---------- the text zone: one beat at a time ---------- */
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-rail {
+    position: relative;
+    height: 100%;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-beat {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    padding: 10px 20px 18px;
+    /* the scrub owns alpha absolutely (direct style writes): the class
+       spotlight's dim and its eased transition would fight it */
+    opacity: 0;
+    transition: none;
+    pointer-events: none;
+  }
+
+  /* the stage type, a step tighter (founder spec: the longest beat's
+     copy must FIT the 40% zone — no scrolling inside it) */
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-beat h3 {
+    margin-top: 10px;
+    font-size: 20px;
+    line-height: 1.18;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points {
+    margin-top: 10px;
+    gap: 7px;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points li {
+    padding-left: 20px;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points li::before {
+    width: 10px;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-name {
+    font-size: 14px;
+  }
+
+  /* the story's scroll length: ~70svh of dwell per beat — the sticky
+     travel, and the master scrub's whole clock */
+  .toolchain-root .tcb.v0-stack.is-stage .v0sm-runway {
+    display: block;
+    height: 280svh;
+  }
+}
+
+/* reduced motion at stage widths: the one-column flow stands, and the
+   spotlight's cold dim stands down — the static fallback is the whole
+   story at once (finished tower on top, every beat readable below),
+   so no beat reads as disabled */
+@media (max-width: 1020px) and (prefers-reduced-motion: reduce) {
+  .toolchain-root .tcb .v0-stack-beat.is-cold {
+    opacity: 1;
+  }
+}
