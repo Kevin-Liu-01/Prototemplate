@@ -12,10 +12,12 @@ import {
 
 export type StudioFieldProps = {
   /**
-   * 'lines' = the ruled line field (the house motif, lit and warped);
-   * 'dither' = the Bayer print-dither flow; 'grain' = the pigment wash;
-   * 'topo' = animated contour lines; 'void' = the radiant aperture;
-   * 'mesh' = two breathing focal blues.
+   * The dither family (print): 'bayer' = the ordered-matrix flow;
+   * 'film' = fine white-noise grain; 'halftone' = the rotated dot screen;
+   * 'diffusion' = organic serpentine dither; 'contour' = dithered
+   * topographic lines. The light family (washes): 'spectral' = the
+   * converging bloom; 'mesh' = two breathing focal blues; 'aurora' =
+   * curtain bands.
    */
   preset?: StudioPreset;
   /** Per-mount overrides on the preset. */
@@ -33,7 +35,7 @@ export type StudioFieldProps = {
  * callers position it and keep their own dark plate behind it, since WebGL
  * absence falls back to a transparent canvas.
  */
-export default function StudioField({ preset = 'lines', params, dpr, speed = 1, className }: StudioFieldProps) {
+export default function StudioField({ preset = 'bayer', params, dpr, speed = 1, className }: StudioFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useGSAP(() => {

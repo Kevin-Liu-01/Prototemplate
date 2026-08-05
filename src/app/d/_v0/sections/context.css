@@ -28,6 +28,10 @@
 
 .toolchain-root .v0-ctx .tcb-in {
   padding-inline: 0;
+  /* the band closes on the review row, not on dead air (founder cut):
+     the sheet's default clamp(56px, 7vw, 88px) tail shrinks to one
+     breath, so the row's bottom rule sits ~33px above the band's own */
+  padding-block-end: 32px;
 }
 
 .toolchain-root .v0-ctx .tcb-grid {

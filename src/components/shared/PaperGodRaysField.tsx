@@ -1,18 +1,18 @@
 'use client';
 
-import { Warp } from '@paper-design/shaders-react';
+import { useGSAP } from '@gsap/react';
+import { GodRays } from '@paper-design/shaders-react';
 import { useRef, useState } from 'react';
 
-import { useMountEffect } from '@/lib/use-mount-effect';
-
 /**
- * Paper Warp in band form — the one packaged material from the founder's
- * glyphfield studio roster (@paper-design/shaders-react, Apache-2.0), kept
- * as the library component rather than a port: its noise-texture warp
- * pipeline is not a single-pass fragment shader. A ruled stripe field is
- * warped and swirled — a field of rules being translated — in the house
+ * Paper God Rays in band form — the one packaged material from the
+ * founder's glyphfield studio roster (@paper-design/shaders-react,
+ * Apache-2.0), kept as the library component rather than a port: its
+ * noise-texture ray pipeline is not a single-pass fragment shader. Soft
+ * volumetric light spills from above the band's center, in the house
  * inks: near-black ground (the page's blend mode drops it out; the light
- * theme's inversion lifts it to paper) under the terminal blues.
+ * theme's inversion lifts it to paper) under translucent blues rolling to
+ * white where the rays stack.
  *
  * CONTEXT DISCIPLINE — Paper's ShaderMount owns a WebGL2 context per mount
  * and its dispose() deletes program and textures but never LOSES the
@@ -26,26 +26,27 @@ import { useMountEffect } from '@/lib/use-mount-effect';
    as numbers and formatted for the component's color-string API. */
 const hex = (rgb: number) => `#${rgb.toString(16).padStart(6, '0')}`;
 
-const HOUSE_COLORS = [
-  hex(0x04060a), // ink ground
-  hex(0x24409e), // blue depth
-  hex(0x2f5ce0), // working blue
-  hex(0x04060a), // ink again — bands stay separated by ground
-  hex(0x9db9ff), // chip light
-];
+const INK = hex(0x04060a);
+const BLUE = hex(0x2f5ce0);
+/* Ray bodies are translucent so stacked rays build to light instead of
+   flat fills; the white core is the only opaque stop. */
+const RAY_COLORS = [`${hex(0x2f5ce0)}8a`, `${hex(0x9db9ff)}b3`, hex(0xffffff), `${hex(0x24409e)}66`];
 
-export type PaperWarpFieldProps = {
+export type PaperGodRaysFieldProps = {
   className?: string;
   speed?: number;
 };
 
-export default function PaperWarpField({ className, speed = 0.6 }: PaperWarpFieldProps) {
+export default function PaperGodRaysField({ className, speed = 0.6 }: PaperGodRaysFieldProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   /* Reduced motion parks the material on a formed mid-cycle frame. SSR and
      the first client render agree on motion; the mount effect corrects. */
   const [reduced, setReduced] = useState(false);
 
-  useMountEffect(() => {
+  /* useGSAP rather than useMountEffect: the mount-once guard would leave the
+     post-StrictMode-remount pass without a registered cleanup, and this
+     cleanup is the context release. */
+  useGSAP(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setReduced(true);
     /* The mount builds its canvas asynchronously (the noise texture loads
        first), so the release target is captured by observation, not by a
@@ -75,21 +76,22 @@ export default function PaperWarpField({ className, speed = 0.6 }: PaperWarpFiel
 
   return (
     <div aria-hidden className={className} ref={hostRef}>
-      <Warp
-        colors={HOUSE_COLORS}
-        distortion={0.22}
+      <GodRays
+        bloom={0.55}
+        colorBack={INK}
+        colorBloom={BLUE}
+        colors={RAY_COLORS}
+        density={0.34}
         frame={reduced ? 9400 : 0}
         height='100%'
-        proportion={0.42}
-        rotation={92}
-        scale={1}
-        shape='stripes'
-        shapeScale={0.16}
-        softness={0.85}
+        intensity={0.74}
+        midIntensity={0.32}
+        midSize={0.18}
+        offsetX={0}
+        offsetY={-0.62}
         speed={reduced ? 0 : speed}
+        spotty={0.32}
         style={{ height: '100%', inset: 0, position: 'absolute', width: '100%' }}
-        swirl={0.72}
-        swirlIterations={10}
         webGlContextAttributes={{ alpha: false, antialias: false }}
         width='100%'
       />

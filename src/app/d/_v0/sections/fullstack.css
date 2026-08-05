@@ -420,21 +420,33 @@
 .toolchain-root .tcb .v0-stack-beat {
   flex: 1;
   /* taller beats than the copy needs, on purpose: the rail is the
-     sticky figure's runway — four of these must outrun the figure's
-     height by enough that the pin holds through the last beat at the
-     CENTERED seat above. 64vh (up from 60 when the figure grew to
-     ~483px) keeps ~30–40px of pin margin from 700px to ~1450px-tall
-     viewports; the 920px cap is the tall-viewport ceiling that keeps
-     the seat (0.5vh) from outrunning the runway (0.8 × beat). The
-     copy centers in each window, so the reader meets it mid-viewport
-     beside the pinned figure; the beats separate by rhythm alone, no
-     dividers (founder round 6). */
+     sticky figure's runway — the beats must outrun the figure's height
+     by enough that the pin holds through the last beat at the biased
+     seat above. The 920px cap is the tall-viewport ceiling that keeps
+     the seat (0.5vh) from outrunning the runway (0.8 × beat). The copy
+     centers in each window, so the reader meets it mid-viewport beside
+     the pinned figure; the beats separate by rhythm alone, no dividers
+     (founder round 6). */
   min-height: clamp(250px, 64vh, 920px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: clamp(24px, 3vw, 40px) clamp(22px, 2.6vw, 36px);
   transition: opacity 0.32s ease;
+}
+
+/* the LAST beat is cut to exactly what the pin needs, no trailing spend
+   (founder: the band ends shortly after beat 04 completes). The runway
+   equation — margin = beat/2 + (50vh − seat) − figure height − ~20 —
+   has no vh term once the seat leaves its 70px floor (the 0.5vh in the
+   seat cancels the read line's), so the need is one CONSTANT: 560px
+   holds ~5px of margin past beat 04's centered read on every viewport
+   taller than ~664px, where 64vh both overspent tall viewports (the
+   old dead area) and UNDERSHOT short ones (at 800vh the pin died 5px
+   before the read). Verify with the pin probe at 1440×900 AND 1280×800
+   whenever the figure or seat moves. */
+.toolchain-root .tcb .v0-stack-beat:last-child {
+  min-height: 560px;
 }
 
 /* the spotlight: JS-managed classes, so the static (reduced-motion)
@@ -510,7 +522,8 @@
     --v0s-cellrail-w: min(100% - 40px, 330px);
   }
 
-  .toolchain-root .tcb .v0-stack-beat {
+  .toolchain-root .tcb .v0-stack-beat,
+  .toolchain-root .tcb .v0-stack-beat:last-child {
     min-height: 0;
   }
 }

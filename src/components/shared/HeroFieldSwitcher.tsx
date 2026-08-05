@@ -3,9 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 
-import PaperWarpField from '@/components/shared/PaperWarpField';
-import { createGlyphField } from '@/lib/glyph-field';
-import { createHorizonField } from '@/lib/horizon-field';
+import PaperGodRaysField from '@/components/shared/PaperGodRaysField';
 import { createPrismaticField } from '@/lib/prismatic-field';
 import { createStudioField } from '@/lib/studio-field';
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -16,16 +14,20 @@ import './HeroFieldSwitcher.css';
  * WORKING-REVIEW RIG — not product. Mounts the hero band's light field and a
  * quiet instrumentation ladder (mono indices, hairline pill, color only on
  * the active row) that swaps the field live between ten variants, so the
- * founder can compare engines on the real band. Slots 04–08 carry the
- * glyphfield studio materials (the founder's own shader studies, ported in
- * src/lib/studio-field.ts; 07 is the packaged Paper Warp). The pick persists
- * in localStorage under one key shared by every home that carries the rig;
- * the default is 01 — today's prismatic wash — so the shipped look is
- * unchanged until someone switches. Exactly one engine is alive at a time:
- * each switch remounts a fresh stage (keyed) and runs the previous engine's
- * destroy(); the canvas engines share the libraries' own session-singleton
- * GL contexts and the Paper mount loses its context on unmount, so cycling
- * variants never grows the context count.
+ * founder can compare engines on the real band. The roster follows the
+ * founder's strategy call — "dither is probably the strat": slots 01–05 are
+ * five genuinely distinct DITHER patterns (print in the house inks, kin to
+ * the glyph field's Bayer atlas), slots 06–10 are five LIGHT washes
+ * (prismatic-adjacent flowing light, each a different pattern). The studio
+ * materials are the founder's own glyphfield shader studies, ported in
+ * src/lib/studio-field.ts; 09 is the packaged Paper God Rays. The pick
+ * persists in localStorage under one key shared by every home that carries
+ * the rig; the default is 01 — the Bayer flow, the dither that reads best
+ * on the dossier band. Exactly one engine is alive at a time: each switch
+ * remounts a fresh stage (keyed) and runs the previous engine's destroy();
+ * the canvas engines share the libraries' own session-singleton GL contexts
+ * and the Paper mount loses its context on unmount, so cycling variants
+ * never grows the context count.
  */
 
 const STORE_KEY = 'gt-hero-field-variant';
@@ -42,121 +44,101 @@ type Variant = {
 };
 
 const VARIANTS: readonly Variant[] = [
+  /* — 01–05: the dither family (print) — */
   {
     id: '01',
-    name: 'prismatic-1',
-    // Today's mount, verbatim: the toolchain hero's field.
+    name: 'bayer-flow',
+    // The 4×4 ordered matrix over a flowing tone field, at coarse print
+    // cells — the glyph field's own atlas grammar, and the default.
+    mount: (canvas) => {
+      const field = createStudioField(canvas, { preset: 'bayer' });
+      return field ? () => field.destroy() : undefined;
+    },
+  },
+  {
+    id: '02',
+    name: 'film-grain',
+    // The same pigment flow through per-cell white-noise thresholds at
+    // near-pixel scale — film stock, reseeded on a slow flicker clock.
+    mount: (canvas) => {
+      const field = createStudioField(canvas, { preset: 'film' });
+      return field ? () => field.destroy() : undefined;
+    },
+  },
+  {
+    id: '03',
+    name: 'halftone-drift',
+    // A rotated dot screen (the 14° printer's angle) whose dot gauge
+    // carries the drifting tone — print's own screen.
+    mount: (canvas) => {
+      const field = createStudioField(canvas, { preset: 'halftone' });
+      return field ? () => field.destroy() : undefined;
+    },
+  },
+  {
+    id: '04',
+    name: 'diffusion-ink',
+    // Error-diffusion's organic read: serpentine value-noise thresholds
+    // clustering the ink into worms instead of ordered cells.
+    mount: (canvas) => {
+      const field = createStudioField(canvas, { preset: 'diffusion' });
+      return field ? () => field.destroy() : undefined;
+    },
+  },
+  {
+    id: '05',
+    name: 'contour-dither',
+    // Topographic elevation lines pushed through the Bayer matrix — the
+    // ruled-line motif rendered as dithered ink density.
+    mount: (canvas) => {
+      const field = createStudioField(canvas, { preset: 'contour' });
+      return field ? () => field.destroy() : undefined;
+    },
+  },
+  /* — 06–10: the light family (washes) — */
+  {
+    id: '06',
+    name: 'prismatic',
+    // Yesterday's shipped look, verbatim: the toolchain hero's field —
+    // it earns its light slot.
     mount: (canvas) => {
       const field = createPrismaticField(canvas, { preset: '1', speed: 0.5, params: { exposureScale: 3400 } });
       return field ? () => field.destroy() : undefined;
     },
   },
   {
-    id: '02',
-    name: 'prismatic-2',
-    mount: (canvas) => {
-      const field = createPrismaticField(canvas, { preset: '2', speed: 0.5, params: { exposureScale: 2600 } });
-      return field ? () => field.destroy() : undefined;
-    },
-  },
-  {
-    id: '03',
-    name: 'prismatic-bright',
-    mount: (canvas) => {
-      const field = createPrismaticField(canvas, { preset: '1', speed: 0.5, params: { exposureScale: 1800 } });
-      return field ? () => field.destroy() : undefined;
-    },
-  },
-  {
-    id: '04',
-    name: 'line-field',
-    // The studio's line study: ruled lines, warped and lit — the house motif.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'lines' });
-      return field ? () => field.destroy() : undefined;
-    },
-  },
-  {
-    id: '05',
-    name: 'ink-dither',
-    // The Bayer print-dither flow — the glyph field's own atlas grammar.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'dither' });
-      return field ? () => field.destroy() : undefined;
-    },
-  },
-  {
-    id: '06',
-    name: 'grain-wash',
-    // Pigment drift with paper tooth: ink rising through the blues.
-    mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'grain' });
-      return field ? () => field.destroy() : undefined;
-    },
-  },
-  {
     id: '07',
-    name: 'paper-warp',
-    // The packaged Paper Warp: a ruled stripe field being translated.
-    render: (className) => <PaperWarpField className={className} />,
+    name: 'spectral-bloom',
+    // The studio's featured bloom: soft currents converging into one
+    // luminous field, blues under a white crest.
+    mount: (canvas) => {
+      const field = createStudioField(canvas, { preset: 'spectral' });
+      return field ? () => field.destroy() : undefined;
+    },
   },
   {
     id: '08',
-    name: 'topo-map',
-    // Animated contour lines — the cartography of a global network.
+    name: 'mesh-wash',
+    // Two orbiting focal blues breathing over the ink — the quietest wash.
     mount: (canvas) => {
-      const field = createStudioField(canvas, { preset: 'topo' });
+      const field = createStudioField(canvas, { preset: 'mesh' });
       return field ? () => field.destroy() : undefined;
     },
   },
   {
     id: '09',
-    name: 'glyph-rain',
-    // The house rain at band intensity; it inks itself from --tc-ink resolved
-    // off the canvas (pinned white by .is-rain) and self-sizes internally.
-    mount: (canvas) => {
-      const field = createGlyphField({ canvas, glyphScale: 0.9 });
-      return field ? () => field.destroy() : undefined;
-    },
+    name: 'god-rays',
+    // The packaged Paper God Rays: soft volumetric light spilling from
+    // above the band, translucent blues rolling to white.
+    render: (className) => <PaperGodRaysField className={className} />,
   },
   {
     id: '10',
-    name: 'horizon',
-    // createHorizonField draws NOTHING until it is given geometry — the
-    // ResizeObserver feeds center/radius, seating the horizon on the left
-    // flank so the window column stays clear.
+    name: 'aurora',
+    // The studio's aurora: curtain bands moving through a deep field.
     mount: (canvas) => {
-      const field = createHorizonField(canvas, {
-        params: {
-          ink: [1, 1, 1],
-          ruleAlpha: 0.05,
-          ringAlpha: [0.07, 0.05, 0.03],
-          lightGain: 1.5,
-          exposure: 2.2,
-          chroma: 0.4,
-          core: [0.008, 0.01, 0.016],
-        },
-      });
-      if (!field) return undefined;
-      const seat = () => {
-        const w = canvas.clientWidth || 1;
-        const h = canvas.clientHeight || 1;
-        field.setParams({
-          center: [w * 0.22, h * 0.55],
-          radius: Math.min(h * 0.34, w * 0.15),
-          worldOrigin: [0, 0],
-        });
-      };
-      seat();
-      let ro: ResizeObserver | undefined;
-      if (typeof ResizeObserver !== 'undefined') {
-        ro = new ResizeObserver(seat);
-        ro.observe(canvas);
-      }
-      return () => {
-        ro?.disconnect();
-        field.destroy();
-      };
+      const field = createStudioField(canvas, { preset: 'aurora' });
+      return field ? () => field.destroy() : undefined;
     },
   },
 ];
@@ -165,7 +147,7 @@ const VARIANTS: readonly Variant[] = [
 function FieldStage({ variant }: { variant: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const def = VARIANTS.find((v) => v.id === variant) ?? VARIANTS[0];
-  const stageClass = `tc-hero-field tch-field hfs-stage${variant === '09' ? ' is-rain' : ''}`;
+  const stageClass = 'tc-hero-field tch-field hfs-stage';
 
   useGSAP(() => {
     const canvas = canvasRef.current;

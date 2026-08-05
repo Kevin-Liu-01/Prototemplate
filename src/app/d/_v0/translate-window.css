@@ -182,11 +182,11 @@
    Preview, transcript plate on Terminal. The payload plate
    under the seam is that same window material returning, so
    dragging reads as peeling the rendered skin back to the
-   artifact, inside the one frame. The surface keeps the mock's
-   own light ground in BOTH themes — the product-screenshot
-   look; remapping it would dissolve the very material swap
-   that makes the window one screen — so nothing here remaps
-   under [data-theme].
+   artifact, inside the one frame. The mock FOLLOWS THE THEME
+   (founder addendum): light theme renders the light build of
+   the app, dark theme the dark build — the dark remaps live at
+   the end of this sheet, and the payload plate steps deeper
+   there so the seam keeps its two materials apart.
    ============================================================ */
 
 /* The stage floor: the in-flow transcript is what actually sizes the
@@ -234,19 +234,40 @@
   content: none;
 }
 
-/* the app's content re-breathes: the main column composes its block in
-   the full-height canvas — centred with a slight upward bias (top
-   padding under bottom), items shrink-wrapped left, on the surface's
-   own gutter. The doubled anchor (.tct-app .tct-app-main) outranks
+/* the app's content re-breathes: the main centres its block in the
+   full-height canvas. Its RIGHT padding mirrors the payload's 30%
+   inset (plus seam clearance), so the whole composition is contained
+   left of the resting cut by construction — the teaser strip never
+   covers a line. The doubled anchor (.tct-app .tct-app-main) outranks
    v0-pages' page-scoped Figma padding, which was tuned for the
    floating card this surface replaces. */
 .toolchain-root .v0-tw .tct-app .tct-app-main {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   justify-content: center;
-  padding: 18px var(--app-gut) 30px;
+  padding: 16px calc(30% + 26px) 24px var(--app-gut);
+}
+
+/* the two rails: the stack (copy, stats, action) left; the chart card
+   riding the right rail, centred on the stack's height. The stack is
+   one intrinsic block, so the rows can never spread its rhythm apart. */
+.toolchain-root .v0-tw .sgdh-app-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: clamp(24px, 6%, 48px);
+  align-items: center;
+  width: 100%;
+}
+
+/* tighter rhythm down the left rail: sub hugs its heading, the ruled
+   stats take a clear step, the action closes the stack */
+.toolchain-root .v0-tw .tct-app-copy {
+  margin-top: 8px;
+}
+
+.toolchain-root .v0-tw .tct-app-btn {
+  margin-top: 16px;
 }
 
 /* the in-app chrome: the GT mark + localized nav on one hairline row.
@@ -300,7 +321,7 @@
   display: grid;
   grid-template-columns: repeat(3, auto);
   justify-content: start;
-  margin: 13px 0 0;
+  margin: 16px 0 0;
   border-top: 1px solid rgba(138, 143, 152, 0.2);
   border-bottom: 1px solid rgba(138, 143, 152, 0.2);
 }
@@ -328,6 +349,78 @@
   line-height: 1.2;
   white-space: nowrap;
   color: #070707;
+}
+
+/* ---- the chart card: the right rail's quiet artifact ----
+   One hairline box: a localized label (a real payload row — it retypes
+   and inspects like every component), a signed Intl percent, six fixed
+   bars with the locale's own short month names beneath. The current
+   month carries the accent; everything else stays in the surface's
+   neutral inks. */
+.toolchain-root .v0-tw .sgdh-app-chart {
+  width: 188px;
+  padding: 11px 13px 9px;
+  border: 1px solid rgba(138, 143, 152, 0.28);
+}
+
+.toolchain-root .v0-tw .sgdh-app-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.toolchain-root .v0-tw .sgdh-app-chart-t {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--tc-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: #8a8f98;
+}
+
+.toolchain-root .v0-tw .sgdh-app-chart-d {
+  flex: 0 0 auto;
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #2e9e63;
+}
+
+.toolchain-root .v0-tw .sgdh-app-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 52px;
+  margin-top: 10px;
+}
+
+.toolchain-root .v0-tw .sgdh-app-bars i {
+  width: 18px;
+  background: rgba(7, 7, 7, 0.12);
+}
+
+.toolchain-root .v0-tw .sgdh-app-bars i[data-on] {
+  background: #2f5ce0;
+}
+
+.toolchain-root .v0-tw .sgdh-app-months {
+  display: flex;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.toolchain-root .v0-tw .sgdh-app-months span {
+  width: 18px;
+  font-family: var(--tc-mono);
+  font-size: 8.5px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  color: #8a8f98;
 }
 
 /* a fully deleted line keeps its line box — the rewrite never reflows
@@ -503,10 +596,152 @@
   color: rgba(255, 255, 255, 0.72);
 }
 
-/* ---- narrow: tighter gutters; the stats keep to the surface ----
-   (the face itself needs no narrow rule any more: it is padding 0 at
-   every width — the surface owns its own gutter) */
+/* ============================================================
+   DARK THEME: the mock follows the page (founder addendum) —
+   the product screen renders as the DARK build of the same app:
+   house ink-family grounds, light ink, hairlines on the white
+   ramp, the action inverting to a light chip. The payload plate
+   steps DEEPER (#070707) than the render so the served artifact
+   keeps clear contrast at the seam, and both seam threads go
+   light — each still in its surface's own ink. Light theme
+   keeps the light screen above.
+   ============================================================ */
+
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app {
+  background: #161616;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-chrome {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+/* brand rule: the dark surface inverts the drawn mark's ink */
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-mark img {
+  filter: invert(1);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-nav {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-navi.is-on b {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app-h {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app-copy {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stats {
+  border-top-color: rgba(255, 255, 255, 0.12);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stat + .sgdh-app-stat {
+  border-left-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stat dt {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stat dd {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* the action inverts: a light chip on the dark build — the seg's own
+   active grammar */
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app-btn {
+  background: rgba(255, 255, 255, 0.92);
+  color: #070707;
+}
+
+/* the chart card on the dark build */
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-chart {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-chart-t {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-chart-d {
+  color: #7ed3a2;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-bars i {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-bars i[data-on] {
+  background: #6f8ef2;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-months span {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* inspector furniture re-inks; the pinned accent holds in both themes
+   (the pinned rule is restated so no dark base rule can outrank it) */
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: #161616;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:hover,
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:focus-visible {
+  color: #7d9bff;
+  border-color: #7d9bff;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark[data-pin='true'] {
+  color: #ffffff;
+  background: #2f5ce0;
+  border-color: #2f5ce0;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] {
+  outline-color: #7d9bff;
+}
+
+/* the id chip separates from the dark surface by stepping to the
+   payload's deeper ink */
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-chip {
+  background: #070707;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* the artifact steps deeper than the render; the seam's threads both
+   go light — the doubled line stays the one internal vertical */
+[data-theme='dark'] .toolchain-root .v0-tw .tct-payload {
+  background: #070707;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .tct-app .tc-seam {
+  --seam-ink-l: rgba(255, 255, 255, 0.5);
+  --seam-ink-r: rgba(255, 255, 255, 0.65);
+}
+
+/* ---- narrow: tighter gutters; the stats keep to the surface; the
+   chart card falls under the stack (the face itself needs no narrow
+   rule any more: it is padding 0 at every width — the surface owns
+   its own gutter) */
 @media (max-width: 760px) {
+  .toolchain-root .v0-tw .sgdh-app-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .v0-tw .sgdh-app-chart {
+    justify-self: start;
+    margin-top: 18px;
+  }
+
   .toolchain-root .v0-tw .sgdh-app-stat {
     padding-right: 12px;
   }

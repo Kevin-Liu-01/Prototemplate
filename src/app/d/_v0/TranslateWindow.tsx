@@ -153,11 +153,12 @@ const ROWS: readonly Row[] = [
    they ship to — a small localized SaaS screen (in-app chrome, a
    greeting, live figures, the button the transcript just
    translated). The locale roster is the belt's: fifteen locales, and
-   every one of them is a complete, correct screen — all seven source
+   every one of them is a complete, correct screen — all eight source
    strings faithfully translated, the figures real Intl output.
    English sources: 'Overview' / 'Payments' / 'Reports' · 'Welcome
    back' · 'Your account activity this week.' · 'Revenue' /
-   'Invoices' / 'Next payout' · 'Get started'.
+   'Invoices' / 'Next payout' · 'Get started' · 'Last 6 months'
+   (the chart card's label).
 
    ar/he are deliberately absent: the mock's whole composition
    clusters LEFT of the resting seam cut, and an honest RTL page
@@ -211,6 +212,8 @@ type PreviewCopy = {
   invoices: string;
   payout: string;
   button: string;
+  /** the chart card's one localized label — "Last 6 months" */
+  chart: string;
 };
 
 const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
@@ -222,6 +225,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Facturas',
     payout: 'Próximo pago',
     button: 'Comenzar ahora',
+    chart: 'Últimos 6 meses',
   },
   ja: {
     nav: ['概要', '支払い', 'レポート'],
@@ -231,6 +235,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: '請求書',
     payout: '次回の入金',
     button: '始める',
+    chart: '過去6か月',
   },
   fr: {
     nav: ['Aperçu', 'Paiements', 'Rapports'],
@@ -240,6 +245,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Factures',
     payout: 'Prochain virement',
     button: 'Commencer',
+    chart: '6 derniers mois',
   },
   ko: {
     nav: ['개요', '결제', '보고서'],
@@ -249,6 +255,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: '청구서',
     payout: '다음 지급일',
     button: '시작하기',
+    chart: '지난 6개월',
   },
   de: {
     nav: ['Übersicht', 'Zahlungen', 'Berichte'],
@@ -258,6 +265,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Rechnungen',
     payout: 'Nächste Auszahlung',
     button: 'Jetzt starten',
+    chart: 'Letzte 6 Monate',
   },
   zh: {
     nav: ['概览', '付款', '报表'],
@@ -267,6 +275,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: '发票',
     payout: '下次结算',
     button: '立即开始',
+    chart: '过去6个月',
   },
   pt: {
     nav: ['Visão geral', 'Pagamentos', 'Relatórios'],
@@ -276,6 +285,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Faturas',
     payout: 'Próximo repasse',
     button: 'Começar agora',
+    chart: 'Últimos 6 meses',
   },
   ru: {
     nav: ['Обзор', 'Платежи', 'Отчёты'],
@@ -285,6 +295,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Счета',
     payout: 'Следующая выплата',
     button: 'Начать',
+    chart: 'Последние 6 месяцев',
   },
   it: {
     nav: ['Panoramica', 'Pagamenti', 'Report'],
@@ -294,6 +305,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Fatture',
     payout: 'Prossimo accredito',
     button: 'Inizia ora',
+    chart: 'Ultimi 6 mesi',
   },
   hi: {
     nav: ['अवलोकन', 'भुगतान', 'रिपोर्ट'],
@@ -303,6 +315,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'चालान',
     payout: 'अगला भुगतान',
     button: 'शुरू करें',
+    chart: 'पिछले 6 महीने',
   },
   nl: {
     nav: ['Overzicht', 'Betalingen', 'Rapporten'],
@@ -312,6 +325,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Facturen',
     payout: 'Volgende uitbetaling',
     button: 'Aan de slag',
+    chart: 'Laatste 6 maanden',
   },
   tr: {
     nav: ['Genel bakış', 'Ödemeler', 'Raporlar'],
@@ -321,6 +335,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Faturalar',
     payout: 'Sonraki ödeme',
     button: 'Hemen başla',
+    chart: 'Son 6 ay',
   },
   sv: {
     nav: ['Översikt', 'Betalningar', 'Rapporter'],
@@ -330,6 +345,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Fakturor',
     payout: 'Nästa utbetalning',
     button: 'Kom igång',
+    chart: 'Senaste 6 månaderna',
   },
   id: {
     nav: ['Ringkasan', 'Pembayaran', 'Laporan'],
@@ -339,6 +355,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Faktur',
     payout: 'Pencairan berikutnya',
     button: 'Mulai sekarang',
+    chart: '6 bulan terakhir',
   },
   pl: {
     nav: ['Przegląd', 'Płatności', 'Raporty'],
@@ -348,6 +365,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     invoices: 'Faktury',
     payout: 'Następna wypłata',
     button: 'Rozpocznij',
+    chart: 'Ostatnie 6 miesięcy',
   },
 };
 
@@ -387,6 +405,25 @@ const fmtInvoices = (loc: PreviewLoc) => new Intl.NumberFormat(loc).format(INVOI
 const fmtPayout = (loc: PreviewLoc) =>
   new Intl.DateTimeFormat(loc, { dateStyle: 'medium' }).format(PAYOUT_DATE);
 
+/* ---- the chart card: the digestible second block filling the mock's
+   right rail. ONE localized string (its "Last 6 months" label — a real
+   payload row like every other component); everything else is Intl
+   output or fixed geometry: month labels in the locale's own calendar
+   voice, a signed localized percent for the delta, and a fixed bar
+   series (the same company's same half-year, whatever the tongue). */
+const CHART_MONTHS = [2, 3, 4, 5, 6, 7] as const; // Mar–Aug 2026, ending at the payout month
+const CHART_BARS = [0.44, 0.58, 0.5, 0.68, 0.82, 1] as const;
+
+const fmtMonth = (loc: PreviewLoc, month: number) =>
+  new Intl.DateTimeFormat(loc, { month: 'short' }).format(new Date(2026, month, 1));
+
+const fmtDelta = (loc: PreviewLoc) =>
+  new Intl.NumberFormat(loc, {
+    style: 'percent',
+    signDisplay: 'always',
+    maximumFractionDigits: 0,
+  }).format(0.12);
+
 /* ------------------------------------------------------------------
    The payload under the render: the hashed-key JSON `gt translate`
    writes to public/_gt/[locale].json (the real file shape — hash of
@@ -407,6 +444,7 @@ const HASHES = {
   invoices: 'c093f7b1e6a2854d',
   payout: '5e1ba4f68d20c793',
   button: '32b8f2a917c40de6',
+  chart: 'f6d02a48c7e1935b',
 } as const;
 
 /* ------------------------------------------------------------------
@@ -426,7 +464,8 @@ type RwKey =
   | 'revenue'
   | 'invoices'
   | 'payout'
-  | 'button';
+  | 'button'
+  | 'chart';
 
 const RW_LINES: readonly { key: RwKey; read: (loc: PreviewLoc) => string }[] = [
   { key: 'nav0', read: (loc) => PREVIEWS[loc].nav[0] },
@@ -438,6 +477,7 @@ const RW_LINES: readonly { key: RwKey; read: (loc: PreviewLoc) => string }[] = [
   { key: 'invoices', read: (loc) => PREVIEWS[loc].invoices },
   { key: 'payout', read: (loc) => PREVIEWS[loc].payout },
   { key: 'button', read: (loc) => PREVIEWS[loc].button },
+  { key: 'chart', read: (loc) => PREVIEWS[loc].chart },
 ];
 
 /** The inspector ids: which payload key each component's string ships
@@ -452,6 +492,7 @@ const INS_IDS: Readonly<Partial<Record<RwKey, string>>> = {
   invoices: HASHES.invoices,
   payout: HASHES.payout,
   button: HASHES.button,
+  chart: HASHES.chart,
 };
 
 /* ---- belt pacing: each locale owns the centre for DWELL seconds.
@@ -552,6 +593,7 @@ function PayloadJson({ loc, hl }: { loc: PreviewLoc; hl?: string }) {
     [HASHES.revenue, p.revenue, 'revenue'],
     [HASHES.invoices, p.invoices, 'invoices'],
     [HASHES.payout, p.payout, 'payout'],
+    [HASHES.chart, p.chart, 'chart'],
   ];
   return (
     <pre className='tct-payload-code'>
@@ -1347,10 +1389,10 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
           <div className='tct-app' ref={app} lang={ploc} style={{ '--seam-cut': '70%' } as CSSProperties}>
             {/* the app's own chrome: the GT mark + localized nav. The brand
                 is the drawn logo alone, never a wordmark (founder addendum);
-                the surface keeps its light ground in both themes, so the
-                light-context (dark-ink) asset is the one right choice. The
-                logo is not a translatable string — no rewrite node, no
-                inspector. */}
+                the mock follows the theme, so the dark-ink asset inverts on
+                the dark build (brand rule — the filter lives in
+                translate-window.css). The logo is not a translatable
+                string — no rewrite node, no inspector. */}
             <div className='sgdh-app-chrome'>
               <span className='sgdh-app-mark'>
                 <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={15} height={15} />
@@ -1371,40 +1413,75 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
               </nav>
             </div>
 
+            {/* the main zone composes TWO rails inside the resting cut
+                (the grid's right padding mirrors the payload's inset,
+                so nothing here ever sits under the teaser strip): copy,
+                stats and action left; the chart card — the calm second
+                block — filling the right rail, vertically centred */}
             <div className='tct-app-main'>
-              <h3 className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
-                <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
-                <InsMark {...insProps('heading')} />
-              </h3>
-              <p className='tct-app-copy sgdh-ins' data-ins-on={ins?.k === 'sub' || undefined} {...insBox('sub')}>
-                <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
-                <InsMark {...insProps('sub')} />
-              </p>
+              <div className='sgdh-app-cols'>
+                <div className='sgdh-app-stack'>
+                  <h3 className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
+                    <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
+                    <InsMark {...insProps('heading')} />
+                  </h3>
+                  <p className='tct-app-copy sgdh-ins' data-ins-on={ins?.k === 'sub' || undefined} {...insBox('sub')}>
+                    <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
+                    <InsMark {...insProps('sub')} />
+                  </p>
 
-              {/* the stats row: labels are payload strings, values are
-                  live Intl output — currency, count, date */}
-              <dl className='sgdh-app-stats'>
-                <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'revenue' || undefined} {...insBox('revenue')}>
-                  <dt data-rw='revenue'>{PREVIEWS[ploc].revenue}</dt>
-                  <dd data-rwf>{fmtRevenue(ploc)}</dd>
-                  <InsMark {...insProps('revenue')} />
-                </div>
-                <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'invoices' || undefined} {...insBox('invoices')}>
-                  <dt data-rw='invoices'>{PREVIEWS[ploc].invoices}</dt>
-                  <dd data-rwf>{fmtInvoices(ploc)}</dd>
-                  <InsMark {...insProps('invoices')} />
-                </div>
-                <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'payout' || undefined} {...insBox('payout')}>
-                  <dt data-rw='payout'>{PREVIEWS[ploc].payout}</dt>
-                  <dd data-rwf>{fmtPayout(ploc)}</dd>
-                  <InsMark {...insProps('payout')} />
-                </div>
-              </dl>
+                  {/* the stats row: labels are payload strings, values are
+                      live Intl output — currency, count, date */}
+                  <dl className='sgdh-app-stats'>
+                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'revenue' || undefined} {...insBox('revenue')}>
+                      <dt data-rw='revenue'>{PREVIEWS[ploc].revenue}</dt>
+                      <dd data-rwf>{fmtRevenue(ploc)}</dd>
+                      <InsMark {...insProps('revenue')} />
+                    </div>
+                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'invoices' || undefined} {...insBox('invoices')}>
+                      <dt data-rw='invoices'>{PREVIEWS[ploc].invoices}</dt>
+                      <dd data-rwf>{fmtInvoices(ploc)}</dd>
+                      <InsMark {...insProps('invoices')} />
+                    </div>
+                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'payout' || undefined} {...insBox('payout')}>
+                      <dt data-rw='payout'>{PREVIEWS[ploc].payout}</dt>
+                      <dd data-rwf>{fmtPayout(ploc)}</dd>
+                      <InsMark {...insProps('payout')} />
+                    </div>
+                  </dl>
 
-              <span className='tct-app-btn sgdh-ins' data-ins-on={ins?.k === 'button' || undefined} {...insBox('button')}>
-                <span data-rw='button'>{PREVIEWS[ploc].button}</span>
-                <InsMark {...insProps('button')} />
-              </span>
+                  <span className='tct-app-btn sgdh-ins' data-ins-on={ins?.k === 'button' || undefined} {...insBox('button')}>
+                    <span data-rw='button'>{PREVIEWS[ploc].button}</span>
+                    <InsMark {...insProps('button')} />
+                  </span>
+                </div>
+
+                {/* the chart card: one localized label (a real payload
+                    row — it retypes and inspects like every component);
+                    months and the delta are the locale's own Intl voice,
+                    the bar series fixed — same company, same half-year */}
+                <aside className='sgdh-app-chart sgdh-ins' data-ins-on={ins?.k === 'chart' || undefined} {...insBox('chart')}>
+                  <div className='sgdh-app-chart-head'>
+                    <span className='sgdh-app-chart-t' data-rw='chart'>{PREVIEWS[ploc].chart}</span>
+                    <b className='sgdh-app-chart-d' data-rwf>{fmtDelta(ploc)}</b>
+                  </div>
+                  <div className='sgdh-app-bars' aria-hidden>
+                    {CHART_BARS.map((h, i) => (
+                      <i
+                        key={CHART_MONTHS[i]}
+                        data-on={i === CHART_BARS.length - 1 || undefined}
+                        style={{ height: `${Math.round(h * 100)}%` }}
+                      />
+                    ))}
+                  </div>
+                  <div className='sgdh-app-months' data-rwf>
+                    {CHART_MONTHS.map((m) => (
+                      <span key={m}>{fmtMonth(ploc, m)}</span>
+                    ))}
+                  </div>
+                  <InsMark {...insProps('chart')} />
+                </aside>
+              </div>
             </div>
 
             <div className='tct-payload' aria-hidden>

@@ -58,9 +58,3 @@
     display: none;
   }
 }
-
-/* the glyph rain inks itself from --tc-ink resolved off the canvas — on the
-   dark plate that must stay white in BOTH themes */
-.hfs-stage.is-rain {
-  --tc-ink: #ffffff;
-}

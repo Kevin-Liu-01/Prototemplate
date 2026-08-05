@@ -340,6 +340,24 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
            one's holds until it leaves, so even an instant jump (keyboard
            End, a fast fling) always lands inside exactly one window and
            the state can never go stale */
+        /* scrolled back out above the band: the arrival reverses — the
+           line retracts down the rail to its foot, ready to rise again on
+           the next lock-in. Wired to BOTH exits that can pass the band's
+           top: beat 01's window (the gradual scroll-up, while the figure
+           is still partly on screen) and the view gate below (an instant
+           jump from a deeper beat, which never re-toggles beat 01). */
+        const retract = () => {
+          if (!rail) return;
+          gsap.to(rail, {
+            scaleY: 0,
+            svgOrigin: RAIL_ORIGIN,
+            duration: 0.7,
+            ease: 'power2.in',
+            overwrite: 'auto',
+          });
+          railAt = 0;
+        };
+
         beats.forEach((beat, i) => {
           ScrollTrigger.create({
             trigger: beat,
@@ -347,19 +365,7 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
             end: i === beats.length - 1 ? 'bottom top' : 'bottom 58%',
             onToggle: (self) => {
               if (self.isActive) setActive(i, false);
-              else if (i === 0 && self.progress === 0 && rail) {
-                /* scrolled back out above the band: the arrival reverses
-                   — the line retracts down the rail to its foot, ready to
-                   rise again on the next lock-in */
-                gsap.to(rail, {
-                  scaleY: 0,
-                  svgOrigin: RAIL_ORIGIN,
-                  duration: 0.7,
-                  ease: 'power2.in',
-                  overwrite: 'auto',
-                });
-                railAt = 0;
-              }
+              else if (i === 0 && self.progress === 0) retract();
             },
           });
         });
@@ -373,6 +379,8 @@ export default function V0FullStack({ sub = 'Everything you need to reach your n
           onToggle: (self) => {
             inView = self.isActive;
             syncLoops();
+            /* the jump exit: left upward without re-entering beat 01 */
+            if (!self.isActive && self.progress === 0 && railAt > 0) retract();
           },
         });
         inView = viewGate.isActive;
