@@ -109,13 +109,16 @@ const VARIANTS: readonly Variant[] = [
       const field = createRayField(canvas, {
         preset: 'shafts',
         params: {
-          rayCount: 9,
+          rayCount: 11,
           pulseSpeed: 0.09,
           pulseCount: 2,
-          pulseBrightness: 2.2,
+          pulseBrightness: 2.8,
           colorMix: 0.15,
-          glow: 0.5,
-          exposure: 1.25,
+          // white-dominant: the dominant pair runs near-white over a pale blue
+          col1Center: [0.93, 0.95, 1.0],
+          col1Edge: [0.62, 0.72, 1.0],
+          glow: 0.7,
+          exposure: 1.4,
         },
       });
       return field ? () => field.destroy() : undefined;

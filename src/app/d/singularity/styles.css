@@ -1037,6 +1037,9 @@
   line-height: 13px;
   border-radius: 1px;
   background-size: cover;
+  /* the ring rides bare white ground: white-field flags (ja, pl) keep
+     their edge the way the emoji's baked-in outline did */
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.16);
   vertical-align: -1.5px;
   will-change: transform;
 }
