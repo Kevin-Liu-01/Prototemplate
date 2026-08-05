@@ -267,11 +267,15 @@ export default function V0FullStack() {
           const top = hot.length > 0 ? Math.max(...hot) : -1;
 
           /* is this the arrival — the fill rising from the rail's empty
-             foot? Entering taps then wait for the tip: the rise is 1.0s
-             power2.out, so a draw parked at 0.8 lands its rail end in
-             fill that has already arrived (or is a frame from it) even
-             at the very top of the stack. */
+             foot? Every tap then waits for the tip (founder round 8: the
+             bend at the rail's tip must DRAW and CONNECT, never sit
+             pre-drawn on the track). tipAt() inverts the rise's 1.0s
+             power2.out to the moment the tip passes tap i, so each bend
+             draws exactly as the blue arrives under it. */
           const rising = rail !== null && railAt === 0;
+          const target = RAIL_SCALE[count - 1] ?? 1;
+          const tipAt = (i: number) =>
+            1 - Math.sqrt(Math.max(0, 1 - (RAIL_SCALE[i] ?? 1) / target));
 
           const tl = gsap.timeline({ defaults: { overwrite: 'auto' } });
           let entered = 0;
@@ -280,8 +284,12 @@ export default function V0FullStack() {
             const seat = set.has(i) ? -LIFT : i > top ? -(LIFT + OPEN) : 0;
             const tap = taps[i];
             if (instant) {
+              /* the instant path always parks the rail EMPTY, so visible
+                 plates' taps park hidden on the RAIL side (−100): the
+                 arrival draws each bend rail-outward as the tip passes,
+                 instead of the fill rising into a pre-drawn corner */
               gsap.set(slab, { y: visible ? seat : seat - DROP, autoAlpha: visible ? 1 : 0 });
-              if (tap) gsap.set(tap, { strokeDashoffset: visible ? 0 : 100 });
+              if (tap) gsap.set(tap, { strokeDashoffset: visible ? -100 : 100 });
             } else if (visible && !shown[i]) {
               /* arriving: the plate drops in from above its seat,
                  bottom-up; once it settles, its tap DRAWS itself — out of
@@ -295,15 +303,22 @@ export default function V0FullStack() {
                 tl.to(
                   tap,
                   { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
-                  rising ? Math.max(at + 0.5, 0.8) : at + 0.5
+                  rising ? Math.max(at + 0.5, tipAt(i) - 0.1) : at + 0.5
                 );
               }
               entered += 1;
             } else if (visible) {
-              /* staying: glide to the new seat, tap normalized drawn */
+              /* staying: glide to the new seat. The tap normalizes drawn
+                 — parked at −100 it draws RAIL-OUTWARD (the bend turning
+                 off the tip and connecting), and on the arrival that draw
+                 waits for the tip to pass its tap point */
               tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.55, ease: 'power3.out' }, 0);
               if (tap) {
-                tl.to(tap, { strokeDashoffset: 0, duration: 0.3, autoRound: false }, 0);
+                tl.to(
+                  tap,
+                  { strokeDashoffset: 0, duration: 0.3, autoRound: false },
+                  rising ? tipAt(i) : 0
+                );
               }
             } else {
               /* leaving: the tap retracts the reverse way — rail end
@@ -369,12 +384,27 @@ export default function V0FullStack() {
            jump from a deeper beat, which never re-toggles beat 01). */
         const retract = () => {
           if (!rail) return;
-          gsap.to(rail, {
-            scaleY: 0,
-            svgOrigin: RAIL_ORIGIN,
-            duration: 0.7,
-            ease: 'power2.in',
-            overwrite: 'auto',
+          const from = railAt;
+          const tl = gsap.timeline({ defaults: { overwrite: 'auto' } });
+          tl.to(
+            rail,
+            { scaleY: 0, svgOrigin: RAIL_ORIGIN, duration: 0.7, ease: 'power2.in' },
+            0
+          );
+          /* the bends leave WITH the line (founder round 8, "the reverse
+             on retract"): each still-shown tap collapses into the tip as
+             it descends past — vertex end first, curling off through the
+             elbow — never an orphan corner on the grey track. The timing
+             inverts the 0.7s power2.in fall to the tip's pass. */
+          taps.forEach((tap, i) => {
+            if (!shown[i]) return;
+            const down =
+              from > 0 ? 0.7 * Math.sqrt(Math.max(0, 1 - (RAIL_SCALE[i] ?? 1) / from)) : 0;
+            tl.to(
+              tap,
+              { strokeDashoffset: -100, duration: 0.25, ease: 'power1.in', autoRound: false },
+              Math.max(0, down - 0.2)
+            );
           });
           railAt = 0;
         };

@@ -99,8 +99,9 @@
   max-width: 24ch;
 }
 
-/* The compliance seals: the actual badge shapes drawn in the sheet's ink —
-   side by side, no chip chrome around them, warming to full ink on hover. */
+/* The compliance seals: the actual program marks, side by side — no chip
+   chrome around them; the transparent assets seat straight on the sheet
+   and lift to full presence on hover. */
 .toolchain-root .v0-foot-badges {
   display: flex;
   flex-wrap: wrap;
@@ -111,61 +112,24 @@
 
 .toolchain-root .v0-foot-badge {
   display: inline-flex;
-  color: var(--tc-ink-2);
-  transition: color 0.15s ease;
+  opacity: 0.92;
+  transition: opacity 0.15s ease;
 }
 
 .toolchain-root .v0-foot-badge:hover {
-  color: var(--tc-ink);
+  opacity: 1;
 }
 
-.toolchain-root .v0-fb {
+.toolchain-root .v0-foot-badge img {
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
 }
 
-.toolchain-root .v0-fb-line {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.15;
-}
-
-.toolchain-root .v0-fb-line.is-thin {
-  stroke-width: 0.7;
-  opacity: 0.7;
-}
-
-.toolchain-root .v0-fb-dot {
-  fill: currentColor;
-}
-
-.toolchain-root .v0-fb-t {
-  fill: currentColor;
-  text-anchor: middle;
-  font-family: var(--tc-sans);
-}
-
-.toolchain-root .v0-fb-t.is-tiny {
-  font-size: 4.6px;
-  letter-spacing: 0.09em;
-}
-
-.toolchain-root .v0-fb-t.is-big {
-  font-size: 8.4px;
-  font-weight: 650;
-  letter-spacing: 0.01em;
-}
-
-.toolchain-root .v0-fb-t.is-mono {
-  font-family: var(--tc-mono);
-  font-size: 6.4px;
-  letter-spacing: 0.08em;
-}
-
-.toolchain-root .v0-fb-t.is-stars {
-  font-size: 4.2px;
-  letter-spacing: 0.12em;
+/* the marks are inked for a light ground — the dark sheet lifts them just
+   enough to read without redrawing them */
+[data-theme='dark'] .toolchain-root .v0-foot-badge img {
+  filter: brightness(2.1);
 }
 
 /* ---------- link columns ---------- */
