@@ -219,6 +219,8 @@ export default function V0FullStack() {
       const taps = gsap.utils.toArray<SVGGElement>('[data-rail-tap]', scope);
       const rail = scope.querySelector<SVGGElement>('[data-rail-line]');
       const waves = gsap.utils.toArray<SVGPathElement>('[data-ctx-wave]', scope);
+      const codeWrap = scope.querySelector<SVGPathElement>('[data-code-wrap]');
+      const fanPulses = gsap.utils.toArray<SVGPathElement>('[data-fan-pulse]', scope);
       const orbit = scope.querySelector<SVGPathElement>('[data-agent-orbit]');
       const stripes = gsap.utils.toArray<SVGPathElement>('[data-ldx-stripe]', scope);
       const stripes2 = gsap.utils.toArray<SVGPathElement>('[data-ldx-stripe2]', scope);
@@ -229,7 +231,9 @@ export default function V0FullStack() {
       if (slabs.length === 0 || beats.length === 0) return;
 
       /* how many slabs must exist for each ambient loop's plate */
+      const codeNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'code') + 1;
       const ctxNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'context') + 1;
+      const transNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'translations') + 1;
       const agentsNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'agents') + 1;
       /* the scan beam answers the STORY, not the build: it hangs only
          while the agents BEAT is the hot one (founder: "when we get to
@@ -297,6 +301,39 @@ export default function V0FullStack() {
         const waveLoops = waves.map((wave, i) =>
           gsap.fromTo(
             wave,
+            { strokeDashoffset: 1000 },
+            {
+              strokeDashoffset: 0,
+              duration: 2.8,
+              ease: 'none',
+              repeat: -1,
+              delay: i * 0.9,
+              paused: true,
+              autoRound: false,
+            }
+          )
+        );
+        /* the code plate's wrap glint: one accent segment lapping the
+           component boundary — the agents orbit's device at block scale */
+        const wrapLoop = codeWrap
+          ? gsap.fromTo(
+              codeWrap,
+              { strokeDashoffset: 210 },
+              {
+                strokeDashoffset: -790,
+                duration: 6,
+                ease: 'none',
+                repeat: -1,
+                paused: true,
+                autoRound: false,
+              }
+            )
+          : null;
+        /* the translations fan's delivery pulses: the waves' ride, source
+           string OUTWARD to each locale run */
+        const fanLoops = fanPulses.map((pulse, i) =>
+          gsap.fromTo(
+            pulse,
             { strokeDashoffset: 1000 },
             {
               strokeDashoffset: 0,
@@ -393,9 +430,19 @@ export default function V0FullStack() {
            a fade mid-flight */
         let scanShown = false;
         const syncLoops = () => {
+          const codeOn = inView && built >= codeNeed;
+          if (wrapLoop) {
+            if (codeOn) wrapLoop.play();
+            else wrapLoop.pause();
+          }
           const wavesOn = inView && built >= ctxNeed;
           for (const loop of waveLoops) {
             if (wavesOn) loop.play();
+            else loop.pause();
+          }
+          const transOn = inView && built >= transNeed;
+          for (const loop of fanLoops) {
+            if (transOn) loop.play();
             else loop.pause();
           }
           const agentsOn = inView && built >= agentsNeed;

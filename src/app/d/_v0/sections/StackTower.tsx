@@ -306,6 +306,13 @@ const CTX_WIRES: readonly string[] = [
   'M-44 26C-22 26 -14 6 7 6',
 ];
 
+/** The code plate's wrap boundary: a flat rounded enclosure spanning the
+    air between the two bracket chips (their inner edges sit at ±22),
+    holding the three code bars — the block the <T> pair owns. The glint
+    that rides it loops in FullStack ([data-code-wrap]). */
+const WRAP_BOX =
+  'M-16.5 -12.5H14.5A3 3 0 0 1 17.5 -9.5V10.5A3 3 0 0 1 14.5 13.5H-16.5A3 3 0 0 1 -19.5 10.5V-9.5A3 3 0 0 1 -16.5 -12.5Z';
+
 /** Translations' fan: source string out to its three locale runs. */
 const FAN_WIRES: readonly string[] = [
   'M-12 -25C-2 -25 -10 -12 2 -12',
@@ -629,11 +636,27 @@ function TopGlyph({ id }: { id: string }) {
       /* source: the raised bracket pair — '<' and '/>' each on its own
          slab, drawn large enough to READ as brackets (founder round),
          lying flush in the chip tops — wrapping three lines of code
-         between them: the <T> block grammar with real bracket forms */
+         between them: the <T> block grammar with real bracket forms.
+         The wrap is now EXPLICIT (founder: the layers speak like the
+         diffs do): a hairline boundary encloses the code block between
+         the brackets, the wrapped line inside tints to the accent, and
+         an accent glint rides the boundary — wrap it and it ships. */
       return (
         <>
+          <g transform={plane(THICK)}>
+            <path className='v0s-wrap-box' d={WRAP_BOX} vectorEffect='non-scaling-stroke' />
+            <path
+              className='v0s-wrap-glint'
+              data-code-wrap
+              d={WRAP_BOX}
+              pathLength={1000}
+              strokeDasharray='130 870'
+              strokeDashoffset={210}
+              vectorEffect='non-scaling-stroke'
+            />
+          </g>
           <path className='v0s-g-mark' d={markPath(-16, -9, 30, 5)} />
-          <path className='v0s-g-mark' d={markPath(-16, -1.5, 22, 5)} />
+          <path className='v0s-g-mark is-wrap' d={markPath(-16, -1.5, 22, 5)} />
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
           <GlyphChip x={-46} y={-12} w={24} d={24} h={CHIP_H} />
           <GlyphChip x={22} y={-12} w={24} d={24} h={CHIP_H} />
@@ -673,6 +696,17 @@ function TopGlyph({ id }: { id: string }) {
               />
             ))}
           </g>
+          {/* the three sources made CONCRETE (founder: the layers speak
+              like the diffs do): glossary, tone and directives as raised
+              mini-chips, each carrying one micro content bar, each wire
+              emerging from under its chip — context has bodies now, not
+              just threads */}
+          <GlyphChip x={-51} y={-30.5} w={10} d={9} h={2.5} />
+          <GlyphChip x={-51} y={-4.5} w={10} d={9} h={2.5} />
+          <GlyphChip x={-51} y={21.5} w={10} d={9} h={2.5} />
+          <path className='v0s-g-mark' d={markPath(-48.5, -27.25, 6, 2.5, THICK + 2.5)} />
+          <path className='v0s-g-mark' d={markPath(-48.5, -1.25, 6, 2.5, THICK + 2.5)} />
+          <path className='v0s-g-mark' d={markPath(-48.5, 24.75, 6, 2.5, THICK + 2.5)} />
           <GlyphChip x={6} y={-12} w={34} d={24} h={CHIP_H} />
           {/* open tracking, on purpose: flush type shears its neighbours
               toward each other, so anything tighter fuses the three forms */}
@@ -701,6 +735,22 @@ function TopGlyph({ id }: { id: string }) {
           <g transform={plane(THICK)}>
             {FAN_WIRES.map((d) => (
               <path key={d} className='v0s-fan-wire' d={d} vectorEffect='non-scaling-stroke' />
+            ))}
+            {/* delivery as MOTION (founder: the layers speak like the
+                diffs do): accent pulses ride the fan from the source
+                string out to every locale run — the context waves'
+                grammar, pointed the other way */}
+            {FAN_WIRES.map((d) => (
+              <path
+                key={`pulse:${d}`}
+                className='v0s-ctx-wave'
+                data-fan-pulse
+                d={d}
+                pathLength={1000}
+                strokeDasharray='160 840'
+                strokeDashoffset={580}
+                vectorEffect='non-scaling-stroke'
+              />
             ))}
           </g>
           <path className='v0s-g-mark' d={markPath(3, -15, 26, 5.5)} />

@@ -470,14 +470,15 @@
 }
 
 /* ---------- the Bayer aura off the frame ----------
-   The dither comes FROM the workspace box (founder note): ordered 4x4
+   The dither comes FROM the workspace box (founder rounds): ordered 4x4
    tiers on 2px cells, every tile on one shared 8px grid so no cell is
-   ever painted twice. The right strip is the strong side — three 8px
-   columns stepping cover 6 -> 3 -> 1 away from the frame, filling the
-   24px to the sheet edge — and the 14px strips above and below carry one
-   quiet cover-2 field. The ink is the band's white in both themes; the
-   two <i> hooks come from the workspace's product chrome. */
+   ever painted twice. Right, top and bottom wear the SAME quiet cover-2
+   field; the directional fade goes WEST — five 8px columns stepping
+   cover 6 -> 4 -> 3 -> 2 -> 1 off the frame's left edge into the copy
+   column, dead long before the words. The ink is the band's white in
+   both themes; the <i> hooks come from the workspace's product chrome. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-r,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-l,
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y {
   position: absolute;
   pointer-events: none;
@@ -488,16 +489,29 @@
   top: 0;
   bottom: 0;
   width: 24px;
-  opacity: 0.3;
+  opacity: 0.11;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E") repeat;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-l {
+  right: 100%;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  opacity: 0.2;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 0h2v2H4ZM2 2h2v2H2ZM0 4h2v2H0ZM4 4h2v2H4ZM6 6h2v2H6Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 0h2v2H4ZM4 4h2v2H4ZM0 4h2v2H0Z'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 0h2v2H4ZM4 4h2v2H4Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0Z'/%3E%3C/svg%3E");
   background-repeat: repeat-y;
   background-position:
-    0 0,
+    32px 0,
+    24px 0,
+    16px 0,
     8px 0,
-    16px 0;
+    0 0;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y {
@@ -513,7 +527,7 @@
      right strip carry the same quiet field */
   right: -24px;
   height: 14px;
-  opacity: 0.16;
+  opacity: 0.11;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23ffffff' d='M0 0h2v2H0ZM4 4h2v2H4Z'/%3E%3C/svg%3E") repeat;
 }
 
@@ -523,4 +537,73 @@
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::after {
   top: 100%;
+}
+
+/* ---------- the four artifacts, easier to read (founder round) ----------
+   The playbook the other diagrams set: icons name the parts, glosses say
+   WHY, every claim shows real evidence, and each cell closes on a one-line
+   captioned footnote (the SentenceWidth pattern). */
+
+/* the pinned term wears the accent — locked, not merely bold */
+.toolchain-root .v0-ctx .v0-ctx-glossary-line b {
+  color: color-mix(in srgb, var(--iso-accent, #2f5ce0) 52%, #ffffff);
+}
+
+.toolchain-root .v0-ctx .v0-ctx-rule {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-rule svg {
+  width: 11px;
+  height: 11px;
+  flex: none;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-gterm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* the mark asset pads its glyph to 222/500 of the box — sized from the
+   glyph, margins hand the padding back (the StackTower lesson) */
+.toolchain-root .v0-ctx .v0-ctx-gmark {
+  width: 27px;
+  height: 27px;
+  margin: -8px;
+  flex: none;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-dir > b {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-dir > b svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .v0-ctx .v0-ctx-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 0;
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-note svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
 }

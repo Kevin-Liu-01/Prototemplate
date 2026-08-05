@@ -3,8 +3,20 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import {
+  Ban,
+  Braces,
+  CalendarDays,
+  PenLine,
+  Pin,
+  SlidersHorizontal,
+  Speech,
+  Split,
+  Users,
+} from 'lucide-react';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 import { createInkField } from '@/app/d/glyph-rain/sections/band/inkField';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
@@ -52,11 +64,11 @@ const GENDER_FORKS = [
   'M220 0 V14 C220 38 330 28 330 56',
 ] as const;
 
-type GenderBranch = { value: string; word: string };
+type GenderBranch = { value: string; word: string; gloss: string };
 
 const GENDER_BRANCHES: readonly GenderBranch[] = [
-  { value: 'masculine', word: 'Bienvenido' },
-  { value: 'feminine', word: 'Bienvenida' },
+  { value: 'masculine', word: 'Bienvenido', gloss: 'greeting a man' },
+  { value: 'feminine', word: 'Bienvenida', gloss: 'greeting a woman' },
 ];
 
 /* ContextResolve's clocks, verbatim — one dwell per branch, the window's
@@ -289,10 +301,13 @@ function GenderFork() {
             <p className='lang-cr-result' lang='es'>
               {branch.word}
             </p>
+            {/* the gloss is the explainer (founder round: easier to
+                understand) — WHY the word changes, beside the locale */}
             <p className='lang-cr-gloss'>
               <span className='lang-tag'>
                 <LocaleTag code='es' />
               </span>
+              {branch.gloss}
             </p>
           </div>
         ))}
@@ -329,26 +344,37 @@ const DE_DATE = new Intl.DateTimeFormat('de-DE', {
 
 type Directive = {
   label: string;
+  icon: LucideIcon;
   text: ReactNode;
-  /** the tiny before→after pair under the Sie directive */
+  /** every directive shows its evidence — a real before→after pair
+      (founder round: the Sie row had one; now they all do) */
   pair?: { before: string; after: string };
 };
 
 const DIRECTIVES: readonly Directive[] = [
-  { label: 'Audience', text: 'Avoid jargon.' },
+  {
+    label: 'Audience',
+    icon: Users,
+    text: 'Avoid jargon.',
+    pair: { before: 'Persistieren…', after: 'Speichern…' },
+  },
   {
     label: 'Formality',
+    icon: Speech,
     text: 'Use the formal “Sie.”',
     pair: { before: 'Du kannst…', after: 'Sie können…' },
   },
-  { label: 'Conventions', text: 'Use active voice.' },
+  {
+    label: 'Conventions',
+    icon: PenLine,
+    text: 'Use active voice.',
+    pair: { before: 'Wird geladen…', after: 'Lädt…' },
+  },
   {
     label: 'Formatting',
-    text: (
-      <>
-        Write dates as <code>{DE_DATE}</code>.
-      </>
-    ),
+    icon: CalendarDays,
+    text: 'Use German date order.',
+    pair: { before: '07/30/2026', after: DE_DATE },
   },
 ];
 
@@ -404,6 +430,10 @@ export default function V0Context() {
             <div className='v0-ctx-art'>
               <ContextResolve title='The English string Save resolves by context: speichern when it saves a file, sparen when it means a discount' />
             </div>
+            <p className='v0-ctx-note'>
+              <Split aria-hidden strokeWidth={1.75} />
+              One string, two meanings — context picks the right word.
+            </p>
           </div>
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
@@ -414,7 +444,10 @@ export default function V0Context() {
               <div className='v0-ctx-glossary'>
                 <div className='v0-ctx-glossary-head'>
                   <b>Vault</b>
-                  <span className='v0-ctx-rule'>pinned</span>
+                  <span className='v0-ctx-rule'>
+                    <Pin aria-hidden strokeWidth={1.75} />
+                    pinned
+                  </span>
                 </div>
                 {VAULT_ROWS.map((row) => (
                   <div className='v0-ctx-glossary-row' key={row.code}>
@@ -427,11 +460,23 @@ export default function V0Context() {
                   </div>
                 ))}
                 <div className='v0-ctx-glossary-head'>
-                  <b>Locadex</b>
-                  <span className='v0-ctx-rule'>never translate</span>
+                  <b className='v0-ctx-gterm'>
+                    {/* the mark, not the letter — the house never writes
+                        the wordmark plain */}
+                    <img alt='' className='v0-ctx-gmark' src='/brand/locadex-mark.svg' />
+                    Locadex
+                  </b>
+                  <span className='v0-ctx-rule'>
+                    <Ban aria-hidden strokeWidth={1.75} />
+                    never translate
+                  </span>
                 </div>
               </div>
             </div>
+            <p className='v0-ctx-note'>
+              <Pin aria-hidden strokeWidth={1.75} />
+              Pinned terms render verbatim in every locale.
+            </p>
           </div>
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
@@ -447,25 +492,35 @@ export default function V0Context() {
                     German
                   </span>
                 </div>
-                {DIRECTIVES.map((directive) => (
-                  <div className='v0-ctx-dir' key={directive.label}>
-                    <b>{directive.label}</b>
-                    <span className='v0-ctx-dir-body'>
-                      <p>{directive.text}</p>
-                      {directive.pair ? (
-                        <span className='v0-ctx-dir-pair' lang='de'>
-                          <span className='is-before'>{directive.pair.before}</span>
-                          <span className='is-arrow' aria-hidden='true'>
-                            {'→'}
+                {DIRECTIVES.map((directive) => {
+                  const Icon = directive.icon;
+                  return (
+                    <div className='v0-ctx-dir' key={directive.label}>
+                      <b>
+                        <Icon aria-hidden strokeWidth={1.75} />
+                        {directive.label}
+                      </b>
+                      <span className='v0-ctx-dir-body'>
+                        <p>{directive.text}</p>
+                        {directive.pair ? (
+                          <span className='v0-ctx-dir-pair' lang='de'>
+                            <span className='is-before'>{directive.pair.before}</span>
+                            <span className='is-arrow' aria-hidden='true'>
+                              {'→'}
+                            </span>
+                            <span>{directive.pair.after}</span>
                           </span>
-                          <span>{directive.pair.after}</span>
-                        </span>
-                      ) : null}
-                    </span>
-                  </div>
-                ))}
+                        ) : null}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
+            <p className='v0-ctx-note'>
+              <SlidersHorizontal aria-hidden strokeWidth={1.75} />
+              Directives apply to every translated string.
+            </p>
           </div>
 
           <div className='tcb-cell v0-ctx-cell v0-ctx-dyn' data-cell data-reveal>
@@ -475,6 +530,10 @@ export default function V0Context() {
             <div className='v0-ctx-art'>
               <GenderFork />
             </div>
+            <p className='v0-ctx-note'>
+              <Braces aria-hidden strokeWidth={1.75} />
+              Grammatical gender follows the variable.
+            </p>
           </div>
 
           {/* The review beat: the grid's full-width closing row — the

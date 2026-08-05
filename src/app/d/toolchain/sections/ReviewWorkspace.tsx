@@ -367,9 +367,11 @@ export default function ReviewWorkspace({
           {chrome === 'product' ? (
             <>
               {/* the aura hooks: zero-ink here — the mounting page styles
-                  them into the dither field breathing off the frame */}
+                  them into the dither field breathing off the frame (quiet
+                  bands right/top/bottom, the directional fade westward) */}
               <i aria-hidden='true' className='tcr-aura-r' />
               <i aria-hidden='true' className='tcr-aura-y' />
+              <i aria-hidden='true' className='tcr-aura-l' />
             </>
           ) : null}
         </div>
