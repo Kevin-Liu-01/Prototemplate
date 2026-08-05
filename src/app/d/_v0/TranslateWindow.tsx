@@ -1601,8 +1601,12 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                       as the nav. The one-line clip lives on .v0-tw-line
                       INSIDE the fit — the fit itself must not clip, its
                       corner mark straddles the box edge (overflow on the
-                      h3/p used to eat the marks whole) */}
-                  <h3 className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
+                      h3/p used to eat the marks whole). A div, not an h3:
+                      the mock app's headline is scenery, and a real heading
+                      here skipped the document outline (h1 straight to h3 —
+                      Lighthouse heading-order); .tct-app-h pins every
+                      UA-differing property, so the swap is invisible. */}
+                  <div className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
                     <span className='v0-tw-fit'>
                       <span className='v0-tw-line'>
                         <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
@@ -1610,7 +1614,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                       <InsMark {...insProps('heading')} />
                     </span>
                     <Ghost read={(l) => PREVIEWS[l].heading} />
-                  </h3>
+                  </div>
                   <p className='tct-app-copy sgdh-ins' data-ins-on={ins?.k === 'sub' || undefined} {...insBox('sub')}>
                     <span className='v0-tw-fit'>
                       <span className='v0-tw-line'>
@@ -1621,33 +1625,38 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                     <Ghost read={(l) => PREVIEWS[l].sub} />
                   </p>
 
-                  {/* the stats row: labels are payload strings, values are
+                  {/* The stats row: labels are payload strings, values are
                       live Intl output — currency, count, date. Each cell
                       carries a label ladder AND a value ladder, so the
-                      figures swap freely inside a cell that never moves. */}
-                  <dl className='sgdh-app-stats'>
+                      figures swap freely inside a cell that never moves.
+                      Divs, not a dl: each cell also hosts its InsMark and
+                      ghost ladders, which a dl's dt/dd grammar forbids
+                      (Lighthouse definition-list) — the is-dt/is-dd names
+                      keep describing the two type roles, and the CSS
+                      anchors on data-rw/data-rwf. */}
+                  <div className='sgdh-app-stats'>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'revenue' || undefined} {...insBox('revenue')}>
-                      <dt data-rw='revenue'>{PREVIEWS[ploc].revenue}</dt>
-                      <dd data-rwf suppressHydrationWarning>{fmtRevenue(ploc)}</dd>
+                      <div data-rw='revenue'>{PREVIEWS[ploc].revenue}</div>
+                      <div data-rwf suppressHydrationWarning>{fmtRevenue(ploc)}</div>
                       <Ghost className='is-dt' read={(l) => PREVIEWS[l].revenue} />
                       <Ghost className='is-dd' read={fmtRevenue} />
                       <InsMark {...insProps('revenue')} />
                     </div>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'invoices' || undefined} {...insBox('invoices')}>
-                      <dt data-rw='invoices'>{PREVIEWS[ploc].invoices}</dt>
-                      <dd data-rwf suppressHydrationWarning>{fmtInvoices(ploc)}</dd>
+                      <div data-rw='invoices'>{PREVIEWS[ploc].invoices}</div>
+                      <div data-rwf suppressHydrationWarning>{fmtInvoices(ploc)}</div>
                       <Ghost className='is-dt' read={(l) => PREVIEWS[l].invoices} />
                       <Ghost className='is-dd' read={fmtInvoices} />
                       <InsMark {...insProps('invoices')} />
                     </div>
                     <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'payout' || undefined} {...insBox('payout')}>
-                      <dt data-rw='payout'>{PREVIEWS[ploc].payout}</dt>
-                      <dd data-rwf suppressHydrationWarning>{fmtPayout(ploc)}</dd>
+                      <div data-rw='payout'>{PREVIEWS[ploc].payout}</div>
+                      <div data-rwf suppressHydrationWarning>{fmtPayout(ploc)}</div>
                       <Ghost className='is-dt' read={(l) => PREVIEWS[l].payout} />
                       <Ghost className='is-dd' read={fmtPayout} />
                       <InsMark {...insProps('payout')} />
                     </div>
-                  </dl>
+                  </div>
 
                   <span className='tct-app-btn sgdh-ins' data-ins-on={ins?.k === 'button' || undefined} {...insBox('button')}>
                     <span data-rw='button'>{PREVIEWS[ploc].button}</span>
