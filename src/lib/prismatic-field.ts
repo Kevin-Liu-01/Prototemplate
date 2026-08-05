@@ -260,8 +260,8 @@ vec2 warpAroundCursor(vec2 screenPosition) {
   gFall = exp(-q * q);
   float amount = uCursorStrength * gFall;
   if (amount < 0.003) return screenPosition;
-  float theta = amount * (gLens * 1.15 + gChroma * 0.22);
-  float pinch = 1.0 - amount * gLens * 0.22;
+  float theta = amount * (gLens * 1.3 + gChroma * 0.22);
+  float pinch = 1.0 - amount * gLens * 0.26;
   float s = sin(theta);
   float c = cos(theta);
   vec2 rotated = vec2(c * toCursor.x - s * toCursor.y, s * toCursor.x + c * toCursor.y);
@@ -317,8 +317,8 @@ vec3 applyChromaFringe(vec3 mappedColor) {
   float w = gChroma * uCursorStrength;
   if (w < 0.003) return mappedColor;
   float ring = gFall * (1.0 - gFall) * 4.0;
-  vec3 plates = 0.6 + 0.4 * cos(gDist / 40.0 - vec3(0.0, 1.05, 2.09));
-  return mappedColor * mix(vec3(1.0), plates * 1.3, clamp(w * ring, 0.0, 1.0));
+  vec3 plates = 0.55 + 0.45 * cos(gDist / 40.0 - vec3(0.0, 1.05, 2.09));
+  return mappedColor * mix(vec3(1.0), plates * 1.4, clamp(w * ring, 0.0, 1.0));
 }
 
 /*
@@ -349,7 +349,7 @@ vec3 applyBeams(vec3 hdrColor, vec2 screenPosition) {
      carve shears apart, each channel reading the profile at its own angle
      so the rays split into R/G/B copies around the cursor. */
   float rim = gFall * (1.0 - gFall) * 4.0;
-  dispersion += uCursorStrength * (gLens * rim * 0.09 + gChroma * gFall * (0.18 + 0.16 * radius));
+  dispersion += uCursorStrength * (gLens * rim * 0.09 + gChroma * gFall * (0.22 + 0.18 * radius));
   vec3 beams = vec3(
     beamProfile(angle + dispersion, t),
     beamProfile(angle, t),

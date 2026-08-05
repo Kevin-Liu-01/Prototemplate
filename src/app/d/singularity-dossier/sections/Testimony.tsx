@@ -2,6 +2,8 @@
    the layout. Swap for real customer words (and confirm names and titles)
    before this copy ships anywhere. */
 
+import GtLogoText from '../../_v0/GtLogoText';
+
 const STATEMENTS = [
   {
     mark: 'is-cursor',
@@ -15,8 +17,12 @@ const STATEMENTS = [
   {
     mark: 'is-ramp',
     brand: 'Ramp',
-    quote:
-      'Finance software cannot ship a wrong word. GT is the only localization system our compliance review passed without a single exception.',
+    quote: (
+      <>
+        Finance software cannot ship a wrong word. <GtLogoText /> is the only localization
+        system our compliance review passed without a single exception.
+      </>
+    ),
     name: 'Head of Platform',
     role: 'Ramp',
     exhibit: 'B',

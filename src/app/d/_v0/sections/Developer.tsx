@@ -24,6 +24,8 @@ import { prefersReducedMotion } from '@/app/d/toolchain/diagrams/lang/lang';
 import SentenceWidth, { SENTENCE_SAMPLES } from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
 import { BentoCell } from '@/components/shell/Bento';
 
+import GtLogoText from '../GtLogoText';
+
 import './developer.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -472,7 +474,7 @@ export default function V0Developer({ heading = 'Built for the world’s develop
       <div className='tc-row v0-dev-grid' data-eq-heads=''>
         <BentoCell
           cell='is-framed'
-          title='GT handles component sizing and orientation.'
+          title={<><GtLogoText /> handles component sizing and orientation.</>}
         >
           <div className='tc-lang is-lead'>
             <SentenceWidth
@@ -491,12 +493,12 @@ export default function V0Developer({ heading = 'Built for the world’s develop
 
         <BentoCell
           cell='is-framed'
-          title='GT handles every branch and edge case.'
+          title={<><GtLogoText /> handles every branch and edge case.</>}
         >
           <BranchForks />
         </BentoCell>
 
-        <BentoCell cell='is-framed' title='GT handles locale routing.'>
+        <BentoCell cell='is-framed' title={<><GtLogoText /> handles locale routing.</>}>
           <div className='v0-dev-routes'>
             {ROUTES.map((route) => {
               const Icon = route.icon;

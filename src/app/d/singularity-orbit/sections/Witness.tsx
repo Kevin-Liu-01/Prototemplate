@@ -2,6 +2,8 @@
    Michael Truell's real words (and confirm the title) before this copy
    ships anywhere. */
 
+import GtLogoText from '../../_v0/GtLogoText';
+
 /**
  * The witness: one voice, given the whole width. A dashed orbit arc rides
  * behind the quote — the speaker is inside the well, and the typography is
@@ -15,8 +17,8 @@ export default function Witness() {
         <blockquote>
           <p>
             Localization used to be the last thing before launch and the first thing to slip.
-            With GT it is just part of the build — our locales ship the same hour the English
-            does.
+            With <GtLogoText /> it is just part of the build — our locales ship the same hour
+            the English does.
           </p>
         </blockquote>
         <figcaption>

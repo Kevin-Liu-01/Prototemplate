@@ -415,8 +415,14 @@ const fmtPayout = (loc: PreviewLoc) =>
    output or fixed geometry: month labels in the locale's own calendar
    voice, a signed localized percent for the delta, and a fixed bar
    series (the same company's same half-year, whatever the tongue). */
-const CHART_MONTHS = [2, 3, 4, 5, 6, 7] as const; // Mar–Aug 2026, ending at the payout month
-const CHART_BARS = [0.44, 0.58, 0.5, 0.68, 0.82, 1] as const;
+/* Twelve months ending at the payout month (Sep 2025 – Aug 2026): JS Date
+   rolls negative month indexes into the prior year, so one anchor serves
+   the whole run. The card always renders the full year; its container
+   queries decide how much history fits the width at hand — the LAST six
+   are the floor, so the accent month never leaves the frame and no
+   locale, seam state or belt tick can move a box. */
+const CHART_MONTHS = [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7] as const;
+const CHART_BARS = [0.34, 0.46, 0.4, 0.52, 0.44, 0.6, 0.44, 0.58, 0.5, 0.68, 0.82, 1] as const;
 
 const fmtMonth = (loc: PreviewLoc, month: number) =>
   new Intl.DateTimeFormat(loc, { month: 'short' }).format(new Date(2026, month, 1));
@@ -514,6 +520,12 @@ const BELT_IDLE = 6000;
    composition a pinned inspector drives to (drag stop and pin target
    are one number, so the two ways of opening the pane agree). */
 const CUT_MIN = 26;
+
+/* The resting cut: the seam parks far right, keeping a 12% teaser of the
+   payload pane in frame while the app composition — the chart card is the
+   stretching member — spends everything left of it. Must agree with the
+   --seam-cut default and the main zone's right padding in the sheet. */
+const REST_CUT = 88;
 
 /** A component's inspector mark: the quiet exclamation pinned to its
     component's top-right CORNER — one fixed inset, centred on the corner
@@ -809,7 +821,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     const r = el.getBoundingClientRect();
     if (r.width === 0) return;
     const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
-    const cutX = r.left + (r.width * (Number.isFinite(now) ? now : 70)) / 100;
+    const cutX = r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
     for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
       const mr = m.getBoundingClientRect();
       if (mr.left + mr.width / 2 > cutX) m.setAttribute('data-swept', '');
@@ -1177,16 +1189,16 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
   );
 
   /* The reveal announces itself once per entry: the payload pane eases open
-     to its 70/30 rest. Skipped after the reader has taken the divider, and
+     to the rest cut. Skipped after the reader has taken the divider, and
      under reduced motion (where the cut is parked mid, statically). */
   useGSAP(
     () => {
       viewRef.current = view;
       if (view !== 'preview' || dragged.current) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const dial = { v: 96 };
+      const dial = { v: 97 };
       gsap.to(dial, {
-        v: 70,
+        v: REST_CUT,
         duration: 0.85,
         delay: 0.25,
         ease: 'power3.out',
@@ -1220,12 +1232,12 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
          them — it holds now and resumes after the quiet spell */
       holdBelt();
       dragged.current = true;
-      const target = pinned ? CUT_MIN : 70;
+      const target = pinned ? CUT_MIN : REST_CUT;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setCut(target);
       } else {
         const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
-        const dial = { v: Number.isFinite(now) ? now : 70 };
+        const dial = { v: Number.isFinite(now) ? now : REST_CUT };
         gsap.to(dial, {
           v: target,
           duration: 0.6,
@@ -1461,7 +1473,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
               light ground. Everything that matters clusters LEFT of the
               resting cut, so the payload's teaser strip never covers a
               line. */}
-          <div className='tct-app' ref={app} lang={ploc} style={{ '--seam-cut': '70%' } as CSSProperties}>
+          <div className='tct-app' ref={app} lang={ploc} style={{ '--seam-cut': `${REST_CUT}%` } as CSSProperties}>
             {/* the app's own chrome: the GT mark + "Translate" as the brand,
                 then the localized nav. The brand pair is NOT a translatable
                 string — no rewrite node, no inspector: it never switches

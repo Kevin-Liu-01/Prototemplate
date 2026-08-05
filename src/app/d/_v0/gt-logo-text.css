@@ -1,0 +1,26 @@
+/* ============================================================
+   GT LOGO TEXT — the inline brand token (GtLogoText.tsx). One
+   rule pair, em-sized, so the mark rides any run of copy at that
+   copy's own size and ink: the monogram is a mask filled with
+   currentColor. The 0.94em box with a -0.11em seat matches the
+   text face's cap height and optical baseline; nudge those two
+   numbers together or the mark floats/sinks against its line.
+   ============================================================ */
+
+.toolchain-root .v0-gtword,
+.singularity-root .v0-gtword {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-gtword-mark,
+.singularity-root .v0-gtword-mark {
+  display: inline-block;
+  width: 0.94em;
+  height: 0.94em;
+  vertical-align: -0.11em;
+  background-color: currentColor;
+  -webkit-mask: url('/brand/no-bg-gt-logo-light.png') center / contain no-repeat;
+  mask: url('/brand/no-bg-gt-logo-light.png') center / contain no-repeat;
+}

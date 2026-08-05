@@ -12,6 +12,8 @@ import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
 import { prefersReducedMotion, target } from '@/app/d/toolchain/diagrams/lang/lang';
 import ReviewWorkspace from '@/app/d/toolchain/sections/ReviewWorkspace';
 
+import GtLogoText from '../GtLogoText';
+
 import './context.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -393,7 +395,9 @@ export default function V0Context() {
             <br />
             codebase and product.
           </h2>
-          <p>GT connects your code, content, and translations.</p>
+          <p>
+            <GtLogoText /> connects your code, content, and translations.
+          </p>
         </div>
 
         <div className='tcb-grid'>

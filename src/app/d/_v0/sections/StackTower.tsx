@@ -5,6 +5,7 @@ import {
   ISO_SIN30,
   frontEdge,
   leftFace,
+  polyline,
   project,
   rightFace,
   roundedPolygon,
@@ -380,9 +381,10 @@ const MARK_PLANE = plane(THICK);
    SHINE_TO (derived below so every pass fully enters, crosses ALL of
    the mark, and exits past its right edge before restarting), gated
    like the orbit to the agents plate being built and on screen;
-   without JS or with reduced motion the markup poses — rotate(60),
-   parallel to the plate's projected +y edges — leave the primary band
-   catching light mid-glyph as a still, the counter-sheen parked clear. */
+   without JS or with reduced motion the markup poses — the windows'
+   own pre-rotated 60° geometry, parallel to the plate's projected +y
+   edges — leave the primary band catching light mid-glyph as a still,
+   the counter-sheen parked clear. */
 
 /** Ordered 4×4 Bayer matrix — glyph-field's, verbatim. */
 const BAYER4: readonly (readonly number[])[] = [
@@ -473,6 +475,81 @@ const SHINE_HALF_LEN = Math.ceil(
     SHINE_NX * Math.max(Math.abs(LDX_Y), Math.abs(LDX_Y + LDX_H)) +
     SHINE_PAD
 );
+
+/** One window: a PRE-ROTATED rectangle path centered on the origin —
+    `width` across the band normal, 2·SHINE_HALF_LEN along the band
+    axis. The 60° set lives in the geometry itself, not in a transform:
+    a rotate()-based window proved origin-fragile (GSAP's SVG origin
+    compensation shifted the whole sweep ~180 units off the mark, a
+    different amount per tier), so the loop is a PURE horizontal
+    translate that no origin math can bend. */
+function shineWindow(width: number): string {
+  const nx = SHINE_NX * (width / 2);
+  const ny = SHINE_NY * (width / 2);
+  const ax = -SHINE_NY * SHINE_HALF_LEN;
+  const ay = SHINE_NX * SHINE_HALF_LEN;
+  const pts: readonly Pt[] = [
+    [nx + ax, ny + ay],
+    [nx - ax, ny - ay],
+    [-nx - ax, -ny - ay],
+    [-nx + ax, -ny + ay],
+  ];
+  return polyline(pts, true);
+}
+
+/* ---- the agents scan beam --------------------------------------------------
+   The Locadex iso's sweep device (Locadex.tsx, v0-ldx-beam), ported to the
+   tower for the agents beat (founder: "when we get to this layer, we can
+   have it start 'scanning' the below layer to suggest how locadex actually
+   works"): a vertical light sheet hanging from the capstone's underside
+   down to the TRANSLATIONS plate's top face — a translucent quad, 1px edge
+   strokes, and a brighter landing line — drawn at y = 0 and swept along
+   world +y by FullStack (a world-y translation projects to the constant
+   screen vector (−cos30, +sin30) per unit, so the pass is one x/y tween).
+
+   The sheet lives in its OWN frame-spanning overlay (the beamsvg below),
+   not in the agents slab's SVG, for two reasons: paint order — the beam
+   must sit BETWEEN the translations slab and the capstone (fullstack.css
+   seats the overlay at the capstone's RESTING z and lets the capstone win
+   by DOM order; the hot capstone rides far above) — and the LIFT: the hot
+   capstone rises 12 screen px, and a beam riding that transform would
+   shear its landing line off the plate below. Instead the sheet stands in
+   the tower's static frame and its top edge OVERSHOOTS the capstone's
+   resting underside by BEAM_TOP_Z world units — more than the lift comes
+   to at any figure width (12px ≈ 6.6 units at 392px, ≈ 7.8 at the
+   one-column 330) — with the overshoot buried behind the opaque hull, so
+   the visible beam always reads seamlessly hung from the capstone,
+   lifted or not (verified against the hull silhouette at both sweep
+   extremes). The floor sits exactly in the translations top-face plane,
+   one STEP below the capstone's seat. */
+
+/** The sheet's half-width along world x — inside the capstone's ±45
+    footprint, wide enough to read as a working scan of the plate below. */
+const BEAM_HALF = 34;
+/** The top edge's overshoot above the capstone's resting underside. */
+const BEAM_TOP_Z = 9;
+/** The translations plate's top face, in the capstone's local z. */
+const BEAM_FLOOR_Z = THICK - STEP;
+const beamTL = project(-BEAM_HALF, 0, BEAM_TOP_Z);
+const beamTR = project(BEAM_HALF, 0, BEAM_TOP_Z);
+const beamBR = project(BEAM_HALF, 0, BEAM_FLOOR_Z);
+const beamBL = project(-BEAM_HALF, 0, BEAM_FLOOR_Z);
+const BEAM_QUAD = polyline([beamTL, beamTR, beamBR, beamBL], true);
+const BEAM_EDGE_L = segment(beamTL, beamBL);
+const BEAM_EDGE_R = segment(beamTR, beamBR);
+const BEAM_LAND = segment(beamBL, beamBR);
+
+/** Sweep amplitude in world y — the beam's footprint stays inside the
+    capstone's underside (±45) and lands well inside the translations
+    plate's ±52 top face at both extremes. */
+const BEAM_SWEEP_Y = 19;
+export const BEAM_SWEEP_DX = BEAM_SWEEP_Y * ISO_COS30;
+export const BEAM_SWEEP_DY = BEAM_SWEEP_Y * ISO_SIN30;
+
+/** The beam's seat in the frame overlay: the capstone row's slab-local
+    frame, derived by id so a reordering never strands the sheet. */
+const BEAM_ROW = TOWER_LAYERS.length - 1 - TOWER_LAYERS.findIndex((layer) => layer.id === 'agents');
+const BEAM_FRAME_TY = BEAM_ROW * STEP - VIEW_Y;
 
 function TopGlyph({ id }: { id: string }) {
   switch (id) {
@@ -603,29 +680,20 @@ function TopGlyph({ id }: { id: string }) {
                 <path className='v0s-ldx-glint' d={bayerTile(cover)} shapeRendering='crispEdges' />
               </pattern>
             ))}
-            {/* the bands: per tier, the UNION of two origin-centered
-                window rects rotated 60° (parallel to the plate's
-                projected +y edges) — the primary and the slimmer
-                counter-sheen FullStack rides half a lap behind it. The
-                markup poses are the reduced-motion and no-JS still:
-                primary mid-glyph, counter-sheen parked off it. */}
+            {/* the bands: per tier, the UNION of two pre-rotated window
+                paths (shineWindow — the 60° set is baked into the
+                geometry, parallel to the plate's projected +y edges) —
+                the primary and the slimmer counter-sheen FullStack rides
+                half a lap behind it. The markup poses are the
+                reduced-motion and no-JS still: primary mid-glyph,
+                counter-sheen parked clear at the sweep's start. */}
             {SHINE_TIERS.map(({ cover, width }) => (
               <clipPath key={cover} id={`v0s-ldx-w${cover}`} clipPathUnits='userSpaceOnUse'>
-                <rect
-                  data-ldx-stripe
-                  x={-width / 2}
-                  y={-SHINE_HALF_LEN}
-                  width={width}
-                  height={SHINE_HALF_LEN * 2}
-                  transform='rotate(60)'
-                />
-                <rect
+                <path data-ldx-stripe d={shineWindow(width)} />
+                <path
                   data-ldx-stripe2
-                  x={-(width * 0.62) / 2}
-                  y={-SHINE_HALF_LEN}
-                  width={width * 0.62}
-                  height={SHINE_HALF_LEN * 2}
-                  transform={`translate(${SHINE_FROM} 0) rotate(60)`}
+                  d={shineWindow(width * 0.62)}
+                  transform={`translate(${SHINE_FROM} 0)`}
                 />
               </clipPath>
             ))}
@@ -718,6 +786,24 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
           width={RAIL_GAUGE}
           height={RAIL_FOOT - RAIL_TOP}
         />
+      </svg>
+
+      {/* the agents scan beam's own seated layer (the beam block above):
+          one frame-spanning overlay BETWEEN the translations slab and the
+          capstone — fullstack.css gives it the capstone's resting z and
+          the capstone, mounted after it, wins the tie; FullStack fades it
+          in and sweeps it only while the agents beat is hot. The outer g
+          seats the sheet in the capstone's row; the inner g is the sweep
+          target, so GSAP's transform never disturbs the seat. */}
+      <svg className='v0s-beamsvg' viewBox={`${VIEW_X} 0 ${VIEW_W} ${TOWER_H}`} aria-hidden>
+        <g className='v0s-scan' data-agents-scan transform={`translate(0 ${BEAM_FRAME_TY})`}>
+          <g data-agents-sweep>
+            <path className='v0s-beam' d={BEAM_QUAD} />
+            <path className='v0s-beam-edge' d={BEAM_EDGE_L} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-beam-edge' d={BEAM_EDGE_R} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-beam-land' d={BEAM_LAND} vectorEffect='non-scaling-stroke' />
+          </g>
+        </g>
       </svg>
 
       {TOWER_LAYERS.map((layer, i) => {

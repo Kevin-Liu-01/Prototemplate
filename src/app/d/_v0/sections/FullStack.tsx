@@ -5,10 +5,19 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Bot, Code2, Languages, Layers } from 'lucide-react';
 import { useRef } from 'react';
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
+import GtLogoText from '@/app/d/_v0/GtLogoText';
 
-import StackTower, { RAIL_ORIGIN, RAIL_SCALE, SHINE_FROM, SHINE_TO, TOWER_LAYERS } from './StackTower';
+import StackTower, {
+  BEAM_SWEEP_DX,
+  BEAM_SWEEP_DY,
+  RAIL_ORIGIN,
+  RAIL_SCALE,
+  SHINE_FROM,
+  SHINE_TO,
+  TOWER_LAYERS,
+} from './StackTower';
 
 import '@/app/d/toolchain/sections/darkband-v3.css';
 import './fullstack.css';
@@ -23,56 +32,91 @@ type BeatIconProps = {
 };
 
 /**
- * One marketing layer of the stack: the spec's verbatim copy split at its
- * first sentence (the lead), plus the tower slabs it spotlights. Slab
- * membership is by TOWER_LAYERS id, never by index, so the mapping survives
- * any reordering of the house drawing.
+ * One marketing layer of the stack, in the founder's four-part grammar:
+ * the eyebrow tag (icon + NAME), the h3 value prop, then the description
+ * and details as scannable BULLET POINTS (founder: "we can use bullet
+ * points instead of paragraphs basically for the new copy"). The points
+ * are ReactNodes, not strings, so the copy can carry the inline brand
+ * token (GtLogoText — founder: "anywhere we say GT, replace that with a
+ * standardized gtlogotext component") and the <T> code chip. Slab
+ * membership is by TOWER_LAYERS id, never by index, so the mapping
+ * survives any reordering of the house drawing.
  */
 type StackBeat = {
   id: string;
   name: string;
   lead: string;
-  body: string;
+  points: readonly ReactNode[];
   icon: ComponentType<BeatIconProps>;
   slabIds: readonly string[];
 };
 
 /**
- * The four layers, VERBATIM from the Figma spec — ordered bottom-up per the
- * spec's own directive ("start from foundations in code and build up"):
- * Code -> Context -> Translations -> Agents. The tower is these same four
- * layers, one slab per beat, so beat order IS physical order.
+ * The four layers, copy VERBATIM from the founder's round — ordered
+ * bottom-up per the spec's own directive ("start from foundations in code
+ * and build up"): Code -> Context -> Translations -> Agents. The tower is
+ * these same four layers, one slab per beat, so beat order IS physical
+ * order. Every prose "GT" is the brand token; the <T> in the code beat is
+ * an inline code chip.
  */
 const BEATS: readonly StackBeat[] = [
   {
     id: 'code',
     name: 'Code',
-    lead: 'Your codebase is the source of truth.',
-    body: 'GT internationalizes it to support 120+ locales. Open-source internationalization (i18n) libraries with SDKs for every stack.',
+    lead: 'Your code is the source of truth.',
+    points: [
+      <>
+        Wrap a component in <code>&lt;T&gt;</code> and it’s ready to ship in 120+ locales. No
+        translation files needed.
+      </>,
+      <>Open-source internationalization (i18n) libraries and SDKs for every stack.</>,
+    ],
     icon: Code2,
     slabIds: ['code'],
   },
   {
     id: 'context',
     name: 'Context',
-    lead: 'Deliver the best experience of your product in every language.',
-    body: 'GT translates with full understanding of your context. Define key product terms, tone, and style to keep consistent across every surface.',
+    lead: 'The best experience of your product.',
+    points: [
+      <>
+        <GtLogoText /> keeps your terminology, voice, and style consistent across every surface
+        and every language.
+      </>,
+      <>
+        Define key product terms, brand voice, and style once. <GtLogoText /> applies them
+        everywhere it translates: app, website, documentation, slides.
+      </>,
+    ],
     icon: Layers,
     slabIds: ['context'],
   },
   {
     id: 'translations',
     name: 'Translations',
-    lead: 'See translations in every target locale, in just minutes.',
-    body: 'Review both static and dynamic content before you go live. Preview, annotate, and approve from the Dashboard.',
+    lead: 'Translations that just work.',
+    points: [
+      <>
+        See your content and components translated in just minutes. <GtLogoText /> handles
+        branching logic for dynamic content and user inputs.
+      </>,
+      <>Built-in components for numbers, currencies, dates, plurals, and every other edge case.</>,
+    ],
     icon: Languages,
     slabIds: ['translations'],
   },
   {
     id: 'agents',
     name: 'Agents',
-    lead: 'Automate the whole process.',
-    body: 'Locadex keeps your app localized with every update. The Locadex agent is the fastest way to localize your app, end-to-end. Just merge a PR.',
+    lead: 'Make it automatic.',
+    points: [
+      <>Locadex keeps your app localized with every update. Just merge a PR.</>,
+      <>The Locadex agent is the fastest way to localize your app end-to-end.</>,
+      <>
+        Locadex localizes your system end to end, then keeps every surface in sync as your code
+        changes.
+      </>,
+    ],
     icon: Bot,
     slabIds: ['agents'],
   },
@@ -127,14 +171,22 @@ const DROP = 64;
  * level settles in from above as the story advances (and leaves again on
  * the way back up) — and the beat's slab(s) take the tower's highest z,
  * lift up the iso vertical, and light their accent edge and leader, while
- * the rest stay solid but dimmer. One timeline per transition, never
- * pinned by JS (the figure is CSS sticky); the one JS hand on the figure
- * itself is the SETTLE below — a scroll-locked descent that lands the
- * tower on the column's floor as the band's bottom rule arrives, so the
- * rest view has no black run under the figure. Reduced motion and the
- * no-JS resting markup get the FULL stack with the first beat lit,
- * statically — four legible slabs over a truer-but-emptier one — with the
- * Locadex mark's shimmer band parked mid-glyph as a still.
+ * the rest stay solid but dimmer. On the agents beat the capstone also
+ * hangs its scan beam down onto the translations plate and sweeps it —
+ * the Locadex iso's device, ported (founder: "when we get to this layer,
+ * we can have it start 'scanning' the below layer"). One timeline per
+ * transition, never pinned by JS (the figure is CSS sticky) — and NO JS
+ * touches the figure at all (founder: "the diagram keeps moving down as
+ * i scroll past agents, which is wrong"): the figure holds its read-line
+ * seat through beat 04's lock-in and then through the rail cell's
+ * post-read runway — the AGENTS DWELL, where the scan beam is the show —
+ * before the native sticky release carries it up and out with the band
+ * (founder: "stay on agents a lil longer as we scroll to show the
+ * scanning ... and then be able to see next section"). The figure never
+ * translates down. Reduced motion and the no-JS resting markup get the
+ * FULL stack with the first beat lit, statically — four legible slabs
+ * over a truer-but-emptier one — with the Locadex mark's shimmer band
+ * parked mid-glyph as a still and the beam hidden.
  */
 export default function V0FullStack() {
   const root = useRef<HTMLElement>(null);
@@ -150,13 +202,19 @@ export default function V0FullStack() {
       const rail = scope.querySelector<SVGGElement>('[data-rail-line]');
       const waves = gsap.utils.toArray<SVGPathElement>('[data-ctx-wave]', scope);
       const orbit = scope.querySelector<SVGPathElement>('[data-agent-orbit]');
-      const stripes = gsap.utils.toArray<SVGRectElement>('[data-ldx-stripe]', scope);
-      const stripes2 = gsap.utils.toArray<SVGRectElement>('[data-ldx-stripe2]', scope);
+      const stripes = gsap.utils.toArray<SVGPathElement>('[data-ldx-stripe]', scope);
+      const stripes2 = gsap.utils.toArray<SVGPathElement>('[data-ldx-stripe2]', scope);
+      const scan = scope.querySelector<SVGGElement>('[data-agents-scan]');
+      const scanSweep = scope.querySelector<SVGGElement>('[data-agents-sweep]');
       if (slabs.length === 0 || beats.length === 0) return;
 
       /* how many slabs must exist for each ambient loop's plate */
       const ctxNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'context') + 1;
       const agentsNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'agents') + 1;
+      /* the scan beam answers the STORY, not the build: it hangs only
+         while the agents BEAT is the hot one (founder: "when we get to
+         this layer, we can have it start 'scanning' the below layer") */
+      const agentsBeat = BEATS.findIndex((beat) => beat.id === 'agents');
 
       /* class + stacking state, shared by both motion branches: hot slabs
          take full ink, the accent edge, and the tower's highest z — above
@@ -199,10 +257,11 @@ export default function V0FullStack() {
         /* the ambient loops (founder round): context's accent waves ride
            their wires into the <T>, the agents plate's orbit trace
            circles its ring, and the Locadex mark's dithered specular
-           bands sweep the glyph (StackTower builds the clip windows;
-           these loops only slide them, holding the markup's 60° set) —
-           each runs ONLY while its plate is built and the band is on
-           screen, so nothing burns frames below the fold. Until first
+           bands sweep the glyph (StackTower builds the clip windows
+           with the 60° set baked into their geometry; these loops only
+           slide them horizontally) — each runs ONLY while its plate is
+           built and the band is on screen, so nothing burns frames
+           below the fold. Until first
            play they rest at the markup's static poses. autoRound: false
            on the dashes, and not as a nicety: GSAP's CSSPlugin
            integer-rounds every non-transform px-unit property per tick
@@ -214,6 +273,7 @@ export default function V0FullStack() {
            never quantizes). */
         let built = 0;
         let inView = false;
+        let hotBeat = 0;
         const waveLoops = waves.map((wave, i) =>
           gsap.fromTo(
             wave,
@@ -248,16 +308,18 @@ export default function V0FullStack() {
            crosses ALL of it, and exits past its right edge before the
            loop restarts (founder round 10: "make it cross the whole
            locadex all the way to the right") — the speed holds and the
-           lap length breathes with the geometry */
+           lap length breathes with the geometry. A PURE x translate:
+           the windows' 60° set is baked into their path geometry
+           (StackTower.shineWindow), because rotating them here proved
+           origin-fragile — GSAP's SVG origin compensation shifted the
+           whole sweep ~180 units off the mark. */
         const shineLap = (SHINE_TO - SHINE_FROM) / 56;
-        const shineBand = (targets: SVGRectElement[]) =>
+        const shineBand = (targets: SVGPathElement[]) =>
           gsap.fromTo(
             targets,
-            { rotation: 60, x: SHINE_FROM, transformOrigin: '50% 50%' },
+            { x: SHINE_FROM },
             {
-              rotation: 60,
               x: SHINE_TO,
-              transformOrigin: '50% 50%',
               duration: shineLap,
               ease: 'none',
               repeat: -1,
@@ -275,6 +337,34 @@ export default function V0FullStack() {
           ...(shineLoop ? [shineLoop] : []),
           ...(shineLoop2 ? [shineLoop2] : []),
         ];
+        /* the agents scan beam: the Locadex iso's sweep (v0-ldx-beam),
+           ported to the tower — the sheet hangs from the capstone's
+           underside to the translations plate's top face (StackTower
+           draws it in its own seated layer between those two slabs) and
+           sweeps along world +y, which projects to the constant screen
+           vector (−cos30, +sin30) per unit, so the whole pass is one x/y
+           transform tween (transforms never quantize — no autoRound
+           needed). It rides the founder's dwell: the beat stays hot and
+           the tower seated through the post-read runway, so this IS what
+           the dwell shows. */
+        const sweepLoop = scanSweep
+          ? gsap.fromTo(
+              scanSweep,
+              { x: BEAM_SWEEP_DX, y: -BEAM_SWEEP_DY },
+              {
+                x: -BEAM_SWEEP_DX,
+                y: BEAM_SWEEP_DY,
+                duration: 3.6,
+                ease: 'sine.inOut',
+                repeat: -1,
+                yoyo: true,
+                paused: true,
+              }
+            )
+          : null;
+        /* the beam's shown/hidden ledger, so repeated syncs never restart
+           a fade mid-flight */
+        let scanShown = false;
         const syncLoops = () => {
           const wavesOn = inView && built >= ctxNeed;
           for (const loop of waveLoops) {
@@ -289,6 +379,36 @@ export default function V0FullStack() {
           for (const loop of shineLoops) {
             if (agentsOn) loop.play();
             else loop.pause();
+          }
+          /* the beam is gated a step tighter than the plate loops: the
+             agents beat must be the HOT one (not merely built) and the
+             band on screen. It fades in only after the capstone's 0.5s
+             lift has landed, so the sheet never shears against a moving
+             underside; going cold it fades fast and pauses the sweep
+             once hidden. CSS parks it hidden for no-JS and reduced
+             motion. */
+          const scanOn = agentsOn && hotBeat === agentsBeat;
+          if (scan && sweepLoop && scanOn !== scanShown) {
+            scanShown = scanOn;
+            if (scanOn) {
+              sweepLoop.play();
+              gsap.to(scan, {
+                autoAlpha: 1,
+                duration: 0.35,
+                delay: 0.45,
+                ease: 'power2.out',
+                overwrite: 'auto',
+              });
+            } else {
+              gsap.to(scan, {
+                autoAlpha: 0,
+                duration: 0.22,
+                delay: 0,
+                ease: 'power2.in',
+                overwrite: 'auto',
+                onComplete: () => sweepLoop.pause(),
+              });
+            }
           }
         };
 
@@ -309,6 +429,7 @@ export default function V0FullStack() {
           paint(active);
           const count = VISIBLE_COUNT[active] ?? slabs.length;
           built = count;
+          hotBeat = active;
           syncLoops();
           const hot = HOT_SLABS[active] ?? [];
           const set = new Set(hot);
@@ -490,6 +611,9 @@ export default function V0FullStack() {
           for (const loop of waveLoops) loop.kill();
           orbitLoop?.kill();
           for (const loop of shineLoops) loop.kill();
+          sweepLoop?.kill();
+          if (scan) gsap.set(scan, { clearProps: 'opacity,visibility' });
+          if (scanSweep) gsap.set(scanSweep, { clearProps: 'transform' });
           const dashed: SVGPathElement[] = orbit ? [...waves, orbit] : [...waves];
           if (dashed.length > 0) gsap.set(dashed, { clearProps: 'strokeDashoffset' });
           const bands = [...stripes, ...stripes2];
@@ -498,110 +622,21 @@ export default function V0FullStack() {
         };
       });
 
-      /* THE SETTLE (founder: "we literally need that black space gone").
-         The seat centers the figure at ~50vh, so at the band's rest view
-         — bottom rule at the viewport bottom — a pinned figure is stranded
-         mid-viewport over a seat-sized black run (~197px at 900, ~286px
-         at 1080; it grows with the display). No sticky geometry can close
-         it: while pinned, the figure's bottom can never ride below
-         seat + figure height. So the figure LANDS instead: across the
-         finale's approach a scroll-locked translate carries it from the
-         seat down to the column's floor, touching down exactly as the
-         rule meets the viewport bottom; from touchdown it holds the floor
-         doc-fixed — riding beside the finale copy — until the native
-         sticky release takes over at the same velocity, so seated → riding
-         has no jump. Descent is sine-eased (zero slope at both ends): it
-         begins after beat 03's read completes and is ~85% down by beat
-         04's lock-in — the founder trades that dwell for the void.
-         Gated to the two-column, motion-allowed world: below 1021px the
-         figure is static and needs no settle. */
-      mm.add('(prefers-reduced-motion: no-preference) and (min-width: 1021px)', () => {
-        const fig = scope.querySelector<HTMLElement>('.v0-stack-fig');
-        const figcol = scope.querySelector<HTMLElement>('.v0-stack-figcol');
-        const finale = beats[beats.length - 1];
-        if (!fig || !figcol || !finale) return;
-
-        const setY = gsap.quickSetter(fig, 'y', 'px');
-
-        /* THE SETTLE OWNS ITS MATH (founder: "step 4 works the same as
-           steps 1–3" — and a debugging round proved ScrollTrigger's
-           parsed start drifted from the intended read-passed moment, so
-           the profile now runs on explicit doc-space landmarks and the
-           trigger is only a lifecycle net). Landmarks, retaken on every
-           refresh:
-           S0   = beat 04's copy line (the finale window's center)
-                  crossing 51% of the viewport — the 55% read line has
-                  just passed, so the read itself always happens SEATED;
-           REST = the band's rest view (bottom rule at the viewport
-                  bottom) — touchdown, fig bottom on the column's floor;
-           END  = REST + drop — the native sticky release meets the
-                  unwound figure at the same point and velocity;
-           drop = vh − tail − (seat + figH) — the landing depth. The
-                  descent window REST − S0 is bought by the rail cell's
-                  post-read runway (fullstack.css) — keep the two in
-                  step: rate = drop / (REST − S0) must stay ≲ 1.2. */
-        let S0 = 0;
-        let REST = 0;
-        let END = 1;
-        let drop = 0;
-        const measure = () => {
-          const vh = window.innerHeight;
-          const sy = window.scrollY;
-          const seat = parseFloat(getComputedStyle(fig).top) || 0;
-          /* offsetHeight, not a rect: the box height must be transform-free */
-          const pinnedBottom = seat + fig.offsetHeight;
-          const secBottom = scope.getBoundingClientRect().bottom + sy;
-          const tail = secBottom - (figcol.getBoundingClientRect().bottom + sy);
-          const fr = finale.getBoundingClientRect();
-          const copyLine = fr.top + fr.height / 2 + sy;
-          drop = Math.max(0, vh - tail - pinnedBottom);
-          S0 = copyLine - 0.51 * vh;
-          REST = secBottom - vh;
-          END = REST + drop;
-        };
-
-        /* piecewise profile in scroll space: sine-in-out from the seat
-           to the floor across [S0, REST], then a linear unwind across
-           [REST, END] that holds the figure doc-fixed on the floor
-           while the sticky box catches up; outside the window the seat
-           (y = 0) owns the figure */
-        const apply = () => {
-          const sy = window.scrollY;
-          if (drop <= 0 || sy <= S0 || sy >= END) {
-            setY(0);
-          } else if (sy <= REST) {
-            const t = (sy - S0) / Math.max(REST - S0, 1);
-            setY(drop * (0.5 - 0.5 * Math.cos(Math.PI * t)));
-          } else {
-            setY(drop * (1 - (sy - REST) / Math.max(drop, 1)));
-          }
-        };
-
-        const settle = ScrollTrigger.create({
-          trigger: scope,
-          start: 'top bottom',
-          end: 'bottom top',
-          onUpdate: apply,
-          onToggle: apply,
-          onRefresh: () => {
-            measure();
-            apply();
-          },
-        });
-        measure();
-        apply();
-
-        return () => {
-          settle.kill();
-          gsap.set(fig, { clearProps: 'y' });
-        };
-      });
+      /* NO SETTLE, NO DESCENT — EVER (founder: "the diagram keeps moving
+         down as i scroll past agents, which is wrong"). No JS touches the
+         figure: the read-line seat (fullstack.css) holds it through beat
+         04's lock-in, the rail cell's post-read runway is the AGENTS
+         DWELL — the tower stays seated while the capstone's scan beam
+         plays (founder: "stay on agents a lil longer as we scroll to
+         show the scanning") — and then the NATIVE sticky release carries
+         the tower up and out with the band, which is what lets the next
+         section arrive. The figure never translates down. */
 
       /* reduced motion: the FULL stack, statically — all four slabs are
          more legible than one when nothing will ever animate the rest in
-         — with the first beat lit and its slab lifted, and the shimmer
-         band resting at the markup's mid-glyph pose (nothing here ever
-         touches the stripes) */
+         — with the first beat lit and its slab lifted, the shimmer band
+         resting at the markup's mid-glyph pose, and the scan beam parked
+         hidden by the stylesheet (nothing here ever touches either) */
       mm.add('(prefers-reduced-motion: reduce)', () => {
         paint(0);
         const hot = new Set(HOT_SLABS[0] ?? []);
@@ -650,11 +685,11 @@ export default function V0FullStack() {
           </div>
 
           {/* The copy rail's cell: four beats read bottom-up — Code,
-              Context, Translations, Agents — separated by rhythm alone.
-              Beats 1–3 center their copy in their scroll windows; the
-              LAST beat rides its window's floor (fullstack.css), so the
-              band ends a breath after the finale instead of trailing
-              the pin's runway as a black void. */}
+              Context, Translations, Agents — separated by rhythm alone,
+              each centered in its uniform scroll window. Below the last
+              beat the cell carries the agents dwell (fullstack.css): the
+              runway that keeps the tower seated and the scan beam
+              running after beat 04's read. */}
           <div className='tcb-cell v0-stack-cell-rail' data-cell>
             <ol className='v0-stack-rail'>
               {BEATS.map((beat, i) => {
@@ -671,7 +706,14 @@ export default function V0FullStack() {
                       <span className='v0-stack-name'>{beat.name}</span>
                     </div>
                     <h3>{beat.lead}</h3>
-                    <p>{beat.body}</p>
+                    {/* the description and details as bullet points (founder:
+                        scannable, not paragraph blocks) — quiet accent dashes,
+                        never browser discs (fullstack.css) */}
+                    <ul className='v0-stack-points'>
+                      {beat.points.map((point, p) => (
+                        <li key={`${beat.id}-${p}`}>{point}</li>
+                      ))}
+                    </ul>
                   </li>
                 );
               })}

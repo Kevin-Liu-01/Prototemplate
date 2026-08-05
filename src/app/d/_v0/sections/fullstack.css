@@ -45,11 +45,10 @@
      token (.v0s-cellrail) — nothing sits between the two. */
   --v0s-rail-ink: var(--iso-accent);
   padding-inline: 0;
-  /* the band ends shortly after beat 04 completes (founder: no tall dead
-     area trailing the pinned pass): the sheet's default clamp(56px, 7vw,
-     88px) tail is cut to one quiet breath between the grid's bottom rule
-     and the band's own — the interior runway the pin needs lives in the
-     beats, not here */
+  /* the sheet's default clamp(56px, 7vw, 88px) tail is cut to one quiet
+     breath between the grid's bottom rule and the band's own — the
+     interior runway the pin needs lives INSIDE the grid: in the beats'
+     windows and in the rail cell's agents dwell (see the cushion below) */
   padding-block-end: 28px;
 }
 
@@ -82,21 +81,21 @@
 
 .toolchain-root .tcb .v0-stack-cell-rail {
   grid-column: span 7;
-  /* THE POST-READ RUNWAY (founder: "the story completely breaks and
-     uncenters itself once we get to agents... go through the first 3
-     steps and make sure step 4 works the same"): beat 04's read must
-     happen with the figure SEATED, exactly like beats 01–03, and must
-     COMPLETE before the band's bottom rule enters the viewport — no
-     descent and no crop during the read. Both are runway problems:
-     without this padding the rest view arrives 0.24·vh − 74px BEFORE
-     beat 04's copy reaches the read line, so the finale read against
-     a departing, mid-descent tower. 36vh buys the read a 74px + 12vh
-     margin ahead of the rule (≥182px at 900), and the settle
-     (FullStack.tsx) spends the same stretch on its descent AFTER the
-     read passes — window = 74px + runway − 28vh, sized to keep the
-     descent rate ≲ 1.1:1 through ~1000-tall viewports. Gated off with
-     the one-column layout below. */
-  padding-block-end: clamp(300px, 36vh, 560px);
+  /* THE AGENTS DWELL (founder: "we make this go stay on agents a lil
+     longer as we scroll to show the scanning on locadex, and then be
+     able to see next section"): the post-read runway that keeps the
+     sticky tower SEATED after beat 04's read while the capstone's scan
+     beam sweeps the translations plate — ~260px of seated scroll at a
+     900 viewport, growing with vh. It feeds the grid row, so its
+     length is what sets where the native sticky release lands (the
+     figcol's bottom meeting the seated figure's bottom, shortly after
+     the band's rest view); the release then carries the tower up and
+     out with the band — the figure never translates down, and no JS
+     ever touches it. Beat 04's lock-in itself is guaranteed by the
+     window math (H + 28px tail ≥ 0.42vh, see the beat rule below)
+     independent of this padding. Gated off with the one-column layout
+     below, where the figure is static. */
+  padding-block-end: 36vh;
 }
 
 /* ---------- the drawing: sticky while the rail scrolls ---------- */
@@ -113,27 +112,16 @@
      the tower + its top pad) + a small upward bias. THIS is the story
      locking (founder: "the locking to story sections is broken") — a
      high fixed seat put the figure a full viewport-third above the hot
-     copy on tall displays, and it fed the settle a descent as deep as
-     vh − 640px (~860px at 1500 tall), so beats 03–04 read against a
-     figure in mid-plunge. Seated at the read line the descent is only
-     0.5vh − 282px (~168px at 900, ~468px at 1500) and begins, sine-slow,
-     exactly at beat 03's read — imperceptible there, finished at rest.
-     The endgame ledger: a seat-pinned figure can NEVER put its bottom
-     below seat + figure height, so the rest view would strand a black
-     run below the tower. The JS settle in FullStack.tsx closes it
-     OUTSIDE this seat: across the finale's approach it translates the
-     figure from the seat to the column's floor, touching down exactly
-     at the rest view. Two equations survive:
-       release  = seat + figure height + 28px tail — the scroll past
-                  the rest view where the native sticky glue takes the
-                  figure off the settle's hands (they meet at the same
-                  point and velocity, so no pop);
-       depth    = 100vh − release — the settle's landing depth, remeasured
-                  by FullStack on every refresh (never hardcode it here).
-     A smaller seat DEEPENS the settle's descent — never lower this
-     without re-checking the plunge. Re-run docs/harness/rhythm-probe.mjs
-     at 1440×900, 1920×1080 AND ~2000×1400 whenever the figure, seat, or
-     beat height moves. */
+     copy on tall displays, so beats 03–04 read against a stranded
+     tower. The seat is the figure's ONLY place, full stop (founder:
+     "the diagram keeps moving down as i scroll past agents, which is
+     wrong") — no JS ever moves the figure, and it NEVER translates
+     down. Pure sticky end to end: the figure holds this seat through
+     beat 04's lock-in, stays seated through the rail cell's agents
+     dwell while the scan beam plays, and the native release then
+     carries it UP and out with the band so the next section arrives.
+     Re-run docs/harness/rhythm-probe.mjs at 1440×900, 1926×1002 AND
+     2000×1400 whenever the figure, seat, beat height, or dwell moves. */
   top: max(70px, calc(55vh - 262px));
   display: flex;
   justify-content: center;
@@ -305,11 +293,9 @@
    <T> under accent waves, translations' source fanning to its locale
    runs (the payload chip the one accent), and the agents plate's
    Locadex mark under its dithered shimmer and an orbiting accent
-   trace. Flat marks and wires stay in the plate's own ink; every
-   value here is the GHOST voice — the is-hot block lifts the active
-   plate's artwork to full ink. */
+   trace. Flat marks and wires stay in the plate's own ink. */
 .toolchain-root .tcb .v0s-g-mark {
-  fill: rgba(255, 255, 255, 0.12);
+  fill: rgba(255, 255, 255, 0.13);
   transition: fill 0.3s ease;
 }
 
@@ -321,7 +307,7 @@
    and orbit) */
 .toolchain-root .tcb .v0s-g-glyph {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.3);
+  stroke: rgba(255, 255, 255, 0.6);
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -333,48 +319,44 @@
 .toolchain-root .tcb .v0s-ctx-wire,
 .toolchain-root .tcb .v0s-fan-wire {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.11);
+  stroke: rgba(255, 255, 255, 0.2);
   stroke-width: 1;
   transition: stroke 0.3s ease;
 }
 
 /* the waves: accent pulses riding the context wires into the <T>
-   (FullStack loops the dash whenever the band is on screen; the
-   markup's offset leaves a resting segment for no-JS and reduced
-   motion) — a ghost murmur until the beat is hot */
+   (FullStack loops the dash while the plate is built; the markup's
+   offset leaves a resting segment for no-JS and reduced motion) —
+   half voice until the beat is hot */
 .toolchain-root .tcb .v0s-ctx-wave {
   fill: none;
   stroke: var(--iso-accent);
   stroke-width: 1.5;
-  opacity: 0.16;
+  opacity: 0.5;
   transition: opacity 0.3s ease;
 }
 
 /* the agents plate's scan energy: the orbiting accent trace, on its
-   own ring inset from the rim so it never doubles the hot edge —
-   ghosted with the rest of the plate until its beat */
+   own ring inset from the rim so it never doubles the hot edge */
 .toolchain-root .tcb .v0s-orbit {
   fill: none;
   stroke: var(--iso-accent);
   stroke-width: 1.75;
-  opacity: 0.22;
-  transition: opacity 0.3s ease;
 }
 
 /* the Locadex mark on the agents slab, in the plate's own ink until
    its beat lets the accent pick it out */
 .toolchain-root .tcb .v0s-g-ldx {
-  fill: rgba(255, 255, 255, 0.16);
+  fill: rgba(255, 255, 255, 0.3);
   transition: fill 0.3s ease;
 }
 
-/* the mark's shimmer (StackTower's Bayer band): silver-white glint
-   cells — brushed metal catching light — quieted to the ghost voice
-   with the rest of the plate, and tinted toward the accent when the
-   agents beat is hot so the metal and the lit mark read as one
-   material */
+/* the mark's shimmer (StackTower's Bayer bands): silver-white glint
+   cells — brushed metal catching light — at half voice until the
+   agents beat is hot, then tinted toward the accent so the metal and
+   the lit mark read as one material */
 .toolchain-root .tcb .v0s-ldx-shine {
-  opacity: 0.3;
+  opacity: 0.5;
   transition: opacity 0.3s ease;
 }
 
@@ -384,8 +366,8 @@
 }
 
 .toolchain-root .tcb .v0s-g-chip-hull {
-  fill: #141414;
-  stroke: rgba(255, 255, 255, 0.08);
+  fill: #1a1a1a;
+  stroke: rgba(255, 255, 255, 0.14);
   stroke-width: 0.6;
   transition:
     fill 0.3s ease,
@@ -393,25 +375,23 @@
 }
 
 .toolchain-root .tcb .v0s-g-chip-top {
-  fill: #181818;
+  fill: #222222;
   transition: fill 0.3s ease;
 }
 
 /* the payload chip: accent-tinted faces under an accent contour,
-   a ghost tint until the translations beat lights it */
+   at half strength until the runtime slab's beat lights it */
 .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-hull {
-  fill: color-mix(in srgb, var(--iso-accent) 8%, #101010);
-  stroke: color-mix(in srgb, var(--iso-accent) 24%, transparent);
+  fill: color-mix(in srgb, var(--iso-accent) 14%, #101010);
+  stroke: color-mix(in srgb, var(--iso-accent) 45%, transparent);
 }
 
 .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-top {
-  fill: color-mix(in srgb, var(--iso-accent) 15%, #101010);
+  fill: color-mix(in srgb, var(--iso-accent) 26%, #101010);
 }
 
-/* the hot slab: the FULL treatment — faces a full step above the
-   ghosts, bright rim, and the accent on the top-face contour
-   (FullStack raises its z and lifts it; its leader's full voice rides
-   the same class on the tap path) */
+/* the hot slab: full ink, brighter rim, and the accent — top edge
+   only (FullStack raises its z and lifts it) */
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-top {
   fill: #1b1b1b;
 }
@@ -437,8 +417,8 @@
 }
 
 /* the hot slab's artwork lifts to full ink; the payload chip takes
-   the whole accent, the orbit and waves their full energy, and the
-   shimmer its accent-tinted metal */
+   the whole accent, the waves their full energy, and the shimmer its
+   accent-tinted metal */
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark {
   fill: rgba(255, 255, 255, 0.42);
 }
@@ -453,10 +433,6 @@
 }
 
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-ctx-wave {
-  opacity: 1;
-}
-
-.toolchain-root .tcb .v0s-slab.is-hot .v0s-orbit {
   opacity: 1;
 }
 
@@ -488,6 +464,54 @@
 
 .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip.is-accent .v0s-g-chip-top {
   fill: color-mix(in srgb, var(--iso-accent) 42%, #101010);
+}
+
+/* ---------- the agents scan beam ----------
+   The Locadex iso's sweep, ported (StackTower's beam block): a light
+   sheet hanging from the capstone's underside onto the translations
+   plate, swept while the agents beat is hot. Its overlay is a seated
+   layer of the tower like the slabs are. */
+
+.toolchain-root .tcb .v0s-beamsvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* BETWEEN the translations slab and the capstone: the overlay takes
+     the capstone's RESTING z (slab z-indices rest at index+1 — the
+     capstone's 4 — and FullStack raises only HOT slabs above 5), and
+     the capstone's slab, mounted after it, wins the tie by DOM order —
+     so the sheet always paints over the plate it scans and under the
+     slab it hangs from, hot or not */
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* hidden at rest: FullStack fades the sheet in only while the agents
+   beat is hot and the band is on screen — no-JS and reduced motion
+   never see the beam at all (the iso's RM discipline) */
+.toolchain-root .tcb .v0s-scan {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* the sheet's inks mirror the iso's (.v0-ldx-beam): a translucent white
+   body, 1px edges, and a brighter landing line — the sweep's white
+   voice; the accent never rides the beam */
+.toolchain-root .tcb .v0s-beam {
+  fill: rgba(255, 255, 255, 0.05);
+}
+
+.toolchain-root .tcb .v0s-beam-edge {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.13);
+  stroke-width: 1;
+}
+
+.toolchain-root .tcb .v0s-beam-land {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.38);
+  stroke-width: 1;
 }
 
 /* ---------- the copy rail: four beats, bottom of the stack first.
@@ -532,11 +556,13 @@
    pair). The lock-in law (window top crossing the 58% read line before
    the band's rest view) needs H > 42vh − 28px tail, and the shared
    42vh window clears it by exactly the tail at every viewport, so the
-   finale is hot at rest with no override here. The figure touches
-   down at the rest view and rides out beside the centered copy (see
-   the settle ledger in FullStack.tsx). Verify with the void probe at
-   1440×900 AND 1920×1080 whenever the figure, seat, or the beat
-   height moves. */
+   finale is hot at rest with no override here — and independent of
+   the rail cell's dwell, which only ADDS seated runway after the
+   lock-in: beat 04 goes hot, the scan beam drops, and the tower holds
+   its seat through the dwell before the natural release (founder:
+   stay on agents a little longer to show the scanning, then see the
+   next section). Verify with rhythm-probe at 1440×900, 1926×1002 AND
+   2000×1400 whenever the figure, seat, beat height, or dwell moves. */
 
 /* the spotlight: JS-managed classes, so the static (reduced-motion)
    state is all four beats at full ink */
@@ -580,14 +606,56 @@
   text-wrap: balance;
 }
 
-.toolchain-root .tcb .v0-stack-beat p {
-  margin-top: 14px;
-  font-size: 16.5px;
-  line-height: 1.6;
-  color: var(--tcb-body);
+/* ---------- the beat's bullet points ----------
+   The description and details as a scannable list (founder: "we can use
+   bullet points instead of paragraphs basically for the new copy"), in
+   the band's own voice: each point opens on a short accent dash — the
+   rail's tap grammar, a quiet horizontal leader, never a browser disc —
+   with body-size text at a reading measure. */
+
+.toolchain-root .tcb .v0-stack-points {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 11px;
   max-width: 54ch;
-  /* no one-word last lines at the bigger size ("Just merge a PR.") */
+}
+
+.toolchain-root .tcb .v0-stack-points li {
+  position: relative;
+  /* the dash's column: 12px mark + 12px air */
+  padding-left: 24px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--tcb-body);
+  /* no one-word last lines ("Just merge a PR.") */
   text-wrap: pretty;
+}
+
+/* the mark: a 12×2 accent dash centered on the first line's x-height */
+.toolchain-root .tcb .v0-stack-points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.71em;
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--iso-accent);
+}
+
+/* the inline code chip — the <T> in the code beat's first point: mono
+   face in a hairline chip, the band's chip voice at bullet size */
+.toolchain-root .tcb .v0-stack-points code {
+  font-family: var(--tc-mono);
+  font-size: 0.87em;
+  padding: 1px 5px 2px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--tcb-ink);
+  white-space: nowrap;
 }
 
 /* ---------- one column ---------- */

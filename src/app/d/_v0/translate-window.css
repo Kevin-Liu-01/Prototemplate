@@ -235,18 +235,24 @@
 }
 
 /* the app's content re-breathes: the main centres its block in the
-   full-height canvas. Its RIGHT padding mirrors the payload's 30%
-   inset (plus seam clearance), so the whole composition is contained
-   left of the resting cut by construction — the teaser strip never
-   covers a line. The doubled anchor (.tct-app .tct-app-main) outranks
-   v0-pages' page-scoped Figma padding, which was tuned for the
-   floating card this surface replaces. */
+   full-height canvas. Its RIGHT padding mirrors the RESTING cut (12%
+   of the surface stays payload teaser, plus seam clearance), so the
+   whole composition is contained left of the parked seam by
+   construction — the teaser strip never covers a line. Must agree with
+   REST_CUT in TranslateWindow.tsx. The doubled anchor (.tct-app
+   .tct-app-main) outranks v0-pages' page-scoped Figma padding, which
+   was tuned for the floating card this surface replaces. */
 .toolchain-root .v0-tw .tct-app .tct-app-main {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 16px calc(30% + 26px) 24px var(--app-gut);
+  padding: 16px calc(12% + 26px) 24px var(--app-gut);
+}
+
+/* the seam parks at the same 88 the unpin tween returns to */
+.toolchain-root .v0-tw .tct-app.tct-app {
+  --seam-cut: 88%;
 }
 
 /* the two rails: the stack (copy, stats, action) left; the chart card
@@ -418,16 +424,19 @@
 
 /* ---- the chart card: the right rail's quiet artifact ----
    One hairline box: a localized label (a real payload row — it retypes
-   and inspects like every component), a signed Intl percent, six fixed
-   bars with the locale's own short month names beneath. The current
-   month carries the accent; everything else stays in the surface's
-   neutral inks. */
+   and inspects like every component), a signed Intl percent, and the
+   year's bar series with the locale's own short month names beneath.
+   The card is an inline-size CONTAINER: it spends every pixel the grid
+   leaves it, and its container queries decide how many of the twelve
+   months fit (below). The current month carries the accent; everything
+   else stays in the surface's neutral inks. */
 .toolchain-root .v0-tw .sgdh-app-chart {
   flex: 1;
   align-self: stretch;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  container-type: inline-size;
   padding: 14px 16px 12px;
   border: 1px solid rgba(138, 143, 152, 0.28);
   /* product-real corners on the mock's interior artifacts (founder):
@@ -506,6 +515,40 @@
   text-align: center;
   white-space: nowrap;
   color: #8a8f98;
+}
+
+/* ---- the year breathes with the card ----
+   Twelve months render; the card's inline size decides how much history
+   shows. The LAST six are the floor — the accent month never leaves the
+   frame — and each step of spare width lets more of the year in from the
+   left. Bars and labels hide in lockstep; the visible boxes just
+   redistribute (flex: 1), so no locale, seam state or belt tick ever
+   moves the card itself. The final tier keeps nth-child so every rule
+   here ties on specificity and order alone decides. */
+.toolchain-root .v0-tw .sgdh-app-bars i:nth-child(-n + 6),
+.toolchain-root .v0-tw .sgdh-app-months span:nth-child(-n + 6) {
+  display: none;
+}
+
+@container (min-width: 300px) {
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 5),
+  .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 5) {
+    display: block;
+  }
+}
+
+@container (min-width: 420px) {
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 3),
+  .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 3) {
+    display: block;
+  }
+}
+
+@container (min-width: 540px) {
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 1),
+  .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 1) {
+    display: block;
+  }
 }
 
 /* a fully deleted line keeps its line box — the rewrite never reflows
@@ -613,6 +656,15 @@
 
 .toolchain-root .v0-tw .sgdh-ins-mark:hover,
 .toolchain-root .v0-tw .sgdh-ins-mark:focus-visible {
+  opacity: 1;
+  color: #2f5ce0;
+  border-color: #2f5ce0;
+}
+
+/* hovering the COMPONENT blues its mark too — the outline and the badge
+   announce together, however the hover arrived (the pin rule below still
+   outranks this while a mark is driving the seam) */
+.toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .sgdh-ins-mark {
   opacity: 1;
   color: #2f5ce0;
   border-color: #2f5ce0;
@@ -760,9 +812,11 @@
   --seam-ink-r: #939393;
 }
 
-/* the fill between the threads: the plate's ink, opaque, full height */
+/* the fill between the threads: the site's own ground carrying a little
+   extra darkness — --tc-paper remaps per theme, so one mix serves the
+   light and dark builds alike (founder: never flat black) */
 .toolchain-root .v0-tw .tct-app .tc-seam::before {
-  background: #101010;
+  background: color-mix(in srgb, var(--tc-paper) 86%, #070707);
 }
 
 .toolchain-root .v0-tw .tct-app .tc-seam::after {
@@ -897,6 +951,12 @@
 
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:hover,
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:focus-visible {
+  color: #7d9bff;
+  border-color: #7d9bff;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .sgdh-ins-mark {
+  opacity: 1;
   color: #7d9bff;
   border-color: #7d9bff;
 }
