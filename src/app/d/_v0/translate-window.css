@@ -344,7 +344,8 @@
 .toolchain-root .v0-tw .sgdh-app-chrome {
   display: flex;
   align-items: center;
-  gap: 18px;
+  /* the nav stands clear of the brand pair (founder: a little farther) */
+  gap: 34px;
   padding: 6px var(--app-gut);
   border-bottom: 1px solid rgba(138, 143, 152, 0.2);
 }
@@ -517,29 +518,23 @@
   color: #8a8f98;
 }
 
-/* ---- the year breathes with the card ----
-   Twelve months render; the card's inline size decides how much history
-   shows. The LAST six are the floor — the accent month never leaves the
-   frame — and each step of spare width lets more of the year in from the
-   left. Bars and labels hide in lockstep; the visible boxes just
-   redistribute (flex: 1), so no locale, seam state or belt tick ever
-   moves the card itself. The final tier keeps nth-child so every rule
-   here ties on specificity and order alone decides. */
-.toolchain-root .v0-tw .sgdh-app-bars i:nth-child(-n + 6),
-.toolchain-root .v0-tw .sgdh-app-months span:nth-child(-n + 6) {
+/* ---- the run breathes with the card ----
+   Fourteen months render; the card's inline size (a CONTENT-box measure —
+   the card's 32px of padding never counts) decides how much history
+   shows. The LAST six are the floor — they always hold the accent month,
+   which sits third from the right — and each step of spare width lets
+   more of the run in from the left. Bars and labels hide in lockstep;
+   the visible boxes just redistribute (flex: 1), so no locale, seam
+   state or belt tick ever moves the card itself. Every tier keeps an
+   nth-child so the rules tie on specificity and order alone decides. */
+.toolchain-root .v0-tw .sgdh-app-bars i:nth-child(-n + 8),
+.toolchain-root .v0-tw .sgdh-app-months span:nth-child(-n + 8) {
   display: none;
 }
 
 @container (min-width: 260px) {
-  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 5),
-  .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 5) {
-    display: block;
-  }
-}
-
-@container (min-width: 330px) {
-  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 3),
-  .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 3) {
+  .toolchain-root .v0-tw .sgdh-app-bars i:nth-child(n + 4),
+  .toolchain-root .v0-tw .sgdh-app-months span:nth-child(n + 4) {
     display: block;
   }
 }

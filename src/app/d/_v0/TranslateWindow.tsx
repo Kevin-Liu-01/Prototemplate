@@ -415,14 +415,19 @@ const fmtPayout = (loc: PreviewLoc) =>
    output or fixed geometry: month labels in the locale's own calendar
    voice, a signed localized percent for the delta, and a fixed bar
    series (the same company's same half-year, whatever the tongue). */
-/* Twelve months ending at the payout month (Sep 2025 – Aug 2026): JS Date
-   rolls negative month indexes into the prior year, so one anchor serves
-   the whole run. The card always renders the full year; its container
-   queries decide how much history fits the width at hand — the LAST six
-   are the floor, so the accent month never leaves the frame and no
+/* Fourteen months, Sep 2025 – Oct 2026, the accented month (August, the
+   payout month) sitting THIRD FROM THE RIGHT (founder): two quieter
+   months trail it, so the hot bar never rides the card's edge. JS Date
+   rolls out-of-range month indexes across year ends, so one anchor
+   serves the whole run. The card always renders the full run; its
+   container queries decide how much history fits the width at hand —
+   the LAST six are the floor, which always includes the accent, and no
    locale, seam state or belt tick can move a box. */
-const CHART_MONTHS = [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7] as const;
-const CHART_BARS = [0.34, 0.46, 0.4, 0.52, 0.44, 0.6, 0.44, 0.58, 0.5, 0.68, 0.82, 1] as const;
+const CHART_MONTHS = [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
+const CHART_BARS = [0.34, 0.46, 0.4, 0.52, 0.44, 0.6, 0.44, 0.58, 0.5, 0.68, 0.82, 1, 0.48, 0.58] as const;
+
+/** the accent bar: August — the payout month, not simply the last bar */
+const CHART_ACCENT = CHART_MONTHS.indexOf(7);
 
 const fmtMonth = (loc: PreviewLoc, month: number) =>
   new Intl.DateTimeFormat(loc, { month: 'short' }).format(new Date(2026, month, 1));
@@ -1595,7 +1600,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                     {CHART_BARS.map((h, i) => (
                       <i
                         key={CHART_MONTHS[i]}
-                        data-on={i === CHART_BARS.length - 1 || undefined}
+                        data-on={i === CHART_ACCENT || undefined}
                         style={{ height: `${Math.round(h * 100)}%` }}
                       />
                     ))}
