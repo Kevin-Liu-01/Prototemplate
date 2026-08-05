@@ -6,7 +6,6 @@ import gsap from 'gsap';
 import { ArrowRight } from 'lucide-react';
 import { useRef } from 'react';
 
-import PrismaticField from '@/components/shared/PrismaticField';
 
 import TranslateWindow from '@/app/d/_v0/TranslateWindow';
 
@@ -535,7 +534,6 @@ export default function HomeHero() {
           it keeps the measured top corners and ring. exposureScale is raised
           (= dimmer) so the flanks wash rather than saturate. */}
       <div className='tc-hero-cell tch-band'>
-        <PrismaticField className='tc-hero-field tch-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
         {/* one clock: the window reports its belt's active locale and the
             headline above morphs to that locale's word for "language" */}
         <TranslateWindow onLocaleChange={handleBeltLocale} />

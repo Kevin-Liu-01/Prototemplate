@@ -63,7 +63,7 @@
 /* the official full lockup (clickhouse.design/brand) — true ink, not
    the old grey; its canvas is 649.3×198.3 */
 .toolchain-root .v0-cust-mark.is-clickhouse {
-  height: 30px;
+  height: 40px;
   aspect-ratio: 649.3 / 198.3;
   background-image: url('/logos/clickhouse.light.svg');
 }

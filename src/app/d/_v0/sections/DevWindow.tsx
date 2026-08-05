@@ -3,7 +3,6 @@
 import { AppWindow } from 'lucide-react';
 import { useRef } from 'react';
 
-import PrismaticField from '@/components/shared/PrismaticField';
 
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
@@ -36,7 +35,6 @@ export default function V0DevWindow() {
       </div>
 
       <div className='v0-devwin-band' data-reveal>
-        <PrismaticField className='tc-hero-field tch-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
         <TranslateWindow />
       </div>
     </section>

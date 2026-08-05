@@ -6,7 +6,6 @@ import gsap from 'gsap';
 import { ArrowRight } from 'lucide-react';
 import { useRef, useState } from 'react';
 
-import PrismaticField from '@/components/shared/PrismaticField';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
@@ -470,7 +469,6 @@ export default function HomeHero() {
           centre dark — and the page opens inside it: headline light-on-dark
           at the top, the raw gt session below it on the same plate. */}
       <div className='sgph-console'>
-        <PrismaticField className='tc-hero-field tch-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
 
         <div className='sgph-console-in'>
           <div className='tc-hero sgph-head'>

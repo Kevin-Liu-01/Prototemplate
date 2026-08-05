@@ -6,7 +6,6 @@ import gsap from 'gsap';
 import { ArrowRight } from 'lucide-react';
 import { useRef, useState } from 'react';
 
-import PrismaticField from '@/components/shared/PrismaticField';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
@@ -511,7 +510,6 @@ export default function HomeHero() {
           inside it keeps the measured top corners and ring. exposureScale is
           raised (= dimmer) so the flanks wash rather than saturate. */}
       <div className='tc-hero-cell tch-band'>
-        <PrismaticField className='tc-hero-field tch-field' preset='1' speed={0.5} params={{ exposureScale: 3400 }} />
         <div className='tct-win' data-hero-in>
           <div className='tct-bar'>
             <span className='tct-title'>gt — translate</span>
