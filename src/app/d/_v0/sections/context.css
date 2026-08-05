@@ -6,8 +6,12 @@
    cells (the fork re-skin, the glossary and directives rows, the
    review row's ground) plus the cells' grid spans. The glyph-rain
    closer's rising ink field drifts behind the ruled sheet. The
-   plate is permanently dark in both themes, so artifact inks are
-   hardcoded white alphas; the seams stay in the band hairline
+   plate is the band's ink in DARK theme, where the artifact inks
+   below are hardcoded white alphas; on LIGHT the band follows the
+   theme (founder: no black boxes on light — the central v0-pages
+   flip re-inks the band chrome and --tcb-* family), and this
+   sheet's own dark hardcodes re-ink in the LIGHT MODE block at
+   the end of the file. The seams stay in the band hairline
    family.
    ============================================================ */
 
@@ -294,9 +298,10 @@
 /* ---------- the review row ----------
    The ORIGINAL ReviewWorkspace mounted whole. Its stylesheet reads the
    light page's tokens, so the cell carries the ground it needs: the dark
-   theme's remap, pinned — the band is dark in both themes. The workspace
-   surface lands on the tcb nested-box tone (a step darker than the cell),
-   and the frame's full-reach rules stay in the band seam family. */
+   theme's remap, pinned here for the dark plate (the LIGHT MODE block at
+   the end re-pins the family ink-on-paper). The workspace surface lands
+   on the tcb nested-box tone (a step darker than the cell), and the
+   frame's full-reach rules stay in the band seam family. */
 
 .toolchain-root .v0-ctx .v0-ctx-review {
   --tc-card: #070707;
@@ -482,8 +487,10 @@
    ever painted twice. Right, top and bottom wear the SAME quiet cover-2
    field; the directional fade goes WEST — five 8px columns stepping
    cover 6 -> 4 -> 3 -> 2 -> 1 off the frame's left edge into the copy
-   column, dead long before the words. The ink is the band's white in
-   both themes; the <i> hooks come from the workspace's product chrome. */
+   column, dead long before the words. The ink is the plate's paper white
+   in dark theme (the LIGHT MODE block re-inks the same geometry as a
+   quiet ink-alpha field); the <i> hooks come from the workspace's
+   product chrome. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-r,
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-l,
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y {
@@ -616,12 +623,182 @@
 }
 
 /* Status wears status color: approved lands in the house green; the
-   transient chips (Translated, Edit) capitalize and stay quiet. The
-   band is dark in both themes, so the green is the footer's dark ok. */
+   transient chips (Translated, Edit) capitalize and stay quiet. On the
+   dark plate the green is the footer's dark ok (the LIGHT MODE block
+   swaps it for the footer's light ok). */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='ok'] {
   color: #2fbf62;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='chip'] {
   text-transform: capitalize;
+}
+
+/* ============================================================
+   LIGHT MODE — the band follows the theme (founder: on light, no
+   black backgrounds in boxes or sections; Deploy today is the one
+   exception and lives elsewhere). The central v0-pages flip already
+   re-inks the band ground and the --tcb-* token family; every rule
+   below re-inks THIS sheet's own hardcoded dark paints — same
+   geometry, same rules, ink-on-paper. Dark theme never matches
+   these selectors and keeps every rule above byte-for-byte.
+   ============================================================ */
+
+/* Locale chips on light surfaces wear the house light chip grammar
+   (the rgba(7,7,7,0.16) border / 0.03 wash family). */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .lct {
+  border-color: rgba(7, 7, 7, 0.16);
+  background: rgba(7, 7, 7, 0.03);
+}
+
+/* The rising field re-inks by inversion: the engine paints paper
+   glyphs for the ink plate; inverted, the same field reads as ink
+   glyphs on the light band — same material, same dither. */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-rain {
+  filter: invert(1);
+}
+
+/* The fork family back on its light-page pairing: white cards and
+   ground, ink buttons with paper labels (lang.css's own resting
+   grammar), inks in the band's light ramp. */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-art .lang {
+  --lang-card: var(--tc-card);
+  --lang-ground: var(--tc-card);
+  --tc-ink: #070707;
+  color: var(--tcb-ink);
+}
+
+/* The interpolation hole dims against the now-ink button face. */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .lang-cr-word code {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ---------- the ledgers, ink-on-paper ---------- */
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-glossary,
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dirs {
+  border-color: var(--tcb-rule);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-glossary-head {
+  border-top-color: var(--tcb-rule);
+  background: rgba(7, 7, 7, 0.04);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-glossary-head b {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-rule {
+  border-color: rgba(7, 7, 7, 0.16);
+  color: rgba(7, 7, 7, 0.6);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-glossary-row {
+  border-top-color: rgba(7, 7, 7, 0.07);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-glossary-row .lct-code {
+  color: rgba(7, 7, 7, 0.5);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-glossary-line {
+  color: rgba(7, 7, 7, 0.66);
+}
+
+/* the pinned term keeps the accent — on paper it speaks unmixed
+   (the dark rule lightens it toward white; light needs no lift) */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-glossary-line b {
+  color: var(--iso-accent, #2f5ce0);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dirs-loc {
+  color: rgba(7, 7, 7, 0.55);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dirs-loc .lct-code {
+  color: rgba(7, 7, 7, 0.5);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir {
+  border-top-color: rgba(7, 7, 7, 0.07);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir b {
+  color: #070707;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir p {
+  color: rgba(7, 7, 7, 0.62);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir p code {
+  color: rgba(7, 7, 7, 0.85);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir-pair {
+  color: rgba(7, 7, 7, 0.78);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir-pair .is-before {
+  color: rgba(7, 7, 7, 0.38);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir-pair .is-arrow {
+  color: rgba(7, 7, 7, 0.35);
+}
+
+/* the Locadex mark inks to the sheet's black on paper */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-gmark {
+  filter: brightness(0);
+}
+
+/* ---------- the review row, ink-on-paper ----------
+   The cell re-pins the workspace's token family to the page's own
+   light values; the surface takes the band's light box tone (the
+   centrally-flipped --tcb-box → paper). The SSOT workspace sheet is
+   all tokens, so the rows, diff strike and caret re-ink from here. */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review {
+  --tc-card: var(--tcb-box);
+  --tc-ink: #070707;
+  --tc-ink-2: rgba(7, 7, 7, 0.63);
+  --tc-ink-3: rgba(7, 7, 7, 0.45);
+  --tc-ink-4: rgba(7, 7, 7, 0.27);
+  --tc-hair: rgba(138, 143, 152, 0.26);
+  --tc-hair-2: rgba(138, 143, 152, 0.15);
+}
+
+/* approved lands in the footer's LIGHT ok green */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='ok'] {
+  color: #16a34a;
+}
+
+/* the agent credit's mark inks dark, same seat and dimming */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-fmark {
+  filter: brightness(0);
+}
+
+/* ---------- the Bayer aura, re-inked ----------
+   Same tiles, same 8px registration, same directional fade — the
+   paper-white cells swap for ink and the field sits a step up in
+   opacity so the dither reads as quietly on paper as it did on the
+   plate. */
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-r {
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23070707' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E");
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-l {
+  opacity: 0.08;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23070707' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23070707' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23070707' d='M0 0h1v1H0Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23070707' d='M0 0h1v1H0Z'/%3E%3C/svg%3E");
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::before,
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-aura-y::after {
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23070707' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E");
 }

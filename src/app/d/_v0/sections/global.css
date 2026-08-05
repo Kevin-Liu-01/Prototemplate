@@ -30,13 +30,41 @@
    split by its own seam. Both now follow the card's actual ground: the
    punch ink is the panel tone, and in dark the panel remaps to the card
    family, which recolors the card AND the payload chip's plate in one
-   move (both read var(--tc-panel)). */
+   move (both read var(--tc-panel)). The same routing is the LIGHT story
+   for free: v0-pages flips --tc-panel to white on light, so the card's
+   ground, the punch, and the chip plate all land on the light plate
+   together — no black dots where the origin punches its route. */
 .toolchain-root .v0-glob .tc-cell.is-night > .tc-card {
   --tc-dark: var(--tc-panel);
 }
 
 [data-theme='dark'] .toolchain-root .v0-glob .tc-cell.is-night > .tc-card {
   --tc-panel: var(--tc-card);
+}
+
+/* ---------- light: the night card becomes a day plate ----------
+   Founder: on light, no black boxes ("Deploy today." excepted). The card's
+   ground already follows the flipped --tc-panel (white), but styles.css's
+   is-night rule pins WHITE iso inks in both themes — white wire on a white
+   plate. The counter-rule, one class deeper and light-only: the page's own
+   paper iso family (styles.css's base values, night-weighted a step up for
+   the labels), and the card's currentColor drops back to the page ink so
+   every color-mix fallback in the globe's sheet reads ink-on-paper too.
+   Dark never matches these selectors and keeps the night verbatim. */
+:root:not([data-theme='dark']) .toolchain-root .v0-glob .tc-cell.is-night > .tc-card {
+  color: var(--tc-ink);
+  --iso-ink: rgba(7, 7, 7, 0.8);
+  --iso-ink-soft: rgba(7, 7, 7, 0.44);
+  --iso-ink-hair: rgba(7, 7, 7, 0.2);
+  --iso-label-color: rgba(7, 7, 7, 0.7);
+}
+
+/* The one accent keeps carrying the meaning (route, serving PoP, payload):
+   the night periwinkle is a dark-plate ink, so on paper it hands over to
+   the page's own accent blue — the same trade v0-pages makes for the dark
+   bands on light. Set on the mount, where the dark value also lives. */
+:root:not([data-theme='dark']) .toolchain-root .v0-glob-art {
+  --iso-accent: var(--tc-accent);
 }
 
 /* ---------- the dithered atmosphere ----------
@@ -60,13 +88,19 @@
   pointer-events: none;
 }
 
-/* The one ink the field spends: the night plate's white at atmosphere
-   opacity (founder round: stepped up from the first 0.05–0.09 window —
-   the field should read, not whisper; the plate is dark in both themes,
-   so the ink is the panel's white, not the page's). Density does the
-   fading — this alpha never ramps. */
+/* The one ink the field spends, per plate: on the night plate the panel's
+   white at atmosphere opacity (founder round: stepped up from the first
+   0.05–0.09 window — the field should read, not whisper); on light the
+   plate is paper now, so the same annuli re-ink to a quiet ink-alpha in
+   that original window — a white haze on white would vanish, and a full
+   0.11 ink would shout on paper. Density does the fading — neither alpha
+   ever ramps. */
 .toolchain-root .v0-glob-atmo-field .v0-glob-atmo-dots {
   fill: rgba(255, 255, 255, 0.11);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-glob-atmo-field .v0-glob-atmo-dots {
+  fill: rgba(7, 7, 7, 0.07);
 }
 
 /* The globe's own stylesheet pins --eg-label-size on .eg itself, so the
