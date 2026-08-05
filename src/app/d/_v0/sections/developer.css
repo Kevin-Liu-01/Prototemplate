@@ -7,6 +7,12 @@
    column.
    ============================================================ */
 
+/* the subheader runs ONE line at desktop (founder) — the SSOT's 60ch
+   measure broke it in two */
+.toolchain-root .v0-dev .tc-head p {
+  max-width: 88ch;
+}
+
 /* The section sheet: one row of three equal framed columns. The grid's
    1px hair gaps ARE the internal seams — drawn once by the row's ground,
    exactly the framed-row mat grammar. `--shell-head-h` aligns the three
@@ -114,8 +120,14 @@
   font-weight: 550;
   letter-spacing: -0.01em;
   line-height: 1;
-  color: var(--tc-ink);
+  /* the category names read in the accent (founder: readability) — the
+     threads' own theme pair, deep blue on paper, band blue in dark */
+  color: #2f5ce0;
   white-space: nowrap;
+}
+
+[data-theme='dark'] .toolchain-root .v0-dev-fork-label {
+  color: #86a8ff;
 }
 
 /* the category's one mark: the icon carries the stack rail's blue;

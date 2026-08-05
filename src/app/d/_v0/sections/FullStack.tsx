@@ -87,7 +87,7 @@ const BEATS: readonly StackBeat[] = [
         Wrap a component in <code>&lt;T&gt;</code> and it’s ready to ship in 120+ locales. No
         translation files needed.
       </>,
-      <>Open-source internationalization (i18n) libraries and SDKs for every stack.</>,
+      <em key='code-oss'>Open-source internationalization (i18n) libraries and SDKs for every stack.</em>,
     ],
     icon: Code2,
     slabIds: ['code'],
@@ -99,7 +99,7 @@ const BEATS: readonly StackBeat[] = [
     points: [
       <>
         <GtLogoText /> keeps your terminology, voice, and style consistent across every surface
-        and every language.
+        and language.
       </>,
       <>
         Define key product terms, brand voice, and style once. <GtLogoText /> applies them
@@ -116,9 +116,9 @@ const BEATS: readonly StackBeat[] = [
     points: [
       <>
         See your content and components translated in just minutes. <GtLogoText /> handles
-        branching logic for dynamic content and user inputs.
+        dynamic content and user inputs.
       </>,
-      <>Built-in components for numbers, currencies, dates, plurals, and every other edge case.</>,
+      <>Built-in components for numbers, currencies, dates, plurals, and more.</>,
     ],
     icon: Languages,
     slabIds: ['translations'],
@@ -129,10 +129,9 @@ const BEATS: readonly StackBeat[] = [
     lead: 'Automate it.',
     points: [
       <>Locadex keeps your app localized with every update. Just merge a PR.</>,
-      <>The Locadex agent is the fastest way to localize your app end-to-end.</>,
       <>
-        Locadex localizes your system end to end, then keeps every surface in sync as your code
-        changes.
+        The Locadex agent internationalizes your system end to end, then keeps every surface
+        localized as your code changes.
       </>,
     ],
     icon: LocadexMark,

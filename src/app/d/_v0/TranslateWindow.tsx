@@ -71,15 +71,25 @@ gsap.registerPlugin(useGSAP);
    separate section.
    ------------------------------------------------------------------ */
 
-type Stack = { name: string; detected: string };
+/* Each stack carries its own session facts (founder: "the terminal
+   should change more in different frameworks") — what the wizard
+   detects, where the scan roots, how many strings it finds, and which
+   files init writes. Picking a tab re-aims all of them. */
+type Stack = {
+  name: string;
+  detected: string;
+  scanRoot: string;
+  strings: number;
+  wrote: string;
+};
 
 const STACKS: readonly Stack[] = [
-  { name: 'Next.js', detected: 'Next.js · App Router' },
-  { name: 'React', detected: 'React · Vite' },
-  { name: 'React Native', detected: 'React Native · Expo' },
-  { name: 'TanStack Start', detected: 'TanStack Start · SSR' },
-  { name: 'Node.js', detected: 'Node.js · server' },
-  { name: 'Python', detected: 'Python · scripts' },
+  { name: 'Next.js', detected: 'Next.js · App Router', scanRoot: 'src/app', strings: 128, wrote: 'gt.config.json · .env.local' },
+  { name: 'React', detected: 'React · Vite', scanRoot: 'src', strings: 96, wrote: 'gt.config.json · .env' },
+  { name: 'React Native', detected: 'React Native · Expo', scanRoot: 'app', strings: 84, wrote: 'gt.config.json · app.config.ts' },
+  { name: 'TanStack Start', detected: 'TanStack Start · SSR', scanRoot: 'src/routes', strings: 74, wrote: 'gt.config.json · .env' },
+  { name: 'Node.js', detected: 'Node.js · server', scanRoot: 'src', strings: 52, wrote: 'gt.config.json · .env' },
+  { name: 'Python', detected: 'Python · scripts', scanRoot: 'app', strings: 47, wrote: 'gt.config.py · .env' },
 ];
 
 type StackMarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean };
@@ -101,7 +111,13 @@ const STACK_MARKS: Record<string, ComponentType<StackMarkProps>> = {
   Python: SiPython,
 };
 
-const DEFAULT_STACK: Stack = STACKS[0] ?? { name: 'Next.js', detected: 'Next.js · App Router' };
+const DEFAULT_STACK: Stack = STACKS[0] ?? {
+  name: 'Next.js',
+  detected: 'Next.js · App Router',
+  scanRoot: 'src/app',
+  strings: 128,
+  wrote: 'gt.config.json · .env.local',
+};
 
 /** The wizard's summary block after the Detected line (which renders from
     the stack strip's state): source, locale set, files written. `src`
@@ -111,7 +127,6 @@ const DEFAULT_STACK: Stack = STACKS[0] ?? { name: 'Next.js', detected: 'Next.js 
 const WIZARD: readonly { key: string; text?: string; src?: string; locs?: readonly string[] }[] = [
   { key: 'Source', src: 'en' },
   { key: 'Locales', locs: ['es', 'fr', 'ja', 'de', 'zh'] },
-  { key: 'Wrote', text: 'gt.config.json · .env.local' },
 ];
 
 type Variant = { loc: string; text: string };
@@ -883,7 +898,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
         .from('[data-tw]', { autoAlpha: 0, duration: 0.16, stagger: 0.07 }, '+=0.06')
         .from('.tct-cmd2 span', { autoAlpha: 0, duration: 0.01, stagger: 0.012 }, '+=0.07')
         .from('[data-ts]', { autoAlpha: 0, duration: 0.16, stagger: 0.09 }, '+=0.06')
-        .add(counter('[data-count-scan]', 128, 0.4, 0), '<')
+        .add(counter('[data-count-scan]', DEFAULT_STACK.strings, 0.4, 0), '<')
         .from('[data-tr-src]', { autoAlpha: 0, duration: 0.14, stagger: 0.06 }, '+=0.05')
         .from('.tct-cell', { autoAlpha: 0, y: 5, duration: 0.22, ease: 'power1.out', stagger: 0.05 }, '<+=0.08')
         .from('[data-td]', { autoAlpha: 0, duration: 0.16, stagger: 0.09 }, '+=0.06')
@@ -1054,8 +1069,13 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       const speed = runWidth / (n * BELT_DWELL);
       const tick = (_time: number, deltaMs: number) => {
         if (sliding || hover || pinnedRef.current || viewRef.current !== 'preview') return;
-        if (Date.now() < beltHold.current) return;
-        pos = wrap(pos + (speed * deltaMs) / 1000);
+        /* a manual pick doesn't FREEZE the conveyor — it crawls through
+           the courtesy window (founder: a stopped belt just reads as a
+           delay), then resumes full speed. At crawl pace the next
+           crossing sits well past the window, so the reader's pick is
+           never stolen. */
+        const crawl = Date.now() < beltHold.current ? 0.22 : 1;
+        pos = wrap(pos + (speed * crawl * deltaMs) / 1000);
         setX();
         const i = centerIdx();
         if (i !== active) {
@@ -1149,11 +1169,13 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
         write(from.join(''));
         const at = i * 0.03;
         const dial = { n: from.length };
+        /* one notch slower than the original cut (founder: 10% slower) —
+           the clamps and the per-character rates all carry the 1.1 */
         tl.to(
           dial,
           {
             n: 0,
-            duration: gsap.utils.clamp(0.05, 0.09, from.length * 0.008),
+            duration: gsap.utils.clamp(0.055, 0.099, from.length * 0.0088),
             ease: 'power1.in',
             onUpdate: () => write(from.slice(0, Math.round(dial.n)).join('')),
           },
@@ -1163,7 +1185,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
           dial,
           {
             n: to.length,
-            duration: gsap.utils.clamp(0.1, 0.18, to.length * 0.011),
+            duration: gsap.utils.clamp(0.11, 0.198, to.length * 0.0121),
             onUpdate: () => write(to.slice(0, Math.round(dial.n)).join('')),
           },
           '>+0.015'
@@ -1179,14 +1201,15 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     { scope: root, dependencies: [ploc] }
   );
 
-  /* The Detected line re-settles the same way when a stack is picked. */
+  /* Every stack-answering line re-settles the same way when a stack is
+     picked — Detected, the written files, the scan root and count. */
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       gsap.fromTo(
-        '[data-detected]',
+        '[data-detected], [data-stackline], [data-count-scan]',
         { autoAlpha: 0.25 },
-        { autoAlpha: 1, duration: 0.32, ease: 'power1.out' }
+        { autoAlpha: 1, duration: 0.32, ease: 'power1.out', stagger: 0.05 }
       );
     },
     { scope: root, dependencies: [stack] }
@@ -1386,14 +1409,21 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                 )}
               </div>
             ))}
+            {/* the written files answer the stack, like the Detected line */}
+            <div className='tct-line' data-tw>
+              <span className='tct-key'>{`  ${'Wrote'.padEnd(11)}`}</span>
+              <span data-stackline>{stack.wrote}</span>
+            </div>
             <div className='tct-gap' />
 
             <Cmd text='npx gt translate' mark='tct-cmd2' />
             <div className='tct-gap' />
             <div className='tct-line tct-meta' data-ts>
-              {'  Scanning src — '}
+              {'  Scanning '}
+              <span data-stackline>{stack.scanRoot}</span>
+              {' — '}
               <b className='tct-strong' data-count-scan>
-                128
+                {stack.strings}
               </b>
               {' strings found'}
             </div>

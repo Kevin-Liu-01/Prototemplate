@@ -144,17 +144,25 @@ const SIGN_T = 0.55;
  * to a constant screen vector (−cos30, +sin30) per unit, so the sweep is
  * one x/y tween.
  */
+/** The landing spreads wider than the slab (founder: "scan the FULL
+    surface") — the sheet flares from the agent's ±22 underside down to a
+    ±34 footprint, a light cone whose land line reaches the module grid's
+    outer columns. */
+const BEAM_LAND_HALF = 34;
 const beamTL = project(-A_HALF, 0, A_Z);
 const beamTR = project(A_HALF, 0, A_Z);
-const beamBR = project(A_HALF, 0, CHIP_TOP);
-const beamBL = project(-A_HALF, 0, CHIP_TOP);
+const beamBR = project(BEAM_LAND_HALF, 0, CHIP_TOP);
+const beamBL = project(-BEAM_LAND_HALF, 0, CHIP_TOP);
 const BEAM_QUAD = polyline([beamTL, beamTR, beamBR, beamBL], true);
 const BEAM_EDGE_L = segment(beamTL, beamBL);
 const BEAM_EDGE_R = segment(beamTR, beamBR);
 const BEAM_LAND = segment(beamBL, beamBR);
 
-/** Sweep amplitude in world y — stays inside the agent's underside (±22). */
-const SWEEP_Y = 20;
+/** Sweep amplitude in world y — deep enough that the land line crosses
+    every module row (the grid spans ±29); the sheet's top may overhang
+    the slab a breath at the extremes, which reads as the light leading
+    the scan, not a defect. */
+const SWEEP_Y = 28;
 const SWEEP_DX = SWEEP_Y * ISO_COS30;
 const SWEEP_DY = SWEEP_Y * ISO_SIN30;
 
@@ -690,25 +698,9 @@ export default function V0Locadex() {
             }
           ),
         ];
-        const mark = el.querySelector<SVGRectElement>('[data-ldx-mark]');
-        if (mark) {
-          loops.push(
-            gsap.fromTo(
-              mark,
-              /* the stylesheet's resting ink — the reduced-motion still */
-              { fill: 'rgba(255, 255, 255, 0.78)' },
-              {
-                /* the accent resolved off the stylesheet — hex stays in css */
-                fill: getComputedStyle(mark).getPropertyValue('--ldx-accent').trim() || 'rgb(134, 168, 255)',
-                duration: 1.8,
-                ease: 'sine.inOut',
-                repeat: -1,
-                yoyo: true,
-                paused: true,
-              }
-            )
-          );
-        }
+        /* the mark holds its resting ink, full stop — the old warm-to-accent
+           pulse read as flashing (founder), so the agent's identity stays
+           still while the beam does the moving */
         ScrollTrigger.create({
           trigger: el,
           start: 'top bottom',
@@ -820,9 +812,9 @@ export default function V0Locadex() {
       <div className='tc-head'>
         <i className='tc-head-icon v0-ldx-head-mark' aria-hidden />
         <h2 data-reveal>
-          The easiest way to localize your application
+          The easiest way to localize your full system
           <br />
-          with native speed and quality.
+          in native speed and quality.
         </h2>
       </div>
 
@@ -834,7 +826,7 @@ export default function V0Locadex() {
           cell='is-tall tcm-ruled'
           framed={false}
           title='Run Locadex.'
-          sub='Connect your GitHub repository to our localization agent. Locadex internationalizes your code and keeps your app localized on every update. Just merge a PR.'
+          sub='Connect your GitHub repository. The Locadex agent internationalizes your code and keeps your app localized on every update. Just merge a PR.'
         >
           <WorksLedger caption='Works with every stack' works={STACK_WORKS} />
         </BentoCell>

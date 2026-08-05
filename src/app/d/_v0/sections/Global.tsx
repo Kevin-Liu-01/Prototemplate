@@ -112,10 +112,12 @@ function atmoTile(cover: number): string {
 }
 
 /** The sphere's projection, mirrored from EdgeGlobe.tsx (R/CX/CY are module
-    constants there, not exported): limb radius 92 centred at (170, 126) in
-    the 360×240 viewBox. The overlay shares that viewBox, so the two
+    constants there, not exported): limb radius 92 centred at (179, 126) in
+    the 360×240 viewBox — 179 is the optically-balanced seat between the
+    two label rails (founder round); keep this in step with EdgeGlobe's CX
+    whenever the sphere moves. The overlay shares that viewBox, so the two
     coordinate systems coincide exactly at any rendered size. */
-const ATMO_CX = 170;
+const ATMO_CX = 179;
 const ATMO_CY = 126;
 
 /** The falloff, centre-out: ring bounds (viewBox units) and Bayer coverage.

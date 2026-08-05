@@ -590,3 +590,58 @@
   width: 38px;
   height: 38px;
 }
+
+/* The Customers seam speaks ONCE, above the spacer (founder: "right
+   under the sponsors") — the platform band's own top rule yields at
+   this junction; the hatch's top hair, with the wall's crosses on it,
+   IS the separator. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .v0-cust
+  + .v0-hatch
+  + .v0-stack {
+  border-top: 0;
+}
+
+/* Two spacers carry their crosses on the BOTTOM seam instead (founder
+   round: the dev→locadex and globe→deploy hatches) — the preceding
+   section's pair stands down and the hatch draws it on its own lower
+   edge. Same geometry as the section pair: the arm centers on the seam
+   whether the hatch draws it (border-bottom, before a light section) or
+   the band below does (hatch bottom dropped, dep's top rule). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .tc-rail
+  > :is(.v0-dev, .v0-glob).tc-sec::after {
+  content: none;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  :is(.v0-dev, .v0-glob)
+  + .v0-hatch {
+  position: relative;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  :is(.v0-dev, .v0-glob)
+  + .v0-hatch::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  height: 9px;
+  z-index: 2;
+  pointer-events: none;
+  --cross-ink: rgba(10, 11, 13, 0.38);
+  background:
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 0 4px / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 4px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat;
+}
+
+[data-theme='dark']
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  :is(.v0-dev, .v0-glob)
+  + .v0-hatch::after {
+  --cross-ink: rgba(255, 255, 255, 0.34);
+}

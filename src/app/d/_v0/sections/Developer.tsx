@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  Braces,
+  Code2,
   Ruler,
   CalendarDays,
   Coins,
@@ -467,7 +467,10 @@ export default function V0Developer({ heading = 'Built for the world’s develop
   return (
     <section className='tc-sec v0-dev' id='developers' ref={root}>
       <div className='tc-head'>
-        <Braces className='tc-head-icon' strokeWidth={1} aria-hidden />
+        {/* the head watermark: the <T> digraph, not the anonymous brace
+            (founder: "a much more meaningful and related icon") — the
+            component every developer actually writes here */}
+        <Code2 className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>{heading}</h2>
         <p data-reveal>
           <GtLogoText /> handles all the infrastructure, so you no longer need to think about
@@ -478,7 +481,7 @@ export default function V0Developer({ heading = 'Built for the world’s develop
       <div className='tc-row v0-dev-grid' data-eq-heads=''>
         <BentoCell
           cell='is-framed'
-          title='Component sizing and layout'
+          title='Dynamic sizing and layout for every component'
         >
           <div className='tc-lang is-lead'>
             <SentenceWidth
@@ -497,12 +500,12 @@ export default function V0Developer({ heading = 'Built for the world’s develop
 
         <BentoCell
           cell='is-framed'
-          title='Every branch and edge case: numbers, currency, dates, plural forms, and more'
+          title='Edge cases handled: numbers, currencies, dates, plurality, and more'
         >
           <BranchForks />
         </BentoCell>
 
-        <BentoCell cell='is-framed' title='Locale routing and SEO'>
+        <BentoCell cell='is-framed' title='Routing to SEO-friendly paths for each locale'>
           <div className='v0-dev-routes'>
             {ROUTES.map((route) => {
               const Icon = route.icon;

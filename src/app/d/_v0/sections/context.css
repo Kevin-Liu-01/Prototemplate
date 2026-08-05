@@ -598,3 +598,30 @@
   flex: none;
   color: var(--tc-ink-3);
 }
+
+/* Column heads carry the locale as the house flag chip, seated right
+   (founder round) — the chip resets the head's caps tracking. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-lab-loc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-lab-tag {
+  display: inline-flex;
+  align-items: center;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Status wears status color: approved lands in the house green; the
+   transient chips (Translated, Edit) capitalize and stay quiet. The
+   band is dark in both themes, so the green is the footer's dark ok. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='ok'] {
+  color: #2fbf62;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='chip'] {
+  text-transform: capitalize;
+}

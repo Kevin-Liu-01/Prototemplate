@@ -814,7 +814,9 @@
   padding-left: 24px;
   font-size: 15.5px;
   line-height: 1.55;
-  color: var(--tcb-body);
+  /* founder: WHITE text — the bullets read in full ink; the rail's
+     cold-beat dim still separates the spotlight */
+  color: rgba(255, 255, 255, 0.92);
   /* no one-word last lines ("Just merge a PR.") */
   text-wrap: pretty;
 }

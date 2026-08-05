@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Download, History, Search, Table2 } from 'lucide-react';
 import { Fragment, useRef } from 'react';
 
+import LocaleTag from '../components/LocaleTag';
+
 import { useQuietReveal } from './reveal';
 
 import './review-workspace.css';
@@ -291,8 +293,29 @@ export default function ReviewWorkspace({
             </div>
 
             <div className='tcr-cols'>
-              <div className='tcr-lab'>source — en</div>
-              <div className='tcr-lab is-t'>translation — es</div>
+              {chrome === 'product' ? (
+                <>
+                  {/* the locale speaks as the house flag chip, seated at the
+                      right edge of its column head (founder round) */}
+                  <div className='tcr-lab tcr-lab-loc'>
+                    Source
+                    <span className='tcr-lab-tag'>
+                      <LocaleTag code='en' />
+                    </span>
+                  </div>
+                  <div className='tcr-lab is-t tcr-lab-loc'>
+                    Translation
+                    <span className='tcr-lab-tag'>
+                      <LocaleTag code='es' />
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className='tcr-lab'>source — en</div>
+                  <div className='tcr-lab is-t'>translation — es</div>
+                </>
+              )}
               {ROWS.map((row) => (
                 <Fragment key={row.key}>
                   <div className='tcr-cell is-s'>
@@ -338,21 +361,21 @@ export default function ReviewWorkspace({
               <div className='tcr-foot'>
                 <span className='tcr-fact'>
                   <Search className='tcr-fico' aria-hidden />
-                  search
+                  Search
                 </span>
                 <span className='tcr-fact'>
                   <History className='tcr-fico' aria-hidden />
-                  history
+                  History
                 </span>
                 <span className='tcr-fact'>
                   <Download className='tcr-fico' aria-hidden />
-                  download
+                  Download
                 </span>
                 <span className='is-right tcr-fact'>
-                  agent ·
+                  Agent ·
                   {/* the mark, not the letter — the house never writes the wordmark plain */}
                   <img alt='' className='tcr-fmark' src='/brand/locadex-mark.svg' />
-                  locadex
+                  Locadex
                 </span>
               </div>
             ) : (
