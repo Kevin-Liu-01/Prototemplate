@@ -291,7 +291,7 @@ const PAIRS: readonly Pair[] = [
   },
 ];
 
-const FLAGS: readonly string[] = ['🇪🇸', '🇫🇷', '🇩🇪', '🇯🇵', '🇰🇷', '🇨🇳', '🇮🇳', '🇸🇦', '🇧🇷', '🇮🇹', '🇳🇱', '🇹🇷'];
+const FLAGS: readonly string[] = ['es', 'fr', 'de', 'jp', 'kr', 'cn', 'in', 'sa', 'br', 'it', 'nl', 'tr'];
 
 const WORDMARKS: readonly { name: string; mark: string }[] = [
   { name: 'Cursor', mark: 'is-cursor' },

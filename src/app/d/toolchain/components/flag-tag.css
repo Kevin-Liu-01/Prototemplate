@@ -1,0 +1,19 @@
+/* ============================================================
+   LOCALE CHIP FLAG — the flag-icons span inside every lct chip.
+   Deliberately UNSCOPED: LocaleTag is shared across every fork
+   root, and each fork's icons.css copy only sets the retired
+   emoji font rules on .lct-flag, so this sheet owns the box for
+   all of them (three classes outrank any root-scoped pair).
+   Fixed print size at chip scale, centred against the mono code,
+   corners barely eased — never a shadow.
+   ============================================================ */
+
+.lct .lct-flag.fi {
+  flex: none;
+  align-self: center;
+  width: 15px;
+  height: 11px;
+  line-height: 11px;
+  border-radius: 1px;
+  background-size: cover;
+}

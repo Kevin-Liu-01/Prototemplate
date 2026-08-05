@@ -90,18 +90,23 @@
   padding-block: 6px;
 }
 
-/* the category and its raw value, one right-flushed block on the stem */
+/* The category and its raw value, one right-flushed block on the stem —
+   anchored so the SOURCE CHIP's center sits exactly on the fork's origin
+   (the middle landing's y = 50% of the drawing), the title just above it.
+   Absolute anchors, not flex centering: centering the whole block put the
+   convergence point between title and chip instead of on the chip. */
 .toolchain-root .v0-dev-key {
-  align-self: center;
+  position: relative;
   justify-self: stretch;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 7px;
 }
 
+/* bottom = the chip's top edge (50% − half the 22px chip) plus the 7px
+   gap — the title rides just above the box it names */
 .toolchain-root .v0-dev-fork-label {
+  position: absolute;
+  right: 0;
+  bottom: calc(50% + 18px);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -129,8 +134,12 @@
 }
 
 /* the source node: the raw value as a mono chip, its right edge on the
-   threads' shared stem */
+   threads' shared stem, its center on the stem's y */
 .toolchain-root .v0-dev-src {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   max-width: 100%;
   padding: 4px 7px 5px;
   border: 1px solid var(--tc-hair);

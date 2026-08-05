@@ -109,11 +109,11 @@ export const STREAM_ITEMS: StreamItem[] = [
 export const WHEEL_GLYPHS = '語한عñß日글مनé中กЖçあāΩרü文ᄀ';
 
 export const FLAGS: [string, string][] = [
-  ['🇪🇸', 'Español'], ['🇫🇷', 'Français'], ['🇯🇵', '日本語'], ['🇩🇪', 'Deutsch'],
-  ['🇨🇳', '中文'], ['🇰🇷', '한국어'], ['🇧🇷', 'Português'], ['🇮🇹', 'Italiano'],
-  ['🇮🇳', 'हिन्दी'], ['🇸🇦', 'العربية'], ['🇷🇺', 'Русский'], ['🇹🇷', 'Türkçe'],
-  ['🇳🇱', 'Nederlands'], ['🇵🇱', 'Polski'], ['🇸🇪', 'Svenska'], ['🇻🇳', 'Tiếng Việt'],
-  ['🇹🇭', 'ไทย'], ['🇮🇩', 'Bahasa'], ['🇮🇱', 'עברית'], ['🇬🇷', 'Ελληνικά'],
+  ['es', 'Español'], ['fr', 'Français'], ['jp', '日本語'], ['de', 'Deutsch'],
+  ['cn', '中文'], ['kr', '한국어'], ['br', 'Português'], ['it', 'Italiano'],
+  ['in', 'हिन्दी'], ['sa', 'العربية'], ['ru', 'Русский'], ['tr', 'Türkçe'],
+  ['nl', 'Nederlands'], ['pl', 'Polski'], ['se', 'Svenska'], ['vn', 'Tiếng Việt'],
+  ['th', 'ไทย'], ['id', 'Bahasa'], ['il', 'עברית'], ['gr', 'Ελληνικά'],
 ];
 
 export const TRUSTED_BY = ['Cursor', 'Ramp', 'Mintlify', 'Profound', 'Partiful', 'ClickHouse'];

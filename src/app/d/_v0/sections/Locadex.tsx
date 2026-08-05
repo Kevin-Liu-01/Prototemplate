@@ -223,7 +223,7 @@ const INT_H = 234;
 const NODE_X = 1;
 const NODE_W = 186;
 const NODE_H = 44;
-const INT_PLATE = { x: 424, y: 85, w: 134, h: 64 } as const;
+const INT_PLATE = { x: 408, y: 73, w: 150, h: 88 } as const;
 
 const INT_SOURCES: readonly IntSource[] = [
   { label: 'GitHub', cy: 24, icons: [{ name: 'GitHub', Icon: SiGithub }] },
@@ -242,21 +242,26 @@ const INT_SOURCES: readonly IntSource[] = [
 
 /**
  * One connector per source, each drawn once, flowing left → right INTO the
- * plate: the outer pair's vertical runs sit at one gauge (x 340), the inner
- * pair's at another (x 308), so no two paths ever share a segment. All four
- * ports land on the plate's left edge, at y 96/110/124/138.
+ * plate, all in ONE turn grammar: every arc is radius 12, the inner pair's
+ * vertical gauge sits at x 320 and the outer pair's at x 344, and every
+ * matching feature repeats at that same 24 interval (turn-in at 308/332,
+ * exit at 332/356). The inner pair's ±24 offset is exactly two radii, so
+ * those turns resolve as clean tangent ogees rather than a cramped jog.
+ * All four ports land on the plate's left edge, at y 96/110/124/138 —
+ * mirror-symmetric about the plate's center line.
  */
 const INT_LINKS: readonly string[] = [
-  'M187 24H332Q340 24 340 32V88Q340 96 348 96H424',
-  'M187 86H300Q308 86 308 94V102Q308 110 316 110H424',
-  'M187 148H300Q308 148 308 140V132Q308 124 316 124H424',
-  'M187 210H332Q340 210 340 202V146Q340 138 348 138H424',
+  'M187 24H332Q344 24 344 36V84Q344 96 356 96H408',
+  'M187 86H308Q320 86 320 98Q320 110 332 110H408',
+  'M187 148H308Q320 148 320 136Q320 124 332 124H408',
+  'M187 210H332Q344 210 344 198V150Q344 138 356 138H408',
 ];
 
-/** Plate contents: mark then wordmark, centered as one group. */
-const INT_MARK = 24;
-const INT_MARK_X = INT_PLATE.x + 22;
-const INT_NAME_X = INT_MARK_X + INT_MARK + 11;
+/** Plate contents: the mark is the node's anchor — 40px against the 17px
+    wordmark — and the lockup is centered in the plate as one group. */
+const INT_MARK = 40;
+const INT_MARK_X = INT_PLATE.x + 16;
+const INT_NAME_X = INT_MARK_X + INT_MARK + 12;
 
 function IntegrateDiagram() {
   return (
@@ -284,10 +289,6 @@ function IntegrateDiagram() {
             height={INT_MARK}
           />
         </mask>
-        {/* the halo's blur — generous region so the soft edge never clips */}
-        <filter id='v0-ldx-int-glow' x='-30%' y='-60%' width='160%' height='220%'>
-          <feGaussianBlur in='SourceGraphic' stdDeviation='5' />
-        </filter>
       </defs>
 
       {INT_LINKS.map((d) => (
@@ -306,6 +307,8 @@ function IntegrateDiagram() {
         />
       ))}
 
+      {/* every label opens on ONE text column (x 18); the marks right-align
+          against the node's far edge, sitting by the wire they feed */}
       {INT_SOURCES.map(({ label, cy, icons }) => (
         <g key={label}>
           <rect
@@ -317,11 +320,14 @@ function IntegrateDiagram() {
             rx={8}
             vectorEffect='non-scaling-stroke'
           />
+          <text className='v0-ldx-nlabel' x={NODE_X + 17} y={cy} dominantBaseline='central'>
+            {label}
+          </text>
           {icons.map(({ name, Icon }, i) => (
             <Icon
               key={name}
               className='v0-ldx-nico'
-              x={NODE_X + 17 + i * 21}
+              x={NODE_X + NODE_W - 17 - 14 - (icons.length - 1 - i) * 21}
               y={cy - 7}
               width={14}
               height={14}
@@ -329,34 +335,26 @@ function IntegrateDiagram() {
               aria-hidden
             />
           ))}
-          <text
-            className='v0-ldx-nlabel'
-            x={NODE_X + 17 + icons.length * 21 + 5}
-            y={cy}
-            dominantBaseline='central'
-          >
-            {label}
-          </text>
         </g>
       ))}
 
-      {/* the arrival glow: an accent-stroked copy of the plate's outline,
-          blurred, sitting BEHIND the plate — its opaque face covers the
-          blur's inner half, leaving a soft halo on the border that GSAP
-          breathes up each time a pulse lands. No vector-effect: the stroke
-          must scale with the geometry it blurs into. */}
       <rect
-        className='v0-ldx-glow'
-        data-ldx-glow
+        className='v0-ldx-int-plate'
         x={INT_PLATE.x}
         y={INT_PLATE.y}
         width={INT_PLATE.w}
         height={INT_PLATE.h}
         rx={10}
-        filter='url(#v0-ldx-int-glow)'
+        vectorEffect='non-scaling-stroke'
       />
+      {/* the arrival ring: the plate's border redrawn in accent at the SAME
+          gauge, directly on the hairline — the border still reads as one
+          stroke, only its ink changes. GSAP fills the whole perimeter solid
+          on each landing and eases it back; the parked tint is the resting
+          border and the reduced-motion still. */}
       <rect
-        className='v0-ldx-int-plate'
+        className='v0-ldx-ring'
+        data-ldx-ring
         x={INT_PLATE.x}
         y={INT_PLATE.y}
         width={INT_PLATE.w}

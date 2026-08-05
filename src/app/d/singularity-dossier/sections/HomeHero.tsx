@@ -383,10 +383,19 @@ export default function HomeHero() {
             //    continuous tween, quantized to device pixels, so the period
             //    and everything after it track without buzz or end snap
             tl.to(em, { width: w1, duration: 0.65, ease: 'power2.inOut', snap: { width: 1 / dpr } });
-            /* the cloud HOLDS its scatter while the box glides — retargeting
-               to the incoming width mid-glide bunched every narrow word's
-               dust at the left edge (the founder saw it peeking). The
-               convergence happens once, at landing, inside the settled box. */
+            /* the cloud CHURNS through the glide — fresh ring targets on the
+               TRANSITION's average width, so the swarm visibly reorganizes
+               (the morph never reads as a fade) without the full shift to
+               the narrow incoming width that used to bunch it at the left
+               edge. The directed flight into the letterforms then carries
+               the real arranging. */
+            const placeMid = ring(Math.max((w0 + w1) / 2, 30));
+            tl.to(dustGlyphs, {
+              x: (i, g) => placeMid(g as HTMLElement, i).x,
+              y: (i, g) => placeMid(g as HTMLElement, i).y,
+              duration: 0.65,
+              ease: 'power1.inOut',
+            }, '<');
 
             // 4. CONDENSATION at glyph-field fidelity: every glyph owns
             //    EXACTLY one sampled point and lands centred on it, in
@@ -402,8 +411,8 @@ export default function HomeHero() {
               const pts = sampleShape(next.text, w1, h, dustGlyphs.length);
               const span = Math.max(w1, 1);
               /* the front's clock: landings finish just ahead of it */
-              const LAND = 0.5;
-              const LAND_SPREAD = 0.18;
+              const LAND = 0.65;
+              const LAND_SPREAD = 0.22;
               const PRINT_AT = 0.4;
               const PRINT = 0.7;
               dustGlyphs.forEach((g, i) => {

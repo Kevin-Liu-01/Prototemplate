@@ -70,10 +70,10 @@ const DEMOS: {
     title: 'Translate copy',
     before: '“Start shipping globally.”',
     cycle: [
-      { t: '« Commencez à livrer dans le monde entier. »', f: '🇫🇷' },
-      { t: '„Weltweit liefern, ab heute.“', f: '🇩🇪' },
-      { t: '「今日から世界へ届けよう」', f: '🇯🇵' },
-      { t: '«Empieza a lanzar globalmente.»', f: '🇪🇸' },
+      { t: '« Commencez à livrer dans le monde entier. »', f: 'fr' },
+      { t: '„Weltweit liefern, ab heute.“', f: 'de' },
+      { t: '「今日から世界へ届けよう」', f: 'jp' },
+      { t: '«Empieza a lanzar globalmente.»', f: 'es' },
     ],
   },
   {
@@ -89,11 +89,11 @@ const DEMOS: {
     title: 'Convert currency',
     before: '$49 / mo',
     cycle: [
-      { t: '45 € / mois', f: '🇫🇷' },
-      { t: '£39 / month', f: '🇬🇧' },
-      { t: '¥6,800 / 月', f: '🇯🇵' },
-      { t: 'R$ 249 / mês', f: '🇧🇷' },
-      { t: '49 zł / mies.', f: '🇵🇱' },
+      { t: '45 € / mois', f: 'fr' },
+      { t: '£39 / month', f: 'gb' },
+      { t: '¥6,800 / 月', f: 'jp' },
+      { t: 'R$ 249 / mês', f: 'br' },
+      { t: '49 zł / mies.', f: 'pl' },
     ],
   },
   {
@@ -102,11 +102,11 @@ const DEMOS: {
     title: 'Reformat everything',
     before: '07/30/2026 · 1,000.5 mi',
     cycle: [
-      { t: '30.07.2026 · 1 610,2 km', f: '🇩🇪' },
-      { t: '2026/07/30 · 1,610.2 km', f: '🇯🇵' },
-      { t: '30/07/2026 · 1.610,2 km', f: '🇧🇷' },
-      { t: '2026-07-30 · 1 610,2 km', f: '🇸🇪' },
-      { t: '٣٠/٠٧/٢٠٢٦ · ١٦١٠٫٢ كم', f: '🇸🇦' },
+      { t: '30.07.2026 · 1 610,2 km', f: 'de' },
+      { t: '2026/07/30 · 1,610.2 km', f: 'jp' },
+      { t: '30/07/2026 · 1.610,2 km', f: 'br' },
+      { t: '2026-07-30 · 1 610,2 km', f: 'se' },
+      { t: '٣٠/٠٧/٢٠٢٦ · ١٦١٠٫٢ كم', f: 'sa' },
     ],
   },
 ];
@@ -122,9 +122,9 @@ const PIPELINE: { icon: IconName; label: string; detail: string; hot?: boolean }
 
 /** One glossary decision fanning out to every surface. */
 const CTX_LEAVES = [
-  { f: '🇫🇷', surface: 'App', term: '« Portefeuille »' },
-  { f: '🇩🇪', surface: 'Docs', term: '„Wallet“' },
-  { f: '🇯🇵', surface: 'Checkout', term: '「ウォレット」' },
+  { f: 'fr', surface: 'App', term: '« Portefeuille »' },
+  { f: 'de', surface: 'Docs', term: '„Wallet“' },
+  { f: 'jp', surface: 'Checkout', term: '「ウォレット」' },
 ];
 
 const TERMS: { label: string; icon: IconName }[] = [

@@ -22,6 +22,27 @@
   overflow: clip;
 }
 
+/* rail-to-rail (founder: "get rid of the space on the left and right of
+   this section"): the band's inline gut is spent nowhere in this section —
+   the sheet's two cells run the full column, edge to edge of the rails.
+   The grid's own 1px ring keeps only its block legs (the top and bottom
+   rules); its inline legs would sit flush against .tcb-in's border-inline
+   and stack the rail hairline to 2px, so they're dropped — the rail border
+   itself is the sheet's inline edge, drawn once. The cells' interior pads
+   (the beats' own padding, the figure's 20px) are all the air the content
+   needs; the head alone keeps the gut so the title never sits ON the rail. */
+.toolchain-root .tcb.v0-stack .tcb-in {
+  padding-inline: 0;
+}
+
+.toolchain-root .tcb.v0-stack .tcb-head {
+  padding-inline: var(--tc-gut);
+}
+
+.toolchain-root .tcb.v0-stack .tcb-grid {
+  padding-inline: 0;
+}
+
 /* ---------- cell spans: drawing 5, copy rail 7 ---------- */
 
 /* no seam between the figure and the copy rail (founder: the two halves

@@ -75,22 +75,22 @@ export const ARTIFACTS: Artifact[] = [
 ];
 
 export const LANGUAGES: { flag: string; name: string }[] = [
-  { flag: '🇪🇸', name: 'Español' },
-  { flag: '🇫🇷', name: 'Français' },
-  { flag: '🇯🇵', name: '日本語' },
-  { flag: '🇩🇪', name: 'Deutsch' },
-  { flag: '🇨🇳', name: '中文' },
-  { flag: '🇰🇷', name: '한국어' },
-  { flag: '🇧🇷', name: 'Português' },
-  { flag: '🇮🇹', name: 'Italiano' },
-  { flag: '🇮🇳', name: 'हिन्दी' },
-  { flag: '🇸🇦', name: 'العربية' },
-  { flag: '🇳🇱', name: 'Nederlands' },
-  { flag: '🇸🇪', name: 'Svenska' },
-  { flag: '🇵🇱', name: 'Polski' },
-  { flag: '🇹🇷', name: 'Türkçe' },
-  { flag: '🇻🇳', name: 'Tiếng Việt' },
-  { flag: '🇹🇭', name: 'ไทย' },
+  { flag: 'es', name: 'Español' },
+  { flag: 'fr', name: 'Français' },
+  { flag: 'jp', name: '日本語' },
+  { flag: 'de', name: 'Deutsch' },
+  { flag: 'cn', name: '中文' },
+  { flag: 'kr', name: '한국어' },
+  { flag: 'br', name: 'Português' },
+  { flag: 'it', name: 'Italiano' },
+  { flag: 'in', name: 'हिन्दी' },
+  { flag: 'sa', name: 'العربية' },
+  { flag: 'nl', name: 'Nederlands' },
+  { flag: 'se', name: 'Svenska' },
+  { flag: 'pl', name: 'Polski' },
+  { flag: 'tr', name: 'Türkçe' },
+  { flag: 'vn', name: 'Tiếng Việt' },
+  { flag: 'th', name: 'ไทย' },
 ];
 
 export const TRUSTED = ['Cursor', 'Ramp', 'Mintlify', 'Profound', 'Partiful', 'ClickHouse'];
