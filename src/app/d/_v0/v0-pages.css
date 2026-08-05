@@ -730,6 +730,13 @@
   color: var(--tc-ink);
 }
 
+/* globals.css paints the app body ink-first; the page root covers it, but
+   overscroll rubber-banding would flash black above and below a light
+   page. Scoped to the five homes via :has() so no other route moves. */
+:root:not([data-theme='dark']) body:has(.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)) {
+  background: #ffffff;
+}
+
 :root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cell h3 {
   color: #070707;
 }

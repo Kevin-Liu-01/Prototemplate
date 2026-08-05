@@ -175,6 +175,44 @@ function GlobeAtmosphere() {
   );
 }
 
+
+/* ---------- the quote plate's dither field ----------
+   Founder: "a big dither in the right of this specific quote box." The
+   house 1-bit language at plate scale: cells on one grid, the 4x4
+   ordered Bayer matrix thresholded by a radial falloff from the right
+   edge's midpoint — a half-halo of density, dense at the edge, dead
+   before the words. Deterministic (module-level), so SSR and client
+   agree byte-for-byte; ink is currentColor so each theme re-inks the
+   same dots. */
+const QD_BAYER: readonly (readonly number[])[] = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
+const QD_CELL = 4;
+const QD_W = 480;
+const QD_H = 320;
+
+const QD_PATH: string = (() => {
+  const parts: string[] = [];
+  const cx = QD_W;
+  const cy = QD_H / 2;
+  const rMax = Math.hypot(QD_W * 0.92, QD_H * 0.8);
+  for (let y = 0; y < QD_H / QD_CELL; y += 1) {
+    for (let x = 0; x < QD_W / QD_CELL; x += 1) {
+      const px = x * QD_CELL + QD_CELL / 2;
+      const py = y * QD_CELL + QD_CELL / 2;
+      const cover = Math.max(0, 16 * (1 - Math.hypot(px - cx, py - cy) / rMax));
+      const row = QD_BAYER[y % 4];
+      if (row && (row[x % 4] ?? 16) < cover) {
+        parts.push(`M${x * QD_CELL} ${y * QD_CELL}h${QD_CELL}v${QD_CELL}h${-QD_CELL}Z`);
+      }
+    }
+  }
+  return parts.join('');
+})();
+
 export default function V0Global() {
   const root = useRef<HTMLElement>(null);
 
@@ -298,6 +336,14 @@ export default function V0Global() {
         <div className='tc-cell' data-reveal>
           <figure className='tcpq-mat'>
             <div className='tcpq-plate'>
+              <svg
+                aria-hidden='true'
+                className='v0-glob-qd'
+                preserveAspectRatio='xMaxYMid slice'
+                viewBox={`0 0 ${QD_W} ${QD_H}`}
+              >
+                <path d={QD_PATH} fill='currentColor' shapeRendering='crispEdges' />
+              </svg>
               <blockquote className='tcpq-quote'>
                 <p>Every once in awhile, I see a snippet of code that makes me a bit emotional.</p>
                 <p>

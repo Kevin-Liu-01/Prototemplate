@@ -317,3 +317,24 @@
 :root:not([data-theme='dark']) .toolchain-root .v0-glob .tcpq-face {
   outline-color: rgba(7, 7, 7, 0.25);
 }
+
+/* ---------- the quote plate's dither field ----------
+   Anchored to the plate's right edge, behind the type (the plate clips
+   it; the quote and attribution ride above). One ink at one alpha —
+   density carries the whole ramp. */
+.toolchain-root .v0-glob-qd {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: min(48%, 600px);
+  height: 100%;
+  color: var(--tc-ink);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.toolchain-root .v0-glob .tcpq-quote,
+.toolchain-root .v0-glob .tcpq-attr {
+  position: relative;
+}
