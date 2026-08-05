@@ -1,7 +1,7 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../toolchain/sections/SiteFooter';
+import V0Footer from '../_v0/V0Footer';
 import V0Nav from '../_v0/V0Nav';
 
 import V0Customers from '../_v0/sections/Customers';
@@ -16,9 +16,9 @@ import HomeHero from './sections/HomeHero';
 
 /* Frameworks is deliberately absent: its argument — one toolchain, every
    stack — lives inside the hero terminal's stack strip. The section normally
-   carries logos-icons.css in with it, and the trust row and footer marks
-   depend on those tokens, so the sheet is imported directly (the toolchain
-   enterprise subpage sets this exact precedent). */
+   carries logos-icons.css in with it, and the hero terminal's code ramp
+   (--tc-tok-*) depends on those tokens, so the sheet is imported directly
+   (the toolchain enterprise subpage sets this exact precedent). */
 import '../toolchain/sections/logos-icons.css';
 import '../toolchain/styles.css';
 import './home.css';
@@ -52,7 +52,7 @@ export default function Page() {
           <V0ContextSec />
           <V0Global />
           <V0Deploy />
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
       <DirectionDock slug='singularity-dossier' />

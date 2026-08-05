@@ -1,0 +1,299 @@
+/* ============================================================
+   V0 FOOTER — the production footer's contents on one ruled
+   sheet. The section is a tc-sec inside the page's .tc-rail, so
+   the rail draws the sides, the dark deploy band above owns the
+   junction seam, and tc-sec:last-child keeps the bottom open.
+   Inside, the GRID owns every line: one border-left per interior
+   cell, one border-top per wrapped row, re-cut per breakpoint the
+   way the customers wall does — no rule ever doubles a seam.
+   Square structural corners, no shadows; only the theme control
+   keeps its small control radius. Both themes render this sheet,
+   so every color is a shared token (plus the one status green,
+   remapped for dark below).
+   ============================================================ */
+
+.toolchain-root .v0-foot {
+  --v0-foot-ok: #16a34a;
+}
+
+[data-theme='dark'] .toolchain-root .v0-foot {
+  --v0-foot-ok: #2fbf62;
+}
+
+/* ---------- the ruled sheet ---------- */
+
+.toolchain-root .v0-foot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) repeat(5, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+/* the row owns the seams */
+.toolchain-root .v0-foot-grid > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+/* Interior cells breathe less than the page gut — six columns share the
+   rail — but the sheet's outer text edges land on the page's own gut. */
+.toolchain-root .v0-foot-cell {
+  padding: clamp(26px, 3vw, 36px) clamp(16px, 1.8vw, 24px) clamp(30px, 3.4vw, 44px);
+}
+
+.toolchain-root .v0-foot-grid > .v0-foot-cell:first-child {
+  padding-left: var(--tc-gut);
+}
+
+.toolchain-root .v0-foot-grid > .v0-foot-cell:last-child {
+  padding-right: var(--tc-gut);
+}
+
+/* ---------- brand cell ---------- */
+
+.toolchain-root .v0-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.toolchain-root .v0-foot-logo.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root .v0-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root .v0-foot-logo.is-dark {
+  display: block;
+}
+
+.toolchain-root .v0-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 24ch;
+}
+
+/* Compliance stamps: hairline-outlined, mono because the identifiers carry
+   numerals, all three linking to the trust center. Square — they read as
+   marks pressed into the sheet, not controls. */
+.toolchain-root .v0-foot-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.toolchain-root .v0-foot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 9px;
+  border: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--tc-ink-2);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.toolchain-root .v0-foot-badge svg {
+  color: var(--tc-ink-3);
+  transition: color 0.15s ease;
+}
+
+.toolchain-root .v0-foot-badge em {
+  font-style: normal;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .v0-foot-badge:hover {
+  color: var(--tc-ink);
+  border-color: rgba(7, 7, 7, 0.28);
+}
+
+.toolchain-root .v0-foot-badge:hover svg {
+  color: var(--tc-ink);
+}
+
+[data-theme='dark'] .toolchain-root .v0-foot-badge:hover {
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+/* ---------- link columns ---------- */
+
+/* Small sentence-case heads in the display face — the ledger carries no
+   uppercase tracking and no eyebrows. */
+.toolchain-root .v0-foot-col h4 {
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--tc-ink);
+  margin: 0 0 13px;
+}
+
+.toolchain-root .v0-foot-col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.toolchain-root .v0-foot-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tc-ink-2);
+  transition: color 0.15s ease;
+}
+
+.toolchain-root .v0-foot-col a:hover {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-foot-mark {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  color: var(--tc-ink-3);
+  transition: color 0.15s ease;
+}
+
+.toolchain-root .v0-foot-col a:hover .v0-foot-mark {
+  color: var(--tc-ink);
+}
+
+/* The Locadex mark is a drawn dark glyph, not currentColor ink — dark mode
+   flips it the way the story chip does. */
+[data-theme='dark'] .toolchain-root .v0-foot-mark.is-locadex {
+  filter: invert(1);
+}
+
+/* ---------- closing strip ---------- */
+
+.toolchain-root .v0-foot-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding: 13px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+}
+
+.toolchain-root .v0-foot-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  transition: color 0.15s ease;
+}
+
+.toolchain-root .v0-foot-status:hover {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-foot-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--v0-foot-ok);
+}
+
+.toolchain-root .v0-foot-copy {
+  margin-left: auto;
+}
+
+/* the theme switch, in the nav's own dress — a control, so it keeps its
+   small radius */
+.toolchain-root .v0-foot-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.toolchain-root .v0-foot-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* ---------- wrap points ----------
+   Six cells tile like the customers wall: 3x2 at tablet, 2x3 on
+   small — always full rows, so every seam runs rail-to-rail. Each
+   block zeroes the previous cut, then draws each seam exactly
+   once; row starts re-take the page gut on their outer edge. */
+
+@media (max-width: 1080px) {
+  .toolchain-root .v0-foot-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell {
+    border-left: 0;
+    border-top: 0;
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:not(:nth-child(3n + 1)) {
+    border-left: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(3n + 1) {
+    padding-left: var(--tc-gut);
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(3n) {
+    padding-right: var(--tc-gut);
+  }
+}
+
+@media (max-width: 640px) {
+  .toolchain-root .v0-foot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* zero the 3-up cuts (both media blocks match down here), then re-draw */
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:not(:nth-child(3n + 1)),
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(n + 4),
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(3n + 1),
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(3n) {
+    border-left: 0;
+    border-top: 0;
+    padding-left: clamp(16px, 4vw, 24px);
+    padding-right: clamp(16px, 4vw, 24px);
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair);
+    padding-right: var(--tc-gut);
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .v0-foot-grid > .v0-foot-cell:nth-child(2n + 1) {
+    padding-left: var(--tc-gut);
+  }
+
+  .toolchain-root .v0-foot-bar {
+    padding-bottom: 64px;
+  }
+}

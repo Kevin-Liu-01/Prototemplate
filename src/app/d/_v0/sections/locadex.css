@@ -300,3 +300,11 @@
   letter-spacing: -0.01em;
   fill: rgba(255, 255, 255, 0.9);
 }
+
+/* the section watermark is the product's own mark — masked so it takes
+   the head icon's ghost ink exactly */
+.toolchain-root .v0-ldx-head-mark {
+  -webkit-mask: url('/brand/locadex-mark.svg') center / contain no-repeat;
+  mask: url('/brand/locadex-mark.svg') center / contain no-repeat;
+  background-color: currentColor;
+}

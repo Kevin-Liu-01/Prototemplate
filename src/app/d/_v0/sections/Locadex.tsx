@@ -6,7 +6,6 @@ import type { ComponentType, CSSProperties, SVGProps } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Bot } from 'lucide-react';
 
 import {
   SiContentful,
@@ -422,7 +421,7 @@ const INT_H = 234;
 const NODE_X = 1;
 const NODE_W = 186;
 const NODE_H = 44;
-const INT_PLATE = { x: 408, y: 73, w: 150, h: 88 } as const;
+const INT_PLATE = { x: 408, y: 87, w: 150, h: 60 } as const;
 
 const INT_SOURCES: readonly IntSource[] = [
   { label: 'GitHub', cy: 24, icons: [{ name: 'GitHub', Icon: SiGithub }] },
@@ -458,9 +457,9 @@ const INT_LINKS: readonly string[] = [
 
 /** Plate contents: the mark is the node's anchor — 40px against the 17px
     wordmark — and the lockup is centered in the plate as one group. */
-const INT_MARK = 40;
-const INT_MARK_X = INT_PLATE.x + 16;
-const INT_NAME_X = INT_MARK_X + INT_MARK + 12;
+const INT_MARK = 32;
+const INT_MARK_X = INT_PLATE.x + 20;
+const INT_NAME_X = INT_MARK_X + INT_MARK + 7;
 
 function IntegrateDiagram() {
   return (
@@ -745,7 +744,7 @@ export default function V0Locadex() {
   return (
     <section className='tc-sec v0-ldx' id='locadex' ref={root}>
       <div className='tc-head'>
-        <Bot className='tc-head-icon' strokeWidth={1} aria-hidden />
+        <i className='tc-head-icon v0-ldx-head-mark' aria-hidden />
         <h2 data-reveal>
           The easiest way to localize your full system in native speed and quality.
         </h2>
