@@ -469,12 +469,16 @@ export default function V0Developer({ heading = 'Built for the world’s develop
       <div className='tc-head'>
         <Braces className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>{heading}</h2>
+        <p data-reveal>
+          <GtLogoText /> handles all the infrastructure, so you no longer need to think about
+          localization.
+        </p>
       </div>
 
       <div className='tc-row v0-dev-grid' data-eq-heads=''>
         <BentoCell
           cell='is-framed'
-          title={<><GtLogoText /> handles component sizing and orientation.</>}
+          title='Component sizing and layout'
         >
           <div className='tc-lang is-lead'>
             <SentenceWidth
@@ -493,12 +497,12 @@ export default function V0Developer({ heading = 'Built for the world’s develop
 
         <BentoCell
           cell='is-framed'
-          title={<><GtLogoText /> handles every branch and edge case.</>}
+          title='Every branch and edge case: numbers, currency, dates, plural forms, and more'
         >
           <BranchForks />
         </BentoCell>
 
-        <BentoCell cell='is-framed' title={<><GtLogoText /> handles locale routing.</>}>
+        <BentoCell cell='is-framed' title='Locale routing and SEO'>
           <div className='v0-dev-routes'>
             {ROUTES.map((route) => {
               const Icon = route.icon;

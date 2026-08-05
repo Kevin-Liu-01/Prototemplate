@@ -40,15 +40,23 @@ export default function Page() {
 
         <div className='tc-rail'>
           <HomeHero />
+          <div aria-hidden className='v0-hatch' />
           <V0Customers heading='Trusted by companies around the globe.' />
+          <div aria-hidden className='v0-hatch' />
           <V0DevWindow />
+          <div aria-hidden className='v0-hatch' />
           <V0FullStack />
+          <div aria-hidden className='v0-hatch' />
           <V0Developer
             heading='Localization is complex.'
           />
+          <div aria-hidden className='v0-hatch' />
           <V0Locadex />
+          <div aria-hidden className='v0-hatch' />
           <V0ContextSec />
+          <div aria-hidden className='v0-hatch' />
           <V0Global />
+          <div aria-hidden className='v0-hatch' />
           <V0Deploy />
           <V0Footer />
         </div>

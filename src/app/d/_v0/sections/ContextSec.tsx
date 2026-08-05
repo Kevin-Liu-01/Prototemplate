@@ -19,7 +19,7 @@ import './context.css';
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * V0 CONTEXT — "Full context on your codebase and product." The section is
+ * V0 CONTEXT — "One source of context." The section is
  * the toolchain dark-band:
  * tc-band tcb → tcb-in → tcb-head cell → tcb-grid of framed tcb-cells, with
  * the glyph-rain closer's RISING ink field behind the sheet (founder note:
@@ -390,20 +390,16 @@ export default function V0Context() {
             the band's margins and padding strips, never the content */}
         <div className='v0-ctx-core' ref={core}>
         <div className='tcb-head' data-cell data-reveal>
-          <h2>
-            Full context on your
-            <br />
-            codebase and product.
-          </h2>
+          <h2>One source of context.</h2>
           <p>
-            <GtLogoText /> connects your code, content, and translations.
+            <GtLogoText /> actually understands your codebase and product.
           </p>
         </div>
 
         <div className='tcb-grid'>
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Translations know your application logic.</h3>
+              <h3>Accurate translations of your logical flow</h3>
             </div>
             <div className='v0-ctx-art'>
               <ContextResolve title='The English string Save resolves by context: speichern when it saves a file, sparen when it means a discount' />
@@ -412,7 +408,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Translations know your key terminology.</h3>
+              <h3>Consistent terminology for your brand and audience</h3>
             </div>
             <div className='v0-ctx-art'>
               <div className='v0-ctx-glossary'>
@@ -440,7 +436,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Translations know your voice and style.</h3>
+              <h3>Tone and style to preserve your voice</h3>
             </div>
             <div className='v0-ctx-art'>
               <div className='v0-ctx-dirs'>
@@ -474,7 +470,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell v0-ctx-dyn' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Translations that work dynamically.</h3>
+              <h3>Built-in handling for dynamic content</h3>
             </div>
             <div className='v0-ctx-art'>
               <GenderFork />
@@ -489,8 +485,8 @@ export default function V0Context() {
               section reads native to the plate. */}
           <div className='tcb-cell v0-ctx-review' data-cell data-reveal>
             <ReviewWorkspace
-              heading='Review and approve from one surface.'
-              sub='Edit and approve translations with your team in a side-by-side view with diffs and version history.'
+              heading='Review and approve with your team, from one surface.'
+              sub={null}
               notes={null}
             />
           </div>

@@ -792,7 +792,7 @@ export default function V0Locadex() {
           cell='is-tall tcm-ruled'
           framed={false}
           title='Any integration.'
-          sub='Just a few clicks to integrate with your Google Drive, CMS platform, or docs framework.'
+          sub='Just a few clicks to integrate with GitHub, Google Drive, your CMS platform, or your docs framework.'
         />
       </div>
     </section>

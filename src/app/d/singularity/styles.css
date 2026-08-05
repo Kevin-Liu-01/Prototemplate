@@ -807,6 +807,20 @@
   transform: translateZ(0);
 }
 
+/* With the lensing shader live (data-eh-live), the fallback disc retires:
+   the cursor lens warps the shader's own core, and a static dark disc
+   behind the canvas would ghost through wherever the rim pulls away. */
+.singularity-root .eh-hero[data-eh-live] .eh-hole {
+  opacity: 0;
+}
+
+/* The cursor-effects instrument (shared FieldEffectsMenu) docks over open
+   paper here, not a dark plate — its "fx" key must follow the page ink so
+   it reads in the light theme too. The opaque chips carry themselves. */
+.singularity-root .eh-fxm .fxm-k {
+  color: var(--tc-ink-3);
+}
+
 /* the lensing shader: disc + annulus, transparent wherever it draws nothing */
 .singularity-root .eh-field {
   position: absolute;

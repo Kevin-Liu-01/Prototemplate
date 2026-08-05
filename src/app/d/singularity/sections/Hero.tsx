@@ -5,11 +5,32 @@ import 'flag-icons/css/flag-icons.min.css';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
-import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
+import FieldEffectsMenu from '@/components/shared/FieldEffectsMenu';
+import {
+  createHorizonField,
+  type HorizonEffectMode,
+  type HorizonFieldHandle,
+} from '@/lib/horizon-field';
 
 gsap.registerPlugin(useGSAP);
+
+const FX_MODES: readonly HorizonEffectMode[] = ['lens', 'dither', 'redshift'];
+
+function isHorizonEffectMode(value: string): value is HorizonEffectMode {
+  return (FX_MODES as readonly string[]).includes(value);
+}
+
+/* Where a menu chip's hover-preview demonstrates its mode: the photon ring's
+   bright (approaching) flank, in canvas-box fractions — the rim sits at
+   0.5 ± 1/(2·2.05) and the doppler flank points down-left (angle 2.55). */
+const FX_PREVIEW_AT: readonly [number, number] = [0.3, 0.64];
+
+type FxMenuState = {
+  modes: readonly HorizonEffectMode[];
+  selected: HorizonEffectMode | 'off';
+};
 
 /* The customers whose marks ride inside the hole, under the CTAs. */
 const CUSTOMERS: readonly { name: string; mark: string }[] = [
@@ -126,6 +147,9 @@ export default function Hero() {
   const horizonRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLCanvasElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
+  const fxHandleRef = useRef<HorizonFieldHandle | null>(null);
+  const fxKeyRef = useRef<string>('');
+  const [fxMenu, setFxMenu] = useState<FxMenuState | null>(null);
 
   useGSAP(
     () => {
@@ -136,12 +160,51 @@ export default function Hero() {
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+      /* The declarative tag — the same opt-in the prismatic mounts use: the
+         hero carries data-fx (modes) + data-fx-default, the hero itself is
+         the pointer host, and the committed mode persists per page under
+         the shared gt-fx: key scheme. */
+      const fxModes = (hero.dataset.fx ?? '').split(/\s+/).filter(isHorizonEffectMode);
+      fxKeyRef.current = `gt-fx:${window.location.pathname}`;
+      const fxDefault = hero.dataset.fxDefault;
+      let fxInitial: HorizonEffectMode | 'off' =
+        fxDefault !== undefined &&
+        (fxDefault === 'off' || (isHorizonEffectMode(fxDefault) && fxModes.includes(fxDefault)))
+          ? fxDefault
+          : (fxModes[0] ?? 'off');
+      if (fxModes.length > 0) {
+        try {
+          const stored = window.localStorage.getItem(fxKeyRef.current);
+          if (
+            stored === 'off' ||
+            (stored !== null && isHorizonEffectMode(stored) && fxModes.includes(stored))
+          ) {
+            fxInitial = stored;
+          }
+        } catch {
+          /* storage unavailable (private mode) — the default stands */
+        }
+      }
+
       /* No guide rings at all — the hole, its glow, and the belt of chips
          are the only geometry. */
       const field: HorizonFieldHandle | null = createHorizonField(fieldCanvas, {
         speed: 0.5,
         params: { ringAlpha: [0, 0, 0] },
+        effects:
+          !reduced && fxModes.length > 0
+            ? { host: hero, modes: fxModes, initial: fxInitial }
+            : undefined,
       });
+      fxHandleRef.current = field;
+
+      /* With the shader live the DOM fallback disc retires (data-eh-live):
+         the cursor lens warps the shader's own core, and a static dark disc
+         behind the canvas would ghost through wherever the rim pulls away. */
+      if (field) hero.dataset.ehLive = '1';
+      if (field && !reduced && fxModes.length > 0) {
+        setFxMenu({ modes: fxModes, selected: field.getEffectMode() });
+      }
 
       /* The shader's ink must follow the page theme: its bent rules and rings
          hand off to CSS-drawn ones at the mask edge, so both flip together. */
@@ -418,6 +481,7 @@ export default function Hero() {
         return () => {
           ro.disconnect();
           themeWatch.disconnect();
+          fxHandleRef.current = null;
           field?.destroy();
         };
       }
@@ -466,15 +530,52 @@ export default function Hero() {
         io.disconnect();
         themeWatch.disconnect();
         gsap.ticker.remove(tick);
+        fxHandleRef.current = null;
         field?.destroy();
       };
     },
     { scope: root }
   );
 
+  /* Menu click: commit the mode and persist it under the shared key. */
+  const selectFx = (mode: HorizonEffectMode | 'off') => {
+    setFxMenu((current) => (current ? { ...current, selected: mode } : current));
+    fxHandleRef.current?.setEffectMode(mode);
+    try {
+      window.localStorage.setItem(fxKeyRef.current, mode);
+    } catch {
+      /* best effort — the session still switches */
+    }
+  };
+
+  /* Chip hover/focus: switch to the mode AND demonstrate it on the photon
+     ring's bright flank — the menu docks over open paper where the field
+     has nothing to show. null restores the committed mode. */
+  const previewFx = (mode: HorizonEffectMode | 'off' | null) => {
+    const handle = fxHandleRef.current;
+    if (!handle) return;
+    if (mode === null) {
+      handle.setEffectMode(fxMenu?.selected ?? 'off');
+      handle.previewRelease();
+    } else {
+      handle.setEffectMode(mode);
+      if (mode === 'off') handle.previewRelease();
+      else handle.previewPulse(FX_PREVIEW_AT[0], FX_PREVIEW_AT[1]);
+    }
+  };
+
   return (
     <section className='tc-sec' id='top' ref={root}>
-      <div className='eh-hero' ref={heroRef} data-eh-mode='wide'>
+      {/* data-fx / data-fx-default: the declarative cursor-effects tag —
+          the hero is the pointer host, the horizon engine implements the
+          modes, and the FieldEffectsMenu below is the shared instrument. */}
+      <div
+        className='eh-hero'
+        ref={heroRef}
+        data-eh-mode='wide'
+        data-fx='lens dither redshift'
+        data-fx-default='lens'
+      >
         <p className='sr-only'>
           A dark event horizon sits at the center of otherwise empty ruled paper; the names of
           languages — Japanese, Spanish, Korean, Arabic, and more — wrap around it like a satellite
@@ -543,6 +644,18 @@ export default function Hero() {
             ))}
           </div>
         </div>
+
+        {/* The cursor-effects instrument, docked bottom-right inside the
+            hero bounds — same panel the prismatic mounts carry. */}
+        {fxMenu !== null ? (
+          <FieldEffectsMenu
+            modes={fxMenu.modes}
+            selected={fxMenu.selected}
+            onSelect={selectFx}
+            onPreview={previewFx}
+            className='eh-fxm'
+          />
+        ) : null}
       </div>
     </section>
   );

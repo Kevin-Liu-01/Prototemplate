@@ -613,7 +613,7 @@ export default function HomeHero() {
               <ArrowRight aria-hidden size={15} strokeWidth={2} />
             </a>
           </span>
-          <a className='tc-btn tc-btn-line' href='#frameworks'>
+          <a className='tc-btn tc-btn-line' href='https://generaltranslation.com/docs' rel='noreferrer' target='_blank'>
             Docs
           </a>
         </div>

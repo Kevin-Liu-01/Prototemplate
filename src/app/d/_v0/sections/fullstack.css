@@ -515,6 +515,49 @@
   stroke-width: 1;
 }
 
+/* ---------- the scan's evidence: diffs on the code plate ----------
+   The Locadex iso's diff voices verbatim (locadex.css .v0-ldx-chip
+   .is-add/.is-del — the dark band's diff inks, hardcoded because this
+   ground never remaps): del and add slats at roughly half the accent
+   chip's presence, signs at fuller strength so the tiny flat marks
+   read. Hidden at rest — FullStack materializes them while the agents
+   beat is hot; no-JS and reduced motion never see them. */
+
+.toolchain-root .tcb .v0s-diff {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.toolchain-root .tcb .v0s-diff-hull {
+  stroke-width: 0.6;
+}
+
+.toolchain-root .tcb .v0s-diff.is-add .v0s-diff-hull {
+  fill: color-mix(in srgb, #85cfa1 12%, #101010);
+  stroke: color-mix(in srgb, #85cfa1 38%, transparent);
+}
+
+.toolchain-root .tcb .v0s-diff.is-add .v0s-diff-top {
+  fill: color-mix(in srgb, #85cfa1 21%, #101010);
+}
+
+.toolchain-root .tcb .v0s-diff.is-del .v0s-diff-hull {
+  fill: color-mix(in srgb, #d29090 10%, #101010);
+  stroke: color-mix(in srgb, #d29090 32%, transparent);
+}
+
+.toolchain-root .tcb .v0s-diff.is-del .v0s-diff-top {
+  fill: color-mix(in srgb, #d29090 18%, #101010);
+}
+
+.toolchain-root .tcb .v0s-diff.is-add .v0s-diff-sign {
+  fill: color-mix(in srgb, #85cfa1 78%, #101010);
+}
+
+.toolchain-root .tcb .v0s-diff.is-del .v0s-diff-sign {
+  fill: color-mix(in srgb, #d29090 74%, #101010);
+}
+
 /* ---------- the copy rail: four beats, bottom of the stack first.
    Padding lives on the beats, not the list, so each divider runs the
    cell edge to edge — a rule, not a floating underline. ---------- */
@@ -531,19 +574,19 @@
 
 .toolchain-root .tcb .v0-stack-beat {
   flex: 1;
-  /* the story's rhythm (founder: the 64vh windows read as messed-up
-     spacing — ~440px of black between copy blocks): four UNIFORM
-     windows at 42vh, copy centered in each, so consecutive reads sit
-     one tight breath apart. 42vh is also the finale's own floor: the
-     lock-in bound is 0.42·vh − tail, so a 42vh window beats it by
-     exactly the 28px tail at EVERY viewport — the last beat is hot at
-     the rest view with no per-viewport override. The uncentered seat
-     above no longer demands a runway premium; the beats separate by
-     rhythm alone, no dividers (founder round 6). */
-  /* the 600px cap keeps tall-viewport gaps in check while still clearing
-     the finale's 58%-lock-in bound (windowTop at rest = (vh − 74 − H)/vh
-     stays under 0.58 through ~1600-tall viewports) */
-  min-height: clamp(240px, 42vh, 600px);
+  /* the story's rhythm: four UNIFORM windows, copy centered in each, so
+     consecutive reads sit an even breath apart (founder round: the old
+     64vh windows read as messed-up spacing; round 6: the beats separate
+     by rhythm alone, no dividers). 48vh now, up from 42 (founder
+     addendum: "make all 4 sections go a little longer so we scroll
+     through em more"). The finale's 58% lock-in is cleared trivially:
+     the agents dwell's runway (see below) holds beat 04's natural
+     window top far above the read line at the band's rest view
+     (~0.13–0.20 of vh at the probe viewports). */
+  /* the 680px cap keeps tall-viewport gaps in check; it is exactly
+     2 × the sticky finale's 340px half-window cap below — the two
+     clamps must track each other */
+  min-height: clamp(240px, 48vh, 680px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -582,14 +625,44 @@
 
 .toolchain-root .tcb .v0-stack-beat.is-finale {
   position: sticky;
-  /* the read pose: 55vh read line minus half the beat window (the
-     window is clamp(240px, 42vh, 600px); its half must track it) */
-  top: calc(55vh - clamp(120px, 21vh, 300px));
+  /* the CENTERED read pose (founder: "keep make it automatic centered
+     with us"): pin so the measured copy block — h3 through the last
+     bullet — holds the 55% read line. The window center sits at
+     55vh − half-window; the copy's own center rides 20.25px below the
+     flex center (the tag row + the h3's 18px margin sit above the h3
+     inside the centered content — MEASURED at 1440×900; re-measure if
+     the finale's copy or tag ever changes), so the pin subtracts that
+     bias too, which also makes the pin engage exactly at the natural
+     read pose — no pre-pin drift. half-window = clamp(120px, 24vh,
+     340px) — half the beat window above; the two clamps must track
+     each other. */
+  top: calc(55vh - clamp(120px, 24vh, 340px) - 20.25px);
+  /* RELEASE PARITY (founder: "make sure the make it automatic height is
+     same height as the diagram section to avoid this extra movement").
+     Both stickies release when their bound hits the shared row bottom:
+     the figure at seat + figH = (55vh − 262px) + 515.11px = 55vh +
+     253.11px (tower capped at 392px wide → figH = 392 × TOWER_H/VIEW_W
+     (250.8/214.13) + 56px pads = 515.11px, measured 515.11); the copy
+     at top + window + this margin (sticky constrains the MARGIN box) =
+     55vh − half − 20.25px + 2·half + mb. Equal ⟺ mb = 273.35px − half
+     — positive at short viewports, NEGATIVE once 24vh > 273.35 (the
+     margin box shrinks inside the border box, which lawfully EXTENDS
+     the sticky travel). The runway below adds the mirror term, so flow
+     height stays window + 36vh exactly and nothing else in the rhythm
+     moves. Exact wherever the tower rides at its 392px cap (all three
+     probe viewports); a narrower two-column tower shortens figH and
+     the copy would trail by the difference — the one-column gate below
+     is what bounds that regime. Verified by the probe's release-parity
+     sweep (±2px). */
+  margin-block-end: calc(273.35px - clamp(120px, 24vh, 340px));
 }
 
 .toolchain-root .tcb .v0-stack-runway {
   flex: none;
-  height: 36vh;
+  /* the dwell's room, minus the finale's parity margin above: window +
+     margin + runway = window + 36vh, whatever the viewport — the dwell
+     length the founder chose survives the parity fix untouched */
+  height: calc(36vh + clamp(120px, 24vh, 340px) - 273.35px);
 }
 
 /* the spotlight: JS-managed classes, so the static (reduced-motion)
@@ -702,6 +775,7 @@
 
   .toolchain-root .tcb .v0-stack-beat.is-finale {
     position: static;
+    margin-block-end: 0;
   }
 
   .toolchain-root .tcb .v0-stack-fig {

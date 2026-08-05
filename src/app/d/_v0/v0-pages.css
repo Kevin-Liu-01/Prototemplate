@@ -281,13 +281,64 @@
   border-bottom: 0;
 }
 
-/* Where a framed row ends a section that a BAND border follows, the
-   band's top rule is the seam — the row's bottom ground strip would sit
-   1–2px above it as a second line. (Developer keeps its strip: nothing
-   below it draws.) */
+/* Where a framed row ends a section that another rule follows (a band
+   border or a hatch edge), that neighbour is the seam — the row's bottom
+   ground strip would sit 1–2px above it as a second line. */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
-  :is(.v0-ldx, .v0-glob) .tc-row:has(> .tc-cell.is-framed):last-child {
+  :is(.v0-ldx, .v0-glob, .v0-dev) .tc-row:has(> .tc-cell.is-framed):last-child {
   padding-bottom: 0;
+}
+
+/* ============================================================
+   THE HATCH SPACERS RETURN: diagonal ruled bands between the
+   explanation beats and bracketing the Customers wall. The hatch
+   owns both of its edges; every neighbour that would draw a rule
+   at the same seam yields — sections drop their border-bottom
+   before a hatch, and against a BAND the band's own border wins.
+   ============================================================ */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-hatch {
+  height: clamp(28px, 3.4vw, 40px);
+  border-block: 1px solid var(--tc-hair);
+  background: repeating-linear-gradient(45deg, var(--tc-hatch) 0 1px, transparent 1px 8px);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-sec:has(+ .v0-hatch) {
+  border-bottom: 0;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .v0-hatch:has(+ .tc-band),
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .v0-hatch:has(+ .v0-dep) {
+  border-bottom: 0;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb + .v0-hatch,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep + .v0-hatch {
+  border-top: 0;
+}
+
+/* DevWindow's own border-top was written to close the Customers wall
+   directly; where a hatch now sits between them the hatch's bottom edge
+   IS that seam, so the section's top rule yields (the devwin.css rule
+   still serves pages without a hatch). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .v0-hatch + .v0-devwin.tc-sec {
+  border-top: 0;
+}
+
+/* Theo, quieter still: smaller text, smaller mark (founder note —
+   design unchanged). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote p {
+  font-size: clamp(16px, 1.6vw, 21px);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote::before {
+  font-size: 42px;
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote {
+  padding-top: clamp(22px, 2.2vw, 30px);
 }
 
 /* ============================================================

@@ -73,7 +73,8 @@ type ReviewWorkspaceProps = {
       flow's "Review from one surface" beat) swap the words, never the
       workspace itself. Defaults are toolchain's own card, verbatim. */
   heading?: string;
-  sub?: string;
+  /** Pass null to drop the sub paragraph entirely. */
+  sub?: string | null;
   /** Pass null to drop the notes list entirely. */
   notes?: readonly string[] | null;
 };
@@ -254,9 +255,11 @@ export default function ReviewWorkspace({
       <div className='tcr-grid'>
         <div className='tcr-copy'>
           <h2 data-reveal>{heading}</h2>
-          <p className='tcr-sub' data-reveal>
-            {sub}
-          </p>
+          {sub ? (
+            <p className='tcr-sub' data-reveal>
+              {sub}
+            </p>
+          ) : null}
           {notes && notes.length ? (
             <ul className='tcr-notes' data-reveal>
               {notes.map((note) => (

@@ -1,5 +1,5 @@
 /* ============================================================
-   V0 CONTEXT — "Full context on your codebase and product."
+   V0 CONTEXT — "One source of context."
    The toolchain dark-band grammar (tc-band tcb): the section
    reuses darkband-v3's tcb-in / tcb-head / tcb-grid / tcb-cell
    sheet wholesale — this file styles only what lives INSIDE the
@@ -333,17 +333,12 @@
 }
 
 /* Inside a cell the workspace's copy column is the artifact's own caption,
-   not a page heading — it steps down so the cell head keeps the row. */
+   not a page heading — it steps down so the cell head keeps the row. The
+   page's 22ch measure would fold the founder heading ("Review and approve
+   with your team, from one surface.") to three lines; 30ch at the caption
+   scale folds it to a balanced two, still inside the column. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-copy h2 {
   font-size: clamp(1.15rem, 1.6vw, 1.42rem);
-}
-
-/* Caption measure: the page's 40ch spreads the two sub lines nearly the
-   column's full width; 30ch folds the paragraph to three, so the caption
-   block stands ~129px tall against the ~375px workspace — the centering
-   ledger below closes on ~123px of air per side. */
-.toolchain-root .v0-ctx .v0-ctx-review .tcr-sub {
-  font-size: 14px;
   max-width: 30ch;
 }
 

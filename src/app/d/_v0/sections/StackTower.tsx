@@ -313,29 +313,72 @@ const FAN_WIRES: readonly string[] = [
   'M-12 -25C-2 -25 -12 18.5 2 18.5',
 ];
 
+/* ---- the scan's evidence: diffs written into the code plate ---------------
+   Founder: "while its scanning, make diffs start appearing in the bottom
+   layer on the left side of the layer" — Locadex writing changes into the
+   codebase. The device is the Locadex iso's diff hunk (Locadex.tsx
+   DIFF_ROWS), ported compactly: thin extruded slats — a del hunk over an
+   add hunk, ragged widths, each signed +/− in its margin — seated on the
+   LEFT region of the code plate's top face, in the plan pocket below the
+   '<' bracket chip (plan y ≥ 18 clears the chip's y ≤ 12 footprint; the
+   slats sit nearer the camera, so painter's order occludes correctly).
+   FullStack materializes them one by one while the agents beat is hot —
+   the same lifecycle as the beam — and they rest hidden (fullstack.css),
+   so no-JS, reduced motion, and every other beat never see them. */
+const DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
+  { w: 14, tone: 'del' },
+  { w: 18, tone: 'del' },
+  { w: 17, tone: 'add' },
+  { w: 11, tone: 'add' },
+  { w: 19, tone: 'add' },
+];
+const DIFF_X = -42;
+const DIFF_Y0 = 18;
+const DIFF_STEP = 5.5;
+const DIFF_GAP = 4;
+const DIFF_D = 3;
+const DIFF_H = 1.4;
+const SIGN_CX = -46.5;
+const SIGN_ARM = 1.7;
+const SIGN_T = 0.55;
+
 /**
- * The agents plate's scan energy: two accent glints riding a ring that
- * HUGS the top face's edge — a hair inside the rim, just about touching
- * (founder: "make the lines on its left and right closer to its edges,
- * just about touching so its like light going around the edge instead of
- * two worms" — the old ring sat 8 units inside the rim and its dashes
- * read as floating marks). On the ring the pair reads as light wrapping
- * around the plate's edge, resting and hot alike: the hot accent edge is
- * the contour itself, and the glints ride 1.5 units inside it, a
- * brightening of that edge rather than a second line. FullStack loops
- * the dashes whenever the plate is built and the band is on screen.
+ * The agents plate's scan energy: accent glints riding the top face's
+ * OWN contour — zero inset, the exact path the plate's edge hairline
+ * strokes (founder: "make the lines ... closer to its edges, just about
+ * touching so its like light going around the edge instead of two
+ * worms", then "for the top 4 lines, make them right on the edges").
+ * The glints are dash segments OF the edge path itself (CAP_PLATE.top
+ * below), so at any zoom the glint and the edge are ONE line — the
+ * light IS the edge, resting and hot alike; hot, the accent contour
+ * simply brightens under them. FullStack loops the dashes whenever the
+ * plate is built and the band is on screen.
  */
-const ORBIT_INSET = 1.5;
-const ORBIT_D = roundedPolygon(
-  topFace({
-    x: -CAP_HALF + ORBIT_INSET,
-    y: -CAP_HALF + ORBIT_INSET,
-    z: 0,
-    w: CAP_SIZE - ORBIT_INSET * 2,
-    d: CAP_SIZE - ORBIT_INSET * 2,
-    h: THICK,
-  })
-);
+const ORBIT_D = CAP_PLATE.top;
+
+/* ---- the capstone's own diffs: the agent's work, scrubbed by scroll ------
+   Founder addendum: "make locadex on teh top left side in a raised square
+   as well, and then a bunch of diffs being generated as we scroll on it."
+   The same slat device as the code plate's hunk, seated across the
+   capstone face CLEAR of the mark's chip (plan x ≥ −2 vs the chip's
+   ≤ −10), del hunk over add hunk, ragged. FullStack SCRUBS their reveal
+   to scroll — beat 04's lock-in through the band's rest view — so the
+   hunk grows as the reader travels the dwell and regenerates in reverse
+   on the way back. No margin signs at this scale: the capstone face also
+   carries the chip, the shimmer, and the edge glints, and the ±1.7-unit
+   marks read as noise beside them (the code plate keeps its signed
+   hunk). */
+const CAP_DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
+  { w: 16, tone: 'del' },
+  { w: 20, tone: 'del' },
+  { w: 12, tone: 'del' },
+  { w: 18, tone: 'add' },
+  { w: 13, tone: 'add' },
+  { w: 20, tone: 'add' },
+  { w: 15, tone: 'add' },
+];
+const CAP_DIFF_X = -2;
+const CAP_DIFF_Y0 = -24;
 
 type GlyphChipProps = {
   x: number;
@@ -358,21 +401,23 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
   );
 }
 
-/** The Locadex mark's seat in the top face (the mask makes the shape take
-    the surface's ink instead of the asset's fill — the same technique the
-    Locadex iso uses on its agent slab), stepped DOWN from the earlier
-    face-owning 54 (founder addendum: "make the locadex logo in the layer
-    smaller" — it reads as a badge on the plate now, not a face-filling
-    glyph, and the edge glints get the rim to themselves). The asset's
-    500² viewBox pads its glyph — the drawn form spans only 199×222 of it
-    — so the seat is sized from the GLYPH, not the file: a 40-plan-unit
-    visible mark (~45% of the 90-unit capstone face), which the padding
-    inflates to a ~100-unit image box. The mask's alpha crops everything
-    back to the glyph. The asset is an SVG, so the scale costs no
-    crispness. */
-const MARK_GLYPH_W = 40;
+/** The Locadex mark's seat: a RAISED SQUARE CHIP at the top-left of the
+    capstone's face (founder addendum: "make locadex on teh top left side
+    in a raised square" — superseding the earlier smaller-centered-mark
+    round), the iso repository's GitHub-chip grammar at capstone scale:
+    the tower's own GlyphChip extrusion, with the mask-mark lying in the
+    CHIP'S top face and taking the surface's ink. The asset's 500²
+    viewBox pads its glyph — the drawn form spans only 199×222 of it —
+    so the seat is sized from the GLYPH: an 18-plan-unit visible mark
+    inside the 26-unit chip (4-unit margins), which the padding inflates
+    to a ~45-unit image box the mask crops back. */
+const CAP_CHIP_X = -36;
+const CAP_CHIP_Y = -13;
+const CAP_CHIP_SIZE = 26;
+const MARK_GLYPH_W = 18;
 const MARK_HALF = (MARK_GLYPH_W * (500 / 199)) / 2;
-const MARK_PLANE = plane(THICK);
+/** The mark lies in the chip's top face, anchored at the chip's center. */
+const MARK_PLANE = plane(THICK + CHIP_H, CAP_CHIP_X + CAP_CHIP_SIZE / 2, CAP_CHIP_Y + CAP_CHIP_SIZE / 2);
 
 /* ---- the mark's dithered shimmer ------------------------------------------
    Founder round 9: "a special animated shader, like the dithers, to make
@@ -446,14 +491,15 @@ const SHINE_TIERS: readonly { cover: number; width: number }[] = [
   { cover: 1, width: 36 },
 ];
 
-/** The masked rects' screen-space cover: the 40-unit capstone glyph
-    projects to ±36.6 × [-25.4, 17.0]; these bounds pad that, and the
-    mask crops the rest back to the mark. The shimmer's travel derives
-    from these below, so it breathes with the mark's size. */
-const LDX_X = -40;
-const LDX_Y = -29;
-const LDX_W = 80;
-const LDX_H = 50;
+/** The masked rects' screen-space cover: the 18-unit glyph on the chip's
+    top face projects to x [-36.4, -3.4], y [-28.7, -9.6] (center
+    (-19.9, -19.2)); these bounds pad that, and the mask crops the rest
+    back to the mark. The shimmer's travel derives from these below, so
+    it breathes with the mark's seat and size. */
+const LDX_X = -39;
+const LDX_Y = -31;
+const LDX_W = 39;
+const LDX_H = 25;
 
 /* The sweep's endpoints, DERIVED from the masked cover and the band's
    own rotated geometry (founder round 10: "make it cross the whole
@@ -586,6 +632,30 @@ function TopGlyph({ id }: { id: string }) {
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
           <GlyphChip x={-46} y={-12} w={24} d={24} h={CHIP_H} />
           <GlyphChip x={22} y={-12} w={24} d={24} h={CHIP_H} />
+          {/* the diffs the scan writes (the DIFF block above): drawn after
+              the bracket chip they sit in front of, hidden until FullStack
+              materializes them during the agents beat */}
+          {DIFF_ROWS.map(({ w, tone }, i) => {
+            const y = DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
+            const cy = y + DIFF_D / 2;
+            const box: IsoBox = { x: DIFF_X, y, z: THICK, w, d: DIFF_D, h: DIFF_H };
+            const sign =
+              markPath(SIGN_CX - SIGN_ARM, cy - SIGN_T, SIGN_ARM * 2, SIGN_T * 2) +
+              (tone === 'add'
+                ? ` ${markPath(SIGN_CX - SIGN_T, cy - SIGN_ARM, SIGN_T * 2, SIGN_ARM * 2)}`
+                : '');
+            return (
+              <g
+                key={`diff-${i}`}
+                className={`v0s-diff is-${tone}`}
+                data-code-diff={i}
+              >
+                <path className='v0s-diff-sign' d={sign} />
+                <path className='v0s-diff-hull' d={roundedPolygon(silhouette(box), 1.2)} />
+                <path className='v0s-diff-top' d={roundedPolygon(topFace(box), 1.2)} />
+              </g>
+            );
+          })}
           <g transform={plane(CHIP_TOP, -34, 0)}>
             <path className='v0s-g-glyph' d={chevron(0, 0, -1)} vectorEffect='non-scaling-stroke' />
           </g>
@@ -660,10 +730,13 @@ function TopGlyph({ id }: { id: string }) {
         </>
       );
     case 'agents':
-      /* the Locadex mark in the plate's own ink under the dithered
-         specular sweep (the shimmer block above), and the scan energy:
-         an accent trace orbiting the layer round and round (founder
-         round), on its own inset ring */
+      /* the Locadex mark riding its raised chip at the face's top-left,
+         in the surface's ink under the dithered specular sweep (the
+         shimmer block above); the capstone's own diff hunk across the
+         rest of the face, scrubbed in by scroll (CAP_DIFF block); and
+         the scan energy: accent glints circling ON the top face's edge
+         contour itself (the ORBIT block — light wrapping the plate's
+         edge, per the founder's addenda) */
       return (
         <>
           <defs>
@@ -724,16 +797,24 @@ function TopGlyph({ id }: { id: string }) {
               quantize (GSAP integer-rounds px-unit CSS props by default)
               step the dash a whole unit at a time — at 100 units that was
               ~6px of rendered jump every few frames; at 1000 a unit is
-              sub-pixel, and FullStack's loop opts out of the rounding too */}
+              sub-pixel, and FullStack's loop opts out of the rounding too.
+              FOUR glints per lap ('110 140' repeats four times over the
+              1000), one per top-face edge, ON the contour itself (the
+              founder: "for the top 4 lines, make them right on the
+              edges"); the parked offset 180 centers each dash mid-edge,
+              and the loop's −1000 travel is four whole pattern periods,
+              so it still wraps seamlessly. */}
           <path
             className='v0s-orbit'
             data-agent-orbit
             d={ORBIT_D}
             pathLength={1000}
-            strokeDasharray='120 880'
-            strokeDashoffset={300}
+            strokeDasharray='110 140'
+            strokeDashoffset={180}
             vectorEffect='non-scaling-stroke'
           />
+          {/* the mark's raised square chip, top-left of the face */}
+          <GlyphChip x={CAP_CHIP_X} y={CAP_CHIP_Y} w={CAP_CHIP_SIZE} d={CAP_CHIP_SIZE} h={CHIP_H} />
           <rect
             className='v0s-g-ldx'
             x={LDX_X}
@@ -758,6 +839,18 @@ function TopGlyph({ id }: { id: string }) {
               />
             ))}
           </g>
+          {/* the agent's ongoing work: the capstone hunk, scrubbed in by
+              scroll (FullStack drives [data-cap-diff]; hidden at rest) */}
+          {CAP_DIFF_ROWS.map(({ w, tone }, i) => {
+            const y = CAP_DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
+            const box: IsoBox = { x: CAP_DIFF_X, y, z: THICK, w, d: DIFF_D, h: DIFF_H };
+            return (
+              <g key={`cdiff-${i}`} className={`v0s-diff is-${tone}`} data-cap-diff={i}>
+                <path className='v0s-diff-hull' d={roundedPolygon(silhouette(box), 1.2)} />
+                <path className='v0s-diff-top' d={roundedPolygon(topFace(box), 1.2)} />
+              </g>
+            );
+          })}
         </>
       );
     default:
