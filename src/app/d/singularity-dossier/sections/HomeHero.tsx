@@ -35,39 +35,39 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
    hero only sets the stack around it: card, band, trust row, and the
    headline's measuring hinge below. */
 
-/* "language" in each of the window's fifteen belt locales — ONE CLOCK
-   (founder): the belt below reports whichever locale it centres
-   (TranslateWindow's onLocaleChange) and the em morphs to that
-   locale's word, so the headline never runs a timer of its own and the
-   word up here always names the locale on screen. Keyed by locale
-   code; English is the SSR/resting initial only — it is not on the
-   belt. Short native tokens so the re-measured line never wraps. Each
-   word carries its BCP-47 tag so the hidden measurer and the live word
-   shape with the same fonts; none of the fifteen are RTL (the belt's
-   roster excludes ar/he until the seam mirrors), but the rtl wiring —
-   probe dir, bidi isolate, reading-side wipe — stays for the day one
-   arrives. */
+/* The WHOLE headline in each of the window's belt locales — ONE CLOCK
+   (founder round: "make the whole sentence translate and retranslate
+   itself"): the belt below reports whichever locale it centres
+   (TranslateWindow's onLocaleChange) and the em morphs the entire
+   sentence to that locale, so the headline never runs a timer of its
+   own and the line up here always speaks the locale on screen. The
+   belt now leads with en, so the resting SSR sentence is also the
+   belt's first stop. Each sentence carries its BCP-47 tag so the
+   hidden measurer and the live line shape with the same fonts; none
+   of the sixteen are RTL (the roster excludes ar/he until the seam
+   mirrors), but the rtl wiring — probe dir, bidi isolate,
+   reading-side wipe — stays for the day one arrives. */
 type EveryWord = { text: string; lang: string; rtl?: boolean };
 
-const WORD_EN: EveryWord = { text: 'language', lang: 'en' };
+const WORD_EN: EveryWord = { text: 'Launch in every language.', lang: 'en' };
 
 const WORDS: Record<string, EveryWord> = {
   en: WORD_EN,
-  es: { text: 'idioma', lang: 'es' },
-  ja: { text: '言語', lang: 'ja' },
-  fr: { text: 'langue', lang: 'fr' },
-  ko: { text: '언어', lang: 'ko' },
-  de: { text: 'Sprache', lang: 'de' },
-  zh: { text: '语言', lang: 'zh' },
-  pt: { text: 'idioma', lang: 'pt' },
-  ru: { text: 'язык', lang: 'ru' },
-  it: { text: 'lingua', lang: 'it' },
-  hi: { text: 'भाषा', lang: 'hi' },
-  nl: { text: 'taal', lang: 'nl' },
-  tr: { text: 'dil', lang: 'tr' },
-  sv: { text: 'språk', lang: 'sv' },
-  id: { text: 'bahasa', lang: 'id' },
-  pl: { text: 'język', lang: 'pl' },
+  es: { text: 'Lanza en todos los idiomas.', lang: 'es' },
+  ja: { text: 'あらゆる言語でローンチ。', lang: 'ja' },
+  fr: { text: 'Lancez dans toutes les langues.', lang: 'fr' },
+  ko: { text: '모든 언어로 출시하세요.', lang: 'ko' },
+  de: { text: 'In jeder Sprache launchen.', lang: 'de' },
+  zh: { text: '用每种语言发布。', lang: 'zh' },
+  pt: { text: 'Lance em todos os idiomas.', lang: 'pt' },
+  ru: { text: 'Запускайтесь на любом языке.', lang: 'ru' },
+  it: { text: 'Lancia in ogni lingua.', lang: 'it' },
+  hi: { text: 'हर भाषा में लॉन्च करें।', lang: 'hi' },
+  nl: { text: 'Lanceer in elke taal.', lang: 'nl' },
+  tr: { text: 'Her dilde yayına alın.', lang: 'tr' },
+  sv: { text: 'Lansera på alla språk.', lang: 'sv' },
+  id: { text: 'Luncurkan dalam setiap bahasa.', lang: 'id' },
+  pl: { text: 'Uruchamiaj w każdym języku.', lang: 'pl' },
 };
 
 /* the dissolve dust pool: small glyphs sampled across the same scripts */
@@ -601,15 +601,15 @@ export default function HomeHero() {
       <div className='tc-hero tch-card'>
         {/* Two authored lines rather than a wrap: "Launch in / every language."
             — the accented word opens line two, on the hinge of the sentence. */}
+        {/* the whole sentence is the morphing unit now — the measuring
+            guides flank the full line and the belt rewrites all of it */}
         <h1 data-hero-in>
           <span>
-            Launch in every{' '}
             <em data-every>
               <span data-every-word lang='en' dir='ltr'>
-                language
+                Launch in every language.
               </span>
             </em>
-            .
           </span>
         </h1>
 

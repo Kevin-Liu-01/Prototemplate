@@ -182,6 +182,7 @@ const ROWS: readonly Row[] = [
    ------------------------------------------------------------------ */
 
 type PreviewLoc =
+  | 'en'
   | 'es'
   | 'ja'
   | 'fr'
@@ -199,8 +200,10 @@ type PreviewLoc =
   | 'pl';
 
 /** The belt's running order — scripts interleaved so the strip reads
-    as the world, not as Europe first. es leads: it is the first fold. */
+    as the world, not as Europe first. en leads (founder: we start with
+    the reader's own language, source before translations), then es. */
 const BELT_LOCS: readonly PreviewLoc[] = [
+  'en',
   'es',
   'ja',
   'fr',
@@ -231,6 +234,16 @@ type PreviewCopy = {
 };
 
 const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
+  en: {
+    nav: ['Overview', 'Payments', 'Reports'],
+    heading: 'Welcome back',
+    sub: 'Your account’s activity this week.',
+    revenue: 'Revenue',
+    invoices: 'Invoices',
+    payout: 'Next payout',
+    button: 'Get started',
+    chart: 'Last 6 months',
+  },
   es: {
     nav: ['Resumen', 'Pagos', 'Informes'],
     heading: 'Hola de nuevo',
@@ -387,6 +400,7 @@ const PREVIEWS: Record<PreviewLoc, PreviewCopy> = {
     grouping, local date order — from fixed inputs so server and client
     render the same characters. */
 const REVENUE: Record<PreviewLoc, { currency: string; amount: number }> = {
+  en: { currency: 'USD', amount: 52840 },
   es: { currency: 'EUR', amount: 48250 },
   ja: { currency: 'JPY', amount: 7480000 },
   fr: { currency: 'EUR', amount: 48250 },
@@ -753,7 +767,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
      click away. Faces only ever change by hand: nothing on the page calls
      setView except the seg's own pickView. */
   const [view, setView] = useState<'term' | 'preview'>('preview');
-  const [ploc, setPloc] = useState<PreviewLoc>('es');
+  const [ploc, setPloc] = useState<PreviewLoc>('en');
   /* the stack strip's selection: what the wizard's Detected line reports */
   const [stack, setStack] = useState<Stack>(DEFAULT_STACK);
   /* the open inspector: which component is naming its payload key. Hover
