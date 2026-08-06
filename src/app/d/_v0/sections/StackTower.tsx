@@ -731,25 +731,41 @@ function TopGlyph({ id }: { id: string }) {
           <path className='v0s-g-mark' d={markPath(-16, -9, 30, 5)} />
           <path className='v0s-g-mark is-wrap' d={markPath(-16, -1.5, 22, 5)} />
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
-          {/* founder: the chips carry two <T> components, not '<' and '/>' —
-              the context slab's trio at a gauge that fits the 28-wide tops */}
+          {/* founder: the chips carry the component PAIR — <T> opening,
+              </T> closing — at a gauge that fits the 28-wide tops */}
           <GlyphChip x={-48} y={-12} w={28} d={24} h={CHIP_H} />
           <GlyphChip x={20} y={-12} w={28} d={24} h={CHIP_H} />
-          {[-34, 34].map((cx) => (
-            <g key={cx} transform={plane(CHIP_TOP, cx, 0)}>
-              <path
-                className='v0s-g-glyph'
-                d={chevron(-9, 0, -1, 12, 6)}
-                vectorEffect='non-scaling-stroke'
-              />
-              <path className='v0s-g-glyph' d={tee(0, 0, 11)} vectorEffect='non-scaling-stroke' />
-              <path
-                className='v0s-g-glyph'
-                d={chevron(9, 0, 1, 12, 6)}
-                vectorEffect='non-scaling-stroke'
-              />
-            </g>
-          ))}
+          <g transform={plane(CHIP_TOP, -34, 0)}>
+            <path
+              className='v0s-g-glyph'
+              d={chevron(-9, 0, -1, 12, 6)}
+              vectorEffect='non-scaling-stroke'
+            />
+            <path className='v0s-g-glyph' d={tee(0, 0, 11)} vectorEffect='non-scaling-stroke' />
+            <path
+              className='v0s-g-glyph'
+              d={chevron(9, 0, 1, 12, 6)}
+              vectorEffect='non-scaling-stroke'
+            />
+          </g>
+          <g transform={plane(CHIP_TOP, 34, 0)}>
+            <path
+              className='v0s-g-glyph'
+              d={chevron(-10.5, 0, -1, 12, 5.5)}
+              vectorEffect='non-scaling-stroke'
+            />
+            <path
+              className='v0s-g-glyph'
+              d={slash(-4, 0, 11, 5)}
+              vectorEffect='non-scaling-stroke'
+            />
+            <path className='v0s-g-glyph' d={tee(3, 0, 10)} vectorEffect='non-scaling-stroke' />
+            <path
+              className='v0s-g-glyph'
+              d={chevron(10.5, 0, 1, 12, 5.5)}
+              vectorEffect='non-scaling-stroke'
+            />
+          </g>
         </>
       );
     case 'context':
@@ -803,9 +819,9 @@ function TopGlyph({ id }: { id: string }) {
               chip top is a window (title rule, two dots) with the real mark
               lying in its body, seated face-plane like the agents cap */}
           <g transform={plane(CHIP_TOP, 23, 0)}>
-            <path className='v0s-g-glyph' d='M-17 -6H17' vectorEffect='non-scaling-stroke' />
-            <circle className='v0s-g-glyph' cx={-14} cy={-8.6} r={0.9} vectorEffect='non-scaling-stroke' />
-            <circle className='v0s-g-glyph' cx={-10.8} cy={-8.6} r={0.9} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-dash-rule' d='M-14 -6H14' vectorEffect='non-scaling-stroke' />
+            <circle className='v0s-dash-dot' cx={-11.6} cy={-8.6} r={1.1} />
+            <circle className='v0s-dash-dot' cx={-8.2} cy={-8.6} r={1.1} />
             {/* both drawn marks ship; the theme's CSS shows the right one
                 (the plates follow the theme, so neither variant survives
                 both grounds alone) */}

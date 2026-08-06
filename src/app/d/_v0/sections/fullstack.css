@@ -1335,3 +1335,26 @@
 [data-theme='dark'] .toolchain-root .v0s-dash-mark.is-light {
   display: none;
 }
+
+/* The dashboard chip's window chrome: its own quiet inks — the glyph
+   gauge (2.5, near-white) read as a slab across the little window, and
+   stroked micro-circles blobbed. The rule is a hairline in the wires'
+   voice; the dots are small FILLED points, both re-inked for light. */
+.toolchain-root .tcb .v0s-dash-rule {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.38);
+  stroke-width: 1.25;
+}
+
+.toolchain-root .tcb .v0s-dash-dot {
+  fill: rgba(255, 255, 255, 0.55);
+  stroke: none;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-dash-rule {
+  stroke: color-mix(in srgb, var(--iso-ink) 42%, transparent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-dash-dot {
+  fill: color-mix(in srgb, var(--iso-ink) 55%, transparent);
+}
