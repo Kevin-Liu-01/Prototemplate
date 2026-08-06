@@ -409,7 +409,7 @@ export default function V0Context() {
           {/* the standardized context glyph — same watermark grammar as
               every other section head */}
           <BookOpenText className='tc-head-icon' strokeWidth={1} aria-hidden />
-          <h2>One source of context.</h2>
+          <h2>One source of context, shared globally</h2>
           <p>
             <GtLogoText /> understands your codebase and product.
           </p>
@@ -506,7 +506,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell v0-ctx-dyn' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Meaningful translations in context.</h3>
+              <h3>Built-in handling for dynamic context</h3>
             </div>
             <div className='v0-ctx-art'>
               <GenderFork />

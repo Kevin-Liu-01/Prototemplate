@@ -94,7 +94,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'context',
     name: 'Context',
-    lead: 'The best experience of your product becomes your best product experience.',
+    lead: 'The best experience of your product.',
     points: [
       <>
         <GtLogoText /> keeps your terminology, voice, and style consistent across every surface

@@ -324,7 +324,11 @@
 }
 
 .toolchain-root .v0-btn-solid:hover {
-  background: rgba(138, 143, 152, 0.26);
+  background: color-mix(in srgb, var(--tc-ink) 86%, transparent);
+}
+
+[data-theme='dark'] .toolchain-root .v0-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.93);
 }
 
 [data-theme='dark'] .toolchain-root .v0-btn-solid {

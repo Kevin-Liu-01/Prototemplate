@@ -490,7 +490,7 @@ export default function V0Developer({ heading = 'Built for developers around the
       <div className='tc-row v0-dev-grid' data-eq-heads=''>
         <BentoCell
           cell='is-framed'
-          title='Dynamic sizing and layout'
+          title='Dynamic layout for each language'
         >
           <div className='tc-lang is-lead'>
             <SentenceWidth

@@ -837,7 +837,10 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 10px;
+  /* the page heads' own measures (founder: the band head read off-grid):
+     the same gutter the tc-heads spend, and the same 13px head-to-sub step */
+  padding-inline: var(--tc-gut, 36px);
+  gap: 13px;
 }
 
 .toolchain-root .v0-ctx .tcb-head .tc-head-icon {

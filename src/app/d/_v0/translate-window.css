@@ -1325,3 +1325,12 @@
   color: rgba(7, 7, 7, 0.72);
 }
 
+
+/* Founder: a tab-row hash chip popped UP into the locale belt's zone and
+   vanished beneath the flags. Chips anchored in the app's top nav flip
+   DOWN instead — same offset, other side — so the id always surfaces
+   over the app's own body, never under the belt. */
+.toolchain-root .v0-tw .sgdh-app-nav .sgdh-ins-chip {
+  bottom: auto;
+  top: calc(100% + 9px);
+}
