@@ -216,7 +216,6 @@ export default function HomeHero() {
            for, whether a cycle holds the floor, and whether the
            first-fold capture window has passed */
         let current: EveryWord = WORD_EN;
-        let pending: EveryWord | null = null;
         let morphing = false;
         let armed = false;
         const holdWidth = () => {
@@ -235,36 +234,66 @@ export default function HomeHero() {
         };
         holdWidth();
 
-        /* the branch below installs the actual animation; drive() is the
-           gate both share: nothing runs before the capture window closes,
-           nothing overlaps a running cycle, and only the LATEST request
-           survives a busy spell */
-        let start: (next: EveryWord) => void = () => {};
-        const drive = () => {
-          if (morphing || !armed) return;
-          const next = pending;
-          pending = null;
-          if (!next) return;
-          if (next.text === current.text) {
-            /* es→pt: same word, different tongue — retag, never dissolve */
-            if (next.lang !== current.lang) {
-              current = next;
-              word.setAttribute('lang', next.lang);
-              word.setAttribute('dir', next.rtl ? 'rtl' : 'ltr');
-            }
+        /* the branch below installs the actual animation. The founder's
+           interaction contract: the INSTANT the belt centres a new locale
+           the sentence starts dissolving; a chip click mid-flight
+           interrupts the running cycle; and the intake is debounced so a
+           burst of clicks collapses to its last target. `target` is the
+           single source of truth for where the headline is headed —
+           every phase boundary reads it fresh. */
+        let target: EveryWord = current;
+        let phase: 'idle' | 'dissolve' | 'form' = 'idle';
+        let act: (next: EveryWord) => void = () => {};
+        const retag = (next: EveryWord) => {
+          /* es→pt: same words, different tongue — retag, never dissolve */
+          current = next;
+          word.setAttribute('lang', next.lang);
+          word.setAttribute('dir', next.rtl ? 'rtl' : 'ltr');
+        };
+
+        /* leading + trailing debounce: the first request in a quiet spell
+           acts NOW (the sentence must already be dissolving as the belt
+           lands); anything inside the window is folded, and the LAST of
+           the burst is served when the window closes */
+        const DEBOUNCE = 0.25;
+        let lastFire = -1e9;
+        let queued: EveryWord | null = null;
+        let trailingCall: gsap.core.Tween | null = null;
+        const requestWord = (w: EveryWord) => {
+          if (!armed) {
+            target = w;
             return;
           }
-          start(next);
+          if (w.text === target.text && w.lang === target.lang) return;
+          const now = gsap.ticker.time;
+          if (now - lastFire >= DEBOUNCE) {
+            lastFire = now;
+            act(w);
+          } else {
+            queued = w;
+            trailingCall ??= gsap.delayedCall(Math.max(0.02, DEBOUNCE - (now - lastFire)), () => {
+              trailingCall = null;
+              const q = queued;
+              queued = null;
+              if (q && (q.text !== target.text || q.lang !== target.lang)) {
+                lastFire = gsap.ticker.time;
+                act(q);
+              }
+            });
+          }
         };
 
         if (compactEvery) {
-          /* At mobile scale 26 particles cannot breathe: a clean measured
-             crossfade tells the same story, on the same belt clock. */
-          start = (next) => {
+          /* At mobile scale the particles cannot breathe: a clean measured
+             crossfade tells the same story, on the same belt clock. The
+             swap is short, so interrupts reduce to latest-wins at the
+             boundary. */
+          const swap = (next: EveryWord) => {
             if (!root.current || !root.current.isConnected) return;
             const w1 = measure(next);
             current = next;
             morphing = true;
+            phase = 'form';
             gsap.to(word, {
               autoAlpha: 0,
               duration: 0.12,
@@ -278,14 +307,25 @@ export default function HomeHero() {
                   snap: { width: 1 / dpr },
                   onComplete: () => {
                     morphing = false;
+                    phase = 'idle';
                     holdWidth();
-                    /* a locale that arrived mid-swap is served now */
-                    drive();
+                    /* a target that arrived mid-swap is served now */
+                    if (target.text !== current.text) swap(target);
+                    else if (target.lang !== current.lang) retag(target);
                   },
                 });
                 gsap.to(word, { autoAlpha: 1, duration: 0.18, ease: 'power2.out', delay: 0.1 });
               },
             });
+          };
+          act = (next) => {
+            target = next;
+            if (phase !== 'idle') return;
+            if (next.text === current.text) {
+              if (next.lang !== current.lang) retag(next);
+              return;
+            }
+            swap(next);
           };
         } else {
           const guideL = document.createElement('span');
@@ -384,112 +424,70 @@ export default function HomeHero() {
             return pts;
           };
 
-          start = (next) => {
+          /* ---- the two-phase engine (founder rounds) ----
+             DISSOLVE: the standing sentence PIXELATES — the dust seats on
+             the outgoing text's own sampled ink so the line visibly breaks
+             into glyphs in place — then disperses into a DISTRIBUTED CLOUD
+             across the whole line box (not a ring). FORM: the bounds glide,
+             the cloud re-spreads over the incoming width, then condenses
+             onto the new sentence's letterforms and the print front absorbs
+             it. The form phase always reads the LATEST target at its
+             boundary; a target arriving mid-form kills the phase and
+             re-disperses whatever stands. */
+          let tlLive: gsap.core.Timeline | null = null;
+          let printCall: gsap.core.Tween | null = null;
+          let veilTl: gsap.core.Timeline | null = null;
+          let killForm: (() => void) | null = null;
+
+          const cloudX = (w: number) => () =>
+            gsap.utils.clamp(3, w - 3, gsap.utils.random(0.03, 0.97) * w);
+          const cloudY = (h: number) => () => gsap.utils.random(h * 0.02, h * 0.52);
+
+          const formPhase = () => {
             if (!root.current || !root.current.isConnected) return;
-            const w0 = measure(current);
-            const w1 = measure(next);
-            current = next;
-            morphing = true;
+            phase = 'form';
+            const goal = target;
+            current = goal;
+            const w1 = measure(goal);
+            const h = em.offsetHeight;
             const tl = gsap.timeline({
               onComplete: () => {
+                tlLive = null;
+                killForm = null;
+                phase = 'idle';
                 morphing = false;
-                /* re-assert from a fresh cache in case fonts or viewport
-                   moved mid-morph — otherwise the same value: nothing snaps */
                 holdWidth();
-                /* a locale that arrived mid-morph is served now */
-                drive();
+                /* a debounced trailing target that landed as we closed */
+                if (target.text !== current.text) act(target);
+                else if (target.lang !== current.lang) retag(target);
               },
             });
+            tlLive = tl;
 
-            // 1. the instrument appears around the current word
-            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.2, ease: 'none' });
-
-            // 2. the word dissolves as ONE shaped run — splitting it into
-            //    per-character spans would disconnect Arabic and reflow the
-            //    very width the sentence is standing on — while the dust
-            //    carries the scatter
-            /* time to go: the blue veil fades in over the word, rests a
-               beat — the dither lingers — then word and veil sink together */
-            seatVeil();
-            tl.to(veil, {
-              autoAlpha: 0.85,
-              duration: 0.35,
-              ease: 'power1.out',
-              overwrite: 'auto',
-            }, '+=0.02');
-            tl.to(word, {
-              autoAlpha: 0,
-              scale: 0.98,
-              transformOrigin: '50% 60%',
-              duration: 0.5,
-              ease: 'power2.in',
-            }, '+=0.3');
-            tl.to(veil, {
-              autoAlpha: 0,
-              scale: 0.98,
-              transformOrigin: '50% 60%',
-              duration: 0.5,
-              ease: 'power2.in',
-              overwrite: 'auto',
-            }, '<');
-            /* the cloud separates SYMMETRICALLY about the word's centre: each
-               glyph takes an evenly-spread angle on a jittered ring, so the
-               scatter is balanced instead of clumping off to one side */
-            const h0 = em.offsetHeight;
-            const ring = (w: number) => (g: HTMLElement, i: number) => {
-              const angle = (i / dustGlyphs.length) * Math.PI * 2 + gsap.utils.random(-0.2, 0.2);
-              const rx = gsap.utils.random(0.18, 0.44) * w;
-              const ry = gsap.utils.random(6, h0 * 0.26);
-              return {
-                // clamped so no glyph ever leaves the measured bounds
-                x: gsap.utils.clamp(3, w - 3, w / 2 + Math.cos(angle) * rx),
-                y: gsap.utils.clamp(h0 * 0.04, h0 * 0.4, h0 * 0.22 + Math.sin(angle) * ry),
-              };
-            };
-            const place0 = ring(Math.max(w0, 30));
+            // the bounds glide to the incoming sentence's shaped width — ONE
+            // continuous tween, quantized to device pixels — while the cloud
+            // re-distributes across the new span
+            tl.to(em, { width: w1, duration: 0.7, ease: 'power2.inOut', snap: { width: 1 / dpr } }, 0);
             tl.to(dustGlyphs, {
-              autoAlpha: () => gsap.utils.random(0.35, 0.8),
-              x: (i, g) => place0(g as HTMLElement, i).x,
-              y: (i, g) => place0(g as HTMLElement, i).y,
-              duration: 0.6,
-              stagger: { amount: 0.15 },
-              ease: 'power1.out',
-            }, '<+=0.03');
-
-            // 3. the bounds glide to the incoming word's shaped width — ONE
-            //    continuous tween, quantized to device pixels, so the period
-            //    and everything after it track without buzz or end snap
-            tl.to(em, { width: w1, duration: 0.9, ease: 'power2.inOut', snap: { width: 1 / dpr } });
-            const place1 = ring(Math.max(w1, 30));
-            tl.to(dustGlyphs, {
-              x: (i, g) => place1(g as HTMLElement, i).x,
-              y: (i, g) => place1(g as HTMLElement, i).y,
-              duration: 0.9,
+              x: cloudX(Math.max(w1, 30)),
+              y: cloudY(h),
+              duration: 0.7,
               ease: 'power2.inOut',
-            }, '<');
+            }, 0);
 
-            // 4. CONDENSATION at glyph-field fidelity: every glyph owns
-            //    EXACTLY one sampled point and lands centred on it, in
-            //    print order (the sketch inks up the way the word will
-            //    print); the real text then PRINTS through the settled
-            //    swarm behind a hard linear clip front entering from the
-            //    script's reading side, and each glyph is absorbed the
-            //    instant the front passes its point — dust becomes
-            //    typography positionally, never a crossfade beside it.
-            //    Surplus glyphs (points < pool) thin out with the scatter.
-            /* the front's clock, hoisted: the timeline's hold must cover
-               the whole print sequence, or its closing sweep would wipe the
-               sketch before the front ever arrives */
+            // CONDENSATION at glyph-field fidelity: every glyph owns
+            // EXACTLY one sampled point and lands centred on it, in
+            // print order; the real text then PRINTS through the settled
+            // swarm behind a hard linear clip front entering from the
+            // script's reading side, and each glyph is absorbed the
+            // instant the front passes its point. Surplus glyphs thin out.
             const LAND = 0.7;
             const LAND_SPREAD = 0.25;
-            /* the front NEVER starts before the last landing: the dust fully
-               sketches the word first, then the print absorbs it — the
-               library's own order */
             const PRINT_AT = LAND + LAND_SPREAD + 0.08;
             const PRINT = 1.0;
             tl.add(() => {
-              const h = em.offsetHeight;
-              const pts = sampleShape(next.text, w1, h, dustGlyphs.length);
+              const hh = em.offsetHeight;
+              const pts = sampleShape(goal.text, w1, hh, dustGlyphs.length);
               const span = Math.max(w1, 1);
               dustGlyphs.forEach((g, i) => {
                 const pt = pts[i];
@@ -497,20 +495,15 @@ export default function HomeHero() {
                   gsap.to(g, { autoAlpha: 0, duration: 0.14, ease: 'power1.out' });
                   return;
                 }
-                /* reading-side progress: 0 where the front enters */
-                const u = next.rtl ? 1 - pt.x / span : pt.x / span;
+                const u = goal.rtl ? 1 - pt.x / span : pt.x / span;
                 gsap.to(g, {
                   x: pt.x - g.offsetWidth / 2,
-                  y: pt.y - h * 0.4 - g.offsetHeight / 2,
+                  y: pt.y - hh * 0.4 - g.offsetHeight / 2,
                   autoAlpha: 1,
                   duration: LAND,
                   ease: 'power3.inOut',
                   delay: u * LAND_SPREAD,
                 });
-                /* the print front absorbs the landed glyph as it passes —
-                   never before its landing tween has released the prop, or
-                   the landing's final autoAlpha:1 wins and the glyph parks
-                   visible at the em's edge */
                 const landEnd = u * LAND_SPREAD + LAND;
                 gsap.to(g, {
                   autoAlpha: 0,
@@ -520,33 +513,31 @@ export default function HomeHero() {
                   delay: Math.max(landEnd + 0.02, PRINT_AT + u * PRINT),
                 });
               });
-              gsap.delayedCall(PRINT_AT, () => {
-                showWord(next);
+              printCall = gsap.delayedCall(PRINT_AT, () => {
+                printCall = null;
+                showWord(goal);
                 gsap.fromTo(
                   word,
                   {
                     autoAlpha: 1,
                     scale: 1,
-                    clipPath: next.rtl ? 'inset(-15% 0% -15% 100%)' : 'inset(-15% 100% -15% 0%)',
+                    clipPath: goal.rtl ? 'inset(-15% 0% -15% 100%)' : 'inset(-15% 100% -15% 0%)',
                   },
                   {
                     clipPath: 'inset(-15% 0% -15% 0%)',
-                    /* linear, like the library's front: the absorb delays
-                       above are computed against this exact sweep */
                     duration: PRINT,
                     ease: 'none',
                     immediateRender: true,
                     onComplete: () => {
                       gsap.set(word, { clearProps: 'clipPath' });
                       /* the fresh print wears the veil: the blue halftone
-                         fades in over the word, rests a beat, and breathes
-                         away — the halftone moment of a fresh print */
-                      veil.textContent = next.text;
-                      veil.setAttribute('lang', next.lang);
-                      veil.setAttribute('dir', next.rtl ? 'rtl' : 'ltr');
+                         breathes in and away — the halftone moment */
+                      veil.textContent = goal.text;
+                      veil.setAttribute('lang', goal.lang);
+                      veil.setAttribute('dir', goal.rtl ? 'rtl' : 'ltr');
                       seatVeil();
-                      gsap
-                        .timeline()
+                      veilTl = gsap
+                        .timeline({ onComplete: () => { veilTl = null; } })
                         .to(veil, {
                           autoAlpha: 0.85,
                           duration: 0.3,
@@ -560,15 +551,120 @@ export default function HomeHero() {
               });
             });
             tl.to({}, { duration: PRINT_AT + PRINT + 0.45 });
-            /* the timeline itself sweeps the pool dark AFTER the front has
-               fully passed: whatever any per-glyph race leaves behind can
-               never park visible into the dwell */
+            /* the timeline sweeps the pool dark AFTER the front has passed */
             tl.to(dustGlyphs, { autoAlpha: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
-
-            // 5. the instrument withdraws
             /* founder: the guides leave FAST — a lingering frame reads as chrome */
             tl.to([guideL, guideR], { opacity: 0, duration: 0.07, ease: 'none' }, '>-0.05');
+
+            killForm = () => {
+              killForm = null;
+              tl.kill();
+              tlLive = null;
+              printCall?.kill();
+              printCall = null;
+              veilTl?.kill();
+              veilTl = null;
+              gsap.killTweensOf(dustGlyphs);
+              gsap.killTweensOf([word, veil, em]);
+              gsap.set(word, { clearProps: 'clipPath' });
+            };
           };
+
+          const startCycle = () => {
+            if (!root.current || !root.current.isConnected) return;
+            phase = 'dissolve';
+            morphing = true;
+            const w0 = measure(current);
+            const h = em.offsetHeight;
+            /* the outgoing sentence pixelates: seat the dust on ITS ink */
+            const pts0 = sampleShape(current.text, w0, h, dustGlyphs.length);
+            const tl = gsap.timeline({
+              onComplete: () => {
+                tlLive = null;
+                formPhase();
+              },
+            });
+            tlLive = tl;
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' }, 0);
+            tl.add(() => {
+              dustGlyphs.forEach((g, i) => {
+                const pt = pts0.length ? pts0[i % pts0.length] : undefined;
+                gsap.set(g, {
+                  x: (pt ? pt.x : w0 / 2) - g.offsetWidth / 2,
+                  y: (pt ? pt.y : h * 0.45) - h * 0.4 - g.offsetHeight / 2,
+                  autoAlpha: 0,
+                });
+              });
+            }, 0);
+            seatVeil();
+            tl.to(veil, { autoAlpha: 0.7, duration: 0.22, ease: 'power1.out', overwrite: 'auto' }, 0.05);
+            /* glyphs materialize ON the letterforms while the ink sinks —
+               the text reads as BECOMING the glyphs, not fading beside them */
+            tl.to(dustGlyphs, {
+              autoAlpha: () => gsap.utils.random(0.5, 0.95),
+              duration: 0.3,
+              stagger: { amount: 0.16 },
+              ease: 'power1.in',
+            }, 0.12);
+            tl.to(word, { autoAlpha: 0, duration: 0.34, ease: 'power2.in' }, 0.18);
+            tl.to(veil, { autoAlpha: 0, duration: 0.3, ease: 'power2.in', overwrite: 'auto' }, '<+=0.04');
+            /* ...then the swarm DISPERSES into a distributed cloud across
+               the whole line box before anything re-forms */
+            tl.to(dustGlyphs, {
+              autoAlpha: () => gsap.utils.random(0.3, 0.75),
+              x: cloudX(Math.max(w0, 30)),
+              y: cloudY(h),
+              duration: 0.55,
+              stagger: { amount: 0.18 },
+              ease: 'power1.inOut',
+            }, 0.44);
+          };
+
+          const reDissolve = () => {
+            phase = 'dissolve';
+            morphing = true;
+            const w = Math.max(em.offsetWidth, 30);
+            const h = em.offsetHeight;
+            const tl = gsap.timeline({
+              onComplete: () => {
+                tlLive = null;
+                formPhase();
+              },
+            });
+            tlLive = tl;
+            tl.to([word, veil], { autoAlpha: 0, duration: 0.18, ease: 'power2.in' }, 0);
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.15, ease: 'none' }, 0);
+            tl.to(dustGlyphs, {
+              autoAlpha: () => gsap.utils.random(0.3, 0.75),
+              x: cloudX(w),
+              y: cloudY(h),
+              duration: 0.32,
+              stagger: { amount: 0.08 },
+              ease: 'power1.out',
+            }, 0);
+          };
+
+          act = (next) => {
+            target = next;
+            if (phase === 'dissolve') {
+              /* already dissolving — the form boundary reads the latest
+                 target; nothing to interrupt */
+              return;
+            }
+            if (phase === 'form') {
+              /* founder: a click mid-flight interrupts — kill the forming
+                 print and re-disperse whatever stands */
+              killForm?.();
+              reDissolve();
+              return;
+            }
+            if (next.text === current.text) {
+              if (next.lang !== current.lang) retag(next);
+              return;
+            }
+            startCycle();
+          };
+          void tlLive;
         }
 
         /* the engine is built — open the vent. The mount-time report
@@ -578,17 +674,13 @@ export default function HomeHero() {
            not dust), by which time the belt's first crossing has usually
            re-aimed pending at the SECOND locale — correct by the
            one-clock rule: the em always names what the belt centres NOW. */
-        driver.current = {
-          request: (w) => {
-            pending = w;
-            drive();
-          },
-        };
+        driver.current = { request: requestWord };
         const init = WORDS[pendingLoc.current];
-        if (init) pending = init;
+        if (init) target = init;
         gsap.delayedCall(1.8, () => {
           armed = true;
-          drive();
+          if (target.text !== current.text) act(target);
+          else if (target.lang !== current.lang) retag(target);
         });
       }
 

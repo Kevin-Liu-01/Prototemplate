@@ -525,6 +525,7 @@ export default function V0Context() {
               heading='Review and approve with your team, over web, API, or CLI.'
               sub={null}
               notes={null}
+              surfaces
             />
           </div>
         </div>

@@ -340,3 +340,200 @@
     display: none;
   }
 }
+
+/* ---------- the three doors (surfaces mode) ----------
+   The v0 flow's "over web, API, or CLI" beat: a rail of three door
+   nodes between the copy and the frame, each wired into the window by
+   a hairline stub and each swapping the frame's face to that surface's
+   real text — the workspace table, the OpenAPI diffs call, the
+   gt save-local session. Hosts opt in with the surfaces prop; the
+   default mount never renders the rail, so nothing below can reach
+   the original page. */
+
+.toolchain-root .tcr-doors .tcr-grid {
+  grid-template-columns: minmax(0, 0.72fr) auto minmax(0, 1.45fr);
+}
+
+.toolchain-root .tcr-rail {
+  display: grid;
+  gap: 14px;
+  align-content: center;
+}
+
+.toolchain-root .tcr-door {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  text-align: left;
+  padding: 11px 14px 12px;
+  background: none;
+  border: 1px solid var(--tc-hair-2);
+  /* a control, so it keeps the small control radius (the theme switch's
+     own dress) — the frame beside it stays square */
+  border-radius: 8px;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.toolchain-root .tcr-door:hover {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .tcr-door[data-on] {
+  color: var(--tc-ink);
+  border-color: color-mix(in srgb, var(--tc-accent) 55%, var(--tc-hair-2));
+}
+
+/* the wire: a stub reaching across the grid gap to the frame's edge —
+   the same clamp as the gap, so it lands exactly on the window */
+.toolchain-root .tcr-door::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: clamp(28px, 4vw, 56px);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .tcr-door[data-on]::after {
+  border-top-color: var(--tc-accent);
+}
+
+.toolchain-root .tcr-door-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  letter-spacing: -0.01em;
+}
+
+.toolchain-root .tcr-door-ico {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+.toolchain-root .tcr-door-line {
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcr-door[data-on] .tcr-door-line {
+  color: var(--tc-ink-3);
+}
+
+/* ---------- the faces ----------
+   The web face stays in flow and gives the frame its height; the API
+   and CLI stills lie absolutely over it, painted on the same card so a
+   crossfade never lets the table ghost through mid-switch. */
+
+.toolchain-root .tcr-ws-multi {
+  position: relative;
+}
+
+.toolchain-root .tcr-face.is-web {
+  transition: opacity 0.26s ease;
+}
+
+.toolchain-root .tcr-face.is-web:not([data-on]) {
+  opacity: 0;
+}
+
+.toolchain-root .tcr-face.is-api,
+.toolchain-root .tcr-face.is-cli {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--tc-card);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.26s ease,
+    visibility 0s linear 0.26s;
+}
+
+.toolchain-root .tcr-face.is-api[data-on],
+.toolchain-root .tcr-face.is-cli[data-on] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.26s ease;
+}
+
+/* the still bodies: the session/exchange text, mono like every artifact
+   string, flexing between the face's own bar and foot */
+.toolchain-root .tcr-code {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 14px 18px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .tcr-ln {
+  white-space: pre-wrap;
+  /* hanging indent: a wrapped session line continues one tab in, never
+     back at the prompt column — first characters stay where written */
+  padding-left: 1.6em;
+  text-indent: -1.6em;
+}
+
+.toolchain-root .tcr-ln.is-gap {
+  height: 0.9em;
+}
+
+.toolchain-root .tcr-ln.is-dim {
+  color: var(--tc-ink-4);
+}
+
+.toolchain-root .tcr-ln .is-acc,
+.toolchain-root .tcr-ln.is-acc {
+  color: var(--tc-accent);
+  font-weight: 600;
+}
+
+/* the diff speaks the workspace's own grammar: the replaced line struck
+   and dimmed, the standing line in the house ok green (the stamp's) */
+.toolchain-root .tcr-ln.is-del {
+  color: var(--tc-ink-4);
+  text-decoration: line-through;
+}
+
+.toolchain-root .tcr-ln.is-add,
+.toolchain-root .tcr-ln.is-ok,
+.toolchain-root .tcr-ln .is-ok {
+  color: #16a34a;
+}
+
+/* narrow: the grid is one column (the 980 rule above), so the rail turns
+   into a horizontal row of doors above the frame and the wires retire */
+@media (max-width: 980px) {
+  .toolchain-root .tcr-doors .tcr-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .tcr-rail {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .toolchain-root .tcr-door::after {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .toolchain-root .tcr-door-line {
+    display: none;
+  }
+}

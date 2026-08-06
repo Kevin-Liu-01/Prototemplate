@@ -3,8 +3,8 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Download, History, Search, Table2 } from 'lucide-react';
-import { Fragment, useRef } from 'react';
+import { Braces, Download, History, Search, Table2, TerminalSquare } from 'lucide-react';
+import { Fragment, useRef, useState } from 'react';
 
 import LocaleTag from '../components/LocaleTag';
 
@@ -22,6 +22,16 @@ type ReviewRow = {
   previous?: string;
   /** The settled stamp: `approved` retires the row, `edit` stays as the quiet affordance. */
   final: 'approved' | 'edit';
+};
+
+/** The regenerated star row, named so the surfaces faces can tell the
+    SAME edit the table shows — one review, three doors. */
+const META_ROW: ReviewRow = {
+  key: 'meta',
+  source: "End-to-end localization for the world's best companies",
+  previous: 'Localización de extremo a extremo para las mejores empresas del mundo.',
+  translation: 'Localización integral para las mejores empresas del mundo.',
+  final: 'edit',
 };
 
 /**
@@ -42,13 +52,7 @@ const ROWS: readonly ReviewRow[] = [
     translation: 'Lanza en todos los idiomas',
     final: 'approved',
   },
-  {
-    key: 'meta',
-    source: "End-to-end localization for the world's best companies",
-    previous: 'Localización de extremo a extremo para las mejores empresas del mundo.',
-    translation: 'Localización integral para las mejores empresas del mundo.',
-    final: 'edit',
-  },
+  META_ROW,
   {
     key: 'terms',
     source: 'By continuing you agree to our Terms of Service.',
@@ -61,6 +65,18 @@ const ROWS: readonly ReviewRow[] = [
    source by a beat and finishing after it. Seconds per character. */
 const SRC_PACE = 0.038;
 const TR_PACE = 0.046;
+
+type Surface = 'web' | 'api' | 'cli';
+
+/** The three doors into the same review (surfaces mode). Every detail
+    line is the real product: the dashboard host, the OpenAPI endpoint
+    local edits sync through (POST /v2/project/files/diffs), and the CLI
+    verb that submits them (gt save-local) — never invented syntax. */
+const DOORS: readonly { key: Surface; name: string; line: string; icon: typeof Table2 }[] = [
+  { key: 'web', name: 'Workspace', line: 'dash.generaltranslation.com', icon: Table2 },
+  { key: 'api', name: 'API', line: 'POST /v2/project/files/diffs', icon: Braces },
+  { key: 'cli', name: 'CLI', line: 'npx gt save-local', icon: TerminalSquare },
+];
 
 /**
  * The review workspace: source beside translation on the page's mount, with
@@ -85,6 +101,11 @@ type ReviewWorkspaceProps = {
       aura hooks the host styles into a dither field around the mat. The
       default renders byte-identical to the original terminal chrome. */
   chrome?: 'terminal' | 'product';
+  /** The "over web, API, or CLI" beat: a rail of three door nodes wired
+      into the frame, each swapping its face to that surface's real text —
+      the workspace table, the diffs call, the save-local session. Off by
+      default; the default mount renders no rail and no faces. */
+  surfaces?: boolean;
 };
 
 const DEFAULT_NOTES: readonly string[] = [
@@ -98,8 +119,10 @@ export default function ReviewWorkspace({
   sub = 'Agents write translations. You review, edit, and approve in a focused workspace.',
   notes = DEFAULT_NOTES,
   chrome = 'terminal',
+  surfaces = false,
 }: ReviewWorkspaceProps = {}) {
   const root = useRef<HTMLElement>(null);
+  const [face, setFace] = useState<Surface>('web');
 
   useQuietReveal(root, chrome !== 'product');
 
@@ -259,39 +282,13 @@ export default function ReviewWorkspace({
     { scope: root }
   );
 
-  return (
-    <section className='tcr tc-sec' id='review' ref={root}>
-      <div className='tcr-grid'>
-        <div className='tcr-copy'>
-          <h2 data-reveal>{heading}</h2>
-          {sub ? (
-            <p className='tcr-sub' data-reveal>
-              {sub}
-            </p>
-          ) : null}
-          {notes && notes.length ? (
-            <ul className='tcr-notes' data-reveal>
-              {notes.map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-
-        <div className='tcr-mat' data-reveal>
-          <div className='tcr-ws'>
-            {chrome === 'product' ? (
-              // the workspace IS the dashboard, so the frame links there —
-              // a full-cover overlay; everything beneath is decorative
-              <a
-                aria-label='Open the GT dashboard'
-                className='tcr-ws-link'
-                href='https://dash.generaltranslation.com'
-                rel='noreferrer'
-                target='_blank'
-              />
-            ) : null}
-            <div className='tcr-bar'>
+  /* The window's resting face — the workspace table with its bar and
+     status strip, exactly the default mount's body. The surfaces mode
+     wraps it in a face so the API and CLI stills can cover it; without
+     surfaces it renders unwrapped, byte-identical to the original. */
+  const webBody = (
+    <>
+      <div className='tcr-bar'>
               {chrome === 'product' ? (
                 <span className='tcr-fact'>
                   <Table2 className='tcr-fico' aria-hidden />
@@ -390,6 +387,178 @@ export default function ReviewWorkspace({
                 <span>download</span>
                 <span className='is-right'>agent · locadex</span>
               </div>
+            )}
+    </>
+  );
+
+  /* The API face: the same edit as the table's regenerated row, pushed
+     through the real endpoint — POST /v2/project/files/diffs with the
+     x-gt-api-key header, the documented body fields, and the endpoint's
+     verbatim 200 message. A still, not a typed loop: the diagram's job
+     is the shape of the call. */
+  const apiBody = (
+    <>
+      <div className='tcr-bar'>
+        <span className='tcr-fact'>
+          <Braces className='tcr-fico' aria-hidden />
+          api2.gtx.dev
+        </span>
+        <span>200 ok</span>
+      </div>
+      <div className='tcr-code'>
+        <div className='tcr-ln'>
+          <b className='is-acc'>POST</b> /v2/project/files/diffs
+        </div>
+        <div className='tcr-ln is-dim'>x-gt-api-key: gtx-api-••••••••</div>
+        <div aria-hidden='true' className='tcr-ln is-gap' />
+        <div className='tcr-ln'>{'{ "diffs": [{'}</div>
+        <div className='tcr-ln'>{'    "fileId": "file_ui_strings",'}</div>
+        <div className='tcr-ln'>{'    "locale": "es-419",'}</div>
+        <div className='tcr-ln'>{'    "diff": "@@ meta.description @@",'}</div>
+        <div className='tcr-ln'>
+          {'    "localContent": '}
+          <span className='is-add'>&quot;{META_ROW.translation}&quot;</span>
+        </div>
+        <div className='tcr-ln'>{'}] }'}</div>
+        <div aria-hidden='true' className='tcr-ln is-gap' />
+        <div className='tcr-ln is-ok'>200 OK</div>
+        <div className='tcr-ln is-dim'>
+          {'{ "filesProcessed": 1, "message": "Processed 1 translation(s)" }'}
+        </div>
+      </div>
+      <div className='tcr-foot'>
+        <span className='tcr-fact'>project:files:write</span>
+        <span className='tcr-fact'>gt-api-version · 2026-03-06.v1</span>
+        <span className='tcr-fact is-right'>openapi.yaml</span>
+      </div>
+    </>
+  );
+
+  /* The CLI face: gt save-local syncing the same edit — the command's
+     real name, its real preconditions (GT_API_KEY, gt.config.json), and
+     the diff it submits, closed by the endpoint's own count line. */
+  const cliBody = (
+    <>
+      <div className='tcr-bar'>
+        <span className='tcr-fact'>
+          <TerminalSquare className='tcr-fico' aria-hidden />
+          acme — zsh
+        </span>
+        <span>branch main</span>
+      </div>
+      <div className='tcr-code'>
+        <div className='tcr-ln'>
+          <b className='is-acc'>$</b> npx gt save-local
+        </div>
+        <div aria-hidden='true' className='tcr-ln is-gap' />
+        <div className='tcr-ln is-dim'>Reading gt.config.json — 3 files · branch main</div>
+        <div className='tcr-ln is-dim'>Changed since last download — ui.es-419.json</div>
+        <div aria-hidden='true' className='tcr-ln is-gap' />
+        <div className='tcr-ln is-dim'>@@ meta.description · es-419 @@</div>
+        <div className='tcr-ln is-del' lang='es'>
+          {'- '}
+          {META_ROW.previous}
+        </div>
+        <div className='tcr-ln is-add' lang='es'>
+          {'+ '}
+          {META_ROW.translation}
+        </div>
+        <div aria-hidden='true' className='tcr-ln is-gap' />
+        <div className='tcr-ln'>
+          <span className='is-ok'>✓</span> Processed 1 translation(s) — synced to the workspace
+        </div>
+      </div>
+      <div className='tcr-foot'>
+        <span className='tcr-fact'>GT_API_KEY · env</span>
+        <span className='tcr-fact'>GT_PROJECT_ID · env</span>
+        <span className='tcr-fact is-right'>--publish → CDN</span>
+      </div>
+    </>
+  );
+
+  return (
+    <section className={surfaces ? 'tcr tc-sec tcr-doors' : 'tcr tc-sec'} id='review' ref={root}>
+      <div className='tcr-grid'>
+        <div className='tcr-copy'>
+          <h2 data-reveal>{heading}</h2>
+          {sub ? (
+            <p className='tcr-sub' data-reveal>
+              {sub}
+            </p>
+          ) : null}
+          {notes && notes.length ? (
+            <ul className='tcr-notes' data-reveal>
+              {notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+
+        {surfaces ? (
+          /* the rail of doors: one review, three surfaces — each node
+             names its surface in the product's own words and wires into
+             the frame; the active wire carries the accent */
+          <div aria-label='Review surface' className='tcr-rail' role='group'>
+            {DOORS.map((door) => {
+              const Icon = door.icon;
+              return (
+                <button
+                  key={door.key}
+                  aria-pressed={face === door.key}
+                  className='tcr-door'
+                  data-on={face === door.key || undefined}
+                  type='button'
+                  onClick={() => setFace(door.key)}
+                >
+                  <span className='tcr-door-head'>
+                    <Icon aria-hidden className='tcr-door-ico' />
+                    {door.name}
+                  </span>
+                  <span className='tcr-door-line'>{door.line}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+
+        <div className='tcr-mat' data-reveal>
+          <div className={surfaces ? 'tcr-ws tcr-ws-multi' : 'tcr-ws'}>
+            {chrome === 'product' ? (
+              // the workspace IS the dashboard, so the frame links there —
+              // a full-cover overlay; everything beneath is decorative
+              <a
+                aria-label='Open the GT dashboard'
+                className='tcr-ws-link'
+                href='https://dash.generaltranslation.com'
+                rel='noreferrer'
+                target='_blank'
+              />
+            ) : null}
+            {surfaces ? (
+              <>
+                {/* the web face stays in flow and keeps the frame's height;
+                    the other two lie over it and cover it when chosen */}
+                <div className='tcr-face is-web' data-on={face === 'web' || undefined}>
+                  {webBody}
+                </div>
+                <div
+                  aria-hidden={face !== 'api'}
+                  className='tcr-face is-api'
+                  data-on={face === 'api' || undefined}
+                >
+                  {apiBody}
+                </div>
+                <div
+                  aria-hidden={face !== 'cli'}
+                  className='tcr-face is-cli'
+                  data-on={face === 'cli' || undefined}
+                >
+                  {cliBody}
+                </div>
+              </>
+            ) : (
+              webBody
             )}
           </div>
           {chrome === 'product' ? (

@@ -854,3 +854,42 @@
   opacity: 0.07;
   pointer-events: none;
 }
+
+/* ---------- the three doors, on the band's plate ----------
+   The rail and faces come from the workspace SSOT (review-workspace.css,
+   surfaces mode); inside this cell they only re-ink. On the dark plate
+   the accent lifts toward white exactly like the pinned glossary term,
+   and the diff's standing line takes the footer's dark ok green; the
+   LIGHT MODE rules below re-ink both, same geometry. */
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-code {
+  padding: 12px 18px;
+  font-size: 11.5px;
+  line-height: 1.72;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-acc,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-acc {
+  color: color-mix(in srgb, var(--tc-accent) 52%, #ffffff);
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-add,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-ok,
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-ok {
+  color: #2fbf62;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-door-head {
+  font-size: 12px;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-acc,
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-acc {
+  color: var(--tc-accent);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-add,
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-ok,
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-ok {
+  color: #16a34a;
+}
