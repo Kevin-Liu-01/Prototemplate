@@ -200,7 +200,15 @@ export default function HomeHero() {
           probe.setAttribute('dir', w.rtl ? 'rtl' : 'ltr');
           probe.textContent = w.text;
           em.appendChild(probe);
-          const width = snapPx(probe.getBoundingClientRect().width);
+          let width = probe.getBoundingClientRect().width;
+          /* the ideographic full stop (U+3002) carries a full-em advance
+             with its ink in the left half — the raw measure pushes the
+             right guide a half-glyph past the sentence (founder catch).
+             Trim the phantom so the guide hugs the ink. */
+          if (/[。．]$/.test(w.text)) {
+            width -= parseFloat(getComputedStyle(em).fontSize) * 0.42;
+          }
+          width = snapPx(width);
           probe.remove();
           widthCache.set(w.text, width);
           return width;
@@ -563,7 +571,8 @@ export default function HomeHero() {
             tl.to(dustGlyphs, { autoAlpha: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
 
             // 5. the instrument withdraws
-            tl.to([guideL, guideR], { opacity: 0, duration: 0.16, ease: 'none' }, '>-0.03');
+            /* founder: the guides leave FAST — a lingering frame reads as chrome */
+            tl.to([guideL, guideR], { opacity: 0, duration: 0.07, ease: 'none' }, '>-0.05');
           };
         }
 

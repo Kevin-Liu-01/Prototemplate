@@ -21,12 +21,13 @@
   pointer-events: none;
 }
 
+/* founder: air between the guides and the sentence */
 .toolchain-root .tc-eg.is-l {
-  left: 0;
+  left: -0.18em;
 }
 
 .toolchain-root .tc-eg.is-r {
-  right: 0;
+  right: -0.18em;
 }
 
 .toolchain-root .tc-eg::before,
