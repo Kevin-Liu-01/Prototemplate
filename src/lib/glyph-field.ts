@@ -510,7 +510,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let formedRight = 0;
   let formedAdvance = 0;
   let formedLabel = '';
-  let formedLabelW = 0;
   let formedWord = '';
   let formedFont = '';
   let formedPx = 0;
@@ -523,7 +522,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let prevPx = 0;
   let prevRtl = false;
   let prevLabel = '';
-  let prevLabelW = 0;
 
   function scan(step: number, sw: number, sh: number, cap: number): number {
     if (!sampleCtx) return 0;
@@ -630,8 +628,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     formedAdvance = Math.round(advance);
     /* The caliper value and its measured width, fixed for the whole hold. */
     formedLabel = `advance ${formedAdvance}px · ${entry.tag}`;
-    sampleCtx.font = `500 11.5px ${mono}`;
-    formedLabelW = sampleCtx.measureText(formedLabel).width;
     /* The fill the swarm becomes: same word, same metrics, same origin. */
     formedWord = entry.word;
     formedFont = `500 ${fontPx}px ${disp}`;
@@ -693,8 +689,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     formedRight = left + advance;
     formedAdvance = Math.round(advance);
     formedLabel = `advance ${formedAdvance}px · ${entry.tag}`;
-    sampleCtx.font = `500 11.5px ${mono}`;
-    formedLabelW = sampleCtx.measureText(formedLabel).width;
     formedWord = entry.word;
     formedFont = `500 ${fontPx}px ${disp}`;
     formedPx = fontPx;
@@ -889,7 +883,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         prevPx = formedPx;
         prevRtl = formedRtl;
         prevLabel = formedLabel;
-        prevLabelW = formedLabelW;
         fx.set(lastX);
         fy.set(lastY);
         inPrev.set(inNext);
@@ -1109,10 +1102,14 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       ctx.restore();
     }
 
-    /* The caliper: the printed word's measured advance — regular-weight
-       dimension line, 5px end ticks, mono value in ink. It fades in once
-       the print front has swept, stands while the word holds, and fades
-       back out over the outgoing word as the morph begins. */
+    /* The caliper: the printed word's measured advance, drawn as a real
+       drafting dimension (founder: the old square bracket and flat label
+       read crude). A 1px hairline GROWS from the word's centre outward,
+       its crossing end ticks riding the growing ends and landing on the
+       true extents; the annotation sits centred beneath in three voices —
+       'advance' dim, the value in full ink, the locale tag dim behind its
+       middle dot. It fades in once the print front has swept, stands
+       while the word holds, and fades back out as the morph begins. */
     const calIn = morph < 0 && ptCount > 0 ? clamp01((p - PRINT - 0.1) / 0.45) : 0;
     const calOut = morph >= 0 && prevWord ? 1 - clamp01(mp / 0.45) : 0;
     const calA = Math.max(calIn, calOut);
@@ -1120,20 +1117,51 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       const cl = calIn > 0 ? formedLeft : prevLeft;
       const cr = calIn > 0 ? formedRight : prevRight;
       const label = calIn > 0 ? formedLabel : prevLabel;
-      const labelW = calIn > 0 ? formedLabelW : prevLabelW;
       const by = Math.min(railY - 9, baselineY + maxFont * 0.24);
-      ctx.globalAlpha = calA;
+      const cx = (cl + cr) / 2;
+      /* centre-out growth on the way in; the outgoing caliper keeps its
+         full span and only fades */
+      const grow = calIn > 0 ? 1 - Math.pow(1 - calIn, 3) : 1;
+      const half = ((cr - cl) / 2) * grow;
+      const gl = cx - half;
+      const gr = cx + half;
       ctx.fillStyle = ink;
-      ctx.fillRect(cl, by, cr - cl, 1.5);
-      ctx.fillRect(cl, by - 5, 1.5, 5);
-      ctx.fillRect(cr - 1.5, by - 5, 1.5, 5);
-      /* The value stands on cleared paper — rain never strikes through it.
-         (clearRect ignores alpha, so only punch the hole at full ink;
-         mid-fade the band is already rain-free via the gated clearing.) */
-      if (calA >= 1) ctx.clearRect(cr - labelW - 8, by + 4, labelW + 12, 17);
-      ctx.font = `500 11.5px ${mono}`;
-      ctx.textAlign = 'right';
-      ctx.fillText(label, cr, by + 16);
+      /* the line a hairline, one step under the value's ink */
+      ctx.globalAlpha = calA * 0.62;
+      ctx.fillRect(gl, by, gr - gl, 1);
+      /* drafting ticks CROSS the line at its live ends */
+      ctx.globalAlpha = calA * 0.85;
+      ctx.fillRect(gl, by - 4, 1, 9);
+      ctx.fillRect(gr - 1, by - 4, 1, 9);
+      /* the annotation, centred beneath in three voices */
+      const parts = /^advance (\d+px) · (.+)$/.exec(label);
+      ctx.font = `500 11px ${mono}`;
+      ctx.textAlign = 'left';
+      if (parts) {
+        const runs: readonly { text: string; a: number }[] = [
+          { text: 'advance ', a: 0.52 },
+          { text: parts[1] ?? '', a: 1 },
+          { text: ` · ${parts[2] ?? ''}`, a: 0.52 },
+        ];
+        const widths = runs.map((run) => ctx.measureText(run.text).width);
+        const total = widths.reduce((s, w) => s + w, 0);
+        let x = cx - total / 2;
+        /* the annotation stands on cleared paper — rain never strikes
+           through it (clearRect ignores alpha, so only punch the hole at
+           full ink; mid-fade the band is already rain-free via the gated
+           clearing) */
+        if (calA >= 1) ctx.clearRect(cx - total / 2 - 7, by + 5, total + 14, 16);
+        runs.forEach((run, i) => {
+          ctx.globalAlpha = calA * run.a;
+          ctx.fillText(run.text, x, by + 17);
+          x += widths[i] ?? 0;
+        });
+      } else {
+        const w = ctx.measureText(label).width;
+        if (calA >= 1) ctx.clearRect(cx - w / 2 - 7, by + 5, w + 14, 16);
+        ctx.globalAlpha = calA;
+        ctx.fillText(label, cx - w / 2, by + 17);
+      }
     }
 
     ctx.globalAlpha = 1;
