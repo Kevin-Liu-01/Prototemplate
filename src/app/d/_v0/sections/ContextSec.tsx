@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Ban, CalendarDays, Layers, PenLine, Pin, Speech, Users } from 'lucide-react';
+import { Ban, BookOpen, CalendarDays, PenLine, Pin, Speech, Users } from 'lucide-react';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -410,7 +410,7 @@ export default function V0Context() {
             wording and icon switched) — same tc-head grammar, same
             watermark seat, the Layers mark where Code2 stands there */}
         <div className='tc-head'>
-          <Layers className='tc-head-icon' strokeWidth={1} aria-hidden />
+          <BookOpen className='tc-head-icon' strokeWidth={1} aria-hidden />
           <h2 data-reveal>One source of context, shared globally</h2>
           <p data-reveal>
             <GtLogoText /> understands your codebase and product.

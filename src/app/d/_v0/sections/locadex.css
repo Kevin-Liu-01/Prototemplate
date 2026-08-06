@@ -399,10 +399,14 @@
 }
 
 /* the section watermark is the product's own mark — masked so it takes
-   the head icon's ghost ink exactly */
+   the head icon's ghost ink exactly. The asset pads its glyph inside a
+   500² canvas, so `contain` read at half the other heads' scale
+   (founder: much larger, the same scale as the others) — the 225.23%
+   crop is the house cut for this asset (fullstack.css's beat tag), and
+   with it the LAMBDA spans the 240 box the way the lucide glyphs do. */
 .toolchain-root .v0-ldx-head-mark {
-  -webkit-mask: url('/brand/locadex-mark.svg') center / contain no-repeat;
-  mask: url('/brand/locadex-mark.svg') center / contain no-repeat;
+  -webkit-mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
+  mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
   background-color: currentColor;
 }
 

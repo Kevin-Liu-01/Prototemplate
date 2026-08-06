@@ -21,7 +21,6 @@ import {
   Globe,
   Languages,
   LayoutDashboard,
-  Layers,
   Mail,
   Newspaper,
   SquareTerminal,
@@ -63,7 +62,7 @@ function product(base: string): readonly MenuColumn[] {
       title: 'Product',
       items: [
         { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
-        { label: 'Context', desc: 'One source of context', href: `${base}/context`, icon: Layers },
+        { label: 'Context', desc: 'One source of context', href: `${base}/context`, icon: BookOpen },
         { label: 'Infrastructure', desc: 'Global delivery network', href: '#infrastructure', icon: Globe },
       ],
     },

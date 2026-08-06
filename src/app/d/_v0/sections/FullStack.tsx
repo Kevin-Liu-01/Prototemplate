@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Code2, Languages, Layers } from 'lucide-react';
+import { BookOpen, Code2, Languages, Layers } from 'lucide-react';
 import { useRef } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
@@ -105,7 +105,9 @@ const BEATS: readonly StackBeat[] = [
         everywhere it translates: app, website, documentation, slides.
       </>,
     ],
-    icon: Layers,
+    /* BookOpen, not Layers (founder: Layers is the FULL STACK's icon
+       now; context wears the knowledge glyph everywhere) */
+    icon: BookOpen,
     slabIds: ['context'],
   },
   {
@@ -954,7 +956,12 @@ export default function V0FullStack() {
   return (
     <section className='tc-band tcb v0-stack' id='platform' ref={root} aria-labelledby='v0-stack-title'>
       <div className='tcb-in'>
-        <div className='tcb-head' data-cell>
+        {/* the head wears the section-head grammar so the FULL-STACK
+            watermark (the Layers glyph — founder: "use the full stack
+            icon here") seats whole at the house 240 gauge, like the
+            developer and context heads */}
+        <div className='tc-head'>
+          <Layers className='tc-head-icon' strokeWidth={1} aria-hidden />
           <h2 id='v0-stack-title' data-reveal>
             The full stack for localization.
           </h2>
