@@ -280,10 +280,17 @@
 /* ---------- right-side actions ---------- */
 
 .toolchain-root .v0-nav-theme {
+  /* founder: the switch sits in the button row, so it wears the row's
+     own box — the v0-btn-sm gauge (32px, 6px radius), squared */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 32px;
   border: 0;
   background: none;
-  padding: 4px 8px;
-  border-radius: 8px;
+  padding: 0 9px;
+  border-radius: 6px;
   font-size: 15px;
   line-height: 1;
   color: var(--tc-ink-3);
