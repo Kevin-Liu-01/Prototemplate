@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  --iso-accent: #86a8ff;
+  --iso-accent: #3b82f6;
 }
 
 /* ---------- one black, not two ----------
@@ -111,7 +111,7 @@
 .toolchain-root .v0-glob-art .eg {
   width: 100%;
   max-width: 520px;
-  --eg-label-size: 9px;
+  --eg-label-size: 8.5px;
 }
 
 @media (max-width: 640px) {

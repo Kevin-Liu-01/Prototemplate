@@ -482,15 +482,15 @@ export default function V0Developer({ heading = 'Built for developers around the
         <Code2 className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>{heading}</h2>
         <p data-reveal>
-          <GtLogoText /> handles all the infrastructure, so you no longer need to think about
-          localization.
+          <GtLogoText /> builds the localization infrastructure, so you can focus on
+          shipping a product the world loves.
         </p>
       </div>
 
       <div className='tc-row v0-dev-grid' data-eq-heads=''>
         <BentoCell
           cell='is-framed'
-          title='Dynamic sizing and layout for every component'
+          title='Dynamic sizing and layout'
         >
           <div className='tc-lang is-lead'>
             <SentenceWidth
@@ -509,7 +509,7 @@ export default function V0Developer({ heading = 'Built for developers around the
 
         <BentoCell
           cell='is-framed'
-          title='Edge cases handled: numbers, currencies, dates, plurality, and more'
+          title='Numbers, currencies, dates, plurality, and more'
         >
           <BranchForks />
         </BentoCell>

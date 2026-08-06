@@ -101,7 +101,7 @@ export default function ReviewWorkspace({
 }: ReviewWorkspaceProps = {}) {
   const root = useRef<HTMLElement>(null);
 
-  useQuietReveal(root);
+  useQuietReveal(root, chrome !== 'product');
 
   useGSAP(
     () => {
@@ -381,12 +381,6 @@ export default function ReviewWorkspace({
                 <span className='tcr-fact'>
                   <Download className='tcr-fico' aria-hidden />
                   Download
-                </span>
-                <span className='is-right tcr-fact'>
-                  Agent ·
-                  {/* the mark, not the letter — the house never writes the wordmark plain */}
-                  <img alt='' className='tcr-fmark' src='/brand/locadex-mark.svg' />
-                  Locadex
                 </span>
               </div>
             ) : (

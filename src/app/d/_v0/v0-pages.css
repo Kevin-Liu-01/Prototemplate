@@ -901,3 +901,71 @@
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta > .v0-dep-btn {
   position: relative;
 }
+
+/* ============================================================
+   FOUNDER BATCH — tokens, specimens, buttons, hero seg
+   ============================================================ */
+
+/* Dark mode speaks the SAME blue the production site speaks on light:
+   rgb(59 130 246). One accent, both themes' dark surfaces. */
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
+  --tc-accent: #3b82f6;
+}
+
+/* The specimen words are SPECIMENS, not buttons (founder: the inverted
+   plates read as controls; too black on light, too white on dark). A
+   quiet ink-tint chip with a hairline, everywhere the fork and the
+   measured rows render a word — the ink var re-inks per plate, so the
+   same rule serves the paper sections and the dark bands. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-cr-word,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-cr-result {
+  background: color-mix(in srgb, var(--tc-ink) 6%, transparent);
+  border: 1px solid var(--tc-hair);
+  color: var(--tc-ink);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-sw-box {
+  background: color-mix(in srgb, var(--tc-ink) 6%, transparent);
+  border: 1px solid var(--tc-hair);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-sw-box .lang-sw-line {
+  color: var(--tc-ink);
+}
+
+/* Buttons (founder round): line buttons GROW their border on hover —
+   the ground never swaps — and solid hovers barely thin, never wash. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-line:hover {
+  background: transparent;
+  border-color: rgba(7, 7, 7, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(7, 7, 7, 0.34);
+}
+
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band .tc-btn-line:hover,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-btn-line:hover {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-solid:hover {
+  background: color-mix(in srgb, var(--tc-ink) 86%, transparent);
+}
+
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-solid:hover,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band .tc-btn-solid:hover,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.93);
+}
+
+/* The hero window's Preview/Terminal switch stands down for now
+   (founder: "we can always add it back later") — preview is the one
+   face the window shows. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-seg {
+  display: none;
+}

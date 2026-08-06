@@ -1131,10 +1131,11 @@
   stroke: rgba(7, 7, 7, 0.28);
 }
 
-/* the Locadex mark rests in fuller ink than the dark build's 0.3
-   white (the shimmer below needs a solid ground to read against) */
+/* Founder round-trip: light KEEPS the white-blue dithering — the dark
+   build's family, stepped up to solid so it reads on the pale steel
+   (the earlier dark-ink light build turned the mark black-blue). */
 :root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-ldx {
-  fill: rgba(7, 7, 7, 0.42);
+  fill: rgba(255, 255, 255, 0.82);
 }
 
 /* THE SHIMMER, RE-INKED (founder: the dithered sweep must still read
@@ -1146,7 +1147,7 @@
    so the metal still moves, dark through the glyph instead of
    bright across it. */
 :root:not([data-theme='dark']) .toolchain-root .tcb .v0s-ldx-glint {
-  fill: color-mix(in srgb, var(--iso-accent) 30%, #11151c);
+  fill: color-mix(in srgb, #ffffff 70%, var(--iso-accent));
 }
 
 /* the chips: raised paper — tops toward white, sides a step under
@@ -1221,7 +1222,7 @@
    sweep still visibly crossing it (a white-leaning glint here would
    read as the glyph dissolving into the light chip) */
 :root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-ldx-glint {
-  fill: color-mix(in srgb, #070707 58%, var(--iso-accent));
+  fill: color-mix(in srgb, #ffffff 70%, var(--iso-accent));
 }
 
 :root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-hull {

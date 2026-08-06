@@ -824,3 +824,30 @@
   z-index: 3;
   cursor: pointer;
 }
+
+
+/* ---------- the band head (founder round) ----------
+   Header and subheader stack on the SAME side, and the head carries
+   the standardized context glyph at its right — the same watermark
+   grammar every section head wears. */
+.toolchain-root .v0-ctx .tcb-head {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+}
+
+.toolchain-root .v0-ctx .tcb-head .tc-head-icon {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 240px;
+  height: 240px;
+  color: var(--tc-ink);
+  opacity: 0.07;
+  pointer-events: none;
+}

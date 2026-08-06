@@ -68,7 +68,7 @@ const R = 92;
    crossing margins need a glance when this moves. */
 const CX = 179;
 const CY = 126;
-const VIEW_W = 360;
+const VIEW_W = 384;
 const VIEW_H = 240;
 
 /** Camera latitude: the globe leans toward the reader by 18°. */
@@ -169,11 +169,10 @@ const CAPS: Arc[] = [CAP, -CAP].flatMap((lat) => splitArcs(ring(lat), true));
 
 /* ---------------- the network ----------------
    Five PoPs, every one on a graticule intersection, every one named and
-   carrying its measured latency. `fra` is the one serving this reader. */
+   carrying its measured latency. `eu-central-1` is the one serving this reader. */
 
 type Pop = {
   code: string;
-  ms: number;
   lat: number;
   lon: number;
   /** Corner-routed leader: node → elbow → horizontal run to the label. */
@@ -196,11 +195,11 @@ type Pop = {
    node dot by 21+ units. The right rail keeps nrt/sin/syd top-to-bottom,
    still in latency order. */
 const POPS: readonly Pop[] = [
-  { code: 'fra', ms: 12, lat: 40, lon: -18, elbow: [94, 114], tickTo: 76, iconX: 3, textX: 15, home: true },
-  { code: 'iad', ms: 21, lat: 40, lon: -54, elbow: [88, 52], tickTo: 76, iconX: 3, textX: 15 },
-  { code: 'nrt', ms: 34, lat: 40, lon: 54, elbow: [272, 78], tickTo: 284, iconX: 288, textX: 300 },
-  { code: 'sin', ms: 41, lat: 0, lon: 54, elbow: [272, 140], tickTo: 284, iconX: 288, textX: 300 },
-  { code: 'syd', ms: 48, lat: -40, lon: 18, elbow: [272, 206], tickTo: 284, iconX: 288, textX: 300 },
+  { code: 'eu-central-1', lat: 40, lon: -18, elbow: [94, 114], tickTo: 78, iconX: 1, textX: 12, home: true },
+  { code: 'us-east-1', lat: 40, lon: -54, elbow: [88, 52], tickTo: 78, iconX: 1, textX: 12 },
+  { code: 'ap-northeast-1', lat: 40, lon: 54, elbow: [272, 78], tickTo: 284, iconX: 288, textX: 300 },
+  { code: 'ap-southeast-1', lat: 0, lon: 54, elbow: [272, 140], tickTo: 284, iconX: 288, textX: 300 },
+  { code: 'ap-southeast-2', lat: -40, lon: 18, elbow: [272, 206], tickTo: 284, iconX: 288, textX: 300 },
 ];
 
 /** The reader: not infrastructure, so not snapped to the grid. Sitting
@@ -417,10 +416,10 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
             <path className='eg-lead' d={leadD} />
             <Server className='eg-icon' x={pop.iconX} y={ey - 4.5} width={9} height={9} strokeWidth={2} aria-hidden />
             <text className='eg-label eg-label-wide' x={pop.textX} y={ey + 2.6}>
-              {pop.code} · {pop.ms} ms
+              {pop.code}
             </text>
             <text className='eg-label eg-label-compact' x={pop.textX} y={ey + 2.6} aria-hidden>
-              {pop.code} {pop.ms}ms
+              {pop.code}
             </text>
             {pop.home ? (
               /* fra's arrival flash: an accent copy of the same lockup and
@@ -431,10 +430,10 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
                 <path className='eg-lead' d={leadD} />
                 <Server className='eg-icon' x={pop.iconX} y={ey - 4.5} width={9} height={9} strokeWidth={2} aria-hidden />
                 <text className='eg-label eg-label-wide' x={pop.textX} y={ey + 2.6}>
-                  {pop.code} · {pop.ms} ms
+                  {pop.code}
                 </text>
                 <text className='eg-label eg-label-compact' x={pop.textX} y={ey + 2.6}>
-                  {pop.code} {pop.ms}ms
+                  {pop.code}
                 </text>
               </g>
             ) : null}

@@ -83,10 +83,10 @@ const BEATS: readonly StackBeat[] = [
     lead: 'Your code is the source of truth.',
     points: [
       <>
-        Wrap a component in <code>&lt;T&gt;</code> and it’s ready to ship in 120+ locales. No
+        Tag user interfaces, and they’re ready to ship in 120+ locales. No
         translation files needed.
       </>,
-      'Open-source internationalization (i18n) libraries and SDKs for every stack.',
+      'Open-source internationalization (i18n) libraries and SDKs for every framework.',
     ],
     icon: Code2,
     slabIds: ['code'],
@@ -94,7 +94,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'context',
     name: 'Context',
-    lead: 'The best experience of your product.',
+    lead: 'The best experience of your product becomes your best product experience.',
     points: [
       <>
         <GtLogoText /> keeps your terminology, voice, and style consistent across every surface

@@ -287,7 +287,7 @@ export default function V0Global() {
         <BentoCell cell='is-tall is-framed'>
           <div className='v0-glob-rail'>
             <article className='v0-glob-item'>
-              <h3>120+ languages, in every writing system.</h3>
+              <h3>Localized by region and dialect.</h3>
 
               {/* The combined artifact: base tags fan into regional variants,
                   every row in the language's own writing system. It draws no
@@ -365,7 +365,7 @@ export default function V0Global() {
             <article className='v0-glob-item'>
               <h3>Built for the enterprise.</h3>
               <p>
-                Custom FDE hours to build any workflow for your use case. Plus SSO, SOC 2 Type
+                Dedicated FDE hours to build any workflow across code and content. Plus SSO, SOC 2 Type
                 II, ISO 27001, and audit logs.
               </p>
             </article>

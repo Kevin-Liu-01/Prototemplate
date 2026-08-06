@@ -293,3 +293,11 @@
     padding-bottom: 64px;
   }
 }
+
+
+/* Founder: on light the living chrome blends into the paper — the mark
+   takes a fine dark metal rim (drop-shadow follows the mask's shape),
+   so the glyph stands off the ground without a drawn border. */
+:root:not([data-theme='dark']) .toolchain-root .v0-foot-gt {
+  filter: drop-shadow(0 0 0.6px rgba(7, 7, 7, 0.55)) drop-shadow(0.6px 1px 1.2px rgba(7, 7, 7, 0.24));
+}

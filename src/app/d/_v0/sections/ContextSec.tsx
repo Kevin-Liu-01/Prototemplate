@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Ban, CalendarDays, PenLine, Pin, Speech, Users } from 'lucide-react';
+import { Ban, BookOpenText, CalendarDays, PenLine, Pin, Speech, Users } from 'lucide-react';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -406,6 +406,9 @@ export default function V0Context() {
             the band's margins and padding strips, never the content */}
         <div className='v0-ctx-core' ref={core}>
         <div className='tcb-head' data-cell data-reveal>
+          {/* the standardized context glyph — same watermark grammar as
+              every other section head */}
+          <BookOpenText className='tc-head-icon' strokeWidth={1} aria-hidden />
           <h2>One source of context.</h2>
           <p>
             <GtLogoText /> understands your codebase and product.
@@ -415,7 +418,7 @@ export default function V0Context() {
         <div className='tcb-grid'>
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Accurate translations of your logical flow</h3>
+              <h3>Meaningful translations of your logical flow</h3>
             </div>
             <div className='v0-ctx-art'>
               <ContextResolve title='The English string Save resolves by context: speichern when it saves a file, sparen when it means a discount' />
@@ -424,7 +427,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Consistent terminology for your brand and audience</h3>
+              <h3>Consistent wording for your brand and audience</h3>
             </div>
             <div className='v0-ctx-art'>
               <div className='v0-ctx-glossary'>
@@ -503,7 +506,7 @@ export default function V0Context() {
 
           <div className='tcb-cell v0-ctx-cell v0-ctx-dyn' data-cell data-reveal>
             <div className='tcb-cap'>
-              <h3>Built-in handling for dynamic content</h3>
+              <h3>Meaningful translations in context.</h3>
             </div>
             <div className='v0-ctx-art'>
               <GenderFork />
@@ -519,7 +522,7 @@ export default function V0Context() {
           <div className='tcb-cell v0-ctx-review' data-cell data-reveal>
             <ReviewWorkspace
               chrome='product'
-              heading='Review and approve with your team, from one surface.'
+              heading='Review and approve with your team, over web, API, or CLI.'
               sub={null}
               notes={null}
             />

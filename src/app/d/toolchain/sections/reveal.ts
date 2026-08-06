@@ -12,9 +12,12 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * few pixels and resolve. No scale, no blur, no stagger longer than a beat —
  * restraint is the thesis, and the page has to read the same in a screenshot.
  */
-export function useQuietReveal(scope: RefObject<HTMLElement | null>) {
+export function useQuietReveal(scope: RefObject<HTMLElement | null>, enabled = true) {
   useGSAP(
     () => {
+      /* hosts that must never shift layout on load (the v0 product mounts)
+         opt out — the resting DOM is the still */
+      if (!enabled) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       ScrollTrigger.batch(gsap.utils.toArray<HTMLElement>('[data-reveal]', scope.current), {
