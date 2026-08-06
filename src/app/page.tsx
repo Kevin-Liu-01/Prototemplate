@@ -12,7 +12,7 @@ import './prototemplate.css';
 
 /* The nameplate speaks two voices, neither of them Switzer: Fraunces for the
    working model, Space Grotesk for the reusable form. The POST below it runs
-   TWK Lausanne (locally installed or dropped into public/fonts/lausanne),
+   TWK Lausanne (when locally installed; the woff2s aren't shipped),
    falling back to Inter. */
 const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });

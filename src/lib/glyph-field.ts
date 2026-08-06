@@ -198,14 +198,16 @@ export function ditherAtlasRows(
     const cssY = Math.floor(y / dpr);
     const cover = coverOfRow(rowOfY(cssY));
     if (cover >= 1) continue;
-    const by = cssY % 4;
-    const bayerRow = BAYER[by] ?? BAYER[0] ?? [0, 8, 2, 10];
+    /* DEVICE-px Bayer cells (founder round: 'smoother, cleaner, full
+       resolution'): the screen is twice as fine at dpr 2, and because
+       blits land on integer device px, every step translates the
+       pattern by WHOLE cells — rigid under motion, no re-phasing. */
+    const bayerRow = BAYER[y % 4] ?? BAYER[0] ?? [0, 8, 2, 10];
     for (let x = 0; x < widthPx; x++) {
       const idx = (y * widthPx + x) * 4 + 3;
       const alpha = data[idx] ?? 0;
       if (alpha === 0) continue;
-      const bx = Math.floor(x / dpr) % 4;
-      const threshold = ((bayerRow[bx] ?? 0) + 0.5) / 16;
+      const threshold = ((bayerRow[x % 4] ?? 0) + 0.5) / 16;
       data[idx] = (alpha / 255) * cover > threshold ? 255 : 0;
     }
   }
@@ -365,7 +367,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       const left = w * 0.47;
       zoneW = Math.max(240, w - 40 - left);
       zoneCx = left + zoneW / 2;
-      baselineY = h * 0.55;
+      /* 0.585, not 0.55 (founder: the word read a little high) — the
+         word + caliper GROUP now optically centres in the band */
+      baselineY = h * 0.585;
       maxFont = Math.min(h * 0.36, 232);
       fadeB = w * 0.43;
       fadeA = w * 0.55;
@@ -1051,22 +1055,19 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         if (sw === 0) continue;
         const sh = spr[m + 3] ?? 0;
         const o = cell * 2;
-        /* The far tier is 1-bit dithered on a CSS-px Bayer lattice: a
-           device-px step re-phases the sparse pattern every frame and the
-           glyph reads as flicker (founder round). Dithered sprites
-           therefore move in WHOLE CSS pixels — the pattern translates
-           rigidly, cell by cell — while solid tiers keep the finer
-           device-px motion. */
-        const dxq = row === 2 ? Math.round(Math.round(x) * dpr) : Math.round(x * dpr);
-        const dyq = row === 2 ? Math.round(Math.round(y) * dpr) : Math.round(y * dpr);
+        /* Device-px snap for every tier: with the Bayer lattice at
+           device-pixel cells (ditherAtlasRows), each integer step is a
+           whole cell — the pattern rides rigidly AND the motion runs at
+           display rate (founder round: the CSS-px quantization read as
+           sub-60fps chop). */
         ctx.drawImage(
           atlas,
           spr[m] ?? 0,
           spr[m + 1] ?? 0,
           sw,
           sh,
-          dxq + (sprOff[o] ?? 0),
-          dyq + (sprOff[o + 1] ?? 0),
+          Math.round(x * dpr) + (sprOff[o] ?? 0),
+          Math.round(y * dpr) + (sprOff[o + 1] ?? 0),
           sw,
           sh,
         );

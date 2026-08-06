@@ -757,10 +757,10 @@
 /* ============================================================
    THE POST — the index below the nameplate reads as a short
    article: motivation, research, discovery, sharing. Set in TWK
-   Lausanne (locally installed, or dropped into
-   public/fonts/lausanne/), falling back to Inter. Reading scale,
-   normal tracking, no eyebrows — the rails, hatches and
-   hairlines still do all the separating.
+   Lausanne when it's installed locally, falling back to Inter —
+   we don't ship the woff2s (licensed font), so src is local()
+   only. Reading scale, normal tracking, no eyebrows — the rails,
+   hatches and hairlines still do all the separating.
    ============================================================ */
 
 @font-face {
@@ -768,8 +768,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: local('TWK Lausanne'), local('TWKLausanne-400'),
-    url('/fonts/lausanne/TWKLausanne-400.woff2') format('woff2');
+  src: local('TWK Lausanne'), local('TWKLausanne-400');
 }
 
 @font-face {
@@ -777,8 +776,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: local('TWK Lausanne Medium'), local('TWKLausanne-500'),
-    url('/fonts/lausanne/TWKLausanne-500.woff2') format('woff2');
+  src: local('TWK Lausanne Medium'), local('TWKLausanne-500');
 }
 
 @font-face {
@@ -786,8 +784,7 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: local('TWK Lausanne SemiBold'), local('TWKLausanne-600'),
-    url('/fonts/lausanne/TWKLausanne-600.woff2') format('woff2');
+  src: local('TWK Lausanne SemiBold'), local('TWKLausanne-600');
 }
 
 .pt-root {
