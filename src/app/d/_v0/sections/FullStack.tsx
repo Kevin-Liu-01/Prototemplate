@@ -272,15 +272,16 @@ export default function V0FullStack() {
          this layer, we can have it start 'scanning' the below layer") */
       const agentsBeat = BEATS.findIndex((beat) => beat.id === 'agents');
 
-      /* class + stacking state, shared by both motion branches: hot slabs
-         take full ink, the accent edge, and the tower's highest z — above
-         even the slab overhead, so the whole plate reads when it pops. The
-         hot plate's rail leader takes the accent with it. */
+      /* class state, shared by both motion branches: hot slabs take full
+         ink and the accent edge; the hot plate's rail leader takes the
+         accent with it. STACKING is deliberately NOT painted here — the
+         instant z demotion at a beat change put a still-fading plate
+         BEHIND the layer under it (founder) — z-order is a story event
+         and rides the story timeline with everything else. */
       const paint = (active: number) => {
         const hot = new Set(HOT_SLABS[active] ?? []);
         slabs.forEach((slab, i) => {
           slab.classList.toggle('is-hot', hot.has(i));
-          slab.style.zIndex = String(hot.has(i) ? slabs.length + 1 + i : i + 1);
         });
         taps.forEach((tap, i) => tap.classList.toggle('is-hot', hot.has(i)));
         beats.forEach((beat, i) => {
@@ -590,8 +591,19 @@ export default function V0FullStack() {
           const base = k === 0 ? 0 : beatEnd[k - 1] ?? 0;
           const legDur = k === 0 ? 1.0 : 0.45;
           const prev = k > 0 ? slabs[k - 1] : undefined;
-          if (prev) story.to(prev, { y: 0, duration: 0.35, ease: 'power2.out' }, base);
+          if (prev) {
+            story.to(prev, { y: 0, duration: 0.35, ease: 'power2.out' }, base);
+            /* seated again — back to the painter's base order */
+            story.set(prev, { zIndex: k }, base);
+          }
+          /* AIRBORNE plates ride above everything: the z change is a
+             story event (a gsap set restores its prior value when the
+             story plays backward), so a plate rewinding out of its fade
+             lifts back OVER the layer under it — never behind (founder).
+             It settles to the hot tier once its drop lands. */
+          story.set(slab, { zIndex: slabs.length * 2 + 2 }, base);
           story.to(slab, { y: -LIFT, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, base);
+          story.set(slab, { zIndex: slabs.length + 1 + k }, base + 0.5);
           if (rail) {
             story.to(
               rail,
