@@ -480,9 +480,6 @@ export default function V0FullStack() {
               onUpdate: setSweep,
             })
           : null;
-        /* the beam's shown/hidden ledger, so repeated syncs never restart
-           a fade mid-flight */
-        let scanShown = false;
         const syncLoops = () => {
           const codeOn = inView && built >= codeNeed;
           if (wrapLoop) {
@@ -508,51 +505,17 @@ export default function V0FullStack() {
             if (agentsOn) loop.play();
             else loop.pause();
           }
-          /* the beam is gated a step tighter than the plate loops: the
-             agents beat must be the HOT one (not merely built) and the
-             band on screen. It fades in only after the capstone's 0.5s
-             lift has landed, so the sheet never shears against a moving
-             underside; going cold it fades fast and pauses the sweep
-             once hidden. CSS parks it hidden for no-JS and reduced
-             motion. */
+          /* the beam's VISIBILITY is a story event now (founder: arriving
+             at the fourth beat plate by plate, the sheet appeared before
+             its plate existed — the instant hot flag ran ahead of the
+             story). The story fades the sheet in only after the
+             capstone's drop lands and rewinds it out before the plate
+             leaves; this ledger only starts and stops the SWEEP so an
+             offscreen band never burns frames. */
           const scanOn = agentsOn && hotBeat === agentsBeat;
-          if (scan && sweepLoop && scanOn !== scanShown) {
-            scanShown = scanOn;
-            /* EVERY transition clears the sheet's slate first: a rapid
-               up-and-down story scrub stacks delayed risers, running
-               fade-outs and their pause callbacks in every order, and
-               any survivor is a ghost sheet (or a frozen sweep) later */
-            gsap.killTweensOf(scan);
-            if (scanOn) {
-              const riser = gsap.to(scan, {
-                autoAlpha: 1,
-                duration: 0.35,
-                delay: 0.45,
-                ease: 'power2.out',
-                /* the gate is RE-READ the instant the delayed riser
-                   actually fires — whatever slipped through the ledger
-                   during the delay, the sheet can never rise cold; and
-                   the sweep starts only WITH the visible sheet, so a
-                   stale pause can never freeze a lit sheet */
-                onStart: () => {
-                  if (!(inView && built >= agentsNeed && hotBeat === agentsBeat)) {
-                    riser.kill();
-                    gsap.set(scan, { autoAlpha: 0 });
-                    sweepLoop.pause();
-                    return;
-                  }
-                  sweepLoop.play();
-                },
-              });
-            } else {
-              gsap.to(scan, {
-                autoAlpha: 0,
-                duration: 0.22,
-                delay: 0,
-                ease: 'power2.in',
-                onComplete: () => sweepLoop.pause(),
-              });
-            }
+          if (sweepLoop) {
+            if (scanOn) sweepLoop.play();
+            else sweepLoop.pause();
           }
         };
 
@@ -622,6 +585,13 @@ export default function V0FullStack() {
               { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
               base + legDur + 0.02
             );
+          }
+          /* the scan sheet enters the story with its plate (founder: the
+             scanner may never precede the fourth layer): it rises after
+             the capstone's drop lands and a rewind carries it out before
+             the plate goes */
+          if (scan && k === slabs.length - 1) {
+            story.to(scan, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, base + 0.5);
           }
           beatEnd[k] = base + legDur + 0.32;
         });
