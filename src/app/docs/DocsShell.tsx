@@ -52,6 +52,7 @@ export default function DocsShell({
           <div className='pt-nav-right'>
             <ThemeToggle className='pt-nav-theme' />
             <Link href='/'>Index</Link>
+            <Link href='/brand'>Brand</Link>
             <Link href='/craft'>Craft</Link>
             <Link className='pt-nav-present' href='/present'>
               Present <span aria-hidden>▶</span>

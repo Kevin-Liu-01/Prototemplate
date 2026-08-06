@@ -69,7 +69,7 @@ browser pane pauses rAF — shader canvases come out blank):
 ```bash
 rsync -a --delete --exclude '/app/review' src/ ~/repos/Prototemplate/src/
 rsync -a --delete public/ ~/repos/Prototemplate/public/
-rsync -a DESIGN.md ARCHITECTURE.md README.md docs/ ~/repos/Prototemplate/  # docs ride along
+rsync -a BRAND.md DESIGN.md ARCHITECTURE.md README.md docs/ ~/repos/Prototemplate/  # docs ride along
 cd ~/repos/Prototemplate
 pnpm build > /tmp/proto-build.log 2>&1; echo $?   # capture the REAL exit code
 ```

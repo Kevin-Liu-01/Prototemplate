@@ -91,6 +91,7 @@ entry (body + snippet) in the same round.
 
 ## Skills and docs
 
+- `BRAND.md` — the identity canon (the basement-facing brand book; served at /docs/brand and /brand).
 - `DESIGN.md` — the visual canon (this repo's law book).
 - `docs/SHIP-LOOP.md` — the verify/ship procedure every round runs.
 - `docs/LIBRARIES.md` — the library index (defers to `/craft` for depth).
@@ -101,5 +102,6 @@ entry (body + snippet) in the same round.
 
 `src/` (minus `/app/review`) and `public/` rsync to the public
 `Prototemplate` repo, which must `pnpm build` green after every round.
-Root docs (`DESIGN.md`, `ARCHITECTURE.md`, `README.md`, `docs/`) are copied
-alongside — see `docs/SHIP-LOOP.md` for the exact sequence.
+Root docs (`BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, `README.md`,
+`docs/`) are copied alongside — see `docs/SHIP-LOOP.md` for the exact
+sequence.

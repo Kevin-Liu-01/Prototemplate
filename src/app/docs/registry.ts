@@ -14,6 +14,13 @@ export type DocEntry = {
 
 export const DOCS: readonly DocEntry[] = [
   {
+    slug: 'brand',
+    file: 'BRAND.md',
+    title: 'The brand',
+    blurb:
+      'The identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the Dossier as the completed reference.',
+  },
+  {
     slug: 'design',
     file: 'DESIGN.md',
     title: 'The design system',

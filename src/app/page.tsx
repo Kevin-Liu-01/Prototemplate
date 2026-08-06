@@ -102,6 +102,7 @@ export default function IndexPage() {
           </Link>
           <div className='pt-nav-right'>
             <ThemeToggle className='pt-nav-theme' />
+            <Link href='/brand'>Brand</Link>
             <Link href='/craft'>Craft</Link>
             <Link href='/docs'>Docs</Link>
             {/* the toolchain family as a previewing dropdown: the SSOT and
@@ -340,7 +341,12 @@ export default function IndexPage() {
           <div className='pt-sites'>
             {SITES.map((site) => (
               <section className='pt-sec pt-site' key={site.slug}>
-                <h3>{site.name}</h3>
+                <h3>
+                  {site.name}
+                  {site.slug === 'singularity-dossier' && (
+                    <span className='pt-site-flag'>the completed direction</span>
+                  )}
+                </h3>
                 <p>{site.signature}</p>
                 <SiteCompare slug={site.slug} name={site.name} />
                 <p className='pt-site-links'>

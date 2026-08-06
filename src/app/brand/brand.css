@@ -1,0 +1,492 @@
+/* ============================================================
+   BRAND — the identity book's own furniture, in the pt grammar.
+   Specimen cards are ABSOLUTE (ink is ink, paper is paper, in both
+   themes — the mark and swatches state the system rather than
+   sample the page); everything else derives from the pt layer.
+   Nothing here draws a line the prototemplate layer already owns.
+   ============================================================ */
+
+/* ---------- the naming system: a ruled ledger ---------- */
+
+.ptb-names {
+  max-width: 720px;
+  margin-top: 22px;
+}
+
+.ptb-name-row {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 18px;
+  padding: 10px 0;
+  border-top: 1px solid var(--pt-hair-2);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.ptb-name-row:last-child {
+  border-bottom: 1px solid var(--pt-hair-2);
+}
+
+.ptb-name-row b {
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+.ptb-name-row span {
+  color: var(--pt-ink-2);
+}
+
+/* ---------- the thesis, set in the brand's own face ---------- */
+
+.ptb-thesis {
+  max-width: 24ch;
+  margin-top: 18px;
+  font-family: var(--font-switzer), 'Helvetica Neue', Arial, sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.12;
+  color: var(--pt-ink);
+}
+
+/* ---------- the attribute scales: one hairline, one dot, per truth ---------- */
+
+.ptb-scales {
+  max-width: 720px;
+  margin-top: 18px;
+  display: grid;
+  gap: 22px;
+}
+
+.ptb-scale {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) 132px;
+  gap: 14px;
+  align-items: center;
+}
+
+.ptb-scale-label {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--pt-ink-4);
+  text-align: right;
+}
+
+.ptb-scale-label.is-r {
+  text-align: left;
+}
+
+.ptb-scale-label[data-on='true'] {
+  color: var(--pt-ink);
+}
+
+.ptb-scale-track {
+  position: relative;
+  height: 1px;
+  background: var(--pt-hair);
+}
+
+.ptb-scale-dot {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--pt-ink);
+}
+
+.ptb-scale-note {
+  position: absolute;
+  left: 0;
+  top: 7px;
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-4);
+  white-space: nowrap;
+}
+
+.ptb-scale-caption {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--pt-ink-3);
+}
+
+.pt-post-sec .ptb-scales + h3,
+.pt-post-sec h3 {
+  margin-top: 30px;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+/* ---------- voice: say / not ---------- */
+
+.ptb-voice {
+  max-width: 64ch;
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.ptb-voice-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+
+.ptb-voice-row span {
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-4);
+  text-transform: uppercase;
+}
+
+.ptb-voice-row p {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+
+.ptb-voice-row.is-yes p {
+  color: var(--pt-ink);
+}
+
+.ptb-voice-row.is-no p {
+  color: var(--pt-ink-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--pt-ink-4);
+  text-decoration-thickness: 1px;
+}
+
+/* ---------- the mark specimens: absolute surfaces ---------- */
+
+.ptb-marks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 860px;
+  margin-top: 20px;
+}
+
+.ptb-mark {
+  margin: 0;
+}
+
+.ptb-mark img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.ptb-mark.is-paper img {
+  background: #ffffff;
+  border: 1px solid var(--pt-hair);
+}
+
+.ptb-mark.is-ink img {
+  background: #070707;
+  /* the ink card keeps its bounds when the page itself goes dark */
+  border: 1px solid var(--pt-hair);
+  background-clip: padding-box;
+}
+
+.ptb-mark figcaption {
+  margin-top: 8px;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--pt-ink-3);
+}
+
+/* ---------- color: the four, absolute, plus the one accent ---------- */
+
+.ptb-swatches {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 720px;
+  margin-top: 20px;
+}
+
+.ptb-swatch i {
+  display: block;
+  height: 44px;
+  border: 1px solid var(--pt-hair);
+  background-clip: padding-box;
+}
+
+.ptb-swatch.is-ink i {
+  background-color: #070707;
+}
+
+.ptb-swatch.is-raised i {
+  background-color: #101010;
+}
+
+.ptb-swatch.is-titanium i {
+  background-color: #8a8f98;
+}
+
+.ptb-swatch.is-paper i {
+  background-color: #ffffff;
+}
+
+.ptb-swatch.is-accent i {
+  background-color: #2f5ce0;
+}
+
+.ptb-swatch.is-accent-lift i {
+  background-color: #86a8ff;
+}
+
+.ptb-swatch b {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+.ptb-swatch span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  color: var(--pt-ink-3);
+}
+
+.ptb-accents {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+  gap: 12px;
+  align-items: start;
+  max-width: 720px;
+  margin-top: 16px;
+}
+
+.ptb-accents p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--pt-ink-3);
+}
+
+/* ---------- type specimens ---------- */
+
+.ptb-type {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  max-width: 860px;
+  margin-top: 20px;
+}
+
+.ptb-face {
+  padding-top: 12px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.ptb-face-tag {
+  display: block;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-3);
+}
+
+.ptb-switzer {
+  margin-top: 10px;
+  font-family: var(--font-switzer), 'Helvetica Neue', Arial, sans-serif;
+  font-size: 21px;
+  line-height: 1.3;
+  color: var(--pt-ink);
+}
+
+.ptb-inter {
+  max-width: 44ch;
+  margin-top: 12px;
+  font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--pt-ink-2);
+}
+
+.ptb-inter.is-italic {
+  font-style: italic;
+  color: var(--pt-ink-3);
+}
+
+/* ---------- language as material ---------- */
+
+/* the one dark plate — permanently ink, like the craft plates */
+.ptb-plate {
+  position: relative;
+  height: 240px;
+  max-width: 860px;
+  margin-top: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #070707;
+  overflow: hidden;
+}
+
+/* the reassembler's type on the plate (the demo's wrapper class) */
+.ptb-plate .ptc-every {
+  color: #ffffff;
+  font-family: var(--font-switzer), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: clamp(22px, 3.2vw, 36px);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.ptb-plate .ptc-every em.every-sentence {
+  font-style: normal;
+}
+
+/* locale pills on the page's own paper */
+.ptb-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.ptb-pill {
+  display: inline-flex;
+  padding: 3px 9px;
+  border: 1px solid var(--pt-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--pt-mono);
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--pt-ink-2);
+}
+
+.ptb-pill .lct {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-style: normal;
+}
+
+.ptb-pill .lct-flag {
+  align-self: center;
+}
+
+/* the device ledger */
+.ptb-devices {
+  max-width: 780px;
+  margin-top: 22px;
+}
+
+.ptb-device-row {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 18px;
+  padding: 9px 0;
+  border-top: 1px solid var(--pt-hair-2);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.ptb-device-row:last-child {
+  border-bottom: 1px solid var(--pt-hair-2);
+}
+
+.ptb-device-row b {
+  font-family: var(--pt-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+.ptb-device-row span {
+  color: var(--pt-ink-2);
+}
+
+/* ---------- the completed reference ---------- */
+
+.ptb-shots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 1000px;
+  margin-top: 20px;
+}
+
+.ptb-shot {
+  margin: 0;
+}
+
+.ptb-shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid var(--pt-hair);
+  border-radius: 10px;
+  background-clip: padding-box;
+}
+
+.ptb-shot figcaption {
+  margin-top: 8px;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--pt-ink-3);
+}
+
+/* ---------- the brief ---------- */
+
+.ptb-brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  max-width: 860px;
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 760px) {
+  .ptb-marks,
+  .ptb-type,
+  .ptb-shots,
+  .ptb-brief {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ptb-swatches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ptb-accents {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ptb-accents p {
+    grid-column: span 2;
+  }
+
+  .ptb-scale {
+    grid-template-columns: 96px minmax(0, 1fr) 96px;
+  }
+
+  .ptb-scale-note {
+    display: none;
+  }
+}

@@ -1,10 +1,13 @@
-# Prototemplate — the GT website redesign lab
+# Prototemplate — GT's brand identity lab
 
-Sixteen art directions and three full sites for the General Translation
-website, built as live pages (never mockups), plus the tooling that judges
-them. The index (`/`) is the working file; `/present` walks the deck;
+The living brand guidelines for General Translation, and the design lab
+that produced them: sixteen art directions and three full sites built as
+live pages (never mockups), plus the tooling that judges them. **The
+Dossier (`/d/singularity-dossier`) is the completed direction** — the
+canonical statement of the identity in application. The index (`/`) is the
+working file; `/brand` is the identity book; `/present` walks the deck;
 `/craft` is the build log with the laws, the auditors, and every library
-running live.
+running live; `/docs` serves the written canon.
 
 ## Run it
 
@@ -17,6 +20,7 @@ pnpm dev        # http://localhost:3006
 
 | doc | what it holds |
 | --- | --- |
+| [`BRAND.md`](./BRAND.md) | the identity canon: the name, the idea, the character and voice, the mark, color, type, language as material — and the Dossier as the completed reference |
 | [`DESIGN.md`](./DESIGN.md) | the visual canon: the four-color system, the line law, rails/grounds/seams, the doubled line, iso, the 1-bit language, moving type, motion discipline |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | the code map: directions registry, the toolchain SSOT + fork rescoping, the component inventory |
 | [`docs/SHIP-LOOP.md`](./docs/SHIP-LOOP.md) | the verify/ship procedure every round runs (line audit, ratchet, tsc, filming, mirror build) |

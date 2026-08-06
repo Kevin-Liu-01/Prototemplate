@@ -905,6 +905,23 @@
   color: var(--pt-ink-2);
 }
 
+/* the completed direction wears its flag — the one chip a site heading
+   is allowed, hairline-boxed in the mono voice */
+.pt-site-flag {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 2px 9px;
+  border: 1px solid var(--pt-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  vertical-align: middle;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-2);
+}
+
 .pt-site-links {
   margin-top: 14px;
   font-size: 14px;

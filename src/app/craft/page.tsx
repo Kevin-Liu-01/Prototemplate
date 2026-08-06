@@ -486,6 +486,7 @@ export default function CraftPage() {
           <div className='pt-nav-right'>
             <ThemeToggle className='pt-nav-theme' />
             <Link href='/'>Index</Link>
+            <Link href='/brand'>Brand</Link>
             <Link href='/docs'>Docs</Link>
             <Link className='pt-nav-present' href='/present'>
               Present <span aria-hidden>▶</span>
@@ -616,7 +617,7 @@ export default function CraftPage() {
             </p>
             <div className='pt-craft-libs'>
               {LIBRARIES.map((lib) => (
-                <div className='pt-craft-lib' key={lib.name}>
+                <div className='pt-craft-lib' id={lib.name} key={lib.name}>
                   <h3>
                     {lib.name} <span>{lib.role}</span>
                   </h3>

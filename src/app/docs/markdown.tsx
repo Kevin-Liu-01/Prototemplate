@@ -16,6 +16,7 @@ const INLINE = /(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\))/g;
 /* doc-to-doc links resolve to their /docs routes */
 const DOC_LINKS: Record<string, string> = {
   'README.md': '/docs',
+  'BRAND.md': '/docs/brand',
   'DESIGN.md': '/docs/design',
   'ARCHITECTURE.md': '/docs/architecture',
   'docs/SHIP-LOOP.md': '/docs/ship-loop',
