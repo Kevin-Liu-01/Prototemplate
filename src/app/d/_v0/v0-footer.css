@@ -295,9 +295,47 @@
 }
 
 
-/* Founder: on light the living chrome blends into the paper — the mark
-   takes a fine dark metal rim (drop-shadow follows the mask's shape),
-   so the glyph stands off the ground without a drawn border. */
-:root:not([data-theme='dark']) .toolchain-root .v0-foot-gt {
-  filter: drop-shadow(0 0 0.6px rgba(7, 7, 7, 0.55)) drop-shadow(0.6px 1px 1.2px rgba(7, 7, 7, 0.24));
+/* Founder round-trip: each shape wears a drawn BORDER on light. A
+   filter cannot do it (masks apply AFTER filters, so shadow copies get
+   cut away) — instead a dark silhouette sits BEHIND the mark, its mask
+   the UNION of four 1px-offset copies of the glyph (dilation inside
+   the mask stage). The metal covers the silhouette's body; what
+   remains is a crisp ~1px contour around every shape. */
+.toolchain-root .v0-foot-gt-seat {
+  position: relative;
+  display: inline-block;
+  width: 88px;
+  height: 88px;
+  flex: none;
+}
+
+.toolchain-root .v0-foot-gt-line {
+  display: none;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-foot-gt-line {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 7, 7, 0.52);
+  -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'),
+    url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
+  mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'),
+    url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
+  -webkit-mask-size: contain, contain, contain, contain;
+  mask-size: contain, contain, contain, contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position:
+    1px 50%,
+    -1px 50%,
+    0 calc(50% - 1px),
+    0 calc(50% + 1px);
+  mask-position:
+    1px 50%,
+    -1px 50%,
+    0 calc(50% - 1px),
+    0 calc(50% + 1px);
+  mask-composite: add;
+  pointer-events: none;
 }

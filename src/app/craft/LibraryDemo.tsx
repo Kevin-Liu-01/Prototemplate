@@ -19,6 +19,7 @@ import {
   streakBands,
   type DitherLoopHandle,
 } from '@/lib/dither';
+import { createInkField, type InkFieldHandle } from '@/app/d/glyph-rain/sections/band/inkField';
 import { createGlyphField, type GlyphFieldHandle } from '@/lib/glyph-field';
 import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
 
@@ -27,6 +28,7 @@ gsap.registerPlugin(useGSAP);
 export type LibraryDemoKind =
   | 'horizon'
   | 'glyph'
+  | 'ink'
   | 'prismatic'
   | 'dither'
   | 'bayer'
@@ -121,6 +123,19 @@ export default function LibraryDemo({
           copy: 'none',
           displayFamily: getComputedStyle(canvas).fontFamily,
           monoFamily: getComputedStyle(canvas).getPropertyValue('--pt-mono').trim() || undefined,
+        });
+        return () => field?.destroy();
+      }
+
+      if (kind === 'ink') {
+        /* the rising band material, flooded (no content clearing on a bare
+           plate) and set to PLAY: glyphs shiver near the pointer, a click
+           bursts the nearest one — the plate is the one interactive mount */
+        const field: InkFieldHandle | null = createInkField({
+          canvas,
+          clearing: 'none',
+          interactive: true,
+          displayFamily: getComputedStyle(canvas).fontFamily,
         });
         return () => field?.destroy();
       }

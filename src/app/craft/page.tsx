@@ -107,6 +107,18 @@ const field = createGlyphField({
 /* the whole teardown — observers, loop, theme watcher */
 field?.destroy();`;
 
+const INK_SNIPPET = `import { createInkField } from '@/app/d/glyph-rain/sections/band/inkField';
+
+const field = createInkField({
+  canvas,
+  clearEl: contentBox, // the field keeps clear of this box, measured live
+  clearing: 'none',    // — or flood the whole canvas (this plate)
+  interactive: true,   // pointer wobble + click bursts; bands never set it
+  displayFamily: getComputedStyle(canvas).fontFamily,
+});
+
+field?.destroy();`;
+
 const DITHER_SNIPPET = `import { createDitherLoop, gradientRamp, streakBands } from '@/lib/dither';
 
 const loop = createDitherLoop(
@@ -295,6 +307,20 @@ const LIBRARIES: readonly Library[] = [
     },
     file: 'src/lib/glyph-field.ts',
     snippet: GLYPH_SNIPPET,
+  },
+  {
+    name: 'ink-field',
+    role: 'the band margins’ rising rain',
+    body:
+      'The closing band’s material as its own engine: the glyph-field’s eight-script inventory rising off the ink in the same set 34px columns, with a content clearing measured off the live DOM box so glyphs own only the margins. It inherited every one of the hero’s flicker lessons — solid tiers on a tier-batched alpha ramp (dither never rides moving glyphs), integer-snapped device-px blits, hysteresis on the clearing rim — and on this plate it plays: glyphs shiver as the pointer nears, and a click blows the nearest one up, its shockwave shoving the column neighbors before the field heals.',
+    demo: {
+      kind: 'ink',
+      tag: 'createInkField()',
+      label:
+        'Live demo: paper glyphs rising off an ink plate. Move the pointer to make nearby glyphs wobble; click to burst one with a shockwave.',
+    },
+    file: 'src/app/d/glyph-rain/sections/band/inkField.ts',
+    snippet: INK_SNIPPET,
   },
   {
     name: 'prismatic-field',

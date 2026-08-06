@@ -136,8 +136,13 @@ export default function V0FooterMark() {
   );
 
   return (
+    <span className='v0-foot-gt-seat'>
+      {/* the light theme's contour: a dilated dark silhouette behind the
+          chrome, drawn by v0-footer.css — dark theme hides it */}
+      <i aria-hidden className='v0-foot-gt-line' />
     <span aria-label='General Translation' className='v0-foot-gt' ref={root} role='img'>
       <canvas aria-hidden />
+    </span>
     </span>
   );
 }

@@ -656,3 +656,10 @@
     transition: none;
   }
 }
+
+/* the ink plate is a toy — the cursor says so, and the canvas must own
+   the pointer (every other plate's canvas is scenery) */
+.ptc-plate.is-ink canvas {
+  cursor: crosshair;
+  touch-action: none;
+}

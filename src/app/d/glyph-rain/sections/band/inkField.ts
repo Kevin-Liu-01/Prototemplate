@@ -58,7 +58,26 @@ export type InkFieldOptions = {
   /** The content block the field keeps clear of, measured off the DOM. */
   clearEl?: HTMLElement | null;
   displayFamily?: string;
+  /** 'none' floods the whole canvas — the craft plate's cut. The default
+      keeps the measured content clearing the bands rely on. */
+  clearing?: 'measured' | 'none';
+  /** Pointer play (the craft plate): glyphs shiver as the pointer nears,
+      and a click bursts the nearest one — a shockwave shoves its
+      neighbors before the field heals. The band mounts never set this;
+      their canvases stay pointer-blind scenery. Ignored under reduced
+      motion (interaction needs the loop). */
+  interactive?: boolean;
 };
+
+/* the interaction's reach, in CSS px / seconds */
+const WOBBLE_R = 90;
+const BOOM_R = 130;
+const BOOM_DUR = 0.7;
+/** The popped glyph's blow-up time, and how long it stays gone after. */
+const POP_DUR = 0.45;
+const POP_HIDE = 2.6;
+/** Concurrent bursts — a tiny ring buffer, no per-click allocation. */
+const BURSTS = 4;
 
 export type InkFieldHandle = { destroy(): void };
 
@@ -177,9 +196,79 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
 
   /** Keep-probability: zero over the content box, dithered rim around it. */
   function keepAt(x: number, y: number): number {
+    if (open) return 1;
     const dx = Math.max(cbL - x, x - cbR, 0);
     const dy = Math.max(cbT - y, y - cbB, 0);
     return smoothstep(0, RIM, Math.max(dx, dy));
+  }
+
+  /* ---------- pointer play (opt-in) ---------- */
+
+  const open = options.clearing === 'none';
+  const interactive = options.interactive === true && !reduced;
+  let ptrX = -1e6;
+  let ptrY = -1e6;
+  const bX = new Float32Array(BURSTS);
+  const bY = new Float32Array(BURSTS);
+  const bT = new Float32Array(BURSTS).fill(-1e6);
+  const popI = new Int32Array(BURSTS).fill(-1);
+  let bNext = 0;
+
+  /** A glyph's base position at the current simT — the draw loop's own
+      formula, shared so the click scan can find the nearest glyph. */
+  function baseX(i: number): number {
+    return (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
+  }
+
+  function baseY(i: number): number {
+    const wrap = h + 52;
+    let y = (hy[i] ?? 0) - simT * (rise[i] ?? 3);
+    y = ((y % wrap) + wrap) % wrap;
+    return y - 26;
+  }
+
+  function toCanvas(e: PointerEvent): void {
+    const box = canvas.getBoundingClientRect();
+    ptrX = e.clientX - box.left;
+    ptrY = e.clientY - box.top;
+  }
+
+  function onMove(e: PointerEvent): void {
+    toCanvas(e);
+  }
+
+  function onLeave(): void {
+    ptrX = -1e6;
+    ptrY = -1e6;
+  }
+
+  function onDown(e: PointerEvent): void {
+    toCanvas(e);
+    /* seat a burst at the click; if a drawn glyph stands within reach it
+       is the one that blows up — otherwise the shockwave alone fires */
+    let nearest = -1;
+    let best = 40 * 40;
+    for (let i = 0; i < POOL; i++) {
+      if (vis[i] !== 1) continue;
+      const dx = baseX(i) - ptrX;
+      const dy = baseY(i) - ptrY;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < best) {
+        best = d2;
+        nearest = i;
+      }
+    }
+    bX[bNext] = ptrX;
+    bY[bNext] = ptrY;
+    bT[bNext] = simT;
+    popI[bNext] = nearest;
+    bNext = (bNext + 1) % BURSTS;
+  }
+
+  if (interactive) {
+    canvas.addEventListener('pointermove', onMove);
+    canvas.addEventListener('pointerleave', onLeave);
+    canvas.addEventListener('pointerdown', onDown);
   }
 
   /** Hysteresis for the clearing-rim cull: a drawn glyph only culls once
@@ -203,10 +292,12 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
     let alphaRow = -1;
     for (let k = 0; k < POOL; k++) {
       const i = order[k] ?? 0;
-      const x = (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
+      let x = (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
       let y = (hy[i] ?? 0) - simT * (rise[i] ?? 3);
       y = ((y % wrap) + wrap) % wrap;
       y -= 26;
+      /* the clearing owns the BASE position — interaction below only
+         displaces the draw, so play never strobes the rim cull */
       const keep = keepAt(x, y);
       if (keep <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.04 : 0.04)) {
         vis[i] = 0;
@@ -214,6 +305,71 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
       }
       vis[i] = 1;
       const row = tier[i] ?? 2;
+
+      let popAge = -1;
+      if (interactive) {
+        /* the wobble: a nervous shiver that grows as the pointer nears */
+        const pdx = x - ptrX;
+        const pdy = y - ptrY;
+        if (pdx > -WOBBLE_R && pdx < WOBBLE_R && pdy > -WOBBLE_R && pdy < WOBBLE_R) {
+          const d = Math.sqrt(pdx * pdx + pdy * pdy);
+          if (d < WOBBLE_R) {
+            const prox = 1 - d / WOBBLE_R;
+            const s = prox * prox * 3.8;
+            x += Math.sin(simT * 21 + i * 1.7) * s;
+            y += Math.cos(simT * 17 + i * 2.3) * s;
+          }
+        }
+        /* the shockwaves: every live burst shoves the field radially,
+           hardest at the center, dying with the wave */
+        for (let b = 0; b < BURSTS; b++) {
+          const age = simT - (bT[b] ?? -1e6);
+          if (age < 0 || age > BOOM_DUR) continue;
+          if (popI[b] === i) {
+            popAge = age;
+            continue;
+          }
+          const bdx = x - (bX[b] ?? 0);
+          const bdy = y - (bY[b] ?? 0);
+          const bd = Math.sqrt(bdx * bdx + bdy * bdy) || 1;
+          if (bd > BOOM_R) continue;
+          const decay = 1 - age / BOOM_DUR;
+          const push = 30 * decay * decay * (1 - bd / BOOM_R);
+          x += (bdx / bd) * push;
+          y += (bdy / bd) * push;
+        }
+        /* a popped glyph past its blow-up stays gone until it heals */
+        if (popAge < 0) {
+          for (let b = 0; b < BURSTS; b++) {
+            if (popI[b] !== i) continue;
+            const age = simT - (bT[b] ?? -1e6);
+            if (age >= 0 && age < POP_HIDE) popAge = age;
+          }
+        }
+      }
+
+      if (popAge >= 0) {
+        if (popAge > POP_DUR) continue;
+        /* the blow-up: the clicked glyph swells and burns out — one
+           fractional-scale blit for half a second, sanctioned */
+        const grow = 1 + (popAge / POP_DUR) * 2.4;
+        const gs = cp * grow;
+        ctx.globalAlpha = (TIER_ALPHA[row] ?? 1) * (1 - popAge / POP_DUR);
+        ctx.drawImage(
+          atlas,
+          (gi[i] ?? 0) * cp,
+          row * cp,
+          cp,
+          cp,
+          Math.round(x * dpr - gs / 2),
+          Math.round(y * dpr - gs / 2),
+          Math.round(gs),
+          Math.round(gs),
+        );
+        alphaRow = -1;
+        continue;
+      }
+
       /* order[] sorts by tier, so alpha changes three times a frame, not
          once per glyph */
       if (row !== alphaRow) {
@@ -309,6 +465,11 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
       cancelAnimationFrame(resizeRaf);
       ro.disconnect();
       io.disconnect();
+      if (interactive) {
+        canvas.removeEventListener('pointermove', onMove);
+        canvas.removeEventListener('pointerleave', onLeave);
+        canvas.removeEventListener('pointerdown', onDown);
+      }
     },
   };
 }
