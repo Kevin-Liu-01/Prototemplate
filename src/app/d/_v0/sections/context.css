@@ -811,3 +811,16 @@
   opacity: 0.08;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath fill='%23070707' d='M0 0h1v1H0ZM4 4h1v1H4Z'/%3E%3C/svg%3E");
 }
+
+/* The frame links to the dashboard (founder round) — a full-cover
+   overlay above the decorative chrome; the pointer is the affordance. */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-ws {
+  position: relative;
+}
+
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-ws-link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  cursor: pointer;
+}

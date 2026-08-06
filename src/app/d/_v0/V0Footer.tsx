@@ -142,7 +142,7 @@ export default function V0Footer() {
                 rel='noreferrer'
                 target='_blank'
               >
-                <img alt={alt} decoding='async' src={src} />
+                <img alt={alt} decoding='async' src={src} width={40} height={40} />
               </a>
             ))}
           </div>
@@ -150,7 +150,10 @@ export default function V0Footer() {
 
         {COLUMNS.map((column) => (
           <nav aria-label={column.title} className='v0-foot-cell v0-foot-col' key={column.title}>
-            <h4>{column.title}</h4>
+            {/* h3, not h4: the sections above head at h2, so h4 skipped a
+                level (Lighthouse heading-order); the ledger's own rule in
+                v0-footer.css pins the type either way */}
+            <h3>{column.title}</h3>
             <ul>
               {column.links.map((link) => {
                 const Mark = link.mark;

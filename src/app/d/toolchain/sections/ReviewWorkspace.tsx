@@ -280,6 +280,17 @@ export default function ReviewWorkspace({
 
         <div className='tcr-mat' data-reveal>
           <div className='tcr-ws'>
+            {chrome === 'product' ? (
+              // the workspace IS the dashboard, so the frame links there —
+              // a full-cover overlay; everything beneath is decorative
+              <a
+                aria-label='Open the GT dashboard'
+                className='tcr-ws-link'
+                href='https://dash.generaltranslation.com'
+                rel='noreferrer'
+                target='_blank'
+              />
+            ) : null}
             <div className='tcr-bar'>
               {chrome === 'product' ? (
                 <span className='tcr-fact'>

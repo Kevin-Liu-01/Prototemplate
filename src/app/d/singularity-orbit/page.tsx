@@ -38,7 +38,7 @@ export default function Page() {
       <div className='toolchain-root sgoh-root'>
         <V0Nav />
 
-        <div className='tc-rail'>
+        <main className='tc-rail'>
           <HomeHero />
           <V0Customers heading='Trusted by companies around the globe.' />
           <div aria-hidden className='v0-hatch' />
@@ -58,7 +58,7 @@ export default function Page() {
           <div aria-hidden className='v0-hatch' />
           <V0Deploy />
           <V0Footer />
-        </div>
+        </main>
       </div>
       <DirectionDock slug='singularity-orbit' />
     </SmoothScroll>

@@ -106,7 +106,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body>{children}</body>
+      {/* suppressHydrationWarning: extensions (Grammarly et al.) stamp
+          attributes on <body> before React hydrates, and the mismatch
+          logs a console error Lighthouse counts against the page — the
+          flag is attribute-only, one level deep, so real bugs still warn */}
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

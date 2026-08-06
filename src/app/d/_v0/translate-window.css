@@ -411,14 +411,18 @@
   border-left: 1px solid rgba(138, 143, 152, 0.2);
 }
 
-.toolchain-root .v0-tw .sgdh-app-stat dt {
+/* The two type roles anchor on the rewrite attributes, not dt/dd tags —
+   the cells left the dl grammar so each could host its InsMark and ghost
+   ladders (TranslateWindow.tsx). data-rw is the label, data-rwf the
+   formatted value. */
+.toolchain-root .v0-tw .sgdh-app-stat [data-rw] {
   font-family: var(--tc-sans);
   font-size: 10.5px;
   letter-spacing: 0.02em;
   color: #8a8f98;
 }
 
-.toolchain-root .v0-tw .sgdh-app-stat dd {
+.toolchain-root .v0-tw .sgdh-app-stat [data-rwf] {
   margin: 4px 0 0;
   font-family: var(--tc-mono);
   font-size: 13px;
@@ -929,11 +933,11 @@
   border-left-color: rgba(255, 255, 255, 0.12);
 }
 
-[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stat dt {
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stat [data-rw] {
   color: rgba(255, 255, 255, 0.52);
 }
 
-[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stat dd {
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-app-stat [data-rwf] {
   color: rgba(255, 255, 255, 0.92);
 }
 
@@ -1102,11 +1106,11 @@
     background: var(--bar-accent);
   }
 
-  .toolchain-root .v0-tw .sgdh-app-stat dd {
+  .toolchain-root .v0-tw .sgdh-app-stat [data-rwf] {
     font-size: 12px;
   }
 
-  /* the value ladders track the dd's narrow size, or the reserve lies */
+  /* the value ladders track the value's narrow size, or the reserve lies */
   .toolchain-root .v0-tw .v0-tw-ghost.is-dd i {
     font-size: 12px;
   }

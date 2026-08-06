@@ -1,10 +1,12 @@
 import type { MetadataRoute } from 'next';
 
-const SITE_URL = 'https://prototemplate.vercel.app';
-
+/* Lighthouse (SEO: robots-txt) treats a missing /robots.txt as invalid;
+   this serves the permissive default explicitly. */
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: '*', allow: '/' }],
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    rules: {
+      userAgent: '*',
+      allow: '/',
+    },
   };
 }

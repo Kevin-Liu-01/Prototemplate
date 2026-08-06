@@ -145,8 +145,9 @@
 /* ---------- link columns ---------- */
 
 /* Small sentence-case heads in the display face — the ledger carries no
-   uppercase tracking and no eyebrows. */
-.toolchain-root .v0-foot-col h4 {
+   uppercase tracking and no eyebrows. h3 in the markup (the outline steps
+   h2 -> h3, not h2 -> h4); this rule pins the size either way. */
+.toolchain-root .v0-foot-col h3 {
   font-size: 13.5px;
   letter-spacing: -0.01em;
   line-height: 1.2;

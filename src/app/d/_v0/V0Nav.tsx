@@ -196,12 +196,15 @@ function Menu({ label, columns, wide, open, onOpenChange }: MenuProps) {
         aria-expanded={open}
         aria-haspopup='true'
         className='v0-nav-drop-trigger'
+        // type sits before onClick: the practices scanner reads a tag only
+        // up to the first close-angle, and the handler's arrow hides
+        // anything declared after it
+        type='button'
         onClick={() => {
           if (Date.now() - focusOpenedAt.current < 350) return;
           onOpenChange(!open);
         }}
         ref={triggerRef}
-        type='button'
       >
         {label}
         <ChevronDown aria-hidden size={13} strokeWidth={2} />

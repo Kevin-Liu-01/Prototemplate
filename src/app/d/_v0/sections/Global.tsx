@@ -264,7 +264,7 @@ export default function V0Global() {
     <section className='tc-sec v0-glob' id='infrastructure' ref={root}>
       <div className='tc-head'>
         <Globe className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>Ship to the world.</h2>
+        <h2 data-reveal>Ship your product to the world.</h2>
       </div>
 
       {/* ---- row 1: the globe on its night card, the ruled rail of claims ---- */}

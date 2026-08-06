@@ -731,15 +731,25 @@ function TopGlyph({ id }: { id: string }) {
           <path className='v0s-g-mark' d={markPath(-16, -9, 30, 5)} />
           <path className='v0s-g-mark is-wrap' d={markPath(-16, -1.5, 22, 5)} />
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
-          <GlyphChip x={-46} y={-12} w={24} d={24} h={CHIP_H} />
-          <GlyphChip x={22} y={-12} w={24} d={24} h={CHIP_H} />
-          <g transform={plane(CHIP_TOP, -34, 0)}>
-            <path className='v0s-g-glyph' d={chevron(0, 0, -1)} vectorEffect='non-scaling-stroke' />
-          </g>
-          <g transform={plane(CHIP_TOP, 34, 0)}>
-            <path className='v0s-g-glyph' d={slash(-4.6, 0)} vectorEffect='non-scaling-stroke' />
-            <path className='v0s-g-glyph' d={chevron(5, 0, 1)} vectorEffect='non-scaling-stroke' />
-          </g>
+          {/* founder: the chips carry two <T> components, not '<' and '/>' —
+              the context slab's trio at a gauge that fits the 28-wide tops */}
+          <GlyphChip x={-48} y={-12} w={28} d={24} h={CHIP_H} />
+          <GlyphChip x={20} y={-12} w={28} d={24} h={CHIP_H} />
+          {[-34, 34].map((cx) => (
+            <g key={cx} transform={plane(CHIP_TOP, cx, 0)}>
+              <path
+                className='v0s-g-glyph'
+                d={chevron(-9, 0, -1, 12, 6)}
+                vectorEffect='non-scaling-stroke'
+              />
+              <path className='v0s-g-glyph' d={tee(0, 0, 11)} vectorEffect='non-scaling-stroke' />
+              <path
+                className='v0s-g-glyph'
+                d={chevron(9, 0, 1, 12, 6)}
+                vectorEffect='non-scaling-stroke'
+              />
+            </g>
+          ))}
         </>
       );
     case 'context':
@@ -789,19 +799,31 @@ function TopGlyph({ id }: { id: string }) {
             dots={ICON_STYLE_DOTS}
           />
           <GlyphChip x={6} y={-12} w={34} d={24} h={CHIP_H} />
-          {/* open tracking, on purpose: flush type shears its neighbours
-              toward each other, so anything tighter fuses the three forms */}
+          {/* founder: the threads land on the GT DASHBOARD, not a <T> — the
+              chip top is a window (title rule, two dots) with the real mark
+              lying in its body, seated face-plane like the agents cap */}
           <g transform={plane(CHIP_TOP, 23, 0)}>
-            <path
-              className='v0s-g-glyph'
-              d={chevron(-11, 0, -1, 12, 6.5)}
-              vectorEffect='non-scaling-stroke'
+            <path className='v0s-g-glyph' d='M-17 -6H17' vectorEffect='non-scaling-stroke' />
+            <circle className='v0s-g-glyph' cx={-14} cy={-8.6} r={0.9} vectorEffect='non-scaling-stroke' />
+            <circle className='v0s-g-glyph' cx={-10.8} cy={-8.6} r={0.9} vectorEffect='non-scaling-stroke' />
+            {/* both drawn marks ship; the theme's CSS shows the right one
+                (the plates follow the theme, so neither variant survives
+                both grounds alone) */}
+            <image
+              className='v0s-dash-mark is-light'
+              href='/brand/no-bg-gt-logo-light.png'
+              x={-6.5}
+              y={-4}
+              width={13}
+              height={13}
             />
-            <path className='v0s-g-glyph' d={tee(0, 0, 12)} vectorEffect='non-scaling-stroke' />
-            <path
-              className='v0s-g-glyph'
-              d={chevron(11, 0, 1, 12, 6.5)}
-              vectorEffect='non-scaling-stroke'
+            <image
+              className='v0s-dash-mark is-dark'
+              href='/brand/no-bg-gt-logo-dark.png'
+              x={-6.5}
+              y={-4}
+              width={13}
+              height={13}
             />
           </g>
         </>

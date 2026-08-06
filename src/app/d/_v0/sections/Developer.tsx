@@ -470,7 +470,7 @@ type V0DeveloperProps = {
   heading?: string;
 };
 
-export default function V0Developer({ heading = 'Built for the world’s developers.' }: V0DeveloperProps) {
+export default function V0Developer({ heading = 'Built for developers around the globe.' }: V0DeveloperProps) {
   const root = useRef<HTMLElement>(null);
 
   return (

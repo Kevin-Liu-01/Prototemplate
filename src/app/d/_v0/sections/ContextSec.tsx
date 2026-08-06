@@ -408,7 +408,7 @@ export default function V0Context() {
         <div className='tcb-head' data-cell data-reveal>
           <h2>One source of context.</h2>
           <p>
-            <GtLogoText /> actually understands your codebase and product.
+            <GtLogoText /> understands your codebase and product.
           </p>
         </div>
 

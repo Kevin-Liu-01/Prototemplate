@@ -1320,3 +1320,18 @@
   border-color: rgba(7, 7, 7, 0.16);
   background: rgba(7, 7, 7, 0.05);
 }
+
+/* The dashboard chip's GT mark ships both drawn variants; the theme picks
+   one — the plates follow the theme, so a single glyph would vanish on one
+   of the two grounds. */
+.toolchain-root .v0s-dash-mark.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root .v0s-dash-mark.is-dark {
+  display: block;
+}
+
+[data-theme='dark'] .toolchain-root .v0s-dash-mark.is-light {
+  display: none;
+}
