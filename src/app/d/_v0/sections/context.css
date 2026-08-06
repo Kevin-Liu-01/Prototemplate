@@ -442,6 +442,10 @@
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-bar {
   letter-spacing: 0.07em;
+  /* the bars speak real addresses now (founder: the rail captions
+     moved into the window chrome) — a URL and a command survive no
+     uppercasing */
+  text-transform: none;
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-bar > span:last-child {
@@ -917,4 +921,13 @@
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-ok,
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-ok {
   color: #16a34a;
+}
+
+/* THE STEMS TOUCH THE SOURCE (founder: "these diagrams are not touching
+   the original boxes") — the SSOT fork svg floats 6px below the source
+   plate; here the doubled threads meet the plate's border, the same
+   contact the tower's taps make with their plates. The ink starts at the
+   svg's very top edge, so zeroing the margin is the whole fix. */
+.toolchain-root .v0-ctx .lang-cr-fork {
+  margin-top: 0;
 }
