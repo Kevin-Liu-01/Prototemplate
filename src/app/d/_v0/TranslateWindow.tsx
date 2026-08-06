@@ -1082,9 +1082,19 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       beltEl.addEventListener('pointerenter', over);
       beltEl.addEventListener('pointerleave', out);
 
+      /* Offscreen the conveyor idles — without this the hero keeps ticking
+         (and rewriting the mock) from the foot of the page; profiling put
+         it near a quarter of a core during the Deploy band. The flag gates
+         the tick; re-entry resumes the belt exactly where it parked. */
+      let onscreen = true;
+      const io = new IntersectionObserver((entries) => {
+        onscreen = entries[0]?.isIntersecting ?? true;
+      });
+      io.observe(beltEl);
+
       const speed = runWidth / (n * BELT_DWELL);
       const tick = (_time: number, deltaMs: number) => {
-        if (sliding || hover || pinnedRef.current || viewRef.current !== 'preview') return;
+        if (!onscreen || sliding || hover || pinnedRef.current || viewRef.current !== 'preview') return;
         /* a manual pick doesn't FREEZE the conveyor — it crawls through
            the courtesy window (founder: a stopped belt just reads as a
            delay), then resumes full speed. At crawl pace the next
@@ -1112,6 +1122,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
 
       return () => {
         gsap.ticker.remove(tick);
+        io.disconnect();
         beltEl.removeEventListener('pointerenter', over);
         beltEl.removeEventListener('pointerleave', out);
         window.removeEventListener('resize', remeasure);
