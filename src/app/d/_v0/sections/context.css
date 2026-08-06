@@ -888,13 +888,18 @@
 }
 
 /* the net's carve is the cell's own ground — the fork family's sandwich
-   core, in this cell's paint (dark plate; the light block re-inks) */
+   core, in this cell's paint — and its live blue is the DARK-PLATE
+   accent every mark in this cell wears (the glossary's 52% lift toward
+   white; founder: the raw token read as the wrong blue). The light
+   block re-inks both. */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-rail {
   --tcr-net-core: #101010;
+  --tcr-net-acc: color-mix(in srgb, var(--tc-accent) 52%, #ffffff);
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-rail {
   --tcr-net-core: var(--tcb-box, #ffffff);
+  --tcr-net-acc: var(--tc-accent);
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-acc,

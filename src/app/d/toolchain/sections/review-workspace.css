@@ -445,9 +445,26 @@
   stroke-width: 4;
 }
 
-/* the chosen door's drop holds the accent */
+/* the chosen door's route holds the accent — the HOST's accent: dark
+   plates lift it toward white (--tcr-net-acc, the glossary-term mix
+   this cell's own POST/$ marks wear), light speaks it unmixed */
 .toolchain-root .tcr-net-ink.is-live {
-  stroke: var(--tc-accent);
+  stroke: var(--tcr-net-acc, var(--tc-accent));
+}
+
+/* the pick animates: the remounted route draws itself button → terminal
+   (dash draw-in over the normalized length); the untouched first paint
+   skips is-draw and renders already lit */
+.toolchain-root .tcr-net-ink.is-live.is-draw {
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
+  animation: tcr-net-draw 0.72s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+}
+
+@keyframes tcr-net-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* the carve: the ground's own color, so only the two threads survive */
@@ -457,32 +474,11 @@
   stroke-width: 2;
 }
 
-/* the blue effect: on every pick a doubled accent segment runs the
-   chosen drop and the bus into the frame — drawn between the ink and
-   the carve (the fork's pulse seat), remounted per selection so it
-   replays and rests at nothing */
-.toolchain-root .tcr-net-pulse {
-  fill: none;
-  stroke: var(--tc-accent);
-  stroke-width: 4;
-  stroke-dasharray: 14 100;
-  stroke-dashoffset: 14;
-  animation: tcr-net-run 0.9s ease-out forwards;
-}
-
-@keyframes tcr-net-run {
-  from {
-    stroke-dashoffset: 14;
-  }
-
-  to {
-    stroke-dashoffset: -100;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .toolchain-root .tcr-net-pulse {
-    display: none;
+  .toolchain-root .tcr-net-ink.is-live.is-draw {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
   }
 }
 

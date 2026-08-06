@@ -356,7 +356,7 @@ const LIBRARIES: readonly Library[] = [
     name: 'reveal-seam',
     role: 'the slide-to-reveal instrument',
     body:
-      'A hundred-line dependency-free slider that drags one CSS custom property, --seam-cut, onto a host box; the top layer clips to it, so the underlayer is revealed in place and content never travels a pixel with the handle. State lives in the CSS var rather than React state — drags cause zero re-renders, GSAP intros and cinema beat scrubs drive the same dial by writing the var directly, and the keyboard path re-reads the live computed value so every writer stays in agreement. The handle is the brand’s doubled line — two real 1px borders at the house gap, bridged by one grabber pill — with a full slider role, arrow-key nudges, and a statically parked cut under reduced motion.',
+      'A hundred-line dependency-free slider that drags one CSS custom property, --seam-cut, onto a host box; the top layer clips to it, so the underlayer is revealed in place and content never travels a pixel with the handle. State lives in the CSS var rather than React state — drags cause zero re-renders, GSAP intros and cinema beat scrubs drive the same dial by writing the var directly, and the keyboard path re-reads the live computed value so every writer stays in agreement. The handle is the brand’s doubled line in the dossier refit — two solid threads at the house gap, the run between them filled with the payload’s own ink, bridged by a rectangular grip tab on a 64px hitbox — with a full slider role, arrow-key nudges, and a statically parked cut under reduced motion.',
     demo: {
       kind: 'seam',
       tag: '<RevealSeam />',

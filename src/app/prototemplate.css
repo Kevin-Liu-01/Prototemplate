@@ -974,36 +974,83 @@
   display: block;
 }
 
-/* the seam is the brand's doubled thread, with a small grip */
+/* the seam is the brand's doubled thread, in the dossier refit: solid
+   two-tone threads with the run between them filled (no see-through
+   stretches over the busy captures), bridged by a rectangular grip tab.
+   The element is decorative — the stage owns the drag — so only the
+   line and tab paint. */
 .pt-compare-seam {
+  --seam-ink-l: rgba(138, 143, 152, 0.55);
+  --seam-ink-r: rgba(138, 143, 152, 0.55);
+
   position: absolute;
   top: 0;
   bottom: 0;
   left: var(--cut, 55%);
-  width: 5px;
-  transform: translateX(-2.5px);
-  /* the seam's doubled thread in the hairline family — full ink read
-     as heavy black bars against the quiet compare plate */
-  border-left: 1px solid var(--pt-hair);
-  border-right: 1px solid var(--pt-hair);
+  width: 7px;
+  transform: translateX(-50%);
+  border-left: 1px solid var(--seam-ink-l);
+  border-right: 1px solid var(--seam-ink-r);
+  background: color-mix(in srgb, var(--pt-paper) 94%, #070707);
+  background-clip: padding-box;
   pointer-events: none;
 }
 
+/* the tab: 16×40, hairline-edged, two quiet grip lines — the light
+   plate wears the dark chip */
 .pt-compare-seam::after {
-  content: '↔';
+  content: '';
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 16px;
+  height: 40px;
   transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--pt-ink);
-  color: var(--pt-paper);
-  font-size: 12px;
-  line-height: 1;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 2px;
+  background-color: #101010;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)),
+    linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75));
+  background-size: 1px 14px, 1px 14px;
+  background-position: calc(50% - 2px) 50%, calc(50% + 2px) 50%;
+  background-repeat: no-repeat;
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.pt-compare-stage:hover .pt-compare-seam::after,
+.pt-compare-stage:focus-within .pt-compare-seam::after {
+  transform: translate(-50%, -50%) scale(1.08);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+/* dark theme: threads go light, the fill steps to deep ink, and the
+   tab inverts to the light chip with dark grips */
+[data-theme='dark'] .pt-root .pt-compare-seam {
+  --seam-ink-l: #8a8a8a;
+  --seam-ink-r: #a8a8a8;
+
+  background: #070707;
+  background-clip: padding-box;
+}
+
+[data-theme='dark'] .pt-root .pt-compare-seam::after {
+  border-color: rgba(7, 7, 7, 0.45);
+  background-color: #f2f2f2;
+  background-image:
+    linear-gradient(rgba(7, 7, 7, 0.6), rgba(7, 7, 7, 0.6)),
+    linear-gradient(rgba(7, 7, 7, 0.6), rgba(7, 7, 7, 0.6));
+}
+
+[data-theme='dark'] .pt-root .pt-compare-stage:hover .pt-compare-seam::after,
+[data-theme='dark'] .pt-root .pt-compare-stage:focus-within .pt-compare-seam::after {
+  border-color: rgba(7, 7, 7, 0.75);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-compare-seam::after {
+    transition: none;
+  }
 }
 
 .pt-compare-tag {
