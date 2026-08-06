@@ -342,23 +342,48 @@
 }
 
 /* ---------- the three doors (surfaces mode) ----------
-   The v0 flow's "over web, API, or CLI" beat: three door nodes in one
-   row under the copy, chained in series by hairline stubs, the last
-   wire running across the gutter into the frame (founder sketch:
-   [__]_[___]_[___]___ window). Each door swaps the frame's face to
-   that surface's real text — the workspace table, the OpenAPI diffs
-   call, the gt save-local session — and the caption beneath the row
-   speaks the active surface's real address. Hosts opt in with the
+   The v0 flow's "over web, API, or CLI" beat: three door nodes on ONE
+   accent bus (founder sketch, round two) — the line runs beneath the
+   row, a riser climbing up into each door, then continues across the
+   gutter into the frame. The rail rides the BOTTOM of the copy column
+   so the bus meets the window low, and the active surface's real
+   address is spoken above the row. Each door swaps the frame's face
+   to that surface's real text — the workspace table, the OpenAPI
+   diffs call, the gt save-local session. Hosts opt in with the
    surfaces prop; the default mount never renders the rail, so nothing
    below can reach the original page. */
 
+/* the column stretches so the rail can sink to the frame's lower edge;
+   the heading keeps the center of the space above it */
+.toolchain-root .tcr-doors .tcr-grid {
+  align-items: stretch;
+}
+
+.toolchain-root .tcr-doors .tcr-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+/* the heading centers in the space the rail leaves it — auto margins,
+   not justify-content, because the rail's own auto margin would
+   otherwise take every free pixel and pin the words to the top */
+.toolchain-root .tcr-doors .tcr-copy > h2 {
+  margin-block: auto;
+}
+
 .toolchain-root .tcr-rail {
-  margin-top: 26px;
+  margin-top: auto;
+  padding-top: 28px;
+  /* the bus lands in the frame's lower third, not on its corner */
+  margin-bottom: 26px;
 }
 
 .toolchain-root .tcr-rail-row {
   display: flex;
   align-items: stretch;
+  gap: 16px;
+  /* the air the risers bridge — the bus's border draws just below */
+  margin-bottom: 13px;
 }
 
 .toolchain-root .tcr-door {
@@ -366,8 +391,8 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 8px 12px;
-  background: none;
+  padding: 9px 14px;
+  background: color-mix(in srgb, var(--tc-ink) 4%, transparent);
   border: 1px solid var(--tc-hair-2);
   /* a control, so it keeps the small control radius (the theme switch's
      own dress) — the frame beside it stays square */
@@ -379,7 +404,8 @@
   white-space: nowrap;
   transition:
     color 0.15s ease,
-    border-color 0.15s ease;
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .toolchain-root .tcr-door:hover {
@@ -389,21 +415,17 @@
 .toolchain-root .tcr-door[data-on] {
   color: var(--tc-ink);
   border-color: color-mix(in srgb, var(--tc-accent) 55%, var(--tc-hair-2));
+  background: color-mix(in srgb, var(--tc-accent) 10%, transparent);
 }
 
-/* the series stubs: each door after the first links back to the one
-   before it across the row's own gap */
-.toolchain-root .tcr-door + .tcr-door {
-  margin-left: 13px;
-}
-
-.toolchain-root .tcr-door + .tcr-door::before {
+/* the risers: every door drops one accent line to the bus below */
+.toolchain-root .tcr-door::after {
   content: '';
   position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 13px;
-  border-top: 1px solid var(--tc-hair-2);
+  top: 100%;
+  left: 50%;
+  height: 14px;
+  border-left: 1px solid var(--tc-accent);
 }
 
 .toolchain-root .tcr-door-ico {
@@ -412,20 +434,17 @@
   flex: none;
 }
 
-/* the trailing wire: fills the row's remainder and crosses the grid
+/* the bus: one accent line under all three doors, crossing the grid
    gap — the same clamp as the gap, so it lands exactly on the frame */
-.toolchain-root .tcr-rail-wire {
-  flex: 1;
-  align-self: center;
-  min-width: 18px;
-  margin-left: 13px;
+.toolchain-root .tcr-rail-bus {
+  display: block;
   margin-right: calc(-1 * clamp(28px, 4vw, 56px));
   border-top: 1px solid var(--tc-accent);
 }
 
-/* the active surface's real address, spoken under the chain */
+/* the active surface's real address, spoken above the row */
 .toolchain-root .tcr-rail-line {
-  margin-top: 10px;
+  margin-bottom: 10px;
   min-height: 15px;
   font-family: var(--tc-mono);
   font-size: 10.5px;
@@ -520,9 +539,14 @@
 }
 
 /* narrow: the grid is one column (the 980 rule above) and the frame sits
-   below the copy, so the trailing wire has nothing to reach — it retires */
+   below the copy, so the bus stops at the column edge instead of
+   reaching for a gutter that no longer exists */
 @media (max-width: 980px) {
-  .toolchain-root .tcr-rail-wire {
-    display: none;
+  .toolchain-root .tcr-rail-bus {
+    margin-right: 0;
+  }
+
+  .toolchain-root .tcr-rail {
+    margin-bottom: 0;
   }
 }

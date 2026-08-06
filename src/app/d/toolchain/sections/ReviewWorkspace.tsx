@@ -495,11 +495,15 @@ export default function ReviewWorkspace({
           ) : null}
 
           {surfaces ? (
-            /* the doors, chained (founder sketch): three nodes in one row
-               wired in series, the last wire running across the gutter
-               into the frame — the caption beneath speaks the active
-               surface's real address */
+            /* the doors on one bus (founder round two): the caption
+               speaks the active surface's real address above the row,
+               and ONE accent line runs beneath all three doors — a
+               riser climbing into each — then on across the gutter
+               into the frame; the rail rides the bottom of the column */
             <div aria-label='Review surface' className='tcr-rail' role='group'>
+              <div className='tcr-rail-line'>
+                {DOORS.find((door) => door.key === face)?.line}
+              </div>
               <div className='tcr-rail-row'>
                 {DOORS.map((door) => {
                   const Icon = door.icon;
@@ -517,11 +521,8 @@ export default function ReviewWorkspace({
                     </button>
                   );
                 })}
-                <i aria-hidden='true' className='tcr-rail-wire' />
               </div>
-              <div className='tcr-rail-line'>
-                {DOORS.find((door) => door.key === face)?.line}
-              </div>
+              <i aria-hidden='true' className='tcr-rail-bus' />
             </div>
           ) : null}
         </div>

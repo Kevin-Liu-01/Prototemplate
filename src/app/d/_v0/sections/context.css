@@ -868,6 +868,12 @@
   line-height: 1.72;
 }
 
+/* the doors mount stretches the columns (the rail sinks to the frame's
+   lower edge), overriding this cell's centered composition above */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr.tcr-doors .tcr-grid {
+  align-items: stretch;
+}
+
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-acc,
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-acc {
   color: color-mix(in srgb, var(--tc-accent) 52%, #ffffff);

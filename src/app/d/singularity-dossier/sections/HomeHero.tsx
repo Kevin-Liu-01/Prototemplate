@@ -441,10 +441,13 @@ export default function HomeHero() {
 
           const cloudX = (w: number) => () =>
             gsap.utils.clamp(3, w - 3, gsap.utils.random(0.03, 0.97) * w);
-          /* the text band in glyph-space runs [0, 0.45h] (the seat mapping
-             subtracts 0.4h from raster ink) — the cloud centres on ITS
-             middle, not the box's (founder: the dust pooled at the bottom) */
-          const cloudY = (h: number) => () => gsap.utils.random(h * -0.04, h * 0.44);
+          /* dust glyphs REST at top:40% of the box (hero-every.css), so a
+             transform of y renders at 0.4h + y. Centring the cloud on the
+             box's optical middle means the transform range must sit BELOW
+             zero as much as above: rendered [0.19h, 0.81h] → y in
+             [-0.26h, 0.36h] (founder rounds: the dust pooled low twice —
+             this is the measured correction, not a guess) */
+          const cloudY = (h: number) => () => gsap.utils.random(h * -0.26, h * 0.36);
 
           const formPhase = () => {
             if (!root.current || !root.current.isConnected) return;
