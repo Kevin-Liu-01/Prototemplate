@@ -143,7 +143,7 @@ export default function ReviewWorkspace({
      the riser xs are measured, not assumed, and remeasure on resize. */
   const railRowRef = useRef<HTMLDivElement>(null);
   const netRef = useRef<SVGSVGElement>(null);
-  const [net, setNet] = useState<{ w: number; xs: number[] } | null>(null);
+  const [net, setNet] = useState<{ w: number; xs: number[]; tail: number } | null>(null);
 
   useLayoutEffect(() => {
     if (!surfaces) return;
@@ -157,7 +157,13 @@ export default function ReviewWorkspace({
         const box = door.getBoundingClientRect();
         return box.left + box.width / 2 - netBox.left;
       });
-      setNet({ w: netBox.width, xs });
+      /* the stacked layout opens a grid-gap between the net and the mat —
+         the straight drops bridge it (measured, never assumed) so they
+         run INTO the panel's border, the same contact every connector on
+         these pages makes with its box */
+      const mat = netEl.closest('.tcr-grid')?.querySelector('.tcr-mat');
+      const tail = mat ? Math.max(0, mat.getBoundingClientRect().top - netBox.bottom + 1) : 0;
+      setNet({ w: netBox.width, xs, tail });
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -186,17 +192,18 @@ export default function ReviewWorkspace({
   const activeX = net?.xs[DOORS.findIndex((door) => door.key === face)];
   const netAll = net
     ? straight
-      ? net.xs.map((x) => `M${x} 0V${NET_H}`).join('')
+      ? net.xs.map((x) => `M${x} 0V${NET_H + net.tail}`).join('')
       : [...net.xs.map((x) => netRiser(x, busY)), `M${(net.xs[0] ?? 0) + NET_R} ${busY}H${net.w}`].join('')
     : null;
   /* the live route runs the WHOLE way — button, drop, bus, into the
      frame (founder: the blue extends from the button down the pipe
      into the terminal); the pulse rides the same road. On narrow the
-     road IS the straight drop. */
+     road IS the straight drop, tailed past the viewBox to the mat (the
+     svg un-clips below for exactly this reach). */
   const netRoute =
     net && activeX !== undefined
       ? straight
-        ? `M${activeX} 0V${NET_H}`
+        ? `M${activeX} 0V${NET_H + net.tail}`
         : `${netRiser(activeX, busY)}H${net.w}`
       : null;
 
@@ -606,7 +613,14 @@ export default function ReviewWorkspace({
                   line built the fork's way — outer ink, pulse between,
                   cores carving every junction into a merged wishbone,
                   the live pair last on the chosen drop */}
-              <svg aria-hidden='true' className='tcr-rail-net' ref={netRef} viewBox={net ? `0 0 ${net.w} ${NET_H}` : undefined}>
+              <svg
+                aria-hidden='true'
+                className='tcr-rail-net'
+                ref={netRef}
+                /* the straight drops run past the viewBox to the mat */
+                style={straight ? { overflow: 'visible' } : undefined}
+                viewBox={net ? `0 0 ${net.w} ${NET_H}` : undefined}
+              >
                 {netAll ? (
                   <>
                     <path className='tcr-net-ink' d={netAll} />
