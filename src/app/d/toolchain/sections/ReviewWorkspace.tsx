@@ -456,9 +456,11 @@ export default function ReviewWorkspace({
   const apiBody = (
     <>
       <div className='tcr-bar'>
+        {/* the bar names the surface, the body speaks the call — a header
+            repeating the first request line read as a stutter (founder) */}
         <span className='tcr-fact'>
           <Braces className='tcr-fico' aria-hidden />
-          POST /v2/project/files/diffs
+          API · api2.gtx.dev
         </span>
         <span>200 OK</span>
       </div>
@@ -499,7 +501,7 @@ export default function ReviewWorkspace({
       <div className='tcr-bar'>
         <span className='tcr-fact'>
           <TerminalSquare className='tcr-fico' aria-hidden />
-          npx gt save-local
+          CLI — zsh
         </span>
         <span>branch main</span>
       </div>
@@ -587,13 +589,19 @@ export default function ReviewWorkspace({
                 {netAll ? (
                   <>
                     <path className='tcr-net-ink' d={netAll} />
-                    {pulse > 0 && netRoute ? (
-                      <path className='tcr-net-pulse' d={netRoute} key={pulse} pathLength={100} />
-                    ) : null}
                     <path className='tcr-net-core' d={netAll} />
                     {netRoute ? (
                       <>
-                        <path className='tcr-net-ink is-live' d={netRoute} />
+                        {/* every pick remounts the live route (key), and
+                            is-draw runs it button → terminal as a dash
+                            draw-in — the blue TRAVELS, never snaps; the
+                            untouched first paint renders it already lit */}
+                        <path
+                          className={pulse > 0 ? 'tcr-net-ink is-live is-draw' : 'tcr-net-ink is-live'}
+                          d={netRoute}
+                          key={`${face}:${pulse}`}
+                          pathLength={100}
+                        />
                         <path className='tcr-net-core' d={netRoute} />
                       </>
                     ) : null}

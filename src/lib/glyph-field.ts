@@ -780,6 +780,20 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
    * or not at all — dithered edges, no veils.
    */
   function keepAt(x: number, y: number, morphing: boolean): number {
+    /* fast path (perf round): a particle deep inside the field — past
+       the copy fade, above the bottom tail, clear of both word gates —
+       keeps at the base value with no smoothstep ladder at all. The
+       vast majority of the pool takes this branch every frame. */
+    if (
+      y < botA &&
+      /* the copy edge waves/bows outward by at most 0.16 x ramp — the
+         fast path clears the worst case, never the resting edge */
+      (narrow ? y : x) > fadeA + 0.16 * (fadeA - fadeB) &&
+      (ptCount === 0 || nextGate <= 0 || x < formedLeft - 40 || x > formedRight + 40) &&
+      (!morphing || !prevWord || prevGate <= 0 || x < prevLeft - 40 || x > prevRight + 40)
+    ) {
+      return narrow ? 0.72 : 1;
+    }
     const shift = narrow ? copyEdgeShift(x, w) : copyEdgeShift(y, h);
     let k = smoothstep(fadeB - shift, fadeA - shift, narrow ? y : x);
     if (k <= 0) return 0;
@@ -1098,8 +1112,18 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     raf = requestAnimationFrame(frame);
   }
 
+  let everWoke = false;
   function start(): void {
     if (running || destroyed || reduced) return;
+    if (!everWoke) {
+      /* First visibility: layout may have settled since the mount-time
+         seed (fonts, clamp paddings) — re-measure and re-seed so the
+         field is FULL from its first frame instead of filling as the
+         wrap carries glyphs into space that did not exist at seed time
+         (founder: black space at the bottom at the beginning). */
+      everWoke = true;
+      resize();
+    }
     running = true;
     lastTs = -1;
     raf = requestAnimationFrame(frame);

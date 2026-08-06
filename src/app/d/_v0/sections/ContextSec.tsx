@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Ban, BookOpenText, CalendarDays, PenLine, Pin, Speech, Users } from 'lucide-react';
+import { Ban, CalendarDays, Layers, PenLine, Pin, Speech, Users } from 'lucide-react';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -406,9 +406,9 @@ export default function V0Context() {
             the band's margins and padding strips, never the content */}
         <div className='v0-ctx-core' ref={core}>
         <div className='tcb-head' data-cell data-reveal>
-          {/* the standardized context glyph — same watermark grammar as
-              every other section head */}
-          <BookOpenText className='tc-head-icon' strokeWidth={1} aria-hidden />
+          {/* the standardized context glyph — the SAME Layers mark the
+              tower's Context beat wears, at the heads' shared gauge */}
+          <Layers className='tc-head-icon' strokeWidth={1} aria-hidden />
           <h2>One source of context, shared globally</h2>
           <p>
             <GtLogoText /> understands your codebase and product.
