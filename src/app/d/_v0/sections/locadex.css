@@ -241,15 +241,23 @@
   max-width: 560px;
   height: auto;
   margin-inline: auto;
-  /* the lockup's two inks, and the flash DIAL between them. GSAP drives
-     --ldx-flash 0 → 1 → 0 on this svg (a number, no colors in JS) and the
-     lockup fills below mix the two inks by it — so the flash lands on the
-     accent in EITHER theme, and a live theme flip can never strand the
-     lockup in the other theme's ink. At rest (--ldx-flash: 0) the mix is
-     exactly --ldx-lockup-ink. */
+  /* ONE accent for the whole diagram: the worms, the border ring and the
+     full-surround flash all drink from --ldx-accent, so "the same blue as
+     the worms" holds by construction — dark rides the section's night
+     accent (the iso plate's #86a8ff family); the light block at the foot
+     remaps it to the page accent. GSAP drives two NUMBERS on this svg, no
+     colors in JS: --ldx-fill is the ring's revealed perimeter (0–100, a
+     quarter per landing), --ldx-off is the unravel dial (it slides the
+     arc's tail clockwise after the head, 0–100 of the same perimeter, as
+     --ldx-fill walks back to 0) and --ldx-flash is the full-surround
+     dial — the lockup fills mix ink and accent by it and the ring blooms
+     its gauge by it — so both themes flash their own accent and a live
+     theme flip never strands a JS-written color. At rest all dials are 0. */
+  --ldx-accent: #86a8ff;
   --ldx-lockup-ink: rgba(255, 255, 255, 0.9);
-  --ldx-lockup-flash: rgb(134, 168, 255);
   --ldx-flash: 0;
+  --ldx-fill: 0;
+  --ldx-off: 0;
 }
 
 /* sources: hairline nodes on paper, marks in the muted step */
@@ -270,7 +278,8 @@
 }
 
 /* connectors: each line drawn once; the pulse is the moving accent dash
-   riding the same geometry, not a second rule */
+   riding the same geometry, not a second rule — in the diagram's ONE
+   accent, the same blue the border ring and the flash spend */
 .toolchain-root .v0-ldx .v0-ldx-link {
   fill: none;
   stroke: var(--tc-hair);
@@ -278,25 +287,43 @@
 
 .toolchain-root .v0-ldx .v0-ldx-pulse {
   fill: none;
-  stroke: var(--tc-accent);
+  stroke: var(--ldx-accent);
   stroke-width: 2;
   stroke-linecap: round;
 }
 
-/* the arrival ring: the plate's border redrawn in accent at the hairline's
-   own gauge and geometry — the border stays one stroke; only its ink
-   changes. GSAP fills it to solid blue on each pulse landing (the whole
-   perimeter at once) and eases it back; this parked alpha is the quiet
-   accent-tinted border at rest, and the reduced-motion still. */
+/* the arrival ring: the plate's border redrawn in the worms' accent at the
+   hairline's own gauge and geometry — a PROGRESS ring. The dash draws the
+   first --ldx-fill percent of RING_D's 402.832 perimeter (the 4.02832
+   below is one percent of it): GSAP adds a quarter per pulse landing and
+   the border colors in around the plate, one arc growing clockwise from
+   the ports' edge — RING_D deliberately STARTS there, because a dash
+   pattern clips at a subpath's end instead of wrapping the closed loop
+   (see the component, which also explains why this ring is the one stroke
+   in the diagram in USER units, not non-scaling screen px). The
+   full-surround flash blooms the gauge by --ldx-flash; the unravel slides
+   the dash window forward by --ldx-off so the tail chases the head back
+   into the origin; at rest all dials are 0, nothing paints, and the
+   plate's quiet hairline is the border. */
 .toolchain-root .v0-ldx .v0-ldx-ring {
   fill: none;
-  stroke: #86a8ff;
-  opacity: 0.35;
+  stroke: var(--ldx-accent);
+  stroke-dasharray: calc(var(--ldx-fill) * 4.02832px) 403px;
+  stroke-dashoffset: calc(var(--ldx-off) * -4.02832px);
+  stroke-width: calc(1px + var(--ldx-flash) * 0.75px);
 }
 
+/* reduced motion: no worms, and the ring holds the finished state — the
+   full accent border, solid and still, over quiet unflashed text (the
+   component's GSAP bails first, so both dials rest at 0) */
 @media (prefers-reduced-motion: reduce) {
   .toolchain-root .v0-ldx .v0-ldx-pulse {
     display: none;
+  }
+
+  .toolchain-root .v0-ldx .v0-ldx-ring {
+    stroke-dasharray: none;
+    stroke-width: 1px;
   }
 }
 
@@ -307,11 +334,7 @@
 }
 
 .toolchain-root .v0-ldx .v0-ldx-mark-ink {
-  fill: color-mix(
-    in srgb,
-    var(--ldx-lockup-flash) calc(var(--ldx-flash) * 100%),
-    var(--ldx-lockup-ink)
-  );
+  fill: color-mix(in srgb, var(--ldx-accent) calc(var(--ldx-flash) * 100%), var(--ldx-lockup-ink));
 }
 
 .toolchain-root .v0-ldx .v0-ldx-int-name {
@@ -319,11 +342,7 @@
   font-weight: 500;
   font-size: 17px;
   letter-spacing: -0.01em;
-  fill: color-mix(
-    in srgb,
-    var(--ldx-lockup-flash) calc(var(--ldx-flash) * 100%),
-    var(--ldx-lockup-ink)
-  );
+  fill: color-mix(in srgb, var(--ldx-accent) calc(var(--ldx-flash) * 100%), var(--ldx-lockup-ink));
 }
 
 /* ---------- the works ledgers: the copy cells' quiet evidence ----------
@@ -404,9 +423,9 @@
       tokens, so restated here).
 
    2. The integrate diagram's Locadex slab goes white-on-paper:
-      panel fill under the same hairline, lockup in ink, and the
-      ring/flash accents on --tc-accent so the lap and the answer
-      stay legible against the light ground.
+      panel fill under the same hairline, lockup in ink, and
+      --ldx-accent remapped to the page accent, so the worms, the
+      border ring and the flash stay ONE legible blue on paper.
    ============================================================ */
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-plate {
@@ -564,19 +583,16 @@
   fill: rgba(7, 7, 7, 0.88);
 }
 
-/* ---- the integrate diagram's slab, in the same daylight ---- */
+/* ---- the integrate diagram's slab, in the same daylight ----
+   one remap re-inks every accent voice at once — worms, ring and flash
+   all read --ldx-accent, and the GSAP choreography is numbers only, so
+   it rides along untouched */
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-int-svg {
+  --ldx-accent: var(--tc-accent);
   --ldx-lockup-ink: rgba(7, 7, 7, 0.9);
-  --ldx-lockup-flash: var(--tc-accent);
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-int-plate {
   fill: var(--tc-panel);
-}
-
-/* the arrival ring re-inks to the page accent; its opacity choreography
-   (the GSAP landings) is numbers only, so it rides along untouched */
-:root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-ring {
-  stroke: var(--tc-accent);
 }

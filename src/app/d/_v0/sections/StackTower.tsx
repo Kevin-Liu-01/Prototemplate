@@ -308,7 +308,7 @@ const CTX_WIRES: readonly string[] = [
 ];
 
 /** The code plate's wrap boundary: a flat rounded enclosure spanning the
-    air between the two bracket chips (their inner edges sit at ±22),
+    air between the two bracket chips (their inner edges sit at ±19),
     holding the three code bars — the block the <T> pair owns. The glint
     that rides it loops in FullStack ([data-code-wrap]). */
 const WRAP_BOX =
@@ -732,37 +732,41 @@ function TopGlyph({ id }: { id: string }) {
           <path className='v0s-g-mark is-wrap' d={markPath(-16, -1.5, 22, 5)} />
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
           {/* founder: the chips carry the component PAIR — <T> opening,
-              </T> closing — at a gauge that fits the 28-wide tops */}
-          <GlyphChip x={-48} y={-12} w={28} d={24} h={CHIP_H} />
-          <GlyphChip x={20} y={-12} w={28} d={24} h={CHIP_H} />
-          <g transform={plane(CHIP_TOP, -34, 0)}>
+              </T> closing — tracked open (round two: air between the
+              letterforms) and stepped down again (round three: the forms
+              ran to the chip edges and the chips to the plate edge — the
+              chips now hold 7 units off the plate rim and the glyphs
+              keep >2 units inside their chips, tracking proportional) */}
+          <GlyphChip x={-45} y={-11} w={26} d={22} h={CHIP_H} />
+          <GlyphChip x={19} y={-11} w={26} d={22} h={CHIP_H} />
+          <g transform={plane(CHIP_TOP, -32, 0)}>
             <path
               className='v0s-g-glyph'
-              d={chevron(-9, 0, -1, 12, 6)}
+              d={chevron(-7.2, 0, -1, 8.5, 4.4)}
               vectorEffect='non-scaling-stroke'
             />
-            <path className='v0s-g-glyph' d={tee(0, 0, 11)} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-g-glyph' d={tee(0, 0, 7.6)} vectorEffect='non-scaling-stroke' />
             <path
               className='v0s-g-glyph'
-              d={chevron(9, 0, 1, 12, 6)}
+              d={chevron(7.2, 0, 1, 8.5, 4.4)}
               vectorEffect='non-scaling-stroke'
             />
           </g>
-          <g transform={plane(CHIP_TOP, 34, 0)}>
+          <g transform={plane(CHIP_TOP, 32, 0)}>
             <path
               className='v0s-g-glyph'
-              d={chevron(-10.5, 0, -1, 12, 5.5)}
+              d={chevron(-8.8, 0, -1, 8.5, 4)}
               vectorEffect='non-scaling-stroke'
             />
             <path
               className='v0s-g-glyph'
-              d={slash(-4, 0, 11, 5)}
+              d={slash(-3.4, 0, 7.6, 3.4)}
               vectorEffect='non-scaling-stroke'
             />
-            <path className='v0s-g-glyph' d={tee(3, 0, 10)} vectorEffect='non-scaling-stroke' />
+            <path className='v0s-g-glyph' d={tee(2.55, 0, 6.8)} vectorEffect='non-scaling-stroke' />
             <path
               className='v0s-g-glyph'
-              d={chevron(10.5, 0, 1, 12, 5.5)}
+              d={chevron(8.8, 0, 1, 8.5, 4)}
               vectorEffect='non-scaling-stroke'
             />
           </g>
@@ -816,12 +820,15 @@ function TopGlyph({ id }: { id: string }) {
           />
           <GlyphChip x={6} y={-12} w={34} d={24} h={CHIP_H} />
           {/* founder: the threads land on the GT DASHBOARD, not a <T> — the
-              chip top is a window (title rule, two dots) with the real mark
-              lying in its body, seated face-plane like the agents cap */}
+              chip top is a window with the real mark lying in its body,
+              seated face-plane like the agents cap. The title rule runs
+              edge to edge and the buttons are the macOS lamps (founder
+              round two: full-width rule, red/yellow/green) */}
           <g transform={plane(CHIP_TOP, 23, 0)}>
-            <path className='v0s-dash-rule' d='M-14 -6H14' vectorEffect='non-scaling-stroke' />
-            <circle className='v0s-dash-dot' cx={-11.6} cy={-8.6} r={1.1} />
-            <circle className='v0s-dash-dot' cx={-8.2} cy={-8.6} r={1.1} />
+            <path className='v0s-dash-rule' d='M-17 -6H17' vectorEffect='non-scaling-stroke' />
+            <circle className='v0s-dash-dot is-r' cx={-11.6} cy={-8.6} r={1.1} />
+            <circle className='v0s-dash-dot is-y' cx={-8.2} cy={-8.6} r={1.1} />
+            <circle className='v0s-dash-dot is-g' cx={-4.8} cy={-8.6} r={1.1} />
             {/* both drawn marks ship; the theme's CSS shows the right one
                 (the plates follow the theme, so neither variant survives
                 both grounds alone) */}

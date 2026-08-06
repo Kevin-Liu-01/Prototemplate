@@ -1358,3 +1358,18 @@
 :root:not([data-theme='dark']) .toolchain-root .tcb .v0s-dash-dot {
   fill: color-mix(in srgb, var(--iso-ink) 55%, transparent);
 }
+
+/* the window buttons in the platform's own lamps (founder: red, yellow,
+   green) — literal traffic lights, one voice on both grounds. The :root
+   prefix ties the light remap's weight above; source order settles it. */
+:root .toolchain-root .tcb .v0s-dash-dot.is-r {
+  fill: #ff5f57;
+}
+
+:root .toolchain-root .tcb .v0s-dash-dot.is-y {
+  fill: #febc2e;
+}
+
+:root .toolchain-root .tcb .v0s-dash-dot.is-g {
+  fill: #28c840;
+}

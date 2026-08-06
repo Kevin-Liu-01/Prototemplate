@@ -491,6 +491,31 @@ const INT_MARK = 42;
 const INT_MARK_X = INT_PLATE.x + 14;
 const INT_NAME_X = INT_MARK_X + INT_MARK + 4;
 
+/** The arrival ring's path: the plate's rounded border REDRAWN to start at
+    the left edge's middle — amid the four ports — and run clockwise. The
+    progress dash must grow from where the worms land, and a dash pattern
+    CLIPS at a subpath's end rather than wrapping the closed loop, so the
+    arc's origin has to be the path's own start; a dashoffset into a <rect>
+    (which always starts top-left) leaves everything past the boundary
+    unpainted. */
+const RING_R = 10;
+const RING_D = (() => {
+  const { x, y, w, h } = INT_PLATE;
+  const r = RING_R;
+  return [
+    `M${x} ${y + h / 2}`,
+    `L${x} ${y + r}`,
+    `A${r} ${r} 0 0 1 ${x + r} ${y}`,
+    `L${x + w - r} ${y}`,
+    `A${r} ${r} 0 0 1 ${x + w} ${y + r}`,
+    `L${x + w} ${y + h - r}`,
+    `A${r} ${r} 0 0 1 ${x + w - r} ${y + h}`,
+    `L${x + r} ${y + h}`,
+    `A${r} ${r} 0 0 1 ${x} ${y + h - r}`,
+    'Z',
+  ].join('');
+})();
+
 function IntegrateDiagram() {
   return (
     <svg
@@ -575,21 +600,20 @@ function IntegrateDiagram() {
         rx={10}
         vectorEffect='non-scaling-stroke'
       />
-      {/* the arrival ring: the plate's border redrawn in accent at the SAME
-          gauge, directly on the hairline — the border still reads as one
-          stroke, only its ink changes. GSAP fills the whole perimeter solid
-          on each landing and eases it back; the parked tint is the resting
-          border and the reduced-motion still. */}
-      <rect
-        className='v0-ldx-ring'
-        data-ldx-ring
-        x={INT_PLATE.x}
-        y={INT_PLATE.y}
-        width={INT_PLATE.w}
-        height={INT_PLATE.h}
-        rx={10}
-        vectorEffect='non-scaling-stroke'
-      />
+      {/* the arrival ring: the plate's border redrawn in the worms' accent
+          directly on the hairline — a PROGRESS ring. The stylesheet draws
+          only the first --ldx-fill percent of RING_D's perimeter as a
+          dash, so each landing colors one more quarter of the border — one
+          arc growing clockwise from the ports' edge, never four loose
+          segments. Everything is in USER units — no pathLength, no
+          non-scaling-stroke: Chromium computes dash patterns in screen
+          space under non-scaling-stroke and ignores pathLength there,
+          which shrivels a normalized dash to a px-long fleck (the
+          founder's 'small blue arc'). The 150×60 r10 perimeter is 402.832
+          (2·130 + 2·40 + 2π·10) — the stylesheet's 4.02832 is one percent
+          of it. At rest --ldx-fill is 0 and the plate's quiet hairline is
+          the only border. */}
+      <path className='v0-ldx-ring' data-ldx-ring d={RING_D} />
       <rect
         className='v0-ldx-mark-ink'
         x={INT_MARK_X}
@@ -731,77 +755,66 @@ export default function V0Locadex() {
          entirely off the path at both endpoints; 22 → −102 carries the dash
          fully across, its tail clearing the port right at the tween's end.
 
-         Each landing answers on the plate itself: the ring (the border
-         redrawn in accent on the hairline's own geometry) fills to solid
-         blue — the whole perimeter at once, nothing travels — then eases
-         off. Arrival of pulse i = its stagger slot + 0.9 of its travel —
-         where the eased dash has all but merged into the plate. Between
-         landings the fill only sags to a mid tint, so the burst reads as
-         one lit border re-struck four times; after the last it holds a
-         beat and settles back to the stylesheet's resting tint. Everything
-         lives on ONE timeline, so pulses and fills can never drift out of
-         phase. */
+         Each landing colors ONE MORE QUARTER of the plate's border: the
+         ring (the border redrawn in the worms' accent on the hairline's own
+         geometry, pathLength 100) reveals as a single arc growing clockwise
+         from the ports' edge — the tween drives only the NUMBER --ldx-fill
+         on the svg, 25 → 50 → 75 → 100, and the stylesheet spends it as the
+         dash. Arrival of pulse i = its stagger slot + 0.9 of its travel —
+         where the eased dash has all but merged into the plate — so the
+         four sweeps land on the worms' own beat. When the fourth quarter
+         closes the lap the plate ANSWERS: --ldx-flash blooms the border's
+         gauge and re-inks the lockup — mark and wordmark together — to the
+         same accent (0.25s up, 0.6s down; the stylesheet mixes ink and
+         accent by the number, so both themes flash their own accent and a
+         live theme flip never strands a JS-written color).
+
+         The reset UNRAVELS instead of just flashing away (founder): after
+         the flash settles, one tween walks --ldx-fill to 0 and --ldx-off
+         to 100 in lockstep, so the arc's tail chases its head clockwise
+         around the perimeter and the border unwinds back into the node —
+         its own beat, about a quarter-fill's pace — returning the plate to
+         the quiet hairline BEFORE the worms begin the next lap. A set()
+         then re-arms --ldx-off while nothing is painted, so the loop wraps
+         with no half-state. Everything lives on ONE timeline, so pulses,
+         quarters, flash and unravel can never drift out of phase. */
       const pulses = el.querySelectorAll<SVGPathElement>('[data-ldx-pulse]');
-      const ring = el.querySelector<SVGRectElement>('[data-ldx-ring]');
       const diagram = el.querySelector<SVGSVGElement>('.v0-ldx-int-svg');
       if (pulses.length > 0 && diagram) {
         const PULSE_DUR = 1.6;
         const PULSE_GAP = 0.45;
         const ARRIVE = PULSE_DUR * 0.9;
-        const flow = gsap.timeline({ repeat: -1, repeatDelay: 0.9, paused: true });
+        /* one landing's border sweep — shorter than the 0.45 beat, so a
+           quarter always finishes drawing before the next one lands */
+        const SWEEP = 0.35;
+        const QUARTER = 100 / pulses.length;
+        const flow = gsap.timeline({ repeat: -1, repeatDelay: 0.45, paused: true });
         flow.fromTo(
           pulses,
           { strokeDashoffset: 22 },
-          { strokeDashoffset: -102, duration: PULSE_DUR, ease: 'power1.inOut', stagger: PULSE_GAP }
+          { strokeDashoffset: -102, duration: PULSE_DUR, ease: 'power1.inOut', stagger: PULSE_GAP },
+          0
         );
-        /* the fourth landing completes the lap, and the plate ANSWERS: the
-           lockup — mark and wordmark together — flashes to the accent once
-           (ink → accent → ink, ~0.5s), on the same timeline so it can never
-           drift off the last arrival; once per loop cycle. The tween drives
-           only the NUMBER --ldx-flash on the svg — the stylesheet mixes the
-           theme's resting ink and flash accent by it (--ldx-lockup-ink /
-           --ldx-lockup-flash), so both themes flash their own accent and a
-           live theme flip never strands a JS-written color. */
-        {
-          const lastAt = (pulses.length - 1) * PULSE_GAP + ARRIVE;
-          flow.to(diagram, { '--ldx-flash': 1, duration: 0.22, ease: 'power2.out' }, lastAt);
+        pulses.forEach((_, i) => {
           flow.to(
             diagram,
-            { '--ldx-flash': 0, duration: 0.3, ease: 'power2.inOut' },
-            lastAt + 0.22
+            { '--ldx-fill': QUARTER * (i + 1), duration: SWEEP, ease: 'power2.out' },
+            i * PULSE_GAP + ARRIVE
           );
-        }
-        if (ring) {
-          /* mirrors the stylesheet's parked opacity — the resting tint */
-          const RING_REST = 0.35;
-          /* the sag between back-to-back landings — still clearly lit */
-          const RING_MID = 0.55;
-          const RISE = 0.1;
-          const HOLD = 0.35;
-          pulses.forEach((_, i) => {
-            const at = i * PULSE_GAP + ARRIVE;
-            const last = i === pulses.length - 1;
-            flow.fromTo(
-              ring,
-              { opacity: i === 0 ? RING_REST : RING_MID },
-              { opacity: 1, duration: RISE, ease: 'power2.out', immediateRender: false },
-              at
-            );
-            if (last) {
-              flow.to(
-                ring,
-                { opacity: RING_REST, duration: 0.8, ease: 'power2.inOut' },
-                at + RISE + HOLD
-              );
-            } else {
-              flow.to(
-                ring,
-                { opacity: RING_MID, duration: PULSE_GAP - RISE, ease: 'power1.inOut' },
-                at + RISE
-              );
-            }
-          });
-        }
+        });
+        /* the border is fully surrounded here — bloom, and settle lit */
+        const fullAt = (pulses.length - 1) * PULSE_GAP + ARRIVE + SWEEP;
+        flow.to(diagram, { '--ldx-flash': 1, duration: 0.25, ease: 'power2.out' }, fullAt);
+        flow.to(diagram, { '--ldx-flash': 0, duration: 0.6, ease: 'power2.inOut' }, fullAt + 0.25);
+        /* the unravel: a breath after the flash lands quiet, then tail
+           chases head — both dials in ONE tween, so the arc can never
+           tear — and the dashoffset dial is re-armed invisibly */
+        flow.to(
+          diagram,
+          { '--ldx-fill': 0, '--ldx-off': 100, duration: 0.5, ease: 'power2.inOut' },
+          fullAt + 1.0
+        );
+        flow.set(diagram, { '--ldx-off': 0 });
         ScrollTrigger.create({
           trigger: diagram,
           start: 'top bottom',

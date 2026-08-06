@@ -22,10 +22,20 @@
  *   the field reads as composed typesetting, not static.
  * - The held word is typography, not particles: particles land, the word
  *   prints over them with a hard clip front, and they are absorbed.
- * - The type column, the held word's own paper, and the bottom seam above
- *   the script ledger are all dithered density falloffs (per-particle
- *   threshold) — no alpha veil ever sits behind content, and the field
- *   ends composed instead of running into the dark band.
+ * - Blits are tight. Every particle draws as a pre-measured sprite — the
+ *   glyph's actual ink bounds out of the atlas, never the empty cell
+ *   margins — integer-snapped in device px (1:1, no per-glyph filtering),
+ *   with the depth fade quantized so alpha state changes a handful of
+ *   times per pass instead of once per glyph. (An offscreen lower-DPR
+ *   rain layer was tried and measured SLOWER: compositing a same-frame
+ *   offscreen canvas forces a synchronous flush inside drawImage.)
+ * - The type column, the held word's own paper, and the bottom seam are
+ *   all dithered density falloffs (per-particle threshold) — no alpha
+ *   veil ever sits behind content. The word's paper is a rounded distance
+ *   field off its glyph box, the copy edge bows organically with height,
+ *   and the seam is a short feathered tail, so no clearing ever reads as
+ *   a ruled box (founder: no square around the word, no empty bar at the
+ *   bottom).
  * - prefers-reduced-motion renders exactly one frame — the printed word
  *   and its caliper — and never starts the loop.
  */
@@ -104,6 +114,14 @@ const CELL = 30;
 const INK = '#070707';
 /** The rain's column pitch: the field is set, not scattered. */
 const COL_PITCH = 34;
+/**
+ * Depth-fade quantization: the static per-particle alpha ramp rounds to
+ * 1/48 steps (imperceptible under the dither) so the frame loop sets
+ * globalAlpha a handful of times per pass instead of once per glyph.
+ */
+const ALPHA_Q = 48;
+/** Feather width (CSS px) of the word hole's rounded distance field. */
+const WORD_FEATHER = 30;
 
 /* The loop, in seconds: print, hold, peel, fly. Each formed word LINGERS —
    the caliper fades in, stands for a beat, and fades back out — then the
@@ -259,6 +277,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   const order = new Uint16Array(POOL); // draw order, far → near, sorted once
   const pick = new Uint16Array(POOL); // eligible indices, shuffled once
   const cand = new Uint16Array(POOL); // per-resample candidate order (dust first)
+  const toneQ = new Uint8Array(POOL); // quantized depth fade, 0…ALPHA_Q
+  const mark = new Uint8Array(POOL); // resample scratch: candidate membership
 
   let eligibleCount = 0;
   for (let i = 0; i < POOL; i++) {
@@ -276,6 +296,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     const per = Math.ceil(GLYPHS.length / 8);
     gi[i] = Math.min(GLYPHS.length - 1, scriptAt * per + Math.floor(rand() * per));
     tier[i] = depth < NEAR_CUT ? 0 : depth < MID_CUT ? 1 : 2;
+    /* z never changes, so the depth fade is a fixed bucket per particle. */
+    toneQ[i] = Math.round((1 - 0.6 * depth) * ALPHA_Q);
     if (depth >= NEAR_CUT) eligibleCount++;
   }
 
@@ -329,8 +351,13 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       fadeA = w * 0.55;
     }
     railY = Math.min(h - 26, baselineY + maxFont * 0.3 + 18);
-    botB = h - 6;
-    botA = narrow ? railY + 26 : h - 88;
+    /* The bottom seam is a short dithered tail, not a reserve (founder: no
+       empty bar): density holds until ~46px above the edge and the falloff
+       completes just PAST it, so edge glyphs still print, clipped, and the
+       field runs to the paper's end. The caption keeps its own local
+       clearing (wordKeep), so the seam no longer has to carry it. */
+    botB = h + 10;
+    botA = narrow ? Math.max(railY + 10, h - 60) : h - 46;
     for (let i = 0; i < POOL; i++) {
       const px = ux[i] ?? 0;
       /* Homes snap to a column pitch, with a small fixed jitter, so the rain
@@ -348,12 +375,71 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
   const atlas = document.createElement('canvas');
   const atlasCtx = atlas.getContext('2d', { willReadFrequently: true });
+  /** Atlas device scale: cp / CELL, so atlas cells land on integer px. */
+  let dprA = 1;
+  /** Atlas cell size in device px. */
+  let cp = CELL;
+  /**
+   * Per-(row × glyph) ink bounds, measured off the built atlas: source rect
+   * [x, y, w, h] in atlas px, and the rect's offset from the glyph's center.
+   * The frame loop blits exactly the ink — never the empty cell margins —
+   * which cuts the blitted area several-fold for the small tiers.
+   */
+  const spr = new Int16Array(ATLAS_ROWS * GLYPHS.length * 4);
+  const sprOff = new Int16Array(ATLAS_ROWS * GLYPHS.length * 2);
+
+  /** Scan the finished atlas once per build for each cell's ink bbox. */
+  function measureSprites(): void {
+    if (!atlasCtx) return;
+    const img = atlasCtx.getImageData(0, 0, atlas.width, atlas.height);
+    const data = img.data;
+    const cols = GLYPHS.length;
+    for (let row = 0; row < ATLAS_ROWS; row++) {
+      for (let col = 0; col < cols; col++) {
+        const bx = col * cp;
+        const by = row * cp;
+        let x0 = cp;
+        let y0 = cp;
+        let x1 = -1;
+        let y1 = -1;
+        for (let y = 0; y < cp; y++) {
+          const base = ((by + y) * atlas.width + bx) * 4 + 3;
+          for (let x = 0; x < cp; x++) {
+            if ((data[base + x * 4] ?? 0) !== 0) {
+              if (x < x0) x0 = x;
+              if (x > x1) x1 = x;
+              if (y < y0) y0 = y;
+              if (y > y1) y1 = y;
+            }
+          }
+        }
+        const m = (row * cols + col) * 4;
+        const o = (row * cols + col) * 2;
+        if (x1 < 0) {
+          spr[m + 2] = 0;
+          spr[m + 3] = 0;
+          continue;
+        }
+        spr[m] = bx + x0;
+        spr[m + 1] = by + y0;
+        spr[m + 2] = x1 - x0 + 1;
+        spr[m + 3] = y1 - y0 + 1;
+        sprOff[o] = Math.round(x0 - cp / 2);
+        sprOff[o + 1] = Math.round(y0 - cp / 2);
+      }
+    }
+  }
 
   function buildAtlas(): void {
     if (!atlasCtx) return;
-    atlas.width = Math.max(1, Math.round(GLYPHS.length * CELL * dpr));
-    atlas.height = Math.max(1, Math.round(ATLAS_ROWS * CELL * dpr));
-    atlasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    /* The atlas renders at the canvas's own scale so every blit is 1:1
+       device px. Rounding cp to whole px keeps cell boundaries (and the
+       Bayer grid) exact. */
+    cp = Math.max(8, Math.round(CELL * dpr));
+    dprA = cp / CELL;
+    atlas.width = Math.max(1, GLYPHS.length * cp);
+    atlas.height = Math.max(1, ATLAS_ROWS * cp);
+    atlasCtx.setTransform(dprA, 0, 0, dprA, 0, 0);
     atlasCtx.clearRect(0, 0, GLYPHS.length * CELL, ATLAS_ROWS * CELL);
     atlasCtx.fillStyle = ink;
     atlasCtx.textAlign = 'center';
@@ -372,10 +458,11 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       atlasCtx,
       atlas.width,
       atlas.height,
-      dpr,
+      dprA,
       (cssY) => Math.min(ATLAS_ROWS - 1, Math.floor(cssY / CELL)),
       (row) => (row === COND_ROW ? 1 : TIER_COVER[row] ?? 1),
     );
+    measureSprites();
   }
 
   /* ---------- word sampling ---------- */
@@ -443,31 +530,31 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        draw().) */
     const wrapC = h + 60;
     let cc = 0;
+    mark.fill(0);
     for (let k = 0; k < eligibleCount; k++) {
       const i = pick[k] ?? 0;
-      if (inNext[i] === 1) cand[cc++] = i;
+      if (inNext[i] === 1) {
+        cand[cc++] = i;
+        mark[i] = 1;
+      }
     }
     for (let k = 0; k < eligibleCount; k++) {
       const i = pick[k] ?? 0;
-      if (inNext[i] === 1) continue;
+      if (mark[i] === 1) continue;
       const rx =
         (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
       let ry = (hy[i] ?? 0) + simT * (fall[i] ?? 3);
       ry = ((ry % wrapC) + wrapC) % wrapC;
       ry -= 30;
-      if (keepAt(rx, ry, true) > (stag[i] ?? 0)) cand[cc++] = i;
+      if (keepAt(rx, ry, true) > (stag[i] ?? 0)) {
+        cand[cc++] = i;
+        mark[i] = 1;
+      }
     }
     if (cc < eligibleCount) {
       for (let k = 0; k < eligibleCount; k++) {
         const i = pick[k] ?? 0;
-        if (inNext[i] === 1) continue;
-        let seen = false;
-        for (let q = 0; q < cc; q++)
-          if (cand[q] === i) {
-            seen = true;
-            break;
-          }
-        if (!seen) cand[cc++] = i;
+        if (mark[i] !== 1) cand[cc++] = i;
       }
     }
 
@@ -598,16 +685,27 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let announcedWord = -1;
   let morphedCycle = -1;
 
-  /** Where the loop stands at time t — the single phase authority. */
-  function phaseAt(t: number): { cycle: number; p: number; holdDur: number } {
-    if (t < FIRST_CYCLE) return { cycle: 0, p: t, holdDur: FIRST_HOLD };
+  /* Where the loop stands at time t — the single phase authority. Written
+     into standing slots (never a returned object) so the frame allocates
+     nothing. */
+  let phCycle = 0;
+  let phP = 0;
+  let phHold = FIRST_HOLD;
+  function computePhase(t: number): void {
+    if (t < FIRST_CYCLE) {
+      phCycle = 0;
+      phP = t;
+      phHold = FIRST_HOLD;
+      return;
+    }
     const t2 = t - FIRST_CYCLE;
-    const cycle = 1 + Math.floor(t2 / CYCLE);
-    return { cycle, p: t2 - (cycle - 1) * CYCLE, holdDur: HOLD };
+    phCycle = 1 + Math.floor(t2 / CYCLE);
+    phP = t2 - (phCycle - 1) * CYCLE;
+    phHold = HOLD;
   }
   const morphingNow = (): boolean => {
-    const ph = phaseAt(simT);
-    return ph.p >= ph.holdDur;
+    computePhase(simT);
+    return phP >= phHold;
   };
 
   function announce(index: number): void {
@@ -617,38 +715,78 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   }
 
   /**
+   * The copy-clearing edge's shift at a position ALONG it (y on wide
+   * layouts, x on narrow), toward the copy in px. The straight dithered
+   * ramp read as a ruled wall (founder), so the edge bows: a gentle ripple
+   * that drifts almost imperceptibly with time, plus an encroachment at
+   * the clearing's quiet extremes — above and below the copy block — where
+   * the rain may stand closer without touching type. The copy zone itself
+   * (the middle of the span) never gains rain: shifts there stay a small
+   * fraction of the ramp's width.
+   */
+  function copyEdgeShift(along: number, span: number): number {
+    const u = span > 0 ? along / span : 0;
+    const ramp = fadeA - fadeB;
+    const wave = Math.sin(u * 8.2 + simT * 0.13) * 0.16 * ramp;
+    const bow = (smoothstep(0.22, 0, u) + smoothstep(0.78, 1, u)) * 0.42 * ramp;
+    return wave + bow;
+  }
+
+  /**
+   * A word's clearing at (x, y), 0…1: a rounded distance field off the
+   * word's actual glyph box — a capsule, tight to the type, feathered over
+   * WORD_FEATHER px — never the old rectangular falloff (founder: no
+   * square around the word). The caliper keeps its own small local
+   * clearing, a slimmer capsule around the dimension line and its value.
+   */
+  function wordKeep(x: number, y: number, gate: number, left: number, right: number, px: number): number {
+    let m = 1;
+    const boxTop = baselineY - px * 0.96;
+    const boxBot = baselineY + Math.min(26, 8 + px * 0.1);
+    const cx = (left + right) / 2;
+    const cy = (boxTop + boxBot) / 2;
+    const hw = (right - left) / 2 + 10;
+    const hh = (boxBot - boxTop) / 2 + 6;
+    const r = Math.min(hw, hh);
+    const qx = Math.abs(x - cx) - (hw - r);
+    const qy = Math.abs(y - cy) - (hh - r);
+    if (qx < r + WORD_FEATHER && qy < r + WORD_FEATHER) {
+      const ax = qx > 0 ? qx : 0;
+      const ay = qy > 0 ? qy : 0;
+      const d = Math.sqrt(ax * ax + ay * ay) - r;
+      m *= 1 - gate * (1 - smoothstep(0, WORD_FEATHER, d));
+    }
+    /* The caliper is an annotation: its dimension line and value stand on
+       paper. A capsule too, so the band's ends taper instead of cutting. */
+    const caliperY = Math.min(railY - 9, baselineY + maxFont * 0.24) + 8;
+    const hd = Math.max(left - x, x - right, 0);
+    const vd = Math.abs(y - caliperY) - 10;
+    if (hd < 18 && vd < 18) {
+      const ay = vd > 0 ? vd : 0;
+      const d = Math.sqrt(hd * hd + ay * ay);
+      m *= 1 - gate * (1 - smoothstep(2, 16, d));
+    }
+    return m;
+  }
+
+  /**
    * The rain's keep-probability at (x, y): the product of the type-column
-   * clearing, the bottom seam above the ledger, and the held word's own
-   * paper. Each particle compares it to its fixed uniform and either draws
-   * at full tier material or not at all — dithered edges, no veils.
+   * clearing, the bottom seam, and the held word's own paper. Each particle
+   * compares it to its fixed uniform and either draws at full tier material
+   * or not at all — dithered edges, no veils.
    */
   function keepAt(x: number, y: number, morphing: boolean): number {
-    let k = smoothstep(fadeB, fadeA, narrow ? y : x);
+    const shift = narrow ? copyEdgeShift(x, w) : copyEdgeShift(y, h);
+    let k = smoothstep(fadeB - shift, fadeA - shift, narrow ? y : x);
     if (k <= 0) return 0;
     k *= 1 - smoothstep(botA, botB, y);
     if (k <= 0) return 0;
     if (ptCount > 0 && nextGate > 0) {
-      const boxTop = baselineY - formedPx * 1.08;
-      const dx = Math.max(formedLeft - 22 - x, x - (formedRight + 22), 0);
-      const dy = Math.max(boxTop - y, y - (baselineY + 28), 0);
-      k *= 1 - nextGate * (1 - smoothstep(0, 26, Math.max(dx, dy)));
-      /* The caliper is an annotation: its dimension line and value stand on
-         paper, so rain clears the measurement band under the word too. */
-      if (x > formedLeft - 30 && x < formedRight + 30) {
-        const caliperY = Math.min(railY - 9, baselineY + maxFont * 0.24) + 8;
-        k *= 1 - nextGate * (1 - smoothstep(14, 26, Math.abs(y - caliperY)));
-      }
+      k *= wordKeep(x, y, nextGate, formedLeft, formedRight, formedPx);
     }
     if (morphing && prevWord && prevGate > 0) {
-      const boxTop = baselineY - prevPx * 1.08;
-      const dx = Math.max(prevLeft - 22 - x, x - (prevRight + 22), 0);
-      const dy = Math.max(boxTop - y, y - (baselineY + 28), 0);
-      k *= 1 - prevGate * (1 - smoothstep(0, 26, Math.max(dx, dy)));
-      /* The outgoing caliper band heals with the same gate. */
-      if (x > prevLeft - 30 && x < prevRight + 30) {
-        const caliperY = Math.min(railY - 9, baselineY + maxFont * 0.24) + 8;
-        k *= 1 - prevGate * (1 - smoothstep(14, 26, Math.abs(y - caliperY)));
-      }
+      /* The outgoing word's paper heals with the same gate. */
+      k *= wordKeep(x, y, prevGate, prevLeft, prevRight, prevPx);
     }
     if (narrow) k *= 0.72;
     return k;
@@ -657,11 +795,14 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   function draw(): void {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
+    /* Particles draw in raw device px (identity transform, integer snap);
+       the transform comes back for the word, which draws in CSS px. */
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    const ph = phaseAt(simT);
-    const cycle = ph.cycle;
-    const p = ph.p;
-    const holdDur = ph.holdDur;
+    computePhase(simT);
+    const cycle = phCycle;
+    const p = phP;
+    const holdDur = phHold;
     const current = ((cycle % SCRIPTS.length) + SCRIPTS.length) % SCRIPTS.length;
     const next = (current + 1) % SCRIPTS.length;
 
@@ -745,7 +886,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        word-bound particles, so the swarm always sits above the rain.
        Same particles, drawn once each — the loop still allocates nothing. */
     const wrap = h + 60;
-    const cs = CELL;
+    const gcount = GLYPHS.length;
+    let curQ = -1;
     for (let pass = 0; pass < 2; pass++) {
       for (let k = 0; k < POOL; k++) {
         const i = order[k] ?? 0;
@@ -769,7 +911,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         }
 
         let row = t;
-        let px = (TIER_SIZE[t] ?? 10) * glyphScale;
 
         if (morph < 0) {
           if (wordBound) {
@@ -784,7 +925,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
             const absorbed = printU >= 1 || (formedRtl ? x >= printX : x <= printX);
             if (absorbed) continue;
             row = COND_ROW;
-            px = CONDENSED_PX;
           }
         } else if (wordBound) {
           /* Departure staggered by the peel; each flight lasts FLIGHT. */
@@ -802,7 +942,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
             x = (fx[i] ?? 0) + ((tx[i] ?? 0) - (fx[i] ?? 0)) * e + arc * 56;
             y = (fy[i] ?? 0) + ((ty[i] ?? 0) - (fy[i] ?? 0)) * e - Math.abs(arc) * 34;
             row = COND_ROW;
-            px = CONDENSED_PX;
           } else if (inNext[i] === 1) {
             /* Called back from the rain: the glyph keeps its own rain
                material for the whole flight — nothing brightens mid-air —
@@ -812,7 +951,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
             y += ((ty[i] ?? 0) - y) * e;
             if (u >= 1) {
               row = COND_ROW;
-              px = CONDENSED_PX;
             }
           } else {
             /* Released: the fill crumbles to rain material at the peel
@@ -834,22 +972,41 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         lastY[i] = y;
         /* Depth fade: farther glyphs recede in alpha as well as size, so
            overlapping glyphs separate by depth instead of colliding at
-           equal ink. Word material always prints full. */
-        ctx.globalAlpha = row === COND_ROW ? 1 : 1 - 0.6 * (z[i] ?? 0);
-        const ds = cs * (px / (row === COND_ROW ? CONDENSED_PX : (TIER_SIZE[row] ?? 10) * glyphScale));
+           equal ink. Word material always prints full. Buckets are static
+           per particle and the order is z-sorted, so the alpha state
+           changes a handful of times per pass, not once per glyph. */
+        const q = row === COND_ROW ? ALPHA_Q : (toneQ[i] ?? ALPHA_Q);
+        if (q !== curQ) {
+          curQ = q;
+          ctx.globalAlpha = q / ALPHA_Q;
+        }
+        /* The blit: the sprite's measured ink bounds only, integer-snapped
+           in device px — 1:1 pixels, no per-glyph filtering, no empty cell
+           margins. Positions convert at the canvas's exact dpr; the sprite
+           itself is 1:1 at the atlas's cell-rounded scale (≤1% size drift
+           at fractional DPRs, uniform and invisible). */
+        const cell = row * gcount + (gi[i] ?? 0);
+        const m = cell * 4;
+        const sw = spr[m + 2] ?? 0;
+        if (sw === 0) continue;
+        const sh = spr[m + 3] ?? 0;
+        const o = cell * 2;
         ctx.drawImage(
           atlas,
-          (gi[i] ?? 0) * cs * dpr,
-          row * cs * dpr,
-          cs * dpr,
-          cs * dpr,
-          x - ds / 2,
-          y - ds / 2,
-          ds,
-          ds,
+          spr[m] ?? 0,
+          spr[m + 1] ?? 0,
+          sw,
+          sh,
+          Math.round(x * dpr) + (sprOff[o] ?? 0),
+          Math.round(y * dpr) + (sprOff[o + 1] ?? 0),
+          sw,
+          sh,
         );
       }
     }
+
+    /* The transform comes back for the type. */
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     /* The words themselves — real typography, machined contours. The
        incoming word prints in behind its front; the outgoing word peels
@@ -1013,6 +1170,12 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       ro.disconnect();
       io.disconnect();
       themeMo.disconnect();
+      /* Release the bitmaps the engine owns — the atlas and the word
+         sampler — rather than waiting on GC for canvas backing store. */
+      atlas.width = 0;
+      atlas.height = 0;
+      sample.width = 0;
+      sample.height = 0;
     },
   };
 }
