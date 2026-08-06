@@ -2,15 +2,19 @@
  * inkField — the closing band's material: the hero's glyph field inverted.
  * Paper glyphs from the same eight-script inventory rise slowly off the ink
  * band (the hero condenses; the closer disperses), set in the same 34px
- * columns, with depth rendered the same 1-bit way — solid paper near,
- * Bayer-dithered paper mid and far. The content column is a dithered
- * clearing measured off the real DOM box: glyphs own the band's margins and
- * top/bottom strips, and the dark centre is where the type and the four
- * artifact panels sit (AESTHETIC_ADDENDUM 2b).
+ * columns, with depth spoken the hero's post-dither way: solid glyphs at
+ * three sizes on a per-tier alpha ramp (the founder's flicker rounds —
+ * dither on moving glyphs strobes, so the moving field carries none; the
+ * clearing's EDGES stay dithered via the per-particle threshold). The
+ * content column is a clearing measured off the real DOM box: glyphs own
+ * the band's margins and top/bottom strips, and the dark centre is where
+ * the type and the four artifact panels sit (AESTHETIC_ADDENDUM 2b).
  *
  * Same craft rules as the hero field: one preallocated pool, no per-frame
- * allocation, no globalAlpha on the field, dithered density edges instead of
- * veils, and prefers-reduced-motion renders exactly one composed frame.
+ * allocation, tier-batched alpha (three state changes a frame, never one
+ * per glyph), integer-snapped device-px blits, dithered density edges
+ * instead of veils, and prefers-reduced-motion renders exactly one
+ * composed frame.
  */
 
 import { GLYPHS, ditherAtlasRows } from '@/lib/glyph-field';
@@ -20,8 +24,13 @@ const POOL = 560;
 const NEAR_CUT = 0.16;
 const MID_CUT = 0.68;
 const TIER_SIZE: readonly [number, number, number] = [17, 13, 10];
-/** 1-bit paper coverage per tier — near reads almost solid, far is halftone. */
-const TIER_COVER: readonly [number, number, number] = [0.85, 0.5, 0.28];
+/* ALL tiers solid — the hero field's own founder round, ported (the
+   dither strobed on anything that moved; here the rising glyphs
+   flickered the same way). Depth speaks through size and the per-tier
+   alpha below; the dither machinery stays for the atlas's other users. */
+const TIER_COVER: readonly [number, number, number] = [1, 1, 1];
+/** The old coverages, spoken as alpha, so the field's tone is unchanged. */
+const TIER_ALPHA: readonly [number, number, number] = [0.9, 0.55, 0.3];
 const CELL = 26;
 const PAPER = '#f2f1ed';
 const COL_PITCH = 34;
@@ -173,31 +182,57 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
     return smoothstep(0, RIM, Math.max(dx, dy));
   }
 
+  /** Hysteresis for the clearing-rim cull: a drawn glyph only culls once
+      its keep drops a band BELOW its threshold, and a culled one only
+      returns a band ABOVE it — the sway no longer strobes glyphs riding
+      the rim's iso-line (the tower wrap's own fix). */
+  const vis = new Uint8Array(POOL);
+
   function draw(): void {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
+    /* Blits run in raw device px — identity transform, integer snap,
+       1:1 atlas cells — the hero field's craft rule: a sprite drawn at
+       fractional device positions is resampled with a different
+       subpixel phase every frame, and that shimmer is the flicker the
+       founder saw on the band's margins. */
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     const wrap = h + 52;
     const cs = CELL;
+    const cp = cs * dpr;
+    let alphaRow = -1;
     for (let k = 0; k < POOL; k++) {
       const i = order[k] ?? 0;
       const x = (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
       let y = (hy[i] ?? 0) - simT * (rise[i] ?? 3);
       y = ((y % wrap) + wrap) % wrap;
       y -= 26;
-      if (keepAt(x, y) <= (stag[i] ?? 0)) continue;
+      const keep = keepAt(x, y);
+      if (keep <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.04 : 0.04)) {
+        vis[i] = 0;
+        continue;
+      }
+      vis[i] = 1;
       const row = tier[i] ?? 2;
+      /* order[] sorts by tier, so alpha changes three times a frame, not
+         once per glyph */
+      if (row !== alphaRow) {
+        alphaRow = row;
+        ctx.globalAlpha = TIER_ALPHA[row] ?? 1;
+      }
       ctx.drawImage(
         atlas,
-        (gi[i] ?? 0) * cs * dpr,
-        row * cs * dpr,
-        cs * dpr,
-        cs * dpr,
-        x - cs / 2,
-        y - cs / 2,
-        cs,
-        cs,
+        (gi[i] ?? 0) * cp,
+        row * cp,
+        cp,
+        cp,
+        Math.round((x - cs / 2) * dpr),
+        Math.round((y - cs / 2) * dpr),
+        cp,
+        cp,
       );
     }
+    ctx.globalAlpha = 1;
   }
 
   function frame(ts: number): void {
