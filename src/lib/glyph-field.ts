@@ -91,9 +91,12 @@ const TIER_SIZE: readonly [number, number, number] = [19, 13, 11];
  * atmosphere's "grey". Two solid sizes plus one halftone plus the printed
  * word are the field's whole palette.
  */
-/* far cover 0.62 (founder: the flank glyphs read as crumbs at 0.45 —
-   at 10px a Bayer glyph is ~2.5 cells wide, and low coverage shreds it) */
-const TIER_COVER: readonly [number, number, number] = [1, 1, 0.62];
+/* ALL tiers solid (founder, after three dither rounds: 'the dither is
+   making it flicker every time it moves — remove the dither'). Depth is
+   spoken by size and the quantized alpha ramp alone; with no pattern on
+   the moving rain there is nothing left to shimmer. The dither machinery
+   stays for the atlas's other users. */
+const TIER_COVER: readonly [number, number, number] = [1, 1, 1];
 /** Flight glyphs draw at one size, solid ink. */
 const CONDENSED_PX = 12;
 /**
