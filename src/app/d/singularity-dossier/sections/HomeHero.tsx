@@ -294,13 +294,16 @@ export default function HomeHero() {
           guideR.className = 'tc-eg is-r';
           const dust = document.createElement('span');
           dust.className = 'tc-edust';
-          for (let i = 0; i < 96; i++) {
+          for (let i = 0; i < 440; i++) {
             const g = document.createElement('span');
             g.textContent = DUST[i % DUST.length] ?? '';
-            /* glyph-field fidelity at em scale: a denser, finer pool — the
-               sampler's pitch settles just under this glyph size, so the
-               landed swarm traces letterforms instead of scribbling */
-            g.style.fontSize = '0.13em';
+            /* glyph-field fidelity at SENTENCE scale (founder round: the
+               assembled swarm should read as the text): the pool runs
+               three words deep and the grain one step finer, so the
+               sampler's adaptive pitch settles back down at glyph size
+               and the landed swarm traces the whole line's letterforms
+               instead of sketching them */
+            g.style.fontSize = '0.105em';
             dust.appendChild(g);
           }
           em.append(guideL, guideR, dust);
