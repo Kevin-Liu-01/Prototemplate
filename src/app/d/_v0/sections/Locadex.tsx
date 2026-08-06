@@ -9,10 +9,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import {
   SiContentful,
+  SiFigma,
   SiGithub,
   SiGoogledrive,
   SiMarkdown,
-  SiMdx,
   SiMintlify,
   SiNextdotjs,
   SiNodedotjs,
@@ -652,15 +652,15 @@ const STACK_WORKS: readonly Work[] = [
   { name: 'Python', Icon: SiPython },
 ];
 
-/** Row 2's marks name what the diagram's trimmed 'CMS' and 'Docs' nodes
-    stand for — the CMSes first, then the docs formats. */
+/** Row 2's marks span the diagram's whole source row — design and drive
+    files alongside what the trimmed 'CMS' and 'Docs' nodes stand for. */
 const SOURCE_WORKS: readonly Work[] = [
-  { name: 'Notion', Icon: SiNotion },
+  { name: 'Figma', Icon: SiFigma },
   { name: 'Contentful', Icon: SiContentful },
   { name: 'Sanity', Icon: SiSanity },
   { name: 'Mintlify', Icon: SiMintlify },
   { name: 'Markdown', Icon: SiMarkdown },
-  { name: 'MDX', Icon: SiMdx },
+  { name: 'Google Drive', Icon: SiGoogledrive },
 ];
 
 /** A captioned grid of marks seated at the copy cell's foot (margin-top
