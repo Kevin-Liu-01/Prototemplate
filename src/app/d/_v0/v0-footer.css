@@ -309,6 +309,12 @@
   flex: none;
 }
 
+/* inside the seat the mark is no longer a flex item — blockify it so
+   its 88px box applies again */
+.toolchain-root .v0-foot-gt-seat .v0-foot-gt {
+  display: block;
+}
+
 .toolchain-root .v0-foot-gt-line {
   display: none;
 }

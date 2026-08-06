@@ -22,9 +22,12 @@ export default function RailFigure() {
         {/* the framed row's surfaces, painted first: the hair ground shows as
             the top, bottom and middle reveals only — at the rails the cells
             sit flush, because the rail already draws that line */}
+        {/* the reveals are LITERALLY 1px in figure units — the middle gap
+            ran 2 units and the top/bottom 1.5 (founder: still more 2px),
+            which drew the exact fat seam the caption forbids */}
         <rect className='ptc-ground' x='162' y='84' width='396' height='148' />
-        <rect className='ptc-cell' x='162' y='85.5' width='197' height='145' />
-        <rect className='ptc-cell' x='361' y='85.5' width='197' height='145' />
+        <rect className='ptc-cell' x='162' y='85' width='197' height='146' />
+        <rect className='ptc-cell' x='360' y='85' width='198' height='146' />
 
         {/* the wrapper's rails, drawn once over the row: the doubled outer
             pair — 10px apart, exactly the page's own offset */}
@@ -90,7 +93,7 @@ export default function RailFigure() {
         </text>
 
         {/* right annotation, top: the mat reveal */}
-        <circle className='ptc-dot' cx='470' cy='84.75' r='2.5' />
+        <circle className='ptc-dot' cx='470' cy='84.5' r='2.5' />
         <line className='ptc-leader' x1='470' y1='84' x2='584' y2='56' />
         <text className='ptc-t' x='588' y='52'>
           the ground is
@@ -103,8 +106,8 @@ export default function RailFigure() {
         </text>
 
         {/* right annotation, bottom: the row's seams */}
-        <circle className='ptc-dot' cx='360' cy='224' r='2.5' />
-        <line className='ptc-leader' x1='360' y1='224' x2='584' y2='252' />
+        <circle className='ptc-dot' cx='359.5' cy='224' r='2.5' />
+        <line className='ptc-leader' x1='359.5' y1='224' x2='584' y2='252' />
         <text className='ptc-t' x='588' y='248'>
           row owns the seams
         </text>
