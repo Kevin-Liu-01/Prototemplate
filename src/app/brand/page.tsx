@@ -166,12 +166,10 @@ export default function BrandPage() {
           <section className='pt-sec pt-post-sec'>
             <h2>The character</h2>
             <p>
-              If the brand were a person, it would be a <strong>fullstack director</strong> in
-              the Christopher Nolan mold: creative but technically innovative — writes the
-              script, directs, commits to practical effects and the best camera technology,
-              with a keen sense for making things people love. On time, under budget,
-              over-delivering, always working with the best people. Creative <em>and</em>{' '}
-              pushing technical boundaries — never one without the other.
+              The brand carries itself like a <strong>fullstack director</strong>: it writes
+              the script and it pushes the camera — creative and technically innovative, never
+              one without the other. On time, under budget, over-delivering, always working
+              with the best people, with a keen sense for making things people love.
             </p>
             <h3>Personality</h3>
             <AttributeScales rows={PERSONALITY} />
@@ -389,25 +387,17 @@ export default function BrandPage() {
             <p>
               AI developer tools: the full stack for localization — i18n libraries,
               context-aware translation APIs, and the infrastructure for versioning, editing,
-              and integrations. The company began in 2024, when Archie McKenzie, then a student
-              at Princeton, built a translation app whose users kept asking &ldquo;could you
-              translate the app itself?&rdquo; — the first open-source, AI-first i18n libraries
-              followed. The audience is technical and product leadership at growth-stage
-              companies; their engineering and growth teams are the users. Auth0 translates
-              docs with GT, Sierra translates marketing and sales material, Ramp translates its
-              core dashboard. Against legacy, seat-based TMS point solutions, GT is usage-based
-              and owns the whole stack — so it can own the whole experience.
+              and integrations. The audience is technical and product leadership at
+              growth-stage companies; their engineering and growth teams are the users. Auth0
+              translates docs with GT, Sierra translates marketing and sales material, Ramp
+              translates its core dashboard. Against legacy, seat-based TMS point solutions,
+              GT is usage-based and owns the whole stack — so it can own the whole experience.
             </p>
             <div className='ptb-brief'>
               <div className='ptb-brief-col'>
                 <h3>Admired</h3>
                 <ul className='pt-post-rules'>
                   <li>Vercel, Resend, Stripe — reliable, developer-first infrastructure with engineering excellence.</li>
-                </ul>
-                <h3>Reference set</h3>
-                <ul className='pt-post-rules'>
-                  <li>viteplus.dev · oxc.rs · greptile · fumadocs</li>
-                  <li>paper.design · lambda.ai · deepswe.datacurve.ai · sanity.io</li>
                 </ul>
               </div>
               <div className='ptb-brief-col'>
@@ -416,10 +406,6 @@ export default function BrandPage() {
                   <li>Monospace as brand typography — mono is for code artifacts only.</li>
                   <li>Smooth scrolling.</li>
                   <li>The generic robot icon.</li>
-                </ul>
-                <h3>Working</h3>
-                <ul className='pt-post-rules'>
-                  <li>Approvals: Archie McKenzie · Pacific Time · Slack-first.</li>
                 </ul>
               </div>
             </div>

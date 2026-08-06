@@ -1,4 +1,4 @@
-# Prototemplate — GT's brand identity lab
+# Prototemplate: GT's brand identity lab
 
 The living brand guidelines for General Translation, and the design lab
 that produced them: sixteen art directions and three full sites built as

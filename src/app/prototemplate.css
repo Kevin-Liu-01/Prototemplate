@@ -177,6 +177,34 @@
   color: var(--pt-ink);
 }
 
+/* ---- the nav on a phone: the brand keeps its row and the links take
+   their own full-width line below — nothing crams, nothing breaks
+   mid-word, and the hover-only Toolchain menu stands down ---- */
+@media (max-width: 720px) {
+  .pt-nav {
+    flex-wrap: wrap;
+    row-gap: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .pt-nav-right {
+    flex: 1 0 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .pt-nav-right > a,
+  .pt-root .pt-nav-present {
+    white-space: nowrap;
+  }
+
+  .pt-menu {
+    display: none;
+  }
+}
+
 .pt-nav-theme {
   border: 0;
   background: none;

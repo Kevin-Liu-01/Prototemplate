@@ -59,13 +59,11 @@ The values, which the visual identity must carry:
 
 ## 3. The character
 
-If the brand were a person, it would be a **"fullstack director"** in the
-Christopher Nolan mold: creative but technically innovative — writes the
-script, directs, commits to practical effects and the best camera
-technology, with a keen sense of the market and for making things people
-love. On time, under budget, over-delivering, always working with the best
-people. Creative *and* pushing technical boundaries — never one without the
-other.
+The brand carries itself like a **"fullstack director"**: it writes the
+script and it pushes the camera — creative and technically innovative,
+never one without the other. On time, under budget, over-delivering,
+always working with the best people, with a keen sense of the market and
+for making things people love.
 
 ### Personality (working readings, from the completed system)
 
@@ -187,10 +185,6 @@ we got there.
 - **Industry:** AI developer tools; the full stack for localization —
   i18n libraries, context-aware translation APIs, and the infrastructure
   for versioning, editing, and integrations.
-- **Origin:** In 2024, Archie McKenzie (archiemckenzie.com), then a student
-  at Princeton, built a translation app; users kept asking "could you
-  translate the app itself?" — and the first open-source, AI-first i18n
-  libraries followed.
 - **Audience:** technical and product executives at growth-stage startups;
   their engineering and growth teams are the users. Auth0 translates docs,
   Sierra translates marketing and sales material, Ramp translates its core
@@ -199,8 +193,5 @@ we got there.
   and owns the whole stack, so it can own the whole experience.
 - **Admired:** Vercel, Resend, Stripe — reliable, developer-first
   infrastructure with engineering excellence and customer experience.
-- **Reference set:** viteplus.dev, oxc.rs, greptile, fumadocs,
-  paper.design, lambda.ai, deepswe.datacurve.ai, sanity.io.
 - **Avoid:** monospace as brand typography; smooth scrolling; the lucide
   "bot" icon.
-- **Approvals:** Archie McKenzie. Pacific Time. Slack-first.
