@@ -4,21 +4,38 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef, useState } from 'react';
 
+import GlobeDemo from './GlobeDemo';
+import IsoDemo from './IsoDemo';
+import PillsDemo from './PillsDemo';
+import SeamDemo from './SeamDemo';
+import ThreadsDemo from './ThreadsDemo';
 import PrismaticField from '@/components/shared/PrismaticField';
+import { createDitherLoop, streakBands, type DitherLoopHandle } from '@/lib/dither';
 import { createGlyphField, type GlyphFieldHandle } from '@/lib/glyph-field';
 import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
 
 gsap.registerPlugin(useGSAP);
 
-export type LibraryDemoKind = 'horizon' | 'glyph' | 'prismatic';
+export type LibraryDemoKind =
+  | 'horizon'
+  | 'glyph'
+  | 'prismatic'
+  | 'dither'
+  | 'iso'
+  | 'threads'
+  | 'globe'
+  | 'pills'
+  | 'seam';
 
 /**
  * One live demo plate per library — the page's dark surface in both themes.
- * Lifecycle: nothing mounts until the plate first approaches the viewport
+ * Lifecycle: no engine mounts until the plate first approaches the viewport
  * (one IntersectionObserver, disconnected after it fires); from then on each
  * engine's own observer pauses its loop off-view, prefers-reduced-motion
  * renders each engine's sanctioned still, and unmount destroys the
  * subscription (the shared WebGL contexts persist for the session by design).
+ * Static drawings (the iso kit, the sandwich stroke) and DOM instruments
+ * (pills, the seam) render directly — there is nothing to arm.
  */
 export default function LibraryDemo({
   kind,
@@ -95,13 +112,28 @@ export default function LibraryDemo({
         return () => field?.destroy();
       }
 
+      if (kind === 'dither') {
+        /* the library's own defaults do the work: white ink, one device
+           pixel per cell at scale 3, CSS upscaling it pixelated */
+        const loop: DitherLoopHandle = createDitherLoop(
+          canvas,
+          streakBands({ bands: 22, waviness: 0.13, taper: 0.5 }),
+          { scale: 3, paper: 'transparent', fps: 30 }
+        );
+        return () => loop.destroy();
+      }
+
       return undefined;
     },
     [armed, kind]
   );
 
+  /* the seam is a real slider — a group with an interactive child, never
+     a flattened image */
+  const role = kind === 'seam' ? 'group' : 'img';
+
   return (
-    <div className={`ptc-plate is-${kind}`} ref={plateRef} role='img' aria-label={label}>
+    <div aria-label={label} className={`ptc-plate is-${kind}`} ref={plateRef} role={role}>
       {kind === 'prismatic' ? (
         armed ? (
           <PrismaticField
@@ -111,6 +143,18 @@ export default function LibraryDemo({
             speed={0.5}
           />
         ) : null
+      ) : kind === 'globe' ? (
+        armed ? (
+          <GlobeDemo />
+        ) : null
+      ) : kind === 'iso' ? (
+        <IsoDemo />
+      ) : kind === 'threads' ? (
+        <ThreadsDemo />
+      ) : kind === 'pills' ? (
+        <PillsDemo />
+      ) : kind === 'seam' ? (
+        <SeamDemo />
       ) : (
         <canvas className='ptc-plate-field' ref={canvasRef} aria-hidden='true' />
       )}

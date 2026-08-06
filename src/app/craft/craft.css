@@ -295,3 +295,272 @@
   color: var(--color-titanium);
   pointer-events: none;
 }
+
+/* ---------- figure devices ---------- */
+
+/* the border cross: a plus seated on a crossing, drawn in ink over both
+   lines — the one ornament a junction is allowed */
+.ptc-cross {
+  fill: none;
+  stroke: var(--pt-ink);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- the iso kit plate: the dark band's night shading ---------- */
+
+.ptc-iso {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* the extrusion recipe's layers: opaque hull occludes, faces shade,
+   hairlines say the edges once */
+.ptc-iso-hull {
+  fill: var(--color-ink);
+}
+
+.ptc-iso-top {
+  fill: rgba(255, 255, 255, 0.04);
+}
+
+.ptc-iso-left {
+  fill: rgba(255, 255, 255, 0.09);
+}
+
+.ptc-iso-right {
+  fill: rgba(255, 255, 255, 0.15);
+}
+
+.ptc-iso-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ptc-iso-hair {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.26);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- the doubled-line plate: the sandwich, at full gauge ---------- */
+
+.ptc-threads {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ptc-th-thread {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* the core matches the surface behind — the plate's own ink — so the
+   carve leaves two parallel 1px threads */
+.ptc-th-core {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* a shade over full sandwich gauge: the carve leaves two accent threads */
+.ptc-th-pulse {
+  fill: none;
+  stroke: #86a8ff;
+  stroke-width: 5;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- the edge-globe plate: night inks + Bayer atmosphere ---------- */
+
+.ptc-plate.is-globe {
+  display: grid;
+  place-items: center;
+}
+
+.ptc-globe-stage {
+  /* the globe draws with the delivery band's night inks */
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+  --iso-mono: var(--pt-mono);
+
+  position: relative;
+  width: min(480px, 88%);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.ptc-globe-atmo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ptc-globe-dots {
+  fill: rgba(255, 255, 255, 0.11);
+}
+
+/* ---------- the locale-pill plate ---------- */
+
+.ptc-pills {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-content: center;
+  justify-content: center;
+  padding: 24px 12%;
+}
+
+/* the dark-surface pill: the host supplies the box, the tag fills it */
+.ptc-pill {
+  display: inline-flex;
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  background-clip: padding-box;
+  font-family: var(--pt-mono);
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ptc-pill .lct {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-style: normal;
+}
+
+.ptc-pill .lct-flag {
+  align-self: center;
+}
+
+/* ---------- the reveal-seam plate: the toolchain recipe, rescoped ---------- */
+
+.ptc-seam-box {
+  position: absolute;
+  inset: 40px 8% 22px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ptc-seam-main,
+.ptc-seam-under {
+  position: absolute;
+  inset: 0;
+  padding: 16px 20px;
+}
+
+.ptc-seam-main p {
+  margin-top: 10px;
+  font-size: clamp(17px, 2.6vw, 24px);
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* the payload layer: full-width and pinned, revealed in place by the cut */
+.ptc-seam-under {
+  clip-path: inset(0 0 0 var(--seam-cut, 62%));
+  background: var(--color-ink-raised);
+}
+
+.ptc-seam-under pre {
+  margin-top: 10px;
+  font-family: var(--pt-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: pre;
+  overflow: hidden;
+}
+
+.ptc-seam-file {
+  display: block;
+  font-family: var(--pt-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--color-titanium);
+}
+
+/* the handle — reveal-seam.css's recipe, scoped to the plate */
+.ptc-plate .tc-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--seam-cut, 62%);
+  z-index: 3;
+  width: 18px;
+  transform: translateX(-50%);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+/* the doubled thread: two real 1px borders at the house gap */
+.ptc-plate .tc-seam::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(var(--seam-gap, 5px) + 2px);
+  transform: translateX(-50%);
+  border-left: 1px solid rgba(255, 255, 255, 0.45);
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* the grabber pill bridging the threads at mid-height */
+.ptc-plate .tc-seam::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--seam-gap, 5px) + 6px);
+  height: 26px;
+  transform: translate(-50%, -50%);
+  border-radius: 6px;
+  background: var(--seam-grab, #867e8e);
+  opacity: 0.8;
+  transition: opacity 0.16s ease, height 0.16s ease, box-shadow 0.16s ease;
+}
+
+.ptc-plate .tc-seam:hover::after,
+.ptc-plate .tc-seam:focus-visible::after {
+  opacity: 1;
+  height: 34px;
+}
+
+.ptc-plate .tc-seam:focus-visible {
+  outline: none;
+}
+
+.ptc-plate .tc-seam:focus-visible::after {
+  box-shadow: 0 0 0 2px var(--seam-ring, rgba(157, 185, 255, 0.85));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ptc-plate .tc-seam::after {
+    transition: none;
+  }
+}

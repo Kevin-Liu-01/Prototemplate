@@ -581,11 +581,11 @@
 }
 
 /* narrow: the grid is one column (the 980 rule above) and the frame sits
-   below the copy, so the bus stops at the column edge instead of
+   below the copy, so the net stops at the column edge instead of
    reaching for a gutter that no longer exists */
 @media (max-width: 980px) {
-  .toolchain-root .tcr-rail-bus {
-    margin-right: 0;
+  .toolchain-root .tcr-rail-net {
+    width: 100%;
   }
 
   .toolchain-root .tcr-rail {

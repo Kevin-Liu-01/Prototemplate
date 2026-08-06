@@ -118,16 +118,22 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
+/* The source chip is a flex row, so the space after "Welcome," is a
+   trailing space on a flex item — collapsed. The gap restores it. */
+.toolchain-root .v0-ctx .lang-cr-word {
+  gap: 0.3em;
+}
+
 /* The interpolation hole in the source chip: mono at the sentence's own
-   scale, sitting on the label's baseline, its ink derived from the
-   label's var (founder round: it ran small, misaligned, and in the
-   wrong ink) — the chip face inverts per theme and the token follows,
-   so the one rule serves both grounds and the light block needs none. */
+   scale, on the label's own ink dimmed by opacity (founder round: it
+   ran small, misaligned, and in the wrong ink) — currentColor follows
+   the label through every chip face and theme, so one rule serves all
+   and the light block needs none. */
 .toolchain-root .v0-ctx .lang-cr-word code {
   font-family: var(--tc-mono);
   font-size: 14px;
   line-height: 1;
-  color: color-mix(in srgb, var(--lang-ground, #f5f5f3) 68%, transparent);
+  opacity: 0.62;
 }
 
 /* ---------- the glossary rows ----------
@@ -849,9 +855,13 @@
   top: 50%;
   transform: translateY(-50%);
   /* sized to sit INSIDE the head (founder: it ran too big and the
-     head's overflow cut it) — a watermark, wholly visible */
-  width: 118px;
-  height: 118px;
+     head's overflow cut it) — the head is only as tall as its two
+     lines, so the glyph takes a share of that height, never a fixed
+     square, and steps up in ink to stay legible at this scale */
+  height: min(96px, 74%);
+  width: auto;
+  aspect-ratio: 1;
+  opacity: 0.13;
   color: var(--tc-ink);
   opacity: 0.07;
   pointer-events: none;
@@ -874,6 +884,16 @@
    lower edge), overriding this cell's centered composition above */
 .toolchain-root .v0-ctx .v0-ctx-review .tcr.tcr-doors .tcr-grid {
   align-items: stretch;
+}
+
+/* the net's carve is the cell's own ground — the fork family's sandwich
+   core, in this cell's paint (dark plate; the light block re-inks) */
+.toolchain-root .v0-ctx .v0-ctx-review .tcr-rail {
+  --tcr-net-core: #101010;
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-rail {
+  --tcr-net-core: var(--tcb-box, #ffffff);
 }
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-acc,

@@ -1006,14 +1006,22 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         if (sw === 0) continue;
         const sh = spr[m + 3] ?? 0;
         const o = cell * 2;
+        /* The far tier is 1-bit dithered on a CSS-px Bayer lattice: a
+           device-px step re-phases the sparse pattern every frame and the
+           glyph reads as flicker (founder round). Dithered sprites
+           therefore move in WHOLE CSS pixels — the pattern translates
+           rigidly, cell by cell — while solid tiers keep the finer
+           device-px motion. */
+        const dxq = row === 2 ? Math.round(Math.round(x) * dpr) : Math.round(x * dpr);
+        const dyq = row === 2 ? Math.round(Math.round(y) * dpr) : Math.round(y * dpr);
         ctx.drawImage(
           atlas,
           spr[m] ?? 0,
           spr[m + 1] ?? 0,
           sw,
           sh,
-          Math.round(x * dpr) + (sprOff[o] ?? 0),
-          Math.round(y * dpr) + (sprOff[o + 1] ?? 0),
+          dxq + (sprOff[o] ?? 0),
+          dyq + (sprOff[o + 1] ?? 0),
           sw,
           sh,
         );

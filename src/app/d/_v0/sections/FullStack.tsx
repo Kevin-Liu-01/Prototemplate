@@ -616,16 +616,18 @@ export default function V0FullStack() {
               const at = entered * 0.14;
               tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, at);
               if (tap) {
-                /* the bend NEVER leaves before the blue does (founder: the
-                   line comes up; as soon as it is done, the connector comes
-                   out of it) — on the arrival that moment is the tip's
-                   pass, and on an ordinary extension it is the 0.6s
-                   landing, so the draw clamps to whichever gate its move
-                   answers to */
+                /* ONE FLOWING STROKE (founder): the bend leaves at the
+                   INSTANT the blue arrives at its junction — the tip's
+                   pass on the arrival, the 0.6s landing on an extension —
+                   with no breath between: the rail hands its momentum to
+                   the bend (extension rail runs power2.in, arriving with
+                   speed; the bend leaves power2.out, spending it into the
+                   plate), so the turn reads as a corner in one stroke,
+                   never two gestures */
                 tl.to(
                   tap,
                   { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
-                  rising ? Math.max(at + 0.5, tipAt(i) + 0.07) : Math.max(at + 0.5, 0.62)
+                  rising ? Math.max(at + 0.5, tipAt(i) + 0.02) : Math.max(at + 0.5, 0.6)
                 );
               }
               entered += 1;
@@ -640,7 +642,7 @@ export default function V0FullStack() {
                 tl.to(
                   tap,
                   { strokeDashoffset: 0, duration: 0.3, autoRound: false },
-                  rising ? tipAt(i) + 0.07 : 0
+                  rising ? tipAt(i) + 0.02 : 0
                 );
               }
             } else {
@@ -674,14 +676,17 @@ export default function V0FullStack() {
               const scaleY = RAIL_SCALE[count - 1] ?? 1;
               /* the rise is 1.0s: entering taps park their draws at 0.8+
                  (above), so the fill's tip has passed every tap before
-                 its leader's rail end lands */
+                 its leader's rail end lands. An ordinary extension runs
+                 power2.IN — the blue accelerates INTO the junction and
+                 hands that speed to the bend leaving it (one flowing
+                 stroke, founder), instead of settling to a stop first. */
               tl.to(
                 rail,
                 {
                   scaleY,
                   svgOrigin: RAIL_ORIGIN,
                   duration: rising ? 1.0 : 0.6,
-                  ease: rising ? 'power2.out' : 'power2.inOut',
+                  ease: rising ? 'power2.out' : 'power2.in',
                 },
                 0
               );

@@ -97,6 +97,7 @@ const GLYPH_SNIPPET = `import { createGlyphField } from '@/lib/glyph-field';
 
 const field = createGlyphField({
   canvas,
+  drift: 'rise', // the library's fall, or a rising field — same wrap math
   displayFamily: getComputedStyle(canvas).fontFamily,
   monoFamily: getComputedStyle(canvas).getPropertyValue('--pt-mono'),
   onScript: (index) => setActive(index),
@@ -104,6 +105,117 @@ const field = createGlyphField({
 
 /* the whole teardown — observers, loop, theme watcher */
 field?.destroy();`;
+
+const DITHER_SNIPPET = `import { createDitherLoop, gradientRamp, streakBands } from '@/lib/dither';
+
+const loop = createDitherLoop(
+  canvas,
+  streakBands({ bands: 22, waviness: 0.13, taper: 0.5 }),
+  { scale: 3, paper: 'transparent', fps: 30 }
+);
+
+/* fields swap live; ink re-resolves on theme flips */
+loop.setField(gradientRamp({ angle: Math.PI / 2, smooth: true }));
+loop.setOptions({ ink: getComputedStyle(canvas).color });
+loop.destroy();`;
+
+const ISO_SNIPPET = `import {
+  frontEdge, leftFace, rightFace, roundedPolygon,
+  segment, silhouette, topFace, type IsoBox,
+} from '@/app/d/toolchain/diagrams/iso';
+
+/* a raised plate: hull occludes, faces lit top/left/right, then hairlines */
+const box: IsoBox = { x: -42, y: -42, z: 0, w: 84, d: 84, h: 3.2 };
+const [a, b] = frontEdge(box);
+
+<path className='iso-face-right' d={roundedPolygon(rightFace(box))} />
+<path className='iso-face-left' d={roundedPolygon(leftFace(box))} />
+<path className='iso-face-top' d={roundedPolygon(topFace(box))} />
+<path className='iso-line' d={roundedPolygon(silhouette(box))} />
+<path className='iso-line' d={segment(a, b)} />`;
+
+const THREADS_SNIPPET = `/* one path, stroked twice → two parallel threads at a constant gap */
+.v0-dev-thread { fill: none; stroke: var(--tc-ink);
+  stroke-width: 4; vector-effect: non-scaling-stroke; }
+.v0-dev-core { fill: none; stroke: var(--tc-card); /* the surface behind */
+  stroke-width: 2; vector-effect: non-scaling-stroke; }
+.v0-dev-pulse { fill: none; stroke: #2f5ce0; /* carved to two accent threads */
+  stroke-width: 5; vector-effect: non-scaling-stroke; opacity: 0; }
+
+/* layer order IS the grammar: threads, pulse, cores — trunk last,
+   so its core re-carves the junction into one clean pair */
+<svg viewBox='0 0 40 96' preserveAspectRatio='none'>
+  {FORKS.map((d) => <path className='v0-dev-thread' d={d} />)}
+  <path className='v0-dev-pulse' d={FORKS[featured]} />
+  {FORKS.map((d) => <path className='v0-dev-core' d={d} />)}
+</svg>`;
+
+const GLOBE_SNIPPET = `import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
+
+/* the dossier mount: a static Bayer atmosphere hugs the limb — four
+   annuli of nested coverage tiers on one shared grid, so crossing a
+   ring boundary only turns dots off and no cell is painted twice */
+<div className='v0-glob-stage'>
+  <GlobeAtmosphere />
+  <EdgeGlobe title='Five PoPs, one request served 12 ms away' />
+</div>`;
+
+const PILLS_SNIPPET = `import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+
+// bare flag+code chip in a code→output ledger row
+<div className='tcb-out-row'>
+  <span><LocaleTag code='es' /></span>
+  <b lang='es'>¡Hola, mundo!</b>
+</div>
+
+// bordered transcript pill in the hero terminal's ✓-row —
+// the host supplies the box, the tag only fills it
+<LocaleTag code={loc} className='tc-termloc' />`;
+
+const SEAM_SNIPPET = `import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
+
+<div className='tct-app' ref={app} style={{ '--seam-cut': '70%' }}>
+  <div className='tct-app-main'>{/* rendered UI, full width */}</div>
+  <div className='tct-payload' aria-hidden>
+    {/* clip-path: inset(0 0 0 var(--seam-cut)) — revealed in place */}
+    <PayloadJson loc={ploc} />
+  </div>
+  <RevealSeam
+    boxRef={app}
+    ariaLabel='Reveal the served translation file'
+    onInteract={() => endTour()}
+  />
+</div>`;
+
+const REASSEMBLER_SNIPPET = `/* the belt is the single clock — no timers, no scroll triggers */
+const driver = useRef<{ request: (w: EveryWord) => void } | null>(null);
+const handleBeltLocale = (loc: string) => {
+  const w = WORDS[loc];
+  if (w) driver.current?.request(w); // debounced; interrupts re-dissolve
+};
+
+<h1><span>
+  <em data-every>
+    <span data-every-word lang='en' dir='ltr'>Launch in every language</span>
+  </em>
+</span></h1>
+<TranslateWindow onLocaleChange={handleBeltLocale} />`;
+
+const COLOR_SNIPPET = `/* globals.css — the four colors, absolute by design */
+@theme {
+  --color-ink: #070707;
+  --color-ink-raised: #101010;
+  --color-titanium: #8a8f98;
+  --color-paper: #ffffff;
+}
+
+/* each root publishes a semantic layer of the four (+ alpha) … */
+.toolchain-root { --tc-paper: #ffffff; --tc-ink: #070707;
+  --tc-hair: rgba(138, 143, 152, 0.26); --tc-accent: #2f5ce0; }
+
+/* … and dark mode is a token remap, nothing else */
+[data-theme='dark'] .toolchain-root { --tc-paper: #070707;
+  --tc-ink: #ffffff; --tc-hair: rgba(138, 143, 152, 0.5); }`;
 
 const PRISMATIC_SNIPPET = `import PrismaticField from '@/components/shared/PrismaticField';
 
@@ -121,9 +233,8 @@ type Library = {
   name: string;
   role: string;
   body: string;
-  demo: LibraryDemoKind;
-  tag: string;
-  demoLabel: string;
+  /** the live plate — absent for the entries that are systems, not engines */
+  demo?: { kind: LibraryDemoKind; tag: string; label: string };
   file: string;
   snippet: string;
 };
@@ -134,10 +245,12 @@ const LIBRARIES: readonly Library[] = [
     role: 'the singularity visual',
     body:
       'The lensing black hole: a photon ring, wrapped accretion arcs, and the page’s own ruled lines bending into the mass — one WebGL fragment shader on one quad. Twenty-one tunable parameters (geometry, doppler, chroma, exposure, breathing), a full runtime handle (setParams, pause, resume, renderStatic, destroy), and GLSL kept comment-free by design so the shipped source stays a fraction of the page it lights.',
-    demo: 'horizon',
-    tag: 'createHorizonField()',
-    demoLabel:
-      'Live demo: a small event horizon — a bright photon ring around a dark core, with faint ruled lines bending into it.',
+    demo: {
+      kind: 'horizon',
+      tag: 'createHorizonField()',
+      label:
+        'Live demo: a small event horizon — a bright photon ring around a dark core, with faint ruled lines bending into it.',
+    },
     file: 'src/lib/horizon-field.ts',
     snippet: HORIZON_SNIPPET,
   },
@@ -145,11 +258,13 @@ const LIBRARIES: readonly Library[] = [
     name: 'glyph-field',
     role: 'the glyph rain visual',
     body:
-      'A canvas-2D particle field of 1,280 glyphs from eight writing systems that condenses into the word "language" in script after script. One preallocated typed-array pool, a 1-bit Bayer-dithered atlas, and morphs that conserve matter: the outgoing word’s dust is the next word’s material, deficits are recruited from visible rain, and nothing ever spawns mid-air or vanishes mid-flight.',
-    demo: 'glyph',
-    tag: 'createGlyphField()',
-    demoLabel:
-      'Live demo: glyphs from eight writing systems rain down and condense into the word "language" in one script after another, each word measured by a caliper.',
+      'A canvas-2D particle field of 1,280 glyphs from eight writing systems that condenses into the word "language" in script after script. One preallocated typed-array pool, a 1-bit Bayer-dithered atlas, and morphs that conserve matter: the outgoing word’s dust is the next word’s material, and nothing ever spawns mid-air or vanishes mid-flight. The dossier home hardened it into a real library: a drift option runs the rain down or up on the same negative-safe wrap math (its closing band rises), per-sprite ink bounds cut the blitted area several-fold, depth alpha is quantized so the loop touches globalAlpha a handful of times per pass instead of per glyph, and the field is host-aspect-true — homes live in unit coordinates and re-lay onto the live box every resize, so nothing about it is square.',
+    demo: {
+      kind: 'glyph',
+      tag: 'createGlyphField()',
+      label:
+        'Live demo: glyphs from eight writing systems rain down and condense into the word "language" in one script after another, each word measured by a caliper.',
+    },
     file: 'src/lib/glyph-field.ts',
     snippet: GLYPH_SNIPPET,
   },
@@ -158,17 +273,119 @@ const LIBRARIES: readonly Library[] = [
     role: 'the chroma wash',
     body:
       'The spectral light behind every dark terminal and band — a flowing wide-gamut wash with presets, speed and exposure control, masked so the light owns the edges and the content owns the dark center.',
-    demo: 'prismatic',
-    tag: '<PrismaticField />',
-    demoLabel:
-      'Live demo: a flowing spectral light field arcing over a dark center, streaks of thin-film color converging and drifting.',
+    demo: {
+      kind: 'prismatic',
+      tag: '<PrismaticField />',
+      label:
+        'Live demo: a flowing spectral light field arcing over a dark center, streaks of thin-film color converging and drifting.',
+    },
     file: 'src/components/shared/PrismaticField.tsx',
     snippet: PRISMATIC_SNIPPET,
+  },
+  {
+    name: 'dither',
+    role: 'the 1-bit Bayer renderer',
+    body:
+      'Any continuous field fn(u, v, t) → 0..1, rendered as pure 1-bit ordered dither: each cell compares the field against the 8×8 Bayer matrix — an exact permutation of 0..63, so a flat field lights exactly k pixels per tile and the ramp has 65 tonally linear levels. It draws one device pixel per cell into a small buffer and lets CSS upscale it pixelated, writes every frame through one reused Uint32 view, and ships field factories — radial bursts, a lit globe, streak bands, ramps, a true text SDF — plus combinators to multiply, max and mix them. The loop caps at 30fps, pauses offscreen and on hidden tabs, and renders exactly one still under reduced motion.',
+    demo: {
+      kind: 'dither',
+      tag: 'createDitherLoop()',
+      label:
+        'Live demo: wavy 1-bit streak bands sweeping across the plate, every dot a single Bayer-thresholded pixel.',
+    },
+    file: 'src/lib/dither.ts',
+    snippet: DITHER_SNIPPET,
+  },
+  {
+    name: 'iso',
+    role: 'the isometric drawing kit',
+    body:
+      'Every isometric illustration in the family goes through one 30° axonometric map — project(x, y, z) seats the camera at (+,+,+), so exactly three faces of any box are visible, always lit in the same order from the upper left. A solid is an IsoBox extruded by recipe: an opaque hull from the rounded silhouette occludes whatever sits below, three face fills shade it, then the hairlines — rim, top contour, and the one interior front edge the silhouette does not already draw. Raised plates carry chips as miniature extrusions, flat artwork seats into any z-plane with a single matrix, thickness runs about four percent of footprint, one corner radius serves the whole family, and every drawing spends its accent on exactly one element.',
+    demo: {
+      kind: 'iso',
+      tag: 'project(x, y, z)',
+      label:
+        'A raised isometric plate drawn with the kit: an extruded slab with two chips seated on its top face, faces lit from the upper left, hairline rim and front edge.',
+    },
+    file: 'src/app/d/toolchain/diagrams/iso.ts',
+    snippet: ISO_SNIPPET,
+  },
+  {
+    name: 'doubled-line',
+    role: 'the two-thread diagram stroke',
+    body:
+      'The brand’s connector is one SVG path stroked twice: a full-gauge ink stroke underneath and a narrower surface-colored core on top, carving the ink into two parallel hairline threads at a constant gap along any curve. Because both strokes share one geometry the gap cannot drift on a bend, and non-scaling-stroke holds the gauge in screen pixels even under a stretched viewBox. The live pulse is a third copy of the same path in accent, layered between the threads and the cores, so a traveling window is always carved into two accent hairlines — and the window is real geometry, a sub-polyline rewritten per GSAP tick, because dash distances drift under anisotropic stretch. Draw a later sandwich over an earlier one and the junction re-carves itself into one clean pair: merges cost zero parallel-curve math. This is also the one sanctioned double — one owner, one path, stroked twice; the auditor’s allow list holds it by name.',
+    demo: {
+      kind: 'threads',
+      tag: 'thread · pulse · core',
+      label:
+        'Two doubled-line connectors merging into one trunk: each path stroked as two parallel hairline threads, with a static accent pulse carved into the trunk.',
+    },
+    file: 'src/app/d/_v0/sections/developer.css',
+    snippet: THREADS_SNIPPET,
+  },
+  {
+    name: 'edge-globe',
+    role: 'the delivery drawing',
+    body:
+      'The translation CDN as an orthographic globe, drawn entirely in ink: front graticule arcs at the family’s regular weight, far arcs as dashed hairlines — depth said once, with ink, no fills and no shading. Five points of presence stand on graticule intersections with corner-routed leaders that never cross; one bowed great-circle route from the user to the answering PoP is the drawing’s single accent, and one GSAP loop rides it — request dot out, arrival ring, payload chip back. Behind it the dossier home seats a static Bayer atmosphere: four non-overlapping annuli filled with nested coverage tiers of the ordered matrix on one shared grid, so crossing a ring boundary only ever turns dots off and no cell is painted twice.',
+    demo: {
+      kind: 'globe',
+      tag: '<EdgeGlobe />',
+      label:
+        'Live demo: the orthographic edge globe — five points of presence, one accent route serving a request — over its dithered Bayer atmosphere.',
+    },
+    file: 'src/app/d/toolchain/diagrams/EdgeGlobe.tsx',
+    snippet: GLOBE_SNIPPET,
+  },
+  {
+    name: 'locale-tag',
+    role: 'the locale pill',
+    body:
+      'Every bare locale code on every page renders through one component: flag first — a fixed 15×11 print from an SVG flag pack, corners barely eased, never a shadow — then the code in the host surface’s own mono, seated on the text baseline with the flag centered against it. The component carries no box of its own; hosts supply the chip — the hairline pill on light surfaces, the translucent-bordered terminal pill on dark — so the same tag drops into ledgers, capability marquees, diagram key columns and the infinite locale belt. Explicit region subtags fly their own flag (en-GB, ar-EG), bases resolve through a twenty-language map, and an unknown locale degrades to a flagless code rather than a wrong flag.',
+    demo: {
+      kind: 'pills',
+      tag: "<LocaleTag code='…' />",
+      label:
+        'Live demo: a row of locale pills — flag chips beside mono locale codes in hairline boxes — as they appear in terminal transcripts and ledgers.',
+    },
+    file: 'src/app/d/toolchain/components/LocaleTag.tsx',
+    snippet: PILLS_SNIPPET,
+  },
+  {
+    name: 'reveal-seam',
+    role: 'the slide-to-reveal instrument',
+    body:
+      'A hundred-line dependency-free slider that drags one CSS custom property, --seam-cut, onto a host box; the top layer clips to it, so the underlayer is revealed in place and content never travels a pixel with the handle. State lives in the CSS var rather than React state — drags cause zero re-renders, GSAP intros and cinema beat scrubs drive the same dial by writing the var directly, and the keyboard path re-reads the live computed value so every writer stays in agreement. The handle is the brand’s doubled line — two real 1px borders at the house gap, bridged by one grabber pill — with a full slider role, arrow-key nudges, and a statically parked cut under reduced motion.',
+    demo: {
+      kind: 'seam',
+      tag: '<RevealSeam />',
+      label:
+        'Interactive demo: drag or arrow-key the seam handle to reveal the served translation payload beneath the rendered string.',
+    },
+    file: 'src/app/d/toolchain/sections/RevealSeam.tsx',
+    snippet: SEAM_SNIPPET,
+  },
+  {
+    name: 'glyph-reassembler',
+    role: 'the headline morph',
+    body:
+      'The dossier hero morphs one shaped sentence — "Launch in every language" — through sixteen locales by dissolving it into 440 glyph-dust spans seated on the outgoing text’s own sampled ink, then reassembling the incoming sentence from the same swarm: glyphs fly to points sampled on a brick lattice and the real text node prints through them behind a hard clip front that absorbs each glyph as it passes, mirrored for RTL. It never runs on a timer — the locale belt is the single clock. The belt reports each locale it centers; requests debounce a quarter second; a request landing mid-dissolve just retargets the form boundary, one landing mid-form kills the timeline and re-dissolves, and a same-text locale change swaps only lang and dir. Width follows the moving-type law: one shaped probe measure per word, cached, device-pixel snapped, tweened once per cycle.',
+    file: 'src/app/d/singularity-dossier/sections/HomeHero.tsx',
+    snippet: REASSEMBLER_SNIPPET,
+  },
+  {
+    name: 'four-color',
+    role: 'the palette everything resolves from',
+    body:
+      'Not an engine — the ground the engines stand on. Four absolute colors: ink, raised ink, titanium, paper. Structural color everywhere derives from these — every text step is ink or white at some alpha, every hairline is titanium at some alpha, every hatch is a thin ink or white veil — and each page adds exactly one spectral accent on top. Pages never touch the raw values: each root class publishes a semantic layer (surfaces, ink steps, hairlines, hatch), and dark mode is a pure custom-property remap in which the paper family collapses onto ink, ink flips to white, and hairline alphas rise so a 1px seam still survives between two ink surfaces.',
+    file: 'src/app/globals.css',
+    snippet: COLOR_SNIPPET,
   },
 ] as const;
 
 /**
- * The build log: everything constructed underneath the eighteen directions —
+ * The build log: everything constructed underneath the sixteen directions —
  * the laws, the tooling that enforces them, and the libraries that will
  * graduate to their own repos. Article-set like the index post, with the
  * receipts drawn in: the auditor's mock, the ownership diagram, the
@@ -206,7 +423,7 @@ export default function CraftPage() {
             <h1>The system under the system</h1>
             <p className='pt-post-byline'>Kevin Liu · August 2026</p>
             <p>
-              Eighteen directions and five full sites is the visible output. Underneath them is
+              Sixteen directions and three full sites is the visible output. Underneath them is
               the part I actually spent the time on: a set of laws about lines and color, the
               tooling that enforces those laws mechanically, and a family of visual engines built
               as standalone libraries. This page is the inventory — with the diagrams, the
@@ -265,6 +482,25 @@ export default function CraftPage() {
             </ul>
             <RailFigure />
             <p>
+              The overlap is the named antipattern all of this exists to kill: two owners each
+              drawing a real line along the same edge, compositing into one band darker and
+              thicker than any line the system allows. This page carried one — the diagram
+              above used to run the row&rsquo;s 1px ground reveal against the inner rail, so the
+              reveal and the rail hairline stacked into a literal doubled border wherever the
+              framed cells met the column. The fix is now drawn into the figure: where a row
+              meets a line that already exists, the cell sits flush and that side&rsquo;s reveal is
+              dropped. A reveal never runs beside a rail; a border never runs beside a seam.
+            </p>
+            <p>
+              Two devices keep the law workable at junctions. Between sections, the
+              diagonal-hatch spacer owns the boundary once — one hairline under a 45&deg; hatch
+              band, the strip you see between every part of this page — so two closes never
+              argue over the same edge. And where two hairlines must legitimately cross, a
+              border cross can be added: a small plus seated exactly on the intersection, the
+              way a printer&rsquo;s registration mark declares a crossing deliberate. The diagram
+              wears two, where the nav&rsquo;s close meets the rails.
+            </p>
+            <p>
               The ownership system is not a convention to remember — it is componentized, so the
               wrong line is impossible to draw. A rails wrapper renders the page pair; the row
               renders one hair-colored ground under 1px gaps; cells have no border props at all:
@@ -294,12 +530,14 @@ export default function CraftPage() {
           <section className='pt-sec pt-post-sec'>
             <h2>The libraries</h2>
             <p>
-              The signature visuals are not page code. Each one is a root-agnostic engine with a
-              real API — options in, a handle out, no framework assumptions — living in its own
-              module. Once they are perfected they will be open-sourced on GitHub as individual
-              libraries. Each plate below is the real engine, mounted the way a consumer mounts
-              it: created when the plate first scrolls near, paused by its own observer when it
-              leaves, a single still under reduced motion.
+              The signature visuals are not page code, and neither are the instruments around
+              them. Each entry below is root-agnostic with a real contract — options in and a
+              handle out, or one component with one prop surface — living in its own module.
+              Once they are perfected they will be open-sourced on GitHub as individual
+              libraries. Every plate is the real thing, mounted the way a consumer mounts it:
+              engines are created when the plate first scrolls near and paused by their own
+              observers when it leaves, a single still under reduced motion; the drawings are
+              the actual geometry modules; the seam is the actual slider.
             </p>
             <div className='pt-craft-libs'>
               {LIBRARIES.map((lib) => (
@@ -308,7 +546,9 @@ export default function CraftPage() {
                     {lib.name} <span>{lib.role}</span>
                   </h3>
                   <p>{lib.body}</p>
-                  <LibraryDemo kind={lib.demo} label={lib.demoLabel} tag={lib.tag} />
+                  {lib.demo ? (
+                    <LibraryDemo kind={lib.demo.kind} label={lib.demo.label} tag={lib.demo.tag} />
+                  ) : null}
                   <CodeBlock code={lib.snippet} label={lib.file} />
                 </div>
               ))}
