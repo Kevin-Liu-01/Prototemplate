@@ -173,7 +173,9 @@ export default function ReviewWorkspace({
   const netAll = net
     ? [...net.xs.map((x) => netRiser(x, busY)), `M${(net.xs[0] ?? 0) + NET_R} ${busY}H${net.w}`].join('')
     : null;
-  const netLive = net && activeX !== undefined ? netRiser(activeX, busY) : null;
+  /* the live route runs the WHOLE way — button, drop, bus, into the
+     frame (founder: the blue extends from the button down the pipe
+     into the terminal); the pulse rides the same road */
   const netRoute =
     net && activeX !== undefined ? `${netRiser(activeX, busY)}H${net.w}` : null;
 
@@ -343,9 +345,11 @@ export default function ReviewWorkspace({
     <>
       <div className='tcr-bar'>
               {chrome === 'product' ? (
+                /* the bar speaks the surface's real address (founder: the
+                   rail captions moved into the window chrome) */
                 <span className='tcr-fact'>
                   <Table2 className='tcr-fico' aria-hidden />
-                  workspace · es-419
+                  dash.generaltranslation.com
                 </span>
               ) : (
                 <span>workspace · es-419</span>
@@ -454,9 +458,9 @@ export default function ReviewWorkspace({
       <div className='tcr-bar'>
         <span className='tcr-fact'>
           <Braces className='tcr-fico' aria-hidden />
-          api2.gtx.dev
+          POST /v2/project/files/diffs
         </span>
-        <span>200 ok</span>
+        <span>200 OK</span>
       </div>
       <div className='tcr-code'>
         <div className='tcr-ln'>
@@ -495,7 +499,7 @@ export default function ReviewWorkspace({
       <div className='tcr-bar'>
         <span className='tcr-fact'>
           <TerminalSquare className='tcr-fico' aria-hidden />
-          acme — zsh
+          npx gt save-local
         </span>
         <span>branch main</span>
       </div>
@@ -554,9 +558,6 @@ export default function ReviewWorkspace({
                riser climbing into each — then on across the gutter
                into the frame; the rail rides the bottom of the column */
             <div aria-label='Review surface' className='tcr-rail' role='group'>
-              <div className='tcr-rail-line'>
-                {DOORS.find((door) => door.key === face)?.line}
-              </div>
               <div className='tcr-rail-row' ref={railRowRef}>
                 {DOORS.map((door) => {
                   const Icon = door.icon;
@@ -590,10 +591,10 @@ export default function ReviewWorkspace({
                       <path className='tcr-net-pulse' d={netRoute} key={pulse} pathLength={100} />
                     ) : null}
                     <path className='tcr-net-core' d={netAll} />
-                    {netLive ? (
+                    {netRoute ? (
                       <>
-                        <path className='tcr-net-ink is-live' d={netLive} />
-                        <path className='tcr-net-core' d={netLive} />
+                        <path className='tcr-net-ink is-live' d={netRoute} />
+                        <path className='tcr-net-core' d={netRoute} />
                       </>
                     ) : null}
                   </>

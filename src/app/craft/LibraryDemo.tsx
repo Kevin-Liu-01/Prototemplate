@@ -10,7 +10,13 @@ import PillsDemo from './PillsDemo';
 import SeamDemo from './SeamDemo';
 import ThreadsDemo from './ThreadsDemo';
 import PrismaticField from '@/components/shared/PrismaticField';
-import { createDitherLoop, streakBands, type DitherLoopHandle } from '@/lib/dither';
+import {
+  createDitherLoop,
+  gradientRamp,
+  multiplyFields,
+  streakBands,
+  type DitherLoopHandle,
+} from '@/lib/dither';
 import { createGlyphField, type GlyphFieldHandle } from '@/lib/glyph-field';
 import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
 
@@ -114,10 +120,14 @@ export default function LibraryDemo({
 
       if (kind === 'dither') {
         /* the library's own defaults do the work: white ink, one device
-           pixel per cell at scale 3, CSS upscaling it pixelated */
+           pixel per cell at scale 3, CSS upscaling it pixelated; a ramp
+           multiplied in keeps the plate quiet under its corner tag */
         const loop: DitherLoopHandle = createDitherLoop(
           canvas,
-          streakBands({ bands: 22, waviness: 0.13, taper: 0.5 }),
+          multiplyFields(
+            streakBands({ bands: 18, duty: 0.4, waviness: 0.13, taper: 0.5 }),
+            gradientRamp({ angle: Math.PI / 2, from: 0.1, to: 0.85, smooth: true })
+          ),
           { scale: 3, paper: 'transparent', fps: 30 }
         );
         return () => loop.destroy();

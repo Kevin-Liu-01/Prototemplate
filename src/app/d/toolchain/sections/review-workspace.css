@@ -374,8 +374,10 @@
 .toolchain-root .tcr-rail {
   margin-top: auto;
   padding-top: 28px;
-  /* the bus lands in the frame's lower third, not on its corner */
-  margin-bottom: 26px;
+  /* seats the bus line on the CENTER of the frame's foot strip
+     (founder round: not just under its top border) — the foot is
+     ~30px tall, the bus draws 3px above the net's bottom edge */
+  margin-bottom: 12px;
 }
 
 .toolchain-root .tcr-rail-row {
@@ -484,15 +486,6 @@
   }
 }
 
-/* the active surface's real address, spoken above the row */
-.toolchain-root .tcr-rail-line {
-  margin-bottom: 10px;
-  min-height: 15px;
-  font-family: var(--tc-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.02em;
-  color: var(--tc-ink-4);
-}
 
 /* ---------- the faces ----------
    The web face stays in flow and gives the frame its height; the API

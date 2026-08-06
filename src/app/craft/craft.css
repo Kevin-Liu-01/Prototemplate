@@ -482,8 +482,16 @@
 
 /* the payload layer: full-width and pinned, revealed in place by the cut */
 .ptc-seam-under {
-  clip-path: inset(0 0 0 var(--seam-cut, 62%));
+  display: flex;
+  justify-content: flex-end;
+  clip-path: inset(0 0 0 var(--seam-cut, 58%));
   background: var(--color-ink-raised);
+}
+
+/* the payload column stands in the resting reveal zone, pinned */
+.ptc-seam-under-in {
+  width: 42%;
+  min-width: 300px;
 }
 
 .ptc-seam-under pre {
@@ -509,7 +517,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--seam-cut, 62%);
+  left: var(--seam-cut, 58%);
   z-index: 3;
   width: 18px;
   transform: translateX(-50%);
