@@ -123,6 +123,10 @@ export default function ReviewWorkspace({
 }: ReviewWorkspaceProps = {}) {
   const root = useRef<HTMLElement>(null);
   const [face, setFace] = useState<Surface>('web');
+  /* counts selections so the bus can replay its accent sweep on every
+     pick (a fresh key remounts the pulse); zero = never touched, so the
+     first paint stays still */
+  const [pulse, setPulse] = useState(0);
 
   useQuietReveal(root, chrome !== 'product');
 
@@ -514,7 +518,10 @@ export default function ReviewWorkspace({
                       className='tcr-door'
                       data-on={face === door.key || undefined}
                       type='button'
-                      onClick={() => setFace(door.key)}
+                      onClick={() => {
+                        setFace(door.key);
+                        setPulse((n) => n + 1);
+                      }}
                     >
                       <Icon aria-hidden className='tcr-door-ico' />
                       {door.name}
@@ -522,7 +529,9 @@ export default function ReviewWorkspace({
                   );
                 })}
               </div>
-              <i aria-hidden='true' className='tcr-rail-bus' />
+              <i aria-hidden='true' className='tcr-rail-bus'>
+                {pulse > 0 ? <i className='tcr-rail-pulse' key={pulse} /> : null}
+              </i>
             </div>
           ) : null}
         </div>

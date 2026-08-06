@@ -174,22 +174,6 @@ const OPEN = 26;
 const DROP = 64;
 
 /**
- * The pen-stroke chain's tempo (founder: each beat must read as ONE
- * continuous stroke — "blue line comes up; as soon as blue line is done,
- * the connector comes out of the blue line into code"). RAIL_RISE is the
- * arrival's haul up from the rail's empty foot; RAIL_HOP is one beat's
- * segment between junctions; BEND_DRAW/BEND_FOLD are the connector
- * leaving/rejoining the landed tip. The chain is STRICTLY SERIALIZED —
- * a bend never starts before its segment completes and the rail never
- * moves under a drawing bend — so these also set each beat's total
- * answer time (hop + draw ≈ 0.9s).
- */
-const RAIL_RISE = 1.0;
-const RAIL_HOP = 0.6;
-const BEND_DRAW = 0.3;
-const BEND_FOLD = 0.25;
-
-/**
  * THE MOBILE STAGE's cut (founder: on phones the story band read as a
  * plain text list with the diagram off screen — "you see the diagram on
  * top, 60% available height, and it's growing — and see the text for it
@@ -572,36 +556,19 @@ export default function V0FullStack() {
           }
         };
 
-        /* the channel's ledger: 0 means the rail rests EMPTY — the
-           arrival hasn't drawn yet, or retract() has drained it — which
-           is what the view gate keys the staged arrival and the jump
-           exit off; any built state records the current goal scale */
+        /* the channel's ledger: the fill's current scaleY target, so beat
+           01's ARRIVAL (the rise from the rail's empty foot) can be told
+           apart from an ordinary between-beats move */
         let railAt = 0;
-        /* the chain in flight: each beat change kills the previous chain
-           outright and re-derives from wherever the stroke actually is
-           (the fill's current scale, each bend's current offset) — a
-           stale chain's QUEUED links must never fire under the new one,
-           and overwrite-on-start alone cannot stop links that haven't
-           started yet */
-        let flight: gsap.core.Timeline | null = null;
 
-        /* One timeline per beat change coordinates the whole answer as a
-           PEN-STROKE CHAIN (founder: "blue line comes up; as soon as
-           blue line is done, the connector comes out of the blue line
-           into code" — one continuous stroke per beat, never two
-           disjoint things). Advancing: the beat's rail segment rises
-           FIRST, and the bend starts the INSTANT the tip lands — drawn
-           rail-outward from the exact junction (the bend's stub lies ON
-           the fill at the rail's own x and gauge, so the joint is
-           pixel-seamless) — one stroke running up the rail, turning, and
-           entering the plate. The plate itself settles during its
-           segment, so the bend always enters a seated surface. Receding
-           reverses the same chain: the bend folds back into the tip,
-           THEN the segment descends. STRICTLY SERIALIZED both ways — no
-           bend before its segment completes, no rail motion under a
-           drawing bend, no gap between the two — and every link aims at
-           an absolute target, so a fast scrub just rebuilds the chain
-           mid-flight from the stroke's actual position. */
+        /* One timeline per beat change coordinates the whole answer:
+           slabs the beat brings in settle from DROP above their seat,
+           bottom-up and staggered; slabs the beat removes (scrolling
+           back) rise out; slabs that stay glide to their new seat (the
+           lift, or the opening above the hot block). Every tween aims at
+           an absolute target with overwrite, so a fast scrub through
+           several windows just redirects mid-flight — no snap, no
+           flicker. */
         const setActive = (active: number, instant: boolean) => {
           paint(active);
           const count = VISIBLE_COUNT[active] ?? slabs.length;
@@ -611,226 +578,116 @@ export default function V0FullStack() {
           const hot = HOT_SLABS[active] ?? [];
           const set = new Set(hot);
           const top = hot.length > 0 ? Math.max(...hot) : -1;
-          const seatOf = (i: number) => (set.has(i) ? -LIFT : i > top ? -(LIFT + OPEN) : 0);
-          /* a bend's dash offset right now: 0 = threaded into its plate,
-             −100 = folded into the rail, between = mid-stroke */
-          const bendAt = (tap: SVGGElement) => Number(gsap.getProperty(tap, 'strokeDashoffset'));
 
-          flight?.kill();
+          /* is this the arrival — the fill rising from the rail's empty
+             foot? Every tap then waits for the tip (founder round 8: the
+             bend at the rail's tip must DRAW and CONNECT, never sit
+             pre-drawn on the track). tipAt() inverts the rise's 1.0s
+             power2.out to the moment the tip passes tap i, so each bend
+             draws exactly as the blue arrives under it. */
+          const rising = rail !== null && railAt === 0;
+          const target = RAIL_SCALE[count - 1] ?? 1;
+          const tipAt = (i: number) =>
+            1 - Math.sqrt(Math.max(0, 1 - (RAIL_SCALE[i] ?? 1) / target));
 
-          if (instant) {
-            /* the instant path always parks the rail EMPTY and every
-               bend FOLDED at its rail side (−100), so the arrival draws
-               the whole chain in sequence — never a pre-drawn corner
-               waiting on the grey track for the fill to reach it */
-            slabs.forEach((slab, i) => {
-              const visible = i < count;
-              gsap.set(slab, {
-                y: visible ? seatOf(i) : seatOf(i) - dropBy,
-                autoAlpha: visible ? 1 : 0,
-              });
-              const tap = taps[i];
-              if (tap) gsap.set(tap, { strokeDashoffset: -100 });
-              shown[i] = visible;
-            });
-            if (rail) gsap.set(rail, { scaleY: 0, svgOrigin: RAIL_ORIGIN });
-            flight = null;
-            railAt = 0;
-            return;
-          }
-
-          const goal = RAIL_SCALE[count - 1] ?? 1;
-          /* where the stroke actually is right now — a redirect chains
-             on from here, never from the last call's target */
-          const from = rail ? Number(gsap.getProperty(rail, 'scaleY')) : goal;
           const tl = gsap.timeline({ defaults: { overwrite: 'auto' } });
-          flight = tl;
-          /* the chain's clock, and the tip's last landing */
-          let pos = 0;
-          let cursor = from;
-
-          if (goal >= from - 1e-4) {
-            /* ADVANCING, bottom-up: every visible beat whose bend is
-               still folded is a chain stop — the segment rises to its
-               junction, lands, and only then the bend continues out of
-               the tip into the plate. Beat 01's arrival is simply the
-               first link, rising from the empty foot (even a deep link
-               rises: the landing beat's trigger fires right after
-               creation and finds the rail at 0, and the whole chain
-               plays through, beat by beat). The rise and the build
-               channel are one rect, so arrival and hops share the seam-
-               free fill. */
-            slabs.forEach((slab, i) => {
-              if (i >= count) return;
-              const entering = !shown[i];
-              const tap = taps[i];
-              const folded = tap ? Math.abs(bendAt(tap)) > 0.5 : false;
-              if (rail && tap && folded) {
-                const stop = RAIL_SCALE[i] ?? goal;
-                /* the arrival's haul decelerates up from the empty foot;
-                   ordinary hops ease out of and into a landing */
-                const haul = cursor <= 1e-3;
-                const segDur = Math.abs(stop - cursor) < 1e-4 ? 0 : haul ? RAIL_RISE : RAIL_HOP;
-                if (segDur > 0) {
-                  tl.to(
-                    rail,
-                    {
-                      scaleY: stop,
-                      svgOrigin: RAIL_ORIGIN,
-                      duration: segDur,
-                      ease: haul ? 'power2.out' : 'power2.inOut',
-                    },
-                    pos
-                  );
-                }
-                /* the plate settles DURING its segment (its 0.5s drop is
-                   shorter than any segment, so it is seated before the
-                   bend enters it); a staying plate glides from the
-                   chain's start */
-                tl.to(
-                  slab,
-                  {
-                    y: seatOf(i),
-                    autoAlpha: 1,
-                    duration: entering ? 0.5 : 0.55,
-                    ease: entering ? 'power2.out' : 'power3.out',
-                  },
-                  entering ? pos : 0
-                );
-                pos += segDur;
-                /* the bend: out of the landed tip, into the plate — no
-                   gap, no overlap. autoRound off: rounded dash offsets
-                   step, fractional ones glide (see the orbit's note) */
+          let entered = 0;
+          slabs.forEach((slab, i) => {
+            const visible = i < count;
+            const seat = set.has(i) ? -LIFT : i > top ? -(LIFT + OPEN) : 0;
+            const tap = taps[i];
+            if (instant) {
+              /* the instant path always parks the rail EMPTY, so visible
+                 plates' taps park hidden on the RAIL side (−100): the
+                 arrival draws each bend rail-outward as the tip passes,
+                 instead of the fill rising into a pre-drawn corner */
+              gsap.set(slab, { y: visible ? seat : seat - dropBy, autoAlpha: visible ? 1 : 0 });
+              if (tap) gsap.set(tap, { strokeDashoffset: visible ? -100 : 100 });
+            } else if (visible && !shown[i]) {
+              /* arriving: the plate drops in from above its seat,
+                 bottom-up; once it settles, its tap DRAWS itself — out of
+                 the layer, through the elbow, into the rail (founder) —
+                 and on the arrival the draw begins only AFTER the fill's
+                 tip has passed its junction (founder: the blue extends up
+                 first, THEN the bend flows out of the rail — the two
+                 never meet at the same spot). autoRound off: rounded dash
+                 offsets step, fractional ones glide (see the orbit's
+                 note). */
+              const at = entered * 0.14;
+              tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, at);
+              if (tap) {
+                /* the bend NEVER leaves before the blue does (founder: the
+                   line comes up; as soon as it is done, the connector comes
+                   out of it) — on the arrival that moment is the tip's
+                   pass, and on an ordinary extension it is the 0.6s
+                   landing, so the draw clamps to whichever gate its move
+                   answers to */
                 tl.to(
                   tap,
-                  { strokeDashoffset: 0, duration: BEND_DRAW, ease: 'power2.out', autoRound: false },
-                  pos
+                  { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
+                  rising ? Math.max(at + 0.5, tipAt(i) + 0.07) : Math.max(at + 0.5, 0.62)
                 );
-                pos += BEND_DRAW;
-                cursor = stop;
-              } else {
-                /* already threaded: just glide to the beat's new seat */
-                tl.to(
-                  slab,
-                  {
-                    y: seatOf(i),
-                    autoAlpha: 1,
-                    duration: entering ? 0.5 : 0.55,
-                    ease: entering ? 'power2.out' : 'power3.out',
-                  },
-                  0
-                );
-                /* no rail in the markup (degenerate): the bend still has
-                   to reach its drawn state once the plate has seated */
-                if (!rail && tap && folded) {
-                  tl.to(
-                    tap,
-                    { strokeDashoffset: 0, duration: BEND_DRAW, ease: 'power2.out', autoRound: false },
-                    0.5
-                  );
-                }
               }
-              shown[i] = true;
-            });
-            /* crossfire only — a forward redirect catching plates mid-
-               teardown above the new count: their junctions sit above
-               the goal, so fold the bends and let the plates rise out in
-               parallel with the chain below */
-            slabs.forEach((slab, i) => {
-              if (i < count || !shown[i]) return;
-              const tap = taps[i];
-              if (tap && bendAt(tap) > -99.5) {
+              entered += 1;
+            } else if (visible) {
+              /* staying: glide to the new seat. The tap normalizes drawn
+                 — parked at −100 it draws RAIL-OUTWARD (the bend flowing
+                 off the already-blue track), and on the arrival that draw
+                 starts a breath AFTER the tip clears its tap point — the
+                 rise reads whole before any bend leaves the rail */
+              tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.55, ease: 'power3.out' }, 0);
+              if (tap) {
                 tl.to(
                   tap,
-                  { strokeDashoffset: -100, duration: BEND_FOLD, ease: 'power1.in', autoRound: false },
+                  { strokeDashoffset: 0, duration: 0.3, autoRound: false },
+                  rising ? tipAt(i) + 0.07 : 0
+                );
+              }
+            } else {
+              /* leaving: the tap retracts the reverse way — rail end
+                 first, back into the layer — as the plate rises out */
+              tl.to(slab, { y: seat - dropBy, autoAlpha: 0, duration: 0.35, ease: 'power2.in' }, 0);
+              if (tap) {
+                tl.to(
+                  tap,
+                  { strokeDashoffset: 100, duration: 0.25, ease: 'power2.in', autoRound: false },
                   0
                 );
               }
-              tl.to(
-                slab,
-                { y: seatOf(i) - dropBy, autoAlpha: 0, duration: 0.35, ease: 'power2.in' },
-                BEND_FOLD
-              );
-              shown[i] = false;
-            });
-          } else {
-            /* RECEDING, top-down — the same chain read backward, beat by
-               beat (founder: scroll-back reverses the stroke): the bend
-               folds back into the tip FIRST, and only then does the
-               segment descend to the junction below, the plate rising
-               out alongside the descent — never an orphan corner on the
-               grey track, never a bend under a moving rail */
-            for (let i = slabs.length - 1; i >= count; i -= 1) {
-              const slab = slabs[i];
-              const tap = taps[i];
-              if (slab && shown[i]) {
-                if (tap && bendAt(tap) > -99.5) {
-                  tl.to(
-                    tap,
-                    {
-                      strokeDashoffset: -100,
-                      duration: BEND_FOLD,
-                      ease: 'power1.in',
-                      autoRound: false,
-                    },
-                    pos
-                  );
-                  pos += BEND_FOLD;
-                }
-                tl.to(
-                  slab,
-                  { y: seatOf(i) - dropBy, autoAlpha: 0, duration: 0.35, ease: 'power2.in' },
-                  pos
-                );
-                if (rail) {
-                  const stop = RAIL_SCALE[i - 1] ?? 0;
-                  if (Math.abs(stop - cursor) > 1e-4) {
-                    tl.to(
-                      rail,
-                      {
-                        scaleY: stop,
-                        svgOrigin: RAIL_ORIGIN,
-                        duration: RAIL_HOP,
-                        ease: 'power2.inOut',
-                      },
-                      pos
-                    );
-                    pos += RAIL_HOP;
-                    cursor = stop;
-                  }
-                }
-              }
-              shown[i] = false;
             }
-            /* the beats that stay glide to their new seats; a bend a
-               redirect left folded re-threads only after the chain's
-               rail motion has ended (its junction is inside the fill) */
-            slabs.forEach((slab, i) => {
-              if (i >= count) return;
-              tl.to(slab, { y: seatOf(i), autoAlpha: 1, duration: 0.55, ease: 'power3.out' }, 0);
-              const tap = taps[i];
-              if (tap && Math.abs(bendAt(tap)) > 0.5) {
-                tl.to(
-                  tap,
-                  { strokeDashoffset: 0, duration: BEND_DRAW, ease: 'power2.out', autoRound: false },
-                  pos
-                );
-              }
-              shown[i] = true;
-            });
-          }
+            shown[i] = visible;
+          });
 
-          /* the tip's last leg, when no stop carried it to the goal (a
-             redirect that left the rail short of an already-threaded
-             junction) — scheduled after every bend, never under one */
-          if (rail && Math.abs(goal - cursor) > 1e-4) {
-            tl.to(
-              rail,
-              { scaleY: goal, svgOrigin: RAIL_ORIGIN, duration: RAIL_HOP, ease: 'power2.inOut' },
-              pos
-            );
+          /* the rail's accent channel, inside the cell-height strokes.
+             Born EMPTY (the instant path parks it at 0): beat 01's
+             lock-in is what draws the arrival — the blue RISES from the
+             rail's bottom end, decelerating into the code plate's tap —
+             and because the rise and the build channel are one rect, the
+             arrival hands off to the ordinary extend/retract moves with
+             no seam. Even a deep link rises: the landing beat's trigger
+             fires right after creation and finds the rail at 0. */
+          if (rail) {
+            if (instant) {
+              gsap.set(rail, { scaleY: 0, svgOrigin: RAIL_ORIGIN });
+              railAt = 0;
+            } else {
+              const scaleY = RAIL_SCALE[count - 1] ?? 1;
+              /* the rise is 1.0s: entering taps park their draws at 0.8+
+                 (above), so the fill's tip has passed every tap before
+                 its leader's rail end lands */
+              tl.to(
+                rail,
+                {
+                  scaleY,
+                  svgOrigin: RAIL_ORIGIN,
+                  duration: rising ? 1.0 : 0.6,
+                  ease: rising ? 'power2.out' : 'power2.inOut',
+                },
+                0
+              );
+              railAt = scaleY;
+            }
           }
-          railAt = goal;
         };
 
         /* the story opens on its foundation: the code slab, alone, before
@@ -842,49 +699,36 @@ export default function V0FullStack() {
            one's holds until it leaves, so even an instant jump (keyboard
            End, a fast fling) always lands inside exactly one window and
            the state can never go stale */
-        /* scrolled back out above the band: the arrival reverses as the
-           SAME chain read backward — each threaded bend folds into the
-           tip FIRST, then the rail descends to the junction below and
-           folds there too, and after the lowest bend the line dives off
-           its empty foot, ready to rise again on the next lock-in. The
-           plates stay; only the blue leaves. Serialized like every other
-           chain: no rail motion under a folding bend. Wired to BOTH
-           exits that can pass the band's top: beat 01's window (the
-           gradual scroll-up, while the figure is still partly on screen)
-           and the view gate below (an instant jump from a deeper beat,
-           which never re-toggles beat 01). */
+        /* scrolled back out above the band: the arrival reverses — the
+           line retracts down the rail to its foot, ready to rise again on
+           the next lock-in. Wired to BOTH exits that can pass the band's
+           top: beat 01's window (the gradual scroll-up, while the figure
+           is still partly on screen) and the view gate below (an instant
+           jump from a deeper beat, which never re-toggles beat 01). */
         const retract = () => {
           if (!rail) return;
-          flight?.kill();
+          const from = railAt;
           const tl = gsap.timeline({ defaults: { overwrite: 'auto' } });
-          flight = tl;
-          let pos = 0;
-          for (let i = taps.length - 1; i >= 0; i -= 1) {
-            /* unthreaded rows have nothing to fold */
-            if (!shown[i]) continue;
-            const tap = taps[i];
-            if (tap && Number(gsap.getProperty(tap, 'strokeDashoffset')) > -99.5) {
-              tl.to(
-                tap,
-                { strokeDashoffset: -100, duration: BEND_FOLD, ease: 'power1.in', autoRound: false },
-                pos
-              );
-              pos += BEND_FOLD;
-            }
-            if (i > 0 && shown[i - 1]) {
-              /* descend to the next threaded junction — a step quicker
-                 than the story's hops; the drain plays at the band's
-                 edge, not under the read line */
-              tl.to(
-                rail,
-                { scaleY: RAIL_SCALE[i - 1] ?? 0, svgOrigin: RAIL_ORIGIN, duration: 0.4, ease: 'power2.inOut' },
-                pos
-              );
-              pos += 0.4;
-            }
-          }
-          /* the last dive: down the track and off the empty foot */
-          tl.to(rail, { scaleY: 0, svgOrigin: RAIL_ORIGIN, duration: 0.7, ease: 'power2.in' }, pos);
+          tl.to(
+            rail,
+            { scaleY: 0, svgOrigin: RAIL_ORIGIN, duration: 0.7, ease: 'power2.in' },
+            0
+          );
+          /* the bends leave WITH the line (founder round 8, "the reverse
+             on retract"): each still-shown tap collapses into the tip as
+             it descends past — vertex end first, curling off through the
+             elbow — never an orphan corner on the grey track. The timing
+             inverts the 0.7s power2.in fall to the tip's pass. */
+          taps.forEach((tap, i) => {
+            if (!shown[i]) return;
+            const down =
+              from > 0 ? 0.7 * Math.sqrt(Math.max(0, 1 - (RAIL_SCALE[i] ?? 1) / from)) : 0;
+            tl.to(
+              tap,
+              { strokeDashoffset: -100, duration: 0.25, ease: 'power1.in', autoRound: false },
+              Math.max(0, down - 0.2)
+            );
+          });
           railAt = 0;
         };
 
@@ -1048,7 +892,6 @@ export default function V0FullStack() {
               beat.style.removeProperty('visibility');
             }
           }
-          flight?.kill();
           capTl?.kill();
           viewGate.kill();
           for (const loop of waveLoops) loop.kill();

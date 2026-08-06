@@ -418,14 +418,23 @@
   background: color-mix(in srgb, var(--tc-accent) 10%, transparent);
 }
 
-/* the risers: every door drops one accent line to the bus below */
+/* the risers: every door drops to the bus on the house DOUBLED line —
+   two 1px threads at a 2px gap (the dev threads' 4px-minus-2px-core
+   gauge, drawn here as borders on a 2px core). They rest in the rail
+   ink; the chosen door's riser takes the accent. */
 .toolchain-root .tcr-door::after {
   content: '';
   position: absolute;
   top: 100%;
-  left: 50%;
-  height: 14px;
-  border-left: 1px solid var(--tc-accent);
+  left: calc(50% - 2px);
+  width: 2px;
+  height: 13px;
+  border-inline: 1px solid var(--tc-hair);
+  transition: border-color 0.25s ease;
+}
+
+.toolchain-root .tcr-door[data-on]::after {
+  border-color: var(--tc-accent);
 }
 
 .toolchain-root .tcr-door-ico {
@@ -434,12 +443,51 @@
   flex: none;
 }
 
-/* the bus: one accent line under all three doors, crossing the grid
-   gap — the same clamp as the gap, so it lands exactly on the frame */
+/* the bus: the same doubled line under all three doors, crossing the
+   grid gap — the same clamp as the gap, so it lands exactly on the
+   frame. It rests in the rail ink; selection sends the blue down it
+   (the pulse below). */
 .toolchain-root .tcr-rail-bus {
+  position: relative;
   display: block;
+  height: 2px;
   margin-right: calc(-1 * clamp(28px, 4vw, 56px));
-  border-top: 1px solid var(--tc-accent);
+  border-block: 1px solid var(--tc-hair);
+}
+
+/* the blue effect: on every pick a doubled accent segment runs the bus
+   left to right into the frame — remounted per selection (keyed), so it
+   replays each time and rests at nothing */
+.toolchain-root .tcr-rail-pulse {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -64px;
+  width: 64px;
+  border-block: 1px solid var(--tc-accent);
+  animation: tcr-pulse-run 0.9s ease-out forwards;
+}
+
+@keyframes tcr-pulse-run {
+  0% {
+    left: -64px;
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .tcr-rail-pulse {
+    display: none;
+  }
 }
 
 /* the active surface's real address, spoken above the row */

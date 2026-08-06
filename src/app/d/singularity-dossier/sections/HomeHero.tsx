@@ -332,22 +332,73 @@ export default function HomeHero() {
           guideL.className = 'tc-eg is-l';
           const guideR = document.createElement('span');
           guideR.className = 'tc-eg is-r';
-          const dust = document.createElement('span');
+          /* THE DUST IS A CANVAS (founder: same visuals, no lag): 440
+             tweened DOM spans cost a style recalc per glyph per tick —
+             the pool is now plain particle objects driven by the very
+             same tweens, drawn once per frame by one ticker. Grain,
+             alphas, staggers and eases are carried over verbatim. */
+          type Mote = { ch: string; x: number; y: number; a: number };
+          const parts: Mote[] = Array.from({ length: 440 }, (_, i) => ({
+            ch: DUST[i % DUST.length] ?? '',
+            x: 0,
+            y: 0,
+            a: 0,
+          }));
+          const dust = document.createElement('canvas');
           dust.className = 'tc-edust';
-          for (let i = 0; i < 440; i++) {
-            const g = document.createElement('span');
-            g.textContent = DUST[i % DUST.length] ?? '';
-            /* glyph-field fidelity at SENTENCE scale (founder round: the
-               assembled swarm should read as the text): the pool runs
-               three words deep and the grain one step finer, so the
-               sampler's adaptive pitch settles back down at glyph size
-               and the landed swarm traces the whole line's letterforms
-               instead of sketching them */
-            g.style.fontSize = '0.105em';
-            dust.appendChild(g);
-          }
+          dust.style.cssText =
+            'position:absolute;left:0;top:0;pointer-events:none;';
+          dust.setAttribute('aria-hidden', 'true');
           em.append(guideL, guideR, dust);
-          const dustGlyphs = Array.from(dust.children) as HTMLElement[];
+          const dctx = dust.getContext('2d');
+          const cdpr = Math.min(2, dpr);
+          let dustFont = '';
+          let dustInk = '';
+          const sizeDust = () => {
+            const host = em.parentElement ?? em;
+            const bw = Math.ceil(host.getBoundingClientRect().width) + 20;
+            const bh = Math.ceil(em.offsetHeight) + 8;
+            if (dust.width !== bw * cdpr || dust.height !== bh * cdpr) {
+              dust.width = bw * cdpr;
+              dust.height = bh * cdpr;
+              dust.style.width = `${bw}px`;
+              dust.style.height = `${bh}px`;
+            }
+            const ws = getComputedStyle(word);
+            dustFont = `400 ${parseFloat(ws.fontSize) * 0.105}px ${ws.fontFamily}`;
+            dustInk = getComputedStyle(em).color;
+          };
+          let drawing = false;
+          const draw = () => {
+            if (!dctx) return;
+            dctx.setTransform(cdpr, 0, 0, cdpr, 0, 0);
+            dctx.clearRect(0, 0, dust.width, dust.height);
+            dctx.font = dustFont;
+            dctx.fillStyle = dustInk;
+            dctx.textAlign = 'center';
+            dctx.textBaseline = 'middle';
+            for (const m of parts) {
+              if (m.a <= 0.015) continue;
+              dctx.globalAlpha = m.a;
+              dctx.fillText(m.ch, m.x, m.y);
+            }
+            dctx.globalAlpha = 1;
+          };
+          const wake = () => {
+            if (drawing) return;
+            drawing = true;
+            sizeDust();
+            gsap.ticker.add(draw);
+          };
+          const sleep = () => {
+            if (!drawing) return;
+            drawing = false;
+            gsap.ticker.remove(draw);
+            if (dctx) {
+              dctx.setTransform(1, 0, 0, 1, 0, 0);
+              dctx.clearRect(0, 0, dust.width, dust.height);
+            }
+          };
 
           /* the dither veil: a blue-shifted twin of the word behind the
              Bayer-tile alpha mask — it fades in and out around each print
@@ -377,7 +428,14 @@ export default function HomeHero() {
              the pitch upward until the point count fits the pool. Every
              returned point is real ink; the swarm traces the word
              exactly, at a density the pool can actually cover. */
+          /* the rasterize-and-scan is the one synchronous hitch at a phase
+             boundary — cached by (text, width), it runs once per locale
+             per size and every later cycle reads warm */
+          const ptsCache = new Map<string, { x: number; y: number }[]>();
           const sampleShape = (text: string, width: number, height: number, count: number) => {
+            const key = `${text}@${Math.round(width)}x${Math.round(height)}`;
+            const hit = ptsCache.get(key);
+            if (hit) return hit;
             const style = getComputedStyle(word);
             const scale = 2;
             const cw = Math.max(Math.ceil(width * 1.25) + 24, 10) * scale;
@@ -421,7 +479,17 @@ export default function HomeHero() {
               const fit = width / maxX;
               for (const pt of pts) pt.x *= fit;
             }
+            ptsCache.set(key, pts);
             return pts;
+          };
+          /* pre-warm the target's letterforms off the hot path, while the
+             dissolve has the floor */
+          const warmTarget = () => {
+            const goal = target;
+            gsap.delayedCall(0.08, () => {
+              if (goal !== target || !em.isConnected) return;
+              sampleShape(goal.text, measure(goal), em.offsetHeight, parts.length);
+            });
           };
 
           /* ---- the two-phase engine (founder rounds) ----
@@ -441,13 +509,10 @@ export default function HomeHero() {
 
           const cloudX = (w: number) => () =>
             gsap.utils.clamp(3, w - 3, gsap.utils.random(0.03, 0.97) * w);
-          /* dust glyphs REST at top:40% of the box (hero-every.css), so a
-             transform of y renders at 0.4h + y. Centring the cloud on the
-             box's optical middle means the transform range must sit BELOW
-             zero as much as above: rendered [0.19h, 0.81h] → y in
-             [-0.26h, 0.36h] (founder rounds: the dust pooled low twice —
-             this is the measured correction, not a guess) */
-          const cloudY = (h: number) => () => gsap.utils.random(h * -0.26, h * 0.36);
+          /* canvas coordinates are absolute: the cloud band IS its rendered
+             band — [0.19h, 0.81h], symmetric about the optical middle
+             (the measured window from the founder's centring rounds) */
+          const cloudY = (h: number) => () => gsap.utils.random(h * 0.19, h * 0.81);
 
           const formPhase = () => {
             if (!root.current || !root.current.isConnected) return;
@@ -462,6 +527,7 @@ export default function HomeHero() {
                 killForm = null;
                 phase = 'idle';
                 morphing = false;
+                sleep();
                 holdWidth();
                 /* a debounced trailing target that landed as we closed */
                 if (target.text !== current.text) act(target);
@@ -474,7 +540,7 @@ export default function HomeHero() {
             // continuous tween, quantized to device pixels — while the cloud
             // re-distributes across the new span
             tl.to(em, { width: w1, duration: 0.7, ease: 'power2.inOut', snap: { width: 1 / dpr } }, 0);
-            tl.to(dustGlyphs, {
+            tl.to(parts, {
               x: cloudX(Math.max(w1, 30)),
               y: cloudY(h),
               duration: 0.7,
@@ -493,26 +559,26 @@ export default function HomeHero() {
             const PRINT = 1.0;
             tl.add(() => {
               const hh = em.offsetHeight;
-              const pts = sampleShape(goal.text, w1, hh, dustGlyphs.length);
+              const pts = sampleShape(goal.text, w1, hh, parts.length);
               const span = Math.max(w1, 1);
-              dustGlyphs.forEach((g, i) => {
+              parts.forEach((g, i) => {
                 const pt = pts[i];
                 if (!pt) {
-                  gsap.to(g, { autoAlpha: 0, duration: 0.14, ease: 'power1.out' });
+                  gsap.to(g, { a: 0, duration: 0.14, ease: 'power1.out' });
                   return;
                 }
                 const u = goal.rtl ? 1 - pt.x / span : pt.x / span;
                 gsap.to(g, {
-                  x: pt.x - g.offsetWidth / 2,
-                  y: pt.y - hh * 0.4 - g.offsetHeight / 2,
-                  autoAlpha: 1,
+                  x: pt.x,
+                  y: pt.y,
+                  a: 1,
                   duration: LAND,
                   ease: 'power3.inOut',
                   delay: u * LAND_SPREAD,
                 });
                 const landEnd = u * LAND_SPREAD + LAND;
                 gsap.to(g, {
-                  autoAlpha: 0,
+                  a: 0,
                   duration: 0.08,
                   ease: 'none',
                   overwrite: 'auto',
@@ -558,7 +624,7 @@ export default function HomeHero() {
             });
             tl.to({}, { duration: PRINT_AT + PRINT + 0.45 });
             /* the timeline sweeps the pool dark AFTER the front has passed */
-            tl.to(dustGlyphs, { autoAlpha: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
+            tl.to(parts, { a: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
             /* founder: the guides leave FAST — a lingering frame reads as chrome */
             tl.to([guideL, guideR], { opacity: 0, duration: 0.07, ease: 'none' }, '>-0.05');
 
@@ -570,7 +636,7 @@ export default function HomeHero() {
               printCall = null;
               veilTl?.kill();
               veilTl = null;
-              gsap.killTweensOf(dustGlyphs);
+              gsap.killTweensOf(parts);
               gsap.killTweensOf([word, veil, em]);
               gsap.set(word, { clearProps: 'clipPath' });
             };
@@ -583,7 +649,9 @@ export default function HomeHero() {
             const w0 = measure(current);
             const h = em.offsetHeight;
             /* the outgoing sentence pixelates: seat the dust on ITS ink */
-            const pts0 = sampleShape(current.text, w0, h, dustGlyphs.length);
+            const pts0 = sampleShape(current.text, w0, h, parts.length);
+            wake();
+            warmTarget();
             const tl = gsap.timeline({
               onComplete: () => {
                 tlLive = null;
@@ -593,21 +661,19 @@ export default function HomeHero() {
             tlLive = tl;
             tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' }, 0);
             tl.add(() => {
-              dustGlyphs.forEach((g, i) => {
+              parts.forEach((g, i) => {
                 const pt = pts0.length ? pts0[i % pts0.length] : undefined;
-                gsap.set(g, {
-                  x: (pt ? pt.x : w0 / 2) - g.offsetWidth / 2,
-                  y: (pt ? pt.y : h * 0.45) - h * 0.4 - g.offsetHeight / 2,
-                  autoAlpha: 0,
-                });
+                g.x = pt ? pt.x : w0 / 2;
+                g.y = pt ? pt.y : h * 0.45;
+                g.a = 0;
               });
             }, 0);
             seatVeil();
             tl.to(veil, { autoAlpha: 0.7, duration: 0.22, ease: 'power1.out', overwrite: 'auto' }, 0.05);
             /* glyphs materialize ON the letterforms while the ink sinks —
                the text reads as BECOMING the glyphs, not fading beside them */
-            tl.to(dustGlyphs, {
-              autoAlpha: () => gsap.utils.random(0.5, 0.95),
+            tl.to(parts, {
+              a: () => gsap.utils.random(0.5, 0.95),
               duration: 0.3,
               stagger: { amount: 0.16 },
               ease: 'power1.in',
@@ -616,8 +682,8 @@ export default function HomeHero() {
             tl.to(veil, { autoAlpha: 0, duration: 0.3, ease: 'power2.in', overwrite: 'auto' }, '<+=0.04');
             /* ...then the swarm DISPERSES into a distributed cloud across
                the whole line box before anything re-forms */
-            tl.to(dustGlyphs, {
-              autoAlpha: () => gsap.utils.random(0.3, 0.75),
+            tl.to(parts, {
+              a: () => gsap.utils.random(0.3, 0.75),
               x: cloudX(Math.max(w0, 30)),
               y: cloudY(h),
               duration: 0.55,
@@ -629,6 +695,8 @@ export default function HomeHero() {
           const reDissolve = () => {
             phase = 'dissolve';
             morphing = true;
+            wake();
+            warmTarget();
             const w = Math.max(em.offsetWidth, 30);
             const h = em.offsetHeight;
             const tl = gsap.timeline({
@@ -640,8 +708,8 @@ export default function HomeHero() {
             tlLive = tl;
             tl.to([word, veil], { autoAlpha: 0, duration: 0.18, ease: 'power2.in' }, 0);
             tl.to([guideL, guideR], { opacity: 0.4, duration: 0.15, ease: 'none' }, 0);
-            tl.to(dustGlyphs, {
-              autoAlpha: () => gsap.utils.random(0.3, 0.75),
+            tl.to(parts, {
+              a: () => gsap.utils.random(0.3, 0.75),
               x: cloudX(w),
               y: cloudY(h),
               duration: 0.32,

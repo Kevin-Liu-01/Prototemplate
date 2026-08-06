@@ -196,19 +196,17 @@ const TAP_STUB = 14;
 /* ---- the plate geometry, once per footprint -------------------------------
    Two footprints share the one drawing system: the base plate and the
    agents capstone. Everything derives from the size — hull, the three lit
-   faces, the front edge, and the rail tap. The tap PATH still runs from
-   the plate down to the rail stub, but the DRAW runs rail-first (founder:
-   one continuous stroke per beat — "blue line comes up; as soon as blue
-   line is done, the connector comes out of the blue line into code"):
-   FullStack parks each bend at dash offset −100 and draws it to 0, which
-   grows the stroke from the path's rail END — the stub lying ON the fill
-   at the exact junction where the rail's tip has just landed — up through
-   the elbow, into the plate; pathLength is normalized to 100 in the
-   markup, so the draw targets are percentages of the tap. The run ends
-   PAST the plate's OWN left vertex (+2, buried under the opaque hull
-   drawn after it in the same SVG), so tap and plate meet with no
-   anti-aliasing seam where the rounding recedes — the capstone's leader
-   lands on the capstone's vertex, never on the base footprint's. */
+   faces, the front edge, and the rail tap. The tap's grammar is unchanged:
+   its run STARTS at the plate and ENDS down the rail, because the tap
+   draws itself out of the layer (founder: "animate it coming out of the
+   layer going into the rail") — a dash-offset run from the buried butt
+   end, out through the elbow, into the rail's fill; pathLength is
+   normalized to 100 in the markup, so FullStack's draw targets are
+   percentages of the tap. The run ends PAST the plate's OWN left vertex
+   (+2, buried under the opaque hull drawn after it in the same SVG), so
+   tap and plate meet with no anti-aliasing seam where the rounding
+   recedes — the capstone's leader lands on the capstone's vertex, never
+   on the base footprint's. */
 type PlateGeo = {
   hull: string;
   top: string;
