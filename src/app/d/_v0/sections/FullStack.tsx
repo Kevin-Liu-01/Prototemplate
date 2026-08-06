@@ -11,10 +11,13 @@ import GtLogoText from '@/app/d/_v0/GtLogoText';
 
 import StackTower, {
   beamAt,
+  RAIL_FOOT,
   RAIL_ORIGIN,
   RAIL_SCALE,
+  RAIL_TOP,
   SHINE_FROM,
   SHINE_TO,
+  TOWER_H,
   TOWER_LAYERS,
 } from './StackTower';
 
@@ -313,6 +316,12 @@ export default function V0FullStack() {
            no-preference machinery, at phone and desktop widths alike */
         if (!mctx.conditions?.motion) return;
         const staged = !!mctx.conditions?.stage;
+        /* the stage's layout class lands FIRST (fullstack.css keys the
+           whole stage relayout on it): everything measured below — the
+           arrival's px mapping, the pen's reserved line seats — must
+           read the STAGE's geometry, so the class can never trail the
+           story build */
+        if (staged) scope.classList.add('is-stage');
         /* the one shared constant the stage narrows: see STAGE_DROP */
         const dropBy = staged ? STAGE_DROP : DROP;
         /* which slabs exist right now — the build's one piece of state,
@@ -526,6 +535,72 @@ export default function V0FullStack() {
            apart from an ordinary between-beats move */
         let railAt = 0;
 
+        /* ===== THE RAIL'S REACH ON THE STAGE (founder: "make the blue
+           line extend all the way towards the bottom and emerge from
+           the bottom" — the desktop fill's rise starts at the figure
+           CELL's bottom rule, but the stage's fig cell ends at the 60%
+           zone seam, so the blue foot floated mid-screen). The text
+           cell already continues the grey track to the stage's bottom
+           edge (fullstack.css's ::before); the blue now continues too:
+           a stage-only extension element (.v0sm-railext) in the text
+           cell — same x, same gauge, same containing block as the track
+           continuation, so the joint can never jog — anchored at the
+           cell's foot and scaled bottom-up. ONE dial drives the whole
+           arrival: it moves the line's top edge in SCREEN px from the
+           stage's bottom edge up to the code tap, and maps that one
+           position onto BOTH fills every frame — the extension holds
+           the run from the foot to the zone seam, the overlay fill from
+           the seam up (everything below the seam sits under the fig
+           cell's clip) — so the two surfaces can never disagree and the
+           rise crosses the joint at constant speed, one line, no seam.
+           The dial is a STORY EVENT (it replaces the stage's beat-01
+           rail leg at the same duration and ease), so scrubs, reversals
+           and retracts play it like any other frame of the story; it
+           ends at RAIL_SCALE[0] algebraically, so the tap junctions
+           above never move, and beats 02–04 tween the overlay fill
+           exactly as on desktop. */
+        const railExt = staged
+          ? scope.querySelector<HTMLElement>('.v0sm-railext')
+          : null;
+        const railCell = scope.querySelector<HTMLElement>('.v0-stack-cell-rail');
+        const railSvg = scope.querySelector<SVGSVGElement>('.v0s-railsvg');
+        const RAIL_UNITS = RAIL_FOOT - RAIL_TOP;
+        /* px measurements as same-frame DIFFERENCES only, so the scroll
+           position can never leak into the mapping; re-measured on every
+           ScrollTrigger refresh (the stage re-lays with dvh) */
+        const arrGeo = { ppu: 0, footDy: 0, extH: 0, ready: false };
+        const measureArrival = () => {
+          if (!railSvg || !railCell) return;
+          const svgR = railSvg.getBoundingClientRect();
+          const cellR = railCell.getBoundingClientRect();
+          if (svgR.height <= 0 || cellR.height <= 0) return;
+          arrGeo.ppu = svgR.height / TOWER_H;
+          arrGeo.footDy = cellR.bottom - svgR.top;
+          arrGeo.extH = cellR.height;
+          arrGeo.ready = true;
+        };
+        const arrival = { t: 0 };
+        const applyArrival = () => {
+          if (!rail || !railExt) return;
+          if (!arrGeo.ready) measureArrival();
+          if (!arrGeo.ready) return;
+          /* the code tap's screen seat, derived from RAIL_SCALE[0]
+             itself, so t = 1 lands the leg exactly where the desktop
+             leg lands */
+          const tapDy = (RAIL_FOOT - (RAIL_SCALE[0] ?? 1) * RAIL_UNITS) * arrGeo.ppu;
+          const dy = arrGeo.footDy + (tapDy - arrGeo.footDy) * arrival.t;
+          gsap.set(rail, {
+            scaleY: (RAIL_FOOT - dy / arrGeo.ppu) / RAIL_UNITS,
+            svgOrigin: RAIL_ORIGIN,
+          });
+          gsap.set(railExt, {
+            scaleY: gsap.utils.clamp(0, 1, (arrGeo.footDy - dy) / arrGeo.extH),
+          });
+        };
+        if (railExt) {
+          gsap.set(railExt, { transformOrigin: '50% 100%', scaleY: 0 });
+        }
+
         /* THE STORY (founder, five round-trips, closing with: "stop
            having these weird instances where the line is just moving
            around but doesn't commit… make everything more perfectly
@@ -570,16 +645,27 @@ export default function V0FullStack() {
           story.to(slab, { y: -LIFT, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, base);
           story.set(slab, { zIndex: slabs.length + 1 + k }, base + 0.5);
           if (rail) {
-            story.to(
-              rail,
-              {
-                scaleY: RAIL_SCALE[k] ?? 1,
-                svgOrigin: RAIL_ORIGIN,
-                duration: legDur,
-                ease: k === 0 ? 'power2.out' : 'power2.in',
-              },
-              base
-            );
+            if (railExt && k === 0) {
+              /* the staged arrival: the dial, not a bare scaleY — same
+                 duration, same first-haul ease, so the story's beat
+                 boundaries and every later leg stand untouched */
+              story.to(
+                arrival,
+                { t: 1, duration: legDur, ease: 'power2.out', onUpdate: applyArrival },
+                base
+              );
+            } else {
+              story.to(
+                rail,
+                {
+                  scaleY: RAIL_SCALE[k] ?? 1,
+                  svgOrigin: RAIL_ORIGIN,
+                  duration: legDur,
+                  ease: k === 0 ? 'power2.out' : 'power2.in',
+                },
+                base
+              );
+            }
           }
           if (tap) {
             story.to(
@@ -694,10 +780,12 @@ export default function V0FullStack() {
           });
         }
 
-        /* set by the staged branch: puts every sliced text node and
-           hidden inline mark back — the typing writes Text data no
-           revert owns */
+        /* set by the staged branch: puts every sliced text node, hidden
+           inline mark and reserved line seat back — the pen writes Text
+           data and min-heights no revert owns */
         let restoreTyped: (() => void) | null = null;
+        /* the staged branch's refresh listener, unhooked at cleanup */
+        let onStageRefresh: (() => void) | null = null;
 
         if (!staged) {
           beats.forEach((beat, i) => {
@@ -725,9 +813,10 @@ export default function V0FullStack() {
         } else {
           /* ===== THE MOBILE STAGE (founder: "you see the diagram on
              top, 60% available height, and it's growing — and see the
-             text for it at bottom, 40% available height … the text just
-             fades in and out of each other with the layers growing").
-             fullstack.css relayouts the band under .is-stage: the grid
+             text for it at bottom, 40% available height for the story
+             section").
+             fullstack.css relayouts the band under .is-stage (set at the
+             top of this callback, before anything measured): the grid
              becomes a viewport-filling CSS-sticky stage (fig zone 60%,
              text zone 40%, the beats absolutely stacked), and the
              .v0sm-runway spacer after it is the sticky travel — so the
@@ -737,117 +826,262 @@ export default function V0FullStack() {
              engage→release span EXACTLY (stage top + stage height =
              viewport bottom, by construction), and its progress drives
              everything — the SAME setActive builds the tower beat by
-             beat (plates drop, taps draw, rail rises), the beats' copy
-             crossfades through the boundaries, and the capstone hunk
-             writes itself across the agents segment. */
-          scope.classList.add('is-stage');
+             beat (plates drop, taps draw, rail rises), THE PEN types
+             the beats' copy through the boundaries (below), and the
+             capstone hunk writes itself across the agents segment. */
           const runway = scope.querySelector<HTMLElement>('.v0sm-runway');
-          /* each beat owns an equal share of the runway; the transition
-             band straddles each boundary — the leaving beat UNTYPES in
-             its first half, the arriving one TYPES in its second
-             (founder: type transition itself instead of fading) */
+          /* each beat owns an equal share of the runway; crossing a
+             boundary only RETARGETS the pen — the writing itself runs
+             on its own authored tempo, never half-parked by the scrub */
           const SEG = 1 / beats.length;
-          const FADE = 0.36 * SEG;
-          /* the hunk writes across the agents dwell: from the moment its
-             text is fully in to a breath before the stage releases */
-          const CAP_FROM = (beats.length - 1) * SEG + FADE / 2;
+          /* the hunk writes across the agents dwell: from just after the
+             finale's copy starts writing to a breath before the stage
+             releases */
+          const CAP_FROM = (beats.length - 1) * SEG + 0.18 * SEG;
           const CAP_TO = 0.985;
 
-          /* THE TYPED TRANSITION's material: every beat's lead and
-             bullets, cut into text nodes (sliced in place) and atomic
-             inline marks (the GT word toggles at its seat) — the brand
-             token survives because the typing never rewrites elements,
-             only Text data. Weighted so a mark costs a couple of beats
-             of the same clock. */
+          /* THE PEN's material (founder screenshots, two rounds: a beat
+             frozen mid-crossfade cut off at "in ju" — "no 50% writing
+             out or anything" — then a whole-block wipe that emptied the
+             zone). The stage's copy TYPES: every beat's tag, lead and
+             bullets are cut into LINES (one block per host, document
+             order), each line into text nodes (sliced in place) and
+             atomic inline marks (the GT word and the <T> chip toggle at
+             their seats; the tag's NAME types under its icon — the
+             icon and the LocadexMark span ride as marks, so the walk
+             accepts SVG elements too). The typing never rewrites
+             elements, only Text data, so the brand token survives; a
+             mark costs a couple of beats of the same character clock. */
           type TypedChunk =
             | { kind: 'text'; node: Text; full: string }
-            | { kind: 'mark'; el: HTMLElement };
+            | { kind: 'mark'; el: HTMLElement | SVGElement };
           type TypedBlock = { host: HTMLElement; chunks: TypedChunk[]; len: number };
           const MARK_WEIGHT = 2;
-          const typedBeats = beats.map((beat) => {
-            const hosts = Array.from(
-              beat.querySelectorAll<HTMLElement>('h3, .v0-stack-points li')
-            );
-            const blocks: TypedBlock[] = hosts.map((host) => {
-              const chunks: TypedChunk[] = [];
-              let len = 0;
-              host.childNodes.forEach((child) => {
-                if (child.nodeType === Node.TEXT_NODE) {
-                  const full = child.textContent ?? '';
-                  if (full.length) {
-                    chunks.push({ kind: 'text', node: child as Text, full });
-                    len += full.length;
-                  }
-                } else if (child instanceof HTMLElement) {
-                  chunks.push({ kind: 'mark', el: child });
-                  len += MARK_WEIGHT;
+          const chunkBlock = (host: HTMLElement): TypedBlock => {
+            const chunks: TypedChunk[] = [];
+            let len = 0;
+            const walk = (child: ChildNode) => {
+              if (child.nodeType === Node.TEXT_NODE) {
+                const full = child.textContent ?? '';
+                if (full.length) {
+                  chunks.push({ kind: 'text', node: child as Text, full });
+                  len += full.length;
                 }
-              });
-              return { host, chunks, len };
+              } else if (
+                child instanceof HTMLElement &&
+                child.classList.contains('v0-stack-name')
+              ) {
+                /* the tag's name is TYPE, not an atom: descend to its
+                   text so "Code" writes character by character */
+                child.childNodes.forEach(walk);
+              } else if (child instanceof HTMLElement || child instanceof SVGElement) {
+                chunks.push({ kind: 'mark', el: child });
+                len += MARK_WEIGHT;
+              }
+            };
+            host.childNodes.forEach(walk);
+            return { host, chunks, len };
+          };
+          const typedBeats = beats.map((beat) => ({
+            blocks: Array.from(
+              beat.querySelectorAll<HTMLElement>('.v0-stack-tag, h3, .v0-stack-points li')
+            ).map(chunkBlock),
+          }));
+          const lineCount = Math.max(...typedBeats.map((t) => t.blocks.length));
+
+          /* THE GHOST LAYOUT (founder: nothing may shift, the block
+             never collapses): before the first character moves, every
+             LINE SEAT reserves the tallest box any beat's line needs at
+             that seat — full copy in, per-index max measured, pinned as
+             min-height on every beat's line — so the seats stand
+             rect-identical across beats and through every transition;
+             typing changes glyphs, never geometry. Greedy wrapping
+             (fullstack.css drops balance/pretty on the stage) keeps a
+             half-written line breaking exactly where the full line
+             breaks. Re-run on refresh: the stage re-lays with dvh. */
+          const reserveTyped = () => {
+            typedBeats.forEach(({ blocks }) =>
+              blocks.forEach((block) => {
+                block.host.style.removeProperty('min-height');
+                block.chunks.forEach((chunk) => {
+                  if (chunk.kind === 'text') chunk.node.data = chunk.full;
+                });
+              })
+            );
+            const seats: number[] = [];
+            typedBeats.forEach(({ blocks }) =>
+              blocks.forEach((block, k) => {
+                seats[k] = Math.max(seats[k] ?? 0, block.host.getBoundingClientRect().height);
+              })
+            );
+            typedBeats.forEach(({ blocks }) =>
+              blocks.forEach((block, k) => {
+                block.host.style.minHeight = `${seats[k] ?? 0}px`;
+              })
+            );
+          };
+
+          /* write line k of beat i at pen count n: text nodes take the
+             prefix, marks show once the budget crosses them — the
+             line's own box never moves (reserved above), and the
+             bullets' dash leaders live on the hosts, which stay
+             visible with their beat, so the zone always keeps its
+             structure even at the all-empty pose */
+          const writeBlock = (i: number, k: number, count: number) => {
+            const block = typedBeats[i]?.blocks[k];
+            if (!block) return;
+            let n = Math.round(count);
+            block.chunks.forEach((chunk) => {
+              if (chunk.kind === 'text') {
+                const take = Math.max(0, Math.min(n, chunk.full.length));
+                const next = chunk.full.slice(0, take);
+                if (chunk.node.data !== next) chunk.node.data = next;
+                n -= chunk.full.length;
+              } else {
+                chunk.el.style.visibility = n > 0 ? '' : 'hidden';
+                n -= MARK_WEIGHT;
+              }
             });
-            return { blocks, total: blocks.reduce((n, b) => n + b.len, 0) };
-          });
+          };
+
+          /* ===== THE PEN (founder, two rounds): presence is spoken by
+             characters, never alpha — a beat's opacity is 1 or 0,
+             nothing between — and the lines move TOGETHER: a leaving
+             beat's lines all erase CONCURRENTLY (one 0.35s clock, so
+             they empty in the same breath), the arriving beat's lines
+             write back in parallel under a small cascade, each inside
+             its reserved seat. The writer is a TARGET QUEUE, the
+             story's own seek grammar for text: scroll only retargets
+             it; a mid-flight line finishes or reverses cleanly from its
+             current character count (kill the tween, keep the pen —
+             never a stale pose), and the zone changes hands only at the
+             all-empty pose, so two beats' glyphs can never share a
+             frame however hard the scrub storms. */
+          const WRITE_CPS = 150;
+          const WRITE_MIN = 0.35;
+          const WRITE_STAGGER = 0.07;
+          const DELETE_DUR = 0.35;
+          const pens = Array.from({ length: lineCount }, () => ({ n: 0 }));
+          const penTweens: gsap.core.Tween[] = [];
+          let shown = 0;
+          let target = 0;
+          let seeded = false;
+          const showOnly = (i: number) => {
+            beats.forEach((beat, k) => {
+              /* whole steps only — the probe's law: no frame anywhere
+                 between 0 and 1. visibility keeps the parked beats out
+                 of the accessibility tree and taps. */
+              beat.style.opacity = k === i ? '1' : '0';
+              beat.style.visibility = k === i ? 'visible' : 'hidden';
+            });
+          };
+          const renderShown = () => {
+            pens.forEach((pen, k) => writeBlock(shown, k, pen.n));
+          };
+          const holdPens = () => {
+            for (const t of penTweens) t.kill();
+            penTweens.length = 0;
+          };
+          const step = () => {
+            penTweens.length = 0;
+            const blocks = typedBeats[shown]?.blocks ?? [];
+            if (shown !== target) {
+              if (pens.every((pen) => pen.n <= 0)) {
+                /* the all-empty pose: the ONLY frame the zone may change
+                   hands — the leaving glyphs are gone before the arriving
+                   beat shows, so mixed text is structurally impossible */
+                shown = target;
+                renderShown();
+                showOnly(shown);
+                step();
+                return;
+              }
+              pens.forEach((pen, k) => {
+                if (pen.n <= 0 || !blocks[k]) {
+                  pen.n = 0;
+                  return;
+                }
+                penTweens.push(
+                  gsap.to(pen, {
+                    n: 0,
+                    duration: DELETE_DUR,
+                    ease: 'none',
+                    autoRound: false,
+                    onUpdate: () => writeBlock(shown, k, pen.n),
+                    onComplete: () => {
+                      if (penTweens.every((t) => !t.isActive())) step();
+                    },
+                  })
+                );
+              });
+              return;
+            }
+            pens.forEach((pen, k) => {
+              const full = blocks[k]?.len ?? 0;
+              if (pen.n >= full) {
+                pen.n = full;
+                return;
+              }
+              penTweens.push(
+                gsap.to(pen, {
+                  n: full,
+                  duration: Math.max(WRITE_MIN, (full - pen.n) / WRITE_CPS),
+                  /* the cascade belongs to FRESH writes; a resumed line
+                     (a reversed delete) picks its pen back up now */
+                  delay: pen.n > 0 ? 0 : k * WRITE_STAGGER,
+                  ease: 'none',
+                  autoRound: false,
+                  onUpdate: () => writeBlock(shown, k, pen.n),
+                })
+              );
+            });
+          };
+          const retype = (i: number) => {
+            if (!seeded) {
+              /* the first clock read seeds the pose instantly — the
+                 rest view and a restored or deep-linked scroll land on
+                 standing copy, like the desktop rail's rest state */
+              seeded = true;
+              shown = i;
+              target = i;
+              pens.forEach((pen, k) => {
+                pen.n = typedBeats[i]?.blocks[k]?.len ?? 0;
+              });
+              renderShown();
+              showOnly(i);
+              return;
+            }
+            if (i === target) return;
+            target = i;
+            holdPens();
+            step();
+          };
 
           restoreTyped = () => {
-            typedBeats.forEach(({ blocks }) => {
+            holdPens();
+            typedBeats.forEach(({ blocks }) =>
               blocks.forEach((block) => {
-                block.host.style.removeProperty('visibility');
+                block.host.style.removeProperty('min-height');
                 block.chunks.forEach((chunk) => {
                   if (chunk.kind === 'text') chunk.node.data = chunk.full;
                   else chunk.el.style.removeProperty('visibility');
                 });
-              });
-            });
-          };
-
-          /* write beat i at reveal fraction f: blocks consume the budget
-             in document order, so the lead types before the bullets and
-             a reversed scroll untypes them back in reverse */
-          const writeBeat = (i: number, f: number) => {
-            const typed = typedBeats[i];
-            if (!typed) return;
-            let n = Math.round(f * typed.total);
-            typed.blocks.forEach((block) => {
-              block.host.style.visibility = n > 0 ? '' : 'hidden';
-              block.chunks.forEach((chunk) => {
-                if (chunk.kind === 'text') {
-                  const take = Math.max(0, Math.min(n, chunk.full.length));
-                  const next = chunk.full.slice(0, take);
-                  if (chunk.node.data !== next) chunk.node.data = next;
-                  n -= chunk.full.length;
-                } else {
-                  chunk.el.style.visibility = n > 0 ? '' : 'hidden';
-                  n -= MARK_WEIGHT;
-                }
-              });
-            });
+              })
+            );
           };
 
           const apply = (p: number) => {
-            beats.forEach((beat, i) => {
-              /* sequential ramps, not a crossfade: the leaving beat's
-                 text is gone before the arriving one starts — the two
-                 are absolutely stacked, and typed fragments of both at
-                 once would overprint */
-              const grow = i === 0 ? 1 : (p - i * SEG) / (FADE / 2);
-              const hold =
-                i === beats.length - 1 ? 1 : ((i + 1) * SEG - p) / (FADE / 2);
-              const f = gsap.utils.clamp(0, 1, Math.min(grow, hold));
-              /* direct style writes, not tweens: the scrub owns the
-                 value absolutely, every frame — visibility keeps the
-                 hidden beats out of the accessibility tree and taps */
-              beat.style.opacity = f > 0 ? '1' : '0';
-              beat.style.visibility = f > 0 ? 'visible' : 'hidden';
-              writeBeat(i, f);
-            });
-            /* the build switches at the boundary centers — the new
-               plate settles in exactly as its text crosses 50% */
+            /* the beat clock: which segment owns the playhead — the
+               build, the pen, and the hunk all read the same number */
             const active = Math.min(beats.length - 1, Math.max(0, Math.floor(p / SEG)));
+            retype(active);
             if (active !== hotBeat) setActive(active, false);
             if (capTl) {
               capTl.progress(gsap.utils.clamp(0, 1, (p - CAP_FROM) / (CAP_TO - CAP_FROM)));
             }
           };
+
+          reserveTyped();
 
           if (runway) {
             const master = ScrollTrigger.create({
@@ -860,6 +1094,19 @@ export default function V0FullStack() {
                state from wherever the clock already reads */
             apply(master.progress);
           }
+
+          /* the stage re-lays with the real viewport (dvh: the mobile
+             chrome collapses, an orientation turn): re-derive the
+             arrival's px mapping and the line seats, then restate the
+             standing pose from the same clocks */
+          onStageRefresh = () => {
+            arrGeo.ready = false;
+            if (arrival.t < 1) applyArrival();
+            else if (railExt) gsap.set(railExt, { scaleY: 1 });
+            reserveTyped();
+            if (seeded) renderShown();
+          };
+          ScrollTrigger.addEventListener('refresh', onStageRefresh);
         }
 
         /* the loops' viewport gate: everything ambient pauses the moment
@@ -887,7 +1134,7 @@ export default function V0FullStack() {
         if (staged && inView && railAt === 0) setActive(hotBeat, false);
 
         return () => {
-          /* the stage's own residue: the layout class and the scrub's
+          /* the stage's own residue: the layout class and the pen's
              direct style writes (no tween owns them, so no revert does) */
           if (staged) {
             scope.classList.remove('is-stage');
@@ -896,7 +1143,9 @@ export default function V0FullStack() {
               beat.style.removeProperty('visibility');
             }
             restoreTyped?.();
+            if (railExt) gsap.set(railExt, { clearProps: 'transform' });
           }
+          if (onStageRefresh) ScrollTrigger.removeEventListener('refresh', onStageRefresh);
           capTl?.kill();
           viewGate.kill();
           for (const loop of waveLoops) loop.kill();
@@ -996,6 +1245,15 @@ export default function V0FullStack() {
               runway that keeps the tower seated and the scan beam
               running after beat 04's read. */}
           <div className='tcb-cell v0-stack-cell-rail' data-cell>
+            {/* THE RAIL'S LOWER REACH, stage only (founder: the blue line
+                must run to the bottom and emerge from it): the accent
+                fill's continuation below the fig/text zone seam — same x,
+                same gauge as the cell's grey track continuation, anchored
+                at the cell's foot and scaled bottom-up by the story's
+                arrival dial. display: none everywhere the stage isn't
+                (fullstack.css), so desktop and the static fallbacks never
+                see it. */}
+            <div className='v0sm-railext' aria-hidden />
             <ol className='v0-stack-rail'>
               {BEATS.map((beat, i) => {
                 const Icon = beat.icon;

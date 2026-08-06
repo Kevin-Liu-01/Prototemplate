@@ -907,8 +907,11 @@
 
    The grid itself becomes a CSS-sticky, viewport-filling stage: fig
    zone the top 60%, text zone the bottom 40%, the beats absolutely
-   stacked in the zone and crossfaded by FullStack's master scrub.
-   Sticky, never JS-positioned — the desktop figure's own law — and
+   stacked in the zone and TYPED one at a time by FullStack's pen (a
+   later founder round replaced the quote's crossfade: the copy writes
+   itself in and erases itself line by line — the master scrub only
+   retargets the writer). Sticky, never JS-positioned — the desktop
+   figure's own law — and
    the travel is the .v0sm-runway spacer after the grid (sticky is
    bounded by the PARENT'S content box, the agents dwell's lesson).
    The runway's 'top bottom'→'bottom bottom' ScrollTrigger window
@@ -927,6 +930,12 @@
 
 /* parked everywhere the stage isn't: desktop, no-JS, reduced motion */
 .toolchain-root .tcb.v0-stack .v0sm-runway {
+  display: none;
+}
+
+/* the stage rail's lower reach (the blue continuation below the zone
+   seam), parked with the runway everywhere the stage isn't */
+.toolchain-root .tcb.v0-stack .v0sm-railext {
   display: none;
 }
 
@@ -1003,6 +1012,34 @@
     pointer-events: none;
   }
 
+  /* THE BLUE RUNS THE WHOLE SCREEN TOO (founder: "make the blue line
+     extend all the way towards the bottom and emerge from the bottom"):
+     the accent fill's stage-only continuation below the zone seam —
+     the track continuation's own box, coordinate for coordinate (same
+     containing block, same formulas, so the joint never jogs and the
+     gauge never doubles), inked in the shared opaque rail token so
+     where it lies on the grey track the line reads drawn once. It
+     anchors at the cell's FOOT — the stage's true bottom edge (this
+     sheet zeroes the grid's bottom padding) — and FullStack scales it
+     bottom-up on the story's arrival dial: the extension carries beat
+     01's rise from the screen's bottom to the seam, the overlay fill
+     carries it onward from the seam to the code tap — one line, one
+     clock, no seam at the handoff. Parked at scaleY(0): no blue shows
+     until the story draws it, and a rewound story takes it back out
+     the way it came. */
+  .toolchain-root .tcb.v0-stack.is-stage .v0sm-railext {
+    display: block;
+    position: absolute;
+    inset-block: 0;
+    left: calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)));
+    width: calc(0.00864 * min(100% - 32px, var(--v0sm-tw)));
+    background: var(--v0s-rail-ink);
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+    will-change: transform;
+    pointer-events: none;
+  }
+
   /* ---------- the text zone: one beat at a time ---------- */
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-rail {
@@ -1019,11 +1056,25 @@
        track's own x (its 50% and this padding's 50% resolve against
        the same one-column width), plus a hand of clearance */
     padding: 10px 20px 18px calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)) + 26px);
-    /* the scrub owns alpha absolutely (direct style writes): the class
-       spotlight's dim and its eased transition would fight it */
+    /* THE PEN owns presence (founder: "no 50% writing out or anything"):
+       FullStack shows exactly one beat — inline opacity 1 or 0, whole
+       steps only, never a fade — and arrival is spoken by characters.
+       The class spotlight's dim and its eased transition would fight
+       that, so both stand down here. */
     opacity: 0;
     transition: none;
     pointer-events: none;
+  }
+
+  /* the pen's line discipline: greedy wrapping only — balance and
+     pretty recompute their breaks per edit, and a typing prefix would
+     hop between lines mid-write; greedy breaks are prefix-stable, so a
+     half-written line always breaks exactly where the full line will
+     (the line boxes themselves are reserved by FullStack's min-height
+     ghost, the tallest seat any beat needs, so nothing ever shifts) */
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-beat h3,
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points li {
+    text-wrap: wrap;
   }
 
   /* the stage type, a step tighter (founder spec: the longest beat's

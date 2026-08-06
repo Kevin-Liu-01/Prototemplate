@@ -1,0 +1,20 @@
+import { chromium } from 'playwright-core';
+const EXE = '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
+const browser = await chromium.launch({ executablePath: EXE });
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+await ctx.addInitScript(() => localStorage.setItem('gt-theme', 'dark'));
+const page = await ctx.newPage();
+await page.goto('http://localhost:3006/d/singularity-orbit', { waitUntil: 'networkidle' });
+await page.waitForTimeout(1000);
+await page.evaluate(() => document.querySelector('.v0-ctx-review')?.scrollIntoView({ block: 'center' }));
+await page.waitForTimeout(1200);
+const out = await page.evaluate(() => {
+  const copy = document.querySelector('.v0-ctx-review .tcr-copy');
+  const h2 = copy.querySelector('h2');
+  const sub = copy.querySelector('.tcr-sub');
+  const r = (el) => { const b = el.getBoundingClientRect(); return { w: b.width, h: b.height }; };
+  const cs = (el) => { const s = getComputedStyle(el); return { fs: s.fontSize, lh: s.lineHeight, mw: s.maxWidth, mt: s.marginTop }; };
+  return { copy: r(copy), h2: { ...r(h2), ...cs(h2) }, sub: { ...r(sub), ...cs(sub) } };
+});
+console.log(JSON.stringify(out, null, 1));
+await browser.close();

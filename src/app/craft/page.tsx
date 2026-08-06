@@ -486,6 +486,7 @@ export default function CraftPage() {
           <div className='pt-nav-right'>
             <ThemeToggle className='pt-nav-theme' />
             <Link href='/'>Index</Link>
+            <Link href='/docs'>Docs</Link>
             <Link className='pt-nav-present' href='/present'>
               Present <span aria-hidden>▶</span>
             </Link>
@@ -645,6 +646,8 @@ export default function CraftPage() {
             </p>
             <p className='pt-site-links'>
               <Link href='/'>back to the index</Link>
+              <span aria-hidden> · </span>
+              <Link href='/docs'>read the docs</Link>
               <span aria-hidden> · </span>
               <Link href='/present'>walk the deck</Link>
             </p>

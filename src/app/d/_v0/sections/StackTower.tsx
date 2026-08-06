@@ -119,8 +119,11 @@ const VIEW_Y = -(HALF + THICK + PAD);
 const VIEW_W = 2 * (SIZE * ISO_COS30 + PAD) + LEAD;
 const VIEW_H = SIZE + THICK + PAD * 2;
 
-/** The tower's frame: slab i sits (count − 1 − i) STEPs below the top slab. */
-const TOWER_H = (TOWER_LAYERS.length - 1) * STEP + VIEW_H;
+/** The tower's frame: slab i sits (count − 1 − i) STEPs below the top slab.
+    Exported (with RAIL_TOP / RAIL_FOOT below) for the mobile stage's
+    arrival mapping: FullStack converts the rail overlay's px box to frame
+    units to aim the rise at the stage's own bottom edge. */
+export const TOWER_H = (TOWER_LAYERS.length - 1) * STEP + VIEW_H;
 
 /* ---- the rail and its taps ------------------------------------------------
    The channel overlay SVG spans the whole tower (viewBox y: 0..TOWER_H), so
@@ -160,9 +163,11 @@ function tapY(i: number): number {
   return row * STEP + (TAP_Y - VIEW_Y);
 }
 
-/** The tap span the channel threads: bottom tap's stub to the top tap. */
+/** The tap span the channel threads: bottom tap's stub to the top tap.
+    RAIL_TOP is exported with RAIL_FOOT and TOWER_H (see TOWER_H's note):
+    together they let FullStack solve frame y ↔ fill scaleY exactly. */
 const RAIL_BOTTOM = tapY(0) + 10;
-const RAIL_TOP = tapY(TOWER_LAYERS.length - 1);
+export const RAIL_TOP = tapY(TOWER_LAYERS.length - 1);
 
 /** The channel's reach BELOW the frame: beat 01's arrival is DRAWN — the
     accent rises from the rail's bottom end (the figure cell's bottom rule,
@@ -174,7 +179,7 @@ const RAIL_TOP = tapY(TOWER_LAYERS.length - 1);
     lowest px-per-unit still outreaches the tallest runway (three
     920px-capped beats plus the fixed last beat). */
 const RAIL_DROP = 2200;
-const RAIL_FOOT = RAIL_BOTTOM + RAIL_DROP;
+export const RAIL_FOOT = RAIL_BOTTOM + RAIL_DROP;
 
 /**
  * How much of the accent channel is filled when `count` slabs are built,

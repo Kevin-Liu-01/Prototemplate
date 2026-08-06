@@ -322,26 +322,29 @@
 :root:not([data-theme='dark']) .toolchain-root .v0-foot-gt-line {
   display: block;
   position: absolute;
-  inset: 0;
-  background: rgba(7, 7, 7, 0.52);
+  /* the silhouette box runs 2px PAST the mark on every side, and the
+     mask pins to the mark's own 88px — the four offset copies can
+     never clip at the box edge (founder: the border was cut off) */
+  inset: -2px;
+  background: rgba(7, 7, 7, 0.72);
   -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'),
     url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
   mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'),
     url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
-  -webkit-mask-size: contain, contain, contain, contain;
-  mask-size: contain, contain, contain, contain;
+  -webkit-mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px;
+  mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position:
-    1px 50%,
-    -1px 50%,
-    0 calc(50% - 1px),
-    0 calc(50% + 1px);
+    calc(50% - 1px) 50%,
+    calc(50% + 1px) 50%,
+    50% calc(50% - 1px),
+    50% calc(50% + 1px);
   mask-position:
-    1px 50%,
-    -1px 50%,
-    0 calc(50% - 1px),
-    0 calc(50% + 1px);
+    calc(50% - 1px) 50%,
+    calc(50% + 1px) 50%,
+    50% calc(50% - 1px),
+    50% calc(50% + 1px);
   mask-composite: add;
   pointer-events: none;
 }

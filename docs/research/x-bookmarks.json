@@ -1,0 +1,33 @@
+{
+  "source": "x.com/i/bookmarks for kevin@generaltranslation.com, scraped 2026-07-28",
+  "bookmarks": [
+    {"permalink": "https://x.com/Abmankendrick/status/2082033404921389290", "author": "Abraham John @Abmankendrick", "text": "UI/UX Designers and Developers, here's some great inspiration with loading spinner animation examples you can use in your next UI design project. Bookmark it for later", "theme": "loading/spinner animation inspiration"},
+    {"permalink": "https://x.com/kail_designs/status/2073708859299102954", "author": "Kailash @kail_designs", "text": "Gradient Lab — generate stunning shader gradients in seconds. Customize colors, angles, softness, speed, brightness. Export as image, video, embeddable code. backgrounds.supply/gradient-lab", "theme": "shader gradient backgrounds", "links": ["https://backgrounds.supply/gradient-lab"]},
+    {"permalink": "https://x.com/marcelkargul/status/2045869750132076704", "author": "Marcel @marcelkargul", "text": "Design websites that should be illegal to know: UI Components → pro.alignui.com | Bento → bentogrids.com | Backgrounds → grainient.supply | Inspiration → mobbin.com", "theme": "design resource list", "links": ["https://pro.alignui.com", "https://bentogrids.com", "https://grainient.supply", "https://mobbin.com"]},
+    {"permalink": "https://x.com/Talhadesignn/status/2081718508875059511", "author": "Ameer Talha @Talhadesignn", "text": "Visual Vault — fresh 4K backgrounds for landing pages, hero sections, and branding projects. 100+ premium backgrounds.", "theme": "hero/landing backgrounds"},
+    {"permalink": "https://x.com/FonsMans/status/2081758014420263406", "author": "Fons Mans @FonsMans", "text": "Gradient Artifacts (@byoffgrid)", "theme": "gradient artifacts / texture aesthetic"},
+    {"permalink": "https://x.com/Abmankendrick/status/2081781667606167648", "author": "Abraham John @Abmankendrick", "text": "Coolest flow transition I've ever seen on a website, everything beautifully executed perfectly. Absolutely Sleek", "theme": "page/flow transitions, sleek motion"},
+    {"permalink": "https://x.com/NathanFlurry/status/2081768022025658672", "author": "Nathan Flurry @NathanFlurry", "text": "By popular demand... (video)", "theme": "unknown/video"},
+    {"permalink": "https://x.com/gabriell_lab/status/2082104815044235428", "author": "Gabriel @gabriell_lab", "text": "Design Engineering Tip: If your modal scrolls like this, you're probably missing overscroll-behavior: contain; It prevents the page behind the modal from scrolling when users reach the top or bottom.", "theme": "scroll craft / design engineering detail"},
+    {"permalink": "https://x.com/davep/status/2081746878119678414", "author": "David Pan @davep", "text": "(video, no text)", "theme": "unknown/video"},
+    {"permalink": "https://x.com/thesephist/status/2081942912946897253", "author": "Linus @thesephist", "text": "The notational space of possibilities is so underexplored", "theme": "novel notation / unexplored visual language"},
+    {"permalink": "https://x.com/drapzdesigns/status/2082047292404801619", "author": "Drapz @drapzdesigns", "text": "Visual Identities that never fail to impress", "theme": "brand identity inspiration"},
+    {"permalink": "https://x.com/yanliudesign/status/2081938984998244560", "author": "Yan Liu @yanliudesign", "text": "A quick recap of some of the interactive experiments I've built with Claude. They're all built around one idea: making things feel alive through interaction and animation. Shader-powered swimming duck, summer-inspired animated little worlds, paper interactions & visual...", "theme": "alive-through-interaction philosophy, shader experiments"},
+    {"permalink": "https://x.com/MeganeJon/status/2082027297230729551", "author": "Jon @MeganeJon", "text": "People were asking me how to create these visuals that I call 'technicolour pop'. Tutorial inside.", "theme": "technicolour pop visuals (accent technique)"},
+    {"permalink": "https://x.com/stfnco/status/2081774138298151086", "author": "Nick Stepuk @stfnco", "text": "Isometrymaxxing", "theme": "isometric illustration"}
+  ],
+  "distilled_taste_signals": [
+    "Shader-driven gradient backgrounds (soft, animated, exportable as embeddable code)",
+    "Grain/noise textures over gradients (grainient aesthetic)",
+    "Bento grid layouts for feature sections",
+    "Flawless flow/page transitions — sleek, perfectly executed motion",
+    "Making things feel alive through interaction and animation",
+    "Craft-level scroll details (overscroll-behavior, scroll hygiene)",
+    "Strong memorable visual identities",
+    "Premium hero-section backgrounds as a differentiator",
+    "Loading/spinner micro-animations as delight moments",
+    "Occasional bold color pop as accent against restrained bases",
+    "Isometric illustration as a spatial technique",
+    "Underexplored notational/visual languages — novelty is valued"
+  ]
+}

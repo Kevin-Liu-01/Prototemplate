@@ -103,6 +103,7 @@ export default function IndexPage() {
           <div className='pt-nav-right'>
             <ThemeToggle className='pt-nav-theme' />
             <Link href='/craft'>Craft</Link>
+            <Link href='/docs'>Docs</Link>
             {/* the toolchain family as a previewing dropdown: the SSOT and
                 the five sites built on it, each with its live capture */}
             <div className='pt-menu'>

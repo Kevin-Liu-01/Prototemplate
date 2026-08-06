@@ -1,0 +1,142 @@
+/* ============================================================
+   DOCS — the repo documents served as pages, in the pt grammar.
+   The pt-post layer owns the prose (h1/h2/p); this sheet adds only
+   what markdown needs beyond it: the switcher chips, h3, lists,
+   tables, code, and the rule. Nothing here draws a line the
+   prototemplate layer already owns.
+   ============================================================ */
+
+/* ---------- the switcher: mono chips, the active doc the only ink ---------- */
+
+.pt-root .ptd-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  padding: 12px var(--pt-gut);
+  font-family: var(--pt-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.pt-root .ptd-tabs a {
+  color: var(--pt-ink-3);
+}
+
+.pt-root .ptd-tabs a:hover {
+  color: var(--pt-ink-2);
+}
+
+.pt-root .ptd-tabs a[data-on='true'] {
+  color: var(--pt-ink);
+}
+
+/* ---------- the document ---------- */
+
+.ptd-doc h3 {
+  max-width: 44ch;
+  margin-top: 26px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--pt-ink);
+}
+
+/* headings after the first get their own air */
+.ptd-doc h2 {
+  margin-top: 34px;
+}
+
+.ptd-list {
+  max-width: 64ch;
+  margin-top: 12px;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+  font-size: 15.5px;
+  line-height: 1.66;
+  color: var(--pt-ink-2);
+  list-style: disc;
+}
+
+.ptd-list.is-ordered {
+  list-style: decimal;
+}
+
+.ptd-list li::marker {
+  color: var(--pt-ink-4);
+}
+
+.ptd-doc code {
+  padding: 1px 5px;
+  font-family: var(--pt-mono);
+  font-size: 0.86em;
+  background: var(--pt-hair-2);
+  border-radius: 4px;
+}
+
+/* fenced code: the craft page's quiet hairline box */
+.ptd-code {
+  max-width: 860px;
+  margin-top: 16px;
+  padding: 14px 16px 16px;
+  border: 1px solid var(--pt-hair);
+  border-radius: 10px;
+  overflow-x: auto;
+  font-family: var(--pt-mono);
+  font-size: 12.5px;
+  line-height: 1.62;
+  color: var(--pt-ink-2);
+}
+
+.ptd-code code {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+/* tables: ruled, one hairline per rule — collapse merges shared edges so
+   the header's close and the first row's open are ONE line */
+.ptd-table-wrap {
+  max-width: 860px;
+  margin-top: 16px;
+  overflow-x: auto;
+}
+
+.ptd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--pt-ink-2);
+}
+
+.ptd-table th {
+  padding: 7px 14px 7px 0;
+  border-bottom: 1px solid var(--pt-hair);
+  text-align: left;
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pt-ink-3);
+}
+
+.ptd-table td {
+  padding: 8px 14px 8px 0;
+  border-bottom: 1px solid var(--pt-hair-2);
+  vertical-align: top;
+}
+
+.ptd-table tr:last-child td {
+  border-bottom: 0;
+}
+
+/* the --- rule: one hairline with air */
+.ptd-hr {
+  max-width: 64ch;
+  margin: 30px 0 4px;
+  border: 0;
+  border-top: 1px solid var(--pt-hair);
+}
