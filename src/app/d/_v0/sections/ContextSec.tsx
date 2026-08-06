@@ -405,12 +405,14 @@ export default function V0Context() {
         {/* the measuring box for the field's dithered clearing: glyphs own
             the band's margins and padding strips, never the content */}
         <div className='v0-ctx-core' ref={core}>
-        <div className='tcb-head' data-cell data-reveal>
-          {/* the standardized context glyph — the SAME Layers mark the
-              tower's Context beat wears, at the heads' shared gauge */}
+        {/* the head is the Developer head VERBATIM (founder: an exact
+            replica of "Built for developers around the globe." with the
+            wording and icon switched) — same tc-head grammar, same
+            watermark seat, the Layers mark where Code2 stands there */}
+        <div className='tc-head'>
           <Layers className='tc-head-icon' strokeWidth={1} aria-hidden />
-          <h2>One source of context, shared globally</h2>
-          <p>
+          <h2 data-reveal>One source of context, shared globally</h2>
+          <p data-reveal>
             <GtLogoText /> understands your codebase and product.
           </p>
         </div>

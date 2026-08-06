@@ -42,9 +42,6 @@
   padding-inline: 0;
 }
 
-.toolchain-root .v0-ctx .tcb-head {
-  padding-inline: 24px;
-}
 
 /* The field is the band's material, not its subject: paper glyphs RISING
    off the ink (the glyph-rain closer's engine), spanning the plate behind
@@ -873,44 +870,11 @@
 }
 
 
-/* ---------- the band head (founder round) ----------
-   Header and subheader stack on the SAME side, and the head carries
-   the standardized context glyph at its right — the same watermark
-   grammar every section head wears. */
-.toolchain-root .v0-ctx .tcb-head {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  /* the page heads' own measures (founder: the band head read off-grid):
-     the same gutter the tc-heads spend, and the same 13px head-to-sub step */
-  padding-inline: var(--tc-gut, 36px);
-  gap: 13px;
-}
-
-.toolchain-root .v0-ctx .tcb-head .tc-head-icon {
-  /* founder: "just do it like image 1" — the developer head. Full 240
-     gauge, right seat; what makes it read whole there is the strip's
-     own vertical spend (the padding-block below, the tc-head grammar),
-     not a smaller glyph. */
-  position: absolute;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 240px;
-  height: 240px;
-  color: var(--tc-ink);
-  opacity: 0.07;
-  pointer-events: none;
-}
-
-/* the strip spends what the developer head spends (styles.css .tc-head:
-   clamp 54–82 above, 28–38 below), so the watermark seats like image 1 */
-.toolchain-root .v0-ctx .tcb-head {
-  padding-block: clamp(54px, 6.4vw, 82px) clamp(28px, 3.2vw, 38px);
-}
+/* ---------- the band head ----------
+   No rules: the head is the Developer head verbatim (founder: an exact
+   replica with the wording and icon switched) — the shared .tc-head /
+   .tc-head-icon grammar in styles.css and the five-home seat override
+   in v0-pages.css drive BOTH heads, so they can never drift apart. */
 
 /* ---------- the three doors, on the band's plate ----------
    The rail and faces come from the workspace SSOT (review-workspace.css,
