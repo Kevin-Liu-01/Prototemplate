@@ -193,28 +193,6 @@ export const DIRECTIONS: Direction[] = [
     tone: 'light',
     signature: 'Session and output, side by side in one window.',
   },
-  {
-    n: 24,
-    label: '17',
-    slug: 'singularity-observatory',
-    site: true,
-    name: 'Observatory',
-    concept:
-      'A full site: the toolchain home whose terminal walks three stages — 01 install, 02 translate, 03 serve — and a /enterprise page of measured proof: the meridian globe, the star catalog, the readouts.',
-    tone: 'light',
-    signature: 'The terminal walks install → translate → serve.',
-  },
-  {
-    n: 24,
-    label: '18',
-    slug: 'singularity-procession',
-    site: true,
-    name: 'Procession',
-    concept:
-      'A full site: the toolchain home with no hero card at all — the first fold is one full-width console — and a /enterprise page as the march: the word-swarm manifesto and customers as monuments.',
-    tone: 'light',
-    signature: 'No card at all: the hero is one full-width console.',
-  },
 ];
 
 export function getDirection(slug: string): Direction | undefined {

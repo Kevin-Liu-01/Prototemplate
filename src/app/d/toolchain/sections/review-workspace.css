@@ -382,8 +382,6 @@
   display: flex;
   align-items: stretch;
   gap: 16px;
-  /* the air the risers bridge — the bus's border draws just below */
-  margin-bottom: 13px;
 }
 
 .toolchain-root .tcr-door {
@@ -418,74 +416,70 @@
   background: color-mix(in srgb, var(--tc-accent) 10%, transparent);
 }
 
-/* the risers: every door drops to the bus on the house DOUBLED line —
-   two 1px threads at a 2px gap (the dev threads' 4px-minus-2px-core
-   gauge, drawn here as borders on a 2px core). They rest in the rail
-   ink; the chosen door's riser takes the accent. */
-.toolchain-root .tcr-door::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: calc(50% - 2px);
-  width: 2px;
-  height: 13px;
-  border-inline: 1px solid var(--tc-hair);
-  transition: border-color 0.25s ease;
-}
-
-.toolchain-root .tcr-door[data-on]::after {
-  border-color: var(--tc-accent);
-}
-
 .toolchain-root .tcr-door-ico {
   width: 12px;
   height: 12px;
   flex: none;
 }
 
-/* the bus: the same doubled line under all three doors, crossing the
-   grid gap — the same clamp as the gap, so it lands exactly on the
-   frame. It rests in the rail ink; selection sends the blue down it
-   (the pulse below). */
-.toolchain-root .tcr-rail-bus {
-  position: relative;
+/* ---------- the rail net ----------
+   The risers and the bus as ONE drawing on the fork family's doubled
+   line: a full-gauge ink stroke with a ground-colored core leaves two
+   parallel threads along any curve, and because every path's outer
+   stroke lands before any core carves, the junctions merge into the
+   wishbone the site's threads wear (never a hard T). Pixel-space
+   viewBox (measured in the component) — no scaling, so pathLength
+   dashes stay honest. The svg crosses the grid gap on the same clamp,
+   landing the bus exactly on the frame. */
+.toolchain-root .tcr-rail-net {
   display: block;
-  height: 2px;
-  margin-right: calc(-1 * clamp(28px, 4vw, 56px));
-  border-block: 1px solid var(--tc-hair);
+  width: calc(100% + clamp(28px, 4vw, 56px));
+  height: 26px;
 }
 
-/* the blue effect: on every pick a doubled accent segment runs the bus
-   left to right into the frame — remounted per selection (keyed), so it
-   replays each time and rests at nothing */
-.toolchain-root .tcr-rail-pulse {
-  position: absolute;
-  top: -1px;
-  bottom: -1px;
-  left: -64px;
-  width: 64px;
-  border-block: 1px solid var(--tc-accent);
-  animation: tcr-pulse-run 0.9s ease-out forwards;
+.toolchain-root .tcr-net-ink {
+  fill: none;
+  stroke: var(--tc-hair);
+  stroke-width: 4;
 }
 
-@keyframes tcr-pulse-run {
-  0% {
-    left: -64px;
-    opacity: 1;
+/* the chosen door's drop holds the accent */
+.toolchain-root .tcr-net-ink.is-live {
+  stroke: var(--tc-accent);
+}
+
+/* the carve: the ground's own color, so only the two threads survive */
+.toolchain-root .tcr-net-core {
+  fill: none;
+  stroke: var(--tcr-net-core, var(--tc-card));
+  stroke-width: 2;
+}
+
+/* the blue effect: on every pick a doubled accent segment runs the
+   chosen drop and the bus into the frame — drawn between the ink and
+   the carve (the fork's pulse seat), remounted per selection so it
+   replays and rests at nothing */
+.toolchain-root .tcr-net-pulse {
+  fill: none;
+  stroke: var(--tc-accent);
+  stroke-width: 4;
+  stroke-dasharray: 14 100;
+  stroke-dashoffset: 14;
+  animation: tcr-net-run 0.9s ease-out forwards;
+}
+
+@keyframes tcr-net-run {
+  from {
+    stroke-dashoffset: 14;
   }
 
-  80% {
-    opacity: 1;
-  }
-
-  100% {
-    left: 100%;
-    opacity: 0;
+  to {
+    stroke-dashoffset: -100;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .toolchain-root .tcr-rail-pulse {
+  .toolchain-root .tcr-net-pulse {
     display: none;
   }
 }

@@ -118,12 +118,16 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-/* The interpolation hole in the source chip stays mono, dim against the
-   inverted (light) button face. */
+/* The interpolation hole in the source chip: mono at the sentence's own
+   scale, sitting on the label's baseline, its ink derived from the
+   label's var (founder round: it ran small, misaligned, and in the
+   wrong ink) — the chip face inverts per theme and the token follows,
+   so the one rule serves both grounds and the light block needs none. */
 .toolchain-root .v0-ctx .lang-cr-word code {
   font-family: var(--tc-mono);
-  font-size: 12.5px;
-  color: rgba(7, 7, 7, 0.6);
+  font-size: 14px;
+  line-height: 1;
+  color: color-mix(in srgb, var(--lang-ground, #f5f5f3) 68%, transparent);
 }
 
 /* ---------- the glossary rows ----------
@@ -677,10 +681,6 @@
   color: var(--tcb-ink);
 }
 
-/* The interpolation hole dims against the now-ink button face. */
-:root:not([data-theme='dark']) .toolchain-root .v0-ctx .lang-cr-word code {
-  color: rgba(255, 255, 255, 0.72);
-}
 
 /* ---------- the ledgers, ink-on-paper ---------- */
 
@@ -845,11 +845,13 @@
 
 .toolchain-root .v0-ctx .tcb-head .tc-head-icon {
   position: absolute;
-  right: 24px;
+  right: 32px;
   top: 50%;
   transform: translateY(-50%);
-  width: 240px;
-  height: 240px;
+  /* sized to sit INSIDE the head (founder: it ran too big and the
+     head's overflow cut it) — a watermark, wholly visible */
+  width: 118px;
+  height: 118px;
   color: var(--tc-ink);
   opacity: 0.07;
   pointer-events: none;

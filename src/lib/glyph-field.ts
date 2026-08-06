@@ -84,14 +84,16 @@ const NEAR_CUT = 0.14;
 /** Depth boundary between the mid and far tiers. */
 const MID_CUT = 0.6;
 /** Glyph size by depth tier: near, mid, far (CSS px). */
-const TIER_SIZE: readonly [number, number, number] = [19, 13, 10];
+const TIER_SIZE: readonly [number, number, number] = [19, 13, 11];
 /**
  * The 1-bit ink coverage per tier. Near and mid are solid ink at their two
  * sizes; the far tier is Bayer-dithered — the sanctioned way to render the
  * atmosphere's "grey". Two solid sizes plus one halftone plus the printed
  * word are the field's whole palette.
  */
-const TIER_COVER: readonly [number, number, number] = [1, 1, 0.45];
+/* far cover 0.62 (founder: the flank glyphs read as crumbs at 0.45 —
+   at 10px a Bayer glyph is ~2.5 cells wide, and low coverage shreds it) */
+const TIER_COVER: readonly [number, number, number] = [1, 1, 0.62];
 /** Flight glyphs draw at one size, solid ink. */
 const CONDENSED_PX = 12;
 /**
@@ -262,6 +264,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   const fall = new Float32Array(POOL); // px/s downward drift
   const sway = new Float32Array(POOL);
   const stag = new Float32Array(POOL); // per-particle uniform for dithered culls
+  const vis = new Uint8Array(POOL); // cull hysteresis: 1 while drawn (a 0.06 band stops boundary flicker)
   const bow = new Float32Array(POOL); // flight-path curvature, −1 … 1
   const tx = new Float32Array(POOL); // condensation target
   const ty = new Float32Array(POOL);
@@ -291,6 +294,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     fall[i] = driftSign * (2.2 + (1 - depth) * 7.5);
     sway[i] = 1.5 + (1 - depth) * 2.5;
     stag[i] = rand();
+    vis[i] = 1;
     bow[i] = rand() * 2 - 1;
     const scriptAt = Math.floor(rand() * 8);
     const per = Math.ceil(GLYPHS.length / 8);
@@ -904,10 +908,20 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
         /* The dithered zones cull rain outright — a culled particle records
            its position and draws nothing. */
-        if (!wordBound && keepAt(x, y, morph >= 0) <= (stag[i] ?? 0)) {
-          lastX[i] = x;
-          lastY[i] = y;
-          continue;
+        if (!wordBound) {
+          /* HYSTERESIS on the dithered cull (founder: the flank glyphs
+             flickered): a drawn glyph only culls once its keep drops a
+             band BELOW its threshold, and a culled one only returns a
+             band ABOVE it — the iso-line no longer strobes as the rain
+             sways across it. Density statistics are unchanged. */
+          const keep = keepAt(x, y, morph >= 0);
+          if (keep <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.06 : 0.06)) {
+            vis[i] = 0;
+            lastX[i] = x;
+            lastY[i] = y;
+            continue;
+          }
+          vis[i] = 1;
         }
 
         let row = t;
@@ -960,7 +974,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
                dithered culls and all. */
             x = (fx[i] ?? 0) + (x - (fx[i] ?? 0)) * e + arc * 36 * e;
             y = (fy[i] ?? 0) + (y - (fy[i] ?? 0)) * e;
-            if (u >= 1 && keepAt(x, y, true) <= (stag[i] ?? 0)) {
+            if (u >= 1 && keepAt(x, y, true) <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.06 : 0.06)) {
+              vis[i] = 0;
               lastX[i] = x;
               lastY[i] = y;
               continue;

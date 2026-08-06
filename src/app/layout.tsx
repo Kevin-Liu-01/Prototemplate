@@ -9,7 +9,7 @@ const SITE_URL = 'https://prototemplate.vercel.app';
 const SITE_TITLE = 'Prototemplate — GT Website Redesign Explorations';
 
 const SITE_DESCRIPTION =
-  'Eighteen art directions for the General Translation website — a localization-first design lab of GSAP motion and WebGL shader heroes, from ruled-paper minimalism to black-hole light fields, each one live at /d/<slug>.';
+  'Sixteen art directions for the General Translation website — a localization-first design lab of GSAP motion and WebGL shader heroes, from ruled-paper minimalism to black-hole light fields, each one live at /d/<slug>.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

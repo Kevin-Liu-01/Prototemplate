@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Braces, Download, History, Search, Table2, TerminalSquare } from 'lucide-react';
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 
 import LocaleTag from '../components/LocaleTag';
 
@@ -78,6 +78,17 @@ const DOORS: readonly { key: Surface; name: string; line: string; icon: typeof T
   { key: 'cli', name: 'CLI', line: 'npx gt save-local', icon: TerminalSquare },
 ];
 
+/* The rail net's drawing frame: each door drops NET_H deep to the bus,
+   turning through NET_R — the curve, not a corner, is what makes the
+   junction read as the site's doubled thread (the fork's grammar). */
+const NET_H = 26;
+const NET_R = 11;
+
+/** One door's drop: down from the door's seat, easing right onto the bus. */
+function netRiser(x: number, busY: number): string {
+  return `M${x} 0V${busY - NET_R}Q${x} ${busY} ${x + NET_R} ${busY}`;
+}
+
 /**
  * The review workspace: source beside translation on the page's mount, with
  * a GSAP loop in which one row at a time writes itself — source first, its
@@ -123,10 +134,48 @@ export default function ReviewWorkspace({
 }: ReviewWorkspaceProps = {}) {
   const root = useRef<HTMLElement>(null);
   const [face, setFace] = useState<Surface>('web');
-  /* counts selections so the bus can replay its accent sweep on every
+  /* counts selections so the net can replay its accent sweep on every
      pick (a fresh key remounts the pulse); zero = never touched, so the
      first paint stays still */
   const [pulse, setPulse] = useState(0);
+
+  /* The net draws in true pixels — the door seats are content-sized, so
+     the riser xs are measured, not assumed, and remeasure on resize. */
+  const railRowRef = useRef<HTMLDivElement>(null);
+  const netRef = useRef<SVGSVGElement>(null);
+  const [net, setNet] = useState<{ w: number; xs: number[] } | null>(null);
+
+  useLayoutEffect(() => {
+    if (!surfaces) return;
+    const row = railRowRef.current;
+    const netEl = netRef.current;
+    if (!row || !netEl) return;
+    const measure = () => {
+      const netBox = netEl.getBoundingClientRect();
+      if (netBox.width === 0) return;
+      const xs = Array.from(row.querySelectorAll<HTMLElement>('.tcr-door')).map((door) => {
+        const box = door.getBoundingClientRect();
+        return box.left + box.width / 2 - netBox.left;
+      });
+      setNet({ w: netBox.width, xs });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(netEl);
+    return () => ro.disconnect();
+  }, [surfaces]);
+
+  /* the strokes: every path in one d (outer ink first, cores carve last,
+     so overlapping junctions merge into the fork family's wishbone), and
+     the active door's own drop for the live pair and the pulse's route */
+  const busY = NET_H - 3;
+  const activeX = net?.xs[DOORS.findIndex((door) => door.key === face)];
+  const netAll = net
+    ? [...net.xs.map((x) => netRiser(x, busY)), `M${(net.xs[0] ?? 0) + NET_R} ${busY}H${net.w}`].join('')
+    : null;
+  const netLive = net && activeX !== undefined ? netRiser(activeX, busY) : null;
+  const netRoute =
+    net && activeX !== undefined ? `${netRiser(activeX, busY)}H${net.w}` : null;
 
   useQuietReveal(root, chrome !== 'product');
 
@@ -508,7 +557,7 @@ export default function ReviewWorkspace({
               <div className='tcr-rail-line'>
                 {DOORS.find((door) => door.key === face)?.line}
               </div>
-              <div className='tcr-rail-row'>
+              <div className='tcr-rail-row' ref={railRowRef}>
                 {DOORS.map((door) => {
                   const Icon = door.icon;
                   return (
@@ -529,9 +578,27 @@ export default function ReviewWorkspace({
                   );
                 })}
               </div>
-              <i aria-hidden='true' className='tcr-rail-bus'>
-                {pulse > 0 ? <i className='tcr-rail-pulse' key={pulse} /> : null}
-              </i>
+              {/* the net: risers curving onto one bus, the house doubled
+                  line built the fork's way — outer ink, pulse between,
+                  cores carving every junction into a merged wishbone,
+                  the live pair last on the chosen drop */}
+              <svg aria-hidden='true' className='tcr-rail-net' ref={netRef} viewBox={net ? `0 0 ${net.w} ${NET_H}` : undefined}>
+                {netAll ? (
+                  <>
+                    <path className='tcr-net-ink' d={netAll} />
+                    {pulse > 0 && netRoute ? (
+                      <path className='tcr-net-pulse' d={netRoute} key={pulse} pathLength={100} />
+                    ) : null}
+                    <path className='tcr-net-core' d={netAll} />
+                    {netLive ? (
+                      <>
+                        <path className='tcr-net-ink is-live' d={netLive} />
+                        <path className='tcr-net-core' d={netLive} />
+                      </>
+                    ) : null}
+                  </>
+                ) : null}
+              </svg>
             </div>
           ) : null}
         </div>

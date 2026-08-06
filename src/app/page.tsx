@@ -38,7 +38,7 @@ export const metadata = {
   },
 };
 
-/** The five full site concepts vs the single-page explorations. */
+/** The three full site concepts vs the single-page explorations. */
 const SITES = DIRECTIONS.filter((d) => d.site);
 const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
 
@@ -56,7 +56,7 @@ const DECK = [
 /* ---- the opener's distillation figure, as data ----
    One continuous corridor, narrowing in two throats: a 7×3 field of
    sketched direction cells (the eight retired ones hatched out), the
-   thirteen structured cards that survived review, and the five full
+   thirteen structured cards that survived review, and the three full
    sites as cascaded browser windows — fidelity rising as the count
    falls. Stroke lengths vary deterministically so no two cells read
    alike. Grids sit 8 units inside the walls so no rule ever doubles. */
@@ -79,8 +79,8 @@ const FUNNEL_SURVIVORS = [
   ...Array.from({ length: 3 }, (_, i) => ({ x: 119 + i * 43, y: 276, b: 15 + ((i * 6) % 10), b2: 10 + ((i * 4) % 9) })),
 ];
 
-/** Stage three: the five sites, browser windows cascaded like the fan. */
-const FUNNEL_SITES = Array.from({ length: 5 }, (_, i) => ({ x: 120 + i * 14, y: 382 + i * 8 }));
+/** Stage three: the three sites, browser windows cascaded like the fan. */
+const FUNNEL_SITES = Array.from({ length: 3 }, (_, i) => ({ x: 134 + i * 14, y: 386 + i * 8 }));
 
 export default function IndexPage() {
   return (
@@ -157,7 +157,7 @@ export default function IndexPage() {
               <p className='pt-post-byline'>Kevin Liu · August 2026</p>
               <p>
                 This site is the working file of a redesign: every direction I tried, the tooling
-                that judged them, and the five full sites that came out the other end. Everything
+                that judged them, and the three full sites that came out the other end. Everything
                 here is live — real pages, not mockups.
               </p>
               <p>
@@ -262,7 +262,7 @@ export default function IndexPage() {
                   <tspan className='pt-funnel-t' dx='12'>SURVIVED REVIEW</tspan>
                 </text>
 
-                {/* stage three: the five full sites — browser windows,
+                {/* stage three: the three full sites — browser windows,
                     cascaded the way the captures fan below; only the front
                     window carries content, the rest show their title bars */}
                 {FUNNEL_SITES.map((c, i) => (
@@ -279,7 +279,7 @@ export default function IndexPage() {
                   </g>
                 ))}
                 <text className='pt-funnel-cap' textAnchor='middle' x='180' y='480'>
-                  <tspan className='pt-funnel-n'>5</tspan>
+                  <tspan className='pt-funnel-n'>3</tspan>
                   <tspan className='pt-funnel-t' dx='12'>FULL SITES</tspan>
                 </text>
               </svg>

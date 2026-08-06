@@ -178,7 +178,7 @@ export default function V0Footer() {
       <div className='v0-foot-bar'>
         <a
           className='v0-foot-status'
-          href='https://status.generaltranslation.com/'
+          href='https://gt-status.com/'
           rel='noreferrer'
           target='_blank'
         >
