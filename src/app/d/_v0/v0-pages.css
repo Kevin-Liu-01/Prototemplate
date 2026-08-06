@@ -276,8 +276,10 @@
 }
 
 /* The context band's display line speaks at the section-head scale —
-   the same size as the Locadex head beside it in the flow. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ctx .tcb-head h2 {
+   the same size as the Developer head it replicates (the head is a
+   tc-head now, and without this pin the band's own larger .tc-band h2
+   scale would take it). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ctx .tc-head h2 {
   font-size: clamp(1.62rem, 2.5vw, 2.2rem);
 }
 
@@ -288,8 +290,11 @@
   padding-top: clamp(26px, 2.8vw, 36px);
 }
 
+/* zero, not the old clamp (founder): the band heads are tc-heads now
+   and bring their own clamp(26–36) top spend — the sheet's padding on
+   top of that read as doubled air */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in {
-  padding-top: clamp(28px, 3vw, 40px);
+  padding-top: 0;
 }
 
 /* Procession's console now ENDS the hero: the section seam is its bottom
