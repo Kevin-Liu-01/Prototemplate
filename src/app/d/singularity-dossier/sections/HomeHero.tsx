@@ -49,25 +49,25 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
    reading-side wipe — stays for the day one arrives. */
 type EveryWord = { text: string; lang: string; rtl?: boolean };
 
-const WORD_EN: EveryWord = { text: 'Launch in every language.', lang: 'en' };
+const WORD_EN: EveryWord = { text: 'Launch in every language', lang: 'en' };
 
 const WORDS: Record<string, EveryWord> = {
   en: WORD_EN,
-  es: { text: 'Lanza en todos los idiomas.', lang: 'es' },
-  ja: { text: 'あらゆる言語でローンチ。', lang: 'ja' },
-  fr: { text: 'Lancez dans toutes les langues.', lang: 'fr' },
-  ko: { text: '모든 언어로 출시하세요.', lang: 'ko' },
-  de: { text: 'In jeder Sprache launchen.', lang: 'de' },
-  zh: { text: '用每种语言发布。', lang: 'zh' },
-  pt: { text: 'Lance em todos os idiomas.', lang: 'pt' },
-  ru: { text: 'Запускайтесь на любом языке.', lang: 'ru' },
-  it: { text: 'Lancia in ogni lingua.', lang: 'it' },
-  hi: { text: 'हर भाषा में लॉन्च करें।', lang: 'hi' },
-  nl: { text: 'Lanceer in elke taal.', lang: 'nl' },
-  tr: { text: 'Her dilde yayına alın.', lang: 'tr' },
-  sv: { text: 'Lansera på alla språk.', lang: 'sv' },
-  id: { text: 'Luncurkan dalam setiap bahasa.', lang: 'id' },
-  pl: { text: 'Uruchamiaj w każdym języku.', lang: 'pl' },
+  es: { text: 'Lanza en todos los idiomas', lang: 'es' },
+  ja: { text: 'あらゆる言語でローンチ', lang: 'ja' },
+  fr: { text: 'Lancez dans toutes les langues', lang: 'fr' },
+  ko: { text: '모든 언어로 출시하세요', lang: 'ko' },
+  de: { text: 'In jeder Sprache launchen', lang: 'de' },
+  zh: { text: '用每种语言发布', lang: 'zh' },
+  pt: { text: 'Lance em todos os idiomas', lang: 'pt' },
+  ru: { text: 'Запускайтесь на любом языке', lang: 'ru' },
+  it: { text: 'Lancia in ogni lingua', lang: 'it' },
+  hi: { text: 'हर भाषा में लॉन्च करें', lang: 'hi' },
+  nl: { text: 'Lanceer in elke taal', lang: 'nl' },
+  tr: { text: 'Her dilde yayına alın', lang: 'tr' },
+  sv: { text: 'Lansera på alla språk', lang: 'sv' },
+  id: { text: 'Luncurkan dalam setiap bahasa', lang: 'id' },
+  pl: { text: 'Uruchamiaj w każdym języku', lang: 'pl' },
 };
 
 /* the dissolve dust pool: small glyphs sampled across the same scripts */
@@ -200,15 +200,7 @@ export default function HomeHero() {
           probe.setAttribute('dir', w.rtl ? 'rtl' : 'ltr');
           probe.textContent = w.text;
           em.appendChild(probe);
-          let width = probe.getBoundingClientRect().width;
-          /* the ideographic full stop (U+3002) carries a full-em advance
-             with its ink in the left half — the raw measure pushes the
-             right guide a half-glyph past the sentence (founder catch).
-             Trim the phantom so the guide hugs the ink. */
-          if (/[。．]$/.test(w.text)) {
-            width -= parseFloat(getComputedStyle(em).fontSize) * 0.42;
-          }
-          width = snapPx(width);
+          const width = snapPx(probe.getBoundingClientRect().width);
           probe.remove();
           widthCache.set(w.text, width);
           return width;
@@ -616,7 +608,7 @@ export default function HomeHero() {
           <span>
             <em data-every>
               <span data-every-word lang='en' dir='ltr'>
-                Launch in every language.
+                Launch in every language
               </span>
             </em>
           </span>
