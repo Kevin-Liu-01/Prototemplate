@@ -342,30 +342,31 @@
 }
 
 /* ---------- the three doors (surfaces mode) ----------
-   The v0 flow's "over web, API, or CLI" beat: a rail of three door
-   nodes between the copy and the frame, each wired into the window by
-   a hairline stub and each swapping the frame's face to that surface's
-   real text — the workspace table, the OpenAPI diffs call, the
-   gt save-local session. Hosts opt in with the surfaces prop; the
-   default mount never renders the rail, so nothing below can reach
-   the original page. */
-
-.toolchain-root .tcr-doors .tcr-grid {
-  grid-template-columns: minmax(0, 0.72fr) auto minmax(0, 1.45fr);
-}
+   The v0 flow's "over web, API, or CLI" beat: three door nodes in one
+   row under the copy, chained in series by hairline stubs, the last
+   wire running across the gutter into the frame (founder sketch:
+   [__]_[___]_[___]___ window). Each door swaps the frame's face to
+   that surface's real text — the workspace table, the OpenAPI diffs
+   call, the gt save-local session — and the caption beneath the row
+   speaks the active surface's real address. Hosts opt in with the
+   surfaces prop; the default mount never renders the rail, so nothing
+   below can reach the original page. */
 
 .toolchain-root .tcr-rail {
-  display: grid;
-  gap: 14px;
-  align-content: center;
+  margin-top: 26px;
+}
+
+.toolchain-root .tcr-rail-row {
+  display: flex;
+  align-items: stretch;
 }
 
 .toolchain-root .tcr-door {
   position: relative;
-  display: grid;
-  gap: 5px;
-  text-align: left;
-  padding: 11px 14px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
   background: none;
   border: 1px solid var(--tc-hair-2);
   /* a control, so it keeps the small control radius (the theme switch's
@@ -373,6 +374,9 @@
   border-radius: 8px;
   color: var(--tc-ink-3);
   cursor: pointer;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
   transition:
     color 0.15s ease,
     border-color 0.15s ease;
@@ -387,45 +391,46 @@
   border-color: color-mix(in srgb, var(--tc-accent) 55%, var(--tc-hair-2));
 }
 
-/* the wire: a stub reaching across the grid gap to the frame's edge —
-   the same clamp as the gap, so it lands exactly on the window */
-.toolchain-root .tcr-door::after {
+/* the series stubs: each door after the first links back to the one
+   before it across the row's own gap */
+.toolchain-root .tcr-door + .tcr-door {
+  margin-left: 13px;
+}
+
+.toolchain-root .tcr-door + .tcr-door::before {
   content: '';
   position: absolute;
-  left: 100%;
+  right: 100%;
   top: 50%;
-  width: clamp(28px, 4vw, 56px);
+  width: 13px;
   border-top: 1px solid var(--tc-hair-2);
 }
 
-.toolchain-root .tcr-door[data-on]::after {
-  border-top-color: var(--tc-accent);
-}
-
-.toolchain-root .tcr-door-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  letter-spacing: -0.01em;
-}
-
 .toolchain-root .tcr-door-ico {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   flex: none;
 }
 
-.toolchain-root .tcr-door-line {
+/* the trailing wire: fills the row's remainder and crosses the grid
+   gap — the same clamp as the gap, so it lands exactly on the frame */
+.toolchain-root .tcr-rail-wire {
+  flex: 1;
+  align-self: center;
+  min-width: 18px;
+  margin-left: 13px;
+  margin-right: calc(-1 * clamp(28px, 4vw, 56px));
+  border-top: 1px solid var(--tc-accent);
+}
+
+/* the active surface's real address, spoken under the chain */
+.toolchain-root .tcr-rail-line {
+  margin-top: 10px;
+  min-height: 15px;
   font-family: var(--tc-mono);
   font-size: 10.5px;
   letter-spacing: 0.02em;
-  white-space: nowrap;
   color: var(--tc-ink-4);
-}
-
-.toolchain-root .tcr-door[data-on] .tcr-door-line {
-  color: var(--tc-ink-3);
 }
 
 /* ---------- the faces ----------
@@ -514,26 +519,10 @@
   color: #16a34a;
 }
 
-/* narrow: the grid is one column (the 980 rule above), so the rail turns
-   into a horizontal row of doors above the frame and the wires retire */
+/* narrow: the grid is one column (the 980 rule above) and the frame sits
+   below the copy, so the trailing wire has nothing to reach — it retires */
 @media (max-width: 980px) {
-  .toolchain-root .tcr-doors .tcr-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .toolchain-root .tcr-rail {
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(0, 1fr);
-    gap: 10px;
-  }
-
-  .toolchain-root .tcr-door::after {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .toolchain-root .tcr-door-line {
+  .toolchain-root .tcr-rail-wire {
     display: none;
   }
 }

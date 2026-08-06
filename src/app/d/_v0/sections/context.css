@@ -879,9 +879,6 @@
   color: #2fbf62;
 }
 
-.toolchain-root .v0-ctx .v0-ctx-review .tcr-door-head {
-  font-size: 12px;
-}
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln .is-acc,
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-ln.is-acc {

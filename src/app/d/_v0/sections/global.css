@@ -338,3 +338,14 @@
 .toolchain-root .v0-glob .tcpq-attr {
   position: relative;
 }
+
+/* CENTER THE SPHERE (founder: "center our globe again"): the region
+   rename left the right label rail far longer than the left, so the
+   ink-balanced seat read as a left-shifted globe. Geometry stays frozen
+   in the SSOT; the drawing's two layers share this wrapper (atmosphere +
+   globe svgs, one viewBox), so one width-relative slide moves them in
+   registration — the limb's centre lands on the card's at every
+   rendered size. */
+.toolchain-root .v0-glob-atmo {
+  transform: translateX(3.32%);
+}

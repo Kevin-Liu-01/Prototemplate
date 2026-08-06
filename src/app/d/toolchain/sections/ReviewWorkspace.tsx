@@ -493,34 +493,38 @@ export default function ReviewWorkspace({
               ))}
             </ul>
           ) : null}
-        </div>
 
-        {surfaces ? (
-          /* the rail of doors: one review, three surfaces — each node
-             names its surface in the product's own words and wires into
-             the frame; the active wire carries the accent */
-          <div aria-label='Review surface' className='tcr-rail' role='group'>
-            {DOORS.map((door) => {
-              const Icon = door.icon;
-              return (
-                <button
-                  key={door.key}
-                  aria-pressed={face === door.key}
-                  className='tcr-door'
-                  data-on={face === door.key || undefined}
-                  type='button'
-                  onClick={() => setFace(door.key)}
-                >
-                  <span className='tcr-door-head'>
-                    <Icon aria-hidden className='tcr-door-ico' />
-                    {door.name}
-                  </span>
-                  <span className='tcr-door-line'>{door.line}</span>
-                </button>
-              );
-            })}
-          </div>
-        ) : null}
+          {surfaces ? (
+            /* the doors, chained (founder sketch): three nodes in one row
+               wired in series, the last wire running across the gutter
+               into the frame — the caption beneath speaks the active
+               surface's real address */
+            <div aria-label='Review surface' className='tcr-rail' role='group'>
+              <div className='tcr-rail-row'>
+                {DOORS.map((door) => {
+                  const Icon = door.icon;
+                  return (
+                    <button
+                      key={door.key}
+                      aria-pressed={face === door.key}
+                      className='tcr-door'
+                      data-on={face === door.key || undefined}
+                      type='button'
+                      onClick={() => setFace(door.key)}
+                    >
+                      <Icon aria-hidden className='tcr-door-ico' />
+                      {door.name}
+                    </button>
+                  );
+                })}
+                <i aria-hidden='true' className='tcr-rail-wire' />
+              </div>
+              <div className='tcr-rail-line'>
+                {DOORS.find((door) => door.key === face)?.line}
+              </div>
+            </div>
+          ) : null}
+        </div>
 
         <div className='tcr-mat' data-reveal>
           <div className={surfaces ? 'tcr-ws tcr-ws-multi' : 'tcr-ws'}>

@@ -111,12 +111,15 @@ function atmoTile(cover: number): string {
   return cells.join('');
 }
 
-/** The sphere's projection, mirrored from EdgeGlobe.tsx (R/CX/CY are module
-    constants there, not exported): limb radius 92 centred at (179, 126) in
-    the 360×240 viewBox — 179 is the optically-balanced seat between the
-    two label rails (founder round); keep this in step with EdgeGlobe's CX
-    whenever the sphere moves. The overlay shares that viewBox, so the two
-    coordinate systems coincide exactly at any rendered size. */
+/** The sphere's projection, mirrored from EdgeGlobe.tsx (R/CX/CY and
+    VIEW_W/VIEW_H are module constants there, not exported): limb radius 92
+    centred at (179, 126) in the 384×240 viewBox. The overlay MUST carry the
+    same viewBox as EdgeGlobe — the two svgs share one box, so any aspect
+    drift letterboxes one of them and the halo slides off the sphere (the
+    384 label-rail widening did exactly that at 360). Keep CX/CY/VIEW_* in
+    step with EdgeGlobe whenever the sphere or its viewBox moves. */
+const ATMO_VIEW_W = 384;
+const ATMO_VIEW_H = 240;
 const ATMO_CX = 179;
 const ATMO_CY = 126;
 
@@ -144,7 +147,7 @@ function GlobeAtmosphere() {
       aria-hidden='true'
       className='v0-glob-atmo-field'
       focusable='false'
-      viewBox='0 0 360 240'
+      viewBox={`0 0 ${ATMO_VIEW_W} ${ATMO_VIEW_H}`}
     >
       <defs>
         {ATMO_RINGS.map(({ cover }) => (
