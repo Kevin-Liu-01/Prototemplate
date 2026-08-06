@@ -1,10 +1,12 @@
 import type { CSSProperties } from 'react';
 
+import DitheredMark, { shineTravel } from '@/app/d/toolchain/diagrams/DitheredMark';
 import {
   ISO_COS30,
-  ISO_SIN30,
   frontEdge,
   leftFace,
+  markPath as isoMarkPath,
+  plane,
   polyline,
   project,
   rightFace,
@@ -236,28 +238,9 @@ const CAP_PLATE = plateGeo(CAP_SIZE);
 
 /* ---- the top-face artifacts, one strong drawing per beat ---------------- */
 
-/** A flat rounded rectangle lying in a z = const plane (top face default). */
+/** The kit's markPath, defaulted to the plate's own top face. */
 function markPath(x: number, y: number, w: number, d: number, z = THICK): string {
-  const quad: Pt[] = [
-    project(x, y, z),
-    project(x + w, y, z),
-    project(x + w, y + d, z),
-    project(x, y + d, z),
-  ];
-  return roundedPolygon(quad);
-}
-
-/**
- * Seats flat 2D artwork in the z = const plane, anchored at plan (ox, oy):
- * a z-plane projects as the affine map (x, y) → (cos30·x − cos30·y,
- * sin30·x + sin30·y − z), so one matrix() carries whole drawings — glyph
- * strokes, wire curves, the masked Locadex mark — into the surface.
- * Strokes inside the group stay 1px via vectorEffect; everything else is
- * drawn in plane coordinates and lands foreshortened like the face itself.
- */
-function plane(z: number, ox = 0, oy = 0): string {
-  const [sx, sy] = project(ox, oy, z);
-  return `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} ${sx} ${sy})`;
+  return isoMarkPath(x, y, w, d, z);
 }
 
 /** The chips' gauge, and where art drawn on a chip's top face sits. */
@@ -520,50 +503,6 @@ const MARK_PLANE = plane(THICK + CHIP_H, CAP_CHIP_X + CAP_CHIP_SIZE / 2, CAP_CHI
    edges — leave the primary band catching light mid-glyph as a still,
    the counter-sheen parked clear. */
 
-/** Ordered 4×4 Bayer matrix — glyph-field's, verbatim. */
-const BAYER4: readonly (readonly number[])[] = [
-  [0, 8, 2, 10],
-  [12, 4, 14, 6],
-  [3, 11, 1, 9],
-  [15, 7, 13, 5],
-];
-
-/** Dither cell edge, in drawing units: ~1.9 screen px at the figure's
-    392px resting width, ~1.6 at the one-column 330 (founder round:
-    "each dot smaller" — stepped down from the first pass's ~2.6px;
-    crispEdges pixel-snaps them, so they stay 1-bit at 1x and 2x alike,
-    never a grey mush). */
-const GLINT_CELL = 1.05;
-const GLINT_TILE = GLINT_CELL * 4;
-
-/** One pattern tile at coverage k/16: every cell whose Bayer threshold
-    sits under k, as one path of squares. */
-function bayerTile(k: number): string {
-  const cells: string[] = [];
-  BAYER4.forEach((row, y) => {
-    row.forEach((threshold, x) => {
-      if (threshold < k) {
-        cells.push(
-          `M${x * GLINT_CELL} ${y * GLINT_CELL}h${GLINT_CELL}v${GLINT_CELL}h${-GLINT_CELL}Z`
-        );
-      }
-    });
-  });
-  return cells.join('');
-}
-
-/** The band's tiers, center-out: clip-window width (drawing units) and
-    Bayer coverage. Each window CONTAINS the previous, so the union is the
-    ordered-dither falloff — solid where every tier lands, sparse at the
-    fringe. */
-const SHINE_TIERS: readonly { cover: number; width: number }[] = [
-  { cover: 16, width: 7 },
-  { cover: 10, width: 12 },
-  { cover: 6, width: 18 },
-  { cover: 3, width: 26 },
-  { cover: 1, width: 36 },
-];
-
 /** The masked rects' screen-space cover: the 28-unit glyph on the chip's
     top face (chip center plan (-22, 0) on the full-size plate, glyph
     v-half 15.6 from the asset's 199×222 form) projects to x
@@ -574,6 +513,7 @@ const LDX_X = -48;
 const LDX_Y = -37;
 const LDX_W = 58;
 const LDX_H = 37;
+const LDX_COVER = { x: LDX_X, y: LDX_Y, w: LDX_W, h: LDX_H } as const;
 
 /* The sweep's endpoints, DERIVED from the masked cover and the band's
    own rotated geometry (founder round 10: "make it cross the whole
@@ -589,50 +529,9 @@ const LDX_H = 37;
    or cover size, never clipped. FullStack slides the windows
    SHINE_FROM → SHINE_TO at constant speed and restarts only after the
    full exit; the counter-sheen rides the same path half a lap behind. */
-const SHINE_NX = Math.cos(Math.PI / 3);
-const SHINE_NY = Math.sin(Math.PI / 3);
-const SHINE_W_MAX = Math.max(...SHINE_TIERS.map((tier) => tier.width));
-const SHINE_PAD = 4;
-/** The cover's extent along the band normal (corners at (LDX_X, LDX_Y)
-    and (LDX_X + LDX_W, LDX_Y + LDX_H) are the extremes: nx, ny > 0). */
-const SHINE_N_MIN = SHINE_NX * LDX_X + SHINE_NY * LDX_Y;
-const SHINE_N_MAX = SHINE_NX * (LDX_X + LDX_W) + SHINE_NY * (LDX_Y + LDX_H);
-export const SHINE_FROM = (SHINE_N_MIN - SHINE_W_MAX / 2 - SHINE_PAD) / SHINE_NX;
-export const SHINE_TO = (SHINE_N_MAX + SHINE_W_MAX / 2 + SHINE_PAD) / SHINE_NX;
-
-/** The window's half-length along its own axis. Horizontal translation
-    also SLIDES the finite window along that axis (by x·sin60), so a
-    fixed 110 ran out at the travel's ends — the band's tip visibly
-    shortened off the mark's upper corner before it had exited (the
-    other half of the founder's cut-off). Sized so the window still
-    spans the whole cover diagonal at both endpoints. */
-const SHINE_HALF_LEN = Math.ceil(
-  SHINE_NY * Math.max(Math.abs(SHINE_FROM), Math.abs(SHINE_TO)) +
-    SHINE_NY * (LDX_W / 2) +
-    SHINE_NX * Math.max(Math.abs(LDX_Y), Math.abs(LDX_Y + LDX_H)) +
-    SHINE_PAD
-);
-
-/** One window: a PRE-ROTATED rectangle path centered on the origin —
-    `width` across the band normal, 2·SHINE_HALF_LEN along the band
-    axis. The 60° set lives in the geometry itself, not in a transform:
-    a rotate()-based window proved origin-fragile (GSAP's SVG origin
-    compensation shifted the whole sweep ~180 units off the mark, a
-    different amount per tier), so the loop is a PURE horizontal
-    translate that no origin math can bend. */
-function shineWindow(width: number): string {
-  const nx = SHINE_NX * (width / 2);
-  const ny = SHINE_NY * (width / 2);
-  const ax = -SHINE_NY * SHINE_HALF_LEN;
-  const ay = SHINE_NX * SHINE_HALF_LEN;
-  const pts: readonly Pt[] = [
-    [nx + ax, ny + ay],
-    [nx - ax, ny - ay],
-    [-nx - ax, -ny - ay],
-    [-nx + ax, -ny + ay],
-  ];
-  return polyline(pts, true);
-}
+const SHINE_TRAVEL = shineTravel(LDX_COVER);
+export const SHINE_FROM = SHINE_TRAVEL.from;
+export const SHINE_TO = SHINE_TRAVEL.to;
 
 /* ---- the agents scan beam --------------------------------------------------
    The Locadex iso's sweep device (Locadex.tsx, v0-ldx-beam), ported to the
@@ -901,59 +800,6 @@ function TopGlyph({ id }: { id: string }) {
          edge, per the founder's addenda) */
       return (
         <>
-          <defs>
-            {/* the glyph's alpha mask. The face-plane transform lives
-                INSIDE the mask now, so the masked rects — the resting
-                ink and the shimmer tiers — sit in slab screen space and
-                the Bayer cells stay square screen pixels. */}
-            <mask
-              id='v0s-agents-mark'
-              maskUnits='userSpaceOnUse'
-              x={-120}
-              y={-80}
-              width={240}
-              height={160}
-              style={{ maskType: 'alpha' }}
-            >
-              <g transform={MARK_PLANE}>
-                <image
-                  href='/brand/locadex-mark.svg'
-                  x={-MARK_HALF}
-                  y={-MARK_HALF}
-                  width={MARK_HALF * 2}
-                  height={MARK_HALF * 2}
-                />
-              </g>
-            </mask>
-            {SHINE_TIERS.map(({ cover }) => (
-              <pattern
-                key={cover}
-                id={`v0s-ldx-b${cover}`}
-                patternUnits='userSpaceOnUse'
-                width={GLINT_TILE}
-                height={GLINT_TILE}
-              >
-                <path className='v0s-ldx-glint' d={bayerTile(cover)} shapeRendering='crispEdges' />
-              </pattern>
-            ))}
-            {/* the bands: per tier, the UNION of two pre-rotated window
-                paths (shineWindow — the 60° set is baked into the
-                geometry, parallel to the plate's projected +y edges) —
-                the primary and the slimmer counter-sheen FullStack rides
-                half a lap behind it. The markup poses are the
-                reduced-motion and no-JS still: primary mid-glyph,
-                counter-sheen parked clear at the sweep's start. */}
-            {SHINE_TIERS.map(({ cover, width }) => (
-              <clipPath key={cover} id={`v0s-ldx-w${cover}`} clipPathUnits='userSpaceOnUse'>
-                <path data-ldx-stripe d={shineWindow(width)} />
-                <path
-                  data-ldx-stripe2
-                  d={shineWindow(width * 0.62)}
-                  transform={`translate(${SHINE_FROM} 0)`}
-                />
-              </clipPath>
-            ))}
-          </defs>
           {/* the ring is normalized to 1000 pathLength units, deliberately
               long: the trace's motion is a dash-offset, and offsets that
               quantize (GSAP integer-rounds px-unit CSS props by default)
@@ -977,30 +823,19 @@ function TopGlyph({ id }: { id: string }) {
           />
           {/* the mark's raised square chip, top-left of the face */}
           <GlyphChip x={CAP_CHIP_X} y={CAP_CHIP_Y} w={CAP_CHIP_SIZE} d={CAP_CHIP_SIZE} h={CHIP_H} />
-          <rect
-            className='v0s-g-ldx'
-            x={LDX_X}
-            y={LDX_Y}
-            width={LDX_W}
-            height={LDX_H}
-            mask='url(#v0s-agents-mark)'
+          {/* the masked mark + its Bayer shimmer — the kit's DitheredMark,
+              carrying the tower's class hooks and stripe attributes so
+              fullstack.css and FullStack's sweep driver stay untouched */}
+          <DitheredMark
+            id='v0s-ldx'
+            href='/brand/locadex-mark.svg'
+            plane={MARK_PLANE}
+            markHalf={MARK_HALF}
+            cover={LDX_COVER}
+            inkClassName='v0s-g-ldx'
+            glintClassName='v0s-ldx-glint'
+            shineClassName='v0s-ldx-shine'
           />
-          {/* the shimmer: static Bayer-tier fills, windowed by the moving
-              band — cells never move, the light does (glyph-field's rule:
-              the screen is fixed, the ramp travels) */}
-          <g className='v0s-ldx-shine' mask='url(#v0s-agents-mark)'>
-            {SHINE_TIERS.map(({ cover }) => (
-              <rect
-                key={cover}
-                x={LDX_X}
-                y={LDX_Y}
-                width={LDX_W}
-                height={LDX_H}
-                fill={`url(#v0s-ldx-b${cover})`}
-                clipPath={`url(#v0s-ldx-w${cover})`}
-              />
-            ))}
-          </g>
           {/* the write wires: one hairline per diff, fanning from the
               mark's chip across the face to each row's margin — FullStack
               draws wire i just before slat i lands ([data-cap-wire]), so

@@ -28,6 +28,8 @@ import {
   ISO_SIN30,
   frontEdge,
   leftFace,
+  markPath,
+  plane,
   polyline,
   project,
   rightFace,
@@ -185,18 +187,6 @@ const AGENT_LEADER = `M${(AGENT_VERT_X + 2.2).toFixed(2)} ${AGENT_TOP_Y}H70`;
 /** The output plate's screen center x — the chip's reading hangs beneath it. */
 const PR_CX = (PR_BOX.x * 2 + PR_BOX.w) * ISO_COS30;
 
-/**
- * Flat artwork lies in a z = const plane, anchored at plan (ox, oy): the
- * plane projects as the 2D affine map (x,y) → (cos30·x − cos30·y,
- * sin30·x + sin30·y − z), so one matrix() carries whole drawings — the
- * masked Locadex mark, the GitHub glyph — into a surface and they inherit
- * the projection like every other face detail.
- */
-function plane(z: number, ox = 0, oy = 0): string {
-  const [sx, sy] = project(ox, oy, z);
-  return `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} ${sx} ${sy})`;
-}
-
 /** The Locadex mark's half-size, and its seat in the slab's top face. */
 const MARK_HALF = 16;
 const MARK_PLANE = plane(A_Z + A_H);
@@ -208,17 +198,8 @@ const VIEW_H = 164;
 /** Custom properties are legal inline styles but absent from CSSProperties. */
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
 
-/** A flat rounded bar lying in the z = const plane — string lines, file
-    contents — the tower's markPath, verbatim. */
-function markPath(x: number, y: number, w: number, d: number, z: number, r?: number): string {
-  const quad: Pt[] = [
-    project(x, y, z),
-    project(x + w, y, z),
-    project(x + w, y + d, z),
-    project(x, y + d, z),
-  ];
-  return roundedPolygon(quad, r);
-}
+/* plane() and markPath() now come from the kit — iso.ts owns the seat
+   every flat mark rides. */
 
 type SolidProps = {
   box: IsoBox;

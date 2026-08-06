@@ -934,11 +934,11 @@
   .toolchain-root .tcb.v0-stack.is-stage {
     /* the stage's seat: the sticky nav's 58px bar + its 1px hairline */
     --v0sm-top: 59px;
-    /* svh, deliberately: the SMALL viewport unit is stable under mobile
-       browser chrome, so the stage never resizes mid-story; when the
-       real viewport runs taller (dvh > svh) the band's own ink shows
-       below the stage and the scrub just starts a breath later */
-    --v0sm-stage-h: calc(100svh - var(--v0sm-top));
+    /* dvh (founder call: "on mobile version use 100dvh") — the stage
+       takes the REAL viewport, chrome collapse included, so the rail
+       and text zone always reach the true screen bottom; the earlier
+       svh cut traded that reach for resize stability */
+    --v0sm-stage-h: calc(100dvh - var(--v0sm-top));
     /* the tower must FIT the 60% fig zone, never clip: its width from
        the zone's height × VIEW_W/TOWER_H (StackTower: 214.133/250.8 =
        0.8538 — change them together), minus the fig pads and the
@@ -988,6 +988,21 @@
     --v0s-cellrail-w: min(100% - 32px, var(--v0sm-tw));
   }
 
+  /* the rail runs the WHOLE screen (founder: fully extends top to
+     bottom): the fig cell's clip stops the track at the zone seam, so
+     the TEXT cell draws the continuation itself — same x, same gauge,
+     same ink (both cells are the grid's one column, so the two
+     formulas resolve to the same pixels and the seam never jogs) */
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-cell-rail::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)));
+    width: calc(0.00864 * min(100% - 32px, var(--v0sm-tw)));
+    background: rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+  }
+
   /* ---------- the text zone: one beat at a time ---------- */
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-rail {
@@ -999,7 +1014,11 @@
     position: absolute;
     inset: 0;
     min-height: 0;
-    padding: 10px 20px 18px;
+    /* the copy sits RIGHT of the rail (founder: shift the text to the
+       right of the rail below the layers) — the left inset is the rail
+       track's own x (its 50% and this padding's 50% resolve against
+       the same one-column width), plus a hand of clearance */
+    padding: 10px 20px 18px calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)) + 26px);
     /* the scrub owns alpha absolutely (direct style writes): the class
        spotlight's dim and its eased transition would fight it */
     opacity: 0;
@@ -1080,6 +1099,11 @@
    the page accent on their own. */
 
 :root:not([data-theme='dark']) .toolchain-root .tcb .v0s-cellrail {
+  background: rgba(7, 7, 7, 0.14);
+}
+
+/* the stage's text-zone rail continuation, ink-on-paper */
+:root:not([data-theme='dark']) .toolchain-root .tcb.v0-stack.is-stage .v0-stack-cell-rail::before {
   background: rgba(7, 7, 7, 0.14);
 }
 

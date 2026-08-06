@@ -94,6 +94,58 @@ export type StudioPreset =
   | 'bayerInk'
   | 'bayerHot';
 
+/** One entry of the codified Bayer family roster. */
+export type BayerVariant = {
+  id: string;
+  name: string;
+  preset: StudioPreset;
+};
+
+/**
+ * THE BAYER FAMILY, codified — the authentic roster, in the review rig's
+ * own order. Slot 01 is the founder's first-survey pick untouched; 02–10
+ * move along real axes: matrix order (2×2/4×4/8×8), cell scale (poster ↔
+ * near-grain), the tone field under the matrix (flow, contours, flank
+ * radials, sweeps, interference, breath), motion, and palette balance
+ * (ink-dominant, blue-forward, white-hot). Anything that shows or switches
+ * the family maps over this list — the hero rig, the craft plate.
+ */
+export const BAYER_PRESETS: readonly BayerVariant[] = [
+  // THE PICK, byte-identical: the 4×4 ordered matrix over flow-clouds
+  // at coarse print cells — the glyph field's own atlas grammar.
+  { id: '01', name: 'bayer-flow', preset: 'bayer' },
+  // Matrix-order twin: the same flow through an 8×8 matrix at
+  // near-grain cells — smooth dithered gradients where 01 steps.
+  { id: '02', name: 'bayer-8x8', preset: 'bayer8' },
+  // Quantized elevation bands drifting downslope — the topographic
+  // motif as terraced ink.
+  { id: '03', name: 'bayer-contour', preset: 'bayerContour' },
+  // Two radial glows breathing at the FLANKS, centered off the window
+  // column; blue-forward palette. The center stays ink by construction.
+  { id: '04', name: 'bayer-radial', preset: 'bayerRadial' },
+  // Long diagonal beams crossing laminar, broken by a slow pigment
+  // churn — the pressroom read, frame counter-rotated from 01.
+  { id: '05', name: 'bayer-sweep', preset: 'bayerSweep' },
+  // Two circular wave systems interfering — crests meet as chips,
+  // troughs sink to ink; the slowest clock in the family.
+  { id: '06', name: 'bayer-waves', preset: 'bayerWaves' },
+  // The 2×2 matrix at coarse poster cells — four thresholds, chunky
+  // mosaic, the loudest print.
+  { id: '07', name: 'bayer-chunk', preset: 'bayerChunk' },
+  // The flow field inhaling and exhaling on a ~16s clock — near-ink at
+  // rest, full bloom at the crest.
+  { id: '08', name: 'bayer-pulse', preset: 'bayerPulse' },
+  // Ink-dominant print: tone biased hard toward ground, sparse blue,
+  // no bright chip in the palette — the quietest variant.
+  { id: '09', name: 'bayer-ink', preset: 'bayerInk' },
+  // Wandering heat cores lift the crests to pure white through the
+  // fine 8×8 screen — the one variant allowed white.
+  { id: '10', name: 'bayer-hot', preset: 'bayerHot' },
+];
+
+/** The rigs' shared default — 02 bayer-8x8, the founder pick. */
+export const BAYER_DEFAULT_ID = '02';
+
 export type StudioOptions = {
   preset?: StudioPreset;
   /** Device-pixel-ratio cap. The dithers are per-pixel; default caps at 2. */

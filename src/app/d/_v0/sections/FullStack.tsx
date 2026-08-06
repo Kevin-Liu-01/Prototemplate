@@ -785,6 +785,11 @@ export default function V0FullStack() {
           });
         }
 
+        /* set by the staged branch: puts every sliced text node and
+           hidden inline mark back — the typing writes Text data no
+           revert owns */
+        let restoreTyped: (() => void) | null = null;
+
         if (!staged) {
           beats.forEach((beat, i) => {
             ScrollTrigger.create({
@@ -828,10 +833,10 @@ export default function V0FullStack() {
              writes itself across the agents segment. */
           scope.classList.add('is-stage');
           const runway = scope.querySelector<HTMLElement>('.v0sm-runway');
-          /* each beat owns an equal share of the runway; the crossfade
-             band straddles each boundary — wide enough that the ride
-             between beats reads as one text dissolving into the next,
-             narrow enough that every beat holds a clean solo dwell */
+          /* each beat owns an equal share of the runway; the transition
+             band straddles each boundary — the leaving beat UNTYPES in
+             its first half, the arriving one TYPES in its second
+             (founder: type transition itself instead of fading) */
           const SEG = 1 / beats.length;
           const FADE = 0.36 * SEG;
           /* the hunk writes across the agents dwell: from the moment its
@@ -839,19 +844,92 @@ export default function V0FullStack() {
           const CAP_FROM = (beats.length - 1) * SEG + FADE / 2;
           const CAP_TO = 0.985;
 
+          /* THE TYPED TRANSITION's material: every beat's lead and
+             bullets, cut into text nodes (sliced in place) and atomic
+             inline marks (the GT word toggles at its seat) — the brand
+             token survives because the typing never rewrites elements,
+             only Text data. Weighted so a mark costs a couple of beats
+             of the same clock. */
+          type TypedChunk =
+            | { kind: 'text'; node: Text; full: string }
+            | { kind: 'mark'; el: HTMLElement };
+          type TypedBlock = { host: HTMLElement; chunks: TypedChunk[]; len: number };
+          const MARK_WEIGHT = 2;
+          const typedBeats = beats.map((beat) => {
+            const hosts = Array.from(
+              beat.querySelectorAll<HTMLElement>('h3, .v0-stack-points li')
+            );
+            const blocks: TypedBlock[] = hosts.map((host) => {
+              const chunks: TypedChunk[] = [];
+              let len = 0;
+              host.childNodes.forEach((child) => {
+                if (child.nodeType === Node.TEXT_NODE) {
+                  const full = child.textContent ?? '';
+                  if (full.length) {
+                    chunks.push({ kind: 'text', node: child as Text, full });
+                    len += full.length;
+                  }
+                } else if (child instanceof HTMLElement) {
+                  chunks.push({ kind: 'mark', el: child });
+                  len += MARK_WEIGHT;
+                }
+              });
+              return { host, chunks, len };
+            });
+            return { blocks, total: blocks.reduce((n, b) => n + b.len, 0) };
+          });
+
+          restoreTyped = () => {
+            typedBeats.forEach(({ blocks }) => {
+              blocks.forEach((block) => {
+                block.host.style.removeProperty('visibility');
+                block.chunks.forEach((chunk) => {
+                  if (chunk.kind === 'text') chunk.node.data = chunk.full;
+                  else chunk.el.style.removeProperty('visibility');
+                });
+              });
+            });
+          };
+
+          /* write beat i at reveal fraction f: blocks consume the budget
+             in document order, so the lead types before the bullets and
+             a reversed scroll untypes them back in reverse */
+          const writeBeat = (i: number, f: number) => {
+            const typed = typedBeats[i];
+            if (!typed) return;
+            let n = Math.round(f * typed.total);
+            typed.blocks.forEach((block) => {
+              block.host.style.visibility = n > 0 ? '' : 'hidden';
+              block.chunks.forEach((chunk) => {
+                if (chunk.kind === 'text') {
+                  const take = Math.max(0, Math.min(n, chunk.full.length));
+                  const next = chunk.full.slice(0, take);
+                  if (chunk.node.data !== next) chunk.node.data = next;
+                  n -= chunk.full.length;
+                } else {
+                  chunk.el.style.visibility = n > 0 ? '' : 'hidden';
+                  n -= MARK_WEIGHT;
+                }
+              });
+            });
+          };
+
           const apply = (p: number) => {
             beats.forEach((beat, i) => {
-              /* a beat's alpha is the meet of its two boundary ramps;
-                 the first never fades in, the last never fades out */
-              const grow = i === 0 ? 1 : (p - (i * SEG - FADE / 2)) / FADE;
+              /* sequential ramps, not a crossfade: the leaving beat's
+                 text is gone before the arriving one starts — the two
+                 are absolutely stacked, and typed fragments of both at
+                 once would overprint */
+              const grow = i === 0 ? 1 : (p - i * SEG) / (FADE / 2);
               const hold =
-                i === beats.length - 1 ? 1 : ((i + 1) * SEG + FADE / 2 - p) / FADE;
-              const alpha = gsap.utils.clamp(0, 1, Math.min(grow, hold));
+                i === beats.length - 1 ? 1 : ((i + 1) * SEG - p) / (FADE / 2);
+              const f = gsap.utils.clamp(0, 1, Math.min(grow, hold));
               /* direct style writes, not tweens: the scrub owns the
                  value absolutely, every frame — visibility keeps the
                  hidden beats out of the accessibility tree and taps */
-              beat.style.opacity = String(alpha);
-              beat.style.visibility = alpha > 0 ? 'visible' : 'hidden';
+              beat.style.opacity = f > 0 ? '1' : '0';
+              beat.style.visibility = f > 0 ? 'visible' : 'hidden';
+              writeBeat(i, f);
             });
             /* the build switches at the boundary centers — the new
                plate settles in exactly as its text crosses 50% */
@@ -908,6 +986,7 @@ export default function V0FullStack() {
               beat.style.removeProperty('opacity');
               beat.style.removeProperty('visibility');
             }
+            restoreTyped?.();
           }
           capTl?.kill();
           viewGate.kill();

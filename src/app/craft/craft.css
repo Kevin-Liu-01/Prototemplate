@@ -307,6 +307,68 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* ---------- the bayer plate's variant strip: the hero rig's ladder,
+   laid flat — mono indices on an OPAQUE ground (a translucent box over
+   the field would self-stack), the active chip the only color ---------- */
+
+/* the bright field runs full-bleed, so the corner tag takes the same
+   opaque chip as the strip — never translucent-on-field */
+.ptc-plate.is-bayer .ptc-plate-tag {
+  left: 10px;
+  top: 10px;
+  padding: 3px 8px;
+  border: 1px solid rgba(138, 143, 152, 0.5);
+  border-radius: 6px;
+  background: #0d0d0d;
+}
+
+.ptc-bayer-strip {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1px;
+  padding: 5px;
+  border: 1px solid rgba(138, 143, 152, 0.5);
+  border-radius: 8px;
+  background: #0d0d0d;
+}
+
+.ptc-bayer-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: 0;
+  padding: 3px 6px;
+  border: 0;
+  background: none;
+  font-family: var(--pt-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.ptc-bayer-chip i {
+  font-style: normal;
+}
+
+.ptc-bayer-chip span {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.ptc-bayer-chip:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ptc-bayer-chip[data-on='true'],
+.ptc-bayer-chip[data-on='true'] span {
+  color: #86a8ff;
+}
+
 /* ---------- the iso kit plate: the dark band's night shading ---------- */
 
 .ptc-iso {
@@ -361,21 +423,8 @@
   height: 100%;
 }
 
-.ptc-th-thread {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.72);
-  stroke-width: 4;
-  vector-effect: non-scaling-stroke;
-}
-
-/* the core matches the surface behind — the plate's own ink — so the
-   carve leaves two parallel 1px threads */
-.ptc-th-core {
-  fill: none;
-  stroke: var(--color-ink);
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
-}
+/* the threads themselves are drawn by the DoubledLine component
+   (attribute strokes); only the pulse keeps a class here */
 
 /* a shade over full sandwich gauge: the carve leaves two accent threads */
 .ptc-th-pulse {
@@ -416,6 +465,26 @@
 
 .ptc-globe-dots {
   fill: rgba(255, 255, 255, 0.11);
+}
+
+/* ---------- the reassembler plate: the sentence at display size ---------- */
+
+.ptc-plate.is-reassembler {
+  display: grid;
+  place-items: center;
+}
+
+.ptc-every {
+  color: var(--color-paper);
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: clamp(24px, 3.4vw, 38px);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.ptc-every em.every-sentence {
+  font-style: normal;
 }
 
 /* ---------- the locale-pill plate ---------- */

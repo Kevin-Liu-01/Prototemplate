@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 
-import { createStudioField, type StudioPreset } from '@/lib/studio-field';
+import { BAYER_DEFAULT_ID, BAYER_PRESETS, createStudioField } from '@/lib/studio-field';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './HeroFieldSwitcher.css';
@@ -30,84 +30,9 @@ import './HeroFieldSwitcher.css';
 
 const STORE_KEY = 'gt-hero-field-variant';
 
-type Variant = {
-  id: string;
-  name: string;
-  preset: StudioPreset;
-};
-
-const VARIANTS: readonly Variant[] = [
-  {
-    id: '01',
-    name: 'bayer-flow',
-    // THE PICK, byte-identical: the 4×4 ordered matrix over flow-clouds
-    // at coarse print cells — the glyph field's own atlas grammar.
-    preset: 'bayer',
-  },
-  {
-    id: '02',
-    name: 'bayer-8x8',
-    // Matrix-order twin: the same flow through an 8×8 matrix at
-    // near-grain cells — smooth dithered gradients where 01 steps.
-    preset: 'bayer8',
-  },
-  {
-    id: '03',
-    name: 'bayer-contour',
-    // Quantized elevation bands drifting downslope — the topographic
-    // motif as terraced ink.
-    preset: 'bayerContour',
-  },
-  {
-    id: '04',
-    name: 'bayer-radial',
-    // Two radial glows breathing at the FLANKS, centered off the window
-    // column; blue-forward palette. The center stays ink by construction.
-    preset: 'bayerRadial',
-  },
-  {
-    id: '05',
-    name: 'bayer-sweep',
-    // Long diagonal beams crossing laminar, broken by a slow pigment
-    // churn — the pressroom read, frame counter-rotated from 01.
-    preset: 'bayerSweep',
-  },
-  {
-    id: '06',
-    name: 'bayer-waves',
-    // Two circular wave systems interfering — crests meet as chips,
-    // troughs sink to ink; the slowest clock in the family.
-    preset: 'bayerWaves',
-  },
-  {
-    id: '07',
-    name: 'bayer-chunk',
-    // The 2×2 matrix at coarse poster cells — four thresholds, chunky
-    // mosaic, the loudest print.
-    preset: 'bayerChunk',
-  },
-  {
-    id: '08',
-    name: 'bayer-pulse',
-    // The flow field inhaling and exhaling on a ~16s clock — near-ink at
-    // rest, full bloom at the crest.
-    preset: 'bayerPulse',
-  },
-  {
-    id: '09',
-    name: 'bayer-ink',
-    // Ink-dominant print: tone biased hard toward ground, sparse blue,
-    // no bright chip in the palette — the quietest variant.
-    preset: 'bayerInk',
-  },
-  {
-    id: '10',
-    name: 'bayer-hot',
-    // Wandering heat cores lift the crests to pure white through the
-    // fine 8×8 screen — the one variant allowed white.
-    preset: 'bayerHot',
-  },
-];
+/* The roster moved to src/lib/studio-field.ts (BAYER_PRESETS) — the
+   codified family, shared with the craft plate's switcher. */
+const VARIANTS = BAYER_PRESETS;
 
 /** One stage, one engine: keyed per variant so every switch starts clean. */
 function FieldStage({ variant }: { variant: string }) {
@@ -127,7 +52,7 @@ function FieldStage({ variant }: { variant: string }) {
 }
 
 export default function HeroFieldSwitcher() {
-  const [variant, setVariant] = useState('02');
+  const [variant, setVariant] = useState(BAYER_DEFAULT_ID);
 
   /* The saved pick loads after hydration so SSR and the first client frame
      agree on the 02 default. */

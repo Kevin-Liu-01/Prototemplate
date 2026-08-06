@@ -165,19 +165,40 @@ export default function ReviewWorkspace({
     return () => ro.disconnect();
   }, [surfaces]);
 
+  /* narrow: the three doors drop STRAIGHT through the net's bottom into
+     the frame (founder) — the shared bus easing off to the frame's right
+     is a wide-layout read; at phone widths it wandered sideways under
+     the chips instead of just entering the panel below */
+  const [straight, setStraight] = useState(false);
+  useLayoutEffect(() => {
+    if (!surfaces) return;
+    const mq = window.matchMedia('(max-width: 760px)');
+    const apply = () => setStraight(mq.matches);
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, [surfaces]);
+
   /* the strokes: every path in one d (outer ink first, cores carve last,
      so overlapping junctions merge into the fork family's wishbone), and
      the active door's own drop for the live pair and the pulse's route */
   const busY = NET_H - 3;
   const activeX = net?.xs[DOORS.findIndex((door) => door.key === face)];
   const netAll = net
-    ? [...net.xs.map((x) => netRiser(x, busY)), `M${(net.xs[0] ?? 0) + NET_R} ${busY}H${net.w}`].join('')
+    ? straight
+      ? net.xs.map((x) => `M${x} 0V${NET_H}`).join('')
+      : [...net.xs.map((x) => netRiser(x, busY)), `M${(net.xs[0] ?? 0) + NET_R} ${busY}H${net.w}`].join('')
     : null;
   /* the live route runs the WHOLE way — button, drop, bus, into the
      frame (founder: the blue extends from the button down the pipe
-     into the terminal); the pulse rides the same road */
+     into the terminal); the pulse rides the same road. On narrow the
+     road IS the straight drop. */
   const netRoute =
-    net && activeX !== undefined ? `${netRiser(activeX, busY)}H${net.w}` : null;
+    net && activeX !== undefined
+      ? straight
+        ? `M${activeX} 0V${NET_H}`
+        : `${netRiser(activeX, busY)}H${net.w}`
+      : null;
 
   useQuietReveal(root, chrome !== 'product');
 

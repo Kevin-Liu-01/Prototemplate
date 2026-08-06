@@ -211,7 +211,7 @@
 
 .toolchain-root .v0-ctx-glossary-row .lct-code {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .toolchain-root .v0-ctx-glossary-line {
@@ -237,37 +237,58 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
+/* the codes read (founder: de and es were invisible) — the chips'
+   chrome stays quiet, the code itself steps up */
 .toolchain-root .v0-ctx-dirs-loc .lct-code {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.78);
 }
 
+.toolchain-root .v0-ctx .lang-cr-gloss .lang-tag {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* The rows, opened up (founder: make this layout much better): a wider
+   label column so Conventions never crowds, the icon seated on the
+   label's line in a quieter ink, more air per row, and the sentence a
+   step brighter. */
 .toolchain-root .v0-ctx-dir {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 12px;
-  padding: 10px 12px 11px;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 14px;
+  padding: 12px 14px 13px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .toolchain-root .v0-ctx-dir b {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: start;
   font-size: 12.5px;
   font-weight: 500;
   line-height: 1.55;
   color: #ffffff;
 }
 
+.toolchain-root .v0-ctx-dir b svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .toolchain-root .v0-ctx-dir-body {
   min-width: 0;
   display: grid;
-  gap: 4px;
+  gap: 5px;
 }
 
 .toolchain-root .v0-ctx-dir p {
   margin: 0;
-  font-size: 12.5px;
+  font-size: 13px;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .toolchain-root .v0-ctx-dir p code {
@@ -279,18 +300,21 @@
 .toolchain-root .v0-ctx-dir-pair {
   display: flex;
   align-items: baseline;
-  gap: 7px;
-  font-size: 12px;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.78);
+  gap: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .toolchain-root .v0-ctx-dir-pair .is-before {
-  color: rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.42);
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
 }
 
 .toolchain-root .v0-ctx-dir-pair .is-arrow {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.42);
 }
 
 /* ---------- the dynamic cell's fork ----------
@@ -736,7 +760,19 @@
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx-dirs-loc .lct-code {
-  color: rgba(7, 7, 7, 0.5);
+  color: rgba(7, 7, 7, 0.72);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-glossary-row .lct-code {
+  color: rgba(7, 7, 7, 0.72);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx .lang-cr-gloss .lang-tag {
+  color: rgba(7, 7, 7, 0.66);
+}
+
+:root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir b svg {
+  color: rgba(7, 7, 7, 0.55);
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir {
@@ -756,15 +792,16 @@
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir-pair {
-  color: rgba(7, 7, 7, 0.78);
+  color: rgba(7, 7, 7, 0.85);
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir-pair .is-before {
-  color: rgba(7, 7, 7, 0.38);
+  color: rgba(7, 7, 7, 0.42);
+  text-decoration-color: rgba(7, 7, 7, 0.3);
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir-pair .is-arrow {
-  color: rgba(7, 7, 7, 0.35);
+  color: rgba(7, 7, 7, 0.42);
 }
 
 /* the Locadex mark inks to the sheet's black on paper */
@@ -854,9 +891,10 @@
 }
 
 .toolchain-root .v0-ctx .tcb-head .tc-head-icon {
-  /* founder round-trip: the SAME seat and gauge as every other section
-     head — 240px at right:24, clipped by the head's own overflow, the
-     accepted bleed the dev and globe heads already wear */
+  /* founder: "just do it like image 1" — the developer head. Full 240
+     gauge, right seat; what makes it read whole there is the strip's
+     own vertical spend (the padding-block below, the tc-head grammar),
+     not a smaller glyph. */
   position: absolute;
   right: 24px;
   top: 50%;
@@ -866,6 +904,12 @@
   color: var(--tc-ink);
   opacity: 0.07;
   pointer-events: none;
+}
+
+/* the strip spends what the developer head spends (styles.css .tc-head:
+   clamp 54–82 above, 28–38 below), so the watermark seats like image 1 */
+.toolchain-root .v0-ctx .tcb-head {
+  padding-block: clamp(54px, 6.4vw, 82px) clamp(28px, 3.2vw, 38px);
 }
 
 /* ---------- the three doors, on the band's plate ----------

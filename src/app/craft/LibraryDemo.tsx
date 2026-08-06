@@ -4,9 +4,11 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef, useState } from 'react';
 
+import BayerDemo from './BayerDemo';
 import GlobeDemo from './GlobeDemo';
 import IsoDemo from './IsoDemo';
 import PillsDemo from './PillsDemo';
+import ReassemblerDemo from './ReassemblerDemo';
 import SeamDemo from './SeamDemo';
 import ThreadsDemo from './ThreadsDemo';
 import PrismaticField from '@/components/shared/PrismaticField';
@@ -27,11 +29,13 @@ export type LibraryDemoKind =
   | 'glyph'
   | 'prismatic'
   | 'dither'
+  | 'bayer'
   | 'iso'
   | 'threads'
   | 'globe'
   | 'pills'
-  | 'seam';
+  | 'seam'
+  | 'reassembler';
 
 /**
  * One live demo plate per library — the page's dark surface in both themes.
@@ -109,9 +113,12 @@ export default function LibraryDemo({
       }
 
       if (kind === 'glyph') {
-        /* the field draws with the page's own faces, resolved off the canvas */
+        /* the field draws with the page's own faces, resolved off the canvas;
+           copy 'none' — the plate has no copy block, so the rain runs
+           full-bleed and the word centers */
         const field: GlyphFieldHandle | null = createGlyphField({
           canvas,
+          copy: 'none',
           displayFamily: getComputedStyle(canvas).fontFamily,
           monoFamily: getComputedStyle(canvas).getPropertyValue('--pt-mono').trim() || undefined,
         });
@@ -138,9 +145,9 @@ export default function LibraryDemo({
     [armed, kind]
   );
 
-  /* the seam is a real slider — a group with an interactive child, never
-     a flattened image */
-  const role = kind === 'seam' ? 'group' : 'img';
+  /* the seam is a real slider and the bayer plate a real switch — groups
+     with interactive children, never flattened images */
+  const role = kind === 'seam' || kind === 'bayer' ? 'group' : 'img';
 
   return (
     <div aria-label={label} className={`ptc-plate is-${kind}`} ref={plateRef} role={role}>
@@ -157,6 +164,10 @@ export default function LibraryDemo({
         armed ? (
           <GlobeDemo />
         ) : null
+      ) : kind === 'bayer' ? (
+        armed ? (
+          <BayerDemo />
+        ) : null
       ) : kind === 'iso' ? (
         <IsoDemo />
       ) : kind === 'threads' ? (
@@ -165,6 +176,10 @@ export default function LibraryDemo({
         <PillsDemo />
       ) : kind === 'seam' ? (
         <SeamDemo />
+      ) : kind === 'reassembler' ? (
+        armed ? (
+          <ReassemblerDemo />
+        ) : null
       ) : (
         <canvas className='ptc-plate-field' ref={canvasRef} aria-hidden='true' />
       )}

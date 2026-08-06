@@ -140,3 +140,157 @@ export function frontEdge(box: IsoBox): [Pt, Pt] {
   const { x, y, z, w, d, h } = box;
   return [project(x + w, y + d, z + h), project(x + w, y + d, z)];
 }
+
+/* ---------------------------------------------------------------------------
+   Flat art in a surface — the seat every consumer used to hand-copy.
+--------------------------------------------------------------------------- */
+
+/** A plan-space point: world ground coordinates, before projection —
+    distinct from screen `Pt`. */
+export type Pt2 = readonly [number, number];
+
+/**
+ * Seats flat 2D artwork in the z = const plane, anchored at plan (ox, oy):
+ * a z-plane projects as the affine map (x, y) → (cos30·x − cos30·y,
+ * sin30·x + sin30·y − z), so one matrix() carries whole drawings — glyph
+ * strokes, wire curves, masked brand marks — into the surface. Strokes
+ * inside the group stay 1px via vectorEffect; everything else is drawn in
+ * plane coordinates and lands foreshortened like the face itself.
+ */
+export function plane(z: number, ox = 0, oy = 0): string {
+  const [sx, sy] = project(ox, oy, z);
+  return `matrix(${ISO_COS30} ${ISO_SIN30} ${-ISO_COS30} ${ISO_SIN30} ${sx} ${sy})`;
+}
+
+/** A flat rounded rectangle lying in a z = const plane — content bars,
+    chip seats, mark plinths. */
+export function markPath(x: number, y: number, w: number, d: number, z = 0, r?: number): string {
+  const quad: Pt[] = [
+    project(x, y, z),
+    project(x + w, y, z),
+    project(x + w, y + d, z),
+    project(x, y + d, z),
+  ];
+  return roundedPolygon(quad, r);
+}
+
+/* ---------------------------------------------------------------------------
+   Arbitrary prisms — any convex plan polygon, extruded like a box.
+   Points follow the box corners' winding ((x,y) → (x+w,y) → (x+w,y+d) →
+   (x,y+d)): the outward normal of edge a→b is (by−ay, ax−bx), and a side
+   face is visible exactly when that normal has a positive x+y component
+   (the camera sits at (+,+,+)). The three-tone law holds: a visible face
+   shades 'right' (darkest) when its normal leans +x, 'left' (mid) when
+   it leans +y.
+--------------------------------------------------------------------------- */
+
+/** A convex plan polygon extruded z..z+h. */
+export type IsoPrism = {
+  points: readonly Pt2[];
+  z: number;
+  h: number;
+};
+
+type PrismFace = { pts: Pt[]; shade: 'left' | 'right' };
+
+/** Whether plan edge a→b faces the camera. */
+function edgeVisible(a: Pt2, b: Pt2): boolean {
+  const nx = b[1] - a[1];
+  const ny = a[0] - b[0];
+  return nx + ny > 0;
+}
+
+/** The projected top ring, in plan order. */
+export function prismTop(p: IsoPrism): Pt[] {
+  return p.points.map(([x, y]) => project(x, y, p.z + p.h));
+}
+
+/** The visible side faces, each with its tone per the three-tone law. */
+export function prismFaces(p: IsoPrism): PrismFace[] {
+  const { points, z, h } = p;
+  const faces: PrismFace[] = [];
+  for (let i = 0; i < points.length; i += 1) {
+    const a = points[i];
+    const b = points[(i + 1) % points.length];
+    if (!a || !b || !edgeVisible(a, b)) continue;
+    const nx = b[1] - a[1];
+    const ny = a[0] - b[0];
+    faces.push({
+      pts: [
+        project(a[0], a[1], z + h),
+        project(b[0], b[1], z + h),
+        project(b[0], b[1], z),
+        project(a[0], a[1], z),
+      ],
+      shade: nx > ny ? 'right' : 'left',
+    });
+  }
+  return faces;
+}
+
+/** The visible run of side edges as [start, end] vertex indices, or null
+    when no side faces the camera (a flat-on view). */
+function visibleRun(points: readonly Pt2[]): [number, number] | null {
+  const n = points.length;
+  let start = -1;
+  for (let i = 0; i < n; i += 1) {
+    const prevA = points[(i + n - 1) % n];
+    const prevB = points[i];
+    const a = points[i];
+    const b = points[(i + 1) % n];
+    if (!prevA || !prevB || !a || !b) continue;
+    if (!edgeVisible(prevA, prevB) && edgeVisible(a, b)) {
+      start = i;
+      break;
+    }
+  }
+  if (start < 0) return null;
+  let end = start;
+  for (let i = 0; i < n; i += 1) {
+    const a = points[(start + i) % n];
+    const b = points[(start + i + 1) % n];
+    if (a && b && edgeVisible(a, b)) end = (start + i + 1) % n;
+    else break;
+  }
+  return [start, end];
+}
+
+/** The prism's outer edge — the box hexagon, generalized: the top ring
+    around the hidden side, the bottom ring under the visible faces. */
+export function prismSilhouette(p: IsoPrism): Pt[] {
+  const { points, z, h } = p;
+  const n = points.length;
+  const run = visibleRun(points);
+  if (!run) return prismTop(p);
+  const [start, end] = run;
+  const ring: Pt[] = [];
+  /* top ring from the run's end vertex, the long way round, to its start */
+  for (let i = end; ; i = (i + 1) % n) {
+    const v = points[i];
+    if (v) ring.push(project(v[0], v[1], z + h));
+    if (i === start) break;
+  }
+  /* bottom ring forward under the visible faces, back to the end vertex */
+  for (let i = start; ; i = (i + 1) % n) {
+    const v = points[i];
+    if (v) ring.push(project(v[0], v[1], z));
+    if (i === end) break;
+  }
+  return ring;
+}
+
+/** The interior vertical edges between adjacent visible faces — the
+    box's one front edge, generalized. */
+export function prismFrontEdges(p: IsoPrism): [Pt, Pt][] {
+  const { points, z, h } = p;
+  const n = points.length;
+  const run = visibleRun(points);
+  if (!run) return [];
+  const [start, end] = run;
+  const edges: [Pt, Pt][] = [];
+  for (let i = (start + 1) % n; i !== end; i = (i + 1) % n) {
+    const v = points[i];
+    if (v) edges.push([project(v[0], v[1], z + h), project(v[0], v[1], z)]);
+  }
+  return edges;
+}

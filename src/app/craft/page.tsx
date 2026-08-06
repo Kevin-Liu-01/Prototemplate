@@ -98,6 +98,7 @@ const GLYPH_SNIPPET = `import { createGlyphField } from '@/lib/glyph-field';
 const field = createGlyphField({
   canvas,
   drift: 'rise', // the library's fall, or a rising field — same wrap math
+  copy: 'none', // 'auto' infers the copy fold; 'none' is a standalone plate
   displayFamily: getComputedStyle(canvas).fontFamily,
   monoFamily: getComputedStyle(canvas).getPropertyValue('--pt-mono'),
   onScript: (index) => setActive(index),
@@ -119,6 +120,23 @@ loop.setField(gradientRamp({ angle: Math.PI / 2, smooth: true }));
 loop.setOptions({ ink: getComputedStyle(canvas).color });
 loop.destroy();`;
 
+const STUDIO_SNIPPET = `import StudioField from '@/components/shared/StudioField';
+import { BAYER_DEFAULT_ID, BAYER_PRESETS } from '@/lib/studio-field';
+
+const [id, setId] = useState(BAYER_DEFAULT_ID);
+const active = BAYER_PRESETS.find((v) => v.id === id);
+
+/* switching is a remount: key the stage, and the outgoing field's
+   destroy() runs before the incoming one draws — one shared GL
+   context, one program per preset cached for the session */
+<StudioField key={active.id} preset={active.preset} className='plate-field' />
+
+{BAYER_PRESETS.map((v) => (
+  <button data-on={v.id === id} key={v.id} onClick={() => setId(v.id)}>
+    <i>{v.id}</i> <span>{v.name}</span>
+  </button>
+))}`;
+
 const ISO_SNIPPET = `import {
   frontEdge, leftFace, rightFace, roundedPolygon,
   segment, silhouette, topFace, type IsoBox,
@@ -134,20 +152,27 @@ const [a, b] = frontEdge(box);
 <path className='iso-line' d={roundedPolygon(silhouette(box))} />
 <path className='iso-line' d={segment(a, b)} />`;
 
-const THREADS_SNIPPET = `/* one path, stroked twice → two parallel threads at a constant gap */
-.v0-dev-thread { fill: none; stroke: var(--tc-ink);
-  stroke-width: 4; vector-effect: non-scaling-stroke; }
-.v0-dev-core { fill: none; stroke: var(--tc-card); /* the surface behind */
-  stroke-width: 2; vector-effect: non-scaling-stroke; }
-.v0-dev-pulse { fill: none; stroke: #2f5ce0; /* carved to two accent threads */
-  stroke-width: 5; vector-effect: non-scaling-stroke; opacity: 0; }
+const THREADS_SNIPPET = `import DoubledLine from '@/components/shared/diagrams/DoubledLine';
 
-/* layer order IS the grammar: threads, pulse, cores — trunk last,
-   so its core re-carves the junction into one clean pair */
-<svg viewBox='0 0 40 96' preserveAspectRatio='none'>
-  {FORKS.map((d) => <path className='v0-dev-thread' d={d} />)}
-  <path className='v0-dev-pulse' d={FORKS[featured]} />
-  {FORKS.map((d) => <path className='v0-dev-core' d={d} />)}
+const TRUNK = 'M330 120 L680 120';
+/* the split region: the SAME center path, closed off the top edge —
+   the clip boundary is the line itself, hidden inside the carve */
+const SPLIT = TRUNK + ' L680 -20 L330 -20 Z';
+
+<svg viewBox='0 0 720 240' aria-hidden='true'>
+  <DoubledLine
+    d={TRUNK}
+    core='var(--color-ink)' /* the surface that carves */
+    ink='rgba(255, 255, 255, 0.88)' /* the white thread */
+    inkB='rgba(255, 255, 255, 0.42)' /* the gray thread */
+    splitD={SPLIT}
+    gauge={1}
+    gap={2}
+  >
+    {/* the pulse slot — between threads and core, carved to two
+        accent hairlines by the same core */}
+    <path className='pulse' d={PULSE} />
+  </DoubledLine>
 </svg>`;
 
 const GLOBE_SNIPPET = `import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
@@ -187,19 +212,22 @@ const SEAM_SNIPPET = `import RevealSeam from '@/app/d/toolchain/sections/RevealS
   />
 </div>`;
 
-const REASSEMBLER_SNIPPET = `/* the belt is the single clock — no timers, no scroll triggers */
-const driver = useRef<{ request: (w: EveryWord) => void } | null>(null);
-const handleBeltLocale = (loc: string) => {
-  const w = WORDS[loc];
-  if (w) driver.current?.request(w); // debounced; interrupts re-dissolve
-};
+const REASSEMBLER_SNIPPET = `import EverySentence, {
+  type EverySentenceHandle,
+} from '@/components/shared/EverySentence';
+
+/* the host owns the one clock — the component never runs a timer.
+   setLocale(loc) is the only intake: debounced a quarter second,
+   mid-dissolve retargets the form boundary, mid-form kills the
+   timeline and re-dissolves, same text with a new lang retags only. */
+const every = useRef<EverySentenceHandle>(null);
 
 <h1><span>
-  <em data-every>
-    <span data-every-word lang='en' dir='ltr'>Launch in every language</span>
-  </em>
+  <EverySentence ref={every} words={WORDS} initial='en' />
 </span></h1>
-<TranslateWindow onLocaleChange={handleBeltLocale} />`;
+
+{/* the dossier hero: the locale belt is the clock */}
+<TranslateWindow onLocaleChange={(loc) => every.current?.setLocale(loc)} />`;
 
 const COLOR_SNIPPET = `/* globals.css — the four colors, absolute by design */
 @theme {
@@ -297,15 +325,29 @@ const LIBRARIES: readonly Library[] = [
     snippet: DITHER_SNIPPET,
   },
   {
+    name: 'studio-field',
+    role: 'the authentic Bayer family',
+    body:
+      'The GPU sibling of the CPU renderer above — the house Bayer looks themselves, codified. Ten variants live in one module as fragment shaders on a single session-singleton WebGL context, exported as the BAYER_PRESETS roster: slot 01 is the founder’s first-survey pick untouched, and the rest move along real axes — matrix order (2×2, 4×4, 8×8), cell scale from poster to near-grain, the tone field under the matrix (flow, contours, flank radials, sweeps, interference, breath), motion, and palette balance from ink-dominant to the one white-hot variant. Anything that shows or switches the family maps over that one list — the hero review rig and this plate included. Switching is a remount: programs compile lazily and cache for the session, destroy() keeps the shared context, so cycling never grows the context count.',
+    demo: {
+      kind: 'bayer',
+      tag: '<StudioField preset={…} />',
+      label:
+        'Interactive demo: the ten authentic Bayer field variants on one plate — pick a numbered chip to remount the field with that preset.',
+    },
+    file: 'src/lib/studio-field.ts',
+    snippet: STUDIO_SNIPPET,
+  },
+  {
     name: 'iso',
     role: 'the isometric drawing kit',
     body:
-      'Every isometric illustration in the family goes through one 30° axonometric map — project(x, y, z) seats the camera at (+,+,+), so exactly three faces of any box are visible, always lit in the same order from the upper left. A solid is an IsoBox extruded by recipe: an opaque hull from the rounded silhouette occludes whatever sits below, three face fills shade it, then the hairlines — rim, top contour, and the one interior front edge the silhouette does not already draw. Raised plates carry chips as miniature extrusions, flat artwork seats into any z-plane with a single matrix, thickness runs about four percent of footprint, one corner radius serves the whole family, and every drawing spends its accent on exactly one element.',
+      'Every isometric illustration in the family goes through one 30° axonometric map — project(x, y, z) seats the camera at (+,+,+), so exactly three faces of any solid are visible, always lit in the same order from the upper left. A solid is extruded by recipe: an opaque hull from the rounded silhouette occludes whatever sits below, face fills shade it, then the hairlines — rim, top contour, and the interior front edges the silhouette does not already draw. Boxes are no longer the whole kit: IsoPrism extrudes any convex plan polygon with the same visibility and three-tone law, plane(z) is the exported matrix that seats whole flat drawings — glyph strokes, masked brand marks — into any surface, markPath() lays rounded bars in a face, and DitheredMark renders a logo as masked ink with the Bayer-quantized shimmer the tower’s capstone wears. Thickness runs about four percent of footprint, one corner radius serves the whole family, and every drawing spends its accent on exactly one element.',
     demo: {
       kind: 'iso',
       tag: 'project(x, y, z)',
       label:
-        'A raised isometric plate drawn with the kit: an extruded slab with two chips seated on its top face, faces lit from the upper left, hairline rim and front edge.',
+        'A raised isometric plate drawn with the kit: an extruded slab carrying two box chips and one hexagonal prism, faces lit from the upper left, hairline rim and front edges.',
     },
     file: 'src/app/d/toolchain/diagrams/iso.ts',
     snippet: ISO_SNIPPET,
@@ -314,14 +356,14 @@ const LIBRARIES: readonly Library[] = [
     name: 'doubled-line',
     role: 'the two-thread diagram stroke',
     body:
-      'The brand’s connector is one SVG path stroked twice: a full-gauge ink stroke underneath and a narrower surface-colored core on top, carving the ink into two parallel hairline threads at a constant gap along any curve. Because both strokes share one geometry the gap cannot drift on a bend, and non-scaling-stroke holds the gauge in screen pixels even under a stretched viewBox. The live pulse is a third copy of the same path in accent, layered between the threads and the cores, so a traveling window is always carved into two accent hairlines — and the window is real geometry, a sub-polyline rewritten per GSAP tick, because dash distances drift under anisotropic stretch. Draw a later sandwich over an earlier one and the junction re-carves itself into one clean pair: merges cost zero parallel-curve math. This is also the one sanctioned double — one owner, one path, stroked twice; the auditor’s allow list holds it by name.',
+      'The brand’s connector is one SVG path stroked twice: a full-gauge ink stroke underneath and a narrower surface-colored core on top, carving the ink into two parallel hairline threads at a constant gap along any curve. Because both strokes share one geometry the gap cannot drift on a bend, and non-scaling-stroke holds the gauge in screen pixels even under a stretched viewBox. Now a component: DoubledLine takes the center path, the carving surface, the gauges, and a pulse slot — and it two-tones the pair, one white thread and one gray, by clipping the white copy to a half-plane closed along the same geometry, so the split seam hides inside the carve on every bend (offset clones collapse on curves; concentric restrokes can only make symmetric rings). Draw a later one over an earlier one and the junction re-carves itself into one clean pair: merges cost zero parallel-curve math. This is also the one sanctioned double — one owner, one path, stroked twice; the auditor’s allow list holds it by name.',
     demo: {
       kind: 'threads',
-      tag: 'thread · pulse · core',
+      tag: '<DoubledLine />',
       label:
-        'Two doubled-line connectors merging into one trunk: each path stroked as two parallel hairline threads, with a static accent pulse carved into the trunk.',
+        'Two doubled-line connectors merging into one trunk: each pair one white thread over one gray, with a static accent pulse carved into the trunk.',
     },
-    file: 'src/app/d/_v0/sections/developer.css',
+    file: 'src/components/shared/diagrams/DoubledLine.tsx',
     snippet: THREADS_SNIPPET,
   },
   {
@@ -368,10 +410,16 @@ const LIBRARIES: readonly Library[] = [
   },
   {
     name: 'glyph-reassembler',
-    role: 'the headline morph',
+    role: 'the sentence-rewriting morph',
     body:
-      'The dossier hero morphs one shaped sentence — "Launch in every language" — through sixteen locales by dissolving it into 440 glyph-dust spans seated on the outgoing text’s own sampled ink, then reassembling the incoming sentence from the same swarm: glyphs fly to points sampled on a brick lattice and the real text node prints through them behind a hard clip front that absorbs each glyph as it passes, mirrored for RTL. It never runs on a timer — the locale belt is the single clock. The belt reports each locale it centers; requests debounce a quarter second; a request landing mid-dissolve just retargets the form boundary, one landing mid-form kills the timeline and re-dissolves, and a same-text locale change swaps only lang and dir. Width follows the moving-type law: one shaped probe measure per word, cached, device-pixel snapped, tweened once per cycle.',
-    file: 'src/app/d/singularity-dossier/sections/HomeHero.tsx',
+      'Now a component: EverySentence owns the dossier hero’s headline engine. One shaped sentence morphs between locales by dissolving into 440 canvas-drawn glyph motes seated on the outgoing text’s own sampled ink, dispersing into a cloud, then reassembling: every glyph flies to exactly one point sampled on a brick lattice and the real text node prints through the settled swarm behind a hard clip front that absorbs each glyph as it passes, mirrored for RTL. It never runs on a timer — the host owns the one clock through a ref handle’s setLocale. Requests debounce a quarter second; one landing mid-dissolve retargets the form boundary, one landing mid-form kills the timeline and re-dissolves, and a same-text locale change retags lang and dir only. Width follows the moving-type law: one shaped probe measure per word, cached, device-pixel snapped, tweened once per cycle. The dossier hero drives it from the locale belt; the plate below drives the same handle from a plain interval.',
+    demo: {
+      kind: 'reassembler',
+      tag: '<EverySentence />',
+      label:
+        'Live demo: one shaped sentence dissolving into glyph dust and reassembling in the next language, measuring guides bracketing the shaped width.',
+    },
+    file: 'src/components/shared/EverySentence.tsx',
     snippet: REASSEMBLER_SNIPPET,
   },
   {

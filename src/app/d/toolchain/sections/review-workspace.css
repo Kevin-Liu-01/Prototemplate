@@ -412,10 +412,13 @@
   color: var(--tc-ink);
 }
 
+/* the chosen door speaks the SAME blue as its route (founder: the old
+   55% hair mix drifted lavender while the pipe ran pure) — one accent
+   var for the border and the line, lifted on dark, raw on light */
 .toolchain-root .tcr-door[data-on] {
   color: var(--tc-ink);
-  border-color: color-mix(in srgb, var(--tc-accent) 55%, var(--tc-hair-2));
-  background: color-mix(in srgb, var(--tc-accent) 10%, transparent);
+  border-color: var(--tcr-net-acc, var(--tc-accent));
+  background: color-mix(in srgb, var(--tcr-net-acc, var(--tc-accent)) 10%, transparent);
 }
 
 .toolchain-root .tcr-door-ico {

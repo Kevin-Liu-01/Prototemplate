@@ -223,6 +223,10 @@ export type GlyphFieldOptions = {
   drift?: 'fall' | 'rise';
   /** Multiplier on the rain tiers' glyph sizes (the formed word is untouched). */
   glyphScale?: number;
+  /** Where the host's copy block sits. 'auto' (default) infers left/top from
+      width; 'left'/'top' force a fold; 'none' is a standalone plate — no copy
+      clearing, full-bleed rain, word centered. */
+  copy?: 'auto' | 'left' | 'top' | 'none';
 };
 
 export type GlyphFieldHandle = { destroy(): void };
@@ -337,8 +341,20 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let botB = 0;
 
   function layout(): void {
-    narrow = w < 880;
-    if (narrow) {
+    const mode = options.copy ?? 'auto';
+    narrow = mode === 'top' || (mode === 'auto' && w < 880);
+    const standalone = mode === 'none';
+    if (standalone) {
+      /* no copy block at all: the clearing edge sits off-canvas, so
+         keepAt's smoothstep saturates to 1 for every on-canvas x, and
+         the word centers in a full-bleed field */
+      zoneCx = w * 0.5;
+      zoneW = Math.max(160, w - 96);
+      baselineY = h * 0.56;
+      maxFont = Math.min(h * 0.3, 132);
+      fadeB = -60;
+      fadeA = -30;
+    } else if (narrow) {
       zoneCx = w * 0.5;
       zoneW = Math.max(120, w - 48);
       baselineY = h * 0.78;
@@ -368,7 +384,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
          reads as set type. The type column stays the field's clearing: every
          home sits to the right of it (below it on narrow); the clearing edge
          itself is a per-frame dithered density falloff. */
-      const raw = narrow ? px * w : (0.4 + px * 0.63) * w;
+      const raw = standalone || narrow ? px * w : (0.4 + px * 0.63) * w;
       hx[i] = Math.round(raw / COL_PITCH) * COL_PITCH + (bow[i] ?? 0) * 4;
       const py = uy[i] ?? 0;
       hy[i] = narrow ? h * (0.5 + py * 0.5) : py * h;
@@ -929,7 +945,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
              band ABOVE it — the iso-line no longer strobes as the rain
              sways across it. Density statistics are unchanged. */
           const keep = keepAt(x, y, morph >= 0);
-          if (keep <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.06 : 0.06)) {
+          /* a hard-cleared zone (keep 0) culls regardless of hysteresis —
+             otherwise a low-threshold glyph drawn at boot survives forever
+             inside a clearing */
+          if (keep <= 0 || keep <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.06 : 0.06)) {
             vis[i] = 0;
             lastX[i] = x;
             lastY[i] = y;
@@ -988,7 +1007,12 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
                dithered culls and all. */
             x = (fx[i] ?? 0) + (x - (fx[i] ?? 0)) * e + arc * 36 * e;
             y = (fy[i] ?? 0) + (y - (fy[i] ?? 0)) * e;
-            if (u >= 1 && keepAt(x, y, true) <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.06 : 0.06)) {
+            const landedKeep = u >= 1 ? keepAt(x, y, true) : 1;
+            if (
+              u >= 1 &&
+              (landedKeep <= 0 ||
+                landedKeep <= (stag[i] ?? 0) + (vis[i] === 1 ? -0.06 : 0.06))
+            ) {
               vis[i] = 0;
               lastX[i] = x;
               lastY[i] = y;
