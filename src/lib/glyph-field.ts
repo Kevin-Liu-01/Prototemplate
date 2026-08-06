@@ -387,7 +387,14 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       const raw = standalone || narrow ? px * w : (0.4 + px * 0.63) * w;
       hx[i] = Math.round(raw / COL_PITCH) * COL_PITCH + (bow[i] ?? 0) * 4;
       const py = uy[i] ?? 0;
-      hy[i] = narrow ? h * (0.5 + py * 0.5) : py * h;
+      /* Homes seed the FULL wrap cycle (h + 60, the draw loop's modulus),
+         not just [0, h]: the draw position is wrap(hy + t·fall) − 30, so
+         seeding a band 60px short left the bottom strip empty at boot —
+         glyphs only reached it after wrapping around, at 2–10 px/s, and
+         every arrival opened on a bare floor that healed over ~10s
+         (founder: "glyph rain always starts with empty spaces below").
+         Seeded over the whole cycle, boot IS the steady state. */
+      hy[i] = narrow ? (h + 60) * (0.5 + py * 0.5) : py * (h + 60);
     }
   }
 
