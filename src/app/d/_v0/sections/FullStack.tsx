@@ -593,69 +593,114 @@ export default function V0FullStack() {
           if (!rail || strokeBusy) return;
           const count = strokeTarget;
           const at = Number(gsap.getProperty(rail, 'scaleY')) || 0;
-          const go = (t: gsap.TweenTarget, vars: gsap.TweenVars, home?: number) => {
+          const home = count > 0 ? (RAIL_SCALE[count - 1] ?? 0) : 0;
+          /* one LEG is the atomic unit — a mini-timeline that always runs
+             to completion; the pen re-consults the target only at leg
+             boundaries. A leg spans EVERY pending junction at once
+             (founder: after a fast scroll the catch-up must not visit
+             third then fourth — "these should happen at the same time"):
+             one rail move, with the passed bends flowing out of (or
+             folding into) the tip AS IT PASSES — the arrival's own
+             grammar, generalized. */
+          const leg = (build: (tl: gsap.core.Timeline) => void) => {
             strokeBusy = true;
-            gsap.to(t, {
-              ...vars,
+            const tl = gsap.timeline({
               onComplete: () => {
-                if (home !== undefined) railAt = home;
                 strokeBusy = false;
                 pump();
               },
             });
+            build(tl);
           };
 
-          /* reverse, top junction first: fold its bend INTO the line at
-             full speed, then the line leaves on that speed and
-             decelerates into the junction below — interleaved, one
-             junction at a time */
-          const floor = count > 0 ? (RAIL_SCALE[count - 1] ?? 0) : 0;
+          /* -------- reverse: fold what stands above, sweep down once */
+          const above: number[] = [];
           for (let k = taps.length - 1; k >= count; k -= 1) {
-            const tap = taps[k];
-            if (tap && strokeOff(k) > -99) {
-              go(tap, { strokeDashoffset: -100, duration: 0.3, ease: 'power2.in', autoRound: false });
-              return;
-            }
-            const goal = Math.max(k > 0 ? (RAIL_SCALE[k - 1] ?? 0) : 0, floor);
-            if (at > goal + 0.0005) {
-              go(
-                rail,
-                {
-                  scaleY: goal,
-                  svgOrigin: RAIL_ORIGIN,
-                  duration: goal === 0 ? 0.7 : 0.45,
-                  ease: 'power2.out',
-                },
-                goal
-              );
-              return;
-            }
+            if (taps[k] && strokeOff(k) > -99) above.push(k);
+          }
+          if (above.length > 0 && at <= home + 0.0005) {
+            /* strays from an interrupted state — the line is already
+               home, the orphan bends just fold */
+            leg((tl) => {
+              above.forEach((k, i) => {
+                const tap = taps[k];
+                if (tap) tl.to(tap, { strokeDashoffset: -100, duration: 0.3, ease: 'power2.in', autoRound: false }, 0.06 * i);
+              });
+            });
+            return;
+          }
+          if (at > home + 0.0005) {
+            leg((tl) => {
+              /* the top bend folds first — the approved corner — then ONE
+                 descent sweeps to the target landing, the remaining bends
+                 collapsing into the tip as it passes them (the retract's
+                 inverse-eased grammar) */
+              const [top, ...rest] = above;
+              let t0 = 0;
+              const topTap = top !== undefined ? taps[top] : undefined;
+              if (topTap) {
+                tl.to(topTap, { strokeDashoffset: -100, duration: 0.3, ease: 'power2.in', autoRound: false }, 0);
+                t0 = 0.3;
+              }
+              const dist = at - home;
+              const dur = Math.min(0.7, Math.max(0.4, dist * 0.9));
+              tl.to(rail, { scaleY: home, svgOrigin: RAIL_ORIGIN, duration: dur, ease: 'power2.in' }, t0);
+              rest.forEach((k) => {
+                const tap = taps[k];
+                if (!tap) return;
+                /* the power2.in fall covers fraction p² of the distance at
+                   progress p — invert it for the tip's pass of junction k */
+                const frac = Math.max(0, Math.min(1, (at - (RAIL_SCALE[k] ?? 1)) / dist));
+                const when = t0 + dur * Math.sqrt(frac);
+                tl.to(tap, { strokeDashoffset: -100, duration: 0.25, ease: 'power1.in', autoRound: false }, Math.max(0, when - 0.15));
+              });
+            });
+            railAt = home;
+            return;
           }
 
-          /* forward, lowest junction first: the first haul from the empty
-             foot keeps the arrival's long decelerating rise; later legs
-             accelerate INTO the junction and the bend leaves on that
-             speed, spending it into the plate */
-          for (let k = 0; k < count; k += 1) {
-            const junction = RAIL_SCALE[k] ?? 1;
-            if (at < junction - 0.0005) {
-              go(
+          /* -------- forward: one rise to the newest landing, bends
+             flowing out of the tip as it passes their junctions; a
+             single-junction hop keeps the strict corner (accelerate in,
+             bend leaves on the landing) */
+          if (at < home - 0.0005) {
+            leg((tl) => {
+              const dist = home - at;
+              const arrival = at === 0;
+              const single = !arrival && count > 1 && at >= (RAIL_SCALE[count - 2] ?? 0) - 0.0005;
+              const dur = arrival ? 1.0 : single ? 0.45 : Math.min(1.0, Math.max(0.5, dist * 1.1));
+              tl.to(
                 rail,
-                {
-                  scaleY: junction,
-                  svgOrigin: RAIL_ORIGIN,
-                  duration: at === 0 ? 1.0 : 0.45,
-                  ease: at === 0 ? 'power2.out' : 'power2.in',
-                },
-                junction
+                { scaleY: home, svgOrigin: RAIL_ORIGIN, duration: dur, ease: single ? 'power2.in' : 'power2.out' },
+                0
               );
-              return;
-            }
-            const tap = taps[k];
-            if (tap && Math.abs(strokeOff(k)) > 1) {
-              go(tap, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false });
-              return;
-            }
+              for (let k = 0; k < count; k += 1) {
+                const tap = taps[k];
+                if (!tap || Math.abs(strokeOff(k)) <= 1) continue;
+                /* the power2.out rise covers 1−(1−p)² at progress p —
+                   invert for the pass; a single hop's one bend leaves at
+                   the landing itself */
+                const frac = Math.max(0, Math.min(1, ((RAIL_SCALE[k] ?? 1) - at) / dist));
+                const when = single ? dur : dur * (1 - Math.sqrt(1 - frac));
+                tl.to(tap, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false }, when + 0.02);
+              }
+            });
+            railAt = home;
+            return;
+          }
+
+          /* -------- line already home: only strays can be undrawn */
+          const undrawn: number[] = [];
+          for (let k = 0; k < count; k += 1) {
+            if (taps[k] && Math.abs(strokeOff(k)) > 1) undrawn.push(k);
+          }
+          if (undrawn.length > 0) {
+            leg((tl) => {
+              undrawn.forEach((k, i) => {
+                const tap = taps[k];
+                if (tap) tl.to(tap, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false }, 0.06 * i);
+              });
+            });
           }
         };
 
