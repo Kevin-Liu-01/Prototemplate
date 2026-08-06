@@ -290,10 +290,15 @@
   padding-top: clamp(26px, 2.8vw, 36px);
 }
 
-/* zero, not the old clamp (founder): the band heads are tc-heads now
-   and bring their own clamp(26–36) top spend — the sheet's padding on
-   top of that read as doubled air */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in {
+  padding-top: clamp(28px, 3vw, 40px);
+}
+
+/* the CONTEXT band alone zeroes it (founder): its head is a tc-head
+   now and brings its own clamp(54–82) top spend — the sheet's padding
+   on top of that read as doubled air. Bands with plain tcb-heads (the
+   full-stack story) keep the clamp above, or their heads kiss the seam. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ctx.tcb .tcb-in {
   padding-top: 0;
 }
 
