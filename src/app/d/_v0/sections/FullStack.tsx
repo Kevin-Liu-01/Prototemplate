@@ -314,7 +314,6 @@ export default function V0FullStack() {
         const dropBy = staged ? STAGE_DROP : DROP;
         /* which slabs exist right now — the build's one piece of state,
            so entering and leaving slabs can be staged differently */
-        const shown = slabs.map(() => false);
 
         /* the ambient loops (founder round): context's accent waves ride
            their wires into the <T>, the agents plate's orbit trace
@@ -561,213 +560,95 @@ export default function V0FullStack() {
            apart from an ordinary between-beats move */
         let railAt = 0;
 
-        /* THE PEN (founder, four round-trips: "blue line comes up; as
-           soon as it is done, the connector comes out of the blue line —
-           into code, into context, and so on. Flowing motions, never two
-           disjoint things" — and its mirror on the way back down). The
-           rail fill and the bends are ONE pen driven as a state machine:
-           the scroll only ever moves the TARGET; the pen makes one
-           atomic move at a time — a rise to the next junction, a bend
-           out of the landed tip, a fold back into the line, a descent to
-           the junction below — and consults the newest target only when
-           a move COMPLETES. No move is ever killed mid-flight, so a fast
-           up-and-down scrub can never shred a half-drawn stroke into
-           jitter: direction changes wait at the next move boundary
-           (≤0.45s) and the pen always draws whole lines. Momentum
-           grammar at every junction: the leg INTO a turn ends fast
-           (power2.in), the leg OUT of it leaves fast and decelerates
-           (power2.out). Bends park at −100, the RAIL side, and draw
-           rail-outward — the layer side (+100) grew connectors out of
-           the plates toward the line, the disjoint read this replaced.
-           The plates keep their own independent timeline below: the
-           layers were right; only the stroke is choreographed. */
-        let strokeTarget = 0;
-        let strokeBusy = false;
+        /* THE STORY (founder, five round-trips, closing with: "stop
+           having these weird instances where the line is just moving
+           around but doesn't commit… make everything more perfectly
+           storylined, even the fading, instead of having gates to show
+           layers and extend lines"). The ENTIRE build is authored once,
+           as a single paused timeline — for each beat, in order: the
+           previous hot plate settles, the beat's plate fades in and
+           drops, the blue rises its leg (the first haul long and
+           decelerating, later legs accelerating into the junction), and
+           the bend flows out of the landed tip. The scroll never touches
+           an element: it only retargets a PLAYHEAD along this one story.
+           Every frame anyone can ever see is therefore a frame OF the
+           story — a reversal plays the same story backward (bend folds
+           into the line before the line leaves; the plate lifts away as
+           its fade rewinds), a fast multi-beat scroll fast-forwards it,
+           and an uncommitted stub or a line/fade disagreement is
+           structurally impossible. Bends park at −100, the RAIL side,
+           so every draw flows rail-outward. */
+        const story = gsap.timeline({ paused: true });
+        /** the story time at which beat k stands complete (bend drawn) */
+        const beatEnd: number[] = [];
+        if (rail) gsap.set(rail, { scaleY: 0, svgOrigin: RAIL_ORIGIN });
+        slabs.forEach((slab, k) => {
+          gsap.set(slab, { y: -LIFT - dropBy, autoAlpha: 0 });
+          const tap = taps[k];
+          if (tap) gsap.set(tap, { strokeDashoffset: -100 });
 
-        const strokeOff = (i: number) => {
-          const tap = taps[i];
-          return tap ? Number(gsap.getProperty(tap, 'strokeDashoffset')) || 0 : -100;
-        };
-
-        const pump = (): void => {
-          if (!rail || strokeBusy) return;
-          const count = strokeTarget;
-          const at = Number(gsap.getProperty(rail, 'scaleY')) || 0;
-          const home = count > 0 ? (RAIL_SCALE[count - 1] ?? 0) : 0;
-          /* one LEG is the atomic unit — a mini-timeline that always runs
-             to completion; the pen re-consults the target only at leg
-             boundaries. A leg spans EVERY pending junction at once
-             (founder: after a fast scroll the catch-up must not visit
-             third then fourth — "these should happen at the same time"):
-             one rail move, with the passed bends flowing out of (or
-             folding into) the tip AS IT PASSES — the arrival's own
-             grammar, generalized. */
-          const leg = (build: (tl: gsap.core.Timeline) => void) => {
-            strokeBusy = true;
-            const tl = gsap.timeline({
-              onComplete: () => {
-                strokeBusy = false;
-                pump();
+          const base = k === 0 ? 0 : beatEnd[k - 1] ?? 0;
+          const legDur = k === 0 ? 1.0 : 0.45;
+          const prev = k > 0 ? slabs[k - 1] : undefined;
+          if (prev) story.to(prev, { y: 0, duration: 0.35, ease: 'power2.out' }, base);
+          story.to(slab, { y: -LIFT, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, base);
+          if (rail) {
+            story.to(
+              rail,
+              {
+                scaleY: RAIL_SCALE[k] ?? 1,
+                svgOrigin: RAIL_ORIGIN,
+                duration: legDur,
+                ease: k === 0 ? 'power2.out' : 'power2.in',
               },
-            });
-            build(tl);
-          };
-
-          /* -------- reverse: fold what stands above, sweep down once */
-          const above: number[] = [];
-          for (let k = taps.length - 1; k >= count; k -= 1) {
-            if (taps[k] && strokeOff(k) > -99) above.push(k);
+              base
+            );
           }
-          if (above.length > 0 && at <= home + 0.0005) {
-            /* strays from an interrupted state — the line is already
-               home, the orphan bends just fold */
-            leg((tl) => {
-              above.forEach((k, i) => {
-                const tap = taps[k];
-                if (tap) tl.to(tap, { strokeDashoffset: -100, duration: 0.3, ease: 'power2.in', autoRound: false }, 0.06 * i);
-              });
-            });
+          if (tap) {
+            story.to(
+              tap,
+              { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
+              base + legDur + 0.02
+            );
+          }
+          beatEnd[k] = base + legDur + 0.32;
+        });
+
+        /* the playhead: the ONE thing the scroll may move. Killing and
+           retargeting it mid-flight is safe by construction — any story
+           time is a coherent pose — so scrub storms just shuttle the
+           playhead. Duration scales with story distance: one beat plays
+           at its authored tempo, a four-beat fling fast-forwards. */
+        let playhead: gsap.core.Tween | null = null;
+        const seek = (time: number, instant: boolean) => {
+          playhead?.kill();
+          playhead = null;
+          if (instant) {
+            story.time(time, true);
             return;
           }
-          if (at > home + 0.0005) {
-            leg((tl) => {
-              /* the top bend folds first — the approved corner — then ONE
-                 descent sweeps to the target landing, the remaining bends
-                 collapsing into the tip as it passes them (the retract's
-                 inverse-eased grammar) */
-              const [top, ...rest] = above;
-              let t0 = 0;
-              const topTap = top !== undefined ? taps[top] : undefined;
-              if (topTap) {
-                tl.to(topTap, { strokeDashoffset: -100, duration: 0.3, ease: 'power2.in', autoRound: false }, 0);
-                t0 = 0.3;
-              }
-              const dist = at - home;
-              const dur = Math.min(0.7, Math.max(0.4, dist * 0.9));
-              tl.to(rail, { scaleY: home, svgOrigin: RAIL_ORIGIN, duration: dur, ease: 'power2.in' }, t0);
-              rest.forEach((k) => {
-                const tap = taps[k];
-                if (!tap) return;
-                /* the power2.in fall covers fraction p² of the distance at
-                   progress p — invert it for the tip's pass of junction k */
-                const frac = Math.max(0, Math.min(1, (at - (RAIL_SCALE[k] ?? 1)) / dist));
-                const when = t0 + dur * Math.sqrt(frac);
-                tl.to(tap, { strokeDashoffset: -100, duration: 0.25, ease: 'power1.in', autoRound: false }, Math.max(0, when - 0.15));
-              });
-            });
-            railAt = home;
-            return;
-          }
-
-          /* -------- forward: one rise to the newest landing, bends
-             flowing out of the tip as it passes their junctions; a
-             single-junction hop keeps the strict corner (accelerate in,
-             bend leaves on the landing) */
-          if (at < home - 0.0005) {
-            leg((tl) => {
-              const dist = home - at;
-              const arrival = at === 0;
-              const single = !arrival && count > 1 && at >= (RAIL_SCALE[count - 2] ?? 0) - 0.0005;
-              const dur = arrival ? 1.0 : single ? 0.45 : Math.min(1.0, Math.max(0.5, dist * 1.1));
-              tl.to(
-                rail,
-                { scaleY: home, svgOrigin: RAIL_ORIGIN, duration: dur, ease: single ? 'power2.in' : 'power2.out' },
-                0
-              );
-              for (let k = 0; k < count; k += 1) {
-                const tap = taps[k];
-                if (!tap || Math.abs(strokeOff(k)) <= 1) continue;
-                /* the power2.out rise covers 1−(1−p)² at progress p —
-                   invert for the pass; a single hop's one bend leaves at
-                   the landing itself */
-                const frac = Math.max(0, Math.min(1, ((RAIL_SCALE[k] ?? 1) - at) / dist));
-                const when = single ? dur : dur * (1 - Math.sqrt(1 - frac));
-                tl.to(tap, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false }, when + 0.02);
-              }
-            });
-            railAt = home;
-            return;
-          }
-
-          /* -------- line already home: only strays can be undrawn */
-          const undrawn: number[] = [];
-          for (let k = 0; k < count; k += 1) {
-            if (taps[k] && Math.abs(strokeOff(k)) > 1) undrawn.push(k);
-          }
-          if (undrawn.length > 0) {
-            leg((tl) => {
-              undrawn.forEach((k, i) => {
-                const tap = taps[k];
-                if (tap) tl.to(tap, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false }, 0.06 * i);
-              });
-            });
-          }
+          const d = Math.abs(time - story.time());
+          if (d < 0.001) return;
+          playhead = gsap.to(story, {
+            time,
+            duration: Math.min(1.3, Math.max(0.35, d * 0.55)),
+            ease: 'none',
+          });
         };
 
-        const strokeTo = (count: number) => {
-          strokeTarget = count;
-          pump();
-        };
-
-        /* One timeline per beat change coordinates the whole answer:
-           slabs the beat brings in settle from DROP above their seat,
-           bottom-up and staggered; slabs the beat removes (scrolling
-           back) rise out; slabs that stay glide to their new seat (the
-           lift, or the opening above the hot block). Every tween aims at
-           an absolute target with overwrite, so a fast scrub through
-           several windows just redirects mid-flight — no snap, no
-           flicker. */
+        /* a beat change is nothing but a NEW STORY TIME: paint the copy,
+           update the loop ledger, and send the playhead to the end of
+           the active beat's segment. The story does the rest — plates,
+           line, bends and fades all read from the same clock. */
         const setActive = (active: number, instant: boolean) => {
           paint(active);
           const count = VISIBLE_COUNT[active] ?? slabs.length;
           built = count;
           hotBeat = active;
           syncLoops();
-          const hot = HOT_SLABS[active] ?? [];
-          const set = new Set(hot);
-          const top = hot.length > 0 ? Math.max(...hot) : -1;
-
-          const tl = gsap.timeline({ defaults: { overwrite: 'auto' } });
-          let entered = 0;
-          slabs.forEach((slab, i) => {
-            const visible = i < count;
-            const seat = set.has(i) ? -LIFT : i > top ? -(LIFT + OPEN) : 0;
-            const tap = taps[i];
-            if (instant) {
-              /* the instant path always parks the rail EMPTY and every
-                 bend on the RAIL side (−100): the stroke queue draws each
-                 one rail-outward as the blue reaches its junction */
-              gsap.set(slab, { y: visible ? seat : seat - dropBy, autoAlpha: visible ? 1 : 0 });
-              if (tap) gsap.set(tap, { strokeDashoffset: -100 });
-            } else if (visible && !shown[i]) {
-              /* arriving: the plate drops in from above its seat,
-                 bottom-up — the plate is furniture and answers its beat
-                 immediately; its bend belongs to the stroke queue and
-                 arrives when the blue does */
-              const at = entered * 0.14;
-              tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, at);
-              entered += 1;
-            } else if (visible) {
-              /* staying: glide to the new seat — the bend is the queue's */
-              tl.to(slab, { y: seat, autoAlpha: 1, duration: 0.55, ease: 'power3.out' }, 0);
-            } else {
-              /* leaving: the plate rises out; its bend folds back into
-                 the line in the queue's reverse chain */
-              tl.to(slab, { y: seat - dropBy, autoAlpha: 0, duration: 0.35, ease: 'power2.in' }, 0);
-            }
-            shown[i] = visible;
-          });
-
-          /* the stroke — rail fill and bends — is one serialized pen */
-          if (instant) {
-            gsap.killTweensOf([rail, ...taps].filter(Boolean));
-            strokeBusy = false;
-            strokeTarget = 0;
-            if (rail) gsap.set(rail, { scaleY: 0, svgOrigin: RAIL_ORIGIN });
-            railAt = 0;
-          } else {
-            strokeTo(count);
-          }
+          const target = instant ? 0 : (beatEnd[count - 1] ?? story.duration());
+          railAt = instant ? 0 : (RAIL_SCALE[count - 1] ?? 1);
+          seek(target, instant);
         };
 
         /* the story opens on its foundation: the code slab, alone, before
@@ -786,12 +667,11 @@ export default function V0FullStack() {
            is still partly on screen) and the view gate below (an instant
            jump from a deeper beat, which never re-toggles beat 01). */
         const retract = () => {
-          if (!rail) return;
-          /* the exit speaks the pen's own reverse grammar — fold the top
-             bend into the line, descend, fold the next, descend — down to
-             the empty foot, so the way out is the same flowing stroke the
-             way in was (founder: the undraw must connect too) */
-          strokeTo(0);
+          /* the exit is the story played back to its opening frame —
+             bends fold into the line before it leaves, plates lift away
+             as their fades rewind, in exactly the order they arrived */
+          railAt = 0;
+          seek(0, false);
         };
 
         /* the capstone's diff hunk, GENERATED BY SCROLL (founder: "a
