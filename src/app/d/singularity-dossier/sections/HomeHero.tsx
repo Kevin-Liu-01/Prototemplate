@@ -441,7 +441,10 @@ export default function HomeHero() {
 
           const cloudX = (w: number) => () =>
             gsap.utils.clamp(3, w - 3, gsap.utils.random(0.03, 0.97) * w);
-          const cloudY = (h: number) => () => gsap.utils.random(h * 0.02, h * 0.52);
+          /* the text band in glyph-space runs [0, 0.45h] (the seat mapping
+             subtracts 0.4h from raster ink) — the cloud centres on ITS
+             middle, not the box's (founder: the dust pooled at the bottom) */
+          const cloudY = (h: number) => () => gsap.utils.random(h * -0.04, h * 0.44);
 
           const formPhase = () => {
             if (!root.current || !root.current.isConnected) return;
