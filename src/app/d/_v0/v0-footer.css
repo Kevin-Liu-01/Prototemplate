@@ -327,24 +327,33 @@
      never clip at the box edge (founder: the border was cut off) */
   inset: -2px;
   background: rgba(7, 7, 7, 0.72);
-  -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'),
-    url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
-  mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'),
-    url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
-  -webkit-mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px;
-  mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px;
+  /* eight offset copies — four orthogonal, four diagonal — union into a
+     DISC dilation, so the border wraps each corner in a smooth join
+     instead of the square kernel's harsh 90s (founder round) */
+  -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
+  mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
+  -webkit-mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px;
+  mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position:
     calc(50% - 1px) 50%,
     calc(50% + 1px) 50%,
     50% calc(50% - 1px),
-    50% calc(50% + 1px);
+    50% calc(50% + 1px),
+    calc(50% - 0.7px) calc(50% - 0.7px),
+    calc(50% + 0.7px) calc(50% - 0.7px),
+    calc(50% - 0.7px) calc(50% + 0.7px),
+    calc(50% + 0.7px) calc(50% + 0.7px);
   mask-position:
     calc(50% - 1px) 50%,
     calc(50% + 1px) 50%,
     50% calc(50% - 1px),
-    50% calc(50% + 1px);
+    50% calc(50% + 1px),
+    calc(50% - 0.7px) calc(50% - 0.7px),
+    calc(50% + 0.7px) calc(50% - 0.7px),
+    calc(50% - 0.7px) calc(50% + 0.7px),
+    calc(50% + 0.7px) calc(50% + 0.7px);
   mask-composite: add;
   pointer-events: none;
 }
