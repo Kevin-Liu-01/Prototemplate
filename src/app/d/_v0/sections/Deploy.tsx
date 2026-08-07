@@ -58,7 +58,7 @@ export default function Deploy() {
         {/* inside the rails, so the formed word is never struck by them */}
         <canvas className='v0-dep-field' ref={stage} aria-hidden='true' />
         <div className='v0-dep-copy'>
-          <h2>Deploy today.</h2>
+          <h2>Deploy today</h2>
           <p className='v0-dep-sub'>
             Join the world’s best developer teams on General Translation.
           </p>

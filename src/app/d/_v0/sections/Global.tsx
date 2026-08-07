@@ -267,7 +267,7 @@ export default function V0Global() {
     <section className='tc-sec v0-glob' id='infrastructure' ref={root}>
       <div className='tc-head'>
         <Globe className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>Ship your product to the world.</h2>
+        <h2 data-reveal>Ship your product to the world</h2>
       </div>
 
       {/* ---- row 1: the globe on its night card, the ruled rail of claims ---- */}
@@ -290,7 +290,7 @@ export default function V0Global() {
         <BentoCell cell='is-tall is-framed'>
           <div className='v0-glob-rail'>
             <article className='v0-glob-item'>
-              <h3>Localized by region and dialect.</h3>
+              <h3>Localized by region and dialect</h3>
 
               {/* The combined artifact: base tags fan into regional variants,
                   every row in the language's own writing system. It draws no
@@ -358,7 +358,7 @@ export default function V0Global() {
             </article>
 
             <article className='v0-glob-item'>
-              <h3>Served from the edge.</h3>
+              <h3>Served from the edge</h3>
               <p>
                 Low-latency CDN, versioned per locale. Fix a string or roll it back without
                 touching your code.
@@ -366,7 +366,7 @@ export default function V0Global() {
             </article>
 
             <article className='v0-glob-item'>
-              <h3>Built for the enterprise.</h3>
+              <h3>Built for the enterprise</h3>
               <p>
                 Dedicated FDE hours to build any workflow across code and content. Plus SSO, SOC 2 Type
                 II, ISO 27001, and audit logs.

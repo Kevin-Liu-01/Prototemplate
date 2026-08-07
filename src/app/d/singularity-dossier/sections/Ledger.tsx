@@ -19,7 +19,7 @@ export default function Ledger() {
     <section className='sgd-ledger' aria-label='Customer rollouts, audited'>
       <header className='sgd-head'>
         <span className='sgd-kicker'>The ledger</span>
-        <h2>What shipped, on the record.</h2>
+        <h2>What shipped, on the record</h2>
       </header>
       <div className='sgd-table' role='table'>
         <div className='sgd-tr is-head' role='row'>

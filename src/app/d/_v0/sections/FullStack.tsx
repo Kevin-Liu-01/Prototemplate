@@ -83,7 +83,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'code',
     name: 'Code',
-    lead: 'Your code is the source of truth.',
+    lead: 'Your code is the source of truth',
     points: [
       <>
         Tag user interfaces, and they’re ready to ship in 120+ locales. No
@@ -97,7 +97,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'context',
     name: 'Context',
-    lead: 'The best experience of your product.',
+    lead: 'The best experience of your product',
     points: [
       <>
         <GtLogoText /> keeps your terminology, voice, and style consistent across every surface
@@ -116,7 +116,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'translations',
     name: 'Translations',
-    lead: 'Translations that just work.',
+    lead: 'Translations that just work',
     points: [
       <>
         See your content and components translated in just minutes. <GtLogoText /> handles
@@ -130,7 +130,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'agents',
     name: 'Agents',
-    lead: 'Automate it.',
+    lead: 'Automate it',
     points: [
       <>Locadex keeps your app localized with every update. Just merge a PR.</>,
       <>

@@ -167,6 +167,25 @@ const NARROW_POOL = 560;
 const DPR_CAP = 2;
 const DPR_CAP_NARROW = 1.25;
 
+/**
+ * The frame-time governor: quality follows MEASURED paint cost, not just
+ * the window. The width cut stays (a phone column starts lean), but a
+ * wide viewport on weak silicon — an old iPad in landscape, a TV browser —
+ * steps down the same ladder once the frames prove it: tier 1 drops the
+ * device-pixel cap to the narrow gauge (one atlas rebuild, no
+ * distribution change), tier 2 binds the frame path to the lean pool,
+ * pitch and cull. Down only — a ratchet can never oscillate mid-scene —
+ * and the pool cut waits for idle rain so a mid-flight mote is never
+ * orphaned. Cadence is judged over a window of counted frames; boot
+ * jank, hidden-tab gaps and one-off hitches are ignored. ~45fps sustained
+ * for about two seconds is a step. (A 30Hz display trips it too — and
+ * loses nothing, since it could never show the frames it sheds.)
+ */
+const GOV_BUDGET_MS = 22;
+const GOV_WINDOW = 120;
+const GOV_TRIP = 0.75;
+const GOV_WARMUP_MS = 2500;
+
 /* The loop, in seconds: print, hold, peel, fly. Each formed word LINGERS —
    the caliper fades in, stands for a beat, and fades back out — then the
    word dissolves, spreads, reorganizes and forms the next, one continuous
@@ -392,6 +411,14 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let h = 0;
   let dpr = 1;
   let narrow = false;
+  /* the governor's ladder position, and the derived quality flag every
+     hot-path site reads: lean = the narrow cut OR a tripped governor */
+  let govTier = 0;
+  let govOver = 0;
+  let govCount = 0;
+  let govBornAt = 0;
+  let govPendingPool = false;
+  let lean = false;
   let zoneCx = 0;
   let zoneW = 0;
   let baselineY = 0;
@@ -407,6 +434,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   function layout(): void {
     const mode = options.copy ?? 'auto';
     narrow = mode === 'top' || (mode === 'auto' && w < 880);
+    lean = narrow || govTier >= 2;
     const standalone = mode === 'none';
     if (standalone) {
       /* no copy block at all: the clearing edge sits off-canvas, so
@@ -746,8 +774,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        roughly half the motes to fly and land; the printed fill carries the
        word. The cap is the narrow deal's own recruitable set, so overflow
        re-steps against what can actually seat. */
-    const cap = narrow ? pickNCount : eligibleCount;
-    let step = narrow
+    const cap = lean ? pickNCount : eligibleCount;
+    let step = lean
       ? Math.max(6, Math.min(COND_PITCH_NARROW, Math.round(fontPx / 9)))
       : Math.max(6, Math.min(COND_PITCH, Math.round(fontPx / 13)));
     let count = scan(step, sw, sh, cap);
@@ -761,7 +789,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     prepPts.set(pts.subarray(0, prepCount * 2));
     prepFontPx = fontPx;
     prepAdvance = advance;
-    prepNarrow = narrow;
+    prepNarrow = lean;
     prepWord = wordIndex;
   }
 
@@ -792,8 +820,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        the draw loop never visits must never be dealt into a word, or its
        whole flight would happen invisibly. Wide deals from the untouched
        full eligible set. */
-    const sel = narrow ? pickN : pick;
-    const selCount = narrow ? pickNCount : eligibleCount;
+    const sel = lean ? pickN : pick;
+    const selCount = lean ? pickNCount : eligibleCount;
     let cc = 0;
     mark.fill(0);
     for (let k = 0; k < selCount; k++) {
@@ -829,7 +857,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        The synchronous call is the fallback (first paint, a resize that
        dropped the set, idle starvation, or a set rastered under the other
        layout cut — its pitch and cap belong to the other deal). */
-    if (prepWord !== wordIndex || prepNarrow !== narrow) prepareSamples(wordIndex);
+    if (prepWord !== wordIndex || prepNarrow !== lean) prepareSamples(wordIndex);
     if (prepWord !== wordIndex) return; // raster impossible — guarded above, defensive
     const fontPx = prepFontPx;
     const advance = prepAdvance;
@@ -1043,7 +1071,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       (ptCount === 0 || nextGate <= 0 || x < formedLeft - 40 || x > formedRight + 40) &&
       (!morphing || !prevWord || prevGate <= 0 || x < prevLeft - 40 || x > prevRight + 40)
     ) {
-      return narrow ? NARROW_KEEP : 1;
+      return lean ? NARROW_KEEP : 1;
     }
     const shift = narrow ? copyEdgeShift(x, w) : copyEdgeShift(y, h);
     let k = smoothstep(fadeB - shift, fadeA - shift, narrow ? y : x);
@@ -1057,7 +1085,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       /* The outgoing word's paper heals with the same gate. */
       k *= wordKeep(x, y, prevGate, prevLeft, prevRight, prevPx);
     }
-    if (narrow) k *= NARROW_KEEP;
+    if (lean) k *= NARROW_KEEP;
     return k;
   }
 
@@ -1130,7 +1158,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         const nspan = Math.max(1, formedRight - formedLeft);
         /* narrow's deal never reaches past NARROW_POOL, so the departure
            pass walks the same bound the rest of the frame does */
-        const lim = narrow ? NARROW_POOL : POOL;
+        const lim = lean ? NARROW_POOL : POOL;
         for (let i = 0; i < lim; i++) {
           if (inPrev[i] === 1) {
             /* a particle that never drew (hidden boot, first frames) lifts
@@ -1174,8 +1202,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        so a phone frame WALKS a fraction of the wide loop instead of
        skipping inside it. Wide iterates the untouched full order,
        byte-identical to before the cut. */
-    const ord = narrow ? orderN : order;
-    const ordCount = narrow ? orderNCount : POOL;
+    const ord = lean ? orderN : order;
+    const ordCount = lean ? orderNCount : POOL;
     let curQ = -1;
     for (let pass = 0; pass < 2; pass++) {
       for (let k = 0; k < ordCount; k++) {
@@ -1406,10 +1434,53 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     ctx.globalAlpha = 1;
   }
 
+  /* the governor's verdicts: count real cadence, ignore boot and gaps,
+     step the ladder down when the paint proves it can't keep up */
+  function govern(ts: number, dtMs: number): void {
+    if (narrow || govTier >= 2) return;
+    if (dtMs > 250) {
+      /* a tab switch or one-off hitch, not a cadence — drop the window */
+      govCount = 0;
+      govOver = 0;
+      return;
+    }
+    if (govBornAt === 0) {
+      govBornAt = ts;
+      return;
+    }
+    if (ts - govBornAt < GOV_WARMUP_MS) return;
+    govCount += 1;
+    if (dtMs > GOV_BUDGET_MS) govOver += 1;
+    if (govCount < GOV_WINDOW) return;
+    const trip = govOver / govCount >= GOV_TRIP;
+    govCount = 0;
+    govOver = 0;
+    if (!trip) return;
+    govTier += 1;
+    canvas.dataset.gfTier = String(govTier);
+    if (govTier === 1) {
+      /* the lean device-pixel cap: resize() re-derives dpr, the backing
+         store and the atlas together, mid-morph-safe like any resize */
+      resize();
+    } else {
+      /* the pool cut waits for idle rain — a mid-flight mote must never
+         fall out of the frame path */
+      govPendingPool = true;
+    }
+  }
+
   function frame(ts: number): void {
     if (destroyed) return;
-    if (lastTs >= 0) simT += Math.min(0.05, (ts - lastTs) / 1000);
+    if (lastTs >= 0) {
+      const dtMs = ts - lastTs;
+      simT += Math.min(0.05, dtMs / 1000);
+      govern(ts, dtMs);
+    }
     lastTs = ts;
+    if (govPendingPool && !morphingNow()) {
+      govPendingPool = false;
+      lean = true;
+    }
     draw();
     raf = requestAnimationFrame(frame);
   }
@@ -1450,7 +1521,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        backing store, the atlas build, every blit's snap — re-derives
        right here, so no consumer can ever see a stale scale. */
     layout();
-    dpr = Math.min(narrow ? DPR_CAP_NARROW : DPR_CAP, window.devicePixelRatio || 1);
+    dpr = Math.min(narrow || govTier >= 1 ? DPR_CAP_NARROW : DPR_CAP, window.devicePixelRatio || 1);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     buildAtlas();

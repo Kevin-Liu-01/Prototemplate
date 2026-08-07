@@ -18,7 +18,7 @@ export default function Procurement() {
     <section className='tc-band sgd-proc' aria-label='Security and compliance controls'>
       <div className='sgd-proc-in'>
         <header className='sgd-proc-head'>
-          <h2>Procurement, handled.</h2>
+          <h2>Procurement, handled</h2>
           <p>
             Security review is where localization vendors go to die. Send ours to your team
             first — the file is already complete.

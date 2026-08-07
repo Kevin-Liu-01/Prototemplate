@@ -817,7 +817,7 @@ export default function V0Locadex() {
         <h2 data-reveal>
           The easiest way to localize
           <br />
-          your full product suite.
+          your full product suite
         </h2>
       </div>
 
@@ -828,7 +828,7 @@ export default function V0Locadex() {
         <BentoCell
           cell='is-tall tcm-ruled'
           framed={false}
-          title='Run Locadex.'
+          title='Run Locadex'
           sub='Connect your GitHub repository. The Locadex agent internationalizes your code and keeps your app localized on every update. Just merge a PR.'
         >
           <WorksLedger caption='Works with every stack' works={STACK_WORKS} />
@@ -857,7 +857,7 @@ export default function V0Locadex() {
         <BentoCell
           cell='is-tall tcm-ruled'
           framed={false}
-          title='Any integration.'
+          title='Any integration'
           sub='Just a few clicks to integrate with GitHub, Google Drive, your CMS, or your docs.'
         >
           <WorksLedger caption='Works with every source' works={SOURCE_WORKS} />
