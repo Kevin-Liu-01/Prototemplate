@@ -21,9 +21,13 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  /* end-stops: the handle parks just inside the box at the extremes
-     (founder: "don't crop the slider") — the clip still travels 0-100% */
-  left: clamp(var(--seam-edge, 12px), var(--seam-cut, 70%), calc(100% - var(--seam-edge, 12px)));
+  /* the flush stops (founder, two rounds: "make this slider go all the
+     way to the edge" then "slider is going ever so slightly over now"):
+     the handle rides the cut, and at either extreme it parks with the
+     GRIP'S OUTER EDGE exactly on the box edge — 9px is half the refit
+     tab's visible 18px (16 + its ring) — never short of it, never over
+     it. The clip itself still travels the full 0-100%. */
+  left: clamp(var(--seam-edge, 9px), var(--seam-cut, 70%), calc(100% - var(--seam-edge, 9px)));
   z-index: 3;
   width: 18px;
   transform: translateX(-50%);

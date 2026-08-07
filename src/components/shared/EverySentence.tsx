@@ -272,11 +272,11 @@ export default function EverySentence({
              tweens, drawn once per frame by one ticker. */
           type Mote = { ch: string; x: number; y: number; a: number };
           /* the pool allocates the desktop maximum once; how many motes a
-             cycle FLIES is poolN — 200 under the 720px law (over a two-line
-             390px column the swarm reads just as dense, at under half the
-             per-tick fillText cost), re-read at each measure pass and
-             latched per cycle as cycleN, so a law flip mid-flight can never
-             orphan a lit mote outside its flock */
+             cycle FLIES is cycleN, latched at each cycle's seed so a law
+             flip mid-flight can never orphan a lit mote outside its flock.
+             poolN is the per-LINE quantum — 200 under the 720px law — and
+             the seed scales it by the morph's tallest line count (founder:
+             a two-line cloud at a flat 200 read skeletal) */
           const POOL_MAX = 440;
           let poolN = compactEvery ? 200 : POOL_MAX;
           let cycleN = poolN;
@@ -292,9 +292,16 @@ export default function EverySentence({
              the gliding guides and can never overhang them; at 0, mote x
              is a plain canvas px coordinate (dissolve space). */
           let spanLive = 0;
+          /* the plate OVERHANGS the em on every side: a dust glyph is a
+             centred quad around its point — ink at x≈0 keeps its left
+             half and the last line keeps its descenders (founder:
+             "clipping the glyphs at left side and below") — and the draw
+             origin shifts by the same pad, so mote coordinates stay
+             em-anchored and no choreography math changes */
+          const PLATE_PAD = 14;
           const dust = document.createElement('canvas');
           dust.className = 'tc-edust';
-          dust.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;';
+          dust.style.cssText = `position:absolute;left:${-PLATE_PAD}px;top:${-PLATE_PAD}px;pointer-events:none;`;
           dust.setAttribute('aria-hidden', 'true');
           em.append(guideL, guideR, dust);
           const dctx = dust.getContext('2d');
@@ -309,8 +316,8 @@ export default function EverySentence({
                emulated-device dpr never renders the dust blurry or fat */
             cdpr = compactEvery ? Math.min(1.5, dpr) : Math.min(2, dpr);
             const host = em.parentElement ?? em;
-            const bw = Math.ceil(host.getBoundingClientRect().width) + 20;
-            const bh = Math.ceil(em.offsetHeight) + 8;
+            const bw = Math.ceil(host.getBoundingClientRect().width) + 20 + PLATE_PAD * 2;
+            const bh = Math.ceil(em.offsetHeight) + 8 + PLATE_PAD * 2;
             if (dust.width !== bw * cdpr || dust.height !== bh * cdpr) {
               dust.width = bw * cdpr;
               dust.height = bh * cdpr;
@@ -326,7 +333,7 @@ export default function EverySentence({
              sizeDust — grows BEFORE any mote flies to line two. Growing a
              canvas clears it; the ticker repaints every frame anyway. */
           const growDust = (bh: number) => {
-            const need = Math.ceil(bh) + 8;
+            const need = Math.ceil(bh) + 8 + PLATE_PAD * 2;
             if (dust.height < need * cdpr) {
               dust.height = need * cdpr;
               dust.style.height = `${need}px`;
@@ -335,11 +342,13 @@ export default function EverySentence({
           let drawing = false;
           const draw = () => {
             if (!dctx) return;
-            dctx.setTransform(cdpr, 0, 0, cdpr, 0, 0);
+            dctx.setTransform(cdpr, 0, 0, cdpr, PLATE_PAD * cdpr, PLATE_PAD * cdpr);
             /* clear in CSS-pixel space: the transform already scales the
                rect, so passing canvas-pixel dims swept cdpr² the needed
-               area every tick — the frame-loop waste from the mobile round */
-            dctx.clearRect(0, 0, dust.width / cdpr, dust.height / cdpr);
+               area every tick — the frame-loop waste from the mobile round.
+               The origin sits PLATE_PAD inside the plate, so the sweep
+               starts at -PLATE_PAD to cover the overhang. */
+            dctx.clearRect(-PLATE_PAD, -PLATE_PAD, dust.width / cdpr, dust.height / cdpr);
             dctx.font = dustFont;
             dctx.fillStyle = dustInk;
             dctx.textAlign = 'center';
@@ -374,6 +383,65 @@ export default function EverySentence({
              the pitch upward until the point count fits the pool. Cached
              by (text, width): it runs once per locale per size and every
              later cycle reads warm. */
+          /* ONE greedy fold shared by the sampler and the density law —
+             the printed wrap, the sampled ink and the mote budget must
+             all break on the same words (greedy on spaces, a spaceless
+             CJK run folding character by character) */
+          const foldLines = (
+            fctx: CanvasRenderingContext2D,
+            text: string,
+            avail: number
+          ): string[] => {
+            const lines: string[] = [];
+            let line = '';
+            for (const tok of text.split(' ')) {
+              const tryTok = line ? `${line} ${tok}` : tok;
+              if (fctx.measureText(tryTok).width <= avail) {
+                line = tryTok;
+                continue;
+              }
+              if (line) lines.push(line);
+              line = '';
+              if (fctx.measureText(tok).width <= avail) {
+                line = tok;
+              } else {
+                for (const chr of tok) {
+                  const tryChr = line + chr;
+                  if (line && fctx.measureText(tryChr).width > avail) {
+                    lines.push(line);
+                    line = chr;
+                  } else {
+                    line = tryChr;
+                  }
+                }
+              }
+            }
+            if (line) lines.push(line);
+            if (!lines.length) lines.push(text);
+            return lines;
+          };
+          /* the density law's line counter: the same fold at CSS scale,
+             one warm ctx — pure measureText, no raster, cached by
+             (text, column) like every other measurement here */
+          const lineCtx = document.createElement('canvas').getContext('2d') as
+            | (CanvasRenderingContext2D & { letterSpacing?: string })
+            | null;
+          const lineCache = new Map<string, number>();
+          const countLines = (text: string) => {
+            if (!compactEvery || !lineCtx) return 1;
+            const avail = colWidth();
+            const key = `${text}@${Math.round(avail)}`;
+            const hit = lineCache.get(key);
+            if (hit !== undefined) return hit;
+            const style = getComputedStyle(word);
+            lineCtx.font = `${style.fontWeight} ${parseFloat(style.fontSize)}px ${style.fontFamily}`;
+            if (style.letterSpacing !== 'normal') {
+              lineCtx.letterSpacing = style.letterSpacing;
+            }
+            const n = foldLines(lineCtx, text, avail).length;
+            lineCache.set(key, n);
+            return n;
+          };
           const ptsCache = new Map<string, { x: number; y: number }[]>();
           const sampleShape = (text: string, width: number, height: number, count: number) => {
             /* the fold regime is part of the identity: the same text at the
@@ -402,62 +470,53 @@ export default function EverySentence({
               ctx.textBaseline = 'alphabetic';
             };
             applyFont();
+            /* the REAL vertical metrics: the DOM line box seats its
+               baseline at half-leading + the font's true ascent — the old
+               0.8em guess printed the sampled ink ~0.1em above the DOM's,
+               so the cloud stood visibly higher than the sentence
+               (founder: "the actual sentence is below the glyphed text").
+               The same metrics size the raster past the last baseline, so
+               descenders survive sampling (founder: "the gs are getting
+               cut off"). */
+            const fmet = ctx.measureText('Hg');
+            const asc = fmet.fontBoundingBoxAscent || fontPx * 0.8;
+            const desc = fmet.fontBoundingBoxDescent || fontPx * 0.25;
             /* the scan bounds: whatever raster the lattice walks below */
             let sw = cw;
             let sh = ch;
             if (compactEvery) {
               /* MOBILE WRAP SAMPLING (founder: two lines): once white-space
                  goes normal the printed word folds at the pinned column, so
-                 mote targets must land on BOTH lines. Fold the text the way
-                 the box will — greedy on spaces, a spaceless CJK run folding
-                 character by character — and print each line centred at its
-                 line-height offset (the h1 centres; so must the ink the
-                 motes seat on). The cache key already carries the wrap
-                 width, so a resize re-folds. */
+                 mote targets must land on BOTH lines — the shared fold —
+                 and each line prints centred at its line-height offset
+                 (the h1 centres; so must the ink the motes seat on). The
+                 cache key already carries the wrap width, so a resize
+                 re-folds. */
               const avail = Math.max(width, 10) * scale;
               const lineH =
                 (parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.1) * scale;
-              const lines: string[] = [];
-              let line = '';
-              for (const tok of text.split(' ')) {
-                const tryTok = line ? `${line} ${tok}` : tok;
-                if (ctx.measureText(tryTok).width <= avail) {
-                  line = tryTok;
-                  continue;
-                }
-                if (line) lines.push(line);
-                line = '';
-                if (ctx.measureText(tok).width <= avail) {
-                  line = tok;
-                } else {
-                  for (const chr of tok) {
-                    const tryChr = line + chr;
-                    if (line && ctx.measureText(tryChr).width > avail) {
-                      lines.push(line);
-                      line = chr;
-                    } else {
-                      line = tryChr;
-                    }
-                  }
-                }
-              }
-              if (line) lines.push(line);
-              if (!lines.length) lines.push(text);
+              const lines = foldLines(ctx, text, avail);
+              const base = (lineH - (asc + desc)) / 2 + asc;
               sw = Math.ceil(avail) + 8;
-              sh = Math.ceil(lines.length * lineH + fontPx * 0.2);
+              sh = Math.ceil((lines.length - 1) * lineH + base + desc) + 4;
               /* resizing a canvas resets its 2d state — re-arm the font */
               canvas.width = sw;
               canvas.height = sh;
               applyFont();
-              /* baseline seated where the line box seats it: half-leading
-                 plus the ~0.8em ascent the desktop heuristic assumes */
-              const base = (lineH - fontPx) / 2 + fontPx * 0.8;
               lines.forEach((ln, li) => {
                 const x0 = Math.max(0, (avail - ctx.measureText(ln).width) / 2);
                 ctx.fillText(ln, x0, li * lineH + base);
               });
             } else {
-              ctx.fillText(text, 0, ch * 0.85);
+              /* single line, same seating: the em's own box IS the line
+                 box, so the baseline sits at half-leading + ascent of it */
+              const base = (ch - (asc + desc)) / 2 + asc;
+              sh = Math.max(ch, Math.ceil(base + desc) + 4);
+              if (sh !== ch) {
+                canvas.height = sh;
+                applyFont();
+              }
+              ctx.fillText(text, 0, base);
             }
             const img = ctx.getImageData(0, 0, sw, sh).data;
             const scan = (step: number) => {
@@ -891,7 +950,13 @@ export default function EverySentence({
                the live pool size, and stand exactly on the measured width */
             widthTw?.kill();
             widthTw = null;
-            cycleN = poolN;
+            /* mobile density follows the LINE COUNT (founder: the two-line
+               cloud read skeletal at the lean 200) — whichever side of the
+               morph wraps taller sets the budget, a line's worth of motes
+               per line, capped by the pool */
+            cycleN = compactEvery
+              ? Math.min(POOL_MAX, poolN * Math.max(countLines(current.text), countLines(target.text)))
+              : poolN;
             holdWidth();
             const w0 = layoutWidth(current);
             const h = em.offsetHeight;
