@@ -21,7 +21,12 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--seam-cut, 70%);
+  /* the end-stops: the handle rides the cut but PARKS just inside the
+     box at either extreme (founder: "don't crop the slider") — the clip
+     still travels the full 0-100%, the handle rests at its stop like
+     any slider thumb at min/max, and the plate's crop never eats the
+     grip. --seam-edge is the half-width the widest skin needs. */
+  left: clamp(var(--seam-edge, 12px), var(--seam-cut, 70%), calc(100% - var(--seam-edge, 12px)));
   z-index: 3;
   width: 18px;
   transform: translateX(-50%);

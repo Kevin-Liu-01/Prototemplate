@@ -774,7 +774,16 @@ export default function EverySentence({
                   if (!g) break;
                   const pt = pts[i];
                   if (!pt) {
-                    gsap.to(g, { a: 0, duration: 0.14, ease: 'power1.out' });
+                    /* the surplus thin-out keeps its SHIPPED absolute clock:
+                       at hops=1 the add itself runs 0.15s early, so the fade
+                       waits that lead out — the seam's lit-ink floor never
+                       drops below the baseline's at any phase */
+                    gsap.to(g, {
+                      a: 0,
+                      duration: 0.14,
+                      ease: 'power1.out',
+                      delay: cycleHops === 1 ? 0.15 : 0,
+                    });
                     continue;
                   }
                   const u = goal.rtl ? 1 - pt.x / span : pt.x / span;

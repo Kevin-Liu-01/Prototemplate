@@ -475,6 +475,16 @@
 }
 
 .ptc-every {
+  /* a real BLOCK column for the engine, not a shrink-wrapped flex item:
+     the engine's column pin reads this box's width, and a shrink-wrapped
+     parent reflects the em's own pinned width back at it after a live
+     resize (the em could never shrink again). Stretch to the plate,
+     keep a margin of air, center the em with text-align — the anchor
+     the engine learns stays 0.5. */
+  justify-self: stretch;
+  min-width: 0;
+  margin: 0 20px;
+  text-align: center;
   color: var(--color-paper);
   font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
@@ -590,7 +600,9 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--seam-cut, 58%);
+  /* end-stops: the handle parks just inside the box at the extremes
+     (founder: "don't crop the slider") — the clip still travels 0-100% */
+  left: clamp(var(--seam-edge, 12px), var(--seam-cut, 58%), calc(100% - var(--seam-edge, 12px)));
   z-index: 3;
   width: 64px;
   transform: translateX(-50%);
