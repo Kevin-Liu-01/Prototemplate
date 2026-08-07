@@ -403,7 +403,7 @@
    not 720: the bento stacks all the way up there, and the first cut's
    phone-only window left tablets at the old 17px. */
 @media (max-width: 1023px) {
-  .toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card {
-    padding-bottom: calc(var(--tc-card-pad) + 24px);
+  .toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card > .shell-cell-head {
+    margin-bottom: 24px;
   }
 }
