@@ -110,7 +110,11 @@
    within 4px of another. The 3-class selectors outrank the
    shell's 2-class swap whichever sheet loads first. */
 
-@media (max-width: 1000px) {
+/* 1023px — the shell's own collapse. The row IS a tc-row, so these
+   counter-rules must switch in the same instant as the shell's border
+   swap; at 1000px the wall spent 23px of viewport one-column with a
+   full-width rule over every logo. */
+@media (max-width: 1023px) {
   .toolchain-root .v0-cust-row {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

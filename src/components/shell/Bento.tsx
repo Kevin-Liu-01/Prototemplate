@@ -96,7 +96,8 @@ export function BentoCell({
 }: {
   /** variant classes appended to .tc-cell (e.g. 'is-tall is-framed') */
   cell?: string;
-  /** framed cells mount the nested .tc-card; flat cells sit on the page */
+  /** framed cells mount the nested .tc-card and always carry .is-framed;
+   * flat cells sit on the page */
   framed?: boolean;
   /** extra head class (e.g. tc-bleed-head keeps its padding grammar) */
   headClass?: string;
@@ -123,8 +124,21 @@ export function BentoCell({
     </>
   );
 
+  /* The seam grammar keys off the `.is-framed` CLASS, not the prop: the
+     stacking media's border-top exclusion and the row's gap-seam both read
+     it. A framed cell whose caller forgot the class would collect gap seam
+     PLUS border-top — the founder's 2px "double border" below the fold — so
+     the prop carries the class itself (skipped when the caller already
+     passed it). Framed-without-class is not a supported look: no caller
+     relies on it, and the law of lines forbids it. */
+  const cellClass = cn(
+    'tc-cell',
+    framed && !/\bis-framed\b/.test(cell) && 'is-framed',
+    cell
+  );
+
   return (
-    <div className={cn('tc-cell', cell)} data-reveal style={style}>
+    <div className={cellClass} data-reveal style={style}>
       {framed ? <div className='tc-card'>{body}</div> : body}
     </div>
   );

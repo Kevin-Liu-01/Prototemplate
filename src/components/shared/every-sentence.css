@@ -83,3 +83,23 @@ em.every-sentence[data-every] {
   opacity: 0;
   will-change: opacity;
 }
+
+/* MOBILE (founder: "take two lines"): the sentence folds at the em's
+   pinned column width. The wrap must be GREEDY (text-wrap: wrap beats
+   any inherited balance), because the dust sampler folds greedily with
+   measureText — a balanced break on a different word would print lines
+   the settled motes never traced. */
+@media (max-width: 720px) {
+  em.every-sentence[data-every],
+  .every-sentence [data-every-word],
+  .every-sentence .tc-eveil {
+    white-space: normal;
+    text-wrap: wrap;
+  }
+
+  /* the veil is the word's absolute twin: same wrap width, or its two
+     lines fold in different places than the print it shadows */
+  .every-sentence .tc-eveil {
+    width: 100%;
+  }
+}

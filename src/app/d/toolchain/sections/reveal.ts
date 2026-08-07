@@ -26,8 +26,29 @@ export function useQuietReveal(scope: RefObject<HTMLElement | null>, enabled = t
         onEnter: (batch) =>
           gsap.fromTo(
             batch,
-            { y: 16, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.62, stagger: 0.055, ease: 'power2.out', overwrite: true }
+            /* The compositor hint lives only as long as the tween. A standing
+               will-change (or a leftover 0px transform) turns every revealed
+               cell into a stacking context that paints OVER the bento rows'
+               1px seam rules — the founder's "border flickering out", and the
+               same paint-over styles.css already patches for .tc-hatch. */
+            { y: 16, autoAlpha: 0, willChange: 'transform, opacity' },
+            {
+              y: 0,
+              autoAlpha: 1,
+              duration: 0.62,
+              stagger: 0.055,
+              ease: 'power2.out',
+              overwrite: true,
+              /* land clean: strip exactly what the tween set, on exactly the
+                 elements it batched, so no stacking context outlives the
+                 entrance — the resting state is the stylesheet's, visually
+                 identical to the tween's end frame */
+              onComplete: () => {
+                gsap.set(batch, {
+                  clearProps: 'transform,opacity,visibility,willChange',
+                });
+              },
+            }
           ),
       });
     },

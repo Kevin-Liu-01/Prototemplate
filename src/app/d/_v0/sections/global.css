@@ -123,8 +123,8 @@
 /* Founder: the globe and the claims rail split the row as equal halves.
    The shell's is-lead template (1.32fr/1fr) is overridden a class deeper —
    the .v0-glob scope outranks it whatever the sheet order — and only above
-   the shell's own 1000px collapse, which keeps its single column. */
-@media (min-width: 1001px) {
+   the shell's own 1023px collapse, which keeps its single column. */
+@media (min-width: 1024px) {
   .toolchain-root .v0-glob .tc-row.is-lead {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

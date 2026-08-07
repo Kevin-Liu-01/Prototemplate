@@ -431,6 +431,22 @@
   font-size: clamp(1.9rem, 4.3vw, 3.4rem);
 }
 
+/* MOBILE HEADLINE (founder: "make the header centered properly and
+   larger and take two lines"): under 720px the one-line law above
+   yields — the size steps UP past what 4.3vw would give, so the
+   sentence breaks to two lines at 390px on the card's own centre
+   axis; the two-line block wants a breath more leading than the
+   desktop 1.03 display cut. The morphing em wraps with it (its own
+   sheet lifts the nowrap), so the h1 never scrolls sideways. */
+@media (max-width: 720px) {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
+    max-width: 100%;
+    white-space: normal;
+    font-size: 2.45rem;
+    line-height: 1.1;
+  }
+}
+
 /* the npx pill sits quiet above the headline — developer-first, per the
    production landing's own note */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-copy.tch-npx-top {

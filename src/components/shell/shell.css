@@ -41,7 +41,10 @@
   min-height: var(--shell-head-h, 112px);
 }
 
-@media (max-width: 1020px) {
+/* Same width as the row collapse above — releasing at 1020 while the grid
+   stacked at 1023 gave head heights (and every seam hung off them) a 3px
+   window to jump through mid-resize: the founder's flickering border. */
+@media (max-width: 1023px) {
   /* stacked cells: alignment across a row no longer exists */
   [data-eq-heads] .shell-cell-head {
     min-height: 0;

@@ -57,7 +57,9 @@
   border-right: 1px solid var(--tc-mat-edge);
 }
 
-@media (min-width: 1001px) {
+/* 1024px pairs with the ≤1023px stacked block below — the side-by-side
+   padding must never coexist with the stacked frame. */
+@media (min-width: 1024px) {
   /* The side pane bottoms out with the code (align-self: stretch), so its
      first line sat exactly ON the mount's top rule and its link exactly ON
      the bottom rule. Step the content 20px inside both rules. */
@@ -77,10 +79,11 @@
   }
 }
 
-/* Stacked (≤1000px) the panes are rows: full-height rule extensions would
-   strike the other pane's text, so the mount keeps a plain square 1px
-   frame and the stacked sheet's own border-top seams do the rest. */
-@media (max-width: 1000px) {
+/* Stacked (≤1023px, the shell's collapse — this must throw with the sheet's
+   own fold) the panes are rows: full-height rule extensions would strike
+   the other pane's text, so the mount keeps a plain square 1px frame and
+   the stacked sheet's own border-top seams do the rest. */
+@media (max-width: 1023px) {
   .toolchain-root .tc-fw-code .tc-mount {
     border: 1px solid var(--tc-mat-edge);
   }

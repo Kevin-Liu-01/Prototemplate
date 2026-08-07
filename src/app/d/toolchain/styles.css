@@ -1935,9 +1935,13 @@
    MOTION — quiet reveals only
    ============================================================ */
 
-.toolchain-root [data-reveal] {
-  will-change: transform, opacity;
-}
+/* No standing will-change on [data-reveal]: the hint makes every revealed
+   cell a stacking context, and stacking contexts paint over the rows' 1px
+   seam rules — the same paint-over the .tc-hatch z-index patch (end of this
+   sheet) works around for the hatch's top rule, showing up here as seams
+   that flicker out on layout shifts (founder). reveal.ts sets the hint
+   inline for the life of the entrance tween and clearProps-es it when the
+   batch lands, so no context outlives the reveal. */
 
 @media (prefers-reduced-motion: reduce) {
   .toolchain-root [data-reveal] {
@@ -1971,7 +1975,13 @@
   }
 }
 
-@media (max-width: 1000px) {
+/* ONE stacking moment. The shell collapses its rows at max-lg — 1023px, see
+   shell/Bento.tsx and shell.css — and this switch used to throw at 1000px,
+   which left a 1000–1023px window where already-stacked cells still wore
+   the desktop border-left rules (stray verticals) and seams jumped as the
+   viewport crossed the gap (founder: the border "just flickering out").
+   Every rule of the page-wide fold now throws at the shell's own width. */
+@media (max-width: 1023px) {
   .toolchain-root .tc-fw,
   .toolchain-root .tc-row.is-split,
   .toolchain-root .tc-row.is-lead,
@@ -2034,6 +2044,22 @@
 
   .toolchain-root .tc-foot-cols {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Founder: "add more vertical space" — a one-column stack reads cramped at
+   the base clamps. The air comes from the cells' own block padding, never
+   from widening the seams: the hairline stays 1px and the panels breathe.
+   Same clamp voice as the base .tc-cell rule, one step up. Framed cells
+   keep padding 0 by design (the ground must reach the seam), so their air
+   is the card's — bumped alongside. */
+@media (max-width: 720px) {
+  .toolchain-root .tc-cell {
+    padding-block: clamp(34px, 6vw, 42px) clamp(38px, 6.5vw, 46px);
+  }
+
+  .toolchain-root .tc-cell.is-framed > .tc-card {
+    padding-block: clamp(24px, 6vw, 30px);
   }
 }
 
@@ -2451,7 +2477,8 @@
   fill: rgba(255, 255, 255, 0.66);
 }
 
-@media (max-width: 1000px) {
+/* same switch as the page-wide fold — 1023px, the shell's collapse */
+@media (max-width: 1023px) {
   .toolchain-root .tcctx {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -2995,9 +3022,11 @@
   padding-bottom: 6px;
 }
 
-/* -- responsive: the band folds to one column below 1000px -- */
+/* -- responsive: the band folds to one column at 1023px, the same moment
+   the shell stacks its rows — folding at 1000px left the band half-folded
+   (columns down, panel margins still desktop) for 23px of viewport -- */
 
-@media (max-width: 1000px) {
+@media (max-width: 1023px) {
   .toolchain-root .tc-band-top {
     grid-template-columns: minmax(0, 1fr);
   }

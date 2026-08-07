@@ -178,8 +178,10 @@
 /* Founder pick: on the side-by-side layout the trunk runs the FULL height
    of its containing cell, top edge to bottom edge. The net's box sits at
    the cell's content edges there, so the overshoot is exactly the cell's
-   own vertical padding (mirrors .tc-cell in styles.css — keep in step). */
-@media (min-width: 1001px) {
+   own vertical padding (mirrors .tc-cell in styles.css — keep in step).
+   1024px is the first side-by-side width — the fold below sits at the
+   shell's 1023px collapse, and the two must never overlap. */
+@media (min-width: 1024px) {
   .toolchain-root .tcm-net::before {
     top: calc(-1 * clamp(26px, 3vw, 36px));
     bottom: calc(-1 * clamp(30px, 3.4vw, 40px));
@@ -368,8 +370,11 @@
   border-right: 1px solid var(--tc-hair);
 }
 
-/* the section folds to one column with the rest of the page */
-@media (max-width: 1000px) {
+/* the section folds to one column with the rest of the page — 1023px, the
+   shell's own collapse, so the retiring seams and the sheet's border-top
+   swap throw in the same instant (a 1000/1023 split left stray verticals
+   for 23px of viewport) */
+@media (max-width: 1023px) {
   .toolchain-root .tcm-ground {
     grid-template-columns: minmax(0, 1fr);
   }

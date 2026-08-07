@@ -786,6 +786,8 @@ export default function V0FullStack() {
         let restoreTyped: (() => void) | null = null;
         /* the staged branch's refresh listener, unhooked at cleanup */
         let onStageRefresh: (() => void) | null = null;
+        /* the staged branch's damped scrub clock, detached at cleanup */
+        let killScrub: (() => void) | null = null;
 
         if (!staged) {
           beats.forEach((beat, i) => {
@@ -1083,16 +1085,59 @@ export default function V0FullStack() {
 
           reserveTyped();
 
+          /* ===== THE SCRUB'S DAMPER (founder: "the connectors coming
+             from rail lines are a little laggy … i want it to look
+             seamless like it does on desktop"). Desktop's capTl rides
+             scrub: 0.35 — ScrollTrigger's own damped clock between
+             scroll and paint. The stage fed apply() RAW progress: every
+             scroll EVENT scrubbed capTl (strokeDashoffset writes on each
+             cap wire — a non-compositable SVG repaint), retyped the pen
+             and stepped the rail, so a burst of touch-scroll events
+             meant a burst of same-frame repaints. Now the trigger only
+             moves a TARGET; one gsap.ticker lerp chases it and calls
+             apply() once per FRAME — taps, capTl, typing and rail all
+             ride one damped clock, the stage's equivalent of scrub:
+             0.35. The ticker detaches when settled (epsilon parks it
+             DEAD ON target so no residue leaks into the beat math) and
+             re-attaches on new input, so a resting stage burns nothing. */
+          let pCur = 0;
+          let pTarget = 0;
+          let scrubOn = false;
+          const SCRUB_EPS = 0.0004;
+          const scrubTick = () => {
+            pCur += (pTarget - pCur) * 0.22;
+            if (Math.abs(pTarget - pCur) < SCRUB_EPS) {
+              pCur = pTarget;
+              gsap.ticker.remove(scrubTick);
+              scrubOn = false;
+            }
+            apply(pCur);
+          };
+          const retarget = (p: number) => {
+            pTarget = p;
+            if (!scrubOn && Math.abs(pTarget - pCur) >= SCRUB_EPS) {
+              scrubOn = true;
+              gsap.ticker.add(scrubTick);
+            }
+          };
+          killScrub = () => {
+            gsap.ticker.remove(scrubTick);
+            scrubOn = false;
+          };
+
           if (runway) {
             const master = ScrollTrigger.create({
               trigger: runway,
               start: 'top bottom',
               end: 'bottom bottom',
-              onUpdate: (self) => apply(self.progress),
+              onUpdate: (self) => retarget(self.progress),
             });
-            /* a deep link or restored scroll lands mid-story: seed the
-               state from wherever the clock already reads */
-            apply(master.progress);
+            /* a deep link or restored scroll lands mid-story: seed BOTH
+               clocks from wherever the trigger already reads and paint
+               once — never a lerp in from 0 across the whole story */
+            pCur = master.progress;
+            pTarget = master.progress;
+            apply(pCur);
           }
 
           /* the stage re-lays with the real viewport (dvh: the mobile
@@ -1138,6 +1183,9 @@ export default function V0FullStack() {
              direct style writes (no tween owns them, so no revert does) */
           if (staged) {
             scope.classList.remove('is-stage');
+            /* the damper first: a ticker tick after teardown would call
+               apply() into dead triggers */
+            killScrub?.();
             for (const beat of beats) {
               beat.style.removeProperty('opacity');
               beat.style.removeProperty('visibility');

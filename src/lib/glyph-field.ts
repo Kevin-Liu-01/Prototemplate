@@ -127,6 +127,24 @@ const COL_PITCH = 34;
 const ALPHA_Q = 48;
 /** Feather width (CSS px) of the word hole's rounded distance field. */
 const WORD_FEATHER = 30;
+/**
+ * The narrow layout's rain keep: phones draw roughly HALF the wide field
+ * (founder, mobile round: "the glyph rain and dissolving and coming
+ * together is really slow and laggy") — the cull is the deepest lever the
+ * field has, since frame cost scales with live blits. The earlier 0.72
+ * was legibility-tuned before the perf round; 0.5 still reads as weather
+ * in a phone column while cutting the per-frame draw load by ~30%.
+ */
+const NARROW_KEEP = 0.5;
+/**
+ * Device-pixel caps: wide layouts render at up to 2x for crispness; the
+ * narrow cut caps at 1.5x — 44% fewer device px per blit, the other half
+ * of the founder's mobile lag fix. resize() is the only writer of dpr,
+ * so the canvas, the atlas and every blit re-derive together on any
+ * width crossing.
+ */
+const DPR_CAP = 2;
+const DPR_CAP_NARROW = 1.5;
 
 /* The loop, in seconds: print, hold, peel, fly. Each formed word LINGERS —
    the caliper fades in, stands for a beat, and fades back out — then the
@@ -514,6 +532,16 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let formedFont = '';
   let formedPx = 0;
   let formedRtl = false;
+  /* The caliper annotation's three voices and their measured widths,
+     fixed for the whole hold. Measured at print/remeasure time, never in
+     the frame loop: measureText is layout work, and running it three
+     times per visible frame was one of the loop's few remaining stalls
+     in the founder's mobile round ("really slow and laggy") — the label
+     never changes while it stands, so the frame only blits. */
+  type CaliperRun = { text: string; a: number };
+  let formedRuns: readonly CaliperRun[] = [];
+  let formedRunW: readonly number[] = [];
+  let formedLabelW = 0;
   /* The outgoing word, snapshotted at each morph start for the peel. */
   let prevLeft = 0;
   let prevRight = 0;
@@ -521,7 +549,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let prevFont = '';
   let prevPx = 0;
   let prevRtl = false;
-  let prevLabel = '';
+  let prevRuns: readonly CaliperRun[] = [];
+  let prevRunW: readonly number[] = [];
+  let prevLabelW = 0;
 
   function scan(step: number, sw: number, sh: number, cap: number): number {
     if (!sampleCtx) return 0;
@@ -542,10 +572,129 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     return count;
   }
 
+  /** Cut the caliper label into its annotation voices and measure each
+      once — draw() reuses these widths every frame it is visible. */
+  function measureCaliper(label: string): {
+    runs: readonly CaliperRun[];
+    widths: readonly number[];
+    total: number;
+  } {
+    const parts = /^advance (\d+px) · (.+)$/.exec(label);
+    const runs: readonly CaliperRun[] = parts
+      ? [
+          { text: 'advance ', a: 0.52 },
+          { text: parts[1] ?? '', a: 1 },
+          { text: ` · ${parts[2] ?? ''}`, a: 0.52 },
+        ]
+      : [{ text: label, a: 1 }];
+    if (!sampleCtx) return { runs, widths: runs.map(() => 0), total: 0 };
+    /* measured in the caliper's own face (draw() sets the same font) */
+    sampleCtx.font = `500 11px ${mono}`;
+    const widths = runs.map((run) => sampleCtx.measureText(run.text).width);
+    return { runs, widths, total: widths.reduce((s, x) => s + x, 0) };
+  }
+
+  /* The prepared sample set: the NEXT word's raster, produced during the
+     HOLD instead of on the morph's first frame. resample()'s raster half
+     — measureText, fillText, getImageData over up to 2048x1024 and the
+     pixel scan — cost a ~200ms first-frame stall on throttled mobile
+     (founder: "the glyph rain and dissolving and coming together is
+     really slow and laggy"), so the hold now queues it through
+     requestIdleCallback (setTimeout fallback) and the morph only deals
+     targets. One-shot; resize (geometry: zoneW/maxFont/zoneCx) and late
+     webfont arrival invalidate it, since both change what the raster
+     would produce. */
+  const prepPts = new Float32Array(POOL * 2);
+  let prepWord = -1;
+  let prepCount = 0;
+  let prepFontPx = 0;
+  let prepAdvance = 0;
+  /* which cycle already queued its prepare, so a hold schedules once */
+  let prepQueuedCycle = -1;
+  let prepHandle = 0;
+  let prepViaIdle = false;
+  const cancelPrepare = (): void => {
+    if (prepHandle === 0) return;
+    if (prepViaIdle) window.cancelIdleCallback(prepHandle);
+    else window.clearTimeout(prepHandle);
+    prepHandle = 0;
+  };
+  const schedulePrepare = (wordIndex: number): void => {
+    cancelPrepare();
+    const run = (): void => {
+      prepHandle = 0;
+      if (destroyed) return;
+      prepareSamples(wordIndex);
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      prepViaIdle = true;
+      /* the timeout keeps the raster inside the 4s hold even on a busy
+         main thread — late is fine, morph-start is not */
+      prepHandle = window.requestIdleCallback(run, { timeout: 1500 });
+    } else {
+      prepViaIdle = false;
+      prepHandle = window.setTimeout(run, 200);
+    }
+  };
+
+  /**
+   * The raster half of resample(): measure, draw and scan one word into
+   * the prepared sample set. Runs off the frame loop when the hold's
+   * idle prepare fires; resample() also calls it synchronously as the
+   * fallback (first paint, a resize that invalidated the set, idle
+   * starvation) — the original inline path, unchanged in effect.
+   */
+  function prepareSamples(wordIndex: number): void {
+    if (!sampleCtx || w === 0) return;
+    const entry = SCRIPTS[wordIndex];
+    if (!entry) return;
+
+    let fontPx = maxFont;
+    sampleCtx.font = `500 ${fontPx}px ${disp}`;
+    let advance = sampleCtx.measureText(entry.word).width;
+    if (advance > zoneW) {
+      fontPx = Math.max(24, (fontPx * zoneW) / advance);
+    }
+
+    const pad = 10;
+    const yb = Math.round(fontPx * 1.08);
+    const sw = Math.min(2048, Math.ceil(zoneW + pad * 2));
+    const sh = Math.min(1024, Math.ceil(fontPx * 1.5));
+    sample.width = sw;
+    sample.height = sh;
+    sampleCtx.clearRect(0, 0, sw, sh);
+    sampleCtx.fillStyle = '#000';
+    sampleCtx.textAlign = 'left';
+    sampleCtx.textBaseline = 'alphabetic';
+    sampleCtx.font = `500 ${fontPx}px ${disp}`;
+    advance = sampleCtx.measureText(entry.word).width;
+    sampleCtx.fillText(entry.word, pad, yb);
+
+    /* Pitch stays under the flight glyph size so the landed swarm sketches
+       the word discretely; overflow steps the pitch back up. */
+    const cap = eligibleCount;
+    let step = Math.max(6, Math.min(COND_PITCH, Math.round(fontPx / 13)));
+    let count = scan(step, sw, sh, cap);
+    while (count > cap && step < 24) {
+      step = Math.max(step + 1, Math.round(step * Math.sqrt(count / cap)));
+      count = scan(step, sw, sh, cap);
+    }
+    /* pts is scan scratch — copy out so a mid-hold resample (resize)
+       can rescan without clobbering the standing set */
+    prepCount = Math.min(count, cap);
+    prepPts.set(pts.subarray(0, prepCount * 2));
+    prepFontPx = fontPx;
+    prepAdvance = advance;
+    prepWord = wordIndex;
+  }
+
   /**
    * Rasterize one word into target points and hand them to the eligible
-   * particles. Runs once per cycle (and on resize / font arrival) — the only
-   * allocation it makes is getImageData's own buffer, well off the frame loop.
+   * particles. Runs once per cycle (and on resize / font arrival). The
+   * raster half normally already happened during the hold (see
+   * prepareSamples), so the morph's first frame only deals targets —
+   * the only allocation left here is the fallback getImageData buffer,
+   * and only when the prepared set was missing or stale.
    */
   function resample(wordIndex: number): void {
     if (!sampleCtx || w === 0) return;
@@ -590,37 +739,20 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       }
     }
 
-    let fontPx = maxFont;
-    sampleCtx.font = `500 ${fontPx}px ${disp}`;
-    let advance = sampleCtx.measureText(entry.word).width;
-    if (advance > zoneW) {
-      fontPx = Math.max(24, (fontPx * zoneW) / advance);
-    }
-
+    /* The raster: normally already standing — the hold queued
+       prepareSamples for this word off the frame loop, so this frame
+       only deals targets (founder: the dissolve's first-frame stall).
+       The synchronous call is the fallback (first paint, a resize that
+       dropped the set, idle starvation). */
+    if (prepWord !== wordIndex) prepareSamples(wordIndex);
+    if (prepWord !== wordIndex) return; // raster impossible — guarded above, defensive
+    const fontPx = prepFontPx;
+    const advance = prepAdvance;
+    ptCount = prepCount;
+    /* one-shot: the set is consumed; the next hold prepares the next word */
+    prepWord = -1;
     const pad = 10;
     const yb = Math.round(fontPx * 1.08);
-    const sw = Math.min(2048, Math.ceil(zoneW + pad * 2));
-    const sh = Math.min(1024, Math.ceil(fontPx * 1.5));
-    sample.width = sw;
-    sample.height = sh;
-    sampleCtx.clearRect(0, 0, sw, sh);
-    sampleCtx.fillStyle = '#000';
-    sampleCtx.textAlign = 'left';
-    sampleCtx.textBaseline = 'alphabetic';
-    sampleCtx.font = `500 ${fontPx}px ${disp}`;
-    advance = sampleCtx.measureText(entry.word).width;
-    sampleCtx.fillText(entry.word, pad, yb);
-
-    /* Pitch stays under the flight glyph size so the landed swarm sketches
-       the word discretely; overflow steps the pitch back up. */
-    const cap = eligibleCount;
-    let step = Math.max(6, Math.min(COND_PITCH, Math.round(fontPx / 13)));
-    let count = scan(step, sw, sh, cap);
-    while (count > cap && step < 24) {
-      step = Math.max(step + 1, Math.round(step * Math.sqrt(count / cap)));
-      count = scan(step, sw, sh, cap);
-    }
-    ptCount = Math.min(count, cap);
 
     const left = zoneCx - advance / 2;
     formedLeft = left;
@@ -628,6 +760,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     formedAdvance = Math.round(advance);
     /* The caliper value and its measured width, fixed for the whole hold. */
     formedLabel = `advance ${formedAdvance}px · ${entry.tag}`;
+    const cal = measureCaliper(formedLabel);
+    formedRuns = cal.runs;
+    formedRunW = cal.widths;
+    formedLabelW = cal.total;
     /* The fill the swarm becomes: same word, same metrics, same origin. */
     formedWord = entry.word;
     formedFont = `500 ${fontPx}px ${disp}`;
@@ -641,9 +777,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     const inset = advance > CONDENSED_PX * 2 ? CONDENSED_PX / 2 : 0;
     for (let k = 0; k < ptCount; k++) {
       const p = cand[k] ?? 0;
-      const rawX = left + (pts[k * 2] ?? 0) - pad;
+      const rawX = left + (prepPts[k * 2] ?? 0) - pad;
       tx[p] = Math.min(Math.max(rawX, left + inset), left + advance - inset);
-      ty[p] = baselineY + (pts[k * 2 + 1] ?? 0) - yb;
+      ty[p] = baselineY + (prepPts[k * 2 + 1] ?? 0) - yb;
       inNext[p] = 1;
     }
     sampledWord = wordIndex;
@@ -689,6 +825,12 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     formedRight = left + advance;
     formedAdvance = Math.round(advance);
     formedLabel = `advance ${formedAdvance}px · ${entry.tag}`;
+    /* the true faces may re-cut the runs' widths — re-measure here, off
+       the frame loop, exactly like resample() */
+    const cal = measureCaliper(formedLabel);
+    formedRuns = cal.runs;
+    formedRunW = cal.widths;
+    formedLabelW = cal.total;
     formedWord = entry.word;
     formedFont = `500 ${fontPx}px ${disp}`;
     formedPx = fontPx;
@@ -816,7 +958,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       (ptCount === 0 || nextGate <= 0 || x < formedLeft - 40 || x > formedRight + 40) &&
       (!morphing || !prevWord || prevGate <= 0 || x < prevLeft - 40 || x > prevRight + 40)
     ) {
-      return narrow ? 0.72 : 1;
+      return narrow ? NARROW_KEEP : 1;
     }
     const shift = narrow ? copyEdgeShift(x, w) : copyEdgeShift(y, h);
     let k = smoothstep(fadeB - shift, fadeA - shift, narrow ? y : x);
@@ -830,7 +972,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       /* The outgoing word's paper heals with the same gate. */
       k *= wordKeep(x, y, prevGate, prevLeft, prevRight, prevPx);
     }
-    if (narrow) k *= 0.72;
+    if (narrow) k *= NARROW_KEEP;
     return k;
   }
 
@@ -869,6 +1011,15 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         inPrev.set(inNext);
         pendingResample = false;
       }
+      /* the hold IS the prep window: queue the NEXT word's raster now,
+         off the frame loop, so the coming dissolve's first frame only
+         deals flight targets (founder: "the glyph rain and dissolving
+         and coming together is really slow and laggy" — the stall was
+         this raster, inlined at morph start) */
+      if (!reduced && prepQueuedCycle !== cycle) {
+        prepQueuedCycle = cycle;
+        schedulePrepare(next);
+      }
       announce(current);
     } else {
       if (morphedCycle !== cycle) {
@@ -882,7 +1033,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         prevFont = formedFont;
         prevPx = formedPx;
         prevRtl = formedRtl;
-        prevLabel = formedLabel;
+        prevRuns = formedRuns;
+        prevRunW = formedRunW;
+        prevLabelW = formedLabelW;
         fx.set(lastX);
         fy.set(lastY);
         inPrev.set(inNext);
@@ -1116,7 +1269,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     if (calA > 0) {
       const cl = calIn > 0 ? formedLeft : prevLeft;
       const cr = calIn > 0 ? formedRight : prevRight;
-      const label = calIn > 0 ? formedLabel : prevLabel;
       const by = Math.min(railY - 9, baselineY + maxFont * 0.24);
       const cx = (cl + cr) / 2;
       /* centre-out growth on the way in; the outgoing caliper keeps its
@@ -1133,35 +1285,27 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       ctx.globalAlpha = calA * 0.85;
       ctx.fillRect(gl, by - 4, 1, 9);
       ctx.fillRect(gr - 1, by - 4, 1, 9);
-      /* the annotation, centred beneath in three voices */
-      const parts = /^advance (\d+px) · (.+)$/.exec(label);
+      /* the annotation, centred beneath in three voices. Runs and widths
+         were cut and measured at print time (measureCaliper) — running
+         measureText three times per visible frame was per-frame layout
+         work the founder's mobile round could not afford, and the label
+         never changes while the caliper stands. */
+      const runs = calIn > 0 ? formedRuns : prevRuns;
+      const widths = calIn > 0 ? formedRunW : prevRunW;
+      const total = calIn > 0 ? formedLabelW : prevLabelW;
       ctx.font = `500 11px ${mono}`;
       ctx.textAlign = 'left';
-      if (parts) {
-        const runs: readonly { text: string; a: number }[] = [
-          { text: 'advance ', a: 0.52 },
-          { text: parts[1] ?? '', a: 1 },
-          { text: ` · ${parts[2] ?? ''}`, a: 0.52 },
-        ];
-        const widths = runs.map((run) => ctx.measureText(run.text).width);
-        const total = widths.reduce((s, w) => s + w, 0);
-        let x = cx - total / 2;
-        /* the annotation stands on cleared paper — rain never strikes
-           through it (clearRect ignores alpha, so only punch the hole at
-           full ink; mid-fade the band is already rain-free via the gated
-           clearing) */
-        if (calA >= 1) ctx.clearRect(cx - total / 2 - 7, by + 5, total + 14, 16);
-        runs.forEach((run, i) => {
-          ctx.globalAlpha = calA * run.a;
-          ctx.fillText(run.text, x, by + 17);
-          x += widths[i] ?? 0;
-        });
-      } else {
-        const w = ctx.measureText(label).width;
-        if (calA >= 1) ctx.clearRect(cx - w / 2 - 7, by + 5, w + 14, 16);
-        ctx.globalAlpha = calA;
-        ctx.fillText(label, cx - w / 2, by + 17);
-      }
+      let x = cx - total / 2;
+      /* the annotation stands on cleared paper — rain never strikes
+         through it (clearRect ignores alpha, so only punch the hole at
+         full ink; mid-fade the band is already rain-free via the gated
+         clearing) */
+      if (calA >= 1) ctx.clearRect(cx - total / 2 - 7, by + 5, total + 14, 16);
+      runs.forEach((run, i) => {
+        ctx.globalAlpha = calA * run.a;
+        ctx.fillText(run.text, x, by + 17);
+        x += widths[i] ?? 0;
+      });
     }
 
     ctx.globalAlpha = 1;
@@ -1204,11 +1348,23 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     if (box.width < 2 || box.height < 2) return;
     w = Math.round(box.width);
     h = Math.round(box.height);
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    /* layout() first: it derives the narrow flag from the fresh width,
+       and the dpr cap keys off it — the narrow cut renders at 1.5x, not
+       2x (founder mobile round: the field pushed 78% more device px than
+       a phone could paint). Everything downstream of dpr — the canvas
+       backing store, the atlas build, every blit's snap — re-derives
+       right here, so no consumer can ever see a stale scale. */
+    layout();
+    dpr = Math.min(narrow ? DPR_CAP_NARROW : DPR_CAP, window.devicePixelRatio || 1);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
-    layout();
     buildAtlas();
+    /* geometry moved under the prepared sample set (zoneW, maxFont,
+       zoneCx all feed the raster): drop it and let the current hold
+       queue a fresh one against the new layout */
+    prepWord = -1;
+    prepQueuedCycle = -1;
+    cancelPrepare();
     if (morphingNow()) pendingResample = true;
     else sampledWord = -1;
     if (reduced || !running) {
@@ -1266,6 +1422,11 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       .then(() => {
         if (destroyed) return;
         buildAtlas();
+        /* the true faces re-cut the raster too: a sample set prepared
+           against fallback metrics would land the swarm on the wrong
+           advance — drop it and let the hold re-queue */
+        prepWord = -1;
+        prepQueuedCycle = -1;
         if (sampledWord >= 0) remeasure(sampledWord);
         if (!running) draw();
       })
@@ -1276,6 +1437,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     destroy() {
       destroyed = true;
       stop();
+      cancelPrepare();
       cancelAnimationFrame(resizeRaf);
       ro.disconnect();
       io.disconnect();

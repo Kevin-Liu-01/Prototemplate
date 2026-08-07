@@ -30,9 +30,12 @@ gsap.registerPlugin(useGSAP);
  *
  * Type and ink are inherited: the engine reads the host's computed font
  * for the dust and the raster, and every color derives from currentColor.
- * Under prefers-reduced-motion the driver is a plain text/lang/dir swap;
- * under 720px the particles yield to a measured crossfade on the same
- * clock.
+ * Under prefers-reduced-motion the driver is a plain text/lang/dir swap.
+ * Under 720px the dissolve itself runs (founder: "do the dissolving
+ * instead of fade in fade out") in a cheap cut — fewer motes, a lower
+ * canvas dpr, the em pinned to the column so a two-line word never
+ * tweens layout — and the sampler folds the text so mote targets land
+ * on both wrapped lines.
  */
 export type EveryWord = { text: string; lang: string; rtl?: boolean };
 
@@ -160,8 +163,16 @@ export default function EverySentence({
         let current: EveryWord = initialWord;
         let morphing = false;
         let armed = false;
+        /* MOBILE WIDTH LAW (founder: two lines, no lag): under 720px the
+           em pins to the COLUMN — the full width the h1 offers — never the
+           word's own measure, so a sentence that folds to two lines cannot
+           reflow the h1 at all; centring stays the h1's text-align. Desktop
+           keeps the measured per-word pin and its one gliding tween. */
+        const colWidth = () =>
+          snapPx(Math.max((em.parentElement ?? em).getBoundingClientRect().width, 30));
+        const layoutWidth = (w: EveryWord) => (compactEvery ? colWidth() : measure(w));
         const holdWidth = () => {
-          em.style.width = `${measure(current)}px`;
+          em.style.width = `${layoutWidth(current)}px`;
         };
         const remeasure = () => {
           if (!em.isConnected) return;
@@ -220,50 +231,12 @@ export default function EverySentence({
           }
         };
 
-        if (compactEvery) {
-          /* At mobile scale the particles cannot breathe: a clean measured
-             crossfade tells the same story, on the same clock. The swap is
-             short, so interrupts reduce to latest-wins at the boundary. */
-          const swap = (next: EveryWord) => {
-            if (!em.isConnected) return;
-            const w1 = measure(next);
-            current = next;
-            morphing = true;
-            phase = 'form';
-            gsap.to(word, {
-              autoAlpha: 0,
-              duration: 0.12,
-              ease: 'power2.in',
-              onComplete: () => {
-                showWord(next);
-                gsap.to(em, {
-                  width: w1,
-                  duration: 0.3,
-                  ease: 'power2.inOut',
-                  snap: { width: 1 / dpr },
-                  onComplete: () => {
-                    morphing = false;
-                    phase = 'idle';
-                    holdWidth();
-                    /* a target that arrived mid-swap is served now */
-                    if (target.text !== current.text) swap(target);
-                    else if (target.lang !== current.lang) retag(target);
-                  },
-                });
-                gsap.to(word, { autoAlpha: 1, duration: 0.18, ease: 'power2.out', delay: 0.1 });
-              },
-            });
-          };
-          act = (next) => {
-            target = next;
-            if (phase !== 'idle') return;
-            if (next.text === current.text) {
-              if (next.lang !== current.lang) retag(next);
-              return;
-            }
-            swap(next);
-          };
-        } else {
+        /* THE DISSOLVE RUNS AT EVERY WIDTH (founder: "do the dissolving
+           instead of fade in fade out") — the old mobile crossfade branch
+           is gone. The mobile cut of the morph is CHEAP instead: ~200
+           motes, the dust plate capped at 1.5x, and no per-tick width
+           tween (the em is pinned to the column above). */
+        {
           const guideL = document.createElement('span');
           guideL.className = 'tc-eg is-l';
           const guideR = document.createElement('span');
@@ -273,7 +246,9 @@ export default function EverySentence({
              the pool is plain particle objects driven by the very same
              tweens, drawn once per frame by one ticker. */
           type Mote = { ch: string; x: number; y: number; a: number };
-          const parts: Mote[] = Array.from({ length: 440 }, (_, i) => ({
+          /* the mobile pool is ~200: over a two-line 390px column the swarm
+             reads just as dense, at under half the per-tick fillText cost */
+          const parts: Mote[] = Array.from({ length: compactEvery ? 200 : 440 }, (_, i) => ({
             ch: DUST[i % DUST.length] ?? '',
             x: 0,
             y: 0,
@@ -285,7 +260,10 @@ export default function EverySentence({
           dust.setAttribute('aria-hidden', 'true');
           em.append(guideL, guideR, dust);
           const dctx = dust.getContext('2d');
-          const cdpr = Math.min(2, dpr);
+          /* mobile caps the plate at 1.5x — the dust glyphs are ~0.1em; a
+             3x phone repainting min(2,dpr) squared device pixels per CSS
+             pixel spends the frame budget on resolution nobody can read */
+          const cdpr = compactEvery ? Math.min(1.5, dpr) : Math.min(2, dpr);
           let dustFont = '';
           let dustInk = '';
           const sizeDust = () => {
@@ -302,11 +280,25 @@ export default function EverySentence({
             dustFont = `400 ${parseFloat(ws.fontSize) * 0.105}px ${ws.fontFamily}`;
             dustInk = getComputedStyle(em).color;
           };
+          /* the incoming word can take one line more than the standing one
+             (mobile wraps): the plate — sized off the standing block by
+             sizeDust — grows BEFORE any mote flies to line two. Growing a
+             canvas clears it; the ticker repaints every frame anyway. */
+          const growDust = (bh: number) => {
+            const need = Math.ceil(bh) + 8;
+            if (dust.height < need * cdpr) {
+              dust.height = need * cdpr;
+              dust.style.height = `${need}px`;
+            }
+          };
           let drawing = false;
           const draw = () => {
             if (!dctx) return;
             dctx.setTransform(cdpr, 0, 0, cdpr, 0, 0);
-            dctx.clearRect(0, 0, dust.width, dust.height);
+            /* clear in CSS-pixel space: the transform already scales the
+               rect, so passing canvas-pixel dims swept cdpr² the needed
+               area every tick — the frame-loop waste from the mobile round */
+            dctx.clearRect(0, 0, dust.width / cdpr, dust.height / cdpr);
             dctx.font = dustFont;
             dctx.fillStyle = dustInk;
             dctx.textAlign = 'center';
@@ -379,21 +371,80 @@ export default function EverySentence({
               | null;
             if (!ctx) return [] as { x: number; y: number }[];
             const fontPx = parseFloat(style.fontSize) * scale;
-            ctx.font = `${style.fontWeight} ${fontPx}px ${style.fontFamily}`;
-            // the DOM word is tracked; an untracked raster runs wide and clips the last glyph
-            if (style.letterSpacing !== 'normal') {
-              ctx.letterSpacing = `${parseFloat(style.letterSpacing) * scale}px`;
+            const applyFont = () => {
+              ctx.font = `${style.fontWeight} ${fontPx}px ${style.fontFamily}`;
+              // the DOM word is tracked; an untracked raster runs wide and clips the last glyph
+              if (style.letterSpacing !== 'normal') {
+                ctx.letterSpacing = `${parseFloat(style.letterSpacing) * scale}px`;
+              }
+              ctx.textBaseline = 'alphabetic';
+            };
+            applyFont();
+            /* the scan bounds: whatever raster the lattice walks below */
+            let sw = cw;
+            let sh = ch;
+            if (compactEvery) {
+              /* MOBILE WRAP SAMPLING (founder: two lines): once white-space
+                 goes normal the printed word folds at the pinned column, so
+                 mote targets must land on BOTH lines. Fold the text the way
+                 the box will — greedy on spaces, a spaceless CJK run folding
+                 character by character — and print each line centred at its
+                 line-height offset (the h1 centres; so must the ink the
+                 motes seat on). The cache key already carries the wrap
+                 width, so a resize re-folds. */
+              const avail = Math.max(width, 10) * scale;
+              const lineH =
+                (parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.1) * scale;
+              const lines: string[] = [];
+              let line = '';
+              for (const tok of text.split(' ')) {
+                const tryTok = line ? `${line} ${tok}` : tok;
+                if (ctx.measureText(tryTok).width <= avail) {
+                  line = tryTok;
+                  continue;
+                }
+                if (line) lines.push(line);
+                line = '';
+                if (ctx.measureText(tok).width <= avail) {
+                  line = tok;
+                } else {
+                  for (const chr of tok) {
+                    const tryChr = line + chr;
+                    if (line && ctx.measureText(tryChr).width > avail) {
+                      lines.push(line);
+                      line = chr;
+                    } else {
+                      line = tryChr;
+                    }
+                  }
+                }
+              }
+              if (line) lines.push(line);
+              if (!lines.length) lines.push(text);
+              sw = Math.ceil(avail) + 8;
+              sh = Math.ceil(lines.length * lineH + fontPx * 0.2);
+              /* resizing a canvas resets its 2d state — re-arm the font */
+              canvas.width = sw;
+              canvas.height = sh;
+              applyFont();
+              /* baseline seated where the line box seats it: half-leading
+                 plus the ~0.8em ascent the desktop heuristic assumes */
+              const base = (lineH - fontPx) / 2 + fontPx * 0.8;
+              lines.forEach((ln, li) => {
+                const x0 = Math.max(0, (avail - ctx.measureText(ln).width) / 2);
+                ctx.fillText(ln, x0, li * lineH + base);
+              });
+            } else {
+              ctx.fillText(text, 0, ch * 0.85);
             }
-            ctx.textBaseline = 'alphabetic';
-            ctx.fillText(text, 0, ch * 0.85);
-            const img = ctx.getImageData(0, 0, cw, ch).data;
+            const img = ctx.getImageData(0, 0, sw, sh).data;
             const scan = (step: number) => {
               const out: { x: number; y: number }[] = [];
               let rowIdx = 0;
-              for (let y = 0; y < ch; y += step, rowIdx++) {
+              for (let y = 0; y < sh; y += step, rowIdx++) {
                 const off = rowIdx % 2 === 1 ? step >> 1 : 0;
-                for (let x = off; x < cw; x += step) {
-                  if ((img[(y * cw + x) * 4 + 3] ?? 0) > 140) out.push({ x: x / scale, y: y / scale });
+                for (let x = off; x < sw; x += step) {
+                  if ((img[(y * sw + x) * 4 + 3] ?? 0) > 140) out.push({ x: x / scale, y: y / scale });
                 }
               }
               return out;
@@ -419,7 +470,7 @@ export default function EverySentence({
             const goal = target;
             gsap.delayedCall(0.08, () => {
               if (goal !== target || !em.isConnected) return;
-              sampleShape(goal.text, measure(goal), em.offsetHeight, parts.length);
+              sampleShape(goal.text, layoutWidth(goal), em.offsetHeight, parts.length);
             });
           };
 
@@ -449,7 +500,7 @@ export default function EverySentence({
             phase = 'form';
             const goal = target;
             current = goal;
-            const w1 = measure(goal);
+            const w1 = layoutWidth(goal);
             const h = em.offsetHeight;
             const tl = gsap.timeline({
               onComplete: () => {
@@ -468,8 +519,14 @@ export default function EverySentence({
 
             // the bounds glide to the incoming sentence's shaped width — ONE
             // continuous tween, quantized to device pixels — while the cloud
-            // re-distributes across the new span
-            tl.to(em, { width: w1, duration: 0.7, ease: 'power2.inOut', snap: { width: 1 / dpr } }, 0);
+            // re-distributes across the new span. Desktop only: the mobile
+            // em is pinned to the column, so the one layout write of a
+            // mobile morph is the print itself (the word's new block height
+            // lands while the line is fully dust — one reflow, not ~40
+            // width ticks; founder: "slow and laggy on mobile").
+            if (!compactEvery) {
+              tl.to(em, { width: w1, duration: 0.7, ease: 'power2.inOut', snap: { width: 1 / dpr } }, 0);
+            }
             tl.to(parts, {
               x: cloudX(Math.max(w1, 30)),
               y: cloudY(h),
@@ -490,6 +547,13 @@ export default function EverySentence({
             tl.add(() => {
               const hh = em.offsetHeight;
               const pts = sampleShape(goal.text, w1, hh, parts.length);
+              if (compactEvery) {
+                /* a two-line target overruns the plate sized off the
+                   standing block — grow it before the first mote lands */
+                let maxY = 0;
+                for (const pt of pts) maxY = Math.max(maxY, pt.y);
+                growDust(maxY + 12);
+              }
               const span = Math.max(w1, 1);
               parts.forEach((g, i) => {
                 const pt = pts[i];
@@ -576,7 +640,7 @@ export default function EverySentence({
             if (!em.isConnected) return;
             phase = 'dissolve';
             morphing = true;
-            const w0 = measure(current);
+            const w0 = layoutWidth(current);
             const h = em.offsetHeight;
             /* the outgoing sentence pixelates: seat the dust on ITS ink */
             const pts0 = sampleShape(current.text, w0, h, parts.length);
