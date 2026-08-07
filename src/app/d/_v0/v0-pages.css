@@ -442,7 +442,12 @@
   .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
     max-width: 100%;
     white-space: normal;
-    font-size: 2.45rem;
+    /* sized against the LONGEST of the sixteen sentences (founder: test
+       at the longest translation): 2.75rem is where French tips to a
+       third line at 390px, so the size rides just under it and scales
+       with the viewport — 10.9vw holds the two-line fit on 360-430px
+       phones alike. */
+    font-size: clamp(2.1rem, 10.9vw, 2.7rem);
     line-height: 1.1;
   }
 }

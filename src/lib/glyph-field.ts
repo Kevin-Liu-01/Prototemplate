@@ -105,6 +105,13 @@ const CONDENSED_PX = 12;
  * printed fill — not the particles — is what carries the word at rest.
  */
 const COND_PITCH = 9;
+/**
+ * The narrow layout's condense pitch (its proportional divisor scales with
+ * it — see prepareSamples): ~1.4x coarser, so roughly half the word motes
+ * fly and land. The printed fill, not the swarm, carries the word's
+ * legibility on a phone.
+ */
+const COND_PITCH_NARROW = 13;
 /** Atlas row for the condensed size — drawn at native px, no downscaling blur. */
 const COND_ROW = 3;
 const ATLAS_ROWS = 4;
@@ -137,14 +144,28 @@ const WORD_FEATHER = 30;
  */
 const NARROW_KEEP = 0.5;
 /**
+ * The narrow layout's ITERATED pool. NARROW_KEEP thins what DRAWS, but the
+ * frame loop still walked all 1280 slots — sine, wrap, keepAt — for every
+ * culled glyph, and the morph walked them again (founder, second mobile
+ * round: "glyph rain is incredibly laggy... when it dissolves and
+ * reassembles its like 10 frames a second"). On narrow the whole frame
+ * path — draw order, condense recruitment, flight — is bound to the first
+ * NARROW_POOL slots; indices are depth-random, so the cut keeps the
+ * field's distribution, just thinner. Off-frame loops (init, layout homes)
+ * still cover POOL, so a wide crossing finds every particle intact.
+ */
+const NARROW_POOL = 560;
+/**
  * Device-pixel caps: wide layouts render at up to 2x for crispness; the
- * narrow cut caps at 1.5x — 44% fewer device px per blit, the other half
- * of the founder's mobile lag fix. resize() is the only writer of dpr,
+ * narrow cut caps at 1.25x — 61% fewer device px per blit than 2x. The
+ * first mobile round's 1.5x was not enough (founder: "glyph rain is
+ * incredibly laggy"), and at rain sizes the extra quarter-step of softness
+ * reads as atmosphere, not blur. resize() is the only writer of dpr,
  * so the canvas, the atlas and every blit re-derive together on any
  * width crossing.
  */
 const DPR_CAP = 2;
-const DPR_CAP_NARROW = 1.5;
+const DPR_CAP_NARROW = 1.25;
 
 /* The loop, in seconds: print, hold, peel, fly. Each formed word LINGERS —
    the caliper fades in, stands for a beat, and fades back out — then the
@@ -343,6 +364,26 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     const a = pick[i] ?? 0;
     pick[i] = pick[j] ?? 0;
     pick[j] = a;
+  }
+
+  /* The narrow frame path's own views of the pool, cut once at init (tier
+     and depth never change): the first NARROW_POOL slots, MINUS the far
+     tier — on a phone the third tier's glyphs are pure atmosphere, and
+     filtering them out of the views removes them from the loop entirely
+     instead of paying position math to blit them small. Both views keep
+     their parents' order (z-sort / shuffle), so narrow draw order and
+     recruitment statistics match the wide field's, just thinner. */
+  const orderN = new Uint16Array(NARROW_POOL);
+  let orderNCount = 0;
+  for (let k = 0; k < POOL; k++) {
+    const i = order[k] ?? 0;
+    if (i < NARROW_POOL && (tier[i] ?? 2) !== 2) orderN[orderNCount++] = i;
+  }
+  const pickN = new Uint16Array(NARROW_POOL);
+  let pickNCount = 0;
+  for (let k = 0; k < pc; k++) {
+    const i = pick[k] ?? 0;
+    if (i < NARROW_POOL && (tier[i] ?? 2) !== 2) pickN[pickNCount++] = i;
   }
 
   /* ---------- layout ---------- */
@@ -606,6 +647,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
      would produce. */
   const prepPts = new Float32Array(POOL * 2);
   let prepWord = -1;
+  /* the layout cut the set was rastered under — part of the cache key:
+     a wide raster's pitch and cap belong to the wide deal */
+  let prepNarrow = false;
   let prepCount = 0;
   let prepFontPx = 0;
   let prepAdvance = 0;
@@ -671,9 +715,16 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     sampleCtx.fillText(entry.word, pad, yb);
 
     /* Pitch stays under the flight glyph size so the landed swarm sketches
-       the word discretely; overflow steps the pitch back up. */
-    const cap = eligibleCount;
-    let step = Math.max(6, Math.min(COND_PITCH, Math.round(fontPx / 13)));
+       the word discretely; overflow steps the pitch back up. On narrow the
+       whole ramp coarsens by the same 13/9 ratio — cap and proportional
+       divisor move together — so every font size samples ~1.4x coarser,
+       roughly half the motes to fly and land; the printed fill carries the
+       word. The cap is the narrow deal's own recruitable set, so overflow
+       re-steps against what can actually seat. */
+    const cap = narrow ? pickNCount : eligibleCount;
+    let step = narrow
+      ? Math.max(6, Math.min(COND_PITCH_NARROW, Math.round(fontPx / 9)))
+      : Math.max(6, Math.min(COND_PITCH, Math.round(fontPx / 13)));
     let count = scan(step, sw, sh, cap);
     while (count > cap && step < 24) {
       step = Math.max(step + 1, Math.round(step * Math.sqrt(count / cap)));
@@ -685,6 +736,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     prepPts.set(pts.subarray(0, prepCount * 2));
     prepFontPx = fontPx;
     prepAdvance = advance;
+    prepNarrow = narrow;
     prepWord = wordIndex;
   }
 
@@ -710,17 +762,24 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        word never starves. (Rain position formula: keep in sync with
        draw().) */
     const wrapC = h + 60;
+    /* The narrow deal recruits only from the narrow frame path's own view
+       of the pool (first NARROW_POOL slots, far tier dropped): a particle
+       the draw loop never visits must never be dealt into a word, or its
+       whole flight would happen invisibly. Wide deals from the untouched
+       full eligible set. */
+    const sel = narrow ? pickN : pick;
+    const selCount = narrow ? pickNCount : eligibleCount;
     let cc = 0;
     mark.fill(0);
-    for (let k = 0; k < eligibleCount; k++) {
-      const i = pick[k] ?? 0;
+    for (let k = 0; k < selCount; k++) {
+      const i = sel[k] ?? 0;
       if (inNext[i] === 1) {
         cand[cc++] = i;
         mark[i] = 1;
       }
     }
-    for (let k = 0; k < eligibleCount; k++) {
-      const i = pick[k] ?? 0;
+    for (let k = 0; k < selCount; k++) {
+      const i = sel[k] ?? 0;
       if (mark[i] === 1) continue;
       const rx =
         (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
@@ -732,9 +791,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         mark[i] = 1;
       }
     }
-    if (cc < eligibleCount) {
-      for (let k = 0; k < eligibleCount; k++) {
-        const i = pick[k] ?? 0;
+    if (cc < selCount) {
+      for (let k = 0; k < selCount; k++) {
+        const i = sel[k] ?? 0;
         if (mark[i] !== 1) cand[cc++] = i;
       }
     }
@@ -743,8 +802,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        prepareSamples for this word off the frame loop, so this frame
        only deals targets (founder: the dissolve's first-frame stall).
        The synchronous call is the fallback (first paint, a resize that
-       dropped the set, idle starvation). */
-    if (prepWord !== wordIndex) prepareSamples(wordIndex);
+       dropped the set, idle starvation, or a set rastered under the other
+       layout cut — its pitch and cap belong to the other deal). */
+    if (prepWord !== wordIndex || prepNarrow !== narrow) prepareSamples(wordIndex);
     if (prepWord !== wordIndex) return; // raster impossible — guarded above, defensive
     const fontPx = prepFontPx;
     const advance = prepAdvance;
@@ -1043,7 +1103,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         announce(next);
         const span = Math.max(1, prevRight - prevLeft);
         const nspan = Math.max(1, formedRight - formedLeft);
-        for (let i = 0; i < POOL; i++) {
+        /* narrow's deal never reaches past NARROW_POOL, so the departure
+           pass walks the same bound the rest of the frame does */
+        const lim = narrow ? NARROW_POOL : POOL;
+        for (let i = 0; i < lim; i++) {
           if (inPrev[i] === 1) {
             /* a particle that never drew (hidden boot, first frames) lifts
                off from its own target, never from the canvas origin */
@@ -1081,10 +1144,17 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        Same particles, drawn once each — the loop still allocates nothing. */
     const wrap = h + 60;
     const gcount = GLYPHS.length;
+    /* The narrow cut swaps in its own pool view — the same far-to-near
+       order, first NARROW_POOL slots only, far tier already filtered out —
+       so a phone frame WALKS a fraction of the wide loop instead of
+       skipping inside it. Wide iterates the untouched full order,
+       byte-identical to before the cut. */
+    const ord = narrow ? orderN : order;
+    const ordCount = narrow ? orderNCount : POOL;
     let curQ = -1;
     for (let pass = 0; pass < 2; pass++) {
-      for (let k = 0; k < POOL; k++) {
-        const i = order[k] ?? 0;
+      for (let k = 0; k < ordCount; k++) {
+        const i = ord[k] ?? 0;
         const wordBound = morph < 0 ? inNext[i] === 1 : inNext[i] === 1 || inPrev[i] === 1;
         if ((pass === 1) !== wordBound) continue;
 
@@ -1349,9 +1419,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     w = Math.round(box.width);
     h = Math.round(box.height);
     /* layout() first: it derives the narrow flag from the fresh width,
-       and the dpr cap keys off it — the narrow cut renders at 1.5x, not
-       2x (founder mobile round: the field pushed 78% more device px than
-       a phone could paint). Everything downstream of dpr — the canvas
+       and the dpr cap keys off it — the narrow cut renders at 1.25x, not
+       2x (founder mobile rounds: 2x pushed more device px than a phone
+       could paint; 1.5x still crawled). Everything downstream of dpr — the canvas
        backing store, the atlas build, every blit's snap — re-derives
        right here, so no consumer can ever see a stale scale. */
     layout();

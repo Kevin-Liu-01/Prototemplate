@@ -668,10 +668,14 @@ export default function V0FullStack() {
             }
           }
           if (tap) {
+            /* the bend FLOWS out of the leg (founder: no pop): the draw
+               starts while the leg is still landing and hands off with an
+               in-out ease, so rail-rise and elbow read as one continuous
+               stroke; it still completes inside the beat's authored end */
             story.to(
               tap,
-              { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', autoRound: false },
-              base + legDur + 0.02
+              { strokeDashoffset: 0, duration: 0.42, ease: 'power1.inOut', autoRound: false },
+              base + legDur - 0.12
             );
           }
           /* the scan sheet enters the story with its plate (founder: the
@@ -699,9 +703,14 @@ export default function V0FullStack() {
           }
           const d = Math.abs(time - story.time());
           if (d < 0.001) return;
+          /* the floor is the CONNECTOR'S tempo (founder: the rail-to-layer
+             draw glitched — a one-beat crossing compressed the whole
+             arrival into ~0.4s and the elbow read as a pop): a single
+             beat now plays near its authored pace, while a multi-beat
+             fling still fast-forwards under the same 1.3s cap */
           playhead = gsap.to(story, {
             time,
-            duration: Math.min(1.3, Math.max(0.35, d * 0.55)),
+            duration: Math.min(1.3, Math.max(0.7, d * 0.9)),
             ease: 'none',
           });
         };
