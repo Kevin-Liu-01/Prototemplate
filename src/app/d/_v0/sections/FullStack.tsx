@@ -617,8 +617,13 @@ export default function V0FullStack() {
            into the line before the line leaves; the plate lifts away as
            its fade rewinds), a fast multi-beat scroll fast-forwards it,
            and an uncommitted stub or a line/fade disagreement is
-           structurally impossible. Bends park at −100, the RAIL side,
-           so every draw flows rail-outward. */
+           structurally impossible. Bends park at +100: the tap path is
+           authored plate-first (its overshot end buries in the hull), so
+           a POSITIVE offset hides it from the path's END — the rail stub
+           — and the draw truly flows rail-outward (founder, round 3: the
+           line was "not drawing itself correctly" — parking at −100
+           revealed from the path START, so the bend grew out of the
+           PLATE, backwards). */
         const story = gsap.timeline({ paused: true });
         /** the story time at which beat k stands complete (bend drawn) */
         const beatEnd: number[] = [];
@@ -626,7 +631,7 @@ export default function V0FullStack() {
         slabs.forEach((slab, k) => {
           gsap.set(slab, { y: -LIFT - dropBy, autoAlpha: 0 });
           const tap = taps[k];
-          if (tap) gsap.set(tap, { strokeDashoffset: -100 });
+          if (tap) gsap.set(tap, { strokeDashoffset: 100 });
 
           const base = k === 0 ? 0 : beatEnd[k - 1] ?? 0;
           const legDur = k === 0 ? 1.0 : 0.45;
@@ -668,14 +673,25 @@ export default function V0FullStack() {
             }
           }
           if (tap) {
-            /* the bend FLOWS out of the leg (founder: no pop): the draw
-               starts while the leg is still landing and hands off with an
-               in-out ease, so rail-rise and elbow read as one continuous
-               stroke; it still completes inside the beat's authored end */
+            /* the bend leaves the junction ONLY once the leg lands
+               (founder, round 2: "still broken and glitchy" — the old
+               0.12s head start against a power2.in leg lit the elbow and
+               its rail-overlap stub while the tip was still half a leg
+               below the junction, so the rail read lit-dark-lit with a
+               floating bend). A hair of overlap keeps the handoff seamed,
+               and the ease matches the leg's ARRIVAL SPEED at the seam:
+               later legs accelerate in (power2.in ends fast), so their
+               bends leave fast and decelerate into the plate; the first
+               haul decelerates in, so its bend eases out just as gently. */
             story.to(
               tap,
-              { strokeDashoffset: 0, duration: 0.42, ease: 'power1.inOut', autoRound: false },
-              base + legDur - 0.12
+              {
+                strokeDashoffset: 0,
+                duration: 0.5,
+                ease: k === 0 ? 'sine.inOut' : 'power2.out',
+                autoRound: false,
+              },
+              base + legDur - 0.02
             );
           }
           /* the scan sheet enters the story with its plate (founder: the
@@ -685,7 +701,8 @@ export default function V0FullStack() {
           if (scan && k === slabs.length - 1) {
             story.to(scan, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, base + 0.5);
           }
-          beatEnd[k] = base + legDur + 0.32;
+          /* the beat stands complete exactly when its bend seats */
+          beatEnd[k] = base + legDur + 0.48;
         });
 
         /* the playhead: the ONE thing the scroll may move. Killing and

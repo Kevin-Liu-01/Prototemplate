@@ -449,6 +449,12 @@
        phones alike. */
     font-size: clamp(2.1rem, 10.9vw, 2.7rem);
     line-height: 1.1;
+    /* the SHORT sentences (ja/zh/ko) fit one line where en/fr/ru take
+       two, and the block breathed per locale (founder: layout shift —
+       reconcile keeping two lines): the h1 reserves the two-line
+       height always, so the belt can cycle every tongue without the
+       hero moving a pixel */
+    min-height: 2.2em;
   }
 }
 

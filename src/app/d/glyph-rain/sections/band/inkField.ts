@@ -159,6 +159,27 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
 
   const atlas = document.createElement('canvas');
   const atlasCtx = atlas.getContext('2d', { willReadFrequently: true });
+  /* The BLIT source (the glyph-field's own fix, ported): the CPU-pinned
+     atlas made every per-glyph drawImage an upload — snapshot each build
+     into a GPU-resident ImageBitmap and blit from that. */
+  let atlasSrc: CanvasImageSource = atlas;
+  let atlasGen = 0;
+  function snapshotAtlas(): void {
+    atlasSrc = atlas;
+    const gen = ++atlasGen;
+    if (typeof createImageBitmap !== 'function') return;
+    createImageBitmap(atlas)
+      .then((bmp) => {
+        if (gen !== atlasGen) {
+          bmp.close();
+          return;
+        }
+        const old = atlasSrc;
+        atlasSrc = bmp;
+        if (old !== atlas && old instanceof ImageBitmap) old.close();
+      })
+      .catch(() => undefined);
+  }
 
   function buildAtlas(): void {
     if (!atlasCtx) return;
@@ -183,6 +204,7 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
       (cssY) => Math.min(2, Math.floor(cssY / CELL)),
       (row) => TIER_COVER[row] ?? 1,
     );
+    snapshotAtlas();
   }
 
   /* ---------- the frame ---------- */
@@ -377,7 +399,7 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
         ctx.globalAlpha = TIER_ALPHA[row] ?? 1;
       }
       ctx.drawImage(
-        atlas,
+        atlasSrc,
         (gi[i] ?? 0) * cp,
         row * cp,
         cp,
@@ -460,6 +482,8 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
 
   return {
     destroy() {
+      atlasGen++;
+      if (atlasSrc !== atlas && atlasSrc instanceof ImageBitmap) atlasSrc.close();
       destroyed = true;
       stop();
       cancelAnimationFrame(resizeRaf);

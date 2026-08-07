@@ -66,24 +66,6 @@ em.every-sentence[data-every] {
   will-change: transform, opacity;
 }
 
-/* the dither veil: a blue-shifted twin of the live word behind a
-   Bayer-tile alpha mask (the engine sets the tile inline, and seats the
-   span on the word's own flow offsets); it fades in and out around each
-   print — worn, never stepped */
-.every-sentence .tc-eveil {
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: inline-block;
-  white-space: nowrap;
-  unicode-bidi: isolate;
-  pointer-events: none;
-  user-select: none;
-  color: color-mix(in srgb, currentColor 55%, #2f5ce0);
-  opacity: 0;
-  will-change: opacity;
-}
-
 /* MOBILE (founder: "take two lines"): the sentence folds at the em's
    pinned column width. The wrap must be GREEDY (text-wrap: wrap beats
    any inherited balance), because the dust sampler folds greedily with
@@ -91,15 +73,18 @@ em.every-sentence[data-every] {
    the settled motes never traced. */
 @media (max-width: 720px) {
   em.every-sentence[data-every],
-  .every-sentence [data-every-word],
-  .every-sentence .tc-eveil {
+  .every-sentence [data-every-word] {
     white-space: normal;
     text-wrap: wrap;
   }
 
-  /* the veil is the word's absolute twin: same wrap width, or its two
-     lines fold in different places than the print it shadows */
-  .every-sentence .tc-eveil {
-    width: 100%;
+  /* Korean folds at SPACES, like the sampler (iOS pass: '출시하세요'
+     broke mid-word — Hangul wraps between syllables by default, so the
+     printed fold disagreed with the mote targets). keep-all scopes to
+     :lang(ko) only: ja/zh carry no spaces and must keep the char folds
+     the sampler already mirrors. */
+  .every-sentence [data-every-word]:lang(ko),
+  em.every-sentence[data-every]:lang(ko) {
+    word-break: keep-all;
   }
 }

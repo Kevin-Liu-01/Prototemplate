@@ -4302,6 +4302,14 @@
   pointer-events: none;
 }
 
+/* mobile heads carry no watermark (founder: remove the big context /
+   code / locadex icons from the right of headers on mobile screens) */
+@media (max-width: 720px) {
+  .toolchain-root .tc-head-icon {
+    display: none;
+  }
+}
+
 
 /* Hatch spacers: reveal tweens leave transforms on the framed cards above,
    whose stacking contexts otherwise paint over the hatch's top rule. */

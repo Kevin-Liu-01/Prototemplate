@@ -52,29 +52,6 @@ type EverySentenceProps = {
   ref?: Ref<EverySentenceHandle>;
 };
 
-/* ------------------------------------------------------------------
-   THE WORD'S DITHER: one 4×4 Bayer tile at half coverage, worn as an
-   alpha mask by a blue-shifted twin of the word (the veil). The veil
-   FADES in and out — opacity, never stepped coverage — so the
-   halftone moment lingers on the fresh print and again at departure.
-   The tile is 4px so the halftone reads at display sizes.
-   ------------------------------------------------------------------ */
-const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-
-const ditherTile = (coverage: number): string => {
-  const cells = BAYER4.map((t, i) => {
-    if (t / 16 >= coverage) return '';
-    const x = i % 4;
-    const y = (i / 4) | 0;
-    return `<rect x='${x}' y='${y}' width='1' height='1'/>`;
-  }).join('');
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4' fill='white'>${cells}</svg>`;
-  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-};
-
-/** the veil's one tile: every Bayer cell under the half threshold inked */
-const VEIL_TILE = ditherTile(0.5);
-
 /* the dissolve dust pool: small glyphs sampled across the same scripts */
 const DUST = 'あ字كहξжか한グمัถイ고ρ'.split('');
 
@@ -326,27 +303,6 @@ export default function EverySentence({
             }
           };
 
-          /* the dither veil: a blue-shifted twin of the word behind the
-             Bayer-tile alpha mask — it fades in and out around each print
-             (worn, never stepped) and rests on the word between the fades */
-          const veil = document.createElement('span');
-          veil.className = 'tc-eveil';
-          veil.textContent = current.text;
-          veil.setAttribute('lang', current.lang);
-          veil.setAttribute('dir', current.rtl ? 'rtl' : 'ltr');
-          veil.setAttribute('aria-hidden', 'true');
-          veil.style.webkitMaskImage = VEIL_TILE;
-          veil.style.maskImage = VEIL_TILE;
-          veil.style.webkitMaskSize = '4px 4px';
-          veil.style.maskSize = '4px 4px';
-          em.append(veil);
-          gsap.set(veil, { autoAlpha: 0 });
-          /* the veil sits on the word's own flow offsets — re-seated before
-             every fade-in, so font loads and resizes can never unseat it */
-          const seatVeil = () => {
-            gsap.set(veil, { left: word.offsetLeft, top: word.offsetTop, scale: 1 });
-          };
-
           /* Sample the incoming word's letterforms the way glyph-field
              does: rasterize at 2x resolution (so CJK counters and
              Devanagari matras survive the alpha threshold), scan a BRICK
@@ -478,15 +434,14 @@ export default function EverySentence({
              DISSOLVE: the standing sentence PIXELATES — the dust seats on
              the outgoing text's own sampled ink so the line visibly breaks
              into glyphs in place — then disperses into a DISTRIBUTED CLOUD
-             across the whole line box. FORM: the bounds glide, the cloud
-             re-spreads over the incoming width, then condenses onto the
-             new sentence's letterforms and the print front absorbs it. The
+             across the whole line box. FORM: the bounds glide while the
+             cloud condenses straight onto the new sentence's letterforms
+             and the print front absorbs it (two swarm moves total). The
              form phase always reads the LATEST target at its boundary; a
              target arriving mid-form kills the phase and re-disperses
              whatever stands. */
           let tlLive: gsap.core.Timeline | null = null;
           let printCall: gsap.core.Tween | null = null;
-          let veilTl: gsap.core.Timeline | null = null;
           let killForm: (() => void) | null = null;
 
           const cloudX = (w: number) => () =>
@@ -518,21 +473,15 @@ export default function EverySentence({
             tlLive = tl;
 
             // the bounds glide to the incoming sentence's shaped width — ONE
-            // continuous tween, quantized to device pixels — while the cloud
-            // re-distributes across the new span. Desktop only: the mobile
-            // em is pinned to the column, so the one layout write of a
-            // mobile morph is the print itself (the word's new block height
-            // lands while the line is fully dust — one reflow, not ~40
-            // width ticks; founder: "slow and laggy on mobile").
+            // continuous tween, quantized to device pixels. Desktop only:
+            // the mobile em is pinned to the column, so the one layout
+            // write of a mobile morph is the print itself (the word's new
+            // block height lands while the line is fully dust — one
+            // reflow, not ~40 width ticks; founder: "slow and laggy on
+            // mobile").
             if (!compactEvery) {
               tl.to(em, { width: w1, duration: 0.7, ease: 'power2.inOut', snap: { width: 1 / dpr } }, 0);
             }
-            tl.to(parts, {
-              x: cloudX(Math.max(w1, 30)),
-              y: cloudY(h),
-              duration: 0.7,
-              ease: 'power2.inOut',
-            }, 0);
 
             // CONDENSATION at glyph-field fidelity: every glyph owns
             // EXACTLY one sampled point and lands centred on it, in
@@ -540,7 +489,12 @@ export default function EverySentence({
             // swarm behind a hard linear clip front entering from the
             // script's reading side, and each glyph is absorbed the
             // instant the front passes its point. Surplus glyphs thin out.
-            const LAND = 0.7;
+            // The cloud flies STRAIGHT from the dissolve pose to the
+            // letterforms (founder: the swarm reordered three times before
+            // the word — now two: disperse, then condense; the old
+            // re-spread across the incoming span is folded into this one
+            // longer flight, and the bounds glide alongside it).
+            const LAND = 0.85;
             const LAND_SPREAD = 0.25;
             const PRINT_AT = LAND + LAND_SPREAD + 0.08;
             const PRINT = 1.0;
@@ -594,28 +548,16 @@ export default function EverySentence({
                     duration: PRINT,
                     ease: 'none',
                     immediateRender: true,
+                    /* no veil breath after the print (founder: remove the
+                       dithering after the reorder) — the fresh sentence
+                       stands clean the moment the front clears it */
                     onComplete: () => {
                       gsap.set(word, { clearProps: 'clipPath' });
-                      /* the fresh print wears the veil: the blue halftone
-                         breathes in and away — the halftone moment */
-                      veil.textContent = goal.text;
-                      veil.setAttribute('lang', goal.lang);
-                      veil.setAttribute('dir', goal.rtl ? 'rtl' : 'ltr');
-                      seatVeil();
-                      veilTl = gsap
-                        .timeline({ onComplete: () => { veilTl = null; } })
-                        .to(veil, {
-                          autoAlpha: 0.85,
-                          duration: 0.3,
-                          ease: 'power1.out',
-                          overwrite: 'auto',
-                        })
-                        .to(veil, { autoAlpha: 0, duration: 0.8, ease: 'power1.inOut' }, '+=0.35');
                     },
                   }
                 );
               });
-            });
+            }, 0.15);
             tl.to({}, { duration: PRINT_AT + PRINT + 0.45 });
             /* the timeline sweeps the pool dark AFTER the front has passed */
             tl.to(parts, { a: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
@@ -628,10 +570,8 @@ export default function EverySentence({
               tlLive = null;
               printCall?.kill();
               printCall = null;
-              veilTl?.kill();
-              veilTl = null;
               gsap.killTweensOf(parts);
-              gsap.killTweensOf([word, veil, em]);
+              gsap.killTweensOf([word, em]);
               gsap.set(word, { clearProps: 'clipPath' });
             };
           };
@@ -662,10 +602,10 @@ export default function EverySentence({
                 g.a = 0;
               });
             }, 0);
-            seatVeil();
-            tl.to(veil, { autoAlpha: 0.7, duration: 0.22, ease: 'power1.out', overwrite: 'auto' }, 0.05);
             /* glyphs materialize ON the letterforms while the ink sinks —
-               the text reads as BECOMING the glyphs, not fading beside them */
+               the text reads as BECOMING the glyphs, not fading beside
+               them. No dither veil anywhere in the cycle (founder): the
+               swarm itself is the whole transition. */
             tl.to(parts, {
               a: () => gsap.utils.random(0.5, 0.95),
               duration: 0.3,
@@ -673,7 +613,6 @@ export default function EverySentence({
               ease: 'power1.in',
             }, 0.12);
             tl.to(word, { autoAlpha: 0, duration: 0.34, ease: 'power2.in' }, 0.18);
-            tl.to(veil, { autoAlpha: 0, duration: 0.3, ease: 'power2.in', overwrite: 'auto' }, '<+=0.04');
             /* ...then the swarm DISPERSES into a distributed cloud across
                the whole line box before anything re-forms */
             tl.to(parts, {
@@ -700,7 +639,7 @@ export default function EverySentence({
               },
             });
             tlLive = tl;
-            tl.to([word, veil], { autoAlpha: 0, duration: 0.18, ease: 'power2.in' }, 0);
+            tl.to(word, { autoAlpha: 0, duration: 0.18, ease: 'power2.in' }, 0);
             tl.to([guideL, guideR], { opacity: 0.4, duration: 0.15, ease: 'none' }, 0);
             tl.to(parts, {
               a: () => gsap.utils.random(0.3, 0.75),

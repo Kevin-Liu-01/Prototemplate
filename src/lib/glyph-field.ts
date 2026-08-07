@@ -468,6 +468,30 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
   const atlas = document.createElement('canvas');
   const atlasCtx = atlas.getContext('2d', { willReadFrequently: true });
+  /* The BLIT source. willReadFrequently pins the atlas canvas to CPU
+     memory (the build's getImageData needs it), which made every
+     per-glyph drawImage a CPU->GPU upload — the mobile lag, worst on
+     WebKit. Each build snapshots the finished atlas into an ImageBitmap
+     (GPU-resident); the frame loop blits from that, falling back to the
+     canvas only until the async snapshot lands. */
+  let atlasSrc: CanvasImageSource = atlas;
+  let atlasGen = 0;
+  function snapshotAtlas(): void {
+    atlasSrc = atlas;
+    const gen = ++atlasGen;
+    if (typeof createImageBitmap !== 'function') return;
+    createImageBitmap(atlas)
+      .then((bmp) => {
+        if (gen !== atlasGen) {
+          bmp.close();
+          return;
+        }
+        const old = atlasSrc;
+        atlasSrc = bmp;
+        if (old !== atlas && old instanceof ImageBitmap) old.close();
+      })
+      .catch(() => undefined);
+  }
   /** Atlas device scale: cp / CELL, so atlas cells land on integer px. */
   let dprA = 1;
   /** Atlas cell size in device px. */
@@ -556,6 +580,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       (row) => (row === COND_ROW ? 1 : TIER_COVER[row] ?? 1),
     );
     measureSprites();
+    snapshotAtlas();
   }
 
   /* ---------- word sampling ---------- */
@@ -1280,7 +1305,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
            display rate (founder round: the CSS-px quantization read as
            sub-60fps chop). */
         ctx.drawImage(
-          atlas,
+          atlasSrc,
           spr[m] ?? 0,
           spr[m + 1] ?? 0,
           sw,
@@ -1505,6 +1530,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
   return {
     destroy() {
+      atlasGen++;
+      if (atlasSrc !== atlas && atlasSrc instanceof ImageBitmap) atlasSrc.close();
       destroyed = true;
       stop();
       cancelPrepare();
