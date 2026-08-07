@@ -1,8 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-
 import { ArrowRight } from 'lucide-react';
 import { useRef } from 'react';
 
@@ -15,8 +12,6 @@ import EverySentence, {
 import HeroFieldSwitcher from '@/components/shared/HeroFieldSwitcher';
 
 import '@/app/d/toolchain/sections/hero-terminal.css';
-
-gsap.registerPlugin(useGSAP);
 
 /**
  * Six names in one weight read as a word list, so each is set as its own
@@ -75,8 +70,6 @@ const WORDS: Record<string, EveryWord> = {
 };
 
 export default function HomeHero() {
-  const root = useRef<HTMLElement>(null);
-
   /* the belt's hand on the headline: TranslateWindow calls
      handleBeltLocale once on mount and on every active-locale change;
      the EverySentence engine consumes it. The component buffers calls
@@ -86,25 +79,12 @@ export default function HomeHero() {
     every.current?.setLocale(loc);
   };
 
-  useGSAP(
-    () => {
-      /* the headline engine lives in EverySentence now; this hero keeps
-         only its own entrance (skipped under reduced motion — the
-         component parks its own still) */
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      gsap.from('[data-hero-in]', {
-        y: 14,
-        autoAlpha: 0,
-        duration: 0.7,
-        stagger: 0.07,
-        ease: 'power2.out',
-      });
-    },
-    { scope: root }
-  );
+  /* no entrance: the hero stands the moment it paints (founder) — the
+     headline engine in EverySentence carries all the motion this fold
+     needs, on the belt's clock */
 
   return (
-    <section className='tc-sec tch-hero-sec' id='top' ref={root}>
+    <section className='tc-sec tch-hero-sec' id='top'>
       {/* The founder's stack: a genuine white card — radius 12, hairline edge,
           inset on the section's second-surface ground — above the SQUARE
           full-width band; the trust row repeats the card below it. */}
@@ -113,17 +93,17 @@ export default function HomeHero() {
             — the accented word opens line two, on the hinge of the sentence. */}
         {/* the whole sentence is the morphing unit now — the measuring
             guides flank the full line and the belt rewrites all of it */}
-        <h1 data-hero-in>
+        <h1>
           <span>
             <EverySentence initial='en' ref={every} words={WORDS} />
           </span>
         </h1>
 
-        <p className='tc-hero-sub' data-hero-in>
+        <p className='tc-hero-sub'>
           <img alt='General Translation' className='tch-sub-mark is-light' src='/brand/no-bg-gt-logo-light.png' width={1198} height={1198} /><img alt='' aria-hidden className='tch-sub-mark is-dark' src='/brand/no-bg-gt-logo-dark.png' width={1198} height={1198} /> builds full-stack infrastructure for localizing apps, docs, and websites.
         </p>
 
-        <div className='tc-hero-acts' data-hero-in>
+        <div className='tc-hero-acts'>
           <span className='tch-cta'>
             <a className='tc-btn tc-btn-solid' href='#deploy'>
               Get started
