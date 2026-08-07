@@ -94,8 +94,9 @@ export default function HomeHero() {
         {/* the whole sentence is the morphing unit now — the measuring
             guides flank the full line and the belt rewrites all of it.
             hops={1} (founder: "for the home page hero, let's just do 1
-            hop"): the dissolve pours straight into the next sentence's
-            ink — no intermediate cloud pose on the hero. */}
+            hop"): the dissolved cloud pours straight into the next
+            sentence's ink — the form corridor's one re-spread beat is
+            skipped on the hero; the dissolve itself never changes. */}
         <h1>
           <span>
             <EverySentence hops={1} initial='en' ref={every} words={WORDS} />
@@ -103,7 +104,7 @@ export default function HomeHero() {
         </h1>
 
         <p className='tc-hero-sub'>
-          <img alt='General Translation' className='tch-sub-mark is-light' src='/brand/no-bg-gt-logo-light-96.png' width={96} height={96} /><img alt='' aria-hidden className='tch-sub-mark is-dark' src='/brand/no-bg-gt-logo-dark-96.png' width={96} height={96} /> builds full-stack infrastructure for localizing apps, docs, and websites.
+          <img alt='General Translation' className='tch-sub-mark is-light' src='/brand/no-bg-gt-logo-light.png' width={1198} height={1198} /><img alt='' aria-hidden className='tch-sub-mark is-dark' src='/brand/no-bg-gt-logo-dark.png' width={1198} height={1198} /> builds full-stack infrastructure for localizing apps, docs, and websites.
         </p>
 
         <div className='tc-hero-acts'>

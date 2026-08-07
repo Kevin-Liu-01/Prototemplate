@@ -20,7 +20,7 @@ gsap.registerPlugin(useGSAP);
  * pauses off-view, and under reduced motion it never starts — the plate
  * shows the sanctioned still. The hop ladder (founder: "up to 5, for our
  * library that we can play with") rides the plate in the bayer strip's
- * chip grammar; a pick latches at the engine's next cycle boundary.
+ * chip grammar; a pick latches at the engine's next form boundary.
  */
 const HOP_CHOICES = [1, 2, 3, 4, 5] as const;
 

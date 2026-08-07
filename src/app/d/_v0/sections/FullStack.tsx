@@ -183,7 +183,8 @@ const DROP = 64;
  * layout and the JS choreography can never disagree; reduced motion
  * never sets the class, so it keeps the static flow too.
  */
-const STAGE_MEDIA = '(max-width: 1020px) and (min-height: 640px)';
+const NARROW_MEDIA = '(max-width: 1020px)';
+const STAGE_MEDIA = `${NARROW_MEDIA} and (min-height: 640px)`;
 
 /**
  * gsap.matchMedia conditions: one callback owns every motion regime, so
@@ -195,6 +196,7 @@ const STAGE_MEDIA = '(max-width: 1020px) and (min-height: 640px)';
 const STAGE_SPLIT = {
   motion: '(prefers-reduced-motion: no-preference)',
   stage: STAGE_MEDIA,
+  narrow: NARROW_MEDIA,
 } as const;
 
 /** The staged drop: the stage's fig zone reserves only this much
@@ -301,6 +303,21 @@ export default function V0FullStack() {
         for (const beat of beats) beat.classList.remove('is-hot', 'is-cold');
       };
 
+      /* the STATIC pose — the full stack, first beat lit, every tap
+         drawn, the channel filled to the top tap: what reduced motion
+         renders, and what the one-column flow is designed around
+         (fullstack.css: "full tower on top, the beats' copy readable
+         below") */
+      const staticPose = () => {
+        paint(0);
+        const hot = new Set(HOT_SLABS[0] ?? []);
+        slabs.forEach((slab, i) => {
+          gsap.set(slab, { y: hot.has(i) ? -LIFT : 0, autoAlpha: 1 });
+        });
+        for (const tap of taps) gsap.set(tap, { strokeDashoffset: 0 });
+        if (rail) gsap.set(rail, { scaleY: 1, svgOrigin: RAIL_ORIGIN });
+      };
+
       const mm = gsap.matchMedia();
 
       mm.add(STAGE_SPLIT, (mctx) => {
@@ -308,6 +325,18 @@ export default function V0FullStack() {
            no-preference machinery, at phone and desktop widths alike */
         if (!mctx.conditions?.motion) return;
         const staged = !!mctx.conditions?.stage;
+        /* THE COMPACT CUT: a window narrow enough for the one-column
+           flow but SHORTER than the stage's 640px floor (founder
+           screenshot: it showed "a weird combination of the mobile
+           story and the desktop scroll story" — the one-column CSS with
+           the desktop machinery still scrubbing over it, slabs parked
+           hidden in a layout whose figure is static by design). The
+           one-column flow is designed around the static pose, so render
+           exactly that and mount NO machinery. */
+        if (mctx.conditions?.narrow && !staged) {
+          staticPose();
+          return clear;
+        }
         /* the stage's layout class lands FIRST (fullstack.css keys the
            whole stage relayout on it): everything measured below — the
            arrival's px mapping, the pen's reserved line seats — must
@@ -1377,13 +1406,7 @@ export default function V0FullStack() {
          resting at the markup's mid-glyph pose, and the scan beam parked
          hidden by the stylesheet (nothing here ever touches either) */
       mm.add('(prefers-reduced-motion: reduce)', () => {
-        paint(0);
-        const hot = new Set(HOT_SLABS[0] ?? []);
-        slabs.forEach((slab, i) => {
-          gsap.set(slab, { y: hot.has(i) ? -LIFT : 0, autoAlpha: 1 });
-        });
-        for (const tap of taps) gsap.set(tap, { strokeDashoffset: 0 });
-        if (rail) gsap.set(rail, { scaleY: 1, svgOrigin: RAIL_ORIGIN });
+        staticPose();
         return clear;
       });
 
