@@ -54,17 +54,6 @@ type EverySentenceProps = {
   /** seconds before the first morph may run (the first-fold capture
       window); 0 arms immediately */
   armDelay?: number;
-  /** how many arrangements the dissolved swarm takes on its way to the
-      print, clamped to integers 1..5 (founder: "define the switches
-      between glyphs as HOPS ... up to 5, for our library"). The
-      dissolve itself never changes. 2 — the default — is the shipped
-      grammar, byte for byte: the cloud re-spreads across the incoming
-      span (riding the bounds glide) and then condenses onto the new
-      ink. 1 skips that one re-spread beat, so the cloud pours straight
-      into the next sentence; 3..5 add re-scatter poses of the same
-      kind. Every count keeps the print and the settle on the shipped
-      clock. Live: a change latches at the next form boundary. */
-  hops?: number;
   ref?: Ref<EverySentenceHandle>;
 };
 
@@ -75,17 +64,9 @@ export default function EverySentence({
   words,
   initial,
   armDelay = 1.8,
-  hops = 2,
   ref,
 }: EverySentenceProps) {
   const emRef = useRef<HTMLElement>(null);
-
-  /* the hop knob is LIVE: the engine latches it at each form boundary,
-     so a host re-render mid-flight retunes the NEXT morph, never the
-     one in flight (an idempotent latest-ref write; the engine effect
-     never rebuilds for it) */
-  const hopsRef = useRef(hops);
-  hopsRef.current = hops;
 
   const initialWord: EveryWord = words[initial] ?? { text: '', lang: 'en' };
 
@@ -531,22 +512,8 @@ export default function EverySentence({
              band — [0.19h, 0.81h], symmetric about the optical middle */
           const cloudY = (h: number) => () => gsap.utils.random(h * 0.19, h * 0.81);
 
-          /* HOPS (founder: "define the switches between glyphs as HOPS
-             ... up to 5, for our library"): the count of arrangements the
-             dissolved swarm takes on its way to the print. The dissolve —
-             seat, materialize, scatter — is the header's signature and is
-             never a hop; every count runs it identically. hops=2 is the
-             shipped grammar, byte for byte. hops=1 skips the form
-             corridor's one intermediary beat. 3..5 add re-spread poses of
-             the original's kind. All hop arithmetic lives inside one
-             formPhase call, latched at the form boundary, so a knob flip
-             mid-flight can never split a cycle's schedule. */
-          const hopCount = () => Math.min(5, Math.max(1, Math.round(hopsRef.current)));
-
           const formPhase = () => {
             if (!em.isConnected) return;
-            const cycleHops = hopCount();
-            em.dataset.everyHops = String(cycleHops);
             phase = 'form';
             const goal = target;
             current = goal;
@@ -626,10 +593,6 @@ export default function EverySentence({
             const LAND_SPREAD = 0.25;
             const PRINT_AT = LAND + LAND_SPREAD + 0.08;
             const PRINT = 1.0;
-            if (cycleHops === 2) {
-            /* ——— hops=2: THE SHIPPED PATH — every statement below, to the
-               byte, is the pre-hops engine (indentation untouched so the
-               diff shows it verbatim) ——— */
             tl.add(() => {
               const hh = em.offsetHeight;
               const pts = sampleShape(goal.text, w1, hh, cycleN);
@@ -715,140 +678,6 @@ export default function EverySentence({
               });
             }, 0.15);
             tl.to({}, { duration: PRINT_AT + PRINT + 0.45 });
-            } else {
-              /* ——— hops=1 / 3..5: THE ADDITIVE LADDER ———
-                 The shipped corridor holds exactly ONE intermediary
-                 arrangement between the dissolved cloud and the condense:
-                 the cloud's re-spread across the incoming span — the old
-                 explicit cloudX(w1)/cloudY wave folded into the 0.7s
-                 power2.inOut bounds glide the swarm rides in fraction
-                 space, fronted by the condense's 0.15s lead. hops=1 SKIPS
-                 that one beat: the condense launches the instant the form
-                 opens (condenseAt 0) and each pour runs the freed 0.15s
-                 longer, so every landing (1.0 + u·0.25), the print (1.33)
-                 and the settle keep the shipped clock times to the digit.
-                 hops=3..5 ADD arrangements of the original's kind —
-                 explicit re-spread poses across the incoming span:
-                 span-FRACTION x targets (the containment model), the
-                 dissolve's own y band, alphas untouched, the original
-                 wave's power2.inOut — dividing the shipped corridor
-                 evenly, the condense always last, the print still on its
-                 shipped clock. */
-              const formFlights = Math.max(1, cycleHops - 1);
-              const slice = (LAND + LAND_SPREAD) / formFlights;
-              const landDur = cycleHops === 1 ? LAND + 0.15 : LAND * (slice / (LAND + LAND_SPREAD));
-              const landSpread =
-                cycleHops === 1 ? LAND_SPREAD : LAND_SPREAD * (slice / (LAND + LAND_SPREAD));
-              const condenseAt = cycleHops === 1 ? 0 : 0.15 + (formFlights - 1) * slice;
-              const printFrom = cycleHops === 1 ? PRINT_AT + 0.15 : landDur + landSpread + 0.08;
-              for (let k = 1; k < formFlights; k++) {
-                tl.add(() => {
-                  const span = Math.max(w1, 1);
-                  const hopX = cloudX(span);
-                  const hopY = cloudY(em.offsetHeight);
-                  for (let i = 0; i < cycleN; i++) {
-                    const g = parts[i];
-                    if (!g) break;
-                    gsap.to(g, {
-                      x: hopX() / span,
-                      y: hopY(),
-                      duration: landDur,
-                      ease: 'power2.inOut',
-                    });
-                  }
-                }, 0.15 + (k - 1) * slice);
-              }
-              tl.add(() => {
-                const hh = em.offsetHeight;
-                const pts = sampleShape(goal.text, w1, hh, cycleN);
-                if (compactEvery) {
-                  /* a two-line target overruns the plate sized off the
-                     standing block — grow it before the first mote lands */
-                  let maxY = 0;
-                  for (const pt of pts) maxY = Math.max(maxY, pt.y);
-                  growDust(maxY + 12);
-                }
-                const span = Math.max(w1, 1);
-                for (let i = 0; i < cycleN; i++) {
-                  const g = parts[i];
-                  if (!g) break;
-                  const pt = pts[i];
-                  if (!pt) {
-                    gsap.to(g, { a: 0, duration: 0.14, ease: 'power1.out' });
-                    continue;
-                  }
-                  const u = goal.rtl ? 1 - pt.x / span : pt.x / span;
-                  gsap.to(g, {
-                    x: pt.x / span,
-                    y: pt.y,
-                    a: 1,
-                    duration: landDur,
-                    ease: 'power3.inOut',
-                    delay: u * landSpread,
-                  });
-                  const landEnd = u * landSpread + landDur;
-                  gsap.to(g, {
-                    a: 0,
-                    duration: 0.08,
-                    ease: 'none',
-                    overwrite: 'auto',
-                    delay: Math.max(landEnd + 0.02, printFrom + u * PRINT),
-                  });
-                }
-                printCall = gsap.delayedCall(printFrom, () => {
-                  printCall = null;
-                  /* the brackets GLIDE between line counts (founder: "when
-                     we do one sentence instead of two, properly animate the
-                     brackets becoming smaller"): the mobile print is the one
-                     moment the em's block height lands, and the guides'
-                     top/bottom anchors would snap with it — so freeze them
-                     at the outgoing height and tween to the incoming one
-                     while the front prints. 0.22em is their overshoot
-                     (top -0.06em + bottom -0.16em). */
-                  const h0 = em.offsetHeight;
-                  showWord(goal);
-                  const h1 = em.offsetHeight;
-                  if (h1 !== h0) {
-                    const pad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
-                    gsap.set([guideL, guideR], { bottom: 'auto', height: h0 + pad });
-                    gsap.to([guideL, guideR], {
-                      height: h1 + pad,
-                      duration: 0.55,
-                      ease: 'power2.inOut',
-                      onComplete: () => {
-                        gsap.set([guideL, guideR], { clearProps: 'height,bottom' });
-                      },
-                    });
-                  }
-                  gsap.fromTo(
-                    word,
-                    {
-                      autoAlpha: 1,
-                      scale: 1,
-                      clipPath: goal.rtl ? 'inset(-15% 0% -15% 100%)' : 'inset(-15% 100% -15% 0%)',
-                    },
-                    {
-                      clipPath: 'inset(-15% 0% -15% 0%)',
-                      duration: PRINT,
-                      ease: 'none',
-                      immediateRender: true,
-                      /* no veil breath after the print (founder: remove the
-                         dithering after the reorder) — the fresh sentence
-                         stands clean the moment the front clears it */
-                      onComplete: () => {
-                        gsap.set(word, { clearProps: 'clipPath' });
-                      },
-                    }
-                  );
-                });
-              }, condenseAt);
-              /* the settle pad is POSITIONED where the shipped append
-                 lands (after the desktop glide; after the shipped 0.15
-                 condense-at on mobile), so the pool sweep, the guide
-                 breath and the cycle's end keep the shipped clock times
-                 at every count */
-              tl.to({}, { duration: PRINT_AT + PRINT + 0.45 }, compactEvery ? 0.15 : 0.7);
-            }
             /* the timeline sweeps the pool dark AFTER the front has passed */
             tl.to(parts, { a: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
             /* the guides BREATHE out with the finished print (founder:

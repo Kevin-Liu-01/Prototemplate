@@ -160,10 +160,9 @@ export default function LibraryDemo({
     [armed, kind]
   );
 
-  /* the seam is a real slider, the bayer plate a real switch and the
-     reassembler carries the hop ladder — groups with interactive
-     children, never flattened images */
-  const role = kind === 'seam' || kind === 'bayer' || kind === 'reassembler' ? 'group' : 'img';
+  /* the seam is a real slider and the bayer plate a real switch — groups
+     with interactive children, never flattened images */
+  const role = kind === 'seam' || kind === 'bayer' ? 'group' : 'img';
 
   return (
     <div aria-label={label} className={`ptc-plate is-${kind}`} ref={plateRef} role={role}>

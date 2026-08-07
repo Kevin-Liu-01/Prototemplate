@@ -2,7 +2,7 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import EverySentence, {
   type EverySentenceHandle,
@@ -18,12 +18,8 @@ gsap.registerPlugin(useGSAP);
  * sits above the ~3.2s form phase so every morph completes; the engine's
  * debounce and interrupt semantics make the exact number safe. The loop
  * pauses off-view, and under reduced motion it never starts — the plate
- * shows the sanctioned still. The hop ladder (founder: "up to 5, for our
- * library that we can play with") rides the plate in the bayer strip's
- * chip grammar; a pick latches at the engine's next form boundary.
+ * shows the sanctioned still.
  */
-const HOP_CHOICES = [1, 2, 3, 4, 5] as const;
-
 const WORDS: Record<string, EveryWord> = {
   en: { text: 'Launch in every language', lang: 'en' },
   ja: { text: 'あらゆる言語でローンチ', lang: 'ja' },
@@ -36,7 +32,6 @@ const ORDER: readonly string[] = ['ja', 'de', 'ko', 'en'];
 export default function ReassemblerDemo() {
   const every = useRef<EverySentenceHandle>(null);
   const box = useRef<HTMLDivElement>(null);
-  const [hops, setHops] = useState(2);
 
   useGSAP(
     () => {
@@ -74,26 +69,8 @@ export default function ReassemblerDemo() {
   );
 
   return (
-    <>
-      <div className='ptc-every' ref={box}>
-        <EverySentence armDelay={0.4} hops={hops} initial='en' ref={every} words={WORDS} />
-      </div>
-      {/* the playable hop count, on the plate the way the bayer ladder
-          is: mono indices, the active row the only color */}
-      <div aria-label='Hops per morph' className='ptc-bayer-strip' role='group'>
-        {HOP_CHOICES.map((n) => (
-          <button
-            className='ptc-bayer-chip'
-            data-on={n === hops}
-            key={n}
-            type='button'
-            onClick={() => setHops(n)}
-          >
-            <i>{n}</i>
-            {n === hops ? <span>{n === 1 ? 'hop' : 'hops'}</span> : null}
-          </button>
-        ))}
-      </div>
-    </>
+    <div className='ptc-every' ref={box}>
+      <EverySentence armDelay={0.4} initial='en' ref={every} words={WORDS} />
+    </div>
   );
 }

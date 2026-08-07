@@ -184,7 +184,13 @@ const DROP = 64;
  * never sets the class, so it keeps the static flow too.
  */
 const NARROW_MEDIA = '(max-width: 1020px)';
-const STAGE_MEDIA = `${NARROW_MEDIA} and (min-height: 640px)`;
+/* the height floor is a last resort, not a comfort line (founder, at a
+   150%-zoom ~525px-tall window: "it should just show the mobile version
+   at this smallness"): under 640px the stage rebalances to 50/50 zones
+   with tighter type (fullstack.css's short-stage block) and keeps
+   working down to 500px; only below THAT does the static one-column
+   flow take over. */
+const STAGE_MEDIA = `${NARROW_MEDIA} and (min-height: 500px)`;
 
 /**
  * gsap.matchMedia conditions: one callback owns every motion regime, so

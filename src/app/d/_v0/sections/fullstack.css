@@ -949,7 +949,7 @@
   display: none;
 }
 
-@media (max-width: 1020px) and (min-height: 640px) {
+@media (max-width: 1020px) and (min-height: 500px) {
   .toolchain-root .tcb.v0-stack.is-stage {
     /* the stage's seat: the sticky nav's 58px bar + its 1px hairline */
     --v0sm-top: 59px;
@@ -1119,6 +1119,42 @@
   .toolchain-root .tcb.v0-stack.is-stage .v0sm-runway {
     display: block;
     height: 280svh;
+  }
+}
+
+/* THE SHORT STAGE (founder, at a 150%-zoom ~525px-tall window: "it
+   should just show the mobile version at this smallness"): between the
+   500px floor and the comfortable 640px, the zones rebalance to 50/50
+   — the tower cedes height so the text zone can still hold the longest
+   beat — and the stage type steps one tighter. The tower width budget's
+   0.5 factor must equal the fig row's share, the 0.6/60% pairing's own
+   law. */
+@media (max-width: 1020px) and (min-height: 500px) and (max-height: 639px) {
+  .toolchain-root .tcb.v0-stack.is-stage {
+    --v0sm-tw: calc((0.5 * var(--v0sm-stage-h) - 56px) * 0.8538);
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .tcb-grid {
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-beat h3 {
+    margin-top: 8px;
+    font-size: 18px;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points {
+    margin-top: 8px;
+    gap: 5px;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points li {
+    font-size: 12.5px;
+    line-height: 1.38;
+  }
+
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-name {
+    font-size: 13px;
   }
 }
 
