@@ -383,10 +383,16 @@ export default function V0Context() {
 
       const canvas = stage.current;
       const h2 = scope.querySelector('h2');
+      /* sides only: the head's strip stays clear, phones park the field
+         entirely, and the decorative margins run at the lean gauges */
       const field = canvas
         ? createInkField({
             canvas,
             clearEl: core.current,
+            clearTopEl: scope.querySelector<HTMLElement>('.tc-head'),
+            minWidth: 880,
+            dprCap: 1.5,
+            fpsCap: 30,
             displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
           })
         : null;

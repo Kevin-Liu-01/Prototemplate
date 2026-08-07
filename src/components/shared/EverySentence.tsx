@@ -231,6 +231,12 @@ export default function EverySentence({
             y: 0,
             a: 0,
           }));
+          /* >0 while a form phase holds the floor: mote x is a FRACTION of
+             the bracket span and draw() maps it through this live span, so
+             the cloud's rendered extent contracts/expands in lockstep with
+             the gliding guides and can never overhang them; at 0, mote x
+             is a plain canvas px coordinate (dissolve space). */
+          let spanLive = 0;
           const dust = document.createElement('canvas');
           dust.className = 'tc-edust';
           dust.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;';
@@ -283,7 +289,7 @@ export default function EverySentence({
             for (const m of parts) {
               if (m.a <= 0.015) continue;
               dctx.globalAlpha = m.a;
-              dctx.fillText(m.ch, m.x, m.y);
+              dctx.fillText(m.ch, spanLive > 0 ? m.x * spanLive : m.x, m.y);
             }
             dctx.globalAlpha = 1;
           };
@@ -443,6 +449,14 @@ export default function EverySentence({
           let tlLive: gsap.core.Timeline | null = null;
           let printCall: gsap.core.Tween | null = null;
           let killForm: (() => void) | null = null;
+          /* leaving form — completed or killed — returns mote x to canvas
+             px at whatever span stands, so dissolve math stays px-space */
+          const exitFrac = () => {
+            if (spanLive > 0) {
+              for (const g of parts) g.x *= spanLive;
+              spanLive = 0;
+            }
+          };
 
           const cloudX = (w: number) => () =>
             gsap.utils.clamp(3, w - 3, gsap.utils.random(0.03, 0.97) * w);
@@ -456,12 +470,21 @@ export default function EverySentence({
             const goal = target;
             current = goal;
             const w1 = layoutWidth(goal);
+            /* the swarm enters fraction space against the span the guides
+               stand at NOW (mid-glide after an interrupt, w0 at rest) —
+               cloud and bounds read one width from the first tick */
+            const w0live = compactEvery
+              ? Math.max(w1, 1)
+              : Math.max(em.getBoundingClientRect().width, 1);
+            for (const g of parts) g.x /= w0live;
+            spanLive = w0live;
             const tl = gsap.timeline({
               onComplete: () => {
                 tlLive = null;
                 killForm = null;
                 phase = 'idle';
                 morphing = false;
+                exitFrac();
                 sleep();
                 holdWidth();
                 /* a debounced trailing target that landed as we closed */
@@ -472,14 +495,24 @@ export default function EverySentence({
             tlLive = tl;
 
             // the bounds glide to the incoming sentence's shaped width — ONE
-            // continuous tween, quantized to device pixels. Desktop only:
-            // the mobile em is pinned to the column, so the one layout
-            // write of a mobile morph is the print itself (the word's new
-            // block height lands while the line is fully dust — one
-            // reflow, not ~40 width ticks; founder: "slow and laggy on
-            // mobile").
+            // continuous tween, quantized to device pixels, whose value IS
+            // spanLive: the guides and the cloud read the same width every
+            // tick of the glide. Desktop only: the mobile em is pinned to
+            // the column, so the one layout write of a mobile morph is the
+            // print itself (the word's new block height lands while the
+            // line is fully dust — one reflow, not ~40 width ticks;
+            // founder: "slow and laggy on mobile").
             if (!compactEvery) {
-              tl.to(em, { width: w1, duration: 0.7, ease: 'power2.inOut', snap: { width: 1 / dpr } }, 0);
+              const glide = { w: w0live };
+              tl.to(glide, {
+                w: w1,
+                duration: 0.7,
+                ease: 'power2.inOut',
+                onUpdate: () => {
+                  spanLive = snapPx(glide.w);
+                  em.style.width = `${spanLive}px`;
+                },
+              }, 0);
             }
 
             // CONDENSATION at glyph-field fidelity: every glyph owns
@@ -492,7 +525,11 @@ export default function EverySentence({
             // letterforms (founder: the swarm reordered three times before
             // the word — now two: disperse, then condense; the old
             // re-spread across the incoming span is folded into this one
-            // longer flight, and the bounds glide alongside it).
+            // longer flight, and the bounds glide alongside it). The
+            // flight runs in span FRACTIONS: a mote laid out over the
+            // outgoing width rescales with the gliding bounds each frame,
+            // and its landing fraction times the settled span is exactly
+            // the sampled ink point.
             const LAND = 0.85;
             const LAND_SPREAD = 0.25;
             const PRINT_AT = LAND + LAND_SPREAD + 0.08;
@@ -516,7 +553,7 @@ export default function EverySentence({
                 }
                 const u = goal.rtl ? 1 - pt.x / span : pt.x / span;
                 gsap.to(g, {
-                  x: pt.x,
+                  x: pt.x / span,
                   y: pt.y,
                   a: 1,
                   duration: LAND,
@@ -594,6 +631,7 @@ export default function EverySentence({
               printCall?.kill();
               printCall = null;
               gsap.killTweensOf(parts);
+              exitFrac();
               gsap.killTweensOf([word, em]);
               gsap.killTweensOf([guideL, guideR]);
               gsap.set([guideL, guideR], { clearProps: 'height,bottom' });

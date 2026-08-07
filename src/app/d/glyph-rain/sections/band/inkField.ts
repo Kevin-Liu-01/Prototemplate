@@ -57,10 +57,26 @@ export type InkFieldOptions = {
   canvas: HTMLCanvasElement;
   /** The content block the field keeps clear of, measured off the DOM. */
   clearEl?: HTMLElement | null;
+  /** The head block whose full-width STRIP the field also keeps clear of —
+      glyphs own the sides and the foot, never the header (measured live,
+      dithered rim below it like every other clearing edge). */
+  clearTopEl?: HTMLElement | null;
   displayFamily?: string;
   /** 'none' floods the whole canvas — the craft plate's cut. The default
       keeps the measured content clearing the bands rely on. */
   clearing?: 'measured' | 'none';
+  /** Below this canvas width the field PARKS — loop stopped, canvas
+      cleared, nothing drawn — and unparks if a resize crosses back. The
+      band mounts pass the tc narrow cut; decorative margins have no
+      business spending phone frames. */
+  minWidth?: number;
+  /** Device-pixel ceiling (before the governor's own floor). Bands pass
+      1.5 — decorative margin glyphs don't need 2x. */
+  dprCap?: number;
+  /** Frame cap for the slow-drift material — bands pass 30; the rise is
+      2–8px/s, so half the paints are imperceptible. Skipped ticks stay on
+      the rAF chain and cost nothing. */
+  fpsCap?: number;
   /** Pointer play (the craft plate): glyphs shiver as the pointer nears,
       and a click bursts the nearest one — a shockwave shoves its
       neighbors before the field heals. The band mounts never set this;
@@ -68,6 +84,15 @@ export type InkFieldOptions = {
       motion (interaction needs the loop). */
   interactive?: boolean;
 };
+
+/* The frame-time governor, glyph-field's pattern: a ratchet judged on raw
+   rAF cadence (independent of the fps cap's deliberate skips) — tier 1
+   drops the device-pixel floor to 1.25, tier 2 strides the pool by 2. */
+const GOV_BUDGET_MS = 22;
+const GOV_WINDOW = 120;
+const GOV_TRIP = 0.35;
+const GOV_WARMUP_MS = 2500;
+const GOV_GAP_MS = 900;
 
 /* the interaction's reach, in CSS px / seconds */
 const WOBBLE_R = 90;
@@ -129,11 +154,21 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
   let w = 0;
   let h = 0;
   let dpr = 1;
+  let parked = false;
+  /* the governor's ladder: 0 full · 1 lean dpr · 2 strided pool */
+  let govTier = 0;
+  let govOver = 0;
+  let govCount = 0;
+  let govBornAt = 0;
+  let rafLast = -1;
+  let leanStride = 1;
   /* The clearing: the content box in canvas coordinates. */
   let cbL = 0;
   let cbT = 0;
   let cbR = 0;
   let cbB = 0;
+  /* The header strip's floor: no glyph stands above it. */
+  let topB = 0;
 
   function layout(): void {
     if (clearEl) {
@@ -143,11 +178,14 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
       cbT = box.top - own.top - 6;
       cbR = box.right - own.left + 6;
       cbB = box.bottom - own.top + 6;
+      const head = options.clearTopEl;
+      topB = head ? head.getBoundingClientRect().bottom - own.top + 10 : 0;
     } else {
       cbL = w * 0.12;
       cbT = h * 0.14;
       cbR = w * 0.88;
       cbB = h * 0.86;
+      topB = 0;
     }
     for (let i = 0; i < POOL; i++) {
       hx[i] = Math.round(((ux[i] ?? 0) * w) / COL_PITCH) * COL_PITCH + (jit[i] ?? 0);
@@ -216,12 +254,15 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
   let visible = true;
   let destroyed = false;
 
-  /** Keep-probability: zero over the content box, dithered rim around it. */
+  /** Keep-probability: zero over the content box AND the header's
+      full-width strip, dithered rim around both. */
   function keepAt(x: number, y: number): number {
     if (open) return 1;
     const dx = Math.max(cbL - x, x - cbR, 0);
     const dy = Math.max(cbT - y, y - cbB, 0);
-    return smoothstep(0, RIM, Math.max(dx, dy));
+    let dist = Math.max(dx, dy);
+    if (topB > 0) dist = Math.min(dist, y - topB);
+    return smoothstep(0, RIM, dist);
   }
 
   /* ---------- pointer play (opt-in) ---------- */
@@ -312,7 +353,7 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
     const cs = CELL;
     const cp = cs * dpr;
     let alphaRow = -1;
-    for (let k = 0; k < POOL; k++) {
+    for (let k = 0; k < POOL; k += leanStride) {
       const i = order[k] ?? 0;
       let x = (hx[i] ?? 0) + Math.sin(simT / (period[i] ?? 8) + (phase[i] ?? 0)) * (sway[i] ?? 2);
       let y = (hy[i] ?? 0) - simT * (rise[i] ?? 3);
@@ -413,18 +454,54 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
     ctx.globalAlpha = 1;
   }
 
+  /* the governor judges raw rAF cadence — the fps cap's deliberate skips
+     are near-free ticks, so a healthy display reads healthy even at 30fps */
+  function govern(ts: number): void {
+    if (govTier >= 2) return;
+    if (rafLast < 0) {
+      rafLast = ts;
+      return;
+    }
+    const dtMs = ts - rafLast;
+    rafLast = ts;
+    if (dtMs > GOV_GAP_MS) return;
+    if (govBornAt === 0) {
+      govBornAt = ts;
+      return;
+    }
+    if (ts - govBornAt < GOV_WARMUP_MS) return;
+    govCount += 1;
+    if (dtMs > GOV_BUDGET_MS) govOver += 1;
+    if (govCount < GOV_WINDOW) return;
+    const trip = govOver / govCount >= GOV_TRIP;
+    govCount = 0;
+    govOver = 0;
+    if (!trip) return;
+    govTier += 1;
+    canvas.dataset.gfTier = String(govTier);
+    if (govTier === 1) resize();
+    else leanStride = 2;
+  }
+
+  const frameMin = options.fpsCap && options.fpsCap > 0 ? 1000 / options.fpsCap - 2 : 0;
+  let lastDraw = -1e9;
+
   function frame(ts: number): void {
     if (destroyed) return;
+    raf = requestAnimationFrame(frame);
+    govern(ts);
+    if (frameMin > 0 && ts - lastDraw < frameMin) return;
     if (lastTs >= 0) simT += Math.min(0.05, (ts - lastTs) / 1000);
     lastTs = ts;
+    lastDraw = ts;
     draw();
-    raf = requestAnimationFrame(frame);
   }
 
   function start(): void {
-    if (running || destroyed || reduced) return;
+    if (running || destroyed || reduced || parked) return;
     running = true;
     lastTs = -1;
+    rafLast = -1;
     raf = requestAnimationFrame(frame);
   }
 
@@ -438,9 +515,23 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
   function resize(): void {
     const box = canvas.getBoundingClientRect();
     if (box.width < 2 || box.height < 2) return;
+    /* the mobile gate: below the cut the field parks — loop stopped,
+       canvas cleared, no atlas, no still — and unparks on the way back */
+    const shouldPark = box.width < (options.minWidth ?? 0);
+    if (shouldPark !== parked) {
+      parked = shouldPark;
+      if (parked) {
+        stop();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      } else if (visible) {
+        start();
+      }
+    }
+    if (parked) return;
     w = Math.round(box.width);
     h = Math.round(box.height);
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    dpr = Math.min(govTier >= 1 ? 1.25 : (options.dprCap ?? 2), window.devicePixelRatio || 1);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     layout();
@@ -473,7 +564,7 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
   if ('fonts' in document) {
     document.fonts.ready
       .then(() => {
-        if (destroyed) return;
+        if (destroyed || parked) return;
         buildAtlas();
         if (!running) draw();
       })

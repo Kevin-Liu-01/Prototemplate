@@ -296,7 +296,7 @@ export const LIBRARIES: readonly Library[] = [
     name: 'ink-field',
     role: 'the band margins’ rising rain',
     body:
-      'The closing band’s material as its own engine: the glyph-field’s eight-script inventory rising off the ink in the same set 34px columns, with a content clearing measured off the live DOM box so glyphs own only the margins. It inherited every one of the hero’s flicker lessons — solid tiers on a tier-batched alpha ramp (dither never rides moving glyphs), integer-snapped device-px blits, hysteresis on the clearing rim — and on this plate it plays: glyphs shiver as the pointer nears, and a click blows the nearest one up, its shockwave shoving the column neighbors before the field heals.',
+      'The closing band’s material as its own engine: the glyph-field’s eight-script inventory rising off the ink in the same set 34px columns, with a content clearing measured off the live DOM box so glyphs own only the margins. The band mounts run it gated: parked entirely below the tc narrow cut, the header’s full-width strip kept clear so glyphs own only the sides and the foot, a 1.5x device-pixel ceiling and a 30fps cap for the slow drift, and the frame-time governor underneath. It inherited every one of the hero’s flicker lessons — solid tiers on a tier-batched alpha ramp (dither never rides moving glyphs), integer-snapped device-px blits, hysteresis on the clearing rim — and on this plate it plays: glyphs shiver as the pointer nears, and a click blows the nearest one up, its shockwave shoving the column neighbors before the field heals.',
     demo: {
       kind: 'ink',
       tag: 'createInkField()',
