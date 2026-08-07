@@ -197,8 +197,9 @@ const STAGE_MEDIA = '(max-width: 1020px) and (min-height: 640px)';
 /**
  * gsap.matchMedia conditions: one callback owns every motion regime, so
  * the desktop machinery and the staged mobile scrub share the loops,
- * the build (setActive), and the viewport gate instead of forking into
- * two systems — the branches differ only in what DRIVES the beats.
+ * the build (one story timeline + the hot ledger), and the viewport
+ * gate instead of forking into two systems — the branches differ only
+ * in what DRIVES the story's clock.
  */
 const STAGE_SPLIT = {
   motion: '(prefers-reduced-motion: no-preference)',
@@ -530,11 +531,6 @@ export default function V0FullStack() {
           }
         };
 
-        /* the channel's ledger: the fill's current scaleY target, so beat
-           01's ARRIVAL (the rise from the rail's empty foot) can be told
-           apart from an ordinary between-beats move */
-        let railAt = 0;
-
         /* ===== THE RAIL'S REACH ON THE STAGE (founder: "make the blue
            line extend all the way towards the bottom and emerge from
            the bottom" — the desktop fill's rise starts at the figure
@@ -611,19 +607,22 @@ export default function V0FullStack() {
            drops, the blue rises its leg (the first haul long and
            decelerating, later legs accelerating into the junction), and
            the bend flows out of the landed tip. The scroll never touches
-           an element: it only retargets a PLAYHEAD along this one story.
+           an element and never plays anything at its own tempo: it IS
+           the story's clock (founder: "as you scroll, the rail is coming
+           up, connecting to the layer, and as you keep going it just
+           keeps going and extends to connecting to a new layer").
            Every frame anyone can ever see is therefore a frame OF the
-           story — a reversal plays the same story backward (bend folds
-           into the line before the line leaves; the plate lifts away as
-           its fade rewinds), a fast multi-beat scroll fast-forwards it,
+           story — scrolling back up plays the same story backward (bend
+           folds into the line before the line leaves; the plate lifts
+           away as its fade rewinds),
            and an uncommitted stub or a line/fade disagreement is
-           structurally impossible. Bends park at +100: the tap path is
-           authored plate-first (its overshot end buries in the hull), so
-           a POSITIVE offset hides it from the path's END — the rail stub
-           — and the draw truly flows rail-outward (founder, round 3: the
-           line was "not drawing itself correctly" — parking at −100
-           revealed from the path START, so the bend grew out of the
-           PLATE, backwards). */
+           structurally impossible. Bends park at −100: the tap path is
+           authored plate-first (its overshot end buries in the hull), and
+           a NEGATIVE offset reveals from the path's END — the rail stub —
+           so the bend grows out of the landed leg's junction, through the
+           elbow, into the plate (founder: "reverse the direction they
+           fill in" — the draw continues the leg's own travel instead of
+           meeting it head-on). */
         const story = gsap.timeline({ paused: true });
         /** the story time at which beat k stands complete (bend drawn) */
         const beatEnd: number[] = [];
@@ -631,7 +630,7 @@ export default function V0FullStack() {
         slabs.forEach((slab, k) => {
           gsap.set(slab, { y: -LIFT - dropBy, autoAlpha: 0 });
           const tap = taps[k];
-          if (tap) gsap.set(tap, { strokeDashoffset: 100 });
+          if (tap) gsap.set(tap, { strokeDashoffset: -100 });
 
           const base = k === 0 ? 0 : beatEnd[k - 1] ?? 0;
           const legDur = k === 0 ? 1.0 : 0.45;
@@ -705,70 +704,27 @@ export default function V0FullStack() {
           beatEnd[k] = base + legDur + 0.48;
         });
 
-        /* the playhead: the ONE thing the scroll may move. Killing and
-           retargeting it mid-flight is safe by construction — any story
-           time is a coherent pose — so scrub storms just shuttle the
-           playhead. Duration scales with story distance: one beat plays
-           at its authored tempo, a four-beat fling fast-forwards. */
-        let playhead: gsap.core.Tween | null = null;
-        const seek = (time: number, instant: boolean) => {
-          playhead?.kill();
-          playhead = null;
-          if (instant) {
-            story.time(time, true);
-            return;
-          }
-          const d = Math.abs(time - story.time());
-          if (d < 0.001) return;
-          /* the floor is the CONNECTOR'S tempo (founder: the rail-to-layer
-             draw glitched — a one-beat crossing compressed the whole
-             arrival into ~0.4s and the elbow read as a pop): a single
-             beat now plays near its authored pace, while a multi-beat
-             fling still fast-forwards under the same 1.3s cap */
-          playhead = gsap.to(story, {
-            time,
-            duration: Math.min(1.3, Math.max(0.7, d * 0.9)),
-            ease: 'none',
-          });
-        };
-
-        /* a beat change is nothing but a NEW STORY TIME: paint the copy,
-           update the loop ledger, and send the playhead to the end of
-           the active beat's segment. The story does the rest — plates,
-           line, bends and fades all read from the same clock. */
-        const setActive = (active: number, instant: boolean) => {
+        /* THE CLOCK (founder: "as you scroll, the rail is coming up,
+           connecting to the layer, and as you keep going it just keeps
+           going and extends to connecting to a new layer — make this
+           logic a lot simpler and just achieve this"): scroll maps
+           STRAIGHT to story time. No playhead to retarget, no beat
+           windows to toggle, no retract wiring — scrolling back up runs
+           the clock backward and the same story plays in reverse. The
+           only per-beat state left is the hot ledger: the copy
+           spotlight, the loop gates and the scan flag, flipped when the
+           clock crosses a beat's lock-in. */
+        const setHot = (active: number) => {
+          if (active === hotBeat) return;
           paint(active);
-          const count = VISIBLE_COUNT[active] ?? slabs.length;
-          built = count;
+          built = VISIBLE_COUNT[active] ?? slabs.length;
           hotBeat = active;
           syncLoops();
-          const target = instant ? 0 : (beatEnd[count - 1] ?? story.duration());
-          railAt = instant ? 0 : (RAIL_SCALE[count - 1] ?? 1);
-          seek(target, instant);
         };
-
-        /* the story opens on its foundation: the code slab, alone, before
-           any scroll — the rest of the stack builds in beat by beat */
-        setActive(0, true);
-
-        /* contiguous windows over one read line, with no dead zones: the
-           first beat's window starts as the section enters and the last
-           one's holds until it leaves, so even an instant jump (keyboard
-           End, a fast fling) always lands inside exactly one window and
-           the state can never go stale */
-        /* scrolled back out above the band: the arrival reverses — the
-           line retracts down the rail to its foot, ready to rise again on
-           the next lock-in. Wired to BOTH exits that can pass the band's
-           top: beat 01's window (the gradual scroll-up, while the figure
-           is still partly on screen) and the view gate below (an instant
-           jump from a deeper beat, which never re-toggles beat 01). */
-        const retract = () => {
-          /* the exit is the story played back to its opening frame —
-             bends fold into the line before it leaves, plates lift away
-             as their fades rewind, in exactly the order they arrived */
-          railAt = 0;
-          seek(0, false);
-        };
+        /* the trailing fraction of each read gap (desktop) or runway
+           segment (stage) that carries the next layer's build; the rest
+           of the gap HOLDS the standing pose */
+        const BUILD = 0.45;
 
         /* the capstone's diff hunk, GENERATED BY SCROLL (founder: "a
            bunch of diffs being generated as we scroll on it"): a scrubbed
@@ -816,17 +772,70 @@ export default function V0FullStack() {
         let killScrub: (() => void) | null = null;
 
         if (!staged) {
-          beats.forEach((beat, i) => {
-            ScrollTrigger.create({
-              trigger: beat,
-              start: i === 0 ? 'top bottom' : 'top 58%',
-              end: i === beats.length - 1 ? 'bottom top' : 'bottom 58%',
-              onToggle: (self) => {
-                if (self.isActive) setActive(i, false);
-                else if (i === 0 && self.progress === 0) retract();
-              },
-            });
+          /* one scrubbed dial spans the whole read — from the first
+             beat's entry to the last beat's lock-in at the read line —
+             and a piecewise map (measured beat seats in, beatEnd[] out)
+             converts it to story time, so every bend still seats exactly
+             as its beat's copy reaches the read line, whatever the
+             beats' real heights are. Re-anchored on every refresh. */
+          const anchors: number[] = beats.map(() => 1);
+          const dial = { p: 0 };
+          const timeAt = (p: number): number => {
+            /* the clock HOLDS at each beat's lock-in (founder: "it
+               should only be the first layer showing up for the first
+               section"): while a row is being read the tower stands at
+               exactly that row's layers, and only the last stretch of
+               the gap to the NEXT row spends the build — the rail
+               extends and the new layer drops as the next row
+               approaches, seating exactly at its lock-in. The floor is
+               beat 01's lock-in, so the foundation and its connector
+               stand before any scroll. */
+            let fromP = anchors[0] ?? 0;
+            let fromT = beatEnd[0] ?? 0;
+            if (p <= fromP) return fromT;
+            for (let k = 1; k < anchors.length; k++) {
+              const toP = anchors[k] ?? 1;
+              const toT = beatEnd[k] ?? story.duration();
+              if (p <= toP) {
+                const zone = toP - (toP - fromP) * BUILD;
+                if (p <= zone) return fromT;
+                const span = toP - zone;
+                return span > 0 ? fromT + ((p - zone) / span) * (toT - fromT) : toT;
+              }
+              fromP = toP;
+              fromT = toT;
+            }
+            return beatEnd[beatEnd.length - 1] ?? story.duration();
+          };
+          const apply = () => {
+            let active = 0;
+            for (let k = anchors.length - 1; k > 0; k--) {
+              if (dial.p >= (anchors[k] ?? 1)) {
+                active = k;
+                break;
+              }
+            }
+            setHot(active);
+            story.time(timeAt(dial.p));
+          };
+          const master = ScrollTrigger.create({
+            animation: gsap.to(dial, { p: 1, duration: 1, ease: 'none', paused: true, onUpdate: apply }),
+            trigger: beats[0] ?? scope,
+            start: 'top bottom',
+            endTrigger: beats[beats.length - 1] ?? scope,
+            end: 'top 58%',
+            scrub: 0.35,
+            onRefresh: (self) => {
+              const span = self.end - self.start;
+              beats.forEach((beat, k) => {
+                const lockIn =
+                  beat.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.58;
+                anchors[k] = span > 0 ? gsap.utils.clamp(0, 1, (lockIn - self.start) / span) : 1;
+              });
+              apply();
+            },
           });
+          void master;
 
           if (capTl) {
             ScrollTrigger.create({
@@ -853,7 +862,7 @@ export default function V0FullStack() {
              its 'top bottom'→'bottom bottom' window equals the sticky
              engage→release span EXACTLY (stage top + stage height =
              viewport bottom, by construction), and its progress drives
-             everything — the SAME setActive builds the tower beat by
+             everything — the SAME story clock builds the tower beat by
              beat (plates drop, taps draw, rail rises), THE PEN types
              the beats' copy through the boundaries (below), and the
              capstone hunk writes itself across the agents segment. */
@@ -1103,7 +1112,22 @@ export default function V0FullStack() {
                build, the pen, and the hunk all read the same number */
             const active = Math.min(beats.length - 1, Math.max(0, Math.floor(p / SEG)));
             retype(active);
-            if (active !== hotBeat) setActive(active, false);
+            setHot(active);
+            /* the tower HOLDS each section's standing pose — section k
+               shows exactly its own layers (founder: "only the first
+               layer showing up for the first section") — and spends the
+               segment's last BUILD stretch on the next layer's arrival,
+               so it seats exactly as the next section's copy takes the
+               zone. The last segment holds its finished pose through
+               the dwell. */
+            const heldT = beatEnd[active] ?? story.duration();
+            const nextT = beatEnd[active + 1];
+            const segP = gsap.utils.clamp(0, 1, p / SEG - active);
+            story.time(
+              nextT === undefined || segP <= 1 - BUILD
+                ? heldT
+                : heldT + ((segP - (1 - BUILD)) / BUILD) * (nextT - heldT)
+            );
             if (capTl) {
               capTl.progress(gsap.utils.clamp(0, 1, (p - CAP_FROM) / (CAP_TO - CAP_FROM)));
             }
@@ -1189,20 +1213,10 @@ export default function V0FullStack() {
           onToggle: (self) => {
             inView = self.isActive;
             syncLoops();
-            /* the staged arrival: the stage has no beat windows, so the
-               view gate is what draws the rise when the band enters with
-               the rail at its empty foot (the desktop's beat-01 window,
-               relocated) — re-entries from below find railAt > 0 */
-            if (staged && self.isActive && railAt === 0) setActive(hotBeat, false);
-            /* the jump exit: left upward without re-entering beat 01 */
-            if (!self.isActive && self.progress === 0 && railAt > 0) retract();
           },
         });
         inView = viewGate.isActive;
         syncLoops();
-        /* born in view (a deep link into the band): the gate's toggle
-           never fired, so the staged arrival draws here instead */
-        if (staged && inView && railAt === 0) setActive(hotBeat, false);
 
         return () => {
           /* the stage's own residue: the layout class and the pen's

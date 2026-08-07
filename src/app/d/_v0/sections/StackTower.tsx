@@ -204,10 +204,10 @@ const TAP_STUB = 14;
    Two footprints share the one drawing system: the base plate and the
    agents capstone. Everything derives from the size — hull, the three lit
    faces, the front edge, and the rail tap. The tap's grammar is unchanged:
-   its run STARTS at the plate and ENDS down the rail, because the tap
-   draws itself out of the layer (founder: "animate it coming out of the
-   layer going into the rail") — a dash-offset run from the buried butt
-   end, out through the elbow, into the rail's fill; pathLength is
+   its run STARTS at the plate and ENDS down the rail — but the FILL runs
+   the other way (founder: "reverse the direction they fill in"): parked
+   at −100, the dash reveals from the rail-stub end, through the elbow,
+   into the layer, continuing the rail leg's own travel; pathLength is
    normalized to 100 in the markup, so FullStack's draw targets are
    percentages of the tap. The run ends PAST the plate's OWN left vertex
    (+2, buried under the opaque hull drawn after it in the same SVG), so

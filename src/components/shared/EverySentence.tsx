@@ -27,6 +27,11 @@ gsap.registerPlugin(useGSAP);
  * from a hidden probe carrying the word's own lang/dir, cached,
  * device-pixel snapped, tweened once per cycle — never per-character
  * boxes, which disconnect Arabic joining and split Devanagari matras.
+ * The viewport is live: any resize without a reload (DevTools device
+ * emulation, rotation, drag-resize) re-derives the whole width table in
+ * one debounced, batched probe pass, settles the standing span in 0.2s,
+ * re-aims a mid-form glide, and re-reads the 720px law and the device
+ * pixel ratio — nothing is ever measured in a frame loop.
  *
  * Type and ink are inherited: the engine reads the host's computed font
  * for the dust and the raster, and every color derives from currentColor.
@@ -106,10 +111,15 @@ export default function EverySentence({
         };
       }
 
-      const compactEvery = window.matchMedia('(max-width: 720px)').matches;
+      /* the 720px law and the device-pixel quantum are LIVE state — a
+         viewport that changes without a reload (DevTools device
+         emulation, drag-resize, rotation) re-reads both on the next
+         measure pass */
+      const compactQuery = window.matchMedia('(max-width: 720px)');
+      let compactEvery = compactQuery.matches;
       let everyCleanup: (() => void) | undefined;
       if (em && word) {
-        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        let dpr = Math.max(1, window.devicePixelRatio || 1);
         const snapPx = (w: number) => Math.round(w * dpr) / dpr;
         const widthCache = new Map<string, number>();
         const measure = (w: EveryWord) => {
@@ -126,6 +136,36 @@ export default function EverySentence({
           probe.remove();
           widthCache.set(w.text, width);
           return width;
+        };
+        /* the full roster in ONE batched pass: a hidden row inside the em
+           (so it inherits the exact computed type) carries every locale's
+           whole shaped sentence with its own lang/dir; appended once, all
+           widths read after a single layout flush, removed. This is the
+           only measurement a viewport change ever costs — nothing is
+           measured in any frame loop. data-every-measures counts passes
+           so the perf probe can see the debounce coalescing. */
+        const probeRow = document.createElement('span');
+        probeRow.style.cssText =
+          'visibility:hidden;position:absolute;left:-9999px;top:0;display:block;';
+        probeRow.setAttribute('aria-hidden', 'true');
+        const probeSpans = Object.values(words).map((w) => {
+          const s = document.createElement('span');
+          s.style.cssText = 'display:block;width:max-content;white-space:nowrap;';
+          s.setAttribute('lang', w.lang);
+          s.setAttribute('dir', w.rtl ? 'rtl' : 'ltr');
+          s.textContent = w.text;
+          probeRow.appendChild(s);
+          return [w, s] as const;
+        });
+        let measurePasses = 0;
+        const measureAll = () => {
+          em.appendChild(probeRow);
+          widthCache.clear();
+          for (const [w, s] of probeSpans) {
+            widthCache.set(w.text, snapPx(s.getBoundingClientRect().width));
+          }
+          probeRow.remove();
+          em.dataset.everyMeasures = String(++measurePasses);
         };
         /* the live word is ONE shaped text node — lang for font selection,
            dir so the RTL run renders right-to-left inside its isolate */
@@ -150,17 +190,6 @@ export default function EverySentence({
         const layoutWidth = (w: EveryWord) => (compactEvery ? colWidth() : measure(w));
         const holdWidth = () => {
           em.style.width = `${layoutWidth(current)}px`;
-        };
-        const remeasure = () => {
-          if (!em.isConnected) return;
-          widthCache.clear();
-          if (!morphing) holdWidth();
-        };
-        window.addEventListener('resize', remeasure);
-        void document.fonts.ready.then(remeasure);
-        everyCleanup = () => {
-          window.removeEventListener('resize', remeasure);
-          driver.current = null;
         };
         holdWidth();
 
@@ -223,9 +252,16 @@ export default function EverySentence({
              the pool is plain particle objects driven by the very same
              tweens, drawn once per frame by one ticker. */
           type Mote = { ch: string; x: number; y: number; a: number };
-          /* the mobile pool is ~200: over a two-line 390px column the swarm
-             reads just as dense, at under half the per-tick fillText cost */
-          const parts: Mote[] = Array.from({ length: compactEvery ? 200 : 440 }, (_, i) => ({
+          /* the pool allocates the desktop maximum once; how many motes a
+             cycle FLIES is poolN — 200 under the 720px law (over a two-line
+             390px column the swarm reads just as dense, at under half the
+             per-tick fillText cost), re-read at each measure pass and
+             latched per cycle as cycleN, so a law flip mid-flight can never
+             orphan a lit mote outside its flock */
+          const POOL_MAX = 440;
+          let poolN = compactEvery ? 200 : POOL_MAX;
+          let cycleN = poolN;
+          const parts: Mote[] = Array.from({ length: POOL_MAX }, (_, i) => ({
             ch: DUST[i % DUST.length] ?? '',
             x: 0,
             y: 0,
@@ -246,10 +282,13 @@ export default function EverySentence({
           /* mobile caps the plate at 1.5x — the dust glyphs are ~0.1em; a
              3x phone repainting min(2,dpr) squared device pixels per CSS
              pixel spends the frame budget on resolution nobody can read */
-          const cdpr = compactEvery ? Math.min(1.5, dpr) : Math.min(2, dpr);
+          let cdpr = compactEvery ? Math.min(1.5, dpr) : Math.min(2, dpr);
           let dustFont = '';
           let dustInk = '';
           const sizeDust = () => {
+            /* the plate's scale follows the LIVE quantum and law, so an
+               emulated-device dpr never renders the dust blurry or fat */
+            cdpr = compactEvery ? Math.min(1.5, dpr) : Math.min(2, dpr);
             const host = em.parentElement ?? em;
             const bw = Math.ceil(host.getBoundingClientRect().width) + 20;
             const bh = Math.ceil(em.offsetHeight) + 8;
@@ -318,7 +357,9 @@ export default function EverySentence({
              later cycle reads warm. */
           const ptsCache = new Map<string, { x: number; y: number }[]>();
           const sampleShape = (text: string, width: number, height: number, count: number) => {
-            const key = `${text}@${Math.round(width)}x${Math.round(height)}`;
+            /* the fold regime is part of the identity: the same text at the
+               same width samples differently once the 720px law flips */
+            const key = `${compactEvery ? 'c' : 'd'}:${text}@${Math.round(width)}x${Math.round(height)}`;
             const hit = ptsCache.get(key);
             if (hit) return hit;
             const style = getComputedStyle(word);
@@ -432,7 +473,7 @@ export default function EverySentence({
             const goal = target;
             gsap.delayedCall(0.08, () => {
               if (goal !== target || !em.isConnected) return;
-              sampleShape(goal.text, layoutWidth(goal), em.offsetHeight, parts.length);
+              sampleShape(goal.text, layoutWidth(goal), em.offsetHeight, cycleN);
             });
           };
 
@@ -449,6 +490,13 @@ export default function EverySentence({
           let tlLive: gsap.core.Timeline | null = null;
           let printCall: gsap.core.Tween | null = null;
           let killForm: (() => void) | null = null;
+          /* the live glide, held by name so a measure pass can re-aim it,
+             and the one width writer that can outlive a timeline (an idle
+             settle or a mid-form retarget) — killed at every phase boundary
+             so the em never has two hands on it */
+          let glideTw: gsap.core.Tween | null = null;
+          let widthTw: gsap.core.Tween | null = null;
+          let formGoal: EveryWord = current;
           /* leaving form — completed or killed — returns mote x to canvas
              px at whatever span stands, so dissolve math stays px-space */
           const exitFrac = () => {
@@ -469,19 +517,29 @@ export default function EverySentence({
             phase = 'form';
             const goal = target;
             current = goal;
+            formGoal = goal;
             const w1 = layoutWidth(goal);
-            /* the swarm enters fraction space against the span the guides
-               stand at NOW (mid-glide after an interrupt, w0 at rest) —
+            /* the swarm enters fraction space against the box the guides
+               stand at NOW (mid-glide after an interrupt, w0 at rest, the
+               other regime's width when the 720px law flipped mid-cycle) —
                cloud and bounds read one width from the first tick */
-            const w0live = compactEvery
-              ? Math.max(w1, 1)
-              : Math.max(em.getBoundingClientRect().width, 1);
+            const w0live = Math.max(em.getBoundingClientRect().width, 1);
             for (const g of parts) g.x /= w0live;
-            spanLive = w0live;
+            if (compactEvery) {
+              /* the column pin lands while the line is fully dust — the one
+                 layout write of a mobile morph besides the print */
+              spanLive = Math.max(w1, 1);
+              if (w0live !== w1) em.style.width = `${w1}px`;
+            } else {
+              spanLive = w0live;
+            }
             const tl = gsap.timeline({
               onComplete: () => {
                 tlLive = null;
                 killForm = null;
+                glideTw = null;
+                widthTw?.kill();
+                widthTw = null;
                 phase = 'idle';
                 morphing = false;
                 exitFrac();
@@ -504,7 +562,7 @@ export default function EverySentence({
             // founder: "slow and laggy on mobile").
             if (!compactEvery) {
               const glide = { w: w0live };
-              tl.to(glide, {
+              glideTw = gsap.to(glide, {
                 w: w1,
                 duration: 0.7,
                 ease: 'power2.inOut',
@@ -512,7 +570,8 @@ export default function EverySentence({
                   spanLive = snapPx(glide.w);
                   em.style.width = `${spanLive}px`;
                 },
-              }, 0);
+              });
+              tl.add(glideTw, 0);
             }
 
             // CONDENSATION at glyph-field fidelity: every glyph owns
@@ -536,7 +595,7 @@ export default function EverySentence({
             const PRINT = 1.0;
             tl.add(() => {
               const hh = em.offsetHeight;
-              const pts = sampleShape(goal.text, w1, hh, parts.length);
+              const pts = sampleShape(goal.text, w1, hh, cycleN);
               if (compactEvery) {
                 /* a two-line target overruns the plate sized off the
                    standing block — grow it before the first mote lands */
@@ -545,11 +604,13 @@ export default function EverySentence({
                 growDust(maxY + 12);
               }
               const span = Math.max(w1, 1);
-              parts.forEach((g, i) => {
+              for (let i = 0; i < cycleN; i++) {
+                const g = parts[i];
+                if (!g) break;
                 const pt = pts[i];
                 if (!pt) {
                   gsap.to(g, { a: 0, duration: 0.14, ease: 'power1.out' });
-                  return;
+                  continue;
                 }
                 const u = goal.rtl ? 1 - pt.x / span : pt.x / span;
                 gsap.to(g, {
@@ -568,7 +629,7 @@ export default function EverySentence({
                   overwrite: 'auto',
                   delay: Math.max(landEnd + 0.02, PRINT_AT + u * PRINT),
                 });
-              });
+              }
               printCall = gsap.delayedCall(PRINT_AT, () => {
                 printCall = null;
                 /* the brackets GLIDE between line counts (founder: "when
@@ -628,6 +689,9 @@ export default function EverySentence({
               killForm = null;
               tl.kill();
               tlLive = null;
+              glideTw = null;
+              widthTw?.kill();
+              widthTw = null;
               printCall?.kill();
               printCall = null;
               gsap.killTweensOf(parts);
@@ -643,10 +707,17 @@ export default function EverySentence({
             if (!em.isConnected) return;
             phase = 'dissolve';
             morphing = true;
+            /* the cycle owns the em now: settle any idle width tween, adopt
+               the live pool size, and stand exactly on the measured width */
+            widthTw?.kill();
+            widthTw = null;
+            cycleN = poolN;
+            holdWidth();
             const w0 = layoutWidth(current);
             const h = em.offsetHeight;
             /* the outgoing sentence pixelates: seat the dust on ITS ink */
-            const pts0 = sampleShape(current.text, w0, h, parts.length);
+            const pts0 = sampleShape(current.text, w0, h, cycleN);
+            const flock = parts.slice(0, cycleN);
             wake();
             warmTarget();
             const tl = gsap.timeline({
@@ -669,7 +740,7 @@ export default function EverySentence({
                the text reads as BECOMING the glyphs, not fading beside
                them. No dither veil anywhere in the cycle (founder): the
                swarm itself is the whole transition. */
-            tl.to(parts, {
+            tl.to(flock, {
               a: () => gsap.utils.random(0.5, 0.95),
               duration: 0.3,
               stagger: { amount: 0.16 },
@@ -678,7 +749,7 @@ export default function EverySentence({
             tl.to(word, { autoAlpha: 0, duration: 0.34, ease: 'power2.in' }, 0.18);
             /* ...then the swarm DISPERSES into a distributed cloud across
                the whole line box before anything re-forms */
-            tl.to(parts, {
+            tl.to(flock, {
               a: () => gsap.utils.random(0.3, 0.75),
               x: cloudX(Math.max(w0, 30)),
               y: cloudY(h),
@@ -691,6 +762,12 @@ export default function EverySentence({
           const reDissolve = () => {
             phase = 'dissolve';
             morphing = true;
+            /* re-disperses whatever STANDS: the flock stays the one latched
+               at the interrupted cycle's seed (cycleN untouched), so no
+               unseeded mote can ever fly */
+            widthTw?.kill();
+            widthTw = null;
+            const flock = parts.slice(0, cycleN);
             wake();
             warmTarget();
             const w = Math.max(em.offsetWidth, 30);
@@ -704,7 +781,7 @@ export default function EverySentence({
             tlLive = tl;
             tl.to(word, { autoAlpha: 0, duration: 0.18, ease: 'power2.in' }, 0);
             tl.to([guideL, guideR], { opacity: 0.4, duration: 0.45, ease: 'power1.inOut' }, 0);
-            tl.to(parts, {
+            tl.to(flock, {
               a: () => gsap.utils.random(0.3, 0.75),
               x: cloudX(w),
               y: cloudY(h),
@@ -735,6 +812,103 @@ export default function EverySentence({
             startCycle();
           };
           void tlLive;
+
+          /* ---- THE VIEWPORT IS LIVE (founder: "someone goes into inspect
+             and chooses the iPhone screen width") ----
+             Every width above descends from the viewport: the clamp()ed
+             type, the 720px law, the shaped-word table, the em's pin, the
+             dust plate's size and scale. A viewport that changes WITHOUT a
+             reload re-derives all of it here — one trailing ~150ms debounce
+             (a drag-resize storm collapses to its last state), ONE batched
+             probe-row read per pass, one observer for the engine's
+             lifetime, and never a measurement inside a frame loop. */
+          const retargetGlide = () => {
+            /* mid-form the cloud already rides spanLive, so moving the
+               glide's destination moves bracket and dust together — the
+               print lands inside bounds that are already right */
+            const w1 = layoutWidth(formGoal);
+            glideTw?.kill();
+            glideTw = null;
+            widthTw?.kill();
+            widthTw = null;
+            if (compactEvery) {
+              spanLive = Math.max(w1, 1);
+              em.style.width = `${w1}px`;
+              return;
+            }
+            const glide = { w: Math.max(em.getBoundingClientRect().width, 1) };
+            widthTw = gsap.to(glide, {
+              w: w1,
+              duration: 0.2,
+              ease: 'power2.out',
+              onUpdate: () => {
+                spanLive = snapPx(glide.w);
+                em.style.width = `${spanLive}px`;
+              },
+              onComplete: () => {
+                widthTw = null;
+              },
+            });
+          };
+          const repass = () => {
+            if (!em.isConnected) return;
+            dpr = Math.max(1, window.devicePixelRatio || 1);
+            compactEvery = compactQuery.matches;
+            poolN = compactEvery ? 200 : POOL_MAX;
+            /* ink sampled under the old type matches no print any more */
+            ptsCache.clear();
+            measureAll();
+            if (drawing) sizeDust();
+            if (phase === 'form') {
+              retargetGlide();
+            } else if (!morphing) {
+              /* the standing sentence settles onto its fresh width — a
+                 quick glide, never a snap */
+              widthTw?.kill();
+              widthTw = gsap.to(em, {
+                width: layoutWidth(current),
+                duration: 0.2,
+                ease: 'power2.out',
+                onComplete: () => {
+                  widthTw = null;
+                },
+              });
+            }
+            /* mid-dissolve needs no hand: the form boundary reads
+               layoutWidth fresh from the corrected table and glides there */
+          };
+          let repassCall: gsap.core.Tween | null = null;
+          const schedule = () => {
+            repassCall?.kill();
+            repassCall = gsap.delayedCall(0.15, () => {
+              repassCall = null;
+              repass();
+            });
+          };
+          window.addEventListener('resize', schedule);
+          void document.fonts.ready.then(() => {
+            if (em.isConnected) repass();
+          });
+          /* container truth: the column can move without a window resize.
+             ONE observer, gated to real width changes — the em's own morphs
+             resize the parent's height, never its width (the host h1's span
+             is a block), so the engine can never re-trigger itself. */
+          let lastColW = -1;
+          const ro = new ResizeObserver((entries) => {
+            const cw = entries[entries.length - 1]?.contentRect.width ?? -1;
+            if (Math.abs(cw - lastColW) < 0.5) return;
+            const first = lastColW < 0;
+            lastColW = cw;
+            if (!first) schedule();
+          });
+          ro.observe(em.parentElement ?? em);
+          everyCleanup = () => {
+            window.removeEventListener('resize', schedule);
+            ro.disconnect();
+            repassCall?.kill();
+            widthTw?.kill();
+            driver.current = null;
+          };
         }
 
         /* the engine is built — open the vent. Calls that landed before
