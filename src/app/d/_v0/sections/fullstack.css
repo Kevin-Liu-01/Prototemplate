@@ -658,14 +658,24 @@
   transition: opacity 0.32s ease;
 }
 
-/* Beat 01 runs one breath longer than the uniform window (founder: "we
-   should be able to scroll down a littleeee further before the diagram
-   component starts moving") — the assembled code plate holds while the
-   reader scrolls, and beat 02's window reaches the read line ~10vh
-   later. Only the FIRST window stretches; the rhythm of the other three
-   and the finale/runway math above stay untouched. */
+/* The first three sections read LONGER (founder: "make these first 3
+   sections last longer and lock into the other for a sec before we
+   scroll to the next"): a read gap between consecutive lock-ins is the
+   block's own height, and the clock's gap shape (FullStack: hold →
+   build → LOCK) spends the gap's tail on the settled next-layer pose —
+   so the extra height buys both a longer read AND a real lock. Only
+   the non-finale beats stretch: the sticky finale's pin math above
+   depends on the base 48vh window and must stay untouched. */
+.toolchain-root .tcb .v0-stack-beat:not(.is-finale) {
+  min-height: clamp(320px, 68vh, 920px);
+}
+
+/* Beat 01 runs one breath longer still (founder: "we should be able to
+   scroll down a littleeee further before the diagram component starts
+   moving") — the assembled code plate holds while the reader scrolls,
+   and beat 02's window reaches the read line later. */
 .toolchain-root .tcb .v0-stack-beat:first-child {
-  min-height: clamp(290px, 58vh, 780px);
+  min-height: clamp(360px, 76vh, 1000px);
 }
 
 /* THE AGENTS DWELL (founder: "we make this go stay on agents a lil

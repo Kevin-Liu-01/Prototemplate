@@ -16,6 +16,12 @@
   --lang-ink: currentColor;
   --lang-mid: color-mix(in srgb, currentColor 64%, transparent);
   --lang-dim: color-mix(in srgb, currentColor 46%, transparent);
+  /* the quietest voice REAL TEXT may take: 62% is the floor that still
+     clears WCAG AA (4.5:1) over both the page and the card in both themes —
+     light mode compounds this mix with the band's own 0.9x ink alpha and an
+     off-white card, which is what pushes the floor past a bare-white 55%
+     (Lighthouse round, Aug 2026). Faint stays for scaffolding, never copy. */
+  --lang-low: color-mix(in srgb, currentColor 62%, transparent);
   --lang-faint: color-mix(in srgb, currentColor 30%, transparent);
   --lang-rule-strong: color-mix(in srgb, currentColor 22%, transparent);
   --lang-rule: color-mix(in srgb, currentColor 13%, transparent);
@@ -60,7 +66,7 @@
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0.04em;
-  color: var(--lang-faint);
+  color: var(--lang-low);
   white-space: nowrap;
 }
 
@@ -190,7 +196,7 @@
   font-family: var(--lang-mono);
   font-size: 11px;
   line-height: 1;
-  color: var(--lang-faint);
+  color: var(--lang-low);
 }
 
 /* The English width, dropped through the whole stack as one guide. Drawn in

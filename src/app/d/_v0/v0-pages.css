@@ -720,7 +720,8 @@
 :root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
   --tc-panel: #ffffff;
   --tc-panel-ink: rgba(7, 7, 7, 0.88);
-  --tc-panel-dim: rgba(7, 7, 7, 0.46);
+  /* the white-plate AA floor: 0.58 black composites to ~#6f6f6f (4.8:1) */
+  --tc-panel-dim: rgba(7, 7, 7, 0.58);
   --tc-panel-faint: rgba(7, 7, 7, 0.3);
   --tc-panel-rule: rgba(7, 7, 7, 0.12);
 }

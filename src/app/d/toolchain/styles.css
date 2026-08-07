@@ -45,7 +45,9 @@
      page keeps its mass between the hero terminal and the dark band. */
   --tc-panel: #101010;
   --tc-panel-ink: rgba(255, 255, 255, 0.88);
-  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  /* 0.5 is the AA floor (4.5:1) for small text on the panel black —
+     dim text is quiet, never illegible (Lighthouse round, Aug 2026) */
+  --tc-panel-dim: rgba(255, 255, 255, 0.5);
   --tc-panel-faint: rgba(255, 255, 255, 0.26);
   --tc-panel-rule: rgba(255, 255, 255, 0.1);
 

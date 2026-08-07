@@ -655,27 +655,44 @@
 .toolchain-root .v0-tw .sgdh-ins-mark {
   appearance: none;
   position: absolute;
-  top: -6px;
-  right: -6px;
+  /* WCAG 2.5.8 target size: the BUTTON is a 25px invisible hit slab
+     centred on the same corner point; the ::before below paints the
+     unchanged 11px badge in its middle, so nothing moves visually and
+     reconcileMarks' box-centre math still lands on the badge centre */
+  top: -13px;
+  right: -13px;
   z-index: 4;
-  width: 11px;
-  height: 11px;
+  width: 25px;
+  height: 25px;
   margin: 0;
   padding: 0;
-  border: 1px solid rgba(7, 7, 7, 0.26);
+  border: 0;
   border-radius: 50%;
-  background: #ffffff;
+  background: none;
   font-family: var(--tc-mono);
   font-size: 8px;
-  line-height: 9px;
+  line-height: 25px;
   text-align: center;
   color: rgba(7, 7, 7, 0.45);
   cursor: pointer;
   opacity: 0.55;
   transition:
     opacity 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
+    color 0.15s ease;
+}
+
+/* the visible badge — the 11px circle the slab used to BE */
+.toolchain-root .v0-tw .sgdh-ins-mark::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  z-index: -1;
+  border: 1px solid rgba(7, 7, 7, 0.26);
+  border-radius: 50%;
+  background: #ffffff;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
 /* a swept mark sits right of the cut: the payload pane owns that ground,
@@ -690,6 +707,10 @@
 .toolchain-root .v0-tw .sgdh-ins-mark:focus-visible {
   opacity: 1;
   color: #2f5ce0;
+}
+
+.toolchain-root .v0-tw .sgdh-ins-mark:hover::before,
+.toolchain-root .v0-tw .sgdh-ins-mark:focus-visible::before {
   border-color: #2f5ce0;
 }
 
@@ -699,6 +720,9 @@
 .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .sgdh-ins-mark {
   opacity: 1;
   color: #2f5ce0;
+}
+
+.toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .sgdh-ins-mark::before {
   border-color: #2f5ce0;
 }
 
@@ -706,6 +730,9 @@
 .toolchain-root .v0-tw .sgdh-ins-mark[data-pin='true'] {
   opacity: 1;
   color: #ffffff;
+}
+
+.toolchain-root .v0-tw .sgdh-ins-mark[data-pin='true']::before {
   background: #2f5ce0;
   border-color: #2f5ce0;
 }
@@ -975,25 +1002,38 @@
 /* inspector furniture re-inks; the pinned accent holds in both themes
    (the pinned rule is restated so no dark base rule can outrank it) */
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark::before {
   border-color: rgba(255, 255, 255, 0.32);
   background: #161616;
-  color: rgba(255, 255, 255, 0.55);
 }
 
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:hover,
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:focus-visible {
   color: #7d9bff;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:hover::before,
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark:focus-visible::before {
   border-color: #7d9bff;
 }
 
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .sgdh-ins-mark {
   opacity: 1;
   color: #7d9bff;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins[data-ins-on='true'] .sgdh-ins-mark::before {
   border-color: #7d9bff;
 }
 
 [data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark[data-pin='true'] {
   color: #ffffff;
+}
+
+[data-theme='dark'] .toolchain-root .v0-tw .sgdh-ins-mark[data-pin='true']::before {
   background: #2f5ce0;
   border-color: #2f5ce0;
 }

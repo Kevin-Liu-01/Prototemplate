@@ -83,13 +83,10 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'code',
     name: 'Code',
-    lead: 'Your code is the source of truth',
+    lead: 'Your code is the source of truth.',
     points: [
-      <>
-        Tag user interfaces, and they’re ready to ship in 120+ locales. No
-        translation files needed.
-      </>,
-      'Open-source internationalization (i18n) libraries and SDKs for every framework.',
+      <>Tag user interfaces and they’re ready to ship in 120+ locales</>,
+      'Open-source internationalization (i18n) libraries and SDKs for every framework',
     ],
     icon: Code2,
     slabIds: ['code'],
@@ -97,16 +94,13 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'context',
     name: 'Context',
-    lead: 'The best experience of your product',
+    lead: 'Context layer, shared globally.',
     points: [
       <>
-        <GtLogoText /> keeps your terminology, voice, and style consistent across every surface
-        and language.
+        <GtLogoText /> keeps your wording and voice consistent across app, website, docs, and
+        slides
       </>,
-      <>
-        Define key product terms, brand voice, and style once. <GtLogoText /> applies them
-        everywhere it translates: app, website, documentation, slides.
-      </>,
+      <>Edit, version, and approve with your team</>,
     ],
     /* BookOpen, not Layers (founder: Layers is the FULL STACK's icon
        now; context wears the knowledge glyph everywhere) */
@@ -116,13 +110,13 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'translations',
     name: 'Translations',
-    lead: 'Translations that just work',
+    lead: 'The best translations of your product.',
     points: [
+      <>High-quality translations that reflect your meaning</>,
       <>
-        See your content and components translated in just minutes. <GtLogoText /> handles
-        dynamic content and user inputs.
+        <GtLogoText /> handles every file format, and logical branches for dynamic content like
+        plurals and gender forms
       </>,
-      <>Built-in components for numbers, currencies, dates, plurals, and more.</>,
     ],
     icon: Languages,
     slabIds: ['translations'],
@@ -130,13 +124,10 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'agents',
     name: 'Agents',
-    lead: 'Automate it',
+    lead: 'Agents connect your systems.',
     points: [
-      <>Locadex keeps your app localized with every update. Just merge a PR.</>,
-      <>
-        The Locadex agent internationalizes your system end to end, then keeps every surface
-        localized as your code changes.
-      </>,
+      <>Locadex connects your GitHub, CMS, Figma, and external files</>,
+      <>Infrastructure built for agents across API, CLI, and MCP</>,
     ],
     icon: LocadexMark,
     slabIds: ['agents'],
@@ -616,13 +607,21 @@ export default function V0FullStack() {
            folds into the line before the line leaves; the plate lifts
            away as its fade rewinds),
            and an uncommitted stub or a line/fade disagreement is
-           structurally impossible. Bends park at −100: the tap path is
-           authored plate-first (its overshot end buries in the hull), and
-           a NEGATIVE offset reveals from the path's END — the rail stub —
-           so the bend grows out of the landed leg's junction, through the
-           elbow, into the plate (founder: "reverse the direction they
-           fill in" — the draw continues the leg's own travel instead of
-           meeting it head-on). */
+           structurally impossible. Bends park at −101, NOT −100: the tap
+           path is authored plate-first (its overshot end buries in the
+           hull), and a NEGATIVE offset reveals from the path's END — the
+           rail stub — so the bend grows out of the landed leg's junction,
+           through the elbow, into the plate (founder: "reverse the
+           direction they fill in" — the draw continues the leg's own
+           travel instead of meeting it head-on). At exactly −100 a dash
+           boundary sits exactly on the path's rail end, and Chromium's
+           dash rounding bled a sub-pixel fleck of accent onto the track
+           at the takeoff (founder, zoomed screenshot: a ~2px blue tick
+           where a FOLDED bend emerges) — the one-unit overshoot, with
+           the dash gap padded past the path length (StackTower's
+           '100 200'), parks every dash edge clear of both path ends, and
+           the visible draw still starts exactly at the junction the
+           moment the offset crosses −100. */
         const story = gsap.timeline({ paused: true });
         /** the story time at which beat k stands complete (bend drawn) */
         const beatEnd: number[] = [];
@@ -630,7 +629,7 @@ export default function V0FullStack() {
         slabs.forEach((slab, k) => {
           gsap.set(slab, { y: -LIFT - dropBy, autoAlpha: 0 });
           const tap = taps[k];
-          if (tap) gsap.set(tap, { strokeDashoffset: -100 });
+          if (tap) gsap.set(tap, { strokeDashoffset: -101 });
 
           const base = k === 0 ? 0 : beatEnd[k - 1] ?? 0;
           const legDur = k === 0 ? 1.0 : 0.45;
@@ -704,6 +703,35 @@ export default function V0FullStack() {
           beatEnd[k] = base + legDur + 0.48;
         });
 
+        /* THE CREST: once the capstone locks in and the reader keeps
+           going, the channel runs the REST of the rail — past the top
+           tap, up through the figure cell's top rule (founder: "once we
+           get to bottom, after scrolling for a sec, the blue rail line
+           should extend fully to top instead of having it still be
+           empty"). The overscan is deliberate: the rect is foot-anchored
+           and the figure cell's crop ends the fill exactly at the top
+           rule, so precision lives in the crop, not the scale — but it
+           is SIZED to the travel a viewport can actually expose (~1.5
+           tower heights), and the ease is LINEAR, so the visible rise
+           tracks the scroll honestly instead of popping (founder: "make
+           the blue rail line that goes up less instant — should be
+           timed better with scroll"; the crest gap's own wide phase
+           window below is the other half of that fix). */
+        const crestFrom = beatEnd[beatEnd.length - 1] ?? 0;
+        const CREST_END = crestFrom + 0.75;
+        if (rail) {
+          story.to(
+            rail,
+            {
+              scaleY: 1 + (2 * TOWER_H) / RAIL_UNITS,
+              svgOrigin: RAIL_ORIGIN,
+              duration: 0.7,
+              ease: 'none',
+            },
+            crestFrom + 0.05
+          );
+        }
+
         /* THE CLOCK (founder: "as you scroll, the rail is coming up,
            connecting to the layer, and as you keep going it just keeps
            going and extends to connecting to a new layer — make this
@@ -721,10 +749,31 @@ export default function V0FullStack() {
           hotBeat = active;
           syncLoops();
         };
-        /* the trailing fraction of each read gap (desktop) or runway
-           segment (stage) that carries the next layer's build; the rest
-           of the gap HOLDS the standing pose */
-        const BUILD = 0.45;
+        /* each read gap (desktop) or runway segment (stage) runs three
+           phases: HOLD the standing pose through the first half, spend
+           the middle stretch on the next layer's BUILD, then LOCK — the
+           new layer stands settled for the gap's last stretch before
+           the next section takes the read line (founder: "lock into the
+           other for a sec before we scroll to the next") */
+        const HOLD = 0.5;
+        const LOCK = 0.82;
+        /* the crest's gap runs its own phases: a short breath after the
+           capstone's lock-in, then the rise rides nearly the WHOLE dwell
+           (founder: the instant crest — the run gets the scroll room its
+           travel deserves) */
+        const CREST_HOLD = 0.12;
+        const CREST_LOCK = 0.95;
+        const gapTime = (
+          fromT: number,
+          toT: number,
+          gp: number,
+          hold: number = HOLD,
+          lock: number = LOCK
+        ): number => {
+          if (gp <= hold) return fromT;
+          if (gp >= lock) return toT;
+          return fromT + ((gp - hold) / (lock - hold)) * (toT - fromT);
+        };
 
         /* the capstone's diff hunk, GENERATED BY SCROLL (founder: "a
            bunch of diffs being generated as we scroll on it"): a scrubbed
@@ -744,11 +793,14 @@ export default function V0FullStack() {
                the mark's chip first, then the diff lands at its far end
                — the agent visibly writing each line (founder). Scrubbed,
                so scroll-back unwrites in reverse. */
+            /* parked at 101, not 100 — the taps' fleck rule (see the
+               story build): at exactly ±100 a dash boundary sits on a
+               path end and Chromium bleeds a sub-pixel dot there */
             const wire = capWires[i];
             if (wire) {
               capTl.fromTo(
                 wire,
-                { strokeDashoffset: 100 },
+                { strokeDashoffset: 101 },
                 { strokeDashoffset: 0, duration: 0.45, ease: 'power1.inOut', autoRound: false },
                 i * 0.8
               );
@@ -774,38 +826,82 @@ export default function V0FullStack() {
         if (!staged) {
           /* one scrubbed dial spans the whole read — from the first
              beat's entry to the last beat's lock-in at the read line —
-             and a piecewise map (measured beat seats in, beatEnd[] out)
+             and a piecewise map (measured lock-ins in, beatEnd[] out)
              converts it to story time, so every bend still seats exactly
              as its beat's copy reaches the read line, whatever the
              beats' real heights are. Re-anchored on every refresh. */
           const anchors: number[] = beats.map(() => 1);
           const dial = { p: 0 };
+          /* A beat's LOCK-IN is its COPY BLOCK's center taking the 55%
+             read line — the line the figure's seat centers the tower on
+             (fullstack.css) — never the beat WINDOW's top crossing 58%:
+             the window is half a viewport of air with the copy centered
+             inside, so its top runs nearly a half-window ahead of the
+             copy, and every anchor fired that much early — with the
+             build spending the gap's last stretch, a plate was mid-drop
+             exactly while the PREVIOUS copy sat on the read line
+             (founder, screenshot: "each layer arrives too early — by the
+             time the layer is finally centered with the text, the 2nd
+             layer is already appearing over it. Make the layers start
+             moving later."). Anchored on the copy itself, the gap's
+             hold → build → lock shape lands where it was written to:
+             the arrival begins only once the previous copy has left the
+             line, runs while its own copy climbs the lower half, and
+             stands LOCKED before that copy takes the read line.
+             Measured from FLOW geometry: the finale is sticky, so its
+             own rect would read the STUCK pose on a mid-dwell refresh —
+             its flow top is the previous beat's (never-sticky) bottom,
+             and the copy's offset inside its beat reads the same stuck
+             or not. For the finale this lock-in IS the pin-engage
+             scroll: the pin seats the copy center on the same 55% line
+             (fullstack.css), so the last build completes exactly as the
+             dwell begins. */
+          const READ_LINE = 0.55;
+          const lockInAt = (k: number): number => {
+            const beat = beats[k];
+            if (!beat) return 0;
+            const rect = beat.getBoundingClientRect();
+            const kids = Array.from(beat.children);
+            let copyMid = rect.height / 2;
+            if (kids.length > 0) {
+              const tops = kids.map((el) => el.getBoundingClientRect().top);
+              const bottoms = kids.map((el) => el.getBoundingClientRect().bottom);
+              copyMid = (Math.min(...tops) + Math.max(...bottoms)) / 2 - rect.top;
+            }
+            const prev = beats[k - 1];
+            const flowTop = prev
+              ? prev.getBoundingClientRect().bottom + window.scrollY
+              : rect.top + window.scrollY;
+            return flowTop + copyMid - window.innerHeight * READ_LINE;
+          };
           const timeAt = (p: number): number => {
             /* the clock HOLDS at each beat's lock-in (founder: "it
                should only be the first layer showing up for the first
                section"): while a row is being read the tower stands at
-               exactly that row's layers, and only the last stretch of
-               the gap to the NEXT row spends the build — the rail
-               extends and the new layer drops as the next row
-               approaches, seating exactly at its lock-in. The floor is
-               beat 01's lock-in, so the foundation and its connector
-               stand before any scroll. */
+               exactly that row's layers; the gap to the next row runs
+               hold → build → lock (gapTime above). The floor is beat
+               01's lock-in, so the foundation and its connector stand
+               before any scroll; the run past the LAST anchor is the
+               dwell's gap, whose build is the crest — the channel's
+               final run to the rail's top. */
             let fromP = anchors[0] ?? 0;
             let fromT = beatEnd[0] ?? 0;
             if (p <= fromP) return fromT;
-            for (let k = 1; k < anchors.length; k++) {
-              const toP = anchors[k] ?? 1;
-              const toT = beatEnd[k] ?? story.duration();
+            for (let k = 1; k <= anchors.length; k++) {
+              const crest = k === anchors.length;
+              const toP = crest ? 1 : (anchors[k] ?? 1);
+              const toT = crest ? CREST_END : (beatEnd[k] ?? CREST_END);
               if (p <= toP) {
-                const zone = toP - (toP - fromP) * BUILD;
-                if (p <= zone) return fromT;
-                const span = toP - zone;
-                return span > 0 ? fromT + ((p - zone) / span) * (toT - fromT) : toT;
+                const span = toP - fromP;
+                const gp = span > 0 ? (p - fromP) / span : 1;
+                return crest
+                  ? gapTime(fromT, toT, gp, CREST_HOLD, CREST_LOCK)
+                  : gapTime(fromT, toT, gp);
               }
               fromP = toP;
               fromT = toT;
             }
-            return beatEnd[beatEnd.length - 1] ?? story.duration();
+            return CREST_END;
           };
           const apply = () => {
             let active = 0;
@@ -822,15 +918,16 @@ export default function V0FullStack() {
             animation: gsap.to(dial, { p: 1, duration: 1, ease: 'none', paused: true, onUpdate: apply }),
             trigger: beats[0] ?? scope,
             start: 'top bottom',
-            endTrigger: beats[beats.length - 1] ?? scope,
-            end: 'top 58%',
+            /* the span runs THROUGH the agents dwell to the band's rest
+               view: the stretch past the last lock-in is the crest's
+               scroll room */
+            endTrigger: scope,
+            end: 'bottom bottom',
             scrub: 0.35,
             onRefresh: (self) => {
               const span = self.end - self.start;
-              beats.forEach((beat, k) => {
-                const lockIn =
-                  beat.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.58;
-                anchors[k] = span > 0 ? gsap.utils.clamp(0, 1, (lockIn - self.start) / span) : 1;
+              beats.forEach((_, k) => {
+                anchors[k] = span > 0 ? gsap.utils.clamp(0, 1, (lockInAt(k) - self.start) / span) : 1;
               });
               apply();
             },
@@ -841,7 +938,11 @@ export default function V0FullStack() {
             ScrollTrigger.create({
               animation: capTl,
               trigger: beats[beats.length - 1],
-              start: 'top 58%',
+              /* the hunk writes from beat 04's LOCK-IN — the same law as
+                 the master's anchors (the copy center taking the read
+                 line, which for the sticky finale is its pin-engage) —
+                 never the window top's early crossing */
+              start: () => lockInAt(beats.length - 1),
               endTrigger: scope,
               end: 'bottom bottom',
               scrub: 0.35,
@@ -1115,18 +1216,19 @@ export default function V0FullStack() {
             setHot(active);
             /* the tower HOLDS each section's standing pose — section k
                shows exactly its own layers (founder: "only the first
-               layer showing up for the first section") — and spends the
-               segment's last BUILD stretch on the next layer's arrival,
-               so it seats exactly as the next section's copy takes the
-               zone. The last segment holds its finished pose through
-               the dwell. */
+               layer showing up for the first section") — and the
+               segment runs the shared hold → build → lock shape, so
+               the next layer seats and STANDS before the next section's
+               copy takes the zone. The last segment's build is the
+               crest: the channel's final run to the rail's top. */
             const heldT = beatEnd[active] ?? story.duration();
-            const nextT = beatEnd[active + 1];
+            const crest = active === beats.length - 1;
+            const nextT = beatEnd[active + 1] ?? CREST_END;
             const segP = gsap.utils.clamp(0, 1, p / SEG - active);
             story.time(
-              nextT === undefined || segP <= 1 - BUILD
-                ? heldT
-                : heldT + ((segP - (1 - BUILD)) / BUILD) * (nextT - heldT)
+              crest
+                ? gapTime(heldT, nextT, segP, CREST_HOLD, CREST_LOCK)
+                : gapTime(heldT, nextT, segP)
             );
             if (capTl) {
               capTl.progress(gsap.utils.clamp(0, 1, (p - CAP_FROM) / (CAP_TO - CAP_FROM)));

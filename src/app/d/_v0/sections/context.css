@@ -309,7 +309,9 @@
 }
 
 .toolchain-root .v0-ctx-dir-pair .is-before {
-  color: rgba(255, 255, 255, 0.42);
+  /* 0.5 is the WCAG AA floor for this size over the band's black —
+     the strike still reads struck against the 0.88 "after" */
+  color: rgba(255, 255, 255, 0.5);
   text-decoration: line-through;
   text-decoration-color: rgba(255, 255, 255, 0.3);
 }
@@ -797,7 +799,8 @@
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx-dir-pair .is-before {
-  color: rgba(7, 7, 7, 0.42);
+  /* on paper the AA floor sits higher: 0.56 black composites to ~#727272 */
+  color: rgba(7, 7, 7, 0.56);
   text-decoration-color: rgba(7, 7, 7, 0.3);
 }
 

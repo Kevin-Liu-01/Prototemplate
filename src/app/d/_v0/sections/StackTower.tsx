@@ -738,7 +738,7 @@ function TopGlyph({ id }: { id: string }) {
                 both grounds alone) */}
             <image
               className='v0s-dash-mark is-light'
-              href='/brand/no-bg-gt-logo-light.png'
+              href='/brand/no-bg-gt-logo-light-96.png'
               x={-6.5}
               y={-4}
               width={13}
@@ -746,7 +746,7 @@ function TopGlyph({ id }: { id: string }) {
             />
             <image
               className='v0s-dash-mark is-dark'
-              href='/brand/no-bg-gt-logo-dark.png'
+              href='/brand/no-bg-gt-logo-dark-96.png'
               x={-6.5}
               y={-4}
               width={13}
@@ -845,7 +845,11 @@ function TopGlyph({ id }: { id: string }) {
               mark's chip across the face to each row's margin — FullStack
               draws wire i just before slat i lands ([data-cap-wire]), so
               the agent visibly WRITES each line (founder). Parked fully
-              undrawn (offset = dasharray) for no-JS and reduced motion. */}
+              undrawn at 101 with the dash gap padded past the path — at
+              a bare '100'/100 a dash boundary sat exactly on the path
+              end and Chromium's dash rounding bled a sub-pixel fleck
+              there (the taps' rule, see the rail tap below) — for no-JS
+              and reduced motion. */}
           {CAP_DIFF_ROWS.map(({ tone }, i) => {
             const y = CAP_DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
             const cy = y + DIFF_D / 2;
@@ -859,8 +863,8 @@ function TopGlyph({ id }: { id: string }) {
                   project(CAP_SIGN_CX - SIGN_ARM - 1, cy, THICK)
                 )}
                 pathLength={100}
-                strokeDasharray={100}
-                strokeDashoffset={100}
+                strokeDasharray='100 200'
+                strokeDashoffset={101}
               />
             );
           })}
@@ -977,13 +981,21 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
                   overshot end disappears into the plate — and IN the slab,
                   so it tracks the plate through every lift and drop;
                   gauge in drawing units, the rail's own, never px */}
+              {/* dasharray '100 200', never '100': the gap must OUTRUN
+                  the path so the parked pose (FullStack folds bends to
+                  −101) keeps every dash edge clear of both path ends —
+                  at a bare '100' the pattern wraps at exactly ±100 and
+                  Chromium's dash rounding bled a sub-pixel accent fleck
+                  onto the rail track at the takeoff (founder's zoomed
+                  screenshot). Offset 0 renders identically: the on-run
+                  still covers the whole path. */}
               <path
                 className={born.has(i) ? 'v0s-leader is-hot' : 'v0s-leader'}
                 data-rail-tap={i}
                 d={geo.tap}
                 strokeWidth={RAIL_GAUGE}
                 pathLength={100}
-                strokeDasharray={100}
+                strokeDasharray='100 200'
                 strokeDashoffset={0}
               />
               {/* the opaque hull — this is what occludes the tower below —
