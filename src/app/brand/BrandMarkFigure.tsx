@@ -4,20 +4,29 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import { GT_OUTLINE_BOX, GT_OUTLINE_PATHS, GT_OUTLINE_VIEWBOX } from './gt-outline';
+
 gsap.registerPlugin(useGSAP);
 
 /**
- * The brand opener's specimen: the monogram set giant in dotted outline,
- * measured by its own layout guides — dashed rules seated exactly on the
- * glyph box's cap, baseline, and side bearings, extending to the figure's
- * edges. The nameplate hero's crop-frame grammar, worn by the mark: the
- * guides are re-seated from the text's live bounding box (fonts included),
- * so they always fit its length and width; on mount they draw outward and
- * the outline's dots march slowly while the figure is on screen. Reduced
- * motion holds the settled sheet.
+ * The brand opener's specimen: the actual GT monogram — its traced
+ * contours, not a typeset stand-in — drawn giant in dotted outline and
+ * measured by its own layout guides: dashed rules seated exactly on the
+ * mark's cap, baseline, and side bearings, extending to the figure's
+ * edges. The nameplate hero's crop-frame grammar, worn by the mark. On
+ * mount everything arrives in one smooth breath (no stagger), then the
+ * dots march slowly while the figure is on screen; reduced motion holds
+ * the settled sheet.
  */
-const VIEW_W = 600;
-const VIEW_H = 440;
+const VB = GT_OUTLINE_VIEWBOX.split(' ').map(Number) as [number, number, number, number];
+
+/** the guides' seats, from the traced bounding box — knowable at build */
+const GUIDE = {
+  top: ((GT_OUTLINE_BOX.y - VB[1]) / VB[3]) * 100,
+  bottom: ((GT_OUTLINE_BOX.y + GT_OUTLINE_BOX.h - VB[1]) / VB[3]) * 100,
+  left: ((GT_OUTLINE_BOX.x - VB[0]) / VB[2]) * 100,
+  right: ((GT_OUTLINE_BOX.x + GT_OUTLINE_BOX.w - VB[0]) / VB[2]) * 100,
+};
 
 export default function BrandMarkFigure() {
   const root = useRef<HTMLElement>(null);
@@ -26,47 +35,19 @@ export default function BrandMarkFigure() {
     () => {
       const rootEl = root.current;
       if (!rootEl) return;
-      const text = rootEl.querySelector<SVGTextElement>('[data-bm-text]');
-      const cap = rootEl.querySelector<HTMLElement>('[data-bm-cap]');
-      const base = rootEl.querySelector<HTMLElement>('[data-bm-base]');
-      const boundL = rootEl.querySelector<HTMLElement>('[data-bm-l]');
-      const boundR = rootEl.querySelector<HTMLElement>('[data-bm-r]');
-      if (!text || !cap || !base || !boundL || !boundR) return;
-
-      /* the guides sit ON the glyph box — measured, never guessed, and
-         re-measured when the face arrives */
-      const seat = () => {
-        const box = text.getBBox();
-        gsap.set(cap, { top: `${(box.y / VIEW_H) * 100}%` });
-        gsap.set(base, { top: `${((box.y + box.height) / VIEW_H) * 100}%` });
-        gsap.set(boundL, { left: `${(box.x / VIEW_W) * 100}%` });
-        gsap.set(boundR, { left: `${((box.x + box.width) / VIEW_W) * 100}%` });
-      };
-      seat();
-      void document.fonts.ready.then(seat);
-
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      gsap.from([cap, base], {
-        scaleX: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-        stagger: 0.08,
-        delay: 0.15,
-      });
-      gsap.from([boundL, boundR], {
-        scaleY: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-        stagger: 0.08,
-        delay: 0.25,
-      });
-      gsap.from(text, { opacity: 0, duration: 1.1, ease: 'power2.out', delay: 0.3 });
+      const lines = gsap.utils.toArray<HTMLElement>('.ptb-fig-line', rootEl);
+      const marks = gsap.utils.toArray<SVGPathElement>('.ptb-fig-gt', rootEl);
 
-      /* the dots march — one dash period at a time, only while watched */
-      const march = gsap.to(text, {
-        strokeDashoffset: -70,
-        duration: 16,
+      /* one smooth arrival — guides and outline together, no stagger */
+      gsap.from(lines, { opacity: 0, duration: 1.4, ease: 'power2.out' });
+      gsap.from(marks, { opacity: 0, duration: 1.4, ease: 'power2.out' });
+
+      /* the dots march — continuous and linear, only while watched */
+      const march = gsap.to(marks, {
+        strokeDashoffset: -63,
+        duration: 14,
         ease: 'none',
         repeat: -1,
         paused: true,
@@ -86,30 +67,19 @@ export default function BrandMarkFigure() {
 
   return (
     <figure
-      aria-label='The GT monogram set giant in dotted outline, measured by dashed layout guides seated on its own width and height.'
+      aria-label='The GT monogram traced in dotted outline, measured by dashed layout guides seated on its own width and height.'
       className='ptb-hero-fig'
       ref={root}
       role='img'
     >
-      <i aria-hidden className='ptb-fig-line is-h' data-bm-cap />
-      <i aria-hidden className='ptb-fig-line is-h' data-bm-base />
-      <i aria-hidden className='ptb-fig-line is-v' data-bm-l />
-      <i aria-hidden className='ptb-fig-line is-v' data-bm-r />
-      <span aria-hidden className='ptb-fig-spec'>
-        the mark · outline
-      </span>
-      <svg aria-hidden viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}>
-        <text
-          className='ptb-fig-gt'
-          data-bm-text
-          lengthAdjust='spacingAndGlyphs'
-          textAnchor='middle'
-          textLength={480}
-          x={VIEW_W / 2}
-          y={352}
-        >
-          GT
-        </text>
+      <i aria-hidden className='ptb-fig-line is-h' style={{ top: `${GUIDE.top}%` }} />
+      <i aria-hidden className='ptb-fig-line is-h' style={{ top: `${GUIDE.bottom}%` }} />
+      <i aria-hidden className='ptb-fig-line is-v' style={{ left: `${GUIDE.left}%` }} />
+      <i aria-hidden className='ptb-fig-line is-v' style={{ left: `${GUIDE.right}%` }} />
+      <svg aria-hidden viewBox={GT_OUTLINE_VIEWBOX}>
+        {GT_OUTLINE_PATHS.map((d) => (
+          <path className='ptb-fig-gt' d={d} key={d.slice(0, 24)} />
+        ))}
       </svg>
     </figure>
   );
