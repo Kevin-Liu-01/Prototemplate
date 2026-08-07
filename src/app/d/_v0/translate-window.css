@@ -238,6 +238,23 @@
   content: none;
 }
 
+/* THE SEAM ESCAPES THE WINDOW (founder: "make this slider go all the
+   way to the edge" — and never crop it): the base window's crops exist
+   to terminate the app card's full-reach frame rules and to round the
+   toolchain window's corners — this surface has NEITHER (the rules are
+   cut above, the v0 window is square, the faces never slide), so the
+   stage and the window open and the handle straddles the window's edge
+   whole at the full 0-100% travel. Everything inside carries its own
+   crop already: the belt masks itself, the payload clips by clip-path,
+   the app's surface is box-bound. */
+.toolchain-root .v0-tw .tct-stage {
+  overflow: visible;
+}
+
+.toolchain-root .tct-win.v0-tw {
+  overflow: visible;
+}
+
 /* the app's content re-breathes: the main centres its block in the
    full-height canvas. Its RIGHT padding mirrors the RESTING cut (12%
    of the surface stays payload teaser, plus seam clearance), so the

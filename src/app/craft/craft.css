@@ -542,7 +542,12 @@
   inset: 40px 8% 22px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 8px;
-  overflow: hidden;
+  /* NO crop on the box (founder: "make this slider go all the way to
+     the edge" — and never cut it off): the handle travels the full
+     0-100% and straddles the border at the extremes, hanging over the
+     plate. The layers crop THEMSELVES — the payload layer's clip-path
+     carries the box's right-corner rounding below. */
+  overflow: visible;
 }
 
 .ptc-seam-main,
@@ -559,11 +564,16 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-/* the payload layer: full-width and pinned, revealed in place by the cut */
+/* the payload layer: full-width and pinned, revealed in place by the cut.
+   The clip rounds the BOX-side corners itself (7px = the box radius less
+   its 1px border) now that the box no longer crops; the cut edge stays
+   square. At cut 0 the layer's square left corners overpaint the border
+   curve by a raised-ink sliver on the ink plate — beneath the contrast
+   floor. */
 .ptc-seam-under {
   display: flex;
   justify-content: flex-end;
-  clip-path: inset(0 0 0 var(--seam-cut, 58%));
+  clip-path: inset(0 0 0 var(--seam-cut, 58%) round 0 7px 7px 0);
   background: var(--color-ink-raised);
 }
 
@@ -600,7 +610,6 @@
   position: absolute;
   top: 0;
   bottom: 0;
-<<<<<<< HEAD
   /* the flush stops (founder, two rounds: "make this slider go all the
      way to the edge" then "slider is going ever so slightly over now"):
      the handle rides the cut, and at either extreme it parks with the
@@ -609,11 +618,6 @@
      riding a hair past is its natural overhang) — 4.5px is half the
      bar's visible 9px. The clip itself still travels the full 0-100%. */
   left: clamp(var(--seam-edge, 4.5px), var(--seam-cut, 58%), calc(100% - var(--seam-edge, 4.5px)));
-=======
-  /* end-stops: the handle parks just inside the box at the extremes
-     (founder: "don't crop the slider") — the clip still travels 0-100% */
-  left: clamp(var(--seam-edge, 12px), var(--seam-cut, 58%), calc(100% - var(--seam-edge, 12px)));
->>>>>>> parent of 1bfdf47f7 (fix(seam): flush stops and the window escape — to the edge, never over)
   z-index: 3;
   width: 64px;
   transform: translateX(-50%);

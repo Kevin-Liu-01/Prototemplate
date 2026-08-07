@@ -577,15 +577,9 @@
    the vertical cut line until the reader has dragged once. */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-drag-hint {
   position: absolute;
-<<<<<<< HEAD
   /* rides the handle's own flush stops so hint and grip never detach
      at the extremes */
   left: clamp(var(--seam-edge, 4.5px), var(--seam-cut, 70%), calc(100% - var(--seam-edge, 4.5px)));
-=======
-  /* rides the handle's own clamped seat so hint and grip never detach
-     at the extremes (the seam end-stops — "don't crop the slider") */
-  left: clamp(var(--seam-edge, 12px), var(--seam-cut, 70%), calc(100% - var(--seam-edge, 12px)));
->>>>>>> parent of 1bfdf47f7 (fix(seam): flush stops and the window escape — to the edge, never over)
   top: 54%;
   transform: translate(12px, -50%);
   z-index: 3;

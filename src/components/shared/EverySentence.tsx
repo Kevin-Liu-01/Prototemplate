@@ -511,15 +511,7 @@ export default function EverySentence({
                 ctx.fillText(ln, x0, li * lineH + base);
               });
             } else {
-              /* single line, same seating: the em's own box IS the line
-                 box, so the baseline sits at half-leading + ascent of it */
-              const base = (ch - (asc + desc)) / 2 + asc;
-              sh = Math.max(ch, Math.ceil(base + desc) + 4);
-              if (sh !== ch) {
-                canvas.height = sh;
-                applyFont();
-              }
-              ctx.fillText(text, 0, base);
+              ctx.fillText(text, 0, ch * 0.85);
             }
             const img = ctx.getImageData(0, 0, sw, sh).data;
             const scan = (step: number) => {
