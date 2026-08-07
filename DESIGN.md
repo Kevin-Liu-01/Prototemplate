@@ -222,3 +222,7 @@ IntersectionObserver arms the plate), pause offscreen and on hidden tabs by
 its own observer, render exactly one still under reduced motion, and
 `destroy()` releases everything the instance owns (shared GL contexts
 persist for the session by design). Ink re-resolves on `data-theme` flips.
+Where an engine has quality tiers, quality follows **measured** frame cost,
+not just the window: glyph-field's frame-time governor ratchets a slow
+device down the phone cut's own ladder (lean device-pixel cap, then the
+lean pool), down only, with pool cuts applied at idle.

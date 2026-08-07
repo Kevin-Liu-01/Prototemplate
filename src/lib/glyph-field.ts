@@ -183,8 +183,12 @@ const DPR_CAP_NARROW = 1.25;
  */
 const GOV_BUDGET_MS = 22;
 const GOV_WINDOW = 120;
-const GOV_TRIP = 0.75;
+/* a third of frames blown is a janky scene even when the median holds —
+   healthy machines sit under 5% with GC spikes included */
+const GOV_TRIP = 0.35;
 const GOV_WARMUP_MS = 2500;
+/* past this, it's a tab gap, not a slow frame — skip the sample */
+const GOV_GAP_MS = 900;
 
 /* The loop, in seconds: print, hold, peel, fly. Each formed word LINGERS —
    the caliper fades in, stands for a beat, and fades back out — then the
@@ -1438,12 +1442,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
      step the ladder down when the paint proves it can't keep up */
   function govern(ts: number, dtMs: number): void {
     if (narrow || govTier >= 2) return;
-    if (dtMs > 250) {
-      /* a tab switch or one-off hitch, not a cadence — drop the window */
-      govCount = 0;
-      govOver = 0;
-      return;
-    }
+    if (dtMs > GOV_GAP_MS) return;
     if (govBornAt === 0) {
       govBornAt = ts;
       return;

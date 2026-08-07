@@ -9,7 +9,7 @@ repos.
 | library | entry point | one line |
 | --- | --- | --- |
 | horizon-field | `src/lib/horizon-field.ts` | WebGL lensing black hole; handle: setParams / pause / resume / renderStatic / destroy. Draws nothing until given a geometry (center + radius). |
-| glyph-field | `src/lib/glyph-field.ts` | Canvas glyph rain, 1,280-glyph typed-array pool, Bayer-dithered far tier, matter-conserving morphs. Options: `drift: 'fall'\|'rise'`, `copy: 'auto'\|'left'\|'top'\|'none'`, `glyphScale`. |
+| glyph-field | `src/lib/glyph-field.ts` | Canvas glyph rain, 1,280-glyph typed-array pool, Bayer-dithered far tier, matter-conserving morphs. Options: `drift: 'fall'\|'rise'`, `copy: 'auto'\|'left'\|'top'\|'none'`, `glyphScale`. A frame-time governor steps quality down (lean dpr, then the lean pool) when measured cadence proves the device can't keep up — down only, pool cuts at idle. |
 | prismatic-field | `src/components/shared/PrismaticField.tsx` | The chroma wash behind dark bands; presets `'1'`/`'2'`, `exposureScale` is the dimmer. |
 | dither | `src/lib/dither.ts` | CPU 1-bit renderer: any `fn(u,v,t)→0..1` through the 8×8 Bayer screen; field factories (radialBurst, globe, streakBands, gradientRamp, makeGlyphField) + combinators. |
 | studio-field | `src/lib/studio-field.ts` | GPU Bayer family — the codified `BAYER_PRESETS` roster (10 variants, default `BAYER_DEFAULT_ID` = 02 bayer-8x8). Switch by remount; one shared GL context. React wrapper: `src/components/shared/StudioField.tsx`. |
