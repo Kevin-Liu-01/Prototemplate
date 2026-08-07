@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
+import TcMobileNav from '@/components/shared/TcMobileNav';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -307,6 +308,18 @@ export default function V0Nav(): ReactNode {
             Get a demo
           </a>
         </div>
+
+        {/* the phone menu: burger + ruled sheet, last in the -in column so
+            the sheet seats absolutely under the bar */}
+        <TcMobileNav
+          items={[
+            { label: 'Enterprise', href: `${base}/enterprise` },
+            { label: 'Pricing', href: `${base}/pricing` },
+            { label: 'Locadex', href: `${base}/locadex` },
+            { label: 'Sign in', href: 'https://dash.generaltranslation.com', external: true },
+            { label: 'Get a demo', href: '#deploy' },
+          ]}
+        />
       </div>
     </header>
   );

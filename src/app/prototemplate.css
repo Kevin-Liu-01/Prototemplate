@@ -177,31 +177,211 @@
   color: var(--pt-ink);
 }
 
-/* ---- the nav on a phone: the brand keeps its row and the links take
-   their own full-width line below — nothing crams, nothing breaks
-   mid-word, and the hover-only Toolchain menu stands down ---- */
+/* ---- the search chip: a hairline box beside the theme switch, with the
+   shortcut said once in the mono voice ---- */
+.pt-nav-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 9px;
+  border: 1px solid var(--pt-hair);
+  border-radius: 6px;
+  background: none;
+  background-clip: padding-box;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--pt-ink-3);
+  cursor: pointer;
+}
+
+.pt-nav-search:hover {
+  color: var(--pt-ink);
+}
+
+.pt-nav-search kbd {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--pt-hair-2);
+  font-family: var(--pt-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-3);
+}
+
+/* ---- the ⌘K palette: one hairline panel on the page's own paper ---- */
+.pt-kbar {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh 16px 16px;
+  background: rgba(7, 7, 7, 0.44);
+}
+
+.pt-kbar-panel {
+  width: min(560px, 100%);
+  border: 1px solid var(--pt-hair);
+  border-radius: 12px;
+  background: var(--pt-paper);
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+.pt-kbar-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--pt-hair);
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  color: var(--pt-ink);
+}
+
+.pt-kbar-input:focus {
+  outline: none;
+}
+
+.pt-kbar-input::placeholder {
+  color: var(--pt-ink-4);
+}
+
+.pt-kbar-list {
+  display: grid;
+  max-height: 320px;
+  padding: 6px;
+  overflow-y: auto;
+}
+
+.pt-kbar-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: var(--pt-ink-2);
+  cursor: pointer;
+}
+
+.pt-kbar-row[data-on='true'] {
+  background: var(--pt-hair-2);
+  color: var(--pt-ink);
+}
+
+.pt-kbar-row em {
+  font-style: normal;
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-4);
+}
+
+.pt-kbar-empty {
+  padding: 14px 12px;
+  font-size: 13.5px;
+  color: var(--pt-ink-3);
+}
+
+.pt-kbar-hint {
+  padding: 8px 14px 10px;
+  border-top: 1px solid var(--pt-hair-2);
+  font-size: 11px;
+  color: var(--pt-ink-4);
+}
+
+.pt-kbar-hint kbd {
+  font-family: var(--pt-mono);
+  font-size: 10px;
+}
+
+/* ---- the phone nav: the link row stands down behind a burger — two
+   stacked hairlines, the brand's own doubled line — that opens a ruled
+   sheet under the bar; the nav's border-bottom stays the single close ---- */
+.pt-nav-burger {
+  display: none;
+}
+
+.pt-nav-sheet {
+  display: none;
+}
+
+.pt-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (max-width: 720px) {
   .pt-nav {
     flex-wrap: wrap;
-    row-gap: 10px;
     padding-top: 12px;
     padding-bottom: 12px;
   }
 
-  .pt-nav-right {
-    flex: 1 0 100%;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    row-gap: 8px;
-  }
-
-  .pt-nav-right > a,
-  .pt-root .pt-nav-present {
-    white-space: nowrap;
-  }
-
-  .pt-menu {
+  .pt-nav-right .pt-nav-link,
+  .pt-nav-right .pt-menu,
+  .pt-root .pt-nav-right .pt-nav-present,
+  .pt-root .pt-nav-right .pt-nav-github {
     display: none;
+  }
+
+  .pt-nav-burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 4px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .pt-nav-burger i {
+    display: block;
+    width: 17px;
+    height: 1px;
+    background: var(--pt-ink);
+  }
+
+  .pt-nav-sheet {
+    display: grid;
+    flex-basis: 100%;
+    margin-top: 4px;
+  }
+
+  .pt-nav-sheet[hidden] {
+    display: none;
+  }
+
+  .pt-nav-sheet a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 12px 2px;
+    border-top: 1px solid var(--pt-hair-2);
+    font-size: 14.5px;
+    color: var(--pt-ink);
+  }
+
+  .pt-nav-sheet-tag {
+    font-family: var(--pt-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--pt-ink-4);
   }
 }
 

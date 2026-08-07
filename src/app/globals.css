@@ -105,6 +105,14 @@ html::-webkit-scrollbar-thumb {
   color: #ffffff;
 }
 
+/* the desktop gutter is gone on a phone — the chip steps below the nav
+   band instead of covering the brand */
+@media (max-width: 700px) {
+  .dd-back {
+    top: 70px;
+  }
+}
+
 [data-theme='dark'] .dd-back {
   background: #070707;
   color: #ffffff;

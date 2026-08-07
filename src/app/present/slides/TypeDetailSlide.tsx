@@ -175,7 +175,13 @@ export default function TypeDetailSlide() {
       // coordinate space at the same instant, which survives pin reverts,
       // refreshes, and late font loads. At p=1 this converges exactly onto
       // the anchor, so nothing is left to snap afterwards.
+      /* On narrow decks the overlay lines wrap (≤860 un-nowraps them), so
+         the single-line-box flight math mis-measures — the pair stays in
+         its stacked columns and every other beat (scramble, growth, the
+         red breath) still reads. */
+      const narrowDeck = window.matchMedia('(max-width: 860px)').matches;
       const placePair = () => {
+        if (narrowDeck) return;
         const els = flightEls();
         if (els.some((el) => !el)) return;
         if (fly.p <= 0.001) {

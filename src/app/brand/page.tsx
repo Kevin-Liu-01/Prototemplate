@@ -4,7 +4,7 @@ import Link from 'next/link';
 import ReassemblerDemo from '../craft/ReassemblerDemo';
 import AttributeScales, { AESTHETIC, PERSONALITY } from './AttributeScales';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
-import ThemeToggle from '@/components/shared/ThemeToggle';
+import PtNav from '@/components/shared/PtNav';
 
 import '../prototemplate.css';
 import './brand.css';
@@ -56,37 +56,14 @@ const PILL_LOCS = ['en-GB', 'es', 'ja', 'ar-EG', 'ko', 'zh-Hant', 'hi', 'pt'] as
  * The brand book — General Translation's identity laid out in one ruled
  * column, for anyone who has to build with it (including basement studio).
  * The written canon is BRAND.md (served at /docs/brand); the laws behind
- * the visuals are DESIGN.md; the engines run live on /craft; and the
+ * the visuals are DESIGN.md; the engines run live on /docs; and the
  * completed reference application is the Dossier.
  */
 export default function BrandPage() {
   return (
     <main className={`pt-root ${fraunces.variable} ${grotesk.variable}`}>
       <div className='pt-rail'>
-        <header className='pt-nav'>
-          <Link className='pt-nav-brand' href='/'>
-            <span className='pt-mark' aria-hidden>
-              <i className='pt-mark-line is-h is-top' />
-              <i className='pt-mark-line is-h is-bot' />
-              <i className='pt-mark-line is-v is-l' />
-              <i className='pt-mark-line is-v is-r' />
-              <i className='pt-mark-fill' />
-            </span>
-            <span className='pt-brand-word'>
-              <b className='pt-face-serif'>proto</b>
-              <b className='pt-face-grot'>template</b>
-            </span>
-          </Link>
-          <div className='pt-nav-right'>
-            <ThemeToggle className='pt-nav-theme' />
-            <Link href='/'>Index</Link>
-            <Link href='/craft'>Craft</Link>
-            <Link href='/docs'>Docs</Link>
-            <Link className='pt-nav-present' href='/present'>
-              Present <span aria-hidden>▶</span>
-            </Link>
-          </div>
-        </header>
+        <PtNav />
 
         <article className='pt-post'>
           <section className='pt-sec pt-post-sec'>
@@ -98,7 +75,7 @@ export default function BrandPage() {
               recognizable — written for anyone who has to build with it, including our
               partners at basement studio. The visual laws behind everything here are codified
               in <Link href='/docs/design'>the design system</Link>; every engine runs live on{' '}
-              <Link href='/craft'>the craft page</Link>; and the completed reference
+              <Link href='/docs'>the docs page</Link>; and the completed reference
               application is <Link href='/d/singularity-dossier'>the Dossier</Link> — treat it
               as the finished statement of this identity, not a concept.
             </p>
@@ -106,7 +83,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='the-name'>
             <h2>The name</h2>
             <p>
               <strong>General Translation</strong> was chosen deliberately, in this order.
@@ -129,7 +106,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='the-idea'>
             <h2>The idea</h2>
             <p className='ptb-thesis'>Every product in every language.</p>
             <p>
@@ -163,7 +140,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='the-character'>
             <h2>The character</h2>
             <p>
               The brand carries itself like a <strong>fullstack director</strong>: it writes
@@ -200,7 +177,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='the-mark'>
             <h2>The mark</h2>
             <p>
               Every stroke of the GT monogram is two parallel lines — the doubled-line grammar
@@ -234,7 +211,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='color'>
             <h2>Color</h2>
             <p>
               Four absolute colors, one spectral accent per page. Structural color everywhere
@@ -273,7 +250,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='type'>
             <h2>Type</h2>
             <p>
               Two faces carry the brand. <strong>Switzer</strong> is the display and UI voice —
@@ -309,7 +286,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='language-as-material'>
             <h2>Language as material</h2>
             <p>
               The signature device: glyphs — characters that make up greater wholes. Writing
@@ -334,7 +311,7 @@ export default function BrandPage() {
             <div className='ptb-devices'>
               {DEVICES.map(([name, what]) => (
                 <div className='ptb-device-row' key={name}>
-                  <Link href={`/craft#${name}`}>
+                  <Link href={`/docs#${name}`}>
                     <b>{name}</b>
                   </Link>
                   <span>{what}</span>
@@ -343,13 +320,13 @@ export default function BrandPage() {
             </div>
             <p>
               Every device above runs live, with its API, on{' '}
-              <Link href='/craft'>the craft page</Link>.
+              <Link href='/docs'>the docs page</Link>.
             </p>
           </section>
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='the-completed-reference'>
             <h2>The completed reference</h2>
             <p>
               <strong>The Dossier is the completed version of this identity in application</strong>{' '}
@@ -382,7 +359,7 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec'>
+          <section className='pt-sec pt-post-sec' id='context-for-partners'>
             <h2>Context for partners</h2>
             <p>
               AI developer tools: the full stack for localization — i18n libraries,

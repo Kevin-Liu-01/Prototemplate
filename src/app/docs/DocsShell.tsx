@@ -3,10 +3,11 @@ import { join } from 'node:path';
 
 import { Fraunces, Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import Markdown from './markdown';
 import { DOCS } from './registry';
-import ThemeToggle from '@/components/shared/ThemeToggle';
+import PtNav from '@/components/shared/PtNav';
 
 import '../prototemplate.css';
 import './docs.css';
@@ -27,38 +28,18 @@ export function readDoc(file: string): string {
 export default function DocsShell({
   active,
   source,
+  children,
 }: {
   /** the active doc slug, or null for the index (README) */
   active: string | null;
   source: string;
+  /** rendered after the document — the index mounts the build log here */
+  children?: ReactNode;
 }) {
   return (
     <main className={`pt-root ${fraunces.variable} ${grotesk.variable}`}>
       <div className='pt-rail'>
-        <header className='pt-nav'>
-          <Link className='pt-nav-brand' href='/'>
-            <span className='pt-mark' aria-hidden>
-              <i className='pt-mark-line is-h is-top' />
-              <i className='pt-mark-line is-h is-bot' />
-              <i className='pt-mark-line is-v is-l' />
-              <i className='pt-mark-line is-v is-r' />
-              <i className='pt-mark-fill' />
-            </span>
-            <span className='pt-brand-word'>
-              <b className='pt-face-serif'>proto</b>
-              <b className='pt-face-grot'>template</b>
-            </span>
-          </Link>
-          <div className='pt-nav-right'>
-            <ThemeToggle className='pt-nav-theme' />
-            <Link href='/'>Index</Link>
-            <Link href='/brand'>Brand</Link>
-            <Link href='/craft'>Craft</Link>
-            <Link className='pt-nav-present' href='/present'>
-              Present <span aria-hidden>▶</span>
-            </Link>
-          </div>
-        </header>
+        <PtNav />
 
         {/* the set, named once: mono chips under the nav — the active doc
             is the only ink */}
@@ -79,13 +60,15 @@ export default function DocsShell({
           </section>
         </article>
 
+        {children}
+
         <div className='pt-hatch' aria-hidden='true' />
 
         <section className='pt-sec pt-post-sec'>
           <p className='pt-site-links'>
             <Link href='/'>back to the index</Link>
             <span aria-hidden> · </span>
-            <Link href='/craft'>read the build log</Link>
+            <Link href='/brand'>read the brand book</Link>
             <span aria-hidden> · </span>
             <Link href='/present'>walk the deck</Link>
           </p>

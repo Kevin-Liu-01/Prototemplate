@@ -253,17 +253,19 @@
   font-size: 13.5px;
 }
 
-.singularity-root .tc-nav-right > a:first-child {
+/* the theme toggle is the right cluster's first child, so "Sign in" is
+   the anchor AFTER it — :first-child never matched an <a> here */
+.singularity-root .tc-nav-right > .tc-nav-theme + a {
   color: var(--tc-ink-2);
 }
 
-.singularity-root .tc-nav-right > a:first-child:hover {
+.singularity-root .tc-nav-right > .tc-nav-theme + a:hover {
   color: var(--tc-ink);
 }
 
 @media (max-width: 860px) {
   .singularity-root .tc-nav-links,
-  .singularity-root .tc-nav-right > a:first-child {
+  .singularity-root .tc-nav-right > .tc-nav-theme + a {
     display: none;
   }
 }
@@ -2688,6 +2690,12 @@
   .singularity-root .tc-nav-in,
   .singularity-root .tc-band-in {
     border-inline: 0;
+  }
+
+  /* the outer rail pair stands down with the inner — an open phone sheet
+     must not be crossed by the ±10px verticals */
+  .singularity-root .tc-nav-in::before {
+    display: none;
   }
 
   .singularity-root .tc-plain ul {

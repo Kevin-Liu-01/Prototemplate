@@ -6,8 +6,8 @@ live pages (never mockups), plus the tooling that judges them. **The
 Dossier (`/d/singularity-dossier`) is the completed direction** — the
 canonical statement of the identity in application. The index (`/`) is the
 working file; `/brand` is the identity book; `/present` walks the deck;
-`/craft` is the build log with the laws, the auditors, and every library
-running live; `/docs` serves the written canon.
+`/docs` serves the written canon and, right below this tour, the whole
+build log — the laws, the auditors, and every library running live.
 
 ## Run it
 

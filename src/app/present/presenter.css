@@ -2378,9 +2378,12 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1020px) {
-  /* Rail labels hide below here, so content can take the viewport again. */
+  /* Rail labels hide below here, so content can take the viewport again.
+     The stage must fit INSIDE .pr-phase's 8vw-per-side padding (84vw of
+     content box) — 92vw overflowed by 8vw and clipped every stage-width
+     element at the right edge. */
   .pr-root {
-    --pr-stage-w: 92vw;
+    --pr-stage-w: 84vw;
   }
 
   .pr-demo-grid {
@@ -2432,8 +2435,59 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     display: none;
   }
 
+  /* the stage tracks the phase's 5vw padding; the extra bottom padding
+     reserves the fixed dock's landing strip so it never sits on content */
+  .pr-root {
+    --pr-stage-w: 90vw;
+  }
+
   .pr-phase {
-    padding: 5vh 5vw;
+    padding: 5vh 5vw 96px;
+  }
+
+  .pr-detail-main,
+  .pr-detail-close {
+    padding-bottom: 96px;
+  }
+
+  /* the desktop clamp floors read as a zoomed-in desktop at 375px —
+     phone-scale floors for the display lines */
+  .pr-why-big {
+    font-size: clamp(44px, 13vw, 90px);
+  }
+
+  .pr-beat-title {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+
+  .pr-detail-big {
+    font-size: clamp(24px, 7.4vw, 40px);
+  }
+
+  .pr-overlay-line {
+    font-size: clamp(20px, 6.4vw, 40px);
+  }
+
+  /* the overlay guides bled 1vw per side past their padded parent */
+  .pr-overlay-guides {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+
+  /* the craft plates: wide enough to hold their contents, and the swatch
+     row wraps instead of running 482px through a 232px plate */
+  .pr-plate {
+    width: 86vw;
+  }
+
+  .pr-swatch-row {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pr-swatch {
+    width: clamp(64px, 22vw, 110px);
   }
 
   .pr-pipe-node {

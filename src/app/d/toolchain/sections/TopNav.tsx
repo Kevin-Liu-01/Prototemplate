@@ -22,6 +22,7 @@ import {
   SquareTerminal,
 } from 'lucide-react';
 
+import TcMobileNav from '@/components/shared/TcMobileNav';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
 type IconProps = { className?: string; color?: string; size?: number; strokeWidth?: number; 'aria-hidden'?: boolean };
@@ -172,6 +173,19 @@ export default function TopNav(): ReactNode {
             Get a demo
           </a>
         </div>
+
+        {/* the phone menu: burger + ruled sheet, last in the -in column so
+            the sheet seats absolutely under the bar */}
+        <TcMobileNav
+          items={[
+            { label: 'Locadex', href: '/d/toolchain/locadex' },
+            { label: 'Context', href: '/d/toolchain/context' },
+            { label: 'Pricing', href: '/d/toolchain/pricing' },
+            { label: 'Enterprise', href: '/d/toolchain/enterprise' },
+            { label: 'Sign in', href: '#pricing' },
+            { label: 'Get a demo', href: '#pricing' },
+          ]}
+        />
       </div>
     </header>
   );

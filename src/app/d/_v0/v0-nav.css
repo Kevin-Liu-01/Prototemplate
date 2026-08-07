@@ -348,3 +348,90 @@
   padding: 0 13px;
   font-size: 12.5px;
 }
+
+/* ============================================================
+   THE PHONE NAV — the shared TcMobileNav burger + sheet, inked
+   for the v0 homes: links stand down behind two stacked
+   hairlines, the sheet seats absolutely under the bar (the -in
+   column is the positioning context). The demo chip yields the
+   bar below 620, the wordmark below 430; both keep sheet rows.
+   ============================================================ */
+
+.toolchain-root .v0-nav .tc-nav-burger {
+  display: none;
+}
+
+.toolchain-root .v0-nav .tc-nav-sheet {
+  display: none;
+}
+
+.toolchain-root .v0-nav .tc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 860px) {
+  .toolchain-root .v0-nav .tc-nav-burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 2px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .toolchain-root .v0-nav .tc-nav-burger i {
+    display: block;
+    width: 17px;
+    height: 1px;
+    background: var(--tc-ink);
+  }
+
+  .toolchain-root .v0-nav .tc-nav-sheet {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    display: grid;
+    padding: 2px var(--tc-gut) 10px;
+    background: var(--tc-paper);
+    border-bottom: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .v0-nav .tc-nav-sheet[hidden] {
+    display: none;
+  }
+
+  .toolchain-root .v0-nav .tc-nav-sheet a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-top: 1px solid var(--tc-hair-2);
+    font-size: 14px;
+    color: var(--tc-ink);
+  }
+}
+
+@media (max-width: 620px) {
+  .toolchain-root .v0-nav .v0-nav-right .v0-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .toolchain-root .v0-nav .v0-nav-brand {
+    font-size: 0;
+    gap: 0;
+  }
+}

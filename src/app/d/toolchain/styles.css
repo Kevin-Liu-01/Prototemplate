@@ -268,18 +268,102 @@
   font-size: 13.5px;
 }
 
-.toolchain-root .tc-nav-right > a:first-child {
+/* the theme toggle is the right cluster's first child, so "Sign in" is
+   the anchor AFTER it — :first-child never matched an <a> here */
+.toolchain-root .tc-nav-right > .tc-nav-theme + a {
   color: var(--tc-ink-2);
 }
 
-.toolchain-root .tc-nav-right > a:first-child:hover {
+.toolchain-root .tc-nav-right > .tc-nav-theme + a:hover {
   color: var(--tc-ink);
+}
+
+/* ---- the phone nav: links stand down behind a burger — two stacked
+   hairlines, the brand's doubled line — that opens a ruled sheet seated
+   absolutely under the bar (the -in column is the positioning context) ---- */
+.toolchain-root .tc-nav-burger {
+  display: none;
+}
+
+.toolchain-root .tc-nav-sheet {
+  display: none;
+}
+
+.toolchain-root .tc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (max-width: 860px) {
   .toolchain-root .tc-nav-links,
-  .toolchain-root .tc-nav-right > a:first-child {
+  .toolchain-root .tc-nav-right > .tc-nav-theme + a {
     display: none;
+  }
+
+  .toolchain-root .tc-nav-burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 2px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .toolchain-root .tc-nav-burger i {
+    display: block;
+    width: 17px;
+    height: 1px;
+    background: var(--tc-ink);
+  }
+
+  .toolchain-root .tc-nav-sheet {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    display: grid;
+    padding: 2px var(--tc-gut) 10px;
+    background: var(--tc-paper);
+    border-bottom: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root .tc-nav-sheet[hidden] {
+    display: none;
+  }
+
+  .toolchain-root .tc-nav-sheet a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-top: 1px solid var(--tc-hair-2);
+    font-size: 14px;
+    color: var(--tc-ink);
+  }
+}
+
+@media (max-width: 620px) {
+  /* the demo chip yields the bar to the brand; it keeps its sheet row */
+  .toolchain-root .tc-nav-right .tc-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  /* logo-only brand: the wordmark stands down, the mark keeps the seat */
+  .toolchain-root .tc-nav-brand {
+    font-size: 0;
+    gap: 0;
   }
 }
 
@@ -2012,6 +2096,12 @@
   .toolchain-root .tc-nav-in,
   .toolchain-root .tc-band-in {
     border-inline: 0;
+  }
+
+  /* the outer rail pair stands down with the inner — an open phone sheet
+     must not be crossed by the ±10px verticals */
+  .toolchain-root .tc-nav-in::before {
+    display: none;
   }
 
   .toolchain-root .tc-plain ul {

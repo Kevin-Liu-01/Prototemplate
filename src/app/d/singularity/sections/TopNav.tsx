@@ -25,6 +25,7 @@ import {
   SquareTerminal,
 } from 'lucide-react';
 
+import TcMobileNav from '@/components/shared/TcMobileNav';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
 import './topnav-menu.css';
@@ -190,6 +191,18 @@ export default function TopNav(): ReactNode {
             Get a demo
           </a>
         </div>
+
+        {/* the phone menu: burger + ruled sheet, last in the -in column so
+            the sheet seats absolutely under the bar */}
+        <TcMobileNav
+          items={[
+            { label: 'Locadex', href: `${base}/locadex` },
+            { label: 'Pricing', href: `${base}/pricing` },
+            { label: 'Enterprise', href: `${base}/enterprise` },
+            { label: 'Sign in', href: 'https://dash.generaltranslation.com', external: true },
+            { label: 'Get a demo', href: `${base}/enterprise` },
+          ]}
+        />
       </div>
     </header>
   );
