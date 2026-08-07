@@ -21,9 +21,20 @@
   position: absolute;
   top: 0;
   bottom: 0;
+<<<<<<< HEAD
+  /* the flush stops (founder, two rounds: "make this slider go all the
+     way to the edge" then "slider is going ever so slightly over now"):
+     the handle rides the cut, and at either extreme it parks with the
+     THREAD BAR'S OUTER EDGE exactly on the box edge (founder round 4:
+     the BAR, not the wider grip tab, is the slider's edge — the tab
+     riding a hair past is its natural overhang) — 4.5px is half the
+     bar's visible 9px. The clip itself still travels the full 0-100%. */
+  left: clamp(var(--seam-edge, 4.5px), var(--seam-cut, 70%), calc(100% - var(--seam-edge, 4.5px)));
+=======
   /* end-stops: the handle parks just inside the box at the extremes
      (founder: "don't crop the slider") — the clip still travels 0-100% */
   left: clamp(var(--seam-edge, 12px), var(--seam-cut, 70%), calc(100% - var(--seam-edge, 12px)));
+>>>>>>> parent of 1bfdf47f7 (fix(seam): flush stops and the window escape — to the edge, never over)
   z-index: 3;
   width: 18px;
   transform: translateX(-50%);
