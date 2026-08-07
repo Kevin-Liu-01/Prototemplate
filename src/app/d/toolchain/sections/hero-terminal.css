@@ -421,13 +421,7 @@
   /* Founder: the extended rules match the header's own rule exactly. */
   --tct-frame: var(--tct-rule, rgba(255, 255, 255, 0.09));
   position: relative;
-  /* the 24px yield: at widths where the card would run flush to the
-     stage, it keeps a 12px gutter per side instead — the seam handle's
-     grip (±8px around the cut) stays whole at the full 0-100% travel
-     rather than losing half to the stage's clip (founder: "make this
-     slider go all the way to the edge" — and never crop it). Desktop
-     widths never feel it: min() still picks 460. */
-  width: min(460px, 100% - 24px);
+  width: min(460px, 100%);
   border-radius: 0;
   background: #ffffff;
   color: #070707;
