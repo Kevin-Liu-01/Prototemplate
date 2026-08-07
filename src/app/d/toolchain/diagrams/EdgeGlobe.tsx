@@ -173,6 +173,9 @@ const CAPS: Arc[] = [CAP, -CAP].flatMap((lat) => splitArcs(ring(lat), true));
 
 type Pop = {
   code: string;
+  /** The compact rendering's name — the PoP's airport code (founder: the
+      ap-* region codes overran the viewBox at the phone step's 12px). */
+  short: string;
   lat: number;
   lon: number;
   /** Corner-routed leader: node → elbow → horizontal run to the label. */
@@ -195,11 +198,11 @@ type Pop = {
    node dot by 21+ units. The right rail keeps nrt/sin/syd top-to-bottom,
    still in latency order. */
 const POPS: readonly Pop[] = [
-  { code: 'eu-central-1', lat: 40, lon: -18, elbow: [94, 114], tickTo: 78, iconX: 1, textX: 12, home: true },
-  { code: 'us-east-1', lat: 40, lon: -54, elbow: [88, 52], tickTo: 78, iconX: 1, textX: 12 },
-  { code: 'ap-northeast-1', lat: 40, lon: 54, elbow: [272, 78], tickTo: 284, iconX: 288, textX: 300 },
-  { code: 'ap-southeast-1', lat: 0, lon: 54, elbow: [272, 140], tickTo: 284, iconX: 288, textX: 300 },
-  { code: 'ap-southeast-2', lat: -40, lon: 18, elbow: [272, 206], tickTo: 284, iconX: 288, textX: 300 },
+  { code: 'eu-central-1', short: 'fra', lat: 40, lon: -18, elbow: [94, 114], tickTo: 78, iconX: 1, textX: 12, home: true },
+  { code: 'us-east-1', short: 'iad', lat: 40, lon: -54, elbow: [88, 52], tickTo: 78, iconX: 1, textX: 12 },
+  { code: 'ap-northeast-1', short: 'nrt', lat: 40, lon: 54, elbow: [272, 78], tickTo: 284, iconX: 288, textX: 300 },
+  { code: 'ap-southeast-1', short: 'sin', lat: 0, lon: 54, elbow: [272, 140], tickTo: 284, iconX: 288, textX: 300 },
+  { code: 'ap-southeast-2', short: 'syd', lat: -40, lon: 18, elbow: [272, 206], tickTo: 284, iconX: 288, textX: 300 },
 ];
 
 /** The reader: not infrastructure, so not snapped to the grid. Sitting
@@ -419,7 +422,7 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
               {pop.code}
             </text>
             <text className='eg-label eg-label-compact' x={pop.textX} y={ey + 2.6} aria-hidden>
-              {pop.code}
+              {pop.short}
             </text>
             {pop.home ? (
               /* fra's arrival flash: an accent copy of the same lockup and
@@ -433,7 +436,7 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
                   {pop.code}
                 </text>
                 <text className='eg-label eg-label-compact' x={pop.textX} y={ey + 2.6}>
-                  {pop.code}
+                  {pop.short}
                 </text>
               </g>
             ) : null}

@@ -535,7 +535,29 @@ export default function EverySentence({
               });
               printCall = gsap.delayedCall(PRINT_AT, () => {
                 printCall = null;
+                /* the brackets GLIDE between line counts (founder: "when
+                   we do one sentence instead of two, properly animate the
+                   brackets becoming smaller"): the mobile print is the one
+                   moment the em's block height lands, and the guides'
+                   top/bottom anchors would snap with it — so freeze them
+                   at the outgoing height and tween to the incoming one
+                   while the front prints. 0.22em is their overshoot
+                   (top -0.06em + bottom -0.16em). */
+                const h0 = em.offsetHeight;
                 showWord(goal);
+                const h1 = em.offsetHeight;
+                if (h1 !== h0) {
+                  const pad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
+                  gsap.set([guideL, guideR], { bottom: 'auto', height: h0 + pad });
+                  gsap.to([guideL, guideR], {
+                    height: h1 + pad,
+                    duration: 0.55,
+                    ease: 'power2.inOut',
+                    onComplete: () => {
+                      gsap.set([guideL, guideR], { clearProps: 'height,bottom' });
+                    },
+                  });
+                }
                 gsap.fromTo(
                   word,
                   {
@@ -561,8 +583,10 @@ export default function EverySentence({
             tl.to({}, { duration: PRINT_AT + PRINT + 0.45 });
             /* the timeline sweeps the pool dark AFTER the front has passed */
             tl.to(parts, { a: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
-            /* the guides leave FAST — a lingering frame reads as chrome */
-            tl.to([guideL, guideR], { opacity: 0, duration: 0.07, ease: 'none' }, '>-0.05');
+            /* the guides BREATHE out with the finished print (founder:
+               "much more smoothly" — the old 0.07s snap-out read as a
+               glitch, not an exhale) */
+            tl.to([guideL, guideR], { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, '>-0.45');
 
             killForm = () => {
               killForm = null;
@@ -572,6 +596,8 @@ export default function EverySentence({
               printCall = null;
               gsap.killTweensOf(parts);
               gsap.killTweensOf([word, em]);
+              gsap.killTweensOf([guideL, guideR]);
+              gsap.set([guideL, guideR], { clearProps: 'height,bottom' });
               gsap.set(word, { clearProps: 'clipPath' });
             };
           };
@@ -593,7 +619,7 @@ export default function EverySentence({
               },
             });
             tlLive = tl;
-            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.18, ease: 'none' }, 0);
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.5, ease: 'power1.inOut' }, 0);
             tl.add(() => {
               parts.forEach((g, i) => {
                 const pt = pts0.length ? pts0[i % pts0.length] : undefined;
@@ -640,7 +666,7 @@ export default function EverySentence({
             });
             tlLive = tl;
             tl.to(word, { autoAlpha: 0, duration: 0.18, ease: 'power2.in' }, 0);
-            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.15, ease: 'none' }, 0);
+            tl.to([guideL, guideR], { opacity: 0.4, duration: 0.45, ease: 'power1.inOut' }, 0);
             tl.to(parts, {
               a: () => gsap.utils.random(0.3, 0.75),
               x: cloudX(w),

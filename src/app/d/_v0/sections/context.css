@@ -30,7 +30,11 @@
    and the junction stays a single line. The head takes the cells' own
    24px text inset so the band's type sits on one column. */
 
-.toolchain-root .v0-ctx .tcb-in {
+/* .v0-ctx.tcb, not a bare descendant: this must OUTRANK darkband-v3's
+   own .tcb .tcb-in gutter regardless of sheet import order (founder,
+   mobile round: the landing imported the sheets in the other order and
+   the head sat 20px deeper than the Locadex head it must align with) */
+.toolchain-root .v0-ctx.tcb .tcb-in {
   padding-bottom: 0;
   padding-inline: 0;
   /* founder, third cut: the band closes flush on the review row — the

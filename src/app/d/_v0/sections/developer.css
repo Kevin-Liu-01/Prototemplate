@@ -396,3 +396,12 @@
   flex: none;
   color: var(--tc-ink-3);
 }
+
+/* MOBILE (founder: "add more space under" the three demos): stacked
+   cells end with their artwork nearly kissing the card's bottom edge —
+   the demos get a real landing strip under them on phones. */
+@media (max-width: 720px) {
+  .toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card {
+    padding-bottom: calc(var(--tc-card-pad) + 16px);
+  }
+}
