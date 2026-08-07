@@ -1,22 +1,12 @@
-'use client';
-
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { useRef } from 'react';
-
 import { GT_OUTLINE_BOX, GT_OUTLINE_PATHS, GT_OUTLINE_VIEWBOX } from './gt-outline';
-
-gsap.registerPlugin(useGSAP);
 
 /**
  * The brand opener's specimen: the actual GT monogram — its traced
  * contours, not a typeset stand-in — drawn giant in dotted outline and
  * measured by its own layout guides: dashed rules seated exactly on the
  * mark's cap, baseline, and side bearings, extending to the figure's
- * edges. The nameplate hero's crop-frame grammar, worn by the mark. On
- * mount everything arrives in one smooth breath (no stagger), then the
- * dots march slowly while the figure is on screen; reduced motion holds
- * the settled sheet.
+ * edges. The nameplate hero's crop-frame grammar, worn by the mark —
+ * and entirely still: the sheet is the statement, no arrival, no march.
  */
 const VB = GT_OUTLINE_VIEWBOX.split(' ').map(Number) as [number, number, number, number];
 
@@ -29,47 +19,10 @@ const GUIDE = {
 };
 
 export default function BrandMarkFigure() {
-  const root = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      const rootEl = root.current;
-      if (!rootEl) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      const lines = gsap.utils.toArray<HTMLElement>('.ptb-fig-line', rootEl);
-      const marks = gsap.utils.toArray<SVGPathElement>('.ptb-fig-gt', rootEl);
-
-      /* one smooth arrival — guides and outline together, no stagger */
-      gsap.from(lines, { opacity: 0, duration: 1.4, ease: 'power2.out' });
-      gsap.from(marks, { opacity: 0, duration: 1.4, ease: 'power2.out' });
-
-      /* the dots march — continuous and linear, only while watched */
-      const march = gsap.to(marks, {
-        strokeDashoffset: -63,
-        duration: 14,
-        ease: 'none',
-        repeat: -1,
-        paused: true,
-      });
-      const io = new IntersectionObserver((entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) march.play();
-        else march.pause();
-      });
-      io.observe(rootEl);
-      return () => {
-        io.disconnect();
-        march.kill();
-      };
-    },
-    { scope: root }
-  );
-
   return (
     <figure
       aria-label='The GT monogram traced in dotted outline, measured by dashed layout guides seated on its own width and height.'
       className='ptb-hero-fig'
-      ref={root}
       role='img'
     >
       <i aria-hidden className='ptb-fig-line is-h' style={{ top: `${GUIDE.top}%` }} />
