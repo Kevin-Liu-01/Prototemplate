@@ -175,7 +175,7 @@ const VISIBLE_COUNT: readonly number[] = HOT_SLABS.reduce<number[]>((acc, hot, i
  * ever clips.
  */
 const LIFT = 12;
-const OPEN = 26;
+const _OPEN = 26;
 const DROP = 64;
 
 /**

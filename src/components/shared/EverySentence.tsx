@@ -456,7 +456,6 @@ export default function EverySentence({
             const goal = target;
             current = goal;
             const w1 = layoutWidth(goal);
-            const h = em.offsetHeight;
             const tl = gsap.timeline({
               onComplete: () => {
                 tlLive = null;
