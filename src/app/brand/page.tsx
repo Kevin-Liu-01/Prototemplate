@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import ReassemblerDemo from '../craft/ReassemblerDemo';
 import AttributeScales, { AESTHETIC, PERSONALITY } from './AttributeScales';
+import BrandMarkFigure from './BrandMarkFigure';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import PtNav from '@/components/shared/PtNav';
 
@@ -67,18 +68,24 @@ export default function BrandPage() {
 
         <article className='pt-post'>
           <section className='pt-sec pt-post-sec'>
-            <h1>The brand</h1>
-            <p className='pt-post-byline'>General Translation · the identity, laid out</p>
-            <p>
-              This page is the brand in one place — the name, the idea, the character, the
-              mark, the color and type systems, and the devices that make the identity
-              recognizable — written for anyone who has to build with it, including our
-              partners at basement studio. The visual laws behind everything here are codified
-              in <Link href='/docs/design'>the design system</Link>; every engine runs live on{' '}
-              <Link href='/docs'>the docs page</Link>; and the completed reference
-              application is <Link href='/d/singularity-dossier'>the Dossier</Link> — treat it
-              as the finished statement of this identity, not a concept.
-            </p>
+            <div className='ptb-opener'>
+              <div className='ptb-opener-copy'>
+                <h1>The brand</h1>
+                <p className='pt-post-byline'>General Translation · the identity, laid out</p>
+                <p>
+                  This page is the brand in one place — the name, the idea, the character, the
+                  mark, the color and type systems, and the devices that make the identity
+                  recognizable — written for anyone who has to build with it, including our
+                  partners at basement studio. The visual laws behind everything here are
+                  codified in <Link href='/docs/design'>the design system</Link>; every engine
+                  runs live on <Link href='/docs'>the docs page</Link>; and the completed
+                  reference application is{' '}
+                  <Link href='/d/singularity-dossier'>the Dossier</Link> — treat it as the
+                  finished statement of this identity, not a concept.
+                </p>
+              </div>
+              <BrandMarkFigure />
+            </div>
           </section>
 
           <div className='pt-hatch' aria-hidden='true' />
@@ -90,7 +97,7 @@ export default function BrandPage() {
               First, ambition: like General Motors or General Electric, the name says we intend
               to be the trustworthy, technologically innovative number one in the category — an
               enterprise, in the old sense. Second, generality: a reference to artificial{' '}
-              <em>general</em> intelligence — general models outperform specific translation
+              <em>general</em>{' '}intelligence — general models outperform specific translation
               models because they understand context and can be directed. Third, distinction:
               every other localization company seemed to begin with an &ldquo;L&rdquo;.
             </p>
