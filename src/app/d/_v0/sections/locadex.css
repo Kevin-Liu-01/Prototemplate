@@ -609,3 +609,36 @@
     order: 2;
   }
 }
+
+/* ---------- the mobile cut (the page's 720px break) ----------
+   The svg annotation sizes are USER units, not screen px: the iso's
+   396-unit frame renders ~0.89x at 390px and the connector's 560-unit
+   frame ~0.64x, so each bump targets the EFFECTIVE size on a phone. */
+@media (max-width: 720px) {
+  /* the authored two-line break strands 'localize' at phone measures */
+  .toolchain-root .v0-ldx .tc-head h2 br {
+    display: none;
+  }
+
+  .toolchain-root .v0-ldx .v0-ldx-iso-name {
+    font-size: 10.5px;
+  }
+
+  .toolchain-root .v0-ldx .v0-ldx-chip-read {
+    font-size: 11.5px;
+  }
+
+  .toolchain-root .v0-ldx .v0-ldx-nlabel {
+    font-size: 16px;
+  }
+
+  .toolchain-root .v0-ldx .v0-ldx-works-cap,
+  .toolchain-root .v0-ldx .v0-ldx-work {
+    font-size: 13px;
+  }
+
+  .toolchain-root .v0-ldx .v0-ldx-works-grid {
+    column-gap: 14px;
+    row-gap: 20px;
+  }
+}

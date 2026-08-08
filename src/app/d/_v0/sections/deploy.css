@@ -154,6 +154,10 @@
     margin-inline: auto;
   }
 
+  .toolchain-root .v0-dep-sub.v0-dep-sub {
+    margin-top: 18px;
+  }
+
   .toolchain-root .v0-dep-acts {
     justify-content: center;
   }
@@ -198,4 +202,12 @@
 
 :root:not([data-theme='dark']) .toolchain-root .v0-dep-sub {
   color: rgba(7, 7, 7, 0.6);
+}
+
+/* the phone cut: the sub's 15px is a desktop measure — on phones it
+   takes the ladder's lead slot */
+@media (max-width: 720px) {
+  .toolchain-root .v0-dep-sub {
+    font-size: var(--tcm-lead, 17px);
+  }
 }

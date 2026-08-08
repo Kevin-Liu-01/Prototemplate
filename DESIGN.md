@@ -226,3 +226,95 @@ Where an engine has quality tiers, quality follows **measured** frame cost,
 not just the window: glyph-field's frame-time governor ratchets a slow
 device down the phone cut's own ladder (lean device-pixel cap, then the
 lean pool), down only, with pool cuts applied at idle.
+
+## 12. The mobile type ladder
+
+Under 720px, type and spacing are **one token ladder, not per-rule
+values** — `--tcm-*` slots declared on `.toolchain-root` in the engine's
+LATE 720px block (`src/app/d/toolchain/styles.css`), consumed by every
+floor below:
+
+| slot | value |
+| --- | --- |
+| `--tcm-h2` / `-h2-lh` | 2.25rem / 1.18 |
+| `--tcm-h3` / `-h3-lh` | 1.375rem / 1.3 |
+| `--tcm-h4` / `-h4-lh` | 1.125rem / 1.35 |
+| `--tcm-lead` / `-lead-lh` | 17px / 1.55 |
+| `--tcm-body` / `-body-lh` | 16px / 1.6 |
+| `--tcm-small` / `-small-lh` | 14px / 1.55 |
+| `--tcm-kick` | 13px |
+| `--tcm-quote` / `-quote-lh` | 22px / 1.4 |
+| `--tcm-head-pt` / `-head-pb` | 72px / 36px |
+| `--tcm-gap-h2` / `--tcm-gap-h3` | 18px / 14px |
+| `--tcm-cell-pad` | 28px |
+| `--tcm-box-pt` / `-box-pb` / `-box-gap` | 36px / 38px / 28px |
+
+- **The px-fallback consumption law**: every consumer reads
+  `var(--tcm-X, <px fallback>)` with the slot's canonical value as the
+  fallback — a rule the ladder doesn't reach (a 721–900px cut, a fork that
+  hasn't declared it) degrades to the same number, never to unstyled. New
+  mobile rules never hardcode a size the ladder has a slot for.
+- **Unlayered engine beats utilities**: the engine's plain CSS is
+  unlayered and Tailwind utilities live in a `@layer`, so engine floors
+  outrank utility metrics (the box-gap rule beats a head's `max-lg:mb-6`).
+  Heading and paragraph metrics therefore live in engine CSS, never in
+  page utilities.
+- **The late block**: the ladder and its floors sit in the engine's LAST
+  720px block because several base rules they override appear after the
+  earlier 720px block — same-specificity declarations only win by
+  following them. New mobile floors go there, not in the early block.
+- **The sg cut outranks the engine**: `v0-pages.css`'s mobile cut
+  (`.toolchain-root:is(.sgdh-root, …)`) carries higher specificity than
+  any engine floor, so it must consume the same tokens — an engine-only
+  raise silently fails to render on the singularity homes. Change one,
+  change both.
+
+### The box-air standard
+
+Boxed cells — framed cards, bento plates, stacked dark-band cells —
+breathe alike on mobile: block padding `--tcm-box-pt`/`--tcm-box-pb`
+(36/38), and `--tcm-box-gap` (28px) between a box's head and its
+artifact. The gap is card-scoped (`.tc-card > .shell-cell-head`) on
+purpose: cells are flex columns, margins never collapse, so an unscoped
+head margin would stack onto the copy cells' own body margins. The seam
+floor rides alongside: copy never sits within 20px of a hairline
+(`--tc-card-pad: 20px`; the trust lead's 20px bottom pad).
+
+## 13. The svh/dvh law
+
+A mobile stage measures the viewport twice, and the two units never
+trade jobs:
+
+- **Reach is dvh.** Whatever must touch the true screen bottom — the
+  stage's rails, the text zone — sizes from `100dvh`, the real viewport
+  with browser chrome collapse included.
+- **Layout is svh.** Any height that participates in layout rides
+  `100svh`, the stable viewport: a dvh layout height grows the document
+  on every chrome toggle and jitters the scroll under it.
+- The difference is a token — the stack stage's `--v0sm-bar-gap`
+  (`dvh − svh`, 0 while the URL bar shows) — and only overhangs (the
+  rails' lower reach) spend it. Anything SIZED from the stage derives
+  from the stable var, or it breathes with the URL bar.
+
+## 14. The two read lines
+
+The stack story runs on two ladders of scroll anchors, measured per beat
+and re-anchored on every ScrollTrigger refresh
+(`src/app/d/_v0/sections/FullStack.tsx`):
+
+- **The read line (55%) is structural.** A beat LOCKS IN when its COPY
+  BLOCK's center takes the 55% line — the same line the sticky figure's
+  seat centers the tower on, and, for the finale, its pin-engage. The
+  tower's build clock and the capstone scrub both key on it. Anchors are
+  measured on the copy itself, from FLOW geometry (the sticky finale's
+  own rect would read the stuck pose on a mid-dwell refresh) — never on
+  the beat window's top, which runs nearly half a viewport ahead of the
+  copy and fires every arrival early.
+- **The highlight line (80%) is the spotlight's alone.** A beat's copy
+  lights as its center rises through the 80% line — just after entering
+  the screen, while the arriving layer is still mid-build beside it.
+
+One scrubbed dial spans the whole read; a piecewise map (measured
+lock-ins in, story time out) HOLDS the clock while a row is being read
+and spends each gap hold → build → lock, so a layer stands locked before
+its own copy takes the line.

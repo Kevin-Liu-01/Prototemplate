@@ -895,6 +895,12 @@
   .toolchain-root .tcb .v0-stack-beat:last-child {
     min-height: 0;
   }
+
+  /* the one-column fallback keeps the desktop lead size, but display
+     leading reads clenched where every lead wraps on a narrow column */
+  .toolchain-root .tcb .v0-stack-beat h3 {
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
 }
 
 /* The band's border-block IS the closing line: the sheet ring's bottom
@@ -962,6 +968,8 @@
        from the stage must use this, or it grows and shrinks with the
        mobile URL bar */
     --v0sm-stage-h-stable: calc(100svh - var(--v0sm-top));
+    /* the browser-chrome gap: 0 while the URL bar shows */
+    --v0sm-bar-gap: calc(var(--v0sm-stage-h) - var(--v0sm-stage-h-stable));
     /* the tower must FIT the 60% fig zone, never clip: its width from
        the zone's height × VIEW_W/TOWER_H (StackTower: 214.133/250.8 =
        0.8538 — change them together), minus the fig pads and the
@@ -973,7 +981,10 @@
   .toolchain-root .tcb.v0-stack.is-stage .tcb-grid {
     position: sticky;
     top: var(--v0sm-top);
-    height: var(--v0sm-stage-h);
+    /* LAYOUT height rides the STABLE viewport — a dvh height grew the
+       document on every chrome toggle and jittered the scroll below;
+       the dvh reach survives as the rails' overhang below */
+    height: var(--v0sm-stage-h-stable);
     /* one column, 60/40 rows — the seam ring's 1px padding stays */
     grid-template-columns: 100%;
     grid-template-rows: minmax(0, 6fr) minmax(0, 4fr);
@@ -989,6 +1000,9 @@
     grid-column: 1 / -1;
     grid-row: 2;
     min-height: 0;
+    /* the rails overhang the grid by the bar gap; everything else in
+       the cell is box-bound */
+    overflow: visible;
   }
 
   /* the figure seats at the zone's FOOT: the slack rides above the
@@ -998,6 +1012,23 @@
     height: 100%;
     align-items: flex-end;
     padding: 8px 16px 12px;
+  }
+
+  /* the composition centres on its VISIBLE mass: the drawing's box
+     reserves the rail's lead margin on the left, so a centred box put
+     the plates and copy ~7% right of true centre — the tower, its
+     cell-height track, the text cell's continuations and the copy
+     column all shift left by half that lead (the 0.53194 fold in the
+     rail formulas is 0.46194 + 0.07, the same shift) */
+  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-tower {
+    transform: translateX(-7%);
+  }
+
+  /* the cell-height track shifts by the same amount as a folded LEFT —
+     a translate percentage would resolve against the line's own 3px
+     box, not the reference width */
+  .toolchain-root .tcb.v0-stack.is-stage .v0s-cellrail {
+    left: calc(50% - 0.53194 * var(--v0s-cellrail-w));
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-tower {
@@ -1019,8 +1050,9 @@
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-cell-rail::before {
     content: '';
     position: absolute;
-    inset-block: 0;
-    left: calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)));
+    top: 0;
+    bottom: calc(-1 * var(--v0sm-bar-gap));
+    left: calc(50% - 0.53194 * min(100% - 32px, var(--v0sm-tw)));
     width: calc(0.00864 * min(100% - 32px, var(--v0sm-tw)));
     background: rgba(255, 255, 255, 0.12);
     pointer-events: none;
@@ -1044,8 +1076,9 @@
   .toolchain-root .tcb.v0-stack.is-stage .v0sm-railext {
     display: block;
     position: absolute;
-    inset-block: 0;
-    left: calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)));
+    top: 0;
+    bottom: calc(-1 * var(--v0sm-bar-gap));
+    left: calc(50% - 0.53194 * min(100% - 32px, var(--v0sm-tw)));
     width: calc(0.00864 * min(100% - 32px, var(--v0sm-tw)));
     background: var(--v0s-rail-ink);
     transform: scaleY(0);
@@ -1069,7 +1102,8 @@
        right of the rail below the layers) — the left inset is the rail
        track's own x (its 50% and this padding's 50% resolve against
        the same one-column width), plus a hand of clearance */
-    padding: 10px 20px 18px calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)) + 26px);
+    padding: 10px 20px 18px
+      calc(50% - 0.53194 * min(100% - 32px, var(--v0sm-tw)) + 26px);
     /* THE PEN owns presence (founder: "no 50% writing out or anything"):
        FullStack shows exactly one beat — inline opacity 1 or 0, whole
        steps only, never a fade — and arrival is spoken by characters.
@@ -1094,9 +1128,9 @@
   /* the stage type, a step tighter (founder spec: the longest beat's
      copy must FIT the 40% zone — no scrolling inside it) */
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-beat h3 {
-    margin-top: 10px;
-    font-size: 20px;
-    line-height: 1.18;
+    margin-top: 12px;
+    font-size: var(--tcm-h3, 22px);
+    line-height: var(--tcm-h3-lh, 1.3);
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points {
@@ -1204,7 +1238,10 @@
 }
 
 /* the stage's text-zone rail continuation, ink-on-paper */
-:root:not([data-theme='dark']) .toolchain-root .tcb.v0-stack.is-stage .v0-stack-cell-rail::before {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb.v0-stack.is-stage
+  .v0-stack-cell-rail::before {
   background: rgba(7, 7, 7, 0.14);
 }
 
@@ -1287,12 +1324,20 @@
 }
 
 /* the payload chip's accent tint mixes over paper, not #101010 */
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-hull {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-g-chip.is-accent
+  .v0s-g-chip-hull {
   fill: color-mix(in srgb, var(--iso-accent) 16%, #ffffff);
   stroke: color-mix(in srgb, var(--iso-accent) 55%, transparent);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-g-chip.is-accent .v0s-g-chip-top {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-g-chip.is-accent
+  .v0s-g-chip-top {
   fill: color-mix(in srgb, var(--iso-accent) 28%, #ffffff);
 }
 
@@ -1308,7 +1353,11 @@
   fill: #f4f2ef;
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-right {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-right {
   fill: #eae8e4;
 }
 
@@ -1316,7 +1365,11 @@
   stroke: rgba(7, 7, 7, 0.45);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-front {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-front {
   stroke: rgba(7, 7, 7, 0.24);
 }
 
@@ -1324,21 +1377,41 @@
   stroke: var(--iso-accent);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-mark {
   fill: rgba(7, 7, 7, 0.42);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-glyph {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-glyph {
   stroke: rgba(7, 7, 7, 0.95);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-ctx-wire,
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-fan-wire {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-ctx-wire,
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-fan-wire {
   stroke: rgba(7, 7, 7, 0.46);
 }
 
 /* token-routed in the dark sheet, restated for the cascade only */
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-ldx {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-ldx {
   fill: var(--iso-accent);
 }
 
@@ -1346,16 +1419,28 @@
    toward ink-navy — same device, one step darker than the mark, the
    sweep still visibly crossing it (a white-leaning glint here would
    read as the glyph dissolving into the light chip) */
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-ldx-glint {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-ldx-glint {
   fill: color-mix(in srgb, #ffffff 70%, var(--iso-accent));
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-hull {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-chip-hull {
   fill: #f2f0ed;
   stroke: rgba(7, 7, 7, 0.34);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-chip-top {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-chip-top {
   fill: #ffffff;
 }
 
@@ -1381,29 +1466,53 @@
 /* the capstone's diff hunk keeps its red/green (founder round-trip),
    spoken through the CENTRAL light diff tokens (v0-pages.css:
    add #1e7a4b / del #b25454) — tints mix over paper, signs solid */
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-hull {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-diff.is-add
+  .v0s-diff-hull {
   fill: color-mix(in srgb, var(--tc-diff-add-ink) 16%, #ffffff);
   stroke: color-mix(in srgb, var(--tc-diff-add-ink) 55%, transparent);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-top {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-diff.is-add
+  .v0s-diff-top {
   fill: color-mix(in srgb, var(--tc-diff-add-ink) 30%, #ffffff);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-hull {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-diff.is-del
+  .v0s-diff-hull {
   fill: color-mix(in srgb, var(--tc-diff-del-ink) 14%, #ffffff);
   stroke: color-mix(in srgb, var(--tc-diff-del-ink) 50%, transparent);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-top {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-diff.is-del
+  .v0s-diff-top {
   fill: color-mix(in srgb, var(--tc-diff-del-ink) 26%, #ffffff);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-add .v0s-diff-sign {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-diff.is-add
+  .v0s-diff-sign {
   fill: var(--tc-diff-add-ink);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-diff.is-del .v0s-diff-sign {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-diff.is-del
+  .v0s-diff-sign {
   fill: var(--tc-diff-del-ink);
 }
 
@@ -1418,7 +1527,11 @@
   fill: color-mix(in srgb, var(--iso-accent) 38%, #ffffff);
 }
 
-:root:not([data-theme='dark']) .toolchain-root .tcb .v0s-slab.is-hot .v0s-g-mark.is-wrap {
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .tcb
+  .v0s-slab.is-hot
+  .v0s-g-mark.is-wrap {
   fill: color-mix(in srgb, var(--iso-accent) 60%, #ffffff);
 }
 

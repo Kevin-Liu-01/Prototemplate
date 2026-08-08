@@ -19,9 +19,13 @@ repos.
 | EdgeGlobe | `src/app/d/toolchain/diagrams/EdgeGlobe.tsx` | The delivery globe — ink-only orthographic sphere, five PoPs, one accent route; pairs with a static Bayer atmosphere (dossier `GlobeAtmosphere`). |
 | LocaleTag | `src/app/d/toolchain/components/LocaleTag.tsx` | The one locale pill: flag print + mono code; hosts supply the box. |
 | RevealSeam | `src/app/d/toolchain/sections/RevealSeam.tsx` | The slide-to-reveal slider; writes `--seam-cut`; skins are host CSS (the dossier refit is the house handle). |
-| EverySentence | `src/components/shared/EverySentence.tsx` | The sentence-rewriting glyph reassembler; host-owned clock via `ref.setLocale(loc)`. |
+| EverySentence | `src/components/shared/EverySentence.tsx` | The sentence-rewriting glyph reassembler; host-owned clock via `ref.setLocale(loc)` (calls landing before boot are buffered); `hops` sets the re-spread beats, 1–5, default 2 — the dossier hero runs 1. |
+| TranslateWindow | `src/app/d/_v0/TranslateWindow.tsx` | The dossier hero's windowed demo, extracted whole so any home can mount it — and the home of the **locale belt**: an infinite conveyor of LocaleTag chips whose crossing of the strip zone's centre is the page's one clock (render and payload retype from the same dial). Hover pauses it, any interaction holds it, a click slides the picked chip to centre; `onLocaleChange` vents the active locale to hosts (the dossier headline runs on it). |
+| V0FullStack | `src/app/d/_v0/sections/FullStack.tsx` | The scroll-scrubbed stack story: beats anchor on the copy block's centre taking the 55% read line, the spotlight fires early at the 80% line, and a piecewise clock holds at each lock-in (`DESIGN.md` §14). The figure is CSS sticky — JS never moves it; the mobile stage runs the svh/dvh law (§13). |
+| gallery-shoot | `docs/harness/gallery-shoot.mjs` | The anatomy wall's tile factory: section-anchored element shots of the flagship (desk/mob × light/dark) plus every variant hero, theme pre-set via `localStorage['gt-theme']`, `manifest.json` written beside the tiles; a missed selector is reported, never fatal. Not a mounted engine — a harness. |
+| mobile type ladder | `src/app/d/toolchain/styles.css` (the late 720px block) | The ≤720px `--tcm-*` token roster every mobile floor consumes as `var(--tcm-X, <px fallback>)`. Not an engine — a contract; full law in `DESIGN.md` §12. |
 
-Lifecycle contract for all of them: lazy mount behind an
+Lifecycle contract for every mounted instrument above: lazy mount behind an
 IntersectionObserver, self-pause offscreen, one still under
 `prefers-reduced-motion`, `destroy()` tears down everything the instance
 owns, ink re-resolves on theme flips.

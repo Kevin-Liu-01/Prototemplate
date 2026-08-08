@@ -349,3 +349,71 @@
 .toolchain-root .v0-glob-atmo {
   transform: translateX(3.32%);
 }
+
+/* ---------- the phone cut ----------
+   The rail lead must carry .v0-glob-rail: v0-pages' 720px .tc-cell h3
+   rule is (0,3,1) in a later sheet, so only the extra class outranks it.
+   The margin and lct-* rules tie their desktop twins above and win by
+   sheet order, so this block stays at the end. */
+@media (max-width: 640px) {
+  .toolchain-root .v0-glob .v0-glob-rail .v0-glob-item h3 {
+    font-size: var(--tcm-h3, 22px);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .toolchain-root .v0-glob .v0-glob-item > p {
+    margin-top: var(--tcm-gap-h3, 14px);
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .toolchain-root .v0-glob-chip {
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .toolchain-root .v0-glob-chip .lct-flag,
+  .toolchain-root .v0-glob-chip .lct-code {
+    font-size: 12px;
+  }
+
+  .toolchain-root .v0-glob .v0-glob-native {
+    font-size: 14px;
+  }
+
+  .toolchain-root .v0-glob .tcpq-name {
+    font-size: 15px;
+  }
+
+  .toolchain-root .v0-glob .tcpq-role {
+    font-size: 13px;
+  }
+
+  .toolchain-root .v0-glob .tcpq-attr > a {
+    font-size: 14px;
+  }
+}
+
+/* ---------- the seam floor ----------
+   Stacked, the rail items meet their border-t hairlines at the clamp's
+   16px floor — a desktop-composition value. The pad lifts to the copy-cell
+   minimum; the first/last trims survive because the card's own pad owns
+   those edges. */
+@media (max-width: 720px) {
+  .toolchain-root .v0-glob .v0-glob-item {
+    padding-block: var(--tcm-cell-pad, 28px);
+  }
+
+  .toolchain-root .v0-glob .v0-glob-item:first-child {
+    padding-top: 0;
+  }
+
+  .toolchain-root .v0-glob .v0-glob-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .toolchain-root .v0-glob .v0-glob-lrow,
+  .toolchain-root .v0-glob .v0-glob-belt {
+    padding-block: 12px;
+  }
+}

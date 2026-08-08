@@ -1,0 +1,194 @@
+/* ============================================================
+   /COMPARE — two live direction pages in one ruled section.
+   Everything rides the landing's tokens: hairline frames, the
+   grotesk label voice, Lausanne at reading scale. The rig draws
+   only frames and pickers — the panes' own chrome is theirs.
+   ============================================================ */
+
+.pt-cmp {
+  padding: clamp(28px, 3.4vw, 44px) var(--pt-gut) clamp(36px, 4vw, 56px);
+  font-family: var(--pt-lausanne);
+}
+
+/* ---- header row: the lede left, the controls right ---- */
+
+.pt-cmp-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 22px;
+}
+
+.pt-cmp h1 {
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.25;
+  color: var(--pt-ink);
+}
+
+.pt-cmp-lede p {
+  max-width: 58ch;
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pt-ink-2);
+}
+
+.pt-cmp-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+}
+
+/* the control chips: hairline boxes in the grotesk label voice */
+.pt-cmp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: 6px;
+  background: none;
+  background-clip: padding-box;
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pt-ink-2);
+  cursor: pointer;
+}
+
+.pt-cmp-chip:hover {
+  color: var(--pt-ink);
+}
+
+.pt-cmp-chip[aria-pressed='true'] {
+  color: var(--pt-ink);
+}
+
+/* the sync state says itself once: hollow off, filled on */
+.pt-cmp-dot {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--pt-ink-3);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.pt-cmp-chip[aria-pressed='true'] .pt-cmp-dot {
+  border-color: var(--pt-ink);
+  background: var(--pt-ink);
+}
+
+/* `.pt-root a`'s color: inherit outranks a lone class — anchor under
+   the root so the quiet ink holds */
+.pt-root .pt-cmp-back {
+  font-size: 13.5px;
+  color: var(--pt-ink-3);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--pt-ink-4);
+}
+
+.pt-root .pt-cmp-back:hover {
+  color: var(--pt-ink);
+  text-decoration-color: var(--pt-ink-2);
+}
+
+/* ---- the two panes ---- */
+
+.pt-cmp-panes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.8vw, 22px);
+}
+
+.pt-cmp-pane {
+  min-width: 0;
+  margin: 0;
+}
+
+.pt-cmp-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pt-cmp-tag {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--pt-ink-4);
+}
+
+.pt-cmp-pick select {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--pt-hair);
+  border-radius: 6px;
+  background: var(--pt-paper);
+  background-clip: padding-box;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--pt-ink);
+  color-scheme: light;
+}
+
+[data-theme='dark'] .pt-root .pt-cmp-pick select {
+  color-scheme: dark;
+}
+
+.pt-cmp-pick select:focus-visible {
+  outline: 1px solid var(--pt-ink-2);
+  outline-offset: 2px;
+}
+
+.pt-root .pt-cmp-out {
+  font-size: 12.5px;
+  white-space: nowrap;
+  color: var(--pt-ink-3);
+}
+
+.pt-root .pt-cmp-out:hover {
+  color: var(--pt-ink);
+}
+
+/* the stage is one hairline frame; a pane whose page hasn't painted yet
+   shows the paper, never a hole */
+.pt-cmp-stage {
+  height: clamp(420px, 72vh, 860px);
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-white);
+  overflow: hidden;
+}
+
+.pt-cmp-stage iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---- phone: the panes stack, pickers staying with their pane ---- */
+
+@media (max-width: 860px) {
+  .pt-cmp-head {
+    align-items: flex-start;
+  }
+
+  .pt-cmp-panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pt-cmp-stage {
+    height: 70vh;
+  }
+}

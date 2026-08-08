@@ -289,8 +289,60 @@
     padding-left: var(--tc-gut);
   }
 
+  .toolchain-root .v0-foot-grid > .v0-foot-cell {
+    padding-top: 32px;
+  }
+
+  .toolchain-root .v0-foot-brand p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  /* heads match the raised links at 15px — hierarchy rides the darker
+     ink and the display face, not size */
+  .toolchain-root .v0-foot-col h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  /* each row's own 11px padding-block carries the rhythm AND the 44px
+     tap pitch (15px x 1.5 line box + 22px), so the list gap retires */
+  .toolchain-root .v0-foot-col ul {
+    gap: 0;
+  }
+
+  .toolchain-root .v0-foot-col a {
+    font-size: 15px;
+    line-height: 1.5;
+    padding-block: 11px;
+  }
+
+  .toolchain-root .v0-foot-col .v0-foot-mark {
+    width: 15px;
+    height: 15px;
+  }
+
   .toolchain-root .v0-foot-bar {
+    font-size: var(--tcm-kick, 13px);
+    line-height: var(--tcm-small-lh, 1.55);
+    padding-top: 20px;
     padding-bottom: 64px;
+    row-gap: 14px;
+  }
+
+  .toolchain-root .v0-foot-copy {
+    margin-left: 0;
+    width: 100%;
+    text-align: left;
+  }
+
+  .toolchain-root .v0-foot-status {
+    font-size: var(--tcm-kick, 13px);
+  }
+
+  .toolchain-root .v0-foot-theme {
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 

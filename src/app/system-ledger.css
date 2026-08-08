@@ -1,0 +1,176 @@
+/* ============================================================
+   SYSTEM LEDGER — the capabilities ledger and the laws learned.
+   Consumes only the --pt-* tokens inherited from .pt-root; no
+   prototemplate.css class is referenced, so mount position and
+   stylesheet order cannot change how it paints.
+   Rule law: cells draw border-top only, containers close with a
+   single border-bottom — no rule ever doubles.
+   ============================================================ */
+
+.sl-sec {
+  padding: clamp(40px, 4.6vw, 64px) var(--pt-gut);
+  border-bottom: 1px solid var(--pt-hair);
+  font-family: var(--pt-lausanne, var(--pt-sans));
+}
+
+/* .pt-post h2 ties this selector at one class — the extra ancestor
+   keeps these metrics winning wherever the mount lands */
+.sl-sec .sl-h2 {
+  max-width: 40ch;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.3;
+  color: var(--pt-ink);
+}
+
+.sl-sec .sl-intro {
+  max-width: 64ch;
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--pt-ink-2);
+}
+
+/* the hatch spacer, restated locally: border-bottom only — the section
+   above already drew the seam */
+.sl-hatch {
+  height: 42px;
+  border-bottom: 1px solid var(--pt-hair);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 6px,
+    var(--pt-hatch) 6px,
+    var(--pt-hatch) 7px
+  );
+}
+
+/* ---------- the capabilities ledger: two ruled columns, one spine ---------- */
+
+.sl-caps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(28px, 4vw, 56px);
+  margin-top: 24px;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+/* the gutter spine — vertical, so it crosses the row rules without
+   ever doubling one; equal 1fr tracks put the gap's center at 50% */
+.sl-caps::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--pt-hair-2);
+  pointer-events: none;
+}
+
+.sl-cap {
+  padding: 11px 0 13px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.sl-cap-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 14px;
+}
+
+.sl-cap-name {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  color: var(--pt-ink);
+}
+
+/* `.pt-root a`'s color: inherit outranks a lone class — anchor the
+   see-slot under .sl-caps so its quiet ink survives */
+.sl-caps .sl-cap-see {
+  font-family: var(--pt-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--pt-ink-3);
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.sl-caps a.sl-cap-see:hover,
+.sl-caps a.sl-cap-see:focus-visible {
+  color: var(--pt-ink);
+}
+
+.sl-cap-law {
+  margin-top: 3px;
+  max-width: 52ch;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--pt-ink-2);
+}
+
+/* ---------- the laws: numbered editorial rows ---------- */
+
+.sl-laws {
+  max-width: 74ch;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sl-law {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: clamp(14px, 2.4vw, 30px);
+  align-items: baseline;
+  padding: 13px 0 15px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.sl-laws .sl-law:last-child {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.sl-law-n {
+  font-family: var(--pt-mono);
+  font-size: 12px;
+  color: var(--pt-ink-3);
+}
+
+.sl-law p {
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pt-ink-2);
+}
+
+.sl-law b {
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+.sl-law code {
+  font-family: var(--pt-mono);
+  font-size: 0.88em;
+  letter-spacing: 0;
+}
+
+@media (max-width: 760px) {
+  .sl-caps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sl-caps::before {
+    display: none;
+  }
+
+  .sl-law {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+}

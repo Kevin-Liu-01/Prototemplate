@@ -31,6 +31,10 @@ scripts/
   lint-lines.mjs          the line auditor (see docs/SHIP-LOOP.md)
   lint-practices.mjs      the practices ratchet (+ baseline JSON)
   shoot-route.mjs         screenshot harness (external playwright-core)
+docs/
+  harness/gallery-shoot.mjs   the gallery shooter (see "The gallery
+                              pipeline" below; the rest of harness/ is
+                              one-off probes)
 ```
 
 ## The direction registry
@@ -88,6 +92,39 @@ plate + API snippet on `/craft`):
 When a page needs one of these behaviors, mount the component — do not
 re-implement it locally. When an engine gains an option, update its craft
 entry (body + snippet) in the same round.
+
+## The gallery pipeline
+
+The index's anatomy wall and the variant gallery are fed by one harness,
+and the file names are the contract between the two ends:
+
+- **The shooter** (`docs/harness/gallery-shoot.mjs`) shoots the flagship
+  home section by section — **element shots anchored on each section's
+  own landmark selector, never scroll depths**, so side-by-side pairs
+  align regardless of viewport — across desktop/mobile cuts and both
+  themes, plus one hero viewport shot per variant home. Theme is set
+  before first paint by an `addInitScript` that writes
+  `localStorage['gt-theme']`, which the root inline script applies; one
+  full scroll pass settles every lazy/armed section before shooting. A
+  selector that misses is reported, never fatal — the wall just skips
+  that tile.
+- **The manifest contract**: the shooter writes `manifest.json` beside
+  the tiles — `{ flagship, sections: [{ key, label, cut, theme, file }],
+  variants: [{ slug, theme, file }] }` — so a consumer can import the
+  set instead of globbing the directory.
+- **Deterministic tile names** are what the anatomy wall reads:
+  `sec-<key>-<cut>-<theme>.png` under `public/shots/gallery/` (key ∈
+  hero, customers, story, developer, locadex, context, global, deploy,
+  footer; cut ∈ desk, mob; theme ∈ light, dark), and
+  `var-<slug>-<theme>.png` for the variant heroes (slugs from
+  `src/lib/directions.ts`). Any single tile may be missing — consumers
+  hide on `onError` or render from a known-good list, never a broken
+  image.
+- **`/compare`** puts two directions side by side as synced same-origin
+  iframes — same origin is what lets the route drive both frames' scroll
+  and theme in lockstep. (The index's home/enterprise sweep,
+  `src/app/SiteCompare.tsx`, is the still-image cousin: two shots under
+  the house seam, the cut living in one CSS var.)
 
 ## Skills and docs
 

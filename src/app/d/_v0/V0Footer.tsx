@@ -185,8 +185,10 @@ export default function V0Footer() {
           <span aria-hidden className='v0-foot-dot' />
           All Systems Operational
         </a>
-        <span className='v0-foot-copy'>© 2026 General Translation, Inc. All rights reserved.</span>
-        <ThemeToggle className='v0-foot-theme' />
+        <span className='v0-foot-copy max-[640px]:ml-0 max-[640px]:w-full max-[640px]:text-left'>
+          © 2026 General Translation, Inc. All rights reserved.
+        </span>
+        <ThemeToggle className='v0-foot-theme max-[640px]:ml-auto' />
       </div>
     </footer>
   );

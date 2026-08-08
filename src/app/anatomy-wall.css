@@ -1,0 +1,183 @@
+/* ============================================================
+   ANATOMY WALL — the flagship dissected. Nine section rows,
+   each a 4-up strip of theme-locked captures (desktop light /
+   dark, mobile light / dark) on hairline plates. Tiles keep the
+   capture's true proportions up to the strip's cap; grounds are
+   fixed per capture — the page theme never swaps a tile.
+   ============================================================ */
+
+/* the head repeats the post voice so the block survives being
+   mounted outside the article */
+.aw-head h2 {
+  max-width: 40ch;
+  font-family: var(--pt-lausanne);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.3;
+  color: var(--pt-ink);
+}
+
+.aw-head p {
+  max-width: 64ch;
+  margin-top: 14px;
+  font-family: var(--pt-lausanne);
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--pt-ink-2);
+}
+
+.aw-rows {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.aw-row {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: clamp(14px, 2.4vw, 30px);
+  align-items: start;
+  padding: 20px var(--pt-gut) 24px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+/* the head's pt-sec already drew the seam — the first row yields */
+.aw-rows .aw-row:first-child {
+  border-top: 0;
+}
+
+.aw-row-label {
+  display: grid;
+  gap: 6px;
+}
+
+.aw-n {
+  font-family: var(--pt-mono);
+  font-size: 12px;
+  color: var(--pt-ink-3);
+}
+
+.aw-row-label h3 {
+  font-family: var(--pt-lausanne);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: var(--pt-ink);
+}
+
+/* the strip owns the horizontal scroll — the page body never does */
+.aw-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(10px, 1.6vw, 16px);
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.aw-tile {
+  flex: none;
+  margin: 0;
+}
+
+.aw-tile.is-desk {
+  width: 300px;
+}
+
+.aw-tile.is-mob {
+  width: 108px;
+}
+
+/* tall captures crop at the cap, top-anchored, like every capture
+   frame on the page; short ones show whole at true ratio */
+.aw-plate {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--pt-hair);
+  background-clip: padding-box;
+}
+
+.aw-tile.is-desk .aw-plate {
+  max-height: 200px;
+}
+
+.aw-tile.is-mob .aw-plate {
+  max-height: 234px;
+}
+
+/* grounds are the capture's own, not the page's — light stays white
+   in the dark theme, dark stays ink in the light */
+.aw-tile.is-light .aw-plate {
+  background-color: #ffffff;
+}
+
+.aw-tile.is-dark .aw-plate {
+  background-color: #070707;
+}
+
+.aw-plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  -webkit-user-drag: none;
+}
+
+/* a capture that hasn't been shot yet holds its frame as hatched
+   ground — the house texture for absence, in the tile's own theme */
+.aw-tile.is-desk .aw-plate.is-missing {
+  aspect-ratio: 8 / 5;
+}
+
+.aw-tile.is-mob .aw-plate.is-missing {
+  aspect-ratio: 6 / 13;
+}
+
+.aw-tile.is-light .aw-plate.is-missing {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 6px,
+    rgba(7, 7, 7, 0.085) 6px,
+    rgba(7, 7, 7, 0.085) 7px
+  );
+}
+
+.aw-tile.is-dark .aw-plate.is-missing {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 6px,
+    rgba(255, 255, 255, 0.07) 6px,
+    rgba(255, 255, 255, 0.07) 7px
+  );
+}
+
+.aw-tile figcaption {
+  margin-top: 7px;
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--pt-ink-3);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .aw-row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 12px;
+  }
+
+  .aw-row-label {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  /* the strip bleeds to the rails so the scroll run uses the full seam */
+  .aw-strip {
+    margin-inline: calc(-1 * var(--pt-gut));
+    padding-inline: var(--pt-gut);
+    scroll-padding-inline: var(--pt-gut);
+  }
+}

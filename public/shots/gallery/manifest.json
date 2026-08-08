@@ -1,0 +1,530 @@
+{
+  "flagship": "singularity-dossier",
+  "generatedFor": "gallery",
+  "sections": [
+    {
+      "key": "context",
+      "label": "Context",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-context-desk-dark.jpg"
+    },
+    {
+      "key": "context",
+      "label": "Context",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-context-desk-light.jpg"
+    },
+    {
+      "key": "context",
+      "label": "Context",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-context-mob-dark.jpg"
+    },
+    {
+      "key": "context",
+      "label": "Context",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-context-mob-light.jpg"
+    },
+    {
+      "key": "customers",
+      "label": "Customers",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-customers-desk-dark.jpg"
+    },
+    {
+      "key": "customers",
+      "label": "Customers",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-customers-desk-light.jpg"
+    },
+    {
+      "key": "customers",
+      "label": "Customers",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-customers-mob-dark.jpg"
+    },
+    {
+      "key": "customers",
+      "label": "Customers",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-customers-mob-light.jpg"
+    },
+    {
+      "key": "deploy",
+      "label": "Deploy",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-deploy-desk-dark.jpg"
+    },
+    {
+      "key": "deploy",
+      "label": "Deploy",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-deploy-desk-light.jpg"
+    },
+    {
+      "key": "deploy",
+      "label": "Deploy",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-deploy-mob-dark.jpg"
+    },
+    {
+      "key": "deploy",
+      "label": "Deploy",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-deploy-mob-light.jpg"
+    },
+    {
+      "key": "developer",
+      "label": "Developer",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-developer-desk-dark.jpg"
+    },
+    {
+      "key": "developer",
+      "label": "Developer",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-developer-desk-light.jpg"
+    },
+    {
+      "key": "developer",
+      "label": "Developer",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-developer-mob-dark.jpg"
+    },
+    {
+      "key": "developer",
+      "label": "Developer",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-developer-mob-light.jpg"
+    },
+    {
+      "key": "footer",
+      "label": "Footer",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-footer-desk-dark.jpg"
+    },
+    {
+      "key": "footer",
+      "label": "Footer",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-footer-desk-light.jpg"
+    },
+    {
+      "key": "footer",
+      "label": "Footer",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-footer-mob-dark.jpg"
+    },
+    {
+      "key": "footer",
+      "label": "Footer",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-footer-mob-light.jpg"
+    },
+    {
+      "key": "global",
+      "label": "Global",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-global-desk-dark.jpg"
+    },
+    {
+      "key": "global",
+      "label": "Global",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-global-desk-light.jpg"
+    },
+    {
+      "key": "global",
+      "label": "Global",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-global-mob-dark.jpg"
+    },
+    {
+      "key": "global",
+      "label": "Global",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-global-mob-light.jpg"
+    },
+    {
+      "key": "hero",
+      "label": "Hero",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-hero-desk-dark.jpg"
+    },
+    {
+      "key": "hero",
+      "label": "Hero",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-hero-desk-light.jpg"
+    },
+    {
+      "key": "hero",
+      "label": "Hero",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-hero-mob-dark.jpg"
+    },
+    {
+      "key": "hero",
+      "label": "Hero",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-hero-mob-light.jpg"
+    },
+    {
+      "key": "locadex",
+      "label": "Locadex",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-locadex-desk-dark.jpg"
+    },
+    {
+      "key": "locadex",
+      "label": "Locadex",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-locadex-desk-light.jpg"
+    },
+    {
+      "key": "locadex",
+      "label": "Locadex",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-locadex-mob-dark.jpg"
+    },
+    {
+      "key": "locadex",
+      "label": "Locadex",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-locadex-mob-light.jpg"
+    },
+    {
+      "key": "story",
+      "label": "Stack story",
+      "cut": "desk",
+      "theme": "dark",
+      "file": "sec-story-desk-dark.jpg"
+    },
+    {
+      "key": "story",
+      "label": "Stack story",
+      "cut": "desk",
+      "theme": "light",
+      "file": "sec-story-desk-light.jpg"
+    },
+    {
+      "key": "story",
+      "label": "Stack story",
+      "cut": "mob",
+      "theme": "dark",
+      "file": "sec-story-mob-dark.jpg"
+    },
+    {
+      "key": "story",
+      "label": "Stack story",
+      "cut": "mob",
+      "theme": "light",
+      "file": "sec-story-mob-light.jpg"
+    }
+  ],
+  "variants": [
+    {
+      "slug": "archive-press",
+      "theme": "dark",
+      "file": "var-archive-press-dark.jpg"
+    },
+    {
+      "slug": "archive-press",
+      "theme": "light",
+      "file": "var-archive-press-light.jpg"
+    },
+    {
+      "slug": "aurora-paper",
+      "theme": "dark",
+      "file": "var-aurora-paper-dark.jpg"
+    },
+    {
+      "slug": "aurora-paper",
+      "theme": "light",
+      "file": "var-aurora-paper-light.jpg"
+    },
+    {
+      "slug": "bento-foundry",
+      "theme": "dark",
+      "file": "var-bento-foundry-dark.jpg"
+    },
+    {
+      "slug": "bento-foundry",
+      "theme": "light",
+      "file": "var-bento-foundry-light.jpg"
+    },
+    {
+      "slug": "blueprint-atlas",
+      "theme": "dark",
+      "file": "var-blueprint-atlas-dark.jpg"
+    },
+    {
+      "slug": "blueprint-atlas",
+      "theme": "light",
+      "file": "var-blueprint-atlas-light.jpg"
+    },
+    {
+      "slug": "chroma-flow",
+      "theme": "dark",
+      "file": "var-chroma-flow-dark.jpg"
+    },
+    {
+      "slug": "chroma-flow",
+      "theme": "light",
+      "file": "var-chroma-flow-light.jpg"
+    },
+    {
+      "slug": "concrete-mono",
+      "theme": "dark",
+      "file": "var-concrete-mono-dark.jpg"
+    },
+    {
+      "slug": "concrete-mono",
+      "theme": "light",
+      "file": "var-concrete-mono-light.jpg"
+    },
+    {
+      "slug": "concrete-origin",
+      "theme": "dark",
+      "file": "var-concrete-origin-dark.jpg"
+    },
+    {
+      "slug": "concrete-origin",
+      "theme": "light",
+      "file": "var-concrete-origin-light.jpg"
+    },
+    {
+      "slug": "concrete-source",
+      "theme": "dark",
+      "file": "var-concrete-source-dark.jpg"
+    },
+    {
+      "slug": "concrete-source",
+      "theme": "light",
+      "file": "var-concrete-source-light.jpg"
+    },
+    {
+      "slug": "dither-field",
+      "theme": "dark",
+      "file": "var-dither-field-dark.jpg"
+    },
+    {
+      "slug": "dither-field",
+      "theme": "light",
+      "file": "var-dither-field-light.jpg"
+    },
+    {
+      "slug": "event-horizon",
+      "theme": "dark",
+      "file": "var-event-horizon-dark.jpg"
+    },
+    {
+      "slug": "event-horizon",
+      "theme": "light",
+      "file": "var-event-horizon-light.jpg"
+    },
+    {
+      "slug": "field-magnet",
+      "theme": "dark",
+      "file": "var-field-magnet-dark.jpg"
+    },
+    {
+      "slug": "field-magnet",
+      "theme": "light",
+      "file": "var-field-magnet-light.jpg"
+    },
+    {
+      "slug": "flipboard-terminus",
+      "theme": "dark",
+      "file": "var-flipboard-terminus-dark.jpg"
+    },
+    {
+      "slug": "flipboard-terminus",
+      "theme": "light",
+      "file": "var-flipboard-terminus-light.jpg"
+    },
+    {
+      "slug": "glyph-rain",
+      "theme": "dark",
+      "file": "var-glyph-rain-dark.jpg"
+    },
+    {
+      "slug": "glyph-rain",
+      "theme": "light",
+      "file": "var-glyph-rain-light.jpg"
+    },
+    {
+      "slug": "hourglass",
+      "theme": "dark",
+      "file": "var-hourglass-dark.jpg"
+    },
+    {
+      "slug": "hourglass",
+      "theme": "light",
+      "file": "var-hourglass-light.jpg"
+    },
+    {
+      "slug": "kinetic-verba",
+      "theme": "dark",
+      "file": "var-kinetic-verba-dark.jpg"
+    },
+    {
+      "slug": "kinetic-verba",
+      "theme": "light",
+      "file": "var-kinetic-verba-light.jpg"
+    },
+    {
+      "slug": "lens-gate",
+      "theme": "dark",
+      "file": "var-lens-gate-dark.jpg"
+    },
+    {
+      "slug": "lens-gate",
+      "theme": "light",
+      "file": "var-lens-gate-light.jpg"
+    },
+    {
+      "slug": "paper-foundry",
+      "theme": "dark",
+      "file": "var-paper-foundry-dark.jpg"
+    },
+    {
+      "slug": "paper-foundry",
+      "theme": "light",
+      "file": "var-paper-foundry-light.jpg"
+    },
+    {
+      "slug": "prism-light",
+      "theme": "dark",
+      "file": "var-prism-light-dark.jpg"
+    },
+    {
+      "slug": "prism-light",
+      "theme": "light",
+      "file": "var-prism-light-light.jpg"
+    },
+    {
+      "slug": "singularity",
+      "theme": "dark",
+      "file": "var-singularity-dark.jpg"
+    },
+    {
+      "slug": "singularity-dossier",
+      "theme": "dark",
+      "file": "var-singularity-dossier-dark.jpg"
+    },
+    {
+      "slug": "singularity-dossier",
+      "theme": "light",
+      "file": "var-singularity-dossier-light.jpg"
+    },
+    {
+      "slug": "singularity",
+      "theme": "light",
+      "file": "var-singularity-light.jpg"
+    },
+    {
+      "slug": "singularity-orbit",
+      "theme": "dark",
+      "file": "var-singularity-orbit-dark.jpg"
+    },
+    {
+      "slug": "singularity-orbit",
+      "theme": "light",
+      "file": "var-singularity-orbit-light.jpg"
+    },
+    {
+      "slug": "singularity-signal",
+      "theme": "dark",
+      "file": "var-singularity-signal-dark.jpg"
+    },
+    {
+      "slug": "singularity-signal",
+      "theme": "light",
+      "file": "var-singularity-signal-light.jpg"
+    },
+    {
+      "slug": "terminus-board",
+      "theme": "dark",
+      "file": "var-terminus-board-dark.jpg"
+    },
+    {
+      "slug": "terminus-board",
+      "theme": "light",
+      "file": "var-terminus-board-light.jpg"
+    },
+    {
+      "slug": "toolchain",
+      "theme": "dark",
+      "file": "var-toolchain-dark.jpg"
+    },
+    {
+      "slug": "toolchain",
+      "theme": "light",
+      "file": "var-toolchain-light.jpg"
+    },
+    {
+      "slug": "typographic-broadcast",
+      "theme": "dark",
+      "file": "var-typographic-broadcast-dark.jpg"
+    },
+    {
+      "slug": "typographic-broadcast",
+      "theme": "light",
+      "file": "var-typographic-broadcast-light.jpg"
+    },
+    {
+      "slug": "white-gallery",
+      "theme": "dark",
+      "file": "var-white-gallery-dark.jpg"
+    },
+    {
+      "slug": "white-gallery",
+      "theme": "light",
+      "file": "var-white-gallery-light.jpg"
+    },
+    {
+      "slug": "wide-rule",
+      "theme": "dark",
+      "file": "var-wide-rule-dark.jpg"
+    },
+    {
+      "slug": "wide-rule",
+      "theme": "light",
+      "file": "var-wide-rule-light.jpg"
+    }
+  ]
+}

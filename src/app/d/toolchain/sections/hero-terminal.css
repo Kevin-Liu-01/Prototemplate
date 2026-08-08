@@ -673,4 +673,13 @@
   .toolchain-root .tct-app-main {
     padding: 16px 14px 52px;
   }
+
+  /* the card's fold-budget squeeze relaxes: no 900px first-fold to hit */
+  .toolchain-root.toolchain-root .tch-card .tc-hero-sub {
+    margin-top: 18px;
+  }
+
+  .toolchain-root.toolchain-root .tch-card .tc-hero-acts {
+    margin-top: 28px;
+  }
 }

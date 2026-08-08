@@ -253,6 +253,94 @@ const PRISMATIC_SNIPPET = `import PrismaticField from '@/components/shared/Prism
 /* presets: '1' wide burst · '2' arc over a dark core.
    exposureScale is the dimmer — raise it under content. */`;
 
+const BELT_SNIPPET = `import TranslateWindow from '@/app/d/_v0/TranslateWindow';
+
+/* the belt is the window's clock: the track carries the roster twice,
+   wraps at one run's width, and whichever chip crosses the strip
+   zone's centre fires the rewrite — never a timer */
+<TranslateWindow onLocaleChange={(loc) => every.current?.setLocale(loc)} />
+
+/* pacing: BELT_DWELL seconds a chip; any interaction holds the belt
+   (BELT_IDLE of quiet before it resumes); a pinned inspector or the
+   Terminal face freezes it outright */`;
+
+const NAMEPLATE_SNIPPET = `import PrototemplateHero from '@/app/PrototemplateHero';
+
+/* the take is physical: 'type' falls out, the serif frame's right
+   rule re-hugs the shorter word, both words travel to the outline
+   and PARK — the parked words ARE the nameplate, lowercase, so
+   nothing ever crossfades */
+<PrototemplateHero />
+
+/* travel deltas are measured from live rects — the module never
+   encodes where the sources sit; fonts are awaited before measuring,
+   resize rebuilds, reduced motion holds the settled sheet */`;
+
+const STACK_STORY_SNIPPET = `/* one dial spans the read; a piecewise map (measured lock-ins in,
+   beat end-times out) converts it to story time — re-anchored on
+   every refresh, lock-ins read from FLOW geometry */
+const READ_LINE = 0.55; // a beat locks as its copy centre takes it
+
+/* the scrub's damper: the trigger only moves a TARGET; one ticker
+   lerp chases it and calls apply() once per frame */
+const retarget = (p: number) => {
+  pTarget = p;
+  if (!scrubOn && Math.abs(pTarget - pCur) >= SCRUB_EPS) {
+    scrubOn = true;
+    gsap.ticker.add(scrubTick); // detaches itself when settled
+  }
+};`;
+
+const COMPARE_SNIPPET = `import SiteCompare from '@/app/SiteCompare';
+
+/* the cut is one CSS var on the stage — dragging re-renders nothing */
+<SiteCompare slug={site.slug} name={site.name} />
+
+/* inside: pointer capture keeps the sweep when the pointer leaves
+   the box; a hidden range control drives the same var for keyboards;
+   draggable={false} on every face — one native image-drag would
+   steal the stream and freeze the seam mid-sweep */`;
+
+const SHOOT_SNIPPET = `$ node docs/harness/gallery-shoot.mjs public/shots/gallery
+
+/* element screenshots, never scroll depths: a tile is one section's
+   own box, so side-by-side pairs align at any viewport */
+const file = \`sec-\${sec.key}-\${cut.key}-\${theme}.jpg\`;
+await page.locator(sec.sel).first().screenshot({ path: file });
+
+/* dark cuts ride the pre-boot door: theme seeded before first paint */
+await context.addInitScript((t) => localStorage.setItem('gt-theme', t), theme);
+
+/* the run ends by writing the manifest the gallery imports — a
+   missed selector is a reported skip, never a broken tile */`;
+
+const LADDER_SNIPPET = `/* styles.css — the LAST 720px block; every floor consumes the slots */
+@media (max-width: 720px) {
+  .toolchain-root {
+    --tcm-h2: 2.25rem;    --tcm-h2-lh: 1.18;
+    --tcm-lead: 17px;     --tcm-body: 16px;
+    --tcm-head-pt: 72px;  --tcm-box-gap: 28px;
+    --tc-card-pad: 20px;  /* the seam floor */
+  }
+
+  /* same specificity as the base rules — the ladder wins by ORDER,
+     so it lives after every rule it must override */
+  .toolchain-root .tc-head h2 {
+    font-size: var(--tcm-h2, 36px);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+}`;
+
+const PREBOOT_SNIPPET = `{/* layout.tsx — two scripts that run before the app exists */}
+
+{/* the persisted theme, stamped before first paint: no flash */}
+<script dangerouslySetInnerHTML={{ __html:
+  "try{var t=localStorage.getItem('gt-theme');" +
+  "if(t)document.documentElement.dataset.theme=t}catch(e){}" }} />
+
+{/* the rAF gate: postMessage({type:'gt:freeze',frozen}) pauses every
+   loop on the page; queued callbacks flush on resume */}`;
+
 export type Library = {
   name: string;
   role: string;
@@ -431,6 +519,62 @@ export const LIBRARIES: readonly Library[] = [
     },
     file: 'src/components/shared/EverySentence.tsx',
     snippet: REASSEMBLER_SNIPPET,
+  },
+  {
+    name: 'locale-belt',
+    role: 'the marquee that drives the page',
+    body:
+      'The translate window’s strip zone is an infinite conveyor of locale chips, and the belt is the demo’s clock, not its decoration: the track carries the fifteen-locale roster twice and its position wraps at one run’s width — the house marquee, ticker-driven so the wrap and the centre logic share one clock — and whichever chip crosses the zone’s centre becomes the active locale, so the rendered page and the payload’s translated leaves retype from the belt’s own output, never a timer’s. Each chip owns the centre for six seconds; hovering pauses the belt, any manual interaction holds it until a quiet spell passes, and a pinned inspector or the Terminal face freezes it outright. Clicking a chip slides the belt the short way round — jumping the position by exactly one run is frame-identical, so the recentre picks the least-travel pairing that stays on the doubled track — with crossings suppressed while it travels, so only the picked locale fires. The window carries one additive vent, onLocaleChange, for a host that wants to run on the belt’s clock (the dossier hero’s morphing headline does); passed nothing, nothing changes. Reduced motion parks the belt with es centred, and clicks recentre instantly.',
+    file: 'src/app/d/_v0/TranslateWindow.tsx',
+    snippet: BELT_SNIPPET,
+  },
+  {
+    name: 'nameplate-take',
+    role: 'the landing hero’s morph',
+    body:
+      'The nameplate as a working type-specimen sheet: prototype in serif off the destination line’s upper left, template in grotesk off its lower right, the destination between them as empty outlined text, and every word held by a crop frame — four border-touching rules that move with their word. The take is physical: type falls out and the serif frame’s right rule slides in to re-hug the shorter word; both words then travel inward, frames riding along, until they park inside the outline — and the parked words ARE the nameplate, lowercase, so nothing ever crossfades. Every travel delta is measured from live rects, so the module never encodes where the sources sit; fonts are awaited before anything is measured, a resize rebuilds the sheet, and reduced motion holds the settled nameplate rather than replaying the take.',
+    file: 'src/app/PrototemplateHero.tsx',
+    snippet: NAMEPLATE_SNIPPET,
+  },
+  {
+    name: 'stack-story',
+    role: 'the scroll-scrubbed stage',
+    body:
+      'The stack story’s scroll engine, and the two laws that keep a pinned read honest. One scrubbed dial spans the whole read, and a piecewise time map — measured lock-ins in, beat end-times out — converts scroll into story time, so every layer seats exactly as its beat’s copy reaches the read line whatever the beats’ real heights are. A lock-in is the copy block’s centre taking the 55% read line, measured from flow geometry (the finale is sticky, so its own rect would report the stuck pose), and the whole map re-anchors on every refresh. Between scroll and paint sits the stage’s damper: the trigger only moves a target, and one gsap.ticker lerp chases it, calling apply() once per frame — taps, cap wires, typing and rail all ride one damped clock, the stage’s equivalent of scrub: 0.35. The ticker detaches when settled, parking dead on target so no residue leaks into the beat math, and re-attaches on new input, so a resting stage burns nothing.',
+    file: 'src/app/d/_v0/sections/FullStack.tsx',
+    snippet: STACK_STORY_SNIPPET,
+  },
+  {
+    name: 'site-compare',
+    role: 'the two-face compare rig',
+    body:
+      'The landing wall’s compare instrument: two faces of one site — the home and the enterprise page — overlaid with the house seam between them, the reveal-seam recipe refit for a wall of stills. The cut lives in one CSS custom property on the stage, so a drag re-renders nothing; pointer capture on the stage keeps the sweep when the pointer leaves the box mid-drag; and a hidden range control drives the same var, so keyboards and readers get a real slider rather than a pantomime of one. Every face image carries draggable={false} — one native image-drag would steal the pointer stream and freeze the seam mid-sweep — and each face is a light/dark pair, so the rig follows the page theme without a re-shoot.',
+    file: 'src/app/SiteCompare.tsx',
+    snippet: COMPARE_SNIPPET,
+  },
+  {
+    name: 'gallery-shoot',
+    role: 'the wall’s tile shooter',
+    body:
+      'The harness that stocks the landing wall: a real Chromium at the dev server, shooting the flagship home’s sections and every variant home’s hero, both themes at both cuts. Element screenshots, never scroll depths — each tile is one section’s own box, so side-by-side pairs align whatever the viewport was. Theme is seeded through the same pre-boot door the site itself uses (an init script writes gt-theme to localStorage before navigation, the root script stamps it before first paint), one full scroll pass settles every lazy-armed section before the first shot, and a selector that misses is reported and skipped, never fatal. The run’s last act writes the manifest the gallery page imports — the wall renders what was actually shot, so a missing tile is a skipped cell rather than a broken image.',
+    file: 'docs/harness/gallery-shoot.mjs',
+    snippet: SHOOT_SNIPPET,
+  },
+  {
+    name: 'mobile-type-ladder',
+    role: 'the compact type slots',
+    body:
+      'Not an engine — the system that makes a whole page’s mobile typography one decision. Under 720px the page root publishes a ladder of slots: heading sizes with their own line heights, lead, body, small and kicker steps, head and cell paddings, box air, and a 20px seam floor — the least air card copy may keep off a ground strip. Every floor below consumes the slots instead of restating sizes, so a compact-cut change is one token edit rather than a hunt across sections. The block’s position is itself a law: it is the last 720px block in the sheet, because several base rules it overrides appear after the earlier one, and these same-specificity declarations only win by following them — the ladder outranks by order, never by escalating selectors.',
+    file: 'src/app/d/toolchain/styles.css',
+    snippet: LADDER_SNIPPET,
+  },
+  {
+    name: 'pre-boot',
+    role: 'the before-first-paint contract',
+    body:
+      'Two inline scripts in the document head run before the app exists, and everything that films or embeds the site leans on them. The first stamps the persisted theme onto the root element before first paint — dark mode is a token remap, so one attribute set early is the difference between no flash and a white flash on every dark load; the screenshot harness enters by the same door, seeding localStorage before navigation. The second is the rAF gate: requestAnimationFrame is wrapped so an embedding parent can freeze and resume every animation loop on the page with one postMessage — queued callbacks flush on resume, so shaders and scroll loops pick up exactly where they stopped rather than rebooting. That gate is how the presenter idles a whole wall of live thumbnails without touching any engine’s own code.',
+    file: 'src/app/layout.tsx',
+    snippet: PREBOOT_SNIPPET,
   },
   {
     name: 'four-color',

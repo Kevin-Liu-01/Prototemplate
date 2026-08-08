@@ -434,11 +434,37 @@
 
 @media (max-width: 560px) {
   .toolchain-root .v0-ctx .v0-ctx-art {
-    padding: 18px 16px 20px;
+    padding: var(--tcm-box-gap, 28px) 16px 30px;
   }
 
   .toolchain-root .v0-ctx-dir {
-    grid-template-columns: 76px minmax(0, 1fr);
+    grid-template-columns: 100px minmax(0, 1fr);
+    padding-block: 16px 17px;
+  }
+
+  .toolchain-root .v0-ctx-rule {
+    font-size: 10px;
+  }
+
+  .toolchain-root .v0-ctx .v0-ctx-review .tcr {
+    padding: 32px 24px 30px;
+  }
+
+  .toolchain-root .v0-ctx .v0-ctx-review .tcr-copy h2 {
+    font-size: var(--tcm-h3, 22px);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .toolchain-root .v0-ctx .lang-cr-branch {
+    padding-block: 16px;
+  }
+
+  .toolchain-root .v0-ctx-glossary-head {
+    padding-block: 14px;
+  }
+
+  .toolchain-root .v0-ctx-glossary-row {
+    padding: 12px 12px 13px;
   }
 }
 

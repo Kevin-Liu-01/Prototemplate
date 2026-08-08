@@ -5,8 +5,10 @@ import PrismaticField from '@/components/shared/PrismaticField';
 import PtNav from '@/components/shared/PtNav';
 import { DIRECTIONS } from '@/lib/directions';
 
+import AnatomyWall from './AnatomyWall';
 import PrototemplateHero from './PrototemplateHero';
 import SiteCompare from './SiteCompare';
+import SystemLedger from './SystemLedger';
 
 import './prototemplate.css';
 
@@ -272,6 +274,9 @@ export default function IndexPage() {
               singularity gate. The two faces of each site are overlaid below — drag the seam to
               sweep between them.
             </p>
+            <p className='pt-site-links'>
+              <Link href='/compare'>Compare any two, live →</Link>
+            </p>
             {/* the five captures fanned at the right edge, absolutely placed
                 and cut off by the section's own corner */}
             <span aria-hidden className='pt-sites-fan'>
@@ -303,6 +308,12 @@ export default function IndexPage() {
               </section>
             ))}
           </div>
+
+          <AnatomyWall />
+
+          <div className='pt-hatch' aria-hidden='true' />
+
+          <SystemLedger />
 
           <div className='pt-hatch' aria-hidden='true' />
 

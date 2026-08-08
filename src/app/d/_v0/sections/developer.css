@@ -373,6 +373,34 @@
   .toolchain-root .v0-dev-grid > .tc-cell:last-child {
     grid-column: auto;
   }
+
+  .toolchain-root .v0-dev-fork-label {
+    font-size: 13px;
+  }
+
+  .toolchain-root .v0-dev-out {
+    min-height: 34px;
+  }
+
+  .toolchain-root .v0-dev-val.is-sans {
+    font-size: 14px;
+  }
+
+  .toolchain-root .v0-dev-note {
+    font-size: 10.5px;
+  }
+
+  .toolchain-root .v0-dev-measure {
+    font-size: 11.5px;
+  }
+
+  .toolchain-root .v0-dev-route-path {
+    font-size: 12.5px;
+  }
+
+  .toolchain-root .v0-dev .lang-sw-rows {
+    gap: 18px;
+  }
 }
 
 /* the measured column's provenance, one quiet captioned line — the
