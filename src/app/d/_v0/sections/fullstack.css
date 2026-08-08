@@ -97,23 +97,6 @@
 
 /* ---------- the drawing: sticky while the rail scrolls ---------- */
 
-/* PRE-BOOT (js-arm): a JS visitor must never see the markup's standing
-   tower flash before the story clocks seed — the section's inline arm
-   script stamps js-arm at parse time (motion permitting) and every
-   machinery branch answers with is-live once it has painted. No JS ⇒
-   no arm ⇒ the standing pose serves the crawl. The 3s failsafe returns
-   the standing pose if the engine ever fails to boot. */
-.toolchain-root .tcb.v0-stack.js-arm:not(.is-live) .v0-stack-fig {
-  visibility: hidden;
-  animation: v0-stack-unarm 0s 3s forwards;
-}
-
-@keyframes v0-stack-unarm {
-  to {
-    visibility: visible;
-  }
-}
-
 .toolchain-root .tcb .v0-stack-figcol {
   flex: 1;
   min-height: 0;
@@ -684,7 +667,7 @@
    the non-finale beats stretch: the sticky finale's pin math above
    depends on the base 48vh window and must stay untouched. */
 .toolchain-root .tcb .v0-stack-beat:not(.is-finale) {
-  min-height: clamp(480px, 100vh, 1360px);
+  min-height: clamp(320px, 68vh, 920px);
 }
 
 /* Beat 01 runs one breath longer still (founder: "we should be able to
@@ -692,7 +675,7 @@
    moving") — the assembled code plate holds while the reader scrolls,
    and beat 02's window reaches the read line later. */
 .toolchain-root .tcb .v0-stack-beat:first-child {
-  min-height: clamp(540px, 112vh, 1500px);
+  min-height: clamp(360px, 76vh, 1000px);
 }
 
 /* THE AGENTS DWELL (founder: "we make this go stay on agents a lil
@@ -975,12 +958,16 @@
        and text zone always reach the true screen bottom; the earlier
        svh cut traded that reach for resize stability */
     --v0sm-stage-h: calc(100dvh - var(--v0sm-top));
+    /* svh never moves when the browser chrome collapses: anything SIZED
+       from the stage must use this, or it grows and shrinks with the
+       mobile URL bar */
+    --v0sm-stage-h-stable: calc(100svh - var(--v0sm-top));
     /* the tower must FIT the 60% fig zone, never clip: its width from
        the zone's height × VIEW_W/TOWER_H (StackTower: 214.133/250.8 =
        0.8538 — change them together), minus the fig pads and the
        STAGE_DROP headroom an arriving plate falls through (20 + 32 +
        a 4px breath) */
-    --v0sm-tw: calc((0.6 * var(--v0sm-stage-h) - 56px) * 0.8538);
+    --v0sm-tw: calc((0.6 * var(--v0sm-stage-h-stable) - 56px) * 0.8538);
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .tcb-grid {
@@ -1131,11 +1118,11 @@
     font-size: 14px;
   }
 
-  /* the story's scroll length: ~105svh of dwell per beat — the sticky
+  /* the story's scroll length: ~70svh of dwell per beat — the sticky
      travel, and the master scrub's whole clock */
   .toolchain-root .tcb.v0-stack.is-stage .v0sm-runway {
     display: block;
-    height: 420svh;
+    height: 280svh;
   }
 }
 
@@ -1148,7 +1135,7 @@
    law. */
 @media (max-width: 1020px) and (min-height: 500px) and (max-height: 639px) {
   .toolchain-root .tcb.v0-stack.is-stage {
-    --v0sm-tw: calc((0.5 * var(--v0sm-stage-h) - 56px) * 0.8538);
+    --v0sm-tw: calc((0.5 * var(--v0sm-stage-h-stable) - 56px) * 0.8538);
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .tcb-grid {

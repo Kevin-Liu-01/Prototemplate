@@ -83,21 +83,66 @@ type Stack = {
 };
 
 const STACKS: readonly Stack[] = [
-  { name: 'Next.js', detected: 'Next.js · App Router', scanRoot: 'src/app', strings: 128, wrote: 'gt.config.json · .env.local' },
-  { name: 'React', detected: 'React · Vite', scanRoot: 'src', strings: 96, wrote: 'gt.config.json · .env' },
-  { name: 'React Native', detected: 'React Native · Expo', scanRoot: 'app', strings: 84, wrote: 'gt.config.json · app.config.ts' },
-  { name: 'TanStack Start', detected: 'TanStack Start · SSR', scanRoot: 'src/routes', strings: 74, wrote: 'gt.config.json · .env' },
-  { name: 'Node.js', detected: 'Node.js · server', scanRoot: 'src', strings: 52, wrote: 'gt.config.json · .env' },
-  { name: 'Python', detected: 'Python · scripts', scanRoot: 'app', strings: 47, wrote: 'gt.config.py · .env' },
+  {
+    name: 'Next.js',
+    detected: 'Next.js · App Router',
+    scanRoot: 'src/app',
+    strings: 128,
+    wrote: 'gt.config.json · .env.local',
+  },
+  {
+    name: 'React',
+    detected: 'React · Vite',
+    scanRoot: 'src',
+    strings: 96,
+    wrote: 'gt.config.json · .env',
+  },
+  {
+    name: 'React Native',
+    detected: 'React Native · Expo',
+    scanRoot: 'app',
+    strings: 84,
+    wrote: 'gt.config.json · app.config.ts',
+  },
+  {
+    name: 'TanStack Start',
+    detected: 'TanStack Start · SSR',
+    scanRoot: 'src/routes',
+    strings: 74,
+    wrote: 'gt.config.json · .env',
+  },
+  {
+    name: 'Node.js',
+    detected: 'Node.js · server',
+    scanRoot: 'src',
+    strings: 52,
+    wrote: 'gt.config.json · .env',
+  },
+  {
+    name: 'Python',
+    detected: 'Python · scripts',
+    scanRoot: 'app',
+    strings: 47,
+    wrote: 'gt.config.py · .env',
+  },
 ];
 
-type StackMarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean };
+type StackMarkProps = {
+  className?: string;
+  color?: string;
+  'aria-hidden'?: boolean;
+};
 
 /** The saved React Native badge, mask-rendered in the tab's own ink —
     same reasoning as the Frameworks tab strip: the bare atom would be
     pixel-identical to the React mark at this size. */
 function ReactNativeStackMark({ className }: StackMarkProps) {
-  return <i className={className ? `${className} is-rn` : 'is-rn'} aria-hidden='true' />;
+  return (
+    <i
+      className={className ? `${className} is-rn` : 'is-rn'}
+      aria-hidden='true'
+    />
+  );
 }
 
 /** The real framework marks, monochrome at text size beside each label. */
@@ -123,7 +168,12 @@ const DEFAULT_STACK: Stack = STACKS[0] ?? {
     renders the page's one locale chip like `locs` does — the source is a
     locale token too, so it speaks the same flag+code grammar as the
     targets, in the plate's quieter neutral voice. */
-const WIZARD: readonly { key: string; text?: string; src?: string; locs?: readonly string[] }[] = [
+const WIZARD: readonly {
+  key: string;
+  text?: string;
+  src?: string;
+  locs?: readonly string[];
+}[] = [
   { key: 'Source', src: 'en' },
   { key: 'Locales', locs: ['es', 'fr', 'ja', 'de', 'zh'] },
 ];
@@ -428,14 +478,17 @@ const fmtRevenue = (loc: PreviewLoc) =>
     maximumFractionDigits: 0,
   }).format(REVENUE[loc].amount);
 
-const fmtInvoices = (loc: PreviewLoc) => new Intl.NumberFormat(loc).format(INVOICE_COUNT);
+const fmtInvoices = (loc: PreviewLoc) =>
+  new Intl.NumberFormat(loc).format(INVOICE_COUNT);
 
 /* day + short month, no year: the product voice for a payout that is
    always near-term — and the honest way to keep the widest locale's
    reserve sane (pt's medium dateStyle runs '12 de ago. de 2026', which
    alone cost the chart card 60px of permanent width) */
 const fmtPayout = (loc: PreviewLoc) =>
-  new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short' }).format(PAYOUT_DATE);
+  new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short' }).format(
+    PAYOUT_DATE
+  );
 
 /* ---- the chart card: the digestible second block filling the mock's
    right rail. ONE localized string (its "Last 6 months" label — a real
@@ -454,10 +507,14 @@ const CHART_MONTHS = [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 /* the series CRESTS at February (the accented bar at the hero's tier):
    a natural climb into the peak, then an easing falloff with one small
    summer bump — the curve is oriented around the accent, not the edge */
-const CHART_BARS = [0.3, 0.42, 0.55, 0.62, 0.78, 1, 0.88, 0.72, 0.6, 0.52, 0.58, 0.5, 0.44, 0.4] as const;
+const CHART_BARS = [
+  0.3, 0.42, 0.55, 0.62, 0.78, 1, 0.88, 0.72, 0.6, 0.52, 0.58, 0.5, 0.44, 0.4,
+] as const;
 
 const fmtMonth = (loc: PreviewLoc, month: number) =>
-  new Intl.DateTimeFormat(loc, { month: 'short' }).format(new Date(2026, month, 1));
+  new Intl.DateTimeFormat(loc, { month: 'short' }).format(
+    new Date(2026, month, 1)
+  );
 
 const fmtDelta = (loc: PreviewLoc) =>
   new Intl.NumberFormat(loc, {
@@ -566,7 +623,8 @@ const REST_CUT = 88;
    payload waits whole behind the seam instead — the drag still reveals
    it. Must agree with the --seam-cut narrow override in the sheet. */
 const NARROW_MQ = '(max-width: 760px)';
-const isNarrow = () => typeof window !== 'undefined' && window.matchMedia(NARROW_MQ).matches;
+const isNarrow = () =>
+  typeof window !== 'undefined' && window.matchMedia(NARROW_MQ).matches;
 const restCut = () => (isNarrow() ? 100 : REST_CUT);
 
 /** A component's inspector mark: the quiet exclamation pinned to its
@@ -632,9 +690,18 @@ function InsMark({
     which would erase it. Stat cells pass a class (`is-dt` / `is-dd`)
     because their ladders sit at cell level and must mirror the dt/dd
     fonts instead of inheriting them. */
-function Ghost({ read, className }: { read: (loc: PreviewLoc) => string; className?: string }) {
+function Ghost({
+  read,
+  className,
+}: {
+  read: (loc: PreviewLoc) => string;
+  className?: string;
+}) {
   return (
-    <span className={className ? `v0-tw-ghost ${className}` : 'v0-tw-ghost'} aria-hidden>
+    <span
+      className={className ? `v0-tw-ghost ${className}` : 'v0-tw-ghost'}
+      aria-hidden
+    >
       {BELT_LOCS.map((loc) => (
         /* ladders carry Intl output: Safari's ICU can format a hair apart
            from the server's, and one mismatched text bails the whole
@@ -665,7 +732,9 @@ function Ghost({ read, className }: { read: (loc: PreviewLoc) => string; classNa
    captured — the payload would freeze on a partial while the rendered
    line typed on. Stable types let React update the same spans in
    place, so the ledger's node refs survive any re-render. */
-const K = ({ k }: { k: string }) => <span className='pl-k'>&quot;{k}&quot;</span>;
+const K = ({ k }: { k: string }) => (
+  <span className='pl-k'>&quot;{k}&quot;</span>
+);
 const S = ({ s, k }: { s: string; k: RwKey }) => (
   <span className='pl-s'>
     &quot;<span data-rwj={k}>{s}</span>&quot;
@@ -692,7 +761,12 @@ function PayloadJson({ loc, hl }: { loc: PreviewLoc; hl?: string }) {
         {'{'}
       </span>
       {flat.map(([k, s, rw], i) => (
-        <span className='pl-line sgdh-pl-row' key={k} data-key={k} data-hl={hl === k || undefined}>
+        <span
+          className='pl-line sgdh-pl-row'
+          key={k}
+          data-key={k}
+          data-hl={hl === k || undefined}
+        >
           <Ln n={i + 2} />
           {'  '}
           <K k={k} />
@@ -758,7 +832,9 @@ type TranslateWindowProps = {
   onLocaleChange?: (loc: string) => void;
 };
 
-export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps) {
+export default function TranslateWindow({
+  onLocaleChange,
+}: TranslateWindowProps) {
   const root = useRef<HTMLDivElement>(null);
 
   /* the terminal window's two faces + the preview's locale. The rendered
@@ -825,9 +901,14 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     pin: pinned === k,
     /* hover never steals an open pin; unpinning falls back to hover state
        (the pointer is still on the mark), so the rectangle stays honest */
-    onEnter: () => setIns((cur) => (cur?.pin || cur?.k === k ? cur : { k, pin: false })),
-    onLeave: () => setIns((cur) => (cur && !cur.pin && cur.k === k ? null : cur)),
-    onToggle: () => setIns((cur) => (cur?.pin && cur.k === k ? { k, pin: false } : { k, pin: true })),
+    onEnter: () =>
+      setIns((cur) => (cur?.pin || cur?.k === k ? cur : { k, pin: false })),
+    onLeave: () =>
+      setIns((cur) => (cur && !cur.pin && cur.k === k ? null : cur)),
+    onToggle: () =>
+      setIns((cur) =>
+        cur?.pin && cur.k === k ? { k, pin: false } : { k, pin: true }
+      ),
   });
   /* The WHOLE component is the inspector's hit target — hovering anywhere
      on it raises the rectangle + chip, clicking anywhere on it pins (the
@@ -835,11 +916,16 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
      are plain elements, so no button ever nests inside a button). Clicks
      that land on the mark itself are left to the mark's own toggle. */
   const insBox = (k: RwKey) => ({
-    onMouseEnter: () => setIns((cur) => (cur?.pin || cur?.k === k ? cur : { k, pin: false })),
-    onMouseLeave: () => setIns((cur) => (cur && !cur.pin && cur.k === k ? null : cur)),
+    onMouseEnter: () =>
+      setIns((cur) => (cur?.pin || cur?.k === k ? cur : { k, pin: false })),
+    onMouseLeave: () =>
+      setIns((cur) => (cur && !cur.pin && cur.k === k ? null : cur)),
     onClick: (e: ReactMouseEvent<HTMLElement>) => {
-      if (e.target instanceof Element && e.target.closest('.sgdh-ins-mark')) return;
-      setIns((cur) => (cur?.pin && cur.k === k ? { k, pin: false } : { k, pin: true }));
+      if (e.target instanceof Element && e.target.closest('.sgdh-ins-mark'))
+        return;
+      setIns((cur) =>
+        cur?.pin && cur.k === k ? { k, pin: false } : { k, pin: true }
+      );
     },
   });
 
@@ -869,7 +955,8 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
     const r = el.getBoundingClientRect();
     if (r.width === 0) return;
     const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
-    const cutX = r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
+    const cutX =
+      r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
     for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
       const mr = m.getBoundingClientRect();
       if (mr.left + mr.width / 2 > cutX) m.setAttribute('data-swept', '');
@@ -884,7 +971,10 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
        payload block's margin */
     const next = Math.min(100, Math.max(CUT_MIN, pct));
     el.style.setProperty('--seam-cut', `${next}%`);
-    el.querySelector('.tc-seam')?.setAttribute('aria-valuenow', String(Math.round(next)));
+    el.querySelector('.tc-seam')?.setAttribute(
+      'aria-valuenow',
+      String(Math.round(next))
+    );
     reconcileMarks();
   };
 
@@ -905,7 +995,12 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
          but the replay still runs beneath it and settles inside ~2.5s —
          whenever the reader flips the seg to Terminal they find a
          finished run, completion line, timing and all. */
-      const counter = (sel: string, to: number, duration: number, decimals: number) => {
+      const counter = (
+        sel: string,
+        to: number,
+        duration: number,
+        decimals: number
+      ) => {
         const el = root.current?.querySelector<HTMLElement>(sel);
         if (!el) return gsap.to({}, { duration: 0 });
         const state = { v: 0 };
@@ -924,31 +1019,82 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
          section's terminal reports for this exact 640-translation run. */
       const run = gsap.timeline({ delay: 0.25, defaults: { ease: 'none' } });
       run
-        .from('.tct-cmd1 span', { autoAlpha: 0, duration: 0.01, stagger: 0.012 })
-        .from('[data-tw]', { autoAlpha: 0, duration: 0.16, stagger: 0.07 }, '+=0.06')
-        .from('.tct-cmd2 span', { autoAlpha: 0, duration: 0.01, stagger: 0.012 }, '+=0.07')
-        .from('[data-ts]', { autoAlpha: 0, duration: 0.16, stagger: 0.09 }, '+=0.06')
+        .from('.tct-cmd1 span', {
+          autoAlpha: 0,
+          duration: 0.01,
+          stagger: 0.012,
+        })
+        .from(
+          '[data-tw]',
+          { autoAlpha: 0, duration: 0.16, stagger: 0.07 },
+          '+=0.06'
+        )
+        .from(
+          '.tct-cmd2 span',
+          { autoAlpha: 0, duration: 0.01, stagger: 0.012 },
+          '+=0.07'
+        )
+        .from(
+          '[data-ts]',
+          { autoAlpha: 0, duration: 0.16, stagger: 0.09 },
+          '+=0.06'
+        )
         .add(counter('[data-count-scan]', DEFAULT_STACK.strings, 0.4, 0), '<')
-        .from('[data-tr-src]', { autoAlpha: 0, duration: 0.14, stagger: 0.06 }, '+=0.05')
-        .from('.tct-cell', { autoAlpha: 0, y: 5, duration: 0.22, ease: 'power1.out', stagger: 0.05 }, '<+=0.08')
-        .from('[data-td]', { autoAlpha: 0, duration: 0.16, stagger: 0.09 }, '+=0.06')
+        .from(
+          '[data-tr-src]',
+          { autoAlpha: 0, duration: 0.14, stagger: 0.06 },
+          '+=0.05'
+        )
+        .from(
+          '.tct-cell',
+          {
+            autoAlpha: 0,
+            y: 5,
+            duration: 0.22,
+            ease: 'power1.out',
+            stagger: 0.05,
+          },
+          '<+=0.08'
+        )
+        .from(
+          '[data-td]',
+          { autoAlpha: 0, duration: 0.16, stagger: 0.09 },
+          '+=0.06'
+        )
         .add(counter('[data-count-time]', 12.4, 0.4, 1), '<');
 
       /* ---- the long tail keeps arriving ----
          Both cycling cells advance IN STEP — one heartbeat for the whole
          column, de → fr → zh: the outgoing variants are fully gone before
          the incoming pair lands. */
-      const cycCells = gsap.utils.toArray<HTMLElement>('.tct-cyc', root.current);
-      const cycGroups = cycCells.map((cell) => gsap.utils.toArray<HTMLElement>('[data-cyc]', cell));
+      const cycCells = gsap.utils.toArray<HTMLElement>(
+        '.tct-cyc',
+        root.current
+      );
+      const cycGroups = cycCells.map((cell) =>
+        gsap.utils.toArray<HTMLElement>('[data-cyc]', cell)
+      );
       const steps = cycGroups[0]?.length ?? 0;
       if (steps > 1) {
         const cyc = gsap.timeline({ repeat: -1, delay: run.duration() + 2.2 });
         for (let i = 0; i < steps; i += 1) {
-          const going = cycGroups.map((g) => g[i]).filter((el): el is HTMLElement => Boolean(el));
-          const coming = cycGroups.map((g) => g[(i + 1) % steps]).filter((el): el is HTMLElement => Boolean(el));
+          const going = cycGroups
+            .map((g) => g[i])
+            .filter((el): el is HTMLElement => Boolean(el));
+          const coming = cycGroups
+            .map((g) => g[(i + 1) % steps])
+            .filter((el): el is HTMLElement => Boolean(el));
           cyc
-            .to(going, { autoAlpha: 0, duration: 0.24, ease: 'power1.in' }, '+=2.7')
-            .to(coming, { autoAlpha: 1, duration: 0.28, ease: 'power1.out' }, '>');
+            .to(
+              going,
+              { autoAlpha: 0, duration: 0.24, ease: 'power1.in' },
+              '+=2.7'
+            )
+            .to(
+              coming,
+              { autoAlpha: 1, duration: 0.28, ease: 'power1.out' },
+              '>'
+            );
         }
       }
     },
@@ -1021,13 +1167,16 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       /* es owns the first fold: seated on centre before first paint */
       seat(0);
 
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
 
       beltApi.current = {
         center: (el: HTMLElement) => {
           const i = chips.indexOf(el) % n;
           if (i >= 0) active = i;
-          const target = el.offsetLeft + el.offsetWidth / 2 - beltEl.clientWidth / 2;
+          const target =
+            el.offsetLeft + el.offsetWidth / 2 - beltEl.clientWidth / 2;
           if (reduced) {
             pos = wrap(target);
             setX();
@@ -1108,7 +1257,14 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
 
       const speed = runWidth / (n * BELT_DWELL);
       const tick = (_time: number, deltaMs: number) => {
-        if (!onscreen || sliding || hover || pinnedRef.current || viewRef.current !== 'preview') return;
+        if (
+          !onscreen ||
+          sliding ||
+          hover ||
+          pinnedRef.current ||
+          viewRef.current !== 'preview'
+        )
+          return;
         /* a manual pick doesn't FREEZE the conveyor — it crawls through
            the courtesy window (founder: a stopped belt just reads as a
            delay), then resumes full speed. At crawl pace the next
@@ -1128,8 +1284,23 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
 
       const remeasure = () => {
         if (!trackEl.isConnected) return;
+        /* CONTINUITY, never a re-seat: fonts arriving (or a resize)
+           change the chips' widths, but the belt has been drifting since
+           first paint — snapping the active chip back to dead centre
+           jerked the whole conveyor backward on every reload. Instead
+           the chip nearest the centre keeps its exact offset from the
+           centre line through the new geometry, so the correction is a
+           few pixels, not the accumulated drift. */
+        const i = centerIdx();
+        const base = lefts[0] ?? 0;
+        const c = base + wrap(pos + beltEl.clientWidth / 2 - base);
+        let delta = c - chipCenter(i);
+        if (Math.abs(delta) > runWidth / 2)
+          delta -= Math.sign(delta) * runWidth;
         measure();
-        if (runWidth > 0 && !sliding) seat(active);
+        if (runWidth <= 0 || sliding) return;
+        pos = wrap(chipCenter(i) + delta - beltEl.clientWidth / 2);
+        setX();
       };
       window.addEventListener('resize', remeasure);
       void document.fonts.ready.then(remeasure);
@@ -1172,7 +1343,9 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       if (!scope) return;
       const prev = prevLoc.current;
       prevLoc.current = ploc;
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
       const lineEls = (key: RwKey) => {
         const els: HTMLElement[] = [];
         const ui = scope.querySelector<HTMLElement>(`[data-rw='${key}']`);
@@ -1235,7 +1408,13 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       tl.fromTo(
         '[data-rwf]',
         { autoAlpha: 0.15 },
-        { autoAlpha: 1, duration: 0.22, ease: 'power1.out', stagger: 0.03, immediateRender: false },
+        {
+          autoAlpha: 1,
+          duration: 0.22,
+          ease: 'power1.out',
+          stagger: 0.03,
+          immediateRender: false,
+        },
         0.08
       );
     },
@@ -1308,7 +1487,9 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setCut(target);
       } else {
-        const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
+        const now = parseFloat(
+          getComputedStyle(el).getPropertyValue('--seam-cut')
+        );
         const dial = { v: Number.isFinite(now) ? now : REST_CUT };
         gsap.to(dial, {
           v: target,
@@ -1325,7 +1506,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
         const t = e.target;
         /* clicks on any inspectable component (or the seam) are theirs to
            handle — only truly-elsewhere pointer-downs dismiss the pin */
-        if (t instanceof Element && (t.closest('.sgdh-ins') || t.closest('.tc-seam'))) return;
+        if (
+          t instanceof Element &&
+          (t.closest('.sgdh-ins') || t.closest('.tc-seam'))
+        )
+          return;
         setIns(null);
       };
       document.addEventListener('keydown', onKey);
@@ -1385,8 +1570,19 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
             {STACKS.map((s) => {
               const Mark = STACK_MARKS[s.name];
               return (
-                <button type='button' key={s.name} data-on={stack.name === s.name} onClick={() => pickStack(s)}>
-                  {Mark ? <Mark className='sgdh-stack-mark' color='currentColor' aria-hidden /> : null}
+                <button
+                  type='button'
+                  key={s.name}
+                  data-on={stack.name === s.name}
+                  onClick={() => pickStack(s)}
+                >
+                  {Mark ? (
+                    <Mark
+                      className='sgdh-stack-mark'
+                      color='currentColor'
+                      aria-hidden
+                    />
+                  ) : null}
                   <span>{s.name}</span>
                 </button>
               );
@@ -1402,7 +1598,12 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
             aria-hidden={view !== 'preview'}
             ref={belt}
           >
-            <div className='tct-tabs v0-tw-belt-track' role='group' aria-label='Preview locale' ref={track}>
+            <div
+              className='tct-tabs v0-tw-belt-track'
+              role='group'
+              aria-label='Preview locale'
+              ref={track}
+            >
               {[0, 1].map((copy) =>
                 BELT_LOCS.map((loc) => (
                   <button
@@ -1426,11 +1627,21 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
             icon-only without touching the buttons; the aria-labels keep
             each button's accessible name when the text is display: none. */}
         <div className='tct-seg' role='group' aria-label='Show the run as'>
-          <button type='button' data-on={view === 'preview'} aria-label='Preview' onClick={() => pickView('preview')}>
+          <button
+            type='button'
+            data-on={view === 'preview'}
+            aria-label='Preview'
+            onClick={() => pickView('preview')}
+          >
             <Eye aria-hidden size={13} strokeWidth={1.8} />
             <span className='v0-tw-seg-t'>Preview</span>
           </button>
-          <button type='button' data-on={view === 'term'} aria-label='Terminal' onClick={() => pickView('term')}>
+          <button
+            type='button'
+            data-on={view === 'term'}
+            aria-label='Terminal'
+            onClick={() => pickView('term')}
+          >
             <TerminalSquare aria-hidden size={13} strokeWidth={1.8} />
             <span className='v0-tw-seg-t'>Terminal</span>
           </button>
@@ -1439,7 +1650,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
 
       <div className='tct-stage'>
         {/* face 1 — the session */}
-        <div className='tct-face tct-face-term' data-on={view === 'term'} aria-hidden={view !== 'term'}>
+        <div
+          className='tct-face tct-face-term'
+          data-on={view === 'term'}
+          aria-hidden={view !== 'term'}
+        >
           <div className='tct-body'>
             <Cmd text='npx gt@latest' mark='tct-cmd1' />
             <div className='tct-gap' />
@@ -1510,7 +1725,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                     ) : (
                       <span className='tct-cell tct-cyc' key={`cyc${c}`}>
                         {cell.map((v, i) => (
-                          <span data-cyc key={v.loc} style={{ opacity: i === 0 ? 1 : 0 }}>
+                          <span
+                            data-cyc
+                            key={v.loc}
+                            style={{ opacity: i === 0 ? 1 : 0 }}
+                          >
                             <i className='tct-chip'>
                               <LocaleTag code={v.loc} />
                             </i>
@@ -1532,8 +1751,7 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
             </div>
             <div className='tct-line tct-meta' data-td>
               {'  '}
-              <span className='tct-ok'>✓</span>
-              {' '}
+              <span className='tct-ok'>✓</span>{' '}
               <b className='tct-strong'>640</b>
               {' translations · 5 locales · '}
               <span className='tct-ok'>
@@ -1556,7 +1774,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
             material simply swaps with the face (app surface here,
             transcript plate on Terminal). The geometry lives in
             translate-window.css. */}
-        <div className='tct-face tct-face-prev' data-on={view === 'preview'} aria-hidden={view !== 'preview'}>
+        <div
+          className='tct-face tct-face-prev'
+          data-on={view === 'preview'}
+          aria-hidden={view !== 'preview'}
+        >
           {/* The full-bleed surface carries the house slide-to-reveal:
               the payload gt wrote sits pinned full-width UNDER the
               render, and the seam (the logo's doubled line, each thread
@@ -1582,7 +1804,12 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
               {/* the mark alone (founder: no brand word) — the drawn GT
                   glyph IS the product's name here */}
               <span className='sgdh-app-mark'>
-                <Image src='/brand/no-bg-gt-logo-light.png' alt='GT' width={21} height={21} />
+                <Image
+                  src='/brand/no-bg-gt-logo-light.png'
+                  alt='GT'
+                  width={21}
+                  height={21}
+                />
               </span>
               {/* each nav item is a reserved slot (its ladder holds the
                   roster's widest label) with a text-hugging FIT inside:
@@ -1590,21 +1817,33 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                   the words' own corner — a mark that floated at a wide
                   slot's far edge read as the NEXT item's */}
               <nav className='sgdh-app-nav' aria-label='Product navigation'>
-                <span className='sgdh-app-navi is-on sgdh-ins' data-ins-on={ins?.k === 'nav0' || undefined} {...insBox('nav0')}>
+                <span
+                  className='sgdh-app-navi is-on sgdh-ins'
+                  data-ins-on={ins?.k === 'nav0' || undefined}
+                  {...insBox('nav0')}
+                >
                   <span className='v0-tw-fit'>
                     <b data-rw='nav0'>{PREVIEWS[ploc].nav[0]}</b>
                     <InsMark {...insProps('nav0')} />
                   </span>
                   <Ghost read={(l) => PREVIEWS[l].nav[0]} />
                 </span>
-                <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav1' || undefined} {...insBox('nav1')}>
+                <span
+                  className='sgdh-app-navi sgdh-ins'
+                  data-ins-on={ins?.k === 'nav1' || undefined}
+                  {...insBox('nav1')}
+                >
                   <span className='v0-tw-fit'>
                     <b data-rw='nav1'>{PREVIEWS[ploc].nav[1]}</b>
                     <InsMark {...insProps('nav1')} />
                   </span>
                   <Ghost read={(l) => PREVIEWS[l].nav[1]} />
                 </span>
-                <span className='sgdh-app-navi sgdh-ins' data-ins-on={ins?.k === 'nav2' || undefined} {...insBox('nav2')}>
+                <span
+                  className='sgdh-app-navi sgdh-ins'
+                  data-ins-on={ins?.k === 'nav2' || undefined}
+                  {...insBox('nav2')}
+                >
                   <span className='v0-tw-fit'>
                     <b data-rw='nav2'>{PREVIEWS[ploc].nav[2]}</b>
                     <InsMark {...insProps('nav2')} />
@@ -1631,7 +1870,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                       here skipped the document outline (h1 straight to h3 —
                       Lighthouse heading-order); .tct-app-h pins every
                       UA-differing property, so the swap is invisible. */}
-                  <div className='tct-app-h sgdh-ins' data-ins-on={ins?.k === 'heading' || undefined} {...insBox('heading')}>
+                  <div
+                    className='tct-app-h sgdh-ins'
+                    data-ins-on={ins?.k === 'heading' || undefined}
+                    {...insBox('heading')}
+                  >
                     <span className='v0-tw-fit'>
                       <span className='v0-tw-line'>
                         <span data-rw='heading'>{PREVIEWS[ploc].heading}</span>
@@ -1640,7 +1883,11 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                     </span>
                     <Ghost read={(l) => PREVIEWS[l].heading} />
                   </div>
-                  <p className='tct-app-copy sgdh-ins' data-ins-on={ins?.k === 'sub' || undefined} {...insBox('sub')}>
+                  <p
+                    className='tct-app-copy sgdh-ins'
+                    data-ins-on={ins?.k === 'sub' || undefined}
+                    {...insBox('sub')}
+                  >
                     <span className='v0-tw-fit'>
                       <span className='v0-tw-line'>
                         <span data-rw='sub'>{PREVIEWS[ploc].sub}</span>
@@ -1660,30 +1907,61 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                       keep describing the two type roles, and the CSS
                       anchors on data-rw/data-rwf. */}
                   <div className='sgdh-app-stats'>
-                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'revenue' || undefined} {...insBox('revenue')}>
+                    <div
+                      className='sgdh-app-stat sgdh-ins'
+                      data-ins-on={ins?.k === 'revenue' || undefined}
+                      {...insBox('revenue')}
+                    >
                       <div data-rw='revenue'>{PREVIEWS[ploc].revenue}</div>
-                      <div data-rwf suppressHydrationWarning>{fmtRevenue(ploc)}</div>
-                      <Ghost className='is-dt' read={(l) => PREVIEWS[l].revenue} />
+                      <div data-rwf suppressHydrationWarning>
+                        {fmtRevenue(ploc)}
+                      </div>
+                      <Ghost
+                        className='is-dt'
+                        read={(l) => PREVIEWS[l].revenue}
+                      />
                       <Ghost className='is-dd' read={fmtRevenue} />
                       <InsMark {...insProps('revenue')} />
                     </div>
-                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'invoices' || undefined} {...insBox('invoices')}>
+                    <div
+                      className='sgdh-app-stat sgdh-ins'
+                      data-ins-on={ins?.k === 'invoices' || undefined}
+                      {...insBox('invoices')}
+                    >
                       <div data-rw='invoices'>{PREVIEWS[ploc].invoices}</div>
-                      <div data-rwf suppressHydrationWarning>{fmtInvoices(ploc)}</div>
-                      <Ghost className='is-dt' read={(l) => PREVIEWS[l].invoices} />
+                      <div data-rwf suppressHydrationWarning>
+                        {fmtInvoices(ploc)}
+                      </div>
+                      <Ghost
+                        className='is-dt'
+                        read={(l) => PREVIEWS[l].invoices}
+                      />
                       <Ghost className='is-dd' read={fmtInvoices} />
                       <InsMark {...insProps('invoices')} />
                     </div>
-                    <div className='sgdh-app-stat sgdh-ins' data-ins-on={ins?.k === 'payout' || undefined} {...insBox('payout')}>
+                    <div
+                      className='sgdh-app-stat sgdh-ins'
+                      data-ins-on={ins?.k === 'payout' || undefined}
+                      {...insBox('payout')}
+                    >
                       <div data-rw='payout'>{PREVIEWS[ploc].payout}</div>
-                      <div data-rwf suppressHydrationWarning>{fmtPayout(ploc)}</div>
-                      <Ghost className='is-dt' read={(l) => PREVIEWS[l].payout} />
+                      <div data-rwf suppressHydrationWarning>
+                        {fmtPayout(ploc)}
+                      </div>
+                      <Ghost
+                        className='is-dt'
+                        read={(l) => PREVIEWS[l].payout}
+                      />
                       <Ghost className='is-dd' read={fmtPayout} />
                       <InsMark {...insProps('payout')} />
                     </div>
                   </div>
 
-                  <span className='tct-app-btn sgdh-ins' data-ins-on={ins?.k === 'button' || undefined} {...insBox('button')}>
+                  <span
+                    className='tct-app-btn sgdh-ins'
+                    data-ins-on={ins?.k === 'button' || undefined}
+                    {...insBox('button')}
+                  >
                     <span data-rw='button'>{PREVIEWS[ploc].button}</span>
                     <Ghost read={(l) => PREVIEWS[l].button} />
                     <InsMark {...insProps('button')} />
@@ -1694,19 +1972,36 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
                     row — it retypes and inspects like every component);
                     months and the delta are the locale's own Intl voice,
                     the bar series fixed — same company, same half-year */}
-                <aside className='sgdh-app-chart sgdh-ins' data-ins-on={ins?.k === 'chart' || undefined} {...insBox('chart')}>
+                <aside
+                  className='sgdh-app-chart sgdh-ins'
+                  data-ins-on={ins?.k === 'chart' || undefined}
+                  {...insBox('chart')}
+                >
                   <div className='sgdh-app-chart-head'>
-                    <span className='sgdh-app-chart-t' data-rw='chart'>{PREVIEWS[ploc].chart}</span>
-                    <b className='sgdh-app-chart-d' data-rwf suppressHydrationWarning>{fmtDelta(ploc)}</b>
+                    <span className='sgdh-app-chart-t' data-rw='chart'>
+                      {PREVIEWS[ploc].chart}
+                    </span>
+                    <b
+                      className='sgdh-app-chart-d'
+                      data-rwf
+                      suppressHydrationWarning
+                    >
+                      {fmtDelta(ploc)}
+                    </b>
                   </div>
                   <div className='sgdh-app-bars' aria-hidden>
                     {CHART_BARS.map((h, i) => (
-                      <i key={CHART_MONTHS[i]} style={{ height: `${Math.round(h * 100)}%` }} />
+                      <i
+                        key={CHART_MONTHS[i]}
+                        style={{ height: `${Math.round(h * 100)}%` }}
+                      />
                     ))}
                   </div>
                   <div className='sgdh-app-months' data-rwf>
                     {CHART_MONTHS.map((m) => (
-                      <span key={m} suppressHydrationWarning>{fmtMonth(ploc, m)}</span>
+                      <span key={m} suppressHydrationWarning>
+                        {fmtMonth(ploc, m)}
+                      </span>
                     ))}
                   </div>
                   <InsMark {...insProps('chart')} />
@@ -1718,12 +2013,19 @@ export default function TranslateWindow({ onLocaleChange }: TranslateWindowProps
               <div className='tct-payload-file' data-rwf>
                 public/_gt/{ploc}.json
               </div>
-              <PayloadJson loc={ploc} hl={pinned ? INS_IDS[pinned] : undefined} />
+              <PayloadJson
+                loc={ploc}
+                hl={pinned ? INS_IDS[pinned] : undefined}
+              />
             </div>
 
             {/* the seam advertises itself until the reader has dragged
                 once — and steps aside while an inspector holds the pane */}
-            <span aria-hidden className='tch-drag-hint' data-hide={hinted || pinned !== null || undefined}>
+            <span
+              aria-hidden
+              className='tch-drag-hint'
+              data-hide={hinted || pinned !== null || undefined}
+            >
               ↔ drag
             </span>
             <RevealSeam

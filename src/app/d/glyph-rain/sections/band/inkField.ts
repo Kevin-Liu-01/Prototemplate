@@ -419,7 +419,7 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
         const gs = cp * grow;
         ctx.globalAlpha = (TIER_ALPHA[row] ?? 1) * (1 - popAge / POP_DUR);
         ctx.drawImage(
-          atlasSrc,
+          atlas,
           (gi[i] ?? 0) * cp,
           row * cp,
           cp,

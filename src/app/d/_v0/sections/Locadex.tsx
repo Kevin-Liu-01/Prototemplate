@@ -77,13 +77,27 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
     (thickness ~4% of footprint). */
 const R_HALF = 38;
 const R_H = 3;
-const REPO_BOX: IsoBox = { x: -R_HALF, y: -R_HALF, z: 0, w: R_HALF * 2, d: R_HALF * 2, h: R_H };
+const REPO_BOX: IsoBox = {
+  x: -R_HALF,
+  y: -R_HALF,
+  z: 0,
+  w: R_HALF * 2,
+  d: R_HALF * 2,
+  h: R_H,
+};
 
 /** Agent slab: half-size, hover height, thickness. */
 const A_HALF = 22;
 const A_Z = 54;
 const A_H = 7;
-const AGENT_BOX: IsoBox = { x: -A_HALF, y: -A_HALF, z: A_Z, w: A_HALF * 2, d: A_HALF * 2, h: A_H };
+const AGENT_BOX: IsoBox = {
+  x: -A_HALF,
+  y: -A_HALF,
+  z: A_Z,
+  w: A_HALF * 2,
+  d: A_HALF * 2,
+  h: A_H,
+};
 
 /** Output plate (the pull request), same stock as the repository. */
 const PR_BOX: IsoBox = { x: 57, y: -121, z: 0, w: 64, d: 64, h: 3 };
@@ -228,7 +242,11 @@ function Solid({ box, rim, edge, lift }: SolidProps) {
       <path className='v0-ldx-right' d={roundedPolygon(rightFace(box))} />
       <path className='v0-ldx-top' d={top} />
       <path className='v0-ldx-rim' d={hull} vectorEffect='non-scaling-stroke' />
-      <path className='v0-ldx-front' d={segment(frontA, frontB)} vectorEffect='non-scaling-stroke' />
+      <path
+        className='v0-ldx-front'
+        d={segment(frontA, frontB)}
+        vectorEffect='non-scaling-stroke'
+      />
       <path className='v0-ldx-edge' d={top} vectorEffect='non-scaling-stroke' />
     </g>
   );
@@ -254,7 +272,10 @@ function Chip({ x, y, z, w, d, h, tone = 'ink', r }: ChipProps) {
   const box: IsoBox = { x, y, z, w, d, h };
   return (
     <g className={tone === 'ink' ? 'v0-ldx-chip' : `v0-ldx-chip is-${tone}`}>
-      <path className='v0-ldx-chip-hull' d={roundedPolygon(silhouette(box), r)} />
+      <path
+        className='v0-ldx-chip-hull'
+        d={roundedPolygon(silhouette(box), r)}
+      />
       <path className='v0-ldx-chip-top' d={roundedPolygon(topFace(box), r)} />
     </g>
   );
@@ -264,8 +285,8 @@ function LocadexIso() {
   return (
     <svg className='v0-ldx-iso' viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} role='img'>
       <title>
-        The Locadex agent scans a repository and opens a pull request: merged, +38 −6, checks
-        passed
+        The Locadex agent scans a repository and opens a pull request: merged,
+        +38 −6, checks passed
       </title>
       <defs>
         {/* the brand marks as alpha masks, so the shapes take the surface's
@@ -318,9 +339,22 @@ function LocadexIso() {
             const isGithub = fx === GH_CHIP[0] && fy === GH_CHIP[1];
             return (
               <g key={`chip-${fx}-${fy}`}>
-                <Chip x={fx} y={fy} z={R_H} w={CHIP_SIZE} d={CHIP_SIZE} h={CHIP_H} />
+                <Chip
+                  x={fx}
+                  y={fy}
+                  z={R_H}
+                  w={CHIP_SIZE}
+                  d={CHIP_SIZE}
+                  h={CHIP_H}
+                />
                 {isGithub ? (
-                  <g transform={plane(CHIP_TOP, fx + CHIP_SIZE / 2, fy + CHIP_SIZE / 2)}>
+                  <g
+                    transform={plane(
+                      CHIP_TOP,
+                      fx + CHIP_SIZE / 2,
+                      fy + CHIP_SIZE / 2
+                    )}
+                  >
                     <rect
                       className='v0-ldx-gh'
                       x={-GH_HALF}
@@ -333,7 +367,13 @@ function LocadexIso() {
                 ) : (
                   <path
                     className='v0-ldx-fmark'
-                    d={markPath(fx + 3, fy + 4, CHIP_BARS[ri * 3 + ci] ?? 6, 3, CHIP_TOP)}
+                    d={markPath(
+                      fx + 3,
+                      fy + 4,
+                      CHIP_BARS[ri * 3 + ci] ?? 6,
+                      3,
+                      CHIP_TOP
+                    )}
                   />
                 )}
               </g>
@@ -342,15 +382,35 @@ function LocadexIso() {
         )}
 
         {/* ground flow: the repository feeds the output plate */}
-        <path className='v0-ldx-flow' d={FLOW_WIRE} vectorEffect='non-scaling-stroke' />
-        <path className='v0-ldx-flow-chev' d={FLOW_CHEV} vectorEffect='non-scaling-stroke' />
+        <path
+          className='v0-ldx-flow'
+          d={FLOW_WIRE}
+          vectorEffect='non-scaling-stroke'
+        />
+        <path
+          className='v0-ldx-flow-chev'
+          d={FLOW_CHEV}
+          vectorEffect='non-scaling-stroke'
+        />
 
         {/* the scan beam, swept across the module grid */}
         <g data-ldx-scan>
           <path className='v0-ldx-beam' d={BEAM_REST.quad} />
-          <path className='v0-ldx-beam-edge' d={BEAM_REST.edgeL} vectorEffect='non-scaling-stroke' />
-          <path className='v0-ldx-beam-edge' d={BEAM_REST.edgeR} vectorEffect='non-scaling-stroke' />
-          <path className='v0-ldx-beam-land' d={BEAM_REST.land} vectorEffect='non-scaling-stroke' />
+          <path
+            className='v0-ldx-beam-edge'
+            d={BEAM_REST.edgeL}
+            vectorEffect='non-scaling-stroke'
+          />
+          <path
+            className='v0-ldx-beam-edge'
+            d={BEAM_REST.edgeR}
+            vectorEffect='non-scaling-stroke'
+          />
+          <path
+            className='v0-ldx-beam-land'
+            d={BEAM_REST.land}
+            vectorEffect='non-scaling-stroke'
+          />
         </g>
 
         {/* the agent slab, hovering, carrying the Locadex mark on its top
@@ -378,14 +438,30 @@ function LocadexIso() {
           const y = DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
           const cy = y + DIFF_D / 2;
           const sign =
-            markPath(SIGN_CX - SIGN_ARM, cy - SIGN_T, SIGN_ARM * 2, SIGN_T * 2, PR_BOX.h, 0.4) +
+            markPath(
+              SIGN_CX - SIGN_ARM,
+              cy - SIGN_T,
+              SIGN_ARM * 2,
+              SIGN_T * 2,
+              PR_BOX.h,
+              0.4
+            ) +
             (tone === 'add'
               ? ` ${markPath(SIGN_CX - SIGN_T, cy - SIGN_ARM, SIGN_T * 2, SIGN_ARM * 2, PR_BOX.h, 0.4)}`
               : '');
           return (
             <g key={`diff-${i}`}>
               <path className={`v0-ldx-sign is-${tone}`} d={sign} />
-              <Chip x={DIFF_X} y={y} z={PR_BOX.h} w={w} d={DIFF_D} h={DIFF_H} tone={tone} r={1.2} />
+              <Chip
+                x={DIFF_X}
+                y={y}
+                z={PR_BOX.h}
+                w={w}
+                d={DIFF_D}
+                h={DIFF_H}
+                tone={tone}
+                r={1.2}
+              />
             </g>
           );
         })}
@@ -395,11 +471,19 @@ function LocadexIso() {
         <Chip x={98} y={-115} z={PR_BOX.h} w={17} d={52} h={4} tone='accent' />
 
         {/* annotations — sans labels, hair leaders */}
-        <path className='v0-ldx-leader' d={REPO_LEADER} vectorEffect='non-scaling-stroke' />
+        <path
+          className='v0-ldx-leader'
+          d={REPO_LEADER}
+          vectorEffect='non-scaling-stroke'
+        />
         <text className='v0-ldx-iso-name' x={-96} y={-0.4} textAnchor='end'>
           Repository
         </text>
-        <path className='v0-ldx-leader' d={AGENT_LEADER} vectorEffect='non-scaling-stroke' />
+        <path
+          className='v0-ldx-leader'
+          d={AGENT_LEADER}
+          vectorEffect='non-scaling-stroke'
+        />
         <text className='v0-ldx-iso-name' x={74} y={AGENT_TOP_Y + 2.8}>
           Locadex agent
         </text>
@@ -436,7 +520,11 @@ const INT_PLATE = { x: 408, y: 87, w: 150, h: 60 } as const;
 
 const INT_SOURCES: readonly IntSource[] = [
   { label: 'GitHub', cy: 24, icons: [{ name: 'GitHub', Icon: SiGithub }] },
-  { label: 'Google Drive', cy: 86, icons: [{ name: 'Google Drive', Icon: SiGoogledrive }] },
+  {
+    label: 'Google Drive',
+    cy: 86,
+    icons: [{ name: 'Google Drive', Icon: SiGoogledrive }],
+  },
   {
     label: 'CMS',
     cy: 148,
@@ -525,8 +613,18 @@ function IntegrateDiagram() {
         </mask>
       </defs>
 
+      {/* NO non-scaling-stroke on the pulses: Chromium computes dash
+          patterns in screen space under it and IGNORES pathLength, so
+          the normalized '22 200' repeated every ~222 screen px and
+          stranded accent fragments along the wires. The svg scales
+          uniformly, so the gauge stays true without it. */}
       {INT_LINKS.map((d) => (
-        <path key={d} className='v0-ldx-link' d={d} vectorEffect='non-scaling-stroke' />
+        <path
+          key={d}
+          className='v0-ldx-link'
+          d={d}
+          vectorEffect='non-scaling-stroke'
+        />
       ))}
       {INT_LINKS.map((d) => (
         <path
@@ -537,7 +635,6 @@ function IntegrateDiagram() {
           pathLength={100}
           strokeDasharray='22 200'
           strokeDashoffset={22}
-          vectorEffect='non-scaling-stroke'
         />
       ))}
 
@@ -554,7 +651,12 @@ function IntegrateDiagram() {
             rx={8}
             vectorEffect='non-scaling-stroke'
           />
-          <text className='v0-ldx-nlabel' x={NODE_X + 17} y={cy} dominantBaseline='central'>
+          <text
+            className='v0-ldx-nlabel'
+            x={NODE_X + 17}
+            y={cy}
+            dominantBaseline='central'
+          >
             {label}
           </text>
           {icons.map(({ name, Icon }, i) => (
@@ -603,7 +705,12 @@ function IntegrateDiagram() {
         height={INT_MARK}
         mask='url(#v0-ldx-int-mark)'
       />
-      <text className='v0-ldx-int-name' x={INT_NAME_X} y={117} dominantBaseline='central'>
+      <text
+        className='v0-ldx-int-name'
+        x={INT_NAME_X}
+        y={117}
+        dominantBaseline='central'
+      >
         Locadex
       </text>
     </svg>
@@ -648,19 +755,35 @@ const SOURCE_WORKS: readonly Work[] = [
     auto — the cell's slack becomes the air between sub and ledger). Marks
     at caption scale in the muted steps; no rules of its own — the row owns
     every line around this cell. */
-function WorksLedger({ caption, works }: { caption: string; works: readonly Work[] }) {
+function WorksLedger({
+  caption,
+  works,
+}: {
+  caption: string;
+  works: readonly Work[];
+}) {
   return (
     <div className='v0-ldx-works'>
       <span className='v0-ldx-works-cap'>{caption}</span>
       <ul className='v0-ldx-works-grid'>
         {works.map(({ name, Icon, mask }) => {
-          const seat: StyleVars | undefined = mask ? { '--mark': `url(${mask})` } : undefined;
+          const seat: StyleVars | undefined = mask
+            ? { '--mark': `url(${mask})` }
+            : undefined;
           return (
             <li className='v0-ldx-work' key={name}>
               {Icon ? (
-                <Icon className='v0-ldx-work-ic' color='currentColor' aria-hidden />
+                <Icon
+                  className='v0-ldx-work-ic'
+                  color='currentColor'
+                  aria-hidden
+                />
               ) : (
-                <i className='v0-ldx-work-ic is-mask' style={seat} aria-hidden />
+                <i
+                  className='v0-ldx-work-ic is-mask'
+                  style={seat}
+                  aria-hidden
+                />
               )}
               {name}
             </li>
@@ -693,8 +816,10 @@ export default function V0Locadex() {
            beamAt — the top pivots inside the slab while the land line
            runs the full surface (see the BEAM block above) */
         const beamBody = scan.querySelector<SVGPathElement>('.v0-ldx-beam');
-        const beamEdges = scan.querySelectorAll<SVGPathElement>('.v0-ldx-beam-edge');
-        const beamLand = scan.querySelector<SVGPathElement>('.v0-ldx-beam-land');
+        const beamEdges =
+          scan.querySelectorAll<SVGPathElement>('.v0-ldx-beam-edge');
+        const beamLand =
+          scan.querySelector<SVGPathElement>('.v0-ldx-beam-land');
         const sweep = { t: 1 };
         const setBeam = () => {
           const g = beamAt(sweep.t);
@@ -704,15 +829,19 @@ export default function V0Locadex() {
           beamLand?.setAttribute('d', g.land);
         };
         const loops: gsap.core.Tween[] = [
-          gsap.fromTo(sweep, { t: 1 }, {
-            t: -1,
-            duration: 3.6,
-            ease: 'sine.inOut',
-            repeat: -1,
-            yoyo: true,
-            paused: true,
-            onUpdate: setBeam,
-          }),
+          gsap.fromTo(
+            sweep,
+            { t: 1 },
+            {
+              t: -1,
+              duration: 3.6,
+              ease: 'sine.inOut',
+              repeat: -1,
+              yoyo: true,
+              paused: true,
+              onUpdate: setBeam,
+            }
+          ),
         ];
         /* the mark holds its resting ink, full stop — the old warm-to-accent
            pulse read as flashing (founder), so the agent's identity stays
@@ -769,30 +898,56 @@ export default function V0Locadex() {
            quarter always finishes drawing before the next one lands */
         const SWEEP = 0.35;
         const QUARTER = 100 / pulses.length;
-        const flow = gsap.timeline({ repeat: -1, repeatDelay: 0.45, paused: true });
+        const flow = gsap.timeline({
+          repeat: -1,
+          repeatDelay: 0.45,
+          paused: true,
+        });
         flow.fromTo(
           pulses,
           { strokeDashoffset: 22 },
-          { strokeDashoffset: -102, duration: PULSE_DUR, ease: 'power1.inOut', stagger: PULSE_GAP },
+          {
+            strokeDashoffset: -102,
+            duration: PULSE_DUR,
+            ease: 'power1.inOut',
+            stagger: PULSE_GAP,
+          },
           0
         );
         pulses.forEach((_, i) => {
           flow.to(
             diagram,
-            { '--ldx-fill': QUARTER * (i + 1), duration: SWEEP, ease: 'power2.out' },
+            {
+              '--ldx-fill': QUARTER * (i + 1),
+              duration: SWEEP,
+              ease: 'power2.out',
+            },
             i * PULSE_GAP + ARRIVE
           );
         });
         /* the border is fully surrounded here — bloom, and settle lit */
         const fullAt = (pulses.length - 1) * PULSE_GAP + ARRIVE + SWEEP;
-        flow.to(diagram, { '--ldx-flash': 1, duration: 0.25, ease: 'power2.out' }, fullAt);
-        flow.to(diagram, { '--ldx-flash': 0, duration: 0.6, ease: 'power2.inOut' }, fullAt + 0.25);
+        flow.to(
+          diagram,
+          { '--ldx-flash': 1, duration: 0.25, ease: 'power2.out' },
+          fullAt
+        );
+        flow.to(
+          diagram,
+          { '--ldx-flash': 0, duration: 0.6, ease: 'power2.inOut' },
+          fullAt + 0.25
+        );
         /* the unravel: a breath after the flash lands quiet, then tail
            chases head — both dials in ONE tween, so the arc can never
            tear — and the dashoffset dial is re-armed invisibly */
         flow.to(
           diagram,
-          { '--ldx-fill': 0, '--ldx-off': 100, duration: 0.5, ease: 'power2.inOut' },
+          {
+            '--ldx-fill': 0,
+            '--ldx-off': 100,
+            duration: 0.5,
+            ease: 'power2.inOut',
+          },
           fullAt + 1.0
         );
         flow.set(diagram, { '--ldx-off': 0 });
@@ -824,7 +979,7 @@ export default function V0Locadex() {
       {/* ---- row 1: the agent, run against a repository ----
           The toolchain 'Code' row's shape: a ruled copy cell of the sheet
           beside a framed artifact cell. The row owns the seam between them. */}
-      <div className='tc-row is-split'>
+      <div className='tc-row is-split v0-ldx-row-run'>
         <BentoCell
           cell='is-tall tcm-ruled'
           framed={false}

@@ -600,3 +600,12 @@
 :root:not([data-theme='dark']) .toolchain-root .v0-ldx .v0-ldx-int-plate {
   fill: var(--tc-panel);
 }
+
+
+/* stacked: every pairing leads with its diagram — the artifact first, its
+   words directly beneath it, matching the sources row's own order */
+@media (max-width: 1023px) {
+  .toolchain-root .v0-ldx .v0-ldx-row-run > .tc-cell:first-child {
+    order: 2;
+  }
+}

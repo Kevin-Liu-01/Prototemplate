@@ -54,19 +54,19 @@ const WORDS: Record<string, EveryWord> = {
   en: WORD_EN,
   es: { text: 'Lanza en todos los idiomas', lang: 'es' },
   ja: { text: 'あらゆる言語でローンチ', lang: 'ja' },
-  fr: { text: 'Lancez dans toutes les langues', lang: 'fr' },
+  fr: { text: 'Lancez-vous dans toutes les langues', lang: 'fr' },
   ko: { text: '모든 언어로 출시하세요', lang: 'ko' },
   de: { text: 'In jeder Sprache launchen', lang: 'de' },
-  zh: { text: '用每种语言发布', lang: 'zh' },
+  zh: { text: '用每一种语言发布', lang: 'zh' },
   pt: { text: 'Lance em todos os idiomas', lang: 'pt' },
-  ru: { text: 'Запускайтесь на любом языке', lang: 'ru' },
+  ru: { text: 'Запускайтесь на всех языках', lang: 'ru' },
   it: { text: 'Lancia in ogni lingua', lang: 'it' },
   hi: { text: 'हर भाषा में लॉन्च करें', lang: 'hi' },
   nl: { text: 'Lanceer in elke taal', lang: 'nl' },
   tr: { text: 'Her dilde yayına alın', lang: 'tr' },
   sv: { text: 'Lansera på alla språk', lang: 'sv' },
   id: { text: 'Luncurkan dalam setiap bahasa', lang: 'id' },
-  pl: { text: 'Uruchamiaj w każdym języku', lang: 'pl' },
+  pl: { text: 'Wystartuj w każdym języku', lang: 'pl' },
 };
 
 export default function HomeHero() {

@@ -41,7 +41,11 @@ type BeatIconProps = {
  * square box out — and fullstack.css scales the mask so the GLYPH spans
  * the box, not the asset's padded canvas.
  */
-function LocadexMark({ size = 16, className, 'aria-hidden': ariaHidden }: BeatIconProps) {
+function LocadexMark({
+  size = 16,
+  className,
+  'aria-hidden': ariaHidden,
+}: BeatIconProps) {
   return (
     <span
       className={className ? `v0-stack-ldx ${className}` : 'v0-stack-ldx'}
@@ -97,8 +101,8 @@ const BEATS: readonly StackBeat[] = [
     lead: 'Context layer, shared globally.',
     points: [
       <>
-        <GtLogoText /> keeps your wording and voice consistent across app, website, docs, and
-        slides
+        <GtLogoText /> keeps your wording and voice consistent across app,
+        website, docs, and slides
       </>,
       <>Edit, version, and approve with your team</>,
     ],
@@ -114,8 +118,8 @@ const BEATS: readonly StackBeat[] = [
     points: [
       <>High-quality translations that reflect your meaning</>,
       <>
-        <GtLogoText /> handles every file format, and logical branches for dynamic content like
-        plurals and gender forms
+        <GtLogoText /> handles every file format, and logical branches for
+        dynamic content like plurals and gender forms
       </>,
     ],
     icon: Languages,
@@ -149,11 +153,14 @@ const HOT_SLABS: readonly (readonly number[])[] = BEATS.map((beat) =>
  * stays a running maximum over the beats' slab peaks so any future
  * regrouping keeps working by physical height.
  */
-const VISIBLE_COUNT: readonly number[] = HOT_SLABS.reduce<number[]>((acc, hot, i) => {
-  const peak = hot.length > 0 ? Math.max(...hot) + 1 : 0;
-  acc.push(Math.max(peak, acc[i - 1] ?? 0));
-  return acc;
-}, []);
+const VISIBLE_COUNT: readonly number[] = HOT_SLABS.reduce<number[]>(
+  (acc, hot, i) => {
+    const peak = hot.length > 0 ? Math.max(...hot) + 1 : 0;
+    acc.push(Math.max(peak, acc[i - 1] ?? 0));
+    return acc;
+  },
+  []
+);
 
 /**
  * The strokes of the tower's answer, in screen px. Hot slabs rise LIFT out
@@ -255,23 +262,45 @@ export default function V0FullStack() {
       const beats = gsap.utils.toArray<HTMLElement>('[data-stack-beat]', scope);
       const taps = gsap.utils.toArray<SVGGElement>('[data-rail-tap]', scope);
       const rail = scope.querySelector<SVGGElement>('[data-rail-line]');
-      const waves = gsap.utils.toArray<SVGPathElement>('[data-ctx-wave]', scope);
+      const waves = gsap.utils.toArray<SVGPathElement>(
+        '[data-ctx-wave]',
+        scope
+      );
       const codeWrap = scope.querySelector<SVGPathElement>('[data-code-wrap]');
-      const fanPulses = gsap.utils.toArray<SVGPathElement>('[data-fan-pulse]', scope);
+      const fanPulses = gsap.utils.toArray<SVGPathElement>(
+        '[data-fan-pulse]',
+        scope
+      );
       const orbit = scope.querySelector<SVGPathElement>('[data-agent-orbit]');
-      const stripes = gsap.utils.toArray<SVGPathElement>('[data-ldx-stripe]', scope);
-      const stripes2 = gsap.utils.toArray<SVGPathElement>('[data-ldx-stripe2]', scope);
+      const stripes = gsap.utils.toArray<SVGPathElement>(
+        '[data-ldx-stripe]',
+        scope
+      );
+      const stripes2 = gsap.utils.toArray<SVGPathElement>(
+        '[data-ldx-stripe2]',
+        scope
+      );
       const scan = scope.querySelector<SVGGElement>('[data-agents-scan]');
       const scanSweep = scope.querySelector<SVGGElement>('[data-agents-sweep]');
-      const capDiffs = gsap.utils.toArray<SVGGElement>('[data-cap-diff]', scope);
-      const capWires = gsap.utils.toArray<SVGPathElement>('[data-cap-wire]', scope);
+      const capDiffs = gsap.utils.toArray<SVGGElement>(
+        '[data-cap-diff]',
+        scope
+      );
+      const capWires = gsap.utils.toArray<SVGPathElement>(
+        '[data-cap-wire]',
+        scope
+      );
       if (slabs.length === 0 || beats.length === 0) return;
 
       /* how many slabs must exist for each ambient loop's plate */
-      const codeNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'code') + 1;
-      const ctxNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'context') + 1;
-      const transNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'translations') + 1;
-      const agentsNeed = TOWER_LAYERS.findIndex((layer) => layer.id === 'agents') + 1;
+      const codeNeed =
+        TOWER_LAYERS.findIndex((layer) => layer.id === 'code') + 1;
+      const ctxNeed =
+        TOWER_LAYERS.findIndex((layer) => layer.id === 'context') + 1;
+      const transNeed =
+        TOWER_LAYERS.findIndex((layer) => layer.id === 'translations') + 1;
+      const agentsNeed =
+        TOWER_LAYERS.findIndex((layer) => layer.id === 'agents') + 1;
       /* the scan beam answers the STORY, not the build: it hangs only
          while the agents BEAT is the hot one (founder: "when we get to
          this layer, we can have it start 'scanning' the below layer") */
@@ -341,7 +370,6 @@ export default function V0FullStack() {
            exactly that and mount NO machinery. */
         if (mctx.conditions?.narrow && !staged) {
           staticPose();
-          scope.classList.add('is-live');
           return clear;
         }
         /* the stage's layout class lands FIRST (fullstack.css keys the
@@ -495,7 +523,8 @@ export default function V0FullStack() {
         const sweepPaths = scanSweep
           ? {
               body: scanSweep.querySelector<SVGPathElement>('.v0s-beam'),
-              edges: scanSweep.querySelectorAll<SVGPathElement>('.v0s-beam-edge'),
+              edges:
+                scanSweep.querySelectorAll<SVGPathElement>('.v0s-beam-edge'),
               land: scanSweep.querySelector<SVGPathElement>('.v0s-beam-land'),
             }
           : null;
@@ -509,15 +538,19 @@ export default function V0FullStack() {
           sweepPaths.land?.setAttribute('d', g.land);
         };
         const sweepLoop = scanSweep
-          ? gsap.fromTo(sweepDial, { t: 1 }, {
-              t: -1,
-              duration: 2.5,
-              ease: 'sine.inOut',
-              repeat: -1,
-              yoyo: true,
-              paused: true,
-              onUpdate: setSweep,
-            })
+          ? gsap.fromTo(
+              sweepDial,
+              { t: 1 },
+              {
+                t: -1,
+                duration: 2.5,
+                ease: 'sine.inOut',
+                repeat: -1,
+                yoyo: true,
+                paused: true,
+                onUpdate: setSweep,
+              }
+            )
           : null;
         const syncLoops = () => {
           const codeOn = inView && built >= codeNeed;
@@ -585,7 +618,9 @@ export default function V0FullStack() {
         const railExt = staged
           ? scope.querySelector<HTMLElement>('.v0sm-railext')
           : null;
-        const railCell = scope.querySelector<HTMLElement>('.v0-stack-cell-rail');
+        const railCell = scope.querySelector<HTMLElement>(
+          '.v0-stack-cell-rail'
+        );
         const railSvg = scope.querySelector<SVGSVGElement>('.v0s-railsvg');
         const RAIL_UNITS = RAIL_FOOT - RAIL_TOP;
         /* px measurements as same-frame DIFFERENCES only, so the scroll
@@ -610,7 +645,8 @@ export default function V0FullStack() {
           /* the code tap's screen seat, derived from RAIL_SCALE[0]
              itself, so t = 1 lands the leg exactly where the desktop
              leg lands */
-          const tapDy = (RAIL_FOOT - (RAIL_SCALE[0] ?? 1) * RAIL_UNITS) * arrGeo.ppu;
+          const tapDy =
+            (RAIL_FOOT - (RAIL_SCALE[0] ?? 1) * RAIL_UNITS) * arrGeo.ppu;
           const dy = arrGeo.footDy + (tapDy - arrGeo.footDy) * arrival.t;
           gsap.set(rail, {
             scaleY: (RAIL_FOOT - dy / arrGeo.ppu) / RAIL_UNITS,
@@ -667,7 +703,7 @@ export default function V0FullStack() {
           const tap = taps[k];
           if (tap) gsap.set(tap, { strokeDashoffset: -101 });
 
-          const base = k === 0 ? 0 : beatEnd[k - 1] ?? 0;
+          const base = k === 0 ? 0 : (beatEnd[k - 1] ?? 0);
           const legDur = k === 0 ? 1.0 : 0.45;
           const prev = k > 0 ? slabs[k - 1] : undefined;
           if (prev) {
@@ -681,7 +717,11 @@ export default function V0FullStack() {
              lifts back OVER the layer under it — never behind (founder).
              It settles to the hot tier once its drop lands. */
           story.set(slab, { zIndex: slabs.length * 2 + 2 }, base);
-          story.to(slab, { y: -LIFT, autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, base);
+          story.to(
+            slab,
+            { y: -LIFT, autoAlpha: 1, duration: 0.5, ease: 'power2.out' },
+            base
+          );
           story.set(slab, { zIndex: slabs.length + 1 + k }, base + 0.5);
           if (rail) {
             if (railExt && k === 0) {
@@ -690,7 +730,12 @@ export default function V0FullStack() {
                  boundaries and every later leg stand untouched */
               story.to(
                 arrival,
-                { t: 1, duration: legDur, ease: 'power2.out', onUpdate: applyArrival },
+                {
+                  t: 1,
+                  duration: legDur,
+                  ease: 'power2.out',
+                  onUpdate: applyArrival,
+                },
                 base
               );
             } else {
@@ -733,7 +778,11 @@ export default function V0FullStack() {
              the capstone's drop lands and a rewind carries it out before
              the plate goes */
           if (scan && k === slabs.length - 1) {
-            story.to(scan, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, base + 0.5);
+            story.to(
+              scan,
+              { autoAlpha: 1, duration: 0.35, ease: 'power2.out' },
+              base + 0.5
+            );
           }
           /* the beat stands complete exactly when its bend seats */
           beatEnd[k] = base + legDur + 0.48;
@@ -822,7 +871,8 @@ export default function V0FullStack() {
            differs — desktop hangs it on beat 04's window below, the
            stage drives its progress from the master scrub's agents
            segment. */
-        const capTl = capDiffs.length > 0 ? gsap.timeline({ paused: true }) : null;
+        const capTl =
+          capDiffs.length > 0 ? gsap.timeline({ paused: true }) : null;
         if (capTl) {
           capDiffs.forEach((slat, i) => {
             /* the write wire leads its slat: the hairline draws OUT of
@@ -837,7 +887,12 @@ export default function V0FullStack() {
               capTl.fromTo(
                 wire,
                 { strokeDashoffset: 101 },
-                { strokeDashoffset: 0, duration: 0.45, ease: 'power1.inOut', autoRound: false },
+                {
+                  strokeDashoffset: 0,
+                  duration: 0.45,
+                  ease: 'power1.inOut',
+                  autoRound: false,
+                },
                 i * 0.8
               );
             }
@@ -892,8 +947,18 @@ export default function V0FullStack() {
              scroll: the pin seats the copy center on the same 55% line
              (fullstack.css), so the last build completes exactly as the
              dwell begins. */
+          /* TWO lines, two laws. The story's structural anchors — the
+             tower's build clock, and the capstone scrub's start — hold
+             the 55% READ LINE the stylesheet seats were measured
+             against (the sticky figure's seat, the finale's
+             pin-engage). The SPOTLIGHT alone fires early: a beat's copy
+             lights as its center rises through the 80% line, just
+             after entering the screen, while the arriving layer is
+             mid-build beside it. */
           const READ_LINE = 0.55;
-          const lockInAt = (k: number): number => {
+          const HIGHLIGHT_LINE = 0.8;
+          const hotAnchors: number[] = beats.map(() => 1);
+          const measureAt = (k: number, line: number): number => {
             const beat = beats[k];
             if (!beat) return 0;
             const rect = beat.getBoundingClientRect();
@@ -901,15 +966,21 @@ export default function V0FullStack() {
             let copyMid = rect.height / 2;
             if (kids.length > 0) {
               const tops = kids.map((el) => el.getBoundingClientRect().top);
-              const bottoms = kids.map((el) => el.getBoundingClientRect().bottom);
-              copyMid = (Math.min(...tops) + Math.max(...bottoms)) / 2 - rect.top;
+              const bottoms = kids.map(
+                (el) => el.getBoundingClientRect().bottom
+              );
+              copyMid =
+                (Math.min(...tops) + Math.max(...bottoms)) / 2 - rect.top;
             }
             const prev = beats[k - 1];
             const flowTop = prev
               ? prev.getBoundingClientRect().bottom + window.scrollY
               : rect.top + window.scrollY;
-            return flowTop + copyMid - window.innerHeight * READ_LINE;
+            return flowTop + copyMid - window.innerHeight * line;
           };
+          const lockInAt = (k: number): number => measureAt(k, READ_LINE);
+          const highlightAt = (k: number): number =>
+            measureAt(k, HIGHLIGHT_LINE);
           const timeAt = (p: number): number => {
             /* the clock HOLDS at each beat's lock-in (founder: "it
                should only be the first layer showing up for the first
@@ -941,8 +1012,8 @@ export default function V0FullStack() {
           };
           const apply = () => {
             let active = 0;
-            for (let k = anchors.length - 1; k > 0; k--) {
-              if (dial.p >= (anchors[k] ?? 1)) {
+            for (let k = hotAnchors.length - 1; k > 0; k--) {
+              if (dial.p >= (hotAnchors[k] ?? 1)) {
                 active = k;
                 break;
               }
@@ -951,7 +1022,13 @@ export default function V0FullStack() {
             story.time(timeAt(dial.p));
           };
           const master = ScrollTrigger.create({
-            animation: gsap.to(dial, { p: 1, duration: 1, ease: 'none', paused: true, onUpdate: apply }),
+            animation: gsap.to(dial, {
+              p: 1,
+              duration: 1,
+              ease: 'none',
+              paused: true,
+              onUpdate: apply,
+            }),
             trigger: beats[0] ?? scope,
             start: 'top bottom',
             /* the span runs THROUGH the agents dwell to the band's rest
@@ -963,7 +1040,18 @@ export default function V0FullStack() {
             onRefresh: (self) => {
               const span = self.end - self.start;
               beats.forEach((_, k) => {
-                anchors[k] = span > 0 ? gsap.utils.clamp(0, 1, (lockInAt(k) - self.start) / span) : 1;
+                anchors[k] =
+                  span > 0
+                    ? gsap.utils.clamp(0, 1, (lockInAt(k) - self.start) / span)
+                    : 1;
+                hotAnchors[k] =
+                  span > 0
+                    ? gsap.utils.clamp(
+                        0,
+                        1,
+                        (highlightAt(k) - self.start) / span
+                      )
+                    : 1;
               });
               apply();
             },
@@ -1029,7 +1117,11 @@ export default function V0FullStack() {
           type TypedChunk =
             | { kind: 'text'; node: Text; full: string }
             | { kind: 'mark'; el: HTMLElement | SVGElement };
-          type TypedBlock = { host: HTMLElement; chunks: TypedChunk[]; len: number };
+          type TypedBlock = {
+            host: HTMLElement;
+            chunks: TypedChunk[];
+            len: number;
+          };
           const MARK_WEIGHT = 2;
           const chunkBlock = (host: HTMLElement): TypedBlock => {
             const chunks: TypedChunk[] = [];
@@ -1048,7 +1140,10 @@ export default function V0FullStack() {
                 /* the tag's name is TYPE, not an atom: descend to its
                    text so "Code" writes character by character */
                 child.childNodes.forEach(walk);
-              } else if (child instanceof HTMLElement || child instanceof SVGElement) {
+              } else if (
+                child instanceof HTMLElement ||
+                child instanceof SVGElement
+              ) {
                 chunks.push({ kind: 'mark', el: child });
                 len += MARK_WEIGHT;
               }
@@ -1058,7 +1153,9 @@ export default function V0FullStack() {
           };
           const typedBeats = beats.map((beat) => ({
             blocks: Array.from(
-              beat.querySelectorAll<HTMLElement>('.v0-stack-tag, h3, .v0-stack-points li')
+              beat.querySelectorAll<HTMLElement>(
+                '.v0-stack-tag, h3, .v0-stack-points li'
+              )
             ).map(chunkBlock),
           }));
           const lineCount = Math.max(...typedBeats.map((t) => t.blocks.length));
@@ -1085,7 +1182,10 @@ export default function V0FullStack() {
             const seats: number[] = [];
             typedBeats.forEach(({ blocks }) =>
               blocks.forEach((block, k) => {
-                seats[k] = Math.max(seats[k] ?? 0, block.host.getBoundingClientRect().height);
+                seats[k] = Math.max(
+                  seats[k] ?? 0,
+                  block.host.getBoundingClientRect().height
+                );
               })
             );
             typedBeats.forEach(({ blocks }) =>
@@ -1247,7 +1347,10 @@ export default function V0FullStack() {
           const apply = (p: number) => {
             /* the beat clock: which segment owns the playhead — the
                build, the pen, and the hunk all read the same number */
-            const active = Math.min(beats.length - 1, Math.max(0, Math.floor(p / SEG)));
+            const active = Math.min(
+              beats.length - 1,
+              Math.max(0, Math.floor(p / SEG))
+            );
             retype(active);
             setHot(active);
             /* the tower HOLDS each section's standing pose — section k
@@ -1267,7 +1370,9 @@ export default function V0FullStack() {
                 : gapTime(heldT, nextT, segP)
             );
             if (capTl) {
-              capTl.progress(gsap.utils.clamp(0, 1, (p - CAP_FROM) / (CAP_TO - CAP_FROM)));
+              capTl.progress(
+                gsap.utils.clamp(0, 1, (p - CAP_FROM) / (CAP_TO - CAP_FROM))
+              );
             }
           };
 
@@ -1319,14 +1424,6 @@ export default function V0FullStack() {
               start: 'top bottom',
               end: 'bottom bottom',
               onUpdate: (self) => retarget(self.progress),
-              /* a zoom or viewport change moves the whole span: re-seed
-                 both clocks from the fresh read and paint once — never
-                 a stale pose waiting on the next scroll tick */
-              onRefresh: (self) => {
-                pCur = self.progress;
-                pTarget = self.progress;
-                apply(pCur);
-              },
             });
             /* a deep link or restored scroll lands mid-story: seed BOTH
                clocks from wherever the trigger already reads and paint
@@ -1364,10 +1461,6 @@ export default function V0FullStack() {
         inView = viewGate.isActive;
         syncLoops();
 
-        /* seeded and painting — lift the pre-boot veil: the first frame
-           a JS visitor sees of the figure IS the story's own */
-        scope.classList.add('is-live');
-
         return () => {
           /* the stage's own residue: the layout class and the pen's
              direct style writes (no tween owns them, so no revert does) */
@@ -1383,7 +1476,8 @@ export default function V0FullStack() {
             restoreTyped?.();
             if (railExt) gsap.set(railExt, { clearProps: 'transform' });
           }
-          if (onStageRefresh) ScrollTrigger.removeEventListener('refresh', onStageRefresh);
+          if (onStageRefresh)
+            ScrollTrigger.removeEventListener('refresh', onStageRefresh);
           capTl?.kill();
           viewGate.kill();
           for (const loop of waveLoops) loop.kill();
@@ -1402,7 +1496,8 @@ export default function V0FullStack() {
             ...(codeWrap ? [codeWrap] : []),
             ...(orbit ? [orbit] : []),
           ];
-          if (dashed.length > 0) gsap.set(dashed, { clearProps: 'strokeDashoffset' });
+          if (dashed.length > 0)
+            gsap.set(dashed, { clearProps: 'strokeDashoffset' });
           const bands = [...stripes, ...stripes2];
           if (bands.length > 0) gsap.set(bands, { clearProps: 'transform' });
           clear();
@@ -1426,7 +1521,6 @@ export default function V0FullStack() {
          hidden by the stylesheet (nothing here ever touches either) */
       mm.add('(prefers-reduced-motion: reduce)', () => {
         staticPose();
-        scope.classList.add('is-live');
         return clear;
       });
 
@@ -1441,19 +1535,7 @@ export default function V0FullStack() {
       id='platform'
       ref={root}
       aria-labelledby='v0-stack-title'
-      suppressHydrationWarning
     >
-      {/* THE PRE-BOOT ARM: stamped during HTML parse, before the figure
-          below ever paints — fullstack.css veils the figure under
-          .js-arm:not(.is-live), each machinery branch answers with
-          is-live once its clocks have seeded, and a no-JS visit never
-          arms, keeping the markup's standing pose. */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html:
-            "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.currentScript.parentElement.classList.add('js-arm')}catch(e){}",
-        }}
-      />
       <div className='tcb-in'>
         {/* the head wears the section-head grammar so the FULL-STACK
             watermark (the Layers glyph — founder: "use the full stack
@@ -1520,7 +1602,12 @@ export default function V0FullStack() {
                     key={beat.id}
                   >
                     <div className='v0-stack-tag'>
-                      <Icon className='v0-stack-ic' size={16} strokeWidth={1.6} aria-hidden />
+                      <Icon
+                        className='v0-stack-ic'
+                        size={16}
+                        strokeWidth={1.6}
+                        aria-hidden
+                      />
                       <span className='v0-stack-name'>{beat.name}</span>
                     </div>
                     <h3>{beat.lead}</h3>

@@ -122,9 +122,6 @@ const BADGES: readonly { alt: string; src: string }[] = [
  * columns separate by rhythm alone, and only the closing strip keeps its
  * hairline — then live status, the copyright line, and the theme switch.
  */
-/* computed once at module load, so SSR and hydration agree */
-const COPYRIGHT_YEAR = new Date().getFullYear();
-
 export default function V0Footer() {
   return (
     <footer className='tc-sec v0-foot'>
@@ -188,7 +185,7 @@ export default function V0Footer() {
           <span aria-hidden className='v0-foot-dot' />
           All Systems Operational
         </a>
-        <span className='v0-foot-copy'>{`© ${COPYRIGHT_YEAR} General Translation, Inc. All rights reserved.`}</span>
+        <span className='v0-foot-copy'>© 2026 General Translation, Inc. All rights reserved.</span>
         <ThemeToggle className='v0-foot-theme' />
       </div>
     </footer>

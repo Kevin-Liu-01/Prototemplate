@@ -67,10 +67,7 @@ function compile(gl: WebGLRenderingContext, type: number, src: string): WebGLSha
   if (!sh) return null;
   gl.shaderSource(sh, src);
   gl.compileShader(sh);
-  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-    gl.deleteShader(sh);
-    return null;
-  }
+  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return null;
   return sh;
 }
 
@@ -90,31 +87,14 @@ export default function V0FooterMark() {
       const vs = compile(gl, gl.VERTEX_SHADER, VERT);
       const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
       const prog = gl.createProgram();
-      let quad: WebGLBuffer | null = null;
-      /* every boot path must release what it created: an unreleased
-         context counts against the browser's small per-page GL pool,
-         and repeated client navigation exhausts it */
-      const release = () => {
-        if (quad) gl.deleteBuffer(quad);
-        if (prog) gl.deleteProgram(prog);
-        if (vs) gl.deleteShader(vs);
-        if (fs) gl.deleteShader(fs);
-        gl.getExtension('WEBGL_lose_context')?.loseContext();
-      };
-      if (!vs || !fs || !prog) {
-        release();
-        return;
-      }
+      if (!vs || !fs || !prog) return;
       gl.attachShader(prog, vs);
       gl.attachShader(prog, fs);
       gl.linkProgram(prog);
-      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-        release();
-        return;
-      }
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
       gl.useProgram(prog);
 
-      quad = gl.createBuffer();
+      const quad = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, quad);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       const loc = gl.getAttribLocation(prog, 'p');
@@ -150,7 +130,6 @@ export default function V0FooterMark() {
       return () => {
         gsap.ticker.remove(render);
         io.disconnect();
-        release();
       };
     },
     { scope: root }
