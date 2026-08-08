@@ -1236,8 +1236,14 @@ export default function TranslateWindow({
          since it starts centred and the first crossing is a dwell away */
       beltHold.current = 0;
       let hover = false;
-      const over = () => {
-        hover = true;
+      const over = (e: PointerEvent) => {
+        /* the hover-pause is a MOUSE affordance. On touch, pointerenter
+           fires on the press itself and iOS keeps the hover state sticky
+           after the finger lifts — so holding the hero to scroll froze
+           the conveyor at the centre (founder: "the carousel locks into
+           the center"). A finger never hovers; only a real pointer that
+           can park over the belt earns the pause. */
+        if (e.pointerType === 'mouse') hover = true;
       };
       const out = () => {
         hover = false;
@@ -1302,7 +1308,17 @@ export default function TranslateWindow({
         pos = wrap(chipCenter(i) + delta - beltEl.clientWidth / 2);
         setX();
       };
-      window.addEventListener('resize', remeasure);
+      /* the belt is horizontal: only WIDTH changes its geometry. Mobile
+         scroll animates the URL bar, firing height-only resizes many
+         times a second — each one re-derived the seat mid-scroll for
+         nothing. */
+      let beltW = window.innerWidth;
+      const onBeltResize = () => {
+        if (Math.abs(window.innerWidth - beltW) < 0.5) return;
+        beltW = window.innerWidth;
+        remeasure();
+      };
+      window.addEventListener('resize', onBeltResize);
       void document.fonts.ready.then(remeasure);
 
       return () => {
@@ -1310,7 +1326,7 @@ export default function TranslateWindow({
         io.disconnect();
         beltEl.removeEventListener('pointerenter', over);
         beltEl.removeEventListener('pointerleave', out);
-        window.removeEventListener('resize', remeasure);
+        window.removeEventListener('resize', onBeltResize);
         beltApi.current = null;
       };
     },

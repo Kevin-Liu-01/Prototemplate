@@ -294,6 +294,11 @@ export type GlyphFieldOptions = {
       width; 'left'/'top' force a fold; 'none' is a standalone plate — no copy
       clearing, full-bleed rain, word centered. */
   copy?: 'auto' | 'left' | 'top' | 'none';
+  /** The copy block's bottom edge in CANVAS px, re-read at every layout —
+      on the narrow fold the quiet zone anchors to this real extent instead
+      of a height proportion, so deep-wrapping locales can never cross the
+      clearing line into the rain. */
+  copyBottom?: () => number | undefined;
 };
 
 export type GlyphFieldHandle = { destroy(): void };
@@ -455,8 +460,16 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       zoneW = Math.max(120, w - 48);
       baselineY = h * 0.78;
       maxFont = Math.min(h * 0.19, 116);
-      fadeB = h * 0.52;
-      fadeA = h * 0.62;
+      /* the quiet zone follows the REAL copy block, not a proportion:
+         a deep-wrapping locale pushed the CTAs across the 0.52h line
+         and the rain printed beside the type (founder: "it glitches
+         into the Deploy today header") */
+      const copyB = options.copyBottom?.();
+      fadeB =
+        typeof copyB === 'number' && copyB > 0
+          ? Math.max(h * 0.52, copyB + 16)
+          : h * 0.52;
+      fadeA = fadeB + Math.max(28, h * 0.1);
     } else {
       const left = w * 0.47;
       zoneW = Math.max(240, w - 40 - left);

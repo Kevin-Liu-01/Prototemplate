@@ -40,11 +40,18 @@ export default function Deploy() {
          re-inking and the reduced-motion still are internal to the library;
          destroy() on unmount is ours. */
       const h2 = rootEl.querySelector('h2');
+      /* the narrow fold's quiet zone anchors to the copy block's REAL
+         bottom (offset metrics — same box the canvas fills), so a
+         deep-wrapping locale can never push the CTAs into the rain */
+      const copyEl = rootEl.querySelector<HTMLElement>('.v0-dep-copy');
       const field = createGlyphField({
         canvas,
         drift: 'rise',
         displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
         monoFamily: getComputedStyle(rootEl).getPropertyValue('--tc-mono').trim() || undefined,
+        copyBottom: copyEl
+          ? () => copyEl.offsetTop + copyEl.offsetHeight
+          : undefined,
       });
 
       return () => field?.destroy();
