@@ -709,6 +709,24 @@ export default function EverySentence({
                 let maxY = 0;
                 for (const pt of pts) maxY = Math.max(maxY, pt.y);
                 growDust(maxY + 12);
+                /* the guides take the INCOMING extent while the cloud
+                   assembles into it (founder: a one-line arrival out of
+                   a two-line stand left the brackets tall until the
+                   print began) — the height is predicted from the shared
+                   fold, no layout write; the em itself still lays out
+                   once, at the print, whose glide hands off from
+                   wherever these stand */
+                const lineHpx = parseFloat(getComputedStyle(word).lineHeight) || hh;
+                const hPred = countLines(goal.text) * lineHpx;
+                if (Math.abs(hPred - hh) > 1) {
+                  const gpad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
+                  gsap.set([guideL, guideR], { bottom: 'auto', height: hh + gpad });
+                  gsap.to([guideL, guideR], {
+                    height: hPred + gpad,
+                    duration: 0.6,
+                    ease: 'power2.inOut',
+                  });
+                }
               }
               const span = Math.max(w1, 1);
               for (let i = 0; i < cycleN; i++) {
@@ -752,7 +770,12 @@ export default function EverySentence({
                 const h1 = em.offsetHeight;
                 if (h1 !== h0) {
                   const pad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
-                  gsap.set([guideL, guideR], { bottom: 'auto', height: h0 + pad });
+                  /* hand off from wherever the guides stand — the
+                     condense may already have squeezed them to the
+                     incoming extent; snapping back to the outgoing
+                     height would undo it in front of the reader */
+                  const standing = parseFloat(getComputedStyle(guideL).height) || h0 + pad;
+                  gsap.set([guideL, guideR], { bottom: 'auto', height: standing });
                   gsap.to([guideL, guideR], {
                     height: h1 + pad,
                     duration: 0.55,
@@ -837,6 +860,24 @@ export default function EverySentence({
                   let maxY = 0;
                   for (const pt of pts) maxY = Math.max(maxY, pt.y);
                   growDust(maxY + 12);
+                  /* the guides take the INCOMING extent while the cloud
+                     assembles into it (founder: a one-line arrival out
+                     of a two-line stand left the brackets tall until
+                     the print began) — the height is predicted from the
+                     shared fold, no layout write; the em itself still
+                     lays out once, at the print, whose glide hands off
+                     from wherever these stand */
+                  const lineHpx = parseFloat(getComputedStyle(word).lineHeight) || hh;
+                  const hPred = countLines(goal.text) * lineHpx;
+                  if (Math.abs(hPred - hh) > 1) {
+                    const gpad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
+                    gsap.set([guideL, guideR], { bottom: 'auto', height: hh + gpad });
+                    gsap.to([guideL, guideR], {
+                      height: hPred + gpad,
+                      duration: 0.6,
+                      ease: 'power2.inOut',
+                    });
+                  }
                 }
                 const span = Math.max(w1, 1);
                 for (let i = 0; i < cycleN; i++) {
@@ -889,7 +930,12 @@ export default function EverySentence({
                   const h1 = em.offsetHeight;
                   if (h1 !== h0) {
                     const pad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
-                    gsap.set([guideL, guideR], { bottom: 'auto', height: h0 + pad });
+                    /* hand off from wherever the guides stand — the
+                       condense may already have squeezed them to the
+                       incoming extent; snapping back to the outgoing
+                       height would undo it in front of the reader */
+                    const standing = parseFloat(getComputedStyle(guideL).height) || h0 + pad;
+                    gsap.set([guideL, guideR], { bottom: 'auto', height: standing });
                     gsap.to([guideL, guideR], {
                       height: h1 + pad,
                       duration: 0.55,
