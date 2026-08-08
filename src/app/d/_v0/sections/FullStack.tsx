@@ -341,6 +341,7 @@ export default function V0FullStack() {
            exactly that and mount NO machinery. */
         if (mctx.conditions?.narrow && !staged) {
           staticPose();
+          scope.classList.add('is-live');
           return clear;
         }
         /* the stage's layout class lands FIRST (fullstack.css keys the
@@ -1318,6 +1319,14 @@ export default function V0FullStack() {
               start: 'top bottom',
               end: 'bottom bottom',
               onUpdate: (self) => retarget(self.progress),
+              /* a zoom or viewport change moves the whole span: re-seed
+                 both clocks from the fresh read and paint once — never
+                 a stale pose waiting on the next scroll tick */
+              onRefresh: (self) => {
+                pCur = self.progress;
+                pTarget = self.progress;
+                apply(pCur);
+              },
             });
             /* a deep link or restored scroll lands mid-story: seed BOTH
                clocks from wherever the trigger already reads and paint
@@ -1354,6 +1363,10 @@ export default function V0FullStack() {
         });
         inView = viewGate.isActive;
         syncLoops();
+
+        /* seeded and painting — lift the pre-boot veil: the first frame
+           a JS visitor sees of the figure IS the story's own */
+        scope.classList.add('is-live');
 
         return () => {
           /* the stage's own residue: the layout class and the pen's
@@ -1413,6 +1426,7 @@ export default function V0FullStack() {
          hidden by the stylesheet (nothing here ever touches either) */
       mm.add('(prefers-reduced-motion: reduce)', () => {
         staticPose();
+        scope.classList.add('is-live');
         return clear;
       });
 
@@ -1422,7 +1436,24 @@ export default function V0FullStack() {
   );
 
   return (
-    <section className='tc-band tcb v0-stack' id='platform' ref={root} aria-labelledby='v0-stack-title'>
+    <section
+      className='tc-band tcb v0-stack'
+      id='platform'
+      ref={root}
+      aria-labelledby='v0-stack-title'
+      suppressHydrationWarning
+    >
+      {/* THE PRE-BOOT ARM: stamped during HTML parse, before the figure
+          below ever paints — fullstack.css veils the figure under
+          .js-arm:not(.is-live), each machinery branch answers with
+          is-live once its clocks have seeded, and a no-JS visit never
+          arms, keeping the markup's standing pose. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.currentScript.parentElement.classList.add('js-arm')}catch(e){}",
+        }}
+      />
       <div className='tcb-in'>
         {/* the head wears the section-head grammar so the FULL-STACK
             watermark (the Layers glyph — founder: "use the full stack
