@@ -305,16 +305,17 @@ export default function EverySentence({
           dust.setAttribute('aria-hidden', 'true');
           em.append(guideL, guideR, dust);
           const dctx = dust.getContext('2d');
-          /* mobile caps the plate at 1.5x — the dust glyphs are ~0.1em; a
-             3x phone repainting min(2,dpr) squared device pixels per CSS
-             pixel spends the frame budget on resolution nobody can read */
-          let cdpr = compactEvery ? Math.min(1.5, dpr) : Math.min(2, dpr);
+          /* the plate renders at up to 2x everywhere — the old mobile
+             1.5x cap read soft on 3x phones (founder: "without becoming
+             blurry"); 2x is the crisp/cheap knee, and the clear already
+             sweeps CSS-pixel space so the cost stays bounded */
+          let cdpr = Math.min(2, dpr);
           let dustFont = '';
           let dustInk = '';
           const sizeDust = () => {
-            /* the plate's scale follows the LIVE quantum and law, so an
-               emulated-device dpr never renders the dust blurry or fat */
-            cdpr = compactEvery ? Math.min(1.5, dpr) : Math.min(2, dpr);
+            /* the plate's scale follows the LIVE quantum, so an emulated
+               device dpr never renders the dust blurry or fat */
+            cdpr = Math.min(2, dpr);
             const host = em.parentElement ?? em;
             const bw = Math.ceil(host.getBoundingClientRect().width) + 20 + PLATE_PAD * 2;
             const bh = Math.ceil(em.offsetHeight) + 8 + PLATE_PAD * 2;
@@ -511,7 +512,22 @@ export default function EverySentence({
                 ctx.fillText(ln, x0, li * lineH + base);
               });
             } else {
-              ctx.fillText(text, 0, ch * 0.85);
+              /* the single-line seat, same law as the wrap branch: the
+                 em's own box IS the line box, baseline at half-leading +
+                 true ascent (the 0.85 guess sat the ink ~2px low), and
+                 the raster runs past the baseline by the full descent —
+                 the old height cut descenders flat at the canvas edge
+                 (founder: "the glyphs are cut off at the bottom") */
+              const fmet = ctx.measureText('Hg');
+              const asc = fmet.fontBoundingBoxAscent || fontPx * 0.8;
+              const desc = fmet.fontBoundingBoxDescent || fontPx * 0.25;
+              const base = (ch - (asc + desc)) / 2 + asc;
+              sh = Math.max(ch, Math.ceil(base + desc) + 4);
+              if (sh !== ch) {
+                canvas.height = sh;
+                applyFont();
+              }
+              ctx.fillText(text, 0, base);
             }
             const img = ctx.getImageData(0, 0, sw, sh).data;
             const scan = (step: number) => {
