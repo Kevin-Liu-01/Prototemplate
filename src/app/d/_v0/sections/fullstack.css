@@ -1002,7 +1002,7 @@
        document on every chrome toggle and jittered the scroll below;
        the dvh reach survives as the rails' overhang below */
     height: var(--v0sm-stage-h-stable);
-    /* one column, 60/40 rows — the seam ring's 1px padding stays */
+    /* one column, 55/45 rows — the seam ring's 1px padding stays */
     grid-template-columns: 100%;
     grid-template-rows: minmax(0, 11fr) minmax(0, 9fr);
   }
@@ -1143,14 +1143,14 @@
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points {
-    margin-top: 10px;
-    gap: 7px;
+    margin-top: 12px;
+    gap: 8px;
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points li {
-    padding-left: 20px;
-    font-size: 13.5px;
-    line-height: 1.45;
+    padding-left: 22px;
+    font-size: 15px;
+    line-height: 1.5;
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points li::before {
