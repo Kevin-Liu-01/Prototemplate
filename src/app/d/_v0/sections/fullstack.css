@@ -1161,11 +1161,12 @@
     font-size: 14px;
   }
 
-  /* the story's scroll length: ~70svh of dwell per beat — the sticky
+  /* the story's scroll length: ~105svh of dwell per beat — anything
+     near 70svh reads too fast — the sticky
      travel, and the master scrub's whole clock */
   .toolchain-root .tcb.v0-stack.is-stage .v0sm-runway {
     display: block;
-    height: 280svh;
+    height: 420svh;
   }
 }
 
