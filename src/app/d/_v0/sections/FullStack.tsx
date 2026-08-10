@@ -364,6 +364,7 @@ export default function V0FullStack() {
            exactly that and mount NO machinery. */
         if (mctx.conditions?.narrow && !staged) {
           staticPose();
+          scope.classList.add('is-live');
           return clear;
         }
         /* the stage's layout class lands FIRST (fullstack.css keys the
@@ -899,10 +900,6 @@ export default function V0FullStack() {
           });
         }
 
-        /* set by the staged branch: puts every sliced text node, hidden
-           inline mark and reserved line seat back — the pen writes Text
-           data and min-heights no revert owns */
-        let restoreTyped: (() => void) | null = null;
         /* the staged branch's refresh listener, unhooked at cleanup */
         let onStageRefresh: (() => void) | null = null;
         /* the staged branch's damped scrub clock, detached at cleanup */
@@ -1086,266 +1083,31 @@ export default function V0FullStack() {
              the beats' copy through the boundaries (below), and the
              capstone hunk writes itself across the agents segment. */
           const runway = scope.querySelector<HTMLElement>('.v0sm-runway');
-          /* each beat owns an equal share of the runway; crossing a
-             boundary only RETARGETS the pen — the writing itself runs
-             on its own authored tempo, never half-parked by the scrub */
+          /* Each beat owns an equal share of the runway. */
           const SEG = 1 / beats.length;
-          /* the hunk writes across the agents dwell: from just after the
-             finale's copy starts writing to a breath before the stage
-             releases */
+          /* The hunk writes from shortly after the finale appears to a
+             breath before the stage releases. */
           const CAP_FROM = (beats.length - 1) * SEG + 0.18 * SEG;
           const CAP_TO = 0.985;
 
-          /* THE PEN's material (founder screenshots, two rounds: a beat
-             frozen mid-crossfade cut off at "in ju" — "no 50% writing
-             out or anything" — then a whole-block wipe that emptied the
-             zone). The stage's copy TYPES: every beat's tag, lead and
-             bullets are cut into LINES (one block per host, document
-             order), each line into text nodes (sliced in place) and
-             atomic inline marks (the GT word and the <T> chip toggle at
-             their seats; the tag's NAME types under its icon — the
-             icon and the LocadexMark span ride as marks, so the walk
-             accepts SVG elements too). The typing never rewrites
-             elements, only Text data, so the brand token survives; a
-             mark costs a couple of beats of the same character clock. */
-          type TypedChunk =
-            | { kind: 'text'; node: Text; full: string }
-            | { kind: 'mark'; el: HTMLElement | SVGElement };
-          type TypedBlock = {
-            host: HTMLElement;
-            chunks: TypedChunk[];
-            len: number;
-          };
-          const MARK_WEIGHT = 2;
-          const chunkBlock = (host: HTMLElement): TypedBlock => {
-            const chunks: TypedChunk[] = [];
-            let len = 0;
-            const walk = (child: ChildNode) => {
-              if (child.nodeType === Node.TEXT_NODE) {
-                const full = child.textContent ?? '';
-                if (full.length) {
-                  chunks.push({ kind: 'text', node: child as Text, full });
-                  len += full.length;
-                }
-              } else if (
-                child instanceof HTMLElement &&
-                child.classList.contains('v0-stack-name')
-              ) {
-                /* the tag's name is TYPE, not an atom: descend to its
-                   text so "Code" writes character by character */
-                child.childNodes.forEach(walk);
-              } else if (
-                child instanceof HTMLElement ||
-                child instanceof SVGElement
-              ) {
-                chunks.push({ kind: 'mark', el: child });
-                len += MARK_WEIGHT;
-              }
-            };
-            host.childNodes.forEach(walk);
-            return { host, chunks, len };
-          };
-          const typedBeats = beats.map((beat) => ({
-            blocks: Array.from(
-              beat.querySelectorAll<HTMLElement>(
-                '.v0-stack-tag, h3, .v0-stack-points li'
-              )
-            ).map(chunkBlock),
-          }));
-          const lineCount = Math.max(...typedBeats.map((t) => t.blocks.length));
-
-          /* THE GHOST LAYOUT (founder: nothing may shift, the block
-             never collapses): before the first character moves, every
-             LINE SEAT reserves the tallest box any beat's line needs at
-             that seat — full copy in, per-index max measured, pinned as
-             min-height on every beat's line — so the seats stand
-             rect-identical across beats and through every transition;
-             typing changes glyphs, never geometry. Greedy wrapping
-             (fullstack.css drops balance/pretty on the stage) keeps a
-             half-written line breaking exactly where the full line
-             breaks. Re-run on refresh: the stage re-lays with dvh. */
-          const reserveTyped = () => {
-            typedBeats.forEach(({ blocks }) =>
-              blocks.forEach((block) => {
-                block.host.style.removeProperty('min-height');
-                block.chunks.forEach((chunk) => {
-                  if (chunk.kind === 'text') chunk.node.data = chunk.full;
-                });
-              })
-            );
-            const seats: number[] = [];
-            typedBeats.forEach(({ blocks }) =>
-              blocks.forEach((block, k) => {
-                seats[k] = Math.max(
-                  seats[k] ?? 0,
-                  block.host.getBoundingClientRect().height
-                );
-              })
-            );
-            typedBeats.forEach(({ blocks }) =>
-              blocks.forEach((block, k) => {
-                block.host.style.minHeight = `${seats[k] ?? 0}px`;
-              })
-            );
-          };
-
-          /* write line k of beat i at pen count n: text nodes take the
-             prefix, marks show once the budget crosses them — the
-             line's own box never moves (reserved above), and the
-             bullets' dash leaders live on the hosts, which stay
-             visible with their beat, so the zone always keeps its
-             structure even at the all-empty pose */
-          const writeBlock = (i: number, k: number, count: number) => {
-            const block = typedBeats[i]?.blocks[k];
-            if (!block) return;
-            let n = Math.round(count);
-            block.chunks.forEach((chunk) => {
-              if (chunk.kind === 'text') {
-                const take = Math.max(0, Math.min(n, chunk.full.length));
-                const next = chunk.full.slice(0, take);
-                if (chunk.node.data !== next) chunk.node.data = next;
-                n -= chunk.full.length;
-              } else {
-                chunk.el.style.visibility = n > 0 ? '' : 'hidden';
-                n -= MARK_WEIGHT;
-              }
-            });
-          };
-
-          /* ===== THE PEN (founder, two rounds): presence is spoken by
-             characters, never alpha — a beat's opacity is 1 or 0,
-             nothing between — and the lines move TOGETHER: a leaving
-             beat's lines all erase CONCURRENTLY (one 0.35s clock, so
-             they empty in the same breath), the arriving beat's lines
-             write back in parallel under a small cascade, each inside
-             its reserved seat. The writer is a TARGET QUEUE, the
-             story's own seek grammar for text: scroll only retargets
-             it; a mid-flight line finishes or reverses cleanly from its
-             current character count (kill the tween, keep the pen —
-             never a stale pose), and the zone changes hands only at the
-             all-empty pose, so two beats' glyphs can never share a
-             frame however hard the scrub storms. */
-          const WRITE_CPS = 150;
-          const WRITE_MIN = 0.35;
-          const WRITE_STAGGER = 0.07;
-          const DELETE_DUR = 0.35;
-          const pens = Array.from({ length: lineCount }, () => ({ n: 0 }));
-          const penTweens: gsap.core.Tween[] = [];
-          let shown = 0;
-          let target = 0;
-          let seeded = false;
+          let shown = -1;
           const showOnly = (i: number) => {
+            if (i === shown) return;
+            shown = i;
             beats.forEach((beat, k) => {
-              /* whole steps only — the probe's law: no frame anywhere
-                 between 0 and 1. visibility keeps the parked beats out
-                 of the accessibility tree and taps. */
               beat.style.opacity = k === i ? '1' : '0';
               beat.style.visibility = k === i ? 'visible' : 'hidden';
             });
           };
-          const renderShown = () => {
-            pens.forEach((pen, k) => writeBlock(shown, k, pen.n));
-          };
-          const holdPens = () => {
-            for (const t of penTweens) t.kill();
-            penTweens.length = 0;
-          };
-          const step = () => {
-            penTweens.length = 0;
-            const blocks = typedBeats[shown]?.blocks ?? [];
-            if (shown !== target) {
-              if (pens.every((pen) => pen.n <= 0)) {
-                /* the all-empty pose: the ONLY frame the zone may change
-                   hands — the leaving glyphs are gone before the arriving
-                   beat shows, so mixed text is structurally impossible */
-                shown = target;
-                renderShown();
-                showOnly(shown);
-                step();
-                return;
-              }
-              pens.forEach((pen, k) => {
-                if (pen.n <= 0 || !blocks[k]) {
-                  pen.n = 0;
-                  return;
-                }
-                penTweens.push(
-                  gsap.to(pen, {
-                    n: 0,
-                    duration: DELETE_DUR,
-                    ease: 'none',
-                    autoRound: false,
-                    onUpdate: () => writeBlock(shown, k, pen.n),
-                    onComplete: () => {
-                      if (penTweens.every((t) => !t.isActive())) step();
-                    },
-                  })
-                );
-              });
-              return;
-            }
-            pens.forEach((pen, k) => {
-              const full = blocks[k]?.len ?? 0;
-              if (pen.n >= full) {
-                pen.n = full;
-                return;
-              }
-              penTweens.push(
-                gsap.to(pen, {
-                  n: full,
-                  duration: Math.max(WRITE_MIN, (full - pen.n) / WRITE_CPS),
-                  /* the cascade belongs to FRESH writes; a resumed line
-                     (a reversed delete) picks its pen back up now */
-                  delay: pen.n > 0 ? 0 : k * WRITE_STAGGER,
-                  ease: 'none',
-                  autoRound: false,
-                  onUpdate: () => writeBlock(shown, k, pen.n),
-                })
-              );
-            });
-          };
-          const retype = (i: number) => {
-            if (!seeded) {
-              /* the first clock read seeds the pose instantly — the
-                 rest view and a restored or deep-linked scroll land on
-                 standing copy, like the desktop rail's rest state */
-              seeded = true;
-              shown = i;
-              target = i;
-              pens.forEach((pen, k) => {
-                pen.n = typedBeats[i]?.blocks[k]?.len ?? 0;
-              });
-              renderShown();
-              showOnly(i);
-              return;
-            }
-            if (i === target) return;
-            target = i;
-            holdPens();
-            step();
-          };
-
-          restoreTyped = () => {
-            holdPens();
-            typedBeats.forEach(({ blocks }) =>
-              blocks.forEach((block) => {
-                block.host.style.removeProperty('min-height');
-                block.chunks.forEach((chunk) => {
-                  if (chunk.kind === 'text') chunk.node.data = chunk.full;
-                  else chunk.el.style.removeProperty('visibility');
-                });
-              })
-            );
-          };
 
           const apply = (p: number) => {
             /* the beat clock: which segment owns the playhead — the
-               build, the pen, and the hunk all read the same number */
+               build, visible copy, and hunk all read the same number */
             const active = Math.min(
               beats.length - 1,
               Math.max(0, Math.floor(p / SEG))
             );
-            retype(active);
+            showOnly(active);
             setHot(active);
             /* the tower HOLDS each section's standing pose — section k
                shows exactly its own layers (founder: "only the first
@@ -1370,7 +1132,6 @@ export default function V0FullStack() {
             }
           };
 
-          reserveTyped();
 
           /* ===== THE SCRUB'S DAMPER (founder: "the connectors coming
              from rail lines are a little laggy … i want it to look
@@ -1435,8 +1196,6 @@ export default function V0FullStack() {
             arrGeo.ready = false;
             if (arrival.t < 1) applyArrival();
             else if (railExt) gsap.set(railExt, { scaleY: 1 });
-            reserveTyped();
-            if (seeded) renderShown();
           };
           ScrollTrigger.addEventListener('refresh', onStageRefresh);
         }
@@ -1455,9 +1214,13 @@ export default function V0FullStack() {
         inView = viewGate.isActive;
         syncLoops();
 
+        /* seeded and painting — lift the pre-boot veil: the first frame
+           a JS visitor sees of the figure IS the story's own */
+        scope.classList.add('is-live');
+
         return () => {
-          /* the stage's own residue: the layout class and the pen's
-             direct style writes (no tween owns them, so no revert does) */
+          /* the stage's own residue: the layout class and direct
+             visibility writes are not owned by a tween. */
           if (staged) {
             scope.classList.remove('is-stage');
             /* the damper first: a ticker tick after teardown would call
@@ -1467,7 +1230,6 @@ export default function V0FullStack() {
               beat.style.removeProperty('opacity');
               beat.style.removeProperty('visibility');
             }
-            restoreTyped?.();
             if (railExt) gsap.set(railExt, { clearProps: 'transform' });
           }
           if (onStageRefresh)
@@ -1515,6 +1277,7 @@ export default function V0FullStack() {
          hidden by the stylesheet (nothing here ever touches either) */
       mm.add('(prefers-reduced-motion: reduce)', () => {
         staticPose();
+        scope.classList.add('is-live');
         return clear;
       });
 

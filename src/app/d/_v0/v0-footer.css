@@ -412,3 +412,16 @@
   mask-composite: add;
   pointer-events: none;
 }
+
+/* mobile touch targets: the status link reads at the kick gauge and the
+   theme control meets the 44px minimum */
+@media (max-width: 640px) {
+  .toolchain-root .v0-foot-status a {
+    font-size: var(--tcm-kick, 13px);
+  }
+
+  .toolchain-root .v0-foot-theme {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

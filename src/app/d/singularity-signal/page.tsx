@@ -36,7 +36,27 @@ export default function Page() {
       <div className='toolchain-root sgsh-root'>
         <V0Nav />
 
-        <main className='tc-rail'>
+        <main className='tc-rail' suppressHydrationWarning>
+          {/* THE PRE-BOOT ARM, from the server boundary: stamped on the
+              rail BEFORE ANY veiled section enters the parse stream —
+              the hero's locale belt (translate-window.css hides
+              .js-arm … .v0-tw-belt-track:not(.is-seated)) streams first,
+              so the stamp must precede it, and the stack section's veil
+              (.js-arm … :not(.is-live)) rides the same class further
+              down. A no-JS visit never arms, keeping the markup's
+              standing poses; a client-side navigation mounts with live
+              JS and needs no veil (React never executes scripts it
+              renders, which is also why this tag lives in a SERVER
+              component). suppressHydrationWarning: the script adds
+              js-arm before hydration, so the client tree never matches
+              the armed DOM — React leaves the attribute alone either
+              way; only the warning is suppressed. */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.currentScript.parentElement.classList.add('js-arm')}catch(e){}",
+            }}
+          />
           <HomeHero />
           <V0Customers />
           <div aria-hidden className='v0-hatch' />

@@ -970,8 +970,10 @@ export default function V0Locadex() {
       <div className='tc-head'>
         <i className='tc-head-icon v0-ldx-head-mark' aria-hidden />
         <h2 data-reveal>
-          The easiest way to localize
-          <br />
+          {/* the space before the br carries the word gap when the mobile
+              cut hides the authored break (locadex.css); a br alone leaves
+              'localize' and 'your' fused */}
+          The easiest way to localize <br />
           your full product suite
         </h2>
       </div>

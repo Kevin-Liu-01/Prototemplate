@@ -1122,11 +1122,65 @@
 
   .toolchain-root .tcb .tcb-stack-cap {
     gap: 9px;
-    padding: 10px 8px;
+    padding: 12px 8px;
   }
 
   .toolchain-root .tcb .tcb-trace-row {
     grid-template-columns: 60px 72px minmax(0, 1fr);
     font-size: 11px;
+  }
+}
+
+/* the mobile box rhythm rides the tcm ladder (engine tokens with the
+   same fallbacks the site uses) — caps, heads and body copy take the
+   ladder's gauges, and the boxes open their block spend */
+@media (max-width: 640px) {
+  .toolchain-root .tcb .tcb-cap {
+    padding: var(--tcm-box-pt, 36px) 20px 0;
+  }
+
+  .toolchain-root .tcb .tcb-cell h3 {
+    font-size: var(--tcm-h3, 22px);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .toolchain-root .tcb .tcb-head p {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .toolchain-root .tcb .tcb-cap p,
+  .toolchain-root .tcb .tcb-svc-cap p {
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .toolchain-root .tcb .tcb-svc-cap {
+    padding: var(--tcm-box-pt, 36px) 20px 0;
+  }
+
+  .toolchain-root .tcb .tcb-art {
+    margin-top: var(--tcm-box-gap, 28px);
+  }
+
+  .toolchain-root .tcb .tcb-stack {
+    padding-block: var(--tcm-box-gap, 28px) var(--tcm-box-pb, 38px);
+  }
+
+  .toolchain-root .tcb .tcb-ctx {
+    padding-block: var(--tcm-box-gap, 28px) var(--tcm-box-pb, 38px);
+  }
+
+  .toolchain-root .tcb .tcb-ctx-card {
+    padding-block: 18px;
+  }
+
+  .toolchain-root .tcb .tcb-ctx-row {
+    padding-block: 8px;
+  }
+
+  .toolchain-root .tcb .tcb-trace {
+    margin-block: var(--tcm-box-gap, 28px) var(--tcm-box-pb, 38px);
+    gap: 12px;
   }
 }

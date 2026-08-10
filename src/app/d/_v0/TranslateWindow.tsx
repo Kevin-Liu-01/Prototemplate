@@ -1164,8 +1164,14 @@ export default function TranslateWindow({
         return best;
       };
 
-      /* es owns the first fold: seated on centre before first paint */
+      /* es owns the first fold: seated on centre before first paint. The
+         UNVEIL pairs with translate-window.css's js-arm rule — the server
+         can't know the seat in pixels, so the armed belt hides through
+         the paint-to-hydration window and appears already seated, instead
+         of painting the raw markup pose and snapping when the clocks
+         boot. */
       seat(0);
+      trackEl.classList.add('is-seated');
 
       const reduced = window.matchMedia(
         '(prefers-reduced-motion: reduce)'

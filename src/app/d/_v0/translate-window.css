@@ -1391,3 +1391,12 @@
   bottom: auto;
   top: calc(100% + 9px);
 }
+
+/* the belt's pre-hydration veil: the seat is pixel-math the server
+   cannot run, so on JS visits (the rail's js-arm stamp) the track hides
+   until the clocks seat it — it appears already centred on the page's
+   locale instead of painting the raw markup pose and snapping. A no-JS
+   visit never arms and keeps the visible markup pose. */
+.js-arm .v0-tw .v0-tw-belt-track:not(.is-seated) {
+  visibility: hidden;
+}

@@ -584,3 +584,12 @@
     margin-bottom: 0;
   }
 }
+
+/* after the .tcr-door base rule — the sheet's earlier 640px block
+   precedes it, so an equal-specificity override there would lose */
+@media (max-width: 640px) {
+  .toolchain-root .tcr-door {
+    padding: 11px 15px;
+    font-size: 13px;
+  }
+}

@@ -22,6 +22,26 @@
   overflow: clip;
 }
 
+/* PRE-BOOT (js-arm): a JS visitor must never see the markup's standing
+   tower flash before the story clocks seed — the page's inline arm
+   script stamps js-arm on the rail at parse time, BEFORE the section
+   streams in (motion permitting), and every
+   machinery branch answers with is-live once it has painted. No JS ⇒
+   no arm ⇒ the standing pose serves the crawl and the print. The 3s
+   failsafe returns the standing pose if the engine ever fails to boot,
+   so nothing can strand an empty column. */
+.toolchain-root .js-arm .tcb.v0-stack:not(.is-live) .v0-stack-fig {
+  visibility: hidden;
+  animation: v0-stack-unarm 0s 3s forwards;
+}
+
+@keyframes v0-stack-unarm {
+  to {
+    visibility: visible;
+  }
+}
+
+
 /* rail-to-rail (founder: "get rid of the space on the left and right of
    this section"): the band's inline gut is spent nowhere in this section —
    the sheet's two cells run the full column, edge to edge of the rails.
@@ -817,6 +837,7 @@
   margin: 16px 0 0;
   padding: 0;
   display: grid;
+  align-content: start;
   gap: 11px;
   max-width: 54ch;
 }
@@ -922,13 +943,9 @@
    just fades in and out of each other with the layers growing").
 
    The grid itself becomes a CSS-sticky, viewport-filling stage: fig
-   zone the top 60%, text zone the bottom 40%, the beats absolutely
-   stacked in the zone and TYPED one at a time by FullStack's pen (a
-   later founder round replaced the quote's crossfade: the copy writes
-   itself in and erases itself line by line — the master scrub only
-   retargets the writer). Sticky, never JS-positioned — the desktop
-   figure's own law — and
-   the travel is the .v0sm-runway spacer after the grid (sticky is
+   zone the top 60%, text zone the bottom 40%, with one beat visible at
+   a time. Sticky, never JS-positioned — the desktop figure's own law —
+   and the travel is the .v0sm-runway spacer after the grid (sticky is
    bounded by the PARENT'S content box, the agents dwell's lesson).
    The runway's 'top bottom'→'bottom bottom' ScrollTrigger window
    equals the sticky engage→release span exactly, because the stage
@@ -975,7 +992,7 @@
        0.8538 — change them together), minus the fig pads and the
        STAGE_DROP headroom an arriving plate falls through (20 + 32 +
        a 4px breath) */
-    --v0sm-tw: calc((0.6 * var(--v0sm-stage-h-stable) - 56px) * 0.8538);
+    --v0sm-tw: calc((0.55 * var(--v0sm-stage-h-stable) - 56px) * 0.8538);
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .tcb-grid {
@@ -987,7 +1004,7 @@
     height: var(--v0sm-stage-h-stable);
     /* one column, 60/40 rows — the seam ring's 1px padding stays */
     grid-template-columns: 100%;
-    grid-template-rows: minmax(0, 6fr) minmax(0, 4fr);
+    grid-template-rows: minmax(0, 11fr) minmax(0, 9fr);
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-cell-fig {
@@ -1111,25 +1128,10 @@
        the same one-column width), plus a hand of clearance */
     padding: 10px 20px 18px
       calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)) - round(nearest, 0.07 * min(100% - 32px, var(--v0sm-tw)), 1px) + 26px);
-    /* THE PEN owns presence (founder: "no 50% writing out or anything"):
-       FullStack shows exactly one beat — inline opacity 1 or 0, whole
-       steps only, never a fade — and arrival is spoken by characters.
-       The class spotlight's dim and its eased transition would fight
-       that, so both stand down here. */
+    /* FullStack shows exactly one beat at each story step. */
     opacity: 0;
     transition: none;
     pointer-events: none;
-  }
-
-  /* the pen's line discipline: greedy wrapping only — balance and
-     pretty recompute their breaks per edit, and a typing prefix would
-     hop between lines mid-write; greedy breaks are prefix-stable, so a
-     half-written line always breaks exactly where the full line will
-     (the line boxes themselves are reserved by FullStack's min-height
-     ghost, the tallest seat any beat needs, so nothing ever shifts) */
-  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-beat h3,
-  .toolchain-root .tcb.v0-stack.is-stage .v0-stack-points li {
-    text-wrap: wrap;
   }
 
   /* the stage type, a step tighter (founder spec: the longest beat's
