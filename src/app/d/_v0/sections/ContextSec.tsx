@@ -8,7 +8,6 @@ import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
-import { createInkField } from '@/app/d/glyph-rain/sections/band/inkField';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
 import { prefersReducedMotion, target } from '@/app/d/toolchain/diagrams/lang/lang';
@@ -345,7 +344,7 @@ const DIRECTIVES: readonly Directive[] = [
   {
     label: 'Audience',
     icon: Users,
-    text: 'Avoid jargon.',
+    text: 'Avoid jargon',
     pair: { before: 'Persistieren…', after: 'Speichern…' },
   },
   {
@@ -357,60 +356,22 @@ const DIRECTIVES: readonly Directive[] = [
   {
     label: 'Conventions',
     icon: PenLine,
-    text: 'Use active voice.',
+    text: 'Use active voice',
     pair: { before: 'Wird geladen…', after: 'Lädt…' },
   },
   {
     label: 'Formatting',
     icon: CalendarDays,
-    text: 'Use German date order.',
+    text: 'Use German date order',
     pair: { before: '07/30/2026', after: DE_DATE },
   },
 ];
 
 export default function V0Context() {
-  const root = useRef<HTMLElement>(null);
-  const stage = useRef<HTMLCanvasElement>(null);
-  const core = useRef<HTMLDivElement>(null);
-
-  /* The band's material. The ink field's rAF, resize, clearing re-measure
-     and reduced-motion still are internal to the engine — destroy() on
-     unmount is ours. */
-  useGSAP(
-    () => {
-      const scope = root.current;
-      if (!scope) return;
-
-      const canvas = stage.current;
-      const h2 = scope.querySelector('h2');
-      /* sides only: the head's strip stays clear, phones park the field
-         entirely, and the decorative margins run at the lean gauges */
-      const field = canvas
-        ? createInkField({
-            canvas,
-            clearEl: core.current,
-            clearTopEl: scope.querySelector<HTMLElement>('.tc-head'),
-            minWidth: 880,
-            dprCap: 1.5,
-            fpsCap: 30,
-            displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
-          })
-        : null;
-
-      return () => field?.destroy();
-    },
-    { scope: root }
-  );
 
   return (
-    <section className='tc-band tcb v0-ctx' id='context' ref={root}>
-      {/* the rising material: paper glyphs off the ink, band edges only */}
-      <canvas className='v0-ctx-rain' ref={stage} aria-hidden='true' />
-
+    <section className='tc-band tcb v0-ctx' id='context'>
       <div className='tcb-in'>
-        {/* the measuring box for the field's dithered clearing: glyphs own
-            the band's margins and padding strips, never the content */}
-        <div className='v0-ctx-core' ref={core}>
         {/* the head is the Developer head VERBATIM (founder: an exact
             replica of "Built for developers around the globe." with the
             wording and icon switched) — same tc-head grammar, same
@@ -536,7 +497,6 @@ export default function V0Context() {
               surfaces
             />
           </div>
-        </div>
         </div>
       </div>
     </section>

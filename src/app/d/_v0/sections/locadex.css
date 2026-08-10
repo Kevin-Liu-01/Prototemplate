@@ -404,7 +404,10 @@
    (founder: much larger, the same scale as the others) — the 225.23%
    crop is the house cut for this asset (fullstack.css's beat tag), and
    with it the LAMBDA spans the 240 box the way the lucide glyphs do. */
-.toolchain-root .v0-ldx-head-mark {
+.toolchain-root .v0-ldx .tc-head .tc-head-icon.v0-ldx-head-mark {
+  width: 343px;
+  height: 343px;
+  transform: translate(25%, -50%);
   -webkit-mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
   mask: url('/brand/locadex-mark.svg') center / 225.23% no-repeat;
   background-color: currentColor;

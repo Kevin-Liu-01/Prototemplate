@@ -87,7 +87,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'code',
     name: 'Code',
-    lead: 'Your code is the source of truth.',
+    lead: 'Built for your codebase',
     points: [
       <>Tag user interfaces and they’re ready to ship in 120+ locales</>,
       'Open-source internationalization (i18n) libraries and SDKs for every framework',
@@ -98,13 +98,10 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'context',
     name: 'Context',
-    lead: 'Context layer, shared globally.',
+    lead: 'Context layer for your scale',
     points: [
-      <>
-        <GtLogoText /> keeps your wording and voice consistent across app,
-        website, docs, and slides
-      </>,
-      <>Edit, version, and approve with your team</>,
+      <>Edit, version, and approve translations with unlimited users</>,
+      <>Share context, custom prompts, and glossaries across every surface</>,
     ],
     /* BookOpen, not Layers (founder: Layers is the FULL STACK's icon
        now; context wears the knowledge glyph everywhere) */
@@ -114,13 +111,10 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'translations',
     name: 'Translations',
-    lead: 'The best translations of your product.',
+    lead: 'Translations in your voice',
     points: [
-      <>High-quality translations that reflect your meaning</>,
-      <>
-        <GtLogoText /> handles every file format, and logical branches for
-        dynamic content like plurals and gender forms
-      </>,
+      <>Localize product copy and user-generated content in native quality</>,
+      <>Translate your entire app with APIs for text, files, and components</>,
     ],
     icon: Languages,
     slabIds: ['translations'],
@@ -128,9 +122,9 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'agents',
     name: 'Agents',
-    lead: 'Agents connect your systems.',
+    lead: 'Agents connect your systems',
     points: [
-      <>Locadex connects your GitHub, CMS, Figma, and external files</>,
+      <>Locadex Agent connects your GitHub, CMS, Google Slides, Figma, and other content sources</>,
       <>Infrastructure built for agents across API, CLI, and MCP</>,
     ],
     icon: LocadexMark,

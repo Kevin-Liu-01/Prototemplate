@@ -42,25 +42,10 @@
   padding-block-end: 0;
 }
 
-.toolchain-root .v0-ctx .tcb-grid {
+.toolchain-root .v0-ctx.tcb .tcb-grid {
   padding-inline: 0;
 }
 
-
-/* The field is the band's material, not its subject: paper glyphs RISING
-   off the ink (the glyph-rain closer's engine), spanning the plate behind
-   the ruled sheet (tcb-in sits above at z-index 1). No mask — the engine
-   holds a dithered clearing measured off the v0-ctx-core box, so glyphs
-   own only the band's margins and padding strips. */
-.toolchain-root .v0-ctx-rain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  display: block;
-  pointer-events: none;
-}
 
 /* Locale chips wear the house pill (the gray grammar the five homes settled
    on — never blue); each host keeps its own code size, and the code's sans
@@ -470,12 +455,12 @@
 
 /* Same closing-line law as the stack band: the band border alone ends
    the sheet — ring bottom leg + nub bottoms yield. */
-.toolchain-root .v0-ctx .tcb-grid {
+.toolchain-root .v0-ctx.tcb .tcb-grid {
   padding-bottom: 0;
 }
 
-.toolchain-root .v0-ctx .tcb-grid::before,
-.toolchain-root .v0-ctx .tcb-grid::after {
+.toolchain-root .v0-ctx.tcb .tcb-grid::before,
+.toolchain-root .v0-ctx.tcb .tcb-grid::after {
   border-bottom: 0;
 }
 
@@ -725,13 +710,6 @@
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .lct {
   border-color: rgba(7, 7, 7, 0.16);
   background: rgba(7, 7, 7, 0.03);
-}
-
-/* The rising field re-inks by inversion: the engine paints paper
-   glyphs for the ink plate; inverted, the same field reads as ink
-   glyphs on the light band — same material, same dither. */
-:root:not([data-theme='dark']) .toolchain-root .v0-ctx-rain {
-  filter: invert(1);
 }
 
 /* The fork family back on its light-page pairing: white cards and

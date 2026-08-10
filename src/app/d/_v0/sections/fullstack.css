@@ -1018,17 +1018,24 @@
      reserves the rail's lead margin on the left, so a centred box put
      the plates and copy ~7% right of true centre — the tower, its
      cell-height track, the text cell's continuations and the copy
-     column all shift left by half that lead (the 0.53194 fold in the
-     rail formulas is 0.46194 + 0.07, the same shift) */
+     column all shift left by the same amount. The shift is ROUNDED to
+     a whole pixel in every formula: the tower's transform is
+     compositor-rounded to a device pixel (its subtree carries animated
+     layers), while the track and extension divs sit at unrounded
+     layout positions — a fractional shift therefore paints the SVG
+     rail up to half a pixel off the divs and the one line reads as
+     two. All the formulas round the SAME quantity (7% of the same
+     width), so they always resolve to the same pixel — change them
+     together. */
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-tower {
-    transform: translateX(-7%);
+    transform: translateX(round(nearest, -7%, 1px));
   }
 
   /* the cell-height track shifts by the same amount as a folded LEFT —
      a translate percentage would resolve against the line's own 3px
      box, not the reference width */
   .toolchain-root .tcb.v0-stack.is-stage .v0s-cellrail {
-    left: calc(50% - 0.53194 * var(--v0s-cellrail-w));
+    left: calc(50% - 0.46194 * var(--v0s-cellrail-w) - round(nearest, 0.07 * var(--v0s-cellrail-w), 1px));
   }
 
   .toolchain-root .tcb.v0-stack.is-stage .v0-stack-tower {
@@ -1052,7 +1059,7 @@
     position: absolute;
     top: 0;
     bottom: calc(-1 * var(--v0sm-bar-gap));
-    left: calc(50% - 0.53194 * min(100% - 32px, var(--v0sm-tw)));
+    left: calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)) - round(nearest, 0.07 * min(100% - 32px, var(--v0sm-tw)), 1px));
     width: calc(0.00864 * min(100% - 32px, var(--v0sm-tw)));
     background: rgba(255, 255, 255, 0.12);
     pointer-events: none;
@@ -1078,7 +1085,7 @@
     position: absolute;
     top: 0;
     bottom: calc(-1 * var(--v0sm-bar-gap));
-    left: calc(50% - 0.53194 * min(100% - 32px, var(--v0sm-tw)));
+    left: calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)) - round(nearest, 0.07 * min(100% - 32px, var(--v0sm-tw)), 1px));
     width: calc(0.00864 * min(100% - 32px, var(--v0sm-tw)));
     background: var(--v0s-rail-ink);
     transform: scaleY(0);
@@ -1103,7 +1110,7 @@
        track's own x (its 50% and this padding's 50% resolve against
        the same one-column width), plus a hand of clearance */
     padding: 10px 20px 18px
-      calc(50% - 0.53194 * min(100% - 32px, var(--v0sm-tw)) + 26px);
+      calc(50% - 0.46194 * min(100% - 32px, var(--v0sm-tw)) - round(nearest, 0.07 * min(100% - 32px, var(--v0sm-tw)), 1px) + 26px);
     /* THE PEN owns presence (founder: "no 50% writing out or anything"):
        FullStack shows exactly one beat — inline opacity 1 or 0, whole
        steps only, never a fade — and arrival is spoken by characters.

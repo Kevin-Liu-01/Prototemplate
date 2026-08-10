@@ -482,7 +482,7 @@ export default function V0Developer({ heading = 'Built for developers around the
         <Code2 className='tc-head-icon' strokeWidth={1} aria-hidden />
         <h2 data-reveal>{heading}</h2>
         <p data-reveal>
-          <GtLogoText /> builds the localization infrastructure, so you can focus on
+          <GtLogoText /> handles the localization infrastructure, so you can focus on
           shipping a product the world loves.
         </p>
       </div>

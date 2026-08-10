@@ -163,7 +163,8 @@
   gap: 9px;
 }
 
-.toolchain-root .v0-foot-col a {
+.toolchain-root .v0-foot-col a,
+.toolchain-root .v0-foot-col button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -173,7 +174,8 @@
   transition: color 0.15s ease;
 }
 
-.toolchain-root .v0-foot-col a:hover {
+.toolchain-root .v0-foot-col a:hover,
+.toolchain-root .v0-foot-col button:hover {
   color: var(--tc-ink);
 }
 
@@ -311,7 +313,8 @@
     gap: 0;
   }
 
-  .toolchain-root .v0-foot-col a {
+  .toolchain-root .v0-foot-col a,
+  .toolchain-root .v0-foot-col button {
     font-size: 15px;
     line-height: 1.5;
     padding-block: 11px;

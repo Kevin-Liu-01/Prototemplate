@@ -1131,3 +1131,188 @@
     line-height: var(--tcm-h3-lh, 1.3);
   }
 }
+
+/* ============================================================
+   THE MOBILE CUT — rhythm and type re-opened under 720px.
+   Founder: the phone read as the desktop page shrunk — heads sat
+   26px under their seams, 25.9px display lines against 16px body,
+   15px section copy, 28px dividers. The desktop composition buys
+   altitude economy (heads at the top of their bands); the phone
+   trades it back for AIR: real top spend above every head, display
+   lines at a phone-native step, body floors up one notch, and the
+   hatched dividers wide enough to read as rests. Diagram-internal
+   micro labels are artwork and keep their gauges.
+   ============================================================ */
+@media (max-width: 720px) {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-head {
+    padding-top: var(--tcm-head-pt, 72px);
+    padding-bottom: var(--tcm-head-pb, 36px);
+  }
+
+  /* display lines: one full step up from the 1.62rem floor */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-head
+    h2,
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-ctx
+    .tc-head
+    h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  /* the dark bands' own display lines take the same step */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-band
+    h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  /* head lead: the sub-line under the H2 takes the lead step, with a
+     touch more separation from the line */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-head
+    p {
+    margin-top: var(--tcm-gap-h2, 18px);
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  /* band sheets breathe — except the two whose tc-heads carry the spend */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tcb:not(.v0-ctx):not(.v0-stack)
+    .tcb-in {
+    padding-top: 36px;
+  }
+
+  /* the hatched rests widen into real pauses between sections */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-hatch {
+    height: 36px;
+  }
+
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-band.v0-stack {
+    border-bottom: 0;
+  }
+
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-band.v0-stack
+    + .v0-hatch {
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-cust
+    + .v0-hatch.v0-hatch {
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--tc-hair);
+  }
+
+  /* the customers wall keeps its caption-scale lead (by design) but
+     takes the same air above */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-cust
+    .tc-head {
+    padding-top: 30px;
+    padding-bottom: 26px;
+  }
+
+  /* the caption's base clamp bottoms out at 14px on phones; pin it to
+     the 16px body step (the h2 reset's 1.06 leading is too tight here) */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-cust
+    .tc-head
+    h2 {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  /* the logo cells take the same breath as the boxes around them —
+     outranks their py-4 utility (unlayered wins) */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-cust-cell {
+    padding-block: 20px;
+  }
+
+  /* the closing band: display line and sub step with the page */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-dep
+    h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-dep
+    .v0-dep-sub {
+    margin-top: var(--tcm-gap-h2, 18px);
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-dep
+    .v0-dep-btn {
+    /* 44px tap floor; overrides the h-9.5 utility (unlayered wins) */
+    height: 44px;
+    font-size: 15px;
+  }
+
+  /* the proof quote reads a step calmer than the heads but above body */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-glob
+    .tcpq-quote
+    p {
+    font-size: var(--tcm-quote, 22px);
+    /* the markup's leading-[1.22] utility sits under the mobile floor */
+    line-height: var(--tcm-quote-lh, 1.4);
+  }
+
+  /* the proof plate rides at two-thirds altitude by design, so it opens
+     in proportion rather than to the box tokens */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-glob
+    .tcpq-plate {
+    padding-top: 26px;
+    padding-bottom: 24px;
+  }
+
+  /* bento cells: titles and body copy step with the page — this is the
+     copy the reader actually studies (Connect Locadex, the dev bentos, the
+     context cells), and 14px under a 31px display line read as fine
+     print */
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-cell
+    h3 {
+    font-size: var(--tcm-h3, 1.375rem);
+    /* without this the engine's 1.06 heading reset leaks through */
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-cell
+    > p,
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .tc-card
+    > p,
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .shell-cell-head
+    > p {
+    margin-top: var(--tcm-gap-h3, 14px);
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  /* the hero band's 10/12 crop is a desktop fold budget; the phone has
+     no fold constraint, so the window sits centred. Identical selector
+     to the base rule — wins on order. */
+  .toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root)
+    .tc-hero-cell.tch-band {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}

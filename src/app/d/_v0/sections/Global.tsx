@@ -369,7 +369,7 @@ export default function V0Global() {
               <h3>Built for the enterprise</h3>
               <p>
                 Dedicated FDE hours to build any workflow across code and content. Plus SSO, SOC 2 Type
-                II, ISO 27001, and audit logs.
+                II, ISO 27001, and audit logs
               </p>
             </article>
           </div>

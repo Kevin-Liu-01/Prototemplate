@@ -29,7 +29,7 @@ export default function V0DevWindow() {
     <section className='tc-sec v0-devwin' id='developers-window' ref={root}>
       <div className='tc-head'>
         <AppWindow className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>Built for developers around the globe</h2>
+        <h2 data-reveal>Built for developers around the globe.</h2>
         <p data-reveal>
           General Translation is deployed in production apps that reach millions of global users.
         </p>

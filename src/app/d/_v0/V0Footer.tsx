@@ -131,7 +131,7 @@ export default function V0Footer() {
               chrome shader (V0FooterMark); the static gradient stays as the
               no-WebGL and reduced-motion ground. */}
           <V0FooterMark />
-          <p>End-to-end localization for the world&rsquo;s best companies.</p>
+          <p>End-to-end localization for the world&rsquo;s best companies</p>
 
           <div className='v0-foot-badges'>
             {BADGES.map(({ alt, src }) => (
