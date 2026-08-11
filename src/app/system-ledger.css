@@ -1,19 +1,27 @@
 /* ============================================================
-   SYSTEM LEDGER — the capabilities ledger and the laws learned.
+   SYSTEM LEDGER: the capabilities ledger and the laws learned.
    Consumes only the --pt-* tokens inherited from .pt-root; no
    prototemplate.css class is referenced, so mount position and
    stylesheet order cannot change how it paints.
    Rule law: cells draw border-top only, containers close with a
-   single border-bottom — no rule ever doubles.
+   single border-bottom. No rule ever doubles.
    ============================================================ */
 
 .sl-sec {
+  /* the working blue, restated locally so the figures stay
+     self-contained; the dark remap follows [data-theme] */
+  --sl-accent: #2f5ce0;
+
   padding: clamp(40px, 4.6vw, 64px) var(--pt-gut);
   border-bottom: 1px solid var(--pt-hair);
   font-family: var(--pt-lausanne, var(--pt-sans));
 }
 
-/* .pt-post h2 ties this selector at one class — the extra ancestor
+[data-theme='dark'] .sl-sec {
+  --sl-accent: #86a8ff;
+}
+
+/* .pt-post h2 ties this selector at one class; the extra ancestor
    keeps these metrics winning wherever the mount lands */
 .sl-sec .sl-h2 {
   max-width: 40ch;
@@ -32,8 +40,8 @@
   color: var(--pt-ink-2);
 }
 
-/* the hatch spacer, restated locally: border-bottom only — the section
-   above already drew the seam */
+/* the hatch spacer, restated locally: border-bottom only, because the
+   section above already drew the seam */
 .sl-hatch {
   height: 42px;
   border-bottom: 1px solid var(--pt-hair);
@@ -57,7 +65,7 @@
   border-bottom: 1px solid var(--pt-hair);
 }
 
-/* the gutter spine — vertical, so it crosses the row rules without
+/* the gutter spine, vertical, so it crosses the row rules without
    ever doubling one; equal 1fr tracks put the gap's center at 50% */
 .sl-caps::before {
   content: '';
@@ -91,8 +99,8 @@
   color: var(--pt-ink);
 }
 
-/* `.pt-root a`'s color: inherit outranks a lone class — anchor the
-   see-slot under .sl-caps so its quiet ink survives */
+/* `.pt-root a`'s color: inherit outranks a lone class, so the see-slot
+   anchors under .sl-caps to keep its quiet ink */
 .sl-caps .sl-cap-see {
   font-family: var(--pt-mono);
   font-size: 11px;
@@ -115,21 +123,23 @@
   color: var(--pt-ink-2);
 }
 
-/* ---------- the laws: numbered editorial rows ---------- */
+/* ---------- the laws: numbered rows, each with a drawn figure ---------- */
 
 .sl-laws {
-  max-width: 74ch;
+  --sl-law-gap: clamp(16px, 2.4vw, 28px);
+
   margin: 24px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .sl-law {
+  position: relative;
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: clamp(14px, 2.4vw, 30px);
-  align-items: baseline;
-  padding: 13px 0 15px;
+  grid-template-columns: 48px minmax(0, 1fr) 240px;
+  column-gap: var(--sl-law-gap);
+  align-items: start;
+  padding: 14px 0 16px;
   border-top: 1px solid var(--pt-hair);
 }
 
@@ -137,28 +147,190 @@
   border-bottom: 1px solid var(--pt-hair);
 }
 
+/* the column rules: vertical, drawn per row from row edge to row edge,
+   so consecutive rows join seamlessly and cross the horizontal rules
+   without doubling them; the caps spine, restated */
+.sl-law::before,
+.sl-law::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--pt-hair-2);
+  pointer-events: none;
+}
+
+.sl-law::before {
+  left: calc(48px + var(--sl-law-gap) / 2);
+}
+
+.sl-law::after {
+  right: calc(240px + var(--sl-law-gap) / 2);
+}
+
+/* the number's line-height matches the text's first line (15px * 1.6)
+   so the two align without baseline-gridding the figure cell */
 .sl-law-n {
   font-family: var(--pt-mono);
   font-size: 12px;
+  line-height: 24px;
   color: var(--pt-ink-3);
 }
 
-.sl-law p {
+.sl-law-text {
   max-width: 62ch;
   font-size: 15px;
   line-height: 1.6;
   color: var(--pt-ink-2);
 }
 
-.sl-law b {
+.sl-law-text b {
   font-weight: 500;
   color: var(--pt-ink);
 }
 
-.sl-law code {
+.sl-law-text code {
   font-family: var(--pt-mono);
   font-size: 0.88em;
   letter-spacing: 0;
+}
+
+/* ---------- the law figures: house diagram voice ---------- */
+
+.sl-law-fig {
+  margin-top: 2px;
+}
+
+.sl-fig {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* line law: every structural stroke is the hairline token, held at a
+   true 1px whatever the svg scales to */
+.sl-fig-stroke {
+  fill: none;
+  stroke: var(--pt-hair);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* the one active element per drawing wears the working blue */
+.sl-fig-accent {
+  fill: none;
+  stroke: var(--sl-accent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.sl-fig-accent-fill {
+  fill: var(--sl-accent);
+  stroke: none;
+}
+
+/* hatched regions: fill only where the boundary is already drawn by a
+   neighboring stroke, so no rule doubles inside a figure */
+.sl-fig-hatch {
+  stroke: none;
+}
+
+/* a hatched region that owns its boundary, because nothing else draws it */
+.sl-fig-hatch-box {
+  stroke: var(--pt-hair);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.sl-fig-hatchline {
+  stroke: var(--pt-hatch);
+  stroke-width: 1;
+}
+
+/* dashed strokes never carry non-scaling-stroke: law 02, dashes must
+   stay in object space or Chromium recomputes them per screen pixel */
+.sl-fig-dash-even {
+  fill: none;
+  stroke: var(--sl-accent);
+  stroke-width: 1;
+  stroke-dasharray: 5 4.5;
+}
+
+.sl-fig-dash-broken {
+  fill: none;
+  stroke: var(--pt-ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 10 2 1 8 15 1 4 7;
+}
+
+.sl-fig-rule-dashed {
+  fill: none;
+  stroke: var(--pt-ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+/* the fan lines of the unsplit module: weight is the argument */
+.sl-fig-heavy {
+  fill: none;
+  stroke: var(--pt-ink-3);
+  stroke-width: 1.8;
+  vector-effect: non-scaling-stroke;
+}
+
+/* wrong-mark x strokes */
+.sl-fig-mark {
+  fill: none;
+  stroke: var(--pt-ink-2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* copy bars: quieter than structure, so the read line stays loudest */
+.sl-fig-copybar {
+  fill: none;
+  stroke: var(--pt-ink-4);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.sl-fig-dot {
+  fill: var(--pt-ink-2);
+  stroke: none;
+}
+
+/* ink enters a figure only as micro-labels */
+.sl-fig-label {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  fill: var(--pt-ink-3);
+}
+
+.sl-fig-label.is-accent {
+  fill: var(--sl-accent);
+}
+
+.sl-fig-mono {
+  font-family: var(--pt-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.01em;
+  fill: var(--pt-ink-3);
+}
+
+.sl-fig-mono.is-accent {
+  fill: var(--sl-accent);
+}
+
+/* real words, where the figure argues about text itself */
+.sl-fig-word {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  fill: var(--pt-ink-2);
 }
 
 @media (max-width: 760px) {
@@ -172,5 +344,23 @@
 
   .sl-law {
     grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .sl-law::before {
+    left: calc(40px + var(--sl-law-gap) / 2);
+  }
+
+  .sl-law::after {
+    display: none;
+  }
+
+  /* the figure drops below the text, full row width, height capped */
+  .sl-law-fig {
+    grid-column: 1 / -1;
+    margin-top: 14px;
+  }
+
+  .sl-fig {
+    max-height: 170px;
   }
 }

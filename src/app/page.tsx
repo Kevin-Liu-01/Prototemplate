@@ -22,12 +22,12 @@ const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], vari
 export const metadata = {
   title: 'Prototemplate',
   description:
-    'Prototype × template — the working index of General Translation redesign directions.',
+    'Prototype × template: the working index of General Translation redesign directions.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
   openGraph: {
     title: 'Prototemplate',
     description:
-      'Prototype × template — the working index of General Translation redesign directions.',
+      'Prototype × template: the working index of General Translation redesign directions.',
     type: 'website',
     images: [{ url: '/og.png', width: 2400, height: 1260, alt: 'prototype × template' }],
   },
@@ -35,7 +35,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Prototemplate',
     description:
-      'Prototype × template — the working index of General Translation redesign directions.',
+      'Prototype × template: the working index of General Translation redesign directions.',
     images: ['/og.png'],
   },
 };
@@ -108,17 +108,17 @@ export default function IndexPage() {
               <p>
                 This site is the working file of a redesign: every direction I tried, the tooling
                 that judged them, and the three full sites that came out the other end. Everything
-                here is live — real pages, not mockups.
+                here is live: real pages, not mockups.
               </p>
               <p>
-                The current site grew the way most startup sites do — section by section, launch
+                The current site grew the way most startup sites do: section by section, launch
                 by launch, each addition reasonable and the whole slowly losing its argument. I
                 wanted to stop patching and ask the question properly: what should this company
                 look like when the answer is built from the ground up?
               </p>
               <p>
                 So instead of one redesign, I built many, made them compete, and built the tooling
-                to judge them — down to a pixel auditor that walks every rendered line on every
+                to judge them, down to a pixel auditor that walks every rendered line on every
                 page and fails a round on a single doubled rule.
               </p>
             </div>
@@ -244,7 +244,7 @@ export default function IndexPage() {
               <div>
                 <h2>Walk the whole thing</h2>
                 <p>
-                  The full deck — the storyboard, the principles, every live prototype, and the
+                  The full deck: the storyboard, the principles, every live prototype, and the
                   scoreboard that picked the winners.
                 </p>
                 <Link className='pt-feature-cta' href='/present'>
@@ -271,7 +271,7 @@ export default function IndexPage() {
             <p>
               The three strongest ideas grew into complete sites: a home built on the toolchain system,
               each with its own take on the hero terminal, over an enterprise page built on the
-              singularity gate. The two faces of each site are overlaid below — drag the seam to
+              singularity gate. The two faces of each site are overlaid below. Drag the seam to
               sweep between them.
             </p>
             <p className='pt-site-links'>

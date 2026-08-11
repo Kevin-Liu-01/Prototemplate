@@ -42,14 +42,14 @@ function DirectionOptions() {
       <optgroup label='Full sites'>
         {SITES.map((d) => (
           <option key={d.slug} value={d.slug}>
-            {d.label} — {d.name}
+            {d.label} · {d.name}
           </option>
         ))}
       </optgroup>
       <optgroup label='Explorations'>
         {EXPLORATIONS.map((d) => (
           <option key={d.slug} value={d.slug}>
-            {d.label} — {d.name}
+            {d.label} · {d.name}
           </option>
         ))}
       </optgroup>
@@ -138,7 +138,7 @@ export default function CompareRig() {
         <div className='pt-cmp-lede'>
           <h1>Compare</h1>
           <p>
-            Any two directions, live in one viewport — scroll either pane and the other follows
+            Any two directions, live in one viewport. Scroll either pane and the other follows
             in proportion.
           </p>
         </div>
@@ -193,7 +193,7 @@ export default function CompareRig() {
                 onLoad={() => wire(key)}
                 ref={frames[key]}
                 src={`/d/${pair[key]}?chrome=0`}
-                title={`${getDirection(pair[key])?.name ?? pair[key]} — live`}
+                title={`${getDirection(pair[key])?.name ?? pair[key]} · live`}
               />
             </div>
           </figure>

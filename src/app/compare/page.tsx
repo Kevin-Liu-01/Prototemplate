@@ -12,7 +12,7 @@ const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--fo
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
 
 export const metadata = {
-  title: 'Compare — Prototemplate',
+  title: 'Compare · Prototemplate',
   description:
     'Any two redesign directions, live and side by side, scrolling in lockstep.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },

@@ -299,13 +299,13 @@ export default function PrototemplateHero() {
             ))}
           </span>
         </span>
-        <span className='pt-src-spec'>proto·type — serif · the working model</span>
+        <span className='pt-src-spec'>proto·type: serif · the working model</span>
       </div>
 
       {/* the grotesk, below the line */}
       <div className='pt-src is-template' data-pt-template aria-hidden>
         <span className='pt-face-grot'>template</span>
-        <span className='pt-src-spec'>temp·late — grotesk · the reusable form</span>
+        <span className='pt-src-spec'>temp·late: grotesk · the reusable form</span>
       </div>
 
       {/* the destination: empty text; the parked words fill it for real */}
