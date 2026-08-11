@@ -1,8 +1,8 @@
 /**
- * The brand attribute scales — each pair of opposing characteristics as a
- * ruled track with one seated dot: where the identity sits, read from the
- * completed system. The chosen pole carries the ink; the note under a track
- * says why. One hairline per row, one dot per truth.
+ * The brand attribute scales: each pair of opposing characteristics as a
+ * ruled track with one seated dot marking where the identity sits, read
+ * from the completed system. The chosen pole carries the ink; the note
+ * under a track says why. One hairline per row, one dot per truth.
  */
 type ScaleRow = {
   left: string;

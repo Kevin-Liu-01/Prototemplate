@@ -7,7 +7,7 @@
 // Usage: node gallery-shoot.mjs <out-dir> [--flagship-only|--variants-only]
 //   REDESIGN_BASE overrides the dev server (default http://localhost:3006).
 import { chromium } from 'playwright-core';
-import { mkdirSync, writeFileSync } from 'fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 
 const EXEC =
@@ -133,6 +133,13 @@ if (mode !== '--flagship-only') {
   }
 }
 
+// partial modes keep the other half of an existing manifest, so a
+// flagship-only re-shoot never erases the variant roster (and vice versa)
+try {
+  const prior = JSON.parse(readFileSync(path.join(outDir, 'manifest.json'), 'utf8'));
+  if (mode === '--flagship-only' && !manifest.variants.length) manifest.variants = prior.variants ?? [];
+  if (mode === '--variants-only' && !manifest.sections.length) manifest.sections = prior.sections ?? [];
+} catch {}
 writeFileSync(path.join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
 console.log(JSON.stringify({ tiles: manifest.sections.length, variants: manifest.variants.length, misses }, null, 2));
 await browser.close();

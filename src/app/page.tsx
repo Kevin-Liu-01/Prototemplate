@@ -127,10 +127,10 @@ export default function IndexPage() {
                 from the diagram's edges to the section's own — the nameplate's
                 frame grammar, one more time. Inside, the mass visibly narrows:
                 the field of everything built, hatched shoulders carrying away
-                what fell, down to the five windows fanned like the captures
+                what fell, down to the three windows fanned like the captures
                 further down the page. */}
             <figure
-              aria-label='The distillation: more than twenty directions built, thirteen survived review, five became full sites.'
+              aria-label='The distillation: more than twenty directions built, thirteen survived review, three became full sites.'
               className='pt-opener-fig'
               role='img'
             >
@@ -267,9 +267,9 @@ export default function IndexPage() {
           <div className='pt-hatch' aria-hidden='true' />
 
           <section className='pt-sec pt-post-sec pt-sites-intro'>
-            <h2>The five sites</h2>
+            <h2>The three sites</h2>
             <p>
-              The strongest ideas grew into complete sites: a home built on the toolchain system,
+              The three strongest ideas grew into complete sites: a home built on the toolchain system,
               each with its own take on the hero terminal, over an enterprise page built on the
               singularity gate. The two faces of each site are overlaid below — drag the seam to
               sweep between them.
@@ -277,7 +277,7 @@ export default function IndexPage() {
             <p className='pt-site-links'>
               <Link href='/compare'>Compare any two, live →</Link>
             </p>
-            {/* the five captures fanned at the right edge, absolutely placed
+            {/* the three captures fanned at the right edge, absolutely placed
                 and cut off by the section's own corner */}
             <span aria-hidden className='pt-sites-fan'>
               {SITES.map((site, i) => (

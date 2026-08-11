@@ -1087,15 +1087,42 @@
   border-top: 0;
 }
 
-/* ---- the five sites: title, one line, the seam ---- */
+/* ---- the three sites: title, one line, the seam. Each site is a
+   .pt-sec, so its own border-bottom draws every horizontal rule —
+   a border-top here would double against the section above ---- */
 
 .pt-site {
   padding: 30px var(--pt-gut) 40px;
-  border-top: 1px solid var(--pt-hair);
 }
 
-.pt-sites .pt-site:first-child {
-  border-top: 0;
+/* three columns from 980 up: hairline gutters between, the intro's
+   border-bottom as the shared top rule. The signature stretches so
+   all three rigs sit on one line and the links rows share the floor. */
+@media (min-width: 980px) {
+  .pt-sites {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pt-sites .pt-site {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pt-sites .pt-site + .pt-site {
+    border-left: 1px solid var(--pt-hair);
+  }
+
+  .pt-sites .pt-site > p:first-of-type {
+    flex: 1 0 auto;
+  }
+
+  /* at column width the 16/10 crop starves the capture — the grid
+     cut runs taller, with a floor so the seam tab never crowds */
+  .pt-sites .pt-compare-stage {
+    aspect-ratio: 4 / 3;
+    min-height: 220px;
+  }
 }
 
 .pt-site h3 {
@@ -1636,7 +1663,7 @@
   display: block;
 }
 
-/* ---- the five captures, fanned off the section's corner ---- */
+/* ---- the three captures, fanned off the section's corner ---- */
 .pt-sites-intro {
   position: relative;
   overflow: clip;
@@ -1652,16 +1679,17 @@
 .pt-sites-fan-shot {
   position: absolute;
   /* the fan RISES toward the front — later windows step up-right, so the
-     stack reads as an ascending / rather than a descending \ */
-  top: calc(50px + (4 - var(--i)) * 20px);
-  right: calc((4 - var(--i)) * 34px + 8px);
+     stack reads as an ascending / rather than a descending \. The step
+     math is keyed to the THREE shots: the last one hugs the corner */
+  top: calc(50px + (2 - var(--i)) * 20px);
+  right: calc((2 - var(--i)) * 34px + 8px);
   width: 300px;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border: 1px solid var(--pt-hair);
   background: var(--pt-white);
   /* the bottom-left window leads the stack; each one behind tucks up-right */
-  z-index: calc(5 - var(--i));
+  z-index: calc(3 - var(--i));
 }
 
 .pt-sites-fan-shot img {

@@ -1140,6 +1140,8 @@ export default function TranslateWindow({
       let pos = 0;
       let active = 0;
       let sliding = false;
+      /* the click-to-centre tween, held so a pointer down can kill it */
+      let slide: gsap.core.Tween | null = null;
       const wrap = (v: number) => ((v % runWidth) + runWidth) % runWidth;
       const setX = () => gsap.set(trackEl, { x: -pos });
       const chipCenter = (i: number) => (lefts[i] ?? 0) + (widths[i] ?? 0) / 2;
@@ -1162,6 +1164,16 @@ export default function TranslateWindow({
           }
         }
         return best;
+      };
+      /* Sets the active locale to the chip nearest the centre line, and
+         only on a change. The drift, a drag and a flick all report
+         crossings through here. */
+      const syncActive = () => {
+        const i = centerIdx();
+        if (i === active) return;
+        active = i;
+        const loc = BELT_LOCS[i];
+        if (loc) setPloc(loc);
       };
 
       /* es owns the first fold: seated on centre before first paint. The
@@ -1212,7 +1224,7 @@ export default function TranslateWindow({
           pos = fromP;
           setX();
           const dial = { v: pos };
-          gsap.to(dial, {
+          slide = gsap.to(dial, {
             v: toP,
             duration: 0.7,
             ease: 'power2.inOut',
@@ -1229,10 +1241,166 @@ export default function TranslateWindow({
         },
       };
 
+      /* ---- dragging the belt ----
+         A pointer down on the belt moves the track 1:1 with the pointer and
+         reports crossings as chips pass the centre; release throws the belt
+         on at the pointer's last velocity. Travel past DRAG_SLOP makes the
+         gesture a drag, which cancels the click that closes it — releasing
+         over a chip does not also pick it. Under the slop the gesture stays
+         a tap and pickChip runs. The horizontal axis is the belt's only
+         while the sheet gives it touch-action: pan-y; without that the
+         browser claims a touch drag and sends pointercancel instead. */
+      const DRAG_SLOP = 4;
+      /* `id` is the owning pointer: the move/up/cancel listeners sit on the
+         window, so every pointer on the page reaches them. A drag answers
+         to the one that started it — a second finger landing on the strip
+         is ignored rather than re-aiming the gesture at its own origin. */
+      let drag: {
+        id: number;
+        x: number;
+        pos: number;
+        moved: boolean;
+      } | null = null;
+      let flick: gsap.core.Tween | null = null;
+      /* the last pointer sample: px/ms, and the clock it landed on */
+      let vel = 0;
+      let velX = 0;
+      let velT = 0;
+      /* set when a drag ends; cancels the one click that follows it */
+      let swallow = false;
+
+      /* the belt moves ONCE PER FRAME, not once per event: pointermove
+         outruns the display on 120Hz trackpads and on touch streams the
+         browser has coalesced, and each write costs a transform plus a
+         centre scan plus — on a crossing — a React render. Velocity still
+         samples every event; only the write is deferred. */
+      let dragDx = 0;
+      let dragRaf = 0;
+      const dragFrame = () => {
+        dragRaf = 0;
+        if (!drag) return;
+        pos = wrap(drag.pos - dragDx);
+        setX();
+        syncActive();
+      };
+
+      const dragMove = (e: PointerEvent) => {
+        if (!drag || e.pointerId !== drag.id) return;
+        const dx = e.clientX - drag.x;
+        if (!drag.moved) {
+          if (Math.abs(dx) < DRAG_SLOP) return;
+          drag.moved = true;
+          beltEl.classList.add('is-dragging');
+        }
+        const now = performance.now();
+        if (now > velT) vel = (e.clientX - velX) / (now - velT);
+        velX = e.clientX;
+        velT = now;
+        dragDx = dx;
+        if (!dragRaf) dragRaf = requestAnimationFrame(dragFrame);
+      };
+
+      /* `throwIt` is false for a CANCELLED pointer: the belt stops where the
+         stream broke. A cancel is the browser taking the gesture over — on
+         touch, a swipe with enough vertical to be a page scroll but more
+         than DRAG_SLOP of horizontal first — and the velocity at that
+         moment is real, so flicking on it would spin the belt and retype
+         the mock under a reader who is only scrolling the page. */
+      const dragEnd = (throwIt: boolean) => {
+        if (!drag) return;
+        /* the pending frame carries the last sample: flush it, or the belt
+           settles a pointermove short of where the pointer left it */
+        if (dragRaf) {
+          cancelAnimationFrame(dragRaf);
+          dragFrame();
+        }
+        const { moved } = drag;
+        drag = null;
+        swallow = moved;
+        beltEl.classList.remove('is-dragging');
+        window.removeEventListener('pointermove', dragMove);
+        window.removeEventListener('pointerup', dragUp);
+        window.removeEventListener('pointercancel', dragCancel);
+        /* Release does not holdBelt(). The belt resumes full speed; only
+           the paths that name a locale (pickChip, pickStack, pickView)
+           hold. */
+        /* a sample older than 90ms, or slower than 0.15px/ms, is a pointer
+           that stopped before it lifted: no throw */
+        if (!throwIt || !moved || reduced) return;
+        if (performance.now() - velT > 90 || Math.abs(vel) < 0.15) return;
+        const dial = { v: pos };
+        flick = gsap.to(dial, {
+          v: pos - gsap.utils.clamp(-900, 900, vel * 190),
+          duration: 0.8,
+          ease: 'power2.out',
+          onUpdate: () => {
+            pos = wrap(dial.v);
+            setX();
+            syncActive();
+          },
+        });
+      };
+
+      /* only the owning pointer closes the drag; any other pointer's
+         up/cancel passes through */
+      const dragUp = (e: PointerEvent) => {
+        if (drag && e.pointerId === drag.id) dragEnd(true);
+      };
+      const dragCancel = (e: PointerEvent) => {
+        if (drag && e.pointerId === drag.id) dragEnd(false);
+      };
+
+      const dragStart = (e: PointerEvent) => {
+        /* a drag already in hand keeps the belt: the second finger of a
+           pinch must not seize it */
+        if (e.button > 0 || drag) return;
+        /* pointer input pre-empts both tweens that write pos */
+        flick?.kill();
+        flick = null;
+        slide?.kill();
+        slide = null;
+        sliding = false;
+        swallow = false;
+        drag = { id: e.pointerId, x: e.clientX, pos, moved: false };
+        vel = 0;
+        velX = e.clientX;
+        velT = performance.now();
+        window.addEventListener('pointermove', dragMove);
+        window.addEventListener('pointerup', dragUp);
+        window.addEventListener('pointercancel', dragCancel);
+      };
+
+      const dragClick = (e: MouseEvent) => {
+        if (!swallow) return;
+        swallow = false;
+        /* detail 0 is a keyboard-synthesized click, never a drag's tail. A
+           drag released outside the belt fires no click, so swallow can
+           still be set when Enter reaches a focused chip; that must pick. */
+        if (e.detail === 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      beltEl.addEventListener('pointerdown', dragStart);
+      beltEl.addEventListener('click', dragClick, true);
+
+      const dropDrag = () => {
+        drag = null;
+        if (dragRaf) cancelAnimationFrame(dragRaf);
+        dragRaf = 0;
+        flick?.kill();
+        beltEl.removeEventListener('pointerdown', dragStart);
+        beltEl.removeEventListener('click', dragClick, true);
+        window.removeEventListener('pointermove', dragMove);
+        window.removeEventListener('pointerup', dragUp);
+        window.removeEventListener('pointercancel', dragCancel);
+      };
+
       if (reduced) {
         /* belt static, locale fixed — the roster still reads, chips still
-           work (instant recentre, instant swap) */
+           work (instant recentre, instant swap), dragging still moves it */
         return () => {
+          dropDrag();
           beltApi.current = null;
         };
       }
@@ -1271,6 +1439,8 @@ export default function TranslateWindow({
       const tick = (_time: number, deltaMs: number) => {
         if (
           !onscreen ||
+          drag ||
+          flick?.isActive() ||
           sliding ||
           hover ||
           pinnedRef.current ||
@@ -1285,12 +1455,7 @@ export default function TranslateWindow({
         const crawl = Date.now() < beltHold.current ? 0.22 : 1;
         pos = wrap(pos + (speed * crawl * deltaMs) / 1000);
         setX();
-        const i = centerIdx();
-        if (i !== active) {
-          active = i;
-          const loc = BELT_LOCS[i];
-          if (loc) setPloc(loc);
-        }
+        syncActive();
       };
       gsap.ticker.add(tick);
 
@@ -1329,6 +1494,7 @@ export default function TranslateWindow({
 
       return () => {
         gsap.ticker.remove(tick);
+        dropDrag();
         io.disconnect();
         beltEl.removeEventListener('pointerenter', over);
         beltEl.removeEventListener('pointerleave', out);
@@ -1359,6 +1525,13 @@ export default function TranslateWindow({
      own instant swap. */
   const shown = useRef<Partial<Record<RwKey, string>>>({});
   const prevLoc = useRef<PreviewLoc>(ploc);
+  /* the swap in flight. useGSAP does not revert on a dependency change, so
+     without this every locale change STACKS another timeline on the same
+     text nodes: at drag/flick speed the crossings arrive far inside the
+     0.55s swap, and N timelines type over each other at N× the cost. One
+     runs at a time; the killed one leaves its partial in `shown`, which is
+     exactly what the next swap deletes from. */
+  const rewrite = useRef<gsap.core.Timeline | null>(null);
   useGSAP(
     () => {
       const scope = root.current;
@@ -1388,10 +1561,12 @@ export default function TranslateWindow({
 
       /* the text-hugging marks land on new corners when the swap
          settles — re-file them against the cut once the typing is done */
+      rewrite.current?.kill();
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
         onComplete: reconcileMarks,
       });
+      rewrite.current = tl;
       RW_LINES.forEach(({ key, read }, i) => {
         const nodes = lineEls(key);
         if (nodes.length === 0) return;

@@ -1,9 +1,11 @@
 /* ============================================================
-   ANATOMY WALL — the flagship dissected. Nine section rows,
-   each a 4-up strip of theme-locked captures (desktop light /
-   dark, mobile light / dark) on hairline plates. Tiles keep the
-   capture's true proportions up to the strip's cap; grounds are
-   fixed per capture — the page theme never swaps a tile.
+   ANATOMY WALL — the flagship dissected, as a gallery collage.
+   Thirty-six theme-locked captures interlock on one 12-column
+   unit grid (row unit = 0.625 column units); each section's four
+   states sit as one solid rectangle, and the nine rectangles
+   tessellate the 12×36 field with no holes. Hovering any capture
+   lights its whole section; grounds are fixed per capture — the
+   page theme never swaps a tile.
    ============================================================ */
 
 /* the head repeats the post voice so the block survives being
@@ -27,93 +29,61 @@
   color: var(--pt-ink-2);
 }
 
-.aw-rows {
+.aw-wall {
+  padding: 4px var(--pt-gut) 30px;
   border-bottom: 1px solid var(--pt-hair);
 }
 
-.aw-row {
+/* rows are 1fr against a fixed field ratio (12u × 22.5u), which
+   keeps every cell's proportion stable at any rail width */
+.aw-collage {
+  --aw-gap: 3px;
+  --aw-accent: #2f5ce0;
+  --aw-accent-ink: #ffffff;
   display: grid;
-  grid-template-columns: 170px minmax(0, 1fr);
-  gap: clamp(14px, 2.4vw, 30px);
-  align-items: start;
-  padding: 20px var(--pt-gut) 24px;
-  border-top: 1px solid var(--pt-hair);
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(36, 1fr);
+  grid-auto-flow: dense;
+  gap: var(--aw-gap);
+  aspect-ratio: 12 / 22.5;
 }
 
-/* the head's pt-sec already drew the seam — the first row yields */
-.aw-rows .aw-row:first-child {
-  border-top: 0;
+[data-theme='dark'] .aw-collage {
+  --aw-accent: #86a8ff;
+  --aw-accent-ink: #070707;
 }
 
-.aw-row-label {
-  display: grid;
-  gap: 6px;
-}
-
-.aw-n {
-  font-family: var(--pt-mono);
-  font-size: 12px;
-  color: var(--pt-ink-3);
-}
-
-.aw-row-label h3 {
-  font-family: var(--pt-lausanne);
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: normal;
-  color: var(--pt-ink);
-}
-
-/* the strip owns the horizontal scroll — the page body never does */
-.aw-strip {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(10px, 1.6vw, 16px);
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-
-.aw-tile {
-  flex: none;
+/* placement rides on custom properties set inline, so the mobile
+   override below can still win the cascade */
+.aw-cell {
+  --aw-on: 0;
+  position: relative;
+  grid-column: var(--aw-c);
+  grid-row: var(--aw-r);
   margin: 0;
-}
-
-.aw-tile.is-desk {
-  width: 300px;
-}
-
-.aw-tile.is-mob {
-  width: 108px;
-}
-
-/* tall captures crop at the cap, top-anchored, like every capture
-   frame on the page; short ones show whole at true ratio */
-.aw-plate {
-  width: 100%;
   overflow: hidden;
   border: 1px solid var(--pt-hair);
+  outline: 1px solid transparent;
   background-clip: padding-box;
-}
-
-.aw-tile.is-desk .aw-plate {
-  max-height: 200px;
-}
-
-.aw-tile.is-mob .aw-plate {
-  max-height: 234px;
+  transition:
+    opacity 0.18s ease,
+    filter 0.18s ease,
+    outline-color 0.18s ease;
 }
 
 /* grounds are the capture's own, not the page's — light stays white
    in the dark theme, dark stays ink in the light */
-.aw-tile.is-light .aw-plate {
+.aw-cell.is-light {
   background-color: #ffffff;
 }
 
-.aw-tile.is-dark .aw-plate {
+.aw-cell.is-dark {
   background-color: #070707;
 }
 
-.aw-plate img {
+/* tall sources crop at the cell, top-anchored, like every capture
+   frame on the page */
+.aw-cell img {
   display: block;
   width: 100%;
   height: 100%;
@@ -122,17 +92,14 @@
   -webkit-user-drag: none;
 }
 
-/* a capture that hasn't been shot yet holds its frame as hatched
+/* a capture that hasn't been shot yet holds its cell as hatched
    ground — the house texture for absence, in the tile's own theme */
-.aw-tile.is-desk .aw-plate.is-missing {
-  aspect-ratio: 8 / 5;
+.aw-missing {
+  width: 100%;
+  height: 100%;
 }
 
-.aw-tile.is-mob .aw-plate.is-missing {
-  aspect-ratio: 6 / 13;
-}
-
-.aw-tile.is-light .aw-plate.is-missing {
+.aw-cell.is-light .aw-missing {
   background-image: repeating-linear-gradient(
     -45deg,
     transparent 0,
@@ -142,7 +109,7 @@
   );
 }
 
-.aw-tile.is-dark .aw-plate.is-missing {
+.aw-cell.is-dark .aw-missing {
   background-image: repeating-linear-gradient(
     -45deg,
     transparent 0,
@@ -152,32 +119,76 @@
   );
 }
 
-.aw-tile figcaption {
-  margin-top: 7px;
+/* the group label, on the cluster's top-left tile — revealed only
+   while its section is lit */
+.aw-chip {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px 2px;
   font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
   font-size: 10.5px;
   letter-spacing: 0.08em;
-  color: var(--pt-ink-3);
   white-space: nowrap;
+  background: var(--aw-accent);
+  color: var(--aw-accent-ink);
+  opacity: var(--aw-on);
+  transition: opacity 0.18s ease;
+  pointer-events: none;
 }
 
+/* ---- group hover, pure CSS: any hovered capture dims the field,
+   and the hovered key's own rule restores and lifts its four ---- */
+
+.aw-collage:has(.aw-cell:hover) .aw-cell {
+  opacity: 0.38;
+}
+
+.aw-collage:has([data-g='hero']:hover) [data-g='hero'],
+.aw-collage:has([data-g='customers']:hover) [data-g='customers'],
+.aw-collage:has([data-g='story']:hover) [data-g='story'],
+.aw-collage:has([data-g='developer']:hover) [data-g='developer'],
+.aw-collage:has([data-g='locadex']:hover) [data-g='locadex'],
+.aw-collage:has([data-g='context']:hover) [data-g='context'],
+.aw-collage:has([data-g='global']:hover) [data-g='global'],
+.aw-collage:has([data-g='deploy']:hover) [data-g='deploy'],
+.aw-collage:has([data-g='footer']:hover) [data-g='footer'] {
+  --aw-on: 1;
+  z-index: 1;
+  opacity: 1;
+  outline-color: var(--aw-accent);
+  filter: brightness(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aw-cell,
+  .aw-chip {
+    transition: none;
+  }
+}
+
+/* ≤760px: the tessellation stands down — each section reads as its
+   own stacked cluster, desk pair full-width over the mob pair side
+   by side; the page never scrolls sideways */
 @media (max-width: 760px) {
-  .aw-row {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 12px;
+  .aw-collage {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: none;
+    aspect-ratio: auto;
   }
 
-  .aw-row-label {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
+  .aw-collage .aw-cell {
+    grid-column: auto;
+    grid-row: auto;
   }
 
-  /* the strip bleeds to the rails so the scroll run uses the full seam */
-  .aw-strip {
-    margin-inline: calc(-1 * var(--pt-gut));
-    padding-inline: var(--pt-gut);
-    scroll-padding-inline: var(--pt-gut);
+  .aw-collage .aw-cell.is-desk {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 10;
+  }
+
+  .aw-collage .aw-cell.is-mob {
+    aspect-ratio: 10 / 19;
   }
 }

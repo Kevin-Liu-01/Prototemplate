@@ -1,16 +1,16 @@
 import { GT_OUTLINE_BOX, GT_OUTLINE_PATHS, GT_OUTLINE_VIEWBOX } from './gt-outline';
 
 /**
- * The brand opener's specimen: the actual GT monogram — its traced
- * contours, not a typeset stand-in — drawn giant in dotted outline and
- * measured by its own layout guides: dashed rules seated exactly on the
- * mark's cap, baseline, and side bearings, extending to the figure's
- * edges. The nameplate hero's crop-frame grammar, worn by the mark —
- * and entirely still: the sheet is the statement, no arrival, no march.
+ * The brand opener's specimen: the actual GT monogram (its traced
+ * contours, not a typeset stand-in) drawn giant in dotted outline and
+ * measured by its own layout guides. The dashed rules seat exactly on the
+ * mark's cap, baseline, and side bearings and extend to the figure's
+ * edges. The nameplate hero's crop-frame grammar, worn by the mark, and
+ * entirely still: the sheet is the statement, no arrival, no march.
  */
 const VB = GT_OUTLINE_VIEWBOX.split(' ').map(Number) as [number, number, number, number];
 
-/** the guides' seats, from the traced bounding box — knowable at build */
+/** the guides' seats, from the traced bounding box, knowable at build */
 const GUIDE = {
   top: ((GT_OUTLINE_BOX.y - VB[1]) / VB[3]) * 100,
   bottom: ((GT_OUTLINE_BOX.y + GT_OUTLINE_BOX.h - VB[1]) / VB[3]) * 100,

@@ -66,8 +66,26 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  /* the belt takes horizontal pointer gestures (its drag), the browser
+     keeps vertical page scroll and pinch-zoom. pan-y is required, not
+     cosmetic: without it the browser claims a touch drag and cancels the
+     pointer stream. pinch-zoom is named explicitly because listing any
+     value drops the rest — bare pan-y would make the strip the one place
+     on the page a zooming reader cannot pinch.
+     user-select keeps the chip labels from selecting under a drag. */
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+
+/* is-dragging rides the belt for the length of a drag. The chips set their
+   own cursor, so the rule has to name them too. */
+.toolchain-root .v0-tw .v0-tw-belt.is-dragging,
+.toolchain-root .v0-tw .v0-tw-belt.is-dragging button {
+  cursor: grabbing;
 }
 
 /* the track keeps the shared .tct-tabs chip grammar; only its geometry
