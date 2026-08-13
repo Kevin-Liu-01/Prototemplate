@@ -14,7 +14,7 @@ const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--fo
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
 
 export const metadata = {
-  title: 'Brand — Prototemplate',
+  title: 'Brand · Prototemplate',
   description:
     'General Translation’s identity, laid out: the name, the idea, the character, the mark, color, type, language as material, and the completed reference.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
@@ -28,6 +28,7 @@ const NAMES = [
   ['gt-next · gt-react · gt-vue · gt-node · gt-python', 'the framework packages'],
   ['Locadex', 'the AI agent product'],
   ['generaltranslation.com', 'the domain, with gt.sh, generaltranslation.ai/.dev, locadex.com/.ai/.dev'],
+  ['glyphfield.com', 'the companion tooling site (shader library, animation studio)'],
 ] as const;
 
 /** The signature devices, each with its one-line jurisdiction. */
@@ -125,6 +126,10 @@ export default function BrandPage() {
               can&rsquo;t: consistent, high-quality translation across a whole business,
               integrated in an afternoon.
             </p>
+            <p>
+              Two registers, one family: the open source should feel community-owned; the
+              platform should feel enterprise-grade.
+            </p>
             <ul className='pt-post-rules'>
               <li>
                 Engineering-first. Built by people with deep technical roots, for the
@@ -141,6 +146,10 @@ export default function BrandPage() {
               <li>
                 Cosmopolitan. Urbane, sophisticated, connecting the world and its languages.
                 Language is our material, not just our market.
+              </li>
+              <li>
+                Hand-crafted. The brand reads as made by people who care, not assembled from
+                a template.
               </li>
             </ul>
           </section>
@@ -165,10 +174,13 @@ export default function BrandPage() {
             </p>
             <h3>Voice</h3>
             <p>
-              Declarative, precise, quietly confident. Captions state laws: &ldquo;the ground
-              is the seam.&rdquo; Sentences carry their own weight, with no exclamation marks
-              doing the work, no hedging, and no marketing adjectives where a fact would do.
-              Wit is allowed as precision, never as decoration.
+              Measured, declarative, precise, quietly confident. Captions state laws:
+              &ldquo;the ground is the seam.&rdquo; Short sentences carry their own weight,
+              with no exclamation marks doing the work, no hedging, and no marketing
+              adjectives where a fact would do. Wit is allowed as precision, never as
+              decoration. Technical terms are used precisely and sparingly. The register sits
+              closer to a well-written spec or a good engineering blog than to marketing
+              copy: product focus over performative marketing.
             </p>
             <div className='ptb-voice'>
               <div className='ptb-voice-row is-yes'>
@@ -206,13 +218,18 @@ export default function BrandPage() {
               </figure>
               <figure className='ptb-mark is-paper'>
                 <img alt='The Locadex mark' src='/brand/locadex-mark.svg' />
-                <figcaption>Locadex — the agent&rsquo;s own mark</figcaption>
+                <figcaption>Locadex, the agent&rsquo;s own mark</figcaption>
               </figure>
             </div>
             <p>
               At text size the wordmark sits inline with prose, at the cap height of the line
               it lives in, the way the Dossier&rsquo;s hero sets &ldquo;GT builds full-stack
               infrastructure&hellip;&rdquo;.
+            </p>
+            <p>
+              The identity must survive compression: a favicon, a CLI banner, a README, a
+              syntax-highlighted code block. Developers meet the brand in a terminal as often
+              as on a website.
             </p>
           </section>
 
@@ -265,8 +282,17 @@ export default function BrandPage() {
               the text companion for long-form reading, the real rsms.me variable Inter with
               the optical-size axis, not the Google Fonts build. Monospace is an{' '}
               <em>instrument</em> voice, not a brand voice. It appears where code artifacts
-              appear (tokens, terminals, file paths) and nowhere else. The serif and grotesk
-              on this page are the lab&rsquo;s own stationery, not the product brand.
+              appear (tokens, terminals, file paths, small labels in technical diagrams and
+              product UI) and nowhere else, and even those labels are avoided where possible.
+              The serif and grotesk on this page are the lab&rsquo;s own stationery, not the
+              product brand.
+            </p>
+            <p>
+              The identity is multilingual-first. Headlines, UI, and marks must hold up in
+              CJK, RTL, and Indic scripts as well as in Latin; a wordmark or layout that only
+              works in English contradicts the company. Switzer plus Inter is the working
+              pair, not a final answer. Alternatives are open if the licensed face carries
+              credible CJK and RTL coverage, or brings well-matched companion faces.
             </p>
             <div className='ptb-type'>
               <div className='ptb-face'>
@@ -306,7 +332,8 @@ export default function BrandPage() {
             </div>
             <p>
               A locale is named one way, everywhere: flag print first, code in the
-              surface&rsquo;s own mono.
+              surface&rsquo;s own mono. The prints are SVG, never emoji; a flag is a
+              functional data chip, never decoration.
             </p>
             <div className='ptb-pills'>
               {PILL_LOCS.map((loc) => (
@@ -378,6 +405,22 @@ export default function BrandPage() {
               point solutions, GT is usage-based and owns the whole stack, so it can own the
               whole experience.
             </p>
+            <h3>Direction</h3>
+            <p>
+              International Style discipline with Art Deco&rsquo;s future-embracing stance.
+              Swiss grids, blueprints, boxes, no rounded corners. Water and ocean as the
+              recurring theme, connecting the globe. Bespoke material textures, in the
+              spirit of materialarchiv.ch.
+            </p>
+            <h3>References</h3>
+            <p>
+              Josef Müller-Brockmann and the Swiss poster tradition. Otl Aicher&rsquo;s
+              Munich 1972 pictograms. Vignelli&rsquo;s subway map. Split-flap departure
+              boards. Undersea cable maps and nautical charts. The Rosetta Stone. The
+              Chrysler Building. Powers of Ten. Vintage National Geographic. Borges&rsquo;
+              Library of Babel. The Whole Earth Catalog. Transit signage. NYRB Classics.
+              Dieter Rams. Vintage Olympics stamps.
+            </p>
             <div className='ptb-brief'>
               <div className='ptb-brief-col'>
                 <h3>Admired</h3>
@@ -388,9 +431,26 @@ export default function BrandPage() {
               <div className='ptb-brief-col'>
                 <h3>Avoid</h3>
                 <ul className='pt-post-rules'>
-                  <li>Monospace as brand typography; mono is for code artifacts only.</li>
-                  <li>Smooth scrolling.</li>
-                  <li>The generic robot icon.</li>
+                  <li>
+                    Monospace as the brand voice in headlines, body, or marketing. Small mono
+                    labels inside technical diagrams and product UI remain instruments; avoid
+                    even those where possible.
+                  </li>
+                  <li>
+                    Smooth scrolling, scroll-hijacking, and inertia libraries. Native scroll
+                    everywhere.
+                  </li>
+                  <li>Robot and sparkle iconography for AI.</li>
+                  <li>
+                    The flag-soup cliche. Flags are functional data chips only, printed as
+                    SVG, never emoji.
+                  </li>
+                  <li>Iridescent AI gradients and glassmorphism.</li>
+                  <li>
+                    Eyebrow text that has not earned its place. Three stacked lines saying
+                    the same thing is noise; functional tags and labels are fine.
+                  </li>
+                  <li>Em dashes in rendered prose.</li>
                 </ul>
               </div>
             </div>

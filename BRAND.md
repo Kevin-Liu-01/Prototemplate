@@ -32,6 +32,7 @@ Dossier as the finished statement of this identity, not a concept.
 | `gt-next`, `gt-react`, `gt-vue`, `gt-node`, `gt-python` | the framework-specific packages |
 | Locadex | the AI agent product |
 | generaltranslation.com | the domain (also held: gt.sh, generaltranslation.ai/.dev, locadex.com/.ai/.dev) |
+| glyphfield.com | the companion tooling site (shader library, animation studio) |
 
 ## 2. The idea
 
@@ -46,6 +47,9 @@ best-in-class way to use those tools. Because we build the entire stack,
 we can promise what point solutions can't: consistent, high-quality
 translation across a whole business, integrated in an afternoon.
 
+Two registers, one family: the open source should feel community-owned;
+the platform should feel enterprise-grade.
+
 The values, which the visual identity must carry:
 
 - **Engineering-first.** Built by people with deep technical roots, for the
@@ -56,6 +60,8 @@ The values, which the visual identity must carry:
   like something an enterprise stands on, not an app it tries.
 - **Cosmopolitan.** Urbane, sophisticated, connecting the world and its
   languages. Language is our material, not just our market.
+- **Hand-crafted.** The brand reads as made by people who care, not
+  assembled from a template.
 
 ## 3. The character
 
@@ -97,11 +103,13 @@ These are read from the shipped system for basement to confirm or push.
 
 ### Voice
 
-Declarative, precise, quietly confident. Captions state laws: "the ground
-is the seam." Sentences carry their own weight, with no exclamation marks
-doing the work, no hedging, and no marketing adjectives where a fact would
-do. Wit is allowed as precision, never as decoration. Technical terms are
-used correctly and then explained plainly.
+Measured, declarative, precise, quietly confident. Captions state laws:
+"the ground is the seam." Short sentences carry their own weight, with no
+exclamation marks doing the work, no hedging, and no marketing adjectives
+where a fact would do. Wit is allowed as precision, never as decoration.
+Technical terms are used precisely and sparingly, then explained plainly.
+The register sits closer to a well-written spec or a good engineering blog
+than to marketing copy: product focus over performative marketing.
 
 - Say: "One pipeline. Every language ships with the deploy."
 - Not: "Supercharge your global growth with cutting-edge AI!"
@@ -127,6 +135,9 @@ Rules:
 - At text size, the wordmark sits inline with prose (the hero's
   "GT builds full-stack infrastructure…" pattern) at the cap height of the
   line it lives in.
+- **The identity must survive compression:** a favicon, a CLI banner, a
+  README, a syntax-highlighted code block. Developers meet the brand in a
+  terminal as often as on a website.
 
 ## 5. Color
 
@@ -145,9 +156,17 @@ never a wash; one bright white; depth from lines and material, not shadows.
 - **Inter** is the text companion: the real rsms.me Inter (v4.1 variable,
   roman + italic, opsz axis), not the Google Fonts build. Long-form reading,
   documentation prose.
+- **Multilingual-first.** Headlines, UI, and marks must hold up in CJK,
+  RTL, and Indic scripts as well as Latin. A wordmark or layout that only
+  works in English contradicts the company. Licensed type needs credible
+  CJK and RTL coverage, or well-matched companion faces.
+- **Switzer plus Inter is the working pair, not a final answer.**
+  Alternatives are open if they satisfy the script-coverage constraint.
 - **Monospace is an instrument voice, not a brand voice.** It appears where
-  code artifacts appear (tokens, terminals, file paths) and nowhere else.
-  The brand direction explicitly avoids monospace as brand typography.
+  code artifacts appear (tokens, terminals, file paths, small labels in
+  technical diagrams and product UI) and nowhere else, and even those
+  labels are avoided where possible. The direction explicitly avoids
+  monospace as the brand voice in headlines, body, and marketing.
 - The prototemplate chrome (this site's own serif/grotesk pairing) is the
   lab's stationery, not the product brand.
 
@@ -162,7 +181,8 @@ Writing systems are the raw material the brand keeps returning to:
 - The **glyph field**: rain from eight writing systems condensing into the
   word "language," script after script.
 - **Locale pills** (`LocaleTag`): flag print + code, the one way a locale is
-  named anywhere.
+  named anywhere. The prints are SVG, never emoji; a flag is a functional
+  data chip, never decoration.
 - The **1-bit Bayer language**: density as ordered dither, never alpha
   veils. This is the texture of the brand.
 - The **doubled line**: every connector one path stroked twice; the mark's
@@ -193,5 +213,26 @@ we got there.
   and owns the whole stack, so it can own the whole experience.
 - **Admired:** Vercel, Resend, Stripe, for reliable, developer-first
   infrastructure with engineering excellence and customer experience.
-- **Avoid:** monospace as brand typography; smooth scrolling; the lucide
-  "bot" icon.
+- **Direction:** International Style discipline with Art Deco's
+  future-embracing stance. Swiss grids, blueprints, boxes, no rounded
+  corners. Water and ocean as the recurring theme, connecting the globe.
+  Bespoke material textures (reference: materialarchiv.ch).
+- **References:** Josef Müller-Brockmann and the Swiss poster tradition;
+  Otl Aicher's Munich 1972 pictograms; Vignelli's subway map; split-flap
+  departure boards; undersea cable maps and nautical charts; the Rosetta
+  Stone; the Chrysler Building; Powers of Ten; vintage National Geographic;
+  Borges' Library of Babel; the Whole Earth Catalog; transit signage; NYRB
+  Classics; Dieter Rams; vintage Olympics stamps.
+- **Avoid (final):**
+  - monospace as the brand voice in headlines, body, or marketing; small
+    mono labels inside technical diagrams and product UI remain
+    instruments, avoided where possible.
+  - smooth scrolling, scroll-hijacking, and inertia libraries; native
+    scroll everywhere.
+  - robot and sparkle iconography for AI.
+  - the flag-soup cliche; flags are functional data chips only, printed as
+    SVG, never emoji.
+  - iridescent AI gradients and glassmorphism.
+  - eyebrow text that has not earned its place; three stacked lines saying
+    the same thing is noise, functional tags and labels are fine.
+  - em dashes in rendered prose.
