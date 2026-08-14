@@ -80,24 +80,32 @@ export default function CompareTable() {
             <tr>
               <th aria-hidden='true' />
               <th scope='col'>
-                <b>Starter</b>
-                <span>From $0</span>
-                <Link
-                  className='pricing-plan-cta'
-                  href='/d/singularity-dossier'
-                >
-                  Get Started
-                </Link>
+                <div className='pricing-compare-planhead'>
+                  <div>
+                    <b>Starter</b>
+                    <span>From $0</span>
+                  </div>
+                  <Link
+                    className='pricing-plan-cta'
+                    href='/d/singularity-dossier'
+                  >
+                    Get Started
+                  </Link>
+                </div>
               </th>
               <th className='is-reco' scope='col'>
-                <b>Enterprise</b>
-                <span>Contact Us</span>
-                <Link
-                  className='pricing-plan-cta is-solid'
-                  href='/d/singularity-dossier/contact'
-                >
-                  Contact Us
-                </Link>
+                <div className='pricing-compare-planhead'>
+                  <div>
+                    <b>Enterprise</b>
+                    <span>Contact Us</span>
+                  </div>
+                  <Link
+                    className='pricing-plan-cta is-solid'
+                    href='/d/singularity-dossier/contact'
+                  >
+                    Contact Us
+                  </Link>
+                </div>
               </th>
             </tr>
           </thead>

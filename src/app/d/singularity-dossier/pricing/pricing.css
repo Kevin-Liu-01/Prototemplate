@@ -2562,6 +2562,28 @@
   vertical-align: top;
 }
 
+/* the plan cell's inner pair: name/price block and the CTA — stacked
+   narrow, one row at desktop so the pinned band stays a slim shelf */
+.pricing-root .pricing-compare-planhead {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 901px) {
+  .pricing-root .pricing-compare-planhead {
+    flex-direction: row;
+    gap: 18px;
+  }
+
+  .pricing-root .pricing-compare thead th {
+    padding-block: 16px;
+    vertical-align: middle;
+  }
+}
+
 .pricing-root .pricing-compare thead th:first-child {
   width: 34%;
 }
@@ -2609,9 +2631,16 @@
 /* the plan header rides sticky under the 59px dossier nav, and each
    group label (Pricing, Platform, Core Products…) pins just beneath
    it — held while its rows scroll, slid over by the next label.
-   --pc-plan-head is the thead row's rendered height. */
+   --pc-plan-head is the thead row's rendered height (stacked cells
+   narrow, the one-row shelf at desktop). */
 .pricing-root .pricing-compare {
   --pc-plan-head: 151px;
+}
+
+@media (min-width: 901px) {
+  .pricing-root .pricing-compare {
+    --pc-plan-head: 92px;
+  }
 }
 
 .pricing-root .pricing-compare thead th {
