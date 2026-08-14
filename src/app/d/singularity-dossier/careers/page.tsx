@@ -116,10 +116,10 @@ export default async function DossierCareersPage() {
                 <Image
                   alt='Two engineers pairing on code at our San Francisco office'
                   className='careers-mission-photo'
-                  height={1512}
+                  height={1548}
                   src='/careers/mission-dither.png'
                   unoptimized
-                  width={1408}
+                  width={1440}
                 />
               </div>
             </div>
