@@ -657,50 +657,14 @@
   border-inline: 1px solid var(--tc-hair);
 }
 
-.careers-root .careers-mission-photo-frame {
-  position: relative;
-  width: 100%;
-}
-
-/* stylized, not photographic: the print is grayscaled then re-toned
-   in the emphasis blue (color blend keeps the luminance), with the
-   ordered Bayer tile printed over it */
+/* the print IS the dither: a pre-rendered ordered-Bayer plate in three
+   blue inks. pixelated keeps the little squares crisp at any display
+   scale. */
 .careers-root .careers-mission-photo {
   display: block;
   width: 100%;
   height: auto;
-  filter: grayscale(1) contrast(1.06);
-}
-
-.careers-root .careers-mission-photo-frame::before {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: #2563eb;
-  mix-blend-mode: color;
-  content: '';
-  pointer-events: none;
-}
-
-[data-theme='dark'] .careers-root .careers-mission-photo-frame::before {
-  background: #6d92e8;
-}
-
-.careers-root .careers-mission-photo-frame::after {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M0 0h1v1H0zM2 0h1v1H2zM4 0h1v1H4zM6 0h1v1H6zM2 2h1v1H2zM6 2h1v1H6zM0 4h1v1H0zM2 4h1v1H2zM4 4h1v1H4zM6 4h1v1H6zM2 6h1v1H2zM6 6h1v1H6z' fill='%232563eb'/%3E%3C/svg%3E");
-  background-size: 16px 16px;
-  opacity: 0.38;
-  content: '';
-  pointer-events: none;
-}
-
-[data-theme='dark']
-  .careers-root
-  .careers-mission-photo-frame::after {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M0 0h1v1H0zM2 0h1v1H2zM4 0h1v1H4zM6 0h1v1H6zM2 2h1v1H2zM6 2h1v1H6zM0 4h1v1H0zM2 4h1v1H2zM4 4h1v1H4zM6 4h1v1H6zM2 6h1v1H2zM6 6h1v1H6z' fill='%2386a8ff'/%3E%3C/svg%3E");
+  image-rendering: pixelated;
 }
 
 @media (max-width: 900px) {

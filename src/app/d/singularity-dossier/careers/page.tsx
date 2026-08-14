@@ -113,15 +113,14 @@ export default async function DossierCareersPage() {
                 </p>
               </div>
               <div className='careers-mission-scene'>
-                <div className='careers-mission-photo-frame'>
-                  <Image
-                    alt='Two engineers pairing on code at our San Francisco office'
-                    className='careers-mission-photo'
-                    height={1502}
-                    src='/careers/mission.jpg'
-                    width={1400}
-                  />
-                </div>
+                <Image
+                  alt='Two engineers pairing on code at our San Francisco office'
+                  className='careers-mission-photo'
+                  height={1512}
+                  src='/careers/mission-dither.png'
+                  unoptimized
+                  width={1408}
+                />
               </div>
             </div>
           </section>
