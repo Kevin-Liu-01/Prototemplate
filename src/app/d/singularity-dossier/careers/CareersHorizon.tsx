@@ -91,7 +91,8 @@ const HORIZON_DARK = {
   lightGain: 1.32,
   swirl: 1.32,
   ink: [1, 1, 1] as [number, number, number],
-  ringAlpha: [0.075, 0.05, 0.03] as [number, number, number],
+  /* no guide rings — they read as stray circles around the horizon */
+  ringAlpha: [0, 0, 0] as [number, number, number],
   ruleAlpha: 0.1,
 };
 

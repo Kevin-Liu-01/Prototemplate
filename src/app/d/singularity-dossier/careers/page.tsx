@@ -1,5 +1,7 @@
 import { ArrowUpRight, Mail } from 'lucide-react';
 
+import Image from 'next/image';
+
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
@@ -13,7 +15,6 @@ import TopNav from '../../singularity/sections/TopNav';
 import CareersHorizon from './CareersHorizon';
 import GlyphRain from './GlyphRain';
 import LogosGrid from './LogosGrid';
-import MissionStack from './MissionStack';
 import ScrollToPositionsButton from './ScrollToPositionsButton';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
@@ -111,7 +112,15 @@ export default async function DossierCareersPage() {
                   talk.
                 </p>
               </div>
-              <MissionStack />
+              <div className='careers-mission-scene'>
+                <Image
+                  alt='Two engineers pairing on code at our San Francisco office'
+                  className='careers-mission-photo'
+                  height={1502}
+                  src='/careers/mission.jpg'
+                  width={1400}
+                />
+              </div>
             </div>
           </section>
 

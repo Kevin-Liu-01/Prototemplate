@@ -648,73 +648,14 @@
   min-width: 0;
 }
 
-.careers-root .careers-mission-svg {
+.careers-root .careers-mission-photo {
   display: block;
   width: 100%;
   max-width: 560px;
   height: auto;
   margin-inline: auto;
-}
-
-/* the instrument's inks: token-driven so both themes arrive free */
-.careers-root .cm-spine line {
-  stroke: color-mix(in srgb, var(--tc-ink) 26%, transparent);
-  stroke-width: 1;
-}
-
-.careers-root .cm-pulse {
-  stroke: var(--tc-accent);
-  stroke-width: 3;
-  stroke-linecap: round;
-  opacity: 0;
-}
-
-.careers-root .cm-face-top {
-  fill: color-mix(in srgb, var(--tc-ink) 3%, var(--tc-card));
-  stroke: color-mix(in srgb, var(--tc-ink) 34%, transparent);
-  stroke-width: 1;
-}
-
-.careers-root .cm-face-top.is-accent {
-  fill: color-mix(in srgb, var(--tc-accent) 9%, var(--tc-card));
-}
-
-.careers-root .cm-face-right {
-  fill: color-mix(in srgb, var(--tc-ink) 11%, var(--tc-card));
-  stroke: color-mix(in srgb, var(--tc-ink) 34%, transparent);
-  stroke-width: 1;
-}
-
-.careers-root .cm-face-left {
-  fill: color-mix(in srgb, var(--tc-ink) 6%, var(--tc-card));
-  stroke: color-mix(in srgb, var(--tc-ink) 34%, transparent);
-  stroke-width: 1;
-}
-
-.careers-root .cm-thread line {
-  stroke: color-mix(in srgb, var(--tc-ink) 30%, transparent);
-  stroke-width: 1;
-}
-
-.careers-root .cm-label-name {
-  fill: var(--tc-ink);
-  font-family: var(--tc-sans);
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-.careers-root .cm-label-sub {
-  fill: var(--tc-ink-3);
-  font-family: var(--tc-mono);
-  font-size: 11px;
-}
-
-.careers-root .cm-ground line,
-.careers-root .cm-ground path {
-  stroke: color-mix(in srgb, var(--tc-ink) 22%, transparent);
-  stroke-width: 1;
-  fill: none;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
 }
 
 @media (max-width: 900px) {
