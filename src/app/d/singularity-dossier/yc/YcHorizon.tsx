@@ -81,9 +81,9 @@ const REDSHIFT_DURATION = 150;
 const REDSHIFT_START_ANGLE = 2.55;
 const TAU = Math.PI * 2;
 
-/* The field's themed inks: dark grounds get the additive Gargantua;
-   light grounds print the same emission in ink so the ring and arcs
-   read on paper. The disc core stays the horizon's own black in both. */
+/* The field's themed inks: the emission keeps its native additive
+   color in BOTH themes — the hole is the hole. Only the ruled lines
+   and guide rings re-ink for the ground they cross. */
 const HORIZON_DARK = {
   chroma: 0.82,
   doppler: 0.85,
@@ -93,13 +93,11 @@ const HORIZON_DARK = {
   ink: [1, 1, 1] as [number, number, number],
   ringAlpha: [0, 0, 0] as [number, number, number],
   ruleAlpha: 0.1,
-  emissionMul: 1,
 };
 
 const HORIZON_LIGHT = {
   ...HORIZON_DARK,
   ink: [0.04, 0.044, 0.051] as [number, number, number],
-  emissionMul: 0.34,
 };
 
 const clampUnit = (value: number) => Math.min(Math.max(value, 0), 1);

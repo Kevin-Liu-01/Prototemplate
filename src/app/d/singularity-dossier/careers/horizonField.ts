@@ -44,12 +44,6 @@ export type HorizonParams = {
   period: number;
   core: [number, number, number];
   ink: [number, number, number];
-  /**
-   * Post-tone-map multiplier on the emission color: 1 is additive light
-   * for dark grounds; ~0.3 prints the same hues in ink so the ring and
-   * arcs read on paper grounds.
-   */
-  emissionMul: number;
 };
 
 export type HorizonFieldHandle = {
@@ -124,7 +118,6 @@ export const HORIZON_DEFAULTS: HorizonParams = {
   period: 7.2,
   core: [0.02, 0.027, 0.043],
   ink: [0.059, 0.067, 0.075],
-  emissionMul: 1,
 };
 
 /* An instant where the streak field is mid-arc and the breathe term is near
@@ -209,7 +202,6 @@ uniform float uBreathe;
 uniform float uPeriod;
 uniform vec3 uCore;
 uniform vec3 uInk;
-uniform float uEmissionMul;
 uniform vec2 uCursor;
 uniform float uFxStrength;
 uniform float uFxMode;
@@ -332,7 +324,7 @@ rdop * on;
 hdr *= 1.0 + fxRed * camt * 0.55;
 vec3 light = toneMap(hdr);
 float lightA = max(light.r, max(light.g, light.b));
-vec3 lightCol = light / max(lightA, 1e-4) * uEmissionMul;
+vec3 lightCol = light / max(lightA, 1e-4);
 vec4 acc = vec4(0.0);
 lay(acc, uInk, ruleA);
 lay(acc, uInk, ringsA);
@@ -529,7 +521,6 @@ function getEngine(): Engine | null {
   const uPeriod = loc('uPeriod');
   const uCore = loc('uCore');
   const uInk = loc('uInk');
-  const uEmissionMul = loc('uEmissionMul');
   const uCursor = loc('uCursor');
   const uFxStrength = loc('uFxStrength');
   const uFxMode = loc('uFxMode');
@@ -599,7 +590,6 @@ function getEngine(): Engine | null {
       ctx.uniform1f(uPeriod, params.period);
       ctx.uniform3f(uCore, params.core[0], params.core[1], params.core[2]);
       ctx.uniform3f(uInk, params.ink[0], params.ink[1], params.ink[2]);
-      ctx.uniform1f(uEmissionMul, params.emissionMul);
       ctx.uniform2f(uCursor, fxX, fxY);
       ctx.uniform1f(uFxStrength, fxStrength);
       ctx.uniform1f(uFxMode, fxMode);
