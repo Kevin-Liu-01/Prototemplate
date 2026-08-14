@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 
 import { useMountEffect } from './use-mount-effect';
 import LocaleFlag from './LocaleFlag';
-import { useQuietReveal } from '../../../singularity/sections/reveal';
+import { useQuietReveal } from './reveal';
 
 import EnterpriseContextFork from './EnterpriseContextFork';
 

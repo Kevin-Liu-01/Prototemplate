@@ -132,7 +132,8 @@ export default function EnterpriseContextFork() {
     <div
       className={langClass('lang-cr', true, 'tcg-fork')}
       ref={root}
-      aria-hidden='true'
+      role='img'
+      aria-label='The same English sentence translated into German with and without the brand-core rule: without it, Locadex is mistranslated as Standort-Index; with it, the product name is preserved'
     >
       <p className='lang-cr-source'>
         <span className='lang-tag'>

@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../../../singularity/sections/reveal';
+import { useQuietReveal } from './reveal';
 import TrackedLink from './TrackedLink';
 
 import HeroInkField from './HeroInkField';
@@ -42,7 +42,7 @@ export default function EnterpriseHero() {
                 href='/enterprise/contact'
                 location='services-cta-hero'
               >
-                Talk to us <span aria-hidden='true'>→</span>
+                Talk to Us <span aria-hidden='true'>→</span>
               </TrackedLink>
             </span>
             <TrackedLink
@@ -50,13 +50,23 @@ export default function EnterpriseHero() {
               href='/enterprise/contact'
               location='services-cta-engineer'
             >
-              Talk to an engineer
+              Talk to an Engineer
             </TrackedLink>
           </div>
-          <div className='tce-hero-badges' aria-hidden='true'>
-            <Image src='/shields/soc-2-type-2.svg' alt='' width={96} height={40} />
-            <Image src='/shields/gdpr.svg' alt='' width={96} height={40} />
-            <Image src='/shields/iso-27001.svg' alt='' width={96} height={40} />
+          <div className='tce-hero-badges'>
+            <Image
+              src='/shields/soc-2-type-2.svg'
+              alt='AICPA SOC 2 Type II certified'
+              width={96}
+              height={40}
+            />
+            <Image src='/shields/gdpr.svg' alt='GDPR compliant' width={96} height={40} />
+            <Image
+              src='/shields/iso-27001.svg'
+              alt='ISO 27001 certified'
+              width={96}
+              height={40}
+            />
           </div>
         </div>
 
@@ -65,9 +75,9 @@ export default function EnterpriseHero() {
               verticals bound it, and the solid card occludes it */}
           <HeroInkField />
           <div className='tc-card tce-hero-proof'>
-              <h3>
+              <h2>
                 Trusted by <em>the world's best engineering teams</em>
-              </h3>
+              </h2>
             <div className='tce-hero-proof-rows'>
               {customerLogos.map((logo) => {
                 const proof = infrastructureProof.find(

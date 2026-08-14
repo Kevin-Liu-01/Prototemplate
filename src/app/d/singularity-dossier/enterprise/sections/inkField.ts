@@ -30,7 +30,12 @@ const TIER_COVER: readonly [number, number, number] = [1, 1, 1];
 /** The tiers' dither coverages, spoken as alpha, so the field keeps its tone. */
 const TIER_ALPHA: readonly [number, number, number] = [0.9, 0.55, 0.3];
 const CELL = 26;
-const PAPER = '#f2f1ed';
+/** Fallback glyph ink when the mount passes none: the canvas's own
+ *  computed color, so the sheet keeps sole custody of color values. */
+function sampledInk(canvas: HTMLCanvasElement): string {
+  const c = getComputedStyle(canvas).color;
+  return c && c !== 'rgba(0, 0, 0, 0)' ? c : 'rgb(242, 241, 237)';
+}
 const COL_PITCH = 34;
 /** How far outside the content box the dithered clearing rim runs. */
 const RIM = 64;
@@ -138,7 +143,7 @@ export function createInkField(
 
   const disp =
     options.displayFamily || "'Switzer', ui-sans-serif, system-ui, sans-serif";
-  let glyphInk = options.glyphColor || PAPER;
+  let glyphInk = options.glyphColor || sampledInk(options.canvas);
   const inv = options.glyphs && options.glyphs.length > 0 ? options.glyphs : GLYPHS;
   const cellW = options.cellWidth ?? CELL;
   const pitch = options.colPitch ?? COL_PITCH;

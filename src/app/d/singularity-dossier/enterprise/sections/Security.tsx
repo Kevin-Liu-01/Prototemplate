@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../../../singularity/sections/reveal';
+import { useQuietReveal } from './reveal';
 
 import DeliveryBoard from './DeliveryBoard';
 

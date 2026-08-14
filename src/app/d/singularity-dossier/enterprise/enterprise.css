@@ -560,7 +560,7 @@
 
 .sgde-root .enterprise-contact .contact-features {
   gap: 0;
-  margin-top: 34px !important;
+  margin-top: 34px;
 }
 
 .sgde-root .enterprise-contact .contact-feature {
@@ -598,7 +598,7 @@
   flex: 1 1 auto;
   align-items: stretch;
   justify-content: start;
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 
 .sgde-root .enterprise-contact .contact-testimonial > a {
@@ -1769,20 +1769,20 @@
 
 /* the head speaks two tones: the frame line dim, the payload in the
    phosphor the column's rain already speaks */
-.sgde-root .tce-hero-proof > h3 {
+.sgde-root .tce-hero-proof > h2 {
   color: var(--tc-ink-3);
 }
 
-.sgde-root .tce-hero-proof > h3 em {
+.sgde-root .tce-hero-proof > h2 em {
   font-style: normal;
   color: var(--tc-accent);
 }
 
-[data-theme='dark'] .sgde-root .tce-hero-proof > h3 {
+[data-theme='dark'] .sgde-root .tce-hero-proof > h2 {
   color: rgb(255 255 255 / 62%);
 }
 
-[data-theme='dark'] .sgde-root .tce-hero-proof > h3 em {
+[data-theme='dark'] .sgde-root .tce-hero-proof > h2 em {
   color: #86a8ff;
 }
 
@@ -2843,7 +2843,7 @@
   flex: 1 1 auto;
   align-items: stretch;
   justify-content: flex-start;
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 
 .sgde-root .enterprise-contact .contact-testimonial > a {
@@ -2866,5 +2866,21 @@
 .sgde-root .enterprise-contact .contact-testimonial > a:hover
   .contact-testimonial-card
   > p:first-child {
+  color: var(--tc-accent);
+}
+
+/* the contact submit keeps gt-cloud's face metrics, and the success
+   badge holds its accent and card ground */
+.sgde-root .enterprise-contact .contact-form .tc-btn {
+  line-height: 20px;
+  letter-spacing: normal;
+}
+
+.sgde-root .contact-success-badge {
+  border-color: var(--tc-hair);
+  background: color-mix(in srgb, var(--tc-paper) 96%, var(--tc-ink) 4%);
+}
+
+.sgde-root .contact-success-badge svg {
   color: var(--tc-accent);
 }

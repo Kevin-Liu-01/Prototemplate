@@ -66,6 +66,11 @@ export default function EnterpriseContact({
   });
   const [success, setSuccess] = useState(false);
   const Heading = headingLevel;
+  const filled =
+    form.name.trim() !== '' &&
+    form.email.trim() !== '' &&
+    form.companyName.trim() !== '' &&
+    form.message.trim() !== '';
 
   return (
     <section className={sectionClassName}>
@@ -82,10 +87,7 @@ export default function EnterpriseContact({
               Talk to our team about enterprise deployment
             </Heading>
 
-            <div
-              style={{ marginTop: '2.5rem' }}
-              className='contact-features flex flex-col gap-y-6 text-sm sm:gap-y-8 sm:text-base'
-            >
+            <div className='contact-features flex flex-col gap-y-6 text-sm sm:gap-y-8 sm:text-base'>
               {FEATURES.map((feature) => (
                 <div key={feature.title} className='contact-feature flex gap-2'>
                   <feature.icon className='mt-1 size-4 shrink-0' />
@@ -99,10 +101,7 @@ export default function EnterpriseContact({
               ))}
             </div>
 
-            <div
-              style={{ marginTop: '2.5rem' }}
-              className='contact-testimonial flex items-center justify-center md:mt-auto'
-            >
+            <div className='contact-testimonial flex items-center justify-center md:mt-auto'>
               <a
                 href='https://x.com/milichab/status/2010496967848370412'
                 target='_blank'
@@ -136,13 +135,16 @@ export default function EnterpriseContact({
 
           <div className='contact-form-panel pt-6 md:pt-0 md:pl-12'>
             {success ? (
-              <div className='flex flex-col items-center justify-center py-12 text-center md:h-full'>
-                <div className='mb-6 flex size-12 items-center justify-center rounded-full border'>
+              <div
+                className='flex flex-col items-center justify-center py-12 text-center md:h-full'
+                role='status'
+              >
+                <div className='contact-success-badge mb-6 flex size-12 items-center justify-center rounded-full border'>
                   <MailCheck className='size-6' />
                 </div>
-                <h3 className='text-2xl font-semibold tracking-tight'>
+                <h2 className='text-2xl font-semibold tracking-tight'>
                   Message received
-                </h3>
+                </h2>
                 <p className='contact-feature-desc mt-3 text-sm'>
                   Thank you for reaching out. We&rsquo;ll be in touch soon.
                 </p>
@@ -234,15 +236,27 @@ export default function EnterpriseContact({
 
                 <div className='mt-6 flex items-center justify-between gap-4'>
                   <p className='contact-feature-desc flex-1 pr-2 text-xs'>
-                    By submitting you agree to the Terms of Service and
-                    acknowledge the Privacy Policy.
+                    By submitting you agree to the{' '}
+                    <a
+                      href='https://generaltranslation.com/legal/terms'
+                      className='underline underline-offset-4'
+                    >
+                      Terms of Service
+                    </a>{' '}
+                    and acknowledge the{' '}
+                    <a
+                      href='https://generaltranslation.com/legal/privacy-policy'
+                      className='underline underline-offset-4'
+                    >
+                      Privacy Policy
+                    </a>
+                    .
                   </p>
-                  <button
-                    type='submit'
-                    className='tc-btn tc-btn-solid shrink-0'
-                  >
-                    Continue
-                  </button>
+                  <span className={filled ? 'tce-hero-cta shrink-0' : 'shrink-0'}>
+                    <button type='submit' className='tc-btn tc-btn-solid'>
+                      Continue
+                    </button>
+                  </span>
                 </div>
               </form>
             )}
