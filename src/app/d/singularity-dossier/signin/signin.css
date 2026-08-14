@@ -1,0 +1,332 @@
+/* ============================================================
+   SINGULARITY · DOSSIER — sign-in. The dashboard sign-in ported
+   as a prototype: Profound-style split — mark, form, and the demo
+   prompt on the left column's floor; the halftone globe standing
+   over the glyph rain on the right; one slim footer rule. Every
+   fixed size on the left is a two-point svh scale (exact at a
+   900px viewport, compressed together under browser zoom), so the
+   layout and hierarchy hold at 125–150% with zero scroll.
+   ============================================================ */
+
+.singularity-root.sgs-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: var(--tc-paper);
+}
+
+.singularity-root .sgs-split {
+  display: grid;
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .singularity-root .sgs-split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---- the left column: mark, form, demo prompt ---- */
+
+.singularity-root .sgs-col {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: clamp(8px, 8svh - 40px, 32px) 24px clamp(8px, 16svh - 92px, 52px);
+}
+
+@media (min-width: 640px) {
+  .singularity-root .sgs-col {
+    padding-inline: 48px;
+  }
+}
+
+@media (min-width: 768px) {
+  .singularity-root .sgs-col {
+    padding-inline: clamp(28px, 4vw, 56px);
+  }
+}
+
+.singularity-root .sgs-block {
+  width: 100%;
+  max-width: 400px;
+  margin-inline: auto;
+}
+
+.singularity-root .sgs-logo {
+  display: inline-flex;
+  width: fit-content;
+}
+
+.singularity-root .sgs-logo img {
+  display: block;
+  height: clamp(26px, 3.33svh + 8px, 38px);
+  width: auto;
+}
+
+.singularity-root .sgs-logo .is-dark,
+[data-theme='dark'] .singularity-root .sgs-logo .is-light {
+  display: none;
+}
+
+[data-theme='dark'] .singularity-root .sgs-logo .is-dark {
+  display: block;
+}
+
+.singularity-root .sgs-mid {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  padding-block: clamp(6px, 15svh - 87px, 48px);
+}
+
+/* ---- the form ---- */
+
+.singularity-root .sgs-form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(9px, 4.67svh - 18px, 24px);
+}
+
+.singularity-root .sgs-form h1 {
+  font-size: clamp(17px, 2.33svh + 5px, 26px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.singularity-root .sgs-sub {
+  margin-top: 8px;
+  color: var(--tc-ink-3);
+  font-size: clamp(11px, 0.67svh + 8px, 14px);
+}
+
+.singularity-root .sgs-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.4svh, 12px);
+}
+
+.singularity-root .sgs-input {
+  appearance: none;
+  width: 100%;
+  height: clamp(33px, 3svh + 17px, 44px);
+  border: 1px solid rgba(138, 143, 152, 0.42);
+  border-radius: 0;
+  background: transparent;
+  padding: 0 13px;
+  font-family: var(--tc-sans);
+  font-size: clamp(13.5px, 1.9svh, 15px);
+  color: var(--tc-ink);
+  transition: border-color 0.16s ease;
+}
+
+.singularity-root .sgs-input::placeholder {
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .sgs-input:focus-visible {
+  outline: 0;
+  border-color: var(--tc-ink);
+}
+
+.singularity-root .sgs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: clamp(33px, 3svh + 17px, 44px);
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: 0 16px;
+  font-family: var(--tc-sans);
+  font-size: clamp(12.5px, 1.8svh, 14px);
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.singularity-root .sgs-btn.is-solid {
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+}
+
+.singularity-root .sgs-btn.is-solid:hover {
+  background: color-mix(in srgb, var(--tc-ink) 86%, var(--tc-paper));
+}
+
+.singularity-root .sgs-btn.is-line {
+  border-color: rgba(138, 143, 152, 0.42);
+  background: transparent;
+  color: var(--tc-ink);
+}
+
+.singularity-root .sgs-btn.is-line:hover {
+  border-color: var(--tc-ink-3);
+}
+
+.singularity-root .sgs-provider {
+  justify-content: flex-start;
+}
+
+.singularity-root .sgs-provider svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.singularity-root .sgs-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--tc-ink-3);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+}
+
+.singularity-root .sgs-or::before,
+.singularity-root .sgs-or::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--tc-hair);
+}
+
+.singularity-root .sgs-terms {
+  color: var(--tc-ink-3);
+  font-size: 12px;
+  text-align: center;
+}
+
+.singularity-root .sgs-terms a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---- the demo prompt: a filed panel (the dossier's dashed
+   grammar) framed by a split-flap cell row at board pitch ---- */
+
+.singularity-root .sgs-demo {
+  border: 1px dashed rgba(138, 143, 152, 0.42);
+}
+
+.singularity-root .sgs-demo-cells {
+  height: 22px;
+  border-bottom: 1px solid var(--tc-hair);
+  background:
+    repeating-linear-gradient(
+      to right,
+      transparent 0 21px,
+      color-mix(in srgb, currentColor 9%, transparent) 21px 22px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, currentColor 4.5%, transparent) 0 10px,
+      transparent 10px 11px,
+      color-mix(in srgb, currentColor 6.5%, transparent) 11px 22px
+    );
+}
+
+.singularity-root .sgs-demo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(6px, 2.67svh - 10px, 14px) 16px;
+}
+
+.singularity-root .sgs-demo-row strong {
+  font-size: clamp(11px, 0.67svh + 8px, 14px);
+  font-weight: 500;
+}
+
+.singularity-root .sgs-demo-row .sgs-btn {
+  height: clamp(30px, 2.2svh + 12px, 36px);
+  font-size: clamp(11.5px, 1.6svh, 13px);
+  text-decoration: none;
+}
+
+/* ---- the aside: globe over rain, both in the house blue ---- */
+
+.singularity-root .sgs-aside {
+  position: relative;
+  display: none;
+  min-width: 0;
+  overflow: hidden;
+  border-left: 1px solid var(--tc-hair);
+  background: color-mix(in srgb, var(--tc-ink) 2%, var(--tc-paper));
+}
+
+@media (min-width: 768px) {
+  .singularity-root .sgs-aside {
+    display: block;
+  }
+}
+
+.singularity-root .sgs-rain,
+.singularity-root .sgs-globe {
+  --tc-ink: #2563eb;
+}
+
+[data-theme='dark'] .singularity-root .sgs-rain,
+[data-theme='dark'] .singularity-root .sgs-globe {
+  --tc-ink: #86a8ff;
+}
+
+.singularity-root .sgs-rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* centered as an ASSEMBLY — sphere at 42% so sphere + word + caliper
+   balance as one group; the svh clamp keeps the sphere's floor clear
+   of the word band on any panel width */
+.singularity-root .sgs-globe {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  display: block;
+  width: min(88%, 64svh);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  image-rendering: pixelated;
+}
+
+/* ---- the slim footer ---- */
+
+.singularity-root .sgs-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  border-top: 1px solid var(--tc-hair);
+  padding: 12px 24px;
+  color: var(--tc-ink-3);
+  font-size: 12px;
+}
+
+@media (min-width: 640px) {
+  .singularity-root .sgs-footer {
+    padding-inline: 24px;
+  }
+}
+
+.singularity-root .sgs-footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.singularity-root .sgs-footer a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+
+.singularity-root .sgs-footer a:hover {
+  color: var(--tc-ink);
+}
