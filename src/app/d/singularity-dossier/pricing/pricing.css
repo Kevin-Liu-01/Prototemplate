@@ -2629,10 +2629,11 @@
    the label rides above the whole header: the th goes transparent —
    the opaque plan cells keep masking their own columns — and only a
    fixed-width paper plate paints, sized so each pinned label fully
-   covers the one before it. */
+   covers the one before it. The label centers on the CTA row — the
+   buttons' center sits 41px above the band's bottom. */
 .pricing-root .pricing-compare tr.pricing-compare-group th {
   position: sticky;
-  top: calc(59px + (var(--pc-plan-head) - var(--pc-group-h)) / 2);
+  top: calc(59px + var(--pc-plan-head) - 41px - var(--pc-group-h) / 2);
   z-index: 41;
   border-color: transparent;
   background: transparent;
