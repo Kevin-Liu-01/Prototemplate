@@ -2057,26 +2057,17 @@
 }
 
 
-/* the head rides sticky through the section — pinned under the nav
-   while the table scrolls, released with the section's end. The band
-   is a fixed 74px; the dossier nav stands 59px (58 + rule). Paper
-   ground, so the rows slide under it cleanly. */
 .pricing-root .pricing-compare-head {
-  position: sticky;
-  top: 59px;
-  z-index: 25;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  height: 74px;
-  margin-bottom: 30px;
-  background: var(--tc-paper);
+  margin-bottom: 34px;
 }
 
 
 .pricing-root .pricing-compare h2 {
-  font-size: clamp(1.7rem, 2.6vw, 2.2rem);
+  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
 }
 
 
@@ -2118,11 +2109,11 @@
 }
 
 
-/* the head's motif: the team mark poured from the ramp, riding the
-   sticky band at the heading's right — sized under the band's 74px */
+/* the head's motif: the team mark poured from the ramp, standing at
+   the heading's right */
 .pricing-root .pricing-dither-type {
   flex: none;
-  width: clamp(130px, 15vw, 190px);
+  width: min(34%, 470px);
   pointer-events: none;
 }
 
@@ -2615,11 +2606,36 @@
   text-align: center;
 }
 
+/* the plan header rides sticky under the 59px dossier nav, and each
+   group label (Pricing, Platform, Core Products…) pins just beneath
+   it — held while its rows scroll, slid over by the next label.
+   --pc-plan-head is the thead row's rendered height. */
+.pricing-root .pricing-compare {
+  --pc-plan-head: 151px;
+}
+
+.pricing-root .pricing-compare thead th {
+  position: sticky;
+  top: 59px;
+  z-index: 40;
+  background: var(--tc-paper);
+}
+
+.pricing-root .pricing-compare tr.pricing-compare-group th {
+  position: sticky;
+  top: calc(59px + var(--pc-plan-head));
+  z-index: 30;
+  background: var(--tc-paper);
+}
+
 /* the recommended column carries the tint — Enterprise, matching the
    Recommended card above */
-.pricing-root .pricing-compare td.is-reco,
-.pricing-root .pricing-compare thead th.is-reco {
+.pricing-root .pricing-compare td.is-reco {
   background: color-mix(in srgb, var(--tc-accent) 5%, transparent);
+}
+
+.pricing-root .pricing-compare thead th.is-reco {
+  background: color-mix(in srgb, var(--tc-accent) 5%, var(--tc-paper));
 }
 
 .pricing-root .pricing-compare td svg {
