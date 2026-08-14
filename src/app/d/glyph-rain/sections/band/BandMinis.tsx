@@ -120,7 +120,7 @@ export function MiniContent() {
           <div>
             {'  '}
             <span className='grm-str'>"el"</span>
-            <span className='grm-dim'>:</span> <b lang='el'>&quot;γλώσσα&quot;</b>{' '}
+            <span className='grm-dim'>:</span> <b lang='el'>&quot;γλωσσα&quot;</b>{' '}
             <span className='grm-dim'>{'}'}</span>
           </div>
         </pre>

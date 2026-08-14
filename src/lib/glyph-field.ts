@@ -56,7 +56,7 @@ export const SCRIPTS: readonly ScriptSample[] = [
   { tag: 'hi', script: 'Devanagari', word: 'भाषा', lang: 'hi' },
   { tag: 'ru', script: 'Cyrillic', word: 'язык', lang: 'ru' },
   { tag: 'ko', script: 'Hangul', word: '언어', lang: 'ko' },
-  { tag: 'el', script: 'Greek', word: 'γλώσσα', lang: 'el' },
+  { tag: 'el', script: 'Greek', word: 'γλωσσα', lang: 'el' },
   { tag: 'th', script: 'Thai', word: 'ภาษา', lang: 'th' },
   { tag: 'en', script: 'Latin', word: 'language', lang: 'en' },
 ];
@@ -924,7 +924,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
    * targets stale made the sketch overhang the printed word whenever the
    * raster ran before the display face arrived.)
    */
-  function remeasure(wordIndex: number): void {
+  function remeasure(wordIndex: number, oldBaselineY = baselineY): void {
     if (!sampleCtx || w === 0) return;
     const entry = SCRIPTS[wordIndex];
     if (!entry) return;
@@ -948,7 +948,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         if (inNext[p] !== 1) continue;
         const mapped = left + ((tx[p] ?? 0) - oldLeft) * sx;
         tx[p] = Math.min(Math.max(mapped, left + inset), left + advance - inset);
-        ty[p] = baselineY + ((ty[p] ?? baselineY) - baselineY) * sy;
+        ty[p] = baselineY + ((ty[p] ?? oldBaselineY) - oldBaselineY) * sy;
       }
     }
     formedLeft = left;
@@ -1524,8 +1524,24 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   function resize(): void {
     const box = canvas.getBoundingClientRect();
     if (box.width < 2 || box.height < 2) return;
-    w = Math.round(box.width);
-    h = Math.round(box.height);
+    const newW = Math.round(box.width);
+    const newH = Math.round(box.height);
+    /* Idempotence: the observers coalesce but can still stack (RO +
+       the dpr watcher both firing on a zoom) — when neither the box
+       nor the effective scale moved, the frame is already right. */
+    const sameDpr =
+      dpr ===
+      Math.min(
+        narrow || govTier >= 1 ? DPR_CAP_NARROW : DPR_CAP,
+        window.devicePixelRatio || 1,
+      );
+    if (newW === w && newH === h && sameDpr && w !== 0) return;
+    const oldW = w;
+    const oldH = h;
+    const oldNarrow = narrow;
+    const oldBaseline = baselineY;
+    w = newW;
+    h = newH;
     /* layout() first: it derives the narrow flag from the fresh width,
        and the dpr cap keys off it — the narrow cut renders at 1.25x, not
        2x (founder mobile rounds: 2x pushed more device px than a phone
@@ -1543,8 +1559,41 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     prepWord = -1;
     prepQueuedCycle = -1;
     cancelPrepare();
-    if (morphingNow()) pendingResample = true;
-    else sampledWord = -1;
+    const cutFlipped = narrow !== oldNarrow;
+    if (morphingNow()) {
+      /* Mid-flight: scale every standing position by the box ratio so
+         trajectories stay on-canvas through the resize, and let the
+         next hold re-deal exactly against the new layout. */
+      if (oldW > 0 && oldH > 0 && (oldW !== w || oldH !== h)) {
+        const sx = w / oldW;
+        const sy = h / oldH;
+        for (let i = 0; i < POOL; i++) {
+          fx[i] = (fx[i] ?? 0) * sx;
+          fy[i] = (fy[i] ?? 0) * sy;
+          lastX[i] = (lastX[i] ?? 0) * sx;
+          lastY[i] = (lastY[i] ?? 0) * sy;
+          tx[i] = (tx[i] ?? 0) * sx;
+          ty[i] = (ty[i] ?? 0) * sy;
+        }
+        prevLeft *= sx;
+        prevRight *= sx;
+        formedLeft *= sx;
+        formedRight *= sx;
+        formedAdvance = Math.round(formedRight - formedLeft);
+      }
+      pendingResample = true;
+    } else if (!cutFlipped && sampledWord >= 0) {
+      /* Holding with a printed word: SQUEEZE the standing swarm onto
+         the new geometry — remeasure remaps every target affinely from
+         the old span and baseline, keeps membership, and re-measures
+         the fill — instead of re-dealing (which teleports the word). */
+      remeasure(sampledWord, oldBaseline);
+    } else {
+      /* The layout family changed (narrow cut flipped) or nothing is
+         printed yet: a full re-deal at the current word is the honest
+         reset — pitch and recruitable set differ per cut. */
+      sampledWord = -1;
+    }
     if (reduced || !running) {
       /* One legible frame: the field printed on its current word. */
       draw();
@@ -1557,6 +1606,24 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     resizeRaf = requestAnimationFrame(resize);
   });
   ro.observe(canvas);
+
+  /* Browser zoom moves devicePixelRatio, often WITHOUT changing the
+     element's CSS box — the ResizeObserver never fires and every blit
+     goes soft at the stale scale. Watch the ratio itself (the media
+     query matches exactly one ratio, so any change fires it), re-arm
+     on each move, and run the same resize path. */
+  let dprMedia: MediaQueryList | null = null;
+  function onDprChange(): void {
+    if (destroyed) return;
+    armDprWatch();
+    resize();
+  }
+  const armDprWatch = (): void => {
+    dprMedia?.removeEventListener('change', onDprChange);
+    dprMedia = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+    dprMedia.addEventListener('change', onDprChange);
+  };
+  armDprWatch();
 
   const io = new IntersectionObserver(
     (entries) => {
@@ -1578,7 +1645,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     buildAtlas();
     if (reduced || !running) draw();
   });
-  themeMo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  themeMo.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme', 'class'],
+  });
 
   /* Boot mid-hold: the word already printed, the caliper already in, and
      comfortably BEFORE the first morph — the boot instant must stay inside
@@ -1622,6 +1692,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       ro.disconnect();
       io.disconnect();
       themeMo.disconnect();
+      dprMedia?.removeEventListener('change', onDprChange);
       /* Release the bitmaps the engine owns — the atlas and the word
          sampler — rather than waiting on GC for canvas backing store. */
       atlas.width = 0;
