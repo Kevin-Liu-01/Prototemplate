@@ -53,6 +53,7 @@
     "src/app/d/singularity-dossier/pricing/flap.ts:19",
     "src/app/d/singularity-dossier/pricing/glyphField.ts:148",
     "src/app/d/singularity-dossier/pricing/inkField.ts:33",
+    "src/app/d/singularity-dossier/yc/glyphField.ts:148",
     "src/app/d/singularity-procession/sections/HomeHero.tsx:474",
     "src/app/d/singularity/sections/Bento.tsx:216",
     "src/app/d/singularity/sections/EnterpriseContact.tsx:71",

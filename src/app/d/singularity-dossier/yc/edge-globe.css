@@ -1,0 +1,266 @@
+/* ============================================================
+   EDGE GLOBE — the delivery CDN as an orthographic globe.
+
+   Every colour derives from `currentColor` or from the custom
+   properties the mount publishes (--iso-ink / -soft / -hair /
+   -accent / --iso-label-color / --iso-mono), so the globe holds
+   on the dark plate in both themes and still reads as
+   ink-on-paper on a light surface.
+
+   The stroke system is three weights:
+     hairline  — graticule back arcs (dashed), caps, leader lines
+     regular   — graticule front arcs, the limb
+     emphasis  — the one highlighted route, user → nearest PoP;
+                 at the landing beats the receiving callout flashes
+                 the same accent through its overlay copy
+   The doubled ring on the serving PoP is the two-thread motif:
+   source and translation arriving together.
+   ============================================================ */
+
+.eg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  /* base stroke gauge in viewBox units; the strokeWidth prop overrides it */
+  --eg-sw: 0.85;
+  /* label size in viewBox units; stepped below, remapped by the mount */
+  --eg-label-size: 8px;
+}
+
+/* ---------- strokes ---------- */
+
+/* The whole drawing is 1px lines. Every stroke pins to one
+   device-true hairline via non-scaling-stroke; hierarchy is carried by
+   ink level and dashing alone. */
+.eg .eg-limb,
+.eg .eg-front,
+.eg .eg-back,
+.eg .eg-hair,
+.eg .eg-lead,
+.eg .eg-route,
+.eg .eg-thread,
+.eg .eg-pulse-ring {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The sphere's edge — the strongest neutral line in the drawing. */
+.eg .eg-limb {
+  stroke: var(--iso-ink, color-mix(in srgb, currentColor 88%, transparent));
+}
+
+/* Graticule, near side: full ink. */
+.eg .eg-front {
+  stroke: var(
+    --iso-ink-soft,
+    color-mix(in srgb, currentColor 50%, transparent)
+  );
+}
+
+/* Graticule, far side: dashed and faint — the whole depth cue. */
+.eg .eg-back {
+  stroke: var(
+    --iso-ink-hair,
+    color-mix(in srgb, currentColor 26%, transparent)
+  );
+  stroke-dasharray: 2.3 3.9;
+}
+
+/* Polar caps: structure, not drawing. */
+.eg .eg-hair {
+  stroke: var(
+    --iso-ink-hair,
+    color-mix(in srgb, currentColor 26%, transparent)
+  );
+}
+
+/* Corner-routed callout leaders: scaffolding, never dashed. */
+.eg .eg-lead {
+  stroke: var(
+    --iso-ink-hair,
+    color-mix(in srgb, currentColor 30%, transparent)
+  );
+}
+
+/* Arrival flash overlays: each serving-pair callout
+   ships an accent copy of its lockup and leader, registered exactly over
+   the base by sharing its classes, invisible at rest — so the resting
+   drawing shows only the quiet ink, and the timeline breathes the copy in
+   and out at the landing beat. Only the ink differs here; geometry, type,
+   and gauge all come from the base rules. */
+.eg .eg-flash {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.eg .eg-flash .eg-lead {
+  stroke: var(--iso-accent-ink, currentColor);
+}
+
+.eg .eg-flash .eg-label {
+  fill: var(--iso-accent-ink, currentColor);
+}
+
+.eg .eg-flash .eg-icon {
+  color: var(--iso-accent-ink, currentColor);
+}
+
+/* The one emphasized element: the great-circle route to the nearest PoP —
+   emphasis lives in full accent ink, not extra gauge. */
+.eg .eg-route {
+  stroke: var(--iso-accent-ink, currentColor);
+}
+
+/* The serving PoP's doubled ring — two threads at constant gauge. */
+.eg .eg-thread {
+  stroke: var(--iso-accent-ink, currentColor);
+  opacity: 0.85;
+}
+
+/* ---------- nodes ---------- */
+
+.eg .eg-node {
+  fill: var(--iso-ink, color-mix(in srgb, currentColor 88%, transparent));
+}
+
+.eg .eg-node-home {
+  fill: var(--iso-accent-ink, currentColor);
+}
+
+/* The user is a hollow dot: not infrastructure, just where the request
+   starts. The dark fill punches it out of the route line beneath it. */
+.eg .eg-origin-dot {
+  fill: var(--tc-dark, var(--tc-paper));
+  stroke: var(--iso-ink, color-mix(in srgb, currentColor 88%, transparent));
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- labels and glyphs ---------- */
+
+.eg .eg-label {
+  font-family: var(
+    --iso-mono,
+    ui-monospace,
+    'SF Mono',
+    Menlo,
+    Consolas,
+    monospace
+  );
+  font-size: var(--eg-label-size);
+  letter-spacing: 0.02em;
+  fill: var(
+    --iso-label-color,
+    color-mix(in srgb, currentColor 70%, transparent)
+  );
+}
+
+/* Every callout ships two renderings of the same label — the region code
+   and the airport code. Exactly one is shown: the wide one wherever the
+   globe renders large, the compact one on phones, where the type steps
+   up to hold the 11px floor and the wide form would overrun the viewBox. */
+.eg .eg-label-compact {
+  display: none;
+}
+
+/* lucide glyphs stroke with currentColor, so colour is set here. */
+.eg .eg-icon {
+  color: var(
+    --iso-label-color,
+    color-mix(in srgb, currentColor 62%, transparent)
+  );
+}
+
+/* ---------- the payload pulse ----------
+   Request dot out, payload chip back. Both are hidden until the
+   timeline shows them; without JS the drawing is complete anyway. */
+
+.eg .eg-dot {
+  fill: var(--iso-accent-ink, currentColor);
+  opacity: 0;
+}
+
+.eg .eg-pulse-ring {
+  stroke: var(--iso-accent-ink, currentColor);
+  opacity: 0;
+}
+
+.eg .eg-chip {
+  opacity: 0;
+}
+
+/* The chip rides on the page's one dark artifact panel tone. */
+.eg .eg-chip-bg {
+  fill: var(--tc-panel, var(--tc-card));
+  stroke: var(
+    --iso-ink-soft,
+    color-mix(in srgb, currentColor 45%, transparent)
+  );
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.eg .eg-chip-icon {
+  color: var(--iso-ink, currentColor);
+}
+
+/* ---------- accent switch (IsoProps contract) ---------- */
+
+.eg.eg-accent-on {
+  --iso-accent-ink: var(--iso-accent, #3f6dfa);
+}
+
+.eg.eg-accent-off {
+  --iso-accent-ink: var(--iso-ink, currentColor);
+}
+
+/* ---------- narrow screens ----------
+   SVG text scales with the viewBox, so the floor is a function of the
+   rendered width: rendered px = size × width / 384. The steps below keep
+   every gated width above 11px rendered; the v0-glob mount remaps
+   --eg-label-size in global.css with the same phone step. At the phone
+   step the wide labels would overrun the viewBox, so the compact
+   rendering takes over. */
+
+@media (max-width: 1160px) {
+  .eg {
+    --eg-label-size: 9px;
+  }
+}
+
+@media (max-width: 640px) {
+  .eg {
+    --eg-label-size: 12px;
+  }
+
+  .eg .eg-label-wide {
+    display: none;
+  }
+
+  .eg .eg-label-compact {
+    display: inline;
+  }
+}
+
+/* ---------- reduced motion ----------
+   The route stays emphasized and every callout rests in the quiet ink,
+   the payload chip rests mid-route (its resting transform is baked into
+   the markup), and the elements that only exist as motion — the request
+   dot, both arrival rings, and the accent flash overlays — are removed
+   entirely; no timeline is built to breathe them in. */
+
+@media (prefers-reduced-motion: reduce) {
+  .eg .eg-chip {
+    opacity: 1;
+  }
+
+  .eg .eg-dot,
+  .eg .eg-pulse-ring,
+  .eg .eg-flash {
+    display: none;
+  }
+}
