@@ -2855,4 +2855,16 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 22px 24px;
+}
+
+/* held, the quote answers in the accent — never by swelling */
+.sgde-root .enterprise-contact .contact-testimonial-card > p:first-child {
+  transition: color 0.2s ease;
+}
+
+.sgde-root .enterprise-contact .contact-testimonial > a:hover
+  .contact-testimonial-card
+  > p:first-child {
+  color: var(--tc-accent);
 }

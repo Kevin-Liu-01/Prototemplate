@@ -107,7 +107,7 @@ export default function EnterpriseContact({
                 href='https://x.com/milichab/status/2010496967848370412'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='transition-transform hover:scale-[1.02]'
+                className='contact-testimonial-link'
               >
                 <div className='contact-testimonial-card flex flex-col gap-3 border p-4'>
                   <p className='flex-1 text-sm whitespace-pre-wrap'>
