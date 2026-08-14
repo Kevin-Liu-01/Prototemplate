@@ -2835,3 +2835,24 @@
   height: 11.25px;
   flex: none;
 }
+
+/* the quote owns the intro column's remaining height: the inline
+   2.5rem offset dies here (the sheet's last word), the block grows,
+   and the card centers its content in the won space */
+.sgde-root .enterprise-contact .contact-testimonial {
+  flex: 1 1 auto;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: 0 !important;
+}
+
+.sgde-root .enterprise-contact .contact-testimonial > a {
+  width: 100%;
+}
+
+.sgde-root .enterprise-contact .contact-testimonial-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
