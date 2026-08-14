@@ -1,20 +1,21 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
-import EnterpriseEvidence from '../../singularity/sections/EnterpriseEvidence';
-import EnterpriseFrameworks from '../../singularity/sections/EnterpriseFrameworks';
-import EnterpriseTestimony from '../../singularity/sections/EnterpriseTestimony';
-import Hero from '../../singularity/sections/Hero';
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
 
-/* no Frameworks on this route — the footer's marks need the sheet directly
-   (the toolchain enterprise subpage precedent) */
-import '../../singularity/sections/logos-icons.css';
+import EnterpriseContactSection from './sections/EnterpriseContactSection';
+import EnterpriseGradeSection from './sections/EnterpriseGradeSection';
+import EnterpriseHero from './sections/EnterpriseHero';
+import GovernedExplorer from './sections/GovernedExplorer';
+import Security from './sections/Security';
+import TestimonialSection from './sections/TestimonialSection';
+
 import '../../singularity/styles.css';
-import '../../singularity/sections/enterprise.css';
+import '../../singularity/sections/logos-icons.css';
 import '../styles.css';
+import './enterprise.css';
+import './enterprise-iso.css';
 
 export const metadata = {
   title: 'Enterprise — Dossier — GT Redesign',
@@ -22,23 +23,25 @@ export const metadata = {
 };
 
 /**
- * Singularity · Dossier — the gate, then the file. The shared enterprise
- * composition under the hero: the contact bay (the ruled form beside the
- * condensing glyph rain), the evidence cells procurement actually reads,
- * and the record — set in this final's dossier dress: dashed certificate
- * frames, filed control numbers, everything measured and signed.
+ * Singularity · Dossier — the enterprise page, ported whole from the
+ * gt-cloud production build: the ink hero with the contained rain and
+ * the customer proof ledger, the quote plate, the ruled contact bay,
+ * the governance timeline (scroll-lit words, per-card blue lock-ins),
+ * the three access instruments in three accents, and the framework
+ * coverage strip flooded in the ink rain.
  */
-export default function SingularityDossierPage() {
+export default function SingularityDossierEnterprisePage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root'>
+      <div className='singularity-root sgd-root sgde-root'>
         <TopNav />
-        <Hero />
-        <EnterpriseContact />
         <div className='tc-rail'>
-          <EnterpriseEvidence />
-          <EnterpriseFrameworks />
-          <EnterpriseTestimony />
+          <EnterpriseHero />
+          <TestimonialSection />
+          <EnterpriseContactSection />
+          <GovernedExplorer />
+          <Security />
+          <EnterpriseGradeSection />
           <SiteFooter />
         </div>
       </div>

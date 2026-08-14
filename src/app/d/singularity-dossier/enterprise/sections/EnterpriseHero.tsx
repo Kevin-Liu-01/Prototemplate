@@ -1,0 +1,106 @@
+'use client';
+
+import { useRef } from 'react';
+
+import { useQuietReveal } from '../../../singularity/sections/reveal';
+import TrackedLink from './TrackedLink';
+
+import HeroInkField from './HeroInkField';
+import Image from 'next/image';
+
+import { customerLogos, infrastructureProof } from './data';
+
+/**
+ * The enterprise opening on the family ink: the ink field rises in the
+ * band's margins (the copy cell is its measured clearing), flat copy on
+ * the left, the customer proof ledger framed on the right. Logos hold
+ * their dark-surface art and the certification marks invert — the
+ * ground never changes with the theme.
+ */
+export default function EnterpriseHero() {
+  const root = useRef<HTMLElement>(null);
+  useQuietReveal(root);
+
+  return (
+    <section className='tc-sec' id='top' ref={root}>
+      <div className='tc-row is-lead tce-hero-row'>
+        <div className='tc-cell tce-hero' data-reveal>
+            <h1>
+              <span>Full-stack localization</span>
+              <span>for enterprises</span>
+            </h1>
+            <p className='tce-hero-sub'>
+              Every company&apos;s localization needs are different. For
+              leading global enterprises, General Translation applies
+              automation, designs custom workflows, and carries
+              international launches through production.
+            </p>
+          <div className='tce-hero-acts'>
+            <span className='tce-hero-cta'>
+              <TrackedLink
+                className='tc-btn tc-btn-solid'
+                href='/enterprise/contact'
+                location='services-cta-hero'
+              >
+                Talk to us <span aria-hidden='true'>→</span>
+              </TrackedLink>
+            </span>
+            <TrackedLink
+              className='tc-btn tc-btn-line'
+              href='/enterprise/contact'
+              location='services-cta-engineer'
+            >
+              Talk to an engineer
+            </TrackedLink>
+          </div>
+          <div className='tce-hero-badges' aria-hidden='true'>
+            <Image src='/shields/soc-2-type-2.svg' alt='' width={96} height={40} />
+            <Image src='/shields/gdpr.svg' alt='' width={96} height={40} />
+            <Image src='/shields/iso-27001.svg' alt='' width={96} height={40} />
+          </div>
+        </div>
+
+        <div className='tc-cell is-framed tce-hero-frame'>
+          {/* the rain lives in this column only — the two frame
+              verticals bound it, and the solid card occludes it */}
+          <HeroInkField />
+          <div className='tc-card tce-hero-proof'>
+              <h3>
+                Trusted by <em>the world's best engineering teams</em>
+              </h3>
+            <div className='tce-hero-proof-rows'>
+              {customerLogos.map((logo) => {
+                const proof = infrastructureProof.find(
+                  (item) => item.label === logo.name
+                );
+                return (
+                  <div className='tce-hero-proof-row' key={logo.name}>
+                    <span className='tce-hero-proof-logo'>
+                      <Image
+                        src={logo.lightSrc}
+                        alt={logo.name}
+                        width={150}
+                        height={42}
+                        className={`is-light ${logo.className ?? ''}`}
+                      />
+                      <Image
+                        src={logo.darkSrc}
+                        alt={logo.name}
+                        width={150}
+                        height={42}
+                        className={`is-dark ${logo.className ?? ''}`}
+                      />
+                    </span>
+                    <span className='tce-hero-proof-copy'>
+                      {proof ? proof.value : null}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
