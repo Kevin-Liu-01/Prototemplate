@@ -354,20 +354,26 @@ export default function YcHorizon() {
         if (width < 2 || height < 2) return;
         const wide = width >= 760;
         /* one disc size across careers and yc — the same formula lives
-           in both heroes, so the holes always match */
+           in both heroes, so the holes always match. The height fit
+           solves the radius back from the ORBIT's vertical semi-extent
+           (ring × tilt + a word's own box), using the larger of the
+           two pages' ring scales (yc's 1.36) so neither page ever
+           clips a flag at the band's edges. */
+        const wordPad = 18;
+        const edgeInset = 24;
+        const fitWide = (height / 2 - edgeInset - wordPad) / (1.36 * 0.94);
+        const fitNarrow = (height / 2 - edgeInset - wordPad) / (1.15 * 0.99);
         const radius = wide
-          ? Math.min(Math.max(width * 0.26, 280), 360, height * 0.41)
-          : Math.min(width * 0.64, 250, height * 0.34);
+          ? Math.min(Math.max(width * 0.26, 280), 360, fitWide)
+          : Math.min(width * 0.64, 250, fitNarrow);
+        const orbitV = wide
+          ? radius * ORBIT_RADIUS_SCALE * WIDE_ORBIT_TILT + wordPad
+          : Math.min(radius * 1.15, width * 0.66) * MOBILE_ORBIT_TILT + wordPad;
         const centerX = width / 2;
-        const centerY = wide
-          ? Math.max(
-              Math.min(height * 0.47, height - radius - 148),
-              radius + 96
-            )
-          : Math.max(
-              Math.min(height * 0.46, height - radius - 172),
-              radius + 148
-            );
+        const centerY = Math.max(
+          Math.min(height * (wide ? 0.47 : 0.46), height - orbitV - edgeInset),
+          orbitV + edgeInset
+        );
         orbitTilt = wide ? WIDE_ORBIT_TILT : MOBILE_ORBIT_TILT;
         orbitRadius = wide
           ? radius * ORBIT_RADIUS_SCALE
