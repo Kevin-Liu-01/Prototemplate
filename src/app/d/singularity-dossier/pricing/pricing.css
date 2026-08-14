@@ -1094,11 +1094,6 @@
 }
 
 
-.pricing-root .pricing-stack-threads path.is-twin {
-  stroke: color-mix(in srgb, var(--tc-ink) 24%, transparent);
-  stroke-width: 1;
-}
-
 
 .pricing-root .pricing-stack-board-col {
   position: relative;
@@ -1115,17 +1110,7 @@
 }
 
 
-/* threads draw themselves in; reduced motion holds them drawn */
-.pricing-root .pricing-stack-threads path {
-  stroke-dasharray: 1200;
-  stroke-dashoffset: 1200;
-}
-@media (prefers-reduced-motion: reduce) {
 
-  .pricing-root .pricing-stack-threads path {
-    stroke-dashoffset: 0;
-  }
-}
 
 
 .pricing-root .pricing-stack-board-col article {

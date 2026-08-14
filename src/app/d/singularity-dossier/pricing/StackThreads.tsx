@@ -1,19 +1,15 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
  * The board's wiring, measured instead of guessed: each station card
  * runs ONE straight doubled thread to its plate's outward vertex. Card
  * edges come from their real boxes, plate anchors from the platform
  * svg's box mapped through the iso projection, and everything re-draws
- * on resize. The threads draw themselves in once, on arrival; the
- * board's data-active attribute re-inks the active run through CSS.
+ * on resize. The threads stand fully drawn — no arrival animation;
+ * the board's data-active attribute re-inks the active run through CSS.
  */
 
 /* Plate anchors in the expanded stack's viewBox space (-96..96 ×
@@ -92,38 +88,15 @@ export default function StackThreads() {
     observer.observe(board);
     void document.fonts?.ready.then(draw);
 
-    const reduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-    let trigger: ScrollTrigger | undefined;
-    if (reduced) {
-      gsap.set(svg.querySelectorAll('path'), { strokeDashoffset: 0 });
-    } else {
-      trigger = ScrollTrigger.create({
-        trigger: board,
-        start: 'top 72%',
-        once: true,
-        onEnter: () => {
-          gsap.to(svg.querySelectorAll('path'), {
-            strokeDashoffset: 0,
-            duration: 1.15,
-            stagger: 0.1,
-            ease: 'power2.out',
-          });
-        },
-      });
-    }
-
     return () => {
       observer.disconnect();
-      trigger?.kill();
     };
   }, []);
 
   return (
     <svg ref={svgRef} className='pricing-stack-threads' aria-hidden='true'>
       {Array.from({ length: 8 }, (_, i) => (
-        <path key={i} className={i % 2 === 1 ? 'is-twin' : undefined} />
+        <path key={i} />
       ))}
     </svg>
   );
