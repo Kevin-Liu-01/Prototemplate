@@ -1883,6 +1883,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       atlas.height = 0;
       sample.width = 0;
       sample.height = 0;
+      for (const sprite of [heldSprite, peelSprite]) {
+        sprite.canvas.width = 0;
+        sprite.canvas.height = 0;
+      }
     },
   };
 }

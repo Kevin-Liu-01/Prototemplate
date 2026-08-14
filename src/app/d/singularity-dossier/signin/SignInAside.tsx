@@ -23,9 +23,11 @@ export default function SignInAside() {
     const globeCanvas = globeRef.current;
     if (!rainCanvas || !globeCanvas) return;
 
-    /* Canvas type must match the page's own faces. */
-    const bodyFamily = getComputedStyle(document.body).fontFamily;
-    const monoFamily = getComputedStyle(document.documentElement)
+    /* Canvas type must match the page's own faces. The tokens live on
+       .singularity-root, so sample them off the canvas (inside the
+       root) — documentElement never carries them. */
+    const bodyFamily = getComputedStyle(rainCanvas).fontFamily;
+    const monoFamily = getComputedStyle(rainCanvas)
       .getPropertyValue('--tc-mono')
       .trim();
 
@@ -85,7 +87,7 @@ export default function SignInAside() {
   });
 
   return (
-    <aside className='sgs-aside' aria-label='General Translation'>
+    <aside className='sgs-aside' aria-hidden='true'>
       {/* the globe underneath, the glyph machine over it: the rain reads
           the same either way (same ink), but the switching word and its
           caliper stay legible instead of sinking into the halftone */}

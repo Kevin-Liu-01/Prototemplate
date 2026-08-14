@@ -97,7 +97,7 @@
 
 .singularity-root .sgs-sub {
   margin-top: 8px;
-  color: var(--tc-ink-3);
+  color: var(--tc-ink-2);
   font-size: clamp(11px, 0.67svh + 8px, 14px);
 }
 
@@ -180,7 +180,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--tc-ink-3);
+  color: var(--tc-ink-2);
   font-family: var(--tc-mono);
   font-size: 11px;
 }
@@ -194,7 +194,7 @@
 }
 
 .singularity-root .sgs-terms {
-  color: var(--tc-ink-3);
+  color: var(--tc-ink-2);
   font-size: 12px;
   text-align: center;
 }
@@ -306,14 +306,8 @@
   gap: 8px 24px;
   border-top: 1px solid var(--tc-hair);
   padding: 12px 24px;
-  color: var(--tc-ink-3);
+  color: var(--tc-ink-2);
   font-size: 12px;
-}
-
-@media (min-width: 640px) {
-  .singularity-root .sgs-footer {
-    padding-inline: 24px;
-  }
 }
 
 .singularity-root .sgs-footer-links {
