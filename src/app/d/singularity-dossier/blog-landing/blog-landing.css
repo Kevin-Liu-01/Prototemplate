@@ -21,14 +21,14 @@
   overflow: hidden;
 }
 
-/* three rows of board cells, flush against the band's edges, flipping
+/* four rows of board cells, flush against the band's edges, flipping
    OVER the figure's dashes */
 .sgd-blog .blog-hero-ticker {
   position: relative;
   z-index: 1;
   display: block;
   width: 100%;
-  height: 66px;
+  height: 88px;
   pointer-events: none;
 }
 
@@ -342,9 +342,9 @@
   pointer-events: none;
   mask-image: linear-gradient(
     to bottom,
-    transparent 0 66px,
-    #000 66px calc(100% - 66px),
-    transparent calc(100% - 66px) 100%
+    transparent 0 88px,
+    #000 88px calc(100% - 88px),
+    transparent calc(100% - 88px) 100%
   );
 }
 
