@@ -105,7 +105,7 @@ export default function CompareTable() {
             <tbody key={group.head}>
               <tr className='pricing-compare-group'>
                 <th colSpan={3} scope='colgroup'>
-                  {group.head}
+                  <span>{group.head}</span>
                 </th>
               </tr>
               {group.rows.map((row) => (
