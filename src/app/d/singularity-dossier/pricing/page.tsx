@@ -4,19 +4,18 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
 
-import PricingBand from '../../singularity/product-sections/PricingBand';
-import PricingFaq from '../../singularity/product-sections/PricingFaq';
-import PricingHero from '../../singularity/product-sections/PricingHero';
-import PricingLedger from '../../singularity/product-sections/PricingLedger';
-import PricingProof from '../../singularity/product-sections/PricingProof';
-import PricingRates from '../../singularity/product-sections/PricingRates';
+import CloseBand from './CloseBand';
+import CompareTable from './CompareTable';
+import PlanCards from './PlanCards';
+import PricingHero from './PricingHero';
+import { StackBoard } from './StackBoard';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
    (the toolchain enterprise subpage precedent) */
 import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
-import '../../singularity/product-sections/product.css';
 import '../styles.css';
+import './pricing.css';
 
 export const metadata = {
   title: 'Pricing — Dossier — GT Redesign',
@@ -24,25 +23,24 @@ export const metadata = {
 };
 
 /**
- * Singularity · Dossier — the pricing page as an
- * evidence file: a dry-run receipt, the two plans, one ruled comparison
- * ledger, the published rate card, and a close on the dark band.
- * A thin wrapper: shared product sections between the shared TopNav and
- * footer, exactly the way this final's enterprise page composes.
+ * Singularity · Dossier — the pricing page ported whole from the live
+ * redesign: the money-weather hero, the two plans on the full-bleed
+ * grid, the pressable full-stack board wired straight to its expanded
+ * platform, the framed compare ledger under the ¥€$ motif, and the
+ * condensation close raining the world's currencies.
  */
 export default function DossierPricingPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root'>
+      <div className='singularity-root sgd-root pricing-root'>
         <TopNav />
         <div className='tc-rail'>
           <PricingHero />
-          <PricingLedger />
-          <PricingRates />
-          <PricingProof />
-          <PricingFaq />
+          <PlanCards />
+          <StackBoard />
+          <CompareTable />
         </div>
-        <PricingBand />
+        <CloseBand />
         <div className='tc-rail'>
           <SiteFooter />
         </div>

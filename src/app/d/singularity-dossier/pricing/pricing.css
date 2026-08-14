@@ -1,0 +1,1599 @@
+/* Dossier pricing — the gt-cloud pricing page ported whole: the
+   money hero, the pressable full-stack board, the framed compare
+   ledger with its ¥€$ motif, and the condensation close. Tokens
+   ride the singularity sheet (--tc-*); the accent maps to
+   --tc-accent. Port-local blocks (plans, table, close CTAs, flap
+   primitives) follow the ported sheet at the end. */
+
+.sgd-root .pricing-root {
+  overflow-x: clip;
+}
+
+
+.pricing-root .pricing-compare a {
+  color: var(--tc-accent);
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+}
+
+
+.pricing-root .pricing-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(460px, 1.18fr);
+  align-items: center;
+  gap: clamp(42px, 6vw, 84px);
+  min-height: 0;
+  padding: clamp(34px, 4vw, 52px) var(--tc-gut);
+}
+
+
+.pricing-root .pricing-hero-copy {
+  min-width: 0;
+}
+
+
+.pricing-root .pricing-hero h1 {
+  font-size: clamp(2.4rem, 3.7vw, 3.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.048em;
+  text-wrap: balance;
+}
+
+
+/* 'everyone' carries the accent, set solid — no dither on live type */
+.pricing-root .pricing-hero-everyone {
+  color: #2563eb;
+}
+
+
+[data-theme='dark'] .pricing-root .pricing-hero-everyone {
+  color: #86a8ff;
+}
+
+
+.pricing-root .pricing-hero p {
+  max-width: 45ch;
+  margin-top: 18px;
+  color: var(--tc-ink-2);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+
+.pricing-root .pricing-hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  color: var(--tc-ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+
+.pricing-root .pricing-hero-link svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.8;
+  transition: transform 160ms ease;
+}
+
+
+.pricing-root .pricing-hero-link:hover svg {
+  transform: translateX(3px);
+}
+
+
+/* the recommendation: accent ring + the Most-popular tag */
+.pricing-root .pricing-plan-card:first-child {
+  position: relative;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--tc-accent) 6%, var(--tc-paper));
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--tc-accent) 45%, transparent);
+}
+
+
+/* a quiet ordered-dither wash in the corner: the accent through a 4×4
+   Bayer tile (cover 3/16), masked down toward the copy. Behind all
+   content — the card isolates so z-index -1 stays above its paint. */
+.pricing-root .pricing-plan-card:first-child::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--tc-accent);
+  opacity: 0.32;
+  mask-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 0h3v3H0zM6 0h3v3H6zM6 6h3v3H6z' fill='%23fff'/%3E%3C/svg%3E"),
+    linear-gradient(225deg, #000, transparent 52%);
+  mask-size: 12px 12px, 100% 100%;
+  mask-repeat: repeat, no-repeat;
+  mask-composite: intersect;
+}
+
+
+/* the Most-popular tag: a solid little plate in the display face,
+   seated on the card's own padding grid (38px top, gut right) */
+.pricing-root .pricing-plan-card > span {
+  top: 38px;
+  right: var(--tc-gut);
+  padding: 5px 10px;
+  border-color: color-mix(in srgb, var(--tc-accent) 55%, transparent);
+  background: color-mix(in srgb, var(--tc-accent) 13%, var(--tc-paper));
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: 1.1;
+  text-transform: none;
+}
+
+
+.pricing-root .pricing-stack-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  padding: clamp(58px, 7vw, 88px) var(--tc-gut) 32px;
+}
+
+
+.pricing-root .pricing-stack-head h2 {
+  max-width: 12ch;
+  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
+}
+
+
+.pricing-root .pricing-stack-head p {
+  max-width: 46ch;
+  color: var(--tc-ink-2);
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: right;
+}
+
+
+.pricing-root .pricing-stack-title i {
+  color: var(--tc-accent);
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+
+.pricing-root .pricing-stack-map {
+  position: relative;
+  min-height: 430px;
+  overflow: hidden;
+  border-top: 1px solid var(--tc-hair);
+  background:
+    linear-gradient(var(--tc-hair-2) 1px, transparent 1px) 0 0 / 100% 44px,
+    radial-gradient(
+      circle at 50% 46%,
+      color-mix(in srgb, var(--tc-accent) 10%, transparent),
+      transparent 36%
+    );
+}
+
+
+.pricing-root .pricing-stack-map-art {
+  position: absolute;
+  inset: 1% 20% 16%;
+}
+
+
+.pricing-root .pricing-stack-map-art svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+
+.pricing-root .pricing-stack-solid-top {
+  fill: color-mix(in srgb, var(--tc-paper) 94%, var(--tc-ink) 6%);
+}
+
+
+.pricing-root .pricing-stack-solid-left {
+  fill: color-mix(in srgb, var(--tc-paper) 84%, var(--tc-ink) 16%);
+}
+
+
+.pricing-root .pricing-stack-solid-right {
+  fill: color-mix(in srgb, var(--tc-paper) 72%, var(--tc-ink) 28%);
+}
+
+
+.pricing-root .pricing-stack-solid.is-active .pricing-stack-solid-top {
+  fill: color-mix(in srgb, var(--tc-paper) 84%, var(--tc-accent) 16%);
+}
+
+
+.pricing-root .pricing-stack-solid.is-active .pricing-stack-solid-left {
+  fill: color-mix(in srgb, var(--tc-paper) 62%, var(--tc-accent) 38%);
+}
+
+
+.pricing-root .pricing-stack-solid.is-active .pricing-stack-solid-right {
+  fill: color-mix(in srgb, var(--tc-paper) 44%, var(--tc-accent) 56%);
+}
+
+
+.pricing-root .pricing-stack-solid-line {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tc-ink) 38%, transparent);
+  stroke-width: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+
+
+/* ---- artifacts seated into the surfaces ---- */
+
+.pricing-root .pricing-stack-station {
+  font-family: var(--tc-mono);
+  font-size: 4.2px;
+  letter-spacing: 0.06em;
+  fill: color-mix(in srgb, var(--tc-ink) 52%, transparent);
+}
+
+
+.pricing-root .pricing-stack-chip-seat {
+  fill: color-mix(in srgb, var(--tc-paper) 80%, var(--tc-accent) 20%);
+  stroke: color-mix(in srgb, var(--tc-accent) 55%, var(--tc-hair));
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+
+.pricing-root .pricing-stack-code {
+  font-family: var(--tc-mono);
+  font-size: 5px;
+  fill: var(--tc-accent);
+}
+
+
+.pricing-root .pricing-stack-pair {
+  font-family: var(--tc-mono);
+  font-size: 5px;
+  letter-spacing: 0.02em;
+  fill: color-mix(in srgb, var(--tc-ink) 68%, transparent);
+}
+
+
+.pricing-root .pricing-stack-key {
+  fill: color-mix(in srgb, var(--tc-paper) 80%, var(--tc-accent) 20%);
+  stroke: color-mix(in srgb, var(--tc-accent) 55%, var(--tc-hair));
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+
+.pricing-root .pricing-stack-mark {
+  fill: color-mix(in srgb, var(--tc-ink) 88%, transparent);
+}
+
+
+/* the doubled thread lying in a face, joining the plates' furniture.
+   Gauge stays above a device pixel: at sub-pixel widths the two
+   strokes catch different anti-aliasing phases and one reads darker. */
+.pricing-root .pricing-stack-duo {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tc-ink) 46%, transparent);
+  stroke-width: 1.3;
+}
+
+
+/* ---- the plates' furniture: chips, bars, wires, diffs ---- */
+
+.pricing-root .pricing-stack-chip-hull {
+  fill: color-mix(in srgb, var(--tc-paper) 58%, var(--tc-ink) 42%);
+}
+
+
+.pricing-root .pricing-stack-chip-top {
+  fill: color-mix(in srgb, var(--tc-paper) 88%, var(--tc-ink) 12%);
+}
+
+
+.pricing-root .pricing-stack-chip.is-accent .pricing-stack-chip-hull {
+  fill: color-mix(in srgb, var(--tc-accent) 60%, var(--tc-paper));
+}
+
+
+.pricing-root .pricing-stack-chip.is-accent .pricing-stack-chip-top {
+  fill: color-mix(in srgb, var(--tc-accent) 24%, var(--tc-paper));
+}
+
+
+.pricing-root .pricing-stack-chip-glyph {
+  font-family: var(--tc-mono);
+  font-size: 6.5px;
+  fill: var(--tc-ink);
+}
+
+
+.pricing-root .pricing-stack-bar {
+  fill: color-mix(in srgb, var(--tc-ink) 42%, transparent);
+}
+
+
+.pricing-root .pricing-stack-bar.is-accent {
+  fill: var(--tc-accent);
+}
+
+
+.pricing-root .pricing-stack-wire {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tc-ink) 38%, transparent);
+  stroke-width: 0.9;
+}
+
+
+.pricing-root .pricing-stack-rule {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tc-ink) 24%, transparent);
+  stroke-width: 0.8;
+}
+
+
+.pricing-root .pricing-stack-lamp.is-r {
+  fill: #e5484d;
+}
+
+
+.pricing-root .pricing-stack-lamp.is-y {
+  fill: #ffb224;
+}
+
+
+.pricing-root .pricing-stack-lamp.is-g {
+  fill: #30a46c;
+}
+
+
+.pricing-root .pricing-stack-sign {
+  fill: color-mix(in srgb, var(--tc-ink) 50%, transparent);
+}
+
+
+.pricing-root .pricing-stack-sign.is-add {
+  fill: var(--tc-accent);
+}
+
+
+.pricing-root .pricing-stack-diff-hull {
+  fill: color-mix(in srgb, var(--tc-paper) 55%, var(--tc-ink) 45%);
+}
+
+
+.pricing-root .pricing-stack-diff-top {
+  fill: color-mix(in srgb, var(--tc-paper) 76%, var(--tc-ink) 24%);
+}
+
+
+.pricing-root .pricing-stack-diff.is-add .pricing-stack-diff-hull {
+  fill: color-mix(in srgb, var(--tc-accent) 58%, var(--tc-paper));
+}
+
+
+.pricing-root .pricing-stack-diff.is-add .pricing-stack-diff-top {
+  fill: color-mix(in srgb, var(--tc-accent) 26%, var(--tc-paper));
+}
+
+
+
+.pricing-root .pricing-stack-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.pricing-root .pricing-stack-title svg {
+  width: 18px;
+  height: 18px;
+  color: var(--tc-accent);
+  stroke-width: 1.65;
+}
+
+
+.pricing-root .pricing-stack-title h3 {
+  font-size: 17px;
+  letter-spacing: -0.018em;
+}
+
+
+/* the station diagrams — one grammar for all four cards: hairline
+   node panels joined by the doubled thread, mono voice, the accent
+   only where it means GO */
+.pricing-root .pricing-stack-artifact {
+  min-width: 0;
+  margin-top: 20px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+
+.pricing-root .pricing-stack-artifact.is-diagram {
+  display: grid;
+}
+
+
+.pricing-root .psd-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--tc-hair);
+  background: color-mix(in srgb, var(--tc-paper) 92%, transparent);
+}
+
+
+.pricing-root .psd-node > span:last-child:not(.psd-bar):not(.psd-tag) {
+  margin-left: auto;
+}
+
+
+.pricing-root .psd-node code,
+.pricing-root .psd-node b {
+  overflow: hidden;
+  color: var(--tc-ink);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.pricing-root .psd-node .is-accent,
+.pricing-root .psd-node b.is-accent {
+  color: var(--tc-accent);
+}
+
+
+.pricing-root .psd-node svg {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  color: var(--tc-accent);
+  stroke-width: 2;
+}
+
+
+/* the doubled thread, vertical: one short run between nodes */
+.pricing-root .psd-link {
+  justify-self: center;
+  width: 7px;
+  height: 14px;
+  border-inline: 1px solid color-mix(in srgb, var(--tc-ink) 38%, transparent);
+}
+
+
+/* 01 — the fan: three doubled drops from the source into the locales */
+.pricing-root .psd-fan {
+  display: flex;
+  justify-content: space-between;
+  height: 14px;
+  padding-inline: 16%;
+}
+
+
+.pricing-root .psd-fan i {
+  width: 7px;
+  border-inline: 1px solid color-mix(in srgb, var(--tc-ink) 38%, transparent);
+}
+
+
+.pricing-root .psd-node.is-locales {
+  justify-content: space-between;
+  gap: 0;
+  padding-inline: 13%;
+}
+
+
+.pricing-root .psd-tag {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+
+/* the payload bars: set type as skeleton, never lorem */
+.pricing-root .psd-bar {
+  flex: none;
+  width: 34px;
+  height: 5px;
+  border-radius: 1.5px;
+  background: color-mix(in srgb, var(--tc-ink) 34%, transparent);
+}
+
+
+.pricing-root .psd-bar.is-accent {
+  width: 24px;
+  background: var(--tc-accent);
+}
+
+
+/* 03 — the keys wired into the dashboard window */
+.pricing-root .pricing-stack-artifact.is-context {
+  grid-template-columns: minmax(0, 1.15fr) 16px minmax(0, 0.85fr);
+  align-items: stretch;
+}
+
+
+.pricing-root .psd-keys {
+  display: grid;
+  gap: 7px;
+}
+
+
+.pricing-root .psd-keys span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--tc-hair);
+  background: color-mix(in srgb, var(--tc-paper) 92%, transparent);
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+
+.pricing-root .psd-keys svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  color: var(--tc-accent);
+  stroke-width: 2;
+}
+
+
+.pricing-root .psd-merge {
+  display: grid;
+  align-content: space-between;
+  padding-block: 12px;
+}
+
+
+.pricing-root .psd-merge i {
+  height: 7px;
+  border-block: 1px solid color-mix(in srgb, var(--tc-ink) 38%, transparent);
+}
+
+
+.pricing-root .psd-node.is-dash {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+}
+
+
+.pricing-root .psd-node.is-dash .psd-bar {
+  width: 56%;
+}
+
+
+.pricing-root .psd-node.is-dash .psd-bar.is-accent {
+  width: 38%;
+}
+
+
+.pricing-root .psd-lamps {
+  display: flex;
+  gap: 4px;
+}
+
+
+.pricing-root .psd-lamps i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+
+.pricing-root .psd-lamps i:nth-child(1) {
+  background: #e5484d;
+}
+
+
+.pricing-root .psd-lamps i:nth-child(2) {
+  background: #ffb224;
+}
+
+
+.pricing-root .psd-lamps i:nth-child(3) {
+  background: #30a46c;
+}
+
+
+/* 04 — the agent's mark between repo and PR */
+.pricing-root .psd-mark {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+
+[data-theme='dark'] .pricing-root .psd-mark {
+  filter: invert(1);
+}
+
+
+/* ---- the pressable stages: card ↔ plate ↔ thread selection ---- */
+
+.pricing-root .pricing-stack-board-col article {
+  cursor: pointer;
+  transition:
+    border-color 200ms ease,
+    opacity 200ms ease;
+}
+
+
+.pricing-root .pricing-stack-board-col article:hover {
+  border-color: color-mix(in srgb, var(--tc-ink) 30%, var(--tc-hair));
+}
+
+
+.pricing-root .pricing-stack-board-col article.is-hot {
+  border-color: color-mix(in srgb, var(--tc-accent) 60%, var(--tc-hair));
+}
+
+
+.pricing-root .pricing-stack-board-col article.is-dim {
+  opacity: 0.5;
+}
+
+
+/* the little description fades in on selection — its space is
+   reserved from the start, so nothing in the board ever reflows */
+.pricing-root .pricing-stack-desc > p {
+  padding-top: 12px;
+  color: var(--tc-ink-2);
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    visibility 0s linear 220ms;
+}
+
+
+.pricing-root
+  .pricing-stack-board-col
+  article.is-hot
+  .pricing-stack-desc
+  > p {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+
+/* the selected plate re-inks; its neighbors step back. The plates are
+   the same toggles as their cards — pressable in place. */
+.pricing-root .pricing-stack-solid {
+  cursor: pointer;
+  transition: opacity 240ms ease;
+}
+
+
+.pricing-root .pricing-stack-solid.is-dim {
+  opacity: 0.32;
+}
+
+
+.pricing-root .pricing-stack-solid.is-hot .pricing-stack-solid-top {
+  fill: color-mix(in srgb, var(--tc-paper) 82%, var(--tc-accent) 18%);
+}
+
+
+.pricing-root .pricing-stack-solid.is-hot .pricing-stack-solid-left {
+  fill: color-mix(in srgb, var(--tc-paper) 60%, var(--tc-accent) 40%);
+}
+
+
+.pricing-root .pricing-stack-solid.is-hot .pricing-stack-solid-right {
+  fill: color-mix(in srgb, var(--tc-paper) 42%, var(--tc-accent) 58%);
+}
+
+
+.pricing-root .pricing-stack-solid.is-hot .pricing-stack-solid-line {
+  stroke: color-mix(in srgb, var(--tc-accent) 65%, transparent);
+}
+
+
+/* the active thread carries the accent; the others step back */
+.pricing-root .pricing-stack-threads path {
+  transition:
+    stroke 200ms ease,
+    opacity 200ms ease;
+}
+
+
+.pricing-root .pricing-stack-board[data-active] .pricing-stack-threads path {
+  opacity: 0.3;
+}
+
+
+.pricing-root
+  .pricing-stack-board[data-active='1']
+  .pricing-stack-threads
+  path[data-run='1'],
+.pricing-root
+  .pricing-stack-board[data-active='2']
+  .pricing-stack-threads
+  path[data-run='2'],
+.pricing-root
+  .pricing-stack-board[data-active='3']
+  .pricing-stack-threads
+  path[data-run='3'],
+.pricing-root
+  .pricing-stack-board[data-active='4']
+  .pricing-stack-threads
+  path[data-run='4'] {
+  opacity: 1;
+  stroke: var(--tc-accent);
+}
+
+
+/* the stack sits low in the board so every level run lands inside
+   its card */
+.pricing-root .pricing-stack-board-map {
+  padding-top: clamp(28px, 3.2vw, 46px);
+}
+
+
+.pricing-root .pricing-stack-surface {
+  display: block;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--tc-hair);
+  color: var(--tc-ink-3);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+}
+
+
+.pricing-root .pricing-compare {
+  /* the head's air above matches its 34px below — no extra shelf */
+  padding: 34px var(--tc-gut) clamp(72px, 8vw, 104px);
+}
+
+
+.pricing-root .pricing-compare-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 34px;
+}
+
+
+.pricing-root .pricing-compare h2 {
+  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
+}
+
+
+/* the grid takes the section's own gut instead of centering at a cap,
+   and its frame runs edge to edge in the house rule grammar */
+.pricing-root .pricing-compare .pricing-compare-grid {
+  position: relative;
+}
+
+
+.pricing-root .pricing-compare .pricing-compare-grid > div {
+  max-width: none;
+}
+
+
+.pricing-root .pricing-compare .pricing-compare-grid::before,
+.pricing-root .pricing-compare .pricing-compare-grid::after {
+  content: '';
+  position: absolute;
+  right: calc(50% - 50vw);
+  left: calc(50% - 50vw);
+  height: 1px;
+  background: var(--tc-hair);
+}
+
+
+.pricing-root .pricing-compare .pricing-compare-grid::before {
+  top: 0;
+}
+
+
+.pricing-root .pricing-compare .pricing-compare-grid::after {
+  bottom: 0;
+}
+
+
+.pricing-root .pricing-compare table {
+  border: 1px solid var(--tc-hair);
+}
+
+
+/* the head's motif: currencies poured from the ramp, standing at the
+   heading's right */
+.pricing-root .pricing-dither-type {
+  flex: none;
+  width: min(34%, 470px);
+  pointer-events: none;
+}
+
+
+.pricing-root .pricing-dither-type svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+.pricing-root .pricing-dither-type text {
+  font-family: inherit;
+  font-weight: 600;
+}
+
+
+.pricing-root .pricing-dither-type pattern path {
+  fill: #2563eb;
+}
+
+
+[data-theme='dark'] .pricing-root .pricing-dither-type pattern path {
+  fill: #86a8ff;
+}
+@media (max-width: 900px) {
+
+  .pricing-root .pricing-dither-type {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+
+  .pricing-root .pricing-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+
+  .pricing-root .pricing-stack-map {
+    min-height: 480px;
+  }
+
+
+  .pricing-root .pricing-stack-map-art {
+    inset-inline: 8%;
+  }
+}
+@media (max-width: 720px) {
+
+  .pricing-root .pricing-hero-ink {
+    display: none;
+  }
+
+
+  .pricing-root .pricing-hero-grid {
+    gap: 48px;
+    padding-top: 42px;
+    padding-bottom: 46px;
+  }
+
+
+  .pricing-root .pricing-hero h1 {
+    font-size: clamp(2.6rem, 13vw, 3.6rem);
+  }
+
+
+  .pricing-root .pricing-stack-head {
+    display: block;
+  }
+
+
+  .pricing-root .pricing-stack-head p {
+    margin-top: 18px;
+    text-align: left;
+  }
+
+
+
+
+  .pricing-root .pricing-stack-map {
+    min-height: 540px;
+  }
+
+
+  .pricing-root .pricing-stack-map-art {
+    inset: 0 0 36%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+
+  .pricing-root .pricing-hero-link svg {
+    transition: none;
+  }
+}
+
+
+
+/* ---- the close: one dark band, the condensation field behind the
+   ask — copy stands left in the engine's own dithered clearing, the
+   word forms to its right ---- */
+
+.pricing-root .pricing-close {
+  /* the band is literal ink in both themes, so the glyph-field engine
+     reads white here — the deploy band's pin (the engine resolves its
+     ink off the canvas's --tc-ink) */
+  --tc-ink: #fff;
+
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(380px, 42vw, 500px);
+  background: #0d0d0f;
+}
+
+
+.pricing-root .pricing-close-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+
+.pricing-root .pricing-close-copy {
+  position: relative;
+  display: grid;
+  gap: 26px;
+  justify-items: start;
+  align-content: center;
+  max-width: min(46%, 500px);
+  min-height: inherit;
+  padding: clamp(56px, 7vw, 88px) var(--tc-gut);
+}
+
+
+.pricing-root .pricing-close-copy h2 {
+  max-width: 16ch;
+  color: rgb(255 255 255 / 94%);
+  font-size: clamp(28px, 3.4vw, 46px);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+
+.pricing-root .pricing-close-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+/* the engine's 880 narrow cut: the word drops bottom-center, so the
+   copy keeps the head and the band grows below it */
+@media (max-width: 880px) {
+
+  .pricing-root .pricing-close-copy {
+    max-width: none;
+    padding-top: clamp(48px, 8vw, 64px);
+    padding-bottom: clamp(240px, 52vw, 300px);
+    align-content: start;
+  }
+}
+
+
+.pricing-root .pricing-close .tc-btn-solid {
+  border-color: #fff;
+  background: #fff;
+  color: #070707;
+}
+
+
+.pricing-root .pricing-close .tc-btn-solid:hover {
+  background: #fff;
+}
+
+
+/* ---- the hero's weather: the ink field on the page's own ground —
+   theme-inked glyphs thinning away leftward on the dither threshold,
+   pointer play on ---- */
+
+.pricing-root .pricing-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+
+.pricing-root .pricing-hero-ink {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(52%, 640px);
+  /* the money rain runs in the accent, not the theme ink */
+  color: #2563eb;
+}
+
+
+[data-theme='dark'] .pricing-root .pricing-hero-ink {
+  color: #86a8ff;
+}
+
+
+.pricing-root .pricing-hero-ink-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+
+.pricing-root .pricing-hero-grid {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+
+/* ---- the platform band seated in the full-stack section ---- */
+
+.pricing-root .pricing-stack .pricing-stack-map.is-hero {
+  min-height: clamp(380px, 42vw, 520px);
+  border-block: 1px solid var(--tc-hair);
+}
+
+
+
+
+/* ---- the full-stack board: pillars wired to their stations ---- */
+
+.pricing-root .pricing-stack-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 0 clamp(12px, 1.4vw, 20px);
+  align-items: stretch;
+  padding: clamp(20px, 2.4vw, 32px) var(--tc-gut) clamp(24px, 2.6vw, 36px);
+  border-top: 1px solid var(--tc-hair);
+  background: radial-gradient(
+    circle at 50% 46%,
+    color-mix(in srgb, var(--tc-accent) 10%, transparent),
+    transparent 36%
+  );
+}
+
+
+.pricing-root .pricing-stack-threads {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+
+.pricing-root .pricing-stack-threads path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tc-ink) 52%, transparent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+
+.pricing-root .pricing-stack-threads path.is-twin {
+  stroke: color-mix(in srgb, var(--tc-ink) 24%, transparent);
+  stroke-width: 1;
+}
+
+
+.pricing-root .pricing-stack-board-col {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(18px, 2.4vw, 32px);
+  align-items: stretch;
+}
+
+
+.pricing-root .pricing-stack-board-col article {
+  height: 100%;
+}
+
+
+/* threads draw themselves in; reduced motion holds them drawn */
+.pricing-root .pricing-stack-threads path {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+}
+@media (prefers-reduced-motion: reduce) {
+
+  .pricing-root .pricing-stack-threads path {
+    stroke-dashoffset: 0;
+  }
+}
+
+
+.pricing-root .pricing-stack-board-col article {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px 20px;
+  border: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+}
+
+
+.pricing-root .pricing-stack-board-col article > p {
+  margin-top: 12px;
+  color: var(--tc-ink-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+.pricing-root .pricing-stack-board-map {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: center;
+}
+
+
+.pricing-root .pricing-stack-board-map .pricing-stack-map {
+  min-height: 0;
+  border: 0;
+  background: none;
+}
+
+
+.pricing-root .pricing-stack-board-map .pricing-stack-map-art {
+  position: relative;
+  inset: auto;
+}
+
+
+.pricing-root .pricing-stack-board-map .pricing-stack-map-art svg {
+  width: 100%;
+  height: auto;
+}
+@media (max-width: 900px) {
+
+  .pricing-root .pricing-stack-board {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+
+  .pricing-root .pricing-stack-threads {
+    display: none;
+  }
+
+
+  .pricing-root .pricing-stack-board-col {
+    gap: 14px;
+  }
+
+
+  .pricing-root .pricing-stack-board-map {
+    order: -1;
+  }
+}
+
+
+/* ---- the close's flap cells ---- */
+
+.pricing-root .pricing-close {
+  --tb-flash: #86a8ff;
+}
+
+
+.pricing-root .pricing-close .tb-ch {
+  position: relative;
+  display: inline-block;
+}
+
+
+.pricing-root .pricing-close .tb-ch-g {
+  visibility: hidden;
+}
+
+
+.pricing-root .pricing-close .tb-ch-f {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  white-space: nowrap;
+  transform-origin: 50% 54%;
+}
+
+
+.pricing-root .pricing-close .tb-word {
+  white-space: nowrap;
+}
+
+
+.pricing-root .pricing-close .tb-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ================= port-local blocks ================= */
+
+/* the page's dark accent steps to the v0 blue (the singularity sheet
+   keeps its own accent for everything else) */
+[data-theme='dark'] .singularity-root .pricing-root {
+  --tc-accent: #3b82f6;
+}
+
+/* ---- flap primitives (the terminus cells FlapPhrase mutates) ---- */
+
+.pricing-root .tb-ch {
+  position: relative;
+  display: inline-block;
+}
+
+.pricing-root .tb-ch-g {
+  visibility: hidden;
+}
+
+.pricing-root .tb-ch-f {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  white-space: nowrap;
+  transform-origin: 50% 54%;
+}
+
+.pricing-root .tb-word {
+  white-space: nowrap;
+}
+
+.pricing-root .tb-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- the plans: two cards on the full-bleed grid ---- */
+
+.pricing-root .pricing-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-block: 1px solid var(--tc-hair);
+}
+
+.pricing-root .pricing-plan-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 470px;
+  padding: 38px var(--tc-gut) 34px;
+}
+
+.pricing-root .pricing-plan-card + .pricing-plan-card {
+  border-left: 1px solid var(--tc-hair);
+}
+
+/* the recommendation: accent ground, inset ring, corner Bayer wash */
+.pricing-root .pricing-plan-card.is-starter {
+  background: color-mix(in srgb, var(--tc-accent) 6%, var(--tc-paper));
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--tc-accent) 45%, transparent);
+}
+
+.pricing-root .pricing-plan-card.is-starter::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--tc-accent);
+  opacity: 0.32;
+  mask-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 0h3v3H0zM6 0h3v3H6zM6 6h3v3H6z' fill='%23fff'/%3E%3C/svg%3E"),
+    linear-gradient(225deg, #000, transparent 52%);
+  mask-size: 12px 12px, 100% 100%;
+  mask-repeat: repeat, no-repeat;
+  mask-composite: intersect;
+}
+
+.pricing-root .pricing-plan-badge {
+  position: absolute;
+  top: 38px;
+  right: var(--tc-gut);
+  padding: 5px 10px;
+  border: 1px solid color-mix(in srgb, var(--tc-accent) 55%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--tc-accent) 13%, var(--tc-paper));
+  color: var(--tc-accent);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: 1.1;
+}
+
+.pricing-root .pricing-plan-name {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.pricing-root .pricing-plan-name svg {
+  width: 18px;
+  height: 18px;
+  color: var(--tc-ink-3);
+  stroke-width: 1.7;
+}
+
+.pricing-root .pricing-plan-name h3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.pricing-root .pricing-plan-price {
+  margin-top: 10px;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.pricing-root .pricing-plan-head > p {
+  margin-top: 8px;
+  color: var(--tc-ink-2);
+  font-size: 14.5px;
+}
+
+.pricing-root .pricing-plan-features {
+  display: grid;
+  gap: 13px;
+  margin-top: 26px;
+  list-style: none;
+  padding: 0;
+}
+
+.pricing-root .pricing-plan-features li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14.5px;
+}
+
+.pricing-root .pricing-plan-features svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--tc-accent);
+  stroke-width: 1.8;
+}
+
+.pricing-root .pricing-plan-rule {
+  margin-top: 24px;
+  border-top: 1px dashed var(--tc-hair);
+}
+
+.pricing-root .pricing-plan-plus {
+  margin-top: 22px;
+  color: var(--tc-ink-2);
+  font-size: 13.5px;
+}
+
+.pricing-root .pricing-plan-plus + .pricing-plan-features {
+  margin-top: 14px;
+}
+
+.pricing-root .pricing-plan-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  padding: 11px 18px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  color: var(--tc-ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+.pricing-root .pricing-plan-cta:hover {
+  border-color: color-mix(in srgb, var(--tc-ink) 30%, var(--tc-hair));
+}
+
+.pricing-root .pricing-plan-cta.is-solid {
+  border-color: var(--tc-ink);
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+}
+
+.pricing-root .pricing-plan-features + .pricing-plan-cta {
+  margin-top: 28px;
+}
+
+/* ---- the compare ledger: one framed table ---- */
+
+.pricing-root .pricing-compare table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.pricing-root .pricing-compare thead th {
+  padding: 22px 16px 18px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.pricing-root .pricing-compare thead th:first-child {
+  width: 34%;
+}
+
+.pricing-root .pricing-compare thead b {
+  display: block;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.pricing-root .pricing-compare thead span {
+  display: block;
+  margin-top: 3px;
+  color: var(--tc-ink-2);
+  font-size: 13px;
+}
+
+.pricing-root .pricing-compare thead .pricing-plan-cta {
+  margin-top: 14px;
+}
+
+.pricing-root .pricing-compare .pricing-compare-group th {
+  padding: 26px 16px 12px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.pricing-root .pricing-compare tbody th {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  color: var(--tc-ink-2);
+  font-weight: 400;
+  text-align: left;
+}
+
+.pricing-root .pricing-compare tbody td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  text-align: center;
+}
+
+.pricing-root .pricing-compare td.is-starter,
+.pricing-root .pricing-compare thead th.is-starter {
+  background: color-mix(in srgb, var(--tc-accent) 5%, transparent);
+}
+
+.pricing-root .pricing-compare td svg {
+  width: 17px;
+  height: 17px;
+  vertical-align: middle;
+  stroke-width: 2.2;
+}
+
+.pricing-root .pricing-compare td svg.is-yes {
+  color: var(--tc-accent);
+}
+
+.pricing-root .pricing-compare td svg.is-no {
+  color: var(--tc-ink-4);
+}
+
+/* ---- the close's CTA pair: the rainbow ring and the outline ---- */
+
+.pricing-root .pricing-close-cta {
+  position: relative;
+  display: inline-flex;
+}
+
+.pricing-root .pricing-close-cta::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #db2777, #2563eb, #9333ea, #16a34a);
+  filter: blur(4px);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.pricing-root .pricing-close-cta:hover::before,
+.pricing-root .pricing-close-cta:focus-within::before {
+  opacity: 0.9;
+}
+
+.pricing-root .pricing-close-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: 6px;
+  color: rgb(255 255 255 / 88%);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.pricing-root .pricing-close-btn:hover {
+  border-color: rgb(255 255 255 / 45%);
+}
+
+/* the ringed solid never washes: the ground holds and the rainbow
+   ring is the whole hover answer */
+.pricing-root .pricing-close-btn.is-solid {
+  border-color: #fff;
+  background: #fff;
+  color: #070707;
+}
+
+.pricing-root .pricing-close-btn.is-solid:hover {
+  background: #fff;
+}
+
+/* ---- the locale tags in the board's fan row ---- */
+
+.pricing-root .psd-tag .fi {
+  width: 15px;
+  height: 11px;
+  border-radius: 1.5px;
+}
+
+/* the table CTAs are buttons, not the section's inline links */
+.pricing-root .pricing-compare a.pricing-plan-cta {
+  color: var(--tc-ink);
+  text-decoration-line: none;
+}
+
+.pricing-root .pricing-compare a.pricing-plan-cta.is-solid {
+  color: var(--tc-paper);
+}
