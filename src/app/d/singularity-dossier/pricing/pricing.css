@@ -721,100 +721,6 @@
 }
 
 
-.pricing-root .pricing-compare {
-  /* the head's air above matches its 34px below — no extra shelf */
-  padding: 34px var(--tc-gut) clamp(72px, 8vw, 104px);
-}
-
-
-.pricing-root .pricing-compare-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 34px;
-}
-
-
-.pricing-root .pricing-compare h2 {
-  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
-}
-
-
-/* the grid takes the section's own gut instead of centering at a cap,
-   and its frame runs edge to edge in the house rule grammar */
-.pricing-root .pricing-compare .pricing-compare-grid {
-  position: relative;
-}
-
-
-.pricing-root .pricing-compare .pricing-compare-grid > div {
-  max-width: none;
-}
-
-
-.pricing-root .pricing-compare .pricing-compare-grid::before,
-.pricing-root .pricing-compare .pricing-compare-grid::after {
-  content: '';
-  position: absolute;
-  right: calc(50% - 50vw);
-  left: calc(50% - 50vw);
-  height: 1px;
-  background: var(--tc-hair);
-}
-
-
-.pricing-root .pricing-compare .pricing-compare-grid::before {
-  top: 0;
-}
-
-
-.pricing-root .pricing-compare .pricing-compare-grid::after {
-  bottom: 0;
-}
-
-
-.pricing-root .pricing-compare table {
-  border: 1px solid var(--tc-hair);
-}
-
-
-/* the head's motif: currencies poured from the ramp, standing at the
-   heading's right */
-.pricing-root .pricing-dither-type {
-  flex: none;
-  width: min(34%, 470px);
-  pointer-events: none;
-}
-
-
-.pricing-root .pricing-dither-type svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-
-.pricing-root .pricing-dither-type text {
-  font-family: inherit;
-  font-weight: 600;
-}
-
-
-.pricing-root .pricing-dither-type pattern path {
-  fill: #2563eb;
-}
-
-
-[data-theme='dark'] .pricing-root .pricing-dither-type pattern path {
-  fill: #86a8ff;
-}
-@media (max-width: 900px) {
-
-  .pricing-root .pricing-dither-type {
-    display: none;
-  }
-}
 @media (max-width: 900px) {
 
   .pricing-root .pricing-hero-grid {
@@ -1223,60 +1129,101 @@
   border: 0;
 }
 
-/* ---- the plans: what every plan carries, then the two cards ---- */
+/* ---- the plans: the shared strip as the table's head row, then the
+   two cards on one subgrid skeleton ---- */
 
+/* the strip is a four-cell manifest row: the head, then three ∞ tiles
+   split by hairlines — closed below by the plan grid's own top rule */
 .pricing-root .pricing-plans-included {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 36px;
-  align-items: baseline;
-  padding: clamp(26px, 3vw, 38px) var(--tc-gut) 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(0, 1fr));
+  align-items: center;
+  margin-top: clamp(18px, 2.4vw, 30px);
+  border-top: 1px solid var(--tc-hair);
 }
 
 .pricing-root .pricing-plans-included h2 {
-  font-size: 16px;
+  max-width: 14ch;
+  padding: 24px 24px 24px var(--tc-gut);
+  font-size: 22px;
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-wrap: balance;
 }
 
 .pricing-root .pricing-plans-included ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
+  display: contents;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .pricing-root .pricing-plans-included li {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  color: var(--tc-ink-2);
-  font-size: 14.5px;
+  position: relative;
+  display: grid;
+  align-content: center;
+  align-self: stretch;
+  min-height: 96px;
+  padding: 22px 96px 22px 24px;
+  border-left: 1px solid var(--tc-hair-2);
+  color: var(--tc-ink);
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.pricing-root .pricing-plans-included svg {
-  flex: none;
-  width: 16px;
-  height: 16px;
+.pricing-root .pricing-inf {
+  margin-bottom: 5px;
   color: var(--tc-accent);
-  stroke-width: 1.8;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
 }
 
+/* the cell's dithered mark, seated absolutely on the right — the
+   compare motif's ramp at tile scale, same accent inks */
+.pricing-root .pricing-plan-inc-mark {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  width: 62px;
+  height: 62px;
+  translate: 0 -50%;
+  pointer-events: none;
+}
+
+.pricing-root .pricing-plan-inc-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pricing-root .pricing-plan-inc-mark pattern path {
+  fill: #2563eb;
+}
+
+[data-theme='dark'] .pricing-root .pricing-plan-inc-mark pattern path {
+  fill: #86a8ff;
+}
+
+/* one skeleton for both cards: name, price, blurb, body, CTA share
+   the grid's row tracks (subgrid), so every beat — the price line,
+   the blurb rule, the CTA — lands on the same line in both columns
+   no matter how the copy wraps */
 .pricing-root .pricing-plan-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(5, auto);
   border-block: 1px solid var(--tc-hair);
 }
 
 .pricing-root .pricing-plan-card {
   position: relative;
   isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  min-height: 470px;
-  padding: 38px var(--tc-gut) 34px;
+  display: grid;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  padding: 32px var(--tc-gut) 30px;
 }
 
 .pricing-root .pricing-plan-card + .pricing-plan-card {
@@ -1309,11 +1256,16 @@
   mask-composite: intersect;
 }
 
-/* the Recommended plate, seated on the card's own padding grid */
+/* the name row: plan mark left, the Recommended plate inline right —
+   no absolute seating, the row IS the shared track */
+.pricing-root .pricing-plan-top {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .pricing-root .pricing-plan-badge {
-  position: absolute;
-  top: 38px;
-  right: var(--tc-gut);
   padding: 5px 10px;
   border: 1px solid color-mix(in srgb, var(--tc-accent) 55%, transparent);
   border-radius: 6px;
@@ -1345,32 +1297,33 @@
   letter-spacing: -0.02em;
 }
 
-/* one head skeleton on both cards: name, price, blurb — held to one
-   height and closed by the same rule, so the content zones below
-   start on the same line */
-.pricing-root .pricing-plan-head {
-  min-height: 122px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--tc-hair-2);
-}
-
 .pricing-root .pricing-plan-price {
-  margin-top: 10px;
-  font-size: 34px;
+  align-self: end;
+  margin-top: 18px;
+  font-size: 40px;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
 }
 
-.pricing-root .pricing-plan-head > p {
-  margin-top: 8px;
+/* the blurb closes the head zone; its rule lands on one shared line
+   because the row track is common to both cards */
+.pricing-root .pricing-plan-blurb {
+  margin-top: 10px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--tc-hair-2);
   color: var(--tc-ink-2);
   font-size: 14.5px;
 }
 
+.pricing-root .pricing-plan-body {
+  padding-block: 20px 28px;
+}
+
+/* Starter's toolkit as ledger rows — rules only BETWEEN entries */
 .pricing-root .pricing-plan-features {
   display: grid;
-  gap: 14px;
-  margin: 24px 0 28px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -1379,7 +1332,16 @@
   display: flex;
   gap: 10px;
   align-items: center;
+  padding-block: 12px;
   font-size: 14.5px;
+}
+
+.pricing-root .pricing-plan-features li + li {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.pricing-root .pricing-plan-features li:first-child {
+  padding-top: 4px;
 }
 
 .pricing-root .pricing-plan-features svg {
@@ -1390,30 +1352,29 @@
   stroke-width: 1.8;
 }
 
-/* Enterprise's three pillars: icon, weighted head, one line — first
-   pillar starts where the features start, rules only BETWEEN pillars */
+/* Enterprise's three pillars as the same ledger rows: icon column,
+   weighted head, one line */
 .pricing-root .pricing-plan-group {
   display: grid;
-  gap: 5px;
-  margin-top: 24px;
+  grid-template-columns: 17px minmax(0, 1fr);
+  gap: 12px;
+  padding-block: 13px;
 }
 
 .pricing-root .pricing-plan-group + .pricing-plan-group {
-  margin-top: 22px;
-  padding-top: 22px;
   border-top: 1px solid var(--tc-hair-2);
 }
 
-.pricing-root .pricing-plan-group:last-of-type {
-  margin-bottom: 28px;
+.pricing-root .pricing-plan-group:first-child {
+  padding-top: 4px;
 }
 
 .pricing-root .pricing-plan-group svg {
   width: 17px;
   height: 17px;
+  margin-top: 1px;
   color: var(--tc-accent);
   stroke-width: 1.8;
-  margin-bottom: 3px;
 }
 
 .pricing-root .pricing-plan-group h4 {
@@ -1423,17 +1384,17 @@
 }
 
 .pricing-root .pricing-plan-group p {
+  margin-top: 3px;
   color: var(--tc-ink-2);
   font-size: 13.5px;
   line-height: 1.6;
 }
 
-/* the CTAs pin to one shared bottom line on both cards */
+/* the CTAs ride the skeleton's last shared track — one bottom line */
 .pricing-root .pricing-plan-cta {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: auto;
   padding: 11px 18px;
   border: 1px solid var(--tc-hair);
   border-radius: 6px;
@@ -2096,17 +2057,26 @@
 }
 
 
+/* the head rides sticky through the section — pinned under the nav
+   while the table scrolls, released with the section's end. The band
+   is a fixed 74px; the dossier nav stands 59px (58 + rule). Paper
+   ground, so the rows slide under it cleanly. */
 .pricing-root .pricing-compare-head {
+  position: sticky;
+  top: 59px;
+  z-index: 25;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 34px;
+  height: 74px;
+  margin-bottom: 30px;
+  background: var(--tc-paper);
 }
 
 
 .pricing-root .pricing-compare h2 {
-  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
+  font-size: clamp(1.7rem, 2.6vw, 2.2rem);
 }
 
 
@@ -2148,11 +2118,11 @@
 }
 
 
-/* the head's motif: currencies poured from the ramp, standing at the
-   heading's right */
+/* the head's motif: the team mark poured from the ramp, riding the
+   sticky band at the heading's right — sized under the band's 74px */
 .pricing-root .pricing-dither-type {
   flex: none;
-  width: min(34%, 470px);
+  width: clamp(130px, 15vw, 190px);
   pointer-events: none;
 }
 
@@ -2163,11 +2133,6 @@
   height: auto;
 }
 
-
-.pricing-root .pricing-dither-type text {
-  font-family: inherit;
-  font-weight: 600;
-}
 
 
 .pricing-root .pricing-dither-type pattern path {
@@ -2592,229 +2557,6 @@
   border: 0;
 }
 
-/* ---- the plans: what every plan carries, then the two cards ---- */
-
-.pricing-root .pricing-plans-included {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 36px;
-  align-items: baseline;
-  padding: clamp(26px, 3vw, 38px) var(--tc-gut) 22px;
-}
-
-.pricing-root .pricing-plans-included h2 {
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-
-.pricing-root .pricing-plans-included ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pricing-root .pricing-plans-included li {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  color: var(--tc-ink-2);
-  font-size: 14.5px;
-}
-
-.pricing-root .pricing-plans-included svg {
-  flex: none;
-  width: 16px;
-  height: 16px;
-  color: var(--tc-accent);
-  stroke-width: 1.8;
-}
-
-.pricing-root .pricing-plan-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-block: 1px solid var(--tc-hair);
-}
-
-.pricing-root .pricing-plan-card {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  min-height: 470px;
-  padding: 38px var(--tc-gut) 34px;
-}
-
-.pricing-root .pricing-plan-card + .pricing-plan-card {
-  border-left: 1px solid var(--tc-hair);
-}
-
-/* the recommendation rides Enterprise: accent ground, inset ring, and
-   the corner Bayer wash — a quiet ordered-dither through a 4×4 tile
-   (cover 3/16), masked down toward the copy. Behind all content — the
-   card isolates so z-index -1 stays above its paint. */
-.pricing-root .pricing-plan-card.is-reco {
-  background: color-mix(in srgb, var(--tc-accent) 6%, var(--tc-paper));
-  box-shadow: inset 0 0 0 1px
-    color-mix(in srgb, var(--tc-accent) 45%, transparent);
-}
-
-.pricing-root .pricing-plan-card.is-reco::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: var(--tc-accent);
-  opacity: 0.32;
-  mask-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 0h3v3H0zM6 0h3v3H6zM6 6h3v3H6z' fill='%23fff'/%3E%3C/svg%3E"),
-    linear-gradient(225deg, #000, transparent 52%);
-  mask-size: 12px 12px, 100% 100%;
-  mask-repeat: repeat, no-repeat;
-  mask-composite: intersect;
-}
-
-/* the Recommended plate, seated on the card's own padding grid */
-.pricing-root .pricing-plan-badge {
-  position: absolute;
-  top: 38px;
-  right: var(--tc-gut);
-  padding: 5px 10px;
-  border: 1px solid color-mix(in srgb, var(--tc-accent) 55%, transparent);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--tc-accent) 13%, var(--tc-paper));
-  color: var(--tc-accent);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  line-height: 1.1;
-}
-
-.pricing-root .pricing-plan-name {
-  display: flex;
-  gap: 9px;
-  align-items: center;
-}
-
-.pricing-root .pricing-plan-name svg {
-  flex: none;
-  width: 18px;
-  height: 18px;
-  color: var(--tc-ink-3);
-  stroke-width: 1.7;
-}
-
-.pricing-root .pricing-plan-name h3 {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.pricing-root .pricing-plan-price {
-  margin-top: 10px;
-  font-size: 34px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-}
-
-.pricing-root .pricing-plan-head > p {
-  margin-top: 8px;
-  color: var(--tc-ink-2);
-  font-size: 14.5px;
-}
-
-.pricing-root .pricing-plan-features {
-  display: grid;
-  gap: 13px;
-  margin: 28px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pricing-root .pricing-plan-features li {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 14.5px;
-}
-
-.pricing-root .pricing-plan-features svg {
-  flex: none;
-  width: 16px;
-  height: 16px;
-  color: var(--tc-accent);
-  stroke-width: 1.8;
-}
-
-/* Enterprise's three pillars: icon, weighted head, one line */
-.pricing-root .pricing-plan-group {
-  display: grid;
-  gap: 5px;
-  margin-top: 22px;
-  padding-top: 22px;
-  border-top: 1px solid var(--tc-hair-2);
-}
-
-.pricing-root .pricing-plan-card .pricing-plan-group:first-of-type {
-  border-top: 0;
-  padding-top: 0;
-  margin-top: 26px;
-}
-
-.pricing-root .pricing-plan-group svg {
-  width: 17px;
-  height: 17px;
-  color: var(--tc-accent);
-  stroke-width: 1.8;
-  margin-bottom: 3px;
-}
-
-.pricing-root .pricing-plan-group h4 {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-
-.pricing-root .pricing-plan-group p {
-  color: var(--tc-ink-2);
-  font-size: 13.5px;
-  line-height: 1.6;
-}
-
-.pricing-root .pricing-plan-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: auto;
-  padding: 11px 18px;
-  border: 1px solid var(--tc-hair);
-  border-radius: 6px;
-  color: var(--tc-ink);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: border-color 160ms ease;
-}
-
-.pricing-root .pricing-plan-cta:hover {
-  border-color: color-mix(in srgb, var(--tc-ink) 30%, var(--tc-hair));
-}
-
-.pricing-root .pricing-plan-cta.is-solid {
-  border-color: var(--tc-ink);
-  background: var(--tc-ink);
-  color: var(--tc-paper);
-}
-
-.pricing-root .pricing-plan-features + .pricing-plan-cta,
-.pricing-root .pricing-plan-group + .pricing-plan-cta {
-  margin-top: 28px;
-}
-
 /* ---- the compare ledger: one framed table ---- */
 
 .pricing-root .pricing-compare table {
@@ -2873,8 +2615,10 @@
   text-align: center;
 }
 
-.pricing-root .pricing-compare td.is-starter,
-.pricing-root .pricing-compare thead th.is-starter {
+/* the recommended column carries the tint — Enterprise, matching the
+   Recommended card above */
+.pricing-root .pricing-compare td.is-reco,
+.pricing-root .pricing-compare thead th.is-reco {
   background: color-mix(in srgb, var(--tc-accent) 5%, transparent);
 }
 
@@ -2972,12 +2716,32 @@
 }
 
 @media (max-width: 720px) {
-  .pricing-root .pricing-plan-grid {
-    grid-template-columns: minmax(0, 1fr);
+  .pricing-root .pricing-plans-included {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .pricing-root .pricing-plan-card {
+  .pricing-root .pricing-plans-included h2 {
+    grid-column: 1 / -1;
+    max-width: none;
+    padding: 22px var(--tc-gut) 4px;
+  }
+
+  .pricing-root .pricing-plans-included li:first-child {
+    border-left: 0;
+    padding-left: var(--tc-gut);
+  }
+
+  .pricing-root .pricing-plans-included li {
     min-height: 0;
+    padding-right: 24px;
+  }
+
+  .pricing-root .pricing-plan-inc-mark {
+    display: none;
+  }
+
+  .pricing-root .pricing-plan-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .pricing-root .pricing-plan-card + .pricing-plan-card {

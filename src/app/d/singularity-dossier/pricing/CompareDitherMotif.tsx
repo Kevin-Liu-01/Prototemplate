@@ -7,11 +7,11 @@ const BAYER4: readonly (readonly number[])[] = [
 ];
 
 /**
- * The compare board's corner motif: the currencies poured from the
+ * The compare board's corner motif: the team mark poured from the
  * house Bayer ramp in the accent blue — the blog feature covers'
- * construction (an SVG text mask over the tiered coverage ramp),
- * reseated in the pricing grammar over the table's empty head cell.
- * Pure server-rendered SVG; decoration only.
+ * construction (an SVG silhouette mask over the tiered coverage
+ * ramp), reseated in the pricing grammar over the table's empty head
+ * cell. Pure server-rendered SVG; decoration only.
  */
 
 /** Coverage tiers, solid-side first: ink decaying to sparse dots. */
@@ -67,17 +67,25 @@ export default function CompareDitherMotif() {
           ))}
           <mask id={`${idBase}-mask`}>
             <rect width='400' height='150' fill='black' />
-            <text
-              x='200'
-              y='78'
+            {/* two seated figures — rear first, the front one carries a
+                black gap stroke so the silhouettes stay separable once
+                the dither eats the edges */}
+            <circle cx='155' cy='38' r='23' fill='white' />
+            <path d='M110 130 V110 A45 45 0 0 1 200 110 V130 Z' fill='white' />
+            <circle
+              cx='245'
+              cy='30'
+              r='28'
               fill='white'
-              textAnchor='middle'
-              dominantBaseline='central'
-              fontSize={104}
-              letterSpacing='0.04em'
-            >
-              {'¥€$'}
-            </text>
+              stroke='black'
+              strokeWidth='8'
+            />
+            <path
+              d='M190 130 V116 A55 55 0 0 1 300 116 V130 Z'
+              fill='white'
+              stroke='black'
+              strokeWidth='8'
+            />
           </mask>
         </defs>
         <g mask={`url(#${idBase}-mask)`}>

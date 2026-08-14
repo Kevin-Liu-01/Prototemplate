@@ -79,21 +79,21 @@ export default function CompareTable() {
           <thead>
             <tr>
               <th aria-hidden='true' />
-              <th className='is-starter' scope='col'>
+              <th scope='col'>
                 <b>Starter</b>
                 <span>From $0</span>
                 <Link
-                  className='pricing-plan-cta is-solid'
+                  className='pricing-plan-cta'
                   href='/d/singularity-dossier'
                 >
                   Get Started
                 </Link>
               </th>
-              <th scope='col'>
+              <th className='is-reco' scope='col'>
                 <b>Enterprise</b>
                 <span>Contact Us</span>
                 <Link
-                  className='pricing-plan-cta'
+                  className='pricing-plan-cta is-solid'
                   href='/d/singularity-dossier/contact'
                 >
                   Contact Us
@@ -111,10 +111,10 @@ export default function CompareTable() {
               {group.rows.map((row) => (
                 <tr key={row[0]}>
                   <th scope='row'>{row[0]}</th>
-                  <td className='is-starter'>
+                  <td>
                     <CellValue value={row[1]} />
                   </td>
-                  <td>
+                  <td className='is-reco'>
                     <CellValue value={row[2]} />
                   </td>
                 </tr>
