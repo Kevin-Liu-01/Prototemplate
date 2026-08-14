@@ -13,7 +13,7 @@ export default function ScrollToPositionsButton() {
           ?.scrollIntoView({ behavior: 'smooth' });
       }}
     >
-      Explore open roles
+      Explore Open Roles
     </button>
   );
 }

@@ -13,6 +13,7 @@ import TopNav from '../../singularity/sections/TopNav';
 import CareersHorizon from './CareersHorizon';
 import GlyphRain from './GlyphRain';
 import LogosGrid from './LogosGrid';
+import MissionStack from './MissionStack';
 import ScrollToPositionsButton from './ScrollToPositionsButton';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
@@ -53,10 +54,6 @@ export default async function DossierCareersPage() {
                 Bring the world&apos;s best products to the{' '}
                 <span>whole world</span>
               </h1>
-              <p>
-                Join us on our mission to build a full internationalization
-                stack, by developers, for developers.
-              </p>
 
               <div className='careers-actions'>
                 <ScrollToPositionsButton />
@@ -64,7 +61,7 @@ export default async function DossierCareersPage() {
                   className='tc-btn careers-secondary-cta'
                   href={`mailto:${CAREERS_EMAIL}`}
                 >
-                  Get in touch
+                  Get in Touch
                 </a>
               </div>
             </div>
@@ -73,6 +70,49 @@ export default async function DossierCareersPage() {
           <section className='tc-sec careers-proof'>
             <p>Used by the world&apos;s best companies</p>
             <LogosGrid />
+          </section>
+
+          <section
+            className='tc-sec careers-mission'
+            aria-labelledby='careers-mission-title'
+          >
+            <div className='careers-mission-grid'>
+              <div className='careers-mission-copy'>
+                <h2 id='careers-mission-title'>Mission</h2>
+                <p>
+                  General Translation is building the language infrastructure
+                  of the internet. We believe that the world&rsquo;s best
+                  products should be accessible in Spanish, French, Japanese,
+                  and every other language. We&rsquo;ve built the full stack
+                  for localization: open-source i18n libraries, an AI-native
+                  translation platform and API, and the agent Locadex. The
+                  limiting factor for translation is no longer model quality,
+                  but context and developer-first infrastructure. Which is why
+                  we&rsquo;ve built the full stack to unlock an unbeatable
+                  customer experience. We&rsquo;ve already become essential
+                  infrastructure integrated into complex codebases reaching
+                  millions of users, and we&rsquo;re scaling rapidly to
+                  capture massive market demand.
+                </p>
+                <p>
+                  We&rsquo;re looking for ambitious and exceptional
+                  talent&mdash;people who can invent their way out of
+                  impossible problems. You&rsquo;ll join a lean team with
+                  unlimited AI token spend and extreme creative control. We
+                  work in-person in San Francisco. We offer highly competitive
+                  salary and equity, and provide top-tier benefits including
+                  free meals, gym, Waymo rides from the office, and full
+                  health coverage. You&rsquo;ll get career acceleration,
+                  ownership, and resources you can&rsquo;t find at any other
+                  early-stage company.
+                </p>
+                <p className='careers-mission-close'>
+                  If you care deeply about your craft, we&rsquo;d love to
+                  talk.
+                </p>
+              </div>
+              <MissionStack />
+            </div>
           </section>
 
           <section
@@ -150,7 +190,7 @@ export default async function DossierCareersPage() {
               </p>
               <span className='careers-close-cta'>
                 <a className='tc-btn' href={`mailto:${CAREERS_EMAIL}`}>
-                  Get in touch
+                  Get in Touch
                   <Mail aria-hidden='true' />
                 </a>
               </span>
