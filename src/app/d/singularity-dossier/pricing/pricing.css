@@ -85,52 +85,6 @@
 }
 
 
-/* the recommendation: accent ring + the Most-popular tag */
-.pricing-root .pricing-plan-card:first-child {
-  position: relative;
-  isolation: isolate;
-  background: color-mix(in srgb, var(--tc-accent) 6%, var(--tc-paper));
-  box-shadow: inset 0 0 0 1px
-    color-mix(in srgb, var(--tc-accent) 45%, transparent);
-}
-
-
-/* a quiet ordered-dither wash in the corner: the accent through a 4×4
-   Bayer tile (cover 3/16), masked down toward the copy. Behind all
-   content — the card isolates so z-index -1 stays above its paint. */
-.pricing-root .pricing-plan-card:first-child::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: var(--tc-accent);
-  opacity: 0.32;
-  mask-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 0h3v3H0zM6 0h3v3H6zM6 6h3v3H6z' fill='%23fff'/%3E%3C/svg%3E"),
-    linear-gradient(225deg, #000, transparent 52%);
-  mask-size: 12px 12px, 100% 100%;
-  mask-repeat: repeat, no-repeat;
-  mask-composite: intersect;
-}
-
-
-/* the Most-popular tag: a solid little plate in the display face,
-   seated on the card's own padding grid (38px top, gut right) */
-.pricing-root .pricing-plan-card > span {
-  top: 38px;
-  right: var(--tc-gut);
-  padding: 5px 10px;
-  border-color: color-mix(in srgb, var(--tc-accent) 55%, transparent);
-  background: color-mix(in srgb, var(--tc-accent) 13%, var(--tc-paper));
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  line-height: 1.1;
-  text-transform: none;
-}
-
-
 .pricing-root .pricing-stack-head {
   display: flex;
   align-items: end;
@@ -1269,7 +1223,46 @@
   border: 0;
 }
 
-/* ---- the plans: two cards on the full-bleed grid ---- */
+/* ---- the plans: what every plan carries, then the two cards ---- */
+
+.pricing-root .pricing-plans-included {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 36px;
+  align-items: baseline;
+  padding: clamp(26px, 3vw, 38px) var(--tc-gut) 22px;
+}
+
+.pricing-root .pricing-plans-included h2 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.pricing-root .pricing-plans-included ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pricing-root .pricing-plans-included li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--tc-ink-2);
+  font-size: 14.5px;
+}
+
+.pricing-root .pricing-plans-included svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--tc-accent);
+  stroke-width: 1.8;
+}
 
 .pricing-root .pricing-plan-grid {
   display: grid;
@@ -1290,14 +1283,17 @@
   border-left: 1px solid var(--tc-hair);
 }
 
-/* the recommendation: accent ground, inset ring, corner Bayer wash */
-.pricing-root .pricing-plan-card.is-starter {
+/* the recommendation rides Enterprise: accent ground, inset ring, and
+   the corner Bayer wash — a quiet ordered-dither through a 4×4 tile
+   (cover 3/16), masked down toward the copy. Behind all content — the
+   card isolates so z-index -1 stays above its paint. */
+.pricing-root .pricing-plan-card.is-reco {
   background: color-mix(in srgb, var(--tc-accent) 6%, var(--tc-paper));
   box-shadow: inset 0 0 0 1px
     color-mix(in srgb, var(--tc-accent) 45%, transparent);
 }
 
-.pricing-root .pricing-plan-card.is-starter::before {
+.pricing-root .pricing-plan-card.is-reco::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -1313,6 +1309,7 @@
   mask-composite: intersect;
 }
 
+/* the Recommended plate, seated on the card's own padding grid */
 .pricing-root .pricing-plan-badge {
   position: absolute;
   top: 38px;
@@ -1335,6 +1332,7 @@
 }
 
 .pricing-root .pricing-plan-name svg {
+  flex: none;
   width: 18px;
   height: 18px;
   color: var(--tc-ink-3);
@@ -1363,9 +1361,9 @@
 .pricing-root .pricing-plan-features {
   display: grid;
   gap: 13px;
-  margin-top: 26px;
-  list-style: none;
+  margin: 28px 0 0;
   padding: 0;
+  list-style: none;
 }
 
 .pricing-root .pricing-plan-features li {
@@ -1383,19 +1381,39 @@
   stroke-width: 1.8;
 }
 
-.pricing-root .pricing-plan-rule {
-  margin-top: 24px;
-  border-top: 1px dashed var(--tc-hair);
+/* Enterprise's three pillars: icon, weighted head, one line */
+.pricing-root .pricing-plan-group {
+  display: grid;
+  gap: 5px;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--tc-hair-2);
 }
 
-.pricing-root .pricing-plan-plus {
-  margin-top: 22px;
+.pricing-root .pricing-plan-card .pricing-plan-group:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 26px;
+}
+
+.pricing-root .pricing-plan-group svg {
+  width: 17px;
+  height: 17px;
+  color: var(--tc-accent);
+  stroke-width: 1.8;
+  margin-bottom: 3px;
+}
+
+.pricing-root .pricing-plan-group h4 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.pricing-root .pricing-plan-group p {
   color: var(--tc-ink-2);
   font-size: 13.5px;
-}
-
-.pricing-root .pricing-plan-plus + .pricing-plan-features {
-  margin-top: 14px;
+  line-height: 1.6;
 }
 
 .pricing-root .pricing-plan-cta {
@@ -1423,7 +1441,8 @@
   color: var(--tc-paper);
 }
 
-.pricing-root .pricing-plan-features + .pricing-plan-cta {
+.pricing-root .pricing-plan-features + .pricing-plan-cta,
+.pricing-root .pricing-plan-group + .pricing-plan-cta {
   margin-top: 28px;
 }
 
@@ -1581,4 +1600,19 @@
 
 .pricing-root .pricing-compare a.pricing-plan-cta.is-solid {
   color: var(--tc-paper);
+}
+
+@media (max-width: 720px) {
+  .pricing-root .pricing-plan-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pricing-root .pricing-plan-card {
+    min-height: 0;
+  }
+
+  .pricing-root .pricing-plan-card + .pricing-plan-card {
+    border-top: 1px solid var(--tc-hair);
+    border-left: 0;
+  }
 }
