@@ -5,10 +5,7 @@ import Image from 'next/image';
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import {
-  ASHBY_JOB_BOARD,
-  getJobPostings,
-} from '../../singularity/company-sections/careers';
+import { getJobPostings } from '../../singularity/company-sections/careers';
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
 
@@ -116,10 +113,10 @@ export default async function DossierCareersPage() {
                 <Image
                   alt='Two engineers pairing on code at our San Francisco office'
                   className='careers-mission-photo'
-                  height={1548}
+                  height={2562}
                   src='/careers/mission-dither.png'
                   unoptimized
-                  width={1440}
+                  width={1920}
                 />
               </div>
             </div>
@@ -184,10 +181,6 @@ export default async function DossierCareersPage() {
                 </div>
               )}
 
-              <div className='careers-source-row'>
-                <span>source · jobs.ashbyhq.com/{ASHBY_JOB_BOARD}</span>
-                <span>refreshed hourly</span>
-              </div>
             </div>
           </section>
 
