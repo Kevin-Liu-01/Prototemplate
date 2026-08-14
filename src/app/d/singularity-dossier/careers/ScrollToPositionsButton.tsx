@@ -10,7 +10,12 @@ export default function ScrollToPositionsButton() {
       onClick={() => {
         document
           .getElementById('positions')
-          ?.scrollIntoView({ behavior: 'smooth' });
+          ?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
+          .matches
+          ? 'auto'
+          : 'smooth',
+      });
       }}
     >
       Explore Open Roles

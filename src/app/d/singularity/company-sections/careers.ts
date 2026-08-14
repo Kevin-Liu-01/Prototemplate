@@ -68,7 +68,10 @@ export async function getJobPostings(): Promise<Position[]> {
         type: formatEmploymentType(job.employmentType),
         url: job.jobUrl,
       }));
-  } catch {
+  } catch (error) {
+    /* logged so a transient Ashby blip caching the empty state is at
+       least diagnosable */
+    console.error('Failed to fetch Ashby jobs:', error);
     return [];
   }
 }

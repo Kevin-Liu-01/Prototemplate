@@ -349,6 +349,17 @@ export default function CareersHorizon() {
         }
       };
 
+      /* the reduced-motion still: re-snap every word onto the current
+         ring (side resets so first-placement logic re-seats blends),
+         then run the settle sweep placeWords needs to converge */
+      const settleWords = () => {
+        for (const word of words) word.side = -1;
+        for (let index = 0; index <= 12; index += 1) {
+          placeWords(42 + index * 0.06);
+        }
+      };
+
+      let lastWide: boolean | null = null;
       const fit = () => {
         const width = host.clientWidth;
         const height = host.clientHeight;
@@ -399,7 +410,20 @@ export default function CareersHorizon() {
           worldOrigin: [centerX - half, centerY - half],
         });
 
-        if (reducedMotion) field?.renderStatic();
+        /* crossing the 760 cut swaps the CSS glyph metrics: re-measure
+           and re-pack once styles apply, or letters keep stale widths */
+        if (lastWide !== null && wide !== lastWide) {
+          requestAnimationFrame(() => {
+            measureWords();
+            packWords();
+            if (reducedMotion) settleWords();
+          });
+        }
+        lastWide = wide;
+
+        /* setParams above already re-renders the static frame when the
+           field is not running; only the WORD ring needs a re-settle */
+        if (reducedMotion) settleWords();
       };
 
       measureWords();
@@ -410,6 +434,7 @@ export default function CareersHorizon() {
         if (destroyed) return;
         measureWords();
         packWords();
+        if (reducedMotion) settleWords();
       });
 
       const observer = new ResizeObserver(fit);
@@ -418,7 +443,8 @@ export default function CareersHorizon() {
       let active = true;
       const visibilityObserver = new IntersectionObserver(
         (entries) => {
-          active = entries[0]?.isIntersecting ?? true;
+          const entry = entries[entries.length - 1];
+          if (entry) active = entry.isIntersecting;
         },
         { rootMargin: '120px' }
       );
@@ -434,9 +460,7 @@ export default function CareersHorizon() {
       };
 
       if (reducedMotion) {
-        for (let index = 0; index <= 12; index += 1) {
-          placeWords(42 + index * 0.06);
-        }
+        settleWords();
       } else {
         gsap.ticker.add(tick);
       }
@@ -478,7 +502,7 @@ export default function CareersHorizon() {
             ) : (
               [...entry.name].map((character, index) => (
                 <b data-orbit-part key={`${entry.name}-${index}`}>
-                  {character === ' ' ? ' ' : character}
+                  {character === ' ' ? '\u00A0' : character}
                 </b>
               ))
             )}

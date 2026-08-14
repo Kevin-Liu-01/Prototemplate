@@ -48,8 +48,8 @@ export default async function DossierCareersPage() {
             <CareersHorizon />
 
             <div className='careers-hero-copy'>
-              <h1 aria-label="Bring the world's best products to the whole world">
-                Bring the world&apos;s best products to the{' '}
+              <h1>
+                Bring the world&rsquo;s best products to the{' '}
                 <span>whole world</span>
               </h1>
 
@@ -66,7 +66,7 @@ export default async function DossierCareersPage() {
           </section>
 
           <section className='tc-sec careers-proof'>
-            <p>Used by the world&apos;s best companies</p>
+            <p>Used by the world&rsquo;s best companies</p>
             <LogosGrid />
           </section>
 
@@ -135,7 +135,7 @@ export default async function DossierCareersPage() {
             </div>
 
             <div className='careers-ledger'>
-              <div className='careers-role-row is-head' aria-hidden='true'>
+              <div className='careers-role-row is-head'>
                 <span>Role</span>
                 <span className='careers-role-column'>Team</span>
                 <span className='careers-role-column'>Location</span>
@@ -186,10 +186,10 @@ export default async function DossierCareersPage() {
 
           <section className='tc-sec careers-close'>
             <div className='careers-close-copy'>
-              <h2>Don&apos;t see a role that fits?</h2>
+              <h2>Don&rsquo;t see a role that fits?</h2>
               <p>
-                We&apos;re always looking for talented people. Send us your
-                resume and tell us how you&apos;d like to contribute.
+                We&rsquo;re always looking for talented people. Send us your
+                resume and tell us how you&rsquo;d like to contribute.
               </p>
               <span className='careers-close-cta'>
                 <a className='tc-btn' href={`mailto:${CAREERS_EMAIL}`}>
