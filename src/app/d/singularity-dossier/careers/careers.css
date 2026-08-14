@@ -644,18 +644,63 @@
   font-weight: 500;
 }
 
+/* the photo's column: two vertical rails running the section's FULL
+   height (the negative block margins swallow the grid's padding), the
+   photo seated flush between them — square, no frame of its own */
 .careers-root .careers-mission-scene {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
   min-width: 0;
+  margin-block: calc(-1 * clamp(64px, 7.5vw, 96px))
+    calc(-1 * clamp(48px, 5.5vw, 76px));
+  border-inline: 1px solid var(--tc-hair);
 }
 
+.careers-root .careers-mission-photo-frame {
+  position: relative;
+  width: 100%;
+}
+
+/* stylized, not photographic: the print is grayscaled then re-toned
+   in the emphasis blue (color blend keeps the luminance), with the
+   ordered Bayer tile printed over it */
 .careers-root .careers-mission-photo {
   display: block;
   width: 100%;
-  max-width: 560px;
   height: auto;
-  margin-inline: auto;
-  border: 1px solid var(--tc-hair);
-  border-radius: 6px;
+  filter: grayscale(1) contrast(1.06);
+}
+
+.careers-root .careers-mission-photo-frame::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #2563eb;
+  mix-blend-mode: color;
+  content: '';
+  pointer-events: none;
+}
+
+[data-theme='dark'] .careers-root .careers-mission-photo-frame::before {
+  background: #6d92e8;
+}
+
+.careers-root .careers-mission-photo-frame::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M0 0h1v1H0zM2 0h1v1H2zM4 0h1v1H4zM6 0h1v1H6zM2 2h1v1H2zM6 2h1v1H6zM0 4h1v1H0zM2 4h1v1H2zM4 4h1v1H4zM6 4h1v1H6zM2 6h1v1H2zM6 6h1v1H6z' fill='%232563eb'/%3E%3C/svg%3E");
+  background-size: 16px 16px;
+  opacity: 0.38;
+  content: '';
+  pointer-events: none;
+}
+
+[data-theme='dark']
+  .careers-root
+  .careers-mission-photo-frame::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M0 0h1v1H0zM2 0h1v1H2zM4 0h1v1H4zM6 0h1v1H6zM2 2h1v1H2zM6 2h1v1H6zM0 4h1v1H0zM2 4h1v1H2zM4 4h1v1H4zM6 4h1v1H6zM2 6h1v1H2zM6 6h1v1H6z' fill='%2386a8ff'/%3E%3C/svg%3E");
 }
 
 @media (max-width: 900px) {
@@ -663,8 +708,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* single column: the rails stand down to the photo's own height,
+     re-seating flush to the section's bottom edge */
   .careers-root .careers-mission-scene {
     max-width: 480px;
+    margin-block: 0 calc(-1 * clamp(48px, 5.5vw, 76px));
     margin-inline: auto;
   }
 }
