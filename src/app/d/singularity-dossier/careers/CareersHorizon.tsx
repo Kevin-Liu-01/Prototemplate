@@ -354,9 +354,11 @@ export default function CareersHorizon() {
         if (width < 2 || height < 2) return;
 
         const wide = width >= 760;
+        /* one disc size across careers and yc — the same formula lives
+           in both heroes, so the holes always match */
         const radius = wide
-          ? Math.min(Math.max(width * 0.29, 300), 390, height * 0.41)
-          : Math.min(width * 0.69, 270, height * 0.34);
+          ? Math.min(Math.max(width * 0.26, 280), 360, height * 0.41)
+          : Math.min(width * 0.64, 250, height * 0.34);
         const centerX = width / 2;
         const centerY = wide
           ? Math.max(Math.min(height * 0.48, height - radius - 96), radius + 82)

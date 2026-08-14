@@ -11,7 +11,7 @@
   --yc-hole-y: 47%;
   --yc-hole-radius: 270px;
   position: relative;
-  min-height: clamp(640px, calc(100svh - 58px), 940px);
+  min-height: clamp(620px, calc(100svh - 140px), 820px);
   overflow: hidden;
   background: var(--tc-dark);
 }

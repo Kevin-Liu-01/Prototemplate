@@ -17,7 +17,7 @@
   --careers-hole-radius: 330px;
   position: relative;
   isolation: isolate;
-  min-height: clamp(720px, calc(100svh - 58px), 920px);
+  min-height: clamp(620px, calc(100svh - 140px), 820px);
   overflow: hidden;
   background: var(--tc-dark);
 }
