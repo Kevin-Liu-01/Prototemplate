@@ -2679,12 +2679,9 @@
   background: var(--tc-paper);
 }
 
-/* the handoff: the pinned label yields the moment its successor
-   enters the band slot (data-eclipsed set by the page's scroll
-   choreography) */
-.pricing-root .pricing-compare tr.pricing-compare-group th[data-eclipsed] > span {
-  visibility: hidden;
-}
+/* the handoff (transform + clip-path set inline by the page's scroll
+   choreography): the incoming label pushes the pinned one up and it
+   clips away at the band's top edge, like contained sticky */
 
 /* the recommended column carries the tint — Enterprise, matching the
    Recommended card above */

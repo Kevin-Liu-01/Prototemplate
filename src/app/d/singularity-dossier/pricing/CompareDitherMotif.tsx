@@ -7,7 +7,8 @@ const BAYER4: readonly (readonly number[])[] = [
 ];
 
 /**
- * The compare board's corner motif: the team mark poured from the
+ * The compare board's corner motif: two plan cards side by side,
+ * poured from the
  * house Bayer ramp in the accent blue — the blog feature covers'
  * construction (an SVG silhouette mask over the tiered coverage
  * ramp), reseated in the pricing grammar over the table's empty head
@@ -67,25 +68,20 @@ export default function CompareDitherMotif() {
           ))}
           <mask id={`${idBase}-mask`}>
             <rect width='400' height='150' fill='black' />
-            {/* two seated figures — rear first, the front one carries a
-                black gap stroke so the silhouettes stay separable once
-                the dither eats the edges */}
-            <circle cx='155' cy='38' r='23' fill='white' />
-            <path d='M110 130 V110 A45 45 0 0 1 200 110 V130 Z' fill='white' />
-            <circle
-              cx='245'
-              cy='30'
-              r='28'
-              fill='white'
-              stroke='black'
-              strokeWidth='8'
-            />
-            <path
-              d='M190 130 V116 A55 55 0 0 1 300 116 V130 Z'
-              fill='white'
-              stroke='black'
-              strokeWidth='8'
-            />
+            {/* two plan cards side by side — a header bar and feature
+                rows carved out of each, the right card one row richer,
+                the ramp fading it like the table beside it */}
+            <rect x='95' y='12' width='100' height='126' rx='10' fill='white' />
+            <rect x='111' y='30' width='68' height='10' fill='black' />
+            <rect x='111' y='58' width='52' height='7' fill='black' />
+            <rect x='111' y='78' width='60' height='7' fill='black' />
+            <rect x='111' y='98' width='44' height='7' fill='black' />
+            <rect x='215' y='12' width='100' height='126' rx='10' fill='white' />
+            <rect x='231' y='30' width='68' height='10' fill='black' />
+            <rect x='231' y='58' width='56' height='7' fill='black' />
+            <rect x='231' y='78' width='48' height='7' fill='black' />
+            <rect x='231' y='98' width='62' height='7' fill='black' />
+            <rect x='231' y='118' width='40' height='7' fill='black' />
           </mask>
         </defs>
         <g mask={`url(#${idBase}-mask)`}>
