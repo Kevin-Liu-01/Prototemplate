@@ -1167,7 +1167,7 @@
   min-height: 96px;
   padding: 22px 96px 22px 24px;
   border-left: 1px solid var(--tc-hair-2);
-  color: var(--tc-ink);
+  color: var(--tc-accent);
   font-size: 14px;
   font-weight: 500;
 }
