@@ -2730,8 +2730,6 @@
 
 .pricing-root .pricing-compare tr.pricing-compare-group th > span {
   display: block;
-  width: 200px;
-  background: var(--tc-paper);
 }
 
 /* the handoff (transform + clip-path set inline by the page's scroll
