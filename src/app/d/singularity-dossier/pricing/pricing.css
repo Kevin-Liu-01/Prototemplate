@@ -90,7 +90,7 @@
   align-items: end;
   justify-content: space-between;
   gap: 32px;
-  padding: clamp(58px, 7vw, 88px) var(--tc-gut) 32px;
+  padding: 28px var(--tc-gut) 32px;
 }
 
 
@@ -1153,6 +1153,61 @@
   align-items: center;
 }
 
+/* the stack's hatch rides the plan grid's own bottom rule as its top
+   edge; the plans section's tc-sec rule yields */
+.pricing-root .pricing-plans {
+  border-bottom: 0;
+}
+
+.pricing-root .pricing-stack > .v0-hatch {
+  border-top: 0;
+}
+
+/* the per-workflow hint: an ink bubble on the row's help mark */
+.pricing-root .pricing-plan-hint {
+  position: relative;
+  display: inline-flex;
+  margin-left: 2px;
+  color: var(--tc-ink-3);
+  cursor: help;
+}
+
+.pricing-root .pricing-plan-hint svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.8;
+  color: inherit;
+}
+
+.pricing-root .pricing-plan-hint i {
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  z-index: 5;
+  width: 230px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+  font-size: 12.5px;
+  font-style: normal;
+  line-height: 1.5;
+  text-align: center;
+  translate: -50% 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 140ms ease,
+    visibility 140ms ease;
+  pointer-events: none;
+}
+
+.pricing-root .pricing-plan-hint:hover i,
+.pricing-root .pricing-plan-hint:focus-visible i {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* the hatch spacer above the strip — the house diagonal band; the
    hero's rule and the strip's own top rule yield to its edges */
 .pricing-root .v0-hatch {
@@ -1447,7 +1502,7 @@
   align-items: end;
   justify-content: space-between;
   gap: 32px;
-  padding: clamp(58px, 7vw, 88px) var(--tc-gut) 32px;
+  padding: 28px var(--tc-gut) 32px;
 }
 
 
@@ -2789,6 +2844,10 @@
 @media (max-width: 720px) {
   .pricing-root .pricing-plans-included {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pricing-root .pricing-stack {
+    display: none;
   }
 
   .pricing-root .pricing-plans-included h2 {

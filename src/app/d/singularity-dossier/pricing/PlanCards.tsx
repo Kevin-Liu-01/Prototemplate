@@ -2,6 +2,7 @@ import { SiGithub } from '@icons-pack/react-simple-icons';
 import {
   Brain,
   CreditCard,
+  HelpCircle,
   Landmark,
   PencilLine,
   ShieldCheck,
@@ -215,6 +216,12 @@ export default function PlanCards() {
               <li>
                 <CreditCard aria-hidden='true' />
                 Per-workflow pricing
+                <span className='pricing-plan-hint' tabIndex={0}>
+                  <HelpCircle aria-hidden='true' />
+                  <i role='tooltip'>
+                    Limited free usage, then charged only for what you use.
+                  </i>
+                </span>
               </li>
             </ul>
           </div>

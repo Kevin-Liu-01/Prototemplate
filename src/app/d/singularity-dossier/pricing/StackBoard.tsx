@@ -45,6 +45,9 @@ export function StackBoard() {
 
   return (
     <section className='tc-sec pricing-stack'>
+      {/* the hatch spacer seats the stack against the plans — the
+          grid's own bottom rule serves as its top edge */}
+      <div className='v0-hatch' aria-hidden='true' />
       <div className='pricing-stack-head'>
         <h2>Full-stack localization</h2>
         <p>
