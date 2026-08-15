@@ -1643,8 +1643,9 @@
 }
 /* ---- the hero's proof box: five logos and their stories ---- */
 
-.sgde-root .tce-hero-proof h3 {
+.sgde-root .tce-hero-proof > h2 {
   padding-bottom: 14px;
+  margin-bottom: 12px;
   border-bottom: 1px solid var(--tc-hair);
   font-size: 16px;
   font-weight: 500;
