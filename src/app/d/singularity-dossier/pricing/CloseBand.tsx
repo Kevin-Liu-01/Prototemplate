@@ -4,7 +4,6 @@ import { useGSAP } from '@gsap/react';
 import { useRef } from 'react';
 import Link from 'next/link';
 
-import FlapPhrase from './FlapPhrase';
 import { createGlyphField } from './glyphField';
 
 /** The close's rain speaks money: the world's currency marks, wider
@@ -81,7 +80,7 @@ export default function CloseBand() {
       <canvas className='pricing-close-canvas' ref={stage} aria-hidden='true' />
       <div className='pricing-close-copy'>
         <h2>
-          <FlapPhrase text='Ship in every language.' />
+          Ship in every language.
         </h2>
         <div className='pricing-close-acts'>
           <span className='pricing-close-cta'>
