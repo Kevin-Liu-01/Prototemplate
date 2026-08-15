@@ -105,7 +105,8 @@ export default function GovernedExplorer() {
               <div className='tcg-card-body'>
                   <h3>Organization rules apply to every translation</h3>
                   <p>
-                    The same sentence, translated with and without the rule.
+                    Translations use the rules your organization sets. Below,
+                    the same sentence with and without this rule.
                   </p>
                   <p className='tce-ba-note'>
                     &ldquo;Locadex is the GT agent. This product name should
@@ -122,8 +123,8 @@ export default function GovernedExplorer() {
               <div className='tcg-card-body'>
                   <h3>Translations ship only after review</h3>
                   <p>
-                    Source and translation stay together in review. The gate
-                    holds both until a reviewer approves them.
+                    Source and translation stay together in review. Neither is
+                    published until a reviewer approves them.
                   </p>
                 <div className='tcg-box'>
                 <div
@@ -135,22 +136,22 @@ export default function GovernedExplorer() {
                   <span className='tce-gate-thread is-m' aria-hidden='true' />
                   <span className='tce-gate-thread is-r' aria-hidden='true' />
                   <span className='tce-gate-box' aria-hidden='true'>
-                      <span>review gate</span>
+                      <span>Review gate</span>
                   </span>
                   <div className='tce-gate-cols'>
                     <div className='tce-gate-st'>
-                        <b>submitted</b>
+                        <b>Submitted</b>
                       <span>
                         <code>&lt;T $requiresReview&gt;</code> · hash df0269ba
                       </span>
                     </div>
                     <div className='tce-gate-st'>
-                        <b>held for review</b>
-                        <span>labels · Legal, Needs review</span>
+                        <b>Held for review</b>
+                        <span>Labels · Legal, Needs review</span>
                     </div>
                     <div className='tce-gate-st'>
-                        <b>published</b>
-                        <span>approved @mira · v214 · edge</span>
+                        <b>Published</b>
+                        <span>Approved @mira · v214 · edge</span>
                     </div>
                   </div>
                 </div>
@@ -165,8 +166,8 @@ export default function GovernedExplorer() {
               <div className='tcg-card-body'>
                   <h3>Every change is a pull request</h3>
                   <p>
-                    Red is your current JSX. Green is the same JSX wrapped for
-                    translation. The change merges only after review.
+                    Locadex wraps your existing JSX for translation in a pull
+                    request that merges only after review.
                   </p>
                 <div className='tcg-box'>
                 <div className='tce-pr'>
@@ -215,17 +216,17 @@ export default function GovernedExplorer() {
                           width={13}
                           height={13}
                         />
-                        opened by Locadex
+                        Opened by Locadex
                       </span>
                         <b>47 files changed</b>
                     </div>
                     <div>
-                        <span>auto-merge</span>
-                        <b>off · review required</b>
+                        <span>Auto-merge</span>
+                        <b>Off · review required</b>
                     </div>
                     <div>
-                        <span>merged by @sam</span>
-                        <b className='is-ok'>checks passed</b>
+                        <span>Merged by @sam</span>
+                        <b className='is-ok'>Checks passed</b>
                     </div>
                   </div>
                 </div>
@@ -240,8 +241,8 @@ export default function GovernedExplorer() {
               <div className='tcg-card-body'>
                   <h3>Served from the edge</h3>
                   <p>
-                    A global, low-latency translation CDN. Push over-the-air
-                    updates without redeploying your app.
+                    Served using a global, low-latency translation CDN. Push
+                    over-the-air updates without redeploying your app.
                   </p>
                 <div className='tcg-box'>
                 <div
@@ -250,8 +251,8 @@ export default function GovernedExplorer() {
                   aria-label={'Edge latency: eu-central-1 12 ms, us-east-1 21, ap-northeast-1 34, ap-southeast-1 41, ap-southeast-2 48 milliseconds'}
                 >
                   <div className='tce-lat-head'>
-                      <span>point of presence</span>
-                      <span>latency</span>
+                      <span>Point of presence</span>
+                      <span>Latency</span>
                   </div>
                   {POPS.map((pop) => (
                     <div
@@ -269,8 +270,8 @@ export default function GovernedExplorer() {
                     </div>
                   ))}
                   <div className='tce-lat-foot'>
-                      <span>anycast · versioned per locale · updates &lt;1s</span>
-                      <span>sla · custom, in contract</span>
+                      <span>Anycast · versioned per locale · updates &lt;1s</span>
+                      <span>SLA · custom, in contract</span>
                   </div>
                 </div>
                 </div>

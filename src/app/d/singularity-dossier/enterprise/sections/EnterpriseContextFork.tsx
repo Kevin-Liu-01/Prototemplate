@@ -176,7 +176,7 @@ export default function EnterpriseContextFork() {
         <div className='lang-cr-branch is-off'>
           <p className='lang-cr-ctx'>
             <span className='lang-cr-attr'>
-                <span>without</span>
+                <span>Without</span>
             </span>{' '}
             <LocaleTag code='de' />
           </p>
@@ -187,7 +187,7 @@ export default function EnterpriseContextFork() {
         <div className='lang-cr-branch is-on'>
           <p className='lang-cr-ctx'>
             <span className='lang-cr-attr'>
-                <span>with brand-core</span>
+                <span>With brand-core</span>
             </span>{' '}
             <LocaleTag code='de' />
           </p>
