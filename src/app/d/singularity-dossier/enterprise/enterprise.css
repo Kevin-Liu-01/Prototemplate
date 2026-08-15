@@ -2882,3 +2882,36 @@
 .sgde-root .contact-success-badge svg {
   color: var(--tc-accent);
 }
+
+/* ---------- the contact sheet folds ---------- */
+
+@media (max-width: 1000px) {
+  /* one column: the ask stacks over the form; the divider dies */
+  .sgde-root .enterprise-contact .contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+  }
+
+  .sgde-root .enterprise-contact .contact-form-panel {
+    padding-left: 0;
+  }
+
+  .sgde-root .enterprise-contact .contact-intro {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .sgde-root .enterprise-contact .contact-layout {
+    padding-inline: var(--tc-gut);
+  }
+
+  /* the consent line and the submit stack instead of squeezing */
+  .sgde-root .enterprise-contact .contact-form > div:last-of-type {
+    flex-wrap: wrap;
+  }
+
+  .sgde-root .enterprise-contact .contact-title {
+    max-width: none;
+  }
+}
