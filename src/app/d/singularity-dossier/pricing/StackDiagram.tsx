@@ -238,6 +238,20 @@ export default function StackDiagram({
         aria-labelledby='pricing-stack-map-title'
       >
         <svg viewBox='-96 -188 192 246' aria-hidden='true'>
+          {/* measured thread anchors — StackThreads reads their live
+              screen positions, so the runs land on the vertices at
+              every viewport regardless of letterboxing */}
+          {[0, 1, 2, 3].map((i) => (
+            <circle
+              className='pricing-stack-anchor'
+              data-slab={i}
+              key={`anchor-${i}`}
+              cx={(i % 2 === 0 ? -1 : 1) * SIZE * Math.cos(Math.PI / 6)}
+              cy={-(plateZ(i) + THICK / 2)}
+              r='0.1'
+              fill='none'
+            />
+          ))}
           <defs>
             <mask
               id='pricing-stack-locadex-mask'

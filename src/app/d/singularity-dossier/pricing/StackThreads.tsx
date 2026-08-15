@@ -6,25 +6,11 @@ import { useRef } from 'react';
 /**
  * The board's wiring, measured instead of guessed: each station card
  * runs ONE straight doubled thread to its plate's outward vertex. Card
- * edges come from their real boxes, plate anchors from the platform
- * svg's box mapped through the iso projection, and everything re-draws
+ * edges come from their real boxes, plate anchors from zero-size
+ * markers the diagram renders at its own vertices, and everything re-draws
  * on resize. The threads stand fully drawn — no arrival animation;
  * the board's data-active attribute re-inks the active run through CSS.
  */
-
-/* Plate anchors in the expanded stack's viewBox space (-96..96 ×
-   -188..58): each station plate's outward VERTEX at mid-thickness,
-   from the same projection the diagram draws with — plates seat at
-   z = 42.2·i, footprint ±52, so a vertex projects to
-   x = ±52·2·cos30 ≈ ±90.1, y = −(z + 2.1). */
-const SLAB_VB: readonly { x: number; y: number }[] = [
-  { x: -90.1, y: -2.1 }, // 01 bottom plate, left vertex
-  { x: 90.1, y: -44.3 }, // 02, right vertex
-  { x: -90.1, y: -86.5 }, // 03, left vertex
-  { x: 90.1, y: -128.7 }, // 04 capstone, right vertex
-];
-
-const VB = { x: -96, y: -188, w: 192, h: 246 } as const;
 
 export default function StackThreads() {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -36,18 +22,24 @@ export default function StackThreads() {
 
     const draw = () => {
       const boardBox = board.getBoundingClientRect();
-      const mapSvg = board.querySelector('.pricing-stack-map-art svg');
       const cards = board.querySelectorAll<HTMLElement>(
         '.pricing-stack-board-col article'
       );
-      if (!mapSvg || cards.length !== 4) return;
-      const mapBox = mapSvg.getBoundingClientRect();
+      const anchors = board.querySelectorAll<SVGCircleElement>(
+        '.pricing-stack-anchor'
+      );
+      if (anchors.length !== 4 || cards.length !== 4) return;
 
+      /* the diagram renders a zero-size anchor at each run vertex —
+         measuring it takes every transform and letterbox with it */
       const slabPoint = (i: number) => {
-        const anchor = SLAB_VB[i] ?? { x: 0, y: 0 };
+        const el = board.querySelector<SVGCircleElement>(
+          `.pricing-stack-anchor[data-slab='${i}']`
+        );
+        const r = el ? el.getBoundingClientRect() : boardBox;
         return {
-          x: mapBox.left - boardBox.left + ((anchor.x - VB.x) / VB.w) * mapBox.width,
-          y: mapBox.top - boardBox.top + ((anchor.y - VB.y) / VB.h) * mapBox.height,
+          x: r.left + r.width / 2 - boardBox.left,
+          y: r.top + r.height / 2 - boardBox.top,
         };
       };
 
