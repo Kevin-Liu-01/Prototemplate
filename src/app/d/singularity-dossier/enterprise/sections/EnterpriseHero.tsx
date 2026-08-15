@@ -2,12 +2,16 @@
 
 import { useRef } from 'react';
 
-import TrackedLink from './TrackedLink';
+import Cta from './Cta';
 
 import HeroInkField from './HeroInkField';
 import Image from 'next/image';
 
-import { customerLogos, infrastructureProof } from './data';
+import {
+  customerLogos,
+  ENTERPRISE_HERO_CTA,
+  infrastructureProof,
+} from './data';
 
 /**
  * The enterprise opening on the family ink: the ink field rises in the
@@ -34,22 +38,21 @@ export default function EnterpriseHero() {
               international launches through production.
             </p>
           <div className='tce-hero-acts'>
-            <span className='tce-hero-cta'>
-              <TrackedLink
-                className='tc-btn tc-btn-solid'
-                href='/enterprise/contact'
-                location='services-cta-hero'
-              >
-                Talk to Us <span aria-hidden='true'>→</span>
-              </TrackedLink>
-            </span>
-            <TrackedLink
-              className='tc-btn tc-btn-line'
+            <Cta
+              href={ENTERPRISE_HERO_CTA.href}
+              ring
+              tracked={ENTERPRISE_HERO_CTA.location}
+              variant='solid'
+            >
+              Talk to Us <span aria-hidden='true'>→</span>
+            </Cta>
+            <Cta
               href='/enterprise/contact'
-              location='services-cta-engineer'
+              tracked='services-cta-engineer'
+              variant='outline'
             >
               Talk to an Engineer
-            </TrackedLink>
+            </Cta>
           </div>
           <div className='tce-hero-badges'>
             <Image

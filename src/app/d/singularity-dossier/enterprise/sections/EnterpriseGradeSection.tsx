@@ -16,54 +16,32 @@ import {
 
 import CoverageRain from './CoverageRain';
 
-const frameworkGroups = [
+const FRAMEWORKS = [
+  { name: 'Next.js', packageName: 'gt-next', icon: SiNextdotjs },
+  { name: 'React', packageName: 'gt-react', icon: SiReact },
+  { name: 'Vite', packageName: 'gt-react', icon: SiVite },
+  { name: 'Gatsby', packageName: 'gt-react', icon: SiGatsby },
+  { name: 'React Router', packageName: 'gt-react', icon: SiReactrouter },
   {
-    name: 'Web',
-    frameworks: [
-      { name: 'Next.js', packageName: 'gt-next', icon: SiNextdotjs },
-      { name: 'React', packageName: 'gt-react', icon: SiReact },
-      { name: 'Vite', packageName: 'gt-react', icon: SiVite },
-      { name: 'Gatsby', packageName: 'gt-react', icon: SiGatsby },
-      { name: 'React Router', packageName: 'gt-react', icon: SiReactrouter },
-      {
-        name: 'Create React App',
-        packageName: 'gt-react',
-        icon: SiCreatereactapp,
-      },
-      { name: 'RedwoodJS', packageName: 'gt-react', icon: SiRedwoodjs },
-      {
-        name: 'TanStack Start',
-        packageName: 'gt-tanstack-start',
-        icon: SiTanstack,
-      },
-    ],
+    name: 'Create React App',
+    packageName: 'gt-react',
+    icon: SiCreatereactapp,
   },
+  { name: 'RedwoodJS', packageName: 'gt-react', icon: SiRedwoodjs },
   {
-    name: 'Native',
-    frameworks: [
-      { name: 'React Native', packageName: 'gt-react-native', icon: SiReact },
-      { name: 'Expo', packageName: 'gt-react-native', icon: SiExpo },
-    ],
+    name: 'TanStack Start',
+    packageName: 'gt-tanstack-start',
+    icon: SiTanstack,
   },
-  {
-    name: 'Server',
-    frameworks: [
-      { name: 'Python', packageName: 'gt-fastapi', icon: SiPython },
-      { name: 'Node.js', packageName: 'gt-node', icon: SiNodedotjs },
-    ],
-  },
-  {
-    name: 'Docs & CMS',
-    frameworks: [
-      { name: 'Mintlify', packageName: 'locadex', icon: SiMintlify },
-      { name: 'Sanity', packageName: 'gt-sanity', icon: SiSanity },
-    ],
-  },
+  { name: 'React Native', packageName: 'gt-react-native', icon: SiReact },
+  { name: 'Expo', packageName: 'gt-react-native', icon: SiExpo },
+  { name: 'Python', packageName: 'gt-fastapi', icon: SiPython },
+  { name: 'Node.js', packageName: 'gt-node', icon: SiNodedotjs },
+  { name: 'Mintlify', packageName: 'locadex', icon: SiMintlify },
+  { name: 'Sanity', packageName: 'gt-sanity', icon: SiSanity },
 ];
 
 export default function EnterpriseGradeSection() {
-  const frameworks = frameworkGroups.flatMap((group) => group.frameworks);
-
   return (
     <section className='tc-sec enterprise-grade'>
       <div className='enterprise-frameworks'>
@@ -93,7 +71,7 @@ export default function EnterpriseGradeSection() {
         <CoverageRain />
         <div className='tcf-core'>
           <ul className='tcf-row'>
-            {frameworks.map((framework) => {
+            {FRAMEWORKS.map((framework) => {
               const Icon = framework.icon;
               return (
                 <li key={framework.name}>

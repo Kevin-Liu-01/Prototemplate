@@ -133,7 +133,7 @@ export default function EnterpriseContextFork() {
       className={langClass('lang-cr', true, 'tcg-fork')}
       ref={root}
       role='img'
-      aria-label='The same English sentence translated into German with and without the brand-core rule: without it, Locadex is mistranslated as Standort-Index; with it, the product name is preserved'
+      aria-label={'The same English sentence translated into German with and without the brand-core rule: without it, Locadex is mistranslated as Standort-Index; with it, the product name is preserved'}
     >
       <p className='lang-cr-source'>
         <span className='lang-tag'>

@@ -207,15 +207,6 @@
   --lang-ground: var(--tc-paper);
 }
 
-/* the specimen chips are specimens, not buttons: the landing home
-   root's quiet ink-tint treatment, carried with the port */
-.sgde-root .tcg-fork .lang-cr-word,
-.sgde-root .tcg-fork .lang-cr-result {
-  background: color-mix(in srgb, var(--tc-ink) 6%, transparent);
-  border: 1px solid var(--tc-hair);
-  color: var(--tc-ink);
-}
-
 /* the plate grammar is square: the PR panel and the fork's chips shed
    their landing radii inside the timeline's hairline boxes */
 .sgde-root .tcg-box .tce-pr,
@@ -392,7 +383,7 @@
 
 .sgde-root .tcg-card-body .tce-lat-flag {
   width: 15px;
-  height: 11.25px;
+  height: auto;
   flex: none;
 }
 

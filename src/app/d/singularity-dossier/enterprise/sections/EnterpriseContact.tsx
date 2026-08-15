@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Building2, MailCheck, Rocket, Workflow } from 'lucide-react';
 
+import Cta from './Cta';
+
 import type { LucideIcon } from 'lucide-react';
 
 type FormState = {
@@ -252,10 +254,10 @@ export default function EnterpriseContact({
                     </a>
                     .
                   </p>
-                  <span className={filled ? 'tc-cta-ring shrink-0' : 'shrink-0'}>
-                    <button type='submit' className='tc-btn tc-btn-solid tc-btn-lg'>
+                  <span className='shrink-0'>
+                    <Cta variant='solid' size='lg' type='submit' ring={filled}>
                       Continue
-                    </button>
+                    </Cta>
                   </span>
                 </div>
               </form>

@@ -16,6 +16,7 @@ import '../../singularity/sections/logos-icons.css';
 import '../styles.css';
 import './enterprise.css';
 import './enterprise-iso.css';
+import './port-compat.css';
 
 export const metadata = {
   title: 'Enterprise — Dossier — GT Redesign',
