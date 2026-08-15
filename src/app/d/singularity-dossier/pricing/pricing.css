@@ -96,7 +96,7 @@
 
 .pricing-root .pricing-stack-head h2 {
   max-width: 12ch;
-  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
+  font-size: clamp(28px, 3.4vw, 46px);
 }
 
 
@@ -1508,7 +1508,7 @@
 
 .pricing-root .pricing-stack-head h2 {
   max-width: 12ch;
-  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
+  font-size: clamp(28px, 3.4vw, 46px);
 }
 
 
@@ -2149,7 +2149,7 @@
 
 
 .pricing-root .pricing-compare h2 {
-  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
+  font-size: clamp(28px, 3.4vw, 46px);
 }
 
 
