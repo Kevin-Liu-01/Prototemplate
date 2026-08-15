@@ -74,8 +74,9 @@ export default function StackThreads() {
         /* one LEVEL run per station — the exit rides the anchor's own
            y (the board's map offset keeps it inside the card) — with
            the doubled twin 5px below */
-        const d = `M${fromX} ${to.y}L${to.x} ${to.y}`;
-        const dTwin = `M${fromX} ${to.y + 5}L${to.x} ${to.y + 5}`;
+        const endX = to.x + (run.side === 'right' ? 12 : -12);
+        const d = `M${fromX} ${to.y}L${endX} ${to.y}`;
+        const dTwin = `M${fromX} ${to.y + 5}L${endX} ${to.y + 5}`;
         paths[i * 2]?.setAttribute('d', d);
         paths[i * 2]?.setAttribute('data-run', String(run.slab + 1));
         paths[i * 2 + 1]?.setAttribute('d', dTwin);

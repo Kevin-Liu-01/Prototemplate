@@ -114,6 +114,9 @@ function IncMark({ id, children }: { id: string; children: ReactNode }) {
 export default function PlanCards() {
   return (
     <section className='tc-sec pricing-plans'>
+      {/* the hatch spacer seats the plans against the hero — the house
+          diagonal band owns both of its edges */}
+      <div className='v0-hatch' aria-hidden='true' />
       <div className='pricing-plans-included'>
         <h2>Included in every plan</h2>
         <ul>

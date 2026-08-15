@@ -142,7 +142,7 @@ export default function GovernedExplorer() {
                     <div className='tce-gate-st'>
                         <b>Submitted</b>
                       <span>
-                        <code>&lt;T $requiresReview&gt;</code> · hash df0269ba
+                        <code>&lt;T $requiresReview&gt;</code>
                       </span>
                     </div>
                     <div className='tce-gate-st'>
@@ -209,13 +209,7 @@ export default function GovernedExplorer() {
                   <div className='tce-pr-meta'>
                     <div>
                       <span>
-                        <Image
-                          className='tce-pr-agent'
-                          src='/brand/locadex-light-no-bg.svg'
-                          alt=''
-                          width={13}
-                          height={13}
-                        />
+                        <i className='tce-pr-agent' aria-hidden='true' />
                         Opened by Locadex
                       </span>
                         <b>47 files changed</b>
@@ -268,10 +262,6 @@ export default function GovernedExplorer() {
                       <b>{pop.ms} ms</b>
                     </div>
                   ))}
-                  <div className='tce-lat-foot'>
-                      <span>Anycast · versioned per locale · updates &lt;1s</span>
-                      <span>SLA · custom, in contract</span>
-                  </div>
                 </div>
                 </div>
               </div>

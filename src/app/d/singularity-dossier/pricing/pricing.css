@@ -669,6 +669,12 @@
 }
 
 
+/* the threads paint beneath the diagram (the runs overshoot into the
+   plates and seat under their mass) */
+.pricing-root .pricing-stack-threads {
+  z-index: 0;
+}
+
 /* the active thread carries the accent; the others step back */
 .pricing-root .pricing-stack-threads path {
   transition:
@@ -793,14 +799,20 @@
    word forms to its right ---- */
 
 .pricing-root .pricing-close {
-  /* the band is literal ink in both themes, so the glyph-field engine
-     reads white here — the deploy band's pin (the engine resolves its
-     ink off the canvas's --tc-ink) */
-  --tc-ink: #fff;
-
   position: relative;
   overflow: hidden;
   min-height: clamp(380px, 42vw, 500px);
+  /* by day the band rides the page's own paper and the rain runs in
+     the page ink */
+  background: var(--tc-paper);
+}
+
+/* by night the band is literal ink — the glyph-field engine resolves
+   its glyph ink off the canvas's --tc-ink, so the pin flips the rain
+   white with the ground */
+[data-theme='dark'] .pricing-root .pricing-close {
+  --tc-ink: #fff;
+
   background: #0d0d0f;
 }
 
@@ -829,7 +841,7 @@
 
 .pricing-root .pricing-close-copy h2 {
   max-width: 16ch;
-  color: rgb(255 255 255 / 94%);
+  color: color-mix(in srgb, var(--tc-ink) 94%, transparent);
   font-size: clamp(28px, 3.4vw, 46px);
   letter-spacing: -0.04em;
   line-height: 1.05;
@@ -855,14 +867,14 @@
 }
 
 
-.pricing-root .pricing-close .tc-btn-solid {
+[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid {
   border-color: #fff;
   background: #fff;
   color: #070707;
 }
 
 
-.pricing-root .pricing-close .tc-btn-solid:hover {
+[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid:hover {
   background: #fff;
 }
 
@@ -1008,6 +1020,7 @@
 
 .pricing-root .pricing-stack-board-map .pricing-stack-map-art {
   position: relative;
+  z-index: 1;
   inset: auto;
 }
 
@@ -1043,7 +1056,7 @@
 /* ---- the close's flap cells ---- */
 
 .pricing-root .pricing-close {
-  --tb-flash: #86a8ff;
+  --tb-flash: var(--tc-accent);
 }
 
 
@@ -1138,8 +1151,22 @@
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(0, 1fr));
   align-items: center;
-  margin-top: clamp(18px, 2.4vw, 30px);
-  border-top: 1px solid var(--tc-hair);
+}
+
+/* the hatch spacer above the strip — the house diagonal band; the
+   hero's rule and the strip's own top rule yield to its edges */
+.pricing-root .v0-hatch {
+  height: clamp(28px, 3.4vw, 40px);
+  border-block: 1px solid var(--tc-hair);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--tc-hair) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+.pricing-root .pricing-hero {
+  border-bottom: 0;
 }
 
 .pricing-root .pricing-plans-included h2 {
@@ -2212,14 +2239,20 @@
    word forms to its right ---- */
 
 .pricing-root .pricing-close {
-  /* the band is literal ink in both themes, so the glyph-field engine
-     reads white here — the deploy band's pin (the engine resolves its
-     ink off the canvas's --tc-ink) */
-  --tc-ink: #fff;
-
   position: relative;
   overflow: hidden;
   min-height: clamp(380px, 42vw, 500px);
+  /* by day the band rides the page's own paper and the rain runs in
+     the page ink */
+  background: var(--tc-paper);
+}
+
+/* by night the band is literal ink — the glyph-field engine resolves
+   its glyph ink off the canvas's --tc-ink, so the pin flips the rain
+   white with the ground */
+[data-theme='dark'] .pricing-root .pricing-close {
+  --tc-ink: #fff;
+
   background: #0d0d0f;
 }
 
@@ -2248,7 +2281,7 @@
 
 .pricing-root .pricing-close-copy h2 {
   max-width: 16ch;
-  color: rgb(255 255 255 / 94%);
+  color: color-mix(in srgb, var(--tc-ink) 94%, transparent);
   font-size: clamp(28px, 3.4vw, 46px);
   letter-spacing: -0.04em;
   line-height: 1.05;
@@ -2274,14 +2307,14 @@
 }
 
 
-.pricing-root .pricing-close .tc-btn-solid {
+[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid {
   border-color: #fff;
   background: #fff;
   color: #070707;
 }
 
 
-.pricing-root .pricing-close .tc-btn-solid:hover {
+[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid:hover {
   background: #fff;
 }
 
@@ -2427,6 +2460,7 @@
 
 .pricing-root .pricing-stack-board-map .pricing-stack-map-art {
   position: relative;
+  z-index: 1;
   inset: auto;
 }
 
@@ -2462,7 +2496,7 @@
 /* ---- the close's flap cells ---- */
 
 .pricing-root .pricing-close {
-  --tb-flash: #86a8ff;
+  --tb-flash: var(--tc-accent);
 }
 
 
@@ -2643,6 +2677,13 @@
   display: block;
   width: 200px;
   background: var(--tc-paper);
+}
+
+/* the handoff: the pinned label yields the moment its successor
+   enters the band slot (data-eclipsed set by the page's scroll
+   choreography) */
+.pricing-root .pricing-compare tr.pricing-compare-group th[data-eclipsed] > span {
+  visibility: hidden;
 }
 
 /* the recommended column carries the tint — Enterprise, matching the

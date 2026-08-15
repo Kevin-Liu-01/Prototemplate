@@ -388,10 +388,11 @@
 /* the plate is bounded by the page's end-to-end border lines — the
    full-reach frame grammar. The section clips sideways only, so the
    foot crosses and the upward line reach stay visible. */
-.sgde-root .enterprise-testimonial {
+.sgde-root .tc-rail > .tc-sec.enterprise-testimonial {
   position: relative;
   overflow-x: clip;
   overflow-y: visible;
+  border-block: 0;
 }
 
 .sgde-root .tce-quote-band::before,
@@ -631,11 +632,15 @@
 }
 
 .sgde-root .enterprise-contact .contact-input {
-  border-color: var(--tc-hair);
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--tc-paper) 96%, var(--tc-ink) 4%);
+  border-color: color-mix(in srgb, var(--tc-ink) 26%, transparent);
+  border-radius: 6px;
+  background: var(--tc-paper);
   color: var(--tc-ink);
   font-size: 14px;
+}
+
+.sgde-root .enterprise-contact .contact-input::placeholder {
+  color: var(--tc-ink-3);
 }
 
 .sgde-root .enterprise-contact textarea.contact-input {
@@ -1278,7 +1283,8 @@
 
 .sgde-root .tce-gate-st code {
   font-family: var(--tc-mono);
-  color: var(--tc-ink-2);
+  color: var(--tc-ink-3);
+  white-space: nowrap;
 }
 
 /* per-locale scoping under the gate: the asymmetry is the feature */
@@ -1510,10 +1516,18 @@
   gap: 7px;
 }
 
-/* the real Locadex mark, inverted for the dark panel */
+/* the Locadex mark as a masked plate — currentColor, so it follows
+   the row's ink in both themes */
 .sgde-root .tce-pr-agent {
-  filter: invert(1);
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  background: currentColor;
   opacity: 0.8;
+  mask-image: url('/brand/locadex-mark.svg');
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
 }
 
 /* ---------- Locadex controls form + monorepo tree ---------- */
@@ -1685,17 +1699,6 @@
   color: #ffffff;
 }
 
-.sgde-root .tce-lat-foot {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px 14px;
-  padding-top: 10px;
-  font-family: var(--tc-mono);
-  font-size: 11px;
-  color: var(--tc-panel-faint);
-}
 
 /* ============================================================
    FOUNDER ROUND — the hero wears the ruled frame (the line-
@@ -1883,10 +1886,6 @@
   color: rgba(7, 7, 7, 0.38);
 }
 
-/* the Locadex mark is dark artwork — inverted only for the dark panel */
-:root:not([data-theme='dark']) .sgde-root .tce-pr-agent {
-  filter: none;
-}
 
 /* the code surface joins the light token ramp (v0-pages' tcb values);
    `pre` in the selector out-specifies engine.css's dark-panel set
@@ -2792,7 +2791,6 @@
 .sgde-root .tce-lat-head,
 .sgde-root .tce-lat-code,
 .sgde-root .tce-lrow-lat > b,
-.sgde-root .tce-lat-foot,
 .sgde-root .enterprise-contact .contact-field label {
   font-family: inherit;
 }

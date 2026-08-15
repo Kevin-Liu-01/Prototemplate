@@ -6,6 +6,7 @@ import TopNav from '../../singularity/sections/TopNav';
 
 import CloseBand from './CloseBand';
 import CompareTable from './CompareTable';
+import GroupLabelHandoff from './GroupLabelHandoff';
 import PlanCards from './PlanCards';
 import PricingHero from './PricingHero';
 import { StackBoard } from './StackBoard';
@@ -39,6 +40,7 @@ export default function DossierPricingPage() {
           <PlanCards />
           <StackBoard />
           <CompareTable />
+          <GroupLabelHandoff />
         </div>
         <CloseBand />
         <div className='tc-rail'>

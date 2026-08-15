@@ -67,11 +67,8 @@ export default function EnterpriseGradeSection() {
   return (
     <section className='tc-sec enterprise-grade'>
       <div className='enterprise-frameworks'>
-          <h2>Works with your stack</h2>
-          <p>
-            One toolchain with native SDKs for web, native, server, and docs
-            frameworks.
-          </p>
+          <h2>Framework Coverage</h2>
+          <p>Adapted to the tech stack your product already uses.</p>
         {/* four framework marks under the dither screen, stacked as the
             head's right seal */}
         <span className='tcf-seal' aria-hidden='true'>
