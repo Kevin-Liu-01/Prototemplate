@@ -6,7 +6,6 @@ import { useRef, useState } from 'react';
 
 import { useMountEffect } from './use-mount-effect';
 import LocaleFlag from './LocaleFlag';
-import { useQuietReveal } from './reveal';
 
 import EnterpriseContextFork from './EnterpriseContextFork';
 
@@ -45,7 +44,6 @@ const MAX_MS = 48;
 
 export default function GovernedExplorer() {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   const [active, setActive] = useState<Stage>('launch');
 
@@ -83,7 +81,7 @@ export default function GovernedExplorer() {
     <section className='tc-sec' id='governance' ref={root}>
       <div className='tcg-grid' data-active={active}>
         {/* ---- the left rail: the claim, its words as the index ---- */}
-        <div className='tcg-side' data-reveal>
+        <div className='tcg-side'>
             <h2 className='tcg-head'>
               Built for teams with real <em>launch</em>, <em>security</em>,
               and <em>operational</em> requirements
@@ -101,7 +99,7 @@ export default function GovernedExplorer() {
 
           {/* launch — the organization's context */}
           <div className='tcg-group' data-stage='launch'>
-            <article className='tcg-card' data-reveal>
+            <article className='tcg-card'>
               <div className='tcg-card-body'>
                   <h3>Organization rules apply to every translation</h3>
                   <p>
@@ -119,7 +117,7 @@ export default function GovernedExplorer() {
 
           {/* security — the gate holds, the PR proves */}
           <div className='tcg-group' data-stage='security'>
-            <article className='tcg-card' data-reveal>
+            <article className='tcg-card'>
               <div className='tcg-card-body'>
                   <h3>Translations ship only after review</h3>
                   <p>
@@ -162,7 +160,7 @@ export default function GovernedExplorer() {
 
           {/* security, continued — the PR proves it */}
           <div className='tcg-group' data-stage='security'>
-            <article className='tcg-card' data-reveal>
+            <article className='tcg-card'>
               <div className='tcg-card-body'>
                   <h3>Every change is a pull request</h3>
                   <p>
@@ -231,7 +229,7 @@ export default function GovernedExplorer() {
 
           {/* operational — the delivery you can take back */}
           <div className='tcg-group' data-stage='operational'>
-            <article className='tcg-card' data-reveal>
+            <article className='tcg-card'>
               <div className='tcg-card-body'>
                   <h3>Served using a global, low-latency translation CDN</h3>
                   <p>

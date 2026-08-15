@@ -390,26 +390,15 @@
    foot crosses and the upward line reach stay visible. */
 .sgde-root .tc-rail > .tc-sec.enterprise-testimonial {
   position: relative;
-  overflow-x: clip;
-  overflow-y: visible;
+  /* no sideways clip: the rail crosses need their outboard arms */
   border-block: 0;
 }
 
-.sgde-root .tce-quote-band::before,
 .sgde-root .tce-quote-band::after {
   content: '';
   position: absolute;
   z-index: 1;
   pointer-events: none;
-}
-
-.sgde-root .tce-quote-band::before {
-  top: 0;
-  bottom: 0;
-  left: -100vw;
-  right: -100vw;
-  border-top: 1px solid var(--tc-hair);
-  border-bottom: 1px solid var(--tc-hair);
 }
 
 .sgde-root .tce-quote-band::after {
@@ -472,11 +461,11 @@
 
 .sgde-root .tce-quote-corner.is-bl {
   bottom: -4.5px;
-  left: -4.5px;
+  left: calc(-1 * var(--tc-gut) - 4.5px);
 }
 
 .sgde-root .tce-quote-corner.is-br {
-  right: -4.5px;
+  right: calc(-1 * var(--tc-gut) - 4.5px);
   bottom: -4.5px;
 }
 
@@ -2914,4 +2903,67 @@
   .sgde-root .enterprise-contact .contact-title {
     max-width: none;
   }
+}
+
+/* the board grid quantizes to whole cells; the canvas overdraws one
+   row past the seam and the stage clips it */
+.sgde-root .tce-security-stage {
+  overflow: hidden;
+}
+
+.sgde-root .tce-security-stage > .tce-delivery-board {
+  height: calc(100% + 36px);
+}
+
+/* ---------- form contrast ---------- */
+.sgde-root .enterprise-contact .contact-field label {
+  color: var(--tc-ink);
+  font-size: 13px;
+}
+
+.sgde-root .enterprise-contact .contact-input {
+  border-color: color-mix(in srgb, var(--tc-ink) 38%, transparent);
+  color: var(--tc-ink);
+}
+
+.sgde-root .enterprise-contact .contact-input::placeholder {
+  color: var(--tc-ink-3);
+}
+
+.sgde-root .enterprise-contact .contact-input:focus-visible {
+  border-color: var(--tc-accent);
+}
+
+/* the engine ring and lg face, carried from gt-cloud's engine (the
+   singularity fork predates the Cta centralization) */
+.sgde-root .tc-cta-ring {
+  position: relative;
+  display: inline-flex;
+}
+
+.sgde-root .tc-cta-ring::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #db2777, #2563eb, #9333ea, #16a34a);
+  filter: blur(4px);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.sgde-root .tc-cta-ring:hover::before,
+.sgde-root .tc-cta-ring:focus-within::before {
+  opacity: 0.9;
+}
+
+.sgde-root .tc-cta-ring > .tc-btn {
+  position: relative;
+  gap: 7px;
+}
+
+.sgde-root .tc-btn-lg {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 14px;
 }

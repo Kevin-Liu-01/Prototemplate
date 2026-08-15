@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
 
 import DeliveryBoard from './DeliveryBoard';
 
@@ -61,13 +60,12 @@ const VERSIONS: readonly {
  */
 export default function Security() {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   return (
     <section className='tc-sec' id='security' ref={root}>
       <div className='tc-head'>
-          <h2 data-reveal>Access is scoped by role and locale</h2>
-          <p data-reveal>
+          <h2>Access is scoped by role and locale</h2>
+          <p>
             Roles scope each person to specific projects and locales.
             Sign-on stays with your identity provider.
           </p>
@@ -78,7 +76,7 @@ export default function Security() {
       <div className='tce-security-stage'>
         <DeliveryBoard />
         <div className='tc-row tce-triple'>
-          <div className='tc-cell is-framed' data-reveal>
+          <div className='tc-cell is-framed'>
             <div className='tc-card tce-bento is-b1'>
                 <h3>Permissions scoped to one language</h3>
                 <p>
@@ -124,7 +122,7 @@ export default function Security() {
             </div>
           </div>
 
-          <div className='tc-cell is-framed' data-reveal>
+          <div className='tc-cell is-framed'>
             <div className='tc-card tce-bento is-b2'>
                 <h3>SSO, API keys, and signed webhooks</h3>
                 <p>
@@ -150,7 +148,7 @@ export default function Security() {
             </div>
           </div>
 
-          <div className='tc-cell is-framed' data-reveal>
+          <div className='tc-cell is-framed'>
             <div className='tc-card tce-bento is-b3'>
                 <h3>Versioned per locale</h3>
                 <p>

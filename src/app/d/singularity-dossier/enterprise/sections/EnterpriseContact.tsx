@@ -252,8 +252,8 @@ export default function EnterpriseContact({
                     </a>
                     .
                   </p>
-                  <span className={filled ? 'tce-hero-cta shrink-0' : 'shrink-0'}>
-                    <button type='submit' className='tc-btn tc-btn-solid'>
+                  <span className={filled ? 'tc-cta-ring shrink-0' : 'shrink-0'}>
+                    <button type='submit' className='tc-btn tc-btn-solid tc-btn-lg'>
                       Continue
                     </button>
                   </span>

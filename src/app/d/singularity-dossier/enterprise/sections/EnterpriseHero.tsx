@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
 import TrackedLink from './TrackedLink';
 
 import HeroInkField from './HeroInkField';
@@ -19,12 +18,11 @@ import { customerLogos, infrastructureProof } from './data';
  */
 export default function EnterpriseHero() {
   const root = useRef<HTMLElement>(null);
-  useQuietReveal(root);
 
   return (
     <section className='tc-sec' id='top' ref={root}>
       <div className='tc-row is-lead tce-hero-row'>
-        <div className='tc-cell tce-hero' data-reveal>
+        <div className='tc-cell tce-hero'>
             <h1>
               <span>Full-stack localization</span>
               <span>for enterprises</span>
