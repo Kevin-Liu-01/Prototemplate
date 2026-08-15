@@ -33,35 +33,17 @@
 }
 
 /* the three load-bearing words: quiet at rest, lit by their proof —
-   the active one takes full ink and the doubled thread underline
-   wipes in beneath it (the hero em's own device, so lines never
-   break around it) */
+   the active one takes the accent ink */
 .sgde-root .tcg-head em {
   font-style: normal;
-  padding-bottom: 0.08em;
   color: var(--tc-ink-3);
-  background-image:
-    linear-gradient(var(--tc-accent), var(--tc-accent)),
-    linear-gradient(var(--tc-accent), var(--tc-accent));
-  background-repeat: no-repeat;
-  background-size:
-    0% var(--thread-gauge),
-    0% var(--thread-gauge);
-  background-position:
-    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
-    0 100%;
-  transition:
-    color 0.35s ease,
-    background-size 0.45s ease;
+  transition: color 0.35s ease;
 }
 
 .sgde-root .tcg-grid[data-active='launch'] .tcg-head em:nth-of-type(1),
 .sgde-root .tcg-grid[data-active='security'] .tcg-head em:nth-of-type(2),
 .sgde-root .tcg-grid[data-active='operational'] .tcg-head em:nth-of-type(3) {
-  color: var(--tc-ink);
-  background-size:
-    100% var(--thread-gauge),
-    100% var(--thread-gauge);
+  color: var(--tc-accent);
 }
 
 .sgde-root .tcg-badges {

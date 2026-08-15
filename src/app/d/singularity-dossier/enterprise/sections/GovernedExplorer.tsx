@@ -239,10 +239,9 @@ export default function GovernedExplorer() {
           <div className='tcg-group' data-stage='operational'>
             <article className='tcg-card' data-reveal>
               <div className='tcg-card-body'>
-                  <h3>Served from the edge</h3>
+                  <h3>Served using a global, low-latency translation CDN</h3>
                   <p>
-                    Served using a global, low-latency translation CDN. Push
-                    over-the-air updates without redeploying your app.
+                    Push over-the-air updates without redeploying your app.
                   </p>
                 <div className='tcg-box'>
                 <div
