@@ -6,44 +6,15 @@ import Link from 'next/link';
 
 import { createGlyphField } from './glyphField';
 
-/** The close's rain speaks money: the world's currency marks, wider
-    variety than the hero's till — data-class symbols, cell-sized. */
-const MONEY_GLYPHS: readonly string[] = [
-  '$',
-  '€',
-  '¥',
-  '£',
-  '₹',
-  '₩',
-  '₽',
-  '₺',
-  '₪',
-  '₫',
-  '฿',
-  '₦',
-  '₴',
-  '₱',
-  '₲',
-  '₡',
-  '₭',
-  '₮',
-  '₸',
-  '₵',
-  '৳',
-  '¢',
-  '¤',
-  'kr',
-  'zł',
-  'R$',
-  'Fr',
-];
-
 /**
- * The close: one dark band, the condensation field behind a single ask
- * — the deploy band's mount and its CTA pair. The copy stands LEFT in
- * the engine's own dithered clearing, the field condenses into the
- * word to the right, and the ask lands the way the board's greetings
- * do: riffling through world scripts before settling out of the rain.
+ * The close — the shared "Deploy today." band: the copy block stands
+ * LEFT, and the RIGHT side is the glyph condensation field — glyphs
+ * from eight scripts drifting in depth, condensing into the word
+ * "language" in one script after another (createGlyphField with the
+ * rising drift). ONE canvas spans the rail column: the engine's own
+ * dithered copy-clearing keeps the left zone quiet for the type, so
+ * no mask and no second ambient field ever fight it. The CTAs are
+ * plain anchors — the ringed solid and the outline pair.
  */
 export default function CloseBand() {
   const root = useRef<HTMLElement>(null);
@@ -56,11 +27,13 @@ export default function CloseBand() {
       if (!rootEl || !canvas) return;
 
       const h2 = rootEl.querySelector('h2');
+      /* the narrow fold's quiet zone anchors to the copy block's REAL
+         bottom (offset metrics — the same box the canvas fills), so a
+         deep-wrapping fold can never push the CTAs into the rain */
       const copyEl = rootEl.querySelector<HTMLElement>('.pricing-close-copy');
       const field = createGlyphField({
         canvas,
         drift: 'rise',
-        glyphs: MONEY_GLYPHS,
         displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
         monoFamily:
           getComputedStyle(rootEl).getPropertyValue('--tc-mono').trim() ||
@@ -77,26 +50,36 @@ export default function CloseBand() {
 
   return (
     <section className='tc-sec pricing-close' ref={root}>
-      <canvas className='pricing-close-canvas' ref={stage} aria-hidden='true' />
-      <div className='pricing-close-copy'>
-        <h2>
-          Ship in every language.
-        </h2>
-        <div className='pricing-close-acts'>
-          <span className='pricing-close-cta'>
+      {/* the rail column carried through the full-bleed band — the
+          canvas mounts INSIDE it, so the formed word is never struck
+          by a rail hairline */}
+      <div className='pricing-close-in'>
+        <canvas
+          className='pricing-close-canvas'
+          ref={stage}
+          aria-hidden='true'
+        />
+        <div className='pricing-close-copy'>
+          <h2>Deploy today.</h2>
+          <p className='pricing-close-sub'>
+            Join the world&rsquo;s best developer teams on General Translation
+          </p>
+          <div className='pricing-close-acts'>
+            <span className='pricing-close-cta'>
+              <Link
+                className='pricing-close-btn is-solid'
+                href='/d/singularity-dossier'
+              >
+                Get Started
+              </Link>
+            </span>
             <Link
-              className='pricing-close-btn is-solid'
-              href='/d/singularity-dossier'
+              className='pricing-close-btn'
+              href='/d/singularity-dossier/contact'
             >
-              Get started
+              Get a Demo
             </Link>
-          </span>
-          <Link
-            className='pricing-close-btn'
-            href='/d/singularity-dossier/contact'
-          >
-            Get a demo
-          </Link>
+          </div>
         </div>
       </div>
     </section>

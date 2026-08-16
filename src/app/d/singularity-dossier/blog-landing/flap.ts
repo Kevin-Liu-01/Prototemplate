@@ -1,13 +1,11 @@
 import gsap from 'gsap';
 
 /**
- * Split-flap engine for DOM text — the terminus board's clack, re-inked
- * for the landing: the settle flash is the house accent blue, not the
- * board fork's amber. Characters are rendered by React as two-layer
- * cells (see FlapText.tsx); this module only ever mutates the face
- * spans, which React never re-renders. A flip folds the face shut
- * (scaleY), swaps the glyph at the squeeze, and unfolds, riffling
- * through a deterministic multi-script cycle before landing on the
+ * Split-flap animation engine for DOM text. React renders characters
+ * as two-layer cells (see FlapText.tsx); this module mutates only the
+ * [data-tb-face] spans, which React never re-renders. A flip folds the
+ * face shut (scaleY), swaps the glyph at the squeeze, and unfolds,
+ * cycling deterministically through CYCLE before settling on the
  * face's data-char target.
  */
 
@@ -16,7 +14,7 @@ import gsap from 'gsap';
 export const CYCLE = 'AEIOUMKZ言語한ÑÉ0387·/–ΔΩ';
 
 /* Fallback for the settle flash when the CSS token is unavailable. */
-const FLASH_FALLBACK = 'rgb(37, 99, 235)';
+const FLASH_FALLBACK = '#2563eb';
 
 function cycleGlyph(index: number, step: number): string {
   return CYCLE[(index * 5 + step * 3) % CYCLE.length] ?? '·';
@@ -85,13 +83,16 @@ export function flipUp(
     if (flash) {
       /* The settle moment: the landed glyph holds hot for a beat, then
          cools on a decay curve — emission dying, not a linear crossfade. */
-      sub
-        .set(face, { color: accent }, '>-0.06')
-        .to(
-          face,
-          { color: ink, duration: 0.85, ease: 'power3.out', clearProps: 'color' },
-          '>+0.12'
-        );
+      sub.set(face, { color: accent }, '>-0.06').to(
+        face,
+        {
+          color: ink,
+          duration: 0.85,
+          ease: 'power3.out',
+          clearProps: 'color',
+        },
+        '>+0.12'
+      );
     }
     tl.add(sub, i * per);
   });

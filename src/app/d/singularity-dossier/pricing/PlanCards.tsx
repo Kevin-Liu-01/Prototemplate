@@ -102,93 +102,98 @@ function IncMark({ id, children }: { id: string; children: ReactNode }) {
   );
 }
 
+type UnlimitedFeature = 'projects' | 'users' | 'languages';
+
+/** The ledger's silhouettes keyed by feature: the tabbed folder, the
+    two seated figures (front one gap-stroked), and the carved globe. */
+function UnlimitedMark({
+  feature,
+  id,
+}: {
+  feature: UnlimitedFeature;
+  id: string;
+}) {
+  let silhouette: ReactNode;
+
+  if (feature === 'projects') {
+    silhouette = (
+      <path
+        d='M6 30 L6 78 Q6 84 12 84 L88 84 Q94 84 94 78 L94 38 Q94 32 88 32 L48 32 L40 22 Q38 19 34 19 L12 19 Q6 19 6 25 Z'
+        fill='white'
+      />
+    );
+  } else if (feature === 'users') {
+    silhouette = (
+      <>
+        <circle cx='34' cy='26' r='13' fill='white' />
+        <path d='M8 78 V68 A26 26 0 0 1 60 68 V78 Z' fill='white' />
+        <circle
+          cx='62'
+          cy='22'
+          r='16'
+          fill='white'
+          stroke='black'
+          strokeWidth='5'
+        />
+        <path
+          d='M30 80 V70 A31 31 0 0 1 92 70 V80 Z'
+          fill='white'
+          stroke='black'
+          strokeWidth='5'
+        />
+      </>
+    );
+  } else {
+    silhouette = (
+      <>
+        <circle cx='50' cy='52' r='34' fill='white' />
+        <ellipse
+          cx='50'
+          cy='52'
+          rx='14'
+          ry='34'
+          fill='none'
+          stroke='black'
+          strokeWidth='4'
+        />
+        <line x1='16' y1='52' x2='84' y2='52' stroke='black' strokeWidth='4' />
+      </>
+    );
+  }
+
+  return <IncMark id={id}>{silhouette}</IncMark>;
+}
+
+function UnlimitedPlanFeatureItems({ idPrefix }: { idPrefix: string }) {
+  return (
+    <>
+      <li>
+        <UnlimitedMark feature='projects' id={`${idPrefix}-projects`} />
+        Unlimited projects
+      </li>
+      <li>
+        <UnlimitedMark feature='users' id={`${idPrefix}-users`} />
+        Unlimited users
+      </li>
+      <li>
+        <UnlimitedMark feature='languages' id={`${idPrefix}-languages`} />
+        Unlimited languages
+      </li>
+    </>
+  );
+}
+
 /**
- * The plans: what EVERY plan carries rides one shared strip above the
- * grid — three ∞ tiles against the head — so the two cards spend their
- * space on what actually differs: Starter's flat toolkit against
- * Enterprise's three weighted pillars. Both cards ride one subgrid
- * skeleton (name, price, blurb, body, CTA), so every beat lands on a
- * shared line no matter how the copy wraps. Enterprise wears the
- * recommendation: the accent ground, the corner Bayer wash, and the
- * Recommended plate inline on the name row.
+ * Every-plan allowances live directly in both cards with the same
+ * dithered marks. Starter carries every item in one continuous ledger;
+ * Enterprise follows the shared allowances with its three weighted
+ * pillars. Both cards ride one subgrid skeleton (name, price, blurb,
+ * body, CTA), so every beat lands on a shared line no matter how the
+ * copy wraps.
  */
 export default function PlanCards() {
   return (
     <section className='tc-sec pricing-plans'>
-      {/* the hatch spacer seats the plans against the hero — the house
-          diagonal band owns both of its edges */}
-      <div className='v0-hatch' aria-hidden='true' />
-      <div className='pricing-plans-included'>
-        <h2>Included in every plan</h2>
-        <ul>
-          <li>
-            <span className='pricing-inf' aria-hidden='true'>
-              ∞
-            </span>
-            Unlimited users
-            <IncMark id='users'>
-              {/* two seated figures, the front one gap-stroked */}
-              <circle cx='34' cy='26' r='13' fill='white' />
-              <path d='M8 78 V68 A26 26 0 0 1 60 68 V78 Z' fill='white' />
-              <circle
-                cx='62'
-                cy='22'
-                r='16'
-                fill='white'
-                stroke='black'
-                strokeWidth='5'
-              />
-              <path
-                d='M30 80 V70 A31 31 0 0 1 92 70 V80 Z'
-                fill='white'
-                stroke='black'
-                strokeWidth='5'
-              />
-            </IncMark>
-          </li>
-          <li>
-            <span className='pricing-inf' aria-hidden='true'>
-              ∞
-            </span>
-            Unlimited projects
-            <IncMark id='projects'>
-              {/* the tabbed folder */}
-              <path
-                d='M6 30 L6 78 Q6 84 12 84 L88 84 Q94 84 94 78 L94 38 Q94 32 88 32 L48 32 L40 22 Q38 19 34 19 L12 19 Q6 19 6 25 Z'
-                fill='white'
-              />
-            </IncMark>
-          </li>
-          <li>
-            <span className='pricing-inf' aria-hidden='true'>
-              ∞
-            </span>
-            Unlimited languages
-            <IncMark id='languages'>
-              {/* the globe: meridian and equator carved in black */}
-              <circle cx='50' cy='52' r='34' fill='white' />
-              <ellipse
-                cx='50'
-                cy='52'
-                rx='14'
-                ry='34'
-                fill='none'
-                stroke='black'
-                strokeWidth='4'
-              />
-              <line
-                x1='16'
-                y1='52'
-                x2='84'
-                y2='52'
-                stroke='black'
-                strokeWidth='4'
-              />
-            </IncMark>
-          </li>
-        </ul>
-      </div>
-
       <div className='pricing-plan-grid'>
         <article className='pricing-plan-card'>
           <div className='pricing-plan-top'>
@@ -201,6 +206,7 @@ export default function PlanCards() {
           <p className='pricing-plan-blurb'>For individuals and small teams</p>
           <div className='pricing-plan-body'>
             <ul className='pricing-plan-features'>
+              <UnlimitedPlanFeatureItems idPrefix='starter' />
               <li>
                 <PencilLine aria-hidden='true' />
                 Translation Editor
@@ -243,16 +249,9 @@ export default function PlanCards() {
             For large teams with complex localization needs
           </p>
           <div className='pricing-plan-body'>
-            <div className='pricing-plan-group'>
-              <ShieldCheck aria-hidden='true' />
-              <div>
-                <h4>Security and governance</h4>
-                <p>
-                  SSO, custom roles, and support for SOC 2 and ISO 27001
-                  requirements.
-                </p>
-              </div>
-            </div>
+            <ul className='pricing-plan-features pricing-plan-unlimited'>
+              <UnlimitedPlanFeatureItems idPrefix='enterprise' />
+            </ul>
             <div className='pricing-plan-group'>
               <UsersRound aria-hidden='true' />
               <div>
@@ -267,6 +266,16 @@ export default function PlanCards() {
               <div>
                 <h4>Custom workflows</h4>
                 <p>Custom integrations, webhooks, and tailored automation.</p>
+              </div>
+            </div>
+            <div className='pricing-plan-group'>
+              <ShieldCheck aria-hidden='true' />
+              <div>
+                <h4>Security and governance</h4>
+                <p>
+                  SSO, RBAC with custom permissions, SOC 2 and ISO 27001
+                  certificates
+                </p>
               </div>
             </div>
           </div>

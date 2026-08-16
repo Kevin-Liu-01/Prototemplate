@@ -151,11 +151,11 @@
     opacity 160ms ease;
 }
 
-.sgd-blog .blog-updates-arrows button:hover:not(:disabled) {
+.sgd-blog .blog-updates-arrows button:hover:not([aria-disabled='true']) {
   color: var(--tc-ink);
 }
 
-.sgd-blog .blog-updates-arrows button:disabled {
+.sgd-blog .blog-updates-arrows button[aria-disabled='true'] {
   opacity: 0.35;
   cursor: default;
 }
@@ -213,6 +213,25 @@
   scroll-snap-align: start;
   text-decoration: none;
   transition: border-color 160ms ease;
+}
+
+/* hover affordance: the go-arrow surfaces in the slab's free corner */
+.sgd-blog .blog-updates-go {
+  position: absolute;
+  top: 14px;
+  right: 15px;
+  color: var(--tc-ink-3);
+  opacity: 0;
+  transform: translate(-3px, 3px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.sgd-blog .blog-updates-cell:hover .blog-updates-go,
+.sgd-blog .blog-updates-cell:focus-visible .blog-updates-go {
+  opacity: 1;
+  transform: none;
 }
 
 /* the marque seated in the slab's corner, a watermark under the copy.
@@ -287,6 +306,12 @@
   color: #86a8ff;
 }
 
+/* ---- the essays board: filters + search, features, then blocks ---- */
+
+.sgd-blog .blog-essays {
+  padding-bottom: clamp(56px, 7vw, 92px);
+}
+
 /* the motif covers: type poured from the Bayer ramp in the house blue */
 .sgd-blog .blog-feature-dither text {
   font-family: inherit;
@@ -322,6 +347,13 @@
 
 .sgd-blog .blog-dither-cover pattern path {
   fill: color-mix(in srgb, var(--tc-ink) 74%, transparent);
+}
+
+/* below five-across, the slabs hold a readable width and scroll */
+@media (max-width: 1250px) {
+  .sgd-blog .blog-updates-cell {
+    flex-basis: 236px;
+  }
 }
 
 /* tall enough that the motif renders whole and large — 21/7 cropped it */
@@ -389,6 +421,6 @@
   color: rgba(255, 255, 255, 0.66);
 }
 
-.sgd-blog .blog-updates-arrows button:hover:not(:disabled) {
+.sgd-blog .blog-updates-arrows button:hover:not([aria-disabled='true']) {
   color: rgba(255, 255, 255, 0.95);
 }

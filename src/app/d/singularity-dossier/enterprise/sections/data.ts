@@ -37,6 +37,7 @@ export const customerLogos: CustomerLogo[] = [
     href: 'https://sierra.ai',
     lightSrc: '/logos/sierra.light.svg',
     darkSrc: '/logos/sierra.dark.svg',
+    className: 'is-sierra',
   },
 ];
 

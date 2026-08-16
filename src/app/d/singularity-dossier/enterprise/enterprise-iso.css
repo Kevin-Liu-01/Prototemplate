@@ -42,7 +42,10 @@
 
 .sgde-root .tcg-grid[data-active='launch'] .tcg-head em:nth-of-type(1),
 .sgde-root .tcg-grid[data-active='security'] .tcg-head em:nth-of-type(2),
-.sgde-root .tcg-grid[data-active='operational'] .tcg-head em:nth-of-type(3) {
+.sgde-root
+  .tcg-grid[data-active='operational']
+  .tcg-head
+  em:nth-of-type(3) {
   color: var(--tc-accent);
 }
 
@@ -244,7 +247,11 @@
 
 .sgde-root .tcg-fork .lang-cr-branch.is-off .lang-cr-result s {
   color: var(--tc-ink-3);
-  text-decoration-color: color-mix(in srgb, var(--tc-accent) 70%, transparent);
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--tc-accent) 70%,
+    transparent
+  );
 }
 
 .sgde-root .tcg-fork .lang-cr-branch.is-off {
@@ -290,39 +297,88 @@
 }
 
 /* by day the PR panel is light — the diff takes the light palette */
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-add {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-add {
   background: #e6ffec;
 }
 
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-add code,
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-add i {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-add
+  code,
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-add
+  i {
   color: #1a7f37;
 }
 
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-del {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-del {
   background: #ffebe9;
 }
 
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-del code,
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-del i {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-del
+  code,
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-del
+  i {
   color: #cf222e;
 }
 
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-hunk {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-hunk {
   background: #ddf4ff;
 }
 
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-diff .is-hunk code {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-diff
+  .is-hunk
+  code {
   color: #0550ae;
 }
 
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-meta b.is-ok,
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-meta b.is-ok::before {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-meta
+  b.is-ok,
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-meta
+  b.is-ok::before {
   color: #1a7f37;
   background-color: transparent;
 }
 
-:root:not([data-theme='dark']) .sgde-root .tcg-card-body .tce-pr-meta b.is-ok::before {
+:root:not([data-theme='dark'])
+  .sgde-root
+  .tcg-card-body
+  .tce-pr-meta
+  b.is-ok::before {
   background-color: #1a7f37;
 }
 

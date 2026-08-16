@@ -1,0 +1,402 @@
+/* ============================================================
+   CONTACT — the gt-cloud /enterprise/contact sheet, mirrored.
+   Every block is the SSOT's (services-landing/enterprise.css,
+   contact-scoped rules only), in SSOT cascade order, rescoped
+   .enterprise-root → .sgdc-root and --color-emphasis →
+   --tc-accent. Prototype-only additions live in port-compat.css
+   so a re-sync is: re-copy this sheet, rescope, keep that file.
+   ============================================================ */
+
+.sgdc-root .enterprise-contact .contact-layout {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(40px, 5vw, 72px);
+  border-inline: 0;
+  padding: clamp(64px, 7vw, 92px) var(--tc-gut);
+}
+
+.sgdc-root .enterprise-contact .contact-intro {
+  padding: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-title {
+  max-width: 14ch;
+  font-family: var(--tc-disp);
+  font-size: clamp(2rem, 3.7vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.sgdc-root .enterprise-contact .contact-features {
+  gap: 0;
+  margin-top: 34px;
+}
+
+.sgdc-root .enterprise-contact .contact-feature {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 12px;
+  padding: 18px 16px;
+  border-top: 1px solid var(--tc-hair);
+  color: var(--tc-ink);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.sgdc-root .enterprise-contact .contact-feature:last-child {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sgdc-root .enterprise-contact .contact-feature svg {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--tc-accent);
+  stroke-width: 1.7;
+}
+
+.sgdc-root .enterprise-contact .contact-feature p {
+  margin: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-feature p span:last-child {
+  color: var(--tc-ink-2);
+}
+
+.sgdc-root .enterprise-contact .contact-testimonial {
+  flex: 1 1 auto;
+  align-items: stretch;
+  justify-content: start;
+  margin-top: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-testimonial > a {
+  width: 100%;
+}
+
+.sgdc-root .enterprise-contact .contact-testimonial-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  border: 0;
+  border-top: 1px solid var(--tc-hair);
+  border-radius: 0;
+  background: transparent;
+  padding: 18px 0 0;
+  box-shadow: none;
+}
+
+.sgdc-root .enterprise-contact .contact-field {
+  gap: 8px;
+}
+
+.sgdc-root .enterprise-contact .contact-field label {
+  color: var(--tc-ink-2);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.sgdc-root .enterprise-contact .contact-input {
+  border-color: color-mix(in srgb, var(--tc-ink) 26%, transparent);
+  border-radius: 6px;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-size: 14px;
+}
+
+.sgdc-root .enterprise-contact .contact-input::placeholder {
+  color: var(--tc-ink-3);
+}
+
+.sgdc-root .enterprise-contact textarea.contact-input {
+  min-height: 136px;
+}
+
+/* The standalone page keeps the grid stretched: the form panel must
+   span the row so its full-reach rules land above the title and under
+   both columns, never through the copy. The panel and the intro
+   center their own content inside the tall row instead. */
+.sgdc-root .enterprise-contact-page .contact-layout {
+  min-height: clamp(680px, calc(100svh - 58px), 840px);
+  align-items: stretch;
+}
+
+.sgdc-root .enterprise-contact-page .contact-form-panel {
+  display: grid;
+  align-content: center;
+}
+
+.sgdc-root .enterprise-contact-page .contact-intro {
+  justify-content: center;
+}
+
+@media (max-width: 1000px) {
+  .sgdc-root .enterprise-contact .contact-layout {
+    border-top: 1px solid var(--tc-hair);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .sgdc-root .enterprise-contact .contact-layout {
+    gap: 52px;
+  }
+
+  .sgdc-root .enterprise-contact .contact-form-panel {
+    border-top: 0;
+  }
+}
+
+/* the form panel sits in its own box, rules running off every edge —
+   the full-reach frame grammar; the section's clip is the sheet's
+   boundary. The panel (not the form) carries the frame so its box
+   stretches the grid row and the bottom rule lands under BOTH
+   columns, never through the quote. */
+.sgdc-root .enterprise-contact .contact-form-panel {
+  position: relative;
+  padding: clamp(26px, 3vw, 40px) clamp(24px, 2.6vw, 36px);
+  background: color-mix(in srgb, var(--tc-ink) 3%, var(--tc-paper));
+}
+
+.sgdc-root .enterprise-contact .contact-form {
+  padding: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-form-panel::before,
+.sgdc-root .enterprise-contact .contact-form-panel::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sgdc-root .enterprise-contact .contact-form-panel::before {
+  top: 0;
+  bottom: 0;
+  left: -100vw;
+  right: -100vw;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sgdc-root .enterprise-contact .contact-form-panel::after {
+  left: 0;
+  right: 0;
+  top: -100vh;
+  bottom: -100vh;
+  border-left: 1px solid var(--tc-hair);
+  border-right: 1px solid var(--tc-hair);
+}
+
+/* ---- the contact section, set in the house grammar ----
+   Content and logic live in the local ContactForm; this block only
+   re-inks it for the rail: hairline structure, square fields,
+   ink-solid ask. */
+
+.sgdc-root .enterprise-contact .contact-layout {
+  border: 0;
+  padding: clamp(48px, 6vw, 76px) var(--tc-gut);
+  gap: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-intro {
+  /* the head keeps the same air above as it keeps off the left rule */
+  padding-block: clamp(26px, 3vw, 36px) 0;
+}
+
+.sgdc-root .enterprise-contact .contact-title {
+  max-width: 14ch;
+  /* only the head steps past the left rule */
+  padding-left: clamp(14px, 1.6vw, 20px);
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+
+.sgdc-root .enterprise-contact .contact-features {
+  margin-top: 34px;
+  gap: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-feature {
+  gap: 14px;
+  padding: 18px 16px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sgdc-root .enterprise-contact .contact-feature:last-child {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sgdc-root .enterprise-contact .contact-feature svg {
+  color: var(--tc-accent);
+  stroke-width: 1.6;
+}
+
+.sgdc-root .enterprise-contact .contact-feature p {
+  font-size: 13.5px;
+  line-height: 1.62;
+}
+
+.sgdc-root .enterprise-contact .contact-testimonial {
+  /* the quote owns the column's remaining height, centered in it */
+  flex: 1 1 auto;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-testimonial-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0;
+  border: 0;
+  border-left: 2px solid var(--tc-accent);
+  padding: 4px 0 4px 18px;
+  background: none;
+  box-shadow: none;
+}
+
+.sgdc-root .enterprise-contact .contact-form label {
+  color: var(--tc-ink-3);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* the fields read at full contrast: white paper wells on the gray
+   panel, a firm ink border, the engine's rounding */
+.sgdc-root .enterprise-contact .contact-form input,
+.sgdc-root .enterprise-contact .contact-form textarea {
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--tc-ink) 38%, transparent);
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-size: 14px;
+  transition: border-color 140ms ease;
+}
+
+.sgdc-root .enterprise-contact .contact-form input {
+  height: 46px;
+}
+
+.sgdc-root .enterprise-contact .contact-form input:focus-visible,
+.sgdc-root .enterprise-contact .contact-form textarea:focus-visible {
+  border-color: var(--tc-accent);
+  outline: 0;
+  box-shadow: none;
+}
+
+/* the submit is the Cta component's own face — no local re-skin */
+
+/* one face: mono retires from the field micro-labels */
+.sgdc-root .enterprise-contact .contact-field label {
+  font-family: inherit;
+}
+
+/* the quote owns the intro column's remaining height: the block grows
+   and the card centers its content in the won space */
+.sgdc-root .enterprise-contact .contact-testimonial {
+  flex: 1 1 auto;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: 0;
+}
+
+.sgdc-root .enterprise-contact .contact-testimonial > a {
+  width: 100%;
+}
+
+.sgdc-root .enterprise-contact .contact-testimonial-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 22px 24px;
+}
+
+/* held, the quote answers in the accent — never by swelling */
+.sgdc-root .enterprise-contact .contact-testimonial-card > p:first-child {
+  transition: color 0.2s ease;
+}
+
+.sgdc-root
+  .enterprise-contact
+  .contact-testimonial
+  > a:hover
+  .contact-testimonial-card
+  > p:first-child {
+  color: var(--tc-accent);
+}
+
+/* ---------- the contact sheet folds ---------- */
+
+@media (max-width: 1000px) {
+  /* one column: the ask stacks over the form; the divider dies */
+  .sgdc-root .enterprise-contact .contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+  }
+
+  .sgdc-root .enterprise-contact .contact-intro {
+    padding-right: 0;
+  }
+
+  .sgdc-root .enterprise-contact .contact-title {
+    max-width: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .sgdc-root .enterprise-contact .contact-layout {
+    padding-inline: var(--tc-gut);
+  }
+
+  /* the consent line and the submit stack instead of squeezing */
+  .sgdc-root .enterprise-contact .contact-form > div:last-of-type {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- form contrast ---------- */
+.sgdc-root .enterprise-contact .contact-field label {
+  color: var(--tc-ink);
+  font-size: 13px;
+}
+
+.sgdc-root .enterprise-contact .contact-input {
+  border-color: color-mix(in srgb, var(--tc-ink) 38%, transparent);
+  color: var(--tc-ink);
+}
+
+.sgdc-root .enterprise-contact .contact-input::placeholder {
+  color: var(--tc-ink-3);
+}
+
+.sgdc-root .enterprise-contact .contact-input:focus-visible {
+  border-color: var(--tc-accent);
+}
+
+/* The standalone page seats the intro on the rail's leading edge. Its feature
+   and title padding provide the intended inset without an extra outer gutter. */
+.sgdc-root .enterprise-contact-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.sgdc-root .enterprise-contact-page .contact-title {
+  max-width: none;
+}
+
+@media (min-width: 1001px) {
+  .sgdc-root .enterprise-contact-page .contact-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-inline: 0;
+  }
+}

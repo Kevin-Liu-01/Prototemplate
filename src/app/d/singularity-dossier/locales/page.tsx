@@ -1,18 +1,17 @@
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import LocaleLedger from '../../singularity/company-sections/LocaleLedger';
-import LocalesHero from '../../singularity/company-sections/LocalesHero';
-import WritingSystems from '../../singularity/company-sections/WritingSystems';
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
+
+import LocalesCatalog from './LocalesCatalog';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
    (the toolchain enterprise subpage precedent) */
 import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
-import '../../singularity/company-sections/company.css';
 import '../styles.css';
+import './locales.css';
 
 export const metadata = {
   title: 'Supported Locales — Dossier — GT Redesign',
@@ -20,22 +19,19 @@ export const metadata = {
 };
 
 /**
- * Supported Locales — the shared company composition in the singularity
- * grammar, wearing the Dossier accent sheet. All 120 rows come from
- * the exact data path the old landing page read at runtime; the sections
- * are built once under ../../singularity/company-sections.
+ * Supported Locales — the production catalog from gt-cloud
+ * (components/pages/supported-locales), on the dossier sheet: centered
+ * head, contained rounded search, and every locale as a flag card. All
+ * 120 rows come from the exact data path the live page reads at runtime
+ * (see ./locales-data.ts); nothing on this page is invented.
  */
 export default function SingularityDossierLocalesPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root' id='top'>
+      <div className='singularity-root sgd-root locales-root' id='top'>
         <TopNav />
         <div className='tc-rail'>
-          <LocalesHero />
-          <LocaleLedger />
-        </div>
-        <WritingSystems />
-        <div className='tc-rail'>
+          <LocalesCatalog />
           <SiteFooter />
         </div>
       </div>

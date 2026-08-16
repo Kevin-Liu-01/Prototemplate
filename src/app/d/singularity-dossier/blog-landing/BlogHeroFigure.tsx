@@ -1,6 +1,6 @@
 /**
- * The GT figure from the brand sheet, drawn as a dotted blueprint
- * outline standing in the masthead's board field.
+ * The GT logotype as bare SVG paths; the dotted-outline stroke is
+ * applied by the .blog-hero-figure rules in blog-landing.css.
  */
 export default function BlogHeroFigure() {
   return (

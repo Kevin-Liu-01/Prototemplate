@@ -53,24 +53,14 @@ const FEATURES: FeatureItem[] = [
   },
 ];
 
-type EnterpriseContactFormProps = {
-  showColumnDivider?: boolean;
-  sectionClassName?: string;
-  containerClassName?: string;
-  headingLevel?: 'h1' | 'h2';
-};
-
 /**
- * The gt-cloud contact composition (EnterpriseContactForm over the shared
- * ContactForm), flattened into one static section for the prototype: same
- * DOM, same classes, the submit completes in place without a backend.
+ * The gt-cloud standalone contact composition (EnterpriseContactPage over
+ * EnterpriseContactForm over the shared ContactForm), flattened into one
+ * static section for the prototype: same DOM, same classes, hardcoded to
+ * the page's config (h1 head, no column divider), and the submit completes
+ * in place without a backend.
  */
-export default function EnterpriseContact({
-  showColumnDivider = true,
-  sectionClassName = 'px-6',
-  containerClassName = '',
-  headingLevel = 'h2',
-}: EnterpriseContactFormProps) {
+export default function ContactForm() {
   const [form, setForm] = useState<FormState>({
     name: '',
     email: '',
@@ -78,7 +68,6 @@ export default function EnterpriseContact({
     message: '',
   });
   const [success, setSuccess] = useState(false);
-  const Heading = headingLevel;
   const filled =
     form.name.trim() !== '' &&
     form.email.trim() !== '' &&
@@ -86,26 +75,15 @@ export default function EnterpriseContact({
     form.message.trim() !== '';
 
   return (
-    <section className={sectionClassName}>
-      <div className={`contact-shell ${containerClassName}`}>
+    <section className='tc-sec enterprise-contact enterprise-contact-page'>
+      <div className='contact-shell'>
         <div className='contact-layout relative grid items-stretch px-8 py-14 sm:px-10 sm:py-16 md:grid-cols-2 md:px-12'>
-          {showColumnDivider && (
-            <div
-              aria-hidden
-              className='pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 md:block'
-            />
-          )}
           <div className='contact-intro flex flex-col py-6 md:py-8 md:pr-12'>
-            <Heading className='contact-title text-3xl font-semibold tracking-tight md:text-4xl'>
+            <h1 className='contact-title text-3xl font-semibold tracking-tight md:text-4xl'>
               Talk to our team about enterprise deployment
-            </Heading>
+            </h1>
 
-            {/* the inline 2.5rem offsets mirror the shared ContactForm;
-                the sheet's !important rules own the final rhythm */}
-            <div
-              style={{ marginTop: '2.5rem' }}
-              className='contact-features flex flex-col gap-y-6 text-sm sm:gap-y-8 sm:text-base'
-            >
+            <div className='contact-features flex flex-col gap-y-6 text-sm sm:gap-y-8 sm:text-base'>
               {FEATURES.map((feature) => (
                 <div key={feature.title} className='contact-feature flex gap-2'>
                   <feature.icon className='mt-1 size-4 shrink-0' />
@@ -119,10 +97,7 @@ export default function EnterpriseContact({
               ))}
             </div>
 
-            <div
-              style={{ marginTop: '2.5rem' }}
-              className='contact-testimonial flex items-center justify-center md:mt-auto'
-            >
+            <div className='contact-testimonial flex items-center justify-center md:mt-auto'>
               <a
                 href='https://x.com/milichab/status/2010496967848370412'
                 target='_blank'
@@ -273,15 +248,11 @@ export default function EnterpriseContact({
                     </a>
                     .
                   </p>
-                  <Cta
-                    className='shrink-0'
-                    ring={filled}
-                    size='lg'
-                    type='submit'
-                    variant='solid'
-                  >
-                    Continue
-                  </Cta>
+                  <span className='shrink-0'>
+                    <Cta variant='solid' size='lg' type='submit' ring={filled}>
+                      Continue
+                    </Cta>
+                  </span>
                 </div>
               </form>
             )}

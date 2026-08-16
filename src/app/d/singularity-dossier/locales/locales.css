@@ -1,0 +1,202 @@
+/* ============================================================
+   SINGULARITY · DOSSIER — supported locales, the production
+   catalog sheet mirrored from gt-cloud (supported-locales.css):
+   centered head, the contained rounded search, and the roster
+   as flag cards. Emphasis reads the dossier accent token.
+   ============================================================ */
+
+.locales-root {
+  overflow-x: clip;
+}
+
+/* ---- the catalog: search rail, then the roster as cards ---- */
+
+.locales-root .locales-catalog {
+  padding: clamp(56px, 6vw, 84px) var(--tc-gut) 110px;
+}
+
+/* the production header: centered head, sub, and the search beneath */
+.locales-root .locales-head {
+  text-align: center;
+}
+
+.locales-root .locales-head h1 {
+  font-size: clamp(2.2rem, 3.4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.locales-root .locales-head p {
+  max-width: 62ch;
+  margin: 12px auto 0;
+  color: var(--tc-ink-2);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.locales-root .locales-search {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  max-width: 640px;
+  height: 50px;
+  margin: 34px auto 0;
+  padding: 0 16px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 10px;
+  background: var(--tc-card);
+}
+
+.locales-root .locales-search svg {
+  width: 16px;
+  height: 16px;
+  color: var(--tc-ink-3);
+}
+
+.locales-root .locales-search input {
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tc-ink);
+  font-size: 14px;
+  outline: none;
+}
+
+.locales-root .locales-search input::placeholder {
+  color: var(--tc-ink-3);
+}
+
+.locales-root .locales-search:focus-within {
+  border-color: color-mix(in srgb, var(--tc-accent) 55%, var(--tc-hair));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tc-accent) 14%, transparent);
+}
+
+.locales-root .locales-search > span {
+  color: var(--tc-ink-2);
+  font-family: var(--tc-mono);
+  font-size: 10px;
+}
+
+/* the cards: the production grid — flag, name, region, code • native */
+.locales-root .locales-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+  margin-top: 44px;
+}
+
+.locales-root .locales-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  transition: background-color 150ms ease;
+}
+
+.locales-root a.locales-card:hover {
+  background: var(--tc-hair-2);
+}
+
+.locales-root .locales-card-flag {
+  display: inline-flex;
+  margin-top: 3px;
+}
+
+.locales-root .locales-card-flag .fi {
+  width: 24px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 0.5px rgb(127 127 127 / 30%);
+}
+
+.locales-root .locales-card-globe {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.locales-root .locales-card-body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.locales-root .locales-card-body strong {
+  overflow: hidden;
+  color: var(--tc-ink);
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.locales-root .locales-card-region {
+  color: var(--tc-ink-2);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.locales-root .locales-card-code {
+  overflow: hidden;
+  color: var(--tc-ink-2);
+  font-size: 11px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.locales-root .locales-card-code code {
+  color: var(--tc-ink);
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+}
+
+.locales-root .locales-card-code i {
+  margin-inline: 5px;
+  color: var(--tc-ink-3);
+  font-style: normal;
+}
+
+.locales-root .locales-show-all {
+  display: flex;
+  justify-content: center;
+  padding-top: 28px;
+}
+
+.locales-root .locales-empty {
+  padding: 42px 0;
+  border-bottom: 1px solid var(--tc-hair);
+  color: var(--tc-ink-2);
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .locales-root .locales-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .locales-root .locales-catalog {
+    padding-inline: 20px;
+  }
+}
+
+@media (max-width: 560px) {
+  .locales-root .locales-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .locales-root .locales-card {
+    transition: none;
+  }
+}

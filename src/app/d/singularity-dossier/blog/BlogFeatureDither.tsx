@@ -1,5 +1,3 @@
-/* The house 4×4 Bayer threshold matrix (local copy — the landing app
-   shares it from DitheredMark). */
 const BAYER4: readonly (readonly number[])[] = [
   [0, 8, 2, 10],
   [12, 4, 14, 6],
@@ -11,6 +9,8 @@ const BAYER4: readonly (readonly number[])[] = [
  * Server-rendered SVG cover: the motif text is an SVG mask over a
  * tiered Bayer-dither ramp, so the glyphs render as dither cells that
  * thin from solid coverage on one flank to sparse on the other.
+ * (The article page's own copy of the landing component — the
+ * blog-landing copy predates the word-vocabulary motifs.)
  */
 
 export type FeatureMotif = {

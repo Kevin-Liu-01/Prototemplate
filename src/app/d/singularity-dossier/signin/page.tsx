@@ -56,9 +56,43 @@ function ArrowMark() {
       strokeLinecap='round'
       strokeLinejoin='round'
       aria-hidden='true'
-      style={{ width: 13, height: 13 }}
+      style={{ width: 14, height: 14 }}
     >
       <path d='M7 17 17 7M7 7h10v10' />
+    </svg>
+  );
+}
+
+function LanguagesMark() {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      aria-hidden='true'
+      style={{ width: 16, height: 16 }}
+    >
+      <path d='m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6' />
+    </svg>
+  );
+}
+
+function ChevronMark() {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      aria-hidden='true'
+      style={{ width: 14, height: 14 }}
+    >
+      <path d='m6 9 6 6 6-6' />
     </svg>
   );
 }
@@ -110,6 +144,8 @@ export default function SingularityDossierSignInPage() {
                     type='text'
                     inputMode='email'
                     autoComplete='email'
+                    autoCapitalize='none'
+                    autoCorrect='off'
                     spellCheck={false}
                     placeholder='you@yourcompany.com'
                     aria-label='Email'
@@ -121,7 +157,7 @@ export default function SingularityDossierSignInPage() {
 
                 <div className='sgs-or'>or</div>
 
-                <div className='sgs-stack'>
+                <div className='sgs-stack is-providers'>
                   <button type='button' className='sgs-btn is-line sgs-provider'>
                     <GitHubMark />
                     Continue with GitHub
@@ -196,7 +232,19 @@ export default function SingularityDossierSignInPage() {
               Privacy
             </a>
           </div>
-          <p>© 2026 General Translation, Inc. All rights reserved.</p>
+          <div className='sgs-footer-meta'>
+            {/* the language selector is a visual stub — the prototype has
+                no locale machinery */}
+            <button type='button' className='sgs-lang'>
+              <LanguagesMark />
+              English
+              <ChevronMark />
+            </button>
+            <p>
+              © {new Date().getFullYear()} General Translation, Inc. All
+              rights reserved.
+            </p>
+          </div>
         </footer>
       </div>
       <DirectionDock slug='singularity-dossier' />

@@ -1,8 +1,10 @@
 /* Dossier pricing — the gt-cloud pricing page ported whole: the
-   money hero, the pressable full-stack board, the framed compare
-   ledger with its ¥€$ motif, and the condensation close. Tokens
+   money hero, the two plans, the framed compare ledger, and the
+   shared deploy close ("Deploy today." beside the condensation
+   field). The full-stack board's blocks stay in this sheet for the
+   enterprise mirror, which imports both it and the board. Tokens
    ride the singularity sheet (--tc-*); the accent maps to
-   --tc-accent. Port-local blocks (plans, table, close CTAs, flap
+   --tc-accent. Port-local blocks (plans, table, close, CTAs, flap
    primitives) follow the ported sheet at the end. */
 
 .sgd-root .pricing-root {
@@ -337,7 +339,6 @@
 .pricing-root .pricing-stack-diff.is-add .pricing-stack-diff-top {
   fill: color-mix(in srgb, var(--tc-accent) 26%, var(--tc-paper));
 }
-
 
 
 .pricing-root .pricing-stack-title {
@@ -774,8 +775,6 @@
   }
 
 
-
-
   .pricing-root .pricing-stack-map {
     min-height: 540px;
   }
@@ -790,92 +789,6 @@
   .pricing-root .pricing-hero-link svg {
     transition: none;
   }
-}
-
-
-
-/* ---- the close: one dark band, the condensation field behind the
-   ask — copy stands left in the engine's own dithered clearing, the
-   word forms to its right ---- */
-
-.pricing-root .pricing-close {
-  position: relative;
-  overflow: hidden;
-  min-height: clamp(380px, 42vw, 500px);
-  /* by day the band rides the page's own paper and the rain runs in
-     the page ink */
-  background: var(--tc-paper);
-}
-
-/* by night the band is literal ink — the glyph-field engine resolves
-   its glyph ink off the canvas's --tc-ink, so the pin flips the rain
-   white with the ground */
-[data-theme='dark'] .pricing-root .pricing-close {
-  --tc-ink: #fff;
-
-  background: #0d0d0f;
-}
-
-
-.pricing-root .pricing-close-canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-
-.pricing-root .pricing-close-copy {
-  position: relative;
-  display: grid;
-  gap: 26px;
-  justify-items: start;
-  align-content: center;
-  max-width: min(46%, 500px);
-  min-height: inherit;
-  padding: clamp(56px, 7vw, 88px) var(--tc-gut);
-}
-
-
-.pricing-root .pricing-close-copy h2 {
-  max-width: 16ch;
-  color: color-mix(in srgb, var(--tc-ink) 94%, transparent);
-  font-size: clamp(28px, 3.4vw, 46px);
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-}
-
-
-.pricing-root .pricing-close-acts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-/* the engine's 880 narrow cut: the word drops bottom-center, so the
-   copy keeps the head and the band grows below it */
-@media (max-width: 880px) {
-
-  .pricing-root .pricing-close-copy {
-    max-width: none;
-    padding-top: clamp(48px, 8vw, 64px);
-    padding-bottom: clamp(240px, 52vw, 300px);
-    align-content: start;
-  }
-}
-
-
-[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid {
-  border-color: #fff;
-  background: #fff;
-  color: #070707;
-}
-
-
-[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid:hover {
-  background: #fff;
 }
 
 
@@ -929,8 +842,6 @@
 }
 
 
-
-
 /* ---- the full-stack board: pillars wired to their stations ---- */
 
 .pricing-root .pricing-stack-board {
@@ -966,7 +877,6 @@
 }
 
 
-
 .pricing-root .pricing-stack-board-col {
   position: relative;
   z-index: 1;
@@ -980,9 +890,6 @@
 .pricing-root .pricing-stack-board-col article {
   height: 100%;
 }
-
-
-
 
 
 .pricing-root .pricing-stack-board-col article {
@@ -1053,51 +960,6 @@
 }
 
 
-/* ---- the close's flap cells ---- */
-
-.pricing-root .pricing-close {
-  --tb-flash: var(--tc-accent);
-}
-
-
-.pricing-root .pricing-close .tb-ch {
-  position: relative;
-  display: inline-block;
-}
-
-
-.pricing-root .pricing-close .tb-ch-g {
-  visibility: hidden;
-}
-
-
-.pricing-root .pricing-close .tb-ch-f {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  white-space: nowrap;
-  transform-origin: 50% 54%;
-}
-
-
-.pricing-root .pricing-close .tb-word {
-  white-space: nowrap;
-}
-
-
-.pricing-root .pricing-close .tb-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 /* ================= port-local blocks ================= */
 
 /* the page's dark accent steps to the v0 blue (the singularity sheet
@@ -1142,23 +1004,17 @@
   border: 0;
 }
 
-/* ---- the plans: the shared strip as the table's head row, then the
-   two cards on one subgrid skeleton ---- */
+/* ---- the plans: two cards on one subgrid skeleton — the every-plan
+   allowances live in both feature ledgers, no separate strip ---- */
 
-/* the strip is a four-cell manifest row: the head, then three ∞ tiles
-   split by hairlines — closed below by the plan grid's own top rule */
-.pricing-root .pricing-plans-included {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(0, 1fr));
-  align-items: center;
-}
-
-/* the stack's hatch rides the plan grid's own bottom rule as its top
-   edge; the plans section's tc-sec rule yields */
+/* the grid's own bottom rule closes the plans; the section yields its
+   tc-sec rule so plans and compare meet on one hairline */
 .pricing-root .pricing-plans {
   border-bottom: 0;
 }
 
+/* the stack's hatch rides the comparison section's bottom rule as its
+   top edge, so the transition keeps one seam instead of doubling it */
 .pricing-root .pricing-stack > .v0-hatch {
   border-top: 0;
 }
@@ -1208,8 +1064,8 @@
   visibility: visible;
 }
 
-/* the hatch spacer above the strip — the house diagonal band; the
-   hero's rule and the strip's own top rule yield to its edges */
+/* the house diagonal hatch band — only the stack section mounts one
+   now, on the enterprise mirror that rides this sheet */
 .pricing-root .v0-hatch {
   height: clamp(28px, 3.4vw, 40px);
   border-block: 1px solid var(--tc-hair);
@@ -1220,57 +1076,20 @@
   );
 }
 
+/* the plan grid's own top rule draws the hero/plans seam — the hero's
+   section rule yields */
 .pricing-root .pricing-hero {
   border-bottom: 0;
 }
 
-.pricing-root .pricing-plans-included h2 {
-  max-width: 14ch;
-  padding: 24px 24px 24px var(--tc-gut);
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  text-wrap: balance;
-}
-
-.pricing-root .pricing-plans-included ul {
-  display: contents;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pricing-root .pricing-plans-included li {
-  position: relative;
-  display: grid;
-  align-content: center;
-  align-self: stretch;
-  min-height: 96px;
-  padding: 22px 96px 22px 24px;
-  border-left: 1px solid var(--tc-hair-2);
-  color: var(--tc-accent);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.pricing-root .pricing-inf {
-  margin-bottom: 5px;
-  color: var(--tc-accent);
-  font-size: 30px;
-  font-weight: 500;
-  line-height: 1;
-}
-
-/* the cell's dithered mark, seated absolutely on the right — the
-   compare motif's ramp at tile scale, same accent inks */
+/* The cards use the dithered folder, people, and globe artwork at the
+   feature ledger's icon gauge. */
 .pricing-root .pricing-plan-inc-mark {
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  width: 62px;
-  height: 62px;
-  translate: 0 -50%;
+  position: relative;
+  display: block;
+  flex: none;
+  width: 18px;
+  height: 18px;
   pointer-events: none;
 }
 
@@ -1399,7 +1218,18 @@
 }
 
 .pricing-root .pricing-plan-body {
-  padding-block: 20px 28px;
+  padding-block: 0 28px;
+}
+
+/* Enterprise changes from the shared feature ledger to its richer
+   pillar rows on one ordinary ledger rule. Starter has no transition:
+   every feature lives in the same list. */
+.pricing-root .pricing-plan-unlimited + .pricing-plan-group {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.pricing-root .pricing-plan-unlimited li {
+  font-weight: 500;
 }
 
 /* Starter's toolkit as ledger rows — rules only BETWEEN entries */
@@ -1422,11 +1252,9 @@
   border-top: 1px solid var(--tc-hair-2);
 }
 
-.pricing-root .pricing-plan-features li:first-child {
-  padding-top: 4px;
-}
-
-.pricing-root .pricing-plan-features svg {
+/* the direct child scope keeps the ledger's icon rule off the dithered
+   marks' own svg */
+.pricing-root .pricing-plan-features > li > svg {
   flex: none;
   width: 16px;
   height: 16px;
@@ -1749,7 +1577,6 @@
 .pricing-root .pricing-stack-diff.is-add .pricing-stack-diff-top {
   fill: color-mix(in srgb, var(--tc-accent) 26%, var(--tc-paper));
 }
-
 
 
 .pricing-root .pricing-stack-title {
@@ -2207,7 +2034,6 @@
 }
 
 
-
 .pricing-root .pricing-dither-type pattern path {
   fill: #2563eb;
 }
@@ -2269,8 +2095,6 @@
   }
 
 
-
-
   .pricing-root .pricing-stack-map {
     min-height: 540px;
   }
@@ -2285,92 +2109,6 @@
   .pricing-root .pricing-hero-link svg {
     transition: none;
   }
-}
-
-
-
-/* ---- the close: one dark band, the condensation field behind the
-   ask — copy stands left in the engine's own dithered clearing, the
-   word forms to its right ---- */
-
-.pricing-root .pricing-close {
-  position: relative;
-  overflow: hidden;
-  min-height: clamp(380px, 42vw, 500px);
-  /* by day the band rides the page's own paper and the rain runs in
-     the page ink */
-  background: var(--tc-paper);
-}
-
-/* by night the band is literal ink — the glyph-field engine resolves
-   its glyph ink off the canvas's --tc-ink, so the pin flips the rain
-   white with the ground */
-[data-theme='dark'] .pricing-root .pricing-close {
-  --tc-ink: #fff;
-
-  background: #0d0d0f;
-}
-
-
-.pricing-root .pricing-close-canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-
-.pricing-root .pricing-close-copy {
-  position: relative;
-  display: grid;
-  gap: 26px;
-  justify-items: start;
-  align-content: center;
-  max-width: min(46%, 500px);
-  min-height: inherit;
-  padding: clamp(56px, 7vw, 88px) var(--tc-gut);
-}
-
-
-.pricing-root .pricing-close-copy h2 {
-  max-width: 16ch;
-  color: color-mix(in srgb, var(--tc-ink) 94%, transparent);
-  font-size: clamp(28px, 3.4vw, 46px);
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-}
-
-
-.pricing-root .pricing-close-acts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-/* the engine's 880 narrow cut: the word drops bottom-center, so the
-   copy keeps the head and the band grows below it */
-@media (max-width: 880px) {
-
-  .pricing-root .pricing-close-copy {
-    max-width: none;
-    padding-top: clamp(48px, 8vw, 64px);
-    padding-bottom: clamp(240px, 52vw, 300px);
-    align-content: start;
-  }
-}
-
-
-[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid {
-  border-color: #fff;
-  background: #fff;
-  color: #070707;
-}
-
-
-[data-theme='dark'] .pricing-root .pricing-close .tc-btn-solid:hover {
-  background: #fff;
 }
 
 
@@ -2424,8 +2162,6 @@
 }
 
 
-
-
 /* ---- the full-stack board: pillars wired to their stations ---- */
 
 .pricing-root .pricing-stack-board {
@@ -2461,7 +2197,6 @@
 }
 
 
-
 .pricing-root .pricing-stack-board-col {
   position: relative;
   z-index: 1;
@@ -2475,9 +2210,6 @@
 .pricing-root .pricing-stack-board-col article {
   height: 100%;
 }
-
-
-
 
 
 .pricing-root .pricing-stack-board-col article {
@@ -2547,51 +2279,6 @@
   }
 }
 
-
-/* ---- the close's flap cells ---- */
-
-.pricing-root .pricing-close {
-  --tb-flash: var(--tc-accent);
-}
-
-
-.pricing-root .pricing-close .tb-ch {
-  position: relative;
-  display: inline-block;
-}
-
-
-.pricing-root .pricing-close .tb-ch-g {
-  visibility: hidden;
-}
-
-
-.pricing-root .pricing-close .tb-ch-f {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  white-space: nowrap;
-  transform-origin: 50% 54%;
-}
-
-
-.pricing-root .pricing-close .tb-word {
-  white-space: nowrap;
-}
-
-
-.pricing-root .pricing-close .tb-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
 
 /* ================= port-local blocks ================= */
 
@@ -2715,11 +2402,11 @@
 /* the group labels pin INTO the header band — the same row as the
    Starter/Enterprise boxes, on the empty left corner. Chromium paints
    tbody sticky cells over thead sticky cells by row-group order, so
-   the label rides above the whole header: the th goes transparent —
-   the opaque plan cells keep masking their own columns — and only a
-   fixed-width paper plate paints, sized so each pinned label fully
-   covers the one before it. The label centers on the CTA row — the
-   buttons' center sits 41px above the band's bottom. */
+   the label rides above the whole header, fully transparent — the
+   opaque plan cells keep masking their own columns, and the push
+   handoff keeps labels from ever overlapping, so no plate paints
+   behind the text. The label centers on the CTA row — the buttons'
+   center sits 41px above the band's bottom. */
 .pricing-root .pricing-compare tr.pricing-compare-group th {
   position: sticky;
   top: calc(59px + var(--pc-plan-head) - 41px - var(--pc-group-h) / 2);
@@ -2761,6 +2448,119 @@
   color: var(--tc-ink-4);
 }
 
+/* ---- the close: the shared deploy band — "Deploy today." beside the
+   glyph condensation field. Copy stands LEFT in the engine's own
+   dithered clearing; ONE canvas spans the rail column, so the formed
+   word is never struck by a rail hairline ---- */
+
+.pricing-root .pricing-close {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-top: 1px solid var(--tc-hair);
+  /* by day the band is a day plate on the page's own paper and the
+     rain runs in the page ink */
+  background: var(--tc-paper);
+}
+
+/* by night the band is literal ink — the glyph-field engine resolves
+   its glyph ink off the canvas's --tc-ink, so the pin flips the rain
+   white with the ground */
+[data-theme='dark'] .pricing-root .pricing-close {
+  --tc-ink: #fff;
+
+  background: #0d0d0f;
+}
+
+/* the page's outer rails carried through the full-bleed band; the
+   canvas fills THIS box, so the copy's offset metrics and the field's
+   clearing share one frame */
+.pricing-root .pricing-close-in {
+  position: relative;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  padding: clamp(76px, 9vw, 132px) var(--tc-gut);
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.pricing-root .pricing-close-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.pricing-root .pricing-close-copy {
+  position: relative;
+  z-index: 1;
+  max-width: min(42%, 440px);
+}
+
+/* the display line steps past the sheet's heading cap (weight 500,
+   1.06/-0.028em) the way the deploy band's own reset override does */
+.pricing-root .pricing-close-copy h2 {
+  max-width: 16ch;
+  color: var(--tc-ink);
+  font-size: clamp(28px, 3.4vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.pricing-root .pricing-close-sub {
+  max-width: 52ch;
+  margin-top: 15px;
+  color: color-mix(in srgb, var(--tc-ink) 60%, transparent);
+  font-size: 15px;
+  line-height: 1.62;
+}
+
+.pricing-root .pricing-close-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-top: clamp(28px, 3.2vw, 42px);
+}
+
+/* the engine's 880 wide/narrow cut: the word drops bottom-center, the
+   copy re-centers and the band grows below it */
+@media (max-width: 881px) {
+  .pricing-root .pricing-close-in {
+    padding-top: clamp(48px, 7vw, 56px);
+    padding-bottom: clamp(260px, 52vw, 300px);
+  }
+
+  .pricing-root .pricing-close-copy {
+    max-width: 460px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .pricing-root .pricing-close-copy h2 {
+    margin-inline: auto;
+  }
+
+  .pricing-root .pricing-close-sub {
+    margin-top: 18px;
+    margin-inline: auto;
+  }
+
+  .pricing-root .pricing-close-acts {
+    justify-content: center;
+  }
+}
+
+/* the phone cut: the sub takes the ladder's lead slot */
+@media (max-width: 720px) {
+  .pricing-root .pricing-close-sub {
+    font-size: var(--tcm-lead, 17px);
+  }
+}
+
 /* ---- the close's CTA pair: the rainbow ring and the outline ---- */
 
 .pricing-root .pricing-close-cta {
@@ -2784,6 +2584,8 @@
   opacity: 0.9;
 }
 
+/* the faces ride the band's own ink, so they trade families with the
+   day plate the way the deploy band's shared CTAs do */
 .pricing-root .pricing-close-btn {
   position: relative;
   display: inline-flex;
@@ -2791,9 +2593,9 @@
   justify-content: center;
   height: 38px;
   padding: 0 17px;
-  border: 1px solid rgb(255 255 255 / 24%);
+  border: 1px solid color-mix(in srgb, var(--tc-ink) 24%, transparent);
   border-radius: 6px;
-  color: rgb(255 255 255 / 88%);
+  color: color-mix(in srgb, var(--tc-ink) 88%, transparent);
   font-size: 13.5px;
   font-weight: 500;
   letter-spacing: -0.005em;
@@ -2806,19 +2608,19 @@
 }
 
 .pricing-root .pricing-close-btn:hover {
-  border-color: rgb(255 255 255 / 45%);
+  border-color: color-mix(in srgb, var(--tc-ink) 45%, transparent);
 }
 
 /* the ringed solid never washes: the ground holds and the rainbow
    ring is the whole hover answer */
 .pricing-root .pricing-close-btn.is-solid {
-  border-color: #fff;
-  background: #fff;
-  color: #070707;
+  border-color: var(--tc-ink);
+  background: var(--tc-ink);
+  color: var(--tc-paper);
 }
 
 .pricing-root .pricing-close-btn.is-solid:hover {
-  background: #fff;
+  background: var(--tc-ink);
 }
 
 /* ---- the locale tags in the board's fan row ---- */
@@ -2840,31 +2642,7 @@
 }
 
 @media (max-width: 720px) {
-  .pricing-root .pricing-plans-included {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .pricing-root .pricing-stack {
-    display: none;
-  }
-
-  .pricing-root .pricing-plans-included h2 {
-    grid-column: 1 / -1;
-    max-width: none;
-    padding: 22px var(--tc-gut) 4px;
-  }
-
-  .pricing-root .pricing-plans-included li:first-child {
-    border-left: 0;
-    padding-left: var(--tc-gut);
-  }
-
-  .pricing-root .pricing-plans-included li {
-    min-height: 0;
-    padding-right: 24px;
-  }
-
-  .pricing-root .pricing-plan-inc-mark {
     display: none;
   }
 

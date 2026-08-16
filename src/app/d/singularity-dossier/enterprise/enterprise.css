@@ -195,7 +195,7 @@
 
 .sgde-root .enterprise-contact .contact-features {
   gap: 0;
-  margin-top: 34px;
+  margin-top: 34px !important;
 }
 
 .sgde-root .enterprise-contact .contact-feature {
@@ -233,7 +233,7 @@
   flex: 1 1 auto;
   align-items: stretch;
   justify-content: start;
-  margin-top: 0;
+  margin-top: 0 !important;
 }
 
 .sgde-root .enterprise-contact .contact-testimonial > a {
@@ -253,7 +253,6 @@
   padding: 18px 0 0;
   box-shadow: none;
 }
-
 
 .sgde-root .enterprise-contact .contact-field {
   gap: 8px;
@@ -281,9 +280,22 @@
   min-height: 136px;
 }
 
+/* The standalone page keeps the grid stretched: the form panel must
+   span the row so its full-reach rules land above the title and under
+   both columns, never through the copy. The panel and the intro
+   center their own content inside the tall row instead. */
 .sgde-root .enterprise-contact-page .contact-layout {
   min-height: clamp(680px, calc(100svh - 58px), 840px);
-  align-items: center;
+  align-items: stretch;
+}
+
+.sgde-root .enterprise-contact-page .contact-form-panel {
+  display: grid;
+  align-content: center;
+}
+
+.sgde-root .enterprise-contact-page .contact-intro {
+  justify-content: center;
 }
 
 .sgde-root .enterprise-frameworks {
@@ -443,9 +455,7 @@
   }
 }
 
-
 @media (max-width: 1000px) {
-
   .sgde-root .enterprise-contact .contact-layout {
     border-top: 1px solid var(--tc-hair);
     border-left: 0;
@@ -453,9 +463,6 @@
 }
 
 @media (max-width: 720px) {
-
-  
-
   .sgde-root .enterprise-contact .contact-layout {
     gap: 52px;
   }
@@ -463,9 +470,7 @@
   .sgde-root .enterprise-contact .contact-form-panel {
     border-top: 0;
   }
-
 }
-
 
 /* ============================================================
    TOOLCHAIN / ENTERPRISE (ported from the redesign prototype)
@@ -502,7 +507,8 @@
 .sgde-root .tce-hero h1 em {
   font-style: normal;
   padding-bottom: 0.06em;
-  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+  background-image:
+    linear-gradient(var(--thread-ink), var(--thread-ink)),
     linear-gradient(var(--thread-ink), var(--thread-ink));
   background-repeat: no-repeat;
   background-size:
@@ -520,6 +526,10 @@
   font-size: 15px;
   line-height: 1.62;
   color: var(--tc-ink-2);
+}
+
+.sgde-root .tce-hero p.tce-hero-sub + p.tce-hero-sub {
+  margin-top: 12px;
 }
 
 .sgde-root .tce-hero-acts {
@@ -940,7 +950,6 @@
   color: #ffffff;
 }
 
-
 /* ============================================================
    FOUNDER ROUND — the hero wears the ruled frame (the line-
    touching-border system shipped in ../sections/review-workspace
@@ -972,7 +981,9 @@
 }
 
 /* the family ink is the night treatment */
-[data-theme='dark'] .sgde-root.sgde-root .tc-row.is-lead.tce-hero-row {
+[data-theme='dark']
+  .sgde-root.sgde-root
+  .tc-row.is-lead.tce-hero-row {
   background: #0b0b0d;
 }
 
@@ -1166,26 +1177,6 @@
   padding-left: calc(var(--tc-gut) + clamp(26px, 3vw, 36px));
 }
 
-/* The rainbow CTA construction is the engine's .tc-cta-ring now; the
-   page keeps only its dark-theme refinement — a fine line on the face
-   so the white button seats on the glow. */
-[data-theme='dark'] .sgde-root .tce-hero-acts .tc-cta-ring > .tc-btn {
-  border: 1px solid rgb(255 255 255 / 35%);
-}
-
-[data-theme='dark'] .sgde-root .tce-hero-row .tc-btn-solid {
-  background: #fff;
-  color: #0b0b0d;
-}
-
-[data-theme='dark'] .sgde-root .tce-hero-row .tc-btn-solid:hover {
-  background: rgb(255 255 255 / 82%);
-}
-
-[data-theme='dark'] .sgde-root .tce-hero-row .tc-btn-line {
-  color: rgb(255 255 255 / 88%);
-}
-
 .sgde-root .tce-dither {
   position: absolute;
   top: 0;
@@ -1297,9 +1288,7 @@
 /* Reduced motion: the composed final state, statically. The glyph field
    prints its own single frame; no timeline runs. */
 
-
 /* Stacked, the hero cells are rows: the stage keeps a workable height. */
-
 
 /* ---- the close: rain behind the one ask ---- */
 
@@ -1636,11 +1625,19 @@
   }
 }
 
-/* the contact wrap is a div, so the section seam rule skips the
-   column — restate its top border */
-.sgde-root .tce-contact-wrap + .tc-sec {
+/* the full-stack board on this rail: each seam speaks once. Above,
+   the hatch's top edge IS the contact/stack seam (the contact wrap is
+   a div, so no section rule reaches here) — stated explicitly so it
+   does not depend on this page's stylesheet order. Below, the next
+   section's top rule is the seam, so the stack's bottom rule yields. */
+.sgde-root .pricing-stack > .v0-hatch {
   border-top: 1px solid var(--tc-hair);
 }
+
+.sgde-root .tc-rail > .tc-sec.pricing-stack {
+  border-bottom: 0;
+}
+
 /* ---- the hero's proof box: five logos and their stories ---- */
 
 .sgde-root .tce-hero-proof > h2 {
@@ -1674,6 +1671,14 @@
   height: auto;
   object-fit: contain;
   object-position: left center;
+}
+
+/* Sierra's art sits inset inside its viewBox (content x 160–427 of
+   118–468): widen the box so the mark matches its neighbors and pull
+   it left by the scaled internal padding so the marks align. */
+.sgde-root .tce-hero-proof-logo img.is-sierra {
+  width: 150px;
+  margin-left: -18px;
 }
 
 .sgde-root .tce-hero-proof-copy {
@@ -1779,7 +1784,6 @@
   box-shadow: none;
 }
 
-
 .sgde-root .enterprise-contact .contact-form label {
   color: var(--tc-ink-3);
   font-family: var(--tc-mono);
@@ -1842,7 +1846,7 @@
   flex: 1 1 auto;
   align-items: stretch;
   justify-content: flex-start;
-  margin-top: 0;
+  margin-top: 0 !important;
 }
 
 .sgde-root .enterprise-contact .contact-testimonial > a {
@@ -1862,7 +1866,10 @@
   transition: color 0.2s ease;
 }
 
-.sgde-root .enterprise-contact .contact-testimonial > a:hover
+.sgde-root
+  .enterprise-contact
+  .contact-testimonial
+  > a:hover
   .contact-testimonial-card
   > p:first-child {
   color: var(--tc-accent);
@@ -1877,12 +1884,12 @@
     gap: 44px;
   }
 
-  .sgde-root .enterprise-contact .contact-form-panel {
-    padding-left: 0;
-  }
-
   .sgde-root .enterprise-contact .contact-intro {
     padding-right: 0;
+  }
+
+  .sgde-root .enterprise-contact .contact-title {
+    max-width: none;
   }
 }
 
@@ -1894,10 +1901,6 @@
   /* the consent line and the submit stack instead of squeezing */
   .sgde-root .enterprise-contact .contact-form > div:last-of-type {
     flex-wrap: wrap;
-  }
-
-  .sgde-root .enterprise-contact .contact-title {
-    max-width: none;
   }
 }
 
@@ -1929,4 +1932,41 @@
 
 .sgde-root .enterprise-contact .contact-input:focus-visible {
   border-color: var(--tc-accent);
+}
+
+/* The standalone page seats the intro on the rail's leading edge. Its feature
+   and title padding provide the intended inset without an extra outer gutter. */
+.sgde-root .enterprise-contact-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.sgde-root .enterprise-contact-page .contact-title {
+  max-width: none;
+}
+
+@media (min-width: 1001px) {
+  .sgde-root .enterprise-contact-page .contact-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-inline: 0;
+  }
+}
+
+/* ---------- PR diff mock at phone widths ---------- */
+/* The mock must read complete, never cropped: the type steps down,
+   the ± gutter narrows, and the hunk header drops its file path so
+   the widest line fits the card with no hidden overflow. */
+@media (max-width: 480px) {
+  .sgde-root .tce-pr-diff {
+    font-size: 11.5px;
+  }
+
+  .sgde-root .tce-pr-diff > div {
+    grid-template-columns: 26px minmax(0, 1fr);
+    padding-right: 12px;
+  }
+
+  .sgde-root .tce-pr-path {
+    display: none;
+  }
 }

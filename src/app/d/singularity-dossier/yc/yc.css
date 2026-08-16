@@ -229,10 +229,17 @@
   width: 0;
   height: 0;
   pointer-events: none;
+  /* the ring arrives after the disc's crossfade starts, never pops */
+  opacity: 0;
+  transition: opacity 0.7s ease 0.2s;
 }
 
 .yc-root .yc-orbit:not([data-live]) {
   visibility: hidden;
+}
+
+.yc-root .yc-orbit[data-live] {
+  opacity: 1;
 }
 
 .yc-root .yc-orbit-word {

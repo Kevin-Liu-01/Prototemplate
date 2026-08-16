@@ -9,7 +9,6 @@ import CompareTable from './CompareTable';
 import GroupLabelHandoff from './GroupLabelHandoff';
 import PlanCards from './PlanCards';
 import PricingHero from './PricingHero';
-import { StackBoard } from './StackBoard';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
    (the toolchain enterprise subpage precedent) */
@@ -26,9 +25,11 @@ export const metadata = {
 /**
  * Singularity · Dossier — the pricing page ported whole from the live
  * redesign: the money-weather hero, the two plans on the full-bleed
- * grid, the pressable full-stack board wired straight to its expanded
- * platform, the framed compare ledger under the ¥€$ motif, and the
- * condensation close raining the world's currencies.
+ * grid, the framed compare ledger directly under the plans (one
+ * hairline between them), and the shared deploy close — the glyph
+ * condensation field beside a single ask. The full-stack board left
+ * this page for the enterprise mirror, which still imports it (and
+ * this sheet) from this directory.
  */
 export default function DossierPricingPage() {
   return (
@@ -38,7 +39,6 @@ export default function DossierPricingPage() {
         <div className='tc-rail'>
           <PricingHero />
           <PlanCards />
-          <StackBoard />
           <CompareTable />
           <GroupLabelHandoff />
         </div>

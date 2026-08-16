@@ -87,7 +87,7 @@ export default function SignInAside() {
   });
 
   return (
-    <aside className='sgs-aside' aria-hidden='true'>
+    <aside className='sgs-aside' aria-label='General Translation'>
       {/* the globe underneath, the glyph machine over it: the rain reads
           the same either way (same ink), but the switching word and its
           caliper stay legible instead of sinking into the halftone */}

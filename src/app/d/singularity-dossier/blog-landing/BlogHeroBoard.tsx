@@ -50,12 +50,9 @@ const NEWS_WORDS: readonly BoardWord[] = [
 ];
 
 /**
- * The blog masthead as a terminus hall: two split-flap ticker strips
- * run flush along the band's top and bottom edges, "news" resolving
- * across the catalog's languages in the house blue, while the copy and
- * the dotted GT figure stand on the same board pitch between them —
- * the figure tall enough that the tickers pass behind its outline.
- * Children are the hero copy.
+ * Blog masthead band: two split-flap ticker canvases run along the
+ * band's top and bottom edges, cycling NEWS_WORDS. Children are the
+ * hero copy, rendered between the strips.
  */
 export default function BlogHeroBoard({
   children,
@@ -86,10 +83,7 @@ export default function BlogHeroBoard({
       const field = createBoardField(canvas, {
         ink: inkFor(),
         font: face,
-        words: [
-          ...NEWS_WORDS.slice(offset),
-          ...NEWS_WORDS.slice(0, offset),
-        ],
+        words: [...NEWS_WORDS.slice(offset), ...NEWS_WORDS.slice(0, offset)],
         seed,
         params: {
           annFirst: 0.4,

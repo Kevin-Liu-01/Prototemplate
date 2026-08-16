@@ -76,7 +76,7 @@ export default function DossierYcPage() {
                     className='tc-btn yc-primary-cta'
                     href={YC_LINKS.heroClaim.href}
                   >
-                    Claim YC deal
+                    Claim YC Deal
                     <ArrowRight aria-hidden='true' />
                   </Link>
                 </span>
@@ -148,7 +148,7 @@ export default function DossierYcPage() {
                     className='tc-btn yc-primary-cta'
                     href={YC_LINKS.closeClaim.href}
                   >
-                    Claim YC deal
+                    Claim YC Deal
                     <Rocket aria-hidden='true' />
                   </Link>
                 </span>

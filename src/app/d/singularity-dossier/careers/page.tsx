@@ -1,18 +1,20 @@
-import { ArrowUpRight, Mail } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 import Image from 'next/image';
 
 import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import { getJobPostings } from '../../singularity/company-sections/careers';
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
 
+import CareersEmailLink from './CareersEmailLink';
 import CareersHorizon from './CareersHorizon';
 import GlyphRain from './GlyphRain';
 import LogosGrid from './LogosGrid';
 import ScrollToPositionsButton from './ScrollToPositionsButton';
+
+import { getJobPostings } from './careers-data';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
    (the toolchain enterprise subpage precedent) */
@@ -26,15 +28,14 @@ export const metadata = {
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
-const CAREERS_EMAIL = 'careers@generaltranslation.com';
-
 /**
  * Singularity · Dossier — the careers page ported whole from the live
  * redesign: the event-horizon hero with the locale orbit (printed in
- * ink on the light sheet), the customer proof wall, the live Ashby
- * openings ledger, and the glyph-rain close. The board is fetched
- * through the shared company-sections helper — same source, same
- * hourly revalidate as the live page.
+ * ink on the light sheet), the customer proof wall, the mission pitch
+ * beside the dithered office plate, the live Ashby openings ledger,
+ * and the glyph-rain close with the hover-revealed mailto. The board
+ * is fetched through the page's local careers-data mirror — same
+ * source, same hourly revalidate as the live page.
  */
 export default async function DossierCareersPage() {
   const openPositions = await getJobPostings();
@@ -55,18 +56,15 @@ export default async function DossierCareersPage() {
 
               <div className='careers-actions'>
                 <ScrollToPositionsButton />
-                <a
-                  className='tc-btn careers-secondary-cta'
-                  href={`mailto:${CAREERS_EMAIL}`}
-                >
-                  Get in Touch
-                </a>
               </div>
             </div>
           </section>
 
           <section className='tc-sec careers-proof'>
-            <p>Used by the world&rsquo;s best companies</p>
+            <h2>
+              Join the team building language infra for the world&rsquo;s best
+              companies
+            </h2>
             <LogosGrid />
           </section>
 
@@ -78,35 +76,57 @@ export default async function DossierCareersPage() {
               <div className='careers-mission-copy'>
                 <h2 id='careers-mission-title'>Mission</h2>
                 <p>
-                  General Translation is building the language infrastructure
-                  of the internet. We believe that the world&rsquo;s best
-                  products should be accessible in Spanish, French, Japanese,
-                  and every other language. We&rsquo;ve built the full stack
-                  for localization: open-source i18n libraries, an AI-native
-                  translation platform and API, and the agent Locadex. The
-                  limiting factor for translation is no longer model quality,
-                  but context and developer-first infrastructure. Which is why
-                  we&rsquo;ve built the full stack to unlock an unbeatable
-                  customer experience. We&rsquo;ve already become essential
-                  infrastructure integrated into complex codebases reaching
-                  millions of users, and we&rsquo;re scaling rapidly to
-                  capture massive market demand.
+                  <strong>
+                    General Translation is bringing the world&rsquo;s best
+                    products to the whole world.
+                  </strong>{' '}
+                  Every product should be natively available in every
+                  language, from day one.
                 </p>
                 <p>
+                  Toward that goal, we serve many of the world&rsquo;s best
+                  companies and are backed by a list of S-tier investors.
+                </p>
+                <p>
+                  <strong>
+                    Our company takes an engineering-first approach to solving
+                    problems.
+                  </strong>
+                </p>
+                <ul>
+                  <li>
+                    In our product, this means applying engineering wherever
+                    necessary to create an incredible customer experience.
+                  </li>
+                  <li>
+                    In our operations, this means automating busywork, and
+                    building our company to be worked on by agents as much as
+                    humans.
+                  </li>
+                  <li>
+                    In our culture, this means prioritizing truth-seeking over
+                    politics.
+                  </li>
+                </ul>
+                <p>
+                  <strong>
+                    Our company is in the business of original ideas.
+                  </strong>{' '}
                   We&rsquo;re looking for ambitious and exceptional
                   talent&mdash;people who can invent their way out of
                   impossible problems. You&rsquo;ll join a lean team with
-                  unlimited AI token spend and extreme creative control. We
-                  work in-person in San Francisco. We offer highly competitive
-                  salary and equity, and provide top-tier benefits including
-                  free meals, gym, Waymo rides from the office, and full
-                  health coverage. You&rsquo;ll get career acceleration,
+                  unlimited AI token spend and extreme creative control.
+                </p>
+                <p>
+                  We work in-person in San Francisco. We offer highly
+                  competitive salary and equity, and provide top-tier benefits
+                  including free meals, gym, Waymo rides from the office, and
+                  full health coverage. You&rsquo;ll get career acceleration,
                   ownership, and resources you can&rsquo;t find at any other
                   early-stage company.
                 </p>
                 <p className='careers-mission-close'>
-                  If you care deeply about your craft, we&rsquo;d love to
-                  talk.
+                  If you care deeply about your work, we&rsquo;d love to talk.
                 </p>
               </div>
               <div className='careers-mission-scene'>
@@ -155,12 +175,12 @@ export default async function DossierCareersPage() {
                     <span className='careers-role-title'>
                       <span>{position.title}</span>
                       <span className='careers-role-mobile-meta'>
-                        {position.team} · {position.location} ·{' '}
+                        {position.department} · {position.location} ·{' '}
                         {position.type}
                       </span>
                     </span>
                     <span className='careers-role-column'>
-                      {position.team}
+                      {position.department}
                     </span>
                     <span className='careers-role-column'>
                       {position.location}
@@ -191,13 +211,7 @@ export default async function DossierCareersPage() {
                 We&rsquo;re always looking for talented people. Send us your
                 resume and tell us how you&rsquo;d like to contribute.
               </p>
-              <span className='careers-close-cta'>
-                <a className='tc-btn' href={`mailto:${CAREERS_EMAIL}`}>
-                  Get in Touch
-                  <Mail aria-hidden='true' />
-                </a>
-              </span>
-              <p className='careers-email'>{CAREERS_EMAIL}</p>
+              <CareersEmailLink />
             </div>
 
             <GlyphRain

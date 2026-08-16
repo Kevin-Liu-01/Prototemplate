@@ -445,7 +445,8 @@ export function createBoardField(
     nextAnnAt = Math.max(simT + 0.5, params.annFirst);
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        level[r * cols + c] = cellHash(c, r, 7) < toneShare(c, r, waveIndex) ? 1 : 0;
+        level[r * cols + c] =
+          cellHash(c, r, 7) < toneShare(c, r, waveIndex) ? 1 : 0;
       }
     }
     computeRowMask();
@@ -471,7 +472,8 @@ export function createBoardField(
   /** True while any announcement is still landing characters. */
   function annResolving(t: number): boolean {
     for (const ann of anns) {
-      if (t < ann.start + ann.cells.length * params.annPer + params.flipDur) return true;
+      if (t < ann.start + ann.cells.length * params.annPer + params.flipDur)
+        return true;
     }
     return false;
   }
@@ -508,7 +510,8 @@ export function createBoardField(
     }
     for (let attempt = 0; attempt < 10; attempt++) {
       const row = rLo + Math.floor(rng() * (rHi - rLo + 1));
-      const col = margin + Math.floor(rng() * Math.max(1, cols - len - margin * 2));
+      const col =
+        margin + Math.floor(rng() * Math.max(1, cols - len - margin * 2));
       let free = true;
       for (let s = -1; s <= len; s++) {
         /* the strip plus one clear cell each side, so two strips never touch */
@@ -544,7 +547,11 @@ export function createBoardField(
     const runs = bandRuns();
     const top = runs[0];
     const bottom = runs.length > 1 ? runs[runs.length - 1] : undefined;
-    const picks: Array<{ run: [number, number] | undefined; word: BoardWord | undefined; bias: number }> = [
+    const picks: Array<{
+      run: [number, number] | undefined;
+      word: BoardWord | undefined;
+      bias: number;
+    }> = [
       { run: top, word: words[0], bias: 0.34 },
       { run: bottom, word: words[3] ?? words[0], bias: 0.62 },
     ];
@@ -555,7 +562,10 @@ export function createBoardField(
       if (len + 4 > cols) continue;
       const [r0, r1] = pick.run;
       const row = Math.min(r1, r0 + Math.floor((r1 - r0) / 2));
-      const col = Math.max(2, Math.min(cols - len - 2, Math.round(cols * pick.bias - len / 2)));
+      const col = Math.max(
+        2,
+        Math.min(cols - len - 2, Math.round(cols * pick.bias - len / 2))
+      );
       const cells: AnnCell[] = strip.map((s, v) => ({
         ...s,
         col: col + v,
@@ -563,7 +573,12 @@ export function createBoardField(
         handed: false,
       }));
       for (let s = 0; s < len; s++) occupied[row * cols + col + s] = true;
-      anns.push({ row, start: simT - 60, holdUntil: Number.POSITIVE_INFINITY, cells });
+      anns.push({
+        row,
+        start: simT - 60,
+        holdUntil: Number.POSITIVE_INFINITY,
+        cells,
+      });
     }
   }
 
@@ -579,8 +594,15 @@ export function createBoardField(
       nextWaveAt += params.wavePeriod + rng() * params.waveJitter;
     }
     for (const wave of waves) {
-      while (wave.col < cols && t >= wave.start + wave.col * params.colStagger) {
-        fireColumn(wave.col, wave.index, wave.start + wave.col * params.colStagger);
+      while (
+        wave.col < cols &&
+        t >= wave.start + wave.col * params.colStagger
+      ) {
+        fireColumn(
+          wave.col,
+          wave.index,
+          wave.start + wave.col * params.colStagger
+        );
         wave.col += 1;
       }
     }
@@ -611,11 +633,16 @@ export function createBoardField(
         occupied[i] = false;
         level[i] = cell.kind === 1 ? 0 : 1;
         flipAt[i] = at;
-        flipTo[i] = cellHash(cell.col, ann.row, waveIndex + 91) < toneShare(cell.col, ann.row, waveIndex) ? 1 : 0;
+        flipTo[i] =
+          cellHash(cell.col, ann.row, waveIndex + 91) <
+          toneShare(cell.col, ann.row, waveIndex)
+            ? 1
+            : 0;
         flipQuiet[i] = true;
       }
     }
-    if (anns.length) anns = anns.filter((ann) => ann.cells.some((cell) => !cell.handed));
+    if (anns.length)
+      anns = anns.filter((ann) => ann.cells.some((cell) => !cell.handed));
 
     while (t >= nextIdleAt) {
       /* a single cell somewhere updates — the board never quite sleeps */
@@ -658,7 +685,13 @@ export function createBoardField(
   }
 
   /** lv 0 quiet, 1 marked, 2 announcement face. */
-  function drawCell(x: number, y: number, fold: number, lv: number, glow: number): void {
+  function drawCell(
+    x: number,
+    y: number,
+    fold: number,
+    lv: number,
+    glow: number
+  ): void {
     const cellD = params.cell * dpr;
     const seamD = params.seam * dpr;
     const hingeD = Math.max(1, params.hinge * dpr);
@@ -679,7 +712,13 @@ export function createBoardField(
 
   /** The sparse language layer: a faint character or locale code, with the
       hinge slit re-cleared through it — a letter on a flap, not print. */
-  function drawNoiseGlyph(c: number, r: number, i: number, x: number, y: number): void {
+  function drawNoiseGlyph(
+    c: number,
+    r: number,
+    i: number,
+    x: number,
+    y: number
+  ): void {
     if (cellHash(c, r, 31) >= params.glyphShare) return;
     /* never crowd an announcement: a code sitting flush against a stamp
        would read as part of it */
@@ -730,12 +769,16 @@ export function createBoardField(
         }
         /* landed: face tone, short phosphor, glyph cooling from flash to ink */
         const dtLand = t - land;
-        const glow = ink.glowAlpha * 0.9 * Math.exp(-dtLand / (params.glowTau * 1.6));
+        const glow =
+          ink.glowAlpha * 0.9 * Math.exp(-dtLand / (params.glowTau * 1.6));
         drawCell(x, y, 1, 2, glow > 0.012 ? glow : 0);
         if (cell.ch) {
           const cool = Math.exp(-dtLand / 0.8);
           ctx.font = cell.kind === 2 ? fontStamp : fontWord;
-          ctx.fillStyle = coolStyle(cool, cell.kind === 2 ? ink.stamp : ink.word);
+          ctx.fillStyle = coolStyle(
+            cool,
+            cell.kind === 2 ? ink.stamp : ink.word
+          );
           ctx.fillText(cell.ch, x + inner / 2, cy);
           ctx.clearRect(x, cy - hingeD / 2, inner, hingeD);
         }
@@ -773,7 +816,8 @@ export function createBoardField(
             settled = false;
             fold = Math.abs(1 - 2 * p);
             lv = p < 0.5 ? lv : (flipTo[i] ?? 0);
-            if (p > 0.5 && !flipQuiet[i]) glow = ink.glowAlpha * 0.8 * (p - 0.5) * 2;
+            if (p > 0.5 && !flipQuiet[i])
+              glow = ink.glowAlpha * 0.8 * (p - 0.5) * 2;
           }
         }
         if (glow === 0) {
@@ -815,7 +859,8 @@ export function createBoardField(
         let glow = 0;
         const h = cellHash(c, r, 911);
         if (h < 0.002) fold = 0.42;
-        else if (h < 0.006) glow = ink.glowAlpha * (0.25 + 0.65 * cellHash(c, r, 913));
+        else if (h < 0.006)
+          glow = ink.glowAlpha * (0.25 + 0.65 * cellHash(c, r, 913));
         drawCell(x, y, fold, lv, glow);
         if (fold === 1) drawNoiseGlyph(c, r, i, x, y);
       }

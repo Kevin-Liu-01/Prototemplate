@@ -167,7 +167,7 @@ export default function YcContactForm({
                       rel='noopener noreferrer'
                       className='yc-contact-muted mt-1 w-fit text-xs underline underline-offset-4 hover:text-current'
                     >
-                      Get your YC verification link
+                      Get Your YC Verification Link
                     </a>
                   </div>
 
@@ -223,8 +223,21 @@ export default function YcContactForm({
 
                 <div className='mt-6 flex items-center justify-between gap-4'>
                   <p className='yc-contact-muted flex-1 pr-2 text-xs'>
-                    By submitting you agree to the Terms of Service and
-                    acknowledge the Privacy Policy.
+                    By submitting you agree to the{' '}
+                    <a
+                      href='https://generaltranslation.com/legal/terms'
+                      className='underline underline-offset-4'
+                    >
+                      Terms of Service
+                    </a>{' '}
+                    and acknowledge the{' '}
+                    <a
+                      href='https://generaltranslation.com/legal/privacy-policy'
+                      className='underline underline-offset-4'
+                    >
+                      Privacy Policy
+                    </a>
+                    .
                   </p>
                   <span
                     className={`yc-cta-ring shrink-0${requiredFieldsFilled ? ' is-on' : ''}`}
@@ -234,7 +247,7 @@ export default function YcContactForm({
                       className='tc-btn tc-btn-solid'
                       data-testid='yc-contact-submit'
                     >
-                      Claim deal
+                      Claim Deal
                     </button>
                   </span>
                 </div>

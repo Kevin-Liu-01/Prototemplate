@@ -29,7 +29,7 @@ export default function PricingHero() {
             className='pricing-hero-link'
             href='/d/singularity-dossier/usage'
           >
-            View usage rates
+            Workflow Rates
             <ArrowRight aria-hidden='true' />
           </Link>
         </div>

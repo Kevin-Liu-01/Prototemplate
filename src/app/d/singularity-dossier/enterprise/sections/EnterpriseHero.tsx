@@ -13,6 +13,13 @@ import {
   infrastructureProof,
 } from './data';
 
+/** The footer's compliance shields (gt-cloud BADGES), inlined. */
+const BADGES: readonly { alt: string; src: string }[] = [
+  { alt: 'SOC 2 Type II', src: '/shields/soc-2-type-2.svg' },
+  { alt: 'GDPR Compliant', src: '/shields/gdpr.svg' },
+  { alt: 'ISO 27001 Certified', src: '/shields/iso-27001.svg' },
+];
+
 /**
  * The enterprise opening on the family ink: the ink field rises in the
  * band's margins (the copy cell is its measured clearing), flat copy on
@@ -27,16 +34,20 @@ export default function EnterpriseHero() {
     <section className='tc-sec' id='top' ref={root}>
       <div className='tc-row is-lead tce-hero-row'>
         <div className='tc-cell tce-hero'>
-            <h1>
-              <span>Full-stack localization</span>
-              <span>for enterprises</span>
-            </h1>
-            <p className='tce-hero-sub'>
-              Every company&apos;s localization needs are different. For
-              leading global enterprises, General Translation applies
-              automation, designs custom workflows, and carries
-              international launches through production.
-            </p>
+          <h1>
+            <span>Scale to the world with</span>
+            <span>full-stack localization</span>
+          </h1>
+          <p className='tce-hero-sub'>
+            Every company&apos;s localization needs are different. General
+            Translation adapts to your existing stack, workflows, and review
+            process.
+          </p>
+          <p className='tce-hero-sub'>
+            Use the platform with your own team, or work alongside our
+            forward-deployed localization engineers to design automation and
+            carry launches through production.
+          </p>
           <div className='tce-hero-acts'>
             <Cta
               href={ENTERPRISE_HERO_CTA.href}
@@ -46,28 +57,11 @@ export default function EnterpriseHero() {
             >
               Talk to Us <span aria-hidden='true'>→</span>
             </Cta>
-            <Cta
-              href='/enterprise/contact'
-              tracked='services-cta-engineer'
-              variant='outline'
-            >
-              Talk to an Engineer
-            </Cta>
           </div>
           <div className='tce-hero-badges'>
-            <Image
-              src='/shields/soc-2-type-2.svg'
-              alt='AICPA SOC 2 Type II certified'
-              width={96}
-              height={40}
-            />
-            <Image src='/shields/gdpr.svg' alt='GDPR compliant' width={96} height={40} />
-            <Image
-              src='/shields/iso-27001.svg'
-              alt='ISO 27001 certified'
-              width={96}
-              height={40}
-            />
+            {BADGES.map(({ alt, src }) => (
+              <Image src={src} alt={alt} key={src} width={96} height={40} />
+            ))}
           </div>
         </div>
 
@@ -76,9 +70,9 @@ export default function EnterpriseHero() {
               verticals bound it, and the solid card occludes it */}
           <HeroInkField />
           <div className='tc-card tce-hero-proof'>
-              <h2>
-                Trusted by <em>the world's best engineering teams</em>
-              </h2>
+            <h2>
+              Trusted by <em>the world's best engineering teams</em>
+            </h2>
             <div className='tce-hero-proof-rows'>
               {customerLogos.map((logo) => {
                 const proof = infrastructureProof.find(

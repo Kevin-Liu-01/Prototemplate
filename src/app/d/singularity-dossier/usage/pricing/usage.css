@@ -1,0 +1,893 @@
+/* ============================================================
+   SINGULARITY · DOSSIER — usage rates page (mirror of the live
+   /pricing/usage: hero, base-rates table under the scroll-shadow
+   wrapper, additional rates, worked examples, Locadex LCU card).
+   Tokens are the shared toolchain set: --tc-paper is the ground,
+   --tc-ink the foreground family, --tc-hair the rules, and
+   --tc-accent stands in for the live page's --color-emphasis.
+   ============================================================ */
+
+/* ---- page shell: back link, hero, content column ---- */
+
+.sgu-root .sgu-back {
+  padding: 42px var(--tc-gut) 12px;
+}
+
+.sgu-root .sgu-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--tc-ink-3);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.sgu-root .sgu-back a:hover {
+  color: var(--tc-ink);
+}
+
+.sgu-root .sgu-back svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sgu-root .sgu-hero {
+  padding-inline: var(--tc-gut);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sgu-root .sgu-hero-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  padding: 18px 0 42px;
+}
+
+.sgu-root .sgu-hero h1 {
+  font-size: clamp(2.4rem, 3.7vw, 3.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.048em;
+  text-wrap: balance;
+}
+
+.sgu-root .sgu-hero p {
+  max-width: 62ch;
+  color: var(--tc-ink-2);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.sgu-root .sgu-hero a {
+  color: var(--tc-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: opacity 0.15s ease;
+}
+
+.sgu-root .sgu-hero a:hover {
+  opacity: 0.7;
+}
+
+.sgu-root .sgu-content {
+  padding: 48px var(--tc-gut);
+}
+
+.sgu-root .sgu-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.sgu-root .sgu-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sgu-root .sgu-sec h2 {
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+}
+
+/* ---- base rates: head row and the scroll-shadowed table ---- */
+
+.sgu-root .sgu-rates-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sgu-root .sgu-per {
+  color: var(--tc-ink-3);
+  font-size: 14px;
+}
+
+.sgu-root .sgu-per a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: opacity 0.15s ease;
+}
+
+.sgu-root .sgu-per a:hover {
+  opacity: 0.7;
+}
+
+/* Four background layers: two page-colored covers that scroll with the
+   content (attachment: local) and two ink shadows pinned to the frame
+   (attachment: scroll). Each edge's shadow shows only while columns
+   hide past that edge; the affordance vanishes when the table fits. */
+.sgu-root .sgu-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background:
+    linear-gradient(to left, var(--tc-paper) 30%, transparent) right center /
+      32px 100% no-repeat local,
+    linear-gradient(to right, var(--tc-paper) 30%, transparent) left center /
+      32px 100% no-repeat local,
+    linear-gradient(
+        to left,
+        color-mix(in oklab, var(--tc-ink) 20%, transparent),
+        transparent
+      )
+      right center / 18px 100% no-repeat scroll,
+    linear-gradient(
+        to right,
+        color-mix(in oklab, var(--tc-ink) 20%, transparent),
+        transparent
+      )
+      left center / 18px 100% no-repeat scroll;
+}
+
+.sgu-root .sgu-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.sgu-root .sgu-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sgu-root .sgu-scroll::-webkit-scrollbar-thumb {
+  background: var(--tc-hair);
+  border-radius: 999px;
+}
+
+.sgu-root .sgu-table {
+  width: 100%;
+  min-width: 640px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.sgu-root .sgu-table th,
+.sgu-root .sgu-table td {
+  padding: 10px 12px;
+  border-right: 1px solid var(--tc-hair);
+}
+
+.sgu-root .sgu-table th:last-child,
+.sgu-root .sgu-table td:last-child {
+  border-right: 0;
+}
+
+.sgu-root .sgu-table thead th {
+  background: color-mix(in oklab, var(--tc-ink) 4%, transparent);
+  color: var(--tc-ink);
+  font-weight: 600;
+  text-align: center;
+}
+
+.sgu-root .sgu-table thead th.sgu-col-format {
+  width: 34%;
+  text-align: left;
+}
+
+.sgu-root .sgu-table thead th:not(.sgu-col-format) {
+  width: 22%;
+}
+
+.sgu-root .sgu-th-in {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.sgu-root .sgu-th-in > svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--tc-accent);
+}
+
+.sgu-root .sgu-table tbody td {
+  border-top: 1px solid var(--tc-hair);
+  color: var(--tc-ink);
+}
+
+.sgu-root .sgu-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.sgu-root .sgu-table tbody tr:hover {
+  background: color-mix(in oklab, var(--tc-ink) 3%, transparent);
+}
+
+.sgu-root .sgu-td-format {
+  font-weight: 500;
+}
+
+.sgu-root .sgu-fmt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sgu-root .sgu-td-rate {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.sgu-root .sgu-dim {
+  color: var(--tc-ink-3);
+}
+
+/* ---- additional rates ---- */
+
+.sgu-root .sgu-add {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.sgu-root .sgu-add-frame {
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sgu-root .sgu-add-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.sgu-root .sgu-add-table td {
+  padding: 10px 12px;
+  color: var(--tc-ink);
+}
+
+.sgu-root .sgu-add-table td.sgu-td-format {
+  width: 34%;
+  border-right: 1px solid var(--tc-hair);
+}
+
+.sgu-root .sgu-add-table tr + tr td {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sgu-root .sgu-add-table tr {
+  transition: background-color 0.15s ease;
+}
+
+.sgu-root .sgu-add-table tr:hover {
+  background: color-mix(in oklab, var(--tc-ink) 3%, transparent);
+}
+
+.sgu-root .sgu-td-add {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- examples card ---- */
+
+.sgu-root .sgu-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.sgu-root .sgu-card {
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--tc-ink) 2%, var(--tc-paper));
+}
+
+.sgu-root .sgu-card-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sgu-root .sgu-card-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+.sgu-root .sgu-togs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sgu-root .sgu-tog {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-card);
+  color: var(--tc-ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.sgu-root .sgu-tog svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sgu-root .sgu-tog:hover {
+  background: color-mix(in oklab, var(--tc-ink) 4%, var(--tc-card));
+}
+
+.sgu-root .sgu-tog.is-on,
+.sgu-root .sgu-tog.is-on:hover {
+  background: var(--tc-ink);
+  border-color: var(--tc-ink);
+  color: var(--tc-paper);
+}
+
+.sgu-root .sgu-formula {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+}
+
+.sgu-root .sgu-term {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-card);
+}
+
+.sgu-root .sgu-term > svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--tc-accent);
+}
+
+.sgu-root .sgu-term > span {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.sgu-root .sgu-op {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--tc-ink-3);
+}
+
+.sgu-root .sgu-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.sgu-root .sgu-group-terms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sgu-root .sgu-paren {
+  width: 14px;
+  min-height: 20px;
+  height: auto;
+  align-self: stretch;
+  flex-shrink: 0;
+  color: var(--tc-ink-3);
+}
+
+.sgu-root .sgu-ex-lower {
+  border-top: 1px solid var(--tc-hair);
+  background: color-mix(in oklab, var(--tc-ink) 1.5%, transparent);
+}
+
+.sgu-root .sgu-ex-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+}
+
+.sgu-root .sgu-ex-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sgu-root .sgu-ex-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+.sgu-root .sgu-ex-desc {
+  font-size: 14px;
+  color: var(--tc-ink-2);
+}
+
+.sgu-root .sgu-ex-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 14px;
+  color: var(--tc-ink-2);
+}
+
+.sgu-root .sgu-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sgu-root .sgu-count svg {
+  width: 16px;
+  height: 16px;
+  color: var(--tc-accent);
+}
+
+.sgu-root .sgu-count b {
+  font-weight: 600;
+  color: var(--tc-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.sgu-root .sgu-work-wrap {
+  padding: 24px;
+}
+
+.sgu-root .sgu-work {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.sgu-root .sgu-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-card);
+  font-family: inherit;
+  cursor: help;
+  transition: background-color 0.15s ease;
+}
+
+.sgu-root .sgu-chip.is-badged {
+  padding-right: 24px;
+}
+
+.sgu-root .sgu-chip.is-plain {
+  cursor: default;
+}
+
+.sgu-root button.sgu-chip:hover {
+  background: color-mix(in oklab, var(--tc-ink) 4%, var(--tc-card));
+}
+
+.sgu-root .sgu-chip > svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--tc-accent);
+}
+
+.sgu-root .sgu-chip-v {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tc-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--tc-ink-3);
+  text-underline-offset: 4px;
+}
+
+.sgu-root button.sgu-chip:hover .sgu-chip-v {
+  text-decoration-color: var(--tc-ink);
+}
+
+.sgu-root .sgu-chip-v.is-solid {
+  text-decoration: none;
+}
+
+.sgu-root .sgu-chip-n {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sgu-root .sgu-eq {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--tc-ink-3);
+}
+
+.sgu-root .sgu-total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 80px;
+  padding: 0 12px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.sgu-root .sgu-notes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--tc-ink-2);
+}
+
+.sgu-root .sgu-note {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.sgu-root .sgu-note-n {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---- separator between rates and agent workflows: spans the rail ---- */
+
+.sgu-root .sgu-sep {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: var(--tc-rail);
+  margin: 48px 0;
+  border-top: 1px solid var(--tc-hair);
+}
+
+/* ---- agent workflows: the Locadex LCU card ---- */
+
+.sgu-root .sgu-agent-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sgu-root .sgu-agent-head p {
+  max-width: 72ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.sgu-root .sgu-agent-grid {
+  display: grid;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sgu-root .sgu-agent-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: color-mix(in oklab, var(--tc-ink) 2%, var(--tc-paper));
+}
+
+.sgu-root .sgu-agent-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle,
+    var(--tc-hair) 0.75px,
+    transparent 0.75px
+  );
+  background-size: 16px 16px;
+  opacity: 0.5;
+}
+
+.sgu-root .sgu-agent-tile {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 144px;
+  height: 144px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-card);
+}
+
+.sgu-root .sgu-agent-mark {
+  width: 64px;
+  height: 64px;
+  background: currentColor;
+  color: var(--tc-accent);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.sgu-root .sgu-agent-price {
+  position: absolute;
+  right: -12px;
+  bottom: -12px;
+  padding: 8px 12px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-card);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.sgu-root .sgu-agent-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sgu-root .sgu-agent-copy h3 {
+  font-size: clamp(1.5rem, 2vw, 1.875rem);
+}
+
+.sgu-root .sgu-agent-copy p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* ---- help tooltip: circled question mark and the fixed bubble ---- */
+
+.sgu-root .sgu-tip {
+  display: inline-flex;
+}
+
+.sgu-root .sgu-tip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tc-accent);
+  cursor: help;
+  vertical-align: middle;
+}
+
+.sgu-root .sgu-tip-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sgu-root .sgu-tip-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.sgu-root .sgu-tip-bubble {
+  position: fixed;
+  z-index: 90;
+  width: 230px;
+  max-width: calc(100vw - 24px);
+  transform: translate(-50%, calc(-100% - 9px));
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ---- screen-reader-only labels inside chips ---- */
+
+.sgu-root .sgu-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- breakpoints ---- */
+
+@media (min-width: 640px) {
+  .sgu-root .sgu-card-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+  }
+
+  .sgu-root .sgu-formula {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 24px 32px;
+  }
+
+  .sgu-root .sgu-group {
+    gap: 12px;
+  }
+
+  .sgu-root .sgu-group-terms {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sgu-root .sgu-paren {
+    width: 8px;
+    height: 20px;
+    align-self: auto;
+  }
+
+  .sgu-root .sgu-ex-meta {
+    flex-direction: row;
+    align-items: center;
+    padding: 20px 24px;
+  }
+
+  .sgu-root .sgu-work-wrap {
+    padding: 24px 32px;
+  }
+
+  .sgu-root .sgu-work {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sgu-root .sgu-agent-head p,
+  .sgu-root .sgu-agent-copy p {
+    font-size: 16px;
+  }
+
+  .sgu-root .sgu-agent-copy {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sgu-root .sgu-agent-grid {
+    grid-template-columns: 0.8fr 1.2fr;
+  }
+
+  .sgu-root .sgu-agent-copy {
+    border-top: 0;
+    border-left: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 720px) {
+  .sgu-root .sgu-hero {
+    padding-inline: 14px;
+  }
+
+  .sgu-root .sgu-hero-inner {
+    padding-block: 36px;
+  }
+
+  .sgu-root .sgu-hero h1 {
+    font-size: clamp(2.6rem, 13vw, 3.6rem);
+  }
+
+  .sgu-root .sgu-hero p {
+    font-size: var(--tcm-lead, 17px);
+  }
+
+  .sgu-root .sgu-content {
+    padding-inline: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sgu-root .sgu-back a,
+  .sgu-root .sgu-tog,
+  .sgu-root .sgu-chip,
+  .sgu-root .sgu-table tbody tr,
+  .sgu-root .sgu-add-table tr {
+    transition: none;
+  }
+}

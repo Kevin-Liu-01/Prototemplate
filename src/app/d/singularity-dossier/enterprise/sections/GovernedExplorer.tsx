@@ -14,8 +14,9 @@ import EnterpriseContextFork from './EnterpriseContextFork';
  * The governance timeline — the enterprise page's middle argument as a
  * scroll-read: the head holds the left rail (sticky), and its three
  * load-bearing words light as their proof passes the viewport's
- * center. launch → the organization's context; security → the review
- * gate and the guarded PR together; operational → edge delivery. The
+ * center. governed (stage key `launch`) → the organization's context;
+ * reviewed (stage key `security`) → the review gate and the guarded PR
+ * together; delivered (stage key `operational`) → edge delivery. The
  * proof cards hang off a doubled spine on the right, each headed by
  * its stage rail — 01 organization · 02 review · 03 proof · 04
  * delivery — the annunciator grammar carried over from the plates.
@@ -82,10 +83,10 @@ export default function GovernedExplorer() {
       <div className='tcg-grid' data-active={active}>
         {/* ---- the left rail: the claim, its words as the index ---- */}
         <div className='tcg-side'>
-            <h2 className='tcg-head'>
-              Built for teams with real <em>launch</em>, <em>security</em>,
-              and <em>operational</em> requirements
-            </h2>
+          <h2 className='tcg-head'>
+            Every translation is <em>governed</em>, <em>reviewed</em>, and{' '}
+            <em>delivered</em> under your controls
+          </h2>
           <div className='tcg-badges' aria-hidden='true'>
             <Image src='/shields/soc-2-type-2.svg' alt='' width={96} height={40} />
             <Image src='/shields/gdpr.svg' alt='' width={96} height={40} />
@@ -177,7 +178,12 @@ export default function GovernedExplorer() {
                   <div className='tce-pr-diff'>
                     <div className='is-hunk'>
                       <i> </i>
-                      <code>@@ −12,3 +12,5 @@ app/checkout/page.tsx</code>
+                      <code>
+                        @@ −12,3 +12,5 @@
+                        <span className='tce-pr-path'>
+                          {' app/checkout/page.tsx'}
+                        </span>
+                      </code>
                     </div>
                     <div>
                       <i> </i>
