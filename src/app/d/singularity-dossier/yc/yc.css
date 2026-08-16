@@ -29,6 +29,34 @@
   transform: translate(-50%, -50%);
 }
 
+/* the copy sits on the disc, so it arrives with the bloom — held back
+   until the shader lands (or the ink backing stands in), with a
+   rescue timer surfacing it regardless if the reveal never fires */
+.yc-root .yc-hole-scene ~ .yc-hero-copy {
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0, 0, 0.2, 1) 0.25s;
+  animation: yc-copy-rescue 0s linear 2.5s forwards;
+}
+
+.yc-root .yc-hole-scene.is-live ~ .yc-hero-copy,
+.yc-root .yc-hole-scene.is-fallback ~ .yc-hero-copy {
+  opacity: 1;
+}
+
+@keyframes yc-copy-rescue {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yc-root .yc-hole-canvas,
+  .yc-root .yc-hole-scene ~ .yc-hero-copy {
+    filter: none;
+    transition: none;
+  }
+}
+
 .yc-root .yc-hero h1 {
   font-size: clamp(1.55rem, 2.9vw, 2.4rem);
   line-height: 1.05;
@@ -134,12 +162,42 @@
   );
   content: '';
   pointer-events: none;
+  /* the ink backing under the shader's translucent core joins the
+     bloom: nothing paints a bare black circle before the reveal — but
+     it rides the copy's rescue timer, since the copy needs this ink
+     ground to stay readable if the reveal never fires */
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0, 0, 0.2, 1);
+  animation: yc-copy-rescue 0s linear 2.5s forwards;
 }
 
+.yc-root .yc-hole-scene.is-live::after,
+.yc-root .yc-hole-scene.is-fallback::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yc-root .yc-hole-scene::after {
+    transition: none;
+  }
+}
+
+/* the shader arrives as a bloom: opacity and blur ease out together
+   over the ink backing, so the glow condenses instead of switching on */
 .yc-root .yc-hole-canvas {
   position: absolute;
   z-index: 1;
   display: block;
+  opacity: 0;
+  filter: blur(14px);
+  transition:
+    opacity 0.9s cubic-bezier(0, 0, 0.2, 1),
+    filter 0.9s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.yc-root .yc-hole-scene.is-live .yc-hole-canvas {
+  opacity: 1;
+  filter: blur(0);
 }
 
 /* ---- the light sheet: paper band, ink rules, ink orbit — the disc

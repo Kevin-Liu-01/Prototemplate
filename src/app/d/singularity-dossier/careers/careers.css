@@ -64,12 +64,42 @@
   );
   content: '';
   pointer-events: none;
+  /* the ink backing under the shader's translucent core joins the
+     bloom: nothing paints a bare black circle before the reveal — but
+     it rides the copy's rescue timer, since the copy needs this ink
+     ground to stay readable if the reveal never fires */
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0, 0, 0.2, 1);
+  animation: careers-copy-rescue 0s linear 2.5s forwards;
 }
 
+.careers-root .careers-horizon-scene.is-live::after,
+.careers-root .careers-horizon-scene.is-fallback::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .careers-root .careers-horizon-scene::after {
+    transition: none;
+  }
+}
+
+/* the shader arrives as a bloom: opacity and blur ease out together
+   over the ink backing, so the glow condenses instead of switching on */
 .careers-root .careers-horizon-canvas {
   position: absolute;
   z-index: 1;
   display: block;
+  opacity: 0;
+  filter: blur(14px);
+  transition:
+    opacity 0.9s cubic-bezier(0, 0, 0.2, 1),
+    filter 0.9s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.careers-root .careers-horizon-scene.is-live .careers-horizon-canvas {
+  opacity: 1;
+  filter: blur(0);
 }
 
 /* ---- the light sheet: paper band, ink rules, ink orbit — the disc
@@ -154,6 +184,34 @@
   color: #fff;
   text-align: center;
   transform: translate(-50%, -50%);
+}
+
+/* the copy sits on the disc, so it arrives with the bloom — held back
+   until the shader lands (or the ink backing stands in), with a
+   rescue timer surfacing it regardless if the reveal never fires */
+.careers-root .careers-horizon-scene ~ .careers-hero-copy {
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0, 0, 0.2, 1) 0.25s;
+  animation: careers-copy-rescue 0s linear 2.5s forwards;
+}
+
+.careers-root .careers-horizon-scene.is-live ~ .careers-hero-copy,
+.careers-root .careers-horizon-scene.is-fallback ~ .careers-hero-copy {
+  opacity: 1;
+}
+
+@keyframes careers-copy-rescue {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .careers-root .careers-horizon-canvas,
+  .careers-root .careers-horizon-scene ~ .careers-hero-copy {
+    filter: none;
+    transition: none;
+  }
 }
 
 .careers-root .careers-hero h1 {

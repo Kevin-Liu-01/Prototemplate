@@ -428,7 +428,22 @@ export default function CareersHorizon() {
 
       measureWords();
       fit();
-      orbit.dataset.live = '1';
+      /* the reveal must not land in the mount frame: the hidden state
+         has to reach the screen once, or the crossfade and the ring's
+         staggered entrance collapse into an instant swap */
+      let reveal = 0;
+      if (field) {
+        reveal = requestAnimationFrame(() => {
+          reveal = requestAnimationFrame(() => {
+            orbit.dataset.live = '1';
+            host.classList.add('is-live');
+          });
+        });
+      } else {
+        /* WebGL out: the ink backing surfaces and the ring arrives */
+        host.classList.add('is-fallback');
+        orbit.dataset.live = '1';
+      }
       let destroyed = false;
       void document.fonts.ready.then(() => {
         if (destroyed) return;
@@ -467,6 +482,7 @@ export default function CareersHorizon() {
 
       return () => {
         destroyed = true;
+        cancelAnimationFrame(reveal);
         observer.disconnect();
         visibilityObserver.disconnect();
         themeObserver.disconnect();
