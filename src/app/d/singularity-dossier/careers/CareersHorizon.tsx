@@ -2,11 +2,13 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
+import FieldEffectsMenu from '@/components/shared/FieldEffectsMenu';
 import LocaleFlag from './LocaleFlag';
 import {
   createHorizonField,
+  type HorizonEffectMode,
   type HorizonFieldHandle,
 } from './horizonField';
 
@@ -137,10 +139,48 @@ const cubicBezier = (
 
 const rollEase = cubicBezier(0.65, 0.05, 0.35, 1);
 
+const FX_MODES: readonly HorizonEffectMode[] = ['lens', 'dither', 'redshift'];
+const FX_STORAGE_KEY = 'dossier-careers-fx';
+
 export default function CareersHorizon() {
   const root = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HorizonFieldHandle | null>(null);
+  /* the committed mode, readable from stale preview closures */
+  const fxRef = useRef<HorizonEffectMode | 'off'>('off');
+  /* last fit()'s hole geometry, host-space: the preview pulse pins the
+     cursor on the rim's bright flank, where every mode has ink to show */
+  const fitRef = useRef<{ x: number; y: number; r: number } | null>(null);
+  const [fx, setFx] = useState<HorizonEffectMode | 'off'>('off');
+
+  const selectFx = (mode: HorizonEffectMode | 'off') => {
+    fxRef.current = mode;
+    setFx(mode);
+    fieldRef.current?.setEffectMode(mode);
+    try {
+      window.localStorage.setItem(FX_STORAGE_KEY, mode);
+    } catch {
+      /* best effort; the session still switches */
+    }
+  };
+
+  const previewFx = (mode: HorizonEffectMode | 'off' | null) => {
+    const field = fieldRef.current;
+    if (!field) return;
+    if (mode === null) {
+      field.setEffectMode(fxRef.current);
+      field.previewRelease();
+      return;
+    }
+    field.setEffectMode(mode);
+    if (mode === 'off') {
+      field.previewRelease();
+      return;
+    }
+    const at = fitRef.current;
+    if (at) field.previewPulse(at.x + at.r * 0.82, at.y - at.r * 0.62);
+  };
 
   useGSAP(
     () => {
@@ -158,10 +198,23 @@ export default function CareersHorizon() {
         doc.getAttribute('data-theme') === 'dark'
           ? HORIZON_DARK
           : HORIZON_LIGHT;
+      let storedFx: HorizonEffectMode | 'off' = 'off';
+      try {
+        const raw = window.localStorage.getItem(FX_STORAGE_KEY);
+        if (raw === 'off' || (FX_MODES as readonly string[]).includes(raw ?? '')) {
+          storedFx = raw as HorizonEffectMode | 'off';
+        }
+      } catch {
+        /* default stands */
+      }
+      fxRef.current = storedFx;
+      setFx(storedFx);
       const field: HorizonFieldHandle | null = createHorizonField(canvas, {
         speed: 0.38,
         params: themedParams(),
+        effects: { host, modes: FX_MODES, initial: storedFx },
       });
+      fieldRef.current = field;
       const themeObserver = new MutationObserver(() =>
         field?.setParams(themedParams())
       );
@@ -395,6 +448,7 @@ export default function CareersHorizon() {
 
         const half = radius * 2.08;
 
+        fitRef.current = { x: centerX, y: centerY, r: radius };
         frame.style.setProperty('--careers-hole-x', `${centerX}px`);
         frame.style.setProperty('--careers-hole-y', `${centerY}px`);
         frame.style.setProperty('--careers-hole-radius', `${radius}px`);
@@ -487,6 +541,7 @@ export default function CareersHorizon() {
         visibilityObserver.disconnect();
         themeObserver.disconnect();
         gsap.ticker.remove(tick);
+        fieldRef.current = null;
         field?.destroy();
       };
     },
@@ -494,6 +549,7 @@ export default function CareersHorizon() {
   );
 
   return (
+    <>
     <div
       className='careers-horizon-scene'
       ref={root}
@@ -526,5 +582,13 @@ export default function CareersHorizon() {
         ))}
       </div>
     </div>
+    <FieldEffectsMenu
+      className='careers-fxm'
+      modes={FX_MODES}
+      selected={fx}
+      onSelect={selectFx}
+      onPreview={previewFx}
+    />
+    </>
   );
 }

@@ -660,3 +660,68 @@
     margin-inline: auto;
   }
 }
+
+/* ---- the horizon's instrument: the shared fx chips docked in the
+   band's bottom-right, arriving with the bloom. Hidden when the shader
+   never boots (is-live absent) or under reduced motion — the chips
+   would drive nothing. ---- */
+.careers-root .careers-fxm {
+  right: 18px;
+  bottom: 14px;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s cubic-bezier(0, 0, 0.2, 1) 0.45s;
+}
+
+.careers-root .careers-horizon-scene.is-live ~ .careers-fxm {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* the light sheet re-inks the chips: paper chips, ink values — the
+   shared instrument ships dark-surface tuned */
+:root:not([data-theme='dark']) .careers-root .careers-fxm .fxm-k {
+  color: rgb(10 11 13 / 42%);
+}
+
+:root:not([data-theme='dark']) .careers-root .careers-fxm .fxm-chip {
+  background: #fff;
+  border-color: rgb(10 11 13 / 24%);
+  color: rgb(10 11 13 / 52%);
+}
+
+:root:not([data-theme='dark']) .careers-root .careers-fxm:hover .fxm-chip,
+:root:not([data-theme='dark'])
+  .careers-root
+  .careers-fxm:focus-within
+  .fxm-chip {
+  color: rgb(10 11 13 / 66%);
+  border-color: rgb(10 11 13 / 32%);
+}
+
+:root:not([data-theme='dark']) .careers-root .careers-fxm .fxm-chip:hover {
+  color: rgb(10 11 13 / 92%);
+  border-color: rgb(10 11 13 / 55%);
+}
+
+:root:not([data-theme='dark'])
+  .careers-root
+  .careers-fxm
+  .fxm-chip[aria-pressed='true'] {
+  color: #0a0b0d;
+  border-color: rgb(10 11 13 / 85%);
+}
+
+:root:not([data-theme='dark'])
+  .careers-root
+  .careers-fxm
+  .fxm-chip:focus-visible {
+  outline-color: rgb(10 11 13 / 85%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .careers-root .careers-fxm {
+    display: none;
+  }
+}
