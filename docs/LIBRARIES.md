@@ -16,7 +16,7 @@ repos.
 | iso | `src/app/d/toolchain/diagrams/iso.ts` | The isometric kit: project/faces/silhouette for boxes, `IsoPrism` for convex plan polygons, `plane()` seats flat art, `markPath()` lays bars. |
 | DitheredMark | `src/app/d/toolchain/diagrams/DitheredMark.tsx` | A masked brand mark + Bayer specular shimmer; `shineTravel()` gives drivers their tween endpoints. Worn by the tower capstone. |
 | DitherText | `src/app/d/toolchain/diagrams/DitherText.tsx` | Type as dithered ink: the word masks a tiered 4×4 Bayer ramp (16/16 → 1/16, rotated as one group), so glyphs thin from solid cells to a sparse fringe. Dials: `text`, `cell` (grain), `ink` (takes a token); `size` defaults off the text's shape. Server-safe, `id` caller-owned; shares `bayerTile` with DitheredMark. |
-| DoubledLine | `src/components/shared/diagrams/DoubledLine.tsx` | The two-thread stroke as a component; optional two-tone via half-plane clip; pulse slot between threads and core. |
+| DoubledLine | `src/components/shared/diagrams/DoubledLine.tsx` | The two-thread stroke as a component; both threads take ONE ink (the house law — hosts pass a token), two-tone via half-plane clip is the exception; pulse slot between threads and core. |
 | EdgeGlobe | `src/app/d/toolchain/diagrams/EdgeGlobe.tsx` | The delivery globe — ink-only orthographic sphere, five PoPs, one accent route; pairs with a static Bayer atmosphere (dossier `GlobeAtmosphere`). |
 | LocaleTag | `src/app/d/toolchain/components/LocaleTag.tsx` | The one locale pill: flag print + mono code; hosts supply the box. |
 | RevealSeam | `src/app/d/toolchain/sections/RevealSeam.tsx` | The slide-to-reveal slider; writes `--seam-cut`; skins are host CSS (the dossier refit is the house handle). |

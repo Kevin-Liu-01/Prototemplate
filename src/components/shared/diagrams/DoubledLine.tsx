@@ -8,7 +8,12 @@ import { useId, type ReactNode } from 'react';
  * on a bend, and non-scaling-stroke holds the gauge in screen pixels even
  * under a stretched viewBox.
  *
- * Two-tone: when `inkB` is set, the sandwich renders one thread in `ink`
+ * The pair is ONE ink by default, and that is the house law: a doubled
+ * line is a single line drawn twice, so its two threads never disagree on
+ * color — hosts publish the value as a token and pass it once.
+ *
+ * Two-tone is the exception, for a drawing that must ink one thread apart
+ * from the other: when `inkB` is set, the sandwich renders one thread in `ink`
  * and the other in `inkB` via a half-plane clip — the full-gauge inkB
  * stroke paints unclipped, the ink copy clips to `splitD` (the SAME center
  * path closed off one side of the viewBox), and the core carves both. The

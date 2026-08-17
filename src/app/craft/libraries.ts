@@ -164,17 +164,12 @@ const [a, b] = frontEdge(box);
 const THREADS_SNIPPET = `import DoubledLine from '@/components/shared/diagrams/DoubledLine';
 
 const TRUNK = 'M330 120 L680 120';
-/* the split region: the SAME center path, closed off the top edge —
-   the clip boundary is the line itself, hidden inside the carve */
-const SPLIT = TRUNK + ' L680 -20 L330 -20 Z';
 
 <svg viewBox='0 0 720 240' aria-hidden='true'>
   <DoubledLine
     d={TRUNK}
     core='var(--color-ink)' /* the surface that carves */
-    ink='rgba(255, 255, 255, 0.88)' /* the white thread */
-    inkB='rgba(255, 255, 255, 0.42)' /* the gray thread */
-    splitD={SPLIT}
+    ink='var(--ptc-thread-ink)' /* ONE ink — both threads */
     gauge={1}
     gap={2}
   >
@@ -481,12 +476,12 @@ export const LIBRARIES: readonly Library[] = [
     name: 'doubled-line',
     role: 'the two-thread diagram stroke',
     body:
-      'The brand’s connector is one SVG path stroked twice: a full-gauge ink stroke underneath and a narrower surface-colored core on top, carving the ink into two parallel hairline threads at a constant gap along any curve. Because both strokes share one geometry the gap cannot drift on a bend, and non-scaling-stroke holds the gauge in screen pixels even under a stretched viewBox. Now a component: DoubledLine takes the center path, the carving surface, the gauges, and a pulse slot — and it two-tones the pair, one white thread and one gray, by clipping the white copy to a half-plane closed along the same geometry, so the split seam hides inside the carve on every bend (offset clones collapse on curves; concentric restrokes can only make symmetric rings). Draw a later one over an earlier one and the junction re-carves itself into one clean pair: merges cost zero parallel-curve math. This is also the one sanctioned double — one owner, one path, stroked twice; the auditor’s allow list holds it by name.',
+      'The brand’s connector is one SVG path stroked twice: a full-gauge ink stroke underneath and a narrower surface-colored core on top, carving the ink into two parallel hairline threads at a constant gap along any curve. Because both strokes share one geometry the gap cannot drift on a bend, and non-scaling-stroke holds the gauge in screen pixels even under a stretched viewBox. Now a component: DoubledLine takes the center path, the carving surface, the gauges, and a pulse slot. The pair it leaves is ONE ink — a doubled line is a single line drawn twice, so its two threads never disagree on color, and the host says that value once as a token. For the rare drawing that must ink one thread apart the component can two-tone, by clipping the second copy to a half-plane closed along the same geometry so the split seam hides inside the carve on every bend (offset clones collapse on curves; concentric restrokes can only make symmetric rings). Draw a later one over an earlier one and the junction re-carves itself into one clean pair: merges cost zero parallel-curve math. This is also the one sanctioned double — one owner, one path, stroked twice; the auditor’s allow list holds it by name.',
     demo: {
       kind: 'threads',
       tag: '<DoubledLine />',
       label:
-        'Two doubled-line connectors merging into one trunk: each pair one white thread over one gray, with a static accent pulse carved into the trunk.',
+        'Two doubled-line connectors merging into one trunk, both threads of every pair in one ink, with a static accent pulse carved into the trunk.',
     },
     file: 'src/components/shared/diagrams/DoubledLine.tsx',
     snippet: THREADS_SNIPPET,

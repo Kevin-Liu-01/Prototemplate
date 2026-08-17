@@ -472,6 +472,14 @@
 
 /* ---------- the doubled-line plate: the sandwich, at full gauge ---------- */
 
+.ptc-plate.is-threads {
+  /* ONE ink for the pair: a doubled line is a single line drawn twice, so
+     its two threads never disagree on color — the plate says the value
+     once and the component spends it on both */
+  --ptc-thread-ink: rgba(255, 255, 255, 0.88);
+  --tc-accent: #86a8ff;
+}
+
 .ptc-threads {
   position: absolute;
   inset: 0;
@@ -485,7 +493,7 @@
 /* a shade over full sandwich gauge: the carve leaves two accent threads */
 .ptc-th-pulse {
   fill: none;
-  stroke: #86a8ff;
+  stroke: var(--tc-accent);
   stroke-width: 5;
   vector-effect: non-scaling-stroke;
 }

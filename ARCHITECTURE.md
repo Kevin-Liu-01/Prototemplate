@@ -84,7 +84,7 @@ plate + API snippet on `/craft`):
 | `src/app/d/toolchain/diagrams/iso.ts` | the isometric kit (boxes, prisms, plane, markPath) |
 | `src/app/d/toolchain/diagrams/DitheredMark.tsx` | masked logo + Bayer shimmer |
 | `src/app/d/toolchain/diagrams/DitherText.tsx` | type as dithered ink (motif over a tiered Bayer ramp) |
-| `src/components/shared/diagrams/DoubledLine.tsx` | the two-thread stroke (two-tone capable) |
+| `src/components/shared/diagrams/DoubledLine.tsx` | the two-thread stroke (one ink; two-tone capable) |
 | `src/app/d/toolchain/diagrams/EdgeGlobe.tsx` | the delivery globe |
 | `src/app/d/toolchain/components/LocaleTag.tsx` | the locale pill |
 | `src/app/d/toolchain/sections/RevealSeam.tsx` | the slide-to-reveal seam |
