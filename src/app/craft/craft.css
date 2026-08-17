@@ -414,6 +414,62 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* ---------- the text-dither plate: three motifs, one ramp ---------- */
+
+.ptc-plate.is-dithertext {
+  /* the plate is permanently dark, so the lit cells are paper and the one
+     accent it spends is the house blue the pulse already wears */
+  --ptc-dt-ink: rgba(255, 255, 255, 0.92);
+  --tc-accent: #86a8ff;
+
+  display: grid;
+  place-items: center;
+  padding: 46px 18px 18px;
+}
+
+.ptc-dithertext {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.ptc-dt-cell {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* the component draws its default ink as currentColor, so the host says
+   the color once and the accent sample overrides it by prop */
+.ptc-dt-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--ptc-dt-ink);
+}
+
+.ptc-dt-cap {
+  font-family: var(--pt-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--color-titanium);
+}
+
+@media (max-width: 760px) {
+  .ptc-plate.is-dithertext {
+    /* three motifs will not read side by side on a phone; the plate keeps
+       the word and drops to a single column */
+    height: auto;
+    padding: 46px 18px 20px;
+  }
+
+  .ptc-dithertext {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* ---------- the doubled-line plate: the sandwich, at full gauge ---------- */
 
 .ptc-threads {

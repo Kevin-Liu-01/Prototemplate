@@ -133,6 +133,19 @@ const active = BAYER_PRESETS.find((v) => v.id === id);
   </button>
 ))}`;
 
+const DITHERTEXT_SNIPPET = `import DitherText from '@/app/d/toolchain/diagrams/DitherText';
+
+<DitherText
+  id='cover-i18n'   /* SVG ids are document-global — caller-owned */
+  text='語'
+  cell={5}          /* the grain: 2 halftone · 5+ pixel art */
+  ink='var(--tc-accent)'
+/>
+
+/* no size given: the fit ladder picks one off the text's shape (a CJK
+   glyph fills the plate, a long word steps down). Pin \`size\` when the
+   motif is a line of type rather than a word. */`;
+
 const ISO_SNIPPET = `import {
   frontEdge, leftFace, rightFace, roundedPolygon,
   segment, silhouette, topFace, type IsoBox,
@@ -435,6 +448,20 @@ export const LIBRARIES: readonly Library[] = [
     },
     file: 'src/lib/studio-field.ts',
     snippet: STUDIO_SNIPPET,
+  },
+  {
+    name: 'dither-text',
+    role: 'type as dithered ink',
+    body:
+      'The 1-bit language spoken by a letterform. The word is an SVG mask over a tiered Bayer ramp — six bands of the 4×4 ordered matrix, 16/16 down to 1/16, laid across the plate and rotated as one group — so the glyphs come out as dither cells that thin from solid on one flank to a sparse fringe on the other. The ramp is tiered rather than a gradient on purpose: ordered dithering nests by construction, so a band boundary only ever turns cells off, no cell is painted twice, and no seam shows where two bands meet. It shares the matrix and its tiling with DitheredMark — one Bayer implementation in the family — and it is server-safe: no hooks, no canvas, no client boundary, so a cover ships in the HTML and costs nothing at runtime. Three dials carry it: the text, the cell (the grain, from halftone to pixel art), and the ink, which takes a token as happily as a color. Size is chosen off the text’s own shape unless the caller pins it.',
+    demo: {
+      kind: 'dithertext',
+      tag: '<DitherText />',
+      label:
+        'Three samples of dithered type: the word “dither” at the house grain, the phrase “ship every language” at a finer cell, and the motif glyph 語 in the accent ink at a poster-coarse cell.',
+    },
+    file: 'src/app/d/toolchain/diagrams/DitherText.tsx',
+    snippet: DITHERTEXT_SNIPPET,
   },
   {
     name: 'iso',

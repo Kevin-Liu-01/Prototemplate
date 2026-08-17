@@ -83,8 +83,9 @@ export function shineTravel(
 }
 
 /** One pattern tile at coverage k/16: every cell whose Bayer threshold
-    sits under k, as one path of squares. */
-function bayerTile(k: number, cell: number): string {
+    sits under k, as one path of squares. Shared with DitherText — the
+    matrix and its tiling live here once. */
+export function bayerTile(k: number, cell: number): string {
   const cells: string[] = [];
   BAYER4.forEach((row, y) => {
     row.forEach((threshold, x) => {
