@@ -16,8 +16,10 @@ import {
 import {
   BookOpen,
   Boxes,
+  BrainCircuit,
   Briefcase,
   ChevronDown,
+  Gauge,
   Languages,
   LayoutDashboard,
   Mail,
@@ -106,6 +108,8 @@ function docsMenu(base: string): readonly MenuColumn[] {
       items: [
         { label: 'Platform', desc: 'Dashboard', href: 'https://dash.generaltranslation.com', icon: LayoutDashboard, external: true },
         { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
+        { label: 'Context', desc: 'Translation context', href: `${base}/context`, icon: BrainCircuit },
+        { label: 'Usage Pricing', desc: 'Workflow rates', href: `${base}/pricing/usage`, icon: Gauge },
       ],
     },
   ];
@@ -246,6 +250,7 @@ export default function V0Nav(): ReactNode {
   // /d/singularity-dossier/... -> /d/singularity-dossier
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '';
+  const signInHref = base === '/d/singularity-dossier' ? `${base}/signin` : 'https://dash.generaltranslation.com';
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
@@ -290,7 +295,7 @@ export default function V0Nav(): ReactNode {
             <kbd>K</kbd>
           </button>
           <ThemeToggle className='v0-nav-theme' />
-          <a className='v0-btn v0-btn-outline v0-btn-sm' href={`${base}/signin`}>
+          <a className='v0-btn v0-btn-outline v0-btn-sm' href={signInHref}>
             Sign In
           </a>
           <a className='v0-btn v0-btn-solid v0-btn-sm' href={`${base}/enterprise/contact`}>
@@ -306,9 +311,13 @@ export default function V0Nav(): ReactNode {
             the sheet seats absolutely under the bar */}
         <TcMobileNav
           items={[
+            { label: 'Locadex', href: `${base}/locadex` },
+            { label: 'Context', href: `${base}/context` },
+            { label: 'Usage Pricing', href: `${base}/pricing/usage` },
+            { label: 'Supported Locales', href: `${base}/supported-locales` },
             { label: 'Enterprise', href: `${base}/enterprise` },
             { label: 'Pricing', href: `${base}/pricing` },
-            { label: 'Sign In', href: `${base}/signin` },
+            { label: 'Sign In', href: signInHref, external: !signInHref.startsWith(base) },
             { label: 'Get a Demo', href: `${base}/enterprise/contact` },
           ]}
         />

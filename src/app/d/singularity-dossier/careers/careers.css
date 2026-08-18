@@ -287,7 +287,7 @@
 }
 
 .careers-root .careers-section-head h2 {
-  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  font-size: clamp(2.25rem, 3.7vw, 3.25rem);
   line-height: 1;
   letter-spacing: -0.04em;
 }
@@ -402,7 +402,7 @@
 
 .careers-root .careers-close-copy h2 {
   max-width: 13ch;
-  font-size: clamp(2.15rem, 3.8vw, 3.35rem);
+  font-size: clamp(2.15rem, 3.6vw, 3.2rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -582,7 +582,7 @@
 }
 
 .careers-root .careers-mission-copy h2 {
-  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  font-size: clamp(2.25rem, 3.7vw, 3.25rem);
   line-height: 1;
   letter-spacing: -0.04em;
 }

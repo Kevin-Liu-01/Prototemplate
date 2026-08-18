@@ -2,8 +2,14 @@
    SINGULARITY · ORBIT — gravity as the argument.
    Instrument dials, the customer gravity well, one witness.
    The physics vocabulary of the hero carried through the page:
-   orbits, sweeps, telemetry — numbers in mono, nothing else.
+   orbits, sweeps, telemetry — all carried in the shared sans family.
    ============================================================ */
+
+.singularity-root.sgo-root {
+  --tc-mono: var(--tc-sans);
+  --font-mono: var(--tc-sans);
+  --default-mono-font-family: var(--tc-sans);
+}
 
 /* ---- telemetry dials ---- */
 

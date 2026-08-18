@@ -35,7 +35,7 @@
 
 
 .pricing-root .pricing-hero h1 {
-  font-size: clamp(2.4rem, 3.7vw, 3.5rem);
+  font-size: clamp(2.4rem, 3.5vw, 3.25rem);
   line-height: 0.95;
   letter-spacing: -0.048em;
   text-wrap: balance;
@@ -760,7 +760,7 @@
 
 
   .pricing-root .pricing-hero h1 {
-    font-size: clamp(2.6rem, 13vw, 3.6rem);
+    font-size: clamp(2.4rem, 11vw, 3.25rem);
   }
 
 
@@ -2080,7 +2080,7 @@
 
 
   .pricing-root .pricing-hero h1 {
-    font-size: clamp(2.6rem, 13vw, 3.6rem);
+    font-size: clamp(2.4rem, 11vw, 3.25rem);
   }
 
 

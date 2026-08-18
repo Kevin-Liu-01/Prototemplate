@@ -379,7 +379,7 @@
 
 .yc-root .yc-close h2 {
   max-width: none;
-  font-size: clamp(2.5rem, 4vw, 3.55rem);
+  font-size: clamp(2.5rem, 3.7vw, 3.25rem);
   line-height: 0.98;
   letter-spacing: -0.04em;
 }

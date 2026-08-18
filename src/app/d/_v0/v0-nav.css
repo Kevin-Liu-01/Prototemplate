@@ -7,6 +7,13 @@
   --tc-rail: 1104px;
 }
 
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root),
+.singularity-root.sgd-root {
+  --tc-mono: var(--tc-sans);
+  --font-mono: var(--tc-sans);
+  --default-mono-font-family: var(--tc-sans);
+}
+
 .toolchain-root .v0-nav {
   position: sticky;
   top: 0;
@@ -197,7 +204,7 @@
 
 .toolchain-root .v0-nav-col h5 {
   margin: 0 0 10px;
-  font-family: var(--tc-mono);
+  font-family: var(--tc-sans);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.14em;

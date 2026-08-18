@@ -44,7 +44,7 @@ function KeyMark() {
   );
 }
 
-function ArrowMark() {
+function ShieldMark() {
   return (
     <svg
       viewBox='0 0 24 24'
@@ -54,9 +54,9 @@ function ArrowMark() {
       strokeLinecap='round'
       strokeLinejoin='round'
       aria-hidden='true'
-      style={{ width: 14, height: 14 }}
     >
-      <path d='M7 17 17 7M7 7h10v10' />
+      <path d='M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3z' />
+      <path d='m9 12 2 2 4-4' />
     </svg>
   );
 }
@@ -97,10 +97,9 @@ function ChevronMark() {
 
 /**
  * Sign in — the dashboard's sign-in ported into the Dossier: the
- * Profound-style split with the mark, the form, and the demo prompt on
- * the left column's floor; the halftone globe standing over the glyph
- * rain on the right, the switching word cycling beneath it; one slim
- * footer rule. The form is a prototype — inert controls, real layout.
+ * Profound-style split with the mark and form on the left; the halftone
+ * globe stands over the glyph rain on the right. The form is a prototype
+ * with inert authentication controls and production-shaped layout.
  */
 export default function SingularityDossierSignInPage() {
   return (
@@ -170,13 +169,15 @@ export default function SingularityDossierSignInPage() {
                   </button>
                 </div>
 
-                <div aria-label='Verifying you are human' className='sgs-captcha'>
-                  <span aria-hidden className='sgs-captcha-spinner' />
-                  <span>Verifying...</span>
-                  <span className='sgs-captcha-brand'>
-                    <b aria-hidden>☁</b>
-                    <strong>CLOUDFLARE</strong>
-                    <small>Privacy · Help</small>
+                <div
+                  aria-live='polite'
+                  className='sgs-captcha'
+                  role='status'
+                >
+                  <ShieldMark />
+                  <span className='sgs-captcha-copy'>
+                    <strong>Checking browser security</strong>
+                    <small>Protected by Cloudflare Turnstile</small>
                   </span>
                 </div>
 
@@ -198,21 +199,6 @@ export default function SingularityDossierSignInPage() {
               </div>
             </div>
 
-            <div className='sgs-block'>
-              <div className='sgs-demo'>
-                <div className='sgs-demo-cells' aria-hidden='true' />
-                <div className='sgs-demo-row'>
-                  <strong>Get a Demo</strong>
-                  <a
-                    className='sgs-btn is-line'
-                    href='/d/singularity-dossier/contact'
-                  >
-                    Talk to an engineer
-                    <ArrowMark />
-                  </a>
-                </div>
-              </div>
-            </div>
           </section>
 
           <SignInAside />

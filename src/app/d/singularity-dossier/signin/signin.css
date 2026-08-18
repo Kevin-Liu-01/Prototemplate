@@ -1,8 +1,8 @@
 /* ============================================================
    SINGULARITY · DOSSIER — sign-in. The dashboard sign-in ported
-   as a prototype: Profound-style split — mark, form, and the demo
-   prompt on the left column's floor; the halftone globe standing
-   over the glyph rain on the right; one slim footer rule. Every
+   as a prototype: Profound-style split — mark and form on the left;
+   the halftone globe stands over the glyph rain on the right; one
+   slim footer rule. Every
    fixed size on the left is a two-point svh scale (exact at a
    900px viewport, compressed together under browser zoom), so the
    layout and hierarchy hold at 125–150% with zero scroll.
@@ -26,7 +26,7 @@
   }
 }
 
-/* ---- the left column: mark, form, demo prompt ---- */
+/* ---- the left column: mark and form ---- */
 
 .singularity-root .sgs-col {
   display: flex;
@@ -211,50 +211,37 @@
 .singularity-root .sgs-captcha {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 64px;
-  border: 1px solid var(--tc-ink-2);
-  background: color-mix(in srgb, var(--tc-ink) 18%, var(--tc-paper));
-  padding: 9px 10px;
+  gap: 12px;
+  min-height: 44px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--tc-ink) 3%, var(--tc-paper));
+  padding: 7px 12px;
   color: var(--tc-ink);
-  font-size: 14px;
 }
 
-.singularity-root .sgs-captcha-spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px dotted #22c55e;
-  border-radius: 50%;
+.singularity-root .sgs-captcha > svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--tc-ink-2);
 }
 
-.singularity-root .sgs-captcha-brand {
+.singularity-root .sgs-captcha-copy {
   display: grid;
-  justify-items: end;
-  margin-left: auto;
-  line-height: 1;
+  gap: 2px;
+  min-width: 0;
+  line-height: 1.2;
 }
 
-.singularity-root .sgs-captcha-brand b {
-  color: #f48120;
-  font-size: 28px;
-  line-height: 0.5;
+.singularity-root .sgs-captcha-copy strong {
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.singularity-root .sgs-captcha-brand strong {
-  margin-top: 4px;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-}
-
-.singularity-root .sgs-captcha-brand small {
-  margin-top: 3px;
-  font-size: 8px;
-}
-
-@media (min-width: 768px) {
-  .singularity-root .sgs-captcha {
-    display: none;
-  }
+.singularity-root .sgs-captcha-copy small {
+  color: var(--tc-ink-2);
+  font-size: 11px;
 }
 
 .singularity-root .sgs-or {
@@ -284,53 +271,6 @@
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 4px;
-}
-
-/* ---- the demo prompt: a hairline panel framed by a split-flap
-   cell row at board pitch (the terminus signature) ---- */
-
-.singularity-root .sgs-demo {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--tc-hair);
-  border-radius: 6px;
-}
-
-.singularity-root .sgs-demo-cells {
-  height: 22px;
-  border-bottom: 1px solid var(--tc-hair);
-  background:
-    repeating-linear-gradient(
-      to right,
-      transparent 0 21px,
-      color-mix(in srgb, currentColor 9%, transparent) 21px 22px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, currentColor 4.5%, transparent) 0 10px,
-      transparent 10px 11px,
-      color-mix(in srgb, currentColor 6.5%, transparent) 11px 22px
-    );
-}
-
-.singularity-root .sgs-demo-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: clamp(6px, 2.67svh - 10px, 14px) 16px;
-}
-
-.singularity-root .sgs-demo-row strong {
-  font-size: clamp(11px, 0.67svh + 8px, 14px);
-  font-weight: 500;
-}
-
-.singularity-root .sgs-demo-row .sgs-btn {
-  height: 32px;
-  padding: 0 10px;
-  font-size: 14px;
-  text-decoration: none;
 }
 
 /* ---- the aside: globe over rain, both in the house blue ---- */

@@ -2,9 +2,15 @@
    SINGULARITY · SIGNAL — the broadcast under the gate.
    Intercepted transmissions, the rollout log typing itself out
    over raining glyphs, the beam at the band's foot, and the
-   assurance strip. Mono carries timestamps and stamps — numbers
-   — and nothing else.
+   assurance strip. Timestamps and stamps stay in the shared sans
+   family with the rest of the finalist.
    ============================================================ */
+
+.singularity-root.sgs-root {
+  --tc-mono: var(--tc-sans);
+  --font-mono: var(--tc-sans);
+  --default-mono-font-family: var(--tc-sans);
+}
 
 /* ---- intercepts ---- */
 

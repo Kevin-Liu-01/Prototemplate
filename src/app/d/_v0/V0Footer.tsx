@@ -61,6 +61,8 @@ function LinkedInMark({ className, color, ...rest }: MarkProps) {
 
 /* The production footer's full roster, regrouped under the ledger's heads. */
 function footerColumns(base: string): readonly { title: string; links: readonly FooterLink[] }[] {
+  const legalBase = base === '/d/singularity-dossier' ? base : '/d/singularity-dossier';
+
   return [
   {
     title: 'Guides',
@@ -104,9 +106,9 @@ function footerColumns(base: string): readonly { title: string; links: readonly 
   {
     title: 'Legal',
     links: [
-      { label: 'Terms of Service', href: `${base}/legal/terms` },
-      { label: 'Privacy', href: `${base}/legal/privacy-policy` },
-      { label: 'Acceptable Use Policy', href: `${base}/legal/acceptable-use` },
+      { label: 'Terms of Service', href: `${legalBase}/legal/terms` },
+      { label: 'Privacy', href: `${legalBase}/legal/privacy-policy` },
+      { label: 'Acceptable Use Policy', href: `${legalBase}/legal/acceptable-use` },
       { label: 'Manage Cookies', href: '#manage-cookies', button: true },
     ],
   },

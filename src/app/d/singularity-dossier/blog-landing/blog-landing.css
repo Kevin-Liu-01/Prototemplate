@@ -101,7 +101,7 @@
 
 .sgd-blog .blog-hero h1 {
   max-width: 12ch;
-  font-size: clamp(2.3rem, 3.4vw, 3.4rem);
+  font-size: clamp(2.3rem, 3.2vw, 3.25rem);
   font-weight: 500;
   letter-spacing: -0.045em;
   line-height: 0.96;
