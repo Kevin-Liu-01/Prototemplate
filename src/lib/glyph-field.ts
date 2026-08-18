@@ -302,13 +302,18 @@ export type GlyphFieldOptions = {
   /** How the held word prints: 'flat' solid ink (default), or 'dithered' —
       the blog covers' diagonal Bayer ramp inside the letterforms. */
   wordFill?: 'flat' | 'dithered';
+  /** Whether rain particles condense into cycling words. Defaults to true. */
+  formWords?: boolean;
   /** Standalone-plate (copy: 'none') layout tuning: the word's baseline as
       a fraction of height, and its size as a height fraction with a px
       cap. Defaults are the full-bleed hero plate's (0.56 / 0.3 / 132). */
   standalone?: { baseline?: number; fontScale?: number; fontCap?: number };
 };
 
-export type GlyphFieldHandle = { destroy(): void };
+export type GlyphFieldHandle = {
+  destroy(): void;
+  setInk(next: string): void;
+};
 
 export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle | null {
   const { canvas, onScript } = options;
@@ -327,6 +332,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   const driftSign = options.drift === 'rise' ? -1 : 1;
   const glyphScale = options.glyphScale ?? 1;
   const wordFill = options.wordFill ?? 'flat';
+  const formWords = options.formWords ?? true;
   const soBaseline = options.standalone?.baseline ?? 0.56;
   const soFontScale = options.standalone?.fontScale ?? 0.3;
   const soFontCap = options.standalone?.fontCap ?? 132;
@@ -1256,7 +1262,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        departs. Handoffs at both boundaries are exact (the outgoing hole
        takes over the held one at full strength; gates land on their hold
        values), so the rain never gains or loses a block in one frame. */
-    if (p < holdDur) {
+    if (!formWords) {
+      nextGate = 0;
+      prevGate = 0;
+    } else if (p < holdDur) {
       nextGate = 1;
       prevGate = 0;
     } else {
@@ -1266,7 +1275,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     }
 
     let morph = -1; // −1: holding; 0…1: flying to `next`
-    if (p < holdDur) {
+    if (formWords && p < holdDur) {
       if (sampledWord !== current || pendingResample) {
         resample(current);
         inPrev.set(inNext);
@@ -1282,7 +1291,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         schedulePrepare(next);
       }
       announce(current);
-    } else {
+    } else if (formWords) {
       if (morphedCycle !== cycle) {
         /* Flight begins: snapshot the outgoing word, lift off from the
            drawn positions, and stagger departures by position in the word
@@ -1817,8 +1826,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   /* Theme flips re-ink the field: the atlas is rebuilt in the new ink and a
      paused field re-prints its still. Cheap — one attribute on the root,
      observed only while the field lives. */
-  const themeMo = new MutationObserver(() => {
-    const next = resolveInk();
+  const applyInk = (next: string): void => {
     if (next === ink) return;
     ink = next;
     buildAtlas();
@@ -1828,7 +1836,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       buildWordSprite(peelSprite, prevWord, prevFont, prevPx, prevLeft, prevRight, prevSeed, prevRtl);
     }
     if (reduced || !running) draw();
-  });
+  };
+
+  const themeMo = new MutationObserver(() => applyInk(resolveInk()));
   themeMo.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['data-theme', 'class'],
@@ -1866,6 +1876,9 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   }
 
   return {
+    setInk(next) {
+      applyInk(next);
+    },
     destroy() {
       atlasGen++;
       if (atlasSrc !== atlas && atlasSrc instanceof ImageBitmap) atlasSrc.close();

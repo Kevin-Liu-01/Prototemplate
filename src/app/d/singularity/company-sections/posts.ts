@@ -21,6 +21,8 @@ export type IndexedPost = {
   /** Frontmatter `summary` (blog) or the post's own first sentence (devlog). */
   summary: string;
   tags: string[];
+  /** Devlog's compact release headline, shown in the changelog board. */
+  headline?: string;
 };
 
 export const BLOG_URL = 'https://generaltranslation.com/blog';
@@ -104,16 +106,90 @@ export const ESSAY_ROWS: IndexedPost[] = [
 /** content/devlog/en-US — every release, newest first. */
 export const RELEASES: IndexedPost[] = [
   {
+    slug: 'gt-sanity_v4_0_0',
+    title: 'gt-sanity@4.0.0',
+    headline: 'Support for Sanity 6 Studios',
+    date: '2026-08-14',
+    authors: ['Fernando Aviles'],
+    summary: 'gt-sanity v4 targets the Sanity 6 Studio.',
+    tags: ['gt-sanity', 'v4.0.0', 'sanity', 'cms', 'translation', 'major'],
+  },
+  {
+    slug: 'gt-sanity_v3_1_1',
+    title: 'gt-sanity@3.1.1',
+    headline: 'Safer locale configuration',
+    date: '2026-07-29',
+    authors: ['Fernando Aviles'],
+    summary: 'gt-sanity v3.1.1 normalizes the plugin target locales before configuring Sanity localization tools.',
+    tags: ['gt-sanity', 'v3.1.1', 'sanity', 'cms', 'locales', 'bug-fix'],
+  },
+  {
+    slug: 'gt-react_v11_1_2',
+    title: 'gt-react@11.1.2',
+    headline: 'SSR fixes for Cloudflare Workers',
+    date: '2026-07-29',
+    authors: ['Ernest McCarter'],
+    summary: 'gt-react, gt-next, and gt-tanstack-start v11.1.2 fix server-side rendering on worker runtimes.',
+    tags: ['gt-react', 'gt-next', 'gt-tanstack-start', 'v11.1.2', 'cloudflare-workers', 'ssr'],
+  },
+  {
+    slug: 'gt-next_v11_1_3',
+    title: 'gt-next@11.1.3',
+    headline: 'Native locale routing for Pages Router',
+    date: '2026-07-29',
+    authors: ['Ernest McCarter'],
+    summary: 'gt-next v11.1.3 uses Next.js internationalized routing for Pages Router apps.',
+    tags: ['gt-next', 'v11.1.3', 'nextjs', 'pages-router', 'i18n', 'locale-routing'],
+  },
+  {
+    slug: 'gt-sanity_v3_1_0',
+    title: 'gt-sanity@3.1.0',
+    headline: 'Save local edits',
+    date: '2026-07-28',
+    authors: ['Fernando Aviles'],
+    summary: 'gt-sanity v3.1 adds Save local edits for preserving editor changes across translation runs.',
+    tags: ['gt-sanity', 'v3.1.0', 'sanity', 'cms', 'translation', 'minor'],
+  },
+  {
+    slug: 'gt-tanstack-start_v11_1_0',
+    title: 'gt-tanstack-start@11.1.0',
+    headline: 'Opt-in locale routing',
+    date: '2026-07-22',
+    authors: ['Ernest McCarter'],
+    summary: 'gt-tanstack-start v11.1 adds opt-in locale routing.',
+    tags: ['gt-tanstack-start', 'v11.1.0', 'tanstack-start', 'i18n', 'locale-routing'],
+  },
+  {
+    slug: 'gt-sanity_v3_0_0',
+    title: 'gt-sanity@3.0.0',
+    headline: 'Native Sanity localization plugins',
+    date: '2026-07-22',
+    authors: ['Brian Lou'],
+    summary: 'gt-sanity v3 uses the Sanity ecosystem native localization plugins.',
+    tags: ['gt-sanity', 'v3.0.0', 'sanity', 'cms', 'translation', 'major'],
+  },
+  {
     slug: 'gt-sanity_v2_1_0',
     title: 'gt-sanity@2.1.0',
+    headline: 'Field-level localization',
     date: '2026-07-14',
     authors: ['Brian Lou'],
     summary: 'gt-sanity v2.1 adds field-level localization: instead of creating a separate document per locale, you can now store every language\'s value inside the same document using internationalized arrays.',
     tags: ['gt-sanity', 'v2.1.0', 'sanity', 'cms', 'translation', 'minor'],
   },
   {
+    slug: 'gt-react_v11_0_0',
+    title: 'gt-react@11.0.0',
+    headline: 'A shared runtime across React frameworks',
+    date: '2026-07-03',
+    authors: ['Ernest McCarter'],
+    summary: 'gt-react 11 is the center of a coordinated release across the General Translation React libraries.',
+    tags: ['gt-react', 'gt-next', 'gt-react-native', 'gt-tanstack-start', 'i18n', 'performance'],
+  },
+  {
     slug: 'gt-react-native_v10_20_0',
     title: 'gt-react-native@10.20.0',
+    headline: 'Sync locale reads from the native store',
     date: '2026-06-01',
     authors: ['Ernest McCarter'],
     summary: 'gt-react-native 10.20.0 adds getLocaleFromNativeStore() — a synchronous function that reads the persisted locale from the native store without needing React context.',
@@ -122,6 +198,7 @@ export const RELEASES: IndexedPost[] = [
   {
     slug: 'gt-i18n_v0_9_0',
     title: 'gt-i18n@0.9.0',
+    headline: 'Dictionary-backed translations',
     date: '2026-05-07',
     authors: ['Ernest McCarter'],
     summary: 'gt-i18n now supports dictionary-backed translations via getTranslations().',
@@ -130,6 +207,7 @@ export const RELEASES: IndexedPost[] = [
   {
     slug: 'gt-react_v10_19_0',
     title: 'gt-react@10.19.0',
+    headline: 'Translation hot reload for SPAs',
     date: '2026-04-16',
     authors: ['Ernest McCarter'],
     summary: 'gt-react/browser now supports dev hot reload for translations.',
@@ -138,6 +216,7 @@ export const RELEASES: IndexedPost[] = [
   {
     slug: 'gt-node_v0_6_0',
     title: 'gt-node@0.6.0',
+    headline: 'Runtime translation with tx()',
     date: '2026-04-14',
     authors: ['Ernest McCarter'],
     summary: 'gt-node now has tx() — a function for translating strings at runtime.',

@@ -47,7 +47,13 @@ const MOTIF_TERMS: readonly [RegExp, string][] = [
   [/locali[sz]|translat|internationali[sz]|locale/i, '語'],
 ];
 
+/* A devlog title is a release identifier. Its cover speaks the bare
+   package name of the first segment, with any npm scope stripped. */
+const RELEASE_SEGMENT = /^(?:@[a-z0-9._-]+\/)?([a-z0-9._-]+)@\d/i;
+
 function wordFor(title: string, tags: string[]): string {
+  const release = title.split(/\s+\/\s+/)[0]?.match(RELEASE_SEGMENT);
+  if (release?.[1]) return release[1];
   for (const hay of [title, tags.join(' ')]) {
     for (const [pattern, word] of MOTIF_TERMS) {
       if (pattern.test(hay)) return word;
@@ -56,14 +62,19 @@ function wordFor(title: string, tags: string[]): string {
   return '語';
 }
 
-/** SVG font-size that fills the 400×225 plate for this word. */
+/** SVG font-size that fills the plate while keeping package names intact. */
 function sizeFor(word: string): number {
-  if (/[　-鿿가-힯]/.test(word)) return 185;
-  if (word.length <= 2) return 170;
-  if (word.length === 3) return 150;
-  if (word.length === 4) return 145;
-  if (word.length <= 6) return 110;
-  return 86;
+  if (/[　-鿿가-힯]/.test(word)) return 170;
+  const length = word.length;
+  if (length <= 2) return 155;
+  if (length === 3) return 138;
+  if (length === 4) return 132;
+  if (length <= 6) return 100;
+  if (length <= 8) return 80;
+  if (length <= 10) return 66;
+  if (length <= 13) return 56;
+  if (length <= 15) return 48;
+  return 42;
 }
 
 export type MotifSource = { slug: string; title: string; tags: string[] };
@@ -85,32 +96,53 @@ export function motifFor(post: MotifSource): FeatureMotif {
   };
 }
 
-/** Coverage tiers, solid-side first (the per-slug covers' ramp, scaled
-    to cross a full plate). The sparse tail starts late enough that the
-    motif's last letter still reads — decay, never disappearance. */
+const BAYER8: readonly (readonly number[])[] = Array.from(
+  { length: 8 },
+  (_, row) =>
+    Array.from({ length: 8 }, (_, col) => {
+      const quadrant = [0, 2, 3, 1][
+        Math.floor(row / 4) * 2 + Math.floor(col / 4)
+      ];
+      return (BAYER4[row % 4]?.[col % 4] ?? 0) * 4 + (quadrant ?? 0);
+    })
+);
+
+/** A fine 8×8 ramp: the tail floors above zero, so long words decay
+    without losing their final letters. */
 const RAMP: readonly { cover: number; width: number }[] = [
-  { cover: 16, width: 320 },
-  { cover: 12, width: 64 },
-  { cover: 8, width: 58 },
-  { cover: 5, width: 54 },
-  { cover: 3, width: 50 },
-  { cover: 1, width: 44 },
+  { cover: 64, width: 260 },
+  { cover: 58, width: 38 },
+  { cover: 52, width: 38 },
+  { cover: 46, width: 38 },
+  { cover: 40, width: 38 },
+  { cover: 34, width: 38 },
+  { cover: 28, width: 38 },
+  { cover: 22, width: 38 },
+  { cover: 16, width: 38 },
+  { cover: 12, width: 38 },
 ];
 
-const CELL = 3;
-const TILE = CELL * 4;
+const CELL = 1;
+const TILE = CELL * 8;
 
 function tilePath(cover: number): string {
   const cells: string[] = [];
-  for (let row = 0; row < 4; row += 1) {
-    for (let col = 0; col < 4; col += 1) {
-      const bayerRow = BAYER4[row];
-      if (bayerRow && (bayerRow[col] ?? 16) < cover) {
+  for (let row = 0; row < 8; row += 1) {
+    for (let col = 0; col < 8; col += 1) {
+      const bayerRow = BAYER8[row];
+      if (bayerRow && (bayerRow[col] ?? 64) < cover) {
         cells.push(`M${col * CELL} ${row * CELL}h${CELL}v${CELL}h${-CELL}z`);
       }
     }
   }
   return cells.join('');
+}
+
+function centerYFor(word: string, fontSize: number): number {
+  if (/[　-鿿가-힯]/.test(word)) return 112.5 - fontSize * 0.04;
+  if (/^gt[-x]/.test(word) && fontSize >= 75) return 112.5 - fontSize * 0.14;
+  if (/[gjpqy]/.test(word)) return 112.5 - fontSize * 0.11;
+  return 112.5 - fontSize * 0.03;
 }
 
 export default function BlogFeatureDither({
@@ -127,6 +159,8 @@ export default function BlogFeatureDither({
   scale?: number;
 }) {
   const idBase = `blog-feature-${id}`;
+  const fontSize = Math.round(motif.size * scale);
+  const centerY = centerYFor(motif.text, fontSize);
 
   let edge = -200;
   const bands = RAMP.map((tier) => {
@@ -157,11 +191,11 @@ export default function BlogFeatureDither({
             <rect width='400' height='225' fill='black' />
             <text
               x='200'
-              y='118'
+              y={centerY}
               fill='white'
               textAnchor='middle'
               dominantBaseline='central'
-              fontSize={Math.round(motif.size * scale)}
+              fontSize={fontSize}
               letterSpacing={motif.letterSpacing}
             >
               {motif.text}

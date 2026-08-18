@@ -1,8 +1,7 @@
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 import { StackBoard } from '../pricing/StackBoard';
 
 import EnterpriseContactSection from './sections/EnterpriseContactSection';
@@ -40,8 +39,8 @@ export const metadata = {
 export default function SingularityDossierEnterprisePage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root sgde-root pricing-root'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root sgde-root pricing-root'>
+        <V0Nav />
         <div className='tc-rail'>
           <EnterpriseHero />
           <TestimonialSection />
@@ -50,10 +49,9 @@ export default function SingularityDossierEnterprisePage() {
           <GovernedExplorer />
           <Security />
           <EnterpriseGradeSection />
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

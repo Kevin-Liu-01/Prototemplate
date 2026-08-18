@@ -276,6 +276,17 @@
   text-overflow: ellipsis;
 }
 
+.sgd-blog .blog-updates-headline {
+  display: block;
+  margin-top: -5px;
+  overflow: hidden;
+  color: var(--tc-ink-3);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* the version settles on one flap chip — seam, lit leaf, hinge, shade */
 .sgd-blog .blog-updates-ver {
   display: inline-flex;

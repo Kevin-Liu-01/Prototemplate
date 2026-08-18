@@ -18,11 +18,11 @@ import {
   Boxes,
   Briefcase,
   ChevronDown,
-  Globe,
   Languages,
   LayoutDashboard,
   Mail,
   Newspaper,
+  Search,
   SquareTerminal,
   Users,
 } from 'lucide-react';
@@ -54,22 +54,6 @@ type MenuColumn = { title: string; items: readonly MenuItem[] };
 
 const DOCS = 'https://generaltranslation.com/docs';
 
-/* The mock's three Product entries, upgraded to menu rows. Locadex and
-   Context link to the final's product pages; Infrastructure keeps its home
-   anchor (it has no subpage — the section IS the page). */
-function product(base: string): readonly MenuColumn[] {
-  return [
-    {
-      title: 'Product',
-      items: [
-        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
-        { label: 'Context', desc: 'One source of context', href: `${base}/context`, icon: BookOpen },
-        { label: 'Infrastructure', desc: 'Global delivery network', href: '#infrastructure', icon: Globe },
-      ],
-    },
-  ];
-}
-
 /* The old flat list (Customers / Blog / Careers) folded into the shared
    two-column Resources sheet: Customers keeps its home anchor (every final
    mounts the trusted-by section) and joins the Company column. */
@@ -81,7 +65,7 @@ function resources(base: string): readonly MenuColumn[] {
         { label: 'Customers', desc: 'Trusted by global teams', href: '#customers', icon: Users },
         { label: 'Blog', desc: 'News and updates', href: `${base}/blog`, icon: Newspaper },
         { label: 'Careers', desc: 'Join our growing team', href: `${base}/careers`, icon: Briefcase },
-        { label: 'Supported Locales', desc: '100+ languages supported', href: `${base}/locales`, icon: Languages },
+        { label: 'Supported Locales', desc: '100+ languages supported', href: `${base}/supported-locales`, icon: Languages },
       ],
     },
     {
@@ -286,28 +270,37 @@ export default function V0Nav(): ReactNode {
     <header className='v0-nav' data-v0-nav>
       <div className='v0-nav-in'>
         <a className='v0-nav-brand' href={base || '/'}>
-          <Image className='v0-nav-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={22} height={22} />
-          <Image className='v0-nav-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={22} height={22} />
-          General Translation
+          <Image className='v0-nav-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={40} height={40} />
+          <Image className='v0-nav-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={40} height={40} />
+          <span className='v0-nav-sr'>General Translation</span>
         </a>
 
         <nav className='v0-nav-links'>
-          <Menu columns={product(base)} {...menu('Product')} />
           <Menu columns={resources(base)} {...menu('Resources')} />
           <Menu columns={docsMenu(base)} {...menu('Docs')} wide />
-          <a href={`${base}/enterprise`}>Enterprise</a>
           <a href={`${base}/pricing`}>Pricing</a>
+          <a href={`${base}/enterprise`}>Enterprise</a>
         </nav>
 
         <div className='v0-nav-right'>
+          <button aria-label='Search documentation' className='v0-nav-search' type='button'>
+            <Search aria-hidden size={15} strokeWidth={1.8} />
+            <span>Search</span>
+            <kbd>⌘</kbd>
+            <kbd>K</kbd>
+          </button>
           <ThemeToggle className='v0-nav-theme' />
-          <a href='https://dash.generaltranslation.com' rel='noreferrer' target='_blank'>
-            Sign in
+          <a className='v0-btn v0-btn-outline v0-btn-sm' href={`${base}/signin`}>
+            Sign In
           </a>
-          <a className='v0-btn v0-btn-solid v0-btn-sm' href='#deploy'>
-            Get a demo
+          <a className='v0-btn v0-btn-solid v0-btn-sm' href={`${base}/enterprise/contact`}>
+            Get a Demo
           </a>
         </div>
+
+        <a className='v0-mobile-demo v0-btn v0-btn-solid' href={`${base}/enterprise/contact`}>
+          Get a Demo
+        </a>
 
         {/* the phone menu: burger + ruled sheet, last in the -in column so
             the sheet seats absolutely under the bar */}
@@ -315,9 +308,8 @@ export default function V0Nav(): ReactNode {
           items={[
             { label: 'Enterprise', href: `${base}/enterprise` },
             { label: 'Pricing', href: `${base}/pricing` },
-            { label: 'Locadex', href: `${base}/locadex` },
-            { label: 'Sign in', href: 'https://dash.generaltranslation.com', external: true },
-            { label: 'Get a demo', href: '#deploy' },
+            { label: 'Sign In', href: `${base}/signin` },
+            { label: 'Get a Demo', href: `${base}/enterprise/contact` },
           ]}
         />
       </div>

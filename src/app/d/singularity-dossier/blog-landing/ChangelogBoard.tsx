@@ -236,6 +236,9 @@ export default function ChangelogBoard() {
                   className='blog-updates-go'
                 />
                 <strong>{release.label}</strong>
+                {release.headline ? (
+                  <span className='blog-updates-headline'>{release.headline}</span>
+                ) : null}
                 {release.version && (
                   <span className='blog-updates-ver'>
                     {`v${release.version}`}

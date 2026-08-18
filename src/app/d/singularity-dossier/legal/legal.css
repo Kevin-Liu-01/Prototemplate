@@ -1,0 +1,304 @@
+.legal-root {
+  overflow-x: clip;
+}
+
+.legal-root .legal-index-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  min-height: 380px;
+  padding: clamp(76px, 9vw, 124px) var(--tc-gut) 62px;
+}
+
+.legal-root .legal-index-hero h1 {
+  max-width: 10ch;
+  font-size: clamp(3.2rem, 6vw, 5.7rem);
+  line-height: 0.94;
+  letter-spacing: -0.058em;
+}
+
+.legal-root .legal-index-hero p {
+  max-width: 47ch;
+  margin-top: 24px;
+  color: var(--tc-ink-2);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.legal-root .legal-index-hero > span {
+  color: var(--tc-ink-3);
+  font-size: 14px;
+}
+
+.legal-root .legal-index-list {
+  padding: 0 var(--tc-gut) clamp(84px, 9vw, 124px);
+}
+
+.legal-root .legal-ledger {
+  border-top: 1px solid var(--tc-ink);
+}
+
+.legal-root .legal-ledger-row {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 22px;
+  min-height: 106px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--tc-hair);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.legal-root .legal-ledger-row:hover {
+  margin-inline: calc(var(--tc-gut) * -0.3);
+  padding-inline: calc(var(--tc-gut) * 0.3);
+  background: var(--tc-hair-2);
+}
+
+.legal-root .legal-ledger-row > span {
+  align-self: start;
+  padding-top: 4px;
+  color: var(--color-emphasis);
+  font-size: 14px;
+}
+
+.legal-root .legal-ledger-row h2 {
+  color: var(--tc-ink);
+  font-size: 20px;
+  font-weight: 570;
+  letter-spacing: -0.025em;
+}
+
+.legal-root .legal-ledger-row p {
+  max-width: 70ch;
+  margin-top: 7px;
+  color: var(--tc-ink-2);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.legal-root .legal-ledger-row > svg {
+  width: 15px;
+  height: 15px;
+  justify-self: end;
+  color: var(--tc-ink-3);
+}
+
+.legal-root .legal-document-shell {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+  min-height: 760px;
+}
+
+.legal-root .legal-document-aside {
+  position: sticky;
+  top: 58px;
+  align-self: start;
+  min-height: calc(100svh - 58px);
+  padding: 58px var(--tc-gut) 68px;
+  border-right: 1px solid var(--tc-hair);
+}
+
+.legal-root .legal-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--tc-ink-3);
+  font-size: 14px;
+  transition: color 140ms ease;
+}
+
+.legal-root .legal-back-link:hover {
+  color: var(--tc-ink);
+}
+
+.legal-root .legal-back-link svg {
+  width: 13px;
+  height: 13px;
+}
+
+.legal-root .legal-document-aside h1 {
+  margin-top: 56px;
+  font-size: clamp(2.55rem, 4.6vw, 4.3rem);
+  line-height: 0.97;
+  letter-spacing: -0.052em;
+  text-wrap: balance;
+}
+
+.legal-root .legal-document-aside > p:not(.legal-updated) {
+  margin-top: 22px;
+  color: var(--tc-ink-2);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.legal-root .legal-updated {
+  margin-top: 35px;
+  padding-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+  color: var(--tc-ink-3);
+  font-size: 14px;
+}
+
+.legal-root .legal-document-body {
+  min-width: 0;
+  padding: 68px clamp(34px, 6vw, 82px) 112px;
+  color: var(--tc-ink-2);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.legal-root .legal-document-body > :first-child {
+  margin-top: 0;
+}
+
+.legal-root .legal-document-body h2 {
+  margin-top: 62px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--tc-hair);
+  color: var(--tc-ink);
+  font-size: 27px;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.legal-root .legal-document-body h3 {
+  margin-top: 38px;
+  color: var(--tc-ink);
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.legal-root .legal-document-body h4 {
+  margin-top: 28px;
+  color: var(--tc-ink);
+}
+
+.legal-root .legal-document-body p {
+  max-width: 76ch;
+  margin-top: 24px;
+}
+
+.legal-root .legal-document-body ul,
+.legal-root .legal-document-body ol {
+  max-width: 76ch;
+  margin: 24px 0 24px 24px;
+}
+
+.legal-root .legal-document-body li {
+  margin-top: 8px;
+}
+
+.legal-root .legal-document-body a {
+  color: var(--tc-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--color-emphasis);
+  text-underline-offset: 4px;
+}
+
+.legal-root .legal-document-body blockquote {
+  margin-top: 24px;
+  padding-left: 24px;
+  border-left: 2px solid var(--color-emphasis);
+  color: var(--tc-ink-2);
+  font-style: italic;
+}
+
+.legal-root .legal-document-body hr {
+  margin-block: 32px;
+  border: 0;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.legal-root .legal-table-wrap {
+  width: 100%;
+  margin-block: 24px;
+  overflow-x: auto;
+}
+
+.legal-root .legal-document-body table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.legal-root .legal-document-body th,
+.legal-root .legal-document-body td {
+  padding: 8px 12px;
+  border: 1px solid var(--tc-hair-strong);
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal-root .legal-document-body th {
+  background: var(--tc-hair-2);
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .legal-root .legal-document-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .legal-root .legal-document-aside {
+    position: relative;
+    top: auto;
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--tc-hair);
+  }
+
+  .legal-root .legal-document-aside h1 {
+    max-width: 14ch;
+  }
+}
+
+@media (max-width: 620px) {
+  .legal-root .legal-index-hero {
+    display: block;
+    min-height: 430px;
+    padding-inline: 20px;
+  }
+
+  .legal-root .legal-index-hero h1 {
+    font-size: clamp(3rem, 15vw, 4.3rem);
+  }
+
+  .legal-root .legal-index-hero > span {
+    display: block;
+    margin-top: 42px;
+  }
+
+  .legal-root .legal-index-list {
+    padding-inline: 20px;
+  }
+
+  .legal-root .legal-ledger-row {
+    grid-template-columns: 34px minmax(0, 1fr) 18px;
+    gap: 12px;
+  }
+
+  .legal-root .legal-ledger-row h2 {
+    font-size: 17px;
+  }
+
+  .legal-root .legal-document-aside,
+  .legal-root .legal-document-body {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .legal-root .legal-document-aside h1 {
+    font-size: clamp(2.65rem, 13vw, 3.7rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legal-root .legal-ledger-row,
+  .legal-root .legal-back-link {
+    transition: none;
+  }
+}

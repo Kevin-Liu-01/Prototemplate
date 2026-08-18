@@ -1,8 +1,7 @@
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 
 import LocalesCatalog from './LocalesCatalog';
 
@@ -28,14 +27,13 @@ export const metadata = {
 export default function SingularityDossierLocalesPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root locales-root' id='top'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root locales-root' id='top'>
+        <V0Nav />
         <div className='tc-rail'>
           <LocalesCatalog />
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

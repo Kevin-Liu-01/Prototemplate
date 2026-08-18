@@ -6,6 +6,8 @@ import { createDitherLoop, globe, type DitherLoopHandle } from '@/lib/dither';
 import { createGlyphField, type GlyphFieldHandle } from '@/lib/glyph-field';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import SignInPalette from './SignInPalette';
+
 /**
  * The sign-in aside: a massive halftone globe (the dither-field plate)
  * standing over the glyph field, the switching word cycling beneath it
@@ -15,8 +17,11 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * aside.
  */
 export default function SignInAside() {
+  const asideRef = useRef<HTMLElement>(null);
   const rainRef = useRef<HTMLCanvasElement>(null);
   const globeRef = useRef<HTMLCanvasElement>(null);
+  const fieldRef = useRef<GlyphFieldHandle | null>(null);
+  const loopRef = useRef<DitherLoopHandle | null>(null);
 
   useMountEffect(() => {
     const rainCanvas = rainRef.current;
@@ -36,11 +41,9 @@ export default function SignInAside() {
       displayFamily: bodyFamily || undefined,
       monoFamily: monoFamily || undefined,
       copy: 'none',
-      wordFill: 'dithered',
-      /* the caption band under the centered globe (the plate is
-         clamped to 64svh in signin.css so the two never collide) */
-      standalone: { baseline: 0.84, fontScale: 0.13, fontCap: 96 },
+      formWords: false,
     });
+    fieldRef.current = field;
 
     /* The globe: lambert-shaded sphere with noise landmass, no
        graticule — the reference plate at chunky cells, slow spin. */
@@ -70,6 +73,7 @@ export default function SignInAside() {
         applyStyles: false,
       },
     );
+    loopRef.current = loop;
 
     const themeMo = new MutationObserver(() => {
       loop.setOptions({ ink: resolveInk() });
@@ -83,16 +87,33 @@ export default function SignInAside() {
       themeMo.disconnect();
       loop.destroy();
       field?.destroy();
+      loopRef.current = null;
+      fieldRef.current = null;
     };
   });
 
+  const applyPalette = (darkInk: string, lightInk: string) => {
+    const aside = asideRef.current;
+    const rainCanvas = rainRef.current;
+    const globeCanvas = globeRef.current;
+    if (!aside || !rainCanvas || !globeCanvas) return;
+
+    aside.style.setProperty('--sgs-palette-dark', darkInk);
+    aside.style.setProperty('--sgs-palette-light', lightInk);
+    const ink = getComputedStyle(globeCanvas).getPropertyValue('--tc-ink').trim();
+    if (!ink) return;
+    fieldRef.current?.setInk(ink);
+    loopRef.current?.setOptions({ ink });
+  };
+
   return (
-    <aside className='sgs-aside' aria-label='General Translation'>
+    <aside className='sgs-aside' aria-label='General Translation' ref={asideRef}>
       {/* the globe underneath, the glyph machine over it: the rain reads
           the same either way (same ink), but the switching word and its
           caliper stay legible instead of sinking into the halftone */}
       <canvas ref={globeRef} className='sgs-globe' aria-hidden='true' />
       <canvas ref={rainRef} className='sgs-rain' aria-hidden='true' />
+      <SignInPalette onPaletteChange={applyPalette} />
     </aside>
   );
 }

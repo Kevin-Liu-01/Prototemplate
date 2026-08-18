@@ -1,8 +1,7 @@
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 
 import LocadexBand from '../../singularity/product-sections/LocadexBand';
 import LocadexHero from '../../singularity/product-sections/LocadexHero';
@@ -24,24 +23,23 @@ export const metadata = {
  * Singularity · Dossier — the Locadex product page.
  * One agent run filed as its exhibits — transcript, scan, inference,
  * diff, pull request — then the itemised bill on the dark band.
- * A thin wrapper: shared product sections between the shared TopNav and
+ * A thin wrapper: shared product sections between the deployed nav and
  * footer, exactly the way this final's enterprise page composes.
  */
 export default function DossierLocadexPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root'>
+        <V0Nav />
         <div className='tc-rail'>
           <LocadexHero />
           <LocadexRun />
         </div>
         <LocadexBand />
         <div className='tc-rail'>
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

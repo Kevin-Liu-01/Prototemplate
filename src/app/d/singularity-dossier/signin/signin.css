@@ -162,6 +162,12 @@
   transform: translateY(1px);
 }
 
+.singularity-root .sgs-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
 .singularity-root .sgs-btn.is-solid {
   background: var(--tc-ink);
   color: var(--tc-paper);
@@ -200,6 +206,55 @@
   width: 16px;
   height: 16px;
   flex: none;
+}
+
+.singularity-root .sgs-captcha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+  border: 1px solid var(--tc-ink-2);
+  background: color-mix(in srgb, var(--tc-ink) 18%, var(--tc-paper));
+  padding: 9px 10px;
+  color: var(--tc-ink);
+  font-size: 14px;
+}
+
+.singularity-root .sgs-captcha-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px dotted #22c55e;
+  border-radius: 50%;
+}
+
+.singularity-root .sgs-captcha-brand {
+  display: grid;
+  justify-items: end;
+  margin-left: auto;
+  line-height: 1;
+}
+
+.singularity-root .sgs-captcha-brand b {
+  color: #f48120;
+  font-size: 28px;
+  line-height: 0.5;
+}
+
+.singularity-root .sgs-captcha-brand strong {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}
+
+.singularity-root .sgs-captcha-brand small {
+  margin-top: 3px;
+  font-size: 8px;
+}
+
+@media (min-width: 768px) {
+  .singularity-root .sgs-captcha {
+    display: none;
+  }
 }
 
 .singularity-root .sgs-or {
@@ -281,6 +336,8 @@
 /* ---- the aside: globe over rain, both in the house blue ---- */
 
 .singularity-root .sgs-aside {
+  --sgs-palette-dark: #2563eb;
+  --sgs-palette-light: #86a8ff;
   position: relative;
   display: none;
   min-width: 0;
@@ -297,12 +354,12 @@
 
 .singularity-root .sgs-rain,
 .singularity-root .sgs-globe {
-  --tc-ink: #2563eb;
+  --tc-ink: var(--sgs-palette-dark);
 }
 
 [data-theme='dark'] .singularity-root .sgs-rain,
 [data-theme='dark'] .singularity-root .sgs-globe {
-  --tc-ink: #86a8ff;
+  --tc-ink: var(--sgs-palette-light);
 }
 
 .singularity-root .sgs-rain {
@@ -312,18 +369,166 @@
   height: 100%;
 }
 
-/* centered as an ASSEMBLY — sphere at 42% so sphere + word + caliper
-   balance as one group; the svh clamp keeps the sphere's floor clear
-   of the word band on any panel width */
+/* The deployed plate centers the globe in the full glyph field. */
 .singularity-root .sgs-globe {
   position: absolute;
-  top: 42%;
+  top: 50%;
   left: 50%;
   display: block;
   width: min(88%, 64svh);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   image-rendering: pixelated;
+}
+
+/* ---- palette instrument: hidden at rest, matching production ---- */
+
+.singularity-root .sgs-palette-shell {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+}
+
+.singularity-root .sgs-palette-toggle {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--tc-ink) 18%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--tc-paper) 88%, transparent);
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.singularity-root .sgs-palette-toggle:hover,
+.singularity-root .sgs-palette-toggle[aria-expanded='true'] {
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+}
+
+.singularity-root .sgs-palette-toggle svg {
+  width: 17px;
+  height: 17px;
+}
+
+.singularity-root .sgs-palette-toggle:focus-visible,
+.singularity-root .sgs-palette-swatch:focus-visible,
+.singularity-root .sgs-palette-custom input:focus-visible {
+  outline: 1px solid var(--tc-ink);
+  outline-offset: 2px;
+}
+
+.singularity-root .sgs-palette-panel {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  width: 318px;
+  padding: 14px 12px 13px;
+  border: 1px solid color-mix(in srgb, var(--tc-ink) 20%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--tc-paper) 96%, transparent);
+  color: var(--tc-ink);
+  box-shadow: 0 16px 46px color-mix(in srgb, black 24%, transparent);
+  font-family: var(--tc-mono);
+  backdrop-filter: blur(14px);
+}
+
+.singularity-root .sgs-palette-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px 11px;
+  color: var(--tc-ink-2);
+  font-size: 14px;
+  letter-spacing: 0.03em;
+}
+
+.singularity-root .sgs-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px 10px;
+  padding-bottom: 13px;
+}
+
+.singularity-root .sgs-palette-swatch {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--palette-light) 0 50%, var(--palette-dark) 50% 100%);
+  cursor: pointer;
+}
+
+.singularity-root .sgs-palette-swatch:hover {
+  transform: scale(1.08);
+}
+
+.singularity-root .sgs-palette-swatch[data-palette='01'] { --palette-dark: #294a83; --palette-light: #86a9dc; }
+.singularity-root .sgs-palette-swatch[data-palette='02'] { --palette-dark: #315ca9; --palette-light: #78a3f2; }
+.singularity-root .sgs-palette-swatch[data-palette='03'] { --palette-dark: #1c3ea1; --palette-light: #4e78dc; }
+.singularity-root .sgs-palette-swatch[data-palette='04'] { --palette-dark: #3846a8; --palette-light: #737de0; }
+.singularity-root .sgs-palette-swatch[data-palette='05'] { --palette-dark: #4d4b9e; --palette-light: #8c89d5; }
+.singularity-root .sgs-palette-swatch[data-palette='06'] { --palette-dark: #43448a; --palette-light: #8585c8; }
+.singularity-root .sgs-palette-swatch[data-palette='07'] { --palette-dark: #235da7; --palette-light: #6197d9; }
+.singularity-root .sgs-palette-swatch[data-palette='08'] { --palette-dark: #176f9c; --palette-light: #58abd0; }
+.singularity-root .sgs-palette-swatch[data-palette='09'] { --palette-dark: #277a9d; --palette-light: #69bad9; }
+.singularity-root .sgs-palette-swatch[data-palette='10'] { --palette-dark: #4c6681; --palette-light: #8da6bd; }
+.singularity-root .sgs-palette-swatch[data-palette='11'] { --palette-dark: #3e546f; --palette-light: #7d91aa; }
+.singularity-root .sgs-palette-swatch[data-palette='12'] { --palette-dark: #31526b; --palette-light: #7995aa; }
+.singularity-root .sgs-palette-swatch[data-palette='13'] { --palette-dark: #374d68; --palette-light: #778aa1; }
+.singularity-root .sgs-palette-swatch[data-palette='14'] { --palette-dark: #465d82; --palette-light: #8da3c3; }
+.singularity-root .sgs-palette-swatch[data-palette='15'] { --palette-dark: #4c5595; --palette-light: #969bca; }
+.singularity-root .sgs-palette-swatch[data-palette='16'] { --palette-dark: #2d4ba9; --palette-light: #5979e4; }
+.singularity-root .sgs-palette-swatch[data-palette='17'] { --palette-dark: #49708f; --palette-light: #8eb5ce; }
+.singularity-root .sgs-palette-swatch[data-palette='18'] { --palette-dark: #414b7d; --palette-light: #8189b2; }
+.singularity-root .sgs-palette-swatch[data-palette='19'] { --palette-dark: #344868; --palette-light: #7187a4; }
+.singularity-root .sgs-palette-swatch[data-palette='20'] { --palette-dark: #394f6a; --palette-light: #738da6; }
+.singularity-root .sgs-palette-swatch[data-palette='21'] { --palette-dark: #485b7a; --palette-light: #8495b1; }
+.singularity-root .sgs-palette-swatch[data-palette='22'] { --palette-dark: #4b587c; --palette-light: #8a94b4; }
+.singularity-root .sgs-palette-swatch[data-palette='23'] { --palette-dark: #4b477d; --palette-light: #8c87af; }
+.singularity-root .sgs-palette-swatch[data-palette='24'] { --palette-dark: #536188; --palette-light: #939dbb; }
+.singularity-root .sgs-palette-swatch[data-palette='25'] { --palette-dark: #47708a; --palette-light: #88b1c7; }
+.singularity-root .sgs-palette-swatch[data-palette='26'] { --palette-dark: #48537f; --palette-light: #8990b6; }
+.singularity-root .sgs-palette-swatch[data-palette='27'] { --palette-dark: #34475f; --palette-light: #708297; }
+.singularity-root .sgs-palette-swatch[data-palette='28'] { --palette-dark: #344b66; --palette-light: #728aa0; }
+.singularity-root .sgs-palette-swatch[data-palette='29'] { --palette-dark: #4b5a80; --palette-light: #8c97b5; }
+.singularity-root .sgs-palette-swatch[data-palette='30'] { --palette-dark: #4c5783; --palette-light: #8b94b8; }
+.singularity-root .sgs-palette-swatch[data-palette='31'] { --palette-dark: #355e79; --palette-light: #78a2b8; }
+.singularity-root .sgs-palette-swatch[data-palette='32'] { --palette-dark: #4b567c; --palette-light: #8e97b5; }
+
+.singularity-root .sgs-palette-custom {
+  display: grid;
+  grid-template-columns: auto 18px minmax(0, 1fr) 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  border: 1px solid color-mix(in srgb, var(--tc-ink) 42%, transparent);
+  border-radius: 8px;
+  padding: 5px 9px;
+}
+
+.singularity-root .sgs-palette-hex-label {
+  color: var(--tc-ink-2);
+  font-size: 14px;
+}
+
+.singularity-root .sgs-palette-chip {
+  width: 18px;
+  height: 12px;
+  border: 1px solid color-mix(in srgb, white 35%, transparent);
+}
+
+.singularity-root .sgs-palette-custom input {
+  min-width: 0;
+  height: 31px;
+  border: 1px solid color-mix(in srgb, var(--tc-ink) 22%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--tc-paper) 94%, black);
+  padding: 0 7px;
+  color: var(--tc-ink);
+  font: inherit;
 }
 
 /* ---- the slim footer ---- */

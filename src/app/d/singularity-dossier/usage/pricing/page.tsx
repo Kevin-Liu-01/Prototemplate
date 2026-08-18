@@ -1,11 +1,10 @@
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../../singularity/sections/SiteFooter';
-import TopNav from '../../../singularity/sections/TopNav';
+import V0Footer from '../../../_v0/V0Footer';
+import V0Nav from '../../../_v0/V0Nav';
 
 import UsagePricing from './UsagePricing';
 
@@ -31,8 +30,8 @@ export const metadata = {
 export default function DossierUsagePricingPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root sgu-root'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root sgu-root'>
+        <V0Nav />
         <main className='tc-rail'>
           <section className='tc-sec'>
             <div className='sgu-back'>
@@ -59,10 +58,9 @@ export default function DossierUsagePricingPage() {
               <UsagePricing />
             </div>
           </section>
-          <SiteFooter />
+          <V0Footer />
         </main>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

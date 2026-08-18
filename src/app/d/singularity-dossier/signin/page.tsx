@@ -1,5 +1,3 @@
-import DirectionDock from '@/components/shared/DirectionDock';
-
 import SignInAside from './SignInAside';
 
 import '../../singularity/styles.css';
@@ -150,7 +148,7 @@ export default function SingularityDossierSignInPage() {
                     placeholder='you@yourcompany.com'
                     aria-label='Email'
                   />
-                  <button type='button' className='sgs-btn is-solid'>
+                  <button type='button' className='sgs-btn is-solid' disabled>
                     Continue
                   </button>
                 </div>
@@ -158,11 +156,11 @@ export default function SingularityDossierSignInPage() {
                 <div className='sgs-or'>or</div>
 
                 <div className='sgs-stack is-providers'>
-                  <button type='button' className='sgs-btn is-line sgs-provider'>
+                  <button type='button' className='sgs-btn is-line sgs-provider' disabled>
                     <GitHubMark />
                     Continue with GitHub
                   </button>
-                  <button type='button' className='sgs-btn is-line sgs-provider'>
+                  <button type='button' className='sgs-btn is-line sgs-provider' disabled>
                     <GoogleMark />
                     Continue with Google
                   </button>
@@ -172,20 +170,26 @@ export default function SingularityDossierSignInPage() {
                   </button>
                 </div>
 
+                <div aria-label='Verifying you are human' className='sgs-captcha'>
+                  <span aria-hidden className='sgs-captcha-spinner' />
+                  <span>Verifying...</span>
+                  <span className='sgs-captcha-brand'>
+                    <b aria-hidden>☁</b>
+                    <strong>CLOUDFLARE</strong>
+                    <small>Privacy · Help</small>
+                  </span>
+                </div>
+
                 <p className='sgs-terms'>
                   By signing in, you agree to our{' '}
                   <a
-                    href='https://generaltranslation.com/legal/terms'
-                    target='_blank'
-                    rel='noopener noreferrer'
+                    href='/d/singularity-dossier/legal/terms'
                   >
                     Terms of Service
                   </a>{' '}
                   and{' '}
                   <a
-                    href='https://generaltranslation.com/legal/privacy-policy'
-                    target='_blank'
-                    rel='noopener noreferrer'
+                    href='/d/singularity-dossier/legal/privacy-policy'
                   >
                     Privacy Policy
                   </a>
@@ -217,18 +221,10 @@ export default function SingularityDossierSignInPage() {
         <footer className='sgs-footer'>
           <div className='sgs-footer-links'>
             <a href='/d/singularity-dossier/contact'>Contact</a>
-            <a
-              href='https://generaltranslation.com/legal/terms'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
+            <a href='/d/singularity-dossier/legal/terms'>
               Terms of Service
             </a>
-            <a
-              href='https://generaltranslation.com/legal/privacy-policy'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
+            <a href='/d/singularity-dossier/legal/privacy-policy'>
               Privacy
             </a>
           </div>
@@ -237,7 +233,7 @@ export default function SingularityDossierSignInPage() {
                 no locale machinery */}
             <button type='button' className='sgs-lang'>
               <LanguagesMark />
-              English
+              English (US)
               <ChevronMark />
             </button>
             <p>
@@ -247,7 +243,6 @@ export default function SingularityDossierSignInPage() {
           </div>
         </footer>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </>
   );
 }

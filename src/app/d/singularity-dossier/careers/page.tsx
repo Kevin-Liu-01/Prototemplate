@@ -2,11 +2,10 @@ import { ArrowUpRight } from 'lucide-react';
 
 import Image from 'next/image';
 
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 
 import CareersEmailLink from './CareersEmailLink';
 import CareersHorizon from './CareersHorizon';
@@ -42,8 +41,8 @@ export default async function DossierCareersPage() {
 
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root careers-root'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root careers-root'>
+        <V0Nav />
         <div className='tc-rail'>
           <section className='tc-sec careers-hero'>
             <CareersHorizon />
@@ -220,10 +219,9 @@ export default async function DossierCareersPage() {
             />
           </section>
 
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

@@ -1,8 +1,7 @@
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 
 import ContactForm from './ContactForm';
 
@@ -29,14 +28,13 @@ export const metadata = {
 export default function SingularityDossierContactPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root sgdc-root' id='top'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root sgdc-root' id='top'>
+        <V0Nav />
         <main className='tc-rail'>
           <ContactForm />
-          <SiteFooter />
+          <V0Footer />
         </main>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

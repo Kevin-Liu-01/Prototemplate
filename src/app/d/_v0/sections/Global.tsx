@@ -267,7 +267,7 @@ export default function V0Global() {
     <section className='tc-sec v0-glob' id='infrastructure' ref={root}>
       <div className='tc-head'>
         <Globe className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>Ship your product to the world</h2>
+        <h2 data-reveal>Ship your product worldwide.</h2>
       </div>
 
       {/* ---- row 1: the globe on its night card, the ruled rail of claims ---- */}
@@ -358,10 +358,9 @@ export default function V0Global() {
             </article>
 
             <article className='v0-glob-item'>
-              <h3>Served from the edge</h3>
+              <h3>Served from local files or the edge</h3>
               <p>
-                Low-latency CDN, versioned per locale. Fix a string or roll it back without
-                touching your code.
+                Store translations alongside your code or in a low-latency CDN, versioned by locale
               </p>
             </article>
 

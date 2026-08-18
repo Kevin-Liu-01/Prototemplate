@@ -3,11 +3,10 @@ import { ArrowRight, CircleCheck, Rocket } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 
 import CursorTestimonial from './CursorTestimonial';
 import EdgeGlobe from './EdgeGlobe';
@@ -38,8 +37,8 @@ export const metadata = {
 export default function DossierYcPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root yc-root'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root yc-root'>
+        <V0Nav />
         <div className='tc-rail'>
           <section className='tc-sec yc-hero'>
             <YcHorizon />
@@ -163,10 +162,9 @@ export default function DossierYcPage() {
 
           <YcContactForm embedded />
 
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

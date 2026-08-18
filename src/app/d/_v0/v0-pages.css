@@ -1316,3 +1316,6 @@
     padding-bottom: 16px;
   }
 }
+.toolchain-root.sgdh-root {
+  --tc-rail: 1104px;
+}

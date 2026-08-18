@@ -350,7 +350,7 @@ const DIRECTIVES: readonly Directive[] = [
   {
     label: 'Formality',
     icon: Speech,
-    text: 'Use the formal “Sie.”',
+    text: 'Use the formal “Sie”',
     pair: { before: 'Du kannst…', after: 'Sie können…' },
   },
   {
@@ -378,9 +378,9 @@ export default function V0Context() {
             watermark seat, the Layers mark where Code2 stands there */}
         <div className='tc-head'>
           <BookOpen className='tc-head-icon' strokeWidth={1} aria-hidden />
-          <h2 data-reveal>One source of context, shared globally</h2>
+          <h2 data-reveal>One source of context, shared globally.</h2>
           <p data-reveal>
-            <GtLogoText /> understands your codebase and product.
+            <GtLogoText /> understands your codebase and product
           </p>
         </div>
 
@@ -491,7 +491,7 @@ export default function V0Context() {
           <div className='tcb-cell v0-ctx-review' data-cell data-reveal>
             <ReviewWorkspace
               chrome='product'
-              heading='Review and approve with your team, over web, API, or CLI.'
+              heading='Review and approve with your team — over web, API, or CLI'
               sub={null}
               notes={null}
               surfaces

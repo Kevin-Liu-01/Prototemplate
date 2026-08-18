@@ -1,8 +1,7 @@
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 import BlogHeroBoard from '../blog-landing/BlogHeroBoard';
 import ChangelogBoard from '../blog-landing/ChangelogBoard';
 import EssaysBoard from '../blog-landing/EssaysBoard';
@@ -30,8 +29,8 @@ export const metadata = {
 export default function SingularityDossierBlogPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root sgd-blog' id='top'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root sgd-blog' id='top'>
+        <V0Nav />
         <div className='tc-rail'>
           <section className='tc-sec blog-hero'>
             <BlogHeroBoard>
@@ -42,10 +41,9 @@ export default function SingularityDossierBlogPage() {
           </section>
           <ChangelogBoard />
           <EssaysBoard />
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

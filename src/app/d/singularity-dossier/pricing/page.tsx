@@ -1,8 +1,7 @@
-import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SiteFooter from '../../singularity/sections/SiteFooter';
-import TopNav from '../../singularity/sections/TopNav';
+import V0Footer from '../../_v0/V0Footer';
+import V0Nav from '../../_v0/V0Nav';
 
 import CloseBand from './CloseBand';
 import CompareTable from './CompareTable';
@@ -34,8 +33,8 @@ export const metadata = {
 export default function DossierPricingPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root sgd-root pricing-root'>
-        <TopNav />
+      <div className='singularity-root toolchain-root sgd-root pricing-root'>
+        <V0Nav />
         <div className='tc-rail'>
           <PricingHero />
           <PlanCards />
@@ -44,10 +43,9 @@ export default function DossierPricingPage() {
         </div>
         <CloseBand />
         <div className='tc-rail'>
-          <SiteFooter />
+          <V0Footer />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }
