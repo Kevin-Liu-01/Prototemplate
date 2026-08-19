@@ -4,7 +4,9 @@ The living brand guidelines for General Translation, and the design lab
 that produced them: sixteen art directions and three full sites built as
 live pages (never mockups), plus the tooling that judges them. **The
 Dossier (`/d/singularity-dossier`) is the completed direction** — the
-canonical statement of the identity in application. The index (`/`) is
+canonical statement of the identity in application. The other two sites,
+Signal and Orbit, are showcases of the previous generation: each keeps
+its own hero and carries the sections the Dossier retired. The index (`/`) is
 the working file: the **anatomy wall** (the flagship cut into section
 tiles, light and dark, desktop and mobile) and the **capabilities
 ledger** (what the system can do, each entry pointing at where it runs

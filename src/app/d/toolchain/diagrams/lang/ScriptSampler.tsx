@@ -41,7 +41,7 @@ const SAMPLES: readonly Sample[] = [
   { tag: 'hi', script: 'Devanagari', text: 'भाषा', lang: 'hi', depth: 0.3, x: 33, y: 0 },
   { tag: 'ru', script: 'Cyrillic', text: 'язык', lang: 'ru', depth: 0.36, x: 4, y: 4 },
   { tag: 'ar', script: 'Arabic', text: 'لغة', lang: 'ar', rtl: true, depth: 0.24, x: 82, y: 84 },
-  { tag: 'el', script: 'Greek', text: 'γλωσσα', lang: 'el', depth: 0.5, x: 36, y: 112 },
+  { tag: 'el', script: 'Greek', text: 'γλώσσα', lang: 'el', depth: 0.5, x: 36, y: 112 },
   { tag: 'ko', script: 'Hangul', text: '언어', lang: 'ko', depth: 0.62, x: 73, y: 146 },
   { tag: 'th', script: 'Thai', text: 'ภาษา', lang: 'th', depth: 0.54, x: 4, y: 146 },
 ];

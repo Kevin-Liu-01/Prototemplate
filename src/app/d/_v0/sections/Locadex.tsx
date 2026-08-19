@@ -46,7 +46,6 @@ import { BentoCell } from '@/components/shell/Bento';
    bento sheet; the v0 routes don't mount that section, so the sheet rides
    in here the way the pages import styles.css directly. */
 import '@/app/d/toolchain/sections/bento-motion.css';
-import GtLogoText from '../GtLogoText';
 import './locadex.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -975,7 +974,7 @@ export default function V0Locadex() {
               cut hides the authored break (locadex.css); a br alone leaves
               'localize' and 'your' fused */}
           The easiest way to localize <br />
-          your full product suite.
+          your full product suite
         </h2>
       </div>
 
@@ -986,8 +985,8 @@ export default function V0Locadex() {
         <BentoCell
           cell='is-tall tcm-ruled'
           framed={false}
-          title='Connect Locadex'
-          sub={<>Locadex is a cloud AI agent which connects <GtLogoText /> to your code, content, and context sources</>}
+          title='Run Locadex'
+          sub='Connect your GitHub repository. The Locadex agent internationalizes your code and keeps your app localized on every update. Just merge a PR.'
         >
           <WorksLedger caption='Works with every stack' works={STACK_WORKS} />
         </BentoCell>
@@ -1016,7 +1015,7 @@ export default function V0Locadex() {
           cell='is-tall tcm-ruled'
           framed={false}
           title='Any integration'
-          sub='Just a few clicks to integrate with GitHub, Google Drive, Figma, your CMS, and your workspace tools'
+          sub='Just a few clicks to integrate with GitHub, Google Drive, your CMS, or your docs.'
         >
           <WorksLedger caption='Works with every source' works={SOURCE_WORKS} />
         </BentoCell>

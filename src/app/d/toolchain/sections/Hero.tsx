@@ -199,7 +199,7 @@ const EVERY: readonly EveryWord[] = [
   { text: 'язык', lang: 'ru' },
   { text: '语言', lang: 'zh' },
   { text: '언어', lang: 'ko' },
-  { text: 'γλωσσα', lang: 'el' },
+  { text: 'γλώσσα', lang: 'el' },
 ];
 
 const EVERY_FALLBACK: EveryWord = EVERY[0] ?? { text: 'language', lang: 'en' };

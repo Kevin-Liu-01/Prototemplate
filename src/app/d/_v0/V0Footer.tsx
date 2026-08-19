@@ -1,15 +1,10 @@
-'use client';
-
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import type { ComponentType } from 'react';
 
 import { SiDiscord, SiGithub, SiNextdotjs, SiReact, SiX } from '@icons-pack/react-simple-icons';
-import { ChevronDown, Languages } from 'lucide-react';
 
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
-import CookieConsent from './CookieConsent';
 import V0FooterMark from './V0FooterMark';
 
 import './v0-footer.css';
@@ -20,7 +15,6 @@ type FooterLink = {
   label: string;
   href: string;
   external?: boolean;
-  button?: boolean;
   /** Brand mark, only where the cell names a tool or venue. Functional, never ornament. */
   mark?: ComponentType<MarkProps>;
 };
@@ -60,33 +54,30 @@ function LinkedInMark({ className, color, ...rest }: MarkProps) {
 }
 
 /* The production footer's full roster, regrouped under the ledger's heads. */
-function footerColumns(base: string): readonly { title: string; links: readonly FooterLink[] }[] {
-  const legalBase = base === '/d/singularity-dossier' ? base : '/d/singularity-dossier';
-
-  return [
+const COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [
   {
     title: 'Guides',
     links: [
-      { label: 'Locadex Agent', href: `${DOCS}/locadex`, external: true, mark: LocadexMark },
-      { label: 'Next.js', href: `${DOCS}/next`, external: true, mark: SiNextdotjs },
-      { label: 'React', href: `${DOCS}/react`, external: true, mark: SiReact },
-      { label: 'React Native', href: `${DOCS}/react-native`, external: true, mark: SiReact },
+      { label: 'Locadex Agent', href: DOCS, external: true, mark: LocadexMark },
+      { label: 'Next.js', href: DOCS, external: true, mark: SiNextdotjs },
+      { label: 'React', href: DOCS, external: true, mark: SiReact },
+      { label: 'React Native', href: DOCS, external: true, mark: SiReact },
     ],
   },
   {
     title: 'Resources',
     links: [
       { label: 'Documentation', href: DOCS, external: true },
-      { label: 'Blog', href: `${base}/blog` },
-      { label: 'Pricing', href: `${base}/pricing` },
-      { label: 'Supported Locales', href: `${base}/supported-locales` },
+      { label: 'Blog', href: 'https://generaltranslation.com/blog', external: true },
+      { label: 'Pricing', href: 'https://generaltranslation.com/pricing', external: true },
+      { label: 'Supported Locales', href: `${DOCS}/platform/locales`, external: true },
     ],
   },
   {
     title: 'Social',
     links: [
       { label: 'GitHub', href: 'https://github.com/generaltranslation', external: true, mark: SiGithub },
-      { label: 'X', href: 'https://x.com/generaltxn', external: true, mark: SiX },
+      { label: 'X', href: 'https://x.com/generaltranslation', external: true, mark: SiX },
       {
         label: 'LinkedIn',
         href: 'https://www.linkedin.com/company/general-translation',
@@ -99,21 +90,20 @@ function footerColumns(base: string): readonly { title: string; links: readonly 
   {
     title: 'Company',
     links: [
-      { label: 'Careers', href: `${base}/careers` },
-      { label: 'Contact', href: `${base}/contact` },
+      { label: 'Careers', href: 'https://generaltranslation.com/careers', external: true },
+      { label: 'Contact', href: 'https://generaltranslation.com/contact', external: true },
     ],
   },
   {
     title: 'Legal',
     links: [
-      { label: 'Terms of Service', href: `${legalBase}/legal/terms` },
-      { label: 'Privacy', href: `${legalBase}/legal/privacy-policy` },
-      { label: 'Acceptable Use Policy', href: `${legalBase}/legal/acceptable-use` },
-      { label: 'Manage Cookies', href: '#manage-cookies', button: true },
+      { label: 'Terms of Service', href: 'https://generaltranslation.com/terms', external: true },
+      { label: 'Privacy', href: 'https://generaltranslation.com/privacy', external: true },
+      { label: 'Acceptable Use Policy', href: 'https://generaltranslation.com/aup', external: true },
+      { label: 'Manage Cookies', href: '#' },
     ],
   },
-  ];
-}
+];
 
 /* The compliance program, as the production shields (the site's own
    /shields SVGs, vendored) — side by side, all three doors into the same
@@ -133,10 +123,6 @@ const BADGES: readonly { alt: string; src: string }[] = [
  * hairline — then live status, the copyright line, and the theme switch.
  */
 export default function V0Footer() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '';
-  const columns = footerColumns(base);
-
   return (
     <footer className='tc-sec v0-foot'>
       <div className='v0-foot-grid'>
@@ -145,7 +131,7 @@ export default function V0Footer() {
               chrome shader (V0FooterMark); the static gradient stays as the
               no-WebGL and reduced-motion ground. */}
           <V0FooterMark />
-          <p>Full-stack localization for the world&rsquo;s best companies</p>
+          <p>End-to-end localization for the world&rsquo;s best companies</p>
 
           <div className='v0-foot-badges'>
             {BADGES.map(({ alt, src }) => (
@@ -162,7 +148,7 @@ export default function V0Footer() {
           </div>
         </div>
 
-        {columns.map((column) => (
+        {COLUMNS.map((column) => (
           <nav aria-label={column.title} className='v0-foot-cell v0-foot-col' key={column.title}>
             {/* h3, not h4: the sections above head at h2, so h4 skipped a
                 level (Lighthouse heading-order); the ledger's own rule in
@@ -173,23 +159,14 @@ export default function V0Footer() {
                 const Mark = link.mark;
                 return (
                   <li key={link.label}>
-                    {link.button ? (
-                      <button
-                        type='button'
-                        onClick={() => window.dispatchEvent(new Event('gt-open-cookie-consent'))}
-                      >
-                        {link.label}
-                      </button>
-                    ) : (
-                      <a
-                        href={link.href}
-                        rel={link.external ? 'noreferrer' : undefined}
-                        target={link.external ? '_blank' : undefined}
-                      >
-                        {Mark ? <Mark aria-hidden className='v0-foot-mark' color='currentColor' /> : null}
-                        {link.label}
-                      </a>
-                    )}
+                    <a
+                      href={link.href}
+                      rel={link.external ? 'noreferrer' : undefined}
+                      target={link.external ? '_blank' : undefined}
+                    >
+                      {Mark ? <Mark aria-hidden className='v0-foot-mark' color='currentColor' /> : null}
+                      {link.label}
+                    </a>
                   </li>
                 );
               })}
@@ -211,14 +188,8 @@ export default function V0Footer() {
         <span className='v0-foot-copy max-[640px]:ml-0 max-[640px]:w-full max-[640px]:text-left'>
           © 2026 General Translation, Inc. All rights reserved.
         </span>
-        <button className='v0-foot-lang' type='button'>
-          <Languages aria-hidden size={15} />
-          English (US)
-          <ChevronDown aria-hidden size={13} />
-        </button>
         <ThemeToggle className='v0-foot-theme max-[640px]:ml-auto' />
       </div>
-      <CookieConsent />
     </footer>
   );
 }

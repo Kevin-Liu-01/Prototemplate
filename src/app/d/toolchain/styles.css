@@ -1848,8 +1848,8 @@
 
 /* ============================================================
    SHARED COMPONENT SKIN — light, quiet, hairline
-   Only the review workspace is borrowed now; the story is authored
-   in `sections/story/` against this page's own tokens.
+   Only the review workspace is borrowed now; the story section
+   (StoryCinema) carries its own sheet against this page's tokens.
    ============================================================ */
 
 .toolchain-root .tc-review {

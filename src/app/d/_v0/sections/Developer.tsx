@@ -470,7 +470,7 @@ type V0DeveloperProps = {
   heading?: string;
 };
 
-export default function V0Developer({ heading = 'Built for every developer.' }: V0DeveloperProps) {
+export default function V0Developer({ heading = 'Built for developers around the globe' }: V0DeveloperProps) {
   const root = useRef<HTMLElement>(null);
 
   return (
@@ -483,7 +483,7 @@ export default function V0Developer({ heading = 'Built for every developer.' }: 
         <h2 data-reveal>{heading}</h2>
         <p data-reveal>
           <GtLogoText /> handles the localization infrastructure, so you can focus on
-          shipping a product the world loves
+          shipping a product the world loves.
         </p>
       </div>
 
@@ -509,12 +509,12 @@ export default function V0Developer({ heading = 'Built for every developer.' }: 
 
         <BentoCell
           cell='is-framed'
-          title='Numbers, currencies, dates, plurals, and more'
+          title='Numbers, currencies, dates, plurality, and more'
         >
           <BranchForks />
         </BentoCell>
 
-        <BentoCell cell='is-framed' title='Search-optimized routing for any locale'>
+        <BentoCell cell='is-framed' title='Routing to SEO-friendly paths for each locale'>
           <div className='v0-dev-routes'>
             {ROUTES.map((route) => {
               const Icon = route.icon;

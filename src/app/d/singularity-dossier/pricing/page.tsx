@@ -1,20 +1,22 @@
+import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../_v0/V0Footer';
-import V0Nav from '../../_v0/V0Nav';
+import SiteFooter from '../../singularity/sections/SiteFooter';
+import TopNav from '../../singularity/sections/TopNav';
 
-import CloseBand from './CloseBand';
-import CompareTable from './CompareTable';
-import GroupLabelHandoff from './GroupLabelHandoff';
-import PlanCards from './PlanCards';
-import PricingHero from './PricingHero';
+import PricingBand from '../../singularity/product-sections/PricingBand';
+import PricingFaq from '../../singularity/product-sections/PricingFaq';
+import PricingHero from '../../singularity/product-sections/PricingHero';
+import PricingLedger from '../../singularity/product-sections/PricingLedger';
+import PricingProof from '../../singularity/product-sections/PricingProof';
+import PricingRates from '../../singularity/product-sections/PricingRates';
 
 /* no Frameworks on this route — the footer's marks need the sheet directly
    (the toolchain enterprise subpage precedent) */
 import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
+import '../../singularity/product-sections/product.css';
 import '../styles.css';
-import './pricing.css';
 
 export const metadata = {
   title: 'Pricing — Dossier — GT Redesign',
@@ -22,30 +24,30 @@ export const metadata = {
 };
 
 /**
- * Singularity · Dossier — the pricing page ported whole from the live
- * redesign: the money-weather hero, the two plans on the full-bleed
- * grid, the framed compare ledger directly under the plans (one
- * hairline between them), and the shared deploy close — the glyph
- * condensation field beside a single ask. The full-stack board left
- * this page for the enterprise mirror, which still imports it (and
- * this sheet) from this directory.
+ * Singularity · Dossier — the pricing page as an
+ * evidence file: a dry-run receipt, the two plans, one ruled comparison
+ * ledger, the published rate card, and a close on the dark band.
+ * A thin wrapper: shared product sections between the shared TopNav and
+ * footer, exactly the way this final's enterprise page composes.
  */
 export default function DossierPricingPage() {
   return (
     <SmoothScroll>
-      <div className='singularity-root toolchain-root sgd-root pricing-root'>
-        <V0Nav />
+      <div className='singularity-root sgd-root'>
+        <TopNav />
         <div className='tc-rail'>
           <PricingHero />
-          <PlanCards />
-          <CompareTable />
-          <GroupLabelHandoff />
+          <PricingLedger />
+          <PricingRates />
+          <PricingProof />
+          <PricingFaq />
         </div>
-        <CloseBand />
+        <PricingBand />
         <div className='tc-rail'>
-          <V0Footer />
+          <SiteFooter />
         </div>
       </div>
+      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

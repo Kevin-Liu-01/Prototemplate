@@ -16,15 +16,13 @@ import {
 import {
   BookOpen,
   Boxes,
-  BrainCircuit,
   Briefcase,
   ChevronDown,
-  Gauge,
+  Globe,
   Languages,
   LayoutDashboard,
   Mail,
   Newspaper,
-  Search,
   SquareTerminal,
   Users,
 } from 'lucide-react';
@@ -56,6 +54,22 @@ type MenuColumn = { title: string; items: readonly MenuItem[] };
 
 const DOCS = 'https://generaltranslation.com/docs';
 
+/* The mock's three Product entries, upgraded to menu rows. Locadex and
+   Context link to the final's product pages; Infrastructure keeps its home
+   anchor (it has no subpage — the section IS the page). */
+function product(base: string): readonly MenuColumn[] {
+  return [
+    {
+      title: 'Product',
+      items: [
+        { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
+        { label: 'Context', desc: 'One source of context', href: `${base}/context`, icon: BookOpen },
+        { label: 'Infrastructure', desc: 'Global delivery network', href: '#infrastructure', icon: Globe },
+      ],
+    },
+  ];
+}
+
 /* The old flat list (Customers / Blog / Careers) folded into the shared
    two-column Resources sheet: Customers keeps its home anchor (every final
    mounts the trusted-by section) and joins the Company column. */
@@ -67,7 +81,7 @@ function resources(base: string): readonly MenuColumn[] {
         { label: 'Customers', desc: 'Trusted by global teams', href: '#customers', icon: Users },
         { label: 'Blog', desc: 'News and updates', href: `${base}/blog`, icon: Newspaper },
         { label: 'Careers', desc: 'Join our growing team', href: `${base}/careers`, icon: Briefcase },
-        { label: 'Supported Locales', desc: '100+ languages supported', href: `${base}/supported-locales`, icon: Languages },
+        { label: 'Supported Locales', desc: '100+ languages supported', href: `${base}/locales`, icon: Languages },
       ],
     },
     {
@@ -108,8 +122,6 @@ function docsMenu(base: string): readonly MenuColumn[] {
       items: [
         { label: 'Platform', desc: 'Dashboard', href: 'https://dash.generaltranslation.com', icon: LayoutDashboard, external: true },
         { label: 'Locadex', desc: 'AI Agent', href: `${base}/locadex`, img: '/brand/no-bg-locadex-logo-light.png', invertsInDark: true },
-        { label: 'Context', desc: 'Translation context', href: `${base}/context`, icon: BrainCircuit },
-        { label: 'Usage Pricing', desc: 'Workflow rates', href: `${base}/pricing/usage`, icon: Gauge },
       ],
     },
   ];
@@ -250,7 +262,6 @@ export default function V0Nav(): ReactNode {
   // /d/singularity-dossier/... -> /d/singularity-dossier
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '';
-  const signInHref = base === '/d/singularity-dossier' ? `${base}/signin` : 'https://dash.generaltranslation.com';
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
@@ -275,50 +286,38 @@ export default function V0Nav(): ReactNode {
     <header className='v0-nav' data-v0-nav>
       <div className='v0-nav-in'>
         <a className='v0-nav-brand' href={base || '/'}>
-          <Image className='v0-nav-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={40} height={40} />
-          <Image className='v0-nav-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={40} height={40} />
-          <span className='v0-nav-sr'>General Translation</span>
+          <Image className='v0-nav-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={22} height={22} />
+          <Image className='v0-nav-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={22} height={22} />
+          General Translation
         </a>
 
         <nav className='v0-nav-links'>
+          <Menu columns={product(base)} {...menu('Product')} />
           <Menu columns={resources(base)} {...menu('Resources')} />
           <Menu columns={docsMenu(base)} {...menu('Docs')} wide />
-          <a href={`${base}/pricing`}>Pricing</a>
           <a href={`${base}/enterprise`}>Enterprise</a>
+          <a href={`${base}/pricing`}>Pricing</a>
         </nav>
 
         <div className='v0-nav-right'>
-          <button aria-label='Search documentation' className='v0-nav-search' type='button'>
-            <Search aria-hidden size={15} strokeWidth={1.8} />
-            <span>Search</span>
-            <kbd>⌘</kbd>
-            <kbd>K</kbd>
-          </button>
           <ThemeToggle className='v0-nav-theme' />
-          <a className='v0-btn v0-btn-outline v0-btn-sm' href={signInHref}>
-            Sign In
+          <a href='https://dash.generaltranslation.com' rel='noreferrer' target='_blank'>
+            Sign in
           </a>
-          <a className='v0-btn v0-btn-solid v0-btn-sm' href={`${base}/enterprise/contact`}>
-            Get a Demo
+          <a className='v0-btn v0-btn-solid v0-btn-sm' href='#deploy'>
+            Get a demo
           </a>
         </div>
-
-        <a className='v0-mobile-demo v0-btn v0-btn-solid' href={`${base}/enterprise/contact`}>
-          Get a Demo
-        </a>
 
         {/* the phone menu: burger + ruled sheet, last in the -in column so
             the sheet seats absolutely under the bar */}
         <TcMobileNav
           items={[
-            { label: 'Locadex', href: `${base}/locadex` },
-            { label: 'Context', href: `${base}/context` },
-            { label: 'Usage Pricing', href: `${base}/pricing/usage` },
-            { label: 'Supported Locales', href: `${base}/supported-locales` },
             { label: 'Enterprise', href: `${base}/enterprise` },
             { label: 'Pricing', href: `${base}/pricing` },
-            { label: 'Sign In', href: signInHref, external: !signInHref.startsWith(base) },
-            { label: 'Get a Demo', href: `${base}/enterprise/contact` },
+            { label: 'Locadex', href: `${base}/locadex` },
+            { label: 'Sign in', href: 'https://dash.generaltranslation.com', external: true },
+            { label: 'Get a demo', href: '#deploy' },
           ]}
         />
       </div>

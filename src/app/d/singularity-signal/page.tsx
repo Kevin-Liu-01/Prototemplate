@@ -5,14 +5,15 @@ import V0Footer from '../_v0/V0Footer';
 import V0Nav from '../_v0/V0Nav';
 
 import V0Customers from '../_v0/sections/Customers';
-import V0Developer from '../_v0/sections/Developer';
 import V0Deploy from '../_v0/sections/Deploy';
-import V0FullStack from '../_v0/sections/FullStack';
-import V0ContextSec from '../_v0/sections/ContextSec';
 import V0Global from '../_v0/sections/Global';
-import V0Locadex from '../_v0/sections/Locadex';
 
+import Review from '../toolchain/sections/Review';
+import StoryCinema from '../toolchain/sections/StoryCinema';
+
+import Assurance from './sections/Assurance';
 import HomeHero from './sections/HomeHero';
+import TransmissionLog from './sections/TransmissionLog';
 
 import '../toolchain/sections/logos-icons.css';
 import '../toolchain/styles.css';
@@ -26,9 +27,11 @@ export const metadata = {
 };
 
 /**
- * Singularity · Signal home — the input/output split. Cause and effect are
- * visible at once: one terminal window, two panes. What you type on the
- * left, what the machine does on the right. No toggle, no preview face.
+ * Singularity · Signal home — the input/output split hero over the
+ * exploration roster. The dossier home is the final direction; signal
+ * keeps its own hero (one terminal window, two panes: cause on the
+ * left, effect on the right) and carries the previous-generation
+ * sections the final retired, so the drop is reviewable side by side.
  */
 export default function Page() {
   return (
@@ -58,15 +61,20 @@ export default function Page() {
             }}
           />
           <HomeHero />
+          {/* The exploration roster: the dossier is the final direction,
+              so this page carries the previous generation it retired.
+              The pinned scroll story and the review workspace come from
+              toolchain; Assurance and TransmissionLog are signal's own
+              sections, built for this home and mounted nowhere else. */}
           <V0Customers />
           <div aria-hidden className='v0-hatch' />
-          <V0FullStack />
+          <StoryCinema />
           <div aria-hidden className='v0-hatch' />
-          <V0Developer />
+          <Review />
           <div aria-hidden className='v0-hatch' />
-          <V0Locadex />
+          <Assurance />
           <div aria-hidden className='v0-hatch' />
-          <V0ContextSec />
+          <TransmissionLog />
           <div aria-hidden className='v0-hatch' />
           <V0Global />
           <div aria-hidden className='v0-hatch' />

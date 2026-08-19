@@ -98,7 +98,7 @@ const BEATS: readonly StackBeat[] = [
   {
     id: 'context',
     name: 'Context',
-    lead: 'Context layer at your scale',
+    lead: 'Context layer for your scale',
     points: [
       <>Edit, version, and approve translations with unlimited users</>,
       <>Share context, custom prompts, and glossaries across every surface</>,

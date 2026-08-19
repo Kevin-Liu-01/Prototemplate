@@ -6,12 +6,6 @@
    only — the structure is the shared sheet.
    ============================================================ */
 
-.singularity-root.sgd-root {
-  --tc-mono: var(--tc-sans);
-  --font-mono: var(--tc-sans);
-  --default-mono-font-family: var(--tc-sans);
-}
-
 /* certificates are filed, not framed */
 .sgd-root .sge-cert {
   border-style: dashed;

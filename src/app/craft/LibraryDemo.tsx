@@ -5,7 +5,6 @@ import gsap from 'gsap';
 import { useRef, useState } from 'react';
 
 import BayerDemo from './BayerDemo';
-import DitherTextDemo from './DitherTextDemo';
 import GlobeDemo from './GlobeDemo';
 import IsoDemo from './IsoDemo';
 import PillsDemo from './PillsDemo';
@@ -33,7 +32,6 @@ export type LibraryDemoKind =
   | 'prismatic'
   | 'dither'
   | 'bayer'
-  | 'dithertext'
   | 'iso'
   | 'threads'
   | 'globe'
@@ -48,9 +46,8 @@ export type LibraryDemoKind =
  * engine's own observer pauses its loop off-view, prefers-reduced-motion
  * renders each engine's sanctioned still, and unmount destroys the
  * subscription (the shared WebGL contexts persist for the session by design).
- * Static drawings (the iso kit, the sandwich stroke, the dithered type)
- * and DOM instruments (pills, the seam) render directly — there is
- * nothing to arm.
+ * Static drawings (the iso kit, the sandwich stroke) and DOM instruments
+ * (pills, the seam) render directly — there is nothing to arm.
  */
 export default function LibraryDemo({
   kind,
@@ -187,8 +184,6 @@ export default function LibraryDemo({
         armed ? (
           <BayerDemo />
         ) : null
-      ) : kind === 'dithertext' ? (
-        <DitherTextDemo />
       ) : kind === 'iso' ? (
         <IsoDemo />
       ) : kind === 'threads' ? (

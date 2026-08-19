@@ -1,3 +1,4 @@
+import DirectionDock from '@/components/shared/DirectionDock';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../_v0/V0Footer';
@@ -80,6 +81,7 @@ export default function Page() {
           <V0Footer />
         </main>
       </div>
+      <DirectionDock slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

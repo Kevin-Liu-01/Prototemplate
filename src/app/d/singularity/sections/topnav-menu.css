@@ -1,8 +1,8 @@
 /* ============================================================
    NAV MEGA-MENUS — ported from the toolchain nav, re-inked.
-   Resources and Docs open ruled sheets from one React-managed
-   state slot, so hover, click, focus, and Escape stay in sync.
-   The chrome is this system's: paper
+   Resources and Docs open ruled sheets on hover or keyboard
+   focus. :focus-within keeps the flyouts CSS-driven (no JS) and
+   still keyboard-usable. The chrome is this system's: paper
    ground, single hairline edge, the page's own ink ramp — the
    token names are shared with toolchain, so every var() below
    resolves to the singularity values set on .singularity-root
@@ -32,11 +32,13 @@
   color: var(--tc-ink-3);
 }
 
-.singularity-root .tc-nav-drop[data-open='true'] .tc-nav-drop-trigger {
+.singularity-root .tc-nav-drop:hover .tc-nav-drop-trigger,
+.singularity-root .tc-nav-drop:focus-within .tc-nav-drop-trigger {
   color: var(--tc-ink);
 }
 
-.singularity-root .tc-nav-drop[data-open='true'] .tc-nav-drop-trigger svg {
+.singularity-root .tc-nav-drop:hover .tc-nav-drop-trigger svg,
+.singularity-root .tc-nav-drop:focus-within .tc-nav-drop-trigger svg {
   transform: rotate(180deg);
   color: var(--tc-ink);
 }
@@ -59,7 +61,8 @@
   width: max-content;
 }
 
-.singularity-root .tc-nav-drop[data-open='true'] .tc-nav-panel {
+.singularity-root .tc-nav-drop:hover .tc-nav-panel,
+.singularity-root .tc-nav-drop:focus-within .tc-nav-panel {
   display: flex;
 }
 
@@ -88,7 +91,7 @@
 
 .singularity-root .tc-nav-col h5 {
   margin: 0 0 10px;
-  font-family: var(--tc-sans);
+  font-family: var(--tc-mono);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.14em;

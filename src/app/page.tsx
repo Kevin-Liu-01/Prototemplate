@@ -271,8 +271,9 @@ export default function IndexPage() {
             <p>
               The three strongest ideas grew into complete sites: a home built on the toolchain system,
               each with its own take on the hero terminal, over an enterprise page built on the
-              singularity gate. The two faces of each site are overlaid below. Drag the seam to
-              sweep between them.
+              singularity gate. Dossier is the completed direction; Signal and Orbit keep their own
+              heroes and now carry the previous-generation sections it retired. The two faces of
+              each site are overlaid below. Drag the seam to sweep between them.
             </p>
             <p className='pt-site-links'>
               <Link href='/compare'>Compare any two, live →</Link>

@@ -42,6 +42,9 @@ docs/
 `src/lib/directions.ts` is the single source of truth for what exists:
 sixteen directions, three of them full site pairs (`site: true`):
 **singularity-dossier**, **singularity-orbit**, **singularity-signal**.
+singularity-dossier is the completed direction; signal and orbit keep
+their own heroes and carry the previous-generation sections the dossier
+retired, as exploration showcases.
 The index, the presenter, and the sitemaps all map over `DIRECTIONS` —
 add or remove a direction there and everything follows. When a direction
 is deleted, also sweep `scripts/lint-practices.baseline.json` for its
@@ -83,8 +86,7 @@ plate + API snippet on `/craft`):
 | `src/lib/studio-field.ts` | GPU Bayer family — `BAYER_PRESETS` roster |
 | `src/app/d/toolchain/diagrams/iso.ts` | the isometric kit (boxes, prisms, plane, markPath) |
 | `src/app/d/toolchain/diagrams/DitheredMark.tsx` | masked logo + Bayer shimmer |
-| `src/app/d/toolchain/diagrams/DitherText.tsx` | type as dithered ink (motif over a tiered Bayer ramp) |
-| `src/components/shared/diagrams/DoubledLine.tsx` | the two-thread stroke (one ink; two-tone capable) |
+| `src/components/shared/diagrams/DoubledLine.tsx` | the two-thread stroke (two-tone capable) |
 | `src/app/d/toolchain/diagrams/EdgeGlobe.tsx` | the delivery globe |
 | `src/app/d/toolchain/components/LocaleTag.tsx` | the locale pill |
 | `src/app/d/toolchain/sections/RevealSeam.tsx` | the slide-to-reveal seam |

@@ -56,7 +56,7 @@ export const SCRIPTS: readonly ScriptSample[] = [
   { tag: 'hi', script: 'Devanagari', word: 'भाषा', lang: 'hi' },
   { tag: 'ru', script: 'Cyrillic', word: 'язык', lang: 'ru' },
   { tag: 'ko', script: 'Hangul', word: '언어', lang: 'ko' },
-  { tag: 'el', script: 'Greek', word: 'γλωσσα', lang: 'el' },
+  { tag: 'el', script: 'Greek', word: 'γλώσσα', lang: 'el' },
   { tag: 'th', script: 'Thai', word: 'ภาษา', lang: 'th' },
   { tag: 'en', script: 'Latin', word: 'language', lang: 'en' },
 ];
@@ -299,21 +299,9 @@ export type GlyphFieldOptions = {
       of a height proportion, so deep-wrapping locales can never cross the
       clearing line into the rain. */
   copyBottom?: () => number | undefined;
-  /** How the held word prints: 'flat' solid ink (default), or 'dithered' —
-      the blog covers' diagonal Bayer ramp inside the letterforms. */
-  wordFill?: 'flat' | 'dithered';
-  /** Whether rain particles condense into cycling words. Defaults to true. */
-  formWords?: boolean;
-  /** Standalone-plate (copy: 'none') layout tuning: the word's baseline as
-      a fraction of height, and its size as a height fraction with a px
-      cap. Defaults are the full-bleed hero plate's (0.56 / 0.3 / 132). */
-  standalone?: { baseline?: number; fontScale?: number; fontCap?: number };
 };
 
-export type GlyphFieldHandle = {
-  destroy(): void;
-  setInk(next: string): void;
-};
+export type GlyphFieldHandle = { destroy(): void };
 
 export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle | null {
   const { canvas, onScript } = options;
@@ -331,11 +319,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
      negative-safe), the scale multiplies only the rain tiers. */
   const driftSign = options.drift === 'rise' ? -1 : 1;
   const glyphScale = options.glyphScale ?? 1;
-  const wordFill = options.wordFill ?? 'flat';
-  const formWords = options.formWords ?? true;
-  const soBaseline = options.standalone?.baseline ?? 0.56;
-  const soFontScale = options.standalone?.fontScale ?? 0.3;
-  const soFontCap = options.standalone?.fontCap ?? 132;
 
   /* The ink follows the theme: `--tc-ink` resolves to the printed constant on
      paper and to the white ramp under [data-theme='dark']. Resolved off the
@@ -468,8 +451,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
          the word centers in a full-bleed field */
       zoneCx = w * 0.5;
       zoneW = Math.max(160, w - 96);
-      baselineY = h * soBaseline;
-      maxFont = Math.min(h * soFontScale, soFontCap);
+      baselineY = h * 0.56;
+      maxFont = Math.min(h * 0.3, 132);
       fadeB = -60;
       fadeA = -30;
     } else if (narrow) {
@@ -680,124 +663,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let prevRuns: readonly CaliperRun[] = [];
   let prevRunW: readonly number[] = [];
   let prevLabelW = 0;
-  let prevSeed = 0;
-
-  /* ---------- the formed word's dithered fill ----------
-     With wordFill 'dithered', the held word prints in the blog covers'
-     material: its ink is a diagonal Bayer ramp — solid tiers dissolving
-     to sparse cells — instead of flat fill. Built once per word (and
-     again on theme flips) as a bitmap; the frame loop blits it under
-     the same print/peel clips the plain fill uses. */
-  const WORD_RAMP: readonly { cover: number; width: number }[] = [
-    { cover: 16, width: 46 },
-    { cover: 12, width: 44 },
-    { cover: 8, width: 40 },
-    { cover: 5, width: 26 },
-    { cover: 3, width: 20 },
-    { cover: 1, width: 16 },
-  ];
-  const RAMP_SPAN = WORD_RAMP.reduce((s, t) => s + t.width, 0);
-  type WordSprite = {
-    canvas: HTMLCanvasElement;
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-    ready: boolean;
-  };
-  const makeSprite = (): WordSprite => ({
-    canvas: document.createElement('canvas'),
-    x: 0,
-    y: 0,
-    w: 0,
-    h: 0,
-    ready: false,
-  });
-  const heldSprite = makeSprite();
-  const peelSprite = makeSprite();
-  let heldSpriteDirty = true;
-
-  function buildWordSprite(
-    sprite: WordSprite,
-    word: string,
-    font: string,
-    px: number,
-    left: number,
-    right: number,
-    seed: number,
-    rtl: boolean,
-  ): void {
-    sprite.ready = false;
-    if (!word || px <= 0) return;
-    const c = sprite.canvas.getContext('2d', { willReadFrequently: true });
-    if (!c) return;
-    const padX = 24;
-    const ascent = px * 1.08;
-    const descent = px * 0.36;
-    sprite.x = left - padX;
-    sprite.y = baselineY - ascent;
-    sprite.w = right - left + padX * 2;
-    sprite.h = ascent + descent;
-    const cw = Math.max(1, Math.round(sprite.w * dpr));
-    const ch = Math.max(1, Math.round(sprite.h * dpr));
-    sprite.canvas.width = cw;
-    sprite.canvas.height = ch;
-    c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    c.clearRect(0, 0, sprite.w, sprite.h);
-    c.fillStyle = ink;
-    c.textAlign = 'left';
-    c.textBaseline = 'alphabetic';
-    c.font = font;
-    c.fillText(word, padX, ascent);
-
-    /* The ramp: a per-word diagonal, tiers quantized like the covers.
-       Solid ink enters from the word's reading side (flipped for RTL)
-       and falls away through the Bayer tiers; the sparsest tier holds
-       to the far edge so the tail keeps its cells. */
-    const deg = (14 + ((seed * 13) % 26)) * (seed % 2 === 0 ? 1 : -1);
-    const rad = (deg * Math.PI) / 180;
-    const flip = rtl ? -1 : 1;
-    const co = Math.cos(rad) * flip;
-    const si = Math.sin(rad) * flip;
-    let pMin = Infinity;
-    let pMax = -Infinity;
-    for (const [cx, cy] of [
-      [0, 0],
-      [cw, 0],
-      [0, ch],
-      [cw, ch],
-    ] as const) {
-      const pr = cx * co + cy * si;
-      if (pr < pMin) pMin = pr;
-      if (pr > pMax) pMax = pr;
-    }
-    const span = Math.max(1, pMax - pMin);
-    /* chunky device-px cells, ~5 CSS px — the covers' scale */
-    const cell = Math.max(3, Math.round(5 * dpr));
-    const img = c.getImageData(0, 0, cw, ch);
-    const data = img.data;
-    for (let y = 0; y < ch; y++) {
-      const bRow = BAYER[Math.floor(y / cell) % 4] ?? BAYER[0] ?? [0, 8, 2, 10];
-      for (let x = 0; x < cw; x++) {
-        const idx = (y * cw + x) * 4 + 3;
-        if ((data[idx] ?? 0) === 0) continue;
-        const u = (x * co + y * si - pMin) / span;
-        let at = u * RAMP_SPAN;
-        let cover = 1;
-        for (const tier of WORD_RAMP) {
-          if (at < tier.width) {
-            cover = tier.cover;
-            break;
-          }
-          at -= tier.width;
-        }
-        const threshold = ((bRow[Math.floor(x / cell) % 4] ?? 0) + 0.5) / 16;
-        data[idx] = cover / 16 > threshold ? 255 : 0;
-      }
-    }
-    c.putImageData(img, 0, 0);
-    sprite.ready = true;
-  }
 
   function scan(step: number, sw: number, sh: number, cap: number): number {
     if (!sampleCtx) return 0;
@@ -1048,7 +913,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       inNext[p] = 1;
     }
     sampledWord = wordIndex;
-    heldSpriteDirty = true;
   }
 
   /**
@@ -1060,7 +924,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
    * targets stale made the sketch overhang the printed word whenever the
    * raster ran before the display face arrived.)
    */
-  function remeasure(wordIndex: number, oldBaselineY = baselineY): void {
+  function remeasure(wordIndex: number): void {
     if (!sampleCtx || w === 0) return;
     const entry = SCRIPTS[wordIndex];
     if (!entry) return;
@@ -1084,7 +948,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         if (inNext[p] !== 1) continue;
         const mapped = left + ((tx[p] ?? 0) - oldLeft) * sx;
         tx[p] = Math.min(Math.max(mapped, left + inset), left + advance - inset);
-        ty[p] = baselineY + ((ty[p] ?? oldBaselineY) - oldBaselineY) * sy;
+        ty[p] = baselineY + ((ty[p] ?? baselineY) - baselineY) * sy;
       }
     }
     formedLeft = left;
@@ -1101,7 +965,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     formedFont = `500 ${fontPx}px ${disp}`;
     formedPx = fontPx;
     formedRtl = entry.rtl === true;
-    heldSpriteDirty = true;
   }
 
   /* ---------- the frame ---------- */
@@ -1262,10 +1125,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        departs. Handoffs at both boundaries are exact (the outgoing hole
        takes over the held one at full strength; gates land on their hold
        values), so the rain never gains or loses a block in one frame. */
-    if (!formWords) {
-      nextGate = 0;
-      prevGate = 0;
-    } else if (p < holdDur) {
+    if (p < holdDur) {
       nextGate = 1;
       prevGate = 0;
     } else {
@@ -1275,7 +1135,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     }
 
     let morph = -1; // −1: holding; 0…1: flying to `next`
-    if (formWords && p < holdDur) {
+    if (p < holdDur) {
       if (sampledWord !== current || pendingResample) {
         resample(current);
         inPrev.set(inNext);
@@ -1291,7 +1151,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         schedulePrepare(next);
       }
       announce(current);
-    } else if (formWords) {
+    } else {
       if (morphedCycle !== cycle) {
         /* Flight begins: snapshot the outgoing word, lift off from the
            drawn positions, and stagger departures by position in the word
@@ -1306,19 +1166,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         prevRuns = formedRuns;
         prevRunW = formedRunW;
         prevLabelW = formedLabelW;
-        prevSeed = current;
-        if (wordFill === 'dithered') {
-          buildWordSprite(
-            peelSprite,
-            prevWord,
-            prevFont,
-            prevPx,
-            prevLeft,
-            prevRight,
-            prevSeed,
-            prevRtl,
-          );
-        }
         fx.set(lastX);
         fy.set(lastY);
         inPrev.set(inNext);
@@ -1533,27 +1380,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
         if (formedRtl) ctx.rect(printX, 0, formedRight + 20 - printX, h);
         else ctx.rect(formedLeft - 20, 0, printX - (formedLeft - 20), h);
         ctx.clip();
-        if (wordFill === 'dithered') {
-          if (heldSpriteDirty) {
-            buildWordSprite(
-              heldSprite,
-              formedWord,
-              formedFont,
-              formedPx,
-              formedLeft,
-              formedRight,
-              Math.max(0, sampledWord),
-              formedRtl,
-            );
-            heldSpriteDirty = false;
-          }
-          if (heldSprite.ready) {
-            ctx.drawImage(heldSprite.canvas, heldSprite.x, heldSprite.y, heldSprite.w, heldSprite.h);
-          }
-        } else {
-          ctx.font = formedFont;
-          ctx.fillText(formedWord, formedLeft, baselineY);
-        }
+        ctx.font = formedFont;
+        ctx.fillText(formedWord, formedLeft, baselineY);
         ctx.restore();
       }
     } else if (prevWord && peelU < 1) {
@@ -1562,14 +1390,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       if (prevRtl) ctx.rect(prevLeft - 20, 0, peelX - (prevLeft - 20), h);
       else ctx.rect(peelX, 0, prevRight + 20 - peelX, h);
       ctx.clip();
-      if (wordFill === 'dithered') {
-        if (peelSprite.ready) {
-          ctx.drawImage(peelSprite.canvas, peelSprite.x, peelSprite.y, peelSprite.w, peelSprite.h);
-        }
-      } else {
-        ctx.font = prevFont;
-        ctx.fillText(prevWord, prevLeft, baselineY);
-      }
+      ctx.font = prevFont;
+      ctx.fillText(prevWord, prevLeft, baselineY);
       ctx.restore();
     }
 
@@ -1702,24 +1524,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   function resize(): void {
     const box = canvas.getBoundingClientRect();
     if (box.width < 2 || box.height < 2) return;
-    const newW = Math.round(box.width);
-    const newH = Math.round(box.height);
-    /* Idempotence: the observers coalesce but can still stack (RO +
-       the dpr watcher both firing on a zoom) — when neither the box
-       nor the effective scale moved, the frame is already right. */
-    const sameDpr =
-      dpr ===
-      Math.min(
-        narrow || govTier >= 1 ? DPR_CAP_NARROW : DPR_CAP,
-        window.devicePixelRatio || 1,
-      );
-    if (newW === w && newH === h && sameDpr && w !== 0) return;
-    const oldW = w;
-    const oldH = h;
-    const oldNarrow = narrow;
-    const oldBaseline = baselineY;
-    w = newW;
-    h = newH;
+    w = Math.round(box.width);
+    h = Math.round(box.height);
     /* layout() first: it derives the narrow flag from the fresh width,
        and the dpr cap keys off it — the narrow cut renders at 1.25x, not
        2x (founder mobile rounds: 2x pushed more device px than a phone
@@ -1737,51 +1543,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     prepWord = -1;
     prepQueuedCycle = -1;
     cancelPrepare();
-    const cutFlipped = narrow !== oldNarrow;
-    if (morphingNow()) {
-      /* Mid-flight: scale every standing position by the box ratio so
-         trajectories stay on-canvas through the resize, and let the
-         next hold re-deal exactly against the new layout. */
-      if (oldW > 0 && oldH > 0 && (oldW !== w || oldH !== h)) {
-        const sx = w / oldW;
-        const sy = h / oldH;
-        for (let i = 0; i < POOL; i++) {
-          fx[i] = (fx[i] ?? 0) * sx;
-          fy[i] = (fy[i] ?? 0) * sy;
-          lastX[i] = (lastX[i] ?? 0) * sx;
-          lastY[i] = (lastY[i] ?? 0) * sy;
-          tx[i] = (tx[i] ?? 0) * sx;
-          ty[i] = (ty[i] ?? 0) * sy;
-        }
-        prevLeft *= sx;
-        prevRight *= sx;
-        formedLeft *= sx;
-        formedRight *= sx;
-        formedAdvance = Math.round(formedRight - formedLeft);
-        /* the sprites' blit boxes ride the same ratio — a transient
-           stretch for the rest of this morph; the next print re-pours
-           them crisp at the true metrics */
-        for (const sprite of [heldSprite, peelSprite]) {
-          sprite.x *= sx;
-          sprite.y *= sy;
-          sprite.w *= sx;
-          sprite.h *= sy;
-        }
-        heldSpriteDirty = true;
-      }
-      pendingResample = true;
-    } else if (!cutFlipped && sampledWord >= 0) {
-      /* Holding with a printed word: SQUEEZE the standing swarm onto
-         the new geometry — remeasure remaps every target affinely from
-         the old span and baseline, keeps membership, and re-measures
-         the fill — instead of re-dealing (which teleports the word). */
-      remeasure(sampledWord, oldBaseline);
-    } else {
-      /* The layout family changed (narrow cut flipped) or nothing is
-         printed yet: a full re-deal at the current word is the honest
-         reset — pitch and recruitable set differ per cut. */
-      sampledWord = -1;
-    }
+    if (morphingNow()) pendingResample = true;
+    else sampledWord = -1;
     if (reduced || !running) {
       /* One legible frame: the field printed on its current word. */
       draw();
@@ -1794,24 +1557,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     resizeRaf = requestAnimationFrame(resize);
   });
   ro.observe(canvas);
-
-  /* Browser zoom moves devicePixelRatio, often WITHOUT changing the
-     element's CSS box — the ResizeObserver never fires and every blit
-     goes soft at the stale scale. Watch the ratio itself (the media
-     query matches exactly one ratio, so any change fires it), re-arm
-     on each move, and run the same resize path. */
-  let dprMedia: MediaQueryList | null = null;
-  function onDprChange(): void {
-    if (destroyed) return;
-    armDprWatch();
-    resize();
-  }
-  const armDprWatch = (): void => {
-    dprMedia?.removeEventListener('change', onDprChange);
-    dprMedia = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
-    dprMedia.addEventListener('change', onDprChange);
-  };
-  armDprWatch();
 
   const io = new IntersectionObserver(
     (entries) => {
@@ -1826,23 +1571,14 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   /* Theme flips re-ink the field: the atlas is rebuilt in the new ink and a
      paused field re-prints its still. Cheap — one attribute on the root,
      observed only while the field lives. */
-  const applyInk = (next: string): void => {
+  const themeMo = new MutationObserver(() => {
+    const next = resolveInk();
     if (next === ink) return;
     ink = next;
     buildAtlas();
-    /* the word sprites carry the ink literally — re-pour both */
-    heldSpriteDirty = true;
-    if (wordFill === 'dithered' && prevWord) {
-      buildWordSprite(peelSprite, prevWord, prevFont, prevPx, prevLeft, prevRight, prevSeed, prevRtl);
-    }
     if (reduced || !running) draw();
-  };
-
-  const themeMo = new MutationObserver(() => applyInk(resolveInk()));
-  themeMo.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme', 'class'],
   });
+  themeMo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   /* Boot mid-hold: the word already printed, the caliper already in, and
      comfortably BEFORE the first morph — the boot instant must stay inside
@@ -1876,9 +1612,6 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   }
 
   return {
-    setInk(next) {
-      applyInk(next);
-    },
     destroy() {
       atlasGen++;
       if (atlasSrc !== atlas && atlasSrc instanceof ImageBitmap) atlasSrc.close();
@@ -1889,17 +1622,12 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       ro.disconnect();
       io.disconnect();
       themeMo.disconnect();
-      dprMedia?.removeEventListener('change', onDprChange);
       /* Release the bitmaps the engine owns — the atlas and the word
          sampler — rather than waiting on GC for canvas backing store. */
       atlas.width = 0;
       atlas.height = 0;
       sample.width = 0;
       sample.height = 0;
-      for (const sprite of [heldSprite, peelSprite]) {
-        sprite.canvas.width = 0;
-        sprite.canvas.height = 0;
-      }
     },
   };
 }

@@ -206,3 +206,174 @@
     border-top-color: rgba(7, 7, 7, 0.12);
   }
 }
+
+/* ============================================================
+   THE PREVIOUS GENERATION'S OWN SECTIONS, restated for this root.
+   Assurance and TransmissionLog were authored for the signal
+   family's .singularity-root scope (../styles.css, the subpage
+   sheet this home does not import); this home's root is
+   .toolchain-root.sgsh-root, so every rule they need is restated
+   under that scope. The band is fixed dark in both themes; the
+   assurance strip reads the toolchain ink tokens and follows the
+   theme.
+   ============================================================ */
+
+/* ---- the transmission band ---- */
+
+.toolchain-root.sgsh-root .tc-band.sgs-band {
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  background: #070707;
+  color: rgba(255, 255, 255, 0.92);
+  border-block: 1px solid var(--tc-hair);
+  overflow: clip;
+  isolation: isolate;
+}
+
+/* the band's full-bleed border carries both seams: the hatch above
+   already yields via v0-pages.css (.v0-hatch:has(+ .tc-band)), the
+   hatch below yields here */
+.toolchain-root.sgsh-root .sgs-band + .v0-hatch {
+  border-top: 0;
+}
+
+.toolchain-root.sgsh-root .sgs-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* the beam runs along the band's foot, under the column */
+.toolchain-root.sgsh-root .sgs-beam {
+  position: absolute;
+  inset: auto -14% -52% -14%;
+  height: 82%;
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  mask-image: linear-gradient(to top, #000 34%, rgba(0, 0, 0, 0) 88%);
+}
+
+.toolchain-root.sgsh-root .sgs-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(138, 143, 152, 0.5);
+  padding: clamp(56px, 6.6vw, 92px) var(--tc-gut) clamp(64px, 7vw, 100px);
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 84px);
+}
+
+.toolchain-root.sgsh-root .sgs-band-head h2 {
+  font-family: var(--tc-disp);
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  color: #ffffff;
+}
+
+.toolchain-root.sgsh-root .sgs-band-head p {
+  margin-top: 16px;
+  max-width: 42ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* the log itself: a ruled console, timestamps in mono */
+.toolchain-root.sgsh-root .sgs-log {
+  position: relative;
+  align-self: center;
+  border: 1px solid rgba(138, 143, 152, 0.42);
+  padding: 22px 24px 26px;
+  background: rgba(7, 7, 7, 0.72);
+  background-clip: padding-box;
+}
+
+.toolchain-root.sgsh-root .sgs-log-line {
+  display: flex;
+  gap: 18px;
+  padding: 7px 0;
+}
+
+.toolchain-root.sgsh-root .sgs-log-line + .sgs-log-line {
+  border-top: 1px solid rgba(138, 143, 152, 0.16);
+}
+
+.toolchain-root.sgsh-root .sgs-log-t {
+  flex: 0 0 auto;
+  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.toolchain-root.sgsh-root .sgs-log-msg {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.toolchain-root.sgsh-root .sgs-caret {
+  display: block;
+  width: 9px;
+  height: 15px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  animation: sgsh-blink 1.1s steps(1) infinite;
+}
+
+@keyframes sgsh-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root.sgsh-root .sgs-caret {
+    animation: none;
+  }
+}
+
+/* ---- assurance ---- */
+
+.toolchain-root.sgsh-root .sgs-assurance {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(24px, 3.4vw, 48px);
+  padding: clamp(56px, 6.6vw, 92px) var(--tc-gut) clamp(60px, 7vw, 96px);
+}
+
+.toolchain-root.sgsh-root .sgs-term {
+  padding-top: 18px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.toolchain-root.sgsh-root .sgs-term h3 {
+  font-family: var(--tc-disp);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--tc-ink);
+}
+
+.toolchain-root.sgsh-root .sgs-term p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+@media (max-width: 880px) {
+  .toolchain-root.sgsh-root .sgs-assurance {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root.sgsh-root .sgs-band-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

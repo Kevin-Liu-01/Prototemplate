@@ -167,7 +167,7 @@ export const DIRECTIONS: Direction[] = [
     site: true,
     name: 'Dossier',
     concept:
-      'A full site: the toolchain home with the every-stack argument folded INTO the hero terminal (one less section), and a /enterprise page that reads as an evidence file — exhibits, a certificate wall, an audit ledger under the gate.',
+      'The completed direction: a full site whose home folds the every-stack argument into the hero terminal (one less section), over an /enterprise page that reads as an evidence file, with exhibits, a certificate wall, and an audit ledger under the gate.',
     tone: 'light',
     signature: 'The every-stack section lives inside the hero terminal.',
   },
@@ -178,9 +178,9 @@ export const DIRECTIONS: Direction[] = [
     site: true,
     name: 'Orbit',
     concept:
-      'A full site: the toolchain home compressed — the hero terminal collapses to a one-line session and a slim table strip — and a /enterprise page that argues with gravity: dials, the customers riding a live orbit, one witness.',
+      'A showcase of the previous generation: orbit keeps its one-line hero and carries the system pieces the dossier retired, the windowed translation demo, the toolchain bento, the gravity well and instrument dials, the dark band, and the pricing file.',
     tone: 'light',
-    signature: 'The hero terminal is one line and a strip — a far shorter first fold.',
+    signature: 'The hero terminal is one line and a strip, a far shorter first fold.',
   },
   {
     n: 24,
@@ -189,7 +189,7 @@ export const DIRECTIONS: Direction[] = [
     site: true,
     name: 'Signal',
     concept:
-      'A full site: the toolchain home with the terminal split into session and output panes — cause and effect at once — and a /enterprise page as the broadcast: intercepts, a self-typing rollout log, the beam.',
+      'A showcase of the previous generation: signal keeps its split-pane hero and carries the sections the dossier retired, the pinned story cinema, the review workspace, the assurance strip, and the self-typing transmission log.',
     tone: 'light',
     signature: 'Session and output, side by side in one window.',
   },

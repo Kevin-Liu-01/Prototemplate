@@ -1,7 +1,7 @@
 const TERMS = [
   {
     title: 'Forward-deployed engineers',
-    note: 'Ours sit with yours until the integration ships. Not a support queue — a team.',
+    note: 'Ours sit with yours until the integration ships. Not a support queue, a team.',
   },
   {
     title: 'Security review, pre-cleared',

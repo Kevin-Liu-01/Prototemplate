@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-/**
- * A wrapper around useEffect that only runs once on mount — the repo's
- * only sanctioned useEffect. Mirrors the gt-cloud house hook: a plain
- * empty-deps useEffect, NO ran-guard. Under StrictMode dev React replays
- * setup/cleanup/setup; a ran-guard would skip the second setup after its
- * cleanup destroyed the first mount's work (dead canvases in dev).
- */
+/** Runs an effect exactly once on mount, per repo policy against bare useEffect. */
 export function useMountEffect(effect: () => void | (() => void)) {
+  const ran = useRef(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only by contract
-  useEffect(effect, []);
+  useEffect(() => {
+    if (ran.current) return;
+    ran.current = true;
+    return effect();
+  }, []);
 }

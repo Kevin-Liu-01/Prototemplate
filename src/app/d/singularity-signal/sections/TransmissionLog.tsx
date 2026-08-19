@@ -56,7 +56,7 @@ export default function TransmissionLog() {
           <h2>One merge. Every market.</h2>
           <p>
             This is the whole ceremony: your engineers merge English, and the machine does the
-            rest — context, terminology, review, delivery.
+            rest. Context, terminology, review, delivery.
           </p>
         </header>
         <div className='sgs-log' role='log'>

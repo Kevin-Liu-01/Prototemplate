@@ -1157,15 +1157,16 @@
    .css, hero-terminal.css and frameworks-ruled.css).
    The compliance ledger's card stops being a rounded white box on
    a mat: the mat ground retires, the card squares off and steps
-   inside the row on three sides, and its frame becomes four 1px
+   inside the row on three sides, and its frame becomes three 1px
    rules drawn by two full-bleed pseudo bands, clipped by the lead
    row — the hero's sheet — so every rule runs edge-to-edge of the
    side it is on. The card's left edge stays ON the column
    boundary, so the frame's left rule IS the text/artifact
    boundary, ruled from the nav seam to the trust seam. The
    horizontals cross the copy column's cleared margins and touch
-   both rail borders; the right vertical runs the gutter's clean
-   air. Rule ink is the token hair in both themes; every line is a
+   both rail borders; the frame draws no right vertical of its
+   own — the rail's edge line owns that side, one line per edge.
+   Rule ink is the token hair in both themes; every line is a
    device-true 1px border, and the card carries no border of its
    own, so nothing can stack to 2px where band and box coincide.
    Doubled root: these override shell rules of equal specificity
@@ -1211,14 +1212,15 @@
   border-bottom: 1px solid var(--tc-hair);
 }
 
-/* the two vertical rules, the sheet's full height */
+/* the one vertical rule, the sheet's full height — the left/column
+   boundary only; the right edge is the rail line's, drawn once by
+   the rail itself a gutter beyond the card */
 .toolchain-root.toolchain-root .tce-hero-frame > .tc-card::after {
   left: 0;
   right: 0;
   top: -100vh;
   bottom: -100vh;
   border-left: 1px solid var(--tc-hair);
-  border-right: 1px solid var(--tc-hair);
 }
 
 /* Stacked (≤1000px, the shell collapses is-lead) the cells are rows:

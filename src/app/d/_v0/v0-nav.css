@@ -3,17 +3,6 @@
    toolchain/styles.css; every color is a shared token, so dark mode is the
    same remap. Panels carry ONE hairline border and no shadow. */
 
-.toolchain-root.sgd-root {
-  --tc-rail: 1104px;
-}
-
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root),
-.singularity-root.sgd-root {
-  --tc-mono: var(--tc-sans);
-  --font-mono: var(--tc-sans);
-  --default-mono-font-family: var(--tc-sans);
-}
-
 .toolchain-root .v0-nav {
   position: sticky;
   top: 0;
@@ -27,11 +16,11 @@
   width: min(var(--tc-rail), 100%);
   margin-inline: auto;
   border-inline: 1px solid var(--tc-hair);
-  height: 56px;
+  height: 58px;
   display: flex;
   align-items: center;
-  gap: 32px;
-  padding-inline: 15px;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
 }
 
 /* The doubled rail's outer pair — one pseudo box at the same +-10px gauge as
@@ -58,20 +47,6 @@
   letter-spacing: -0.02em;
 }
 
-.toolchain-root .v0-nav-brand img {
-  width: 38px;
-  height: 38px;
-}
-
-.toolchain-root .v0-nav-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
-
 /* Brand mark carries both variants; the theme picks one. */
 .toolchain-root .v0-nav-logo-dark {
   display: none;
@@ -88,7 +63,7 @@
 .toolchain-root .v0-nav-links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 22px;
   font-size: 13.5px;
   color: var(--tc-ink-2);
 }
@@ -105,9 +80,17 @@
   font-size: 13.5px;
 }
 
+.toolchain-root .v0-nav-right > a:first-of-type {
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .v0-nav-right > a:first-of-type:hover {
+  color: var(--tc-ink);
+}
+
 @media (max-width: 860px) {
   .toolchain-root .v0-nav-links,
-  .toolchain-root .v0-nav-right {
+  .toolchain-root .v0-nav-right > a:first-of-type {
     display: none;
   }
 }
@@ -204,7 +187,7 @@
 
 .toolchain-root .v0-nav-col h5 {
   margin: 0 0 10px;
-  font-family: var(--tc-sans);
+  font-family: var(--tc-mono);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -314,39 +297,6 @@
   cursor: pointer;
 }
 
-.toolchain-root .v0-nav-search {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  height: 36px;
-  border: 1px solid var(--tc-hair);
-  border-radius: 6px;
-  background: none;
-  padding: 0 8px 0 10px;
-  color: var(--tc-ink-2);
-  font: inherit;
-  cursor: pointer;
-}
-
-.toolchain-root .v0-nav-search kbd {
-  display: grid;
-  width: 20px;
-  height: 22px;
-  place-items: center;
-  border: 1px solid var(--tc-hair);
-  border-radius: 5px;
-  background: color-mix(in srgb, var(--tc-ink) 3%, transparent);
-  color: var(--tc-ink-2);
-  font-family: var(--tc-sans);
-  font-size: 11px;
-  box-shadow: 0 1px 0 var(--tc-hair);
-}
-
-.toolchain-root .v0-nav-search:hover {
-  background: var(--tc-hair-2);
-  color: var(--tc-ink);
-}
-
 .toolchain-root .v0-nav-theme:hover {
   color: var(--tc-ink);
   background: var(--tc-hair-2);
@@ -380,16 +330,6 @@
   color: #f5f5f3;
 }
 
-.toolchain-root .v0-btn-outline {
-  border-color: var(--tc-hair-strong);
-  background: var(--tc-paper);
-  color: var(--tc-ink);
-}
-
-.toolchain-root .v0-btn-outline:hover {
-  background: var(--tc-hair-2);
-}
-
 .toolchain-root .v0-btn-solid:hover {
   background: color-mix(in srgb, var(--tc-ink) 86%, transparent);
 }
@@ -404,7 +344,7 @@
 }
 
 .toolchain-root .v0-btn-sm {
-  height: 36px;
+  height: 32px;
   padding: 0 13px;
   font-size: 12.5px;
 }
@@ -418,10 +358,6 @@
    ============================================================ */
 
 .toolchain-root .v0-nav .tc-nav-burger {
-  display: none;
-}
-
-.toolchain-root .v0-mobile-demo {
   display: none;
 }
 
@@ -442,30 +378,14 @@
 }
 
 @media (max-width: 860px) {
-  .toolchain-root .v0-nav-in {
-    gap: 8px;
-  }
-
-  .toolchain-root .v0-mobile-demo {
-    display: inline-flex;
-    height: 40px;
-    margin-left: auto;
-    padding-inline: 16px;
-    font-size: 14px;
-  }
-
   .toolchain-root .v0-nav .tc-nav-burger {
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
     gap: 5px;
-    width: 40px;
-    height: 40px;
-    align-items: center;
-    padding: 0;
-    border: 1px solid var(--tc-hair);
-    border-radius: 6px;
-    background: var(--tc-paper);
+    padding: 10px 2px;
+    border: 0;
+    background: none;
     cursor: pointer;
   }
 

@@ -464,10 +464,6 @@ export function createDitherLoop(
   let frame = 0;
   let startedAt = 0;
   let lastDrawn = -Infinity;
-  /* Field-time accumulated across pauses, so an offscreen/hidden spell
-     resumes the motion where it left off instead of snapping the field
-     back to its boot frame. */
-  let simBase = 0;
   let running = false;
   let visible = true;
   let destroyed = false;
@@ -486,7 +482,7 @@ export function createDitherLoop(
     if (now - lastDrawn < minDelta) return;
     lastDrawn = now;
     if (!startedAt) startedAt = now;
-    draw(simBase + ((now - startedAt) / 1000) * (options.speed ?? 1));
+    draw(((now - startedAt) / 1000) * (options.speed ?? 1));
   };
 
   const start = () => {
@@ -498,11 +494,6 @@ export function createDitherLoop(
   };
 
   const stop = () => {
-    if (running && startedAt) {
-      simBase +=
-        ((performance.now() - startedAt) / 1000) * (options.speed ?? 1);
-      startedAt = 0;
-    }
     running = false;
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
@@ -526,7 +517,7 @@ export function createDitherLoop(
       if (destroyed) return;
       // A resize invalidates the buffer, so a paused/static canvas still needs
       // one fresh frame at its current time.
-      if (!running) draw(reduced ? (options.reducedMotionTime ?? 0) : simBase);
+      if (!running) draw(reduced ? (options.reducedMotionTime ?? 0) : 0);
     });
     resizeObserver.observe(canvas);
   }
@@ -565,11 +556,11 @@ export function createDitherLoop(
     },
     setField: (next) => {
       field = next;
-      if (!running) draw(simBase);
+      if (!running) draw(0);
     },
     setOptions: (patch) => {
       options = { ...options, ...patch };
-      if (!running) draw(reduced ? (options.reducedMotionTime ?? 0) : simBase);
+      if (!running) draw(options.reducedMotionTime ?? 0);
     },
     destroy: () => {
       destroyed = true;

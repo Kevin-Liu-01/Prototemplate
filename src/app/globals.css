@@ -113,11 +113,6 @@ html::-webkit-scrollbar-thumb {
   }
 }
 
-body:has(.tc-nav-sheet:not([hidden])) .dd-back {
-  opacity: 0;
-  pointer-events: none;
-}
-
 [data-theme='dark'] .dd-back {
   background: #070707;
   color: #ffffff;
