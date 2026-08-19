@@ -32,6 +32,7 @@ pnpm dev        # http://localhost:3006
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | the code map: directions registry, the toolchain SSOT + fork rescoping, the component inventory |
 | [`docs/SHIP-LOOP.md`](./docs/SHIP-LOOP.md) | the verify/ship procedure every round runs (line audit, ratchet, tsc, filming, mirror build) |
 | [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index — the live version is `/craft` |
+| [`media/`](./media/README.md) | finished artwork made with the system: the Open Source announcement reel and the X banner |
 
 Agent sessions: the same material is wired as skills under
 `.agents/skills/gt-redesign` (umbrella) and the focused `redesign-*` skills.
