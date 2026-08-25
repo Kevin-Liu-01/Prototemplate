@@ -1419,19 +1419,6 @@
   padding-block: clamp(26px, 3.2vw, 48px);
 }
 
-/* the opener's right column: the funnel, then the control plate under it,
-   both centred on the same 360px measure so the plate's edges line up with
-   the diagram's crop frame rather than floating in the gutter */
-.pt-opener-right {
-  display: grid;
-  gap: clamp(14px, 1.6vw, 22px);
-  align-content: center;
-  /* stretch, not center: the plate and the diagram's crop frame then share
-     one box, so their edges are flush and the four extender rules read as
-     the frame around both rather than around the diagram alone */
-  justify-items: stretch;
-}
-
 .pt-opener-fig {
   position: relative;
   margin: 0;
@@ -1440,67 +1427,6 @@
   place-items: center;
 }
 
-/* The plate reads as the funnel's last stage, so it borrows the window
-   grammar of the three captures rather than the card grammar of a section:
-   a hairline frame, the capture, and one line of caption under it. */
-.pt-opener-control {
-  display: grid;
-  width: 100%;
-  gap: 10px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.pt-opener-control-shot {
-  display: block;
-  overflow: hidden;
-  border: 1px solid var(--pt-hair);
-  border-radius: 3px;
-  background: var(--pt-card);
-  transition: border-color 160ms ease;
-}
-
-.pt-opener-control-shot img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.pt-opener-control-shot img.is-dark {
-  display: none;
-}
-
-.pt-opener-control:hover .pt-opener-control-shot,
-.pt-opener-control:focus-visible .pt-opener-control-shot {
-  border-color: var(--pt-ink-3);
-}
-
-.pt-opener-control:focus-visible {
-  outline: 2px solid var(--pt-ink);
-  outline-offset: 3px;
-  border-radius: 3px;
-}
-
-.pt-opener-control-cap {
-  display: grid;
-  gap: 2px;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: var(--pt-ink-2);
-}
-
-.pt-opener-control-cap b {
-  font-weight: 500;
-  color: var(--pt-ink);
-}
-
-[data-theme='dark'] .pt-root .pt-opener-control-shot img.is-light {
-  display: none;
-}
-
-[data-theme='dark'] .pt-root .pt-opener-control-shot img.is-dark {
-  display: block;
-}
 
 .pt-opener-fig .pt-funnel {
   /* 1:1 with the viewBox at desktop, so every hairline lands on a

@@ -132,12 +132,11 @@ export default function IndexPage() {
                 the field of everything built, hatched shoulders carrying away
                 what fell, down to the three windows fanned like the captures
                 further down the page. */}
-            <div className='pt-opener-right'>
-              <figure
-                aria-label='The distillation: more than twenty directions built, thirteen survived review, three became full sites.'
-                className='pt-opener-fig'
-                role='img'
-              >
+            <figure
+              aria-label='The distillation: more than twenty directions built, thirteen survived review, three became full sites.'
+              className='pt-opener-fig'
+              role='img'
+            >
               <i className='pt-xline is-h is-top' />
               <i className='pt-xline is-h is-bot' />
               <i className='pt-xline is-v is-l' />
@@ -236,30 +235,8 @@ export default function IndexPage() {
                   <tspan className='pt-funnel-n'>3</tspan>
                   <tspan className='pt-funnel-t' dx='12'>FULL SITES</tspan>
                 </text>
-                </svg>
-              </figure>
-
-              {/* the funnel's floor: what all of it was measured against. The
-                  three windows above are proposals; this is the shipped site,
-                  rebuilt page for page, so a direction is legible next to what
-                  it trades away. Outside the figure because that carries
-                  role='img' — a link inside it would be unreachable. */}
-              {REFERENCE ? (
-                <Link className='pt-opener-control' href={`/d/${REFERENCE.slug}`}>
-                  <span aria-hidden className='pt-opener-control-shot'>
-                    <img alt='' className='is-light' draggable={false} loading='lazy' src={`/shots/light/${REFERENCE.slug}.jpg`} />
-                    <img alt='' className='is-dark' draggable={false} loading='lazy' src={`/shots/dark/${REFERENCE.slug}.jpg`} />
-                  </span>
-                  <span className='pt-opener-control-cap'>
-                    <b>The control</b>
-                    <span>
-                      The shipped site, rebuilt page for page — the thing every direction
-                      above is measured against.
-                    </span>
-                  </span>
-                </Link>
-              ) : null}
-            </div>
+              </svg>
+            </figure>
           </section>
 
           <div className='pt-hatch' aria-hidden='true' />
@@ -291,6 +268,39 @@ export default function IndexPage() {
           </section>
 
           <div className='pt-hatch' aria-hidden='true' />
+
+          {REFERENCE ? (
+            <>
+              <section className='pt-sec pt-post-sec'>
+                <h2>The site as it stands</h2>
+                <p>
+                  Before the proposals, the thing they answer to: generaltranslation.com,
+                  rebuilt here page for page — the same sections in the same order, carrying
+                  the same copy. It argues for nothing. It is here so a direction can be held
+                  beside what it would replace, because what a redesign gains is only legible
+                  next to what it trades away.
+                </p>
+              </section>
+
+              <div className='pt-sites'>
+                <section className='pt-sec pt-site' key={REFERENCE.slug}>
+                  <h3>
+                    {REFERENCE.name}
+                    <span className='pt-site-flag'>the shipped site</span>
+                  </h3>
+                  <p>{REFERENCE.signature}</p>
+                  <SiteCompare slug={REFERENCE.slug} name={REFERENCE.name} />
+                  <p className='pt-site-links'>
+                    <Link href={`/d/${REFERENCE.slug}`}>open the home</Link>
+                    <span aria-hidden> · </span>
+                    <Link href={`/d/${REFERENCE.slug}/enterprise`}>open the enterprise page</Link>
+                  </p>
+                </section>
+              </div>
+
+              <div className='pt-hatch' aria-hidden='true' />
+            </>
+          ) : null}
 
           <section className='pt-sec pt-post-sec pt-sites-intro'>
             <h2>The three sites</h2>
