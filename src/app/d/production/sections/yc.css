@@ -1,0 +1,699 @@
+/* ============================================================
+   PRODUCTION — /yc, the shipped sheet.
+
+   Ported 1-1 from
+   apps/landing/src/components/pages/yc/yc.css. Nothing is
+   restyled: the selectors, the numbers and the light-sheet
+   overrides are the shipped page's own. One block is appended
+   at the end that the real page gets from elsewhere in its
+   bundle and this route has to carry itself: the globe
+   atmosphere's ink (globe-atmosphere.css). The field's own box
+   (absolute, inset 0, z -1) rides Tailwind utilities on the
+   component, exactly as it does upstream.
+   ============================================================ */
+
+.yc-root .yc-hero {
+  --yc-hole-x: 50%;
+  --yc-hole-y: 47%;
+  --yc-hole-radius: 270px;
+  position: relative;
+  min-height: clamp(620px, calc(100svh - 140px), 820px);
+  overflow: hidden;
+  background: var(--tc-dark);
+}
+
+.yc-root .yc-hero-copy {
+  position: absolute;
+  z-index: 4;
+  top: var(--yc-hole-y);
+  left: var(--yc-hole-x);
+  display: grid;
+  width: calc(var(--yc-hole-radius) * 1.56);
+  justify-items: center;
+  color: #fff;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.yc-root .yc-hero h1 {
+  font-size: clamp(1.55rem, 2.9vw, 2.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.034em;
+  text-wrap: balance;
+  color: #fff;
+  text-shadow: 0 1px 26px rgb(0 0 0 / 55%);
+}
+
+.yc-root .yc-hero h1 span {
+  display: block;
+  color: var(--color-emphasis);
+}
+
+.yc-root .yc-partner-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.yc-root .yc-partner-lockup > img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  opacity: 0.96;
+  filter: drop-shadow(0 0 12px rgb(255 255 255 / 35%));
+}
+
+.yc-root .yc-partner-lockup > span {
+  color: rgb(255 255 255 / 48%);
+  font-size: 22px;
+  font-weight: 300;
+}
+
+.yc-root .yc-partner-yc {
+  display: block;
+  width: 44px;
+  height: 44px;
+  background: #fff;
+}
+
+.yc-root .yc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 34px;
+}
+
+.yc-root .yc-hero-copy .yc-actions {
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.yc-root .yc-hole-scene {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+}
+
+.yc-root .yc-hole-scene::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    rgb(255 255 255 / 9%) 0 1px,
+    transparent 1px 44px
+  );
+  mask-image: radial-gradient(
+    circle calc(var(--yc-hole-radius, 200px) * 1.66) at var(--yc-hole-x, 50%)
+      var(--yc-hole-y, 47%),
+    transparent 87.9%,
+    #000 100%
+  );
+  content: '';
+  pointer-events: none;
+}
+
+/* the disc under the canvas: the copy sits inside the hole, so the
+   black ground must survive a lost WebGL context — and in light mode
+   it is what keeps the white headline readable. Inset 3px so the
+   shader's breathing rim never exposes its edge. */
+.yc-root .yc-hole-scene::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: radial-gradient(
+    circle calc(var(--yc-hole-radius, 200px) - 3px) at var(--yc-hole-x, 50%)
+      var(--yc-hole-y, 47%),
+    #05070b calc(100% - 1.5px),
+    transparent 100%
+  );
+  content: '';
+  pointer-events: none;
+  /* the ink backing under the shader's translucent core joins the
+     bloom: nothing paints a bare black circle before the reveal */
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.yc-root .yc-hole-scene.is-live::after,
+.yc-root .yc-hole-scene.is-fallback::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yc-root .yc-hole-scene::after {
+    transition: none;
+  }
+}
+
+.yc-root .yc-hole-canvas {
+  position: absolute;
+  z-index: 1;
+  display: block;
+}
+
+/* ---- the light sheet: paper band, ink rules, ink orbit — the disc
+   and everything inside it keeps the horizon's own black ---- */
+
+:root:not([data-theme='dark']) .yc-root .yc-hero {
+  background: var(--tc-card);
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-hole-scene::before {
+  background: repeating-linear-gradient(
+    180deg,
+    rgb(10 11 13 / 8%) 0 1px,
+    transparent 1px 44px
+  );
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-orbit-word b[data-orbit-part] {
+  color: rgb(10 11 13 / 64%);
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-orbit-flag {
+  box-shadow: inset 0 0 0 0.5px rgb(10 11 13 / 22%);
+}
+
+.yc-root .yc-orbit {
+  position: absolute;
+  z-index: 3;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  /* the ring arrives after the disc's crossfade starts, never pops */
+  opacity: 0;
+  transition: opacity 0.7s ease 0.2s;
+}
+
+.yc-root .yc-orbit:not([data-live]) {
+  visibility: hidden;
+}
+
+.yc-root .yc-orbit[data-live] {
+  opacity: 1;
+}
+
+.yc-root .yc-orbit-word {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+}
+
+.yc-root .yc-orbit[data-live] .yc-orbit-word [data-orbit-part] {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.yc-root .yc-orbit-word b[data-orbit-part] {
+  display: inline-block;
+  color: rgb(255 255 255 / 62%);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: pre;
+  will-change: transform;
+}
+
+.yc-root .yc-orbit-flag {
+  display: inline-block;
+  width: 17px;
+  height: 13px;
+  margin-right: 5px;
+  border-radius: 1px;
+  background-size: cover;
+  box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 20%);
+  line-height: 13px;
+  vertical-align: -1.5px;
+  will-change: transform;
+}
+
+.yc-root .yc-glyph {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  min-height: 680px;
+}
+
+.yc-root .yc-glyph-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(64px, 8vw, 108px) var(--tc-gut);
+}
+
+.yc-root .yc-glyph-copy h2 {
+  max-width: 12ch;
+  font-size: clamp(2.15rem, 3.7vw, 3.3rem);
+  text-wrap: balance;
+}
+
+.yc-root .yc-glyph-copy p {
+  max-width: 48ch;
+  margin-top: 22px;
+  color: var(--tc-ink-2);
+  font-size: 15px;
+  line-height: 1.68;
+}
+
+.yc-root .yc-benefits {
+  max-width: 52ch;
+  margin-top: 34px;
+  padding: 0;
+  list-style: none;
+}
+
+.yc-root .yc-benefits li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 14px;
+  padding: 15px 0;
+  border-top: 1px solid var(--tc-hair);
+  color: var(--tc-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.yc-root .yc-benefits li:last-child {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.yc-root .yc-benefit-icon {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--color-emphasis);
+  stroke-width: 2;
+}
+
+.yc-root .yc-benefit-copy {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.yc-root .yc-benefit-emphasis {
+  color: color-mix(in srgb, var(--color-emphasis), var(--tc-ink) 18%);
+}
+
+.yc-root .yc-glyph-scene {
+  position: relative;
+  min-width: 0;
+  min-height: 100%;
+  overflow: hidden;
+  border-left: 1px solid var(--tc-hair);
+}
+
+.yc-root .yc-glyph-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.yc-root .yc-testimonial {
+  padding: clamp(72px, 9vw, 112px) var(--tc-gut);
+}
+
+.yc-root .yc-claim {
+  scroll-margin-top: 72px;
+}
+
+.yc-root .yc-close {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(360px, 1.04fr);
+  align-items: center;
+  gap: clamp(24px, 3.6vw, 48px);
+  overflow: hidden;
+  padding: clamp(64px, 6.5vw, 84px) var(--tc-gut);
+}
+
+.yc-root .yc-close h2 {
+  max-width: none;
+  font-size: clamp(2.5rem, 4vw, 3.55rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.yc-root .yc-close h2 span {
+  display: block;
+}
+
+.yc-root .yc-close-copy {
+  max-width: 43ch;
+  margin-top: 20px;
+  color: var(--tc-ink-2);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.yc-root .yc-close-actions {
+  justify-content: flex-start;
+  margin-top: 28px;
+}
+
+.yc-root .yc-close-globe {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 590px;
+  min-width: 0;
+  justify-self: end;
+  color: var(--tc-ink);
+  --tc-dark: var(--tc-paper);
+  --tc-panel: var(--tc-paper);
+  --iso-accent: var(--color-emphasis);
+  --iso-ink: color-mix(in srgb, var(--tc-ink) 80%, transparent);
+  --iso-ink-soft: color-mix(in srgb, var(--tc-ink) 44%, transparent);
+  --iso-ink-hair: color-mix(in srgb, var(--tc-ink) 20%, transparent);
+  --iso-label-color: color-mix(in srgb, var(--tc-ink) 70%, transparent);
+}
+
+.yc-root .yc-close-globe :is(.v0-glob-atmo-field, .eg) {
+  position: relative;
+  z-index: 1;
+  transform: scale(1.08);
+}
+
+.yc-root .yc-close-globe .v0-glob-atmo-field {
+  position: absolute;
+  z-index: -1;
+}
+
+@media (max-width: 900px) {
+  .yc-root .yc-glyph {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .yc-root .yc-hero h1 {
+    font-size: clamp(1.5rem, 3.4vw, 1.9rem);
+  }
+
+  .yc-root .yc-glyph-scene {
+    min-height: 480px;
+    border-top: 1px solid var(--tc-hair);
+    border-left: 0;
+  }
+
+  .yc-root .yc-close {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .yc-root .yc-close-globe {
+    max-width: 560px;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 760px) {
+  .yc-root .yc-hero {
+    min-height: clamp(640px, calc(100svh - 58px), 800px);
+  }
+
+  .yc-root .yc-hero h1 {
+    font-size: clamp(1.36rem, 6.2vw, 1.62rem);
+  }
+
+  .yc-root .yc-hero-copy {
+    width: min(calc(var(--yc-hole-radius) * 1.8), calc(100% - 32px));
+  }
+
+  .yc-root .yc-orbit-word b[data-orbit-part] {
+    font-size: 13px;
+  }
+
+  .yc-root .yc-orbit-flag {
+    width: 20px;
+    height: 15px;
+    margin-right: 6px;
+    line-height: 15px;
+  }
+
+  .yc-root .yc-partner-lockup {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .yc-root .yc-partner-lockup > img,
+  .yc-root .yc-partner-yc {
+    width: 28px;
+    height: 28px;
+  }
+
+  .yc-root .yc-partner-lockup > span {
+    font-size: 16px;
+  }
+
+  .yc-root .yc-hero-copy .yc-actions {
+    margin-top: 14px;
+  }
+
+  .yc-root .yc-hero-copy .yc-actions a {
+    height: 33px;
+    padding-right: 13px;
+    padding-left: 13px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 560px) {
+  .yc-root .yc-glyph-copy {
+    padding-top: 58px;
+    padding-bottom: 62px;
+  }
+
+  .yc-root .yc-glyph-scene {
+    min-height: 410px;
+  }
+
+  .yc-root .yc-testimonial {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .yc-root .yc-close {
+    padding-top: 62px;
+    padding-bottom: 68px;
+  }
+
+  .yc-root .yc-close h2 {
+    font-size: clamp(2.25rem, 10vw, 2.75rem);
+  }
+
+  .yc-root .yc-close-globe :is(.v0-glob-atmo-field, .eg) {
+    transform: none;
+  }
+}
+
+/* ---- the white hole: light mode trades the disc's ink for paper,
+   and everything standing on it re-inks to hold ---- */
+:root:not([data-theme='dark']) .yc-root .yc-hole-scene::after {
+  background: radial-gradient(
+    circle calc(var(--yc-hole-radius, 200px) - 3px) at var(--yc-hole-x, 50%)
+      var(--yc-hole-y, 47%),
+    #ffffff calc(100% - 1.5px),
+    transparent 100%
+  );
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-hero-copy {
+  color: #0b0b0d;
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-hero h1 {
+  color: #0b0b0d;
+  text-shadow: none;
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-partner-lockup > span {
+  color: rgb(10 11 13 / 55%);
+}
+
+/* the GT mark ships white; on paper it inverts to ink (the YC square
+   keeps its orange) */
+:root:not([data-theme='dark']) .yc-root .yc-partner-lockup > img:first-child {
+  filter: invert(1);
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-hero-copy .tc-btn-onink {
+  border-color: var(--tc-ink);
+  background: var(--tc-ink);
+  color: #f5f5f3;
+}
+
+:root:not([data-theme='dark']) .yc-root .yc-hero-copy .tc-btn-onink:hover {
+  border-color: color-mix(in srgb, var(--tc-ink) 86%, transparent);
+  background: color-mix(in srgb, var(--tc-ink) 86%, transparent);
+}
+
+/* ---------- carried in: the atmosphere's ink ----------
+   globe-atmosphere.css on the shipped page; the yc close band is the
+   only place this route draws the field. */
+.toolchain-root .v0-glob-atmo-field .v0-glob-atmo-dots {
+  fill: color-mix(in srgb, var(--tc-ink) 11%, transparent);
+}
+
+:root:not([data-theme='dark'])
+  .toolchain-root
+  .v0-glob-atmo-field
+  .v0-glob-atmo-dots {
+  fill: color-mix(in srgb, var(--tc-ink) 7%, transparent);
+}
+
+/* ---------- carried in: the testimonial's two semantic inks ----------
+   CursorTestimonial.tsx colors its type with the design system's
+   `text-foreground` / `text-muted-foreground` Tailwind tokens, which
+   this repo's theme does not define. The engine's own ink pair is the
+   same intent, so the two class names keep their place in the markup
+   (the diff against the shipped component stays legible) and resolve
+   here instead. */
+.yc-root .yc-testimonial .text-foreground {
+  color: var(--tc-ink);
+}
+
+.yc-root .yc-testimonial .text-muted-foreground {
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   CARRIED IN: the claim record's design-system layer.
+
+   YcContactForm.tsx dresses itself in the dashboard design
+   system's Tailwind tokens (--color-fd-border, --color-primary,
+   text-fd-muted-foreground, text-emphasis, the fd-ring focus
+   pair) plus its own yc-contact-form.css for the submit face.
+   None of that layer exists in this repo, so the markup keeps
+   the real component's class names — the diff against the
+   shipped form stays legible — and they resolve here against
+   the engine's equivalents. Substitution of the token layer
+   only: no metric, no copy and no structure is restyled.
+   ============================================================ */
+
+.yc-root .yc-claim {
+  --color-fd-border: var(--tc-hair);
+  --color-primary: var(--tc-ink);
+  --color-primary-foreground: #f5f5f3;
+}
+
+.yc-root .yc-claim .text-fd-muted-foreground {
+  color: var(--tc-ink-2);
+}
+
+.yc-root .yc-claim .text-fd-foreground\/90 {
+  color: color-mix(in srgb, var(--tc-ink) 90%, transparent);
+}
+
+.yc-root .yc-claim .text-emphasis {
+  color: var(--color-emphasis);
+}
+
+.yc-root .yc-claim :is(input, textarea) {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  font-size: 14px;
+}
+
+.yc-root .yc-claim :is(input, textarea)::placeholder {
+  color: var(--tc-ink-3);
+}
+
+.yc-root .yc-claim :is(input, textarea):focus-visible {
+  border-color: var(--color-emphasis);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-emphasis) 50%, transparent);
+}
+
+.yc-root .yc-claim .yc-contact-notice {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid var(--tc-hair);
+  color: var(--tc-ink-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.yc-root .yc-claim .yc-contact-notice a {
+  color: var(--tc-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* yc-contact-form.css, verbatim in its own tokens: the submit keeps the
+   ui-Button face the shipped form shows on both of its mounts. */
+.yc-root .yc-contact-form .yc-contact-actions button[type='submit'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: normal;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.yc-root .yc-contact-form .yc-contact-actions button[type='submit']:hover {
+  border-color: color-mix(in oklab, var(--color-primary) 80%, transparent);
+  background: color-mix(in oklab, var(--color-primary) 80%, transparent);
+}
+
+.yc-root .yc-contact-form .yc-contact-actions button[type='submit']:active {
+  transform: translateY(1px);
+}
+
+/* ============================================================
+   CARRIED IN: the Tailwind margins the reset eats.
+
+   globals.css in this repo opens with an UNLAYERED `* { margin: 0 }`
+   reset, and unlayered declarations outrank anything in Tailwind's
+   `utilities` layer — so every margin utility a ported component
+   carries (mt-5, mt-10, mx-auto and the rest) computes to 0 here
+   while it holds upstream. The shipped values
+   are restated below (Tailwind's default scale: 1 = 0.25rem), so
+   the two pages measure the same. Nothing is re-spaced; these ARE
+   the shipped numbers.
+   ============================================================ */
+
+/* CursorTestimonial: mx-auto centres the 600px column, mt-8 sets the
+   attribution off the quote */
+.yc-root .yc-testimonial .mx-auto {
+  margin-inline: auto;
+}
+
+.yc-root .yc-testimonial a.mt-8 {
+  margin-top: 2rem;
+}
+
+/* YcContactForm, embedded */
+.yc-root .yc-claim p.mt-5 {
+  margin-top: 1.25rem;
+}
+
+.yc-root .yc-claim div.mt-10 {
+  margin-top: 2.5rem;
+}
+
+.yc-root .yc-claim a.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.yc-root .yc-claim .mt-0\.5 {
+  margin-top: 0.125rem;
+}
+
+.yc-root .yc-claim .yc-contact-actions.mt-6 {
+  margin-top: 1.5rem;
+}

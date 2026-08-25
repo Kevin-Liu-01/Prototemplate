@@ -1,0 +1,581 @@
+/* ============================================================
+   PRODUCTION · SIGN IN — the shipped dashboard sign-in page,
+   reproduced.
+
+   This page is the one route in the control that does NOT live in
+   the marketing app: it ships from apps/dashboard
+   (src/app/[locale]/signin/page.tsx + src/components/signin/*), so
+   it wears the dashboard's own shadcn palette rather than the
+   toolchain sheet's --tc-* family. The tokens below are the
+   dashboard's values verbatim, from packages/ui/src/css/shared.css
+   (@layer base :root and .dark) with --radius: 0.5rem, so
+   rounded-md resolves to 6px. Every measurement in this file is
+   the real component's own Tailwind arbitrary value, transcribed —
+   the clamp()s are the shipped ones, not re-tuned.
+
+   Dark mode: the real app resolves dark as a root class; this repo
+   resolves it as [data-theme='dark']. Same remap, one selector
+   different.
+   ============================================================ */
+
+.psi-page {
+  /* --- dashboard light tokens (shared.css :root) --- */
+  --psi-bg: hsl(0 0% 100%);
+  --psi-fg: hsl(240 10% 3.9%);
+  --psi-muted: hsl(240 4.8% 95.9%);
+  --psi-muted-fg: hsl(240 3.8% 46.1%);
+  --psi-muted-fg-60: hsl(240 3.8% 46.1% / 0.6);
+  --psi-accent: hsl(240 4.8% 95.9%);
+  --psi-accent-fg: hsl(240 5.9% 10%);
+  --psi-primary: hsl(240 5.9% 10%);
+  --psi-primary-80: hsl(240 5.9% 10% / 0.8);
+  --psi-primary-fg: hsl(0 0% 98%);
+  --psi-border: hsl(240 5.9% 90%);
+  --psi-input: hsl(240 5.9% 90%);
+  --psi-input-fill: transparent;
+  --psi-ring: hsl(240 10% 3.9%);
+  --psi-popover: hsl(0 0% 100% / 0.6);
+  --psi-aside: hsl(240 4.8% 95.9% / 0.2);
+  --psi-shadow-lg:
+    0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+
+  /* the aside plate's ink — the real canvases carry it inline as
+     [--tc-ink:#2563eb] dark:[--tc-ink:#86a8ff] */
+  --psi-plate-ink: #2563eb;
+
+  --psi-radius: 6px;
+
+  background: var(--psi-bg);
+  color: var(--psi-fg);
+  font-family: var(--tc-sans);
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+}
+
+[data-theme='dark'] .psi-page {
+  /* --- dashboard dark tokens (shared.css .dark) --- */
+  --psi-bg: hsl(240 10% 3.9%);
+  --psi-fg: hsl(0 0% 98%);
+  --psi-muted: hsl(240 3.7% 15.9%);
+  --psi-muted-fg: hsl(240 5% 64.9%);
+  --psi-muted-fg-60: hsl(240 5% 64.9% / 0.6);
+  --psi-accent: hsl(240 3.7% 15.9%);
+  --psi-accent-fg: hsl(0 0% 98%);
+  --psi-primary: hsl(0 0% 98%);
+  --psi-primary-80: hsl(0 0% 98% / 0.8);
+  --psi-primary-fg: hsl(240 5.9% 10%);
+  --psi-border: hsl(240 3.7% 15.9%);
+  --psi-input: hsl(240 3.7% 15.9%);
+  --psi-input-fill: hsl(240 3.7% 15.9% / 0.3);
+  --psi-ring: hsl(240 4.9% 83.9%);
+  --psi-popover: hsl(240 10% 3.9% / 0.6);
+  --psi-aside: hsl(240 3.7% 15.9% / 0.2);
+  --psi-shadow-lg:
+    0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.4);
+  --psi-plate-ink: #86a8ff;
+}
+
+.psi-page *,
+.psi-page *::before,
+.psi-page *::after {
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   THE TWO COLUMNS
+   `grid flex-1 md:grid-cols-2` — one column on a phone (the form
+   IS the page), two from 768px up.
+   ============================================================ */
+
+.psi-split {
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+@media (min-width: 768px) {
+  .psi-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* `flex min-w-0 flex-col px-6 pt-[clamp(8px,8svh-40px,32px)]
+    pb-[clamp(8px,16svh-92px,52px)] sm:px-12 md:px-[clamp(28px,4vw,56px)]` */
+.psi-col {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-inline: 24px;
+  padding-top: clamp(8px, 8svh - 40px, 32px);
+  padding-bottom: clamp(8px, 16svh - 92px, 52px);
+}
+
+@media (min-width: 640px) {
+  .psi-col {
+    padding-inline: 48px;
+  }
+}
+
+@media (min-width: 768px) {
+  .psi-col {
+    padding-inline: clamp(28px, 4vw, 56px);
+  }
+}
+
+/* `mx-auto w-full max-w-[400px]` — the mark and the panel share one
+   measure, so the logo sits exactly over the form's left edge */
+.psi-measure {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* `flex flex-1 items-center py-[clamp(6px,15svh-87px,48px)]` */
+.psi-body {
+  display: flex;
+  flex: 1 1 0%;
+  align-items: center;
+  padding-block: clamp(6px, 15svh - 87px, 48px);
+}
+
+/* `inline-flex w-fit items-center [&_img]:h-[clamp(26px,3.33svh+8px,38px)]
+    [&_img]:w-auto` */
+.psi-mark {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+}
+
+.psi-mark img {
+  height: clamp(26px, 3.33svh + 8px, 38px);
+  width: auto;
+}
+
+/* ============================================================
+   THE PANEL
+   `space-y-[clamp(9px,4.67svh-18px,24px)]` on the form root, read
+   here as a flex column gap (identical spacing, no first-child
+   margin to unwind).
+   ============================================================ */
+
+.psi-panel {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(9px, 4.67svh - 18px, 24px);
+}
+
+.psi-h1 {
+  font-size: clamp(17px, 2.33svh + 5px, 26px);
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.psi-sub {
+  color: var(--psi-muted-fg);
+  margin-top: 8px;
+  font-size: clamp(11px, 0.67svh + 8px, 14px);
+  line-height: 1.45;
+}
+
+/* `space-y-[clamp(8px,1.4svh,12px)]` */
+.psi-form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.4svh, 12px);
+}
+
+.psi-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ---- the email field -------------------------------------------
+   The Input primitive plus the sign-in overrides. The font floor is
+   deliberate: `text-base` (16px) below md, the clamp only from md
+   up. Anything under 16px makes iOS Safari zoom the page on focus,
+   which on this layout throws the whole column off-centre. Do not
+   "tidy" the two rules into one clamp. */
+.psi-field {
+  height: clamp(33px, 3svh + 17px, 44px);
+  width: 100%;
+  min-width: 0;
+  border-radius: var(--psi-radius);
+  border: 1px solid var(--psi-input);
+  background: var(--psi-input-fill);
+  color: inherit;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 16px;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  outline: none;
+}
+
+@media (min-width: 768px) {
+  .psi-field {
+    font-size: clamp(13.5px, 1.9svh, 15px);
+  }
+}
+
+.psi-field::placeholder {
+  color: var(--psi-muted-fg-60);
+}
+
+.psi-field:focus-visible {
+  border-color: var(--psi-ring);
+}
+
+/* ---- the buttons ----------------------------------------------- */
+
+.psi-btn {
+  height: clamp(33px, 3svh + 17px, 44px);
+  width: 100%;
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: var(--psi-radius);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  padding-inline: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  outline: none;
+  user-select: none;
+}
+
+.psi-btn:active {
+  transform: translateY(1px);
+}
+
+.psi-btn:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.psi-btn:focus-visible {
+  border-color: var(--psi-ring);
+}
+
+.psi-btn.is-solid {
+  border-color: var(--psi-primary);
+  background: var(--psi-primary);
+  color: var(--psi-primary-fg);
+}
+
+.psi-btn.is-solid:hover {
+  border-color: var(--psi-primary-80);
+  background: var(--psi-primary-80);
+}
+
+/* `outline` + `w-full justify-start px-4 font-normal` */
+.psi-btn.is-outline {
+  border-color: var(--psi-border);
+  background: var(--psi-bg);
+  color: inherit;
+  justify-content: flex-start;
+  padding-inline: 16px;
+  font-weight: 400;
+}
+
+[data-theme='dark'] .psi-page .psi-btn.is-outline {
+  border-color: var(--psi-input);
+  background: var(--psi-input-fill);
+}
+
+.psi-btn.is-outline:hover {
+  background: var(--psi-accent);
+  color: var(--psi-accent-fg);
+}
+
+.psi-btn.is-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: inherit;
+}
+
+.psi-btn.is-ghost:hover {
+  background: var(--psi-muted);
+  color: var(--psi-fg);
+}
+
+.psi-btn-glyph {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+/* ---- the 'or' rule -------------------------------------------- */
+
+.psi-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* the Separator primitive: a decorative 1px bar, not an <hr> */
+.psi-or .psi-rule {
+  flex: 1 1 0%;
+  height: 1px;
+  background: var(--psi-border);
+  flex-shrink: 0;
+}
+
+.psi-or span {
+  color: var(--psi-muted-fg);
+  font-size: 12px;
+  line-height: 1.33;
+}
+
+/* `grid gap-[clamp(7px,1.2svh,10px)]` */
+.psi-socials {
+  display: grid;
+  gap: clamp(7px, 1.2svh, 10px);
+}
+
+/* ---- the study's honest notice --------------------------------
+   The captcha slot and the submit notice. Every control here is
+   inert by design; the page says so rather than faking a state. */
+.psi-slot {
+  border: 1px dashed var(--psi-border);
+  border-radius: var(--psi-radius);
+  color: var(--psi-muted-fg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  max-width: 100%;
+}
+
+.psi-slot svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.psi-notice {
+  border: 1px solid var(--psi-border);
+  border-radius: var(--psi-radius);
+  background: var(--psi-muted);
+  color: var(--psi-muted-fg);
+  margin: 0;
+  padding: 9px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.psi-notice a,
+.psi-legal a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* `text-muted-foreground text-center text-xs` */
+.psi-legal {
+  color: var(--psi-muted-fg);
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ============================================================
+   THE ASIDE PLATE
+   `bg-muted/20 relative hidden min-w-0 overflow-hidden md:block
+    md:border-s` — desktop only. On a phone the plate never mounts
+   visibly and both engines idle at zero size.
+   ============================================================ */
+
+.psi-aside {
+  position: relative;
+  display: none;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--psi-aside);
+}
+
+@media (min-width: 768px) {
+  .psi-aside {
+    display: block;
+    border-inline-start: 1px solid var(--psi-border);
+  }
+}
+
+.psi-globe {
+  --tc-ink: var(--psi-plate-ink);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  aspect-ratio: 1 / 1;
+  width: min(88%, 64svh);
+  transform: translate(-50%, -50%);
+}
+
+.psi-rain {
+  --tc-ink: var(--psi-plate-ink);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================================
+   THE SLIM FOOTER
+   `flex flex-wrap items-center justify-between gap-x-6 gap-y-2
+    border-t px-4 py-3 text-xs sm:px-6`
+   ============================================================ */
+
+.psi-foot {
+  color: var(--psi-muted-fg);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 24px;
+  row-gap: 8px;
+  border-top: 1px solid var(--psi-border);
+  padding: 12px 16px;
+  font-size: 12px;
+  line-height: 1.33;
+}
+
+@media (min-width: 640px) {
+  .psi-foot {
+    padding-inline: 24px;
+  }
+}
+
+.psi-foot p {
+  margin: 0;
+}
+
+/* ---- the language selector ------------------------------------ */
+
+.psi-lang {
+  position: relative;
+}
+
+/* `inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm` */
+.psi-lang-trigger {
+  color: var(--psi-muted-fg);
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: var(--psi-radius);
+  background: transparent;
+  padding-inline: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.psi-lang-trigger:hover,
+.psi-lang-trigger[aria-expanded='true'] {
+  background: var(--psi-accent);
+  color: var(--psi-accent-fg);
+}
+
+.psi-lang-trigger svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.psi-lang-chev {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
+.psi-lang-trigger[aria-expanded='true'] .psi-lang-chev {
+  transform: rotate(180deg);
+}
+
+/* PopoverContent side='top' align='end' sideOffset={4}, plus the
+   selector's own `flex max-h-72 min-w-[200px] flex-col
+   overflow-y-auto p-1` */
+.psi-lang-menu {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  right: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  max-height: 288px;
+  min-width: 200px;
+  max-width: 98vw;
+  overflow-y: auto;
+  border: 1px solid var(--psi-border);
+  border-radius: var(--psi-radius);
+  background: var(--psi-popover);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--psi-shadow-lg);
+  padding: 4px;
+  font-size: 14px;
+  color: var(--psi-fg);
+}
+
+.psi-lang-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-radius: var(--psi-radius);
+  background: transparent;
+  color: inherit;
+  padding: 8px 10px;
+  text-align: left;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  outline: none;
+}
+
+.psi-lang-row:hover {
+  background: var(--psi-accent);
+  color: var(--psi-accent-fg);
+}
+
+.psi-lang-row.is-active {
+  background: var(--psi-accent);
+  color: var(--psi-accent-fg);
+  font-weight: 500;
+}
+
+.psi-lang-row .fi {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.psi-lang-check {
+  margin-left: auto;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}

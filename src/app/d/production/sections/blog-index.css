@@ -1,0 +1,437 @@
+/* ============================================================
+   PRODUCTION · BLOG INDEX
+   The shipped blog index's own sheet, carried over from
+   apps/landing/src/components/blog/blog.css — the masthead
+   board, the flap cells, the changelog strip, the motif
+   covers and the dotted GT figure, rule for rule. The
+   article-only rules of that file (prose ramp, sidebar,
+   share bar, post footer) are not this page's and stay out.
+
+   Two adaptations, both forced by the port:
+     - --tb-flash reads --tc-accent; the shipped sheet points
+       it at --color-emphasis, a token of the landing app's
+       own engine sheet that this repo does not carry.
+     - .blog-index keeps its min-height rule; the shipped
+       file groups it with .blog-article.
+   ============================================================ */
+
+.blog-root {
+  --tb-flash: var(--tc-accent);
+
+  min-height: 100vh;
+}
+
+.blog-root .blog-index {
+  min-height: calc(100svh - 3.5rem);
+}
+
+.blog-root .blog-hero {
+  display: block;
+}
+
+/* ---- the terminus masthead: ticker strips flush at both edges ---- */
+
+.blog-root .blog-hero-board {
+  position: relative;
+  overflow: hidden;
+}
+
+/* four rows of board cells, flush against the band's edges, flipping
+   OVER the figure's dashes */
+.blog-root .blog-hero-ticker {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 88px;
+  pointer-events: none;
+}
+
+.blog-root .blog-hero-mast {
+  display: flex;
+  align-items: center;
+  min-height: clamp(88px, 8.5vw, 116px);
+}
+
+.blog-root .blog-hero-copy {
+  position: relative;
+  z-index: 1;
+  padding: 10px var(--tc-gut);
+}
+
+/* flap cells: an in-flow ghost holds the measure, the face rides above */
+.blog-root .tb-ch {
+  position: relative;
+  display: inline-block;
+}
+
+.blog-root .tb-ch-g {
+  visibility: hidden;
+}
+
+.blog-root .tb-ch-f {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  white-space: nowrap;
+  transform-origin: 50% 54%;
+}
+
+.blog-root .tb-word {
+  white-space: nowrap;
+}
+
+.blog-root .tb-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* the settled headline keeps the machine visible: each character stands
+   on a ghost tile — seam, lit upper leaf, hinge, shaded lower leaf */
+.blog-root .blog-hero-copy h1 .tb-ch::before {
+  content: '';
+  position: absolute;
+  inset: 0.03em 0.014em;
+  border-radius: 0.05em;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 3.5%, transparent);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, currentColor 1.8%, transparent) 0,
+    color-mix(in srgb, currentColor 1.8%, transparent) calc(54% - 1px),
+    color-mix(in srgb, currentColor 6.5%, transparent) calc(54% - 1px),
+    color-mix(in srgb, currentColor 6.5%, transparent) 54%,
+    color-mix(in srgb, currentColor 3%, transparent) 54%,
+    color-mix(in srgb, currentColor 3%, transparent) 100%
+  );
+}
+
+.blog-root .blog-hero h1 {
+  max-width: 12ch;
+  font-size: clamp(2.3rem, 3.4vw, 3.4rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+}
+
+/* the masthead band tightens on a phone (the shipped rule ships in a
+   shared max-width:700px block with the article nav) */
+@media (max-width: 700px) {
+  .blog-root .blog-hero-mast {
+    min-height: 84px;
+  }
+}
+
+/* ---- the updates board: releases as one departures strip ---- */
+
+/* the head lives on the board itself: same ground, no rule between */
+.blog-root .blog-updates-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  padding: 16px var(--tc-gut) 0;
+}
+
+.blog-root .blog-updates-head h2 {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.blog-root .blog-updates-arrows {
+  display: flex;
+  gap: 6px;
+}
+
+.blog-root .blog-updates-arrows button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.blog-root .blog-updates-arrows button:hover:not([aria-disabled='true']) {
+  color: var(--tc-ink);
+}
+
+.blog-root .blog-updates-arrows button[aria-disabled='true'] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.blog-root .blog-updates-board {
+  overflow: hidden;
+  border-bottom: 1px solid var(--tc-hair);
+  background: color-mix(in srgb, var(--tc-ink) 2.5%, var(--tc-panel));
+}
+
+.blog-root .blog-updates-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 14px var(--tc-gut) 18px;
+  scroll-snap-type: x proximity;
+  /* the snapport honors the inset — without this, snap pulls the first
+     slab flush against the hall's left edge */
+  scroll-padding-left: var(--tc-gut);
+  scrollbar-width: none;
+  cursor: grab;
+  /* the waiting sixth slab dissolves at the hall's right edge */
+  mask-image: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - 44px),
+    transparent 100%
+  );
+}
+
+.blog-root .blog-updates-track.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+  scroll-snap-type: none;
+}
+
+.blog-root .blog-updates-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* exactly five slabs fill the hall; the rest wait past the edge */
+.blog-root .blog-updates-cell {
+  position: relative;
+  z-index: 0;
+  display: grid;
+  flex: 0 0 calc((100% - 40px) / 5);
+  box-sizing: border-box;
+  gap: 11px;
+  /* meta / name / headline / version chip: the headline row absorbs
+     the height difference between one- and two-line summaries, so the
+     chip sits on the cell's floor, aligned with the corner mark, at
+     every content length */
+  grid-template-rows: auto auto 1fr auto;
+  min-width: 0;
+  padding: 13px 15px 15px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-paper);
+  scroll-snap-align: start;
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+/* hover affordance: the go-arrow surfaces in the slab's free corner */
+.blog-root .blog-updates-go {
+  position: absolute;
+  top: 14px;
+  right: 15px;
+  color: var(--tc-ink-3);
+  opacity: 0;
+  transform: translate(-3px, 3px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.blog-root .blog-updates-cell:hover .blog-updates-go,
+.blog-root .blog-updates-cell:focus-visible .blog-updates-go {
+  opacity: 1;
+  transform: none;
+}
+
+/* the marque seated in the slab's corner, a watermark under the copy.
+   Solid ink faded as a group — a translucent fill would double up
+   where the monogram's outline paths overlap and read as seams. */
+.blog-root .blog-updates-mark {
+  position: absolute;
+  z-index: -1;
+  right: 15px;
+  bottom: 15px;
+  display: flex;
+  color: var(--tc-ink);
+  opacity: 0.2;
+}
+
+.blog-root .blog-updates-cell:hover {
+  border-color: var(--tc-ink-3);
+}
+
+.blog-root .blog-updates-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.blog-root .blog-updates-meta time {
+  color: var(--tc-ink-3);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.blog-root .blog-updates-cell strong {
+  display: block;
+  overflow: hidden;
+  color: var(--tc-ink);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* the condensed release summary: one quiet line under the package name */
+.blog-root .blog-updates-headline {
+  display: block;
+  margin-top: -5px;
+  color: var(--tc-ink-3);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* the version settles on one flap chip — seam, lit leaf, hinge, shade */
+.blog-root .blog-updates-ver {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  height: 21px;
+  padding: 0 8px;
+  border-radius: 3px;
+  color: color-mix(in srgb, var(--tc-ink) 82%, transparent);
+  font-size: 12px;
+  font-weight: 500;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--tc-ink) 6%, transparent) 0 calc(54% - 1px),
+    color-mix(in srgb, var(--tc-ink) 12%, transparent) calc(54% - 1px) 54%,
+    color-mix(in srgb, var(--tc-ink) 4%, transparent) 54% 100%
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tc-ink) 5%, transparent);
+  transition: color 200ms ease;
+}
+
+/* hover: the board's phosphor re-ink */
+.blog-root .blog-updates-cell:hover .blog-updates-ver {
+  color: #2563eb;
+}
+
+[data-theme='dark'] .blog-root .blog-updates-cell:hover .blog-updates-ver {
+  color: #86a8ff;
+}
+
+/* ---- the essays board: filters + search, features, then blocks ---- */
+
+.blog-root .blog-essays {
+  padding-bottom: clamp(56px, 7vw, 92px);
+}
+
+/* the motif covers: type poured from the Bayer ramp in the house blue */
+.blog-root .blog-feature-dither text {
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.blog-root .blog-dither-cover.blog-feature-dither pattern path {
+  fill: #2563eb;
+}
+
+[data-theme='dark']
+  .blog-root
+  .blog-dither-cover.blog-feature-dither
+  pattern
+  path {
+  fill: #86a8ff;
+}
+
+/* the simple blog image: the hero's dither, poured per slug. Sizing
+   (aspect/height) belongs to each slot's utilities — an unlayered
+   aspect here would outrank them. */
+.blog-root .blog-dither-cover {
+  display: block;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--tc-ink) 4%, transparent);
+}
+
+.blog-root .blog-dither-cover svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.blog-root .blog-dither-cover pattern path {
+  fill: color-mix(in srgb, var(--tc-ink) 74%, transparent);
+}
+
+/* the post image itself: the card slot owns the aspect, the image fills it */
+.blog-root .blog-post-cover {
+  width: 100%;
+  object-fit: cover;
+}
+
+/* below five-across, the slabs hold a readable width and scroll */
+@media (max-width: 1250px) {
+  .blog-root .blog-updates-cell {
+    flex-basis: 236px;
+  }
+}
+
+/* ---- the GT figure: dotted blueprint standing in the field ---- */
+
+/* the figure's slot spans the hero; the ticker boards are solid, so
+   the mask cuts the dashes dead at their edges — the figure exists
+   only in the open band, passing behind the boards */
+.blog-root .blog-hero-figure-slot {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0 88px,
+    #000 88px calc(100% - 88px),
+    transparent calc(100% - 88px) 100%
+  );
+}
+
+.blog-root .blog-hero-figure {
+  position: absolute;
+  top: 50%;
+  right: var(--tc-gut);
+  height: 105%;
+  width: auto;
+  transform: translateY(-50%);
+}
+
+.blog-root .blog-hero-figure path {
+  fill: none;
+  stroke: var(--tc-ink-3);
+  stroke-width: 1.25;
+  stroke-dasharray: 2 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 720px) {
+  .blog-root .blog-hero-figure {
+    display: none;
+  }
+}

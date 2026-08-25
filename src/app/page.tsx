@@ -334,8 +334,11 @@ export default function IndexPage() {
                   <span className='pt-site-flag'>the shipped site</span>
                 </h3>
                 <p>{site.signature}</p>
+                <SiteCompare slug={site.slug} name={site.name} />
                 <p className='pt-site-links'>
-                  <Link href={`/d/${site.slug}`}>open the page</Link>
+                  <Link href={`/d/${site.slug}`}>open the home</Link>
+                  <span aria-hidden> · </span>
+                  <Link href={`/d/${site.slug}/enterprise`}>open the enterprise page</Link>
                 </p>
               </section>
             ))}
