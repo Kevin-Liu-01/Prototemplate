@@ -44,7 +44,7 @@ export const metadata = {
     build is a site too, but it is not one of the proposals, so it is listed
     on its own rather than padding the count. */
 const SITES = DIRECTIONS.filter((d) => d.site && !d.reference);
-const REFERENCES = DIRECTIONS.filter((d) => d.reference);
+const REFERENCE = DIRECTIONS.find((d) => d.reference);
 const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
 
 /** The presenter's actual running order. */
@@ -132,11 +132,12 @@ export default function IndexPage() {
                 the field of everything built, hatched shoulders carrying away
                 what fell, down to the three windows fanned like the captures
                 further down the page. */}
-            <figure
-              aria-label='The distillation: more than twenty directions built, thirteen survived review, three became full sites.'
-              className='pt-opener-fig'
-              role='img'
-            >
+            <div className='pt-opener-right'>
+              <figure
+                aria-label='The distillation: more than twenty directions built, thirteen survived review, three became full sites.'
+                className='pt-opener-fig'
+                role='img'
+              >
               <i className='pt-xline is-h is-top' />
               <i className='pt-xline is-h is-bot' />
               <i className='pt-xline is-v is-l' />
@@ -235,8 +236,30 @@ export default function IndexPage() {
                   <tspan className='pt-funnel-n'>3</tspan>
                   <tspan className='pt-funnel-t' dx='12'>FULL SITES</tspan>
                 </text>
-              </svg>
-            </figure>
+                </svg>
+              </figure>
+
+              {/* the funnel's floor: what all of it was measured against. The
+                  three windows above are proposals; this is the shipped site,
+                  rebuilt page for page, so a direction is legible next to what
+                  it trades away. Outside the figure because that carries
+                  role='img' — a link inside it would be unreachable. */}
+              {REFERENCE ? (
+                <Link className='pt-opener-control' href={`/d/${REFERENCE.slug}`}>
+                  <span aria-hidden className='pt-opener-control-shot'>
+                    <img alt='' className='is-light' draggable={false} loading='lazy' src={`/shots/light/${REFERENCE.slug}.jpg`} />
+                    <img alt='' className='is-dark' draggable={false} loading='lazy' src={`/shots/dark/${REFERENCE.slug}.jpg`} />
+                  </span>
+                  <span className='pt-opener-control-cap'>
+                    <b>The control</b>
+                    <span>
+                      The shipped site, rebuilt page for page — the thing every direction
+                      above is measured against.
+                    </span>
+                  </span>
+                </Link>
+              ) : null}
+            </div>
           </section>
 
           <div className='pt-hatch' aria-hidden='true' />
@@ -301,37 +324,6 @@ export default function IndexPage() {
                   {site.slug === 'singularity-dossier' && (
                     <span className='pt-site-flag'>the completed direction</span>
                   )}
-                </h3>
-                <p>{site.signature}</p>
-                <SiteCompare slug={site.slug} name={site.name} />
-                <p className='pt-site-links'>
-                  <Link href={`/d/${site.slug}`}>open the home</Link>
-                  <span aria-hidden> · </span>
-                  <Link href={`/d/${site.slug}/enterprise`}>open the enterprise page</Link>
-                </p>
-              </section>
-            ))}
-          </div>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec'>
-            <h2>The control</h2>
-            <p>
-              Every direction above argues for something. This one argues for nothing: the
-              shipped site, reproduced section for section in the order it mounts them,
-              carrying its own copy. It exists so a proposal can be held beside the thing it
-              proposes to replace — what a direction gains is only legible next to what it
-              trades away.
-            </p>
-          </section>
-
-          <div className='pt-sites'>
-            {REFERENCES.map((site) => (
-              <section className='pt-sec pt-site' key={site.slug}>
-                <h3>
-                  {site.name}
-                  <span className='pt-site-flag'>the shipped site</span>
                 </h3>
                 <p>{site.signature}</p>
                 <SiteCompare slug={site.slug} name={site.name} />
