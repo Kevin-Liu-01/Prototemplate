@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import CodeBlock from '../sections/code';
 import { useQuietReveal } from '../sections/reveal';
 import { FEATURED, postHref } from './posts';
+import { useConceptBase } from './use-concept-base';
 
 /**
  * The newest essay, filed like a dossier exhibit: a ruled plate carrying the
@@ -37,6 +38,7 @@ const FIX = `<T>
 export default function BlogFeature() {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
+  const base = useConceptBase();
 
   return (
     <section className='tc-sec' ref={root}>
@@ -49,7 +51,7 @@ export default function BlogFeature() {
         <div className='cpb-feat-body'>
           <div className='cpb-feat-meta' data-reveal>
             <h2>
-              <a href={postHref(FEATURED.slug)}>{FEATURED.title}</a>
+              <a href={postHref(base, FEATURED.slug)}>{FEATURED.title}</a>
             </h2>
             <p className='cpb-feat-dek'>{FEATURED.summary}</p>
             <p className='cpb-feat-by'>{FEATURED.authors.join(', ')}</p>
@@ -61,7 +63,7 @@ export default function BlogFeature() {
               ))}
             </div>
             <div className='cpb-feat-act'>
-              <a className='tc-btn tc-btn-line tc-btn-sm' href={postHref(FEATURED.slug)}>
+              <a className='tc-btn tc-btn-line tc-btn-sm' href={postHref(base, FEATURED.slug)}>
                 Read the post
               </a>
             </div>

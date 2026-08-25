@@ -73,7 +73,9 @@ function LinkedInMark({ className, color, ...rest }: MarkProps) {
  * blog, pricing, locales, careers and contact, so a hardcoded
  * generaltranslation.com href sent readers off to the live site instead of
  * the page sitting one route away. Only what has no page here stays absolute:
- * the docs, the social venues and the legal documents. */
+ * the docs and the social venues. The legal column joined the internal set
+ * once the concepts started shipping /legal and /legal/<document> of their
+ * own — the same documents, in the concept's own dress. */
 const columns = (
   base: string,
 ): readonly { title: string; links: readonly FooterLink[] }[] => [
@@ -134,21 +136,9 @@ const columns = (
   {
     title: "Legal",
     links: [
-      {
-        label: "Terms of Service",
-        href: "https://generaltranslation.com/terms",
-        external: true,
-      },
-      {
-        label: "Privacy",
-        href: "https://generaltranslation.com/privacy",
-        external: true,
-      },
-      {
-        label: "Acceptable Use Policy",
-        href: "https://generaltranslation.com/aup",
-        external: true,
-      },
+      { label: "Terms of Service", href: `${base}/legal/terms` },
+      { label: "Privacy", href: `${base}/legal/privacy-policy` },
+      { label: "Acceptable Use Policy", href: `${base}/legal/acceptable-use` },
       { label: "Manage Cookies", href: "#" },
     ],
   },

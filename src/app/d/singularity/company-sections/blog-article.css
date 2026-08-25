@@ -1,0 +1,611 @@
+/* ============================================================
+   SINGULARITY · COMPANY PAGES — the blog ARTICLE (cpa-).
+   The landing app's article anatomy (blog.css) carried into the
+   dossier grammar: a rail column holding the back link and the
+   contents list, the copy column holding the eyebrow, title,
+   summary, byline and motif cover, the prose beneath, and the
+   post footer. Structure from the source, dress from company.css.
+   ============================================================ */
+
+.singularity-root .cpa {
+  /* the sticky navbar's own height (58px + its hairline) — every sticky
+     offset and anchor inset below is measured from it */
+  --cpa-nav: 59px;
+  /* the small-screen contents bar, which rides under the navbar */
+  --cpa-bar: 48px;
+  --cpa-rail-w: 220px;
+  --cpa-gap: clamp(28px, 4vw, 56px);
+  /* the article's one mark colour — the contents rail's active tick, the
+     progress arc, and the cover's dither ink all spend the same blue */
+  --cpa-mark: var(--tc-accent);
+}
+
+/* ---- the lead: rail column, copy column, cover ---- */
+
+/* The bottom padding centres the cover: the space below it (this padding
+   plus the prose's 30px top inset) equals the space above it (the lead's
+   row gap plus the cover's 22px margin), so pb = gap - 8px. */
+.singularity-root .cpa-header {
+  padding: clamp(48px, 6vw, 76px) var(--tc-gut) calc(var(--cpa-gap) - 8px);
+}
+
+.singularity-root .cpa-lead {
+  display: grid;
+  grid-template-columns: var(--cpa-rail-w) minmax(0, 1fr);
+  gap: var(--cpa-gap);
+}
+
+.singularity-root .cpa-lead-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.singularity-root .cpa-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  transition: color 0.16s ease;
+}
+
+.singularity-root .cpa-back:hover {
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-back svg {
+  width: 14px;
+  height: 14px;
+}
+
+.singularity-root .cpa-lead-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.singularity-root .cpa-lead-tags span {
+  padding: 2px 9px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 999px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .cpa-crumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpa-crumb a:hover {
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-copy h1 {
+  margin-top: 12px;
+  max-width: 22ch;
+  font-family: var(--tc-disp);
+  font-size: clamp(30px, 3.9vw, 50px);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 1.05;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-summary {
+  margin-top: 18px;
+  max-width: 58ch;
+  font-size: 16px;
+  line-height: 1.58;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .cpa-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpa-byline time {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+/* the cover rides the copy column only while the lead keeps its rail */
+.singularity-root .cpa-cover {
+  overflow: hidden;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  margin-top: 22px;
+}
+
+@media (min-width: 981px) {
+  .singularity-root .cpa-cover {
+    grid-column: 2;
+  }
+}
+
+/* ---- the motif cover ---- */
+
+.singularity-root .cpa-dither {
+  display: block;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--tc-ink) 4%, transparent);
+}
+
+.singularity-root .cpa-dither svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.singularity-root .cpa-dither text {
+  font-family: var(--tc-disp);
+  font-weight: 600;
+}
+
+/* the ramp is poured in the direction's one accent */
+.singularity-root .cpa-dither pattern path {
+  fill: var(--cpa-mark);
+}
+
+/* tall enough that the motif renders whole and large */
+.singularity-root .cpa-cover .cpa-dither {
+  aspect-ratio: 2 / 1;
+}
+
+.singularity-root .cpa-dither.is-card {
+  aspect-ratio: 16 / 6;
+}
+
+/* ---- the body grid: contents rail, prose ---- */
+
+.singularity-root .cpa-grid {
+  display: grid;
+  grid-template-columns: var(--cpa-rail-w) minmax(0, 1fr);
+  gap: var(--cpa-gap);
+  padding-left: var(--tc-gut);
+}
+
+/* both columns opt out of min-width:auto — a `white-space: pre` code panel
+   would otherwise blow the prose column past the rail */
+.singularity-root .cpa-rail,
+.singularity-root .cpa-main {
+  min-width: 0;
+}
+
+.singularity-root .cpa-rail-sticky {
+  position: sticky;
+  top: calc(var(--cpa-nav) + 18px);
+}
+
+.singularity-root .cpa-toc {
+  padding: 30px 26px 30px 0;
+}
+
+.singularity-root .cpa-toc h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+/* the ring closes the label line, so progress reads where the eye already is */
+.singularity-root .cpa-toc h2 .cpa-ring {
+  margin-left: auto;
+}
+
+.singularity-root .cpa-toc-list {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpa-toc-item {
+  margin-left: -1px;
+  padding: 5px 0 5px 14px;
+  border-left: 1px solid transparent;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--tc-ink-2);
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.singularity-root .cpa-toc-item[data-depth='3'] {
+  padding-left: 24px;
+}
+
+.singularity-root .cpa-toc-item:hover {
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-toc-item[data-active='true'] {
+  border-left-color: var(--cpa-mark);
+  color: var(--tc-ink);
+}
+
+/* ---- the reading-progress ring ---- */
+
+/* the arc carries the mark, not the ink: a quarter turn in ink-3 over an
+   ink-3 track is invisible in the dark, which is the one place the ring
+   has to be readable */
+.singularity-root .cpa-ring {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--cpa-mark);
+}
+
+.singularity-root .cpa-ring-track {
+  stroke: var(--tc-hair);
+}
+
+.singularity-root .cpa-ring-arc {
+  stroke: currentColor;
+  transition: stroke-dashoffset 0.24s ease;
+}
+
+/* ---- the small-screen contents popover ---- */
+
+.singularity-root .cpa-toc-pop {
+  display: none;
+}
+
+.singularity-root .cpa-toc-bar {
+  display: flex;
+  width: 100%;
+  height: var(--cpa-bar);
+  align-items: center;
+  gap: 10px;
+  padding-inline: var(--tc-gut);
+  border: 0;
+  background: transparent;
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+}
+
+.singularity-root .cpa-toc-bar .cpa-ring {
+  width: 18px;
+  height: 18px;
+}
+
+.singularity-root .cpa-toc-bar-label {
+  flex: 1;
+  overflow: hidden;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.singularity-root .cpa-toc-bar svg:last-child {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  transition: transform 0.18s ease;
+}
+
+.singularity-root .cpa-toc-bar svg:last-child.is-open {
+  transform: rotate(180deg);
+}
+
+.singularity-root .cpa-toc-panel {
+  padding: 14px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+}
+
+/* ---- the prose ---- */
+
+/* the prose sits on the copy column's own left edge — flush with the title
+   and cover above, not centred in the leftover width */
+.singularity-root .cpa-prose {
+  width: min(100%, 700px);
+  padding: 30px var(--tc-gut) clamp(64px, 7vw, 96px) 0;
+  font-family: var(--tc-sans);
+  font-size: 15.5px;
+  line-height: 1.74;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .cpa-prose h2,
+.singularity-root .cpa-prose h3 {
+  scroll-margin-top: calc(var(--cpa-nav) + 26px);
+  font-family: var(--tc-disp);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-prose h2 {
+  margin-top: 1.7em;
+  font-size: clamp(21px, 2.2vw, 27px);
+}
+
+.singularity-root .cpa-prose h3 {
+  margin-top: 1.6em;
+  font-size: clamp(17px, 1.7vw, 20px);
+}
+
+.singularity-root .cpa-prose p {
+  margin-block: 1.15em;
+}
+
+.singularity-root .cpa-prose ul {
+  margin-block: 1.15em;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.singularity-root .cpa-prose li {
+  margin-block: 0.35em;
+}
+
+.singularity-root .cpa-prose strong {
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+/* inline code only — the code PANEL owns the <code> inside .tc-code, and a
+   bordered chip in there would ring every single line */
+.singularity-root .cpa-prose :is(p, li, h2, h3) > code {
+  font-family: var(--tc-mono);
+  font-size: 0.86em;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-prose hr {
+  height: 0;
+  margin-block: 2em;
+  border: 0;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpa-prose .tc-code {
+  margin-block: 1.5em;
+}
+
+.singularity-root .cpa-prose > :first-child {
+  margin-top: 0;
+}
+
+.singularity-root .cpa-prose > :last-child {
+  margin-bottom: 0;
+}
+
+/* the shell-only lede's footnote: this study's own note, filed as one */
+.singularity-root .cpa-stub {
+  padding-top: 18px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  line-height: 1.62;
+  color: var(--tc-ink-3);
+}
+
+/* ---- the post footer ---- */
+
+.singularity-root .cpa-foot {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpa-foot-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.singularity-root .cpa-foot-link {
+  display: flex;
+  min-height: 140px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 28px var(--tc-gut);
+  border-right: 1px solid var(--tc-hair);
+  color: inherit;
+}
+
+.singularity-root .cpa-foot-link.is-next {
+  align-items: flex-end;
+  border-right: 0;
+  text-align: right;
+}
+
+.singularity-root .cpa-foot-link > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpa-foot-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.singularity-root .cpa-foot-link strong {
+  max-width: 30ch;
+  font-family: var(--tc-disp);
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-explore {
+  border-top: 1px solid var(--tc-hair);
+  padding: clamp(36px, 4.4vw, 56px) var(--tc-gut);
+}
+
+.singularity-root .cpa-explore-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 26px;
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpa-explore-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.singularity-root .cpa-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  transition: border-color 0.16s ease;
+}
+
+.singularity-root .cpa-card:hover {
+  border-color: var(--tc-ink-3);
+}
+
+.singularity-root .cpa-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 22px;
+}
+
+.singularity-root .cpa-card-meta {
+  display: flex;
+  gap: 14px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpa-card strong {
+  font-family: var(--tc-disp);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.24;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpa-card-dek {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+/* ---- below the rail breakpoint ---- */
+
+@media (max-width: 980px) {
+  .singularity-root .cpa-lead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  /* the cover-centring equation re-solves for the stacked lead's 22px gap */
+  .singularity-root .cpa-header {
+    padding-bottom: 14px;
+  }
+
+  .singularity-root .cpa-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-left: 0;
+  }
+
+  /* the rail becomes a bar stuck under the navbar, riding the whole read */
+  .singularity-root .cpa-rail {
+    position: sticky;
+    z-index: 30;
+    top: var(--cpa-nav);
+    order: -1;
+    border-block: 1px solid var(--tc-hair);
+    background: var(--tc-paper);
+  }
+
+  .singularity-root .cpa-rail:empty {
+    display: none;
+  }
+
+  .singularity-root .cpa-rail-sticky {
+    display: none;
+  }
+
+  .singularity-root .cpa-toc-pop {
+    display: block;
+  }
+
+  .singularity-root .cpa-prose {
+    padding-inline: var(--tc-gut);
+  }
+
+  /* the sticky stack over the prose is navbar + contents bar */
+  .singularity-root .cpa-prose h2,
+  .singularity-root .cpa-prose h3 {
+    scroll-margin-top: calc(var(--cpa-nav) + var(--cpa-bar) + 16px);
+  }
+}
+
+@media (max-width: 700px) {
+  .singularity-root .cpa-foot-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .singularity-root .cpa-foot-link {
+    border-right: 0;
+  }
+
+  .singularity-root .cpa-foot-link.is-next {
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .singularity-root .cpa-explore-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- dark ---- */
+
+/* the house blue lifts off the ink-black ground, as it does on the index */
+[data-theme='dark'] .singularity-root .cpa {
+  --cpa-mark: #86a8ff;
+}

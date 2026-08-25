@@ -14,6 +14,8 @@ import TopNav from '../../singularity/sections/TopNav';
 import '../../singularity/sections/logos-icons.css';
 import '../../singularity/styles.css';
 import '../../singularity/sections/enterprise.css';
+/* the desk pointer in the contact band draws this sheet's sgec- rules */
+import '../../singularity/sections/enterprise-contact.css';
 import '../styles.css';
 
 export const metadata = {
@@ -34,7 +36,7 @@ export default function SingularityDossierPage() {
       <div className='singularity-root sgd-root'>
         <TopNav />
         <Hero />
-        <EnterpriseContact />
+        <EnterpriseContact deskPath='/enterprise/contact' />
         <div className='tc-rail'>
           <EnterpriseEvidence />
           <EnterpriseFrameworks />
