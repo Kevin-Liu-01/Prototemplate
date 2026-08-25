@@ -1,0 +1,1045 @@
+'use client';
+
+import { useRef } from 'react';
+import type { ComponentType, CSSProperties, SVGProps } from 'react';
+
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+import {
+  SiContentful,
+  SiFigma,
+  SiGithub,
+  SiGoogledrive,
+  SiMarkdown,
+  SiMintlify,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiNotion,
+  SiPython,
+  SiReact,
+  SiSanity,
+  SiTanstack,
+} from '@icons-pack/react-simple-icons';
+
+import {
+  ISO_COS30,
+  ISO_SIN30,
+  frontEdge,
+  leftFace,
+  markPath,
+  plane,
+  polyline,
+  project,
+  rightFace,
+  roundedPolygon,
+  segment,
+  silhouette,
+  topFace,
+  type IsoBox,
+  type Pt,
+} from '@/app/d/toolchain/diagrams/iso';
+import GtLogoText from './GtLogoText';
+import { BentoCell } from '@/components/shell/Bento';
+
+/* tcm-ruled (the split row's ruled copy cell) is defined by the toolchain
+   bento sheet; the v0 routes don't mount that section, so the sheet rides
+   in here the way the pages import styles.css directly. */
+import '@/app/d/toolchain/sections/bento-motion.css';
+import './locadex.css';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+/**
+ * PRODUCTION Locadex — the shipped section, reproduced: an iso composition
+ * reading left to right — the repository plate with its module grid, the
+ * Locadex agent slab hovering over it with a scan beam sweeping the modules,
+ * and the output plate carrying the merged-PR chip, the drawing's one accent
+ * — plus the integrate block's connector diagram: four source nodes feeding
+ * one Locadex plate.
+ *
+ * The plates use the stack tower's material (StackTower / fullstack.css
+ * .v0s-*): opaque extruded plates in the dark band's ink family — hull
+ * under three face fills lit from the upper left, 1px rims and top edges
+ * whose alphas step brighter toward the story's focus — with the plates'
+ * artwork as miniature extrusions of the same stock. The section is a
+ * tc-head band over two split rows (a ruled copy cell and a framed
+ * artifact cell — row 1 words-first, row 2 diagram-first), whose seams the
+ * rows own.
+ */
+
+/** The copy cell's one CTA: the dashboard's GitHub connect flow. The
+    shipped page links its own '/dashboard/api/integrations/github/start'
+    path, which the landing app redirects to the dashboard host — the
+    prototype names that host outright, since it serves no /dashboard. */
+const CONNECT_GITHUB =
+  'https://dash.generaltranslation.com/api/integrations/github/start?returnTo=' +
+  encodeURIComponent('/');
+
+/* ---- geometry, all through the family's 30° projection ------------------ */
+
+/** Repository plate: half-size and thickness at the tower's plate gauge
+    (thickness ~4% of footprint). */
+const R_HALF = 38;
+const R_H = 3;
+const REPO_BOX: IsoBox = {
+  x: -R_HALF,
+  y: -R_HALF,
+  z: 0,
+  w: R_HALF * 2,
+  d: R_HALF * 2,
+  h: R_H,
+};
+
+/** Agent slab: half-size, hover height, thickness. */
+const A_HALF = 22;
+const A_Z = 54;
+const A_H = 7;
+const AGENT_BOX: IsoBox = {
+  x: -A_HALF,
+  y: -A_HALF,
+  z: A_Z,
+  w: A_HALF * 2,
+  d: A_HALF * 2,
+  h: A_H,
+};
+
+/** Output plate (the pull request), same stock as the repository. */
+const PR_BOX: IsoBox = { x: 57, y: -121, z: 0, w: 64, d: 64, h: 3 };
+
+/** Module grid on the repository plate: 3×3 raised chips of 14, stepped 22 —
+    the tower's chip drawing (a rounded extrusion, hull + lighter top face),
+    each topped by a content bar so the modules read as files, not tiles. */
+const CHIP_POS: readonly number[] = [-29, -7, 15];
+const CHIP_SIZE = 14;
+const CHIP_H = 3;
+const CHIP_TOP = R_H + CHIP_H;
+/** The content bars' widths, row-major — ragged like a real file list. */
+const CHIP_BARS: readonly number[] = [8, 6, 7, 5, 8, 6, 6, 7, 5];
+
+/** The front-left module carries the mask-rendered GitHub mark instead of a
+    content bar — the repository's one identifying glyph, in the chip's own
+    quiet ink. The corner seat keeps it out of the beam's core path: the
+    land line (y sweeping ±BEAM_LAND_Y) reaches this chip only at the far
+    end of a pass. */
+const GH_CHIP: readonly [number, number] = [-29, 15];
+const GH_HALF = 4.6;
+
+/** The merged plate's evidence: the diff carries the plate alone — no
+    title bars — a hunk of deletes over a hunk of adds, each group banded,
+    ragged widths, raised off the face like the payload chip but tinted at
+    the band's diff voices, kept well under the accent's presence. */
+const DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
+  { w: 22, tone: 'del' },
+  { w: 27, tone: 'del' },
+  { w: 16, tone: 'del' },
+  { w: 25, tone: 'add' },
+  { w: 18, tone: 'add' },
+  { w: 27, tone: 'add' },
+  { w: 20, tone: 'add' },
+];
+const DIFF_X = 64;
+/* The hunk fills the
+   plate's left half up to the upright merged chip. Deep rows
+   shingle so each GROUP fuses into one striped hunk, while DIFF_GAP
+   opens a breath of bare plate where del turns to add. */
+const DIFF_Y0 = -111;
+const DIFF_STEP = 6.6;
+const DIFF_GAP = 5;
+const DIFF_D = 3.8;
+const DIFF_H = 1.8;
+
+/** The margin signs: a flat +/− lying on the plate left of each diff
+    line, in the line's own tint — arm half-length and bar half-thickness
+    in plan units, seated between the plate's edge and the hunk. */
+const SIGN_CX = 60;
+const SIGN_ARM = 1.9;
+const SIGN_T = 0.6;
+
+/**
+ * The scan beam is a vertical sheet under the agent — from its underside at
+ * z=A_Z down to the module chips' top faces (the grid is extruded now, so
+ * landing any lower would slice the light through the chip bodies) — drawn
+ * at y=0 and swept along world +y by GSAP. A world-y translation projects
+ * to a constant screen vector (−cos30, +sin30) per unit, so the sweep is
+ * one x/y tween.
+ */
+/* The sheet LEANS as it sweeps — a rigid translate would send the top
+   past the slab: the top edge travels only ±BEAM_TOP_Y, always under the ±22
+   slab, while the land line travels ±BEAM_LAND_Y so it crosses every
+   module row (the grid spans ±29). A leaning quad cannot be a translated
+   constant, so beamAt(t) projects the four corners for a sweep phase
+   t ∈ [−1, 1] and the loop writes the paths per tick; t = 0 is the drawn
+   rest pose (the reduced-motion still). The landing also spreads wider
+   than the slab (±34): a light cone reaching the grid's outer columns. */
+const BEAM_LAND_HALF = 34;
+const BEAM_TOP_Y = 14;
+const BEAM_LAND_Y = 28;
+const beamAt = (t: number) => {
+  const tl = project(-A_HALF, BEAM_TOP_Y * t, A_Z);
+  const tr = project(A_HALF, BEAM_TOP_Y * t, A_Z);
+  const br = project(BEAM_LAND_HALF, BEAM_LAND_Y * t, CHIP_TOP);
+  const bl = project(-BEAM_LAND_HALF, BEAM_LAND_Y * t, CHIP_TOP);
+  return {
+    quad: polyline([tl, tr, br, bl], true),
+    edgeL: segment(tl, bl),
+    edgeR: segment(tr, br),
+    land: segment(bl, br),
+  };
+};
+const BEAM_REST = beamAt(0);
+
+/** Ground flow from the repository's right vertex toward the output plate. */
+const FLOW_WIRE = segment(project(40, -40, 0), project(54, -54, 0));
+const FLOW_CHEV = 'M88.7 -4.1L94.3 0L88.7 4.1';
+
+/** Screen anchors for the annotation leaders. */
+const REPO_VERT_X = -(R_HALF * 2 * ISO_COS30);
+const AGENT_VERT_X = A_HALF * 2 * ISO_COS30;
+const AGENT_TOP_Y = -(A_Z + A_H);
+const REPO_LEADER = `M${(REPO_VERT_X - 2.2).toFixed(2)} ${-R_H}H-92`;
+const AGENT_LEADER = `M${(AGENT_VERT_X + 2.2).toFixed(2)} ${AGENT_TOP_Y}H70`;
+
+/** The output plate's screen center x — the chip's reading hangs beneath it. */
+const PR_CX = (PR_BOX.x * 2 + PR_BOX.w) * ISO_COS30;
+
+/** The Locadex mark's half-size, and its seat in the slab's top face. */
+const MARK_HALF = 16;
+const MARK_PLANE = plane(A_Z + A_H);
+
+/** The iso's frame — the composition's bounds. */
+const VIEW_W = 396;
+const VIEW_H = 164;
+
+/** Custom properties are legal inline styles but absent from CSSProperties. */
+type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
+
+/* plane() and markPath() now come from the kit — iso.ts owns the seat
+   every flat mark rides. */
+
+type SolidProps = {
+  box: IsoBox;
+  /** The tower's depth-stepped stroke voice: the silhouette rim's and the
+      top-face contour's alphas, brightening toward the story's focus. */
+  rim: number;
+  edge: number;
+  /** The hovering actor sits a fill step brighter — the tower's hot ink. */
+  lift?: boolean;
+};
+
+/** One plate of the tower's stock: opaque hull, three face fills lit from
+    the family's upper-left, then the hairlines, each drawn once. */
+function Solid({ box, rim, edge, lift }: SolidProps) {
+  const hull = roundedPolygon(silhouette(box));
+  const top = roundedPolygon(topFace(box));
+  const [frontA, frontB] = frontEdge(box);
+  const voice: StyleVars = {
+    '--ldx-rim-a': rim.toFixed(3),
+    '--ldx-edge-a': edge.toFixed(3),
+  };
+  return (
+    <g className={lift ? 'v0-ldx-solid is-lift' : 'v0-ldx-solid'} style={voice}>
+      <path className='v0-ldx-hull' d={hull} />
+      <path className='v0-ldx-left' d={roundedPolygon(leftFace(box))} />
+      <path className='v0-ldx-right' d={roundedPolygon(rightFace(box))} />
+      <path className='v0-ldx-top' d={top} />
+      <path className='v0-ldx-rim' d={hull} vectorEffect='non-scaling-stroke' />
+      <path
+        className='v0-ldx-front'
+        d={segment(frontA, frontB)}
+        vectorEffect='non-scaling-stroke'
+      />
+      <path className='v0-ldx-edge' d={top} vectorEffect='non-scaling-stroke' />
+    </g>
+  );
+}
+
+type ChipProps = {
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+  d: number;
+  h: number;
+  /** 'accent' is the one hot artifact (the merged pull request); 'add' and
+      'del' are the diff lines' quiet tints; default is the plate's ink. */
+  tone?: 'ink' | 'accent' | 'add' | 'del';
+  /** Corner radius override: the family default reads as a capsule on the
+      thin diff slats, which take a crisper corner. */
+  r?: number;
+};
+
+/** A miniature extrusion resting on a plate — the tower's glyph chip. */
+function Chip({ x, y, z, w, d, h, tone = 'ink', r }: ChipProps) {
+  const box: IsoBox = { x, y, z, w, d, h };
+  return (
+    <g className={tone === 'ink' ? 'v0-ldx-chip' : `v0-ldx-chip is-${tone}`}>
+      <path
+        className='v0-ldx-chip-hull'
+        d={roundedPolygon(silhouette(box), r)}
+      />
+      <path className='v0-ldx-chip-top' d={roundedPolygon(topFace(box), r)} />
+    </g>
+  );
+}
+
+function LocadexIso() {
+  return (
+    <svg className='v0-ldx-iso' viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} role='img'>
+      <title>
+        The Locadex agent scans a repository and opens a pull request: merged,
+        +38 −6, checks passed
+      </title>
+      <defs>
+        {/* the brand marks as alpha masks, so the shapes take the surface's
+            ink instead of the assets' baked-in fills */}
+        <mask
+          id='v0-ldx-slab-mark'
+          maskUnits='userSpaceOnUse'
+          x={-MARK_HALF}
+          y={-MARK_HALF}
+          width={MARK_HALF * 2}
+          height={MARK_HALF * 2}
+          style={{ maskType: 'alpha' }}
+        >
+          <image
+            href='/brand/locadex-mark.svg'
+            x={-MARK_HALF}
+            y={-MARK_HALF}
+            width={MARK_HALF * 2}
+            height={MARK_HALF * 2}
+          />
+        </mask>
+        <mask
+          id='v0-ldx-gh-mark'
+          maskUnits='userSpaceOnUse'
+          x={-GH_HALF}
+          y={-GH_HALF}
+          width={GH_HALF * 2}
+          height={GH_HALF * 2}
+          style={{ maskType: 'alpha' }}
+        >
+          <SiGithub
+            x={-GH_HALF}
+            y={-GH_HALF}
+            width={GH_HALF * 2}
+            height={GH_HALF * 2}
+            color='#fff'
+            aria-hidden
+          />
+        </mask>
+      </defs>
+
+      <g transform='translate(155 97)'>
+        {/* the repository: one plate, a grid of module chips — painter's
+            order back row first, so the small extrusions occlude cleanly.
+            The GitHub-marked chip skips its content bar: one glyph, not
+            a glyph over a bar. */}
+        <Solid box={REPO_BOX} rim={0.13} edge={0.28} />
+        {CHIP_POS.map((fy, ri) =>
+          CHIP_POS.map((fx, ci) => {
+            const isGithub = fx === GH_CHIP[0] && fy === GH_CHIP[1];
+            return (
+              <g key={`chip-${fx}-${fy}`}>
+                <Chip
+                  x={fx}
+                  y={fy}
+                  z={R_H}
+                  w={CHIP_SIZE}
+                  d={CHIP_SIZE}
+                  h={CHIP_H}
+                />
+                {isGithub ? (
+                  <g
+                    transform={plane(
+                      CHIP_TOP,
+                      fx + CHIP_SIZE / 2,
+                      fy + CHIP_SIZE / 2
+                    )}
+                  >
+                    <rect
+                      className='v0-ldx-gh'
+                      x={-GH_HALF}
+                      y={-GH_HALF}
+                      width={GH_HALF * 2}
+                      height={GH_HALF * 2}
+                      mask='url(#v0-ldx-gh-mark)'
+                    />
+                  </g>
+                ) : (
+                  <path
+                    className='v0-ldx-fmark'
+                    d={markPath(
+                      fx + 3,
+                      fy + 4,
+                      CHIP_BARS[ri * 3 + ci] ?? 6,
+                      3,
+                      CHIP_TOP
+                    )}
+                  />
+                )}
+              </g>
+            );
+          })
+        )}
+
+        {/* ground flow: the repository feeds the output plate */}
+        <path
+          className='v0-ldx-flow'
+          d={FLOW_WIRE}
+          vectorEffect='non-scaling-stroke'
+        />
+        <path
+          className='v0-ldx-flow-chev'
+          d={FLOW_CHEV}
+          vectorEffect='non-scaling-stroke'
+        />
+
+        {/* the scan beam, swept across the module grid */}
+        <g data-ldx-scan>
+          <path className='v0-ldx-beam' d={BEAM_REST.quad} />
+          <path
+            className='v0-ldx-beam-edge'
+            d={BEAM_REST.edgeL}
+            vectorEffect='non-scaling-stroke'
+          />
+          <path
+            className='v0-ldx-beam-edge'
+            d={BEAM_REST.edgeR}
+            vectorEffect='non-scaling-stroke'
+          />
+          <path
+            className='v0-ldx-beam-land'
+            d={BEAM_REST.land}
+            vectorEffect='non-scaling-stroke'
+          />
+        </g>
+
+        {/* the agent slab, hovering, carrying the Locadex mark on its top
+            face — the brightest voice in the frame */}
+        <Solid box={AGENT_BOX} rim={0.2} edge={0.48} lift />
+        <g transform={MARK_PLANE}>
+          <rect
+            className='v0-ldx-mark'
+            data-ldx-mark
+            x={-MARK_HALF}
+            y={-MARK_HALF}
+            width={MARK_HALF * 2}
+            height={MARK_HALF * 2}
+            mask='url(#v0-ldx-slab-mark)'
+          />
+        </g>
+
+        {/* the output plate reads top to bottom: the del hunk, a breath of
+            bare plate, the add hunk — every line signed +/− in its margin —
+            then the merged chip, the tower's payload chip treatment, the
+            drawing's one accent */}
+        <Solid box={PR_BOX} rim={0.16} edge={0.36} />
+        {DIFF_ROWS.map(({ w, tone }, i) => {
+          const y = DIFF_Y0 + i * DIFF_STEP + (tone === 'add' ? DIFF_GAP : 0);
+          const cy = y + DIFF_D / 2;
+          const sign =
+            markPath(
+              SIGN_CX - SIGN_ARM,
+              cy - SIGN_T,
+              SIGN_ARM * 2,
+              SIGN_T * 2,
+              PR_BOX.h,
+              0.4
+            ) +
+            (tone === 'add'
+              ? ` ${markPath(SIGN_CX - SIGN_T, cy - SIGN_ARM, SIGN_T * 2, SIGN_ARM * 2, PR_BOX.h, 0.4)}`
+              : '');
+          return (
+            <g key={`diff-${i}`}>
+              <path className={`v0-ldx-sign is-${tone}`} d={sign} />
+              <Chip
+                x={DIFF_X}
+                y={y}
+                z={PR_BOX.h}
+                w={w}
+                d={DIFF_D}
+                h={DIFF_H}
+                tone={tone}
+                r={1.2}
+              />
+            </g>
+          );
+        })}
+        {/* the merged chip stands UPRIGHT along the plate's right side
+            — oriented like | rather than _ — and spends the face
+            the hunk leaves free — a tall accent block, y-deep */}
+        <Chip x={98} y={-115} z={PR_BOX.h} w={17} d={52} h={4} tone='accent' />
+
+        {/* annotations — sans labels, hair leaders */}
+        <path
+          className='v0-ldx-leader'
+          d={REPO_LEADER}
+          vectorEffect='non-scaling-stroke'
+        />
+        <text className='v0-ldx-iso-name' x={-96} y={-0.4} textAnchor='end'>
+          Repository
+        </text>
+        <path
+          className='v0-ldx-leader'
+          d={AGENT_LEADER}
+          vectorEffect='non-scaling-stroke'
+        />
+        <text className='v0-ldx-iso-name' x={74} y={AGENT_TOP_Y + 2.8}>
+          Locadex agent
+        </text>
+
+        {/* the chip's reading — mono spent on the numbers only */}
+        <text className='v0-ldx-chip-read' x={PR_CX} y={54} textAnchor='middle'>
+          {'merged · '}
+          <tspan className='v0-ldx-chip-num'>+38 −6</tspan>
+          {' · checks passed'}
+        </text>
+      </g>
+    </svg>
+  );
+}
+
+/* ---- the integrate diagram: four sources feed one Locadex plate --------- */
+
+type MarkProps = SVGProps<SVGSVGElement>;
+
+type IntSource = {
+  label: string;
+  cy: number;
+  icons: readonly { name: string; Icon: ComponentType<MarkProps> }[];
+};
+
+/** Flat ruled coordinates: the four source nodes at LEFT feed the Locadex
+    plate at right — the tools flow into the agent. */
+const INT_W = 560;
+const INT_H = 234;
+const NODE_X = 1;
+const NODE_W = 186;
+const NODE_H = 44;
+const INT_PLATE = { x: 408, y: 87, w: 150, h: 60 } as const;
+
+const INT_SOURCES: readonly IntSource[] = [
+  { label: 'GitHub', cy: 24, icons: [{ name: 'GitHub', Icon: SiGithub }] },
+  {
+    label: 'Google Drive',
+    cy: 86,
+    icons: [{ name: 'Google Drive', Icon: SiGoogledrive }],
+  },
+  {
+    label: 'CMS',
+    cy: 148,
+    icons: [
+      { name: 'Notion', Icon: SiNotion },
+      { name: 'Contentful', Icon: SiContentful },
+      { name: 'Sanity', Icon: SiSanity },
+    ],
+  },
+  { label: 'Docs', cy: 210, icons: [{ name: 'Markdown', Icon: SiMarkdown }] },
+];
+
+/**
+ * One connector per source, each drawn once, flowing left → right INTO the
+ * plate, all in ONE turn grammar: every arc is radius 12, the inner pair's
+ * vertical gauge sits at x 320 and the outer pair's at x 344, and every
+ * matching feature repeats at that same 24 interval (turn-in at 308/332,
+ * exit at 332/356). The inner pair's ±24 offset is exactly two radii, so
+ * those turns resolve as clean tangent ogees rather than a cramped jog.
+ * All four ports land on the plate's left edge, at y 96/110/124/138 —
+ * mirror-symmetric about the plate's center line.
+ */
+const INT_LINKS: readonly string[] = [
+  'M187 24H332Q344 24 344 36V84Q344 96 356 96H408',
+  'M187 86H308Q320 86 320 98Q320 110 332 110H408',
+  'M187 148H308Q320 148 320 136Q320 124 332 124H408',
+  'M187 210H332Q344 210 344 198V150Q344 138 356 138H408',
+];
+
+/** Plate contents: the mark is the node's anchor — 42px against the 17px
+    wordmark — and the lockup is centered in the plate as one group. */
+const INT_MARK = 42;
+const INT_MARK_X = INT_PLATE.x + 14;
+const INT_NAME_X = INT_MARK_X + INT_MARK + 4;
+
+/** The arrival ring's path: the plate's rounded border REDRAWN to start at
+    the left edge's middle — amid the four ports — and run clockwise. The
+    progress dash must grow from where the worms land, and a dash pattern
+    CLIPS at a subpath's end rather than wrapping the closed loop, so the
+    arc's origin has to be the path's own start; a dashoffset into a <rect>
+    (which always starts top-left) leaves everything past the boundary
+    unpainted. */
+const RING_R = 10;
+const RING_D = (() => {
+  const { x, y, w, h } = INT_PLATE;
+  const r = RING_R;
+  return [
+    `M${x} ${y + h / 2}`,
+    `L${x} ${y + r}`,
+    `A${r} ${r} 0 0 1 ${x + r} ${y}`,
+    `L${x + w - r} ${y}`,
+    `A${r} ${r} 0 0 1 ${x + w} ${y + r}`,
+    `L${x + w} ${y + h - r}`,
+    `A${r} ${r} 0 0 1 ${x + w - r} ${y + h}`,
+    `L${x + r} ${y + h}`,
+    `A${r} ${r} 0 0 1 ${x} ${y + h - r}`,
+    'Z',
+  ].join('');
+})();
+
+function IntegrateDiagram() {
+  return (
+    <svg
+      className='v0-ldx-int-svg'
+      viewBox={`0 0 ${INT_W} ${INT_H}`}
+      role='img'
+      aria-label='GitHub, Google Drive, a CMS, and docs all feed the Locadex agent'
+    >
+      <defs>
+        <mask
+          id='v0-ldx-int-mark'
+          maskUnits='userSpaceOnUse'
+          x={INT_MARK_X}
+          y={117 - INT_MARK / 2}
+          width={INT_MARK}
+          height={INT_MARK}
+          style={{ maskType: 'alpha' }}
+        >
+          <image
+            href='/brand/locadex-mark.svg'
+            x={INT_MARK_X}
+            y={117 - INT_MARK / 2}
+            width={INT_MARK}
+            height={INT_MARK}
+          />
+        </mask>
+      </defs>
+
+      {/* NO non-scaling-stroke on the pulses: Chromium computes dash
+          patterns in screen space under it and IGNORES pathLength, so
+          the normalized '22 200' repeated every ~222 screen px and
+          stranded accent fragments along the wires. The svg scales
+          uniformly, so the gauge stays true without it. */}
+      {INT_LINKS.map((d) => (
+        <path
+          key={d}
+          className='v0-ldx-link'
+          d={d}
+          vectorEffect='non-scaling-stroke'
+        />
+      ))}
+      {INT_LINKS.map((d) => (
+        <path
+          key={`pulse-${d}`}
+          className='v0-ldx-pulse'
+          data-ldx-pulse
+          d={d}
+          pathLength={100}
+          strokeDasharray='22 200'
+          strokeDashoffset={22}
+        />
+      ))}
+
+      {/* every label opens on ONE text column (x 18); the marks right-align
+          against the node's far edge, sitting by the wire they feed */}
+      {INT_SOURCES.map(({ label, cy, icons }) => (
+        <g key={label}>
+          <rect
+            className='v0-ldx-node'
+            x={NODE_X}
+            y={cy - NODE_H / 2}
+            width={NODE_W}
+            height={NODE_H}
+            rx={8}
+            vectorEffect='non-scaling-stroke'
+          />
+          <text
+            className='v0-ldx-nlabel'
+            x={NODE_X + 17}
+            y={cy}
+            dominantBaseline='central'
+          >
+            {label}
+          </text>
+          {icons.map(({ name, Icon }, i) => (
+            <Icon
+              key={name}
+              className='v0-ldx-nico'
+              x={NODE_X + NODE_W - 17 - 14 - (icons.length - 1 - i) * 21}
+              y={cy - 7}
+              width={14}
+              height={14}
+              color='currentColor'
+              aria-hidden
+            />
+          ))}
+        </g>
+      ))}
+
+      <rect
+        className='v0-ldx-int-plate'
+        x={INT_PLATE.x}
+        y={INT_PLATE.y}
+        width={INT_PLATE.w}
+        height={INT_PLATE.h}
+        rx={10}
+        vectorEffect='non-scaling-stroke'
+      />
+      {/* the arrival ring: the plate's border redrawn in the worms' accent
+          directly on the hairline — a PROGRESS ring. The stylesheet draws
+          only the first --ldx-fill percent of RING_D's perimeter as a
+          dash, so each landing colors one more quarter of the border — one
+          arc growing clockwise from the ports' edge, never four loose
+          segments. Everything is in USER units — no pathLength, no
+          non-scaling-stroke: Chromium computes dash patterns in screen
+          space under non-scaling-stroke and ignores pathLength there,
+          which shrivels a normalized dash to a
+          px-long fleck. The 150×60 r10 perimeter is 402.832
+          (2·130 + 2·40 + 2π·10) — the stylesheet's 4.02832 is one percent
+          of it. At rest --ldx-fill is 0 and the plate's quiet hairline is
+          the only border. */}
+      <path className='v0-ldx-ring' data-ldx-ring d={RING_D} />
+      <rect
+        className='v0-ldx-mark-ink'
+        x={INT_MARK_X}
+        y={117 - INT_MARK / 2}
+        width={INT_MARK}
+        height={INT_MARK}
+        mask='url(#v0-ldx-int-mark)'
+      />
+      <text
+        className='v0-ldx-int-name'
+        x={INT_NAME_X}
+        y={117}
+        dominantBaseline='central'
+      >
+        Locadex
+      </text>
+    </svg>
+  );
+}
+
+/* ---- the works ledgers: the copy cells' quiet evidence ------------------ */
+
+type Work = {
+  name: string;
+  Icon?: ComponentType<MarkProps>;
+  /** Marks with no monochrome component render a saved asset as an alpha
+      mask over currentColor — the head watermark's own treatment. */
+  mask?: string;
+};
+
+/** Row 1's marks: the stacks the agent works in — the toolchain's own
+    framework roster (stacks.ts), in its order. React Native takes the saved
+    plated badge, as on the framework tabs: the bare atom is pixel-identical
+    to React's at this size, and the two sit adjacent here too. */
+const STACK_WORKS: readonly Work[] = [
+  { name: 'Next.js', Icon: SiNextdotjs },
+  { name: 'React', Icon: SiReact },
+  { name: 'React Native', mask: '/logos/react-native-no-bg.svg' },
+  { name: 'TanStack', Icon: SiTanstack },
+  { name: 'Node.js', Icon: SiNodedotjs },
+  { name: 'Python', Icon: SiPython },
+];
+
+/** Row 2's marks span the diagram's whole source row — design and drive
+    files alongside what the 'CMS' and 'Docs' nodes stand for. */
+const SOURCE_WORKS: readonly Work[] = [
+  { name: 'Google Drive', Icon: SiGoogledrive },
+  { name: 'Figma', Icon: SiFigma },
+  { name: 'Contentful', Icon: SiContentful },
+  { name: 'Sanity', Icon: SiSanity },
+  { name: 'Mintlify', Icon: SiMintlify },
+  { name: 'Markdown', Icon: SiMarkdown },
+];
+
+/** A captioned grid of marks seated at the copy cell's foot (margin-top
+    auto — the cell's slack becomes the air between sub and ledger). Marks
+    at caption scale in the muted steps; no rules of its own — the row owns
+    every line around this cell. */
+function WorksLedger({
+  caption,
+  works,
+}: {
+  caption: string;
+  works: readonly Work[];
+}) {
+  return (
+    <div className='v0-ldx-works'>
+      <span className='v0-ldx-works-cap'>{caption}</span>
+      <ul className='v0-ldx-works-grid'>
+        {works.map(({ name, Icon, mask }) => {
+          const seat: StyleVars | undefined = mask
+            ? { '--mark': `url(${mask})` }
+            : undefined;
+          return (
+            <li className='v0-ldx-work' key={name}>
+              {Icon ? (
+                <Icon
+                  className='v0-ldx-work-ic'
+                  color='currentColor'
+                  aria-hidden
+                />
+              ) : (
+                <i
+                  className='v0-ldx-work-ic is-mask'
+                  style={seat}
+                  aria-hidden
+                />
+              )}
+              {name}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+export default function V0Locadex() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const el = root.current;
+      if (!el) return;
+
+      /* One quiet pass, back and forth, across the module grid. The tween
+         runs only while the section is on screen; with reduced motion the
+         beam rests at the plate's center (its drawn position) and the mark
+         holds the stylesheet's ink. */
+      const scan = el.querySelector<SVGGElement>('[data-ldx-scan]');
+      if (scan) {
+        /* the leaning sweep: one dial drives all four paths through
+           beamAt — the top pivots inside the slab while the land line
+           runs the full surface (see the BEAM block above) */
+        const beamBody = scan.querySelector<SVGPathElement>('.v0-ldx-beam');
+        const beamEdges =
+          scan.querySelectorAll<SVGPathElement>('.v0-ldx-beam-edge');
+        const beamLand =
+          scan.querySelector<SVGPathElement>('.v0-ldx-beam-land');
+        const sweep = { t: 1 };
+        const setBeam = () => {
+          const g = beamAt(sweep.t);
+          beamBody?.setAttribute('d', g.quad);
+          beamEdges[0]?.setAttribute('d', g.edgeL);
+          beamEdges[1]?.setAttribute('d', g.edgeR);
+          beamLand?.setAttribute('d', g.land);
+        };
+        const loops: gsap.core.Tween[] = [
+          gsap.fromTo(
+            sweep,
+            { t: 1 },
+            {
+              t: -1,
+              duration: 3.6,
+              ease: 'sine.inOut',
+              repeat: -1,
+              yoyo: true,
+              paused: true,
+              onUpdate: setBeam,
+            }
+          ),
+        ];
+        /* the mark keeps its stylesheet ink; the beam is the iso's only
+           moving element */
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (self) => {
+            for (const loop of loops) {
+              if (self.isActive) loop.play();
+              else loop.pause();
+            }
+          },
+        });
+      }
+
+      /* The connector pulses: a long normalized dash (22 of pathLength 100)
+         slides source → plate on each link, staggered, looping only while
+         the diagram is on screen. The 200 gap keeps the parked pattern
+         entirely off the path at both endpoints; 22 → −102 carries the dash
+         fully across, its tail clearing the port right at the tween's end.
+
+         Each landing colors ONE MORE QUARTER of the plate's border: the
+         ring (the border redrawn in the worms' accent on the hairline's own
+         geometry, pathLength 100) reveals as a single arc growing clockwise
+         from the ports' edge — the tween drives only the NUMBER --ldx-fill
+         on the svg, 25 → 50 → 75 → 100, and the stylesheet spends it as the
+         dash. Arrival of pulse i = its stagger slot + 0.9 of its travel —
+         where the eased dash has all but merged into the plate — so the
+         four sweeps land on the worms' own beat. When the fourth quarter
+         closes the lap the plate ANSWERS: --ldx-flash blooms the border's
+         gauge and re-inks the lockup — mark and wordmark together — to the
+         same accent (0.25s up, 0.6s down; the stylesheet mixes ink and
+         accent by the number, so both themes flash their own accent and a
+         live theme flip never strands a JS-written color).
+
+         The reset UNRAVELS instead of just flashing away: after
+         the flash settles, one tween walks --ldx-fill to 0 and --ldx-off
+         to 100 in lockstep, so the arc's tail chases its head clockwise
+         around the perimeter and the border unwinds back into the node —
+         its own beat, about a quarter-fill's pace — returning the plate to
+         the quiet hairline BEFORE the worms begin the next lap. A set()
+         then re-arms --ldx-off while nothing is painted, so the loop wraps
+         with no half-state. Everything lives on ONE timeline, so pulses,
+         quarters, flash and unravel can never drift out of phase. */
+      const pulses = el.querySelectorAll<SVGPathElement>('[data-ldx-pulse]');
+      const diagram = el.querySelector<SVGSVGElement>('.v0-ldx-int-svg');
+      if (pulses.length > 0 && diagram) {
+        const PULSE_DUR = 1.6;
+        const PULSE_GAP = 0.45;
+        const ARRIVE = PULSE_DUR * 0.9;
+        /* one landing's border sweep — shorter than the 0.45 beat, so a
+           quarter always finishes drawing before the next one lands */
+        const SWEEP = 0.35;
+        const QUARTER = 100 / pulses.length;
+        const flow = gsap.timeline({
+          repeat: -1,
+          repeatDelay: 0.45,
+          paused: true,
+        });
+        flow.fromTo(
+          pulses,
+          { strokeDashoffset: 22 },
+          {
+            strokeDashoffset: -102,
+            duration: PULSE_DUR,
+            ease: 'power1.inOut',
+            stagger: PULSE_GAP,
+          },
+          0
+        );
+        pulses.forEach((_, i) => {
+          flow.to(
+            diagram,
+            {
+              '--ldx-fill': QUARTER * (i + 1),
+              duration: SWEEP,
+              ease: 'power2.out',
+            },
+            i * PULSE_GAP + ARRIVE
+          );
+        });
+        /* the border is fully surrounded here — bloom, and settle lit */
+        const fullAt = (pulses.length - 1) * PULSE_GAP + ARRIVE + SWEEP;
+        flow.to(
+          diagram,
+          { '--ldx-flash': 1, duration: 0.25, ease: 'power2.out' },
+          fullAt
+        );
+        flow.to(
+          diagram,
+          { '--ldx-flash': 0, duration: 0.6, ease: 'power2.inOut' },
+          fullAt + 0.25
+        );
+        /* the unravel: a breath after the flash lands quiet, then tail
+           chases head — both dials in ONE tween, so the arc can never
+           tear — and the dashoffset dial is re-armed invisibly */
+        flow.to(
+          diagram,
+          {
+            '--ldx-fill': 0,
+            '--ldx-off': 100,
+            duration: 0.5,
+            ease: 'power2.inOut',
+          },
+          fullAt + 1.0
+        );
+        flow.set(diagram, { '--ldx-off': 0 });
+        ScrollTrigger.create({
+          trigger: diagram,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (self) => {
+            if (self.isActive) flow.play();
+            else flow.pause();
+          },
+        });
+      }
+    },
+    { scope: root }
+  );
+
+  return (
+    <section className='tc-sec v0-ldx' id='locadex' ref={root}>
+      <div className='tc-head'>
+        <i className='tc-head-icon v0-ldx-head-mark' aria-hidden />
+        {/* the space before the br carries the word gap when the mobile cut
+            hides the authored break (locadex.css); a br alone leaves
+            'localize' and 'your' fused */}
+        <h2 data-reveal>
+          The easiest way to localize <br />
+          your full product suite
+        </h2>
+        <p data-reveal>
+          Connect agents and integrate any content source or tool with{' '}
+          <GtLogoText />
+        </p>
+      </div>
+
+      {/* ---- row 1: the agent, run against a repository ----
+          The toolchain 'Code' row's shape: a ruled copy cell of the sheet
+          beside a framed artifact cell. The row owns the seam between them. */}
+      <div className='tc-row is-split v0-ldx-row-run'>
+        <BentoCell
+          cell='is-tall tcm-ruled'
+          framed={false}
+          title='Connect Locadex'
+          sub={
+            <>
+              Locadex is a cloud AI agent which connects <GtLogoText /> to your
+              code, content, and context sources
+            </>
+          }
+        >
+          {/* straight into the GitHub connect flow. The shipped page points
+              at its own /dashboard/api/... path, which the landing app
+              redirects to the dashboard host; the prototype carries that
+              resolved absolute URL. returnTo must be a real dashboard path:
+              the callback treats /project/<seg> as a project ID, and no
+              projectless Locadex route exists — the install flow computes
+              its own /locadex/setup redirect when it carries project state,
+              so the fallback is the home. */}
+          <div className='v0-ldx-acts mt-4 mb-5 flex flex-wrap gap-2.5'>
+            <a className='tc-btn tc-btn-solid gap-2' href={CONNECT_GITHUB}>
+              <SiGithub aria-hidden className='size-4' /> Connect GitHub
+            </a>
+          </div>
+          <WorksLedger caption='Works with every stack' works={STACK_WORKS} />
+        </BentoCell>
+
+        {/* is-bleed: the card sheds its padding, so the iso's ground (night
+            ink in dark, panel white on light) runs to the card's own frame —
+            the cell owns the frame, the plate draws no border or radius of
+            its own. */}
+        <BentoCell cell='is-tall is-bleed is-framed self-stretch'>
+          <div className='v0-ldx-plate'>
+            <LocadexIso />
+          </div>
+        </BentoCell>
+      </div>
+
+      {/* ---- row 2: the sources, converging — row 1 mirrored, the diagram
+          leads and the words answer from the right ---- */}
+      <div className='tc-row is-split'>
+        <BentoCell cell='is-tall is-framed'>
+          <div className='tc-art-center'>
+            <IntegrateDiagram />
+          </div>
+        </BentoCell>
+
+        <BentoCell
+          cell='is-tall tcm-ruled'
+          framed={false}
+          title='Any integration'
+          sub='Just a few clicks to integrate with GitHub, Google Drive, Figma, your CMS, and your workspace tools'
+        >
+          <WorksLedger caption='Works with every source' works={SOURCE_WORKS} />
+        </BentoCell>
+      </div>
+    </section>
+  );
+}

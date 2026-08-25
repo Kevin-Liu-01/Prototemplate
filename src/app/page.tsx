@@ -40,8 +40,11 @@ export const metadata = {
   },
 };
 
-/** The three full site concepts vs the single-page explorations. */
-const SITES = DIRECTIONS.filter((d) => d.site);
+/** The full site concepts vs the single-page explorations. The reference
+    build is a site too, but it is not one of the proposals, so it is listed
+    on its own rather than padding the count. */
+const SITES = DIRECTIONS.filter((d) => d.site && !d.reference);
+const REFERENCES = DIRECTIONS.filter((d) => d.reference);
 const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
 
 /** The presenter's actual running order. */
@@ -305,6 +308,34 @@ export default function IndexPage() {
                   <Link href={`/d/${site.slug}`}>open the home</Link>
                   <span aria-hidden> · </span>
                   <Link href={`/d/${site.slug}/enterprise`}>open the enterprise page</Link>
+                </p>
+              </section>
+            ))}
+          </div>
+
+          <div className='pt-hatch' aria-hidden='true' />
+
+          <section className='pt-sec pt-post-sec'>
+            <h2>The control</h2>
+            <p>
+              Every direction above argues for something. This one argues for nothing: the
+              shipped site, reproduced section for section in the order it mounts them,
+              carrying its own copy. It exists so a proposal can be held beside the thing it
+              proposes to replace — what a direction gains is only legible next to what it
+              trades away.
+            </p>
+          </section>
+
+          <div className='pt-sites'>
+            {REFERENCES.map((site) => (
+              <section className='pt-sec pt-site' key={site.slug}>
+                <h3>
+                  {site.name}
+                  <span className='pt-site-flag'>the shipped site</span>
+                </h3>
+                <p>{site.signature}</p>
+                <p className='pt-site-links'>
+                  <Link href={`/d/${site.slug}`}>open the page</Link>
                 </p>
               </section>
             ))}

@@ -22,6 +22,12 @@ export type Direction = {
    * The index lists these in their own section.
    */
   site?: boolean;
+  /**
+   * Not a proposal — the shipped site reproduced as a control, so a direction
+   * can be held beside what it would replace. Listed in its own section,
+   * apart from the directions that are arguing for something.
+   */
+  reference?: boolean;
 };
 
 /**
@@ -192,6 +198,18 @@ export const DIRECTIONS: Direction[] = [
       'A showcase of the previous generation: signal keeps its split-pane hero and carries the sections the dossier retired, the pinned story cinema, the review workspace, the assurance strip, and the self-typing transmission log.',
     tone: 'light',
     signature: 'Session and output, side by side in one window.',
+  },
+  {
+    n: 23,
+    label: '17',
+    slug: 'production',
+    name: 'Production',
+    concept:
+      'The shipped site itself, reproduced section for section: the reference the proposals are measured against, not a proposal of its own.',
+    tone: 'light',
+    signature: 'No argument — the real page, so a direction can be held beside what it replaces.',
+    site: true,
+    reference: true,
   },
 ];
 

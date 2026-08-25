@@ -1,0 +1,43 @@
+/* ============================================================
+   SINGULARITY · DOSSIER — this final's dress over the shared
+   enterprise composition (singularity/sections/enterprise.css).
+   The file grammar: certificates carry dashed frames and filed
+   control numbers; ledger heads read like folder tabs. Accents
+   only — the structure is the shared sheet.
+   ============================================================ */
+
+/* certificates are filed, not framed */
+.sgd-root .sge-cert {
+  border-style: dashed;
+}
+
+.sgd-root .sge-cert-file {
+  letter-spacing: 0.16em;
+}
+
+/* ledger heads as folder tabs — a shade more official */
+.sgd-root .sge-ledger-head,
+.sgd-root .sge-perm-row.is-head {
+  letter-spacing: 0.16em;
+}
+
+/* the record's statements carry the seal spacing */
+.sgd-root .sge-plate-rule {
+  letter-spacing: 0.18em;
+}
+
+/* the deployment pillars are filed like the certificates */
+.sgd-root .sge-feat {
+  border-style: dashed;
+}
+
+/* ledger columns read like folder tabs */
+.sgd-root .sge-stories-head,
+.sgd-root .sge-fw-colhead b {
+  letter-spacing: 0.18em;
+}
+
+/* the coverage sheet is a filed document: dashed jacket, paper leaf */
+.sgd-root .sge-fw {
+  border-style: dashed;
+}

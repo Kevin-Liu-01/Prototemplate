@@ -1,0 +1,453 @@
+/* ============================================================
+   V0 — BUILT FOR DEVELOPERS. The section is the shell's own
+   grammar (tc-sec / tc-head / tc-row / BentoCell), which already
+   owns every structural line; only the artifacts INSIDE the
+   cells are styled here — the branching minis, the routing
+   ledger, and the SentenceWidth re-measures for a third-width
+   column.
+   ============================================================ */
+
+/* the subheader runs ONE line at desktop (founder) — the SSOT's 60ch
+   measure broke it in two */
+.toolchain-root .v0-dev .tc-head p {
+  max-width: 88ch;
+}
+
+/* the heading's own break holds "around the globe" on its second line at
+   desktop; on a phone the measure already wraps, so the manual break would
+   only strand a short first line */
+@media (max-width: 720px) {
+  .toolchain-root .v0-dev .v0-dev-title-break {
+    display: none;
+  }
+}
+
+/* The section sheet: one row of three equal framed columns. The grid's
+   1px hair gaps ARE the internal seams — drawn once by the row's ground,
+   exactly the framed-row mat grammar. `--shell-head-h` aligns the three
+   one-to-two-line heads so the first artifact mark lands on one shared y. */
+.toolchain-root .v0-dev-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  --shell-head-h: 68px;
+}
+
+/* Cells stretch, or the shortest column exposes the row ground as a slab
+   where a 1px seam should be. Needs the tc-row qualifier: tc-row's own
+   `align-items: start` ties specificity and its sheet loads later. Every
+   mounted cell distributes its own slack, so the stretch is safe. */
+.toolchain-root .tc-row.v0-dev-grid {
+  align-items: stretch;
+}
+
+/* bento content shares the header's left rule: the cards trade their
+   own pad for the section gutter */
+.toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card {
+  padding-inline: var(--tc-gut);
+}
+
+/* ---------- the measured column ----------
+   The lone diagram spends the cell's full height: the wrapper stretches
+   its child, the rows grid takes the cell's slack and spaces the measured
+   rows over it, and the ruler + caption keep the floor. */
+.toolchain-root .v0-dev .tc-lang.is-lead {
+  align-items: stretch;
+}
+
+.toolchain-root .v0-dev .tc-lang.is-lead .lang-sw {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolchain-root .v0-dev .tc-lang.is-lead .lang-sw-rows {
+  flex: 1;
+  align-content: space-between;
+}
+
+/* A third-width column, not the old merged double cell: the nominal type
+   size steps down (the diagram still measures and scales from it), and the
+   locale key column narrows to the flag+code chips it actually holds. */
+.toolchain-root .v0-dev .tc-lang.is-lead .lang-sw {
+  --lang-sw-size: 14px;
+}
+
+.toolchain-root .v0-dev .lang-sw-row {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+
+.toolchain-root .v0-dev .lang-sw-guide {
+  left: 64px;
+}
+
+/* The flag+code chips carry the locale column alone here — the language
+   names retire. display: none keeps the flex gap from stranding. */
+.toolchain-root .v0-dev .lang-sw-name {
+  display: none;
+}
+
+/* ---------- the branching minis ----------
+   Four compact figures, no perimeter and no separators — each unit's own
+   left key (icon + label riding the source node) is the divider. The
+   stack spreads whatever slack the row leaves it. */
+.toolchain-root .v0-dev-forks {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toolchain-root .v0-dev-fork {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 6px;
+}
+
+/* The category and its raw value, one right-flushed block on the stem —
+   anchored so the SOURCE CHIP's center sits exactly on the fork's origin
+   (the middle landing's y = 50% of the drawing), the title just above it.
+   Absolute anchors, not flex centering: centering the whole block put the
+   convergence point between title and chip instead of on the chip. */
+.toolchain-root .v0-dev-key {
+  position: relative;
+  justify-self: stretch;
+  min-width: 0;
+}
+
+/* bottom = the chip's top edge (50% − half the 22px chip) plus the 7px
+   gap — the title rides just above the box it names */
+.toolchain-root .v0-dev-fork-label {
+  position: absolute;
+  right: 0;
+  bottom: calc(50% + 18px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  /* the category names read in the accent (founder: readability) — the
+     threads' own theme pair, deep blue on paper, band blue in dark */
+  color: #2f5ce0;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .toolchain-root .v0-dev-fork-label {
+  color: #86a8ff;
+}
+
+/* the category's one mark: the icon carries the stack rail's blue;
+   the label beside it stays ink */
+.toolchain-root .v0-dev-fork-ic {
+  flex: none;
+  color: #86a8ff;
+}
+
+/* key | threads | outputs — the fork body. The columns are fixed so
+   all four forks start their threads on one shared x. */
+.toolchain-root .v0-dev-fork-body {
+  display: grid;
+  grid-template-columns: 98px 32px minmax(0, 1fr);
+  align-items: stretch;
+}
+
+/* the source node: the raw value as a mono chip, its right edge on the
+   threads' shared stem, its center on the stem's y */
+.toolchain-root .v0-dev-src {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 100%;
+  padding: 4px 7px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-card);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+/* The drawing column: the svg fills it absolutely so its intrinsic size
+   can never dictate the row's height — the output rows own that. */
+.toolchain-root .v0-dev-mid {
+  position: relative;
+  min-height: 72px;
+}
+
+.toolchain-root .v0-dev-threads {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The doubled line, miniaturized: a 4px ink stroke with a 2px card-colored
+   core leaves two parallel 1px threads at a constant 2px gap along any
+   curve. `non-scaling-stroke` keeps the gauge fixed under the stretched
+   viewBox. */
+.toolchain-root .v0-dev-thread {
+  fill: none;
+  stroke: var(--tc-ink);
+  stroke-width: 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.toolchain-root .v0-dev-thread.is-live {
+  stroke: #2f5ce0;
+}
+
+/* The transfer window: the resolving branch's accent a shade over full
+   sandwich gauge — the core carve leaves two 1.5px accent threads, enough
+   to read at this scale — drawn under the cores so the traveling segment
+   is carved into the same pair as the ink it rides over. Hidden until the
+   loop takes it — under reduced motion the static live pair holds the
+   frame instead. */
+.toolchain-root .v0-dev-pulse {
+  fill: none;
+  stroke: #2f5ce0;
+  stroke-width: 5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  will-change: opacity;
+}
+
+.toolchain-root .v0-dev-core {
+  fill: none;
+  stroke: var(--tc-card);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.toolchain-root .v0-dev-live {
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* the deep page blue drowns on ink — the dark theme announces in the
+   band's own blue, the same one the icons carry */
+[data-theme='dark'] .toolchain-root .v0-dev-thread.is-live,
+[data-theme='dark'] .toolchain-root .v0-dev-pulse {
+  stroke: #86a8ff;
+}
+
+/* Three equal landing rows: flex 1 1 0 pins each row's center to the
+   drawing's 1/6, 1/2 and 5/6 — where the threads land. */
+.toolchain-root .v0-dev-outs {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The landing chip sizes itself (the page pills every .v0-dev .lct, and a
+   fork's three codes are the same length, so the values still share a left
+   rule within each diagram). flex-basis stays `auto` so a two-line plural
+   row's height reaches the container's intrinsic size — every row in a
+   fork carries the same lines, so the three stay equal and the landings
+   keep their thirds. */
+.toolchain-root .v0-dev-out {
+  flex: 1 1 auto;
+  min-height: 24px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+  padding-left: 6px;
+  will-change: opacity;
+}
+
+/* the plural rows carry a second line under the sentence: the annotation
+   gets its own 4px of air, top and bottom, and lifts all three rows of
+   that fork together */
+.toolchain-root .v0-dev-out.has-note {
+  padding-block: 4px;
+}
+
+.toolchain-root .v0-dev-out .lct,
+.toolchain-root .v0-dev-route .lct {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-dev-out-val {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+/* one value voice: mono, one size */
+.toolchain-root .v0-dev-val {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+/* …except the plural sentences, which are UI strings: the text face, with
+   the per-script fallbacks the page's own faces do not cover */
+.toolchain-root .v0-dev-val.is-sans {
+  font-family: var(--tc-sans), 'Hiragino Sans', 'Noto Sans CJK JP', 'Yu Gothic', 'Geeza Pro',
+    'Noto Naskh Arabic', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.toolchain-root .v0-dev-note {
+  font-family: var(--tc-mono);
+  font-size: 9.5px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+/* ---------- the routing ledger ----------
+   Five mechanisms, one hairline between neighbours, nothing at the ends —
+   the rows spread over the cell's height like every other mounted ledger. */
+.toolchain-root .v0-dev-routes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toolchain-root .v0-dev-route {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 16px;
+}
+
+.toolchain-root .v0-dev-route + .v0-dev-route {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.toolchain-root .v0-dev-route-ic {
+  flex: none;
+  color: #86a8ff;
+}
+
+.toolchain-root .v0-dev-route-path {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* the locale-carrying segment is the row's one emphasis */
+.toolchain-root .v0-dev-route-path b {
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .v0-dev-route-path .is-to {
+  margin-inline: 6px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- responsive: 3 → 2 → 1 ----------
+   At two columns the routing ledger takes the full second row; the same
+   1px gaps carry every seam. */
+@media (max-width: 1100px) {
+  .toolchain-root .v0-dev-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toolchain-root .v0-dev-grid > .tc-cell:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .toolchain-root .v0-dev-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toolchain-root .v0-dev-grid > .tc-cell:last-child {
+    grid-column: auto;
+  }
+
+  .toolchain-root .v0-dev-fork-label {
+    font-size: 13px;
+  }
+
+  .toolchain-root .v0-dev-out {
+    min-height: 34px;
+  }
+
+  .toolchain-root .v0-dev-val.is-sans {
+    font-size: 14px;
+  }
+
+  .toolchain-root .v0-dev-note {
+    font-size: 10.5px;
+  }
+
+  .toolchain-root .v0-dev-measure {
+    font-size: 11.5px;
+  }
+
+  .toolchain-root .v0-dev-route-path {
+    font-size: 12.5px;
+  }
+
+  .toolchain-root .v0-dev .lang-sw-rows {
+    gap: 18px;
+  }
+}
+
+/* the measured column's provenance, one quiet captioned line — the
+   diagram's own mono note retires for it */
+.toolchain-root .v0-dev .lang-sw-note {
+  display: none;
+}
+
+.toolchain-root .v0-dev-measure {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  white-space: nowrap;
+}
+
+.toolchain-root .v0-dev-measure svg {
+  flex: none;
+  color: var(--tc-ink-3);
+}
+
+/* STACKED (founder, twice: "add more space under" the three demos):
+   single-column cells end with their artwork nearly kissing the card's
+   bottom edge — the demos get a real landing strip under them. 1023px,
+   not 720: the bento stacks all the way up there, and the first cut's
+   phone-only window left tablets at the old 17px. */
+@media (max-width: 1023px) {
+  .toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card > .shell-cell-head {
+    margin-bottom: 24px;
+  }
+}
