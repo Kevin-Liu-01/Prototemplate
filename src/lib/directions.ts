@@ -7,8 +7,11 @@ export type Direction = {
    * The number the founder refers to this version by. Explicit rather than
    * derived from array position so retired versions can drop out of the list
    * without breaking the numbers he uses in review notes.
+   *
+   * Absent on the outcome: what shipped is not one of the numbered attempts,
+   * and giving it a number would put it in the running against them.
    */
-  label: string;
+  label?: string;
   /** Route segment under /d. */
   slug: string;
   name: string;
@@ -201,9 +204,8 @@ export const DIRECTIONS: Direction[] = [
   },
   {
     n: 23,
-    label: '17',
     slug: 'production',
-    name: 'Production',
+    name: 'Shipped',
     concept:
       'What the directions produced: the site now live at generaltranslation.com, rebuilt here page for page.',
     tone: 'light',

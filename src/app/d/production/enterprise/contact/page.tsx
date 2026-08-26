@@ -19,7 +19,7 @@ import '../../../singularity/sections/enterprise-contact.css';
 import '../../styles.css';
 
 export const metadata = {
-  title: 'Enterprise Contact — Production — GT Redesign',
+  title: 'Enterprise Contact — Shipped — GT Redesign',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 

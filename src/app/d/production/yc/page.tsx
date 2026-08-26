@@ -17,7 +17,7 @@ import '../sections/partner-primitives.css';
 import '../sections/yc.css';
 
 export const metadata = {
-  title: 'Y Combinator — Production — GT Redesign',
+  title: 'Y Combinator — Shipped — GT Redesign',
   description:
     'The shipped /yc programme page, reproduced section for section: the reference every other direction is measured against.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

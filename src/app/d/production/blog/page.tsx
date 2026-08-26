@@ -12,7 +12,7 @@ import '../../_v0/v0-pages.css';
 import '../sections/blog-index.css';
 
 export const metadata = {
-  title: 'Blog — Production — GT Redesign',
+  title: 'Blog — Shipped — GT Redesign',
   description: 'News and notes from the field',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

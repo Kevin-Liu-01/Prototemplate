@@ -19,7 +19,7 @@ import '../../_v0/v0-pages.css';
 import '../sections/careers.css';
 
 export const metadata = {
-  title: 'Careers — Production — GT Redesign',
+  title: 'Careers — Shipped — GT Redesign',
   description:
     'The shipped careers page, reproduced section for section: hero, customers, mission, open roles, close.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

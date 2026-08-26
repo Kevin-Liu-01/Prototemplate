@@ -42,14 +42,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
   if (!post) {
     return {
-      title: 'Post Not Found — Blog — Production — GT Redesign',
+      title: 'Post Not Found — Blog — Shipped — GT Redesign',
       robots: { index: false, follow: false },
       icons: { icon: '/brand/no-bg-gt-logo-light.png' },
     };
   }
 
   return {
-    title: `${post.title} — Blog — Production — GT Redesign`,
+    title: `${post.title} — Blog — Shipped — GT Redesign`,
     description: post.summary || undefined,
     icons: { icon: '/brand/no-bg-gt-logo-light.png' },
   };

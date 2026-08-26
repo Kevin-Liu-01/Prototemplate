@@ -11,7 +11,7 @@ import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 
 export const metadata = {
-  title: 'Contact — Production — GT Redesign',
+  title: 'Contact — Shipped — GT Redesign',
   description:
     "Have a question about General Translation? We're here to help.",
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

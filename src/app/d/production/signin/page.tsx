@@ -13,7 +13,7 @@ import '../sections/signin.css';
    d('metadata.description'), which resolves to the dashboard dictionary's
    tagline (apps/dashboard/src/dictionary.ts). */
 export const metadata = {
-  title: 'Sign In — Production — GT Redesign',
+  title: 'Sign In — Shipped — GT Redesign',
   description: "Full-stack localization for the world's best companies",
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

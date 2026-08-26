@@ -15,7 +15,7 @@ import '../../_v0/v0-pages.css';
 import '../sections/pricing.css';
 
 export const metadata = {
-  title: 'Pricing — Production — GT Redesign',
+  title: 'Pricing — Shipped — GT Redesign',
   description:
     'The shipped pricing page, reproduced section for section: the hero, the two plans, and the compare board every other direction is measured against.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   return {
     title: doc
-      ? `${doc.title} — Production — GT Redesign`
+      ? `${doc.title} — Shipped — GT Redesign`
       : 'Legal Document Not Found',
     description: doc?.description,
     icons: { icon: '/brand/no-bg-gt-logo-light.png' },

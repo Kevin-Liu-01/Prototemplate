@@ -20,7 +20,7 @@ import '../_v0/v0-pages.css';
 import '@/components/shared/home-terminal-colors.css';
 
 export const metadata = {
-  title: 'Production — GT Redesign',
+  title: 'Shipped — GT Redesign',
   description:
     'What the redesign produced: the landing page now live at generaltranslation.com, reproduced section for section.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

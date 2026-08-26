@@ -11,7 +11,7 @@ import '../../../toolchain/styles.css';
 import '../../../_v0/v0-pages.css';
 
 export const metadata = {
-  title: 'Usage rates — Production — GT Redesign',
+  title: 'Usage rates — Shipped — GT Redesign',
   description:
     'Usage rates for translation workflows, Google Slides, context, and the Locadex agent.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

@@ -12,7 +12,7 @@ import '../../_v0/v0-pages.css';
 import '../sections/legal.css';
 
 export const metadata = {
-  title: 'Legal Resources — Production — GT Redesign',
+  title: 'Legal Resources — Shipped — GT Redesign',
   description:
     'Policies, terms, and data processing information for General Translation.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

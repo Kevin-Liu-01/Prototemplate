@@ -340,7 +340,7 @@ export default function IndexPage() {
                   <i className='pt-xline is-v is-r' />
                   <h3>
                     {REFERENCE.name}
-                    <span className='pt-site-flag'>live today</span>
+                    <span className='pt-site-flag'>generaltranslation.com</span>
                   </h3>
                   <p>{REFERENCE.signature}</p>
                   <SiteCompare slug={REFERENCE.slug} name={REFERENCE.name} />

@@ -14,7 +14,7 @@ import './sections/not-found.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '404 — Production — GT Redesign',
+  title: '404 — Shipped — GT Redesign',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
   robots: { index: false, follow: false },
 };

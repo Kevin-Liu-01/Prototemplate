@@ -12,7 +12,7 @@ import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 
 export const metadata = {
-  title: 'Supported Locales — Production — GT Redesign',
+  title: 'Supported Locales — Shipped — GT Redesign',
   description:
     'Explore all languages and regional variants supported by General Translation',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },

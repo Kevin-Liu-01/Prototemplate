@@ -42,14 +42,14 @@ function DirectionOptions() {
       <optgroup label='Full sites'>
         {SITES.map((d) => (
           <option key={d.slug} value={d.slug}>
-            {d.label} · {d.name}
+            {d.label ? `${d.label} · ` : ''}{d.name}
           </option>
         ))}
       </optgroup>
       <optgroup label='Explorations'>
         {EXPLORATIONS.map((d) => (
           <option key={d.slug} value={d.slug}>
-            {d.label} · {d.name}
+            {d.label ? `${d.label} · ` : ''}{d.name}
           </option>
         ))}
       </optgroup>

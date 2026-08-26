@@ -15,7 +15,7 @@ import '../../_v0/v0-pages.css';
 import '../sections/enterprise.css';
 
 export const metadata = {
-  title: 'Enterprise — Production — GT Redesign',
+  title: 'Enterprise — Shipped — GT Redesign',
   description:
     'Full-stack localization for enterprises, with white-glove delivery by forward-deployed engineers — the shipped enterprise page, reproduced section for section.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
