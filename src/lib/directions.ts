@@ -209,7 +209,7 @@ export const DIRECTIONS: Direction[] = [
     concept:
       'What the directions produced: the site now live at generaltranslation.com, rebuilt here page for page.',
     tone: 'light',
-    signature: 'The one that shipped — the three above, resolved into a real codebase.',
+    signature: 'The one that shipped — the three below, resolved into a real codebase.',
     site: true,
     reference: true,
   },

@@ -270,6 +270,46 @@ export default function IndexPage() {
           <div className='pt-hatch' aria-hidden='true' />
 
 
+          {REFERENCE ? (
+            <>
+              {/* copy left, the finished site boxed right — the opener's
+                  crop-frame grammar, so the box's four rules run out to the
+                  section's own edges instead of stopping at the card */}
+              <section className='pt-sec pt-post-sec pt-shipped'>
+                <div className='pt-shipped-copy'>
+                  <h2>What shipped</h2>
+                  <p>
+                    The three below are proposals. This is what came out of them: the
+                    site now live at generaltranslation.com, rebuilt here page for page
+                    so it can be read in the same room as the directions that produced
+                    it. Dossier is where most of it comes from; the rest is what
+                    survived contact with a real codebase.
+                  </p>
+                </div>
+
+                <div className='pt-shipped-box'>
+                  <i className='pt-xline is-h is-top' />
+                  <i className='pt-xline is-h is-bot' />
+                  <i className='pt-xline is-v is-l' />
+                  <i className='pt-xline is-v is-r' />
+                  <h3>
+                    {REFERENCE.name}
+                    <span className='pt-site-flag'>generaltranslation.com</span>
+                  </h3>
+                  <p>{REFERENCE.signature}</p>
+                  <SiteCompare slug={REFERENCE.slug} name={REFERENCE.name} />
+                  <p className='pt-site-links'>
+                    <Link href={`/d/${REFERENCE.slug}`}>open the home</Link>
+                    <span aria-hidden> · </span>
+                    <Link href={`/d/${REFERENCE.slug}/enterprise`}>open the enterprise page</Link>
+                  </p>
+                </div>
+              </section>
+
+              <div className='pt-hatch' aria-hidden='true' />
+            </>
+          ) : null}
+
           <section className='pt-sec pt-post-sec pt-sites-intro'>
             <h2>The three sites</h2>
             <p>
@@ -315,46 +355,6 @@ export default function IndexPage() {
           </div>
 
           <div className='pt-hatch' aria-hidden='true' />
-
-          {REFERENCE ? (
-            <>
-              {/* copy left, the finished site boxed right — the opener's
-                  crop-frame grammar, so the box's four rules run out to the
-                  section's own edges instead of stopping at the card */}
-              <section className='pt-sec pt-post-sec pt-shipped'>
-                <div className='pt-shipped-copy'>
-                  <h2>What shipped</h2>
-                  <p>
-                    The three above are proposals. This is what came out of them: the
-                    site now live at generaltranslation.com, rebuilt here page for page
-                    so it can be read in the same room as the directions that produced
-                    it. Dossier is where most of it comes from; the rest is what
-                    survived contact with a real codebase.
-                  </p>
-                </div>
-
-                <div className='pt-shipped-box'>
-                  <i className='pt-xline is-h is-top' />
-                  <i className='pt-xline is-h is-bot' />
-                  <i className='pt-xline is-v is-l' />
-                  <i className='pt-xline is-v is-r' />
-                  <h3>
-                    {REFERENCE.name}
-                    <span className='pt-site-flag'>generaltranslation.com</span>
-                  </h3>
-                  <p>{REFERENCE.signature}</p>
-                  <SiteCompare slug={REFERENCE.slug} name={REFERENCE.name} />
-                  <p className='pt-site-links'>
-                    <Link href={`/d/${REFERENCE.slug}`}>open the home</Link>
-                    <span aria-hidden> · </span>
-                    <Link href={`/d/${REFERENCE.slug}/enterprise`}>open the enterprise page</Link>
-                  </p>
-                </div>
-              </section>
-
-              <div className='pt-hatch' aria-hidden='true' />
-            </>
-          ) : null}
 
           <AnatomyWall />
 
