@@ -22,27 +22,28 @@ import '@/components/shared/home-terminal-colors.css';
 export const metadata = {
   title: 'Production — GT Redesign',
   description:
-    'The shipped landing page, reproduced section for section: the reference every other direction is measured against.',
+    'What the redesign produced: the landing page now live at generaltranslation.com, reproduced section for section.',
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
 /**
- * PRODUCTION — the shipped site, not a direction.
+ * PRODUCTION — what shipped.
  *
- * Every other final in this file is a proposal: it takes the real page's
- * subject and argues for a different treatment. This one argues for nothing.
- * It reproduces generaltranslation.com section for section, in the order the
- * real page mounts them, carrying the real page's own copy — so a reviewer
- * can put a proposal beside the thing it proposes to replace and see exactly
- * what is being traded away.
+ * The other finals here are proposals: each takes the site's subject and
+ * argues for a treatment. This one is the outcome. The directions were built,
+ * judged and narrowed to three, and what came out the far side is the site now
+ * live at generaltranslation.com — most of it Dossier, the rest whatever
+ * survived contact with a real codebase. It is reproduced here page for page
+ * so the result can be read in the same room as the arguments that produced
+ * it.
  *
  * The composition below mirrors HomePage.tsx in gt-cloud
  * (apps/landing/src/components/pages/home/HomePage.tsx): hero, customers,
  * full stack, developers, locadex, context, global, deploy — hatch rules
  * between them, and the three fragment aliases published links point at.
  *
- * It follows that page rather than improving on it. Where a section here
- * still reads differently, that is drift to be closed, not a decision.
+ * It follows the shipped page rather than improving on it. Where a section
+ * here still reads differently, that is drift to be closed, not a decision.
  */
 export default function ProductionPage() {
   return (

@@ -23,9 +23,9 @@ export type Direction = {
    */
   site?: boolean;
   /**
-   * Not a proposal — the shipped site reproduced as a control, so a direction
-   * can be held beside what it would replace. Listed in its own section,
-   * apart from the directions that are arguing for something.
+   * The outcome rather than a proposal: the site that actually shipped after
+   * the directions were judged. Listed in its own section, after the three,
+   * because it is what they produced and not another candidate.
    */
   reference?: boolean;
 };
@@ -205,9 +205,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'production',
     name: 'Production',
     concept:
-      'The shipped site itself, reproduced section for section: the reference the proposals are measured against, not a proposal of its own.',
+      'What the directions produced: the site now live at generaltranslation.com, rebuilt here page for page.',
     tone: 'light',
-    signature: 'No argument — the real page, so a direction can be held beside what it replaces.',
+    signature: 'The one that shipped — the three above, resolved into a real codebase.',
     site: true,
     reference: true,
   },

@@ -1403,11 +1403,12 @@
   opacity: 1;
 }
 
-/* ---- the control: copy left, the shipped site boxed right ----
-   The same two-column law as the opener, and the same crop frame: the box's
-   four rules run past its corners to the section's own edges, so the control
-   reads as a plate cut out of the page rather than a card sitting on it. */
-.pt-control {
+/* ---- what shipped: copy left, the finished site boxed right ----
+   The last stop after the three proposals. Same two-column law as the opener
+   and the same crop frame: the box's four rules run past its corners to the
+   section's own edges, so the outcome reads as a plate cut out of the page
+   rather than a card sitting on it. */
+.pt-shipped {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
@@ -1416,11 +1417,11 @@
   overflow: clip;
 }
 
-.pt-control-copy {
+.pt-shipped-copy {
   padding-block: clamp(26px, 3.2vw, 48px);
 }
 
-.pt-control-box {
+.pt-shipped-box {
   position: relative;
   display: grid;
   gap: 10px;
@@ -1430,14 +1431,14 @@
 
 /* the box owns the card's own type scale, so the plate reads at the same
    weight as the three proposals below it */
-.pt-control-box h3 {
+.pt-shipped-box h3 {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 0;
 }
 
-.pt-control-box > p {
+.pt-shipped-box > p {
   margin: 0;
   font-size: 13.5px;
   line-height: 1.55;
@@ -1445,14 +1446,14 @@
 }
 
 @media (max-width: 900px) {
-  .pt-control {
+  .pt-shipped {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
 
   /* stacked, the vertical extenders would cut the copy above; only the
      horizontals still describe the plate */
-  .pt-control-box .pt-xline.is-v {
+  .pt-shipped-box .pt-xline.is-v {
     display: none;
   }
 }
