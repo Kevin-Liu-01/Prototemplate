@@ -271,19 +271,27 @@ export default function IndexPage() {
 
           {REFERENCE ? (
             <>
-              <section className='pt-sec pt-post-sec'>
-                <h2>The site as it stands</h2>
-                <p>
-                  Before the proposals, the thing they answer to: generaltranslation.com,
-                  rebuilt here page for page — the same sections in the same order, carrying
-                  the same copy. It argues for nothing. It is here so a direction can be held
-                  beside what it would replace, because what a redesign gains is only legible
-                  next to what it trades away.
-                </p>
-              </section>
+              {/* copy left, the control boxed right — the opener's crop-frame
+                  grammar, so the box's four rules run out to the section's own
+                  edges instead of stopping at the card */}
+              <section className='pt-sec pt-post-sec pt-control'>
+                <div className='pt-control-copy'>
+                  <h2>The site as it stands</h2>
+                  <p>
+                    Before the proposals, the thing they answer to:
+                    generaltranslation.com, rebuilt here page for page — the same
+                    sections in the same order, carrying the same copy. It argues for
+                    nothing. It is here so a direction can be held beside what it would
+                    replace, because what a redesign gains is only legible next to what
+                    it trades away.
+                  </p>
+                </div>
 
-              <div className='pt-sites'>
-                <section className='pt-sec pt-site' key={REFERENCE.slug}>
+                <div className='pt-control-box'>
+                  <i className='pt-xline is-h is-top' />
+                  <i className='pt-xline is-h is-bot' />
+                  <i className='pt-xline is-v is-l' />
+                  <i className='pt-xline is-v is-r' />
                   <h3>
                     {REFERENCE.name}
                     <span className='pt-site-flag'>the shipped site</span>
@@ -295,8 +303,8 @@ export default function IndexPage() {
                     <span aria-hidden> · </span>
                     <Link href={`/d/${REFERENCE.slug}/enterprise`}>open the enterprise page</Link>
                   </p>
-                </section>
-              </div>
+                </div>
+              </section>
 
               <div className='pt-hatch' aria-hidden='true' />
             </>
