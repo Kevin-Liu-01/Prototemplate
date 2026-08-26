@@ -354,8 +354,7 @@ export default function IndexPage() {
             ))}
           </div>
 
-          <div className='pt-hatch' aria-hidden='true' />
-
+          {/* AnatomyWall carries its own leading hatch */}
           <AnatomyWall />
 
           <div className='pt-hatch' aria-hidden='true' />
