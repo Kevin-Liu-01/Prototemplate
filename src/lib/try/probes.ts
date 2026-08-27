@@ -309,7 +309,9 @@ export async function discoverVariants(
       if (!res) break;
       fetched.add(dedupKey(url));
       if (res.status >= 200 && res.status < 300 && res.body) {
-        const stillOnPath = normPath(res.finalUrl).startsWith(`/${code}`);
+        const finalPath = normPath(res.finalUrl);
+        const stillOnPath =
+          finalPath === `/${code}` || finalPath.startsWith(`/${code}/`);
         const page = parsePage(res.body, res.finalUrl);
         if (stillOnPath && looksLikeVariant(page, code, base, defaultLang)) {
           variants.push({ code, url: res.finalUrl, via: 'path', page });

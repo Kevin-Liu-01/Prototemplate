@@ -1,7 +1,10 @@
+import { buildCategoryEvidence } from '@/lib/try/evidence';
 import { languageProfile, primarySubtag, RTL_LANGS } from '@/lib/try/language';
 
+import type { CategoryEvidence, EvidenceContext } from '@/lib/try/evidence';
 import type { LanguageProfile } from '@/lib/try/language';
 import type { ParsedPage } from '@/lib/try/parse';
+import type { FetchLogEntry } from '@/lib/try/safeFetch';
 
 export type Grade = 'A' | 'B' | 'C' | 'D' | 'F';
 
@@ -44,6 +47,7 @@ export type ReportCategory = CategoryResult & {
   id: string;
   name: string;
   score: number;
+  evidence: CategoryEvidence;
 };
 
 export type ReportGrades = {
@@ -441,6 +445,11 @@ export function gradeReport(input: {
   declaredCount: number;
   defaultLang: string;
   sitemap?: SitemapEvidence | null;
+  /* Evidence inputs: the content-type header exactly as served and the
+     run's fetch log. Both are optional so grading-only callers stay valid;
+     the evidence block then reports what was not captured. */
+  contentTypeHeader?: string;
+  fetchLog?: FetchLogEntry[];
 }): ReportGrades {
   const {
     base,
@@ -450,6 +459,8 @@ export function gradeReport(input: {
     declaredCount,
     defaultLang,
     sitemap = null,
+    contentTypeHeader = '',
+    fetchLog = [],
   } = input;
   const declaredRtl = base.alternates.some((a) =>
     RTL_LANGS.has(primarySubtag(a.hreflang))
@@ -490,8 +501,30 @@ export function gradeReport(input: {
      its discrete judgment as a multiple of 25. The letter ships with the
      score so the UI never re-derives it with different boundaries. */
   const score = Math.max(1, Math.round((avg / 4) * 100));
+  let host = 'the site';
+  try {
+    host = new URL(base.url).hostname || host;
+  } catch {
+    // Fixtures may grade a page with a non-URL identifier; keep the label.
+  }
+  const evidenceContext: EvidenceContext = {
+    host,
+    base,
+    charsetHeader,
+    contentTypeHeader,
+    variants,
+    negotiation,
+    declaredCount,
+    defaultLang,
+    sitemap,
+    fetchLog,
+  };
   return {
     overall: { score, grade: letter, summary: OVERALL_LINES[letter] },
-    categories: categories.map((c) => ({ ...c, score: POINTS[c.grade] * 25 })),
+    categories: categories.map((c) => ({
+      ...c,
+      score: POINTS[c.grade] * 25,
+      evidence: buildCategoryEvidence(c.id, evidenceContext),
+    })),
   };
 }

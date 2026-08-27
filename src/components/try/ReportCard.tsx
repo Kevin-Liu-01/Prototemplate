@@ -1,9 +1,12 @@
 'use client';
 
+import { useRef, useState } from 'react';
+
 import CategoryMark from './CategoryMarks';
+import TryEvidenceModal from './TryEvidenceModal';
 import TryHelpTip from './TryHelpTip';
 
-import type { CSSProperties } from 'react';
+import type { CSSProperties, KeyboardEvent } from 'react';
 import type { Report } from '@/lib/try/analyze';
 
 export type ReportCardState =
@@ -66,13 +69,14 @@ function gradeOf(score: number): (typeof GRADES)[number] {
    mark is a check in the row's grade colour instead of the action
    arrow. The grader writes these lines in English by contract (the
    footnote says so), so the prefix test is stable. */
-function isCleanFix(fix: string): boolean {
+export function isCleanFix(fix: string): boolean {
   return /^None\b/.test(fix);
 }
 
 /* The fix sub-row's marks, house-drawn at 16px: a check for rows with
-   nothing to do, a right-angle action arrow for rows with work. */
-function FixMark({ clean }: { clean: boolean }) {
+   nothing to do, a right-angle action arrow for rows with work.
+   Exported: the evidence modal's fix line reuses the row grammar. */
+export function FixMark({ clean }: { clean: boolean }) {
   return (
     <svg
       viewBox='0 0 16 16'
@@ -152,6 +156,26 @@ export default function ReportCard({
   state: ReportCardState;
 }) {
   const filled = report !== null;
+  /* The one-open-at-a-time evidence modal: the id of the open category,
+     and the rows' elements so close can hand focus back to the opener. */
+  const [openId, setOpenId] = useState<string | null>(null);
+  const rowEls = useRef<Record<string, HTMLLIElement | null>>({});
+  const openCat = report?.categories.find((cat) => cat.id === openId) ?? null;
+
+  function closeModal() {
+    const id = openId;
+    setOpenId(null);
+    if (id !== null) rowEls.current[id]?.focus();
+  }
+
+  /* Enter/Space on the row's button-semantics wrapper (Space would
+     otherwise scroll the page). */
+  function onRowKeyDown(event: KeyboardEvent<HTMLLIElement>, id: string) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    setOpenId(id);
+  }
+
   const rows = ROSTER.map((base, i) => ({
     id: report?.categories[i]?.id ?? base.id,
     name: report?.categories[i]?.name ?? base.name,
@@ -216,9 +240,21 @@ export default function ReportCard({
           {rows.map((row, i) => (
             <li
               key={row.id}
+              ref={(el) => {
+                rowEls.current[row.id] = el;
+              }}
               id={`try-cat-${row.id}`}
-              className='try-cat'
-              tabIndex={-1}
+              className={`try-cat${row.cat ? ' is-openable' : ''}`}
+              /* filled rows are real buttons: the whole row opens the
+                 category's evidence modal; skeleton rows stay inert
+                 (tabIndex -1 only for the satellite jump's focus) */
+              role={row.cat ? 'button' : undefined}
+              aria-haspopup={row.cat ? 'dialog' : undefined}
+              tabIndex={row.cat ? 0 : -1}
+              onClick={row.cat ? () => setOpenId(row.id) : undefined}
+              onKeyDown={
+                row.cat ? (event) => onRowKeyDown(event, row.id) : undefined
+              }
               style={{ '--try-row-i': i } as CSSProperties}
             >
               <span className='try-cat-icon'>
@@ -228,11 +264,39 @@ export default function ReportCard({
                 <div className='try-cat-namerow'>
                   <h3 className='try-cat-name'>{row.name}</h3>
                   {/* the pricing pages' help affordance, in its local
-                      hairline build */}
-                  <span className='try-info'>
+                      hairline build — its clicks and keys stop here so
+                      the row's own open handler never fires under it */}
+                  <span
+                    className='try-info'
+                    onClick={(event) => event.stopPropagation()}
+                    onKeyDown={(event) => event.stopPropagation()}
+                  >
                     <TryHelpTip label='What this measures'>
                       {INFO_COPY[row.id]}
                     </TryHelpTip>
+                  </span>
+                  {/* the row-end affordance: the whole row is the click
+                      surface, this chip just makes it discoverable. It
+                      stays mounted on the skeleton (hidden, height kept)
+                      so the fill never moves the namerow. */}
+                  <span
+                    className={`try-cat-details${row.cat ? '' : ' is-ghost'}`}
+                    aria-hidden='true'
+                  >
+                    Details
+                    <svg
+                      viewBox='0 0 16 16'
+                      width={11}
+                      height={11}
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth={1.25}
+                      strokeLinecap='square'
+                      strokeLinejoin='miter'
+                    >
+                      <path d='M2.5 8h10' />
+                      <path d='m8.7 4.2 3.8 3.8-3.8 3.8' />
+                    </svg>
                   </span>
                 </div>
                 {row.cat ? (
@@ -284,6 +348,9 @@ export default function ReportCard({
             <span className='try-ghost try-ghost-foot' />
           )}
         </p>
+        {openCat && (
+          <TryEvidenceModal category={openCat} onClose={closeModal} />
+        )}
       </div>
     </div>
   );

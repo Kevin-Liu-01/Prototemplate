@@ -1524,12 +1524,12 @@
   }
 }
 
-/* each row absorbs the tallest real row — a two-line summary with its
-   ruled two-line fix sub-row measures 155px at the tightened padding —
-   plus a small buffer, so the fill never grows a row and no row carries
-   more than the content spread in dead space */
+/* each row absorbs the tallest real row — on the refreshed
+   wordpress.org capture a three-line summary with its ruled two-line
+   fix sub-row measures 200px at the tightened padding — plus a small
+   buffer, so the fill never grows a row */
 .try-cat {
-  min-height: 160px;
+  min-height: 204px;
 }
 
 .try-footnote {
@@ -1538,11 +1538,11 @@
 
 /* mid ladder: the copy column narrows before the rows restack, so the
    row reserve grows to keep absorbing the same summary and fix runs
-   (the tallest real row — a three-line summary — measures 177px from
+   (the tallest real row on the refreshed capture measures 203px from
    1024 down through the two-column run) */
 @media (max-width: 1099.98px) and (min-width: 720.02px) {
   .try-cat {
-    min-height: 180px;
+    min-height: 208px;
   }
 }
 
@@ -1689,11 +1689,11 @@
 
   .try-cat {
     grid-template-columns: calc(var(--try-pad) + 40px) minmax(0, 1fr);
-    /* stacked reserve: the tallest real row (a three-line summary with
-       its ruled two-line fix sub-row measures 288px at 390) fits inside
-       the skeleton; the spare run sits below the scale so rows keep a
-       shared rhythm */
-    min-height: 292px;
+    /* stacked reserve: the tallest real row (a four-line summary with
+       its ruled fix sub-row measures 309px at 390 on the refreshed
+       capture) fits inside the skeleton; the spare run sits below the
+       scale so rows keep a shared rhythm */
+    min-height: 312px;
     align-content: start;
   }
 
@@ -1765,5 +1765,342 @@
   /* the ledger line wraps to two lines on the narrow ladder */
   .try-footnote {
     min-height: 76px;
+  }
+}
+
+/* ============================================================
+   THE EVIDENCE MODAL: each filled row is a button that opens its
+   category's dossier — the exact tags the grader read, the
+   expanded findings, and a paste-ready agent prompt. One modal at
+   a time, on a fixed ink scrim; the panel is a hairline-framed
+   card, square-cornered like everything else on the page.
+   ============================================================ */
+
+/* ---------- the clickable rows ---------- */
+
+/* the whole filled row is the target; hover lifts the row ground one
+   step off the card */
+.try-cat.is-openable {
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.try-cat.is-openable:hover {
+  background: color-mix(in srgb, var(--tc-ink) 3%, transparent);
+}
+
+/* the row-end affordance: a hairline chip with a right-angle arrow —
+   discoverability only, the row itself carries the button semantics */
+.try-cat-details {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  margin-left: auto;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid var(--tc-hair-2);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.try-cat-details svg {
+  display: block;
+}
+
+/* the skeleton's ghost twin: mounted for the namerow's height, unseen
+   (the whole skeleton card is aria-hidden and inert already) */
+.try-cat-details.is-ghost {
+  visibility: hidden;
+}
+
+.try-cat.is-openable:hover .try-cat-details,
+.try-cat.is-openable:focus-visible .try-cat-details {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+}
+
+/* ---------- the scrim and the panel ---------- */
+
+.try-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  /* the ink scrim: the house ink black at 55%, both themes */
+  background: rgb(7 7 7 / 55%);
+  animation: try-modal-fade 160ms ease both;
+}
+
+.try-modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 760px;
+  max-height: 82vh;
+  border: 1px solid var(--tc-hair);
+  background: var(--tc-card);
+  color: var(--tc-ink);
+  animation: try-modal-rise 200ms ease both;
+}
+
+@keyframes try-modal-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes try-modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- the header ---------- */
+
+.try-modal-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px 13px 20px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.try-modal-headicon {
+  flex: none;
+  display: flex;
+  color: var(--tc-ink-2);
+  --try-mark-accent: var(--tc-accent);
+}
+
+.try-modal-mark {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+/* the drawings' instrument labels blur below the 56px report seat */
+.try-modal-mark text {
+  display: none;
+}
+
+.try-modal-name {
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: -0.014em;
+}
+
+/* the header's grade chip drops the score group's stand-off */
+.try-modal-head .try-score-chip {
+  margin-left: 0;
+}
+
+.try-modal-close {
+  flex: none;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.try-modal-close:hover {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+}
+
+.try-modal-close:focus-visible {
+  outline: 1px solid var(--tc-ink);
+  outline-offset: 2px;
+}
+
+/* ---------- the body ---------- */
+
+/* the panel's internal scroll: the header stands, the body scrolls */
+.try-modal-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px 20px 24px;
+}
+
+.try-modal-sec {
+  margin-top: 18px;
+}
+
+.try-modal-sec + .try-modal-sec {
+  padding-top: 18px;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.try-modal-sechead {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--tc-ink-3);
+}
+
+.try-modal-summary {
+  margin: 10px 0 0;
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--tc-ink);
+}
+
+/* the modal's fix line rides the row grammar (.try-cat-fixrow) as is */
+
+/* ---------- the evidence ---------- */
+
+.try-modal-snip {
+  margin: 14px 0 0;
+}
+
+.try-modal-sniplabel {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+/* verbatim material: mono at 12.5px is sanctioned instrument use — the
+   block scrolls sideways inside its own frame, never the page */
+.try-modal-code {
+  margin: 7px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--tc-hair-2);
+  background: color-mix(in srgb, var(--tc-ink) 2.5%, transparent);
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre;
+  color: var(--tc-ink);
+}
+
+/* the findings: a tight list with hairline row seams */
+.try-modal-details {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.try-modal-details li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+  /* probe lines carry long URLs: wrap anywhere, never scroll the page */
+  overflow-wrap: anywhere;
+}
+
+.try-modal-empty {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- the agent prompt ---------- */
+
+.try-modal-hint {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.try-modal-prompt {
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--tc-hair-2);
+  background: color-mix(in srgb, var(--tc-ink) 2.5%, transparent);
+}
+
+.try-modal-promptext {
+  margin: 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--tc-ink);
+}
+
+/* the copy button: the house ink button, square-cornered here; a fixed
+   min width so the Copied flip never moves the frame */
+.try-root .try-modal .try-modal-copy {
+  margin-top: 12px;
+  border-radius: 0;
+  min-width: 122px;
+}
+
+/* ---------- the mobile ladder ---------- */
+
+@media (max-width: 720px) {
+  .try-modal-scrim {
+    padding: 12px;
+  }
+
+  .try-modal {
+    max-height: calc(100dvh - 24px);
+  }
+
+  .try-modal-body {
+    padding-inline: 16px;
+  }
+
+  .try-modal-head {
+    padding-inline: 12px 12px;
+    padding-left: 16px;
+  }
+
+  .try-root .try-modal .try-modal-copy {
+    width: 100%;
+  }
+}
+
+/* ---------- reduced motion: no transitions, no entrances ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .try-modal-scrim,
+  .try-modal {
+    animation: none;
+  }
+
+  .try-cat.is-openable,
+  .try-cat-details,
+  .try-modal-close {
+    transition: none;
   }
 }

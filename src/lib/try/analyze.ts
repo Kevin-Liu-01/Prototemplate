@@ -118,6 +118,8 @@ export async function analyze(startUrl: string): Promise<Report> {
     declaredCount,
     defaultLang,
     sitemap,
+    contentTypeHeader: first.headers.get('content-type') || '',
+    fetchLog: fetcher.log,
   });
 
   return {

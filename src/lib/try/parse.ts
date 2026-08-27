@@ -36,6 +36,10 @@ export type ParsedPage = {
   chunks: string[];
   bodyText: string;
   hasReplacementChars: boolean;
+  /* Verbatim evidence captured before any DOM normalization: the html open
+     tag exactly as served, and the raw hreflang link tags (first 15). */
+  htmlOpenTag: string;
+  rawHreflangTags: string[];
 };
 
 function toAbs(href: string, baseUrl: string): string | null {
@@ -145,8 +149,32 @@ export function parseSitemap(xml: string): ParsedSitemap {
   return { kind, childSitemaps, entries };
 }
 
+const MAX_RAW_HREFLANG_TAGS = 15;
+const MAX_RAW_TAG_CHARS = 300;
+
+/* Verbatim capture off the raw markup, before cheerio normalizes
+   attribute order and quoting: the report shows what the server sent. */
+function captureRawEvidence(html: string): {
+  htmlOpenTag: string;
+  rawHreflangTags: string[];
+} {
+  const htmlOpenTag = (/<html\b[^>]*>/i.exec(html)?.[0] || '').slice(0, 500);
+  const rawHreflangTags: string[] = [];
+  for (const tag of html.match(/<link\b[^>]*>/gi) || []) {
+    if (rawHreflangTags.length >= MAX_RAW_HREFLANG_TAGS) break;
+    if (
+      /\brel\s*=\s*["']?alternate\b/i.test(tag) &&
+      /\bhreflang\s*=/i.test(tag)
+    ) {
+      rawHreflangTags.push(tag.slice(0, MAX_RAW_TAG_CHARS));
+    }
+  }
+  return { htmlOpenTag, rawHreflangTags };
+}
+
 // Extract everything the graders need from one HTML page.
 export function parsePage(html: string, pageUrl: string): ParsedPage {
+  const { htmlOpenTag, rawHreflangTags } = captureRawEvidence(html);
   const $ = cheerio.load(html);
   const htmlEl = $('html').first();
   const lang = (htmlEl.attr('lang') || '').trim();
@@ -207,5 +235,7 @@ export function parsePage(html: string, pageUrl: string): ParsedPage {
     chunks,
     bodyText,
     hasReplacementChars: bodyText.includes('�'),
+    htmlOpenTag,
+    rawHreflangTags,
   };
 }
