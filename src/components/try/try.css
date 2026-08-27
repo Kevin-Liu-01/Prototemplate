@@ -85,6 +85,7 @@
    the field above already gives it air, so the top pad steps down. */
 .try-root .try-head {
   padding-top: clamp(16px, 2.2vw, 26px);
+  padding-bottom: 16px;
 }
 
 .try-root .try-head h1 {
