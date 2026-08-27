@@ -491,6 +491,11 @@
   stroke: color-mix(in srgb, var(--tc-accent) 30%, var(--tc-paper));
 }
 
+/* the far side of the ball recedes */
+.try-fig-glyphline .try-fig-grat-back {
+  opacity: 0.32;
+}
+
 /* dark theme: the lines lift to the light ink register instead — they
    read over the ink shadow and dissolve into the lit crest */
 [data-theme='dark'] .try-root .try-fig-glyphline {

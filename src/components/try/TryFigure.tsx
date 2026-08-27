@@ -339,9 +339,11 @@ export default function TryFigure({
             {/* the drawing layer: a hairline globe over the shaded field —
                 non-scaling strokes so the lines stay 1px at every clamp
                 (safe here: no pathLength dashes ride these paths). The
-                parallels' runs end on the rim circle (r 47, chords at
-                y 26/74), so every line dies into the drawing, not the
-                mask edge. */}
+                graticule is a tilted orthographic sphere (viewer 18 degrees
+                above the equator, sin 0.309 / cos 0.951 on R 47): parallels
+                at 0/30/60 degrees project to ellipses whose front arcs bow
+                toward the viewer at full ink while the back arcs recede
+                faint; meridians run pole to pole (poles at y 5.3 / 94.7). */}
             <svg
               className='try-fig-glyphline'
               viewBox='0 0 100 100'
@@ -354,17 +356,66 @@ export default function TryFigure({
                 r='47'
                 vectorEffect='non-scaling-stroke'
               />
+              {/* meridians: the central pole line and two ellipse pairs */}
+              <path d='M50 5.3v89.4' vectorEffect='non-scaling-stroke' />
               <ellipse
                 cx='50'
                 cy='50'
                 rx='20'
-                ry='47'
+                ry='44.7'
                 vectorEffect='non-scaling-stroke'
               />
-              <path d='M50 3v94' vectorEffect='non-scaling-stroke' />
-              <path d='M3 50h94' vectorEffect='non-scaling-stroke' />
-              <path d='M9.6 26h80.8' vectorEffect='non-scaling-stroke' />
-              <path d='M9.6 74h80.8' vectorEffect='non-scaling-stroke' />
+              <ellipse
+                cx='50'
+                cy='50'
+                rx='38'
+                ry='44.7'
+                vectorEffect='non-scaling-stroke'
+              />
+              {/* parallels, front arcs: equator, then 30 and 60 north/south */}
+              <path
+                d='M3 50A47 14.5 0 0 0 97 50'
+                vectorEffect='non-scaling-stroke'
+              />
+              <path
+                d='M9.3 27.65A40.7 12.6 0 0 0 90.7 27.65'
+                vectorEffect='non-scaling-stroke'
+              />
+              <path
+                d='M9.3 72.35A40.7 12.6 0 0 0 90.7 72.35'
+                vectorEffect='non-scaling-stroke'
+              />
+              <path
+                d='M26.5 11.3A23.5 7.3 0 0 0 73.5 11.3'
+                vectorEffect='non-scaling-stroke'
+              />
+              <path
+                d='M26.5 88.7A23.5 7.3 0 0 0 73.5 88.7'
+                vectorEffect='non-scaling-stroke'
+              />
+              {/* parallels, back arcs: the far side of the ball, receding */}
+              <g className='try-fig-grat-back'>
+                <path
+                  d='M3 50A47 14.5 0 0 1 97 50'
+                  vectorEffect='non-scaling-stroke'
+                />
+                <path
+                  d='M9.3 27.65A40.7 12.6 0 0 1 90.7 27.65'
+                  vectorEffect='non-scaling-stroke'
+                />
+                <path
+                  d='M9.3 72.35A40.7 12.6 0 0 1 90.7 72.35'
+                  vectorEffect='non-scaling-stroke'
+                />
+                <path
+                  d='M26.5 11.3A23.5 7.3 0 0 1 73.5 11.3'
+                  vectorEffect='non-scaling-stroke'
+                />
+                <path
+                  d='M26.5 88.7A23.5 7.3 0 0 1 73.5 88.7'
+                  vectorEffect='non-scaling-stroke'
+                />
+              </g>
             </svg>
           </div>
           <div className='try-fig-seatzone'>
