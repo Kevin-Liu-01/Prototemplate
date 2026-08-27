@@ -224,8 +224,8 @@ export default function TryPage() {
             <div className='tc-head try-head'>
               <h1>How localized is your site?</h1>
               <p>
-                Checks hreflang, routing, metadata, content, and more on any
-                public site.
+                Six live checks: hreflang, language declaration, routing,
+                metadata, content, and charset.
               </p>
             </div>
             <div className='try-form-zone'>
