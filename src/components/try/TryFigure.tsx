@@ -44,6 +44,99 @@ const SAT_IDS = [...LEFT_SATS, ...RIGHT_SATS] as const;
 
 /* The favicon seat's box in px — .try-fig-seat mirrors it in try.css. */
 const SEAT = 96;
+
+/* ---- the graticule, computed rather than eyeballed ----
+   A tilted orthographic sphere (viewer GRAT_TILT above the equator):
+   every parallel and meridian is sampled on the real sphere, projected,
+   and split where the limb crosses (Z' = 0, interpolated), so each line
+   dies exactly on the rim and the hidden side recedes as its own faint
+   path. At this tilt the south pole sits behind the limb; the math, not
+   the drawing, decides what shows. */
+const GRAT_R = 47;
+const GRAT_TILT = (18 * Math.PI) / 180;
+const GRAT_PARALLELS = [-60, -30, 0, 30, 60];
+const GRAT_MERIDIANS = [-54, -25, 0, 25, 54];
+const GRAT_STEPS = 128;
+
+type GratPoint = { x: number; y: number; z: number };
+
+function gratProject(X: number, Y: number, Z: number): GratPoint {
+  const sinT = Math.sin(GRAT_TILT);
+  const cosT = Math.cos(GRAT_TILT);
+  return {
+    x: 50 + GRAT_R * X,
+    y: 50 - GRAT_R * (Y * cosT - Z * sinT),
+    z: Y * sinT + Z * cosT,
+  };
+}
+
+function gratEmit(pts: GratPoint[], front: string[], back: string[]): void {
+  let seg: string[] = [];
+  let segFront = (pts[0]?.z ?? 0) >= 0;
+  let prev: GratPoint | null = null;
+  const flush = () => {
+    if (seg.length > 1) {
+      (segFront ? front : back).push(`M${seg.join('L')}`);
+    }
+    seg = [];
+  };
+  for (const pt of pts) {
+    const vis = pt.z >= 0;
+    if (prev && vis !== segFront) {
+      const t = prev.z / (prev.z - pt.z);
+      const cx = prev.x + (pt.x - prev.x) * t;
+      const cy = prev.y + (pt.y - prev.y) * t;
+      const cross = `${cx.toFixed(2)} ${cy.toFixed(2)}`;
+      seg.push(cross);
+      flush();
+      segFront = vis;
+      seg.push(cross);
+    }
+    seg.push(`${pt.x.toFixed(2)} ${pt.y.toFixed(2)}`);
+    prev = pt;
+  }
+  flush();
+}
+
+function gratPaths(): { front: string[]; back: string[] } {
+  const front: string[] = [];
+  const back: string[] = [];
+  for (const latDeg of GRAT_PARALLELS) {
+    const phi = (latDeg * Math.PI) / 180;
+    const pts: GratPoint[] = [];
+    for (let i = 0; i <= GRAT_STEPS; i++) {
+      /* start the sweep at the back seam so a visible run never splits */
+      const th = Math.PI + (i / GRAT_STEPS) * 2 * Math.PI;
+      pts.push(
+        gratProject(
+          Math.cos(phi) * Math.sin(th),
+          Math.sin(phi),
+          Math.cos(phi) * Math.cos(th)
+        )
+      );
+    }
+    gratEmit(pts, front, back);
+  }
+  for (const lonDeg of GRAT_MERIDIANS) {
+    const lam = (lonDeg * Math.PI) / 180;
+    const pts: GratPoint[] = [];
+    for (let i = 0; i <= GRAT_STEPS; i++) {
+      const ph = -Math.PI / 2 + (i / GRAT_STEPS) * Math.PI;
+      pts.push(
+        gratProject(
+          Math.cos(ph) * Math.sin(lam),
+          Math.sin(ph),
+          Math.cos(ph) * Math.cos(lam)
+        )
+      );
+    }
+    gratEmit(pts, front, back);
+  }
+  return { front, back };
+}
+
+const GRAT = gratPaths();
+
 /* The seat's corner radius (border-radius 20 in try.css; the drawn
    outline runs at 19.5, inset 0.5 for the crisp 1px stroke). */
 const SEAT_R = 20;
@@ -338,12 +431,10 @@ export default function TryFigure({
             <canvas className='try-fig-canvas' ref={canvasRef} />
             {/* the drawing layer: a hairline globe over the shaded field —
                 non-scaling strokes so the lines stay 1px at every clamp
-                (safe here: no pathLength dashes ride these paths). The
-                graticule is a tilted orthographic sphere (viewer 18 degrees
-                above the equator, sin 0.309 / cos 0.951 on R 47): parallels
-                at 0/30/60 degrees project to ellipses whose front arcs bow
-                toward the viewer at full ink while the back arcs recede
-                faint; meridians run pole to pole (poles at y 5.3 / 94.7). */}
+                (safe here: no pathLength dashes ride these paths). Every
+                graticule path is sampled from the tilted sphere itself,
+                so lines end exactly on the rim and the far side recedes
+                faint beneath the front. */}
             <svg
               className='try-fig-glyphline'
               viewBox='0 0 100 100'
@@ -356,66 +447,22 @@ export default function TryFigure({
                 r='47'
                 vectorEffect='non-scaling-stroke'
               />
-              {/* meridians: the central pole line and two ellipse pairs */}
-              <path d='M50 5.3v89.4' vectorEffect='non-scaling-stroke' />
-              <ellipse
-                cx='50'
-                cy='50'
-                rx='20'
-                ry='44.7'
-                vectorEffect='non-scaling-stroke'
-              />
-              <ellipse
-                cx='50'
-                cy='50'
-                rx='38'
-                ry='44.7'
-                vectorEffect='non-scaling-stroke'
-              />
-              {/* parallels, front arcs: equator, then 30 and 60 north/south */}
-              <path
-                d='M3 50A47 14.5 0 0 0 97 50'
-                vectorEffect='non-scaling-stroke'
-              />
-              <path
-                d='M9.3 27.65A40.7 12.6 0 0 0 90.7 27.65'
-                vectorEffect='non-scaling-stroke'
-              />
-              <path
-                d='M9.3 72.35A40.7 12.6 0 0 0 90.7 72.35'
-                vectorEffect='non-scaling-stroke'
-              />
-              <path
-                d='M26.5 11.3A23.5 7.3 0 0 0 73.5 11.3'
-                vectorEffect='non-scaling-stroke'
-              />
-              <path
-                d='M26.5 88.7A23.5 7.3 0 0 0 73.5 88.7'
-                vectorEffect='non-scaling-stroke'
-              />
-              {/* parallels, back arcs: the far side of the ball, receding */}
               <g className='try-fig-grat-back'>
-                <path
-                  d='M3 50A47 14.5 0 0 1 97 50'
-                  vectorEffect='non-scaling-stroke'
-                />
-                <path
-                  d='M9.3 27.65A40.7 12.6 0 0 1 90.7 27.65'
-                  vectorEffect='non-scaling-stroke'
-                />
-                <path
-                  d='M9.3 72.35A40.7 12.6 0 0 1 90.7 72.35'
-                  vectorEffect='non-scaling-stroke'
-                />
-                <path
-                  d='M26.5 11.3A23.5 7.3 0 0 1 73.5 11.3'
-                  vectorEffect='non-scaling-stroke'
-                />
-                <path
-                  d='M26.5 88.7A23.5 7.3 0 0 1 73.5 88.7'
-                  vectorEffect='non-scaling-stroke'
-                />
+                {GRAT.back.map((d) => (
+                  <path
+                    d={d}
+                    key={d.slice(0, 24)}
+                    vectorEffect='non-scaling-stroke'
+                  />
+                ))}
               </g>
+              {GRAT.front.map((d) => (
+                <path
+                  d={d}
+                  key={d.slice(0, 24)}
+                  vectorEffect='non-scaling-stroke'
+                />
+              ))}
             </svg>
           </div>
           <div className='try-fig-seatzone'>
