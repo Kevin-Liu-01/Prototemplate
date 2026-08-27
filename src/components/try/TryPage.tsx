@@ -213,7 +213,7 @@ export default function TryPage() {
         ? 'Grading six categories from live fetches, usually under a minute.'
         : report.state === 'done'
           ? `Graded ${report.value.hostname}: ${report.value.overall.score}/100. Report below.`
-          : 'Checks hreflang, routing, metadata, content, and more on any public site.';
+          : 'Enter a URL for a graded localization report card.';
 
   return (
     <>
@@ -223,7 +223,6 @@ export default function TryPage() {
           <div className='try-hero-copy'>
             <div className='tc-head try-head'>
               <h1>How localized is your site?</h1>
-              <p>Enter a URL for a graded localization report card.</p>
             </div>
             <div className='try-form-zone'>
               <form className='try-form' onSubmit={run}>
