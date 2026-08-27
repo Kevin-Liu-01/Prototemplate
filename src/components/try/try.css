@@ -106,13 +106,12 @@
   padding: 4px var(--tc-gut) clamp(48px, 6vw, 72px);
 }
 
-/* One composed bar: input + trailing affordance + button inside a single
-   hairline frame. The OUTER ends round (the page's sanctioned exception);
-   the inner input-button junction stays square. Focus is ink, never an
-   accent halo. */
+/* One composed assembly: the input+button bar with the status strip
+   joined beneath it, inside a single hairline frame. The OUTER corners
+   round (the page's sanctioned exception) — the bar's top ends and the
+   strip's bottom ends; every inner junction stays square. Focus is ink,
+   never an accent halo. */
 .try-form {
-  display: flex;
-  align-items: stretch;
   max-width: 640px;
   border: 1px solid var(--tc-hair);
   border-radius: 10px;
@@ -121,6 +120,12 @@
 
 .try-form:focus-within {
   border-color: var(--tc-ink);
+}
+
+/* the bar row: input + trailing affordance + button */
+.try-form-bar {
+  display: flex;
+  align-items: stretch;
 }
 
 .try-url-wrap {
@@ -137,7 +142,7 @@
   /* the right pad clears the 18px affordance and its 14px stand-off */
   padding: 0 46px 0 16px;
   border: 0;
-  border-radius: 9px 0 0 9px;
+  border-radius: 9px 0 0 0;
   background: transparent;
   color: var(--tc-ink);
   font-family: var(--tc-sans);
@@ -195,14 +200,15 @@
 
 /* ---------- the go button ----------
    The house solid button, seated flush in the bar's right end: square
-   inner edge, rounded outer end (9px inside the frame's 10px). Both
-   faces — the idle label and the loading arc + label — stay mounted in
-   one grid cell, so the busy swap never changes the button's box. */
+   inner edges, rounded outer top end (9px inside the frame's 10px —
+   the status strip below owns the bottom corner). Both faces — the
+   idle label and the loading arc + label — stay mounted in one grid
+   cell, so the busy swap never changes the button's box. */
 
 .try-root .try-form .try-go {
   height: auto;
   align-self: stretch;
-  border-radius: 0 9px 9px 0;
+  border-radius: 0 9px 0 0;
   padding: 0 22px;
   display: inline-grid;
   place-items: center;
@@ -256,37 +262,67 @@
   background: color-mix(in srgb, var(--tc-ink) 76%, var(--tc-paper));
 }
 
-/* The message slot below the form holds reserved height for whichever
-   line occupies it — the loading note or the error line — so appearing,
-   swapping and clearing never move the figure, hatch or card below. The
-   reserve covers the taller occupant (the framed error line). */
-.try-form-slot {
-  /* flow-root keeps the occupant's top margin inside the slot, so the
-     slot's own top edge never moves as messages come and go; the reserve
-     covers the tallest occupant, the framed two-line error (74px). */
-  display: flow-root;
-  min-height: 76px;
-}
-
-/* one tight line while the run is live, led by a small accent tick that
-   breathes — opacity only, nothing moves */
-.try-note {
+/* ---------- the status strip ----------
+   ONE element, four faces: the idle hint, the live run note, the error
+   line and the success line all occupy this same slot under the bar,
+   inside the bar's own frame — an inner hairline rule separates the
+   two. Constant height (the old floating slot's reserve folded in), so
+   every state swap is a repaint, never a reflow. Led by a 6px square
+   tick: invisible at idle (a placeholder, so the text never moves),
+   pulsing accent while the run is live, the F-red on error, the overall
+   grade's colour on done. */
+.try-strip {
   display: flex;
-  align-items: center;
+  /* top-aligned, not centered: the faces wrap to different line counts,
+     and anchoring the first line keeps every swap a pure repaint — a
+     centered block would glide when the count changes */
+  align-items: flex-start;
   gap: 9px;
-  margin: 18px 0 0;
-  max-width: 60ch;
+  /* the reserve: two wrapped lines — the hero grid's copy column keeps
+     the assembly near 360-470px wide, where the hint, the note and the
+     canned errors all run to two — so every face fits one height */
+  min-height: 68px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--tc-hair-2);
+  border-radius: 0 0 9px 9px;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--tc-ink-3);
 }
 
-.try-note-tick {
+.try-strip-tick {
   flex: none;
   width: 6px;
   height: 6px;
+  /* seat the tick on the first line's vertical center */
+  margin-top: 7.5px;
+  background: transparent;
+}
+
+.try-strip[data-state='loading'] .try-strip-tick {
   background: var(--tc-accent);
   animation: try-tick-pulse 1.6s ease-in-out infinite;
+}
+
+/* error: the text takes full ink and the strip's left edge carries a
+   2px red inset rule — painted, not laid out, so nothing shifts */
+.try-strip[data-state='error'] {
+  color: var(--tc-ink);
+  box-shadow: inset 2px 0 0 var(--try-grade-f);
+}
+
+.try-strip[data-state='error'] .try-strip-tick {
+  background: var(--try-grade-f);
+}
+
+/* done: the tick re-inks in the overall grade's colour (set inline by
+   TryPage) and the success line steps up half a register */
+.try-strip[data-state='done'] {
+  color: var(--tc-ink-2);
+}
+
+.try-strip[data-state='done'] .try-strip-tick {
+  background: var(--try-strip-grade, var(--tc-accent));
 }
 
 @keyframes try-tick-pulse {
@@ -311,21 +347,16 @@
   }
 
   .try-go-arc,
-  .try-note-tick {
+  .try-strip[data-state='loading'] .try-strip-tick {
     animation: none;
   }
 }
 
-.try-error {
-  margin: 18px 0 0;
-  max-width: 640px;
-  padding: 13px 16px;
-  border: 1px solid var(--tc-hair);
-  border-left: 2px solid var(--try-grade-f);
-  background: var(--tc-card);
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: var(--tc-ink);
+/* the narrowest phones: the longest faces run to three lines */
+@media (max-width: 359.98px) {
+  .try-strip {
+    min-height: 90px;
+  }
 }
 
 /* ---------- the hero figure ----------
@@ -1594,8 +1625,7 @@
     line-height: var(--tcm-lead-lh, 1.55);
   }
 
-  .try-note,
-  .try-error {
+  .try-strip {
     font-size: var(--tcm-small, 14px);
     line-height: var(--tcm-small-lh, 1.55);
   }

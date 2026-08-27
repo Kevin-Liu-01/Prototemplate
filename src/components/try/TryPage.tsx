@@ -8,7 +8,7 @@ import ReportCard from './ReportCard';
 import TryField from './TryField';
 import TryFigure from './TryFigure';
 
-import type { FormEvent } from 'react';
+import type { CSSProperties, FormEvent } from 'react';
 import type { Report } from '@/lib/try/analyze';
 import type { Grade } from '@/lib/try/grade';
 
@@ -195,6 +195,26 @@ export default function TryPage() {
       ? report.value
       : null;
 
+  /* The status strip's face. The settle sweep still reads as a live run,
+     so it keeps the loading face until the reveal; done holds the success
+     line (built from the report's real host and score) until a new run. */
+  const stripState =
+    report.state === 'error'
+      ? 'error'
+      : busy
+        ? 'loading'
+        : report.state === 'done'
+          ? 'done'
+          : 'idle';
+  const stripText =
+    report.state === 'error'
+      ? report.message
+      : busy
+        ? 'Grading six categories from live fetches, usually under a minute.'
+        : report.state === 'done'
+          ? `Graded ${report.value.hostname}: ${report.value.overall.score}/100. Report below.`
+          : 'Checks hreflang, routing, metadata, content, and more on any public site.';
+
   return (
     <>
       <div className='tc-sec try-hero'>
@@ -207,115 +227,122 @@ export default function TryPage() {
             </div>
             <div className='try-form-zone'>
               <form className='try-form' onSubmit={run}>
-                <div className='try-url-wrap'>
-                  <input
-                    className='try-url'
-                    type='text'
-                    inputMode='url'
-                    spellCheck={false}
-                    placeholder='stripe.com'
-                    value={url}
-                    onChange={(e) => onUrlChange(e.target.value)}
-                    aria-label='Website URL'
-                  />
-                  {/* the trailing affordance: a house-drawn search glass
+                <div className='try-form-bar'>
+                  <div className='try-url-wrap'>
+                    <input
+                      className='try-url'
+                      type='text'
+                      inputMode='url'
+                      spellCheck={false}
+                      placeholder='stripe.com'
+                      value={url}
+                      onChange={(e) => onUrlChange(e.target.value)}
+                      aria-label='Website URL'
+                    />
+                    {/* the trailing affordance: a house-drawn search glass
                       that crossfades to the typed host's favicon once it
                       loads, so the user sees the target confirmed. On
                       error the glass stays — never a broken image. */}
-                  <span
-                    className={`try-url-affix${
-                      previewFav !== null && previewFav === previewHost
-                        ? ' has-fav'
-                        : ''
-                    }`}
-                    aria-hidden='true'
-                  >
-                    <svg
-                      className='try-url-glass'
-                      viewBox='0 0 18 18'
-                      width={18}
-                      height={18}
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth={1.25}
-                      strokeLinecap='square'
-                    >
-                      <circle cx='8' cy='8' r='5.5' />
-                      <path d='m12.1 12.1 4.4 4.4' />
-                    </svg>
-                    {previewHost !== null && (
-                      <img
-                        key={previewHost}
-                        className='try-url-fav'
-                        src={`https://${previewHost}/favicon.ico`}
-                        alt=''
-                        width={18}
-                        height={18}
-                        draggable={false}
-                        referrerPolicy='no-referrer'
-                        onLoad={() => setPreviewFav(previewHost)}
-                        onError={() => {
-                          setPreviewFav((prev) =>
-                            prev === previewHost ? null : prev
-                          );
-                        }}
-                      />
-                    )}
-                  </span>
-                </div>
-                {/* both faces stay mounted in one grid cell so the busy
-                    swap never changes the button's box (zero CLS) */}
-                <button
-                  className={`tc-btn tc-btn-solid try-go${
-                    busy ? ' is-busy' : ''
-                  }`}
-                  type='submit'
-                  disabled={busy}
-                >
-                  <span
-                    className='try-go-face'
-                    aria-hidden={busy ? true : undefined}
-                  >
-                    Grade My Site
-                  </span>
-                  <span
-                    className='try-go-wait'
-                    aria-hidden={busy ? undefined : true}
-                  >
-                    <svg
-                      className='try-go-arc'
-                      viewBox='0 0 16 16'
-                      width={14}
-                      height={14}
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth={1.5}
-                      strokeLinecap='butt'
+                    <span
+                      className={`try-url-affix${
+                        previewFav !== null && previewFav === previewHost
+                          ? ' has-fav'
+                          : ''
+                      }`}
                       aria-hidden='true'
                     >
-                      <path d='M8 1.5A6.5 6.5 0 1 1 1.5 8' />
-                    </svg>
-                    Grading…
-                  </span>
-                </button>
+                      <svg
+                        className='try-url-glass'
+                        viewBox='0 0 18 18'
+                        width={18}
+                        height={18}
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth={1.25}
+                        strokeLinecap='square'
+                      >
+                        <circle cx='8' cy='8' r='5.5' />
+                        <path d='m12.1 12.1 4.4 4.4' />
+                      </svg>
+                      {previewHost !== null && (
+                        <img
+                          key={previewHost}
+                          className='try-url-fav'
+                          src={`https://${previewHost}/favicon.ico`}
+                          alt=''
+                          width={18}
+                          height={18}
+                          draggable={false}
+                          referrerPolicy='no-referrer'
+                          onLoad={() => setPreviewFav(previewHost)}
+                          onError={() => {
+                            setPreviewFav((prev) =>
+                              prev === previewHost ? null : prev
+                            );
+                          }}
+                        />
+                      )}
+                    </span>
+                  </div>
+                  {/* both faces stay mounted in one grid cell so the busy
+                    swap never changes the button's box (zero CLS) */}
+                  <button
+                    className={`tc-btn tc-btn-solid try-go${
+                      busy ? ' is-busy' : ''
+                    }`}
+                    type='submit'
+                    disabled={busy}
+                  >
+                    <span
+                      className='try-go-face'
+                      aria-hidden={busy ? true : undefined}
+                    >
+                      Grade My Site
+                    </span>
+                    <span
+                      className='try-go-wait'
+                      aria-hidden={busy ? undefined : true}
+                    >
+                      <svg
+                        className='try-go-arc'
+                        viewBox='0 0 16 16'
+                        width={14}
+                        height={14}
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth={1.5}
+                        strokeLinecap='butt'
+                        aria-hidden='true'
+                      >
+                        <path d='M8 1.5A6.5 6.5 0 1 1 1.5 8' />
+                      </svg>
+                      Grading…
+                    </span>
+                  </button>
+                </div>
+                {/* The status strip: ONE element under the bar, inside the
+                    same frame, holding all four states at constant height —
+                    the hint, the live note, the error line and the success
+                    line swap in place, so nothing below ever moves. One
+                    live region: every state change announces from here. */}
+                <div
+                  className='try-strip'
+                  data-state={stripState}
+                  role='status'
+                  style={
+                    report.state === 'done'
+                      ? ({
+                          '--try-strip-grade': gradeVarOf(
+                            report.value.overall.score
+                          ),
+                        } as CSSProperties)
+                      : undefined
+                  }
+                >
+                  <i className='try-strip-tick' aria-hidden='true' />
+                  <span className='try-strip-text'>{stripText}</span>
+                </div>
               </form>
-              {/* The message slot is always in flow with a reserved
-                  height, so the note and the error line swap in and out
-                  without moving anything below them. */}
-              <div className='try-form-slot'>
-                {report.state === 'error' && (
-                  <p className='try-error' role='alert'>
-                    {report.message}
-                  </p>
-                )}
-                {busy && (
-                  <p className='try-note' role='status'>
-                    <i className='try-note-tick' aria-hidden='true' />
-                    Grading six categories from live fetches, usually under a
-                    minute.
-                  </p>
-                )}
-              </div>
             </div>
           </div>
           <div className='try-hero-fig'>
