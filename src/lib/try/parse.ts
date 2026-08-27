@@ -52,17 +52,52 @@ function toAbs(href: string, baseUrl: string): string | null {
 const SITEMAP_MAX_CHILDREN = 50;
 const SITEMAP_MAX_ENTRIES = 500;
 
+/* Numeric entities outside the Unicode scalar range (or lone surrogates)
+   stay literal: String.fromCodePoint would throw, and one malformed entity
+   must not abort sitemap parsing. */
+function decodeCodePoint(entity: string, cp: number): string {
+  const scalar =
+    Number.isInteger(cp) &&
+    cp >= 0 &&
+    cp <= 0x10ffff &&
+    !(cp >= 0xd800 && cp <= 0xdfff);
+  return scalar ? String.fromCodePoint(cp) : entity;
+}
+
 function decodeXmlEntities(s: string): string {
   return s
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) =>
-      String.fromCodePoint(parseInt(hex, 16))
+    .replace(/&#x([0-9a-f]+);/gi, (entity, hex: string) =>
+      decodeCodePoint(entity, parseInt(hex, 16))
     )
-    .replace(/&#(\d+);/g, (_, dec: string) => String.fromCodePoint(Number(dec)))
+    .replace(/&#(\d+);/g, (entity, dec: string) =>
+      decodeCodePoint(entity, Number(dec))
+    )
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'")
     .replace(/&amp;/g, '&');
+}
+
+/* Linear block extraction: one token pass pairing opening and closing
+   tags, stopping at `max`. A lazy [\s\S]*? block regex goes quadratic on
+   a feed of unclosed tags, which a hostile sitemap can serve. */
+function tagBlocks(xml: string, name: string, max: number): string[] {
+  const token = new RegExp(`<(/?)(?:[\\w-]+:)?${name}(?=[\\s/>])[^>]*>`, 'gi');
+  const blocks: string[] = [];
+  let open = -1;
+  let m: RegExpExecArray | null;
+  while (blocks.length < max && (m = token.exec(xml)) !== null) {
+    if (m[1]) {
+      if (open >= 0) {
+        blocks.push(xml.slice(open, m.index + m[0].length));
+        open = -1;
+      }
+    } else if (open < 0) {
+      open = m.index;
+    }
+  }
+  return blocks;
 }
 
 function locOf(block: string): string {
@@ -88,18 +123,12 @@ export function parseSitemap(xml: string): ParsedSitemap {
   const childSitemaps: string[] = [];
   const entries: SitemapEntry[] = [];
   if (kind === 'index') {
-    const blocks =
-      xml.match(
-        /<(?:[\w-]+:)?sitemap[\s>][\s\S]*?<\/(?:[\w-]+:)?sitemap\s*>/gi
-      ) || [];
-    for (const block of blocks.slice(0, SITEMAP_MAX_CHILDREN)) {
+    for (const block of tagBlocks(xml, 'sitemap', SITEMAP_MAX_CHILDREN)) {
       const loc = locOf(block);
       if (loc) childSitemaps.push(loc);
     }
   } else if (kind === 'urlset') {
-    const blocks =
-      xml.match(/<(?:[\w-]+:)?url[\s>][\s\S]*?<\/(?:[\w-]+:)?url\s*>/gi) || [];
-    for (const block of blocks.slice(0, SITEMAP_MAX_ENTRIES)) {
+    for (const block of tagBlocks(xml, 'url', SITEMAP_MAX_ENTRIES)) {
       const loc = locOf(block);
       if (!loc) continue;
       const alternates: SitemapAlternate[] = [];

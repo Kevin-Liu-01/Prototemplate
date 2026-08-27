@@ -238,6 +238,7 @@ async function readCapped(res: UpstreamResponse, cap: number): Promise<string> {
   const decoder = new TextDecoder('utf-8', { fatal: false });
   let out = '';
   let bytes = 0;
+  let truncated = false;
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -247,11 +248,15 @@ async function readCapped(res: UpstreamResponse, cap: number): Promise<string> {
     bytes += chunk.byteLength;
     out += decoder.decode(chunk, { stream: true });
     if (bytes >= cap) {
+      truncated = true;
       await reader.cancel().catch(() => {});
       break;
     }
   }
-  out += decoder.decode();
+  /* No flush after a capped read: the cap can cut mid-character, and
+     flushing turns the dangling bytes into U+FFFD, which the charset
+     grade would read as broken encoding. */
+  if (!truncated) out += decoder.decode();
   return out.slice(0, cap);
 }
 

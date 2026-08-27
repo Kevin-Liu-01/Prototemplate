@@ -29,7 +29,11 @@
  *   - bayerInk: the flow biased hard toward ground — sparse blue on ink,
  *     the quietest print, no bright chip in the palette;
  *   - bayerHot: wandering heat cores lift the crests to pure white through
- *     an 8×8 screen — the one variant allowed white.
+ *     an 8×8 screen — the one variant allowed white;
+ *   - bayerSphere: the /try globe's material — a lit sphere under an
+ *     upper-left key light, pigment drifting in longitude/latitude so the
+ *     motion reads as the ball slowly turning, quantized through the 8×8
+ *     screen; the dither density describes the form, not a flat wash.
  *
  * HOUSE TUNING — every preset grounds on near-black so the field renders
  * LIGHT ON INK: the page composites the canvas with its own mix-blend-mode,
@@ -92,7 +96,8 @@ export type StudioPreset =
   | 'bayerChunk'
   | 'bayerPulse'
   | 'bayerInk'
-  | 'bayerHot';
+  | 'bayerHot'
+  | 'bayerSphere';
 
 /** One entry of the codified Bayer family roster. */
 export type BayerVariant = {
@@ -297,6 +302,17 @@ export const STUDIO_PRESETS: Record<StudioPreset, StudioParams> = {
     grain: 40,
     rotation: 10,
   },
+  /* the lit sphere — shading first, drift second; callers reink per theme */
+  bayerSphere: {
+    ...BASE_PARAMS,
+    colorA: INK_BLUE,
+    colorB: BLUE,
+    colorC: BLUE_CHIP,
+    strength: 0.5,
+    detail: 3.0,
+    frequency: 5.0,
+    grain: 42,
+  },
 };
 
 /* An instant where every study is mid-motion with structure visible — the
@@ -345,7 +361,14 @@ void main() {
      bayerInk = the flow pushed through pow 2.4 and capped at .9, printed
      against a lowered bias (+.4) — coverage stays sparse;
      bayerHot = the flow plus a second wandering fbm whose top lobes gate
-     heat; heat lifts the tone to the white crest through the 8×8 screen.
+     heat; heat lifts the tone to the white crest through the 8×8 screen;
+     bayerSphere = a Lambert sphere (radius .96 of the half-frame, key
+     light upper-left, a tight pow-5 core near the light that overshoots
+     the crest threshold so the hot core prints crest-dominant, tone
+     eased to ink at the limb) with pigment sampled in longitude/latitude
+     off the sphere's own normal — the longitude carries the clock, so
+     the drift compresses at the limbs exactly like a turning ball —
+     through the 8×8 screen at near-grain cells.
    - Ternary chains (level < .25 ? A : level < .75 ? B : C) are the
      studio's own idiom and valid ES 1.00. */
 const PREAMBLE = `
@@ -588,6 +611,27 @@ void main() {
   float heat = smoothstep(0.58, 0.86, cores) * smoothstep(0.45, 0.9, flow);
   float tone = clamp(flow * 0.72 + heat * 0.7, 0.0, 1.0);
   float cellSize = mix(1.5, 6.0, uGrain / 100.0);
+  float threshold = bayer8(gl_FragCoord.xy / cellSize);
+  float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
+  gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);
+}
+`,
+  bayerSphere: `${BAYER8}
+void main() {
+  vec2 p = studioUv();
+  vec2 q = p / 0.96;
+  float z = sqrt(max(1.0 - dot(q, q), 0.0));
+  vec3 normal = normalize(vec3(q, max(z, 0.001)));
+  vec3 light = normalize(vec3(-0.5, 0.55, 0.62));
+  float lit = clamp(dot(normal, light), 0.0, 1.0);
+  float lon = atan(q.x, max(z, 0.02));
+  float lat = asin(clamp(q.y, -1.0, 1.0));
+  float turn = uTime * 0.055;
+  float pigment = fbm(vec2(lon + turn, lat * 1.25) * max(0.8, uDetail * 0.42)) - 0.5;
+  float tone = 0.14 + pow(lit, 1.15) * 1.05 + pow(lit, 5.0) * 0.45 + pigment * uStrength;
+  tone *= mix(0.42, 1.0, smoothstep(0.0, 0.4, z));
+  tone = clamp(tone, 0.0, 1.45);
+  float cellSize = mix(1.0, 4.0, uGrain / 100.0);
   float threshold = bayer8(gl_FragCoord.xy / cellSize);
   float level = floor(clamp(tone + 0.5 - threshold, 0.0, 1.0) * 2.0) / 2.0;
   gl_FragColor = vec4(max(vec3(0.0), inks(level) * uBrightness), 1.0);

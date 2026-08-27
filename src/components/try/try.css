@@ -452,13 +452,16 @@
   overflow: hidden;
 }
 
-/* the centerpiece: the field canvas masked to the globe mark */
+/* the centerpiece: the lit-sphere field masked to a disc, with the
+   hairline globe drawing seated over it — texture and drawing as two
+   clean layers (the mask clips both, so nothing bleeds past the ball) */
 
 .try-fig-glyph {
+  position: relative;
   width: clamp(150px, 19vw, 214px);
   aspect-ratio: 1;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='7'%3E%3Ccircle cx='50' cy='50' r='44'/%3E%3Cellipse cx='50' cy='50' rx='20' ry='44'/%3E%3Cpath d='M50 6v88'/%3E%3Cpath d='M6 50h88'/%3E%3Cpath d='M14 26h72'/%3E%3Cpath d='M14 74h72'/%3E%3C/g%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='7'%3E%3Ccircle cx='50' cy='50' r='44'/%3E%3Cellipse cx='50' cy='50' rx='20' ry='44'/%3E%3Cpath d='M50 6v88'/%3E%3Cpath d='M6 50h88'/%3E%3Cpath d='M14 26h72'/%3E%3Cpath d='M14 74h72'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23000'/%3E%3C/svg%3E");
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
@@ -472,6 +475,26 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* the drawing layer: meridians and parallels at one crisp hairline —
+   quiet enough to sit in the texture, firm enough to read the form */
+.try-fig-glyphline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* light theme: the lines are the paper showing through the print,
+     tinted a breath of accent so the graticule survives inside the lit
+     crest — they read over the inked body without cutting a hole in it */
+  stroke: color-mix(in srgb, var(--tc-accent) 30%, var(--tc-paper));
+}
+
+/* dark theme: the lines lift to the light ink register instead — they
+   read over the ink shadow and dissolve into the lit crest */
+[data-theme='dark'] .try-root .try-fig-glyphline {
+  stroke: var(--tc-ink-3);
 }
 
 /* the morph: the glyph steps down as the favicon seat steps in */

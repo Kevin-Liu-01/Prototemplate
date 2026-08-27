@@ -43,6 +43,27 @@ function dedupKey(u: string): string {
   }
 }
 
+/* Sitemap <loc> matching key: query-insensitive, so a canonical entry for
+   /page still matches a submitted /page?utm_source=x. Fetch dedup keeps
+   using dedupKey because query alternates are distinct pages. */
+function entryKey(u: string): string {
+  try {
+    const url = new URL(u);
+    const path = url.pathname.replace(/\/+$/, '') || '/';
+    return `${url.host.toLowerCase()}${path}`;
+  } catch {
+    return u;
+  }
+}
+
+function hasQuery(u: string): boolean {
+  try {
+    return new URL(u).search !== '';
+  } catch {
+    return false;
+  }
+}
+
 const NO_SITEMAP: SitemapEvidence = {
   checked: false,
   url: null,
@@ -87,9 +108,12 @@ export async function probeSitemap(
   let sitemapUrl = res.finalUrl;
   let viaIndex = false;
   if (parsed.kind === 'index') {
+    /* Media-feed filtering looks at the path only: a host like
+       news.example.com must not disqualify every child. */
     const child =
-      parsed.childSitemaps.find((u) => !/image|video|news/i.test(u)) ??
-      parsed.childSitemaps[0];
+      parsed.childSitemaps.find(
+        (u) => !/image|video|news/i.test(normPath(u))
+      ) ?? parsed.childSitemaps[0];
     if (!child) return NO_SITEMAP;
     const childRes = await fetcher.fetchPage(child, {
       purpose: 'child sitemap',
@@ -109,26 +133,29 @@ export async function probeSitemap(
   }
   if (parsed.kind !== 'urlset') return NO_SITEMAP;
 
-  // The base page's own entry is scanned first so its alternates win the
-  // code -> URL slots; other entries only fill gaps.
-  const baseKey = dedupKey(baseUrl);
-  const baseEntry = parsed.entries.find((e) => dedupKey(e.loc) === baseKey);
-  const ordered = baseEntry
-    ? [baseEntry, ...parsed.entries.filter((e) => e !== baseEntry)]
-    : parsed.entries;
+  /* Only the submitted page's own entry supplies alternate evidence:
+     sibling entries describe other pages, so their alternates are never
+     credited here, and a base page the sitemap does not list gets none at
+     all. An exact (query-sensitive) match wins; the query-insensitive
+     fallback considers only query-free canonical entries, so a stray
+     tracking param finds the canonical entry but never a query-specific
+     sibling variant. */
+  const baseEntry =
+    parsed.entries.find((e) => dedupKey(e.loc) === dedupKey(baseUrl)) ??
+    parsed.entries.find(
+      (e) => !hasQuery(e.loc) && entryKey(e.loc) === entryKey(baseUrl)
+    );
   const codes = new Set<string>();
   const alternatesByCode: Record<string, string> = {};
-  for (const entry of ordered) {
-    for (const a of entry.alternates) {
-      const code = primarySubtag(a.hreflang);
-      if (!code || code === 'x') continue;
-      codes.add(code);
-      if (!(code in alternatesByCode)) {
-        try {
-          alternatesByCode[code] = new URL(a.href, sitemapUrl).href;
-        } catch {
-          // Unresolvable alternate URLs still count as declared codes.
-        }
+  for (const a of baseEntry?.alternates ?? []) {
+    const code = primarySubtag(a.hreflang);
+    if (!code || code === 'x') continue;
+    codes.add(code);
+    if (!(code in alternatesByCode)) {
+      try {
+        alternatesByCode[code] = new URL(a.href, sitemapUrl).href;
+      } catch {
+        // Unresolvable alternate URLs still count as declared codes.
       }
     }
   }

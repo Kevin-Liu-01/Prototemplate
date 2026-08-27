@@ -8,12 +8,16 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 import CategoryMark from './CategoryMarks';
 
 import type { CSSProperties } from 'react';
+import type { StudioVec3 } from '@/lib/studio-field';
 import type { Grade } from '@/lib/try/grade';
 
 /* The hero figure: a hairline browser window whose centerpiece is the
-   website glyph — a globe mark whose fill IS the live dither field (the
-   canvas runs the shared studio engine, clipped to the glyph by a CSS
-   mask). On submit the glyph morphs into the graded site's favicon,
+   website glyph — a dithered globe drawn as two clean layers: the studio
+   engine's lit-sphere material (bayerSphere) clipped to a disc by a CSS
+   mask, and a hairline SVG globe drawing seated over it, so the texture
+   describes the form and the drawing keeps the edges crisp. The sphere
+   is inked per theme (a dark print on the light paper, a lit crest on
+   the ink ground). On submit the glyph morphs into the graded site's favicon,
    seated snug in a rounded container (the one rounded element the page
    allows). The six category marks orbit the window as satellite chips;
    every chip is a button that jumps to its category's report row. While
@@ -46,6 +50,29 @@ const SEAT_R = 20;
 /* Every connector stops this many px short of the seat's drawn border,
    so the dots never touch the assembling outline segments. */
 const CONN_GAP = 7;
+
+/* The sphere's two prints (hex in comments — the practices linter keeps
+   color literals out of TS). The shader shades tone 0 (shadow) with
+   colorA and tone 1 (lit) with colorC, so each theme dissolves ONE end
+   into its own ground: light theme prints ink that thins to paper at the
+   lit crest; dark theme prints light that sinks to ink at the shadow. */
+type SphereInks = {
+  colorA: StudioVec3;
+  colorB: StudioVec3;
+  colorC: StudioVec3;
+};
+
+const SPHERE_LIGHT: SphereInks = {
+  colorA: [0.043, 0.055, 0.09], // #0b0e17 — the shadow ink on paper
+  colorB: [0.184, 0.361, 0.878], // #2f5ce0 — the house accent body
+  colorC: [0.973, 0.98, 1.0], // #f8faff — melts into the light card
+};
+
+const SPHERE_DARK: SphereInks = {
+  colorA: [0.016, 0.024, 0.04], // #04060a — falls into the ink ground
+  colorB: [0.184, 0.361, 0.878], // #2f5ce0 — the house accent body
+  colorC: [0.812, 0.878, 1.0], // #cfe0ff — the lit crest
+};
 
 /* The seat outline: six open segments (each a straight run or a half-top
    or half-bottom plus its corner) that together tile the 96px rounded
@@ -184,11 +211,29 @@ export default function TryFigure({
   /* The connector overlay's measured routes (null until first measure). */
   const [conn, setConn] = useState<ConnGeom | null>(null);
 
+  /* Mount the sphere material and keep its inks on the live theme: the
+     shell stamps data-theme on the root pre-paint and on every toggle,
+     so one attribute observer re-inks the field without a re-render. */
   useMountEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const field = createStudioField(canvas, { preset: 'bayer8' });
-    return field ? () => field.destroy() : undefined;
+    const field = createStudioField(canvas, { preset: 'bayerSphere' });
+    if (!field) return;
+    const root = document.documentElement;
+    const applyInks = () => {
+      const dark = root.getAttribute('data-theme') === 'dark';
+      field.setParams(dark ? SPHERE_DARK : SPHERE_LIGHT);
+    };
+    applyInks();
+    const themeWatch = new MutationObserver(applyInks);
+    themeWatch.observe(root, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+    return () => {
+      themeWatch.disconnect();
+      field.destroy();
+    };
   });
 
   /* Measure the connector routes: one polyline per chip, from the chip's
@@ -291,6 +336,36 @@ export default function TryFigure({
         <div className='try-fig-body' ref={bodyRef}>
           <div className='try-fig-glyph'>
             <canvas className='try-fig-canvas' ref={canvasRef} />
+            {/* the drawing layer: a hairline globe over the shaded field —
+                non-scaling strokes so the lines stay 1px at every clamp
+                (safe here: no pathLength dashes ride these paths). The
+                parallels' runs end on the rim circle (r 47, chords at
+                y 26/74), so every line dies into the drawing, not the
+                mask edge. */}
+            <svg
+              className='try-fig-glyphline'
+              viewBox='0 0 100 100'
+              fill='none'
+              strokeWidth={1}
+            >
+              <circle
+                cx='50'
+                cy='50'
+                r='47'
+                vectorEffect='non-scaling-stroke'
+              />
+              <ellipse
+                cx='50'
+                cy='50'
+                rx='20'
+                ry='47'
+                vectorEffect='non-scaling-stroke'
+              />
+              <path d='M50 3v94' vectorEffect='non-scaling-stroke' />
+              <path d='M3 50h94' vectorEffect='non-scaling-stroke' />
+              <path d='M9.6 26h80.8' vectorEffect='non-scaling-stroke' />
+              <path d='M9.6 74h80.8' vectorEffect='non-scaling-stroke' />
+            </svg>
           </div>
           <div className='try-fig-seatzone'>
             <span className='try-fig-seat'>

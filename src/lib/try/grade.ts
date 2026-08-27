@@ -47,7 +47,7 @@ export type ReportCategory = CategoryResult & {
 };
 
 export type ReportGrades = {
-  overall: { score: number; summary: string };
+  overall: { score: number; grade: Grade; summary: string };
   categories: ReportCategory[];
 };
 
@@ -73,14 +73,14 @@ function gradeHreflang(
       const n = sitemapCodes.size;
       return {
         grade: n >= 2 ? 'B' : 'D',
-        summary: `No hreflang tags in the HTML, but ${n} locale${n === 1 ? '' : 's'} ${n === 1 ? 'is' : 'are'} declared via sitemap.xml alternates.`,
-        fix: 'Sitemap hreflang is a valid channel. Keep the sitemap set complete, add an x-default entry, and consider mirroring it as link tags.',
+        summary: `No hreflang tags in the HTML; ${n} locale${n === 1 ? '' : 's'} declared via sitemap.xml alternates.`,
+        fix: 'Mirror the sitemap alternates as on-page link tags and add an x-default entry.',
       };
     }
     return {
       grade: 'F',
-      summary: 'No hreflang alternate tags were found on the page.',
-      fix: 'Add a link rel="alternate" hreflang tag for every locale you serve, plus an x-default.',
+      summary: 'No hreflang alternate tags on the page.',
+      fix: 'Add a link rel="alternate" hreflang tag for each served locale, plus x-default.',
     };
   }
   const hasXDefault = alts.some(
@@ -88,11 +88,16 @@ function gradeHreflang(
   );
   const allValid = alts.every((a) => VALID_HREFLANG.test(a.hreflang));
   const allAbsolute = alts.every((a) => /^https?:\/\//i.test(a.href));
-  const basePath = new URL(base.url).pathname.replace(/\/+$/, '') || '/';
+  /* Self-reference means the same host and path: a subdomain or ccTLD
+     alternate sharing the path is a different page. */
+  const baseParsed = new URL(base.url);
+  const baseKey = `${baseParsed.host.toLowerCase()}${baseParsed.pathname.replace(/\/+$/, '') || '/'}`;
   const hasSelf = alts.some((a) => {
     try {
+      const u = new URL(a.abs || '');
       return (
-        (new URL(a.abs || '').pathname.replace(/\/+$/, '') || '/') === basePath
+        `${u.host.toLowerCase()}${u.pathname.replace(/\/+$/, '') || '/'}` ===
+        baseKey
       );
     } catch {
       return false;
@@ -125,11 +130,11 @@ function gradeHreflang(
 
   let summary =
     problems.length === 0
-      ? `${locales.size} locales declared with x-default and a self-reference. Textbook.`
-      : `${locales.size} locale${locales.size === 1 ? '' : 's'} declared, but: ${problems.join(', ')}.`;
+      ? `${locales.size} locales declared with x-default and a self-reference.`
+      : `${locales.size} locale${locales.size === 1 ? '' : 's'} declared; issues: ${problems.join(', ')}.`;
   let fix =
     problems.length === 0
-      ? 'Nothing. Keep the tags in sync as locales are added.'
+      ? 'None required.'
       : `Fix the hreflang set: ${problems.join(', ')}.`;
 
   /* Sitemap evidence folds into this category: agreement is a confirmation
@@ -148,9 +153,9 @@ function gradeHreflang(
       const larger = Math.max(pageSubtags.size, sitemapCodes.size);
       if (overlap * 2 < larger) {
         grade = DEMOTE[grade];
-        summary += ` The sitemap.xml hreflang set disagrees with the page tags (only ${overlap} of ${larger} languages shared).`;
+        summary += ` The sitemap.xml hreflang set disagrees with the page tags (${overlap} of ${larger} languages shared).`;
         fix =
-          'Bring the sitemap.xml hreflang entries and the on-page link tags in sync; they currently declare different locale sets.';
+          'Bring the sitemap.xml hreflang entries and the on-page link tags in sync.';
       } else {
         summary += ' sitemap.xml agrees.';
       }
@@ -163,9 +168,8 @@ function gradeLangDecl(base: ParsedPage): CategoryResult {
   if (!base.lang) {
     return {
       grade: 'F',
-      summary:
-        'The <html> tag has no lang attribute, so browsers, translators and screen readers must guess.',
-      fix: 'Set <html lang="..."> on every page, matched to the content language of that page.',
+      summary: 'The <html> tag has no lang attribute.',
+      fix: 'Set <html lang="..."> on every page to match its content language.',
     };
   }
   if (
@@ -183,7 +187,7 @@ function gradeLangDecl(base: ParsedPage): CategoryResult {
   if (isRtl && base.dir !== 'rtl') {
     return {
       grade: 'D',
-      summary: `Page declares the right-to-left language "${base.lang}" but has no dir="rtl".`,
+      summary: `lang="${base.lang}" is a right-to-left language but dir="rtl" is not set.`,
       fix: 'Add dir="rtl" to <html> for right-to-left locales.',
     };
   }
@@ -202,14 +206,14 @@ function gradeLangDecl(base: ParsedPage): CategoryResult {
   ) {
     return {
       grade: 'C',
-      summary: `lang="${base.lang}" is declared, but most of the visible text does not read as that language.`,
-      fix: 'Make the lang attribute match what the page actually says.',
+      summary: `lang="${base.lang}" does not match the detected language of most visible text.`,
+      fix: 'Set the lang attribute to the actual content language.',
     };
   }
   return {
     grade: 'A',
-    summary: `lang="${base.lang}" is valid and matches the page${isRtl ? ', and dir="rtl" is set' : ''}.`,
-    fix: 'Nothing. Set it per locale variant too.',
+    summary: `lang="${base.lang}" is valid and matches the page content${isRtl ? ', and dir="rtl" is set' : ''}.`,
+    fix: 'None required.',
   };
 }
 
@@ -223,7 +227,7 @@ function gradeRouting(
   );
   const queryBased = variants.filter((v) => v.confirmed && v.via === 'query');
   const negNote = negotiation.works
-    ? ` Accept-Language negotiation also works (${negotiation.detail}).`
+    ? ` Accept-Language negotiation works (${negotiation.detail}).`
     : negotiation.attempted
       ? ' Accept-Language negotiation had no effect.'
       : '';
@@ -233,7 +237,7 @@ function gradeRouting(
     return {
       grade: 'A',
       summary: `${urlBased.length} live locale URLs confirmed (via ${shapes}).${negNote}`,
-      fix: 'Nothing. Stable locale URLs are the right shape.',
+      fix: 'None required.',
     };
   }
   if (urlBased.length === 1) {
@@ -247,8 +251,8 @@ function gradeRouting(
     return {
       grade: 'C',
       summary: queryBased.length
-        ? 'Locales only reachable through a query parameter, which search engines and shared links handle poorly.'
-        : `Content varies with the Accept-Language header, but there are no stable locale URLs.${negNote}`,
+        ? 'Locales are reachable only through a query parameter.'
+        : `Content varies with the Accept-Language header; no stable locale URLs.${negNote}`,
       fix: 'Give each locale its own indexable URL (path prefix or subdomain).',
     };
   }
@@ -256,15 +260,15 @@ function gradeRouting(
     return {
       grade: 'D',
       summary:
-        'hreflang declares other locales, but none of the probed ones actually served localized content.',
-      fix: 'Make the declared locale URLs really serve that locale, or remove the claims.',
+        'hreflang declares other locales, but no probed locale URL served localized content.',
+      fix: 'Serve the declared locale URLs in their declared locale, or remove the declarations.',
     };
   }
   return {
     grade: 'F',
     summary:
       'No locale routing found: no localized paths, no negotiation, no query parameter.',
-    fix: 'Ship locale URLs (/es, /fr, ...) or subdomains, then declare them with hreflang.',
+    fix: 'Add locale URLs (/es, /fr, ...) or subdomains and declare them with hreflang.',
   };
 }
 
@@ -276,8 +280,7 @@ function gradeMetadata(
   if (confirmed.length === 0) {
     return {
       grade: 'F',
-      summary:
-        'No locale variants were found, so there is no translated metadata to grade.',
+      summary: 'No locale variants found; no translated metadata to grade.',
       fix: 'Localize the pages first, then translate title, meta description and OG tags per locale.',
     };
   }
@@ -299,7 +302,7 @@ function gradeMetadata(
     return {
       grade: 'C',
       summary:
-        'The default page itself has no title or meta description to compare against.',
+        'The default page has no title or meta description to compare against.',
       fix: 'Add title, meta description and OG tags, then translate them per locale.',
     };
   }
@@ -316,10 +319,10 @@ function gradeMetadata(
     summary:
       grade === 'A'
         ? `Titles, descriptions and OG tags are localized. ${detail}`
-        : `Metadata is only partly localized. ${detail}`,
+        : `Metadata is partially localized. ${detail}`,
     fix:
       grade === 'A'
-        ? 'Nothing. Watch for new fields shipping untranslated.'
+        ? 'None required.'
         : 'Translate title, meta description, og:title and og:description on every locale page.',
   };
 }
@@ -333,8 +336,8 @@ function gradeContent(
     return {
       grade: 'F',
       summary:
-        'No locale variants were found, so all visitors get the default language.',
-      fix: 'Translate the site. This is the core gap everything above depends on.',
+        'No locale variants found; all pages serve the default language.',
+      fix: 'Translate the site content.',
     };
   }
   const usable = confirmed.filter(
@@ -344,8 +347,8 @@ function gradeContent(
     return {
       grade: 'C',
       summary:
-        'Locale variants exist, but the offline language detector could not confidently classify their text.',
-      fix: 'Manual spot check needed; the page may be too JS-rendered or too short for static analysis.',
+        'Locale variants exist, but the language detector could not confidently classify their text.',
+      fix: 'Manual check needed; the page may be JS-rendered or too short for static analysis.',
     };
   }
   const avgExpected =
@@ -361,11 +364,11 @@ function gradeContent(
   else grade = 'F';
   return {
     grade,
-    summary: `On the ${names} page${usable.length === 1 ? '' : 's'}, ${pct(avgExpected)} of the text reads as the right language and ${pct(avgDefault)} still reads as ${defaultLang}.`,
+    summary: `On the ${names} page${usable.length === 1 ? '' : 's'}, ${pct(avgExpected)} of the text is in the expected language and ${pct(avgDefault)} is in ${defaultLang}.`,
     fix:
       grade === 'A'
-        ? 'Nothing major. Keep new strings from shipping untranslated.'
-        : 'Hunt down the untranslated strings on locale pages; they are usually hardcoded UI copy.',
+        ? 'None required.'
+        : 'Translate the remaining strings on locale pages; untranslated text is usually hardcoded UI copy.',
   };
 }
 
@@ -401,7 +404,7 @@ function gradeCharsetDir(
   let note = '';
   if (declaredRtl && rtlVariants.length === 0) {
     note =
-      ' RTL locales are declared but were not fetched, so direction there is unverified.';
+      ' RTL locales are declared but were not fetched; direction unverified.';
   }
   let grade: Grade;
   if (score === 0) grade = 'A';
@@ -417,17 +420,17 @@ function gradeCharsetDir(
         : `${issues.join('; ')}.${note}`,
     fix:
       issues.length === 0
-        ? 'Nothing.'
+        ? 'None required.'
         : 'Declare UTF-8 everywhere and set dir="rtl" on right-to-left locale pages.',
   };
 }
 
 const OVERALL_LINES: Record<Grade, string> = {
-  A: 'Seriously localized. This site treats non-English visitors as first-class.',
-  B: 'Well localized, with a few gaps that cost search visibility or polish.',
-  C: 'Partially localized. The foundations exist but visitors will hit English walls.',
-  D: 'Barely localized. A few signals exist, but non-English visitors are mostly out of luck.',
-  F: 'Not localized. Every visitor gets one language, whatever they speak.',
+  A: 'Localized across all checked signals.',
+  B: 'Localized with minor gaps.',
+  C: 'Partially localized.',
+  D: 'Largely unlocalized; only isolated signals present.',
+  F: 'Not localized.',
 };
 
 export function gradeReport(input: {
@@ -477,17 +480,18 @@ export function gradeReport(input: {
   ];
   const avg =
     categories.reduce((s, c) => s + POINTS[c.grade], 0) / categories.length;
-  let overall: Grade;
-  if (avg >= 3.5) overall = 'A';
-  else if (avg >= 2.5) overall = 'B';
-  else if (avg >= 1.5) overall = 'C';
-  else if (avg >= 0.7) overall = 'D';
-  else overall = 'F';
-  // Overall is the continuous average on a 1-100 scale; each category is its
-  // discrete judgment as a multiple of 25.
+  let letter: Grade;
+  if (avg >= 3.5) letter = 'A';
+  else if (avg >= 2.5) letter = 'B';
+  else if (avg >= 1.5) letter = 'C';
+  else if (avg >= 0.7) letter = 'D';
+  else letter = 'F';
+  /* Overall is the continuous average on a 1-100 scale; each category is
+     its discrete judgment as a multiple of 25. The letter ships with the
+     score so the UI never re-derives it with different boundaries. */
   const score = Math.max(1, Math.round((avg / 4) * 100));
   return {
-    overall: { score, summary: OVERALL_LINES[overall] },
+    overall: { score, grade: letter, summary: OVERALL_LINES[letter] },
     categories: categories.map((c) => ({ ...c, score: POINTS[c.grade] * 25 })),
   };
 }
