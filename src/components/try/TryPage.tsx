@@ -320,29 +320,26 @@ export default function TryPage() {
                     </span>
                   </button>
                 </div>
-                {/* The status strip: ONE element under the bar, inside the
-                    same frame, holding all four states at constant height —
-                    the hint, the live note, the error line and the success
-                    line swap in place, so nothing below ever moves. One
-                    live region: every state change announces from here. */}
-                <div
-                  className='try-strip'
-                  data-state={stripState}
-                  role='status'
-                  style={
-                    report.state === 'done'
-                      ? ({
-                          '--try-strip-grade': gradeVarOf(
-                            report.value.overall.score
-                          ),
-                        } as CSSProperties)
-                      : undefined
-                  }
-                >
-                  <i className='try-strip-tick' aria-hidden='true' />
-                  <span className='try-strip-text'>{stripText}</span>
-                </div>
               </form>
+              {/* The status strip: ONE element holding all four states at constant
+                  height, on its own line below the bar. One live region. */}
+              <div
+                className='try-strip'
+                data-state={stripState}
+                role='status'
+                style={
+                  report.state === 'done'
+                    ? ({
+                        '--try-strip-grade': gradeVarOf(
+                          report.value.overall.score
+                        ),
+                      } as CSSProperties)
+                    : undefined
+                }
+              >
+                <i className='try-strip-tick' aria-hidden='true' />
+                <span className='try-strip-text'>{stripText}</span>
+              </div>
             </div>
           </div>
           <div className='try-hero-fig'>
