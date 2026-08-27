@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { usePathname } from 'next/navigation';
 import { useRef, useState } from 'react';
 
 import GlyphRain from './GlyphRain';
@@ -64,19 +63,9 @@ type SubmitState = 'idle' | 'sending' | 'sent';
  * form: same fields, same endpoint, same error codes — success only when
  * the API says so.
  */
-type Props = {
-  /** Path of the full contact desk, appended to the concept base. Only the
-      finals that carry /enterprise/contact pass it; everywhere else the
-      band closes on the form as it always has. Styled by
-      enterprise-contact.css, which those routes' pages import. */
-  deskPath?: string;
-};
-
-export default function EnterpriseContact({ deskPath }: Props) {
+export default function EnterpriseContact() {
   const root = useRef<HTMLElement>(null);
   const fieldRef = useRef<HTMLCanvasElement>(null);
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/singularity';
   const [scriptIndex, setScriptIndex] = useState(0);
   const [submit, setSubmit] = useState<SubmitState>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -243,12 +232,6 @@ export default function EnterpriseContact({ deskPath }: Props) {
                   </div>
                 </form>
               )}
-              {deskPath !== undefined ? (
-                <p className='sgec-aside'>
-                  Need the full sheet?{' '}
-                  <a href={`${base}${deskPath}`}>Open the enterprise contact desk</a>.
-                </p>
-              ) : null}
             </div>
             {/* the engine's paper: the rain, the condensed word, its caliper */}
             <div className='sge-rainzone' aria-hidden>

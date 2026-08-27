@@ -1,0 +1,1712 @@
+/* ============================================================
+   /try — the localization report card, in the toolchain shell.
+   Content sits inside the ruled column; the report is a framed
+   artifact on the hair ground; a hatch strip divides the form
+   block from the report. Sans everywhere — mono survives only
+   as tiny instrument labels inside the meter and grade scales.
+   No rounded corners on this page, with two sanctioned
+   exceptions: the favicon's seat in the figure, and the form
+   bar's outer ends (the owner's order).
+   ============================================================ */
+
+.try-root {
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  /* The landing engine's strong hairline has no twin in this app's
+     toolchain sheet; the band-strong weight is the same third step of
+     the one hairline family, so the tie ticks and meter rule borrow it. */
+  --tc-hair-strong: var(--tc-hair-band-strong);
+  /* The glyph field band's height — the hero figure column subtracts it
+     to rise up and sit on the field. */
+  --try-field-h: clamp(110px, 16vh, 170px);
+  /* Grade ramp, light defaults: green/olive/ochre/orange/red families
+     darkened to clear 4.5:1 on the white card at any size. */
+  --try-grade-a: #1f7a3d;
+  --try-grade-b: #556b16;
+  --try-grade-c: #7d5f0a;
+  --try-grade-d: #9a4a12;
+  --try-grade-f: #b32e2e;
+  /* The mark ink on a chip whose ground is filled with the accent —
+     white clears 4.5:1 on the house accent blue in both themes. */
+  --try-accent-ink: #ffffff;
+}
+
+/* Dark remap: the original pastels, which clear 4.5:1 on ink black. */
+[data-theme='dark'] .try-root {
+  --try-grade-a: #7bc98c;
+  --try-grade-b: #a8c97b;
+  --try-grade-c: #d9c26b;
+  --try-grade-d: #d98f5f;
+  --try-grade-f: #d96b6b;
+}
+
+/* ---------- the hero section ---------- */
+
+/* ONE hairline pair frames the page: the engine's legacy doubled outer
+   rail (its .tc-rail::before pseudo) is retired site-wide by the skin
+   roots (v0-pages.css); this page rides the sgdh skin root, so the rule
+   stands only as a belt against a skinless mount. */
+.toolchain-root.try-root .try-rail::before {
+  content: none;
+}
+
+/* The hero always rules its own bottom edge: idle it closes the rail,
+   and with the report shown the hatch below it draws no top rule. */
+.try-root .try-rail > .try-hero {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.try-root .try-hero + .tc-hatch {
+  border-top: 0;
+}
+
+/* The glyph field is its own quiet band above the heading; the mask
+   dissolves the motes before they reach the text below. */
+.try-field {
+  height: var(--try-field-h);
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
+}
+
+.try-field-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The head joins the tc-head grammar at the section-heading register —
+   the field above already gives it air, so the top pad steps down. */
+.try-root .try-head {
+  padding-top: clamp(16px, 2.2vw, 26px);
+}
+
+.try-root .try-head h1 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.try-root .try-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+/* ---------- the form block ---------- */
+
+.try-form-zone {
+  padding: 4px var(--tc-gut) clamp(48px, 6vw, 72px);
+}
+
+/* One composed bar: input + trailing affordance + button inside a single
+   hairline frame. The OUTER ends round (the page's sanctioned exception);
+   the inner input-button junction stays square. Focus is ink, never an
+   accent halo. */
+.try-form {
+  display: flex;
+  align-items: stretch;
+  max-width: 640px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 10px;
+  background: var(--tc-card);
+}
+
+.try-form:focus-within {
+  border-color: var(--tc-ink);
+}
+
+.try-url-wrap {
+  position: relative;
+  flex: 1 1 200px;
+  min-width: 0;
+  display: flex;
+}
+
+.try-url {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  /* the right pad clears the 18px affordance and its 14px stand-off */
+  padding: 0 46px 0 16px;
+  border: 0;
+  border-radius: 9px 0 0 9px;
+  background: transparent;
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  font-size: 15px;
+}
+
+.try-url::placeholder {
+  color: var(--tc-ink-4);
+}
+
+.try-url:focus-visible {
+  outline: none;
+}
+
+/* ---------- the trailing affordance ----------
+   A house-drawn hairline search glass inside the input's right end.
+   Once the typed value parses to a plausible host and that host's own
+   /favicon.ico loads, the glass crossfades to the favicon — the target,
+   confirmed. On error or an unparseable value the glass stays: the
+   affordance never shows a broken image. */
+
+.try-url-affix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translateY(-50%);
+  color: var(--tc-ink-3);
+  pointer-events: none;
+}
+
+.try-url-glass,
+.try-url-fav {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 18px;
+  height: 18px;
+  transition: opacity 220ms ease;
+}
+
+.try-url-fav {
+  object-fit: contain;
+  opacity: 0;
+}
+
+.try-url-affix.has-fav .try-url-glass {
+  opacity: 0;
+}
+
+.try-url-affix.has-fav .try-url-fav {
+  opacity: 1;
+}
+
+/* ---------- the go button ----------
+   The house solid button, seated flush in the bar's right end: square
+   inner edge, rounded outer end (9px inside the frame's 10px). Both
+   faces — the idle label and the loading arc + label — stay mounted in
+   one grid cell, so the busy swap never changes the button's box. */
+
+.try-root .try-form .try-go {
+  height: auto;
+  align-self: stretch;
+  border-radius: 0 9px 9px 0;
+  padding: 0 22px;
+  display: inline-grid;
+  place-items: center;
+}
+
+.try-root .try-form .try-go:focus-visible {
+  outline: 1px solid var(--tc-ink);
+  outline-offset: 2px;
+}
+
+.try-go-face,
+.try-go-wait {
+  grid-area: 1 / 1;
+  transition: opacity 180ms ease;
+}
+
+.try-go-wait {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.try-go.is-busy .try-go-face {
+  opacity: 0;
+}
+
+.try-go.is-busy .try-go-wait {
+  opacity: 1;
+}
+
+/* the loading arc: an open 270° hairline segment, rotating */
+.try-go-arc {
+  display: block;
+  animation: try-arc-spin 900ms linear infinite;
+}
+
+@keyframes try-arc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* disabled is designed, not browser-gray: the ink ground steps back
+   toward the paper while the face stays legible at full opacity */
+.try-root .try-form .try-go:disabled {
+  pointer-events: auto;
+  cursor: not-allowed;
+  opacity: 1;
+  background: color-mix(in srgb, var(--tc-ink) 76%, var(--tc-paper));
+}
+
+/* The message slot below the form holds reserved height for whichever
+   line occupies it — the loading note or the error line — so appearing,
+   swapping and clearing never move the figure, hatch or card below. The
+   reserve covers the taller occupant (the framed error line). */
+.try-form-slot {
+  /* flow-root keeps the occupant's top margin inside the slot, so the
+     slot's own top edge never moves as messages come and go; the reserve
+     covers the tallest occupant, the framed two-line error (74px). */
+  display: flow-root;
+  min-height: 76px;
+}
+
+/* one tight line while the run is live, led by a small accent tick that
+   breathes — opacity only, nothing moves */
+.try-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 18px 0 0;
+  max-width: 60ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+}
+
+.try-note-tick {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: var(--tc-accent);
+  animation: try-tick-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes try-tick-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* reduced motion: the affordance and button faces swap instantly, the
+   arc stands still, the tick holds steady */
+@media (prefers-reduced-motion: reduce) {
+  .try-url-glass,
+  .try-url-fav,
+  .try-go-face,
+  .try-go-wait {
+    transition: none;
+  }
+
+  .try-go-arc,
+  .try-note-tick {
+    animation: none;
+  }
+}
+
+.try-error {
+  margin: 18px 0 0;
+  max-width: 640px;
+  padding: 13px 16px;
+  border: 1px solid var(--tc-hair);
+  border-left: 2px solid var(--try-grade-f);
+  background: var(--tc-card);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--tc-ink);
+}
+
+/* ---------- the hero figure ----------
+   A hairline browser window with the shader-applied website glyph at its
+   center: the studio field canvas clipped to a globe mark by a CSS mask,
+   so the live dither IS the icon. The six category marks orbit as
+   satellite chips tied on by connector ticks. Two columns from 980px;
+   below, the figure drops under the form at reduced scale. */
+
+.try-hero-fig {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 var(--tc-gut) clamp(40px, 8vw, 60px);
+}
+
+@media (min-width: 980px) {
+  .try-hero-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+    align-items: center;
+  }
+
+  /* The figure rises to sit on the glyph field band above: its box grows
+     upward by the band's height, and the figure centers in that run. */
+  .try-hero-fig {
+    align-self: stretch;
+    margin-top: calc(-1 * var(--try-field-h));
+    padding-bottom: clamp(24px, 3vw, 40px);
+  }
+}
+
+.try-fig {
+  /* the connector overlay positions against the figure's box */
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  max-width: 560px;
+}
+
+/* the browser window: hairline frame, title bar, content ground */
+
+.try-fig-win {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: clamp(300px, 34vw, 440px);
+  border: 1px solid var(--tc-hair);
+  background: var(--tc-card);
+}
+
+.try-fig-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.try-fig-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.try-fig-dots i {
+  width: 5px;
+  height: 5px;
+  background: var(--tc-ink-4);
+}
+
+.try-fig-addr {
+  position: relative;
+  flex: 1;
+  height: 16px;
+  border: 1px solid var(--tc-hair-2);
+}
+
+.try-fig-addr::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 34px;
+  height: 1px;
+  background: var(--tc-ink-4);
+}
+
+.try-fig-body {
+  position: relative;
+  height: clamp(230px, 26vw, 310px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/* the centerpiece: the field canvas masked to the globe mark */
+
+.try-fig-glyph {
+  width: clamp(150px, 19vw, 214px);
+  aspect-ratio: 1;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='7'%3E%3Ccircle cx='50' cy='50' r='44'/%3E%3Cellipse cx='50' cy='50' rx='20' ry='44'/%3E%3Cpath d='M50 6v88'/%3E%3Cpath d='M6 50h88'/%3E%3Cpath d='M14 26h72'/%3E%3Cpath d='M14 74h72'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='7'%3E%3Ccircle cx='50' cy='50' r='44'/%3E%3Cellipse cx='50' cy='50' rx='20' ry='44'/%3E%3Cpath d='M50 6v88'/%3E%3Cpath d='M6 50h88'/%3E%3Cpath d='M14 26h72'/%3E%3Cpath d='M14 74h72'/%3E%3C/g%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  transition:
+    transform 380ms ease,
+    opacity 380ms ease;
+}
+
+.try-fig-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* the morph: the glyph steps down as the favicon seat steps in */
+
+.try-fig.is-seated .try-fig-glyph {
+  transform: scale(0.52);
+  opacity: 0;
+}
+
+.try-fig-seatzone {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.82);
+  transition:
+    transform 380ms ease,
+    opacity 380ms ease;
+  pointer-events: none;
+}
+
+.try-fig.is-seated .try-fig-seatzone {
+  opacity: 1;
+  transform: none;
+}
+
+/* the favicon's snug seat: no padding, the image edge to edge, rounded
+   corners — the owner's one sanctioned exception to the page's
+   square-corner law. The outline is the seatline SVG's six open
+   segments (together they tile the 96px rounded rect, TryFigure's
+   SEAT_SEGS): while the run is live each segment dash-draws in as its
+   satellite chip completes, so the checks visibly assemble the border
+   around the favicon — a dash on an open segment, never around a
+   closed path. A faint base rim keeps the favicon from sitting
+   borderless before the first segment lands. */
+
+.try-fig-seat {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+  background: var(--tc-card);
+}
+
+.try-fig-favicon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.try-fig-seatline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.try-fig-seatbase {
+  stroke: var(--tc-hair-2);
+}
+
+/* each segment: pathLength 1, so the dash pair hides it until its draw.
+   Butt caps — the six segments share endpoints, and a cap would bleed a
+   dot at the start point while a segment still waits undrawn. */
+.try-fig-seatseg {
+  stroke: var(--tc-accent);
+  stroke-linecap: butt;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke 320ms ease;
+}
+
+/* the assembling border rides the chip choreography's clock: chip k's
+   fill completes its rise at 504ms + k x 1400ms into the loop, and its
+   segment draws right then, standing for the rest of the run */
+.try-fig[data-state='loading'] .try-fig-seatseg {
+  animation: try-fig-draw 400ms ease forwards;
+  animation-delay: calc(504ms + var(--try-sat-i, 0) * 1400ms);
+}
+
+/* the settle gate: segments of chips the loop already colored stand at
+   once; the rest draw on the sweep's clock (fill risen at 150ms into
+   each 250ms step) and finish inside settleMsOf's window, so the whole
+   border stands before the reveal */
+.try-fig[data-state='settling'] .try-fig-seatseg.is-locked {
+  stroke-dashoffset: 0;
+}
+
+.try-fig[data-state='settling'] .try-fig-seatseg:not(.is-locked) {
+  animation: try-fig-draw 250ms ease forwards;
+  animation-delay: calc(var(--try-settle-i, 0) * 140ms + 150ms);
+}
+
+/* the finish: the assembled border stands and re-inks in the overall
+   grade's colour (the old separate ring folded into it) */
+.try-fig[data-state='done'] .try-fig-seatseg {
+  stroke: var(--try-fig-grade, var(--tc-accent));
+  stroke-dashoffset: 0;
+}
+
+@keyframes try-fig-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* the six satellite chips: three per flank, each tied to the window by
+   a short hairline connector tick */
+
+.try-fig-sats {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  /* the flank distributes on the window's CONTENT area, not the whole
+     window: the title bar (34px with its rule) sets the content area's
+     center 17px below the window's, so 34px of extra top padding
+     recenters the space-around run there — the middle chip's center
+     lands exactly on the seat's, and the connector overlay can route
+     the middle lines as single straight horizontals */
+  padding-block: calc(24px + 34px) 24px;
+}
+
+.try-fig-sat {
+  display: flex;
+  align-items: center;
+}
+
+.try-fig-sats-r .try-fig-sat {
+  flex-direction: row-reverse;
+}
+
+/* each chip is a button: click (or Enter/Space) jumps to the category's
+   report row. Hover inks the connector tick. */
+.try-fig-chip {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--tc-hair);
+  background: var(--tc-card);
+  color: var(--tc-ink-2);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background 460ms ease,
+    border-color 460ms ease,
+    color 460ms ease;
+}
+
+.try-fig-sat:hover .try-fig-tie,
+.try-fig-sat:focus-within .try-fig-tie {
+  background: var(--tc-accent);
+}
+
+.try-fig-chip:focus-visible {
+  outline: 1px solid var(--tc-ink);
+  outline-offset: 2px;
+}
+
+/* the chip's fill plate: a bottom-anchored ground that rises to fill the
+   chip with the working accent during the run choreography */
+.try-fig-chip-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--tc-accent);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+
+.try-fig-chip-mark {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* at 24px the diagrams' instrument labels would blur — chips drop them */
+.try-fig-chip-mark text {
+  display: none;
+}
+
+/* the idle tether: a short tick keeps each chip tied to the window while
+   nothing is seated; once the favicon seats, the tick hands the tether
+   off to the drawn connector overlay */
+.try-fig-tie {
+  width: 13px;
+  height: 1px;
+  background: var(--tc-hair-strong);
+  transition: opacity 380ms ease;
+}
+
+.try-fig.is-seated .try-fig-tie {
+  opacity: 0;
+}
+
+/* ---------- the dotted connectors ----------
+   The mermaid-diagram voice: a dotted hairline from each chip's inner
+   edge to the seat's nearest edge (routes measured by TryFigure). The
+   overlay only shows while the favicon is seated — idle the lines sit
+   undrawn, and the tie ticks carry the tether instead. Each dotted
+   polyline draws chip-to-seat via its solid reveal twin inside a mask,
+   on the same clock as the chips and border segments. */
+
+.try-fig-conn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 380ms ease;
+}
+
+.try-fig.is-seated .try-fig-conn {
+  opacity: 1;
+}
+
+/* the reveal twin: a fat solid stroke inside the mask, dash-drawn on
+   the open polyline (pathLength 1), butt-capped so nothing bleeds at
+   the chip end while the line still waits undrawn */
+.try-conn-reveal {
+  stroke: #fff;
+  stroke-width: 6;
+  stroke-linecap: butt;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+
+/* the visible line: 2.5px square dots on a 6px period */
+.try-conn-dots {
+  stroke: var(--tc-ink-3);
+  stroke-width: 2.5;
+  stroke-linecap: square;
+  stroke-dasharray: 0.1 5.9;
+  transition: stroke 320ms ease;
+}
+
+/* while the run is live the drawn lines ink accent, each drawing the
+   moment its chip's fill completes (the loop's clock) */
+.try-fig[data-state='loading'] .try-conn-dots,
+.try-fig[data-state='settling'] .try-conn-dots {
+  stroke: var(--tc-accent);
+}
+
+.try-fig[data-state='loading'] .try-conn-reveal {
+  animation: try-fig-draw 360ms ease forwards;
+  animation-delay: calc(504ms + var(--try-sat-i, 0) * 1400ms);
+}
+
+/* the settle gate, same contract as the border segments */
+.try-fig[data-state='settling'] .try-conn-reveal.is-locked {
+  stroke-dashoffset: 0;
+}
+
+.try-fig[data-state='settling'] .try-conn-reveal:not(.is-locked) {
+  animation: try-fig-draw 250ms ease forwards;
+  animation-delay: calc(var(--try-settle-i, 0) * 140ms + 150ms);
+}
+
+/* on done each connector settles to its chip's grade tint (the same
+   55% mix the locked chips' borders use) */
+.try-fig[data-state='done'] .try-conn-reveal {
+  stroke-dashoffset: 0;
+}
+
+.try-fig[data-state='done'] .try-conn-dots {
+  stroke: color-mix(
+    in srgb,
+    var(--try-chip-grade, var(--tc-ink-3)) 55%,
+    var(--tc-hair)
+  );
+}
+
+/* the run choreography: while the grader is live, the six chips take the
+   accent in sequence — chip k enters at k x 1.4s, holds while its
+   neighbour rises, then drains as the wave moves on, looping until the
+   run ends. Designed pacing, not data: the server sends no per-category
+   progress. The active chip's connector tick inks accent with it. */
+.try-fig[data-state='loading'] .try-fig-chip-fill {
+  animation: try-chip-fill 8.4s ease-in-out infinite;
+  animation-delay: calc(var(--try-sat-i, 0) * 1.4s);
+}
+
+.try-fig[data-state='loading'] .try-fig-chip {
+  animation: try-chip-ink 8.4s ease-in-out infinite;
+  animation-delay: calc(var(--try-sat-i, 0) * 1.4s);
+}
+
+.try-fig[data-state='loading'] .try-fig-tie {
+  animation: try-tie-ink 8.4s ease-in-out infinite;
+  animation-delay: calc(var(--try-sat-i, 0) * 1.4s);
+}
+
+/* the shared clock: 8.4s = 6 chips x 1.4s. Rise over ~0.5s (6%), hold
+   through the next chip's entrance (16.7% = 1.4s), drain over ~0.5s. */
+@keyframes try-chip-fill {
+  0% {
+    transform: scaleY(0);
+  }
+
+  6%,
+  16.7% {
+    transform: scaleY(1);
+  }
+
+  22.7%,
+  100% {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes try-chip-ink {
+  0% {
+    color: var(--tc-ink-2);
+  }
+
+  6%,
+  16.7% {
+    color: var(--try-accent-ink);
+  }
+
+  22.7%,
+  100% {
+    color: var(--tc-ink-2);
+  }
+}
+
+@keyframes try-tie-ink {
+  0% {
+    background: var(--tc-hair-strong);
+  }
+
+  6%,
+  16.7% {
+    background: var(--tc-accent);
+  }
+
+  22.7%,
+  100% {
+    background: var(--tc-hair-strong);
+  }
+}
+
+/* on done every chip locks to a quiet tint of its category's REAL grade
+   colour, the mark inked in the grade colour itself (all five clear
+   4.5:1 on the card in both themes). While the settle sweep runs, chips
+   the loop already colored take the same lock at once. Error or reset
+   clears the chips. */
+.try-fig[data-state='done'] .try-fig-chip,
+.try-fig[data-state='settling'] .try-fig-sat.is-locked .try-fig-chip {
+  border-color: color-mix(
+    in srgb,
+    var(--try-chip-grade, var(--tc-ink-2)) 55%,
+    var(--tc-hair)
+  );
+  background: color-mix(
+    in srgb,
+    var(--try-chip-grade, transparent) 10%,
+    transparent
+  );
+  color: var(--try-chip-grade, var(--tc-ink-2));
+}
+
+/* the settle gate: the report is in hand, but the reveal waits while the
+   not-yet-filled chips run a fast completion sweep — the same bottom-up
+   accent fill at a 140ms stagger, each locking to its grade tint as it
+   completes. Clock mirrored in TryPage's settleMsOf. */
+.try-fig[data-state='settling']
+  .try-fig-sat:not(.is-locked)
+  .try-fig-chip-fill {
+  animation: try-settle-fill 250ms ease both;
+  animation-delay: calc(var(--try-settle-i, 0) * 140ms);
+}
+
+.try-fig[data-state='settling'] .try-fig-sat:not(.is-locked) .try-fig-chip {
+  animation: try-settle-lock 250ms ease both;
+  animation-delay: calc(var(--try-settle-i, 0) * 140ms);
+}
+
+@keyframes try-settle-fill {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+
+  60% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+@keyframes try-settle-lock {
+  0%,
+  40% {
+    border-color: var(--tc-hair);
+    background: var(--tc-card);
+    color: var(--tc-ink-2);
+  }
+
+  60% {
+    color: var(--try-accent-ink);
+  }
+
+  100% {
+    border-color: color-mix(
+      in srgb,
+      var(--try-chip-grade, var(--tc-ink-2)) 55%,
+      var(--tc-hair)
+    );
+    background: color-mix(
+      in srgb,
+      var(--try-chip-grade, transparent) 10%,
+      transparent
+    );
+    color: var(--try-chip-grade, var(--tc-ink-2));
+  }
+}
+
+/* reduced motion: no draw choreography — the border segments and
+   connectors appear instantly at each state, and the morph swaps
+   instantly */
+
+@media (prefers-reduced-motion: reduce) {
+  .try-fig-glyph,
+  .try-fig-seatzone,
+  .try-fig-chip,
+  .try-fig-tie,
+  .try-fig-conn,
+  .try-fig-seatseg,
+  .try-conn-dots {
+    transition: none;
+  }
+
+  .try-fig[data-state='loading'] .try-fig-seatseg,
+  .try-fig[data-state='settling'] .try-fig-seatseg,
+  .try-fig[data-state='loading'] .try-conn-reveal,
+  .try-fig[data-state='settling'] .try-conn-reveal {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  /* no fill choreography: while loading every chip just tints accent.
+     TryPage skips the settling state entirely under reduced motion; if
+     it ever renders, chips lock instantly with no sweep. */
+  .try-fig[data-state='loading'] .try-fig-chip-fill,
+  .try-fig[data-state='loading'] .try-fig-tie,
+  .try-fig[data-state='settling'] .try-fig-chip-fill {
+    animation: none;
+  }
+
+  .try-fig[data-state='settling'] .try-fig-sat:not(.is-locked) .try-fig-chip {
+    animation: none;
+    border-color: color-mix(
+      in srgb,
+      var(--try-chip-grade, var(--tc-ink-2)) 55%,
+      var(--tc-hair)
+    );
+    background: color-mix(
+      in srgb,
+      var(--try-chip-grade, transparent) 10%,
+      transparent
+    );
+    color: var(--try-chip-grade, var(--tc-ink-2));
+  }
+
+  .try-fig[data-state='loading'] .try-fig-chip {
+    animation: none;
+    border-color: color-mix(in srgb, var(--tc-accent) 45%, var(--tc-hair));
+    background: color-mix(in srgb, var(--tc-accent) 10%, transparent);
+    color: var(--tc-accent);
+  }
+}
+
+/* below 980 the figure sits under the form at reduced scale */
+
+@media (max-width: 979.98px) {
+  .try-root .try-form-zone {
+    padding-bottom: clamp(32px, 5vw, 48px);
+  }
+
+  .try-fig-win {
+    max-width: 340px;
+  }
+
+  .try-fig-body {
+    height: clamp(200px, 52vw, 250px);
+  }
+
+  .try-fig-glyph {
+    width: clamp(120px, 32vw, 160px);
+  }
+}
+
+/* ---------- the report: a framed artifact on the hair ground ----------
+   The band paints the shell's line colour and the card sits inside it,
+   so the exposed 1px strips ARE the frame — single hairlines that join
+   the rail's own, in the is-framed grammar (square-cornered here). */
+
+.try-report-band {
+  background: var(--tc-hair);
+  padding: 1px 0;
+}
+
+/* The hatch above already rules the seam. */
+.tc-hatch + .try-report-band {
+  padding-top: 0;
+}
+
+.try-report {
+  background: var(--tc-card);
+  /* the card's inline inset — the category grid bleeds through it so
+     its rules run edge to edge, then folds it back into its outer
+     cells' padding */
+  --try-pad: clamp(20px, 2.8vw, 36px);
+  padding: 0 var(--try-pad);
+}
+
+/* ---------- the overall instrument ---------- */
+
+.try-overall {
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+}
+
+/* the copy half centers its score group against the meter half, so the
+   two sides of the overall row read as one instrument */
+.try-overall-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(30px, 3.6vw, 42px) clamp(30px, 3.6vw, 40px);
+  padding-right: clamp(20px, 2.6vw, 32px);
+}
+
+.try-overall-meter {
+  display: flex;
+  align-items: center;
+  border-left: 1px solid var(--tc-hair-2);
+  padding-block: clamp(30px, 3.6vw, 42px) clamp(30px, 3.6vw, 40px);
+  padding-left: clamp(20px, 2.6vw, 32px);
+}
+
+.try-host {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* the overall line: the score group anchors, the verdict rides beside
+   it, vertically centered to the numeral */
+.try-overall-line {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 2.4vw, 30px);
+}
+
+/* the score group shares one baseline: the numeral, /100 beside it,
+   and the grade chip seated on the same line */
+.try-score-group {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.try-score {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: clamp(46px, 4.4vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.try-score-of {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* the grade letter: a small framed chip in the seg grammar — border and
+   ground from the grade colour it is inked in */
+.try-score-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  margin-left: 4px;
+  border: 1px solid currentColor;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.try-verdict {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The ruled 0-100 meter. Instrument labels only — tiny mono is allowed
+   here and nowhere else outside a diagram. */
+.try-meter {
+  position: relative;
+  width: 100%;
+  height: 58px;
+  /* the meter is a size container so the mark can glide in cqw units —
+     a pure transform, invisible to the layout-shift observer */
+  container-type: inline-size;
+}
+
+.try-meter-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 17px;
+  height: 1px;
+  background: var(--tc-hair-strong);
+}
+
+.try-meter-fill {
+  position: absolute;
+  left: 0;
+  bottom: 16px;
+  height: 3px;
+  background: var(--tc-accent);
+  /* the skeleton mounts this at width 0; the score's arrival GROWS it */
+  transition: width 700ms ease;
+}
+
+.try-meter-tick {
+  position: absolute;
+  bottom: 17px;
+  width: 1px;
+  height: 9px;
+  background: var(--tc-ink-4);
+  transform: translateX(-50%);
+}
+
+.try-meter-tick i {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-style: normal;
+  font-family: var(--tc-mono);
+  font-size: 9.5px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-4);
+}
+
+.try-meter-range {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  font-family: var(--tc-mono);
+  font-size: 9.5px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--tc-ink-4);
+}
+
+.try-meter-mark {
+  position: absolute;
+  left: 0;
+  bottom: 12px;
+  width: 2px;
+  height: 16px;
+  background: var(--tc-accent);
+  /* --try-mark-at is the score (0-100): each unit is 1% of the meter */
+  transform: translateX(calc(var(--try-mark-at, 0) * 1cqw - 50%));
+  /* hidden on the skeleton; rides the fill's transition when it lights */
+  opacity: 0;
+  transition:
+    transform 700ms ease,
+    opacity 400ms ease 250ms;
+}
+
+.try-report.is-filled .try-meter-mark {
+  opacity: 1;
+}
+
+/* ---------- the six category rows ----------
+   Three zones per row — icon | copy | grade scale — drawn as ONE grid:
+   the list bleeds through the card's inline padding so every row seam
+   runs edge to edge, the column rules run unbroken through all six
+   rows to meet them, and the card's inset returns as padding inside
+   the outer cells. Collapsed single hairlines throughout — cells carry
+   the rules, rows carry the seams, nothing doubles. */
+
+.try-cats {
+  list-style: none;
+  margin: 0 calc(-1 * var(--try-pad));
+  padding: 0;
+  border-top: 1px solid var(--tc-hair);
+  /* the grid rules its own bottom seam (the footnote draws none) */
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.try-cat {
+  display: grid;
+  grid-template-columns:
+    calc(var(--try-pad) + 96px)
+    minmax(0, 1fr)
+    calc(212px + var(--try-pad));
+  /* the satellite jump lands the row below the sticky nav (59px) */
+  scroll-margin-top: 76px;
+}
+
+/* the row takes programmatic focus from the figure's satellite jump */
+.try-cat:focus-visible {
+  outline: 1px solid var(--tc-ink);
+  outline-offset: -1px;
+}
+
+.try-cat + .try-cat {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.try-cat > * {
+  padding-block: 18px 20px;
+}
+
+/* the diagram cell: the drawing centers on BOTH axes of its cell (the
+   cell spans the row's full height, so the optical center is the row's) */
+.try-cat-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-block: 0;
+  color: var(--tc-ink-2);
+  /* the row diagrams carry their one accent detail; the figure's chips
+     leave this unset so their choreography recolors the whole drawing */
+  --try-mark-accent: var(--tc-accent);
+}
+
+.try-cat-mark {
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+
+/* the diagrams' instrument labels: tiny mono, like the meter's */
+.try-mark text {
+  font-family: var(--tc-mono);
+  letter-spacing: 0.02em;
+}
+
+.try-cat-copy {
+  border-left: 1px solid var(--tc-hair-2);
+  padding-inline: clamp(18px, 2.4vw, 28px);
+}
+
+.try-cat-namerow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.try-cat-name {
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: -0.014em;
+}
+
+/* ---------- the info signs ----------
+   The pricing pages' help affordance, in its local hairline build
+   (TryHelpTip): a circle-question trigger after each category name, and
+   a hairline panel floated above it. The panel is absolutely positioned
+   over the card, so opening never moves a row. */
+
+.try-info {
+  display: inline-flex;
+  align-items: center;
+}
+
+.try-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.try-tip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tc-ink-3);
+  cursor: help;
+  transition: color 180ms ease;
+}
+
+.try-tip-btn:hover,
+.try-tip-btn[aria-expanded='true'] {
+  color: var(--tc-ink);
+}
+
+.try-tip-btn:focus-visible {
+  outline: 1px solid var(--tc-ink);
+  outline-offset: 2px;
+}
+
+.try-tip-btn svg {
+  display: block;
+}
+
+.try-tip-panel {
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  width: 230px;
+  max-width: calc(100vw - 24px);
+  padding: 10px 12px;
+  border: 1px solid var(--tc-hair);
+  background: var(--tc-card);
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-align: center;
+  color: var(--tc-ink-2);
+}
+
+/* the summary is the row's lead line — full ink */
+.try-cat-summary {
+  margin: 12px 0 0;
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--tc-ink);
+}
+
+/* the fix sub-row: ONE hairline rule above it inside the copy zone, and
+   a 16px house-drawn mark seated before the text — a check in the row's
+   grade colour when there is nothing to fix, the accent action arrow
+   when there is work. The mark says "fix"; the word drops. */
+.try-cat-fixrow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 62ch;
+  margin-top: 14px;
+  border-top: 1px solid var(--tc-hair-2);
+  padding-top: 12px;
+}
+
+.try-cat-fixmark {
+  flex: none;
+  margin-top: 3px;
+  color: var(--tc-accent);
+}
+
+.try-cat-fixmark svg {
+  display: block;
+}
+
+.try-cat-fix {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* the scale cell stretches the row's full height so its rule runs
+   unbroken into the seams; the scale itself centers inside it */
+.try-cat-scale {
+  display: flex;
+  align-items: center;
+  border-left: 1px solid var(--tc-hair-2);
+  padding-left: clamp(18px, 2.4vw, 28px);
+  padding-right: var(--try-pad);
+}
+
+/* The segmented A-F scale: five hairline segments, single shared strokes,
+   the achieved grade filled in its grade colour. Letters are instrument
+   labels inside the diagram. */
+.try-seg {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  margin-left: -1px;
+  border: 1px solid var(--tc-hair-2);
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--tc-ink-4);
+}
+
+.try-seg:nth-child(1) {
+  margin-left: 0;
+}
+
+.try-seg.is-on {
+  position: relative;
+  z-index: 1;
+  border-color: currentColor;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  font-weight: 600;
+}
+
+.try-seg-a.is-on {
+  color: var(--try-grade-a);
+}
+
+.try-seg-b.is-on {
+  color: var(--try-grade-b);
+}
+
+.try-seg-c.is-on {
+  color: var(--try-grade-c);
+}
+
+.try-seg-d.is-on {
+  color: var(--try-grade-d);
+}
+
+.try-seg-f.is-on {
+  color: var(--try-grade-f);
+}
+
+/* ---------- the skeleton and the fill-in ----------
+   The card's full structure stands from first paint — empty meter, ghost
+   score, six named rows with unlit scales — and the real values animate
+   into it when the report lands. Ghost bars reserve the typical text
+   heights so the fill never shifts the layout. */
+
+/* the ghost bars: faint hairline-toned slabs where text will land */
+.try-ghost {
+  display: block;
+  background: var(--tc-hair-2);
+}
+
+/* the score slot's unfilled placeholder: a ghost numeral slab holding
+   the same box the real numeral will occupy */
+.try-ghost-score {
+  width: 96px;
+  height: clamp(46px, 4.4vw, 56px);
+}
+
+/* one summary ghost per row, sized to a typical two-line summary plus
+   its ruled fix sub-row so the filled row lands on the same height
+   (88px keeps the skeleton row just under the 160px reserve) */
+.try-ghost-summary {
+  margin-top: 16px;
+  width: min(46ch, 100%);
+  height: 88px;
+}
+
+/* the footnote ghost matches the real line's box exactly (one line at
+   1.55), so the ledger line never moves the footer when the text lands */
+.try-ghost-foot {
+  width: 260px;
+  max-width: 100%;
+  height: 19px;
+}
+
+/* height reserves: the overall line and each row hold their filled size.
+   The overall line reserves the 56px numeral group beside a three-line
+   verdict (75px, the longest canned line at 44ch); each row absorbs a
+   three-line summary plus the ruled fix sub-row at two lines (measured
+   on the tallest real row), so the real text never grows a row past
+   the skeleton. */
+.try-overall-line {
+  min-height: 80px;
+}
+
+/* the mid run: the copy column narrows before the overall row restacks,
+   so the verdict drops below the score group and the reserve absorbs
+   the stacked pair */
+@media (max-width: 1099.98px) and (min-width: 720.02px) {
+  .try-overall-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    min-height: 148px;
+  }
+}
+
+/* each row absorbs the tallest real row — a two-line summary with its
+   ruled two-line fix sub-row measures 155px at the tightened padding —
+   plus a small buffer, so the fill never grows a row and no row carries
+   more than the content spread in dead space */
+.try-cat {
+  min-height: 160px;
+}
+
+.try-footnote {
+  min-height: 58px;
+}
+
+/* mid ladder: the copy column narrows before the rows restack, so the
+   row reserve grows to keep absorbing the same summary and fix runs
+   (the tallest real row — a three-line summary — measures 177px from
+   1024 down through the two-column run) */
+@media (max-width: 1099.98px) and (min-width: 720.02px) {
+  .try-cat {
+    min-height: 180px;
+  }
+}
+
+/* the loading pulse: at most a faint opacity breath on the ghosts */
+.try-report.is-waiting .try-ghost {
+  animation: try-ghost-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes try-ghost-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* the fill-in: score group and verdict rise first, then the rows in a
+   90ms stagger — summary and fix rise 8px as the achieved segment
+   lights */
+.try-report.is-filled .try-score-group {
+  animation: try-report-in 480ms ease both;
+}
+
+.try-report.is-filled .try-verdict {
+  animation: try-report-in 480ms ease 120ms both;
+}
+
+.try-report.is-filled .try-cat-summary,
+.try-report.is-filled .try-cat-fix {
+  animation: try-report-in 460ms ease both;
+  animation-delay: calc(180ms + var(--try-row-i, 0) * 90ms);
+}
+
+.try-report.is-filled .try-seg.is-on {
+  animation: try-seg-in 460ms ease both;
+  animation-delay: calc(240ms + var(--try-row-i, 0) * 90ms);
+}
+
+@keyframes try-report-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes try-seg-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* reduced motion: the report appears instantly, no pulse, no growth */
+@media (prefers-reduced-motion: reduce) {
+  .try-meter-fill,
+  .try-meter-mark {
+    transition: none;
+  }
+
+  .try-report.is-waiting .try-ghost,
+  .try-report.is-filled .try-score-group,
+  .try-report.is-filled .try-verdict,
+  .try-report.is-filled .try-cat-summary,
+  .try-report.is-filled .try-cat-fix,
+  .try-report.is-filled .try-seg.is-on {
+    animation: none;
+  }
+}
+
+/* ---------- the footnote ledger line ---------- */
+
+.try-footnote {
+  margin: 0;
+  /* the grid above rules the seam — a rule here would double it */
+  padding-block: 16px 20px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   THE MOBILE LADDER (720): rows stack — icon and name share one
+   line, the grade scale runs full width — with spacing from the
+   --tcm box tokens. Nothing scrolls sideways.
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .try-root .try-head h1 {
+    font-size: var(--tcm-h2, 36px);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .try-root .try-head p {
+    margin-top: var(--tcm-gap-h2, 18px);
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .try-note,
+  .try-error {
+    font-size: var(--tcm-small, 14px);
+    line-height: var(--tcm-small-lh, 1.55);
+  }
+
+  .try-overall {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .try-overall-copy {
+    padding-block: var(--tcm-box-pt, 36px) 0;
+    padding-right: 0;
+  }
+
+  .try-overall-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    /* stacked reserve: the 46px numeral group plus a three-line verdict
+       (77px at the 16px body size), so the verdict's arrival cannot
+       grow the block */
+    min-height: 140px;
+  }
+
+  .try-overall-meter {
+    border-left: 0;
+    padding-left: 0;
+    padding-block: var(--tcm-box-gap, 28px) var(--tcm-box-pb, 38px);
+  }
+
+  .try-verdict {
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .try-cat {
+    grid-template-columns: calc(var(--try-pad) + 40px) minmax(0, 1fr);
+    /* stacked reserve: the tallest real row (a three-line summary with
+       its ruled two-line fix sub-row measures 288px at 390) fits inside
+       the skeleton; the spare run sits below the scale so rows keep a
+       shared rhythm */
+    min-height: 292px;
+    align-content: start;
+  }
+
+  .try-cat > * {
+    padding-block: 0;
+  }
+
+  .try-cat-icon {
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-left: var(--try-pad);
+    padding-top: 24px;
+    margin-top: 1px;
+  }
+
+  /* the stacked gutter: the diagram steps down proportionally and, at
+     that size, drops its instrument labels like the chips do */
+  .try-cat-mark {
+    width: 32px;
+    height: 32px;
+    margin-top: -4px;
+  }
+
+  .try-cat-mark text {
+    display: none;
+  }
+
+  .try-cat-copy {
+    border-left: 0;
+    padding-left: 0;
+    padding-right: var(--try-pad);
+    padding-top: 24px;
+  }
+
+  .try-cat-name {
+    font-size: var(--tcm-h4, 18px);
+    line-height: var(--tcm-h4-lh, 1.35);
+  }
+
+  .try-cat-summary {
+    margin-top: 12px;
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .try-cat-fixrow {
+    margin-top: 12px;
+    padding-top: 11px;
+  }
+
+  .try-cat-fix {
+    font-size: var(--tcm-small, 14px);
+    line-height: var(--tcm-small-lh, 1.55);
+  }
+
+  .try-cat-scale {
+    grid-column: 1 / -1;
+    border-left: 0;
+    padding-inline: var(--try-pad);
+    padding-top: 20px;
+    padding-bottom: 24px;
+  }
+
+  .try-seg {
+    height: 34px;
+    font-size: 11px;
+  }
+
+  /* the ledger line wraps to two lines on the narrow ladder */
+  .try-footnote {
+    min-height: 76px;
+  }
+}

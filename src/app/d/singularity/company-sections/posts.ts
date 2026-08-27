@@ -7,10 +7,8 @@
  * so each release's dek is compressed from that post's own opening lines —
  * no release is described with words its post doesn't contain.
  *
- * Post links used to point at the live articles on generaltranslation.com;
- * they now resolve against the CURRENT concept's own article route
- * (<base>/blog/<slug>), which renders the shell from this frontmatter and,
- * for the handful of slugs in post-bodies.ts, the real post body.
+ * Post links point at the real articles on generaltranslation.com; this
+ * redesign rebuilds the index, not every essay behind it.
  */
 
 export type IndexedPost = {
@@ -25,16 +23,10 @@ export type IndexedPost = {
   tags: string[];
 };
 
-/** Which content tree a post came from — content/blog vs content/devlog. */
-export type PostKind = 'essay' | 'release';
+export const BLOG_URL = 'https://generaltranslation.com/blog';
 
-/**
- * The concept-relative article path. `base` is the current final's own
- * prefix (`/d/<slug>`), so a section mounted by three concepts never links
- * out of the one the reader is in.
- */
-export function postHref(base: string, slug: string): string {
-  return `${base}/blog/${slug}`;
+export function postHref(slug: string): string {
+  return `${BLOG_URL}/${slug}`;
 }
 
 /** The newest blog post — the index's one filed feature plate. */
@@ -249,163 +241,3 @@ export const ESSAYS: IndexedPost[] = [FEATURED, ...ESSAY_ROWS];
 const ALL_DATES = [...ESSAYS, ...RELEASES].map((post) => post.date).sort();
 export const INDEX_FROM = ALL_DATES[0] ?? '';
 export const INDEX_TO = ALL_DATES[ALL_DATES.length - 1] ?? '';
-
-/* ============================================================
-   THE ARTICLE MODEL — the index, read one entry at a time.
-   Ported from apps/landing/src/components/blog/model.ts, minus the
-   locale plumbing this single-locale study has no use for.
-   ============================================================ */
-
-/** Every filed post, essays first, each still newest-first inside its tree. */
-export const ALL_POSTS: readonly IndexedPost[] = [...ESSAYS, ...RELEASES];
-
-export function findPost(slug: string): IndexedPost | undefined {
-  return ALL_POSTS.find((post) => post.slug === slug);
-}
-
-export function postKind(slug: string): PostKind {
-  return RELEASES.some((post) => post.slug === slug) ? 'release' : 'essay';
-}
-
-/** The sibling list a post is read inside — its own content tree. */
-export function siblingsOf(kind: PostKind): readonly IndexedPost[] {
-  return kind === 'release' ? RELEASES : ESSAYS;
-}
-
-export const BLOG_CATEGORIES = ['Engineering', 'Craft', 'Community', 'News'] as const;
-
-export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
-
-const COMMUNITY_TERMS = ['community', 'customer', 'event', 'open-source', 'open source'];
-const NEWS_TERMS = [
-  'announce',
-  'announcement',
-  'company',
-  'launch',
-  'launching',
-  'news',
-  'release',
-];
-const CRAFT_TERMS = [
-  'best-practices',
-  'best practices',
-  'comparison',
-  'craft',
-  'design',
-  'developer-experience',
-  'developer experience',
-  'workflow',
-];
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/* Terms match only as whole words or phrases, case-insensitive; a term never
-   matches inside a larger word (e.g. 'event' must not match 'prevent'). */
-function buildTermMatcher(terms: readonly string[]): RegExp {
-  return new RegExp(`\\b(?:${terms.map(escapeRegExp).join('|')})\\b`, 'i');
-}
-
-const COMMUNITY_MATCHER = buildTermMatcher(COMMUNITY_TERMS);
-const NEWS_MATCHER = buildTermMatcher(NEWS_TERMS);
-const CRAFT_MATCHER = buildTermMatcher(CRAFT_TERMS);
-
-type Categorizable = Pick<IndexedPost, 'title' | 'tags'>;
-
-function matchesAnyTerm(post: Categorizable, matcher: RegExp): boolean {
-  return matcher.test([post.title, ...post.tags].join(' '));
-}
-
-export function getBlogCategory(post: Categorizable): BlogCategory {
-  if (matchesAnyTerm(post, COMMUNITY_MATCHER)) return 'Community';
-  if (matchesAnyTerm(post, NEWS_MATCHER)) return 'News';
-  if (matchesAnyTerm(post, CRAFT_MATCHER)) return 'Craft';
-  return 'Engineering';
-}
-
-/**
- * Rewrites a release title's `pkg@version` segments as `pkg version`.
- * Segments split on ' / ' WITH spaces (a bare '/' would shear scoped
- * names); a segment without a version separator passes through as-is.
- */
-export function formatReleaseTitle(title: string): string {
-  return title
-    .split(/\s+\/\s+/)
-    .map((segment) => {
-      const at = segment.lastIndexOf('@');
-      if (at <= 0) return segment;
-      return `${segment.slice(0, at)} ${segment.slice(at + 1)}`;
-    })
-    .join(' / ');
-}
-
-const MONTHS_SHORT = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-] as const;
-
-/**
- * `2025-09-26` → `26 Sep 2025` (article) or `26 Sep` (index). Spelled out
- * from the ISO parts rather than through Intl so the server and the client
- * render the same string byte for byte — the article shell is a client
- * component, and a timezone-shifted day would hydrate mismatched.
- */
-export function formatPostDate(sourceDate: string, format: 'index' | 'article'): string {
-  const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(sourceDate);
-  if (!parts) return sourceDate;
-  const [, year, month, day] = parts;
-  const monthName = MONTHS_SHORT[Number(month) - 1];
-  if (!monthName) return sourceDate;
-  const stem = `${Number(day)} ${monthName}`;
-  return format === 'article' ? `${stem} ${year}` : stem;
-}
-
-/** Same-category-first, then shared tags, then recency — the index's own ranking. */
-export function rankRelatedPosts(
-  currentPost: IndexedPost,
-  candidates: readonly IndexedPost[],
-  limit: number
-): IndexedPost[] {
-  const currentTags = new Set(currentPost.tags.map((tag) => tag.trim().toLowerCase()));
-  const currentCategory = getBlogCategory(currentPost);
-
-  return candidates
-    .filter((candidate) => candidate.slug !== currentPost.slug)
-    .map((candidate) => {
-      const sharedTags = candidate.tags.reduce(
-        (count, tag) => count + (currentTags.has(tag.trim().toLowerCase()) ? 1 : 0),
-        0
-      );
-      const categoryScore = getBlogCategory(candidate) === currentCategory ? 5 : 0;
-      return { candidate, score: categoryScore + sharedTags * 2 };
-    })
-    .sort((a, b) => {
-      if (a.score !== b.score) return b.score - a.score;
-      const byDate = b.candidate.date.localeCompare(a.candidate.date);
-      if (byDate !== 0) return byDate;
-      return a.candidate.title.localeCompare(b.candidate.title, undefined, { numeric: true });
-    })
-    .slice(0, limit)
-    .map(({ candidate }) => candidate);
-}
-
-/** Newest-first lists, so the NEXT post is the one above. */
-export function getPostNeighbors(
-  currentSlug: string,
-  posts: readonly IndexedPost[]
-): { previous: IndexedPost | undefined; next: IndexedPost | undefined } {
-  const at = posts.findIndex((post) => post.slug === currentSlug);
-  if (at === -1) return { previous: undefined, next: undefined };
-  return { previous: posts[at + 1], next: posts[at - 1] };
-}

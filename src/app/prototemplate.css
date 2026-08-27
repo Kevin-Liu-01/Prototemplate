@@ -1403,61 +1403,6 @@
   opacity: 1;
 }
 
-/* ---- what shipped: copy left, the finished site boxed right ----
-   The last stop after the three proposals. Same two-column law as the opener
-   and the same crop frame: the box's four rules run past its corners to the
-   section's own edges, so the outcome reads as a plate cut out of the page
-   rather than a card sitting on it. */
-.pt-shipped {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: clamp(28px, 4vw, 64px);
-  align-items: center;
-  overflow: clip;
-}
-
-.pt-shipped-copy {
-  padding-block: clamp(26px, 3.2vw, 48px);
-}
-
-.pt-shipped-box {
-  position: relative;
-  display: grid;
-  gap: 10px;
-  align-content: start;
-  padding: clamp(20px, 2.2vw, 30px);
-}
-
-/* the box owns the card's own type scale, so the plate reads at the same
-   weight as the three proposals below it */
-.pt-shipped-box h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-}
-
-.pt-shipped-box > p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: var(--pt-ink-2);
-}
-
-@media (max-width: 900px) {
-  .pt-shipped {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-  }
-
-  /* stacked, the vertical extenders would cut the copy above; only the
-     horizontals still describe the plate */
-  .pt-shipped-box .pt-xline.is-v {
-    display: none;
-  }
-}
-
 /* ---- the opener: copy left, the distillation right, crop-framed ---- */
 .pt-opener {
   position: relative;
@@ -1481,7 +1426,6 @@
   display: grid;
   place-items: center;
 }
-
 
 .pt-opener-fig .pt-funnel {
   /* 1:1 with the viewBox at desktop, so every hairline lands on a

@@ -393,42 +393,6 @@ export default function BrandPage() {
 
           <div className='pt-hatch' aria-hidden='true' />
 
-          <section className='pt-sec pt-post-sec' id='made-with-the-system'>
-            <h2>Made with the system</h2>
-            <p>
-              Finished artwork produced with this toolchain and the glyphfield studio,
-              kept here as proof of what the identity does off the page.
-            </p>
-            <div className='ptb-media'>
-              <figure className='ptb-shot'>
-                <video
-                  controls
-                  playsInline
-                  poster='/media/open-source-poster.jpg'
-                  preload='metadata'
-                  src='/media/open-source-reel.mp4'
-                />
-                <figcaption>
-                  the Open Source announcement reel · twelve studio materials cut on the
-                  beat in the brand blue, landing on the gem smoke composition
-                </figcaption>
-              </figure>
-              <figure className='ptb-shot'>
-                <img
-                  alt='The X profile banner: the halftone dither globe and glyph rain beside the customer logo grid'
-                  loading='lazy'
-                  src='/media/gt-banner-signin@2x.png'
-                />
-                <figcaption>
-                  the X banner · the sign-in globe and glyph rain in the 1-bit language,
-                  the customer grid at right
-                </figcaption>
-              </figure>
-            </div>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
           <section className='pt-sec pt-post-sec' id='context-for-partners'>
             <h2>Context for partners</h2>
             <p>

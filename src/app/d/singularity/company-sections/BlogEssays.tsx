@@ -4,7 +4,6 @@ import { useRef } from 'react';
 
 import { useQuietReveal } from '../sections/reveal';
 import { ESSAY_ROWS, postHref } from './posts';
-import { useConceptBase } from './use-concept-base';
 
 /**
  * The Blogs column of the old page as filed evidence: one plate per essay,
@@ -15,7 +14,6 @@ import { useConceptBase } from './use-concept-base';
 export default function BlogEssays() {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
-  const base = useConceptBase();
 
   return (
     <section className='tc-sec' ref={root}>
@@ -26,7 +24,7 @@ export default function BlogEssays() {
 
       <div className='cpb-ledger'>
         {ESSAY_ROWS.map((post) => (
-          <a className='cpb-row' data-reveal href={postHref(base, post.slug)} key={post.slug}>
+          <a className='cpb-row' data-reveal href={postHref(post.slug)} key={post.slug}>
             <span className='cpb-row-date'>{post.date}</span>
             <span className='cpb-row-main'>
               <span className='cpb-row-title'>{post.title}</span>

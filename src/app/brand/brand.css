@@ -526,26 +526,6 @@
   color: var(--pt-ink-3);
 }
 
-.ptb-media {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 22px;
-  max-width: 1000px;
-  margin-top: 20px;
-}
-
-.ptb-media .ptb-shot video,
-.ptb-media .ptb-shot img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: auto;
-  object-fit: contain;
-  border: 1px solid var(--pt-hair);
-  border-radius: 10px;
-  background-clip: padding-box;
-}
-
 /* ---------- the brief ---------- */
 
 .ptb-brief {

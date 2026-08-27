@@ -1,7 +1,5 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-
 import { useRef, useState } from 'react';
 import type { ComponentType, FormEvent } from 'react';
 
@@ -128,8 +126,6 @@ const CHANNELS: readonly ChannelGroup[] = [
 ];
 
 export default function ContactBay() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/singularity';
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
 
@@ -257,7 +253,7 @@ export default function ContactBay() {
           <p className='cpk-terms'>
             By submitting you agree to the{' '}
             <a
-              href={`${base}/legal/terms`}
+              href='https://generaltranslation.com/legal/terms'
               rel='noreferrer noopener'
               target='_blank'
             >
@@ -265,7 +261,7 @@ export default function ContactBay() {
             </a>{' '}
             and acknowledge the{' '}
             <a
-              href={`${base}/legal/privacy-policy`}
+              href='https://generaltranslation.com/legal/privacy-policy'
               rel='noreferrer noopener'
               target='_blank'
             >

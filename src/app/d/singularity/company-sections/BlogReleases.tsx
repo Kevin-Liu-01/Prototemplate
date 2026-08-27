@@ -4,7 +4,6 @@ import { useRef } from 'react';
 
 import { useQuietReveal } from '../sections/reveal';
 import { postHref, RELEASES } from './posts';
-import { useConceptBase } from './use-concept-base';
 
 /**
  * The Updates column of the old page, promoted to what it always was: the
@@ -16,7 +15,6 @@ import { useConceptBase } from './use-concept-base';
 export default function BlogReleases() {
   const root = useRef<HTMLElement>(null);
   useQuietReveal(root);
-  const base = useConceptBase();
 
   return (
     <section className='tc-band cp-band' ref={root} aria-label='Release notes'>
@@ -31,7 +29,7 @@ export default function BlogReleases() {
 
         <div className='cpb-rel'>
           {RELEASES.map((post) => (
-            <a className='cpb-relrow' data-reveal href={postHref(base, post.slug)} key={post.slug}>
+            <a className='cpb-relrow' data-reveal href={postHref(post.slug)} key={post.slug}>
               <span className='cpb-relrow-date'>{post.date}</span>
               <span className='cpb-relrow-main'>
                 <span className='cpb-relrow-title'>{post.title}</span>
