@@ -1,0 +1,361 @@
+/* ============================================================
+   SINGULARITY · COMPANY PAGES — legal (cpg-).
+   The library index as a ruled ledger, and each document as the
+   old page's two-column record: a sticky title-and-contents
+   column beside the prose. Same grammar as company.css — the
+   masthead, section head and colophon come from there; only what
+   is particular to the legal pages lives here.
+   ============================================================ */
+
+/* ---- the index ledger: one ruled row per document ---- */
+
+.singularity-root .cpg-ledger {
+  padding: 0 var(--tc-gut) clamp(56px, 6.4vw, 88px);
+}
+
+.singularity-root .cpg-row {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 132px 16px;
+  align-items: start;
+  gap: 20px;
+  padding: 22px 0 24px;
+  border-top: 1px solid var(--tc-hair);
+  transition: background-color 150ms ease;
+}
+
+.singularity-root .cpg-row:hover {
+  margin-inline: calc(var(--tc-gut) * -0.35);
+  padding-inline: calc(var(--tc-gut) * 0.35);
+  background: var(--tc-hair-2);
+}
+
+.singularity-root .cpg-row-num {
+  padding-top: 4px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpg-row-main {
+  min-width: 0;
+}
+
+.singularity-root .cpg-row-title {
+  display: block;
+  font-family: var(--tc-disp);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpg-row:hover .cpg-row-title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.singularity-root .cpg-row-dek {
+  display: block;
+  margin-top: 6px;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .cpg-row-date {
+  padding-top: 5px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  text-align: right;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpg-row-arrow {
+  width: 15px;
+  height: 15px;
+  margin-top: 5px;
+  justify-self: end;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .cpg-row:hover .cpg-row-arrow {
+  color: var(--tc-ink-2);
+}
+
+/* ---- the document: sticky record column beside the prose ---- */
+
+.singularity-root .cpg-doc {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+}
+
+.singularity-root .cpg-doc-aside {
+  position: sticky;
+  top: 59px;
+  align-self: start;
+  max-height: calc(100svh - 59px);
+  overflow-y: auto;
+  background: var(--tc-paper);
+  padding: clamp(40px, 4.4vw, 56px) var(--tc-gut) clamp(40px, 4.4vw, 56px);
+  border-right: 1px solid var(--tc-hair);
+}
+
+/* the way back up, the old page's shared BackLink */
+.singularity-root .cpg-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+  transition: color 140ms ease;
+}
+
+.singularity-root .cpg-back:hover {
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpg-back > svg {
+  width: 13px;
+  height: 13px;
+}
+
+.singularity-root .cpg-doc-aside h1 {
+  margin-top: 26px;
+  font-family: var(--tc-disp);
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--tc-ink);
+  text-wrap: balance;
+}
+
+.singularity-root .cpg-doc-dek {
+  margin-top: 14px;
+  max-width: 40ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .cpg-doc-updated {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-3);
+}
+
+/* CONTENTS: the document's own h2 headings, numbered by the list */
+.singularity-root .cpg-toc {
+  margin-top: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpg-toc-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpg-toc-list {
+  margin-top: 14px;
+  border-left: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpg-toc-list a {
+  display: block;
+  padding: 5px 0 5px 14px;
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tc-ink-3);
+  transition:
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.singularity-root .cpg-toc-list a:hover {
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpg-toc-list a[data-active='true'] {
+  border-left-color: var(--tc-accent);
+  color: var(--tc-ink);
+}
+
+/* ---- the prose ---- */
+
+.singularity-root .cpg-doc-body {
+  min-width: 0;
+  padding: clamp(40px, 4.4vw, 56px) clamp(24px, 4vw, 60px) clamp(72px, 8vw, 108px);
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--tc-ink-2);
+}
+
+/* Heads own the space above them, everything else the space above itself —
+   so a paragraph reads the same after a head, a list or a table. */
+.singularity-root .cpg-doc-body h2 {
+  margin-top: 56px;
+  padding-bottom: 13px;
+  scroll-margin-top: 84px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-disp);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpg-doc-body h3 {
+  margin-top: 34px;
+  font-family: var(--tc-disp);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpg-doc-body p,
+.singularity-root .cpg-doc-body ul,
+.singularity-root .cpg-doc-body ol {
+  margin-top: 16px;
+}
+
+.singularity-root .cpg-doc-body > :first-child,
+.singularity-root .cpg-doc-body > section:first-child h2 {
+  margin-top: 0;
+}
+
+.singularity-root .cpg-doc-body p {
+  max-width: 74ch;
+}
+
+.singularity-root .cpg-doc-body li {
+  max-width: 72ch;
+  margin-left: 20px;
+  padding-left: 6px;
+  list-style: disc;
+}
+
+.singularity-root .cpg-doc-body ol > li {
+  list-style: decimal;
+}
+
+.singularity-root .cpg-doc-body li + li {
+  margin-top: 10px;
+}
+
+/* the AUP's lettered sub-clauses, nested under a numbered rule */
+.singularity-root .cpg-doc-body ol.cpg-sublist {
+  margin-top: 10px;
+}
+
+.singularity-root .cpg-doc-body ol.cpg-sublist > li {
+  list-style: lower-alpha;
+}
+
+.singularity-root .cpg-doc-body strong {
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpg-doc-body a {
+  color: var(--tc-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--tc-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.singularity-root .cpg-doc-body code {
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+/* ---- tables ---- */
+
+.singularity-root .cpg-doc-body .cpg-tablewrap {
+  margin-top: 22px;
+  overflow-x: auto;
+}
+
+.singularity-root .cpg-tablewrap table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.singularity-root .cpg-tablewrap th,
+.singularity-root .cpg-tablewrap td {
+  padding: 10px 12px;
+  border: 1px solid var(--tc-hair);
+  text-align: left;
+  vertical-align: top;
+}
+
+.singularity-root .cpg-tablewrap th {
+  background: var(--tc-hair-2);
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   NARROW
+   ============================================================ */
+
+@media (max-width: 880px) {
+  .singularity-root .cpg-doc {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .singularity-root .cpg-doc-aside {
+    position: relative;
+    top: auto;
+    max-height: none;
+    overflow-y: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--tc-hair);
+  }
+
+  .singularity-root .cpg-toc {
+    display: none;
+  }
+
+  .singularity-root .cpg-row {
+    grid-template-columns: 34px minmax(0, 1fr) 14px;
+    gap: 14px;
+  }
+
+  .singularity-root .cpg-row-date {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .singularity-root .cpg-row,
+  .singularity-root .cpg-back,
+  .singularity-root .cpg-toc-list a {
+    transition: none;
+  }
+}

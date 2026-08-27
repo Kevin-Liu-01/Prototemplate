@@ -1,0 +1,394 @@
+/* ============================================================
+   SINGULARITY — THE 404 BAND
+   One fold, one object: the horizon-field shader fills the band
+   and the apology sits inside the hole. Light is the WHITE hole
+   (paper core, chromatic rim carrying the definition); dark is
+   the black one. Ported from the landing app's not-found page,
+   re-inked onto this shell's tokens.
+   ============================================================ */
+
+.singularity-root .tcnf-hero {
+  --tcnf-hole-x: 50%;
+  --tcnf-hole-y: 50%;
+  --tcnf-hole-radius: 350px;
+  position: relative;
+  isolation: isolate;
+  /* the band IS the fold: no floor taller than the viewport, so the
+     horizon (fit to this height) is always fully visible. 58px is the
+     ruled nav above it. */
+  min-height: clamp(560px, calc(100svh - 58px), 920px);
+  overflow: hidden;
+  background: var(--tc-paper);
+}
+
+.singularity-root .tcnf-scene {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+}
+
+/* The pre-boot stand-in: a static disc at the fit() formula's resolved
+   geometry (wide radius = min(max(0.27w, 300), 410, (h/2 - 24) / 1.28),
+   doubled to a diameter in container units), crossfaded away once the
+   shader boots. If WebGL never comes up the stand-in simply stays. */
+.singularity-root .tcnf-hole-placeholder {
+  /* hidden by default: the band loads bare and the shader blooms in;
+     the disc surfaces as the WebGL-out fallback — and on the same
+     rescue timer as the copy, which needs this ground to stay
+     readable if the reveal never fires */
+  opacity: 0;
+  animation: tcnf-copy-rescue 0s linear 2.5s forwards;
+  /* diameter first, then the glow half-extent (radius x 1.28 =
+     diameter x 0.64); top mirrors fit()'s clamp exactly — centered
+     until the glow extent binds against either band edge */
+  --tcnf-hole-d: min(max(54cqw, 600px), 820px, calc((100cqh - 48px) / 1.28));
+  --tcnf-hole-glow: calc(var(--tcnf-hole-d) * 0.64);
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: clamp(
+    calc(var(--tcnf-hole-glow) + 24px),
+    50cqh,
+    calc(100cqh - var(--tcnf-hole-glow) - 24px)
+  );
+  transform: translate(-50%, -50%) scale(1.6);
+  width: var(--tcnf-hole-d);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle closest-side,
+    #ffffff 0%,
+    #ffffff 58%,
+    #eef1f6 60.5%,
+    rgba(255, 240, 224, 0.7) 62.5%,
+    rgba(150, 172, 255, 0.28) 66%,
+    rgba(130, 150, 240, 0.1) 74%,
+    transparent 92%
+  );
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+
+.singularity-root .tcnf-scene.is-fallback .tcnf-hole-placeholder {
+  opacity: 1;
+}
+
+/* a successful boot cancels the rescue: the live shader must never
+   grow a second rim at 2.5s. If the rescue already fired, dropping
+   its fill hands the disc to the opacity transition — a crossfade
+   under the arriving canvas, not a cut. */
+.singularity-root .tcnf-scene.is-live .tcnf-hole-placeholder {
+  animation: none;
+}
+
+@media (max-width: 759px) {
+  .singularity-root .tcnf-hole-placeholder {
+    --tcnf-hole-d: min(142cqw, 572px, calc((100cqh - 48px) / 1.28));
+    top: clamp(
+      calc(var(--tcnf-hole-glow) + 24px),
+      47cqh,
+      calc(100cqh - var(--tcnf-hole-glow) - 24px)
+    );
+  }
+}
+
+/* the shader arrives as a bloom: opacity and blur ease out together
+   over the stand-in, so the glow condenses instead of switching on */
+.singularity-root .tcnf-canvas {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  opacity: 0;
+  filter: blur(14px);
+  transition:
+    opacity 0.9s cubic-bezier(0, 0, 0.2, 1),
+    filter 0.9s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.singularity-root .tcnf-scene.is-live .tcnf-canvas {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* the copy sits on the disc, so it arrives with the bloom — held back
+   until the shader lands (or the fallback disc stands in), with a
+   rescue timer surfacing it regardless if the reveal never fires */
+.singularity-root .tcnf-scene ~ .tcnf-copy {
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0, 0, 0.2, 1) 0.25s;
+  animation: tcnf-copy-rescue 0s linear 2.5s forwards;
+}
+
+.singularity-root .tcnf-scene.is-live ~ .tcnf-copy,
+.singularity-root .tcnf-scene.is-fallback ~ .tcnf-copy {
+  opacity: 1;
+}
+
+@keyframes tcnf-copy-rescue {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .singularity-root .tcnf-canvas,
+  .singularity-root .tcnf-hole-placeholder,
+  .singularity-root .tcnf-scene ~ .tcnf-copy {
+    filter: none;
+    transition: none;
+  }
+}
+
+/* the ruled paper the lens bends: the shader re-draws these hairlines at
+   the lensed coordinate inside the mask's hole, so the CSS layer opens a
+   feathered gap and the two meet where deflection is already zero */
+.singularity-root .tcnf-scene::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    rgb(10 11 13 / 8%) 0 1px,
+    transparent 1px 44px
+  );
+  mask-image: radial-gradient(
+    circle calc(var(--tcnf-hole-radius) * 1.66) at var(--tcnf-hole-x)
+      var(--tcnf-hole-y),
+    transparent 87.9%,
+    #000 100%
+  );
+  content: '';
+  pointer-events: none;
+}
+
+/* the disc under the canvas: the copy sits inside the hole, so the
+   ground must survive a lost WebGL context — in light mode it is the
+   paper the dark copy stands on, in dark mode the ink. Inset 3px so
+   the shader's breathing rim never exposes its edge. */
+.singularity-root .tcnf-scene::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: radial-gradient(
+    circle calc(var(--tcnf-hole-radius) - 3px) at var(--tcnf-hole-x)
+      var(--tcnf-hole-y),
+    #ffffff calc(100% - 1.5px),
+    transparent 100%
+  );
+  content: '';
+  pointer-events: none;
+  /* the backing under the shader's translucent core joins the bloom:
+     nothing paints a bare circle before the reveal */
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.singularity-root .tcnf-scene.is-live::after,
+.singularity-root .tcnf-scene.is-fallback::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .singularity-root .tcnf-scene::after {
+    transition: none;
+  }
+}
+
+/* ---------- the copy, standing in the hole ---------- */
+
+.singularity-root .tcnf-copy {
+  position: absolute;
+  z-index: 3;
+  top: var(--tcnf-hole-y);
+  left: var(--tcnf-hole-x);
+  display: grid;
+  width: min(calc(var(--tcnf-hole-radius) * 1.55), calc(100% - 40px));
+  justify-items: center;
+  color: var(--tc-ink);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.singularity-root .tcnf-copy h1 {
+  max-width: 14ch;
+  color: var(--tc-ink);
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.singularity-root .tcnf-copy p {
+  max-width: 42ch;
+  margin-top: 18px;
+  color: var(--tc-ink-2);
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+.singularity-root .tcnf-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+/* the buttons are the shell's on-ink pair at the large gauge; only the
+   label→arrow gap is page-local — the engine spends its 7px inside the
+   CTA ring, which this band skips */
+.singularity-root .tcnf-acts .tc-btn {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 14px;
+  gap: 7px;
+}
+
+/* ---------- the on-ink pair (ported from the shell engine) ----------
+   For CTAs standing on a fixed-ink ground. Here the ground flips with
+   the theme — the white hole in light, the black one in dark — so the
+   pair re-inks with the rest of the copy instead of pinning white. */
+.singularity-root .tcnf-acts .tc-btn-onink {
+  border-color: var(--tc-ink);
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+}
+
+.singularity-root .tcnf-acts .tc-btn-onink:hover {
+  border-color: rgb(10 11 13 / 86%);
+  background: rgb(10 11 13 / 86%);
+}
+
+.singularity-root .tcnf-acts .tc-btn-onink-line {
+  border-color: rgb(10 11 13 / 24%);
+  background: rgb(255 255 255 / 42%);
+  color: var(--tc-ink);
+  backdrop-filter: blur(8px);
+}
+
+.singularity-root .tcnf-acts .tc-btn-onink-line:hover {
+  border-color: rgb(10 11 13 / 42%);
+  background: rgb(10 11 13 / 9%);
+}
+
+/* ---------- the filed code, bottom right ---------- */
+
+.singularity-root .tcnf-code {
+  position: absolute;
+  z-index: 2;
+  right: 24px;
+  bottom: 18px;
+  color: rgb(10 11 13 / 45%);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+}
+
+@media (max-width: 720px) {
+  .singularity-root .tcnf-copy {
+    width: min(calc(var(--tcnf-hole-radius) * 1.45), calc(100% - 34px));
+  }
+
+  .singularity-root .tcnf-copy h1 {
+    font-size: clamp(1.9rem, 9vw, 2.7rem);
+  }
+
+  .singularity-root .tcnf-copy p {
+    font-size: 13px;
+  }
+
+  .singularity-root .tcnf-acts {
+    flex-direction: column;
+    width: min(100%, 220px);
+  }
+
+  .singularity-root .tcnf-acts a {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .singularity-root .tcnf-acts a {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   THE BLACK HOLE — dark mode trades the paper core for ink,
+   and everything standing on it re-inks to hold.
+   ============================================================ */
+
+[data-theme='dark'] .singularity-root .tcnf-scene::before {
+  background: repeating-linear-gradient(
+    180deg,
+    rgb(255 255 255 / 8%) 0 1px,
+    transparent 1px 44px
+  );
+}
+
+[data-theme='dark'] .singularity-root .tcnf-scene::after {
+  background: radial-gradient(
+    circle calc(var(--tcnf-hole-radius) - 3px) at var(--tcnf-hole-x)
+      var(--tcnf-hole-y),
+    #05070b calc(100% - 1.5px),
+    transparent 100%
+  );
+}
+
+[data-theme='dark'] .singularity-root .tcnf-hole-placeholder {
+  background: radial-gradient(
+    circle closest-side,
+    #05070b 0%,
+    #05070b 58%,
+    #10141d 60.5%,
+    rgba(255, 240, 224, 0.7) 62.5%,
+    rgba(150, 172, 255, 0.28) 66%,
+    rgba(130, 150, 240, 0.1) 74%,
+    transparent 92%
+  );
+}
+
+/* the copy stands on the ink disc, not the band, so it keeps white and
+   the halo shadows that hold it against the accretion light */
+[data-theme='dark'] .singularity-root .tcnf-copy,
+[data-theme='dark'] .singularity-root .tcnf-copy h1 {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .singularity-root .tcnf-copy h1 {
+  text-shadow: 0 1px 26px rgb(0 0 0 / 58%);
+}
+
+[data-theme='dark'] .singularity-root .tcnf-copy p {
+  color: rgb(255 255 255 / 66%);
+  text-shadow: 0 1px 20px rgb(0 0 0 / 70%);
+}
+
+[data-theme='dark'] .singularity-root .tcnf-acts .tc-btn-onink {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #070707;
+}
+
+[data-theme='dark'] .singularity-root .tcnf-acts .tc-btn-onink:hover {
+  border-color: rgb(255 255 255 / 86%);
+  background: rgb(255 255 255 / 86%);
+  color: #070707;
+}
+
+[data-theme='dark'] .singularity-root .tcnf-acts .tc-btn-onink-line {
+  border-color: rgb(255 255 255 / 24%);
+  background: rgb(7 7 7 / 42%);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .singularity-root .tcnf-acts .tc-btn-onink-line:hover {
+  border-color: rgb(255 255 255 / 42%);
+  background: rgb(255 255 255 / 9%);
+}
+
+[data-theme='dark'] .singularity-root .tcnf-code {
+  color: rgb(255 255 255 / 38%);
+}

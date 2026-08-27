@@ -4,10 +4,10 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import V0Footer from '../../_v0/V0Footer';
 import V0Nav from '../../_v0/V0Nav';
 
-import TryPage from './TryPage';
+import TryPage from '@/components/try/TryPage';
 
 import '../../toolchain/styles.css';
-import './try.css';
+import '@/components/try/try.css';
 import '../../_v0/v0-pages.css';
 
 export const metadata = {

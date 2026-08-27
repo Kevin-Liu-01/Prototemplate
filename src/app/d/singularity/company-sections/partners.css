@@ -1,0 +1,899 @@
+/* ============================================================
+   SINGULARITY · PARTNER PAGES — the Mintlify integration page
+   and the Y Combinator programme page. Same grammar as the
+   company sheet next door: ruled sheets, filed plates, one ink
+   band per page, mono spent on codes and numbers and nothing
+   else. Every colour is a shell token, so both themes hold.
+   Shared by all five finals; each wrapper brings its own accent
+   sheet on top.
+   ============================================================ */
+
+/* ---- the partner lockup: two marks, one crossbar ---- */
+
+.singularity-root .cpp-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 28px;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpp-lockup b {
+  font-family: var(--tc-disp);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.singularity-root .cpp-lockup i {
+  font-style: normal;
+  font-size: 15px;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .cpp-lockup img,
+.singularity-root .cpp-lockup svg {
+  display: block;
+}
+
+/* the GT mark is drawn in ink; the dark page inverts it, the hero-mark way */
+[data-theme='dark'] .singularity-root .cpp-lockup-mark {
+  filter: invert(1);
+}
+
+/* ============================================================
+   MINTLIFY — the integration page
+   ============================================================ */
+
+.singularity-root .cpm-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+  gap: clamp(32px, 5vw, 76px);
+  align-items: center;
+  padding: clamp(60px, 6.6vw, 96px) var(--tc-gut) clamp(48px, 5.4vw, 76px);
+}
+
+.singularity-root .cpm-hero-copy h1 {
+  margin-top: 20px;
+  max-width: 15ch;
+  font-family: var(--tc-disp);
+  font-size: clamp(30px, 3.6vw, 50px);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.06;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpm-hero-sub {
+  margin-top: 16px;
+  max-width: 42ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .cpm-hero-sub b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpm-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.singularity-root .cpm-acts .tc-btn {
+  gap: 8px;
+}
+
+.singularity-root .cpm-hero-note {
+  margin-top: 18px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--tc-ink-3);
+}
+
+/* ---- the hero exhibit: repo → processor → pull request ---- */
+
+.singularity-root .cpm-diagram {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.singularity-root .cpm-diagram-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.singularity-root .cpm-diagram-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tc-panel-ink);
+}
+
+.singularity-root .cpm-diagram-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 78px minmax(0, 1.05fr);
+  gap: 12px;
+  align-items: center;
+  padding: 20px 16px;
+}
+
+.singularity-root .cpm-tree,
+.singularity-root .cpm-out {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 14px 15px;
+  border: 1px dashed rgba(138, 143, 152, 0.42);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.singularity-root .cpm-tree > code {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.singularity-root .cpm-tree > span,
+.singularity-root .cpm-out-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tc-panel-ink);
+}
+
+.singularity-root .cpm-tree svg,
+.singularity-root .cpm-out svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.singularity-root .cpm-tree > small,
+.singularity-root .cpm-out > small {
+  padding-top: 8px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.singularity-root .cpm-out-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.singularity-root .cpm-out-row code {
+  flex: 1;
+}
+
+.singularity-root .cpm-out-row svg:last-child {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.singularity-root .cpm-out-flag {
+  width: 15px;
+  height: 11px;
+  flex: none;
+  border-radius: 1px;
+}
+
+/* the processor sits between them, the one accented cell */
+.singularity-root .cpm-proc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--tc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.singularity-root .cpm-proc-core {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  font-family: var(--tc-disp);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--tc-panel-ink);
+}
+
+.singularity-root .cpm-proc svg {
+  width: 14px;
+  height: 14px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.singularity-root .cpm-diagram-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.singularity-root .cpm-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tc-accent);
+}
+
+.singularity-root .cpm-diagram-status code {
+  margin-left: auto;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  color: var(--tc-panel-ink);
+}
+
+/* ---- the language sheet ---- */
+
+.singularity-root .cpm-langs {
+  padding: clamp(34px, 3.8vw, 50px) var(--tc-gut) clamp(38px, 4.2vw, 56px);
+}
+
+.singularity-root .cpm-lang-rule {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpm-lang-rule i {
+  font-family: var(--tc-mono);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .cpm-lang-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.singularity-root .cpm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpm-chip-flag {
+  width: 16px;
+  height: 12px;
+  flex: none;
+  border-radius: 1px;
+}
+
+.singularity-root .cpm-chip code {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: var(--tc-ink-3);
+}
+
+/* ---- how it works: three ruled cells ---- */
+
+.singularity-root .cpm-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpm-step {
+  margin: 0;
+  padding: 26px var(--tc-gut) 34px;
+}
+
+.singularity-root .cpm-step + .cpm-step {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+.singularity-root .cpm-step-rule {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.singularity-root .cpm-step-mark {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .cpm-step-glyph {
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpm-step h3 {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpm-step p {
+  margin-top: 9px;
+  max-width: 36ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* ---- the MDX exhibit and the capability ledger ---- */
+
+.singularity-root .cpm-content {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+  padding: 0 var(--tc-gut) clamp(56px, 6.4vw, 88px);
+}
+
+.singularity-root .cpm-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.singularity-root .cpm-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-ink);
+}
+
+.singularity-root .cpm-code-bar code {
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--tc-panel-dim);
+}
+
+.singularity-root .cpm-code-lines {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 4px 12px;
+  padding: 18px 16px 20px;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.singularity-root .cpm-code-lines > code {
+  color: rgba(255, 255, 255, 0.26);
+}
+
+.singularity-root .cpm-code-lines > span {
+  min-width: 0;
+  color: var(--tc-panel-dim);
+  word-break: break-word;
+}
+
+/* localized content carries the ink; preserved code stays quiet */
+.singularity-root .cpm-code-lines b {
+  font-weight: 500;
+  color: var(--tc-panel-ink);
+  box-shadow: inset 0 -1px 0 var(--tc-accent);
+}
+
+.singularity-root .cpm-code-lines > span.is-preserved {
+  color: var(--tc-panel-faint);
+}
+
+.singularity-root .cpm-code-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.singularity-root .cpm-code-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.singularity-root .cpm-code-key span::before {
+  content: '';
+  width: 10px;
+  height: 2px;
+}
+
+.singularity-root .cpm-code-key .is-localized::before {
+  background: var(--tc-accent);
+}
+
+.singularity-root .cpm-code-key .is-code::before {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.singularity-root .cpm-feats {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpm-feat {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 14px;
+  margin: 0;
+  padding: 16px 0 18px;
+  border-bottom: 1px solid var(--tc-hair-2);
+}
+
+.singularity-root .cpm-feat-glyph {
+  margin-top: 3px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpm-feat h3 {
+  font-family: var(--tc-disp);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpm-feat p {
+  margin-top: 7px;
+  max-width: 54ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* ---- the setup record ---- */
+
+.singularity-root .cpm-setup {
+  margin: 0 var(--tc-gut) clamp(56px, 6.4vw, 88px);
+  padding: 0;
+  border-top: 1px solid var(--tc-hair);
+  list-style: none;
+}
+
+.singularity-root .cpm-setup-row {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 20px;
+  padding: 20px 0 22px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpm-setup-mark {
+  padding-top: 3px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .cpm-setup-row h3 {
+  font-family: var(--tc-disp);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpm-setup-row p {
+  margin-top: 8px;
+  max-width: 62ch;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* ---- the questions, filed open ---- */
+
+.singularity-root .cpm-faq {
+  margin: 0 var(--tc-gut) clamp(56px, 6.4vw, 88px);
+  border-top: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpm-faq-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: clamp(20px, 3vw, 48px);
+  padding: 20px 0 22px;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpm-faq dt {
+  font-family: var(--tc-disp);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpm-faq dd {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+/* ---- the close, on ink ---- */
+
+.singularity-root .cpm-close-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(32px, 5vw, 84px);
+  align-items: end;
+}
+
+.singularity-root .cpm-close-copy h2 {
+  max-width: 16ch;
+  font-family: var(--tc-disp);
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  color: #ffffff;
+}
+
+.singularity-root .cpm-close-copy > p {
+  margin-top: 14px;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.singularity-root .cpm-close .cpm-acts .tc-btn svg {
+  flex: none;
+}
+
+.singularity-root .cpm-close-path {
+  padding: 18px 20px 20px;
+  border: 1px dashed rgba(138, 143, 152, 0.42);
+}
+
+.singularity-root .cpm-close-path-rule {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.singularity-root .cpm-close-path code {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: #ffffff;
+  word-break: break-all;
+}
+
+.singularity-root .cpm-close-path p {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.58;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.singularity-root .cpm-close-path a {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   Y COMBINATOR — the programme page
+   ============================================================ */
+
+/* the live headline breaks after "want," — 18ch would break after "people" */
+.singularity-root .cpy-hero h1 {
+  max-width: 26ch;
+}
+
+.singularity-root .cpy-hero h1 span {
+  display: block;
+}
+
+.singularity-root .cpy-hero .cpc-hero-acts {
+  margin-top: 30px;
+}
+
+
+/* ---- the deal terms, filed one plate per term ---- */
+
+.singularity-root .cpy-benefits {
+  margin: 0 var(--tc-gut) clamp(56px, 6.4vw, 88px);
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  list-style: none;
+}
+
+.singularity-root .cpy-benefit {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 6px 12px;
+  padding: 18px 18px 20px;
+  border: 1px dashed var(--tc-hair);
+}
+
+.singularity-root .cpy-benefit-file {
+  grid-column: 1 / -1;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .cpy-benefit-glyph {
+  margin-top: 2px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpy-benefit p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.singularity-root .cpy-benefit p b {
+  font-family: var(--tc-disp);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--tc-ink);
+}
+
+/* ---- the statement on the record ---- */
+
+.singularity-root .cpy-quote-wrap {
+  padding: clamp(48px, 5.4vw, 76px) var(--tc-gut) clamp(52px, 6vw, 84px);
+}
+
+.singularity-root .cpy-plate {
+  margin: 0;
+  max-width: 60ch;
+  padding: 22px 24px 24px;
+  border: 1px solid var(--tc-hair);
+}
+
+.singularity-root .cpy-plate-rule {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpy-plate-rule i {
+  font-family: var(--tc-mono);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--tc-ink-4);
+}
+
+.singularity-root .cpy-plate blockquote {
+  margin: 18px 0 0;
+}
+
+.singularity-root .cpy-plate blockquote p {
+  font-family: var(--tc-disp);
+  font-size: clamp(18px, 2vw, 23px);
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.34;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpy-plate figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpy-plate figcaption b {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.singularity-root .cpy-plate figcaption a {
+  margin-left: auto;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.singularity-root .cpy-plate figcaption a:hover {
+  color: var(--tc-ink);
+}
+
+/* ---- the close ---- */
+
+.singularity-root .cpy-close h2 span {
+  display: block;
+}
+
+/* ---- the claim record, on ink ---- */
+
+.singularity-root .cpy-claim-copy > p {
+  max-width: 40ch;
+}
+
+.singularity-root .cpy-assure {
+  margin-top: 30px;
+  border-top: 1px solid rgba(138, 143, 152, 0.28);
+}
+
+.singularity-root .cpy-assure-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(138, 143, 152, 0.22);
+}
+
+.singularity-root .cpy-assure-glyph {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.singularity-root .cpy-assure-row p {
+  font-size: 14px;
+  line-height: 1.58;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.singularity-root .cpy-verify-link {
+  margin-top: -4px;
+  width: fit-content;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.singularity-root .cpy-verify-link:hover {
+  color: #ffffff;
+}
+
+/* ============================================================
+   NARROW
+   ============================================================ */
+
+@media (max-width: 1000px) {
+  .singularity-root .cpm-hero,
+  .singularity-root .cpm-content,
+  .singularity-root .cpm-close-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .singularity-root .cpm-close-in {
+    align-items: start;
+  }
+
+  .singularity-root .cpm-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .singularity-root .cpm-step + .cpm-step {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .singularity-root .cpm-faq-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .singularity-root .cpy-benefits {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .singularity-root .cpm-diagram-stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .singularity-root .cpm-proc {
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .singularity-root .cpm-proc svg {
+    transform: rotate(90deg);
+  }
+
+  .singularity-root .cpm-setup-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}

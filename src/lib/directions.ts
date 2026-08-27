@@ -7,8 +7,11 @@ export type Direction = {
    * The number the founder refers to this version by. Explicit rather than
    * derived from array position so retired versions can drop out of the list
    * without breaking the numbers he uses in review notes.
+   *
+   * Absent on the outcome: what shipped is not one of the numbered attempts,
+   * and giving it a number would put it in the running against them.
    */
-  label: string;
+  label?: string;
   /** Route segment under /d. */
   slug: string;
   name: string;
@@ -22,6 +25,12 @@ export type Direction = {
    * The index lists these in their own section.
    */
   site?: boolean;
+  /**
+   * The outcome rather than a proposal: the site that actually shipped after
+   * the directions were judged. Listed in its own section, after the three,
+   * because it is what they produced and not another candidate.
+   */
+  reference?: boolean;
 };
 
 /**
@@ -192,6 +201,17 @@ export const DIRECTIONS: Direction[] = [
       'A showcase of the previous generation: signal keeps its split-pane hero and carries the sections the dossier retired, the pinned story cinema, the review workspace, the assurance strip, and the self-typing transmission log.',
     tone: 'light',
     signature: 'Session and output, side by side in one window.',
+  },
+  {
+    n: 23,
+    slug: 'production',
+    name: 'Shipped',
+    concept:
+      'What the directions produced: the site now live at generaltranslation.com, rebuilt here page for page.',
+    tone: 'light',
+    signature: 'The one that shipped — the three below, resolved into a real codebase.',
+    site: true,
+    reference: true,
   },
 ];
 
