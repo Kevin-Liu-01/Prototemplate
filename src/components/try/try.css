@@ -1338,8 +1338,8 @@
 }
 
 /* the summary is the row's lead line — full ink */
-.try-cat-summary {
-  margin: 12px 0 0;
+.try-root .try-cat-summary {
+  margin: 16px 0 0;
   max-width: 62ch;
   font-size: 15px;
   line-height: 1.65;
@@ -1704,8 +1704,8 @@
     line-height: var(--tcm-h4-lh, 1.35);
   }
 
-  .try-cat-summary {
-    margin-top: 12px;
+  .try-root .try-cat-summary {
+    margin-top: 16px;
     font-size: var(--tcm-body, 16px);
     line-height: var(--tcm-body-lh, 1.6);
   }
