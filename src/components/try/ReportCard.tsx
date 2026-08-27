@@ -62,12 +62,12 @@ function gradeOf(score: number): (typeof GRADES)[number] {
   return 'F';
 }
 
-/* A fix line that opens with "Nothing" is a clean bill — its sub-row
+/* A fix line that opens with "None" is a clean bill: its sub-row
    mark is a check in the row's grade colour instead of the action
    arrow. The grader writes these lines in English by contract (the
    footnote says so), so the prefix test is stable. */
 function isCleanFix(fix: string): boolean {
-  return /^Nothing\b/.test(fix);
+  return /^None\b/.test(fix);
 }
 
 /* The fix sub-row's marks, house-drawn at 16px: a check for rows with
