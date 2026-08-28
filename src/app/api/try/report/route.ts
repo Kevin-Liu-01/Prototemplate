@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { analyze } from '@/lib/try/analyze';
-import { getClientIp, isRateLimited } from '@/lib/try/rateLimit';
+import { getClientIp, isRateLimited } from '@/lib/rate-limit';
 import { gateUserInput } from '@/lib/try/safeFetch';
 
 import type { NextRequest } from 'next/server';

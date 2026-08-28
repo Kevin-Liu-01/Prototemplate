@@ -15,7 +15,6 @@
     "@gsap/react": "^2.1.2",
     "@icons-pack/react-simple-icons": "^13.13.0",
     "@paper-design/shaders-react": "0.0.78",
-    "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
     "flag-icons": "^7.5.0",
     "franc": "^6.2.0",

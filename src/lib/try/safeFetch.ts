@@ -2,6 +2,8 @@ import { lookup } from 'node:dns/promises';
 import type { LookupAddress } from 'node:dns';
 import { isIP } from 'node:net';
 import type { LookupFunction } from 'node:net';
+// undici stays a dependency: its Agent is the SSRF DNS-pinning seam below,
+// and Node's global fetch exposes no dispatcher to hook.
 import { Agent, fetch as undiciFetch } from 'undici';
 
 const UA = 'GT-Localization-Report-Card/0.1 (+https://generaltranslation.com)';

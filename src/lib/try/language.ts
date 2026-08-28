@@ -1,3 +1,5 @@
+// franc stays a dependency: there is no in-tree detector, and its trigram
+// data only ever loads server-side.
 import { franc } from 'franc';
 
 // Maps a locale's primary subtag to the ISO 639-3 codes franc reports for it.
