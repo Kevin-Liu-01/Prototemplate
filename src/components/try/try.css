@@ -1841,6 +1841,7 @@
 }
 
 .try-modal {
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -1994,6 +1995,7 @@
 /* verbatim material: mono at 12.5px is sanctioned instrument use — the
    block scrolls sideways inside its own frame, never the page */
 .try-modal-code {
+  border-radius: 10px;
   margin: 7px 0 0;
   padding: 12px 14px;
   border: 1px solid var(--tc-hair-2);
@@ -2041,6 +2043,7 @@
 }
 
 .try-modal-prompt {
+  border-radius: 10px;
   margin-top: 10px;
   padding: 14px;
   border: 1px solid var(--tc-hair-2);
@@ -2061,7 +2064,7 @@
    min width so the Copied flip never moves the frame */
 .try-root .try-modal .try-modal-copy {
   margin-top: 12px;
-  border-radius: 0;
+  border-radius: 9px;
   min-width: 122px;
 }
 
