@@ -6,7 +6,7 @@ import CategoryMark from './CategoryMarks';
 import TryEvidenceModal from './TryEvidenceModal';
 import TryHelpTip from './TryHelpTip';
 
-import type { CSSProperties, KeyboardEvent } from 'react';
+import type { CSSProperties } from 'react';
 import type { Report } from '@/lib/try/analyze';
 
 export type ReportCardState =
@@ -45,25 +45,17 @@ const INFO_COPY: Record<string, string> = {
     'UTF-8 encoding declared and decoded cleanly, and the right text direction for scripts such as Arabic and Hebrew.',
 };
 
-/* The meter's grade boundaries on the 0-100 run, and where each grade's
-   range letter sits (the center of its run). */
-const METER_TICKS = [0, 60, 70, 80, 90, 100] as const;
+/* The meter's grade boundaries on the 0-100 run (gradeReport's grade-point
+   cutoffs 3.5/2.5/1.5/0.7 mapped onto the rounded score), and where each
+   grade's range letter sits (the center of its run). */
+const METER_TICKS = [0, 18, 38, 63, 88, 100] as const;
 const METER_RANGES = [
-  { grade: 'F', at: 30 },
-  { grade: 'D', at: 65 },
-  { grade: 'C', at: 75 },
-  { grade: 'B', at: 85 },
-  { grade: 'A', at: 95 },
+  { grade: 'F', at: 9 },
+  { grade: 'D', at: 28 },
+  { grade: 'C', at: 50.5 },
+  { grade: 'B', at: 75.5 },
+  { grade: 'A', at: 94 },
 ] as const;
-
-/* The overall score's grade letter — the meter's own boundaries. */
-function gradeOf(score: number): (typeof GRADES)[number] {
-  if (score >= 90) return 'A';
-  if (score >= 80) return 'B';
-  if (score >= 70) return 'C';
-  if (score >= 60) return 'D';
-  return 'F';
-}
 
 /* A fix line that opens with "None" is a clean bill: its sub-row
    mark is a check in the row's grade colour instead of the action
@@ -168,14 +160,6 @@ export default function ReportCard({
     if (id !== null) rowEls.current[id]?.focus();
   }
 
-  /* Enter/Space on the row's button-semantics wrapper (Space would
-     otherwise scroll the page). */
-  function onRowKeyDown(event: KeyboardEvent<HTMLLIElement>, id: string) {
-    if (event.key !== 'Enter' && event.key !== ' ') return;
-    event.preventDefault();
-    setOpenId(id);
-  }
-
   const rows = ROSTER.map((base, i) => ({
     id: report?.categories[i]?.id ?? base.id,
     name: report?.categories[i]?.name ?? base.name,
@@ -213,14 +197,12 @@ export default function ReportCard({
                     <span
                       className='try-score-chip'
                       role='img'
-                      aria-label={`Grade ${gradeOf(report.overall.score)}`}
+                      aria-label={`Grade ${report.overall.grade}`}
                       style={{
-                        color: `var(--try-grade-${gradeOf(
-                          report.overall.score
-                        ).toLowerCase()})`,
+                        color: `var(--try-grade-${report.overall.grade.toLowerCase()})`,
                       }}
                     >
-                      {gradeOf(report.overall.score)}
+                      {report.overall.grade}
                     </span>
                   </>
                 ) : (
@@ -245,16 +227,11 @@ export default function ReportCard({
               }}
               id={`try-cat-${row.id}`}
               className={`try-cat${row.cat ? ' is-openable' : ''}`}
-              /* filled rows are real buttons: the whole row opens the
-                 category's evidence modal; skeleton rows stay inert
-                 (tabIndex -1 only for the satellite jump's focus) */
-              role={row.cat ? 'button' : undefined}
-              aria-haspopup={row.cat ? 'dialog' : undefined}
-              tabIndex={row.cat ? 0 : -1}
-              onClick={row.cat ? () => setOpenId(row.id) : undefined}
-              onKeyDown={
-                row.cat ? (event) => onRowKeyDown(event, row.id) : undefined
-              }
+              /* tabIndex -1 only for the satellite jump's focus; the
+                 row's real control is the name button below, whose
+                 hit area stretches over the row in CSS, so the help
+                 tooltip's button never nests inside another control */
+              tabIndex={-1}
               style={{ '--try-row-i': i } as CSSProperties}
             >
               <span className='try-cat-icon'>
@@ -262,15 +239,24 @@ export default function ReportCard({
               </span>
               <div className='try-cat-copy'>
                 <div className='try-cat-namerow'>
-                  <h3 className='try-cat-name'>{row.name}</h3>
+                  <h3 className='try-cat-name'>
+                    {row.cat ? (
+                      <button
+                        type='button'
+                        className='try-cat-open'
+                        aria-haspopup='dialog'
+                        onClick={() => setOpenId(row.id)}
+                      >
+                        {row.name}
+                      </button>
+                    ) : (
+                      row.name
+                    )}
+                  </h3>
                   {/* the pricing pages' help affordance, in its local
-                      hairline build — its clicks and keys stop here so
-                      the row's own open handler never fires under it */}
-                  <span
-                    className='try-info'
-                    onClick={(event) => event.stopPropagation()}
-                    onKeyDown={(event) => event.stopPropagation()}
-                  >
+                      hairline build; it stacks above the name button's
+                      stretched hit area, so it stays its own control */}
+                  <span className='try-info'>
                     <TryHelpTip label='What this measures'>
                       {INFO_COPY[row.id]}
                     </TryHelpTip>

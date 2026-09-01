@@ -12,6 +12,9 @@ import type { CSSProperties, FormEvent } from 'react';
 import type { Report } from '@/lib/try/analyze';
 import type { Grade } from '@/lib/try/grade';
 
+import { analyze } from '@/lib/try/analyze';
+import { createRelayFetcher, normalizeUserUrl } from '@/lib/try/fetcher';
+
 type Slot<Value> =
   | { state: 'idle' }
   | { state: 'loading' }
@@ -23,8 +26,8 @@ type Slot<Value> =
   | { state: 'done'; value: Value }
   | { state: 'error'; message: string };
 
-// Slightly above the report route's 78s maxDuration so the server's own
-// verdict normally arrives before the client gives up.
+// Slightly above the pipeline's worst-case fetch schedule (~75s across
+// the budgeted relay calls) so a normal run always beats the deadline.
 const CLIENT_TIMEOUT_MS = 80000;
 
 /* The settle gate's clock, mirrored from try.css. The loading loop enters
@@ -52,20 +55,29 @@ function settleMsOf(remaining: number): number {
   return (remaining - 1) * SWEEP_STEP_MS + SWEEP_HOLD_MS;
 }
 
-async function postJson<Value>(path: string, body: object): Promise<Value> {
-  const res = await fetch(path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(CLIENT_TIMEOUT_MS),
+/* The pipeline runs in this browser tab (parsing, detection, grading);
+   only the raw fetches go through the relay. One overall deadline so a
+   stalled run still resolves into the error face. */
+async function runReport(url: string): Promise<Report> {
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      const error = new Error('timed out');
+      error.name = 'TimeoutError';
+      reject(error);
+    }, CLIENT_TIMEOUT_MS);
   });
-  const data = (await res.json().catch(() => null)) as
-    | (Value & { error?: string })
-    | null;
-  if (!res.ok || !data) {
-    throw new Error(data?.error || `Request failed (${res.status}).`);
+  try {
+    return await Promise.race([
+      analyze(normalizeUserUrl(url), createRelayFetcher(10, controller.signal)),
+      deadline,
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+    /* whichever way the race ends, no relay call outlives the run */
+    controller.abort();
   }
-  return data;
 }
 
 /* The typed URL's host, for the figure's favicon — the request goes only
@@ -94,15 +106,6 @@ function plausibleHostOf(raw: string): string | null {
 
 /* How long after typing stops before the affordance probes the host. */
 const PREVIEW_DEBOUNCE_MS = 500;
-
-/* The meter's own grade boundaries, resolved to the grade colour vars. */
-function gradeVarOf(score: number): string {
-  if (score >= 90) return 'var(--try-grade-a)';
-  if (score >= 80) return 'var(--try-grade-b)';
-  if (score >= 70) return 'var(--try-grade-c)';
-  if (score >= 60) return 'var(--try-grade-d)';
-  return 'var(--try-grade-f)';
-}
 
 export default function TryPage() {
   const [url, setUrl] = useState('');
@@ -155,7 +158,7 @@ export default function TryPage() {
     const startedAt = performance.now();
     setReport({ state: 'loading' });
     try {
-      const value = await postJson<Report>('/api/try/report', { url });
+      const value = await runReport(url);
       const reduced = window.matchMedia(
         '(prefers-reduced-motion: reduce)'
       ).matches;
@@ -223,9 +226,7 @@ export default function TryPage() {
           <div className='try-hero-copy'>
             <div className='tc-head try-head'>
               <h1>How localized is your site?</h1>
-              <p>
-                Enter a URL for a graded localization report card.
-              </p>
+              <p>Enter a URL for a graded localization report card.</p>
             </div>
             <div className='try-form-zone'>
               <form className='try-form' onSubmit={run}>
@@ -323,8 +324,11 @@ export default function TryPage() {
                   </button>
                 </div>
               </form>
-              {/* The status strip: ONE element holding all four states at constant
-                  height, on its own line below the bar. One live region. */}
+              {/* The status strip: ONE element holding all four states at
+                  constant height, on its own line below the bar — the hint,
+                  the live note, the error line and the success line swap in
+                  place, so nothing below ever moves. One live region: every
+                  state change announces from here. */}
               <div
                 className='try-strip'
                 data-state={stripState}
@@ -332,9 +336,7 @@ export default function TryPage() {
                 style={
                   report.state === 'done'
                     ? ({
-                        '--try-strip-grade': gradeVarOf(
-                          report.value.overall.score
-                        ),
+                        '--try-strip-grade': `var(--try-grade-${report.value.overall.grade.toLowerCase()})`,
                       } as CSSProperties)
                     : undefined
                 }
@@ -350,7 +352,7 @@ export default function TryPage() {
               host={host}
               gradeVar={
                 report.state === 'done'
-                  ? gradeVarOf(report.value.overall.score)
+                  ? `var(--try-grade-${report.value.overall.grade.toLowerCase()})`
                   : null
               }
               grades={

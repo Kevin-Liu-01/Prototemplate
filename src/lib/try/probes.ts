@@ -3,7 +3,7 @@ import { parsePage, parseSitemap } from '@/lib/try/parse';
 
 import type { Negotiation, SitemapEvidence, VariantVia } from '@/lib/try/grade';
 import type { ParsedPage } from '@/lib/try/parse';
-import type { SafeFetcher } from '@/lib/try/safeFetch';
+import type { SafeFetcher } from '@/lib/try/fetcher';
 
 export type DiscoveredVariant = {
   code: string;

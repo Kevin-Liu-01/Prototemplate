@@ -6,13 +6,15 @@ import {
   RTL_LANGS,
 } from '@/lib/try/language';
 
+import { isUtf8Label } from '@/lib/try/grade';
+
 import type {
   GradedVariant,
   Negotiation,
   SitemapEvidence,
 } from '@/lib/try/grade';
 import type { ParsedPage } from '@/lib/try/parse';
-import type { FetchLogEntry } from '@/lib/try/safeFetch';
+import type { FetchLogEntry } from '@/lib/try/fetcher';
 
 export type EvidenceSnippet = {
   label: string;
@@ -84,8 +86,19 @@ const LANGUAGE_NAMES: Record<string, string> = {
   ur: 'Urdu',
 };
 
+/* Page-controlled text never enters an agent prompt raw: a value embeds
+   only when it parses as a plain locale-shaped token, so a hostile page
+   cannot smuggle instructions into copy users are told to paste. */
+const SAFE_TOKEN = /^[a-z0-9][a-z0-9_-]{0,19}$/i;
+function safeToken(value: string, fallback: string): string {
+  return SAFE_TOKEN.test(value) ? value : fallback;
+}
+
 function languageName(code: string): string {
-  return LANGUAGE_NAMES[primarySubtag(code)] || code;
+  return (
+    LANGUAGE_NAMES[primarySubtag(code)] ||
+    safeToken(code, 'an unrecognized language')
+  );
 }
 
 function clip(text: string, max: number): string {
@@ -243,16 +256,20 @@ function hreflangEvidence(ctx: EvidenceContext): CategoryEvidence {
       the rendered HTML of each locale page and checking that the full tag group is
       present and identical across locales.`;
   } else {
-    const issues = details.filter(
-      (d) =>
-        d.startsWith('No x-default') ||
-        d.startsWith('Invalid') ||
-        d.startsWith('Conflicting') ||
-        d.includes('relative URLs')
-    );
-    if (issues.length > 0) {
+    /* The prompt names defect categories only; the raw offending values
+       stay in the separately labeled details and snippets. */
+    const defects: string[] = [];
+    if (details.some((d) => d.startsWith('No x-default')))
+      defects.push('a missing x-default entry');
+    if (details.some((d) => d.startsWith('Invalid')))
+      defects.push('invalid language codes');
+    if (details.some((d) => d.includes('relative URLs')))
+      defects.push('relative URLs where the spec requires absolute ones');
+    if (details.some((d) => d.startsWith('Conflicting')))
+      defects.push('duplicate codes pointing at different URLs');
+    if (defects.length > 0) {
       agentPrompt = `The site ${host} declares hreflang tags but the set has defects:
-        ${issues.join(' ')} Fix each defect in the layout that renders the head. Every
+        ${defects.join(', ')}. Fix each defect in the layout that renders the head. Every
         locale page must emit the same complete tag group: one absolute URL per locale,
         one x-default entry, and a self-referencing tag. Remove duplicate entries that
         point the same hreflang code at different URLs. Verify by fetching the rendered
@@ -308,7 +325,7 @@ function langDeclEvidence(ctx: EvidenceContext): CategoryEvidence {
     agentPrompt = `The site ${host} serves its HTML without a lang attribute on the html
       element. Screen readers and search engines fall back to guessing the page
       language. Set the lang attribute on the root html element of every page to the
-      BCP 47 tag of that page's content language, for example lang="${declared || 'en'}"
+      BCP 47 tag of that page's content language, for example lang="${safeToken(declared, 'en')}"
       on the default page. In a localized app, derive the value from the active locale
       instead of hardcoding it. Verify with view-source on the default page and one
       locale page and confirm the attribute matches the visible content language.`;
@@ -317,14 +334,14 @@ function langDeclEvidence(ctx: EvidenceContext): CategoryEvidence {
     profile.confident >= 5 &&
     profile.expectedShare < 0.3
   ) {
-    agentPrompt = `The site ${host} declares lang="${base.lang}" on its html element, but
+    agentPrompt = `The site ${host} declares lang="${safeToken(base.lang, '(a malformed value)')}" on its html element, but
       language detection over the visible text classifies only ${pct(profile.expectedShare)}
       of it as ${languageName(declared)}. Set the lang attribute to the language the page
       actually renders in, and derive it from the active locale on localized routes.
       Verify by re-running detection on the served HTML and confirming the declared tag
       matches the majority content language.`;
   } else {
-    agentPrompt = `The site ${host} declares lang="${base.lang}" on its html element and the
+    agentPrompt = `The site ${host} declares lang="${safeToken(base.lang, '(a malformed value)')}" on its html element and the
       value matches the detected content language. Keep that true: derive the attribute
       from the active locale so every localized route declares its own language.
       Never leave the default value on translated pages. Verify by checking the html
@@ -441,14 +458,16 @@ function routingEvidence(ctx: EvidenceContext): CategoryEvidence {
   let agentPrompt: string;
   if (urlBased.length >= 2) {
     agentPrompt = `The site ${host} serves ${urlBased.length} confirmed locale URLs
-      (${urlBased.map((v) => pathOf(v.url)).join(', ')}). Keep that true: every locale
+      (locales ${urlBased.map((v) => safeToken(v.code, 'unknown')).join(', ')}; the
+      working URLs are listed in this report). Keep that true: every locale
       must stay on its own stable, indexable URL that returns HTTP 200 without
       requiring cookies or headers. When adding a locale, give it the same URL shape
       and declare it in hreflang. Verify by curling each locale URL and checking the
       status code and the lang attribute of the response.`;
   } else if (urlBased.length === 1) {
     agentPrompt = `The site ${host} serves only one confirmed locale URL
-      (${urlBased[0]?.url ?? ''}), and the remaining probed locale URLs did not serve
+      (for the ${safeToken(urlBased[0]?.code ?? '', 'one confirmed')} locale; the URL
+      is listed in this report), and the remaining probed locale URLs did not serve
       localized content. Give every supported locale its own stable URL using the same
       shape as the working one, and make each return HTTP 200 with translated content.
       Declare the full set with hreflang link tags on every page. Verify by curling
@@ -534,8 +553,9 @@ function metadataEvidence(ctx: EvidenceContext): CategoryEvidence {
       const b = (v.page[field] || '').trim();
       if (!a) continue;
       const same = b !== '' && a.toLowerCase() === b.toLowerCase();
-      if (!b) untranslated.push(`${v.code} ${label} is missing`);
-      else if (same) untranslated.push(`${v.code} ${label} equals the default`);
+      const code = safeToken(v.code, 'a locale');
+      if (!b) untranslated.push(`${code} ${label} is missing`);
+      else if (same) untranslated.push(`${code} ${label} equals the default`);
       details.push(
         `${v.code} ${label}: default "${clip(a, FIELD_CLIP)}" vs variant "${b ? clip(b, FIELD_CLIP) : '(missing)'}".`
       );
@@ -630,7 +650,7 @@ function contentEvidence(ctx: EvidenceContext): CategoryEvidence {
       footer copy. Verify by fetching each locale URL and running language detection
       over the body text to confirm the expected language dominates.`;
   } else if (worst && worst.profile.expectedShare < 0.85) {
-    agentPrompt = `The site ${host} serves the ${pathOf(worst.url)} page with only
+    agentPrompt = `The site ${host} serves its ${languageName(worst.code)} locale page with only
       ${pct(worst.profile.expectedShare)} of its text in ${languageName(worst.code)} and
       ${pct(worst.profile.defaultShare)} still in ${languageName(defaultLang)}. The
       untranslated strings are usually hardcoded UI copy: navigation labels, buttons,
@@ -676,7 +696,7 @@ function charsetEvidence(ctx: EvidenceContext): CategoryEvidence {
   const effective = (charsetHeader || base.metaCharset || '').toLowerCase();
   details.push(
     effective
-      ? `Effective charset: ${effective}${effective.includes('utf-8') ? '' : ' (not UTF-8)'}.`
+      ? `Effective charset: ${effective}${isUtf8Label(effective) ? '' : ' (not UTF-8)'}.`
       : 'No charset declared in headers or meta tags.'
   );
   details.push(
@@ -704,16 +724,16 @@ function charsetEvidence(ctx: EvidenceContext): CategoryEvidence {
   }
 
   let agentPrompt: string;
-  const badCharset = !effective || !effective.includes('utf-8');
+  const badCharset = !effective || !isUtf8Label(effective);
   if (badCharset || base.hasReplacementChars || rtlMissingDir.length > 0) {
     const fixes: string[] = [];
     if (!effective) {
       fixes.push(
         'Declare UTF-8 in both the Content-Type response header (charset=utf-8) and a meta charset tag in the first bytes of the head.'
       );
-    } else if (!effective.includes('utf-8')) {
+    } else if (!isUtf8Label(effective)) {
       fixes.push(
-        `Switch the declared charset from ${effective} to UTF-8 in the Content-Type header and the meta charset tag, and re-encode any stored content that is not UTF-8.`
+        `Switch the declared charset from ${safeToken(effective, 'its current value')} to UTF-8 in the Content-Type header and the meta charset tag, and re-encode any stored content that is not UTF-8.`
       );
     }
     if (base.hasReplacementChars) {
@@ -723,7 +743,7 @@ function charsetEvidence(ctx: EvidenceContext): CategoryEvidence {
     }
     if (rtlMissingDir.length > 0) {
       fixes.push(
-        `Set dir="rtl" on the html element of the ${rtlMissingDir.map((v) => v.code).join(', ')} page${rtlMissingDir.length === 1 ? '' : 's'}, derived from the active locale.`
+        `Set dir="rtl" on the html element of the ${rtlMissingDir.map((v) => safeToken(v.code, 'rtl')).join(', ')} page${rtlMissingDir.length === 1 ? '' : 's'}, derived from the active locale.`
       );
     }
     agentPrompt = `The site ${host} has encoding or direction defects. ${fixes.join(' ')}

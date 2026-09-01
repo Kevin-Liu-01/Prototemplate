@@ -4,7 +4,7 @@ import { languageProfile, primarySubtag, RTL_LANGS } from '@/lib/try/language';
 import type { CategoryEvidence, EvidenceContext } from '@/lib/try/evidence';
 import type { LanguageProfile } from '@/lib/try/language';
 import type { ParsedPage } from '@/lib/try/parse';
-import type { FetchLogEntry } from '@/lib/try/safeFetch';
+import type { FetchLogEntry } from '@/lib/try/fetcher';
 
 export type Grade = 'A' | 'B' | 'C' | 'D' | 'F';
 
@@ -92,11 +92,16 @@ function gradeHreflang(
   );
   const allValid = alts.every((a) => VALID_HREFLANG.test(a.hreflang));
   const allAbsolute = alts.every((a) => /^https?:\/\//i.test(a.href));
-  /* Self-reference means the same host and path: a subdomain or ccTLD
-     alternate sharing the path is a different page. */
+  /* Self-reference means the same host and path in the page's own
+     language: a subdomain or ccTLD alternate sharing the path is a
+     different page, and an x-default or foreign-language entry pointing
+     here does not annotate this page's locale. */
   const baseParsed = new URL(base.url);
   const baseKey = `${baseParsed.host.toLowerCase()}${baseParsed.pathname.replace(/\/+$/, '') || '/'}`;
+  const baseLangSub = primarySubtag(base.lang);
   const hasSelf = alts.some((a) => {
+    if (a.hreflang.toLowerCase() === 'x-default') return false;
+    if (baseLangSub && primarySubtag(a.hreflang) !== baseLangSub) return false;
     try {
       const u = new URL(a.abs || '');
       return (
@@ -376,6 +381,12 @@ function gradeContent(
   };
 }
 
+/* WHATWG treats utf8 (and the unicode*utf8 labels) as UTF-8 aliases, so
+   match on the label with its separators stripped. */
+export function isUtf8Label(value: string): boolean {
+  return value.replace(/[^a-z0-9]/gi, '').includes('utf8');
+}
+
 function gradeCharsetDir(
   base: ParsedPage,
   charsetHeader: string,
@@ -388,7 +399,7 @@ function gradeCharsetDir(
   if (!charset) {
     issues.push('no charset declared in headers or meta');
     score += 1;
-  } else if (!charset.includes('utf-8')) {
+  } else if (!isUtf8Label(charset)) {
     issues.push(`charset is ${charset}, not UTF-8`);
     score += 1;
   }

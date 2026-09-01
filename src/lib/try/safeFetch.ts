@@ -1,4 +1,3 @@
-import { lookup } from 'node:dns/promises';
 import type { LookupAddress } from 'node:dns';
 import { isIP } from 'node:net';
 import type { LookupFunction } from 'node:net';
@@ -6,129 +5,31 @@ import type { LookupFunction } from 'node:net';
 // and Node's global fetch exposes no dispatcher to hook.
 import { Agent, fetch as undiciFetch } from 'undici';
 
+import {
+  isPublicIp,
+  normalizeHostname,
+  resolveHostAddresses,
+} from '@/lib/networking-ip';
+
+import type {
+  FetchedPage,
+  FetchLogEntry,
+  FetchPageOptions,
+  SafeFetcher,
+} from '@/lib/try/fetcher';
+
+export type {
+  FetchedPage,
+  FetchLogEntry,
+  FetchPageOptions,
+  SafeFetcher,
+} from '@/lib/try/fetcher';
+
 const UA = 'GT-Localization-Report-Card/0.1 (+https://generaltranslation.com)';
 const MAX_BYTES = 1_500_000;
 const MAX_REDIRECTS = 5;
 
 type UpstreamResponse = Awaited<ReturnType<typeof undiciFetch>>;
-
-export type FetchedPage = {
-  status: number;
-  finalUrl: string;
-  contentType: string;
-  body: string;
-  headers: Headers;
-  error?: string;
-};
-
-export type FetchLogEntry = {
-  url: string;
-  purpose: string;
-  status: number | null;
-  finalUrl: string | null;
-  ms: number | null;
-  note: string;
-};
-
-type FetchPageOptions = {
-  purpose?: string;
-  acceptLanguage?: string;
-  timeoutMs?: number;
-  countsAgainstBudget?: boolean;
-};
-
-/* Every address class that must never be reachable from this server:
-   loopback, RFC1918, link-local, site-local, CGN, benchmarking,
-   documentation, multicast, reserved, and the IPv6 transport prefixes
-   that embed an IPv4 address (mapped, compatible, NAT64, Teredo, 6to4). */
-function isPublicIpv4(ip: string): boolean {
-  const parts = ip.split('.').map(Number);
-  if (parts.length !== 4 || parts.some((p) => Number.isNaN(p))) return false;
-  const a = parts[0] ?? -1;
-  const b = parts[1] ?? -1;
-  const c = parts[2] ?? -1;
-  if (a === 0 || a === 10 || a === 127) return false;
-  if (a === 100 && b >= 64 && b <= 127) return false;
-  if (a === 169 && b === 254) return false;
-  if (a === 172 && b >= 16 && b <= 31) return false;
-  if (a === 192 && b === 0 && (c === 0 || c === 2)) return false;
-  if (a === 192 && b === 168) return false;
-  if (a === 198 && (b === 18 || b === 19)) return false;
-  if (a === 198 && b === 51 && c === 100) return false;
-  if (a === 203 && b === 0 && c === 113) return false;
-  if (a >= 224) return false;
-  return true;
-}
-
-/* Expands an IPv6 address to its eight 16-bit words, folding a dotted
-   IPv4 tail into the last two, so every spelling of an address reduces
-   to the same words before classification. */
-function parseIpv6Words(ip: string): number[] | null {
-  let s = ip;
-  const dotted = /^(.*:)(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(s);
-  if (dotted) {
-    const quads = dotted.slice(2, 6).map(Number);
-    if (quads.some((q) => q > 255)) return null;
-    const hi = ((quads[0] ?? 0) << 8) | (quads[1] ?? 0);
-    const lo = ((quads[2] ?? 0) << 8) | (quads[3] ?? 0);
-    s = `${dotted[1] ?? ''}${hi.toString(16)}:${lo.toString(16)}`;
-  }
-  const halves = s.split('::');
-  if (halves.length > 2) return null;
-  const headParts = halves[0] ? halves[0].split(':') : [];
-  const tailParts =
-    halves.length === 2 && halves[1] ? halves[1].split(':') : [];
-  const missing = 8 - headParts.length - tailParts.length;
-  if (halves.length === 2 ? missing < 1 : missing !== 0) return null;
-  const words = [
-    ...headParts.map((p) => parseInt(p, 16)),
-    ...(halves.length === 2 ? Array(missing).fill(0) : []),
-    ...tailParts.map((p) => parseInt(p, 16)),
-  ] as number[];
-  if (words.some((w) => Number.isNaN(w) || w < 0 || w > 0xffff)) return null;
-  return words;
-}
-
-function isPublicIpv6(ip: string): boolean {
-  const words = parseIpv6Words(ip);
-  if (!words) return false;
-  const w0 = words[0] ?? 0;
-  const w1 = words[1] ?? 0;
-  const w2 = words[2] ?? 0;
-  const w4 = words[4] ?? 0;
-  const w5 = words[5] ?? 0;
-  const w6 = words[6] ?? 0;
-  const w7 = words[7] ?? 0;
-  const zeroTo4 = words.slice(0, 5).every((w) => w === 0);
-  const embeddedV4 = `${w6 >> 8}.${w6 & 0xff}.${w7 >> 8}.${w7 & 0xff}`;
-  if (zeroTo4 && w5 === 0) {
-    if (w6 === 0 && w7 <= 1) return false;
-    return isPublicIpv4(embeddedV4);
-  }
-  if (zeroTo4 && w5 === 0xffff) return isPublicIpv4(embeddedV4);
-  const zeroTo3 = words.slice(0, 4).every((w) => w === 0);
-  if (zeroTo3 && w4 === 0xffff && w5 === 0) {
-    return isPublicIpv4(embeddedV4);
-  }
-  if (w0 === 0x64 && w1 === 0xff9b) return false;
-  if ((w0 & 0xfe00) === 0xfc00) return false;
-  if ((w0 & 0xffc0) === 0xfe80) return false;
-  if ((w0 & 0xffc0) === 0xfec0) return false;
-  if ((w0 & 0xff00) === 0xff00) return false;
-  if (w0 === 0x2001 && w1 === 0x0db8) return false;
-  if (w0 === 0x2001 && w1 === 0) return false;
-  if (w0 === 0x2002) {
-    return isPublicIpv4(`${w1 >> 8}.${w1 & 0xff}.${w2 >> 8}.${w2 & 0xff}`);
-  }
-  return true;
-}
-
-export function isPublicIp(ip: string): boolean {
-  const family = isIP(ip);
-  if (family === 4) return isPublicIpv4(ip);
-  if (family !== 6) return false;
-  return isPublicIpv6(ip);
-}
 
 export type UrlGateResult =
   | { ok: true; url: URL }
@@ -159,22 +60,17 @@ export function gateUrl(raw: string): UrlGateResult {
   return { ok: true, url };
 }
 
-export function gateUserInput(raw: string): UrlGateResult {
-  if (!raw) return { ok: false, reason: 'Enter a URL first.' };
-  return gateUrl(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
-}
-
 /* Resolves the hostname once and validates every returned address. The same
    records are then pinned into the connection, so what was validated is
    what gets dialed. */
 async function resolvePublic(
   hostname: string
 ): Promise<LookupAddress[] | null> {
-  const bare = hostname.replace(/^\[|\]$/g, '');
+  const bare = normalizeHostname(hostname);
   const family = isIP(bare);
   if (family) return isPublicIp(bare) ? [{ address: bare, family }] : null;
   try {
-    const records = await lookup(bare, { all: true, verbatim: true });
+    const records = await resolveHostAddresses(bare);
     if (records.length === 0) return null;
     return records.every((r) => isPublicIp(r.address)) ? records : null;
   } catch {
@@ -199,7 +95,13 @@ function pinnedDispatcher(hostname: string, records: LookupAddress[]): Agent {
       callback(null, first?.address ?? '', first?.family ?? 4);
     }
   };
-  return new Agent({ connect: { lookup: pinnedLookup } });
+  /* maxResponseSize is the transport ceiling: undici refuses to hand
+     over a response past it even in one oversized chunk, so readCapped's
+     1.5MB truncation can never be out-bought on memory. */
+  return new Agent({
+    connect: { lookup: pinnedLookup },
+    maxResponseSize: MAX_BYTES * 4,
+  });
 }
 
 function timeoutError(): Error {
@@ -261,15 +163,6 @@ async function readCapped(res: UpstreamResponse, cap: number): Promise<string> {
   if (!truncated) out += decoder.decode();
   return out.slice(0, cap);
 }
-
-export type SafeFetcher = {
-  fetchPage: (
-    url: string,
-    opts?: FetchPageOptions
-  ) => Promise<FetchedPage | null>;
-  log: FetchLogEntry[];
-  remaining: () => number;
-};
 
 export function createSafeFetcher(maxFollowUps = 8): SafeFetcher {
   const log: FetchLogEntry[] = [];

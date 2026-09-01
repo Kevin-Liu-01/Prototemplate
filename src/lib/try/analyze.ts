@@ -8,10 +8,9 @@ import {
 } from '@/lib/try/language';
 import { parsePage } from '@/lib/try/parse';
 import { discoverVariants, probeSitemap } from '@/lib/try/probes';
-import { createSafeFetcher } from '@/lib/try/safeFetch';
 
 import type { GradedVariant, ReportGrades } from '@/lib/try/grade';
-import type { FetchLogEntry } from '@/lib/try/safeFetch';
+import type { FetchLogEntry, SafeFetcher } from '@/lib/try/fetcher';
 import type { ParsedPage } from '@/lib/try/parse';
 
 export type Report = ReportGrades & {
@@ -57,10 +56,12 @@ function guessDefaultLang(base: ParsedPage): string {
   return (top && SUBTAG_BY_FRANC[top]) || 'en';
 }
 
-export async function analyze(startUrl: string): Promise<Report> {
-  // Budget: 2 fetches for sitemap.xml evidence plus 8 discovery probes.
-  // Keep this in sync with the maxDuration math in api/try/report/route.ts.
-  const fetcher = createSafeFetcher(10);
+// The caller supplies the fetcher with a budget of 10: 2 fetches for
+// sitemap.xml evidence plus 8 discovery probes.
+export async function analyze(
+  startUrl: string,
+  fetcher: SafeFetcher
+): Promise<Report> {
   const first = await fetcher.fetchPage(startUrl, {
     purpose: 'default page',
     countsAgainstBudget: false,

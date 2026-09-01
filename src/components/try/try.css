@@ -107,11 +107,10 @@
   padding: 4px var(--tc-gut) clamp(48px, 6vw, 72px);
 }
 
-/* One composed assembly: the input+button bar with the status strip
-   joined beneath it, inside a single hairline frame. The OUTER corners
-   round (the page's sanctioned exception) — the bar's top ends and the
-   strip's bottom ends; every inner junction stays square. Focus is ink,
-   never an accent halo. */
+/* The bar: input + trailing affordance + button in one hairline frame,
+   outer ends rounded (the page's sanctioned exception); the inner
+   junction stays square. Focus is ink, never an accent halo. The status
+   strip lives on its own line below. */
 .try-form {
   max-width: 640px;
   border: 1px solid var(--tc-hair);
@@ -304,8 +303,7 @@
   animation: try-tick-pulse 1.6s ease-in-out infinite;
 }
 
-/* error: the text takes full ink and the strip's left edge carries a
-   2px red inset rule — painted, not laid out, so nothing shifts */
+/* error: the text takes full ink; the tick carries the red */
 .try-strip[data-state='error'] {
   color: var(--tc-ink);
 }
@@ -1235,6 +1233,7 @@
 }
 
 .try-cat {
+  position: relative;
   display: grid;
   grid-template-columns:
     calc(var(--try-pad) + 96px)
@@ -1242,6 +1241,34 @@
     calc(212px + var(--try-pad));
   /* the satellite jump lands the row below the sticky nav (59px) */
   scroll-margin-top: 76px;
+}
+
+/* the openable row's real control: the category name is a button whose
+   ::after stretches over the whole row, so the help tooltip stays its
+   own sibling control instead of nesting inside a button row */
+.try-cat-open {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* z-index 1: the reveal's transformed row content stacks like
+   positioned elements, so the overlay must outrank it explicitly */
+.try-cat-open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.try-cat:has(.try-cat-open:focus-visible) {
+  outline: 1px solid var(--tc-ink);
+  outline-offset: -1px;
 }
 
 /* the row takes programmatic focus from the figure's satellite jump */
@@ -1288,8 +1315,9 @@
   padding-inline: clamp(18px, 2.4vw, 28px);
 }
 
+/* no `position` here: the name button's ::after must anchor to the
+   row (.try-cat is the nearest positioned ancestor), not this line */
 .try-cat-namerow {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1307,7 +1335,11 @@
    a hairline panel floated above it. The panel is absolutely positioned
    over the card, so opening never moves a row. */
 
+/* z-index 2: the tip must stack above the name button's ::after
+   overlay (z-index 1), so it stays its own clickable control */
 .try-info {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
 }
@@ -1789,8 +1821,8 @@
   background: color-mix(in srgb, var(--tc-ink) 3%, transparent);
 }
 
-/* the row-end affordance: a hairline chip with a right-angle arrow —
-   discoverability only, the row itself carries the button semantics */
+/* the row-end affordance: a hairline chip with a right-angle arrow;
+   discoverability only, the name button carries the semantics */
 .try-cat-details {
   display: inline-flex;
   align-items: center;
@@ -1820,7 +1852,7 @@
 }
 
 .try-cat.is-openable:hover .try-cat-details,
-.try-cat.is-openable:focus-visible .try-cat-details {
+.try-cat.is-openable:has(.try-cat-open:focus-visible) .try-cat-details {
   border-color: var(--tc-hair);
   color: var(--tc-ink);
 }
