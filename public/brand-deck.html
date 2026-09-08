@@ -35,12 +35,8 @@
   }
 
   * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--text); overflow: hidden; -webkit-font-smoothing: antialiased; }
 
   /* the stage: a fixed 1600 x 900 sheet, scaled to the window */
-  .viewport { position: fixed; inset: 0; overflow: hidden; background: var(--paper); }
-  .stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: center center; transform: translate(-50%, -50%); }
 
   /* edge grid: two rails and two rules that run to the edge of the sheet, crosses where they meet */
   .frame { position: absolute; inset: 0; pointer-events: none; }
@@ -59,8 +55,6 @@
   .wordmark { position: absolute; left: 72px; bottom: 18px; height: 18px; color: var(--titanium); }
   .wordmark svg { display: block; }
 
-  .slide { position: absolute; inset: 57px; padding: 72px 80px; display: none; }
-  .slide.is-on { display: block; }
   .slide > .in { position: relative; width: 100%; height: 100%; }
 
   /* type: the display face is capped at weight 500, the way the shipped site caps it */
@@ -159,23 +153,108 @@
   :root[data-theme="dark"] .panel { border: 1px solid var(--hair); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .panel { border: 1px solid var(--hair); } }
 
-  .help { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); font-family: var(--text); font-size: 12px; color: var(--titanium); opacity: 0; transition: opacity 200ms; pointer-events: none; }
-  body.show-help .help { opacity: 1; }
   @media (prefers-reduced-motion: no-preference) { .slide.is-on { animation: cut 140ms ease-out; } }
   @keyframes cut { from { opacity: 0; } to { opacity: 1; } }
-  .nav-zone { position: fixed; top: 0; bottom: 0; width: 50%; cursor: pointer; }
+
+  /* ---------- viewer chrome ---------- */
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--text); overflow: hidden; -webkit-font-smoothing: antialiased; }
+  .viewer { position: fixed; inset: 0; display: grid; grid-template-columns: 272px minmax(0, 1fr); grid-template-rows: 100%; background: var(--paper); }
+  .viewer.no-sb { grid-template-columns: 0 minmax(0, 1fr); }
+  .viewer.no-sb .sb { display: none; }
+  .sb { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--hair); background: var(--paper); }
+  .sb-head { height: 48px; flex: 0 0 48px; display: flex; align-items: center; gap: 10px; padding: 0 14px 0 16px; border-bottom: 1px solid var(--hair); }
+  .sb-head svg { width: 25px; height: 16px; color: var(--ink); }
+  .sb-head b { font-family: var(--display); font-weight: 500; font-size: 14px; letter-spacing: -0.01em; }
+  .sb-head span { margin-left: auto; font-size: 12px; color: var(--titanium); font-variant-numeric: tabular-nums; }
+  .thumbs { flex: 1 1 auto; overflow-y: auto; padding: 8px 14px 28px 12px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; }
+  .sec-label { font-size: 12px; color: var(--titanium); padding: 14px 0 2px 30px; }
+  .sec-label:first-child { padding-top: 6px; }
+  .thumb { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; cursor: pointer; }
+  .thumb .n { font-family: var(--display); font-weight: 500; font-size: 12px; color: var(--titanium); padding-top: 3px; font-variant-numeric: tabular-nums; text-align: right; }
+  .thumb.is-active .n { color: var(--ink); }
+  .thumb-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--hair); overflow: hidden; background: var(--paper); }
+  .thumb:hover .thumb-frame { border-color: var(--ink-2); }
+  .thumb.is-active .thumb-frame { border-color: var(--ink); outline: 1px solid var(--ink); outline-offset: 0; }
+  .thumb-frame .mini { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; transform-origin: 0 0; transform: scale(var(--k, 0.14)); pointer-events: none; }
+  .thumb-frame .mini .slide { display: block; }
+  .thumb-title { font-size: 12px; line-height: 1.3; color: var(--ink-2); margin-top: 6px; }
+  .main { grid-column: 2; grid-row: 1; position: relative; display: grid; grid-template-rows: 48px minmax(0, 1fr) 1px; min-width: 0; min-height: 0; }
+  .bar { grid-row: 1; display: flex; align-items: center; gap: 2px; padding: 0 10px; border-bottom: 1px solid var(--hair); font-size: 13px; min-width: 0; }
+  .bar .title { font-family: var(--display); font-weight: 500; font-size: 14px; letter-spacing: -0.01em; margin: 0 auto 0 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; }
+  .bar .count { font-size: 12.5px; color: var(--titanium); font-variant-numeric: tabular-nums; padding: 0 10px; }
+  .bar button { appearance: none; background: none; border: 1px solid transparent; color: var(--ink-2); font: 13px var(--text); padding: 6px 10px; cursor: pointer; border-radius: 0; white-space: nowrap; }
+  .bar button:hover { color: var(--ink); border-color: var(--hair); }
+  .bar button:focus-visible { outline: 1px solid var(--ink); }
+  .bar button kbd { font: 11px var(--text); color: var(--titanium); margin-left: 6px; }
+  .bar button.is-on { color: var(--ink); border-color: var(--ink); }
+  .bar .sep { width: 1px; height: 20px; background: var(--hair); margin: 0 6px; }
+  .stagewrap { grid-row: 2; position: relative; overflow: hidden; min-height: 0; }
+  .stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: center center; transform: translate(-50%, -50%); }
+  .slide { position: absolute; inset: 57px; padding: 72px 80px; display: none; }
+  .slide.is-on { display: block; }
+  .nav-zone { position: absolute; top: 0; bottom: 0; width: 50%; cursor: pointer; }
   .nav-zone.prev { left: 0; } .nav-zone.next { right: 0; }
+  .grid { position: absolute; inset: 0; overflow-y: auto; background: var(--paper); }
+  .grid .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px 24px; align-content: start; padding: 20px 28px 40px; overflow: visible; }
+  .grid .sec-label { grid-column: 1 / -1; padding: 12px 0 0; }
+  .grid .thumb { grid-template-columns: 26px minmax(0, 1fr); }
+  .viewer.is-overview { grid-template-columns: 0 minmax(0, 1fr); }
+  .viewer.is-overview .sb { display: none; }
+  .viewer.is-overview .nav-zone { display: none; }
+  .progress { grid-row: 3; position: relative; background: var(--hair-soft); }
+  .progress i { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--ink); transition: width 160ms ease-out; }
+  .viewer.is-present { grid-template-columns: 0 minmax(0, 1fr); }
+  .viewer.is-present .sb { display: none; }
+  .viewer.is-present .main { grid-template-rows: 0 minmax(0, 1fr) 0; }
+  .viewer.is-present .bar, .viewer.is-present .progress { display: none; }
+  .help { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(7, 7, 7, 0.28); z-index: 20; }
+  .help[hidden] { display: none; }
+  .help-card { background: var(--paper); color: var(--ink); border: 1px solid var(--hair); padding: 26px 30px 22px; min-width: 380px; max-width: 92vw; }
+  .help-card h3 { font-family: var(--display); font-weight: 500; font-size: 18px; margin: 0 0 14px; }
+  .help-card table { border-collapse: collapse; font-size: 13.5px; }
+  .help-card td { padding: 6px 18px 6px 0; border-top: 1px solid var(--hair-soft); color: var(--ink-2); }
+  .help-card td:first-child { color: var(--ink); font-family: var(--display); font-weight: 500; white-space: nowrap; }
+  .help-card p { font-size: 12.5px; color: var(--titanium); margin: 14px 0 0; }
+  .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--ink); color: var(--paper); font-size: 12.5px; padding: 7px 12px; opacity: 0; transition: opacity 160ms; pointer-events: none; z-index: 21; }
+  .toast.is-on { opacity: 1; }
+  @media (max-width: 900px) {
+    .viewer { grid-template-columns: 0 minmax(0, 1fr); }
+    .viewer .sb { display: none; }
+    .viewer.sb-open .sb { display: flex; position: absolute; left: 0; top: 0; bottom: 0; width: min(84vw, 300px); z-index: 10; }
+    .bar .count, .bar .hide-sm { display: none; }
+  }
 </style>
 
-<div class="viewport">
-  <div class="stage" id="stage">
-    <div class="frame">
-      <div class="rule top"></div><div class="rule bottom"></div>
-      <span class="cross tl"></span><span class="cross tr"></span><span class="cross bl"></span><span class="cross br"></span>
+<div class="viewer" id="viewer">
+  <aside class="sb" id="sb" aria-label="Slides">
+    <div class="sb-head"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>GT brand deck</b><span id="sb-count"></span></div>
+    <div class="thumbs" id="thumbs"></div>
+  </aside>
+  <section class="main" id="main">
+    <div class="bar" role="toolbar" aria-label="Deck controls">
+      <button type="button" data-act="sb" title="Toggle the slide list ([)">Slides</button>
+      <div class="title" id="bar-title"></div>
+      <span class="count" id="bar-count"></span>
+      <button type="button" data-act="prev" title="Previous slide (left arrow)">&#8249;</button>
+      <button type="button" data-act="next" title="Next slide (right arrow)">&#8250;</button>
+      <span class="sep"></span>
+      <button type="button" data-act="overview" class="hide-sm" title="All slides (g)">Overview<kbd>g</kbd></button>
+      <button type="button" data-act="theme" title="Toggle dark mode (d)"><span id="theme-label">Dark</span><kbd>d</kbd></button>
+      <button type="button" data-act="present" class="hide-sm" title="Hide the chrome (p)">Present<kbd>p</kbd></button>
+      <button type="button" data-act="full" title="Fullscreen (f)">Fullscreen<kbd>f</kbd></button>
+      <button type="button" data-act="link" class="hide-sm" title="Copy a link to this slide">Copy link</button>
+      <button type="button" data-act="help" title="Keyboard shortcuts (?)">?</button>
     </div>
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="gt-mark" viewBox="-8 214 1213 771"><path fill-rule="evenodd" d="M363 222.5L1197 222.5L1196.5 283L834 283.5L832.5 976L773 975.5L772.5 398L359.5 398L341.5 401L301.5 414L271.5 430L249.5 446L231 463.5L214 484.5L190 529.5L180 567.5L178 613.5L185 653.5L196 682.5L217 717.5L242.5 746L270.5 768L314.5 790L342.5 798L372.5 802L399.5 802L430.5 798L475.5 783L502.5 768L524 751.5L523.5 747L415.5 748L414.5 684L583 684.5L583 923.5L580.5 926L516.5 955L476.5 967L439.5 974L403.5 977L355.5 976L326.5 973L287.5 965L252.5 954L221.5 941L187.5 923L155.5 902L121.5 874L97 849.5L77 825.5L55 793.5L33 752.5L15 705.5L4 656.5L0 613.5L2 556.5L10 511.5L23 469.5L44 423.5L66 387.5L99 346.5L129.5 317L170.5 286L225.5 256L275.5 237L325.5 226L363 222.5Z M386.5 282L322.5 288L275.5 301L220.5 327L167.5 365L123 413.5L103 443.5L87 474.5L71 518.5L61 578.5L63 641.5L68 669.5L78 703.5L107 762.5L143 810.5L171.5 838L194.5 856L248.5 887L305.5 907L366.5 916L403.5 916L442.5 912L490.5 900L523.5 887L524 826.5L479.5 847L440.5 858L399.5 863L344.5 860L291.5 846L254.5 829L214.5 802L186 775.5L165 749.5L141 708.5L125 664.5L118 624.5L118 573.5L126 530.5L139 494.5L165 449.5L201.5 408L238.5 379L292.5 352L341.5 339L373.5 336L773 336.5L772.5 283L386.5 282Z M888 337.5L1197 337.5L1196.5 398L949 398.5L948.5 976L888 975.5L888 337.5Z M415 571.5L692 572.5L692 830.5L668 858.5L633.5 890L631 890.5L631 635.5L414.5 635L415 571.5Z"/></symbol></svg>
-    <div class="wordmark" aria-hidden="true"><svg width="28" height="18" fill="currentColor"><use href="#gt-mark"/></svg></div>
-    <div class="counter" id="counter"></div>
+    <div class="stagewrap" id="stagewrap">
+      <div class="stage" id="stage">
+        <div class="frame">
+          <div class="rule top"></div><div class="rule bottom"></div>
+          <span class="cross tl"></span><span class="cross tr"></span><span class="cross bl"></span><span class="cross br"></span>
+        </div>
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="gt-mark" viewBox="-8 214 1213 771"><path fill-rule="evenodd" d="M363 222.5L1197 222.5L1196.5 283L834 283.5L832.5 976L773 975.5L772.5 398L359.5 398L341.5 401L301.5 414L271.5 430L249.5 446L231 463.5L214 484.5L190 529.5L180 567.5L178 613.5L185 653.5L196 682.5L217 717.5L242.5 746L270.5 768L314.5 790L342.5 798L372.5 802L399.5 802L430.5 798L475.5 783L502.5 768L524 751.5L523.5 747L415.5 748L414.5 684L583 684.5L583 923.5L580.5 926L516.5 955L476.5 967L439.5 974L403.5 977L355.5 976L326.5 973L287.5 965L252.5 954L221.5 941L187.5 923L155.5 902L121.5 874L97 849.5L77 825.5L55 793.5L33 752.5L15 705.5L4 656.5L0 613.5L2 556.5L10 511.5L23 469.5L44 423.5L66 387.5L99 346.5L129.5 317L170.5 286L225.5 256L275.5 237L325.5 226L363 222.5Z M386.5 282L322.5 288L275.5 301L220.5 327L167.5 365L123 413.5L103 443.5L87 474.5L71 518.5L61 578.5L63 641.5L68 669.5L78 703.5L107 762.5L143 810.5L171.5 838L194.5 856L248.5 887L305.5 907L366.5 916L403.5 916L442.5 912L490.5 900L523.5 887L524 826.5L479.5 847L440.5 858L399.5 863L344.5 860L291.5 846L254.5 829L214.5 802L186 775.5L165 749.5L141 708.5L125 664.5L118 624.5L118 573.5L126 530.5L139 494.5L165 449.5L201.5 408L238.5 379L292.5 352L341.5 339L373.5 336L773 336.5L772.5 283L386.5 282Z M888 337.5L1197 337.5L1196.5 398L949 398.5L948.5 976L888 975.5L888 337.5Z M415 571.5L692 572.5L692 830.5L668 858.5L633.5 890L631 890.5L631 635.5L414.5 635L415 571.5Z"/></symbol></svg>
+        <div class="wordmark" aria-hidden="true"><svg width="28" height="18" fill="currentColor"><use href="#gt-mark"/></svg></div>
+        <div class="counter" id="counter"></div>
 
     <!-- title -->
     <section class="slide"><div class="in">
@@ -985,104 +1064,239 @@
         </div>
       </div>
     </div></section>
+      </div>
+      <div class="grid" id="grid" hidden></div>
+      <div class="nav-zone prev" data-dir="-1" aria-hidden="true"></div>
+      <div class="nav-zone next" data-dir="1" aria-hidden="true"></div>
+    </div>
+    <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+  </section>
+</div>
+<div class="help" id="help" hidden>
+  <div class="help-card" role="dialog" aria-label="Keyboard shortcuts">
+    <h3>Keyboard shortcuts</h3>
+    <table>
+      <tr><td>Right, Space, J</td><td>Next slide</td></tr>
+      <tr><td>Left, K</td><td>Previous slide</td></tr>
+      <tr><td>Home, End</td><td>First and last slide</td></tr>
+      <tr><td>1 to 9, then Enter</td><td>Go to a slide number</td></tr>
+      <tr><td>G</td><td>Overview of all slides</td></tr>
+      <tr><td>[</td><td>Show or hide the slide list</td></tr>
+      <tr><td>D</td><td>Dark or light</td></tr>
+      <tr><td>P</td><td>Presentation mode, chrome hidden</td></tr>
+      <tr><td>F</td><td>Fullscreen</td></tr>
+      <tr><td>Esc</td><td>Leave overview, presentation, or this panel</td></tr>
+    </table>
+    <p>Click the left or right half of a slide to move. The URL hash tracks the current slide.</p>
   </div>
 </div>
-<div class="nav-zone prev" data-dir="-1" aria-hidden="true"></div>
-<div class="nav-zone next" data-dir="1" aria-hidden="true"></div>
-<div class="help">arrows or click to move, d for dark, f for fullscreen</div>
+<div class="toast" id="toast"></div>
 
 <script>
 (function () {
+  var viewer = document.getElementById('viewer');
   var stage = document.getElementById('stage');
-  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var wrap = document.getElementById('stagewrap');
+  var grid = document.getElementById('grid');
+  var thumbsEl = document.getElementById('thumbs');
+  var slides = Array.prototype.slice.call(stage.querySelectorAll('.slide'));
   var counter = document.getElementById('counter');
+  var barTitle = document.getElementById('bar-title');
+  var barCount = document.getElementById('bar-count');
+  var progress = document.getElementById('progress');
+  var help = document.getElementById('help');
+  var toast = document.getElementById('toast');
+  var themeLabel = document.getElementById('theme-label');
   var swaps = Array.prototype.slice.call(document.querySelectorAll('img[data-dark]'));
   swaps.forEach(function (img) { img.dataset.light = img.getAttribute('src'); });
-  var i = 0;
+  var i = 0, digits = '', digitTimer = null;
 
-  function fit() {
-    var s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
-    stage.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  var SECTIONS = [[1, 'Brand'], [13, 'Design system'], [25, 'Website'], [33, 'Documentation'], [35, 'Blog and content'], [42, 'Developer experience'], [43, 'Prototemplate and glyphfield'], [48, 'Status and plan']];
+
+  function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function titleOf(slide, k) {
+    var el = slide.querySelector('h1, h2, .big');
+    var t = el ? el.textContent.replace(/\s+/g, ' ').trim() : 'Slide ' + (k + 1);
+    return t.length > 72 ? t.slice(0, 69).replace(/\s+\S*$/, '') + '...' : t;
   }
   function isDark() {
     var attr = document.documentElement.getAttribute('data-theme');
     return attr === 'dark' || (!attr && window.matchMedia('(prefers-color-scheme: dark)').matches);
   }
-  /* site screenshots follow the deck's theme where a dark twin exists */
-  function applyTheme() {
-    var dark = isDark();
-    swaps.forEach(function (img) {
-      var want = dark ? img.dataset.dark : img.dataset.light;
-      if (want && img.getAttribute('src') !== want) img.setAttribute('src', want);
-    });
-    slides.forEach(function (s) { var c = s.querySelector('canvas.dither'); if (c) c.dataset.drawn = ''; });
-  }
-  function pad(n) { return (n < 10 ? '0' : '') + n; }
-  function show(n, push) {
-    n = Math.max(0, Math.min(slides.length - 1, n));
-    slides.forEach(function (s, k) { s.classList.toggle('is-on', k === n); });
-    i = n;
-    counter.textContent = pad(n + 1) + ' / ' + pad(slides.length);
-    if (push !== false) { try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {} }
-    var c = slides[n].querySelector('canvas.dither');
-    if (c && !c.dataset.drawn) { drawDither(c); c.dataset.drawn = '1'; }
-  }
-  function fromHash() {
-    var h = parseInt(location.hash.replace('#', ''), 10);
-    return isNaN(h) ? 0 : h - 1;
-  }
+  function say(msg) { toast.textContent = msg; toast.classList.add('is-on'); clearTimeout(say.t); say.t = setTimeout(function () { toast.classList.remove('is-on'); }, 1400); }
 
-  /* the 8x8 Bayer screen, a permutation of 0..63; density as ordered dither, never an alpha veil */
+  /* the 8x8 Bayer screen, a permutation of 0..63 */
   var B4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
   var Q = [0, 2, 3, 1];
   function bayer8(r, c) { r = r % 8; c = c % 8; return B4[r % 4][c % 4] * 4 + Q[Math.floor(r / 4) * 2 + Math.floor(c / 4)]; }
   function drawDither(canvas) {
-    /* the bitmap is half the box in each axis, so every cell is a 2 by 2 square on the stage */
     var W = Math.max(8, Math.round(canvas.clientWidth / 2)), H = Math.max(8, Math.round(canvas.clientHeight / 2));
+    if (!canvas.clientWidth) { W = 505; H = 110; }
     canvas.width = W; canvas.height = H;
     var ctx = canvas.getContext('2d');
     var dark = isDark();
     ctx.fillStyle = dark ? '#070707' : '#ffffff';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = dark ? '#f2f2f0' : '#070707';
-    for (var y = 0; y < H; y += 1) {
-      for (var x = 0; x < W; x += 1) {
-        var t = 1 - x / W;                 /* coverage falls from solid on the left */
-        if (bayer8(y, x) / 64 < t) ctx.fillRect(x, y, 1, 1);
-      }
-    }
+    for (var y = 0; y < H; y += 1) for (var x = 0; x < W; x += 1) { if (bayer8(y, x) / 64 < 1 - x / W) ctx.fillRect(x, y, 1, 1); }
   }
+  function drawAllDither() {
+    Array.prototype.forEach.call(document.querySelectorAll('canvas.dither'), function (c) { c.dataset.drawn = ''; });
+    var c = slides[i].querySelector('canvas.dither'); if (c) { drawDither(c); c.dataset.drawn = '1'; }
+    Array.prototype.forEach.call(thumbsEl.querySelectorAll('canvas.dither'), drawDither);
+  }
+
+  /* sidebar: one live thumbnail per slide, grouped by section */
+  var thumbs = [];
+  function buildThumbs() {
+    var frame = stage.querySelector('.frame');
+    slides.forEach(function (slide, k) {
+      var sec = SECTIONS.filter(function (s) { return s[0] === k + 1; })[0];
+      if (sec) { var lab = document.createElement('div'); lab.className = 'sec-label'; lab.textContent = sec[1]; thumbsEl.appendChild(lab); }
+      var t = document.createElement('div'); t.className = 'thumb'; t.dataset.k = k; t.setAttribute('role', 'button'); t.tabIndex = 0;
+      var n = document.createElement('div'); n.className = 'n'; n.textContent = pad(k + 1);
+      var body = document.createElement('div');
+      var f = document.createElement('div'); f.className = 'thumb-frame';
+      var mini = document.createElement('div'); mini.className = 'mini';
+      mini.appendChild(frame.cloneNode(true));
+      var clone = slide.cloneNode(true); clone.classList.add('is-on'); clone.removeAttribute('id');
+      Array.prototype.forEach.call(clone.querySelectorAll('[id]'), function (el) { el.removeAttribute('id'); });
+      mini.appendChild(clone);
+      f.appendChild(mini);
+      var tt = document.createElement('div'); tt.className = 'thumb-title'; tt.textContent = titleOf(slide, k);
+      body.appendChild(f); body.appendChild(tt);
+      t.appendChild(n); t.appendChild(body);
+      t.addEventListener('click', function () { show(k); if (viewer.classList.contains('is-overview')) overview(false); if (narrow()) setSidebar(false); });
+      t.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(k); if (viewer.classList.contains('is-overview')) overview(false); } });
+      thumbsEl.appendChild(t); thumbs.push(t);
+    });
+    document.getElementById('sb-count').textContent = slides.length + ' slides';
+    scaleThumbs();
+  }
+  function scaleThumbs() {
+    thumbs.forEach(function (t) { var f = t.querySelector('.thumb-frame'); var w = f.clientWidth; if (w) f.querySelector('.mini').style.setProperty('--k', (w - 2) / 1600); });
+  }
+
+  function fit() {
+    var w = wrap.clientWidth, h = wrap.clientHeight;
+    var s = Math.max(0.05, Math.min(w / 1600, h / 900));
+    stage.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  function applyTheme() {
+    var dark = isDark();
+    themeLabel.textContent = dark ? 'Light' : 'Dark';
+    Array.prototype.forEach.call(document.querySelectorAll('img[data-dark]'), function (img) {
+      if (!img.dataset.light) img.dataset.light = img.getAttribute('src');
+      var want = dark ? img.dataset.dark : img.dataset.light;
+      if (want && img.getAttribute('src') !== want) img.setAttribute('src', want);
+    });
+    drawAllDither();
+  }
+  function show(n, push) {
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle('is-on', k === n); });
+    thumbs.forEach(function (t, k) { t.classList.toggle('is-active', k === n); });
+    i = n;
+    var label = pad(n + 1) + ' / ' + pad(slides.length);
+    counter.textContent = label; barCount.textContent = label;
+    barTitle.textContent = titleOf(slides[n], n);
+    progress.style.width = ((n + 1) / slides.length * 100) + '%';
+    document.title = 'GT Brand Deck, ' + (n + 1) + ' of ' + slides.length;
+    if (push !== false) { try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {} }
+    var c = slides[n].querySelector('canvas.dither');
+    if (c && !c.dataset.drawn) { drawDither(c); c.dataset.drawn = '1'; }
+    var t = thumbs[n]; if (t && !viewer.classList.contains('is-overview')) { try { t.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
+  }
+  function fromHash() { var h = parseInt(location.hash.replace('#', ''), 10); return isNaN(h) ? 0 : h - 1; }
+
+  function narrow() { return window.innerWidth <= 900; }
+  function sidebarVisible() { return getComputedStyle(document.getElementById('sb')).display !== 'none'; }
+  function setSidebar(on) {
+    if (narrow()) { viewer.classList.remove('no-sb'); viewer.classList.toggle('sb-open', on); }
+    else { viewer.classList.remove('sb-open'); viewer.classList.toggle('no-sb', !on); store('gt-deck-sb', on ? '1' : '0'); }
+    requestAnimationFrame(function () { fit(); scaleThumbs(); });
+  }
+  function overview(on) {
+    var goingOn = on === undefined ? !viewer.classList.contains('is-overview') : on;
+    viewer.classList.toggle('is-overview', goingOn);
+    var btn = document.querySelector('[data-act="overview"]'); if (btn) btn.classList.toggle('is-on', goingOn);
+    if (goingOn) { grid.hidden = false; stage.hidden = true; grid.appendChild(thumbsEl); }
+    else { grid.hidden = true; stage.hidden = false; document.getElementById('sb').appendChild(thumbsEl); }
+    requestAnimationFrame(function () { scaleThumbs(); fit(); var t = thumbs[i]; if (t) { try { t.scrollIntoView({ block: 'nearest' }); } catch (e) {} } });
+  }
+  function present(on) {
+    var goingOn = on === undefined ? !viewer.classList.contains('is-present') : on;
+    viewer.classList.toggle('is-present', goingOn);
+    requestAnimationFrame(fit);
+  }
+  function fullscreen() {
+    if (document.fullscreenElement) { document.exitFullscreen(); return; }
+    var el = document.documentElement; if (el.requestFullscreen) el.requestFullscreen();
+  }
+  document.addEventListener('fullscreenchange', function () { present(!!document.fullscreenElement); });
+  function copyLink() {
+    var url = location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { say('Link to slide ' + (i + 1) + ' copied'); }, function () { say(url); });
+    else say(url);
+  }
+  function toggleTheme() {
+    document.documentElement.setAttribute('data-theme', isDark() ? 'light' : 'dark');
+    store('gt-deck-theme', document.documentElement.getAttribute('data-theme'));
+    applyTheme();
+  }
+
+  document.querySelector('.bar').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var act = b.dataset.act;
+    if (act === 'prev') show(i - 1); else if (act === 'next') show(i + 1);
+    else if (act === 'sb') setSidebar(!sidebarVisible());
+    else if (act === 'overview') overview();
+    else if (act === 'theme') toggleTheme();
+    else if (act === 'present') present(true);
+    else if (act === 'full') fullscreen();
+    else if (act === 'link') copyLink();
+    else if (act === 'help') help.hidden = !help.hidden;
+  });
+  help.addEventListener('click', function () { help.hidden = true; });
+  Array.prototype.forEach.call(wrap.querySelectorAll('.nav-zone'), function (z) { z.addEventListener('click', function () { show(i + Number(z.dataset.dir)); }); });
 
   document.addEventListener('keydown', function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
     var k = e.key;
+    if (k >= '0' && k <= '9') { digits += k; clearTimeout(digitTimer); digitTimer = setTimeout(function () { digits = ''; }, 1500); say('Slide ' + digits + ', press Enter'); return; }
+    if (k === 'Enter' && digits) { var n = parseInt(digits, 10); digits = ''; show(n - 1); if (viewer.classList.contains('is-overview')) overview(false); return; }
     if (k === 'ArrowRight' || k === ' ' || k === 'PageDown' || k === 'j' || k === 'l') { e.preventDefault(); show(i + 1); }
     else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'k' || k === 'h' || k === 'Backspace') { e.preventDefault(); show(i - 1); }
     else if (k === 'Home') show(0);
     else if (k === 'End') show(slides.length - 1);
-    else if (k === 'f') { var el = document.documentElement; if (document.fullscreenElement) document.exitFullscreen(); else if (el.requestFullscreen) el.requestFullscreen(); }
-    else if (k === 'd') {
-      document.documentElement.setAttribute('data-theme', isDark() ? 'light' : 'dark');
-      applyTheme();
-      show(i, false);
-    }
-    else if (k === '?') document.body.classList.toggle('show-help');
+    else if (k === 'g') overview();
+    else if (k === '[' || k === 's') setSidebar(!sidebarVisible());
+    else if (k === 'd') toggleTheme();
+    else if (k === 'p') present();
+    else if (k === 'f') fullscreen();
+    else if (k === '?') help.hidden = !help.hidden;
+    else if (k === 'Escape') { if (!help.hidden) help.hidden = true; else if (viewer.classList.contains('is-overview')) overview(false); else if (viewer.classList.contains('is-present') && !document.fullscreenElement) present(false); }
   });
-  Array.prototype.forEach.call(document.querySelectorAll('.nav-zone'), function (z) {
-    z.addEventListener('click', function () { show(i + Number(z.dataset.dir)); });
-  });
+
   var tx = null;
-  document.addEventListener('touchstart', function (e) { tx = e.changedTouches[0].clientX; }, { passive: true });
-  document.addEventListener('touchend', function (e) {
-    if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null;
-    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
-  }, { passive: true });
-  window.addEventListener('resize', fit);
+  wrap.addEventListener('touchstart', function (e) { tx = e.changedTouches[0].clientX; }, { passive: true });
+  wrap.addEventListener('touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1)); }, { passive: true });
+
+  window.addEventListener('resize', function () { fit(); scaleThumbs(); });
+  if (window.ResizeObserver) { new ResizeObserver(function () { fit(); scaleThumbs(); }).observe(wrap); }
   window.addEventListener('hashchange', function () { show(fromHash(), false); });
-  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { applyTheme(); show(i, false); }); } catch (e) {}
-  fit();
+  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { applyTheme(); }); } catch (e) {}
+
+  var savedTheme = load('gt-deck-theme'); if (savedTheme === 'dark' || savedTheme === 'light') document.documentElement.setAttribute('data-theme', savedTheme);
+  buildThumbs();
+  if (load('gt-deck-sb') === '0') setSidebar(false);
   applyTheme();
+  fit();
   show(fromHash(), false);
+  window.addEventListener('load', function () { fit(); scaleThumbs(); drawAllDither(); });
 })();
 </script>
 </body></html>

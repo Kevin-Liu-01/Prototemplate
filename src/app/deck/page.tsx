@@ -13,8 +13,10 @@ export const metadata = {
 /**
  * The brand deck as a page: the self-contained slideshow at
  * /public/brand-deck.html (fonts and screenshots inlined) framed to the
- * viewport. Arrow keys move, d toggles dark, f goes fullscreen; the frame
- * takes focus on load so the keys reach the deck without a click.
+ * viewport. The file carries its own viewer: a sidebar of live thumbnails,
+ * a toolbar, an overview grid (g), present mode (p), dark mode (d),
+ * fullscreen (f) and a shortcut card (?). Arrow keys move; the frame takes
+ * focus on load so the keys reach the deck without a click.
  */
 export default function DeckPage() {
   return (
