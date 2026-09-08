@@ -515,19 +515,31 @@
     </div></section>
 
     <!-- voice -->
-    <section class="slide s09"><div class="in">
-      <div class="split">
-        <div class="head">
+    <section class="slide s09"><style>
+      .s09 .rules > div { padding: 13px 0; font-size: 19px; line-height: 1.4; gap: 24px; }
+      .s09 .ex { --key: 190px; }
+      .s09 .ex > div { padding: 20px 0; gap: 28px; align-items: baseline; }
+      .s09 .ex > div > b { font-size: 18px; color: var(--titanium); font-weight: 500; padding-top: 4px; }
+      .s09 .ex .q { font-family: var(--display); font-weight: 500; font-size: 27px; line-height: 1.25; letter-spacing: -0.015em; color: var(--ink); }
+      .s09 .ex .q.no { color: var(--ink-2); text-decoration: line-through; text-decoration-thickness: 1.5px; text-decoration-color: var(--titanium); }
+    </style><div class="in">
+      <div class="cols">
+        <div class="stack">
           <h2>Writing style</h2>
-          <p class="max-p" style="margin-top:18px">Copy uses short declarative sentences with no exclamation marks, no hedging, and no marketing adjectives where a fact is available. It should have the register of a technical specification.</p>
-        </div>
-        <div class="body">
-          <div class="say">
-            <div><div class="q">Translations are generated at build time and deploy with the app.</div><small>This is acceptable.</small></div>
-            <div><div class="q no">Supercharge your global growth with cutting-edge AI.</div><small>This is not acceptable.</small></div>
-            <div><div class="q">Source code is the source of truth. Every locale ships with the deploy.</div><small>This is acceptable.</small></div>
-            <div><div class="q no">Unlock global markets with our game-changing localization platform.</div><small>This is not acceptable.</small></div>
+          <p class="max-p">Copy has the register of a technical specification. The same five rules apply to the site, the docs, the blog, and every social post.</p>
+          <div class="rows narrow tight rules" style="--key:150px">
+            <div><b>Sentence</b><span>Short and declarative. Each sentence carries one claim.</span></div>
+            <div><b>Evidence</b><span>A number or a mechanism stands where a marketing adjective would.</span></div>
+            <div><b>Hedging</b><span>None. A claim is made or it is left out.</span></div>
+            <div><b>Punctuation</b><span>No exclamation marks or em dashes.</span></div>
+            <div><b>Case</b><span>Sentence case everywhere. Title Case only on buttons.</span></div>
           </div>
+        </div>
+        <div class="rows ex">
+          <div><b>Acceptable</b><span class="q">Translations are generated at build time and deploy with the app.</span></div>
+          <div><b>Not acceptable</b><span class="q no">Supercharge your global growth with cutting-edge AI.</span></div>
+          <div><b>Acceptable</b><span class="q">Source code is the source of truth. Every locale ships with the deploy.</span></div>
+          <div><b>Not acceptable</b><span class="q no">Unlock global markets with our game-changing localization platform.</span></div>
         </div>
       </div>
     </div></section>
