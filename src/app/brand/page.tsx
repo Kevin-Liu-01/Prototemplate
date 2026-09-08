@@ -398,7 +398,7 @@ export default function BrandPage() {
             <p>
               Finished artwork produced with this toolchain and the glyphfield studio,
               kept here as proof of what the identity does off the page. The whole
-              identity, this page included, is also summarized as a 51-slide
+              identity, this page included, is also summarized as a 52-slide
               slideshow at <Link href='/deck'>/deck</Link>.
             </p>
             <div className='ptb-media'>
