@@ -397,7 +397,9 @@ export default function BrandPage() {
             <h2>Made with the system</h2>
             <p>
               Finished artwork produced with this toolchain and the glyphfield studio,
-              kept here as proof of what the identity does off the page.
+              kept here as proof of what the identity does off the page. The whole
+              identity, this page included, is also summarized as a 51-slide
+              slideshow at <Link href='/deck'>/deck</Link>.
             </p>
             <div className='ptb-media'>
               <figure className='ptb-shot'>

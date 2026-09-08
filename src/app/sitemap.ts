@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified, changeFrequency: 'weekly', priority: 1 },
     { url: `${SITE_URL}/present`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/deck`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/craft`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
   ];
 

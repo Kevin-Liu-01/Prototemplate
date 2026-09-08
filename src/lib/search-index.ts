@@ -19,6 +19,7 @@ const PAGES: readonly SearchEntry[] = [
   { title: 'Index', href: '/', kind: 'page', keywords: 'home working file directions' },
   { title: 'Brand', href: '/brand', kind: 'page', keywords: 'identity book basement mark color type voice' },
   { title: 'Docs', href: '/docs', kind: 'page', keywords: 'readme build log craft libraries laws' },
+  { title: 'Deck', href: '/deck', kind: 'page', keywords: 'brand deck slideshow slides identity summary' },
   { title: 'Present', href: '/present', kind: 'page', keywords: 'deck presenter slides scoreboard' },
 ];
 

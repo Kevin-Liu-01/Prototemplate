@@ -1,0 +1,25 @@
+import DeckFrame from './DeckFrame';
+
+import './deck.css';
+
+export const metadata = {
+  title: 'Brand deck · General Translation',
+  description:
+    'The General Translation brand in 51 slides: thesis, values, writing style, mark, color, type, line rules, dither, motion, the shipped site, docs, blog, content rules, prototemplate, glyphfield, and current status.',
+  // declared per-route so the browser stops probing the app-wide /favicon.ico
+  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
+};
+
+/**
+ * The brand deck as a page: the self-contained slideshow at
+ * /public/brand-deck.html (fonts and screenshots inlined) framed to the
+ * viewport. Arrow keys move, d toggles dark, f goes fullscreen; the frame
+ * takes focus on load so the keys reach the deck without a click.
+ */
+export default function DeckPage() {
+  return (
+    <main className='pt-deck'>
+      <DeckFrame />
+    </main>
+  );
+}

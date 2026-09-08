@@ -9,9 +9,9 @@ import { DIRECTIONS } from '@/lib/directions';
 
 /**
  * The prototemplate nav — one component for every pt page (index, brand,
- * docs). Desktop: brand, then theme · search · Brand · Docs · Sites (the
- * three completed-site previews; the toolchain SSOT stays out of the
- * menu) · Present · GitHub. On a phone the link row stands down behind a
+ * docs). Desktop: brand, then theme · search · Brand · Docs · Deck (the
+ * brand slideshow) · Sites (the three completed-site previews; the
+ * toolchain SSOT stays out of the menu) · Present · GitHub. On a phone the link row stands down behind a
  * burger — two stacked hairlines, the brand's doubled line — that opens a
  * ruled sheet under the bar: one row per destination, the nav's own
  * border-bottom still the single close.
@@ -47,6 +47,9 @@ export default function PtNav() {
         </Link>
         <Link className='pt-nav-link' href='/docs'>
           Docs
+        </Link>
+        <Link className='pt-nav-link' href='/deck'>
+          Deck
         </Link>
         {/* the three completed sites as a previewing dropdown */}
         <div className='pt-menu'>
@@ -104,6 +107,9 @@ export default function PtNav() {
         </Link>
         <Link href='/docs' onClick={close}>
           Docs
+        </Link>
+        <Link href='/deck' onClick={close}>
+          Deck
         </Link>
         {SITES.map((d) => (
           <Link href={`/d/${d.slug}`} key={d.slug} onClick={close}>
