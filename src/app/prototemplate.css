@@ -6,23 +6,27 @@
    the same ink-black dark remap behind [data-theme='dark'].
    ============================================================ */
 
+/* Old-name bridge (specification 1.1). The article layer reads the shell
+   tokens from src/components/viewer/tokens.css: --pt-paper, --pt-ink,
+   --pt-ink-2, --pt-hair, --pt-rail and --pt-mono come from :root and remap
+   under :root[data-theme='dark'] there. The names this sheet grew up with
+   alias to that set so its rules keep working while they are swept:
+   hairlines move to the ink family (--pt-hair at 18 percent, --pt-hair-2 to
+   --pt-hair-soft), --pt-ink-2 becomes solid, --pt-ink-3 and --pt-ink-4 take
+   the titanium and cross steps, the paper stand-ins collapse to one, and
+   the two faces read the shell's display and text stacks. --pt-hatch and
+   --pt-gut are the sheet's own and stay. */
 .pt-root {
-  --pt-paper: #ffffff;
-  --pt-white: #ffffff;
-  --pt-card: #ffffff;
-  --pt-sunk: #ffffff;
-  --pt-ink: #070707;
-  --pt-ink-2: rgba(7, 7, 7, 0.63);
-  --pt-ink-3: rgba(7, 7, 7, 0.45);
-  --pt-ink-4: rgba(7, 7, 7, 0.27);
-  --pt-hair: rgba(138, 143, 152, 0.26);
-  --pt-hair-2: rgba(138, 143, 152, 0.15);
+  --pt-white: var(--pt-paper);
+  --pt-card: var(--pt-paper);
+  --pt-sunk: var(--pt-paper);
+  --pt-ink-3: var(--pt-titanium);
+  --pt-ink-4: var(--pt-cross);
+  --pt-hair-2: var(--pt-hair-soft);
   --pt-hatch: rgba(7, 7, 7, 0.085);
-  --pt-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
-  --pt-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
-  --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --pt-disp: var(--pt-display);
+  --pt-sans: var(--pt-text);
   --pt-gut: clamp(20px, 3.1vw, 36px);
-  --pt-rail: 1170px;
 
   min-height: 100vh;
   background: var(--pt-paper);
@@ -32,16 +36,6 @@
 }
 
 [data-theme='dark'] .pt-root {
-  --pt-paper: #070707;
-  --pt-white: #070707;
-  --pt-card: #070707;
-  --pt-sunk: #070707;
-  --pt-ink: #ffffff;
-  --pt-ink-2: rgba(255, 255, 255, 0.66);
-  --pt-ink-3: rgba(255, 255, 255, 0.48);
-  --pt-ink-4: rgba(255, 255, 255, 0.3);
-  --pt-hair: rgba(138, 143, 152, 0.38);
-  --pt-hair-2: rgba(138, 143, 152, 0.3);
   --pt-hatch: rgba(255, 255, 255, 0.07);
 }
 
