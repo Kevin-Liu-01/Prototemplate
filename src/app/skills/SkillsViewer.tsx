@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
+import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
@@ -273,7 +274,8 @@ function SkillsBook({ sheetRef, jumpRef, activeOut }: SkillsBookProps) {
               </div>
               <div className='sk-body'>
                 <h3>{skill.name}</h3>
-                <p>{skill.description}</p>
+                {/* the description is the SKILL.md frontmatter verbatim; the standalone word GT renders as the mark */}
+                <p>{gtText(skill.description)}</p>
               </div>
             </article>
           ))}

@@ -23,8 +23,9 @@
 //                           pass through as they are
 //
 // The result is wrapped as a full document (doctype, charset, viewport, the
-// title, a noindex meta, and a two-rule style for color-scheme and the body
-// margin) and written to public/brand-deck.html. The thumbnails under
+// title, a noindex meta, and a style for color-scheme, which follows the
+// data-theme attribute the head script stamps rather than the OS scheme, and
+// the body margin) and written to public/brand-deck.html. The thumbnails under
 // shots/thumb are also copied to public/shots/deck, where the index panel's
 // General Translation set (src/lib/surfaces.ts) reads them.
 //
@@ -211,7 +212,7 @@ const open =
   '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1">' +
   `<title>${TITLE}</title><meta name="robots" content="noindex">` +
-  '<style>html{color-scheme:light dark}body{margin:0}</style></head><body>';
+  '<style>:root{color-scheme:light}:root[data-theme="dark"]{color-scheme:dark}body{margin:0}</style></head><body>';
 const html = `${open}${source}\n</body></html>\n`;
 
 const sections = (html.match(/<section class="slide[\s"]/g) ?? []).length;

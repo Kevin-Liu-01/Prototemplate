@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { gtText } from '@/components/viewer/GtWord';
 import { pad2 } from '@/lib/shell-data';
 
 /**
@@ -11,7 +12,11 @@ import { pad2 } from '@/lib/shell-data';
  * punctuation stripped, unique within a document); lists render as ruled
  * rows; fenced code sits on the panel; tables keep border-collapse. The
  * book builder splits a parsed document at its h2 headings into numbered
- * rows, so every consumer shares one parse and one id scheme.
+ * rows, so every consumer shares one parse and one id scheme. Plain text
+ * passes through gtText, so the standalone word GT renders as the mark
+ * (GtWord.tsx); code spans and fenced code stay text, link hrefs are
+ * untouched, and heading ids derive from plainText, so they keep the
+ * letters.
  */
 
 /* ---- inline: `code`, **bold**, [text](href) ---- */
@@ -96,7 +101,9 @@ function renderInline(text: string, keyBase: string): ReactNode[] {
       );
       return;
     }
-    out.push(part);
+    /* plain text: the standalone word GT becomes the mark; a run with none
+       comes back as the string it was */
+    out.push(gtText(part, key));
   });
   return out;
 }

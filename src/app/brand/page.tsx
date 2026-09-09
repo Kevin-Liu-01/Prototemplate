@@ -8,6 +8,7 @@ import type { BrandPage } from './BrandViewer';
 import BrandViewer from './BrandViewer';
 import { headingId } from './brand-sections';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import { GtWord, gtText } from '@/components/viewer/GtWord';
 
 import '../prototemplate.css';
 import './brand.css';
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
 };
 
-/** The naming system: every name, what it is, one row each. */
+/** The naming system: every name, what it is, one row each. The short form renders as the mark (gtText); the lowercase package names stay text. */
 const NAMES = [
   ['General Translation, Inc.', 'the company'],
   ['GT', 'the short form, and the mark'],
@@ -79,6 +80,9 @@ const OPENER = (
  * The ten sections, each rendered on the server and handed to the viewer as
  * a page. Ids match brand-sections.ts, which the viewer reads for the list,
  * the grid and the hash; the h3 ids are the rows under the active section.
+ * The word GT in the prose is <GtWord />; the space after it is written as
+ * {' '} because the JSX transform drops the leading space of a text run
+ * that also carries an HTML entity (&rsquo;, &hellip;).
  */
 const PAGES: readonly BrandPage[] = [
   {
@@ -98,7 +102,7 @@ const PAGES: readonly BrandPage[] = [
         <div className='ptb-names'>
           {NAMES.map(([name, what]) => (
             <div className='ptb-name-row' key={name}>
-              <b>{name}</b>
+              <b>{gtText(name)}</b>
               <span>{what}</span>
             </div>
           ))}
@@ -198,7 +202,7 @@ const PAGES: readonly BrandPage[] = [
       <>
         <h2>The mark</h2>
         <p>
-          Every stroke of the GT monogram is two parallel lines: the doubled-line grammar
+          Every stroke of the <GtWord />{' '}monogram is two parallel lines: the doubled-line grammar
           at brand scale, the same device that runs through every diagram in the system.
           The mark renders in one ink, either ink on paper or paper on ink. Never a third
           color, never a gradient, never a shadow. The dark surface inverts the drawn
@@ -222,7 +226,7 @@ const PAGES: readonly BrandPage[] = [
         </div>
         <p>
           At text size the wordmark sits inline with prose, at the cap height of the line
-          it lives in, the way the Dossier&rsquo;s hero sets &ldquo;GT builds full-stack
+          it lives in, the way the Dossier&rsquo;s hero sets &ldquo;<GtWord />{' '}builds full-stack
           infrastructure&hellip;&rdquo;.
         </p>
         <p>
@@ -447,9 +451,9 @@ const PAGES: readonly BrandPage[] = [
           i18n libraries, context-aware translation APIs, and the infrastructure for
           versioning, editing, and integrations. The audience is technical and product
           leadership at growth-stage companies; their engineering and growth teams are
-          the users. Auth0 translates docs with GT, Sierra translates marketing and sales
+          the users. Auth0 translates docs with <GtWord />, Sierra translates marketing and sales
           material, Ramp translates its core dashboard. Against legacy, seat-based TMS
-          point solutions, GT is usage-based and owns the whole stack, so it can own the
+          point solutions, <GtWord />{' '}is usage-based and owns the whole stack, so it can own the
           whole experience.
         </p>
         <h3 id={headingId('context-for-partners', 'direction')}>Direction</h3>

@@ -660,6 +660,36 @@ a.pt-sb-mark:focus-visible {
   display: block;
 }
 
+/* a capture with no dark twin (the archive): the frame is filled by the mat,
+   and in the dark theme the light picture sits inset on the plate ground
+   with a hairline, never as a bright block to the frame's edge. The 64x36
+   mini frame in the list has room for the plate inset only: its own
+   --pt-edge is the one line, and a hairline 4px inside it would be the
+   doubled line the line law forbids. */
+.pt-shot-mat {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+:root[data-theme='dark'] .pt-shot-mat {
+  padding: 6%;
+  background: var(--pt-plate);
+}
+
+:root[data-theme='dark'] .pt-shot-mat .pt-shot {
+  position: relative;
+  border: 1px solid var(--pt-hair);
+}
+
+:root[data-theme='dark'] .pt-thumb-frame.is-mini .pt-shot-mat {
+  padding: 4px;
+}
+
+:root[data-theme='dark'] .pt-thumb-frame.is-mini .pt-shot-mat .pt-shot {
+  border: 0;
+}
+
 /* the blank plate when an item has no capture: its initial in 15px titanium */
 .pt-plate {
   position: absolute;

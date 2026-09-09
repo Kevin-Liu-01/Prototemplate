@@ -101,11 +101,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             stamped as data-shell-sb and data-shell-density for the same
             reason: ViewerShell.css reads them until the shell has settled,
             so the first paint already shows the closed list or the wider
-            column and hydration never shifts the layout (directive 7.5). */}
+            column and hydration never shifts the layout (directive 7.5).
+            A framed page also follows a same-origin
+            postMessage({ type: 'gt-theme', theme }) from the page around it
+            (ThemeButton.tsx posts one to every frame on each toggle), which
+            reaches it when storage cannot, in a private window. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var t=localStorage.getItem('gt-theme');document.documentElement.dataset.theme=t==='light'||t==='dark'?t:'dark'}catch(e){document.documentElement.dataset.theme='dark'}try{if(localStorage.getItem('gt-shell-sb')==='0')document.documentElement.dataset.shellSb='0';if(localStorage.getItem('gt-shell-density')==='thumbs')document.documentElement.dataset.shellDensity='thumbs'}catch(e){}window.addEventListener('storage',function(e){if(e.key==='gt-theme'&&(e.newValue==='light'||e.newValue==='dark'))document.documentElement.dataset.theme=e.newValue});",
+              "try{var t=localStorage.getItem('gt-theme');document.documentElement.dataset.theme=t==='light'||t==='dark'?t:'dark'}catch(e){document.documentElement.dataset.theme='dark'}try{if(localStorage.getItem('gt-shell-sb')==='0')document.documentElement.dataset.shellSb='0';if(localStorage.getItem('gt-shell-density')==='thumbs')document.documentElement.dataset.shellDensity='thumbs'}catch(e){}window.addEventListener('storage',function(e){if(e.key==='gt-theme'&&(e.newValue==='light'||e.newValue==='dark'))document.documentElement.dataset.theme=e.newValue});window.addEventListener('message',function(e){var d=e&&e.data;if(!d||d.type!=='gt-theme'||(d.theme!=='light'&&d.theme!=='dark')||e.origin!==location.origin)return;document.documentElement.dataset.theme=d.theme});",
           }}
         />
         {/* rAF gate: an embedding parent can freeze/resume this page's

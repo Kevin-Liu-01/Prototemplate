@@ -66,6 +66,19 @@
   object-position: top;
 }
 
+/* a surface with a light capture only (the archive): in the dark theme the
+   picture sits inset on the frame's plate with a hairline, never as a bright
+   block to the frame's edge */
+:root[data-theme='dark'] .pt-preview-frame.is-solo {
+  padding: 10px;
+}
+
+:root[data-theme='dark'] .pt-preview-frame.is-solo .pt-preview-img {
+  position: relative;
+  height: 100%;
+  border: 1px solid var(--pt-hair);
+}
+
 /* the plate while the capture decodes, or when there is none: the initial in 15px titanium */
 .pt-preview-plate {
   position: absolute;

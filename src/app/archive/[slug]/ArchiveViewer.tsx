@@ -95,13 +95,16 @@ function ArchiveStage({ item }: { item: ArchiveEntry }) {
             <Icon name='external' />
           </a>
         </p>
-        <img
-          className='ar-full'
-          src={archiveFull(item)}
-          width={item.width}
-          height={item.fullHeight}
-          alt={`${item.name}, the full page at ${item.width} pixels wide`}
-        />
+        {/* the mat: archive.css insets the light capture on a plate in the dark theme */}
+        <div className='ar-capture'>
+          <img
+            className='ar-full'
+            src={archiveFull(item)}
+            width={item.width}
+            height={item.fullHeight}
+            alt={`${item.name}, the full page at ${item.width} pixels wide`}
+          />
+        </div>
       </article>
     </Sheet>
   );

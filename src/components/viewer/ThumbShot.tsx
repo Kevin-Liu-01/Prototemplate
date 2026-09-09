@@ -16,7 +16,10 @@ export type ThumbShotProps = { item: ShellItem };
  * list and grid, .pt-page-frame in the book) with object-fit cover from the
  * top. Without a shot, or when the light file fails to load, it draws the
  * blank plate with the item number. A missing dark file falls back to the
- * light one in both themes.
+ * light one in both themes. A shot with no dark twin at all (the archive
+ * captures) is wrapped in .pt-shot-mat, which Sidebar.css insets on a
+ * --pt-plate ground with a --pt-hair rule in the dark theme, so a light
+ * picture never fills a frame on the ink ground as a bright block.
  */
 export function ThumbShot({ item }: ThumbShotProps) {
   const [lightBroken, setLightBroken] = useState(false);
@@ -32,28 +35,32 @@ export function ThumbShot({ item }: ThumbShotProps) {
   }
 
   const dark = shot.dark && !darkBroken ? shot.dark : null;
+  const light = (
+    <img
+      className={cn('pt-shot is-light', dark !== null && 'has-dark')}
+      src={shot.light}
+      alt=''
+      loading='lazy'
+      decoding='async'
+      draggable={false}
+      onError={() => setLightBroken(true)}
+    />
+  );
+  if (dark === null) {
+    return <span className='pt-shot-mat'>{light}</span>;
+  }
   return (
     <>
+      {light}
       <img
-        className={cn('pt-shot is-light', dark !== null && 'has-dark')}
-        src={shot.light}
+        className='pt-shot is-dark'
+        src={dark}
         alt=''
         loading='lazy'
         decoding='async'
         draggable={false}
-        onError={() => setLightBroken(true)}
+        onError={() => setDarkBroken(true)}
       />
-      {dark !== null ? (
-        <img
-          className='pt-shot is-dark'
-          src={dark}
-          alt=''
-          loading='lazy'
-          decoding='async'
-          draggable={false}
-          onError={() => setDarkBroken(true)}
-        />
-      ) : null}
     </>
   );
 }

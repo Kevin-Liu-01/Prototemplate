@@ -1,7 +1,15 @@
 <title>GT Brand Deck</title>
 <!--FONTS-->
+<script>
+  /* the theme before first paint: the same read as the boot script in src/app/layout.tsx (gt-theme, then the deck's older
+     gt-deck-theme, dark when neither is set), so the document never paints the light :root defaults below and then flips;
+     the stamp at the end of parts/tail.html is the assertion after load, and a same-origin page around the frame can post
+     { type: 'gt-theme', theme } (src/components/viewer/ThemeButton.tsx), which the tail applies live */
+  try { var t = localStorage.getItem('gt-theme'); if (t !== 'light' && t !== 'dark') t = localStorage.getItem('gt-deck-theme'); document.documentElement.setAttribute('data-theme', t === 'light' || t === 'dark' ? t : 'dark'); } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+</script>
 <style>
   :root {
+    color-scheme: light;
     --paper: #ffffff;
     --ink: #070707;
     --ink-2: #3a3d44;
@@ -19,6 +27,7 @@
     --indic: 'Noto Sans Devanagari', 'Kohinoor Devanagari', 'Devanagari Sangam MN', sans-serif;
   }
     :root[data-theme="dark"] {
+    color-scheme: dark;
     --paper: #070707; --ink: #f2f2f0; --ink-2: #b9bcc3; --titanium: #8a8f98;
     --hair: rgba(242, 242, 240, 0.22); --hair-soft: rgba(242, 242, 240, 0.1); --plate: rgba(242, 242, 240, 0.05); --cross: rgba(255, 255, 255, 0.34);
   }
@@ -58,6 +67,12 @@
   .muted { color: var(--ink-2); }
   .max { max-width: 32ch; }
   .max-p { max-width: 56ch; }
+
+  /* the GT word: every standalone GT in rendered copy is the mark, sized to the text like a capital letter, with the letters kept as hidden text for assistive technology and search.
+     Written as <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span>. The svg carries no viewBox; the symbol supplies its own. */
+  .gt-word { position: relative; display: inline-block; vertical-align: -0.008em; } /* the symbol's viewBox leaves 8 of 771 units under the glyph, so this lift puts the glyph's foot on the baseline; the glyph itself is 0.724em tall, Inter's cap height */
+  .gt-word svg { display: block; height: 0.74em; width: 1.164em; fill: currentColor; }
+  .gt-word .sr { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
   /* layouts */
   .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
@@ -339,14 +354,14 @@
 
 <div class="viewer" id="viewer">
   <aside class="sb" id="sb" aria-label="Slides">
-    <div class="sb-head"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>GT brand deck</b><span id="sb-count"></span></div>
+    <div class="sb-head"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>brand deck</b><span id="sb-count"></span></div>
     <div class="thumbs scroll" id="thumbs"></div>
   </aside>
   <section class="main" id="main">
     <div class="toolbar" role="toolbar" aria-label="Deck controls">
       <div class="bar-l">
         <button type="button" class="ib icon" data-act="sb" title="Show or hide the slide list ([)" aria-label="Show or hide the slide list"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75Zm0 10.5a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Z"/></svg></button>
-        <span class="bar-brand"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>GT brand deck</b></span>
+        <span class="bar-brand"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>brand deck</b></span>
         <span class="sep"></span>
         <button type="button" class="ib icon" data-act="prev" title="Previous slide (left arrow)" aria-label="Previous slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"/></svg></button>
         <span class="count"><b id="bar-n">01</b><span class="of"> / </span><span id="bar-total">85</span></span>

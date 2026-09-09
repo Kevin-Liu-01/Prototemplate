@@ -254,6 +254,14 @@
   display: none;
 }
 
+/* a light capture with no dark twin (the archive rows): in the dark theme it
+   sits inset on the frame's plate ground, never as a bright block to the
+   frame's edge. The frame's own --pt-edge is the one line here: a second
+   rule 4px inside it would be the doubled line the line law forbids. */
+:root[data-theme='dark'] .pt-surf .shot-s.solo {
+  padding: 4px;
+}
+
 .pt-surf .shot-s.blank {
   display: grid;
   place-items: center;

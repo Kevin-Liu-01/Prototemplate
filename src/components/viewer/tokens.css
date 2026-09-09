@@ -62,6 +62,20 @@
   --pt-ease: cubic-bezier(0.2, 0, 0, 1); /* the sidebar column */
 }
 
+/* Native controls follow the theme (directive: light and dark hold
+   everywhere). color-scheme paints form controls, the caret, autofill, the
+   scrollbars outside .pt-scroll and the browser's overscroll canvas in the
+   theme's own scheme instead of the OS scheme. The boot script stamps
+   data-theme before first paint, so there is no mismatch window; the deck
+   document (deck/parts/head.html) carries the same pair. */
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
 /* Dark is a token remap. --pt-scrim, --pt-panel-ink and --pt-panel-text do
    not change. */
 :root[data-theme='dark'] {

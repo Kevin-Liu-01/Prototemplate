@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
+import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
@@ -144,7 +145,9 @@ type MarkSheetProps = {
  * One mark, presented the way a logo reel presents a logo: the mark large,
  * positive and reversed; a row of sizes on both grounds; the app icon and
  * the favicon in a tab; the clean mark beside its construction; then the
- * thesis, the construction and the small-size note as ruled rows.
+ * thesis, the construction and the small-size note as ruled rows. The
+ * notes arrive as strings from marks.ts, so they pass through gtText: the
+ * standalone word GT renders as the mark, as everywhere in the site's copy.
  */
 function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
   const family = markFamily(mark);
@@ -164,7 +167,7 @@ function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
         </small>
         <div>
           <h2 id={headingId}>{mark.name}</h2>
-          <p className='mk-thesis'>{family.principle}</p>
+          <p className='mk-thesis'>{gtText(family.principle)}</p>
         </div>
       </div>
 
@@ -222,15 +225,15 @@ function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
       <dl className='mk-notes'>
         <div className='mk-note'>
           <dt>Thesis</dt>
-          <dd>{mark.thesis}</dd>
+          <dd>{gtText(mark.thesis)}</dd>
         </div>
         <div className='mk-note'>
           <dt>Construction</dt>
-          <dd>{mark.construction}</dd>
+          <dd>{gtText(mark.construction)}</dd>
         </div>
         <div className='mk-note'>
           <dt>At 16px</dt>
-          <dd>{mark.small}</dd>
+          <dd>{gtText(mark.small)}</dd>
         </div>
         <div className='mk-note'>
           <dt>Files</dt>
@@ -447,7 +450,7 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
           {MARK_FAMILIES.map((family) => (
             <div key={family.id} className='mk-family'>
               <b>{family.label}</b>
-              <p>{family.principle}</p>
+              <p>{gtText(family.principle)}</p>
             </div>
           ))}
         </div>
@@ -504,7 +507,7 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
             <figcaption>{REFERENCE_MARK.name}, reversed</figcaption>
           </figure>
         </div>
-        <p className='mk-ref-note'>{REFERENCE_CAPTION}</p>
+        <p className='mk-ref-note'>{gtText(REFERENCE_CAPTION)}</p>
       </section>
     </div>
   );

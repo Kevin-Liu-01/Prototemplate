@@ -3,7 +3,11 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+
+import { readTheme, toggleTheme } from '@/components/viewer/ThemeButton';
+import type { Theme } from '@/components/viewer/ThemeButton';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 
@@ -21,33 +25,22 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export default function Scoreboard() {
   const root = useRef<HTMLElement>(null);
   const reviews = useReviews();
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<Theme>('dark');
 
-  useEffect(() => {
-    try {
-      if (localStorage.getItem('gt-theme') === 'dark') setTheme('dark');
-    } catch {
-      // private mode: previews just start light
-    }
-  }, []);
-
-  // The previews are same-origin, so their theme can be flipped live: persist
-  // the choice (new frames boot with it) and restamp every mounted frame.
-  const toggleTheme = () => {
-    const next = theme === 'light' ? 'dark' : 'light';
-    setTheme(next);
-    try {
-      localStorage.setItem('gt-theme', next);
-    } catch {
-      // private mode: mounted frames still flip below
-    }
-    document
-      .querySelectorAll<HTMLIFrameElement>('.pr-root iframe')
-      .forEach((el) => {
-        const doc = el.contentDocument;
-        if (doc?.documentElement) doc.documentElement.dataset.theme = next;
-      });
-  };
+  // The switch reads the one theme state, <html data-theme>, which the boot
+  // script stamps before first paint (dark when nothing is saved), and follows
+  // it while another control (the D key, a frame's own toggle) changes it.
+  // toggleTheme() from ThemeButton writes the attribute, the gt-theme key and
+  // a message to every frame, and each same-origin preview applies both the
+  // storage event and the message through the boot script, so no frame is
+  // stamped by hand here and the label, the page, storage and the previews
+  // agree from the first paint.
+  useMountEffect(() => {
+    setTheme(readTheme());
+    const observer = new MutationObserver(() => setTheme(readTheme()));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  });
 
   useGSAP(
     () => {
@@ -82,7 +75,9 @@ export default function Scoreboard() {
         <button
           type='button'
           className='pr-score-theme'
-          onClick={toggleTheme}
+          onClick={() => {
+            toggleTheme();
+          }}
           aria-label={
             theme === 'light'
               ? 'View previews in dark mode'

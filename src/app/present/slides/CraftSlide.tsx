@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import Icon from '../icons';
+import { gtText } from '@/components/viewer/GtWord';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin);
 
@@ -144,7 +145,7 @@ export default function CraftSlide() {
             <ul className='pr-craft-rules'>
               {GUIDELINES.map((rule) => (
                 <li key={rule} className='pr-craft-rule'>
-                  {rule}
+                  {gtText(rule)}
                 </li>
               ))}
             </ul>

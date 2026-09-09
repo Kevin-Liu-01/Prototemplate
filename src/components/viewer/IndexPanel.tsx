@@ -103,7 +103,9 @@ type ShotProps = { row: Surface; broken: boolean; onBroken: () => void };
 /**
  * The 96x54 preview. Light and dark twins both render and the theme picks
  * one in CSS; a row without a capture, or one whose file is missing, shows
- * the blank plate with its initial.
+ * the blank plate with its initial. A row with a light capture only (the
+ * archive) is .solo, and IndexPanel.css insets it on the plate with a
+ * hairline in the dark theme.
  */
 function Shot({ row, broken, onBroken }: ShotProps) {
   if (!row.shot || broken) {
@@ -114,7 +116,7 @@ function Shot({ row, broken, onBroken }: ShotProps) {
     );
   }
   return (
-    <span className='shot-s'>
+    <span className={row.shotDark ? 'shot-s' : 'shot-s solo'}>
       <img
         className={row.shotDark ? 'light' : undefined}
         src={row.shot}

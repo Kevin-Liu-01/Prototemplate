@@ -257,7 +257,8 @@ function requestImage(src: string, urgent: boolean, el: HTMLElement | null): Pro
 
 /* ---- resolving and placing ---- */
 
-type Subject = { id: string; name: string; src: string | null; initial: string };
+/** solo: the surface has a light capture only, so the dark theme mats it (PreviewLayer.css .is-solo). */
+type Subject = { id: string; name: string; src: string | null; initial: string; solo: boolean };
 
 function darkTheme(): boolean {
   return document.documentElement.dataset.theme === 'dark';
@@ -268,7 +269,7 @@ function subjectFor(id: string): Subject | null {
   const surface = getSurface(id);
   if (!surface) return null;
   const src = surface.shot ? (darkTheme() && surface.shotDark ? surface.shotDark : surface.shot) : null;
-  return { id, name: surface.name, src, initial: surface.name.charAt(0).toUpperCase() };
+  return { id, name: surface.name, src, initial: surface.name.charAt(0).toUpperCase(), solo: !surface.shotDark };
 }
 
 type Place = { x: number; y: number };
@@ -597,7 +598,7 @@ export function PreviewLayer() {
       style={open ? { transform: `translate3d(${open.x}px, ${open.y}px, 0)` } : undefined}
       aria-hidden='true'
     >
-      <div className='pt-preview-frame'>
+      <div className={open?.solo ? 'pt-preview-frame is-solo' : 'pt-preview-frame'}>
         <div ref={frame} className='pt-preview-img' />
         {open && !(open.src && open.ready) ? <span className='pt-preview-plate'>{open.initial}</span> : null}
       </div>

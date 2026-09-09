@@ -268,6 +268,17 @@
   /* the engines resolve their ink off this token — pinned to paper-white
      because the plate is permanently dark */
   --tc-ink: var(--color-paper);
+  /* the article's ink tokens, restated in their dark values: the hosts'
+     prose rules (.ptd-book .ptd-body p in docs.css, .pt-craft-lib p in
+     prototemplate.css) outrank .ptc-seam-main p and paint var(--pt-ink-2),
+     which in the light theme is a dark ink on this dark plate. With the
+     family scoped here every rule inside the plate resolves to a light ink
+     in both themes, and native controls follow the plate's scheme. */
+  --pt-ink: #ffffff;
+  --pt-ink-2: rgba(255, 255, 255, 0.66);
+  --pt-ink-3: rgba(255, 255, 255, 0.48);
+  --pt-ink-4: rgba(255, 255, 255, 0.3);
+  color-scheme: dark;
 
   position: relative;
   height: 280px;
@@ -557,7 +568,11 @@
   padding: 16px 20px;
 }
 
-.ptc-seam-main p {
+/* scoped through the plate and the box (three classes) so the rendered
+   string keeps its display ink: the hosts' prose rules (.ptd-book .ptd-body
+   p at two classes, .pt-craft-lib p) would otherwise outrank a bare
+   .ptc-seam-main p and paint the plate's --pt-ink-2 */
+.ptc-plate .ptc-seam-box .ptc-seam-main p {
   margin-top: 10px;
   font-size: clamp(17px, 2.6vw, 24px);
   line-height: 1.35;

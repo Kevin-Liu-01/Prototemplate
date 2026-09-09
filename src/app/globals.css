@@ -29,17 +29,28 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* The document ground follows the theme: --pt-paper and --pt-ink come from
+   src/components/viewer/tokens.css, imported right after this file, which
+   defines both on :root with the dark remap. html carries the ground too,
+   so the overscroll canvas, the scrollbar gutter and any pane that has not
+   filled yet (the deck frame while its document streams) never expose the
+   other theme. The @theme colors above stay for Tailwind utilities only. */
+html,
 body {
-  background: var(--color-ink);
-  color: #fff;
+  background: var(--pt-paper);
+}
+
+body {
+  color: var(--pt-ink);
 }
 
 /* House scrollbar everywhere (including embedded direction pages): the
-   presenter's hairline — a bare track with a thin neutral thumb that reads
-   on light and dark pages alike. */
+   presenter's hairline, a bare track with a thin thumb in the shell's
+   --pt-thumb token, so the 1px document thumb on the /d pages and the
+   .pt-scroll thumbs in chrome are one grey, and it remaps with the theme. */
 html {
   scrollbar-width: thin;
-  scrollbar-color: rgba(127, 127, 127, 0.45) transparent;
+  scrollbar-color: var(--pt-thumb) transparent;
 }
 
 html::-webkit-scrollbar {
@@ -53,7 +64,11 @@ html::-webkit-scrollbar-track {
 }
 
 html::-webkit-scrollbar-thumb {
-  background: rgba(127, 127, 127, 0.45);
+  background: var(--pt-thumb);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--pt-ink-2);
 }
 
 @media (prefers-reduced-motion: reduce) {

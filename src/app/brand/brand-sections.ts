@@ -37,7 +37,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'the-name',
     title: 'The name',
-    desc: 'The company name, the GT short form, and Locadex.',
+    desc: 'The company name, its short form, and Locadex.',
     headings: [],
   },
   {
@@ -59,7 +59,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'the-mark',
     title: 'The mark',
-    desc: 'The GT monogram: doubled-line construction, one ink, and the rules for its use.',
+    desc: 'The monogram: doubled-line construction, one ink, and the rules for its use.',
     headings: [],
   },
   {

@@ -9,6 +9,9 @@ import EverySentence, {
   type EveryWord,
 } from '@/components/shared/EverySentence';
 
+// the plate sheet travels with the demo: /brand mounts it outside CraftArticle
+import './craft.css';
+
 gsap.registerPlugin(useGSAP);
 
 /**

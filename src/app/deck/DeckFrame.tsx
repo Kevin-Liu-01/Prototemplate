@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 
+import { postTheme, readTheme } from '@/components/viewer/ThemeButton';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 const DECK_SRC = '/brand-deck.html';
@@ -36,6 +37,12 @@ function isDeckSlideMessage(data: unknown): data is DeckSlideMessage {
  * name the slide on screen. replaceState fires no hashchange, so nothing is
  * forwarded back. The deck itself stays standalone (directive 8.1): outside
  * a frame it posts to nobody.
+ *
+ * Theme: the deck reads gt-theme before its first paint (deck/parts/head.html)
+ * and follows the storage event, and on load this frame also posts the page's
+ * current theme as { type: 'gt-theme', theme } (ThemeButton.tsx postTheme),
+ * the same message every later toggle on the page sends, so the frame and
+ * the page agree even where storage is unavailable.
  */
 export default function DeckFrame() {
   const frame = useRef<HTMLIFrameElement>(null);
@@ -52,7 +59,10 @@ export default function DeckFrame() {
         el.src = `${DECK_SRC}${hash}`;
       }
     }
-    const onLoad = () => el.focus();
+    const onLoad = () => {
+      postTheme(el.contentWindow, readTheme());
+      el.focus();
+    };
     const onHash = () => {
       const next = window.location.hash;
       if (next.length <= 1) return;

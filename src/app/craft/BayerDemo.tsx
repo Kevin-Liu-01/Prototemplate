@@ -5,6 +5,9 @@ import { useState } from 'react';
 import StudioField from '@/components/shared/StudioField';
 import { BAYER_DEFAULT_ID, BAYER_PRESETS } from '@/lib/studio-field';
 
+// the plate sheet travels with the demo, so any host outside CraftArticle has the chip rules
+import './craft.css';
+
 /**
  * The authentic Bayer family, switchable — the codified BAYER_PRESETS
  * roster on one plate. Switching is a remount (the house pattern): the

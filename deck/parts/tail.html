@@ -159,7 +159,7 @@
   var pages = [], bookIO = null;
   function buildBook() {
     var head = document.createElement('div'); head.className = 'book-head';
-    head.innerHTML = '<div><h1>GT brand deck</h1><p></p></div><div class="meta"></div>';
+    head.innerHTML = '<div><h1><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> brand deck</h1><p></p></div><div class="meta"></div>';
     head.querySelector('p').textContent = 'The General Translation brand in ' + slides.length + ' slides: the thesis, the design system, the shipped site, the documentation, the blog, developer experience, prototemplate and glyphfield, and the current plan. Read it top to bottom, or click a page to open it as a slide.';
     head.querySelector('.meta').innerHTML = SECTIONS.length + ' sections<br>' + slides.length + ' slides<br>September 2026';
     bookIn.appendChild(head);
@@ -307,6 +307,17 @@
   window.addEventListener('storage', function (e) {
     if (e.key !== 'gt-theme' || (e.newValue !== 'dark' && e.newValue !== 'light')) return;
     document.documentElement.setAttribute('data-theme', e.newValue);
+    applyTheme();
+  });
+  /* the page around the frame also posts { type: 'gt-theme', theme } on every toggle and once on load
+     (src/components/viewer/ThemeButton.tsx, src/app/deck/DeckFrame.tsx); it arrives where the storage event does not,
+     in a private window, and lands the same way. Same origin only. */
+  window.addEventListener('message', function (e) {
+    var d = e && e.data;
+    if (!d || d.type !== 'gt-theme' || (d.theme !== 'dark' && d.theme !== 'light') || e.origin !== location.origin) return;
+    if (document.documentElement.getAttribute('data-theme') === d.theme) return;
+    document.documentElement.setAttribute('data-theme', d.theme);
+    store('gt-deck-theme', d.theme);
     applyTheme();
   });
 

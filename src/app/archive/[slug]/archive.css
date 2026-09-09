@@ -117,10 +117,29 @@
   fill: currentColor;
 }
 
+/* The capture is a light picture by definition (the route is gone, so there
+   is no dark twin to switch to). In the light theme it runs edge to edge at
+   its captured width. In the dark theme it is matted, not recolored: a
+   --pt-plate ground with the picture inset and ruled in --pt-hair, the way
+   src/app/anatomy-wall.css keeps a capture's own ground, so it never sits
+   as a raw bright block on the ink sheet. */
+.ar-capture {
+  display: block;
+}
+
+:root[data-theme='dark'] .ar-capture {
+  padding: 24px;
+  background: var(--pt-plate);
+}
+
 .ar-full {
   display: block;
   width: 100%;
   height: auto;
+}
+
+:root[data-theme='dark'] .ar-full {
+  border: 1px solid var(--pt-hair);
 }
 
 @media (max-width: 900px) {

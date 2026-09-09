@@ -57,7 +57,32 @@ export function readTheme(): Theme {
   return isTheme(current) ? current : DEFAULT_THEME;
 }
 
-/** Stamps the attribute and persists the choice. */
+/**
+ * The message a theme change posts to every same-origin frame on the page.
+ * The deck (deck/parts/tail.html) and every framed site page (the boot
+ * script in src/app/layout.tsx) apply it live. The frames also follow the
+ * gt-theme storage event, so the message is the path that holds when
+ * storage does not (a private window), and the one DeckFrame.tsx uses to
+ * hand a freshly loaded deck the current theme.
+ */
+export type ThemeMessage = { type: 'gt-theme'; theme: Theme };
+
+/** Posts the theme to one frame's window; a frame that left the origin never receives it. */
+export function postTheme(target: Window | null | undefined, theme: Theme): void {
+  if (!target) return;
+  const message: ThemeMessage = { type: 'gt-theme', theme };
+  try {
+    target.postMessage(message, window.location.origin);
+  } catch {
+    // a detached frame: nothing to tell
+  }
+}
+
+function broadcastTheme(theme: Theme): void {
+  document.querySelectorAll('iframe').forEach((frame) => postTheme(frame.contentWindow, theme));
+}
+
+/** Stamps the attribute, persists the choice and tells every frame on the page. */
 export function applyTheme(theme: Theme): void {
   document.documentElement.dataset.theme = theme;
   try {
@@ -65,6 +90,7 @@ export function applyTheme(theme: Theme): void {
   } catch {
     // private mode: the switch still works for the session
   }
+  broadcastTheme(theme);
 }
 
 /** Flips the theme and returns the new one. */

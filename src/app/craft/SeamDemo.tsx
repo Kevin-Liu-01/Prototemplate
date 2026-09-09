@@ -4,6 +4,9 @@ import { useRef, type CSSProperties } from 'react';
 
 import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
 
+// the plate sheet travels with the demo, so any host outside CraftArticle has the seam rules
+import './craft.css';
+
 /**
  * The reveal-seam demo plate — the real component, live. Two full-width
  * layers pinned in one box: the rendered string on top, the served payload

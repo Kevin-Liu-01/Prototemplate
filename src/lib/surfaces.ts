@@ -85,6 +85,7 @@ export type Surface = {
   href: string;
   /** the address shown under the name: host and path for external surfaces, the path for internal routes */
   host: string;
+  /** one sentence the panel prints as text: the brand is spelled out as General Translation, never the letters GT (GtWord.tsx) */
   desc: string;
   shot?: string;
   shotDark?: string;
@@ -128,7 +129,7 @@ const PAGES: readonly Surface[] = [
   internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
   internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
   internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs')),
-  internal('deck', 'Deck', '/deck', 'The GT brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
+  internal('deck', 'Deck', '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
 ];
@@ -141,7 +142,7 @@ const PAGES: readonly Surface[] = [
  */
 const KNOWLEDGE: readonly Surface[] = [
   internal('skills', 'Skills', '/skills', 'The working skills behind the design lab and the product, by name and description.', 'Knowledge'),
-  internal('marks', 'Marks', '/marks', 'Nine new GT marks in three families, each one color, with its construction.', 'Knowledge'),
+  internal('marks', 'Marks', '/marks', 'Nine new General Translation marks in three families, each one color, with its construction.', 'Knowledge'),
   internal(
     'archive',
     'Archive',
@@ -308,10 +309,10 @@ const LIBRARY_ROWS: readonly Surface[] = LIBRARIES.map((lib) =>
 );
 
 const BRAND_SECTIONS: readonly Surface[] = [
-  ['the-name', 'The name', 'The company name, the GT short form, and Locadex.'],
+  ['the-name', 'The name', 'The company name, its short form, and Locadex.'],
   ['the-idea', 'The idea', 'Every product in every language: the mission and the positioning.'],
   ['the-character', 'The character', 'The personality, the voice, and the attribute scales.'],
-  ['the-mark', 'The mark', 'The GT monogram: doubled-line construction, one ink, and the rules for its use.'],
+  ['the-mark', 'The mark', 'The monogram: doubled-line construction, one ink, and the rules for its use.'],
   ['color', 'Color', 'Four absolute colors, alpha steps for structure, one spectral accent per page.'],
   ['type', 'Type', 'Switzer and Inter, and the multilingual requirements for headlines and UI.'],
   [

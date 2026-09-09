@@ -6,6 +6,7 @@
       .s11 .lineage img { display: block; height: 56px; width: auto; }
       .s11 .lineage svg { display: block; height: 40px; width: 63px; color: #070707; }
       .s11 .lineage figcaption { margin-top: 8px; font-size: 15px; line-height: 1.4; color: var(--ink-2); }
+      .s11 .rows > div > b.name-mark { padding-left: 30px; } /* the short form is the mark itself, so the row carries it once, in the label position, with the icon slot left empty */
     </style><div class="in">
       <div class="cols">
         <div class="stack">
@@ -24,7 +25,7 @@
         </div>
         <div class="rows tight" style="--key:300px">
           <div><b><svg class="ic info" aria-hidden="true"><use href="#i-building-office-2"/></svg>General Translation</b><span>The company.</span></div>
-          <div><b><svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><use href="#gt-mark" x="2" y="4.915" width="16" height="10.17"/></svg>GT</b><span>The short form and the mark.</span></div>
+          <div><b class="name-mark"><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span></b><span>The short form and the mark.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-command-line"/></svg>gt</b><span>The open-source library and CLI.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-cube"/></svg><span style="white-space:nowrap">gt-next</span>, <span style="white-space:nowrap">gt-react</span>, <span style="white-space:nowrap">gt-vue</span>, <span style="white-space:nowrap">gt-node</span>, <span style="white-space:nowrap">gt-python</span></b><span>The framework packages.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-bolt"/></svg>Locadex</b><span>The AI agent product.</span></div>

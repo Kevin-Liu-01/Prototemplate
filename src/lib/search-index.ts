@@ -101,7 +101,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   gallery: 'home index working file directions',
   brand: 'identity book basement mark color type voice directives',
   docs: 'readme build log craft libraries laws documents',
-  deck: 'brand deck slideshow slides identity summary book',
+  deck: 'brand deck slideshow slides identity summary book GT',
   present: 'presenter slides scoreboard',
   compare: 'side by side synced frames',
   skills: 'agent skills SKILL.md engineering productivity general translation',

@@ -31,15 +31,17 @@
 
 /* OPAQUE chips: plates rule hairlines straight through this corner (the
    locadex terminal frame), and a translucent chip lets the line cross the
-   label. Solid near-black is the terminal family's own ink, so the chip
-   sits ON the chrome instead of ghosting it. The resting quiet comes from
-   dimmed ink, never container alpha. */
+   label. The solid ground is the page's dark band token (--tc-dark, the
+   plate under every prismatic mount, fixed in both themes) and the border
+   a titanium alpha, so the chip sits ON the chrome instead of ghosting it
+   and draws no grey of its own. The resting quiet comes from dimmed ink,
+   never container alpha. */
 .fxm-chip {
   appearance: none;
   margin: 0;
   padding: 5px 8px 4px;
-  background: #0c0d0f;
-  border: 1px solid rgba(120, 124, 132, 0.3);
+  background: var(--tc-dark, #070707);
+  border: 1px solid rgba(138, 143, 152, 0.3);
   border-radius: 0; /* square — the page's chips, not pills */
   color: rgba(255, 255, 255, 0.48);
   font: inherit;

@@ -56,8 +56,20 @@
    the page's token family — the demo web on the deepest ink black,
    the beat panel one step raised — meeting at the base hairline
    (.tc-cinema-beat's border-left in styles.css). Neither token remaps
-   under [data-theme='dark'], so both themes hold identically. */
+   under [data-theme='dark'], but src/app/d/_v0/v0-pages.css remaps the
+   panel family to white on the five site homes in LIGHT mode, and the
+   cinema's inks are the fixed white ramp in styles.css, so on the Signal
+   home the beat panel and the demo card went white under white text.
+   The panel family is therefore restated on the stage itself, with the
+   toolchain root's own values: a declaration on the element outranks
+   the remap inherited from the root, so the take is one dark surface
+   in both themes on every root that renders it. */
 .toolchain-root .tc-cinema.tc-cinema-v3 {
+  --tc-panel: #101010;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.5);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
   margin-inline: calc(50% - 50vw);
   /* Above the rail's doubled-thread overlay (.tc-rail::before, z-index 2):
      the threads pass BEHIND the full-bleed stage and resume below it —
