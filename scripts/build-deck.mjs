@@ -13,10 +13,14 @@
 //                           1280px wide at JPEG quality 78 through sips, except
 //                           the full-bleed openers and mood images (shots/opener-*,
 //                           shots/mood-*) and the 2x detail crops (shots/detail-*),
-//                           which are re-encoded
-//                           at their native size at JPEG quality 88 so they stay
-//                           sharp on the 1600px sheet; shots/thumb/* files pass
-//                           through as they are
+//                           which keep their native size so they stay sharp on
+//                           the 1600px sheet: a two-tone dither (the screened
+//                           shader openers and the mood photographs) is stored
+//                           as a two-color PNG through Pillow, lossless and about
+//                           a fortieth of the JPEG, and a continuous-tone image
+//                           (the gem smoke openers, the detail crops) is
+//                           re-encoded as JPEG at quality 88; shots/thumb/* files
+//                           pass through as they are
 //
 // The result is wrapped as a full document (doctype, charset, viewport, the
 // title, a noindex meta, and a two-rule style for color-scheme and the body
@@ -25,7 +29,12 @@
 // General Translation set (src/lib/surfaces.ts) reads them.
 //
 // Usage: pnpm build:deck
-import { execSync } from 'node:child_process';
+//        node scripts/build-deck.mjs --out <file> [--quality <n>] [--max-width <px>]
+//                           writes one lighter copy somewhere else (the
+//                           artifact copy, which must stay under 16MB) with
+//                           the photographs at that JPEG quality and width;
+//                           public/ is left alone
+import { execFileSync, execSync } from 'node:child_process';
 import {
   copyFileSync,
   existsSync,
@@ -42,14 +51,63 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DECK = join(ROOT, 'deck');
-const OUT = join(ROOT, 'public/brand-deck.html');
+const ARGS = process.argv.slice(2);
+const flag = (name) => {
+  const at = ARGS.indexOf(name);
+  return at >= 0 ? ARGS[at + 1] : undefined;
+};
+/* an alternate output path: one lighter file, and public/ is left alone */
+const OUT_OVERRIDE = flag('--out');
+const OUT = OUT_OVERRIDE ?? join(ROOT, 'public/brand-deck.html');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
 const SLIDE_COUNT = 85;
-const MAX_WIDTH = 1280;
-const QUALITY = 78;
+const QUALITY = Number(flag('--quality') ?? 78);
+const MAX_WIDTH = Number(flag('--max-width') ?? 1280);
 /* full-bleed openers and mood images and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
 const NATIVE = /^(opener|mood|detail)-/;
 const NATIVE_QUALITY = 88;
+/* the share of pixels at the two extremes above which a native image counts as a two-tone dither */
+const TWO_TONE_SHARE = 0.98;
+
+/*
+ * Writes a native image as a two-color PNG when it is a two-tone dither and
+ * reports whether it did. The two colors are the means of the dark and light
+ * clusters, so a warm paper or an inked blue survives; the JPEG's ringing
+ * around each cell does not. Exit 3 from the script means the image carries
+ * continuous tone and takes the JPEG path; any other failure means Pillow is
+ * missing, which the build reports once and then also falls back to JPEG.
+ */
+const TWO_TONE_SCRIPT = `
+import sys
+from PIL import Image, ImageStat
+im = Image.open(sys.argv[1]).convert('RGB')
+lum = im.convert('L')
+h = lum.histogram()
+n = im.width * im.height
+if (sum(h[:48]) + sum(h[208:])) / n < float(sys.argv[3]):
+    sys.exit(3)
+dark = lum.point(lambda v: 255 if v <= 127 else 0)
+light = lum.point(lambda v: 255 if v > 127 else 0)
+lo = [round(c) for c in ImageStat.Stat(im, dark).mean]
+hi = [round(c) for c in ImageStat.Stat(im, light).mean]
+index = lum.point(lambda v: 1 if v > 127 else 0)
+out = Image.frombytes('P', im.size, index.tobytes())
+out.putpalette(lo + hi)
+out.save(sys.argv[2], 'PNG', optimize=True, bits=1)
+`;
+let pillowMissing = false;
+function twoTonePng(abs, out) {
+  if (pillowMissing) return false;
+  try {
+    execFileSync('python3', ['-c', TWO_TONE_SCRIPT, abs, out, String(TWO_TONE_SHARE)], { stdio: 'ignore' });
+    return true;
+  } catch (error) {
+    if (error && typeof error === 'object' && 'status' in error && error.status === 3) return false;
+    pillowMissing = true;
+    console.warn('build-deck: python3 with Pillow is not available, so two-tone images are inlined as JPEG and the deck is far larger');
+    return false;
+  }
+}
 const TITLE = 'General Translation brand deck';
 const LEADING_TITLE = /^<title>[^<]*<\/title>\n/;
 const IMAGE_REF = /(src|data-dark)="(shots\/[^"]+)"/g;
@@ -92,6 +150,7 @@ const uris = new Map();
 let imageBytes = 0;
 let photographs = 0;
 let natives = 0;
+let twoTones = 0;
 let thumbs = 0;
 
 function toUri(abs, mime) {
@@ -112,8 +171,15 @@ function dataUri(rel) {
     thumbs += 1;
     return toUri(abs, mime);
   }
-  const resampled = join(tmp, basename(rel).replace(/\.[^.]+$/, '.jpg'));
   const native = NATIVE.test(basename(rel));
+  if (native) {
+    const png = join(tmp, basename(rel).replace(/\.[^.]+$/, '.png'));
+    if (twoTonePng(abs, png)) {
+      twoTones += 1;
+      return toUri(png, 'image/png');
+    }
+  }
+  const resampled = join(tmp, basename(rel).replace(/\.[^.]+$/, '.jpg'));
   const options = native
     ? `-s formatOptions ${NATIVE_QUALITY}`
     : `-s formatOptions ${QUALITY} --resampleWidth ${MAX_WIDTH}`;
@@ -155,17 +221,19 @@ if (sections !== SLIDE_COUNT) {
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, html);
 
-/* ---------- thumbnails for the index panel ---------- */
+/* ---------- thumbnails for the index panel (the public build only) ---------- */
 
-mkdirSync(THUMBS_OUT, { recursive: true });
 let copied = 0;
-for (const file of readdirSync(join(DECK, 'shots/thumb'))) {
-  if (!IMAGE.test(file)) continue;
-  copyFileSync(join(DECK, 'shots/thumb', file), join(THUMBS_OUT, file));
-  copied += 1;
+if (!OUT_OVERRIDE) {
+  mkdirSync(THUMBS_OUT, { recursive: true });
+  for (const file of readdirSync(join(DECK, 'shots/thumb'))) {
+    if (!IMAGE.test(file)) continue;
+    copyFileSync(join(DECK, 'shots/thumb', file), join(THUMBS_OUT, file));
+    copied += 1;
+  }
 }
 
 const mb = (n) => `${(n / 1024 / 1024).toFixed(2)}MB`;
 console.log(
-  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${natives} openers, mood images and details at native size, ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> public/brand-deck.html (${mb(Buffer.byteLength(html))}); ${copied} thumbnails -> public/shots/deck`
+  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${twoTones} two-tone images as PNG, ${natives} continuous-tone images at native size, ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> ${OUT_OVERRIDE ?? 'public/brand-deck.html'} (${mb(Buffer.byteLength(html))})${OUT_OVERRIDE ? '' : `; ${copied} thumbnails -> public/shots/deck`}`
 );
