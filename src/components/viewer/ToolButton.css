@@ -3,6 +3,25 @@
    1180px label collapse) so one rule set draws every button. This sheet
    holds only what the base leaves open. */
 
+/* the theme glyph (ThemeButton.tsx, directive 8.4): the text ◐ or ◑ at
+   16px, one line, centered in the 16px slot an icon would take; weight 400
+   so the disc's halves meet cleanly */
+.pt-theme-glyph {
+  display: inline-block;
+  width: 16px;
+  font-size: 16px;
+  line-height: 16px;
+  text-align: center;
+  font-weight: 400;
+}
+
+/* a labeled button with no icon keeps its word through every collapse:
+   the rules that hide .pt-lb (Toolbar.css) exclude .is-text, and this one
+   holds the geometry a text-only button needs */
+.pt-ib.is-text {
+  padding: 0 12px;
+}
+
 /* the filled button would draw its focus ring ink on ink */
 .pt-ib.is-solid:focus-visible {
   outline-color: var(--pt-paper);

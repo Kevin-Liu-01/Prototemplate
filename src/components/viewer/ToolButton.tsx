@@ -11,8 +11,11 @@ import './ToolButton.css';
  * The shell's button. Every control in the toolbar, the segmented control
  * and the panel head is one of these: a .pt-ib with type="button" and a
  * title that names its key. With a label it is a text button whose label
- * collapses at 1180px; without one it is the 32px icon square (.pt-icon),
- * which also carries a text glyph such as the ? on the help button.
+ * Toolbar.css may collapse when the bar runs short; without one it is the
+ * 32px icon square (.pt-icon), which also carries a text glyph such as the
+ * theme button's half disc. A labeled button with no icon (the compare
+ * rig's Both) is .is-text, and the collapse rules leave its label alone,
+ * since an icon square with nothing in it would be a blank block.
  */
 export type ToolButtonProps = {
   /** tooltip; names the key in parentheses, as in 'Dark or light (D)' */
@@ -24,6 +27,12 @@ export type ToolButtonProps = {
   label?: string;
   /** aria-pressed plus .is-on; leave undefined for buttons that do not toggle */
   pressed?: boolean;
+  /**
+   * aria-pressed without the ink frame: for a toggle whose state is already
+   * visible elsewhere (the list toggle, while the list is the state), so the
+   * frame stays reserved for transient toggles like Index and Help.
+   */
+  quiet?: boolean;
   /** .is-solid, the one filled call to action */
   solid?: boolean;
   /** .hide-sm: hidden at or below 900px */
@@ -31,7 +40,7 @@ export type ToolButtonProps = {
   /** accessible name; icon squares default to the title without its key */
   ariaLabel?: string;
   className?: string;
-  /** replaces the icon: the ? glyph on the help button */
+  /** replaces the icon: the theme glyph */
   children?: ReactNode;
 };
 
@@ -46,6 +55,7 @@ export function ToolButton({
   icon,
   label,
   pressed,
+  quiet = false,
   solid = false,
   hideSm = false,
   ariaLabel,
@@ -56,7 +66,8 @@ export function ToolButton({
   const classes = [
     'pt-ib',
     iconOnly ? 'pt-icon' : '',
-    pressed ? 'is-on' : '',
+    !iconOnly && !icon && !children ? 'is-text' : '',
+    pressed && !quiet ? 'is-on' : '',
     solid ? 'is-solid' : '',
     hideSm ? 'hide-sm' : '',
     className ?? '',

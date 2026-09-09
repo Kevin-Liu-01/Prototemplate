@@ -132,77 +132,21 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
   grid-row: 1;
   position: relative;
   display: grid;
-  /* the toolbar, the first-visit hint row (0 when absent), the stage, the progress line */
-  grid-template-rows: var(--pt-toolbar-h) auto minmax(0, 1fr) 2px;
+  /* the toolbar, the stage, the progress line; nothing is inserted between
+     them after hydration, so the stage never moves (directive 7.5) */
+  grid-template-rows: var(--pt-toolbar-h) minmax(0, 1fr) 2px;
   min-width: 0;
   min-height: 0;
   background: var(--pt-paper);
 }
 
-/* the first-visit hint: a 28px row on paper over the stage, not a toast over
-   the content; a close button and any key put it away */
-.pt-hint {
-  grid-row: 2;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 6px 0 12px;
-  background: var(--pt-paper);
-  border-bottom: 1px solid var(--pt-hair-soft);
-  font-size: 12.5px;
-  line-height: 1;
-  color: var(--pt-titanium);
-}
-
-.pt-hint span {
-  flex: 1 1 auto;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pt-hint-close {
-  appearance: none;
-  background: none;
-  border: 0;
-  border-radius: 0;
-  margin: 0;
-  padding: 0;
-  width: 22px;
-  height: 22px;
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--pt-titanium);
-  cursor: pointer;
-  transition: color var(--pt-dur-fast) var(--pt-ease-out);
-}
-
-.pt-hint-close svg {
-  width: 12px;
-  height: 12px;
-  fill: currentColor;
-}
-
-.pt-hint-close:hover {
-  color: var(--pt-ink);
-}
-
-.pt-hint-close:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: -1px;
-}
-
-/* the stage: the third row, measured by the shell's ResizeObserver; the
+/* the stage: the second row, measured by the shell's ResizeObserver; the
    sheet, the grid and the book sit inside it. The index panel is a sibling,
    positioned against .pt-main so it spans the toolbar's bottom rule to the
    progress line, sliding over the stage without changing its layout. The
    view-transition-name makes it the one region a mode change cross-fades. */
 .pt-stagewrap {
-  grid-row: 3;
+  grid-row: 2;
   position: relative;
   overflow: hidden;
   min-height: 0;
@@ -226,11 +170,10 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
 
 /* present: chrome gone, the stage reads as the window */
 .pt-viewer.is-present .pt-main {
-  grid-template-rows: 0 0 minmax(0, 1fr) 0;
+  grid-template-rows: 0 minmax(0, 1fr) 0;
 }
 
 .pt-viewer.is-present .pt-toolbar,
-.pt-viewer.is-present .pt-hint,
 .pt-viewer.is-present .pt-progress {
   display: none;
 }
@@ -347,20 +290,9 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
   }
 }
 
-/* on a phone the toolbar takes two rows (Toolbar.css wraps it) */
-@media (max-width: 600px) {
-  .pt-viewer {
-    --pt-toolbar-h: 92px;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .pt-viewer,
   .pt-viewer[data-settled] {
-    transition: none;
-  }
-
-  .pt-hint-close {
     transition: none;
   }
 

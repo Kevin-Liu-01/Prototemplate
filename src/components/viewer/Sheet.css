@@ -12,11 +12,10 @@
    Slide change (directive 7.4): the stage carries data-dir, the way the last
    move went. The incoming slide fades from 0 and rises 6px over the slide
    duration, from below for next and from above for previous; the outgoing
-   one fades over the fast duration. Two kinds of slide take it: a keyed
-   wrapper (.pt-slide, routes that pass itemKey) and injected markup that
-   marks its slides .slide.is-on (.is-off is the leaving mark Sheet.tsx sets
-   for the fade). GalleryViewer.css reads the pt-slide-up and pt-slide-down
-   keyframes. All off under reduced motion. */
+   one fades over the fast duration. The keyed wrapper (.pt-slide, routes
+   that pass itemKey) takes it; the deck's injected markup left with the
+   native deck route (directive 8.1). GalleryViewer.css reads the
+   pt-slide-up and pt-slide-down keyframes. All off under reduced motion. */
 
 /* the click and swipe surface for the fixed sheet; shown only in slide mode */
 .pt-sheet-stage {
@@ -179,25 +178,16 @@
   }
 }
 
-/* injected markup hides every slide but the one on; the leaving mark shows
-   the slide again for its fade */
-.pt-slides .slide.is-off {
-  display: block;
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  .pt-sheet-stage[data-dir='next'] .stage > .pt-slide,
-  .pt-sheet-stage[data-dir='next'] .pt-slides .slide.is-on {
+  .pt-sheet-stage[data-dir='next'] .stage > .pt-slide {
     animation: pt-slide-up var(--pt-dur-slide) var(--pt-ease-out) both;
   }
 
-  .pt-sheet-stage[data-dir='prev'] .stage > .pt-slide,
-  .pt-sheet-stage[data-dir='prev'] .pt-slides .slide.is-on {
+  .pt-sheet-stage[data-dir='prev'] .stage > .pt-slide {
     animation: pt-slide-down var(--pt-dur-slide) var(--pt-ease-out) both;
   }
 
-  .pt-sheet-stage[data-dir] .stage > .pt-slide.is-leaving,
-  .pt-sheet-stage[data-dir] .pt-slides .slide.is-off {
+  .pt-sheet-stage[data-dir] .stage > .pt-slide.is-leaving {
     animation: pt-slide-out var(--pt-dur-fast) var(--pt-ease-out) both;
     pointer-events: none;
     will-change: opacity;

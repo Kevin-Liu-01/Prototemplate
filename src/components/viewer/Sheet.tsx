@@ -126,43 +126,6 @@ export function Sheet(props: SheetProps) {
   return <FixedSheet {...props} />;
 }
 
-/**
- * Injected slide markup (the deck) marks its current slide `.slide.is-on`
- * and hides the rest, so the slide that lost the mark vanishes before it
- * can fade. This watches the sheet for that class change and holds the
- * slide that lost `is-on` as `.is-off` for the outgoing duration, which
- * Sheet.css shows and fades. A slide that comes back on while it is still
- * leaving drops the mark at once. Off under reduced motion.
- */
-function watchOutgoingSlides(root: HTMLElement): () => void {
-  const timers = new Map<HTMLElement, number>();
-  const settle = (el: HTMLElement) => {
-    window.clearTimeout(timers.get(el));
-    timers.delete(el);
-    el.classList.remove('is-off');
-  };
-  const observer = new MutationObserver((records) => {
-    for (const record of records) {
-      const el = record.target;
-      if (!(el instanceof HTMLElement) || !el.classList.contains('slide')) continue;
-      if (el.classList.contains('is-on')) {
-        if (el.classList.contains('is-off')) settle(el);
-        continue;
-      }
-      const wasOn = (record.oldValue ?? '').split(/\s+/).includes('is-on');
-      if (!wasOn) continue;
-      el.classList.add('is-off');
-      window.clearTimeout(timers.get(el));
-      timers.set(el, window.setTimeout(() => settle(el), OUT_MS));
-    }
-  });
-  observer.observe(root, { attributes: true, attributeFilter: ['class'], attributeOldValue: true, subtree: true });
-  return () => {
-    observer.disconnect();
-    timers.forEach((_, el) => settle(el));
-  };
-}
-
 function FixedSheet({
   w = 1600,
   h = 900,
@@ -200,15 +163,7 @@ function FixedSheet({
     { dependencies: [leaving] }
   );
 
-  useMountEffect(() => {
-    const root = mat.current;
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const unwatch = root && !still && typeof MutationObserver !== 'undefined' ? watchOutgoingSlides(root) : null;
-    return () => {
-      window.clearTimeout(leaveTimer.current);
-      unwatch?.();
-    };
-  });
+  useMountEffect(() => () => window.clearTimeout(leaveTimer.current));
 
   const shown = mode === 'slide';
   const paged = keys === 'paged';

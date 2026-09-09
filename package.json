@@ -11,6 +11,7 @@
     "lint:lines": "node scripts/lint-lines.mjs",
     "lint:lines:shell": "node scripts/lint-lines.mjs --shell",
     "build:deck": "node scripts/build-deck.mjs",
+    "build:thumbs": "node scripts/build-thumbs.mjs",
     "lint:all": "pnpm lint:shell && pnpm lint:practices && pnpm lint:lines:shell"
   },
   "dependencies": {

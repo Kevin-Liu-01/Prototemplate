@@ -72,12 +72,17 @@ const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
 /** The count's order: every paged direction in the site map's order (Shipped, Sites, Explorations), so the number column matches the count and the arrows (01 to 17). */
 const PAGED_DIRECTIONS = [...SHIPPED, ...SITES, ...EXPLORATIONS];
 
+/** The shipped direction is the live site's home, and every list calls it that (surfaces.ts, the index, the corner); its registry name stays the group's. */
+function directionTitle(d: Direction): string {
+  return d.reference ? 'Home' : d.name;
+}
+
 function directionItem(d: Direction): ShellItem {
   const position = PAGED_DIRECTIONS.indexOf(d);
   return {
     id: d.slug,
     n: position >= 0 ? pad2(position + 1) : '',
-    title: d.name,
+    title: directionTitle(d),
     href: `/d/${d.slug}`,
     desc: d.reference ? `${d.concept} Live at generaltranslation.com.` : d.concept,
     shot: { light: `/shots/light/${d.slug}.jpg`, dark: `/shots/dark/${d.slug}.jpg` },
@@ -260,15 +265,19 @@ function GalleryHome({ home, scrollRef, intent }: HomeProps) {
   return null;
 }
 
-/** The toolbar slot: opens the marked direction as its own page, named. Absent while no direction is marked. */
+/** The toolbar slot (section 3): opens the marked direction as its own page; the title names it. Absent while no direction is marked. */
 function OpenPage() {
   const { active } = usePtShell();
   const direction = DIRECTION_BY_SLUG.get(active);
   if (!direction) return null;
   return (
-    <Link className='pt-ib gv-open' href={`/d/${direction.slug}`} title={`Open ${direction.name} as its own page`}>
+    <Link
+      className='pt-ib gv-open'
+      href={`/d/${direction.slug}`}
+      title={`Open ${directionTitle(direction)} as its own page`}
+    >
       <Icon name='open-page' />
-      <span className='pt-lb'>Open {direction.name}</span>
+      <span className='pt-lb'>Open page</span>
     </Link>
   );
 }
@@ -308,7 +317,7 @@ function ExhibitFrame({ direction }: { direction: Direction }) {
           key={src}
           className={cn('gv-frame', on && 'is-on')}
           src={src}
-          title={`${direction.name}, live at 1440 pixels wide`}
+          title={`${directionTitle(direction)}, live at 1440 pixels wide`}
           onLoad={() => setReady(src)}
         />
       ) : null}

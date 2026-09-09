@@ -42,6 +42,8 @@ export type SearchEntry = {
   surface?: string;
   /** which site a row belongs to; the row colors its icon on the site's token */
   site?: SearchSite;
+  /** the lowercased words the filter matches against, built once when the index is; never set by a caller */
+  hay?: string;
 };
 
 /**
@@ -62,8 +64,15 @@ const GROUP_ORDER: readonly string[] = [
   'Deck slides',
 ];
 
-/** The groups an empty query shows: the site map, without headings, anchors and slides. */
-const DEFAULT_GROUPS: readonly string[] = ['Pages', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
+/**
+ * What an empty query shows: a short map of the site that fits the card
+ * without a scroll region, so the palette opens as a map and not a list to
+ * wade through. Every page, the shipped site's home and its first two
+ * pages, every document and the three site concepts (their enterprise pages
+ * are one keystroke away). Explorations, the archive, headings, libraries,
+ * brand sections and slides appear as soon as a letter is typed.
+ */
+const EMPTY_PER_GROUP: Readonly<Partial<Record<string, number>>> = { Pages: 6, Shipped: 3, Documents: 6, Sites: 3 };
 
 /* the Pages rows' icons (directive 8.5), by surface id */
 const PAGE_ICON: Readonly<Record<string, IconName>> = {
@@ -291,15 +300,36 @@ const SLIDES: readonly SearchEntry[] = DECK_SLIDES.map(
   })
 );
 
-/** Every site map row, then the headings, then the slides: the panel groups and orders them. */
-export const SEARCH_INDEX: readonly SearchEntry[] = [...SITE_SURFACES.map(fromSurface), ...HEADINGS, ...SLIDES];
+/** The words a row is matched on, lowercased once. */
+function hayOf(entry: SearchEntry): string {
+  return `${entry.title} ${entry.meta} ${entry.keywords ?? ''} ${entry.href} ${entry.group}`.toLowerCase();
+}
+
+/** Every site map row, then the headings, then the slides, each with its haystack built: the panel groups and orders them. */
+export const SEARCH_INDEX: readonly SearchEntry[] = [...SITE_SURFACES.map(fromSurface), ...HEADINGS, ...SLIDES].map(
+  (entry) => ({ ...entry, hay: hayOf(entry) })
+);
 
 /** Every term of the query, in order, has to appear somewhere in the row's words. */
 export function searchMatches(entry: SearchEntry, query: string): boolean {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (terms.length === 0) return true;
-  const hay = `${entry.title} ${entry.meta} ${entry.keywords ?? ''} ${entry.href} ${entry.group}`.toLowerCase();
+  const hay = entry.hay ?? hayOf(entry);
   return terms.every((term) => hay.includes(term));
+}
+
+/** True for a row the empty query shows: within its group's allowance, and for Sites the three homes alone. */
+function emptyRows(): SearchEntry[] {
+  const left = new Map(Object.entries(EMPTY_PER_GROUP));
+  const out: SearchEntry[] = [];
+  for (const entry of SEARCH_INDEX) {
+    const room = left.get(entry.group);
+    if (!room) continue;
+    if (entry.group === 'Sites' && entry.id.endsWith('-enterprise')) continue;
+    out.push(entry);
+    left.set(entry.group, room - 1);
+  }
+  return out;
 }
 
 export type SearchGroupRows = { group: SearchGroup; rows: readonly SearchEntry[] };
@@ -311,14 +341,12 @@ function groupRank(group: string): number {
 
 /**
  * The rows for a query, grouped in the fixed order and capped at `limit`
- * rows in all. An empty query shows the site map groups so the palette
- * opens as a map of the site, not a blank field.
+ * rows in all. An empty query shows the short map (EMPTY_PER_GROUP) so the
+ * palette opens as a map of the site, not a blank field.
  */
 export function searchGroups(query: string, limit = 60): readonly SearchGroupRows[] {
   const q = query.trim();
-  const hits = q
-    ? SEARCH_INDEX.filter((entry) => searchMatches(entry, q))
-    : SEARCH_INDEX.filter((entry) => DEFAULT_GROUPS.includes(entry.group));
+  const hits = q ? SEARCH_INDEX.filter((entry) => searchMatches(entry, q)) : emptyRows();
   const groups = new Map<SearchGroup, SearchEntry[]>();
   for (const entry of hits) {
     const rows = groups.get(entry.group);

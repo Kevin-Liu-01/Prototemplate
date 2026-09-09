@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { KeyboardEvent, MouseEvent, ReactNode, RefObject } from 'react';
-import { Fragment, useId, useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
 import type { ShellDensity, ShellItem, ShellMark, ShellSection, ShellShot, ShellThumb } from '@/lib/shell-data';
@@ -39,19 +39,20 @@ export type SidebarFilter = { active: boolean; clear: () => void };
 /** The site map groups, in the one order every route keeps (decision 7; Shipped after Pages, directive 8.10). */
 const NAV_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
 
-/** Groups folded on a first visit; the count on the header says what is inside. */
-const CLOSED_BY_DEFAULT: readonly string[] = ['Shipped'];
+/** The Shipped group's folded child: the live surfaces of the shipped site (directive 8.10). */
+const LIVE_KEY = 'Shipped:live';
+const LIVE_LABEL = 'Live site';
 
-/** The group whose body is the tile grid, one site per grid row. */
-const TILE_GROUP: SurfaceGroup = 'Sites';
+/** Groups folded on a first visit: only the live surfaces, whose header names them; every top-level group is open. */
+const CLOSED_BY_DEFAULT: readonly string[] = [LIVE_KEY];
 
-/** What the arrow keys walk, in document order: headers, rows, tiles, the rows a route hangs under an item. */
-const WALK = '.pt-grp-head, .pt-orow, .pt-tile, .pt-sub .pt-row';
+/** What the arrow keys walk, in document order: headers, rows, the rows a route hangs under an item. */
+const WALK = '.pt-grp-head, .pt-orow, .pt-sub .pt-row';
 
 /** the distance a followed row keeps from the list's edges */
 const FOLLOW_MARGIN = 8;
 
-/* queue-list for the outline (bars-3 would read as the toolbar's List toggle 60px away), photo for the shots */
+/* queue-list for the outline (bars-3 would read as the toolbar's list toggle 60px away), photo for the shots */
 const DENSITY_OPTIONS: readonly SegOption<ShellDensity>[] = [
   { value: 'outline', label: 'Outline', icon: 'queue-list', title: 'Outline' },
   { value: 'thumbs', label: 'Thumbnails', icon: 'photo', title: 'Thumbnails' },
@@ -79,7 +80,7 @@ const SITE_ICON: Readonly<Record<SurfaceSite, IconName>> = {
 
 /* the icon a site map group's rows share when the row itself does not decide */
 const GROUP_ICON: Readonly<Partial<Record<string, IconName>>> = {
-  Shipped: 'check-badge',
+  Shipped: 'document',
   Documents: 'document',
   Explorations: 'sparkles',
   Archive: 'archive',
@@ -89,7 +90,7 @@ const GROUP_ICON: Readonly<Partial<Record<string, IconName>>> = {
 
 /* the icon a route's own section gives its items, by section id */
 const SECTION_ICON: Readonly<Partial<Record<string, IconName>>> = {
-  shipped: 'check-badge',
+  shipped: 'document',
   documents: 'document',
   'brand-book': 'swatch',
   explorations: 'sparkles',
@@ -101,7 +102,6 @@ const SITE_OF_SLUG: Readonly<Record<string, SurfaceSite>> = {
   'singularity-dossier': 'dossier',
   'singularity-orbit': 'orbit',
   'singularity-signal': 'signal',
-  production: 'shipped',
 };
 
 function siteOfId(id: string): SurfaceSite | undefined {
@@ -111,15 +111,28 @@ function siteOfId(id: string): SurfaceSite | undefined {
   return undefined;
 }
 
+/** True for a site's enterprise page, which sits as a child under the site's home. */
+function isEnterprise(id: string): boolean {
+  return id.endsWith('-enterprise');
+}
+
+/**
+ * The glyph a site map row draws. Pages carry their own; a row that leaves
+ * the site draws external; the shipped site's pages are documents (the
+ * group's header carries the check-badge, so its rows are not a column of
+ * badges); a site's enterprise page is a document on the site's color and
+ * the site's home its own colored icon; the rest follow their group.
+ */
 function navIcon(row: Surface): IconName {
   if (row.group === 'Pages') return PAGE_ICON[row.id] ?? 'pages';
   if (isExternalSurface(row)) return 'external';
-  if (row.site) return SITE_ICON[row.site];
+  if (row.group === 'Shipped') return 'document';
+  if (row.site) return isEnterprise(row.id) ? 'document' : SITE_ICON[row.site];
   return GROUP_ICON[row.group] ?? 'pages';
 }
 
 function itemIcon(section: ShellSection, item: ShellItem, site: SurfaceSite | undefined): IconName {
-  if (site) return SITE_ICON[site];
+  if (site) return isEnterprise(item.id) ? 'document' : SITE_ICON[site];
   if (item.url) return 'external';
   return SECTION_ICON[section.id] ?? GROUP_ICON[section.label] ?? 'pages';
 }
@@ -133,7 +146,10 @@ function itemIcon(section: ShellSection, item: ShellItem, site: SurfaceSite | un
  */
 type Row = {
   key: string;
+  /** the full name, as the grid caption and the preview title read it */
   name: string;
+  /** the shorter name the tree shows for a child row (`Enterprise` under `Dossier`) */
+  short?: string;
   /** the second line in thumbnail density: the path, or host and path for a row that leaves the site */
   address: string;
   desc: string;
@@ -145,6 +161,8 @@ type Row = {
   shot?: ShellShot;
   href: string;
   external: boolean;
+  /** indented one level under the row before it: a site's enterprise page */
+  child?: boolean;
   item?: ShellItem;
 };
 
@@ -152,8 +170,11 @@ type Group = {
   key: string;
   label: string;
   rows: readonly Row[];
-  /** the Sites group: tiles instead of rows */
-  tiles: boolean;
+  /** the header's own glyph and the color it draws: the Shipped group's check-badge (directive 8.10) */
+  icon?: IconName;
+  site?: SurfaceSite;
+  /** a folded child group rendered after the rows: the Shipped group's live surfaces */
+  sub?: Group;
 };
 
 function fromItem(section: ShellSection, item: ShellItem): Row {
@@ -181,7 +202,8 @@ function fromNav(row: Surface): Row {
     address: row.host,
     desc: row.desc,
     icon: navIcon(row),
-    site: row.site,
+    /* the shipped site's rows draw no color of their own; their header does */
+    site: row.group === 'Shipped' ? undefined : row.site,
     preview: row.id,
     shot: row.shot ? { light: row.shot, dark: row.shotDark } : undefined,
     href: row.href,
@@ -194,7 +216,9 @@ function fromNav(row: Surface): Row {
  * the route does not own: on the gallery, Sites holds the three concepts as
  * items and their enterprise pages as links, Shipped the production home
  * as an item and its pages and live surfaces as links. Items and rows pair
- * by surface id; items the map does not know follow at the end.
+ * by surface id, and a paired item takes the map's name (so the shipped
+ * direction reads `Home` here as it does in the index and the corner);
+ * items the map does not know follow at the end.
  */
 function merge(section: ShellSection, nav: readonly Surface[]): readonly Row[] {
   const items = section.items.map((item) => fromItem(section, item));
@@ -204,7 +228,7 @@ function merge(section: ShellSection, nav: readonly Surface[]): readonly Row[] {
   for (const surface of nav) {
     const own = byPreview.get(surface.id);
     if (own) {
-      out.push(own);
+      out.push({ ...own, name: surface.name, site: surface.group === 'Shipped' ? undefined : own.site });
       taken.add(own.key);
     } else {
       out.push(fromNav(surface));
@@ -212,6 +236,32 @@ function merge(section: ShellSection, nav: readonly Surface[]): readonly Row[] {
   }
   for (const row of items) if (!taken.has(row.key)) out.push(row);
   return out;
+}
+
+/** The Sites group as a tree: each enterprise page a child row named `Enterprise` under its site's home. */
+function nestSites(rows: readonly Row[]): readonly Row[] {
+  return rows.map((row) => (isEnterprise(row.preview) ? { ...row, child: true, short: 'Enterprise' } : row));
+}
+
+/** The Shipped group: the header carries the badge, the pages are its rows, the live surfaces fold under `Live site`. */
+function shippedGroup(label: string, rows: readonly Row[]): Group {
+  const pages = rows.filter((row) => !row.external);
+  const live = rows.filter((row) => row.external);
+  return {
+    key: label,
+    label,
+    rows: pages,
+    icon: 'check-badge',
+    site: 'shipped',
+    sub: live.length > 0 ? { key: LIVE_KEY, label: LIVE_LABEL, rows: live } : undefined,
+  };
+}
+
+/** A site map group as the list shows it: Shipped with its child group, Sites as a tree, the rest as rows. */
+function navGroup(group: SurfaceGroup, rows: readonly Row[]): Group {
+  if (group === 'Shipped') return shippedGroup(group, rows);
+  if (group === 'Sites') return { key: group, label: group, rows: nestSites(rows) };
+  return { key: group, label: group, rows };
 }
 
 /**
@@ -227,7 +277,6 @@ function buildGroups(sections: readonly ShellSection[], siteMap: boolean): reado
     key: section.id,
     label: section.label,
     rows: section.items.map((item) => fromItem(section, item)),
-    tiles: false,
   });
   if (!siteMap) return sections.map(own);
   const navRows = new Map(surfaceGroups('site').map((entry) => [entry.group, entry.rows]));
@@ -238,9 +287,9 @@ function buildGroups(sections: readonly ShellSection[], siteMap: boolean): reado
     const nav = navRows.get(group) ?? [];
     if (section) {
       matched.add(section.id);
-      out.push({ key: group, label: group, rows: merge(section, nav), tiles: group === TILE_GROUP });
+      out.push(navGroup(group, merge(section, nav)));
     } else if (nav.length > 0) {
-      out.push({ key: group, label: group, rows: nav.map(fromNav), tiles: group === TILE_GROUP });
+      out.push(navGroup(group, nav.map(fromNav)));
     }
     if (group === 'Pages') {
       for (const entry of sections) {
@@ -253,6 +302,11 @@ function buildGroups(sections: readonly ShellSection[], siteMap: boolean): reado
   }
   for (const entry of sections) if (!matched.has(entry.id)) out.push(own(entry));
   return out;
+}
+
+/** Every group and every child group, flat, for lookups by key. */
+function allGroups(groups: readonly Group[]): readonly Group[] {
+  return groups.flatMap((group) => (group.sub ? [group, group.sub] : [group]));
 }
 
 function matches(row: Row, query: string): boolean {
@@ -287,7 +341,7 @@ function covers(path: string, pathname: string): boolean {
  */
 function currentKey(groups: readonly Group[], pathname: string): string | null {
   let best: Row | null = null;
-  for (const group of groups) {
+  for (const group of allGroups(groups)) {
     for (const row of group.rows) {
       if (row.item || row.external) continue;
       const path = pathOf(row.href);
@@ -314,9 +368,14 @@ function scrollBehavior(): ScrollBehavior {
  * alone (scrollTo on the region, not scrollIntoView, which also moves every
  * scrolling ancestor), only when the row is out of view, and not before the
  * shell has applied the hash (ready), so the SSR default row never spends
- * the landing. The sticky header above the row is kept clear of it.
+ * the landing. The sticky header above the row is kept clear of it. The
+ * first follow after landing is the deep link's: a row out of view is
+ * centered in the list, with the groups above and below it in sight,
+ * instead of parked on the bottom edge; every later selection moves the
+ * minimum distance.
  */
 function makeFollow(listRef: RefObject<HTMLElement | null>, ready: RefObject<boolean>) {
+  let landed = false;
   return (el: HTMLElement | null) => {
     const list = listRef.current;
     if (!el || !list || !ready.current) return;
@@ -325,9 +384,18 @@ function makeFollow(listRef: RefObject<HTMLElement | null>, ready: RefObject<boo
     /* measured against the list, not the row's offsetParent (its positioned group) */
     const top = el.getBoundingClientRect().top - list.getBoundingClientRect().top + list.scrollTop;
     const bottom = top + el.offsetHeight;
-    if (top - headH < list.scrollTop) {
+    const above = top - headH < list.scrollTop;
+    const below = bottom > list.scrollTop + list.clientHeight;
+    const first = !landed;
+    landed = true;
+    if (!above && !below) return;
+    if (first) {
+      list.scrollTo({ top: Math.max(0, top - (list.clientHeight - el.offsetHeight) / 2), behavior: 'auto' });
+      return;
+    }
+    if (above) {
       list.scrollTo({ top: Math.max(0, top - headH - FOLLOW_MARGIN), behavior: scrollBehavior() });
-    } else if (bottom > list.scrollTop + list.clientHeight) {
+    } else {
       list.scrollTo({ top: bottom - list.clientHeight + FOLLOW_MARGIN, behavior: scrollBehavior() });
     }
   };
@@ -372,6 +440,14 @@ export type ThumbListProps = {
   sections: readonly ShellSection[];
   thumb: ShellThumb;
   density: ShellDensity;
+  /**
+   * Mirror the sidebar's grouping (directive 8.10): a route section that
+   * stands for a site map group shows the group's rows that have a capture,
+   * the route's own items among them, so the grid's Shipped holds the home
+   * and its captured pages and Sites the three homes with their enterprise
+   * pages. Rows that leave the site and rows without a capture are left out.
+   */
+  siteMap?: boolean;
   renderSub?: SubRenderer;
   /** Defaults to the shell's select. GridView passes one that opens the slide first. */
   onSelect?: (id: string) => void;
@@ -379,30 +455,65 @@ export type ThumbListProps = {
   className?: string;
 };
 
+/** A site map row as a grid item: its capture under its full name, opened by the router. */
+function navItem(row: Row): ShellItem {
+  return { id: row.key, n: '', title: row.name, href: row.href, shot: row.shot, desc: row.desc, surface: row.preview };
+}
+
 /**
  * The route's own items as a plain list: a label per section and every item
  * as a captured frame (or a row when the route's thumb is 'row'). The grid
  * renders this over the stage; GridView.css re-lays it out. Every item
- * carries data-id so the shell can find it from outside.
+ * carries data-id so the shell can find it from outside. With siteMap the
+ * sections are built the way the sidebar builds its groups, so the two
+ * agree on what Shipped and Sites hold.
  */
-export function ThumbList({ sections, thumb, density, renderSub, onSelect, className }: ThumbListProps) {
+export function ThumbList({ sections, thumb, density, siteMap = false, renderSub, onSelect, className }: ThumbListProps) {
   const shell = usePtShell();
+  const router = useRouter();
   const pick = onSelect ?? shell.select;
   const frames = density === 'thumbs' && thumb !== 'row';
+
+  type Block = { key: string; label: string; entries: readonly { item: ShellItem; own: boolean }[] };
+  const blocks: readonly Block[] = siteMap
+    ? buildGroups(sections, true)
+        .filter((group) => sections.some((section) => section.id === group.key.toLowerCase()))
+        .map((group) => ({
+          key: group.key,
+          label: group.label,
+          entries: group.rows
+            .filter((row) => row.item || (row.shot && !row.external))
+            .map((row) => (row.item ? { item: row.item, own: true } : { item: navItem(row), own: false })),
+        }))
+    : sections.map((section) => ({
+        key: section.id,
+        label: section.label,
+        entries: section.items.map((item) => ({ item, own: true })),
+      }));
+
+  const open = (entry: { item: ShellItem; own: boolean }) => {
+    if (entry.own) {
+      pick(entry.item.id);
+      return;
+    }
+    if (entry.item.href) router.push(entry.item.href);
+  };
+
   return (
     <div className={cn('pt-thumbs', !frames && 'is-rows', className)}>
-      {sections.map((section) => (
-        <Fragment key={section.id}>
-          <div className='pt-sec-label'>{section.label}</div>
-          {section.items.map((item) => {
-            const active = item.id === shell.active;
-            const sub = renderSub ? renderSub(item, active) : null;
+      {blocks.map((block) => (
+        <Fragment key={block.key}>
+          <div className='pt-sec-label'>{block.label}</div>
+          {block.entries.map((entry) => {
+            const { item } = entry;
+            const active = entry.own && item.id === shell.active;
+            const sub = entry.own && renderSub ? renderSub(item, active) : null;
             return (
               <Fragment key={item.id}>
                 {frames ? (
-                  <ThumbItem item={item} active={active} onSelect={pick} />
+                  <ThumbItem item={item} active={active} onSelect={() => open(entry)} />
                 ) : (
-                  <ListRow item={item} active={active} onSelect={pick} />
+                  <ListRow item={item} active={active} onSelect={() => open(entry)} />
                 )}
                 {sub ? <div className='pt-sub'>{sub}</div> : null}
               </Fragment>
@@ -429,11 +540,11 @@ type RowProps = {
   follow?: (el: HTMLElement | null) => void;
 };
 
-/** The link attributes every row and tile shares. */
+/** The link attributes every row shares. The title carries the full name and the description, since the row clamps to one line. */
 function linkAttrs(row: Row, active: boolean, current: boolean) {
   return {
     href: row.href,
-    title: row.desc,
+    title: row.desc === row.name ? row.name : `${row.name}. ${row.desc}`,
     'data-preview': row.preview,
     'data-site': row.site,
     'aria-current': active || current ? (row.item ? ('true' as const) : ('page' as const)) : undefined,
@@ -450,7 +561,7 @@ function onRowSpace(event: KeyboardEvent<HTMLElement>, act: () => void): void {
   act();
 }
 
-/** The 64x36 capture, or the plate with the row's initial; in a row it is a frame, in a tile the tile is. */
+/** The 64x36 capture, or the plate with the row's initial, in its own frame. */
 function Mini({ row }: { row: Row }) {
   return (
     <span className='pt-thumb-frame is-mini'>
@@ -465,17 +576,24 @@ function Mini({ row }: { row: Row }) {
  * label (a site's icon on its --pt-site-* token through data-site), the
  * name, a route's short mark at the right end when it sets one (the pane
  * letter on /compare), and in thumbnail density the 64x36 capture on the
- * left with the address on a second line, 44px tall. A route item is an
- * anchor with its real href whose plain click the shell answers (a
- * modified click keeps the browser's meaning); a site map row is a link to
- * its route. The row that
- * is the place inside the current document draws the 2px ink bar.
+ * left with the address on a second line, 44px tall. A child row (a site's
+ * enterprise page) is indented one level under the row before it and shows
+ * its short name. A route item is an anchor with its real href whose plain
+ * click the shell answers (a modified click keeps the browser's meaning); a
+ * site map row is a link to its route. The row that is the place inside the
+ * current document draws the 2px ink bar.
  */
 function TreeRow({ row, active, current, shots, onPick, follow }: RowProps) {
   const Tag = row.item || row.external ? 'a' : Link;
   return (
     <Tag
-      className={cn('pt-orow', active && 'is-active', current && 'is-current', row.external && 'is-external')}
+      className={cn(
+        'pt-orow',
+        active && 'is-active',
+        current && 'is-current',
+        row.external && 'is-external',
+        row.child && 'is-child'
+      )}
       {...linkAttrs(row, active, current)}
       onMouseDown={row.item ? pressWithoutFocus : undefined}
       onClick={(event) => onPick(row, event)}
@@ -484,39 +602,9 @@ function TreeRow({ row, active, current, shots, onPick, follow }: RowProps) {
     >
       {shots ? <Mini row={row} /> : null}
       <Icon name={row.icon} />
-      <span className='pt-orow-name'>{row.name}</span>
+      <span className='pt-orow-name'>{row.short ?? row.name}</span>
       {row.item?.mark ? <span className='pt-orow-mark'>{row.item.mark}</span> : null}
       {shots ? <span className='pt-orow-addr'>{row.address}</span> : null}
-    </Tag>
-  );
-}
-
-/**
- * A site as a tile (grafted from variant C): the colored 14px icon and the
- * name, set as one run of text so a two-word name wraps under the icon and
- * keeps the tile's full width, in a --pt-edge frame, ink on hover and
- * current with the 2px offset outline every other current frame uses; a
- * route's mark (the pane letter on /compare) follows the name. In
- * thumbnail density the 64x36 capture sits above them, drawn without a
- * frame of its own since the tile is the frame (directive 8.9).
- */
-function Tile({ row, active, current, shots, onPick, follow }: RowProps) {
-  const Tag = row.item || row.external ? 'a' : Link;
-  return (
-    <Tag
-      className={cn('pt-tile', active && 'is-active', current && 'is-current')}
-      {...linkAttrs(row, active, current)}
-      onMouseDown={row.item ? pressWithoutFocus : undefined}
-      onClick={(event) => onPick(row, event)}
-      onKeyDown={row.item ? (event) => onRowSpace(event, () => onPick(row, null)) : undefined}
-      ref={follow}
-    >
-      {shots ? <Mini row={row} /> : null}
-      <span className='pt-tile-cap'>
-        <Icon name={row.icon} size={14} />
-        <span className='pt-tile-name'>{row.name}</span>
-        {row.item?.mark ? <span className='pt-tile-mark'>{row.item.mark}</span> : null}
-      </span>
     </Tag>
   );
 }
@@ -531,7 +619,7 @@ export type SidebarProps = {
   renderSub?: SubRenderer;
   /** render the site map groups around the route's sections */
   siteMap?: boolean;
-  /** the groups folded on a first visit; Shipped unless the caller says otherwise */
+  /** the groups folded on a first visit; the live surfaces unless the caller says otherwise */
   closedGroups?: readonly string[];
   /** where ViewerShell reads the filter state for the Escape ladder */
   filter?: RefObject<SidebarFilter>;
@@ -545,23 +633,27 @@ export type SidebarProps = {
  * gallery on every other route), the title, which never truncates, and the
  * density toggle; a 40px filter row holds the field and the route's count.
  * The list fills the rest as a scroll region of collapsible groups: a 24px
- * header with the chevron, the group's name and its count, sticky at the
- * top of the region so the group in view is always named, owning the
- * --pt-hair rule above its first row; under it 28px rows indented 24px
- * behind their Heroicons, so every icon sits in one column under the
- * header's label and the site colors stack. The Sites group is a two-column
- * grid of tiles, one site per grid row. Shipped starts folded with its
- * count; a group that holds the current route opens itself; the reader's
- * own choices persist per route under gt-shell-sections:<id>. In thumbnail
- * density every row is 44px with its 64x36 capture (or the plate with its
- * initial) and the address on a second line. The current row draws the 2px
- * ink bar and ink text and the list scrolls to it, alone, when it is out of
- * view. Every row carries data-preview for the one preview layer
- * (directive 8.6); the list draws no preview of its own. Typing in the
- * filter narrows every group and opens them; Enter opens the first match;
- * Escape clears; Down moves into the list; the arrows walk headers and
- * rows, Left and Right fold and unfold a header. At or below 900px an open
- * list is an overlay with a close button, and a pick closes it.
+ * header with the chevron, the group's name and its count (painted from
+ * data-count, so the header is four nodes), sticky at the top of the
+ * region so the group in view is always named, owning the --pt-hair rule
+ * above its first row; under it, as the section's own children, 28px rows
+ * indented 24px behind their Heroicons, so every icon sits in one column
+ * under the header's label and the site colors stack. Every top-level group
+ * is open on a first visit; the reader's own choices persist per route
+ * under gt-shell-sections:<id>. Shipped (directive 8.10) carries the
+ * check-badge on its header, its pages as document rows, and the eight live
+ * surfaces folded under a `Live site` child header. Sites holds each site's
+ * home on its colored icon with its enterprise page as an indented child
+ * row. In thumbnail density every row is 44px with its 64x36 capture (or
+ * the plate with its initial) and the address on a second line. The current
+ * row draws the 2px ink bar and ink text and the list scrolls to it, alone,
+ * when it is out of view; a deep link's first follow centers it. Every row
+ * carries data-preview for the one preview layer (directive 8.6); the list
+ * draws no preview of its own. Typing in the filter narrows every group and
+ * opens them; Enter opens the first match; Escape clears; Down moves into
+ * the list; the arrows walk headers and rows, Left and Right fold and unfold
+ * a header. At or below 900px an open list is an overlay with a close
+ * button, and a pick closes it.
  */
 export function Sidebar({
   title,
@@ -578,7 +670,6 @@ export function Sidebar({
   const shell = usePtShell();
   const router = useRouter();
   const pathname = usePathname();
-  const uid = useId();
   const { id, density, present, narrow, sidebarOpen, sidebarShown, active, select, setSidebar, setDensity } = shell;
   /* the shell's landing flag; a state assembled elsewhere (DirectionCorner) leaves it out and is ready at once */
   const ready = shell.ready ?? true;
@@ -594,12 +685,13 @@ export function Sidebar({
   const [follow] = useState(() => makeFollow(listRef, readyRef));
 
   const groups = buildGroups(sections, siteMap);
+  const flat = allGroups(groups);
   const q = query.trim().toLowerCase();
   const filtering = q.length > 0;
   const current = currentKey(groups, pathname);
   /* an item marked by the shell carries the bar; while none is (the gallery
      at its top, a direction page) the current route's row carries it */
-  const hasActiveItem = groups.some((group) => group.rows.some((row) => row.item?.id === active));
+  const hasActiveItem = flat.some((group) => group.rows.some((row) => row.item?.id === active));
 
   /* in the DOM while the shell says so: sidebarShown lags a close by the
      sidebar duration so the content can fade while the column narrows
@@ -679,7 +771,7 @@ export function Sidebar({
 
   /* the first visible thing the filter matches: a route item or a site map row */
   const firstMatch = (): (() => void) | null => {
-    for (const group of groups) {
+    for (const group of flat) {
       const row = visibleRows(group)[0];
       if (!row) continue;
       if (row.item) {
@@ -750,7 +842,7 @@ export function Sidebar({
     }
     if (key !== 'ArrowLeft' && key !== 'ArrowRight') return;
     const box = target.closest<HTMLElement>('.pt-grp');
-    const group = groups.find((entry) => entry.key === box?.dataset.group);
+    const group = flat.find((entry) => entry.key === box?.dataset.group);
     if (!box || !group) return;
     const onHead = target.classList.contains('pt-grp-head');
     event.preventDefault();
@@ -760,11 +852,11 @@ export function Sidebar({
       return;
     }
     if (!onHead) return;
-    if (isOpen(group)) box.querySelector<HTMLElement>('.pt-orow, .pt-tile')?.focus();
+    if (isOpen(group)) box.querySelector<HTMLElement>('.pt-orow')?.focus();
     else setOpen(group, true);
   };
 
-  const renderRow = (group: Group, row: Row) => {
+  const renderRow = (row: Row) => {
     const isActive = row.item ? row.item.id === active : !hasActiveItem && row.key === current;
     const isCurrent = !isActive && row.key === current;
     const props: RowProps = {
@@ -775,7 +867,6 @@ export function Sidebar({
       onPick,
       follow: isActive ? follow : undefined,
     };
-    if (group.tiles) return <Tile key={row.key} {...props} />;
     const sub = row.item && renderSub ? renderSub(row.item, isActive) : null;
     return (
       <Fragment key={row.key}>
@@ -785,37 +876,39 @@ export function Sidebar({
     );
   };
 
-  const renderGroup = (group: Group) => {
+  /* a group: the header, then its rows as the section's own children (no
+     wrapper, so the list stays under its node budget), then its child group */
+  const renderGroup = (group: Group, child = false): ReactNode => {
     const rows = visibleRows(group);
-    if (rows.length === 0) return null;
+    const sub = group.sub && visibleRows(group.sub).length > 0 ? group.sub : null;
+    if (rows.length === 0 && !sub) return null;
     const open = isOpen(group);
-    const bodyId = `${uid}-${group.key}`;
     return (
-      <section className={cn('pt-grp', !open && 'is-closed')} key={group.key} data-group={group.key}>
+      <section
+        className={cn('pt-grp', !open && 'is-closed', child && 'is-sub')}
+        key={group.key}
+        data-group={group.key}
+      >
         <button
           type='button'
           className='pt-grp-head'
           aria-expanded={open}
-          aria-controls={open ? bodyId : undefined}
           title={open ? `Collapse ${group.label}` : `Expand ${group.label}`}
+          data-count={rows.length}
+          data-site={group.site}
           onClick={() => setOpen(group, !open)}
         >
-          <span className='pt-chev' aria-hidden='true'>
-            <Icon name='chevron-down' />
-          </span>
+          <Icon name='chevron-down' />
+          {group.icon ? <Icon name={group.icon} /> : null}
           <span className='pt-grp-name'>{group.label}</span>
-          <span className='pt-grp-count'>{rows.length}</span>
         </button>
-        {open ? (
-          <div id={bodyId} className={cn('pt-grp-body', group.tiles && 'pt-tiles')}>
-            {rows.map((row) => renderRow(group, row))}
-          </div>
-        ) : null}
+        {open ? rows.map(renderRow) : null}
+        {open && sub ? renderGroup(sub, true) : null}
       </section>
     );
   };
 
-  const rendered = groups.map(renderGroup).filter((node) => node !== null);
+  const rendered = groups.map((group) => renderGroup(group)).filter((node) => node !== null);
   const gallery = id === 'gallery';
   const markNode = mark === 'gt' ? <GtMark /> : <PtMark />;
 

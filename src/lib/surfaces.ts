@@ -1,6 +1,6 @@
 import { LIBRARIES } from '@/app/craft/libraries';
 import { DOCS } from '@/app/docs/registry';
-import { ARCHIVE, archiveDesc, archiveShot } from '@/lib/archive';
+import { ARCHIVE, archiveDesc } from '@/lib/archive';
 import { DIRECTIONS } from '@/lib/directions';
 import type { ShellShot } from '@/lib/shell-data';
 
@@ -11,17 +11,21 @@ import type { ShellShot } from '@/lib/shell-data';
  * deck's surfaces panel as data. Pure data; the panel filters it client-side
  * and navigates internal hrefs with the router, external ones in a new tab.
  *
- * Thumbnails: `shot` and `shotDark` are public paths. Site rows use the
- * direction captures under /shots/light and /shots/dark; document and brand
- * rows the route captures under /shots/thumb/<id>.jpg and <id>-dark.jpg;
- * archive rows the 1440x900 first fold under /shots/archive. Public rows
- * point into /shots/deck, the deck's own thumbnails, which
+ * Thumbnails: `shot` and `shotDark` are public paths, and this registry is
+ * the preview layer's only image source (directive 8.6), so every path here
+ * is a thumbnail: direction, shipped page and archive rows point at the
+ * 640x360 cuts scripts/build-thumbs.mjs writes under /shots/thumb/<id>.jpg
+ * and <id>-dark.jpg (archive-<slug>.jpg for the archive), document and
+ * brand rows at the route captures in the same folder. The 1440 exhibit
+ * captures under /shots/light, /shots/dark and /shots/archive stay for the
+ * exhibit sheet and the grid, which read the routes' own ShellItem.shot.
+ * Public rows point into /shots/deck, the deck's own thumbnails, which
  * scripts/build-deck.mjs copies from deck/shots/thumb; the three page rows
  * with no route capture of their own (the gallery, the deck, the compare
  * rig) borrow the deck's captures of those pages from the same folder, so
- * every row that has a picture anywhere resolves one (directive 8.6). A row
- * without a shot renders the blank plate with its initial. surfaceShot(id)
- * is what the preview layer reads.
+ * every row that has a picture anywhere resolves one. A row without a shot
+ * renders the blank plate with its initial. surfaceShot(id) is what the
+ * preview layer reads.
  *
  * The site groups run in the one sidebar order every route keeps (Pages,
  * Shipped, Documents, Sites, Explorations, Archive); Libraries and Brand
@@ -142,9 +146,9 @@ const SITE_OF_SLUG: Readonly<Record<string, SurfaceSite>> = {
   production: 'shipped',
 };
 
-/** The light and dark direction captures under /shots/light and /shots/dark. */
+/** The light and dark thumbnails of a direction or a shipped page, cut by scripts/build-thumbs.mjs from the 1440 captures. */
 function directionShots(stem: string): { shot: string; shotDark: string } {
-  return { shot: `/shots/light/${stem}.jpg`, shotDark: `/shots/dark/${stem}.jpg` };
+  return thumb(stem);
 }
 
 const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => {
@@ -277,10 +281,7 @@ const SHIPPED_LIVE: readonly Surface[] = [
 const SHIPPED: readonly Surface[] = [...SHIPPED_HOME, ...SHIPPED_ROUTES, ...SHIPPED_LIVE];
 
 const EXPLORATIONS: readonly Surface[] = EXPLORATION_DIRECTIONS.map((d) =>
-  internal(d.slug, d.name, `/d/${d.slug}`, d.concept, 'Explorations', {
-    shot: `/shots/light/${d.slug}.jpg`,
-    shotDark: `/shots/dark/${d.slug}.jpg`,
-  })
+  internal(d.slug, d.name, `/d/${d.slug}`, d.concept, 'Explorations', directionShots(d.slug))
 );
 
 const LIBRARY_ROWS: readonly Surface[] = LIBRARIES.map((lib) =>
@@ -318,10 +319,10 @@ const BRAND_SECTIONS: readonly Surface[] = [
   internal(`brand-${anchor}`, name, `/brand#${anchor}`, desc, 'Brand sections', thumb(`brand-${anchor}`))
 );
 
-/** The retired versions, each opening its capture at /archive/<slug>. */
+/** The retired versions, each opening its capture at /archive/<slug>; the thumbnail is the first fold's 640x360 cut, light only. */
 const ARCHIVE_ROWS: readonly Surface[] = ARCHIVE.map((item) =>
   internal(`archive-${item.slug}`, item.name, `/archive/${item.slug}`, archiveDesc(item), 'Archive', {
-    shot: archiveShot(item),
+    shot: `${THUMBS}/archive-${item.slug}.jpg`,
   })
 );
 

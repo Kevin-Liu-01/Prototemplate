@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 import { Icon } from '@/components/viewer/icons';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { searchCount, searchGroups } from '@/lib/search-index';
-import type { SearchEntry } from '@/lib/search-index';
+import type { SearchEntry, SearchGroupRows } from '@/lib/search-index';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './Search.css';
@@ -36,13 +36,24 @@ import './Search.css';
  * Navigation goes through the router for another path and through the
  * hash for an anchor on the current path, so a heading on the document
  * being read fires hashchange and the shell's scroll-spy follows it.
+ *
+ * The index is filtered only while the card is open: the trigger sits in
+ * the toolbar, which re-renders on every shell state change, and a closed
+ * palette has nothing to compute. An empty query shows a short map of the
+ * site (search-index.ts, searchGroups) that fits the card without a scroll
+ * region, so opening it mounts a few rows and the preview layer preloads
+ * only what a reader can see.
  */
 export type SearchProps = {
   /** `field`: the toolbar's field-shaped button; `tool`: a labeled ToolButton for the direction corner's stack */
   trigger?: 'field' | 'tool';
   /** extra classes on the card's overlay */
   className?: string;
+  /** called as the palette opens, from the button or from the key: the direction corner closes its list and index with it */
+  onOpen?: () => void;
 };
+
+const EMPTY_GROUPS: readonly SearchGroupRows[] = [];
 
 /** The document event that opens the palette; fired by openSearch(). */
 export const SEARCH_OPEN_EVENT = 'pt:search-open';
@@ -68,21 +79,25 @@ function rowId(index: number): string {
   return `pt-search-opt-${index}`;
 }
 
-export function Search({ trigger = 'field', className }: SearchProps) {
+export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [sel, setSel] = useState(0);
   const card = useRef<HTMLDivElement>(null);
+  /* the mount-time listener reads the latest callback through this ref */
+  const onOpenRef = useRef(onOpen);
+  onOpenRef.current = onOpen;
 
-  const groups = searchGroups(query);
-  const rows: SearchEntry[] = groups.flatMap((entry) => entry.rows);
+  const groups = open ? searchGroups(query) : EMPTY_GROUPS;
+  const rows: readonly SearchEntry[] = groups.flatMap((entry) => entry.rows);
   const at = Math.min(sel, Math.max(rows.length - 1, 0));
 
   const show = () => {
     setQuery('');
     setSel(0);
     setOpen(true);
+    onOpenRef.current?.();
   };
 
   const close = () => {

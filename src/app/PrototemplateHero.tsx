@@ -257,18 +257,26 @@ export default function PrototemplateHero() {
 
       /* The sheet's width follows the viewer shell (the sidebar and the
          index panel resize the stage without a window resize), so the hero
-         watches its own box rather than the window. The observer reports
-         the initial size on observe; that first call is skipped because
-         fonts.ready already builds once. Without ResizeObserver the window
-         listener stands in. */
+         watches its own box rather than the window. Only a change of width
+         rebuilds: the travel deltas are horizontal measurements, and a
+         height change alone (the swapped nameplate fonts arriving, a row
+         above the stage coming or going) would otherwise kill the running
+         timeline and start it over about a second in, which is the drift
+         the 430e3c7 page never had. The observer's first report is the
+         initial box, which fonts.ready has already built from. Without
+         ResizeObserver the window listener stands in. */
       let observer: ResizeObserver | null = null;
       if (typeof ResizeObserver !== 'undefined') {
-        let first = true;
-        observer = new ResizeObserver(() => {
-          if (first) {
-            first = false;
+        let width: number | null = null;
+        observer = new ResizeObserver((entries) => {
+          const box = entries[0]?.contentRect;
+          const next = box ? Math.round(box.width) : rootEl.clientWidth;
+          if (width === null) {
+            width = next;
             return;
           }
+          if (next === width) return;
+          width = next;
           rebuild();
         });
         observer.observe(rootEl);

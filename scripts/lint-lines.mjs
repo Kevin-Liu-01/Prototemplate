@@ -104,7 +104,6 @@ const ALLOW = [
   'sheet', // the viewer shell's sheet mat: a 1px edge border inside a 1px paper gap inside a 1px hair-soft outline, the one sanctioned doubled line in chrome (the deck's own .sheet draws the same ring as two spread shadows)
   'thumb-frame', // the shell's active thumbnail frame: the edge border plus the 2px offset ink outline (the deck's .thumb-frame is the same device)
   'page-frame', // the shell's active book page frame: the same border plus offset outline pair
-  'pt-tile', // the sidebar's site tiles (directive 8.5): the edge frame plus the 2px offset ink outline on the current tile
   'pt-preview', // the hover preview card: a paper mat with a hair-soft outline around a frame with an edge border, the sheet ring at 240px
 ];
 

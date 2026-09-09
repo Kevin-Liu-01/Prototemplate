@@ -1,14 +1,15 @@
 /* /compare: the pane rules.
 
-   ViewerShell draws the chrome and Sheet draws the ring; this sheet owns
-   only what sits on the 2881x928 stage: two columns, each a 28px caption
-   over a 1440x900 pane, and the one hairline seam between them. The stage
-   is scaled by the sheet to fit both panes at once (Both) or to the stage
+   ViewerShell draws the chrome and Sheet draws the ring and the 1x caption
+   row under the sheet; this sheet owns only what sits on the 2881-wide
+   stage: two columns of one 1440-wide pane each, filling the stage's
+   height, and the one hairline seam between them. The stage is scaled by
+   the sheet to fit both panes at once (Both, where CompareRig.tsx sizes the
+   sheet's height from the stage so the panes fill it) or to the stage
    height, panning sideways to the named pane (Left, Right), so the panes
    keep their exhibit width and the proportional scroll sync in
-   CompareRig.tsx reads two same-origin windows of one size. Each caption
-   is clipped inside its own pane, so the stage edge can never cut it.
-   Colors are tokens only. */
+   CompareRig.tsx reads two same-origin windows of one size. The caption
+   names both panes and marks the target in ink. Colors are tokens only. */
 
 .pt-cmp-panes {
   position: absolute;
@@ -21,49 +22,15 @@
 
 .pt-cmp-col {
   display: grid;
-  grid-template-rows: 28px 900px;
-}
-
-/* the caption over a pane: the side, the direction, the address; the target pane's reads ink */
-.pt-cmp-caption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  max-width: 1440px;
-  padding: 0 14px;
-  font-size: 15px;
-  line-height: 1;
-  color: var(--pt-titanium);
-  border-bottom: 1px solid var(--pt-hair-soft);
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.pt-cmp-caption > span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pt-cmp-caption b {
-  font-weight: 500;
-  color: var(--pt-ink-2);
-}
-
-.pt-cmp-col.is-target .pt-cmp-caption {
-  color: var(--pt-ink-2);
-}
-
-.pt-cmp-col.is-target .pt-cmp-caption b {
-  color: var(--pt-ink);
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 0;
 }
 
 /* a pane whose page has not painted yet shows the paper, never a hole */
 .pt-cmp-pane {
   display: block;
   width: 1440px;
-  height: 900px;
+  height: 100%;
   border: 0;
   background: var(--pt-paper);
 }
@@ -71,4 +38,18 @@
 .pt-cmp-seam {
   display: block;
   background: var(--pt-hair);
+}
+
+/* the caption (Sheet.css sizes the row): the side in ink-2, the target pane's in ink */
+.pt-cmp-cap b {
+  font-weight: 500;
+  color: var(--pt-ink-2);
+}
+
+.pt-cmp-cap.is-target b {
+  color: var(--pt-ink);
+}
+
+.pt-cmp-cap i {
+  font-style: normal;
 }

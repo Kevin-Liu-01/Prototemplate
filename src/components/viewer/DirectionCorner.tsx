@@ -44,7 +44,10 @@ import './DirectionCorner.css';
  * exhibit, the compare panes and every screenshot pass depend on. No
  * toolbar and no sheet: the page stays a full document with its own nav.
  * Replaces src/components/shared/DirectionDock.tsx with the same prop
- * shape, { slug }.
+ * shape, { slug }. The palette opens inside the corner's own stacking
+ * context (z-index 100), under the layer that holds the list, the index and
+ * their scrim (101), so opening it from the button or from Cmd K closes the
+ * list and the index first; the palette is then the one thing over the page.
  *
  * The Sidebar, the IndexPanel and the HelpCard read shell state from
  * context, so the corner publishes small ShellState values of its own: one
@@ -164,6 +167,10 @@ function Corner({ slug }: DirectionCornerProps) {
       const low = e.key.length === 1 ? e.key.toLowerCase() : e.key;
       if ((e.metaKey || e.ctrlKey) && !e.altKey && low === 'k') {
         e.preventDefault();
+        /* the palette renders inside the corner's stacking context, under
+           the layer that holds the list and the index, so both close first */
+        setList(false);
+        setPanel(false);
         openSearch();
         return;
       }
@@ -235,7 +242,14 @@ function Corner({ slug }: DirectionCornerProps) {
         >
           <PtMark />
         </Link>
-        <Search trigger='tool' className='pt-corner-search' />
+        <Search
+          trigger='tool'
+          className='pt-corner-search'
+          onOpen={() => {
+            setList(false);
+            setPanel(false);
+          }}
+        />
         <ToolButton
           icon='sidebar'
           label='List'

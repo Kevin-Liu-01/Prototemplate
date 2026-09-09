@@ -4,20 +4,28 @@
    filter row (SidebarFilter.css draws the field; this sheet places the row
    and sizes the field), then the list as a scroll region: collapsible
    groups, each a 24px header that sticks to the top of the region while
-   its rows scroll under it, and 28px rows indented 24px behind their icons;
-   the Sites group a two-column grid of tiles. Thumbnail density widens the
-   column (ViewerShell.css sets --pt-sb-w to 256px) and every row becomes
-   44px with its 64x36 capture and its address.
+   its rows scroll under it, and 28px rows indented 24px behind their icons,
+   a child row (a site's enterprise page) one level further. The Shipped
+   group's header carries the check-badge on the shipped color and folds its
+   live surfaces under a child header. Thumbnail density widens the column
+   (ViewerShell.css sets --pt-sb-w to 256px) and every row becomes 44px with
+   its 64x36 capture and its address.
+
+   Nodes (directive 8.6, under 300 at 52 items): a header is four nodes
+   (button, the chevron svg and its path, the name span; the count is
+   painted from data-count, and only the Shipped header adds a glyph), a
+   row four (the anchor, its icon svg and path, the name span; five for a
+   two-path icon), and a group's rows are the section's own children with
+   no wrapper between.
 
    Lines (directive 8.9), 1px each, drawn once by one owner: the aside owns
    its right edge, the head and the filter row their bottom edges, a group
    header the --pt-hair rule above its first row (the rows draw none: a
    65-row list with a rule per row would be 65 lines, and the tree reads by
-   indentation), a tile its --pt-edge frame (its shot draws none), a row's
-   64x36 capture its own --pt-edge frame. The current row draws the 2px ink
-   bar at the column's edge and ink text; a current tile or capture an ink
-   frame plus the 2px offset outline every current frame in the shell uses
-   (scripts/lint-lines.mjs allows pt-tile and thumb-frame for that pair).
+   indentation), a row's 64x36 capture its own --pt-edge frame. The current
+   row draws the 2px ink bar at the column's edge and ink text; a current
+   capture an ink frame plus the 2px offset outline every current frame in
+   the shell uses (scripts/lint-lines.mjs allows thumb-frame for that pair).
    Site icons draw their site's token through data-site and hold it in
    every state; every other icon turns ink with its name. Spacing
    (directive 8.8): 28px rows, 24px headers with 16px above, 8px 10px list
@@ -169,10 +177,11 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-titanium);
 }
 
-/* ---- a group: the header, then its rows or tiles; 16px above every group
-   but the first. The group is the sticky header's containing block, so the
-   header rides along while the group's rows scroll under it and leaves
-   with its last row. ---- */
+/* ---- a group: the header, then its rows as its own children; 16px above
+   every group but the first. The group is the sticky header's containing
+   block, so the header rides along while the group's rows scroll under it
+   and leaves with its last row. The rows a header opens fade in over the
+   fast duration; closing removes them at once. ---- */
 .pt-grp {
   position: relative;
   display: flex;
@@ -183,10 +192,16 @@ a.pt-sb-mark:focus-visible {
   margin-top: 16px;
 }
 
+.pt-grp:not(.is-closed) > .pt-orow,
+.pt-grp:not(.is-closed) > .pt-sub {
+  animation: pt-fade-in var(--pt-dur-fast) var(--pt-ease-out) both;
+}
+
 /* the header: 24px plus its rule, the chevron in a 16px slot at the head of
-   a 24px gutter, the name, the count at the right end; paper ground so the
-   rows scroll under it, one --pt-hair rule below it (the line above the
-   first row, directive 8.9) */
+   a 24px gutter, the group's own glyph when it has one, the name, the count
+   at the right end painted from data-count; paper ground so the rows scroll
+   under it, one --pt-hair rule below it (the line above the first row,
+   directive 8.9) */
 .pt-grp-head {
   position: sticky;
   top: 0;
@@ -215,24 +230,30 @@ a.pt-sb-mark:focus-visible {
   transition: color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
-.pt-chev {
-  display: inline-flex;
+/* the chevron: the first svg, 12px in a 16px slot, turned while closed */
+.pt-grp-head > svg {
+  display: block;
   width: 16px;
   height: 16px;
+  padding: 2px;
+  box-sizing: border-box;
   flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-}
-
-.pt-chev svg {
-  width: 12px;
-  height: 12px;
   fill: currentColor;
   transition: transform var(--pt-dur-toast) var(--pt-ease-out);
 }
 
-.pt-grp.is-closed .pt-chev svg {
+.pt-grp.is-closed > .pt-grp-head > svg:first-child {
   transform: rotate(-90deg);
+}
+
+/* the group's own glyph (the Shipped badge): full 16px, on the group's site color */
+.pt-grp-head > svg + svg {
+  padding: 0;
+  transition: none;
+}
+
+.pt-grp-head[data-site='shipped'] > svg + svg {
+  color: var(--pt-site-shipped);
 }
 
 .pt-grp-name {
@@ -243,7 +264,10 @@ a.pt-sb-mark:focus-visible {
   text-overflow: ellipsis;
 }
 
-.pt-grp-count {
+/* the count, from the attribute: 12px tabular at the right end */
+.pt-grp-head::after {
+  content: attr(data-count);
+  flex: 0 0 auto;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
@@ -258,12 +282,19 @@ a.pt-sb-mark:focus-visible {
   outline-offset: -1px;
 }
 
-/* the rows a header opens fade in over the fast duration; closing removes them at once */
-.pt-grp-body {
-  display: flex;
-  flex-direction: column;
-  padding-top: 4px;
-  animation: pt-fade-in var(--pt-dur-fast) var(--pt-ease-out) both;
+/* a child group (the live surfaces under Shipped): 8px above, its header
+   in the row column and not sticky, its rows one level further in */
+.pt-grp.is-sub {
+  margin-top: 8px;
+}
+
+.pt-grp.is-sub > .pt-grp-head {
+  position: static;
+  padding-left: 34px;
+}
+
+.pt-grp.is-sub > .pt-orow {
+  padding-left: 58px;
 }
 
 /* ---- a row: a two-column grid, the icon in a 16px column under the
@@ -282,6 +313,11 @@ a.pt-sb-mark:focus-visible {
   cursor: pointer;
   content-visibility: auto;
   contain-intrinsic-size: auto 28px;
+}
+
+/* a child row: one level further in, under the row before it */
+.pt-orow.is-child {
+  padding-left: 58px;
 }
 
 /* the icon is the row's own child (no wrapper: a row is four nodes) */
@@ -352,135 +388,26 @@ a.pt-sb-mark:focus-visible {
   outline-offset: -1px;
 }
 
-/* the sites' icons carry their site's color on both grounds, in rows and tiles alike */
-.pt-sb [data-site='dossier'] > svg,
-.pt-sb [data-site='dossier'] .pt-tile-cap > svg {
+/* the sites' icons carry their site's color on both grounds */
+.pt-sb [data-site='dossier'] > svg {
   color: var(--pt-site-dossier);
 }
 
-.pt-sb [data-site='orbit'] > svg,
-.pt-sb [data-site='orbit'] .pt-tile-cap > svg {
+.pt-sb [data-site='orbit'] > svg {
   color: var(--pt-site-orbit);
 }
 
-.pt-sb [data-site='signal'] > svg,
-.pt-sb [data-site='signal'] .pt-tile-cap > svg {
+.pt-sb [data-site='signal'] > svg {
   color: var(--pt-site-signal);
 }
 
-.pt-sb [data-site='shipped'] > svg,
-.pt-sb [data-site='shipped'] .pt-tile-cap > svg {
+.pt-sb .pt-orow[data-site='shipped'] > svg {
   color: var(--pt-site-shipped);
-}
-
-/* ---- the Sites group as tiles (grafted from variant C): two columns, one
-   site per grid row, the home on the left and the enterprise page on the
-   right; 8px under the header so the frames never sit against its rule,
-   and 8px between tiles so a current tile's offset outline (3px outside
-   its frame) stays clear of its neighbours. A tile is the colored 14px
-   icon and the name in a --pt-edge frame, 44px so a name on two lines
-   (Dossier enterprise) and one on one line keep the same height; the
-   caption is one run of inline text, the icon leading it, so the second
-   line starts under the icon and has the tile's whole width. ---- */
-.pt-grp-body.pt-tiles {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  padding: 8px 10px 0;
-}
-
-.pt-tile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  min-height: 44px;
-  padding: 6px 8px;
-  border: 1px solid var(--pt-edge);
-  background: var(--pt-paper);
-  color: var(--pt-ink-2);
-  text-decoration: none;
-  cursor: pointer;
-  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
-}
-
-.pt-tile-cap {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  min-width: 0;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-  font-size: 13px;
-  line-height: 16px;
-}
-
-.pt-tile-cap > svg {
-  display: inline;
-  width: 14px;
-  height: 14px;
-  margin-right: 6px;
-  vertical-align: -2px;
-  fill: currentColor;
-  color: var(--pt-titanium);
-}
-
-.pt-tile-name {
-  display: inline;
-  transition: color var(--pt-dur-fast) var(--pt-ease-out);
-}
-
-/* a route's mark after the name: the pane letter on /compare */
-.pt-tile-mark {
-  display: inline;
-  margin-left: 6px;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-}
-
-.pt-tile:hover,
-.pt-tile:focus-visible,
-.pt-tile.is-active,
-.pt-tile.is-current {
-  border-color: var(--pt-ink);
-}
-
-.pt-tile:hover .pt-tile-name,
-.pt-tile:focus-visible .pt-tile-name,
-.pt-tile.is-active .pt-tile-name,
-.pt-tile.is-current .pt-tile-name {
-  color: var(--pt-ink);
-}
-
-.pt-tile.is-active .pt-tile-name,
-.pt-tile.is-current .pt-tile-name {
-  font-weight: 500;
-}
-
-.pt-tile.is-active .pt-tile-mark {
-  color: var(--pt-ink);
-}
-
-/* the current tile: the ink frame plus the offset outline every current frame uses */
-.pt-tile.is-active {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: 2px;
-}
-
-.pt-tile:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: -2px;
 }
 
 /* ---- thumbnail density: every row 44px with its 64x36 capture on the
    left (a frame of its own), the icon and the name on the first line, the
-   address on the second; the tree's indent gives way to the capture. A
-   tile grows to 84px with the capture above its caption and draws no frame
-   around the capture, since the tile is the frame. ---- */
+   address on the second; the tree's indent gives way to the capture. ---- */
 .pt-thumb-frame.is-mini {
   position: relative;
   display: block;
@@ -498,6 +425,11 @@ a.pt-sb-mark:focus-visible {
   height: 44px;
   padding: 0 10px;
   contain-intrinsic-size: auto 44px;
+}
+
+.pt-thumbs.is-shots .pt-orow.is-child,
+.pt-thumbs.is-shots .pt-grp.is-sub > .pt-orow {
+  padding-left: 26px;
 }
 
 .pt-thumbs.is-shots .pt-orow .pt-thumb-frame.is-mini {
@@ -546,31 +478,25 @@ a.pt-sb-mark:focus-visible {
   outline-offset: 2px;
 }
 
-.pt-thumbs.is-shots .pt-tile {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  height: 84px;
-  padding: 5px;
-}
-
-/* the tile is the frame: its capture draws none */
-.pt-tile .pt-thumb-frame.is-mini {
-  border: 0;
-  background: var(--pt-plate);
-}
-
 /* ---- the rows a route hangs under an item (ListRow): 28px, indented under
-   the item's icon, no rule of their own. Written above the shields in
+   the item's icon, one line with an ellipsis (the title attribute carries
+   the whole heading), no rule of their own. Written above the shields in
    docs.css and brand.css (three and four selectors deep), which keep the
    article layer's .pt-row rules off these rows. ---- */
-.pt-sb .pt-thumbs .pt-grp-body .pt-sub .pt-row {
+.pt-sb .pt-thumbs .pt-sub .pt-row {
   grid-template-columns: 26px minmax(0, 1fr);
   gap: 8px;
   align-items: baseline;
   min-height: 28px;
   padding: 5px 10px 5px 34px;
   border-bottom: 0;
+}
+
+.pt-sb .pt-thumbs .pt-sub .pt-row .pt-row-title {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pt-thumbs.is-shots .pt-sub .pt-row {
@@ -726,17 +652,16 @@ a.pt-sb-mark:focus-visible {
   }
 
   .pt-sb.is-overlay,
-  .pt-grp-body {
+  .pt-grp:not(.is-closed) > .pt-orow,
+  .pt-grp:not(.is-closed) > .pt-sub {
     animation: none;
   }
 
   a.pt-sb-mark,
   .pt-grp-head,
-  .pt-chev svg,
+  .pt-grp-head > svg,
   .pt-orow > svg,
   .pt-orow-name,
-  .pt-tile,
-  .pt-tile-name,
   .pt-thumb-frame {
     transition: none;
   }

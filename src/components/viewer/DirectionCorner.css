@@ -20,6 +20,9 @@
    out under .is-leaving. The keyframes live here because /d pages never
    load ViewerShell.css. Reduced motion switches every one of them off. */
 
+/* the column shares one right edge: every labeled button stretches to the
+   widest (Search, List and Index end on one x), so the stack reads as one
+   piece of chrome; the 32px mark tile keeps its own width */
 .pt-corner {
   position: fixed;
   top: 10px;
@@ -27,8 +30,12 @@
   z-index: 100;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   font-family: var(--pt-text);
+}
+
+.pt-corner .pt-ib:not(.pt-icon) {
+  justify-content: flex-start;
 }
 
 .pt-corner .pt-ib {

@@ -87,19 +87,21 @@
 /* Scroll regions (directive 8.11): one thin scrollbar for every scrolling
    box in chrome, the sidebar list, the index panel body, the search
    results, the grid, the book and the flow sheet. A 4px gutter, always
-   present, with no track and no rule; a 2px thumb in --pt-thumb flush to
-   the edge (the thumb's 2px transparent left border, clipped out of its
-   ground, leaves the paint on the outer 2px), widening to the full 4px
-   while the pointer is over the region; no buttons; radius 0. This class
-   is the single owner of the values, and deck/parts/head.html's .scroll
-   rule carries the same ones so the standalone deck matches. Shell routes
-   never scroll the document. globals.css sets scrollbar-width: thin and a
-   scrollbar-color on html for the /d pages, and both properties inherit;
-   Chromium ignores ::-webkit-scrollbar rules on any box where either is not
-   auto, so the region resets them before the webkit rules below can paint.
-   Firefox, which has no ::-webkit-scrollbar, takes scrollbar-width: thin
-   with the thumb color on a transparent track. .pt-scroll-x is the
-   sideways variant for a stage wider than its box. */
+   present, with no track and no rule; a 2px thumb in --pt-thumb centered
+   in the gutter (a 1px transparent border on each side, clipped out of the
+   thumb's ground, leaves the paint on the middle 2px, so the thumb never
+   touches the seam beside the gutter and never reads as a 3px band with
+   it), widening to the full 4px only while the pointer is on the thumb
+   itself; no buttons; radius 0. This class is the single owner of the
+   values, and deck/parts/head.html's .scroll rule carries the same ones so
+   the standalone deck matches. Shell routes never scroll the document.
+   globals.css sets scrollbar-width: thin and a scrollbar-color on html for
+   the /d pages, and both properties inherit; Chromium ignores
+   ::-webkit-scrollbar rules on any box where either is not auto, so the
+   region resets them before the webkit rules below can paint. Firefox,
+   which has no ::-webkit-scrollbar, takes scrollbar-width: thin with the
+   thumb color on a transparent track. .pt-scroll-x is the sideways variant
+   for a stage wider than its box. */
 .pt-scroll,
 .pt-scroll-x {
   scrollbar-gutter: stable;
@@ -134,29 +136,23 @@
   background: var(--pt-thumb);
   background-clip: padding-box;
   border: 0;
-  border-left: 2px solid transparent;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
   border-radius: 0;
 }
 
 .pt-scroll-x::-webkit-scrollbar-thumb {
   border-left: 0;
-  border-top: 2px solid transparent;
+  border-right: 0;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 
-/* Chromium re-resolves a scrollbar part's style only when the scroller's
-   own computed style changes; a hover rule that touches nothing but the
-   pseudo-element never repaints the thumb. The custom property below is
-   that change: it has no reader, it exists so the thumb's hover rule takes
-   effect on entering and leaving the region. */
-.pt-scroll:hover,
-.pt-scroll-x:hover {
-  --pt-scroll-hover: 1;
-}
-
-.pt-scroll:hover::-webkit-scrollbar-thumb,
-.pt-scroll-x:hover::-webkit-scrollbar-thumb {
-  border-left-width: 0;
-  border-top-width: 0;
+/* the pointer on the thumb: the full 4px, in the hover color */
+.pt-scroll::-webkit-scrollbar-thumb:hover,
+.pt-scroll-x::-webkit-scrollbar-thumb:hover {
+  background-color: var(--pt-ink-2);
+  border-width: 0;
 }
 
 .pt-scroll::-webkit-scrollbar-button,

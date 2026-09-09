@@ -162,14 +162,14 @@
   [hidden] { display: none !important; }
 
   /* scroll regions: the thin scrollbar the Prototemplate shell uses (src/components/viewer/tokens.css .pt-scroll, directive 8.11):
-     a 4px gutter with no track rule, a 2px thumb flush to the edge (a 2px transparent left border clipped out of the
-     thumb's ground) that widens to 4px while the pointer is over the region, no buttons, radius 0, scrollbar-width: thin in Firefox */
+     a 4px gutter with no track rule, a 2px thumb centered in it (a 1px transparent border each side clipped out of the
+     thumb's ground, so it never touches the seam beside the gutter) that widens to 4px only while the pointer is on the
+     thumb itself, no buttons, radius 0, scrollbar-width: thin in Firefox */
   .scroll { overflow-y: scroll; overflow-x: hidden; scrollbar-gutter: stable; scrollbar-width: auto; scrollbar-color: auto; }
   .scroll::-webkit-scrollbar { width: 4px; height: 4px; }
   .scroll::-webkit-scrollbar-track { background: transparent; border: 0; }
-  .scroll::-webkit-scrollbar-thumb { background: var(--thumb); background-clip: padding-box; border: 0; border-left: 2px solid transparent; border-radius: 0; }
-  .scroll:hover { --scroll-hover: 1; } /* Chromium re-resolves scrollbar parts only when the scroller's own style changes; this property is that change */
-  .scroll:hover::-webkit-scrollbar-thumb { border-left-width: 0; }
+  .scroll::-webkit-scrollbar-thumb { background: var(--thumb); background-clip: padding-box; border: 0; border-left: 1px solid transparent; border-right: 1px solid transparent; border-radius: 0; }
+  .scroll::-webkit-scrollbar-thumb:hover { background-color: var(--ink-2); border-width: 0; }
   .scroll::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
   @supports not selector(::-webkit-scrollbar) { .scroll { scrollbar-width: thin; scrollbar-color: var(--thumb) transparent; } }
 
@@ -215,6 +215,7 @@
   .viewer.no-sb .bar-brand, .viewer.is-overview .bar-brand { display: inline-flex; }
   .ib { appearance: none; background: none; border: 1px solid transparent; color: var(--ink-2); font: 13px/1 var(--text); height: 32px; padding: 0 10px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap; border-radius: 0; }
   .ib svg { width: 16px; height: 16px; fill: currentColor; flex: 0 0 auto; }
+  .ib .theme-glyph { display: inline-block; width: 16px; font-size: 16px; line-height: 16px; text-align: center; font-weight: 400; } /* the theme's text glyph, ◐ in light and ◑ in dark, as the Prototemplate shell draws it (directive 8.4) */
   .ib:hover { color: var(--ink); border-color: var(--hair); }
   .ib:focus-visible { outline: 1px solid var(--ink); outline-offset: -1px; }
   .ib.is-on { color: var(--ink); border-color: var(--ink); }
@@ -338,26 +339,26 @@
   <section class="main" id="main">
     <div class="toolbar" role="toolbar" aria-label="Deck controls">
       <div class="bar-l">
-        <button type="button" class="ib icon" data-act="sb" title="Show or hide the slide list ([)" aria-label="Show or hide the slide list"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M1 2h14v12H1V2Zm6 1.5v9h6.5v-9H7Z"/></svg></button>
+        <button type="button" class="ib icon" data-act="sb" title="Show or hide the slide list ([)" aria-label="Show or hide the slide list"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75Zm0 10.5a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Z"/></svg></button>
         <span class="bar-brand"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>GT brand deck</b></span>
         <span class="sep"></span>
-        <button type="button" class="ib icon" data-act="prev" title="Previous slide (left arrow)" aria-label="Previous slide"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.5v11L4.5 8l6-5.5Z"/></svg></button>
+        <button type="button" class="ib icon" data-act="prev" title="Previous slide (left arrow)" aria-label="Previous slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"/></svg></button>
         <span class="count"><b id="bar-n">01</b><span class="of"> / </span><span id="bar-total">52</span></span>
-        <button type="button" class="ib icon" data-act="next" title="Next slide (right arrow)" aria-label="Next slide"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 2.5v11L11.5 8l-6-5.5Z"/></svg></button>
+        <button type="button" class="ib icon" data-act="next" title="Next slide (right arrow)" aria-label="Next slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"/></svg></button>
       </div>
       <div class="bar-r">
         <div class="seg" role="group" aria-label="View">
-          <button type="button" class="ib is-on" data-mode="slide" title="One slide at a time (Esc)" aria-pressed="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h14v10H1Z"/></svg><span class="lb">Slide</span></button>
-          <button type="button" class="ib" data-mode="grid" title="Every slide as a grid (G)" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h6v6H1ZM9 1h6v6H9ZM1 9h6v6H1ZM9 9h6v6H9Z"/></svg><span class="lb">Grid</span></button>
-          <button type="button" class="ib" data-mode="book" title="Read the deck as a book (B)" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 3.2c2.4-.5 4.4-.1 5.75 1v9.6c-1.35-1.1-3.35-1.5-5.75-1V3.2ZM14.5 3.2c-2.4-.5-4.4-.1-5.75 1v9.6c1.35-1.1 3.35-1.5 5.75-1V3.2Z"/></svg><span class="lb">Book</span></button>
+          <button type="button" class="ib is-on" data-mode="slide" title="One slide at a time (Esc)" aria-pressed="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.127 3.502 5.25 3.5h9.5c.041 0 .082 0 .123.002A2.251 2.251 0 0 0 12.75 2h-5.5a2.25 2.25 0 0 0-2.123 1.502ZM1 10.25A2.25 2.25 0 0 1 3.25 8h13.5A2.25 2.25 0 0 1 19 10.25v5.5A2.25 2.25 0 0 1 16.75 18H3.25A2.25 2.25 0 0 1 1 15.75v-5.5ZM3.25 6.5c-.04 0-.082 0-.123.002A2.25 2.25 0 0 1 5.25 5h9.5c.98 0 1.814.627 2.123 1.502a3.819 3.819 0 0 0-.123-.002H3.25Z"/></svg><span class="lb">Slide</span></button>
+          <button type="button" class="ib" data-mode="grid" title="Every slide as a grid (G)" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 2 13.25v2.5A2.25 2.25 0 0 0 4.25 18h2.5A2.25 2.25 0 0 0 9 15.75v-2.5A2.25 2.25 0 0 0 6.75 11h-2.5Zm9-9A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 11 13.25v2.5A2.25 2.25 0 0 0 13.25 18h2.5A2.25 2.25 0 0 0 18 15.75v-2.5A2.25 2.25 0 0 0 15.75 11h-2.5Z"/></svg><span class="lb">Grid</span></button>
+          <button type="button" class="ib" data-mode="book" title="Read the deck as a book (B)" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10.75 16.82A7.462 7.462 0 0 1 15 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0 0 18 15.06v-11a.75.75 0 0 0-.546-.721A9.006 9.006 0 0 0 15 3a8.963 8.963 0 0 0-4.25 1.065V16.82ZM9.25 4.065A8.963 8.963 0 0 0 5 3c-.85 0-1.673.118-2.454.339A.75.75 0 0 0 2 4.06v11a.75.75 0 0 0 .954.721A7.506 7.506 0 0 1 5 15.5c1.579 0 3.042.487 4.25 1.32V4.065Z"/></svg><span class="lb">Book</span></button>
         </div>
         <span class="sep"></span>
-        <button type="button" class="ib" data-act="surfaces" title="Every public surface, with previews and links (R)" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 2.75h2.5v2.5H1ZM5.5 2.75H15v2.5H5.5ZM1 6.75h2.5v2.5H1ZM5.5 6.75H15v2.5H5.5ZM1 10.75h2.5v2.5H1ZM5.5 10.75H15v2.5H5.5Z"/></svg><span class="lb">Surfaces</span></button>
-        <button type="button" class="ib icon" data-act="theme" title="Dark or light (D)" aria-label="Dark or light"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Zm0 1.3v10.4a5.2 5.2 0 0 0 0-10.4Z"/></svg></button>
-        <button type="button" class="ib icon hide-sm" data-act="present" title="Presentation mode, chrome hidden (P)" aria-label="Presentation mode"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 2.5h14V11H1ZM5.5 12.5h5V14h-5Z"/></svg></button>
-        <button type="button" class="ib icon" data-act="full" title="Fullscreen (F)" aria-label="Fullscreen"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h5.5v2H3v3.5H1ZM9.5 1H15v5.5h-2V3H9.5ZM1 9.5h2V13h3.5v2H1ZM13 9.5h2V15H9.5v-2H13Z"/></svg></button>
-        <button type="button" class="ib icon hide-sm" data-act="link" title="Copy a link to this slide" aria-label="Copy a link to this slide"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h5v2H4v7h7V9h2v5H2ZM9 1h6v6h-2V4.4l-5.3 5.3-1.4-1.4L11.6 3H9Z"/></svg></button>
-        <button type="button" class="ib icon" data-act="help" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">?</button>
+        <button type="button" class="ib" data-act="surfaces" title="Every public surface, with previews and links (R)" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.75A.75.75 0 0 1 6.75 4h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 4.75ZM6 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 10Zm0 5.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H6.75a.75.75 0 0 1-.75-.75ZM1.99 4.75a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1v-.01ZM1.99 15.25a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1v-.01ZM1.99 10a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1V10Z"/></svg><span class="lb">Surfaces</span></button>
+        <button type="button" class="ib icon" data-act="theme" title="Dark or light (D)" aria-label="Dark or light"><span class="theme-glyph" aria-hidden="true">◑</span></button>
+        <button type="button" class="ib icon hide-sm" data-act="present" title="Presentation mode, chrome hidden (P)" aria-label="Presentation mode"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.841Z"/></svg></button>
+        <button type="button" class="ib icon" data-act="full" title="Fullscreen (F)" aria-label="Fullscreen"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m13.28 7.78 3.22-3.22v2.69a.75.75 0 0 0 1.5 0v-4.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0 0 1.5h2.69l-3.22 3.22a.75.75 0 0 0 1.06 1.06ZM2 17.25v-4.5a.75.75 0 0 1 1.5 0v2.69l3.22-3.22a.75.75 0 0 1 1.06 1.06L4.56 16.5h2.69a.75.75 0 0 1 0 1.5h-4.5a.747.747 0 0 1-.75-.75ZM12.22 13.28l3.22 3.22h-2.69a.75.75 0 0 0 0 1.5h4.5a.747.747 0 0 0 .75-.75v-4.5a.75.75 0 0 0-1.5 0v2.69l-3.22-3.22a.75.75 0 1 0-1.06 1.06ZM3.5 4.56l3.22 3.22a.75.75 0 0 0 1.06-1.06L4.56 3.5h2.69a.75.75 0 0 0 0-1.5h-4.5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4.56Z"/></svg></button>
+        <button type="button" class="ib icon hide-sm" data-act="link" title="Copy a link to this slide" aria-label="Copy a link to this slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z"/><path d="M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z"/></svg></button>
+        <button type="button" class="ib icon" data-act="help" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg></button>
       </div>
     </div>
     <div class="stagewrap" id="stagewrap">

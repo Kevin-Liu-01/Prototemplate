@@ -241,8 +241,9 @@
   text-overflow: ellipsis;
 }
 
+/* the active row's title and icon turn ink; a site row's icon holds its site color in every state (directive 8.5), so the guard sits on the row, where data-site lives */
 .pt-search-row.is-active .pt-search-t,
-.pt-search-row.is-active .pt-search-ic:not([data-site]) {
+.pt-search-row.is-active:not([data-site]) .pt-search-ic {
   color: var(--pt-ink);
 }
 

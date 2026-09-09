@@ -21,22 +21,30 @@ import './Toolbar.css';
 
 /**
  * The 52px bar over the stage, the first row of .pt-main. Left group: the
- * list toggle, the brand (in the DOM always, shown by Toolbar.css only
- * while the sidebar column is closed, so the first paint of a saved closed
- * list already names the route), Previous, the
- * count (a button: click it, type a number, press Enter), Next. Right
- * group: the search bar first (directive 8.3: the field-shaped button with
- * the ⌘K hint, left of the mode control on every shell route), then the
- * route's own controls, the mode seg in one fixed order (Slides, Grid,
- * Book) when the route offers more than one mode, then Index, Theme,
- * Present (whenever the route has a slide mode), Fullscreen, Copy link and
- * Help. Every control is a labeled ToolButton with a title naming its key
- * (decision 7). One treatment per meaning: the seg's active fill is the one
- * solid in the bar, so Present is a labeled button like Fullscreen, since
- * after directive 7.1 it is a mode toggle (Escape leaves it) and not an
- * action that leaves the page. The labels collapse in two stages when the
- * bar runs short (Toolbar.css): the conventional glyphs first, everything
- * only when that is not enough. State and actions come from the shell
+ * list toggle (an icon square, section 2.2; aria-pressed follows the list
+ * but the ink frame does not, since the open list is its own state and the
+ * frame is kept for transient toggles), the brand (in the DOM always, shown
+ * by Toolbar.css only while the sidebar column is closed, so the first
+ * paint of a saved closed list already names the route), then Previous,
+ * the count (a button: click it, type a number, press Enter) and Next while
+ * the route is paging. On a route with a slide mode that is showing its
+ * book or grid (the gallery), the keys are flow and the trio is left out:
+ * arrows scroll there, and a count with nothing to count read as a noun
+ * phrase. Right group: the search bar first (directive 8.3: the
+ * field-shaped button with the ⌘K hint, left of the mode control on every
+ * shell route), then the route's own controls, the mode seg in one fixed
+ * order (Slides, Grid, Book) when the route offers more than one mode, then
+ * Index, Theme, Present (in slide mode only, where it has a slide to
+ * present), Fullscreen, Copy link and Help. Every control is a labeled
+ * ToolButton with a title naming its key (decision 7). One treatment per
+ * meaning: the seg's active fill is the one solid in the bar, so Present is
+ * a labeled button like Fullscreen, since after directive 7.1 it is a mode
+ * toggle (Escape leaves it) and not an action that leaves the page. The
+ * labels collapse in measured tiers when the bar runs short (Toolbar.css):
+ * Copy link and Fullscreen first, then Previous and Next, then Theme, and
+ * only when a route's own controls still leave the bar short, Index, Help,
+ * Present and the slot's buttons; the seg's words and the Search field
+ * never collapse above 900px. State and actions come from the shell
  * context; the props carry only what the context does not hold.
  */
 export type ToolbarProps = {
@@ -64,13 +72,24 @@ const MODE_ACTION: Record<ShellMode, string> = {
 
 const MODE_KEY: Partial<Record<ShellMode, string>> = { grid: 'G', book: 'B' };
 
-/** How far the labels have collapsed: none, the conventional glyphs, everything. */
-type Tight = 0 | 1 | 2;
+/**
+ * How far the labels have collapsed: none; then Copy link and Fullscreen;
+ * then Previous and Next; then Theme; then, when a route's own controls
+ * still leave the bar short (the compare rig's seg and two buttons at
+ * 1280), Index, Help, Present and the slot's buttons. The seg's words and
+ * the Search field are never traded.
+ */
+type Tight = 0 | 1 | 2 | 3 | 4;
 
+const TIERS: readonly Tight[] = [1, 2, 3, 4];
+
+/* the tiers are cumulative: tier three carries the classes of one and two, so each tier's rules name only what it adds */
 const TIGHT_CLASS: Record<Tight, string> = {
   0: 'pt-toolbar',
   1: 'pt-toolbar is-tight-1',
-  2: 'pt-toolbar is-tight',
+  2: 'pt-toolbar is-tight-1 is-tight-2',
+  3: 'pt-toolbar is-tight-1 is-tight-2 is-tight-3',
+  4: 'pt-toolbar is-tight-1 is-tight-2 is-tight-3 is-tight-4',
 };
 
 /**
@@ -184,15 +203,17 @@ function Count() {
 
 /**
  * How far the labels have to collapse for the bar's controls to fit its
- * box. Measured with each stage applied in turn, so the answer does not
+ * box. Measured with each tier applied in turn, so the answer does not
  * depend on the state it decides. The two groups are measured by their
  * content, not the bar by its scroll width: the left group is allowed to
  * shrink (the brand truncates inside it), so its buttons would overlap the
- * right group before the bar itself overflowed. At most two forced layouts,
- * and only when the bar or a group's content has changed size.
+ * right group before the bar itself overflowed. At most three forced
+ * layouts, and only when the bar or a group's content has changed size. A
+ * bar still short at the last tier stays there: the seg's words and the
+ * Search field are the bar's meaning and are not traded.
  */
 function fitLabels(bar: HTMLElement): Tight {
-  bar.classList.remove('is-tight-1', 'is-tight');
+  bar.classList.remove('is-tight-1', 'is-tight-2', 'is-tight-3', 'is-tight-4');
   const style = getComputedStyle(bar);
   const frame = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + parseFloat(style.columnGap);
   const groups = bar.querySelectorAll<HTMLElement>(':scope > .pt-bar-l, :scope > .pt-bar-r');
@@ -205,11 +226,13 @@ function fitLabels(bar: HTMLElement): Tight {
   };
   const room = bar.clientWidth + 1;
   if (need() <= room) return 0;
-  bar.classList.add('is-tight-1');
-  if (need() <= room) return 1;
-  bar.classList.remove('is-tight-1');
-  bar.classList.add('is-tight');
-  return 2;
+  let tight: Tight = 0;
+  for (const tier of TIERS) {
+    bar.classList.add(`is-tight-${tier}`);
+    tight = tier;
+    if (need() <= room) break;
+  }
+  return tight;
 }
 
 export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
@@ -221,6 +244,10 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   const showSeg = modes.length > 1;
   const slideOffered = modes.includes('slide');
   const hasRouteControls = Boolean(slot) || showSeg;
+  /* the paging trio: on a route with a slide mode it belongs to that mode; a
+     route that always flows (docs, brand) keeps it, since its Next moves to
+     the next document */
+  const paging = keys === 'paged' || !slideOffered;
   /* the count is wider while it names the total (`17 directions`) than while it reads a place */
   const countNamesTotal = index < 0;
 
@@ -258,7 +285,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
       const el = bar.current;
       if (el) setTight(fitLabels(el));
     },
-    { dependencies: [slot, modes, sidebarOpen, shell.countLabel, countNamesTotal] }
+    { dependencies: [slot, modes, sidebarOpen, shell.countLabel, countNamesTotal, paging, mode] }
   );
 
   /* a paged route's toast names the item (`Link to slide 12 copied`); a flow
@@ -295,9 +322,9 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
       <div className='pt-bar-l'>
         <ToolButton
           icon='sidebar'
-          label='List'
           title='Show or hide the list ([)'
           pressed={sidebarOpen}
+          quiet
           className='pt-list'
           onClick={() => shell.setSidebar(!sidebarOpen)}
         />
@@ -306,16 +333,26 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
           {mark === 'gt' ? <GtMark /> : <PtMark />}
           <b>{title}</b>
         </span>
-        <span className='pt-sep' aria-hidden='true' />
-        <ToolButton
-          icon='prev'
-          label='Previous'
-          title='Previous (left arrow)'
-          className='pt-prev'
-          onClick={() => shell.step(-1)}
-        />
-        <Count />
-        <ToolButton icon='next' label='Next' title='Next (right arrow)' className='pt-next' onClick={() => shell.step(1)} />
+        {paging ? (
+          <>
+            <span className='pt-sep' aria-hidden='true' />
+            <ToolButton
+              icon='prev'
+              label='Previous'
+              title='Previous (left arrow)'
+              className='pt-prev'
+              onClick={() => shell.step(-1)}
+            />
+            <Count />
+            <ToolButton
+              icon='next'
+              label='Next'
+              title='Next (right arrow)'
+              className='pt-next'
+              onClick={() => shell.step(1)}
+            />
+          </>
+        ) : null}
       </div>
       <div className='pt-bar-r'>
         <Search />
@@ -330,15 +367,17 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
           label='Index'
           title='Show or hide the index (R)'
           pressed={panelOpen}
+          className='pt-index-btn'
           onClick={() => shell.setPanel(!panelOpen)}
         />
         <ThemeButton className='pt-theme' label />
-        {slideOffered ? (
+        {slideOffered && mode === 'slide' ? (
           <ToolButton
             icon='present'
             label='Present'
             title='Presentation mode, chrome hidden (P)'
             hideSm
+            className='pt-present-btn'
             onClick={presentNow}
           />
         ) : null}
@@ -366,6 +405,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
           label='Help'
           title='Keyboard shortcuts (?)'
           pressed={helpOpen}
+          className='pt-help-btn'
           onClick={() => shell.setHelp(!helpOpen)}
         />
       </div>

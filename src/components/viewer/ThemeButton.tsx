@@ -1,6 +1,5 @@
 'use client';
 
-import type { CSSProperties } from 'react';
 import { useState } from 'react';
 
 import { ToolButton } from '@/components/viewer/ToolButton';
@@ -19,9 +18,9 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * The glyph is the old one (directive 8.4): the half discs ◐ in light mode
  * and ◑ in dark mode, rendered as text at 16px, the one place in chrome a
  * text glyph stands for an icon. The moon and the sun are gone from the
- * button. The size rides on the span itself rather than a sheet because
- * the button mounts in two places that load different CSS: the shell
- * toolbar and the direction navs on /d pages.
+ * button and from icons.tsx. ToolButton.css sizes the glyph (.pt-theme-glyph):
+ * the span is a child of ToolButton, whose sheet loads wherever the button
+ * renders, on the shell toolbar and on the direction navs alike.
  *
  * Two forms. In the shell toolbar it is a labeled button like every other
  * control (decision 7), with the title naming the D key. The direction
@@ -37,16 +36,6 @@ const DEFAULT_THEME: Theme = 'dark';
 
 /** The glyph names the theme the button is in: the left half filled in light, the right half in dark. */
 const GLYPH: Record<Theme, string> = { light: '◐', dark: '◑' };
-
-/* 16px, one line, centered in the 16px slot an icon would take */
-const GLYPH_STYLE: CSSProperties = {
-  display: 'inline-block',
-  width: 16,
-  fontSize: 16,
-  lineHeight: '16px',
-  textAlign: 'center',
-  fontWeight: 400,
-};
 
 function isTheme(value: unknown): value is Theme {
   return value === 'light' || value === 'dark';
@@ -118,7 +107,7 @@ export function ThemeButton({ className, label = className === undefined }: Them
         toggleTheme();
       }}
     >
-      <span className='pt-theme-glyph' style={GLYPH_STYLE} aria-hidden='true'>
+      <span className='pt-theme-glyph' aria-hidden='true'>
         {GLYPH[theme]}
       </span>
     </ToolButton>

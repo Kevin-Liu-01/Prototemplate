@@ -1,28 +1,32 @@
 /* Toolbar: the first row of .pt-main. tokens.css owns every button state
    (.pt-ib, .pt-icon, .is-on, .is-solid, .pt-seg, .pt-lb); this sheet owns
    the bar, its two groups (8px gaps between and inside them, directive
-   8.8), the count control,
-   the search trigger, the separators and the brand,
-   and the label collapse in two stages. That collapse is measured, not
-   guessed: Toolbar.tsx compares the bar's content width with its box on
-   every resize. When the labels would overflow it marks the bar
-   .is-tight-1, which hides only the labels whose glyphs are conventional
-   and whose neighbours name them (Previous and Next around the count,
-   Theme, Fullscreen, Copy link), keeping List, the mode seg, Index,
-   Present, Help and the route slot worded; measured again, a bar still
-   short becomes .is-tight and every button is the 32px icon square with
-   the titles carrying the names. So a 1180 to 1400 laptop, and thumbnail
-   density at 1440, keep their labels (directive 7.6). The brand, shown
-   only while the sidebar is hidden, truncates its title rather than push
-   the right group off the bar. At or below 900px the separators go, the
-   Theme label goes and the search trigger is an icon square; at or below
-   600px the bar takes two rows and the seg keeps its words.
+   8.8), the count control, the search trigger, the separators and the
+   brand, and the label collapse in three tiers. That collapse is measured,
+   not guessed: Toolbar.tsx compares the bar's content width with its box on
+   every resize and applies the tiers in turn until the bar fits. Tier one
+   (.is-tight-1) takes the words off Copy link and Fullscreen, whose glyphs
+   are conventional; tier two (.is-tight-2) takes Previous and Next, which
+   sit either side of the count; tier three (.is-tight-3) takes Theme, whose
+   half disc names itself; tier four (.is-tight-4), reached only when a
+   route's own controls still leave the bar short (the compare rig's seg
+   and two buttons at 1280), takes Index, Help, Present and the slot's
+   labeled buttons and lets the Search field narrow to 120px. The seg's
+   words and the Search field keep their labels at every width above 900px
+   (decision 7, directive 8.3). A labeled button with no icon (.is-text) is
+   never collapsed. The left group's controls never shrink; only the brand
+   title inside it gives way. The brand, shown only while the sidebar is hidden,
+   truncates its title rather than push the right group off the bar. At or
+   below 900px the bar stays one 52px row: the brand and the separators go,
+   every button but the seg's text-only options is an icon square, the seg
+   is icon-only and the search trigger a glyph; at or below 600px Previous,
+   Next and Copy link leave too (the sheet's edges and a swipe page), so the
+   count, the search, the seg, Index, Theme and Help fit a phone.
 
    The search trigger (directive 8.3) is the one field-shaped button: a
    --pt-hair box like the count's, the search glyph, the word Search in
    ink-2 and the ⌘K hint in titanium pushed to its right end; hover turns
-   the box ink as a focused field would. Stage one of the collapse leaves
-   it whole, stage two leaves the glyph alone. */
+   the box ink as a focused field would. No tier touches it. */
 .pt-toolbar {
   grid-row: 1;
   height: var(--pt-toolbar-h, var(--pt-bar-h));
@@ -50,6 +54,12 @@
 .pt-bar-l {
   flex: 0 1 auto;
   min-width: 0;
+}
+
+.pt-bar-l > .pt-ib,
+.pt-bar-l > .pt-count,
+.pt-bar-l > .pt-sep {
+  flex-shrink: 0;
 }
 
 .pt-bar-slot {
@@ -188,64 +198,75 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
   text-overflow: ellipsis;
 }
 
-/* The label collapse, stage one: the conventional glyphs lose their words
-   (Previous and Next sit either side of the count; Theme, Fullscreen and
-   Copy link are their icons), everything else stays worded. */
-.pt-toolbar.is-tight-1 .pt-prev .pt-lb,
-.pt-toolbar.is-tight-1 .pt-next .pt-lb,
-.pt-toolbar.is-tight-1 .pt-theme .pt-lb,
-.pt-toolbar.is-tight-1 .pt-full .pt-lb,
-.pt-toolbar.is-tight-1 .pt-copy .pt-lb {
+/* The label collapse. The tiers are cumulative (Toolbar.tsx stamps every
+   lower tier's class along with the one it reached), so each block names
+   only what its tier adds. Tier one: Copy link and Fullscreen lose their
+   words. */
+.pt-toolbar.is-tight-1 .pt-copy .pt-lb,
+.pt-toolbar.is-tight-1 .pt-full .pt-lb {
   display: none;
 }
 
-.pt-toolbar.is-tight-1 .pt-prev,
-.pt-toolbar.is-tight-1 .pt-next,
-.pt-toolbar.is-tight-1 .pt-theme,
-.pt-toolbar.is-tight-1 .pt-full,
-.pt-toolbar.is-tight-1 .pt-copy {
+.pt-toolbar.is-tight-1 .pt-copy,
+.pt-toolbar.is-tight-1 .pt-full {
   width: 32px;
   padding: 0;
   gap: 0;
   justify-content: center;
 }
 
-/* stage two takes the search's hint with its word */
-.pt-toolbar.is-tight .pt-search-kbd {
+/* Tier two: Previous and Next, either side of the count, follow. */
+.pt-toolbar.is-tight-2 .pt-prev .pt-lb,
+.pt-toolbar.is-tight-2 .pt-next .pt-lb {
   display: none;
 }
 
-/* Stage two: when the bar is still short, .is-tight goes on and every
-   labeled button takes the icon square's geometry, so every control is the
-   same 32px; seg options keep a 9px pad around theirs; the count keeps its
-   numbers. */
-.pt-toolbar.is-tight .pt-lb {
-  display: none;
-}
-
-.pt-toolbar.is-tight .pt-ib {
+.pt-toolbar.is-tight-2 .pt-prev,
+.pt-toolbar.is-tight-2 .pt-next {
   width: 32px;
   padding: 0;
   gap: 0;
   justify-content: center;
 }
 
-.pt-toolbar.is-tight .pt-seg .pt-ib {
-  width: auto;
-  padding: 0 9px;
+/* Tier three: Theme, whose half disc names itself. */
+.pt-toolbar.is-tight-3 .pt-theme .pt-lb {
+  display: none;
 }
 
-.pt-toolbar.is-tight .pt-ib.pt-count {
-  width: auto;
-  padding: 0 6px;
-  gap: 4px;
+.pt-toolbar.is-tight-3 .pt-theme {
+  width: 32px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
 }
 
-.pt-toolbar.is-tight .pt-search-btn {
-  min-width: 0;
+/* Tier four: Index, Help, Present and the slot's labeled buttons (never a
+   text-only one), and the Search field narrows; the seg keeps its words. */
+.pt-toolbar.is-tight-4 .pt-index-btn .pt-lb,
+.pt-toolbar.is-tight-4 .pt-help-btn .pt-lb,
+.pt-toolbar.is-tight-4 .pt-present-btn .pt-lb,
+.pt-toolbar.is-tight-4 .pt-bar-slot > .pt-ib:not(.is-text) .pt-lb {
+  display: none;
 }
 
-/* narrow: the brand stays so the route is named, the separators and the Theme label go */
+.pt-toolbar.is-tight-4 .pt-index-btn,
+.pt-toolbar.is-tight-4 .pt-help-btn,
+.pt-toolbar.is-tight-4 .pt-present-btn,
+.pt-toolbar.is-tight-4 .pt-bar-slot > .pt-ib:not(.is-text) {
+  width: 32px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+}
+
+.pt-toolbar.is-tight-4 .pt-search-btn {
+  min-width: 120px;
+}
+
+/* narrow: one 52px row. The brand and the separators go, every button but
+   a text-only seg option is an icon square, the seg is icon-only, the
+   search is a glyph (directive 8.3), the count keeps its numbers. */
 @media (max-width: 900px) {
   .pt-toolbar {
     gap: 8px;
@@ -259,51 +280,50 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
 
   .pt-toolbar .pt-sep,
   .pt-toolbar .hide-sm,
-  .pt-toolbar .pt-theme .pt-lb {
+  .pt-toolbar .pt-bar-brand,
+  html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-toolbar .pt-bar-brand {
     display: none;
   }
 
-  /* the search is an icon square at this width (directive 8.3) */
-  .pt-toolbar .pt-search-btn {
-    min-width: 0;
+  .pt-toolbar .pt-ib:not(.is-text) .pt-lb,
+  .pt-toolbar .pt-search-btn .pt-search-kbd {
+    display: none;
+  }
+
+  .pt-toolbar .pt-ib:not(.is-text):not(.pt-count) {
     width: 32px;
     padding: 0;
     gap: 0;
     justify-content: center;
   }
 
-  .pt-toolbar .pt-search-btn .pt-lb,
-  .pt-toolbar .pt-search-btn .pt-search-kbd {
-    display: none;
-  }
-
-  .pt-toolbar .pt-seg .pt-ib {
-    padding: 0 7px;
-  }
-}
-
-/* a phone: two rows, the left group over the right one; the second row has
-   room for the seg's words (the seg plus Index, Theme and Help fit in 374px),
-   so the collapse leaves them */
-@media (max-width: 600px) {
-  .pt-toolbar {
-    flex-wrap: wrap;
-    align-content: center;
-    row-gap: 4px;
-    padding: 6px 8px;
-  }
-
-  .pt-bar-l,
-  .pt-bar-r {
-    flex: 1 1 100%;
+  .pt-toolbar .pt-search-btn {
     min-width: 0;
   }
 
-  .pt-bar-r {
-    justify-content: flex-end;
+  .pt-toolbar .pt-seg .pt-ib:not(.is-text) {
+    width: auto;
+    padding: 0 8px;
   }
 
-  .pt-toolbar.is-tight .pt-seg .pt-lb {
-    display: inline;
+  .pt-toolbar .pt-ib.pt-count {
+    padding: 0 6px;
+    gap: 4px;
+  }
+}
+
+/* a phone: Previous, Next and Copy link leave (the sheet's edges and a
+   swipe page, the count still jumps, the address bar shares), the count
+   drops its word and a route's slot keeps only its seg (the compare rig's
+   Both, Left, Right; its Sync scroll and Swap and the gallery's Open page
+   go, since their rows in the list carry the same links), so the list
+   toggle, the count, the search, the seg, Index, Theme and Help fit 390px */
+@media (max-width: 600px) {
+  .pt-toolbar .pt-prev,
+  .pt-toolbar .pt-next,
+  .pt-toolbar .pt-copy,
+  .pt-toolbar .pt-count-word,
+  .pt-toolbar .pt-bar-slot > .pt-ib {
+    display: none;
   }
 }

@@ -3,7 +3,7 @@
    transform (directive 7.4) and Progress.tsx can write it from a scroll
    frame without a render. */
 .pt-progress {
-  grid-row: 4;
+  grid-row: 3;
   position: relative;
   height: 2px;
   background: var(--pt-hair-soft);

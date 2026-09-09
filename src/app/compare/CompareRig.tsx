@@ -5,8 +5,8 @@ import type { RefObject } from 'react';
 
 import { Seg } from '@/components/viewer/Seg';
 import type { SegOption } from '@/components/viewer/Seg';
-import { Sheet } from '@/components/viewer/Sheet';
-import { usePtShell } from '@/components/viewer/shell-context';
+import { Sheet, SHEET_PAD } from '@/components/viewer/Sheet';
+import { usePtShell, usePtStage } from '@/components/viewer/shell-context';
 import type { ShellState } from '@/components/viewer/shell-context';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
@@ -39,15 +39,20 @@ import './compare.css';
  *
  * A Both | Left | Right seg chooses the view. Both (the default) fits the
  * whole 2881px sheet in the stage so the two panes are on screen at once;
- * Left and Right fill the stage height and pan sideways to the named pane
- * (Sheet's fit 'height'), where each pane keeps legible text and the sync
- * scroll matters, and also make that pane the one the next pick fills. A
- * 28px caption over each pane names it (Left: Dossier, /d/...). The shell
- * tracks one active item: the direction in the target pane. Arrows, digits
- * and list picks all go through the shell's select, which lands in onSelect
- * and loads that pane; the count reads `Left 01 / 17`, and the list marks
- * the loaded directions L and R. The shell writes #<slug> on every
- * selection; onSelect rewrites the pair form over it.
+ * the sheet's height is derived from the stage (CompareStage) so the two
+ * panes fill it top to bottom at that scale, each a taller 1440-wide
+ * viewport showing more of its page, instead of two 900px panes floating
+ * in empty plate. Left and Right fill the stage height at 900px and pan
+ * sideways to the named pane (Sheet's fit 'height'), where each pane keeps
+ * legible text and the sync scroll matters, and also make that pane the one
+ * the next pick fills. The sheet's own caption row, drawn at 1x under the
+ * sheet, names both panes (Left: Dossier, /d/...) and marks the target; the
+ * scaled sheet carries no text of its own. The shell tracks one active
+ * item: the direction in the target pane. Arrows, digits and list picks
+ * all go through the shell's select, which lands in onSelect and loads that
+ * pane; the count reads `Left 01 / 17`, and the list marks the loaded
+ * directions L and R. The shell writes #<slug> on every selection; onSelect
+ * rewrites the pair form over it.
  */
 
 const TITLE = 'Compare';
@@ -56,13 +61,14 @@ const MODES: readonly ShellMode[] = ['slide'];
 /** How long an echoed programmatic scroll stays inaudible. */
 const MUTE_MS = 160;
 
-/** Each pane is a site exhibit under a caption band; the seam between them is one hairline. */
+/** Each pane is a site exhibit; the seam between them is one hairline. */
 const PANE_W = 1440;
 const PANE_H = 900;
-const CAPTION_H = 28;
 const SEAM = 1;
 const SHEET_W = PANE_W * 2 + SEAM;
-const SHEET_H = PANE_H + CAPTION_H;
+
+/** The sheet's 1x caption row under a frameless sheet (Sheet.tsx, CAPTION_H): reserved out of the stage before the fit. */
+const CAPTION_ROW = 28;
 
 type Frames = Record<PaneKey, RefObject<HTMLIFrameElement | null>>;
 
@@ -70,7 +76,7 @@ type Frames = Record<PaneKey, RefObject<HTMLIFrameElement | null>>;
 type PaneView = 'both' | PaneKey;
 
 const PANE_OPTIONS: readonly SegOption<PaneView>[] = [
-  { value: 'both', label: 'Both', title: 'Both panes side by side' },
+  { value: 'both', label: 'Both', icon: 'columns', title: 'Both panes side by side' },
   {
     value: 'a',
     label: PANE_NAME.a,
@@ -253,12 +259,10 @@ type ComparePanesProps = {
 };
 
 /**
- * The two captioned panes and the seam on the 2881x928 stage. Each iframe
- * is keyed by its slug: recreating it navigates without pushing joint
+ * The two panes and the seam, filling the 2881-wide stage. Each iframe is
+ * keyed by its slug: recreating it navigates without pushing joint
  * session-history entries, so the browser's Back returns to the page the
- * visitor came from, not through every pick. The caption over a pane names
- * its side, the direction and the address; the pane the next pick fills is
- * marked.
+ * visitor came from, not through every pick.
  */
 function ComparePanes({ pair, target, frames, onLoad }: ComparePanesProps) {
   const pane = (key: PaneKey) => {
@@ -266,12 +270,6 @@ function ComparePanes({ pair, target, frames, onLoad }: ComparePanesProps) {
     const name = getDirection(slug)?.name ?? slug;
     return (
       <div className={key === target ? 'pt-cmp-col is-target' : 'pt-cmp-col'}>
-        <div className='pt-cmp-caption'>
-          <span>
-            <b>{PANE_NAME[key]}:</b> {name}, /d/{slug}
-          </span>
-          <span>{key === target ? 'the next pick lands here' : ''}</span>
-        </div>
         <iframe
           key={`${key}:${slug}`}
           ref={frames[key]}
@@ -289,6 +287,61 @@ function ComparePanes({ pair, target, frames, onLoad }: ComparePanesProps) {
       <i className='pt-cmp-seam' aria-hidden='true' />
       {pane('b')}
     </div>
+  );
+}
+
+/** The 1x caption under the sheet: both panes named with their address, the target pane in ink. */
+function CompareCaption({ pair, target }: Pick<ComparePanesProps, 'pair' | 'target'>) {
+  const side = (key: PaneKey) => {
+    const slug = pair[key];
+    const name = getDirection(slug)?.name ?? slug;
+    return (
+      <span className={key === target ? 'pt-cmp-cap is-target' : 'pt-cmp-cap'}>
+        <b>{PANE_NAME[key]}</b> {name}, /d/{slug}
+        {key === target ? <i> (the next pick lands here)</i> : null}
+      </span>
+    );
+  };
+  return (
+    <>
+      <span className='pt-sheet-caption-l'>{side('a')}</span>
+      <span className='pt-sheet-caption-r'>{side('b')}</span>
+    </>
+  );
+}
+
+type CompareStageProps = ComparePanesProps & { view: PaneView };
+
+/**
+ * The sheet, sized from the stage. In the Both view the sheet keeps its
+ * 2881px width and takes the height that fills the stage at the width's
+ * scale (the pad on each side and the caption row come off first), so each
+ * pane is a 1440-wide viewport as tall as the stage allows and the plate
+ * above and below the rig is gone. In a pane view the sheet is 900px tall
+ * and the fit follows the height, panning sideways. Reads the stage box the
+ * shell publishes, so it re-renders with the sidebar and the window.
+ */
+function CompareStage({ view, pair, target, frames, onLoad }: CompareStageProps) {
+  const { stageSize } = usePtStage();
+  const { present, narrow } = usePtShell();
+  const pad = present ? SHEET_PAD.present : narrow ? SHEET_PAD.narrow : SHEET_PAD.wide;
+  const caption = present ? 0 : CAPTION_ROW;
+  let h = PANE_H;
+  if (view === 'both' && stageSize.width > 0) {
+    const scale = (stageSize.width - pad * 2) / SHEET_W;
+    h = Math.max(PANE_H / 2, Math.floor((stageSize.height - pad * 2 - caption) / scale));
+  }
+  return (
+    <Sheet
+      variant='fixed'
+      w={SHEET_W}
+      h={h}
+      frame={false}
+      fit={view === 'both' ? 'contain' : 'height'}
+      caption={<CompareCaption pair={pair} target={target} />}
+    >
+      <ComparePanes pair={pair} target={target} frames={frames} onLoad={onLoad} />
+    </Sheet>
   );
 }
 
@@ -421,16 +474,7 @@ export default function CompareRig() {
         />
       }
     >
-      <Sheet
-        variant='fixed'
-        w={SHEET_W}
-        h={SHEET_H}
-        frame={false}
-        fit={view === 'both' ? 'contain' : 'height'}
-        caption={false}
-      >
-        <ComparePanes pair={pair} target={target} frames={frames} onLoad={wire} />
-      </Sheet>
+      <CompareStage view={view} pair={pair} target={target} frames={frames} onLoad={wire} />
       <CompareBoot readPair={readPair} readTarget={readTarget} apply={apply} wireLoaded={wireLoaded} />
     </ViewerShell>
   );

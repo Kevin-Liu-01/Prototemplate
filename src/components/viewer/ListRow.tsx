@@ -52,7 +52,9 @@ export type ListRowProps = {
  * the sections on /brand, the sub-beats on /present, and as the whole list
  * when a shell's thumb is 'row'. Presentational on purpose: the caller
  * supplies active and onSelect, because a row's active state is often a
- * scroll-spied heading rather than the shell's active item.
+ * scroll-spied heading rather than the shell's active item. The title
+ * attribute carries the full text, since the sidebar clamps the row to one
+ * line and the preview card has no caption for a heading.
  */
 export function ListRow({ item, active, onSelect }: ListRowProps) {
   const select = () => onSelect(item.id);
@@ -66,6 +68,7 @@ export function ListRow({ item, active, onSelect }: ListRowProps) {
       onMouseDown={pressWithoutFocus}
       onClick={select}
       onKeyDown={(event) => activateOnKey(event, select)}
+      title={item.title}
     >
       <span className='n'>{item.n ?? ''}</span>
       <span className='pt-row-title'>{item.title}</span>

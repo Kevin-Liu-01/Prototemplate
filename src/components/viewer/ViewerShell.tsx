@@ -20,7 +20,6 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { GridView } from './GridView';
 import { HelpCard } from './HelpCard';
-import { Icon } from './icons';
 import { IndexPanel } from './IndexPanel';
 import { PreviewLayer } from './PreviewLayer';
 import { Progress } from './Progress';
@@ -44,7 +43,9 @@ const DENSITY_KEY = 'gt-shell-density';
 /** The route families that have shown the first-visit hint, comma separated. */
 const HINT_KEY = 'gt-shell-hint';
 
+/** The first-visit toast (directive 7.4) and how long it holds: longer than a copy notice, since it is read once. */
 const HINT_TEXT = 'Arrow keys move. Press ? for every shortcut.';
+const HINT_HOLD_MS = 5000;
 
 /** At or below this width the sidebar is an overlay and the sheet pad shrinks. */
 const NARROW_PX = 900;
@@ -73,9 +74,9 @@ type Transition = ShellTransition & { native: boolean };
 
 /**
  * The one frame for Prototemplate: a fixed full-viewport grid of a sidebar
- * and a main region (toolbar, an optional hint row, stage, progress line),
- * with the index panel, the help card, the toast and the preview layer
- * (directive 8.6, one for every data-preview on the page) floating over it. The
+ * and a main region (toolbar, stage, progress line), with the index panel,
+ * the help card, the toast and the preview layer (directive 8.6, one for
+ * every data-preview on the page) floating over it. The
  * shell owns the state every child reads through usePtShell() and no
  * content rules at all: the route renders the stage content (a Sheet, and
  * a BookView while the mode is book) as children.
@@ -87,7 +88,9 @@ type Transition = ShellTransition & { native: boolean };
  * frame later the root gains data-settled and only then do the column
  * transitions apply, so a saved closed list or a saved density is a cut on
  * load, never a 220ms animation from the server's layout (directive 7.5,
- * no layout shift after the first frame).
+ * no layout shift after the first frame). The first visit to a route
+ * family says the arrows and the help key through the toast (directive
+ * 7.4), which floats and lays nothing out.
  *
  * Motion (directive 7.4). A mode change cross-fades the stage through the
  * View Transitions API: the browser snapshots the leaving view and the
@@ -249,13 +252,13 @@ export function ViewerShell({
   const [booted, setBooted] = useState(false);
   /* true one frame after that: from here on the column transitions apply */
   const [settledState, setSettledState] = useState(false);
-  /* the first-visit hint row over the stage */
-  const [hint, setHint] = useState(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const touchX = useRef<number | null>(null);
   const filter = useRef<SidebarFilter>({ active: false, clear: () => {} });
   const toast = useToast();
+  const sayRef = useRef(toast.say);
+  sayRef.current = toast.say;
 
   /* the timers behind the two motions, and a stamp so a transition that
      was superseded never clears the one that replaced it */
@@ -433,13 +436,10 @@ export function ViewerShell({
         commitMode(modesRef.current.includes('slide') ? 'slide' : (modesRef.current[0] ?? 'slide'), false);
       }
       setPanelOpen(false);
-      setHint(false);
     }
     setPresentState(on);
     if (sidebarRef.current && !narrowRef.current) moveSidebar(on ? 'close' : 'open');
   };
-
-  const dismissHint = () => setHint(false);
 
   const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     const touch = e.changedTouches.item(0);
@@ -476,11 +476,11 @@ export function ViewerShell({
     /* landed: the sidebar may spend its centering scroll; the settle follows a frame later */
     setBooted(true);
 
-    /* the first visit to a route family: one row over the stage naming the arrows and the help key */
+    /* the first visit to a route family: the toast names the arrows and the help key */
     const seen = (load(HINT_KEY) ?? '').split(',').filter(Boolean);
     if (!seen.includes(id)) {
       store(HINT_KEY, [...seen, id].join(','));
-      setHint(true);
+      sayRef.current(HINT_TEXT, HINT_HOLD_MS);
     }
 
     const onHash = () => {
@@ -495,12 +495,9 @@ export function ViewerShell({
       setNarrow(now);
       setSidebarOpen(now ? false : load(SIDEBAR_KEY) !== '0');
     };
-    /* any key puts the hint away */
-    const onKey = () => setHint(false);
     window.addEventListener('hashchange', onHash);
     document.addEventListener('fullscreenchange', onFullscreen);
     window.addEventListener('resize', onResize);
-    document.addEventListener('keydown', onKey);
 
     /* the stage box, for the fixed sheet's fit */
     const stage = stageRef.current;
@@ -523,7 +520,6 @@ export function ViewerShell({
       window.removeEventListener('hashchange', onHash);
       document.removeEventListener('fullscreenchange', onFullscreen);
       window.removeEventListener('resize', onResize);
-      document.removeEventListener('keydown', onKey);
       observer?.disconnect();
       if (document.body.dataset.shell === id) delete document.body.dataset.shell;
     };
@@ -664,20 +660,6 @@ export function ViewerShell({
           />
           <section className='pt-main'>
             <Toolbar title={title} mark={mark} slot={toolbarSlot} modeLabels={modeLabels} />
-            {hint ? (
-              <div className='pt-hint' role='status'>
-                <span>{HINT_TEXT}</span>
-                <button
-                  type='button'
-                  className='pt-hint-close'
-                  title='Dismiss'
-                  aria-label='Dismiss the hint'
-                  onClick={dismissHint}
-                >
-                  <Icon name='close' />
-                </button>
-              </div>
-            ) : null}
             <div ref={stageRef} className='pt-stagewrap'>
               {children}
               {grid ? (
@@ -686,6 +668,7 @@ export function ViewerShell({
                     sections={sections}
                     thumb={thumb}
                     density='thumbs'
+                    siteMap={siteMap}
                     renderSub={renderSub}
                     onSelect={(next) => {
                       /* a pick from the grid opens the item live where the route has a slide */
