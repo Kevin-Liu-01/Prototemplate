@@ -3,10 +3,9 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -16,11 +15,11 @@ export default function IntroSlide() {
   const [logoField, setLogoField] = useState(0);
 
   // The logo box alternates between two shader moods.
-  useMountEffect(() => {
+  useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const id = window.setInterval(() => setLogoField((f) => (f + 1) % 2), 3400);
     return () => window.clearInterval(id);
-  });
+  }, []);
 
   useGSAP(
     () => {

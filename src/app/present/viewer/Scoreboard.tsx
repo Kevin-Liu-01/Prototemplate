@@ -3,10 +3,9 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { DIRECTIONS } from '@/lib/directions';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 import LazyFrame from './LazyFrame';
 import RatingStars from './RatingStars';
@@ -22,15 +21,15 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export default function Scoreboard() {
   const root = useRef<HTMLElement>(null);
   const reviews = useReviews();
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-  useMountEffect(() => {
+  useEffect(() => {
     try {
-      if (localStorage.getItem('gt-theme') === 'light') setTheme('light');
+      if (localStorage.getItem('gt-theme') === 'dark') setTheme('dark');
     } catch {
-      // private mode: previews just start in the site default, dark
+      // private mode: previews just start light
     }
-  });
+  }, []);
 
   // The previews are same-origin, so their theme can be flipped live: persist
   // the choice (new frames boot with it) and restamp every mounted frame.

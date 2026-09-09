@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { DIRECTIONS } from '@/lib/directions';
@@ -203,7 +203,7 @@ export default function PrototypeViewer() {
     { scope: root }
   );
 
-  useMountEffect(() => {
+  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (!activeTrigger.current?.isActive) return;
@@ -246,60 +246,52 @@ export default function PrototypeViewer() {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('pr:goto', onGoto);
     };
-  });
+  }, []);
 
   // The SSR-rendered iframe can finish loading before hydration attaches
   // React's onLoad, so the veil would never lift — watch the load natively and
   // treat an already-complete document as loaded.
-  useGSAP(
-    () => {
-      const el = frame.current;
-      if (!el) return;
-      const slug = current.slug;
-      const markLoaded = () => setLoadedSlug(slug);
-      const doc = el.contentDocument;
-      if (doc?.readyState === 'complete' && doc.body?.childElementCount)
-        markLoaded();
-      el.addEventListener('load', markLoaded);
-      return () => el.removeEventListener('load', markLoaded);
-    },
-    { dependencies: [current.slug], revertOnUpdate: true }
-  );
+  useEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const slug = current.slug;
+    const markLoaded = () => setLoadedSlug(slug);
+    const doc = el.contentDocument;
+    if (doc?.readyState === 'complete' && doc.body?.childElementCount)
+      markLoaded();
+    el.addEventListener('load', markLoaded);
+    return () => el.removeEventListener('load', markLoaded);
+  }, [current.slug]);
 
   // The frame takes the pointer once loaded (hover states inside the
   // prototype must work in presenter mode), but the deck keeps the wheel:
   // wheel events inside the same-origin frame are cancelled there and
   // replayed on the deck's Lenis, so scroll-driving never strands.
-  useGSAP(
-    () => {
-      if (!isLoaded) return;
-      const win = frame.current?.contentWindow;
-      if (!win) return;
-      const forward = (e: WheelEvent) => {
-        e.preventDefault();
-        const lenis = getLenis();
-        if (lenis) lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: true });
-        else window.scrollBy(0, e.deltaY);
-      };
-      win.addEventListener('wheel', forward, { passive: false, capture: true });
-      return () => win.removeEventListener('wheel', forward, { capture: true });
-    },
-    { dependencies: [isLoaded], revertOnUpdate: true }
-  );
+  useEffect(() => {
+    if (!isLoaded) return;
+    const win = frame.current?.contentWindow;
+    if (!win) return;
+    const forward = (e: WheelEvent) => {
+      e.preventDefault();
+      const lenis = getLenis();
+      if (lenis) lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: true });
+      else window.scrollBy(0, e.deltaY);
+    };
+    win.addEventListener('wheel', forward, { passive: false, capture: true });
+    return () =>
+      win.removeEventListener('wheel', forward, { capture: true });
+  }, [isLoaded]);
 
   // Keep the roll scrolled so the current card sits mid-rail.
-  useGSAP(
-    () => {
-      const container = roll.current;
-      const item = container?.querySelector<HTMLElement>('.is-current');
-      if (!container || !item) return;
-      container.scrollTo({
-        top: item.offsetTop - container.clientHeight / 2 + item.clientHeight / 2,
-        behavior: 'smooth',
-      });
-    },
-    { dependencies: [index] }
-  );
+  useEffect(() => {
+    const container = roll.current;
+    const item = container?.querySelector<HTMLElement>('.is-current');
+    if (!container || !item) return;
+    container.scrollTo({
+      top: item.offsetTop - container.clientHeight / 2 + item.clientHeight / 2,
+      behavior: 'smooth',
+    });
+  }, [index]);
 
   const scrollToScoreboard = () => {
     const target = document.getElementById('pr-scoreboard');

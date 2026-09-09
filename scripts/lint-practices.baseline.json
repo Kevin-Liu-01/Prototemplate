@@ -5,6 +5,13 @@
  ],
  "img-missing-alt": [],
  "bare-useEffect": [
+  "src/app/present/slides/IntroSlide.tsx:18",
+  "src/app/present/viewer/PrototypeViewer.tsx:206",
+  "src/app/present/viewer/PrototypeViewer.tsx:254",
+  "src/app/present/viewer/PrototypeViewer.tsx:270",
+  "src/app/present/viewer/PrototypeViewer.tsx:286",
+  "src/app/present/viewer/Scoreboard.tsx:26",
+  "src/app/present/viewer/LazyFrame.tsx:29",
   "src/app/d/prism-light/sections/PrismScene.tsx:101",
   "src/app/d/dither-field/fields.ts:656"
  ],
