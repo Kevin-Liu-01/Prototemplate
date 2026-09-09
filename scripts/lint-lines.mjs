@@ -1,20 +1,73 @@
 // Geometric line lint — "lines must be the one line."
 //
-// Renders a page and audits the ACTUAL drawn hairlines:
+// Renders a page and audits the ACTUAL drawn hairlines, reconstructed from
+// computed CSS (borders, outlines, spread-only shadows, thin filled boxes,
+// exposed-ground strips and absolutely positioned pseudo rules):
 //   1. DOUBLE lines: two parallel 1-2px lines from DIFFERENT owners within
 //      1..4px of each other, overlapping most of their run — the double-
 //      border bug class. Same-owner pairs are exempt (the brand's doubled
 //      rail draws both strokes from one element on purpose), as are the
-//      known thread/instrument devices.
+//      named devices in ALLOW. A stroke another opaque box paints over is
+//      not drawn, so it cannot double anything: pairs are checked for
+//      visibility with elementsFromPoint before they count.
 //   2. MISSING seams: adjacent top-level sections whose shared boundary has
-//      no horizontal line spanning the column within 3px.
+//      no horizontal line spanning the column within 3px (page mode only).
+//   3. JUNCTIONS: two owners drawing the same seam, coincident (gap under
+//      1px). Reported apart from doubles because the fix is different: one
+//      owner keeps the line, the other drops its side (the ownership table
+//      in DESIGN.md, "Line law for chrome").
+//   4. BORDER ROLES (shell mode): every visible border in chrome draws one of
+//      three tokens, --pt-hair (structural), --pt-hair-soft (rows) or
+//      --pt-edge (frames). --pt-ink is allowed only on an element in an
+//      active state (.is-on, .is-active, .is-editing, .is-solid,
+//      aria-pressed, aria-current, focus-within), because active states
+//      draw their border in ink by design. Outlines are rings: the three
+//      roles, ink (focus and active rings) or paper (a ring on an ink plate).
+//      The deck's own document uses the unprefixed names (--hair, --edge);
+//      the roles are read from whichever the document defines.
 //
-// Usage: node scripts/lint-lines.mjs [url] [--theme dark|light] [--report]
+// Page mode (the original):
+//   node scripts/lint-lines.mjs [url ...] [--theme dark|light] [--report]
+//   Audits every URL at 1440 and 1280 in one theme, over the whole document.
+//
+// Shell mode (pnpm lint:lines:shell, directive 8.9):
+//   node scripts/lint-lines.mjs --shell [--base http://localhost:3005]
+//     [--only /docs] [--width 1440] [--theme dark] [--report] [--json]
+//   Walks /, /docs, /brand, /compare, /archive/<first slug>, /d/production
+//   and /deck (the iframe's document) at 1440, 1280 and 390 in both themes
+//   against the dev server, and on each page audits the resting state, the
+//   list toggled ([), the index panel (R), the search (Cmd K), and on / and
+//   /deck the grid (G) and the book (B). Chrome is every element under a
+//   shell root (.pt-viewer, .pt-corner, .pt-corner-layer, .pt-help, .pt-toast,
+//   .pt-preview, or any pt- class) outside the content roots (.stage, the
+//   flow sheet's children, .pt-page-body, .pt-root, .gv-article, .ar-doc);
+//   in the deck's document everything outside .stage, .mini and .slide.
+//   Fails on any double, any junction and any border color outside the
+//   three roles where at least one owner is chrome. A state that did not
+//   apply is an infrastructure failure (exit 2), never a pass.
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { chromium } from 'playwright-core';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const EXEC =
   '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
-const positional = process.argv.slice(2).filter((a, i, all) => !a.startsWith('--') && all[i - 1] !== '--theme');
+
+const argv = process.argv.slice(2);
+/* flags that take a value; the value is never a positional URL */
+const VALUED = new Set(['--theme', '--base', '--only', '--width', '--state']);
+const flag = (name) => {
+  const i = argv.indexOf(name);
+  return i >= 0 ? argv[i + 1] : undefined;
+};
+const positional = argv.filter((a, i, all) => !a.startsWith('--') && !VALUED.has(all[i - 1]));
+const SHELL = argv.includes('--shell');
+const reportOnly = argv.includes('--report');
+const jsonOut = argv.includes('--json');
+
 /* EVERY positional URL is audited — for years of shame, an earlier version
    silently audited only the first and blessed the rest. */
 const urls = positional.length ? positional : ['http://localhost:3006/d/toolchain?chrome=0'];
@@ -26,20 +79,21 @@ for (const u of urls) {
     process.exit(2);
   }
 }
-const theme = process.argv.includes('--theme')
-  ? process.argv[process.argv.indexOf('--theme') + 1]
-  : 'dark';
-const reportOnly = process.argv.includes('--report');
+const theme = flag('--theme') ?? 'dark';
 
-/** class fragments whose lines are deliberate multi-stroke devices */
+/**
+ * Class fragments whose lines are deliberate multi-stroke devices. Every
+ * entry names the device and why its parallel strokes are one drawing, so
+ * the list can be audited by reading it. Anything not named here is strict.
+ */
 const ALLOW = [
-  'thread',
-  'shell-rail',
-  'stack-rail',
-  'trace-rail',
-  'tcpv-def',
-  'tc-eg',
-  'tc-hatch',
+  'thread', // the doubled line (DESIGN.md §5): one path stroked twice carves two parallel hairlines by construction
+  'shell-rail', // the page rails (DESIGN.md §3): the column's inner pair plus one wrapper pseudo at ±10px, drawn by one owner
+  'stack-rail', // the dark band's stacked rails: the same doubled-rail device on the band's own root
+  'trace-rail', // the dark band's traced rails: the doubled rail with a traveling pulse between the strokes
+  'tcpv-def', // toolchain pricing definitions: a ruled term column whose rule sits beside the row rule on purpose
+  'tc-eg', // paper foundry's example plates: a frame inside a ruled cell, both strokes one figure
+  'tc-hatch', // the diagonal-hatch spacer (DESIGN.md §2): a hatch band under one hairline reads as stripes, not lines
   'lang-sw', // the sentence-width measuring instrument draws guide boxes
   'lang-rm', // the re-measure instrument: bright extents drawn on faint axes
   'tc-tab-bar', // the active-tab accent deliberately rides the tabs seam
@@ -47,39 +101,70 @@ const ALLOW = [
   'eh-chip', // orbiting locale chips sweep the hero; any parallelism is transient
   'tcb-term', // the band terminal wears the doubled frame: border + offset outline
   'lg-card', // lens-gate's refracting cards drift each frame; parallelism is transient
-  'sheet', // the viewer shell's sheet mat: a 1px edge border inside a 1px paper gap inside a 1px hair-soft outline
-  'thumb-frame', // the shell's active thumbnail frame: border plus the offset outline
-  'page-frame', // the shell's active book page frame: the same pair
+  'sheet', // the viewer shell's sheet mat: a 1px edge border inside a 1px paper gap inside a 1px hair-soft outline, the one sanctioned doubled line in chrome (the deck's own .sheet draws the same ring as two spread shadows)
+  'thumb-frame', // the shell's active thumbnail frame: the edge border plus the 2px offset ink outline (the deck's .thumb-frame is the same device)
+  'page-frame', // the shell's active book page frame: the same border plus offset outline pair
+  'pt-tile', // the sidebar's site tiles (directive 8.5): the edge frame plus the 2px offset ink outline on the current tile
+  'pt-preview', // the hover preview card: a paper mat with a hair-soft outline around a frame with an edge border, the sheet ring at 240px
 ];
 
-/* Audit at two widths: media queries re-arrange the grammar, and a junction
-   clean at 1440 can double or vanish at narrower layouts. */
+/**
+ * Where chrome ends and content begins, for the two documents the shell
+ * mode audits. The roles name the custom properties to read, prefixed
+ * first; `active` marks an element whose ink border is a state, not a seam.
+ */
+const SHELL_CHROME = {
+  roots: '.pt-viewer, .pt-corner, .pt-corner-layer, .pt-help, .pt-toast, .pt-preview',
+  prefix: 'pt-',
+  content: '.stage, .sheet-flow .sheet > *, .pt-page-body, .pt-root, .gv-article, .ar-doc, iframe',
+  tokens: {
+    hair: ['--pt-hair', '--hair'],
+    soft: ['--pt-hair-soft', '--hair-soft'],
+    edge: ['--pt-edge', '--edge'],
+    ink: ['--pt-ink', '--ink'],
+    paper: ['--pt-paper', '--paper'],
+  },
+  active: '.is-on, .is-active, .is-editing, .is-solid, [aria-pressed="true"], [aria-current], [aria-selected="true"]',
+};
+
+const DECK_CHROME = {
+  ...SHELL_CHROME,
+  roots: 'body',
+  prefix: null,
+  content: '.stage, .mini, .slide',
+};
+
+/* Page mode audits at two widths: media queries re-arrange the grammar, and
+   a junction clean at 1440 can double or vanish at narrower layouts. */
 const WIDTHS = [1440, 1280];
 
-const browser = await chromium.launch({ executablePath: EXEC, headless: true });
+/* Shell mode adds the phone cut, where the list is an overlay and the
+   toolbar takes two rows. */
+const SHELL_WIDTHS = [1440, 1280, 390];
+const SHELL_THEMES = ['dark', 'light'];
+const BASE = (flag('--base') ?? 'http://localhost:3005').replace(/\/$/, '');
 
-async function auditAt(url, width) {
-const ctx = await browser.newContext({ viewport: { width, height: 4200 } });
-await ctx.addInitScript((t) => localStorage.setItem('gt-theme', t), theme);
-const page = await ctx.newPage();
-const resp = await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
-/* an error page audits clean at ~1 line — that is a blessing nobody asked
-   for. HTTP failures fail the audit loudly. */
-if (resp && resp.status() >= 400) {
-  console.error(`lint-lines: HTTP ${resp.status()} for ${url}`);
-  process.exit(2);
-}
-await page.evaluate(() => document.fonts.ready);
-await page.waitForTimeout(3000);
-
-const audit = await page.evaluate((ALLOW) => {
+/**
+ * The audit, run inside the document. Self-contained: Playwright serializes
+ * the function, so it reads nothing but its argument.
+ * cfg.ALLOW: the class fragments above. cfg.chrome: null in page mode, a
+ * chrome config in shell mode (colors and junctions are then gated to
+ * chrome, missing seams are skipped).
+ */
+const auditDocument = (cfg) => {
+  const ALLOW = cfg.ALLOW;
+  const chrome = cfg.chrome;
   const segs = [];
   const els = [];
+  /* parallel to els: is that element chrome */
+  const chromeOf = [];
   const selfStacks = [];
   const invisibles = [];
+  const colors = [];
+  /* the first two classes name the owner; an element with none is named by its tag */
   const label = (el) =>
-    (typeof el.className === 'string' ? el.className : el.tagName)
-      .split(' ')
+    (typeof el.className === 'string' && el.className.trim() ? el.className.trim() : el.tagName)
+      .split(/\s+/)
       .slice(0, 2)
       .join('.');
   const visible = (color) => {
@@ -93,6 +178,94 @@ const audit = await page.evaluate((ALLOW) => {
     if (!m) return color === 'transparent' ? 0 : 1;
     return m[1].split(',').map(parseFloat)[3] ?? 1;
   };
+
+  /* ---- chrome scope and the border roles ---- */
+  const isChrome = (el) => {
+    if (!chrome) return false;
+    if (el.closest(chrome.content)) return false;
+    if (el.closest(chrome.roots)) return true;
+    return Boolean(chrome.prefix && typeof el.className === 'string' && new RegExp(`(^|\\s)${chrome.prefix}`).test(el.className));
+  };
+  /* a color string to [r, g, b, a]; computed colors are rgb()/rgba(), token values may be hex */
+  const rgba = (str) => {
+    if (!str) return null;
+    const s = str.trim().toLowerCase();
+    if (s === 'transparent') return [0, 0, 0, 0];
+    let m = s.match(/^rgba?\(([^)]+)\)$/);
+    if (m) {
+      const p = m[1].split(/[\s,/]+/).filter(Boolean).map(parseFloat);
+      return [p[0], p[1], p[2], p[3] ?? 1];
+    }
+    m = s.match(/^#([0-9a-f]{3,8})$/);
+    if (m) {
+      let h = m[1];
+      if (h.length === 3 || h.length === 4) h = h.split('').map((c) => c + c).join('');
+      const n = parseInt(h.slice(0, 6), 16);
+      const a = h.length === 8 ? parseInt(h.slice(6, 8), 16) / 255 : 1;
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255, a];
+    }
+    return null;
+  };
+  const sameColor = (a, b) =>
+    Boolean(a && b) &&
+    Math.abs(a[0] - b[0]) <= 2 &&
+    Math.abs(a[1] - b[1]) <= 2 &&
+    Math.abs(a[2] - b[2]) <= 2 &&
+    Math.abs(a[3] - b[3]) <= 0.02;
+  const readToken = (names) => {
+    const root = getComputedStyle(document.documentElement);
+    for (const name of names) {
+      const v = root.getPropertyValue(name).trim();
+      if (v) return rgba(v);
+    }
+    return null;
+  };
+  const ROLES = chrome
+    ? Object.fromEntries(Object.entries(chrome.tokens).map(([role, names]) => [role, readToken(names)]))
+    : null;
+  const roleOf = (color) => {
+    const c = rgba(color);
+    for (const [role, value] of Object.entries(ROLES)) if (sameColor(c, value)) return role;
+    return null;
+  };
+  /* an ink border is a state when the element, its parent or its grandparent
+     is marked active or holds focus; no further, so an open panel does not
+     excuse every rule inside it */
+  const activeNear = (el) => {
+    for (let n = el, d = 0; n && d < 3; n = n.parentElement, d++) {
+      if (n.matches(chrome.active)) return true;
+      if (n.matches(':focus-within')) return true;
+    }
+    return false;
+  };
+  const SEAM_ROLES = ['hair', 'soft', 'edge'];
+  const RING_ROLES = ['hair', 'soft', 'edge', 'ink', 'paper'];
+  const checkColors = (rect, cs, owner, el, isPseudo) => {
+    if (!chrome || !el || !isChrome(el)) return;
+    for (const side of ['Top', 'Bottom', 'Left', 'Right']) {
+      const w = parseFloat(cs[`border${side}Width`]);
+      const color = cs[`border${side}Color`];
+      if (!(w >= 1) || !visible(color)) continue;
+      const role = roleOf(color);
+      if (SEAM_ROLES.includes(role)) continue;
+      if (role === 'ink' && activeNear(el)) continue;
+      colors.push({
+        kind: 'border',
+        owner: isPseudo ? `pseudo:${owner}` : owner,
+        side: side.toLowerCase(),
+        color,
+        role: role ?? 'none',
+        at: Math.round(side === 'Top' ? rect.top : side === 'Bottom' ? rect.bottom : side === 'Left' ? rect.left : rect.right),
+      });
+    }
+    const ow = parseFloat(cs.outlineWidth);
+    if (cs.outlineStyle !== 'none' && ow >= 1 && visible(cs.outlineColor)) {
+      const role = roleOf(cs.outlineColor);
+      if (!RING_ROLES.includes(role))
+        colors.push({ kind: 'outline', owner, side: 'ring', color: cs.outlineColor, role: role ?? 'none', at: Math.round(rect.top) });
+    }
+  };
+
   /* Straight-run spans stop where the corner radius begins — arcs are not
      parallel to anything and must not extend a segment's overlap. */
   const radii = (cs) => ({
@@ -176,6 +349,8 @@ const audit = await page.evaluate((ALLOW) => {
     if (parseFloat(cs.opacity) <= 0.05) return; // hover-woken devices rest invisible
     if (inSkipped(el)) return;
     const elIdx = els.push(el) - 1;
+    const inChrome = isChrome(el);
+    chromeOf[elIdx] = inChrome;
     /* Clamp every real element to its clipping ancestor before reading
        lines off it — the audit must see the geometry the eye does, not
        the layout box. Edges the clip removes are dropped outright. */
@@ -201,6 +376,7 @@ const audit = await page.evaluate((ALLOW) => {
       }
     }
     pushBorders(crect, cs, owner, elIdx, edges);
+    checkColors(crect, cs, owner, el, false);
     // thin filled boxes are lines too — same clamped geometry
     if (visible(cs.backgroundColor)) {
       const tw = crect.right - crect.left;
@@ -218,7 +394,10 @@ const audit = await page.evaluate((ALLOW) => {
        cannot be seen (the panel-on-ink bug class). */
     if (visible(cs.backgroundColor) && rect.width > 24 && rect.height > 24) {
       const bgA2 = alphaOf(cs.backgroundColor);
-      if (bgA2 >= 0.95) {
+      /* the named devices (ALLOW) own their strips and stacks by design: the
+         sheet mat's 1px paper gap is the ring's middle stroke, not a seam */
+      const deviceOwner = ALLOW.some((frag) => owner.includes(frag));
+      if (bgA2 >= 0.95 && (!chrome || inChrome) && !deviceOwner) {
         const own = cs.backgroundColor.match(/\d+/g)?.map(Number) ?? [];
         const rootBg = getComputedStyle(document.body).backgroundColor.match(/\d+/g)?.map(Number) ?? [];
         const hasStrip = ['Top', 'Bottom', 'Left', 'Right'].some((side) => {
@@ -250,21 +429,23 @@ const audit = await page.evaluate((ALLOW) => {
       /* Self-stack: a translucent border over the element's own visible
          background (backgrounds paint to the border box) composites darker
          than either — the same line drawn twice by one element. */
-      for (const side of ['Top', 'Bottom', 'Left', 'Right']) {
-        const bw = parseFloat(cs[`border${side}Width`]);
-        const bc = cs[`border${side}Color`];
-        const bgA = alphaOf(cs.backgroundColor);
-        if (
-          bw >= 1 && visible(bc) && alphaOf(bc) < 0.95 &&
-          bgA >= 0.12 && bgA < 0.95 &&
-          cs.backgroundClip !== 'padding-box' && cs.backgroundClip !== 'content-box'
-        )
-          selfStacks.push({
-            owner,
-            side: side.toLowerCase(),
-            at: Math.round(side === 'Top' ? rect.top : side === 'Bottom' ? rect.bottom : side === 'Left' ? rect.left : rect.right),
-            len: Math.round(side === 'Top' || side === 'Bottom' ? rect.width : rect.height),
-          });
+      if ((!chrome || inChrome) && !deviceOwner) {
+        for (const side of ['Top', 'Bottom', 'Left', 'Right']) {
+          const bw = parseFloat(cs[`border${side}Width`]);
+          const bc = cs[`border${side}Color`];
+          const bgA = alphaOf(cs.backgroundColor);
+          if (
+            bw >= 1 && visible(bc) && alphaOf(bc) < 0.95 &&
+            bgA >= 0.12 && bgA < 0.95 &&
+            cs.backgroundClip !== 'padding-box' && cs.backgroundClip !== 'content-box'
+          )
+            selfStacks.push({
+              owner,
+              side: side.toLowerCase(),
+              at: Math.round(side === 'Top' ? rect.top : side === 'Bottom' ? rect.bottom : side === 'Left' ? rect.left : rect.right),
+              len: Math.round(side === 'Top' || side === 'Bottom' ? rect.width : rect.height),
+            });
+        }
       }
     }
     // absolutely-positioned pseudo rails/rules
@@ -302,7 +483,9 @@ const audit = await page.evaluate((ALLOW) => {
       }
       const prect = { top, bottom: top + height, left, right: left + width, width, height };
       const hostIdx = els.push(el) - 1;
+      chromeOf[hostIdx] = inChrome;
       pushBorders(prect, ps, `${pseudo}${label(el)}`, hostIdx);
+      checkColors(prect, ps, `${pseudo}${label(el)}`, el, true);
       if (visible(ps.backgroundColor)) {
         if (height <= 2.5 && width > 24) segs.push({ orient: 'h', pos: Math.round((top + height / 2) * 2) / 2, from: left, to: left + width, owner: `${pseudo}${label(el)}`, el: hostIdx });
         if (width <= 2.5 && height > 24) segs.push({ orient: 'v', pos: Math.round((left + width / 2) * 2) / 2, from: top, to: top + height, owner: `${pseudo}${label(el)}`, el: hostIdx });
@@ -342,12 +525,43 @@ const audit = await page.evaluate((ALLOW) => {
     return false;
   };
 
+  /* A stroke is drawn only where nothing opaque paints over it. Walking the
+     hit stack from the top: reaching the drawer (or its subtree) means the
+     stroke is on top; reaching an ancestor means nothing above hid it; an
+     unrelated opaque box first means the stroke is under it (an overlay list
+     over the toolbar, the index panel over the sheet). Sampled at three
+     points of the shared run; points off the viewport count as visible. */
+  const strokeVisibleAt = (s, x, y) => {
+    const E = els[s.el];
+    if (!E) return true;
+    if (x < 0 || y < 0 || x >= window.innerWidth || y >= window.innerHeight) return true;
+    for (const node of document.elementsFromPoint(x, y)) {
+      if (node === E || E.contains(node) || node.contains(E)) return true;
+      if (opaqueBg(node)) return false;
+    }
+    return true;
+  };
+  const bothVisible = (a, b) => {
+    const from = Math.max(a.from, b.from), to = Math.min(a.to, b.to);
+    const pos = (a.pos + b.pos) / 2;
+    let seen = 0;
+    for (const t of [0.25, 0.5, 0.75]) {
+      const along = from + (to - from) * t;
+      const [x, y] = a.orient === 'h' ? [along, pos] : [pos, along];
+      if (strokeVisibleAt(a, x, y) && strokeVisibleAt(b, x, y)) seen++;
+    }
+    return seen >= 2;
+  };
+
   // 1 · doubles: cross-owner parallel pairs 0..4px apart, 70%+ overlap.
   // gap 0 is the worst case, not an exemption: two coincident translucent
-  // strokes stack alpha and render a brighter line than either alone.
+  // strokes stack alpha and render a brighter line than either alone. It is
+  // reported as a junction (two owners meet on one seam); 1..4px pairs are
+  // doubles. In shell mode a pair counts only when one owner is chrome.
   const doubles = [];
+  const junctions = [];
   const seen = new Set();
-  for (const [orient, axisFrom] of [['h', 'from'], ['v', 'from']]) {
+  for (const orient of ['h', 'v']) {
     const pool = segs.filter((s) => s.orient === orient && !allowed(s.owner));
     pool.sort((a, b) => a.pos - b.pos);
     for (let i = 0; i < pool.length; i++) {
@@ -355,77 +569,393 @@ const audit = await page.evaluate((ALLOW) => {
         const a = pool[i], b = pool[j];
         const gap = b.pos - a.pos;
         if (a.owner === b.owner) continue;
+        if (chrome && !chromeOf[a.el] && !chromeOf[b.el]) continue;
         const overlap = Math.min(a.to, b.to) - Math.max(a.from, b.from);
         const shorter = Math.min(a.to - a.from, b.to - b.from);
         if (overlap < shorter * 0.75 || overlap < 80) continue;
         if (gap < 1 && coveredCoincidence(a, b)) continue;
+        if (!bothVisible(a, b)) continue;
         const key = `${orient}:${Math.round(a.pos)}:${a.owner}|${b.owner}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        doubles.push({ orient, at: Math.round(a.pos), gap: +gap.toFixed(1), a: a.owner, b: b.owner, span: Math.round(overlap) });
+        const hit = { orient, at: Math.round(a.pos), gap: +gap.toFixed(1), a: a.owner, b: b.owner, span: Math.round(overlap) };
+        (gap < 1 ? junctions : doubles).push(hit);
       }
     }
   }
 
   // 2 · missing seams at section boundaries AND adjacent-row boundaries —
-  // every junction between stacked blocks must carry one spanning line
+  // every junction between stacked blocks must carry one spanning line.
+  // Page grammar only; the shell has no stacked sections.
   const missing = [];
-  const needSeam = (el, next, kind) => {
-    const r = el.getBoundingClientRect();
-    if (r.height < 8 || r.width < 200) return;
-    const hit = segs.some(
-      (s) => s.orient === 'h' && Math.abs(s.pos - r.bottom) <= 3 && s.to - s.from >= Math.min(r.width, 1100) * 0.5
-    );
-    if (!hit)
-      missing.push({
-        kind,
-        between: `${el.id || label(el)} → ${next.id || label(next)}`,
-        at: Math.round(r.bottom),
-      });
-  };
-  const sections = [...document.querySelectorAll('.tc-rail > section, [class*="-root"] > section')];
-  sections.sort((x, y) => x.getBoundingClientRect().top - y.getBoundingClientRect().top);
-  for (let i = 0; i + 1 < sections.length; i++) needSeam(sections[i], sections[i + 1], 'section');
-  const BLOCKS = '.tc-row, .tc-hatch, .tc-band, .tc-delivery-band';
-  for (const block of document.querySelectorAll(BLOCKS)) {
-    const next = block.nextElementSibling;
-    if (next && next.matches(BLOCKS)) needSeam(block, next, 'row');
+  if (!chrome) {
+    const needSeam = (el, next, kind) => {
+      const r = el.getBoundingClientRect();
+      if (r.height < 8 || r.width < 200) return;
+      const hit = segs.some(
+        (s) => s.orient === 'h' && Math.abs(s.pos - r.bottom) <= 3 && s.to - s.from >= Math.min(r.width, 1100) * 0.5
+      );
+      if (!hit)
+        missing.push({
+          kind,
+          between: `${el.id || label(el)} → ${next.id || label(next)}`,
+          at: Math.round(r.bottom),
+        });
+    };
+    const sections = [...document.querySelectorAll('.tc-rail > section, [class*="-root"] > section')];
+    sections.sort((x, y) => x.getBoundingClientRect().top - y.getBoundingClientRect().top);
+    for (let i = 0; i + 1 < sections.length; i++) needSeam(sections[i], sections[i + 1], 'section');
+    const BLOCKS = '.tc-row, .tc-hatch, .tc-band, .tc-delivery-band';
+    for (const block of document.querySelectorAll(BLOCKS)) {
+      const next = block.nextElementSibling;
+      if (next && next.matches(BLOCKS)) needSeam(block, next, 'row');
+    }
   }
+
+  /* the same color drawn by the same owner on many rows is one finding */
+  const colorKeys = new Set();
+  const colorHits = colors.filter((c) => {
+    const key = `${c.kind}:${c.owner}:${c.side}:${c.color}`;
+    if (colorKeys.has(key)) return false;
+    colorKeys.add(key);
+    return true;
+  });
 
   return {
     total: segs.length,
     doubles: doubles.slice(0, 40),
+    junctions: junctions.slice(0, 40),
+    colors: colorHits.slice(0, 40),
     missing,
     selfStacks: selfStacks.slice(0, 24),
     invisibles: invisibles.slice(0, 12),
+    roles: ROLES,
   };
-}, ALLOW);
+};
 
-await ctx.close();
-return audit;
-}
-
-let failed = false;
-const out = {};
-for (const url of urls) {
-  const per = {};
-  for (const width of WIDTHS) {
-    const audit = await auditAt(url, width);
-    per[width] = audit;
-    /* chip-scale self-stacks (short edges) are reported but do not gate — the
-       structural ones (long seams reading darker than their neighbours) do. */
-    const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
-    if (
-      audit.doubles.length ||
+/** True when an audit carries anything that fails the run. */
+const failing = (audit) => {
+  /* chip-scale self-stacks (short edges) are reported but do not gate — the
+     structural ones (long seams reading darker than their neighbours) do. */
+  const structuralStacks = audit.selfStacks.filter((s) => s.len >= 120);
+  return Boolean(
+    audit.doubles.length ||
+      audit.junctions.length ||
+      audit.colors.length ||
       audit.missing.length ||
       structuralStacks.length ||
       audit.invisibles.length
-    )
-      failed = true;
+  );
+};
+
+const browser = await chromium.launch({ executablePath: EXEC, headless: true });
+
+/* ------------------------------------------------------------------ */
+/* page mode                                                           */
+/* ------------------------------------------------------------------ */
+
+async function auditPageAt(url, width) {
+  const ctx = await browser.newContext({ viewport: { width, height: 4200 } });
+  await ctx.addInitScript((t) => localStorage.setItem('gt-theme', t), theme);
+  const page = await ctx.newPage();
+  const resp = await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
+  /* an error page audits clean at ~1 line — that is a blessing nobody asked
+     for. HTTP failures fail the audit loudly. */
+  if (resp && resp.status() >= 400) {
+    console.error(`lint-lines: HTTP ${resp.status()} for ${url}`);
+    process.exit(2);
   }
-  if (urls.length === 1) Object.assign(out, per);
-  else out[url] = per;
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(3000);
+  const audit = await page.evaluate(auditDocument, { ALLOW, chrome: null });
+  await ctx.close();
+  return audit;
 }
-console.log(JSON.stringify(out, null, 1));
+
+async function runPageMode() {
+  let failed = false;
+  const out = {};
+  for (const url of urls) {
+    const per = {};
+    for (const width of WIDTHS) {
+      const audit = await auditPageAt(url, width);
+      delete audit.roles;
+      per[width] = audit;
+      if (failing(audit)) failed = true;
+    }
+    if (urls.length === 1) Object.assign(out, per);
+    else out[url] = per;
+  }
+  console.log(JSON.stringify(out, null, 1));
+  return failed;
+}
+
+/* ------------------------------------------------------------------ */
+/* shell mode                                                          */
+/* ------------------------------------------------------------------ */
+
+/** The routes directive 8.9 names, and the states each is driven through. */
+function shellRoutes() {
+  const archive = readFileSync(join(ROOT, 'src/lib/archive.ts'), 'utf8');
+  const slug = archive.match(/entry\('([^']+)'/)?.[1];
+  if (!slug) {
+    console.error('lint-lines: no archive entry found in src/lib/archive.ts');
+    process.exit(2);
+  }
+  return [
+    { path: '/', states: ['list', 'index', 'search', 'grid', 'book'] },
+    { path: '/docs', states: ['list', 'index', 'search'] },
+    { path: '/brand', states: ['list', 'index', 'search'] },
+    { path: '/compare', states: ['list', 'index', 'search'] },
+    { path: `/archive/${slug}`, states: ['list', 'index', 'search'] },
+    { path: '/d/production', states: ['list', 'index'], corner: true },
+    { path: '/deck', states: ['list', 'index', 'grid', 'book'], deck: true },
+  ];
+}
+
+/** What the document shows right now; the driver verifies every state against it. */
+const probeState = () => {
+  const shell = document.querySelector('.pt-viewer');
+  const deck = document.querySelector('.viewer');
+  /* the mode the toolbar's seg says is on: the shell's option text (Slides, Grid, Book; a route may reword the first), the deck's data-mode */
+  const segOn = document.querySelector('.pt-toolbar .pt-seg .pt-ib.is-on');
+  const deckOn = document.querySelector('.toolbar [data-mode].is-on');
+  const mode = deckOn ? deckOn.dataset.mode ?? null : segOn ? (segOn.textContent ?? '').trim().toLowerCase() : null;
+  return {
+    theme: document.documentElement.dataset.theme ?? null,
+    kind: shell ? 'shell' : deck ? 'deck' : document.querySelector('.pt-corner') ? 'corner' : 'none',
+    sb: shell ? shell.dataset.sb ?? null : deck ? (deck.classList.contains('no-sb') ? '0' : '1') : null,
+    overlay: Boolean(document.querySelector('.pt-sb.is-overlay, .viewer.sb-open')),
+    panel: Boolean(document.querySelector('.pt-panel.is-on, .panel-r.is-on')),
+    /* the open search layer (Search.tsx mounts .pt-search-card only while open; the toolbar's .pt-search-btn is always there) */
+    search: Boolean(document.querySelector('.pt-search-card[role="dialog"], [class*="pt-palette"], [data-pt-search]')),
+    mode,
+    grid: mode === 'grid' || Boolean(document.querySelector('.pt-grid, .viewer.is-overview')),
+    book: mode === 'book' || Boolean(document.querySelector('.pt-book, .sheet-flow, .gv-flow, .viewer .book:not([hidden])')),
+    help: Boolean(document.querySelector('.pt-help, .help:not([hidden])')),
+  };
+};
+
+/** Send one key. The top document gets a real key press; the deck's iframe gets the same event dispatched on its document. */
+async function press(target, key, deck) {
+  if (!deck) {
+    await target.page().keyboard.press(key);
+    return;
+  }
+  const [, mod, k] = key.match(/^(?:(Meta|Control)\+)?(.+)$/);
+  await target.evaluate(
+    ([kk, m]) => {
+      document.dispatchEvent(
+        new KeyboardEvent('keydown', { key: kk, bubbles: true, cancelable: true, metaKey: m === 'Meta', ctrlKey: m === 'Control' })
+      );
+    },
+    [k, mod ?? null]
+  );
+}
+
+async function settle(target, ms) {
+  await target.page().waitForTimeout(ms);
+}
+
+/**
+ * Drive one route at one width in one theme through its states, auditing
+ * each. Returns { [state]: audit } plus the probes; a state that did not
+ * apply is recorded under `unapplied` and fails the run with exit 2.
+ */
+async function auditShellRoute(route, width, themeName) {
+  const height = width <= 600 ? 844 : 900;
+  const ctx = await browser.newContext({ viewport: { width, height } });
+  await ctx.addInitScript((t) => {
+    try {
+      localStorage.setItem('gt-theme', t);
+      localStorage.setItem('gt-deck-theme', t);
+    } catch {}
+  }, themeName);
+  const page = await ctx.newPage();
+  const url = `${BASE}${route.path}`;
+  const resp = await page.goto(url, { waitUntil: 'load', timeout: 90000 });
+  if (!resp || resp.status() >= 400) {
+    console.error(`lint-lines: HTTP ${resp ? resp.status() : 'none'} for ${url}`);
+    process.exit(2);
+  }
+  let target = page.mainFrame();
+  let deck = false;
+  if (route.deck) {
+    await page.waitForSelector('iframe, .pt-viewer', { timeout: 60000 });
+    const iframe = await page.$('iframe');
+    if (iframe) {
+      const frame = await iframe.contentFrame();
+      if (!frame) {
+        console.error(`lint-lines: the deck iframe at ${url} has no document`);
+        process.exit(2);
+      }
+      await frame.waitForSelector('.viewer', { timeout: 60000 });
+      target = frame;
+      deck = true;
+    }
+  } else {
+    await page.waitForSelector(route.corner ? '.pt-corner' : '.pt-viewer', { timeout: 60000 });
+  }
+  await target.evaluate(() => document.fonts.ready);
+  await settle(target, 1200);
+
+  /* the theme: the key is set before load; a document that read another key
+     is toggled with D once it agrees on what it shows (a document that has
+     not stamped the attribute yet is given a moment, never toggled blind),
+     and every probe records the theme the audit ran in */
+  let probe = await target.evaluate(probeState);
+  if (probe.theme === null) {
+    await settle(target, 400);
+    probe = await target.evaluate(probeState);
+  }
+  if (probe.theme !== null && probe.theme !== themeName) {
+    await press(target, 'd', deck);
+    await settle(target, 400);
+    probe = await target.evaluate(probeState);
+  }
+  if (probe.theme !== themeName) {
+    console.error(`lint-lines: ${url} at ${width} shows theme ${probe.theme}, wanted ${themeName}`);
+    process.exit(2);
+  }
+
+  const cfg = { ALLOW, chrome: deck ? DECK_CHROME : SHELL_CHROME };
+  const results = {};
+  const unapplied = [];
+  const audit = async (name) => {
+    const state = await target.evaluate(probeState);
+    const found = await target.evaluate(auditDocument, cfg);
+    results[name] = { ...found, probe: state };
+    return state;
+  };
+
+  await audit('rest');
+  const narrow = width <= 900;
+
+  for (const state of route.states) {
+    if (state === 'list') {
+      /* [ toggles the list: at a wide width the column closes; at or below
+         900px, and on a direction page, it opens as the overlay */
+      const opens = narrow || Boolean(route.corner);
+      await press(target, '[', deck);
+      await settle(target, 500);
+      const p = await audit(opens ? 'list-open' : 'list-closed');
+      const ok = opens ? p.overlay || (narrow && p.sb !== '0') : p.sb === '0';
+      if (!ok) unapplied.push('list');
+      await press(target, opens ? 'Escape' : '[', deck);
+      await settle(target, 400);
+    } else if (state === 'index') {
+      await press(target, 'r', deck);
+      await settle(target, 500);
+      const p = await audit('index');
+      if (!p.panel) unapplied.push('index');
+      await press(target, 'Escape', deck);
+      await settle(target, 400);
+      const after = await target.evaluate(probeState);
+      if (after.panel) {
+        await press(target, 'r', deck);
+        await settle(target, 400);
+      }
+    } else if (state === 'search') {
+      await press(target, 'Meta+k', deck);
+      await settle(target, 500);
+      const p0 = await target.evaluate(probeState);
+      /* the search bar (directive 8.3); until it lands Cmd K opens the index panel with the filter focused */
+      const name = p0.search ? 'search' : p0.panel ? 'search-as-index' : 'search';
+      const p = await audit(name);
+      if (!p.search && !p.panel) unapplied.push('search');
+      await press(target, 'Escape', deck);
+      await settle(target, 400);
+      const after = await target.evaluate(probeState);
+      if (after.search || after.panel) {
+        await press(target, 'Escape', deck);
+        await settle(target, 300);
+      }
+    } else if (state === 'grid' || state === 'book') {
+      await press(target, state === 'grid' ? 'g' : 'b', deck);
+      await settle(target, 700);
+      const p = await audit(state);
+      if (!p[state]) unapplied.push(state);
+      /* Escape returns to the default mode */
+      await press(target, 'Escape', deck);
+      await settle(target, 600);
+    }
+  }
+
+  await ctx.close();
+  return { results, unapplied, deck };
+}
+
+/** Run tasks with at most `n` in flight. */
+async function pool(tasks, n) {
+  const results = new Array(tasks.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < tasks.length) {
+      const i = next++;
+      results[i] = await tasks[i]();
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(n, tasks.length) }, worker));
+  return results;
+}
+
+async function runShellMode() {
+  const only = flag('--only');
+  const widthFlag = flag('--width');
+  const themeFlag = flag('--theme');
+  const routes = shellRoutes().filter((r) => !only || r.path.includes(only));
+  const widths = widthFlag ? [Number(widthFlag)] : SHELL_WIDTHS;
+  const themes = themeFlag ? [themeFlag] : SHELL_THEMES;
+  if (routes.length === 0) {
+    console.error(`lint-lines: --only ${only} matches no route`);
+    process.exit(2);
+  }
+
+  const out = {};
+  let audits = 0;
+  let bad = 0;
+  let broken = 0;
+  const tasks = [];
+  for (const route of routes)
+    for (const themeName of themes)
+      for (const width of widths)
+        tasks.push(async () => {
+          const { results, unapplied } = await auditShellRoute(route, width, themeName);
+          const key = `${width}/${themeName}`;
+          out[route.path] ??= {};
+          out[route.path][key] = results;
+          for (const [state, audit] of Object.entries(results)) {
+            audits++;
+            if (failing(audit)) {
+              bad++;
+              const lines = [];
+              for (const d of audit.junctions) lines.push(`  junction ${d.orient}@${d.at} gap ${d.gap}: ${d.a} | ${d.b} (${d.span}px)`);
+              for (const d of audit.doubles) lines.push(`  double ${d.orient}@${d.at} gap ${d.gap}: ${d.a} | ${d.b} (${d.span}px)`);
+              for (const c of audit.colors) lines.push(`  color ${c.kind} ${c.side} of ${c.owner} @${c.at}: ${c.color} (${c.role})`);
+              for (const s of audit.selfStacks.filter((x) => x.len >= 120)) lines.push(`  self-stack ${s.side} of ${s.owner} @${s.at} (${s.len}px)`);
+              for (const s of audit.invisibles) lines.push(`  invisible seam ${s.owner} @${s.at} on ${s.fill}`);
+              console.error(`${route.path} ${key} ${state}: ${lines.length} finding(s)`);
+              for (const line of lines) console.error(line);
+            }
+          }
+          for (const state of unapplied) {
+            broken++;
+            console.error(`${route.path} ${key}: state "${state}" did not apply (audited whatever showed)`);
+          }
+        });
+  await pool(tasks, 3);
+
+  if (jsonOut || reportOnly) console.log(JSON.stringify(out, null, 1));
+  console.error(
+    `lint:lines:shell — ${audits} audit(s) over ${routes.length} route(s), ${widths.length} width(s), ${themes.length} theme(s): ${bad} with findings, ${broken} state(s) unapplied`
+  );
+  if (broken && !reportOnly) {
+    await browser.close();
+    process.exit(2);
+  }
+  return bad > 0;
+}
+
+const failed = SHELL ? await runShellMode() : await runPageMode();
 await browser.close();
 if (!reportOnly && failed) process.exit(1);

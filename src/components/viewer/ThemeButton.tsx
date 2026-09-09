@@ -1,5 +1,6 @@
 'use client';
 
+import type { CSSProperties } from 'react';
 import { useState } from 'react';
 
 import { ToolButton } from '@/components/viewer/ToolButton';
@@ -13,8 +14,14 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * the default when nothing is saved (decision 2). Replaces
  * src/components/shared/ThemeToggle.tsx. The D key in useShellKeys calls
  * toggleTheme() directly and the button follows through a MutationObserver
- * on the attribute. The glyph names the theme the click will bring: the
- * moon in light mode, the sun in dark mode (directive 7.2).
+ * on the attribute.
+ *
+ * The glyph is the old one (directive 8.4): the half discs ◐ in light mode
+ * and ◑ in dark mode, rendered as text at 16px, the one place in chrome a
+ * text glyph stands for an icon. The moon and the sun are gone from the
+ * button. The size rides on the span itself rather than a sheet because
+ * the button mounts in two places that load different CSS: the shell
+ * toolbar and the direction navs on /d pages.
  *
  * Two forms. In the shell toolbar it is a labeled button like every other
  * control (decision 7), with the title naming the D key. The direction
@@ -27,6 +34,19 @@ export type Theme = 'light' | 'dark';
 export const THEME_KEY = 'gt-theme';
 
 const DEFAULT_THEME: Theme = 'dark';
+
+/** The glyph names the theme the button is in: the left half filled in light, the right half in dark. */
+const GLYPH: Record<Theme, string> = { light: '◐', dark: '◑' };
+
+/* 16px, one line, centered in the 16px slot an icon would take */
+const GLYPH_STYLE: CSSProperties = {
+  display: 'inline-block',
+  width: 16,
+  fontSize: 16,
+  lineHeight: '16px',
+  textAlign: 'center',
+  fontWeight: 400,
+};
 
 function isTheme(value: unknown): value is Theme {
   return value === 'light' || value === 'dark';
@@ -90,7 +110,6 @@ export function ThemeButton({ className, label = className === undefined }: Them
 
   return (
     <ToolButton
-      icon={theme === 'dark' ? 'theme-light' : 'theme-dark'}
       label={label ? 'Theme' : undefined}
       title={label ? 'Dark or light (D)' : 'Dark or light'}
       ariaLabel={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
@@ -98,6 +117,10 @@ export function ThemeButton({ className, label = className === undefined }: Them
       onClick={() => {
         toggleTheme();
       }}
-    />
+    >
+      <span className='pt-theme-glyph' style={GLYPH_STYLE} aria-hidden='true'>
+        {GLYPH[theme]}
+      </span>
+    </ToolButton>
   );
 }

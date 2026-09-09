@@ -28,7 +28,13 @@
   display: none;
 }
 
-/* the panning sheet (fit 'height'): wider than the stage, scrolled sideways */
+/* the panning sheet (fit 'height'): wider than the stage, scrolled sideways.
+   Its scrollbar is the shell's thin one (directive 8.11): tokens.css owns
+   the values under .pt-scroll-x, the sideways variant of .pt-scroll, and
+   the pan stage is meant to carry that class from Sheet.tsx. The two
+   declarations here are the same Firefox fallback that class carries, so a
+   stage without it still shows a thin bar in the thumb color and never a
+   ruled 12px one. */
 .pt-sheet-stage.is-pan {
   overflow-x: auto;
   overflow-y: hidden;

@@ -12,6 +12,8 @@ export type ShellItem = {
   id: string;
   /** the number column text, already padded (`01`); blank hides it */
   n?: string;
+  /** a short mark at the right end of the item's list row: the pane letter (`L`, `R`, `LR`) on /compare */
+  mark?: string;
   title: string;
   /** internal route the item opens, when it is a page rather than a slide */
   href?: string;
@@ -19,6 +21,14 @@ export type ShellItem = {
   desc?: string;
   /** external address, when the item points off the site */
   url?: string;
+  /**
+   * The src/lib/surfaces.ts id this item stands for, when it differs from
+   * `id`: `docs-design` for the document `design`, `brand-the-mark` for a
+   * brand section, `archive-concrete-mono` for an archived version. The
+   * preview layer (directive 8.6) resolves a row's capture by this id
+   * through previewId(), which falls back to `id`.
+   */
+  surface?: string;
 };
 
 export type ShellSection = {
@@ -67,6 +77,11 @@ export function pagedShellItems(sections: readonly ShellSection[]): readonly She
 /** The key table a route resolves to for a mode. */
 export function resolveShellKeys(keys: ShellKeysProp, mode: ShellMode): ShellKeys {
   return typeof keys === 'function' ? keys(mode) : keys;
+}
+
+/** The surfaces.ts id an item previews under: its own `surface`, or its id. Written to data-preview. */
+export function previewId(item: ShellItem): string {
+  return item.surface ?? item.id;
 }
 
 /** `1` becomes `01`; `52` stays `52`. Used for counts, thumbs and pages. */

@@ -1,9 +1,12 @@
 /* DirectionCorner: the floating chrome on /d pages. A 32px tile with the
-   Prototemplate mark (the link back to the gallery) over two labeled
-   buttons, stacked in the top left corner and sharing one hairline, on
-   paper, so the trio reads as Prototemplate chrome and not as part of the
-   prototype's own nav band; a fixed layer over the page holds the overlay
-   list and the index panel above a 28 percent ink scrim. Tokens only, radius 0, no shadow. tokens.css owns
+   Prototemplate mark (the link back to the gallery) over three labeled
+   buttons (Search, List, Index), stacked in the top left corner and
+   sharing one hairline, on paper, so the stack reads as Prototemplate
+   chrome and not as part of the prototype's own nav band; a fixed layer
+   over the page holds the overlay list and the index panel above a 28
+   percent ink scrim, and the search palette (Search.css) opens from the
+   stack itself, above the page's own nav. Tokens only, radius 0, no
+   shadow. tokens.css owns
    .pt-ib; Sidebar.css draws the overlay list (.pt-sb.is-overlay) as an
    absolute box against this layer and slides it in; IndexPanel.css draws
    the panel, which here spans the whole height because there is no toolbar
@@ -34,9 +37,20 @@
   color: var(--pt-ink-2);
 }
 
-/* the stack shares the hairlines between its members */
-.pt-corner .pt-ib + .pt-ib {
+/* the stack shares the hairlines between its members; the general sibling
+   so the open palette, which sits between two buttons in the DOM, does not
+   break the chain. The upper button owns each seam with its bottom edge
+   and the lower one's top edge is transparent at rest, so two translucent
+   strokes never stack on one line (line law for chrome); the hover and
+   pressed rules below restore the top edge in ink */
+.pt-corner .pt-ib ~ .pt-ib {
   margin-top: -1px;
+  border-top-color: transparent;
+}
+
+/* the palette from the corner: above the page's nav, which never passes the corner's own layer */
+.pt-corner .pt-search.pt-corner-search {
+  z-index: 2;
 }
 
 /* the mark tile: a link dressed as the icon square, ink at rest */

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
+import { Icon } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import {
@@ -29,7 +30,9 @@ import './archive.css';
  * Explorations) and this route's Archive section replaces the Archive
  * group, with the eleven captures as items and the current one marked and
  * scrolled into view. Selecting another version navigates to its address.
- * Keys are flow, so Space and the arrows scroll the capture.
+ * Keys are flow, so Space and the arrows scroll the capture. The two links
+ * that leave the page (the source address, the first-fold crop) carry the
+ * external glyph from icons.tsx (directive 8.7), never a text arrow.
  */
 const ARCHIVE_TITLE = 'Archive';
 const ARCHIVE_MODES: readonly ShellMode[] = ['book'];
@@ -42,6 +45,8 @@ function archiveItem(item: ArchiveEntry, index: number): ShellItem {
     href: `/archive/${item.slug}`,
     desc: archiveDesc(item),
     shot: { light: archiveShot(item) },
+    /* the surfaces.ts id, for the preview layer and the sidebar's site map pairing */
+    surface: `archive-${item.slug}`,
   };
 }
 
@@ -68,6 +73,7 @@ function ArchiveStage({ item }: { item: ArchiveEntry }) {
             <span className='ar-v'>
               <a href={item.source} target='_blank' rel='noreferrer'>
                 {archiveHost(item)}
+                <Icon name='external' />
               </a>
             </span>
           </div>
@@ -86,6 +92,7 @@ function ArchiveStage({ item }: { item: ArchiveEntry }) {
           This is a static capture; nothing in it is live.{' '}
           <a href={archiveShot(item)} target='_blank' rel='noreferrer'>
             Open the 1440 by 900 crop
+            <Icon name='external' />
           </a>
         </p>
         <img

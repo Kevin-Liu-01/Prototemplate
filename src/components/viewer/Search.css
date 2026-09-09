@@ -1,0 +1,316 @@
+/* Search: the palette over a scrim (directive 8.3). The card is paper with
+   a --pt-edge frame, 640px at most, near the top of the viewport. Three
+   rows: the tools (the 34px filter with the search glyph, the count), the
+   results (a scroll region of groups, each a 12.5px titanium label over
+   ruled rows), the foot (the three keys in words). Every rule is 1px and
+   drawn once: the tools row draws the line under itself, a group label the
+   line above its first row (--pt-hair, structural), each row the line
+   below itself (--pt-hair-soft), the last row of the list none so the
+   foot's own --pt-hair line is the only one at that seam (directive 8.9).
+   The active row is the 2px ink bar at its left edge and ink text, the
+   sidebar's mark. Icons are the 16px Heroicons; a site row colors its icon
+   on the site's --pt-site-* token and falls back to the row's color until
+   tokens.css carries them. Motion (directive 7.4): the scrim fades over the
+   toast duration and the card fades and rises 8px over the enter
+   duration, as the help card does; both are still under reduced motion.
+   Radius 0, no shadow, Inter only, weight 500 at most. Toolbar.css draws
+   the field-shaped trigger. */
+
+.pt-search {
+  position: fixed;
+  inset: 0;
+  z-index: 16;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10vh 16px 16px;
+  background: var(--pt-scrim);
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  animation: pt-fade-in var(--pt-dur-toast) var(--pt-ease-out) both;
+}
+
+.pt-search-card {
+  width: min(640px, 100%);
+  max-height: min(70vh, 640px);
+  display: flex;
+  flex-direction: column;
+  background: var(--pt-paper);
+  border: 1px solid var(--pt-edge);
+  animation: pt-search-in var(--pt-dur-enter) var(--pt-ease-out) both;
+}
+
+@keyframes pt-search-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- the tools row: the filter and the count; 9px around the 34px field,
+   so the row is the 52px bar height (directive 8.8) ---- */
+.pt-search-tools {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+/* the same control as the index panel's filter: one 34px ruled box that turns ink while focused */
+.pt-search-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 34px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+  color: var(--pt-titanium);
+  cursor: text;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out), color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-search-field:focus-within {
+  border-color: var(--pt-ink);
+  color: var(--pt-ink);
+}
+
+.pt-search-field > svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+
+.pt-search-field input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: 32px;
+  border: 0;
+  background: none;
+  color: var(--pt-ink);
+  font: 13.5px var(--pt-text);
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pt-search-field input::placeholder {
+  color: var(--pt-titanium);
+}
+
+.pt-search-field input::-webkit-search-cancel-button,
+.pt-search-field input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  display: none;
+}
+
+.pt-search-count {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- the results ---- */
+.pt-search-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 18px 8px;
+}
+
+.pt-search-group h4 {
+  margin: 0;
+  padding: 14px 0 6px;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--pt-titanium);
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+/* a row: the glyph, the title, the address, the bar at the left edge when active */
+.pt-search-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 8px 10px 12px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pt-search-group:last-child .pt-search-row:last-child {
+  border-bottom: 0;
+}
+
+.pt-search-row.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--pt-ink);
+}
+
+.pt-search-ic {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--pt-titanium);
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-search-ic svg,
+.pt-search-row > svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex: 0 0 auto;
+}
+
+/* the external glyph after the address, titanium like the panel's */
+.pt-search-row > svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pt-titanium);
+}
+
+/* the sites' icons carry their site's color on both grounds (directive 8.5) */
+.pt-search-row[data-site='dossier'] .pt-search-ic {
+  color: var(--pt-site-dossier, currentColor);
+}
+
+.pt-search-row[data-site='orbit'] .pt-search-ic {
+  color: var(--pt-site-orbit, currentColor);
+}
+
+.pt-search-row[data-site='signal'] .pt-search-ic {
+  color: var(--pt-site-signal, currentColor);
+}
+
+.pt-search-row[data-site='shipped'] .pt-search-ic {
+  color: var(--pt-site-shipped, currentColor);
+}
+
+.pt-search-t {
+  min-width: 0;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--pt-ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-search-m {
+  max-width: 260px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pt-search-row.is-active .pt-search-t,
+.pt-search-row.is-active .pt-search-ic:not([data-site]) {
+  color: var(--pt-ink);
+}
+
+.pt-search-row.is-active > svg {
+  color: var(--pt-ink);
+}
+
+.pt-search-empty {
+  margin: 0;
+  padding: 18px 0 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+}
+
+/* ---- the foot: the keys in words ---- */
+.pt-search-foot {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 9px 18px 10px;
+  border-top: 1px solid var(--pt-hair);
+  display: flex;
+  gap: 18px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pt-titanium);
+}
+
+@media (max-width: 900px) {
+  .pt-search {
+    padding: 8px;
+  }
+
+  .pt-search-card {
+    max-height: calc(100vh - 16px);
+  }
+
+  .pt-search-tools,
+  .pt-search-foot {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .pt-search-list {
+    padding: 0 12px 8px;
+  }
+
+  .pt-search-m {
+    display: none;
+  }
+}
+
+/* a phone has no arrow keys to name, and the foot would wrap to three lines */
+@media (max-width: 600px) {
+  .pt-search-foot {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-search,
+  .pt-search-card {
+    animation: none;
+  }
+
+  .pt-search-field,
+  .pt-search-ic,
+  .pt-search-t {
+    transition: none;
+  }
+}

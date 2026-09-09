@@ -1,8 +1,8 @@
 /* GalleryViewer: the gallery's own rules inside the viewer shell. The shell
    draws the chrome (ViewerShell.css and its siblings) and the site map in
    the sidebar; this sheet owns the live exhibit frame in slide mode, the
-   book wrapper that hands the flow sheet's column to the article, the
-   article's archive rows, and the archive capture sheet.
+   book's scroll region that holds the article full-bleed, the article's
+   archive rows, and the archive capture sheet.
    Colors are tokens only: the shell's --pt- set outside the article, the
    article's own .pt-root set inside it (decision 6 keeps the article's
    hairline family). No radius, no shadow, Inter at weight 500 or less in
@@ -42,25 +42,17 @@
   opacity: 1;
 }
 
-/* ---- book mode: the flow sheet at the rail width holds the article edge
-   to edge. The sheet's ring stands in for the article's doubled rails, so
-   the column padding goes and the article's own gutters and section rules
-   draw the inside; the wrapper is a selector only, never a box. ---- */
-.gv-book {
-  display: contents;
-}
-
-.gv-book .sheet-flow {
+/* ---- book mode: the article stands full-bleed in the stage (directive
+   8.2). One scroll region on the shell's paper, no sheet mat and no column
+   cap: the article's own 1170px rail with its doubled hairlines centers
+   itself the way it did on the old page, and the hero measures against the
+   same box it did there. The region paints paper so the margins beside the
+   rail read as the page, not the plate. ---- */
+.gv-flow {
+  position: absolute;
+  inset: 0;
+  background: var(--pt-paper);
   scroll-behavior: smooth;
-}
-
-.gv-book .sheet-flow .sheet {
-  padding: 0;
-}
-
-/* the article no longer fills a document, so its viewport floor goes */
-.gv-book .pt-root {
-  min-height: 0;
 }
 
 .gv-article [data-gv-id],
@@ -300,7 +292,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gv-book .sheet-flow {
+  .gv-flow {
     scroll-behavior: auto;
   }
 

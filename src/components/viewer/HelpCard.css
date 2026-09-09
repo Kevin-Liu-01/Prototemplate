@@ -77,7 +77,9 @@
   width: 100%;
 }
 
-/* a group heading: Move, View, Panels, Theme */
+/* a group heading: Move, View, Panels, Theme. Its rule is a structural
+   line (--pt-hair, directive 8.9) and the heading owns it: the first row
+   under it draws no top rule. */
 .pt-help-card th {
   padding: 14px 0 6px;
   text-align: left;
@@ -87,7 +89,7 @@
   font-size: 12.5px;
   letter-spacing: -0.005em;
   color: var(--pt-titanium);
-  border-bottom: 1px solid var(--pt-ink);
+  border-bottom: 1px solid var(--pt-hair);
 }
 
 .pt-help-card tbody:first-child th {

@@ -2,6 +2,7 @@ import { LIBRARIES } from '@/app/craft/libraries';
 import { DOCS } from '@/app/docs/registry';
 import { ARCHIVE, archiveDesc, archiveShot } from '@/lib/archive';
 import { DIRECTIONS } from '@/lib/directions';
+import type { ShellShot } from '@/lib/shell-data';
 
 /**
  * The one registry behind the index panel. Two sets: `site` is every place
@@ -14,18 +15,28 @@ import { DIRECTIONS } from '@/lib/directions';
  * direction captures under /shots/light and /shots/dark; document and brand
  * rows the route captures under /shots/thumb/<id>.jpg and <id>-dark.jpg;
  * archive rows the 1440x900 first fold under /shots/archive. Public rows
- * point into /deck/shots/thumb, which scripts/build-deck.mjs emits from the
- * deck source. A row without a shot renders the blank plate with its
- * initial.
+ * point into /shots/deck, the deck's own thumbnails, which
+ * scripts/build-deck.mjs copies from deck/shots/thumb; the three page rows
+ * with no route capture of their own (the gallery, the deck, the compare
+ * rig) borrow the deck's captures of those pages from the same folder, so
+ * every row that has a picture anywhere resolves one (directive 8.6). A row
+ * without a shot renders the blank plate with its initial. surfaceShot(id)
+ * is what the preview layer reads.
  *
  * The site groups run in the one sidebar order every route keeps (Pages,
- * Documents, Sites, Explorations, Archive); Libraries and Brand sections
- * follow as panel-only groups.
+ * Shipped, Documents, Sites, Explorations, Archive); Libraries and Brand
+ * sections follow as panel-only groups. Shipped (directive 8.10) holds the
+ * direction that shipped and its pages: /d/production and every concrete
+ * page.tsx under src/app/d/production, then the live surfaces of the
+ * shipped site as external rows. Sites holds the three full site concepts
+ * only. A row that belongs to one of the four sites names it in `site`, so
+ * a list can color its icon on the matching --pt-site-* token.
  */
 export type SurfaceSet = 'site' | 'public';
 
 export const SITE_GROUPS = [
   'Pages',
+  'Shipped',
   'Documents',
   'Sites',
   'Explorations',
@@ -47,6 +58,9 @@ export type SiteGroup = (typeof SITE_GROUPS)[number];
 export type PublicGroup = (typeof PUBLIC_GROUPS)[number];
 export type SurfaceGroup = SiteGroup | PublicGroup;
 
+/** The four sites a row can belong to; each has a color token in tokens.css (--pt-site-<site>). */
+export type SurfaceSite = 'dossier' | 'orbit' | 'signal' | 'shipped';
+
 export type Surface = {
   /** unique across both sets; also the thumbnail file stem */
   id: string;
@@ -59,6 +73,8 @@ export type Surface = {
   shotDark?: string;
   group: SurfaceGroup;
   set: SurfaceSet;
+  /** the site a row belongs to, when it does: the three site concepts, and every Shipped row */
+  site?: SurfaceSite;
 };
 
 /** `the chroma wash` becomes `The chroma wash.` */
@@ -81,20 +97,29 @@ function internal(
 
 const THUMBS = '/shots/thumb';
 
+/** The deck's own captures, copied by scripts/build-deck.mjs; the Pages rows without a route capture borrow theirs. */
+const DECK_SHOTS = '/shots/deck';
+
 /** The light and dark route captures for a thumbnail stem under /shots/thumb. */
 function thumb(stem: string): { shot: string; shotDark: string } {
   return { shot: `${THUMBS}/${stem}.jpg`, shotDark: `${THUMBS}/${stem}-dark.jpg` };
 }
 
 const PAGES: readonly Surface[] = [
-  internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages'),
+  internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', {
+    shot: `${DECK_SHOTS}/proto-gallery.jpg`,
+  }),
   internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand-the-name')),
   internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs-readme')),
-  internal('deck', 'Deck', '/deck', 'The GT brand deck, 52 slides.', 'Pages'),
+  internal('deck', 'Deck', '/deck', 'The GT brand deck, its own viewer.', 'Pages', {
+    shot: `${DECK_SHOTS}/proto-deck.jpg`,
+  }),
   internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', {
     shot: `${THUMBS}/present-intro.jpg`,
   }),
-  internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages'),
+  internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages', {
+    shot: `${DECK_SHOTS}/proto-compare.jpg`,
+  }),
 ];
 
 const DOCUMENTS: readonly Surface[] = [
@@ -104,26 +129,152 @@ const DOCUMENTS: readonly Surface[] = [
   ),
 ];
 
-const SITE_DIRECTIONS = DIRECTIONS.filter((d) => d.site);
+/** The three full site concepts; the shipped reference has its own group. */
+const SITE_DIRECTIONS = DIRECTIONS.filter((d) => d.site && !d.reference);
+const SHIPPED_DIRECTION = DIRECTIONS.find((d) => d.reference);
 const EXPLORATION_DIRECTIONS = DIRECTIONS.filter((d) => !d.site);
 
-const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => [
-  internal(d.slug, d.name, `/d/${d.slug}`, d.concept, 'Sites', {
-    shot: `/shots/light/${d.slug}.jpg`,
-    shotDark: `/shots/dark/${d.slug}.jpg`,
-  }),
-  internal(
-    `${d.slug}-enterprise`,
-    `${d.name} enterprise`,
-    `/d/${d.slug}/enterprise`,
-    `The enterprise page of ${d.name}.`,
-    'Sites',
+/** Which site a direction slug is: the concept's slug names its site token. */
+const SITE_OF_SLUG: Readonly<Record<string, SurfaceSite>> = {
+  'singularity-dossier': 'dossier',
+  'singularity-orbit': 'orbit',
+  'singularity-signal': 'signal',
+  production: 'shipped',
+};
+
+/** The light and dark direction captures under /shots/light and /shots/dark. */
+function directionShots(stem: string): { shot: string; shotDark: string } {
+  return { shot: `/shots/light/${stem}.jpg`, shotDark: `/shots/dark/${stem}.jpg` };
+}
+
+const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => {
+  const site = SITE_OF_SLUG[d.slug];
+  return [
+    { ...internal(d.slug, d.name, `/d/${d.slug}`, d.concept, 'Sites', directionShots(d.slug)), site },
     {
-      shot: `/shots/light/${d.slug}-enterprise.jpg`,
-      shotDark: `/shots/dark/${d.slug}-enterprise.jpg`,
-    }
+      ...internal(
+        `${d.slug}-enterprise`,
+        `${d.name} enterprise`,
+        `/d/${d.slug}/enterprise`,
+        `The enterprise page of ${d.name}.`,
+        'Sites',
+        directionShots(`${d.slug}-enterprise`)
+      ),
+      site,
+    },
+  ];
+});
+
+/**
+ * The pages of the shipped direction under /d/production (directive 8.10):
+ * every concrete page.tsx under src/app/d/production, as [path, name,
+ * description]. The dynamic segments (blog/[slug], legal/[route], the
+ * catch-all) are not pages of their own and are left out. Home comes
+ * first; the rest run in the order the live site's navigation reads them.
+ */
+const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
+  ['/enterprise', 'Enterprise', 'The enterprise page of the shipped site.'],
+  ['/try', 'Report card', 'The interactive localization report card.'],
+  ['/pricing', 'Pricing', 'Plans and the comparison table.'],
+  ['/pricing/usage', 'Usage rates', 'The per-word rates behind the plans.'],
+  ['/careers', 'Careers', 'Open roles and the mission.'],
+  ['/blog', 'Blog', 'Essays, devlogs and the changelog.'],
+  ['/mintlify', 'Mintlify', 'Automated translation for Mintlify documentation.'],
+  ['/supported-locales', 'Supported locales', 'The catalog of supported locales.'],
+  ['/contact', 'Contact', 'The contact form.'],
+  ['/enterprise/contact', 'Enterprise contact', 'The enterprise contact desk.'],
+  ['/enterprise/contact/yc', 'YC deal', 'The Y Combinator claim desk.'],
+  ['/yc', 'Y Combinator', 'The Y Combinator offer.'],
+  ['/signin', 'Sign in', 'The sign in page.'],
+  ['/legal', 'Legal', 'The legal resources ledger.'],
+];
+
+/** `/enterprise/contact/yc` becomes `enterprise-contact-yc`. */
+function pathStem(path: string): string {
+  return path.replace(/^\//, '').replace(/\//g, '-');
+}
+
+const SHIPPED_HOME: readonly Surface[] = SHIPPED_DIRECTION
+  ? [
+      {
+        ...internal(
+          SHIPPED_DIRECTION.slug,
+          'Home',
+          `/d/${SHIPPED_DIRECTION.slug}`,
+          `${SHIPPED_DIRECTION.concept} Live at generaltranslation.com.`,
+          'Shipped',
+          directionShots(SHIPPED_DIRECTION.slug)
+        ),
+        site: 'shipped',
+      },
+    ]
+  : [];
+
+const SHIPPED_ROUTES: readonly Surface[] = SHIPPED_PAGES.map(([path, name, desc]) => {
+  const stem = `production-${pathStem(path)}`;
+  /* only the home and the enterprise page have captures under /shots today */
+  const shots = path === '/enterprise' ? directionShots(stem) : undefined;
+  return { ...internal(stem, name, `/d/production${path}`, desc, 'Shipped', shots), site: 'shipped' };
+});
+
+const LIVE_HOST = 'generaltranslation.com';
+const LIVE_THUMBS = '/shots/deck';
+
+/** A live surface of the shipped site: an external row in the site set, with the deck's capture of it. */
+function live(id: string, name: string, path: string, desc: string, shot?: string, shotDark?: string): Surface {
+  const host = `${LIVE_HOST}${path}`;
+  return {
+    id,
+    name,
+    href: `https://${host}`,
+    host,
+    desc,
+    group: 'Shipped',
+    set: 'site',
+    site: 'shipped',
+    ...(shot ? { shot: `${LIVE_THUMBS}/${shot}` } : {}),
+    ...(shotDark ? { shotDark: `${LIVE_THUMBS}/${shotDark}` } : {}),
+  };
+}
+
+/** The live surfaces of the shipped site (directive 8.10), in the order Kevin listed them. */
+const SHIPPED_LIVE: readonly Surface[] = [
+  live('live-home', 'generaltranslation.com', '', 'The live site.', 'gt-home-light.jpg', 'gt-home-dark.jpg'),
+  live('live-pricing', 'Pricing, live', '/pricing', 'The live pricing page.', 'gt-pricing.jpg', 'gt-pricing-dark.jpg'),
+  live(
+    'live-enterprise',
+    'Enterprise, live',
+    '/enterprise',
+    'The live enterprise page.',
+    'gt-enterprise.jpg',
+    'gt-enterprise-dark.jpg'
   ),
-]);
+  live('live-careers', 'Careers, live', '/careers', 'The live careers page.', 'gt-careers.jpg', 'gt-careers-dark.jpg'),
+  live('live-docs', 'Docs, live', '/docs', 'The live documentation.', 'gt-docs.jpg', 'gt-docs-dark.jpg'),
+  live('live-blog', 'Blog, live', '/blog', 'The live blog and changelog.', 'gt-blog.jpg'),
+  live(
+    'live-report-card',
+    'Report card, live',
+    '/report-card',
+    'The live localization report card.',
+    'gt-report-card.jpg',
+    'gt-report-card-dark.jpg'
+  ),
+  {
+    id: 'live-dash',
+    name: 'Dashboard, live',
+    href: 'https://dash.generaltranslation.com',
+    host: 'dash.generaltranslation.com',
+    desc: 'The signed-in product.',
+    group: 'Shipped',
+    set: 'site',
+    site: 'shipped',
+    shot: `${LIVE_THUMBS}/gt-dash.jpg`,
+  },
+];
+
+/** The Shipped group: the home, its pages, then the live surfaces. */
+const SHIPPED: readonly Surface[] = [...SHIPPED_HOME, ...SHIPPED_ROUTES, ...SHIPPED_LIVE];
 
 const EXPLORATIONS: readonly Surface[] = EXPLORATION_DIRECTIONS.map((d) =>
   internal(d.slug, d.name, `/d/${d.slug}`, d.concept, 'Explorations', {
@@ -176,6 +327,7 @@ const ARCHIVE_ROWS: readonly Surface[] = ARCHIVE.map((item) =>
 
 export const SITE_SURFACES: readonly Surface[] = [
   ...PAGES,
+  ...SHIPPED,
   ...DOCUMENTS,
   ...SITES,
   ...EXPLORATIONS,
@@ -184,7 +336,7 @@ export const SITE_SURFACES: readonly Surface[] = [
   ...BRAND_SECTIONS,
 ];
 
-const DECK_THUMBS = '/deck/shots/thumb';
+const DECK_THUMBS = '/shots/deck';
 
 function external(
   id: string,
@@ -426,6 +578,20 @@ export const PUBLIC_SURFACES: readonly Surface[] = [
 ];
 
 export const SURFACES: readonly Surface[] = [...SITE_SURFACES, ...PUBLIC_SURFACES];
+
+const SURFACE_BY_ID: ReadonlyMap<string, Surface> = new Map(SURFACES.map((row) => [row.id, row]));
+
+/** The surface with this id across both sets, or undefined. */
+export function getSurface(id: string): Surface | undefined {
+  return SURFACE_BY_ID.get(id);
+}
+
+/** The light and dark captures of a surface, as the shell's ShellShot; undefined when the row has no picture. */
+export function surfaceShot(id: string): ShellShot | undefined {
+  const row = SURFACE_BY_ID.get(id);
+  if (!row?.shot) return undefined;
+  return { light: row.shot, dark: row.shotDark };
+}
 
 export function surfacesFor(set: SurfaceSet): readonly Surface[] {
   return set === 'site' ? SITE_SURFACES : PUBLIC_SURFACES;

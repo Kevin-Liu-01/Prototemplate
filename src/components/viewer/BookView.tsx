@@ -5,7 +5,7 @@ import type { MouseEvent, ReactNode } from 'react';
 import { Fragment, useMemo, useRef } from 'react';
 
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
-import { pad2 } from '@/lib/shell-data';
+import { pad2, previewId } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { usePtShell } from './shell-context';
@@ -235,7 +235,7 @@ export function BookView({
               const on = item.id === active;
               return (
                 <article key={item.id} className={on ? 'pt-page is-active' : 'pt-page'} data-id={item.id}>
-                  <div className='pt-pn'>
+                  <div className='pt-pn' data-preview={previewId(item)}>
                     {item.n ? <b>{item.n}</b> : null}
                     <span>{item.title}</span>
                   </div>

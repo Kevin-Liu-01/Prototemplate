@@ -41,14 +41,16 @@ function paneMark(slug: string, pair: Pair): string | undefined {
 }
 
 /**
- * One sidebar item. The number column shows the pane mark while the
- * direction is loaded, otherwise the direction's place in the count (the
- * sites 01 to 04, the explorations after them), as the gallery numbers them.
+ * One sidebar item. The number is the direction's place in the count (the
+ * shipped site 01, the three concepts after it, then the explorations), as
+ * the gallery numbers them; the mark, shown at the right end of the list
+ * row, is the pane letter while the direction is loaded in a pane.
  */
 function toItem(direction: Direction, pair: Pair, position: number): ShellItem {
   return {
     id: direction.slug,
-    n: paneMark(direction.slug, pair) ?? pad2(position + 1),
+    n: pad2(position + 1),
+    mark: paneMark(direction.slug, pair),
     title: direction.name,
     href: `/d/${direction.slug}`,
     shot: shotFor(direction.slug),
@@ -57,22 +59,22 @@ function toItem(direction: Direction, pair: Pair, position: number): ShellItem {
 }
 
 /**
- * The gallery's two sections in the gallery's order: the three site
- * concepts and the shipped site under Sites, then the explorations in label
- * order (the order DIRECTIONS keeps). Rebuilt on every pair change so the
- * marks move.
+ * The gallery's sections in the gallery's order (directive 8.10): the
+ * shipped site under Shipped, the three site concepts under Sites, then the
+ * explorations in label order (the order DIRECTIONS keeps). Rebuilt on
+ * every pair change so the marks move.
  */
 export function compareSections(pair: Pair): readonly ShellSection[] {
-  const sites = DIRECTIONS.filter((d) => d.site);
+  const shipped = DIRECTIONS.filter((d) => d.reference);
+  const sites = DIRECTIONS.filter((d) => d.site && !d.reference);
   const explorations = DIRECTIONS.filter((d) => !d.site);
+  const ordered = [...shipped, ...sites, ...explorations];
+  const item = (d: Direction) => toItem(d, pair, ordered.indexOf(d));
   return [
-    { id: 'sites', label: 'Sites', items: sites.map((d, i) => toItem(d, pair, i)) },
-    {
-      id: 'explorations',
-      label: 'Explorations',
-      items: explorations.map((d, i) => toItem(d, pair, sites.length + i)),
-    },
-  ];
+    { id: 'shipped', label: 'Shipped', items: shipped.map(item) },
+    { id: 'sites', label: 'Sites', items: sites.map(item) },
+    { id: 'explorations', label: 'Explorations', items: explorations.map(item) },
+  ].filter((section) => section.items.length > 0);
 }
 
 /** `#a=singularity-dossier&b=singularity-signal` */

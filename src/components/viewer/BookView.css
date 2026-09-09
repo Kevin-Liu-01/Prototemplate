@@ -20,14 +20,15 @@
   gap: 36px;
 }
 
-/* head: title and lead on the left, meta on the right, one ink rule under both */
+/* head: title and lead on the left, meta on the right, one structural rule
+   under both (--pt-hair; chrome draws no ink rules, directive 8.9) */
 .pt-book-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 32px;
   align-items: end;
   padding-bottom: 26px;
-  border-bottom: 1px solid var(--pt-ink);
+  border-bottom: 1px solid var(--pt-hair);
 }
 
 .pt-book-head h1 {

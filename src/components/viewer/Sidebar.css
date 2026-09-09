@@ -1,19 +1,38 @@
-/* Sidebar: column one of the shell (directive 7.3). A 52px head (the mark,
-   the title, the density toggle, the close button when the list is an
-   overlay), a 40px filter row (SidebarFilter.css draws the field; this
-   sheet places the row and sizes the field), then the list as a scroll
-   region: collapsible groups of 32px outline rows by default, captured
-   frames in thumbnail density. Every rule here is 1px, drawn once by one
-   owner: the aside owns its right edge, the head and the filter row their
-   bottom edges, each frame its border. The active frame adds the one
-   sanctioned offset outline; the active outline row a 2px ink bar at its
-   left edge. The column's width lives on the shell root (--pt-sb-w, 208px
-   in outline and 256px in thumbnail density, set by ViewerShell.css); the
-   aside clips to it while the shell animates the change, and fades over
-   the same 220ms when the list is toggled off. Rows and frames skip
-   rendering off screen (content-visibility) with an intrinsic size that
-   keeps the scroll height honest. Colors are tokens only; ThumbShot fills
-   the frames and shares this sheet. */
+/* Sidebar: column one of the shell, the site map as a tree (directive 8.5,
+   variant B with the judged grafts). A 52px head (the mark, the title, the
+   density toggle, the close button when the list is an overlay), a 40px
+   filter row (SidebarFilter.css draws the field; this sheet places the row
+   and sizes the field), then the list as a scroll region: collapsible
+   groups, each a 24px header that sticks to the top of the region while
+   its rows scroll under it, and 28px rows indented 24px behind their icons;
+   the Sites group a two-column grid of tiles. Thumbnail density widens the
+   column (ViewerShell.css sets --pt-sb-w to 256px) and every row becomes
+   44px with its 64x36 capture and its address.
+
+   Lines (directive 8.9), 1px each, drawn once by one owner: the aside owns
+   its right edge, the head and the filter row their bottom edges, a group
+   header the --pt-hair rule above its first row (the rows draw none: a
+   65-row list with a rule per row would be 65 lines, and the tree reads by
+   indentation), a tile its --pt-edge frame (its shot draws none), a row's
+   64x36 capture its own --pt-edge frame. The current row draws the 2px ink
+   bar at the column's edge and ink text; a current tile or capture an ink
+   frame plus the 2px offset outline every current frame in the shell uses
+   (scripts/lint-lines.mjs allows pt-tile and thumb-frame for that pair).
+   Site icons draw their site's token through data-site and hold it in
+   every state; every other icon turns ink with its name. Spacing
+   (directive 8.8): 28px rows, 24px headers with 16px above, 8px 10px list
+   padding (the 10px sides sit on the headers and rows themselves so the
+   bar reaches the edge). Colors are tokens only, radius 0, no shadow;
+   motion is color and border color over the fast duration plus the
+   chevron's turn, off under reduced motion. Rows skip painting off screen
+   (content-visibility) at their exact height.
+
+   The grid re-uses the tail of this sheet: ThumbList renders .pt-thumbs
+   with .pt-sec-label and .pt-thumb frames, and GridView.css re-lays it
+   out; ThumbShot draws .pt-shot and .pt-plate inside every frame. The
+   groups are .pt-grp, not .pt-sec: the article layer (prototemplate.css)
+   owns .pt-sec and rules its sections, and the two sheets meet on /, /docs
+   and /brand. */
 
 .pt-sb {
   grid-column: 1;
@@ -28,7 +47,7 @@
   color: var(--pt-ink);
   border-right: 1px solid var(--pt-hair);
   /* opening: visible at once, the content fades in as the column widens */
-  transition: opacity 220ms cubic-bezier(0.2, 0, 0, 1);
+  transition: opacity var(--pt-dur-sb) var(--pt-ease);
 }
 
 /* the list toggled off, or presenting: the content fades while the column
@@ -38,8 +57,8 @@
   visibility: hidden;
   pointer-events: none;
   transition:
-    opacity 220ms cubic-bezier(0.2, 0, 0, 1),
-    visibility 0s linear 220ms;
+    opacity var(--pt-dur-sb) var(--pt-ease),
+    visibility 0s linear var(--pt-dur-sb);
 }
 
 /* at or below 900px an open list floats over the stage, above its scrim */
@@ -50,7 +69,7 @@
   bottom: 0;
   width: min(84vw, 300px);
   z-index: 10;
-  animation: pt-sb-in 220ms cubic-bezier(0.2, 0, 0, 1) both;
+  animation: pt-sb-in var(--pt-dur-sb) var(--pt-ease) both;
 }
 
 @keyframes pt-sb-in {
@@ -69,7 +88,7 @@
    At the 208px outline width the arithmetic is tight: 10px pad, the mark
    (25px for GT, 22px for Prototemplate, its hit area folded into negative
    margins), two 6px gaps, the 58px toggle, 6px pad, which leaves the title
-   96px, enough for `GT brand deck` at 13.5px. ---- */
+   96px, enough for `Prototemplate` at 13.5px. ---- */
 .pt-sb-head {
   height: var(--pt-bar-h);
   flex: 0 0 var(--pt-bar-h);
@@ -91,7 +110,7 @@ a.pt-sb-mark {
   padding: 4px;
   margin: 0 -4px;
   outline: 1px solid transparent;
-  transition: outline-color 120ms ease-out;
+  transition: outline-color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
 a.pt-sb-mark:hover {
@@ -134,13 +153,12 @@ a.pt-sb-mark:focus-visible {
   --pt-filter-fs: 13px;
 }
 
-/* ---- the list ---- */
-.pt-thumbs {
+/* ---- the list: 8px above the tree, 32px of run-out at the end so the
+   last row clears the edge ---- */
+.pt-sb .pt-thumbs {
   flex: 1 1 auto;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 4px 0 32px;
+  padding: 8px 0 32px;
 }
 
 .pt-sb-empty {
@@ -151,25 +169,41 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-titanium);
 }
 
-/* a group: a 28px head that collapses it, then its rows or frames. The
-   rows carry content-visibility themselves at an exact size; the group
-   does not, so the scroll height and every scrollIntoView stay honest. */
-.pt-sec {
+/* ---- a group: the header, then its rows or tiles; 16px above every group
+   but the first. The group is the sticky header's containing block, so the
+   header rides along while the group's rows scroll under it and leaves
+   with its last row. ---- */
+.pt-grp {
+  position: relative;
   display: flex;
   flex-direction: column;
 }
 
-.pt-sec-head {
+.pt-grp + .pt-grp {
+  margin-top: 16px;
+}
+
+/* the header: 24px plus its rule, the chevron in a 16px slot at the head of
+   a 24px gutter, the name, the count at the right end; paper ground so the
+   rows scroll under it, one --pt-hair rule below it (the line above the
+   first row, directive 8.9) */
+.pt-grp-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   appearance: none;
-  background: none;
-  border: 0;
-  border-radius: 0;
-  height: 28px;
-  margin: 8px 0 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 25px;
+  margin: 0;
   padding: 0 10px;
+  border: 0;
+  border-bottom: 1px solid var(--pt-hair);
+  border-radius: 0;
+  background: var(--pt-paper);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   color: var(--pt-titanium);
   font-family: var(--pt-display);
   font-weight: 500;
@@ -178,59 +212,380 @@ a.pt-sb-mark:focus-visible {
   font-feature-settings: 'cv11', 'ss01';
   text-align: left;
   cursor: pointer;
-  transition: color 120ms ease-out;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
-.pt-sec-head svg {
+.pt-chev {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.pt-chev svg {
   width: 12px;
   height: 12px;
-  flex: 0 0 auto;
   fill: currentColor;
-  transition: transform 160ms ease-out;
+  transition: transform var(--pt-dur-toast) var(--pt-ease-out);
 }
 
-.pt-sec.is-closed .pt-sec-head svg {
+.pt-grp.is-closed .pt-chev svg {
   transform: rotate(-90deg);
 }
 
-.pt-sec-head .pt-sec-label {
+.pt-grp-name {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.pt-sec-count {
-  font-variant-numeric: tabular-nums;
+.pt-grp-count {
   font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 
-.pt-sec-head:hover,
-.pt-sec-head:focus-visible {
+.pt-grp-head:hover,
+.pt-grp-head:focus-visible {
   color: var(--pt-ink);
 }
 
-.pt-sec-head:focus-visible {
+.pt-grp-head:focus-visible {
   outline: 1px solid var(--pt-ink);
   outline-offset: -1px;
 }
 
-/* the group body: rows in outline density, frames in thumbnail density */
-.pt-sec-body {
+/* the rows a header opens fade in over the fast duration; closing removes them at once */
+.pt-grp-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 6px 10px 8px;
+  padding-top: 4px;
+  animation: pt-fade-in var(--pt-dur-fast) var(--pt-ease-out) both;
 }
 
-.pt-sec-body.is-rows {
-  gap: 0;
-  padding: 0 0 4px;
+/* ---- a row: a two-column grid, the icon in a 16px column under the
+   header's label and the name beside it; 28px for one line. The row
+   skips painting off screen at its own height. ---- */
+.pt-orow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  column-gap: 8px;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px 0 34px;
+  color: var(--pt-ink-2);
+  text-decoration: none;
+  cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 28px;
 }
 
-/* the plain list the grid renders (ThumbList): labels and items, no groups */
+/* the icon is the row's own child (no wrapper: a row is four nodes) */
+.pt-orow > svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  color: var(--pt-titanium);
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-orow-name {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+/* a route's short mark at the right end: the pane letter on /compare */
+.pt-orow-mark {
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.pt-orow:hover .pt-orow-name,
+.pt-orow:focus-visible .pt-orow-name,
+.pt-orow.is-active .pt-orow-name,
+.pt-orow.is-current .pt-orow-name,
+.pt-orow.is-active .pt-orow-mark {
+  color: var(--pt-ink);
+}
+
+.pt-orow.is-active .pt-orow-name,
+.pt-orow.is-current .pt-orow-name {
+  font-weight: 500;
+}
+
+/* every icon turns ink with its name; a site's icon holds its color */
+.pt-orow:not([data-site]):hover > svg,
+.pt-orow:not([data-site]):focus-visible > svg,
+.pt-orow:not([data-site]).is-active > svg,
+.pt-orow:not([data-site]).is-current > svg {
+  color: var(--pt-ink);
+}
+
+/* the current row: the 2px ink bar at the column's edge */
+.pt-orow.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--pt-ink);
+}
+
+.pt-orow:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* the sites' icons carry their site's color on both grounds, in rows and tiles alike */
+.pt-sb [data-site='dossier'] > svg,
+.pt-sb [data-site='dossier'] .pt-tile-cap > svg {
+  color: var(--pt-site-dossier);
+}
+
+.pt-sb [data-site='orbit'] > svg,
+.pt-sb [data-site='orbit'] .pt-tile-cap > svg {
+  color: var(--pt-site-orbit);
+}
+
+.pt-sb [data-site='signal'] > svg,
+.pt-sb [data-site='signal'] .pt-tile-cap > svg {
+  color: var(--pt-site-signal);
+}
+
+.pt-sb [data-site='shipped'] > svg,
+.pt-sb [data-site='shipped'] .pt-tile-cap > svg {
+  color: var(--pt-site-shipped);
+}
+
+/* ---- the Sites group as tiles (grafted from variant C): two columns, one
+   site per grid row, the home on the left and the enterprise page on the
+   right; 8px under the header so the frames never sit against its rule,
+   and 8px between tiles so a current tile's offset outline (3px outside
+   its frame) stays clear of its neighbours. A tile is the colored 14px
+   icon and the name in a --pt-edge frame, 44px so a name on two lines
+   (Dossier enterprise) and one on one line keep the same height; the
+   caption is one run of inline text, the icon leading it, so the second
+   line starts under the icon and has the tile's whole width. ---- */
+.pt-grp-body.pt-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px 10px 0;
+}
+
+.pt-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 1px solid var(--pt-edge);
+  background: var(--pt-paper);
+  color: var(--pt-ink-2);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-tile-cap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.pt-tile-cap > svg {
+  display: inline;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  fill: currentColor;
+  color: var(--pt-titanium);
+}
+
+.pt-tile-name {
+  display: inline;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+/* a route's mark after the name: the pane letter on /compare */
+.pt-tile-mark {
+  display: inline;
+  margin-left: 6px;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.pt-tile:hover,
+.pt-tile:focus-visible,
+.pt-tile.is-active,
+.pt-tile.is-current {
+  border-color: var(--pt-ink);
+}
+
+.pt-tile:hover .pt-tile-name,
+.pt-tile:focus-visible .pt-tile-name,
+.pt-tile.is-active .pt-tile-name,
+.pt-tile.is-current .pt-tile-name {
+  color: var(--pt-ink);
+}
+
+.pt-tile.is-active .pt-tile-name,
+.pt-tile.is-current .pt-tile-name {
+  font-weight: 500;
+}
+
+.pt-tile.is-active .pt-tile-mark {
+  color: var(--pt-ink);
+}
+
+/* the current tile: the ink frame plus the offset outline every current frame uses */
+.pt-tile.is-active {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.pt-tile:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -2px;
+}
+
+/* ---- thumbnail density: every row 44px with its 64x36 capture on the
+   left (a frame of its own), the icon and the name on the first line, the
+   address on the second; the tree's indent gives way to the capture. A
+   tile grows to 84px with the capture above its caption and draws no frame
+   around the capture, since the tile is the frame. ---- */
+.pt-thumb-frame.is-mini {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 64px;
+  height: 36px;
+  aspect-ratio: auto;
+  flex: 0 0 auto;
+}
+
+.pt-thumbs.is-shots .pt-orow {
+  grid-template-columns: 64px 16px minmax(0, 1fr) auto;
+  grid-template-rows: 16px 16px;
+  align-content: center;
+  height: 44px;
+  padding: 0 10px;
+  contain-intrinsic-size: auto 44px;
+}
+
+.pt-thumbs.is-shots .pt-orow .pt-thumb-frame.is-mini {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: center;
+}
+
+.pt-thumbs.is-shots .pt-orow > svg {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.pt-thumbs.is-shots .pt-orow .pt-orow-name {
+  grid-column: 3;
+  grid-row: 1;
+  line-height: 16px;
+}
+
+.pt-thumbs.is-shots .pt-orow .pt-orow-mark {
+  grid-column: 4;
+  grid-row: 1;
+  line-height: 16px;
+}
+
+.pt-orow-addr {
+  grid-column: 2 / -1;
+  grid-row: 2;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--pt-titanium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pt-orow:hover .pt-thumb-frame.is-mini,
+.pt-orow:focus-visible .pt-thumb-frame.is-mini {
+  border-color: var(--pt-ink);
+}
+
+.pt-orow.is-active .pt-thumb-frame.is-mini {
+  border-color: var(--pt-ink);
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.pt-thumbs.is-shots .pt-tile {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  height: 84px;
+  padding: 5px;
+}
+
+/* the tile is the frame: its capture draws none */
+.pt-tile .pt-thumb-frame.is-mini {
+  border: 0;
+  background: var(--pt-plate);
+}
+
+/* ---- the rows a route hangs under an item (ListRow): 28px, indented under
+   the item's icon, no rule of their own. Written above the shields in
+   docs.css and brand.css (three and four selectors deep), which keep the
+   article layer's .pt-row rules off these rows. ---- */
+.pt-sb .pt-thumbs .pt-grp-body .pt-sub .pt-row {
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  min-height: 28px;
+  padding: 5px 10px 5px 34px;
+  border-bottom: 0;
+}
+
+.pt-thumbs.is-shots .pt-sub .pt-row {
+  padding-left: 10px;
+}
+
+/* ================================================================
+   The grid's list (ThumbList): labels and captured frames. GridView.css
+   lays the list out as a grid and sizes the number column.
+   ================================================================ */
+.pt-thumbs {
+  display: flex;
+  flex-direction: column;
+}
+
 .pt-thumbs > .pt-sec-label {
   font-family: var(--pt-display);
   font-weight: 500;
@@ -247,110 +602,6 @@ a.pt-sb-mark:focus-visible {
 
 .pt-thumbs.is-rows > .pt-sec-label {
   padding-bottom: 6px;
-}
-
-/* ---- an outline row: 32px for one line, the number in a 26px tabular
-   column, the title clamped to two lines (a row grows to 48px for the
-   second line; nothing is cut to an ellipsis), the preview affordance.
-   The number and the affordance sit on the first line. ---- */
-.pt-orow {
-  position: relative;
-  display: grid;
-  grid-template-columns: 26px minmax(0, 1fr) auto;
-  gap: 8px;
-  align-items: start;
-  min-height: 32px;
-  padding: 7px 10px;
-  color: var(--pt-ink-2);
-  text-decoration: none;
-  cursor: pointer;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 34px;
-}
-
-.pt-orow .n {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 17px;
-  font-feature-settings: 'cv11', 'ss01';
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  transition: color 120ms ease-out;
-}
-
-.pt-orow-title {
-  min-width: 0;
-  font-size: 13px;
-  line-height: 17px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  white-space: normal;
-  transition: color 120ms ease-out;
-}
-
-.pt-orow:hover .pt-orow-title,
-.pt-orow:focus-visible .pt-orow-title,
-.pt-orow.is-active .pt-orow-title,
-.pt-orow.is-active .n {
-  color: var(--pt-ink);
-}
-
-/* the 12px preview affordance (the eye): present for items with a capture, shown on hover or focus */
-.pt-orow-peek {
-  display: inline-flex;
-  width: 12px;
-  height: 12px;
-  margin-top: 2px;
-  color: var(--pt-titanium);
-  opacity: 0;
-  transition: opacity 120ms ease-out;
-}
-
-.pt-orow-peek svg {
-  width: 12px;
-  height: 12px;
-  fill: currentColor;
-}
-
-.pt-orow:hover .pt-orow-peek,
-.pt-orow:focus-visible .pt-orow-peek {
-  opacity: 1;
-}
-
-.pt-orow-peek:hover {
-  color: var(--pt-ink);
-}
-
-/* the current row: a 2px ink bar at the left edge. The bar means one thing,
-   the position inside the current document; a site map row that names the
-   route the reader is on (aria-current="page") is ink text instead, so
-   "you are here" is never marked twice in one list. */
-.pt-orow.is-active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 4px;
-  bottom: 4px;
-  width: 2px;
-  background: var(--pt-ink);
-}
-
-.pt-orow.is-nav.is-active::before {
-  display: none;
-}
-
-.pt-orow.is-nav.is-active .pt-orow-title {
-  color: var(--pt-ink);
-  font-weight: 500;
-}
-
-.pt-orow:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: -1px;
 }
 
 /* ---- a frame item: the number column, then the frame and its title.
@@ -398,7 +649,7 @@ a.pt-sb-mark:focus-visible {
   border: 1px solid var(--pt-edge);
   overflow: hidden;
   background: var(--pt-paper);
-  transition: border-color 120ms ease-out;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
 .pt-thumb:hover .pt-thumb-frame,
@@ -423,24 +674,11 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-ink);
 }
 
-/* rows a route hangs under an item */
-.pt-sub {
+/* the rows a route hangs under an item in the grid's list */
+.pt-thumbs > .pt-sub {
   display: flex;
   flex-direction: column;
   padding: 0 10px 4px;
-}
-
-/* under an outline row the sub rows take the outline grammar: the 26px
-   number column, no separators, 28px rows */
-.pt-sec-body.is-rows .pt-sub .pt-row {
-  grid-template-columns: 26px minmax(0, 1fr);
-  border-bottom: 0;
-  min-height: 28px;
-  padding: 5px 0 5px 10px;
-}
-
-.pt-sec-body:not(.is-rows) .pt-sub {
-  padding: 0;
 }
 
 /* ThumbShot: light and dark twins; the theme attribute picks one */
@@ -466,7 +704,7 @@ a.pt-sb-mark:focus-visible {
   display: block;
 }
 
-/* the blank plate when an item has no capture */
+/* the blank plate when an item has no capture: its initial in 15px titanium */
 .pt-plate {
   position: absolute;
   inset: 0;
@@ -487,16 +725,18 @@ a.pt-sb-mark:focus-visible {
     transition: none;
   }
 
-  .pt-sb.is-overlay {
+  .pt-sb.is-overlay,
+  .pt-grp-body {
     animation: none;
   }
 
   a.pt-sb-mark,
-  .pt-sec-head,
-  .pt-sec-head svg,
-  .pt-orow .n,
-  .pt-orow-title,
-  .pt-orow-peek,
+  .pt-grp-head,
+  .pt-chev svg,
+  .pt-orow > svg,
+  .pt-orow-name,
+  .pt-tile,
+  .pt-tile-name,
   .pt-thumb-frame {
     transition: none;
   }

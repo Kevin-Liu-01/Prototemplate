@@ -1,6 +1,8 @@
 /* Toolbar: the first row of .pt-main. tokens.css owns every button state
    (.pt-ib, .pt-icon, .is-on, .is-solid, .pt-seg, .pt-lb); this sheet owns
-   the bar, its two groups, the count control, the separators and the brand,
+   the bar, its two groups (8px gaps between and inside them, directive
+   8.8), the count control,
+   the search trigger, the separators and the brand,
    and the label collapse in two stages. That collapse is measured, not
    guessed: Toolbar.tsx compares the bar's content width with its box on
    every resize. When the labels would overflow it marks the bar
@@ -12,16 +14,22 @@
    the titles carrying the names. So a 1180 to 1400 laptop, and thumbnail
    density at 1440, keep their labels (directive 7.6). The brand, shown
    only while the sidebar is hidden, truncates its title rather than push
-   the right group off the bar. At or below 900px the separators go and the
-   Theme label goes; at or below 600px the bar takes two rows and the seg
-   keeps its words. */
+   the right group off the bar. At or below 900px the separators go, the
+   Theme label goes and the search trigger is an icon square; at or below
+   600px the bar takes two rows and the seg keeps its words.
+
+   The search trigger (directive 8.3) is the one field-shaped button: a
+   --pt-hair box like the count's, the search glyph, the word Search in
+   ink-2 and the ⌘K hint in titanium pushed to its right end; hover turns
+   the box ink as a focused field would. Stage one of the collapse leaves
+   it whole, stage two leaves the glyph alone. */
 .pt-toolbar {
   grid-row: 1;
   height: var(--pt-toolbar-h, var(--pt-bar-h));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   padding: 0 12px 0 10px;
   border-bottom: 1px solid var(--pt-hair);
   min-width: 0;
@@ -34,7 +42,7 @@
 .pt-bar-r {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   flex: 0 0 auto;
 }
 
@@ -47,7 +55,40 @@
 .pt-bar-slot {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+}
+
+/* the search trigger: a field with a glyph, a word and the key hint */
+.pt-toolbar .pt-search-btn {
+  min-width: 176px;
+  justify-content: flex-start;
+  gap: 8px;
+  border-color: var(--pt-hair);
+  color: var(--pt-titanium);
+}
+
+.pt-toolbar .pt-search-btn .pt-lb {
+  color: var(--pt-ink-2);
+}
+
+.pt-toolbar .pt-search-btn:hover,
+.pt-toolbar .pt-search-btn[aria-expanded='true'] {
+  color: var(--pt-ink);
+  border-color: var(--pt-ink);
+}
+
+.pt-toolbar .pt-search-btn:hover .pt-lb,
+.pt-toolbar .pt-search-btn[aria-expanded='true'] .pt-lb {
+  color: var(--pt-ink);
+}
+
+.pt-search-kbd {
+  margin-left: auto;
+  font-family: var(--pt-text);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--pt-titanium);
+  white-space: nowrap;
 }
 
 /* the count: a button that opens a number field, ruled at rest so it reads
@@ -100,11 +141,12 @@
   color: var(--pt-titanium);
 }
 
+/* a separator sits in the group's 8px gaps and adds none of its own (directive 8.8) */
 .pt-sep {
   width: 1px;
   height: 22px;
   background: var(--pt-hair);
-  margin: 0 8px;
+  margin: 0;
   flex: none;
 }
 
@@ -168,6 +210,11 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
   justify-content: center;
 }
 
+/* stage two takes the search's hint with its word */
+.pt-toolbar.is-tight .pt-search-kbd {
+  display: none;
+}
+
 /* Stage two: when the bar is still short, .is-tight goes on and every
    labeled button takes the icon square's geometry, so every control is the
    same 32px; seg options keep a 9px pad around theirs; the count keeps its
@@ -194,6 +241,10 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
   gap: 4px;
 }
 
+.pt-toolbar.is-tight .pt-search-btn {
+  min-width: 0;
+}
+
 /* narrow: the brand stays so the route is named, the separators and the Theme label go */
 @media (max-width: 900px) {
   .pt-toolbar {
@@ -203,12 +254,26 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
 
   .pt-bar-l,
   .pt-bar-r {
-    gap: 2px;
+    gap: 4px;
   }
 
   .pt-toolbar .pt-sep,
   .pt-toolbar .hide-sm,
   .pt-toolbar .pt-theme .pt-lb {
+    display: none;
+  }
+
+  /* the search is an icon square at this width (directive 8.3) */
+  .pt-toolbar .pt-search-btn {
+    min-width: 0;
+    width: 32px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+
+  .pt-toolbar .pt-search-btn .pt-lb,
+  .pt-toolbar .pt-search-btn .pt-search-kbd {
     display: none;
   }
 

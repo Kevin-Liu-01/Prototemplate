@@ -6,13 +6,14 @@ import { useRef, useState } from 'react';
 
 import { GtMark } from '@/components/viewer/GtMark';
 import { PtMark } from '@/components/viewer/PtMark';
+import { Search } from '@/components/viewer/Search';
 import { Seg } from '@/components/viewer/Seg';
 import type { SegOption } from '@/components/viewer/Seg';
 import { ThemeButton } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { toggleFullscreen } from '@/components/viewer/useShellKeys';
-import { MODE_ORDER, pad2 } from '@/lib/shell-data';
+import { MODE_ORDER, pad2, previewId } from '@/lib/shell-data';
 import type { ShellMark, ShellMode } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -24,8 +25,10 @@ import './Toolbar.css';
  * while the sidebar column is closed, so the first paint of a saved closed
  * list already names the route), Previous, the
  * count (a button: click it, type a number, press Enter), Next. Right
- * group: the route's own controls, the mode seg in one fixed order (Slides,
- * Grid, Book) when the route offers more than one mode, then Index, Theme,
+ * group: the search bar first (directive 8.3: the field-shaped button with
+ * the ⌘K hint, left of the mode control on every shell route), then the
+ * route's own controls, the mode seg in one fixed order (Slides, Grid,
+ * Book) when the route offers more than one mode, then Index, Theme,
  * Present (whenever the route has a slide mode), Fullscreen, Copy link and
  * Help. Every control is a labeled ToolButton with a title naming its key
  * (decision 7). One treatment per meaning: the seg's active fill is the one
@@ -97,13 +100,15 @@ export function modeOptions(
  * click opens a number field, Enter goes there. While nothing paged is
  * marked (the gallery's book at its top) it names the total instead, `17
  * directions`, so the number is never a dash. The route may put a word
- * before it (`Left 01 / 17` on /compare).
+ * before it (`Left 01 / 17` on /compare). Hovering it previews the next
+ * item through the preview layer (directive 8.6).
  */
 function Count() {
   const shell = usePtShell();
   const { index, total, paged, noun, countLabel } = shell;
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState('');
+  const next = paged[index + 1];
 
   const open = () => {
     setValue('');
@@ -158,6 +163,7 @@ function Count() {
       type='button'
       className='pt-ib pt-count'
       title={`Go to a ${noun} by number (click, type it, press Enter)`}
+      data-preview={next ? previewId(next) : undefined}
       onClick={open}
     >
       {countLabel ? <span className='pt-count-word'>{countLabel}</span> : null}
@@ -312,6 +318,8 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
         <ToolButton icon='next' label='Next' title='Next (right arrow)' className='pt-next' onClick={() => shell.step(1)} />
       </div>
       <div className='pt-bar-r'>
+        <Search />
+        <span className='pt-sep' aria-hidden='true' />
         {slot ? <div className='pt-bar-slot'>{slot}</div> : null}
         {showSeg ? (
           <Seg options={modeOptions(modes, modeLabels)} value={mode} onChange={shell.setMode} label='View' />

@@ -5,8 +5,7 @@
    only, because the boot script in src/app/layout.tsx stamps the attribute
    (there is no prefers-color-scheme block here). Unprefixed names are not
    published on :root: seven retired direction stylesheets define --ink,
-   --paper and --hair on their own root classes. The .pt-slides bridge below
-   re-exports them in scope for the authored deck slides.
+   --paper and --hair on their own root classes.
 
    Imported once, from src/app/layout.tsx, right after globals.css. Every
    other file under src/components/viewer imports only its own sheet. */
@@ -25,6 +24,20 @@
   --pt-scrim: rgba(7, 7, 7, 0.28);
   --pt-panel-ink: #101010;
   --pt-panel-text: rgba(255, 255, 255, 0.87);
+
+  /* Site colors (directive 8.5): the one color each site's icon carries in
+     the sidebar, the search results and the index panel. None of the four
+     sites declares an accent in its own styles.css; they inherit the shared
+     src/app/d/singularity/styles.css --tc-accent, #2f5ce0, which is the
+     Dossier blue and the directive's default for it. The other three are
+     the directive's defaults. Every value clears 3:1 against its ground
+     (WCAG 1.4.11 for a 16px glyph): the Signal amber is #f0a020 on the
+     dark ground but darkens to #c47d00 here, where #f0a020 would sit at
+     2.15:1 on white. Nothing else in chrome draws these. */
+  --pt-site-dossier: #2f5ce0;
+  --pt-site-orbit: #7c6cff;
+  --pt-site-signal: #c47d00;
+  --pt-site-shipped: #12a37a;
   --pt-bar-h: 52px;
   /* the sidebar in outline density; ViewerShell.css widens it to 256px for thumbnails */
   --pt-sb-w: 208px;
@@ -50,8 +63,7 @@
 }
 
 /* Dark is a token remap. --pt-scrim, --pt-panel-ink and --pt-panel-text do
-   not change; the code panel gains a 1px --pt-hair border in the slide
-   sheet, which the deck build emits under .pt-slides. */
+   not change. */
 :root[data-theme='dark'] {
   --pt-paper: #070707;
   --pt-ink: #f2f2f0;
@@ -63,75 +75,102 @@
   --pt-cross: rgba(255, 255, 255, 0.34);
   --pt-edge: rgba(242, 242, 240, 0.55);
   --pt-thumb: rgba(242, 242, 240, 0.32);
+  /* the site hues lifted for the ink ground: #2f5ce0 would sit at 3.58:1
+     on #070707, so each keeps its hue and gains light; the Signal amber
+     returns to its own #f0a020 */
+  --pt-site-dossier: #5b82ff;
+  --pt-site-orbit: #9d91ff;
+  --pt-site-signal: #f0a020;
+  --pt-site-shipped: #1fbf92;
 }
 
-/* Slide bridge. Authored slide HTML and DECK-GRAMMAR.md use the unprefixed
-   names; this class re-exports them in scope so the 52 slide files are not
-   edited. Applied to the deck stage, the one place live slide markup lives
-   (directive 7.5): the list, the grid and the book show static renders. */
-.pt-slides {
-  --paper: var(--pt-paper);
-  --ink: var(--pt-ink);
-  --ink-2: var(--pt-ink-2);
-  --titanium: var(--pt-titanium);
-  --hair: var(--pt-hair);
-  --hair-soft: var(--pt-hair-soft);
-  --plate: var(--pt-plate);
-  --cross: var(--pt-cross);
-  --edge: var(--pt-edge);
-  --display: var(--pt-display);
-  --text: var(--pt-text);
-  --mono: var(--pt-mono);
-  --switzer: var(--font-switzer), 'Switzer', 'Helvetica Neue', Arial, sans-serif;
-  --cjk: 'Hiragino Sans', 'Noto Sans CJK JP', 'Noto Sans JP', 'PingFang SC', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-  --arabic: 'Noto Naskh Arabic', 'Geeza Pro', 'Noto Sans Arabic', sans-serif;
-  --indic: 'Noto Sans Devanagari', 'Kohinoor Devanagari', 'Devanagari Sangam MN', sans-serif;
-}
-
-/* Scroll regions: always present, 12px wide, a ruled track and a flat thumb.
-   Shell routes never scroll the document; this class owns every scrolling
-   box inside the shell. globals.css sets scrollbar-width: thin and a
+/* Scroll regions (directive 8.11): one thin scrollbar for every scrolling
+   box in chrome, the sidebar list, the index panel body, the search
+   results, the grid, the book and the flow sheet. A 4px gutter, always
+   present, with no track and no rule; a 2px thumb in --pt-thumb flush to
+   the edge (the thumb's 2px transparent left border, clipped out of its
+   ground, leaves the paint on the outer 2px), widening to the full 4px
+   while the pointer is over the region; no buttons; radius 0. This class
+   is the single owner of the values, and deck/parts/head.html's .scroll
+   rule carries the same ones so the standalone deck matches. Shell routes
+   never scroll the document. globals.css sets scrollbar-width: thin and a
    scrollbar-color on html for the /d pages, and both properties inherit;
    Chromium ignores ::-webkit-scrollbar rules on any box where either is not
-   auto, so the region resets them before the webkit rules below can paint. */
-.pt-scroll {
-  overflow-y: scroll;
-  overflow-x: hidden;
+   auto, so the region resets them before the webkit rules below can paint.
+   Firefox, which has no ::-webkit-scrollbar, takes scrollbar-width: thin
+   with the thumb color on a transparent track. .pt-scroll-x is the
+   sideways variant for a stage wider than its box. */
+.pt-scroll,
+.pt-scroll-x {
   scrollbar-gutter: stable;
   scrollbar-width: auto;
   scrollbar-color: auto;
 }
 
-.pt-scroll::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+.pt-scroll {
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
-.pt-scroll::-webkit-scrollbar-track {
-  background: var(--pt-paper);
-  border-left: 1px solid var(--pt-hair-soft);
+.pt-scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-.pt-scroll::-webkit-scrollbar-thumb {
+.pt-scroll::-webkit-scrollbar,
+.pt-scroll-x::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.pt-scroll::-webkit-scrollbar-track,
+.pt-scroll-x::-webkit-scrollbar-track {
+  background: transparent;
+  border: 0;
+}
+
+.pt-scroll::-webkit-scrollbar-thumb,
+.pt-scroll-x::-webkit-scrollbar-thumb {
   background: var(--pt-thumb);
-  border: 3px solid var(--pt-paper);
+  background-clip: padding-box;
+  border: 0;
+  border-left: 2px solid transparent;
   border-radius: 0;
 }
 
-.pt-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--pt-ink-2);
+.pt-scroll-x::-webkit-scrollbar-thumb {
+  border-left: 0;
+  border-top: 2px solid transparent;
 }
 
-.pt-scroll::-webkit-scrollbar-button {
+/* Chromium re-resolves a scrollbar part's style only when the scroller's
+   own computed style changes; a hover rule that touches nothing but the
+   pseudo-element never repaints the thumb. The custom property below is
+   that change: it has no reader, it exists so the thumb's hover rule takes
+   effect on entering and leaving the region. */
+.pt-scroll:hover,
+.pt-scroll-x:hover {
+  --pt-scroll-hover: 1;
+}
+
+.pt-scroll:hover::-webkit-scrollbar-thumb,
+.pt-scroll-x:hover::-webkit-scrollbar-thumb {
+  border-left-width: 0;
+  border-top-width: 0;
+}
+
+.pt-scroll::-webkit-scrollbar-button,
+.pt-scroll-x::-webkit-scrollbar-button {
   display: none;
   width: 0;
   height: 0;
 }
 
 @supports not selector(::-webkit-scrollbar) {
-  .pt-scroll {
-    scrollbar-width: auto;
-    scrollbar-color: var(--pt-thumb) var(--pt-paper);
+  .pt-scroll,
+  .pt-scroll-x {
+    scrollbar-width: thin;
+    scrollbar-color: var(--pt-thumb) transparent;
   }
 }
 

@@ -106,6 +106,17 @@
   color: var(--pt-ink);
 }
 
+/* the external glyph after a link that leaves the page: 12px, on the text's own color */
+.ar-v a svg,
+.ar-static a svg {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  vertical-align: -1px;
+  fill: currentColor;
+}
+
 .ar-full {
   display: block;
   width: 100%;

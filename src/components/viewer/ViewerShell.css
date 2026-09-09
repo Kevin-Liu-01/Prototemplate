@@ -275,7 +275,7 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
    stage's snapshot (painted in the top layer) never covers them: the index
    panel (IndexPanel.css), the toast (Toast.css), the help card
    (HelpCard.css), and here the narrow overlay list, its scrim and the
-   sidebar's hover preview (HoverPreview.css draws .pt-preview). */
+   preview layer's card (PreviewLayer.css draws .pt-preview). */
 .pt-viewer > .pt-sb.is-overlay {
   view-transition-name: pt-sb;
 }

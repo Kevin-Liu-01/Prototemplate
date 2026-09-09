@@ -27,11 +27,14 @@ import './IndexPanel.css';
  * `N pages` or `N places`. The filter is a case-insensitive substring
  * match on the row text and its href; groups with no match hide and the
  * head count follows. Opened by the toolbar's Index button and, in
- * useShellKeys, by R and by Cmd K or Ctrl K, which also focus the filter, so
- * the palette habit survives; the panel itself focuses the filter on every
- * open. Escape closes and blurs. Enter on a focused row navigates: the
- * router for internal hrefs, a new tab for external ones; Enter in the
- * filter opens the first match.
+ * useShellKeys, by R (Cmd K and Ctrl K open the search bar, directive
+ * 8.3); the panel itself focuses the filter on every open. Escape closes
+ * and blurs. Enter on a focused row navigates: the router for internal
+ * hrefs, a new tab for external ones; Enter in the filter opens the first
+ * match. Every row writes its surface id to data-preview for the preview
+ * layer (directive 8.6). Glyphs are the 16px Heroicons from icons.tsx
+ * (directive 8.7): the search glyph on the filter, close on the head,
+ * external or next at the end of a row.
  */
 export type IndexPanelProps = {
   /** which registry the panel opens on: the site map, or every public surface */
@@ -230,6 +233,7 @@ export function IndexPanel({ set: initialSet, ref }: IndexPanelProps) {
                   key={row.id}
                   className='pt-surf'
                   href={row.href}
+                  data-preview={row.id}
                   target={external ? '_blank' : undefined}
                   rel={external ? 'noreferrer' : undefined}
                   onClick={(event) => onRowClick(event, row)}

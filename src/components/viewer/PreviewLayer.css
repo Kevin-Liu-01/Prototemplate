@@ -1,0 +1,99 @@
+/* PreviewLayer: the one card beside a hovered or focused row (directive
+   8.6). A 322px column: a 1px paper mat with a --pt-hair-soft outline (the
+   sheet ring, one stroke each; scripts/lint-lines.mjs allows pt-preview for
+   the pair), the 320x180 frame with its --pt-edge border holding the
+   decoded capture, or the plate with the surface's initial until the
+   capture is ready, and the 32px title row. Fixed at the viewport origin
+   and moved with translate3d alone, so opening it lays nothing out; above
+   the index panel, the narrow overlay list, the search and the direction
+   corner's layer, below nothing that would ever coexist with it (the help
+   card's scrim closes it). It fades over the fast duration with
+   will-change set for that long (.is-entering) and cleared after; reduced
+   motion drops the fade. Colors are tokens only; radius 0; no shadow. */
+
+.pt-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  width: 322px;
+  height: 214px;
+  box-sizing: border-box;
+  padding: 1px;
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  outline: 1px solid var(--pt-hair-soft);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--pt-dur-fast) var(--pt-ease-out),
+    visibility 0s linear var(--pt-dur-fast);
+}
+
+.pt-preview.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-preview.is-entering {
+  will-change: transform, opacity;
+}
+
+/* the frame: 320x180 including its border; the decoded image fills it from the top */
+.pt-preview-frame {
+  position: relative;
+  box-sizing: border-box;
+  width: 320px;
+  height: 180px;
+  border: 1px solid var(--pt-edge);
+  background: var(--pt-plate);
+  overflow: hidden;
+}
+
+.pt-preview-img {
+  position: absolute;
+  inset: 0;
+}
+
+.pt-preview-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* the plate while the capture decodes, or when there is none: the initial in 15px titanium */
+.pt-preview-plate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--pt-titanium);
+}
+
+.pt-preview-title {
+  height: 32px;
+  box-sizing: border-box;
+  padding: 7px 10px 8px;
+  font-size: 12.5px;
+  line-height: 17px;
+  color: var(--pt-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-preview,
+  .pt-preview.is-on {
+    transition: none;
+  }
+}

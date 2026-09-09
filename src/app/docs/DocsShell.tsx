@@ -99,6 +99,8 @@ function docsSections(docs: readonly DocPage[]): readonly ShellSection[] {
         href: doc.href,
         desc: doc.blurb,
         shot: doc.shot,
+        /* the surfaces.ts id, for the preview layer and the sidebar's site map pairing */
+        surface: `docs-${doc.slug}`,
       })),
     },
   ];

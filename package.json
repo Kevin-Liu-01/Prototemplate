@@ -9,8 +9,9 @@
     "lint:shell": "node scripts/lint-shell.mjs",
     "lint:practices": "node scripts/lint-practices.mjs",
     "lint:lines": "node scripts/lint-lines.mjs",
+    "lint:lines:shell": "node scripts/lint-lines.mjs --shell",
     "build:deck": "node scripts/build-deck.mjs",
-    "lint:all": "pnpm lint:shell && pnpm lint:practices"
+    "lint:all": "pnpm lint:shell && pnpm lint:practices && pnpm lint:lines:shell"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

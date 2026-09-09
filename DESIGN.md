@@ -88,6 +88,66 @@ CSS — so figures must be checked by eye at 2× pixel crops of the junctions.
   active book page frame carry the same border plus offset outline. The
   auditor allows them under `sheet`, `thumb-frame` and `page-frame`.
 
+### Line law for chrome
+
+Chrome is everything the viewer shell draws around content: the toolbar,
+the sidebar, the index panel, the search, the sheet ring, the grid, the
+book frame, the help card, the direction corner, and the standalone deck
+viewer's own chrome. Every rule in chrome is 1px, drawn once, in one of
+three roles, and this is part of the identity: a page reads as
+Prototemplate because its lines are single and their weights mean
+something.
+
+The three roles, and only three:
+
+| role | token | draws |
+| --- | --- | --- |
+| structural | `--pt-hair` | the toolbar bottom, the sidebar right edge, the index panel left edge, group headers, the segmented control, the field boxes at rest |
+| row | `--pt-hair-soft` | list rows, search results, panel rows, the help card's table rows, the progress track |
+| frame | `--pt-edge` | the sheet, thumbnails, tiles, the 96x54 captures, the help card |
+
+Nothing in chrome sets a border color from any other token or literal.
+`--pt-ink` appears on a border only as a state: a pressed button
+(`.is-on`), the active thumbnail or page frame (`.is-active`), the count
+while it is being edited, the solid call to action, and a field while it
+holds focus. Group headers, book heads and table headings draw `--pt-hair`,
+never ink. Outlines are rings: the three roles, ink for focus and active
+rings, paper for a ring on an ink plate.
+
+Where two bordered components touch, exactly one draws the line:
+
+| junction | owner | the other side |
+| --- | --- | --- |
+| sidebar and stage | the sidebar's right edge | the main region draws no left edge |
+| toolbar and stage | the toolbar's bottom edge | the stage, the hint row and the index panel draw no top edge |
+| index panel and stage | the panel's left edge | the sheet ring runs under the panel; the panel covers the progress track while open |
+| group header and its first row | the header's bottom edge | the first row draws no top rule |
+| last row of a group and what follows | the last row's bottom edge | the next header carries no top rule |
+| sheet mat and its content | the mat's ring | content draws no outer border |
+| tile and its shot | the tile's frame | the shot draws no border |
+| segmented control and its options | the control's outer border | options draw only the dividers between them; the last draws none |
+| stacked corner buttons | the upper button's bottom edge | the lower button's top edge is transparent at rest |
+| sidebar head and toolbar | each owns its own side of the vertical seam | the two bottom rules meet at the sidebar's edge and never overlap |
+
+The auditor enforces this from computed CSS. `pnpm lint:lines:shell` walks
+`/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`, `/d/production`
+and `/deck` (the iframe's document) at 1440, 1280 and 390 in both themes
+against the dev server on port 3005, with the list toggled, the index panel
+open, the search open, and the grid and book modes on `/` and `/deck`. It
+fails on any doubled line (two owners within 4px), any junction (two owners
+coincident on one seam), and any border color in chrome outside the three
+roles. `pnpm lint:all` runs it. The allow list in `scripts/lint-lines.mjs`
+names every sanctioned multi-stroke device with its reason inline; for
+chrome those are the sheet mat (`sheet`), the active frames (`thumb-frame`,
+`page-frame`, the sidebar's site tiles as `pt-tile`) and the hover
+preview's mat (`pt-preview`).
+
+Scroll regions belong to the same law: one thin scrollbar everywhere in
+chrome, a 4px gutter with no track rule and a 2px thumb in `--pt-thumb`
+that widens to 4px on hover, owned by `.pt-scroll` in
+`src/components/viewer/tokens.css` and mirrored by the deck's `.scroll`
+rule. No scroll region draws a rule beside its thumb.
+
 ### Corners
 
 The corner notches on hero cards are not drawn — they are the ground showing

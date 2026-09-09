@@ -136,6 +136,8 @@ export const BRAND_SHELL_SECTIONS: readonly ShellSection[] = [
       desc: section.desc,
       href: `/brand#${section.id}`,
       shot: brandShot(section.id),
+      /* the surfaces.ts id, for the preview layer */
+      surface: `brand-${section.id}`,
     })),
   },
 ];

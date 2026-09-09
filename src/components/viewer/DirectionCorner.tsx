@@ -8,7 +8,9 @@ import Link from 'next/link';
 
 import { HelpCard } from '@/components/viewer/HelpCard';
 import { IndexPanel } from '@/components/viewer/IndexPanel';
+import { PreviewLayer } from '@/components/viewer/PreviewLayer';
 import { PtMark } from '@/components/viewer/PtMark';
+import { openSearch, Search } from '@/components/viewer/Search';
 import { ShellContext } from '@/components/viewer/shell-context';
 import type { ShellState } from '@/components/viewer/shell-context';
 import { Sidebar } from '@/components/viewer/Sidebar';
@@ -26,15 +28,19 @@ import './DirectionCorner.css';
  * The direction pages' one piece of floating chrome, in the shell's grammar.
  * A 32px tile with the Prototemplate mark leads the stack in the top left
  * corner (the link back to the gallery, as the sidebar head's mark is), so
- * the trio reads as Prototemplate chrome and not as part of the prototype's
- * own nav band; under it two labeled buttons: List opens the shell
- * Sidebar as the 300px overlay over a scrim, in outline density, listing
- * the whole site map (Pages, Documents, Sites, Explorations, Archive) with
- * this page's row marked, with its filter, its collapsible groups and its
- * hover previews, so every route is one click away from every prototype;
- * Index opens the IndexPanel over the page. Keys: [ for the list, R and
- * Cmd K or Ctrl K for the index, D for the theme, ? for the shortcuts,
- * Escape back one layer. Hidden under ?chrome=0, which the gallery's
+ * the stack reads as Prototemplate chrome and not as part of the
+ * prototype's own nav band; under it three labeled buttons: Search opens
+ * the search bar's palette (directive 8.3, the same Search the toolbar
+ * mounts, so Cmd K reaches every page from a prototype too); List opens
+ * the shell Sidebar as the 300px overlay over a scrim, in outline density,
+ * listing the whole site map (Pages, Shipped, Documents, Sites,
+ * Explorations, Archive) with this page's row marked, with its filter and
+ * its collapsible groups, so every route is one click away from every
+ * prototype; Index opens the IndexPanel over the page; the one
+ * PreviewLayer (directive 8.6) mounts here for all three. Keys: Cmd K
+ * or Ctrl K for the search, [ for the list, R for the index, D for the
+ * theme, ? for the shortcuts, Escape back one layer. Hidden under
+ * ?chrome=0, which the gallery's
  * exhibit, the compare panes and every screenshot pass depend on. No
  * toolbar and no sheet: the page stays a full document with its own nav.
  * Replaces src/components/shared/DirectionDock.tsx with the same prop
@@ -53,11 +59,8 @@ import './DirectionCorner.css';
  */
 export type DirectionCornerProps = { slug: string };
 
-/** The site map groups the list shows, in the shell's one order; the count names their rows. */
-const LIST_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Documents', 'Sites', 'Explorations', 'Archive'];
-
-/** The site map groups open when the list opens on a direction page. */
-const OPEN_GROUPS: readonly string[] = ['Pages', 'Sites', 'Explorations'];
+/** The site map groups the list shows, in the shell's one order (Shipped after Pages, directive 8.10); the count names their rows. */
+const LIST_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
 
 /** `44 pages`: the count at the end of the filter row, and the word its placeholder takes (`Filter pages`). */
 const LIST_COUNT = `${SITE_SURFACES.filter((row) => LIST_GROUPS.includes(row.group)).length} pages`;
@@ -68,8 +71,9 @@ const LEAVE_MS = 220;
 /** The corner's own key table, for the help card. */
 const ROWS: readonly ShellKeyRow[] = [
   { group: 'Move', keys: 'Space, arrows', action: 'Scroll the page' },
+  { group: 'Panels', keys: 'Cmd K or Ctrl K', action: 'Search every page, document, direction and slide' },
   { group: 'Panels', keys: '[', action: 'Show or hide the list' },
-  { group: 'Panels', keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' },
+  { group: 'Panels', keys: 'R', action: 'Index panel, with the filter focused' },
   { group: 'Panels', keys: '?', action: 'Keyboard shortcuts' },
   { group: 'Panels', keys: 'Esc', action: 'Back one layer: the shortcuts, the index, the list' },
   { group: 'Theme', keys: 'D', action: 'Dark or light' },
@@ -160,7 +164,7 @@ function Corner({ slug }: DirectionCornerProps) {
       const low = e.key.length === 1 ? e.key.toLowerCase() : e.key;
       if ((e.metaKey || e.ctrlKey) && !e.altKey && low === 'k') {
         e.preventDefault();
-        setPanel(true);
+        openSearch();
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -231,6 +235,7 @@ function Corner({ slug }: DirectionCornerProps) {
         >
           <PtMark />
         </Link>
+        <Search trigger='tool' className='pt-corner-search' />
         <ToolButton
           icon='sidebar'
           label='List'
@@ -264,7 +269,6 @@ function Corner({ slug }: DirectionCornerProps) {
               sections={[]}
               thumb='row'
               siteMap
-              openGroups={OPEN_GROUPS}
             />
           </ShellContext>
         ) : null}
@@ -278,6 +282,8 @@ function Corner({ slug }: DirectionCornerProps) {
           note='The list and the index reach every page on the site; the page itself scrolls as a document.'
         />
       </ShellContext>
+      {/* the one preview layer (directive 8.6) for the list's, the index's and the search's rows */}
+      <PreviewLayer />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useRef } from 'react';
 
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { openSearch } from './Search';
 import type { ShellState } from './shell-context';
 
 /** How long typed digits wait for Enter. */
@@ -77,7 +78,8 @@ export function shellKeyRows(
   if (book) rows.push({ group: 'View', keys: 'B', action: 'Book view, read top to bottom' });
   if (slide) rows.push({ group: 'View', keys: 'P', action: 'Presentation mode, chrome hidden' });
   if (!route.narrow) rows.push({ group: 'View', keys: 'F', action: 'Fullscreen' });
-  rows.push({ group: 'Panels', keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' });
+  rows.push({ group: 'Panels', keys: 'Cmd K or Ctrl K', action: 'Search every page, document, direction and slide' });
+  rows.push({ group: 'Panels', keys: 'R', action: 'Index panel, with the filter focused' });
   rows.push({ group: 'Panels', keys: '[ or S', action: 'Show or hide the list' });
   rows.push({ group: 'Panels', keys: '?', action: 'Keyboard shortcuts' });
   rows.push({
@@ -95,27 +97,16 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
 }
 
 /**
- * Focus and select the index filter. Used when Cmd K lands on a panel that
- * is already open; a panel that is opening focuses the filter itself.
- */
-function focusPanelFilter(): void {
-  const input = document.querySelector<HTMLInputElement>('.pt-panel input[type="search"]');
-  if (!input) return;
-  input.focus({ preventScroll: true });
-  input.select();
-}
-
-/**
  * The shell's one document keydown owner. ViewerShell calls it with the
  * state it publishes; the listener registers once on mount and reads the
  * latest state through a ref, so no key ever acts on a stale closure.
  *
  * Meta, Ctrl and Alt combinations pass through, except Cmd K and Ctrl K,
- * which open the index (the panel focuses its filter as it opens) or, when
- * it is already open, refocus and select the filter. Inside an input or
- * textarea only Escape acts and it closes the index, unless the field has
- * already answered the key itself (the sidebar filter and the count field
- * clear or close on their own Escape). Digits accumulate for 1500ms behind
+ * which open the search bar (directive 8.3) through openSearch(); the
+ * index panel keeps R. Inside an input or textarea only Escape acts and it
+ * closes the index, unless the field has already answered the key itself
+ * (the search, the sidebar filter and the count field close or clear on
+ * their own Escape). Digits accumulate for 1500ms behind
  * the toast `Slide 12, press Enter`; Enter jumps, and that jump is read
  * before the defaultPrevented bail so it wins over a focused thumb's own
  * Enter activation, as in the deck. Every other event a component already
@@ -158,8 +149,7 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
 
       if ((e.metaKey || e.ctrlKey) && !e.altKey && low === 'k') {
         e.preventDefault();
-        if (s.panelOpen) focusPanelFilter();
-        else s.setPanel(true);
+        openSearch();
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;

@@ -143,9 +143,7 @@
 
 .pt-hero {
   position: relative;
-  /* short enough that the opener's h1 and first paragraph enter the first
-     fold at 1440x900 and at 390x844 inside the shell's stage */
-  min-height: clamp(300px, 42vh, 460px);
+  min-height: clamp(520px, 76vh, 820px);
   display: grid;
   place-items: center;
   overflow: hidden;

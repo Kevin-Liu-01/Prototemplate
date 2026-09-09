@@ -22,6 +22,7 @@ import { GridView } from './GridView';
 import { HelpCard } from './HelpCard';
 import { Icon } from './icons';
 import { IndexPanel } from './IndexPanel';
+import { PreviewLayer } from './PreviewLayer';
 import { Progress } from './Progress';
 import { ShellContext, StageContext } from './shell-context';
 import type { ShellDir, ShellState, ShellTransition, StageSize, StageState } from './shell-context';
@@ -73,7 +74,8 @@ type Transition = ShellTransition & { native: boolean };
 /**
  * The one frame for Prototemplate: a fixed full-viewport grid of a sidebar
  * and a main region (toolbar, an optional hint row, stage, progress line),
- * with the index panel, the help card and the toast floating over it. The
+ * with the index panel, the help card, the toast and the preview layer
+ * (directive 8.6, one for every data-preview on the page) floating over it. The
  * shell owns the state every child reads through usePtShell() and no
  * content rules at all: the route renders the stage content (a Sheet, and
  * a BookView while the mode is book) as children.
@@ -709,6 +711,8 @@ export function ViewerShell({
         </div>
         <HelpCard />
         <Toast message={toast.message} on={toast.on} />
+        {/* the one preview layer (directive 8.6): every data-preview under the shell opens its capture here */}
+        <PreviewLayer />
       </StageContext>
     </ShellContext>
   );
