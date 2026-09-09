@@ -24,13 +24,7 @@
     --arabic: 'Noto Naskh Arabic', 'Geeza Pro', 'Noto Sans Arabic', sans-serif;
     --indic: 'Noto Sans Devanagari', 'Kohinoor Devanagari', 'Devanagari Sangam MN', sans-serif;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #070707; --ink: #f2f2f0; --ink-2: #b9bcc3; --titanium: #8a8f98;
-      --hair: rgba(242, 242, 240, 0.22); --hair-soft: rgba(242, 242, 240, 0.1); --plate: rgba(242, 242, 240, 0.05); --cross: rgba(255, 255, 255, 0.34);
-    }
-  }
-  :root[data-theme="dark"] {
+    :root[data-theme="dark"] {
     --paper: #070707; --ink: #f2f2f0; --ink-2: #b9bcc3; --titanium: #8a8f98;
     --hair: rgba(242, 242, 240, 0.22); --hair-soft: rgba(242, 242, 240, 0.1); --plate: rgba(242, 242, 240, 0.05); --cross: rgba(255, 255, 255, 0.34);
   }
@@ -154,15 +148,13 @@
   /* code sits on the dark panel in white monospace, the same as on the site */
   .panel { background: #101010; color: rgba(255, 255, 255, 0.87); padding: 22px 26px; font-family: var(--mono); font-size: 17px; line-height: 1.7; border: 0; }
   :root[data-theme="dark"] .panel { border: 1px solid var(--hair); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .panel { border: 1px solid var(--hair); } }
-
+  
   @media (prefers-reduced-motion: no-preference) { .slide.is-on { animation: cut 140ms ease-out; } }
   @keyframes cut { from { opacity: 0; } to { opacity: 1; } }
 
   /* ---------- viewer chrome ---------- */
   :root { --edge: rgba(7, 7, 7, 0.62); --thumb: rgba(7, 7, 7, 0.32); --bar-h: 52px; --panel-w: 460px; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --edge: rgba(242, 242, 240, 0.55); --thumb: rgba(242, 242, 240, 0.32); } }
-  :root[data-theme="dark"] { --edge: rgba(242, 242, 240, 0.55); --thumb: rgba(242, 242, 240, 0.32); }
+    :root[data-theme="dark"] { --edge: rgba(242, 242, 240, 0.55); --thumb: rgba(242, 242, 240, 0.32); }
   html, body { height: 100%; }
   body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--text); font-optical-sizing: auto; overflow: hidden; -webkit-font-smoothing: antialiased; }
   [hidden] { display: none !important; }
