@@ -1,6 +1,7 @@
-/* The grid: the sidebar's list re-parented over the stage. The list keeps
-   its classes (.pt-thumbs, .pt-sec-label, .pt-thumb from Sidebar.css); the
-   rules below re-lay it out under .pt-grid and win on specificity. */
+/* The grid: an item list rendered over the stage while the sidebar's is
+   unmounted. The list keeps its classes (.pt-thumbs, .pt-sec-label,
+   .pt-thumb from Sidebar.css); the rules below re-lay it out under .pt-grid
+   and win on specificity. */
 
 .pt-grid {
   position: absolute;

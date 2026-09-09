@@ -18,6 +18,8 @@ export type ShellState = {
   /** the modes the route offers; the first is the default */
   modes: readonly ShellMode[];
   keys: ShellKeys;
+  /** the word for one item in the toasts and the help rows: `slide`, `direction` */
+  noun: string;
   /** every item across sections, in order */
   items: readonly ShellItem[];
   mode: ShellMode;
@@ -34,6 +36,8 @@ export type ShellState = {
   /** items.length */
   total: number;
   stageSize: StageSize;
+  /** the index panel's box width, measured by the same observer; what an open panel takes from the stage */
+  panelWidth: number;
   setMode: (mode: ShellMode) => void;
   setSidebar: (open: boolean) => void;
   setPanel: (open: boolean) => void;

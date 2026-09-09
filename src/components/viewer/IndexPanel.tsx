@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffectEvent, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, RefObject } from 'react';
 
 import { useRouter } from 'next/navigation';
@@ -20,14 +20,17 @@ import './IndexPanel.css';
  * 96x54 preview, a name, an address and a line of description. The filter
  * is a case-insensitive substring match on the row text and its href;
  * groups with no match hide and the head count follows. Opened by the
- * toolbar's Index button, R (useShellKeys), and Cmd K or Ctrl K here, which
- * also focus the filter, so the palette habit survives. Escape closes and
- * blurs. Enter on a focused row navigates: the router for internal hrefs, a
- * new tab for external ones; Enter in the filter opens the first match.
+ * toolbar's Index button and, in useShellKeys, by R and by Cmd K or Ctrl K,
+ * which also focus the filter, so the palette habit survives; the panel
+ * itself focuses the filter on every open. Escape closes and blurs. Enter on
+ * a focused row navigates: the router for internal hrefs, a new tab for
+ * external ones; Enter in the filter opens the first match.
  */
 export type IndexPanelProps = {
   /** which registry the panel lists: the site map, or every public surface */
   set: SurfaceSet;
+  /** the aside, for the shell's ResizeObserver, which publishes the panel width */
+  ref?: RefObject<HTMLElement | null>;
 };
 
 const NOTE: Record<SurfaceSet, string> = {
@@ -111,10 +114,11 @@ function Shot({ row, broken, onBroken }: ShotProps) {
   );
 }
 
-export function IndexPanel({ set }: IndexPanelProps) {
+export function IndexPanel({ set, ref }: IndexPanelProps) {
   const shell = usePtShell();
   const router = useRouter();
-  const panelRef = useRef<HTMLElement>(null);
+  const ownRef = useRef<HTMLElement>(null);
+  const panelRef = ref ?? ownRef;
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const [broken, setBroken] = useState<ReadonlySet<string>>(() => new Set());
@@ -162,28 +166,6 @@ export function IndexPanel({ set }: IndexPanelProps) {
     event.preventDefault();
     go(first);
   };
-
-  /* Cmd K and Ctrl K open the panel, or refocus the filter when it is already
-     open. An effect event reads the live shell so the one document listener,
-     registered once on mount, never sees a stale panelOpen or setPanel. */
-  const onPaletteKey = useEffectEvent((event: KeyboardEvent) => {
-    if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return;
-    if (event.key !== 'k' && event.key !== 'K') return;
-    event.preventDefault();
-    if (shell.panelOpen) {
-      const input = inputRef.current;
-      input?.focus({ preventScroll: true });
-      input?.select();
-      return;
-    }
-    shell.setPanel(true);
-  });
-
-  useMountEffect(() => {
-    const onKey = (event: KeyboardEvent) => onPaletteKey(event);
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  });
 
   const markBroken = (id: string) => {
     setBroken((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));

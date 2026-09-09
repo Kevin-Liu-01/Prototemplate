@@ -37,7 +37,9 @@
 }
 
 /* the stage: the second row, measured by the shell's ResizeObserver; the
-   sheet, the grid, the book and the index panel sit inside it */
+   sheet, the grid and the book sit inside it. The index panel is a sibling,
+   positioned against .pt-main so it spans the toolbar's bottom rule to the
+   progress line */
 .pt-stagewrap {
   grid-row: 2;
   position: relative;

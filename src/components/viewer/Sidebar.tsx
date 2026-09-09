@@ -11,7 +11,7 @@ import type {
 } from '@/lib/shell-data';
 
 import { GtMark } from './GtMark';
-import { activateOnKey, ListRow } from './ListRow';
+import { activateOnKey, ListRow, pressWithoutFocus } from './ListRow';
 import { PtMark } from './PtMark';
 import { usePtShell } from './shell-context';
 import { ThumbMini, type MiniSource } from './ThumbMini';
@@ -21,8 +21,9 @@ import './Sidebar.css';
 
 /**
  * Finds the nodes a 'mini' item clones. `index` is the item's position across
- * every section, in order. The default reads the deck stage: the nth .slide
- * under .stage.pt-slides, and that stage's .frame when it has one.
+ * every section, in order. The default, stageMini, reads the stage: the nth
+ * .slide directly under the .pt-slides box, and the sheet frame when the
+ * stage draws one.
  */
 export type MiniResolver = (item: ShellItem, index: number) => MiniSource;
 
@@ -58,16 +59,16 @@ export type SidebarProps = {
 
 /**
  * The default MiniResolver, and the one a deck route passes to BookView's
- * renderPage: the nth .slide under the stage, plus the stage's .frame.
+ * renderPage. Matches the shipped stage markup: DeckStage puts .pt-slides on
+ * the box that holds the 52 .slide sections inside the Sheet's .stage, and
+ * SheetFrame draws .pt-sheet-frame beside it.
  */
 export function stageMini(_item: ShellItem, index: number): MiniSource {
-  const stage =
-    document.querySelector('.pt-stagewrap .stage.pt-slides') ??
-    document.querySelector('.stage.pt-slides');
-  if (!stage) return { slide: null };
+  const slides = document.querySelector('.pt-stagewrap .pt-slides');
+  if (!slides) return { slide: null };
   return {
-    slide: stage.querySelectorAll('.slide').item(index),
-    frame: stage.querySelector('.frame'),
+    slide: slides.querySelectorAll(':scope > .slide').item(index),
+    frame: document.querySelector('.pt-stagewrap .pt-sheet-frame'),
   };
 }
 
@@ -112,6 +113,7 @@ function ThumbItem({
       tabIndex={0}
       data-id={item.id}
       aria-current={active || undefined}
+      onMouseDown={pressWithoutFocus}
       onClick={select}
       onKeyDown={(event) => activateOnKey(event, select)}
       ref={active && follow ? scrollNearest : undefined}
@@ -134,9 +136,11 @@ function ThumbItem({
 /**
  * The item list on its own: section labels and one item per ShellItem,
  * rendered as ThumbMini, ThumbShot or ListRow by `thumb`. The sidebar
- * renders it as its scroll region; GridView renders a second one over the
- * stage and restyles .pt-thumbs, .pt-sec-label and .pt-thumb under .pt-grid.
- * Every item carries data-id so the shell can find it from outside.
+ * renders it as its scroll region while the mode is not grid; in grid mode
+ * ViewerShell renders one inside GridView instead, which restyles
+ * .pt-thumbs, .pt-sec-label and .pt-thumb under .pt-grid, so one list of
+ * live clones exists at a time. Every item carries data-id so the shell can
+ * find it from outside.
  */
 export function ThumbList({
   sections,
@@ -192,7 +196,9 @@ export function ThumbList({
  * then the item list as a .pt-scroll region. Visibility follows shell state:
  * hidden while presenting, in grid mode, or when the list is toggled off;
  * at or below 900px an open list is an absolute overlay, and selecting an
- * item closes it. ViewerShell collapses the grid column to match.
+ * item closes it. ViewerShell collapses the grid column to match. In grid
+ * mode the list is unmounted, not just hidden, because the grid renders its
+ * own copy of every item.
  */
 export function Sidebar({
   title,
@@ -205,7 +211,8 @@ export function Sidebar({
 }: SidebarProps) {
   const { mode, present, narrow, sidebarOpen, select, setSidebar } =
     usePtShell();
-  const hidden = present || mode === 'grid' || !sidebarOpen;
+  const grid = mode === 'grid';
+  const hidden = present || grid || !sidebarOpen;
   const overlay = narrow && !hidden;
   const pick = (id: string) => {
     select(id);
@@ -221,17 +228,19 @@ export function Sidebar({
           {mark === 'gt' ? <GtMark /> : <PtMark />}
         </span>
         <b>{title}</b>
-        <span>{count}</span>
+        <span className='pt-sb-count'>{count}</span>
       </div>
-      <ThumbList
-        className='pt-scroll'
-        sections={sections}
-        thumb={thumb}
-        mini={mini}
-        renderSub={renderSub}
-        onSelect={pick}
-        follow={!hidden}
-      />
+      {grid ? null : (
+        <ThumbList
+          className='pt-scroll'
+          sections={sections}
+          thumb={thumb}
+          mini={mini}
+          renderSub={renderSub}
+          onSelect={pick}
+          follow={!hidden}
+        />
+      )}
     </aside>
   );
 }

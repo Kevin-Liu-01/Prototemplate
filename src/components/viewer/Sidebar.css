@@ -59,7 +59,8 @@
   text-overflow: ellipsis;
 }
 
-.pt-sb-head span {
+/* the count, pushed right; scoped by class so the mark's span keeps its ink */
+.pt-sb-count {
   margin-left: auto;
   font-size: 12.5px;
   color: var(--pt-titanium);

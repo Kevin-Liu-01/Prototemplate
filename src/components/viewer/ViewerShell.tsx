@@ -126,8 +126,10 @@ export function ViewerShell({
   const [narrow, setNarrow] = useState(false);
   const [active, setActive] = useState<string>(() => initialActive ?? items[0]?.id ?? '');
   const [stageSize, setStageSize] = useState<StageSize>({ width: 0, height: 0 });
+  const [panelWidth, setPanelWidth] = useState(0);
 
   const stageRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const toast = useToast();
 
   /* the mount-time listeners read the latest values through these refs;
@@ -218,18 +220,25 @@ export function ViewerShell({
     document.addEventListener('fullscreenchange', onFullscreen);
     window.addEventListener('resize', onResize);
 
+    /* the stage box, and the panel's: the panel keeps its layout width while
+       it is off screen (translated, visibility hidden), so the sheet's fit can
+       read what an open panel will take without a token copied into code */
     const stage = stageRef.current;
+    const panel = panelRef.current;
     const measure = () => {
-      if (!stage) return;
-      const width = stage.clientWidth;
-      const height = stage.clientHeight;
-      setStageSize((prev) => (prev.width === width && prev.height === height ? prev : { width, height }));
+      if (stage) {
+        const width = stage.clientWidth;
+        const height = stage.clientHeight;
+        setStageSize((prev) => (prev.width === width && prev.height === height ? prev : { width, height }));
+      }
+      if (panel) setPanelWidth(panel.offsetWidth);
     };
     measure();
     let observer: ResizeObserver | null = null;
-    if (stage && typeof ResizeObserver !== 'undefined') {
+    if (typeof ResizeObserver !== 'undefined') {
       observer = new ResizeObserver(measure);
-      observer.observe(stage);
+      if (stage) observer.observe(stage);
+      if (panel) observer.observe(panel);
     }
 
     return () => {
@@ -246,6 +255,7 @@ export function ViewerShell({
       id,
       modes,
       keys,
+      noun,
       items,
       mode,
       sidebarOpen,
@@ -257,6 +267,7 @@ export function ViewerShell({
       index,
       total,
       stageSize,
+      panelWidth,
       setMode,
       setSidebar,
       setPanel,
@@ -268,10 +279,10 @@ export function ViewerShell({
     }),
     // the handlers close over refs and setters only, so the state fields are the real dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id, modes, keys, items, mode, sidebarOpen, panelOpen, helpOpen, present, narrow, active, index, total, stageSize, toast.say]
+    [id, modes, keys, noun, items, mode, sidebarOpen, panelOpen, helpOpen, present, narrow, active, index, total, stageSize, panelWidth, toast.say]
   );
 
-  useShellKeys(state, { toggleTheme, noun });
+  useShellKeys(state, { toggleTheme });
 
   const grid = mode === 'grid';
 
@@ -314,8 +325,9 @@ export function ViewerShell({
                 />
               </GridView>
             ) : null}
-            <IndexPanel set={surfaces} />
           </div>
+          {/* a child of .pt-main, not of the stage: its top and bottom are written against the toolbar and the progress line */}
+          <IndexPanel ref={panelRef} set={surfaces} />
           <Progress />
         </section>
       </div>

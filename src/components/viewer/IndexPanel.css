@@ -1,5 +1,6 @@
-/* IndexPanel: a column over the stage, positioned against .pt-main (below
-   the toolbar, above the progress line), off the right edge until .is-on.
+/* IndexPanel: a column over the stage. The aside is a child of .pt-main, not
+   of the stage, so its top is the toolbar's height and its bottom the
+   progress line; it sits off the right edge until .is-on.
    Every rule here is 1px and drawn once: --pt-hair for the panel edge and
    the head, --pt-hair-soft for the tools and the rows, --pt-ink under each
    group heading. No shadow, no radius. */

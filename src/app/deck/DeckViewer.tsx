@@ -2,16 +2,15 @@
 
 import { useGSAP } from '@gsap/react';
 import type { ReactNode } from 'react';
-import { useRef } from 'react';
 
 import { BookView } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { stageMini } from '@/components/viewer/Sidebar';
 import { ThumbMini } from '@/components/viewer/ThumbMini';
-import type { MiniSource } from '@/components/viewer/ThumbMini';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { redrawDithers } from '@/lib/dither';
-import type { ShellItem, ShellMode, ShellSection } from '@/lib/shell-data';
+import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { DECK_SECTIONS, SLIDE_COUNT } from './sections';
@@ -44,15 +43,6 @@ function stageRoot(): Element | null {
   return document.querySelector('.pt-stagewrap .pt-deck-slides');
 }
 
-/** The nth slide on the stage, and the sheet frame drawn under every clone. */
-function deckMini(_item: ShellItem, index: number): MiniSource {
-  const stage = stageRoot();
-  return {
-    slide: stage?.querySelectorAll(':scope > .slide').item(index) ?? null,
-    frame: document.querySelector('.pt-stagewrap .pt-sheet-frame'),
-  };
-}
-
 function isDark(): boolean {
   return document.documentElement.dataset.theme === 'dark';
 }
@@ -81,45 +71,64 @@ function needsTheme(node: Node): node is Element {
 }
 
 /**
+ * Holds document.title at `want` until the returned disconnect runs. The
+ * route's metadata <title> commits when the head hydrates, after the layout
+ * effect that named the slide, so the head's child list and the title
+ * element's text are both watched and the position is put back. Only the
+ * title element is observed, not the head's subtree, and a replaced title
+ * element is picked up from the head record.
+ */
+function guardTitle(want: string): () => void {
+  const options: MutationObserverInit = { childList: true, characterData: true, subtree: true };
+  const watchTitle = () => {
+    const title = document.head.querySelector('title');
+    if (title) observer.observe(title, options);
+  };
+  const observer = new MutationObserver(() => {
+    watchTitle();
+    if (document.title !== want) document.title = want;
+  });
+  observer.observe(document.head, { childList: true });
+  watchTitle();
+  return () => observer.disconnect();
+}
+
+/**
  * The deck's behavior on the stage: moves `.is-on` to the active slide,
  * names the document after it, and keeps the slides in the current theme.
  * The stage markup is injected HTML, so the slide toggle is imperative; it
  * runs in a layout effect keyed to the index so the cut lands before paint.
- * Theme work runs from one MutationObserver: html[data-theme] flipping
- * redraws the whole document, and a clone appearing (the list, the grid, the
- * book) redraws that clone, since a cloned canvas carries no bitmap.
+ * The same effect owns the title guard, because its cleanup is synchronous:
+ * it reverts on every index change (revertOnUpdate) and on unmount, in the
+ * same task as the commit, so a client navigation away from /deck can never
+ * see the guard rewrite the next route's title. Theme work runs from one
+ * MutationObserver: html[data-theme] flipping redraws the whole document,
+ * and a clone appearing (the list, the grid, the book) redraws that clone,
+ * since a cloned canvas carries no bitmap.
  */
 function DeckSlides() {
   const { index, total } = usePtShell();
-  /* read by the mount-time title re-assert, so it names the slide the hash chose */
-  const position = useRef({ index, total });
-  position.current = { index, total };
 
   useGSAP(
     () => {
       const stage = stageRoot();
-      if (!stage) return;
-      stage.querySelectorAll(':scope > .slide').forEach((slide, k) => {
-        const on = k === index;
-        slide.classList.toggle('is-on', on);
-        /* the slide is laid out now, so its canvas can take its real box */
-        if (on) redrawDithers(slide, DITHER_BOX);
-      });
-      document.title = titleFor(index, total);
+      if (stage) {
+        stage.querySelectorAll(':scope > .slide').forEach((slide, k) => {
+          const on = k === index;
+          slide.classList.toggle('is-on', on);
+          /* the slide is laid out now, so its canvas can take its real box */
+          if (on) redrawDithers(slide, DITHER_BOX);
+        });
+      }
+      const want = titleFor(index, total);
+      document.title = want;
+      return guardTitle(want);
     },
-    { dependencies: [index, total] }
+    { dependencies: [index, total], revertOnUpdate: true }
   );
 
   useMountEffect(() => {
     applyTheme(document);
-    /* the route's metadata title lands when the head hydrates, after the
-       layout effect above and on no fixed frame; a guard on the head puts
-       the position back whenever the title is rewritten */
-    const guard = new MutationObserver(() => {
-      const want = titleFor(position.current.index, position.current.total);
-      if (document.title !== want) document.title = want;
-    });
-    guard.observe(document.head, { childList: true, characterData: true, subtree: true });
     let frame = 0;
     const pending = new Set<ParentNode>();
     const flush = () => {
@@ -153,7 +162,6 @@ function DeckSlides() {
     });
     return () => {
       observer.disconnect();
-      guard.disconnect();
       if (frame) cancelAnimationFrame(frame);
     };
   });
@@ -172,7 +180,7 @@ function DeckBook({ sections }: { sections: readonly ShellSection[] }) {
       meta={BOOK_META}
       sections={sections}
       noun={BOOK_NOUN}
-      renderPage={(item, i) => <ThumbMini resolve={() => deckMini(item, i)} />}
+      renderPage={(item, i) => <ThumbMini resolve={() => stageMini(item, i)} />}
     />
   );
 }
@@ -188,6 +196,8 @@ export type DeckViewerProps = {
  * The brand deck on the viewer shell: 52 slides on a 1600 x 900 sheet with
  * the frame, live thumbnails in the list and the grid, the book, and the
  * public surfaces in the index panel. Paged keys; the hash carries the slide.
+ * The thumbnails resolve through the shell's default, stageMini, which
+ * reads the .pt-slides box DeckStage renders inside the sheet.
  */
 export default function DeckViewer({ sections, children }: DeckViewerProps) {
   return (
@@ -202,7 +212,6 @@ export default function DeckViewer({ sections, children }: DeckViewerProps) {
       surfaces='public'
       keys='paged'
       noun='slide'
-      mini={deckMini}
     >
       <Sheet variant='fixed'>{children}</Sheet>
       <DeckSlides />

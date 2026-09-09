@@ -8,9 +8,6 @@ import { SheetFrame } from './SheetFrame';
 
 import './Sheet.css';
 
-/** Mirrors --pt-panel-w in tokens.css: what the open index panel takes from the stage. */
-export const PANEL_W = 460;
-
 /** The plate left around the sheet: 28px, 12px at or below 900px, 0 in present mode. */
 export const SHEET_PAD = { wide: 28, narrow: 12, present: 0 } as const;
 
@@ -91,13 +88,14 @@ export function Sheet(props: SheetProps) {
 }
 
 function FixedSheet({ w = 1600, h = 900, frame = true, children }: FixedSheetProps) {
-  const { mode, present, narrow, panelOpen, stageSize, step } = usePtShell();
+  const { mode, present, narrow, panelOpen, stageSize, panelWidth, step } = usePtShell();
   const mat = useRef<HTMLDivElement>(null);
   const touchX = useRef<number | null>(null);
 
   const shown = mode === 'slide';
   const pad = present ? SHEET_PAD.present : narrow ? SHEET_PAD.narrow : SHEET_PAD.wide;
-  const side = panelOpen && !narrow ? PANEL_W : 0;
+  /* the panel width is measured by the shell, so the fit follows --pt-panel-w */
+  const side = panelOpen && !narrow ? panelWidth : 0;
   const fit = fitSheet({ aw: stageSize.width - side, ah: stageSize.height, w, h, pad });
 
   const onClick = (e: MouseEvent<HTMLDivElement>) => {

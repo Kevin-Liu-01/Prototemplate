@@ -1,6 +1,6 @@
 'use client';
 
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 
 import { cn } from '@/lib/cn';
 import type { ShellItem } from '@/lib/shell-data';
@@ -9,18 +9,35 @@ import './ListRow.css';
 
 /**
  * Enter and Space activate a role="button" element the way a native button
- * does. Space also stops here: in a paged route the shell's document
- * listener reads Space as "next", and the row's own selection must win.
- * Enter keeps bubbling so the digit buffer (1, 2, then Enter) still lands.
+ * does. Space stops here: in a paged route the shell's document listener
+ * reads Space as "next", and the row's own selection must win. Enter is
+ * neither prevented nor stopped (a div has no Enter default to cancel), so
+ * the digit buffer in useShellKeys (1, 2, then Enter) still lands and wins
+ * over the row's activation.
  */
 export function activateOnKey(
   event: KeyboardEvent<HTMLElement>,
   act: () => void
 ): void {
   if (event.key !== 'Enter' && event.key !== ' ') return;
-  event.preventDefault();
-  if (event.key === ' ') event.stopPropagation();
+  if (event.key === ' ') {
+    event.preventDefault();
+    event.stopPropagation();
+  }
   act();
+}
+
+/**
+ * A pointer press on a row or a thumb must not park focus on it: a focused
+ * item would answer Enter and Space itself for the rest of the visit, so a
+ * mouse user who clicked slide 5 and then typed a number would see the row
+ * re-select itself. Focus behaves as it would on a plain div: whatever was
+ * focused lets go, and keyboard users still reach every item through Tab.
+ */
+export function pressWithoutFocus(event: MouseEvent<HTMLElement>): void {
+  event.preventDefault();
+  const focused = document.activeElement;
+  if (focused instanceof HTMLElement && focused !== event.currentTarget) focused.blur();
 }
 
 export type ListRowProps = {
@@ -46,6 +63,7 @@ export function ListRow({ item, active, onSelect }: ListRowProps) {
       tabIndex={0}
       data-id={item.id}
       aria-current={active || undefined}
+      onMouseDown={pressWithoutFocus}
       onClick={select}
       onKeyDown={(event) => activateOnKey(event, select)}
     >

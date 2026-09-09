@@ -1,9 +1,13 @@
 /* Toolbar: the first row of .pt-main. tokens.css owns every button state
-   (.pt-ib, .pt-icon, .is-on, .is-solid, .pt-seg, .pt-lb and the 1180px
-   label collapse); this sheet owns the bar, its two groups, the count, the
-   separators and the brand, plus a second label collapse keyed to the bar's
-   own width, because the 1180px rule reads the window and the bar is 288px
-   narrower whenever the sidebar is open. */
+   (.pt-ib, .pt-icon, .is-on, .is-solid, .pt-seg, .pt-lb); this sheet owns
+   the bar, its two groups, the count, the separators and the brand, and the
+   one label collapse. That collapse is keyed to the bar's own width, not the
+   window's: the bar is 288px narrower whenever the sidebar is open, and a
+   window rule cannot tell. With every control labeled the bar needs 1085px
+   (measured at 1440 with the sidebar open); below that the labels leave,
+   every button becomes the 32px icon square, and the titles carry the
+   names. The brand, shown only while the sidebar is hidden, adds 152px and
+   truncates its title rather than push the right group off the bar. */
 .pt-toolbar {
   grid-row: 1;
   height: var(--pt-bar-h);
@@ -25,6 +29,12 @@
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;
+}
+
+/* the left group is the one that gives: only the brand title inside it can shrink */
+.pt-bar-l {
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .pt-bar-slot {
@@ -63,6 +73,12 @@
   gap: 10px;
   padding: 0 6px;
   color: var(--pt-ink);
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.pt-bar-brand svg {
+  flex: 0 0 auto;
 }
 
 .pt-bar-brand b {
@@ -72,20 +88,27 @@
   font-size: 14.5px;
   letter-spacing: -0.01em;
   white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* With every control labeled, the bar needs about 1030px. Below that the
-   labels leave and the titles carry the names, as they do under 1180px. */
-@container (max-width: 1119px) {
+/* The label collapse. Labeled buttons take the icon square's geometry so
+   every control is the same 32px; seg options keep a 9px pad around theirs. */
+@container (max-width: 1084px) {
   .pt-toolbar .pt-lb {
     display: none;
   }
 
   .pt-toolbar .pt-ib {
+    width: 32px;
+    padding: 0;
     gap: 0;
+    justify-content: center;
   }
 
   .pt-toolbar .pt-seg .pt-ib {
+    width: auto;
     padding: 0 9px;
   }
 }

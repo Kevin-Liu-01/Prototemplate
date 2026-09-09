@@ -9,29 +9,32 @@ import type { ShellState } from './shell-context';
 /** How long typed digits wait for Enter. */
 const DIGIT_HOLD_MS = 1500;
 
-/** The deck's delay before the index filter takes focus, so the panel has started to slide in. */
-const PANEL_FOCUS_MS = 200;
-
 export type ShellKeyOptions = {
   /** flips html[data-theme] and persists gt-theme; ThemeButton owns the logic */
   toggleTheme: () => void;
   /** defaults to toggleFullscreen() below */
-  toggleFullscreen?: () => void;
-  /** the word in the digit toast and the help rows: `Slide 12, press Enter` */
-  noun?: string;
+  toggleFullscreen?: () => void | Promise<void>;
 };
 
 /** One row of the help card: the keys, then what they do. */
 export type ShellKeyRow = { keys: string; action: string };
 
-/** Enter or leave fullscreen on the document. Shared with the toolbar button. */
-export function toggleFullscreen(): void {
-  if (document.fullscreenElement) {
-    void document.exitFullscreen();
-    return;
+/**
+ * Enter or leave fullscreen on the document. The one implementation, shared
+ * by the F key and the toolbar button. A refusal (an iframe without
+ * allowfullscreen, which the gallery and presenter embeds are, or a call
+ * without a gesture) is swallowed: there is nothing to report to the user.
+ */
+export async function toggleFullscreen(): Promise<void> {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch {
+    // refused by the browser; the F key and the button simply do nothing here
   }
-  const root = document.documentElement;
-  if (root.requestFullscreen) void root.requestFullscreen();
 }
 
 function capitalize(word: string): string {
@@ -39,35 +42,37 @@ function capitalize(word: string): string {
 }
 
 /**
- * The key table for a route, in the order the help card shows it. Built
- * from the same descriptors the hook reads, so the card is always true for
- * the route: paged rows only on paged routes, mode rows only when the mode
- * is offered, present only where present exists.
+ * The key table for a route, in the order the help card shows it. The one
+ * table, kept next to the handler below so the card is always true for the
+ * route: paged rows only on paged routes (flow routes say that Space and the
+ * arrows scroll), mode rows only when the mode is offered, present only
+ * where present exists. Wording follows the copy rules: sentence case, no
+ * trailing periods.
  */
-export function shellKeyRows(
-  route: Pick<ShellState, 'keys' | 'modes'>,
-  noun = 'slide'
-): readonly ShellKeyRow[] {
+export function shellKeyRows(route: Pick<ShellState, 'keys' | 'modes' | 'noun'>): readonly ShellKeyRow[] {
   const paged = route.keys === 'paged';
   const grid = route.modes.includes('grid');
   const book = route.modes.includes('book');
+  const noun = route.noun;
   const rows: ShellKeyRow[] = [];
   if (paged) {
-    rows.push({ keys: 'Right, Space, J', action: `Next ${noun}` });
-    rows.push({ keys: 'Left, K', action: `Previous ${noun}` });
+    rows.push({ keys: 'Right arrow, Space, Page down, J, L', action: `Next ${noun}` });
+    rows.push({ keys: 'Left arrow, Page up, Backspace, K, H', action: `Previous ${noun}` });
+    if (book) rows.push({ keys: 'Down and up arrows', action: `Next and previous ${noun} in the book view` });
     rows.push({ keys: 'Home, End', action: `First and last ${noun}` });
-    if (book) rows.push({ keys: 'Up, Down', action: `Previous and next ${noun} in the book` });
+  } else {
+    rows.push({ keys: 'Space, arrows', action: 'Scroll the sheet' });
   }
-  rows.push({ keys: '1 to 9, then Enter', action: `Go to a ${noun} by number` });
-  if (grid) rows.push({ keys: 'G', action: `Grid of every ${noun}` });
+  rows.push({ keys: 'Digits, then Enter', action: `Go to a ${noun} by number` });
+  if (grid) rows.push({ keys: 'G', action: 'Grid view' });
   if (book) rows.push({ keys: 'B', action: 'Book view, read top to bottom' });
-  rows.push({ keys: 'R, Cmd K', action: 'Index of pages and surfaces' });
+  rows.push({ keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' });
   rows.push({ keys: '[ or S', action: 'Show or hide the list' });
   rows.push({ keys: 'D', action: 'Dark or light' });
   if (paged) rows.push({ keys: 'P', action: 'Presentation mode, chrome hidden' });
   rows.push({ keys: 'F', action: 'Fullscreen' });
   rows.push({ keys: '?', action: 'Keyboard shortcuts' });
-  rows.push({ keys: 'Esc', action: 'Back one layer: help, index, mode, presentation, list' });
+  rows.push({ keys: 'Esc', action: 'Back one layer: the shortcuts, the index, the view, presentation mode, the list' });
   return rows;
 }
 
@@ -76,9 +81,15 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
   return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 }
 
+/**
+ * Focus and select the index filter. Used when Cmd K lands on a panel that
+ * is already open; a panel that is opening focuses the filter itself.
+ */
 function focusPanelFilter(): void {
   const input = document.querySelector<HTMLInputElement>('.pt-panel input[type="search"]');
-  input?.focus();
+  if (!input) return;
+  input.focus({ preventScroll: true });
+  input.select();
 }
 
 /**
@@ -87,11 +98,14 @@ function focusPanelFilter(): void {
  * latest state through a ref, so no key ever acts on a stale closure.
  *
  * Meta, Ctrl and Alt combinations pass through, except Cmd K and Ctrl K,
- * which open the index and focus its filter. Inside an input or textarea
- * only Escape acts and it closes the index. Events a component already
- * handled (defaultPrevented) pass through, so Enter on a focused thumb
- * does not also page. Digits accumulate for 1500ms behind the toast
- * `Slide 12, press Enter`; Enter jumps.
+ * which open the index (the panel focuses its filter as it opens) or, when
+ * it is already open, refocus and select the filter. Inside an input or
+ * textarea only Escape acts and it closes the index. Digits accumulate for
+ * 1500ms behind the toast `Slide 12, press Enter`; Enter jumps, and that
+ * jump is read before the defaultPrevented bail so it wins over a focused
+ * thumb's own Enter activation, as in the deck. Every other event a
+ * component already handled (defaultPrevented) passes through, so Space on
+ * a focused thumb selects it and does not also page.
  *
  * Paged routes: Right, Space, PageDown, J, L next; Left, PageUp, K, H,
  * Backspace previous; Down and Up page in book mode only; Home and End.
@@ -111,7 +125,6 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
   useMountEffect(() => {
     let digits = '';
     let digitTimer = 0;
-    let focusTimer = 0;
 
     const clearDigits = () => {
       digits = '';
@@ -121,17 +134,16 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
     const onKeyDown = (e: KeyboardEvent) => {
       const s = stateRef.current;
       const o = optionsRef.current;
-      const noun = o.noun ?? 'slide';
+      const noun = s.noun;
       const key = e.key;
       const low = key.length === 1 ? key.toLowerCase() : key;
 
-      if (e.defaultPrevented || e.isComposing) return;
+      if (e.isComposing) return;
 
       if ((e.metaKey || e.ctrlKey) && !e.altKey && low === 'k') {
         e.preventDefault();
-        s.setPanel(true);
-        window.clearTimeout(focusTimer);
-        focusTimer = window.setTimeout(focusPanelFilter, PANEL_FOCUS_MS);
+        if (s.panelOpen) focusPanelFilter();
+        else s.setPanel(true);
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -145,16 +157,9 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
         return;
       }
 
-      if (key.length === 1 && key >= '0' && key <= '9') {
-        digits += key;
-        window.clearTimeout(digitTimer);
-        digitTimer = window.setTimeout(clearDigits, DIGIT_HOLD_MS);
-        s.say(`${capitalize(noun)} ${digits}, press Enter`);
-        return;
-      }
-
-      if (key === 'Enter') {
-        if (!digits) return;
+      /* the digit jump, ahead of the defaultPrevented bail: a focused thumb
+         re-selects itself on Enter, and the typed number has to win */
+      if (key === 'Enter' && digits) {
         const n = parseInt(digits, 10);
         clearDigits();
         const item = s.items[n - 1];
@@ -165,6 +170,16 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
         e.preventDefault();
         if (s.mode === 'grid') s.setMode(s.modes[0]);
         s.select(item.id);
+        return;
+      }
+
+      if (e.defaultPrevented) return;
+
+      if (key.length === 1 && key >= '0' && key <= '9') {
+        digits += key;
+        window.clearTimeout(digitTimer);
+        digitTimer = window.setTimeout(clearDigits, DIGIT_HOLD_MS);
+        s.say(`${capitalize(noun)} ${digits}, press Enter`);
         return;
       }
 
@@ -231,7 +246,7 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
           if (paged) s.setPresent(!s.present);
           return;
         case 'f':
-          (o.toggleFullscreen ?? toggleFullscreen)();
+          void (o.toggleFullscreen ?? toggleFullscreen)();
           return;
         case '?':
           s.setHelp(!s.helpOpen);
@@ -253,7 +268,6 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
     return () => {
       document.removeEventListener('keydown', onKeyDown);
       window.clearTimeout(digitTimer);
-      window.clearTimeout(focusTimer);
     };
   });
 }

@@ -89,6 +89,7 @@
   right: 72px;
   bottom: 22px;
   font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
   font-size: 13px;
   line-height: 1;
   color: var(--pt-titanium);

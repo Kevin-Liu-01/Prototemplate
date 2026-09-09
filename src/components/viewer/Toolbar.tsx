@@ -9,6 +9,7 @@ import type { SegOption } from '@/components/viewer/Seg';
 import { ThemeButton } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { toggleFullscreen } from '@/components/viewer/useShellKeys';
 import { pad2 } from '@/lib/shell-data';
 import type { ShellMark, ShellMode } from '@/lib/shell-data';
 
@@ -18,12 +19,12 @@ import './Toolbar.css';
  * The 52px bar over the stage, the first row of .pt-main. Left group: the
  * list toggle, the brand (only while the sidebar is hidden or the grid is
  * up), previous, the count, next. Right group: the route's own controls,
- * the mode seg when the route offers more than one mode, then Index, theme,
- * Present (paged routes only), Fullscreen, Copy link and the ? card. Every
- * control is a ToolButton with a title naming its key; labels collapse at
- * 1180px and again when the bar itself runs short (Toolbar.css). State and
- * actions come from the shell context; the props carry only what the
- * context does not hold.
+ * the mode seg when the route offers more than one mode, then Index, Theme,
+ * Present (paged routes only), Fullscreen, Copy link and Help. Every
+ * control is a labeled ToolButton with a title naming its key (decision 7);
+ * the labels collapse to 32px icon squares when the bar itself runs short
+ * (Toolbar.css owns that one breakpoint). State and actions come from the
+ * shell context; the props carry only what the context does not hold.
  */
 export type ToolbarProps = {
   /** the route's title, shown with the mark while the sidebar is hidden */
@@ -63,29 +64,17 @@ export function modeOptions(modes: readonly ShellMode[]): readonly SegOption<She
   });
 }
 
-async function toggleFullscreen(): Promise<void> {
-  try {
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
-    } else {
-      await document.documentElement.requestFullscreen();
-    }
-  } catch {
-    // refused by the browser (an iframe without allowfullscreen, or no gesture); nothing to report
-  }
-}
-
 export function Toolbar({ title, mark, slot }: ToolbarProps) {
   const shell = usePtShell();
-  const { id, modes, keys, mode, index, total, sidebarOpen, panelOpen, helpOpen } = shell;
+  const { modes, keys, noun, mode, index, total, sidebarOpen, panelOpen, helpOpen } = shell;
   const showBrand = !sidebarOpen || mode === 'grid';
   const showSeg = modes.length > 1;
   const hasRouteControls = Boolean(slot) || showSeg;
 
   const copyLink = async () => {
     const url = window.location.href;
-    /* the deck's toast names the slide (specification 2.8); other routes say Link copied */
-    const done = id === 'deck' ? `Link to slide ${index + 1} copied` : 'Link copied';
+    /* a paged route's toast names the item (`Link to slide 12 copied`); a flow route's link has no number */
+    const done = keys === 'paged' ? `Link to ${noun} ${index + 1} copied` : 'Link copied';
     try {
       await navigator.clipboard.writeText(url);
       shell.say(done);
@@ -145,6 +134,7 @@ export function Toolbar({ title, mark, slot }: ToolbarProps) {
           icon='fullscreen'
           label='Fullscreen'
           title='Fullscreen (F)'
+          hideSm
           onClick={() => {
             void toggleFullscreen();
           }}
@@ -158,8 +148,10 @@ export function Toolbar({ title, mark, slot }: ToolbarProps) {
             void copyLink();
           }}
         />
-        <ToolButton title='Keyboard shortcuts (?)' onClick={() => shell.setHelp(!helpOpen)}>
-          ?
+        <ToolButton label='Help' title='Keyboard shortcuts (?)' onClick={() => shell.setHelp(!helpOpen)}>
+          <span className='pt-glyph' aria-hidden='true'>
+            ?
+          </span>
         </ToolButton>
       </div>
     </div>

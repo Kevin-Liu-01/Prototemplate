@@ -13,7 +13,9 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * the default when nothing is saved (decision 2). Replaces
  * src/components/shared/ThemeToggle.tsx; direction navs keep passing their
  * own className. The D key in useShellKeys calls toggleTheme() directly and
- * the button follows through a MutationObserver on the attribute.
+ * the button follows through a MutationObserver on the attribute. In the
+ * toolbar it is a labeled button like every other control (decision 7); the
+ * label collapses with the rest when the bar runs short.
  */
 export type Theme = 'light' | 'dark';
 
@@ -80,6 +82,7 @@ export function ThemeButton({ className }: ThemeButtonProps) {
   return (
     <ToolButton
       icon='theme'
+      label='Theme'
       title='Dark or light (D)'
       ariaLabel={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
       className={className}

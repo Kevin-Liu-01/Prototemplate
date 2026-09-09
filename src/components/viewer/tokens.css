@@ -75,11 +75,16 @@
 
 /* Scroll regions: always present, 12px wide, a ruled track and a flat thumb.
    Shell routes never scroll the document; this class owns every scrolling
-   box inside the shell. */
+   box inside the shell. globals.css sets scrollbar-width: thin and a
+   scrollbar-color on html for the /d pages, and both properties inherit;
+   Chromium ignores ::-webkit-scrollbar rules on any box where either is not
+   auto, so the region resets them before the webkit rules below can paint. */
 .pt-scroll {
   overflow-y: scroll;
   overflow-x: hidden;
   scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
 }
 
 .pt-scroll::-webkit-scrollbar {
@@ -163,14 +168,28 @@ body[data-shell] {
   border-color: var(--pt-ink);
 }
 
-/* icon-only, 32px square; also carries the ? glyph on the help button */
+/* icon-only, 32px square */
 .pt-ib.pt-icon {
   width: 32px;
   padding: 0;
   justify-content: center;
   font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14px;
+}
+
+/* a text glyph standing where the icon goes (the ? on Help): the icon's 16px footprint */
+.pt-ib .pt-glyph {
+  display: inline-block;
+  width: 16px;
+  flex: 0 0 auto;
+  text-align: center;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
 }
 
 /* the one filled button: the Present call to action, Title Case label */
@@ -180,7 +199,7 @@ body[data-shell] {
   border-color: var(--pt-ink);
 }
 
-/* a button label that collapses at 1180px */
+/* a button label; Toolbar.css collapses it when the bar runs short */
 .pt-lb {
   display: inline;
 }
@@ -210,18 +229,4 @@ body[data-shell] {
 .pt-seg .pt-ib.is-on {
   background: var(--pt-ink);
   color: var(--pt-paper);
-}
-
-@media (max-width: 1180px) {
-  .pt-lb {
-    display: none;
-  }
-
-  .pt-ib {
-    gap: 0;
-  }
-
-  .pt-seg .pt-ib {
-    padding: 0 9px;
-  }
 }
