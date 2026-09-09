@@ -1,0 +1,10 @@
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+const here = dirname(new URL(import.meta.url).pathname);
+const out = process.argv[2] ? resolve(process.argv[2]) : resolve(here, 'deck.src.html');
+const head = readFileSync(resolve(here, 'parts/head.html'), 'utf8');
+const tail = readFileSync(resolve(here, 'parts/tail.html'), 'utf8');
+const files = readdirSync(resolve(here, 'slides')).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
+const body = files.map((f) => readFileSync(resolve(here, 'slides', f), 'utf8').replace(/\s+$/, '') + '\n\n').join('');
+writeFileSync(out, head + body + tail);
+console.log('assembled', files.length, 'slides ->', out);

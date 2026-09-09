@@ -1,0 +1,41 @@
+/* ListRow: a frameless item in the sidebar list. The number column is the
+   same 22px as .pt-thumb so a row under a thumb lines up with its frame.
+   One rule per row, drawn once, at the bottom. Colors are tokens only. */
+
+.pt-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: var(--pt-ink-2);
+  cursor: pointer;
+}
+
+.pt-row .n {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 12.5px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'cv11', 'ss01';
+  text-align: right;
+}
+
+.pt-row-title {
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+
+.pt-row:hover .pt-row-title,
+.pt-row.is-active .pt-row-title,
+.pt-row.is-active .n {
+  color: var(--pt-ink);
+}
+
+.pt-row:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}

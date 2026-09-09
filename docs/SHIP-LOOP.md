@@ -64,13 +64,22 @@ browser pane pauses rAF — shader canvases come out blank):
 - Push a NEW backup branch each round from HEAD:
   `redesign/diagram-standard-v1<next-letter>`.
 
-## 6. Mirror to Prototemplate
+## 6. The mirror
+
+Prototemplate `main` (`~/repos/Prototemplate`) is the primary repository.
+The public site builds and deploys from it, and it carries routes that
+`apps/redesign` does not have (`/docs`, `/brand`, `/deck`, `/compare`,
+`/present`). Nothing is rsynced from `apps/redesign` into Prototemplate
+with `--delete`: that command would erase every one of those routes.
+
+Work that lands in Prototemplate `main` stays there. When a direction page
+is still edited in `apps/redesign`, the changed files move into
+Prototemplate one at a time, and the build is the gate:
 
 ```bash
-rsync -a --delete --exclude '/app/review' src/ ~/repos/Prototemplate/src/
-rsync -a --delete public/ ~/repos/Prototemplate/public/
-rsync -a BRAND.md DESIGN.md ARCHITECTURE.md README.md docs/ ~/repos/Prototemplate/  # docs ride along
 cd ~/repos/Prototemplate
+git checkout main && git pull --ff-only
+cp <monorepo>/apps/redesign/src/app/d/<slug>/<file> src/app/d/<slug>/<file>   # only the files the round touched
 pnpm build > /tmp/proto-build.log 2>&1; echo $?   # capture the REAL exit code
 ```
 
@@ -80,3 +89,7 @@ pnpm build > /tmp/proto-build.log 2>&1; echo $?   # capture the REAL exit code
 - Sanity-grep the route manifest for pages you added or deleted.
 - Commit and push Prototemplate `main` ("push to main" always means this
   repo).
+- To refresh `apps/redesign` from Prototemplate, copy in the other
+  direction, again file by file. Root docs (`BRAND.md`, `DESIGN.md`,
+  `ARCHITECTURE.md`, `README.md`, `docs/`) are edited in Prototemplate
+  first and copied outward.

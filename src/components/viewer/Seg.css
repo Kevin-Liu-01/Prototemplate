@@ -1,0 +1,8 @@
+/* Seg. tokens.css owns .pt-seg and its options (the 30px height, the
+   right-hand rule between options, the plate hover and the ink fill on the
+   active option). This sheet holds only what the base leaves open. */
+
+/* the active option would draw its focus ring ink on ink */
+.pt-seg .pt-ib.is-on:focus-visible {
+  outline-color: var(--pt-paper);
+}

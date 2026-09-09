@@ -1378,3 +1378,66 @@ export function mapField(
 ): FieldFn {
   return (u, v, t) => transform(field(u, v, t));
 }
+
+/* ------------------------------------------------------------------------ *
+ * The deck's ramp — canvas.dither elements in the slide markup.
+ *
+ * The brand deck draws one tonal ramp with the 8x8 screen (slide 20) and
+ * the viewer clones that slide into its list, grid and book. A cloned canvas
+ * carries no bitmap, and the ramp's two colors are the theme's paper and
+ * ink, so the redraw reads them from the computed --pt- tokens on the root
+ * element and runs again whenever html[data-theme] changes.
+ * ------------------------------------------------------------------------ */
+
+/** Solid ink on the left, paper on the right. */
+export const inkRamp: FieldFn = (u) => 1 - u;
+
+export type DitherRampOptions = {
+  /**
+   * The box used for a canvas that is not laid out (a slide that is off, a
+   * collapsed list), so it is drawn at the size it will have once shown.
+   * Defaults to the canvas's current backing store.
+   */
+  fallbackWidth?: number;
+  fallbackHeight?: number;
+  /** CSS pixels per cell. The deck uses 2. */
+  scale?: number;
+};
+
+function readRootToken(name: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/**
+ * Redraws every `canvas.dither` under `root` as the ink ramp in the current
+ * theme. Sizes come from the layout box (clientWidth, clientHeight), never
+ * from getBoundingClientRect, because a clone inside a scaled thumbnail is
+ * laid out at full size and only transformed down. Returns how many
+ * canvases were drawn; zero when the tokens are not on the root.
+ */
+export function redrawDithers(
+  root: ParentNode = document,
+  opts: DitherRampOptions = {}
+): number {
+  const { fallbackWidth, fallbackHeight, scale = 2 } = opts;
+  const canvases = root.querySelectorAll<HTMLCanvasElement>('canvas.dither');
+  if (canvases.length === 0) return 0;
+  const paper = readRootToken('--pt-paper');
+  const ink = readRootToken('--pt-ink');
+  if (!paper || !ink) return 0;
+  let drawn = 0;
+  canvases.forEach((canvas) => {
+    const cssWidth = canvas.clientWidth || fallbackWidth || canvas.width;
+    const cssHeight = canvas.clientHeight || fallbackHeight || canvas.height;
+    ditherToCanvas(canvas, inkRamp, {
+      scale,
+      ink,
+      paper,
+      cssWidth,
+      cssHeight,
+      applyStyles: false,
+    });
+    drawn += 1;
+  });
+  return drawn;
+}

@@ -13,6 +13,7 @@ import { dirname, join } from 'node:path';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const TARGETS = [
   'src/components/shell',
+  'src/components/viewer',
   'src/app/d/toolchain/sections/bento-motion.css',
   'src/app/d/toolchain/sections/Bento.tsx',
 ];

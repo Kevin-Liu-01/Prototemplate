@@ -1,0 +1,97 @@
+/* The sheet frame: rails, rules, crosses, wordmark, counter. Positioned in
+   the 1600 x 900 stage space and scaled with it. Every stroke is 1px and
+   drawn once: the rails are the frame's own pseudo elements, the rules and
+   crosses are its children. */
+
+.pt-sheet-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* the two rails, 56px in from the left and right edges */
+.pt-sheet-frame::before,
+.pt-sheet-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--pt-hair);
+}
+
+.pt-sheet-frame::before {
+  left: 56px;
+}
+
+.pt-sheet-frame::after {
+  right: 56px;
+}
+
+/* the two rules, 56px in from the top and bottom edges */
+.pt-sheet-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--pt-hair);
+}
+
+.pt-sheet-rule.is-top {
+  top: 56px;
+}
+
+.pt-sheet-rule.is-bottom {
+  bottom: 56px;
+}
+
+/* 11x11 registration crosses centered on the rail and rule intersections */
+.pt-sheet-cross {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  background:
+    linear-gradient(var(--pt-cross), var(--pt-cross)) 5px 0 / 1px 11px no-repeat,
+    linear-gradient(var(--pt-cross), var(--pt-cross)) 0 5px / 11px 1px no-repeat;
+}
+
+.pt-sheet-cross.is-tl {
+  left: 51px;
+  top: 51px;
+}
+
+.pt-sheet-cross.is-tr {
+  right: 51px;
+  top: 51px;
+}
+
+.pt-sheet-cross.is-bl {
+  left: 51px;
+  bottom: 51px;
+}
+
+.pt-sheet-cross.is-br {
+  right: 51px;
+  bottom: 51px;
+}
+
+.pt-sheet-wordmark {
+  position: absolute;
+  left: 72px;
+  bottom: 18px;
+  height: 18px;
+  color: var(--pt-titanium);
+  pointer-events: none;
+}
+
+.pt-sheet-counter {
+  position: absolute;
+  right: 72px;
+  bottom: 22px;
+  font-family: var(--pt-display);
+  font-size: 13px;
+  line-height: 1;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}

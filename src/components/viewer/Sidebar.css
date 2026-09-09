@@ -1,0 +1,224 @@
+/* Sidebar: column one of the shell. A 52px head, then the item list as a
+   scroll region. Every rule here is 1px, drawn once by one owner: the aside
+   owns its right edge, the head its bottom edge, each frame its border. The
+   active frame adds the one sanctioned offset outline. Colors are tokens
+   only; ThumbMini and ThumbShot fill the frames and share this sheet. */
+
+.pt-sb {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  border-right: 1px solid var(--pt-hair);
+}
+
+/* present, grid, or the list toggled off */
+.pt-sb.is-hidden {
+  display: none;
+}
+
+/* at or below 900px an open list floats over the stage */
+.pt-sb.is-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: min(84vw, 300px);
+  z-index: 10;
+}
+
+.pt-sb-head {
+  height: var(--pt-bar-h);
+  flex: 0 0 var(--pt-bar-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.pt-sb-mark {
+  display: flex;
+  flex: 0 0 auto;
+  color: var(--pt-ink);
+}
+
+.pt-sb-head b {
+  min-width: 0;
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'cv11', 'ss01';
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pt-sb-head span {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* the list */
+.pt-thumbs {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 12px 32px 12px;
+}
+
+.pt-thumbs.is-rows {
+  gap: 0;
+}
+
+.pt-sec-label {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+  font-feature-settings: 'cv11', 'ss01';
+  color: var(--pt-titanium);
+  padding: 16px 0 0 30px;
+}
+
+.pt-sec-label:first-child {
+  padding-top: 8px;
+}
+
+.pt-thumbs.is-rows .pt-sec-label {
+  padding-bottom: 6px;
+}
+
+/* one item: the number column, then the frame and its title */
+.pt-thumb {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  cursor: pointer;
+}
+
+.pt-thumb:focus-visible {
+  outline: none;
+}
+
+.pt-thumb .n {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 12.5px;
+  font-feature-settings: 'cv11', 'ss01';
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding-top: 3px;
+}
+
+.pt-thumb.is-active .n {
+  color: var(--pt-ink);
+}
+
+.pt-thumb-body {
+  min-width: 0;
+}
+
+.pt-thumb-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--pt-edge);
+  overflow: hidden;
+  background: var(--pt-paper);
+}
+
+.pt-thumb:hover .pt-thumb-frame,
+.pt-thumb:focus-visible .pt-thumb-frame {
+  border-color: var(--pt-ink);
+}
+
+.pt-thumb.is-active .pt-thumb-frame {
+  border-color: var(--pt-ink);
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.pt-thumb-title {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--pt-ink-2);
+  margin-top: 7px;
+}
+
+.pt-thumb.is-active .pt-thumb-title {
+  color: var(--pt-ink);
+}
+
+/* rows a route hangs under an item */
+.pt-sub {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ThumbMini: a 1600x900 copy of a slide scaled by --k from the frame width */
+.pt-mini {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1600px;
+  height: 900px;
+  transform-origin: 0 0;
+  transform: scale(var(--k, 0.137));
+  pointer-events: none;
+  color: var(--pt-ink);
+}
+
+.pt-mini .slide {
+  display: block;
+}
+
+/* ThumbShot: light and dark twins; the theme attribute picks one */
+.pt-shot {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.pt-shot.is-dark {
+  display: none;
+}
+
+:root[data-theme='dark'] .pt-shot.is-light.has-dark {
+  display: none;
+}
+
+:root[data-theme='dark'] .pt-shot.is-dark {
+  display: block;
+}
+
+/* the blank plate when an item has no capture */
+.pt-plate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--pt-plate);
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 15px;
+  font-feature-settings: 'cv11', 'ss01';
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-titanium);
+}

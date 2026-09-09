@@ -1,0 +1,70 @@
+/* HelpCard: a scrim over the whole viewport with the key table centered. */
+.pt-help {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--pt-scrim);
+  z-index: 20;
+}
+
+.pt-help-card {
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  border: 1px solid var(--pt-edge);
+  padding: 26px 30px 22px;
+  min-width: 400px;
+  max-width: 92vw;
+  font-family: var(--pt-text);
+}
+
+.pt-help-card h3 {
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+
+.pt-help-card table {
+  border-collapse: collapse;
+  font-size: 13.5px;
+  width: 100%;
+}
+
+.pt-help-card td {
+  padding: 6px 18px 6px 0;
+  border-top: 1px solid var(--pt-hair-soft);
+  color: var(--pt-ink-2);
+  line-height: 1.4;
+  vertical-align: top;
+}
+
+.pt-help-card td:first-child {
+  color: var(--pt-ink);
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pt-help-card p {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+  margin: 14px 0 0;
+}
+
+/* on a phone the 400px floor would pass the viewport */
+@media (max-width: 900px) {
+  .pt-help-card {
+    min-width: 0;
+    width: 92vw;
+  }
+
+  .pt-help-card td:first-child {
+    white-space: normal;
+  }
+}

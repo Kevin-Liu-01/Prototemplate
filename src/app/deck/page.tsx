@@ -1,9 +1,11 @@
-import DeckFrame from './DeckFrame';
+import type { Metadata } from 'next';
 
-import './deck.css';
+import DeckStage, { readDeckSlides } from './DeckStage';
+import DeckViewer from './DeckViewer';
+import { deckSections, slideTitles } from './sections';
 
-export const metadata = {
-  title: 'Brand deck · General Translation',
+export const metadata: Metadata = {
+  title: { absolute: 'GT brand deck' },
   description:
     'The General Translation brand in 52 slides: thesis, values, writing style, mark, color, type, line rules, dither, motion, the shipped site and every public surface, docs, blog, content rules, prototemplate, glyphfield, and current status.',
   // declared per-route so the browser stops probing the app-wide /favicon.ico
@@ -11,17 +13,16 @@ export const metadata = {
 };
 
 /**
- * The brand deck as a page: the self-contained slideshow at
- * /public/brand-deck.html (fonts and screenshots inlined) framed to the
- * viewport. The file carries its own viewer: a sidebar of live thumbnails,
- * a toolbar, an overview grid (g), present mode (p), dark mode (d),
- * fullscreen (f) and a shortcut card (?). Arrow keys move; the frame takes
- * focus on load so the keys reach the deck without a click.
+ * The brand deck, native on the viewer shell. The slide markup is read here
+ * on the server, once, and handed both to the stage (as HTML) and to the
+ * viewer (as the section list built from the slide headings).
  */
 export default function DeckPage() {
+  const html = readDeckSlides();
+  const sections = deckSections(slideTitles(html));
   return (
-    <main className='pt-deck'>
-      <DeckFrame />
-    </main>
+    <DeckViewer sections={sections}>
+      <DeckStage html={html} />
+    </DeckViewer>
   );
 }

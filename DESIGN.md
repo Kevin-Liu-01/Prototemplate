@@ -81,6 +81,12 @@ CSS — so figures must be checked by eye at 2× pixel crops of the junctions.
 - **The doubled line** is the one sanctioned double — one owner, one path,
   stroked twice (see §5). The auditor's allow list holds deliberate devices
   by name; everything else stays strict.
+- **The sheet mat** is the one sanctioned doubled line in chrome: the viewer
+  shell draws its sheet ring as a 1px `--pt-edge` border on `.sheet`, a 1px
+  paper gap from the padding of `.sheet-mat`, and a 1px `--pt-hair-soft`
+  outline on the mat, with no shadow. The active thumbnail frame and the
+  active book page frame carry the same border plus offset outline. The
+  auditor allows them under `sheet`, `thumb-frame` and `page-frame`.
 
 ### Corners
 

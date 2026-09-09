@@ -1,0 +1,236 @@
+/* IndexPanel: a column over the stage, positioned against .pt-main (below
+   the toolbar, above the progress line), off the right edge until .is-on.
+   Every rule here is 1px and drawn once: --pt-hair for the panel edge and
+   the head, --pt-hair-soft for the tools and the rows, --pt-ink under each
+   group heading. No shadow, no radius. */
+.pt-panel {
+  position: absolute;
+  top: var(--pt-bar-h);
+  right: 0;
+  bottom: 2px;
+  width: var(--pt-panel-w);
+  max-width: 100%;
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  border-left: 1px solid var(--pt-hair);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  visibility: hidden;
+  /* closing: the slide runs, then visibility drops at its end */
+  transition:
+    transform 180ms ease-out,
+    visibility 0s linear 180ms;
+}
+
+/* opening: visible at once, so the filter can take focus on the first frame */
+.pt-panel.is-on {
+  transform: none;
+  visibility: visible;
+  transition: transform 180ms ease-out;
+}
+
+.pt-panel-head {
+  height: var(--pt-bar-h);
+  flex: 0 0 var(--pt-bar-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 0 18px;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.pt-panel-head b {
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.pt-panel-head span {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pt-panel-tools {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.pt-panel-tools input {
+  width: 100%;
+  height: 34px;
+  box-sizing: border-box;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font: 13.5px var(--pt-text);
+  padding: 0 10px;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pt-panel-tools input:focus {
+  border-color: var(--pt-ink);
+}
+
+.pt-panel-tools input::placeholder {
+  color: var(--pt-titanium);
+}
+
+.pt-panel-tools input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.pt-panel-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 18px 44px;
+}
+
+.pt-panel-note {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+  margin: 14px 0 2px;
+}
+
+.pt-surf-group {
+  padding-top: 18px;
+}
+
+.pt-surf-group h4 {
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 13.5px;
+  line-height: 1.3;
+  color: var(--pt-ink);
+  margin: 0;
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--pt-ink);
+}
+
+/* a row: preview, text, glyph */
+.pt-surf {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 16px;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: inherit;
+  text-decoration: none;
+}
+
+.pt-surf:hover .pt-surf-name {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.pt-surf:hover svg {
+  color: var(--pt-ink);
+}
+
+.pt-surf:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.pt-surf .shot-s {
+  display: block;
+  width: 96px;
+  height: 54px;
+  box-sizing: border-box;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-plate);
+  overflow: hidden;
+}
+
+.pt-surf .shot-s img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* the theme picks one twin; the other keeps no box, so a lazy image never loads */
+:root[data-theme='dark'] .pt-surf .shot-s img.light {
+  display: none;
+}
+
+:root:not([data-theme='dark']) .pt-surf .shot-s img.dark {
+  display: none;
+}
+
+.pt-surf .shot-s.blank {
+  display: grid;
+  place-items: center;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--pt-titanium);
+}
+
+.pt-surf-t {
+  min-width: 0;
+}
+
+.pt-surf-name {
+  display: block;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.pt-surf-url {
+  display: block;
+  font-size: 12px;
+  color: var(--pt-titanium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.pt-surf-desc {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pt-ink-2);
+  margin-top: 4px;
+}
+
+.pt-surf svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  color: var(--pt-titanium);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-panel {
+    transition: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .pt-panel {
+    width: 100%;
+  }
+}

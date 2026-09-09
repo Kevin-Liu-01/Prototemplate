@@ -140,8 +140,13 @@ and the file names are the contract between the two ends:
 
 ## The mirror
 
-`src/` (minus `/app/review`) and `public/` rsync to the public
-`Prototemplate` repo, which must `pnpm build` green after every round.
-Root docs (`BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, `README.md`,
-`docs/`) are copied alongside — see `docs/SHIP-LOOP.md` for the exact
-sequence.
+Prototemplate `main` is the primary repository for this code. The public
+site builds and deploys from it, and the routes that exist only here
+(`/docs`, `/brand`, `/deck`, `/compare`, `/present`) have no counterpart
+in `apps/redesign`. `apps/redesign` in the gt-cloud monorepo is a
+downstream copy of the direction pages: when a direction changes there,
+the changed files are copied into Prototemplate one at a time and
+`pnpm build` must pass before the commit. No bulk `rsync --delete` runs
+toward Prototemplate from any tree. Root docs (`BRAND.md`, `DESIGN.md`,
+`ARCHITECTURE.md`, `README.md`, `docs/`) are edited here first. See
+`docs/SHIP-LOOP.md` section 6 for the sequence.

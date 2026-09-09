@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { fontVariables } from '@/lib/fonts';
 
 import './globals.css';
+import '@/components/viewer/tokens.css';
 
 const SITE_URL = 'https://prototemplate.vercel.app';
 
@@ -87,11 +88,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en' className={fontVariables} suppressHydrationWarning>
       <head>
-        {/* apply the persisted theme before first paint */}
+        {/* apply the persisted theme before first paint; dark when nothing
+            is saved, the site default, so the shell's post-hydration
+            assertion in ThemeButton agrees with the first paint */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var t=localStorage.getItem('gt-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}",
+              "try{var t=localStorage.getItem('gt-theme');document.documentElement.dataset.theme=t==='light'||t==='dark'?t:'dark'}catch(e){document.documentElement.dataset.theme='dark'}",
           }}
         />
         {/* rAF gate: an embedding parent can freeze/resume this page's

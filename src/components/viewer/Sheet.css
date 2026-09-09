@@ -1,0 +1,92 @@
+/* The sheet.
+
+   ViewerShell.css owns .pt-stagewrap, the main grid's second row that the
+   shell renders and measures. The sheet sits inside it. The fixed sheet is
+   positioned by fitSheet() in Sheet.tsx; the ring is drawn as a mat so no
+   shadow is needed: a 1px edge border on .sheet, a 1px paper gap from the
+   mat's padding, a 1px hair-soft outline on the mat. lint-lines allows the
+   pair under the `sheet` class fragment. */
+
+/* the click and swipe surface for the fixed sheet; shown only in slide mode */
+.pt-sheet-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.pt-sheet-stage[hidden] {
+  display: none;
+}
+
+.sheet-mat {
+  box-sizing: content-box;
+  padding: 1px;
+  background: var(--pt-paper);
+  outline: 1px solid var(--pt-hair-soft);
+}
+
+.sheet {
+  box-sizing: border-box;
+  border: 1px solid var(--pt-edge);
+  background: var(--pt-paper);
+  overflow: hidden;
+}
+
+/* fixed: the mat is placed by inline style, the sheet fills it */
+.pt-sheet-stage .sheet-mat {
+  position: absolute;
+  z-index: 1;
+}
+
+.pt-sheet-stage .sheet {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+
+/* present: the ring goes, the sheet reads as the window */
+.sheet-mat.is-present {
+  outline-color: transparent;
+}
+
+.sheet-mat.is-present .sheet {
+  border-color: transparent;
+}
+
+/* flow: a scroll region with the ring around a reading column */
+.sheet-flow {
+  position: absolute;
+  inset: 0;
+  padding: 28px;
+}
+
+.sheet-flow .sheet-mat {
+  position: relative;
+  max-width: calc(1280px + 2px);
+  margin: 0 auto;
+}
+
+.sheet-flow.is-rail .sheet-mat {
+  max-width: calc(var(--pt-rail) + 2px);
+}
+
+.sheet-flow .sheet {
+  padding: 44px 56px 120px;
+  overflow: visible;
+}
+
+@media (max-width: 900px) {
+  .sheet-flow {
+    padding: 12px;
+  }
+
+  .sheet-flow .sheet {
+    padding: 24px 16px 80px;
+  }
+}

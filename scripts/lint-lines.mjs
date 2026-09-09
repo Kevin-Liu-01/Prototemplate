@@ -47,6 +47,9 @@ const ALLOW = [
   'eh-chip', // orbiting locale chips sweep the hero; any parallelism is transient
   'tcb-term', // the band terminal wears the doubled frame: border + offset outline
   'lg-card', // lens-gate's refracting cards drift each frame; parallelism is transient
+  'sheet', // the viewer shell's sheet mat: a 1px edge border inside a 1px paper gap inside a 1px hair-soft outline
+  'thumb-frame', // the shell's active thumbnail frame: border plus the offset outline
+  'page-frame', // the shell's active book page frame: the same pair
 ];
 
 /* Audit at two widths: media queries re-arrange the grammar, and a junction

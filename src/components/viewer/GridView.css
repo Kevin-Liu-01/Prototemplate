@@ -1,0 +1,39 @@
+/* The grid: the sidebar's list re-parented over the stage. The list keeps
+   its classes (.pt-thumbs, .pt-sec-label, .pt-thumb from Sidebar.css); the
+   rules below re-lay it out under .pt-grid and win on specificity. */
+
+.pt-grid {
+  position: absolute;
+  inset: 0;
+  background: var(--pt-paper);
+  z-index: 2;
+}
+
+.pt-grid .pt-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 26px;
+  align-content: start;
+  padding: 22px 34px 56px;
+  overflow: visible;
+}
+
+/* section labels span every column under a rule; the first has none */
+.pt-grid .pt-sec-label {
+  grid-column: 1 / -1;
+  padding: 16px 0 0;
+  margin-top: 10px;
+  border-top: 1px solid var(--pt-hair);
+  font-size: 13.5px;
+  color: var(--pt-ink);
+}
+
+.pt-grid .pt-sec-label:first-child {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 4px;
+}
+
+.pt-grid .pt-thumb {
+  grid-template-columns: 26px minmax(0, 1fr);
+}

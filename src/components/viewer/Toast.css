@@ -1,0 +1,30 @@
+/* Toast: paper text on an ink plate, centered above the bottom edge. */
+.pt-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  background: var(--pt-ink);
+  color: var(--pt-paper);
+  font: 12.5px/1.4 var(--pt-text);
+  font-variant-numeric: tabular-nums;
+  padding: 7px 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transition: opacity 160ms;
+  pointer-events: none;
+  z-index: 21;
+}
+
+.pt-toast.is-on {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-toast {
+    transition: none;
+  }
+}

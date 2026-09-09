@@ -1,0 +1,16 @@
+/* ToolButton. tokens.css owns .pt-ib and every state it shares across the
+   shell (hover, focus-visible, .is-on, .pt-icon, .is-solid, .pt-lb and the
+   1180px label collapse) so one rule set draws every button. This sheet
+   holds only what the base leaves open. */
+
+/* the filled button would draw its focus ring ink on ink */
+.pt-ib.is-solid:focus-visible {
+  outline-color: var(--pt-paper);
+}
+
+/* .hide-sm leaves at the narrow breakpoint, wherever the button sits */
+@media (max-width: 900px) {
+  .pt-ib.hide-sm {
+    display: none;
+  }
+}

@@ -1,0 +1,104 @@
+/* Toolbar: the first row of .pt-main. tokens.css owns every button state
+   (.pt-ib, .pt-icon, .is-on, .is-solid, .pt-seg, .pt-lb and the 1180px
+   label collapse); this sheet owns the bar, its two groups, the count, the
+   separators and the brand, plus a second label collapse keyed to the bar's
+   own width, because the 1180px rule reads the window and the bar is 288px
+   narrower whenever the sidebar is open. */
+.pt-toolbar {
+  grid-row: 1;
+  height: var(--pt-bar-h);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px 0 10px;
+  border-bottom: 1px solid var(--pt-hair);
+  min-width: 0;
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  container-type: inline-size;
+}
+
+.pt-bar-l,
+.pt-bar-r {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.pt-bar-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pt-count {
+  font-size: 13px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.pt-count b {
+  color: var(--pt-ink);
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.pt-sep {
+  width: 1px;
+  height: 22px;
+  background: var(--pt-hair);
+  margin: 0 8px;
+  flex: none;
+}
+
+.pt-bar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 6px;
+  color: var(--pt-ink);
+}
+
+.pt-bar-brand b {
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* With every control labeled, the bar needs about 1030px. Below that the
+   labels leave and the titles carry the names, as they do under 1180px. */
+@container (max-width: 1119px) {
+  .pt-toolbar .pt-lb {
+    display: none;
+  }
+
+  .pt-toolbar .pt-ib {
+    gap: 0;
+  }
+
+  .pt-toolbar .pt-seg .pt-ib {
+    padding: 0 9px;
+  }
+}
+
+@media (max-width: 900px) {
+  .pt-toolbar {
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .pt-toolbar .pt-sep,
+  .pt-toolbar .pt-bar-brand,
+  .pt-toolbar .hide-sm {
+    display: none;
+  }
+}
