@@ -22,7 +22,7 @@ export const metadata: Metadata = {
  */
 export default function DeckPage() {
   return (
-    <main className='pt-deck' style={{ position: 'fixed', inset: 0, margin: 0 }}>
+    <main className='pt-deckpage' style={{ position: 'fixed', inset: 0, margin: 0 }}>
       <DeckFrame />
     </main>
   );

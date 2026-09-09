@@ -1,5 +1,5 @@
-/* The deck owns the whole viewport; the slideshow inside draws its own frame. */
-.pt-deck {
+/* The deck page owns the whole viewport; the slideshow inside draws its own frame. The class is pt-deckpage, not pt-deck, because prototemplate.css uses .pt-deck for a gallery article component and that sheet stays loaded after a client navigation. */
+.pt-deckpage {
   position: fixed;
   inset: 0;
   margin: 0;
