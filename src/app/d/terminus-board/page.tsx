@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import DarkBand from './sections/DarkBand';
@@ -44,7 +44,7 @@ export default function TerminusBoardPage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='terminus-board' />
+      <DirectionCorner slug='terminus-board' />
     </SmoothScroll>
   );
 }

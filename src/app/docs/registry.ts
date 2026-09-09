@@ -46,7 +46,7 @@ export const DOCS: readonly DocEntry[] = [
     file: 'docs/LIBRARIES.md',
     title: 'The libraries',
     blurb:
-      'The index of the componentized instruments — the living version, with plates running, is the craft page.',
+      'The index of the componentized instruments. The living version, with plates running, is the build log under the readme.',
   },
 ] as const;
 

@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../_v0/V0Footer';
@@ -74,7 +74,7 @@ export default function ProductionPage() {
           <V0Footer />
         </main>
       </div>
-      <DirectionDock slug='production' />
+      <DirectionCorner slug='production' />
     </SmoothScroll>
   );
 }

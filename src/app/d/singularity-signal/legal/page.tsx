@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import LegalLedger from '../../singularity/company-sections/LegalLedger';
@@ -37,7 +37,7 @@ export default function SingularitySignalLegalPage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='singularity-signal' />
+      <DirectionCorner slug='singularity-signal' />
     </SmoothScroll>
   );
 }

@@ -7,6 +7,7 @@ import { SplitText } from 'gsap/SplitText';
 import { useRef } from 'react';
 
 import Icon, { type IconName } from '../icons';
+import { scrollerOf } from '../scroller';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
@@ -45,7 +46,8 @@ export default function WhySlide() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const scroller = scrollerOf(root.current);
+      if (!scroller || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       const big = SplitText.create('.pr-why-big', {
         type: 'chars',
@@ -55,6 +57,7 @@ export default function WhySlide() {
         defaults: { ease: 'power3.out' },
         scrollTrigger: {
           trigger: root.current,
+          scroller,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.45,

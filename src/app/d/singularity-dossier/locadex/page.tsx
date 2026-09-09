@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import SiteFooter from '../../singularity/sections/SiteFooter';
@@ -41,7 +41,7 @@ export default function DossierLocadexPage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='singularity-dossier' />
+      <DirectionCorner slug='singularity-dossier' />
     </SmoothScroll>
   );
 }

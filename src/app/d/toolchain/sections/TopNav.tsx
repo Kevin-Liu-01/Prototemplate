@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 import TcMobileNav from '@/components/shared/TcMobileNav';
-import ThemeToggle from '@/components/shared/ThemeToggle';
+import { ThemeButton } from '@/components/viewer/ThemeButton';
 
 type IconProps = { className?: string; color?: string; size?: number; strokeWidth?: number; 'aria-hidden'?: boolean };
 
@@ -167,7 +167,7 @@ export default function TopNav(): ReactNode {
         </nav>
 
         <div className='tc-nav-right'>
-          <ThemeToggle className='tc-nav-theme' />
+          <ThemeButton className='tc-nav-theme' />
           <a href='#pricing'>Sign in</a>
           <a className='tc-btn tc-btn-solid tc-btn-sm' href='#pricing'>
             Get a demo

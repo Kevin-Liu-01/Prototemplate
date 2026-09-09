@@ -1,0 +1,158 @@
+/* The archive route. Tokens only, radius 0, no shadow. Two jobs: widen the
+   flow sheet to the capture's own 1440 pixels so the page shows at the size
+   it was captured, and draw the site map rows the route portals into the
+   sidebar list ahead of the shell's Archive section. */
+
+/* the sheet takes the capture's width; the ring stays, the padding goes */
+.pt-viewer[data-shell='archive'] .sheet-flow .sheet-mat {
+  max-width: calc(1440px + 2px);
+}
+
+.pt-viewer[data-shell='archive'] .sheet-flow .sheet {
+  padding: 0;
+}
+
+/* ---- the record: one ruled row of cells over the capture ---- */
+.ar-doc {
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+}
+
+.ar-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.ar-cell {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-width: 0;
+  padding: 16px 22px 18px;
+  border-left: 1px solid var(--pt-hair-soft);
+}
+
+.ar-cell:first-child {
+  border-left: 0;
+}
+
+.ar-k {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+  font-feature-settings: 'cv11', 'ss01';
+  color: var(--pt-titanium);
+}
+
+.ar-head h1 {
+  margin: 0;
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-feature-settings: 'cv11', 'ss01';
+  text-wrap: balance;
+}
+
+.ar-v {
+  font-size: 14px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--pt-ink);
+}
+
+.ar-v a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.ar-v a:hover {
+  color: var(--pt-ink-2);
+}
+
+.ar-note {
+  margin: 0;
+  padding: 14px 22px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.ar-full {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 900px) {
+  .ar-head {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ar-cell-name {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--pt-hair-soft);
+  }
+
+  .ar-cell:nth-child(2) {
+    border-left: 0;
+  }
+
+  .ar-cell:nth-child(4) {
+    grid-column: 1 / -1;
+    border-left: 0;
+    border-top: 1px solid var(--pt-hair-soft);
+  }
+
+  .ar-v {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ---- the site map rows in the sidebar list, ahead of the Archive section ---- */
+.ar-nav {
+  order: -1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ar-nav-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.ar-nav-group + .ar-nav-group .pt-sec-label {
+  padding-top: 16px;
+}
+
+.ar-nav-group .pt-sec-label {
+  padding-bottom: 6px;
+}
+
+/* a row is a link; ListRow.css draws its grid, rule and colors */
+.ar-nav-row {
+  text-decoration: none;
+  color: var(--pt-ink-2);
+}
+
+.ar-nav-row:hover .pt-row-title {
+  color: var(--pt-ink);
+}
+
+.ar-nav-row:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* the shell's own first label follows the site map, so it takes the full gap */
+.pt-viewer[data-shell='archive'] .pt-sb .pt-thumbs > .pt-sec-label:first-child {
+  padding-top: 16px;
+}

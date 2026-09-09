@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import TryPage from '@/components/try/TryPage';
 
@@ -33,7 +33,7 @@ export default function ProductionTryPage() {
           <V0Footer />
         </main>
       </div>
-      <DirectionDock slug='production' />
+      <DirectionCorner slug='production' />
     </SmoothScroll>
   );
 }

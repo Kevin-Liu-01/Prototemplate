@@ -29,7 +29,7 @@ import {
 import { usePathname } from 'next/navigation';
 
 import TcMobileNav from '@/components/shared/TcMobileNav';
-import ThemeToggle from '@/components/shared/ThemeToggle';
+import { ThemeButton } from '@/components/viewer/ThemeButton';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './v0-nav.css';
@@ -300,7 +300,7 @@ export default function V0Nav(): ReactNode {
         </nav>
 
         <div className='v0-nav-right'>
-          <ThemeToggle className='v0-nav-theme' />
+          <ThemeButton className='v0-nav-theme' />
           <a href='https://dash.generaltranslation.com' rel='noreferrer' target='_blank'>
             Sign in
           </a>

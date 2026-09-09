@@ -1,10 +1,108 @@
 /* ============================================================
-   BRAND — the identity book's own furniture, in the pt grammar.
+   BRAND: the identity book's own furniture, in the pt grammar.
    Specimen cards are ABSOLUTE (ink is ink, paper is paper, in both
-   themes — the mark and swatches state the system rather than
+   themes: the mark and swatches state the system rather than
    sample the page); everything else derives from the pt layer.
    Nothing here draws a line the prototemplate layer already owns.
+   The article reads inside the viewer shell's flow sheet, so the
+   book rules at the end replace the rail the page used to stand in.
    ============================================================ */
+
+/* ---------- the book: the article inside the shell's flow sheet ---------- */
+
+/* The sheet carries the horizontal gutter (Sheet.css: 44px 56px 120px,
+   24px 16px 80px at or below 900px). The article's full-width rules, the
+   section closes and the hatch bands, bleed back out by the same amount so
+   they reach the sheet border the way they reached the rails. */
+.ptb-book {
+  --ptb-bleed: 56px;
+  --ptb-sec-pad: clamp(40px, 4.6vw, 64px);
+  min-height: 0;
+}
+
+.ptb-book .pt-sec,
+.ptb-book .pt-hatch {
+  margin-inline: calc(-1 * var(--ptb-bleed));
+}
+
+.ptb-book .pt-sec {
+  padding-inline: var(--ptb-bleed);
+}
+
+/* the sections keep their vertical rhythm and lose their own side gutter */
+.ptb-book .pt-post-sec {
+  padding-inline: 0;
+}
+
+/* the opener is the head of the book: flush with the sheet's top padding */
+.ptb-book .ptb-head {
+  padding-block: 0 var(--ptb-sec-pad);
+}
+
+/* a page row: the section number in the gutter, the section beside it */
+.ptb-page {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  scroll-margin-top: 28px;
+}
+
+/* the sheet border closes the book */
+.ptb-page:last-child {
+  border-bottom: 0;
+}
+
+.ptb-pn {
+  padding-top: calc(var(--ptb-sec-pad) + 2px);
+  font-family: var(--pt-sans);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--pt-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.ptb-page.is-active .ptb-pn {
+  color: var(--pt-ink);
+}
+
+.ptb-page-body {
+  min-width: 0;
+}
+
+/* the headings the list rows jump to land under the sheet's top edge */
+.ptb-book h3[id] {
+  scroll-margin-top: 28px;
+}
+
+/* the rows under the active section stand down in the grid; the shell's
+   wrapper stays, empty, and must not take a grid cell */
+.pt-viewer[data-shell='brand'] .pt-sub:empty {
+  display: none;
+}
+
+/* prototemplate.css, which the article needs, also names the gallery's
+   exploration rows .pt-row and loads after the shell's ListRow.css on this
+   route. Inside the shell's list the ListRow layout is re-asserted one
+   class higher; the article's own rows are not touched. */
+.pt-viewer[data-shell='brand'] .pt-sub .pt-row {
+  position: static;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 0;
+  padding: 6px 0;
+  border-top: 0;
+  overflow: visible;
+  transition: none;
+  background: none;
+}
+
+.pt-viewer[data-shell='brand'] .pt-sub .pt-row::before {
+  content: none;
+}
 
 /* ---------- the opener: copy beside the measured monogram ---------- */
 
@@ -26,7 +124,7 @@
 }
 
 /* the specimen: the monogram in dotted outline, measured by dashed
-   guides seated on its own glyph box — the nameplate's crop grammar */
+   guides seated on its own glyph box */
 .ptb-hero-fig {
   position: relative;
   margin: 0;
@@ -141,10 +239,9 @@
 }
 
 .ptb-scale-label {
-  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--pt-sans);
   font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-size: 12px;
   color: var(--pt-ink-4);
   text-align: right;
 }
@@ -177,11 +274,10 @@
   position: absolute;
   left: 0;
   top: 7px;
-  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--pt-sans);
   font-style: normal;
   font-weight: 500;
-  font-size: 10px;
-  letter-spacing: 0.04em;
+  font-size: 11px;
   color: var(--pt-ink-4);
   white-space: nowrap;
 }
@@ -261,7 +357,6 @@
   height: 150px;
   object-fit: contain;
   padding: 30px;
-  border-radius: 12px;
 }
 
 .ptb-mark.is-paper img {
@@ -404,7 +499,7 @@
 
 /* ---------- language as material ---------- */
 
-/* the one dark plate — permanently ink, like the craft plates */
+/* the one dark plate: permanently ink, like the craft plates */
 .ptb-plate {
   position: relative;
   height: 240px;
@@ -412,7 +507,6 @@
   margin-top: 20px;
   display: grid;
   place-items: center;
-  border-radius: 12px;
   background: #070707;
   overflow: hidden;
 }
@@ -443,7 +537,6 @@
   display: inline-flex;
   padding: 3px 9px;
   border: 1px solid var(--pt-hair);
-  border-radius: 4px;
   background-clip: padding-box;
   font-family: var(--pt-mono);
   font-size: 12px;
@@ -514,7 +607,6 @@
   object-fit: cover;
   object-position: top;
   border: 1px solid var(--pt-hair);
-  border-radius: 10px;
   background-clip: padding-box;
 }
 
@@ -542,7 +634,6 @@
   aspect-ratio: auto;
   object-fit: contain;
   border: 1px solid var(--pt-hair);
-  border-radius: 10px;
   background-clip: padding-box;
 }
 
@@ -556,6 +647,27 @@
 }
 
 /* ---------- narrow ---------- */
+
+@media (max-width: 900px) {
+  .ptb-book {
+    --ptb-bleed: 16px;
+  }
+
+  /* the gutter folds: the number sits over its section */
+  .ptb-page {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .ptb-pn {
+    padding-top: 28px;
+    font-size: 16px;
+  }
+
+  .ptb-book .ptb-page .pt-post-sec {
+    padding-top: 10px;
+  }
+}
 
 @media (max-width: 760px) {
   .ptb-marks,

@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import Delivery from './sections/Delivery';
@@ -48,7 +48,7 @@ export default function ChromaFlowPage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='chroma-flow' />
+      <DirectionCorner slug='chroma-flow' />
     </SmoothScroll>
   );
 }

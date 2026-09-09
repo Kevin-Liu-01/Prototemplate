@@ -1,93 +1,517 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+'use client';
 
-import { Fraunces, Space_Grotesk } from 'next/font/google';
-import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { useGSAP } from '@gsap/react';
+import type { RefObject } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
-import Markdown from './markdown';
-import { DOCS } from './registry';
-import PtNav from '@/components/shared/PtNav';
+import { ListRow } from '@/components/viewer/ListRow';
+import { Sheet } from '@/components/viewer/Sheet';
+import { usePtShell } from '@/components/viewer/shell-context';
+import type { SubRenderer } from '@/components/viewer/Sidebar';
+import { ViewerShell } from '@/components/viewer/ViewerShell';
+import { cn } from '@/lib/cn';
+import type { ShellMode, ShellSection } from '@/lib/shell-data';
+import { useMountEffect } from '@/lib/use-mount-effect';
+
+import type { DocPage } from './model';
+import { docHref, docWindowTitle, slugFromPath } from './model';
 
 import '../prototemplate.css';
 import './docs.css';
 
-const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
-const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
+const DOCS_TITLE = 'Docs';
+const DOCS_MODES: readonly ShellMode[] = ['book', 'grid'];
+const BOOK_TITLE = 'Prototemplate docs';
+const BOOK_LEAD =
+  'The repository documents, read in the browser and top to bottom: the readme with the build log, the brand and design canons, the architecture map, the ship loop, and the library index. The list on the left follows the section in view; pick a document or a heading to jump to it.';
+const BOOK_DATE = 'September 2026';
 
 /**
- * The docs shell — the repo documents served as pages, in the pt grammar:
- * the ruled column, the nav, a mono switcher naming the set, and the
- * document itself as an article. Files are read from the app root at build
- * time; the ship loop rsyncs them to the mirror alongside src/.
+ * The read line. A block that crosses the top tenth of the sheet is the one
+ * being read; among several, the lowest on the page wins, so the heading
+ * whose section has scrolled under the line is the active one.
  */
-export function readDoc(file: string): string {
-  return readFileSync(join(process.cwd(), file), 'utf8');
+const SPY_MARGIN = '0px 0px -90% 0px';
+
+/** How long the spy waits for a programmatic scroll before it reads the page again. */
+const SETTLE_MS = 1500;
+
+/**
+ * Where a selection came from, set before the shell's select() runs so the
+ * active effect knows what to do with the URL and the scroll. `select` is
+ * the list, the keys, the grid, a link in the sheet; `spy` is the
+ * IntersectionObserver following the reader; `history` is Back or Forward.
+ * The shell's own hash read on mount sets nothing.
+ */
+type SelectSource = 'select' | 'spy' | 'history';
+
+function readHash(): string {
+  const raw = window.location.hash.slice(1);
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
 }
 
-export default function DocsShell({
-  active,
-  source,
-  children,
-}: {
-  /** the active doc slug, or null for the index (README) */
-  active: string | null;
-  source: string;
-  /** rendered after the document — the index mounts the build log here */
-  children?: ReactNode;
-}) {
+function here(): string {
+  return `${window.location.pathname}${window.location.hash}`;
+}
+
+function urlFor(slug: string, heading: string | null): string {
+  return heading ? `${docHref(slug)}#${encodeURIComponent(heading)}` : docHref(slug);
+}
+
+function writeUrl(url: string, push: boolean): void {
+  try {
+    if (push) window.history.pushState(null, '', url);
+    else window.history.replaceState(null, '', url);
+  } catch {
+    // a sandboxed document: the shell state still moves, the address does not
+  }
+}
+
+function scrollBehavior(): ScrollBehavior {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+}
+
+function cssEscape(value: string): string {
+  return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
+}
+
+/** The six documents as the shell's one section. */
+function docsSections(docs: readonly DocPage[]): readonly ShellSection[] {
+  return [
+    {
+      id: 'documents',
+      label: 'Documents',
+      items: docs.map((doc) => ({
+        id: doc.slug,
+        n: doc.n,
+        title: doc.title,
+        href: doc.href,
+        desc: doc.blurb,
+        shot: doc.shot,
+      })),
+    },
+  ];
+}
+
+type DocsBookProps = {
+  docs: readonly DocPage[];
+  activeHeading: string | null;
+  onHeading: (id: string | null) => void;
+  /** the flow sheet's scroll region */
+  sheetRef: RefObject<HTMLDivElement | null>;
+  source: RefObject<SelectSource | null>;
+  /** receives the jump function so the sidebar's heading rows can call it */
+  jumpRef: RefObject<(id: string) => void>;
+};
+
+/**
+ * The canon read top to bottom inside the flow sheet: a head, a contents
+ * list, then every document under a divider as numbered rows, one per h2,
+ * with the readme carrying the build log as its last rows. Owns the
+ * reading state: an IntersectionObserver on the sheet marks the document
+ * and heading under the read line (the list follows, the URL follows), a
+ * selection from anywhere else scrolls the sheet, links to documents and
+ * anchors inside the sheet are answered in place, Back and Forward are
+ * honored, and the window title names the document. The URL is always the
+ * document's own route, `/docs/design#2-the-line-law`, so a copied link
+ * lands on the same place.
+ */
+function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef }: DocsBookProps) {
+  const { active, index, select } = usePtShell();
+
+  /* the listeners registered on mount read the latest values through refs;
+     the assignments run every render so none of them sees a stale closure */
+  const activeRef = useRef(active);
+  activeRef.current = active;
+  const headingRef = useRef(activeHeading);
+  headingRef.current = activeHeading;
+  const selectRef = useRef(select);
+  selectRef.current = select;
+  const onHeadingRef = useRef(onHeading);
+  onHeadingRef.current = onHeading;
+
+  /** the active id the effect last saw; null before the first run */
+  const lastActive = useRef<string | null>(null);
+  /** the URL the current history entry holds, put back after the shell's hash write */
+  const url = useRef('');
+  /** the URL a popstate delivered, restored once the document is selected */
+  const popped = useRef<string | null>(null);
+  /** a heading named with a selection, scrolled to once the document is active */
+  const pendingHeading = useRef<string | null>(null);
+  /** the block a programmatic scroll is heading for; the spy waits for it */
+  const settling = useRef<Element | null>(null);
+  const settleTimer = useRef(0);
+
+  const sectionTotal = useMemo(() => docs.reduce((n, doc) => n + doc.sections.length, 0), [docs]);
+
+  const hasDoc = (slug: string | null): slug is string => slug !== null && docs.some((doc) => doc.slug === slug);
+
+  const blockFor = (slug: string, heading: string | null): HTMLElement | null => {
+    const root = sheetRef.current;
+    if (!root) return null;
+    const selector = heading
+      ? `[data-heading="${cssEscape(heading)}"]`
+      : `.ptd-sec[data-doc="${cssEscape(slug)}"]`;
+    return root.querySelector<HTMLElement>(selector);
+  };
+
+  /**
+   * A programmatic scroll. The spy is muted until the block it lands on
+   * reaches the read line (or the scroll ends, or 1500ms pass), so the
+   * documents and headings the scroll passes through are never selected.
+   */
+  const scrollTo = (el: Element | null, behavior: ScrollBehavior) => {
+    if (!el) return;
+    settling.current = el.closest('[data-doc]') ?? el;
+    window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      settling.current = null;
+    }, SETTLE_MS);
+    el.scrollIntoView({ block: 'start', behavior });
+  };
+
+  /**
+   * Scroll to a heading row or to any element with that id inside the
+   * sheet (a library entry, `#horizon-field`). A row in another document
+   * selects that document first. False when nothing carries the id.
+   */
+  const jumpTo = (id: string, behavior: ScrollBehavior): boolean => {
+    const root = sheetRef.current;
+    if (!root) return false;
+    const row = root.querySelector<HTMLElement>(`[data-heading="${cssEscape(id)}"]`);
+    const el = row ?? document.getElementById(id);
+    if (!el || !root.contains(el)) return false;
+    const owner = row?.dataset.doc;
+    if (owner && owner !== activeRef.current) {
+      pendingHeading.current = id;
+      source.current = 'select';
+      selectRef.current(owner);
+      return true;
+    }
+    scrollTo(el, behavior);
+    if (row) onHeadingRef.current(id);
+    url.current = urlFor(activeRef.current, id);
+    writeUrl(url.current, false);
+    return true;
+  };
+
+  jumpRef.current = (id: string) => {
+    jumpTo(id, scrollBehavior());
+  };
+
+  /* the spy: the block under the read line names the document and the heading */
+  useMountEffect(() => {
+    const root = sheetRef.current;
+    if (!root || typeof IntersectionObserver === 'undefined') return;
+    const blocks = Array.from(root.querySelectorAll<HTMLElement>('[data-doc]'));
+    const order = new Map<Element, number>(blocks.map((el, i) => [el, i]));
+    const visible = new Set<Element>();
+    /** the lowest block on the page that crosses the read line */
+    const lowest = (): HTMLElement | null => {
+      let best: HTMLElement | null = null;
+      let rank = -1;
+      for (const el of visible) {
+        const i = order.get(el) ?? -1;
+        if (i > rank) {
+          rank = i;
+          best = el as HTMLElement;
+        }
+      }
+      return best;
+    };
+    const apply = (best: HTMLElement) => {
+      const doc = best.dataset.doc;
+      if (!doc) return;
+      const heading = best.dataset.heading ?? null;
+      const docChanged = doc !== activeRef.current;
+      const headingChanged = heading !== headingRef.current;
+      if (!docChanged && !headingChanged) return;
+      if (headingChanged) onHeadingRef.current(heading);
+      if (docChanged) {
+        /* the active effect writes the URL once the document is selected */
+        source.current = 'spy';
+        selectRef.current(doc);
+        return;
+      }
+      url.current = urlFor(doc, heading);
+      writeUrl(url.current, false);
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target);
+          else visible.delete(entry.target);
+        }
+        const best = lowest();
+        if (!best) return;
+        if (settling.current) {
+          if (best !== settling.current) return;
+          settling.current = null;
+          window.clearTimeout(settleTimer.current);
+        }
+        apply(best);
+      },
+      { root, rootMargin: SPY_MARGIN, threshold: 0 }
+    );
+    blocks.forEach((el) => observer.observe(el));
+    /* a programmatic scroll that ends short of its block still gets read */
+    const onScrollEnd = () => {
+      if (!settling.current) return;
+      settling.current = null;
+      window.clearTimeout(settleTimer.current);
+      const best = lowest();
+      if (best) apply(best);
+    };
+    root.addEventListener('scrollend', onScrollEnd);
+    return () => {
+      observer.disconnect();
+      root.removeEventListener('scrollend', onScrollEnd);
+      window.clearTimeout(settleTimer.current);
+    };
+  });
+
+  /* links inside the sheet that name a document or an anchor are answered in place */
+  useMountEffect(() => {
+    const root = sheetRef.current;
+    if (!root) return;
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const target = e.target instanceof Element ? e.target : null;
+      const anchor = target?.closest('a[href]');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href') ?? '';
+      const [path, fragment = ''] = href.split('#');
+      const heading = fragment ? decodeURIComponent(fragment) : null;
+      if (href.startsWith('#')) {
+        if (heading && jumpTo(heading, scrollBehavior())) e.preventDefault();
+        return;
+      }
+      const slug = slugFromPath(path ?? '');
+      if (!hasDoc(slug)) return;
+      e.preventDefault();
+      if (slug === activeRef.current) {
+        if (heading) jumpTo(heading, scrollBehavior());
+        else scrollTo(blockFor(slug, null), scrollBehavior());
+        return;
+      }
+      pendingHeading.current = heading;
+      source.current = 'select';
+      selectRef.current(slug);
+    };
+    root.addEventListener('click', onClick);
+    return () => root.removeEventListener('click', onClick);
+  });
+
+  /* Back and Forward: the path names the document, the hash the heading */
+  useMountEffect(() => {
+    const onPop = () => {
+      const slug = slugFromPath(window.location.pathname);
+      if (!hasDoc(slug)) return;
+      const hash = readHash();
+      const heading = hash && hash !== slug ? hash : null;
+      if (slug !== activeRef.current) {
+        popped.current = here();
+        pendingHeading.current = heading;
+        source.current = 'history';
+        selectRef.current(slug);
+        return;
+      }
+      url.current = here();
+      if (heading) {
+        scrollTo(blockFor(slug, heading) ?? document.getElementById(heading), 'auto');
+        if (blockFor(slug, heading)) onHeadingRef.current(heading);
+      }
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  });
+
+  /* the one dependency effect: the active document changed. On mount the
+     entry URL decides the scroll; after that the source decides the URL. */
+  useGSAP(
+    () => {
+      const previous = lastActive.current;
+      lastActive.current = active;
+      const src = source.current;
+      source.current = null;
+      const doc = docs.find((d) => d.slug === active);
+      if (!doc) return;
+      document.title = docWindowTitle(doc.slug, doc.title);
+
+      if (previous === null) {
+        url.current = here();
+        const hash = readHash();
+        if (hash && hash !== active && jumpTo(hash, 'auto')) return;
+        if (index > 0) scrollTo(blockFor(active, null), 'auto');
+        return;
+      }
+      if (previous === active) return;
+
+      if (src === 'spy') {
+        url.current = urlFor(active, headingRef.current);
+        writeUrl(url.current, false);
+        return;
+      }
+
+      const heading = pendingHeading.current;
+      pendingHeading.current = null;
+      onHeadingRef.current(heading);
+      scrollTo(blockFor(active, heading), src === 'history' ? 'auto' : scrollBehavior());
+
+      if (src === 'history') {
+        url.current = popped.current ?? urlFor(active, heading);
+        popped.current = null;
+        writeUrl(url.current, false);
+        return;
+      }
+      const next = urlFor(active, heading);
+      if (src === 'select') {
+        /* the shell wrote `#<slug>` over the current entry: put that entry back, then add one */
+        writeUrl(url.current, false);
+        writeUrl(next, true);
+      } else {
+        /* the shell read a document from the hash on mount: name the route in place */
+        writeUrl(next, false);
+      }
+      url.current = next;
+    },
+    { dependencies: [active] }
+  );
+
   return (
-    <main className={`pt-root ${fraunces.variable} ${grotesk.variable}`}>
-      <div className='pt-rail'>
-        <PtNav />
+    <div className='ptd-book'>
+      <header className='ptd-head'>
+        <div>
+          <h1>{BOOK_TITLE}</h1>
+          <p>{BOOK_LEAD}</p>
+        </div>
+        <div className='ptd-meta'>
+          <span>{docs.length} documents</span>
+          <span>{sectionTotal} sections</span>
+          <span>{BOOK_DATE}</span>
+        </div>
+      </header>
 
-        {/* the set, named once: mono chips under the nav — the active doc
-            is the only ink */}
-        <nav aria-label='Documents' className='pt-sec ptd-tabs'>
-          <Link data-on={active === null} href='/docs'>
-            readme
-          </Link>
-          {DOCS.map((doc) => (
-            <Link data-on={active === doc.slug} href={`/docs/${doc.slug}`} key={doc.slug}>
-              {doc.slug}
-            </Link>
+      <nav className='ptd-toc' aria-label='Contents'>
+        {docs.map((doc) => (
+          <a key={doc.slug} href={doc.href} aria-current={doc.slug === active ? 'true' : undefined}>
+            <span>{doc.title}</span>
+            <small>{doc.n}</small>
+          </a>
+        ))}
+      </nav>
+
+      {docs.map((doc) => (
+        <section
+          key={doc.slug}
+          className={cn('ptd-doc', doc.slug === active && 'is-active')}
+          aria-labelledby={`ptd-${doc.slug}`}
+        >
+          <div className='ptd-sec' data-doc={doc.slug}>
+            <small>
+              <span>Document {doc.n}</span>
+              <span>{doc.file}</span>
+            </small>
+            <h2 id={`ptd-${doc.slug}`}>{doc.title}</h2>
+          </div>
+          {doc.lead ? (
+            <div className='ptd-row ptd-lead' data-doc={doc.slug}>
+              <div className='ptd-pn' aria-hidden='true' />
+              <div className='ptd-body pt-root'>{doc.lead}</div>
+            </div>
+          ) : null}
+          {doc.sections.map((section) => (
+            <div
+              key={section.id}
+              id={section.kind === 'craft' ? section.id : undefined}
+              className={cn(
+                'ptd-row',
+                doc.slug === active && section.id === activeHeading && 'is-active'
+              )}
+              data-doc={doc.slug}
+              data-heading={section.id}
+            >
+              <div className='ptd-pn'>
+                <b>{section.n}</b>
+              </div>
+              <div className={cn('ptd-body pt-root', section.kind === 'craft' && 'pt-post ptd-craft')}>
+                {section.body}
+              </div>
+            </div>
           ))}
-        </nav>
-
-        <article className='pt-post ptd-doc'>
-          <section className='pt-sec pt-post-sec'>
-            <Markdown source={source} />
-          </section>
-        </article>
-
-        {children}
-
-        <div className='pt-hatch' aria-hidden='true' />
-
-        <section className='pt-sec pt-post-sec'>
-          <p className='pt-site-links'>
-            <Link href='/'>back to the index</Link>
-            <span aria-hidden> · </span>
-            <Link href='/brand'>read the brand book</Link>
-            <span aria-hidden> · </span>
-            <Link href='/present'>walk the deck</Link>
-          </p>
         </section>
+      ))}
+    </div>
+  );
+}
 
-        <footer className='pt-foot'>
-          <span className='pt-foot-brand'>
-            <span className='pt-mark' aria-hidden>
-              <i className='pt-mark-line is-h is-top' />
-              <i className='pt-mark-line is-h is-bot' />
-              <i className='pt-mark-line is-v is-l' />
-              <i className='pt-mark-line is-v is-r' />
-              <i className='pt-mark-fill' />
-            </span>
-            Prototemplate
-          </span>
-          <span className='pt-foot-right'>prototype × template</span>
-        </footer>
-      </div>
-    </main>
+export type DocsShellProps = {
+  /** the document the route names: `readme` on /docs, the slug on /docs/[slug] */
+  active: string;
+  /** from buildDocs() on the server */
+  docs: readonly DocPage[];
+};
+
+/**
+ * The docs on the viewer shell: six documents as ThumbShot items in one
+ * list, the headings of the active document as rows under it, the canon as
+ * a book inside the 1280px flow sheet, and the six captures as a grid. Flow
+ * keys, so Space and the arrows scroll; the site map in the index panel.
+ */
+export default function DocsShell({ active, docs }: DocsShellProps) {
+  const [activeHeading, setActiveHeading] = useState<string | null>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const source = useRef<SelectSource | null>(null);
+  const jumpRef = useRef<(id: string) => void>(() => {});
+  const sections = useMemo(() => docsSections(docs), [docs]);
+
+  const renderSub: SubRenderer = (item, isActive) => {
+    if (!isActive) return null;
+    const doc = docs.find((d) => d.slug === item.id);
+    if (!doc || doc.sections.length === 0) return null;
+    return doc.sections.map((section) => (
+      <ListRow
+        key={section.id}
+        item={{ id: section.id, n: section.n, title: section.title }}
+        active={section.id === activeHeading}
+        onSelect={(id) => jumpRef.current(id)}
+      />
+    ));
+  };
+
+  return (
+    <ViewerShell
+      id='docs'
+      title={DOCS_TITLE}
+      mark='pt'
+      count={`${docs.length} documents`}
+      sections={sections}
+      active={active}
+      modes={DOCS_MODES}
+      thumb='shot'
+      surfaces='site'
+      keys='flow'
+      noun='document'
+      renderSub={renderSub}
+      onSelect={() => {
+        /* a selection nobody claimed came from the list, the keys or the grid */
+        source.current ??= 'select';
+      }}
+    >
+      <Sheet variant='flow' width={1280} scrollRef={sheetRef}>
+        <DocsBook
+          docs={docs}
+          activeHeading={activeHeading}
+          onHeading={setActiveHeading}
+          sheetRef={sheetRef}
+          source={source}
+          jumpRef={jumpRef}
+        />
+      </Sheet>
+    </ViewerShell>
   );
 }

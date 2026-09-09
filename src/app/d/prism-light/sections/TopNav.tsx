@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import ThemeToggle from '@/components/shared/ThemeToggle';
+import { ThemeButton } from '@/components/viewer/ThemeButton';
 
 /** Slim, ruled, and quiet — the column's top edge more than a navigation bar. */
 export default function TopNav() {
@@ -21,7 +21,7 @@ export default function TopNav() {
         </nav>
 
         <div className='tc-nav-right'>
-          <ThemeToggle className='tc-nav-theme' />
+          <ThemeButton className='tc-nav-theme' />
           <a href='#pricing'>Sign in</a>
           <a className='tc-btn tc-btn-solid tc-btn-sm' href='#pricing'>
             Get a demo

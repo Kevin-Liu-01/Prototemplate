@@ -12,7 +12,7 @@ import {
   SiX,
 } from "@icons-pack/react-simple-icons";
 
-import ThemeToggle from "@/components/shared/ThemeToggle";
+import { ThemeButton } from "@/components/viewer/ThemeButton";
 
 import V0FooterMark from "./V0FooterMark";
 
@@ -252,7 +252,7 @@ export default function V0Footer() {
         <span className="v0-foot-copy max-[640px]:ml-0 max-[640px]:w-full max-[640px]:text-left">
           © 2026 General Translation, Inc. All rights reserved.
         </span>
-        <ThemeToggle className="v0-foot-theme max-[640px]:ml-auto" />
+        <ThemeButton className="v0-foot-theme max-[640px]:ml-auto" />
       </div>
     </footer>
   );

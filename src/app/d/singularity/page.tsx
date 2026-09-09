@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import Bento from './sections/Bento';
@@ -56,7 +56,7 @@ export default function SingularityPage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='singularity' />
+      <DirectionCorner slug='singularity' />
     </SmoothScroll>
   );
 }

@@ -1,20 +1,19 @@
-import { Fraunces, Space_Grotesk } from 'next/font/google';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import ReassemblerDemo from '../craft/ReassemblerDemo';
 import AttributeScales, { AESTHETIC, PERSONALITY } from './AttributeScales';
 import BrandMarkFigure from './BrandMarkFigure';
+import type { BrandPage } from './BrandViewer';
+import BrandViewer from './BrandViewer';
+import { headingId } from './brand-sections';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
-import PtNav from '@/components/shared/PtNav';
 
 import '../prototemplate.css';
 import './brand.css';
 
-const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
-const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
-
-export const metadata = {
-  title: 'Brand · Prototemplate',
+export const metadata: Metadata = {
+  title: 'Brand',
   description:
     'General Translation’s identity, laid out: the name, the idea, the character, the mark, color, type, language as material, and the completed reference.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
@@ -54,468 +53,468 @@ const SWITZER_WEIGHTS = [300, 400, 500, 600, 700, 800] as const;
 
 const PILL_LOCS = ['en-GB', 'es', 'ja', 'ar-EG', 'ko', 'zh-Hant', 'hi', 'pt'] as const;
 
+/** The opener: the head of the book, before the numbered sections. */
+const OPENER = (
+  <div className='ptb-opener'>
+    <div className='ptb-opener-copy'>
+      <h1>The brand</h1>
+      <p className='pt-post-byline'>General Translation · the identity, laid out</p>
+      <p>
+        This page is the brand in one place: the name, the idea, the character, the
+        mark, the color and type systems, and the devices that make the identity
+        recognizable. It is written for anyone who has to build with it, including
+        our partners at basement studio. The visual laws are codified
+        in <Link href='/docs/design'>the design system</Link>, and every engine
+        runs live on <Link href='/docs'>the docs page</Link>. The completed
+        reference application is{' '}
+        <Link href='/d/singularity-dossier'>the Dossier</Link>; treat it as the
+        finished statement of this identity, not a concept.
+      </p>
+    </div>
+    <BrandMarkFigure />
+  </div>
+);
+
 /**
- * The brand book: General Translation's identity laid out in one ruled
- * column, for anyone who has to build with it (including basement studio).
- * The written canon is BRAND.md (served at /docs/brand); the laws behind
- * the visuals are DESIGN.md; the engines run live on /docs; and the
- * completed reference application is the Dossier.
+ * The ten sections, each rendered on the server and handed to the viewer as
+ * a page. Ids match brand-sections.ts, which the viewer reads for the list,
+ * the grid and the hash; the h3 ids are the rows under the active section.
  */
-export default function BrandPage() {
-  return (
-    <main className={`pt-root ${fraunces.variable} ${grotesk.variable}`}>
-      <div className='pt-rail'>
-        <PtNav />
-
-        <article className='pt-post'>
-          <section className='pt-sec pt-post-sec'>
-            <div className='ptb-opener'>
-              <div className='ptb-opener-copy'>
-                <h1>The brand</h1>
-                <p className='pt-post-byline'>General Translation · the identity, laid out</p>
-                <p>
-                  This page is the brand in one place: the name, the idea, the character, the
-                  mark, the color and type systems, and the devices that make the identity
-                  recognizable. It is written for anyone who has to build with it, including
-                  our partners at basement studio. The visual laws are codified
-                  in <Link href='/docs/design'>the design system</Link>, and every engine
-                  runs live on <Link href='/docs'>the docs page</Link>. The completed
-                  reference application is{' '}
-                  <Link href='/d/singularity-dossier'>the Dossier</Link>; treat it as the
-                  finished statement of this identity, not a concept.
-                </p>
-              </div>
-              <BrandMarkFigure />
+const PAGES: readonly BrandPage[] = [
+  {
+    id: 'the-name',
+    body: (
+      <>
+        <h2>The name</h2>
+        <p>
+          <strong>General Translation</strong> was chosen deliberately, in this order.
+          First, ambition: like General Motors or General Electric, the name says we intend
+          to be the trustworthy, technologically innovative number one in the category, an
+          enterprise in the old sense. Second, generality: a reference to artificial{' '}
+          <em>general</em>{' '}intelligence. General models outperform specific translation
+          models because they understand context and can be directed. Third, distinction:
+          every other localization company seemed to begin with an &ldquo;L&rdquo;.
+        </p>
+        <div className='ptb-names'>
+          {NAMES.map(([name, what]) => (
+            <div className='ptb-name-row' key={name}>
+              <b>{name}</b>
+              <span>{what}</span>
             </div>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='the-name'>
-            <h2>The name</h2>
-            <p>
-              <strong>General Translation</strong> was chosen deliberately, in this order.
-              First, ambition: like General Motors or General Electric, the name says we intend
-              to be the trustworthy, technologically innovative number one in the category, an
-              enterprise in the old sense. Second, generality: a reference to artificial{' '}
-              <em>general</em>{' '}intelligence. General models outperform specific translation
-              models because they understand context and can be directed. Third, distinction:
-              every other localization company seemed to begin with an &ldquo;L&rdquo;.
-            </p>
-            <div className='ptb-names'>
-              {NAMES.map(([name, what]) => (
-                <div className='ptb-name-row' key={name}>
-                  <b>{name}</b>
-                  <span>{what}</span>
-                </div>
-              ))}
+          ))}
+        </div>
+      </>
+    ),
+  },
+  {
+    id: 'the-idea',
+    body: (
+      <>
+        <h2>The idea</h2>
+        <p className='ptb-thesis'>Every product in every language.</p>
+        <p>
+          Native-level speed and quality, from day one. A simple idea, executed insanely
+          hard. The positioning is <strong>the Vercel of localization</strong>: two halves
+          designed together, open-source developer tools (the <code>gt</code> libraries)
+          and closed-source infrastructure that is the best-in-class way to use them.
+          Because we build the entire stack, we can promise what point solutions
+          can&rsquo;t: consistent, high-quality translation across a whole business,
+          integrated in an afternoon.
+        </p>
+        <p>
+          Two registers, one family: the open source should feel community-owned; the
+          platform should feel enterprise-grade.
+        </p>
+        <ul className='pt-post-rules'>
+          <li>
+            Engineering-first. Built by people with deep technical roots, for the
+            world&rsquo;s best engineering teams.
+          </li>
+          <li>
+            Craft. We care about the difference between drawn-once and drawn-twice lines.
+            That is literal: the line law audits every page.
+          </li>
+          <li>
+            Infrastructure-grade. Reliable, fast, secure. Something an enterprise stands
+            on, not an app it tries.
+          </li>
+          <li>
+            Cosmopolitan. Urbane, sophisticated, connecting the world and its languages.
+            Language is our material, not just our market.
+          </li>
+          <li>
+            Hand-crafted. The brand reads as made by people who care, not assembled from
+            a template.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: 'the-character',
+    body: (
+      <>
+        <h2>The character</h2>
+        <p>
+          The brand carries itself like a <strong>fullstack director</strong>: it writes
+          the script and it pushes the camera. Creative and technically innovative, never
+          one without the other. On time, under budget, over-delivering, always working
+          with the best people, with a keen sense for making things people love.
+        </p>
+        <h3 id={headingId('the-character', 'personality')}>Personality</h3>
+        <AttributeScales rows={PERSONALITY} />
+        <h3 id={headingId('the-character', 'aesthetic')}>Aesthetic</h3>
+        <AttributeScales rows={AESTHETIC} />
+        <p className='ptb-scale-caption'>
+          Positions are read from the completed system. They are working answers, for
+          basement to confirm or push.
+        </p>
+        <h3 id={headingId('the-character', 'voice')}>Voice</h3>
+        <p>
+          Measured, declarative, precise, quietly confident. Captions state laws:
+          &ldquo;the ground is the seam.&rdquo; Short sentences carry their own weight,
+          with no exclamation marks doing the work, no hedging, and no marketing
+          adjectives where a fact would do. Wit is allowed as precision, never as
+          decoration. Technical terms are used precisely and sparingly. The register sits
+          closer to a well-written spec or a good engineering blog than to marketing
+          copy: product focus over performative marketing.
+        </p>
+        <div className='ptb-voice'>
+          <div className='ptb-voice-row is-yes'>
+            <span>say</span>
+            <p>One pipeline. Every language ships with the deploy.</p>
+          </div>
+          <div className='ptb-voice-row is-no'>
+            <span>not</span>
+            <p>Supercharge your global growth with cutting-edge AI!</p>
+          </div>
+        </div>
+      </>
+    ),
+  },
+  {
+    id: 'the-mark',
+    body: (
+      <>
+        <h2>The mark</h2>
+        <p>
+          Every stroke of the GT monogram is two parallel lines: the doubled-line grammar
+          at brand scale, the same device that runs through every diagram in the system.
+          The mark renders in one ink, either ink on paper or paper on ink. Never a third
+          color, never a gradient, never a shadow. The dark surface inverts the drawn
+          mark&rsquo;s ink. In illustration systems the mark renders as an alpha mask, so
+          the shape takes the surface&rsquo;s ink. The one sanctioned flourish is the
+          Bayer-dithered specular shimmer, never a GIF and never a glow.
+        </p>
+        <div className='ptb-marks'>
+          <figure className='ptb-mark is-paper'>
+            <img alt='The GT monogram in ink on paper' src='/brand/gt-logo-light.svg' />
+            <figcaption>ink on paper</figcaption>
+          </figure>
+          <figure className='ptb-mark is-ink'>
+            <img alt='The GT monogram in paper on ink' src='/brand/gt-logo-dark.svg' />
+            <figcaption>paper on ink</figcaption>
+          </figure>
+          <figure className='ptb-mark is-paper'>
+            <img alt='The Locadex mark' src='/brand/locadex-mark.svg' />
+            <figcaption>Locadex, the agent&rsquo;s own mark</figcaption>
+          </figure>
+        </div>
+        <p>
+          At text size the wordmark sits inline with prose, at the cap height of the line
+          it lives in, the way the Dossier&rsquo;s hero sets &ldquo;GT builds full-stack
+          infrastructure&hellip;&rdquo;.
+        </p>
+        <p>
+          The identity must survive compression: a favicon, a CLI banner, a README, a
+          syntax-highlighted code block. Developers meet the brand in a terminal as often
+          as on a website.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'color',
+    body: (
+      <>
+        <h2>Color</h2>
+        <p>
+          Four absolute colors, one spectral accent per page. Structural color everywhere
+          derives from the four as alpha steps: every text step is ink or white at some
+          alpha, every hairline titanium at some alpha. Dark mode is a pure token remap,
+          one surface family in the dark, the way light mode is one white. The accent is
+          a controlled edge, never a wash. Depth comes from lines and material, never
+          shadows.
+        </p>
+        <div className='ptb-swatches'>
+          {SWATCHES.map(([cls, name, hex]) => (
+            <div className={`ptb-swatch ${cls}`} key={name}>
+              <i />
+              <b>{name}</b>
+              <span>{hex}</span>
             </div>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='the-idea'>
-            <h2>The idea</h2>
-            <p className='ptb-thesis'>Every product in every language.</p>
-            <p>
-              Native-level speed and quality, from day one. A simple idea, executed insanely
-              hard. The positioning is <strong>the Vercel of localization</strong>: two halves
-              designed together, open-source developer tools (the <code>gt</code> libraries)
-              and closed-source infrastructure that is the best-in-class way to use them.
-              Because we build the entire stack, we can promise what point solutions
-              can&rsquo;t: consistent, high-quality translation across a whole business,
-              integrated in an afternoon.
+          ))}
+        </div>
+        <div className='ptb-accents'>
+          <div className='ptb-swatch is-accent'>
+            <i />
+            <b>the accent</b>
+            <span>#2f5ce0</span>
+          </div>
+          <div className='ptb-swatch is-accent-lift'>
+            <i />
+            <b>its dark-band lift</b>
+            <span>#86a8ff</span>
+          </div>
+          <p>
+            One per page. The working accent is the toolchain blue; a page may choose its
+            own spectral band, but it only ever gets one.
+          </p>
+        </div>
+      </>
+    ),
+  },
+  {
+    id: 'type',
+    body: (
+      <>
+        <h2>Type</h2>
+        <p>
+          Two faces carry the brand. <strong>Switzer</strong> is the display and UI voice:
+          headlines, interface chrome, the declarative captions. <strong>Inter</strong> is
+          the text companion for long-form reading, the real rsms.me variable Inter with
+          the optical-size axis, not the Google Fonts build. Monospace is an{' '}
+          <em>instrument</em> voice, not a brand voice. It appears where code artifacts
+          appear (tokens, terminals, file paths, small labels in technical diagrams and
+          product UI) and nowhere else, and even those labels are avoided where possible.
+        </p>
+        <p>
+          The identity is multilingual-first. Headlines, UI, and marks must hold up in
+          CJK, RTL, and Indic scripts as well as in Latin; a wordmark or layout that only
+          works in English contradicts the company. Switzer plus Inter is the working
+          pair, not a final answer. Alternatives are open if the licensed face carries
+          credible CJK and RTL coverage, or brings well-matched companion faces.
+        </p>
+        <div className='ptb-type'>
+          <div className='ptb-face'>
+            <span className='ptb-face-tag'>Switzer · 300–800</span>
+            {SWITZER_WEIGHTS.map((weight) => (
+              <p className='ptb-switzer' key={weight} style={{ fontWeight: weight }}>
+                Every product in every language
+              </p>
+            ))}
+          </div>
+          <div className='ptb-face'>
+            <span className='ptb-face-tag'>Inter · variable, roman + italic</span>
+            <p className='ptb-inter'>
+              General Translation builds full-stack infrastructure for localizing apps,
+              docs, and websites: i18n libraries, context-aware translation, and the
+              platform that runs them.
             </p>
-            <p>
-              Two registers, one family: the open source should feel community-owned; the
-              platform should feel enterprise-grade.
+            <p className='ptb-inter is-italic'>
+              The optical-size axis keeps text honest at every scale.
             </p>
+          </div>
+        </div>
+      </>
+    ),
+  },
+  {
+    id: 'language-as-material',
+    body: (
+      <>
+        <h2>Language as material</h2>
+        <p>
+          The signature device: glyphs, characters that make up greater wholes. Writing
+          systems are the raw material the brand keeps returning to. The sentence below is
+          the reassembler running live. The headline dissolves into glyph dust and the
+          same swarm becomes the next language.
+        </p>
+        <div className='ptb-plate'>
+          <ReassemblerDemo />
+        </div>
+        <p>
+          A locale is named one way, everywhere: flag print first, code in the
+          surface&rsquo;s own mono. The prints are SVG, never emoji; a flag is a
+          functional data chip, never decoration.
+        </p>
+        <div className='ptb-pills'>
+          {PILL_LOCS.map((loc) => (
+            <span className='ptb-pill' key={loc}>
+              <LocaleTag code={loc} />
+            </span>
+          ))}
+        </div>
+        <div className='ptb-devices'>
+          {DEVICES.map(([name, what]) => (
+            <div className='ptb-device-row' key={name}>
+              <Link href={`/docs#${name}`}>
+                <b>{name}</b>
+              </Link>
+              <span>{what}</span>
+            </div>
+          ))}
+        </div>
+        <p>
+          Every device above runs live, with its API, on{' '}
+          <Link href='/docs'>the docs page</Link>.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'the-completed-reference',
+    body: (
+      <>
+        <h2>The completed reference</h2>
+        <p>
+          <strong>The Dossier is the completed version of this identity in application</strong>:
+          the belt-driven morphing headline, the translate window, the stack tower
+          wearing the Locadex shimmer, the edge globe over its dithered atmosphere, the
+          four-color dark band. When in doubt about how the brand behaves in product, the
+          Dossier is the answer. The other directions are the working record of how we
+          got there.
+        </p>
+        <div className='ptb-shots'>
+          <figure className='ptb-shot'>
+            <img alt='The Dossier home, light theme' loading='lazy' src='/shots/light/singularity-dossier.jpg' />
+            <figcaption>the home · light</figcaption>
+          </figure>
+          <figure className='ptb-shot'>
+            <img alt='The Dossier home, dark theme' loading='lazy' src='/shots/dark/singularity-dossier.jpg' />
+            <figcaption>the home · dark</figcaption>
+          </figure>
+          <figure className='ptb-shot'>
+            <img alt='The Dossier enterprise page, light theme' loading='lazy' src='/shots/light/singularity-dossier-enterprise.jpg' />
+            <figcaption>the enterprise page</figcaption>
+          </figure>
+        </div>
+        <p className='pt-site-links'>
+          <Link href='/d/singularity-dossier'>open the home</Link>
+          <span aria-hidden> · </span>
+          <Link href='/d/singularity-dossier/enterprise'>open the enterprise page</Link>
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'made-with-the-system',
+    body: (
+      <>
+        <h2>Made with the system</h2>
+        <p>
+          Finished artwork produced with this toolchain and the glyphfield studio,
+          kept here as proof of what the identity does off the page. The whole
+          identity, this page included, is also summarized as a 52-slide
+          slideshow at <Link href='/deck'>/deck</Link>.
+        </p>
+        <div className='ptb-media'>
+          <figure className='ptb-shot'>
+            <video
+              controls
+              playsInline
+              poster='/media/open-source-poster.jpg'
+              preload='metadata'
+              src='/media/open-source-reel.mp4'
+            />
+            <figcaption>
+              the Open Source announcement reel · twelve studio materials cut on the
+              beat in the brand blue, landing on the gem smoke composition
+            </figcaption>
+          </figure>
+          <figure className='ptb-shot'>
+            <img
+              alt='The X profile banner: the halftone dither globe and glyph rain beside the customer logo grid'
+              loading='lazy'
+              src='/media/gt-banner-signin@2x.png'
+            />
+            <figcaption>
+              the X banner · the sign-in globe and glyph rain in the 1-bit language,
+              the customer grid at right
+            </figcaption>
+          </figure>
+        </div>
+      </>
+    ),
+  },
+  {
+    id: 'context-for-partners',
+    body: (
+      <>
+        <h2>Context for partners</h2>
+        <p>
+          The industry is AI developer tools: the full stack for localization, meaning
+          i18n libraries, context-aware translation APIs, and the infrastructure for
+          versioning, editing, and integrations. The audience is technical and product
+          leadership at growth-stage companies; their engineering and growth teams are
+          the users. Auth0 translates docs with GT, Sierra translates marketing and sales
+          material, Ramp translates its core dashboard. Against legacy, seat-based TMS
+          point solutions, GT is usage-based and owns the whole stack, so it can own the
+          whole experience.
+        </p>
+        <h3 id={headingId('context-for-partners', 'direction')}>Direction</h3>
+        <p>
+          International Style discipline with Art Deco&rsquo;s future-embracing stance.
+          Swiss grids, blueprints, boxes, no rounded corners. Water and ocean as the
+          recurring theme, connecting the globe. Bespoke material textures, in the
+          spirit of materialarchiv.ch.
+        </p>
+        <h3 id={headingId('context-for-partners', 'references')}>References</h3>
+        <p>
+          Josef Müller-Brockmann and the Swiss poster tradition. Otl Aicher&rsquo;s
+          Munich 1972 pictograms. Vignelli&rsquo;s subway map. Split-flap departure
+          boards. Undersea cable maps and nautical charts. The Rosetta Stone. The
+          Chrysler Building. Powers of Ten. Vintage National Geographic. Borges&rsquo;
+          Library of Babel. The Whole Earth Catalog. Transit signage. NYRB Classics.
+          Dieter Rams. Vintage Olympics stamps.
+        </p>
+        <div className='ptb-brief'>
+          <div className='ptb-brief-col'>
+            <h3 id={headingId('context-for-partners', 'admired')}>Admired</h3>
+            <ul className='pt-post-rules'>
+              <li>Vercel, Resend, Stripe: reliable, developer-first infrastructure with engineering excellence.</li>
+            </ul>
+          </div>
+          <div className='ptb-brief-col'>
+            <h3 id={headingId('context-for-partners', 'avoid')}>Avoid</h3>
             <ul className='pt-post-rules'>
               <li>
-                Engineering-first. Built by people with deep technical roots, for the
-                world&rsquo;s best engineering teams.
+                Monospace as the brand voice in headlines, body, or marketing. Small mono
+                labels inside technical diagrams and product UI remain instruments; avoid
+                even those where possible.
               </li>
               <li>
-                Craft. We care about the difference between drawn-once and drawn-twice lines.
-                That is literal: the line law audits every page.
+                Smooth scrolling, scroll-hijacking, and inertia libraries. Native scroll
+                everywhere.
               </li>
+              <li>Robot and sparkle iconography for AI.</li>
               <li>
-                Infrastructure-grade. Reliable, fast, secure. Something an enterprise stands
-                on, not an app it tries.
+                The flag-soup cliche. Flags are functional data chips only, printed as
+                SVG, never emoji.
               </li>
+              <li>Iridescent AI gradients and glassmorphism.</li>
               <li>
-                Cosmopolitan. Urbane, sophisticated, connecting the world and its languages.
-                Language is our material, not just our market.
+                Eyebrow text that has not earned its place. Three stacked lines saying
+                the same thing is noise; functional tags and labels are fine.
               </li>
-              <li>
-                Hand-crafted. The brand reads as made by people who care, not assembled from
-                a template.
-              </li>
+              <li>Em dashes in rendered prose.</li>
             </ul>
-          </section>
+          </div>
+        </div>
+      </>
+    ),
+  },
+];
 
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='the-character'>
-            <h2>The character</h2>
-            <p>
-              The brand carries itself like a <strong>fullstack director</strong>: it writes
-              the script and it pushes the camera. Creative and technically innovative, never
-              one without the other. On time, under budget, over-delivering, always working
-              with the best people, with a keen sense for making things people love.
-            </p>
-            <h3>Personality</h3>
-            <AttributeScales rows={PERSONALITY} />
-            <h3>Aesthetic</h3>
-            <AttributeScales rows={AESTHETIC} />
-            <p className='ptb-scale-caption'>
-              Positions are read from the completed system. They are working answers, for
-              basement to confirm or push.
-            </p>
-            <h3>Voice</h3>
-            <p>
-              Measured, declarative, precise, quietly confident. Captions state laws:
-              &ldquo;the ground is the seam.&rdquo; Short sentences carry their own weight,
-              with no exclamation marks doing the work, no hedging, and no marketing
-              adjectives where a fact would do. Wit is allowed as precision, never as
-              decoration. Technical terms are used precisely and sparingly. The register sits
-              closer to a well-written spec or a good engineering blog than to marketing
-              copy: product focus over performative marketing.
-            </p>
-            <div className='ptb-voice'>
-              <div className='ptb-voice-row is-yes'>
-                <span>say</span>
-                <p>One pipeline. Every language ships with the deploy.</p>
-              </div>
-              <div className='ptb-voice-row is-no'>
-                <span>not</span>
-                <p>Supercharge your global growth with cutting-edge AI!</p>
-              </div>
-            </div>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='the-mark'>
-            <h2>The mark</h2>
-            <p>
-              Every stroke of the GT monogram is two parallel lines: the doubled-line grammar
-              at brand scale, the same device that runs through every diagram in the system.
-              The mark renders in one ink, either ink on paper or paper on ink. Never a third
-              color, never a gradient, never a shadow. The dark surface inverts the drawn
-              mark&rsquo;s ink. In illustration systems the mark renders as an alpha mask, so
-              the shape takes the surface&rsquo;s ink. The one sanctioned flourish is the
-              Bayer-dithered specular shimmer, never a GIF and never a glow.
-            </p>
-            <div className='ptb-marks'>
-              <figure className='ptb-mark is-paper'>
-                <img alt='The GT monogram in ink on paper' src='/brand/gt-logo-light.svg' />
-                <figcaption>ink on paper</figcaption>
-              </figure>
-              <figure className='ptb-mark is-ink'>
-                <img alt='The GT monogram in paper on ink' src='/brand/gt-logo-dark.svg' />
-                <figcaption>paper on ink</figcaption>
-              </figure>
-              <figure className='ptb-mark is-paper'>
-                <img alt='The Locadex mark' src='/brand/locadex-mark.svg' />
-                <figcaption>Locadex, the agent&rsquo;s own mark</figcaption>
-              </figure>
-            </div>
-            <p>
-              At text size the wordmark sits inline with prose, at the cap height of the line
-              it lives in, the way the Dossier&rsquo;s hero sets &ldquo;GT builds full-stack
-              infrastructure&hellip;&rdquo;.
-            </p>
-            <p>
-              The identity must survive compression: a favicon, a CLI banner, a README, a
-              syntax-highlighted code block. Developers meet the brand in a terminal as often
-              as on a website.
-            </p>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='color'>
-            <h2>Color</h2>
-            <p>
-              Four absolute colors, one spectral accent per page. Structural color everywhere
-              derives from the four as alpha steps: every text step is ink or white at some
-              alpha, every hairline titanium at some alpha. Dark mode is a pure token remap,
-              one surface family in the dark, the way light mode is one white. The accent is
-              a controlled edge, never a wash. Depth comes from lines and material, never
-              shadows.
-            </p>
-            <div className='ptb-swatches'>
-              {SWATCHES.map(([cls, name, hex]) => (
-                <div className={`ptb-swatch ${cls}`} key={name}>
-                  <i />
-                  <b>{name}</b>
-                  <span>{hex}</span>
-                </div>
-              ))}
-            </div>
-            <div className='ptb-accents'>
-              <div className='ptb-swatch is-accent'>
-                <i />
-                <b>the accent</b>
-                <span>#2f5ce0</span>
-              </div>
-              <div className='ptb-swatch is-accent-lift'>
-                <i />
-                <b>its dark-band lift</b>
-                <span>#86a8ff</span>
-              </div>
-              <p>
-                One per page. The working accent is the toolchain blue; a page may choose its
-                own spectral band, but it only ever gets one.
-              </p>
-            </div>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='type'>
-            <h2>Type</h2>
-            <p>
-              Two faces carry the brand. <strong>Switzer</strong> is the display and UI voice:
-              headlines, interface chrome, the declarative captions. <strong>Inter</strong> is
-              the text companion for long-form reading, the real rsms.me variable Inter with
-              the optical-size axis, not the Google Fonts build. Monospace is an{' '}
-              <em>instrument</em> voice, not a brand voice. It appears where code artifacts
-              appear (tokens, terminals, file paths, small labels in technical diagrams and
-              product UI) and nowhere else, and even those labels are avoided where possible.
-              The serif and grotesk on this page are the lab&rsquo;s own stationery, not the
-              product brand.
-            </p>
-            <p>
-              The identity is multilingual-first. Headlines, UI, and marks must hold up in
-              CJK, RTL, and Indic scripts as well as in Latin; a wordmark or layout that only
-              works in English contradicts the company. Switzer plus Inter is the working
-              pair, not a final answer. Alternatives are open if the licensed face carries
-              credible CJK and RTL coverage, or brings well-matched companion faces.
-            </p>
-            <div className='ptb-type'>
-              <div className='ptb-face'>
-                <span className='ptb-face-tag'>Switzer · 300–800</span>
-                {SWITZER_WEIGHTS.map((weight) => (
-                  <p className='ptb-switzer' key={weight} style={{ fontWeight: weight }}>
-                    Every product in every language
-                  </p>
-                ))}
-              </div>
-              <div className='ptb-face'>
-                <span className='ptb-face-tag'>Inter · variable, roman + italic</span>
-                <p className='ptb-inter'>
-                  General Translation builds full-stack infrastructure for localizing apps,
-                  docs, and websites: i18n libraries, context-aware translation, and the
-                  platform that runs them.
-                </p>
-                <p className='ptb-inter is-italic'>
-                  The optical-size axis keeps text honest at every scale.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='language-as-material'>
-            <h2>Language as material</h2>
-            <p>
-              The signature device: glyphs, characters that make up greater wholes. Writing
-              systems are the raw material the brand keeps returning to. The sentence below is
-              the reassembler running live. The headline dissolves into glyph dust and the
-              same swarm becomes the next language.
-            </p>
-            <div className='ptb-plate'>
-              <ReassemblerDemo />
-            </div>
-            <p>
-              A locale is named one way, everywhere: flag print first, code in the
-              surface&rsquo;s own mono. The prints are SVG, never emoji; a flag is a
-              functional data chip, never decoration.
-            </p>
-            <div className='ptb-pills'>
-              {PILL_LOCS.map((loc) => (
-                <span className='ptb-pill' key={loc}>
-                  <LocaleTag code={loc} />
-                </span>
-              ))}
-            </div>
-            <div className='ptb-devices'>
-              {DEVICES.map(([name, what]) => (
-                <div className='ptb-device-row' key={name}>
-                  <Link href={`/docs#${name}`}>
-                    <b>{name}</b>
-                  </Link>
-                  <span>{what}</span>
-                </div>
-              ))}
-            </div>
-            <p>
-              Every device above runs live, with its API, on{' '}
-              <Link href='/docs'>the docs page</Link>.
-            </p>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='the-completed-reference'>
-            <h2>The completed reference</h2>
-            <p>
-              <strong>The Dossier is the completed version of this identity in application</strong>:
-              the belt-driven morphing headline, the translate window, the stack tower
-              wearing the Locadex shimmer, the edge globe over its dithered atmosphere, the
-              four-color dark band. When in doubt about how the brand behaves in product, the
-              Dossier is the answer. The other directions are the working record of how we
-              got there.
-            </p>
-            <div className='ptb-shots'>
-              <figure className='ptb-shot'>
-                <img alt='The Dossier home, light theme' loading='lazy' src='/shots/light/singularity-dossier.jpg' />
-                <figcaption>the home · light</figcaption>
-              </figure>
-              <figure className='ptb-shot'>
-                <img alt='The Dossier home, dark theme' loading='lazy' src='/shots/dark/singularity-dossier.jpg' />
-                <figcaption>the home · dark</figcaption>
-              </figure>
-              <figure className='ptb-shot'>
-                <img alt='The Dossier enterprise page, light theme' loading='lazy' src='/shots/light/singularity-dossier-enterprise.jpg' />
-                <figcaption>the enterprise page</figcaption>
-              </figure>
-            </div>
-            <p className='pt-site-links'>
-              <Link href='/d/singularity-dossier'>open the home</Link>
-              <span aria-hidden> · </span>
-              <Link href='/d/singularity-dossier/enterprise'>open the enterprise page</Link>
-            </p>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='made-with-the-system'>
-            <h2>Made with the system</h2>
-            <p>
-              Finished artwork produced with this toolchain and the glyphfield studio,
-              kept here as proof of what the identity does off the page. The whole
-              identity, this page included, is also summarized as a 52-slide
-              slideshow at <Link href='/deck'>/deck</Link>.
-            </p>
-            <div className='ptb-media'>
-              <figure className='ptb-shot'>
-                <video
-                  controls
-                  playsInline
-                  poster='/media/open-source-poster.jpg'
-                  preload='metadata'
-                  src='/media/open-source-reel.mp4'
-                />
-                <figcaption>
-                  the Open Source announcement reel · twelve studio materials cut on the
-                  beat in the brand blue, landing on the gem smoke composition
-                </figcaption>
-              </figure>
-              <figure className='ptb-shot'>
-                <img
-                  alt='The X profile banner: the halftone dither globe and glyph rain beside the customer logo grid'
-                  loading='lazy'
-                  src='/media/gt-banner-signin@2x.png'
-                />
-                <figcaption>
-                  the X banner · the sign-in globe and glyph rain in the 1-bit language,
-                  the customer grid at right
-                </figcaption>
-              </figure>
-            </div>
-          </section>
-
-          <div className='pt-hatch' aria-hidden='true' />
-
-          <section className='pt-sec pt-post-sec' id='context-for-partners'>
-            <h2>Context for partners</h2>
-            <p>
-              The industry is AI developer tools: the full stack for localization, meaning
-              i18n libraries, context-aware translation APIs, and the infrastructure for
-              versioning, editing, and integrations. The audience is technical and product
-              leadership at growth-stage companies; their engineering and growth teams are
-              the users. Auth0 translates docs with GT, Sierra translates marketing and sales
-              material, Ramp translates its core dashboard. Against legacy, seat-based TMS
-              point solutions, GT is usage-based and owns the whole stack, so it can own the
-              whole experience.
-            </p>
-            <h3>Direction</h3>
-            <p>
-              International Style discipline with Art Deco&rsquo;s future-embracing stance.
-              Swiss grids, blueprints, boxes, no rounded corners. Water and ocean as the
-              recurring theme, connecting the globe. Bespoke material textures, in the
-              spirit of materialarchiv.ch.
-            </p>
-            <h3>References</h3>
-            <p>
-              Josef Müller-Brockmann and the Swiss poster tradition. Otl Aicher&rsquo;s
-              Munich 1972 pictograms. Vignelli&rsquo;s subway map. Split-flap departure
-              boards. Undersea cable maps and nautical charts. The Rosetta Stone. The
-              Chrysler Building. Powers of Ten. Vintage National Geographic. Borges&rsquo;
-              Library of Babel. The Whole Earth Catalog. Transit signage. NYRB Classics.
-              Dieter Rams. Vintage Olympics stamps.
-            </p>
-            <div className='ptb-brief'>
-              <div className='ptb-brief-col'>
-                <h3>Admired</h3>
-                <ul className='pt-post-rules'>
-                  <li>Vercel, Resend, Stripe: reliable, developer-first infrastructure with engineering excellence.</li>
-                </ul>
-              </div>
-              <div className='ptb-brief-col'>
-                <h3>Avoid</h3>
-                <ul className='pt-post-rules'>
-                  <li>
-                    Monospace as the brand voice in headlines, body, or marketing. Small mono
-                    labels inside technical diagrams and product UI remain instruments; avoid
-                    even those where possible.
-                  </li>
-                  <li>
-                    Smooth scrolling, scroll-hijacking, and inertia libraries. Native scroll
-                    everywhere.
-                  </li>
-                  <li>Robot and sparkle iconography for AI.</li>
-                  <li>
-                    The flag-soup cliche. Flags are functional data chips only, printed as
-                    SVG, never emoji.
-                  </li>
-                  <li>Iridescent AI gradients and glassmorphism.</li>
-                  <li>
-                    Eyebrow text that has not earned its place. Three stacked lines saying
-                    the same thing is noise; functional tags and labels are fine.
-                  </li>
-                  <li>Em dashes in rendered prose.</li>
-                </ul>
-              </div>
-            </div>
-            <p className='pt-site-links'>
-              <Link href='/docs/brand'>read the written canon</Link>
-              <span aria-hidden> · </span>
-              <Link href='/docs/design'>read the design system</Link>
-              <span aria-hidden> · </span>
-              <Link href='/present'>walk the deck</Link>
-            </p>
-          </section>
-        </article>
-
-        <footer className='pt-foot'>
-          <span className='pt-foot-brand'>
-            <span className='pt-mark' aria-hidden>
-              <i className='pt-mark-line is-h is-top' />
-              <i className='pt-mark-line is-h is-bot' />
-              <i className='pt-mark-line is-v is-l' />
-              <i className='pt-mark-line is-v is-r' />
-              <i className='pt-mark-fill' />
-            </span>
-            Prototemplate
-          </span>
-          <span className='pt-foot-right'>prototype × template</span>
-        </footer>
-      </div>
-    </main>
-  );
+/**
+ * The brand book: General Translation's identity laid out in one ruled
+ * column, for anyone who has to build with it (including basement studio),
+ * read inside the viewer shell. The written canon is BRAND.md (served at
+ * /docs/brand); the laws behind the visuals are DESIGN.md; the engines run
+ * live on /docs; and the completed reference application is the Dossier.
+ * The routes that used to close the article (Docs, Deck, Present) are one
+ * click away in the index panel's Pages group.
+ */
+export default function BrandPage() {
+  return <BrandViewer opener={OPENER} pages={PAGES} />;
 }

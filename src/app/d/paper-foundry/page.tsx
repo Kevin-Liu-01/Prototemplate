@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import Bento from './sections/Bento';
@@ -50,7 +50,7 @@ export default function PaperFoundryPage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='paper-foundry' />
+      <DirectionCorner slug='paper-foundry' />
     </SmoothScroll>
   );
 }

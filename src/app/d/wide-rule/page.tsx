@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import DarkBand from './sections/DarkBand';
@@ -46,7 +46,7 @@ export default function WideRulePage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='wide-rule' />
+      <DirectionCorner slug='wide-rule' />
     </SmoothScroll>
   );
 }

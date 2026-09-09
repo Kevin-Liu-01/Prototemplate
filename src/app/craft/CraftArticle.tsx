@@ -1,3 +1,6 @@
+import { Fragment } from 'react';
+import type { ReactNode } from 'react';
+
 import AuditorFigure from './AuditorFigure';
 import CodeBlock from './CodeBlock';
 import CornerFigure from './CornerFigure';
@@ -8,19 +11,30 @@ import RailFigure from './RailFigure';
 import './craft.css';
 
 /**
- * The build log, as an article fragment — everything constructed underneath
- * the sixteen directions: the laws, the tooling that enforces them, and the
- * libraries that will graduate to their own repos, each with a live plate.
- * Mounted on the /docs landing page beneath the one-paragraph tour (the old
- * /craft route redirects there); the receipts are drawn in — the auditor's
- * mock, the ownership diagram, the second-surface kit.
+ * One section of the build log: a stable id (the anchor and the sidebar
+ * row), the heading text, and the body, which starts with its own h2. The
+ * docs book renders the sections as numbered rows after the readme; the
+ * default export below renders them as the standalone article.
  */
-export default function CraftArticle() {
-  return (
-    <article className='pt-post'>
-      <div className='pt-hatch' aria-hidden='true' />
+export type CraftSection = {
+  id: string;
+  title: string;
+  body: ReactNode;
+};
 
-      <section className='pt-sec pt-post-sec'>
+/**
+ * The build log, as data — everything constructed underneath the sixteen
+ * directions: the laws, the tooling that enforces them, and the libraries
+ * that will graduate to their own repos, each with a live plate. The
+ * receipts are drawn in — the auditor's mock, the ownership diagram, the
+ * second-surface kit.
+ */
+export const CRAFT_SECTIONS: readonly CraftSection[] = [
+  {
+    id: 'the-system-under-the-system',
+    title: 'The system under the system',
+    body: (
+      <>
         <h2>The system under the system</h2>
         <p>
           Sixteen directions and three full sites is the visible output. Underneath them is
@@ -29,11 +43,14 @@ export default function CraftArticle() {
           as standalone libraries. What follows is the inventory — with the diagrams, the
           invocations, and the engines themselves running live.
         </p>
-      </section>
-
-      <div className='pt-hatch' aria-hidden='true' />
-
-      <section className='pt-sec pt-post-sec'>
+      </>
+    ),
+  },
+  {
+    id: 'the-line-law-and-the-auditors-that-hold-it',
+    title: 'The line law, and the auditors that hold it',
+    body: (
+      <>
         <h2>The line law, and the auditors that hold it</h2>
         <p>
           Every direction runs on one typographic rule: structure comes from hairlines, and
@@ -64,11 +81,14 @@ export default function CraftArticle() {
           counts button types, bare effects, any-types, raw hex in markup and !important in
           CSS, and refuses any commit that adds to the count.
         </p>
-      </section>
-
-      <div className='pt-hatch' aria-hidden='true' />
-
-      <section className='pt-sec pt-post-sec'>
+      </>
+    ),
+  },
+  {
+    id: 'rails-grounds-and-seams',
+    title: 'Rails, grounds, and seams',
+    body: (
+      <>
         <h2>Rails, grounds, and seams</h2>
         <p>
           The page&rsquo;s spine is a ruled column with doubled rails — an outer hairline pair
@@ -106,11 +126,14 @@ export default function CraftArticle() {
           renders one hair-colored ground under 1px gaps; cells have no border props at all:
         </p>
         <CodeBlock code={BENTO_SNIPPET} label='src/components/shell/Bento.tsx — the primitives in use' />
-      </section>
-
-      <div className='pt-hatch' aria-hidden='true' />
-
-      <section className='pt-sec pt-post-sec'>
+      </>
+    ),
+  },
+  {
+    id: 'corners-spacers-and-the-second-surface',
+    title: 'Corners, spacers, and the second surface',
+    body: (
+      <>
         <h2>Corners, spacers, and the second surface</h2>
         <p>
           The corner notches on hero cards are not drawn — they are the ground showing
@@ -123,11 +146,14 @@ export default function CraftArticle() {
           shadows.
         </p>
         <CornerFigure />
-      </section>
-
-      <div className='pt-hatch' aria-hidden='true' />
-
-      <section className='pt-sec pt-post-sec'>
+      </>
+    ),
+  },
+  {
+    id: 'the-libraries',
+    title: 'The libraries',
+    body: (
+      <>
         <h2>The libraries</h2>
         <p>
           The signature visuals are not page code, and neither are the instruments around
@@ -153,11 +179,14 @@ export default function CraftArticle() {
             </div>
           ))}
         </div>
-      </section>
-
-      <div className='pt-hatch' aria-hidden='true' />
-
-      <section className='pt-sec pt-post-sec'>
+      </>
+    ),
+  },
+  {
+    id: 'the-moving-type',
+    title: 'The moving type',
+    body: (
+      <>
         <h2>The moving type</h2>
         <p>
           Every animation obeys the same discipline as the lines. The morphing headline is a
@@ -169,7 +198,28 @@ export default function CraftArticle() {
           slide-to-reveal instrument the toolchain hero uses to pull its rendered app back to
           the payload underneath.
         </p>
-      </section>
+      </>
+    ),
+  },
+];
+
+/**
+ * The build log as a standalone article fragment: every section under a
+ * hatch spacer, in the pt grammar. The /docs book does not use this; it
+ * renders CRAFT_SECTIONS as rows after the readme.
+ */
+export default function CraftArticle() {
+  return (
+    <article className='pt-post'>
+      {CRAFT_SECTIONS.map((section) => (
+        <Fragment key={section.id}>
+          <div className='pt-hatch' aria-hidden='true' />
+          <section className='pt-sec pt-post-sec' id={section.id}>
+            {section.body}
+          </section>
+        </Fragment>
+      ))}
+      <div className='pt-hatch' aria-hidden='true' />
     </article>
   );
 }

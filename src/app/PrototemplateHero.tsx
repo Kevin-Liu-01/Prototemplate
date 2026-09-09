@@ -243,17 +243,38 @@ export default function PrototemplateHero() {
       });
 
       let raf = 0;
-      const onResize = () => {
+      const rebuild = () => {
         cancelAnimationFrame(raf);
         raf = requestAnimationFrame(() => {
           if (!cancelled) build();
         });
       };
-      window.addEventListener('resize', onResize);
+
+      /* The sheet's width follows the viewer shell (the sidebar and the
+         index panel resize the stage without a window resize), so the hero
+         watches its own box rather than the window. The observer reports
+         the initial size on observe; that first call is skipped because
+         fonts.ready already builds once. Without ResizeObserver the window
+         listener stands in. */
+      let observer: ResizeObserver | null = null;
+      if (typeof ResizeObserver !== 'undefined') {
+        let first = true;
+        observer = new ResizeObserver(() => {
+          if (first) {
+            first = false;
+            return;
+          }
+          rebuild();
+        });
+        observer.observe(rootEl);
+      } else {
+        window.addEventListener('resize', rebuild);
+      }
 
       return () => {
         cancelled = true;
-        window.removeEventListener('resize', onResize);
+        observer?.disconnect();
+        window.removeEventListener('resize', rebuild);
         cancelAnimationFrame(raf);
         tl?.kill();
       };

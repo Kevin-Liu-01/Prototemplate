@@ -1,102 +1,350 @@
-/* ============================================================
-   DOCS — the repo documents served as pages, in the pt grammar.
-   The pt-post layer owns the prose (h1/h2/p); this sheet adds only
-   what markdown needs beyond it: the switcher chips, h3, lists,
-   tables, code, and the rule. Nothing here draws a line the
-   prototemplate layer already owns.
-   ============================================================ */
+/* Docs: the repository documents on the viewer shell.
 
-/* ---------- the switcher: mono chips, the active doc the only ink ---------- */
+   The shell (src/components/viewer) draws the frame; this sheet draws the
+   book inside the flow sheet: the head, the contents, the document
+   dividers, the numbered rows, and the prose the markdown renderer emits.
+   Two token families meet here on purpose (decision 6): the book furniture
+   is chrome and reads the shell's --pt- tokens; each row body is article
+   content under .pt-root, so it keeps the titanium hairline family from
+   src/app/prototemplate.css. Nothing here draws a line either layer already
+   owns. */
 
-.pt-root .ptd-tabs {
+/* ---------- a shield for the sidebar ----------
+   prototemplate.css names the gallery's exploration rows .pt-row, the same
+   class as the shell's ListRow, and it is loaded here for the article
+   layer. Until ListRow takes a name of its own these rules keep the heading
+   rows in the list at the ListRow geometry. No colors: the ListRow sheet
+   keeps those. */
+
+.pt-viewer .pt-thumbs .pt-row {
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  padding: 6px 0;
+  min-height: 0;
+  border-top: 0;
+  overflow: visible;
+  background: none;
+  transition: none;
+}
+
+.pt-viewer .pt-thumbs .pt-row::before {
+  content: none;
+}
+
+/* the grid shows the six cards alone; the heading rows belong to the list */
+.pt-grid .pt-sub {
+  display: none;
+}
+
+/* ---------- the book column ---------- */
+
+.ptd-book {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 18px;
-  padding: 12px var(--pt-gut);
-  font-family: var(--pt-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  flex-direction: column;
+  gap: 36px;
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
 }
 
-.pt-root .ptd-tabs a {
-  color: var(--pt-ink-3);
+/* head: title and lead on the left, meta on the right, one ink rule under both */
+.ptd-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: end;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--pt-ink);
 }
 
-.pt-root .ptd-tabs a:hover {
+.ptd-head h1 {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 44px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+.ptd-head p {
+  font-size: 15.5px;
+  line-height: 1.5;
   color: var(--pt-ink-2);
+  max-width: 62ch;
+  margin: 14px 0 0;
 }
 
-.pt-root .ptd-tabs a[data-on='true'] {
+.ptd-meta {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ptd-meta span {
+  display: block;
+}
+
+/* contents: three columns of ruled links with the document number */
+.ptd-toc {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 28px;
+}
+
+.ptd-toc a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.ptd-toc a span {
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.ptd-toc a:hover span,
+.ptd-toc a[aria-current] span {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.ptd-toc a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.ptd-toc small {
+  font-family: var(--pt-text);
+  font-size: 12px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* one document: its divider, its lead, its rows */
+.ptd-doc {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* divider: the ordinal and the file in the gutter, the title beside */
+.ptd-sec {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 28px;
+  align-items: end;
+  padding-top: 30px;
+  border-top: 1px solid var(--pt-hair);
+  margin-top: 12px;
+  scroll-margin-top: 20px;
+}
+
+.ptd-sec small {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+}
+
+.ptd-sec small span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ptd-sec h2 {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* row: the section number in the gutter, the content beside */
+.ptd-row {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  scroll-margin-top: 20px;
+}
+
+.ptd-pn {
+  padding-top: 3px;
+}
+
+.ptd-pn b {
+  display: block;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the section being read: its number turns ink, as its row in the list does */
+.ptd-row.is-active .ptd-pn b {
   color: var(--pt-ink);
 }
 
-/* ---------- the document ---------- */
+/* ---------- the row body: article content on the titanium family ---------- */
 
-.ptd-doc h3 {
+.ptd-body {
+  min-width: 0;
+}
+
+/* .pt-root is a page root in prototemplate.css; here it is a token scope */
+.ptd-body.pt-root {
+  min-height: 0;
+  background: transparent;
+}
+
+.ptd-book .ptd-body h2 {
+  max-width: 40ch;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--pt-ink);
+}
+
+.ptd-book .ptd-body h3 {
   max-width: 44ch;
   margin-top: 26px;
   font-size: 17px;
   font-weight: 500;
+  letter-spacing: normal;
   line-height: 1.35;
   color: var(--pt-ink);
 }
 
-/* headings after the first get their own air */
-.ptd-doc h2 {
-  margin-top: 34px;
+/* the library entries name the module, then its role */
+.ptd-book .ptd-body .pt-craft-lib h3 span {
+  color: var(--pt-ink-3);
+  font-weight: 400;
 }
 
-.ptd-list {
+.ptd-book .ptd-body p {
   max-width: 64ch;
-  margin-top: 12px;
-  padding-left: 20px;
-  display: grid;
-  gap: 8px;
-  font-size: 15.5px;
-  line-height: 1.66;
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.72;
   color: var(--pt-ink-2);
-  list-style: disc;
 }
 
-.ptd-list.is-ordered {
-  list-style: decimal;
+/* the lead has no heading above it */
+.ptd-lead .ptd-body > p:first-child {
+  margin-top: 0;
 }
 
-.ptd-list li::marker {
-  color: var(--pt-ink-4);
+.ptd-book .ptd-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
-.ptd-doc code {
+.ptd-book .ptd-body a:hover {
+  color: var(--pt-ink);
+}
+
+/* inline code: a long path or token breaks rather than widen the column */
+.ptd-book .ptd-body code {
   padding: 1px 5px;
   font-family: var(--pt-mono);
   font-size: 0.86em;
   background: var(--pt-hair-2);
-  border-radius: 4px;
+  overflow-wrap: anywhere;
 }
 
-/* fenced code: the craft page's quiet hairline box */
-.ptd-code {
-  max-width: 860px;
-  margin-top: 16px;
-  padding: 14px 16px 16px;
-  border: 1px solid var(--pt-hair);
-  border-radius: 10px;
-  overflow-x: auto;
-  font-family: var(--pt-mono);
-  font-size: 12.5px;
-  line-height: 1.62;
+/* lists: ruled rows, one hairline per rule; the ordered list numbers its rows in a 40px column */
+.ptd-list {
+  max-width: 64ch;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.ptd-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pt-hair-2);
+  font-size: 15.5px;
+  line-height: 1.6;
   color: var(--pt-ink-2);
 }
 
-.ptd-code code {
-  padding: 0;
-  background: none;
-  border-radius: 0;
-  font-size: inherit;
+.ptd-list.is-ordered {
+  counter-reset: ptd-item;
 }
 
-/* tables: ruled, one hairline per rule — collapse merges shared edges so
-   the header's close and the first row's open are ONE line */
+.ptd-list.is-ordered li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+}
+
+.ptd-list.is-ordered li::before {
+  counter-increment: ptd-item;
+  content: counter(ptd-item, decimal-leading-zero);
+  padding-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pt-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* fenced code sits on the panel, in both themes; dark adds the one hairline */
+.ptd-code {
+  max-width: 860px;
+  margin: 16px 0 0;
+  padding: 18px 22px;
+  border: 0;
+  background: var(--pt-panel-ink);
+  color: var(--pt-panel-text);
+  overflow-x: auto;
+  font-family: var(--pt-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+:root[data-theme='dark'] .ptd-code {
+  border: 1px solid var(--pt-hair);
+}
+
+.ptd-book .ptd-body .ptd-code code {
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  overflow-wrap: normal;
+}
+
+/* tables: ruled, one hairline per rule; collapse merges the header's close
+   and the first row's open into one line */
 .ptd-table-wrap {
   max-width: 860px;
   margin-top: 16px;
@@ -115,12 +363,10 @@
   padding: 7px 14px 7px 0;
   border-bottom: 1px solid var(--pt-hair);
   text-align: left;
-  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
-  font-size: 11px;
+  font-family: var(--pt-text);
+  font-size: 12.5px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--pt-ink-3);
+  color: var(--pt-ink);
 }
 
 .ptd-table td {
@@ -139,4 +385,52 @@
   margin: 30px 0 4px;
   border: 0;
   border-top: 1px solid var(--pt-hair);
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px) {
+  .ptd-book,
+  .ptd-doc {
+    gap: 24px;
+  }
+
+  .ptd-head {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .ptd-head h1 {
+    font-size: 32px;
+  }
+
+  .ptd-meta {
+    text-align: left;
+  }
+
+  .ptd-toc {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ptd-sec,
+  .ptd-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .ptd-sec h2 {
+    font-size: 26px;
+  }
+
+  .ptd-pn {
+    padding-top: 0;
+  }
+
+  .ptd-pn b {
+    font-size: 16px;
+  }
+
+  .ptd-lead .ptd-pn {
+    display: none;
+  }
 }

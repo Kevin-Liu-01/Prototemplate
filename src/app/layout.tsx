@@ -7,15 +7,15 @@ import '@/components/viewer/tokens.css';
 
 const SITE_URL = 'https://prototemplate.vercel.app';
 
-const SITE_TITLE = 'Prototemplate — GT Website Redesign Explorations';
+const SITE_TITLE = 'Prototemplate, redesign explorations for the General Translation website';
 
 const SITE_DESCRIPTION =
-  'Sixteen art directions for the General Translation website — a localization-first design lab of GSAP motion and WebGL shader heroes, from ruled-paper minimalism to black-hole light fields, each one live at /d/<slug>.';
+  'Seventeen directions for the General Translation website, each one live at /d/<slug>, with the brand book, the repository documents, the brand deck, a presenter, a compare rig and an archive of retired versions, all in one viewer.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    template: '%s · Prototemplate',
+    template: '%s, Prototemplate',
     default: SITE_TITLE,
   },
   description: SITE_DESCRIPTION,
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 2400,
         height: 1260,
-        alt: 'Prototemplate — prototype × template, the working index of General Translation redesign directions.',
+        alt: 'Prototemplate, the working index of General Translation redesign directions.',
       },
     ],
   },
@@ -98,7 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         {/* rAF gate: an embedding parent can freeze/resume this page's
-            animation loops with postMessage({type:'gt:freeze',frozen}) —
+            animation loops with postMessage({type:'gt:freeze',frozen});
             queued callbacks flush on resume, so shaders and scroll loops
             pick up where they left off. The presenter uses it to idle its
             wall of live thumbnails. */}
@@ -111,7 +111,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       {/* suppressHydrationWarning: extensions (Grammarly et al.) stamp
           attributes on <body> before React hydrates, and the mismatch
-          logs a console error Lighthouse counts against the page — the
+          logs a console error Lighthouse counts against the page; the
           flag is attribute-only, one level deep, so real bugs still warn */}
       <body suppressHydrationWarning>{children}</body>
     </html>

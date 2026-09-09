@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
-import ThemeToggle from '@/components/shared/ThemeToggle';
+import { ThemeButton } from '@/components/viewer/ThemeButton';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -52,7 +52,7 @@ export default function TopNav() {
         </nav>
 
         <div className='tc-nav-right'>
-          <ThemeToggle className='tc-nav-theme' />
+          <ThemeButton className='tc-nav-theme' />
           <a href='#pricing'>Sign in</a>
           <a className='tc-btn tc-btn-solid tc-btn-sm' href='#pricing'>
             Get a demo

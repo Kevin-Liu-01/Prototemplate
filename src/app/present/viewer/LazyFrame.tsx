@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 /**
  * A scaled-down live preview of a direction page. The iframe only exists
@@ -26,7 +28,7 @@ export default function LazyFrame({ slug }: { slug: string }) {
     frame.current?.contentWindow?.postMessage({ type: 'gt:freeze', frozen }, '*');
   };
 
-  useEffect(() => {
+  useMountEffect(() => {
     const el = holder.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -46,7 +48,7 @@ export default function LazyFrame({ slug }: { slug: string }) {
       sizer.disconnect();
       window.clearTimeout(settleTimer.current);
     };
-  }, []);
+  });
 
   return (
     <div

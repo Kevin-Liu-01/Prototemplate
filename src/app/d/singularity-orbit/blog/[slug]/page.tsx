@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import BlogArticle from '../../../singularity/company-sections/BlogArticle';
@@ -58,7 +58,7 @@ export default async function SingularityOrbitBlogPostPage({ params }: Params) {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='singularity-orbit' />
+      <DirectionCorner slug='singularity-orbit' />
     </SmoothScroll>
   );
 }

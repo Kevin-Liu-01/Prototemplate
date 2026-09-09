@@ -1,0 +1,74 @@
+/* DirectionCorner: the floating chrome on /d pages. Two 32px buttons stacked
+   in the top left corner, sharing one hairline, on paper; a fixed layer
+   over the page holds the overlay list and the index panel. Tokens only,
+   radius 0, no shadow. tokens.css owns .pt-ib; Sidebar.css draws the
+   overlay list (.pt-sb.is-overlay) as an absolute box against this layer;
+   IndexPanel.css draws the panel, which here spans the whole height because
+   there is no toolbar above it and no progress line below. */
+
+.pt-corner {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--pt-text);
+}
+
+.pt-corner .pt-ib {
+  background: var(--pt-paper);
+  border-color: var(--pt-hair);
+  color: var(--pt-ink-2);
+}
+
+/* the pair shares the hairline between them */
+.pt-corner .pt-ib + .pt-ib {
+  margin-top: -1px;
+}
+
+.pt-corner .pt-ib:hover,
+.pt-corner .pt-ib.is-on {
+  position: relative;
+  z-index: 1;
+  color: var(--pt-ink);
+  border-color: var(--pt-ink);
+}
+
+/* the outer margin is gone on a phone: the corner steps below the nav band */
+@media (max-width: 700px) {
+  .pt-corner {
+    top: 70px;
+  }
+}
+
+/* the layer: inert until a child opens; children take the pointer */
+.pt-corner-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  pointer-events: none;
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+}
+
+.pt-corner-layer > * {
+  pointer-events: auto;
+}
+
+/* a click outside the open layer closes it; nothing to see, so no scrim color */
+.pt-corner-scrim {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  cursor: default;
+}
+
+.pt-corner-layer .pt-panel {
+  top: 0;
+  bottom: 0;
+}

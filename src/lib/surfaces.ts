@@ -1,5 +1,6 @@
 import { LIBRARIES } from '@/app/craft/libraries';
 import { DOCS } from '@/app/docs/registry';
+import { ARCHIVE, archiveDesc, archiveShot } from '@/lib/archive';
 import { DIRECTIONS } from '@/lib/directions';
 
 /**
@@ -10,11 +11,16 @@ import { DIRECTIONS } from '@/lib/directions';
  * and navigates internal hrefs with the router, external ones in a new tab.
  *
  * Thumbnails: `shot` and `shotDark` are public paths. Site rows use the
- * direction captures under /shots/light and /shots/dark where they exist;
- * page, document and brand rows take /shots/thumb/<id>.jpg once captured
- * (192x108, shown at 96x54). Public rows point into /deck/shots/thumb,
- * which scripts/build-deck.mjs emits from the deck source. A row without a
- * shot renders the blank plate with its initial.
+ * direction captures under /shots/light and /shots/dark; document and brand
+ * rows the route captures under /shots/thumb/<id>.jpg and <id>-dark.jpg;
+ * archive rows the 1440x900 first fold under /shots/archive. Public rows
+ * point into /deck/shots/thumb, which scripts/build-deck.mjs emits from the
+ * deck source. A row without a shot renders the blank plate with its
+ * initial.
+ *
+ * The site groups run in the one sidebar order every route keeps (Pages,
+ * Documents, Sites, Explorations, Archive); Libraries and Brand sections
+ * follow as panel-only groups.
  */
 export type SurfaceSet = 'site' | 'public';
 
@@ -23,6 +29,7 @@ export const SITE_GROUPS = [
   'Documents',
   'Sites',
   'Explorations',
+  'Archive',
   'Libraries',
   'Brand sections',
 ] as const;
@@ -72,19 +79,28 @@ function internal(
   return { id, name, href, host: href, desc, group, set: 'site', ...shots };
 }
 
+const THUMBS = '/shots/thumb';
+
+/** The light and dark route captures for a thumbnail stem under /shots/thumb. */
+function thumb(stem: string): { shot: string; shotDark: string } {
+  return { shot: `${THUMBS}/${stem}.jpg`, shotDark: `${THUMBS}/${stem}-dark.jpg` };
+}
+
 const PAGES: readonly Surface[] = [
   internal('index', 'Index', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages'),
-  internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages'),
-  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages'),
+  internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand-the-name')),
+  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs-readme')),
   internal('deck', 'Deck', '/deck', 'The GT brand deck, 52 slides.', 'Pages'),
-  internal('present', 'Present', '/present', 'The presenter: intro, prototypes and scoreboard.', 'Pages'),
+  internal('present', 'Present', '/present', 'The presenter: intro, prototypes and scoreboard.', 'Pages', {
+    shot: `${THUMBS}/present-intro.jpg`,
+  }),
   internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages'),
 ];
 
 const DOCUMENTS: readonly Surface[] = [
-  internal('docs-readme', 'Readme', '/docs', 'The repository readme.', 'Documents'),
+  internal('docs-readme', 'Readme', '/docs', 'The repository readme.', 'Documents', thumb('docs-readme')),
   ...DOCS.map((doc) =>
-    internal(`docs-${doc.slug}`, doc.title, `/docs/${doc.slug}`, doc.blurb, 'Documents')
+    internal(`docs-${doc.slug}`, doc.title, `/docs/${doc.slug}`, doc.blurb, 'Documents', thumb(`docs-${doc.slug}`))
   ),
 ];
 
@@ -148,7 +164,14 @@ const BRAND_SECTIONS: readonly Surface[] = [
     'The industry, the audience, and the visual references for partners.',
   ],
 ].map(([anchor, name, desc]) =>
-  internal(`brand-${anchor}`, name, `/brand#${anchor}`, desc, 'Brand sections')
+  internal(`brand-${anchor}`, name, `/brand#${anchor}`, desc, 'Brand sections', thumb(`brand-${anchor}`))
+);
+
+/** The retired versions, each opening its capture at /archive/<slug>. */
+const ARCHIVE_ROWS: readonly Surface[] = ARCHIVE.map((item) =>
+  internal(`archive-${item.slug}`, item.name, `/archive/${item.slug}`, archiveDesc(item), 'Archive', {
+    shot: archiveShot(item),
+  })
 );
 
 export const SITE_SURFACES: readonly Surface[] = [
@@ -156,6 +179,7 @@ export const SITE_SURFACES: readonly Surface[] = [
   ...DOCUMENTS,
   ...SITES,
   ...EXPLORATIONS,
+  ...ARCHIVE_ROWS,
   ...LIBRARY_ROWS,
   ...BRAND_SECTIONS,
 ];

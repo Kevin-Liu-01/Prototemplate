@@ -17,12 +17,12 @@ import { useQuietReveal } from '../../sections/reveal';
 
 const BEFORE = `<T>
   <p>Payment received</p>
-  <button>Save</button>
+  <button type="button">Save</button>
 </T>`;
 
 const AFTER = `<T context="checkout toast">
   <p>Payment received</p>
-  <button>Save</button>
+  <button type="button">Save</button>
 </T>`;
 
 export default function ContextHero() {

@@ -1,4 +1,4 @@
-import DirectionDock from '@/components/shared/DirectionDock';
+import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import SiteFooter from '../sections/SiteFooter';
@@ -47,7 +47,7 @@ export default function ToolchainContextPage() {
           <SiteFooter />
         </div>
       </div>
-      <DirectionDock slug='toolchain' />
+      <DirectionCorner slug='toolchain' />
     </SmoothScroll>
   );
 }

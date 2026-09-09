@@ -21,7 +21,7 @@ src/
     globals.css           the four color tokens
   components/
     shared/               cross-page instruments: EverySentence, StudioField,
-                          PrismaticField, HeroFieldSwitcher, ThemeToggle,
+                          PrismaticField, HeroFieldSwitcher, TcMobileNav,
                           diagrams/ (DoubledLine, …)
     shell/                Bento primitives (Rails / BentoRow / BentoCell)
   lib/                    the engines: dither.ts, studio-field.ts,
@@ -69,8 +69,7 @@ and copies only the CSS it must re-scope.
   a new copy, don't: import the SSOT and rescope CSS.
 - The singularity-* homes are toolchain-based (`toolchain-root sgXh-root`)
   and pull shared v0 sections from `src/app/d/_v0/`; their `/enterprise`
-  pages are singularity-based. The nav's enterprise link is retargeted
-  post-hydration by `EnterpriseNavRebase` — never edit toolchain's TopNav.
+  pages are singularity-based. Never edit toolchain's TopNav for one site.
 
 ## Componentized instruments
 
