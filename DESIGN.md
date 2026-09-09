@@ -102,9 +102,20 @@ The three roles, and only three:
 
 | role | token | draws |
 | --- | --- | --- |
-| structural | `--pt-hair` | the toolbar bottom, the sidebar right edge, the index panel left edge, group headers, the segmented control, the field boxes at rest |
-| row | `--pt-hair-soft` | list rows, search results, panel rows, the help card's table rows, the progress track |
-| frame | `--pt-edge` | the sheet, thumbnails, tiles, the 96x54 captures, the help card |
+| structural | `--pt-hair` | large surfaces and the lines that divide the shell: the sheet ring (fixed and flow), the search card, the index panel's left edge, the toolbar bottom, the sidebar right edge, group headers, the book head's rule, the segmented control, the field boxes at rest |
+| row | `--pt-hair-soft` | list rows, search results, panel rows, the book head's meta table rows, the help card's table rows, the sheet mat's outer ring, the progress track |
+| frame | `--pt-edge` | frames of images and tiles only: thumbnails, the book's page frames, the grid tiles, the 96x54 and 64x36 captures, the hover preview's frame, and the help card |
+
+The weights carry meaning. A frame at 0.62 alpha is the darkest line in
+chrome because it holds a picture in place: the eye must find the edge of
+a capture against the paper around it. A large surface (the sheet, a card,
+a panel, a head) is not a picture; it is the paper itself, so its edge is
+the structural hairline, and its mat ring (where it has one) steps down
+again to the row weight. A sheet drawn in the frame weight reads as a
+boxed image, which is the bug Kevin named in round six ("make the borders
+around these areas the proper border colors"). The help card is the one
+card that keeps the frame weight: it floats over a scrim, where the
+hairline would vanish.
 
 Nothing in chrome sets a border color from any other token or literal.
 `--pt-ink` appears on a border only as a state: a pressed button
@@ -123,7 +134,9 @@ Where two bordered components touch, exactly one draws the line:
 | index panel and stage | the panel's left edge | the sheet ring runs under the panel; the panel covers the progress track while open |
 | group header and its first row | the header's bottom edge | the first row draws no top rule |
 | last row of a group and what follows | the last row's bottom edge | the next header carries no top rule |
-| sheet mat and its content | the mat's ring | content draws no outer border |
+| sheet mat and its content | the mat's ring (hair border, paper gap, hair-soft outline) | content draws no outer border |
+| book head and its contents | the head's bottom rule (`--pt-hair`) | the contents grid draws no top rule; its rows draw their own bottom rules |
+| book head and its meta table | the table's rows draw `--pt-hair-soft` under themselves | the table draws no outer frame; the head's rule closes it |
 | tile and its shot | the tile's frame | the shot draws no border |
 | segmented control and its options | the control's outer border | options draw only the dividers between them; the last draws none |
 | stacked corner buttons | the upper button's bottom edge | the lower button's top edge is transparent at rest |
@@ -138,9 +151,10 @@ fails on any doubled line (two owners within 4px), any junction (two owners
 coincident on one seam), and any border color in chrome outside the three
 roles. `pnpm lint:all` runs it. The allow list in `scripts/lint-lines.mjs`
 names every sanctioned multi-stroke device with its reason inline; for
-chrome those are the sheet mat (`sheet`), the active frames (`thumb-frame`,
-`page-frame`, the sidebar's site tiles as `pt-tile`) and the hover
-preview's mat (`pt-preview`).
+chrome those are the sheet mat (`sheet`: a hair border, a paper gap, a
+hair-soft outline), the active frames (`thumb-frame`, `page-frame`, the
+sidebar's site tiles as `pt-tile`) and the hover preview's mat
+(`pt-preview`).
 
 Scroll regions belong to the same law: one thin scrollbar everywhere in
 chrome, a 4px gutter with no track rule and a 2px thumb in `--pt-thumb`

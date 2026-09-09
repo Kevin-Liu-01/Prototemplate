@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { RefObject } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
+import { BookHead } from '@/components/viewer/BookView';
 import { ListRow } from '@/components/viewer/ListRow';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -449,17 +450,15 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
 
   return (
     <div className='ptd-book'>
-      <header className='ptd-head'>
-        <div>
-          <h1>{BOOK_TITLE}</h1>
-          <p>{BOOK_LEAD}</p>
-        </div>
-        <div className='ptd-meta'>
-          <span>{docs.length} documents</span>
-          <span>{sectionTotal} sections</span>
-          <span>{BOOK_DATE}</span>
-        </div>
-      </header>
+      <BookHead
+        title={BOOK_TITLE}
+        lead={BOOK_LEAD}
+        meta={[
+          { key: 'Documents', value: String(docs.length) },
+          { key: 'Sections', value: String(sectionTotal) },
+          { key: 'Updated', value: BOOK_DATE },
+        ]}
+      />
 
       <nav className='ptd-toc' aria-label='Contents'>
         {docs.map((doc) => (

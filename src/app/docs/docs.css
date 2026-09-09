@@ -1,8 +1,9 @@
 /* Docs: the repository documents on the viewer shell.
 
-   The shell (src/components/viewer) draws the frame; this sheet draws the
-   book inside the flow sheet: the head, the contents, the document
-   dividers, the numbered rows, and the prose the markdown renderer emits.
+   The shell (src/components/viewer) draws the frame and the book's head
+   (BookHead); this sheet draws the rest of the book inside the flow sheet:
+   the contents, the document dividers, the numbered rows, and the prose
+   the markdown renderer emits.
    Two token families meet here on purpose (decision 6): the book furniture
    is chrome and reads the shell's --pt- tokens; each row body is article
    content under .pt-root, so it keeps the titanium hairline family from
@@ -41,52 +42,13 @@
 .ptd-book {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 32px;
   color: var(--pt-ink);
   font-family: var(--pt-text);
 }
 
-/* head: title and lead on the left, meta on the right, one ink rule under both */
-.ptd-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 32px;
-  align-items: end;
-  padding-bottom: 26px;
-  border-bottom: 1px solid var(--pt-ink);
-}
-
-.ptd-head h1 {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 44px;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
-  margin: 0;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
-}
-
-.ptd-head p {
-  font-size: 15.5px;
-  line-height: 1.5;
-  color: var(--pt-ink-2);
-  max-width: 62ch;
-  margin: 14px 0 0;
-}
-
-.ptd-meta {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--pt-titanium);
-  text-align: right;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-
-.ptd-meta span {
-  display: block;
-}
+/* the head is the shell's BookHead (src/components/viewer/BookView.css):
+   the title, the lead, the meta table and the --pt-hair rule under them */
 
 /* contents: three columns of ruled links with the document number */
 .ptd-toc {
@@ -150,7 +112,7 @@
   align-items: end;
   padding-top: 30px;
   border-top: 1px solid var(--pt-hair);
-  margin-top: 12px;
+  margin-top: 16px;
   scroll-margin-top: 20px;
 }
 
@@ -393,19 +355,6 @@
   .ptd-book,
   .ptd-doc {
     gap: 24px;
-  }
-
-  .ptd-head {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .ptd-head h1 {
-    font-size: 32px;
-  }
-
-  .ptd-meta {
-    text-align: left;
   }
 
   .ptd-toc {

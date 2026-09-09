@@ -3,9 +3,11 @@
    ViewerShell.css owns .pt-stagewrap, the main grid's second row that the
    shell renders and measures, and the cross-fade between views. The sheet
    sits inside it. The fixed sheet is positioned by fitSheet() in Sheet.tsx;
-   the ring is drawn as a mat so no shadow is needed: a 1px edge border on
-   .sheet, a 1px paper gap from the mat's padding, a 1px hair-soft outline
-   on the mat. lint-lines allows the pair under the `sheet` class fragment.
+   the ring is drawn as a mat so no shadow is needed: a 1px hair border on
+   .sheet (the structural role: a sheet is a large surface, not a framed
+   image, so it never draws --pt-edge), a 1px paper gap from the mat's
+   padding, a 1px hair-soft outline on the mat. lint-lines allows the pair
+   under the `sheet` class fragment.
    A frameless sheet carries a 24px caption under it; a paged sheet shows a
    chevron at each edge on hover, where a click pages.
 
@@ -51,7 +53,7 @@
 
 .sheet {
   box-sizing: border-box;
-  border: 1px solid var(--pt-edge);
+  border: 1px solid var(--pt-hair);
   background: var(--pt-paper);
   overflow: hidden;
 }

@@ -17,50 +17,87 @@
   padding: 44px 56px 120px;
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 32px;
 }
 
-/* head: title and lead on the left, meta on the right, one structural rule
-   under both (--pt-hair; chrome draws no ink rules, directive 8.9) */
+/* ---- the masthead (BookHead) ----
+   Title and lead at the left, the meta table at the right, top-aligned
+   with the title, one structural rule under both (--pt-hair; chrome draws
+   no ink rules, directive 8.9) and 32px of air to the contents below: the
+   column's gap. The lead's column is fluid; the table holds 220px. */
 .pt-book-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 32px;
-  align-items: end;
-  padding-bottom: 26px;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 56px;
+  align-items: start;
+  padding-bottom: 28px;
   border-bottom: 1px solid var(--pt-hair);
+  color: var(--pt-ink);
+}
+
+.pt-book-title {
+  min-width: 0;
 }
 
 .pt-book-head h1 {
   font-family: var(--pt-display);
   font-weight: 500;
-  font-size: 44px;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
+  font-size: 48px;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
   margin: 0;
   text-wrap: balance;
   font-feature-settings: 'cv11', 'ss01';
 }
 
 .pt-book-head p {
-  font-size: 15.5px;
-  line-height: 1.5;
+  font-family: var(--pt-text);
+  font-size: 17px;
+  line-height: 1.55;
   color: var(--pt-ink-2);
   max-width: 62ch;
-  margin: 14px 0 0;
+  margin: 16px 0 0;
 }
 
+/* the meta: a ruled mini table, key at the left in titanium and the value
+   at the right in ink, a row rule (--pt-hair-soft) under each row. The
+   first row's top pad seats its cap height on the title's. */
 .pt-book-meta {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--pt-titanium);
-  text-align: right;
-  white-space: nowrap;
+  margin: 0;
+  font-family: var(--pt-text);
   font-variant-numeric: tabular-nums;
 }
 
-.pt-book-meta span {
-  display: block;
+.pt-book-meta > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0 9px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.pt-book-meta > div:first-child {
+  padding-top: 2px;
+}
+
+.pt-book-meta dt {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pt-titanium);
+  white-space: nowrap;
+}
+
+.pt-book-meta dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--pt-ink);
+  text-align: right;
+  white-space: nowrap;
+  font-feature-settings: 'cv11', 'ss01';
 }
 
 /* contents: four columns of ruled links with a tabular page range */
@@ -117,7 +154,7 @@
   align-items: end;
   padding-top: 30px;
   border-top: 1px solid var(--pt-hair);
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 .pt-book-sec small {
@@ -229,15 +266,27 @@
 
   .pt-book-head {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 20px;
+    padding-bottom: 20px;
   }
 
   .pt-book-head h1 {
     font-size: 32px;
+    letter-spacing: -0.025em;
+  }
+
+  .pt-book-head p {
+    font-size: 15.5px;
+    margin-top: 12px;
   }
 
   .pt-book-meta {
-    text-align: left;
+    max-width: 320px;
+  }
+
+  .pt-book-meta > div:first-child {
+    padding-top: 8px;
+    border-top: 1px solid var(--pt-hair-soft);
   }
 
   .pt-book-toc {

@@ -15,11 +15,29 @@ import './BookView.css';
 /** The word for one page in the divider text: `Slides 13 to 24`, `Slide 49`. */
 export type BookNoun = { one: string; many: string };
 
+/** One row of the head's meta table: `Documents` and `6`, `Updated` and `September 2026`. */
+export type BookMetaEntry = { key: string; value: string };
+
+/**
+ * A meta line as a caller writes it. A string is parsed: `6 documents`
+ * becomes the value `6` under the key `Documents`, and a line with no
+ * leading count (`September 2026`) becomes the value under `Updated`. An
+ * entry names both sides itself.
+ */
+export type BookMeta = string | BookMetaEntry;
+
+export type BookHeadProps = {
+  title: string;
+  lead?: ReactNode;
+  /** the rows of the ruled table at the right of the title, top to bottom */
+  meta?: readonly BookMeta[];
+};
+
 export type BookViewProps = {
   title: string;
-  lead?: string;
-  /** right-aligned lines under the head rule: `8 sections`, `52 slides`, `September 2026` */
-  meta?: readonly string[];
+  lead?: ReactNode;
+  /** the head's meta rows: `8 sections`, `52 slides`, `September 2026`, or key and value pairs */
+  meta?: readonly BookMeta[];
   /** the book's sections; each becomes a contents entry and a divider */
   sections: readonly ShellSection[];
   /** what fills a page: a ThumbShot, or the real content of a section */
@@ -49,6 +67,49 @@ function dividerText(range: PageRange, noun: BookNoun): string {
   return range.last > range.first
     ? `${noun.many} ${pad2(range.first)} to ${pad2(range.last)}`
     : `${noun.one} ${pad2(range.first)}`;
+}
+
+/** `6 documents`: the count, then the noun */
+const COUNT_LINE = /^(\d[\d,.]*)\s+(\S.*)$/;
+
+/** the key a line with no count sits under */
+const DATE_KEY = 'Updated';
+
+function metaEntry(line: BookMeta): BookMetaEntry {
+  if (typeof line !== 'string') return line;
+  const m = COUNT_LINE.exec(line.trim());
+  if (!m) return { key: DATE_KEY, value: line.trim() };
+  const noun = m[2].trim();
+  return { key: noun.charAt(0).toUpperCase() + noun.slice(1), value: m[1] };
+}
+
+/**
+ * The masthead of a book: the title and its lead at the left, the meta as
+ * a ruled mini table at the right, top-aligned with the title, and one
+ * structural rule (--pt-hair, never ink; directive 8.9) under both. Used
+ * by BookView and by any route that lays out its own book (the docs) so
+ * every book in the shell opens the same way.
+ */
+export function BookHead({ title, lead, meta }: BookHeadProps) {
+  const rows = meta ? meta.map(metaEntry) : [];
+  return (
+    <header className='pt-book-head'>
+      <div className='pt-book-title'>
+        <h1>{title}</h1>
+        {lead ? <p>{lead}</p> : null}
+      </div>
+      {rows.length > 0 ? (
+        <dl className='pt-book-meta'>
+          {rows.map((row, i) => (
+            <div key={`${i}-${row.key}`}>
+              <dt>{row.key}</dt>
+              <dd>{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+    </header>
+  );
 }
 
 /**
@@ -195,19 +256,7 @@ export function BookView({
   return (
     <div ref={root} className='pt-book pt-scroll' role='region' aria-label={label}>
       <div className='pt-book-in'>
-        <div className='pt-book-head'>
-          <div>
-            <h1>{title}</h1>
-            {lead ? <p>{lead}</p> : null}
-          </div>
-          {meta && meta.length > 0 ? (
-            <div className='pt-book-meta'>
-              {meta.map((line, i) => (
-                <span key={i}>{line}</span>
-              ))}
-            </div>
-          ) : null}
-        </div>
+        <BookHead title={title} lead={lead} meta={meta} />
 
         <nav className='pt-book-toc' aria-label='Contents'>
           {blocks.map(({ section, range }) => {

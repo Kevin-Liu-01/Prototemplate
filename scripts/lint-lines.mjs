@@ -101,7 +101,7 @@ const ALLOW = [
   'eh-chip', // orbiting locale chips sweep the hero; any parallelism is transient
   'tcb-term', // the band terminal wears the doubled frame: border + offset outline
   'lg-card', // lens-gate's refracting cards drift each frame; parallelism is transient
-  'sheet', // the viewer shell's sheet mat: a 1px edge border inside a 1px paper gap inside a 1px hair-soft outline, the one sanctioned doubled line in chrome (the deck's own .sheet draws the same ring as two spread shadows)
+  'sheet', // the viewer shell's sheet mat: a 1px hair border (the structural role; a sheet is a large surface, not a framed image) inside a 1px paper gap inside a 1px hair-soft outline, the one sanctioned doubled line in chrome (the deck's own .sheet draws the same ring as two spread shadows)
   'thumb-frame', // the shell's active thumbnail frame: the edge border plus the 2px offset ink outline (the deck's .thumb-frame is the same device)
   'page-frame', // the shell's active book page frame: the same border plus offset outline pair
   'pt-preview', // the hover preview card: a paper mat with a hair-soft outline around a frame with an edge border, the sheet ring at 240px

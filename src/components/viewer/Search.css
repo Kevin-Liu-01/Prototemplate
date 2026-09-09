@@ -1,5 +1,7 @@
 /* Search: the palette over a scrim (directive 8.3). The card is paper with
-   a --pt-edge frame, 640px at most, near the top of the viewport. Three
+   a --pt-hair border (a large surface takes the structural role; only image
+   frames and tiles draw --pt-edge), 640px at most, near the top of the
+   viewport. Three
    rows: the tools (the 34px filter with the search glyph, the count), the
    results (a scroll region of groups, each a 12.5px titanium label over
    ruled rows), the foot (the three keys in words). Every rule is 1px and
@@ -36,7 +38,7 @@
   display: flex;
   flex-direction: column;
   background: var(--pt-paper);
-  border: 1px solid var(--pt-edge);
+  border: 1px solid var(--pt-hair);
   animation: pt-search-in var(--pt-dur-enter) var(--pt-ease-out) both;
 }
 
