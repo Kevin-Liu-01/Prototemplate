@@ -5,3 +5,7 @@ out
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
+
+# deck renders and private temp files from deck/shoot-slide.mjs
+deck/preview
+deck/tmp

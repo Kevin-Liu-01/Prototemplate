@@ -28,7 +28,7 @@
   /* the stage: a fixed 1600 x 900 sheet, scaled to the window */
 
   /* edge grid: two rails and two rules that run to the edge of the sheet, crosses where they meet */
-  .frame { position: absolute; inset: 0; pointer-events: none; }
+  .frame { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
   .frame::before, .frame::after { content: ''; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--hair); }
   .frame::before { left: 56px; } .frame::after { right: 56px; }
   .frame .rule { position: absolute; left: 0; right: 0; height: 1px; background: var(--hair); }
@@ -335,7 +335,7 @@
         <span class="bar-brand"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>GT brand deck</b></span>
         <span class="sep"></span>
         <button type="button" class="ib icon" data-act="prev" title="Previous slide (left arrow)" aria-label="Previous slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"/></svg></button>
-        <span class="count"><b id="bar-n">01</b><span class="of"> / </span><span id="bar-total">52</span></span>
+        <span class="count"><b id="bar-n">01</b><span class="of"> / </span><span id="bar-total">63</span></span>
         <button type="button" class="ib icon" data-act="next" title="Next slide (right arrow)" aria-label="Next slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"/></svg></button>
       </div>
       <div class="bar-r">

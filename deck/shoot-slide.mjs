@@ -17,7 +17,7 @@ const head = readFileSync(resolve(D, 'parts/head.html'), 'utf8');
 const tail = readFileSync(resolve(D, 'parts/tail.html'), 'utf8');
 const files = readdirSync(resolve(D, 'slides')).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
 const body = files.map((f) => readFileSync(resolve(D, 'slides', f), 'utf8').replace(/\s+$/, '') + '\n\n').join('');
-const fonts = readFileSync(resolve(D, '..', 'deck-fonts.css'), 'utf8');
+const fonts = readFileSync(resolve(D, 'fonts', 'deck-fonts.css'), 'utf8');
 const src = (head + body + tail).replace('<!--FONTS-->', `<style>${fonts}</style>`).replace(/^<title>[^<]*<\/title>\s*/, '');
 const args = process.argv.slice(2);
 const want = args.length === 0 || args[0] === 'all' ? files.map((_, k) => k + 1) : args.map(Number).filter((n) => n >= 1 && n <= files.length);
@@ -30,12 +30,14 @@ const errors = [];
 for (const scheme of ['light', 'dark']) {
   const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 }, colorScheme: scheme, deviceScaleFactor: 1, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
+  // parts/tail.html opens dark unless a theme is stored and never consults prefers-color-scheme, so seed the stored theme per pass
+  await ctx.addInitScript((t) => { try { localStorage.setItem('gt-theme', t); localStorage.setItem('gt-deck-theme', t); } catch (e) {} }, scheme);
   page.on('pageerror', (e) => errors.push(`${scheme}: ${e.message}`));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(`${scheme} console: ${m.text()}`); });
   await page.goto(`file://${tmp}#${want[0]}`, { waitUntil: 'load' });
   await page.waitForTimeout(500);
   // present mode: chrome hidden, the sheet fills the 1600x900 viewport exactly
-  await page.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
+  await page.evaluate((t) => { document.documentElement.setAttribute('data-theme', t); }, scheme);
   await page.keyboard.press('p');
   await page.waitForTimeout(250);
   for (const n of want) {

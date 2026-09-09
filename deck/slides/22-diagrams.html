@@ -1,0 +1,73 @@
+    <!-- diagrams -->
+    <section class="slide s19a">
+      <style>
+        .s19a .lay { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 40px; }
+        .s19a .lay > .head { flex: 0 0 auto; }
+        /* the grammar as two ruled tables side by side; every row is the height of a two-line value so the rules align across the gutter */
+        .s19a .rules { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; }
+        .s19a .rules .rows > div { padding: 10px 0; min-height: 79px; gap: 20px; }
+        /* four examples at 300px each; the 300-unit viewBox renders 1:1, so 20px labels and 1px strokes are 20px and 1px on the sheet */
+        .s19a .ex { display: grid; grid-template-columns: repeat(4, 300px); justify-content: space-between; }
+        .s19a .ex svg.dia { width: 300px; }
+      </style>
+      <div class="in">
+        <div class="lay">
+          <div class="head">
+            <h2>Diagrams</h2>
+            <p>Every diagram is an inline SVG drawn in one grammar. The rows state the grammar, and the four examples below follow it.</p>
+          </div>
+          <div class="rules">
+            <div class="rows" style="--key:120px">
+              <div><b>Strokes</b><span>Lines are 1px or 1.5px in ink, the body text tone, or the hairline, with square caps and no rounded joins.</span></div>
+              <div><b>Labels</b><span>Labels are 20px in the body text tone or 26px in ink, always horizontal and 12px clear of any line.</span></div>
+              <div><b>Markers</b><span>A value on a scale or a step on a flow is marked with an 11px filled square in ink.</span></div>
+            </div>
+            <div class="rows" style="--key:120px">
+              <div><b>Arrowheads</b><span>Arrowheads are never drawn. Direction comes from reading order, a marker, or a short tick.</span></div>
+              <div><b>Objects</b><span>Objects use one isometric projection at 30 degrees, with faces shaded 4, 9, and 15 percent.</span></div>
+              <div><b>Links</b><span>Links between objects use the doubled connector. Flows, axes, and scales use a single 1px line.</span></div>
+            </div>
+          </div>
+          <div class="ex">
+            <svg class="dia" viewBox="0 0 300 210" aria-label="A three-step flow: a line with three square markers labeled Source, Translate, and Deploy, with the words strings and translations between them">
+              <line class="ink" x1="5.5" y1="70.5" x2="294.5" y2="70.5"/>
+              <rect x="0" y="65" width="11" height="11" fill="var(--ink)"/>
+              <rect x="144.5" y="65" width="11" height="11" fill="var(--ink)"/>
+              <rect x="289" y="65" width="11" height="11" fill="var(--ink)"/>
+              <text x="75" y="52" text-anchor="middle">strings</text>
+              <text x="222" y="52" text-anchor="middle">translations</text>
+              <text x="0" y="114">Source</text>
+              <text x="150" y="114" text-anchor="middle">Translate</text>
+              <text x="300" y="114" text-anchor="end">Deploy</text>
+              <text x="0" y="204">A three-step flow</text>
+            </svg>
+            <svg class="dia" viewBox="0 0 300 210" aria-label="A scale from Reserved to Playful with a center tick and an 11px square marker at 22 percent">
+              <line class="hair" x1="0" y1="70.5" x2="300" y2="70.5"/>
+              <line class="mid" x1="150.5" y1="66.5" x2="150.5" y2="75.5"/>
+              <rect x="60.5" y="65" width="11" height="11" fill="var(--ink)"/>
+              <text class="lab" style="font-size:20px" x="0" y="114">Reserved</text>
+              <text x="300" y="114" text-anchor="end">Playful</text>
+              <text x="0" y="204">A scale with a marker</text>
+            </svg>
+            <svg class="dia" viewBox="0 0 300 210" aria-label="A stacked layer model: customer apps above the open-source libraries above the platform, the two GT layers on a plate">
+              <rect x="0.5" y="62.5" width="299" height="108" fill="var(--plate)"/>
+              <rect x="0.5" y="8.5" width="299" height="162" fill="none" class="hair" stroke-width="1"/>
+              <path d="M0.5 62.5 H299.5 M0.5 116.5 H299.5" class="hair" stroke-width="1" fill="none"/>
+              <text x="16" y="42">Customer apps</text>
+              <text x="16" y="96">Open-source libraries</text>
+              <text x="16" y="150">Platform</text>
+              <text x="0" y="204">A stacked layer model</text>
+            </svg>
+            <svg class="dia" viewBox="0 0 300 210" aria-label="An isometric plate with three shaded faces and the mark seated in the top face">
+              <polygon points="150,8 270,77.28 150,146.56 30,77.28" fill="var(--ink)" fill-opacity="0.04"/>
+              <polygon points="270,77.28 150,146.56 150,170.56 270,101.28" fill="var(--ink)" fill-opacity="0.15"/>
+              <polygon points="30,77.28 150,146.56 150,170.56 30,101.28" fill="var(--ink)" fill-opacity="0.09"/>
+              <polygon points="150,8 270,77.28 270,101.28 150,170.56 30,101.28 30,77.28" fill="none" class="mid" stroke-width="1"/>
+              <path d="M30 77.28 L150 146.56 L270 77.28 M150 146.56 L150 170.56" fill="none" class="mid" stroke-width="1"/>
+              <g transform="translate(150 74) scale(1 0.5) rotate(45)"><svg width="84" height="54" x="-42" y="-27" fill="var(--ink)" fill-opacity="0.55"><use href="#gt-mark"/></svg></g>
+              <text x="0" y="204">An isometric plate</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
