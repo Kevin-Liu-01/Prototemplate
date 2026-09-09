@@ -1,0 +1,323 @@
+/* Skills: the working skills on the viewer shell.
+
+   The shell (src/components/viewer) draws the frame; this sheet draws the
+   book inside the flow sheet (the head, the contents, the category
+   dividers, the ruled rows) and lays the grid's rows out as text tiles.
+   Everything reads the shell's --pt- tokens: the book is chrome, so its
+   rules are --pt-hair and --pt-hair-soft and never ink (directive 8.9),
+   and the tiles carry the frame grammar every captured frame in the shell
+   uses (a 1px --pt-edge border, ink on hover, ink plus the 2px offset
+   outline when active). One hairline per rule, radius 0, no shadow. */
+
+/* ---------- the book column ---------- */
+
+.sk-book {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+}
+
+/* head: title and lead on the left, the counts on the right, one rule under both */
+.sk-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: end;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.sk-head h1 {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 44px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+.sk-head p {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+  max-width: 62ch;
+  margin: 14px 0 0;
+}
+
+.sk-meta {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-meta span {
+  display: block;
+}
+
+/* contents: one ruled link per category with its tabular range */
+.sk-toc {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 28px;
+}
+
+.sk-toc a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.sk-toc a span {
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.sk-toc a:hover span {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.sk-toc a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.sk-toc small {
+  font-family: var(--pt-text);
+  font-size: 12px;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* one category: its divider, then its rows; the rows rule themselves */
+.sk-cat {
+  display: flex;
+  flex-direction: column;
+}
+
+/* divider: the ordinal and the range in the gutter, the title beside */
+.sk-sec {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 28px;
+  align-items: end;
+  padding: 30px 0 18px;
+  border-top: 1px solid var(--pt-hair);
+  margin-top: 12px;
+}
+
+.sk-sec small {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-sec small span {
+  display: block;
+}
+
+.sk-sec h2 {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* row: the number in the gutter, the name and the description beside, one
+   soft rule below each; the scroll margin keeps a landed row off the edge */
+.sk-row {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  scroll-margin-top: 20px;
+}
+
+/* the last row of a category draws no rule: the next divider's rule, or the
+   book's end, follows it, so no two lines sit 12px apart */
+.sk-cat .sk-row:last-child {
+  border-bottom: 0;
+}
+
+.sk-n {
+  padding-top: 2px;
+}
+
+.sk-n b {
+  display: block;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the row being read: its number turns ink, as its row in the list does */
+.sk-row.is-active .sk-n b {
+  color: var(--pt-ink);
+}
+
+.sk-body {
+  min-width: 0;
+}
+
+.sk-body h3 {
+  margin: 0;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--pt-ink);
+  overflow-wrap: anywhere;
+}
+
+.sk-body p {
+  max-width: 72ch;
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+}
+
+/* ---------- the grid: every skill as a text tile ----------
+   ThumbList renders the shell's ListRow (.pt-row) for a route whose thumb
+   is 'row'; under this route's grid the rows become bordered tiles with the
+   number above the name. Scoped to the shell's id so no other route's grid
+   changes. The resets keep the article layer's .pt-row (prototemplate.css,
+   loaded by the gallery in the same session) off these tiles. */
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-thumbs {
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 12px;
+}
+
+/* the 12px gap is the tile spacing; the label keeps the grid's 26px break above it */
+.pt-viewer[data-shell='skills'] .pt-grid .pt-thumbs > .pt-sec-label:not(:first-child) {
+  margin-top: 14px;
+}
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  align-content: start;
+  min-height: 88px;
+  padding: 12px 14px;
+  margin: 0;
+  border: 1px solid var(--pt-edge);
+  background: var(--pt-paper);
+  overflow: visible;
+  color: var(--pt-ink-2);
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row::before {
+  content: none;
+}
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row .n {
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row .pt-row-title {
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  -webkit-line-clamp: 3;
+  overflow-wrap: anywhere;
+}
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row:hover,
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row:focus-visible {
+  border-color: var(--pt-ink);
+}
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.pt-viewer[data-shell='skills'] .pt-grid .pt-row.is-active {
+  border-color: var(--pt-ink);
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-viewer[data-shell='skills'] .pt-grid .pt-row {
+    transition: none;
+  }
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px) {
+  .sk-book {
+    gap: 24px;
+  }
+
+  .sk-head {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sk-head h1 {
+    font-size: 32px;
+  }
+
+  .sk-meta {
+    text-align: left;
+  }
+
+  .sk-toc {
+    grid-template-columns: 1fr;
+  }
+
+  .sk-sec,
+  .sk-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .sk-sec h2 {
+    font-size: 26px;
+  }
+
+  .sk-n {
+    padding-top: 0;
+  }
+}
