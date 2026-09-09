@@ -9,7 +9,6 @@ import {
   Package,
   X,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import type { ComponentType, ReactNode } from 'react';
 
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -23,6 +22,7 @@ import {
   type FeatureGroupId,
 } from './pricing-features';
 import { PLAN_CTAS } from './pricing-links';
+import { USAGE_RATES_URL } from './site-links';
 
 import './pricing.css';
 
@@ -219,9 +219,7 @@ function PlanHead({ tier }: { tier: Tier }) {
  * does it: the ruled table on desktop, the stacked value grid on phones.
  */
 export default function PricingCompare() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
-  const usage = `${base}/pricing/usage`;
+  const usage = USAGE_RATES_URL;
 
   useGroupLabelHandoff();
 

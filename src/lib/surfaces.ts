@@ -23,13 +23,14 @@ import type { ShellShot } from '@/lib/shell-data';
  * into /shots/pages; the 1440 exhibit captures under /shots/light,
  * /shots/dark and /shots/archive stay for the exhibit sheet and the grid,
  * which read the routes' own ShellItem.shot. The live surfaces of the
- * shipped site point at the deck's captures of generaltranslation.com,
- * copied into /shots/thumb as live-<name>.jpg; public rows point into
- * /shots/deck, the deck's own thumbnails, which scripts/build-deck.mjs
- * copies from deck/shots/thumb. So every site row that names a page
- * resolves a picture in both themes; a row without a shot (a library, the
- * asset folder) renders the blank plate with its initial. surfaceShot(id)
- * is what the preview layer reads.
+ * shipped site point at the captures scripts/capture-pages.mjs --live
+ * takes of generaltranslation.com in both themes, cut into /shots/thumb as
+ * live-<id>.jpg and live-<id>-dark.jpg; public rows point into /shots/deck,
+ * the deck's own thumbnails, which scripts/build-deck.mjs copies from
+ * deck/shots/thumb. So every site row that names a page resolves a picture
+ * in both themes; a row without a shot (a library, the asset folder)
+ * renders the blank plate with its initial. surfaceShot(id) is what the
+ * preview layer reads.
  *
  * The site groups run in the one sidebar order every route keeps (Pages,
  * Knowledge, Shipped, Documents, Sites, Explorations, Archive); Libraries
@@ -40,8 +41,9 @@ import type { ShellShot } from '@/lib/shell-data';
  * repository documents (/docs), the agent skills (/skills), the mark
  * explorations (/marks) and the archive of retired versions. Shipped
  * (directive 8.10) holds the direction that shipped and its pages:
- * /d/production and every concrete page.tsx under src/app/d/production,
- * then the live surfaces of the shipped site as external rows. Sites holds
+ * /d/production and the pages Kevin built under src/app/d/production, then
+ * the pages of the live site as external rows (the sidebar folds those
+ * under a `Live site` child). Sites holds
  * the three full site concepts only. A row that belongs to one of the four
  * sites names it in `site`, so a list can color its icon on the matching
  * --pt-site-* token.
@@ -191,29 +193,25 @@ const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => {
 
 /**
  * The pages of the shipped direction under /d/production (directive 8.10):
- * every concrete page.tsx under src/app/d/production, as [path, name,
- * description]. The dynamic segments (blog/[slug], legal/[route], the
- * catch-all) are not pages of their own and are left out. Home comes
- * first; the rest run in the order the live site's navigation reads them.
+ * the pages Kevin built for the live site, as [path, name, description],
+ * in the order the live site's navigation reads them after Home. The
+ * legal, Mintlify, usage rates, enterprise contact and YC routes are gone
+ * from this prototype on Kevin's directive; the live site's usage rates
+ * page appears among the live surfaces below. The dynamic segments
+ * (blog/[slug], the catch-all) are not pages of their own and are left out.
  */
 const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
-  ['/enterprise', 'Enterprise', 'The enterprise page of the shipped site.'],
-  ['/try', 'Report card', 'The interactive localization report card.'],
   ['/pricing', 'Pricing', 'Plans and the comparison table.'],
-  ['/pricing/usage', 'Usage rates', 'The per-word rates behind the plans.'],
+  ['/enterprise', 'Enterprise', 'The enterprise page of the shipped site.'],
   ['/careers', 'Careers', 'Open roles and the mission.'],
-  ['/blog', 'Blog', 'Essays, devlogs and the changelog.'],
-  ['/mintlify', 'Mintlify', 'Automated translation for Mintlify documentation.'],
-  ['/supported-locales', 'Supported locales', 'The catalog of supported locales.'],
   ['/contact', 'Contact', 'The contact form.'],
-  ['/enterprise/contact', 'Enterprise contact', 'The enterprise contact desk.'],
-  ['/enterprise/contact/yc', 'YC deal', 'The Y Combinator claim desk.'],
-  ['/yc', 'Y Combinator', 'The Y Combinator offer.'],
+  ['/try', 'Report card', 'The interactive localization report card.'],
+  ['/supported-locales', 'Supported locales', 'The catalog of supported locales.'],
   ['/signin', 'Sign in', 'The sign in page.'],
-  ['/legal', 'Legal', 'The legal resources ledger.'],
+  ['/blog', 'Blog', 'Essays, devlogs and the changelog.'],
 ];
 
-/** `/enterprise/contact/yc` becomes `enterprise-contact-yc`. */
+/** `/supported-locales` becomes `supported-locales`; a nested path joins its segments with hyphens. */
 function pathStem(path: string): string {
   return path.replace(/^\//, '').replace(/\//g, '-');
 }
@@ -242,62 +240,57 @@ const SHIPPED_ROUTES: readonly Surface[] = SHIPPED_PAGES.map(([path, name, desc]
 
 const LIVE_HOST = 'generaltranslation.com';
 
-/** The deck's capture of a live GT surface, copied into /shots/thumb as live-<name>.jpg. */
-function liveThumb(name: string): string {
-  return `${THUMBS}/live-${name}`;
-}
-
-/** A live surface of the shipped site: an external row in the site set, with the deck's capture of it. */
-function live(id: string, name: string, path: string, desc: string, shot: string, shotDark?: string): Surface {
-  const host = `${LIVE_HOST}${path}`;
+/**
+ * A live surface of the shipped site: an external row in the site set,
+ * with the light and dark captures scripts/capture-pages.mjs --live takes
+ * of the live page, cut by scripts/build-thumbs.mjs into
+ * /shots/thumb/live-<id>.jpg and live-<id>-dark.jpg.
+ */
+function live(id: string, name: string, href: string, host: string, desc: string): Surface {
   return {
-    id,
+    id: `live-${id}`,
     name,
-    href: `https://${host}`,
+    href,
     host,
     desc,
     group: 'Shipped',
     set: 'site',
     site: 'shipped',
-    shot: liveThumb(shot),
-    ...(shotDark ? { shotDark: liveThumb(shotDark) } : {}),
+    ...thumb(`live-${id}`),
   };
 }
 
-/** The live surfaces of the shipped site (directive 8.10), in the order Kevin listed them. */
+/** A live page of generaltranslation.com at `path`. */
+function livePage(id: string, name: string, path: string, desc: string): Surface {
+  const host = `${LIVE_HOST}${path}`;
+  return live(id, name, `https://${host}`, host, desc);
+}
+
+/**
+ * The live surfaces of the shipped site (directive 8.10): the pages Kevin
+ * built on generaltranslation.com, in the order he listed them, then the
+ * 404 page at an address that does not exist and the dashboard sign-in on
+ * its own host. The sidebar folds these under the Shipped group's `Live
+ * site` child, each with the external glyph.
+ */
 const SHIPPED_LIVE: readonly Surface[] = [
-  live('live-home', 'generaltranslation.com', '', 'The live site.', 'gt-home-light.jpg', 'gt-home-dark.jpg'),
-  live('live-pricing', 'Pricing, live', '/pricing', 'The live pricing page.', 'gt-pricing.jpg', 'gt-pricing-dark.jpg'),
+  livePage('home', 'Home', '', 'The live home page.'),
+  livePage('pricing', 'Pricing', '/pricing', 'The live pricing page.'),
+  livePage('usage', 'Usage rates', '/pricing/usage', 'The per-word rates behind the plans.'),
+  livePage('enterprise', 'Enterprise', '/enterprise', 'The live enterprise page.'),
+  livePage('careers', 'Careers', '/careers', 'The live careers page.'),
+  livePage('contact', 'Contact', '/contact', 'The live contact form.'),
+  livePage('docs', 'Docs', '/docs', 'The live documentation.'),
+  livePage('blog', 'Blog', '/blog', 'The live blog and changelog.'),
+  livePage('report-card', 'Report card', '/report-card', 'The live localization report card.'),
+  livePage('404', '404 page', '/this-page-does-not-exist', 'The not-found page, at an address that does not exist.'),
   live(
-    'live-enterprise',
-    'Enterprise, live',
-    '/enterprise',
-    'The live enterprise page.',
-    'gt-enterprise.jpg',
-    'gt-enterprise-dark.jpg'
+    'dash',
+    'Dashboard sign-in',
+    'https://dash.generaltranslation.com',
+    'dash.generaltranslation.com',
+    'The sign-in page of the dashboard.'
   ),
-  live('live-careers', 'Careers, live', '/careers', 'The live careers page.', 'gt-careers.jpg', 'gt-careers-dark.jpg'),
-  live('live-docs', 'Docs, live', '/docs', 'The live documentation.', 'gt-docs.jpg', 'gt-docs-dark.jpg'),
-  live('live-blog', 'Blog, live', '/blog', 'The live blog and changelog.', 'gt-blog.jpg'),
-  live(
-    'live-report-card',
-    'Report card, live',
-    '/report-card',
-    'The live localization report card.',
-    'gt-report-card.jpg',
-    'gt-report-card-dark.jpg'
-  ),
-  {
-    id: 'live-dash',
-    name: 'Dashboard, live',
-    href: 'https://dash.generaltranslation.com',
-    host: 'dash.generaltranslation.com',
-    desc: 'The signed-in product.',
-    group: 'Shipped',
-    set: 'site',
-    site: 'shipped',
-    shot: liveThumb('gt-dash.jpg'),
-  },
 ];
 
 /** The Shipped group: the home, its pages, then the live surfaces. */

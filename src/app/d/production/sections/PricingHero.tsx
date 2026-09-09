@@ -2,10 +2,10 @@
 
 import { useGSAP } from '@gsap/react';
 import { ArrowRight } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
 import { createInkField } from './pricing-ink-field';
+import { USAGE_RATES_URL } from './site-links';
 
 import './pricing.css';
 
@@ -102,13 +102,10 @@ function MoneyRain() {
  * else — the real page states its price posture in three lines and hands
  * the plan cards the rest.
  *
- * The Usage Rates link is the real page's /pricing/usage, resolved against
- * the concept's own base so it stays inside this control.
+ * The Usage Rates link goes to the live site's /pricing/usage: this control
+ * has no usage rates page of its own.
  */
 export default function PricingHero() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
-
   return (
     <section className='tc-sec pricing-hero'>
       <MoneyRain />
@@ -119,7 +116,7 @@ export default function PricingHero() {
             Start for free with usage-based billing. Unlimited projects and
             users on every plan.
           </p>
-          <a className='pricing-hero-link' href={`${base}/pricing/usage`}>
+          <a className='pricing-hero-link' href={USAGE_RATES_URL}>
             Usage Rates
             <ArrowRight aria-hidden='true' />
           </a>

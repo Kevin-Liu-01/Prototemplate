@@ -1,13 +1,12 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-
 import { useState } from 'react';
 import type { ComponentType, FormEvent } from 'react';
 
 import { HelpCircle, MessageSquare } from 'lucide-react';
 
 import GtHeroFigure from './GtHeroFigure';
+import { LEGAL_URL } from './site-links';
 
 import './contact.css';
 
@@ -73,9 +72,6 @@ const FEATURES: readonly Feature[] = [
 ];
 
 export default function ContactForm() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
-
   const [form, setForm] = useState<FormState>(EMPTY);
   const [noticed, setNoticed] = useState(false);
 
@@ -220,9 +216,9 @@ export default function ContactForm() {
               <div className='contact-close'>
                 <p className='contact-terms'>
                   By submitting you agree to the{' '}
-                  <a href={`${base}/legal/terms`}>Terms of Service</a> and
+                  <a href={LEGAL_URL}>Terms of Service</a> and
                   acknowledge the{' '}
-                  <a href={`${base}/legal/privacy-policy`}>Privacy Policy</a>.
+                  <a href={LEGAL_URL}>Privacy Policy</a>.
                 </p>
                 {requiredFieldsFilled ? (
                   <span className='tch-cta'>{submit}</span>

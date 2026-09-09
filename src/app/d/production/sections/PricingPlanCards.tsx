@@ -10,13 +10,13 @@ import {
   Workflow,
   Zap,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import PricingHelp from './PricingHelp';
 import { LucideGithubMark } from './pricing-github-mark';
 import { bayerTile, type ShineTier } from './pricing-bayer';
 import { PLAN_CTAS } from './pricing-links';
+import { USAGE_RATES_URL } from './site-links';
 
 import './pricing.css';
 
@@ -174,9 +174,7 @@ function UnlimitedPlanFeatureItems({ idPrefix }: { idPrefix: string }) {
  * copy wraps.
  */
 export default function PricingPlanCards() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
-  const usage = `${base}/pricing/usage`;
+  const usage = USAGE_RATES_URL;
 
   return (
     <section className='tc-sec pricing-plans'>

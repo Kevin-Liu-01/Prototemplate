@@ -25,8 +25,11 @@ export type LabelValue = {
   value: string;
 };
 
+/* The shipped CTA goes to /enterprise/contact, a route this control no
+   longer carries; EnterpriseHero resolves the path against the concept
+   base, so it lands on the contact page instead. */
 export const ENTERPRISE_HERO_CTA = {
-  href: '/enterprise/contact',
+  href: '/contact',
   location: 'services-cta-hero',
 } as const;
 

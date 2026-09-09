@@ -1,11 +1,11 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { useCallback, useRef, useState, type FormEvent } from 'react';
 
 import { SiGithub, SiGoogle } from '@icons-pack/react-simple-icons';
 import { KeyRound, ShieldCheck } from 'lucide-react';
 
+import { LEGAL_URL } from './site-links';
 import './signin.css';
 
 /**
@@ -27,9 +27,6 @@ import './signin.css';
 const SIGNIN_URL = 'https://dashboard.generaltranslation.com/signin';
 
 export default function SignInPanel() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
-
   const [email, setEmail] = useState('');
   const [ssoEmail, setSsoEmail] = useState('');
   const [showSsoForm, setShowSsoForm] = useState(false);
@@ -208,7 +205,7 @@ export default function SignInPanel() {
       <p className='psi-legal'>
         By signing in, you agree to our{' '}
         <a
-          href={`${base}/legal/terms`}
+          href={LEGAL_URL}
           rel='noopener noreferrer'
           target='_blank'
         >
@@ -216,7 +213,7 @@ export default function SignInPanel() {
         </a>{' '}
         and{' '}
         <a
-          href={`${base}/legal/privacy-policy`}
+          href={LEGAL_URL}
           rel='noopener noreferrer'
           target='_blank'
         >

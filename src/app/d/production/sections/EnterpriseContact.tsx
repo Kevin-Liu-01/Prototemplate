@@ -1,10 +1,10 @@
 'use client';
 
 import { Building2, Rocket, ShieldCheck, Workflow } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 import type { ComponentType, FormEvent } from 'react';
+import { LEGAL_URL } from './site-links';
 
 /**
  * The shipped enterprise contact section.
@@ -85,9 +85,6 @@ const TESTIMONIAL = {
 };
 
 export default function EnterpriseContact() {
-  const pathname = usePathname();
-  const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
-
   const [form, setForm] = useState<FormState>(EMPTY);
   const [noticed, setNoticed] = useState(false);
 
@@ -285,14 +282,14 @@ export default function EnterpriseContact() {
                     By submitting you agree to the{' '}
                     <a
                       className='underline underline-offset-4'
-                      href={`${base}/legal/terms`}
+                      href={LEGAL_URL}
                     >
                       Terms of Service
                     </a>{' '}
                     and acknowledge the{' '}
                     <a
                       className='underline underline-offset-4'
-                      href={`${base}/legal/privacy-policy`}
+                      href={LEGAL_URL}
                     >
                       Privacy Policy
                     </a>
