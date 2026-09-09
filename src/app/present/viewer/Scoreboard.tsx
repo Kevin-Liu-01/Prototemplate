@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 
-import { DIRECTIONS } from '@/lib/directions';
+import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 
 import LazyFrame from './LazyFrame';
 import RatingStars from './RatingStars';

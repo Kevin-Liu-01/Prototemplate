@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { DIRECTIONS } from '@/lib/directions';
+import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import Icon from '../icons';
