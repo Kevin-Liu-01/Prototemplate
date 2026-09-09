@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
+  <path fill-rule="evenodd" d="M 48 48 L 136 48 A 24 24 0 0 1 160 72 L 160 80 L 128 80 L 128 104 L 104 80 L 56 80 L 56 176 L 128 176 L 128 152 L 88 152 L 88 120 L 160 120 L 160 184 A 24 24 0 0 1 136 208 L 48 208 A 24 24 0 0 1 24 184 L 24 72 A 24 24 0 0 1 48 48 Z M 176 48 H 240 V 80 H 224 V 208 H 192 V 80 H 176 Z"/>
+</svg>
