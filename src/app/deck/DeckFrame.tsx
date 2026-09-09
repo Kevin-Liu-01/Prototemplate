@@ -92,6 +92,8 @@ export default function DeckFrame() {
       className='pt-deck-frame'
       ref={frame}
       src={DECK_SRC}
+      /* inline so the frame never falls back to the 150px default while the route's stylesheet is still loading on a client navigation */
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, display: 'block' }}
       title='General Translation brand deck'
     />
   );
