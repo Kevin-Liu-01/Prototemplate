@@ -34,11 +34,19 @@ export function slideId(n: number): string {
   return String(n);
 }
 
-/** Where the static slide renders live, light and dark (directive 7.5): public/deck/thumbs/sNN-light.jpg. */
-export const DECK_THUMBS = '/deck/thumbs';
+/** The render sizes: 480x270 for the list and the grid, 960x540 for the book's wider pages. */
+export type DeckThumbSize = 480 | 960;
 
-export function slideShot(n: number): ShellShot {
-  return { light: `${DECK_THUMBS}/s${pad2(n)}-light.jpg`, dark: `${DECK_THUMBS}/s${pad2(n)}-dark.jpg` };
+/**
+ * Where the static slide renders live, light and dark (directive 7.5):
+ * public/deck/thumbs/sNN-light.jpg at 480x270 and public/deck/thumbs-960
+ * at 960x540, both checked in and copied by scripts/build-deck.mjs.
+ */
+export const DECK_THUMBS: Record<DeckThumbSize, string> = { 480: '/deck/thumbs', 960: '/deck/thumbs-960' };
+
+export function slideShot(n: number, size: DeckThumbSize = 480): ShellShot {
+  const dir = DECK_THUMBS[size];
+  return { light: `${dir}/s${pad2(n)}-light.jpg`, dark: `${dir}/s${pad2(n)}-dark.jpg` };
 }
 
 const ENTITIES: Record<string, string> = {

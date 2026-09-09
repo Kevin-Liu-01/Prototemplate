@@ -22,7 +22,7 @@ import './Toolbar.css';
  * The 52px bar over the stage, the first row of .pt-main. Left group: the
  * list toggle, the brand (only while the sidebar is hidden), Previous, the
  * count (a button: click it, type a number, press Enter), Next. Right
- * group: the route's own controls, the mode seg in one fixed order (Slide,
+ * group: the route's own controls, the mode seg in one fixed order (Slides,
  * Grid, Book) when the route offers more than one mode, then Index, Theme,
  * Present (whenever the route has a slide mode), Fullscreen, Copy link and
  * Help. Every control is a labeled ToolButton with a title naming its key
@@ -39,8 +39,9 @@ export type ToolbarProps = {
   slot?: ReactNode;
 };
 
+/* the action words of directive 7.6 */
 const MODE_LABEL: Record<ShellMode, string> = {
-  slide: 'Slide',
+  slide: 'Slides',
   grid: 'Grid',
   book: 'Book',
 };
@@ -118,6 +119,7 @@ function Count() {
           className='pt-count-field'
           type='text'
           inputMode='numeric'
+          maxLength={3}
           value={value}
           placeholder={pad2(Math.max(1, index + 1))}
           aria-label={`Go to a ${noun} by number`}

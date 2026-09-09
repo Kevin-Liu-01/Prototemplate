@@ -53,11 +53,14 @@ function dividerText(range: PageRange, noun: BookNoun): string {
 
 /**
  * The route read top to bottom: a head, a contents list, then every item
- * as a page under its section divider. An IntersectionObserver on the
+ * as a page under its section divider. One IntersectionObserver on the
  * scroll region marks the page in the middle band active and selects it
- * through the shell, which updates the hash without scrolling the book;
- * selections from anywhere else (keys, sidebar, contents) scroll the page
- * into view. Content-agnostic: what a page holds comes from renderPage.
+ * through the shell on the next animation frame, which updates the hash
+ * without scrolling the book; selections from anywhere else (keys, sidebar,
+ * contents) scroll the page into view. Pages hold static captures (or a
+ * route's flowing content) and skip rendering off screen; a click on a
+ * framed page opens the item live in slide mode where the route offers one
+ * (directive 7.5). Content-agnostic: what a page holds comes from renderPage.
  */
 export function BookView({
   title,
@@ -117,9 +120,22 @@ export function BookView({
     }
   };
 
+  /* the one observer for this view (directive 7.5): it reads every page and
+     hands the winner to a frame callback, so a fast scroll that fires the
+     observer several times a frame selects once, on the next paint */
   useMountEffect(() => {
     const book = root.current;
     if (!book || typeof IntersectionObserver === 'undefined') return;
+    let frame = 0;
+    let pending: string | null = null;
+    const commit = () => {
+      frame = 0;
+      const id = pending;
+      pending = null;
+      if (!id || id === activeRef.current || modeRef.current !== 'book') return;
+      fromScroll.current = id;
+      selectRef.current(id);
+    };
     const observer = new IntersectionObserver(
       (entries) => {
         if (modeRef.current !== 'book') return;
@@ -130,13 +146,16 @@ export function BookView({
         if (!best) return;
         const id = (best.target as HTMLElement).dataset.id;
         if (!id || id === activeRef.current) return;
-        fromScroll.current = id;
-        selectRef.current(id);
+        pending = id;
+        if (!frame) frame = requestAnimationFrame(commit);
       },
       { root: book, rootMargin: IO_ROOT_MARGIN, threshold: IO_THRESHOLDS }
     );
     book.querySelectorAll<HTMLElement>('.pt-page').forEach((page) => observer.observe(page));
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+    };
   });
 
   /* the one dependency effect: when the active item changes from outside

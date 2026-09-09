@@ -92,24 +92,6 @@ function showPane(key: PaneKey): void {
   stage.scrollTo({ left: key === 'a' ? 0 : max });
 }
 
-/** Two rails with their thumbs at one height: the panes scroll in step. */
-function SyncGlyph() {
-  return (
-    <svg viewBox='0 0 16 16' width={16} height={16} fill='currentColor' aria-hidden='true'>
-      <path d='M3 1h1.5v14H3ZM11.5 1H13v14h-1.5ZM1.5 5h4.5v5H1.5ZM10 5h4.5v5H10Z' />
-    </svg>
-  );
-}
-
-/** Two arrows passing each other: the panes trade pages. */
-function SwapGlyph() {
-  return (
-    <svg viewBox='0 0 16 16' width={16} height={16} fill='currentColor' aria-hidden='true'>
-      <path d='M1 4h9V1.5L15 5l-5 3.5V6H1ZM15 10H6V7.5L1 11l5 3.5V12h9Z' />
-    </svg>
-  );
-}
-
 /** What the inner components need from the rig; the refs read the latest values from any listener. */
 type Engine = {
   pair: Pair;
@@ -127,7 +109,8 @@ type CompareToolsProps = Pick<Engine, 'pair' | 'target' | 'syncOn' | 'setTarget'
 
 /**
  * The toolbar slot: the Left | Right seg naming the pane the next pick
- * fills, then Sync scroll and Swap. Changing the target or swapping moves
+ * fills, then Sync scroll and Swap, each a labeled ToolButton with a
+ * Heroicons glyph (directive 7.2). Changing the target or swapping moves
  * the shell's active item to the direction now in the target pane, so the
  * list always marks the pane the arrows will drive, and the stage scrolls
  * to that pane. T and X are the two route keys; the shell's key owner
@@ -176,12 +159,14 @@ function CompareTools({ pair, target, syncOn, setTarget, swap, toggleSync }: Com
   return (
     <>
       <Seg options={PANE_OPTIONS} value={target} onChange={pickTarget} label='Pane the next pick fills' />
-      <ToolButton label='Sync scroll' title='Scroll both panes together' pressed={syncOn} onClick={toggleSync}>
-        <SyncGlyph />
-      </ToolButton>
-      <ToolButton label='Swap' title='Swap the left and right panes (X)' onClick={doSwap}>
-        <SwapGlyph />
-      </ToolButton>
+      <ToolButton
+        icon='sync'
+        label='Sync scroll'
+        title='Scroll both panes together'
+        pressed={syncOn}
+        onClick={toggleSync}
+      />
+      <ToolButton icon='swap' label='Swap' title='Swap the left and right panes (X)' onClick={doSwap} />
     </>
   );
 }

@@ -1,5 +1,7 @@
 /* Toast: paper text on an ink plate, centered above the bottom edge. It
-   fades and rises 4px over 160ms (directive 7.4). */
+   fades and rises 4px over the toast duration (directive 7.4), and settles
+   back the same way. It keeps its own view transition group so a mode
+   change's stage snapshot never covers a message in flight. */
 .pt-toast {
   position: fixed;
   left: 50%;
@@ -16,10 +18,11 @@
   text-overflow: ellipsis;
   opacity: 0;
   transition:
-    opacity 160ms ease-out,
-    transform 160ms ease-out;
+    opacity var(--pt-dur-toast) var(--pt-ease-out),
+    transform var(--pt-dur-toast) var(--pt-ease-out);
   pointer-events: none;
   z-index: 21;
+  view-transition-name: pt-toast;
 }
 
 .pt-toast.is-on {

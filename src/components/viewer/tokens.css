@@ -33,6 +33,20 @@
   --pt-display: var(--font-inter), 'Inter', 'Helvetica Neue', Arial, sans-serif;
   --pt-text: var(--font-inter), 'Inter', 'Helvetica Neue', Arial, sans-serif;
   --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Motion (directive 7.4). Every transition and animation in the shell
+     reads one of these, and every one of them moves transform or opacity
+     only; the sidebar column is the one sanctioned exception. The reduced
+     motion block at the end of this file sets all six durations to 0ms, so
+     the whole layer goes still from one place. */
+  --pt-dur-fast: 120ms; /* button color and ground, frame borders, the outgoing slide */
+  --pt-dur-leave: 140ms; /* the leaving view */
+  --pt-dur-toast: 160ms; /* the toast, the help scrim, a scrim fade */
+  --pt-dur-slide: 180ms; /* the incoming slide, the index panel, the seg indicator */
+  --pt-dur-enter: 200ms; /* the entering view, the help card */
+  --pt-dur-sb: 220ms; /* the sidebar column */
+  --pt-ease-out: ease-out;
+  --pt-ease: cubic-bezier(0.2, 0, 0, 1); /* the sidebar column */
 }
 
 /* Dark is a token remap. --pt-scrim, --pt-panel-ink and --pt-panel-text do
@@ -144,11 +158,11 @@ body[data-shell] {
   white-space: nowrap;
   cursor: pointer;
   border-radius: 0;
-  /* directive 7.4: color and ground move over 120ms; nothing else animates */
+  /* directive 7.4: color and ground move over the fast duration; nothing else animates */
   transition:
-    color 120ms ease-out,
-    background-color 120ms ease-out,
-    border-color 120ms ease-out;
+    color var(--pt-dur-fast) var(--pt-ease-out),
+    background-color var(--pt-dur-fast) var(--pt-ease-out),
+    border-color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
 .pt-ib svg {
@@ -197,14 +211,22 @@ body[data-shell] {
   display: inline;
 }
 
-/* Segmented control: role="group", options are .pt-ib children. */
+/* Segmented control: role="group", options are .pt-ib children. The active
+   fill is one shared indicator (.pt-seg-ind, drawn by Seg.css) that slides
+   between options (directive 7.4); the options sit above it with no ground
+   of their own, and the active one turns its text to paper. Until Seg.tsx
+   has measured the indicator (.has-ind), the active option fills itself so
+   a render without scripts still shows the choice. */
 .pt-seg {
+  position: relative;
   display: inline-flex;
   border: 1px solid var(--pt-hair);
   height: 32px;
 }
 
 .pt-seg .pt-ib {
+  position: relative;
+  z-index: 1;
   height: 30px;
   border: 0;
   border-right: 1px solid var(--pt-hair);
@@ -220,11 +242,28 @@ body[data-shell] {
 }
 
 .pt-seg .pt-ib.is-on {
-  background: var(--pt-ink);
+  background: none;
   color: var(--pt-paper);
 }
 
+.pt-seg:not(.has-ind) .pt-ib.is-on {
+  background: var(--pt-ink);
+}
+
+/* Reduced motion: every duration goes to zero, so each transition and
+   animation that reads a token lands on its end state at once. Component
+   sheets also switch their own transitions off, so nothing depends on this
+   block alone. */
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --pt-dur-fast: 0ms;
+    --pt-dur-leave: 0ms;
+    --pt-dur-toast: 0ms;
+    --pt-dur-slide: 0ms;
+    --pt-dur-enter: 0ms;
+    --pt-dur-sb: 0ms;
+  }
+
   .pt-ib {
     transition: none;
   }

@@ -1,28 +1,45 @@
-/* Sidebar: column one of the shell. A 52px head (mark, title, the close
-   button when the list is an overlay), a 40px filter row with the density
-   toggle, then the list as a scroll region: collapsible groups of outline
-   rows by default, captured frames in thumbnail density. Every rule here
-   is 1px, drawn once by one owner: the aside owns its right edge, the head
-   and the filter row their bottom edges, each frame its border. The active
-   frame adds the one sanctioned offset outline; the active outline row a
-   2px ink bar at its left edge. Colors are tokens only; ThumbShot fills the
-   frames and shares this sheet. */
+/* Sidebar: column one of the shell (directive 7.3). A 52px head (the mark,
+   the title, the density toggle, the close button when the list is an
+   overlay), a 40px filter row (SidebarFilter.css draws the field; this
+   sheet places the row and sizes the field), then the list as a scroll
+   region: collapsible groups of 32px outline rows by default, captured
+   frames in thumbnail density. Every rule here is 1px, drawn once by one
+   owner: the aside owns its right edge, the head and the filter row their
+   bottom edges, each frame its border. The active frame adds the one
+   sanctioned offset outline; the active outline row a 2px ink bar at its
+   left edge. The column's width lives on the shell root (--pt-sb-w, 208px
+   in outline and 256px in thumbnail density, set by ViewerShell.css); the
+   aside clips to it while the shell animates the change, and fades over
+   the same 220ms when the list is toggled off. Rows and frames skip
+   rendering off screen (content-visibility) with an intrinsic size that
+   keeps the scroll height honest. Colors are tokens only; ThumbShot fills
+   the frames and shares this sheet. */
 
 .pt-sb {
   grid-column: 1;
   grid-row: 1;
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
   background: var(--pt-paper);
   color: var(--pt-ink);
   border-right: 1px solid var(--pt-hair);
+  /* opening: visible at once, the content fades in as the column widens */
+  transition: opacity 220ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* present, or the list toggled off */
+/* the list toggled off, or presenting: the content fades while the column
+   closes, then visibility drops at the end of the shell's width transition */
 .pt-sb.is-hidden {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 220ms cubic-bezier(0.2, 0, 0, 1),
+    visibility 0s linear 220ms;
 }
 
 /* at or below 900px an open list floats over the stage, above its scrim */
@@ -48,14 +65,18 @@
   }
 }
 
-/* ---- the head: the mark, the title (never truncated), the overlay's close button ---- */
+/* ---- the head: the mark, the title (never truncated), the density toggle.
+   At the 208px outline width the arithmetic is tight: 10px pad, the mark
+   (25px for GT, 22px for Prototemplate, its hit area folded into negative
+   margins), two 6px gaps, the 58px toggle, 6px pad, which leaves the title
+   96px, enough for `GT brand deck` at 13.5px. ---- */
 .pt-sb-head {
   height: var(--pt-bar-h);
   flex: 0 0 var(--pt-bar-h);
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 10px 0 14px;
+  gap: 6px;
+  padding: 0 6px 0 10px;
   border-bottom: 1px solid var(--pt-hair);
 }
 
@@ -68,8 +89,9 @@
 /* the mark is a link back to the gallery on every other route */
 a.pt-sb-mark {
   padding: 4px;
-  margin-left: -4px;
+  margin: 0 -4px;
   outline: 1px solid transparent;
+  transition: outline-color 120ms ease-out;
 }
 
 a.pt-sb-mark:hover {
@@ -80,6 +102,8 @@ a.pt-sb-mark:focus-visible {
   outline-color: var(--pt-ink);
 }
 
+/* the title takes what the mark and the toggle leave and is never cut:
+   no overflow rule, no ellipsis */
 .pt-sb-head b {
   flex: 1 1 auto;
   min-width: 0;
@@ -91,58 +115,23 @@ a.pt-sb-mark:focus-visible {
   white-space: nowrap;
 }
 
-/* ---- the filter row: the search input and the density toggle ---- */
+.pt-sb-head .pt-seg {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+/* ---- the filter row: the field, then the count at the right end ---- */
 .pt-sb-tools {
   height: 40px;
   flex: 0 0 40px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 10px 0 14px;
+  padding: 0 6px 0 10px;
   border-bottom: 1px solid var(--pt-hair-soft);
 }
 
-.pt-sb-filter {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--pt-titanium);
-}
-
-.pt-sb-filter svg {
-  width: 14px;
-  height: 14px;
-  flex: 0 0 auto;
-  fill: currentColor;
-}
-
-.pt-sb-filter input {
-  flex: 1 1 auto;
-  min-width: 0;
-  height: 28px;
-  border: 0;
-  background: none;
-  color: var(--pt-ink);
-  font: 13px var(--pt-text);
-  padding: 0;
-  border-radius: 0;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.pt-sb-filter input::placeholder {
-  color: var(--pt-titanium);
-}
-
-.pt-sb-filter input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-}
-
-.pt-sb-filter:focus-within {
-  color: var(--pt-ink);
+/* the sidebar's size of the shared field: 30px in the 40px row, 13px text */
+.pt-sb .pt-filter {
+  --pt-filter-h: 30px;
+  --pt-filter-fs: 13px;
 }
 
 /* ---- the list ---- */
@@ -156,7 +145,7 @@ a.pt-sb-mark:focus-visible {
 
 .pt-sb-empty {
   margin: 0;
-  padding: 12px 14px;
+  padding: 12px 10px;
   font-size: 12.5px;
   line-height: 1.5;
   color: var(--pt-titanium);
@@ -177,7 +166,7 @@ a.pt-sb-mark:focus-visible {
   border-radius: 0;
   height: 28px;
   margin: 8px 0 0;
-  padding: 0 10px 0 12px;
+  padding: 0 10px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -189,6 +178,7 @@ a.pt-sb-mark:focus-visible {
   font-feature-settings: 'cv11', 'ss01';
   text-align: left;
   cursor: pointer;
+  transition: color 120ms ease-out;
 }
 
 .pt-sec-head svg {
@@ -232,7 +222,7 @@ a.pt-sb-mark:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 6px 12px 8px;
+  padding: 6px 10px 8px;
 }
 
 .pt-sec-body.is-rows {
@@ -259,15 +249,16 @@ a.pt-sb-mark:focus-visible {
   padding-bottom: 6px;
 }
 
-/* ---- an outline row: 32px, the number in a 26px tabular column, the title ---- */
+/* ---- an outline row: 32px, the number in a 26px tabular column, the
+   title, the preview affordance ---- */
 .pt-orow {
   position: relative;
   display: grid;
-  grid-template-columns: 26px minmax(0, 1fr);
+  grid-template-columns: 26px minmax(0, 1fr) auto;
   gap: 8px;
   align-items: center;
   min-height: 32px;
-  padding: 0 10px 0 12px;
+  padding: 0 10px;
   color: var(--pt-ink-2);
   text-decoration: none;
   cursor: pointer;
@@ -283,6 +274,7 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-titanium);
   font-variant-numeric: tabular-nums;
   text-align: right;
+  transition: color 120ms ease-out;
 }
 
 .pt-orow-title {
@@ -292,12 +284,38 @@ a.pt-sb-mark:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 120ms ease-out;
 }
 
 .pt-orow:hover .pt-orow-title,
 .pt-orow:focus-visible .pt-orow-title,
 .pt-orow.is-active .pt-orow-title,
 .pt-orow.is-active .n {
+  color: var(--pt-ink);
+}
+
+/* the 12px preview affordance: present for items with a capture, shown on hover or focus */
+.pt-orow-peek {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+  color: var(--pt-titanium);
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.pt-orow-peek svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.pt-orow:hover .pt-orow-peek,
+.pt-orow:focus-visible .pt-orow-peek {
+  opacity: 1;
+}
+
+.pt-orow-peek:hover {
   color: var(--pt-ink);
 }
 
@@ -317,12 +335,16 @@ a.pt-sb-mark:focus-visible {
   outline-offset: -1px;
 }
 
-/* ---- a frame item: the number column, then the frame and its title ---- */
+/* ---- a frame item: the number column, then the frame and its title.
+   The 3px pad (and the matching negative margin) keeps the active frame's
+   offset outline inside the box that content-visibility paints. ---- */
 .pt-thumb {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr);
   gap: 8px;
   align-items: start;
+  padding: 3px 3px 3px 0;
+  margin: -3px -3px -3px 0;
   cursor: pointer;
   content-visibility: auto;
   contain-intrinsic-size: auto 150px;
@@ -387,44 +409,16 @@ a.pt-sb-mark:focus-visible {
 .pt-sub {
   display: flex;
   flex-direction: column;
-  padding: 0 10px 4px 12px;
+  padding: 0 10px 4px;
+}
+
+/* under an outline row the sub rows share its 26px number column */
+.pt-sec-body.is-rows .pt-sub .pt-row {
+  grid-template-columns: 26px minmax(0, 1fr);
 }
 
 .pt-sec-body:not(.is-rows) .pt-sub {
   padding: 0;
-}
-
-/* ---- the hover preview beside an outline row: a 320x180 capture and the title ---- */
-.pt-sb-preview {
-  position: fixed;
-  z-index: 12;
-  width: 320px;
-  padding: 1px;
-  background: var(--pt-paper);
-  outline: 1px solid var(--pt-hair-soft);
-  pointer-events: none;
-  animation: pt-fade-in 120ms ease-out both;
-}
-
-.pt-sb-preview-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border: 1px solid var(--pt-edge);
-  overflow: hidden;
-  background: var(--pt-paper);
-}
-
-.pt-sb-preview-title {
-  padding: 7px 10px 8px;
-  font-size: 12.5px;
-  line-height: 1.35;
-  color: var(--pt-ink);
-}
-
-.pt-sb-preview-title span {
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
 }
 
 /* ThumbShot: light and dark twins; the theme attribute picks one */
@@ -466,12 +460,21 @@ a.pt-sb-mark:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pt-sb.is-overlay,
-  .pt-sb-preview {
+  .pt-sb,
+  .pt-sb.is-hidden {
+    transition: none;
+  }
+
+  .pt-sb.is-overlay {
     animation: none;
   }
 
+  a.pt-sb-mark,
+  .pt-sec-head,
   .pt-sec-head svg,
+  .pt-orow .n,
+  .pt-orow-title,
+  .pt-orow-peek,
   .pt-thumb-frame {
     transition: none;
   }

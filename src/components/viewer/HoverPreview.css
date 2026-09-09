@@ -1,0 +1,59 @@
+/* HoverPreview: the card beside an outline row. A 320px column: a 1px
+   paper mat with a --pt-hair-soft outline (the sheet ring, one stroke
+   each), the 16:9 frame with its --pt-edge border, the title row. Fixed to
+   the viewport, above the narrow overlay list (10) and below the help card
+   (20). It fades and moves 4px over 120ms, transform and opacity only, and
+   holds still under reduced motion. Colors are tokens only. */
+
+.pt-preview {
+  position: fixed;
+  z-index: 12;
+  width: 320px;
+  padding: 1px;
+  background: var(--pt-paper);
+  outline: 1px solid var(--pt-hair-soft);
+  pointer-events: none;
+  animation: pt-preview-in 120ms ease-out both;
+}
+
+@keyframes pt-preview-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pt-preview-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--pt-edge);
+  overflow: hidden;
+  background: var(--pt-paper);
+}
+
+.pt-preview-title {
+  padding: 7px 10px 8px;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--pt-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pt-preview-title span {
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-preview {
+    animation: none;
+  }
+}

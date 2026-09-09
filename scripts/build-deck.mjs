@@ -14,12 +14,19 @@
 //                                 panel reference
 //   public/deck/thumbs/           the 104 static slide renders at 480x270
 //                                 (sNN-light.jpg, sNN-dark.jpg) from
-//                                 deck/thumbs, which the sidebar, the grid
-//                                 and the book show instead of live clones
+//                                 deck/thumbs, which the sidebar and the
+//                                 grid show instead of live clones
+//                                 (directive 7.5)
+//   public/deck/thumbs-960/       the same 104 renders at 960x540 from
+//                                 deck/thumbs-960, which the book's wider
+//                                 pages show. Both sets are static assets:
+//                                 the build copies them and never renders
+//                                 or removes them, so anything else under
+//                                 those folders is left alone
 //
 // Usage: pnpm build:deck
 import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,8 +34,11 @@ const DECK = join(ROOT, 'deck');
 const OUT = join(ROOT, 'src/app/deck');
 const SHOTS_IN = join(DECK, 'shots');
 const SHOTS_OUT = join(ROOT, 'public/deck/shots');
-const THUMBS_IN = join(DECK, 'thumbs');
-const THUMBS_OUT = join(ROOT, 'public/deck/thumbs');
+/* the static slide renders, one light and one dark per slide, at two sizes */
+const RENDERS = [
+  { size: '480x270', from: join(DECK, 'thumbs'), to: join(ROOT, 'public/deck/thumbs') },
+  { size: '960x540', from: join(DECK, 'thumbs-960'), to: join(ROOT, 'public/deck/thumbs-960') },
+];
 const SCOPE = '.pt-slides';
 const IMAGE = /\.(jpg|jpeg|png|gif|webp|svg)$/i;
 
@@ -207,18 +217,25 @@ for (const file of readdirSync(join(SHOTS_IN, 'thumb'))) {
 
 /* ---------- the slide renders ---------- */
 
-rmSync(THUMBS_OUT, { recursive: true, force: true });
-mkdirSync(THUMBS_OUT, { recursive: true });
+/* checked-in static assets, one light and one dark render per slide at
+   each size: the build keeps them by copying, in place, and never
+   regenerates them */
+const RENDER = /^s\d\d-(light|dark)\.jpg$/;
 let renders = 0;
-for (const file of readdirSync(THUMBS_IN)) {
-  if (!/^s\d\d-(light|dark)\.jpg$/.test(file)) continue;
-  copyFileSync(join(THUMBS_IN, file), join(THUMBS_OUT, file));
-  renders += 1;
-}
-if (renders !== slideFiles.length * 2) {
-  throw new Error(`build-deck: expected ${slideFiles.length * 2} slide renders under deck/thumbs, found ${renders}`);
+for (const set of RENDERS) {
+  const files = readdirSync(set.from).filter((file) => RENDER.test(file));
+  if (files.length !== slideFiles.length * 2) {
+    throw new Error(
+      `build-deck: expected ${slideFiles.length * 2} slide renders at ${set.size} under ${relative(ROOT, set.from)}, found ${files.length}`
+    );
+  }
+  mkdirSync(set.to, { recursive: true });
+  for (const file of files) {
+    copyFileSync(join(set.from, file), join(set.to, file));
+    renders += 1;
+  }
 }
 
 console.log(
-  `build:deck  ${slideFiles.length} slides -> src/app/deck/slides.html, ${scopedCss.split('\n').length} lines -> src/app/deck/deck-slides.css, ${copied} images + ${thumbs} thumbs -> public/deck/shots, ${renders} renders -> public/deck/thumbs`
+  `build:deck  ${slideFiles.length} slides -> src/app/deck/slides.html, ${scopedCss.split('\n').length} lines -> src/app/deck/deck-slides.css, ${copied} images + ${thumbs} thumbs -> public/deck/shots, ${renders} renders -> public/deck/thumbs and thumbs-960`
 );

@@ -48,6 +48,9 @@
   }
 }
 
+/* a 300px column holds a 272px frame at 16:9 plus its title: the size a
+   frame off screen reserves before it is first drawn (directive 7.5) */
 .pt-grid .pt-thumb {
   grid-template-columns: 26px minmax(0, 1fr);
+  contain-intrinsic-size: auto 180px;
 }

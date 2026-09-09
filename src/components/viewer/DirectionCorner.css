@@ -3,9 +3,17 @@
    layer over the page holds the overlay list and the index panel above a
    28 percent ink scrim. Tokens only, radius 0, no shadow. tokens.css owns
    .pt-ib; Sidebar.css draws the overlay list (.pt-sb.is-overlay) as an
-   absolute box against this layer; IndexPanel.css draws the panel, which
-   here spans the whole height because there is no toolbar above it and no
-   progress line below. The labels leave at 1180px, as the toolbar's do. */
+   absolute box against this layer and slides it in; IndexPanel.css draws
+   the panel, which here spans the whole height because there is no toolbar
+   above it and no progress line below. The labels leave at 1180px, as the
+   toolbar's do.
+
+   Motion (directive 7.4), transform and opacity only, on the --pt-dur-*
+   and --pt-ease* tokens: the scrim is always in the layer and fades both
+   ways over the panel's slide duration; the list, held in the DOM by
+   DirectionCorner.tsx for the sidebar duration after it closes, slides back
+   out under .is-leaving. The keyframes live here because /d pages never
+   load ViewerShell.css. Reduced motion switches every one of them off. */
 
 .pt-corner {
   position: fixed;
@@ -72,7 +80,9 @@
   pointer-events: auto;
 }
 
-/* the scrim: 28 percent ink over the page, a click closes the open layer */
+/* the scrim: 28 percent ink over the page, always in the layer, hidden
+   until a child opens so it can fade out as well as in; a click closes the
+   open layer. Hidden, it takes no pointer. */
 .pt-corner-scrim {
   position: absolute;
   inset: 0;
@@ -82,7 +92,37 @@
   background: var(--pt-scrim);
   appearance: none;
   cursor: default;
-  animation: pt-fade-in 180ms ease-out both;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--pt-dur-slide) var(--pt-ease-out),
+    visibility 0s linear var(--pt-dur-slide);
+}
+
+.pt-corner-scrim.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--pt-dur-slide) var(--pt-ease-out);
+}
+
+/* the list leaving: the mirror of Sidebar.css's pt-sb-in, over the sidebar
+   duration, with will-change held only while it runs */
+.pt-corner-layer.is-leaving .pt-sb.is-overlay {
+  animation: pt-corner-sb-out var(--pt-dur-sb) var(--pt-ease) both;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+@keyframes pt-corner-sb-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
 }
 
 .pt-corner-layer .pt-panel {
@@ -92,6 +132,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pt-corner-scrim {
+    transition: none;
+  }
+
+  .pt-corner-layer.is-leaving .pt-sb.is-overlay {
     animation: none;
   }
 }

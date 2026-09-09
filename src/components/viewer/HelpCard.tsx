@@ -1,9 +1,13 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
+import { useRef, useState } from 'react';
+
 import { usePtShell } from '@/components/viewer/shell-context';
 import { shellKeyRows } from '@/components/viewer/useShellKeys';
 import type { ShellKeyGroup, ShellKeyRow } from '@/components/viewer/useShellKeys';
 import type { ShellKeys } from '@/lib/shell-data';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './HelpCard.css';
 
@@ -14,6 +18,10 @@ import './HelpCard.css';
  * that shows it: flow routes drop the paging rows because Space and the
  * arrows scroll there, and a mode key appears only when the route offers
  * that mode. Click anywhere closes it; Escape is handled by the key owner.
+ *
+ * Motion (directive 7.4): the scrim fades over the toast duration and the
+ * card fades and rises 8px over the enter duration. On close the card stays
+ * mounted for the toast duration with .is-closing so both can fade back out.
  */
 export type HelpCardProps = {
   /** replaces the rows derived from the shell */
@@ -24,6 +32,9 @@ export type HelpCardProps = {
 
 const GROUPS: readonly ShellKeyGroup[] = ['Move', 'View', 'Panels', 'Theme'];
 
+/** How long the card stays for its exit; matches --pt-dur-toast in tokens.css. */
+const OUT_MS = 160;
+
 /** The footnote for a route. */
 export function helpNote(keys: ShellKeys): string {
   return keys === 'paged'
@@ -33,14 +44,43 @@ export function helpNote(keys: ShellKeys): string {
 
 export function HelpCard({ rows, note }: HelpCardProps) {
   const shell = usePtShell();
-  if (!shell.helpOpen) return null;
+  const { helpOpen } = shell;
+  /* true from the close until the exit has run, so the card is still there to fade */
+  const [closing, setClosing] = useState(false);
+  const wasOpen = useRef(false);
+  const timer = useRef(0);
+
+  useGSAP(
+    () => {
+      window.clearTimeout(timer.current);
+      if (helpOpen) {
+        wasOpen.current = true;
+        setClosing(false);
+        return;
+      }
+      if (!wasOpen.current) return;
+      wasOpen.current = false;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      setClosing(true);
+      timer.current = window.setTimeout(() => setClosing(false), OUT_MS);
+    },
+    { dependencies: [helpOpen] }
+  );
+
+  useMountEffect(() => () => window.clearTimeout(timer.current));
+
+  if (!helpOpen && !closing) return null;
   const list = rows ?? shellKeyRows(shell);
   const foot = note ?? helpNote(shell.keys);
   const groups = GROUPS.map((group) => ({ group, rows: list.filter((row) => row.group === group) })).filter(
     (entry) => entry.rows.length > 0
   );
   return (
-    <div className='pt-help' onClick={() => shell.setHelp(false)}>
+    <div
+      className={helpOpen ? 'pt-help' : 'pt-help is-closing'}
+      aria-hidden={!helpOpen}
+      onClick={() => shell.setHelp(false)}
+    >
       <div className='pt-help-card' role='dialog' aria-modal='true' aria-label='Keyboard shortcuts'>
         <h3>Keyboard shortcuts</h3>
         <table>

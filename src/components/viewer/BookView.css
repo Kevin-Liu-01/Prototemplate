@@ -141,13 +141,21 @@
   font-feature-settings: 'cv11', 'ss01';
 }
 
-/* page row: number and title in the gutter, the frame beside */
+/* page row: number and title in the gutter, the frame beside. Pages off
+   screen skip rendering (directive 7.5); the intrinsic size is a 1012px
+   frame at 16:9 so the scroll height holds before a page is first drawn.
+   The 3px pad and its negative margin keep the active frame's offset
+   outline inside the box that content-visibility paints. */
 .pt-page {
   display: grid;
   grid-template-columns: 128px minmax(0, 1fr);
   gap: 28px;
   align-items: start;
   scroll-margin-top: 20px;
+  padding: 3px 3px 3px 0;
+  margin: -3px -3px -3px 0;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 570px;
 }
 
 .pt-pn {

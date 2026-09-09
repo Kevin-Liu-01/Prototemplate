@@ -2,6 +2,7 @@
 
 import type { ReactNode, TouchEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 import { cn } from '@/lib/cn';
 import type {
@@ -21,7 +22,7 @@ import { HelpCard } from './HelpCard';
 import { IndexPanel } from './IndexPanel';
 import { Progress } from './Progress';
 import { ShellContext } from './shell-context';
-import type { ShellState, StageSize } from './shell-context';
+import type { ShellDir, ShellState, ShellTransition, StageSize } from './shell-context';
 import { Sidebar, ThumbList } from './Sidebar';
 import type { SidebarFilter, SubRenderer } from './Sidebar';
 import { toggleTheme } from './ThemeButton';
@@ -51,12 +52,39 @@ const EDGE_PX = 24;
 const SWIPE_PX = 40;
 
 /**
+ * Motion lengths, matching the --pt-dur-* tokens in tokens.css (directive
+ * 7.4). The code needs them to know when a transition is over: when to let
+ * the list leave the DOM after its column has closed, and when to drop the
+ * entering view's attribute in the fallback cross-fade.
+ */
+const SB_MS = 220;
+const ENTER_MS = 200;
+
+/** Why the sidebar column is moving; ViewerShell.css keys the content fade on it. */
+type SidebarMotion = 'open' | 'close' | 'density';
+
+/** The transition in flight, plus whether the browser is animating it (view transitions) or CSS is (the fallback). */
+type Transition = ShellTransition & { native: boolean };
+
+/**
  * The one frame for Prototemplate: a fixed full-viewport grid of a sidebar
  * and a main region (toolbar, stage, progress line), with the index panel,
  * the help card and the toast floating over it. The shell owns the state
  * every child reads through usePtShell() and no content rules at all: the
  * route renders the stage content (a Sheet, and a BookView while the mode
  * is book) as children.
+ *
+ * Motion (directive 7.4). A mode change cross-fades the stage through the
+ * View Transitions API: the browser snapshots the leaving view and the
+ * entering one and ViewerShell.css animates the two images (out over the
+ * leave duration to 0.985, in over the enter duration from 1.015 with a
+ * 60ms delay), which is the only way both views can be on screen at once
+ * when every route mounts its views on the committed mode. A browser
+ * without the API commits at once and the entering view fades in through
+ * CSS (data-entering). The sidebar column animates its width while the
+ * list's content fades (data-sb, data-sb-moving), and the list stays in the
+ * DOM for the closing duration through sidebarShown. Reduced motion skips
+ * all of it.
  */
 export type ViewerShellProps = {
   /** storage namespace: gt-shell-mode:<id>; also body[data-shell] */
@@ -139,6 +167,11 @@ function isDensity(value: string | null): value is ShellDensity {
   return value === 'outline' || value === 'thumbs';
 }
 
+/** The reader has asked for no motion: every transition commits at once. */
+function reducedMotion(): boolean {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export function ViewerShell({
   id,
   title,
@@ -164,14 +197,16 @@ export function ViewerShell({
   const defaultMode = modes[0] ?? 'slide';
 
   const [mode, setModeState] = useState<ShellMode>(defaultMode);
+  const [transition, setTransition] = useState<Transition | null>(null);
   const [density, setDensityState] = useState<ShellDensity>('outline');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sbMotion, setSbMotion] = useState<SidebarMotion | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [present, setPresentState] = useState(false);
   const [narrow, setNarrow] = useState(false);
   const [active, setActive] = useState<string>(() => initialActive ?? items[0]?.id ?? '');
-  const [dir, setDir] = useState<'next' | 'prev'>('next');
+  const [dir, setDir] = useState<ShellDir>('next');
   const [stageSize, setStageSize] = useState<StageSize>({ width: 0, height: 0 });
   const [panelWidth, setPanelWidth] = useState(0);
 
@@ -180,6 +215,15 @@ export function ViewerShell({
   const touchX = useRef<number | null>(null);
   const filter = useRef<SidebarFilter>({ active: false, clear: () => {} });
   const toast = useToast();
+
+  /* the timers behind the two motions, and a stamp so a transition that
+     was superseded never clears the one that replaced it */
+  const transitionTimer = useRef(0);
+  const transitionStamp = useRef(0);
+  const sbTimer = useRef(0);
+  /* false until the first frame after mount: a mode set while landing (the
+     saved mode, a deep link) commits without a cross-fade */
+  const settled = useRef(false);
 
   /* the mount-time listeners read the latest values through these refs;
      the assignments run every render so no listener sees a stale closure */
@@ -197,6 +241,12 @@ export function ViewerShell({
   modesRef.current = modes;
   const modeRef = useRef(mode);
   modeRef.current = mode;
+  const sidebarRef = useRef(sidebarOpen);
+  sidebarRef.current = sidebarOpen;
+  const presentRef = useRef(present);
+  presentRef.current = present;
+  const densityRef = useRef(density);
+  densityRef.current = density;
 
   const index = paged.findIndex((item) => item.id === active);
   const total = paged.length;
@@ -224,10 +274,8 @@ export function ViewerShell({
 
   /* the slide shows one paged item, so entering it with nothing paged marked
      (the gallery's book at its top, or an archived capture) opens the first */
-  const setMode = (next: ShellMode) => {
-    if (!modesRef.current.includes(next)) return;
+  const commitMode = (next: ShellMode) => {
     setModeState(next);
-    store(`gt-shell-mode:${id}`, next);
     if (next === 'slide') {
       const list = pagedRef.current;
       const first = list[0];
@@ -235,30 +283,93 @@ export function ViewerShell({
     }
   };
 
+  /**
+   * The cross-fade. With the View Transitions API the browser snapshots the
+   * stage, the commit runs inside its callback (flushSync, so the new view
+   * is in the DOM when the new snapshot is taken) and ViewerShell.css
+   * animates the two images; the transition state is published until the
+   * browser reports the animation finished. Without the API the commit is
+   * immediate and data-entering carries the CSS fade-in for the enter
+   * duration. While landing, or under reduced motion, the mode just changes.
+   */
+  const switchMode = (from: ShellMode, to: ShellMode) => {
+    window.clearTimeout(transitionTimer.current);
+    const stamp = ++transitionStamp.current;
+    const done = () => {
+      if (transitionStamp.current === stamp) setTransition(null);
+    };
+    if (!settled.current || reducedMotion()) {
+      commitMode(to);
+      setTransition(null);
+      return;
+    }
+    if (typeof document.startViewTransition !== 'function') {
+      setTransition({ from, to, native: false });
+      commitMode(to);
+      transitionTimer.current = window.setTimeout(done, ENTER_MS);
+      return;
+    }
+    setTransition({ from, to, native: true });
+    const view = document.startViewTransition(() => {
+      flushSync(() => commitMode(to));
+    });
+    /* a skipped transition (a hidden document, a newer transition) rejects
+       ready; the commit has still run, so there is nothing to report */
+    view.ready.catch(() => undefined);
+    view.finished.then(done, done);
+  };
+
+  const setMode = (next: ShellMode) => {
+    if (!modesRef.current.includes(next)) return;
+    store(`gt-shell-mode:${id}`, next);
+    const from = modeRef.current;
+    if (from === next) return;
+    switchMode(from, next);
+  };
+
+  /* the sidebar column is moving: the content fades for the duration and the
+     list stays in the DOM through a close (sidebarShown) */
+  const moveSidebar = (kind: SidebarMotion) => {
+    window.clearTimeout(sbTimer.current);
+    if (reducedMotion()) {
+      setSbMotion(null);
+      return;
+    }
+    setSbMotion(kind);
+    sbTimer.current = window.setTimeout(() => setSbMotion(null), SB_MS);
+  };
+
   const setDensity = (next: ShellDensity) => {
+    if (next === densityRef.current) return;
     setDensityState(next);
     store(DENSITY_KEY, next);
+    if (sidebarRef.current && !presentRef.current && !narrowRef.current) moveSidebar('density');
   };
 
   const setSidebar = (open: boolean) => {
+    if (open === sidebarRef.current) return;
     setSidebarOpen(open);
     /* the overlay at narrow widths is a passing state, not a preference */
     if (!narrowRef.current) store(SIDEBAR_KEY, open ? '1' : '0');
+    if (!presentRef.current) moveSidebar(open ? 'open' : 'close');
   };
 
   const setPanel = (open: boolean) => setPanelOpen(open);
   const setHelp = (open: boolean) => setHelpOpen(open);
 
   /* presenting keeps the sheet that is up: only the grid, which has no sheet,
-     hands over to the slide (or the default when the route has none) */
+     hands over to the slide (or the default when the route has none); the
+     list leaves with the chrome and comes back with it */
   const setPresent = (on: boolean) => {
+    if (on === presentRef.current) return;
     if (on) {
       if (modeRef.current === 'grid') {
-        setModeState(modesRef.current.includes('slide') ? 'slide' : (modesRef.current[0] ?? 'slide'));
+        commitMode(modesRef.current.includes('slide') ? 'slide' : (modesRef.current[0] ?? 'slide'));
       }
       setPanelOpen(false);
     }
     setPresentState(on);
+    if (sidebarRef.current && !narrowRef.current) moveSidebar(on ? 'close' : 'open');
   };
 
   const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
@@ -288,6 +399,11 @@ export function ViewerShell({
     setNarrow(startNarrow);
     narrowRef.current = startNarrow;
     setSidebarOpen(startNarrow ? false : load(SIDEBAR_KEY) !== '0');
+
+    /* landed: from the next frame on, mode changes cross-fade */
+    const landing = requestAnimationFrame(() => {
+      settled.current = true;
+    });
 
     /* the first visit to a route family: one toast naming the arrows and the help key */
     const seen = (load(HINT_KEY) ?? '').split(',').filter(Boolean);
@@ -334,6 +450,9 @@ export function ViewerShell({
     }
 
     return () => {
+      cancelAnimationFrame(landing);
+      window.clearTimeout(transitionTimer.current);
+      window.clearTimeout(sbTimer.current);
       window.removeEventListener('hashchange', onHash);
       document.removeEventListener('fullscreenchange', onFullscreen);
       window.removeEventListener('resize', onResize);
@@ -341,6 +460,13 @@ export function ViewerShell({
       if (document.body.dataset.shell === id) delete document.body.dataset.shell;
     };
   });
+
+  /* the list is in the DOM while it is wanted, and for the closing duration after */
+  const sidebarShown = (sidebarOpen && !present) || sbMotion === 'close';
+  const published: ShellTransition | null = useMemo(
+    () => (transition ? { from: transition.from, to: transition.to } : null),
+    [transition]
+  );
 
   const state: ShellState = useMemo(
     () => ({
@@ -351,14 +477,17 @@ export function ViewerShell({
       items,
       paged,
       mode,
+      transition: published,
       density,
       sidebarOpen,
+      sidebarShown,
       panelOpen,
       helpOpen,
       present,
       narrow,
       active,
       index,
+      dir,
       total,
       countLabel,
       stageSize,
@@ -383,14 +512,17 @@ export function ViewerShell({
       items,
       paged,
       mode,
+      published,
       density,
       sidebarOpen,
+      sidebarShown,
       panelOpen,
       helpOpen,
       present,
       narrow,
       active,
       index,
+      dir,
       total,
       countLabel,
       stageSize,
@@ -410,20 +542,20 @@ export function ViewerShell({
   });
 
   const grid = mode === 'grid';
-  const overlayOpen = narrow && sidebarOpen;
+  const overlayOpen = narrow && sidebarShown;
+  /* the sidebar column: closed, or open at the density's width */
+  const sb = present || narrow || !sidebarOpen ? '0' : density;
 
   return (
     <ShellContext value={state}>
       <div
-        className={cn(
-          'pt-viewer',
-          !sidebarOpen && !narrow && 'no-sb',
-          present && 'is-present',
-          overlayOpen && 'sb-open',
-          density === 'thumbs' && 'is-thumbs'
-        )}
+        className={cn('pt-viewer', present && 'is-present', overlayOpen && 'sb-open')}
         data-shell={id}
         data-dir={dir}
+        data-sb={sb}
+        data-density={density}
+        data-sb-moving={sbMotion ?? undefined}
+        data-entering={transition && !transition.native ? transition.to : undefined}
         onTouchStart={narrow ? onTouchStart : undefined}
         onTouchEnd={narrow ? onTouchEnd : undefined}
       >
@@ -465,14 +597,14 @@ export function ViewerShell({
                 />
               </GridView>
             ) : null}
-            {panelOpen ? (
-              <button
-                type='button'
-                className='pt-panel-scrim'
-                aria-label='Close the index (Esc)'
-                onClick={() => setPanel(false)}
-              />
-            ) : null}
+            {/* always mounted so it can fade both ways with the panel; hidden by IndexPanel.css while off */}
+            <button
+              type='button'
+              className={cn('pt-panel-scrim', panelOpen && 'is-on')}
+              aria-label='Close the index (Esc)'
+              tabIndex={-1}
+              onClick={() => setPanel(false)}
+            />
           </div>
           {/* a child of .pt-main, not of the stage: its top and bottom are written against the toolbar and the progress line */}
           <IndexPanel ref={panelRef} set={surfaces} />

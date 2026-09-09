@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import type { KeyboardEvent, MouseEvent, ReactNode, RefObject } from 'react';
+import type { FocusEvent, KeyboardEvent, MouseEvent, ReactNode, RefObject } from 'react';
 import { Fragment, useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
@@ -12,12 +12,15 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { GtMark } from './GtMark';
+import { HoverPreview, useHoverPreview } from './HoverPreview';
+import type { HoverPreviewControls } from './HoverPreview';
 import { Icon } from './icons';
 import { activateOnKey, ListRow, pressWithoutFocus } from './ListRow';
 import { PtMark } from './PtMark';
 import { Seg } from './Seg';
 import type { SegOption } from './Seg';
 import { usePtShell } from './shell-context';
+import { SidebarFilter as FilterRow } from './SidebarFilter';
 import { ThumbShot } from './ThumbShot';
 import { ToolButton } from './ToolButton';
 
@@ -38,8 +41,8 @@ const NAV_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Documents', 'Sites', 'Exp
 /** The groups open by default on a site route: the route's own sections, and Pages. */
 const OPEN_BY_DEFAULT: readonly string[] = ['Pages'];
 
-/** How long a row is hovered before its preview opens. */
-const PREVIEW_MS = 250;
+/** Everything the arrow keys walk in the list: item rows, frames, sub rows, group heads. */
+const ROW_SELECTOR = '.pt-orow, .pt-thumb, .pt-row, .pt-sec-head';
 
 const DENSITY_OPTIONS: readonly SegOption<ShellDensity>[] = [
   { value: 'outline', label: 'Outline', icon: 'list', title: 'Outline' },
@@ -110,6 +113,29 @@ function isCurrentRoute(row: Surface, pathname: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/** A site map row as a preview subject: its capture under its name. */
+function rowAsItem(row: Surface): ShellItem {
+  return {
+    id: `nav:${row.id}`,
+    title: row.name,
+    shot: row.shot ? { light: row.shot, dark: row.shotDark } : undefined,
+  };
+}
+
+/** `52 slides` -> `slides`; the word the filter placeholder names. */
+function nounOf(count: string): string {
+  return count.replace(/^\d+\s*/, '').trim() || 'items';
+}
+
+/** True when the element took focus from the keyboard, not from a click. */
+function focusVisible(el: HTMLElement): boolean {
+  try {
+    return el.matches(':focus-visible');
+  } catch {
+    return true;
+  }
+}
+
 /**
  * A ref callback, not an effect: React calls it when the active row mounts
  * or when the ref prop switches on, so the row follows every selection and
@@ -136,7 +162,7 @@ type ThumbItemProps = {
   follow?: (el: HTMLElement | null) => void;
 };
 
-/** A route item as a captured 16:9 frame with its number and title. */
+/** A route item as a captured 16:9 frame with its number and title (thumbnail density). */
 function ThumbItem({ item, active, onSelect, follow }: ThumbItemProps) {
   const select = () => onSelect(item.id);
   return (
@@ -163,15 +189,45 @@ function ThumbItem({ item, active, onSelect, follow }: ThumbItemProps) {
 }
 
 type OutlineRowProps = ThumbItemProps & {
-  onHover?: (item: ShellItem | null, el: HTMLElement | null) => void;
+  preview: HoverPreviewControls;
 };
 
-/** A route item as a 32px outline row: the number in a 26px column, the title, a 2px ink bar when active. */
-function OutlineRow({ item, active, onSelect, follow, onHover }: OutlineRowProps) {
+/**
+ * A route item as a 32px outline row: the number in a 26px tabular column,
+ * the title, and, when the item has a capture, a 12px preview affordance
+ * that shows on hover. The active row draws a 2px ink bar at its left edge.
+ * Enter selects; Space opens the preview (or selects an item with no
+ * capture); hovering or keyboard-focusing the row for 250ms opens it too.
+ */
+function OutlineRow({ item, active, onSelect, follow, preview }: OutlineRowProps) {
   const select = () => onSelect(item.id);
+  const onKey = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      /* not prevented: the shell's digit buffer (1, 2, Enter) still lands and wins */
+      select();
+      return;
+    }
+    if (event.key === ' ') {
+      /* stopped here: in a paged route the shell reads Space as next */
+      event.preventDefault();
+      event.stopPropagation();
+      if (item.shot) preview.open(item, event.currentTarget);
+      else select();
+      return;
+    }
+    if (event.key === 'Escape') preview.close();
+  };
+  const onFocus = (event: FocusEvent<HTMLDivElement>) => {
+    if (focusVisible(event.currentTarget)) preview.arm(item, event.currentTarget);
+  };
+  const onPeek = (event: MouseEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    const row = event.currentTarget.closest<HTMLElement>('.pt-orow');
+    if (row) preview.open(item, row);
+  };
   return (
     <div
-      className={cn('pt-orow', active && 'is-active')}
+      className={cn('pt-orow', active && 'is-active', item.shot && 'has-shot')}
       role='button'
       tabIndex={0}
       data-id={item.id}
@@ -179,13 +235,20 @@ function OutlineRow({ item, active, onSelect, follow, onHover }: OutlineRowProps
       title={item.desc}
       onMouseDown={pressWithoutFocus}
       onClick={select}
-      onKeyDown={(event) => activateOnKey(event, select)}
-      onMouseEnter={onHover ? (event) => onHover(item, event.currentTarget) : undefined}
-      onMouseLeave={onHover ? () => onHover(null, null) : undefined}
+      onKeyDown={onKey}
+      onMouseEnter={(event) => preview.arm(item, event.currentTarget)}
+      onMouseLeave={preview.close}
+      onFocus={onFocus}
+      onBlur={preview.close}
       ref={active && follow ? follow : undefined}
     >
       <span className='n'>{item.n ?? ''}</span>
       <span className='pt-orow-title'>{item.title}</span>
+      {item.shot ? (
+        <span className='pt-orow-peek' title='Preview (Space)' aria-hidden='true' onClick={onPeek}>
+          <Icon name='photo' />
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -195,21 +258,34 @@ type NavRowProps = {
   current: boolean;
   onNavigate: (event: MouseEvent<HTMLAnchorElement>, row: Surface, current: boolean) => void;
   follow?: (el: HTMLElement | null) => void;
+  preview: HoverPreviewControls;
 };
 
-/** A site map row: a link to another route, marked when it names this one. */
-function NavRow({ row, current, onNavigate, follow }: NavRowProps) {
+/** A site map row: a link to another route, marked when it names this one; its capture previews like an item's. */
+function NavRow({ row, current, onNavigate, follow, preview }: NavRowProps) {
+  const subject = rowAsItem(row);
   return (
     <Link
-      className={cn('pt-orow is-nav', current && 'is-active')}
+      className={cn('pt-orow is-nav', current && 'is-active', subject.shot && 'has-shot')}
       href={row.href}
       aria-current={current ? 'page' : undefined}
       title={row.desc}
       onClick={(event) => onNavigate(event, row, current)}
+      onMouseEnter={(event) => preview.arm(subject, event.currentTarget)}
+      onMouseLeave={preview.close}
+      onFocus={(event) => {
+        if (focusVisible(event.currentTarget)) preview.arm(subject, event.currentTarget);
+      }}
+      onBlur={preview.close}
       ref={current && follow ? follow : undefined}
     >
       <span className='n' aria-hidden='true' />
       <span className='pt-orow-title'>{row.name}</span>
+      {subject.shot ? (
+        <span className='pt-orow-peek' aria-hidden='true'>
+          <Icon name='photo' />
+        </span>
+      ) : null}
     </Link>
   );
 }
@@ -278,21 +354,23 @@ export type SidebarProps = {
   onCurrentPage?: () => void;
 };
 
-type Preview = { item: ShellItem; top: number; left: number };
-
 /**
- * Column one of the shell (directive 7.3): a 52px head with the mark (a
- * link back to the gallery on every other route) and the never-truncated
- * title; a 40px filter row with the density toggle; then the list as a
- * scroll region. The list is an outline by default: collapsible groups of
- * 32px rows with the active row marked by a 2px ink bar, or the strip of
- * captured 16:9 frames in thumbnail density. Site map groups are links to
- * other routes and stay rows in both densities; the current route's row is
- * marked. Typing in the filter narrows every group and opens them; Enter
- * opens the first match; Escape clears. Arrow keys move between rows.
- * Hovering an outline row with a capture for 250ms opens a preview beside
- * the list (not on touch). At or below 900px an open list is an overlay
- * with a close button, and selecting an item closes it.
+ * Column one of the shell (directive 7.3), an outline first and a thumbnail
+ * strip second. A 52px head holds the mark (a link back to the gallery on
+ * every other route), the title, which never truncates, and the density
+ * toggle: two 28px icon options, Outline and Thumbnails. A 40px filter row
+ * holds the search field and, at its right end, the route's count. The list
+ * fills the rest as a scroll region: collapsible groups whose open state
+ * persists per route under gt-shell-sections:<id>, each item a 32px row
+ * with the active one marked by a 2px ink bar, or a strip of captured 16:9
+ * frames in thumbnail density. Site map groups are links to other routes
+ * and stay rows in both densities; the current route's row is marked.
+ * Typing in the filter narrows every group and opens them; Enter opens the
+ * first match; Escape clears; Down arrow moves into the list. Arrow keys
+ * move between rows, Enter selects, Space previews. Hovering or focusing a
+ * row with a capture for 250ms opens a preview beside the list (never on
+ * touch). At or below 900px an open list is an overlay with a close button,
+ * and selecting an item closes it.
  */
 export function Sidebar({
   title,
@@ -309,16 +387,15 @@ export function Sidebar({
   const shell = usePtShell();
   const router = useRouter();
   const pathname = usePathname();
-  const { id, density, present, narrow, sidebarOpen, active, select, setSidebar, setDensity } = shell;
+  const { id, density, present, narrow, sidebarOpen, sidebarShown, active, select, setSidebar, setDensity } = shell;
 
   const [query, setQuery] = useState('');
   /* per group, open or closed, where the reader has changed the default; persisted per route */
   const [overrides, setOverrides] = useState<ReadonlyMap<string, boolean>>(() => new Map());
-  const [preview, setPreview] = useState<Preview | null>(null);
+  const preview = useHoverPreview();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const landed = useRef(false);
-  const hoverTimer = useRef(0);
   /* one stable ref callback: React calls it only when the active row mounts or changes */
   const [follow] = useState(() => makeFollow(landed));
 
@@ -326,9 +403,13 @@ export function Sidebar({
   const q = query.trim().toLowerCase();
   const filtering = q.length > 0;
 
-  const hidden = present || !sidebarOpen;
+  /* in the DOM while the shell says so: sidebarShown lags a close by the
+     sidebar duration so the content can fade while the column narrows
+     (directive 7.4); a state without it (DirectionCorner) follows the toggle */
+  const hidden = !(sidebarShown ?? (sidebarOpen && !present));
   const overlay = narrow && !hidden;
-  const storageKey = `gt-shell-closed:${id}`;
+  const storageKey = `gt-shell-sections:${id}`;
+  const frames = density === 'thumbs' && thumb !== 'row';
 
   if (filter) {
     filter.current = {
@@ -347,7 +428,6 @@ export function Sidebar({
     } catch {
       // private mode or a stale value: the defaults hold
     }
-    return () => window.clearTimeout(hoverTimer.current);
   });
 
   const isOpen = (group: Group) => filtering || (overrides.get(group.key) ?? group.open);
@@ -364,11 +444,13 @@ export function Sidebar({
   };
 
   const pick = (itemId: string) => {
+    preview.close();
     select(itemId);
     if (narrow) setSidebar(false);
   };
 
   const onNavigate = (event: MouseEvent<HTMLAnchorElement>, row: Surface, current: boolean) => {
+    preview.close();
     if (current && onCurrentPage && (row.href.split('#')[0] ?? row.href) === pathname) {
       event.preventDefault();
       onCurrentPage();
@@ -395,11 +477,25 @@ export function Sidebar({
     return null;
   };
 
+  const rowsInList = (): HTMLElement[] => {
+    const list = listRef.current;
+    return list ? Array.from(list.querySelectorAll<HTMLElement>(ROW_SELECTOR)) : [];
+  };
+
   const onFilterKey = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Escape') {
+      /* prevented so the shell's Escape ladder leaves the index alone; the field answered */
       event.preventDefault();
       if (query) setQuery('');
       else event.currentTarget.blur();
+      return;
+    }
+    if (event.key === 'ArrowDown') {
+      const first = rowsInList().find((row) => !row.classList.contains('pt-sec-head')) ?? rowsInList()[0];
+      if (first) {
+        event.preventDefault();
+        first.focus();
+      }
       return;
     }
     if (event.key === 'Enter' && filtering) {
@@ -411,31 +507,38 @@ export function Sidebar({
     }
   };
 
-  /* arrow keys move focus between the rows of the list */
+  /* arrow keys move focus between the rows of the list; Up from the first row returns to the filter */
   const onListKey = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-    const list = listRef.current;
     const target = event.target;
-    if (!list || !(target instanceof HTMLElement)) return;
-    const rows = Array.from(list.querySelectorAll<HTMLElement>('.pt-orow, .pt-thumb, .pt-row, .pt-sec-head'));
+    if (!(target instanceof HTMLElement)) return;
+    const rows = rowsInList();
     const at = rows.indexOf(target);
     if (at < 0) return;
     event.preventDefault();
+    if (event.key === 'ArrowUp' && at === 0) {
+      inputRef.current?.focus({ preventScroll: true });
+      return;
+    }
     const next = rows[at + (event.key === 'ArrowDown' ? 1 : -1)];
     next?.focus();
   };
 
-  const onHover = (item: ShellItem | null, el: HTMLElement | null) => {
-    window.clearTimeout(hoverTimer.current);
-    if (!item || !el || !item.shot || !window.matchMedia('(hover: hover)').matches) {
-      setPreview(null);
-      return;
-    }
-    const rect = el.getBoundingClientRect();
-    hoverTimer.current = window.setTimeout(() => {
-      const top = Math.max(8, Math.min(window.innerHeight - 236, rect.top - 8));
-      setPreview({ item, top, left: rect.right + 8 });
-    }, PREVIEW_MS);
+  const renderHead = (group: Group, n: number) => {
+    const open = isOpen(group);
+    return (
+      <button
+        type='button'
+        className='pt-sec-head'
+        aria-expanded={open}
+        title={open ? `Collapse ${group.label}` : `Expand ${group.label}`}
+        onClick={() => toggle(group)}
+      >
+        <Icon name='chevron-down' />
+        <span className='pt-sec-label'>{group.label}</span>
+        <span className='pt-sec-count'>{n}</span>
+      </button>
+    );
   };
 
   const renderGroup = (group: Group) => {
@@ -445,17 +548,7 @@ export function Sidebar({
       if (rows.length === 0) return null;
       return (
         <div className={cn('pt-sec', !open && 'is-closed')} key={group.key}>
-          <button
-            type='button'
-            className='pt-sec-head'
-            aria-expanded={open}
-            title={open ? `Collapse ${group.label}` : `Expand ${group.label}`}
-            onClick={() => toggle(group)}
-          >
-            <Icon name='chevron-down' />
-            <span className='pt-sec-label'>{group.label}</span>
-            <span className='pt-sec-count'>{rows.length}</span>
-          </button>
+          {renderHead(group, rows.length)}
           {open ? (
             <div className='pt-sec-body is-rows'>
               {rows.map((row) => (
@@ -465,6 +558,7 @@ export function Sidebar({
                   current={isCurrentRoute(row, pathname)}
                   onNavigate={onNavigate}
                   follow={follow}
+                  preview={preview}
                 />
               ))}
             </div>
@@ -476,20 +570,9 @@ export function Sidebar({
       ? group.section.items.filter((item) => matches(itemText(item), q))
       : group.section.items;
     if (items.length === 0) return null;
-    const frames = density === 'thumbs' && thumb !== 'row';
     return (
       <div className={cn('pt-sec', !open && 'is-closed')} key={group.key}>
-        <button
-          type='button'
-          className='pt-sec-head'
-          aria-expanded={open}
-          title={open ? `Collapse ${group.label}` : `Expand ${group.label}`}
-          onClick={() => toggle(group)}
-        >
-          <Icon name='chevron-down' />
-          <span className='pt-sec-label'>{group.label}</span>
-          <span className='pt-sec-count'>{items.length}</span>
-        </button>
+        {renderHead(group, items.length)}
         {open ? (
           <div className={cn('pt-sec-body', !frames && 'is-rows')}>
             {items.map((item) => {
@@ -500,7 +583,7 @@ export function Sidebar({
                   {frames ? (
                     <ThumbItem item={item} active={on} onSelect={pick} follow={follow} />
                   ) : (
-                    <OutlineRow item={item} active={on} onSelect={pick} follow={follow} onHover={onHover} />
+                    <OutlineRow item={item} active={on} onSelect={pick} follow={follow} preview={preview} />
                   )}
                   {sub ? <div className='pt-sub'>{sub}</div> : null}
                 </Fragment>
@@ -514,63 +597,53 @@ export function Sidebar({
 
   const rendered = groups.map(renderGroup).filter((node) => node !== null);
   const gallery = id === 'gallery';
+  const markNode = mark === 'gt' ? <GtMark /> : <PtMark />;
 
   return (
-    <aside className={cn('pt-sb', hidden && 'is-hidden', overlay && 'is-overlay')} aria-label={title}>
+    <aside
+      className={cn('pt-sb', hidden && 'is-hidden', overlay && 'is-overlay')}
+      aria-label={title}
+      aria-hidden={hidden || undefined}
+    >
       <div className='pt-sb-head'>
         {gallery ? (
-          <span className='pt-sb-mark'>{mark === 'gt' ? <GtMark /> : <PtMark />}</span>
+          <span className='pt-sb-mark'>{markNode}</span>
         ) : (
           <Link className='pt-sb-mark' href='/' title='Back to the gallery' aria-label='Back to the gallery'>
-            {mark === 'gt' ? <GtMark /> : <PtMark />}
+            {markNode}
           </Link>
         )}
         <b>{title}</b>
-        {overlay ? (
-          <ToolButton icon='close' title='Close the list (Esc)' onClick={() => setSidebar(false)} />
-        ) : null}
-      </div>
-      <div className='pt-sb-tools'>
-        <label className='pt-sb-filter'>
-          <Icon name='search' />
-          <input
-            ref={inputRef}
-            type='search'
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onKeyDown={onFilterKey}
-            placeholder='Filter'
-            title={`Filter ${count}`}
-            aria-label={`Filter ${count}`}
-            autoComplete='off'
-            spellCheck={false}
-          />
-        </label>
         {thumb === 'row' ? null : (
           <Seg
             options={DENSITY_OPTIONS}
             value={density}
-            onChange={setDensity}
+            onChange={(next) => {
+              preview.close();
+              setDensity(next);
+            }}
             label='List density'
             iconOnly
             className='is-small'
           />
         )}
+        {overlay ? (
+          <ToolButton icon='close' title='Close the list (Esc)' onClick={() => setSidebar(false)} />
+        ) : null}
       </div>
-      <div ref={listRef} className='pt-thumbs pt-scroll' onKeyDown={onListKey}>
+      <FilterRow
+        className='pt-sb-tools'
+        value={query}
+        onChange={setQuery}
+        onKeyDown={onFilterKey}
+        placeholder={`Filter ${nounOf(count)}`}
+        count={count}
+        inputRef={inputRef}
+      />
+      <div ref={listRef} className='pt-thumbs pt-scroll' onKeyDown={onListKey} onScroll={preview.close}>
         {rendered.length > 0 ? rendered : <p className='pt-sb-empty'>Nothing matches the filter.</p>}
       </div>
-      {preview ? (
-        <div className='pt-sb-preview' style={{ top: preview.top, left: preview.left }} aria-hidden='true'>
-          <div className='pt-sb-preview-frame'>
-            <ThumbShot item={preview.item} />
-          </div>
-          <div className='pt-sb-preview-title'>
-            {preview.item.n ? <span>{preview.item.n} </span> : null}
-            {preview.item.title}
-          </div>
-        </div>
-      ) : null}
+      {preview.preview && !hidden && !frames ? <HoverPreview preview={preview.preview} /> : null}
     </aside>
   );
 }

@@ -1,21 +1,27 @@
 /* The sheet.
 
    ViewerShell.css owns .pt-stagewrap, the main grid's second row that the
-   shell renders and measures. The sheet sits inside it. The fixed sheet is
-   positioned by fitSheet() in Sheet.tsx; the ring is drawn as a mat so no
-   shadow is needed: a 1px edge border on .sheet, a 1px paper gap from the
-   mat's padding, a 1px hair-soft outline on the mat. lint-lines allows the
-   pair under the `sheet` class fragment. A frameless sheet carries a 24px
-   caption under it; a paged sheet shows a chevron at each edge on hover,
-   where a click pages. Motion (directive 7.4): the entering view fades and
-   settles from 1.015; the incoming slide fades and rises 6px, from below
-   for next and from above for previous; all off under reduced motion. */
+   shell renders and measures, and the cross-fade between views. The sheet
+   sits inside it. The fixed sheet is positioned by fitSheet() in Sheet.tsx;
+   the ring is drawn as a mat so no shadow is needed: a 1px edge border on
+   .sheet, a 1px paper gap from the mat's padding, a 1px hair-soft outline
+   on the mat. lint-lines allows the pair under the `sheet` class fragment.
+   A frameless sheet carries a 24px caption under it; a paged sheet shows a
+   chevron at each edge on hover, where a click pages.
+
+   Slide change (directive 7.4): the stage carries data-dir, the way the last
+   move went. The incoming slide fades from 0 and rises 6px over the slide
+   duration, from below for next and from above for previous; the outgoing
+   one fades over the fast duration. Two kinds of slide take it: a keyed
+   wrapper (.pt-slide, routes that pass itemKey) and injected markup that
+   marks its slides .slide.is-on (.is-off is the leaving mark Sheet.tsx sets
+   for the fade). GalleryViewer.css reads the pt-slide-up and pt-slide-down
+   keyframes. All off under reduced motion. */
 
 /* the click and swipe surface for the fixed sheet; shown only in slide mode */
 .pt-sheet-stage {
   position: absolute;
   inset: 0;
-  animation: pt-view-in 200ms ease-out both;
 }
 
 .pt-sheet-stage[hidden] {
@@ -64,6 +70,13 @@
   transform-origin: 0 0;
 }
 
+/* a keyed body of stage content: fills the stage, so the leaving and the
+   arriving one stack */
+.pt-sheet-stage .stage > .pt-slide {
+  position: absolute;
+  inset: 0;
+}
+
 /* the paging chevrons: 32px ink-2 on paper at the sheet's edges, hover only */
 .pt-sheet-edge {
   position: absolute;
@@ -78,7 +91,7 @@
   color: var(--pt-ink-2);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 120ms ease-out;
+  transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
   z-index: 2;
 }
 
@@ -122,6 +135,8 @@
   text-overflow: ellipsis;
 }
 
+/* ---- the slide change ---- */
+
 /* the incoming slide rises 6px from the side it came from */
 @keyframes pt-slide-up {
   from {
@@ -147,13 +162,39 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .pt-viewer[data-dir='next'] .pt-stagewrap .pt-slides .slide.is-on {
-    animation: pt-slide-up 180ms ease-out;
+/* the outgoing slide fades where it is */
+@keyframes pt-slide-out {
+  from {
+    opacity: 1;
   }
 
-  .pt-viewer[data-dir='prev'] .pt-stagewrap .pt-slides .slide.is-on {
-    animation: pt-slide-down 180ms ease-out;
+  to {
+    opacity: 0;
+  }
+}
+
+/* injected markup hides every slide but the one on; the leaving mark shows
+   the slide again for its fade */
+.pt-slides .slide.is-off {
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pt-sheet-stage[data-dir='next'] .stage > .pt-slide,
+  .pt-sheet-stage[data-dir='next'] .pt-slides .slide.is-on {
+    animation: pt-slide-up var(--pt-dur-slide) var(--pt-ease-out) both;
+  }
+
+  .pt-sheet-stage[data-dir='prev'] .stage > .pt-slide,
+  .pt-sheet-stage[data-dir='prev'] .pt-slides .slide.is-on {
+    animation: pt-slide-down var(--pt-dur-slide) var(--pt-ease-out) both;
+  }
+
+  .pt-sheet-stage[data-dir] .stage > .pt-slide.is-leaving,
+  .pt-sheet-stage[data-dir] .pt-slides .slide.is-off {
+    animation: pt-slide-out var(--pt-dur-fast) var(--pt-ease-out) both;
+    pointer-events: none;
+    will-change: opacity;
   }
 }
 
@@ -171,7 +212,6 @@
   position: absolute;
   inset: 0;
   padding: 28px;
-  animation: pt-view-in 200ms ease-out both;
 }
 
 .sheet-flow .sheet-mat {
@@ -200,16 +240,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pt-sheet-stage,
-  .sheet-flow {
-    animation: none;
-  }
-
   .pt-sheet-stage.is-pan {
     scroll-behavior: auto;
   }
 
   .pt-sheet-edge {
     transition: none;
+  }
+
+  .pt-sheet-stage .stage > .pt-slide.is-leaving {
+    display: none;
   }
 }

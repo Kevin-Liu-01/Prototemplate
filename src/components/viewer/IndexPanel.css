@@ -1,9 +1,12 @@
 /* IndexPanel: a column over the stage. The aside is a child of .pt-main, not
    of the stage, so its top is the toolbar's height and its bottom the
-   progress line; it sits off the right edge until .is-on.
+   progress line; it sits off the right edge until .is-on. Its scrim
+   (.pt-panel-scrim, rendered by ViewerShell inside the stage) fades with
+   the slide both ways, 28 percent ink over the stage (directive 7.4).
    Every rule here is 1px and drawn once: --pt-hair for the panel edge and
    the head, --pt-hair-soft for the tools and the rows, --pt-ink under each
-   group heading. No shadow, no radius. */
+   group heading. No shadow, no radius. The panel keeps its own view
+   transition group so a mode change's stage snapshot never covers it. */
 .pt-panel {
   position: absolute;
   top: var(--pt-bar-h);
@@ -20,17 +23,43 @@
   flex-direction: column;
   transform: translateX(100%);
   visibility: hidden;
+  view-transition-name: pt-panel;
   /* closing: the slide runs, then visibility drops at its end */
   transition:
-    transform 180ms ease-out,
-    visibility 0s linear 180ms;
+    transform var(--pt-dur-slide) var(--pt-ease-out),
+    visibility 0s linear var(--pt-dur-slide);
 }
 
 /* opening: visible at once, so the filter can take focus on the first frame */
 .pt-panel.is-on {
   transform: none;
   visibility: visible;
-  transition: transform 180ms ease-out;
+  transition: transform var(--pt-dur-slide) var(--pt-ease-out);
+}
+
+/* the scrim: always in the stage, hidden until the panel opens, so it can
+   fade out with the panel's slide as well as in; a click closes the panel */
+.pt-panel-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  background: var(--pt-scrim);
+  cursor: default;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--pt-dur-slide) var(--pt-ease-out),
+    visibility 0s linear var(--pt-dur-slide);
+}
+
+.pt-panel-scrim.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--pt-dur-slide) var(--pt-ease-out);
 }
 
 .pt-panel-head {
@@ -78,32 +107,57 @@
   height: 32px;
 }
 
-.pt-panel-tools input {
+/* the filter: the search glyph and the field share one 34px ruled box, the
+   same control as the sidebar's filter row; the box turns ink while the
+   field has focus */
+.pt-panel-filter {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 34px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+  color: var(--pt-titanium);
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-panel-filter:focus-within {
+  border-color: var(--pt-ink);
+  color: var(--pt-ink);
+}
+
+.pt-panel-filter svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+
+.pt-panel-filter input {
   flex: 1 1 auto;
   min-width: 0;
   width: 100%;
-  height: 34px;
-  box-sizing: border-box;
-  border: 1px solid var(--pt-hair);
-  background: var(--pt-paper);
+  height: 32px;
+  border: 0;
+  background: none;
   color: var(--pt-ink);
   font: 13.5px var(--pt-text);
-  padding: 0 10px;
+  padding: 0;
   border-radius: 0;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
 }
 
-.pt-panel-tools input:focus {
-  border-color: var(--pt-ink);
-}
-
-.pt-panel-tools input::placeholder {
+.pt-panel-filter input::placeholder {
   color: var(--pt-titanium);
 }
 
-.pt-panel-tools input::-webkit-search-cancel-button {
+.pt-panel-filter input::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
 
@@ -237,10 +291,13 @@
   height: 14px;
   fill: currentColor;
   color: var(--pt-titanium);
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pt-panel {
+  .pt-panel,
+  .pt-panel-scrim,
+  .pt-panel-filter {
     transition: none;
   }
 }

@@ -15,22 +15,14 @@
 
 /* ---- slide mode: the live exhibit at 1440x900 inside the fixed sheet.
    The static capture (ThumbShot, .pt-shot from Sidebar.css) fills the box
-   behind the frame and shows until the page has loaded. ---- */
+   behind the frame and shows until the page has loaded. The slide change
+   (the outgoing fade, the 6px rise from the side of the move) belongs to
+   the sheet's keyed wrapper (Sheet.css, .pt-slide), so nothing here
+   animates on its own. ---- */
 .gv-exhibit {
   position: absolute;
   inset: 0;
   background: var(--pt-paper);
-}
-
-/* the incoming exhibit fades and rises 6px from the side it came from (directive 7.4) */
-@media (prefers-reduced-motion: no-preference) {
-  .pt-viewer[data-dir='next'] .gv-exhibit {
-    animation: pt-slide-up 180ms ease-out both;
-  }
-
-  .pt-viewer[data-dir='prev'] .gv-exhibit {
-    animation: pt-slide-down 180ms ease-out both;
-  }
 }
 
 .gv-frame {

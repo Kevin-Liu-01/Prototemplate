@@ -199,17 +199,21 @@ export function IndexPanel({ set: initialSet, ref }: IndexPanelProps) {
       </div>
       <div className='pt-panel-tools'>
         <Seg options={SET_OPTIONS} value={set} onChange={setSet} label='Which index' className='pt-panel-sets' />
-        <input
-          ref={inputRef}
-          type='search'
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          onKeyDown={onInputKey}
-          placeholder='Filter by name or address'
-          aria-label='Filter by name or address'
-          autoComplete='off'
-          spellCheck={false}
-        />
+        {/* the same control as the sidebar's filter: a search glyph, then the field */}
+        <label className='pt-panel-filter'>
+          <Icon name='search' />
+          <input
+            ref={inputRef}
+            type='search'
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={onInputKey}
+            placeholder='Filter by name or address'
+            aria-label='Filter by name or address'
+            autoComplete='off'
+            spellCheck={false}
+          />
+        </label>
       </div>
       <div className='pt-panel-body pt-scroll'>
         <p className='pt-panel-note'>{NOTE[set]}</p>

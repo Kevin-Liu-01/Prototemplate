@@ -6,7 +6,9 @@
  * the shell; the two marks live in GtMark.tsx and PtMark.tsx. The theme
  * button shows theme-dark (moon) in light mode and theme-light (sun) in
  * dark mode; the fullscreen button swaps to exit-fullscreen while
- * fullscreen; Help uses help (question-mark-circle).
+ * fullscreen; Help uses help (question-mark-circle); the compare rig's
+ * Sync scroll and Swap use sync (arrows-up-down) and swap
+ * (arrows-right-left).
  */
 export type IconName =
   | 'sidebar'
@@ -35,7 +37,9 @@ export type IconName =
   | 'photo'
   | 'list'
   | 'collapse'
-  | 'open-page';
+  | 'open-page'
+  | 'swap'
+  | 'sync';
 
 type IconPath = { d: string; evenodd?: boolean };
 
@@ -150,6 +154,14 @@ const PATHS: Record<IconName, readonly IconPath[]> = {
   /* arrow-up-right */
   'open-page': [
     { d: 'M5.22 14.78a.75.75 0 0 0 1.06 0l7.22-7.22v5.69a.75.75 0 0 0 1.5 0v-7.5a.75.75 0 0 0-.75-.75h-7.5a.75.75 0 0 0 0 1.5h5.69l-7.22 7.22a.75.75 0 0 0 0 1.06Z', evenodd: true },
+  ],
+  /* arrows-right-left */
+  'swap': [
+    { d: 'M13.2 2.24a.75.75 0 0 0 .04 1.06l2.1 1.95H6.75a.75.75 0 0 0 0 1.5h8.59l-2.1 1.95a.75.75 0 1 0 1.02 1.1l3.5-3.25a.75.75 0 0 0 0-1.1l-3.5-3.25a.75.75 0 0 0-1.06.04Zm-6.4 8a.75.75 0 0 0-1.06-.04l-3.5 3.25a.75.75 0 0 0 0 1.1l3.5 3.25a.75.75 0 1 0 1.02-1.1l-2.1-1.95h8.59a.75.75 0 0 0 0-1.5H4.66l2.1-1.95a.75.75 0 0 0 .04-1.06Z', evenodd: true },
+  ],
+  /* arrows-up-down */
+  'sync': [
+    { d: 'M2.24 6.8a.75.75 0 0 0 1.06-.04l1.95-2.1v8.59a.75.75 0 0 0 1.5 0V4.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L2.2 5.74a.75.75 0 0 0 .04 1.06Zm8 6.4a.75.75 0 0 0-.04 1.06l3.25 3.5a.75.75 0 0 0 1.1 0l3.25-3.5a.75.75 0 1 0-1.1-1.02l-1.95 2.1V6.75a.75.75 0 0 0-1.5 0v8.59l-1.95-2.1a.75.75 0 0 0-1.06-.04Z', evenodd: true },
   ],
 };
 

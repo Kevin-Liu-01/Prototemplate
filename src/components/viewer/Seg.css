@@ -1,6 +1,25 @@
 /* Seg. tokens.css owns .pt-seg and its options (the 30px height, the
-   right-hand rule between options, the plate hover and the ink fill on the
-   active option). This sheet holds only what the base leaves open. */
+   right-hand rule between options, the plate hover, the paper text on the
+   active option and the ink fallback fill before the indicator exists).
+   This sheet owns the shared indicator and the small variant. */
+
+/* The active fill (directive 7.4): one 1px ink span at the group's left
+   edge, placed with translateX and widened with scaleX by Seg.tsx, so the
+   slide between options is a transform and nothing lays out. A solid
+   rectangle with no content scales cleanly. It is inserted already in
+   place, so the first paint shows no slide; every later move takes the
+   slide duration. */
+.pt-seg-ind {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--pt-ink);
+  transform-origin: 0 0;
+  transition: transform var(--pt-dur-slide) var(--pt-ease-out);
+  pointer-events: none;
+}
 
 /* the active option would draw its focus ring ink on ink */
 .pt-seg .pt-ib.is-on:focus-visible {
@@ -22,4 +41,10 @@
 .pt-seg.is-small .pt-ib svg {
   width: 14px;
   height: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-seg-ind {
+    transition: none;
+  }
 }

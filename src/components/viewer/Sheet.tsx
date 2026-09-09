@@ -1,9 +1,11 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
 import type { MouseEvent, ReactNode, Ref, TouchEvent } from 'react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { pad2 } from '@/lib/shell-data';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { Icon } from './icons';
 import { usePtShell } from './shell-context';
@@ -19,6 +21,9 @@ const CAPTION_H = 28;
 
 /** A touch has to travel this far to count as a swipe. */
 const SWIPE_PX = 40;
+
+/** How long the outgoing slide stays for its fade; matches --pt-dur-fast in tokens.css. */
+const OUT_MS = 120;
 
 export type SheetFit = {
   /** the stage transform, W / w */
@@ -81,6 +86,16 @@ export type FixedSheetProps = {
    * the right; false hides it; a node replaces it.
    */
   caption?: ReactNode | false;
+  /**
+   * The key of the item the children show, for routes whose children change
+   * with the active item (the gallery's live exhibit). With it, the children
+   * sit in a wrapper keyed by the item, the wrapper that leaves stays for
+   * the outgoing fade and the wrapper that arrives rises in from the side
+   * the move came from (directive 7.4). Leave it off when the stage is one
+   * fixed body whose slides toggle their own `is-on` class, as the deck's
+   * injected markup does: the sheet animates those slides in place instead.
+   */
+  itemKey?: string;
   children?: ReactNode;
 };
 
@@ -95,6 +110,9 @@ export type FlowSheetProps = {
 
 export type SheetProps = FixedSheetProps | FlowSheetProps;
 
+/** One keyed body of stage content: the item it shows and its node. */
+type Slot = { key: string; node: ReactNode };
+
 /**
  * The content frame inside the stage. Fixed: a w x h sheet scaled to fit,
  * shown in slide mode, with the ring drawn as a mat (1px edge border, 1px
@@ -107,11 +125,88 @@ export function Sheet(props: SheetProps) {
   return <FixedSheet {...props} />;
 }
 
-function FixedSheet({ w = 1600, h = 900, frame = true, fit: fitMode = 'contain', caption, children }: FixedSheetProps) {
-  const { mode, keys, present, narrow, panelOpen, stageSize, panelWidth, items, active, index, total, step } =
+/**
+ * Injected slide markup (the deck) marks its current slide `.slide.is-on`
+ * and hides the rest, so the slide that lost the mark vanishes before it
+ * can fade. This watches the sheet for that class change and holds the
+ * slide that lost `is-on` as `.is-off` for the outgoing duration, which
+ * Sheet.css shows and fades. A slide that comes back on while it is still
+ * leaving drops the mark at once. Off under reduced motion.
+ */
+function watchOutgoingSlides(root: HTMLElement): () => void {
+  const timers = new Map<HTMLElement, number>();
+  const settle = (el: HTMLElement) => {
+    window.clearTimeout(timers.get(el));
+    timers.delete(el);
+    el.classList.remove('is-off');
+  };
+  const observer = new MutationObserver((records) => {
+    for (const record of records) {
+      const el = record.target;
+      if (!(el instanceof HTMLElement) || !el.classList.contains('slide')) continue;
+      if (el.classList.contains('is-on')) {
+        if (el.classList.contains('is-off')) settle(el);
+        continue;
+      }
+      const wasOn = (record.oldValue ?? '').split(/\s+/).includes('is-on');
+      if (!wasOn) continue;
+      el.classList.add('is-off');
+      window.clearTimeout(timers.get(el));
+      timers.set(el, window.setTimeout(() => settle(el), OUT_MS));
+    }
+  });
+  observer.observe(root, { attributes: true, attributeFilter: ['class'], attributeOldValue: true, subtree: true });
+  return () => {
+    observer.disconnect();
+    timers.forEach((_, el) => settle(el));
+  };
+}
+
+function FixedSheet({
+  w = 1600,
+  h = 900,
+  frame = true,
+  fit: fitMode = 'contain',
+  caption,
+  itemKey,
+  children,
+}: FixedSheetProps) {
+  const { mode, keys, present, narrow, panelOpen, stageSize, panelWidth, items, active, index, total, dir, step } =
     usePtShell();
   const mat = useRef<HTMLDivElement>(null);
   const touchX = useRef<number | null>(null);
+
+  /* the keyed wrapper: the slot last rendered as current, and the one on its
+     way out. The leaving slot is derived during the render that changes the
+     key (React re-renders before it commits), so the old wrapper is never
+     unmounted and remounted; a timer lets it go after the outgoing fade. */
+  const last = useRef<Slot | null>(null);
+  const [leaving, setLeaving] = useState<Slot | null>(null);
+  const leaveTimer = useRef(0);
+  if (itemKey !== undefined) {
+    const prev = last.current;
+    if (prev && prev.key !== itemKey && (!leaving || leaving.key !== prev.key)) setLeaving(prev);
+    last.current = { key: itemKey, node: children };
+  }
+
+  useGSAP(
+    () => {
+      window.clearTimeout(leaveTimer.current);
+      if (!leaving) return;
+      leaveTimer.current = window.setTimeout(() => setLeaving((cur) => (cur === leaving ? null : cur)), OUT_MS);
+    },
+    { dependencies: [leaving] }
+  );
+
+  useMountEffect(() => {
+    const root = mat.current;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const unwatch = root && !still && typeof MutationObserver !== 'undefined' ? watchOutgoingSlides(root) : null;
+    return () => {
+      window.clearTimeout(leaveTimer.current);
+      unwatch?.();
+    };
+  });
 
   const shown = mode === 'slide';
   const paged = keys === 'paged';
@@ -164,9 +259,26 @@ function FixedSheet({ w = 1600, h = 900, frame = true, fit: fitMode = 'contain',
       caption
     );
 
+  const body =
+    itemKey === undefined ? (
+      children
+    ) : (
+      <>
+        {leaving ? (
+          <div key={leaving.key} className='pt-slide is-leaving' aria-hidden='true'>
+            {leaving.node}
+          </div>
+        ) : null}
+        <div key={itemKey} className='pt-slide'>
+          {children}
+        </div>
+      </>
+    );
+
   return (
     <div
       className={fitMode === 'height' ? 'pt-sheet-stage is-pan' : 'pt-sheet-stage'}
+      data-dir={dir ?? 'next'}
       hidden={!shown}
       onClick={onClick}
       onTouchStart={onTouchStart}
@@ -186,7 +298,7 @@ function FixedSheet({ w = 1600, h = 900, frame = true, fit: fitMode = 'contain',
         <div className='sheet'>
           <div className='stage' style={{ width: w, height: h, transform: `scale(${fit.scale})` }}>
             {frame ? <SheetFrame /> : null}
-            {children}
+            {body}
           </div>
         </div>
         {paged && !present ? (

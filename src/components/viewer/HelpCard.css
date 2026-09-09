@@ -1,6 +1,9 @@
 /* HelpCard: a scrim over the whole viewport with the key table centered.
-   The scrim fades over 160ms and the card rises 8px over 200ms (directive
-   7.4); both are off under reduced motion. */
+   The scrim fades over the toast duration and the card rises 8px over the
+   enter duration (directive 7.4); on close (.is-closing, held by
+   HelpCard.tsx for the toast duration) both fade back out and the card
+   settles 8px down. Off under reduced motion. The card keeps its own view
+   transition group so a mode change's stage snapshot never covers it. */
 .pt-help {
   position: fixed;
   inset: 0;
@@ -8,7 +11,8 @@
   place-items: center;
   background: var(--pt-scrim);
   z-index: 20;
-  animation: pt-fade-in 160ms ease-out both;
+  view-transition-name: pt-help;
+  animation: pt-fade-in var(--pt-dur-toast) var(--pt-ease-out) both;
 }
 
 .pt-help-card {
@@ -21,7 +25,16 @@
   max-height: 92vh;
   overflow-y: auto;
   font-family: var(--pt-text);
-  animation: pt-help-in 200ms ease-out both;
+  animation: pt-help-in var(--pt-dur-enter) var(--pt-ease-out) both;
+}
+
+.pt-help.is-closing {
+  animation: pt-fade-out var(--pt-dur-toast) var(--pt-ease-out) both;
+  pointer-events: none;
+}
+
+.pt-help.is-closing .pt-help-card {
+  animation: pt-help-out var(--pt-dur-toast) var(--pt-ease-out) both;
 }
 
 @keyframes pt-help-in {
@@ -33,6 +46,18 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes pt-help-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }
 
@@ -111,7 +136,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pt-help,
-  .pt-help-card {
+  .pt-help.is-closing,
+  .pt-help-card,
+  .pt-help.is-closing .pt-help-card {
     animation: none;
   }
 }

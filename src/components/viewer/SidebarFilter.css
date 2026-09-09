@@ -1,0 +1,131 @@
+/* SidebarFilter: the filter row and its field. The field is the index
+   panel's control (IndexPanel.css, .pt-panel-tools input): a 1px --pt-hair
+   border that turns ink on focus, paper ground, ink text, titanium
+   placeholder, radius 0, no native search styling. Two custom properties
+   size it: --pt-filter-h (34px, the panel's) and --pt-filter-fs (13.5px);
+   the sidebar sets its own 30px and 13px in Sidebar.css. One rule per
+   field, drawn once by the field. Colors are tokens only. */
+
+.pt-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pt-filter {
+  --pt-filter-h: 34px;
+  --pt-filter-fs: 13.5px;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  height: var(--pt-filter-h);
+  padding: 0 4px 0 9px;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+  color: var(--pt-titanium);
+  transition:
+    border-color 120ms ease-out,
+    color 120ms ease-out;
+}
+
+.pt-filter:focus-within {
+  border-color: var(--pt-ink);
+  color: var(--pt-ink);
+}
+
+.pt-filter-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: text;
+}
+
+.pt-filter-field > svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+
+.pt-filter input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--pt-ink);
+  font: var(--pt-filter-fs) var(--pt-text);
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pt-filter input::placeholder {
+  color: var(--pt-titanium);
+}
+
+.pt-filter input::-webkit-search-cancel-button,
+.pt-filter input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  display: none;
+}
+
+/* the clear button, present only while the field holds text */
+.pt-filter-clear {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pt-titanium);
+  cursor: pointer;
+  transition: color 120ms ease-out;
+}
+
+.pt-filter-clear svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.pt-filter-clear:hover {
+  color: var(--pt-ink);
+}
+
+.pt-filter-clear:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* the count at the right end of the row */
+.pt-filter-count {
+  flex: 0 0 auto;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-filter,
+  .pt-filter-clear {
+    transition: none;
+  }
+}

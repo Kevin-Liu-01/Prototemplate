@@ -12,7 +12,7 @@ import { redrawDithers } from '@/lib/dither';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { DECK_SECTIONS, SLIDE_COUNT } from './sections';
+import { DECK_SECTIONS, SLIDE_COUNT, slideShot } from './sections';
 
 const DECK_TITLE = 'GT brand deck';
 const DECK_MODES: readonly ShellMode[] = ['slide', 'grid', 'book'];
@@ -141,7 +141,11 @@ function DeckSlides() {
   return null;
 }
 
-/** The book, mounted only while the mode is book; pages are the static renders, a click opens the slide. */
+/**
+ * The book, mounted only while the mode is book. Its pages are wider than
+ * the list's frames, so they show the 960x540 renders (directive 7.5) in
+ * place of the item's 480x270 shot; a click opens the slide.
+ */
 function DeckBook({ sections }: { sections: readonly ShellSection[] }) {
   const { mode } = usePtShell();
   if (mode !== 'book') return null;
@@ -152,7 +156,7 @@ function DeckBook({ sections }: { sections: readonly ShellSection[] }) {
       meta={BOOK_META}
       sections={sections}
       noun={BOOK_NOUN}
-      renderPage={(item) => <ThumbShot item={item} />}
+      renderPage={(item) => <ThumbShot item={{ ...item, shot: slideShot(Number(item.id), 960) }} />}
     />
   );
 }

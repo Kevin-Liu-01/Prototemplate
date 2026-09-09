@@ -840,7 +840,9 @@ type StageProps = ArticleProps;
  * the shell over the stage, so nothing is mounted under it and the live
  * frame and the shader field release their contexts. An archived item shows
  * its capture sheet in either remaining mode; otherwise the book holds the
- * article and the slide holds the live exhibit.
+ * article and the slide holds the live exhibit, on a sheet keyed by the
+ * direction so the exhibit that leaves fades while the next rises in from
+ * the side of the move (directive 7.4).
  */
 function GalleryStage({ fontClass, anatomy, ledger, scrollRef, intent }: StageProps) {
   const { mode, active } = usePtShell();
@@ -867,7 +869,7 @@ function GalleryStage({ fontClass, anatomy, ledger, scrollRef, intent }: StagePr
 
   const direction = DIRECTION_BY_SLUG.get(active);
   return (
-    <Sheet variant='fixed' w={EXHIBIT_W} h={EXHIBIT_H} frame={false}>
+    <Sheet variant='fixed' w={EXHIBIT_W} h={EXHIBIT_H} frame={false} itemKey={direction?.slug}>
       {direction ? <ExhibitFrame key={direction.slug} direction={direction} /> : null}
     </Sheet>
   );

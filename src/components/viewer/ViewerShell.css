@@ -1,9 +1,26 @@
 /* ViewerShell: the fixed full-viewport grid. Column one is the sidebar
    (Sidebar.css draws it and hides or floats itself), column two is the main
    region with three rows: the toolbar, the stage, the 2px progress line.
-   This sheet owns the grid, the stage box, the two scrims and the
-   modifiers; every other rule belongs to the component that draws it.
-   Colors are tokens only. */
+   This sheet owns the grid, the stage box, the sidebar scrim, the modifiers
+   and every motion the shell runs between its views (directive 7.4); every
+   other rule belongs to the component that draws it. Colors are tokens
+   only; durations and easings are the --pt-dur-* and --pt-ease* tokens.
+
+   Motion here, in order:
+   1. The sidebar column. data-sb on .pt-viewer is '0' while the list is
+      closed (or present, or the viewport is narrow) and the density name
+      while it is open; data-density always names the density, so --pt-sb-w
+      keeps the list's width even while the column is closing. The column
+      animates its track over the sidebar duration; the list keeps its full
+      width under the main region (which paints over it) so its content never
+      reflows, and fades while data-sb-moving names the move.
+   2. The mode change. .pt-stagewrap carries a view-transition-name, so a
+      change of view runs through the View Transitions API from
+      ViewerShell.tsx: the old image fades and scales to 0.985 over the leave
+      duration, the new one fades and scales from 1.015 over the enter
+      duration after a 60ms delay. Every other element keeps its own group
+      or shows live. Without the API, data-entering on .pt-viewer names the
+      entering view for the enter duration and CSS fades it in. */
 
 .pt-viewer {
   --pt-toolbar-h: var(--pt-bar-h);
@@ -17,20 +34,66 @@
   font-family: var(--pt-text);
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
-  /* the sidebar's width change (open, closed, outline, thumbnails) animates;
-     the stage refits on every frame through the shell's ResizeObserver */
-  transition: grid-template-columns 220ms cubic-bezier(0.2, 0, 0, 1);
+  /* the one layout animation the shell runs: the stage refits on every frame
+     through the shell's ResizeObserver */
+  transition: grid-template-columns var(--pt-dur-sb) var(--pt-ease);
 }
 
 /* thumbnail density widens the column (directive 7.3) */
-.pt-viewer.is-thumbs {
+.pt-viewer[data-density='thumbs'] {
   --pt-sb-w: 256px;
 }
 
-/* the list toggled off, or presenting: column one collapses */
-.pt-viewer.no-sb,
-.pt-viewer.is-present {
+/* the list toggled off, presenting, or a narrow viewport: the track closes */
+.pt-viewer[data-sb='0'] {
   grid-template-columns: 0 minmax(0, 1fr);
+}
+
+/* the list keeps the density's width whatever the track is doing, so its
+   content holds still while the main region slides over it */
+.pt-viewer > .pt-sb {
+  min-width: var(--pt-sb-w);
+}
+
+/* the content fade that rides the column's move */
+.pt-viewer[data-sb-moving] > .pt-sb {
+  will-change: opacity;
+}
+
+.pt-viewer[data-sb-moving='open'] > .pt-sb:not(.is-overlay) {
+  animation: pt-fade-in var(--pt-dur-sb) var(--pt-ease-out) both;
+}
+
+.pt-viewer[data-sb-moving='close'] > .pt-sb:not(.is-overlay) {
+  animation: pt-fade-out var(--pt-dur-toast) var(--pt-ease-out) both;
+  pointer-events: none;
+}
+
+.pt-viewer[data-sb-moving='density'] > .pt-sb .pt-thumbs {
+  animation: pt-fade-in var(--pt-dur-sb) var(--pt-ease-out) both;
+}
+
+/* the narrow overlay leaves the way Sidebar.css brings it in */
+.pt-viewer[data-sb-moving='close'] > .pt-sb.is-overlay {
+  animation: pt-sb-out var(--pt-dur-sb) var(--pt-ease) both;
+  pointer-events: none;
+}
+
+.pt-viewer[data-sb-moving='close'] > .pt-sb-scrim {
+  animation: pt-fade-out var(--pt-dur-toast) var(--pt-ease-out) both;
+  pointer-events: none;
+}
+
+@keyframes pt-sb-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
 }
 
 .pt-main {
@@ -47,28 +110,15 @@
 /* the stage: the second row, measured by the shell's ResizeObserver; the
    sheet, the grid and the book sit inside it. The index panel is a sibling,
    positioned against .pt-main so it spans the toolbar's bottom rule to the
-   progress line */
+   progress line. The view-transition-name makes it the one region a mode
+   change cross-fades. */
 .pt-stagewrap {
   grid-row: 2;
   position: relative;
   overflow: hidden;
   min-height: 0;
   background: var(--pt-plate);
-}
-
-/* the scrim under an open index panel: 28 percent ink over the stage, a
-   click closes the panel; it fades with the panel's slide */
-.pt-panel-scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  appearance: none;
-  background: var(--pt-scrim);
-  cursor: default;
-  animation: pt-fade-in 180ms ease-out both;
+  view-transition-name: pt-stage;
 }
 
 /* the scrim under the narrow overlay list */
@@ -82,7 +132,7 @@
   appearance: none;
   background: var(--pt-scrim);
   cursor: default;
-  animation: pt-fade-in 180ms ease-out both;
+  animation: pt-fade-in var(--pt-dur-slide) var(--pt-ease-out) both;
 }
 
 /* present: chrome gone, the stage reads as the window */
@@ -99,7 +149,8 @@
   background: var(--pt-paper);
 }
 
-/* the entering view: a fade and a settle from 1.015 (directive 7.4) */
+/* ---- the keyframes the shell shares (Sidebar.css and DirectionCorner.css
+   read pt-fade-in; GalleryViewer.css reads Sheet.css's slide pair) ---- */
 @keyframes pt-fade-in {
   from {
     opacity: 0;
@@ -110,6 +161,17 @@
   }
 }
 
+@keyframes pt-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* the entering view: a fade and a settle from 1.015 (directive 7.4) */
 @keyframes pt-view-in {
   from {
     opacity: 0;
@@ -120,6 +182,89 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* the leaving view: a fade and a shrink to 0.985 */
+@keyframes pt-view-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+/* ---- the mode change through the View Transitions API ---- */
+
+/* Singletons that can sit over the stage keep their own group, so the
+   stage's snapshot (painted in the top layer) never covers them: the index
+   panel (IndexPanel.css), the toast (Toast.css), the help card
+   (HelpCard.css), and here the narrow overlay list, its scrim and the
+   sidebar's hover preview (HoverPreview.css draws .pt-preview). */
+.pt-viewer > .pt-sb.is-overlay {
+  view-transition-name: pt-sb;
+}
+
+.pt-sb-scrim {
+  view-transition-name: pt-sb-scrim;
+}
+
+.pt-preview {
+  view-transition-name: pt-preview;
+}
+
+/* Everything but the stage shows its new state at once: no group tween, the
+   old image gone, the new image live and unblended. */
+::view-transition-group(*) {
+  animation: none;
+}
+
+::view-transition-old(*) {
+  animation: none;
+  opacity: 0;
+}
+
+::view-transition-new(*) {
+  animation: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+/* The stage: the leaving view fades and shrinks over the leave duration,
+   the entering view fades and settles over the enter duration after a 60ms
+   delay, so the two never overlap fully. The pair clips, so the settling
+   image never reaches over the toolbar. */
+::view-transition-image-pair(pt-stage) {
+  overflow: clip;
+}
+
+::view-transition-old(pt-stage) {
+  animation: pt-view-out var(--pt-dur-leave) var(--pt-ease-out) both;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(pt-stage) {
+  animation: pt-view-in var(--pt-dur-enter) var(--pt-ease-out) 60ms both;
+  mix-blend-mode: normal;
+}
+
+/* ---- the fallback without the API: the entering view fades in by itself ---- */
+
+/* GridView.css fades the grid in on every mount; under the shell that fade
+   belongs to the cross-fade, so it is off here and the fallback puts it back */
+.pt-viewer .pt-grid {
+  animation: none;
+}
+
+.pt-viewer[data-entering='slide'] .pt-sheet-stage,
+.pt-viewer[data-entering='grid'] .pt-grid,
+.pt-viewer[data-entering='book'] .pt-book,
+.pt-viewer[data-entering='book'] .sheet-flow {
+  animation: pt-view-in var(--pt-dur-enter) var(--pt-ease-out) both;
+  will-change: transform, opacity;
 }
 
 /* at or below 900px the sidebar leaves the grid; .sb-open marks the shell
@@ -142,8 +287,19 @@
     transition: none;
   }
 
-  .pt-panel-scrim,
-  .pt-sb-scrim {
+  .pt-viewer[data-sb-moving] > .pt-sb,
+  .pt-viewer[data-sb-moving] > .pt-sb .pt-thumbs,
+  .pt-viewer[data-sb-moving] > .pt-sb-scrim,
+  .pt-sb-scrim,
+  .pt-viewer[data-entering] .pt-sheet-stage,
+  .pt-viewer[data-entering] .pt-grid,
+  .pt-viewer[data-entering] .pt-book,
+  .pt-viewer[data-entering] .sheet-flow {
+    animation: none;
+  }
+
+  ::view-transition-old(pt-stage),
+  ::view-transition-new(pt-stage) {
     animation: none;
   }
 }

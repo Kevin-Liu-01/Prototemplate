@@ -1,5 +1,6 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useRef, useState } from 'react';
 
@@ -12,38 +13,56 @@ import { toggleTheme } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import type { ShellKeyRow } from '@/components/viewer/useShellKeys';
 import { cn } from '@/lib/cn';
+import { SITE_SURFACES } from '@/lib/surfaces';
+import type { SurfaceGroup } from '@/lib/surfaces';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './DirectionCorner.css';
 
 /**
  * The direction pages' one piece of floating chrome, in the shell's grammar.
- * Two labeled buttons stacked in the top left corner: Directions opens the
- * shell Sidebar as a 300px overlay over a scrim, listing the whole site map
- * (Pages, Documents, Sites, Explorations, Archive) with this page's row
- * marked, so every route is one click away from every prototype; Index
- * opens the IndexPanel over the page. Keys: [ for the list, R and Cmd K or
- * Ctrl K for the index, D for the theme, ? for the shortcuts, Escape back
- * one layer. Hidden under ?chrome=0, which the presenter's iframes, the
- * gallery's exhibit and every screenshot pass depend on. No toolbar and no
- * sheet: the page stays a full document with its own nav. Replaces
- * src/components/shared/DirectionDock.tsx with the same prop shape, { slug }.
+ * Two labeled buttons stacked in the top left corner: List opens the shell
+ * Sidebar as the 300px overlay over a scrim, in outline density, listing
+ * the whole site map (Pages, Documents, Sites, Explorations, Archive) with
+ * this page's row marked, with its filter, its collapsible groups and its
+ * hover previews, so every route is one click away from every prototype;
+ * Index opens the IndexPanel over the page. Keys: [ for the list, R and
+ * Cmd K or Ctrl K for the index, D for the theme, ? for the shortcuts,
+ * Escape back one layer. Hidden under ?chrome=0, which the gallery's
+ * exhibit, the compare panes and every screenshot pass depend on. No
+ * toolbar and no sheet: the page stays a full document with its own nav.
+ * Replaces src/components/shared/DirectionDock.tsx with the same prop
+ * shape, { slug }.
  *
  * The Sidebar, the IndexPanel and the HelpCard read shell state from
  * context, so the corner publishes small ShellState values of its own: one
  * for the list (narrow, so the sidebar draws itself as the overlay with its
  * close button and closes after a pick), one for the panel (wide, so the
  * filter takes focus), one for the help card.
+ *
+ * Motion (directive 7.4): the scrim stays mounted and fades both ways over
+ * the panel's slide duration; the list slides in through Sidebar.css and,
+ * on close, stays mounted for the sidebar duration under .is-leaving so
+ * DirectionCorner.css can slide it back out. Reduced motion commits at once.
  */
 export type DirectionCornerProps = { slug: string };
+
+/** The site map groups the list shows, in the shell's one order; the count names their rows. */
+const LIST_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Documents', 'Sites', 'Explorations', 'Archive'];
 
 /** The site map groups open when the list opens on a direction page. */
 const OPEN_GROUPS: readonly string[] = ['Pages', 'Sites', 'Explorations'];
 
+/** `44 pages`: the count at the end of the filter row, and the word its placeholder takes (`Filter pages`). */
+const LIST_COUNT = `${SITE_SURFACES.filter((row) => LIST_GROUPS.includes(row.group)).length} pages`;
+
+/** How long the closing list stays for its exit; matches --pt-dur-sb in tokens.css. */
+const LEAVE_MS = 220;
+
 /** The corner's own key table, for the help card. */
 const ROWS: readonly ShellKeyRow[] = [
   { group: 'Move', keys: 'Space, arrows', action: 'Scroll the page' },
-  { group: 'Panels', keys: '[', action: 'Show or hide the list of every page' },
+  { group: 'Panels', keys: '[', action: 'Show or hide the list' },
   { group: 'Panels', keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' },
   { group: 'Panels', keys: '?', action: 'Keyboard shortcuts' },
   { group: 'Panels', keys: 'Esc', action: 'Back one layer: the shortcuts, the index, the list' },
@@ -62,14 +81,17 @@ function cornerState(active: string, overrides: Partial<ShellState>): ShellState
     items: [],
     paged: [],
     mode: 'slide',
+    transition: null,
     density: 'outline',
     sidebarOpen: false,
+    sidebarShown: false,
     panelOpen: false,
     helpOpen: false,
     present: false,
     narrow: false,
     active,
     index: -1,
+    dir: 'next',
     total: 0,
     stageSize: { width: 0, height: 0 },
     panelWidth: 0,
@@ -91,15 +113,42 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
   return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 }
 
+/** The reader has asked for no motion: the list leaves at once. */
+function reducedMotion(): boolean {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 function Corner({ slug }: DirectionCornerProps) {
   const params = useSearchParams();
   const [list, setList] = useState(false);
   const [panel, setPanel] = useState(false);
   const [help, setHelp] = useState(false);
+  /* true from a close of the list until its exit has run, so it is still there to slide out */
+  const [leaving, setLeaving] = useState(false);
+  const wasList = useRef(false);
+  const leaveTimer = useRef(0);
 
   /* the mount-time listener reads the latest layers through this ref */
   const layers = useRef({ list, panel, help });
   layers.current = { list, panel, help };
+
+  /* the one dependency effect: the list closed, so hold it for its exit */
+  useGSAP(
+    () => {
+      window.clearTimeout(leaveTimer.current);
+      if (list) {
+        wasList.current = true;
+        setLeaving(false);
+        return;
+      }
+      if (!wasList.current) return;
+      wasList.current = false;
+      if (reducedMotion()) return;
+      setLeaving(true);
+      leaveTimer.current = window.setTimeout(() => setLeaving(false), LEAVE_MS);
+    },
+    { dependencies: [list] }
+  );
 
   useMountEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -112,6 +161,7 @@ function Corner({ slug }: DirectionCornerProps) {
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (isEditable(e.target)) {
+        /* the list filter and the index filter answer their own Escape (defaultPrevented) */
         if (e.key === 'Escape' && !e.defaultPrevented) {
           setPanel(false);
           e.target.blur();
@@ -142,12 +192,22 @@ function Corner({ slug }: DirectionCornerProps) {
       }
     };
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      window.clearTimeout(leaveTimer.current);
+    };
   });
 
   if (params.get('chrome') === '0') return null;
 
-  const listState = cornerState(slug, { narrow: true, sidebarOpen: list, setSidebar: setList });
+  /* the list is in the DOM while it is wanted, and for its exit after */
+  const listShown = list || leaving;
+  const listState = cornerState(slug, {
+    narrow: true,
+    sidebarOpen: list,
+    sidebarShown: listShown,
+    setSidebar: setList,
+  });
   const panelState = cornerState(slug, { panelOpen: panel, setPanel });
   const helpState = cornerState(slug, { helpOpen: help, setHelp });
   const open = list || panel;
@@ -161,20 +221,39 @@ function Corner({ slug }: DirectionCornerProps) {
       <div className='pt-corner' role='group' aria-label='Prototemplate'>
         <ToolButton
           icon='sidebar'
-          label='Directions'
-          title='Every page on the site ([)'
+          label='List'
+          title='Show or hide the list ([)'
           pressed={list}
           onClick={() => setList(!list)}
         />
-        <ToolButton icon='index' label='Index' title='Index (R)' pressed={panel} onClick={() => setPanel(!panel)} />
+        <ToolButton
+          icon='index'
+          label='Index'
+          title='Show or hide the index (R)'
+          pressed={panel}
+          onClick={() => setPanel(!panel)}
+        />
       </div>
-      <div className={cn('pt-corner-layer', open && 'is-on')}>
-        {open ? (
-          <button type='button' className='pt-corner-scrim' aria-label='Close (Esc)' onClick={closeTop} />
-        ) : null}
-        {list ? (
+      <div className={cn('pt-corner-layer', open && 'is-on', leaving && !list && 'is-leaving')}>
+        {/* always mounted so it can fade both ways; hidden by DirectionCorner.css while off */}
+        <button
+          type='button'
+          className={cn('pt-corner-scrim', open && 'is-on')}
+          aria-label='Close (Esc)'
+          tabIndex={-1}
+          onClick={closeTop}
+        />
+        {listShown ? (
           <ShellContext value={listState}>
-            <Sidebar title='Prototemplate' mark='pt' count='the site' sections={[]} thumb='row' siteMap openGroups={OPEN_GROUPS} />
+            <Sidebar
+              title='Prototemplate'
+              mark='pt'
+              count={LIST_COUNT}
+              sections={[]}
+              thumb='row'
+              siteMap
+              openGroups={OPEN_GROUPS}
+            />
           </ShellContext>
         ) : null}
         <ShellContext value={panelState}>
@@ -182,7 +261,10 @@ function Corner({ slug }: DirectionCornerProps) {
         </ShellContext>
       </div>
       <ShellContext value={helpState}>
-        <HelpCard rows={ROWS} note='The list and the index reach every page on the site; the page itself scrolls as a document.' />
+        <HelpCard
+          rows={ROWS}
+          note='The list and the index reach every page on the site; the page itself scrolls as a document.'
+        />
       </ShellContext>
     </>
   );
