@@ -1,0 +1,16 @@
+    <!-- mood dictionary -->
+    <section class="slide mood s-mood s-mood-dictionary">
+      <style>
+        .s-mood .mood-img { position: absolute; inset: -57px; z-index: -1; width: 1600px; height: 900px; object-fit: cover; display: block; }
+        /* solid paper chips under the viewer's wordmark (stage 72,864, 28 by 18) and counter (right 72, bottom 22), the same plate treatment the openers use; scoped to the stage so thumbnails, which carry no chrome, stay clean */
+        #stage > .s-mood::after { content: ''; position: absolute; inset: -57px; z-index: -1; pointer-events: none; background: linear-gradient(var(--paper), var(--paper)) 66px 858px / 40px 30px no-repeat, linear-gradient(var(--paper), var(--paper)) 1474px 856px / 60px 28px no-repeat; }
+        .s-mood .mood-plate { position: absolute; right: 0; bottom: 0; width: fit-content; padding: 10px 14px; background: var(--paper); }
+        .s-mood .mood-plate .credit { font-size: 15px; line-height: 1.45; letter-spacing: 0.01em; color: var(--titanium); white-space: nowrap; }
+      </style>
+      <img class="mood-img" src="shots/mood-dictionary-light.jpg" data-dark="shots/mood-dictionary.jpg" alt="The Compact Oxford English Dictionary lying open, rendered as a two-tone dither">
+      <div class="in">
+        <div class="mood-plate">
+          <div class="credit">Photograph: Cullen328, CC BY-SA 4.0</div>
+        </div>
+      </div>
+    </section>

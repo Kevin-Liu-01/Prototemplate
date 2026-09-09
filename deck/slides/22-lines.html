@@ -1,0 +1,32 @@
+    <!-- lines -->
+    <section class="slide"><div class="in">
+      <div class="cols">
+        <div class="stack">
+          <h2>Line rules</h2>
+          <p class="max-p">Every line is drawn exactly once. Layout structure comes from 1px hairlines. The row draws every structural line, and a cell never draws a border parallel to a row seam, so no line is doubled. Where two hairlines cross, a small registration cross marks the intersection. It is the only decorative element allowed at a junction.</p>
+          <p class="cap max-p">A lint script reconstructs every rule from computed CSS and reports doubled lines, missing seams, self-stacked borders, and low-contrast seams before a page ships.</p>
+        </div>
+        <!-- The 731-unit viewBox renders 1:1 in the 7fr column, so 20px labels and 1px strokes are 20px and 1px on the sheet. -->
+        <svg class="dia" viewBox="0 0 731 452" aria-label="Two figures. Cells that draw their own borders put two lines at every seam. Row seams drawn once put one line at every seam, with a registration cross where a seam meets a rail.">
+          <text x="0" y="20">Cell borders</text>
+          <rect x="0" y="56.5" width="320" height="110" fill="none" class="mid"/>
+          <rect x="0" y="169.5" width="320" height="110" fill="none" class="mid"/>
+          <rect x="0" y="282.5" width="320" height="110" fill="none" class="mid"/>
+          <text x="0" y="446">Two lines at every seam</text>
+          <text x="411" y="20">Row seams</text>
+          <line x1="451" y1="36.5" x2="451" y2="412.5" class="mid"/>
+          <line x1="691" y1="36.5" x2="691" y2="412.5" class="mid"/>
+          <line x1="411" y1="56.5" x2="731" y2="56.5" class="mid"/>
+          <line x1="411" y1="168.5" x2="731" y2="168.5" class="mid"/>
+          <line x1="411" y1="281.5" x2="731" y2="281.5" class="mid"/>
+          <line x1="411" y1="392.5" x2="731" y2="392.5" class="mid"/>
+          <g class="ink" stroke-width="1.5" fill="none">
+            <path d="M443.5 56.5 h15 M451 49 v15 M683.5 56.5 h15 M691 49 v15"/>
+            <path d="M443.5 168.5 h15 M451 161 v15 M683.5 168.5 h15 M691 161 v15"/>
+            <path d="M443.5 281.5 h15 M451 274 v15 M683.5 281.5 h15 M691 274 v15"/>
+            <path d="M443.5 392.5 h15 M451 385 v15 M683.5 392.5 h15 M691 385 v15"/>
+          </g>
+          <text x="411" y="446">One line at every seam</text>
+        </svg>
+      </div>
+    </div></section>

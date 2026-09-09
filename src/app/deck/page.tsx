@@ -7,7 +7,7 @@ import './deck.css';
 export const metadata: Metadata = {
   title: { absolute: 'General Translation brand deck' },
   description:
-    'The General Translation brand in 76 slides: thesis, values, writing style, mark, color, type, line rules, diagrams, dither, motion, the shipped site and every public surface, docs, blog, content rules, prototemplate, glyphfield, fixed points, and current status.',
+    'The General Translation brand in 85 slides: thesis, values, writing style, mark, color, type, line rules, diagrams, dither, motion, the shipped site and every public surface, docs, blog, content rules, prototemplate, glyphfield, fixed points, current status, and mood images between the sections.',
   // declared per-route so the browser stops probing the app-wide /favicon.ico
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };

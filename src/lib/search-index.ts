@@ -9,7 +9,7 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * palette at 430e3c7 and rebuilt on the shell's registries so the rows
  * carry the same ids as the index panel and the sidebar: pages, documents
  * and their headings, the sites and explorations, the archived versions,
- * the brand sections, the library anchors, and the 52 deck slides, each
+ * the brand sections, the library anchors, and the 85 deck slides, each
  * linking to /deck#n. Pure data, no React, no DOM.
  *
  * The site rows come straight from src/lib/surfaces.ts, so a group added
@@ -247,16 +247,18 @@ const HEADINGS: readonly SearchEntry[] = Object.entries(DOC_HEADINGS).flatMap(([
   )
 );
 
-/** The 76 slide titles: the first h1, h2 or .big of each deck/slides/NN-*.html, in order. */
+/** The 85 slide titles, in order: the first h1, h2 or .big of each deck/slides/NN-*.html; the nine mood slides carry no heading and are listed by their image. */
 const DECK_SLIDES: readonly string[] = [
   'Brand',
   'General Translation',
   'Every product in every language',
   'Reputation',
   'Why the redesign',
+  'The Blue Marble',
   'Open source and platform',
   'Audience',
   'Values',
+  'The Tower of Babel',
   'Brand personality',
   'Writing style',
   'Visual references',
@@ -270,6 +272,7 @@ const DECK_SLIDES: readonly string[] = [
   'Type scale',
   'Line rules',
   'The doubled line',
+  'Karahisari calligraphy',
   'Diagrams',
   'Dither',
   'Isometric illustration',
@@ -282,6 +285,7 @@ const DECK_SLIDES: readonly string[] = [
   'Dark mode',
   'Pricing and enterprise',
   'Contact and report card',
+  'Louisbourg lighthouse',
   'Details',
   'Three details enlarged',
   'Layout measurements',
@@ -289,10 +293,12 @@ const DECK_SLIDES: readonly string[] = [
   'Nearest-page routing',
   'Documentation',
   'Documentation',
+  'The Compact Oxford English Dictionary',
   'Markdown twins',
   'Blog and content',
   'Blog index',
   'Generated covers',
+  'Devanagari manuscript page',
   'Designed covers',
   'Blog content',
   'The copy test',
@@ -300,6 +306,7 @@ const DECK_SLIDES: readonly string[] = [
   'Brand assets outside the site',
   'Developer experience',
   'Translation as a build step',
+  'Eastern Telegraph Company cable chart',
   'The CLI',
   'Prototemplate and glyphfield',
   'prototemplate.com',
@@ -311,6 +318,7 @@ const DECK_SLIDES: readonly string[] = [
   'Compare and the presenter',
   'The Dossier',
   'Directions',
+  'The Great Wave off Kanagawa',
   'The archive',
   'Shared engines',
   'The build log',
@@ -321,6 +329,7 @@ const DECK_SLIDES: readonly string[] = [
   'The agent API',
   'Status and plan',
   'Current status',
+  'Bowen compass rose',
   'The identity project',
   'Fixed points',
   'Success criteria',

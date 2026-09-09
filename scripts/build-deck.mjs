@@ -11,8 +11,9 @@
 //   shots/*                 every src="shots/..." and data-dark="shots/..."
 //                           becomes a data URI: photographs are resampled to
 //                           1280px wide at JPEG quality 78 through sips, except
-//                           the full-bleed openers (shots/opener-*) and the 2x
-//                           detail crops (shots/detail-*), which are re-encoded
+//                           the full-bleed openers and mood images (shots/opener-*,
+//                           shots/mood-*) and the 2x detail crops (shots/detail-*),
+//                           which are re-encoded
 //                           at their native size at JPEG quality 88 so they stay
 //                           sharp on the 1600px sheet; shots/thumb/* files pass
 //                           through as they are
@@ -43,11 +44,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DECK = join(ROOT, 'deck');
 const OUT = join(ROOT, 'public/brand-deck.html');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
-const SLIDE_COUNT = 76;
+const SLIDE_COUNT = 85;
 const MAX_WIDTH = 1280;
 const QUALITY = 78;
-/* full-bleed openers and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
-const NATIVE = /^(opener|detail)-/;
+/* full-bleed openers and mood images and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
+const NATIVE = /^(opener|mood|detail)-/;
 const NATIVE_QUALITY = 88;
 const TITLE = 'General Translation brand deck';
 const LEADING_TITLE = /^<title>[^<]*<\/title>\n/;
@@ -166,5 +167,5 @@ for (const file of readdirSync(join(DECK, 'shots/thumb'))) {
 
 const mb = (n) => `${(n / 1024 / 1024).toFixed(2)}MB`;
 console.log(
-  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${natives} openers and details at native size, ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> public/brand-deck.html (${mb(Buffer.byteLength(html))}); ${copied} thumbnails -> public/shots/deck`
+  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${natives} openers, mood images and details at native size, ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> public/brand-deck.html (${mb(Buffer.byteLength(html))}); ${copied} thumbnails -> public/shots/deck`
 );

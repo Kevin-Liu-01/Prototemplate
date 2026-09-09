@@ -79,7 +79,7 @@
   var i = 0, digits = '', digitTimer = null, mode = 'slide', reduced = false;
   try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
-  var SECTIONS = [[1, 'Brand'], [14, 'Design system'], [28, 'Website'], [39, 'Documentation'], [42, 'Blog and content'], [50, 'Developer experience'], [53, 'Prototemplate and glyphfield'], [71, 'Status and plan']];
+  var SECTIONS = [[1, 'Brand'], [16, 'Design system'], [31, 'Website'], [43, 'Documentation'], [47, 'Blog and content'], [56, 'Developer experience'], [60, 'Prototemplate and glyphfield'], [79, 'Status and plan']];
   function sectionOf(k) { var name = SECTIONS[0][1]; SECTIONS.forEach(function (s) { if (s[0] <= k + 1) name = s[1]; }); return name; }
   function sectionRange(idx) { return [SECTIONS[idx][0], idx + 1 < SECTIONS.length ? SECTIONS[idx + 1][0] - 1 : slides.length]; }
 
