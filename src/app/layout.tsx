@@ -7,10 +7,10 @@ import '@/components/viewer/tokens.css';
 
 const SITE_URL = 'https://prototemplate.vercel.app';
 
-const SITE_TITLE = 'Prototemplate, redesign explorations for the General Translation website';
+const SITE_TITLE = 'Prototemplate';
 
 const SITE_DESCRIPTION =
-  'Seventeen directions for the General Translation website, each one live at /d/<slug>, with the brand book, the repository documents, the brand deck, a presenter, a compare rig and an archive of retired versions, all in one viewer.';
+  'Prototemplate is the General Translation knowledge base: the brand book, the brand directives, the design lab with its directions and sites, the repository documents, the agent skills, and the mark explorations, read in one viewer.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   keywords: [
     'Prototemplate',
     'General Translation',
+    'knowledge base',
+    'brand book',
+    'brand guidelines',
     'website redesign',
     'design explorations',
     'art direction',
@@ -52,7 +55,7 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 2400,
         height: 1260,
-        alt: 'Prototemplate, the working index of General Translation redesign directions.',
+        alt: 'Prototemplate, the General Translation knowledge base.',
       },
     ],
   },

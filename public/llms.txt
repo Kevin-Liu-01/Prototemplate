@@ -1,19 +1,30 @@
 # Prototemplate
 
-> Prototemplate (https://prototemplate.vercel.app) is the working gallery of website redesign explorations for General Translation (https://generaltranslation.com), the localization platform for developers. It is a design exploration by Kevin Liu: seventeen directions for the GT marketing site, each one built and running live with GSAP motion, WebGL shader heroes and a strict ruled-line design system, plus the brand book, the repository documents, the brand deck, a presenter, a compare rig, and an archive of retired versions. Every page runs in one viewer: a sidebar of thumbnails, a toolbar, a stage, and an index panel that lists every page on the site.
+> Prototemplate (https://prototemplate.vercel.app) is the General Translation knowledge base. It holds the brand book, the brand directives, the design lab with its directions and sites, the repository documents, the agent skills, and the mark explorations, and serves all of it as live pages in one viewer: a sidebar of thumbnails, a toolbar, a stage, and an index panel that lists every page on the site. General Translation (https://generaltranslation.com) is the localization platform for developers. The site is made by Kevin Liu.
 
-Every direction is a real page, not a mockup. Thirteen are single-page explorations; three are full site concepts (a home page plus an enterprise page) built on the shared Toolchain foundation; one is the site that shipped, rebuilt page for page.
+The design lab holds seventeen directions for the General Translation website, each one built and running live with GSAP motion, WebGL shader heroes and a ruled-line design system. Every direction is a real page, not a mockup. Thirteen are single-page explorations; three are full site concepts (a home page plus an enterprise page) built on the shared Toolchain foundation; one is the site that shipped, rebuilt page for page.
 
 ## Routes
 
-- [Gallery](https://prototemplate.vercel.app/): the seventeen directions, read as an article, one live exhibit at a time, or as a grid of captures.
-- [Brand](https://prototemplate.vercel.app/brand): the identity canon in ten sections.
-- [Docs](https://prototemplate.vercel.app/docs): the repository documents read in the browser, with one address per document at /docs/<slug>.
-- [Deck](https://prototemplate.vercel.app/deck): the General Translation brand deck, 52 slides.
-- [Present](https://prototemplate.vercel.app/present): the presenter, a scroll walkthrough of the why, the principles, the craft and every prototype live.
+- [Gallery](https://prototemplate.vercel.app/): the design lab, the seventeen directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall and the capabilities ledger.
+- [Brand](https://prototemplate.vercel.app/brand): the brand book, the identity canon in ten sections.
+- [Docs](https://prototemplate.vercel.app/docs): the repository documents read in the browser, one address per document at /docs/<slug>, with the build log under the readme.
+- [Deck](https://prototemplate.vercel.app/deck): the General Translation brand deck, 52 slides in its own viewer.
+- [Skills](https://prototemplate.vercel.app/skills): the agent skills that carry the brand and design rules into coding sessions.
+- [Marks](https://prototemplate.vercel.app/marks): the mark explorations, every candidate drawn in one color.
 - [Compare](https://prototemplate.vercel.app/compare): two directions side by side in scroll-synced frames.
+- [Present](https://prototemplate.vercel.app/present): the presenter, a full-screen walkthrough of the redesign with every prototype live.
+- [Archive](https://prototemplate.vercel.app/archive): the retired directions, each kept at /archive/<slug> as a full-page capture with the commit that last held its code.
 - Each direction lives at https://prototemplate.vercel.app/d/<slug>; site concepts add /d/<slug>/enterprise.
-- Each retired version lives at https://prototemplate.vercel.app/archive/<slug> as a full-page capture with the commit that last held its code.
+
+## Documents
+
+- [Readme](https://prototemplate.vercel.app/docs): what Prototemplate is, how to run it, where to read next, and the build log.
+- [The brand](https://prototemplate.vercel.app/docs/brand): the identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the Dossier as the completed reference.
+- [The design system](https://prototemplate.vercel.app/docs/design): the four-color system, the line law, rails and seams, the doubled line, iso, the 1-bit language, moving type, motion discipline.
+- [Architecture](https://prototemplate.vercel.app/docs/architecture): the code map: the direction registry, the toolchain single source of truth and fork rescoping, the componentized instruments, the mirror.
+- [The ship loop](https://prototemplate.vercel.app/docs/ship-loop): the verify-and-ship procedure every round runs: the line audit, the practices ratchet, types, filming, the backup branch, the mirror build.
+- [The libraries](https://prototemplate.vercel.app/docs/libraries): the index of the componentized instruments; the living version, with plates running, is the build log under the readme.
 
 ## Directions
 
@@ -42,5 +53,5 @@ Eleven earlier versions were retired and their routes deleted. Each stays viewab
 ## About
 
 - Built with Next.js, GSAP, and hand-written WebGL and canvas field libraries (horizon-field, glyph-field, prismatic-field).
-- Made by Kevin Liu as a design exploration for General Translation.
+- Made by Kevin Liu for General Translation.
 - General Translation: https://generaltranslation.com
