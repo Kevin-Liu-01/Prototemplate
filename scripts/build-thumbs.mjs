@@ -8,13 +8,22 @@
 //   public/shots/light/<slug>.jpg      -> public/shots/thumb/<slug>.jpg
 //   public/shots/dark/<slug>.jpg       -> public/shots/thumb/<slug>-dark.jpg
 //   public/shots/archive/<slug>.jpg    -> public/shots/thumb/archive-<slug>.jpg
+//   public/shots/pages/<id>-light.jpg  -> public/shots/thumb/<id>.jpg
+//   public/shots/pages/<id>-dark.jpg   -> public/shots/thumb/<id>-dark.jpg
+//
+// The pages folder holds what scripts/capture-pages.mjs shoots: every
+// static page of the shipped direction and the routes of the Pages group,
+// under their surface ids. It is cut last, so a stem captured both as an
+// exhibit and as a page (production, production-enterprise) takes the page
+// capture, the fresher one.
 //
 // Each source is resampled to 640 wide and cropped to 360 from the top
 // through sips (macOS), at JPEG quality 72: about 25 to 45KB a file against
 // 84 to 175KB for a 1440 capture, and a 0.9MB bitmap once decoded against
 // 5.2MB. A source without a dark twin gets no dark file; the preview layer
 // falls back to the light one. Existing thumbnails for other stems (the
-// docs, brand and present captures) are left alone.
+// docs, brand and present captures, the live-* copies of the deck's GT
+// captures) are left alone.
 //
 // Usage: pnpm build:thumbs
 import { execSync } from 'node:child_process';
@@ -72,6 +81,14 @@ for (const stem of stems('light')) {
 /* the archive's first folds: light only, prefixed so they never collide with a live slug */
 for (const stem of stems('archive')) {
   build(join(SHOTS, 'archive', `${stem}.jpg`), join(OUT, `archive-${stem}.jpg`));
+}
+
+/* the page captures: <id>-light becomes <id>, <id>-dark stays <id>-dark; a file under neither suffix is not a capture */
+for (const stem of stems('pages')) {
+  const match = /^(.+)-(light|dark)$/.exec(stem);
+  if (!match) continue;
+  const [, id, theme] = match;
+  build(join(SHOTS, 'pages', `${stem}.jpg`), join(OUT, theme === 'light' ? `${id}.jpg` : `${id}-dark.jpg`));
 }
 
 const kb = (n) => `${Math.round(n / 1024)}KB`;

@@ -13,19 +13,23 @@ import type { ShellShot } from '@/lib/shell-data';
  *
  * Thumbnails: `shot` and `shotDark` are public paths, and this registry is
  * the preview layer's only image source (directive 8.6), so every path here
- * is a thumbnail: direction, shipped page and archive rows point at the
- * 640x360 cuts scripts/build-thumbs.mjs writes under /shots/thumb/<id>.jpg
- * and <id>-dark.jpg (archive-<slug>.jpg for the archive), document and
- * brand rows at the route captures in the same folder. The 1440 exhibit
- * captures under /shots/light, /shots/dark and /shots/archive stay for the
- * exhibit sheet and the grid, which read the routes' own ShellItem.shot.
- * Public rows point into /shots/deck, the deck's own thumbnails, which
- * scripts/build-deck.mjs copies from deck/shots/thumb; the three page rows
- * with no route capture of their own (the gallery, the deck, the compare
- * rig) borrow the deck's captures of those pages from the same folder, so
- * every row that has a picture anywhere resolves one. A row without a shot
- * renders the blank plate with its initial. surfaceShot(id) is what the
- * preview layer reads.
+ * is a thumbnail: direction, page, shipped page and archive rows point at
+ * the 640x360 cuts scripts/build-thumbs.mjs writes under
+ * /shots/thumb/<id>.jpg and <id>-dark.jpg (archive-<slug>.jpg for the
+ * archive), document and brand section rows at the route captures in the
+ * same folder. The page and shipped page cuts come from
+ * scripts/capture-pages.mjs, which shoots every static page under
+ * src/app/d/production and every route of the Pages group in both themes
+ * into /shots/pages; the 1440 exhibit captures under /shots/light,
+ * /shots/dark and /shots/archive stay for the exhibit sheet and the grid,
+ * which read the routes' own ShellItem.shot. The live surfaces of the
+ * shipped site point at the deck's captures of generaltranslation.com,
+ * copied into /shots/thumb as live-<name>.jpg; public rows point into
+ * /shots/deck, the deck's own thumbnails, which scripts/build-deck.mjs
+ * copies from deck/shots/thumb. So every site row that names a page
+ * resolves a picture in both themes; a row without a shot (a library, the
+ * asset folder) renders the blank plate with its initial. surfaceShot(id)
+ * is what the preview layer reads.
  *
  * The site groups run in the one sidebar order every route keeps (Pages,
  * Shipped, Documents, Sites, Explorations, Archive); Libraries and Brand
@@ -101,29 +105,19 @@ function internal(
 
 const THUMBS = '/shots/thumb';
 
-/** The deck's own captures, copied by scripts/build-deck.mjs; the Pages rows without a route capture borrow theirs. */
-const DECK_SHOTS = '/shots/deck';
-
 /** The light and dark route captures for a thumbnail stem under /shots/thumb. */
 function thumb(stem: string): { shot: string; shotDark: string } {
   return { shot: `${THUMBS}/${stem}.jpg`, shotDark: `${THUMBS}/${stem}-dark.jpg` };
 }
 
+/** The Pages rows; each previews its own first fold, shot by scripts/capture-pages.mjs under the row's id. */
 const PAGES: readonly Surface[] = [
-  internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', {
-    shot: `${DECK_SHOTS}/proto-gallery.jpg`,
-  }),
-  internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand-the-name')),
-  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs-readme')),
-  internal('deck', 'Deck', '/deck', 'The GT brand deck, its own viewer.', 'Pages', {
-    shot: `${DECK_SHOTS}/proto-deck.jpg`,
-  }),
-  internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', {
-    shot: `${THUMBS}/present-intro.jpg`,
-  }),
-  internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages', {
-    shot: `${DECK_SHOTS}/proto-compare.jpg`,
-  }),
+  internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
+  internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
+  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs')),
+  internal('deck', 'Deck', '/deck', 'The GT brand deck, its own viewer.', 'Pages', thumb('deck')),
+  internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
+  internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
 ];
 
 const DOCUMENTS: readonly Surface[] = [
@@ -214,18 +208,21 @@ const SHIPPED_HOME: readonly Surface[] = SHIPPED_DIRECTION
     ]
   : [];
 
+/** Every shipped page previews its own first fold: scripts/capture-pages.mjs shoots each static page under its stem. */
 const SHIPPED_ROUTES: readonly Surface[] = SHIPPED_PAGES.map(([path, name, desc]) => {
   const stem = `production-${pathStem(path)}`;
-  /* only the home and the enterprise page have captures under /shots today */
-  const shots = path === '/enterprise' ? directionShots(stem) : undefined;
-  return { ...internal(stem, name, `/d/production${path}`, desc, 'Shipped', shots), site: 'shipped' };
+  return { ...internal(stem, name, `/d/production${path}`, desc, 'Shipped', directionShots(stem)), site: 'shipped' };
 });
 
 const LIVE_HOST = 'generaltranslation.com';
-const LIVE_THUMBS = '/shots/deck';
+
+/** The deck's capture of a live GT surface, copied into /shots/thumb as live-<name>.jpg. */
+function liveThumb(name: string): string {
+  return `${THUMBS}/live-${name}`;
+}
 
 /** A live surface of the shipped site: an external row in the site set, with the deck's capture of it. */
-function live(id: string, name: string, path: string, desc: string, shot?: string, shotDark?: string): Surface {
+function live(id: string, name: string, path: string, desc: string, shot: string, shotDark?: string): Surface {
   const host = `${LIVE_HOST}${path}`;
   return {
     id,
@@ -236,8 +233,8 @@ function live(id: string, name: string, path: string, desc: string, shot?: strin
     group: 'Shipped',
     set: 'site',
     site: 'shipped',
-    ...(shot ? { shot: `${LIVE_THUMBS}/${shot}` } : {}),
-    ...(shotDark ? { shotDark: `${LIVE_THUMBS}/${shotDark}` } : {}),
+    shot: liveThumb(shot),
+    ...(shotDark ? { shotDark: liveThumb(shotDark) } : {}),
   };
 }
 
@@ -273,7 +270,7 @@ const SHIPPED_LIVE: readonly Surface[] = [
     group: 'Shipped',
     set: 'site',
     site: 'shipped',
-    shot: `${LIVE_THUMBS}/gt-dash.jpg`,
+    shot: liveThumb('gt-dash.jpg'),
   },
 ];
 

@@ -1643,10 +1643,7 @@
     var t = el ? el.textContent.replace(/\s+/g, ' ').trim() : 'Slide ' + (k + 1);
     return t.length > 72 ? t.slice(0, 69).replace(/\s+\S*$/, '') + '...' : t;
   }
-  function isDark() {
-    var attr = document.documentElement.getAttribute('data-theme');
-    return attr === 'dark' || (!attr && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  }
+  function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
   function say(msg) { toast.textContent = msg; toast.classList.add('is-on'); clearTimeout(say.t); say.t = setTimeout(function () { toast.classList.remove('is-on'); }, 1400); }
   function narrow() { return window.innerWidth <= 900; }
   function panelOn() { return panel.classList.contains('is-on'); }
@@ -1794,7 +1791,11 @@
     if (barSec) barSec.textContent = sectionOf(n);
     progress.style.width = ((n + 1) / slides.length * 100) + '%';
     document.title = 'GT Brand Deck, ' + (n + 1) + ' of ' + slides.length;
-    if (opts.hash !== false) { try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {} }
+    if (opts.hash !== false) {
+      try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {}
+      /* inside the /deck frame the page around it mirrors the slide into its own address (src/app/deck/DeckFrame.tsx) */
+      if (window.parent !== window) { try { window.parent.postMessage({ type: 'gt-deck-slide', n: n + 1 }, location.origin); } catch (e) {} }
+    }
     var c = slides[n].querySelector('canvas.dither');
     if (c && !c.dataset.drawn) { drawDither(c); c.dataset.drawn = '1'; }
     if (mode !== 'grid') { var t = thumbs[n]; if (t) { try { t.scrollIntoView({ block: 'nearest' }); } catch (e) {} } }
@@ -1842,7 +1843,13 @@
     else say(url);
   }
   /* one theme for the site and the deck: gt-theme is the key the Prototemplate shell reads and writes, gt-deck-theme the
-     deck's older one; the toggle writes both, and a toggle on the page around the frame arrives as a storage event */
+     deck's older one; the toggle writes both, and a toggle on the page around the frame arrives as a storage event.
+     With neither key set the deck opens dark, as the site does; prefers-color-scheme is not consulted */
+  function storedTheme() {
+    var t = load('gt-theme'); if (t === 'dark' || t === 'light') return t;
+    t = load('gt-deck-theme'); if (t === 'dark' || t === 'light') return t;
+    return 'dark';
+  }
   function toggleTheme() {
     document.documentElement.setAttribute('data-theme', isDark() ? 'light' : 'dark');
     var t = document.documentElement.getAttribute('data-theme');
@@ -1931,9 +1938,8 @@
   window.addEventListener('resize', function () { fit(); scaleThumbs(); });
   if (window.ResizeObserver) { new ResizeObserver(function () { fit(); scaleThumbs(); }).observe(wrap); }
   window.addEventListener('hashchange', function () { show(fromHash(), { hash: false }); });
-  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { applyTheme(); }); } catch (e) {}
 
-  var savedTheme = load('gt-theme') || load('gt-deck-theme'); if (savedTheme === 'dark' || savedTheme === 'light') document.documentElement.setAttribute('data-theme', savedTheme);
+  document.documentElement.setAttribute('data-theme', storedTheme());
   buildThumbs();
   filterSurfaces();
   if (load('gt-deck-sb') === '0') setSidebar(false);
