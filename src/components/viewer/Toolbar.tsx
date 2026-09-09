@@ -31,15 +31,17 @@ import './Toolbar.css';
  * book or grid (the gallery), the keys are flow and the trio is left out:
  * arrows scroll there, and a count with nothing to count read as a noun
  * phrase. Right group: the search bar first (directive 8.3: the
- * field-shaped button with the ⌘K hint, left of the mode control on every
+ * field-shaped button with the key chip, left of the mode control on every
  * shell route), then the route's own controls, the mode seg in one fixed
  * order (Slides, Grid, Book) when the route offers more than one mode, then
  * Index, Theme, Present (in slide mode only, where it has a slide to
  * present), Fullscreen, Copy link and Help. Every control is a labeled
- * ToolButton with a title naming its key (decision 7). One treatment per
- * meaning: the seg's active fill is the one solid in the bar, so Present is
- * a labeled button like Fullscreen, since after directive 7.1 it is a mode
- * toggle (Escape leaves it) and not an action that leaves the page. The
+ * ToolButton with a title naming its key (decision 7). Two of them keep
+ * the old nav's look at Kevin's request (DESIGN.md, chrome exceptions):
+ * the Search field is the 6px pill with its ⌘K chip, and Present is the
+ * solid call to action with the 8px corner and the play glyph after its
+ * word (ToolButton.css), even though after directive 7.1 it is a mode
+ * toggle that Escape leaves. Every other button is square. The
  * labels collapse in measured tiers when the bar runs short (Toolbar.css):
  * Copy link and Fullscreen first, then Previous and Next, then Theme, and
  * only when a route's own controls still leave the bar short, Index, Help,
@@ -376,6 +378,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
             icon='present'
             label='Present'
             title='Presentation mode, chrome hidden (P)'
+            solid
             hideSm
             className='pt-present-btn'
             onClick={presentNow}

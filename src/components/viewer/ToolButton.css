@@ -22,6 +22,30 @@
   padding: 0 12px;
 }
 
+/* the solid call to action, Present, keeps the old nav's .pt-nav-present
+   (Kevin's directive; DESIGN.md, chrome exceptions): an 8px corner, 14px
+   sides, the word first and the 12px play glyph after it (the row is
+   reversed here so ToolButton keeps its one icon-then-label markup), and a
+   hover that drops the ink ground for ink text inside the ink frame. The
+   toolbar's tier four still collapses it to a 32px square. */
+.pt-ib.is-solid {
+  flex-direction: row-reverse;
+  gap: 7px;
+  padding: 0 14px;
+  border-radius: 8px;
+}
+
+.pt-ib.is-solid svg {
+  width: 12px;
+  height: 12px;
+}
+
+.pt-ib.is-solid:hover {
+  background: transparent;
+  color: var(--pt-ink);
+  border-color: var(--pt-ink);
+}
+
 /* the filled button would draw its focus ring ink on ink */
 .pt-ib.is-solid:focus-visible {
   outline-color: var(--pt-paper);

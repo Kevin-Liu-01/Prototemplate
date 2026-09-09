@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import type { KeyboardEvent, MouseEvent, ReactNode, RefObject } from 'react';
 import { Fragment, useRef, useState } from 'react';
 
+import { brandFontVariables } from '@/lib/brand-fonts';
 import { cn } from '@/lib/cn';
 import type { ShellDensity, ShellItem, ShellMark, ShellSection, ShellShot, ShellThumb } from '@/lib/shell-data';
 import { previewId } from '@/lib/shell-data';
@@ -911,6 +912,21 @@ export function Sidebar({
   const rendered = groups.map((group) => renderGroup(group)).filter((node) => node !== null);
   const gallery = id === 'gallery';
   const markNode = mark === 'gt' ? <GtMark /> : <PtMark />;
+  /* the name beside the mark: the old nameplate on every Prototemplate route
+     (Kevin's directive; DESIGN.md, chrome exceptions), `proto` in Fraunces
+     and `template` in Space Grotesk, with the two font variables on the
+     span itself so they resolve on /docs and /brand as on /; the deck keeps
+     its Inter title beside the GT mark. The aside is still named by the
+     route's title. */
+  const nameNode =
+    mark === 'pt' ? (
+      <span className={cn('pt-brand-word', brandFontVariables)}>
+        <b className='pt-face-serif'>proto</b>
+        <b className='pt-face-grot'>template</b>
+      </span>
+    ) : (
+      <b>{title}</b>
+    );
 
   return (
     <aside
@@ -920,13 +936,18 @@ export function Sidebar({
     >
       <div className='pt-sb-head'>
         {gallery ? (
-          <span className='pt-sb-mark'>{markNode}</span>
+          <span className='pt-sb-mark pt-mark-host'>{markNode}</span>
         ) : (
-          <Link className='pt-sb-mark' href='/' title='Back to the gallery' aria-label='Back to the gallery'>
+          <Link
+            className='pt-sb-mark pt-mark-host'
+            href='/'
+            title='Back to the gallery'
+            aria-label='Back to the gallery'
+          >
             {markNode}
           </Link>
         )}
-        <b>{title}</b>
+        {nameNode}
         {thumb === 'row' ? null : (
           <Seg
             options={DENSITY_OPTIONS}

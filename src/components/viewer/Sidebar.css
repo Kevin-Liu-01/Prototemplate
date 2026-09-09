@@ -92,11 +92,16 @@
   }
 }
 
-/* ---- the head: the mark, the title (never truncated), the density toggle.
+/* ---- the head: the mark, the name (never truncated), the density toggle.
    At the 208px outline width the arithmetic is tight: 10px pad, the mark
    (25px for GT, 22px for Prototemplate, its hit area folded into negative
-   margins), two 6px gaps, the 58px toggle, 6px pad, which leaves the title
-   96px, enough for `Prototemplate` at 13.5px. ---- */
+   margins), two 6px gaps, the 58px toggle, 6px pad, which leaves the name
+   100px. The deck's Inter title `Brand deck` fits at 13.5px; the
+   Prototemplate routes carry the old nameplate instead (Kevin's directive;
+   DESIGN.md, chrome exceptions), `proto` in Fraunces 600 and `template` in
+   Space Grotesk 500 at 14.5px, measured at 97px with both faces loaded.
+   The mark is the rainbow one (PtMark.css); hovering it, link or not,
+   fades the hatched fill in over the core. ---- */
 .pt-sb-head {
   height: var(--pt-bar-h);
   flex: 0 0 var(--pt-bar-h);
@@ -131,7 +136,7 @@ a.pt-sb-mark:focus-visible {
 
 /* the title takes what the mark and the toggle leave and is never cut:
    no overflow rule, no ellipsis */
-.pt-sb-head b {
+.pt-sb-head > b {
   flex: 1 1 auto;
   min-width: 0;
   font-family: var(--pt-display);
@@ -140,6 +145,31 @@ a.pt-sb-mark:focus-visible {
   letter-spacing: -0.01em;
   font-feature-settings: 'cv11', 'ss01';
   white-space: nowrap;
+}
+
+/* the nameplate: two words in two faces on one baseline (the font variables
+   ride on the span itself, from src/lib/brand-fonts.ts). Ink, never cut. */
+.pt-sb-head .pt-brand-word {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 14.5px;
+  line-height: 1;
+  color: var(--pt-ink);
+  white-space: nowrap;
+}
+
+.pt-sb-head .pt-face-serif {
+  font-family: var(--font-fraunces), Georgia, 'Times New Roman', serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.pt-sb-head .pt-face-grot {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
 }
 
 .pt-sb-head .pt-seg {

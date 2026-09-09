@@ -384,3 +384,24 @@ One scrubbed dial spans the whole read; a piecewise map (measured
 lock-ins in, story time out) HOLDS the clock while a row is being read
 and spends each gap hold → build → lock, so a layer stands locked before
 its own copy takes the line.
+
+## 15. Chrome exceptions Kevin asked for
+
+The shell's chrome is Inter only, weight 500 or less, radius 0, one
+hairline per rule, colors from `src/components/viewer/tokens.css` and
+borders in the three roles of section 2. Kevin's round six directives
+override those rules for exactly four elements. Each exception is listed
+here with its owner file so nothing else reaches for it, and so the next
+sweep does not "fix" it back.
+
+| element | exception | owner |
+| --- | --- | --- |
+| Search pill (toolbar) | `border-radius: 6px` on the 32px `--pt-hair` field; hover border `--pt-ink-2`, a fourth border color in chrome (the rest state stays in the `hair` role, which is what the line auditor reads) | `Toolbar.css`, `.pt-toolbar .pt-search-btn` |
+| Search key chip | `kbd.pt-search-kbd`: `border-radius: 4px`, ground `--pt-hair-soft`, 11px weight 500 titanium; reads ⌘K, and `Ctrl K` on Windows and Linux (`Search.tsx` swaps the text after mount from the user agent) | `Toolbar.css`, `Search.tsx` |
+| Present | the one `.is-solid` button: `border-radius: 8px`, 14px sides, the label first and the 12px play glyph after it (`flex-direction: row-reverse`, so ToolButton keeps one markup), hover drops the ink ground for ink text in the ink frame, the old `.pt-nav-present` from 430e3c7 | `ToolButton.css`, `.pt-ib.is-solid`; `Toolbar.tsx` passes `solid` |
+| Prototemplate mark | the rainbow core: five chroma stops (`#4b3bff`, `#00b3ff`, `#27d17e`, `#ffc53b`, `#ff3b6b`, display-p3 where supported) declared as `--pt-mark-c1` to `--pt-mark-c5` on `.pt-mark`, the one color in chrome outside the site icons; hovering the head link (or any `a` or `.pt-mark-host` around the mark) fades the hatched paper fill in over the core, opacity only, over `--pt-dur-enter` (200ms, 0 under reduced motion). The markup is the old nav's span with four `i.pt-mark-line` and `i.pt-mark-fill` | `PtMark.tsx`, `PtMark.css` |
+| Sidebar nameplate | the name beside the mark on every Prototemplate route is `span.pt-brand-word` with `b.pt-face-serif` `proto` in Fraunces 600 and `b.pt-face-grot` `template` in Space Grotesk 500 at 14.5px, two faces outside Inter and a weight above 500; the fonts load from `src/lib/brand-fonts.ts` with their variable classes on the span, so `/docs` and `/brand` carry them too. The deck keeps its Inter title beside the GT mark | `Sidebar.tsx` (head), `Sidebar.css` (head rules) |
+
+Everything else in chrome keeps the rules above: every other toolbar
+button is square, the palette card and the index panel are radius 0, and
+no other element carries a chroma or a face outside Inter.

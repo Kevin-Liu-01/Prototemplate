@@ -23,10 +23,12 @@
    Next and Copy link leave too (the sheet's edges and a swipe page), so the
    count, the search, the seg, Index, Theme and Help fit a phone.
 
-   The search trigger (directive 8.3) is the one field-shaped button: a
-   --pt-hair box like the count's, the search glyph, the word Search in
-   ink-2 and the ⌘K hint in titanium pushed to its right end; hover turns
-   the box ink as a focused field would. No tier touches it. */
+   The search trigger (directive 8.3) is the one field-shaped button, and
+   it keeps the old nav's pill (Kevin's directive; DESIGN.md, chrome
+   exceptions): a 32px --pt-hair box with a 6px corner, the search glyph,
+   the word Search in ink-2 and the key chip at its right end, a 4px-corner
+   kbd on --pt-hair-soft reading ⌘K (Ctrl K on Windows, Search.tsx) in 11px
+   titanium; hover turns the box --pt-ink-2. No tier touches it. */
 .pt-toolbar {
   grid-row: 1;
   height: var(--pt-toolbar-h, var(--pt-bar-h));
@@ -68,12 +70,16 @@
   gap: 8px;
 }
 
-/* the search trigger: a field with a glyph, a word and the key hint */
+/* the search trigger: the old nav's pill, a glyph, a word and the key chip
+   (the 6px and 4px corners are Kevin's exception to the shell's radius 0) */
 .pt-toolbar .pt-search-btn {
   min-width: 176px;
+  height: 32px;
+  padding: 0 6px 0 10px;
   justify-content: flex-start;
   gap: 8px;
   border-color: var(--pt-hair);
+  border-radius: 6px;
   color: var(--pt-titanium);
 }
 
@@ -84,7 +90,7 @@
 .pt-toolbar .pt-search-btn:hover,
 .pt-toolbar .pt-search-btn[aria-expanded='true'] {
   color: var(--pt-ink);
-  border-color: var(--pt-ink);
+  border-color: var(--pt-ink-2);
 }
 
 .pt-toolbar .pt-search-btn:hover .pt-lb,
@@ -92,11 +98,20 @@
   color: var(--pt-ink);
 }
 
+/* the key chip: 18px tall on --pt-hair-soft, 11px titanium, at the pill's right end */
 .pt-search-kbd {
   margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--pt-hair-soft);
   font-family: var(--pt-text);
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
   line-height: 1;
+  letter-spacing: 0.02em;
   color: var(--pt-titanium);
   white-space: nowrap;
 }

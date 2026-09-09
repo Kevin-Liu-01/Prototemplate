@@ -15,8 +15,10 @@ import './Search.css';
 /**
  * The search bar (directive 8.3), the primary way to get anywhere: the
  * palette from 430e3c7 restyled in the shell's grammar. A field-shaped
- * button in the toolbar (the search glyph, the word Search, a ⌘K hint in
- * titanium; an icon square at or below 900px) opens a card over a scrim:
+ * button in the toolbar (the old nav's pill, kept at Kevin's request: the
+ * search glyph, the word Search, a kbd chip reading ⌘K, or Ctrl K on
+ * Windows and Linux, in titanium; an icon square at or below 900px) opens
+ * a card over a scrim:
  * the 34px filter with the search glyph and a count, then the results as
  * ruled rows grouped under 12.5px titanium labels, each row a Heroicon, a
  * title and its address, the active row marked with the 2px ink bar. The
@@ -65,6 +67,15 @@ export function openSearch(): void {
 
 const TITLE = 'Search (Cmd K or Ctrl K)';
 
+/* what the pill's key chip reads: the command glyph on Apple platforms, the word elsewhere */
+const MAC_CHIP = '⌘K';
+const OTHER_CHIP = 'Ctrl K';
+
+/** Apple platforms, where the shortcut is Cmd K; everything else (Windows, Linux) reads Ctrl K. */
+function isApplePlatform(): boolean {
+  return /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
+}
+
 /** A left click with no modifier: the one the router should take over. */
 function isPlainClick(event: ReactMouseEvent): boolean {
   return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
@@ -84,6 +95,8 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [sel, setSel] = useState(0);
+  /* the key chip's text: ⌘K as rendered on the server and on Apple platforms, Ctrl K everywhere else */
+  const [chip, setChip] = useState(MAC_CHIP);
   const card = useRef<HTMLDivElement>(null);
   /* the mount-time listener reads the latest callback through this ref */
   const onOpenRef = useRef(onOpen);
@@ -110,6 +123,11 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
     const onOpen = () => show();
     document.addEventListener(SEARCH_OPEN_EVENT, onOpen);
     return () => document.removeEventListener(SEARCH_OPEN_EVENT, onOpen);
+  });
+
+  /* the chip is rendered as ⌘K on the server; a Windows or Linux reader sees Ctrl K after mount */
+  useMountEffect(() => {
+    if (!isApplePlatform()) setChip(OTHER_CHIP);
   });
 
   const go = (entry: SearchEntry) => {
@@ -188,7 +206,7 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
           <Icon name='search' />
           <span className='pt-lb'>Search</span>
           <kbd className='pt-search-kbd' aria-hidden='true'>
-            ⌘K
+            {chip}
           </kbd>
         </button>
       )}

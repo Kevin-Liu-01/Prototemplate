@@ -1,0 +1,109 @@
+/* PtMark: the Prototemplate mark as the old nav drew it (prototemplate.css
+   at 430e3c7, .pt-mark at lines 97 to 140 and the HDR core at 1355 to
+   1405). A 22x22 box, four 1px hairlines in --pt-ink at 5px and 16px, and
+   the 10px core they frame at 6px.
+
+   Kevin's exception (DESIGN.md, chrome exceptions): the core is the one
+   place chrome carries chroma. Its five stops are declared here as custom
+   properties on the mark, sRGB first and display-p3 where the screen can
+   carry it, so tokens.css stays the shell's palette and the mark's color
+   has one owner. The uncolored mark is the ::after over the core: paper
+   with the diagonal hatch in --pt-ink-2, opacity 0 at rest, 1 while the
+   wrapping link (or a parent marked .pt-mark-host) is hovered. The fade is
+   opacity only, over the enter duration (200ms), and the reduced motion
+   block in tokens.css zeroes that duration. */
+
+.pt-mark {
+  --pt-mark-c1: #4b3bff;
+  --pt-mark-c2: #00b3ff;
+  --pt-mark-c3: #27d17e;
+  --pt-mark-c4: #ffc53b;
+  --pt-mark-c5: #ff3b6b;
+  position: relative;
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+@supports (color: color(display-p3 1 0 0)) {
+  .pt-mark {
+    --pt-mark-c1: color(display-p3 0.28 0.2 1);
+    --pt-mark-c2: color(display-p3 0 0.72 1);
+    --pt-mark-c3: color(display-p3 0.05 0.9 0.45);
+    --pt-mark-c4: color(display-p3 1 0.78 0.1);
+    --pt-mark-c5: color(display-p3 1 0.15 0.38);
+  }
+}
+
+.pt-mark-line {
+  position: absolute;
+  background: var(--pt-ink);
+}
+
+.pt-mark-line.is-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.pt-mark-line.is-h.is-top {
+  top: 5px;
+}
+
+.pt-mark-line.is-h.is-bot {
+  top: 16px;
+}
+
+.pt-mark-line.is-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.pt-mark-line.is-v.is-l {
+  left: 5px;
+}
+
+.pt-mark-line.is-v.is-r {
+  left: 16px;
+}
+
+/* the core: the chroma, 135deg across the 10px square */
+.pt-mark-fill {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(
+    135deg,
+    var(--pt-mark-c1) 0%,
+    var(--pt-mark-c2) 34%,
+    var(--pt-mark-c3) 58%,
+    var(--pt-mark-c4) 80%,
+    var(--pt-mark-c5) 100%
+  );
+}
+
+/* the uncolored mark, held over the core and shown on hover */
+.pt-mark-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--pt-paper);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 2px,
+    var(--pt-ink-2) 2px,
+    var(--pt-ink-2) 3px
+  );
+  opacity: 0;
+  transition: opacity var(--pt-dur-enter) var(--pt-ease-out);
+}
+
+.pt-mark-host:hover .pt-mark-fill::after,
+a:hover > .pt-mark .pt-mark-fill::after {
+  opacity: 1;
+}
