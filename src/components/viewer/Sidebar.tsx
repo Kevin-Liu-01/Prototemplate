@@ -37,8 +37,8 @@ export type SubRenderer = (item: ShellItem, active: boolean) => ReactNode;
 /** What ViewerShell reads from the filter for the Escape ladder: whether it holds text, and how to clear it. */
 export type SidebarFilter = { active: boolean; clear: () => void };
 
-/** The site map groups, in the one order every route keeps (decision 7; Shipped after Pages, directive 8.10). */
-const NAV_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
+/** The site map groups, in the one order every route keeps (decision 7; Knowledge then Shipped after Pages, directive 8.10). */
+const NAV_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Knowledge', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
 
 /** The Shipped group's folded child: the live surfaces of the shipped site (directive 8.10). */
 const LIVE_KEY = 'Shipped:live';
@@ -69,6 +69,8 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   deck: 'deck',
   present: 'present',
   compare: 'compare',
+  skills: 'sparkles',
+  marks: 'swatch',
 };
 
 /* the sites, on their color tokens */
@@ -81,6 +83,7 @@ const SITE_ICON: Readonly<Record<SurfaceSite, IconName>> = {
 
 /* the icon a site map group's rows share when the row itself does not decide */
 const GROUP_ICON: Readonly<Partial<Record<string, IconName>>> = {
+  Knowledge: 'sparkles',
   Shipped: 'document',
   Documents: 'document',
   Explorations: 'sparkles',
@@ -125,7 +128,7 @@ function isEnterprise(id: string): boolean {
  * the site's home its own colored icon; the rest follow their group.
  */
 function navIcon(row: Surface): IconName {
-  if (row.group === 'Pages') return PAGE_ICON[row.id] ?? 'pages';
+  if (row.group === 'Pages' || row.group === 'Knowledge') return PAGE_ICON[row.id] ?? 'pages';
   if (isExternalSurface(row)) return 'external';
   if (row.group === 'Shipped') return 'document';
   if (row.site) return isEnterprise(row.id) ? 'document' : SITE_ICON[row.site];
@@ -258,10 +261,15 @@ function shippedGroup(label: string, rows: readonly Row[]): Group {
   };
 }
 
-/** A site map group as the list shows it: Shipped with its child group, Sites as a tree, the rest as rows. */
+/**
+ * A site map group as the list shows it: Shipped with its child group, Sites
+ * as a tree, the rest as rows. Knowledge drops its archive row, since the
+ * Archive group below lists every retired version itself.
+ */
 function navGroup(group: SurfaceGroup, rows: readonly Row[]): Group {
   if (group === 'Shipped') return shippedGroup(group, rows);
   if (group === 'Sites') return { key: group, label: group, rows: nestSites(rows) };
+  if (group === 'Knowledge') return { key: group, label: group, rows: rows.filter((row) => row.preview !== 'archive') };
   return { key: group, label: group, rows };
 }
 

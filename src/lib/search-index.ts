@@ -75,8 +75,8 @@ const GROUP_ORDER: readonly string[] = [
  * as a letter is typed.
  */
 const EMPTY_PER_GROUP: Readonly<Partial<Record<string, number>>> = {
-  Pages: 3,
-  Knowledge: 6,
+  Pages: 6,
+  Knowledge: 3,
   Shipped: 3,
   Documents: 6,
   Sites: 3,
@@ -247,7 +247,7 @@ const HEADINGS: readonly SearchEntry[] = Object.entries(DOC_HEADINGS).flatMap(([
   )
 );
 
-/** The 63 slide titles: the first h1, h2 or .big of each deck/slides/NN-*.html, in order. */
+/** The 75 slide titles: the first h1, h2 or .big of each deck/slides/NN-*.html, in order. */
 const DECK_SLIDES: readonly string[] = [
   'Brand',
   'General Translation',
@@ -302,10 +302,22 @@ const DECK_SLIDES: readonly string[] = [
   'Developer experience',
   'Prototemplate and glyphfield',
   'prototemplate.com',
+  'The knowledge base',
+  'Skills and marks',
+  'The viewer shell',
+  'The shell in use',
+  'The line law in chrome',
+  'Compare and the presenter',
   'The Dossier',
   'Directions',
+  'The archive',
   'Shared engines',
+  'The build log',
   'glyphfield.com',
+  'Fifteen tools',
+  'Books and templates',
+  '134 live materials',
+  'The agent API',
   'Status and plan',
   'Current status',
   'The identity project',

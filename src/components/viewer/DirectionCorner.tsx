@@ -63,7 +63,7 @@ import './DirectionCorner.css';
 export type DirectionCornerProps = { slug: string };
 
 /** The site map groups the list shows, in the shell's one order (Shipped after Pages, directive 8.10); the count names their rows. */
-const LIST_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
+const LIST_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Knowledge', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
 
 /** `44 pages`: the count at the end of the filter row, and the word its placeholder takes (`Filter pages`). */
 const LIST_COUNT = `${SITE_SURFACES.filter((row) => LIST_GROUPS.includes(row.group)).length} pages`;

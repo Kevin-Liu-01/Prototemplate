@@ -73,12 +73,18 @@ function LinkedInMark({ className, color, ...rest }: MarkProps) {
  * blog, pricing, locales, careers and contact, so a hardcoded
  * generaltranslation.com href sent readers off to the live site instead of
  * the page sitting one route away. Only what has no page here stays absolute:
- * the docs and the social venues. The legal column joined the internal set
- * once the concepts started shipping /legal and /legal/<document> of their
- * own — the same documents, in the concept's own dress. */
+ * the docs and the social venues. The legal column resolves against the
+ * concept while it ships /legal/<document> of its own; the production
+ * concept dropped its legal pages, so there the column leaves for the live
+ * site's documents. */
+const LIVE = "https://generaltranslation.com";
+
 const columns = (
   base: string,
-): readonly { title: string; links: readonly FooterLink[] }[] => [
+): readonly { title: string; links: readonly FooterLink[] }[] => {
+  const legalBase = base === "/d/production" ? LIVE : base;
+  const legalExternal = legalBase === LIVE;
+  return [
   {
     title: "Guides",
     links: [
@@ -141,13 +147,14 @@ const columns = (
   {
     title: "Legal",
     links: [
-      { label: "Terms of Service", href: `${base}/legal/terms` },
-      { label: "Privacy", href: `${base}/legal/privacy-policy` },
-      { label: "Acceptable Use Policy", href: `${base}/legal/acceptable-use` },
+      { label: "Terms of Service", href: `${legalBase}/legal/terms`, external: legalExternal },
+      { label: "Privacy", href: `${legalBase}/legal/privacy-policy`, external: legalExternal },
+      { label: "Acceptable Use Policy", href: `${legalBase}/legal/acceptable-use`, external: legalExternal },
       { label: "Manage Cookies", href: "#" },
     ],
   },
 ];
+};
 
 /* The compliance program, as the production shields (the site's own
    /shields SVGs, vendored) — side by side, all three doors into the same

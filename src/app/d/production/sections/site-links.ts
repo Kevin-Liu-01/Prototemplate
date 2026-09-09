@@ -6,5 +6,6 @@
  * links) leave for generaltranslation.com instead of a concept path that
  * would 404.
  */
-export const LEGAL_URL = 'https://generaltranslation.com/legal/privacy-policy';
+export const TERMS_URL = 'https://generaltranslation.com/legal/terms';
+export const PRIVACY_URL = 'https://generaltranslation.com/legal/privacy-policy';
 export const USAGE_RATES_URL = 'https://generaltranslation.com/pricing/usage';

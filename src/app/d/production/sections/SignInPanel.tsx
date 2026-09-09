@@ -5,7 +5,7 @@ import { useCallback, useRef, useState, type FormEvent } from 'react';
 import { SiGithub, SiGoogle } from '@icons-pack/react-simple-icons';
 import { KeyRound, ShieldCheck } from 'lucide-react';
 
-import { LEGAL_URL } from './site-links';
+import { PRIVACY_URL, TERMS_URL } from './site-links';
 import './signin.css';
 
 /**
@@ -205,7 +205,7 @@ export default function SignInPanel() {
       <p className='psi-legal'>
         By signing in, you agree to our{' '}
         <a
-          href={LEGAL_URL}
+          href={TERMS_URL}
           rel='noopener noreferrer'
           target='_blank'
         >
@@ -213,7 +213,7 @@ export default function SignInPanel() {
         </a>{' '}
         and{' '}
         <a
-          href={LEGAL_URL}
+          href={PRIVACY_URL}
           rel='noopener noreferrer'
           target='_blank'
         >

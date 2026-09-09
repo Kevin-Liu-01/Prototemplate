@@ -119,24 +119,27 @@ function thumb(stem: string): { shot: string; shotDark: string } {
   return { shot: `${THUMBS}/${stem}.jpg`, shotDark: `${THUMBS}/${stem}-dark.jpg` };
 }
 
-/** The Pages rows, the lab's working views; each previews its own first fold, shot by scripts/capture-pages.mjs under the row's id. */
+/**
+ * The Pages rows, the site's own views in the order Kevin set for the
+ * sidebar: gallery, brand, docs, deck, presenter, compare. Each previews its
+ * own first fold, shot by scripts/capture-pages.mjs under the row's id.
+ */
 const PAGES: readonly Surface[] = [
   internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
+  internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
+  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs')),
+  internal('deck', 'Deck', '/deck', 'The GT brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
 ];
 
 /**
  * The Knowledge rows: what the site keeps as the General Translation
- * knowledge base. The brand book, the directives and the documents keep
- * their captures under their ids; the skills and the marks have no capture
+ * knowledge base beyond its pages. The skills and the marks have no capture
  * yet and draw the blank plate; the archive row opens the first retired
  * version, since the archive has no index page of its own.
  */
 const KNOWLEDGE: readonly Surface[] = [
-  internal('deck', 'Brand book', '/deck', 'The GT brand deck: the identity in slides, its own viewer.', 'Knowledge', thumb('deck')),
-  internal('brand', 'Brand directives', '/brand', 'The identity canon in ten sections.', 'Knowledge', thumb('brand')),
-  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Knowledge', thumb('docs')),
   internal('skills', 'Skills', '/skills', 'The working skills behind the design lab and the product, by name and description.', 'Knowledge'),
   internal('marks', 'Marks', '/marks', 'Nine new GT marks in three families, each one color, with its construction.', 'Knowledge'),
   internal(

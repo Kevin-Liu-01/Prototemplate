@@ -4,7 +4,7 @@ import { Building2, Rocket, ShieldCheck, Workflow } from 'lucide-react';
 import { useState } from 'react';
 
 import type { ComponentType, FormEvent } from 'react';
-import { LEGAL_URL } from './site-links';
+import { PRIVACY_URL, TERMS_URL } from './site-links';
 
 /**
  * The shipped enterprise contact section.
@@ -282,14 +282,14 @@ export default function EnterpriseContact() {
                     By submitting you agree to the{' '}
                     <a
                       className='underline underline-offset-4'
-                      href={LEGAL_URL}
+                      href={TERMS_URL}
                     >
                       Terms of Service
                     </a>{' '}
                     and acknowledge the{' '}
                     <a
                       className='underline underline-offset-4'
-                      href={LEGAL_URL}
+                      href={PRIVACY_URL}
                     >
                       Privacy Policy
                     </a>
