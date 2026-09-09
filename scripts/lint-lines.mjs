@@ -20,9 +20,11 @@
 //      three tokens, --pt-hair (structural), --pt-hair-soft (rows) or
 //      --pt-edge (frames). --pt-ink is allowed only on an element in an
 //      active state (.is-on, .is-active, .is-editing, .is-solid,
-//      aria-pressed, aria-current, focus-within), because active states
-//      draw their border in ink by design. Outlines are rings: the three
-//      roles, ink (focus and active rings) or paper (a ring on an ink plate).
+//      aria-pressed, aria-current, aria-selected, aria-expanded,
+//      focus-within), because active states draw their border in ink by
+//      design (the search pill while its palette is open is one). Outlines
+//      are rings: the three roles, ink (focus and active rings) or paper (a
+//      ring on an ink plate).
 //      The deck's own document uses the unprefixed names (--hair, --edge);
 //      the roles are read from whichever the document defines.
 //
@@ -123,7 +125,8 @@ const SHELL_CHROME = {
     ink: ['--pt-ink', '--ink'],
     paper: ['--pt-paper', '--paper'],
   },
-  active: '.is-on, .is-active, .is-editing, .is-solid, [aria-pressed="true"], [aria-current], [aria-selected="true"]',
+  active:
+    '.is-on, .is-active, .is-editing, .is-solid, [aria-pressed="true"], [aria-current], [aria-selected="true"], [aria-expanded="true"]',
 };
 
 const DECK_CHROME = {

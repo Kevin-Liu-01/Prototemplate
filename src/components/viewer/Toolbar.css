@@ -28,7 +28,9 @@
    exceptions): a 32px --pt-hair box with a 6px corner, the search glyph,
    the word Search in ink-2 and the key chip at its right end, a 4px-corner
    kbd on --pt-hair-soft reading ⌘K (Ctrl K on Windows, Search.tsx) in 11px
-   titanium; hover turns the box --pt-ink-2. No tier touches it. */
+   titanium; hover turns the box --pt-ink-2, and while the palette is open
+   (aria-expanded) it draws --pt-ink, as every open field does. No tier
+   touches it. */
 .pt-toolbar {
   grid-row: 1;
   height: var(--pt-toolbar-h, var(--pt-bar-h));
@@ -87,10 +89,16 @@
   color: var(--pt-ink-2);
 }
 
-.pt-toolbar .pt-search-btn:hover,
-.pt-toolbar .pt-search-btn[aria-expanded='true'] {
+.pt-toolbar .pt-search-btn:hover {
   color: var(--pt-ink);
   border-color: var(--pt-ink-2);
+}
+
+/* the open field: ink, the active state's color (the count while editing
+   draws the same) */
+.pt-toolbar .pt-search-btn[aria-expanded='true'] {
+  color: var(--pt-ink);
+  border-color: var(--pt-ink);
 }
 
 .pt-toolbar .pt-search-btn:hover .pt-lb,

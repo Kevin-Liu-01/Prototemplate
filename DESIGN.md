@@ -404,13 +404,13 @@ its own copy takes the line.
 The shell's chrome is Inter only, weight 500 or less, radius 0, one
 hairline per rule, colors from `src/components/viewer/tokens.css` and
 borders in the three roles of section 2. Kevin's round six directives
-override those rules for exactly four elements. Each exception is listed
+override those rules for exactly five elements. Each exception is listed
 here with its owner file so nothing else reaches for it, and so the next
 sweep does not "fix" it back.
 
 | element | exception | owner |
 | --- | --- | --- |
-| Search pill (toolbar) | `border-radius: 6px` on the 32px `--pt-hair` field; hover border `--pt-ink-2`, a fourth border color in chrome (the rest state stays in the `hair` role, which is what the line auditor reads) | `Toolbar.css`, `.pt-toolbar .pt-search-btn` |
+| Search pill (toolbar) | `border-radius: 6px` on the 32px `--pt-hair` field; hover border `--pt-ink-2`, a fourth border color in chrome, reachable only under the pointer (the line auditor never drives hover). At rest the pill stays in the `hair` role, and while its palette is open (`aria-expanded="true"`, a state the auditor does drive) it draws `--pt-ink`, the active-state color every open field takes | `Toolbar.css`, `.pt-toolbar .pt-search-btn` |
 | Search key chip | `kbd.pt-search-kbd`: `border-radius: 4px`, ground `--pt-hair-soft`, 11px weight 500 titanium; reads ⌘K, and `Ctrl K` on Windows and Linux (`Search.tsx` swaps the text after mount from the user agent) | `Toolbar.css`, `Search.tsx` |
 | Present | the one `.is-solid` button: `border-radius: 8px`, 14px sides, the label first and the 12px play glyph after it (`flex-direction: row-reverse`, so ToolButton keeps one markup), hover drops the ink ground for ink text in the ink frame, the old `.pt-nav-present` from 430e3c7 | `ToolButton.css`, `.pt-ib.is-solid`; `Toolbar.tsx` passes `solid` |
 | Prototemplate mark | the rainbow core: five chroma stops (`#4b3bff`, `#00b3ff`, `#27d17e`, `#ffc53b`, `#ff3b6b`, display-p3 where supported) declared as `--pt-mark-c1` to `--pt-mark-c5` on `.pt-mark`, the one color in chrome outside the site icons; hovering the head link (or any `a` or `.pt-mark-host` around the mark) fades the hatched paper fill in over the core, opacity only, over `--pt-dur-enter` (200ms, 0 under reduced motion). The markup is the old nav's span with four `i.pt-mark-line` and `i.pt-mark-fill` | `PtMark.tsx`, `PtMark.css` |
