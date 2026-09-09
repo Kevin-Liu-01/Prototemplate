@@ -9,9 +9,10 @@ const SITE_URL = 'https://prototemplate.vercel.app';
 /**
  * Every route on the site, derived from the registries the pages render
  * from so the sitemap tracks the lineup: the gallery, the presenter, the
- * deck, the brand book, the documents, the compare rig, each direction with
- * each site concept's enterprise page, and the archive of retired versions.
- * /craft is a redirect to /docs and is not listed.
+ * deck, the brand book, the documents, the skills, the mark explorations,
+ * the compare rig, each direction with each site concept's enterprise page,
+ * and the archive of retired versions. /craft is a redirect to /docs and is
+ * not listed.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
@@ -22,6 +23,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/deck`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/brand`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/docs`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${SITE_URL}/skills`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/marks`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   for (const doc of DOCS) {

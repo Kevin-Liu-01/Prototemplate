@@ -32,18 +32,25 @@ import type { ShellShot } from '@/lib/shell-data';
  * is what the preview layer reads.
  *
  * The site groups run in the one sidebar order every route keeps (Pages,
- * Shipped, Documents, Sites, Explorations, Archive); Libraries and Brand
- * sections follow as panel-only groups. Shipped (directive 8.10) holds the
- * direction that shipped and its pages: /d/production and every concrete
- * page.tsx under src/app/d/production, then the live surfaces of the
- * shipped site as external rows. Sites holds the three full site concepts
- * only. A row that belongs to one of the four sites names it in `site`, so
- * a list can color its icon on the matching --pt-site-* token.
+ * Knowledge, Shipped, Documents, Sites, Explorations, Archive); Libraries
+ * and Brand sections follow as panel-only groups. Pages holds the three
+ * working views of the lab: the gallery, the presenter and the compare rig.
+ * Knowledge holds what the site keeps as the General Translation knowledge
+ * base: the brand book (/deck), the brand directives (/brand), the
+ * repository documents (/docs), the agent skills (/skills), the mark
+ * explorations (/marks) and the archive of retired versions. Shipped
+ * (directive 8.10) holds the direction that shipped and its pages:
+ * /d/production and every concrete page.tsx under src/app/d/production,
+ * then the live surfaces of the shipped site as external rows. Sites holds
+ * the three full site concepts only. A row that belongs to one of the four
+ * sites names it in `site`, so a list can color its icon on the matching
+ * --pt-site-* token.
  */
 export type SurfaceSet = 'site' | 'public';
 
 export const SITE_GROUPS = [
   'Pages',
+  'Knowledge',
   'Shipped',
   'Documents',
   'Sites',
@@ -110,14 +117,33 @@ function thumb(stem: string): { shot: string; shotDark: string } {
   return { shot: `${THUMBS}/${stem}.jpg`, shotDark: `${THUMBS}/${stem}-dark.jpg` };
 }
 
-/** The Pages rows; each previews its own first fold, shot by scripts/capture-pages.mjs under the row's id. */
+/** The Pages rows, the lab's working views; each previews its own first fold, shot by scripts/capture-pages.mjs under the row's id. */
 const PAGES: readonly Surface[] = [
   internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
-  internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
-  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs')),
-  internal('deck', 'Deck', '/deck', 'The GT brand deck, its own viewer.', 'Pages', thumb('deck')),
   internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
+];
+
+/**
+ * The Knowledge rows: what the site keeps as the General Translation
+ * knowledge base. The brand book, the directives and the documents keep
+ * their captures under their ids; the skills and the marks have no capture
+ * yet and draw the blank plate; the archive row opens the first retired
+ * version, since the archive has no index page of its own.
+ */
+const KNOWLEDGE: readonly Surface[] = [
+  internal('deck', 'Brand book', '/deck', 'The GT brand deck: the identity in slides, its own viewer.', 'Knowledge', thumb('deck')),
+  internal('brand', 'Brand directives', '/brand', 'The identity canon in ten sections.', 'Knowledge', thumb('brand')),
+  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Knowledge', thumb('docs')),
+  internal('skills', 'Skills', '/skills', 'The working skills behind the design lab and the product, by name and description.', 'Knowledge'),
+  internal('marks', 'Marks', '/marks', 'Nine new GT marks in three families, each one color, with its construction.', 'Knowledge'),
+  internal(
+    'archive',
+    'Archive',
+    `/archive/${ARCHIVE[0]?.slug ?? ''}`,
+    `The ${ARCHIVE.length} retired versions, kept as full-page captures at their own addresses.`,
+    'Knowledge'
+  ),
 ];
 
 const DOCUMENTS: readonly Surface[] = [
@@ -325,6 +351,7 @@ const ARCHIVE_ROWS: readonly Surface[] = ARCHIVE.map((item) =>
 
 export const SITE_SURFACES: readonly Surface[] = [
   ...PAGES,
+  ...KNOWLEDGE,
   ...SHIPPED,
   ...DOCUMENTS,
   ...SITES,

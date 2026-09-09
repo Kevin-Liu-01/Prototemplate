@@ -53,6 +53,7 @@ export type SearchEntry = {
  */
 const GROUP_ORDER: readonly string[] = [
   'Pages',
+  'Knowledge',
   'Shipped',
   'Documents',
   'Headings',
@@ -67,31 +68,45 @@ const GROUP_ORDER: readonly string[] = [
 /**
  * What an empty query shows: a short map of the site that fits the card
  * without a scroll region, so the palette opens as a map and not a list to
- * wade through. Every page, the shipped site's home and its first two
- * pages, every document and the three site concepts (their enterprise pages
- * are one keystroke away). Explorations, the archive, headings, libraries,
- * brand sections and slides appear as soon as a letter is typed.
+ * wade through. Every page and every knowledge row, the shipped site's home
+ * and its first two pages, every document and the three site concepts
+ * (their enterprise pages are one keystroke away). Explorations, the
+ * archive, headings, libraries, brand sections and slides appear as soon
+ * as a letter is typed.
  */
-const EMPTY_PER_GROUP: Readonly<Partial<Record<string, number>>> = { Pages: 6, Shipped: 3, Documents: 6, Sites: 3 };
+const EMPTY_PER_GROUP: Readonly<Partial<Record<string, number>>> = {
+  Pages: 3,
+  Knowledge: 6,
+  Shipped: 3,
+  Documents: 6,
+  Sites: 3,
+};
 
-/* the Pages rows' icons (directive 8.5), by surface id */
+/* the Pages and Knowledge rows' icons (directive 8.5), by surface id; the
+   marks take the swatch, the nearest glyph the shell's set has to a star */
 const PAGE_ICON: Readonly<Record<string, IconName>> = {
   gallery: 'gallery',
-  brand: 'swatch',
-  docs: 'document',
-  deck: 'deck',
   present: 'present',
   compare: 'compare',
+  deck: 'deck',
+  brand: 'swatch',
+  docs: 'document',
+  skills: 'sparkles',
+  marks: 'swatch',
+  archive: 'archive',
 };
 
 /* words the old palette matched that the row text does not carry */
 const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   gallery: 'home index working file directions',
-  brand: 'identity book basement mark color type voice',
-  docs: 'readme build log craft libraries laws',
-  deck: 'brand deck slideshow slides identity summary',
+  brand: 'identity book basement mark color type voice directives',
+  docs: 'readme build log craft libraries laws documents',
+  deck: 'brand deck slideshow slides identity summary book',
   present: 'presenter slides scoreboard',
   compare: 'side by side synced frames',
+  skills: 'agent skills SKILL.md engineering productivity general translation',
+  marks: 'logo mark monogram GT explorations bilingual counterform reflection',
+  archive: 'retired versions captures history',
 };
 
 /* the sites' icons and colors (directive 8.5), by direction slug */
@@ -127,7 +142,7 @@ const GROUP_ICON: Readonly<Partial<Record<SurfaceGroup, IconName>>> = {
 };
 
 function iconOf(row: Surface, site: SearchSite | undefined): IconName {
-  if (row.group === 'Pages') return PAGE_ICON[row.id] ?? 'pages';
+  if (row.group === 'Pages' || row.group === 'Knowledge') return PAGE_ICON[row.id] ?? 'pages';
   if (site) return SITE_ICON[site];
   return GROUP_ICON[row.group] ?? 'pages';
 }
