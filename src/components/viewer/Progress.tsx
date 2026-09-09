@@ -12,8 +12,11 @@ import './Progress.css';
  * (index + 1) / total. On flow routes it follows the scroll position of the
  * scrolling box inside .pt-stagewrap, read from one passive listener on the
  * document in the capture phase (scroll events do not bubble), so the flow
- * sheet does not have to hand its element up to the shell. A value prop
- * overrides both for routes that measure their own progress.
+ * sheet does not have to hand its element up to the shell. The listener is
+ * always attached and checks the key table at event time, because a route
+ * can change tables with its mode (the gallery pages in the slide and
+ * scrolls in the book). A value prop overrides both for routes that measure
+ * their own progress.
  */
 export type ProgressProps = {
   /** 0 to 1; replaces the shell-derived fraction */
@@ -30,7 +33,6 @@ export function Progress({ value }: ProgressProps) {
   const [scrolled, setScrolled] = useState(0);
 
   useMountEffect(() => {
-    if (shell.keys !== 'flow') return;
     const onScroll = (event: Event) => {
       const box = event.target;
       if (!(box instanceof HTMLElement)) return;
@@ -42,7 +44,7 @@ export function Progress({ value }: ProgressProps) {
     return () => document.removeEventListener('scroll', onScroll, { capture: true });
   });
 
-  const paged = shell.total > 0 ? (shell.index + 1) / shell.total : 0;
+  const paged = shell.total > 0 && shell.index >= 0 ? (shell.index + 1) / shell.total : 0;
   const fraction = clamp(value ?? (shell.keys === 'paged' ? paged : scrolled));
 
   return (

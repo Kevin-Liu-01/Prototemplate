@@ -5,16 +5,30 @@
    positioned by fitSheet() in Sheet.tsx; the ring is drawn as a mat so no
    shadow is needed: a 1px edge border on .sheet, a 1px paper gap from the
    mat's padding, a 1px hair-soft outline on the mat. lint-lines allows the
-   pair under the `sheet` class fragment. */
+   pair under the `sheet` class fragment. A frameless sheet carries a 24px
+   caption under it; a paged sheet shows a chevron at each edge on hover,
+   where a click pages. Motion (directive 7.4): the entering view fades and
+   settles from 1.015; the incoming slide fades and rises 6px, from below
+   for next and from above for previous; all off under reduced motion. */
 
 /* the click and swipe surface for the fixed sheet; shown only in slide mode */
 .pt-sheet-stage {
   position: absolute;
   inset: 0;
+  animation: pt-view-in 200ms ease-out both;
 }
 
 .pt-sheet-stage[hidden] {
   display: none;
+}
+
+/* the panning sheet (fit 'height'): wider than the stage, scrolled sideways */
+.pt-sheet-stage.is-pan {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pt-thumb) transparent;
+  scroll-behavior: smooth;
 }
 
 .sheet-mat {
@@ -50,6 +64,99 @@
   transform-origin: 0 0;
 }
 
+/* the paging chevrons: 32px ink-2 on paper at the sheet's edges, hover only */
+.pt-sheet-edge {
+  position: absolute;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  display: grid;
+  place-items: center;
+  background: var(--pt-paper);
+  border: 1px solid var(--pt-hair);
+  color: var(--pt-ink-2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+  z-index: 2;
+}
+
+.pt-sheet-edge svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.pt-sheet-edge.is-prev {
+  left: 1px;
+}
+
+.pt-sheet-edge.is-next {
+  right: 1px;
+}
+
+.sheet-mat:hover .pt-sheet-edge {
+  opacity: 1;
+}
+
+/* the caption under a frameless sheet: what is live, and the count */
+.pt-sheet-caption {
+  position: absolute;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12.5px;
+  line-height: 1;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.pt-sheet-caption-l {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* the incoming slide rises 6px from the side it came from */
+@keyframes pt-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pt-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pt-viewer[data-dir='next'] .pt-stagewrap .pt-slides .slide.is-on {
+    animation: pt-slide-up 180ms ease-out;
+  }
+
+  .pt-viewer[data-dir='prev'] .pt-stagewrap .pt-slides .slide.is-on {
+    animation: pt-slide-down 180ms ease-out;
+  }
+}
+
 /* present: the ring goes, the sheet reads as the window */
 .sheet-mat.is-present {
   outline-color: transparent;
@@ -64,6 +171,7 @@
   position: absolute;
   inset: 0;
   padding: 28px;
+  animation: pt-view-in 200ms ease-out both;
 }
 
 .sheet-flow .sheet-mat {
@@ -88,5 +196,20 @@
 
   .sheet-flow .sheet {
     padding: 24px 16px 80px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-sheet-stage,
+  .sheet-flow {
+    animation: none;
+  }
+
+  .pt-sheet-stage.is-pan {
+    scroll-behavior: auto;
+  }
+
+  .pt-sheet-edge {
+    transition: none;
   }
 }

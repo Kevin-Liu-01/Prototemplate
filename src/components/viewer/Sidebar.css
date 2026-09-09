@@ -1,8 +1,12 @@
-/* Sidebar: column one of the shell. A 52px head, then the item list as a
-   scroll region. Every rule here is 1px, drawn once by one owner: the aside
-   owns its right edge, the head its bottom edge, each frame its border. The
-   active frame adds the one sanctioned offset outline. Colors are tokens
-   only; ThumbMini and ThumbShot fill the frames and share this sheet. */
+/* Sidebar: column one of the shell. A 52px head (mark, title, the close
+   button when the list is an overlay), a 40px filter row with the density
+   toggle, then the list as a scroll region: collapsible groups of outline
+   rows by default, captured frames in thumbnail density. Every rule here
+   is 1px, drawn once by one owner: the aside owns its right edge, the head
+   and the filter row their bottom edges, each frame its border. The active
+   frame adds the one sanctioned offset outline; the active outline row a
+   2px ink bar at its left edge. Colors are tokens only; ThumbShot fills the
+   frames and shares this sheet. */
 
 .pt-sb {
   grid-column: 1;
@@ -16,12 +20,12 @@
   border-right: 1px solid var(--pt-hair);
 }
 
-/* present, grid, or the list toggled off */
+/* present, or the list toggled off */
 .pt-sb.is-hidden {
   display: none;
 }
 
-/* at or below 900px an open list floats over the stage */
+/* at or below 900px an open list floats over the stage, above its scrim */
 .pt-sb.is-overlay {
   position: absolute;
   left: 0;
@@ -29,15 +33,29 @@
   bottom: 0;
   width: min(84vw, 300px);
   z-index: 10;
+  animation: pt-sb-in 220ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 
+@keyframes pt-sb-in {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- the head: the mark, the title (never truncated), the overlay's close button ---- */
 .pt-sb-head {
   height: var(--pt-bar-h);
   flex: 0 0 var(--pt-bar-h);
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 16px;
+  padding: 0 10px 0 14px;
   border-bottom: 1px solid var(--pt-hair);
 }
 
@@ -47,42 +65,183 @@
   color: var(--pt-ink);
 }
 
+/* the mark is a link back to the gallery on every other route */
+a.pt-sb-mark {
+  padding: 4px;
+  margin-left: -4px;
+  outline: 1px solid transparent;
+}
+
+a.pt-sb-mark:hover {
+  outline-color: var(--pt-hair);
+}
+
+a.pt-sb-mark:focus-visible {
+  outline-color: var(--pt-ink);
+}
+
 .pt-sb-head b {
+  flex: 1 1 auto;
   min-width: 0;
   font-family: var(--pt-display);
   font-weight: 500;
-  font-size: 14.5px;
+  font-size: 13.5px;
   letter-spacing: -0.01em;
   font-feature-settings: 'cv11', 'ss01';
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* the count, pushed right; scoped by class so the mark's span keeps its ink */
-.pt-sb-count {
-  margin-left: auto;
-  font-size: 12.5px;
+/* ---- the filter row: the search input and the density toggle ---- */
+.pt-sb-tools {
+  height: 40px;
+  flex: 0 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 0 14px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.pt-sb-filter {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
-/* the list */
+.pt-sb-filter svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+
+.pt-sb-filter input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  border: 0;
+  background: none;
+  color: var(--pt-ink);
+  font: 13px var(--pt-text);
+  padding: 0;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pt-sb-filter input::placeholder {
+  color: var(--pt-titanium);
+}
+
+.pt-sb-filter input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.pt-sb-filter:focus-within {
+  color: var(--pt-ink);
+}
+
+/* ---- the list ---- */
 .pt-thumbs {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  padding: 4px 0 32px;
+}
+
+.pt-sb-empty {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+}
+
+/* a group: a 28px head that collapses it, then its rows or frames */
+.pt-sec {
+  display: flex;
+  flex-direction: column;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 200px;
+}
+
+.pt-sec-head {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  height: 28px;
+  margin: 8px 0 0;
+  padding: 0 10px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--pt-titanium);
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+  font-feature-settings: 'cv11', 'ss01';
+  text-align: left;
+  cursor: pointer;
+}
+
+.pt-sec-head svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  fill: currentColor;
+  transition: transform 160ms ease-out;
+}
+
+.pt-sec.is-closed .pt-sec-head svg {
+  transform: rotate(-90deg);
+}
+
+.pt-sec-head .pt-sec-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pt-sec-count {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+}
+
+.pt-sec-head:hover,
+.pt-sec-head:focus-visible {
+  color: var(--pt-ink);
+}
+
+.pt-sec-head:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* the group body: rows in outline density, frames in thumbnail density */
+.pt-sec-body {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  padding: 8px 12px 32px 12px;
+  padding: 6px 12px 8px;
 }
 
-.pt-thumbs.is-rows {
+.pt-sec-body.is-rows {
   gap: 0;
+  padding: 0 0 4px;
 }
 
-.pt-sec-label {
+/* the plain list the grid renders (ThumbList): labels and items, no groups */
+.pt-thumbs > .pt-sec-label {
   font-family: var(--pt-display);
   font-weight: 500;
   font-size: 12.5px;
@@ -92,21 +251,81 @@
   padding: 16px 0 0 30px;
 }
 
-.pt-sec-label:first-child {
+.pt-thumbs > .pt-sec-label:first-child {
   padding-top: 8px;
 }
 
-.pt-thumbs.is-rows .pt-sec-label {
+.pt-thumbs.is-rows > .pt-sec-label {
   padding-bottom: 6px;
 }
 
-/* one item: the number column, then the frame and its title */
+/* ---- an outline row: 32px, the number in a 26px tabular column, the title ---- */
+.pt-orow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px 0 12px;
+  color: var(--pt-ink-2);
+  text-decoration: none;
+  cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 32px;
+}
+
+.pt-orow .n {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 12px;
+  font-feature-settings: 'cv11', 'ss01';
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.pt-orow-title {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pt-orow:hover .pt-orow-title,
+.pt-orow:focus-visible .pt-orow-title,
+.pt-orow.is-active .pt-orow-title,
+.pt-orow.is-active .n {
+  color: var(--pt-ink);
+}
+
+/* the current row: a 2px ink bar at the left edge */
+.pt-orow.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--pt-ink);
+}
+
+.pt-orow:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* ---- a frame item: the number column, then the frame and its title ---- */
 .pt-thumb {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr);
   gap: 8px;
   align-items: start;
   cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 150px;
 }
 
 .pt-thumb:focus-visible {
@@ -139,6 +358,7 @@
   border: 1px solid var(--pt-edge);
   overflow: hidden;
   background: var(--pt-paper);
+  transition: border-color 120ms ease-out;
 }
 
 .pt-thumb:hover .pt-thumb-frame,
@@ -153,7 +373,7 @@
 }
 
 .pt-thumb-title {
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.35;
   color: var(--pt-ink-2);
   margin-top: 7px;
@@ -167,23 +387,44 @@
 .pt-sub {
   display: flex;
   flex-direction: column;
+  padding: 0 10px 4px 12px;
 }
 
-/* ThumbMini: a 1600x900 copy of a slide scaled by --k from the frame width */
-.pt-mini {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1600px;
-  height: 900px;
-  transform-origin: 0 0;
-  transform: scale(var(--k, 0.137));
+.pt-sec-body:not(.is-rows) .pt-sub {
+  padding: 0;
+}
+
+/* ---- the hover preview beside an outline row: a 320x180 capture and the title ---- */
+.pt-sb-preview {
+  position: fixed;
+  z-index: 12;
+  width: 320px;
+  padding: 1px;
+  background: var(--pt-paper);
+  outline: 1px solid var(--pt-hair-soft);
   pointer-events: none;
+  animation: pt-fade-in 120ms ease-out both;
+}
+
+.pt-sb-preview-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--pt-edge);
+  overflow: hidden;
+  background: var(--pt-paper);
+}
+
+.pt-sb-preview-title {
+  padding: 7px 10px 8px;
+  font-size: 12.5px;
+  line-height: 1.35;
   color: var(--pt-ink);
 }
 
-.pt-mini .slide {
-  display: block;
+.pt-sb-preview-title span {
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ThumbShot: light and dark twins; the theme attribute picks one */
@@ -222,4 +463,16 @@
   font-feature-settings: 'cv11', 'ss01';
   font-variant-numeric: tabular-nums;
   color: var(--pt-titanium);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-sb.is-overlay,
+  .pt-sb-preview {
+    animation: none;
+  }
+
+  .pt-sec-head svg,
+  .pt-thumb-frame {
+    transition: none;
+  }
 }

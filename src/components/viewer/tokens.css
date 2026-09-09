@@ -26,6 +26,7 @@
   --pt-panel-ink: #101010;
   --pt-panel-text: rgba(255, 255, 255, 0.87);
   --pt-bar-h: 52px;
+  /* the sidebar in outline density; ViewerShell.css widens it to 256px for thumbnails */
   --pt-sb-w: 208px;
   --pt-panel-w: 460px;
   --pt-rail: 1170px;
@@ -52,8 +53,8 @@
 
 /* Slide bridge. Authored slide HTML and DECK-GRAMMAR.md use the unprefixed
    names; this class re-exports them in scope so the 52 slide files are not
-   edited. Applied to the deck stage, to every ThumbMini clone, and to every
-   book page frame. */
+   edited. Applied to the deck stage, the one place live slide markup lives
+   (directive 7.5): the list, the grid and the book show static renders. */
 .pt-slides {
   --paper: var(--pt-paper);
   --ink: var(--pt-ink);
@@ -143,6 +144,11 @@ body[data-shell] {
   white-space: nowrap;
   cursor: pointer;
   border-radius: 0;
+  /* directive 7.4: color and ground move over 120ms; nothing else animates */
+  transition:
+    color 120ms ease-out,
+    background-color 120ms ease-out,
+    border-color 120ms ease-out;
 }
 
 .pt-ib svg {
@@ -177,19 +183,6 @@ body[data-shell] {
   font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14px;
-}
-
-/* a text glyph standing where the icon goes (the ? on Help): the icon's 16px footprint */
-.pt-ib .pt-glyph {
-  display: inline-block;
-  width: 16px;
-  flex: 0 0 auto;
-  text-align: center;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1;
 }
 
 /* the one filled button: the Present call to action, Title Case label */
@@ -229,4 +222,10 @@ body[data-shell] {
 .pt-seg .pt-ib.is-on {
   background: var(--pt-ink);
   color: var(--pt-paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-ib {
+    transition: none;
+  }
 }

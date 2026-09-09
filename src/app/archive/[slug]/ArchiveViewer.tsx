@@ -1,12 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
 
 import { Sheet } from '@/components/viewer/Sheet';
-import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import {
   ARCHIVE,
@@ -21,9 +17,6 @@ import {
 import type { ArchiveEntry } from '@/lib/archive';
 import type { ShellItem, ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
-import { surfaceGroups } from '@/lib/surfaces';
-import type { SurfaceGroup } from '@/lib/surfaces';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './archive.css';
 
@@ -31,20 +24,15 @@ import './archive.css';
  * The archive on the viewer shell: one retired version at a time, its
  * full-page capture at 1440 pixels wide in a flow sheet under a ruled
  * record (the name, the capture date, the source address, the last commit
- * that held the code). The sidebar keeps the one order every route keeps:
- * Pages, Documents, Sites and Explorations as site map rows, then Archive
- * as the shell's own section with the eleven captures as thumbs. Selecting
- * another version navigates to its address; selecting a site map row leaves
- * for that page. Keys are flow, so Space and the arrows scroll the capture.
+ * that held the code) and a line saying the image is a picture. The shell
+ * draws the site map in its one order (Pages, Documents, Sites,
+ * Explorations) and this route's Archive section replaces the Archive
+ * group, with the eleven captures as items and the current one marked and
+ * scrolled into view. Selecting another version navigates to its address.
+ * Keys are flow, so Space and the arrows scroll the capture.
  */
 const ARCHIVE_TITLE = 'Archive';
 const ARCHIVE_MODES: readonly ShellMode[] = ['book'];
-
-/** the shell's list box, the host the site map rows are portaled into */
-const SIDEBAR_LIST = '.pt-viewer[data-shell="archive"] .pt-sb .pt-thumbs';
-
-/** the site map groups above the archive, in the one order */
-const NAV_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Documents', 'Sites', 'Explorations'];
 
 function archiveItem(item: ArchiveEntry, index: number): ShellItem {
   return {
@@ -60,51 +48,6 @@ function archiveItem(item: ArchiveEntry, index: number): ShellItem {
 const SECTIONS: readonly ShellSection[] = [
   { id: 'archive', label: 'Archive', items: ARCHIVE.map(archiveItem) },
 ];
-
-const NAV_ROWS = surfaceGroups('site').filter((entry) => NAV_GROUPS.includes(entry.group));
-
-/**
- * The site map above the shell's own section: Pages, Documents, Sites and
- * Explorations as rows in the ListRow grammar, portaled into the sidebar's
- * list box and ordered first by CSS. Rows are links, so every page is one
- * click away; on a narrow screen a click also closes the overlay list. The
- * host exists from the first paint because the sidebar always renders its
- * list in book mode, the only mode this route offers.
- */
-function SiteMapNav() {
-  const shell = usePtShell();
-  const [host, setHost] = useState<HTMLElement | null>(null);
-
-  useMountEffect(() => {
-    setHost(document.querySelector<HTMLElement>(SIDEBAR_LIST));
-  });
-
-  if (!host) return null;
-  return createPortal(
-    <div className='ar-nav'>
-      {NAV_ROWS.map((group) => (
-        <div className='ar-nav-group' key={group.group}>
-          <div className='pt-sec-label'>{group.group}</div>
-          {group.rows.map((row) => (
-            <Link
-              key={row.id}
-              className='pt-row ar-nav-row'
-              href={row.href}
-              title={row.desc}
-              onClick={() => {
-                if (shell.narrow) shell.setSidebar(false);
-              }}
-            >
-              <span className='n' aria-hidden='true' />
-              <span className='pt-row-title'>{row.name}</span>
-            </Link>
-          ))}
-        </div>
-      ))}
-    </div>,
-    host
-  );
-}
 
 /** The record and the capture, in the flow sheet widened to the capture's own 1440 pixels. */
 function ArchiveStage({ item }: { item: ArchiveEntry }) {
@@ -135,8 +78,15 @@ function ArchiveStage({ item }: { item: ArchiveEntry }) {
         </header>
         <p className='ar-note'>
           Captured at {item.width} pixels wide in the light theme, {item.fullHeight} pixels tall, before the route
-          was deleted. The code stays in the repository history under commit {item.lastCommit}; the route left in
-          the commit that followed it, {ARCHIVE_DELETION.subject}, on branch {ARCHIVE_DELETION.branch}.
+          was deleted. The code stays in the repository history under commit {item.lastCommit}. The route was
+          removed in the next commit, {ARCHIVE_DELETION.hash}, &ldquo;{ARCHIVE_DELETION.subject}&rdquo;, on
+          branch {ARCHIVE_DELETION.branch}.
+        </p>
+        <p className='ar-static'>
+          This is a static capture; nothing in it is live.{' '}
+          <a href={archiveShot(item)} target='_blank' rel='noreferrer'>
+            Open the 1440 by 900 crop
+          </a>
         </p>
         <img
           className='ar-full'
@@ -177,7 +127,6 @@ export default function ArchiveViewer({ slug }: ArchiveViewerProps) {
       noun='version'
       onSelect={onSelect}
     >
-      <SiteMapNav />
       {item ? <ArchiveStage item={item} /> : null}
     </ViewerShell>
   );

@@ -6,6 +6,8 @@ import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent
 import { useRouter } from 'next/navigation';
 
 import { Icon } from '@/components/viewer/icons';
+import { Seg } from '@/components/viewer/Seg';
+import type { SegOption } from '@/components/viewer/Seg';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { isExternalSurface, surfaceGroups, surfaceInitial, surfaceMatches } from '@/lib/surfaces';
@@ -17,21 +19,29 @@ import './IndexPanel.css';
 /**
  * The index panel: a 460px column that slides over the stage from the
  * right, listing one set from src/lib/surfaces.ts in groups, each row with a
- * 96x54 preview, a name, an address and a line of description. The filter
- * is a case-insensitive substring match on the row text and its href;
- * groups with no match hide and the head count follows. Opened by the
- * toolbar's Index button and, in useShellKeys, by R and by Cmd K or Ctrl K,
- * which also focus the filter, so the palette habit survives; the panel
- * itself focuses the filter on every open. Escape closes and blurs. Enter on
- * a focused row navigates: the router for internal hrefs, a new tab for
- * external ones; Enter in the filter opens the first match.
+ * 96x54 preview, a name, an address and a line of description. A Site |
+ * Public seg above the filter switches between the two sets, so every route
+ * reaches every page on this site and every public surface; the route names
+ * the set the panel opens on. The filter is a case-insensitive substring
+ * match on the row text and its href; groups with no match hide and the
+ * head count follows. Opened by the toolbar's Index button and, in
+ * useShellKeys, by R and by Cmd K or Ctrl K, which also focus the filter, so
+ * the palette habit survives; the panel itself focuses the filter on every
+ * open. Escape closes and blurs. Enter on a focused row navigates: the
+ * router for internal hrefs, a new tab for external ones; Enter in the
+ * filter opens the first match.
  */
 export type IndexPanelProps = {
-  /** which registry the panel lists: the site map, or every public surface */
+  /** which registry the panel opens on: the site map, or every public surface */
   set: SurfaceSet;
   /** the aside, for the shell's ResizeObserver, which publishes the panel width */
   ref?: RefObject<HTMLElement | null>;
 };
+
+const SET_OPTIONS: readonly SegOption<SurfaceSet>[] = [
+  { value: 'site', label: 'Site', title: 'Every page on this site' },
+  { value: 'public', label: 'Public', title: 'Every public place the brand is live' },
+];
 
 const NOTE: Record<SurfaceSet, string> = {
   site: 'Every page on this site, with a preview where one exists. Each row opens in place.',
@@ -114,12 +124,13 @@ function Shot({ row, broken, onBroken }: ShotProps) {
   );
 }
 
-export function IndexPanel({ set, ref }: IndexPanelProps) {
+export function IndexPanel({ set: initialSet, ref }: IndexPanelProps) {
   const shell = usePtShell();
   const router = useRouter();
   const ownRef = useRef<HTMLElement>(null);
   const panelRef = ref ?? ownRef;
   const inputRef = useRef<HTMLInputElement>(null);
+  const [set, setSet] = useState<SurfaceSet>(initialSet);
   const [query, setQuery] = useState('');
   const [broken, setBroken] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -187,6 +198,7 @@ export function IndexPanel({ set, ref }: IndexPanelProps) {
         <ToolButton icon='close' title='Close the index (Esc)' onClick={close} />
       </div>
       <div className='pt-panel-tools'>
+        <Seg options={SET_OPTIONS} value={set} onChange={setSet} label='Which index' className='pt-panel-sets' />
         <input
           ref={inputRef}
           type='search'

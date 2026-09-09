@@ -14,15 +14,20 @@ export type ShellKeyOptions = {
   toggleTheme: () => void;
   /** defaults to toggleFullscreen() below */
   toggleFullscreen?: () => void | Promise<void>;
+  /** the Escape ladder's filter rung: clears the sidebar filter and returns true when it held text */
+  clearFilter?: () => boolean;
 };
 
-/** One row of the help card: the keys, then what they do. */
-export type ShellKeyRow = { keys: string; action: string };
+/** The help card's four groups (directive 7.6). */
+export type ShellKeyGroup = 'Move' | 'View' | 'Panels' | 'Theme';
+
+/** One row of the help card: the group, the keys, then what they do. */
+export type ShellKeyRow = { group: ShellKeyGroup; keys: string; action: string };
 
 /**
  * Enter or leave fullscreen on the document. The one implementation, shared
  * by the F key and the toolbar button. A refusal (an iframe without
- * allowfullscreen, which the gallery and presenter embeds are, or a call
+ * allowfullscreen, which the gallery and compare embeds are, or a call
  * without a gesture) is swallowed: there is nothing to report to the user.
  */
 export async function toggleFullscreen(): Promise<void> {
@@ -42,37 +47,42 @@ function capitalize(word: string): string {
 }
 
 /**
- * The key table for a route, in the order the help card shows it. The one
- * table, kept next to the handler below so the card is always true for the
- * route: paged rows only on paged routes (flow routes say that Space and the
- * arrows scroll), mode rows only when the mode is offered, present only
- * where present exists. Wording follows the copy rules: sentence case, no
- * trailing periods.
+ * The key table for a route, grouped as the help card shows it: Move, View,
+ * Panels, Theme. The one table, kept next to the handler below so the card
+ * is always true for the route: paged rows only on paged routes (flow
+ * routes say that Space and the arrows scroll), mode rows only when the
+ * mode is offered, present only where a slide exists. Wording follows the
+ * copy rules: sentence case, no trailing periods.
  */
 export function shellKeyRows(route: Pick<ShellState, 'keys' | 'modes' | 'noun'>): readonly ShellKeyRow[] {
   const paged = route.keys === 'paged';
   const grid = route.modes.includes('grid');
   const book = route.modes.includes('book');
+  const slide = route.modes.includes('slide');
   const noun = route.noun;
   const rows: ShellKeyRow[] = [];
   if (paged) {
-    rows.push({ keys: 'Right arrow, Space, Page down, J, L', action: `Next ${noun}` });
-    rows.push({ keys: 'Left arrow, Page up, Backspace, K, H', action: `Previous ${noun}` });
-    if (book) rows.push({ keys: 'Down and up arrows', action: `Next and previous ${noun} in the book view` });
-    rows.push({ keys: 'Home, End', action: `First and last ${noun}` });
+    rows.push({ group: 'Move', keys: 'Right arrow, Space, Page down, J, L', action: `Next ${noun}` });
+    rows.push({ group: 'Move', keys: 'Left arrow, Page up, Backspace, K, H', action: `Previous ${noun}` });
+    if (book) rows.push({ group: 'Move', keys: 'Down and up arrows', action: `Next and previous ${noun} in the book view` });
+    rows.push({ group: 'Move', keys: 'Home, End', action: `First and last ${noun}` });
   } else {
-    rows.push({ keys: 'Space, arrows', action: 'Scroll the sheet' });
+    rows.push({ group: 'Move', keys: 'Space, arrows', action: 'Scroll the sheet' });
   }
-  rows.push({ keys: 'Digits, then Enter', action: `Go to a ${noun} by number` });
-  if (grid) rows.push({ keys: 'G', action: 'Grid view' });
-  if (book) rows.push({ keys: 'B', action: 'Book view, read top to bottom' });
-  rows.push({ keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' });
-  rows.push({ keys: '[ or S', action: 'Show or hide the list' });
-  rows.push({ keys: 'D', action: 'Dark or light' });
-  if (paged) rows.push({ keys: 'P', action: 'Presentation mode, chrome hidden' });
-  rows.push({ keys: 'F', action: 'Fullscreen' });
-  rows.push({ keys: '?', action: 'Keyboard shortcuts' });
-  rows.push({ keys: 'Esc', action: 'Back one layer: the shortcuts, the index, the view, presentation mode, the list' });
+  rows.push({ group: 'Move', keys: 'Digits, then Enter', action: `Go to a ${noun} by number (or click the count)` });
+  if (grid) rows.push({ group: 'View', keys: 'G', action: 'Grid view' });
+  if (book) rows.push({ group: 'View', keys: 'B', action: 'Book view, read top to bottom' });
+  if (slide) rows.push({ group: 'View', keys: 'P', action: 'Presentation mode, chrome hidden' });
+  rows.push({ group: 'View', keys: 'F', action: 'Fullscreen' });
+  rows.push({ group: 'Panels', keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' });
+  rows.push({ group: 'Panels', keys: '[ or S', action: 'Show or hide the list' });
+  rows.push({ group: 'Panels', keys: '?', action: 'Keyboard shortcuts' });
+  rows.push({
+    group: 'Panels',
+    keys: 'Esc',
+    action: 'Back one layer: the shortcuts, the index, the list filter, the view, presentation mode, the list',
+  });
+  rows.push({ group: 'Theme', keys: 'D', action: 'Dark or light' });
   return rows;
 }
 
@@ -100,20 +110,23 @@ function focusPanelFilter(): void {
  * Meta, Ctrl and Alt combinations pass through, except Cmd K and Ctrl K,
  * which open the index (the panel focuses its filter as it opens) or, when
  * it is already open, refocus and select the filter. Inside an input or
- * textarea only Escape acts and it closes the index. Digits accumulate for
- * 1500ms behind the toast `Slide 12, press Enter`; Enter jumps, and that
- * jump is read before the defaultPrevented bail so it wins over a focused
- * thumb's own Enter activation, as in the deck. Every other event a
- * component already handled (defaultPrevented) passes through, so Space on
- * a focused thumb selects it and does not also page.
+ * textarea only Escape acts and it closes the index, unless the field has
+ * already answered the key itself (the sidebar filter and the count field
+ * clear or close on their own Escape). Digits accumulate for 1500ms behind
+ * the toast `Slide 12, press Enter`; Enter jumps, and that jump is read
+ * before the defaultPrevented bail so it wins over a focused thumb's own
+ * Enter activation, as in the deck. Every other event a component already
+ * handled (defaultPrevented) passes through, so Space on a focused thumb
+ * selects it and does not also page.
  *
  * Paged routes: Right, Space, PageDown, J, L next; Left, PageUp, K, H,
  * Backspace previous; Down and Up page in book mode only; Home and End.
  * Every route: G grid and B book when offered, R index, [ or S sidebar,
- * D theme, P present (paged only), F fullscreen, ? help. Escape steps back
- * one layer: help, then the index, then a non-default mode, then present
- * when not fullscreen, then the open narrow sidebar. Flow routes drop the
- * paging keys so Space and the arrows scroll the sheet.
+ * D theme, P present (where a slide mode exists; from the book or the grid
+ * it opens the slide first), F fullscreen, ? help. Escape steps back one
+ * layer: help, then the index, then the list filter, then a non-default
+ * mode, then present when not fullscreen, then the open narrow sidebar.
+ * Flow routes drop the paging keys so Space and the arrows scroll the sheet.
  */
 export function useShellKeys(state: ShellState, options: ShellKeyOptions): void {
   /* assigned every render so the mount-time listener reads current state */
@@ -149,7 +162,7 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
       if (isEditable(e.target)) {
-        if (key === 'Escape') {
+        if (key === 'Escape' && !e.defaultPrevented) {
           e.preventDefault();
           s.setPanel(false);
           e.target.blur();
@@ -162,13 +175,13 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
       if (key === 'Enter' && digits) {
         const n = parseInt(digits, 10);
         clearDigits();
-        const item = s.items[n - 1];
+        const item = s.paged[n - 1];
         if (!item) {
           s.say(`No ${noun} ${n}`);
           return;
         }
         e.preventDefault();
-        if (s.mode === 'grid') s.setMode(s.modes[0]);
+        if (s.mode === 'grid') s.setMode(s.modes.includes('slide') ? 'slide' : s.modes[0]);
         s.select(item.id);
         return;
       }
@@ -213,13 +226,13 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
         }
         if (key === 'Home') {
           e.preventDefault();
-          const first = s.items[0];
+          const first = s.paged[0];
           if (first) s.select(first.id);
           return;
         }
         if (key === 'End') {
           e.preventDefault();
-          const last = s.items[s.items.length - 1];
+          const last = s.paged[s.paged.length - 1];
           if (last) s.select(last.id);
           return;
         }
@@ -243,7 +256,13 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
           o.toggleTheme();
           return;
         case 'p':
-          if (paged) s.setPresent(!s.present);
+          if (!s.modes.includes('slide')) return;
+          if (s.present) {
+            s.setPresent(false);
+            return;
+          }
+          if (s.mode !== 'slide') s.setMode('slide');
+          s.setPresent(true);
           return;
         case 'f':
           void (o.toggleFullscreen ?? toggleFullscreen)();
@@ -258,6 +277,7 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
       if (key === 'Escape') {
         if (s.helpOpen) s.setHelp(false);
         else if (s.panelOpen) s.setPanel(false);
+        else if (o.clearFilter?.()) return;
         else if (s.mode !== s.modes[0]) s.setMode(s.modes[0]);
         else if (s.present && !document.fullscreenElement) s.setPresent(false);
         else if (s.narrow && s.sidebarOpen) s.setSidebar(false);

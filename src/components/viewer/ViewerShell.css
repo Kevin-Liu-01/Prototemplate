@@ -1,11 +1,12 @@
 /* ViewerShell: the fixed full-viewport grid. Column one is the sidebar
    (Sidebar.css draws it and hides or floats itself), column two is the main
    region with three rows: the toolbar, the stage, the 2px progress line.
-   This sheet owns the grid, the stage box and the four modifiers; every
-   other rule belongs to the component that draws it. Colors are tokens
-   only. */
+   This sheet owns the grid, the stage box, the two scrims and the
+   modifiers; every other rule belongs to the component that draws it.
+   Colors are tokens only. */
 
 .pt-viewer {
+  --pt-toolbar-h: var(--pt-bar-h);
   position: fixed;
   inset: 0;
   display: grid;
@@ -16,11 +17,18 @@
   font-family: var(--pt-text);
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
+  /* the sidebar's width change (open, closed, outline, thumbnails) animates;
+     the stage refits on every frame through the shell's ResizeObserver */
+  transition: grid-template-columns 220ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* the list toggled off, the grid up, or presenting: column one collapses */
+/* thumbnail density widens the column (directive 7.3) */
+.pt-viewer.is-thumbs {
+  --pt-sb-w: 256px;
+}
+
+/* the list toggled off, or presenting: column one collapses */
 .pt-viewer.no-sb,
-.pt-viewer.is-overview,
 .pt-viewer.is-present {
   grid-template-columns: 0 minmax(0, 1fr);
 }
@@ -30,7 +38,7 @@
   grid-row: 1;
   position: relative;
   display: grid;
-  grid-template-rows: var(--pt-bar-h) minmax(0, 1fr) 2px;
+  grid-template-rows: var(--pt-toolbar-h) minmax(0, 1fr) 2px;
   min-width: 0;
   min-height: 0;
   background: var(--pt-paper);
@@ -48,6 +56,35 @@
   background: var(--pt-plate);
 }
 
+/* the scrim under an open index panel: 28 percent ink over the stage, a
+   click closes the panel; it fades with the panel's slide */
+.pt-panel-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  background: var(--pt-scrim);
+  cursor: default;
+  animation: pt-fade-in 180ms ease-out both;
+}
+
+/* the scrim under the narrow overlay list */
+.pt-sb-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  background: var(--pt-scrim);
+  cursor: default;
+  animation: pt-fade-in 180ms ease-out both;
+}
+
 /* present: chrome gone, the stage reads as the window */
 .pt-viewer.is-present .pt-main {
   grid-template-rows: 0 minmax(0, 1fr) 0;
@@ -62,10 +99,51 @@
   background: var(--pt-paper);
 }
 
+/* the entering view: a fade and a settle from 1.015 (directive 7.4) */
+@keyframes pt-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pt-view-in {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* at or below 900px the sidebar leaves the grid; .sb-open marks the shell
    while the list floats as the overlay Sidebar.css draws (.pt-sb.is-overlay) */
 @media (max-width: 900px) {
   .pt-viewer {
     grid-template-columns: 0 minmax(0, 1fr);
+  }
+}
+
+/* on a phone the toolbar takes two rows (Toolbar.css wraps it) */
+@media (max-width: 600px) {
+  .pt-viewer {
+    --pt-toolbar-h: 92px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-viewer {
+    transition: none;
+  }
+
+  .pt-panel-scrim,
+  .pt-sb-scrim {
+    animation: none;
   }
 }

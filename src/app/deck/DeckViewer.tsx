@@ -6,8 +6,7 @@ import type { ReactNode } from 'react';
 import { BookView } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
-import { stageMini } from '@/components/viewer/Sidebar';
-import { ThumbMini } from '@/components/viewer/ThumbMini';
+import { ThumbShot } from '@/components/viewer/ThumbShot';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { redrawDithers } from '@/lib/dither';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
@@ -21,16 +20,12 @@ const BOOK_LEAD = `The General Translation brand in ${SLIDE_COUNT} slides: the t
 const BOOK_META: readonly string[] = [`${DECK_SECTIONS.length} sections`, `${SLIDE_COUNT} slides`, 'September 2026'];
 const BOOK_NOUN = { one: 'Slide', many: 'Slides' };
 
-/** What a theme change or a new clone has to revisit. */
-const THEMED = 'canvas.dither, img[data-dark]';
-
 /**
  * The dither canvas on slide 20 sits in a grid column of the 1326px slide
  * body: 1326 minus the 220px matrix column and the 64px gap, less its own
  * 1px border on each side, by its 220px height less the same border. A
- * canvas that is not laid out (a slide that is off, a list that is
- * collapsed) is drawn at this box so it shows the same cells once it
- * appears.
+ * canvas that is not laid out (a slide that is off) is drawn at this box so
+ * it shows the same cells once it appears.
  */
 const DITHER_BOX = { fallbackWidth: 1040, fallbackHeight: 218 };
 
@@ -49,8 +44,7 @@ function isDark(): boolean {
 
 /**
  * Light and dark screenshot twins in the slides: `data-dark` names the dark
- * file, `data-light` remembers the authored one. Clones carry both
- * attributes, so a swap reaches every copy under `root`.
+ * file, `data-light` remembers the authored one.
  */
 function swapImages(root: ParentNode, dark: boolean): void {
   root.querySelectorAll<HTMLImageElement>('img[data-dark]').forEach((img) => {
@@ -60,14 +54,9 @@ function swapImages(root: ParentNode, dark: boolean): void {
   });
 }
 
-function applyTheme(root: ParentNode): void {
-  swapImages(root, isDark());
-  redrawDithers(root, DITHER_BOX);
-}
-
-/** True when a node the observer saw carries something the theme has to touch. */
-function needsTheme(node: Node): node is Element {
-  return node instanceof Element && (node.matches(THEMED) || node.querySelector(THEMED) !== null);
+/** The slide that is on, or null before the stage has mounted. */
+function activeSlide(): Element | null {
+  return stageRoot()?.querySelector(':scope > .slide.is-on') ?? null;
 }
 
 /**
@@ -102,9 +91,9 @@ function guardTitle(want: string): () => void {
  * it reverts on every index change (revertOnUpdate) and on unmount, in the
  * same task as the commit, so a client navigation away from /deck can never
  * see the guard rewrite the next route's title. Theme work runs from one
- * MutationObserver: html[data-theme] flipping redraws the whole document,
- * and a clone appearing (the list, the grid, the book) redraws that clone,
- * since a cloned canvas carries no bitmap.
+ * MutationObserver on html[data-theme]: the image twins swap across the
+ * stage and only the visible slide's dither redraws (directive 7.5); the
+ * list, the grid and the book show static renders and need nothing.
  */
 function DeckSlides() {
   const { index, total } = usePtShell();
@@ -128,38 +117,21 @@ function DeckSlides() {
   );
 
   useMountEffect(() => {
-    applyTheme(document);
+    const stage = stageRoot();
+    if (stage) swapImages(stage, isDark());
     let frame = 0;
-    const pending = new Set<ParentNode>();
-    const flush = () => {
-      frame = 0;
-      const targets = pending.has(document) ? [document] : [...pending];
-      pending.clear();
-      targets.forEach((target) => {
-        if (target === document || (target as Element).isConnected) applyTheme(target);
+    const observer = new MutationObserver(() => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const root = stageRoot();
+        if (!root) return;
+        swapImages(root, isDark());
+        const on = activeSlide();
+        if (on) redrawDithers(on, DITHER_BOX);
       });
-    };
-    const schedule = (target: ParentNode) => {
-      pending.add(target);
-      if (!frame) frame = requestAnimationFrame(flush);
-    };
-    const observer = new MutationObserver((records) => {
-      for (const record of records) {
-        if (record.type === 'attributes') {
-          schedule(document);
-          return;
-        }
-        record.addedNodes.forEach((node) => {
-          if (needsTheme(node)) schedule(node);
-        });
-      }
     });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
-      childList: true,
-      subtree: true,
-    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     return () => {
       observer.disconnect();
       if (frame) cancelAnimationFrame(frame);
@@ -169,7 +141,7 @@ function DeckSlides() {
   return null;
 }
 
-/** The book, mounted only while the mode is book; pages are live clones. */
+/** The book, mounted only while the mode is book; pages are the static renders, a click opens the slide. */
 function DeckBook({ sections }: { sections: readonly ShellSection[] }) {
   const { mode } = usePtShell();
   if (mode !== 'book') return null;
@@ -180,7 +152,7 @@ function DeckBook({ sections }: { sections: readonly ShellSection[] }) {
       meta={BOOK_META}
       sections={sections}
       noun={BOOK_NOUN}
-      renderPage={(item, i) => <ThumbMini resolve={() => stageMini(item, i)} />}
+      renderPage={(item) => <ThumbShot item={item} />}
     />
   );
 }
@@ -194,10 +166,10 @@ export type DeckViewerProps = {
 
 /**
  * The brand deck on the viewer shell: 52 slides on a 1600 x 900 sheet with
- * the frame, live thumbnails in the list and the grid, the book, and the
- * public surfaces in the index panel. Paged keys; the hash carries the slide.
- * The thumbnails resolve through the shell's default, stageMini, which
- * reads the .pt-slides box DeckStage renders inside the sheet.
+ * the frame, the static renders in the list, the grid and the book, and the
+ * public surfaces in the index panel (the Site set is one click away in the
+ * same panel). Paged keys; the hash carries the slide. The sidebar lists
+ * the eight deck sections; its mark links back to the gallery.
  */
 export default function DeckViewer({ sections, children }: DeckViewerProps) {
   return (
@@ -208,7 +180,7 @@ export default function DeckViewer({ sections, children }: DeckViewerProps) {
       count={`${SLIDE_COUNT} slides`}
       sections={sections}
       modes={DECK_MODES}
-      thumb='mini'
+      thumb='shot'
       surfaces='public'
       keys='paged'
       noun='slide'

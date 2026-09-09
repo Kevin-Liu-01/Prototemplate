@@ -1,4 +1,6 @@
-/* HelpCard: a scrim over the whole viewport with the key table centered. */
+/* HelpCard: a scrim over the whole viewport with the key table centered.
+   The scrim fades over 160ms and the card rises 8px over 200ms (directive
+   7.4); both are off under reduced motion. */
 .pt-help {
   position: fixed;
   inset: 0;
@@ -6,6 +8,7 @@
   place-items: center;
   background: var(--pt-scrim);
   z-index: 20;
+  animation: pt-fade-in 160ms ease-out both;
 }
 
 .pt-help-card {
@@ -15,7 +18,22 @@
   padding: 26px 30px 22px;
   min-width: 400px;
   max-width: 92vw;
+  max-height: 92vh;
+  overflow-y: auto;
   font-family: var(--pt-text);
+  animation: pt-help-in 200ms ease-out both;
+}
+
+@keyframes pt-help-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .pt-help-card h3 {
@@ -34,12 +52,34 @@
   width: 100%;
 }
 
+/* a group heading: Move, View, Panels, Theme */
+.pt-help-card th {
+  padding: 14px 0 6px;
+  text-align: left;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+  color: var(--pt-titanium);
+  border-bottom: 1px solid var(--pt-ink);
+}
+
+.pt-help-card tbody:first-child th {
+  padding-top: 0;
+}
+
 .pt-help-card td {
   padding: 6px 18px 6px 0;
   border-top: 1px solid var(--pt-hair-soft);
   color: var(--pt-ink-2);
   line-height: 1.4;
   vertical-align: top;
+}
+
+/* the first row under a heading sits on the heading's own rule */
+.pt-help-group + tr td {
+  border-top: 0;
 }
 
 .pt-help-card td:first-child {
@@ -66,5 +106,12 @@
 
   .pt-help-card td:first-child {
     white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-help,
+  .pt-help-card {
+    animation: none;
   }
 }

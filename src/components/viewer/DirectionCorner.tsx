@@ -1,61 +1,54 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Suspense, useRef, useState } from 'react';
 
+import { HelpCard } from '@/components/viewer/HelpCard';
 import { IndexPanel } from '@/components/viewer/IndexPanel';
 import { ShellContext } from '@/components/viewer/shell-context';
 import type { ShellState } from '@/components/viewer/shell-context';
 import { Sidebar } from '@/components/viewer/Sidebar';
+import { toggleTheme } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
+import type { ShellKeyRow } from '@/components/viewer/useShellKeys';
 import { cn } from '@/lib/cn';
-import { DIRECTIONS } from '@/lib/directions';
-import type { Direction } from '@/lib/directions';
-import { flattenShellItems } from '@/lib/shell-data';
-import type { ShellItem, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './DirectionCorner.css';
 
 /**
  * The direction pages' one piece of floating chrome, in the shell's grammar.
- * Two 32px buttons stacked in the top left corner: Directions opens the
- * shell Sidebar as a 300px overlay listing the seventeen directions in the
- * gallery's three sections (selecting one navigates to /d/<slug>), and
- * Index opens the IndexPanel over the page, so every route is one click
- * away from every prototype. Keys: [ for the list, R and Cmd K or Ctrl K
- * for the index, Escape back one layer. Hidden under ?chrome=0, which the
- * presenter's iframes, the gallery's exhibit and every screenshot pass
- * depend on. No toolbar and no sheet: the page stays a full document with
- * its own nav. Replaces src/components/shared/DirectionDock.tsx with the
- * same prop shape, { slug }.
+ * Two labeled buttons stacked in the top left corner: Directions opens the
+ * shell Sidebar as a 300px overlay over a scrim, listing the whole site map
+ * (Pages, Documents, Sites, Explorations, Archive) with this page's row
+ * marked, so every route is one click away from every prototype; Index
+ * opens the IndexPanel over the page. Keys: [ for the list, R and Cmd K or
+ * Ctrl K for the index, D for the theme, ? for the shortcuts, Escape back
+ * one layer. Hidden under ?chrome=0, which the presenter's iframes, the
+ * gallery's exhibit and every screenshot pass depend on. No toolbar and no
+ * sheet: the page stays a full document with its own nav. Replaces
+ * src/components/shared/DirectionDock.tsx with the same prop shape, { slug }.
  *
- * The Sidebar and the IndexPanel read shell state from context, so the
- * corner publishes two small ShellState values of its own: one for the list
- * (narrow, so the sidebar draws itself as the overlay and closes after a
- * pick) and one for the panel (wide, so the filter takes focus).
+ * The Sidebar, the IndexPanel and the HelpCard read shell state from
+ * context, so the corner publishes small ShellState values of its own: one
+ * for the list (narrow, so the sidebar draws itself as the overlay with its
+ * close button and closes after a pick), one for the panel (wide, so the
+ * filter takes focus), one for the help card.
  */
 export type DirectionCornerProps = { slug: string };
 
-function directionItem(d: Direction): ShellItem {
-  return {
-    id: d.slug,
-    n: d.label ?? '',
-    title: d.name,
-    href: `/d/${d.slug}`,
-    desc: d.concept,
-    shot: { light: `/shots/light/${d.slug}.jpg`, dark: `/shots/dark/${d.slug}.jpg` },
-  };
-}
+/** The site map groups open when the list opens on a direction page. */
+const OPEN_GROUPS: readonly string[] = ['Pages', 'Sites', 'Explorations'];
 
-/** The gallery's three sections: the site concepts, the shipped site, the explorations in label order. */
-const SECTIONS: readonly ShellSection[] = [
-  { id: 'sites', label: 'Sites', items: DIRECTIONS.filter((d) => d.site && !d.reference).map(directionItem) },
-  { id: 'shipped', label: 'Shipped', items: DIRECTIONS.filter((d) => d.reference).map(directionItem) },
-  { id: 'explorations', label: 'Explorations', items: DIRECTIONS.filter((d) => !d.site).map(directionItem) },
+/** The corner's own key table, for the help card. */
+const ROWS: readonly ShellKeyRow[] = [
+  { group: 'Move', keys: 'Space, arrows', action: 'Scroll the page' },
+  { group: 'Panels', keys: '[', action: 'Show or hide the list of every page' },
+  { group: 'Panels', keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' },
+  { group: 'Panels', keys: '?', action: 'Keyboard shortcuts' },
+  { group: 'Panels', keys: 'Esc', action: 'Back one layer: the shortcuts, the index, the list' },
+  { group: 'Theme', keys: 'D', action: 'Dark or light' },
 ];
-
-const ITEMS = flattenShellItems(SECTIONS);
 
 const noop = () => {};
 
@@ -66,19 +59,22 @@ function cornerState(active: string, overrides: Partial<ShellState>): ShellState
     modes: ['slide'],
     keys: 'flow',
     noun: 'direction',
-    items: ITEMS,
+    items: [],
+    paged: [],
     mode: 'slide',
+    density: 'outline',
     sidebarOpen: false,
     panelOpen: false,
     helpOpen: false,
     present: false,
     narrow: false,
     active,
-    index: ITEMS.findIndex((item) => item.id === active),
-    total: ITEMS.length,
+    index: -1,
+    total: 0,
     stageSize: { width: 0, height: 0 },
     panelWidth: 0,
     setMode: noop,
+    setDensity: noop,
     setSidebar: noop,
     setPanel: noop,
     setHelp: noop,
@@ -97,13 +93,13 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
 
 function Corner({ slug }: DirectionCornerProps) {
   const params = useSearchParams();
-  const router = useRouter();
   const [list, setList] = useState(false);
   const [panel, setPanel] = useState(false);
+  const [help, setHelp] = useState(false);
 
   /* the mount-time listener reads the latest layers through this ref */
-  const layers = useRef({ list, panel });
-  layers.current = { list, panel };
+  const layers = useRef({ list, panel, help });
+  layers.current = { list, panel, help };
 
   useMountEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -116,23 +112,32 @@ function Corner({ slug }: DirectionCornerProps) {
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (isEditable(e.target)) {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' && !e.defaultPrevented) {
           setPanel(false);
           e.target.blur();
         }
         return;
       }
       if (e.defaultPrevented) return;
-      if (low === '[') {
-        setList((open) => !open);
-        return;
-      }
-      if (low === 'r') {
-        setPanel((open) => !open);
-        return;
+      switch (low) {
+        case '[':
+          setList((open) => !open);
+          return;
+        case 'r':
+          setPanel((open) => !open);
+          return;
+        case 'd':
+          toggleTheme();
+          return;
+        case '?':
+          setHelp((open) => !open);
+          return;
+        default:
+          break;
       }
       if (e.key === 'Escape') {
-        if (layers.current.panel) setPanel(false);
+        if (layers.current.help) setHelp(false);
+        else if (layers.current.panel) setPanel(false);
         else if (layers.current.list) setList(false);
       }
     };
@@ -142,13 +147,9 @@ function Corner({ slug }: DirectionCornerProps) {
 
   if (params.get('chrome') === '0') return null;
 
-  const go = (id: string) => {
-    setList(false);
-    if (id !== slug) router.push(`/d/${id}`);
-  };
-
-  const listState = cornerState(slug, { narrow: true, sidebarOpen: list, setSidebar: setList, select: go });
+  const listState = cornerState(slug, { narrow: true, sidebarOpen: list, setSidebar: setList });
   const panelState = cornerState(slug, { panelOpen: panel, setPanel });
+  const helpState = cornerState(slug, { helpOpen: help, setHelp });
   const open = list || panel;
   const closeTop = () => {
     if (panel) setPanel(false);
@@ -158,8 +159,14 @@ function Corner({ slug }: DirectionCornerProps) {
   return (
     <>
       <div className='pt-corner' role='group' aria-label='Prototemplate'>
-        <ToolButton icon='sidebar' title='Directions ([)' pressed={list} onClick={() => setList(!list)} />
-        <ToolButton icon='index' title='Index (R)' pressed={panel} onClick={() => setPanel(!panel)} />
+        <ToolButton
+          icon='sidebar'
+          label='Directions'
+          title='Every page on the site ([)'
+          pressed={list}
+          onClick={() => setList(!list)}
+        />
+        <ToolButton icon='index' label='Index' title='Index (R)' pressed={panel} onClick={() => setPanel(!panel)} />
       </div>
       <div className={cn('pt-corner-layer', open && 'is-on')}>
         {open ? (
@@ -167,19 +174,16 @@ function Corner({ slug }: DirectionCornerProps) {
         ) : null}
         {list ? (
           <ShellContext value={listState}>
-            <Sidebar
-              title='Prototemplate'
-              mark='pt'
-              count={`${ITEMS.length} directions`}
-              sections={SECTIONS}
-              thumb='shot'
-            />
+            <Sidebar title='Prototemplate' mark='pt' count='the site' sections={[]} thumb='row' siteMap openGroups={OPEN_GROUPS} />
           </ShellContext>
         ) : null}
         <ShellContext value={panelState}>
           <IndexPanel set='site' />
         </ShellContext>
       </div>
+      <ShellContext value={helpState}>
+        <HelpCard rows={ROWS} note='The list and the index reach every page on the site; the page itself scrolls as a document.' />
+      </ShellContext>
     </>
   );
 }

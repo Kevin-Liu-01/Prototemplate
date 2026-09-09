@@ -11,11 +11,16 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * [data-theme='dark']; the choice persists under one key, gt-theme, which
  * the boot script in src/app/layout.tsx applies before first paint. Dark is
  * the default when nothing is saved (decision 2). Replaces
- * src/components/shared/ThemeToggle.tsx; direction navs keep passing their
- * own className. The D key in useShellKeys calls toggleTheme() directly and
- * the button follows through a MutationObserver on the attribute. In the
- * toolbar it is a labeled button like every other control (decision 7); the
- * label collapses with the rest when the bar runs short.
+ * src/components/shared/ThemeToggle.tsx. The D key in useShellKeys calls
+ * toggleTheme() directly and the button follows through a MutationObserver
+ * on the attribute. The glyph names the theme the click will bring: the
+ * moon in light mode, the sun in dark mode (directive 7.2).
+ *
+ * Two forms. In the shell toolbar it is a labeled button like every other
+ * control (decision 7), with the title naming the D key. The direction
+ * navs (the toolchain TopNavs, V0Nav, V0Footer) pass their own className
+ * and get the 32px icon square with no label and no key in the title,
+ * because D only works inside the shell; their bars are unchanged.
  */
 export type Theme = 'light' | 'dark';
 
@@ -60,9 +65,13 @@ export function toggleTheme(): Theme {
   return next;
 }
 
-export type ThemeButtonProps = { className?: string };
+export type ThemeButtonProps = {
+  className?: string;
+  /** show the `Theme` label and name the D key; defaults to true unless a className is passed */
+  label?: boolean;
+};
 
-export function ThemeButton({ className }: ThemeButtonProps) {
+export function ThemeButton({ className, label = className === undefined }: ThemeButtonProps) {
   const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
 
   useMountEffect(() => {
@@ -81,9 +90,9 @@ export function ThemeButton({ className }: ThemeButtonProps) {
 
   return (
     <ToolButton
-      icon='theme'
-      label='Theme'
-      title='Dark or light (D)'
+      icon={theme === 'dark' ? 'theme-light' : 'theme-dark'}
+      label={label ? 'Theme' : undefined}
+      title={label ? 'Dark or light (D)' : 'Dark or light'}
       ariaLabel={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
       className={className}
       onClick={() => {

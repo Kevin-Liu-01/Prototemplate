@@ -3,13 +3,11 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
-import { ThemeButton } from '@/components/viewer/ThemeButton';
 import { DIRECTIONS } from '@/lib/directions';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { jumpToDirection } from '../presenterStore';
-import { scrollerOf } from '../scroller';
 import LazyFrame from './LazyFrame';
 import RatingStars from './RatingStars';
 import { setReview, useReviews } from './reviewStore';
@@ -17,20 +15,44 @@ import { setReview, useReviews } from './reviewStore';
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * The closing gallery: every prototype as a live preview, nothing else. A
- * card's number and stars are the only chrome; clicking a preview jumps back
- * into the viewer on that direction. The previews follow the site theme: the
- * shell's ThemeButton in the head switches it, and PresenterStage restamps
- * every mounted frame.
+ * The closing gallery — every prototype as a live preview, nothing else.
+ * A card's number and stars are the only chrome; clicking a preview jumps
+ * back into the viewer on that direction.
  */
 export default function Scoreboard() {
   const root = useRef<HTMLElement>(null);
   const reviews = useReviews();
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+  useMountEffect(() => {
+    try {
+      if (localStorage.getItem('gt-theme') === 'light') setTheme('light');
+    } catch {
+      // private mode: previews just start in the site default, dark
+    }
+  });
+
+  // The previews are same-origin, so their theme can be flipped live: persist
+  // the choice (new frames boot with it) and restamp every mounted frame.
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    try {
+      localStorage.setItem('gt-theme', next);
+    } catch {
+      // private mode: mounted frames still flip below
+    }
+    document
+      .querySelectorAll<HTMLIFrameElement>('.pr-root iframe')
+      .forEach((el) => {
+        const doc = el.contentDocument;
+        if (doc?.documentElement) doc.documentElement.dataset.theme = next;
+      });
+  };
 
   useGSAP(
     () => {
-      const scroller = scrollerOf(root.current);
-      if (!scroller || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       gsap.utils.toArray<HTMLElement>('.pr-gal-card').forEach((card, i) => {
         gsap.from(card, {
           autoAlpha: 0,
@@ -38,12 +60,16 @@ export default function Scoreboard() {
           duration: 0.55,
           delay: (i % 3) * 0.08,
           ease: 'power3.out',
-          scrollTrigger: { trigger: card, scroller, start: 'top 94%' },
+          scrollTrigger: { trigger: card, start: 'top 94%' },
         });
       });
     },
     { scope: root }
   );
+
+  const jumpTo = (slug: string) => {
+    window.dispatchEvent(new CustomEvent('pr:goto', { detail: slug }));
+  };
 
   return (
     <section
@@ -54,7 +80,19 @@ export default function Scoreboard() {
     >
       <header className='pr-score-head'>
         <h2 className='pr-score-title'>The verdict.</h2>
-        <ThemeButton className='pr-score-theme' />
+        <button
+          type='button'
+          className='pr-score-theme'
+          onClick={toggleTheme}
+          aria-label={
+            theme === 'light'
+              ? 'View previews in dark mode'
+              : 'View previews in light mode'
+          }
+        >
+          <i>{theme === 'light' ? '◐' : '◑'}</i>
+          {theme === 'light' ? 'Light' : 'Dark'}
+        </button>
       </header>
 
       <div className='pr-gallery'>
@@ -63,7 +101,7 @@ export default function Scoreboard() {
             <button
               type='button'
               className='pr-gal-preview'
-              onClick={() => jumpToDirection(direction.slug)}
+              onClick={() => jumpTo(direction.slug)}
               aria-label={`Open ${direction.name} in the viewer`}
             >
               <LazyFrame slug={direction.slug} />

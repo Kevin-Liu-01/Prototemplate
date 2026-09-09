@@ -1,8 +1,9 @@
 /* /compare: the pane rules.
 
    ViewerShell draws the chrome and Sheet draws the ring; this sheet owns
-   only what sits on the 2881x900 stage: two 1440x900 panes and the one
-   hairline seam between them. The stage is scaled by the sheet, so the
+   only what sits on the 2881x928 stage: two columns, each a 28px caption
+   over a 1440x900 pane, and the one hairline seam between them. The stage
+   is scaled by the sheet to the stage height and pans sideways, so the
    panes keep their exhibit width and the proportional scroll sync in
    CompareRig.tsx reads two same-origin windows of one size. Colors are
    tokens only. */
@@ -13,6 +14,39 @@
   display: grid;
   grid-template-columns: 1440px 1px 1440px;
   background: var(--pt-paper);
+  font-family: var(--pt-text);
+}
+
+.pt-cmp-col {
+  display: grid;
+  grid-template-rows: 28px 900px;
+}
+
+/* the caption over a pane: the side, the direction, the address; the target pane's reads ink */
+.pt-cmp-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 14px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--pt-titanium);
+  border-bottom: 1px solid var(--pt-hair-soft);
+  white-space: nowrap;
+}
+
+.pt-cmp-caption b {
+  font-weight: 500;
+  color: var(--pt-ink-2);
+}
+
+.pt-cmp-col.is-target .pt-cmp-caption {
+  color: var(--pt-ink-2);
+}
+
+.pt-cmp-col.is-target .pt-cmp-caption b {
+  color: var(--pt-ink);
 }
 
 /* a pane whose page has not painted yet shows the paper, never a hole */

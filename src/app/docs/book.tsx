@@ -15,6 +15,9 @@ import { DOCS } from './registry';
  * Files are read relative to process.cwd(); the ship loop rsyncs the root
  * docs alongside src/. The readme comes first and carries the build log
  * (CRAFT_SECTIONS) as its last rows, numbered on from its own headings.
+ * Section numbers read document.section (1.1, 1.2, 3.1), never the bare
+ * 01 to 09 that a document itself carries, so a heading row never reads
+ * like a document row in the list.
  */
 export function readDoc(file: string): string {
   return readFileSync(join(process.cwd(), file), 'utf8');
@@ -31,10 +34,11 @@ export function buildDocs(): readonly DocPage[] {
   const entries = [README, ...DOCS];
   return entries.map((entry, i) => {
     const split = splitDoc(parseBlocks(readDoc(entry.file)));
-    const sections: DocSection[] = split.rows.map((row) => ({
+    const number = (k: number) => `${i + 1}.${k + 1}`;
+    const sections: DocSection[] = split.rows.map((row, k) => ({
       kind: 'markdown',
       id: row.id,
-      n: row.n,
+      n: number(k),
       title: row.title,
       body: renderBlocks(row.blocks, `${entry.slug}-${row.id}`),
     }));
@@ -43,7 +47,7 @@ export function buildDocs(): readonly DocPage[] {
         sections.push({
           kind: 'craft',
           id: craft.id,
-          n: pad2(sections.length + 1),
+          n: number(sections.length),
           title: craft.title,
           body: craft.body,
         });

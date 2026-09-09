@@ -22,7 +22,7 @@ export type BookViewProps = {
   meta?: readonly string[];
   /** the book's sections; each becomes a contents entry and a divider */
   sections: readonly ShellSection[];
-  /** what fills a page: a ThumbMini, a ThumbShot, or the real content of a section */
+  /** what fills a page: a ThumbShot, or the real content of a section */
   renderPage: (item: ShellItem, index: number) => ReactNode;
   /** wrap each page in the 16:9 frame; off when pages hold flowing content */
   frame?: boolean;

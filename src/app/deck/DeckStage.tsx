@@ -19,8 +19,9 @@ export type DeckStageProps = {
  * fills the 1600 x 900 stage so each absolutely placed .slide takes its 57px
  * inset from the sheet. The first slide is marked on so a render without
  * scripts shows the title; DeckViewer moves the mark from there. Every
- * later slide is display: none until it is on, and ThumbMini clones the
- * slides out of this box for the list, the grid and the book.
+ * later slide is display: none until it is on. This is the one place live
+ * slide markup lives: the list, the grid and the book show the static
+ * renders under public/deck/thumbs (directive 7.5).
  */
 export default function DeckStage({ html }: DeckStageProps) {
   const marked = html.replace(

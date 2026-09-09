@@ -4,176 +4,124 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { DIRECTIONS } from '@/lib/directions';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { setDirectionIndex, useDirectionIndex } from '../presenterStore';
-import { glideTo, scrollerOf } from '../scroller';
+import Icon from '../icons';
+import { getLenis } from '../lenis';
+import RatingStars from './RatingStars';
+import { setReview, useReviews } from './reviewStore';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * Where a jump into the viewer lands, in stage heights past the section's
- * top: the frame has finished growing there and the dwell is still in its
- * deadzone, so the embedded page shows its own top.
- */
-const DOCK_HEIGHTS = 0.3;
-
-/** The first stretch of the dwell scrolls nothing inside the page. */
-const DEADZONE = 0.08;
-
-type StageFrameProps = {
-  slug: string;
-  label?: string;
-  name: string;
-};
-
-/**
- * The live page. Keyed by slug from the parent, so each direction gets a
- * fresh frame and a fresh mount effect: the SSR-rendered iframe can finish
- * loading before hydration attaches React's onLoad, so the load is watched
- * natively and an already complete document counts as loaded. Once loaded
- * the frame takes the pointer (hover states inside the prototype work), but
- * the deck keeps the wheel: wheel events inside the same-origin frame are
- * cancelled there and replayed on the stage's scroll box, so scroll-driving
- * never strands.
- */
-function StageFrame({ slug, label, name }: StageFrameProps) {
-  const frame = useRef<HTMLIFrameElement>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useMountEffect(() => {
-    const el = frame.current;
-    if (!el) return;
-    const wheel: { detach: (() => void) | null } = { detach: null };
-    const markLoaded = () => {
-      setLoaded(true);
-      const win = el.contentWindow;
-      if (!win || wheel.detach) return;
-      const forward = (event: WheelEvent) => {
-        event.preventDefault();
-        scrollerOf(el)?.scrollBy({ top: event.deltaY, left: 0 });
-      };
-      win.addEventListener('wheel', forward, { passive: false, capture: true });
-      wheel.detach = () => win.removeEventListener('wheel', forward, { capture: true });
-    };
-    const doc = el.contentDocument;
-    if (doc?.readyState === 'complete' && doc.body?.childElementCount) markLoaded();
-    el.addEventListener('load', markLoaded);
-    return () => {
-      el.removeEventListener('load', markLoaded);
-      wheel.detach?.();
-    };
-  });
-
-  return (
-    <>
-      <iframe
-        ref={frame}
-        src={`/d/${slug}?chrome=0`}
-        title={name}
-        className={loaded ? 'is-loaded' : ''}
-      />
-      {!loaded ? (
-        <div className='pr-stage-veil'>
-          <span>
-            Loading {label ? `${label} ` : ''}
-            {name}
-          </span>
-        </div>
-      ) : null}
-    </>
-  );
-}
-
-/**
- * The live prototype stage. The slide-sized frame grows into the whole stage
- * as the section docks, and while it is docked the presenter's scroll drives
- * the embedded page's own scroll. Which direction is loaded lives in
- * presenterStore: the sidebar rows under the Prototypes slide switch it, the
- * toolbar's Rate and Notes act on it, and cross-component jumps (the verdict
- * cards, the detail tiles, the sidebar rows) arrive as a `pr:goto` event
- * carrying the slug, which this component answers by loading the direction
- * while PresenterStage glides the stage to the docked position.
+ * The live prototype stage. The slides frame scales up into a full-screen
+ * iframe of the current direction; a dock and a vertical carousel roll switch
+ * between prototypes, with notes and a rating saved per direction.
+ *
+ * Cross-component jumps (scoreboard thumbnails) arrive as a `pr:goto`
+ * CustomEvent carrying the target slug.
  */
 export default function PrototypeViewer() {
   const root = useRef<HTMLElement>(null);
-  const index = useDirectionIndex();
-  const current = DIRECTIONS[index];
+  const roll = useRef<HTMLDivElement>(null);
+  const frame = useRef<HTMLIFrameElement>(null);
+  const activeTrigger = useRef<ScrollTrigger | null>(null);
+  const [index, setIndex] = useState(0);
+  const [loadedSlug, setLoadedSlug] = useState<string | null>(null);
+  const [notesOpen, setNotesOpen] = useState(false);
+  const [gridOpen, setGridOpen] = useState(false);
+  const [rollOpen, setRollOpen] = useState(true);
+  const [dockSlot, setDockSlot] = useState<HTMLElement | null>(null);
+  const [notesSlot, setNotesSlot] = useState<HTMLElement | null>(null);
+  const reviews = useReviews();
 
-  /** The docked landing for this section, as a scroll position of the stage box. */
-  const dockTop = (scroller: HTMLElement) => {
-    const el = root.current;
-    if (!el) return 0;
-    const top =
-      el.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
-    return Math.round(top + scroller.clientHeight * DOCK_HEIGHTS);
+  // The dock is one shared pill in the presenter HUD; this viewer portals
+  // its controls (and the notes panel) into the pill's slots.
+  useMountEffect(() => {
+    setDockSlot(document.getElementById('pr-dock-viewer-slot'));
+    setNotesSlot(document.getElementById('pr-notes-slot'));
+  });
+
+  const current = DIRECTIONS[index]!;
+  const review = reviews[current.slug];
+  const isLoaded = loadedSlug === current.slug;
+
+  const goTo = (target: number) => {
+    setIndex((target + DIRECTIONS.length) % DIRECTIONS.length);
   };
 
   useGSAP(
     () => {
-      const scroller = scrollerOf(root.current);
-      if (!scroller) return;
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
 
-      // Deep link (/present?d=slug, how the gallery links a direction): land
+      // Arrow keys page through prototypes only while the stage is on screen.
+      activeTrigger.current = ScrollTrigger.create({
+        trigger: root.current,
+        start: 'top 60%',
+        end: 'bottom 40%',
+      });
+
+      // Deep link (/present?d=slug — the index rows link this way): land
       // docked on the requested prototype, and KEEP landing it. On a
-      // client-side navigation the deck grows while slides lay out (and in
-      // dev, compile), early jumps clamp, and every ScrollTrigger refresh can
-      // move the target, so re-snap on a timer ladder AND after every
-      // refresh. Only real user input stops the re-snaps.
+      // client-side navigation the document grows while slides lay out (and
+      // in dev, compile), early jumps clamp, Next's late scroll-to-top can
+      // undo one that took, and every ScrollTrigger refresh can move the
+      // target — so re-snap on a timer ladder AND after every refresh.
+      // Only real user input stops the re-snaps.
       const cleanupDeepLink = (() => {
         const slug = new URLSearchParams(window.location.search).get('d');
-        const found = DIRECTIONS.findIndex((direction) => direction.slug === slug);
+        const found = DIRECTIONS.findIndex(
+          (direction) => direction.slug === slug
+        );
         if (found < 0) return () => {};
-        setDirectionIndex(found);
+        setIndex(found);
         let userMoved = false;
         const markUser = () => {
           userMoved = true;
         };
         const snap = () => {
           if (userMoved || !root.current) return;
-          glideTo(scroller, dockTop(scroller), true);
+          window.scrollTo(
+            0,
+            Math.round(
+              root.current.getBoundingClientRect().top +
+                window.scrollY +
+                window.innerHeight * 0.3
+            )
+          );
         };
-        const timers = [150, 500, 1000, 1800, 3000, 4500].map((ms) => window.setTimeout(snap, ms));
-        const stop = window.setTimeout(markUser, 5200);
+        const timers = [150, 500, 1000, 1800, 3000, 4500].map((ms) =>
+          window.setTimeout(snap, ms)
+        );
+        const stop = window.setTimeout(() => markUser(), 5200);
         ScrollTrigger.addEventListener('refresh', snap);
-        scroller.addEventListener('wheel', markUser, { passive: true });
-        scroller.addEventListener('touchstart', markUser, { passive: true });
+        window.addEventListener('wheel', markUser, { passive: true });
+        window.addEventListener('touchstart', markUser, { passive: true });
         window.addEventListener('keydown', markUser);
         return () => {
           timers.forEach((timer) => window.clearTimeout(timer));
           window.clearTimeout(stop);
           ScrollTrigger.removeEventListener('refresh', snap);
-          scroller.removeEventListener('wheel', markUser);
-          scroller.removeEventListener('touchstart', markUser);
+          window.removeEventListener('wheel', markUser);
+          window.removeEventListener('touchstart', markUser);
           window.removeEventListener('keydown', markUser);
         };
       })();
 
       if (reduced) return cleanupDeepLink;
 
-      /* a refresh scrolls the box to 0 to measure and puts it back after;
-         the dwell must not hand that excursion to the embedded page */
-      let refreshing = false;
-      const onRefreshInit = () => {
-        refreshing = true;
-      };
-      const onRefreshed = () => {
-        refreshing = false;
-      };
-      ScrollTrigger.addEventListener('refreshInit', onRefreshInit);
-      ScrollTrigger.addEventListener('refresh', onRefreshed);
-
-      // The frame grows from a slide-sized card into the full stage.
+      // The frame grows from a slide-sized card into the full viewport.
       // scrub:true (no lag) so the frame is visually docked at the exact
       // scroll position where the inner-scroll handoff becomes possible.
       gsap
         .timeline({
           scrollTrigger: {
             trigger: root.current,
-            scroller,
             start: 'top 85%',
             end: 'top top',
             scrub: true,
@@ -185,60 +133,350 @@ export default function PrototypeViewer() {
           { scale: 1, borderRadius: 0, ease: 'none' }
         );
 
+      // The dock is the presenter's shared pill: this viewer only announces
+      // mode over pr:chrome and the pill morphs itself. Entering docked, the
+      // pill expands while the roll slides in; leaving back up, the pill
+      // contracts while the roll slides away; leaving down into the verdict
+      // the chrome just cuts as the stage scrolls off.
+      const setChrome = (on: boolean) => {
+        if (!on) setNotesOpen(false);
+        window.dispatchEvent(new CustomEvent('pr:chrome', { detail: on }));
+      };
+      gsap.set('.pr-side', { y: 0, yPercent: -50, xPercent: 118, visibility: 'hidden' });
+
+      gsap
+        .timeline({
+          onReverseComplete: () =>
+            gsap.set('.pr-side', { visibility: 'hidden' }),
+          scrollTrigger: {
+            trigger: root.current,
+            start: 'top top+=8',
+            end: 'bottom bottom',
+            toggleActions: 'play none none reverse',
+            onToggle: (self) => {
+              if (self.isActive) {
+                gsap.set('.pr-side', { visibility: 'visible' });
+                setChrome(true);
+              } else {
+                setChrome(false);
+                if (self.direction === 1)
+                  gsap.set('.pr-side', { visibility: 'hidden' });
+              }
+            },
+          },
+        })
+        .fromTo(
+          '.pr-side',
+          { xPercent: 118 },
+          { xPercent: 0, duration: 0.55, ease: 'power2.out' },
+          0.12
+        );
+
       // While the stage is docked, presenter scroll drives the embedded
       // site's own scroll: the dwell maps onto the full page height, so the
       // deck's scroll becomes the website's scroll. The first stretch of the
-      // dwell is a deadzone: you scroll to get INTO the preview, it settles
+      // dwell is a deadzone — you scroll to get INTO the preview, it settles
       // fully docked, and only then does further scroll move the page inside.
+      const DEADZONE = 0.08;
       ScrollTrigger.create({
         trigger: root.current,
-        scroller,
         start: 'top top',
-        end: () => `+=${(root.current?.offsetHeight ?? 0) - scroller.clientHeight * 2}`,
+        end: () =>
+          `+=${(root.current?.offsetHeight ?? 0) - window.innerHeight * 2}`,
         onUpdate: (self) => {
-          if (refreshing) return;
-          const el = root.current?.querySelector('iframe');
+          const el = frame.current;
           const win = el?.contentWindow;
           const doc = el?.contentDocument;
           if (!win || !doc?.documentElement) return;
           const max = doc.documentElement.scrollHeight - win.innerHeight;
           if (max <= 0) return;
-          const progress = Math.max(0, (self.progress - DEADZONE) / (1 - DEADZONE));
+          const progress = Math.max(
+            0,
+            (self.progress - DEADZONE) / (1 - DEADZONE)
+          );
           win.scrollTo(0, progress * max);
         },
       });
 
-      return () => {
-        ScrollTrigger.removeEventListener('refreshInit', onRefreshInit);
-        ScrollTrigger.removeEventListener('refresh', onRefreshed);
-        cleanupDeepLink();
-      };
+      return cleanupDeepLink;
     },
     { scope: root }
   );
 
   useMountEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (!activeTrigger.current?.isActive) return;
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT')
+      )
+        return;
+      if (event.key === 'ArrowRight')
+        setIndex((i) => (i + 1) % DIRECTIONS.length);
+      else if (event.key === 'ArrowLeft')
+        setIndex((i) => (i - 1 + DIRECTIONS.length) % DIRECTIONS.length);
+      else if (event.key === 'g' || event.key === 'G')
+        setGridOpen((open) => !open);
+      else if (event.key === 'Escape') {
+        setGridOpen(false);
+        setNotesOpen(false);
+      } else return;
+      event.preventDefault();
+    };
+
     const onGoto = (event: Event) => {
       const slug = (event as CustomEvent<string>).detail;
-      const found = DIRECTIONS.findIndex((direction) => direction.slug === slug);
-      if (found >= 0) setDirectionIndex(found);
+      const found = DIRECTIONS.findIndex((d) => d.slug === slug);
+      if (found < 0 || !root.current) return;
+      setIndex(found);
+      const y =
+        root.current.getBoundingClientRect().top +
+        window.scrollY +
+        window.innerHeight * 1.05;
+      const lenis = getLenis();
+      if (lenis) lenis.scrollTo(y, { duration: 1.3 });
+      else window.scrollTo({ top: y, behavior: 'smooth' });
     };
+
+    window.addEventListener('keydown', onKey);
     window.addEventListener('pr:goto', onGoto);
-    return () => window.removeEventListener('pr:goto', onGoto);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pr:goto', onGoto);
+    };
   });
+
+  // The SSR-rendered iframe can finish loading before hydration attaches
+  // React's onLoad, so the veil would never lift — watch the load natively and
+  // treat an already-complete document as loaded.
+  useGSAP(
+    () => {
+      const el = frame.current;
+      if (!el) return;
+      const slug = current.slug;
+      const markLoaded = () => setLoadedSlug(slug);
+      const doc = el.contentDocument;
+      if (doc?.readyState === 'complete' && doc.body?.childElementCount)
+        markLoaded();
+      el.addEventListener('load', markLoaded);
+      return () => el.removeEventListener('load', markLoaded);
+    },
+    { dependencies: [current.slug], revertOnUpdate: true }
+  );
+
+  // The frame takes the pointer once loaded (hover states inside the
+  // prototype must work in presenter mode), but the deck keeps the wheel:
+  // wheel events inside the same-origin frame are cancelled there and
+  // replayed on the deck's Lenis, so scroll-driving never strands.
+  useGSAP(
+    () => {
+      if (!isLoaded) return;
+      const win = frame.current?.contentWindow;
+      if (!win) return;
+      const forward = (e: WheelEvent) => {
+        e.preventDefault();
+        const lenis = getLenis();
+        if (lenis) lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: true });
+        else window.scrollBy(0, e.deltaY);
+      };
+      win.addEventListener('wheel', forward, { passive: false, capture: true });
+      return () => win.removeEventListener('wheel', forward, { capture: true });
+    },
+    { dependencies: [isLoaded], revertOnUpdate: true }
+  );
+
+  // Keep the roll scrolled so the current card sits mid-rail.
+  useGSAP(
+    () => {
+      const container = roll.current;
+      const item = container?.querySelector<HTMLElement>('.is-current');
+      if (!container || !item) return;
+      container.scrollTo({
+        top: item.offsetTop - container.clientHeight / 2 + item.clientHeight / 2,
+        behavior: 'smooth',
+      });
+    },
+    { dependencies: [index] }
+  );
+
+  const scrollToScoreboard = () => {
+    const target = document.getElementById('pr-scoreboard');
+    if (!target) return;
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(target, { duration: 1.4 });
+    else target.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <section ref={root} className='pr-slide pr-proto' data-slide='prototypes'>
       <div className='pr-stage'>
         <div className='pr-stage-frame'>
-          <StageFrame
+          <iframe
+            ref={frame}
             key={current.slug}
-            slug={current.slug}
-            label={current.label}
-            name={current.name}
+            src={`/d/${current.slug}?chrome=0`}
+            title={current.name}
+            className={isLoaded ? 'is-loaded' : ''}
           />
+          {!isLoaded && (
+            <div className='pr-stage-veil'>
+              <span>
+                LOADING {current.label} · {current.name.toUpperCase()}
+              </span>
+            </div>
+          )}
         </div>
+
+        <div className={rollOpen ? 'pr-side' : 'pr-side is-closed'}>
+          <button
+            type='button'
+            className='pr-side-toggle'
+            onClick={() => setRollOpen((open) => !open)}
+            aria-label={rollOpen ? 'Collapse prototype list' : 'Expand prototype list'}
+          >
+            <Icon name={rollOpen ? 'arrow-right' : 'arrow-left'} size={13} />
+          </button>
+          <aside ref={roll} className='pr-roll' data-lenis-prevent aria-label='All prototypes'>
+            {DIRECTIONS.map((direction, i) => {
+              const rating = reviews[direction.slug]?.rating ?? 0;
+              return (
+                <button
+                  key={direction.slug}
+                  type='button'
+                  className={`pr-roll-card${i === index ? ' is-current' : ''}`}
+                  onClick={() => goTo(i)}
+                >
+                  <span className='pr-roll-top'>
+                    <span className='pr-roll-num'>{direction.label}</span>
+                    <i
+                      className={`pr-roll-dot pr-dot-${direction.tone}`}
+                      title={`${direction.tone} direction`}
+                    />
+                  </span>
+                  <strong>{direction.name}</strong>
+                  <span className='pr-roll-sig'>{direction.signature}</span>
+                  {rating > 0 && (
+                    <span className='pr-roll-stars'>{'★'.repeat(rating)}</span>
+                  )}
+                </button>
+              );
+            })}
+          </aside>
+        </div>
+
+
+        {gridOpen && (
+          <div className='pr-grid' onClick={() => setGridOpen(false)}>
+            <div className='pr-grid-panel' onClick={(event) => event.stopPropagation()}>
+              <div className='pr-grid-head'>
+                <strong>All prototypes</strong>
+                <span>
+                  {DIRECTIONS.length} directions · G or Esc to close
+                </span>
+              </div>
+              <div className='pr-grid-cards'>
+                {DIRECTIONS.map((direction, i) => {
+                  const rating = reviews[direction.slug]?.rating ?? 0;
+                  return (
+                    <button
+                      key={direction.slug}
+                      type='button'
+                      className={i === index ? 'is-current' : ''}
+                      onClick={() => {
+                        goTo(i);
+                        setGridOpen(false);
+                      }}
+                    >
+                      <span className='pr-roll-num'>{direction.label}</span>
+                      <strong>{direction.name}</strong>
+                      <p>{direction.concept}</p>
+                      {rating > 0 && (
+                        <span className='pr-roll-stars'>{'★'.repeat(rating)}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
+
+      {/* The viewer's controls live in the presenter's shared dock pill. */}
+      {dockSlot &&
+        createPortal(
+          <>
+            <button type='button' onClick={() => goTo(index - 1)} aria-label='Previous prototype'>
+              <Icon name='arrow-left' size={15} />
+            </button>
+            <button
+              type='button'
+              className='pr-dock-label'
+              onClick={() => setGridOpen((open) => !open)}
+            >
+              <span>
+                {current.label} · {String(index + 1).padStart(2, '0')}/
+                {DIRECTIONS.length}
+              </span>
+              <strong>{current.name}</strong>
+            </button>
+            <button type='button' onClick={() => goTo(index + 1)} aria-label='Next prototype'>
+              <Icon name='arrow-right' size={15} />
+            </button>
+            <button
+              type='button'
+              onClick={() => setGridOpen((open) => !open)}
+              aria-label='All prototypes'
+            >
+              <Icon name='grid' size={14} />
+            </button>
+            <i className='pr-dock-sep' />
+            <RatingStars
+              value={review?.rating ?? 0}
+              onChange={(rating) => setReview(current.slug, { rating })}
+            />
+            <button
+              type='button'
+              className={notesOpen || review?.note ? 'pr-dock-notes is-active' : 'pr-dock-notes'}
+              onClick={() => setNotesOpen((open) => !open)}
+            >
+              <Icon name='pencil' size={13} />
+              Notes{review?.note ? ' •' : ''}
+            </button>
+            <i className='pr-dock-sep' />
+            <button type='button' className='pr-dock-summary' onClick={scrollToScoreboard}>
+              Verdict
+              <Icon name='arrow-down' size={13} />
+            </button>
+          </>,
+          dockSlot
+        )}
+
+      {notesSlot &&
+        notesOpen &&
+        createPortal(
+          <div className='pr-notes'>
+            <header>
+              NOTES · {current.label} {current.name.toUpperCase()}
+              <button type='button' onClick={() => setNotesOpen(false)} aria-label='Close notes'>
+                ✕
+              </button>
+            </header>
+            <textarea
+              // eslint-disable-next-line jsx-a11y/no-autofocus -- opened by an explicit click; focus should land in the field
+              autoFocus
+              value={review?.note ?? ''}
+              placeholder='What works, what doesn’t…'
+              onChange={(event) =>
+                setReview(current.slug, { note: event.target.value })
+              }
+            />
+          </div>,
+          notesSlot
+        )}
     </section>
   );
 }

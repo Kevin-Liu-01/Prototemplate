@@ -1,7 +1,7 @@
-/* The grid: an item list rendered over the stage while the sidebar's is
-   unmounted. The list keeps its classes (.pt-thumbs, .pt-sec-label,
-   .pt-thumb from Sidebar.css); the rules below re-lay it out under .pt-grid
-   and win on specificity. */
+/* The grid: the route's items as captured frames over the stage. The list
+   keeps its classes (.pt-thumbs, .pt-sec-label, .pt-thumb from
+   Sidebar.css); the rules below re-lay it out under .pt-grid and win on
+   specificity. */
 
 .pt-grid {
   position: absolute;
@@ -19,11 +19,14 @@
   overflow: visible;
 }
 
-/* section labels span every column under a rule; the first has none */
+/* section labels span every column over a rule; the grid's own 26px gap is
+   the whole break, so the label carries no margin or padding of its own */
 .pt-grid .pt-sec-label {
   grid-column: 1 / -1;
-  padding: 16px 0 0;
-  margin-top: 10px;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  padding-top: 8px;
   border-top: 1px solid var(--pt-hair);
   font-size: 13.5px;
   color: var(--pt-ink);
@@ -31,8 +34,18 @@
 
 .pt-grid .pt-sec-label:first-child {
   border-top: 0;
-  margin-top: 0;
-  padding-top: 4px;
+  padding-top: 0;
+}
+
+/* the entering view (directive 7.4) */
+.pt-grid {
+  animation: pt-view-in 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-grid {
+    animation: none;
+  }
 }
 
 .pt-grid .pt-thumb {

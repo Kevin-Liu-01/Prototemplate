@@ -1,62 +1,12 @@
 /* GalleryViewer: the gallery's own rules inside the viewer shell. The shell
-   draws the chrome (ViewerShell.css and its siblings); this sheet owns the
-   site map rows the gallery adds to the sidebar, the live exhibit frame in
-   slide mode, the book wrapper that hands the flow sheet's column to the
-   article, the article's archive rows, and the archive capture sheet.
+   draws the chrome (ViewerShell.css and its siblings) and the site map in
+   the sidebar; this sheet owns the live exhibit frame in slide mode, the
+   book wrapper that hands the flow sheet's column to the article, the
+   article's archive rows, and the archive capture sheet.
    Colors are tokens only: the shell's --pt- set outside the article, the
    article's own .pt-root set inside it (decision 6 keeps the article's
    hairline family). No radius, no shadow, Inter at weight 500 or less in
    everything that is chrome. */
-
-/* ---- the site map: Pages and Documents, portaled to the top of the
-   sidebar list. The list is a flex column with a 12px gap, so the block
-   orders itself first; the shell's own first label then loses its 8px head
-   room, and the block's bottom margin gives it back. Rows follow the
-   ListRow grammar (22px number column, 13.5px title, one soft rule) under
-   their own class, because .pt-row is also the article's row class. ---- */
-.gv-nav {
-  order: -1;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 8px;
-}
-
-.gv-nav .pt-sec-label {
-  padding-bottom: 6px;
-}
-
-.gv-nav-row {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-  gap: 8px;
-  align-items: baseline;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--pt-hair-soft);
-  color: var(--pt-ink-2);
-  text-decoration: none;
-}
-
-.gv-nav-title {
-  min-width: 0;
-  font-size: 13.5px;
-  line-height: 1.35;
-}
-
-.gv-nav-row:hover .gv-nav-title,
-.gv-nav-row.is-active .gv-nav-title {
-  color: var(--pt-ink);
-}
-
-/* the current location: ink like every active name in the shell, and weight
-   500 (the shell's ceiling) so a row with no frame to outline still reads as marked */
-.gv-nav-row.is-active .gv-nav-title {
-  font-weight: 500;
-}
-
-.gv-nav-row:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: -1px;
-}
 
 /* ---- the toolbar slot: a link dressed as the shell's button ---- */
 .gv-open {
@@ -70,6 +20,17 @@
   position: absolute;
   inset: 0;
   background: var(--pt-paper);
+}
+
+/* the incoming exhibit fades and rises 6px from the side it came from (directive 7.4) */
+@media (prefers-reduced-motion: no-preference) {
+  .pt-viewer[data-dir='next'] .gv-exhibit {
+    animation: pt-slide-up 180ms ease-out both;
+  }
+
+  .pt-viewer[data-dir='prev'] .gv-exhibit {
+    animation: pt-slide-down 180ms ease-out both;
+  }
 }
 
 .gv-frame {
@@ -300,11 +261,30 @@
   margin: 18px 0 0;
 }
 
+/* the line that says the image is a picture, with the link to the first-fold crop */
+.gv-archive-static {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+  margin: 10px 0 0;
+}
+
+.gv-archive-static a {
+  color: var(--pt-ink-2);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.gv-archive-static a:hover {
+  color: var(--pt-ink);
+}
+
 .gv-archive-full {
   display: block;
   width: 100%;
   height: auto;
-  margin-top: 28px;
+  margin-top: 18px;
   border: 1px solid var(--pt-hair);
 }
 

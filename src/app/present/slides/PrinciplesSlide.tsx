@@ -10,7 +10,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, type ReactNode } from 'react';
 
 import Icon, { type IconName } from '../icons';
-import { scrollerOf } from '../scroller';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, MorphSVGPlugin);
 
@@ -190,14 +189,12 @@ export default function PrinciplesSlide() {
 
   useGSAP(
     () => {
-      const scroller = scrollerOf(root.current);
-      if (!scroller || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       const tl = gsap.timeline({
         defaults: { ease: 'power3.out' },
         scrollTrigger: {
           trigger: root.current,
-          scroller,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.45,

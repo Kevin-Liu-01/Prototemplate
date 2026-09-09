@@ -11,18 +11,20 @@ gsap.registerPlugin(useGSAP);
  *
  * `prototype` (serif) stands off the destination line's upper LEFT,
  * `template` (grotesk) off its lower RIGHT, the destination between
- * them as EMPTY outlined text. Every word is held by a crop frame —
- * four border-touching rules: one above, one below, one left, one
- * right — and the frames move with their words.
+ * them as EMPTY outlined text. Every word is held by a crop frame of
+ * four border-touching rules (one above, one below, one left, one
+ * right), and the frames move with their words.
  *
  * The take is physical: `type` falls out and the serif frame's right
  * rule slides in to re-hug the shorter word; then both words slide
  * inward to the line, frames traveling with them, until both park
- * inside the outline — the parked words ARE the nameplate (lowercase,
+ * inside the outline. The parked words are the nameplate (lowercase,
  * so nothing has to crossfade). The travel deltas are measured from
- * live rects, so this file never encodes where the sources sit. The destination frame fades in around
- * them: cap rule, the doubled baseline pair, and three verticals —
- * left bound, the serif/grotesk junction, right bound.
+ * live rects, so this file never encodes where the sources sit. The
+ * destination frame fades in around them: cap rule, the doubled
+ * baseline pair, and three verticals (left bound, the serif and grotesk
+ * junction, right bound). The take runs once, in about 1.2 seconds, and
+ * the merged sheet holds.
  *
  * Fonts are awaited before measuring; resize rebuilds; reduced motion
  * holds the settled sheet.
@@ -30,8 +32,8 @@ gsap.registerPlugin(useGSAP);
 
 const TYPE_LETTERS = 'type'.split('');
 
-const HOLD_SOURCES = 1.3;
-const HOLD_MERGED = 3.4;
+/** How long the two source words hold before the merge, in seconds. */
+const HOLD_SOURCES = 0.15;
 
 const SRC_FRAME = ['top', 'bot', 'l', 'r'] as const;
 
@@ -163,78 +165,50 @@ export default function PrototemplateHero() {
         gsap.set(dstLines, { opacity: 0 });
         gsap.set(specs, { opacity: 0 });
 
-        /* The intro draws the sheet once; the cycle then runs forever as a
-           true round trip — no fades to black, no restarts. */
-        const intro = gsap.timeline();
-        intro
-          .to([fpTop, fpBot, ftTop, ftBot], { scaleX: 1, duration: 0.6, ease: 'power3.inOut', stagger: 0.05 })
-          .to([fpL, fpR, ftL, ftR], { scaleY: 1, duration: 0.6, ease: 'power3.inOut', stagger: 0.05 }, '-=0.45')
-          .to([proto, template], { opacity: 1, duration: 0.45, stagger: 0.1 }, '-=0.3')
-          .to(ghost, { opacity: 0.4, duration: 0.5 }, '-=0.2')
-          .to(specs, { opacity: 1, duration: 0.35 }, '-=0.25');
+        /* One take, under 1.2s, then the merged nameplate holds: the two
+           words and their frames appear, `type` falls out and the serif
+           frame re-hugs the shorter word, both words slide onto the line,
+           and the destination frame fades in around them. Nothing repeats,
+           so the first fold is never caught mid-state. */
+        tl = gsap.timeline();
+        tl.to([fpTop, fpBot, ftTop, ftBot], { scaleX: 1, duration: 0.2, ease: 'power3.inOut', stagger: 0.02 })
+          .to([fpL, fpR, ftL, ftR], { scaleY: 1, duration: 0.2, ease: 'power3.inOut', stagger: 0.02 }, '-=0.14')
+          .to([proto, template], { opacity: 1, duration: 0.15, stagger: 0.04 }, '-=0.1')
+          .to(ghost, { opacity: 0.4, duration: 0.15 }, '-=0.08');
 
-        const cycle = gsap.timeline({ repeat: -1 });
-        cycle.to({}, { duration: HOLD_SOURCES });
-
-        /* 1 — type falls out; the serif frame re-hugs the shorter word. */
-        cycle
-          .addLabel('fall')
+        /* 1: type falls out; the serif frame re-hugs the shorter word */
+        tl.addLabel('fall', HOLD_SOURCES)
           .to(
             typeLetters,
             {
               y: () => heroRect.height * 0.4,
               opacity: 0,
               rotation: () => gsap.utils.random(-22, 22),
-              duration: 0.75,
+              duration: 0.3,
               ease: 'power2.in',
-              stagger: 0.05,
+              stagger: 0.03,
             },
             'fall'
           )
-          .to(fpR, { left: rel(typeRect.left, 'x') + 10, duration: 0.7, ease: 'power3.inOut' }, 'fall+=0.2')
-          .to(specs, { opacity: 0, duration: 0.3 }, 'fall');
+          .to(fpR, { left: rel(typeRect.left, 'x') + 10, duration: 0.3, ease: 'power3.inOut' }, 'fall+=0.08');
 
-        /* 2 — proto comes down, template comes up, frames riding along. */
-        cycle
-          .addLabel('merge', 'fall+=0.55')
-          .to(proto, { x: dProto.x, y: dProto.y, duration: 0.9, ease: 'power3.inOut' }, 'merge')
-          .to([fpTop, fpBot], { y: dProto.y, duration: 0.9, ease: 'power3.inOut' }, 'merge')
-          .to([fpL, fpR], { x: dProto.x, duration: 0.9, ease: 'power3.inOut' }, 'merge')
-          .to(template, { x: dTemplate.x, y: dTemplate.y, duration: 0.9, ease: 'power3.inOut' }, 'merge+=0.08')
-          .to([ftTop, ftBot], { y: dTemplate.y, duration: 0.9, ease: 'power3.inOut' }, 'merge+=0.08')
-          .to([ftL, ftR], { x: dTemplate.x, duration: 0.9, ease: 'power3.inOut' }, 'merge+=0.08')
-          .to(ghost, { opacity: 0.8, duration: 0.45 }, 'merge+=0.3');
+        /* 2: proto comes down, template comes up, frames riding along */
+        tl.addLabel('merge', 'fall+=0.22')
+          .to(proto, { x: dProto.x, y: dProto.y, duration: 0.42, ease: 'power3.inOut' }, 'merge')
+          .to([fpTop, fpBot], { y: dProto.y, duration: 0.42, ease: 'power3.inOut' }, 'merge')
+          .to([fpL, fpR], { x: dProto.x, duration: 0.42, ease: 'power3.inOut' }, 'merge')
+          .to(template, { x: dTemplate.x, y: dTemplate.y, duration: 0.42, ease: 'power3.inOut' }, 'merge+=0.04')
+          .to([ftTop, ftBot], { y: dTemplate.y, duration: 0.42, ease: 'power3.inOut' }, 'merge+=0.04')
+          .to([ftL, ftR], { x: dTemplate.x, duration: 0.42, ease: 'power3.inOut' }, 'merge+=0.04')
+          .to(ghost, { opacity: 0.8, duration: 0.2 }, 'merge+=0.14');
 
-        /* 3 — arrival: the parked words ARE the nameplate. The travel
-           frames hand over to the destination frame around them. */
-        cycle
-          .addLabel('land', 'merge+=0.92')
-          .to(ghost, { opacity: 0, duration: 0.25 }, 'land')
-          .to(srcLines, { opacity: 0, duration: 0.35 }, 'land')
-          .to(dstLines, { opacity: 0.5, duration: 0.5 }, 'land+=0.1')
-          .to({}, { duration: HOLD_MERGED });
-
-        /* 4 — the unwind: the travel rules come back, the words carry them
-           home, and `type` re-types itself under the returning rule. */
-        cycle
-          .addLabel('unwind')
-          .to(dstLines, { opacity: 0, duration: 0.4 }, 'unwind')
-          .to(srcLines, { opacity: 1, duration: 0.3 }, 'unwind+=0.1')
-          .to(ghost, { opacity: 0.4, duration: 0.45 }, 'unwind+=0.15')
-          .to(template, { x: 0, y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
-          .to([ftTop, ftBot], { y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
-          .to([ftL, ftR], { x: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
-          .to(proto, { x: 0, y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
-          .to([fpTop, fpBot], { y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
-          .to([fpL, fpR], { x: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
-          .set(typeLetters, { y: 0, rotation: 0, opacity: 0 }, 'unwind+=1.35')
-          .to(fpR, { left: rel(protoRect.right, 'x') + 12, duration: 0.45, ease: 'power3.inOut' }, 'unwind+=1.4')
-          .to(typeLetters, { opacity: 1, duration: 0.06, stagger: 0.11, ease: 'none' }, 'unwind+=1.45')
-          .to(specs, { opacity: 1, duration: 0.35 }, 'unwind+=1.6')
-          .to({}, { duration: 0.3 });
-
-        tl = gsap.timeline();
-        tl.add(intro).add(cycle);
+        /* 3: arrival. The parked words are the nameplate; the travel frames
+           hand over to the destination frame around them. The spec lines
+           stay off: under the merged word they would overlap */
+        tl.addLabel('land', 'merge+=0.44')
+          .to(ghost, { opacity: 0, duration: 0.15 }, 'land')
+          .to(srcLines, { opacity: 0, duration: 0.2 }, 'land')
+          .to(dstLines, { opacity: 0.5, duration: 0.25 }, 'land+=0.05');
       };
 
       let cancelled = false;

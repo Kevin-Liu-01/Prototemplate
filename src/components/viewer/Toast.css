@@ -1,9 +1,10 @@
-/* Toast: paper text on an ink plate, centered above the bottom edge. */
+/* Toast: paper text on an ink plate, centered above the bottom edge. It
+   fades and rises 4px over 160ms (directive 7.4). */
 .pt-toast {
   position: fixed;
   left: 50%;
   bottom: 22px;
-  transform: translateX(-50%);
+  transform: translate(-50%, 4px);
   max-width: calc(100vw - 32px);
   background: var(--pt-ink);
   color: var(--pt-paper);
@@ -14,17 +15,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0;
-  transition: opacity 160ms;
+  transition:
+    opacity 160ms ease-out,
+    transform 160ms ease-out;
   pointer-events: none;
   z-index: 21;
 }
 
 .pt-toast.is-on {
   opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pt-toast {
     transition: none;
+    transform: translate(-50%, 0);
   }
 }

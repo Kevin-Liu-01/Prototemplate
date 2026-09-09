@@ -23,10 +23,10 @@ export type CraftSection = {
 };
 
 /**
- * The build log, as data — everything constructed underneath the sixteen
- * directions: the laws, the tooling that enforces them, and the libraries
+ * The build log, as data: everything constructed underneath the sixteen
+ * directions, the laws, the tooling that enforces them, and the libraries
  * that will graduate to their own repos, each with a live plate. The
- * receipts are drawn in — the auditor's mock, the ownership diagram, the
+ * receipts are drawn in: the auditor's mock, the ownership diagram, the
  * second-surface kit.
  */
 export const CRAFT_SECTIONS: readonly CraftSection[] = [

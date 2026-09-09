@@ -12,6 +12,10 @@
 //   public/deck/shots/            the image files under deck/shots, plus
 //                                 thumb/, which the slides and the index
 //                                 panel reference
+//   public/deck/thumbs/           the 104 static slide renders at 480x270
+//                                 (sNN-light.jpg, sNN-dark.jpg) from
+//                                 deck/thumbs, which the sidebar, the grid
+//                                 and the book show instead of live clones
 //
 // Usage: pnpm build:deck
 import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -23,6 +27,8 @@ const DECK = join(ROOT, 'deck');
 const OUT = join(ROOT, 'src/app/deck');
 const SHOTS_IN = join(DECK, 'shots');
 const SHOTS_OUT = join(ROOT, 'public/deck/shots');
+const THUMBS_IN = join(DECK, 'thumbs');
+const THUMBS_OUT = join(ROOT, 'public/deck/thumbs');
 const SCOPE = '.pt-slides';
 const IMAGE = /\.(jpg|jpeg|png|gif|webp|svg)$/i;
 
@@ -199,6 +205,20 @@ for (const file of readdirSync(join(SHOTS_IN, 'thumb'))) {
   thumbs += 1;
 }
 
+/* ---------- the slide renders ---------- */
+
+rmSync(THUMBS_OUT, { recursive: true, force: true });
+mkdirSync(THUMBS_OUT, { recursive: true });
+let renders = 0;
+for (const file of readdirSync(THUMBS_IN)) {
+  if (!/^s\d\d-(light|dark)\.jpg$/.test(file)) continue;
+  copyFileSync(join(THUMBS_IN, file), join(THUMBS_OUT, file));
+  renders += 1;
+}
+if (renders !== slideFiles.length * 2) {
+  throw new Error(`build-deck: expected ${slideFiles.length * 2} slide renders under deck/thumbs, found ${renders}`);
+}
+
 console.log(
-  `build:deck  ${slideFiles.length} slides -> src/app/deck/slides.html, ${scopedCss.split('\n').length} lines -> src/app/deck/deck-slides.css, ${copied} images + ${thumbs} thumbs -> public/deck/shots`
+  `build:deck  ${slideFiles.length} slides -> src/app/deck/slides.html, ${scopedCss.split('\n').length} lines -> src/app/deck/deck-slides.css, ${copied} images + ${thumbs} thumbs -> public/deck/shots, ${renders} renders -> public/deck/thumbs`
 );

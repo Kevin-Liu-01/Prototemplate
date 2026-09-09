@@ -1,13 +1,6 @@
 /*
- * Presenter deck. Everything is prefixed pr- and scoped under .pr-root so
+ * Presenter frame. Everything is prefixed pr- and scoped under .pr-root so
  * the embedded direction pages (iframes) stay unaffected.
- *
- * The deck is the stage content of the viewer shell (PresenterStage): the
- * document is fixed, and .pr-scroll, a box filling the stage, is what the
- * slides scroll and pin inside. It is a size container, so the cqh and cqw
- * units below measure the stage the way vh and vw measured the window when
- * the deck owned the document. The width queries are container queries for
- * the same reason.
  *
  * Layout model: each story slide is a tall section (.pr-slide) whose inner
  * .pr-pin is pinned by ScrollTrigger while a scrubbed timeline plays through
@@ -25,9 +18,10 @@
      (not hidden) so no scroll container is created and sticky pins keep
      working. */
   overflow-x: clip;
-  /* Stage width: wide content keeps inside .pr-phase's 8cqw padding on
-     each side and stops growing on the widest stages. */
-  --pr-stage-w: min(84cqw, 1240px);
+  /* Stage width: wide content clears the HUD rail's label gutter on
+     mid-size screens; below 1020px the labels hide, so content can take
+     the viewport again. */
+  --pr-stage-w: calc(100vw - 470px);
   /*
    * The presenter is set entirely in Inter — no Switzer, no mono. Overriding
    * the shared variables here re-fonts every label scoped under .pr-root
@@ -35,31 +29,6 @@
    */
   --font-display: var(--font-inter), 'Inter', system-ui, sans-serif;
   --font-mono: var(--font-inter), 'Inter', system-ui, sans-serif;
-}
-
-/* The scroll box: fills the stage, scrolls the deck, and is the container
-   the cqh and cqw units and the width queries measure. tokens.css draws the
-   scrollbar (.pt-scroll). The deck's ground, so the plate never shows. */
-.pr-scroll {
-  position: absolute;
-  inset: 0;
-  background: var(--color-ink);
-  container-type: size;
-}
-
-/* presenting: the chrome is gone and so is the scrollbar; the wheel, the
-   keys and the sidebar rows still move the deck */
-.pt-viewer.is-present .pr-scroll {
-  scrollbar-width: none;
-}
-
-.pt-viewer.is-present .pr-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* the rows under a slide are the sidebar's; the grid shows captures alone */
-.pt-viewer[data-shell='present'] .pt-grid .pt-sub {
-  display: none;
 }
 
 /*
@@ -94,13 +63,34 @@
   font-family: inherit;
 }
 
+/* Presenter-only 1px scrollbar: a hairline thumb on a bare track. Scoped so
+   the embedded direction pages keep their own scrollbars. */
+html:has(.pr-root) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+html:has(.pr-root)::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+}
+
+html:has(.pr-root)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html:has(.pr-root)::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+}
+
 .pr-slide {
   position: relative;
 }
 
 .pr-pin {
   position: relative;
-  height: 100cqh;
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -111,7 +101,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6cqh 8cqw;
+  padding: 6vh 8vw;
   text-align: center;
 }
 
@@ -122,9 +112,269 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
+/* ---------- HUD ---------- */
+
+.pr-hud-brand {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 90;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  mix-blend-mode: difference;
+  text-decoration: none;
+}
+
+.pr-hud-brand img {
+  height: 20px;
+  width: auto;
+  display: block;
+}
+
+.pr-hud-brand span {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pr-hud-author {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 90;
+  transition: opacity 0.3s ease;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  mix-blend-mode: difference;
+}
+
+.pr-hud-rail {
+  position: fixed;
+  left: 24px;
+  top: 50%;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transform: translateY(-50%);
+  padding: 26px 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Scrim so the rail never fights the content behind it: one solid ink
+   shape blurred, so it falls off smoothly with no gradient banding. At rest
+   it only just clears the rail's footprint; it grows with the rail on hover
+   when the subsections unfold. */
+.pr-hud-rail::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: -10px;
+  right: -4px;
+  z-index: -1;
+  background: rgba(7, 7, 7, 0.9);
+  border-radius: 26px;
+  filter: blur(20px);
+  opacity: 0.65;
+  transition:
+    opacity 0.35s ease,
+    top 0.35s ease,
+    bottom 0.35s ease,
+    left 0.35s ease,
+    right 0.35s ease;
+  pointer-events: none;
+}
+
+.pr-hud-rail:hover::before {
+  top: -14px;
+  bottom: -14px;
+  left: -32px;
+  right: -16px;
+  opacity: 0.95;
+}
+
+/* The rail steps aside while the prototype viewer owns the screen, and
+   returns once every prototype has been walked. */
+.pr-hud-rail.is-hidden,
+.pr-hud-brand.is-hidden,
+.pr-hud-author.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The intro's shader stays unshaded: no scrim on the first section unless
+   the rail is actually being used. */
+.pr-hud-rail.no-scrim::before {
+  opacity: 0;
+}
+
+.pr-hud-rail.no-scrim:hover::before {
+  opacity: 1;
+}
+
+/* Generous hitboxes: padding carries the hit area, not the layout. */
+.pr-hud-rail button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 0;
+  padding: 6px 16px 6px 2px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Subsections: every beat of a slide, revealed on hover and for the
+   active section. Grid-rows animation gives an exact-height, eased
+   expansion; items cascade in with a per-row delay. */
+.pr-hud-subs {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-left: 10px;
+  transition:
+    grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease,
+    margin 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pr-hud-subs-inner {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.pr-hud-subs button {
+  padding: 5px 16px 5px 2px;
+  opacity: 0;
+  transform: translateX(-7px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0s;
+}
+
+.pr-hud-item:hover .pr-hud-subs,
+.pr-hud-item.is-active .pr-hud-subs {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 3px;
+}
+
+.pr-hud-item:hover .pr-hud-subs button,
+.pr-hud-item.is-active .pr-hud-subs button {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i, 0) * 45ms + 60ms);
+}
+
+.pr-hud-subs button i {
+  width: 9px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.pr-hud-subs button em {
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+.pr-hud-rail:hover .pr-hud-subs button em {
+  opacity: 1;
+  transform: none;
+}
+
+.pr-hud-subs button:hover i {
+  background: #fff;
+}
+
+.pr-hud-subs button:hover em {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* The beat the playhead is currently on: tick grows and its title shows
+   even when the rail is not hovered. */
+.pr-hud-subs button.is-here i {
+  width: 16px;
+  background: #fff;
+}
+
+.pr-hud-subs button.is-here em {
+  color: #fff;
+  opacity: 1;
+  transform: none;
+}
+
+.pr-hud-subs button i {
+  transition:
+    background 0.25s,
+    width 0.25s;
+}
+
+/* Slide markers are short lines; the active slide's line grows. */
+.pr-hud-rail button i {
+  width: 16px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  transition:
+    background 0.25s,
+    width 0.25s;
+}
+
+.pr-hud-item.is-active > button i {
+  width: 28px;
+  background: #fff;
+}
+
+.pr-hud-rail button em {
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.pr-hud-rail:hover button em,
+.pr-hud-item.is-active > button em {
+  opacity: 1;
+  transform: none;
+}
+
+/* The dock itself lives with the viewer chrome styles (one shared pill,
+   two content sets — see the Dock section). Only the slide counter is
+   HUD-specific. */
+.pr-hud-count {
+  margin-left: 5px;
+  padding: 0 11px 0 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- Intro ---------- */
 
 .pr-intro {
-  height: 100cqh;
+  height: 100vh;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -156,7 +406,7 @@
   align-items: center;
   gap: 22px;
   text-align: center;
-  padding: 0 6cqw;
+  padding: 0 6vw;
 }
 
 /* Mixed lockup: The [GT logo] website Redesign, one face per piece. */
@@ -166,7 +416,7 @@
   justify-content: center;
   flex-wrap: wrap;
   column-gap: 0.24em;
-  font-size: clamp(44px, 6.6cqw, 104px);
+  font-size: clamp(44px, 6.6vw, 104px);
   line-height: 1.05;
   letter-spacing: -0.03em;
 }
@@ -287,7 +537,7 @@
 /* ---------- Why ---------- */
 
 .pr-why {
-  height: 420cqh;
+  height: 420vh;
 }
 
 .pr-why-big {
@@ -298,7 +548,7 @@
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(90px, 16cqw, 240px);
+  font-size: clamp(90px, 16vw, 240px);
   letter-spacing: -0.045em;
 }
 
@@ -316,8 +566,8 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: clamp(14px, 2.6cqh, 26px);
-  margin-top: 4cqh;
+  gap: clamp(14px, 2.6vh, 26px);
+  margin-top: 4vh;
   width: min(860px, var(--pr-stage-w));
 }
 
@@ -337,7 +587,7 @@
 .pr-why-item h3 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(24px, 3.2cqw, 42px);
+  font-size: clamp(24px, 3.2vw, 42px);
   letter-spacing: -0.025em;
   line-height: 1.12;
 }
@@ -368,13 +618,13 @@
 /* ---------- What we need ---------- */
 
 .pr-need {
-  height: 920cqh;
+  height: 920vh;
 }
 
 .pr-need-head h2 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(38px, 5.4cqw, 72px);
+  font-size: clamp(38px, 5.4vw, 72px);
   letter-spacing: -0.035em;
 }
 
@@ -385,14 +635,14 @@
 .pr-beat-title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(28px, 3.4cqw, 46px);
+  font-size: clamp(28px, 3.4vw, 46px);
   letter-spacing: -0.025em;
 }
 
 .pr-need-barbell {
   position: relative;
   width: min(880px, var(--pr-stage-w));
-  margin-top: 13cqh;
+  margin-top: 13vh;
 }
 
 .pr-need-barbell svg {
@@ -485,7 +735,7 @@
 }
 
 .pr-infra {
-  margin-top: 7cqh;
+  margin-top: 7vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -527,7 +777,7 @@
 }
 
 .pr-demo-grid {
-  margin-top: 5cqh;
+  margin-top: 5vh;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
@@ -583,7 +833,7 @@
   position: relative;
   flex: 1;
   min-height: 0;
-  font-size: clamp(17px, 1.6cqw, 22px);
+  font-size: clamp(17px, 1.6vw, 22px);
   font-weight: 500;
   color: #b9ffd9;
   clip-path: inset(0 0% 0 0);
@@ -704,7 +954,7 @@
 }
 
 .pr-terms {
-  margin-top: 5cqh;
+  margin-top: 5vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -751,7 +1001,7 @@
 .pr-pipe {
   position: relative;
   width: min(1120px, var(--pr-stage-w));
-  margin-top: 6cqh;
+  margin-top: 6vh;
 }
 
 .pr-pipe-line {
@@ -909,7 +1159,7 @@
 }
 
 .pr-ctx-note {
-  margin-top: 3.5cqh;
+  margin-top: 3.5vh;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.5);
 }
@@ -917,20 +1167,20 @@
 /* ---------- Craft ---------- */
 
 .pr-craft {
-  height: 560cqh;
+  height: 560vh;
 }
 
 .pr-craft-header {
   position: absolute;
-  top: 6cqh;
-  left: 8cqw;
+  top: 6vh;
+  left: 8vw;
   z-index: 2;
 }
 
 .pr-craft-header h2 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(28px, 3.4cqw, 46px);
+  font-size: clamp(28px, 3.4vw, 46px);
   letter-spacing: -0.03em;
 }
 
@@ -941,17 +1191,17 @@
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 6cqw;
+  gap: 6vw;
   /* The first plate starts just offscreen right, past the reveal trigger
      line, so every plate's reveal plays while it rides in. */
-  padding: 0 12cqw 0 96cqw;
+  padding: 0 12vw 0 96vw;
   will-change: transform;
 }
 
 .pr-plate {
   flex: 0 0 auto;
-  width: min(720px, 62cqw);
-  padding-top: 10cqh;
+  width: min(720px, 62vw);
+  padding-top: 10vh;
 }
 
 .pr-plate-icon {
@@ -963,7 +1213,7 @@
   margin-top: 14px;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(26px, 3cqw, 40px);
+  font-size: clamp(26px, 3vw, 40px);
   letter-spacing: -0.025em;
 }
 
@@ -1066,7 +1316,7 @@
 
 .pr-weight-row {
   font-family: var(--font-display);
-  font-size: clamp(26px, 3cqw, 40px);
+  font-size: clamp(26px, 3vw, 40px);
   letter-spacing: -0.02em;
   line-height: 1.25;
   display: flex;
@@ -1100,7 +1350,7 @@
 /* ---------- Type detail interlude ---------- */
 
 .pr-detail {
-  height: 740cqh;
+  height: 740vh;
 }
 
 .pr-detail-inner {
@@ -1108,7 +1358,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10cqh 8cqw;
+  padding: 10vh 8vw;
   text-align: center;
 }
 
@@ -1116,7 +1366,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5cqh;
+  gap: 5vh;
 }
 
 /* Overlay stage: the two builds stacked in one place, Google build in red.
@@ -1128,8 +1378,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4.5cqh;
-  padding: 0 6cqw;
+  gap: 4.5vh;
+  padding: 0 6vw;
 }
 
 /* Specimen guides (cap, mean, baseline, descender) draw around the overlay. */
@@ -1142,9 +1392,9 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -7cqw;
-  right: -7cqw;
-  width: calc(100% + 14cqw);
+  left: -7vw;
+  right: -7vw;
+  width: calc(100% + 14vw);
   height: 100%;
   pointer-events: none;
 }
@@ -1168,7 +1418,7 @@
 .pr-detail-close h3 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(38px, 5cqw, 66px);
+  font-size: clamp(38px, 5vw, 66px);
   letter-spacing: -0.035em;
 }
 
@@ -1179,7 +1429,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   width: min(1040px, var(--pr-stage-w));
-  margin-top: 2cqh;
+  margin-top: 2vh;
   mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
 }
 
@@ -1234,7 +1484,7 @@
   text-overflow: ellipsis;
 }
 
-@container (max-width: 1020px) {
+@media (max-width: 1020px) {
   .pr-close-gallery {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1253,7 +1503,7 @@
   align-self: start;
   width: max-content;
   text-align: left;
-  font-size: clamp(40px, 7.4cqw, 120px);
+  font-size: clamp(40px, 7.4vw, 120px);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -1309,7 +1559,7 @@
 .pr-detail-head h2 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(30px, 4cqw, 54px);
+  font-size: clamp(30px, 4vw, 54px);
   letter-spacing: -0.03em;
 }
 
@@ -1417,7 +1667,7 @@
    flight math assumes a single line box. Overflow is fine while flying. */
 .pr-detail-big {
   position: relative;
-  font-size: clamp(40px, 4.6cqw, 64px);
+  font-size: clamp(40px, 4.6vw, 64px);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -1432,7 +1682,7 @@
 
 .pr-detail-row p {
   margin-top: 4px;
-  font-size: clamp(20px, 2cqw, 27px);
+  font-size: clamp(20px, 2vw, 27px);
   color: rgba(255, 255, 255, 0.85);
 }
 
@@ -1443,7 +1693,7 @@
   color: rgba(255, 255, 255, 0.45);
 }
 
-@container (max-width: 860px) {
+@media (max-width: 860px) {
   .pr-detail-grid {
     grid-template-columns: 1fr;
   }
@@ -1455,16 +1705,16 @@
 
 /* ---------- Prototype viewer ---------- */
 
-/* Entry transition (~100cqh), then a long dwell that maps onto the embedded
-   site's full scroll height, then a 100cqh exit. */
+/* Entry transition (~100vh), then a long dwell that maps onto the embedded
+   site's full scroll height, then a 100vh exit. */
 .pr-proto {
-  height: 800cqh;
+  height: 800vh;
 }
 
 .pr-stage {
   position: sticky;
   top: 0;
-  height: 100cqh;
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -1491,8 +1741,7 @@
 /* Once loaded the frame takes the pointer so the embedded page's hover
    states (the iso stack's layers, marquee pauses) work in presenter mode.
    The deck still owns the WHEEL: PrototypeViewer forwards wheel events out
-   of the same-origin frame to the stage's scroll box, so scroll-driving
-   never strands. */
+   of the same-origin frame to Lenis, so scroll-driving never strands. */
 .pr-stage-frame iframe.is-loaded {
   opacity: 1;
   pointer-events: auto;
@@ -1517,11 +1766,429 @@
   }
 }
 
+/* Carousel roll: one quiet panel, rows split by hairlines, and the current
+   row marked with the same line motif as the HUD rail. */
+
+/* Right-side rail: a collapse tab plus the roll. GSAP slides the wrapper in;
+   the collapse is a width change on the roll itself, so the two transforms
+   never fight. */
+.pr-side {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  transition: right 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Collapsed, the tab docks flush against the viewport edge. */
+.pr-side.is-closed {
+  right: 0;
+}
+
+/* The collapse tab is attached to the roll's left edge: rounded only on its
+   outer side, borderless where it meets the roll. */
+.pr-side-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 54px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: 0;
+  border-radius: 9px 0 0 9px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+/* Collapsed, the roll's border goes transparent, so the tab closes its own
+   right edge. */
+.pr-side.is-closed .pr-side-toggle {
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.pr-side-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pr-roll {
+  width: 238px;
+  max-height: 76vh;
+  overflow: hidden auto;
+  /* Native scroll now: don't chain a finished roll-scroll into the deck. */
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  visibility: visible;
+  transition:
+    width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    padding 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    border-width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    visibility 0s linear;
+}
+
+/* Fully gone once collapsed — zero width AND zero border, then hidden, so
+   no sliver (or its backdrop blur) is left smearing the stage. */
+.pr-side.is-closed .pr-roll {
+  width: 0;
+  padding-inline: 0;
+  border-width: 0;
+  visibility: hidden;
+  transition:
+    width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    padding 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    border-width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+    visibility 0s linear 0.45s;
+}
+
+.pr-roll-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+  /* Fixed width so cards clip instead of reflowing while the roll
+     collapses. */
+  min-width: 224px;
+  padding: 11px 12px 12px 16px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pr-roll-card + .pr-roll-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pr-roll-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pr-roll-card.is-current {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pr-roll-card.is-current::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: #fff;
+}
+
+.pr-roll-card.is-current::after,
+.pr-roll-card.is-current + .pr-roll-card::after {
+  background: transparent;
+}
+
+.pr-roll-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pr-roll-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.pr-dot-light {
+  background: #ffffff;
+  border-color: transparent;
+}
+
+.pr-dot-alt {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: transparent;
+}
+
 .pr-roll-num {
   font-size: 9.5px;
   font-weight: 500;
   letter-spacing: 0.18em;
   color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-roll-card strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+}
+
+.pr-roll-sig {
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-roll-stars {
+  margin-top: 2px;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: #ffd77a;
+}
+
+/* THE dock: one pill for the whole presenter, rendered by the HUD. It holds
+   two content sets — slide paging and the viewer controls — and data-mode
+   picks which one shows while the pill FLIPs between their sizes. Notes
+   render through the slot above it so they always share its width. */
+
+.pr-bottom {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pr-notes-slot {
+  display: contents;
+}
+
+.pr-dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  /* The morph between modes clips symmetrically. */
+  overflow: hidden;
+}
+
+.pr-dock-set {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pr-dock-set > *,
+.pr-dock > * {
+  flex-shrink: 0;
+}
+
+.pr-dock[data-mode='slides'] .pr-dock-set-viewer,
+.pr-dock[data-mode='viewer'] .pr-dock-set-slides {
+  display: none;
+}
+
+.pr-dock button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 0 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.pr-dock button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pr-dock button.pr-dock-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 180px;
+  height: auto;
+  padding: 3px 12px;
+}
+
+.pr-dock-label span {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pr-dock-label strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+}
+
+.pr-dock-sep {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 0 5px;
+}
+
+.pr-dock-notes.is-active {
+  color: #fff;
+}
+
+.pr-dock-summary {
+  letter-spacing: 0.02em;
+}
+
+/* Grid overlay — the direction dock's G-grid, absorbed into the presenter. */
+
+/* The switcher overlay: a centered sheet on a blurred scrim rather than a
+   wall of floating cards. One quick pop, no lingering fades. */
+.pr-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(24px, 7vh, 72px) 4vw;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(22px);
+}
+
+.pr-grid-panel {
+  width: min(1060px, 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(10, 10, 10, 0.92);
+  padding: 18px;
+  animation: pr-grid-pop 0.16s ease-out;
+}
+
+@keyframes pr-grid-pop {
+  from {
+    transform: scale(0.985);
+    opacity: 0;
+  }
+}
+
+.pr-grid-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 6px 14px;
+}
+
+.pr-grid-head strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.pr-grid-head span {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-titanium);
+}
+
+.pr-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pr-grid-cards > button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  padding: 14px 15px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: var(--color-ink-raised);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    background 0.18s;
+}
+
+.pr-grid-cards > button:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: #161616;
+}
+
+.pr-grid-cards > button.is-current {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.pr-grid-cards > button strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+}
+
+.pr-grid-cards > button p {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--color-titanium);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pr-grid-cards .pr-roll-num {
+  color: var(--color-titanium);
+}
+
+@media (max-width: 1020px) {
+  .pr-grid-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .pr-grid-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* Stars */
@@ -1555,11 +2222,60 @@
   padding: 2px 2px;
 }
 
+/* Notes */
+
+/* Out of flow so the textarea's intrinsic width can never widen the
+   wrapper: the dock alone sets the width, and the notes span it exactly. */
+.pr-notes {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.pr-notes header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pr-notes header button {
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.pr-notes textarea {
+  width: 100%;
+  height: 128px;
+  padding: 12px 14px;
+  border: 0;
+  resize: none;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  outline: none;
+}
+
 /* ---------- Scoreboard gallery ---------- */
 
 .pr-score {
-  min-height: 100cqh;
-  padding: 12cqh 6cqw 14cqh;
+  min-height: 100vh;
+  padding: 12vh 6vw 14vh;
 }
 
 .pr-score-head {
@@ -1572,23 +2288,40 @@
 .pr-score-title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(26px, 3cqw, 40px);
+  font-size: clamp(26px, 3vw, 40px);
   letter-spacing: -0.025em;
 }
 
-/* The previews follow the site theme through the shell's ThemeButton, which
-   sits in the head and is recolored for the deck's dark ground. */
-.pr-score-head .pr-score-theme {
+/* Light/dark switch for the previews below. */
+.pr-score-theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 11px;
+  background: var(--color-ink-raised);
   color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
-.pr-score-head .pr-score-theme:hover {
+.pr-score-theme:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.pr-score-theme i {
+  font-style: normal;
+  font-size: 13px;
 }
 
 .pr-gallery {
-  margin-top: 5cqh;
+  margin-top: 5vh;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
@@ -1644,17 +2377,21 @@
 
 /* ---------- Responsive ---------- */
 
-@container (max-width: 1020px) {
+@media (max-width: 1020px) {
   /* Rail labels hide below here, so content can take the viewport again.
-     The stage must fit INSIDE .pr-phase's 8cqw-per-side padding (84cqw of
-     content box) — 92cqw overflowed by 8cqw and clipped every stage-width
+     The stage must fit INSIDE .pr-phase's 8vw-per-side padding (84vw of
+     content box) — 92vw overflowed by 8vw and clipped every stage-width
      element at the right edge. */
   .pr-root {
-    --pr-stage-w: 84cqw;
+    --pr-stage-w: 84vw;
   }
 
   .pr-demo-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pr-side {
+    display: none;
   }
 
   .pr-gallery {
@@ -1673,6 +2410,11 @@
     transform: none;
   }
 
+  .pr-hud-rail button em,
+  .pr-hud-subs button em {
+    display: none;
+  }
+
   /* Five nodes can't sit in one row: wrap them and drop the connector. */
   .pr-pipe-line {
     display: none;
@@ -1687,15 +2429,20 @@
 
 /* ---------- Mobile ---------- */
 
-@container (max-width: 700px) {
-  /* the stage tracks the phase's 5cqw padding; the extra bottom padding
+@media (max-width: 700px) {
+  .pr-hud-rail,
+  .pr-hud-author {
+    display: none;
+  }
+
+  /* the stage tracks the phase's 5vw padding; the extra bottom padding
      reserves the fixed dock's landing strip so it never sits on content */
   .pr-root {
-    --pr-stage-w: 90cqw;
+    --pr-stage-w: 90vw;
   }
 
   .pr-phase {
-    padding: 5cqh 5cqw 96px;
+    padding: 5vh 5vw 96px;
   }
 
   .pr-detail-main,
@@ -1706,22 +2453,22 @@
   /* the desktop clamp floors read as a zoomed-in desktop at 375px —
      phone-scale floors for the display lines */
   .pr-why-big {
-    font-size: clamp(44px, 13cqw, 90px);
+    font-size: clamp(44px, 13vw, 90px);
   }
 
   .pr-beat-title {
-    font-size: clamp(20px, 6cqw, 28px);
+    font-size: clamp(20px, 6vw, 28px);
   }
 
   .pr-detail-big {
-    font-size: clamp(24px, 7.4cqw, 40px);
+    font-size: clamp(24px, 7.4vw, 40px);
   }
 
   .pr-overlay-line {
-    font-size: clamp(20px, 6.4cqw, 40px);
+    font-size: clamp(20px, 6.4vw, 40px);
   }
 
-  /* the overlay guides bled 1cqw per side past their padded parent */
+  /* the overlay guides bled 1vw per side past their padded parent */
   .pr-overlay-guides {
     left: 0;
     right: 0;
@@ -1731,7 +2478,7 @@
   /* the craft plates: wide enough to hold their contents, and the swatch
      row wraps instead of running 482px through a 232px plate */
   .pr-plate {
-    width: 86cqw;
+    width: 86vw;
   }
 
   .pr-swatch-row {
@@ -1740,7 +2487,7 @@
   }
 
   .pr-swatch {
-    width: clamp(64px, 22cqw, 110px);
+    width: clamp(64px, 22vw, 110px);
   }
 
   .pr-pipe-node {
@@ -1763,6 +2510,42 @@
   .pr-gallery {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .pr-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The dock must fit the phone: the label yields (ellipsis) and the
+     verdict shortcut goes — the scoreboard is one scroll away anyway. */
+  .pr-bottom {
+    max-width: calc(100vw - 12px);
+  }
+
+  .pr-dock {
+    max-width: 100%;
+  }
+
+  .pr-dock-set-viewer .pr-dock-label,
+  .pr-dock .pr-dock-label {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .pr-dock-label strong,
+  .pr-dock-label span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .pr-dock-summary {
+    display: none;
+  }
+
+  .pr-dock button {
+    padding: 0 6px;
+  }
 }
 
 /* ---------- Reduced motion: a plain vertical document ---------- */
@@ -1782,22 +2565,22 @@
   .pr-craft-header,
   .pr-craft-track {
     position: static;
-    padding: 10cqh 8cqw;
+    padding: 10vh 8vw;
   }
 
   .pr-why-big {
-    font-size: clamp(60px, 10cqw, 140px);
+    font-size: clamp(60px, 10vw, 140px);
   }
 
   .pr-craft-track {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10cqh;
+    gap: 10vh;
     height: auto;
   }
 
   .pr-proto {
-    height: 100cqh;
+    height: 100vh;
   }
 
   .pr-stage-caption {
@@ -1807,11 +2590,11 @@
   /* Static fallback: main columns and the red/white overlay stack in flow. */
   .pr-detail-overlay {
     position: static;
-    margin-top: 8cqh;
+    margin-top: 8vh;
   }
 
   .pr-detail-close {
     position: static;
-    margin-top: 8cqh;
+    margin-top: 8vh;
   }
 }

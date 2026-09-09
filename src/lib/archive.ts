@@ -6,8 +6,8 @@
  *
  *   git checkout <lastCommit> -- src/app/d/<slug>
  *
- * The routes were deleted on branch viewer-shell in the commit titled
- * "Every route runs on the viewer shell", the child of lastCommit. Every
+ * The routes were deleted on branch viewer-shell in commit c064945, "Every
+ * route runs on the viewer shell", the child of lastCommit. Every
  * capture was taken at 1440 pixels wide in the light theme from the live
  * site before the deletion: `crop` is the 1440x900 first fold, `full` the
  * whole page. Both live under public/shots/archive. Pure data, no React, so
@@ -38,8 +38,9 @@ export type ArchiveEntry = {
 /** Where the capture files live. */
 export const ARCHIVE_DIR = '/shots/archive';
 
-/** The commit that deleted the routes, named by its subject because it is the child of every lastCommit below. */
+/** The commit that deleted the routes: the child of every lastCommit below. */
 export const ARCHIVE_DELETION = {
+  hash: 'c064945',
   branch: 'viewer-shell',
   subject: 'Every route runs on the viewer shell',
 } as const;

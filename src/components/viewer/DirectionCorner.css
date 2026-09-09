@@ -1,10 +1,11 @@
-/* DirectionCorner: the floating chrome on /d pages. Two 32px buttons stacked
-   in the top left corner, sharing one hairline, on paper; a fixed layer
-   over the page holds the overlay list and the index panel. Tokens only,
-   radius 0, no shadow. tokens.css owns .pt-ib; Sidebar.css draws the
-   overlay list (.pt-sb.is-overlay) as an absolute box against this layer;
-   IndexPanel.css draws the panel, which here spans the whole height because
-   there is no toolbar above it and no progress line below. */
+/* DirectionCorner: the floating chrome on /d pages. Two labeled buttons
+   stacked in the top left corner, sharing one hairline, on paper; a fixed
+   layer over the page holds the overlay list and the index panel above a
+   28 percent ink scrim. Tokens only, radius 0, no shadow. tokens.css owns
+   .pt-ib; Sidebar.css draws the overlay list (.pt-sb.is-overlay) as an
+   absolute box against this layer; IndexPanel.css draws the panel, which
+   here spans the whole height because there is no toolbar above it and no
+   progress line below. The labels leave at 1180px, as the toolbar's do. */
 
 .pt-corner {
   position: fixed;
@@ -13,6 +14,7 @@
   z-index: 100;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   font-family: var(--pt-text);
 }
 
@@ -33,6 +35,20 @@
   z-index: 1;
   color: var(--pt-ink);
   border-color: var(--pt-ink);
+}
+
+/* below the toolbar's label width the two become icon squares */
+@media (max-width: 1180px) {
+  .pt-corner .pt-lb {
+    display: none;
+  }
+
+  .pt-corner .pt-ib {
+    width: 32px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
 }
 
 /* the outer margin is gone on a phone: the corner steps below the nav band */
@@ -56,19 +72,26 @@
   pointer-events: auto;
 }
 
-/* a click outside the open layer closes it; nothing to see, so no scrim color */
+/* the scrim: 28 percent ink over the page, a click closes the open layer */
 .pt-corner-scrim {
   position: absolute;
   inset: 0;
   margin: 0;
   padding: 0;
   border: 0;
-  background: transparent;
+  background: var(--pt-scrim);
   appearance: none;
   cursor: default;
+  animation: pt-fade-in 180ms ease-out both;
 }
 
 .pt-corner-layer .pt-panel {
   top: 0;
   bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-corner-scrim {
+    animation: none;
+  }
 }

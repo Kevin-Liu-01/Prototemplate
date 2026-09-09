@@ -1,4 +1,4 @@
-import type { ShellItem, ShellSection } from '@/lib/shell-data';
+import type { ShellItem, ShellSection, ShellShot } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
 /**
@@ -32,6 +32,13 @@ export const DECK_SECTIONS: readonly DeckSectionStart[] = [
 /** The item id the hash carries: the slide number, `#12`. */
 export function slideId(n: number): string {
   return String(n);
+}
+
+/** Where the static slide renders live, light and dark (directive 7.5): public/deck/thumbs/sNN-light.jpg. */
+export const DECK_THUMBS = '/deck/thumbs';
+
+export function slideShot(n: number): ShellShot {
+  return { light: `${DECK_THUMBS}/s${pad2(n)}-light.jpg`, dark: `${DECK_THUMBS}/s${pad2(n)}-dark.jpg` };
 }
 
 const ENTITIES: Record<string, string> = {
@@ -85,7 +92,7 @@ export function deckSections(titles: readonly string[]): readonly ShellSection[]
     const end = next ? next.start - 1 : titles.length;
     const items: ShellItem[] = [];
     for (let n = section.start; n <= end; n += 1) {
-      items.push({ id: slideId(n), n: pad2(n), title: titles[n - 1] ?? `Slide ${n}` });
+      items.push({ id: slideId(n), n: pad2(n), title: titles[n - 1] ?? `Slide ${n}`, shot: slideShot(n) });
     }
     return { id: sectionSlug(section.label), label: section.label, items };
   });

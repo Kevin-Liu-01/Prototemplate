@@ -37,10 +37,15 @@ import './compare.css';
  * loop back. The pair mirrors into the URL hash (#a=...&b=...) so a
  * comparison is a link.
  *
- * The shell tracks one active item: the direction in the pane the next pick
- * fills (the Left | Right seg). Arrows, digits and list picks all go through
- * the shell's select, which lands in onSelect and loads that pane. The shell
- * writes #<slug> on every selection; onSelect rewrites the pair form over it.
+ * The sheet fills the stage height and pans sideways (Sheet's fit 'height'),
+ * so each pane keeps legible text instead of shrinking two pages into one
+ * width; a 28px caption over each pane names it (Left: Dossier, /d/...),
+ * and the Left | Right seg scrolls the stage to the pane it names. The shell
+ * tracks one active item: the direction in the pane the next pick fills.
+ * Arrows, digits and list picks all go through the shell's select, which
+ * lands in onSelect and loads that pane; the count reads `Left 01 / 17`.
+ * The shell writes #<slug> on every selection; onSelect rewrites the pair
+ * form over it.
  */
 
 const TITLE = 'Compare';
@@ -49,17 +54,19 @@ const MODES: readonly ShellMode[] = ['slide'];
 /** How long an echoed programmatic scroll stays inaudible. */
 const MUTE_MS = 160;
 
-/** Each pane is a site exhibit; the seam between them is one hairline. */
+/** Each pane is a site exhibit under a caption band; the seam between them is one hairline. */
 const PANE_W = 1440;
 const PANE_H = 900;
+const CAPTION_H = 28;
 const SEAM = 1;
 const SHEET_W = PANE_W * 2 + SEAM;
+const SHEET_H = PANE_H + CAPTION_H;
 
 type Frames = Record<PaneKey, RefObject<HTMLIFrameElement | null>>;
 
 const PANE_OPTIONS: readonly SegOption<PaneKey>[] = [
-  { value: 'a', label: PANE_NAME.a, icon: 'prev', title: 'Picks and arrows load the left pane (T)' },
-  { value: 'b', label: PANE_NAME.b, icon: 'next', title: 'Picks and arrows load the right pane (T)' },
+  { value: 'a', label: PANE_NAME.a, icon: 'prev', title: 'Picks and arrows load the left pane; the stage scrolls to it (T)' },
+  { value: 'b', label: PANE_NAME.b, icon: 'next', title: 'Picks and arrows load the right pane; the stage scrolls to it (T)' },
 ];
 
 function writeHash(pair: Pair): void {
@@ -75,6 +82,14 @@ function writeHash(pair: Pair): void {
 function isEditable(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
   return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+}
+
+/** Scroll the panning stage to one pane. */
+function showPane(key: PaneKey): void {
+  const stage = document.querySelector<HTMLElement>('.pt-viewer[data-shell="compare"] .pt-sheet-stage');
+  if (!stage) return;
+  const max = stage.scrollWidth - stage.clientWidth;
+  stage.scrollTo({ left: key === 'a' ? 0 : max });
 }
 
 /** Two rails with their thumbs at one height: the panes scroll in step. */
@@ -114,8 +129,9 @@ type CompareToolsProps = Pick<Engine, 'pair' | 'target' | 'syncOn' | 'setTarget'
  * The toolbar slot: the Left | Right seg naming the pane the next pick
  * fills, then Sync scroll and Swap. Changing the target or swapping moves
  * the shell's active item to the direction now in the target pane, so the
- * list always marks the pane the arrows will drive. T and X are the two
- * route keys; the shell's key owner leaves both letters free.
+ * list always marks the pane the arrows will drive, and the stage scrolls
+ * to that pane. T and X are the two route keys; the shell's key owner
+ * leaves both letters free.
  */
 function CompareTools({ pair, target, syncOn, setTarget, swap, toggleSync }: CompareToolsProps) {
   const shell = usePtShell();
@@ -123,6 +139,7 @@ function CompareTools({ pair, target, syncOn, setTarget, swap, toggleSync }: Com
   const pickTarget = (next: PaneKey) => {
     setTarget(next);
     shell.select(pair[next]);
+    showPane(next);
   };
 
   const doSwap = () => {
@@ -218,28 +235,40 @@ function CompareBoot({ readPair, readTarget, apply, wireLoaded }: CompareBootPro
 
 type ComparePanesProps = {
   pair: Pair;
+  target: PaneKey;
   frames: Frames;
   onLoad: (key: PaneKey) => void;
 };
 
 /**
- * The two panes and the seam on the 2881x900 stage. Each iframe is keyed by
- * its slug: recreating it navigates without pushing joint session-history
- * entries, so the browser's Back returns to the page the visitor came from,
- * not through every pick.
+ * The two captioned panes and the seam on the 2881x928 stage. Each iframe
+ * is keyed by its slug: recreating it navigates without pushing joint
+ * session-history entries, so the browser's Back returns to the page the
+ * visitor came from, not through every pick. The caption over a pane names
+ * its side, the direction and the address; the pane the next pick fills is
+ * marked.
  */
-function ComparePanes({ pair, frames, onLoad }: ComparePanesProps) {
+function ComparePanes({ pair, target, frames, onLoad }: ComparePanesProps) {
   const pane = (key: PaneKey) => {
     const slug = pair[key];
+    const name = getDirection(slug)?.name ?? slug;
     return (
-      <iframe
-        key={`${key}:${slug}`}
-        ref={frames[key]}
-        className='pt-cmp-pane'
-        src={`/d/${slug}?chrome=0`}
-        title={`${getDirection(slug)?.name ?? slug}, ${PANE_NAME[key].toLowerCase()} pane`}
-        onLoad={() => onLoad(key)}
-      />
+      <div className={key === target ? 'pt-cmp-col is-target' : 'pt-cmp-col'}>
+        <div className='pt-cmp-caption'>
+          <span>
+            <b>{PANE_NAME[key]}:</b> {name}, /d/{slug}
+          </span>
+          <span>{key === target ? 'the next pick lands here' : ''}</span>
+        </div>
+        <iframe
+          key={`${key}:${slug}`}
+          ref={frames[key]}
+          className='pt-cmp-pane'
+          src={`/d/${slug}?chrome=0`}
+          title={`${name}, ${PANE_NAME[key].toLowerCase()} pane`}
+          onLoad={() => onLoad(key)}
+        />
+      </div>
     );
   };
   return (
@@ -357,6 +386,7 @@ export default function CompareRig() {
       title={TITLE}
       mark='pt'
       count={`${DIRECTIONS.length} directions`}
+      countLabel={PANE_NAME[target]}
       sections={sections}
       active={DEFAULT_PAIR.a}
       modes={MODES}
@@ -376,8 +406,8 @@ export default function CompareRig() {
         />
       }
     >
-      <Sheet variant='fixed' w={SHEET_W} h={PANE_H} frame={false}>
-        <ComparePanes pair={pair} frames={frames} onLoad={wire} />
+      <Sheet variant='fixed' w={SHEET_W} h={SHEET_H} frame={false} fit='height' caption={false}>
+        <ComparePanes pair={pair} target={target} frames={frames} onLoad={wire} />
       </Sheet>
       <CompareBoot readPair={readPair} readTarget={readTarget} apply={apply} wireLoaded={wireLoaded} />
     </ViewerShell>

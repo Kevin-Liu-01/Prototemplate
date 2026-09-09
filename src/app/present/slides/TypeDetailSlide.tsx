@@ -9,8 +9,6 @@ import { useRef } from 'react';
 
 import { DIRECTIONS } from '@/lib/directions';
 
-import { scrollerOf } from '../scroller';
-
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin);
 
 /**
@@ -118,7 +116,6 @@ export default function TypeDetailSlide() {
 
   useGSAP(
     () => {
-      const scroller = scrollerOf(root.current);
       // The two builds render their baselines at slightly different heights.
       // Font-metric math proved unreliable, so measure the truth instead: a
       // zero-height inline-block sits exactly on the baseline of the line it
@@ -182,7 +179,7 @@ export default function TypeDetailSlide() {
          the single-line-box flight math mis-measures — the pair stays in
          its stacked columns and every other beat (scramble, growth, the
          red breath) still reads. */
-      const narrowDeck = (scroller?.clientWidth ?? window.innerWidth) <= 860;
+      const narrowDeck = window.matchMedia('(max-width: 860px)').matches;
       const placePair = () => {
         if (narrowDeck) return;
         const els = flightEls();
@@ -237,7 +234,6 @@ export default function TypeDetailSlide() {
         defaults: { ease: 'power2.inOut' },
         scrollTrigger: {
           trigger: root.current,
-          scroller: scroller ?? undefined,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.45,

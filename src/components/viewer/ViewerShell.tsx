@@ -1,11 +1,18 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { ReactNode, TouchEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
-import type { ShellKeys, ShellMark, ShellMode, ShellSection, ShellThumb } from '@/lib/shell-data';
-import { flattenShellItems } from '@/lib/shell-data';
+import type {
+  ShellDensity,
+  ShellKeysProp,
+  ShellMark,
+  ShellMode,
+  ShellSection,
+  ShellThumb,
+} from '@/lib/shell-data';
+import { flattenShellItems, pagedShellItems, resolveShellKeys } from '@/lib/shell-data';
 import type { SurfaceSet } from '@/lib/surfaces';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -16,7 +23,7 @@ import { Progress } from './Progress';
 import { ShellContext } from './shell-context';
 import type { ShellState, StageSize } from './shell-context';
 import { Sidebar, ThumbList } from './Sidebar';
-import type { MiniResolver, SubRenderer } from './Sidebar';
+import type { SidebarFilter, SubRenderer } from './Sidebar';
 import { toggleTheme } from './ThemeButton';
 import { Toast, useToast } from './Toast';
 import { Toolbar } from './Toolbar';
@@ -27,8 +34,21 @@ import './ViewerShell.css';
 /** The sidebar preference, shared by every shell: '0' hides the list. */
 const SIDEBAR_KEY = 'gt-shell-sb';
 
+/** The sidebar density preference, shared by every shell. */
+const DENSITY_KEY = 'gt-shell-density';
+
+/** The route families that have shown the first-visit hint, comma separated. */
+const HINT_KEY = 'gt-shell-hint';
+
+const HINT_TEXT = 'Arrow keys move. Press ? for every shortcut.';
+const HINT_HOLD_MS = 3600;
+
 /** At or below this width the sidebar is an overlay and the sheet pad shrinks. */
 const NARROW_PX = 900;
+
+/** A touch that starts within this many pixels of the left edge and travels SWIPE_PX opens the narrow list. */
+const EDGE_PX = 24;
+const SWIPE_PX = 40;
 
 /**
  * The one frame for Prototemplate: a fixed full-viewport grid of a sidebar
@@ -46,23 +66,32 @@ export type ViewerShellProps = {
   /** already worded: `52 slides`, `17 directions` */
   count: string;
   sections: readonly ShellSection[];
-  /** the item to open when the hash names none; defaults to the first item */
+  /** the item to open when the hash names none; defaults to the first item, an empty string marks nothing */
   active?: string;
   /** the modes the route offers; the first is the default */
   modes: readonly ShellMode[];
-  /** which registry the index panel lists */
+  /** which registry the index panel opens on */
   surfaces: SurfaceSet;
   thumb: ShellThumb;
   onSelect?: (id: string) => void;
   /** the route's own controls, first in the toolbar's right group */
   toolbarSlot?: ReactNode;
-  keys: ShellKeys;
+  /** the key table, or a function of the mode */
+  keys: ShellKeysProp;
   /** the word in the digit toast and the help rows; `slide` unless the route says otherwise */
   noun?: string;
-  /** how a 'mini' thumb finds its source nodes; the default reads the deck stage */
-  mini?: MiniResolver;
   /** rows a route hangs under an item in the list */
   renderSub?: SubRenderer;
+  /**
+   * The site map (Pages, Documents, Sites, Explorations, Archive) rendered
+   * ahead of and around the route's sections, a route section replacing the
+   * group of the same name (decision 7). Defaults to true on site routes.
+   */
+  siteMap?: boolean;
+  /** a word before the count: `Left` on /compare */
+  countLabel?: string;
+  /** what the current route's own Pages row does when clicked; the gallery returns its book to the top */
+  onCurrentPage?: () => void;
   /** the stage content */
   children?: ReactNode;
 };
@@ -93,8 +122,21 @@ function readHash(): string {
   }
 }
 
+function writeHash(id: string): void {
+  try {
+    const base = `${window.location.pathname}${window.location.search}`;
+    window.history.replaceState(null, '', id ? `${base}#${encodeURIComponent(id)}` : base);
+  } catch {
+    // a sandboxed document: the state still moves, the address does not
+  }
+}
+
 function isNarrow(): boolean {
   return window.innerWidth <= NARROW_PX;
+}
+
+function isDensity(value: string | null): value is ShellDensity {
+  return value === 'outline' || value === 'thumbs';
 }
 
 export function ViewerShell({
@@ -111,31 +153,40 @@ export function ViewerShell({
   toolbarSlot,
   keys,
   noun = 'slide',
-  mini,
   renderSub,
+  siteMap = surfaces === 'site',
+  countLabel,
+  onCurrentPage,
   children,
 }: ViewerShellProps) {
   const items = useMemo(() => flattenShellItems(sections), [sections]);
+  const paged = useMemo(() => pagedShellItems(sections), [sections]);
   const defaultMode = modes[0] ?? 'slide';
 
   const [mode, setModeState] = useState<ShellMode>(defaultMode);
+  const [density, setDensityState] = useState<ShellDensity>('outline');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [panelOpen, setPanelOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [present, setPresentState] = useState(false);
   const [narrow, setNarrow] = useState(false);
   const [active, setActive] = useState<string>(() => initialActive ?? items[0]?.id ?? '');
+  const [dir, setDir] = useState<'next' | 'prev'>('next');
   const [stageSize, setStageSize] = useState<StageSize>({ width: 0, height: 0 });
   const [panelWidth, setPanelWidth] = useState(0);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLElement>(null);
+  const touchX = useRef<number | null>(null);
+  const filter = useRef<SidebarFilter>({ active: false, clear: () => {} });
   const toast = useToast();
 
   /* the mount-time listeners read the latest values through these refs;
      the assignments run every render so no listener sees a stale closure */
   const itemsRef = useRef(items);
   itemsRef.current = items;
+  const pagedRef = useRef(paged);
+  pagedRef.current = paged;
   const activeRef = useRef(active);
   activeRef.current = active;
   const narrowRef = useRef(narrow);
@@ -144,34 +195,49 @@ export function ViewerShell({
   onSelectRef.current = onSelect;
   const modesRef = useRef(modes);
   modesRef.current = modes;
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
 
-  const index = items.findIndex((item) => item.id === active);
-  const total = items.length;
+  const index = paged.findIndex((item) => item.id === active);
+  const total = paged.length;
+  const resolvedKeys = resolveShellKeys(keys, mode);
 
   const select = (next: string) => {
-    if (!itemsRef.current.some((item) => item.id === next)) return;
+    if (next && !itemsRef.current.some((item) => item.id === next)) return;
+    const list = pagedRef.current;
+    const from = list.findIndex((item) => item.id === activeRef.current);
+    const to = list.findIndex((item) => item.id === next);
+    if (from >= 0 && to >= 0 && from !== to) setDir(to > from ? 'next' : 'prev');
     setActive(next);
-    try {
-      window.history.replaceState(null, '', `#${encodeURIComponent(next)}`);
-    } catch {
-      // a sandboxed document: the state still moves, the address does not
-    }
+    writeHash(next);
     onSelectRef.current?.(next);
   };
 
   const step = (delta: number) => {
-    const list = itemsRef.current;
+    const list = pagedRef.current;
     if (list.length === 0) return;
     const at = list.findIndex((item) => item.id === activeRef.current);
-    const next = Math.max(0, Math.min(list.length - 1, (at < 0 ? 0 : at) + delta));
+    const next = at < 0 ? (delta > 0 ? 0 : list.length - 1) : Math.max(0, Math.min(list.length - 1, at + delta));
     const target = list[next];
     if (target && target.id !== activeRef.current) select(target.id);
   };
 
+  /* the slide shows one paged item, so entering it with nothing paged marked
+     (the gallery's book at its top, or an archived capture) opens the first */
   const setMode = (next: ShellMode) => {
     if (!modesRef.current.includes(next)) return;
     setModeState(next);
     store(`gt-shell-mode:${id}`, next);
+    if (next === 'slide') {
+      const list = pagedRef.current;
+      const first = list[0];
+      if (first && !list.some((item) => item.id === activeRef.current)) select(first.id);
+    }
+  };
+
+  const setDensity = (next: ShellDensity) => {
+    setDensityState(next);
+    store(DENSITY_KEY, next);
   };
 
   const setSidebar = (open: boolean) => {
@@ -183,26 +249,52 @@ export function ViewerShell({
   const setPanel = (open: boolean) => setPanelOpen(open);
   const setHelp = (open: boolean) => setHelpOpen(open);
 
+  /* presenting keeps the sheet that is up: only the grid, which has no sheet,
+     hands over to the slide (or the default when the route has none) */
   const setPresent = (on: boolean) => {
     if (on) {
-      setModeState(modesRef.current[0] ?? 'slide');
+      if (modeRef.current === 'grid') {
+        setModeState(modesRef.current.includes('slide') ? 'slide' : (modesRef.current[0] ?? 'slide'));
+      }
       setPanelOpen(false);
     }
     setPresentState(on);
   };
 
+  const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    const touch = e.changedTouches.item(0);
+    touchX.current = narrow && !sidebarOpen && touch && touch.clientX <= EDGE_PX ? touch.clientX : null;
+  };
+
+  const onTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
+    const start = touchX.current;
+    touchX.current = null;
+    const touch = e.changedTouches.item(0);
+    if (start === null || !touch) return;
+    if (touch.clientX - start > SWIPE_PX) setSidebar(true);
+  };
+
   useMountEffect(() => {
     document.body.dataset.shell = id;
 
-    /* persisted mode, the hash, the width, the sidebar preference */
+    /* persisted mode, density, the hash, the width, the sidebar preference */
     const savedMode = load(`gt-shell-mode:${id}`);
     if (savedMode && modesRef.current.some((m) => m === savedMode)) setModeState(savedMode as ShellMode);
+    const savedDensity = load(DENSITY_KEY);
+    if (isDensity(savedDensity)) setDensityState(savedDensity);
     const fromHash = readHash();
     if (fromHash && itemsRef.current.some((item) => item.id === fromHash)) setActive(fromHash);
     const startNarrow = isNarrow();
     setNarrow(startNarrow);
     narrowRef.current = startNarrow;
     setSidebarOpen(startNarrow ? false : load(SIDEBAR_KEY) !== '0');
+
+    /* the first visit to a route family: one toast naming the arrows and the help key */
+    const seen = (load(HINT_KEY) ?? '').split(',').filter(Boolean);
+    if (!seen.includes(id)) {
+      store(HINT_KEY, [...seen, id].join(','));
+      toast.say(HINT_TEXT, HINT_HOLD_MS);
+    }
 
     const onHash = () => {
       const next = readHash();
@@ -254,10 +346,12 @@ export function ViewerShell({
     () => ({
       id,
       modes,
-      keys,
+      keys: resolvedKeys,
       noun,
       items,
+      paged,
       mode,
+      density,
       sidebarOpen,
       panelOpen,
       helpOpen,
@@ -266,9 +360,11 @@ export function ViewerShell({
       active,
       index,
       total,
+      countLabel,
       stageSize,
       panelWidth,
       setMode,
+      setDensity,
       setSidebar,
       setPanel,
       setHelp,
@@ -279,12 +375,42 @@ export function ViewerShell({
     }),
     // the handlers close over refs and setters only, so the state fields are the real dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id, modes, keys, noun, items, mode, sidebarOpen, panelOpen, helpOpen, present, narrow, active, index, total, stageSize, panelWidth, toast.say]
+    [
+      id,
+      modes,
+      resolvedKeys,
+      noun,
+      items,
+      paged,
+      mode,
+      density,
+      sidebarOpen,
+      panelOpen,
+      helpOpen,
+      present,
+      narrow,
+      active,
+      index,
+      total,
+      countLabel,
+      stageSize,
+      panelWidth,
+      toast.say,
+    ]
   );
 
-  useShellKeys(state, { toggleTheme });
+  useShellKeys(state, {
+    toggleTheme,
+    /* the Escape ladder's filter rung: true when the sidebar filter had text to clear */
+    clearFilter: () => {
+      if (!filter.current.active) return false;
+      filter.current.clear();
+      return true;
+    },
+  });
 
   const grid = mode === 'grid';
+  const overlayOpen = narrow && sidebarOpen;
 
   return (
     <ShellContext value={state}>
@@ -292,20 +418,33 @@ export function ViewerShell({
         className={cn(
           'pt-viewer',
           !sidebarOpen && !narrow && 'no-sb',
-          grid && 'is-overview',
           present && 'is-present',
-          narrow && sidebarOpen && 'sb-open'
+          overlayOpen && 'sb-open',
+          density === 'thumbs' && 'is-thumbs'
         )}
         data-shell={id}
+        data-dir={dir}
+        onTouchStart={narrow ? onTouchStart : undefined}
+        onTouchEnd={narrow ? onTouchEnd : undefined}
       >
+        {overlayOpen ? (
+          <button
+            type='button'
+            className='pt-sb-scrim'
+            aria-label='Close the list (Esc)'
+            onClick={() => setSidebar(false)}
+          />
+        ) : null}
         <Sidebar
           title={title}
           mark={mark}
           count={count}
           sections={sections}
           thumb={thumb}
-          mini={mini}
           renderSub={renderSub}
+          siteMap={siteMap}
+          filter={filter}
+          onCurrentPage={onCurrentPage}
         />
         <section className='pt-main'>
           <Toolbar title={title} mark={mark} slot={toolbarSlot} />
@@ -316,14 +455,23 @@ export function ViewerShell({
                 <ThumbList
                   sections={sections}
                   thumb={thumb}
-                  mini={mini}
+                  density='thumbs'
                   renderSub={renderSub}
                   onSelect={(next) => {
-                    setMode(defaultMode);
+                    /* a pick from the grid opens the item live where the route has a slide */
+                    setMode(modes.includes('slide') ? 'slide' : defaultMode);
                     select(next);
                   }}
                 />
               </GridView>
+            ) : null}
+            {panelOpen ? (
+              <button
+                type='button'
+                className='pt-panel-scrim'
+                aria-label='Close the index (Esc)'
+                onClick={() => setPanel(false)}
+              />
             ) : null}
           </div>
           {/* a child of .pt-main, not of the stage: its top and bottom are written against the toolbar and the progress line */}

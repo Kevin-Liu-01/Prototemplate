@@ -6,3 +6,20 @@
 .pt-seg .pt-ib.is-on:focus-visible {
   outline-color: var(--pt-paper);
 }
+
+/* the small variant: the sidebar's density toggle, two 28px icon squares */
+.pt-seg.is-small {
+  height: 28px;
+}
+
+.pt-seg.is-small .pt-ib {
+  height: 26px;
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+}
+
+.pt-seg.is-small .pt-ib svg {
+  width: 14px;
+  height: 14px;
+}

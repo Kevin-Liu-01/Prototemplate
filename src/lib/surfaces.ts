@@ -87,7 +87,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
 }
 
 const PAGES: readonly Surface[] = [
-  internal('index', 'Index', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages'),
+  internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages'),
   internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand-the-name')),
   internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs-readme')),
   internal('deck', 'Deck', '/deck', 'The GT brand deck, 52 slides.', 'Pages'),

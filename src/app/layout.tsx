@@ -90,11 +90,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* apply the persisted theme before first paint; dark when nothing
             is saved, the site default, so the shell's post-hydration
-            assertion in ThemeButton agrees with the first paint */}
+            assertion in ThemeButton agrees with the first paint. A
+            same-origin frame (the gallery exhibit, the compare panes) also
+            receives the parent's write as a storage event, so every loaded
+            frame follows the toggle with no per-frame code. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var t=localStorage.getItem('gt-theme');document.documentElement.dataset.theme=t==='light'||t==='dark'?t:'dark'}catch(e){document.documentElement.dataset.theme='dark'}",
+              "try{var t=localStorage.getItem('gt-theme');document.documentElement.dataset.theme=t==='light'||t==='dark'?t:'dark'}catch(e){document.documentElement.dataset.theme='dark'}window.addEventListener('storage',function(e){if(e.key==='gt-theme'&&(e.newValue==='light'||e.newValue==='dark'))document.documentElement.dataset.theme=e.newValue});",
           }}
         />
         {/* rAF gate: an embedding parent can freeze/resume this page's

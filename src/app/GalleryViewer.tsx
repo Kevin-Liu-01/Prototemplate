@@ -2,9 +2,8 @@
 
 import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
-import type { MouseEvent, ReactNode, RefObject } from 'react';
-import { Fragment, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import type { ReactNode, RefObject } from 'react';
+import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 import { Icon } from '@/components/viewer/icons';
@@ -18,7 +17,6 @@ import { cn } from '@/lib/cn';
 import { DIRECTIONS } from '@/lib/directions';
 import type { Direction } from '@/lib/directions';
 import type { ShellItem, ShellMode, ShellSection } from '@/lib/shell-data';
-import { surfaceGroups } from '@/lib/surfaces';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import PrototemplateHero from './PrototemplateHero';
@@ -29,13 +27,14 @@ import './GalleryViewer.css';
 /**
  * The gallery on the viewer shell. Three modes: the book (default) is the
  * existing editorial article inside the flow sheet at the 1170px rail, with
- * the sidebar tracking the direction in view; the slide is one live 1440x900
+ * the sidebar tracking the direction in view and nothing marked while the
+ * nameplate and the opener are on screen; the slide is one live 1440x900
  * exhibit of the active direction in the fixed sheet; the grid is every
- * capture at once. The sidebar lists the site map first (Pages, Documents,
- * from src/lib/surfaces.ts) and then the shell's own sections (Sites,
- * Shipped, Explorations, Archive), so the one order holds on every route.
- * Keys are paged only while the slide is up; in the book and the grid the
- * arrows and Space scroll.
+ * capture at once. The shell draws the site map (Pages, Documents) around
+ * the gallery's own sections (Sites, Explorations, Archive), so the one
+ * order holds on every route. Keys are paged only while the slide is up; in
+ * the book and the grid the arrows and Space scroll. The archive rows can be
+ * selected but are not counted: the count reads the 17 directions.
  */
 
 const GALLERY_TITLE = 'Prototemplate';
@@ -52,9 +51,6 @@ const SETTLE_MS = 300;
 const IO_ROOT_MARGIN = '-42% 0px -42% 0px';
 const IO_THRESHOLDS = [0, 0.25, 0.5, 1];
 
-/** the sidebar's list, the box the site map is portaled into */
-const SIDEBAR_LIST = '.pt-viewer[data-shell="gallery"] .pt-sb .pt-thumbs';
-
 /**
  * An archived version: one of the retired /d routes, kept viewable as its
  * captures after the code left the tree (decision 1). The list lives in
@@ -64,18 +60,19 @@ const SIDEBAR_LIST = '.pt-viewer[data-shell="gallery"] .pt-sb .pt-thumbs';
  * 1440x900 crop) and <slug>-full.jpg (the full page).
  */
 
-/** The full site concepts, the shipped reference, and the single-page explorations in label order. */
-const SITES = DIRECTIONS.filter((d) => d.site && !d.reference);
+/** The full site concepts and the shipped reference together, then the single-page explorations in label order. */
+const SITES = DIRECTIONS.filter((d) => d.site);
 const REFERENCE = DIRECTIONS.find((d) => d.reference);
 const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
 
 function directionItem(d: Direction): ShellItem {
   return {
     id: d.slug,
-    n: d.label ?? '',
+    /* the sites carry no number: the labels belong to the explorations */
+    n: d.site ? '' : (d.label ?? ''),
     title: d.name,
     href: `/d/${d.slug}`,
-    desc: d.concept,
+    desc: d.reference ? `${d.concept} Live at generaltranslation.com.` : d.concept,
     shot: { light: `/shots/light/${d.slug}.jpg`, dark: `/shots/dark/${d.slug}.jpg` },
   };
 }
@@ -90,26 +87,23 @@ function archiveItem(entry: ArchiveEntry): ShellItem {
   };
 }
 
-const SECTIONS: readonly ShellSection[] = [
+const ALL_SECTIONS: readonly ShellSection[] = [
   { id: 'sites', label: 'Sites', items: SITES.map(directionItem) },
-  { id: 'shipped', label: 'Shipped', items: REFERENCE ? [directionItem(REFERENCE)] : [] },
   { id: 'explorations', label: 'Explorations', items: EXPLORATIONS.map(directionItem) },
-  { id: 'archive', label: 'Archive', items: ARCHIVE.map(archiveItem) },
-].filter((section) => section.items.length > 0);
+  { id: 'archive', label: 'Archive', items: ARCHIVE.map(archiveItem), paged: false },
+];
+
+const SECTIONS: readonly ShellSection[] = ALL_SECTIONS.filter((section) => section.items.length > 0);
 
 const ITEM_BY_ID = new Map(SECTIONS.flatMap((section) => section.items).map((item) => [item.id, item]));
 const DIRECTION_BY_SLUG = new Map(DIRECTIONS.map((d) => [d.slug, d]));
 const ARCHIVE_BY_SLUG = new Map(ARCHIVE.map((entry) => [entry.slug, entry]));
 
-/** where the Index row and the archive's Escape land: the first direction in the list, and the last one before the archive */
-const FIRST_EXHIBIT = (SITES[0] ?? DIRECTIONS[0]).slug;
+/** where the archive's Escape lands: the last direction before the archive */
 const LAST_EXHIBIT = (EXPLORATIONS[EXPLORATIONS.length - 1] ?? DIRECTIONS[DIRECTIONS.length - 1]).slug;
 
-/** The site map groups the gallery adds above its own sections: the same rows the index panel lists. */
-const NAV_GROUPS = surfaceGroups('site').filter((entry) => entry.group === 'Pages' || entry.group === 'Documents');
-
 /**
- * Where the article should open when it mounts: `top` from the Index row,
+ * Where the article should open when it mounts: `top` from the Gallery row,
  * `archive` from the archive sheet's Escape, or the hash landing when null.
  * A ref, not state, because it is consumed once by the mount that follows.
  */
@@ -171,44 +165,16 @@ const DECK = [
 ] as const;
 
 /**
- * Mirrors the shell's mode to the parent (the keys prop depends on it) and
- * corrects two shell defaults that assume the sheet is the default mode:
- * presenting or going fullscreen from the slide returns the shell to the
- * book, so the slide is restored; a grid click returns to the book, so a
- * direction picked from the grid opens live instead. Also resolves the
- * presenter's `?d=<slug>` deep link into the slide.
+ * Resolves the presenter's `?d=<slug>` deep link into the slide on mount:
+ * setMode persists the choice before the shell reads it, select writes the
+ * hash, and the query string is dropped.
  */
-function ModeBridge({ onMode }: { onMode: (mode: ShellMode) => void }) {
-  const { mode, active, present, setMode, select } = usePtShell();
-  const last = useRef({ mode, active, present });
-
-  useGSAP(
-    () => {
-      onMode(mode);
-    },
-    { dependencies: [mode] }
-  );
-
-  useGSAP(
-    () => {
-      const was = last.current;
-      last.current = { mode, active, present };
-      if (present && !was.present && was.mode === 'slide' && mode !== 'slide') {
-        setMode('slide');
-        return;
-      }
-      if (was.mode === 'grid' && mode === 'book' && active !== was.active && !ARCHIVE_BY_SLUG.has(active)) {
-        setMode('slide');
-      }
-    },
-    { dependencies: [mode, active, present] }
-  );
+function DeepLink() {
+  const { setMode, select } = usePtShell();
 
   useMountEffect(() => {
     const slug = new URLSearchParams(window.location.search).get('d');
     if (!slug || !DIRECTION_BY_SLUG.has(slug)) return;
-    /* setMode persists the choice before the shell reads it on mount, and
-       select writes the hash; the query string is then dropped */
     setMode('slide');
     select(slug);
     try {
@@ -259,88 +225,39 @@ function GalleryEscape({ intent }: { intent: RefObject<MountIntent> }) {
   return null;
 }
 
-/** The toolbar slot: opens the active direction as its own page. */
+/**
+ * Fills the ref the shell's Gallery row calls: the book comes back to its
+ * top with nothing marked. From the slide, the grid or an archived capture
+ * the article is about to mount, so it opens at the top instead of at the
+ * hash.
+ */
+type HomeProps = {
+  home: RefObject<() => void>;
+  scrollRef: RefObject<HTMLDivElement | null>;
+  intent: RefObject<MountIntent>;
+};
+
+function GalleryHome({ home, scrollRef, intent }: HomeProps) {
+  const shell = usePtShell();
+  home.current = () => {
+    if (shell.mode !== 'book' || ARCHIVE_BY_SLUG.has(shell.active)) intent.current = 'top';
+    else scrollRef.current?.scrollTo({ top: 0 });
+    shell.select('');
+    shell.setMode('book');
+  };
+  return null;
+}
+
+/** The toolbar slot: opens the marked direction as its own page, named. Absent while no direction is marked. */
 function OpenPage() {
   const { active } = usePtShell();
   const direction = DIRECTION_BY_SLUG.get(active);
   if (!direction) return null;
   return (
     <Link className='pt-ib gv-open' href={`/d/${direction.slug}`} title={`Open ${direction.name} as its own page`}>
-      <Icon name='external' />
-      <span className='pt-lb'>Open page</span>
+      <Icon name='open-page' />
+      <span className='pt-lb'>Open {direction.name}</span>
     </Link>
-  );
-}
-
-type NavProps = {
-  scrollRef: RefObject<HTMLDivElement | null>;
-  intent: RefObject<MountIntent>;
-};
-
-/**
- * The site map at the top of the sidebar list: Pages and Documents, from the
- * same registry the index panel reads, as link rows in the ListRow grammar.
- * The shell renders its list from sections alone, so the rows are portaled
- * into the list box and ordered first (GalleryViewer.css). The box remounts
- * when the grid comes and goes, so the host is re-read on every mode change;
- * in grid mode there is no host and the grid shows the shell's sections only.
- * The Index row is the current location and always reads as such; selecting
- * it brings the book back to its top instead of navigating.
- */
-function SiteMapNav({ scrollRef, intent }: NavProps) {
-  const shell = usePtShell();
-  const [host, setHost] = useState<HTMLElement | null>(null);
-
-  useGSAP(
-    () => {
-      setHost(document.querySelector<HTMLElement>(SIDEBAR_LIST));
-    },
-    { dependencies: [shell.mode] }
-  );
-
-  if (!host) return null;
-
-  const goIndex = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    const archived = ARCHIVE_BY_SLUG.has(shell.active);
-    if (shell.mode !== 'book' || archived) {
-      /* the article is about to mount: it opens at the top instead of at the hash */
-      intent.current = 'top';
-    } else {
-      scrollRef.current?.scrollTo({ top: 0 });
-    }
-    if (archived) shell.select(FIRST_EXHIBIT);
-    shell.setMode('book');
-  };
-
-  return createPortal(
-    <nav className='gv-nav' aria-label='Site map'>
-      {NAV_GROUPS.map((entry) => (
-        <Fragment key={entry.group}>
-          <div className='pt-sec-label'>{entry.group}</div>
-          {entry.rows.map((row) => {
-            const current = row.href === '/';
-            return (
-              <Link
-                key={row.id}
-                className={cn('gv-nav-row', current && 'is-active')}
-                href={row.href}
-                aria-current={current ? 'page' : undefined}
-                title={row.desc}
-                onClick={(event) => {
-                  if (current) goIndex(event);
-                  if (shell.narrow) shell.setSidebar(false);
-                }}
-              >
-                <span className='n' aria-hidden='true' />
-                <span className='gv-nav-title'>{row.name}</span>
-              </Link>
-            );
-          })}
-        </Fragment>
-      ))}
-    </nav>,
-    host
   );
 }
 
@@ -353,7 +270,8 @@ function SiteMapNav({ scrollRef, intent }: NavProps) {
  * keyed by its address, so a late load event from a page that was skipped
  * never marks the next one ready. The gt:freeze gate the presenter uses for
  * its wall is not needed here: this is the one live frame, and it unmounts
- * with the mode.
+ * with the mode. The theme reaches the frame through the storage event the
+ * boot script in layout.tsx listens for.
  */
 function ExhibitFrame({ direction }: { direction: Direction }) {
   const [src, setSrc] = useState<string | null>(null);
@@ -426,9 +344,15 @@ function ArchiveSheet({ entry }: { entry: ArchiveEntry }) {
         </div>
         <p className='gv-archive-note'>
           The page was captured at {entry.width} pixels wide in the light theme before its route was deleted.
-          The code stays in the repository history under commit {entry.lastCommit}; the route left in the commit
-          that followed it, {ARCHIVE_DELETION.subject}, on branch {ARCHIVE_DELETION.branch}. Press Escape to
-          return to the gallery.
+          The code stays in the repository history under commit {entry.lastCommit}. The route was removed in the
+          next commit, {ARCHIVE_DELETION.hash}, &ldquo;{ARCHIVE_DELETION.subject}&rdquo;, on branch{' '}
+          {ARCHIVE_DELETION.branch}. Press Escape to return to the gallery.
+        </p>
+        <p className='gv-archive-static'>
+          This is a static capture; nothing in it is live.{' '}
+          <a href={archiveShot(entry)} target='_blank' rel='noreferrer'>
+            Open the 1440 by 900 crop
+          </a>
         </p>
         <img
           className='gv-archive-full'
@@ -453,10 +377,12 @@ type ArticleProps = {
  * 1170px rail, under .pt-root so it keeps its own token family (decision 6)
  * and the nameplate's two faces (decision 3). The old top nav is gone; the
  * shell's sidebar and index panel take its place. The sections that stand
- * for a direction carry data-gv-id: an IntersectionObserver on the sheet
- * marks the one in the middle band active through the shell, which updates
- * the hash without scrolling, and a selection from anywhere else (the
- * sidebar, the keys, a grid click that landed in the book) scrolls its
+ * for a direction carry data-gv-id, and the nameplate with the opener
+ * carries data-gv-top: an IntersectionObserver on the sheet marks the one in
+ * the middle band active through the shell (the top clears the mark, so
+ * only the Gallery row is current while nothing is on screen), which
+ * updates the hash without scrolling, and a selection from anywhere else
+ * (the sidebar, the keys, a grid click that landed in the book) scrolls its
  * section into view. The archive rows are not spied, so reading past them
  * never opens a capture uninvited.
  */
@@ -489,14 +415,14 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
     const box = root.current;
     const scroller = scrollRef.current;
 
-    /* the landing: an intent from the Index row or the archive's Escape
+    /* the landing: an intent from the Gallery row or the archive's Escape
        wins; otherwise a hash that names the active item opens the book at
        its section, and a plain visit opens at the nameplate */
     const want = intent.current;
     intent.current = null;
     if (want === 'archive') {
       scrollTo(box?.querySelector<HTMLElement>('[data-gv-anchor="archive"]') ?? null, 'instant');
-    } else if (want !== 'top' && readHash() === activeRef.current) {
+    } else if (want !== 'top' && activeRef.current && readHash() === activeRef.current) {
       scrollTo(target(activeRef.current), 'instant');
     }
     const frame = requestAnimationFrame(() => {
@@ -512,14 +438,16 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
             if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) best = entry;
           }
           if (!best) return;
-          const id = (best.target as HTMLElement).dataset.gvId;
-          if (!id || id === activeRef.current) return;
+          const el = best.target as HTMLElement;
+          /* the nameplate and the opener: nothing is marked */
+          const id = el.dataset.gvTop !== undefined ? '' : el.dataset.gvId;
+          if (id === undefined || id === activeRef.current) return;
           fromScroll.current = id;
           selectRef.current(id);
         },
         { root: scroller, rootMargin: IO_ROOT_MARGIN, threshold: IO_THRESHOLDS }
       );
-      box.querySelectorAll<HTMLElement>('[data-gv-id]').forEach((el) => observer?.observe(el));
+      box.querySelectorAll<HTMLElement>('[data-gv-id], [data-gv-top]').forEach((el) => observer?.observe(el));
     }
 
     return () => {
@@ -541,6 +469,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
         fromScroll.current = null;
         return;
       }
+      if (!active) return;
       scrollTo(target(active), landed.current ? 'auto' : 'instant');
     },
     { dependencies: [active] }
@@ -548,7 +477,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
 
   return (
     <div ref={root} className={cn('pt-root', 'gv-article', fontClass)}>
-      <section className='pt-sec'>
+      <section className='pt-sec' data-gv-top=''>
         <PrototemplateHero />
       </section>
 
@@ -559,7 +488,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
            display sizes; the rails, hatches and hairlines carry the
            structure the way they do everywhere else. ---- */}
       <article className='pt-post'>
-        <section className='pt-sec pt-post-sec pt-opener'>
+        <section className='pt-sec pt-post-sec pt-opener' data-gv-top=''>
           <div className='pt-opener-copy'>
             <h1>Redesigning General Translation</h1>
             <p className='pt-post-byline'>Kevin Liu · August 2026</p>
@@ -779,7 +708,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
           {/* the three captures fanned at the right edge, absolutely placed
               and cut off by the section's own corner */}
           <span aria-hidden className='pt-sites-fan'>
-            {SITES.map((site, i) => (
+            {SITES.filter((site) => !site.reference).map((site, i) => (
               <span className='pt-sites-fan-shot' key={site.slug} style={{ ['--i' as never]: i }}>
                 <img alt='' className='is-light' draggable={false} loading='lazy' src={`/shots/light/${site.slug}.jpg`} />
                 <img alt='' className='is-dark' draggable={false} loading='lazy' src={`/shots/dark/${site.slug}.jpg`} />
@@ -789,7 +718,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
         </section>
 
         <div className='pt-sites'>
-          {SITES.map((site) => (
+          {SITES.filter((site) => !site.reference).map((site) => (
             <section className='pt-sec pt-site' key={site.slug} data-gv-id={site.slug}>
               <h3>
                 {site.name}
@@ -939,7 +868,7 @@ function GalleryStage({ fontClass, anatomy, ledger, scrollRef, intent }: StagePr
   const direction = DIRECTION_BY_SLUG.get(active);
   return (
     <Sheet variant='fixed' w={EXHIBIT_W} h={EXHIBIT_H} frame={false}>
-      {direction ? <ExhibitFrame direction={direction} /> : null}
+      {direction ? <ExhibitFrame key={direction.slug} direction={direction} /> : null}
     </Sheet>
   );
 }
@@ -954,10 +883,9 @@ export type GalleryViewerProps = {
 };
 
 export default function GalleryViewer({ fontClass, anatomy, ledger }: GalleryViewerProps) {
-  /* a mirror of the shell's mode: the keys prop is paged only while the slide is up */
-  const [mode, setMode] = useState<ShellMode>(GALLERY_MODES[0]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const intent = useRef<MountIntent>(null);
+  const home = useRef<() => void>(() => {});
 
   return (
     <ViewerShell
@@ -966,16 +894,18 @@ export default function GalleryViewer({ fontClass, anatomy, ledger }: GalleryVie
       mark='pt'
       count={`${DIRECTIONS.length} directions`}
       sections={SECTIONS}
+      active=''
       modes={GALLERY_MODES}
       thumb='shot'
       surfaces='site'
-      keys={mode === 'slide' ? 'paged' : 'flow'}
+      keys={(mode) => (mode === 'slide' ? 'paged' : 'flow')}
       noun='direction'
       toolbarSlot={<OpenPage />}
+      onCurrentPage={() => home.current()}
     >
-      <ModeBridge onMode={setMode} />
+      <DeepLink />
       <GalleryEscape intent={intent} />
-      <SiteMapNav scrollRef={scrollRef} intent={intent} />
+      <GalleryHome home={home} scrollRef={scrollRef} intent={intent} />
       <GalleryStage fontClass={fontClass} anatomy={anatomy} ledger={ledger} scrollRef={scrollRef} intent={intent} />
     </ViewerShell>
   );

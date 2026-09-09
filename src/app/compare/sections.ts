@@ -41,32 +41,31 @@ function paneMark(slug: string, pair: Pair): string | undefined {
 
 /**
  * One sidebar item. The number column shows the pane mark while the
- * direction is loaded, otherwise the label the gallery shows (blank on the
- * shipped site, which carries no number).
+ * direction is loaded, otherwise the exploration's label; the sites carry
+ * no number, as in the gallery.
  */
 function toItem(direction: Direction, pair: Pair): ShellItem {
   return {
     id: direction.slug,
-    n: paneMark(direction.slug, pair) ?? direction.label ?? '',
+    n: paneMark(direction.slug, pair) ?? (direction.site ? '' : direction.label ?? ''),
     title: direction.name,
     href: `/d/${direction.slug}`,
     shot: shotFor(direction.slug),
-    desc: direction.concept,
+    desc: direction.reference ? `${direction.concept} Live at generaltranslation.com.` : direction.concept,
   };
 }
 
 /**
- * The gallery's three sections in the gallery's order: the three site
- * concepts, the shipped site, then the explorations in label order (the
- * order DIRECTIONS keeps). Rebuilt on every pair change so the marks move.
+ * The gallery's two sections in the gallery's order: the three site
+ * concepts and the shipped site under Sites, then the explorations in label
+ * order (the order DIRECTIONS keeps). Rebuilt on every pair change so the
+ * marks move.
  */
 export function compareSections(pair: Pair): readonly ShellSection[] {
-  const sites = DIRECTIONS.filter((d) => d.site && !d.reference);
-  const shipped = DIRECTIONS.filter((d) => d.reference);
+  const sites = DIRECTIONS.filter((d) => d.site);
   const explorations = DIRECTIONS.filter((d) => !d.site);
   return [
     { id: 'sites', label: 'Sites', items: sites.map((d) => toItem(d, pair)) },
-    { id: 'shipped', label: 'Shipped', items: shipped.map((d) => toItem(d, pair)) },
     { id: 'explorations', label: 'Explorations', items: explorations.map((d) => toItem(d, pair)) },
   ];
 }

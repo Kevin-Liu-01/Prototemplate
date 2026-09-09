@@ -36,6 +36,13 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 /** How long the spy waits for a programmatic scroll before it reads the page again. */
 const SETTLE_MS = 1500;
 
+/** The landing re-checks its block this often, this many times, while the sheet's height settles. */
+const LAND_EVERY_MS = 250;
+const LAND_TRIES = 12;
+
+/** A landed block sits within this many pixels of the read line (its scroll margin is 20px). */
+const LAND_SLACK = 26;
+
 /**
  * Where a selection came from, set before the shell's select() runs so the
  * active effect knows what to do with the URL and the scroll. `select` is
@@ -106,6 +113,10 @@ type DocsBookProps = {
   source: RefObject<SelectSource | null>;
   /** receives the jump function so the sidebar's heading rows can call it */
   jumpRef: RefObject<(id: string) => void>;
+  /** receives the document jump, for a re-click on the current document in the list */
+  docJumpRef: RefObject<(slug: string) => void>;
+  /** the active document, read by the shell's onSelect outside this component */
+  activeOut: RefObject<string>;
 };
 
 /**
@@ -120,8 +131,9 @@ type DocsBookProps = {
  * document's own route, `/docs/design#2-the-line-law`, so a copied link
  * lands on the same place.
  */
-function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef }: DocsBookProps) {
+function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, docJumpRef, activeOut }: DocsBookProps) {
   const { active, index, select } = usePtShell();
+  activeOut.current = active;
 
   /* the listeners registered on mount read the latest values through refs;
      the assignments run every render so none of them sees a stale closure */
@@ -145,6 +157,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef }:
   /** the block a programmatic scroll is heading for; the spy waits for it */
   const settling = useRef<Element | null>(null);
   const settleTimer = useRef(0);
+  const landTimer = useRef(0);
 
   const sectionTotal = useMemo(() => docs.reduce((n, doc) => n + doc.sections.length, 0), [docs]);
 
@@ -201,6 +214,55 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef }:
 
   jumpRef.current = (id: string) => {
     jumpTo(id, scrollBehavior());
+  };
+
+  docJumpRef.current = (slug: string) => {
+    scrollTo(blockFor(slug, null), scrollBehavior());
+    /* the shell wrote `#<slug>` over the current entry: put the document's own address back */
+    writeUrl(url.current || urlFor(slug, null), false);
+  };
+
+  /**
+   * The landing on a direct /docs/<slug> visit, with or without a heading
+   * in the hash. This runs from a layout effect, before the parent Sheet's
+   * ref is attached, so the block is looked up on every check rather than
+   * once. The sheet's height also keeps growing after mount (docs.css, the
+   * code panels and the thumbs land), so one scrollIntoView lands short:
+   * the block is re-checked on the next frame, when the fonts are ready, and
+   * every 250ms for three seconds, and scrolled again whenever its top has
+   * drifted off the read line; a scroll of the reader's own ends the
+   * retries.
+   */
+  const landOn = (slug: string, heading: string | null) => {
+    let tries = 0;
+    let lastSet = -1;
+    let named = false;
+    const check = () => {
+      window.clearTimeout(landTimer.current);
+      tries += 1;
+      const root = sheetRef.current;
+      const row = blockFor(slug, heading);
+      const el = row ?? (heading ? document.getElementById(heading) : null);
+      if (!root || !el || !root.contains(el)) {
+        if (tries < LAND_TRIES) landTimer.current = window.setTimeout(check, LAND_EVERY_MS);
+        return;
+      }
+      if (lastSet >= 0 && Math.abs(root.scrollTop - lastSet) > 1 && tries > 2) return;
+      const offset = el.getBoundingClientRect().top - root.getBoundingClientRect().top;
+      if (Math.abs(offset) > LAND_SLACK) {
+        scrollTo(el, 'auto');
+        lastSet = root.scrollTop;
+      } else if (lastSet < 0) {
+        lastSet = root.scrollTop;
+      }
+      if (heading && row && !named) {
+        named = true;
+        onHeadingRef.current(heading);
+      }
+      if (tries < LAND_TRIES) landTimer.current = window.setTimeout(check, LAND_EVERY_MS);
+    };
+    requestAnimationFrame(check);
+    document.fonts.ready.then(check).catch(() => {});
   };
 
   /* the spy: the block under the read line names the document and the heading */
@@ -271,6 +333,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef }:
       observer.disconnect();
       root.removeEventListener('scrollend', onScrollEnd);
       window.clearTimeout(settleTimer.current);
+      window.clearTimeout(landTimer.current);
     };
   });
 
@@ -345,8 +408,8 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef }:
       if (previous === null) {
         url.current = here();
         const hash = readHash();
-        if (hash && hash !== active && jumpTo(hash, 'auto')) return;
-        if (index > 0) scrollTo(blockFor(active, null), 'auto');
+        const heading = hash && hash !== active ? hash : null;
+        if (index > 0 || heading) landOn(active, heading);
         return;
       }
       if (previous === active) return;
@@ -457,16 +520,19 @@ export type DocsShellProps = {
 };
 
 /**
- * The docs on the viewer shell: six documents as ThumbShot items in one
- * list, the headings of the active document as rows under it, the canon as
+ * The docs on the viewer shell: six documents under Documents in the site
+ * map, the headings of the active document as rows under it, the canon as
  * a book inside the 1280px flow sheet, and the six captures as a grid. Flow
- * keys, so Space and the arrows scroll; the site map in the index panel.
+ * keys, so Space and the arrows scroll. A direct /docs/<slug> lands on that
+ * document and stays there while the sheet settles.
  */
 export default function DocsShell({ active, docs }: DocsShellProps) {
   const [activeHeading, setActiveHeading] = useState<string | null>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const source = useRef<SelectSource | null>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
+  const docJumpRef = useRef<(slug: string) => void>(() => {});
+  const activeOut = useRef(active);
   const sections = useMemo(() => docsSections(docs), [docs]);
 
   const renderSub: SubRenderer = (item, isActive) => {
@@ -497,9 +563,11 @@ export default function DocsShell({ active, docs }: DocsShellProps) {
       keys='flow'
       noun='document'
       renderSub={renderSub}
-      onSelect={() => {
-        /* a selection nobody claimed came from the list, the keys or the grid */
-        source.current ??= 'select';
+      onSelect={(id) => {
+        /* re-clicking the current document jumps to it; any other selection
+           nobody claimed came from the list, the keys or the grid */
+        if (id === activeOut.current) docJumpRef.current(id);
+        else source.current ??= 'select';
       }}
     >
       <Sheet variant='flow' width={1280} scrollRef={sheetRef}>
@@ -510,6 +578,8 @@ export default function DocsShell({ active, docs }: DocsShellProps) {
           sheetRef={sheetRef}
           source={source}
           jumpRef={jumpRef}
+          docJumpRef={docJumpRef}
+          activeOut={activeOut}
         />
       </Sheet>
     </ViewerShell>

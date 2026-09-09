@@ -7,7 +7,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import Icon from '../icons';
-import { scrollerOf } from '../scroller';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin);
 
@@ -50,27 +49,24 @@ export default function CraftSlide() {
 
   useGSAP(
     () => {
-      const scroller = scrollerOf(root.current);
-      if (!scroller || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const trackEl = track.current;
       if (!trackEl) return;
 
       // The pin engages at the top, but the track starts sliding as soon as
-      // the section enters the stage, so scrolling never feels inert.
+      // the section enters the viewport, so scrolling never feels inert.
       ScrollTrigger.create({
         trigger: root.current,
-        scroller,
         start: 'top top',
         end: 'bottom bottom',
         pin: pin.current,
       });
 
       const scrollTween = gsap.to(trackEl, {
-        x: () => -(trackEl.scrollWidth - scroller.clientWidth),
+        x: () => -(trackEl.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
           trigger: root.current,
-          scroller,
           start: 'top bottom',
           end: 'bottom bottom',
           scrub: 0.5,
@@ -95,7 +91,6 @@ export default function CraftSlide() {
           ...vars,
           scrollTrigger: {
             trigger: plate,
-            scroller,
             containerAnimation: scrollTween,
             start,
             toggleActions: 'play none none reverse',

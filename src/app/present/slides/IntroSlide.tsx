@@ -8,8 +8,6 @@ import { useRef, useState } from 'react';
 import PrismaticField from '@/components/shared/PrismaticField';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { scrollerOf } from '../scroller';
-
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /** Opening slide — the prismatic burst sets the mood under the title card. */
@@ -26,8 +24,7 @@ export default function IntroSlide() {
 
   useGSAP(
     () => {
-      const scroller = scrollerOf(root.current);
-      if (!scroller || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
       tl.fromTo(
@@ -73,7 +70,6 @@ export default function IntroSlide() {
         ease: 'none',
         scrollTrigger: {
           trigger: root.current,
-          scroller,
           start: 'top top',
           end: 'bottom top',
           scrub: true,
