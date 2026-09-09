@@ -75,6 +75,7 @@
   function $(id) { return document.getElementById(id); }
   var viewer = $('viewer'), sb = $('sb'), sheet = $('sheet'), stage = $('stage'), wrap = $('stagewrap'), grid = $('grid'), book = $('book'), bookIn = $('book-in'), thumbsEl = $('thumbs');
   var slides = Array.prototype.slice.call(stage.querySelectorAll('.slide'));
+  var backImg = document.querySelector('#backdrop img');
   var counter = $('counter'), barTitle = $('bar-title'), barSec = $('bar-sec'), barN = $('bar-n'), barTotal = $('bar-total'), progress = $('progress'), help = $('help'), toast = $('toast'), panel = $('panel'), filter = $('surf-filter'), surfCount = $('surf-count');
   var i = 0, digits = '', digitTimer = null, mode = 'slide', reduced = false;
   try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
@@ -225,6 +226,15 @@
       if (want && img.getAttribute('src') !== want) img.setAttribute('src', want);
     });
     drawAllDither();
+    syncBackdrop();
+  }
+  /* a full-picture slide fills the stage area: the backdrop takes the active slide's image in the current theme (slide mode only; the grid and the book show the sheet as it is) */
+  function syncBackdrop() {
+    var cur = slides[i];
+    var pic = cur ? cur.querySelector('.opener-img, .mood-img') : null;
+    var on = !!pic && mode === 'slide';
+    wrap.classList.toggle('is-picture', on);
+    if (on && backImg) { var src = pic.getAttribute('src'); if (backImg.getAttribute('src') !== src) backImg.setAttribute('src', src); }
   }
   function show(n, opts) {
     opts = opts || {};
@@ -233,6 +243,7 @@
     thumbs.forEach(function (t, k) { t.classList.toggle('is-active', k === n); });
     pages.forEach(function (p, k) { p.classList.toggle('is-active', k === n); });
     i = n;
+    syncBackdrop();
     counter.textContent = pad(n + 1) + ' / ' + pad(slides.length);
     barN.textContent = pad(n + 1);
     if (barTitle) barTitle.textContent = titleOf(slides[n], n);
@@ -265,6 +276,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-mode]'), function (b) { var on = b.dataset.mode === m; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
     if (prev === 'grid') sb.appendChild(thumbsEl);
     if (m === 'grid') grid.appendChild(thumbsEl);
+    syncBackdrop();
     if (m === 'book' && !pages.length) buildBook();
     grid.hidden = m !== 'grid'; book.hidden = m !== 'book'; sheet.hidden = m !== 'slide';
     store('gt-deck-mode', m);

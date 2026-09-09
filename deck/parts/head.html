@@ -247,6 +247,12 @@
   .seg .ib:hover { background: var(--plate); }
   .seg .ib.is-on { background: var(--ink); color: var(--paper); }
   .stagewrap { grid-row: 2; position: relative; overflow: hidden; min-height: 0; background: var(--plate); }
+  /* a full-picture slide (an opener or a mood slide) paints its image over the whole stage area, not only the sheet: the backdrop carries the active slide's current image at object-fit cover, the sheet goes transparent and loses its edge, and the slide's own copy of the image hides so the two crops never show together; the rails, the plate and the chrome stay on the sheet */
+  .backdrop { position: absolute; inset: 0; z-index: 0; display: none; pointer-events: none; background: var(--paper); }
+  .backdrop img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .stagewrap.is-picture .backdrop { display: block; }
+  .stagewrap.is-picture .sheet { background: transparent; border-color: transparent; box-shadow: none; }
+  .stagewrap.is-picture .slide.is-on .opener-img, .stagewrap.is-picture .slide.is-on .mood-img { visibility: hidden; }
   .sheet { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; box-sizing: content-box; background: var(--paper); border: 1px solid var(--edge); box-shadow: 0 0 0 1px var(--paper), 0 0 0 2px var(--hair-soft); overflow: hidden; z-index: 1; }
   .stage { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; transform-origin: 0 0; }
   .slide { position: absolute; inset: 57px; padding: 72px 80px; display: none; }
@@ -383,6 +389,7 @@
       </div>
     </div>
     <div class="stagewrap" id="stagewrap">
+      <div class="backdrop" id="backdrop" aria-hidden="true"><img alt=""></div>
       <div class="sheet" id="sheet">
       <div class="stage" id="stage">
         <div class="frame">

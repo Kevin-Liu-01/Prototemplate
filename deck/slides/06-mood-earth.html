@@ -4,12 +4,17 @@
         .s-mood .mood-img { position: absolute; inset: -57px; z-index: -1; width: 1600px; height: 900px; object-fit: cover; display: block; }
         /* solid paper chips under the viewer's wordmark (stage 72,864, 28 by 18) and counter (right 72, bottom 22), the same plate treatment the openers use; scoped to the stage so thumbnails, which carry no chrome, stay clean */
         #stage > .s-mood::after { content: ''; position: absolute; inset: -57px; z-index: -1; pointer-events: none; background: linear-gradient(var(--paper), var(--paper)) 66px 858px / 40px 30px no-repeat, linear-gradient(var(--paper), var(--paper)) 1474px 856px / 60px 28px no-repeat; }
-        .s-mood .mood-plate { position: absolute; right: 0; bottom: 0; width: fit-content; padding: 10px 14px; background: var(--paper); }
-        .s-mood .mood-plate .credit { font-size: 15px; line-height: 1.45; letter-spacing: 0.01em; color: var(--titanium); white-space: nowrap; }
+        /* the plate names the picture, says why it is in the deck, and credits it; lower right, so it never meets the openers' lower-left plate as a pattern */
+        .s-mood .mood-plate { position: absolute; right: 0; bottom: 0; width: fit-content; max-width: 560px; padding: 22px 26px 20px; background: var(--paper); color: var(--ink); }
+        .s-mood .mood-plate .title { font-size: 44px; line-height: 1.08; color: var(--ink); }
+        .s-mood .mood-plate p { margin-top: 12px; color: var(--ink); }
+        .s-mood .mood-plate .credit { margin-top: 12px; font-size: 15px; line-height: 1.45; letter-spacing: 0.01em; color: var(--titanium); }
       </style>
       <img class="mood-img" src="shots/mood-earth-light.jpg" data-dark="shots/mood-earth.jpg" alt="NASA's Blue Marble, the Earth with the Western Hemisphere in daylight, rendered as a two-tone dither">
       <div class="in">
         <div class="mood-plate">
+          <div class="big title">The Blue Marble</div>
+          <p>NASA's composite of the whole planet. The company sells to every part of it, so the brand section starts at that scale.</p>
           <div class="credit">Image: NASA, Reto Stöckli, 2007, public domain</div>
         </div>
       </div>

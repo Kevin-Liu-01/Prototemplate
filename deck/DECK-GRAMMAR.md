@@ -3,6 +3,7 @@
 The deck is a single self-contained HTML file. Source lives in this directory:
 
 - `parts/head.html`: tokens, slide CSS, viewer CSS, viewer markup up to the stage. Do not edit unless told to.
+- Full-picture slides (`.s-opener`, `.s-mood`): the image sits at `inset: -57px` under the rails at object-fit cover, and in slide mode the viewer also paints it across the whole stage area through the `.backdrop` layer (`syncBackdrop()` in `parts/tail.html`), so on any viewport the picture fills the space edge to edge and only the plate, the rails and the chrome sit on the sheet. An opener's plate is lower left (section title, one sentence on what the section covers, credit); a mood slide's plate is lower right (the picture's title at 44px, one or two sentences on why the picture is in the deck, credit). Keep the picture's important region clear of its plate; the Blue Marble is fit to its plate, see `shots/OPENERS.md`.
 - `slides/NN-slug.html`: one file per slide, in order. Each file is exactly one `<section class="slide"><div class="in"> ... </div></section>` preceded by an HTML comment naming the slide. Edit only your assigned slide files.
 - `parts/tail.html`: closing markup, surfaces panel, help, script. Do not edit.
 - `node shoot-slide.mjs 8 15` renders slides 8 and 15 to `preview/s08-light.jpg`, `preview/s08-dark.jpg`, and so on, and prints any element that overflows the 1600x900 sheet. Safe to run concurrently. Look at both themes after every edit.
