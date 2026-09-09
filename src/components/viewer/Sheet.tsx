@@ -8,7 +8,7 @@ import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { Icon } from './icons';
-import { usePtShell } from './shell-context';
+import { usePtShell, usePtStage } from './shell-context';
 import { SheetFrame } from './SheetFrame';
 
 import './Sheet.css';
@@ -37,7 +37,7 @@ export type SheetFit = {
 };
 
 export type SheetFitInput = {
-  /** stage width minus the open panel */
+  /** the stage width */
   aw: number;
   ah: number;
   w: number;
@@ -114,9 +114,10 @@ export type SheetProps = FixedSheetProps | FlowSheetProps;
 type Slot = { key: string; node: ReactNode };
 
 /**
- * The content frame inside the stage. Fixed: a w x h sheet scaled to fit,
- * shown in slide mode, with the ring drawn as a mat (1px edge border, 1px
- * paper gap, 1px hair-soft outline; no shadow). Flow: a ruled scroll
+ * The content frame inside the stage. Fixed: a w x h sheet scaled to fit
+ * the whole stage (the index panel is an overlay and takes nothing from
+ * it), shown in slide mode, with the ring drawn as a mat (1px edge border,
+ * 1px paper gap, 1px hair-soft outline; no shadow). Flow: a ruled scroll
  * region holding the same ring around a reading column. Both sit inside
  * ViewerShell's .pt-stagewrap.
  */
@@ -171,8 +172,9 @@ function FixedSheet({
   itemKey,
   children,
 }: FixedSheetProps) {
-  const { mode, keys, present, narrow, panelOpen, stageSize, panelWidth, items, active, index, total, dir, step } =
-    usePtShell();
+  const { mode, keys, present, narrow, items, active, index, total, dir, step } = usePtShell();
+  /* the stage box comes through its own context, so the observer's ticks re-render only this sheet */
+  const { stageSize } = usePtStage();
   const mat = useRef<HTMLDivElement>(null);
   const touchX = useRef<number | null>(null);
 
@@ -211,17 +213,20 @@ function FixedSheet({
   const shown = mode === 'slide';
   const paged = keys === 'paged';
   const pad = present ? SHEET_PAD.present : narrow ? SHEET_PAD.narrow : SHEET_PAD.wide;
-  /* the panel width is measured by the shell, so the fit follows --pt-panel-w */
-  const side = panelOpen && !narrow ? panelWidth : 0;
   const withCaption = !frame && caption !== false && !present;
-  const fit = fitSheet({
-    aw: stageSize.width - side,
+  /* the index panel slides over the scrimmed stage and takes nothing from
+     the fit, so opening it never re-lays out the sheet (directive 7.4);
+     on a narrow viewport the sheet sits under the toolbar instead of
+     centered, so the plate below it can hold the slide's title */
+  const fitted = fitSheet({
+    aw: stageSize.width,
     ah: stageSize.height - (withCaption ? CAPTION_H : 0),
     w,
     h,
     pad,
     fit: fitMode,
   });
+  const fit: SheetFit = narrow && !present ? { ...fitted, top: pad } : fitted;
 
   const onClick = (e: MouseEvent<HTMLDivElement>) => {
     if (!shown || !paged) return;

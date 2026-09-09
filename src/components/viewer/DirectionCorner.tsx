@@ -4,8 +4,11 @@ import { useGSAP } from '@gsap/react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useRef, useState } from 'react';
 
+import Link from 'next/link';
+
 import { HelpCard } from '@/components/viewer/HelpCard';
 import { IndexPanel } from '@/components/viewer/IndexPanel';
+import { PtMark } from '@/components/viewer/PtMark';
 import { ShellContext } from '@/components/viewer/shell-context';
 import type { ShellState } from '@/components/viewer/shell-context';
 import { Sidebar } from '@/components/viewer/Sidebar';
@@ -21,7 +24,10 @@ import './DirectionCorner.css';
 
 /**
  * The direction pages' one piece of floating chrome, in the shell's grammar.
- * Two labeled buttons stacked in the top left corner: List opens the shell
+ * A 32px tile with the Prototemplate mark leads the stack in the top left
+ * corner (the link back to the gallery, as the sidebar head's mark is), so
+ * the trio reads as Prototemplate chrome and not as part of the prototype's
+ * own nav band; under it two labeled buttons: List opens the shell
  * Sidebar as the 300px overlay over a scrim, in outline density, listing
  * the whole site map (Pages, Documents, Sites, Explorations, Archive) with
  * this page's row marked, with its filter, its collapsible groups and its
@@ -93,8 +99,6 @@ function cornerState(active: string, overrides: Partial<ShellState>): ShellState
     index: -1,
     dir: 'next',
     total: 0,
-    stageSize: { width: 0, height: 0 },
-    panelWidth: 0,
     setMode: noop,
     setDensity: noop,
     setSidebar: noop,
@@ -219,6 +223,14 @@ function Corner({ slug }: DirectionCornerProps) {
   return (
     <>
       <div className='pt-corner' role='group' aria-label='Prototemplate'>
+        <Link
+          className='pt-ib pt-icon pt-corner-mark'
+          href='/'
+          title='Back to the gallery'
+          aria-label='Back to the gallery'
+        >
+          <PtMark />
+        </Link>
         <ToolButton
           icon='sidebar'
           label='List'

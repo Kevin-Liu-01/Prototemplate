@@ -1,7 +1,9 @@
-/* DirectionCorner: the floating chrome on /d pages. Two labeled buttons
-   stacked in the top left corner, sharing one hairline, on paper; a fixed
-   layer over the page holds the overlay list and the index panel above a
-   28 percent ink scrim. Tokens only, radius 0, no shadow. tokens.css owns
+/* DirectionCorner: the floating chrome on /d pages. A 32px tile with the
+   Prototemplate mark (the link back to the gallery) over two labeled
+   buttons, stacked in the top left corner and sharing one hairline, on
+   paper, so the trio reads as Prototemplate chrome and not as part of the
+   prototype's own nav band; a fixed layer over the page holds the overlay
+   list and the index panel above a 28 percent ink scrim. Tokens only, radius 0, no shadow. tokens.css owns
    .pt-ib; Sidebar.css draws the overlay list (.pt-sb.is-overlay) as an
    absolute box against this layer and slides it in; IndexPanel.css draws
    the panel, which here spans the whole height because there is no toolbar
@@ -32,9 +34,20 @@
   color: var(--pt-ink-2);
 }
 
-/* the pair shares the hairline between them */
+/* the stack shares the hairlines between its members */
 .pt-corner .pt-ib + .pt-ib {
   margin-top: -1px;
+}
+
+/* the mark tile: a link dressed as the icon square, ink at rest */
+.pt-corner .pt-corner-mark {
+  color: var(--pt-ink);
+  text-decoration: none;
+}
+
+.pt-corner .pt-corner-mark svg {
+  width: 22px;
+  height: 22px;
 }
 
 .pt-corner .pt-ib:hover,

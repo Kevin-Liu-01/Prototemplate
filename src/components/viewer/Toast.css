@@ -1,7 +1,10 @@
-/* Toast: paper text on an ink plate, centered above the bottom edge. It
-   fades and rises 4px over the toast duration (directive 7.4), and settles
-   back the same way. It keeps its own view transition group so a mode
-   change's stage snapshot never covers a message in flight. */
+/* Toast: paper text on an ink plate with a 1px paper outline, so the plate
+   separates from dark content under it (the archive capture in the light
+   theme), centered above the bottom edge. It fades and rises 4px over the
+   toast duration (directive 7.4), and settles back the same way. On a phone
+   it sits under the toolbar instead, where the thumb never rests. It keeps
+   its own view transition group so a mode change's stage snapshot never
+   covers a message in flight. */
 .pt-toast {
   position: fixed;
   left: 50%;
@@ -10,6 +13,7 @@
   max-width: calc(100vw - 32px);
   background: var(--pt-ink);
   color: var(--pt-paper);
+  outline: 1px solid var(--pt-paper);
   font: 12.5px/1.4 var(--pt-text);
   font-variant-numeric: tabular-nums;
   padding: 7px 12px;
@@ -30,8 +34,24 @@
   transform: translate(-50%, 0);
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* the phone: the toolbar takes two rows (92px, ViewerShell.css); the toast
+   hangs 8px under it. The variable is read from the shell root's scope when
+   the toast sits inside one and falls back to the same 92px otherwise. */
+@media (max-width: 600px) {
   .pt-toast {
+    top: calc(var(--pt-toolbar-h, 92px) + 8px);
+    bottom: auto;
+    transform: translate(-50%, -4px);
+  }
+
+  .pt-toast.is-on {
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-toast,
+  .pt-toast.is-on {
     transition: none;
     transform: translate(-50%, 0);
   }

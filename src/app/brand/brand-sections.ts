@@ -124,11 +124,11 @@ export function brandShot(sectionId: string): ShellShot {
   };
 }
 
-/** The shell's list: one section, Brand book, with the ten sections as items. */
+/** The shell's list: one section, Sections, with the ten sections as items (Brand / Sections / 10 sections, parallel to Docs / Documents). */
 export const BRAND_SHELL_SECTIONS: readonly ShellSection[] = [
   {
     id: 'brand-book',
-    label: 'Brand book',
+    label: 'Sections',
     items: BRAND_SECTIONS.map((section, i) => ({
       id: section.id,
       n: pad2(i + 1),

@@ -58,7 +58,7 @@ const OPENER = (
   <div className='ptb-opener'>
     <div className='ptb-opener-copy'>
       <h1>The brand</h1>
-      <p className='pt-post-byline'>General Translation · the identity, laid out</p>
+      <p className='pt-post-byline'>General Translation. The identity, laid out</p>
       <p>
         This page is the brand in one place: the name, the idea, the character, the
         mark, the color and type systems, and the devices that make the identity

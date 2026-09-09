@@ -3,10 +3,12 @@
    ViewerShell draws the chrome and Sheet draws the ring; this sheet owns
    only what sits on the 2881x928 stage: two columns, each a 28px caption
    over a 1440x900 pane, and the one hairline seam between them. The stage
-   is scaled by the sheet to the stage height and pans sideways, so the
-   panes keep their exhibit width and the proportional scroll sync in
-   CompareRig.tsx reads two same-origin windows of one size. Colors are
-   tokens only. */
+   is scaled by the sheet to fit both panes at once (Both) or to the stage
+   height, panning sideways to the named pane (Left, Right), so the panes
+   keep their exhibit width and the proportional scroll sync in
+   CompareRig.tsx reads two same-origin windows of one size. Each caption
+   is clipped inside its own pane, so the stage edge can never cut it.
+   Colors are tokens only. */
 
 .pt-cmp-panes {
   position: absolute;
@@ -28,12 +30,20 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  max-width: 1440px;
   padding: 0 14px;
   font-size: 15px;
   line-height: 1;
   color: var(--pt-titanium);
   border-bottom: 1px solid var(--pt-hair-soft);
   white-space: nowrap;
+  overflow: hidden;
+}
+
+.pt-cmp-caption > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pt-cmp-caption b {

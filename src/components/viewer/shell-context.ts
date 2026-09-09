@@ -7,6 +7,14 @@ import type { ShellDensity, ShellItem, ShellKeys, ShellMode } from '@/lib/shell-
 /** The stage box, published by ViewerShell's ResizeObserver on .pt-stagewrap. */
 export type StageSize = { width: number; height: number };
 
+/**
+ * The stage geometry, in its own context so the ResizeObserver's ticks
+ * (every frame of the sidebar's 220ms width transition, every window
+ * resize) re-render only the fixed sheet that reads them, never the sidebar
+ * rows, the toolbar, the panel or the book (directive 7.5).
+ */
+export type StageState = { stageSize: StageSize };
+
 /** Which way the last paged move went; the slide-change animation reads it. */
 export type ShellDir = 'next' | 'prev';
 
@@ -71,9 +79,14 @@ export type ShellState = {
   total: number;
   /** a word before the count, when the count needs one: `Left` on /compare */
   countLabel?: string;
-  stageSize: StageSize;
-  /** the index panel's box width, measured by the same observer; what an open panel takes from the stage */
-  panelWidth: number;
+  /**
+   * False until the shell's mount effect has applied the saved state and the
+   * hash; the sidebar spends its one centering scroll only after that, so a
+   * deep link lands its row in the middle of the list instead of the SSR
+   * default row taking it. Optional so a state assembled outside ViewerShell
+   * (DirectionCorner) can leave it out: read an absent value as true.
+   */
+  ready?: boolean;
   setMode: (mode: ShellMode) => void;
   setDensity: (density: ShellDensity) => void;
   setSidebar: (open: boolean) => void;
@@ -97,5 +110,14 @@ export const ShellContext = createContext<ShellProviderValue>(null);
 export function usePtShell(): ShellState {
   const value = useContext(ShellContext);
   if (!value) throw new Error('usePtShell must be called inside ViewerShell');
+  return value;
+}
+
+export const StageContext = createContext<StageState | null>(null);
+
+/** The stage box for the fixed sheet. Throws outside ViewerShell. */
+export function usePtStage(): StageState {
+  const value = useContext(StageContext);
+  if (!value) throw new Error('usePtStage must be called inside ViewerShell');
   return value;
 }

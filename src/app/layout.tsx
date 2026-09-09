@@ -93,11 +93,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             assertion in ThemeButton agrees with the first paint. A
             same-origin frame (the gallery exhibit, the compare panes) also
             receives the parent's write as a storage event, so every loaded
-            frame follows the toggle with no per-frame code. */}
+            frame follows the toggle with no per-frame code. The saved shell
+            list state (gt-shell-sb '0', gt-shell-density 'thumbs') is
+            stamped as data-shell-sb and data-shell-density for the same
+            reason: ViewerShell.css reads them until the shell has settled,
+            so the first paint already shows the closed list or the wider
+            column and hydration never shifts the layout (directive 7.5). */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var t=localStorage.getItem('gt-theme');document.documentElement.dataset.theme=t==='light'||t==='dark'?t:'dark'}catch(e){document.documentElement.dataset.theme='dark'}window.addEventListener('storage',function(e){if(e.key==='gt-theme'&&(e.newValue==='light'||e.newValue==='dark'))document.documentElement.dataset.theme=e.newValue});",
+              "try{var t=localStorage.getItem('gt-theme');document.documentElement.dataset.theme=t==='light'||t==='dark'?t:'dark'}catch(e){document.documentElement.dataset.theme='dark'}try{if(localStorage.getItem('gt-shell-sb')==='0')document.documentElement.dataset.shellSb='0';if(localStorage.getItem('gt-shell-density')==='thumbs')document.documentElement.dataset.shellDensity='thumbs'}catch(e){}window.addEventListener('storage',function(e){if(e.key==='gt-theme'&&(e.newValue==='light'||e.newValue==='dark'))document.documentElement.dataset.theme=e.newValue});",
           }}
         />
         {/* rAF gate: an embedding parent can freeze/resume this page's

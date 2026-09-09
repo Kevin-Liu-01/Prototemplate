@@ -91,7 +91,7 @@ const PAGES: readonly Surface[] = [
   internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand-the-name')),
   internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs-readme')),
   internal('deck', 'Deck', '/deck', 'The GT brand deck, 52 slides.', 'Pages'),
-  internal('present', 'Present', '/present', 'The presenter, a separate full-screen tool.', 'Pages', {
+  internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', {
     shot: `${THUMBS}/present-intro.jpg`,
   }),
   internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages'),

@@ -7,8 +7,12 @@
 //                                 the --pt- tokens; no viewer chrome
 //   src/app/deck/slides.html      the 52 slides concatenated in order, with
 //                                 src and data-dark rewritten to
-//                                 /deck/shots/..., preceded by the #gt-mark
-//                                 symbol the slides reference
+//                                 /deck/shots/... and every <img> marked
+//                                 loading="lazy" decoding="async" (an image
+//                                 in a slide that is not displayed is never
+//                                 fetched; DeckViewer warms the neighbours),
+//                                 preceded by the #gt-mark symbol the slides
+//                                 reference
 //   public/deck/shots/            the image files under deck/shots, plus
 //                                 thumb/, which the slides and the index
 //                                 panel reference
@@ -174,13 +178,19 @@ const slidesBody = slideFiles
   .replace(/(src|data-dark)="shots\/([^"]+)"/g, (_, attr, path) => {
     referenced.add(path);
     return `${attr}="/deck/shots/${path}"`;
-  });
+  })
+  /* directive 7.5: only the slide on screen (and its neighbours, which
+     DeckViewer marks eager) downloads its photography */
+  .replace(/<img\b(?![^>]*\bloading=)/g, '<img loading="lazy" decoding="async"');
 
 if (/<script\b/i.test(slidesBody)) {
   throw new Error('build-deck: a slide carries a <script>; the grammar forbids it');
 }
 if (/(src|data-dark)="shots\//.test(slidesBody)) {
   throw new Error('build-deck: an image path was not rewritten');
+}
+if (/<img\b(?![^>]*\bloading=)/.test(slidesBody)) {
+  throw new Error('build-deck: an image was not marked lazy');
 }
 
 const symbol = head.match(/<svg width="0" height="0"[^>]*>\s*<symbol id="gt-mark"[\s\S]*?<\/symbol><\/svg>/);

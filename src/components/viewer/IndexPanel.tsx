@@ -17,12 +17,14 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 import './IndexPanel.css';
 
 /**
- * The index panel: a 460px column that slides over the stage from the
- * right, listing one set from src/lib/surfaces.ts in groups, each row with a
- * 96x54 preview, a name, an address and a line of description. A Site |
- * Public seg above the filter switches between the two sets, so every route
- * reaches every page on this site and every public surface; the route names
- * the set the panel opens on. The filter is a case-insensitive substring
+ * The index panel: a 460px column that slides over the scrimmed stage from
+ * the right (the sheet under it keeps its fit), listing one set from
+ * src/lib/surfaces.ts in groups, each row with a 96x54 preview, a name, an
+ * address and a line of description. A `This site | General Translation`
+ * seg above the filter switches between the two sets, so every route
+ * reaches every page on this site and every public place the brand is
+ * live; the route names the set the panel opens on and the head counts
+ * `N pages` or `N places`. The filter is a case-insensitive substring
  * match on the row text and its href; groups with no match hide and the
  * head count follows. Opened by the toolbar's Index button and, in
  * useShellKeys, by R and by Cmd K or Ctrl K, which also focus the filter, so
@@ -38,20 +40,21 @@ export type IndexPanelProps = {
   ref?: RefObject<HTMLElement | null>;
 };
 
+/* the two sets in a first visitor's words: what is on this site, and where General Translation is live */
 const SET_OPTIONS: readonly SegOption<SurfaceSet>[] = [
-  { value: 'site', label: 'Site', title: 'Every page on this site' },
-  { value: 'public', label: 'Public', title: 'Every public place the brand is live' },
+  { value: 'site', label: 'This site', title: 'Every page on this site' },
+  { value: 'public', label: 'General Translation', title: 'Every public place the brand is live' },
 ];
 
+/* each note starts with what the rows do */
 const NOTE: Record<SurfaceSet, string> = {
-  site: 'Every page on this site, with a preview where one exists. Each row opens in place.',
-  public:
-    'Every place the brand is live, with a preview where one exists. Each row opens the surface in a new tab.',
+  site: 'Pages on this site; a row opens it here. A preview shows where one exists.',
+  public: "General Translation's live pages; a row opens in a new tab. A preview shows where one exists.",
 };
 
-/** `14 pages`, `1 surface`: the head count for a set. */
+/** `14 pages`, `23 places`: the head count for a set. */
 export function surfaceCount(set: SurfaceSet, n: number): string {
-  const one = set === 'site' ? 'page' : 'surface';
+  const one = set === 'site' ? 'page' : 'place';
   return `${n} ${n === 1 ? one : `${one}s`}`;
 }
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { FocusEvent, KeyboardEvent, MouseEvent, ReactNode, RefObject } from 'react';
@@ -44,8 +45,9 @@ const OPEN_BY_DEFAULT: readonly string[] = ['Pages'];
 /** Everything the arrow keys walk in the list: item rows, frames, sub rows, group heads. */
 const ROW_SELECTOR = '.pt-orow, .pt-thumb, .pt-row, .pt-sec-head';
 
+/* queue-list for the outline (bars-3 would read as the toolbar's List toggle 60px away), photo for the frames */
 const DENSITY_OPTIONS: readonly SegOption<ShellDensity>[] = [
-  { value: 'outline', label: 'Outline', icon: 'list', title: 'Outline' },
+  { value: 'outline', label: 'Outline', icon: 'queue-list', title: 'Outline' },
   { value: 'thumbs', label: 'Thumbnails', icon: 'photo', title: 'Thumbnails' },
 ];
 
@@ -122,7 +124,7 @@ function rowAsItem(row: Surface): ShellItem {
   };
 }
 
-/** `52 slides` -> `slides`; the word the filter placeholder names. */
+/** `52 slides` -> `slides`; the word the filter's accessible name carries (the placeholder is `Filter`, the count beside it names the noun). */
 function nounOf(count: string): string {
   return count.replace(/^\d+\s*/, '').trim() || 'items';
 }
@@ -136,22 +138,33 @@ function focusVisible(el: HTMLElement): boolean {
   }
 }
 
+function scrollRow(el: HTMLElement, block: ScrollLogicalPosition): void {
+  try {
+    el.scrollIntoView({ block });
+  } catch {
+    el.scrollIntoView();
+  }
+}
+
 /**
  * A ref callback, not an effect: React calls it when the active row mounts
  * or when the ref prop switches on, so the row follows every selection and
- * reappears in view when a hidden list is shown again. The first landing
- * centers the row; later moves scroll the least distance.
+ * reappears in view when a hidden list is shown again. Nothing happens
+ * before the shell is ready (the SSR default row must not spend the
+ * landing); the first landing after that centers the row on the next frame,
+ * so it measures rendered boxes; later moves scroll the least distance.
  */
-function makeFollow(landed: RefObject<boolean>) {
+function makeFollow(landed: RefObject<boolean>, ready: RefObject<boolean>) {
   return (el: HTMLElement | null) => {
-    if (!el) return;
-    const block: ScrollLogicalPosition = landed.current ? 'nearest' : 'center';
-    landed.current = true;
-    try {
-      el.scrollIntoView({ block });
-    } catch {
-      el.scrollIntoView();
+    if (!el || !ready.current) return;
+    if (landed.current) {
+      scrollRow(el, 'nearest');
+      return;
     }
+    landed.current = true;
+    requestAnimationFrame(() => {
+      if (el.isConnected) scrollRow(el, 'center');
+    });
   };
 }
 
@@ -196,8 +209,10 @@ type OutlineRowProps = ThumbItemProps & {
  * A route item as a 32px outline row: the number in a 26px tabular column,
  * the title, and, when the item has a capture, a 12px preview affordance
  * that shows on hover. The active row draws a 2px ink bar at its left edge.
+ * The title clamps to two lines and the tooltip repeats the description, or
+ * the title itself when there is none, so a clamped row still names itself.
  * Enter selects; Space opens the preview (or selects an item with no
- * capture); hovering or keyboard-focusing the row for 250ms opens it too.
+ * capture); hovering or keyboard-focusing the row for 500ms opens it too.
  */
 function OutlineRow({ item, active, onSelect, follow, preview }: OutlineRowProps) {
   const select = () => onSelect(item.id);
@@ -232,7 +247,7 @@ function OutlineRow({ item, active, onSelect, follow, preview }: OutlineRowProps
       tabIndex={0}
       data-id={item.id}
       aria-current={active || undefined}
-      title={item.desc}
+      title={item.desc ?? item.title}
       onMouseDown={pressWithoutFocus}
       onClick={select}
       onKeyDown={onKey}
@@ -246,7 +261,7 @@ function OutlineRow({ item, active, onSelect, follow, preview }: OutlineRowProps
       <span className='pt-orow-title'>{item.title}</span>
       {item.shot ? (
         <span className='pt-orow-peek' title='Preview (Space)' aria-hidden='true' onClick={onPeek}>
-          <Icon name='photo' />
+          <Icon name='eye' />
         </span>
       ) : null}
     </div>
@@ -283,7 +298,7 @@ function NavRow({ row, current, onNavigate, follow, preview }: NavRowProps) {
       <span className='pt-orow-title'>{row.name}</span>
       {subject.shot ? (
         <span className='pt-orow-peek' aria-hidden='true'>
-          <Icon name='photo' />
+          <Icon name='eye' />
         </span>
       ) : null}
     </Link>
@@ -364,12 +379,14 @@ export type SidebarProps = {
  * persists per route under gt-shell-sections:<id>, each item a 32px row
  * with the active one marked by a 2px ink bar, or a strip of captured 16:9
  * frames in thumbnail density. Site map groups are links to other routes
- * and stay rows in both densities; the current route's row is marked.
+ * and stay rows in both densities; the current route's row reads in ink
+ * (no bar: the bar means the place inside the current document).
  * Typing in the filter narrows every group and opens them; Enter opens the
  * first match; Escape clears; Down arrow moves into the list. Arrow keys
  * move between rows, Enter selects, Space previews. Hovering or focusing a
- * row with a capture for 250ms opens a preview beside the list (never on
- * touch). At or below 900px an open list is an overlay with a close button,
+ * row with a capture for 500ms opens a preview beside the list (never on
+ * touch). The list centers the active row once, after the shell has
+ * applied the hash (shell.ready), so a deep link lands in the middle. At or below 900px an open list is an overlay with a close button,
  * and selecting an item closes it.
  */
 export function Sidebar({
@@ -388,6 +405,8 @@ export function Sidebar({
   const router = useRouter();
   const pathname = usePathname();
   const { id, density, present, narrow, sidebarOpen, sidebarShown, active, select, setSidebar, setDensity } = shell;
+  /* the shell's landing flag; a state assembled elsewhere (DirectionCorner) leaves it out and is ready at once */
+  const ready = shell.ready ?? true;
 
   const [query, setQuery] = useState('');
   /* per group, open or closed, where the reader has changed the default; persisted per route */
@@ -396,8 +415,22 @@ export function Sidebar({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const landed = useRef(false);
+  const readyRef = useRef(ready);
+  readyRef.current = ready;
   /* one stable ref callback: React calls it only when the active row mounts or changes */
-  const [follow] = useState(() => makeFollow(landed));
+  const [follow] = useState(() => makeFollow(landed, readyRef));
+
+  /* the landing without a hash: the row the server marked is already in the
+     DOM, its ref callback ran before the shell was ready and will not run
+     again, so the centering is spent here once ready */
+  useGSAP(
+    () => {
+      if (!ready || landed.current) return;
+      const row = listRef.current?.querySelector<HTMLElement>('.pt-orow.is-active, .pt-thumb.is-active');
+      if (row) follow(row);
+    },
+    { dependencies: [ready] }
+  );
 
   const groups = buildGroups(sections, siteMap, openGroups);
   const q = query.trim().toLowerCase();
@@ -636,7 +669,8 @@ export function Sidebar({
         value={query}
         onChange={setQuery}
         onKeyDown={onFilterKey}
-        placeholder={`Filter ${nounOf(count)}`}
+        placeholder='Filter'
+        label={`Filter ${nounOf(count)}`}
         count={count}
         inputRef={inputRef}
       />

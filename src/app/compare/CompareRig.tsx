@@ -37,15 +37,17 @@ import './compare.css';
  * loop back. The pair mirrors into the URL hash (#a=...&b=...) so a
  * comparison is a link.
  *
- * The sheet fills the stage height and pans sideways (Sheet's fit 'height'),
- * so each pane keeps legible text instead of shrinking two pages into one
- * width; a 28px caption over each pane names it (Left: Dossier, /d/...),
- * and the Left | Right seg scrolls the stage to the pane it names. The shell
- * tracks one active item: the direction in the pane the next pick fills.
- * Arrows, digits and list picks all go through the shell's select, which
- * lands in onSelect and loads that pane; the count reads `Left 01 / 17`.
- * The shell writes #<slug> on every selection; onSelect rewrites the pair
- * form over it.
+ * A Both | Left | Right seg chooses the view. Both (the default) fits the
+ * whole 2881px sheet in the stage so the two panes are on screen at once;
+ * Left and Right fill the stage height and pan sideways to the named pane
+ * (Sheet's fit 'height'), where each pane keeps legible text and the sync
+ * scroll matters, and also make that pane the one the next pick fills. A
+ * 28px caption over each pane names it (Left: Dossier, /d/...). The shell
+ * tracks one active item: the direction in the target pane. Arrows, digits
+ * and list picks all go through the shell's select, which lands in onSelect
+ * and loads that pane; the count reads `Left 01 / 17`, and the list marks
+ * the loaded directions L and R. The shell writes #<slug> on every
+ * selection; onSelect rewrites the pair form over it.
  */
 
 const TITLE = 'Compare';
@@ -64,9 +66,23 @@ const SHEET_H = PANE_H + CAPTION_H;
 
 type Frames = Record<PaneKey, RefObject<HTMLIFrameElement | null>>;
 
-const PANE_OPTIONS: readonly SegOption<PaneKey>[] = [
-  { value: 'a', label: PANE_NAME.a, icon: 'prev', title: 'Picks and arrows load the left pane; the stage scrolls to it (T)' },
-  { value: 'b', label: PANE_NAME.b, icon: 'next', title: 'Picks and arrows load the right pane; the stage scrolls to it (T)' },
+/** What the stage shows: both panes fitted side by side, or one pane at the stage height. */
+type PaneView = 'both' | PaneKey;
+
+const PANE_OPTIONS: readonly SegOption<PaneView>[] = [
+  { value: 'both', label: 'Both', title: 'Both panes side by side' },
+  {
+    value: 'a',
+    label: PANE_NAME.a,
+    icon: 'arrow-left-circle',
+    title: 'The left pane at reading size; picks and arrows load it (T)',
+  },
+  {
+    value: 'b',
+    label: PANE_NAME.b,
+    icon: 'arrow-right-circle',
+    title: 'The right pane at reading size; picks and arrows load it (T)',
+  },
 ];
 
 function writeHash(pair: Pair): void {
@@ -84,46 +100,57 @@ function isEditable(target: EventTarget | null): boolean {
   return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 }
 
-/** Scroll the panning stage to one pane. */
+/** Scroll the panning stage to one pane, on the next frame so a fit that changed with the view has laid out. */
 function showPane(key: PaneKey): void {
-  const stage = document.querySelector<HTMLElement>('.pt-viewer[data-shell="compare"] .pt-sheet-stage');
-  if (!stage) return;
-  const max = stage.scrollWidth - stage.clientWidth;
-  stage.scrollTo({ left: key === 'a' ? 0 : max });
+  requestAnimationFrame(() => {
+    const stage = document.querySelector<HTMLElement>('.pt-viewer[data-shell="compare"] .pt-sheet-stage');
+    if (!stage) return;
+    const max = stage.scrollWidth - stage.clientWidth;
+    stage.scrollTo({ left: key === 'a' ? 0 : max });
+  });
 }
 
 /** What the inner components need from the rig; the refs read the latest values from any listener. */
 type Engine = {
   pair: Pair;
   target: PaneKey;
+  view: PaneView;
   syncOn: boolean;
   readPair: () => Pair;
   readTarget: () => PaneKey;
   apply: (next: Pair) => void;
   setTarget: (next: PaneKey) => void;
+  setView: (next: PaneView) => void;
   swap: () => Pair;
   toggleSync: () => void;
 };
 
-type CompareToolsProps = Pick<Engine, 'pair' | 'target' | 'syncOn' | 'setTarget' | 'swap' | 'toggleSync'>;
+type CompareToolsProps = Pick<
+  Engine,
+  'pair' | 'target' | 'view' | 'syncOn' | 'setTarget' | 'setView' | 'swap' | 'toggleSync'
+>;
 
 /**
- * The toolbar slot: the Left | Right seg naming the pane the next pick
- * fills, then Sync scroll and Swap, each a labeled ToolButton with a
- * Heroicons glyph (directive 7.2). Changing the target or swapping moves
- * the shell's active item to the direction now in the target pane, so the
- * list always marks the pane the arrows will drive, and the stage scrolls
- * to that pane. T and X are the two route keys; the shell's key owner
- * leaves both letters free.
+ * The toolbar slot: the Both | Left | Right seg choosing the view (a pane
+ * option also names the pane the next pick fills), then Sync scroll and
+ * Swap, each a labeled ToolButton with a Heroicons glyph (directive 7.2).
+ * Choosing a pane or swapping moves the shell's active item to the
+ * direction now in the target pane, so the list always marks the pane the
+ * arrows will drive, and the stage pans to that pane. T and X are the two
+ * route keys; the shell's key owner leaves both letters free.
  */
-function CompareTools({ pair, target, syncOn, setTarget, swap, toggleSync }: CompareToolsProps) {
+function CompareTools({ pair, target, view, syncOn, setTarget, setView, swap, toggleSync }: CompareToolsProps) {
   const shell = usePtShell();
 
-  const pickTarget = (next: PaneKey) => {
+  const pickView = (next: PaneView) => {
+    setView(next);
+    if (next === 'both') return;
     setTarget(next);
     shell.select(pair[next]);
     showPane(next);
   };
+
+  const pickTarget = (next: PaneKey) => pickView(next);
 
   const doSwap = () => {
     const next = swap();
@@ -158,7 +185,7 @@ function CompareTools({ pair, target, syncOn, setTarget, swap, toggleSync }: Com
 
   return (
     <>
-      <Seg options={PANE_OPTIONS} value={target} onChange={pickTarget} label='Pane the next pick fills' />
+      <Seg options={PANE_OPTIONS} value={view} onChange={pickView} label='View' />
       <ToolButton
         icon='sync'
         label='Sync scroll'
@@ -273,6 +300,7 @@ export default function CompareRig() {
 
   const [pair, setPairState] = useState<Pair>(DEFAULT_PAIR);
   const [target, setTargetState] = useState<PaneKey>('a');
+  const [view, setView] = useState<PaneView>('both');
   const [syncOn, setSyncOn] = useState(true);
 
   /* the refs are written in the same call as the state so a select that
@@ -384,14 +412,23 @@ export default function CompareRig() {
         <CompareTools
           pair={pair}
           target={target}
+          view={view}
           syncOn={syncOn}
           setTarget={setTarget}
+          setView={setView}
           swap={swap}
           toggleSync={toggleSync}
         />
       }
     >
-      <Sheet variant='fixed' w={SHEET_W} h={SHEET_H} frame={false} fit='height' caption={false}>
+      <Sheet
+        variant='fixed'
+        w={SHEET_W}
+        h={SHEET_H}
+        frame={false}
+        fit={view === 'both' ? 'contain' : 'height'}
+        caption={false}
+      >
         <ComparePanes pair={pair} target={target} frames={frames} onLoad={wire} />
       </Sheet>
       <CompareBoot readPair={readPair} readTarget={readTarget} apply={apply} wireLoaded={wireLoaded} />

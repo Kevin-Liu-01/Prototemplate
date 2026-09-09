@@ -1,6 +1,7 @@
 import { DIRECTIONS, getDirection } from '@/lib/directions';
 import type { Direction } from '@/lib/directions';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
+import { pad2 } from '@/lib/shell-data';
 
 /**
  * The data behind /compare: the two panes, the default pair, the sidebar
@@ -21,8 +22,8 @@ export const OTHER: Record<PaneKey, PaneKey> = { a: 'b', b: 'a' };
 /** The seg labels. */
 export const PANE_NAME: Record<PaneKey, string> = { a: 'Left', b: 'Right' };
 
-/** The number column mark while a direction is loaded in that pane. */
-export const PANE_MARK: Record<PaneKey, string> = { a: 'A', b: 'B' };
+/** The number column mark while a direction is loaded in that pane: the pane's initial, as the seg, the caption and the count name it. */
+export const PANE_MARK: Record<PaneKey, string> = { a: 'L', b: 'R' };
 
 export const DEFAULT_PAIR: Pair = {
   a: 'singularity-dossier',
@@ -33,7 +34,7 @@ function shotFor(slug: string): ShellItem['shot'] {
   return { light: `/shots/light/${slug}.jpg`, dark: `/shots/dark/${slug}.jpg` };
 }
 
-/** `A`, `B`, or `AB` when one direction fills both panes; undefined when it is loaded in neither. */
+/** `L`, `R`, or `LR` when one direction fills both panes; undefined when it is loaded in neither. */
 function paneMark(slug: string, pair: Pair): string | undefined {
   const marks = PANE_KEYS.filter((key) => pair[key] === slug).map((key) => PANE_MARK[key]);
   return marks.length > 0 ? marks.join('') : undefined;
@@ -41,13 +42,13 @@ function paneMark(slug: string, pair: Pair): string | undefined {
 
 /**
  * One sidebar item. The number column shows the pane mark while the
- * direction is loaded, otherwise the exploration's label; the sites carry
- * no number, as in the gallery.
+ * direction is loaded, otherwise the direction's place in the count (the
+ * sites 01 to 04, the explorations after them), as the gallery numbers them.
  */
-function toItem(direction: Direction, pair: Pair): ShellItem {
+function toItem(direction: Direction, pair: Pair, position: number): ShellItem {
   return {
     id: direction.slug,
-    n: paneMark(direction.slug, pair) ?? (direction.site ? '' : direction.label ?? ''),
+    n: paneMark(direction.slug, pair) ?? pad2(position + 1),
     title: direction.name,
     href: `/d/${direction.slug}`,
     shot: shotFor(direction.slug),
@@ -65,8 +66,12 @@ export function compareSections(pair: Pair): readonly ShellSection[] {
   const sites = DIRECTIONS.filter((d) => d.site);
   const explorations = DIRECTIONS.filter((d) => !d.site);
   return [
-    { id: 'sites', label: 'Sites', items: sites.map((d) => toItem(d, pair)) },
-    { id: 'explorations', label: 'Explorations', items: explorations.map((d) => toItem(d, pair)) },
+    { id: 'sites', label: 'Sites', items: sites.map((d, i) => toItem(d, pair, i)) },
+    {
+      id: 'explorations',
+      label: 'Explorations',
+      items: explorations.map((d, i) => toItem(d, pair, sites.length + i)),
+    },
   ];
 }
 

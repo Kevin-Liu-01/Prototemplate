@@ -1,6 +1,9 @@
-/* Progress: the third row of .pt-main, a 2px track with an ink fill. */
+/* Progress: the last row of .pt-main, a 2px track with an ink fill. The
+   fill is a full-width span scaled from its left edge, so every move is a
+   transform (directive 7.4) and Progress.tsx can write it from a scroll
+   frame without a render. */
 .pt-progress {
-  grid-row: 3;
+  grid-row: 4;
   position: relative;
   height: 2px;
   background: var(--pt-hair-soft);
@@ -11,9 +14,11 @@
   left: 0;
   top: 0;
   height: 100%;
-  width: 0;
+  width: 100%;
   background: var(--pt-ink);
-  transition: width 160ms ease-out;
+  transform: scaleX(0);
+  transform-origin: 0 0;
+  transition: transform 160ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -20,8 +20,10 @@
 }
 
 /* section labels span every column over a rule; the grid's own 26px gap is
-   the whole break, so the label carries no margin or padding of its own */
-.pt-grid .pt-sec-label {
+   the whole break, so the label carries no margin or padding of its own.
+   Written at the list's own specificity plus the grid (Sidebar.css sets
+   .pt-thumbs > .pt-sec-label), so the import order can never decide it. */
+.pt-grid .pt-thumbs > .pt-sec-label {
   grid-column: 1 / -1;
   padding: 0;
   margin: 0;
@@ -32,7 +34,7 @@
   color: var(--pt-ink);
 }
 
-.pt-grid .pt-sec-label:first-child {
+.pt-grid .pt-thumbs > .pt-sec-label:first-child {
   border-top: 0;
   padding-top: 0;
 }

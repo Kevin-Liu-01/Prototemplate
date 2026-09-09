@@ -1,6 +1,9 @@
 /* ListRow: a frameless item in the sidebar list. The number column is the
    same 22px as .pt-thumb so a row under a thumb lines up with its frame.
-   One rule per row, drawn once, at the bottom. Colors are tokens only. */
+   One rule per row, drawn once, at the bottom, where the row stands alone;
+   under an outline row Sidebar.css drops the rule and the row takes the
+   outline grammar. The title clamps to two lines at 12.5px, as the outline
+   rows do. Colors are tokens only. */
 
 .pt-row {
   display: grid;
@@ -25,8 +28,12 @@
 
 .pt-row-title {
   min-width: 0;
-  font-size: 13.5px;
-  line-height: 1.35;
+  font-size: 12.5px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .pt-row:hover .pt-row-title,

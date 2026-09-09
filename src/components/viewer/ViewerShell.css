@@ -6,6 +6,11 @@
    other rule belongs to the component that draws it. Colors are tokens
    only; durations and easings are the --pt-dur-* and --pt-ease* tokens.
 
+   Landing: the column transitions below apply only under data-settled,
+   which ViewerShell.tsx stamps one frame after the saved state is in the
+   DOM, so a saved closed list or a saved density is a cut on load and
+   never a 220ms animation from the server's layout.
+
    Motion here, in order:
    1. The sidebar column. data-sb on .pt-viewer is '0' while the list is
       closed (or present, or the viewport is narrow) and the density name
@@ -34,9 +39,35 @@
   font-family: var(--pt-text);
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
-  /* the one layout animation the shell runs: the stage refits on every frame
-     through the shell's ResizeObserver */
+}
+
+/* the one layout animation the shell runs: the stage refits on every frame
+   through the shell's ResizeObserver. Settled only, see the head note. */
+.pt-viewer[data-settled] {
   transition: grid-template-columns var(--pt-dur-sb) var(--pt-ease);
+}
+
+/* the list's own fade (Sidebar.css) waits for the settle as well */
+.pt-viewer:not([data-settled]) > .pt-sb,
+.pt-viewer:not([data-settled]) > .pt-sb.is-hidden {
+  transition: none;
+}
+
+/* The saved list state, stamped on <html> by the boot script in layout.tsx
+   (data-shell-sb '0', data-shell-density 'thumbs'), paints the closed list
+   or the wider column on the first frame, before hydration has read
+   localStorage. These rules hold until the shell settles; by then data-sb
+   and data-density carry the same geometry, so nothing moves. */
+html[data-shell-density='thumbs'] .pt-viewer:not([data-settled]) {
+  --pt-sb-w: 256px;
+}
+
+html[data-shell-sb='0'] .pt-viewer:not([data-settled]) {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+
+html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
+  visibility: hidden;
 }
 
 /* thumbnail density widens the column (directive 7.3) */
@@ -101,19 +132,77 @@
   grid-row: 1;
   position: relative;
   display: grid;
-  grid-template-rows: var(--pt-toolbar-h) minmax(0, 1fr) 2px;
+  /* the toolbar, the first-visit hint row (0 when absent), the stage, the progress line */
+  grid-template-rows: var(--pt-toolbar-h) auto minmax(0, 1fr) 2px;
   min-width: 0;
   min-height: 0;
   background: var(--pt-paper);
 }
 
-/* the stage: the second row, measured by the shell's ResizeObserver; the
+/* the first-visit hint: a 28px row on paper over the stage, not a toast over
+   the content; a close button and any key put it away */
+.pt-hint {
+  grid-row: 2;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 6px 0 12px;
+  background: var(--pt-paper);
+  border-bottom: 1px solid var(--pt-hair-soft);
+  font-size: 12.5px;
+  line-height: 1;
+  color: var(--pt-titanium);
+}
+
+.pt-hint span {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pt-hint-close {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pt-titanium);
+  cursor: pointer;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-hint-close svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.pt-hint-close:hover {
+  color: var(--pt-ink);
+}
+
+.pt-hint-close:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* the stage: the third row, measured by the shell's ResizeObserver; the
    sheet, the grid and the book sit inside it. The index panel is a sibling,
    positioned against .pt-main so it spans the toolbar's bottom rule to the
-   progress line. The view-transition-name makes it the one region a mode
-   change cross-fades. */
+   progress line, sliding over the stage without changing its layout. The
+   view-transition-name makes it the one region a mode change cross-fades. */
 .pt-stagewrap {
-  grid-row: 2;
+  grid-row: 3;
   position: relative;
   overflow: hidden;
   min-height: 0;
@@ -137,10 +226,11 @@
 
 /* present: chrome gone, the stage reads as the window */
 .pt-viewer.is-present .pt-main {
-  grid-template-rows: 0 minmax(0, 1fr) 0;
+  grid-template-rows: 0 0 minmax(0, 1fr) 0;
 }
 
 .pt-viewer.is-present .pt-toolbar,
+.pt-viewer.is-present .pt-hint,
 .pt-viewer.is-present .pt-progress {
   display: none;
 }
@@ -149,27 +239,9 @@
   background: var(--pt-paper);
 }
 
-/* ---- the keyframes the shell shares (Sidebar.css and DirectionCorner.css
-   read pt-fade-in; GalleryViewer.css reads Sheet.css's slide pair) ---- */
-@keyframes pt-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes pt-fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
+/* ---- the shared fades, pt-fade-in and pt-fade-out, live in tokens.css so
+   HelpCard.css resolves them on the /d pages, which never load this sheet;
+   GalleryViewer.css reads Sheet.css's slide pair ---- */
 
 /* the entering view: a fade and a settle from 1.015 (directive 7.4) */
 @keyframes pt-view-in {
@@ -283,7 +355,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pt-viewer {
+  .pt-viewer,
+  .pt-viewer[data-settled] {
+    transition: none;
+  }
+
+  .pt-hint-close {
     transition: none;
   }
 

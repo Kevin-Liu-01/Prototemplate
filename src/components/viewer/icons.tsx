@@ -8,7 +8,11 @@
  * dark mode; the fullscreen button swaps to exit-fullscreen while
  * fullscreen; Help uses help (question-mark-circle); the compare rig's
  * Sync scroll and Swap use sync (arrows-up-down) and swap
- * (arrows-right-left).
+ * (arrows-right-left), its Left and Right panes arrow-left-circle and
+ * arrow-right-circle (never the paging chevrons). One glyph per meaning:
+ * sidebar (bars-3-bottom-left) is the list toggle alone, queue-list the
+ * sidebar's Outline density, photo its Thumbnails density, eye the row's
+ * preview affordance.
  */
 export type IconName =
   | 'sidebar'
@@ -39,7 +43,11 @@ export type IconName =
   | 'collapse'
   | 'open-page'
   | 'swap'
-  | 'sync';
+  | 'sync'
+  | 'queue-list'
+  | 'eye'
+  | 'arrow-left-circle'
+  | 'arrow-right-circle';
 
 type IconPath = { d: string; evenodd?: boolean };
 
@@ -162,6 +170,23 @@ const PATHS: Record<IconName, readonly IconPath[]> = {
   /* arrows-up-down */
   'sync': [
     { d: 'M2.24 6.8a.75.75 0 0 0 1.06-.04l1.95-2.1v8.59a.75.75 0 0 0 1.5 0V4.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L2.2 5.74a.75.75 0 0 0 .04 1.06Zm8 6.4a.75.75 0 0 0-.04 1.06l3.25 3.5a.75.75 0 0 0 1.1 0l3.25-3.5a.75.75 0 1 0-1.1-1.02l-1.95 2.1V6.75a.75.75 0 0 0-1.5 0v8.59l-1.95-2.1a.75.75 0 0 0-1.06-.04Z', evenodd: true },
+  ],
+  /* queue-list */
+  'queue-list': [
+    { d: 'M2 4.5A2.5 2.5 0 0 1 4.5 2h11a2.5 2.5 0 0 1 0 5h-11A2.5 2.5 0 0 1 2 4.5ZM2.75 9.083a.75.75 0 0 0 0 1.5h14.5a.75.75 0 0 0 0-1.5H2.75ZM2.75 12.663a.75.75 0 0 0 0 1.5h14.5a.75.75 0 0 0 0-1.5H2.75ZM2.75 16.25a.75.75 0 0 0 0 1.5h14.5a.75.75 0 1 0 0-1.5H2.75Z' },
+  ],
+  /* eye */
+  'eye': [
+    { d: 'M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z' },
+    { d: 'M.664 10.59a1.651 1.651 0 0 1 0-1.186A10.004 10.004 0 0 1 10 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0 1 10 17c-4.257 0-7.893-2.66-9.336-6.41ZM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z', evenodd: true },
+  ],
+  /* arrow-left-circle */
+  'arrow-left-circle': [
+    { d: 'M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.25-7.25a.75.75 0 0 0 0-1.5H8.66l2.1-1.95a.75.75 0 1 0-1.02-1.1l-3.5 3.25a.75.75 0 0 0 0 1.1l3.5 3.25a.75.75 0 0 0 1.02-1.1l-2.1-1.95h4.59Z', evenodd: true },
+  ],
+  /* arrow-right-circle */
+  'arrow-right-circle': [
+    { d: 'M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h4.59l-2.1 1.95a.75.75 0 0 0 1.02 1.1l3.5-3.25a.75.75 0 0 0 0-1.1l-3.5-3.25a.75.75 0 1 0-1.02 1.1l2.1 1.95H6.75Z', evenodd: true },
   ],
 };
 

@@ -1,15 +1,20 @@
 /* Toolbar: the first row of .pt-main. tokens.css owns every button state
    (.pt-ib, .pt-icon, .is-on, .is-solid, .pt-seg, .pt-lb); this sheet owns
    the bar, its two groups, the count control, the separators and the brand,
-   and the one label collapse. That collapse is measured, not guessed:
-   Toolbar.tsx compares the bar's content width with its box on every
-   resize and marks the bar .is-tight when the labels would overflow, so a
-   route with a wide slot (compare) collapses where the deck still fits.
-   Then every button becomes the 32px icon square and the titles carry the
-   names. The brand, shown only while the sidebar is hidden, truncates its
-   title rather than push the right group off the bar. At or below 900px the
-   separators go and the Theme label goes; at or below 600px the bar takes
-   two rows. */
+   and the label collapse in two stages. That collapse is measured, not
+   guessed: Toolbar.tsx compares the bar's content width with its box on
+   every resize. When the labels would overflow it marks the bar
+   .is-tight-1, which hides only the labels whose glyphs are conventional
+   and whose neighbours name them (Previous and Next around the count,
+   Theme, Fullscreen, Copy link), keeping List, the mode seg, Index,
+   Present, Help and the route slot worded; measured again, a bar still
+   short becomes .is-tight and every button is the 32px icon square with
+   the titles carrying the names. So a 1180 to 1400 laptop, and thumbnail
+   density at 1440, keep their labels (directive 7.6). The brand, shown
+   only while the sidebar is hidden, truncates its title rather than push
+   the right group off the bar. At or below 900px the separators go and the
+   Theme label goes; at or below 600px the bar takes two rows and the seg
+   keeps its words. */
 .pt-toolbar {
   grid-row: 1;
   height: var(--pt-toolbar-h, var(--pt-bar-h));
@@ -45,13 +50,15 @@
   gap: 4px;
 }
 
-/* the count: a button that opens a number field */
+/* the count: a button that opens a number field, ruled at rest so it reads
+   as one (ink on hover and while editing, as every field) */
 .pt-count {
   font-size: 13px;
   color: var(--pt-titanium);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   gap: 4px;
+  border-color: var(--pt-hair);
 }
 
 .pt-count b,
@@ -111,6 +118,18 @@
   flex: 0 1 auto;
 }
 
+/* the brand names the route only while the list column is closed (the
+   toggle, the grid, present, a narrow viewport); before the shell settles
+   the boot script's stamp on <html> decides, so a saved closed list shows
+   the brand on the first frame */
+.pt-viewer:not([data-sb='0']) .pt-bar-brand {
+  display: none;
+}
+
+html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
+  display: inline-flex;
+}
+
 .pt-bar-brand svg {
   flex: 0 0 auto;
 }
@@ -127,8 +146,29 @@
   text-overflow: ellipsis;
 }
 
-/* The label collapse. Toolbar.tsx measures the bar: when its controls
-   with their labels would overflow the box, .is-tight goes on and every
+/* The label collapse, stage one: the conventional glyphs lose their words
+   (Previous and Next sit either side of the count; Theme, Fullscreen and
+   Copy link are their icons), everything else stays worded. */
+.pt-toolbar.is-tight-1 .pt-prev .pt-lb,
+.pt-toolbar.is-tight-1 .pt-next .pt-lb,
+.pt-toolbar.is-tight-1 .pt-theme .pt-lb,
+.pt-toolbar.is-tight-1 .pt-full .pt-lb,
+.pt-toolbar.is-tight-1 .pt-copy .pt-lb {
+  display: none;
+}
+
+.pt-toolbar.is-tight-1 .pt-prev,
+.pt-toolbar.is-tight-1 .pt-next,
+.pt-toolbar.is-tight-1 .pt-theme,
+.pt-toolbar.is-tight-1 .pt-full,
+.pt-toolbar.is-tight-1 .pt-copy {
+  width: 32px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+}
+
+/* Stage two: when the bar is still short, .is-tight goes on and every
    labeled button takes the icon square's geometry, so every control is the
    same 32px; seg options keep a 9px pad around theirs; the count keeps its
    numbers. */
@@ -177,7 +217,9 @@
   }
 }
 
-/* a phone: two rows, the left group over the right one */
+/* a phone: two rows, the left group over the right one; the second row has
+   room for the seg's words (the seg plus Index, Theme and Help fit in 374px),
+   so the collapse leaves them */
 @media (max-width: 600px) {
   .pt-toolbar {
     flex-wrap: wrap;
@@ -194,5 +236,9 @@
 
   .pt-bar-r {
     justify-content: flex-end;
+  }
+
+  .pt-toolbar.is-tight .pt-seg .pt-lb {
+    display: inline;
   }
 }

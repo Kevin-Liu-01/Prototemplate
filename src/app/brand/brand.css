@@ -34,9 +34,12 @@
   padding-inline: 0;
 }
 
-/* the opener is the head of the book: flush with the sheet's top padding */
+/* the opener is the head of the book: flush with the sheet's top padding,
+   and inset like the sections below it (it carries pt-post-sec too, whose
+   reset above would otherwise zero its inline padding) */
 .ptb-book .ptb-head {
   padding-block: 0 var(--ptb-sec-pad);
+  padding-inline: var(--ptb-bleed);
 }
 
 /* a page row: the section number in the gutter, the section beside it */

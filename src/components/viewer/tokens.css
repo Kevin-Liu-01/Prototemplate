@@ -250,6 +250,30 @@ body[data-shell] {
   background: var(--pt-ink);
 }
 
+/* The two fades every shell sheet may read: the help scrim (HelpCard.css,
+   which the /d pages load without ViewerShell.css), the sidebar's content
+   fade and the narrow scrim (ViewerShell.css). Declared here so no motion
+   depends on which sheet a route happened to load. */
+@keyframes pt-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pt-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 /* Reduced motion: every duration goes to zero, so each transition and
    animation that reads a token lands on its end state at once. Component
    sheets also switch their own transitions off, so nothing depends on this

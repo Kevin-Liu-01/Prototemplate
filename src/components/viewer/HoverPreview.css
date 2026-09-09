@@ -1,14 +1,15 @@
-/* HoverPreview: the card beside an outline row. A 320px column: a 1px
+/* HoverPreview: the card beside an outline row. A 240px column: a 1px
    paper mat with a --pt-hair-soft outline (the sheet ring, one stroke
    each), the 16:9 frame with its --pt-edge border, the title row. Fixed to
-   the viewport, above the narrow overlay list (10) and below the help card
-   (20). It fades and moves 4px over 120ms, transform and opacity only, and
-   holds still under reduced motion. Colors are tokens only. */
+   the viewport, centered on its row, above the narrow overlay list (10) and
+   below the help card (20). It fades and moves 4px over 120ms, transform
+   and opacity only, and holds still under reduced motion. Colors are
+   tokens only. */
 
 .pt-preview {
   position: fixed;
   z-index: 12;
-  width: 320px;
+  width: 240px;
   padding: 1px;
   background: var(--pt-paper);
   outline: 1px solid var(--pt-hair-soft);

@@ -151,12 +151,12 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-titanium);
 }
 
-/* a group: a 28px head that collapses it, then its rows or frames */
+/* a group: a 28px head that collapses it, then its rows or frames. The
+   rows carry content-visibility themselves at an exact size; the group
+   does not, so the scroll height and every scrollIntoView stay honest. */
 .pt-sec {
   display: flex;
   flex-direction: column;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 200px;
 }
 
 .pt-sec-head {
@@ -249,27 +249,30 @@ a.pt-sb-mark:focus-visible {
   padding-bottom: 6px;
 }
 
-/* ---- an outline row: 32px, the number in a 26px tabular column, the
-   title, the preview affordance ---- */
+/* ---- an outline row: 32px for one line, the number in a 26px tabular
+   column, the title clamped to two lines (a row grows to 48px for the
+   second line; nothing is cut to an ellipsis), the preview affordance.
+   The number and the affordance sit on the first line. ---- */
 .pt-orow {
   position: relative;
   display: grid;
   grid-template-columns: 26px minmax(0, 1fr) auto;
   gap: 8px;
-  align-items: center;
+  align-items: start;
   min-height: 32px;
-  padding: 0 10px;
+  padding: 7px 10px;
   color: var(--pt-ink-2);
   text-decoration: none;
   cursor: pointer;
   content-visibility: auto;
-  contain-intrinsic-size: auto 32px;
+  contain-intrinsic-size: auto 34px;
 }
 
 .pt-orow .n {
   font-family: var(--pt-display);
   font-weight: 500;
   font-size: 12px;
+  line-height: 17px;
   font-feature-settings: 'cv11', 'ss01';
   color: var(--pt-titanium);
   font-variant-numeric: tabular-nums;
@@ -280,10 +283,12 @@ a.pt-sb-mark:focus-visible {
 .pt-orow-title {
   min-width: 0;
   font-size: 13px;
-  line-height: 1.3;
-  white-space: nowrap;
+  line-height: 17px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
   transition: color 120ms ease-out;
 }
 
@@ -294,11 +299,12 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-ink);
 }
 
-/* the 12px preview affordance: present for items with a capture, shown on hover or focus */
+/* the 12px preview affordance (the eye): present for items with a capture, shown on hover or focus */
 .pt-orow-peek {
   display: inline-flex;
   width: 12px;
   height: 12px;
+  margin-top: 2px;
   color: var(--pt-titanium);
   opacity: 0;
   transition: opacity 120ms ease-out;
@@ -319,7 +325,10 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-ink);
 }
 
-/* the current row: a 2px ink bar at the left edge */
+/* the current row: a 2px ink bar at the left edge. The bar means one thing,
+   the position inside the current document; a site map row that names the
+   route the reader is on (aria-current="page") is ink text instead, so
+   "you are here" is never marked twice in one list. */
 .pt-orow.is-active::before {
   content: '';
   position: absolute;
@@ -328,6 +337,15 @@ a.pt-sb-mark:focus-visible {
   bottom: 4px;
   width: 2px;
   background: var(--pt-ink);
+}
+
+.pt-orow.is-nav.is-active::before {
+  display: none;
+}
+
+.pt-orow.is-nav.is-active .pt-orow-title {
+  color: var(--pt-ink);
+  font-weight: 500;
 }
 
 .pt-orow:focus-visible {
@@ -412,9 +430,13 @@ a.pt-sb-mark:focus-visible {
   padding: 0 10px 4px;
 }
 
-/* under an outline row the sub rows share its 26px number column */
+/* under an outline row the sub rows take the outline grammar: the 26px
+   number column, no separators, 28px rows */
 .pt-sec-body.is-rows .pt-sub .pt-row {
   grid-template-columns: 26px minmax(0, 1fr);
+  border-bottom: 0;
+  min-height: 28px;
+  padding: 5px 0 5px 10px;
 }
 
 .pt-sec-body:not(.is-rows) .pt-sub {

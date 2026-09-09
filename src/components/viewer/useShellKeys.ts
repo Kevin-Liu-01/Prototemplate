@@ -51,14 +51,17 @@ function capitalize(word: string): string {
  * Panels, Theme. The one table, kept next to the handler below so the card
  * is always true for the route: paged rows only on paged routes (flow
  * routes say that Space and the arrows scroll), mode rows only when the
- * mode is offered, present only where a slide exists. Wording follows the
- * copy rules: sentence case, no trailing periods.
+ * mode is offered, present only where a slide exists, and neither P nor F
+ * on a narrow viewport, where the toolbar hides Present and Fullscreen.
+ * Wording follows the copy rules: sentence case, no trailing periods.
  */
-export function shellKeyRows(route: Pick<ShellState, 'keys' | 'modes' | 'noun'>): readonly ShellKeyRow[] {
+export function shellKeyRows(
+  route: Pick<ShellState, 'keys' | 'modes' | 'noun'> & Partial<Pick<ShellState, 'narrow'>>
+): readonly ShellKeyRow[] {
   const paged = route.keys === 'paged';
   const grid = route.modes.includes('grid');
   const book = route.modes.includes('book');
-  const slide = route.modes.includes('slide');
+  const slide = route.modes.includes('slide') && !route.narrow;
   const noun = route.noun;
   const rows: ShellKeyRow[] = [];
   if (paged) {
@@ -73,7 +76,7 @@ export function shellKeyRows(route: Pick<ShellState, 'keys' | 'modes' | 'noun'>)
   if (grid) rows.push({ group: 'View', keys: 'G', action: 'Grid view' });
   if (book) rows.push({ group: 'View', keys: 'B', action: 'Book view, read top to bottom' });
   if (slide) rows.push({ group: 'View', keys: 'P', action: 'Presentation mode, chrome hidden' });
-  rows.push({ group: 'View', keys: 'F', action: 'Fullscreen' });
+  if (!route.narrow) rows.push({ group: 'View', keys: 'F', action: 'Fullscreen' });
   rows.push({ group: 'Panels', keys: 'R, Cmd K or Ctrl K', action: 'Index panel, with the filter focused' });
   rows.push({ group: 'Panels', keys: '[ or S', action: 'Show or hide the list' });
   rows.push({ group: 'Panels', keys: '?', action: 'Keyboard shortcuts' });

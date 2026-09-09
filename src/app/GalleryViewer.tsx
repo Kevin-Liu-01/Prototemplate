@@ -17,6 +17,7 @@ import { cn } from '@/lib/cn';
 import { DIRECTIONS } from '@/lib/directions';
 import type { Direction } from '@/lib/directions';
 import type { ShellItem, ShellMode, ShellSection } from '@/lib/shell-data';
+import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import PrototemplateHero from './PrototemplateHero';
@@ -39,6 +40,8 @@ import './GalleryViewer.css';
 
 const GALLERY_TITLE = 'Prototemplate';
 const GALLERY_MODES: readonly ShellMode[] = ['book', 'slide', 'grid'];
+/* the slide here is one live 1440 exhibit, so the seg says so */
+const GALLERY_MODE_LABELS: Partial<Record<ShellMode, string>> = { slide: 'Live' };
 
 /** the live exhibit's stage in CSS pixels, before the sheet scales it */
 const EXHIBIT_W = 1440;
@@ -64,12 +67,14 @@ const IO_THRESHOLDS = [0, 0.25, 0.5, 1];
 const SITES = DIRECTIONS.filter((d) => d.site);
 const REFERENCE = DIRECTIONS.find((d) => d.reference);
 const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
+/** The count's order: every paged direction, so the number column matches the count and the arrows (01 to 17). */
+const PAGED_DIRECTIONS = [...SITES, ...EXPLORATIONS];
 
 function directionItem(d: Direction): ShellItem {
+  const position = PAGED_DIRECTIONS.indexOf(d);
   return {
     id: d.slug,
-    /* the sites carry no number: the labels belong to the explorations */
-    n: d.site ? '' : (d.label ?? ''),
+    n: position >= 0 ? pad2(position + 1) : '',
     title: d.name,
     href: `/d/${d.slug}`,
     desc: d.reference ? `${d.concept} Live at generaltranslation.com.` : d.concept,
@@ -902,6 +907,7 @@ export default function GalleryViewer({ fontClass, anatomy, ledger }: GalleryVie
       surfaces='site'
       keys={(mode) => (mode === 'slide' ? 'paged' : 'flow')}
       noun='direction'
+      modeLabels={GALLERY_MODE_LABELS}
       toolbarSlot={<OpenPage />}
       onCurrentPage={() => home.current()}
     >

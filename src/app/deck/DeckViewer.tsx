@@ -87,6 +87,10 @@ function guardTitle(want: string): () => void {
  * names the document after it, and keeps the slides in the current theme.
  * The stage markup is injected HTML, so the slide toggle is imperative; it
  * runs in a layout effect keyed to the index so the cut lands before paint.
+ * Every slide image is built lazy (scripts/build-deck.mjs), and a lazy
+ * image in a slide that is not displayed is never fetched; the slides on
+ * either side of the active one are marked eager first, so the 180ms slide
+ * change never shows an empty frame (directive 7.5).
  * The same effect owns the title guard, because its cleanup is synchronous:
  * it reverts on every index change (revertOnUpdate) and on unmount, in the
  * same task as the commit, so a client navigation away from /deck can never
@@ -104,6 +108,12 @@ function DeckSlides() {
       if (stage) {
         stage.querySelectorAll(':scope > .slide').forEach((slide, k) => {
           const on = k === index;
+          /* the neighbours warm their images before the toggle */
+          if (Math.abs(k - index) <= 1) {
+            slide.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+              img.loading = 'eager';
+            });
+          }
           slide.classList.toggle('is-on', on);
           /* the slide is laid out now, so its canvas can take its real box */
           if (on) redrawDithers(slide, DITHER_BOX);
