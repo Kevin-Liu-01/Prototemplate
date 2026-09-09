@@ -1,6 +1,6 @@
 # Section openers
 
-Eight full-bleed images, one per section, chosen in round five after Kevin's correction: the openers are photographs and artworks that carry the company's ideas (translation, language, infrastructure, precision, distance, the ocean), not shader renders. Every opener is a two-tone image in ink and paper made with the deck's own screen, saved as a 1600 by 900 JPEG at quality 85 with a light twin. All sources are Wikimedia Commons files under a public domain or Creative Commons license. No opener shows a recognizable public figure and none is another designer's poster.
+Eight full-bleed images, one per section. Six are photographs and artworks chosen in round five after Kevin's correction: they carry the company's ideas (translation, language, infrastructure, precision, distance, the ocean) and are two-tone images in ink and paper made with the deck's own screen, saved as 1600 by 900 JPEGs at quality 85 with a light twin. Two, Blog and content and Developer experience, are renders of the brand's own gem smoke material and stay in color; round seven restored them at Kevin's direction ("make sure our blog and content shader bg and developer experience shader bg are super high quality, right now blurry"), within the allowance in ROUND-5.md for at most two color openers where the gem smoke material is the point. The color openers are rendered at 3200 by 1800 and saved at 1600 by 900 at quality 92, and the same file serves both themes. All photographic sources are Wikimedia Commons files under a public domain or Creative Commons license. No opener shows a recognizable public figure and none is another designer's poster.
 
 ## Files
 
@@ -10,18 +10,18 @@ Eight full-bleed images, one per section, chosen in round five after Kevin's cor
 | Design system | `opener-design-system.jpg` | `opener-design-system-light.jpg` | Karahisari, calligraphy exercise, 16th century |
 | Website | `opener-website.jpg` | `opener-website-light.jpg` | Louisbourg lighthouse in a fall storm |
 | Documentation | `opener-documentation.jpg` | `opener-documentation-light.jpg` | The Compact Oxford English Dictionary, open |
-| Blog and content | `opener-blog.jpg` | `opener-blog-light.jpg` | Prashna Upanishad manuscript page, Devanagari |
-| Developer experience | `opener-developer-experience.jpg` | `opener-developer-experience-light.jpg` | Eastern Telegraph cable chart, 1901 |
+| Blog and content | `opener-blog.jpg` | `opener-blog-light.jpg` (same image) | glyphfield gem smoke, Default preset, brand blue |
+| Developer experience | `opener-developer-experience.jpg` | `opener-developer-experience-light.jpg` (same image) | glyphfield gem smoke, Fire preset |
 | Prototemplate and glyphfield | `opener-prototemplate.jpg` | `opener-prototemplate-light.jpg` | Hokusai, The Great Wave off Kanagawa, about 1831 |
-| Status and plan | `opener-status.jpg` | `opener-status-light.jpg` | Runway 16R approach lights, Narita |
+| Status and plan | `opener-status.jpg` | `opener-status-light.jpg` | NASA, Blue Marble Next Generation, Western Hemisphere, 2007 |
 
-The slide references the light file in `src` and the dark file in `data-dark`. The slides carry the sentences and credits listed below. Round six (the review of these eight renders) changed the design system, website and developer experience crops, swapped the documentation polarity, rewrote the Prototemplate sentence, and fixed the plate and chrome rules recorded under Slide.
+The slide references the light file in `src` and the dark file in `data-dark`. The slides carry the sentences and credits listed below. Round six (the review of these eight renders) changed the design system, website and developer experience crops, swapped the documentation polarity, rewrote the Prototemplate sentence, and fixed the plate and chrome rules recorded under Slide. Round seven replaced the Blog and content and Developer experience photographs with gem smoke renders, replaced the Status and plan runway with the Blue Marble, and changed `scripts/build-deck.mjs` so that `opener-*` and `detail-*` files are inlined at their native size at JPEG quality 88 instead of being resampled to 1280 pixels wide, which is what blurred the full-bleed openers in the built deck. The replaced images and their settings are kept under Replaced in round seven.
 
 ## Shared pipeline
 
 Every opener went through the same Pillow steps. Sources are the Commons downloads scaled to 1800 pixels on the long side; crop boxes are left, top, right, bottom in those pixels.
 
-1. Convert to grayscale and crop the box.
+1. Convert to grayscale and crop the box. Where noted, one channel replaces the luminance conversion; the Blue Marble uses the red channel, see its entry. Pillow pads a crop box that reaches past the source with black, which the Blue Marble uses to place the disk in a wider frame.
 2. Where noted, apply a Gaussian blur (to turn small type or film grain into an even tone) before scaling. The cable chart isolates its routes by color instead of thickening every line; see its entry.
 3. Fit to 800 by 450 with Lanczos, trimming the long side centered. Where noted, an unsharp mask is applied to a band of rows after the fit.
 4. Autocontrast with a 0.5 percent cutoff. Clip to the black and white points listed (values at or below the black point become ink, values at or above the white point become paper). Apply the gamma curve (below 1 lifts mid-tones, above 1 drops them).
@@ -33,6 +33,7 @@ Every opener went through the same Pillow steps. Sources are the Commons downloa
 
 - The title, sentence and credit sit on a solid `--paper` plate (no blur, no shadow) anchored to the lower left of the content box. The plate grows upward, so a three-line sentence does not move its bottom edge (771) toward the bottom rule (844).
 - The credit is 15px at line-height 1.45 in titanium, the `.cap` size, which is the smallest size the grammar allows on the sheet. Round five set it at 13px.
+- The two color openers reference the same image in `src` and `data-dark` (the light file is a byte copy of the dark file), so the plate is the only element that changes with the theme: ink text on a paper plate over the same render in both.
 - The viewer draws the wordmark (stage 72, 864, 28 by 18) and the counter (right 72, bottom 22) in titanium over the image. Each opener paints two solid `--paper` chips under them (40 by 30 at 66, 858 and 60 by 28 at 1474, 856) from a `#stage > .s-opener::after` pseudo-element at z-index -1, after the image in tree order and under the viewer chrome, the same plate treatment the title uses. The selector is scoped to the stage because the grid and book thumbnails clone the slide without the chrome.
 
 ## Brand
@@ -81,25 +82,24 @@ Every opener went through the same Pillow steps. Sources are the Commons downloa
 
 ## Blog and content
 
-- Image: A page of a Prashna Upanishad manuscript, Sanskrit in Devanagari script, with corrections written between the lines.
-- Source: File:Prashna Upanishad sample manuscript page, Sanskrit, Devanagari script.jpg
-- Artist: Ms Sarah Welch.
-- License: CC BY-SA 4.0.
-- Crop: 187, 0, 1613, 803. The full height of the page, centered, with the side margins trimmed to 16 by 9. Black 40, white 215, no blur. The main text renders solid and the smaller interlinear notes render as fine marks.
-- Reason: a text copied by hand and corrected between the lines. Written content is drafted, checked and edited in place. Language.
-- Sentence: This manuscript was copied by hand and corrected between the lines; written content is edited the same way.
-- Credit: Photograph: Ms Sarah Welch, CC BY-SA 4.0
+- Image: the gem smoke material, the GPU material behind the designed covers and the reel (the Designed covers slide), in the brand blue: white smoke over a blue field, the polarity of the GT open-source cover.
+- Source: glyphfield (`/Users/kevinliu/repos/glyphfield`), route `/shader-preview?materialId=paper-gem-smoke&diagnostics=1&live=1` on the local dev server (port 3012). The route runs Paper Shaders' Gem Smoke family (Apache-2.0) through glyphfield's live material canvas; `diagnostics=1` with `live=1` is the only combination that plays the shader live and draws no overlay. Default preset, `preservePresetGeometry`, shape `metaballs`, `colorInner` transparent, as the route sets them.
+- Render: Chromium (Playwright, `--use-gl=angle --use-angle=metal --ignore-gpu-blocklist`), 1600 by 900 viewport at device scale factor 2. Two things in the route work against a sharp capture and were overridden on the `paperShaderMount` handle after the canvas reported ready: the route caps the canvas at 360,000 pixels (`maxPixelCount`), and under an emulated scale factor Paper's ResizeObserver reads the box in CSS pixels and sizes the canvas at 1x. The mount's `devicePixelsSupported` flag was cleared and `setMinPixelRatio(2)` and `setMaxPixelCount(3200 * 1800 + 1)` were called; the drawing buffer was then verified at 3200 by 1800 with render scale 2 (`u_pixelRatio` 2, so the composition matches the site at 1600 by 900). The route's preview palette is the violet "metal" palette for every preset, so the brand palette was set through `setUniforms`: `colorBack #2f5ce0` (the accent on light from the Color slide), `colors [#ffffff, #86a8ff]`, `colorInner` transparent.
+- Frame: three element screenshots of the canvas at about 4, 5 and 6 seconds of playback; the third was kept because its highlight sits right of center, clear of the plate, and the left half is flat blue under the title. Saved from the 3200 by 1800 PNG as a 1600 by 900 JPEG with Lanczos at quality 92 (4:4:4). The light file is a copy.
+- Not chosen: the same material on the ink ground (`colorBack #070707`, `colors [#2f5ce0, #ffffff]`) reads as a dark slide with a blue rim and does not match the covers; the route's own violet palette is not a brand color.
+- Reason: the blog is where the covers live, and the covers are this material in this color.
+- Sentence: The gem smoke material renders this opener in the brand blue; the designed covers and the reel use the same material.
+- Credit: Material: glyphfield gem smoke
 
 ## Developer experience
 
-- Image: The Eastern Telegraph Company's chart of its submarine cable system, 1901.
-- Source: File:1901 Eastern Telegraph cables.png
-- Artist: Eastern Telegraph Company; the draughtsman is not recorded.
-- License: Public domain.
-- Crop: 500, 470, 1060, 785. The North Atlantic: Newfoundland and the Gulf of St Lawrence at left, the British Isles at top right, Iberia and the Mediterranean at right, the Sahara at bottom right. The routes are red on a cream map with teal coastal shading, so a plain grayscale puts routes, coast hatching, graticule and names in one mid tone. Instead the routes are isolated by color (a pixel is a route where R minus max(G, B) exceeds 35), fitted to 800 by 450 separately and composited as ink after the tone step; the ground is grayscale with blur 0.4, black 100, white 215. The routes render solid and continuous, the graticule as fine lines, the coasts and place names as texture, and the plate covers the Caribbean corner, not the bundle. The round five version (213, 458, 1636, 1260, 3 pixel minimum filter, black 80, white 230) fused everything into blobs at 800 by 450 and no coastline or route could be identified.
-- Reason: the first global network that carried text between continents across the ocean floor. The libraries and the CLI are the infrastructure that carries translations into products. Infrastructure, distance and the ocean.
-- Sentence: The 1901 telegraph network carried text between continents; the libraries and the CLI carry it into products.
-- Credit: Map: Eastern Telegraph Company, 1901, public domain
+- Image: the same gem smoke material in Paper's Fire preset with the preset's shipped colors (`colors [#fe5b16, #f7ff61, #ffffff]`, `colorBack #000000`, `colorInner` transparent), so the two color openers read as one material in two states.
+- Source: glyphfield, route `/shader-preview?materialId=paper-gem-smoke-fire&diagnostics=1&live=1`, the same server, browser and resolution steps as the Blog opener. The route replaces the preset's colors with its violet preview palette, so the shipped colors were passed back through `setUniforms`.
+- Frame: the third sample, about 6 seconds in. Its lower left is black, so the plate sits on the ink ground in the dark theme and the paper plate has full contrast in the light theme, and the bright band runs across the right half. Saved the same way, 1600 by 900 at quality 92; the light file is a copy.
+- Not chosen: the Infrared preset (magenta ground with five colors) is louder than anything else in the deck; the Fluorescent preset in the route's palette looked the same as the Default.
+- Note: the orange is Paper's preset color, not the Fumadocs partner color on the Designed covers slide. The credit line names the material, not a partner.
+- Sentence: The same gem smoke material in its fire preset renders this opener. Developer experience is the primary brand surface.
+- Credit: Material: glyphfield gem smoke
 
 ## Prototemplate and glyphfield
 
@@ -115,18 +115,27 @@ Every opener went through the same Pillow steps. Sources are the Commons downloa
 
 ## Status and plan
 
-- Image: Runway 16R approach lights at night, Narita Airport.
-- Source: File:Runway 16R, Narita Airport (4055519259).jpg
-- Artist: Kentaro Iemoto.
-- License: CC BY-SA 2.0.
-- Crop: 0, 60, 1200, 735. The full width of the frame from the horizon lights to the near lights. Gamma 0.8 lifts the dim lights so each renders as a solid cluster; no blur, no black or white point. Positive is the dark file: lights on the ink ground.
-- Reason: approach lights mark a fixed path to a fixed point. The plan states what exists, what is fixed, and how the work is judged. Infrastructure and precision.
-- Sentence: Approach lights mark a fixed path to a fixed point; the plan states what exists and how the work will be judged.
-- Credit: Photograph: Kentaro Iemoto, CC BY-SA 2.0
+- Image: The Blue Marble, Western Hemisphere, from NASA's Blue Marble Next Generation series: a composite of MODIS land and ocean data (2001 to 2004), a single day of clouds, sea ice, radar topography and city lights along the terminator, published in 2007.
+- Source: File:Blue Marble Western Hemisphere.jpg (local copy `scratchpad/photo/earth-night.jpg`, 1800 by 1800).
+- Artist: NASA Earth Observatory, images by Reto Stöckli, based on data from NASA and NOAA; the Commons file is dated October 2, 2007.
+- License: Public domain.
+- Crop: -1201, 35, 1878, 1767. The disk spans 72 to 1722 across and 72 to 1730 down in the source (center 897, 901). The box is 3079 by 1732 and reaches past the left edge, where Pillow pads black, which is the source's own ground. Fitted to 800 by 450 this puts the disk at 860 pixels of diameter on the sheet, centered at x 1090, 20 pixels off the top and bottom edges, with the space at left under the plate; the plate's right edge crosses only the South Pacific corner of the disk, which is ink anyway.
+- Tone: the red channel instead of luminance. In luminance the ocean and the cloud tones sit close together and the disk dithers to noise, which is why round five rejected the image. In the red channel the ocean drops toward black while land and cloud rise, so the oceans clip to ink and the continents and cloud bands render as texture; the city lights on the night side render as scattered single cells. Blur 0.6, black 80, white 210, gamma 1.0. Positive is the dark file: the disk on the ink ground. The light file is the inverse.
+- Reason: the photograph shows the whole planet in one frame, and the section shows the whole project in one place: what exists, what is fixed, and how the work is judged. Kevin asked for it ("also i like the blue marble"). It took the Status and plan slot rather than Brand because the Tower of Babel is the literal origin story behind the company's name and the runway was the weaker fit.
+- Sentence: The Blue Marble shows the whole Earth in one frame; the plan shows the whole project in one place.
+- Credit: Image: NASA, Reto Stöckli, 2007, public domain
 
 ## Licensing note
 
-Four openers are share-alike (CC BY-SA): the lighthouse, the dictionary, the manuscript and the runway. The dithered files are adaptations, so the share-alike condition applies to them, and the credit line on each slide is required. If the deck cannot carry share-alike images, swap these four for public domain or CC BY sources.
+Two openers are share-alike (CC BY-SA): the lighthouse and the dictionary. The dithered files are adaptations, so the share-alike condition applies to them, and the credit line on each slide is required. If the deck cannot carry share-alike images, swap these two for public domain or CC BY sources. The manuscript and the runway, both share-alike, left the deck in round seven. The gem smoke openers are renders of Paper Shaders' Gem Smoke (Apache-2.0) through glyphfield, the brand's own tool; the credit line names the material.
+
+## Replaced in round seven
+
+Kept so the images can be restored with one command each. All three followed the shared pipeline.
+
+- Blog and content, Prashna Upanishad manuscript page (File:Prashna Upanishad sample manuscript page, Sanskrit, Devanagari script.jpg, Ms Sarah Welch, CC BY-SA 4.0): crop 187, 0, 1613, 803; black 40, white 215, no blur; positive is the light file. Sentence: This manuscript was copied by hand and corrected between the lines; written content is edited the same way. Credit: Photograph: Ms Sarah Welch, CC BY-SA 4.0.
+- Developer experience, Eastern Telegraph cable chart (File:1901 Eastern Telegraph cables.png, public domain): crop 500, 470, 1060, 785; routes isolated by color (a pixel is a route where R minus max(G, B) exceeds 35), fitted to 800 by 450 separately and composited as ink after the tone step; ground blur 0.4, black 100, white 215; positive is the light file. Sentence: The 1901 telegraph network carried text between continents; the libraries and the CLI carry it into products. Credit: Map: Eastern Telegraph Company, 1901, public domain.
+- Status and plan, Runway 16R approach lights (File:Runway 16R, Narita Airport (4055519259).jpg, Kentaro Iemoto, CC BY-SA 2.0): crop 0, 60, 1200, 735; gamma 0.8, no blur, no black or white point; positive is the dark file. Sentence: Approach lights mark a fixed path to a fixed point; the plan states what exists and how the work will be judged. Credit: Photograph: Kentaro Iemoto, CC BY-SA 2.0.
 
 ## Rejected candidates
 
@@ -136,7 +145,7 @@ Recorded so the next round does not repeat them. All were processed with the pip
 - Müller-Brockmann poster and the Vignelli subway map: other designers' work. They stay on the references slide and are not used as openers.
 - Solari board at Secaucus Junction: dithered cleanly, but the destination names read as stray copy on the sheet, and a Solari board already sits on the references slide.
 - Gutenberg forme (Gutenberg Museum, Mainz): the rows of type turned to noise at 800 by 450 in every crop.
-- Blue Marble (NASA): cloud and ocean tones are too close; the disk read but the surface was noise.
+- Blue Marble (NASA): in round five the cloud and ocean tones were too close in luminance; the disk read but the surface was noise. Round seven took the red channel instead and it became the Status and plan opener; see that entry.
 - 1691 Sanson double hemisphere map: the line work is too fine; the two circles read but the interiors turned to noise.
 - Jacquard pattern cards for sari weaving: mid-tone heavy; the holes read only in a 1:1 crop and the rest was noise.
 - Linotype operator (Queensland Times, 1975): the operator and the machine share one mid-tone; muddy in three crops and tone settings.

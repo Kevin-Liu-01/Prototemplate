@@ -2,9 +2,9 @@
     <section class="slide"><div class="in">
       <div class="cols even">
         <div class="stack">
-          <h2>Developer experience</h2>
-          <p class="max-p">Developer experience is the primary brand surface. Source code is the source of truth and translation is a build step. There are no translation keys, no JSON files, and no separate translation management system. Every locale ships with the deploy. The quality of this workflow is what builds the reputation.</p>
-          <div class="panel" style="margin-top:8px">npx gt init<br><br>&lt;T&gt;<br>&nbsp;&nbsp;&lt;h1&gt;Hello, &lt;Var&gt;{user.name}&lt;/Var&gt;&lt;/h1&gt;<br>&lt;/T&gt;<br><br>npx gt translate</div>
+          <h2>Translation as a build step</h2>
+          <p class="max-p">Source code is the source of truth. Text is written in the components that render it, and translation runs as a build step. There are no translation keys, no string files to maintain, and no separate translation management system. Every locale ships with the deploy. The quality of this workflow is what builds the reputation.</p>
+          <div class="panel" style="margin-top:8px">import { T, Var } from 'gt-next';<br><br>&lt;T&gt;<br>&nbsp;&nbsp;&lt;h1&gt;Hello, &lt;Var&gt;{user.name}&lt;/Var&gt;&lt;/h1&gt;<br>&lt;/T&gt;</div>
         </div>
         <svg class="dia" viewBox="0 0 627 380" aria-label="Source code becomes every configured locale at build time">
           <rect x="0.5" y="130.5" width="210" height="120" fill="none" class="hair" stroke-width="1"/>

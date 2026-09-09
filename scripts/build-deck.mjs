@@ -10,8 +10,12 @@
 //   fonts/deck-fonts.css    inlined as a <style> in place of <!--FONTS-->
 //   shots/*                 every src="shots/..." and data-dark="shots/..."
 //                           becomes a data URI: photographs are resampled to
-//                           1280px wide at JPEG quality 78 through sips, and
-//                           shots/thumb/* files pass through as they are
+//                           1280px wide at JPEG quality 78 through sips, except
+//                           the full-bleed openers (shots/opener-*) and the 2x
+//                           detail crops (shots/detail-*), which are re-encoded
+//                           at their native size at JPEG quality 88 so they stay
+//                           sharp on the 1600px sheet; shots/thumb/* files pass
+//                           through as they are
 //
 // The result is wrapped as a full document (doctype, charset, viewport, the
 // title, a noindex meta, and a two-rule style for color-scheme and the body
@@ -39,9 +43,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DECK = join(ROOT, 'deck');
 const OUT = join(ROOT, 'public/brand-deck.html');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
-const SLIDE_COUNT = 63;
+const SLIDE_COUNT = 76;
 const MAX_WIDTH = 1280;
 const QUALITY = 78;
+/* full-bleed openers and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
+const NATIVE = /^(opener|detail)-/;
+const NATIVE_QUALITY = 88;
 const TITLE = 'General Translation brand deck';
 const LEADING_TITLE = /^<title>[^<]*<\/title>\n/;
 const IMAGE_REF = /(src|data-dark)="(shots\/[^"]+)"/g;
@@ -83,6 +90,7 @@ const tmp = mkdtempSync(join(tmpdir(), 'build-deck-'));
 const uris = new Map();
 let imageBytes = 0;
 let photographs = 0;
+let natives = 0;
 let thumbs = 0;
 
 function toUri(abs, mime) {
@@ -104,15 +112,17 @@ function dataUri(rel) {
     return toUri(abs, mime);
   }
   const resampled = join(tmp, basename(rel).replace(/\.[^.]+$/, '.jpg'));
+  const native = NATIVE.test(basename(rel));
+  const options = native
+    ? `-s formatOptions ${NATIVE_QUALITY}`
+    : `-s formatOptions ${QUALITY} --resampleWidth ${MAX_WIDTH}`;
   try {
-    execSync(
-      `sips -s format jpeg -s formatOptions ${QUALITY} --resampleWidth ${MAX_WIDTH} "${abs}" --out "${resampled}"`,
-      { stdio: 'ignore' }
-    );
+    execSync(`sips -s format jpeg ${options} "${abs}" --out "${resampled}"`, { stdio: 'ignore' });
   } catch {
-    throw new Error(`build-deck: sips could not resample deck/${rel}; the build runs on macOS`);
+    throw new Error(`build-deck: sips could not ${native ? 'encode' : 'resample'} deck/${rel}; the build runs on macOS`);
   }
-  photographs += 1;
+  if (native) natives += 1;
+  else photographs += 1;
   return toUri(resampled, 'image/jpeg');
 }
 
@@ -156,5 +166,5 @@ for (const file of readdirSync(join(DECK, 'shots/thumb'))) {
 
 const mb = (n) => `${(n / 1024 / 1024).toFixed(2)}MB`;
 console.log(
-  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs and ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> public/brand-deck.html (${mb(Buffer.byteLength(html))}); ${copied} thumbnails -> public/shots/deck`
+  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${natives} openers and details at native size, ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> public/brand-deck.html (${mb(Buffer.byteLength(html))}); ${copied} thumbnails -> public/shots/deck`
 );

@@ -25,7 +25,8 @@ The deck is a single self-contained HTML file. Source lives in this directory:
 ## Color
 
 - Light: paper `#ffffff`, ink `#070707`, ink-2 `#3a3d44`, titanium `#8a8f98`, hairlines at 18% and 9% ink, plate at 3.5% ink. Dark is a token remap (paper `#070707`, ink `#f2f2f0`). Use only the CSS variables `--paper`, `--ink`, `--ink-2`, `--titanium`, `--hair`, `--hair-soft`, `--plate`, `--cross`, `--edge`. Never hard-code a color except inside the swatch and code-panel rules that already exist.
-- No accent color anywhere in the deck. The brand accent is only ever shown as an outlined, labeled swatch.
+- No accent color on text, lines, or fills anywhere in the deck. The brand accent is only ever shown as an outlined, labeled swatch.
+- Semantic color appears only on icons: green for done or passing, amber for open or in review, red for excluded or rejected, GT blue for GT itself; text and lines stay monochrome. The four hues (`#12a37a`, `#f0a020`, `#e5484d`, `#2f5ce0`) are the same in both themes.
 - Code sits on the `#101010` panel (`.panel`) in white monospace. Nothing else uses monospace.
 
 ## Layout classes (already defined in head.html)
@@ -35,6 +36,7 @@ The deck is a single self-contained HTML file. Source lives in this directory:
 - `.pair` two figures side by side with captions. `.shot` bordered screenshot, `.shot.fit` fits its box. `.shot-wrap` centers a shot in the remaining space.
 - `.scales` / `.scale` slider rows (150px label, track, 150px label). `.spec` type specimen. `.lang` multilingual grid. `.ladder` type ladder. `.swatches` / `.swatch` color plates. `.plain` ruled statement list (`.no` strikes a line through). `.refs` two-column reference list. `.say` two quoted registers.
 - Lists are ruled rows, never bullets. No cards with shadows, no rounded corners, no gradients, no icons from icon fonts.
+- Icons are Heroicons 20 solid from the sprite in `parts/head.html`, written as `<svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>` with `ok`, `warn`, `no`, or `info` for the four semantic colors and no color class for a monochrome category glyph. An icon sits only in a key cell (`.rows > div > b`) or at the start of a `.plain` row, never inside a body sentence: 20px on 20px rows, 24px on 24px display lists, one gap before the label, and a key that wraps keeps its second line under the label. `.ic.ext` is the 16px titanium external glyph that follows a link in a table. A glyph missing from the sprite is added as a `<symbol id="i-name" viewBox="0 0 20 20">` from heroicons `optimized/20/solid`.
 
 ## Diagrams
 

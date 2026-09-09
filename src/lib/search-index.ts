@@ -247,7 +247,7 @@ const HEADINGS: readonly SearchEntry[] = Object.entries(DOC_HEADINGS).flatMap(([
   )
 );
 
-/** The 75 slide titles: the first h1, h2 or .big of each deck/slides/NN-*.html, in order. */
+/** The 76 slide titles: the first h1, h2 or .big of each deck/slides/NN-*.html, in order. */
 const DECK_SLIDES: readonly string[] = [
   'Brand',
   'General Translation',
@@ -299,7 +299,8 @@ const DECK_SLIDES: readonly string[] = [
   'Site copy and founder posts',
   'Brand assets outside the site',
   'Developer experience',
-  'Developer experience',
+  'Translation as a build step',
+  'The CLI',
   'Prototemplate and glyphfield',
   'prototemplate.com',
   'The knowledge base',
