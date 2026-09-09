@@ -1,18 +1,20 @@
     <!-- opener blog and content -->
-    <section class="slide opener s-opener s42">
+    <section class="slide opener s-opener s-opener-blog">
       <style>
         .s-opener .opener-img { position: absolute; inset: -57px; z-index: -1; width: 1600px; height: 900px; object-fit: cover; display: block; }
-        .s-opener .opener-plate { position: absolute; left: 0; bottom: 0; width: fit-content; max-width: 900px; padding: 22px 26px; background: var(--paper); color: var(--ink); }
+        /* solid paper chips under the viewer's wordmark (stage 72,864, 28 by 18) and counter (right 72, bottom 22), the plate treatment the title uses; scoped to the stage so thumbnails, which carry no chrome, stay clean */
+        #stage > .s-opener::after { content: ''; position: absolute; inset: -57px; z-index: -1; pointer-events: none; background: linear-gradient(var(--paper), var(--paper)) 66px 858px / 40px 30px no-repeat, linear-gradient(var(--paper), var(--paper)) 1474px 856px / 60px 28px no-repeat; }
+        .s-opener .opener-plate { position: absolute; left: 0; bottom: 0; width: fit-content; max-width: 740px; padding: 22px 26px 20px; background: var(--paper); color: var(--ink); }
         .s-opener .opener-plate .big { color: var(--ink); }
         .s-opener .opener-plate p { margin-top: 14px; max-width: 56ch; color: var(--ink); }
-        /* the image stops at the bottom rule so the wordmark and the counter sit on paper */
-        .s-opener.s42 .opener-img { height: 843px; }
+        .s-opener .opener-plate .credit { margin-top: 12px; font-size: 15px; line-height: 1.45; letter-spacing: 0.01em; color: var(--titanium); }
       </style>
-      <img class="opener-img" src="shots/opener-blog.jpg" data-dark="shots/opener-blog.jpg" alt="The orange gem smoke from a blog cover">
+      <img class="opener-img" src="shots/opener-blog-light.jpg" data-dark="shots/opener-blog.jpg" alt="A page of a Prashna Upanishad manuscript in Devanagari script with corrections between the lines, rendered as a two-tone dither">
       <div class="in">
         <div class="opener-plate">
           <div class="big">Blog and content</div>
-          <p>This section covers the blog index, the cover system, and the rules for written content.</p>
+          <p>This manuscript was copied by hand and corrected between the lines; written content is edited the same way.</p>
+          <div class="credit">Photograph: Ms Sarah Welch, CC BY-SA 4.0</div>
         </div>
       </div>
     </section>

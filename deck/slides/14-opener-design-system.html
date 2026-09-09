@@ -1,16 +1,20 @@
     <!-- opener design system -->
-    <section class="slide opener s-opener">
+    <section class="slide opener s-opener s-opener-design-system">
       <style>
         .s-opener .opener-img { position: absolute; inset: -57px; z-index: -1; width: 1600px; height: 900px; object-fit: cover; display: block; }
-        .s-opener .opener-plate { position: absolute; left: 0; bottom: 0; width: fit-content; max-width: 900px; padding: 22px 26px; background: var(--paper); color: var(--ink); }
+        /* solid paper chips under the viewer's wordmark (stage 72,864, 28 by 18) and counter (right 72, bottom 22), the plate treatment the title uses; scoped to the stage so thumbnails, which carry no chrome, stay clean */
+        #stage > .s-opener::after { content: ''; position: absolute; inset: -57px; z-index: -1; pointer-events: none; background: linear-gradient(var(--paper), var(--paper)) 66px 858px / 40px 30px no-repeat, linear-gradient(var(--paper), var(--paper)) 1474px 856px / 60px 28px no-repeat; }
+        .s-opener .opener-plate { position: absolute; left: 0; bottom: 0; width: fit-content; max-width: 740px; padding: 22px 26px 20px; background: var(--paper); color: var(--ink); }
         .s-opener .opener-plate .big { color: var(--ink); }
         .s-opener .opener-plate p { margin-top: 14px; max-width: 56ch; color: var(--ink); }
+        .s-opener .opener-plate .credit { margin-top: 12px; font-size: 15px; line-height: 1.45; letter-spacing: 0.01em; color: var(--titanium); }
       </style>
-      <img class="opener-img" src="shots/opener-design-system-light.jpg" data-dark="shots/opener-design-system.jpg" alt="Doubled flow lines from the chroma flow direction, dithered">
+      <img class="opener-img" src="shots/opener-design-system-light.jpg" data-dark="shots/opener-design-system.jpg" alt="A calligraphy exercise sheet by Ahmed Karahisari, 16th century, rendered as a two-tone dither">
       <div class="in">
         <div class="opener-plate">
           <div class="big">Design system</div>
-          <p>This section documents the mark, the color set, the type, the line system, the dither, and the isometric projection.</p>
+          <p>Karahisari repeated every stroke until the forms were consistent, which is what a design system is for.</p>
+          <div class="credit">Calligraphy: Ahmed Karahisari, 16th century, public domain</div>
         </div>
       </div>
     </section>
