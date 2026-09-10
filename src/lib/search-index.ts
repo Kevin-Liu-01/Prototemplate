@@ -291,7 +291,7 @@ const DECK_SLIDES: readonly string[] = [
   'Layout measurements',
   'The horizon field',
   'Documentation',
-  'Documentation',
+  'The docs',
   'Nearest-page routing',
   'The Compact Oxford English Dictionary',
   'Markdown twins',

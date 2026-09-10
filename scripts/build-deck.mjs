@@ -31,10 +31,13 @@
 //
 // Usage: pnpm build:deck
 //        node scripts/build-deck.mjs --out <file> [--quality <n>] [--max-width <px>]
+//                                          [--native-quality <n>] [--thumb-quality <n>]
 //                           writes one lighter copy somewhere else (the
 //                           artifact copy, which must stay under 16MB) with
-//                           the photographs at that JPEG quality and width;
-//                           public/ is left alone
+//                           the photographs at that JPEG quality and width,
+//                           the continuous-tone native images at that quality,
+//                           and the thumbnails re-encoded at that quality
+//                           instead of passing through; public/ is left alone
 import { execFileSync, execSync } from 'node:child_process';
 import {
   copyFileSync,
@@ -64,9 +67,11 @@ const THUMBS_OUT = join(ROOT, 'public/shots/deck');
 const SLIDE_COUNT = 85;
 const QUALITY = Number(flag('--quality') ?? 78);
 const MAX_WIDTH = Number(flag('--max-width') ?? 1280);
+/* the thumbnails pass through untouched unless a copy asks for them re-encoded */
+const THUMB_QUALITY = flag('--thumb-quality') ? Number(flag('--thumb-quality')) : undefined;
 /* full-bleed openers and mood images and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
 const NATIVE = /^(opener|mood|detail)-/;
-const NATIVE_QUALITY = 88;
+const NATIVE_QUALITY = Number(flag('--native-quality') ?? 88);
 /* the share of pixels at the two extremes above which a native image counts as a two-tone dither */
 const TWO_TONE_SHARE = 0.98;
 
@@ -170,7 +175,15 @@ function dataUri(rel) {
     const mime = MIME[extname(abs).toLowerCase()];
     if (!mime) throw new Error(`build-deck: no image type for deck/${rel}`);
     thumbs += 1;
-    return toUri(abs, mime);
+    if (THUMB_QUALITY === undefined) return toUri(abs, mime);
+    const small = join(tmp, `thumb-${basename(rel).replace(/\.[^.]+$/, '.jpg')}`);
+    try {
+      execSync(`sips -s format jpeg -s formatOptions ${THUMB_QUALITY} "${abs}" --out "${small}"`, { stdio: ['ignore', 'ignore', 'pipe'] });
+    } catch (error) {
+      const detail = error && typeof error === 'object' && 'stderr' in error && error.stderr ? String(error.stderr).trim() : '';
+      throw new Error(`build-deck: sips could not re-encode deck/${rel}; the build runs on macOS${detail ? `: ${detail}` : ''}`);
+    }
+    return toUri(small, 'image/jpeg');
   }
   const native = NATIVE.test(basename(rel));
   if (native) {
@@ -185,9 +198,10 @@ function dataUri(rel) {
     ? `-s formatOptions ${NATIVE_QUALITY}`
     : `-s formatOptions ${QUALITY} --resampleWidth ${MAX_WIDTH}`;
   try {
-    execSync(`sips -s format jpeg ${options} "${abs}" --out "${resampled}"`, { stdio: 'ignore' });
-  } catch {
-    throw new Error(`build-deck: sips could not ${native ? 'encode' : 'resample'} deck/${rel}; the build runs on macOS`);
+    execSync(`sips -s format jpeg ${options} "${abs}" --out "${resampled}"`, { stdio: ['ignore', 'ignore', 'pipe'] });
+  } catch (error) {
+    const detail = error && typeof error === 'object' && 'stderr' in error && error.stderr ? String(error.stderr).trim() : '';
+    throw new Error(`build-deck: sips could not ${native ? 'encode' : 'resample'} deck/${rel}; the build runs on macOS${detail ? `: ${detail}` : ''}`);
   }
   if (native) natives += 1;
   else photographs += 1;
