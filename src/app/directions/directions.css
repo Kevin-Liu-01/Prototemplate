@@ -1,0 +1,256 @@
+/* /directions/[slug]: one direction's book inside the flow sheet.
+
+   The shell (src/components/viewer) draws the chrome and the sheet ring;
+   this sheet draws the book: the head is the shell's BookHead
+   (BookView.css), the section dividers are its .pt-book-sec, and the rules
+   below follow the line law for chrome (DESIGN.md). Every rule is 1px and
+   drawn once in one of the three roles: the live page's ring is the sheet
+   mat (a --pt-hair border inside a 1px paper gap inside a --pt-hair-soft
+   outline; a live page is a surface, not a picture), the captures and the
+   96x54 page thumbnails take --pt-edge because they hold a picture, and
+   the page rows draw --pt-hair-soft under themselves. Radius 0, no shadow,
+   tokens only. */
+
+.dr-doc {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+}
+
+/* ---- the toolbar slot: a link dressed as the shell's button ---- */
+.dr-open {
+  text-decoration: none;
+}
+
+/* ---- the head and its signature row.
+   BookHead closes with the structural rule; the signature sits under it as
+   one more row of the head, in the gutter grid the dividers use. It draws
+   no rule of its own: the first divider's top rule closes it, so the head
+   never ends in two rules with an empty band between them. ---- */
+.dr-head {
+  display: flex;
+  flex-direction: column;
+}
+
+.dr-sig {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 28px;
+  margin: 0;
+  padding: 12px 0 0;
+}
+
+.dr-sig dt {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+}
+
+.dr-sig dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+  max-width: 62ch;
+}
+
+/* ---- a section: the divider, then its content 24px under ---- */
+.dr-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---- the live page: the sheet ring around a 1440x900 stage scaled to the
+   column. The ring is the shell's sheet mat, drawn here with its own class
+   names so the flow sheet's padding never reaches it; the box keeps the
+   stage's ratio so the scaled stage fills it edge to edge. ---- */
+.dr-sheet-mat {
+  box-sizing: content-box;
+  padding: 1px;
+  background: var(--pt-paper);
+  outline: 1px solid var(--pt-hair-soft);
+}
+
+.dr-sheet {
+  position: relative;
+  box-sizing: content-box;
+  aspect-ratio: 1440 / 900;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+  overflow: hidden;
+}
+
+.dr-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+
+.dr-live {
+  margin: 0;
+  min-width: 0;
+}
+
+/* the caption under the live page: what is live, and its address */
+.dr-cap {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.dr-cap span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- the captures: light and dark side by side, each a picture in an
+   edge frame with its theme under it ---- */
+.dr-shots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.dr-shot {
+  margin: 0;
+  min-width: 0;
+}
+
+.dr-shot-frame {
+  display: block;
+  aspect-ratio: 1440 / 900;
+  border: 1px solid var(--pt-edge);
+  background: var(--pt-paper);
+  overflow: hidden;
+}
+
+.dr-shot-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.dr-shot figcaption {
+  margin-top: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pt-titanium);
+}
+
+/* ---- a site's pages: ruled rows, each a link with its 96x54 thumbnail,
+   its name and its address, the open glyph at the right ---- */
+.dr-page-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dr-page {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 16px;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: inherit;
+  text-decoration: none;
+}
+
+.dr-page-frame {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 54px;
+  border: 1px solid var(--pt-edge);
+  background: var(--pt-paper);
+  overflow: hidden;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.dr-page:hover .dr-page-frame,
+.dr-page:focus-visible .dr-page-frame {
+  border-color: var(--pt-ink);
+}
+
+.dr-page-main {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.dr-page-name {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'cv11', 'ss01';
+  color: var(--pt-ink);
+}
+
+.dr-page:hover .dr-page-name {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.dr-page-addr {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pt-titanium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dr-page > svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  color: var(--pt-titanium);
+}
+
+.dr-page:hover > svg {
+  color: var(--pt-ink);
+}
+
+.dr-page:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+@media (max-width: 900px) {
+  .dr-sig {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .dr-shots {
+    grid-template-columns: 1fr;
+  }
+
+  .dr-cap {
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-page-frame {
+    transition: none;
+  }
+}

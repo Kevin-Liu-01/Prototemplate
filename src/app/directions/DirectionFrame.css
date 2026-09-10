@@ -1,0 +1,36 @@
+/* DirectionFrame: the live exhibit at 1440x900 inside a stage that scales
+   it (the gallery's fixed sheet in slide mode, the direction page's own
+   frame). The static capture (ThumbShot, .pt-shot from Sidebar.css) fills
+   the box behind the frame and shows until the page has loaded. Any motion
+   around the frame (the gallery's outgoing fade and 6px rise) belongs to
+   the sheet's keyed wrapper (Sheet.css, .pt-slide), so nothing here
+   animates on its own beyond the frame's fade-in. Tokens only. */
+
+.dr-exhibit {
+  position: absolute;
+  inset: 0;
+  background: var(--pt-paper);
+}
+
+.dr-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 1440px;
+  height: 900px;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+  transition: opacity var(--pt-dur-leave) var(--pt-ease-out);
+}
+
+.dr-frame.is-on {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-frame {
+    transition: none;
+  }
+}

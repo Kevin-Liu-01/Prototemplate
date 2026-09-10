@@ -2,7 +2,8 @@
    of every published SKILL.md: the engineering and productivity categories of
    the wiki's skill tree and the General Translation repository's own skills.
    Do not edit by hand; edit a SKILL.md and run the script. Sorted by category
-   in SKILL_CATEGORIES order, then by name. */
+   in SKILL_CATEGORIES order, then by name. The same run writes each body to
+   public/skills/<slug>.md, read by the skill page on the server and served raw. */
 
 /** Where a skill's SKILL.md lives: the wiki's skill tree, or the General Translation repository's .agents/skills. */
 export type SkillSource = 'wiki' | 'gt-cloud';
@@ -11,7 +12,7 @@ export type SkillSource = 'wiki' | 'gt-cloud';
 export type SkillCategory = 'engineering' | 'productivity' | 'general-translation';
 
 export type Skill = {
-  /** the folder name; unique across the categories, and what the hash names */
+  /** the folder name; unique across the categories, the slug of the page, and what the hash names */
   id: string;
   /** the frontmatter name; the folder name in all but a few cases */
   name: string;
@@ -27,6 +28,14 @@ export const SKILL_CATEGORIES: readonly { id: SkillCategory; label: string }[] =
   { id: 'productivity', label: 'Productivity' },
   { id: 'general-translation', label: 'General Translation' },
 ];
+
+/** Where the generator writes each body, relative to the repository root; the file is served at /skills/<slug>.md. */
+export const SKILL_BODY_DIR = 'public/skills';
+
+/** The page of one skill: `/skills/<slug>`. */
+export function skillHref(slug: string): string {
+  return `/skills/${slug}`;
+}
 
 export const SKILLS: readonly Skill[] = [
   {
@@ -1857,3 +1866,29 @@ export const SKILLS: readonly Skill[] = [
     source: 'gt-cloud',
   },
 ];
+
+const SKILL_BY_SLUG: ReadonlyMap<string, Skill> = new Map(SKILLS.map((skill) => [skill.id, skill]));
+
+/** The skill a slug names, or undefined for a slug that is not published. */
+export function getSkill(slug: string): Skill | undefined {
+  return SKILL_BY_SLUG.get(slug);
+}
+
+/** One category as the sidebar, the search and the sitemap list it: its skills by name, each with the address of its page. */
+export type SkillGroup = {
+  id: SkillCategory;
+  label: string;
+  /** skills.length, for a count next to the label */
+  count: number;
+  skills: readonly { slug: string; name: string; href: string }[];
+};
+
+/** The categories with their skills, in SKILL_CATEGORIES order and the order SKILLS holds them; a category with no skills is left out. */
+export const SKILL_GROUPS: readonly SkillGroup[] = SKILL_CATEGORIES.map((category) => {
+  const skills = SKILLS.filter((skill) => skill.category === category.id).map((skill) => ({
+    slug: skill.id,
+    name: skill.name,
+    href: skillHref(skill.id),
+  }));
+  return { id: category.id, label: category.label, count: skills.length, skills };
+}).filter((group) => group.count > 0);

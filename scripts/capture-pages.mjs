@@ -13,6 +13,13 @@
 //     the rule surfaces.ts uses
 //   - the routes the Pages group lists: the gallery (`gallery`), /brand,
 //     /docs, /compare, /present and /deck, under their own ids
+//   - the Knowledge rows that have a page of their own: /skills (`skills`)
+//     and /marks (`marks`), so the sidebar's Skills and Marks rows can
+//     preview their first fold
+//   - one direction page (`directions`): /directions/<slug> for the first
+//     exploration in src/lib/directions.ts, the route every site and
+//     exploration row opens (the reference keeps /d/production, which the
+//     shipped pages above already cover)
 //   - with --live, the pages of generaltranslation.com the Shipped group's
 //     `Live site` child lists (LIVE_PAGES below, ids live-<name>), instead
 //     of the local pages: the cookie banner is declined through the
@@ -36,7 +43,7 @@
 // Needs the dev server running (pnpm dev) and the Chrome for Testing build
 // playwright-core expects; CHROME_PATH overrides the executable. --live
 // needs the network instead of the dev server.
-import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -44,6 +51,7 @@ import { chromium } from 'playwright-core';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PRODUCTION = join(ROOT, 'src/app/d/production');
+const DIRECTIONS_SOURCE = join(ROOT, 'src/lib/directions.ts');
 const OUT = join(ROOT, 'public/shots/pages');
 
 const EXEC =
@@ -110,6 +118,29 @@ function productionPages() {
   return found;
 }
 
+/**
+ * The slug of the first exploration in src/lib/directions.ts (the first
+ * entry of DIRECTIONS without `site: true`), read from the source the way
+ * scripts/lint-lines.mjs reads the archive's first slug, so the script
+ * needs no TypeScript loader. /directions/<slug> is the direction page
+ * captured under the `directions` id.
+ */
+function firstExplorationSlug() {
+  const source = readFileSync(DIRECTIONS_SOURCE, 'utf8');
+  const start = source.indexOf('export const DIRECTIONS');
+  const end = source.indexOf('\n];', start);
+  if (start < 0 || end < 0) {
+    console.error('capture-pages: no DIRECTIONS array in src/lib/directions.ts');
+    process.exit(2);
+  }
+  for (const block of source.slice(start, end).split(/\n  \},?\n/)) {
+    const slug = block.match(/\bslug: '([^']+)'/)?.[1];
+    if (slug && !/\bsite: true\b/.test(block)) return slug;
+  }
+  console.error('capture-pages: no exploration found in src/lib/directions.ts');
+  process.exit(2);
+}
+
 /** [id, url] for every capture: the live pages under --live, the local pages otherwise. */
 function targets() {
   if (LIVE) return ONLY ? LIVE_PAGES.filter(([id]) => ONLY.includes(id)) : LIVE_PAGES;
@@ -125,6 +156,9 @@ function targets() {
     ['compare', '/compare'],
     ['present', '/present'],
     ['deck', '/deck'],
+    ['skills', '/skills'],
+    ['marks', '/marks'],
+    ['directions', `/directions/${firstExplorationSlug()}`],
   ].map(([id, path]) => [id, `${BASE}${path}`]);
   const all = [...shipped, ...routes];
   return ONLY ? all.filter(([id]) => ONLY.includes(id)) : all;

@@ -2,17 +2,19 @@ import type { MetadataRoute } from 'next';
 
 import { DOCS } from '@/app/docs/registry';
 import { ARCHIVE } from '@/lib/archive';
-import { DIRECTIONS } from '@/lib/directions';
+import { DIRECTION_PAGE_SLUGS, DIRECTIONS } from '@/lib/directions';
+import { SKILLS, skillHref } from '@/lib/skills';
 
 const SITE_URL = 'https://prototemplate.vercel.app';
 
 /**
  * Every route on the site, derived from the registries the pages render
  * from so the sitemap tracks the lineup: the gallery, the presenter, the
- * deck, the brand book, the documents, the skills, the mark explorations,
- * the compare rig, each direction with each site concept's enterprise page,
- * and the archive of retired versions. /craft is a redirect to /docs and is
- * not listed.
+ * deck, the brand book, the documents, the skills index and each skill's
+ * page, the mark explorations, the compare rig, each direction's own page
+ * and its prototype with each site concept's enterprise page, and the
+ * archive of retired versions. /craft is a redirect to /docs and is not
+ * listed.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
@@ -36,7 +38,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   }
 
+  for (const skill of SKILLS) {
+    entries.push({
+      url: `${SITE_URL}${skillHref(skill.id)}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    });
+  }
+
   entries.push({ url: `${SITE_URL}/compare`, lastModified, changeFrequency: 'monthly', priority: 0.5 });
+
+  /* each site and exploration's own page on the shell; the reference answers /d/production below */
+  for (const slug of DIRECTION_PAGE_SLUGS) {
+    entries.push({
+      url: `${SITE_URL}/directions/${slug}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    });
+  }
 
   for (const direction of DIRECTIONS) {
     entries.push({

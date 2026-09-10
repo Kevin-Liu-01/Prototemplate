@@ -7,7 +7,9 @@
    its rows scroll under it, and 28px rows indented 24px behind their icons,
    a child row (a site's enterprise page) one level further. The Shipped
    group's header carries the check-badge on the shipped color and folds its
-   live surfaces under a child header. Thumbnail density widens the column
+   live surfaces under a child header; a page row that hangs route sections
+   under it (Skills) is followed by their headers one indent in and their
+   rows one further (.is-under-row). Thumbnail density widens the column
    (ViewerShell.css sets --pt-sb-w to 256px) and every row becomes 44px with
    its 64x36 capture and its address.
 
@@ -368,6 +370,33 @@ a.pt-sb-mark:focus-visible {
   padding-left: 58px;
 }
 
+/* a child group nested under a page row (the skill categories under
+   Knowledge > Skills): its header starts where the row's name does, one
+   indent under the row, and its rows one level further; closed until it
+   holds the current skill. The run of groups under one row sits 4px off
+   the row above and the row below, with no gap between two of them, so the
+   row reads as their parent. The header draws no rule, like every header
+   (DESIGN.md, the line law's junction table). */
+.pt-grp.is-sub.is-under-row {
+  margin-top: 4px;
+}
+
+.pt-grp.is-under-row + .pt-grp.is-under-row {
+  margin-top: 0;
+}
+
+.pt-grp.is-under-row + .pt-orow {
+  margin-top: 4px;
+}
+
+.pt-grp.is-sub.is-under-row > .pt-grp-head {
+  padding-left: 58px;
+}
+
+.pt-grp.is-sub.is-under-row > .pt-orow {
+  padding-left: 82px;
+}
+
 /* ---- a row: a two-column grid, the icon in a 16px column under the
    header's label and the name beside it; 28px for one line. The row
    skips painting off screen at its own height. ---- */
@@ -501,6 +530,11 @@ a.pt-sb-mark:focus-visible {
 .pt-thumbs.is-shots .pt-orow.is-child,
 .pt-thumbs.is-shots .pt-grp.is-sub > .pt-orow {
   padding-left: 26px;
+}
+
+/* a row of a group nested under a page row: one more level in, its capture at 42px */
+.pt-thumbs.is-shots .pt-grp.is-sub.is-under-row > .pt-orow {
+  padding-left: 42px;
 }
 
 .pt-thumbs.is-shots .pt-orow .pt-thumb-frame.is-mini {

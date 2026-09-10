@@ -29,6 +29,14 @@ export type ShellItem = {
    * through previewId(), which falls back to `id`.
    */
   surface?: string;
+  /**
+   * True for an item the shell selects in place even though it carries an
+   * href to another path: the documents on /docs, whose book scrolls and
+   * rewrites the address itself. Without it, a sidebar row or grid tile
+   * for an item whose href names a path other than the current one is a
+   * link and navigates; the shell never scrolls the page for it.
+   */
+  inPlace?: true;
 };
 
 export type ShellSection = {
@@ -41,6 +49,13 @@ export type ShellSection = {
    * the count, the progress line and step(); a paged route counts the rest.
    */
   paged?: false;
+  /**
+   * The surfaces.ts id of the page row this section nests beneath in the
+   * sidebar: `skills` for the skill categories, which hang under Knowledge >
+   * Skills as collapsible child groups instead of standing as groups of
+   * their own. A section without it stands at the top level.
+   */
+  under?: string;
 };
 
 /** Stage modes. A route offers a subset; the first offered is its default. */

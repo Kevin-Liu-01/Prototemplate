@@ -3,23 +3,22 @@
 import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import type { ReactNode, RefObject } from 'react';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 import { Icon } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
-import { ThumbShot } from '@/components/viewer/ThumbShot';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { ARCHIVE, ARCHIVE_DELETION, archiveDate, archiveDesc, archiveFull, archiveHost, archiveShot } from '@/lib/archive';
 import type { ArchiveEntry } from '@/lib/archive';
 import { cn } from '@/lib/cn';
-import { DIRECTIONS } from '@/lib/directions';
-import type { Direction } from '@/lib/directions';
+import { DIRECTIONS, directionPageHref } from '@/lib/directions';
 import type { ShellItem, ShellMode, ShellSection } from '@/lib/shell-data';
-import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { DirectionFrame, FRAME_H, FRAME_W } from './directions/DirectionFrame';
+import { DIRECTION_ITEMS, DIRECTION_SECTIONS, directionTitle, EXPLORATIONS, REFERENCE, SITES } from './directions/sections';
 import PrototemplateHero from './PrototemplateHero';
 import SiteCompare from './SiteCompare';
 
@@ -44,16 +43,19 @@ const GALLERY_MODES: readonly ShellMode[] = ['book', 'slide', 'grid'];
 /* the slide here is one live 1440 exhibit, so the seg says so */
 const GALLERY_MODE_LABELS: Partial<Record<ShellMode, string>> = { slide: 'Live' };
 
-/** the live exhibit's stage in CSS pixels, before the sheet scales it */
-const EXHIBIT_W = 1440;
-const EXHIBIT_H = 900;
+/**
+ * The read line. A section crossing the top tenth of the sheet is the one
+ * in view; among several, the lowest on the page wins, so the section whose
+ * top has just passed under the line is the active one, and a section
+ * scrolled to the top of the sheet (a hash landing, a selection) is the one
+ * the spy confirms. A band in the middle of the sheet cannot do this: a
+ * 128px exploration row parked at the top never reaches it, and a row
+ * further down wins instead, so the hash never round-trips.
+ */
+const SPY_MARGIN = '0px 0px -90% 0px';
 
-/** how long a new selection waits before the exhibit frame loads it, so rapid arrowing does not load every page */
-const SETTLE_MS = 300;
-
-/** the band in the middle of the book that decides the direction in view */
-const IO_ROOT_MARGIN = '-42% 0px -42% 0px';
-const IO_THRESHOLDS = [0, 0.25, 0.5, 1];
+/** How long the spy waits for a programmatic scroll to reach its section before it reads the page again. */
+const SETTLE_MS = 1200;
 
 /**
  * An archived version: one of the retired /d routes, kept viewable as its
@@ -64,32 +66,7 @@ const IO_THRESHOLDS = [0, 0.25, 0.5, 1];
  * 1440x900 crop) and <slug>-full.jpg (the full page).
  */
 
-/** The shipped reference, then the three full site concepts, then the single-page explorations in label order. */
-const REFERENCE = DIRECTIONS.find((d) => d.reference);
-const SHIPPED = REFERENCE ? [REFERENCE] : [];
-const SITES = DIRECTIONS.filter((d) => d.site && !d.reference);
-const EXPLORATIONS = DIRECTIONS.filter((d) => !d.site);
-/** The count's order: every paged direction in the site map's order (Shipped, Sites, Explorations), so the number column matches the count and the arrows (01 to 17). */
-const PAGED_DIRECTIONS = [...SHIPPED, ...SITES, ...EXPLORATIONS];
-
-/** The shipped direction is the live site's home, and every list calls it that (surfaces.ts, the index, the corner); its registry name stays the group's. */
-function directionTitle(d: Direction): string {
-  return d.reference ? 'Home' : d.name;
-}
-
-function directionItem(d: Direction): ShellItem {
-  const position = PAGED_DIRECTIONS.indexOf(d);
-  return {
-    id: d.slug,
-    n: position >= 0 ? pad2(position + 1) : '',
-    title: directionTitle(d),
-    href: `/d/${d.slug}`,
-    desc: d.reference ? `${d.concept} Live at generaltranslation.com.` : d.concept,
-    shot: { light: `/shots/light/${d.slug}.jpg`, dark: `/shots/dark/${d.slug}.jpg` },
-  };
-}
-
-/** An archived version as an item: opened in place here, at its own address on /archive, previewed as its surface. */
+/** An archived version as an item: its row opens its own address on /archive; a hash naming it lands its sheet here; previewed as its surface. */
 function archiveItem(entry: ArchiveEntry): ShellItem {
   return {
     id: entry.slug,
@@ -102,17 +79,13 @@ function archiveItem(entry: ArchiveEntry): ShellItem {
   };
 }
 
-/** The gallery's groups in the site map's order (directive 8.10): Shipped on its own, then the three sites, the explorations, the archive. */
+/** The gallery's groups in the site map's order (directive 8.10): the direction groups shared with the direction pages (Shipped, Sites, Explorations), then the archive. */
 const ALL_SECTIONS: readonly ShellSection[] = [
-  { id: 'shipped', label: 'Shipped', items: SHIPPED.map(directionItem) },
-  { id: 'sites', label: 'Sites', items: SITES.map(directionItem) },
-  { id: 'explorations', label: 'Explorations', items: EXPLORATIONS.map(directionItem) },
+  ...DIRECTION_SECTIONS,
   { id: 'archive', label: 'Archive', items: ARCHIVE.map(archiveItem), paged: false },
 ];
 
 const SECTIONS: readonly ShellSection[] = ALL_SECTIONS.filter((section) => section.items.length > 0);
-
-const ITEM_BY_ID = new Map(SECTIONS.flatMap((section) => section.items).map((item) => [item.id, item]));
 const DIRECTION_BY_SLUG = new Map(DIRECTIONS.map((d) => [d.slug, d]));
 const ARCHIVE_BY_SLUG = new Map(ARCHIVE.map((entry) => [entry.slug, entry]));
 
@@ -265,7 +238,7 @@ function GalleryHome({ home, scrollRef, intent }: HomeProps) {
   return null;
 }
 
-/** The toolbar slot (section 3): opens the marked direction as its own page; the title names it. Absent while no direction is marked. */
+/** The toolbar slot (section 3): opens the marked direction's own page (its prototype, for the reference); the title names it. Absent while no direction is marked. */
 function OpenPage() {
   const { active } = usePtShell();
   const direction = DIRECTION_BY_SLUG.get(active);
@@ -273,55 +246,12 @@ function OpenPage() {
   return (
     <Link
       className='pt-ib gv-open'
-      href={`/d/${direction.slug}`}
+      href={directionPageHref(direction.slug)}
       title={`Open ${directionTitle(direction)} as its own page`}
     >
       <Icon name='open-page' />
       <span className='pt-lb'>Open page</span>
     </Link>
-  );
-}
-
-/**
- * The live exhibit in slide mode: one same-origin iframe of the direction
- * page with its corner hidden, at 1440x900 inside the fixed sheet, which
- * scales it. The static capture sits behind it and shows until the page has
- * loaded; a new selection waits SETTLE_MS before the frame takes it, so
- * arrowing through the list loads only where the reader stops. The frame is
- * keyed by its address, so a late load event from a page that was skipped
- * never marks the next one ready. The gt:freeze gate the presenter uses for
- * its wall is not needed here: this is the one live frame, and it unmounts
- * with the mode. The theme reaches the frame through the storage event the
- * boot script in layout.tsx listens for.
- */
-function ExhibitFrame({ direction }: { direction: Direction }) {
-  const [src, setSrc] = useState<string | null>(null);
-  const [ready, setReady] = useState<string | null>(null);
-
-  useGSAP(
-    () => {
-      const timer = window.setTimeout(() => setSrc(`/d/${direction.slug}?chrome=0`), SETTLE_MS);
-      return () => window.clearTimeout(timer);
-    },
-    { dependencies: [direction.slug], revertOnUpdate: true }
-  );
-
-  const item = ITEM_BY_ID.get(direction.slug) ?? directionItem(direction);
-  const on = src !== null && ready === src;
-
-  return (
-    <div className='gv-exhibit'>
-      <ThumbShot item={item} />
-      {src ? (
-        <iframe
-          key={src}
-          className={cn('gv-frame', on && 'is-on')}
-          src={src}
-          title={`${directionTitle(direction)}, live at 1440 pixels wide`}
-          onLoad={() => setReady(src)}
-        />
-      ) : null}
-    </div>
   );
 }
 
@@ -400,13 +330,16 @@ type ArticleProps = {
  * nameplate's two faces (decision 3). The old top nav is gone; the
  * shell's sidebar and index panel take its place. The sections that stand
  * for a direction carry data-gv-id, and the nameplate with the opener
- * carries data-gv-top: an IntersectionObserver on the sheet marks the one in
- * the middle band active through the shell (the top clears the mark, so
- * only the Gallery row is current while nothing is on screen), which
+ * carries data-gv-top: an IntersectionObserver on the sheet marks the one
+ * crossing the read line at the top of the sheet active through the shell
+ * (the lowest of several; the top clears the mark, so only the Gallery row
+ * is current while the nameplate and the opener are on screen), which
  * updates the hash without scrolling, and a selection from anywhere else
- * (the sidebar, the keys, a grid click that landed in the book) scrolls its
- * section into view. The archive rows are not spied, so reading past them
- * never opens a capture uninvited.
+ * (the hash, the keys, a grid click that landed in the book) scrolls its
+ * section to the top of the sheet and mutes the spy until the section
+ * arrives, so the sections the scroll passes are never selected and the
+ * landed section stays marked. The archive rows are not spied, so reading
+ * past them never opens a capture uninvited.
  */
 function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: ArticleProps) {
   const { active, select } = usePtShell();
@@ -429,8 +362,21 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
   const target = (id: string): HTMLElement | null =>
     root.current?.querySelector<HTMLElement>(`[data-gv-id="${CSS.escape(id)}"]`) ?? null;
 
+  /** the section a programmatic scroll is heading for; the spy waits for it */
+  const settling = useRef<Element | null>(null);
+  const settleTimer = useRef(0);
+
+  /* a programmatic scroll: the spy is muted until the section reaches the
+     read line, the scroll ends, or the settle time passes, so the sections
+     the scroll passes are never selected and the landed one is confirmed */
   const scrollTo = (el: HTMLElement | null, behavior: ScrollBehavior) => {
-    if (el) el.scrollIntoView({ block: 'start', behavior });
+    if (!el) return;
+    settling.current = el;
+    window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      settling.current = null;
+    }, SETTLE_MS);
+    el.scrollIntoView({ block: 'start', behavior });
   };
 
   useMountEffect(() => {
@@ -451,30 +397,63 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
       landed.current = true;
     });
 
+    /* the spy: of the sections crossing the read line, the lowest on the
+       page names the direction in view; a landing or a selection in flight
+       is waited for, so the sections the scroll passes are never selected */
     let observer: IntersectionObserver | null = null;
+    const onScrollEnd = () => {
+      if (!settling.current) return;
+      settling.current = null;
+      window.clearTimeout(settleTimer.current);
+    };
     if (box && scroller && typeof IntersectionObserver !== 'undefined') {
+      const watched = Array.from(box.querySelectorAll<HTMLElement>('[data-gv-id], [data-gv-top]'));
+      const order = new Map<Element, number>(watched.map((el, i) => [el, i]));
+      const visible = new Set<Element>();
+      const lowest = (): HTMLElement | null => {
+        let best: HTMLElement | null = null;
+        let rank = -1;
+        for (const el of visible) {
+          const i = order.get(el) ?? -1;
+          if (i > rank) {
+            rank = i;
+            best = el as HTMLElement;
+          }
+        }
+        return best;
+      };
       observer = new IntersectionObserver(
         (entries) => {
-          let best: IntersectionObserverEntry | null = null;
           for (const entry of entries) {
-            if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) best = entry;
+            if (entry.isIntersecting) visible.add(entry.target);
+            else visible.delete(entry.target);
           }
+          const best = lowest();
           if (!best) return;
-          const el = best.target as HTMLElement;
+          if (settling.current) {
+            if (best !== settling.current) return;
+            settling.current = null;
+            window.clearTimeout(settleTimer.current);
+          }
           /* the nameplate and the opener: nothing is marked */
-          const id = el.dataset.gvTop !== undefined ? '' : el.dataset.gvId;
+          const id = best.dataset.gvTop !== undefined ? '' : best.dataset.gvId;
           if (id === undefined || id === activeRef.current) return;
           fromScroll.current = id;
           selectRef.current(id);
         },
-        { root: scroller, rootMargin: IO_ROOT_MARGIN, threshold: IO_THRESHOLDS }
+        { root: scroller, rootMargin: SPY_MARGIN, threshold: 0 }
       );
-      box.querySelectorAll<HTMLElement>('[data-gv-id], [data-gv-top]').forEach((el) => observer?.observe(el));
+      watched.forEach((el) => observer?.observe(el));
+      /* a scroll that ends short of its section (the last rows cannot reach
+         the line) keeps the selected section active; the spy reads again from here */
+      scroller.addEventListener('scrollend', onScrollEnd);
     }
 
     return () => {
       cancelAnimationFrame(frame);
       observer?.disconnect();
+      scroller?.removeEventListener('scrollend', onScrollEnd);
+      window.clearTimeout(settleTimer.current);
     };
   });
 
@@ -705,7 +684,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
                   <p>{REFERENCE.signature}</p>
                   <SiteCompare slug={REFERENCE.slug} name={REFERENCE.name} />
                   <p className='pt-site-links'>
-                    <Link href={`/d/${REFERENCE.slug}`}>open the home</Link>
+                    <Link href={directionPageHref(REFERENCE.slug)}>open the home</Link>
                     <span aria-hidden> · </span>
                     <Link href={`/d/${REFERENCE.slug}/enterprise`}>open the enterprise page</Link>
                   </p>
@@ -752,7 +731,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
                 <p>{site.signature}</p>
                 <SiteCompare slug={site.slug} name={site.name} />
                 <p className='pt-site-links'>
-                  <Link href={`/d/${site.slug}`}>open the home</Link>
+                  <Link href={directionPageHref(site.slug)}>open the home</Link>
                   <span aria-hidden> · </span>
                   <Link href={`/d/${site.slug}/enterprise`}>open the enterprise page</Link>
                 </p>
@@ -774,13 +753,13 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
             <p>
               Twenty-plus directions got built; thirteen survived review. Some are quiet
               evolutions of the current site, some are physics experiments with type. Each row
-              below is a live page.
+              below opens the direction's own page, with its live prototype and its captures.
             </p>
           </section>
 
           <div className='pt-rows pt-post-rows'>
             {EXPLORATIONS.map((direction) => (
-              <Link className='pt-row' href={`/d/${direction.slug}`} key={direction.slug} data-gv-id={direction.slug}>
+              <Link className='pt-row' href={directionPageHref(direction.slug)} key={direction.slug} data-gv-id={direction.slug}>
                 <span className='pt-row-label'>{direction.label}</span>
                 <span className='pt-row-main'>
                   <h3>{direction.name}</h3>
@@ -864,9 +843,10 @@ type StageProps = ArticleProps;
  * the shell over the stage, so nothing is mounted under it and the live
  * frame and the shader field release their contexts. An archived item shows
  * its capture sheet in either remaining mode; otherwise the book holds the
- * article and the slide holds the live exhibit, on a sheet keyed by the
- * direction so the exhibit that leaves fades while the next rises in from
- * the side of the move (directive 7.4).
+ * article and the slide holds the live exhibit (DirectionFrame, shared with
+ * the direction pages), on a sheet keyed by the direction so the exhibit
+ * that leaves fades while the next rises in from the side of the move
+ * (directive 7.4).
  */
 function GalleryStage({ fontClass, anatomy, ledger, scrollRef, intent }: StageProps) {
   const { mode, active } = usePtShell();
@@ -891,8 +871,10 @@ function GalleryStage({ fontClass, anatomy, ledger, scrollRef, intent }: StagePr
 
   const direction = DIRECTION_BY_SLUG.get(active);
   return (
-    <Sheet variant='fixed' w={EXHIBIT_W} h={EXHIBIT_H} frame={false} itemKey={direction?.slug}>
-      {direction ? <ExhibitFrame key={direction.slug} direction={direction} /> : null}
+    <Sheet variant='fixed' w={FRAME_W} h={FRAME_H} frame={false} itemKey={direction?.slug}>
+      {direction ? (
+        <DirectionFrame key={direction.slug} direction={direction} item={DIRECTION_ITEMS.get(direction.slug)} />
+      ) : null}
     </Sheet>
   );
 }

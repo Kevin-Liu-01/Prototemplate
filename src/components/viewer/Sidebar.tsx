@@ -47,11 +47,29 @@ const LIVE_LABEL = 'Live site';
 /** Groups folded on a first visit: only the live surfaces, whose header names them; every top-level group is open. */
 const CLOSED_BY_DEFAULT: readonly string[] = [LIVE_KEY];
 
+/**
+ * Where the reader's folds live: one site-wide key holding a JSON map of
+ * group key to open or closed, so a group folded on one route stays folded
+ * on the next. The per-route keys an earlier version wrote
+ * (gt-shell-sections:<id>) are ignored.
+ */
+const STORAGE_KEY = 'gt-shell-groups';
+
 /** What the arrow keys walk, in document order: headers, rows, the rows a route hangs under an item. */
 const WALK = '.pt-grp-head, .pt-orow, .pt-sub .pt-row';
 
 /** the distance a followed row keeps from the list's edges */
 const FOLLOW_MARGIN = 8;
+
+/**
+ * The path a keyboard activation of a row is heading for (Enter on the
+ * link), or null. Every row is a link that remounts the shell on the new
+ * route, so the flag lives outside the component: the list on that page
+ * puts focus back on its marked row once ready, and the arrow walk goes on
+ * where a pointer click would have left the reader, instead of dropping to
+ * the body and forcing a Tab back through the toolbar after every Enter.
+ */
+let pendingFocusPath: string | null = null;
 
 /* queue-list for the outline (bars-3 would read as the toolbar's list toggle 60px away), photo for the shots */
 const DENSITY_OPTIONS: readonly SegOption<ShellDensity>[] = [
@@ -168,6 +186,8 @@ type Row = {
   /** indented one level under the row before it: a site's enterprise page */
   child?: boolean;
   item?: ShellItem;
+  /** the route sections that nest under this page row, rendered after it as child groups: the skill categories under Skills */
+  subs?: readonly Group[];
 };
 
 type Group = {
@@ -177,8 +197,10 @@ type Group = {
   /** the header's own glyph and the color it draws: the Shipped group's check-badge (directive 8.10) */
   icon?: IconName;
   site?: SurfaceSite;
-  /** a folded child group rendered after the rows: the Shipped group's live surfaces */
-  sub?: Group;
+  /** folded child groups rendered after the rows: the Shipped group's live surfaces */
+  subs?: readonly Group[];
+  /** the group hangs under a page row (ShellSection.under) and is closed until it holds the current item */
+  nested?: boolean;
 };
 
 function fromItem(section: ShellSection, item: ShellItem): Row {
@@ -257,7 +279,7 @@ function shippedGroup(label: string, rows: readonly Row[]): Group {
     rows: pages,
     icon: 'check-badge',
     site: 'shipped',
-    sub: live.length > 0 ? { key: LIVE_KEY, label: LIVE_LABEL, rows: live } : undefined,
+    subs: live.length > 0 ? [{ key: LIVE_KEY, label: LIVE_LABEL, rows: live }] : undefined,
   };
 }
 
@@ -274,12 +296,38 @@ function navGroup(group: SurfaceGroup, rows: readonly Row[]): Group {
 }
 
 /**
+ * The route sections that nest under page rows (ShellSection.under), as
+ * child groups keyed by the surface id they hang beneath, hung on the row
+ * with that preview id wherever it stands. A section whose row is not in
+ * the list is left for the caller to place at the top level.
+ */
+function hangUnderRows(groups: readonly Group[], nested: ReadonlyMap<string, readonly Group[]>): readonly Group[] {
+  if (nested.size === 0) return groups;
+  const hang = (group: Group): Group => ({
+    ...group,
+    rows: group.rows.map((row) => {
+      const subs = nested.get(row.preview);
+      return subs ? { ...row, subs } : row;
+    }),
+    subs: group.subs?.map(hang),
+  });
+  return groups.map(hang);
+}
+
+/** True when a row of the group, or of a group nested under one of its rows, has this preview id. */
+function holdsPreview(groups: readonly Group[], preview: string): boolean {
+  return allGroups(groups).some((group) => group.rows.some((row) => row.preview === preview));
+}
+
+/**
  * The groups in order. With the site map on, the six groups run in the one
  * order every route keeps, a route section replacing the group of its own
  * name (Documents on /docs, Sites and Explorations on the gallery); a route
- * section that matches no group (the brand book's Sections) follows Pages,
- * since the route is a page. Without the site map the route's sections are
- * the whole list.
+ * section that names the page row it belongs to (`under`, the skill
+ * categories under Knowledge > Skills) hangs under that row as a child
+ * group; a route section that matches no group and names no row (the
+ * brand book's Sections) follows Pages, since the route is a page. Without
+ * the site map the route's sections are the whole list.
  */
 function buildGroups(sections: readonly ShellSection[], siteMap: boolean): readonly Group[] {
   const own = (section: ShellSection): Group => ({
@@ -300,22 +348,30 @@ function buildGroups(sections: readonly ShellSection[], siteMap: boolean): reado
     } else if (nav.length > 0) {
       out.push(navGroup(group, nav.map(fromNav)));
     }
-    if (group === 'Pages') {
-      for (const entry of sections) {
-        if (!matched.has(entry.id) && !NAV_GROUPS.some((name) => name.toLowerCase() === entry.id)) {
-          matched.add(entry.id);
-          out.push(own(entry));
-        }
-      }
-    }
   }
-  for (const entry of sections) if (!matched.has(entry.id)) out.push(own(entry));
-  return out;
+  /* the sections that hang under a page row, grouped by that row's surface id */
+  const nested = new Map<string, Group[]>();
+  for (const entry of sections) {
+    if (matched.has(entry.id) || !entry.under || !holdsPreview(out, entry.under)) continue;
+    matched.add(entry.id);
+    const list = nested.get(entry.under) ?? [];
+    list.push({ ...own(entry), nested: true });
+    nested.set(entry.under, list);
+  }
+  const hung = hangUnderRows(out, nested);
+  /* the sections left over stand as groups of their own, after Pages */
+  const rest = sections.filter((entry) => !matched.has(entry.id)).map(own);
+  const pages = hung.findIndex((group) => group.key === 'Pages');
+  return pages < 0 ? [...hung, ...rest] : [...hung.slice(0, pages + 1), ...rest, ...hung.slice(pages + 1)];
 }
 
-/** Every group and every child group, flat, for lookups by key. */
+/** Every group, every child group and every group nested under a row, flat and in document order, for lookups by key. */
 function allGroups(groups: readonly Group[]): readonly Group[] {
-  return groups.flatMap((group) => (group.sub ? [group, group.sub] : [group]));
+  return groups.flatMap((group) => [
+    group,
+    ...group.rows.flatMap((row) => (row.subs ? allGroups(row.subs) : [])),
+    ...(group.subs ? allGroups(group.subs) : []),
+  ]);
 }
 
 function matches(row: Row, query: string): boolean {
@@ -344,21 +400,45 @@ function covers(path: string, pathname: string): boolean {
 }
 
 /**
- * The one site map row that names the route the reader is on: of the rows
- * whose path covers the pathname, the longest, so on /d/production/enterprise
- * the Enterprise row is current and not the Home row above it as well.
+ * The one row that names the page the reader is on, site map row or route
+ * item alike: of the rows whose path covers the pathname, the longest, so
+ * on /d/production/enterprise the Enterprise row is current and not the
+ * Home row above it as well, and on /skills/<slug> the skill's own row and
+ * not the Skills row it hangs under. Rows that leave the site never are.
  */
 function currentKey(groups: readonly Group[], pathname: string): string | null {
   let best: Row | null = null;
   for (const group of allGroups(groups)) {
     for (const row of group.rows) {
-      if (row.item || row.external) continue;
+      if (row.external) continue;
       const path = pathOf(row.href);
       if (!covers(path, pathname)) continue;
       if (!best || path.length > pathOf(best.href).length) best = row;
     }
   }
   return best?.key ?? null;
+}
+
+/**
+ * True for a page row the reader is inside: it hangs route sections under
+ * it (the Skills row) and its path covers the pathname, so on
+ * /skills/<slug> the Skills row is marked with the skill's own row.
+ */
+function isParentPage(row: Row, pathname: string): boolean {
+  return Boolean(row.subs) && !row.external && covers(pathOf(row.href), pathname);
+}
+
+/**
+ * True for a row whose click the browser or the router answers, never the
+ * shell: a site map row, a row that leaves the site, or a route item whose
+ * href names a page other than the one the reader is on and that does not
+ * ask to be selected in place (ShellItem.inPlace). An item with no href, an
+ * in-place item, or the item of the page itself is selected by the shell.
+ */
+function navigates(row: Row, pathname: string): boolean {
+  if (!row.item || row.external) return true;
+  if (row.item.inPlace || !row.item.href) return false;
+  return pathOf(row.href) !== pathname;
 }
 
 /** Smooth unless the reader asked for less motion. */
@@ -474,18 +554,22 @@ function navItem(row: Row): ShellItem {
  * as a captured frame (or a row when the route's thumb is 'row'). The grid
  * renders this over the stage; GridView.css re-lays it out. Every item
  * carries data-id so the shell can find it from outside. With siteMap the
- * sections are built the way the sidebar builds its groups, so the two
- * agree on what Shipped and Sites hold.
+ * sections are built the way the sidebar builds its groups (the groups
+ * nested under a page row included), so the two agree on what Shipped and
+ * Sites hold. A pick follows the sidebar's rule: an item of this page, or
+ * one asking to be selected in place, is selected; every other item and
+ * every site map row opens its page through the router.
  */
 export function ThumbList({ sections, thumb, density, siteMap = false, renderSub, onSelect, className }: ThumbListProps) {
   const shell = usePtShell();
   const router = useRouter();
+  const pathname = usePathname();
   const pick = onSelect ?? shell.select;
   const frames = density === 'thumbs' && thumb !== 'row';
 
   type Block = { key: string; label: string; entries: readonly { item: ShellItem; own: boolean }[] };
   const blocks: readonly Block[] = siteMap
-    ? buildGroups(sections, true)
+    ? allGroups(buildGroups(sections, true))
         .filter((group) => sections.some((section) => section.id === group.key.toLowerCase()))
         .map((group) => ({
           key: group.key,
@@ -501,11 +585,14 @@ export function ThumbList({ sections, thumb, density, siteMap = false, renderSub
       }));
 
   const open = (entry: { item: ShellItem; own: boolean }) => {
-    if (entry.own) {
-      pick(entry.item.id);
+    const { item } = entry;
+    const inPlace = entry.own && (item.inPlace || !item.href || pathOf(item.href) === pathname);
+    if (inPlace) {
+      pick(item.id);
       return;
     }
-    if (entry.item.href) router.push(entry.item.href);
+    if (item.url) window.open(item.url, '_blank', 'noopener,noreferrer');
+    else if (item.href) router.push(item.href);
   };
 
   return (
@@ -540,23 +627,37 @@ type RowProps = {
   row: Row;
   /** the row is the place inside the current document, or the one current route while no item is marked */
   active: boolean;
-  /** the row names the route the reader is on while an item carries the bar */
+  /** the row names the page the reader is on, or the page row the reader is inside, while an item carries the bar */
   current: boolean;
+  /** the row's click is answered by the router or the browser (a link), not by the shell's select */
+  link: boolean;
   /** thumbnail density: the 64x36 capture and the address */
   shots: boolean;
+  /** the page the reader is on: only a marked row whose own path is this one reads as aria-current="page" */
+  pathname: string;
   /** a plain click or Space (null) picks the row; a modified click keeps the browser's meaning */
   onPick: (row: Row, event: MouseEvent<HTMLElement> | null) => void;
   follow?: (el: HTMLElement | null) => void;
 };
 
-/** The link attributes every row shares. The title carries the full name and the description, since the row clamps to one line. */
-function linkAttrs(row: Row, active: boolean, current: boolean) {
+/**
+ * The link attributes every row shares. The title carries the full name
+ * and the description, since the row clamps to one line. A marked row whose
+ * own path is the page the reader is on (or the page row the reader is
+ * inside: Skills on /skills/<slug>) is aria-current="page"; a marked row
+ * that is the reading position on another page (the direction under the
+ * gallery's read line, the skill under the index's, each with a page of
+ * its own) or an item with no address of its own (a slide, a section) is
+ * "true", so a reader never hears two pages announced as the current one.
+ */
+function linkAttrs(row: Row, active: boolean, current: boolean, pathname: string) {
+  const onPage = !row.external && (pathOf(row.href) === pathname || isParentPage(row, pathname));
   return {
     href: row.href,
     title: row.desc === row.name ? row.name : `${row.name}. ${row.desc}`,
     'data-preview': row.preview,
     'data-site': row.site,
-    'aria-current': active || current ? (row.item ? ('true' as const) : ('page' as const)) : undefined,
+    'aria-current': active || current ? (onPage ? ('page' as const) : ('true' as const)) : undefined,
     target: row.external ? '_blank' : undefined,
     rel: row.external ? 'noreferrer' : undefined,
   };
@@ -587,34 +688,51 @@ function Mini({ row }: { row: Row }) {
  * letter on /compare), and in thumbnail density the 64x36 capture on the
  * left with the address on a second line, 44px tall. A child row (a site's
  * enterprise page) is indented one level under the row before it and shows
- * its short name. A route item is an anchor with its real href whose plain
- * click the shell answers (a modified click keeps the browser's meaning); a
- * site map row is a link to its route. The row that is the place inside the
- * current document draws the 2px ink bar.
+ * its short name. A route item selected in place (no href of its own, an
+ * in-place item, or the item of this page) is an anchor with its real href
+ * whose plain click the shell answers (a modified click keeps the browser's
+ * meaning); every other row, a site map row or an item whose page is
+ * elsewhere, is a link to its page (`link`), with prefetch off: a list of
+ * two hundred rows must not fetch every page that scrolls into view (the
+ * hover prefetch stays, so a click is as quick). The row that is the place
+ * inside the current document draws the 2px ink bar.
  */
-function TreeRow({ row, active, current, shots, onPick, follow }: RowProps) {
-  const Tag = row.item || row.external ? 'a' : Link;
-  return (
-    <Tag
-      className={cn(
-        'pt-orow',
-        active && 'is-active',
-        current && 'is-current',
-        row.external && 'is-external',
-        row.child && 'is-child'
-      )}
-      {...linkAttrs(row, active, current)}
-      onMouseDown={row.item ? pressWithoutFocus : undefined}
-      onClick={(event) => onPick(row, event)}
-      onKeyDown={row.item ? (event) => onRowSpace(event, () => onPick(row, null)) : undefined}
-      ref={follow}
-    >
+function TreeRow({ row, active, current, link, shots, pathname, onPick, follow }: RowProps) {
+  const className = cn(
+    'pt-orow',
+    active && 'is-active',
+    current && 'is-current',
+    row.external && 'is-external',
+    row.child && 'is-child'
+  );
+  const attrs = linkAttrs(row, active, current, pathname);
+  const body = (
+    <>
       {shots ? <Mini row={row} /> : null}
       <Icon name={row.icon} />
       <span className='pt-orow-name'>{row.short ?? row.name}</span>
       {row.item?.mark ? <span className='pt-orow-mark'>{row.item.mark}</span> : null}
       {shots ? <span className='pt-orow-addr'>{row.address}</span> : null}
-    </Tag>
+    </>
+  );
+  if (link && !row.external) {
+    return (
+      <Link className={className} {...attrs} prefetch={false} onClick={(event) => onPick(row, event)} ref={follow}>
+        {body}
+      </Link>
+    );
+  }
+  return (
+    <a
+      className={className}
+      {...attrs}
+      onMouseDown={link ? undefined : pressWithoutFocus}
+      onClick={(event) => onPick(row, event)}
+      onKeyDown={link ? undefined : (event) => onRowSpace(event, () => onPick(row, null))}
+      ref={follow}
+    >
+      {body}
+    </a>
   );
 }
 
@@ -648,20 +766,33 @@ export type SidebarProps = {
  * above its first row; under it, as the section's own children, 28px rows
  * indented 24px behind their Heroicons, so every icon sits in one column
  * under the header's label and the site colors stack. Every top-level group
- * is open on a first visit; the reader's own choices persist per route
- * under gt-shell-sections:<id>. Shipped (directive 8.10) carries the
- * check-badge on its header, its pages as document rows, and the eight live
- * surfaces folded under a `Live site` child header. Sites holds each site's
- * home on its colored icon with its enterprise page as an indented child
- * row. In thumbnail density every row is 44px with its 64x36 capture (or
- * the plate with its initial) and the address on a second line. The current
- * row draws the 2px ink bar and ink text and the list scrolls to it, alone,
- * when it is out of view; a deep link's first follow centers it. Every row
- * carries data-preview for the one preview layer (directive 8.6); the list
- * draws no preview of its own. Typing in the filter narrows every group and
- * opens them; Enter opens the first match; Escape clears; Down moves into
- * the list; the arrows walk headers and rows, Left and Right fold and unfold
- * a header. At or below 900px an open list is an overlay with a close
+ * is open on a first visit; the reader's own folds persist site-wide under
+ * gt-shell-groups. Shipped (directive 8.10) carries the check-badge on its
+ * header, its pages as document rows, and the eight live surfaces folded
+ * under a `Live site` child header. Sites holds each site's home on its
+ * colored icon with its enterprise page as an indented child row. A route
+ * section that names its page row (ShellSection.under: the skill
+ * categories under Knowledge > Skills) hangs under that row as a child
+ * group, closed until it holds the current skill. In thumbnail density
+ * every row is 44px with its 64x36 capture (or the plate with its initial)
+ * and the address on a second line.
+ *
+ * Every row is a link to a page. A site map row, and a route item whose
+ * href names a page other than this one, navigate through the router; the
+ * shell selects in place only an item with no address of its own, an item
+ * asking for it (ShellItem.inPlace, the documents on /docs) or the item of
+ * the page itself. So no row scrolls the gallery: a direction opens its
+ * page, a skill its own. The row that names the page the reader is on is
+ * always marked, whether it is a site map row or a route item: it draws
+ * the 2px ink bar and ink text while no item carries the bar, and ink text
+ * otherwise, as does the page row the reader is inside (Skills on
+ * /skills/<slug>). The list scrolls to the marked row, alone, when it is
+ * out of view; a deep link's first follow centers it. Every row carries
+ * data-preview for the one preview layer (directive 8.6); the list draws no
+ * preview of its own. Typing in the filter narrows every group and opens
+ * them; Enter opens the first match; Escape clears; Down moves into the
+ * list; the arrows walk headers and rows, Left and Right fold and unfold a
+ * header. At or below 900px an open list is an overlay with a close
  * button, and a pick closes it.
  */
 export function Sidebar({
@@ -684,7 +815,7 @@ export function Sidebar({
   const ready = shell.ready ?? true;
 
   const [query, setQuery] = useState('');
-  /* per group, open or closed, where the reader has changed the default; persisted per route */
+  /* per group, open or closed, where the reader has changed the default; persisted site-wide */
   const [overrides, setOverrides] = useState<ReadonlyMap<string, boolean>>(() => new Map());
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLElement>(null);
@@ -699,7 +830,7 @@ export function Sidebar({
   const filtering = q.length > 0;
   const current = currentKey(groups, pathname);
   /* an item marked by the shell carries the bar; while none is (the gallery
-     at its top, a direction page) the current route's row carries it */
+     at its top, a direction page) the current page's row carries it */
   const hasActiveItem = flat.some((group) => group.rows.some((row) => row.item?.id === active));
 
   /* in the DOM while the shell says so: sidebarShown lags a close by the
@@ -707,7 +838,6 @@ export function Sidebar({
      (directive 7.4); a state without it (DirectionCorner) follows the toggle */
   const hidden = !(sidebarShown ?? (sidebarOpen && !present));
   const overlay = narrow && !hidden;
-  const storageKey = `gt-shell-sections:${id}`;
   const shots = density === 'thumbs' && thumb !== 'row';
 
   if (filter) {
@@ -722,7 +852,7 @@ export function Sidebar({
 
   useMountEffect(() => {
     try {
-      const saved = localStorage.getItem(storageKey);
+      const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) setOverrides(new Map(Object.entries(JSON.parse(saved) as Record<string, boolean>)));
     } catch {
       // private mode or a stale value: the defaults hold
@@ -731,38 +861,57 @@ export function Sidebar({
 
   /* the landing: the row the server marked mounted before the shell was
      ready, so its ref callback did nothing; once ready, the current row is
-     brought into view if it is not */
+     brought into view if it is not. A landing that a keyboard activation
+     asked for (pendingFocusPath names this page) puts focus back on the
+     marked row, the current page's row failing that, so the arrow walk
+     goes on from the list of the new page. */
   useGSAP(
     () => {
       if (!ready) return;
-      const row = listRef.current?.querySelector<HTMLElement>('.is-active[data-preview]');
+      const list = listRef.current;
+      const row = list?.querySelector<HTMLElement>('.is-active[data-preview]');
       if (row) follow(row);
+      if (pendingFocusPath === null) return;
+      const wanted = pendingFocusPath === pathname;
+      pendingFocusPath = null;
+      if (!wanted) return;
+      (row ?? list?.querySelector<HTMLElement>('.is-current[data-preview]'))?.focus({ preventScroll: true });
     },
-    { dependencies: [ready] }
+    { dependencies: [ready, pathname] }
   );
 
-  const holdsCurrent = (group: Group) =>
-    group.rows.some((row) => (row.item ? row.item.id === active : row.key === current));
+  /* the group holds the marked item or the current page's row, in its own rows or a group nested under one */
+  const holdsCurrent = (group: Group): boolean =>
+    group.rows.some(
+      (row) =>
+        row.item?.id === active ||
+        row.key === current ||
+        (row.subs?.some(holdsCurrent) ?? false)
+    );
+
+  /* closed until the reader opens it: the live surfaces, and every group nested under a page row */
+  const closedByDefault = (group: Group) => Boolean(group.nested) || closedGroups.includes(group.key);
 
   const isOpen = (group: Group) =>
-    filtering || (overrides.get(group.key) ?? (holdsCurrent(group) || !closedGroups.includes(group.key)));
+    filtering || (overrides.get(group.key) ?? (holdsCurrent(group) || !closedByDefault(group)));
 
   const setOpen = (group: Group, open: boolean) => {
     const next = new Map(overrides);
     next.set(group.key, open);
     setOverrides(next);
     try {
-      localStorage.setItem(storageKey, JSON.stringify(Object.fromEntries(next)));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.fromEntries(next)));
     } catch {
       // private mode: the state holds for the session
     }
   };
 
-  /* a route item: the shell selects it; a site map row: the link navigates,
-     unless it names this route, whose own handler runs instead */
+  /* an item of this page, or one asking for it: the shell selects it; every
+     other row is a link and navigates, unless it names this route, whose
+     own handler runs instead */
   const onPick = (row: Row, event: MouseEvent<HTMLElement> | null) => {
     if (event && isModified(event)) return;
-    if (row.item) {
+    if (!navigates(row, pathname) && row.item) {
       event?.preventDefault();
       select(row.item.id);
       if (narrow) setSidebar(false);
@@ -771,20 +920,32 @@ export function Sidebar({
     if (!row.external && row.key === current && onCurrentPage && pathOf(row.href) === pathname) {
       event?.preventDefault();
       onCurrentPage();
+    } else if (!row.external && event?.detail === 0) {
+      /* Enter on the link (a keyboard click has no detail count): the list on the new page takes focus back */
+      pendingFocusPath = pathOf(row.href);
     }
     if (narrow) setSidebar(false);
   };
 
-  const visibleRows = (group: Group): readonly Row[] =>
+  /* the rows the filter matches by their own text */
+  const matchingRows = (group: Group): readonly Row[] =>
     filtering ? group.rows.filter((row) => matches(row, q)) : group.rows;
 
-  /* the first visible thing the filter matches: a route item or a site map row */
+  /* the group has something to show: a row of its own, or one in a group nested under a row */
+  const hasVisible = (group: Group): boolean =>
+    visibleRows(group).length > 0 || (group.subs?.some(hasVisible) ?? false);
+
+  /* the rows the list shows: the matches, and a page row kept for the matches nested under it (the Skills row while a skill matches) */
+  const visibleRows = (group: Group): readonly Row[] =>
+    filtering ? group.rows.filter((row) => matches(row, q) || (row.subs?.some(hasVisible) ?? false)) : group.rows;
+
+  /* the first thing the filter matches by its own text, opened the way its row would be: selected in place, or navigated to */
   const firstMatch = (): (() => void) | null => {
     for (const group of flat) {
-      const row = visibleRows(group)[0];
+      const row = matchingRows(group)[0];
       if (!row) continue;
-      if (row.item) {
-        const item = row.item;
+      const item = row.item;
+      if (item && !navigates(row, pathname)) {
         return () => {
           select(item.id);
           if (narrow) setSidebar(false);
@@ -865,14 +1026,17 @@ export function Sidebar({
     else setOpen(group, true);
   };
 
-  const renderRow = (row: Row) => {
+  /* a row, the rows a route hangs under it, then the groups nested under it */
+  const renderRow = (row: Row): ReactNode => {
     const isActive = row.item ? row.item.id === active : !hasActiveItem && row.key === current;
-    const isCurrent = !isActive && row.key === current;
+    const isCurrent = !isActive && (row.key === current || isParentPage(row, pathname));
     const props: RowProps = {
       row,
       active: isActive,
       current: isCurrent,
+      link: navigates(row, pathname),
       shots,
+      pathname,
       onPick,
       follow: isActive ? follow : undefined,
     };
@@ -881,20 +1045,23 @@ export function Sidebar({
       <Fragment key={row.key}>
         <TreeRow {...props} />
         {sub ? <div className='pt-sub'>{sub}</div> : null}
+        {row.subs?.filter(hasVisible).map((group) => renderGroup(group, true))}
       </Fragment>
     );
   };
 
   /* a group: the header, then its rows as the section's own children (no
-     wrapper, so the list stays under its node budget), then its child group */
+     wrapper, so the list stays under its node budget), then its child groups.
+     A child group under a page row (`nested`) sits one level deeper than a
+     child group under a header (the live surfaces). */
   const renderGroup = (group: Group, child = false): ReactNode => {
     const rows = visibleRows(group);
-    const sub = group.sub && visibleRows(group.sub).length > 0 ? group.sub : null;
-    if (rows.length === 0 && !sub) return null;
+    const subs = group.subs?.filter(hasVisible) ?? [];
+    if (rows.length === 0 && subs.length === 0) return null;
     const open = isOpen(group);
     return (
       <section
-        className={cn('pt-grp', !open && 'is-closed', child && 'is-sub')}
+        className={cn('pt-grp', !open && 'is-closed', child && 'is-sub', group.nested && 'is-under-row')}
         key={group.key}
         data-group={group.key}
       >
@@ -912,7 +1079,7 @@ export function Sidebar({
           <span className='pt-grp-name'>{group.label}</span>
         </button>
         {open ? rows.map(renderRow) : null}
-        {open && sub ? renderGroup(sub, true) : null}
+        {open ? subs.map((sub) => renderGroup(sub, true)) : null}
       </section>
     );
   };

@@ -1,5 +1,6 @@
 import type { IconName } from '@/components/viewer/icons';
 import { DOCS } from '@/app/docs/registry';
+import { SKILL_GROUPS, skillHref } from '@/lib/skills';
 import { SITE_SURFACES } from '@/lib/surfaces';
 import type { Surface, SurfaceGroup } from '@/lib/surfaces';
 
@@ -7,25 +8,30 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * The search bar's index (directive 8.3): everything the site can jump to,
  * as one flat list the palette filters client-side. Restored from the
  * palette at 430e3c7 and rebuilt on the shell's registries so the rows
- * carry the same ids as the index panel and the sidebar: pages, documents
- * and their headings, the sites and explorations, the archived versions,
- * the brand sections, the library anchors, and the 85 deck slides, each
- * linking to /deck#n. Pure data, no React, no DOM.
+ * carry the same ids as the index panel and the sidebar: pages, the skill
+ * pages, documents and their headings, the sites and explorations (each
+ * opening its page under /directions), the archived versions, the brand
+ * sections, the library anchors, and the 85 deck slides, each linking to
+ * /deck#n. Pure data, no React, no DOM.
  *
  * The site rows come straight from src/lib/surfaces.ts, so a group added
  * there (Shipped, directive 8.10) appears here without a change; `surface`
  * is that row's id and is what a result row writes to data-preview for the
- * preview layer (directive 8.6). The headings and the slide titles are
- * snapshots: the documents are read from disk on the server, and the slide
- * files live under deck/slides, neither reachable from a client module.
- * Heading ids follow src/app/docs/markdown.tsx (lowercase, `&` to `and`,
- * apostrophes dropped, runs of anything else to one hyphen). Refresh both
- * tables when a document gains an h2 or a slide is renamed.
+ * preview layer (directive 8.6). The skill rows come from the generated
+ * src/lib/skills.ts (SKILL_GROUPS: the slug, the name and the category,
+ * never the descriptions, which would put the whole registry in every
+ * shell page's bundle) and preview the skills index. The headings and the
+ * slide titles are snapshots: the documents are read from disk on the
+ * server, and the slide files live under deck/slides, neither reachable
+ * from a client module. Heading ids follow src/app/docs/markdown.tsx
+ * (lowercase, `&` to `and`, apostrophes dropped, runs of anything else to
+ * one hyphen). Refresh both tables when a document gains an h2 or a slide
+ * is renamed.
  */
 export type SearchSite = 'dossier' | 'orbit' | 'signal' | 'shipped';
 
-/** The site map groups from surfaces.ts plus the two groups only the search has. */
-export type SearchGroup = SurfaceGroup | 'Headings' | 'Deck slides';
+/** The site map groups from surfaces.ts plus the three groups only the search has. */
+export type SearchGroup = SurfaceGroup | 'Skills' | 'Headings' | 'Deck slides';
 
 export type SearchEntry = {
   /** unique across the index */
@@ -54,6 +60,7 @@ export type SearchEntry = {
 const GROUP_ORDER: readonly string[] = [
   'Pages',
   'Knowledge',
+  'Skills',
   'Shipped',
   'Documents',
   'Headings',
@@ -70,9 +77,9 @@ const GROUP_ORDER: readonly string[] = [
  * without a scroll region, so the palette opens as a map and not a list to
  * wade through. Every page and every knowledge row, the shipped site's home
  * and its first two pages, every document and the three site concepts
- * (their enterprise pages are one keystroke away). Explorations, the
- * archive, headings, libraries, brand sections and slides appear as soon
- * as a letter is typed.
+ * (their enterprise pages are one keystroke away). The skill pages,
+ * explorations, the archive, headings, libraries, brand sections and slides
+ * appear as soon as a letter is typed.
  */
 const EMPTY_PER_GROUP: Readonly<Partial<Record<string, number>>> = {
   Pages: 6,
@@ -161,6 +168,26 @@ function fromSurface(row: Surface): SearchEntry {
     site,
   };
 }
+
+/**
+ * One row per skill page, in the categories' order: the name, the category
+ * as the meta line, the sparkles glyph the Skills row carries, and the
+ * skills index as the preview, since a skill page has no capture of its own.
+ */
+const SKILL_ROWS: readonly SearchEntry[] = SKILL_GROUPS.flatMap((group) =>
+  group.skills.map(
+    (skill): SearchEntry => ({
+      id: `skill-${skill.slug}`,
+      title: skill.name,
+      href: skillHref(skill.slug),
+      group: 'Skills',
+      meta: `Skills / ${group.label}`,
+      icon: 'sparkles',
+      keywords: `skill SKILL.md agent ${group.label}`,
+      surface: 'skills',
+    })
+  )
+);
 
 /** `/docs` for the readme, `/docs/<slug>` otherwise (src/app/docs/model.ts). */
 function docHref(slug: string): string {
@@ -353,10 +380,13 @@ function hayOf(entry: SearchEntry): string {
   return `${entry.title} ${entry.meta} ${entry.keywords ?? ''} ${entry.href} ${entry.group}`.toLowerCase();
 }
 
-/** Every site map row, then the headings, then the slides, each with its haystack built: the panel groups and orders them. */
-export const SEARCH_INDEX: readonly SearchEntry[] = [...SITE_SURFACES.map(fromSurface), ...HEADINGS, ...SLIDES].map(
-  (entry) => ({ ...entry, hay: hayOf(entry) })
-);
+/** Every site map row, then the skill pages, the headings and the slides, each with its haystack built: the panel groups and orders them. */
+export const SEARCH_INDEX: readonly SearchEntry[] = [
+  ...SITE_SURFACES.map(fromSurface),
+  ...SKILL_ROWS,
+  ...HEADINGS,
+  ...SLIDES,
+].map((entry) => ({ ...entry, hay: hayOf(entry) }));
 
 /** Every term of the query, in order, has to appear somewhere in the row's words. */
 export function searchMatches(entry: SearchEntry, query: string): boolean {
@@ -388,23 +418,49 @@ function groupRank(group: string): number {
 }
 
 /**
- * The rows for a query, grouped in the fixed order and capped at `limit`
- * rows in all. An empty query shows the short map (EMPTY_PER_GROUP) so the
- * palette opens as a map of the site, not a blank field.
+ * How close a row's title is to the query: 0 for the title itself, 1 for a
+ * title that starts with it, 2 for one that contains it, 3 for a match
+ * elsewhere in the row's words (the address, the keywords, the group). The
+ * query is already trimmed and lowercased.
+ */
+function titleScore(entry: SearchEntry, q: string): number {
+  const title = entry.title.toLowerCase();
+  if (title === q) return 0;
+  if (title.startsWith(q)) return 1;
+  if (title.includes(q)) return 2;
+  return 3;
+}
+
+/**
+ * The rows for a query, grouped and capped at `limit` rows in all. Inside a
+ * group the rows run by title score (titleScore) and index order within a
+ * score; the groups run by their best row first and the fixed order
+ * (GROUP_ORDER) second, so Enter on `Toolchain` opens the exploration named
+ * Toolchain, not a document whose keywords mention it, and `Dossier` opens
+ * the site. An empty query shows the short map (EMPTY_PER_GROUP) in the
+ * fixed order, so the palette opens as a map of the site, not a blank field.
  */
 export function searchGroups(query: string, limit = 60): readonly SearchGroupRows[] {
-  const q = query.trim();
+  const q = query.trim().toLowerCase();
   const hits = q ? SEARCH_INDEX.filter((entry) => searchMatches(entry, q)) : emptyRows();
+  const scores = new Map<SearchEntry, number>(hits.map((entry) => [entry, q ? titleScore(entry, q) : 3]));
+  const scoreOf = (entry: SearchEntry): number => scores.get(entry) ?? 3;
   const groups = new Map<SearchGroup, SearchEntry[]>();
   for (const entry of hits) {
     const rows = groups.get(entry.group);
     if (rows) rows.push(entry);
     else groups.set(entry.group, [entry]);
   }
-  const ordered = [...groups.entries()].sort((a, b) => groupRank(a[0]) - groupRank(b[0]));
+  const ordered = [...groups.entries()]
+    .map(([group, rows]) => ({
+      group,
+      rows: rows.sort((a, b) => scoreOf(a) - scoreOf(b)),
+      best: Math.min(...rows.map(scoreOf)),
+    }))
+    .sort((a, b) => a.best - b.best || groupRank(a.group) - groupRank(b.group));
   const out: SearchGroupRows[] = [];
   let left = limit;
-  for (const [group, rows] of ordered) {
+  for (const { group, rows } of ordered) {
     if (left <= 0) break;
     const take = rows.slice(0, left);
     left -= take.length;

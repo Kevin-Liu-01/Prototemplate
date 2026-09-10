@@ -134,6 +134,7 @@ Where two bordered components touch, exactly one draws the line:
 | toolbar and stage | the toolbar's bottom edge | the stage, the hint row and the index panel draw no top edge |
 | index panel and stage | the panel's left edge | the sheet ring runs under the panel; the panel covers the progress track while open |
 | group header and its first row | no one: the header draws no rule, and the group's boundary is the 16px gap above its header | the first row draws no top rule |
+| a group nested under a page row and the row above it | no one: the nested header draws no rule, and the 4px gap between the row and the run of groups under it is the boundary | the row draws no bottom rule; the nested rows draw none |
 | last row of a group and what follows | the last row's bottom edge | the next header carries no top rule |
 | sheet mat and its content | the mat's ring (hair border, paper gap, hair-soft outline) | content draws no outer border |
 | book head and its contents | the head's bottom rule (`--pt-hair`) | the contents grid draws no top rule; its rows draw their own bottom rules |
@@ -144,10 +145,12 @@ Where two bordered components touch, exactly one draws the line:
 | sidebar head and toolbar | each owns its own side of the vertical seam | the two bottom rules meet at the sidebar's edge and never overlap |
 
 The auditor enforces this from computed CSS. `pnpm lint:lines:shell` walks
-`/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`, `/d/production`
-and `/deck` (the iframe's document) at 1440, 1280 and 390 in both themes
-against the dev server on port 3005, with the list toggled, the index panel
-open, the search open, and the grid and book modes on `/` and `/deck`. It
+`/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`,
+`/directions/<first slug>`, `/skills`, `/skills/<first slug>`,
+`/d/production` and `/deck` (the iframe's document) at 1440, 1280 and 390
+in both themes against the dev server on port 3005, with the list toggled,
+the index panel open, the search open, and the grid and book modes on `/`
+and `/deck`. It
 fails on any doubled line (two owners within 4px), any junction (two owners
 coincident on one seam), and any border color in chrome outside the three
 roles. `pnpm lint:all` runs it. The allow list in `scripts/lint-lines.mjs`
@@ -420,3 +423,37 @@ sweep does not "fix" it back.
 Everything else in chrome keeps the rules above: every other toolbar
 button is square, the palette card and the index panel are radius 0, and
 no other element carries a chroma or a face outside Inter.
+
+## 16. The sidebar's rows
+
+Three rules govern the list in column one (`src/components/viewer/Sidebar.tsx`),
+on every route that shows the site map.
+
+**Every row is a link to a page.** A site map row navigates to its route
+through the router; a row that leaves the site opens a new tab. A route's
+own item navigates too when its href names a page other than the one the
+reader is on: a direction row on `/` opens `/directions/<slug>`, an archive
+row `/archive/<slug>`, a skill row `/skills/<slug>`. The shell selects in
+place only an item with no address of its own (a slide, a brand section),
+an item that asks for it (`ShellItem.inPlace`, the documents on `/docs`,
+whose book scrolls and writes the address itself), or the item of the page
+the reader is already on. No row scrolls the gallery. The grid's tiles and
+the filter's Enter follow the same rule.
+
+**Route sections nest under their page row.** A section that names the
+surface id of the page it belongs to (`ShellSection.under: 'skills'`) hangs
+under that row as a child group (`.pt-grp.is-sub.is-under-row`), its header
+one indent under the row and its rows one further, instead of standing as a
+group of its own. Nested groups are closed until one holds the current
+item; the live surfaces under Shipped keep the same default. Folds persist
+site-wide under `gt-shell-groups`, a JSON map of group key to open or
+closed, so a group folded on one route stays folded on the next.
+
+**The current page is always marked.** The row whose path is the longest
+one covering the pathname is current, site map row or route item alike: on
+`/skills/<slug>` the skill's row, on `/directions/<slug>` the direction's,
+on `/d/production/enterprise` the Enterprise row and not Home. While no
+item carries the bar (a direction page, the gallery at its top) that row
+draws the 2px ink bar and ink text; while an item does, it draws ink text
+(`.is-current`, `aria-current="page"`), as does the page row the reader is
+inside (Skills on `/skills/<slug>`).

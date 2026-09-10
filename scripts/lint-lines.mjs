@@ -34,8 +34,9 @@
 //
 // Shell mode (pnpm lint:lines:shell, directive 8.9):
 //   node scripts/lint-lines.mjs --shell [--base http://localhost:3005]
-//     [--only /docs] [--width 1440] [--theme dark] [--report] [--json]
-//   Walks /, /docs, /brand, /compare, /archive/<first slug>, /d/production
+//     [--only /docs] [--width 1440] [--theme dark] [--jobs 3] [--report] [--json]
+//   Walks /, /docs, /brand, /compare, /archive/<first slug>,
+//   /directions/<first slug>, /skills, /skills/<first slug>, /d/production
 //   and /deck (the iframe's document) at 1440, 1280 and 390 in both themes
 //   against the dev server, and on each page audits the resting state, the
 //   list toggled ([), the index panel (R), the search (Cmd K), and on / and
@@ -60,7 +61,7 @@ const EXEC =
 
 const argv = process.argv.slice(2);
 /* flags that take a value; the value is never a positional URL */
-const VALUED = new Set(['--theme', '--base', '--only', '--width', '--state']);
+const VALUED = new Set(['--theme', '--base', '--only', '--width', '--state', '--jobs']);
 const flag = (name) => {
   const i = argv.indexOf(name);
   return i >= 0 ? argv[i + 1] : undefined;
@@ -696,20 +697,50 @@ async function runPageMode() {
 /* shell mode                                                          */
 /* ------------------------------------------------------------------ */
 
-/** The routes directive 8.9 names, and the states each is driven through. */
-function shellRoutes() {
-  const archive = readFileSync(join(ROOT, 'src/lib/archive.ts'), 'utf8');
-  const slug = archive.match(/entry\('([^']+)'/)?.[1];
+/**
+ * The first slug a registry file declares, read from its source so the route
+ * list follows the data: the archive's first `entry('<slug>'`, the first
+ * `slug: '<slug>'` of src/lib/directions.ts (the first exploration), the
+ * first `id: '<slug>'` after the SKILLS array opens in the generated
+ * src/lib/skills.ts (the categories above it carry ids of their own).
+ */
+function firstSlug(file, pattern, from) {
+  let text = readFileSync(join(ROOT, file), 'utf8');
+  if (from) {
+    const at = text.indexOf(from);
+    if (at < 0) {
+      console.error(`lint-lines: ${from} not found in ${file}`);
+      process.exit(2);
+    }
+    text = text.slice(at);
+  }
+  const slug = text.match(pattern)?.[1];
   if (!slug) {
-    console.error('lint-lines: no archive entry found in src/lib/archive.ts');
+    console.error(`lint-lines: no slug matching ${pattern} in ${file}`);
     process.exit(2);
   }
+  return slug;
+}
+
+/**
+ * The routes directive 8.9 names, and the states each is driven through:
+ * the gallery, the docs, the brand book, the compare rig, the first archived
+ * version, the first exploration's page under /directions, the skills index
+ * and the first skill's page, the shipped direction's corner, and the deck.
+ */
+function shellRoutes() {
+  const archive = firstSlug('src/lib/archive.ts', /entry\('([^']+)'/);
+  const direction = firstSlug('src/lib/directions.ts', /slug: '([^']+)'/);
+  const skill = firstSlug('src/lib/skills.ts', /id: '([^']+)'/, 'export const SKILLS');
   return [
     { path: '/', states: ['list', 'index', 'search', 'grid', 'book'] },
     { path: '/docs', states: ['list', 'index', 'search'] },
     { path: '/brand', states: ['list', 'index', 'search'] },
     { path: '/compare', states: ['list', 'index', 'search'] },
-    { path: `/archive/${slug}`, states: ['list', 'index', 'search'] },
+    { path: `/archive/${archive}`, states: ['list', 'index', 'search'] },
+    { path: `/directions/${direction}`, states: ['list', 'index', 'search'] },
+    { path: '/skills', states: ['list', 'index', 'search'] },
+    { path: `/skills/${skill}`, states: ['list', 'index', 'search'] },
     { path: '/d/production', states: ['list', 'index'], corner: true },
     { path: '/deck', states: ['list', 'index', 'grid', 'book'], deck: true },
   ];
@@ -906,6 +937,12 @@ async function runShellMode() {
   const widthFlag = flag('--width');
   const themeFlag = flag('--theme');
   const routes = shellRoutes().filter((r) => !only || r.path.includes(only));
+  /* pages driven at once; --jobs 1 keeps a loaded machine to one browser page */
+  const jobs = Number(flag('--jobs') ?? 3);
+  if (!Number.isInteger(jobs) || jobs < 1) {
+    console.error(`lint-lines: --jobs wants a positive integer, got ${flag('--jobs')}`);
+    process.exit(2);
+  }
   const widths = widthFlag ? [Number(widthFlag)] : SHELL_WIDTHS;
   const themes = themeFlag ? [themeFlag] : SHELL_THEMES;
   if (routes.length === 0) {
@@ -945,7 +982,7 @@ async function runShellMode() {
             console.error(`${route.path} ${key}: state "${state}" did not apply (audited whatever showed)`);
           }
         });
-  await pool(tasks, 3);
+  await pool(tasks, jobs);
 
   if (jsonOut || reportOnly) console.log(JSON.stringify(out, null, 1));
   console.error(

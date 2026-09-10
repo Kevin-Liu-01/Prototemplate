@@ -55,6 +55,8 @@ function toItem(direction: Direction, pair: Pair, position: number): ShellItem {
     href: `/d/${direction.slug}`,
     shot: shotFor(direction.slug),
     desc: direction.reference ? `${direction.concept} Live at generaltranslation.com.` : direction.concept,
+    /* a row loads the direction into the target pane through the shell's select; it never leaves the rig */
+    inPlace: true,
   };
 }
 

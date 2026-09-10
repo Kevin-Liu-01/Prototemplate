@@ -1,7 +1,7 @@
 import { LIBRARIES } from '@/app/craft/libraries';
 import { DOCS } from '@/app/docs/registry';
 import { ARCHIVE, archiveDesc } from '@/lib/archive';
-import { DIRECTIONS } from '@/lib/directions';
+import { DIRECTIONS, directionPageHref } from '@/lib/directions';
 import type { ShellShot } from '@/lib/shell-data';
 
 /**
@@ -43,10 +43,13 @@ import type { ShellShot } from '@/lib/shell-data';
  * (directive 8.10) holds the direction that shipped and its pages:
  * /d/production and the pages Kevin built under src/app/d/production, then
  * the pages of the live site as external rows (the sidebar folds those
- * under a `Live site` child). Sites holds
- * the three full site concepts only. A row that belongs to one of the four
- * sites names it in `site`, so a list can color its icon on the matching
- * --pt-site-* token.
+ * under a `Live site` child). Sites holds the three full site concepts
+ * only, and Explorations the single-page directions; each of those rows
+ * opens the direction's own page under /directions (directionPageHref),
+ * where the prototype runs in a frame with its captures, while a site's
+ * enterprise row opens the prototype page itself. A row that belongs to
+ * one of the four sites names it in `site`, so a list can color its icon
+ * on the matching --pt-site-* token.
  */
 export type SurfaceSet = 'site' | 'public';
 
@@ -136,13 +139,29 @@ const PAGES: readonly Surface[] = [
 
 /**
  * The Knowledge rows: what the site keeps as the General Translation
- * knowledge base beyond its pages. The skills and the marks have no capture
- * yet and draw the blank plate; the archive row opens the first retired
- * version, since the archive has no index page of its own.
+ * knowledge base beyond its pages. The skills and the marks preview their
+ * first folds, shot by scripts/capture-pages.mjs under their ids (the plate
+ * with the initial stands in until the cuts exist); the archive row opens
+ * the first retired version, since the archive has no index page of its
+ * own. The sidebar hangs the skill categories under the Skills row.
  */
 const KNOWLEDGE: readonly Surface[] = [
-  internal('skills', 'Skills', '/skills', 'The working skills behind the design lab and the product, by name and description.', 'Knowledge'),
-  internal('marks', 'Marks', '/marks', 'Nine new General Translation marks in three families, each one color, with its construction.', 'Knowledge'),
+  internal(
+    'skills',
+    'Skills',
+    '/skills',
+    'The working skills behind the design lab and the product, by name and description.',
+    'Knowledge',
+    thumb('skills')
+  ),
+  internal(
+    'marks',
+    'Marks',
+    '/marks',
+    'Nine new General Translation marks in three families, each one color, with its construction.',
+    'Knowledge',
+    thumb('marks')
+  ),
   internal(
     'archive',
     'Archive',
@@ -177,10 +196,11 @@ function directionShots(stem: string): { shot: string; shotDark: string } {
   return thumb(stem);
 }
 
+/** A site's home row opens the direction's page under /directions; its enterprise row opens the prototype page. */
 const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => {
   const site = SITE_OF_SLUG[d.slug];
   return [
-    { ...internal(d.slug, d.name, `/d/${d.slug}`, d.concept, 'Sites', directionShots(d.slug)), site },
+    { ...internal(d.slug, d.name, directionPageHref(d.slug), d.concept, 'Sites', directionShots(d.slug)), site },
     {
       ...internal(
         `${d.slug}-enterprise`,
@@ -300,8 +320,9 @@ const SHIPPED_LIVE: readonly Surface[] = [
 /** The Shipped group: the home, its pages, then the live surfaces. */
 const SHIPPED: readonly Surface[] = [...SHIPPED_HOME, ...SHIPPED_ROUTES, ...SHIPPED_LIVE];
 
+/** Every exploration opens its page under /directions. */
 const EXPLORATIONS: readonly Surface[] = EXPLORATION_DIRECTIONS.map((d) =>
-  internal(d.slug, d.name, `/d/${d.slug}`, d.concept, 'Explorations', directionShots(d.slug))
+  internal(d.slug, d.name, directionPageHref(d.slug), d.concept, 'Explorations', directionShots(d.slug))
 );
 
 const LIBRARY_ROWS: readonly Surface[] = LIBRARIES.map((lib) =>

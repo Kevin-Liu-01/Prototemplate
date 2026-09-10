@@ -102,6 +102,8 @@ function docsSections(docs: readonly DocPage[]): readonly ShellSection[] {
         shot: doc.shot,
         /* the surfaces.ts id, for the preview layer and the sidebar's site map pairing */
         surface: `docs-${doc.slug}`,
+        /* the book scrolls to the document and writes its address itself; the sidebar row never navigates */
+        inPlace: true,
       })),
     },
   ];

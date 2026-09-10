@@ -1,6 +1,7 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
+import Link from 'next/link';
 import type { MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
@@ -9,17 +10,19 @@ import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
-import type { ShellMode, ShellSection } from '@/lib/shell-data';
-import { SKILL_CATEGORIES, SKILLS } from '@/lib/skills';
-import type { Skill, SkillCategory } from '@/lib/skills';
+import type { ShellMode } from '@/lib/shell-data';
+import { SKILLS, skillHref } from '@/lib/skills';
 import { useMountEffect } from '@/lib/use-mount-effect';
+
+import { BLOCKS, SECTIONS } from './model';
+import type { Numbered } from './model';
 
 import './skills.css';
 
 const SKILLS_TITLE = 'Skills';
 const SKILLS_MODES: readonly ShellMode[] = ['book', 'grid'];
 const BOOK_LEAD =
-  'The working skills behind the design lab and the product. Each is a SKILL.md an agent loads for one kind of task, published here by name and description: the engineering and productivity skills from the wiki, and the General Translation repository skills as a third group. The list on the left follows the row in view; pick a skill to jump to it.';
+  'The working skills behind the design lab and the product. Each is a SKILL.md an agent loads for one kind of task, published here by name and description: the engineering and productivity skills from the wiki, and the General Translation repository skills as a third group. Every skill has its own page with the full SKILL.md; the list on the left follows the row in view, and a row opens the page.';
 
 /**
  * The read line. A row that crosses the top tenth of the sheet is the one
@@ -30,40 +33,6 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 
 /** How long the spy waits for a programmatic scroll to reach its row before it reads the page again. */
 const SETTLE_MS = 1200;
-
-/** `7` becomes `007`: three digits, since the list runs past a hundred. */
-function pad3(n: number): string {
-  return String(n).padStart(3, '0');
-}
-
-/** One skill with its place in the whole list, 1-based. */
-type Numbered = { skill: Skill; n: string; pos: number };
-
-/** One category as the book shows it: its rows and the range they cover. */
-type Block = {
-  category: SkillCategory;
-  label: string;
-  ordinal: number;
-  rows: readonly Numbered[];
-};
-
-/* SKILLS is sorted by category in SKILL_CATEGORIES order, then by name, so
-   the position in the whole list is the shell's own index plus one */
-const NUMBERED: readonly Numbered[] = SKILLS.map((skill, i) => ({ skill, n: pad3(i + 1), pos: i + 1 }));
-
-const BLOCKS: readonly Block[] = SKILL_CATEGORIES.map((category, i) => ({
-  category: category.id,
-  label: category.label,
-  ordinal: i + 1,
-  rows: NUMBERED.filter((row) => row.skill.category === category.id),
-})).filter((block) => block.rows.length > 0);
-
-/** The three categories as the shell's sections, one item per skill; the description feeds the sidebar filter. */
-const SECTIONS: readonly ShellSection[] = BLOCKS.map((block) => ({
-  id: block.category,
-  label: block.label,
-  items: block.rows.map(({ skill, n }) => ({ id: skill.id, n, title: skill.name, desc: skill.description })),
-}));
 
 function rangeText(rows: readonly Numbered[]): string {
   const first = rows[0];
@@ -263,9 +232,14 @@ function SkillsBook({ sheetRef, jumpRef, activeOut }: SkillsBookProps) {
             <h2 id={`sk-${block.category}`}>{block.label}</h2>
           </div>
           {block.rows.map(({ skill, n }) => (
-            <article
+            /* the row is the link to the skill's page; the spy reads its data-id. Prefetch is
+               off: two hundred rows must not fetch every page that scrolls into view; the hover
+               prefetch stays, so a click is as quick */
+            <Link
               key={skill.id}
               className={cn('sk-row', skill.id === active && 'is-active')}
+              href={skillHref(skill.id)}
+              prefetch={false}
               data-id={skill.id}
               aria-current={skill.id === active ? 'true' : undefined}
             >
@@ -277,7 +251,7 @@ function SkillsBook({ sheetRef, jumpRef, activeOut }: SkillsBookProps) {
                 {/* the description is the SKILL.md frontmatter verbatim; the standalone word GT renders as the mark */}
                 <p>{gtText(skill.description)}</p>
               </div>
-            </article>
+            </Link>
           ))}
         </section>
       ))}
@@ -287,11 +261,13 @@ function SkillsBook({ sheetRef, jumpRef, activeOut }: SkillsBookProps) {
 
 /**
  * The skills on the viewer shell: three sections in the list (Engineering,
- * Productivity, General Translation) with one row per skill, the whole set
- * as ruled rows inside the 1280px flow sheet, and every skill as a text
- * tile in the grid (skills.css lays the shell's rows out as tiles there).
- * Flow keys, so Space and the arrows scroll; the sidebar filter matches
- * names and descriptions. The hash names the active skill.
+ * Productivity, General Translation) nested under Knowledge > Skills with
+ * one row per skill, the whole set as ruled rows inside the 1280px flow
+ * sheet, each row a link to the skill's own page (/skills/<slug>), and
+ * every skill as a text tile in the grid (skills.css lays the shell's rows
+ * out as tiles there). Flow keys, so Space and the arrows scroll; the
+ * sidebar filter matches names and descriptions. The hash names the row in
+ * view; a row in the list opens the page.
  */
 export default function SkillsViewer() {
   const sheetRef = useRef<HTMLDivElement>(null);

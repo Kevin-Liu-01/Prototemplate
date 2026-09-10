@@ -1,8 +1,9 @@
 /* GalleryViewer: the gallery's own rules inside the viewer shell. The shell
    draws the chrome (ViewerShell.css and its siblings) and the site map in
-   the sidebar; this sheet owns the live exhibit frame in slide mode, the
-   book's scroll region that holds the article full-bleed, the article's
-   archive rows, and the archive capture sheet.
+   the sidebar, and the live exhibit in slide mode is DirectionFrame
+   (src/app/directions/DirectionFrame.css, shared with the direction
+   pages); this sheet owns the book's scroll region that holds the article
+   full-bleed, the article's archive rows, and the archive capture sheet.
    Colors are tokens only: the shell's --pt- set outside the article, the
    article's own .pt-root set inside it (decision 6 keeps the article's
    hairline family). No radius, no shadow, Inter at weight 500 or less in
@@ -11,35 +12,6 @@
 /* ---- the toolbar slot: a link dressed as the shell's button ---- */
 .gv-open {
   text-decoration: none;
-}
-
-/* ---- slide mode: the live exhibit at 1440x900 inside the fixed sheet.
-   The static capture (ThumbShot, .pt-shot from Sidebar.css) fills the box
-   behind the frame and shows until the page has loaded. The slide change
-   (the outgoing fade, the 6px rise from the side of the move) belongs to
-   the sheet's keyed wrapper (Sheet.css, .pt-slide), so nothing here
-   animates on its own. ---- */
-.gv-exhibit {
-  position: absolute;
-  inset: 0;
-  background: var(--pt-paper);
-}
-
-.gv-frame {
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: block;
-  width: 1440px;
-  height: 900px;
-  border: 0;
-  background: transparent;
-  opacity: 0;
-  transition: opacity 140ms ease-out;
-}
-
-.gv-frame.is-on {
-  opacity: 1;
 }
 
 /* ---- book mode: the article stands full-bleed in the stage (directive
@@ -294,9 +266,5 @@
 @media (prefers-reduced-motion: reduce) {
   .gv-flow {
     scroll-behavior: auto;
-  }
-
-  .gv-frame {
-    transition: none;
   }
 }

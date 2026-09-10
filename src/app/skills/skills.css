@@ -321,3 +321,138 @@
     padding-top: 0;
   }
 }
+
+/* ---------- the rows as links ----------
+   Each row on the index is the link to its skill's page. The name takes the
+   underline on hover, the way the contents links do; focus draws the ink
+   ring the shell uses everywhere. */
+
+.sk-row {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sk-row:hover .sk-body h3 {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.sk-row:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* ---------- the skill page (/skills/<slug>) ----------
+   The page is a book in the docs grammar: the shell's BookHead, the body
+   under .ptd-body.pt-root from docs.css (SkillViewer loads docs.css and
+   prototemplate.css for it), and the two neighbours in the category under
+   one structural rule. Only what the docs grammar does not already say is
+   written here. */
+
+/* the toolbar slot: a link dressed as the shell's button */
+.sk-raw {
+  text-decoration: none;
+}
+
+/* one continuous body, unlike the docs' one row per h2: the sections need
+   air between them, and the first block sits flush under the head */
+.ptd-book .ptd-body.sk-doc h2 {
+  margin-top: 44px;
+}
+
+.ptd-book .ptd-body.sk-doc h3 {
+  margin-top: 28px;
+}
+
+.ptd-book .ptd-body.sk-doc > :first-child {
+  margin-top: 0;
+}
+
+/* the neighbours: previous at the left, next at the right, under one rule */
+.sk-pager {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.sk-pager-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sk-pager-link.is-next {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.sk-pager-link svg {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  fill: currentColor;
+  color: var(--pt-titanium);
+}
+
+.sk-pager-link span {
+  display: block;
+  min-width: 0;
+}
+
+.sk-pager-link small {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pt-titanium);
+}
+
+.sk-pager-link b {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--pt-ink);
+  overflow-wrap: anywhere;
+}
+
+.sk-pager-link:hover b {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.sk-pager-link:hover svg {
+  color: var(--pt-ink);
+}
+
+.sk-pager-link:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .sk-pager {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .sk-pager-link.is-next {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .sk-pager-end {
+    display: none;
+  }
+}

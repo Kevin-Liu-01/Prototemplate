@@ -1,3 +1,5 @@
+import type { ShellShot } from '@/lib/shell-data';
+
 export type Tone = 'dark' | 'light' | 'alt';
 
 export type Direction = {
@@ -218,3 +220,44 @@ export const DIRECTIONS: Direction[] = [
 export function getDirection(slug: string): Direction | undefined {
   return DIRECTIONS.find((d) => d.slug === slug);
 }
+
+/**
+ * Where a direction's own page on the viewer shell is: /directions/<slug>
+ * for the three sites and the thirteen explorations. The shipped reference
+ * has no page of its own beyond its prototype, so it answers /d/production,
+ * and a caller never branches on the reference flag.
+ */
+export function directionPageHref(slug: string): string {
+  const direction = getDirection(slug);
+  return direction?.reference ? `/d/${direction.slug}` : `/directions/${slug}`;
+}
+
+/**
+ * The 1440 by 900 captures of a direction, or of one of its pages
+ * (`singularity-dossier-enterprise`), in both themes: public/shots/light
+ * and public/shots/dark hold one file per stem.
+ */
+export function directionShots(stem: string): ShellShot {
+  return { light: `/shots/light/${stem}.jpg`, dark: `/shots/dark/${stem}.jpg` };
+}
+
+/** One page of a direction: its home, or a site's enterprise page. The id is the surfaces.ts id, so a preview resolves. */
+export type DirectionPage = { id: string; name: string; href: string; shot: ShellShot };
+
+/** The pages a direction answers: the home for every direction, and the enterprise page for a site. */
+export function directionPages(d: Direction): readonly DirectionPage[] {
+  const home: DirectionPage = { id: d.slug, name: 'Home', href: `/d/${d.slug}`, shot: directionShots(d.slug) };
+  if (!d.site) return [home];
+  return [
+    home,
+    {
+      id: `${d.slug}-enterprise`,
+      name: 'Enterprise',
+      href: `/d/${d.slug}/enterprise`,
+      shot: directionShots(`${d.slug}-enterprise`),
+    },
+  ];
+}
+
+/** Every slug with a page at /directions/<slug>: the lineup without the shipped reference. */
+export const DIRECTION_PAGE_SLUGS: readonly string[] = DIRECTIONS.filter((d) => !d.reference).map((d) => d.slug);
