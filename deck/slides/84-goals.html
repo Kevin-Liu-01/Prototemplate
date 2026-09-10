@@ -1,16 +1,57 @@
     <!-- goals -->
-    <section class="slide"><div class="in">
-      <div class="cols">
-        <div class="stack">
-          <h2>Success criteria</h2>
-          <p class="max-p">Visitors perceive quality before reading any copy, and all five tests pass.</p>
-        </div>
+    <section class="slide s84"><style>
+      .s84 .lay { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 26px; }
+      .s84 .head { display: grid; grid-template-columns: 4fr 8fr; gap: 72px; align-items: start; }
+      .s84 .head h2 { margin-bottom: 0; }
+      .s84 .head p { margin-top: 0; }
+      /* the five tests at 20px, one line each, green where the test passes today and amber where it waits on the identity project */
+      .s84 .plain { font-size: 20px; line-height: 1.45; }
+      .s84 .plain > span { padding: 8px 0; }
+      .s84 .plain > span > .ic { width: 20px; height: 20px; vertical-align: -4px; margin-right: 10px; }
+      .s84 .plain > span:has(> .ic) { padding-left: 30px; text-indent: -30px; }
+      /* the two tests that run today: the mark bench on the left, the docs served in Japanese on the right */
+      .s84 .proof { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+      .s84 figure { margin: 0; display: grid; gap: 8px; }
+      .s84 figcaption { font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+      .s84 .proof img { display: block; width: 100%; height: auto; border: 1px solid var(--hair); background: var(--plate); }
+      .s84 .bench use { fill: var(--ink); }
+      .s84 .term { display: flex; align-items: center; gap: 28px; padding: 14px 26px; }
+      .s84 .term svg { display: block; fill: currentColor; flex: 0 0 auto; }
+      .s84 .term span { font-size: 20px; line-height: 1; }
+    </style><div class="in">
+      <div class="lay">
+        <div class="head"><h2>Success criteria</h2>
+          <p>Visitors perceive quality before reading any copy, and all five tests pass. Two tests run against the current system today and are shown below.</p></div>
         <div class="plain">
           <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>The mark works at 16px and in a terminal.</span>
           <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>The type system works in CJK, RTL, and Indic scripts.</span>
-          <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>One visual family works for the open-source libraries and the enterprise platform.</span>
-          <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>The identity cannot be mistaken for a template.</span>
-          <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>An enterprise buyer trusts General Translation as infrastructure.</span>
+          <span><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>One visual family works for the open-source libraries and the enterprise platform.</span>
+          <span><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>The identity cannot be mistaken for a template.</span>
+          <span><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>An enterprise buyer trusts General Translation as infrastructure.</span>
+        </div>
+        <div class="proof">
+          <figure>
+            <!-- 639 units on the 639px column, so every mark renders at its stated pixel size; the symbol is 1213 by 771 units, 1.573 wide for its height -->
+            <svg class="dia bench" viewBox="0 0 639 160" aria-label="The mark at 128, 64, 32, 24 and 16 pixels on one baseline">
+              <line class="hair" stroke-width="1" x1="0" y1="128.5" x2="639" y2="128.5"/>
+              <use href="#gt-mark" x="0" y="0" width="201" height="128"/>
+              <use href="#gt-mark" x="233" y="64" width="101" height="64"/>
+              <use href="#gt-mark" x="366" y="96" width="50" height="32"/>
+              <use href="#gt-mark" x="448" y="104" width="38" height="24"/>
+              <use href="#gt-mark" x="518" y="112" width="25" height="16"/>
+              <text x="100" y="156" text-anchor="middle">128px</text>
+              <text x="283" y="156" text-anchor="middle">64px</text>
+              <text x="391" y="156" text-anchor="middle">32px</text>
+              <text x="467" y="156" text-anchor="middle">24px</text>
+              <text x="530" y="156" text-anchor="middle">16px</text>
+            </svg>
+            <div class="panel term"><svg width="25" height="16" aria-hidden="true"><use href="#gt-mark"/></svg><svg width="50" height="32" aria-hidden="true"><use href="#gt-mark"/></svg><span>npx gt translate</span></div>
+            <figcaption>The first test as it is run: the mark from 128 to 16 pixels on paper, and reversed at 16 and 32 pixels on the terminal ground beside a command.</figcaption>
+          </figure>
+          <figure>
+            <img src="shots/detail-docs-ja-light.jpg" data-dark="shots/detail-docs-ja-dark.jpg" alt="The heading and opening paragraph of the docs get-started page served in Japanese, at 2x">
+            <figcaption>The second test in production: the docs get-started page served in Japanese, captured at 2x on September 9, 2026. The heading, the body and the interface labels are set in the same type system.</figcaption>
+          </figure>
         </div>
       </div>
     </div></section>

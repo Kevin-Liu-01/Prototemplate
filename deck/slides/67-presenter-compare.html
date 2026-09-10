@@ -1,16 +1,33 @@
-    <!-- compare and presenter -->
+    <!-- compare and the presenter -->
     <section class="slide s53f"><style>
       .s53f .split { gap: 40px; }
       .s53f .head p { margin-top: 10px; }
-      .s53f .pair figcaption { font-size: 15px; }
+      .s53f .tools { display: grid; grid-template-columns: 692px 1fr; gap: 72px; align-items: start; }
+      .s53f figure { margin: 0; display: grid; gap: 12px; }
+      .s53f figcaption { font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+      .s53f img { display: block; width: 100%; height: auto; border: 1px solid var(--hair); background: var(--plate); }
+      .s53f .rig { display: grid; grid-template-columns: 311px 369px; gap: 12px; align-items: start; }
+      .s53f .bar { display: grid; gap: 12px; }
     </style><div class="in">
       <div class="split">
         <div class="head"><h2>Compare and the presenter</h2>
           <p>Two review tools sit beside the knowledge base. Compare puts two directions side by side; the presenter walks through the redesign with every prototype live.</p></div>
         <div class="body">
-          <div class="pair">
-            <figure><img src="shots/proto-compare-light.jpg" data-dark="shots/proto-compare-dark.jpg" alt="Compare with Dossier on the left and Signal on the right"><figcaption>Compare loads two directions as same-origin iframes, Dossier left and Signal right, and drives both frames' scroll and theme in lockstep. The list marks the pair L and R.</figcaption></figure>
-            <figure><img src="shots/proto-present.jpg" alt="The presenter's title screen"><figcaption>The presenter is a full-screen walkthrough in seven parts, from intro to verdict. Its grid of live thumbnails pauses and resumes through the page's requestAnimationFrame gate.</figcaption></figure>
+          <div class="tools">
+            <figure>
+              <div class="rig">
+                <img src="shots/proto-compare-list-light.jpg" data-dark="shots/proto-compare-list-dark.jpg" alt="The Sites group of the compare list, with Dossier marked L and Signal marked R">
+                <div class="bar">
+                  <img src="shots/proto-compare-count-light.jpg" data-dark="shots/proto-compare-count-dark.jpg" alt="The toolbar count reading Left 02 / 17 between the previous and next buttons">
+                  <img src="shots/proto-compare-view-light.jpg" data-dark="shots/proto-compare-view-dark.jpg" alt="The Both, Left and Right view control">
+                </div>
+              </div>
+              <figcaption>Compare loads two directions as same-origin iframes, Dossier in the left pane and Signal in the right, and drives both frames' scroll and theme in lockstep. The three crops come from one capture of the shell. The Sites group of the list marks the loaded pair L and R, the count names the target pane and its direction, and the view control shows both panes or one pane at reading size.</figcaption>
+            </figure>
+            <figure>
+              <img src="shots/proto-present.jpg" alt="The presenter's title screen">
+              <figcaption>The presenter is a full-screen walkthrough in seven parts, from intro to verdict. Its grid of live thumbnails pauses and resumes through the page's requestAnimationFrame gate.</figcaption>
+            </figure>
           </div>
         </div>
       </div>

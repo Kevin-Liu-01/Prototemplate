@@ -1,10 +1,24 @@
-    <!-- closing -->
-    <section class="slide"><div class="in">
-      <div class="center">
-        <div class="stack" style="align-items:center;gap:36px">
-          <svg width="132" height="84" fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg>
+    <!-- closing: the deck closes the way it opens, on a two-tone shader render behind a solid paper plate. The Brand opener carries the top arc of the Event Horizon ring with its plate below the arc; the closing carries the lower arc of the Singularity ring with its plate above the arc, so the two full-picture slides mirror each other. -->
+    <section class="slide opener s-opener s-closing">
+      <style>
+        .s-opener .opener-img { position: absolute; inset: -57px; z-index: -1; width: 1600px; height: 900px; object-fit: cover; display: block; }
+        /* solid paper chips under the viewer's wordmark (stage 72,864, 28 by 18) and counter (right 72, bottom 22), the plate treatment the title uses; scoped to the stage so thumbnails, which carry no chrome, stay clean */
+        #stage > .s-opener::after { content: ''; position: absolute; inset: -57px; z-index: -1; pointer-events: none; background: linear-gradient(var(--paper), var(--paper)) 66px 858px / 40px 30px no-repeat, linear-gradient(var(--paper), var(--paper)) 1474px 856px / 60px 28px no-repeat; }
+        .s-opener .opener-plate { position: absolute; left: 0; bottom: 0; width: fit-content; max-width: 740px; padding: 22px 26px 20px; background: var(--paper); color: var(--ink); }
+        .s-opener .opener-plate .big { color: var(--ink); }
+        .s-opener .opener-plate p { margin-top: 14px; max-width: 56ch; color: var(--ink); }
+        .s-opener .opener-plate .credit { margin-top: 12px; font-size: 15px; line-height: 1.45; letter-spacing: 0.01em; color: var(--titanium); }
+        /* the closing plate sits at the top left, over the ring's interior, which is solid ink in the dark file and clean paper in the light file; the arc runs under it from the lower left to the upper right */
+        .s-closing .opener-plate { top: 0; bottom: auto; max-width: 720px; }
+        .s-closing .opener-plate .mark { display: block; width: 138px; height: 88px; fill: currentColor; margin-bottom: 24px; }
+      </style>
+      <img class="opener-img" src="shots/opener-closing-light.jpg" data-dark="shots/opener-closing.jpg" alt="The lower arc of the Singularity ring, dithered, rising from the lower left to the upper right">
+      <div class="in">
+        <div class="opener-plate">
+          <svg class="mark" aria-hidden="true"><use href="#gt-mark"/></svg>
           <div class="big">Every product in every language</div>
-          <p class="muted">generaltranslation.com, prototemplate.com, glyphfield.com</p>
+          <p>generaltranslation.com, prototemplate.com, glyphfield.com</p>
+          <div class="credit">Material: Singularity, a Prototemplate direction</div>
         </div>
       </div>
-    </div></section>
+    </section>

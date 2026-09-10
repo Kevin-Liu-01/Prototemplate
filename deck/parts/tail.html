@@ -80,7 +80,7 @@
   var i = 0, digits = '', digitTimer = null, mode = 'slide', reduced = false;
   try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
-  var SECTIONS = [[1, 'Brand'], [16, 'Design system'], [31, 'Website'], [43, 'Documentation'], [47, 'Blog and content'], [56, 'Developer experience'], [60, 'Prototemplate and glyphfield'], [79, 'Status and plan']];
+  var SECTIONS = [[1, 'Brand'], [16, 'Design system'], [31, 'Website'], [42, 'Documentation'], [47, 'Blog and content'], [56, 'Developer experience'], [60, 'Prototemplate and Glyphfield'], [79, 'Status and plan']];
   function sectionOf(k) { var name = SECTIONS[0][1]; SECTIONS.forEach(function (s) { if (s[0] <= k + 1) name = s[1]; }); return name; }
   function sectionRange(idx) { return [SECTIONS[idx][0], idx + 1 < SECTIONS.length ? SECTIONS[idx + 1][0] - 1 : slides.length]; }
 
@@ -160,8 +160,8 @@
   var pages = [], bookIO = null;
   function buildBook() {
     var head = document.createElement('div'); head.className = 'book-head';
-    head.innerHTML = '<div><h1><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> brand deck</h1><p></p></div><div class="meta"></div>';
-    head.querySelector('p').textContent = 'The General Translation brand in ' + slides.length + ' slides: the thesis, the design system, the shipped site, the documentation, the blog, developer experience, prototemplate and glyphfield, and the current plan. Read it top to bottom, or click a page to open it as a slide.';
+    head.innerHTML = '<div><h1><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> Brand deck</h1><p></p></div><div class="meta"></div>';
+    head.querySelector('p').textContent = 'The General Translation brand in ' + slides.length + ' slides: the thesis, the design system, the shipped site, the documentation, the blog, developer experience, Prototemplate and Glyphfield, and the current plan. Read it top to bottom, or click a page to open it as a slide.';
     head.querySelector('.meta').innerHTML = SECTIONS.length + ' sections<br>' + slides.length + ' slides<br>September 2026';
     bookIn.appendChild(head);
     var toc = document.createElement('nav'); toc.className = 'book-toc'; toc.setAttribute('aria-label', 'Contents');
@@ -249,7 +249,7 @@
     if (barTitle) barTitle.textContent = titleOf(slides[n], n);
     if (barSec) barSec.textContent = sectionOf(n);
     progress.style.width = ((n + 1) / slides.length * 100) + '%';
-    document.title = 'GT Brand Deck, ' + (n + 1) + ' of ' + slides.length;
+    document.title = 'GT Brand deck, ' + (n + 1) + ' of ' + slides.length;
     if (opts.hash !== false) {
       try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {}
       /* inside the /deck frame the page around it mirrors the slide into its own address (src/app/deck/DeckFrame.tsx) */

@@ -1,35 +1,51 @@
     <!-- glyphfield agent api -->
-    <section class="slide"><div class="in">
+    <section class="slide s78x"><style>
+      .s78x .cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+      .s78x .stack { min-width: 0; }
+      .s78x .panel { font-size: 15px; line-height: 1.7; padding: 20px 18px; white-space: pre; overflow: hidden; }
+    </style><div class="in">
       <div class="cols">
         <div class="stack">
           <h2>The agent API</h2>
-          <p class="max-p">The studio and the agent interface use the same identities, catalog and generation language. Agents discover the site through llms.txt, a versioned manifest and an OpenAPI 3.1 document, generate deterministic SVG over HTTP, and drive the live studio through a browser API that reads and applies the same source the inspectors edit.</p>
-          <svg class="dia" viewBox="0 0 522 250" aria-label="One identity feeds the studio tools and the agent API, and both produce the same artifacts">
-            <rect x="0.5" y="65.5" width="150" height="120" fill="none" class="hair" stroke-width="1"/>
-            <text class="lab" x="14" y="104">Identity</text>
-            <text class="sm" x="14" y="132">one active</text>
-            <rect x="186.5" y="0.5" width="150" height="100" fill="none" class="hair" stroke-width="1"/>
-            <text class="lab" x="200" y="37">Studio</text>
-            <text class="sm" x="200" y="65">fifteen tools</text>
-            <rect x="186.5" y="150.5" width="150" height="100" fill="none" class="hair" stroke-width="1"/>
-            <text class="lab" x="200" y="187">Agent API</text>
-            <text class="sm" x="200" y="215">HTTP, browser</text>
-            <rect x="371.5" y="65.5" width="150" height="120" fill="none" class="hair" stroke-width="1"/>
-            <text class="lab" x="385" y="104">Artifacts</text>
-            <text class="sm" x="385" y="132">SVG, PNG,</text>
-            <text class="sm" x="385" y="156">GIF, MP4</text>
-            <g class="ink" stroke-width="1" fill="none">
-              <path d="M150.5 125.5 H168.5"/>
-              <path d="M168.5 50.5 V200.5"/>
-              <path d="M168.5 50.5 H186.5 M168.5 200.5 H186.5"/>
-              <path d="M336.5 50.5 H354.5 M336.5 200.5 H354.5"/>
-              <path d="M354.5 50.5 V200.5"/>
-              <path d="M354.5 125.5 H371.5"/>
+          <p class="max-p">Agents and the studio share the identities, the catalog and the generation language. An agent reads llms.txt, generates SVG over HTTP, or drives the live studio in the browser.</p>
+          <svg class="dia" viewBox="0 0 522 222" aria-label="One identity feeds the studio tools and the agent API, and both produce the same artifacts">
+            <g fill="none" class="hair" stroke-width="1">
+              <rect x="0.5" y="40.5" width="150" height="141"/>
+              <rect x="180.5" y="0.5" width="160" height="104"/>
+              <rect x="180.5" y="117.5" width="160" height="104"/>
+              <rect x="372.5" y="40.5" width="149" height="141"/>
             </g>
-            <rect x="175" y="45" width="11" height="11" fill="var(--ink)"/>
-            <rect x="175" y="195" width="11" height="11" fill="var(--ink)"/>
-            <rect x="360" y="120" width="11" height="11" fill="var(--ink)"/>
+            <g fill="var(--ink-2)">
+              <use href="#i-identification" x="14" y="52" width="24" height="24"/>
+              <use href="#i-paint-brush" x="194" y="12" width="24" height="24"/>
+              <use href="#i-code-bracket" x="194" y="129" width="24" height="24"/>
+              <use href="#i-photo" x="386" y="52" width="24" height="24"/>
+            </g>
+            <text class="lab" x="14" y="104">Identity</text>
+            <text x="14" y="132">One active</text>
+            <text class="lab" x="194" y="64">Studio</text>
+            <text x="194" y="92">Fifteen tools</text>
+            <text class="lab" x="194" y="181">Agent API</text>
+            <text x="194" y="209">HTTP, browser</text>
+            <text class="lab" x="386" y="104">Artifacts</text>
+            <text x="386" y="132">SVG, PNG,</text>
+            <text x="386" y="158">GIF, MP4</text>
+            <g class="ink" stroke-width="1" fill="none">
+              <path d="M150.5 111.5 H168.5"/>
+              <path d="M168.5 52.5 V169.5"/>
+              <path d="M168.5 52.5 H180.5 M168.5 169.5 H180.5"/>
+              <path d="M340.5 52.5 H352.5 M340.5 169.5 H352.5"/>
+              <path d="M352.5 52.5 V169.5"/>
+              <path d="M352.5 111.5 H372.5"/>
+            </g>
+            <rect x="169" y="47" width="11" height="11" fill="var(--ink)"/>
+            <rect x="169" y="164" width="11" height="11" fill="var(--ink)"/>
+            <rect x="361" y="106" width="11" height="11" fill="var(--ink)"/>
           </svg>
+          <div class="panel">POST /api/generate
+{ "kind": "background",
+  "identity": { "preset": "gt" },
+  "settings": { "style": "dither", "width": 1200 } }</div>
         </div>
         <div class="rows tight" style="--key:250px">
           <div><b>/llms.txt</b><span>The operating guide in 194 lines; /llms-full.txt carries the complete documentation corpus.</span></div>
@@ -37,7 +53,7 @@
           <div><b>/openapi.json</b><span>The OpenAPI 3.1 document, eleven paths, and the catalogs: labs, materials, identities, elements.</span></div>
           <div><b>/api/elements</b><span>89 brand elements in seven categories, from digital to physical.</span></div>
           <div><b>/api/generate</b><span>POST a kind: background, template, element-brief or design-sequence, as JSON or raw SVG.</span></div>
-          <div><b>window.glyphfield.studio</b><span>describe, controls, activate, set, readSource, applySource, invoke and download.</span></div>
+          <div><b>window.glyphfield.studio</b><span>It exposes describe, controls, activate, set, readSource, applySource, invoke and download.</span></div>
           <div><b>Skills</b><span>Four repository skills, one per task: create, api, studio and export.</span></div>
         </div>
       </div>

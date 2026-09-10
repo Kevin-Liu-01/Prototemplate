@@ -1,14 +1,29 @@
     <!-- state -->
-    <section class="slide"><div class="in">
-      <div class="split">
-        <div class="head"><h2>Current status</h2></div>
-        <div class="body">
-          <div class="rows tight" style="--key:200px">
-            <div><b><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>Shipped</b><span>The redesign is live on home, pricing, enterprise, careers, contact, the blog, and the docs. The docs redesign merged on September 3 and nearest-page routing merged on September 8. Prototemplate and glyphfield are public.</span></div>
-            <div><b><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>Open on the docs</b><span>The locale guard and locale switch fix, markdown versions for every locale, and flag-based locale selectors are open.</span></div>
-            <div><b><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>Open on the site</b><span>The enterprise page is being rebuilt in the agreed section order. The three blues are being consolidated, and the CTA gradient ring and the accent on the careers and contact headlines are being removed.</span></div>
-            <div><b><svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg>Next</b><span>The identity project runs September 1 to November 27. Its deliverables will then be implemented as design tokens and assets in prototemplate and on the site.</span></div>
-          </div>
+    <section class="slide s80"><style>
+      .s80 .lay { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 32px; }
+      .s80 .head { display: grid; grid-template-columns: 4fr 8fr; gap: 72px; align-items: start; }
+      .s80 .head h2 { margin-bottom: 0; }
+      .s80 .head p { margin-top: 0; }
+      /* the status board: one ruled row per surface with a 128 by 72 capture, the surface and its address, the state with its icon, and one or two sentences */
+      .s80 .board { display: flex; flex-direction: column; border-top: 1px solid var(--hair); }
+      .s80 .board > div { display: grid; grid-template-columns: 128px 250px 200px 1fr; gap: 22px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--hair); font-size: 20px; line-height: 1.45; }
+      .s80 .board img { display: block; width: 128px; height: 72px; object-fit: cover; object-position: top; border: 1px solid var(--hair); background: var(--plate); }
+      .s80 .board b { font-family: var(--display); font-weight: 500; letter-spacing: -0.01em; }
+      .s80 .board .who b { display: block; }
+      .s80 .board .who small { display: block; font-size: 16px; line-height: 1.3; color: var(--ink-2); margin-top: 2px; }
+      .s80 .board .state { white-space: nowrap; }
+      .s80 .board .state .ic { margin-right: 10px; }
+    </style><div class="in">
+      <div class="lay">
+        <div class="head"><h2>Current status</h2>
+          <p>Each surface is listed with its state on September 9, 2026. Where fixes are open, the redesign is live on that surface and the open items are named.</p></div>
+        <div class="board">
+          <div><img src="shots/site-home-light.jpg" data-dark="shots/site-home-dark.jpg" alt="The production home page"><span class="who"><b>Site</b><small>generaltranslation.com</small></span><b class="state"><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>Fixes open</b><span>Home, pricing, enterprise, careers and contact run the redesign. The enterprise rebuild, the blue consolidation and the CTA ring fix are open.</span></div>
+          <div><img src="shots/site-docs-light.jpg" data-dark="shots/site-docs-dark.jpg" alt="The docs front page"><span class="who"><b>Docs</b><small>/docs, 393 pages in eight locales</small></span><b class="state"><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>Fixes open</b><span>The redesign merged September 3 and nearest-page routing September 8. The locale guard, per-locale markdown and flag selectors are open.</span></div>
+          <div><img src="shots/site-blog-light.jpg" data-dark="shots/site-blog-dark.jpg" alt="The blog index"><span class="who"><b>Blog</b><small>/blog, posts and the changelog</small></span><b class="state"><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>Live</b><span>The index with its two tickers, the changelog strip and the post pages run the redesign. Designed covers use the gem smoke material.</span></div>
+          <div><img src="shots/gh-gt.jpg" alt="The gt repository on GitHub"><span class="who"><b>Libraries</b><small>github.com/generaltranslation/gt</small></span><b class="state"><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>Live</b><span>gt, gt-next, gt-react, gt-vue, gt-node and gt-python ship under names that are fixed points. The CLI is the gt package.</span></div>
+          <div><img src="shots/site-dash-light.jpg" data-dark="shots/site-dash-dark.jpg" alt="The dashboard sign-in page"><span class="who"><b>Dashboard</b><small>dash.generaltranslation.com</small></span><b class="state"><svg class="ic no" aria-hidden="true"><use href="#i-x-circle"/></svg>Outside this round</b><span>The sign-in page carries the mark, the dithered globe and the glyph field. The dashboard interface is not part of the redesign.</span></div>
+          <div><img src="shots/proto-brand-light.jpg" data-dark="shots/proto-brand-dark.jpg" alt="The brand directives page on prototemplate.com"><span class="who"><b>Brand</b><small>prototemplate.com/brand</small></span><b class="state"><svg class="ic warn" aria-hidden="true"><use href="#i-clock"/></svg>In progress</b><span>The identity project runs September 1 to November 27. Its deliverables become design tokens and assets in Prototemplate and on the site.</span></div>
         </div>
       </div>
     </div></section>

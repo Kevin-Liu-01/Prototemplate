@@ -1,39 +1,50 @@
     <!-- fixed points -->
-    <section class="slide s50a"><style>
-      .s50a .two { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
-      .s50a .two h3 { font-family: var(--display); font-size: 26px; line-height: 1.2; font-weight: 500; letter-spacing: -0.015em; margin: 0 0 12px; }
-      .s50a .plain { font-size: 20px; line-height: 1.4; }
-      .s50a .plain > span { padding: 7px 0; }
-      .s50a .rows > div > b span { white-space: nowrap; }
-      .s50a .plain > span > .ic { width: 20px; height: 20px; vertical-align: -4px; margin-right: 10px; }
-      .s50a .plain > span:has(> .ic) { padding-left: 30px; text-indent: -30px; }
-    </style><div class="in">
-      <div class="split">
+    <section class="slide s83"><style>
+      .s83 .lay { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 36px; }
+      .s83 .head h2 { margin-bottom: 14px; }
+      .s83 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+      .s83 h3 { font-family: var(--display); font-size: 26px; line-height: 1.2; font-weight: 500; letter-spacing: -0.015em; margin: 0 0 12px; }
+      /* the two fixed points set large on a ruled plate, each with the closed lock in the company's blue */
+      .s83 .fixed { border: 1px solid var(--hair); background: var(--plate); }
+      .s83 .fixed > div { display: grid; grid-template-columns: 28px 1fr; gap: 18px; align-items: start; padding: 16px 24px; border-bottom: 1px solid var(--hair); }
+      .s83 .fixed > div:last-child { border-bottom: 0; }
+      .s83 .fixed .ic { width: 28px; height: 28px; margin-top: 10px; }
+      .s83 .fixed .name { font-family: var(--display); font-weight: 500; letter-spacing: -0.025em; font-size: 44px; line-height: 1.1; text-wrap: balance; }
+      .s83 .fixed .names { font-family: var(--display); font-weight: 500; letter-spacing: -0.02em; font-size: 30px; line-height: 1.25; }
+      .s83 .fixed .names span { white-space: nowrap; }
+      .s83 .fixed p { margin-top: 8px; font-size: 20px; line-height: 1.45; color: var(--ink-2); }
+      .s83 .panel { margin-top: 20px; }
+      .s83 .plain { font-size: 22px; line-height: 1.4; }
+      .s83 .plain > span { padding: 10px 0; }
+    </style>
+    <!-- the closed lock is not in the sprite in parts/head.html; heroicons 20 solid lock-closed, defined here until the sprite carries it -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-lock-closed" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z" clip-rule="evenodd"/></symbol></svg>
+    <div class="in">
+      <div class="lay">
         <div class="head">
           <h2>Fixed points</h2>
-          <p>The identity project works from first principles with two fixed points. Everything else is open. No decision is protected by the effort already spent on it. The current system is evidence of what has been tried and does not constrain what is proposed. A proposal is judged on the same success criteria as the current system, and on nothing else.</p>
+          <p>The identity project works from first principles with two fixed points, and everything else is open. No decision is protected by the effort already spent on it; a proposal is judged on the success criteria alone.</p>
         </div>
-        <div class="body">
-          <div class="two">
-            <div>
-              <h3>Fixed</h3>
-              <div class="rows" style="--key:300px">
-                <div><b><svg class="ic info" aria-hidden="true"><use href="#i-key"/></svg>General Translation</b><span>The company's legal name does not change.</span></div>
-                <div><b><svg class="ic info" aria-hidden="true"><use href="#i-key"/></svg><span>gt</span>, <span>gt-next</span>, <span>gt-react</span>, <span>gt-vue</span>, <span>gt-node</span>, <span>gt-python</span></b><span>The names customers install and import do not change.</span></div>
-              </div>
+        <div class="two">
+          <div>
+            <h3>Fixed</h3>
+            <div class="fixed">
+              <div><svg class="ic info" aria-hidden="true"><use href="#i-lock-closed"/></svg><div><div class="name">General Translation</div><p>The company's legal name does not change.</p></div></div>
+              <div><svg class="ic info" aria-hidden="true"><use href="#i-lock-closed"/></svg><div><div class="names"><span>gt</span>, <span>gt-next</span>, <span>gt-react</span>, <span>gt-vue</span>, <span>gt-node</span>, <span>gt-python</span></div><p>The names customers install and import do not change.</p></div></div>
             </div>
-            <div>
-              <h3>Open</h3>
-              <div class="plain">
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The mark</span>
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The colors</span>
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The type</span>
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The layout system</span>
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The voice</span>
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The site structure</span>
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The deck itself</span>
-                <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The product names, including Locadex</span>
-              </div>
+            <div class="panel">npm i gt-next<br>import { T } from 'gt-next';<br>npx gt translate</div>
+          </div>
+          <div>
+            <h3>Open</h3>
+            <div class="plain">
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The mark</span>
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The colors</span>
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The type</span>
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The layout system</span>
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The voice</span>
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The site structure</span>
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The deck itself</span>
+              <span><svg class="ic warn" aria-hidden="true"><use href="#i-lock-open"/></svg>The product names, including Locadex</span>
             </div>
           </div>
         </div>

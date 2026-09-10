@@ -1,31 +1,38 @@
     <!-- identity project -->
-    <section class="slide"><div class="in">
+    <section class="slide s82"><style>
+      .s82 svg.dia use { fill: var(--ink); }
+      .s82 svg.dia .term { font-family: var(--mono); }
+    </style><div class="in">
       <div class="split">
         <div class="head"><h2>The identity project</h2>
-          <p class="max-p" style="margin-top:18px">The project runs from September 1 to November 27 in five stages: research, definition, identity design, visual language, and delivery. Constraints are stated once at the start, along with a test list the work is checked against.</p></div>
+          <p style="margin-top:18px">The project runs from September 1 to November 27 in five stages: research, definition, identity design, visual language, and delivery. Constraints and a test list are stated once at the start. The marker is September 9, 2026, the date of this deck.</p></div>
         <div class="body">
-          <div class="rows tight" style="margin-bottom:48px;--key:200px">
+          <div class="rows tight" style="margin-bottom:36px;--key:200px">
             <div><b><svg class="ic" aria-hidden="true"><use href="#i-archive-box"/></svg>Inputs</b><span>The inputs are prototemplate.com as the handoff site, the brand book, the questionnaire finalized August 11, and the test list.</span></div>
             <div><b><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>Decisions</b><span>The four reviews cover the territory, the identity direction, the system, and the handoff. <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> selects one option at each and returns one consolidated feedback document within 48 hours.</span></div>
           </div>
-          <svg class="dia" viewBox="0 0 1326 168" aria-label="Five stages across thirteen weeks with four review points">
-            <text x="0" y="18">Sep 1</text><text x="201" y="18">Sep 14</text><text x="414" y="18">Sep 28</text><text x="734" y="18">Oct 19</text><text x="1161" y="18">Nov 16</text><text x="1326" y="18" text-anchor="end">Nov 27</text>
-            <rect x="0" y="40" width="196" height="60" fill="var(--plate)" class="hair"/>
-            <rect x="201" y="40" width="207" height="60" fill="var(--plate)" class="hair"/>
-            <rect x="414" y="40" width="314" height="60" fill="var(--plate)" class="hair"/>
-            <rect x="734" y="40" width="421" height="60" fill="var(--plate)" class="hair"/>
-            <rect x="1161" y="40" width="165" height="60" fill="var(--plate)" class="hair"/>
-            <text x="16" y="77" class="lab" style="font-size:20px">Research</text>
-            <text x="217" y="77" class="lab" style="font-size:20px">Definition</text>
-            <text x="430" y="77" class="lab" style="font-size:20px">Identity design</text>
-            <text x="750" y="77" class="lab" style="font-size:20px">Visual language</text>
-            <text x="1177" y="77" class="lab" style="font-size:20px">Delivery</text>
-            <g class="ink" stroke-width="1"><line x1="411" y1="100" x2="411" y2="128"/><line x1="731" y1="100" x2="731" y2="128"/><line x1="1158" y1="100" x2="1158" y2="128"/><line x1="1326" y1="100" x2="1326" y2="128"/></g>
-            <text x="0" y="158">Review points</text>
-            <text x="411" y="158" text-anchor="middle">Territory</text>
-            <text x="731" y="158" text-anchor="middle">Identity</text>
-            <text x="1158" y="158" text-anchor="middle">System</text>
-            <text x="1326" y="158" text-anchor="end">Handoff</text>
+          <!-- 1326 units for 87 days, 15.24 units a day: September 14 at 201, September 28 at 414, October 19 at 734, November 16 at 1161, November 27 at 1326; September 9 is day 8, at 122. The first four dates sit flush with the left edge of the stage they start; the two November dates sit flush with the right edge of the stage they end, because the 164-unit Delivery stage cannot hold two spelled dates at 20px (121 and 124 units wide). The today marker hangs from the bottom edge of the track (a tick ending in an 11px square, label to its right) so it neither crosses the Research label inside the stage nor touches the September 1 date above it. -->
+          <svg class="dia" viewBox="0 0 1326 212" aria-label="Five stages across thirteen weeks with an icon each, four review points, and a marker on September 9">
+            <text x="0" y="18">September 1</text><text x="201" y="18">September 14</text><text x="414" y="18">September 28</text><text x="734" y="18">October 19</text><text x="1155" y="18" text-anchor="end">November 16</text><text x="1326" y="18" text-anchor="end">November 27</text>
+            <rect x="0.5" y="34.5" width="195" height="80" fill="var(--plate)" class="hair"/>
+            <rect x="201.5" y="34.5" width="206" height="80" fill="var(--plate)" class="hair"/>
+            <rect x="414.5" y="34.5" width="313" height="80" fill="var(--plate)" class="hair"/>
+            <rect x="734.5" y="34.5" width="420" height="80" fill="var(--plate)" class="hair"/>
+            <rect x="1161.5" y="34.5" width="164" height="80" fill="var(--plate)" class="hair"/>
+            <use href="#i-magnifying-glass" x="16" y="61" width="26" height="26"/><text x="56" y="83" class="lab">Research</text>
+            <use href="#i-document-text" x="217" y="61" width="26" height="26"/><text x="257" y="83" class="lab">Definition</text>
+            <use href="#i-pencil-square" x="430" y="61" width="26" height="26"/><text x="470" y="83" class="lab">Identity design</text>
+            <use href="#i-swatch" x="750" y="61" width="26" height="26"/><text x="790" y="83" class="lab">Visual language</text>
+            <use href="#i-archive-box" x="1177" y="61" width="26" height="26"/><text x="1217" y="83" class="lab">Delivery</text>
+            <line class="ink" stroke-width="1.5" x1="122" y1="114.5" x2="122" y2="134"/>
+            <rect x="116.5" y="134" width="11" height="11" fill="var(--ink)"/>
+            <text x="138" y="147">September 9, today</text>
+            <g class="ink" stroke-width="1"><line x1="411.5" y1="114.5" x2="411.5" y2="176.5"/><line x1="731.5" y1="114.5" x2="731.5" y2="176.5"/><line x1="1158.5" y1="114.5" x2="1158.5" y2="176.5"/><line x1="1325.5" y1="114.5" x2="1325.5" y2="176.5"/></g>
+            <text x="0" y="204">Review points</text>
+            <text x="411" y="204" text-anchor="middle">Territory</text>
+            <text x="731" y="204" text-anchor="middle">Identity</text>
+            <text x="1158" y="204" text-anchor="middle">System</text>
+            <text x="1326" y="204" text-anchor="end">Handoff</text>
           </svg>
         </div>
       </div>

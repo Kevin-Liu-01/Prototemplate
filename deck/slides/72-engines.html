@@ -1,40 +1,32 @@
     <!-- engines -->
-    <section class="slide"><div class="in">
-      <div class="cols">
-        <div class="stack">
-          <h2>Shared engines</h2>
-          <p class="max-p">Twelve engines run live on the docs page under the readme, each with the call that mounts it. Eight further entries in the same index are contracts and harnesses rather than engines: the locale belt, the nameplate take, the stack story, site compare, the gallery shooter, the mobile type ladder, the pre-boot scripts and the four-color palette. Every engine follows one lifecycle.</p>
-          <svg class="dia" viewBox="0 0 522 240" aria-label="Engine lifecycle: mount on first view, run on screen, pause off screen, one frame under reduced motion">
-            <rect x="0" y="0" width="160" height="90" fill="none" class="hair" stroke-width="1"/>
-            <rect x="181" y="0" width="160" height="90" fill="none" class="hair" stroke-width="1"/>
-            <rect x="362" y="0" width="160" height="90" fill="none" class="hair" stroke-width="1"/>
-            <rect x="0" y="150" width="160" height="90" fill="none" class="hair" stroke-width="1"/>
-            <g class="ink" stroke-width="1" fill="none">
-              <path d="M160 45 H181"/><path d="M178 39 V51"/>
-              <path d="M341 32 H362"/><path d="M359 26 V38"/>
-              <path d="M362 58 H341"/><path d="M344 52 V64"/>
-              <path d="M80 90 V150"/><path d="M74 147 H86"/>
-            </g>
-            <text x="16" y="38" class="lab">Mount</text><text x="16" y="70">first view</text>
-            <text x="197" y="38" class="lab">Run</text><text x="197" y="70">on screen</text>
-            <text x="378" y="38" class="lab">Pause</text><text x="378" y="70">off screen</text>
-            <text x="16" y="188" class="lab">One frame</text><text x="16" y="220">renders once</text>
-            <text x="92" y="126">reduced motion</text>
-          </svg>
-        </div>
-        <div class="rows narrow tight" style="--key:200px">
-          <div style="padding:8px 0"><b>Horizon field</b><span>A WebGL lensing shader with 21 parameters.</span></div>
-          <div style="padding:8px 0"><b>Glyph field</b><span>1,280 glyphs from eight scripts form a word.</span></div>
-          <div style="padding:8px 0"><b>Ink field</b><span>Glyphs rise through the band margins.</span></div>
-          <div style="padding:8px 0"><b>Prismatic field</b><span>The spectral wash behind the dark bands.</span></div>
-          <div style="padding:8px 0"><b>Dither</b><span>A CPU Bayer renderer, one device pixel a cell.</span></div>
-          <div style="padding:8px 0"><b>Studio field</b><span>Ten GPU Bayer presets on one GL context.</span></div>
-          <div style="padding:8px 0"><b>Iso</b><span>One 30 degree projection for every solid.</span></div>
-          <div style="padding:8px 0"><b>Doubled line</b><span>One path stroked twice into two threads.</span></div>
-          <div style="padding:8px 0"><b>Edge globe</b><span>The delivery globe: five PoPs and one route.</span></div>
-          <div style="padding:8px 0"><b>Locale tag</b><span>A 15 by 11 flag print beside the locale code.</span></div>
-          <div style="padding:8px 0"><b>Reveal seam</b><span>A slider that writes one CSS variable.</span></div>
-          <div style="padding:8px 0"><b>Glyph reassembler</b><span>One sentence reforms in the next locale.</span></div>
+    <section class="slide s72x"><style>
+      .s72x .split { gap: 40px; }
+      .s72x .head { display: grid; grid-template-columns: 4fr 8fr; gap: 72px; align-items: start; }
+      .s72x .head h2, .s72x .head p { margin: 0; }
+      .s72x .eng { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 20px; }
+      .s72x .eng figure { margin: 0; display: grid; gap: 4px; }
+      .s72x .eng img { display: block; width: 100%; height: auto; border: 1px solid var(--hair); background: var(--plate); }
+      .s72x .eng b { display: block; font-family: var(--display); font-weight: 500; font-size: 20px; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); }
+      .s72x .eng span { display: block; font-size: 15px; line-height: 1.35; color: var(--ink-2); white-space: nowrap; }
+    </style><div class="in">
+      <div class="split">
+        <div class="head"><h2>Shared engines</h2>
+          <p>Twelve engines run live on the docs page under the readme, each on a plate with the call that mounts it. Every engine mounts on first view, runs on screen, pauses off screen, and renders one frame under reduced motion. The plates below are cut from the page at two times device scale. Four are cropped to the engine itself.</p></div>
+        <div class="body">
+          <div class="eng">
+            <figure><img src="shots/proto-engine-horizon-field-light.jpg" data-dark="shots/proto-engine-horizon-field-dark.jpg" alt=""><b>Horizon field</b><span>A WebGL lens shader takes 21 parameters.</span></figure>
+            <figure><img src="shots/proto-engine-glyph-field-light.jpg" data-dark="shots/proto-engine-glyph-field-dark.jpg" alt=""><b>Glyph field</b><span>Glyphs from eight scripts form one word.</span></figure>
+            <figure><img src="shots/proto-engine-ink-field-light.jpg" data-dark="shots/proto-engine-ink-field-dark.jpg" alt=""><b>Ink field</b><span>Glyphs rise through the band margins.</span></figure>
+            <figure><img src="shots/proto-engine-prismatic-field-light.jpg" data-dark="shots/proto-engine-prismatic-field-dark.jpg" alt=""><b>Prismatic field</b><span>A spectral wash runs behind the bands.</span></figure>
+            <figure><img src="shots/proto-engine-dither-light.jpg" data-dark="shots/proto-engine-dither-dark.jpg" alt=""><b>Dither</b><span>A CPU Bayer pass draws one pixel per cell.</span></figure>
+            <figure><img src="shots/proto-engine-studio-field-light.jpg" data-dark="shots/proto-engine-studio-field-dark.jpg" alt=""><b>Studio field</b><span>Ten Bayer presets share one GL context.</span></figure>
+            <figure><img src="shots/proto-engine-iso-light.jpg" data-dark="shots/proto-engine-iso-dark.jpg" alt=""><b>Iso</b><span>A 30 degree projection draws every solid.</span></figure>
+            <figure><img src="shots/proto-engine-doubled-line-detail-light.jpg" data-dark="shots/proto-engine-doubled-line-detail-dark.jpg" alt=""><b>Doubled line</b><span>One path is stroked twice into two threads.</span></figure>
+            <figure><img src="shots/proto-engine-edge-globe-light.jpg" data-dark="shots/proto-engine-edge-globe-dark.jpg" alt=""><b>Edge globe</b><span>The globe shows five PoPs and one route.</span></figure>
+            <figure><img src="shots/proto-engine-locale-tag-detail-light.jpg" data-dark="shots/proto-engine-locale-tag-detail-dark.jpg" alt=""><b>Locale tag</b><span>A 15 by 11 flag prints beside the code.</span></figure>
+            <figure><img src="shots/proto-engine-reveal-seam-detail-light.jpg" data-dark="shots/proto-engine-reveal-seam-detail-dark.jpg" alt=""><b>Reveal seam</b><span>A slider writes one CSS variable.</span></figure>
+            <figure><img src="shots/proto-engine-glyph-reassembler-detail-light.jpg" data-dark="shots/proto-engine-glyph-reassembler-detail-dark.jpg" alt=""><b>Glyph reassembler</b><span>One sentence reforms in the next locale.</span></figure>
+          </div>
         </div>
       </div>
     </div></section>

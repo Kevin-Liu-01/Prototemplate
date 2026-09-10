@@ -1,30 +1,62 @@
     <!-- knowledge base -->
-    <section class="slide s53a"><style>
-      .s53a .lay { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 36px; }
-      .s53a .lay > .head { flex: 0 0 auto; display: grid; grid-template-columns: 4fr 8fr; gap: 72px; align-items: start; }
-      .s53a .head h2, .s53a .head p { margin: 0; }
-      /* two ruled tables side by side; every row is the height of a two-line value so the rules align across the gutter */
-      .s53a .two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; }
-      .s53a .rows > div { min-height: 86px; }
+    <section class="slide s62x"><style>
+      .s62x .split { gap: 44px; }
+      .s62x .head { display: grid; grid-template-columns: 4fr 8fr; gap: 72px; align-items: start; }
+      .s62x .head h2, .s62x .head p { margin: 0; }
     </style><div class="in">
-      <div class="lay">
+      <div class="split">
         <div class="head"><h2>The knowledge base</h2>
-          <p>Every page on the site is registered once, in nine groups, and the sidebar, the search, the index panel, the preview layer and the sitemap read that one list. The sidebar shows seven of the nine groups; Libraries and Brand sections appear only in the index panel. The rows name what lives where.</p></div>
-        <div class="two">
-          <div class="rows tight" style="--key:160px">
-            <div><b>Brand book</b><span>/deck. This deck in its own viewer, with a slide list, a grid and a book.</span></div>
-            <div><b>Brand directives</b><span>/brand. The identity canon in ten sections, from the name to the partner context.</span></div>
-            <div><b>Docs</b><span>/docs. Six documents in 48 sections, with the build log under the readme.</span></div>
-            <div><b>Skills</b><span>/skills. 261 agent skills in three groups, each listed by name and description.</span></div>
-            <div><b>Marks</b><span>/marks. Nine <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> marks in three families, each with its construction and six tests.</span></div>
-          </div>
-          <div class="rows tight" style="--key:160px">
-            <div><b>Directions</b><span>/. Seventeen directions: thirteen explorations, three sites and the shipped site.</span></div>
-            <div><b>Shipped</b><span>/d/production. The live site rebuilt page for page, fifteen pages in all.</span></div>
-            <div><b>Archive</b><span>/archive. Eleven retired versions kept as captures, each with its last commit.</span></div>
-            <div><b>Compare, present</b><span>/compare, /present. Two directions in synced frames; the redesign walkthrough.</span></div>
-            <div><b>Libraries</b><span>Under the readme. Twelve engines running live, each with the call that mounts it.</span></div>
-          </div>
+          <p>Every page on the site is registered once, in nine groups and 95 entries, and the sidebar, the search, the index panel, the preview layer and the sitemap read that one list. The sidebar shows seven of the nine groups; Libraries and Brand sections appear only in the index panel and are drawn here with the darker edge.</p></div>
+        <div class="body">
+          <svg class="dia" viewBox="0 0 1326 380" aria-label="One registry of 95 entries feeds nine groups: Pages, Knowledge, Shipped, Documents, Sites, Explorations and Archive in the sidebar, Libraries and Brand sections in the index panel only">
+            <rect x="463.5" y="0.5" width="399" height="66" fill="none" class="hair" stroke-width="1"/>
+            <use href="#i-rectangle-stack" x="477" y="21" width="24" height="24" fill="var(--ink)"/>
+            <text class="lab" x="513" y="31">One registry</text>
+            <text x="513" y="56">95 entries in src/lib/surfaces.ts</text>
+            <g class="ink" stroke-width="1" fill="none">
+              <path d="M663.5 66.5 V92.5"/>
+              <path d="M125.5 92.5 H1201.5"/>
+              <path d="M125.5 92.5 V116.5 M394.5 92.5 V116.5 M663.5 92.5 V116.5 M932.5 92.5 V116.5 M1201.5 92.5 V116.5"/>
+              <path d="M259.5 92.5 V262.5 M528.5 92.5 V262.5 M797.5 92.5 V262.5 M1066.5 92.5 V262.5"/>
+            </g>
+            <g fill="var(--ink)">
+              <rect x="120" y="105" width="11" height="11"/><rect x="389" y="105" width="11" height="11"/><rect x="658" y="105" width="11" height="11"/><rect x="927" y="105" width="11" height="11"/><rect x="1196" y="105" width="11" height="11"/>
+              <rect x="254" y="251" width="11" height="11"/><rect x="523" y="251" width="11" height="11"/><rect x="792" y="251" width="11" height="11"/><rect x="1061" y="251" width="11" height="11"/>
+            </g>
+            <g fill="none" class="hair" stroke-width="1">
+              <rect x="0.5" y="116.5" width="250" height="116"/>
+              <rect x="269.5" y="116.5" width="250" height="116"/>
+              <rect x="538.5" y="116.5" width="250" height="116"/>
+              <rect x="807.5" y="116.5" width="250" height="116"/>
+              <rect x="1076.5" y="116.5" width="250" height="116"/>
+              <rect x="134.5" y="262.5" width="250" height="116"/>
+              <rect x="403.5" y="262.5" width="250" height="116"/>
+            </g>
+            <g fill="none" class="mid" stroke-width="1">
+              <rect x="672.5" y="262.5" width="250" height="116"/>
+              <rect x="941.5" y="262.5" width="250" height="116"/>
+            </g>
+            <g fill="var(--ink)">
+              <use href="#i-squares-2x2" x="14" y="130" width="24" height="24"/>
+              <use href="#i-book-open" x="283" y="130" width="24" height="24"/>
+              <use href="#i-check-badge" x="552" y="130" width="24" height="24"/>
+              <use href="#i-document-text" x="821" y="130" width="24" height="24"/>
+              <use href="#i-globe-alt" x="1090" y="130" width="24" height="24"/>
+              <use href="#i-beaker" x="148" y="276" width="24" height="24"/>
+              <use href="#i-archive-box" x="417" y="276" width="24" height="24"/>
+              <use href="#i-cube" x="686" y="276" width="24" height="24"/>
+              <use href="#i-identification" x="955" y="276" width="24" height="24"/>
+            </g>
+            <text class="lab" x="48" y="150">Pages</text><text x="14" y="188">Six pages</text><text x="14" y="216">/, /brand, /docs, /deck</text>
+            <text class="lab" x="317" y="150">Knowledge</text><text x="283" y="188">Three pages</text><text x="283" y="216">/skills, /marks, /archive</text>
+            <text class="lab" x="586" y="150">Shipped</text><text x="552" y="188">Twenty pages</text><text x="552" y="216">/d/production, live site</text>
+            <text class="lab" x="855" y="150">Documents</text><text x="821" y="188">Six documents</text><text x="821" y="216">/docs, /docs/brand</text>
+            <text class="lab" x="1124" y="150">Sites</text><text x="1090" y="188">Six pages</text><text x="1090" y="216">/d/singularity-dossier</text>
+            <text class="lab" x="182" y="296">Explorations</text><text x="148" y="334">Thirteen directions</text><text x="148" y="362">/d/toolchain</text>
+            <text class="lab" x="451" y="296">Archive</text><text x="417" y="334">Eleven versions</text><text x="417" y="362">/archive/concrete-mono</text>
+            <text class="lab" x="720" y="296">Libraries</text><text x="686" y="334">Twenty entries</text><text x="686" y="362">Index panel only</text>
+            <text class="lab" x="989" y="296">Brand sections</text><text x="955" y="334">Ten sections</text><text x="955" y="362">Index panel only</text>
+          </svg>
         </div>
       </div>
     </div></section>

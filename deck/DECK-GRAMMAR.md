@@ -19,7 +19,7 @@ The deck is a single self-contained HTML file. Source lives in this directory:
 
 - Everything is set in Inter (`--display` and `--text` both resolve to Inter). Headings use weight 500 at most. Never bold beyond 500 for display text; `<b>` inside rows and scales is weight 500.
 - Sizes: `h1` 88px, `h2` 44px, `.big` 72px, `p` 22px at line-height 1.5, `.lead` 26px, `.cap` 15px in titanium, `.rows` 20px. SVG labels: 20px in `--ink-2` minimum, `.lab` 26px in ink; never smaller than 18px (`.sm`). Text below 15px on the sheet is a defect.
-- Headings have no trailing period. Sentences in body copy do. Headings are plain nouns or plain statements, sentence case.
+- Headings have no trailing period. Sentences in body copy do. Headings are plain nouns or plain statements in sentence case: a capital first letter, proper nouns capitalized (General Translation, Prototemplate, Glyphfield, Locadex), product tokens in their exact form (gt-next, gt, npx, CLI, API) and never as the first word, and a heading is a name, not a URL (Prototemplate, not prototemplate.com; the domain belongs in the body). Title Case only on buttons.
 - Copy register: straight technical English. No metaphors, no "X, not Y" contrast pairs, no fragment rhythm, no noun-phrase-with-comma-tail headings, no em dashes, no exclamation marks, no eyebrow labels above headings. Full sentences even in captions. Title Case only for button labels.
 - Switzer exists only inside the type specimen slide (15) to show the site's display face. Nowhere else.
 
