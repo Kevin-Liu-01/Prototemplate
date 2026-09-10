@@ -123,7 +123,7 @@ The six two-tone openers went through the same Pillow steps, four in round five 
 | Slide | Placed after | Dark file | Light file | Image |
 | --- | --- | --- | --- | --- |
 | `06-mood-earth` | Why the redesign | `mood-earth.jpg` | `mood-earth-light.jpg` | NASA, Blue Marble Next Generation, Western Hemisphere, 2007 |
-| `10-mood-babel` | Values | `mood-babel.jpg` | `mood-babel-light.jpg` | Bruegel, The Tower of Babel, 1563 |
+| `10-mood-rosetta` | Values | `mood-rosetta.jpg` | `mood-rosetta-light.jpg` | Hans Hillewaert, The Rosetta Stone, CC BY-SA 4.0 |
 | `24-mood-calligraphy` | The doubled line | `mood-calligraphy.jpg` | `mood-calligraphy-light.jpg` | Karahisari, calligraphy exercise, 16th century |
 | `37-mood-lighthouse` | Pages, second slide | `mood-lighthouse.jpg` | `mood-lighthouse-light.jpg` | Louisbourg lighthouse in a fall storm |
 | `45-mood-dictionary` | Nearest-page routing | `mood-dictionary.jpg` | `mood-dictionary-light.jpg` | The Compact Oxford English Dictionary, open |
@@ -155,15 +155,17 @@ Every photograph went through the same Pillow steps. Sources are the Commons dow
 - The same two `--paper` chips as the openers sit under the viewer's wordmark and counter, from `#stage > .s-mood::after`, scoped to the stage so thumbnails stay clean.
 - The section CSS is scoped to `.s-mood`; each file carries the same block, as the openers do.
 
-### Brand, mood-babel
+### Brand, mood-rosetta
 
-- Image: The Tower of Babel, oil on panel, Kunsthistorisches Museum, Vienna.
-- Source: File:Pieter Bruegel the Elder - The Tower of Babel (Vienna) - Google Art Project - edited.jpg
-- Artist: Pieter Bruegel the Elder, 1563.
-- License: Public domain.
-- Crop: 300, 0, 1500, 675. The tower alone, from the crane at its top to the level of the lower arcades; the harbour and the crowd at the base are left out. Blur 1.0, black 60, white 205, gamma 1.15. The lit left face and the sky go to paper, the shadow side and the arches to ink.
-- Placement: after Values, the densest slide in the first half of Brand.
-- Credit: Painting: Pieter Bruegel the Elder, 1563, public domain
+- Image: The Rosetta Stone, the Ptolemaic decree of 196 BC carved in hieroglyphic, Demotic and Greek, British Museum.
+- Source: File:Rosetta Stone.JPG (local copy `scratchpad/photo/rosetta.jpg`, 1539 by 1800).
+- Artist: Hans Hillewaert.
+- License: CC BY-SA 4.0. The dithered files are adaptations, so the credit line on the plate is required.
+- Crop: 0, 300, 1539, 1166. The upper body of the stone with its broken top edge against the dark ground, cover-fit to 800 by 450, so the stone fills the sheet and its right edge ends near x 1320. Blur 0.6, black 140, white 230, gamma 0.9. The high black point drops the stone's surface to ink and leaves the cut glyph rows as light lines, so the inscription reads as rows of text rather than a grey field; the earlier black points of 60 to 90 left a 50 percent screen with no edge. Positive is the dark file (light glyphs on an ink stone); the light twin reads as dark text on paper.
+- Plate: the lower-right plate covers part of the stone's lower right, which is inscription texture, not a subject; the plate is solid, so nothing shows through. Scratchpad `rosetta/make.py`, candidate f-upper-b140.
+- Placement: after Values, where the Tower of Babel sat from round seven to round ten. Kevin: "change the tower of babel to something else. maybe rosetta stone".
+- Sentence: One decree carved in three scripts so every reader could read it. General Translation does the same for software: one source text, every language.
+- Credit: Photograph: Hans Hillewaert, CC BY-SA 4.0
 
 ### Brand, mood-earth
 
@@ -250,7 +252,7 @@ Every photograph went through the same Pillow steps. Sources are the Commons dow
 
 ## Licensing note
 
-Three mood slides are share-alike (CC BY-SA): the lighthouse, the dictionary and the manuscript page. The dithered files are adaptations, so the share-alike condition applies to them, and the credit plate on each slide is required. If the deck cannot carry share-alike images, swap these three for public domain or CC BY sources. The compass rose is public domain, as are the Babel painting, the Blue Marble, the calligraphy sheet, the cable chart and the wave print. The gem smoke openers and the Prototemplate and Glyphfield opener are renders of Paper Shaders materials (Gem Smoke and Liquid Metal, Apache-2.0) through Glyphfield, the brand's own tool, and their credit names Paper Shaders; the five other dithered openers are renders of Prototemplate directions built on the brand's own engines, and their credit names the direction.
+Four mood slides are share-alike (CC BY-SA): the Rosetta Stone, the lighthouse, the dictionary and the manuscript page. The dithered files are adaptations, so the share-alike condition applies to them, and the credit plate on each slide is required. If the deck cannot carry share-alike images, swap these three for public domain or CC BY sources. The compass rose is public domain, as are the Babel painting, the Blue Marble, the calligraphy sheet, the cable chart and the wave print. The gem smoke openers and the Prototemplate and Glyphfield opener are renders of Paper Shaders materials (Gem Smoke and Liquid Metal, Apache-2.0) through Glyphfield, the brand's own tool, and their credit names Paper Shaders; the five other dithered openers are renders of Prototemplate directions built on the brand's own engines, and their credit names the direction.
 
 ## History
 
@@ -297,3 +299,4 @@ Photographs, processed with the photograph pipeline at several crops and tone se
 - Karahisari, tall strokes centered (310, 640, 1030, 1045): the strongest composition of the tight crops, but the crease in the sheet crossed it and read as a stray rule; the window was moved up until the crease fell off the bottom edge.
 - Rosetta Stone, container ship, Trinity College Long Room, Corcovado silhouette, Apollo 9 control room: not processed. The ship carries a shipping line's name across the hull, the stone is a dark slab whose text is below the cell size, the Long Room and the control room are mid-tone interiors, and the Corcovado photograph is dominated by the statue.
 - Round nine, from Kevin's directive on full-picture slides: every mood slide's plate gained the picture's title and a sentence on why it is in the deck, above the credit, at `max-width: 560px`; the Blue Marble moved left (820 pixel disk centered at x 420) so the plate meets no lit cell; and the viewer gained a backdrop layer (`.backdrop` in `parts/head.html`, `syncBackdrop()` in `parts/tail.html`) that paints the active opener or mood image across the whole stage area at object-fit cover in slide mode, with the sheet transparent and edgeless and the slide's own image hidden so the two crops never show together. The grid, the book and the thumbnails show the sheet as before.
+- Round eleven: the Tower of Babel mood slide (10) became the Rosetta Stone at Kevin's request ("change the tower of babel to something else. maybe rosetta stone"); `mood-babel.jpg` and its light twin left the repo, and the Bruegel entry is kept only in this history line. Round ten also replaced the Prototemplate and Status openers, recorded above.

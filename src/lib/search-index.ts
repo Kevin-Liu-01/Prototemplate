@@ -258,7 +258,7 @@ const DECK_SLIDES: readonly string[] = [
   'Open source and platform',
   'Audience',
   'Values',
-  'The Tower of Babel',
+  'The Rosetta Stone',
   'Brand personality',
   'Writing style',
   'Visual references',
