@@ -2,14 +2,27 @@
    8.6). A 322px column: a 1px paper mat with a --pt-hair-soft outline (the
    sheet ring, one stroke each; scripts/lint-lines.mjs allows pt-preview for
    the pair), the 320x180 frame with its --pt-edge border holding the
-   decoded capture, or the plate with the surface's initial until the
-   capture is ready, and the 32px title row. Fixed at the viewport origin
-   and moved with translate3d alone, so opening it lays nothing out; above
-   the index panel, the narrow overlay list, the search and the direction
-   corner's layer, below nothing that would ever coexist with it (the help
-   card's scrim closes it). It fades over the fast duration with
-   will-change set for that long (.is-entering) and cleared after; reduced
-   motion drops the fade. Colors are tokens only; radius 0; no shadow. */
+   decoded capture over the plate with the surface's initial, and the 32px
+   title row. Rounded on --pt-radius (6px until tokens.css defines it); the
+   frame takes the radius less the mat's 1px and clips its capture to that
+   less its own border. Fixed at the viewport origin and moved with
+   translate3d alone, so opening it lays nothing out; above the index
+   panel, the narrow overlay list, the search and the direction corner's
+   layer, below nothing that would ever coexist with it (the help card's
+   scrim closes it).
+
+   Motion (directive 7.4), transform and opacity only. Opening fades the
+   card in over the fast duration with the transform landing at once, so a
+   fresh card never slides in from its last place. Moving between rows
+   (.is-moving, set once the card has moved while open) slides the
+   transform over the 160ms duration and never touches opacity, so the fade
+   does not re-run. Following a scroll (the list moved under a resting
+   pointer) drops .is-moving, so the card lands on the row's new place at
+   once and moves with the row instead of trailing it by the slide; the
+   next move between rows puts the class back. A capture lands with .is-in
+   (opacity 0) and is released to fade in over the fast duration over the
+   previous capture or the plate. Closing fades the card out in place.
+   Reduced motion drops all four. Colors are tokens only; no shadow. */
 
 .pt-preview {
   position: fixed;
@@ -24,46 +37,83 @@
   color: var(--pt-ink);
   font-family: var(--pt-text);
   outline: 1px solid var(--pt-hair-soft);
+  border-radius: var(--pt-radius, 6px);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
+  /* closing: the fade out, then hidden; the transform holds its last place */
   transition:
     opacity var(--pt-dur-fast) var(--pt-ease-out),
     visibility 0s linear var(--pt-dur-fast);
 }
 
+/* open: the fade in; transform is not in this list, so a fresh card, or one following its row through a scroll, lands at once */
 .pt-preview.is-on {
   opacity: 1;
   visibility: visible;
+  will-change: transform;
   transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
 }
 
-.pt-preview.is-entering {
-  will-change: transform, opacity;
+/* a move between rows: one eased slide over the 160ms duration (the box
+   too, should it ever change size). Opacity stays in the list at the fade's
+   own duration so a fade in still running when the first move comes keeps
+   running instead of snapping to 1; it never re-runs, because a move never
+   changes the opacity value. The class leaves while the card follows its
+   row through a scroll (PreviewLayer.tsx follow), so a scroll never slides */
+.pt-preview.is-on.is-moving {
+  transition:
+    opacity var(--pt-dur-fast) var(--pt-ease-out),
+    transform var(--pt-dur-toast) var(--pt-ease),
+    width var(--pt-dur-toast) var(--pt-ease),
+    height var(--pt-dur-toast) var(--pt-ease);
 }
 
-/* the frame: 320x180 including its border; the decoded image fills it from the top */
+/* the frame: 320x180 including its border; the capture fills it from the top */
 .pt-preview-frame {
   position: relative;
   box-sizing: border-box;
   width: 320px;
   height: 180px;
   border: 1px solid var(--pt-edge);
+  border-radius: calc(var(--pt-radius, 6px) - 1px);
   background: var(--pt-plate);
   overflow: hidden;
 }
 
+/* the plate under the capture: the initial in 15px titanium, showing while the capture decodes or when there is none */
+.pt-preview-plate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--pt-display);
+  font-feature-settings: 'cv11', 'ss01';
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--pt-titanium);
+}
+
+/* the captures stack in the frame; the newest lies on top and fades in, the one under it leaves after the fade */
 .pt-preview-img {
   position: absolute;
   inset: 0;
 }
 
 .pt-preview-img img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top;
+  opacity: 1;
+  transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-preview-img img.is-in {
+  opacity: 0;
 }
 
 /* a surface with a light capture only (the archive): in the dark theme the
@@ -77,19 +127,8 @@
   position: relative;
   height: 100%;
   border: 1px solid var(--pt-hair);
-}
-
-/* the plate while the capture decodes, or when there is none: the initial in 15px titanium */
-.pt-preview-plate {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 15px;
-  color: var(--pt-titanium);
+  border-radius: calc(var(--pt-radius, 6px) - 2px);
+  overflow: hidden;
 }
 
 .pt-preview-title {
@@ -106,7 +145,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pt-preview,
-  .pt-preview.is-on {
+  .pt-preview.is-on,
+  .pt-preview.is-on.is-moving,
+  .pt-preview-img img {
     transition: none;
   }
 }

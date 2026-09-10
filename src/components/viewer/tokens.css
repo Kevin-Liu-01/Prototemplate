@@ -43,6 +43,15 @@
   --pt-sb-w: 208px;
   --pt-panel-w: 460px;
   --pt-rail: 1170px;
+  /* The one corner in chrome (Kevin's directive): the Search pill's 6px,
+     shared by the segmented control at both sizes (the toolbar's format seg,
+     the sidebar's density seg and the index panel's set switch), the
+     sidebar's filter field at both sizes (.pt-filter, 30px and 34px), the
+     index panel's own filter field (.pt-panel-filter in IndexPanel.css,
+     34px, beside the set switch) and the hover preview frame
+     (PreviewLayer.css reads it with a 6px fallback). Every other box in the
+     shell stays square. */
+  --pt-radius: 6px;
   --pt-display: var(--font-inter), 'Inter', 'Helvetica Neue', Arial, sans-serif;
   --pt-text: var(--font-inter), 'Inter', 'Helvetica Neue', Arial, sans-serif;
   --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -265,12 +274,25 @@ body[data-shell] {
    between options (directive 7.4); the options sit above it with no ground
    of their own, and the active one turns its text to paper. Until Seg.tsx
    has measured the indicator (.has-ind), the active option fills itself so
-   a render without scripts still shows the choice. */
+   a render without scripts still shows the choice.
+
+   The box takes the shell corner (--pt-radius) and clips its children to
+   the inner corner: the indicator is a 1px span widened with scaleX, so a
+   radius of its own would stretch with it, and the clip is what keeps its
+   ink inside the rounded border. The end options also round their outer
+   corners to the inner radius (the box's radius less its 1px border), so
+   the plate hover, the ink fallback fill and the focus ring follow the box
+   without a second stroke at the corner. The dividers between options are
+   straight rules that never reach a corner; the last option draws none.
+   The indicator span is the first child while it exists, so the end
+   options are the first and last button, not the first and last child. */
 .pt-seg {
   position: relative;
   display: inline-flex;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius);
   height: 32px;
+  overflow: hidden;
 }
 
 .pt-seg .pt-ib {
@@ -282,8 +304,15 @@ body[data-shell] {
   padding: 0 12px;
 }
 
-.pt-seg .pt-ib:last-child {
+.pt-seg .pt-ib:first-of-type {
+  border-top-left-radius: calc(var(--pt-radius) - 1px);
+  border-bottom-left-radius: calc(var(--pt-radius) - 1px);
+}
+
+.pt-seg .pt-ib:last-of-type {
   border-right: 0;
+  border-top-right-radius: calc(var(--pt-radius) - 1px);
+  border-bottom-right-radius: calc(var(--pt-radius) - 1px);
 }
 
 .pt-seg .pt-ib:hover {

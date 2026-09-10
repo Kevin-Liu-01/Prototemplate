@@ -102,7 +102,7 @@ The three roles, and only three:
 
 | role | token | draws |
 | --- | --- | --- |
-| structural | `--pt-hair` | large surfaces and the lines that divide the shell: the sheet ring (fixed and flow), the search card, the index panel's left edge, the toolbar bottom, the sidebar right edge, group headers, the book head's rule, the segmented control, the field boxes at rest |
+| structural | `--pt-hair` | large surfaces and the lines that divide the shell: the sheet ring (fixed and flow), the search card, the index panel's left edge, the toolbar bottom, the sidebar right edge, the deck surface index's group headers (the sidebar's group headers draw no rule), the book head's rule, the segmented control, the field boxes at rest |
 | row | `--pt-hair-soft` | list rows, search results, panel rows, the book head's meta table rows, the help card's table rows, the sheet mat's outer ring, the progress track |
 | frame | `--pt-edge` | frames of images and tiles only: thumbnails, the book's page frames, the grid tiles, the 96x54 and 64x36 captures, the hover preview's frame, and the help card |
 
@@ -121,8 +121,9 @@ Nothing in chrome sets a border color from any other token or literal.
 `--pt-ink` appears on a border only as a state: a pressed button
 (`.is-on`), the active thumbnail or page frame (`.is-active`), the count
 while it is being edited, the solid call to action, and a field while it
-holds focus. Group headers, book heads and table headings draw `--pt-hair`,
-never ink. Outlines are rings: the three roles, ink for focus and active
+holds focus. Book heads, table headings and the deck surface index's group
+headers draw `--pt-hair`, never ink; the sidebar's group headers draw no
+rule at all. Outlines are rings: the three roles, ink for focus and active
 rings, paper for a ring on an ink plate.
 
 Where two bordered components touch, exactly one draws the line:
@@ -132,7 +133,7 @@ Where two bordered components touch, exactly one draws the line:
 | sidebar and stage | the sidebar's right edge | the main region draws no left edge |
 | toolbar and stage | the toolbar's bottom edge | the stage, the hint row and the index panel draw no top edge |
 | index panel and stage | the panel's left edge | the sheet ring runs under the panel; the panel covers the progress track while open |
-| group header and its first row | the header's bottom edge | the first row draws no top rule |
+| group header and its first row | no one: the header draws no rule, and the group's boundary is the 16px gap above its header | the first row draws no top rule |
 | last row of a group and what follows | the last row's bottom edge | the next header carries no top rule |
 | sheet mat and its content | the mat's ring (hair border, paper gap, hair-soft outline) | content draws no outer border |
 | book head and its contents | the head's bottom rule (`--pt-hair`) | the contents grid draws no top rule; its rows draw their own bottom rules |

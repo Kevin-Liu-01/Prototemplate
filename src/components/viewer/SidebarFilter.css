@@ -1,10 +1,13 @@
 /* SidebarFilter: the filter row and its field. The field is the index
    panel's control (IndexPanel.css, .pt-panel-tools input): a 1px --pt-hair
    border that turns ink on focus, paper ground, ink text, titanium
-   placeholder, radius 0, no native search styling. Two custom properties
-   size it: --pt-filter-h (34px, the panel's) and --pt-filter-fs (13.5px);
-   the sidebar sets its own 30px and 13px in Sidebar.css. One rule per
-   field, drawn once by the field. Colors are tokens only. */
+   placeholder, no native search styling, and the shell corner (--pt-radius,
+   the Search pill's 6px) at both sizes. Two custom properties size it:
+   --pt-filter-h (34px, the panel's) and --pt-filter-fs (13.5px); the
+   sidebar sets its own 30px and 13px in Sidebar.css. One rule per field,
+   drawn once by the field: the input and the clear button inside it draw
+   no border and no ground, so the corner is one stroke. Colors are tokens
+   only. */
 
 .pt-filter-row {
   display: flex;
@@ -23,6 +26,7 @@
   height: var(--pt-filter-h);
   padding: 0 4px 0 9px;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius);
   background: var(--pt-paper);
   color: var(--pt-titanium);
   transition:

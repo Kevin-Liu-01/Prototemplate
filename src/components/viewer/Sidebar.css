@@ -19,18 +19,24 @@
    no wrapper between.
 
    Lines (directive 8.9), 1px each, drawn once by one owner: the aside owns
-   its right edge, the head and the filter row their bottom edges, a group
-   header the --pt-hair rule above its first row (the rows draw none: a
-   65-row list with a rule per row would be 65 lines, and the tree reads by
-   indentation), a row's 64x36 capture its own --pt-edge frame. The current
+   its right edge, the head and the filter row their bottom edges, a row's
+   64x36 capture its own --pt-edge frame. Group headers and rows draw no
+   rule: a 65-row list with a rule per row would be 65 lines, the tree reads
+   by indentation, and a group starts at the 16px gap above its header
+   (DESIGN.md, the line law's junction table). The current
    row draws the 2px ink bar at the column's edge and ink text; a current
    capture an ink frame plus the 2px offset outline every current frame in
    the shell uses (scripts/lint-lines.mjs allows thumb-frame for that pair).
    Site icons draw their site's token through data-site and hold it in
    every state; every other icon turns ink with its name. Spacing
-   (directive 8.8): 28px rows, 24px headers with 16px above, 8px 10px list
-   padding (the 10px sides sit on the headers and rows themselves so the
-   bar reaches the edge). Colors are tokens only, radius 0, no shadow;
+   (directive 8.8): 28px rows, 24px headers with 16px above, 8px above the
+   tree and 32px of run-out below it, both left in flow by the edge fades.
+   The list has no padding of its own: Chromium insets a sticky box's
+   constraint rectangle by its scroll container's padding, so an 8px top
+   padding held every stuck header 8px below the edge with the rows of the
+   group before it passing through the strip above it. The 10px sides sit
+   on the headers and rows themselves so the bar reaches the edge. Colors
+   are tokens only, radius 0, no shadow;
    motion is color and border color over the fast duration plus the
    chevron's turn, off under reduced motion. Rows skip painting off screen
    (content-visibility) at their exact height.
@@ -191,12 +197,46 @@ a.pt-sb-mark:focus-visible {
   --pt-filter-fs: 13px;
 }
 
-/* ---- the list: 8px above the tree, 32px of run-out at the end so the
-   last row clears the edge ---- */
+/* ---- the list: no padding (the header comment says why); the edge fades
+   below leave 8px above the tree and 32px of run-out after the last row ---- */
 .pt-sb .pt-thumbs {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 8px 0 32px;
+  padding: 0;
+}
+
+/* the edge fades: 28px of paper to transparent at each end of the scroll
+   region, sticky so they hold the scrollport's edges while the rows scroll
+   under them. Both are flex items of the list. The top one keeps 8px of its
+   height in flow (the gap above the tree) and gives the rest back with a
+   negative margin; the bottom one stands after the last group with a 4px
+   margin, 32px of run-out in all, and sticks to the bottom edge until the
+   list reaches its end. Painting order inside the list, one stacking
+   context (the groups set no z-index): rows at auto, the top fade at 1, a
+   stuck header at 2 so it stays crisp over the fade, the bottom fade at 3
+   so a header entering from below fades with its rows. No motion, so
+   reduced motion changes nothing. */
+.pt-sb .pt-thumbs::before,
+.pt-sb .pt-thumbs::after {
+  content: '';
+  position: sticky;
+  flex: 0 0 28px;
+  height: 28px;
+  pointer-events: none;
+}
+
+.pt-sb .pt-thumbs::before {
+  top: 0;
+  z-index: 1;
+  margin-bottom: -20px;
+  background: linear-gradient(var(--pt-paper), transparent);
+}
+
+.pt-sb .pt-thumbs::after {
+  bottom: 0;
+  z-index: 3;
+  margin-top: 4px;
+  background: linear-gradient(transparent, var(--pt-paper));
 }
 
 .pt-sb-empty {
@@ -227,23 +267,24 @@ a.pt-sb-mark:focus-visible {
   animation: pt-fade-in var(--pt-dur-fast) var(--pt-ease-out) both;
 }
 
-/* the header: 24px plus its rule, the chevron in a 16px slot at the head of
-   a 24px gutter, the group's own glyph when it has one, the name, the count
-   at the right end painted from data-count; paper ground so the rows scroll
-   under it, one --pt-hair rule below it (the line above the first row,
-   directive 8.9) */
+/* the header: 24px, the chevron in a 16px slot at the head of a 24px
+   gutter, the group's own glyph when it has one, the name, the count at the
+   right end painted from data-count; paper ground so the rows scroll under
+   it, no rule (the 16px gap above the header is the group's boundary;
+   DESIGN.md, the line law's junction table). It sticks to the top of the
+   scroll region over the top fade (z-index 2 to the fade's 1) so it stays
+   crisp while its rows fade out under it. */
 .pt-grp-head {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   appearance: none;
   box-sizing: border-box;
   width: 100%;
-  height: 25px;
+  height: 24px;
   margin: 0;
   padding: 0 10px;
   border: 0;
-  border-bottom: 1px solid var(--pt-hair);
   border-radius: 0;
   background: var(--pt-paper);
   display: flex;

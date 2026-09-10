@@ -25,8 +25,10 @@
 
    The search trigger (directive 8.3) is the one field-shaped button, and
    it keeps the old nav's pill (Kevin's directive; DESIGN.md, chrome
-   exceptions): a 32px --pt-hair box with a 6px corner, the search glyph,
-   the word Search in ink-2 and the key chip at its right end, a 4px-corner
+   exceptions): a 32px --pt-hair box with the shell corner (--pt-radius,
+   6px, the token the seg, the filter and the hover preview share), the
+   search glyph, the word Search in ink-2 and the key chip at its right
+   end, a 4px-corner
    kbd on --pt-hair-soft reading ⌘K (Ctrl K on Windows, Search.tsx) in 11px
    titanium; hover turns the box --pt-ink-2, and while the palette is open
    (aria-expanded) it draws --pt-ink, as every open field does. No tier
@@ -73,7 +75,8 @@
 }
 
 /* the search trigger: the old nav's pill, a glyph, a word and the key chip
-   (the 6px and 4px corners are Kevin's exception to the shell's radius 0) */
+   (the pill's corner is --pt-radius, the shell corner this pill set; the
+   4px chip inside it is the chip's own) */
 .pt-toolbar .pt-search-btn {
   min-width: 176px;
   height: 32px;
@@ -81,7 +84,7 @@
   justify-content: flex-start;
   gap: 8px;
   border-color: var(--pt-hair);
-  border-radius: 6px;
+  border-radius: var(--pt-radius);
   color: var(--pt-titanium);
 }
 

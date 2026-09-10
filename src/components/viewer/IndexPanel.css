@@ -11,9 +11,11 @@
    --pt-hair-soft for the tools and the rows, --pt-edge for the 96x54
    frames. The toolbar owns the seam above the panel (its bottom rule); the
    panel owns its left edge; a heading owns the line above its first row
-   and each row the line below it. No shadow, no radius. The panel keeps its
-   own view transition group so a mode change's stage snapshot never covers
-   it. */
+   and each row the line below it. No shadow. The only corners are the
+   shell corner (--pt-radius) on the tools row's seg and filter field, so
+   the two controls in that row read as one family; every other box in the
+   panel is square. The panel keeps its own view transition group so a mode
+   change's stage snapshot never covers it. */
 .pt-panel {
   position: absolute;
   top: var(--pt-bar-h);
@@ -115,9 +117,11 @@
   height: 32px;
 }
 
-/* the filter: the search glyph and the field share one 34px ruled box, the
-   same control as the sidebar's filter row; the box turns ink while the
-   field has focus */
+/* the filter: the search glyph and the field share one 34px ruled box with
+   the shell corner, the same control as the sidebar's filter row and level
+   with the seg beside it; the box turns ink while the field has focus. The
+   input inside draws no border, no ground and no radius, so the corner is
+   one stroke. */
 .pt-panel-filter {
   flex: 1 1 auto;
   min-width: 0;
@@ -128,6 +132,7 @@
   gap: 8px;
   padding: 0 10px;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius);
   background: var(--pt-paper);
   color: var(--pt-titanium);
   transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
