@@ -10,7 +10,7 @@
   --_t1: var(--gtb-title, rgba(255, 255, 255, 0.94));
   --_t2: var(--gtb-body, rgba(255, 255, 255, 0.64));
   --_t3: var(--gtb-label, rgba(255, 255, 255, 0.4));
-  --_display: var(--gtb-display, var(--font-switzer), 'Switzer', system-ui, sans-serif);
+  --_display: var(--gtb-display, var(--font-inter), 'Inter', system-ui, sans-serif);
   --_text: var(--gtb-text, var(--font-inter), 'Inter', system-ui, sans-serif);
   --_mono: var(--gtb-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
 

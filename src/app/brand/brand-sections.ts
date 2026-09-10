@@ -71,7 +71,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'type',
     title: 'Type',
-    desc: 'Switzer and Inter, and the multilingual requirements for headlines and UI.',
+    desc: 'Inter as the one typeface, the weight cap, and the multilingual requirements for headlines and UI.',
     headings: [],
   },
   {

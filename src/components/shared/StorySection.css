@@ -28,7 +28,7 @@
   --_t4: var(--gts-t4, rgba(255, 255, 255, 0.24));
   --_line: var(--gts-line, rgba(255, 255, 255, 0.1));
   --_line2: var(--gts-line-2, rgba(255, 255, 255, 0.055));
-  --_display: var(--gts-display, var(--font-switzer), 'Switzer', system-ui, sans-serif);
+  --_display: var(--gts-display, var(--font-inter), 'Inter', system-ui, sans-serif);
   --_text: var(--gts-text, var(--font-inter), 'Inter', system-ui, sans-serif);
   --_mono: var(--gts-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
   --_radius: var(--gts-radius, 12px);

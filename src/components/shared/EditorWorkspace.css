@@ -11,7 +11,7 @@
   --_t2: var(--gte-body, rgba(255, 255, 255, 0.64));
   --_t3: var(--gte-label, rgba(255, 255, 255, 0.4));
   --_t4: var(--gte-quiet, rgba(255, 255, 255, 0.24));
-  --_display: var(--gte-display, var(--font-switzer), 'Switzer', system-ui, sans-serif);
+  --_display: var(--gte-display, var(--font-inter), 'Inter', system-ui, sans-serif);
   --_text: var(--gte-text, var(--font-inter), 'Inter', system-ui, sans-serif);
   --_mono: var(--gte-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
 

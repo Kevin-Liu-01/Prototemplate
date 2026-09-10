@@ -149,7 +149,7 @@ export function createInkField(
   const ctx: CanvasRenderingContext2D = maybeCtx;
 
   const disp =
-    options.displayFamily || "'Switzer', ui-sans-serif, system-ui, sans-serif";
+    options.displayFamily || "'Inter', ui-sans-serif, system-ui, sans-serif";
   let glyphInk = options.glyphColor || PAPER;
   const inv =
     options.glyphs && options.glyphs.length > 0 ? options.glyphs : GLYPHS;

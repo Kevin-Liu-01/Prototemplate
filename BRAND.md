@@ -150,18 +150,21 @@ never a wash; one bright white; depth from lines and material, not shadows.
 
 ## 6. Type
 
-- **Switzer** is the display and UI face, self-hosted, weights 300–800. The
-  voice of headlines, interface chrome, and the brand's declarative
-  captions.
-- **Inter** is the text companion: the real rsms.me Inter (v4.1 variable,
-  roman + italic, opsz axis), not the Google Fonts build. Long-form reading,
-  documentation prose.
+- **Inter** is the one typeface: display, interface and text. Headlines,
+  interface chrome, captions, long-form reading and documentation prose are
+  all set in it. The build is the real rsms.me Inter (v4.1 variable, roman +
+  italic, opsz axis), self-hosted rather than loaded from Google Fonts.
+- **Headings use weight 500 at most.** Display text never goes bolder than
+  500; long-form text is set at weight 400.
 - **Multilingual-first.** Headlines, UI, and marks must hold up in CJK,
   RTL, and Indic scripts as well as Latin. A wordmark or layout that only
-  works in English contradicts the company. Licensed type needs credible
-  CJK and RTL coverage, or well-matched companion faces.
-- **Switzer plus Inter is the working pair, not a final answer.**
-  Alternatives are open if they satisfy the script-coverage constraint.
+  works in English contradicts the company. Inter covers Latin, Greek and
+  Cyrillic; other scripts fall back to the system face for that script, and
+  every layout is checked in them. Licensed type needs credible CJK and RTL
+  coverage, or well-matched companion faces.
+- **Inter is the working typeface for the identity project.** It is not a
+  final decision. Alternatives remain open if they satisfy the
+  script-coverage constraint.
 - **Monospace is an instrument voice, not a brand voice.** It appears where
   code artifacts appear (tokens, terminals, file paths, small labels in
   technical diagrams and product UI) and nowhere else, and even those

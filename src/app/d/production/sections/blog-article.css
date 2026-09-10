@@ -34,10 +34,13 @@
   /* mirrors the .toolchain-root heading line-height in the engine sheet */
   --pba-heading-lh: 1.06;
   /* effective cap height as a share of font size, measured from the
-     rendered ink of each face: Inter (label, body) and Switzer
-     (headings) — remeasure if the typefaces change */
+     rendered ink. Label, body and headings are all Inter, whose cap
+     height measures 0.7275 of the font size at every size and weight
+     this sheet uses, so both values are the same. The heading value
+     stays its own variable so a different display face could be
+     metered on its own. */
   --pba-cap-ratio: 0.72;
-  --pba-heading-cap-ratio: 0.65;
+  --pba-heading-cap-ratio: 0.72;
   /* optical lift on top of the metric alignment, per first-block type */
   --pba-first-line-trim-body: 0.4px;
   --pba-first-line-trim-heading: 1px;
@@ -753,8 +756,9 @@
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  /* the shipped card title is body face, not the display one — only the
-     neighbour links above it switch to Switzer */
+  /* the shipped card title uses the body token, not the display one; only
+     the neighbour links above it switch to the display token. Both resolve
+     to Inter now. */
   font-size: 21px;
   font-weight: 500;
   letter-spacing: -0.025em;

@@ -44,7 +44,7 @@
      the viewport again. */
   --pr-stage-w: calc(100vw - 470px);
   /*
-   * The presenter is set entirely in Inter — no Switzer, no mono. Overriding
+   * The presenter is set entirely in Inter, with no monospace. Overriding
    * the shared variables here re-fonts every label scoped under .pr-root
    * without touching the direction pages.
    */
@@ -557,7 +557,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 .pr-title-redesign {
-  font-family: var(--font-switzer), var(--font-inter), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-weight: 500;
   letter-spacing: -0.035em;
 }

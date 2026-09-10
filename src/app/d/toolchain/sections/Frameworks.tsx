@@ -229,7 +229,7 @@ export default function Frameworks() {
       }
       settled.current = true;
 
-      /* Switzer loads after first paint; the underline is measured type, so it
+      /* Inter loads after first paint; the underline is measured type, so it
          has to be measured again once the real face is in. */
       const settle = () => place(false);
       void document.fonts?.ready.then(settle);

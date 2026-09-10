@@ -69,7 +69,8 @@
   --tc-card-pad: clamp(17px, 1.9vw, 21px);
   --tc-hatch: rgba(7, 7, 7, 0.085);
 
-  --tc-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  /* display and text share Inter; the token stays so the selectors below do not change */
+  --tc-disp: var(--font-inter), 'Inter', system-ui, sans-serif;
   --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
   --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 

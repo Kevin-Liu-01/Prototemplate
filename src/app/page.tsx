@@ -6,11 +6,11 @@ import SystemLedger from './SystemLedger';
 
 import './prototemplate.css';
 
-/* The nameplate speaks two voices, neither of them Switzer: Fraunces for the
-   working model, Space Grotesk for the reusable form (decision 3 keeps
-   them). The post below it runs TWK Lausanne when locally installed (the
-   woff2s are not shipped), falling back to Inter. The shell around the
-   article is Inter alone. */
+/* The nameplate uses two faces of its own, Fraunces for the working model
+   and Space Grotesk for the reusable form (decision 3 keeps them); neither
+   is Inter, the brand face. The post below it runs TWK Lausanne when
+   locally installed (the woff2s are not shipped), falling back to Inter.
+   The shell around the article is Inter alone. */
 const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
 const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
 

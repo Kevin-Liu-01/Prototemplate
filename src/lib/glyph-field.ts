@@ -310,7 +310,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   /* Bound once so the closures below see a non-null context. */
   const ctx: CanvasRenderingContext2D = maybeCtx;
 
-  const disp = options.displayFamily || "'Switzer', ui-sans-serif, system-ui, sans-serif";
+  const disp = options.displayFamily || "'Inter', ui-sans-serif, system-ui, sans-serif";
   const mono = options.monoFamily || "ui-monospace, 'SF Mono', Menlo, Consolas, monospace";
   const reduced =
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -112,7 +112,7 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
   if (!maybeCtx) return null;
   const ctx: CanvasRenderingContext2D = maybeCtx;
 
-  const disp = options.displayFamily || "'Switzer', ui-sans-serif, system-ui, sans-serif";
+  const disp = options.displayFamily || "'Inter', ui-sans-serif, system-ui, sans-serif";
   const reduced =
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

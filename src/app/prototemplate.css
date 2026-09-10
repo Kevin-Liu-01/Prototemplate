@@ -9,7 +9,7 @@
 /* The article's own token family (decision 6). The shell chrome around
    this layer draws the deck's ink hairlines from
    src/components/viewer/tokens.css; the article keeps the titanium
-   hairlines, the alpha ink steps, Switzer for display and its own mono,
+   hairlines, the alpha ink steps, Inter for display and its own mono,
    redefined here on the root class so the two never mix. The alias block
    from specification 1.1 is deferred until Kevin decides the hairline
    family; --pt-gut and --pt-hatch belong to this sheet alone. */
@@ -25,7 +25,7 @@
   --pt-hair: rgba(138, 143, 152, 0.26);
   --pt-hair-2: rgba(138, 143, 152, 0.15);
   --pt-hatch: rgba(7, 7, 7, 0.085);
-  --pt-disp: var(--font-switzer), 'Switzer', system-ui, sans-serif;
+  --pt-disp: var(--font-inter), 'Inter', system-ui, sans-serif;
   --pt-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
   --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --pt-gut: clamp(20px, 3.1vw, 36px);
@@ -150,7 +150,7 @@
   padding: 0 var(--pt-gut);
 }
 
-/* the two voices — neither is Switzer */
+/* the two nameplate voices; neither is Inter, the brand face */
 .pt-face-serif {
   font-family: var(--font-fraunces), Georgia, 'Times New Roman', serif;
   font-weight: 600;
@@ -367,7 +367,7 @@
 .pt-feature h2 {
   font-family: var(--pt-disp);
   font-size: clamp(28px, 3.4vw, 44px);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1.05;
   color: #ffffff;
@@ -447,7 +447,7 @@
 .pt-index-head h2 {
   font-family: var(--pt-disp);
   font-size: clamp(22px, 2.6vw, 32px);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.025em;
 }
 
@@ -509,7 +509,7 @@
 .pt-row-main h3 {
   font-family: var(--pt-disp);
   font-size: 16.5px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.015em;
 }
 

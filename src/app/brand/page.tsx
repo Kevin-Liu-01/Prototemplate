@@ -50,7 +50,7 @@ const SWATCHES = [
   ['is-paper', 'paper', '#ffffff'],
 ] as const;
 
-const SWITZER_WEIGHTS = [300, 400, 500, 600, 700, 800] as const;
+const INTER_WEIGHTS = [300, 400, 500, 600, 700, 800] as const;
 
 const PILL_LOCS = ['en-GB', 'es', 'ja', 'ar-EG', 'ko', 'zh-Hant', 'hi', 'pt'] as const;
 
@@ -284,39 +284,43 @@ const PAGES: readonly BrandPage[] = [
       <>
         <h2>Type</h2>
         <p>
-          Two faces carry the brand. <strong>Switzer</strong> is the display and UI voice:
-          headlines, interface chrome, the declarative captions. <strong>Inter</strong> is
-          the text companion for long-form reading, the real rsms.me variable Inter with
-          the optical-size axis, not the Google Fonts build. Monospace is an{' '}
-          <em>instrument</em> voice, not a brand voice. It appears where code artifacts
-          appear (tokens, terminals, file paths, small labels in technical diagrams and
-          product UI) and nowhere else, and even those labels are avoided where possible.
+          One face carries the brand. <strong>Inter</strong> is the display, interface
+          and text typeface: headlines, interface chrome, captions and long-form reading
+          are all set in it. The build is the rsms.me variable Inter (version 4.1, roman
+          and italic, with the optical size axis), self-hosted rather than loaded from
+          Google Fonts. Headings use weight 500 at most. Long-form text is set at weight
+          400. Monospace is an <em>instrument</em> voice for code artifacts (tokens,
+          terminals, file paths, small labels in technical diagrams and product UI) and
+          appears nowhere else; even those labels are avoided where possible.
         </p>
         <p>
-          The identity is multilingual-first. Headlines, UI, and marks must hold up in
-          CJK, RTL, and Indic scripts as well as in Latin; a wordmark or layout that only
-          works in English contradicts the company. Switzer plus Inter is the working
-          pair, not a final answer. Alternatives are open if the licensed face carries
-          credible CJK and RTL coverage, or brings well-matched companion faces.
+          The identity is multilingual-first. Headlines, UI and marks must hold up in
+          CJK, RTL and Indic scripts as well as in Latin; a wordmark or layout that only
+          works in English contradicts the company. Inter covers Latin, Greek and
+          Cyrillic, so text in other scripts falls back to the system face for that
+          script, and every layout is checked in those scripts. Inter is the working
+          typeface for the identity project. It is not a final decision; alternatives
+          remain open if they bring credible CJK and RTL coverage or well-matched
+          companion faces.
         </p>
         <div className='ptb-type'>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Switzer · 300–800</span>
-            {SWITZER_WEIGHTS.map((weight) => (
-              <p className='ptb-switzer' key={weight} style={{ fontWeight: weight }}>
+            <span className='ptb-face-tag'>Inter · 300–800, headings at 500 or lighter</span>
+            {INTER_WEIGHTS.map((weight) => (
+              <p className='ptb-display' key={weight} style={{ fontWeight: weight }}>
                 Every product in every language
               </p>
             ))}
           </div>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Inter · variable, roman + italic</span>
+            <span className='ptb-face-tag'>Inter · text, roman + italic</span>
             <p className='ptb-inter'>
               General Translation builds full-stack infrastructure for localizing apps,
               docs, and websites: i18n libraries, context-aware translation, and the
               platform that runs them.
             </p>
             <p className='ptb-inter is-italic'>
-              The optical-size axis keeps text honest at every scale.
+              The optical size axis adjusts the letterforms to the point size.
             </p>
           </div>
         </div>

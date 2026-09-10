@@ -314,7 +314,11 @@ const BRAND_SECTIONS: readonly Surface[] = [
   ['the-character', 'The character', 'The personality, the voice, and the attribute scales.'],
   ['the-mark', 'The mark', 'The monogram: doubled-line construction, one ink, and the rules for its use.'],
   ['color', 'Color', 'Four absolute colors, alpha steps for structure, one spectral accent per page.'],
-  ['type', 'Type', 'Switzer and Inter, and the multilingual requirements for headlines and UI.'],
+  [
+    'type',
+    'Type',
+    'Inter as the one typeface, the weight cap, and the multilingual requirements for headlines and UI.',
+  ],
   [
     'language-as-material',
     'Language as material',
