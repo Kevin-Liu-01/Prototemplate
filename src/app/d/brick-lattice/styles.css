@@ -1,0 +1,1729 @@
+/* brick-lattice: the whole page is one glazed-brick wall in running bond, and
+   every brick is an ordered-dither cell; density draws the ornament, copy
+   sits on smooth glazed panels cut out of the lattice.
+
+   Lineage: the Assyrian and Babylonian revival inside 1920s Art Deco, drawn
+   from three references and their geometry, not from the idea of deco.
+   1. The Ishtar Gate reconstruction (Pergamon Museum, Berlin): a wall of
+      glazed stretchers in running bond, lapis ground, ornament counted brick
+      by brick in gold and white glaze, a register of rosettes over a register
+      of chevrons, and a crenellated parapet of stepped merlons. Here the bond
+      is the page's ground, the brick module is 2:1, and every ornament is a
+      density field quantised onto the courses, so the ornament is literally
+      made of bricks: the hero's rosette, the chevron courses behind the
+      wall, the kiln's merlons and stepped foot, the footer's foundation.
+   2. The Guardian Building (Wirt Rowland, Detroit, 1929): a whole elevation
+      of one orange brick, with glazed Pewabic tile chevrons and stepped
+      bands set flush into the body so the ornament and the wall are one
+      material, and stepped setbacks at every edge. That flushness is the
+      archetype here: no frame, no empty ground, the glazed panels are
+      cut out of the same lattice and their corners step in three courses
+      (the .bl-panel polygon), and the chevron register behind the wall of
+      translations is the Guardian's tile chevron laid course by course.
+   3. Assyrian rosette and palmette repeats (the glazed friezes of Nimrud
+      and Khorsabad, the radial repeat the lineage names): a rosette of
+      eight or twelve petals around a disc, run in bands. The hero's field
+      resolves into one twelve-petal rosette; the languages band is a course
+      of sixteen eight-petal medallions, each with a glazed disc at its
+      core, the way the friezes seat a boss in each; the pricing register
+      is a row of palmette fans rising from its bottom course.
+
+   Method: the house 4x4 and 8x8 Bayer screens from src/lib/dither.ts give
+   every brick its threshold, so a wall of identical bricks carries a tonal
+   ramp. Every ramp on this page, from the petal cores to the parapet's
+   foot, is a Bayer tier and never an opacity fade or a gradient.
+
+   Material palette (Babylonian glaze): the ground is alabaster (the panels
+   and the mortar), the ink is bitumen black, fired clay is the unglazed
+   brick, lapis is the glaze that lights a brick, gold is the second glaze
+   and the ornament color, turquoise is the accent, brick red is the mortar
+   in the kiln's dark bond.
+
+   Ornament homes: everywhere the thesis needs it (charter G6): the lattice
+   itself is the ornament layer; the stepped parapet corner on every panel;
+   the gold header course on every brick of the wall; the rosette mark on
+   every section head; the medallions of the languages band.
+   Accent: one job, strings. The source line in the wall, the quoted strings
+   in the code window, and the ring that lights when the source fires.
+   Display face: Cinzel (inscriptional capitals), h1 and h2 only; Inter is
+   the body, interface and caption face from --font-inter on <html>.
+   The one circle on the page is the medallion's core disc (the sun-disk of
+   the rosette); every other surface is square or stepped.
+   Dark mode remaps the six charter tokens, the three material glazes
+   (mortar, fired clay, lapis; gold follows the ornament token) and the
+   raised ink of the solid control's hover, nothing else; the kiln's tokens
+   are literals so it stays dark in both themes. */
+.brick-lattice-root {
+  --deco-ground: #f2e9d8;
+  --deco-ink: #17120d;
+  --deco-ink-2: rgba(23, 18, 13, 0.66);
+  --deco-ink-3: rgba(23, 18, 13, 0.46);
+  --deco-hair: rgba(23, 18, 13, 0.18);
+  --deco-accent: #1f8a93;
+  --deco-ornament: #b98a2c;
+
+  /* the lattice's four glazes, read by the canvas engine at paint time */
+  --bl-mortar: #e6d9c2;
+  --bl-brick-face: #dbc6a6;
+  --bl-lapis: #1e3f8f;
+  --bl-gold: var(--deco-ornament);
+
+  /* type on a glaze */
+  --bl-glaze-ink: #f2e9d8;
+  --bl-ink-on-gold: #1a140c;
+  --bl-ring-on-gold: rgba(26, 20, 12, 0.34);
+  --bl-ink-raised: #2b2218;
+  --bl-tok-str: var(--deco-accent);
+
+  /* the brick module: stretcher width; the course is half of it */
+  --bl-brick: clamp(18px, 1.9vw, 28px);
+  /* the DOM seam between panels and wall bricks: the lattice shows through it */
+  --bl-mortar-w: 3px;
+  --bl-gut: clamp(16px, 3vw, 40px);
+  --bl-col: 1200px;
+  --bl-pad: clamp(20px, 2.4vw, 32px);
+
+  /* the stepped parapet corner's step; panels that want a finer or coarser
+     step override it, and .bl-panel resolves the polygon on the panel itself */
+  --bl-s: 8px;
+
+  --bl-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --bl-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --bl-display: var(--brick-lattice-display), var(--font-inter), 'Inter', serif;
+
+  position: relative;
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  font-family: var(--bl-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- dark mode: the six tokens and the four glazes remap ---- */
+[data-theme='dark'] .brick-lattice-root {
+  --deco-ground: #0b0908;
+  --deco-ink: #f2e9d8;
+  --deco-ink-2: rgba(242, 233, 216, 0.66);
+  --deco-ink-3: rgba(242, 233, 216, 0.46);
+  --deco-hair: rgba(242, 233, 216, 0.22);
+  --deco-accent: #48b6be;
+  --deco-ornament: #d2a63a;
+  --bl-mortar: #1f1915;
+  --bl-brick-face: #130f0c;
+  --bl-lapis: #2c58b8;
+  --bl-ink-raised: #d9cfbd;
+}
+
+/* ============================================================
+   the ground
+   ============================================================ */
+
+.brick-lattice-root * {
+  box-sizing: border-box;
+}
+
+.brick-lattice-root .bl-sec {
+  position: relative;
+  isolation: isolate;
+  padding-block: calc(var(--bl-brick) * 3);
+}
+
+.brick-lattice-root .bl-lattice {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.brick-lattice-root .bl-brick-probe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--bl-brick);
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.brick-lattice-root .bl-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--bl-col), 100% - var(--bl-gut) * 2);
+  margin-inline: auto;
+}
+
+.brick-lattice-root .bl-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.brick-lattice-root .bl-def-mortar {
+  fill: var(--bl-mortar);
+}
+
+.brick-lattice-root .bl-def-brick {
+  fill: var(--bl-brick-face);
+}
+
+.brick-lattice-root .bl-def-lapis {
+  fill: var(--bl-lapis);
+}
+
+/* ---- the glazed panel: opaque ground, stepped parapet corners, no border;
+        the lattice is its edge ---- */
+.brick-lattice-root .bl-panel {
+  position: relative;
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  /* three steps of --bl-s on both top corners: the parapet's merlon profile */
+  clip-path: polygon(
+    0 calc(var(--bl-s) * 3),
+    var(--bl-s) calc(var(--bl-s) * 3),
+    var(--bl-s) calc(var(--bl-s) * 2),
+    calc(var(--bl-s) * 2) calc(var(--bl-s) * 2),
+    calc(var(--bl-s) * 2) var(--bl-s),
+    calc(var(--bl-s) * 3) var(--bl-s),
+    calc(var(--bl-s) * 3) 0,
+    calc(100% - var(--bl-s) * 3) 0,
+    calc(100% - var(--bl-s) * 3) var(--bl-s),
+    calc(100% - var(--bl-s) * 2) var(--bl-s),
+    calc(100% - var(--bl-s) * 2) calc(var(--bl-s) * 2),
+    calc(100% - var(--bl-s)) calc(var(--bl-s) * 2),
+    calc(100% - var(--bl-s)) calc(var(--bl-s) * 3),
+    100% calc(var(--bl-s) * 3),
+    100% 100%,
+    0 100%
+  );
+}
+
+/* ---- section heads: a cartouche with the rosette mark ---- */
+.brick-lattice-root .bl-head {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  width: min(720px, 100%);
+  padding: calc(var(--bl-pad) + 8px) var(--bl-pad) var(--bl-pad);
+}
+
+.brick-lattice-root .bl-head h2 {
+  margin: 0;
+  font-family: var(--bl-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.14;
+  letter-spacing: 0.01em;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.brick-lattice-root .bl-head p {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+  max-width: 60ch;
+}
+
+.brick-lattice-root .bl-ros-svg.is-mark {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.brick-lattice-root .bl-ros-svg.is-mark .bl-ros-bond {
+  fill: transparent;
+}
+
+/* ============================================================
+   type and controls
+   ============================================================ */
+
+.brick-lattice-root a {
+  color: inherit;
+}
+
+.brick-lattice-root h3,
+.brick-lattice-root h4 {
+  margin: 0;
+  font-weight: 500;
+}
+
+.brick-lattice-root code {
+  font-family: var(--bl-mono);
+  font-size: 0.92em;
+}
+
+.brick-lattice-root :focus-visible {
+  outline: 2px solid var(--deco-accent);
+  outline-offset: 2px;
+}
+
+.brick-lattice-root .bl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-family: var(--bl-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.brick-lattice-root .bl-btn-solid {
+  background: var(--deco-ink);
+  color: var(--deco-ground);
+}
+
+.brick-lattice-root .bl-btn-solid:hover {
+  background: var(--bl-ink-raised);
+}
+
+.brick-lattice-root .bl-btn-line {
+  background: var(--deco-ground);
+  background-clip: padding-box;
+  color: var(--deco-ink);
+  border: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-btn-line:hover {
+  border-color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-btn-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* ---- the copyable command ---- */
+.brick-lattice-root .bl-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 6px 0 12px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background: var(--deco-ground);
+  background-clip: padding-box;
+  font-family: var(--bl-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-cmd-prompt {
+  color: var(--deco-ink-3);
+}
+
+.brick-lattice-root .bl-cmd-text {
+  font-size: 13px;
+}
+
+.brick-lattice-root .bl-cmd-copy {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--deco-ink-2);
+  cursor: pointer;
+}
+
+.brick-lattice-root .bl-cmd-copy:hover,
+.brick-lattice-root .bl-cmd-copy[data-copied] {
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-cmd.is-bar {
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-cmd.is-bar .bl-cmd-text {
+  font-size: 11.5px;
+}
+
+.brick-lattice-root .bl-cmd.is-bar .bl-cmd-copy {
+  width: 24px;
+  height: 24px;
+}
+
+/* ---- the locale chip: flag print then code, one hairline ring ---- */
+.brick-lattice-root .bl-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 2px;
+  background: var(--deco-ground);
+  background-clip: padding-box;
+  font-family: var(--bl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink);
+  white-space: nowrap;
+}
+
+.brick-lattice-root .bl-chip .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.brick-lattice-root .bl-chip .lct-code {
+  font-family: var(--bl-mono);
+}
+
+.brick-lattice-root .bl-chip.is-glazed {
+  border-color: var(--bl-ring-on-gold);
+  background: transparent;
+  color: var(--bl-ink-on-gold);
+}
+
+/* ============================================================
+   navigation
+   ============================================================ */
+
+.brick-lattice-root .bl-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--deco-ground);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 58px;
+  width: min(var(--bl-col), 100% - var(--bl-gut) * 2);
+  margin-inline: auto;
+}
+
+.brick-lattice-root .bl-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brick-lattice-root .bl-nav-links {
+  display: flex;
+  gap: 22px;
+  margin: 0 0 0 8px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.brick-lattice-root .bl-nav-links a {
+  color: var(--deco-ink-2);
+  text-decoration: none;
+}
+
+.brick-lattice-root .bl-nav-links a:hover {
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-nav-acts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+
+.brick-lattice-root .bl-nav-signin {
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.brick-lattice-root .bl-nav-signin:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   hero: the field, the claim panel, the trust course
+   ============================================================ */
+
+.brick-lattice-root .bl-hero {
+  min-height: calc(100svh - 58px);
+  padding-block: 0;
+}
+
+.brick-lattice-root .bl-hero-in {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: calc(100svh - 58px);
+  padding-block: clamp(40px, 7vh, 88px) calc(var(--bl-brick) * 2);
+}
+
+.brick-lattice-root .bl-claim {
+  --bl-s: 10px;
+  justify-self: center;
+  align-self: center;
+  width: min(780px, 100%);
+  padding: clamp(36px, 4.6vw, 64px) clamp(24px, 4vw, 56px) clamp(32px, 4vw, 52px);
+  text-align: center;
+}
+
+.brick-lattice-root .bl-h1 {
+  margin: 0;
+  font-family: var(--bl-display);
+  font-weight: 500;
+  font-size: clamp(1.9rem, 4.2vw, 3.5rem);
+  line-height: 1.12;
+  letter-spacing: 0.012em;
+  min-height: 2.24em;
+  text-wrap: balance;
+  unicode-bidi: isolate;
+}
+
+.brick-lattice-root .bl-sub {
+  margin: 18px auto 0;
+  max-width: 58ch;
+  font-size: clamp(15px, 1.25vw, 17px);
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: -1px;
+  color: var(--deco-ink);
+  font-weight: 500;
+}
+
+.brick-lattice-root .bl-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* ---- the trust course ---- */
+.brick-lattice-root .bl-trust {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--bl-mortar-w);
+  margin-top: clamp(40px, 7vh, 88px);
+}
+
+.brick-lattice-root .bl-trust-lead {
+  --bl-s: 4px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0 22px;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+  white-space: nowrap;
+}
+
+.brick-lattice-root .bl-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--bl-mortar-w);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brick-lattice-root .bl-trust-cell {
+  --bl-s: 4px;
+  display: grid;
+  place-items: center;
+  min-height: 64px;
+  padding: 0 16px;
+}
+
+.brick-lattice-root .bl-wm-link {
+  display: block;
+  line-height: 0;
+}
+
+/* the marks: the real SVG as an alpha mask over the page ink, one color, never tinted */
+.brick-lattice-root .bl-wm {
+  display: block;
+  height: 18px;
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  background-color: var(--deco-ink);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.brick-lattice-root .bl-wm.is-cursor {
+  height: 22px;
+  -webkit-mask-image: url('/logos/cursor.light.svg');
+  mask-image: url('/logos/cursor.light.svg');
+}
+
+.brick-lattice-root .bl-wm.is-ramp {
+  height: 16px;
+  -webkit-mask-image: url('/logos/ramp.light.svg');
+  mask-image: url('/logos/ramp.light.svg');
+}
+
+.brick-lattice-root .bl-wm.is-mintlify {
+  height: 17px;
+  -webkit-mask-image: url('/logos/mintlify.light.svg');
+  mask-image: url('/logos/mintlify.light.svg');
+}
+
+.brick-lattice-root .bl-wm.is-profound {
+  height: 15px;
+  -webkit-mask-image: url('/logos/profound.light.svg');
+  mask-image: url('/logos/profound.light.svg');
+}
+
+.brick-lattice-root .bl-wm.is-partiful {
+  height: 17px;
+  -webkit-mask-image: url('/logos/partiful.light.svg');
+  mask-image: url('/logos/partiful.light.svg');
+}
+
+.brick-lattice-root .bl-wm.is-clickhouse {
+  height: 18px;
+  -webkit-mask-image: url('/logos/clickhouse.light.svg');
+  mask-image: url('/logos/clickhouse.light.svg');
+}
+
+/* ============================================================
+   the wall: the T component proof
+   ============================================================ */
+
+.brick-lattice-root .bl-wall {
+  display: grid;
+  gap: var(--bl-mortar-w);
+  margin-top: var(--bl-mortar-w);
+}
+
+.brick-lattice-root .bl-course {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: var(--bl-mortar-w);
+}
+
+.brick-lattice-root .bl-half {
+  grid-column: span 1;
+  background: var(--bl-brick-face);
+}
+
+.brick-lattice-root .bl-tb {
+  position: relative;
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  background: var(--bl-brick-face);
+  color: var(--deco-ink);
+  unicode-bidi: isolate;
+}
+
+.brick-lattice-root .bl-tb-head {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--deco-ornament);
+  color: var(--bl-ink-on-gold);
+}
+
+.brick-lattice-root .bl-tb-text {
+  position: relative;
+  z-index: 2;
+  margin: auto 0;
+  padding: 12px 18px 16px;
+  font-size: clamp(15px, 1.3vw, 19px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.brick-lattice-root .bl-tb-scr {
+  position: absolute;
+  left: 0;
+  top: 34px;
+  z-index: 1;
+  width: 100%;
+  height: calc(100% - 34px);
+  pointer-events: none;
+}
+
+.brick-lattice-root .bl-tb-scr rect {
+  fill: transparent;
+}
+
+.brick-lattice-root .bl-tb[data-tier='1'] .bl-tb-scr rect {
+  fill: url('#bl-t1');
+}
+
+.brick-lattice-root .bl-tb[data-tier='2'] .bl-tb-scr rect {
+  fill: url('#bl-t2');
+}
+
+.brick-lattice-root .bl-tb[data-tier='3'] .bl-tb-scr rect {
+  fill: url('#bl-t3');
+}
+
+.brick-lattice-root .bl-tb[data-tier='4'] .bl-tb-scr rect {
+  fill: url('#bl-t4');
+}
+
+.brick-lattice-root .bl-tb.is-fired {
+  background: var(--bl-lapis);
+  color: var(--bl-glaze-ink);
+}
+
+.brick-lattice-root .bl-tb.is-fired .bl-tb-scr {
+  display: none;
+}
+
+.brick-lattice-root .bl-tb.is-fired .bl-tb-text {
+  opacity: 1;
+}
+
+/* the source brick: the code face, lit by the accent ring */
+.brick-lattice-root .bl-src {
+  background: var(--deco-ground);
+}
+
+.brick-lattice-root .bl-src .bl-tb-head {
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-src .bl-chip.is-glazed {
+  border-color: var(--deco-hair);
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-src-tag {
+  font-family: var(--bl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-src-code {
+  margin: auto 0;
+  padding: 12px 18px 16px;
+  font-family: var(--bl-mono);
+  font-size: clamp(13px, 1.1vw, 15.5px);
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.brick-lattice-root .bl-src-code code {
+  font-size: inherit;
+}
+
+.brick-lattice-root .bl-tag {
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-str {
+  color: var(--bl-tok-str);
+}
+
+.brick-lattice-root .bl-src.is-lit {
+  box-shadow: inset 0 0 0 2px var(--deco-accent);
+}
+
+.brick-lattice-root .bl-wall-foot {
+  --bl-s: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: var(--bl-mortar-w);
+  padding: 18px var(--bl-pad);
+}
+
+.brick-lattice-root .bl-wall-foot p {
+  margin: 0;
+  max-width: 64ch;
+  font-size: 14.5px;
+  color: var(--deco-ink-2);
+}
+
+/* ============================================================
+   the kiln: the dark moment, tokens fixed in both themes
+   ============================================================ */
+
+.brick-lattice-root .bl-kiln {
+  --deco-ground: #17120e;
+  --deco-ink: #f2e9d8;
+  --deco-ink-2: rgba(242, 233, 216, 0.66);
+  --deco-ink-3: rgba(242, 233, 216, 0.44);
+  --deco-hair: rgba(242, 233, 216, 0.16);
+  --deco-ornament: #d2a63a;
+  --bl-mortar: #3a1a12;
+  --bl-brick-face: #0d0a08;
+  --bl-lapis: #2a55b4;
+  --bl-gold: #d2a63a;
+  --bl-ink-raised: #d9cfbd;
+  --bl-tok-str: #8fd0d6;
+  --bl-panel-2: #0e0b09;
+  padding-block: calc(var(--bl-brick) * 4);
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-kiln-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--bl-mortar-w);
+  margin-top: var(--bl-mortar-w);
+}
+
+.brick-lattice-root .bl-kp {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: var(--bl-pad);
+}
+
+.brick-lattice-root .bl-kp.is-lib,
+.brick-lattice-root .bl-kp.is-dash {
+  grid-column: span 7;
+}
+
+.brick-lattice-root .bl-kp.is-cli,
+.brick-lattice-root .bl-kp.is-agent {
+  grid-column: span 5;
+}
+
+.brick-lattice-root .bl-kp-head {
+  display: grid;
+  gap: 8px;
+}
+
+.brick-lattice-root .bl-kp h3 {
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.brick-lattice-root .bl-kp-head p {
+  margin: 0;
+  max-width: 54ch;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-kp-head code {
+  color: var(--deco-ink);
+}
+
+/* the windows inside the panels: one ring each, the second dark surface */
+.brick-lattice-root .bl-win,
+.brick-lattice-root .bl-term,
+.brick-lattice-root .bl-ws {
+  min-width: 0;
+  border: 1px solid var(--deco-hair);
+  background: var(--bl-panel-2);
+  background-clip: padding-box;
+}
+
+.brick-lattice-root .bl-win-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--deco-hair);
+  font-family: var(--bl-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-win-file {
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-win-pkg {
+  margin-left: auto;
+  color: var(--deco-ink-3);
+}
+
+.brick-lattice-root .bl-code {
+  margin: 0;
+  padding: 14px 12px;
+  overflow-x: auto;
+  font-family: var(--bl-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-code code {
+  display: block;
+  font-size: inherit;
+}
+
+.brick-lattice-root .bl-code-line {
+  display: flex;
+  gap: 14px;
+  white-space: pre;
+}
+
+.brick-lattice-root .bl-code-n {
+  flex: none;
+  min-width: 2ch;
+  text-align: right;
+  color: var(--deco-ink-3);
+  user-select: none;
+}
+
+.brick-lattice-root .bl-stacks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 16px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--deco-hair);
+  list-style: none;
+  font-size: 13px;
+}
+
+.brick-lattice-root .bl-stacks li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brick-lattice-root .bl-stack-pkg {
+  font-size: 11.5px;
+  color: var(--deco-ink-3);
+  white-space: nowrap;
+}
+
+/* the terminal */
+.brick-lattice-root .bl-term-lines {
+  margin: 0;
+  padding: 14px 12px;
+  list-style: none;
+  font-family: var(--bl-mono);
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-term-lines .is-out {
+  padding-left: 2ch;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-term-p {
+  color: var(--deco-ink-3);
+}
+
+.brick-lattice-root .bl-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-block: 5px;
+}
+
+.brick-lattice-root .bl-kiln .bl-chip {
+  background: transparent;
+}
+
+/* the review workspace */
+.brick-lattice-root .bl-ws-cols,
+.brick-lattice-root .bl-ws-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 82px;
+  gap: 14px;
+  padding: 10px 12px;
+}
+
+.brick-lattice-root .bl-ws-cols {
+  border-bottom: 1px solid var(--deco-hair);
+  font-family: var(--bl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--deco-ink-3);
+}
+
+.brick-lattice-root .bl-ws-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brick-lattice-root .bl-ws-row {
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.brick-lattice-root .bl-ws-row + .bl-ws-row {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-ws-src {
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-ws-tr {
+  display: grid;
+  gap: 4px;
+}
+
+.brick-lattice-root .bl-ws-prev {
+  color: var(--deco-ink-3);
+  text-decoration: line-through;
+}
+
+.brick-lattice-root .bl-stamp {
+  justify-self: start;
+  align-self: start;
+  padding: 3px 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 2px;
+  font-family: var(--bl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-stamp.is-edit {
+  font-style: italic;
+}
+
+.brick-lattice-root .bl-ws-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 9px 12px;
+  border-top: 1px solid var(--deco-hair);
+  font-family: var(--bl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--deco-ink-3);
+}
+
+/* locadex */
+.brick-lattice-root .bl-agent-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brick-lattice-root .bl-locadex-mark {
+  display: block;
+  width: 36px;
+  height: 36px;
+  /* the mark is drawn in ink for a light ground; the kiln inverts it */
+  filter: invert(1);
+}
+
+.brick-lattice-root .bl-trace {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--deco-hair);
+  list-style: none;
+}
+
+.brick-lattice-root .bl-trace li {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--deco-hair);
+  font-family: var(--bl-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.brick-lattice-root .bl-trace-k {
+  color: var(--deco-ink-3);
+}
+
+.brick-lattice-root .bl-trace-v {
+  color: var(--deco-ink);
+  overflow-wrap: anywhere;
+}
+
+.brick-lattice-root .bl-trace-v code {
+  font-size: inherit;
+}
+
+.brick-lattice-root .bl-kiln-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: calc(var(--bl-brick) * 1.5);
+}
+
+/* ============================================================
+   languages as material: the medallion band
+   ============================================================ */
+
+.brick-lattice-root .bl-band {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--bl-mortar-w);
+  margin: var(--bl-mortar-w) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brick-lattice-root .bl-ros {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.brick-lattice-root .bl-ros-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.brick-lattice-root .bl-ros-bond {
+  fill: url('#bl-bond');
+}
+
+.brick-lattice-root .bl-ros-lapis {
+  fill: var(--bl-lapis);
+}
+
+.brick-lattice-root .bl-ros-gold {
+  fill: var(--bl-gold);
+}
+
+/* the core disc: the one circle on the page */
+.brick-lattice-root .bl-ros-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 50%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  text-align: center;
+  transform: translate(-50%, -50%);
+  unicode-bidi: isolate;
+}
+
+.brick-lattice-root .bl-ros-name {
+  max-width: 86%;
+  font-size: clamp(11px, 0.95vw, 13.5px);
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.brick-lattice-root .bl-ros-core .bl-chip {
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10px;
+}
+
+/* the variants register */
+.brick-lattice-root .bl-variants {
+  margin-top: var(--bl-mortar-w);
+  padding: var(--bl-pad);
+}
+
+.brick-lattice-root .bl-var-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.brick-lattice-root .bl-var-table th,
+.brick-lattice-root .bl-var-table td {
+  padding: 10px 0;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.brick-lattice-root .bl-var-table th {
+  width: 200px;
+  padding-right: 16px;
+  white-space: nowrap;
+}
+
+.brick-lattice-root .bl-var-table tr + tr th,
+.brick-lattice-root .bl-var-table tr + tr td {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-var-tag {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.brick-lattice-root .bl-var-name {
+  margin-left: 10px;
+  font-size: 14px;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-var-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.brick-lattice-root .bl-var-chip {
+  display: inline-block;
+  padding: 2px 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 2px;
+  background-clip: padding-box;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.brick-lattice-root .bl-var-chip.is-tell {
+  border-color: var(--deco-ornament);
+}
+
+.brick-lattice-root .bl-var-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-var-foot p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--deco-ink-2);
+}
+
+/* ============================================================
+   pricing: three glazed panels
+   ============================================================ */
+
+.brick-lattice-root .bl-price-sec {
+  padding-bottom: calc(var(--bl-brick) * 7);
+}
+
+.brick-lattice-root .bl-price-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: var(--bl-mortar-w);
+  margin-top: var(--bl-mortar-w);
+}
+
+.brick-lattice-root .bl-ledger,
+.brick-lattice-root .bl-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: var(--bl-pad);
+}
+
+.brick-lattice-root .bl-ledger h3,
+.brick-lattice-root .bl-plan h3 {
+  font-size: 15px;
+}
+
+.brick-lattice-root .bl-rates {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.brick-lattice-root .bl-rates th,
+.brick-lattice-root .bl-rates td {
+  padding: 10px 0;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.brick-lattice-root .bl-rates thead th {
+  padding-top: 0;
+  font-family: var(--bl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink-3);
+}
+
+.brick-lattice-root .bl-rates tbody th,
+.brick-lattice-root .bl-rates tbody td {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-rates th:first-child {
+  width: 36%;
+  padding-right: 14px;
+}
+
+.brick-lattice-root .bl-rates td:last-child,
+.brick-lattice-root .bl-rates th:last-child {
+  width: 16%;
+  text-align: right;
+}
+
+.brick-lattice-root .bl-rates tbody tr.is-lead th {
+  font-weight: 500;
+}
+
+.brick-lattice-root .bl-rate-notes {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--deco-hair);
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-plan-price {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.brick-lattice-root .bl-plan-price small {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-plan-body {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-plan-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.brick-lattice-root .bl-plan-list li {
+  padding: 9px 0;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-plan .bl-btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.brick-lattice-root .bl-compare {
+  --bl-s: 4px;
+  margin: var(--bl-mortar-w) 0 0;
+  padding: 16px var(--bl-pad);
+  text-align: center;
+  font-size: 14px;
+}
+
+.brick-lattice-root .bl-compare a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   footer: the foundation
+   ============================================================ */
+
+.brick-lattice-root .bl-foot-sec {
+  padding-bottom: calc(var(--bl-brick) * 6);
+}
+
+.brick-lattice-root .bl-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr);
+  gap: 40px;
+  padding: calc(var(--bl-pad) + 8px) var(--bl-pad) var(--bl-pad);
+}
+
+.brick-lattice-root .bl-foot-brand {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.brick-lattice-root .bl-foot-brand p {
+  margin: 0;
+  max-width: 30ch;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-foot-logo {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+.brick-lattice-root .bl-foot-logo.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .brick-lattice-root .bl-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .brick-lattice-root .bl-foot-logo.is-dark {
+  display: block;
+}
+
+.brick-lattice-root .bl-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.brick-lattice-root .bl-foot-col h4 {
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.brick-lattice-root .bl-foot-col ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.brick-lattice-root .bl-foot-col a {
+  color: var(--deco-ink-2);
+  text-decoration: none;
+}
+
+.brick-lattice-root .bl-foot-col a:hover {
+  color: var(--deco-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.brick-lattice-root .bl-foot-bar {
+  --bl-s: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: var(--bl-mortar-w);
+  padding: 14px var(--bl-pad);
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+/* ============================================================
+   reflow
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .brick-lattice-root .bl-band {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .brick-lattice-root .bl-ros-name {
+    font-size: 13px;
+  }
+
+  .brick-lattice-root .bl-kp.is-lib,
+  .brick-lattice-root .bl-kp.is-dash,
+  .brick-lattice-root .bl-kp.is-cli,
+  .brick-lattice-root .bl-kp.is-agent {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 900px) {
+  .brick-lattice-root .bl-kp.is-lib,
+  .brick-lattice-root .bl-kp.is-dash,
+  .brick-lattice-root .bl-kp.is-cli,
+  .brick-lattice-root .bl-kp.is-agent {
+    grid-column: span 12;
+  }
+
+  .brick-lattice-root .bl-price-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brick-lattice-root .bl-price-grid .bl-plan {
+    min-height: 0;
+  }
+
+  /* the wall flows two bricks a course; the bond stagger moves to the margins */
+  .brick-lattice-root .bl-wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brick-lattice-root .bl-course {
+    display: contents;
+  }
+
+  .brick-lattice-root .bl-half {
+    display: none;
+  }
+
+  .brick-lattice-root .bl-tb {
+    grid-column: auto;
+    aspect-ratio: auto;
+    min-height: 132px;
+  }
+
+  .brick-lattice-root .bl-course[data-course='1'] .bl-src {
+    grid-column: 1 / -1;
+    aspect-ratio: auto;
+  }
+
+  .brick-lattice-root .bl-foot {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .brick-lattice-root .bl-trust {
+    grid-template-columns: 1fr;
+  }
+
+  .brick-lattice-root .bl-trust-lead {
+    padding-block: 14px;
+    white-space: normal;
+  }
+
+  .brick-lattice-root .bl-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* the last 720px block: the mobile ladder, consumed with px fallbacks */
+@media (max-width: 720px) {
+  .brick-lattice-root {
+    --bl-brick: 18px;
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .brick-lattice-root .bl-nav-links,
+  .brick-lattice-root .bl-nav-signin {
+    display: none;
+  }
+
+  .brick-lattice-root .bl-nav-in {
+    gap: 12px;
+  }
+
+  .brick-lattice-root .bl-head {
+    padding: var(--tcm-cell-pad, 28px);
+    gap: var(--tcm-gap-h2, 18px);
+  }
+
+  .brick-lattice-root .bl-head h2 {
+    font-size: var(--tcm-h2, 36px);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .brick-lattice-root .bl-head p,
+  .brick-lattice-root .bl-sub {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .brick-lattice-root .bl-claim {
+    --bl-s: 6px;
+    padding: var(--tcm-box-pt, 36px) var(--tcm-cell-pad, 28px) var(--tcm-box-pb, 38px);
+  }
+
+  .brick-lattice-root .bl-h1 {
+    font-size: var(--tcm-h2, 36px);
+    line-height: var(--tcm-h2-lh, 1.18);
+    min-height: 0;
+  }
+
+  .brick-lattice-root .bl-acts {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .brick-lattice-root .bl-acts .bl-btn,
+  .brick-lattice-root .bl-acts .bl-cmd {
+    justify-content: center;
+  }
+
+  .brick-lattice-root .bl-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brick-lattice-root .bl-wall {
+    grid-template-columns: 1fr;
+  }
+
+  .brick-lattice-root .bl-course[data-course='0'] .bl-tb {
+    margin-left: 7%;
+  }
+
+  .brick-lattice-root .bl-course[data-course='2'] .bl-tb {
+    margin-right: 7%;
+  }
+
+  .brick-lattice-root .bl-tb {
+    min-height: 0;
+  }
+
+  .brick-lattice-root .bl-tb-text {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+    padding: 14px 18px 18px;
+  }
+
+  .brick-lattice-root .bl-wall-foot,
+  .brick-lattice-root .bl-var-foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .brick-lattice-root .bl-kp,
+  .brick-lattice-root .bl-ledger,
+  .brick-lattice-root .bl-plan,
+  .brick-lattice-root .bl-variants,
+  .brick-lattice-root .bl-foot {
+    padding: var(--tcm-box-pt, 36px) var(--tcm-cell-pad, 28px) var(--tcm-box-pb, 38px);
+  }
+
+  .brick-lattice-root .bl-kp h3 {
+    font-size: var(--tcm-h4, 18px);
+    line-height: var(--tcm-h4-lh, 1.35);
+  }
+
+  .brick-lattice-root .bl-kp-head p,
+  .brick-lattice-root .bl-plan-body,
+  .brick-lattice-root .bl-wall-foot p {
+    font-size: var(--tcm-small, 14px);
+    line-height: var(--tcm-small-lh, 1.55);
+  }
+
+  .brick-lattice-root .bl-stacks {
+    grid-template-columns: 1fr;
+  }
+
+  .brick-lattice-root .bl-ws-cols,
+  .brick-lattice-root .bl-ws-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .brick-lattice-root .bl-ws-cols span:not(:first-child) {
+    display: none;
+  }
+
+  .brick-lattice-root .bl-band {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brick-lattice-root .bl-ros-name {
+    font-size: 14px;
+  }
+
+  .brick-lattice-root .bl-var-table th {
+    width: auto;
+    white-space: normal;
+  }
+
+  .brick-lattice-root .bl-var-table tr {
+    display: grid;
+    gap: 6px;
+  }
+
+  .brick-lattice-root .bl-var-table tr + tr td {
+    border-top: 0;
+  }
+
+  .brick-lattice-root .bl-var-table td {
+    padding-top: 0;
+  }
+
+  .brick-lattice-root .bl-rates {
+    font-size: var(--tcm-small, 14px);
+  }
+
+  .brick-lattice-root .bl-rates th:first-child {
+    width: 40%;
+  }
+
+  .brick-lattice-root .bl-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brick-lattice-root .bl-foot-bar {
+    flex-direction: column;
+  }
+}

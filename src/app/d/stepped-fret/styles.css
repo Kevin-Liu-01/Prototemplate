@@ -1,0 +1,1675 @@
+/* stepped-fret: the page is a sequence of horizontal registers, each bounded
+   above and below by a stepped-fret meander at its own scale, and the content
+   block of each register steps one fret step to the right of the one before
+   it, so the grid itself is the stair; the hero is one monumental fret with
+   the claim set in the step it leaves open.
+
+   References, designed from concretely:
+   1. Mitla, Hall of Columns (Zapotec, c. 1200 to 1500). The facades are three
+      stacked panels of stepped frets, each panel a different fret at a
+      different scale, separated by plain limestone bands. Every fret is a
+      mosaic of whole cut stones one unit thick, and the ground between the
+      stones is the same fret inverted. This page takes the stacked registers
+      at differing scales (every FretBand), the one-cell stroke on an integer
+      grid (fret.ts), and the figure-ground rule (a one-cell gap between every
+      coil, so the cream between the stones is itself a fret).
+   2. 450 Sutter, Timothy Pflueger, San Francisco, 1929. Mayan-revival
+      terracotta spandrels that step with the window bays; a lobby ceiling of
+      stepped relief in gold on black; cast-aluminum frets on the entrance.
+      This page takes the stepped bays (the registers step one fret step per
+      register, the plinths step up in height), and the relief on black stone
+      (the dark band's limestone frets and its ziggurat of dither tiers).
+   3. The Guardian Building, Wirt Rowland, Detroit, 1929. Orange brick with
+      Pewabic and Rookwood tile in stepped and chevron patterns in ochre, red,
+      cream and black; an entrance arch of concentric stepped rings; a stepped
+      pylon profile. This page takes the palette (limestone cream, ochre, red
+      oxide, black) and the setback profile (the content blocks narrow one
+      step per register down the page, and the platform is a six-setback
+      ziggurat).
+
+   Material palette (Zapotec and Mixtec revival): a limestone cream ground,
+   the outline black of the Mixtec codices as ink, ochre as the ornament
+   color, red oxide as the accent.
+   Ornament homes: the register boundaries (every band is the fret at its
+   own cell size: 3, 4, 5, 6 and 7 pixels), the hero (the monumental fret in
+   ordered dither), the grid (one fret step of stagger per register), the
+   meander over the language cells, the plinth cornices in the pricing file,
+   the dark band's two limestone frets and its ziggurat, the hero crown
+   (a bar-and-dot numeral).
+   Accent: red oxide marks the step in progress, the top tread's riser and
+   its chip ring, and nothing else.
+   Display face: Aboreto, used for h1, h2, and the hero crown figure only.
+   Inter is the body, interface and caption face.
+   Dark mode remaps these six tokens and nothing else. */
+.stepped-fret-root {
+  --deco-ground: #ede4d0;
+  --deco-ink: #1a1512;
+  --deco-ink-2: rgba(26, 21, 18, 0.66);
+  --deco-hair: rgba(26, 21, 18, 0.2);
+  --deco-accent: #a3361f;
+  --deco-ornament: #c08a2c;
+  --deco-display: var(--stepped-fret-display), var(--font-inter), 'Inter', system-ui, sans-serif;
+
+  /* the round's shared token names, assigned from the palette so a reviewer
+     can grep them; the page's own rules read the sf tokens below */
+  --tc-paper: var(--deco-ground);
+  --tc-card: var(--deco-ground);
+  --tc-ink: var(--deco-ink);
+  --tc-ink-2: var(--deco-ink-2);
+  --tc-hair: var(--deco-hair);
+  --tc-accent: var(--deco-accent);
+
+  --sf-ground: var(--deco-ground);
+  --sf-ink: var(--deco-ink);
+  --sf-ink-2: var(--deco-ink-2);
+  --sf-hair: var(--deco-hair);
+  --sf-hair-2: color-mix(in srgb, var(--deco-ink) 11%, transparent);
+  --sf-accent: var(--deco-accent);
+  --sf-ornament: var(--deco-ornament);
+
+  /* the black stone: code windows, the terminal and the dark band keep
+     these in both themes */
+  --sf-stone: #14100d;
+  --sf-stone-ink: #efe6d3;
+  --sf-stone-hair: rgba(239, 230, 211, 0.16);
+  --sf-tok-str: #dcb063;
+  --sf-dark: #0a0807;
+  --sf-dark-ink: #efe6d3;
+  --sf-dark-hair: rgba(239, 230, 211, 0.16);
+
+  --sf-rail: 1280px;
+  --sf-gut: clamp(20px, 3vw, 40px);
+  --sf-step: 48px;
+  --sf-reg-pt: 72px;
+  --sf-reg-pb: 80px;
+  --sf-hero-cell: calc(min(var(--sf-rail), 100vw) / 26);
+  --sf-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --sf-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--sf-ground);
+  color: var(--sf-ink);
+  font-family: var(--sf-sans);
+  font-size: 15px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme='dark'] .stepped-fret-root {
+  --deco-ground: #0a0807;
+  --deco-ink: #f0e7d5;
+  --deco-ink-2: rgba(240, 231, 213, 0.66);
+  --deco-hair: rgba(240, 231, 213, 0.22);
+  --deco-accent: #d4573a;
+  --deco-ornament: #d8a24c;
+}
+
+/* ------------------------------------------------------------------
+   The rail: one centered column with its pair of hairlines, the pylon
+   walls every register stands between. Nothing else draws a rail.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-rail {
+  position: relative;
+  width: min(var(--sf-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--sf-hair);
+}
+
+/* ------------------------------------------------------------------
+   Type: Aboreto in the three display slots, Inter everywhere else.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-h1 {
+  font-family: var(--deco-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 3.6vw, 2.85rem);
+  line-height: 1.12;
+  letter-spacing: 0.005em;
+  margin: 0 0 22px;
+  min-height: 2.24em;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-h2 {
+  font-family: var(--deco-display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 2.5vw, 2.3rem);
+  line-height: 1.14;
+  letter-spacing: 0.005em;
+  margin: 0 0 14px;
+  max-width: 24ch;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-crown-figure {
+  font-family: var(--deco-display);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 500 17px/1.3 var(--sf-sans);
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-h4 {
+  margin: 0 0 12px;
+  font: 500 13px/1.3 var(--sf-sans);
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-lead {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.62;
+  max-width: 60ch;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-lead code,
+.stepped-fret-root .sf-plinth-p code,
+.stepped-fret-root .sf-rate-notes code {
+  font-family: var(--sf-mono);
+  font-size: 0.88em;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-head {
+  max-width: 780px;
+  margin-bottom: 44px;
+}
+
+.stepped-fret-root .sf-kicker {
+  font-family: var(--sf-mono);
+  font-size: 11.5px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-plinth-p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--sf-ink-2);
+}
+
+/* ------------------------------------------------------------------
+   Controls: one button grammar, one chip, one command.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-clip: padding-box;
+  font: 500 14px/1 var(--sf-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-btn-solid {
+  background: var(--sf-ink);
+  border-color: var(--sf-ink);
+  color: var(--sf-ground);
+}
+
+.stepped-fret-root .sf-btn-line {
+  border-color: var(--sf-hair);
+}
+
+.stepped-fret-root .sf-btn-line:hover {
+  border-color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-btn-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.stepped-fret-root .sf-btn:focus-visible,
+.stepped-fret-root .sf-cmd-copy:focus-visible,
+.stepped-fret-root .sf-code-copy:focus-visible {
+  outline: 1px solid var(--sf-ink);
+  outline-offset: 2px;
+}
+
+.stepped-fret-root .sf-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--sf-hair);
+  border-radius: 0;
+  background: var(--sf-ground);
+  background-clip: padding-box;
+  color: var(--sf-ink);
+  font-family: var(--sf-mono);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.stepped-fret-root .sf-chip .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepped-fret-root .sf-chip.is-active {
+  border-color: var(--sf-accent);
+}
+
+.stepped-fret-root .sf-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 6px 0 12px;
+  border: 1px solid var(--sf-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--sf-mono);
+  font-size: 12.5px;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-cmd-copy,
+.stepped-fret-root .sf-code-copy {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.stepped-fret-root .sf-cmd-copy {
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-cmd-copy:hover {
+  color: var(--sf-ink);
+}
+
+/* ------------------------------------------------------------------
+   The nav: the top register, sticky, with the rail pair on its column.
+   Its bottom rule is the seam the hero starts from.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--sf-ground);
+  border-bottom: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  width: min(var(--sf-rail), 100%);
+  height: 56px;
+  margin-inline: auto;
+  padding-inline: var(--sf-gut);
+  border-inline: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sf-ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.stepped-fret-root .sf-nav-links {
+  display: flex;
+  gap: 22px;
+  margin-inline-start: 10px;
+}
+
+.stepped-fret-root .sf-nav-links a,
+.stepped-fret-root .sf-nav-signin {
+  font-size: 14px;
+  color: var(--sf-ink-2);
+  text-decoration: none;
+}
+
+.stepped-fret-root .sf-nav-links a:hover,
+.stepped-fret-root .sf-nav-signin:hover {
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-nav-signin {
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-nav-acts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-inline-start: auto;
+}
+
+.stepped-fret-root .sf-theme.pt-ib {
+  color: var(--sf-ink-2);
+  border-color: transparent;
+  border-radius: 4px;
+}
+
+.stepped-fret-root .sf-theme.pt-ib:hover {
+  color: var(--sf-ink);
+  border-color: var(--sf-hair);
+}
+
+/* ------------------------------------------------------------------
+   Registers and bands. A register draws no block rule; the band above
+   and the band below own both seams. The register's block steps one
+   fret step to the right per register and its left edge is the riser.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-reg {
+  position: relative;
+}
+
+.stepped-fret-root .sf-reg-in {
+  margin-inline-start: calc(var(--k) * var(--sf-step));
+  padding: var(--sf-reg-pt) var(--sf-gut) var(--sf-reg-pb);
+  border-inline-start: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-reg[data-k='0'] .sf-reg-in {
+  border-inline-start: 0;
+}
+
+.stepped-fret-root .sf-band {
+  position: relative;
+  box-sizing: content-box;
+  overflow: hidden;
+  color: var(--sf-ink);
+  border-block: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-band.is-ornament {
+  color: var(--sf-ornament);
+}
+
+.stepped-fret-root .sf-band.is-paper {
+  color: var(--sf-dark-ink);
+  border-color: var(--sf-dark-hair);
+}
+
+.stepped-fret-root .sf-band.is-edges-bottom {
+  border-top: 0;
+}
+
+.stepped-fret-root .sf-band.is-edges-top {
+  border-bottom: 0;
+}
+
+.stepped-fret-root .sf-band.is-edges-none {
+  border: 0;
+}
+
+.stepped-fret-root .sf-band-svg {
+  display: block;
+  width: 100%;
+}
+
+/* ------------------------------------------------------------------
+   The hero: one monumental fret on a 26-column grid; the claim sits in
+   the open step between the stair and the coil.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-hero {
+  position: relative;
+}
+
+.stepped-fret-root .sf-hero-grid {
+  display: grid;
+  grid-template-columns: repeat(26, minmax(0, 1fr));
+}
+
+.stepped-fret-root .sf-hero-plate {
+  position: relative;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: start;
+  aspect-ratio: 26 / 10;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-hero-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.stepped-fret-root .sf-hero-copy {
+  position: relative;
+  grid-column: 8 / 19;
+  grid-row: 1;
+  align-self: start;
+  padding-top: calc(var(--sf-hero-cell) * 1.55);
+  padding-bottom: calc(var(--sf-hero-cell) * 0.5);
+}
+
+.stepped-fret-root .sf-crown {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 26px;
+  color: var(--sf-ornament);
+}
+
+.stepped-fret-root .sf-crown-bardot {
+  display: block;
+  flex: none;
+}
+
+.stepped-fret-root .sf-crown-cap {
+  padding-bottom: 5px;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-hero-sub {
+  margin: 0 0 26px;
+  font-size: 17px;
+  line-height: 1.55;
+  max-width: 46ch;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  vertical-align: -1px;
+  color: var(--sf-ink);
+  font-weight: 500;
+}
+
+.stepped-fret-root .sf-hero-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ------------------------------------------------------------------
+   Trust: six monochrome wordmarks, each a real SVG mark as an alpha
+   mask filled with the page ink; the row owns its dividers.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-trust .sf-reg-in {
+  padding-top: 40px;
+  padding-bottom: 44px;
+}
+
+.stepped-fret-root .sf-trust-lead {
+  margin: 0 0 22px;
+  font-size: 14px;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.stepped-fret-root .sf-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-trust-cell + .sf-trust-cell {
+  border-left: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-wm {
+  display: block;
+  height: var(--wm-h);
+  aspect-ratio: var(--wm-ratio);
+  background-color: currentColor;
+  -webkit-mask: var(--wm) center / contain no-repeat;
+  mask: var(--wm) center / contain no-repeat;
+}
+
+/* ------------------------------------------------------------------
+   The proof: the source plinth at the base, the stair of translations
+   climbing right. Every step owns its top and left hairline.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-stair {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 0 var(--sf-step);
+  align-items: end;
+}
+
+.stepped-fret-root .sf-stair-base {
+  display: grid;
+  gap: 14px;
+}
+
+.stepped-fret-root .sf-stair-src {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 6px;
+}
+
+.stepped-fret-root .sf-stair-srctext {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.stepped-fret-root .sf-install {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stepped-fret-root .sf-install code {
+  padding: 9px 10px;
+  border: 1px solid var(--sf-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font: 12.5px/1 var(--sf-mono);
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-auto-rows: minmax(72px, auto);
+}
+
+.stepped-fret-root .sf-step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px 16px 26px;
+  border-top: 1px solid var(--sf-hair);
+  border-left: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-step.is-active {
+  border-left-color: var(--sf-accent);
+}
+
+.stepped-fret-root .sf-step-riser {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.stepped-fret-root .sf-step-text {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/* the code window and the terminal: black stone, limestone type, one hue for
+   strings. The window owns its one hairline frame, so its edge still reads
+   in the dark theme where the stone sits on a ground a few steps darker. */
+.stepped-fret-root .sf-code,
+.stepped-fret-root .sf-term {
+  overflow: hidden;
+  border: 1px solid var(--sf-stone-hair);
+  border-radius: 0;
+  background: var(--sf-stone);
+  background-clip: padding-box;
+  color: var(--sf-stone-ink);
+}
+
+.stepped-fret-root .sf-code-bar,
+.stepped-fret-root .sf-term-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 10px 0 16px;
+  border-bottom: 1px solid var(--sf-stone-hair);
+  font: 12px/1 var(--sf-mono);
+  color: color-mix(in srgb, var(--sf-stone-ink) 70%, transparent);
+}
+
+.stepped-fret-root .sf-code-copy {
+  color: color-mix(in srgb, var(--sf-stone-ink) 70%, transparent);
+}
+
+.stepped-fret-root .sf-code-copy:hover {
+  color: var(--sf-stone-ink);
+}
+
+.stepped-fret-root .sf-code-copy:focus-visible {
+  outline-color: var(--sf-stone-ink);
+}
+
+.stepped-fret-root .sf-code-body {
+  margin: 0;
+  padding: 18px 20px 20px 12px;
+  overflow-x: auto;
+  font: 12.5px/1.6 var(--sf-mono);
+}
+
+.stepped-fret-root .sf-code-line {
+  display: block;
+  white-space: pre;
+}
+
+.stepped-fret-root .sf-code-n {
+  display: inline-block;
+  width: 2.2em;
+  margin-right: 1.2em;
+  text-align: right;
+  color: color-mix(in srgb, var(--sf-stone-ink) 34%, transparent);
+  user-select: none;
+}
+
+.stepped-fret-root .sf-code-t .is-str {
+  color: var(--sf-tok-str);
+}
+
+.stepped-fret-root .sf-code-t .is-tag {
+  color: color-mix(in srgb, var(--sf-stone-ink) 78%, transparent);
+}
+
+.stepped-fret-root .sf-code-t .is-kw {
+  color: color-mix(in srgb, var(--sf-stone-ink) 52%, transparent);
+}
+
+.stepped-fret-root .sf-term-body {
+  margin: 0;
+  padding: 14px 16px 10px;
+  font: 12.5px/1.7 var(--sf-mono);
+}
+
+.stepped-fret-root .sf-term-line {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.stepped-fret-root .sf-term-line .is-prompt {
+  color: var(--sf-tok-str);
+}
+
+.stepped-fret-root .sf-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 16px;
+}
+
+.stepped-fret-root .sf-term .sf-chip {
+  background: transparent;
+  border-color: var(--sf-stone-hair);
+  color: var(--sf-stone-ink);
+}
+
+/* ------------------------------------------------------------------
+   The surfaces: four plinths stepping up left to right; each owns its
+   one hairline frame and the ground between them is the seam.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-plinth {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sf-hair);
+  background-clip: padding-box;
+}
+
+.stepped-fret-root .sf-plinths {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sf-step);
+  align-items: end;
+}
+
+.stepped-fret-root .sf-plinths > .sf-plinth {
+  gap: 12px;
+  padding: 24px 22px 26px;
+  min-height: calc(380px + var(--rise));
+}
+
+.stepped-fret-root .sf-plinths > .sf-plinth:nth-child(1) {
+  --rise: 0px;
+}
+
+.stepped-fret-root .sf-plinths > .sf-plinth:nth-child(2) {
+  --rise: 48px;
+}
+
+.stepped-fret-root .sf-plinths > .sf-plinth:nth-child(3) {
+  --rise: 96px;
+}
+
+.stepped-fret-root .sf-plinths > .sf-plinth:nth-child(4) {
+  --rise: 144px;
+}
+
+.stepped-fret-root .sf-ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stepped-fret-root .sf-ledger li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  font-size: 14px;
+}
+
+.stepped-fret-root .sf-ledger li + li {
+  border-top: 1px solid var(--sf-hair-2);
+}
+
+.stepped-fret-root .sf-ledger code {
+  font: 12px/1 var(--sf-mono);
+  color: var(--sf-ink-2);
+  white-space: nowrap;
+}
+
+.stepped-fret-root .sf-caps {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--sf-hair);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+}
+
+.stepped-fret-root .sf-caps li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stepped-fret-root .sf-caps code {
+  font: 12.5px/1.4 var(--sf-mono);
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-plinth .sf-term,
+.stepped-fret-root .sf-plinth .sf-pr {
+  margin-top: auto;
+}
+
+.stepped-fret-root .sf-cascade {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.stepped-fret-root .sf-cascade li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 0 12px 16px;
+  border-left: 1px solid var(--sf-hair);
+  font-size: 14px;
+}
+
+.stepped-fret-root .sf-cascade li + li {
+  margin-left: 16px;
+}
+
+.stepped-fret-root .sf-cascade code {
+  font: 12.5px/1.4 var(--sf-mono);
+}
+
+.stepped-fret-root .sf-locadex-mark {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.stepped-fret-root .sf-pr {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--sf-hair);
+  background-clip: padding-box;
+}
+
+.stepped-fret-root .sf-pr-title {
+  font: 500 20px/1.2 var(--sf-sans);
+}
+
+.stepped-fret-root .sf-pr-line {
+  font: 12.5px/1.4 var(--sf-mono);
+  color: var(--sf-ink-2);
+}
+
+/* ------------------------------------------------------------------
+   Languages as material: the long meander, one fret unit over every
+   cell, then the atlas of variants beside the halftone globe.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-meander {
+  margin-bottom: 56px;
+}
+
+.stepped-fret-root .sf-meander-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.stepped-fret-root .sf-meander-track {
+  width: calc(var(--cells) * 13 * var(--mc));
+}
+
+.stepped-fret-root .sf-mcells {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cells), calc(13 * var(--mc)));
+  border-bottom: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-mcell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 150px;
+  padding: 18px 16px 16px;
+}
+
+.stepped-fret-root .sf-mcell + .sf-mcell {
+  border-left: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-mcell-text {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.stepped-fret-root .sf-mcell-name {
+  font-size: 12.5px;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-mcell .sf-chip {
+  margin-top: auto;
+}
+
+.stepped-fret-root .sf-atlas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: var(--sf-step);
+  align-items: start;
+}
+
+.stepped-fret-root .sf-atlas-row {
+  display: grid;
+  grid-template-columns: 44px 120px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 0 12px calc(var(--i) * 16px);
+  border-top: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-atlas-tag {
+  font: 12px/1.4 var(--sf-mono);
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-atlas-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.stepped-fret-root .sf-atlas-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stepped-fret-root .sf-atlas-tail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.stepped-fret-root .sf-loc {
+  padding: 4px 6px;
+  border: 1px solid var(--sf-hair);
+  background-clip: padding-box;
+  font: 11.5px/1 var(--sf-mono);
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-loc.is-tell {
+  border-color: var(--sf-ink);
+}
+
+.stepped-fret-root .is-muted {
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-atlas-count {
+  margin: 18px 0 16px;
+  font-size: 14px;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-atlas-globe {
+  margin: 0;
+}
+
+.stepped-fret-root .sf-globe-well {
+  width: min(100%, 360px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-globe {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.stepped-fret-root .sf-atlas-note {
+  margin-top: 14px;
+  text-align: center;
+  font: 12px/1.5 var(--sf-mono);
+  color: var(--sf-ink-2);
+}
+
+/* ------------------------------------------------------------------
+   The review stele: bar, field, tool line. State by type and stamps.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-stele {
+  border: 1px solid var(--sf-hair);
+  background-clip: padding-box;
+}
+
+.stepped-fret-root .sf-stele-bar,
+.stepped-fret-root .sf-stele-foot {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  height: 40px;
+  padding: 0 20px;
+  font: 12px/1 var(--sf-mono);
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-stele-bar {
+  border-bottom: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-stele-foot {
+  border-top: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-stele-foot .is-right {
+  margin-left: auto;
+}
+
+.stepped-fret-root .sf-stele-heads,
+.stepped-fret-root .sf-stele-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 96px;
+  gap: 20px;
+  padding: 16px 20px;
+}
+
+.stepped-fret-root .sf-stele-heads {
+  padding: 12px 20px 10px;
+  font: 11.5px/1.4 var(--sf-mono);
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-stele-row {
+  border-top: 1px solid var(--sf-hair-2);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.stepped-fret-root .sf-stele-tr {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stepped-fret-root .sf-stele-prev {
+  color: var(--sf-ink-2);
+  text-decoration: line-through;
+}
+
+.stepped-fret-root .sf-stamp {
+  justify-self: end;
+  align-self: start;
+  padding: 4px 7px;
+  border: 1px solid var(--sf-hair);
+  background-clip: padding-box;
+  font: 11.5px/1 var(--sf-mono);
+  color: var(--sf-ink-2);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   The dark band: black stone in both themes, two limestone frets, the
+   ziggurat of six setbacks on a dithered floor.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-dark {
+  background: var(--sf-dark);
+  color: var(--sf-dark-ink);
+}
+
+/* the band's two frets sit on the rail width; the top one owns the seam
+   under it and the bottom one the seam above it, so the ziggurat's base
+   tier stands on the lower fret's rule and draws no bottom rule of its own */
+.stepped-fret-root .sf-dark-band {
+  width: min(var(--sf-rail), 100%);
+  margin-inline: auto;
+}
+
+.stepped-fret-root .sf-dark-in {
+  position: relative;
+  width: min(var(--sf-rail), 100%);
+  margin-inline: auto;
+  overflow: hidden;
+  border-inline: 1px solid var(--sf-dark-hair);
+}
+
+.stepped-fret-root .sf-dark-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 64%;
+  color: var(--sf-dark-ink);
+  pointer-events: none;
+}
+
+.stepped-fret-root .sf-dark-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: var(--sf-step);
+  align-items: end;
+  padding: 84px var(--sf-gut) 0;
+}
+
+.stepped-fret-root .sf-dark-copy {
+  padding-bottom: 84px;
+}
+
+.stepped-fret-root .sf-dark .sf-h2 {
+  color: var(--sf-dark-ink);
+}
+
+.stepped-fret-root .sf-dark .sf-lead {
+  color: color-mix(in srgb, var(--sf-dark-ink) 70%, transparent);
+}
+
+.stepped-fret-root .sf-trace {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 28px;
+  margin: 28px 0 32px;
+}
+
+.stepped-fret-root .sf-trace dt {
+  font: 11.5px/1.4 var(--sf-mono);
+  color: color-mix(in srgb, var(--sf-dark-ink) 60%, transparent);
+}
+
+.stepped-fret-root .sf-trace dd {
+  margin: 4px 0 0;
+  font: 500 22px/1 var(--sf-sans);
+}
+
+.stepped-fret-root .sf-dark-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stepped-fret-root .sf-dark .sf-btn-solid {
+  background: var(--sf-dark-ink);
+  border-color: var(--sf-dark-ink);
+  color: var(--sf-dark);
+}
+
+.stepped-fret-root .sf-dark .sf-btn-line {
+  border-color: var(--sf-dark-hair);
+  color: var(--sf-dark-ink);
+}
+
+.stepped-fret-root .sf-dark .sf-btn-line:hover {
+  border-color: var(--sf-dark-ink);
+}
+
+.stepped-fret-root .sf-dark .sf-btn:focus-visible {
+  outline-color: var(--sf-dark-ink);
+}
+
+.stepped-fret-root .sf-zig {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepped-fret-root .sf-tier {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  width: calc(40% + (7 - var(--level)) * 10%);
+  min-height: 66px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--sf-dark-hair);
+  border-inline: 1px solid var(--sf-dark-hair);
+  background-clip: padding-box;
+}
+
+.stepped-fret-root .sf-tier-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: color-mix(in srgb, var(--sf-dark-ink) 22%, transparent);
+  pointer-events: none;
+}
+
+.stepped-fret-root .sf-tier-name {
+  position: relative;
+  font: 500 15px/1.3 var(--sf-sans);
+}
+
+.stepped-fret-root .sf-tier-note {
+  position: relative;
+  font: 12px/1.4 var(--sf-mono);
+  color: color-mix(in srgb, var(--sf-dark-ink) 62%, transparent);
+}
+
+/* ------------------------------------------------------------------
+   The pricing file: three stepped plinths on one baseline, a fret
+   cornice under each top rule. Nothing here moves on its own.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-plinths-3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sf-step);
+  align-items: end;
+}
+
+.stepped-fret-root .sf-plinth.is-rates {
+  min-height: 560px;
+}
+
+.stepped-fret-root .sf-plinth.is-starter {
+  min-height: 620px;
+}
+
+.stepped-fret-root .sf-plinth.is-enterprise {
+  min-height: 680px;
+}
+
+.stepped-fret-root .sf-plinth-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px 28px;
+}
+
+.stepped-fret-root .sf-plinth-body .sf-btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.stepped-fret-root .sf-rates {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepped-fret-root .sf-rates-head,
+.stepped-fret-root .sf-rate {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr 0.6fr;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.stepped-fret-root .sf-rates-head {
+  padding-bottom: 8px;
+  font: 11.5px/1.4 var(--sf-mono);
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-rate {
+  border-top: 1px solid var(--sf-hair-2);
+}
+
+.stepped-fret-root .sf-rate-value,
+.stepped-fret-root .sf-rate-gt {
+  font-family: var(--sf-mono);
+  font-size: 12.5px;
+}
+
+.stepped-fret-root .sf-rate-gt {
+  text-align: right;
+}
+
+.stepped-fret-root .sf-rate-notes {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--sf-hair);
+  display: grid;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 4px 0 2px;
+  font: 500 34px/1 var(--sf-sans);
+}
+
+.stepped-fret-root .sf-price small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-plan-list {
+  list-style: none;
+  margin: 4px 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.stepped-fret-root .sf-plan-list li::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  vertical-align: 2px;
+  background: var(--sf-ornament);
+}
+
+.stepped-fret-root .sf-compare {
+  margin: 32px 0 0;
+  font-size: 14px;
+}
+
+.stepped-fret-root .sf-compare a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--sf-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--sf-hair);
+}
+
+.stepped-fret-root .sf-compare a:hover {
+  border-bottom-color: var(--sf-ink);
+}
+
+/* ------------------------------------------------------------------
+   The footer: marks, one sentence, four columns by rhythm, and the
+   closing bar, the footer's only hairline.
+   ------------------------------------------------------------------ */
+.stepped-fret-root .sf-footer .sf-reg-in {
+  padding-top: 56px;
+  padding-bottom: 0;
+}
+
+.stepped-fret-root .sf-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr);
+  gap: var(--sf-step);
+  padding-bottom: 48px;
+}
+
+.stepped-fret-root .sf-foot-brand p {
+  margin: 14px 0 0;
+  max-width: 30ch;
+  font-size: 14px;
+  color: var(--sf-ink-2);
+}
+
+.stepped-fret-root .sf-foot-logo {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.stepped-fret-root .sf-foot-logo.is-dark {
+  display: none;
+}
+
+.stepped-fret-root .sf-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.stepped-fret-root .sf-foot-cols ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 9px;
+}
+
+.stepped-fret-root .sf-foot-cols a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--sf-ink-2);
+  text-decoration: none;
+}
+
+.stepped-fret-root .sf-foot-cols a:hover {
+  color: var(--sf-ink);
+}
+
+.stepped-fret-root .sf-foot-mark {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+
+.stepped-fret-root .sf-foot-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 18px 0 22px;
+  border-top: 1px solid var(--sf-hair);
+  font: 12px/1.5 var(--sf-mono);
+  color: var(--sf-ink-2);
+}
+
+/* ------------------------------------------------------------------
+   Dark theme: the marks. The six tokens above remap; brand marks are
+   inverted or swapped, and nothing else changes.
+   ------------------------------------------------------------------ */
+[data-theme='dark'] .stepped-fret-root .sf-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .stepped-fret-root .sf-foot-logo.is-dark {
+  display: block;
+}
+
+[data-theme='dark'] .stepped-fret-root .sf-locadex-mark,
+[data-theme='dark'] .stepped-fret-root .sf-foot-mark.is-locadex {
+  filter: invert(1);
+}
+
+/* ------------------------------------------------------------------
+   Reflow. 1100: the step shortens and the surfaces pair up. 900: the
+   hero copy leaves the open step and flows under the fret; the stair,
+   the atlas, the dark grid and the plinths stack. 720 (the last block):
+   the stagger and its risers go, the type ladder takes over.
+   ------------------------------------------------------------------ */
+@media (max-width: 1100px) {
+  .stepped-fret-root {
+    --sf-step: 32px;
+  }
+
+  .stepped-fret-root .sf-plinths {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stepped-fret-root .sf-plinths > .sf-plinth {
+    min-height: 0;
+  }
+
+  .stepped-fret-root .sf-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .stepped-fret-root .sf-nav-links {
+    display: none;
+  }
+
+  .stepped-fret-root .sf-nav-signin {
+    display: none;
+  }
+
+  .stepped-fret-root .sf-hero-copy {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding: 32px var(--sf-gut) 48px;
+  }
+
+  .stepped-fret-root .sf-h1 {
+    min-height: 0;
+  }
+
+  .stepped-fret-root .sf-stair {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px 0;
+  }
+
+  .stepped-fret-root .sf-atlas,
+  .stepped-fret-root .sf-dark-grid,
+  .stepped-fret-root .sf-plinths-3,
+  .stepped-fret-root .sf-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stepped-fret-root .sf-dark-copy {
+    padding-bottom: 48px;
+  }
+
+  .stepped-fret-root .sf-plinth.is-rates,
+  .stepped-fret-root .sf-plinth.is-starter,
+  .stepped-fret-root .sf-plinth.is-enterprise {
+    min-height: 0;
+  }
+
+  .stepped-fret-root .sf-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stepped-fret-root .sf-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .stepped-fret-root .sf-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--sf-hair);
+  }
+}
+
+@media (max-width: 720px) {
+  .stepped-fret-root {
+    /* the mobile type ladder, consumed below with px fallbacks */
+    --tcm-h2: 1.85rem;
+    --tcm-h2-lh: 1.18;
+    --tcm-h3: 1.2rem;
+    --tcm-lead: 16px;
+    --tcm-lead-lh: 1.55;
+    --tcm-body: 15px;
+    --tcm-body-lh: 1.6;
+    --tcm-small: 13px;
+    --tcm-head-pt: 56px;
+    --tcm-head-pb: 32px;
+    --tcm-cell-pad: 20px;
+    --sf-step: 0px;
+    --sf-reg-pt: var(--tcm-head-pt, 72px);
+    --sf-reg-pb: 56px;
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .stepped-fret-root .sf-reg-in {
+    border-inline-start: 0;
+  }
+
+  .stepped-fret-root .sf-head {
+    margin-bottom: var(--tcm-head-pb, 36px);
+  }
+
+  .stepped-fret-root .sf-h1 {
+    font-size: clamp(1.75rem, 8vw, 2.2rem);
+  }
+
+  .stepped-fret-root .sf-h2 {
+    font-size: var(--tcm-h2, 36px);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .stepped-fret-root .sf-h3 {
+    font-size: var(--tcm-h3, 1.375rem);
+  }
+
+  .stepped-fret-root .sf-lead,
+  .stepped-fret-root .sf-hero-sub {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .stepped-fret-root .sf-plinth-p,
+  .stepped-fret-root .sf-stele-row,
+  .stepped-fret-root .sf-ledger li,
+  .stepped-fret-root .sf-plan-list {
+    font-size: var(--tcm-small, 14px);
+  }
+
+  .stepped-fret-root .sf-plinths > .sf-plinth,
+  .stepped-fret-root .sf-plinth-body {
+    padding: var(--tcm-cell-pad, 28px);
+  }
+
+  .stepped-fret-root .sf-plinths {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stepped-fret-root .sf-crown-figure {
+    font-size: 32px;
+  }
+
+  .stepped-fret-root .sf-steps {
+    grid-auto-rows: minmax(64px, auto);
+  }
+
+  .stepped-fret-root .sf-step {
+    padding: 14px 16px 14px 22px;
+  }
+
+  .stepped-fret-root .sf-step-text {
+    font-size: 16px;
+  }
+
+  .stepped-fret-root .sf-stele-heads,
+  .stepped-fret-root .sf-stele-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 14px var(--tcm-cell-pad, 20px);
+  }
+
+  .stepped-fret-root .sf-stele-heads span:nth-child(n + 2) {
+    display: none;
+  }
+
+  .stepped-fret-root .sf-stamp {
+    justify-self: start;
+  }
+
+  .stepped-fret-root .sf-stele-bar,
+  .stepped-fret-root .sf-stele-foot {
+    padding: 0 var(--tcm-cell-pad, 20px);
+    gap: 14px;
+  }
+
+  .stepped-fret-root .sf-atlas-row {
+    grid-template-columns: 40px minmax(0, 1fr);
+    padding-left: 0;
+  }
+
+  .stepped-fret-root .sf-atlas-variants {
+    grid-column: 1 / -1;
+  }
+
+  /* two lines per rate: the workflow, then its rate and the GT-libraries figure */
+  .stepped-fret-root .sf-rates-head {
+    display: none;
+  }
+
+  .stepped-fret-root .sf-rate {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+  }
+
+  .stepped-fret-root .sf-rate-name {
+    grid-column: 1 / -1;
+  }
+
+  .stepped-fret-root .sf-trace {
+    gap: 20px;
+  }
+
+  .stepped-fret-root .sf-tier {
+    width: calc(52% + (7 - var(--level)) * 8%);
+    padding: 10px 12px;
+  }
+
+  .stepped-fret-root .sf-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,1698 @@
+/* raking-relief: a bas-relief wall. Wide stone courses stacked under a
+   raking light from the left; every form is carved, and depth is read
+   from dither density, never from a gradient or a blurred shadow. A raised
+   panel catches a lit edge on its left and casts a Bayer-tier shadow to its
+   right; a sunk panel holds shadow inside its left edge and light on its
+   right. The rule is applied the same way to every panel on the page.
+
+   References, designed from concretely:
+   1. The Ishtar Gate reconstruction (Pergamon Museum): wide horizontal
+      courses of glazed brick divided by a single rule, framed by rosette
+      bands (a rosette, a square, a rosette) and palmette friezes in relief.
+      The course-and-band rhythm of this page is that register system, and
+      the rosette and palmette bands are its two repeats. Geometry only.
+   2. The Rosetta Stone: one dark slab, three registers of incised text,
+      read under raking light. The ground is the highest plane; the letter
+      is cut into it; the wall of the cut facing the light is bright and
+      the floor beside the far rim is in shadow. The sunk panels here follow
+      that reading, with the lit edge on the right and the shadow band
+      inside the left edge, and the black stele takes its three registers.
+   3. The Guardian Building, Detroit (Wirt Rowland, 1929): stepped setbacks
+      and the notched chevron tile bands of the exterior. The stele's stepped
+      crown and the chevron band are taken from its silhouette and tile
+      courses. The stepped fret is the greca of Mitla's Hall of Columns,
+      which the same builders quoted.
+
+   Material palette (Assyrian and Egyptian revival): alabaster for the wall
+   and every face (ground), warm shadow for the ink and the carved shade
+   (ink, ink-2), the same shadow at low alpha for the hairline (hair), lapis
+   for the one inlay (accent), and a warm mid-shadow for the carved bands
+   (ornament). The display face is Cinzel, inscriptional capitals, used for
+   the h1 and the h2 only; Inter carries everything else.
+
+   Ornament homes: the band courses between panels (rosette, palmette,
+   chevron, stepped fret), the course marks beside each heading (bar-and-dot
+   numerals), the niche strip under each customer cartouche, and the
+   rosettes the locales are carved into.
+
+   Accent: lapis marks the translated string wherever it appears. The
+   locale inlays are lapis blocks; string literals in the code tablet are
+   lapis text. Nothing else is blue.
+
+   Dark mode remaps the material tokens below and nothing else; the stele's
+   own tokens are constants and never remap. */
+.raking-relief-root {
+  --deco-ground: #ede6d8;
+  --deco-ink: #2a2017;
+  --deco-ink-2: rgba(42, 32, 23, 0.66);
+  --deco-hair: rgba(42, 32, 23, 0.2);
+  --deco-accent: #1f4e9c;
+  --deco-ornament: #7a6650;
+
+  /* the lit edge under raking light; remaps with the theme */
+  --rr-lit: rgba(255, 255, 255, 0.82);
+  /* text set into a lapis inlay, in both themes */
+  --rr-inlay-ink: #f6f0e6;
+
+  /* the stele: black stone, alabaster ink, its own seams; never remaps */
+  --rr-stele-ground: #070707;
+  --rr-stele-ink: #f2ede3;
+  --rr-stele-ink-2: rgba(242, 237, 227, 0.66);
+  --rr-stele-seam: rgba(255, 255, 255, 0.14);
+  --rr-stele-lit: rgba(255, 255, 255, 0.24);
+  --rr-stele-accent: #2f63b4;
+
+  /* the wall column and its gutter */
+  --rr-col: 1200px;
+  --rr-gut: clamp(20px, 3vw, 40px);
+
+  --rr-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --rr-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Bayer 4x4 tiers as masks: coverage k/16 of the house screen, one path
+     of squares per tile, black so the mask keeps the cells it draws. The
+     element's background is the shadow ink; the mask sets its density.
+     Tiles are 8px (2px cells) and every band on one panel is anchored at
+     the same corner, so nested tiers compose an exact ramp. */
+  --rr-t3: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM2 2h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-t6: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM1 1h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM3 3h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-t8: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM1 1h1v1h-1ZM3 1h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM1 3h1v1h-1ZM3 3h1v1h-1Z'/%3E%3C/svg%3E");
+
+  min-height: 100vh;
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  font-family: var(--rr-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- utilities ---------- */
+
+.raking-relief-root .rr-vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.raking-relief-root a {
+  color: inherit;
+}
+
+.raking-relief-root code {
+  font-family: var(--rr-mono);
+}
+
+/* ---------- the relief primitives ---------- */
+
+/* Raised: the face sits on the wall; the light from the left strikes its
+   left edge and top edge (one inset lit line each, zero blur); the shadow
+   it casts falls to the right and, thinly, below. Two nested tiers: t3 out
+   to 16px, t8 out to 8px, both anchored at the panel's top-left corner. */
+.raking-relief-root .rr-raised {
+  position: relative;
+  isolation: isolate;
+}
+
+.raking-relief-root .rr-raised::before,
+.raking-relief-root .rr-raised::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  background: var(--deco-ink);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-raised::before {
+  inset: 0 -16px -8px 0;
+  -webkit-mask-image: var(--rr-t3);
+  mask-image: var(--rr-t3);
+}
+
+.raking-relief-root .rr-raised::after {
+  inset: 0 -8px -4px 0;
+  -webkit-mask-image: var(--rr-t8);
+  mask-image: var(--rr-t8);
+}
+
+.raking-relief-root .rr-face {
+  position: relative;
+  z-index: 1;
+  background: var(--deco-ground);
+  box-shadow:
+    inset 1px 0 0 0 var(--rr-lit),
+    inset 0 1px 0 0 var(--rr-lit);
+}
+
+/* Sunk: cut into the wall. The far rim shades the floor inside the left
+   edge (t3 to 16px, t8 to 8px) and thinly along the top (t6 to 8px); the
+   right and bottom inner walls face the light and carry the lit line. */
+.raking-relief-root .rr-sunk {
+  position: relative;
+  isolation: isolate;
+  box-shadow:
+    inset -1px 0 0 0 var(--rr-lit),
+    inset 0 -1px 0 0 var(--rr-lit);
+}
+
+.raking-relief-root .rr-sunk::before,
+.raking-relief-root .rr-sunk::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  background: var(--deco-ink);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-sunk::before {
+  inset: 0 auto 0 0;
+  width: 16px;
+  -webkit-mask-image: var(--rr-t3);
+  mask-image: var(--rr-t3);
+}
+
+.raking-relief-root .rr-sunk::after {
+  inset: 0 0 auto 0;
+  height: 8px;
+  -webkit-mask-image: var(--rr-t6);
+  mask-image: var(--rr-t6);
+}
+
+.raking-relief-root .rr-sunk > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- the wall column and its courses ---------- */
+
+.raking-relief-root .rr-wall {
+  width: min(var(--rr-col), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-course {
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-course:last-child {
+  border-bottom: 0;
+}
+
+/* a band course owns its bottom rule; a band with ruled content directly
+   above it (the hero stage) also draws its top */
+.raking-relief-root .rr-band {
+  height: 28px;
+  color: var(--deco-ornament);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-band.is-mid {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-band.is-thin {
+  height: 16px;
+}
+
+.raking-relief-root .rr-band svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.raking-relief-root .rr-head {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  column-gap: 28px;
+  align-items: start;
+  padding: 64px var(--rr-gut) 32px;
+}
+
+.raking-relief-root .rr-mark {
+  display: block;
+  margin-top: 6px;
+  color: var(--deco-ornament);
+}
+
+.raking-relief-root .rr-head h2 {
+  margin: 0;
+  font-family: var(--raking-relief-display), var(--rr-sans);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+  line-height: 1.18;
+  letter-spacing: 0.03em;
+  max-width: 26ch;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-head p {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.62;
+  max-width: 60ch;
+  color: var(--deco-ink-2);
+}
+
+/* ---------- buttons ---------- */
+
+.raking-relief-root .rr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-family: var(--rr-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.raking-relief-root .rr-btn.is-solid {
+  background: var(--deco-ink);
+  color: var(--deco-ground);
+}
+
+.raking-relief-root .rr-btn.is-line {
+  border: 1px solid var(--deco-hair);
+  color: var(--deco-ink);
+  background-clip: padding-box;
+}
+
+.raking-relief-root .rr-btn.is-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* ---------- nav ---------- */
+
+.raking-relief-root .rr-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--deco-ground);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: min(var(--rr-col), 100%);
+  height: 58px;
+  margin-inline: auto;
+  padding: 0 var(--rr-gut);
+  border-inline: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--deco-ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.raking-relief-root .rr-nav-links {
+  display: flex;
+  gap: 26px;
+  margin-left: 16px;
+  font-size: 14px;
+}
+
+.raking-relief-root .rr-nav-links a {
+  color: var(--deco-ink-2);
+  text-decoration: none;
+}
+
+.raking-relief-root .rr-nav-links a:hover,
+.raking-relief-root .rr-nav-links a:focus-visible {
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-nav-acts {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.raking-relief-root .rr-nav-signin {
+  font-size: 14px;
+  color: var(--deco-ink);
+  text-decoration: none;
+}
+
+/* ---------- hero ---------- */
+
+.raking-relief-root .rr-hero-stage {
+  position: relative;
+  padding: 56px var(--rr-gut) 64px;
+}
+
+.raking-relief-root .rr-hero-wall {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-hero-panel {
+  z-index: 1;
+}
+
+.raking-relief-root .rr-hero-face {
+  padding: 48px clamp(24px, 4.5vw, 72px) 52px;
+}
+
+.raking-relief-root .rr-claim {
+  margin: 22px 0 0;
+  font-family: var(--raking-relief-display), var(--rr-sans);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 5vw, 4.4rem);
+  line-height: 1.08;
+  letter-spacing: 0.012em;
+  max-width: 19ch;
+  min-height: 2.16em;
+  color: var(--deco-ink);
+}
+
+/* the one text node; its cast shadow is its own ::before printing the same
+   text from data-text through the t8 mask, offset to the right and down */
+.raking-relief-root .rr-claim-face {
+  --rr-cut-l: 0;
+  --rr-cut-r: 0;
+  position: relative;
+  display: block;
+  isolation: isolate;
+  clip-path: inset(0 calc(var(--rr-cut-r) * 100%) 0 calc(var(--rr-cut-l) * 100%));
+}
+
+.raking-relief-root .rr-claim-face::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translate(0.05em, 0.045em);
+  color: transparent;
+  background: var(--deco-ink);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-mask-image: var(--rr-t8);
+  mask-image: var(--rr-t8);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-hero-sub {
+  margin: 24px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  max-width: 54ch;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-wm {
+  display: inline-flex;
+  vertical-align: -2px;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 14px;
+  margin-top: 30px;
+}
+
+.raking-relief-root .rr-cmd {
+  display: inline-flex;
+  align-items: stretch;
+  height: 38px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--rr-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.raking-relief-root .rr-cmd code {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+}
+
+.raking-relief-root .rr-copy {
+  height: 100%;
+  padding: 0 12px;
+  border: 0;
+  border-left: 1px solid var(--deco-hair);
+  border-radius: 0;
+  background: transparent;
+  color: var(--deco-ink);
+  font-family: var(--rr-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.raking-relief-root .rr-copy:hover,
+.raking-relief-root .rr-copy:focus-visible {
+  color: var(--deco-accent);
+}
+
+/* ---------- trust: six cartouches sunk into the wall ---------- */
+
+.raking-relief-root .rr-trust {
+  padding: 40px var(--rr-gut) 48px;
+}
+
+.raking-relief-root .rr-trust-lead {
+  margin: 0 0 22px;
+  font-size: 14px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-cartouche {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 0 30px;
+  color: var(--deco-ornament);
+}
+
+.raking-relief-root .rr-cartouche-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  margin-bottom: 18px;
+}
+
+.raking-relief-root .rr-wordmark {
+  display: block;
+  height: 20px;
+  width: auto;
+  max-width: 100%;
+}
+
+.raking-relief-root .rr-wordmark.is-dark {
+  display: none;
+}
+
+.raking-relief-root .rr-niche {
+  display: block;
+  color: var(--deco-ornament);
+}
+
+/* ---------- the T proof ---------- */
+
+.raking-relief-root .rr-proof-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 24px;
+  align-items: start;
+  padding: 8px var(--rr-gut) 24px;
+}
+
+/* a wide sample scrolls inside its own box and never widens its column */
+.raking-relief-root .rr-proof-grid > *,
+.raking-relief-root .rr-bond > *,
+.raking-relief-root .rr-tablets > *,
+.raking-relief-root .rr-ros-grid > * {
+  min-width: 0;
+}
+
+.raking-relief-root .rr-code .rr-face {
+  display: flex;
+  flex-direction: column;
+}
+
+.raking-relief-root .rr-code-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 0 0 18px;
+  border-bottom: 1px solid var(--deco-hair);
+  font-family: var(--rr-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-code-file {
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-code-bar .rr-copy {
+  height: 40px;
+  margin-left: auto;
+}
+
+.raking-relief-root .rr-code-scroll {
+  overflow-x: auto;
+}
+
+.raking-relief-root .rr-code-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 18px;
+  margin: 0;
+  padding: 20px 20px 22px;
+  font-family: var(--rr-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--deco-ink);
+  tab-size: 2;
+}
+
+.raking-relief-root .rr-code-nums {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  color: var(--deco-ink-2);
+  user-select: none;
+}
+
+.raking-relief-root .rr-code-body code {
+  white-space: pre;
+}
+
+.raking-relief-root .rr-tok-str {
+  color: var(--deco-accent);
+}
+
+.raking-relief-root .rr-incised {
+  padding: 22px 24px 8px 40px;
+}
+
+.raking-relief-root .rr-incised-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-incised-src {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.raking-relief-root .rr-incised-meta {
+  font-family: var(--rr-mono);
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-incised-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-incised-rows li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.raking-relief-root .rr-incised-rows li + li {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-incised-text {
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-outputs {
+  margin: 0 var(--rr-gut) 60px;
+  padding: 18px 24px 18px 40px;
+}
+
+.raking-relief-root .rr-outputs-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-outputs-row li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 18px 6px 0;
+}
+
+.raking-relief-root .rr-outputs-row li + li {
+  padding-left: 18px;
+  border-left: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-outputs-cap {
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-outputs-val {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--deco-ink);
+}
+
+/* ---------- product surfaces: a running bond of tablets ---------- */
+
+.raking-relief-root .rr-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0 var(--rr-gut) 28px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--deco-hair);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+}
+
+.raking-relief-root .rr-stats li + li {
+  border-left: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-stat-value {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.raking-relief-root .rr-stat-label {
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-bond {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  padding: 0 var(--rr-gut) 24px;
+}
+
+.raking-relief-root .rr-bond.is-offset {
+  grid-template-columns: 1fr 1.5fr;
+  padding-bottom: 64px;
+}
+
+.raking-relief-root .rr-tablet {
+  display: flex;
+}
+
+.raking-relief-root .rr-tablet .rr-face {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.raking-relief-root .rr-tablet-head {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-tablet-head h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.raking-relief-root .rr-tablet-head p {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-ledger {
+  margin: 0;
+  padding: 10px 24px 14px;
+  list-style: none;
+}
+
+.raking-relief-root .rr-ledger li {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: baseline;
+  padding: 11px 0;
+}
+
+.raking-relief-root .rr-ledger li + li {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-ledger-pkg {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.raking-relief-root .rr-ledger-name {
+  font-size: 14px;
+}
+
+.raking-relief-root .rr-ledger-cmd {
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-term {
+  flex: 1;
+  padding: 20px 24px 22px;
+  font-family: var(--rr-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.raking-relief-root .rr-term-line {
+  margin: 0;
+}
+
+.raking-relief-root .rr-term-line.is-out,
+.raking-relief-root .rr-term-prompt {
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+}
+
+.raking-relief-root .rr-agent {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px 16px;
+  align-items: start;
+  padding: 20px 24px 22px;
+}
+
+.raking-relief-root .rr-lx {
+  display: block;
+}
+
+.raking-relief-root .rr-findings {
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.raking-relief-root .rr-findings li + li {
+  margin-top: 6px;
+}
+
+.raking-relief-root .rr-agent-diff {
+  grid-column: 2;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-review {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.raking-relief-root .rr-review-bar,
+.raking-relief-root .rr-review-foot {
+  display: flex;
+  gap: 18px;
+  padding: 10px 24px;
+  font-family: var(--rr-mono);
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-review-bar {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-review-foot {
+  margin-top: auto;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-review-rows {
+  margin: 0;
+  padding: 8px 24px;
+  list-style: none;
+}
+
+.raking-relief-root .rr-review-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 12px 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.raking-relief-root .rr-review-rows li + li {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-review-src {
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-review-tr {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.raking-relief-root .rr-review-tr s {
+  color: var(--deco-ink-2);
+}
+
+/* revision state by type: a solid ring is approved, a dashed ring is an edit */
+.raking-relief-root .rr-stamp {
+  align-self: start;
+  padding: 5px 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 3px;
+  background-clip: padding-box;
+  font-family: var(--rr-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.raking-relief-root .rr-stamp[data-state='edit'] {
+  border-style: dashed;
+}
+
+/* ---------- languages: the rosette band ---------- */
+
+.raking-relief-root .rr-ros-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px 0;
+  margin: 0;
+  padding: 8px var(--rr-gut) 28px;
+  list-style: none;
+}
+
+.raking-relief-root .rr-ros {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 6px 16px;
+  color: var(--deco-ornament);
+}
+
+.raking-relief-root .rr-ros-disc {
+  position: relative;
+  width: min(100%, 132px);
+  aspect-ratio: 1;
+}
+
+.raking-relief-root .rr-ros-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.raking-relief-root .rr-ros-name {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 22%;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--deco-ink);
+  overflow-wrap: anywhere;
+}
+
+.raking-relief-root .rr-variants {
+  margin: 0 var(--rr-gut) 64px;
+  padding: 8px 24px 22px 40px;
+}
+
+.raking-relief-root .rr-variants-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-variants-rows li {
+  display: grid;
+  grid-template-columns: 44px 120px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.raking-relief-root .rr-variants-rows li + li {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-variants-tag {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.raking-relief-root .rr-variants-name {
+  font-size: 14px;
+}
+
+.raking-relief-root .rr-variants-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.raking-relief-root .rr-variants-list .rr-variants-tag {
+  margin-left: 4px;
+}
+
+.raking-relief-root .rr-variants-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-variants-foot p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+/* ---------- the stele: the one dark course ---------- */
+
+.raking-relief-root .rr-stele {
+  position: relative;
+  color: var(--rr-stele-ink);
+}
+
+.raking-relief-root .rr-stele-crown {
+  display: grid;
+  justify-items: center;
+  width: min(var(--rr-col), 100%);
+  margin-inline: auto;
+}
+
+.raking-relief-root .rr-step {
+  display: block;
+  height: 16px;
+  background: var(--rr-stele-ground);
+}
+
+.raking-relief-root .rr-step.is-3 {
+  width: 58%;
+}
+
+.raking-relief-root .rr-step.is-2 {
+  width: 72%;
+}
+
+.raking-relief-root .rr-step.is-1 {
+  width: 86%;
+}
+
+.raking-relief-root .rr-stele-slab {
+  position: relative;
+  isolation: isolate;
+  padding: 44px 0 56px;
+  background: var(--rr-stele-ground);
+}
+
+.raking-relief-root .rr-stele-wall {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  color: var(--rr-stele-ink);
+}
+
+.raking-relief-root .rr-stele-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--rr-col), 100%);
+  margin-inline: auto;
+  padding: 0 var(--rr-gut);
+}
+
+/* the polished field: registers on opaque ground over the tooled border,
+   one lit edge on the left of the stack and on its top, seams between */
+.raking-relief-root .rr-stele-reg {
+  background: var(--rr-stele-ground);
+  box-shadow: inset 1px 0 0 0 var(--rr-stele-lit);
+}
+
+.raking-relief-root .rr-stele-reg + .rr-stele-reg {
+  border-top: 1px solid var(--rr-stele-seam);
+}
+
+.raking-relief-root .rr-stele-head {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  column-gap: 28px;
+  align-items: start;
+  padding: 36px 40px 34px;
+  box-shadow:
+    inset 1px 0 0 0 var(--rr-stele-lit),
+    inset 0 1px 0 0 var(--rr-stele-lit);
+}
+
+.raking-relief-root .rr-stele-head .rr-mark {
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-stele-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.raking-relief-root .rr-stele-title h2 {
+  margin: 0;
+  font-family: var(--raking-relief-display), var(--rr-sans);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+  line-height: 1.18;
+  letter-spacing: 0.03em;
+  color: var(--rr-stele-ink);
+}
+
+.raking-relief-root .rr-lx.is-inverted {
+  filter: invert(1);
+}
+
+.raking-relief-root .rr-stele-sub {
+  grid-column: 2;
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 1.62;
+  max-width: 64ch;
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-stele-sub code {
+  font-size: 13px;
+  color: var(--rr-stele-ink);
+}
+
+.raking-relief-root .rr-stele-body {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+}
+
+.raking-relief-root .rr-stele-run,
+.raking-relief-root .rr-stele-trace {
+  margin: 0;
+  padding: 28px 40px 30px;
+  list-style: none;
+}
+
+.raking-relief-root .rr-stele-trace {
+  border-left: 1px solid var(--rr-stele-seam);
+}
+
+.raking-relief-root .rr-stele-label {
+  margin: 0 0 12px;
+  font-family: var(--rr-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-stele-line {
+  margin: 0;
+  font-family: var(--rr-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--rr-stele-ink);
+}
+
+.raking-relief-root .rr-stele-line.is-out,
+.raking-relief-root .rr-stele-run .rr-term-prompt {
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-stele-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+}
+
+.raking-relief-root .rr-stele .rr-inlay {
+  background: var(--rr-stele-accent);
+}
+
+.raking-relief-root .rr-stele-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 28px 40px 34px;
+}
+
+.raking-relief-root .rr-stele .rr-btn.is-solid {
+  background: var(--rr-stele-ink);
+  color: var(--rr-stele-ground);
+}
+
+.raking-relief-root .rr-stele .rr-btn.is-line {
+  border-color: var(--rr-stele-seam);
+  color: var(--rr-stele-ink);
+}
+
+/* ---------- pricing: three tablets ---------- */
+
+.raking-relief-root .rr-tablets {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  padding: 8px var(--rr-gut) 24px;
+}
+
+.raking-relief-root .rr-rate-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.raking-relief-root .rr-rate-table th,
+.raking-relief-root .rr-rate-table td {
+  padding: 11px 24px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.raking-relief-root .rr-rate-table thead th {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--deco-hair);
+  font-family: var(--rr-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-rate-table tbody th {
+  font-weight: 400;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-rate-table tbody td {
+  font-family: var(--rr-mono);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-rate-table tbody tr + tr > * {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-rate-notes {
+  margin: 0;
+  padding: 20px 24px;
+  border-top: 1px solid var(--deco-hair);
+  list-style: none;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-rate-notes li + li {
+  margin-top: 6px;
+}
+
+.raking-relief-root .rr-rate-notes code {
+  font-size: 12px;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 10px 0 0;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-plan-price small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-plan-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px 24px;
+}
+
+.raking-relief-root .rr-plan-body > p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.58;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-plan-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.raking-relief-root .rr-plan-list li {
+  position: relative;
+  padding: 8px 0 8px 18px;
+}
+
+.raking-relief-root .rr-plan-list li::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--deco-ornament);
+}
+
+.raking-relief-root .rr-plan-list li + li {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-plan-body .rr-btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.raking-relief-root .rr-compare {
+  padding: 8px var(--rr-gut) 64px;
+}
+
+/* ---------- footer ---------- */
+
+.raking-relief-root .rr-foot {
+  display: grid;
+  grid-template-columns: 1.3fr repeat(4, minmax(0, 1fr));
+  gap: 32px;
+  padding: 56px var(--rr-gut) 48px;
+}
+
+.raking-relief-root .rr-foot-logo {
+  display: block;
+}
+
+.raking-relief-root .rr-foot-logo.is-dark {
+  display: none;
+}
+
+.raking-relief-root .rr-foot-brand p {
+  margin: 16px 0 0;
+  max-width: 30ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-foot-col h4 {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-foot-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-foot-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--deco-ink-2);
+  text-decoration: none;
+}
+
+.raking-relief-root .rr-foot-col a:hover,
+.raking-relief-root .rr-foot-col a:focus-visible {
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-foot-mark {
+  flex: none;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-foot-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 20px var(--rr-gut) 22px;
+  border-top: 1px solid var(--deco-hair);
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+/* ---------- the lapis inlay ---------- */
+
+.raking-relief-root .rr-inlay {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px 0 5px;
+  border-radius: 3px;
+  background: var(--deco-accent);
+  color: var(--rr-inlay-ink);
+  vertical-align: middle;
+}
+
+.raking-relief-root .rr-inlay .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-style: normal;
+}
+
+.raking-relief-root .rr-inlay .lct-code {
+  font-family: var(--rr-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+/* the two script variants the atlas singles out: a lapis ring, not a fill */
+.raking-relief-root .rr-inlay.is-tell {
+  background: transparent;
+  color: var(--deco-accent);
+  box-shadow: inset 0 0 0 1px var(--deco-accent);
+}
+
+/* ---------- dark: the same wall by night ---------- */
+
+[data-theme='dark'] .raking-relief-root {
+  --deco-ground: #070707;
+  --deco-ink: #f3ede2;
+  --deco-ink-2: rgba(243, 237, 226, 0.66);
+  --deco-hair: rgba(243, 237, 226, 0.2);
+  --deco-accent: #2f63b4;
+  --deco-ornament: #a08d72;
+  --rr-lit: rgba(255, 255, 255, 0.24);
+}
+
+[data-theme='dark'] .raking-relief-root .rr-wordmark.is-light,
+[data-theme='dark'] .raking-relief-root .rr-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .raking-relief-root .rr-wordmark.is-dark,
+[data-theme='dark'] .raking-relief-root .rr-foot-logo.is-dark {
+  display: block;
+}
+
+[data-theme='dark'] .raking-relief-root .rr-lx {
+  filter: invert(1);
+}
+
+/* ---------- reflow ---------- */
+
+@media (max-width: 1100px) {
+  .raking-relief-root .rr-ledger li {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+
+  .raking-relief-root .rr-ledger-cmd {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 960px) {
+  .raking-relief-root .rr-proof-grid,
+  .raking-relief-root .rr-bond,
+  .raking-relief-root .rr-bond.is-offset,
+  .raking-relief-root .rr-tablets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .raking-relief-root .rr-outputs-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-outputs-row li {
+    padding: 12px 18px 12px 0;
+  }
+
+  .raking-relief-root .rr-outputs-row li:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .raking-relief-root .rr-outputs-row li:nth-child(n + 3) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .raking-relief-root .rr-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-stats li:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .raking-relief-root .rr-stats li:nth-child(n + 3) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .raking-relief-root .rr-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-ros-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-review-rows li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .raking-relief-root .rr-review-tr {
+    grid-column: 1 / -1;
+  }
+
+  .raking-relief-root .rr-stele-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .raking-relief-root .rr-stele-trace {
+    border-left: 0;
+    border-top: 1px solid var(--rr-stele-seam);
+  }
+
+  .raking-relief-root .rr-foot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-foot-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+/* the mobile floors read the shared ladder with its px fallbacks */
+@media (max-width: 720px) {
+  .raking-relief-root .rr-wall,
+  .raking-relief-root .rr-nav-in {
+    border-inline: 0;
+  }
+
+  .raking-relief-root .rr-nav-links,
+  .raking-relief-root .rr-nav-signin {
+    display: none;
+  }
+
+  .raking-relief-root .rr-head {
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 16px;
+    padding: var(--tcm-head-pt, 72px) var(--rr-gut) var(--tcm-head-pb, 36px);
+  }
+
+  .raking-relief-root .rr-head h2,
+  .raking-relief-root .rr-stele-title h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .raking-relief-root .rr-head p,
+  .raking-relief-root .rr-stele-sub {
+    margin-top: var(--tcm-gap-h2, 18px);
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .raking-relief-root .rr-hero-stage {
+    padding: 28px var(--rr-gut) 40px;
+  }
+
+  .raking-relief-root .rr-hero-face {
+    padding: var(--tcm-box-pt, 36px) 22px var(--tcm-box-pb, 38px);
+  }
+
+  .raking-relief-root .rr-claim {
+    font-size: clamp(2rem, 9.4vw, 2.6rem);
+    max-width: none;
+    min-height: 0;
+  }
+
+  .raking-relief-root .rr-hero-sub {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .raking-relief-root .rr-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-tablet-head,
+  .raking-relief-root .rr-ledger,
+  .raking-relief-root .rr-term,
+  .raking-relief-root .rr-agent,
+  .raking-relief-root .rr-plan-body,
+  .raking-relief-root .rr-review-rows,
+  .raking-relief-root .rr-review-bar,
+  .raking-relief-root .rr-review-foot,
+  .raking-relief-root .rr-rate-notes {
+    padding-inline: var(--tcm-cell-pad, 28px);
+  }
+
+  .raking-relief-root .rr-rate-table th,
+  .raking-relief-root .rr-rate-table td {
+    padding-inline: 14px;
+  }
+
+  .raking-relief-root .rr-incised,
+  .raking-relief-root .rr-outputs,
+  .raking-relief-root .rr-variants {
+    padding-right: 20px;
+    padding-left: 36px;
+  }
+
+  .raking-relief-root .rr-ros-name {
+    font-size: 11px;
+    padding: 0 20%;
+  }
+
+  .raking-relief-root .rr-variants-rows li {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .raking-relief-root .rr-variants-list {
+    grid-column: 1 / -1;
+  }
+
+  .raking-relief-root .rr-stele-head {
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 16px;
+    padding: 28px 24px;
+  }
+
+  .raking-relief-root .rr-stele-run,
+  .raking-relief-root .rr-stele-trace,
+  .raking-relief-root .rr-stele-acts {
+    padding: 24px;
+  }
+
+  .raking-relief-root .rr-code-body {
+    font-size: 12px;
+  }
+
+  .raking-relief-root .rr-foot {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+}

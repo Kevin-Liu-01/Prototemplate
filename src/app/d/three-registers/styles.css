@@ -1,0 +1,1676 @@
+/* three-registers: a stele of registers. One tall slab of black granodiorite stands on a
+   dark ground under a stepped cornice, and every section is a register of three bands
+   read top to bottom, after the stone that carried one decree in hieroglyphic, demotic
+   and Greek. The claim is cut into the first band, the same claim in a living script
+   into the second, the served interface into the third; the T component, the scripts,
+   the instruments, the review, the rates and the base follow as registers down the slab.
+
+   References, and what each one gives the page concretely:
+   The Rosetta Stone (British Museum, EA24): one granodiorite slab, three registers of
+   one text in three scripts, incised capitals in the lowest register, ruled register
+   lines, a broken base. The page is one slab; every section is three bands; the type is
+   pale as a cut face on dark stone; the slab ends in a coarse dithered fracture.
+   The Behistun inscription (Mount Behistun, Iran): the same text in three cuneiform
+   languages on a battered rock face, panels stacked and ruled, read across a cliff. The
+   panels stack as bands with functional labels in their corners; nothing sits beside
+   the column; a chevron strip separates one register from the next.
+   Cartier's Egyptian-revival jewels (1920s): black onyx and lacquer against gold,
+   stepped and battered profiles, block and chevron borders, the cartouche as the frame
+   that holds a name. Gold is spent on edges and figures only; the cornice is four
+   setbacks; each register head carries a cartouche with the register's numeral; one
+   register is gilded end to end, the page's high-contrast moment.
+
+   Material palette (Ptolemaic Egyptian revival): black granodiorite for the slab, incised
+   pale stone for the ink, gold leaf for the accent and the ornament, an obsidian floor
+   for the ground. The light theme is the same stele cut in pale limestone on a sandstone
+   floor. The gilded register is gold leaf in both.
+   Ornament homes: the stepped cornice (the slab's crown), the winged sun disk over the
+   claim (a dithered circle between two bars), the cartouche in every register head, the
+   chevron strip between registers, the ziggurat stair that draws the pipeline inside the
+   gilded register, and the Bayer grain of the slab with its dissolving base.
+   Accent: gold, one job, edges and figures: the slab's edge, the active tab's underline,
+   the tell chip's ring, the string hue in code, the rates' figures, and the gilded register.
+   Display face: Cinzel, for h1 and h2 only. Inter is body, interface, captions, chips,
+   labels, code bars and the footer.
+   Dark mode remaps the material tokens below and nothing else; the gilded register's
+   tokens never remap. Geometry only: steps, bars, circles, chevrons, cartouches, stairs. */
+.three-registers-root {
+  --deco-ground: #ddd3bf;
+  --deco-slab: #efe7d6;
+  --deco-ink: #1c1813;
+  --deco-ink-2: rgba(28, 24, 19, 0.64);
+  --deco-hair: rgba(28, 24, 19, 0.2);
+  --deco-hair-2: rgba(28, 24, 19, 0.11);
+  /* gold as text (rate figures, string tokens) must hold AA on the pale slab: 5.0:1 */
+  --deco-accent: #7d5c0b;
+  --deco-ornament: #7d5c0b;
+  --deco-edge: rgba(125, 92, 11, 0.62);
+  --deco-grain: rgba(28, 24, 19, 0.09);
+
+  /* the gilded register, the same in both themes; the second ink holds AA on gold leaf */
+  --deco-gild: #c9a227;
+  --deco-gild-ink: #16120a;
+  --deco-gild-ink-2: rgba(22, 18, 10, 0.78);
+  --deco-gild-hair: rgba(22, 18, 10, 0.3);
+  --deco-gild-hair-2: rgba(22, 18, 10, 0.16);
+
+  /* the ledger's typewriter and the slab's measures */
+  --tr-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --tr-slab: 1080px;
+  --tr-gut: clamp(10px, 3vw, 40px);
+  --tr-pad: clamp(20px, 3.6vw, 48px);
+  --tr-band-pt: clamp(28px, 3.6vw, 48px);
+  --tr-band-pb: clamp(30px, 3.8vw, 52px);
+
+  position: relative;
+  min-height: 100svh;
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme='dark'] .three-registers-root {
+  --deco-ground: #0a0908;
+  --deco-slab: #1b1a17;
+  --deco-ink: #ebe4d2;
+  --deco-ink-2: rgba(235, 228, 210, 0.64);
+  --deco-hair: rgba(235, 228, 210, 0.18);
+  --deco-hair-2: rgba(235, 228, 210, 0.1);
+  --deco-accent: #d2a72e;
+  --deco-ornament: #d2a72e;
+  --deco-edge: rgba(210, 167, 46, 0.55);
+  --deco-grain: rgba(235, 228, 210, 0.085);
+}
+
+/* ---------- base ---------- */
+
+.three-registers-root *,
+.three-registers-root *::before,
+.three-registers-root *::after {
+  box-sizing: border-box;
+}
+
+.three-registers-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.three-registers-root :focus-visible {
+  outline: 1px solid var(--deco-accent);
+  outline-offset: 2px;
+}
+
+.three-registers-root code {
+  font-family: var(--tr-mono);
+  font-size: 0.88em;
+}
+
+.three-registers-root h3,
+.three-registers-root h4 {
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ---------- the ground, the slab, the grain ---------- */
+
+.three-registers-root .tr-ground {
+  padding: 44px var(--tr-gut) 0;
+}
+
+.three-registers-root .tr-slab {
+  width: min(var(--tr-slab), 100%);
+  margin-inline: auto;
+}
+
+.three-registers-root .tr-cornice {
+  display: block;
+  width: 100%;
+  height: 64px;
+}
+
+.three-registers-root .tr-cornice-fill {
+  fill: var(--deco-slab);
+}
+
+.three-registers-root .tr-cornice-edge {
+  fill: none;
+  stroke: var(--deco-edge);
+  stroke-width: 1;
+}
+
+.three-registers-root .tr-stele {
+  position: relative;
+  background: var(--deco-slab);
+  border-inline: 1px solid var(--deco-edge);
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-reg,
+.three-registers-root .tr-rule {
+  position: relative;
+  z-index: 1;
+}
+
+/* each stone register's grain sits behind its own head and bands */
+.three-registers-root .tr-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.three-registers-root .tr-reg-head,
+.three-registers-root .tr-band {
+  position: relative;
+  z-index: 1;
+}
+
+.three-registers-root .tr-dissolve {
+  display: block;
+  width: 100%;
+  height: 132px;
+}
+
+/* ---------- the nav: the slab's first course ---------- */
+
+.three-registers-root .tr-nav {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 58px;
+  padding: 0 var(--tr-pad);
+  background: var(--deco-slab);
+  border-bottom: 1px solid var(--deco-hair);
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.three-registers-root .tr-nav-links {
+  display: flex;
+  gap: 22px;
+  margin: 0 auto 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.three-registers-root .tr-nav-links a {
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-nav-links a:hover {
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-nav-acts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+
+.three-registers-root .tr-nav-signin {
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---------- registers, heads, bands, rules ---------- */
+
+.three-registers-root .tr-reg-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 54px;
+  padding: 10px var(--tr-pad);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.three-registers-root .tr-reg-name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--deco-ornament);
+}
+
+.three-registers-root .tr-cart-loop {
+  display: inline-grid;
+  place-items: center;
+  min-width: 44px;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--deco-ornament);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-cart-tie {
+  width: 1px;
+  height: 20px;
+  background: var(--deco-ornament);
+}
+
+.three-registers-root .tr-band {
+  position: relative;
+  padding: var(--tr-band-pt) var(--tr-pad) var(--tr-band-pb);
+}
+
+.three-registers-root .tr-band + .tr-band {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.three-registers-root .tr-band-label {
+  margin: 0 0 18px;
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-rule {
+  height: 21px;
+  border-top: 1px solid var(--deco-hair);
+  border-bottom: 1px solid var(--deco-hair);
+  color: var(--deco-ornament);
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-rule-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* the gilded register re-points the material tokens to gold leaf and its cut ink */
+.three-registers-root .tr-reg.is-gild {
+  --deco-slab: var(--deco-gild);
+  --deco-ink: var(--deco-gild-ink);
+  --deco-ink-2: var(--deco-gild-ink-2);
+  --deco-hair: var(--deco-gild-hair);
+  --deco-hair-2: var(--deco-gild-hair-2);
+  --deco-accent: var(--deco-gild-ink);
+  --deco-ornament: var(--deco-gild-ink);
+
+  background: var(--deco-gild);
+  color: var(--deco-gild-ink);
+}
+
+/* ---------- type ---------- */
+
+.three-registers-root h1.tr-h1 {
+  margin: 0;
+  font-family: var(--three-registers-display), var(--font-inter), serif;
+  font-size: clamp(2.3rem, 6.4vw, 5.2rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.three-registers-root h2.tr-h2 {
+  margin: 0;
+  max-width: 28ch;
+  font-family: var(--three-registers-display), var(--font-inter), serif;
+  font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.three-registers-root .tr-sub {
+  margin: 14px 0 0;
+  max-width: 58ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-sub code {
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-h3 {
+  max-width: 32ch;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.three-registers-root .tr-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--deco-ink);
+  font-weight: 500;
+  vertical-align: baseline;
+}
+
+.three-registers-root .tr-caption {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--deco-ink-2);
+}
+
+/* ---------- acts, chips, copy ---------- */
+
+.three-registers-root .tr-act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.three-registers-root .tr-act.is-solid {
+  background: var(--deco-ink);
+  color: var(--deco-slab);
+}
+
+.three-registers-root .tr-act.is-line {
+  border: 1px solid var(--deco-hair);
+  color: var(--deco-ink);
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-act.is-line:hover {
+  border-color: var(--deco-ink);
+}
+
+.three-registers-root .tr-act.is-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.three-registers-root .tr-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 3px;
+  color: var(--deco-ink-2);
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+  direction: ltr;
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-chip.is-tell {
+  border-color: var(--deco-accent);
+  color: var(--deco-ink);
+}
+
+.three-registers-root .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-style: normal;
+}
+
+.three-registers-root .lct-code {
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.three-registers-root .tr-copy {
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--deco-ink-2);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-copy:hover {
+  color: var(--deco-ink);
+  border-color: var(--deco-ink);
+}
+
+/* ---------- register I: the claim ---------- */
+
+.three-registers-root .tr-band.is-claim {
+  padding-top: clamp(40px, 5vw, 72px);
+  text-align: center;
+}
+
+.three-registers-root .tr-crown {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 520px;
+  margin: 0 auto 32px;
+  color: var(--deco-ornament);
+}
+
+.three-registers-root .tr-crown-bar {
+  flex: 1;
+  height: 1px;
+  background: var(--deco-ornament);
+}
+
+.three-registers-root .tr-disk {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 80px;
+  height: 80px;
+}
+
+.three-registers-root .tr-disk-canvas,
+.three-registers-root .tr-disk-ring {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.three-registers-root .tr-sub.is-hero {
+  margin: 24px auto 0;
+  font-size: 17px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.three-registers-root .tr-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.three-registers-root .tr-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 6px 0 12px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-cmd code {
+  font-size: 13px;
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-demotic {
+  unicode-bidi: isolate;
+}
+
+.three-registers-root .tr-demotic-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px 18px;
+}
+
+.three-registers-root .tr-demotic-text {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.8vw, 3rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  unicode-bidi: isolate;
+}
+
+.three-registers-root .tr-demotic-text[dir='rtl'] {
+  text-align: right;
+}
+
+.three-registers-root .tr-face {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.three-registers-root .tr-face > * + * {
+  padding-left: var(--tr-pad);
+  border-left: 1px solid var(--deco-hair);
+}
+
+.three-registers-root .tr-face-src {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-right: var(--tr-pad);
+}
+
+.three-registers-root .tr-face-key {
+  margin: 0 0 4px;
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-face-src code {
+  display: block;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-face-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--deco-hair-2);
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-face-page {
+  padding-top: 22px;
+  unicode-bidi: isolate;
+}
+
+.three-registers-root .tr-face-h {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.three-registers-root .tr-face-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  margin-top: 16px;
+  padding: 0 12px;
+  border-radius: 4px;
+  background: var(--deco-ink);
+  color: var(--deco-slab);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* ---------- register II: the T component ---------- */
+
+.three-registers-root .tr-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 22px;
+  margin-top: 26px;
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.three-registers-root .tr-tab {
+  position: relative;
+  height: 38px;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: var(--deco-ink-2);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.three-registers-root .tr-tab.is-on {
+  color: var(--deco-ink);
+}
+
+/* the active underline sits on the tablist's rule: gold over the seam, one line */
+.three-registers-root .tr-tab.is-on::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--deco-accent);
+}
+
+.three-registers-root .tr-code {
+  margin-top: 22px;
+  border: 1px solid var(--deco-hair);
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-code-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 36px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--deco-hair);
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-code-file {
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-code-pkg {
+  flex: 1;
+}
+
+.three-registers-root .tr-code-face {
+  margin: 0;
+  padding: 16px 20px 18px;
+  overflow-x: auto;
+  font-family: var(--tr-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--deco-ink);
+  tab-size: 2;
+}
+
+.three-registers-root .tr-code-face code {
+  font-size: inherit;
+}
+
+.three-registers-root .tr-code-line {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+}
+
+.three-registers-root .tr-code-n {
+  padding-right: 1.2em;
+  text-align: right;
+  color: var(--deco-ink-2);
+  user-select: none;
+}
+
+.three-registers-root .tr-code-src {
+  white-space: pre;
+}
+
+.three-registers-root .tr-tok-str {
+  color: var(--deco-accent);
+}
+
+.three-registers-root .tr-tok-kw,
+.three-registers-root .tr-tok-num {
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-tok-tag,
+.three-registers-root .tr-tok-cm {
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-install {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-install code::before {
+  content: '$ ';
+}
+
+.three-registers-root .tr-outputs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--deco-hair);
+}
+
+.three-registers-root .tr-output {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 20px 20px 22px;
+  background: var(--deco-slab);
+}
+
+.three-registers-root .tr-output-cap {
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-output-api {
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-output-val {
+  font-size: 17px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.three-registers-root .tr-output .tr-chip {
+  justify-self: start;
+}
+
+.three-registers-root .tr-belt {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+  gap: 16px 24px;
+}
+
+.three-registers-root .tr-belt + .tr-belt {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--deco-hair-2);
+}
+
+.three-registers-root .tr-belt-src {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.three-registers-root .tr-belt-key {
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-belt-src b,
+.three-registers-root .tr-belt-out b {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.three-registers-root .tr-belt-out {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.three-registers-root .tr-belt-out li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- register III: the scripts ---------- */
+
+.three-registers-root .tr-variants {
+  display: grid;
+  margin-top: 26px;
+}
+
+.three-registers-root .tr-variant {
+  display: grid;
+  grid-template-columns: 56px 110px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid var(--deco-hair-2);
+}
+
+.three-registers-root .tr-variant:first-child {
+  border-top: 0;
+}
+
+.three-registers-root .tr-variant-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.three-registers-root .tr-variant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.three-registers-root .tr-scripts {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--deco-hair);
+}
+
+.three-registers-root .tr-script {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  min-height: 118px;
+  padding: 22px 20px;
+  background: var(--deco-slab);
+}
+
+.three-registers-root .tr-script-name {
+  display: block;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  unicode-bidi: isolate;
+}
+
+.three-registers-root .tr-tail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+}
+
+.three-registers-root .tr-tail span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.three-registers-root .tr-count {
+  margin: 18px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.three-registers-root .tr-band.is-tail .tr-act {
+  margin-top: 22px;
+}
+
+/* ---------- register IV: the instruments ---------- */
+
+.three-registers-root .tr-libs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--deco-hair);
+}
+
+.three-registers-root .tr-lib {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 20px 20px 22px;
+  background: var(--deco-slab);
+}
+
+.three-registers-root .tr-lib-pkg {
+  font-size: 13px;
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-lib-name {
+  font-size: 13px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-lib-install {
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-lib-install::before {
+  content: '$ ';
+}
+
+.three-registers-root .tr-term {
+  font-family: var(--tr-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.three-registers-root .tr-term-line {
+  margin: 0;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-term-line.is-cmd {
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-term-prompt {
+  color: var(--deco-accent);
+}
+
+.three-registers-root .tr-term-line.is-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+.three-registers-root .tr-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.three-registers-root .tr-pair > :first-child {
+  padding-right: var(--tr-pad);
+}
+
+.three-registers-root .tr-pair > * + * {
+  padding-left: var(--tr-pad);
+  border-left: 1px solid var(--deco-hair);
+}
+
+.three-registers-root .tr-pair-cell h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.three-registers-root .tr-pair-cell p {
+  margin: 8px 0 0;
+  max-width: 46ch;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-ledger-mini {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.three-registers-root .tr-ledger-mini li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid var(--deco-hair-2);
+  font-size: 13px;
+}
+
+.three-registers-root .tr-ledger-mini li:first-child {
+  border-top: 0;
+}
+
+.three-registers-root .tr-ledger-mini b {
+  font-weight: 500;
+}
+
+.three-registers-root .tr-ledger-mini span {
+  font-family: var(--tr-mono);
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-trace {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--tr-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-trace li {
+  padding: 6px 0;
+  border-top: 1px solid var(--deco-hair-2);
+}
+
+.three-registers-root .tr-trace li:first-child {
+  border-top: 0;
+}
+
+.three-registers-root .tr-trace li:last-child code {
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-trace-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 0;
+  font-family: var(--tr-mono);
+  font-size: 11.5px;
+}
+
+.three-registers-root .tr-ldx {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.three-registers-root .tr-ldx.is-sm {
+  width: 12px;
+  height: 12px;
+}
+
+/* the lambda mark is drawn dark; the dark slab inverts it */
+[data-theme='dark'] .three-registers-root .tr-ldx {
+  filter: invert(1);
+}
+
+/* ---------- register V: the gilded review ---------- */
+
+.three-registers-root .tr-marks {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--deco-hair);
+}
+
+.three-registers-root .tr-mark-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  background: var(--deco-slab);
+}
+
+.three-registers-root .tr-mark-cell a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* monochrome marks in the register's ink, never colored */
+.three-registers-root .tr-mark {
+  height: 20px;
+  width: auto;
+  max-width: 76%;
+  filter: grayscale(1);
+}
+
+.three-registers-root .tr-ws-bar,
+.three-registers-root .tr-ws-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-ws-bar {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.three-registers-root .tr-ws-cols {
+  display: flex;
+  gap: 22px;
+  margin-left: auto;
+}
+
+.three-registers-root .tr-ws-foot {
+  padding-top: 12px;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.three-registers-root .tr-ws-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.three-registers-root .tr-ws-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) minmax(0, 1fr) 84px;
+  align-items: start;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--deco-hair-2);
+}
+
+.three-registers-root .tr-ws-row:first-child {
+  border-top: 0;
+}
+
+.three-registers-root .tr-ws-key {
+  padding-top: 3px;
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-ws-src,
+.three-registers-root .tr-ws-tr {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.three-registers-root .tr-ws-tr s {
+  display: block;
+  color: var(--deco-ink-2);
+  text-decoration-thickness: 1px;
+}
+
+/* revision state carried by type and the ring, never by color */
+.three-registers-root .tr-stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  height: 20px;
+  padding: 0 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  background-clip: padding-box;
+}
+
+.three-registers-root .tr-stamp.is-edited {
+  border-style: dashed;
+}
+
+.three-registers-root .tr-stair {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: end;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.three-registers-root .tr-step-tread {
+  display: block;
+  height: calc(var(--tr-i) * 12px);
+  border-top: 1px solid var(--deco-ornament);
+  border-left: 1px solid var(--deco-ornament);
+}
+
+.three-registers-root .tr-step-label {
+  display: block;
+  padding: 10px 0 0 8px;
+  font-family: var(--tr-mono);
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-counts {
+  margin: 22px 0 0;
+  font-family: var(--tr-mono);
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+/* ---------- register VI: the rates ---------- */
+
+.three-registers-root .tr-ledger {
+  margin-top: 26px;
+}
+
+.three-registers-root .tr-ledger-head,
+.three-registers-root .tr-ledger-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.7fr) minmax(0, 0.6fr);
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.three-registers-root .tr-ledger-head {
+  padding-top: 0;
+  font-family: var(--tr-mono);
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-ledger-row {
+  border-top: 1px solid var(--deco-hair-2);
+  font-size: 14px;
+}
+
+/* the figures, cut and gilded */
+.three-registers-root .tr-ledger-rate,
+.three-registers-root .tr-ledger-gt {
+  font-family: var(--tr-mono);
+  font-size: 13px;
+  color: var(--deco-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.three-registers-root .tr-plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--deco-hair);
+}
+
+.three-registers-root .tr-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 22px 26px;
+  background: var(--deco-slab);
+}
+
+.three-registers-root .tr-plan h3 {
+  font-size: 15px;
+}
+
+.three-registers-root .tr-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+
+.three-registers-root .tr-plan-price b {
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--deco-accent);
+}
+
+.three-registers-root .tr-plan-price small {
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-plan-body {
+  margin: 0;
+  font-size: 14px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-plan ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+}
+
+/* one block of the block border as the bullet */
+.three-registers-root .tr-plan ul li::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  background: var(--deco-ornament);
+  vertical-align: 1px;
+}
+
+.three-registers-root .tr-plan .tr-act {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.three-registers-root .tr-notes {
+  display: grid;
+  gap: 8px;
+  max-width: 70ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-notes code {
+  color: var(--deco-ink);
+}
+
+/* ---------- register VII: the base ---------- */
+
+.three-registers-root .tr-foot-brand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  font-size: 15px;
+}
+
+.three-registers-root .tr-foot-logos {
+  display: inline-flex;
+}
+
+.three-registers-root .tr-foot-logo {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
+.three-registers-root .tr-foot-logo.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .three-registers-root .tr-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .three-registers-root .tr-foot-logo.is-dark {
+  display: block;
+}
+
+.three-registers-root .tr-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.three-registers-root .tr-foot-col h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+
+.three-registers-root .tr-foot-col ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.three-registers-root .tr-foot-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+.three-registers-root .tr-foot-col a:hover {
+  color: var(--deco-ink);
+}
+
+.three-registers-root .tr-band.is-close {
+  padding-top: 18px;
+  padding-bottom: 22px;
+}
+
+.three-registers-root .tr-foot-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+/* ---------- reflow ---------- */
+
+@media (max-width: 960px) {
+  .three-registers-root .tr-scripts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .three-registers-root .tr-outputs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* five outputs in three (then two) columns: the last cell fills the row so the mat never shows as a block */
+  .three-registers-root .tr-output:last-child {
+    grid-column: span 2;
+  }
+
+  .three-registers-root .tr-marks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .three-registers-root .tr-libs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .three-registers-root .tr-belt {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .three-registers-root {
+    /* the mobile ladder: every floor reads a slot with its canonical px fallback */
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .three-registers-root .tr-ground {
+    padding-top: 24px;
+  }
+
+  .three-registers-root .tr-cornice {
+    height: 40px;
+  }
+
+  .three-registers-root .tr-nav-links {
+    display: none;
+  }
+
+  .three-registers-root .tr-nav-signin {
+    display: none;
+  }
+
+  .three-registers-root .tr-band {
+    padding-top: var(--tcm-cell-pad, 28px);
+    padding-bottom: var(--tcm-cell-pad, 28px);
+  }
+
+  .three-registers-root h1.tr-h1 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+    letter-spacing: 0.04em;
+  }
+
+  .three-registers-root h2.tr-h2 {
+    font-size: var(--tcm-h3, 1.375rem);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .three-registers-root .tr-sub,
+  .three-registers-root .tr-sub.is-hero {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+    margin-top: var(--tcm-gap-h3, 14px);
+  }
+
+  .three-registers-root .tr-h3 {
+    font-size: var(--tcm-h4, 1.125rem);
+    line-height: var(--tcm-h4-lh, 1.35);
+  }
+
+  .three-registers-root .tr-demotic-text {
+    font-size: var(--tcm-quote, 22px);
+    line-height: var(--tcm-quote-lh, 1.4);
+  }
+
+  .three-registers-root .tr-face,
+  .three-registers-root .tr-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .three-registers-root .tr-face > * + *,
+  .three-registers-root .tr-pair > * + * {
+    margin-top: 22px;
+    padding-top: 22px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .three-registers-root .tr-face-src,
+  .three-registers-root .tr-pair > :first-child {
+    padding-right: 0;
+  }
+
+  .three-registers-root .tr-variant {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .three-registers-root .tr-variant-list {
+    grid-column: 1 / -1;
+  }
+
+  .three-registers-root .tr-ws-cols {
+    display: none;
+  }
+
+  .three-registers-root .tr-ws-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 16px;
+  }
+
+  .three-registers-root .tr-ws-key {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .three-registers-root .tr-stamp {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .three-registers-root .tr-ws-src,
+  .three-registers-root .tr-ws-tr {
+    grid-column: 1 / -1;
+  }
+
+  /* stacked: the source reads in the second ink, the translation in the first */
+  .three-registers-root .tr-ws-src {
+    color: var(--deco-ink-2);
+  }
+
+  .three-registers-root .tr-ledger-head {
+    display: none;
+  }
+
+  .three-registers-root .tr-ledger-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .three-registers-root .tr-ledger-gt:empty {
+    display: none;
+  }
+
+  .three-registers-root .tr-ledger-gt::before {
+    content: 'GT libraries ';
+    color: var(--deco-ink-2);
+  }
+
+  .three-registers-root .tr-plans {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .three-registers-root .tr-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .three-registers-root .tr-step-label {
+    padding-left: 4px;
+    font-size: 10.5px;
+  }
+
+  .three-registers-root .tr-dissolve {
+    height: 88px;
+  }
+}
+
+@media (max-width: 560px) {
+  .three-registers-root .tr-scripts,
+  .three-registers-root .tr-outputs,
+  .three-registers-root .tr-marks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .three-registers-root .tr-libs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .three-registers-root .tr-script {
+    min-height: 104px;
+  }
+
+  .three-registers-root .tr-script-name {
+    font-size: 19px;
+  }
+
+  .three-registers-root .tr-crown {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .three-registers-root .tr-disk {
+    width: 64px;
+    height: 64px;
+  }
+
+  .three-registers-root .tr-acts .tr-act,
+  .three-registers-root .tr-cmd {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .three-registers-root .tr-cmd {
+    justify-content: space-between;
+  }
+
+  .three-registers-root .tr-stair {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 18px;
+  }
+
+  .three-registers-root .tr-foot-bar {
+    flex-direction: column;
+  }
+}

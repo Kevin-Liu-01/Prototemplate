@@ -1,0 +1,1593 @@
+/* textile-block: the General Translation landing page as a relief block
+   wall. A rigid grid of square cast-concrete blocks laid in horizontal
+   courses; most blocks carry a repeating geometric relief, and the content
+   sits on smooth block faces set into the same bond. Nothing floats. Every
+   surface on the page is a block, and every line on the page is a joint.
+
+   Lineage: the Mayan revival of Art Deco. Geometry only.
+
+   References, and what each one gives the page concretely:
+   1. Frank Lloyd Wright, Millard House (La Miniatura, Pasadena, 1923) and
+      Ennis House (Los Angeles, 1924), the textile-block system. The unit is
+      the sixteen-inch square block, cast with a patterned face and laid in
+      courses with the steel knit into the joints. Here the module is one
+      square block (`--tb-block`), the courses are grid rows of that module,
+      the joints are the hairlines drawn once at the module pitch, and the
+      two block faces are the two surfaces: patterned (`--deco-ground` with
+      the motif in the ornament color) and smooth (`--tb-face`). The Millard
+      cruciform with its four corner squares is the `cross` motif and, cut
+      through as a hole, the `perf` module; the Ennis interlocking key is the
+      `fret` motif. Wright's perforated blocks with glass inserts are the
+      hero's lit modules: the Bayer field is the light behind the wall.
+   2. The Mayan Theater (Los Angeles, 1927, Morgan, Walls and Clements; relief
+      facade by Francisco Cornejo). The whole street face is relief panels
+      stacked in register bands, each band one repeating unit, framed by
+      plain courses. That is the page's rhythm: pattern courses (`.is-frieze`)
+      between content courses, one motif per band (chevron, meander, fret,
+      bond), and the nested-square `step` medallion as the stepped-pyramid
+      plan. Its concrete is left the color of concrete, so the ground here is
+      cast grey, not paper.
+   3. The Aztec Hotel (Monrovia, 1924, Robert Stacy-Judd). Stepped frets and
+      greca meanders run as continuous friezes across a battered wall, and
+      the openings are set deep into the mass. The `meander` and `chevron`
+      bands are that continuous run; the base course's five setbacks are
+      battered (clip-path trapezoids, slope in pixels not percent), and
+      the objects inside the smooth blocks sit one layer deeper on the
+      ground color, like a recess in the mass.
+
+   Material palette (H3): cast concrete grey for the ground, moss green for
+   the relief (the lichen that stains the recesses of the Ennis blocks),
+   terracotta for the accent, jade for the dark base course.
+
+   Ornament homes: the relief modules themselves, wherever the bond leaves a
+   module without content (the hero's perforated field, the head courses'
+   remainders, the friezes between courses, the fillers that close a row);
+   the cartouche frame inside each script block; the Bayer tiers on the
+   ziggurat faces. Ornament never sits on a smooth face except the cartouche.
+
+   Accent: terracotta marks the live string and nothing else. String tokens
+   in the source block, and the ring on the one locale pair the atlas wants
+   noticed (zh-Hans beside zh-Hant).
+
+   Display face: Marcellus (next/font/google, `--textile-block-display`),
+   used for h1 and h2 only. Inter is the body, interface, caption, ledger
+   and chip face; the mono voice is for code, tokens and paths.
+
+   Dark mode remaps the six deco tokens and the smooth face and nothing
+   else. The jade base course never remaps. */
+.textile-block-root {
+  --deco-ground: #d6d2c8;
+  --deco-ink: #1b201d;
+  --deco-ink-2: rgba(27, 32, 29, 0.68);
+  --deco-hair: rgba(27, 32, 29, 0.22);
+  --deco-accent: #b0563a;
+  --deco-ornament: #5d6c50;
+
+  /* the smooth cast face, one step lighter than the patterned ground */
+  --tb-cast-face: #e9e5dc;
+
+  /* the jade base course: fixed in both themes */
+  --tb-dk-ground: #14211d;
+  --tb-dk-face: #1a2b26;
+  --tb-dk-relief: #2a4d43;
+  --tb-dk-lit: #3f6b5e;
+  --tb-dk-ink: #eef0ea;
+  --tb-dk-ink-2: rgba(238, 240, 234, 0.66);
+  --tb-dk-hair: rgba(238, 240, 234, 0.17);
+
+  /* the wall reads the palette through its own tokens */
+  --tb-ground: var(--deco-ground);
+  --tb-face: var(--tb-cast-face);
+  --tb-ink: var(--deco-ink);
+  --tb-ink-2: var(--deco-ink-2);
+  --tb-hair: var(--deco-hair);
+  --tb-accent: var(--deco-accent);
+  --tb-ornament: var(--deco-ornament);
+  --tb-light-ink: var(--tb-ink);
+  --tb-light-paper: var(--tb-face);
+
+  /* type */
+  --tb-display: var(--textile-block-display), var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tb-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tb-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* the bond: columns per course, the module, the gutter, the copy floor */
+  --tb-cols: 12;
+  --tb-block-max: 100px;
+  --tb-gut: clamp(16px, 3vw, 40px);
+  --tb-block: min(var(--tb-block-max), round(down, calc((100cqw - 1px) / var(--tb-cols)), 1px));
+  --tb-pad: clamp(20px, 2.3vw, 30px);
+
+  position: relative;
+  min-height: 100svh;
+  margin: 0;
+  color: var(--tb-ink);
+  background: var(--tb-ground);
+  font-family: var(--tb-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* a browser without round(): the module goes fractional and the joints soften; the bond holds */
+@supports not (width: round(down, 10px, 1px)) {
+  .textile-block-root {
+    --tb-block: min(var(--tb-block-max), calc((100cqw - 1px) / var(--tb-cols)));
+  }
+}
+
+/* ------------------------------------------------------------------------ *
+ * The page and the wall
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-page {
+  container-type: inline-size;
+  padding: 0 var(--tb-gut) 72px;
+}
+
+.textile-block-root .tb-main {
+  display: block;
+}
+
+/* The wall owns its left and top edge; every module owns its right and
+   bottom joint. Nothing else draws a line that parallels a joint. */
+.textile-block-root .tb-wall {
+  width: calc(var(--tb-cols) * var(--tb-block) + 1px);
+  margin-inline: auto;
+  border-left: 1px solid var(--tb-hair);
+  border-top: 1px solid var(--tb-hair);
+}
+
+/* the lower wall begins under the base course's own bottom joints */
+.textile-block-root .tb-wall.is-lower {
+  border-top: 0;
+}
+
+.textile-block-root .tb-course {
+  display: grid;
+  grid-template-columns: repeat(var(--tb-cols), var(--tb-block));
+  grid-auto-rows: minmax(var(--tb-block), auto);
+  position: relative;
+}
+
+.textile-block-root .tb-block,
+.textile-block-root .tb-relief {
+  grid-column: span var(--c, 1);
+  grid-row: span var(--r, 1);
+  min-width: 0;
+}
+
+/* ---- the smooth block ---- */
+.textile-block-root .tb-block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tb-pad);
+  border-right: 1px solid var(--tb-hair);
+  border-bottom: 1px solid var(--tb-hair);
+  background: var(--tb-face);
+  background-clip: padding-box;
+}
+
+/* ---- the relief region ---- */
+.textile-block-root .tb-relief {
+  position: relative;
+  overflow: hidden;
+  background: var(--tb-ground);
+}
+
+.textile-block-root .tb-relief-light {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: var(--tb-light-ink);
+  background-color: var(--tb-light-paper);
+}
+
+/* the concrete layer of a perforated module: a square with the cruciform cut out */
+.textile-block-root .tb-relief-face {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--tb-ground);
+  -webkit-mask-image: var(--tb-perf);
+  mask-image: var(--tb-perf);
+  -webkit-mask-size: var(--tb-block) var(--tb-block);
+  mask-size: var(--tb-block) var(--tb-block);
+  -webkit-mask-position: right bottom;
+  mask-position: right bottom;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+/* the relief: the motif tile as a mask over the ornament color */
+.textile-block-root .tb-relief-motif {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--tb-ornament);
+  -webkit-mask-image: var(--tb-motif);
+  mask-image: var(--tb-motif);
+  -webkit-mask-size: var(--tb-block) var(--tb-block);
+  mask-size: var(--tb-block) var(--tb-block);
+  -webkit-mask-position: right bottom;
+  mask-position: right bottom;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+/* The joints of a relief region, drawn once at the module pitch: one 1px
+   line at the right and one at the bottom of every module. Hard-stop
+   single-color gradients draw rules, not tone (the C2 device). */
+.textile-block-root .tb-relief::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to left, var(--tb-hair) 1px, transparent 1px),
+    linear-gradient(to top, var(--tb-hair) 1px, transparent 1px);
+  background-size: var(--tb-block) var(--tb-block);
+  background-position: right bottom;
+}
+
+/* ---- the motifs, 100-unit tiles, geometry only ---- */
+
+/* Millard cruciform with four corner squares */
+.textile-block-root .tb-relief.is-cross {
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' d='M40 10h20v30h30v20H60v30H40V60H10V40h30zM10 10h16v16H10zM74 10h16v16H74zM10 74h16v16H10zM74 74h16v16H74z'/></svg>");
+}
+
+/* Ennis interlocking key: one square spiral per block */
+.textile-block-root .tb-relief.is-fret {
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='none' stroke='white' stroke-width='8' d='M14 86H86V14H30V70H70V30H46V54'/></svg>");
+}
+
+/* the stepped pyramid in plan: nested square rings */
+.textile-block-root .tb-relief.is-step {
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' fill-rule='evenodd' d='M10 10h80v80H10zM18 18v64h64V18zM28 28h44v44H28zM36 36v28h28V36zM44 44h12v12H44z'/></svg>");
+}
+
+/* the running chevron, continuous across the course */
+.textile-block-root .tb-relief.is-chevron {
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='none' stroke='white' stroke-width='9' d='M0 68L25 32L50 68L75 32L100 68'/></svg>");
+}
+
+/* the stepped meander: a crenellated line, continuous across the course */
+.textile-block-root .tb-relief.is-meander {
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='none' stroke='white' stroke-width='8' d='M0 64H20V36H40V64H60V36H80V64H100'/></svg>");
+}
+
+/* the rosette as a radial repeat: a ring and eight bars */
+.textile-block-root .tb-relief.is-rosette {
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='12' fill='none' stroke='white' stroke-width='6'/><g fill='white'><rect x='46.5' y='10' width='7' height='20'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(45 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(90 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(135 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(180 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(225 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(270 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(315 50 50)'/></g></svg>");
+}
+
+/* the running bond: three courses of brick inside the block */
+.textile-block-root .tb-relief.is-bond {
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' d='M8 8h84v18H8zM8 41h38v18H8zM54 41h38v18H54zM8 74h84v18H8z'/></svg>");
+}
+
+/* the perforated block: the concrete keeps the corner squares in relief and
+   loses the cruciform to the light */
+.textile-block-root .tb-relief.is-perf {
+  --tb-perf: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' fill-rule='evenodd' d='M0 0h100v100H0zM42 14h16v28h28v16H58v28H42V58H14V42h28z'/></svg>");
+  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' d='M10 10h16v16H10zM74 10h16v16H74zM10 74h16v16H10zM74 74h16v16H74z'/></svg>");
+}
+
+/* ------------------------------------------------------------------------ *
+ * Type
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root h1 {
+  margin: 0;
+  font-family: var(--tb-display);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 4.6vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.textile-block-root .tb-h2 {
+  margin: 0;
+  font-family: var(--tb-display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 2.3vw, 2.05rem);
+  line-height: 1.14;
+  letter-spacing: 0;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+.textile-block-root h3 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.textile-block-root h4 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.textile-block-root p {
+  margin: 0;
+}
+
+.textile-block-root a {
+  color: inherit;
+}
+
+.textile-block-root code {
+  font-family: var(--tb-mono);
+  font-size: 0.92em;
+}
+
+.textile-block-root .tb-head {
+  justify-content: center;
+  gap: 8px;
+}
+
+.textile-block-root .tb-head p {
+  max-width: 60ch;
+  color: var(--tb-ink-2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* ------------------------------------------------------------------------ *
+ * Controls: buttons, the inset locale tile, the shared chip's box
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font: 500 14px/1 var(--tb-sans);
+  color: var(--tb-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.textile-block-root .tb-btn-solid {
+  border-color: var(--tb-ink);
+  background: var(--tb-ink);
+  color: var(--tb-face);
+}
+
+.textile-block-root .tb-btn-solid:hover {
+  background: var(--tb-ink-2);
+  border-color: transparent;
+}
+
+.textile-block-root .tb-btn-line {
+  border-color: var(--tb-hair);
+  background: transparent;
+  background-clip: padding-box;
+}
+
+.textile-block-root .tb-btn-line:hover {
+  border-color: var(--tb-ink);
+}
+
+.textile-block-root .tb-btn-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.textile-block-root .tb-btn:focus-visible,
+.textile-block-root .tb-cmd-copy:focus-visible {
+  outline: 1px solid var(--tb-ink);
+  outline-offset: 2px;
+}
+
+/* the inset tile: a recessed square-cornered chip in the ground color */
+.textile-block-root .tb-tile {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--tb-hair);
+  background: var(--tb-ground);
+  background-clip: padding-box;
+  color: var(--tb-ink);
+  vertical-align: middle;
+}
+
+.textile-block-root .tb-tile.is-tell {
+  border-color: var(--tb-accent);
+}
+
+.textile-block-root .tb-tile.is-corner {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+}
+
+.textile-block-root .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.textile-block-root .lct-code {
+  font: 500 11px/1 var(--tb-mono);
+  letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------------ *
+ * The lintel (nav)
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  width: calc(var(--tb-cols) * var(--tb-block) + 1px);
+  height: 56px;
+  margin: 16px auto 20px;
+  padding: 0 18px;
+  border: 1px solid var(--tb-hair);
+  background: var(--tb-face);
+  background-clip: padding-box;
+}
+
+.textile-block-root .tb-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--tb-ink);
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.textile-block-root .tb-nav-links {
+  display: flex;
+  gap: 18px;
+  margin-left: 6px;
+}
+
+.textile-block-root .tb-nav-links a {
+  color: var(--tb-ink-2);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.textile-block-root .tb-nav-links a:hover {
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-nav-acts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.textile-block-root .tb-nav-signin {
+  color: var(--tb-ink-2);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.textile-block-root .tb-nav-signin:hover {
+  color: var(--tb-ink);
+}
+
+/* the shell's theme button, reset to the wall's ink */
+.textile-block-root .tb-nav-theme {
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-nav-theme:hover {
+  color: var(--tb-ink);
+  border-color: var(--tb-hair);
+}
+
+/* ------------------------------------------------------------------------ *
+ * The hero course: the monumental block and the lit field
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-claim {
+  justify-content: space-between;
+  gap: 22px;
+  padding: calc(var(--tb-pad) + 8px);
+}
+
+.textile-block-root .tb-crown {
+  color: var(--tb-ink);
+  line-height: 0;
+}
+
+.textile-block-root .tb-every {
+  display: inline-block;
+}
+
+.textile-block-root .tb-sub {
+  max-width: 56ch;
+  color: var(--tb-ink-2);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.textile-block-root .tb-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--tb-ink);
+  font-weight: 500;
+  vertical-align: -1px;
+}
+
+.textile-block-root .tb-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* the install command: a recessed mono line with one control */
+.textile-block-root .tb-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  height: 34px;
+  padding: 0 5px 0 12px;
+  border: 1px solid var(--tb-hair);
+  background: var(--tb-ground);
+  background-clip: padding-box;
+  font: 500 12.5px/1 var(--tb-mono);
+}
+
+.textile-block-root .tb-cmd code {
+  font-size: 12.5px;
+}
+
+.textile-block-root .tb-cmd-prompt {
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-cmd-copy {
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--tb-hair);
+  border-radius: 3px;
+  background: var(--tb-face);
+  background-clip: padding-box;
+  font: 500 11px/1 var(--tb-sans);
+  color: var(--tb-ink);
+  cursor: pointer;
+}
+
+.textile-block-root .tb-cmd-copy:hover {
+  border-color: var(--tb-ink);
+}
+
+/* ---- the trust course ---- */
+.textile-block-root .tb-trust-lead {
+  justify-content: center;
+}
+
+.textile-block-root .tb-trust-lead p {
+  color: var(--tb-ink-2);
+  font-size: 14px;
+}
+
+.textile-block-root .tb-trust-cell {
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.textile-block-root .tb-wm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-wm:hover {
+  color: var(--tb-ink-2);
+}
+
+/* the mark, printed through its SVG as a mask so it takes the page ink */
+.textile-block-root .tb-wm-print {
+  display: block;
+  height: 20px;
+  width: calc(20px * var(--wm-ratio, 4));
+  max-width: 70%;
+  background: currentColor;
+  -webkit-mask-image: var(--wm);
+  mask-image: var(--wm);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* ------------------------------------------------------------------------ *
+ * The T proof: the source block and the cast translations
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-source {
+  padding: 0;
+}
+
+.textile-block-root .tb-source-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 42px;
+  padding: 0 var(--tb-pad);
+  border-bottom: 1px solid var(--tb-hair);
+  font: 500 12px/1 var(--tb-mono);
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-source-side {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.textile-block-root .tb-code {
+  flex: 1;
+  margin: 0;
+  padding: 18px var(--tb-pad) 22px;
+  list-style: none;
+  overflow-x: auto;
+  counter-reset: line;
+  font: 400 12.5px/1.6 var(--tb-mono);
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-code li {
+  display: flex;
+  gap: 16px;
+  white-space: pre;
+}
+
+.textile-block-root .tb-code li::before {
+  counter-increment: line;
+  content: counter(line);
+  flex: none;
+  width: 2ch;
+  color: var(--tb-ink-2);
+  text-align: right;
+}
+
+.textile-block-root .tb-code .is-k {
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-code .is-t {
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-code .is-T {
+  color: var(--tb-ink);
+  font-weight: 700;
+}
+
+/* strings carry the only syntax hue: strings are the product */
+.textile-block-root .tb-code .is-s {
+  color: var(--tb-accent);
+}
+
+.textile-block-root .tb-cast {
+  justify-content: flex-end;
+  padding: 44px 20px 20px;
+}
+
+.textile-block-root .tb-cast p {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+/* ------------------------------------------------------------------------ *
+ * The product objects
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-obj {
+  gap: 12px;
+}
+
+.textile-block-root .tb-obj-lead {
+  max-width: 52ch;
+  color: var(--tb-ink-2);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.textile-block-root .tb-obj > .tb-ledger,
+.textile-block-root .tb-obj > .tb-term,
+.textile-block-root .tb-obj > .tb-ws,
+.textile-block-root .tb-obj > .tb-trace {
+  margin-top: 6px;
+}
+
+/* ---- libraries ledger ---- */
+.textile-block-root .tb-ledger {
+  font-size: 13px;
+}
+
+.textile-block-root .tb-ledger-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 1.4fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-top: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-ledger-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.textile-block-root .tb-ledger-head {
+  color: var(--tb-ink-2);
+  font-size: 11.5px;
+}
+
+.textile-block-root .tb-ledger code {
+  font-size: 12px;
+}
+
+/* ---- the CLI transcript, recessed into the ground ---- */
+.textile-block-root .tb-term {
+  padding: 14px 16px;
+  border: 1px solid var(--tb-hair);
+  background: var(--tb-ground);
+  background-clip: padding-box;
+  font: 400 12.5px/1.75 var(--tb-mono);
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-term-line.is-cmd {
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-term-line.is-cmd code {
+  font-size: 12.5px;
+}
+
+.textile-block-root .tb-term-prompt {
+  margin-right: 8px;
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0 8px;
+}
+
+.textile-block-root .tb-term .tb-tile {
+  background: var(--tb-face);
+}
+
+/* ---- the review workspace ---- */
+.textile-block-root .tb-ws {
+  border: 1px solid var(--tb-hair);
+  background: var(--tb-ground);
+  background-clip: padding-box;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.textile-block-root .tb-ws-bar,
+.textile-block-root .tb-ws-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 12px;
+  font: 500 11px/1 var(--tb-mono);
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-ws-bar {
+  border-bottom: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-ws-foot {
+  justify-content: flex-start;
+  border-top: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-ws-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.textile-block-root .tb-ws-row + .tb-ws-row {
+  border-top: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-ws-src,
+.textile-block-root .tb-ws-tr {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 9px 12px;
+}
+
+/* the divider between source and translation: one owner, the translation cell */
+.textile-block-root .tb-ws-tr {
+  border-left: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-ws-tr s {
+  color: var(--tb-ink-2);
+  text-decoration: line-through;
+}
+
+.textile-block-root .tb-ws-stamp {
+  align-self: flex-start;
+  padding: 3px 6px;
+  border: 1px solid var(--tb-hair);
+  font: 500 10.5px/1 var(--tb-mono);
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-ws-stamp[data-kind='ok'] {
+  border-color: var(--tb-ink);
+  color: var(--tb-ink);
+}
+
+/* ---- Locadex ---- */
+.textile-block-root .tb-ldx-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.textile-block-root .tb-ldx-mark {
+  display: block;
+  flex: none;
+}
+
+.textile-block-root .tb-trace {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 500 12px/1.5 var(--tb-mono);
+}
+
+.textile-block-root .tb-trace li {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-trace li:first-child {
+  border-top: 0;
+}
+
+.textile-block-root .tb-trace-stage {
+  color: var(--tb-ink-2);
+}
+
+/* ------------------------------------------------------------------------ *
+ * Languages as material
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-script {
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.textile-block-root .tb-cartouche {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--tb-ornament);
+}
+
+.textile-block-root .tb-cartouche path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+}
+
+/* the sample is the relief: cast in the ornament color, its own lang and dir */
+.textile-block-root .tb-script p {
+  position: relative;
+  padding: 0 24px;
+  color: var(--tb-ornament);
+  font-weight: 500;
+  font-size: clamp(22px, 2.1vw, 30px);
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.textile-block-root .tb-count {
+  justify-content: center;
+  gap: 4px;
+  padding: 20px;
+}
+
+.textile-block-root .tb-count b {
+  font-weight: 500;
+  font-size: clamp(30px, 3.2vw, 42px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.textile-block-root .tb-count span {
+  color: var(--tb-ink-2);
+  font-size: 14px;
+}
+
+.textile-block-root .tb-count small {
+  margin-top: 8px;
+  color: var(--tb-ink-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* ---- the atlas ledger ---- */
+.textile-block-root .tb-atlas {
+  justify-content: center;
+}
+
+.textile-block-root .tb-atlas-row {
+  display: grid;
+  grid-template-columns: 40px 120px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-atlas-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.textile-block-root .tb-atlas-tag {
+  font: 500 12.5px/1 var(--tb-mono);
+}
+
+.textile-block-root .tb-atlas-name {
+  font-size: 14px;
+}
+
+.textile-block-root .tb-atlas-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  align-items: center;
+}
+
+.textile-block-root .tb-atlas-row.is-tail {
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-atlas-tail {
+  font-size: 13.5px;
+}
+
+.textile-block-root .tb-atlas-tail code {
+  margin-right: 2px;
+  font-size: 12px;
+}
+
+.textile-block-root .tb-atlas-act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.textile-block-root .tb-atlas-note {
+  color: var(--tb-ink-2);
+  font-size: 12.5px;
+}
+
+/* ------------------------------------------------------------------------ *
+ * The base course: jade, fixed in both themes
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-base {
+  margin-inline: calc(-1 * var(--tb-gut));
+  padding-inline: var(--tb-gut);
+  background: var(--tb-dk-ground);
+}
+
+.textile-block-root .tb-base .tb-course {
+  --tb-ground: var(--tb-dk-ground);
+  --tb-face: var(--tb-dk-face);
+  --tb-ink: var(--tb-dk-ink);
+  --tb-ink-2: var(--tb-dk-ink-2);
+  --tb-hair: var(--tb-dk-hair);
+  --tb-ornament: var(--tb-dk-relief);
+  --tb-light-ink: var(--tb-dk-lit);
+  --tb-light-paper: var(--tb-dk-ground);
+
+  width: calc(var(--tb-cols) * var(--tb-block) + 1px);
+  margin-inline: auto;
+  border-left: 1px solid var(--tb-hair);
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-dark-copy {
+  justify-content: center;
+  gap: 18px;
+}
+
+.textile-block-root .tb-dark-copy p {
+  max-width: 34ch;
+  color: var(--tb-ink-2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.textile-block-root .tb-dark-copy .tb-acts {
+  margin-top: 6px;
+}
+
+/* ---- the ziggurat: five battered setbacks ---- */
+.textile-block-root .tb-zig-block {
+  justify-content: center;
+  gap: 20px;
+}
+
+.textile-block-root .tb-zig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.textile-block-root .tb-tier {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(44% + var(--tier, 0) * 14%);
+  height: 46px;
+  background: var(--tb-dk-relief);
+  border-top: 1px solid var(--tb-dk-hair);
+  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 100%, 0 100%);
+}
+
+/* the lit face: a static Bayer tier in the lighter jade, denser toward the platform */
+.textile-block-root .tb-tier::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tb-dk-lit);
+  -webkit-mask-image: var(--tile);
+  mask-image: var(--tile);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+.textile-block-root .tb-tier b {
+  position: relative;
+  padding: 4px 9px;
+  background: var(--tb-dk-relief);
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 1;
+  color: var(--tb-dk-ink);
+}
+
+.textile-block-root .tb-zig-facts {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.textile-block-root .tb-zig-fact {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.textile-block-root .tb-zig-fact dt {
+  font-weight: 500;
+}
+
+.textile-block-root .tb-zig-fact dd {
+  margin: 0;
+  color: var(--tb-ink-2);
+}
+
+/* ------------------------------------------------------------------------ *
+ * The pricing plaques
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-rates {
+  padding: 0;
+}
+
+.textile-block-root .tb-rates-head,
+.textile-block-root .tb-rate {
+  display: grid;
+  grid-template-columns: 1.15fr 1.55fr 0.7fr;
+  gap: 14px;
+  padding: 0 var(--tb-pad);
+}
+
+.textile-block-root .tb-rates-head {
+  align-items: center;
+  height: 42px;
+  border-bottom: 1px solid var(--tb-hair);
+  font-size: 11.5px;
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-rates-body {
+  flex: 1;
+  padding: 6px 0;
+}
+
+.textile-block-root .tb-rate {
+  align-items: baseline;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  font-size: 13.5px;
+}
+
+.textile-block-root .tb-rate + .tb-rate {
+  border-top: 1px solid var(--tb-hair);
+}
+
+/* the raised figures */
+.textile-block-root .tb-rate-value,
+.textile-block-root .tb-rate-gt {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.textile-block-root .tb-rate.is-lead .tb-rate-name {
+  font-weight: 500;
+}
+
+.textile-block-root .tb-rates-foot {
+  display: grid;
+  gap: 6px;
+  padding: 12px var(--tb-pad) 18px;
+  border-top: 1px solid var(--tb-hair);
+  color: var(--tb-ink-2);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.textile-block-root .tb-plan {
+  gap: 12px;
+}
+
+.textile-block-root .tb-plan-price {
+  font-weight: 500;
+  font-size: clamp(30px, 3vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.textile-block-root .tb-plan-price small {
+  margin-left: 8px;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-plan p {
+  color: var(--tb-ink-2);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.textile-block-root .tb-plan ul {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+}
+
+.textile-block-root .tb-plan li {
+  padding: 7px 0;
+  border-top: 1px solid var(--tb-hair);
+}
+
+.textile-block-root .tb-plan li:first-child {
+  border-top: 0;
+}
+
+.textile-block-root .tb-plan .tb-btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.textile-block-root .tb-compare {
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.textile-block-root .tb-compare a {
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: underline;
+  text-decoration-color: var(--tb-hair);
+  text-underline-offset: 4px;
+}
+
+.textile-block-root .tb-compare a:hover {
+  text-decoration-color: var(--tb-ink);
+}
+
+/* ------------------------------------------------------------------------ *
+ * The footer course
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-foot-brand {
+  justify-content: center;
+  gap: 14px;
+}
+
+.textile-block-root .tb-foot-marks {
+  line-height: 0;
+}
+
+.textile-block-root .tb-foot-logo {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.textile-block-root .tb-foot-logo.is-dark {
+  display: none;
+}
+
+.textile-block-root .tb-foot-brand p {
+  max-width: 30ch;
+  color: var(--tb-ink-2);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.textile-block-root .tb-foot-col {
+  justify-content: center;
+  gap: 10px;
+}
+
+.textile-block-root .tb-foot-col ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.textile-block-root .tb-foot-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tb-ink-2);
+  font-size: 13.5px;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.textile-block-root .tb-foot-col a:hover {
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-foot-mark {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.textile-block-root .tb-foot-bar {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  color: var(--tb-ink-2);
+  font-size: 12.5px;
+}
+
+/* ------------------------------------------------------------------------ *
+ * Breakpoint-only fillers
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-lg-only {
+  display: none;
+}
+
+.textile-block-root .tb-md-only {
+  display: none;
+}
+
+@media (min-width: 1120px) {
+  .textile-block-root .tb-lg-only {
+    display: block;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 1119px) {
+  .textile-block-root .tb-md-only {
+    display: block;
+  }
+}
+
+/* ------------------------------------------------------------------------ *
+ * Motion: gated. The resting markup is the still.
+ * ------------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .textile-block-root .tb-every {
+    transition:
+      opacity 0.26s ease,
+      transform 0.26s ease;
+  }
+
+  .textile-block-root .tb-every.is-out {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  .textile-block-root .tb-btn,
+  .textile-block-root .tb-cmd-copy,
+  .textile-block-root .tb-nav-links a,
+  .textile-block-root .tb-foot-col a {
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+}
+
+/* ------------------------------------------------------------------------ *
+ * Eight columns: 721px to 1119px
+ * ------------------------------------------------------------------------ */
+
+@media (max-width: 1119px) {
+  .textile-block-root {
+    --tb-cols: 8;
+    --tb-block-max: 112px;
+  }
+
+  .textile-block-root .tb-block,
+  .textile-block-root .tb-relief {
+    grid-column: span var(--c-md, var(--c, 1));
+    grid-row: span var(--r-md, var(--r, 1));
+  }
+
+  .textile-block-root .tb-claim {
+    padding: var(--tb-pad);
+  }
+}
+
+/* ------------------------------------------------------------------------ *
+ * Six columns: 720px and under. The last block consumes the mobile ladder.
+ * ------------------------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  .textile-block-root {
+    --tb-cols: 6;
+    --tb-block-max: 96px;
+  }
+
+  .textile-block-root .tb-block,
+  .textile-block-root .tb-relief {
+    grid-column: span var(--c-sm, var(--c-md, var(--c, 1)));
+    grid-row: span var(--r-sm, var(--r-md, var(--r, 1)));
+  }
+
+  .textile-block-root .tb-nav {
+    gap: 14px;
+    padding: 0 12px;
+  }
+
+  .textile-block-root .tb-nav-wide,
+  .textile-block-root .tb-nav-brand span {
+    display: none;
+  }
+
+  .textile-block-root .tb-nav-links {
+    gap: 14px;
+    margin-left: 0;
+  }
+
+  .textile-block-root h1 {
+    font-size: clamp(2.1rem, 9.4vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .textile-block-root .tb-h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+    max-width: none;
+  }
+
+  .textile-block-root h3 {
+    font-size: var(--tcm-h3, 1.375rem);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .textile-block-root .tb-head p,
+  .textile-block-root .tb-sub,
+  .textile-block-root .tb-dark-copy p {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .textile-block-root .tb-obj-lead,
+  .textile-block-root .tb-plan p,
+  .textile-block-root .tb-foot-brand p,
+  .textile-block-root .tb-atlas-name {
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .textile-block-root .tb-rate,
+  .textile-block-root .tb-plan ul,
+  .textile-block-root .tb-ledger,
+  .textile-block-root .tb-foot-col a {
+    font-size: var(--tcm-small, 14px);
+    line-height: var(--tcm-small-lh, 1.55);
+  }
+
+  .textile-block-root .tb-block {
+    padding: var(--tcm-cell-pad, 28px);
+  }
+
+  .textile-block-root .tb-claim {
+    padding: var(--tcm-cell-pad, 28px);
+    gap: 18px;
+  }
+
+  .textile-block-root .tb-source,
+  .textile-block-root .tb-rates,
+  .textile-block-root .tb-script,
+  .textile-block-root .tb-trust-cell {
+    padding: 0;
+  }
+
+  .textile-block-root .tb-source-bar,
+  .textile-block-root .tb-rates-head,
+  .textile-block-root .tb-rate {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .textile-block-root .tb-code {
+    padding: 16px 20px 20px;
+    font-size: 11.5px;
+  }
+
+  .textile-block-root .tb-rates-foot {
+    padding: 12px 20px 18px;
+  }
+
+  .textile-block-root .tb-cast {
+    padding: 44px 20px 20px;
+  }
+
+  .textile-block-root .tb-script p {
+    font-size: 22px;
+  }
+
+  .textile-block-root .tb-count b {
+    font-size: 30px;
+  }
+
+  .textile-block-root .tb-atlas-row {
+    grid-template-columns: 34px 1fr;
+  }
+
+  .textile-block-root .tb-atlas-chips {
+    grid-column: 1 / -1;
+  }
+
+  .textile-block-root .tb-ws-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* stacked, the divider becomes a row seam: one owner still */
+  .textile-block-root .tb-ws-tr {
+    border-left: 0;
+    border-top: 1px solid var(--tb-hair);
+  }
+
+  .textile-block-root .tb-ledger-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .textile-block-root .tb-ledger-row > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .textile-block-root .tb-rates-head,
+  .textile-block-root .tb-rate {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .textile-block-root .tb-rates-head > :last-child,
+  .textile-block-root .tb-rate-gt {
+    display: none;
+  }
+
+  .textile-block-root .tb-tier {
+    height: 40px;
+  }
+
+  .textile-block-root .tb-zig-fact {
+    grid-template-columns: 82px 1fr;
+  }
+}
+
+/* ------------------------------------------------------------------------ *
+ * Dark mode: the six deco tokens and the smooth face remap. The jade base
+ * course keeps its own material.
+ * ------------------------------------------------------------------------ */
+
+[data-theme='dark'] .textile-block-root {
+  --deco-ground: #101312;
+  --deco-ink: #efeee8;
+  --deco-ink-2: rgba(239, 238, 232, 0.68);
+  --deco-hair: rgba(239, 238, 232, 0.2);
+  --deco-accent: #d07d61;
+  --deco-ornament: #7e916f;
+  --tb-cast-face: #191d1b;
+}
+
+[data-theme='dark'] .textile-block-root .tb-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .textile-block-root .tb-foot-logo.is-dark {
+  display: block;
+}
+
+/* the lambda mark is drawn dark for light ground; the dark ground inverts it */
+[data-theme='dark'] .textile-block-root .tb-ldx-mark {
+  filter: invert(1);
+}

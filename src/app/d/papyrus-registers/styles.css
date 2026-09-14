@@ -1,0 +1,1779 @@
+/* papyrus-registers: a translation platform set as a ruled papyrus scroll,
+   the oldest carrier of written language, with the modern strings as its
+   living text. Egyptian revival Art Deco, geometry only.
+
+   References, designed from concretely:
+   1. Book of the Dead papyri (register geometry only). Text runs in columns
+      bounded by ruled margins; chapter openings and key words are written
+      in red ink (the rubric) while the body is black carbon ink; vignettes
+      sit in their own ruled register above the text. Taken here: the ruled
+      column between two rails, the rubric as the opener of every section,
+      the register as the unit of layout, the vignette register (the fan
+      band) above the first text. No vignette imagery is drawn.
+   2. The Egyptian canon of proportions, the 18-square grid. Relief was laid
+      out on a grid of squares, eighteen from sole to hairline. Taken here:
+      the scroll is exactly eighteen units wide (--pr-u = width / 18), the
+      unit sets the vertical measures (the fan band is three squares, a
+      script cell is three, a trust cell one and a half), the fans repeat on
+      a two-square pitch, and the grid is left visible behind the opening
+      column: squares under the fan band, columns under the claim.
+   3. The Hoover Building (Wallis, Gilbert and Partners, 1933). The entrance
+      carries the papyrus flower as a rhythm of radiating bars closed by an
+      arc; the corners are battered like pylon walls; the parapet steps; the
+      palette is red and a warm cream on white. Taken here: the umbel as a
+      bar fan and never a plant (the FanBand field, radiating bars closed by
+      an arc), the lotus bell reduced to concentric arcs (the FanCell tiers,
+      five nested half rings), the battered sides of the dark stele (a
+      clip-path polygon), the stepped setbacks of its dither floor, and red
+      as the single accent on a papyrus ground.
+   The dark stele takes its material and its idea from the Rosetta Stone:
+   one text carried in ruled registers on black granodiorite. Here the
+   registers carry one modern string from the source node to the served
+   file to the rendered page; no ancient text is set anywhere.
+
+   Material palette, Egyptian: ground papyrus (#ede4cc), ink carbon black
+   (#1a1712), ink-2 diluted ink, hair ink at alpha (titanium does not read
+   on a tinted ground), accent rubric red as red ochre (#a8321c), ornament
+   gold leaf (#b8922f) rendered only as Bayer dither, never as a wash.
+   Stone is the stele's permanent black granodiorite and never remaps.
+
+   Ornament homes: column heads (the bar-and-dot numeral in the margin and
+   the rubric), the fan band above the claim, the fan cell of every script,
+   the water rules between registers, the cartouche around the Locadex mark,
+   the stele's stepped floor.
+   Accent: rubric red opens every column (the claim, the rubrics, the
+   numerals), marks the source in the proof (its strings and T tags), and
+   rings the zh-Hans / zh-Hant tell. Nothing else is red.
+   Display face: Julius Sans One, used for h1 and h2 only; every other slot
+   is Inter, and the instrument mono carries code, paths and rates.
+   Dark mode remaps the six tokens and nothing else: the ground goes to the
+   granodiorite black, the ink to papyrus, the hair rises, red and gold lift.
+
+   Lines: the scroll draws the two rails once; a column draws only its
+   bottom rule; a register draws its top rule and the seams between its
+   children; a cell draws no border; a framed object (code register,
+   collation, chip, button) draws one ring with background-clip on the
+   padding box. The canon grid is a background texture below hairline weight
+   and it is clipped to the padding box, so no grid line ever sits beside a
+   rule. */
+.papyrus-registers-root {
+  --deco-ground: #ede4cc;
+  --deco-ink: #1a1712;
+  --deco-ink-2: rgba(26, 23, 18, 0.64);
+  --deco-hair: rgba(26, 23, 18, 0.22);
+  --deco-accent: #a8321c;
+  --deco-ornament: #b8922f;
+
+  /* the scroll reads the palette through its own names */
+  --pr-ground: var(--deco-ground);
+  --pr-ink: var(--deco-ink);
+  --pr-ink-2: var(--deco-ink-2);
+  --pr-hair: var(--deco-hair);
+  --pr-hair-2: color-mix(in srgb, var(--deco-ink) 11%, transparent);
+  --pr-accent: var(--deco-accent);
+  --pr-ornament: var(--deco-ornament);
+
+  /* the round's shared token names, so one grep reads every direction; no tc- class is used on this page */
+  --tc-paper: var(--deco-ground);
+  --tc-card: var(--deco-ground);
+  --tc-ink: var(--deco-ink);
+  --tc-ink-2: var(--deco-ink-2);
+  --tc-hair: var(--deco-hair);
+  --tc-accent: var(--deco-accent);
+
+  /* stone: the stele and the terminal panel, permanent in both themes */
+  --pr-stone: #0b0a09;
+  --pr-stone-2: #141311;
+  --pr-panel: #101010;
+  --pr-stone-ink: #ece3cb;
+  --pr-stone-ink-2: rgba(236, 227, 203, 0.62);
+  --pr-stone-hair: rgba(236, 227, 203, 0.16);
+  --pr-stone-accent: #e2643f;
+
+  /* the canon: eighteen squares across the scroll */
+  --pr-rail: 1188px;
+  --pr-u: calc(min(var(--pr-rail), 100vw) / 18);
+  --pr-gut: clamp(20px, var(--pr-u), 66px);
+  --pr-pad: clamp(20px, calc(var(--pr-u) * 0.45), 30px);
+
+  --pr-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --pr-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --pr-display: var(--papyrus-registers-display), var(--font-inter), 'Inter', system-ui, sans-serif;
+
+  min-height: 100vh;
+  background: var(--pr-ground);
+  color: var(--pr-ink);
+  font-family: var(--pr-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+[data-theme='dark'] .papyrus-registers-root {
+  --deco-ground: #070707;
+  --deco-ink: #f1e8d2;
+  --deco-ink-2: rgba(241, 232, 210, 0.66);
+  --deco-hair: rgba(241, 232, 210, 0.24);
+  --deco-accent: #e2643f;
+  --deco-ornament: #d6ad4a;
+}
+
+/* ---------- utilities ---------- */
+
+.papyrus-registers-root .pr-vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.papyrus-registers-root :focus-visible {
+  outline: 2px solid var(--pr-accent);
+  outline-offset: 2px;
+}
+
+.papyrus-registers-root a {
+  color: inherit;
+}
+
+/* ---------- the scroll: rails and columns ---------- */
+
+.papyrus-registers-root .pr-scroll {
+  width: min(var(--pr-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-col {
+  border-bottom: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-col:last-child {
+  border-bottom: 0;
+}
+
+/* a register: one top rule, one seam between children, cells draw nothing */
+.papyrus-registers-root .pr-reg {
+  display: grid;
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-reg > * + * {
+  border-left: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-split {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.papyrus-registers-root .pr-cell {
+  padding: 38px var(--pr-pad) 44px;
+}
+
+.papyrus-registers-root .pr-split > :first-child {
+  padding-inline: var(--pr-gut) var(--pr-pad);
+}
+
+.papyrus-registers-root .pr-split > :last-child {
+  padding-inline: var(--pr-pad) var(--pr-gut);
+}
+
+/* ---------- type ---------- */
+
+.papyrus-registers-root .pr-claim {
+  margin: 0;
+  font-family: var(--pr-display);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 4.6vw, 3.6rem);
+  line-height: 1.14;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  color: var(--pr-accent);
+  min-height: 2.28em;
+  unicode-bidi: isolate;
+}
+
+.papyrus-registers-root .pr-rubric {
+  margin: 0;
+  font-family: var(--pr-display);
+  font-weight: 400;
+  font-size: clamp(1.45rem, 2.2vw, 1.95rem);
+  line-height: 1.22;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pr-accent);
+  max-width: 26ch;
+}
+
+.papyrus-registers-root .pr-h3 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-label {
+  display: block;
+  margin-bottom: 12px;
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1;
+  color: var(--pr-ink-2);
+}
+
+/* ---------- column heads ---------- */
+
+.papyrus-registers-root .pr-head {
+  display: grid;
+  grid-template-columns: var(--pr-gut) minmax(0, 1fr);
+  padding: calc(var(--pr-u) * 1.1) var(--pr-gut) calc(var(--pr-u) * 0.7) 0;
+}
+
+.papyrus-registers-root .pr-head-margin {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 0.7rem;
+  color: var(--pr-accent);
+}
+
+.papyrus-registers-root .pr-numeral {
+  display: block;
+  flex: none;
+}
+
+.papyrus-registers-root .pr-head-sub {
+  margin: 14px 0 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--pr-ink-2);
+  max-width: 58ch;
+}
+
+/* ---------- buttons, chips, copy ---------- */
+
+.papyrus-registers-root .pr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-family: var(--pr-sans);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.papyrus-registers-root .pr-btn.is-solid {
+  background: var(--pr-ink);
+  border-color: var(--pr-ink);
+  color: var(--pr-ground);
+}
+
+.papyrus-registers-root .pr-btn.is-line {
+  background: var(--pr-ground);
+  background-clip: padding-box;
+  border-color: var(--pr-hair);
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-btn.is-line:hover {
+  border-color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-btn.is-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.papyrus-registers-root .pr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 6px 0 5px;
+  border: 1px solid var(--pr-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  font-style: normal;
+  color: var(--pr-ink);
+  vertical-align: middle;
+}
+
+.papyrus-registers-root .pr-chip.is-stone {
+  border-color: var(--pr-stone-hair);
+  color: var(--pr-stone-ink);
+}
+
+.papyrus-registers-root .pr-copy {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--pr-ink-2);
+  cursor: pointer;
+}
+
+.papyrus-registers-root .pr-copy:hover {
+  color: var(--pr-ink);
+}
+
+/* ---------- nav ---------- */
+
+.papyrus-registers-root .pr-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--pr-ground);
+  border-bottom: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-nav-in {
+  width: min(var(--pr-rail), 100%);
+  height: 60px;
+  margin-inline: auto;
+  padding-inline: var(--pr-gut);
+  border-inline: 1px solid var(--pr-hair);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+}
+
+.papyrus-registers-root .pr-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+}
+
+.papyrus-registers-root .pr-nav-links a {
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-nav-links a:hover {
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-nav-acts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.papyrus-registers-root .pr-theme {
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-nav-signin {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--pr-ink);
+}
+
+/* ---------- the opening column ---------- */
+
+/* the vignette register: three canon squares tall, the canon grid drawn as
+   squares underneath, clipped to the padding box so the bottom rule is the
+   only line at the register's edge (rule-drawing gradients, one color, hard stops) */
+.papyrus-registers-root .pr-fanband {
+  position: relative;
+  height: calc(var(--pr-u) * 3);
+  border-bottom: 1px solid var(--pr-hair);
+  background-image:
+    linear-gradient(to right, var(--pr-hair-2) 0 1px, transparent 1px),
+    linear-gradient(to bottom, var(--pr-hair-2) 0 1px, transparent 1px);
+  background-size: var(--pr-u) var(--pr-u);
+  background-position: -1px -1px;
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+.papyrus-registers-root .pr-fanband-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* the claim's register: the canon's columns only, no horizontals */
+.papyrus-registers-root .pr-hero-body {
+  display: grid;
+  grid-template-columns: var(--pr-gut) minmax(0, 1fr);
+  padding: calc(var(--pr-u) * 1.2) var(--pr-gut) calc(var(--pr-u) * 1.3) 0;
+  background-image: linear-gradient(to right, var(--pr-hair-2) 0 1px, transparent 1px);
+  background-size: var(--pr-u) 100%;
+  background-position: -1px 0;
+  background-repeat: repeat-x;
+  background-clip: padding-box;
+}
+
+.papyrus-registers-root .pr-hero-margin {
+  padding-top: 1.1rem;
+}
+
+.papyrus-registers-root .pr-lead {
+  margin: 28px 0 0;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--pr-ink);
+  max-width: 44ch;
+}
+
+.papyrus-registers-root .pr-wordmark {
+  display: inline-flex;
+  vertical-align: -3px;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.papyrus-registers-root .pr-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 6px 0 12px;
+  border: 1px solid var(--pr-hair);
+  border-radius: 4px;
+  background: var(--pr-ground);
+  background-clip: padding-box;
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 1;
+  color: var(--pr-ink);
+}
+
+/* the trust register */
+.papyrus-registers-root .pr-trust {
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-trust-lead {
+  margin: 0;
+  padding: 22px var(--pr-gut) 20px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-trust-row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-trust-row > li + li {
+  border-left: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-trust-row a {
+  display: grid;
+  place-items: center;
+  height: calc(var(--pr-u) * 1.5);
+  color: var(--pr-ink);
+}
+
+/* the marks as alpha masks: the shape takes the page's ink in both themes */
+.papyrus-registers-root .pr-wm {
+  display: block;
+  width: 110px;
+  height: 26px;
+  max-width: calc(100% - 24px);
+  background: currentColor;
+  -webkit-mask: var(--pr-wm) center / contain no-repeat;
+  mask: var(--pr-wm) center / contain no-repeat;
+}
+
+.papyrus-registers-root .pr-wm.is-cursor {
+  --pr-wm: url('/logos/cursor.light.svg');
+}
+
+.papyrus-registers-root .pr-wm.is-ramp {
+  --pr-wm: url('/logos/ramp.light.svg');
+  height: 22px;
+}
+
+.papyrus-registers-root .pr-wm.is-mintlify {
+  --pr-wm: url('/logos/mintlify.light.svg');
+}
+
+.papyrus-registers-root .pr-wm.is-profound {
+  --pr-wm: url('/logos/profound.light.svg');
+  height: 20px;
+}
+
+.papyrus-registers-root .pr-wm.is-partiful {
+  --pr-wm: url('/logos/partiful.light.svg');
+}
+
+.papyrus-registers-root .pr-wm.is-clickhouse {
+  --pr-wm: url('/logos/clickhouse.light.svg');
+}
+
+/* ---------- the proof ---------- */
+
+.papyrus-registers-root .pr-proof {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+
+.papyrus-registers-root .pr-proof-src {
+  padding: var(--pr-pad) var(--pr-pad) var(--pr-pad) var(--pr-gut);
+}
+
+.papyrus-registers-root .pr-code {
+  margin: 0;
+  border: 1px solid var(--pr-hair);
+  background: var(--pr-ground);
+  background-clip: padding-box;
+}
+
+.papyrus-registers-root .pr-code-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 36px;
+  padding: 0 6px 0 14px;
+  border-bottom: 1px solid var(--pr-hair);
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-code-body {
+  margin: 0;
+  padding: 18px 20px 20px;
+  overflow-x: auto;
+  font-family: var(--pr-mono);
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--pr-ink);
+  tab-size: 2;
+}
+
+.papyrus-registers-root .pr-tok-str,
+.papyrus-registers-root .pr-tok-t {
+  color: var(--pr-accent);
+}
+
+.papyrus-registers-root .pr-tok-t {
+  font-weight: 500;
+}
+
+.papyrus-registers-root .pr-tok-kw {
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-installs {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.papyrus-registers-root .pr-installs code {
+  display: inline-block;
+  padding: 7px 10px;
+  border: 1px solid var(--pr-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--pr-ink);
+}
+
+/* twelve cells of black ink; each line has one owner: a cell draws its top
+   rule from the second row on and its left rule from the second column on */
+.papyrus-registers-root .pr-hellos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.papyrus-registers-root .pr-hello {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 22px var(--pr-pad);
+  min-height: calc(var(--pr-u) * 1.9);
+}
+
+.papyrus-registers-root .pr-hello:nth-child(n + 4) {
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-hello:not(:nth-child(3n + 1)) {
+  border-left: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-hello-mark {
+  padding-top: 1px;
+}
+
+.papyrus-registers-root .pr-hello-text {
+  display: block;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--pr-ink);
+  text-align: start;
+}
+
+/* ---------- the surfaces ---------- */
+
+.papyrus-registers-root .pr-cell-sub {
+  margin: 8px 0 22px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--pr-ink-2);
+  max-width: 52ch;
+}
+
+.papyrus-registers-root .pr-sdk-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.9fr) minmax(0, 1.25fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 11px 0;
+  border-top: 1px solid var(--pr-hair);
+  font-size: 14px;
+}
+
+.papyrus-registers-root .pr-sdk-row.is-head {
+  padding-top: 0;
+  border-top: 0;
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-sdk-pkg {
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-sdk-install {
+  font-family: var(--pr-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-sdk-row a {
+  text-decoration: none;
+  color: var(--pr-ink);
+  border-bottom: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-sdk-row a:hover {
+  border-bottom-color: var(--pr-ink);
+}
+
+/* the terminal: the light page's one dark panel, permanent in both themes */
+.papyrus-registers-root .pr-term {
+  background: var(--pr-panel);
+  color: var(--pr-stone-ink);
+}
+
+.papyrus-registers-root .pr-term-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--pr-stone-hair);
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1;
+  color: var(--pr-stone-ink-2);
+}
+
+.papyrus-registers-root .pr-term-body {
+  padding: 16px 18px 20px;
+  font-family: var(--pr-mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+
+.papyrus-registers-root .pr-term-body p {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.papyrus-registers-root .pr-term-prompt {
+  margin-right: 8px;
+  color: var(--pr-stone-ink-2);
+}
+
+.papyrus-registers-root .pr-term-out {
+  padding-left: 18px;
+}
+
+.papyrus-registers-root .pr-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-block: 3px;
+}
+
+.papyrus-registers-root .pr-term-key {
+  margin-right: 6px;
+  color: var(--pr-stone-ink-2);
+}
+
+/* the collation: source beside translation, one frame, ruled rows */
+.papyrus-registers-root .pr-coll {
+  border: 1px solid var(--pr-hair);
+  background: var(--pr-ground);
+  background-clip: padding-box;
+  font-size: 13.5px;
+  overflow-x: auto;
+}
+
+.papyrus-registers-root .pr-coll-bar,
+.papyrus-registers-root .pr-coll-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 0 14px;
+  height: 36px;
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1;
+  color: var(--pr-ink-2);
+  white-space: nowrap;
+}
+
+.papyrus-registers-root .pr-coll-bar {
+  border-bottom: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-coll-foot {
+  justify-content: flex-start;
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-coll-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 420px;
+}
+
+.papyrus-registers-root .pr-coll-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 92px;
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-coll-row:first-child {
+  border-top: 0;
+}
+
+.papyrus-registers-root .pr-coll-row > * {
+  padding: 12px 14px;
+  line-height: 1.5;
+}
+
+.papyrus-registers-root .pr-coll-row > * + * {
+  border-left: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-coll-src {
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-coll-tr {
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-coll-prev {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-stamp {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 1px solid var(--pr-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 10.5px;
+  line-height: 1.2;
+  color: var(--pr-ink-2);
+}
+
+/* the agent: the mark in its cartouche beside the trace */
+.papyrus-registers-root .pr-agent {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.papyrus-registers-root .pr-cartouche {
+  position: relative;
+  display: block;
+  width: 72px;
+  height: 126px;
+  color: var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-cartouche-ring {
+  display: block;
+}
+
+.papyrus-registers-root .pr-cartouche-seat {
+  position: absolute;
+  inset: 0 0 8px;
+  display: grid;
+  place-items: center;
+}
+
+.papyrus-registers-root .pr-locadex {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.papyrus-registers-root .pr-trace {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.papyrus-registers-root .pr-trace li {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-trace-verb {
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-trace-obj {
+  font-family: var(--pr-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--pr-ink);
+}
+
+/* ---------- the water rule ---------- */
+
+/* the divider owns both of its boundaries; the register after it drops its top rule */
+.papyrus-registers-root .pr-water {
+  height: 28px;
+  border-top: 1px solid var(--pr-hair);
+  border-bottom: 1px solid var(--pr-hair);
+  color: var(--pr-hair);
+  overflow: hidden;
+}
+
+.papyrus-registers-root .pr-water-svg {
+  display: block;
+  width: 100%;
+  height: 26px;
+}
+
+.papyrus-registers-root .pr-water + .pr-reg {
+  border-top: 0;
+}
+
+/* ---------- the scripts ---------- */
+
+.papyrus-registers-root .pr-fans {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-fan-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px var(--pr-pad) 24px;
+  min-height: calc(var(--pr-u) * 3);
+}
+
+.papyrus-registers-root .pr-fan-cell:nth-child(n + 7) {
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-fan-cell:not(:nth-child(6n + 1)) {
+  border-left: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-fan {
+  display: block;
+  flex: none;
+  color: var(--pr-ornament);
+}
+
+.papyrus-registers-root .pr-fan-name {
+  display: block;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--pr-ink);
+  text-align: start;
+}
+
+.papyrus-registers-root .pr-fan-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pr-ink-2);
+}
+
+/* the variants atlas */
+.papyrus-registers-root .pr-variants {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+}
+
+.papyrus-registers-root .pr-var-table {
+  padding: 10px var(--pr-pad) 26px var(--pr-gut);
+}
+
+.papyrus-registers-root .pr-var-row {
+  display: grid;
+  grid-template-columns: 44px 120px minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-var-row:first-child {
+  border-top: 0;
+}
+
+.papyrus-registers-root .pr-var-tag {
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-var-name {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-var-name.is-muted {
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-var-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.papyrus-registers-root .pr-varchip {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 1px solid var(--pr-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-varchip.is-tell {
+  border-color: var(--pr-accent);
+  color: var(--pr-accent);
+}
+
+.papyrus-registers-root .pr-var-tail {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 14px;
+  font-size: 14px;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-var-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 26px var(--pr-gut) 30px var(--pr-pad);
+}
+
+.papyrus-registers-root .pr-var-count {
+  margin: 0;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.4;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-var-note {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-var-side .pr-btn {
+  margin-top: 8px;
+}
+
+/* ---------- the stele: the one dark moment, permanent in both themes ---------- */
+
+.papyrus-registers-root .pr-stele {
+  background: var(--pr-stone);
+  color: var(--pr-stone-ink);
+}
+
+.papyrus-registers-root .pr-stele-in {
+  width: min(var(--pr-rail), 100%);
+  margin-inline: auto;
+  padding-top: calc(var(--pr-u) * 1.1);
+  border-inline: 1px solid var(--pr-stone-hair);
+}
+
+/* the battered plate: sides slope inward toward the top, as a pylon wall */
+.papyrus-registers-root .pr-stele-plate {
+  margin: 0 var(--pr-gut);
+  padding: 8px calc(var(--pr-pad) + 3.2%) 56px;
+  background: var(--pr-stone-2);
+  clip-path: polygon(3.2% 0, 96.8% 0, 100% 100%, 0 100%);
+}
+
+.papyrus-registers-root .pr-head.is-stone {
+  padding-right: 0;
+}
+
+.papyrus-registers-root .pr-head.is-stone .pr-head-margin,
+.papyrus-registers-root .pr-head.is-stone .pr-rubric {
+  color: var(--pr-stone-accent);
+}
+
+.papyrus-registers-root .pr-head.is-stone .pr-head-sub {
+  color: var(--pr-stone-ink-2);
+}
+
+.papyrus-registers-root .pr-stele-plate .pr-regs,
+.papyrus-registers-root .pr-stele-plate .pr-acts {
+  margin-left: var(--pr-gut);
+}
+
+.papyrus-registers-root .pr-regs {
+  list-style: none;
+  margin: 0 0 40px;
+  padding: 0;
+}
+
+.papyrus-registers-root .pr-regs-row {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  padding: 20px 0;
+  border-top: 1px solid var(--pr-stone-hair);
+}
+
+.papyrus-registers-root .pr-regs-row:last-child {
+  border-bottom: 1px solid var(--pr-stone-hair);
+}
+
+.papyrus-registers-root .pr-regs-label {
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--pr-stone-ink-2);
+}
+
+.papyrus-registers-root .pr-regs-code,
+.papyrus-registers-root .pr-regs-value {
+  font-family: var(--pr-mono);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pr-stone-ink);
+}
+
+.papyrus-registers-root .pr-regs-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.papyrus-registers-root .pr-regs-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.papyrus-registers-root .pr-regs-path {
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--pr-stone-ink-2);
+}
+
+.papyrus-registers-root .pr-regs-render {
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--pr-stone-ink);
+}
+
+.papyrus-registers-root .pr-stele .pr-btn.is-solid {
+  background: var(--pr-stone-ink);
+  border-color: var(--pr-stone-ink);
+  color: var(--pr-stone);
+}
+
+.papyrus-registers-root .pr-stele .pr-btn.is-line {
+  background: transparent;
+  border-color: var(--pr-stone-hair);
+  color: var(--pr-stone-ink);
+}
+
+.papyrus-registers-root .pr-stele .pr-btn.is-line:hover {
+  border-color: var(--pr-stone-ink);
+}
+
+.papyrus-registers-root .pr-stele :focus-visible {
+  outline-color: var(--pr-stone-accent);
+}
+
+/* the stepped floor: setbacks rising to the plate's base */
+.papyrus-registers-root .pr-stele-floor {
+  position: relative;
+  height: calc(var(--pr-u) * 4);
+}
+
+.papyrus-registers-root .pr-stele-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- the ledger ---------- */
+
+.papyrus-registers-root .pr-ledger-scroll {
+  overflow-x: auto;
+}
+
+.papyrus-registers-root .pr-ledger {
+  min-width: 640px;
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-ledger-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.6fr) minmax(0, 0.7fr);
+  border-top: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-ledger-row:first-child {
+  border-top: 0;
+}
+
+.papyrus-registers-root .pr-ledger-row > * {
+  padding: 15px var(--pr-pad);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.papyrus-registers-root .pr-ledger-row > :first-child {
+  padding-left: var(--pr-gut);
+}
+
+.papyrus-registers-root .pr-ledger-row > :last-child {
+  padding-right: var(--pr-gut);
+}
+
+.papyrus-registers-root .pr-ledger-row > * + * {
+  border-left: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-ledger-row.is-head > * {
+  padding-block: 10px;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-ledger-row.is-lead .pr-ledger-name {
+  font-weight: 500;
+}
+
+.papyrus-registers-root .pr-ledger-rate,
+.papyrus-registers-root .pr-ledger-gt {
+  font-family: var(--pr-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-ledger-foot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 40px;
+  padding: 18px var(--pr-gut) 22px;
+  border-top: 1px solid var(--pr-hair);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-ledger-foot p {
+  margin: 0;
+}
+
+.papyrus-registers-root .pr-ledger-foot code {
+  font-family: var(--pr-mono);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-plans {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.papyrus-registers-root .pr-plan {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.papyrus-registers-root .pr-price {
+  margin: 14px 0 0;
+  font-weight: 500;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-price small {
+  margin-left: 10px;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-plan-body {
+  margin: 16px 0 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--pr-ink-2);
+  max-width: 46ch;
+}
+
+.papyrus-registers-root .pr-plan-list {
+  list-style: none;
+  margin: 18px 0 28px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-plan-list li {
+  padding: 3px 0;
+}
+
+.papyrus-registers-root .pr-plan .pr-btn {
+  margin-top: auto;
+}
+
+.papyrus-registers-root .pr-compare {
+  margin: 0;
+  padding: 18px var(--pr-gut) 22px;
+  border-top: 1px solid var(--pr-hair);
+  font-size: 14px;
+}
+
+.papyrus-registers-root .pr-compare a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--pr-ink);
+  border-bottom: 1px solid var(--pr-hair);
+}
+
+.papyrus-registers-root .pr-compare a:hover {
+  border-bottom-color: var(--pr-ink);
+}
+
+/* ---------- the footer ---------- */
+
+.papyrus-registers-root .pr-foot-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr);
+  gap: 40px;
+  padding: calc(var(--pr-u) * 0.9) var(--pr-gut);
+}
+
+.papyrus-registers-root .pr-foot-mark {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+.papyrus-registers-root .pr-foot-mark.is-dark {
+  display: none;
+}
+
+.papyrus-registers-root .pr-foot-brand p {
+  margin: 14px 0 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--pr-ink-2);
+  max-width: 30ch;
+}
+
+.papyrus-registers-root .pr-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.papyrus-registers-root .pr-foot-cols h4 {
+  margin: 0 0 12px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-foot-cols ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.papyrus-registers-root .pr-foot-cols a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: none;
+  color: var(--pr-ink-2);
+}
+
+.papyrus-registers-root .pr-foot-cols a:hover {
+  color: var(--pr-ink);
+}
+
+.papyrus-registers-root .pr-foot-glyph {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
+.papyrus-registers-root .pr-foot-bar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding: 18px var(--pr-gut) 22px;
+  border-top: 1px solid var(--pr-hair);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--pr-ink-2);
+}
+
+/* ---------- dark: the drawn marks swap, the Locadex drawing inverts ---------- */
+
+[data-theme='dark'] .papyrus-registers-root .pr-foot-mark.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .papyrus-registers-root .pr-foot-mark.is-dark {
+  display: block;
+}
+
+/* the sanctioned invert on a brand drawing: the mark is a drawing, not a picture */
+[data-theme='dark'] .papyrus-registers-root .pr-locadex {
+  filter: invert(1);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1040px) {
+  .papyrus-registers-root .pr-proof,
+  .papyrus-registers-root .pr-split,
+  .papyrus-registers-root .pr-variants,
+  .papyrus-registers-root .pr-plans {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .papyrus-registers-root .pr-proof > * + *,
+  .papyrus-registers-root .pr-split > * + *,
+  .papyrus-registers-root .pr-variants > * + *,
+  .papyrus-registers-root .pr-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-split > :first-child,
+  .papyrus-registers-root .pr-split > :last-child {
+    padding-inline: var(--pr-gut);
+  }
+
+  .papyrus-registers-root .pr-proof-src {
+    padding-right: var(--pr-gut);
+  }
+
+  .papyrus-registers-root .pr-var-table,
+  .papyrus-registers-root .pr-var-side {
+    padding-inline: var(--pr-gut);
+  }
+
+  .papyrus-registers-root .pr-fans {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .papyrus-registers-root .pr-fan-cell:nth-child(n + 7) {
+    border-top: 0;
+  }
+
+  .papyrus-registers-root .pr-fan-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-fan-cell:not(:nth-child(6n + 1)) {
+    border-left: 0;
+  }
+
+  .papyrus-registers-root .pr-fan-cell:not(:nth-child(3n + 1)) {
+    border-left: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-foot-top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .papyrus-registers-root .pr-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 24px;
+  }
+}
+
+@media (max-width: 860px) {
+  .papyrus-registers-root .pr-nav-links {
+    display: none;
+  }
+
+  .papyrus-registers-root .pr-nav-in {
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+  }
+}
+
+/* the late 720 block: the mobile ladder, every floor reads a --tcm-* slot
+   with its canonical px fallback, so a fork that has not declared the
+   ladder degrades to the same numbers */
+@media (max-width: 720px) {
+  .papyrus-registers-root {
+    --pr-gut: 20px;
+    --pr-pad: var(--tcm-cell-pad, 28px);
+  }
+
+  .papyrus-registers-root .pr-nav-signin {
+    display: none;
+  }
+
+  /* the margin is gone at this width: the numeral opens the column above
+     the rubric instead of beside it, so the 30px device never overflows the
+     20px gutter into the rail or the text */
+  .papyrus-registers-root .pr-head {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: var(--tcm-head-pt, 72px);
+    padding-bottom: var(--tcm-head-pb, 36px);
+    padding-inline: var(--pr-gut);
+  }
+
+  .papyrus-registers-root .pr-head-margin {
+    justify-content: flex-start;
+    padding-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .papyrus-registers-root .pr-claim {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+    min-height: calc(3 * var(--tcm-h2-lh, 1.18) * 1em);
+  }
+
+  .papyrus-registers-root .pr-rubric {
+    font-size: var(--tcm-h3, 1.375rem);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .papyrus-registers-root .pr-h3 {
+    font-size: var(--tcm-h4, 1.125rem);
+    line-height: var(--tcm-h4-lh, 1.35);
+  }
+
+  .papyrus-registers-root .pr-head-sub {
+    margin-top: var(--tcm-gap-h3, 14px);
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .papyrus-registers-root .pr-lead {
+    margin-top: var(--tcm-gap-h2, 18px);
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .papyrus-registers-root .pr-cell-sub,
+  .papyrus-registers-root .pr-plan-body,
+  .papyrus-registers-root .pr-hello-text,
+  .papyrus-registers-root .pr-var-name,
+  .papyrus-registers-root .pr-var-tail {
+    font-size: var(--tcm-small, 14px);
+    line-height: var(--tcm-small-lh, 1.55);
+  }
+
+  .papyrus-registers-root .pr-cell {
+    padding-top: var(--tcm-box-pt, 36px);
+    padding-bottom: var(--tcm-box-pb, 38px);
+  }
+
+  .papyrus-registers-root .pr-cell-sub {
+    margin-bottom: var(--tcm-box-gap, 28px);
+  }
+
+  .papyrus-registers-root .pr-fanband {
+    height: calc(var(--pr-u) * 4);
+  }
+
+  .papyrus-registers-root .pr-hero-body {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 40px var(--pr-gut) 48px;
+    background-image: none;
+  }
+
+  .papyrus-registers-root .pr-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .papyrus-registers-root .pr-trust-row > li + li {
+    border-left: 0;
+  }
+
+  .papyrus-registers-root .pr-trust-row > li:not(:nth-child(3n + 1)) {
+    border-left: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-trust-row > li:nth-child(n + 4) {
+    border-top: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-trust-row a {
+    height: 72px;
+  }
+
+  .papyrus-registers-root .pr-wm {
+    width: 92px;
+  }
+
+  .papyrus-registers-root .pr-hellos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .papyrus-registers-root .pr-hello {
+    padding: 18px var(--pr-gut);
+    min-height: 0;
+  }
+
+  .papyrus-registers-root .pr-hello:nth-child(n + 4) {
+    border-top: 0;
+  }
+
+  .papyrus-registers-root .pr-hello:nth-child(n + 3) {
+    border-top: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-hello:not(:nth-child(3n + 1)) {
+    border-left: 0;
+  }
+
+  .papyrus-registers-root .pr-hello:nth-child(2n) {
+    border-left: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-fans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .papyrus-registers-root .pr-fan-cell {
+    min-height: 0;
+    padding-inline: var(--pr-gut);
+  }
+
+  .papyrus-registers-root .pr-fan-cell:nth-child(n + 4) {
+    border-top: 0;
+  }
+
+  .papyrus-registers-root .pr-fan-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-fan-cell:not(:nth-child(3n + 1)) {
+    border-left: 0;
+  }
+
+  .papyrus-registers-root .pr-fan-cell:nth-child(2n) {
+    border-left: 1px solid var(--pr-hair);
+  }
+
+  .papyrus-registers-root .pr-fan-name {
+    font-size: var(--tcm-h4, 1.125rem);
+    line-height: var(--tcm-h4-lh, 1.35);
+  }
+
+  .papyrus-registers-root .pr-var-row {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .papyrus-registers-root .pr-var-row > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .papyrus-registers-root .pr-agent {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .papyrus-registers-root .pr-stele-plate {
+    margin-inline: var(--pr-gut);
+    padding-inline: calc(var(--pr-gut) + 3.2%);
+  }
+
+  .papyrus-registers-root .pr-stele-plate .pr-regs,
+  .papyrus-registers-root .pr-stele-plate .pr-acts {
+    margin-left: 0;
+  }
+
+  .papyrus-registers-root .pr-head.is-stone {
+    padding-inline: 0;
+  }
+
+  .papyrus-registers-root .pr-regs-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .papyrus-registers-root .pr-stele-floor {
+    height: calc(var(--pr-u) * 5);
+  }
+
+  .papyrus-registers-root .pr-ledger-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .papyrus-registers-root .pr-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,168 @@
+'use client';
+
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef, useState } from 'react';
+
+import { prefersReducedMotion } from '@/lib/dither';
+import { useMountEffect } from '@/lib/use-mount-effect';
+
+import { HELLO_WORLD, SOURCE_FILE } from '../data';
+import Tile from './Tile';
+import { Block, Course, Relief } from './Wall';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+/**
+ * textile-block: the T proof, cast in relief.
+ *
+ * The shipped Next.js sample (stacks.ts, verbatim) is cast into one smooth
+ * block whose bar carries the file name, the package, the source locale tile
+ * and one copy control; the string it wraps comes back in twelve languages,
+ * each cast into the adjacent block of the same course with its locale tile
+ * inset at the corner. Strings carry the only syntax hue, because strings
+ * are the product. One paused timeline casts the translations in order while
+ * the course is on screen; the resting markup is the finished wall, and
+ * under prefers-reduced-motion nothing is built.
+ */
+
+type Kind = 'k' | 't' | 'T' | 's' | 'p';
+
+type Token = readonly [Kind, string];
+
+/** stacks.ts FRAMEWORKS[0].code, split into lines and marked by hand. */
+const CODE: readonly (readonly Token[])[] = [
+  [['k', 'import'], ['p', ' { T, Num, DateTime } '], ['k', 'from'], ['p', ' '], ['s', "'gt-next'"], ['p', ';']],
+  [],
+  [['k', 'export default function'], ['p', ' Home() {']],
+  [['p', '  '], ['k', 'return'], ['p', ' (']],
+  [['p', '    '], ['T', '<T>']],
+  [['p', '      '], ['t', '<main>']],
+  [['p', '        '], ['t', '<h1>'], ['s', 'Hello, world!'], ['t', '</h1>']],
+  [['p', '        '], ['t', '<p>']],
+  [['p', '          '], ['t', '<DateTime>'], ['p', '{new Date()}'], ['t', '</DateTime>']],
+  [['p', '        '], ['t', '</p>']],
+  [['p', '        '], ['t', '<p>']],
+  [['p', '          '], ['s', 'GT has everything you need to ship your']],
+  [['p', '          '], ['s', 'product in '], ['t', '<Num>'], ['p', '{118}'], ['t', '</Num>'], ['s', ' languages.']],
+  [['p', '        '], ['t', '</p>']],
+  [['p', '      '], ['t', '</main>']],
+  [['p', '    '], ['T', '</T>']],
+  [['p', '  );']],
+  [['p', '}']],
+];
+
+/** The sample as plain text, for the bar's copy control. */
+const SOURCE_TEXT = CODE.map((line) => line.map(([, text]) => text).join('')).join('\n');
+
+function CopySource() {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef(0);
+
+  useMountEffect(() => () => window.clearTimeout(timer.current));
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(SOURCE_TEXT);
+      setCopied(true);
+      window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setCopied(false), 1400);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <button aria-label='Copy the source file' className='tb-cmd-copy' onClick={copy} type='button'>
+      {copied ? 'copied' : 'copy'}
+    </button>
+  );
+}
+
+function SourceCode() {
+  return (
+    <ol className='tb-code'>
+      {CODE.map((line, i) => (
+        <li key={i}>
+          {line.length === 0 ? (
+            <span> </span>
+          ) : (
+            line.map(([kind, text], j) => (
+              <span className={`is-${kind}`} key={j}>
+                {text}
+              </span>
+            ))
+          )}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+export default function Proof() {
+  const root = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+      const scope = root.current;
+      if (!scope) return;
+      const casts = gsap.utils.toArray<HTMLElement>('[data-cast]', scope);
+      if (casts.length === 0) return;
+
+      const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 0.8 });
+      tl.fromTo(
+        casts,
+        { opacity: 0.14 },
+        { opacity: 1, duration: 0.5, ease: 'power2.out', stagger: 0.16 }
+      );
+      tl.to(casts, { opacity: 0.14, duration: 0.4, ease: 'power1.in', stagger: 0.05 }, '+=2.4');
+
+      ScrollTrigger.create({
+        trigger: scope,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        onToggle: (self) => {
+          if (self.isActive) tl.play();
+          else tl.pause();
+        },
+      });
+    },
+    { scope: root }
+  );
+
+  return (
+    <div ref={root}>
+      <Course className='is-proof' id='proof' label='The T component'>
+        <Block className='tb-head' span={{ c: 8, r: 2, cMd: 8, rMd: 2, cSm: 6, rSm: 3 }}>
+          <h2 className='tb-h2'>The T component</h2>
+          <p>Wrap the tree once. GT extracts every string, translates it, and ships each locale.</p>
+        </Block>
+        <Relief className='tb-lg-only' motif='fret' span={{ c: 4, r: 2 }} />
+
+        <Block className='tb-source' span={{ c: 6, r: 5, cMd: 8, rMd: 5, cSm: 6, rSm: 7 }}>
+          <div className='tb-source-bar'>
+            <span className='tb-source-file'>{SOURCE_FILE}</span>
+            <span className='tb-source-side'>
+              <span>gt-next</span>
+              <Tile code='en' />
+              <CopySource />
+            </span>
+          </div>
+          <SourceCode />
+        </Block>
+
+        {HELLO_WORLD.map((row) => (
+          <Block className='tb-cast' key={row.tag} span={{ c: 2, r: 1, cMd: 2, cSm: 3, rSm: 2 }}>
+            <Tile code={row.tag} corner />
+            <p data-cast dir={row.rtl ? 'rtl' : 'ltr'} lang={row.tag}>
+              {row.text}
+            </p>
+          </Block>
+        ))}
+        <Relief className='tb-lg-only' motif='cross' span={{ c: 6, r: 1 }} />
+      </Course>
+    </div>
+  );
+}

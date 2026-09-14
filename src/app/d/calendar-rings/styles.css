@@ -1,0 +1,1467 @@
+/* calendar-rings: the landing page as one concentric disk, every later
+   section a ring of that disk unrolled into a wide arc band, so the page
+   reads as rings peeled outward from the claim at the center.
+
+   Lineage: the Aztec and Maya revival of 1920s deco, geometry only.
+   References, and what each one gives the page:
+   1. The Aztec Sun Stone (Piedra del Sol). Its concentric structure is the
+      hero: a center hub, a ring of twenty day cells divided by radial
+      rules, bands of repeating cells, and a notched outer rim. Here the
+      rings are Bayer dither at stepping density (0.08, 0.20, 0.36, 0.58,
+      0.90), the day cells become thirteen cells with bar-and-dot numerals
+      knocked out of the fourth ring, and the rim keeps its twenty notches.
+   2. The Dresden Codex layout. Its pages are ruled registers of bar-and-dot
+      numerals, a dot for one and a bar for five, dots stacked above bars,
+      set in strict rows; the calendar round it tabulates is two wheels, one
+      of thirteen numbers and one of twenty day positions, turning against
+      each other. The numerals here are that count, knocked out of the
+      fourth ring and seated on every section head; the disk's two notched
+      edges (eighteen and twenty notches) rotate in opposite directions.
+   3. The Aztec Hotel, Monrovia (Robert Stacy-Judd, 1924). Its facade is a
+      stepped register grammar: stacked bands with hairline reliefs,
+      battered set-backs, and dense cell repeats over plain stucco. The
+      plinth under the disk is three stepped registers; every section head
+      carries its ring number as a bar-and-dot numeral; the arc bands are
+      the facade's registers bent to the ring.
+
+   Material palette (H3), named as tokens below: obsidian for the ink,
+   fired clay (pale terracotta) for the ground, jade for the accent, gold
+   for the ornament.
+
+   Ornament homes: the hero disk (ring rules, radial rules, numerals, the
+   crown text), the section heads (the ring numeral), the arc bands (the
+   layout itself: arcs and radial dividers), the cartouche frames of the
+   four objects in the negative ring, the notched rule under the nav and
+   over the footer bar, and the dither floor of the negative ring.
+
+   Accent: jade has one job, it marks the source. The hub circle of the
+   disk, the source ring of the T proof, the strings and T brackets in the
+   code window, and the ring of the `en` chip.
+
+   Display face: Cinzel (inscriptional capitals, geometric construction),
+   loaded once in page.tsx as --calendar-rings-display and used for h1, h2,
+   and the crown text inscribed on the disk's first ring. Inter is the body.
+
+   Dark mode remaps the six tokens below and nothing else: obsidian becomes
+   the ground, clay the ink, jade and gold lift for the dark ground. The
+   negative ring swaps ground and ink in both themes, so it is dark on the
+   light page and light on the dark page: one high-contrast moment. */
+.calendar-rings-root {
+  --deco-ground: #eedfce;
+  --deco-ink: #100e0c;
+  --deco-ink-2: rgba(16, 14, 12, 0.66);
+  --deco-hair: rgba(16, 14, 12, 0.2);
+  --deco-accent: #1f7a63;
+  --deco-ornament: #b5862b;
+
+  /* the page reads the palette through these; the negative ring swaps the first four */
+  --cr-ground: var(--deco-ground);
+  --cr-ink: var(--deco-ink);
+  --cr-ink-2: var(--deco-ink-2);
+  --cr-hair: var(--deco-hair);
+  --cr-accent: var(--deco-accent);
+  --cr-ornament: var(--deco-ornament);
+
+  --cr-rail: 1170px;
+  --cr-gut: clamp(20px, 3.1vw, 36px);
+  --cr-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --cr-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --cr-display: var(--calendar-rings-display), var(--font-inter), 'Inter', serif;
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--cr-ground);
+  color: var(--cr-ink);
+  font-family: var(--cr-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.calendar-rings-root a {
+  color: inherit;
+}
+
+.calendar-rings-root :focus-visible {
+  outline: 1px solid var(--cr-ink);
+  outline-offset: 2px;
+}
+
+.calendar-rings-root h1,
+.calendar-rings-root h2,
+.calendar-rings-root h3,
+.calendar-rings-root h4,
+.calendar-rings-root p {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ *
+ * The column. No rails: the arcs are the structure, and the column's
+ * edges are where the page cuts each ring.
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-col {
+  width: min(var(--cr-rail), 100% - 2 * var(--cr-gut));
+  margin-inline: auto;
+}
+
+/* ------------------------------------------------------------------ *
+ * Controls: one button grammar, one chip, one command box.
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font: 500 14px/1 var(--cr-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  background-clip: padding-box;
+}
+
+.calendar-rings-root .cr-btn.is-solid {
+  background: var(--cr-ink);
+  color: var(--cr-ground);
+  border-color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-btn.is-line {
+  color: var(--cr-ink);
+  border-color: var(--cr-hair);
+}
+
+.calendar-rings-root .cr-btn.is-line:hover {
+  border-color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-btn.is-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* the chip: the shared flag print and code inside this page's hairline
+   box; its ground masks the rule it sits on, which is the notch */
+.calendar-rings-root .cr-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--cr-hair);
+  border-radius: 3px;
+  background: var(--cr-ground);
+  background-clip: padding-box;
+  color: var(--cr-ink);
+  font: 500 11px/1 var(--cr-mono);
+}
+
+.calendar-rings-root .cr-chip.is-source {
+  border-color: var(--cr-accent);
+}
+
+.calendar-rings-root .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-style: normal;
+}
+
+.calendar-rings-root .lct-code {
+  font: inherit;
+}
+
+.calendar-rings-root .cr-cmd {
+  display: inline-flex;
+  align-items: stretch;
+  height: 38px;
+  border: 1px solid var(--cr-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+}
+
+.calendar-rings-root .cr-cmd-text {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  font: 500 12.5px/1 var(--cr-mono);
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-cmd-btn {
+  appearance: none;
+  border: 0;
+  border-left: 1px solid var(--cr-hair);
+  background: none;
+  padding: 0 12px;
+  font: 500 12px/1 var(--cr-sans);
+  color: var(--cr-ink-2);
+  cursor: pointer;
+}
+
+.calendar-rings-root .cr-cmd-btn:hover {
+  color: var(--cr-ink);
+}
+
+/* the notched rule: the rim's notches unrolled. One owner draws the
+   hairline and the row of 1px ticks under it (a hatch device, lines not
+   tone). Seats under the nav and over the footer bar. */
+.calendar-rings-root .cr-ticks {
+  height: 7px;
+  border-top: 1px solid var(--cr-hair);
+  background-image: repeating-linear-gradient(90deg, var(--cr-hair) 0 1px, transparent 1px 24px);
+  background-position: center top;
+}
+
+/* ------------------------------------------------------------------ *
+ * Navigation register
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--cr-ground);
+}
+
+.calendar-rings-root .cr-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 58px;
+}
+
+.calendar-rings-root .cr-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.005em;
+}
+
+.calendar-rings-root .cr-nav-links {
+  display: flex;
+  gap: 22px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+
+.calendar-rings-root .cr-nav-links a {
+  text-decoration: none;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-nav-links a:hover {
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-nav-acts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+
+.calendar-rings-root .cr-nav-signin {
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-nav-signin:hover {
+  color: var(--cr-ink);
+}
+
+/* the theme switch is the shared ToolButton; its shell palette gives way
+   to the page's ink and hairline here, radius held to the control floor */
+.calendar-rings-root .cr-theme {
+  color: var(--cr-ink-2);
+  border-color: transparent;
+  border-radius: 4px;
+}
+
+.calendar-rings-root .cr-theme:hover {
+  color: var(--cr-ink);
+  border-color: var(--cr-hair);
+}
+
+.calendar-rings-root .cr-theme:focus-visible {
+  outline: 1px solid var(--cr-ink);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ *
+ * The hero: the disk
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-hero {
+  padding-top: 26px;
+}
+
+.calendar-rings-root .cr-disk-stage {
+  --cr-disk: min(100%, 68vh, 760px);
+  position: relative;
+  width: var(--cr-disk);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+.calendar-rings-root .cr-disk-plate {
+  position: absolute;
+  inset: 0;
+}
+
+.calendar-rings-root .cr-disk-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.calendar-rings-root .cr-disk-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.calendar-rings-root .cr-disk-svg circle,
+.calendar-rings-root .cr-disk-svg path {
+  fill: none;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* the source: the one place the accent is spent on the disk */
+.calendar-rings-root .cr-disk-hub-ring {
+  stroke: var(--cr-accent);
+}
+
+.calendar-rings-root .cr-disk-rule {
+  stroke: var(--cr-ornament);
+}
+
+/* the numerals knock out of the fourth ring in the ground color */
+.calendar-rings-root .cr-disk-numeral {
+  color: var(--cr-ground);
+}
+
+/* the crown: the name inscribed along the first ring, display face, gold */
+.calendar-rings-root .cr-crown {
+  font-family: var(--cr-display);
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  fill: var(--cr-ornament);
+}
+
+.calendar-rings-root .cr-disk-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.calendar-rings-root .cr-claim {
+  font-family: var(--cr-display);
+  font-weight: 400;
+  font-size: clamp(17px, 3.4cqw, 30px);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--cr-ink);
+  text-wrap: balance;
+  unicode-bidi: isolate;
+}
+
+.calendar-rings-root .cr-claim span {
+  display: inline-block;
+}
+
+/* the plinth: three stepped registers. Each step draws its top and its
+   sides; the step under it closes it, and the last step closes itself. */
+.calendar-rings-root .cr-plinth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.calendar-rings-root .cr-step {
+  border: 1px solid var(--cr-hair);
+  border-bottom: 0;
+  background-clip: padding-box;
+}
+
+.calendar-rings-root .cr-step.is-1 {
+  width: min(100%, 780px);
+  padding: 30px 32px 32px;
+  text-align: center;
+}
+
+.calendar-rings-root .cr-step.is-2 {
+  width: min(100%, 940px);
+  height: 16px;
+}
+
+.calendar-rings-root .cr-step.is-3 {
+  width: 100%;
+  height: 16px;
+  border-bottom: 1px solid var(--cr-hair);
+}
+
+.calendar-rings-root .cr-sub {
+  max-width: 60ch;
+  margin-inline: auto;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  vertical-align: -3px;
+  color: var(--cr-ink);
+  font-weight: 500;
+}
+
+.calendar-rings-root .cr-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Sections and heads
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-sec {
+  padding-top: 88px;
+}
+
+.calendar-rings-root .cr-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 680px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.calendar-rings-root .cr-head-num {
+  display: block;
+  color: var(--cr-ornament);
+}
+
+.calendar-rings-root .cr-head h2 {
+  font-family: var(--cr-display);
+  font-weight: 400;
+  font-size: clamp(1.45rem, 2.3vw, 2.05rem);
+  line-height: 1.16;
+  letter-spacing: 0.01em;
+  color: var(--cr-ink);
+  text-wrap: balance;
+}
+
+.calendar-rings-root .cr-head p {
+  max-width: 60ch;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--cr-ink-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * The arc band: one ring unrolled. The SVG owns every line, the cells
+ * draw none, and content follows the arc by a translate that never
+ * touches layout.
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-arc {
+  position: relative;
+  padding: 30px 0 calc(30px + var(--cr-sag, 0px));
+}
+
+.calendar-rings-root .cr-arc-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.calendar-rings-root .cr-arc-line {
+  fill: none;
+  stroke: var(--cr-hair);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.calendar-rings-root .cr-arc-cells {
+  display: grid;
+  grid-template-columns: var(--cr-cols, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.calendar-rings-root .cr-arc-cell {
+  min-width: 0;
+  padding: 0 28px;
+  transform: translateY(calc(var(--cr-sag, 0px) * var(--cr-k, 0)));
+}
+
+/* ------------------------------------------------------------------ *
+ * Ring 2: the customers
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-trust-arc .cr-arc-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 84px;
+}
+
+.calendar-rings-root .cr-wm-link {
+  display: block;
+}
+
+/* the real wordmarks in the page's ink, cap-height aligned by height;
+   the name stays as text for readers and find-in-page */
+.calendar-rings-root .cr-wm {
+  display: block;
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: grayscale(1);
+  opacity: 0.84;
+}
+
+.calendar-rings-root .cr-wm.is-cursor {
+  background-image: url('/logos/cursor.light.svg');
+}
+
+.calendar-rings-root .cr-wm.is-ramp {
+  background-image: url('/logos/ramp.light.svg');
+}
+
+.calendar-rings-root .cr-wm.is-mintlify {
+  background-image: url('/logos/mintlify.light.svg');
+}
+
+.calendar-rings-root .cr-wm.is-profound {
+  background-image: url('/logos/profound.light.svg');
+}
+
+.calendar-rings-root .cr-wm.is-partiful {
+  background-image: url('/logos/partiful.light.svg');
+}
+
+.calendar-rings-root .cr-wm.is-clickhouse {
+  background-image: url('/logos/clickhouse.light.svg');
+}
+
+/* ------------------------------------------------------------------ *
+ * Ring 3: the T component, a half disk
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-proof-fig {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  margin: 24px auto 48px;
+  container-type: inline-size;
+}
+
+.calendar-rings-root .cr-proof-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.calendar-rings-root .cr-proof-line,
+.calendar-rings-root .cr-proof-hub {
+  fill: none;
+  stroke: var(--cr-hair);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.calendar-rings-root .cr-proof-hub {
+  stroke: var(--cr-accent);
+}
+
+/* the source window sits on the base line, which closes it */
+.calendar-rings-root .cr-proof-source {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 26%;
+  transform: translateX(-50%);
+  border: 1px solid var(--cr-hair);
+  border-bottom: 0;
+  background: var(--cr-ground);
+  background-clip: padding-box;
+}
+
+.calendar-rings-root .cr-win-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 30px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--cr-hair);
+  font: 500 11px/1 var(--cr-mono);
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-code {
+  margin: 0;
+  padding: 10px 12px 12px;
+  overflow: hidden;
+  font: 400 clamp(9px, 1cqw, 12px) / 1.55 var(--cr-mono);
+  color: var(--cr-ink);
+  white-space: pre;
+  tab-size: 2;
+}
+
+/* strings are the product, so they carry the one syntax hue: the accent, which marks the source */
+.calendar-rings-root .cr-tok-str,
+.calendar-rings-root .cr-tok-t {
+  color: var(--cr-accent);
+}
+
+.calendar-rings-root .cr-tok-t {
+  font-weight: 500;
+}
+
+.calendar-rings-root .cr-proof-ring {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.calendar-rings-root .cr-proof-item {
+  display: contents;
+}
+
+.calendar-rings-root .cr-proof-label {
+  display: none;
+}
+
+.calendar-rings-root .cr-proof-text {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: clamp(13px, 1.5cqw, 18px);
+  line-height: 1.3;
+  color: var(--cr-ink);
+  white-space: nowrap;
+  text-align: center;
+  unicode-bidi: isolate;
+}
+
+.calendar-rings-root .cr-proof-chip {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.calendar-rings-root .cr-proof-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -36px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--cr-ink-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * Ring 4: the negative. Ground and ink swap; every rule below reads the
+ * swapped tokens, so the buttons, chips and frames invert with it.
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-negative {
+  --cr-ground: var(--deco-ink);
+  --cr-ink: var(--deco-ground);
+  --cr-ink-2: color-mix(in srgb, var(--deco-ground) 68%, transparent);
+  --cr-hair: color-mix(in srgb, var(--deco-ground) 24%, transparent);
+  position: relative;
+  margin-top: 88px;
+  padding-top: 84px;
+  background: var(--cr-ground);
+  color: var(--cr-ink);
+  overflow: hidden;
+}
+
+.calendar-rings-root .cr-negative-in {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 64px;
+}
+
+.calendar-rings-root .cr-negative-floor {
+  display: block;
+  width: 100%;
+  height: 160px;
+}
+
+.calendar-rings-root .cr-stack-arc .cr-arc-cell {
+  padding: 0 22px;
+}
+
+/* the cartouche: one frame, a name bar, a face, a base line */
+.calendar-rings-root .cr-object {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--cr-hair);
+  background-clip: padding-box;
+}
+
+.calendar-rings-root .cr-object-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 32px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--cr-hair);
+  font: 500 11px/1 var(--cr-mono);
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-object-meta {
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-object-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: auto;
+  padding: 10px 12px;
+  border-top: 1px solid var(--cr-hair);
+  font: 400 11px/1.5 var(--cr-mono);
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-pkgs {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 14px 16px;
+  font-size: 13px;
+}
+
+.calendar-rings-root .cr-pkgs li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.calendar-rings-root .cr-pkgs code {
+  font: 500 11.5px/1.5 var(--cr-mono);
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-term {
+  padding: 14px 16px;
+  font: 400 12px/1.75 var(--cr-mono);
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-term-line.is-dim,
+.calendar-rings-root .cr-term-prompt {
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+.calendar-rings-root .cr-review {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 16px 20px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.calendar-rings-root .cr-review li {
+  display: grid;
+  gap: 2px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cr-hair);
+}
+
+.calendar-rings-root .cr-review li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.calendar-rings-root .cr-review-src {
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-locadex {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--cr-ink-2);
+}
+
+/* the light drawing of the mark on the obsidian ground: inverted, the sanctioned device for brand marks */
+.calendar-rings-root .cr-locadex-mark {
+  width: 52px;
+  height: 52px;
+  filter: invert(1);
+}
+
+.calendar-rings-root .cr-acts.is-center {
+  margin-top: 40px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Ring 5: languages as material
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-langs-arc .cr-arc-cell {
+  padding: 0 8px;
+}
+
+.calendar-rings-root .cr-langs-arc + .cr-langs-arc {
+  margin-top: 28px;
+}
+
+.calendar-rings-root .cr-lang {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 84px;
+}
+
+.calendar-rings-root .cr-lang-word {
+  font-size: clamp(13px, 1.45vw, 17px);
+  line-height: 1.3;
+  text-align: center;
+  color: var(--cr-ink);
+  overflow-wrap: anywhere;
+  unicode-bidi: isolate;
+}
+
+.calendar-rings-root .cr-langs-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px 28px;
+  margin-top: 36px;
+}
+
+.calendar-rings-root .cr-count {
+  font: 500 13px/1.4 var(--cr-mono);
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-variants {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.calendar-rings-root .cr-variants li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Ring 6: the pricing file
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 4px 0;
+}
+
+.calendar-rings-root .cr-plan h3 {
+  font: 500 13px/1.3 var(--cr-sans);
+  letter-spacing: 0.02em;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.calendar-rings-root .cr-plan-amount {
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-plan-period,
+.calendar-rings-root .cr-plan-note {
+  font-size: 13.5px;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-plan-list {
+  display: grid;
+  gap: 7px;
+  list-style: none;
+  margin: 6px 0 12px;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--cr-ink);
+}
+
+/* the bullet is a bar of the count, in the ornament color */
+.calendar-rings-root .cr-plan-list li::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 2px;
+  margin-right: 9px;
+  vertical-align: middle;
+  background: var(--cr-ornament);
+}
+
+.calendar-rings-root .cr-plan .cr-btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.calendar-rings-root .cr-ledger-wrap {
+  overflow-x: auto;
+}
+
+.calendar-rings-root .cr-ledger {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.calendar-rings-root .cr-ledger caption {
+  padding-bottom: 12px;
+  text-align: left;
+  font: 500 11px/1 var(--cr-mono);
+  letter-spacing: 0.04em;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-ledger th,
+.calendar-rings-root .cr-ledger td {
+  padding: 9px 12px 9px 0;
+  border-bottom: 1px solid var(--cr-hair);
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.calendar-rings-root .cr-ledger thead th {
+  padding-top: 0;
+  font: 500 11px/1 var(--cr-mono);
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-ledger tbody th {
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-ledger td {
+  font: 400 12.5px/1.5 var(--cr-mono);
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-ledger tbody tr:last-child th,
+.calendar-rings-root .cr-ledger tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.calendar-rings-root .cr-ledger-empty {
+  display: inline-block;
+  width: 8px;
+  height: 1px;
+  vertical-align: middle;
+  background: var(--cr-hair);
+}
+
+.calendar-rings-root .cr-pricing-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px 32px;
+  margin-top: 32px;
+}
+
+.calendar-rings-root .cr-notes {
+  display: grid;
+  gap: 6px;
+  max-width: 64ch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--cr-ink-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * The base register: the footer
+ * ------------------------------------------------------------------ */
+.calendar-rings-root .cr-foot {
+  margin-top: 100px;
+}
+
+.calendar-rings-root .cr-foot-in {
+  display: grid;
+  grid-template-columns: 1.1fr 2fr;
+  gap: 40px;
+  padding: 44px 0 40px;
+}
+
+.calendar-rings-root .cr-foot-brand {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.calendar-rings-root .cr-foot-brand p {
+  max-width: 34ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-foot-mark {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.calendar-rings-root .cr-foot-mark.is-dark {
+  display: none;
+}
+
+.calendar-rings-root .cr-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.calendar-rings-root .cr-foot-col h4 {
+  margin-bottom: 12px;
+  font: 500 12px/1.4 var(--cr-sans);
+  letter-spacing: 0.02em;
+  color: var(--cr-ink-2);
+}
+
+.calendar-rings-root .cr-foot-col ul {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.calendar-rings-root .cr-foot-col a {
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--cr-ink);
+}
+
+.calendar-rings-root .cr-foot-col a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.calendar-rings-root .cr-foot-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 14px 0 36px;
+  font-size: 12px;
+  color: var(--cr-ink-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * Dark mode: the six tokens remap, nothing else. Obsidian becomes the
+ * ground, clay the ink; jade and gold lift for the dark ground.
+ * ------------------------------------------------------------------ */
+[data-theme='dark'] .calendar-rings-root {
+  --deco-ground: #0b0a09;
+  --deco-ink: #eedfce;
+  --deco-ink-2: rgba(238, 223, 206, 0.66);
+  --deco-hair: rgba(238, 223, 206, 0.22);
+  --deco-accent: #4fb392;
+  --deco-ornament: #d2a545;
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-wm.is-cursor {
+  background-image: url('/logos/cursor.dark.svg');
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-wm.is-ramp {
+  background-image: url('/logos/ramp.dark.svg');
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-wm.is-mintlify {
+  background-image: url('/logos/mintlify.dark.svg');
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-wm.is-profound {
+  background-image: url('/logos/profound.dark.svg');
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-wm.is-partiful {
+  background-image: url('/logos/partiful.dark.svg');
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-wm.is-clickhouse {
+  background-image: url('/logos/clickhouse.dark.svg');
+}
+
+/* the negative ring is clay in the dark theme, so the mark's own ink stands */
+[data-theme='dark'] .calendar-rings-root .cr-locadex-mark {
+  filter: none;
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-foot-mark.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .calendar-rings-root .cr-foot-mark.is-dark {
+  display: block;
+}
+
+/* ------------------------------------------------------------------ *
+ * Reflow. Four cells of objects need room; the half disk needs room;
+ * under 860px every ring unrolls flat and the sheet draws the seams.
+ * ------------------------------------------------------------------ */
+@media (max-width: 1100px) {
+  .calendar-rings-root .cr-stack-arc .cr-arc-cell {
+    padding: 0 14px;
+  }
+
+  .calendar-rings-root .cr-arc-cell {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 860px) {
+  /* the arc band flattens: no SVG, stacked cells, seams from the sheet */
+  .calendar-rings-root .cr-arc {
+    padding: 0;
+    border-top: 1px solid var(--cr-hair);
+    border-bottom: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-arc-svg {
+    display: none;
+  }
+
+  .calendar-rings-root .cr-arc-cells {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-rings-root .cr-arc-cell,
+  .calendar-rings-root .cr-stack-arc .cr-arc-cell,
+  .calendar-rings-root .cr-langs-arc .cr-arc-cell {
+    padding: 22px 0;
+    transform: none;
+  }
+
+  .calendar-rings-root .cr-arc-cell + .cr-arc-cell {
+    border-top: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-trust-arc .cr-arc-cells {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .calendar-rings-root .cr-trust-arc .cr-arc-cell {
+    min-height: 72px;
+    padding: 8px 0;
+  }
+
+  .calendar-rings-root .cr-trust-arc .cr-arc-cell + .cr-arc-cell {
+    border-top: 0;
+  }
+
+  .calendar-rings-root .cr-trust-arc .cr-arc-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-trust-arc .cr-arc-cell:nth-child(3n + 2),
+  .calendar-rings-root .cr-trust-arc .cr-arc-cell:nth-child(3n + 3) {
+    border-left: 1px solid var(--cr-hair);
+  }
+
+  /* the languages keep two columns: one owner per seam */
+  .calendar-rings-root .cr-langs-arc .cr-arc-cells {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calendar-rings-root .cr-langs-arc .cr-arc-cell + .cr-arc-cell {
+    border-top: 0;
+  }
+
+  .calendar-rings-root .cr-langs-arc .cr-arc-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-langs-arc .cr-arc-cell:nth-child(even) {
+    border-left: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-lang {
+    min-height: 0;
+    padding: 6px 0;
+  }
+
+  .calendar-rings-root .cr-lang-word {
+    font-size: 17px;
+  }
+
+  .calendar-rings-root .cr-langs-arc + .cr-langs-arc {
+    margin-top: 0;
+    border-top: 0;
+  }
+
+  .calendar-rings-root .cr-object {
+    height: auto;
+  }
+
+  .calendar-rings-root .cr-plan .cr-btn {
+    margin-top: 6px;
+  }
+
+  /* the half disk unrolls: the window, then the two rings as rows */
+  .calendar-rings-root .cr-proof-fig {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    aspect-ratio: auto;
+    margin-bottom: 0;
+  }
+
+  .calendar-rings-root .cr-proof-svg {
+    display: none;
+  }
+
+  .calendar-rings-root .cr-proof-source {
+    position: static;
+    width: 100%;
+    transform: none;
+    border-bottom: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-code {
+    font-size: 12px;
+    overflow-x: auto;
+  }
+
+  .calendar-rings-root .cr-proof-ring {
+    border-top: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-proof-item,
+  .calendar-rings-root .cr-proof-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--cr-hair);
+  }
+
+  .calendar-rings-root .cr-proof-label code {
+    font: 500 12px/1.4 var(--cr-mono);
+    color: var(--cr-ink-2);
+  }
+
+  .calendar-rings-root .cr-proof-text,
+  .calendar-rings-root .cr-proof-chip {
+    position: static;
+    transform: none;
+    white-space: normal;
+    text-align: left;
+    font-size: 16px;
+  }
+
+  .calendar-rings-root .cr-proof-cap {
+    position: static;
+    padding-top: 6px;
+  }
+
+  .calendar-rings-root .cr-foot-in {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .calendar-rings-root .cr-foot-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* the mobile ladder: the last block consumes the --tcm-* slots with their px fallbacks */
+@media (max-width: 720px) {
+  .calendar-rings-root {
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .calendar-rings-root .cr-nav-in {
+    gap: 16px;
+  }
+
+  .calendar-rings-root .cr-nav-links {
+    gap: 16px;
+  }
+
+  .calendar-rings-root .cr-nav-links .is-wide,
+  .calendar-rings-root .cr-nav-signin {
+    display: none;
+  }
+
+  /* the claim moves above the disk; the disk keeps the crownless plate */
+  .calendar-rings-root .cr-disk-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    aspect-ratio: auto;
+  }
+
+  .calendar-rings-root .cr-disk-hub {
+    position: static;
+    order: -1;
+    width: 100%;
+    transform: none;
+    padding-top: var(--tcm-head-pb, 36px);
+  }
+
+  .calendar-rings-root .cr-disk-plate {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+
+  .calendar-rings-root .cr-crown {
+    display: none;
+  }
+
+  .calendar-rings-root .cr-claim {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .calendar-rings-root .cr-step.is-1 {
+    padding: var(--tcm-cell-pad, 28px) 16px;
+  }
+
+  .calendar-rings-root .cr-sub {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .calendar-rings-root .cr-sec {
+    padding-top: var(--tcm-head-pt, 72px);
+  }
+
+  .calendar-rings-root .cr-negative {
+    margin-top: var(--tcm-head-pt, 72px);
+    padding-top: var(--tcm-head-pt, 72px);
+  }
+
+  .calendar-rings-root .cr-head {
+    gap: var(--tcm-gap-h3, 14px);
+    margin-bottom: var(--tcm-head-pb, 36px);
+  }
+
+  .calendar-rings-root .cr-head h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .calendar-rings-root .cr-head p,
+  .calendar-rings-root .cr-plan-list,
+  .calendar-rings-root .cr-notes {
+    font-size: var(--tcm-small, 14px);
+    line-height: var(--tcm-small-lh, 1.55);
+  }
+
+  .calendar-rings-root .cr-arc-cell,
+  .calendar-rings-root .cr-stack-arc .cr-arc-cell {
+    padding: var(--tcm-cell-pad, 28px) 0;
+  }
+
+  .calendar-rings-root .cr-langs-arc .cr-arc-cell {
+    padding: 14px 0;
+  }
+
+  .calendar-rings-root .cr-trust-arc .cr-arc-cell {
+    padding: 8px 0;
+  }
+
+  .calendar-rings-root .cr-negative-floor {
+    height: 110px;
+  }
+
+  .calendar-rings-root .cr-pricing-foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calendar-rings-root .cr-foot-cols {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-rings-root .cr-brand span {
+    display: none;
+  }
+
+  .calendar-rings-root .cr-nav-in {
+    gap: 12px;
+  }
+}

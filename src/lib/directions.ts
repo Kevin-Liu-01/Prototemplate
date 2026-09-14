@@ -205,6 +205,106 @@ export const DIRECTIONS: Direction[] = [
     signature: 'Session and output, side by side in one window.',
   },
   {
+    n: 25,
+    label: '17',
+    slug: 'pylon-gate',
+    name: 'Pylon Gate',
+    concept:
+      'A monumental Egyptian-revival gateway: two battered Bayer-dithered pylon masses frame a central passage, and every section is a court passed through on one axis, the passage narrowing at each lintel from forecourt to hypostyle to inner court to a lapis sanctuary to the pricing plinths.',
+    tone: 'light',
+    signature: 'The claim morphs between twelve locales as one shaped text node under a dithered sun disk between two pairs of gold bars, framed by two battered pylons whose stone is four stepped tiers of ordered dither.',
+  },
+  {
+    n: 26,
+    label: '18',
+    slug: 'textile-block',
+    name: 'Textile Block',
+    concept:
+      'The General Translation landing page as a Frank Lloyd Wright textile-block wall: a rigid grid of square cast-concrete modules laid in courses, most carrying Mayan-revival geometric relief in moss green, with the claim, the T proof, the four product objects, the scripts, a jade plinth and three pricing plaques set as smooth blocks into the same bond.',
+    tone: 'light',
+    signature: 'One monumental smooth block carries the claim while the Bayer field glows through the cruciform holes of the perforated blocks beside it, and every joint on the page is a hairline drawn once at the module pitch.',
+  },
+  {
+    n: 27,
+    label: '19',
+    slug: 'stepped-fret',
+    name: 'Stepped Fret',
+    concept:
+      'Fret strata in the Zapotec and Mixtec revival: the page is a stack of horizontal registers, each bounded by a stepped-fret meander at its own scale, the content blocks step one fret step per register, and the hero is one monumental fret rendered in ordered dither with the claim set in the step it leaves open.',
+    tone: 'light',
+    signature: 'The monumental hero fret is solid limestone-black at the base of its stair and thins to ordered Bayer grain by the end of its coil, with one knot of density travelling the path every twenty seconds while the claim in the open step cycles through sixteen locales.',
+  },
+  {
+    n: 28,
+    label: '20',
+    slug: 'three-registers',
+    name: 'Three Registers',
+    concept:
+      'A stele of registers: one tall black-granodiorite slab on a dark ground where every section is a three-band register read top to bottom, after the stone that carried one text in three scripts.',
+    tone: 'dark',
+    signature: 'The hero is the upper register itself: the claim incised in Cinzel caps under a dithered gold sun disk, the same claim as one shaped living-script node in the second band, and the served interface with its locale chip in the third, all beneath a four-step cornice and above six more registers separated by chevron strips, one of them gilded end to end.',
+  },
+  {
+    n: 29,
+    label: '21',
+    slug: 'glazed-bond',
+    name: 'Glazed Bond',
+    concept:
+      'General Translation as the Ishtar Gate\'s elevation: two battered brick towers with stepped parapets flank a corbelled arch that holds the claim, and every section below is one more course of lapis-glazed panels set into running bond, divided by gold rosette bands.',
+    tone: 'light',
+    signature: 'The claim morphs through sixteen locales inside the arch while a dithered sun disc turns in its crown, and each course\'s bricks and medallions are laid one by one as their wall scrolls in.',
+  },
+  {
+    n: 30,
+    label: '22',
+    slug: 'papyrus-registers',
+    name: 'Papyrus Registers',
+    concept:
+      'A General Translation landing page set as a ruled papyrus scroll in the Egyptian revival lineage of Art Deco: one column eighteen canon squares wide between two hairline rails, every section a column of the scroll opened by a rubric in red ochre with a bar-and-dot numeral in the margin, with papyrus umbels reduced to radiating bars and rendered only as gold Bayer dither.',
+    tone: 'light',
+    signature: 'The opening column: a gold-dithered band of nine bar fans swaying over the visible 18-square canon grid, above the claim set as the first red rubric in Julius Sans One caps that turns through sixteen locales as one shaped text node.',
+  },
+  {
+    n: 31,
+    label: '23',
+    slug: 'brick-lattice',
+    name: 'Brick Lattice',
+    concept:
+      'A Babylonian-revival landing page in which the entire surface is one running-bond brick wall, every brick an ordered-dither cell, and density alone draws the rosettes, chevrons, frets, palmettes and stepped parapets around glazed content panels cut out of the lattice.',
+    tone: 'light',
+    signature: 'Dot density on a continuous brick bond resolves into one enormous twelve-petal rosette behind a stepped-corner claim panel, and every later ornament, from the wall of translations to the kiln\'s crenellations and the medallion band, is the same brick counted course by course.',
+  },
+  {
+    n: 32,
+    label: '24',
+    slug: 'screenfold-codex',
+    name: 'Screenfold Codex',
+    concept:
+      'The landing page as a Maya screenfold: one strip of bark-paper cream folded into eight red-framed leaves of horizontal registers, adjacent leaves sheared opposite ways, with Bayer dither as the writing (geometric glyph blocks, stepped fold ramps, a live stepped-pyramid plate on the black leaf) and every figure printed in bar-and-dot beside its Arabic form.',
+    tone: 'light',
+    signature: 'While the hero is on screen, one glyph block at a time re-inks to the next Bayer density tier in the codex\'s paired-column reading order, a discrete step through the screen rather than a fade, so the band is a finished still at every frame.',
+  },
+  {
+    n: 33,
+    label: '25',
+    slug: 'raking-relief',
+    name: 'Raking Relief',
+    concept:
+      'A bas-relief wall of wide alabaster courses under a raking light from the left, where every panel is carved and shaded by Bayer dither density, geometric rosette, palmette, chevron and fret bands frame each course, and the product is inscribed text with one lapis inlay per locale.',
+    tone: 'light',
+    signature: 'The hero claim stands in inscriptional capitals casting a dithered shadow to the right, and cycles through sixteen locales as a chisel pass that cuts the old line away and reveals the new one from the left.',
+  },
+  {
+    n: 34,
+    label: '26',
+    slug: 'calendar-rings',
+    name: 'Calendar Rings',
+    concept:
+      'A concentric disk of Bayer-dithered rings holds the claim at its center, and every section below it is one ring unrolled into a wide arc band, so the page reads as rings peeled outward from the Sun Stone\'s geometry.',
+    tone: 'light',
+    signature: 'The disk\'s two notched edges turn against each other like the wheels of the calendar round while the claim at the hub cycles through the shipped locales as one shaped text node.',
+  },
+  {
     n: 23,
     slug: 'production',
     name: 'Shipped',

@@ -1,0 +1,1874 @@
+/* glazed-bond: General Translation as a gate elevation in the Babylonian
+   revival of Art Deco. Two battered towers with stepped parapets flank a
+   corbelled arch that holds the claim; every section below is one more
+   course of the elevation, content set as glazed panels into running-bond
+   brick, with rosette bands running across the towers as the dividers.
+   Language is the oldest technology; the gate that carried it is the frame.
+
+   References, designed from concretely:
+   1. The Ishtar Gate reconstruction (Pergamon Museum): lapis-glazed brick in
+      running bond with thin mortar seams, gold and white rosette friezes on
+      the towers between register rules, stepped crenellations on the
+      parapets, battered tower faces. The page's bond pattern (72 by 28
+      stretchers, half-brick offset), its rosette bands (twelve-petal
+      rosettes on lapis between two gold rules), its parapets (three-step
+      merlons on a rail) and the 14px batter on each tower's inner face are
+      those forms at page scale. The rosette itself, a radial repeat of
+      identical rhombi around a disc, is the language medallion (sixteen
+      petals between two rings), the band rosette (twelve petals) and the
+      pricing bullet (one lozenge).
+   2. The Pythian Temple (New York, 1927): the Babylonian revival building,
+      a stepped setback massing in polychrome glazed terracotta, each tier
+      narrower than the one under it, glazed panels set into brick. The
+      story section is three tiers that widen downward; the arch's crown
+      steps inward in five courses; the gate towers are wider than the
+      flank walls under them; the court and the pricing plaques are glazed
+      panels seated in the bond.
+   3. The Behistun inscription: one text carved in three languages as
+      parallel ruled registers. The bond wall lays the source string beside
+      its thirteen translations; the review tablet sets source beside
+      translation row by row; the variants register and the rate ledger are
+      ruled registers with a mono tag column.
+
+   Material palette (Babylonian revival): cream mortar as the ground,
+   black-lapis as the ink, lapis glaze on bands, plaques and the court,
+   turquoise glaze as the one accent, gold as the one ornament, fired brick
+   as a Bayer stipple on the walls.
+
+   Ornament homes: the towers and flanks (bond and stipple), the parapets,
+   the rosette bands between courses, the medallions, the course-number
+   bricks, the pricing plaques, the court's bond and dithered floor.
+   Accent: turquoise glaze, spent as a controlled edge only: the ring on a
+   told chip (the source brick's header, zh-Hans and zh-Hant), the focus
+   and hover underline, and the string hue on the court's code face.
+   Display face: Cinzel, used for h1, h2 and the crown cartouche only.
+   Dark mode remaps these six tokens (and lifts the three material tokens
+   that sit on the ground) and nothing else; the court's glaze never
+   remaps. */
+.glazed-bond-root {
+  --deco-ground: #efe6d2;
+  --deco-ink: #14192b;
+  --deco-ink-2: rgba(20, 25, 43, 0.66);
+  --deco-hair: rgba(20, 25, 43, 0.2);
+  --deco-accent: #1f8a86;
+  --deco-ornament: #cfa53a;
+
+  /* materials on the ground: these three lift in dark mode */
+  --gb-plate: #f6efdf;
+  --gb-lapis: #1a3a80;
+  --gb-brick: rgba(162, 74, 46, 0.5);
+
+  /* the glaze family: fixed in both themes, cream on lapis */
+  --gb-cream: #efe6d2;
+  --gb-cream-2: rgba(239, 230, 210, 0.7);
+  --gb-cream-3: rgba(239, 230, 210, 0.44);
+  --gb-cream-hair: rgba(239, 230, 210, 0.22);
+  --gb-court: #17357a;
+  --gb-court-2: #10285e;
+  --gb-court-seam: rgba(239, 230, 210, 0.13);
+  --gb-court-accent: #5fc4bf;
+  --gb-gold: var(--deco-ornament);
+
+  /* the elevation: the content column, the flank towers, the hero piers */
+  --gb-gate: 1000px;
+  --gb-tower: clamp(14px, calc((100cqw - var(--gb-gate)) / 2), 300px);
+  --gb-pier: clamp(24px, 7cqw, 110px);
+  --gb-hero-tower: calc(var(--gb-tower) + var(--gb-pier));
+  --gb-pad: clamp(20px, 3vw, 40px);
+
+  --gb-sans: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  --gb-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  position: relative;
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  font-family: var(--gb-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+[data-theme='dark'] .glazed-bond-root {
+  --deco-ground: #0a0908;
+  --deco-ink: #f1e9d8;
+  --deco-ink-2: rgba(241, 233, 216, 0.66);
+  --deco-hair: rgba(241, 233, 216, 0.22);
+  --deco-accent: #4fb8b3;
+  --deco-ornament: #d8b545;
+  --gb-plate: #131210;
+  --gb-lapis: #1f428c;
+  --gb-brick: rgba(184, 87, 58, 0.42);
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root *,
+.glazed-bond-root *::before,
+.glazed-bond-root *::after {
+  box-sizing: border-box;
+}
+
+.glazed-bond-root h1,
+.glazed-bond-root h2,
+.glazed-bond-root h3,
+.glazed-bond-root p,
+.glazed-bond-root ul,
+.glazed-bond-root ol,
+.glazed-bond-root pre,
+.glazed-bond-root figure,
+.glazed-bond-root dl {
+  margin: 0;
+}
+
+.glazed-bond-root a {
+  color: inherit;
+}
+
+.glazed-bond-root :focus-visible {
+  outline: 2px solid var(--deco-accent);
+  outline-offset: 2px;
+}
+
+.glazed-bond-root .gb-vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The display face: h1, h2, and the crown cartouche. Nowhere else. */
+.glazed-bond-root h1 {
+  font-family: var(--glazed-bond-display), var(--font-inter), 'Inter', serif;
+  font-weight: 400;
+}
+
+.glazed-bond-root h2 {
+  font-family: var(--glazed-bond-display), var(--font-inter), 'Inter', serif;
+  font-weight: 400;
+}
+
+.glazed-bond-root .gb-crown-word {
+  font-family: var(--glazed-bond-display), var(--font-inter), 'Inter', serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* Buttons: one grammar, solid or line, optionally small. The ground holds on hover. */
+.glazed-bond-root .gb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background-clip: padding-box;
+  font: 500 14px/1 var(--gb-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.15s ease;
+}
+
+.glazed-bond-root .gb-btn.is-solid {
+  background: var(--deco-ink);
+  border-color: var(--deco-ink);
+  color: var(--deco-ground);
+}
+
+.glazed-bond-root .gb-btn.is-line {
+  border-color: var(--deco-hair);
+  color: var(--deco-ink);
+}
+
+.glazed-bond-root .gb-btn.is-line:hover {
+  border-color: var(--deco-ink);
+}
+
+.glazed-bond-root .gb-btn.is-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.glazed-bond-root .gb-btn.is-glazed.is-solid {
+  background: var(--gb-cream);
+  border-color: var(--gb-cream);
+  color: var(--gb-court);
+}
+
+.glazed-bond-root .gb-btn.is-glazed.is-line {
+  border-color: var(--gb-cream-hair);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-btn.is-glazed.is-line:hover {
+  border-color: var(--gb-cream);
+}
+
+/* Chips: header bricks. A hairline box, the flag print, the code in mono. */
+.glazed-bond-root .gb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font: 500 11px/1 var(--gb-mono);
+  color: var(--deco-ink);
+  white-space: nowrap;
+}
+
+.glazed-bond-root .gb-chip .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.glazed-bond-root .gb-chip.is-tell {
+  border-color: var(--deco-accent);
+}
+
+.glazed-bond-root .gb-court .gb-chip,
+.glazed-bond-root .gb-plaque .gb-chip {
+  border-color: var(--gb-cream-hair);
+  color: var(--gb-cream);
+}
+
+/* The bond: the SVG pattern fills its host; the sheet colors it. */
+.glazed-bond-root .gb-bond {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.glazed-bond-root .gb-bond-seam {
+  fill: var(--deco-hair);
+}
+
+.glazed-bond-root .gb-bond-stipple {
+  fill: var(--gb-brick);
+}
+
+/* Glaze, rosettes, bands, wedges */
+.glazed-bond-root .gb-glaze {
+  fill: var(--gb-lapis);
+}
+
+.glazed-bond-root .gb-ros-disc {
+  fill: var(--gb-lapis);
+}
+
+.glazed-bond-root .gb-ros-petal {
+  fill: var(--gb-gold);
+}
+
+.glazed-bond-root .gb-ros-ring {
+  fill: none;
+  stroke: var(--gb-gold);
+  stroke-width: 1;
+}
+
+.glazed-bond-root .gb-band {
+  position: relative;
+  z-index: 2;
+  height: 44px;
+}
+
+.glazed-bond-root .gb-band-svg {
+  display: block;
+  width: 100%;
+  height: 44px;
+}
+
+.glazed-bond-root .gb-band-ground {
+  fill: var(--gb-lapis);
+}
+
+.glazed-bond-root .gb-band-gold {
+  fill: var(--gb-gold);
+}
+
+.glazed-bond-root .gb-band-ring {
+  fill: none;
+  stroke: var(--gb-gold);
+  stroke-width: 1;
+}
+
+.glazed-bond-root .gb-wedge {
+  display: block;
+  flex: none;
+}
+
+.glazed-bond-root .gb-field {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ------------------------------------------------------------------ *
+ * The lintel
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-lintel {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  container-type: inline-size;
+  background: var(--deco-ground);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-lintel-in {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 58px;
+  padding-inline: calc(var(--gb-tower) + var(--gb-pad));
+}
+
+.glazed-bond-root .gb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--deco-ink);
+  text-decoration: none;
+  font: 500 14px/1 var(--gb-sans);
+  white-space: nowrap;
+}
+
+.glazed-bond-root .gb-links {
+  display: flex;
+  gap: 22px;
+  margin-inline: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.glazed-bond-root .gb-links a {
+  color: var(--deco-ink-2);
+  text-decoration: none;
+  font: 500 13.5px/1 var(--gb-sans);
+}
+
+.glazed-bond-root .gb-links a:hover {
+  color: var(--deco-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--deco-accent);
+  text-underline-offset: 6px;
+}
+
+.glazed-bond-root .gb-lintel-acts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-inline-start: auto;
+}
+
+.glazed-bond-root .gb-links + .gb-lintel-acts {
+  margin-inline-start: 0;
+}
+
+.glazed-bond-root .gb-signin {
+  color: var(--deco-ink);
+  text-decoration: none;
+  font: 500 13.5px/1 var(--gb-sans);
+}
+
+.glazed-bond-root .gb-theme {
+  width: 32px;
+  height: 32px;
+}
+
+/* ------------------------------------------------------------------ *
+ * The gate
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-gate {
+  container-type: inline-size;
+  background: var(--deco-ground);
+}
+
+.glazed-bond-root .gb-gate-in {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--gb-hero-tower) minmax(0, 1fr) var(--gb-hero-tower);
+  min-height: min(820px, 100svh);
+}
+
+.glazed-bond-root .gb-tower {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.glazed-bond-root .gb-parapet {
+  display: block;
+  flex: none;
+  width: 100%;
+  height: 44px;
+}
+
+.glazed-bond-root .gb-tower-wall {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* the batter: the inner face of each tower leans in as it rises */
+.glazed-bond-root .gb-tower.is-left .gb-tower-wall {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 100%, 0 100%);
+}
+
+.glazed-bond-root .gb-tower.is-right .gb-tower-wall {
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.glazed-bond-root .gb-arch-wall {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-top: 56px;
+}
+
+.glazed-bond-root .gb-spandrel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.glazed-bond-root .gb-arch-wall > .gb-parapet {
+  position: relative;
+  z-index: 1;
+}
+
+.glazed-bond-root .gb-spandrel-gap {
+  flex: none;
+  height: 72px;
+}
+
+/* the opening: a corbelled arch, five courses stepping in to a flat crown, battered jambs */
+.glazed-bond-root .gb-opening {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0 6%;
+  background: var(--deco-ground);
+  clip-path: polygon(
+    0 100%,
+    1.5% 100px,
+    8% 100px,
+    8% 80px,
+    16% 80px,
+    16% 60px,
+    24% 60px,
+    24% 40px,
+    32% 40px,
+    32% 20px,
+    40% 20px,
+    40% 0,
+    60% 0,
+    60% 20px,
+    68% 20px,
+    68% 40px,
+    76% 40px,
+    76% 60px,
+    84% 60px,
+    84% 80px,
+    92% 80px,
+    92% 100px,
+    98.5% 100px,
+    100% 100%
+  );
+}
+
+.glazed-bond-root .gb-sky {
+  position: absolute;
+  inset: 0;
+  color: var(--deco-ink);
+}
+
+.glazed-bond-root .gb-claim-stack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 140px clamp(20px, 6%, 64px) 72px;
+  text-align: center;
+}
+
+.glazed-bond-root .gb-crown {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--deco-hair);
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  /* the doubled rule: one ring of ground, one ring of hair, zero blur */
+  box-shadow:
+    0 0 0 3px var(--deco-ground),
+    0 0 0 4px var(--deco-hair);
+}
+
+.glazed-bond-root .gb-claim {
+  max-width: 17ch;
+  font-size: clamp(2rem, 4.8vw, 3.75rem);
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink);
+  text-wrap: balance;
+}
+
+.glazed-bond-root .gb-claim span {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.glazed-bond-root .gb-sub {
+  max-width: 52ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-wm {
+  display: inline-flex;
+  vertical-align: -3px;
+  color: var(--deco-ink);
+}
+
+.glazed-bond-root .gb-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.glazed-bond-root .gb-copy {
+  cursor: pointer;
+  font-family: var(--gb-mono);
+}
+
+.glazed-bond-root .gb-command {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background: transparent;
+  background-clip: padding-box;
+  color: var(--deco-ink);
+  font: 500 12.5px/1 var(--gb-mono);
+}
+
+.glazed-bond-root .gb-command code {
+  font: inherit;
+}
+
+.glazed-bond-root .gb-copy-label {
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-gate-band {
+  position: absolute;
+  top: 100px;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  height: 44px;
+}
+
+/* ------------------------------------------------------------------ *
+ * The elevation: flank towers, courses, heads
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-elevation {
+  position: relative;
+  container-type: inline-size;
+  background: var(--deco-ground);
+}
+
+.glazed-bond-root .gb-flank {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  width: var(--gb-tower);
+  overflow: hidden;
+}
+
+.glazed-bond-root .gb-flank.is-left {
+  left: 0;
+  border-right: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-flank.is-right {
+  right: 0;
+  border-left: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-course {
+  position: relative;
+  z-index: 1;
+  padding-inline: var(--gb-tower);
+}
+
+.glazed-bond-root .gb-course-in {
+  max-width: 1170px;
+  margin-inline: auto;
+  padding: 0 var(--gb-pad) 88px;
+}
+
+.glazed-bond-root .gb-head {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  padding: 72px 0 40px;
+}
+
+.glazed-bond-root .gb-head-brick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 10px;
+  background: var(--gb-lapis);
+  color: var(--gb-gold);
+}
+
+.glazed-bond-root .gb-head h2 {
+  max-width: 26ch;
+  font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+  line-height: 1.16;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink);
+  text-wrap: balance;
+}
+
+.glazed-bond-root .gb-head p {
+  max-width: 58ch;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-head.is-glazed .gb-head-brick {
+  background: var(--gb-cream);
+  color: var(--gb-court);
+}
+
+.glazed-bond-root .gb-head.is-glazed h2 {
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-head.is-glazed p {
+  color: var(--gb-cream-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * The threshold
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-threshold .gb-course-in {
+  padding-top: 40px;
+  padding-bottom: 56px;
+}
+
+.glazed-bond-root .gb-threshold-lead {
+  margin-bottom: 18px;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-marks {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--deco-hair);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-mark-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  padding: 0 12px;
+}
+
+.glazed-bond-root .gb-mark-cell + .gb-mark-cell {
+  border-left: 1px solid var(--deco-hair);
+}
+
+/* each mark is its own artwork used as a mask over the ink */
+.glazed-bond-root .gb-mark {
+  display: block;
+  height: 20px;
+  max-width: 100%;
+  background: currentColor;
+  color: var(--deco-ink);
+  -webkit-mask: var(--gb-mark-src) center / contain no-repeat;
+  mask: var(--gb-mark-src) center / contain no-repeat;
+}
+
+.glazed-bond-root .gb-mark.is-cursor {
+  --gb-mark-src: url('/logos/cursor.light.svg');
+  height: 22px;
+}
+
+.glazed-bond-root .gb-mark.is-ramp {
+  --gb-mark-src: url('/logos/ramp.light.svg');
+  height: 22px;
+}
+
+.glazed-bond-root .gb-mark.is-mintlify {
+  --gb-mark-src: url('/logos/mintlify.light.svg');
+  height: 22px;
+}
+
+.glazed-bond-root .gb-mark.is-profound {
+  --gb-mark-src: url('/logos/profound.light.svg');
+  height: 17px;
+}
+
+.glazed-bond-root .gb-mark.is-partiful {
+  --gb-mark-src: url('/logos/partiful.light.svg');
+  height: 21px;
+}
+
+.glazed-bond-root .gb-mark.is-clickhouse {
+  --gb-mark-src: url('/logos/clickhouse.light.svg');
+  height: 26px;
+}
+
+/* ------------------------------------------------------------------ *
+ * The bond wall: the T proof
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-wall {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--deco-hair);
+  background: var(--deco-hair);
+}
+
+.glazed-bond-root .gb-pair {
+  display: contents;
+}
+
+.glazed-bond-root .gb-brick {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 68px;
+  padding: 12px 14px;
+  background: var(--gb-plate);
+  color: var(--deco-ink);
+  font-size: 14.5px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.glazed-bond-root .gb-brick-h {
+  grid-row: var(--gb-wr);
+  grid-column: var(--gb-wc) / span 1;
+  justify-content: center;
+  padding: 12px 6px;
+}
+
+.glazed-bond-root .gb-brick-s {
+  grid-row: var(--gb-wr);
+  grid-column: var(--gb-wc) / span 3;
+}
+
+.glazed-bond-root .gb-closer {
+  grid-row: var(--gb-wr);
+  grid-column: var(--gb-wc) / span 2;
+}
+
+.glazed-bond-root .gb-closer.is-mid-only,
+.glazed-bond-root .gb-filler {
+  display: none;
+}
+
+.glazed-bond-root .gb-brick.is-source {
+  gap: 8px;
+  background: var(--gb-lapis);
+  color: var(--gb-cream);
+  font-weight: 500;
+}
+
+.glazed-bond-root .gb-t {
+  font: 500 12px/1 var(--gb-mono);
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-wall-note {
+  margin-top: 16px;
+  max-width: 62ch;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * The rosette frieze and the variants register
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-frieze {
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+
+.glazed-bond-root .gb-frieze-in {
+  display: grid;
+  gap: 28px;
+  min-width: max-content;
+  padding-inline: 2px;
+}
+
+.glazed-bond-root .gb-frieze-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* the second course of medallions sits half a medallion over, as bricks do */
+.glazed-bond-root .gb-frieze-row.is-offset {
+  padding-inline-start: 65px;
+}
+
+.glazed-bond-root .gb-med {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  width: 120px;
+}
+
+.glazed-bond-root .gb-med-face {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+}
+
+.glazed-bond-root .gb-rosette {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.glazed-bond-root .gb-med-text {
+  position: relative;
+  z-index: 1;
+  max-width: 66px;
+  font: 500 14px/1.25 var(--gb-sans);
+  color: var(--gb-cream);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.glazed-bond-root .gb-med-cap {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-register {
+  margin-top: 40px;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-reg-row {
+  display: grid;
+  grid-template-columns: 64px 160px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-reg-row.is-head {
+  padding: 10px 0;
+  font: 500 11px/1 var(--gb-mono);
+  color: var(--deco-ink-2);
+  text-transform: lowercase;
+}
+
+.glazed-bond-root .gb-reg-tag {
+  font: 500 13px/1 var(--gb-mono);
+  color: var(--deco-ink);
+}
+
+.glazed-bond-root .gb-reg-name {
+  font-size: 14.5px;
+}
+
+.glazed-bond-root .gb-reg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.glazed-bond-root .is-muted {
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-reg-tail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 12px;
+  font-size: 13.5px;
+}
+
+.glazed-bond-root .gb-course-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.glazed-bond-root .gb-count {
+  font: 500 12.5px/1 var(--gb-mono);
+  color: var(--deco-ink-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * The inner court: the one dark moment
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-court {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  background: var(--gb-court);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-court-bond {
+  position: absolute;
+  inset: 0;
+}
+
+.glazed-bond-root .gb-court .gb-bond-seam {
+  fill: var(--gb-court-seam);
+}
+
+.glazed-bond-root .gb-court-floor {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 220px;
+  color: var(--gb-court-accent);
+}
+
+.glazed-bond-root .gb-court-in {
+  position: relative;
+  z-index: 1;
+  padding-inline: var(--gb-tower);
+}
+
+.glazed-bond-root .gb-court .gb-course-in {
+  padding-bottom: 104px;
+}
+
+.glazed-bond-root .gb-tablets {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 20px;
+}
+
+.glazed-bond-root .gb-tab {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--gb-cream-hair);
+  background: var(--gb-court-2);
+  background-clip: padding-box;
+}
+
+.glazed-bond-root .gb-tab-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--gb-cream-hair);
+  font: 500 11.5px/1 var(--gb-mono);
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-tab-title {
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-copy.is-bar {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--gb-cream-hair);
+  border-radius: 4px;
+  background: transparent;
+  background-clip: padding-box;
+  color: var(--gb-cream-2);
+  font: 500 11px/1 var(--gb-mono);
+}
+
+.glazed-bond-root .gb-copy.is-bar .gb-copy-label {
+  color: inherit;
+}
+
+.glazed-bond-root .gb-code {
+  flex: 1;
+  padding: 16px 14px;
+  overflow-x: auto;
+  font: 12.5px/1.6 var(--gb-mono);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-code-line {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+}
+
+.glazed-bond-root .gb-code-n {
+  color: var(--gb-cream-3);
+  user-select: none;
+}
+
+.glazed-bond-root .gb-code-t {
+  white-space: pre;
+}
+
+.glazed-bond-root .gb-tok.is-str {
+  color: var(--gb-court-accent);
+}
+
+.glazed-bond-root .gb-tok.is-kw {
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-tok.is-tag {
+  font-weight: 500;
+}
+
+.glazed-bond-root .gb-tok.is-cmt {
+  color: var(--gb-cream-3);
+}
+
+.glazed-bond-root .gb-tab-foot {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-top: 1px solid var(--gb-cream-hair);
+}
+
+.glazed-bond-root .gb-tab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.glazed-bond-root .gb-outputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.glazed-bond-root .gb-outputs div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.glazed-bond-root .gb-outputs dt {
+  font: 500 11px/1 var(--gb-mono);
+  color: var(--gb-cream-3);
+  text-transform: lowercase;
+}
+
+.glazed-bond-root .gb-outputs dd {
+  margin: 0;
+  font: 500 12.5px/1 var(--gb-mono);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-term {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: 6px;
+  padding: 16px 14px;
+  font: 12.5px/1.7 var(--gb-mono);
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-term-line.is-prompt {
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0 8px;
+}
+
+.glazed-bond-root .gb-tab-foot.is-plain p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-review {
+  flex: 1;
+}
+
+.glazed-bond-root .gb-rev-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) 76px;
+  gap: 14px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gb-cream-hair);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.glazed-bond-root .gb-rev-row:last-child {
+  border-bottom: 0;
+}
+
+.glazed-bond-root .gb-rev-row.is-head {
+  padding: 10px 14px;
+  font: 500 11px/1 var(--gb-mono);
+  color: var(--gb-cream-3);
+}
+
+.glazed-bond-root .gb-rev-src {
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-rev-tr {
+  display: grid;
+  gap: 4px;
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-rev-tr s {
+  color: var(--gb-cream-3);
+  text-decoration-thickness: 1px;
+}
+
+.glazed-bond-root .gb-stamp {
+  justify-self: end;
+  align-self: start;
+  height: 20px;
+  padding: 0 7px;
+  border: 1px solid var(--gb-cream-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font: 500 10.5px/18px var(--gb-mono);
+  color: var(--gb-cream-2);
+  white-space: nowrap;
+}
+
+.glazed-bond-root .gb-tab-foot.is-bar {
+  display: flex;
+  gap: 16px;
+  padding: 10px 14px;
+  font: 500 11px/1 var(--gb-mono);
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-tab-foot.is-bar .is-right {
+  margin-inline-start: auto;
+}
+
+.glazed-bond-root .gb-lx {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: 14px;
+  padding: 16px 14px;
+}
+
+.glazed-bond-root .gb-lx-mark {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+/* the Locadex mark is the light drawing, inverted for the glazed panel */
+.glazed-bond-root .gb-lx-mark img {
+  display: block;
+  filter: invert(1);
+}
+
+.glazed-bond-root .gb-lx-mark p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-lx-findings {
+  padding: 0 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-lx-diff {
+  display: grid;
+  padding: 12px;
+  border: 1px solid var(--gb-cream-hair);
+  font: 12.5px/1.7 var(--gb-mono);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-lx-diff .is-add {
+  color: var(--gb-court-accent);
+}
+
+.glazed-bond-root .gb-lx-diff .is-del {
+  color: var(--gb-cream-3);
+  text-decoration: line-through;
+}
+
+.glazed-bond-root .gb-lx-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font: 500 11.5px/1 var(--gb-mono);
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-court-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 36px;
+}
+
+/* ------------------------------------------------------------------ *
+ * The ziggurat
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-zig {
+  padding: 0;
+  list-style: none;
+}
+
+.glazed-bond-root .gb-tier {
+  border-top: 1px solid var(--deco-hair);
+  border-inline: 1px solid var(--deco-hair);
+  background: var(--gb-plate);
+}
+
+.glazed-bond-root .gb-tier.is-1 {
+  margin-inline: 10%;
+}
+
+.glazed-bond-root .gb-tier.is-2 {
+  margin-inline: 5%;
+}
+
+.glazed-bond-root .gb-tier.is-3 {
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-tier-in {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0;
+  list-style: none;
+}
+
+.glazed-bond-root .gb-tread {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  padding: 22px 20px 24px;
+}
+
+.glazed-bond-root .gb-tread + .gb-tread {
+  border-left: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-tread-n {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  color: var(--gb-lapis);
+}
+
+.glazed-bond-root .gb-tread h3 {
+  font: 500 16px/1.35 var(--gb-sans);
+  letter-spacing: -0.01em;
+}
+
+.glazed-bond-root .gb-tread p {
+  font-size: 14px;
+  line-height: 1.58;
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-annot {
+  margin-top: 4px;
+  font: 500 11.5px/1.5 var(--gb-mono);
+  color: var(--deco-ink);
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------------ *
+ * The pricing plaques
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-plaques {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.45fr) minmax(0, 0.8fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.glazed-bond-root .gb-plaque {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--gb-cream-hair);
+  background: var(--gb-lapis);
+  background-clip: padding-box;
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-plaque-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--gb-cream-hair);
+}
+
+.glazed-bond-root .gb-plaque-head h3 {
+  font: 500 15px/1 var(--gb-sans);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 22px 18px 6px;
+}
+
+.glazed-bond-root .gb-plan-price strong {
+  font: 500 40px/1 var(--gb-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--gb-gold);
+}
+
+.glazed-bond-root .gb-plan-price small {
+  font-size: 12.5px;
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-plan-body {
+  padding: 0 18px;
+  font-size: 13.5px;
+  line-height: 1.58;
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-plan-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 0 18px;
+  list-style: none;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.glazed-bond-root .gb-plan-list li {
+  display: flex;
+  gap: 10px;
+}
+
+/* one gold lozenge per line */
+.glazed-bond-root .gb-plan-list li::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  background: var(--gb-gold);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.glazed-bond-root .gb-plaque.is-plan .gb-btn {
+  margin: 22px 18px 18px;
+}
+
+.glazed-bond-root .gb-ledger-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) 88px;
+  gap: 14px;
+  align-items: baseline;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--gb-cream-hair);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.glazed-bond-root .gb-ledger-row.is-head {
+  padding: 10px 18px;
+  font: 500 11px/1 var(--gb-mono);
+  color: var(--gb-cream-3);
+}
+
+.glazed-bond-root .gb-ledger-name {
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-ledger-rate,
+.glazed-bond-root .gb-ledger-gt {
+  font: 500 13.5px/1.45 var(--gb-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--gb-gold);
+}
+
+.glazed-bond-root .gb-ledger-gt {
+  text-align: right;
+}
+
+.glazed-bond-root .gb-ledger-notes {
+  display: grid;
+  gap: 8px;
+  padding: 14px 18px 18px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--gb-cream-2);
+}
+
+.glazed-bond-root .gb-ledger-notes code {
+  font: 500 12px/1 var(--gb-mono);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-compare {
+  margin-top: 24px;
+}
+
+.glazed-bond-root .gb-compare a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--deco-hair);
+  font: 500 14px/1.3 var(--gb-sans);
+  color: var(--deco-ink);
+  text-decoration: none;
+}
+
+.glazed-bond-root .gb-compare a:hover {
+  border-bottom-color: var(--deco-ink);
+}
+
+/* ------------------------------------------------------------------ *
+ * The foundation
+ * ------------------------------------------------------------------ */
+
+.glazed-bond-root .gb-foundation {
+  border-top: 1px solid var(--deco-hair);
+  background: var(--deco-ground);
+}
+
+.glazed-bond-root .gb-foundation-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 2.7fr);
+  gap: 40px;
+  max-width: 1170px;
+  margin-inline: auto;
+  padding: 56px var(--gb-pad) 48px;
+}
+
+.glazed-bond-root .gb-foot-brand p {
+  max-width: 30ch;
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.glazed-bond-root .gb-foot-logo {
+  display: block;
+}
+
+.glazed-bond-root .gb-foot-logo.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .glazed-bond-root .gb-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .glazed-bond-root .gb-foot-logo.is-dark {
+  display: block;
+}
+
+.glazed-bond-root .gb-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.glazed-bond-root .gb-foot-col h3 {
+  margin-bottom: 14px;
+  font: 500 12.5px/1 var(--gb-sans);
+  color: var(--deco-ink);
+}
+
+.glazed-bond-root .gb-foot-col ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.glazed-bond-root .gb-foot-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+  text-decoration: none;
+}
+
+.glazed-bond-root .gb-foot-col a:hover {
+  color: var(--deco-ink);
+}
+
+.glazed-bond-root .gb-foot-lx {
+  display: block;
+}
+
+[data-theme='dark'] .glazed-bond-root .gb-foot-lx {
+  filter: invert(1);
+}
+
+.glazed-bond-root .gb-foot-bar {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.glazed-bond-root .gb-foot-bar .gb-foundation-in {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 18px var(--gb-pad);
+  font: 500 11.5px/1.4 var(--gb-mono);
+  color: var(--deco-ink-2);
+}
+
+/* ------------------------------------------------------------------ *
+ * Responsive
+ * ------------------------------------------------------------------ */
+
+/* the mid wall: twelve columns, courses of three and two, one glazed filler */
+@media (max-width: 1100px) {
+  .glazed-bond-root .gb-wall {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .glazed-bond-root .gb-brick-h {
+    grid-row: var(--gb-mr);
+    grid-column: var(--gb-mc) / span 1;
+  }
+
+  .glazed-bond-root .gb-brick-s {
+    grid-row: var(--gb-mr);
+    grid-column: var(--gb-mc) / span 3;
+  }
+
+  .glazed-bond-root .gb-closer {
+    grid-row: var(--gb-mr);
+    grid-column: var(--gb-mc) / span 2;
+  }
+
+  .glazed-bond-root .gb-closer.is-mid-only {
+    display: flex;
+  }
+
+  .glazed-bond-root .gb-filler {
+    display: flex;
+    grid-row: var(--gb-mr);
+    grid-column: var(--gb-mc) / span 4;
+    justify-content: center;
+    background: var(--gb-lapis);
+  }
+}
+
+@media (max-width: 900px) {
+  .glazed-bond-root .gb-marks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .glazed-bond-root .gb-mark-cell + .gb-mark-cell {
+    border-left: 0;
+  }
+
+  .glazed-bond-root .gb-mark-cell:not(:nth-child(3n + 1)) {
+    border-left: 1px solid var(--deco-hair);
+  }
+
+  .glazed-bond-root .gb-mark-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .glazed-bond-root .gb-tablets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .glazed-bond-root .gb-tier.is-1 {
+    margin-inline: 8%;
+  }
+
+  .glazed-bond-root .gb-tier.is-2 {
+    margin-inline: 4%;
+  }
+
+  .glazed-bond-root .gb-tier-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .glazed-bond-root .gb-tread + .gb-tread {
+    border-top: 1px solid var(--deco-hair);
+    border-left: 0;
+  }
+
+  .glazed-bond-root .gb-plaques {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .glazed-bond-root .gb-reg-row {
+    grid-template-columns: 48px 120px minmax(0, 1fr);
+  }
+
+  .glazed-bond-root .gb-foundation-in {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .glazed-bond-root .gb-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* the mobile ladder: the direction consumes the --tcm-* slots with px fallbacks */
+@media (max-width: 720px) {
+  .glazed-bond-root {
+    --gb-tower: 14px;
+    --gb-pier: 20px;
+    /* copy never sits within 20px of the flank hairline */
+    --gb-pad: 20px;
+    font-size: var(--tcm-body, 15px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .glazed-bond-root .gb-links,
+  .glazed-bond-root .gb-signin {
+    display: none;
+  }
+
+  .glazed-bond-root .gb-lintel-in {
+    gap: 12px;
+  }
+
+  .glazed-bond-root .gb-links + .gb-lintel-acts {
+    margin-inline-start: auto;
+  }
+
+  .glazed-bond-root .gb-gate-in {
+    min-height: 640px;
+  }
+
+  .glazed-bond-root .gb-arch-wall {
+    margin-top: 40px;
+  }
+
+  .glazed-bond-root .gb-spandrel-gap {
+    height: 48px;
+  }
+
+  .glazed-bond-root .gb-gate-band {
+    top: 84px;
+  }
+
+  .glazed-bond-root .gb-opening {
+    margin: 0 4%;
+  }
+
+  .glazed-bond-root .gb-claim-stack {
+    gap: 18px;
+    padding: 124px 16px 56px;
+  }
+
+  .glazed-bond-root .gb-claim {
+    font-size: var(--tcm-h2, 30px);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .glazed-bond-root .gb-sub {
+    font-size: var(--tcm-lead, 15px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .glazed-bond-root .gb-head {
+    padding: 56px 0 28px;
+  }
+
+  .glazed-bond-root .gb-head h2 {
+    font-size: var(--tcm-h2, 26px);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .glazed-bond-root .gb-head p {
+    font-size: var(--tcm-lead, 15px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .glazed-bond-root .gb-course-in {
+    padding-bottom: var(--tcm-head-pt, 64px);
+  }
+
+  .glazed-bond-root .gb-mark-cell {
+    height: 60px;
+  }
+
+  /* the wall stacks: one pair per course, no closers */
+  .glazed-bond-root .gb-wall {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .glazed-bond-root .gb-brick-h {
+    grid-row: auto;
+    grid-column: 1;
+  }
+
+  .glazed-bond-root .gb-brick-s {
+    grid-row: auto;
+    grid-column: 2;
+  }
+
+  .glazed-bond-root .gb-closer,
+  .glazed-bond-root .gb-closer.is-mid-only,
+  .glazed-bond-root .gb-filler {
+    display: none;
+  }
+
+  .glazed-bond-root .gb-brick {
+    min-height: 56px;
+    padding: 10px 12px;
+    font-size: var(--tcm-small, 14px);
+  }
+
+  .glazed-bond-root .gb-brick.is-source {
+    flex-wrap: wrap;
+  }
+
+  .glazed-bond-root .gb-reg-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 10px 12px;
+  }
+
+  .glazed-bond-root .gb-reg-chips {
+    grid-column: 1 / -1;
+  }
+
+  .glazed-bond-root .gb-reg-row.is-head [role='columnheader']:last-child {
+    display: none;
+  }
+
+  .glazed-bond-root .gb-tread {
+    padding: var(--tcm-cell-pad, 20px);
+  }
+
+  .glazed-bond-root .gb-tier.is-1,
+  .glazed-bond-root .gb-tier.is-2 {
+    margin-inline: 0;
+  }
+
+  .glazed-bond-root .gb-tier.is-1 {
+    margin-inline: 6%;
+  }
+
+  .glazed-bond-root .gb-tier.is-2 {
+    margin-inline: 3%;
+  }
+
+  .glazed-bond-root .gb-rev-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .glazed-bond-root .gb-rev-row .gb-stamp {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .glazed-bond-root .gb-rev-row.is-head [role='columnheader']:last-child {
+    display: none;
+  }
+
+  .glazed-bond-root .gb-ledger-row {
+    grid-template-columns: minmax(0, 1fr) 64px;
+  }
+
+  .glazed-bond-root .gb-ledger-rate {
+    grid-column: 1 / -1;
+  }
+
+  .glazed-bond-root .gb-ledger-row.is-head [role='columnheader']:nth-child(2) {
+    display: none;
+  }
+
+  .glazed-bond-root .gb-foot-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .glazed-bond-root .gb-tab-foot.is-bar {
+    flex-wrap: wrap;
+  }
+}
