@@ -1,31 +1,27 @@
-import { Inter, Josefin_Sans } from 'next/font/google';
+import { Jost } from 'next/font/google';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
-import { DitherDefs } from './ornaments';
-import {
-  Hero,
-  Languages,
-  Platform,
-  Pricing,
-  Proof,
-  SiteFooter,
-  TopNav,
-} from './sections';
+import Bento from './sections/Bento';
+import DarkBand from './sections/DarkBand';
+import Frameworks from './sections/Frameworks';
+import Hero from './sections/Hero';
+import Locales from './sections/Locales';
+import Pricing from './sections/Pricing';
+import Review from './sections/Review';
+import SiteFooter from './sections/SiteFooter';
+import Story from './sections/Story';
+import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-const display = Josefin_Sans({
+/* The one display face (charter C4): Jost, a geometric cut of the Futura
+   decade, on h1 and h2 only. Inter is already on <html> as --font-inter and
+   is never loaded again. */
+const display = Jost({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--bf-display',
-  display: 'swap',
-});
-
-const body = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--bf-body',
+  weight: ['500'],
+  variable: '--bayer-frieze-display',
   display: 'swap',
 });
 
@@ -36,29 +32,40 @@ export const metadata = {
 };
 
 /**
- * BAYER FRIEZE — dither-focused art deco. The whole deco ornament grammar
- * (Greek-key meander, chevrons, stepped keys, sunrise fans, stripe borders)
- * is generated from one Bayer 4x4 matrix at four stepped densities: 1/16,
- * 4/16, 8/16, 12/16. Cream and ink carry the page; one jade accent sits in
- * the mark, the CTAs, and the ornament rims. Typography stays disciplined
- * (Josefin Sans display over Inter body) so the friezes carry the identity.
- * The hero closes on a full-width dithered meander band that crawls one
- * 48px unit at a time; the footer inverts the same band to cream on ink.
+ * BAYER-FRIEZE: the deco fork of dither-field. GT's complete landing system
+ * is inherited whole: the ruled column and its seams, the SVG flag chips,
+ * the framework code window, the bento and its SSOT diagrams, the locales
+ * atlas, the nine-beat story, the review workspace, the one dark band, the
+ * rate ledger and the footer. On top of it sits one documented layer: the
+ * deco ornament grammar (chevron courses, sawtooth rows, Greek keys, a
+ * sunrise, stepped keys) generated from a 4x4 Bayer matrix at four stepped
+ * densities, 1/16, 4/16, 8/16 and 12/16, laid as friezes in the homes the
+ * charter names (section heads, dividers, frames, the hero crown, the dark
+ * band). Cream and ink with one jade edge; Inter, with Jost on h1 and h2.
+ * The token block at the top of styles.css documents the whole system, and
+ * sections/deco/bayer.ts generates every tile.
  */
 export default function BayerFriezePage() {
   return (
     <>
-      <div className={`bayer-frieze-root ${display.variable} ${body.variable}`}>
-        <DitherDefs />
+      <div className={`bayer-frieze-root ${display.variable}`}>
         <TopNav />
-        <main>
+
+        <div className='tc-rail'>
           <Hero />
-          <Proof />
-          <Languages />
-          <Platform />
+          <Frameworks />
+          <Bento />
+          <Locales />
+          <Story />
+          <Review />
+        </div>
+
+        <DarkBand />
+
+        <div className='tc-rail'>
           <Pricing />
-        </main>
-        <SiteFooter />
+          <SiteFooter />
+        </div>
       </div>
       <DirectionCorner slug='bayer-frieze' />
     </>

@@ -1,75 +1,122 @@
-/* ============================================================
-   QUANTIZED TEMPLE: dither-focused art deco.
-   Stepped ziggurat forms, silk-smoke gradients that quantize
-   into ordered dither as they rise, orange and gold on warm
-   black. Cinzel display over Inter body. Every rule is scoped
-   under .quantized-temple-root.
-   ============================================================ */
-
+/* quantized-temple: stepped ziggurat forms filled with silk smoke that
+   quantizes into ordered dither as it rises, gold and orange on warm black;
+   each major section is a tier of the temple and the dark band is the
+   summit dissolving into dots.
+   Reference: Mesopotamian ziggurats and the setback towers of 1920s New
+   York, read through GT's halftone blog art; Roman inscription capitals for
+   the display face.
+   Ornament homes: section heads (C1.1: the TierCrest in the tc-head-icon
+   slot, one course taller each section down the page, and the StepRule
+   under every h2); dividers (C1.2: the .tc-hatch spacer becomes three
+   strata of Bayer tiers, dense at the floor, dots at the crown); frames
+   (C1.3: the mat behind framed cards, the tc-mount edge, the review and
+   story mats, the groundwork nodes and the dark band's --tcb-mat are gilt);
+   the hero crown (C1.4: the GT monogram seated on a dithered plinth above
+   the h1, the ziggurat plate rendered in ornament ink, the ember line as
+   the plate's one edge); the dark band (C1.5: the CLI bloom and the stepped
+   summit floor in ornament ink, gilt artifact frames).
+   Accent: one job, the active edge. The travelling tab underline, the
+   zh-Hans / zh-Hant tell-chip ring, the story's live pipeline step, the
+   ember line under the ziggurat's base course, and, diluted with the ink,
+   the string token in every code window (strings are the product).
+   Display face: Cinzel, used for h1, h2, and nothing else; the crown
+   carries no type. Inter is the body, interface and caption face.
+   Dark mode remaps these six tokens (plus --deco-ink-rgb, the ink's own
+   channels for alpha tints) and nothing else: the warm black collapses onto
+   the band's ink black, the bone ink lifts to white, hairlines go titanium,
+   the accent and ornament lift a step for the colder ground. */
 .quantized-temple-root {
-  /* Ground and inks */
-  --qt-black: #0b0705;
-  --qt-black-2: #140c07;
-  --qt-panel: #120a06;
-  --qt-ember: #b24216;
-  --qt-orange: #e06e28;
-  --qt-gold: #d9a24a;
-  --qt-gold-2: #eecd8f;
-  --qt-bone: #f4e9d6;
-  --qt-dim: rgba(244, 233, 214, 0.68);
-  --qt-faint: rgba(244, 233, 214, 0.44);
-  --qt-hair: rgba(217, 162, 74, 0.28);
-  --qt-hair-2: rgba(217, 162, 74, 0.14);
+  --deco-ground: #0f0a07;
+  --deco-ink: #f3e9d8;
+  --deco-ink-rgb: 243, 233, 216;
+  --deco-ink-2: rgba(243, 233, 216, 0.66);
+  --deco-hair: rgba(243, 233, 216, 0.2);
+  --deco-accent: #e8712a;
+  --deco-ornament: #d9a24a;
 
-  /* Faces */
-  --qt-disp: var(--qt-font-display), 'Cinzel', Georgia, 'Times New Roman', serif;
-  --qt-sans: var(--qt-font-body), 'Inter', system-ui, sans-serif;
-  --qt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* the rail system reads the palette through the tc tokens */
+  --tc-paper: var(--deco-ground);
+  --tc-sunk: var(--deco-ground);
+  --tc-white: var(--deco-ground);
+  --tc-ink: var(--deco-ink);
+  --tc-ink-2: var(--deco-ink-2);
+  --tc-ink-3: rgba(var(--deco-ink-rgb), 0.46);
+  --tc-ink-4: rgba(var(--deco-ink-rgb), 0.28);
+  /* Hairlines are the ink at alpha: titanium does not read on the warm
+     ground. The second hairline is the first, thinned. */
+  --tc-hair: var(--deco-hair);
+  --tc-hair-2: color-mix(in srgb, var(--deco-hair) 60%, transparent);
+  --tc-accent: var(--deco-accent);
+  --tc-dark: #070707;
 
-  background: var(--qt-black);
-  color: var(--qt-bone);
-  font-family: var(--qt-sans);
-  font-size: 16px;
-  line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: clip;
+  /* Gilt: the ornament mixed into the ground, opaque, so a mat and the
+     seams it shows through never double-tint where they stack. */
+  --qt-gilt: color-mix(in srgb, var(--deco-ornament) 44%, var(--deco-ground));
+  --qt-gilt-edge: color-mix(in srgb, var(--deco-ornament) 58%, var(--deco-ground));
+  --qt-gilt-hair: color-mix(in srgb, var(--deco-ornament) 30%, var(--deco-ground));
+
+  /* language-diagram rules follow the shell's line colour */
+  --lang-rule-strong: var(--tc-hair);
+  --lang-rule: var(--tc-hair);
+
+  /* The second surface — the LEDGER beige every light diagram sits on. A light
+     cell's artifact zone is never bare card: the plate is the material that
+     carries it, the way the references never leave a diagram on paper. */
+  --tc-plate: color-mix(in srgb, var(--deco-ground) 94%, var(--deco-ink));
+
+  /* The one dark artifact surface for code, config and diffs — the inset panel
+     every reference draws its code on. Light cells place it on the card; the
+     page keeps its mass between the hero terminal and the dark band. */
+  --tc-panel: color-mix(in srgb, var(--deco-ground) 91%, var(--deco-ink));
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame, on the founder's corner grammar: the mat IS the shell
+     line colour, the card is radius-12 white on it, and the grey ground fills
+     the corner notches — ONE ring, never doubled edges. */
+  --tc-mat: var(--qt-gilt);
+  --tc-mat-edge: var(--qt-gilt-edge);
+  --tc-card: var(--deco-ground);
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
+  --tc-card-pad: clamp(20px, 1.9vw, 22px);
+  --tc-hatch: var(--qt-gilt-hair);
+
+  /* display and text share Inter; the token stays so the selectors below do not change */
+  --tc-disp: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: rgba(var(--deco-ink-rgb), 0.8);
+  --iso-ink-soft: rgba(var(--deco-ink-rgb), 0.44);
+  --iso-ink-hair: rgba(var(--deco-ink-rgb), 0.2);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-.quantized-temple-root ::selection {
-  background: rgba(224, 110, 40, 0.55);
-  color: var(--qt-bone);
-}
-
-.quantized-temple-root .qt-rail {
-  max-width: 1140px;
-  margin-inline: auto;
-  padding-inline: clamp(20px, 4vw, 40px);
-}
-
-.quantized-temple-root h1,
-.quantized-temple-root h2,
-.quantized-temple-root h3 {
-  font-family: var(--qt-disp);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--qt-gold-2);
-  margin: 0;
-}
-
-.quantized-temple-root h2 {
-  font-size: clamp(30px, 4vw, 46px);
-  line-height: 1.14;
-  max-width: 20ch;
-}
-
-.quantized-temple-root h3 {
-  font-size: 19px;
-  letter-spacing: 0.05em;
-}
-
-.quantized-temple-root p {
-  margin: 0;
+.quantized-temple-root *,
+.quantized-temple-root *::before,
+.quantized-temple-root *::after {
+  box-sizing: border-box;
 }
 
 .quantized-temple-root a {
@@ -77,998 +124,3264 @@
   text-decoration: none;
 }
 
-.quantized-temple-root .qt-lead {
-  color: var(--qt-dim);
-  font-size: 17px;
-  max-width: 58ch;
-  margin-top: 16px;
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.quantized-temple-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
 }
 
-/* The inline <T> token, the page's recurring relic. */
-.quantized-temple-root .qt-t {
-  font-family: var(--qt-mono);
-  font-size: 0.86em;
-  color: var(--qt-gold-2);
-  background: rgba(217, 162, 74, 0.13);
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 3px;
-  padding: 1px 6px;
-  white-space: nowrap;
+.quantized-temple-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
 }
 
-.quantized-temple-root .qt-t-h {
-  font-size: 0.8em;
-  vertical-align: 0.08em;
+.quantized-temple-root .tc-sec:last-child {
+  border-bottom: 0;
 }
 
-/* ---------------------------------------------------------- */
-/* Buttons                                                     */
-/* ---------------------------------------------------------- */
+/* ---------- type ---------- */
 
-.quantized-temple-root .qt-btn {
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.quantized-temple-root h1,
+.quantized-temple-root h2,
+.quantized-temple-root h3,
+.quantized-temple-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+.quantized-temple-root p {
+  margin: 0;
+}
+
+.quantized-temple-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
+
+.quantized-temple-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.quantized-temple-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.quantized-temple-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- buttons ---------- */
+
+.quantized-temple-root .tc-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--qt-sans);
-  font-size: 14px;
-  font-weight: 550;
-  letter-spacing: 0.01em;
-  padding: 9px 18px;
-  border-radius: 3px;
-  border: 1px solid var(--qt-hair);
-  transition: filter 160ms ease, border-color 160ms ease;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 
-.quantized-temple-root .qt-btn-big {
-  padding: 12px 24px;
-  font-size: 15px;
+.quantized-temple-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: var(--tc-paper);
 }
 
-.quantized-temple-root .qt-btn-solid {
-  background: linear-gradient(180deg, var(--qt-gold-2), var(--qt-gold));
-  border-color: rgba(238, 205, 143, 0.55);
-  color: #241206;
+.quantized-temple-root .tc-btn-solid:hover {
+  background: color-mix(in srgb, var(--tc-ink) 84%, var(--tc-paper));
 }
 
-.quantized-temple-root .qt-btn-solid:hover {
-  filter: brightness(1.06);
-}
-
-.quantized-temple-root .qt-btn-line {
-  color: var(--qt-gold-2);
+.quantized-temple-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
   background: transparent;
 }
 
-.quantized-temple-root .qt-btn-line:hover {
-  border-color: var(--qt-gold);
+.quantized-temple-root .tc-btn-line:hover {
+  border-color: rgba(var(--deco-ink-rgb), 0.28);
+  background: rgba(var(--deco-ink-rgb), 0.03);
 }
 
-/* ---------------------------------------------------------- */
-/* Top nav                                                     */
-/* ---------------------------------------------------------- */
-
-.quantized-temple-root .qt-nav {
-  border-bottom: 1px solid var(--qt-hair-2);
-  background: linear-gradient(180deg, rgba(20, 12, 7, 0.85), rgba(11, 7, 5, 0.6));
+.quantized-temple-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
 }
 
-.quantized-temple-root .qt-nav-row {
-  display: flex;
-  align-items: center;
-  gap: clamp(16px, 3vw, 40px);
-  height: 68px;
-}
+/* ============================================================
+   NAV
+   ============================================================ */
 
-.quantized-temple-root .qt-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 11px;
-}
-
-.quantized-temple-root .qt-brand-mark {
-  display: block;
-  width: 26px;
-  height: 26px;
-}
-
-.quantized-temple-root .qt-brand-name {
-  font-family: var(--qt-disp);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  color: var(--qt-gold-2);
-  white-space: nowrap;
-}
-
-.quantized-temple-root .qt-nav-links {
-  display: flex;
-  gap: clamp(14px, 2.4vw, 30px);
-  margin-inline: auto;
-}
-
-.quantized-temple-root .qt-nav-links a {
-  font-size: 14px;
-  color: var(--qt-dim);
-  transition: color 160ms ease;
-}
-
-.quantized-temple-root .qt-nav-links a:hover {
-  color: var(--qt-gold-2);
-}
-
-.quantized-temple-root .qt-nav-cta {
-  display: flex;
-  gap: 10px;
-  margin-left: auto;
-}
-
-/* ---------------------------------------------------------- */
-/* Hero                                                        */
-/* ---------------------------------------------------------- */
-
-.quantized-temple-root .qt-hero {
-  position: relative;
-  padding-block: clamp(56px, 8vw, 110px) 0;
-  border-bottom: 1px solid var(--qt-hair-2);
-  background:
-    radial-gradient(90% 70% at 72% 100%, rgba(178, 66, 22, 0.24), rgba(11, 7, 5, 0) 70%),
-    linear-gradient(180deg, var(--qt-black-2), var(--qt-black) 46%);
-}
-
-.quantized-temple-root .qt-hero-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: clamp(28px, 4vw, 60px);
-  align-items: end;
-}
-
-.quantized-temple-root .qt-hero-copy {
-  padding-bottom: clamp(48px, 6vw, 90px);
-}
-
-.quantized-temple-root .qt-hero h1 {
-  font-size: clamp(40px, 5.4vw, 66px);
-  line-height: 1.08;
-}
-
-.quantized-temple-root .qt-hero h1 span {
-  display: block;
-}
-
-.quantized-temple-root .qt-hero h1 span:last-child {
-  color: var(--qt-gold);
-}
-
-.quantized-temple-root .qt-hero-sub {
-  color: var(--qt-dim);
-  font-size: 17px;
-  max-width: 52ch;
-  margin-top: 22px;
-}
-
-.quantized-temple-root .qt-hero-ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 30px;
-}
-
-.quantized-temple-root .qt-hero-cmd {
-  font-family: var(--qt-mono);
-  font-size: 13.5px;
-  color: var(--qt-gold-2);
-  background: var(--qt-panel);
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 3px;
-  display: inline-block;
-  padding: 9px 16px;
-  margin-top: 22px;
-}
-
-.quantized-temple-root .qt-cmd-prompt {
-  color: var(--qt-faint);
-}
-
-.quantized-temple-root .qt-hero-proofline {
-  font-size: 13.5px;
-  color: var(--qt-faint);
-  margin-top: 18px;
-}
-
-/* Entrance: one quiet rise, staggered down the copy stack. */
-.quantized-temple-root .qt-hero-copy > * {
-  animation: qtpl-rise 700ms cubic-bezier(0.22, 0.9, 0.3, 1) both;
-}
-
-.quantized-temple-root .qt-hero-copy > *:nth-child(2) {
-  animation-delay: 70ms;
-}
-
-.quantized-temple-root .qt-hero-copy > *:nth-child(3) {
-  animation-delay: 140ms;
-}
-
-.quantized-temple-root .qt-hero-copy > *:nth-child(4) {
-  animation-delay: 210ms;
-}
-
-.quantized-temple-root .qt-hero-copy > *:nth-child(5) {
-  animation-delay: 280ms;
-}
-
-@keyframes qtpl-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ------------------------- Monument ----------------------- */
-
-.quantized-temple-root .qt-monument {
-  position: relative;
-  height: clamp(360px, 42vw, 540px);
-  margin: 0;
-  pointer-events: none;
-}
-
-/* Deco sunburst: gold hairline rays fanning from the crown. */
-.quantized-temple-root .qt-monument::before {
-  content: '';
-  position: absolute;
-  inset: -6% -14% 0;
-  background: repeating-conic-gradient(
-    from -90deg at 50% 46%,
-    rgba(217, 162, 74, 0.13) 0deg 0.5deg,
-    rgba(217, 162, 74, 0) 0.5deg 7deg
-  );
-  -webkit-mask-image: radial-gradient(75% 62% at 50% 46%, black, transparent 72%);
-  mask-image: radial-gradient(75% 62% at 50% 46%, black, transparent 72%);
-}
-
-.quantized-temple-root .qt-monument-smoke {
-  position: absolute;
-  left: 6%;
-  right: 6%;
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.quantized-temple-root .tc-nav {
+  position: sticky;
   top: 0;
-  height: 56%;
-  width: 88%;
-  image-rendering: pixelated;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
 }
 
-.quantized-temple-root .qt-monument-body {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
+.quantized-temple-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
 }
 
-.quantized-temple-root .qt-tier {
-  position: relative;
-  margin-top: 3px;
-  border-top: 1px solid rgba(255, 224, 166, 0.55);
-  background:
-    linear-gradient(
-      90deg,
-      rgba(255, 224, 166, 0) 30%,
-      rgba(255, 224, 166, 0.3) 46%,
-      rgba(255, 224, 166, 0) 62%
-    ),
-    linear-gradient(180deg, #f0c078 0%, #e06e28 44%, #6d2a0e 100%);
-  background-size: 220% 100%, 100% 100%;
-  background-position: -60% 0, 0 0;
-  animation: qtpl-sheen 9s ease-in-out infinite alternate;
+.quantized-temple-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
-/* The silk quantizes: dark dot erosion, heaviest on the upper tiers. */
-.quantized-temple-root .qt-tier::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(11, 7, 5, 0.95) 1.1px, rgba(11, 7, 5, 0) 1.5px);
-  background-size: 5px 5px;
-  opacity: 0.2;
+.quantized-temple-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
 }
 
-.quantized-temple-root .qt-tier-1 {
-  width: 26%;
-  height: clamp(20px, 2.4vw, 30px);
+.quantized-temple-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
 }
 
-.quantized-temple-root .qt-tier-1::after {
-  opacity: 0.85;
-  background-size: 4px 4px;
+.quantized-temple-root .tc-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
 }
 
-.quantized-temple-root .qt-tier-2 {
-  width: 42%;
-  height: clamp(28px, 3.2vw, 40px);
+.quantized-temple-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
 }
 
-.quantized-temple-root .qt-tier-2::after {
-  opacity: 0.55;
+.quantized-temple-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
 }
 
-.quantized-temple-root .qt-tier-3 {
-  width: 58%;
-  height: clamp(40px, 4.4vw, 56px);
+@media (max-width: 860px) {
+  .quantized-temple-root .tc-nav-links,
+  .quantized-temple-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* Trimmed a step so the terminal owns more of the first viewport instead of
+   being cut at the fold. */
+.quantized-temple-root .tc-hero {
+  text-align: center;
+  padding: clamp(44px, 5.6vw, 72px) var(--tc-gut) 0;
+}
+
+.quantized-temple-root .tc-hero-mark {
+  display: block;
+  margin: 0 auto 26px;
+  opacity: 0.9;
+}
+
+.quantized-temple-root .tc-hero h1 {
+  font-size: clamp(2.05rem, 4.9vw, 3.7rem);
+  line-height: 1.03;
+  letter-spacing: -0.038em;
+  max-width: 20ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.quantized-temple-root .tc-hero h1 span {
+  display: block;
+}
+
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink. */
+.quantized-temple-root .tc-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.quantized-temple-root .tc-hero-sub {
+  margin: 20px auto 0;
+  max-width: 54ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.quantized-temple-root .tc-hero-acts {
+  margin-top: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.quantized-temple-root .qt-tier-3::after {
-  opacity: 0.32;
+.quantized-temple-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
 }
 
-.quantized-temple-root .qt-tier-glyph {
+.quantized-temple-root .tc-copy:hover {
+  border-color: rgba(var(--deco-ink-rgb), 0.26);
+}
+
+.quantized-temple-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- full-bleed hero visual cell ---------- */
+
+/* The terminal sits flush to the bottom of its band — a panel standing on the
+   section rule rather than an object floating in a wash. The band itself is
+   the page's first committed material: a dark plate carrying the prismatic
+   field, lit at the flanks and dark in the centre column under the transcript
+   (AESTHETIC_ADDENDUM 2b — content sits in the dark, the light owns the
+   edges), so the first viewport has the same mass the references open with. */
+.quantized-temple-root .tc-hero-cell {
+  position: relative;
+  margin-top: clamp(36px, 4.4vw, 54px);
+  border-top: 1px solid var(--tc-hair);
+  padding: clamp(28px, 3.8vw, 48px) clamp(14px, 3vw, 44px) 0;
+  background: var(--tc-dark);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.quantized-temple-root .tc-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.92;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 10%,
+    rgba(0, 0, 0, 0.28) 30%,
+    rgba(0, 0, 0, 0.18) 50%,
+    rgba(0, 0, 0, 0.28) 70%,
+    #000 90%,
+    #000 100%
+  );
+  pointer-events: none;
+}
+
+/* The measured hero ring from the references: 1px white at .30, offset 2px. */
+.quantized-temple-root .tc-term {
   position: relative;
   z-index: 1;
-  font-family: var(--qt-disp);
-  font-size: clamp(20px, 2.2vw, 28px);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: rgba(34, 15, 4, 0.88);
-}
-
-.quantized-temple-root .qt-tier-4 {
-  width: 76%;
-  height: clamp(48px, 5.4vw, 68px);
-}
-
-.quantized-temple-root .qt-tier-5 {
-  width: 94%;
-  height: clamp(58px, 6.4vw, 82px);
-}
-
-.quantized-temple-root .qt-tier-5::after {
-  opacity: 0.12;
-}
-
-@keyframes qtpl-sheen {
-  from {
-    background-position: -60% 0, 0 0;
-  }
-
-  to {
-    background-position: 160% 0, 0 0;
-  }
-}
-
-/* ---------------------------------------------------------- */
-/* Sections and tier rules                                     */
-/* ---------------------------------------------------------- */
-
-.quantized-temple-root .qt-sec {
-  padding-block: clamp(64px, 8vw, 110px);
-  border-bottom: 1px solid var(--qt-hair-2);
-}
-
-.quantized-temple-root .qt-tierline {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: clamp(26px, 3vw, 38px);
-}
-
-.quantized-temple-root .qt-tierline-rule {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(217, 162, 74, 0), var(--qt-hair));
-}
-
-.quantized-temple-root .qt-tierline-rule:last-child {
-  background: linear-gradient(90deg, var(--qt-hair), rgba(217, 162, 74, 0));
-}
-
-.quantized-temple-root .qt-tierline-mark {
-  font-family: var(--qt-disp);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.32em;
-  text-indent: 0.32em;
-  color: var(--qt-gold);
-  border: 1px solid var(--qt-hair);
-  padding: 5px 11px;
-  box-shadow: 0 0 0 3px var(--qt-black), 0 0 0 4px var(--qt-hair-2);
-}
-
-/* ---------------------------------------------------------- */
-/* Proof: before / after and the rendered locales              */
-/* ---------------------------------------------------------- */
-
-.quantized-temple-root .qt-diff {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-top: clamp(30px, 4vw, 44px);
-}
-
-.quantized-temple-root .qt-code {
-  margin: 0;
-  background: var(--qt-panel);
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 4px;
+  max-width: 820px;
+  margin-inline: auto;
+  border-radius: 8px 8px 0 0;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
   overflow: hidden;
 }
 
-.quantized-temple-root .qt-code.is-after {
-  border-color: var(--qt-hair);
+.quantized-temple-root .tc-term-bar {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
 }
 
-.quantized-temple-root .qt-code figcaption {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--qt-faint);
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--qt-hair-2);
-}
-
-.quantized-temple-root .qt-code.is-after figcaption {
-  color: var(--qt-gold);
-}
-
-.quantized-temple-root .qt-code pre {
-  margin: 0;
-  padding: 16px 18px;
-  font-family: var(--qt-mono);
-  font-size: 13px;
-  line-height: 1.65;
-  color: var(--qt-dim);
+.quantized-temple-root .tc-term-body {
+  padding: 24px 28px 30px;
+  font-family: var(--tc-mono);
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.74);
   overflow-x: auto;
 }
 
-.quantized-temple-root .qt-hl {
-  color: var(--qt-gold-2);
-  background: rgba(217, 162, 74, 0.14);
+.quantized-temple-root .tc-term-line {
+  white-space: pre;
 }
 
-.quantized-temple-root .qt-proof-demo {
-  margin-top: clamp(30px, 4vw, 44px);
+.quantized-temple-root .tc-term-line[data-tone='prompt'] {
+  color: #ffffff;
 }
 
-.quantized-temple-root .qt-proof-intro {
-  color: var(--qt-dim);
-  font-size: 15px;
+.quantized-temple-root .tc-term-line[data-tone='dim'] {
+  color: rgba(255, 255, 255, 0.42);
 }
 
-.quantized-temple-root .qt-proof-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+.quantized-temple-root .tc-term-line[data-tone='gap'] {
+  height: 12px;
 }
 
-.quantized-temple-root .qt-proof-tab {
-  font-family: var(--qt-sans);
-  font-size: 13.5px;
-  color: var(--qt-dim);
-  background: transparent;
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 3px;
-  padding: 7px 14px;
-  cursor: pointer;
-  transition: color 160ms ease, border-color 160ms ease;
+.quantized-temple-root .tc-term-key {
+  color: rgba(255, 255, 255, 0.42);
 }
 
-.quantized-temple-root .qt-proof-tab:hover {
-  color: var(--qt-gold-2);
-  border-color: var(--qt-hair);
+.quantized-temple-root .tc-swap {
+  display: grid;
+  grid-template-columns: minmax(0, auto) 18px minmax(0, 1fr);
+  gap: 0 8px;
+  white-space: nowrap;
 }
 
-.quantized-temple-root .qt-proof-tab[aria-pressed='true'] {
-  color: #241206;
-  background: linear-gradient(180deg, var(--qt-gold-2), var(--qt-gold));
-  border-color: rgba(238, 205, 143, 0.55);
+.quantized-temple-root .tc-swap-src {
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.quantized-temple-root .qt-proof-stage {
-  margin-top: 14px;
-  background: var(--qt-panel);
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 4px;
-  padding: clamp(26px, 3.4vw, 40px);
-  min-height: 158px;
+.quantized-temple-root .tc-swap-arrow {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.quantized-temple-root .tc-swap-out {
+  display: grid;
+}
+
+.quantized-temple-root .tc-swap-out > i {
+  grid-area: 1 / 1;
+  font-style: normal;
+  color: #ffffff;
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.quantized-temple-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.quantized-temple-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-trust-cell {
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
 }
 
-.quantized-temple-root .qt-proof-screen {
-  display: block;
-  width: 100%;
-  animation: qtpl-fade 420ms ease both;
+.quantized-temple-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
 }
 
-.quantized-temple-root .qt-proof-chip {
-  display: inline-block;
-  font-family: var(--qt-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--qt-gold);
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 3px;
-  padding: 2px 8px;
-  margin-bottom: 14px;
-}
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
 
-.quantized-temple-root .qt-proof-h {
-  display: block;
-  font-size: clamp(22px, 2.6vw, 30px);
-  font-weight: 650;
-  line-height: 1.25;
-  color: var(--qt-bone);
-}
-
-.quantized-temple-root .qt-proof-p {
-  display: block;
-  color: var(--qt-dim);
-  margin-top: 6px;
-}
-
-@keyframes qtpl-fade {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.quantized-temple-root .qt-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-top: clamp(36px, 4.5vw, 56px);
-}
-
-.quantized-temple-root .qt-step {
-  border-top: 1px solid var(--qt-hair);
-  padding-top: 18px;
-}
-
-.quantized-temple-root .qt-step-mark {
-  width: 22px;
-  height: 22px;
-  color: var(--qt-orange);
-  display: block;
-}
-
-.quantized-temple-root .qt-step h3 {
-  margin-top: 12px;
-}
-
-.quantized-temple-root .qt-step p {
-  color: var(--qt-dim);
-  font-size: 15px;
-  margin-top: 8px;
-}
-
-/* ---------------------------------------------------------- */
-/* Scripts: greetings hung in the drapery folds                */
-/* ---------------------------------------------------------- */
-
-.quantized-temple-root .qt-scripts {
+.quantized-temple-root .tc-tabs {
   position: relative;
-  background: var(--qt-black-2);
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.quantized-temple-root .qt-drape {
+.quantized-temple-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.quantized-temple-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.quantized-temple-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.quantized-temple-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .tc-tab-bar {
   position: absolute;
-  inset: 0;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
   pointer-events: none;
-  background:
-    radial-gradient(rgba(217, 162, 74, 0.09) 1px, rgba(217, 162, 74, 0) 1.5px),
-    repeating-linear-gradient(
-      90deg,
-      rgba(224, 110, 40, 0.13) 0 10px,
-      rgba(224, 110, 40, 0.04) 10px 46px,
-      rgba(20, 12, 7, 0) 46px 104px,
-      rgba(224, 110, 40, 0.04) 104px 140px
-    ),
-    linear-gradient(180deg, rgba(178, 66, 22, 0.18), rgba(11, 7, 5, 0) 62%);
-  background-size: 7px 7px, auto, auto;
-  -webkit-mask-image: linear-gradient(
-    180deg,
-    transparent 0,
-    black 110px,
-    black calc(100% - 70px),
-    transparent
-  );
-  mask-image: linear-gradient(
-    180deg,
-    transparent 0,
-    black 110px,
-    black calc(100% - 70px),
-    transparent
-  );
 }
 
-.quantized-temple-root .qt-scripts-inner {
-  position: relative;
-}
-
-.quantized-temple-root .qt-hellos {
-  list-style: none;
-  margin: clamp(34px, 4.5vw, 52px) 0 0;
-  padding: 0;
+.quantized-temple-root .tc-fw {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px 18px;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
 }
 
-/* Each greeting hangs on its own fold of silk. */
-.quantized-temple-root .qt-hello {
-  position: relative;
-  padding: 26px 18px 30px;
-  border-top: 1px solid var(--qt-hair);
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(244, 233, 214, 0.05) 0 2px,
-      rgba(244, 233, 214, 0) 2px 19px
-    ),
-    linear-gradient(
-      180deg,
-      rgba(178, 66, 22, 0.32),
-      rgba(224, 110, 40, 0.1) 56%,
-      rgba(11, 7, 5, 0) 100%
-    );
+.quantized-temple-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
 }
 
-/* The fold's lower edge dissolves into dots, like every form here. */
-.quantized-temple-root .qt-hello::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  bottom: -16px;
-  height: 24px;
-  background-image: radial-gradient(rgba(224, 110, 40, 0.7) 1.2px, rgba(224, 110, 40, 0) 1.7px);
-  background-size: 7px 7px;
-  -webkit-mask-image: linear-gradient(180deg, black, transparent);
-  mask-image: linear-gradient(180deg, black, transparent);
+.quantized-temple-root .tc-fw-code {
+  padding: var(--tc-gut);
 }
 
-.quantized-temple-root .qt-hello-word {
-  display: block;
-  font-family: var(--qt-disp);
-  font-size: clamp(24px, 2.8vw, 36px);
-  line-height: 1.3;
-  color: var(--qt-gold-2);
+.quantized-temple-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
 }
 
-.quantized-temple-root .qt-hello-name {
-  display: block;
-  font-size: 12px;
-  letter-spacing: 0.13em;
-  color: var(--qt-faint);
+.quantized-temple-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .tc-fw-side p {
   margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
 }
 
-.quantized-temple-root .qt-scripts-note {
-  color: var(--qt-dim);
-  font-size: 15px;
-  max-width: 58ch;
-  margin-top: clamp(34px, 4.5vw, 52px);
-}
-
-/* ---------------------------------------------------------- */
-/* Platform                                                    */
-/* ---------------------------------------------------------- */
-
-.quantized-temple-root .qt-plat {
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.quantized-temple-root .tc-caps {
+  flex: 1;
+  margin-top: 12px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-top: clamp(30px, 4vw, 44px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
 }
 
-.quantized-temple-root .qt-card {
-  background: var(--qt-panel);
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 4px;
-  padding: 22px 20px 26px;
-  transition: border-color 160ms ease;
-}
-
-.quantized-temple-root .qt-card:hover {
-  border-color: var(--qt-hair);
-}
-
-.quantized-temple-root .qt-card-mark {
-  width: 24px;
-  height: 24px;
-  color: var(--qt-gold);
-  display: block;
-}
-
-.quantized-temple-root .qt-card h3 {
-  margin-top: 14px;
-}
-
-.quantized-temple-root .qt-card p {
-  color: var(--qt-dim);
-  font-size: 14.5px;
-  margin-top: 10px;
-}
-
-/* ---------------------------------------------------------- */
-/* Pricing                                                     */
-/* ---------------------------------------------------------- */
-
-.quantized-temple-root .qt-plans {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-top: clamp(30px, 4vw, 44px);
-}
-
-.quantized-temple-root .qt-plan {
-  background: var(--qt-panel);
-  border: 1px solid var(--qt-hair-2);
-  border-radius: 4px;
-  padding: clamp(24px, 3vw, 34px);
+.quantized-temple-root .tc-caps span {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
 }
 
-.quantized-temple-root .qt-plan.is-enterprise {
-  border-color: var(--qt-hair);
-  background:
-    linear-gradient(180deg, rgba(178, 66, 22, 0.14), rgba(18, 10, 6, 0) 46%),
-    var(--qt-panel);
-}
-
-.quantized-temple-root .qt-price {
-  font-family: var(--qt-disp);
-  font-size: clamp(34px, 4vw, 46px);
+.quantized-temple-root .tc-caps b {
   font-weight: 500;
-  color: var(--qt-bone);
-  margin-top: 14px;
+  line-height: 1;
 }
 
-.quantized-temple-root .qt-price span {
-  font-family: var(--qt-sans);
-  font-size: 13.5px;
-  color: var(--qt-faint);
-  margin-left: 8px;
+.quantized-temple-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
 }
 
-.quantized-temple-root .qt-plan-copy {
-  color: var(--qt-dim);
-  font-size: 15px;
+.quantized-temple-root .tc-fw-run {
+  margin-top: 12px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.quantized-temple-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.quantized-temple-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.quantized-temple-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.quantized-temple-root .tc-fw-link {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.quantized-temple-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.quantized-temple-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.quantized-temple-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#101010`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.quantized-temple-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.quantized-temple-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.quantized-temple-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.quantized-temple-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.quantized-temple-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.quantized-temple-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.quantized-temple-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.quantized-temple-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.quantized-temple-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set — the story's editor mock highlights on paper. */
+.quantized-temple-root .tc-t-str {
+  color: var(--tc-ink-3);
+}
+
+.quantized-temple-root .tc-t-kw {
+  color: rgba(var(--deco-ink-rgb), 0.52);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.quantized-temple-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.quantized-temple-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.quantized-temple-root .tc-t-num {
+  color: var(--tc-ink-3);
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.quantized-temple-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.quantized-temple-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.quantized-temple-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.quantized-temple-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.quantized-temple-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.quantized-temple-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-row.is-lead,
+.quantized-temple-root .tc-row.is-three,
+.quantized-temple-root .tc-row.is-wide-left,
+.quantized-temple-root .tc-row.is-tilt,
+.quantized-temple-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.quantized-temple-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.quantized-temple-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.quantized-temple-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.quantized-temple-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.quantized-temple-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.quantized-temple-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.quantized-temple-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.quantized-temple-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.quantized-temple-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.quantized-temple-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.quantized-temple-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.quantized-temple-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.quantized-temple-root .tc-cell > p,
+.quantized-temple-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.quantized-temple-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.quantized-temple-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   The founder's corner grammar: a cell that carries something visual is a
+   MAT — the shell line colour, zero padding — and the card inside it is
+   radius-12 white, so the grey ground fills the corner notches. ONE ring,
+   never doubled edges. Text-only cells never get this — the contrast is the
+   whole point, and it is also why the vertical rule is dropped wherever a
+   mat provides the edge. */
+
+.quantized-temple-root .tc-cell.is-framed {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: flex;
+}
+
+/* The ground behind the white cards is the shell line colour, so a row of
+   framed cells reads as white cards on the shell's own grey. */
+.quantized-temple-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-mat);
+}
+
+.quantized-temple-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border: 0;
+  border-radius: 12px;
+  background: var(--tc-card);
+}
+
+.quantized-temple-root .tc-row > .is-framed + *,
+.quantized-temple-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- diagonal spacer band ----------
+   Bounded, content-free breathing room between specific rows. Not a field
+   behind content — a ruled strip between subjects. */
+
+/* The band owns its two hairlines once; the strata inside are the TierHatch
+   SVG (sections/deco/TierHatch.tsx), three Bayer tiers in the ornament ink. */
+.quantized-temple-root .tc-hatch {
+  height: auto;
+  line-height: 0;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  color: var(--deco-ornament);
+}
+
+.quantized-temple-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.quantized-temple-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantized-temple-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.quantized-temple-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.quantized-temple-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.quantized-temple-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars): the plate is
+   the card's own white now — the frame carries the edge work. */
+.quantized-temple-root .tc-surface.is-plated {
   margin-top: 12px;
 }
 
-.quantized-temple-root .qt-plan-list {
-  list-style: none;
-  margin: 18px 0 26px;
-  padding: 0;
-  color: var(--qt-dim);
-  font-size: 14.5px;
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.quantized-temple-root .tc-quad {
+  flex: 1;
   display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.quantized-temple-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.quantized-temple-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.quantized-temple-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.quantized-temple-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.quantized-temple-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.quantized-temple-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.quantized-temple-root .tc-bleed-art {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.quantized-temple-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.quantized-temple-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.quantized-temple-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.quantized-temple-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.quantized-temple-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.quantized-temple-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.quantized-temple-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.quantized-temple-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.quantized-temple-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.quantized-temple-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.quantized-temple-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.quantized-temple-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.quantized-temple-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .tc-cell-act {
+  margin-top: 12px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.quantized-temple-root .tc-stats {
+  flex: 1;
+  margin-top: 12px;
+  padding: 0;
+  display: grid;
+  align-content: space-between;
+}
+
+.quantized-temple-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.quantized-temple-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.quantized-temple-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.quantized-temple-root .tc-cell.is-panel .tc-code {
+  margin-top: 12px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.quantized-temple-root .tc-lang {
+  flex: 1;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --lang-ground: var(--tc-white);
+}
+
+.quantized-temple-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* In-diagram annotation floor on this fork: nothing mono renders under 12px.
+   The borrowed language diagrams bring an 11px caption with them; re-set it. */
+.quantized-temple-root .lang-sw-note {
+  font-size: 12px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.quantized-temple-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.quantized-temple-root .tc-lang.is-lead .lang-sw-name,
+.quantized-temple-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.quantized-temple-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.quantized-temple-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.quantized-temple-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.quantized-temple-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.quantized-temple-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #ffffff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+.quantized-temple-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(120px, 12vw, 170px);
+}
+
+/* Lede left, texture panel right — full-height split. */
+.quantized-temple-root .tc-band-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  gap: clamp(32px, 4.4vw, 68px);
+  align-items: stretch;
+}
+
+.quantized-temple-root .tc-band-lede {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(6px, 1vw, 14px) 0 clamp(4px, 0.8vw, 10px);
+}
+
+/* the lede's foot: what "buildtime, runtime, and review" concretely are */
+.quantized-temple-root .tc-band-index {
+  margin-top: auto;
+  padding-top: clamp(26px, 3vw, 40px);
+}
+
+.quantized-temple-root .tc-band-index-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.quantized-temple-root .tc-band-index-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.quantized-temple-root .tc-band-index-row span {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.quantized-temple-root .tc-band-index-row b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* The band's one material moment: a full-height texture panel bleeding past
+   the band's top edge and out to the right rail — the halftone bloom, run
+   bright at the edges and held at ink in its core, with the status terminal
+   floating in that core. Same grammar as the references' light panel, drawn
+   by the Bayer engine. */
+.quantized-temple-root .tc-band-panel {
+  position: relative;
+  overflow: hidden;
+  margin-top: calc(-1 * clamp(66px, 8vw, 108px));
+  margin-right: calc(-1 * var(--tc-gut));
+  border-radius: 0 0 0 8px;
+  background: #070707;
+  min-height: clamp(430px, 42vw, 560px);
+  display: grid;
+  place-items: center;
+}
+
+.quantized-temple-root .df-panel-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  z-index: 0;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.quantized-temple-root .tc-band-panel .tc-band-term {
+  position: relative;
+  z-index: 1;
+  width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
+  margin: clamp(40px, 4.6vw, 64px) 0;
+  background: #070707;
+  outline-color: rgba(255, 255, 255, 0.3);
+}
+
+.quantized-temple-root .tc-band-term {
+  border-radius: 6px;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.quantized-temple-root .tc-band-term-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.quantized-temple-root .tc-band-term-body {
+  padding: 16px 18px 18px;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.quantized-temple-root .tc-band-term-body [data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.quantized-temple-root .tc-band-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.quantized-temple-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.quantized-temple-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* One sheet, four different objects, one bottom line: no internal rules —
+   the four plates carry the mass, the shared top rule carries the structure. */
+.quantized-temple-root .tc-band-grid {
+  margin-top: clamp(46px, 5.4vw, 70px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: clamp(20px, 2.6vw, 34px);
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.quantized-temple-root .tc-band-grid > div {
+  padding: 26px 0 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.quantized-temple-root .tc-band-grid h3 {
+  font-size: 15px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.quantized-temple-root .tc-band-grid p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+/* ---- the four service minis: dark shells, flush content, no internal rules ---- */
+
+.quantized-temple-root .tcm {
+  margin-top: 18px;
+  border-radius: 6px;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  font-family: var(--tc-mono);
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 218px;
+}
+
+.quantized-temple-root .tcm-file {
+  padding: 11px 14px 0;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quantized-temple-root .tcm-pre {
+  margin: 8px 0 0;
+  padding: 0 14px;
+  font-size: 11.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.quantized-temple-root .tcm-dim {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.quantized-temple-root .tcm-kw {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.quantized-temple-root .tcm-str {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* GT's own API carries weight, not hue — same rule as every code panel. */
+.quantized-temple-root .tcm-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.quantized-temple-root .tcm-rows {
+  margin-top: 9px;
+  padding: 0 14px 13px;
+  display: grid;
+  gap: 5px;
+}
+
+.quantized-temple-root .tcm-rows.is-ledger {
+  margin-top: 10px;
   gap: 9px;
 }
 
-.quantized-temple-root .qt-plan-list li {
-  padding-left: 20px;
-  position: relative;
+.quantized-temple-root .tcm-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
 }
 
-.quantized-temple-root .qt-plan-list li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  width: 7px;
-  height: 7px;
-  background: var(--qt-orange);
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+.quantized-temple-root .tcm-rows.is-ledger .tcm-row {
+  font-size: 12px;
 }
 
-.quantized-temple-root .qt-plan .qt-btn {
+.quantized-temple-root .tcm-row span {
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.quantized-temple-root .tcm-row b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+/* the pinned band every plate ends on — a tinted fill, not a rule */
+.quantized-temple-root .tcm-bottom {
+  margin-top: auto;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Code: an editor — tab strip on top, gutter numbers in the code */
+.quantized-temple-root .tcm-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.quantized-temple-root .tcm-tabs span {
+  padding: 10px 14px 8px;
+  color: rgba(255, 255, 255, 0.38);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.quantized-temple-root .tcm-tabs .is-on {
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.9);
+}
+
+.quantized-temple-root .tcm-ln {
+  display: inline-block;
+  width: 16px;
+  margin-right: 10px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.24);
+}
+
+/* Content: an exchange — request block, doubled thread, tinted response */
+.quantized-temple-root .tcm-tail {
   margin-top: auto;
 }
 
-/* ---------------------------------------------------------- */
-/* Dissolve band and footer                                    */
-/* ---------------------------------------------------------- */
+.quantized-temple-root .tcm-wire {
+  display: block;
+  margin: 2px 0 6px 26px;
+}
 
-.quantized-temple-root .qt-dissolve {
+.quantized-temple-root .tcm-wire path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: var(--thread-gauge, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+
+.quantized-temple-root .tcm-wire .tcm-wire-head {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: none;
+}
+
+.quantized-temple-root .tcm-resp {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 9px 0 12px;
+}
+
+.quantized-temple-root .tcm-resp-status {
+  padding: 0 14px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.quantized-temple-root .tcm-resp .tcm-pre {
+  margin-top: 4px;
+}
+
+.quantized-temple-root .tcm-resp b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Dashboard: product UI — lighter card, locale chip strip, publish footer */
+.quantized-temple-root .tcm.is-dash {
+  background: #101010;
+}
+
+.quantized-temple-root .tcm-dash-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.quantized-temple-root .tcm-dash-bar span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.quantized-temple-root .tcm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px 2px;
+}
+
+.quantized-temple-root .tcm-chips span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.quantized-temple-root .tcm.is-dash .tcm-rows.is-ledger {
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.quantized-temple-root .tcm-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.045);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
+.quantized-temple-root .tcm-foot b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.quantized-temple-root .tcm-foot span {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Locadex: a diff sheet — full-bleed tinted added lines under the hunk */
+.quantized-temple-root .tcm-diffbody {
+  padding: 0;
+  margin-top: 9px;
+}
+
+.quantized-temple-root .tcm-diffbody > div {
+  padding: 0 14px;
+}
+
+.quantized-temple-root .tcm-diffbody > .is-add {
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.quantized-temple-root .tcm-diffbody > .is-del {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.quantized-temple-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quantized-temple-root .tc-band .tc-btn-solid {
+  background: var(--tc-ink);
+  color: var(--tc-dark);
+}
+
+.quantized-temple-root .tc-band .tc-btn-solid:hover {
+  background: color-mix(in srgb, var(--tc-ink) 86%, var(--tc-dark));
+}
+
+.quantized-temple-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.quantized-temple-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.quantized-temple-root .tc-plans {
   display: grid;
-  grid-template-rows: repeat(4, 1fr);
-  height: 72px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
 }
 
-.quantized-temple-root .qt-dissolve.is-flip {
-  transform: scaleY(-1);
+.quantized-temple-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
 }
 
-.quantized-temple-root .qt-dissolve span {
-  background-image: radial-gradient(var(--qt-gold) var(--qtpl-dot), rgba(217, 162, 74, 0) calc(var(--qtpl-dot) + 0.5px));
+.quantized-temple-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
 }
 
-.quantized-temple-root .qt-dissolve span:nth-child(1) {
-  --qtpl-dot: 0.7px;
-  background-size: 9px 9px;
-  opacity: 0.22;
+.quantized-temple-root .tc-plan h3 {
+  font-size: 1.15rem;
 }
 
-.quantized-temple-root .qt-dissolve span:nth-child(2) {
-  --qtpl-dot: 1.1px;
-  background-size: 8px 8px;
-  opacity: 0.38;
+.quantized-temple-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
 }
 
-.quantized-temple-root .qt-dissolve span:nth-child(3) {
-  --qtpl-dot: 1.5px;
-  background-size: 7px 7px;
-  opacity: 0.56;
+.quantized-temple-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
 }
 
-.quantized-temple-root .qt-dissolve span:nth-child(4) {
-  --qtpl-dot: 1.9px;
-  background-size: 6px 6px;
-  opacity: 0.78;
-}
-
-.quantized-temple-root .qt-footer {
-  background: var(--qt-black-2);
-  padding-bottom: clamp(40px, 5vw, 64px);
-}
-
-.quantized-temple-root .qt-foot-grid {
-  display: grid;
-  grid-template-columns: 1.4fr repeat(4, 1fr);
-  gap: clamp(22px, 3.5vw, 44px);
-  padding-top: clamp(40px, 5vw, 64px);
-}
-
-.quantized-temple-root .qt-foot-brand p {
-  color: var(--qt-faint);
-  font-size: 14px;
+.quantized-temple-root .tc-plan p {
   margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.quantized-temple-root .tc-plan .tc-list {
+  margin-top: 20px;
+}
+
+.quantized-temple-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.quantized-temple-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.quantized-temple-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.quantized-temple-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.quantized-temple-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.quantized-temple-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
   max-width: 26ch;
 }
 
-.quantized-temple-root .qt-foot-col h4 {
-  font-family: var(--qt-disp);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--qt-gold);
-  margin: 0 0 14px;
+.quantized-temple-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
 }
 
-.quantized-temple-root .qt-foot-col ul {
-  list-style: none;
+.quantized-temple-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.quantized-temple-root .tc-foot-cols ul {
   margin: 0;
   padding: 0;
+  list-style: none;
   display: grid;
   gap: 9px;
 }
 
-.quantized-temple-root .qt-foot-col a {
-  font-size: 14px;
-  color: var(--qt-dim);
-  transition: color 160ms ease;
-}
-
-.quantized-temple-root .qt-foot-col a:hover {
-  color: var(--qt-gold-2);
-}
-
-.quantized-temple-root .qt-foot-legal {
-  margin-top: clamp(40px, 5vw, 60px);
-  padding-top: 20px;
-  border-top: 1px solid var(--qt-hair-2);
+.quantized-temple-root .tc-foot-cols a {
   font-size: 13px;
-  color: var(--qt-faint);
+  color: var(--tc-ink-2);
 }
 
-/* ---------------------------------------------------------- */
-/* Responsive                                                  */
-/* ---------------------------------------------------------- */
+.quantized-temple-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
 
-@media (max-width: 1020px) {
-  .quantized-temple-root .qt-hellos {
-    grid-template-columns: repeat(3, 1fr);
+.quantized-temple-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
+
+.quantized-temple-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-mat-lite);
+  --gte-ws-shadow: none;
+  /* The mat's radius, because the workspace IS a mat now — see below. */
+  --gte-radius: 5px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 500;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
+}
+
+.quantized-temple-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
+}
+
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.quantized-temple-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.quantized-temple-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+.quantized-temple-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
+}
+
+.quantized-temple-root .tc-review .gte-notes {
+  margin-top: 22px;
+}
+
+/* ---------- the workspace, mounted ----------
+   This is the biggest product mock on the page and it was the one surface
+   outside the frame system: a single border at the page hairline rather than the
+   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
+   the most prominent thing in the section read as an import.
+
+   The borrowed markup has no card element to wrap, so the mat is the workspace
+   shell itself and the two blocks inside it carry the card: the bar takes the
+   top corners, the columns take the bottom, and because they are adjacent with
+   no gap the pair reads as one white card with a 2px reveal around it. Same
+   material, same radii, same 2px as every other mount here. */
+.quantized-temple-root .tc-review .gte-ws {
+  padding: 2px;
+  border-color: var(--tc-mat-lite-edge);
+}
+
+.quantized-temple-root .tc-review .gte-bar {
+  border-radius: 2px 2px 0 0;
+  background: var(--tc-card);
+}
+
+.quantized-temple-root .tc-review .gte-cols {
+  border-radius: 0 0 2px 2px;
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.quantized-temple-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+/* Under reduced motion the reveal hook never runs, so nothing competes with
+   the resting pose; the rule states it plainly. */
+@media (prefers-reduced-motion: reduce) {
+  .quantized-temple-root [data-reveal] {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .quantized-temple-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .quantized-temple-root .qt-plat {
-    grid-template-columns: repeat(2, 1fr);
+  .quantized-temple-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
   }
 
-  .quantized-temple-root .qt-foot-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .quantized-temple-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .quantized-temple-root .tc-fw,
+  .quantized-temple-root .tc-row.is-split,
+  .quantized-temple-root .tc-row.is-lead,
+  .quantized-temple-root .tc-row.is-three,
+  .quantized-temple-root .tc-row.is-wide-left,
+  .quantized-temple-root .tc-row.is-wide-right,
+  .quantized-temple-root .tc-row.is-even,
+  .quantized-temple-root .tc-row.is-tilt,
+  .quantized-temple-root .tc-row.is-grammar,
+  .quantized-temple-root .tc-plans,
+  .quantized-temple-root .tc-plain,
+  .quantized-temple-root .tc-band-top,
+  .quantized-temple-root .tc-band-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .quantized-temple-root .qt-foot-brand {
+  .quantized-temple-root .tc-row > * + *,
+  .quantized-temple-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .quantized-temple-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .quantized-temple-root .tc-band-grid > div + div {
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  /* stacked, each cell needs its own foot before the next cell's top rule */
+  .quantized-temple-root .tc-band-grid > div {
+    padding-bottom: 26px;
+  }
+
+  .quantized-temple-root .tcm {
+    min-height: 0;
+  }
+
+  .quantized-temple-root .tc-band-panel {
+    margin-top: 6px;
+    margin-left: calc(-1 * var(--tc-gut));
+    border-radius: 0;
+    min-height: 420px;
+  }
+
+  .quantized-temple-root .tc-band-index-row b {
+    white-space: normal;
+    text-align: right;
+  }
+
+  .quantized-temple-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .quantized-temple-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .quantized-temple-root .tc-row > .is-framed + *,
+  .quantized-temple-root .tc-row > * + .is-framed,
+  .quantized-temple-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .quantized-temple-root .tc-cell.is-tall,
+  .quantized-temple-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .quantized-temple-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quantized-temple-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .quantized-temple-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .quantized-temple-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .quantized-temple-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .quantized-temple-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quantized-temple-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .quantized-temple-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .quantized-temple-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quantized-temple-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .quantized-temple-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .quantized-temple-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .quantized-temple-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .quantized-temple-root .tc-rail,
+  .quantized-temple-root .tc-nav-in,
+  .quantized-temple-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .quantized-temple-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quantized-temple-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quantized-temple-root .tc-term-body {
+    font-size: 11px;
+  }
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .quantized-temple-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .quantized-temple-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .quantized-temple-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  .quantized-temple-root .tc-hero-cell {
+    padding-inline: 12px;
+  }
+}
+
+/* (The hero's transmission plate styles live at the end of this sheet —
+   after the founder-stack block they override.) */
+
+/* ============================================================
+   DF — TRUST CARD (M03, glyph-masked)
+   The stack's third surface. The claim is the lead; the six
+   wordmarks are 1-bit fields from the same engine as the band
+   above them, in the ruled six-cell row.
+   ============================================================ */
+
+.quantized-temple-root .df-wm {
+  font-family: var(--tc-disp);
+  color: var(--tc-ink);
+  opacity: 0.86;
+}
+
+/* ============================================================
+   DF — LOCALES (M13)
+   The expanding-variant table and the halftone atlas globe.
+   ============================================================ */
+
+.quantized-temple-root .df-loc-table {
+  margin-top: 4px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .df-loc-row {
+  display: grid;
+  grid-template-columns: 56px 128px minmax(0, 1fr);
+  gap: 8px 14px;
+  align-items: baseline;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .df-loc-tag {
+  font-family: var(--tc-mono);
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .df-loc-name {
+  font-size: 15.5px;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .df-loc-name.is-muted,
+.quantized-temple-root .df-loc-variants.is-muted {
+  color: var(--tc-ink-3);
+  font-size: 13.5px;
+}
+
+.quantized-temple-root .df-loc-variants {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.quantized-temple-root .df-loc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+}
+
+/* The two-second tell: zh-Hans and zh-Hant, adjacent, both real. The accent
+   is spent here as a chip ring, one of its edges. */
+.quantized-temple-root .df-loc-chip.is-tell {
+  border-color: var(--tc-accent);
+  color: var(--tc-ink);
+  font-weight: 600;
+}
+
+.quantized-temple-root .df-loc-tail {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.quantized-temple-root .df-loc-count {
+  margin-top: 14px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+}
+
+/* The globe cell: the well is the card's whole depth, the canvas fills it,
+   and the aspect is measured at mount — the drawing stays circular. */
+.quantized-temple-root .df-globe-well {
+  position: relative;
+  flex: 1;
+  min-height: 380px;
+}
+
+.quantized-temple-root .df-globe {
+  position: absolute;
+  inset: 0;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .df-globe-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+/* ============================================================
+   DF — RATE LEDGER (M17)
+   The published rates as a ruled table. The beige second surface
+   marks the row most readers price first.
+   ============================================================ */
+
+.quantized-temple-root .df-rates {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .df-rates-head,
+.quantized-temple-root .df-rate {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.45fr) 120px;
+  gap: 18px;
+  padding: 12px var(--tc-gut);
+}
+
+.quantized-temple-root .df-rates-head {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .df-rates-head span:nth-child(n + 2) {
+  text-align: right;
+}
+
+.quantized-temple-root .df-rate {
+  padding-block: 13px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  align-items: baseline;
+}
+
+/* The row most readers price first. State is weight and ink — never a second
+   surface: this page's palette is ink and paper, full stop. */
+.quantized-temple-root .df-rate.is-lead .df-rate-name {
+  font-weight: 500;
+}
+
+.quantized-temple-root .df-rate-name {
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .df-rate-value,
+.quantized-temple-root .df-rate-gt {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.quantized-temple-root .df-rate-gt:empty::before,
+.quantized-temple-root .df-rate-gt {
+  color: var(--tc-ink-2);
+}
+
+.quantized-temple-root .df-rate.is-lead .df-rate-value,
+.quantized-temple-root .df-rate.is-lead .df-rate-gt {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .df-rates-foot {
+  display: grid;
+  gap: 7px;
+  padding: 14px var(--tc-gut) 18px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+}
+
+.quantized-temple-root .df-rates-foot code {
+  color: var(--tc-ink-2);
+}
+
+/* The plans sit directly under the ledger; the ledger owns the top rule. */
+.quantized-temple-root .df-rates + .tc-plans {
+  border-top: 0;
+}
+
+/* ============================================================
+   DF — DARK BAND FLOOR (paper-on-ink)
+   The one loose dissolve on the page, mounted in the band's
+   bottom padding — a zone type can never enter.
+   ============================================================ */
+
+.quantized-temple-root .df-band-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 130px;
+  /* the summit dissolve prints in the ornament ink (themeInk reads this) */
+  color: var(--deco-ornament);
+  display: block;
+  image-rendering: pixelated;
+  z-index: 0;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ============================================================
+   DF — RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .quantized-temple-root .df-loc-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .quantized-temple-root .df-loc-variants {
     grid-column: 1 / -1;
   }
+
+  .quantized-temple-root .df-rates-head,
+  .quantized-temple-root .df-rate {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) 64px;
+    gap: 10px;
+  }
+
+  .quantized-temple-root .df-rate-value,
+  .quantized-temple-root .df-rate-gt {
+    font-size: 11px;
+    white-space: normal;
+  }
+
+  .quantized-temple-root .df-globe-well {
+    min-height: 300px;
+  }
 }
 
-@media (max-width: 880px) {
-  .quantized-temple-root .qt-nav-links {
+
+/* ---- dark mode ----
+   Token remap only: the six charter tokens and the ink's channel triple.
+   Everything downstream (the tc tokens, the gilt mixes, the panel and plate
+   mixes, every button) re-skins from these. The warm black collapses onto
+   the band's ink black; the dark band's own plates never remap. */
+[data-theme='dark'] .quantized-temple-root {
+  --deco-ground: #070707;
+  --deco-ink: #ffffff;
+  --deco-ink-rgb: 255, 255, 255;
+  --deco-ink-2: rgba(255, 255, 255, 0.66);
+  --deco-hair: rgba(138, 143, 152, 0.38);
+  --deco-accent: #f0843c;
+  --deco-ornament: #e4b35f;
+}
+
+/* (The language diagrams' measured pills invert their labels with the theme
+   inside lang.css itself — color: var(--lang-ground) — no local override.) */
+
+
+
+
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.quantized-temple-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.quantized-temple-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ============================================================
+   ANCHOR: tc-curation-r1 — dark-grid diagram adaptations
+   (propagated from toolchain; rescoped) New classes only.
+   ============================================================ */
+
+/* -- (1) the <T> wrap thread --------------------------------------
+   The brand's two lines (THREAD_MOTIF — constant gauge, never merging)
+   run the sample's own left margin from <T> to </T>, feet turned toward
+   the code they bind. Panel-dim white, so the pair reads in light and
+   dark theme alike — the panel itself never remaps. */
+.quantized-temple-root .tc-code-wrap {
+  position: relative;
+}
+
+.quantized-temple-root .tc-code-wrap::before,
+.quantized-temple-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.quantized-temple-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.quantized-temple-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .quantized-temple-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .quantized-temple-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+/* -- (2) glossary directives --------------------------------------
+   Per-locale style rules under the pinned entries. The group divider is
+   the page's stronger hairline against the hair-2 rules inside each half. */
+.quantized-temple-root .tcx-dirs {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tcx-dirs li span {
+  font-size: 12.5px;
+}
+
+/* -- (6) the source/preview pane pair -----------------------------
+   Two panes on the dev window's own surface, split by the in-window
+   hairline. State is type weight on the live pane's tag. */
+.quantized-temple-root .tcx-pane {
+  padding: 10px 11px 13px;
+}
+
+.quantized-temple-root .tcx-pane + .tcx-pane {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.quantized-temple-root .tcx-pane-tag {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.quantized-temple-root .tcx-pane-tag.is-on {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of ground; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.quantized-temple-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.quantized-temple-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+/* ---- the dark band's bloom canvas ----
+   The v3 CLI cell's field, drawn by this page's own engine: the canvas takes
+   the shader's box (darkband-v3.css .tcb-cli-field) and adds the 1-bit
+   upscale discipline. Paper-on-ink, permanently dark — never remaps. */
+.quantized-temple-root .tcb .tcb-cli-field.df-cli-bloom {
+  display: block;
+  image-rendering: pixelated;
+  opacity: 0.9;
+  pointer-events: none;
+  /* the bloom prints in the ornament ink (themeInk reads this) */
+  color: var(--deco-ornament);
+}
+
+/* ============================================================
+   DF — THE HERO STACK (founder grammar)
+   The split row (white copy card beside the transmission plate)
+   above the trust card: cards on the shell-grey ground, 1px
+   seams, radius-12 corners with the ground filling the notches.
+   The founder overlay below pins the seams; these set the
+   surfaces; the plate block at the end of the sheet sets the
+   split itself.
+   ============================================================ */
+
+.quantized-temple-root .tc-sec.tch-hero-sec {
+  --tch-inset: clamp(10px, 1.1vw, 14px);
+  background: var(--tc-mat);
+}
+
+/* the white hero card — the only rounded surface above the band */
+.quantized-temple-root .tc-hero.tch-card {
+  border-radius: 12px;
+  background: var(--tc-card);
+  padding: clamp(24px, 2.6vw, 34px) var(--tc-gut) clamp(20px, 2.2vw, 26px);
+}
+
+/* the card trades a step of air for the band: the broadcast has to land
+   inside a 900px first fold */
+.quantized-temple-root .tch-card .tc-hero-mark {
+  margin-bottom: 10px;
+}
+
+.quantized-temple-root .tch-card .tc-hero-sub {
+  margin-top: 12px;
+}
+
+.quantized-temple-root .tch-card .tc-hero-acts {
+  margin-top: 18px;
+}
+
+/* the trust row: the card grammar repeated below the band */
+.quantized-temple-root .tch-hero-sec > .tc-trust.tch-trustcard {
+  border-radius: 12px;
+  background: var(--tc-card);
+  overflow: hidden;
+}
+
+/* ============================================================
+   FOUNDER PICKS (propagated from toolchain's tail; rescoped)
+   ============================================================ */
+
+.quantized-temple-root .tc-sec.tch-hero-sec > *:last-child {
+  margin-bottom: 0;
+}
+
+/* the trust row completes the hero stack: third card, same seam */
+.quantized-temple-root .tc-sec.tch-hero-sec > .tc-trust {
+  background: var(--tc-white);
+  border-radius: 12px;
+  margin-top: 1px;
+}
+
+/* ---- founder emergency overlay: no cream, ever ----
+   Grounds are the shell grey, reveals are 1px. Token-level override so
+   whatever consumes these vars re-skins correctly. */
+.quantized-temple-root {
+  --tch-ground: var(--tc-mat);
+  --tf-ground: var(--tc-white);
+}
+
+.quantized-temple-root .tc-sec.tch-hero-sec {
+  background: var(--tc-mat);
+  /* the nav's full-width rule is the top divider; the gilt mat shows only in
+     the card corner notches and the 1px seams */
+  padding: 0;
+}
+
+.quantized-temple-root .tc-nav {
+  margin-bottom: 0;
+}
+
+/* the split row sits in the section's 1px reveal — no extra surround,
+   no border, no outline: the rounding and the ground do all the work */
+.quantized-temple-root .tc-sec.tch-hero-sec > .tch-split,
+.quantized-temple-root .tch-split > .tc-hero {
+  margin: 0;
+  border: 0;
+  outline: 0;
+}
+
+/* ---- punch list: stats grid + guide headroom ----
+   Numeral above label, two per row, tabular figures on a shared baseline,
+   doubled-hairline separators; the old value-left/label-right stretch dies. */
+.quantized-temple-root .tc-stats.is-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.quantized-temple-root .tc-stats.is-grid .tc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 16px 16px;
+  border-top: 1px double var(--tc-hair);
+  border-top-width: 3px;
+  border-top-style: double;
+}
+
+.quantized-temple-root .tc-stats.is-grid .tc-stat:nth-child(-n + 2) {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.quantized-temple-root .tc-stats.is-grid .tc-stat:nth-child(2n) {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-stats.is-grid .tc-stat-value {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.quantized-temple-root .tc-stats.is-grid .tc-stat-label {
+  text-align: left;
+  color: var(--tc-ink-3);
+}
+
+.quantized-temple-root .tc-eg {
+  top: -0.02em;
+}
+
+/* founder picks: the trust card sits at the 1px seam and carries zero
+   padding of its own */
+.quantized-temple-root .tc-sec.tch-hero-sec > .tc-trust {
+  margin-top: 1px;
+  padding: 0;
+}
+
+/* the morphing word carries no box of its own: the guides are the only frame */
+.quantized-temple-root .tc-hero h1 em[data-every] {
+  outline: 0;
+  border: 0;
+}
+
+/* ---- founder picks: corner concentricity, trust full-bleed, head crests ---- */
+/* Trust card: the lead keeps the base padding (24px over the gutter); the
+   card itself bleeds over the section's 1px pad so no mat shows under or
+   beside the logos. Later in the sheet than the rules above, same
+   specificity, so order settles the margin and the border. */
+.quantized-temple-root .tc-sec.tch-hero-sec > .tc-trust {
+  margin: 1px 0 -1px;
+  border: 0;
+  outline: 0;
+  border-radius: 12px;
+}
+
+/* The section-head crest (C1.1): the TierCrest SVG in the ornament ink,
+   bleeding off the head's right edge where the fork hung its watermark. */
+.quantized-temple-root .tc-head {
+  position: relative;
+  overflow: hidden;
+}
+
+.quantized-temple-root .tc-head-icon {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 260px;
+  height: 200px;
+  color: var(--deco-ornament);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Hatch spacers: reveal tweens leave transforms on the framed cards above,
+   whose stacking contexts otherwise paint over the hatch's top rule. */
+.quantized-temple-root .tc-hatch {
+  position: relative;
+  z-index: 2;
+}
+
+/* Founder: the quad's column rules touch the card's top and bottom edges.
+   The card's padding is a single token, so the rules extend by exactly it. */
+.quantized-temple-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.quantized-temple-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Nav theme switch, left of Sign in: token ink, quiet until hover. */
+.quantized-temple-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.quantized-temple-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand mark carries both variants. The ground is dark in both themes, so
+   the light-stroke drawing is the one that shows. */
+.quantized-temple-root .tc-logo-light {
+  display: none;
+}
+
+.quantized-temple-root .tc-logo-dark {
+  display: block;
+}
+
+/* The trust band's lower rule. The blanket border-zeroing above (which cured
+   the doubled edges at the nav junction) also erased the one line that should
+   survive, under the brands. Appended later, so border-bottom wins by order. */
+.quantized-temple-root .tc-sec.tch-hero-sec > .tc-trust {
+  border-bottom: 1px solid var(--tc-hair);
+  border-radius: 12px 12px 0 0;
+}
+
+/* The footer's Locadex mark is a drawn dark glyph, not currentColor ink;
+   the ground is dark in both themes, so it is always inverted (brand law). */
+.quantized-temple-root .tc-foot-mark.is-locadex {
+  filter: invert(1);
+}
+
+/* The doubled rail continues through the full-bleed dark band: the band sits
+   outside the .tc-rail wrappers, so it draws the same column's line pairs
+   itself — inner pair at the column edges, outer pair at the +-10px gauge —
+   in the band's own rule ink (the band is dark in both themes). */
+.quantized-temple-root .tc-band {
+  position: relative;
+}
+
+.quantized-temple-root .tc-band::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(min(var(--tc-rail), 100%) + 20px);
+  transform: translateX(-50%);
+  border-inline: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+/* ============================================================
+   DF — THE TRANSMISSION PLATE (the hero's media panel)
+   The founder's directive, verbatim: the dither must FILL UP ITS
+   COMPONENT. So the hero splits: the copy card is calm paper on
+   the left, and the field owns ONE framed plate beside it — a
+   radius-12 card in the stack's mat grammar that the 1-bit
+   transmission fills edge to edge, dense and bold. The source
+   docks on the plate's left edge and radiates rightward; the
+   greetings materialise across the whole component.
+
+   The plate is 1-bit and theme-following: the canvas ink is its
+   computed `color` (var(--tc-ink), re-sampled on theme flip), so
+   dark mode prints light dust on the ink-black card — never a
+   white flash. One hairline wire passes under the field through
+   the dock, on the shell's rule grammar. Appended after the
+   founder stack so these compose over the tch-card defaults.
+   ============================================================ */
+
+.quantized-temple-root .tch-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 1px;
+  align-items: stretch;
+}
+
+/* The copy card: the same white card, turned left-aligned and centred on its
+   own axis — the headline no longer has a field to sit in, it has a plate to
+   stand beside. */
+.quantized-temple-root .tch-split .tc-hero.tch-copy {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(30px, 3.6vw, 52px) clamp(26px, 3.2vw, 48px);
+}
+
+.quantized-temple-root .tch-card.tch-copy .tc-hero-mark {
+  margin: 0 0 24px;
+}
+
+.quantized-temple-root .tch-copy h1 {
+  /* A step down from the centred composition: the line must clear the split
+     column, and the plate carries the scale now. */
+  font-size: clamp(2.05rem, 3.4vw, 2.9rem);
+  margin-inline: 0;
+}
+
+.quantized-temple-root .tch-card.tch-copy .tc-hero-sub {
+  margin: 18px 0 0;
+  max-width: 44ch;
+}
+
+.quantized-temple-root .tch-card.tch-copy .tc-hero-acts {
+  margin-top: 26px;
+  justify-content: flex-start;
+}
+
+/* The command chip joins the acts row at button gauge — same device, calm
+   paper, outside the plate. */
+.quantized-temple-root .tch-copy .df-hero-cmd {
+  height: 38px;
+  padding: 0 14px;
+  gap: 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+/* The plate itself: one framed component, and the field is ALL of it. */
+.quantized-temple-root .df-plate {
+  position: relative;
+  border-radius: 12px;
+  /* the plate is PAPER: the ink is the field, and both follow the theme */
+  background: var(--tc-white);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: clamp(480px, 60vh, 620px);
+}
+
+/* The ziggurat prints in the ornament ink: themeInk reads this color at
+   mount and again on every theme flip. */
+.quantized-temple-root .df-plate-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: var(--deco-ornament);
+  pointer-events: none;
+}
+
+/* The ember line (C1.4): the accent's one appearance in the hero, a 2px
+   course under the ziggurat's base, inset to the base course's own width. */
+.quantized-temple-root .df-plate-ember {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 7px;
+  height: 2px;
+  background: var(--tc-accent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Stacked: the plate keeps its fill under the copy, edge to edge. */
+@media (max-width: 900px) {
+  .quantized-temple-root .tch-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quantized-temple-root .df-plate {
+    min-height: clamp(340px, 52vh, 460px);
+  }
+}
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.quantized-temple-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.quantized-temple-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tc-hair-band, var(--tcb-seam));
+}
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.quantized-temple-root .tc-row:has(> .tc-cell.is-framed),
+.quantized-temple-root .tc-mount,
+.quantized-temple-root .tcs-mat,
+.quantized-temple-root .tcr-mat,
+.quantized-temple-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* the hero ground's background shorthand above resets the clip; this longhand
+   follows it at the same specificity, so the close rule never stacks */
+.quantized-temple-root .tc-sec.tch-hero-sec,
+.quantized-temple-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   QT — THE DECO LAYER
+   The thesis on top of the GT system, in the C1 homes only.
+   Appended last so it composes over the fork's rules.
+   ============================================================ */
+
+/* ---- display type: Roman capitals for h1 and h2, nothing else ----
+   Cinzel sets lowercase as small capitals, so every heading reads as an
+   inscription. Sizes come down a step from the fork's Inter values because
+   capitals run wider, and the tracking opens instead of closing. h3, h4,
+   body, captions, buttons, chips, code and the footer stay Inter. */
+.quantized-temple-root h1,
+.quantized-temple-root h2 {
+  font-family: var(--quantized-temple-display), var(--font-inter), 'Inter', serif;
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: 0.012em;
+}
+
+.quantized-temple-root .tc-head h2 {
+  font-size: clamp(1.4rem, 2.15vw, 1.9rem);
+  max-width: 26ch;
+}
+
+.quantized-temple-root .tcr .tcr-copy h2 {
+  font-size: clamp(1.4rem, 2.15vw, 1.9rem);
+  max-width: 24ch;
+}
+
+.quantized-temple-root .tc-band.tcb h2 {
+  font-size: clamp(1.5rem, 2.5vw, 2.15rem);
+  max-width: 22ch;
+}
+
+.quantized-temple-root .tc-hero h1 {
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+.quantized-temple-root .tch-copy h1 {
+  font-size: clamp(1.8rem, 2.9vw, 2.5rem);
+}
+
+/* ---- the crown (C1.4): monogram over a dithered plinth ---- */
+.quantized-temple-root .qt-crown {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0 0 22px;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .qt-crown-mark {
+  display: block;
+  /* centres the 30px mark over the 120px plinth */
+  padding-left: 45px;
+  color: var(--tc-ink);
+}
+
+.quantized-temple-root .qt-crown-plinth {
+  display: block;
+  color: var(--deco-ornament);
+}
+
+/* ---- the wordmark inline in the sub: monogram plus the name, one ink ---- */
+.quantized-temple-root .qt-wm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--tc-ink);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.quantized-temple-root .qt-wm-mark {
+  display: inline-flex;
+  color: var(--tc-ink);
+}
+
+/* ---- the stepped rule under the h2 (C1.1) ---- */
+.quantized-temple-root .qt-head-rule {
+  display: block;
+  margin-top: 14px;
+  color: var(--deco-ornament);
+}
+
+.quantized-temple-root .tcb .tcb-head-copy {
+  min-width: 0;
+}
+
+/* ---- the hatch strata (C1.2) ---- */
+.quantized-temple-root .qt-hatch-field {
+  display: block;
+  width: 100%;
+}
+
+/* ---- the review mount joins the gilt frames (C1.3) ---- */
+.quantized-temple-root .tcr .tcr-mat {
+  background: var(--tc-mat);
+}
+
+/* Between 720 and 900px the crest would run under a two-line h2, so it
+   leaves with the head; under 720 the ladder below hides it with the rest
+   of the head devices. */
+@media (max-width: 900px) {
+  .quantized-temple-root .tc-head-icon {
+    display: none;
+  }
+}
+
+/* ---- the mobile ladder (DESIGN.md 12) ----
+   Every floor below consumes these slots with px fallbacks. This is the
+   direction's last 720px block on purpose: the base rules it overrides sit
+   earlier in the sheet at the same specificity, so order settles them. */
+@media (max-width: 720px) {
+  .quantized-temple-root {
+    --tcm-h2: 1.7rem;
+    --tcm-h2-lh: 1.2;
+    --tcm-h3: 1.25rem;
+    --tcm-h3-lh: 1.3;
+    --tcm-lead: 16px;
+    --tcm-lead-lh: 1.55;
+    --tcm-body: 15px;
+    --tcm-body-lh: 1.6;
+    --tcm-small: 13.5px;
+    --tcm-small-lh: 1.55;
+    --tcm-kick: 12.5px;
+    --tcm-head-pt: 60px;
+    --tcm-head-pb: 30px;
+    --tcm-gap-h2: 16px;
+    --tcm-gap-h3: 12px;
+    --tcm-cell-pad: 26px;
+    --tcm-box-pt: 30px;
+    --tcm-box-pb: 32px;
+    --tcm-box-gap: 24px;
+    /* seam floor: card copy never sits under 20px off the mat */
+    --tc-card-pad: 20px;
+  }
+
+  .quantized-temple-root .tc-head-icon {
     display: none;
   }
 
-  .quantized-temple-root .qt-nav-cta {
-    margin-left: auto;
+  .quantized-temple-root .tc-head {
+    padding-block: var(--tcm-head-pt, 60px) var(--tcm-head-pb, 30px);
   }
 
-  .quantized-temple-root .qt-hero-grid {
-    grid-template-columns: 1fr;
+  .quantized-temple-root .tc-head h2,
+  .quantized-temple-root .tcr .tcr-copy h2,
+  .quantized-temple-root .tc-band.tcb h2 {
+    font-size: var(--tcm-h2, 27px);
+    line-height: var(--tcm-h2-lh, 1.2);
   }
 
-  .quantized-temple-root .qt-hero-copy {
-    padding-bottom: 0;
+  .quantized-temple-root .tc-head p,
+  .quantized-temple-root .tcr .tcr-sub {
+    margin-top: var(--tcm-gap-h2, 16px);
+    font-size: var(--tcm-lead, 16px);
+    line-height: var(--tcm-lead-lh, 1.55);
   }
 
-  .quantized-temple-root .qt-monument {
-    height: clamp(280px, 52vw, 420px);
-    margin-top: 30px;
+  .quantized-temple-root .tch-copy h1 {
+    font-size: 2rem;
+    line-height: var(--tcm-h2-lh, 1.2);
   }
 
-  .quantized-temple-root .qt-diff {
-    grid-template-columns: 1fr;
+  .quantized-temple-root .tc-hero-sub {
+    font-size: var(--tcm-lead, 16px);
+    line-height: var(--tcm-lead-lh, 1.55);
   }
 
-  .quantized-temple-root .qt-steps {
-    grid-template-columns: 1fr;
-    gap: 26px;
-  }
-}
-
-@media (max-width: 640px) {
-  .quantized-temple-root .qt-hellos {
-    grid-template-columns: repeat(2, 1fr);
+  .quantized-temple-root .tc-cell h3,
+  .quantized-temple-root .tc-quad h3,
+  .quantized-temple-root .tc-plan h3 {
+    font-size: var(--tcm-h3, 20px);
+    line-height: var(--tcm-h3-lh, 1.3);
   }
 
-  .quantized-temple-root .qt-plat {
-    grid-template-columns: 1fr;
+  .quantized-temple-root .tc-cell > p,
+  .quantized-temple-root .tc-card > p,
+  .quantized-temple-root .tc-bleed-head p,
+  .quantized-temple-root .tc-quad p,
+  .quantized-temple-root .tc-plan p {
+    margin-top: var(--tcm-gap-h3, 12px);
+    font-size: var(--tcm-body, 15px);
+    line-height: var(--tcm-body-lh, 1.6);
   }
 
-  .quantized-temple-root .qt-plans {
-    grid-template-columns: 1fr;
+  .quantized-temple-root .tc-list li,
+  .quantized-temple-root .tcs-beat p {
+    font-size: var(--tcm-small, 13.5px);
+    line-height: var(--tcm-small-lh, 1.55);
   }
 
-  .quantized-temple-root .qt-foot-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .quantized-temple-root .tc-cell {
+    padding-block: var(--tcm-cell-pad, 26px);
   }
 
-  .quantized-temple-root .qt-brand-name {
-    display: none;
+  .quantized-temple-root .tc-cell.is-framed > .tc-card {
+    padding: var(--tcm-box-pt, 30px) var(--tc-card-pad, 20px) var(--tcm-box-pb, 32px);
   }
 
-  .quantized-temple-root .qt-foot-brand .qt-brand-name {
-    display: inline;
+  .quantized-temple-root .tc-trust-lead {
+    font-size: var(--tcm-kick, 12.5px);
   }
-}
 
-/* ---------------------------------------------------------- */
-/* Reduced motion: everything holds still                      */
-/* ---------------------------------------------------------- */
+  .quantized-temple-root .tc-btn {
+    height: 44px;
+    font-size: 15px;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .quantized-temple-root .qt-hero-copy > *,
-  .quantized-temple-root .qt-tier,
-  .quantized-temple-root .qt-proof-screen {
-    animation: none;
+  /* after .tc-btn: same specificity, order keeps the sm sizes */
+  .quantized-temple-root .tc-btn-sm {
+    height: 38px;
+    font-size: 13.5px;
   }
 }

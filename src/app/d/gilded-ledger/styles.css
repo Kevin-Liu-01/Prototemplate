@@ -1,56 +1,115 @@
-/* GILDED LEDGER — a 1928 annual report as a website. Ivory paper, warm ink,
-   gold-leaf rules, marbled endpaper bands, monogram cartouches, double-rule
-   frames. Every rule is scoped under .gilded-ledger-root. The only motion is
-   the title-page rise and a sheen sweep on the ink button; both are
-   disabled under prefers-reduced-motion. */
-
+/* gilded-ledger: a bound annual report printed on GT's ruled column. Ivory
+   paper, warm ink, gold-leaf rules wherever the system draws a frame,
+   combed-marble endpaper bands where the page turns between sections, a
+   monogram cartouche over the title, and the pricing file set as a two-leaf
+   ledger spread. The most restrained direction: print craft, not ornament.
+   Reference: 1920s corporate annual reports and prospectuses set in Bodoni
+   with letterpress rules and marbled endpapers; the brass of the Chrysler
+   Building lobby for the gold.
+   Ornament homes (charter C1, as applied):
+     1 section heads: a doubled gold head rule above every h2 (.tc-head,
+       .tcr-copy and .tcb-head ::before);
+     2 dividers: the .tc-hatch spacers are combed-marble endpaper bands of
+       1px gold hairlines (sections/deco/MarbleBand.tsx), and the pricing
+       spread's binding is one doubled gold rule (.gl-spread-page::before);
+     3 frames: the tc-mount and is-framed mats, the review and story mats,
+       the tc-code-bar rule and the dark band's --tcb-mat are gold-leaf
+       rings, one owner each, square corners;
+     4 the hero crown: a gold cartouche holding the GT monogram between
+       doubled rules (sections/deco/Crown.tsx);
+     5 the dark band: gilt-edged, its rail pairs, frame mats and head rule in
+       the lifted gold, strings printed in the same leaf.
+   Accent: gold leaf, one job, marking the active edge: the travelling tab
+   underline, the zh-Hans / zh-Hant tell chips, the doubled underline under
+   the hero's morphing word, and the string tokens on the dark panels (its
+   dark-ground lift). The ornament color is the same gold, so the page
+   carries three inks: ivory, warm black, gold.
+   Display face: Bodoni Moda, used for h1 and h2 only. The crown holds the
+   monogram, not type. Inter stays the body, interface and caption face.
+   Dark mode remaps these six tokens and nothing else. */
 .gilded-ledger-root {
-  /* paper */
-  --gl-paper: #f7f2e4;
-  --gl-paper-hi: #fcf8ec;
-  --gl-paper-lo: #efe7d2;
-  /* ink */
-  --gl-ink: #221e13;
-  --gl-ink-soft: #5a5340;
-  /* gold leaf */
-  --gl-gold: #a87e2f;
-  --gl-gold-deep: #7e5d1e;
-  --gl-gold-hi: #ecd394;
-  --gl-leaf: linear-gradient(100deg, #7e5d1e, #c49b4a 34%, #f0dfa8 50%, #b8893a 66%, #6f5119);
-  /* endpaper marbling */
-  --gl-navy: #26374f;
-  --gl-oxblood: #6e2f26;
-  /* rules */
-  --gl-hair: rgba(34, 30, 19, 0.34);
-  --gl-hair-soft: rgba(34, 30, 19, 0.14);
+  --deco-ground: #f4eee1;
+  --deco-ink: #1c1712;
+  --deco-ink-2: rgba(28, 23, 18, 0.66);
+  --deco-hair: rgba(28, 23, 18, 0.22);
+  --deco-accent: #a3782a;
+  --deco-ornament: #a3782a;
 
-  color-scheme: light;
-  background-color: var(--gl-paper);
-  background-image: radial-gradient(120% 90% at 50% 0%, var(--gl-paper-hi) 0%, var(--gl-paper) 58%);
-  color: var(--gl-ink);
-  font-family: var(--font-gl-body), 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  min-height: 100vh;
+  /* the rail system reads the palette through the tc tokens; every further
+     ink and hairline step is mixed from the six, so dark mode remaps six */
+  --tc-paper: var(--deco-ground);
+  --tc-sunk: var(--deco-ground);
+  --tc-white: var(--deco-ground);
+  --tc-card: var(--deco-ground);
+  --tc-plate: var(--deco-ground);
+  --tc-ink: var(--deco-ink);
+  --tc-ink-2: var(--deco-ink-2);
+  --tc-ink-3: color-mix(in srgb, var(--deco-ink) 46%, transparent);
+  --tc-ink-4: color-mix(in srgb, var(--deco-ink) 30%, transparent);
+  --tc-hair: var(--deco-hair);
+  --tc-hair-2: color-mix(in srgb, var(--deco-hair) 70%, transparent);
+  --tc-hatch: color-mix(in srgb, var(--deco-ink) 8%, transparent);
+  --tc-accent: var(--deco-accent);
+  --tc-dark: #070707;
+
+  /* The frame (deco home C1.3): the mat IS the gold leaf, and the one edge
+     a mount draws is the same leaf, so every framed surface wears one 1px
+     gold ring and the seams between framed cards are gold. */
+  --tc-mat: var(--deco-ornament);
+  --tc-mat-edge: var(--deco-ornament);
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+
+  /* language-diagram rules follow the shell's line colour */
+  --lang-rule-strong: var(--tc-hair);
+  --lang-rule: var(--tc-hair);
+
+  /* The one dark artifact surface for code, config and diffs, the same in
+     both themes. Its bar rule is the gilt line the engraved plate is signed
+     with (the code bar is a C1.3 frame home). */
+  --tc-panel: #101010;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+  --tc-panel-gilt: rgba(201, 162, 74, 0.55);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled; the gold head
+     rules, the crown and the ledger binding draw the same pair. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* Inter is the body, interface and caption face. The two display slots
+     (h1, h2) read the Bodoni variable directly in their own rules. */
+  --tc-disp: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: color-mix(in srgb, var(--deco-ink) 80%, transparent);
+  --iso-ink-soft: color-mix(in srgb, var(--deco-ink) 44%, transparent);
+  --iso-ink-hair: color-mix(in srgb, var(--deco-ink) 20%, transparent);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-.gilded-ledger-root h1,
-.gilded-ledger-root h2,
-.gilded-ledger-root h3 {
-  font-family: var(--font-gl-display), Georgia, 'Times New Roman', serif;
-  font-weight: 500;
-  margin: 0;
-}
-
-.gilded-ledger-root p {
-  margin: 0;
-}
-
-.gilded-ledger-root ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.gilded-ledger-root *,
+.gilded-ledger-root *::before,
+.gilded-ledger-root *::after {
+  box-sizing: border-box;
 }
 
 .gilded-ledger-root a {
@@ -58,1042 +117,2514 @@
   text-decoration: none;
 }
 
-.gilded-ledger-root :focus-visible {
-  outline: 2px solid var(--gl-gold-deep);
-  outline-offset: 3px;
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.gilded-ledger-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
 }
 
-.gilded-ledger-root code {
-  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.86em;
+.gilded-ledger-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
 }
 
-/* the shared measure */
-.gilded-ledger-root .gl-page {
-  margin: 0 auto;
-  max-width: 1060px;
-  padding: 0 24px;
-  width: 100%;
+.gilded-ledger-root .tc-sec:last-child {
+  border-bottom: 0;
 }
 
-.gilded-ledger-root .gl-page.is-wide {
-  max-width: 1180px;
-}
+/* ---------- type ---------- */
 
-/* small caps: uppercase letterspaced Inter, the report's labeling voice */
-.gilded-ledger-root .gl-sc {
-  font-family: var(--font-gl-body), 'Helvetica Neue', Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-/* ------------------------------------------------------------ ornaments */
-
-.gilded-ledger-root .gl-monogram {
-  align-items: center;
-  background: radial-gradient(circle at 32% 26%, var(--gl-paper-hi), var(--gl-paper-lo));
-  border: 1px solid var(--gl-ink);
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0 0 3px var(--gl-paper-hi),
-    inset 0 0 0 4px var(--gl-gold);
-  color: var(--gl-ink);
-  display: inline-flex;
-  flex: none;
-  font-family: var(--font-gl-display), Georgia, serif;
-  font-size: 15px;
-  font-weight: 600;
-  height: 42px;
-  justify-content: center;
-  letter-spacing: 0.06em;
-  width: 42px;
-}
-
-.gilded-ledger-root .gl-monogram.is-lg {
-  font-size: 22px;
-  height: 64px;
-  position: relative;
-  width: 64px;
-  z-index: 1;
-}
-
-.gilded-ledger-root .gl-orn {
-  align-items: center;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.gilded-ledger-root .gl-orn i {
-  background: var(--gl-hair);
-  flex: 1;
-  height: 1px;
-  max-width: 96px;
-}
-
-.gilded-ledger-root .gl-orn b {
-  background: var(--gl-gold);
-  flex: none;
-  height: 7px;
-  transform: rotate(45deg);
-  width: 7px;
-}
-
-.gilded-ledger-root .gl-corner {
-  background: var(--gl-gold);
-  height: 9px;
-  position: absolute;
-  transform: rotate(45deg);
-  width: 9px;
-  z-index: 1;
-}
-
-.gilded-ledger-root .gl-corner.is-tl {
-  left: -5px;
-  top: -5px;
-}
-
-.gilded-ledger-root .gl-corner.is-tr {
-  right: -5px;
-  top: -5px;
-}
-
-.gilded-ledger-root .gl-corner.is-bl {
-  bottom: -5px;
-  left: -5px;
-}
-
-.gilded-ledger-root .gl-corner.is-br {
-  bottom: -5px;
-  right: -5px;
-}
-
-/* dotted ledger leader shared by the contents table and the rate table */
-.gilded-ledger-root .gl-lead {
-  align-self: flex-end;
-  border-bottom: 1px dotted var(--gl-hair);
-  flex: 1;
-  margin: 0 10px 5px;
-  min-width: 24px;
-}
-
-/* the marbled endpaper band: layered ring gradients from offset centers,
-   the interference between them reads as combed marbling */
-.gilded-ledger-root .gl-marble {
-  background-color: var(--gl-navy);
-  background-image:
-    repeating-radial-gradient(circle at 18% 130%, rgba(236, 211, 148, 0.8) 0 2px, transparent 2px 26px),
-    repeating-radial-gradient(circle at 82% -40%, rgba(110, 47, 38, 0.95) 0 8px, transparent 8px 34px),
-    repeating-radial-gradient(circle at 45% 170%, rgba(247, 242, 228, 0.5) 0 3px, transparent 3px 21px),
-    repeating-radial-gradient(circle at 63% -70%, rgba(38, 55, 79, 0.95) 0 10px, transparent 10px 27px),
-    repeating-radial-gradient(circle at 4% -30%, rgba(168, 126, 47, 0.6) 0 5px, transparent 5px 18px);
-  border-bottom: 1px solid var(--gl-gold-deep);
-  border-top: 1px solid var(--gl-gold-deep);
-  height: 72px;
-}
-
-/* buttons: ruled small-caps plates; the primary is ink with a gold keyline */
-.gilded-ledger-root .gl-btn {
-  align-items: center;
-  background: transparent;
-  border: 1px solid var(--gl-ink);
-  color: var(--gl-ink);
-  display: inline-flex;
-  font-family: var(--font-gl-body), 'Helvetica Neue', Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  justify-content: center;
-  letter-spacing: 0.2em;
-  line-height: 1;
-  padding: 13px 22px;
-  text-transform: uppercase;
-  transition: background-color 0.25s ease;
-}
-
-.gilded-ledger-root .gl-btn:hover {
-  background-color: rgba(34, 30, 19, 0.07);
-}
-
-.gilded-ledger-root .gl-btn.is-ink {
-  background: var(--gl-ink);
-  box-shadow:
-    0 0 0 2px var(--gl-paper),
-    0 0 0 3px var(--gl-gold);
-  color: var(--gl-paper-hi);
-  overflow: hidden;
-  position: relative;
-}
-
-.gilded-ledger-root .gl-btn.is-ink:hover {
-  background-color: var(--gl-ink);
-}
-
-.gilded-ledger-root .gl-btn.is-ink::after {
-  background: linear-gradient(115deg, transparent 40%, rgba(236, 211, 148, 0.38) 50%, transparent 60%);
-  content: '';
-  inset: 0;
-  position: absolute;
-  transform: translateX(-130%);
-  transition: transform 0.7s ease;
-}
-
-.gilded-ledger-root .gl-btn.is-ink:hover::after {
-  transform: translateX(130%);
-}
-
-/* ------------------------------------------------------------- masthead */
-
-.gilded-ledger-root .gl-mast {
-  padding-top: 14px;
-}
-
-.gilded-ledger-root .gl-folio {
-  border-bottom: 1px solid var(--gl-hair-soft);
-  color: var(--gl-ink-soft);
-  display: flex;
-  font-size: 9.5px;
-  justify-content: space-between;
-  padding-bottom: 8px;
-}
-
-.gilded-ledger-root .gl-mast-row {
-  align-items: center;
-  display: flex;
-  gap: 28px;
-  justify-content: space-between;
-  padding: 18px 0;
-}
-
-.gilded-ledger-root .gl-mast-brand {
-  align-items: center;
-  display: inline-flex;
-  gap: 14px;
-}
-
-.gilded-ledger-root .gl-mast-name {
-  font-family: var(--font-gl-display), Georgia, serif;
-  font-size: 21px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-
-.gilded-ledger-root .gl-mast-nav {
-  display: flex;
-  gap: 28px;
-}
-
-.gilded-ledger-root .gl-mast-nav a {
-  border-bottom: 1px solid transparent;
-  padding-bottom: 3px;
-  transition: border-color 0.2s ease;
-}
-
-.gilded-ledger-root .gl-mast-nav a:hover {
-  border-bottom-color: var(--gl-gold);
-}
-
-.gilded-ledger-root .gl-mast-cta {
-  align-items: center;
-  display: flex;
-  gap: 12px;
-}
-
-/* the masthead's thick-thin closing rule */
-.gilded-ledger-root .gl-mast-rule {
-  border-bottom: 1px solid var(--gl-ink);
-  border-top: 3px solid var(--gl-ink);
-  height: 3px;
-}
-
-/* ----------------------------------------------------------------- hero */
-
-.gilded-ledger-root .gl-hero {
-  padding: 72px 0 24px;
-}
-
-.gilded-ledger-root .gl-titlepage {
-  animation: gl-rise 0.9s ease-out both;
-  background: var(--gl-paper-hi);
-  border: 1px solid var(--gl-ink);
-  box-shadow:
-    inset 0 0 0 5px var(--gl-paper-hi),
-    inset 0 0 0 6px var(--gl-gold);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 76px 48px 60px;
-  position: relative;
-  text-align: center;
-}
-
-/* the deco sunburst: gold conic rays masked to a half annulus, seated
-   behind the monogram cartouche like an engraved title-page device */
-.gilded-ledger-root .gl-fan {
-  background: repeating-conic-gradient(
-    from 262deg at 50% 100%,
-    var(--gl-gold) 0deg 1.6deg,
-    transparent 1.6deg 8.2deg
-  );
-  border-radius: 220px 220px 0 0;
-  height: 104px;
-  margin-bottom: -34px;
-  -webkit-mask-image: radial-gradient(circle at 50% 100%, transparent 37px, #000 38px);
-  mask-image: radial-gradient(circle at 50% 100%, transparent 37px, #000 38px);
-  opacity: 0.65;
-  width: 208px;
-}
-
-.gilded-ledger-root .gl-kicker {
-  color: var(--gl-gold-deep);
-  margin-top: 26px;
-}
-
-.gilded-ledger-root .gl-titlepage h1 {
-  font-size: clamp(44px, 7vw, 84px);
-  letter-spacing: -0.015em;
-  line-height: 1.02;
-  margin-top: 18px;
-  max-width: 15ch;
-}
-
-.gilded-ledger-root .gl-titlepage h1 em {
-  background: var(--gl-leaf);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-style: italic;
-  font-weight: 600;
-}
-
-.gilded-ledger-root .gl-lede {
-  color: var(--gl-ink-soft);
-  font-size: 17px;
-  margin-top: 26px;
-  max-width: 620px;
-}
-
-.gilded-ledger-root .gl-hero-cta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  justify-content: center;
-  margin-top: 34px;
-}
-
-/* the contents table, dotted leaders to plate references */
-.gilded-ledger-root .gl-toc {
-  border-top: 1px solid var(--gl-hair-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 48px;
-  max-width: 460px;
-  padding-top: 24px;
-  text-align: left;
-  width: 100%;
-}
-
-.gilded-ledger-root .gl-toc-head {
-  color: var(--gl-gold-deep);
-  margin-bottom: 6px;
-  text-align: center;
-}
-
-.gilded-ledger-root .gl-toc-row {
-  display: flex;
-  font-size: 15px;
-}
-
-.gilded-ledger-root .gl-toc-row:hover .gl-toc-title {
-  color: var(--gl-gold-deep);
-}
-
-.gilded-ledger-root .gl-toc-title {
-  transition: color 0.2s ease;
-}
-
-.gilded-ledger-root .gl-toc-no {
-  color: var(--gl-gold-deep);
-  display: inline-block;
-  font-family: var(--font-gl-display), Georgia, serif;
-  min-width: 26px;
-}
-
-.gilded-ledger-root .gl-toc-ref {
-  color: var(--gl-ink-soft);
-  font-size: 10px;
-  padding-bottom: 2px;
-}
-
-.gilded-ledger-root .gl-trust {
-  color: var(--gl-ink-soft);
-  margin-top: 48px;
-  text-align: center;
-}
-
-.gilded-ledger-root .gl-trust-row {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 20px;
-  justify-content: center;
-  margin-top: 16px;
-}
-
-.gilded-ledger-root .gl-trust-row li {
-  align-items: center;
-  display: inline-flex;
-  font-family: var(--font-gl-display), Georgia, serif;
-  font-size: 19px;
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.gilded-ledger-root h1,
+.gilded-ledger-root h2,
+.gilded-ledger-root h3,
+.gilded-ledger-root h4 {
+  font-family: var(--tc-disp);
   font-weight: 500;
-  gap: 20px;
-  letter-spacing: 0.02em;
-}
-
-.gilded-ledger-root .gl-trust-row li + li::before {
-  background: var(--gl-gold);
-  content: '';
-  display: inline-block;
-  height: 5px;
-  transform: rotate(45deg);
-  width: 5px;
-}
-
-/* ------------------------------------------------------------- sections */
-
-.gilded-ledger-root .gl-sec {
-  padding: 96px 0 8px;
-}
-
-.gilded-ledger-root .gl-sechead {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin: 0 auto 52px;
-  max-width: 660px;
-  text-align: center;
-}
-
-.gilded-ledger-root .gl-sechead-no {
-  color: var(--gl-gold-deep);
-}
-
-.gilded-ledger-root .gl-sechead h2 {
-  font-size: clamp(30px, 4vw, 46px);
-  line-height: 1.1;
-}
-
-.gilded-ledger-root .gl-sechead p {
-  color: var(--gl-ink-soft);
-  font-size: 16px;
-}
-
-/* the engraved-plate figure grammar: double-rule frame, small-caps caption */
-.gilded-ledger-root .gl-figure {
+  line-height: 1.06;
+  letter-spacing: -0.028em;
   margin: 0;
 }
 
-.gilded-ledger-root .gl-caption {
-  color: var(--gl-ink-soft);
-  font-size: 10px;
-  margin-top: 16px;
-  text-align: center;
-}
-
-/* --------------------------------------------------------------- plate I */
-
-.gilded-ledger-root .gl-plate {
-  background: var(--gl-paper-hi);
-  border: 1px solid var(--gl-ink);
-  box-shadow:
-    inset 0 0 0 5px var(--gl-paper-hi),
-    inset 0 0 0 6px var(--gl-gold);
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  padding: 6px;
-  position: relative;
-}
-
-.gilded-ledger-root .gl-plate-pane {
-  min-width: 0;
-  padding: 34px 34px 38px;
-}
-
-.gilded-ledger-root .gl-plate-pane.is-render {
-  border-left: 1px solid var(--gl-hair-soft);
-}
-
-.gilded-ledger-root .gl-pane-label {
-  color: var(--gl-gold-deep);
-  display: block;
-  font-size: 10px;
-  margin-bottom: 18px;
-}
-
-.gilded-ledger-root .gl-code {
-  background: var(--gl-paper-lo);
-  border: 1px solid var(--gl-hair-soft);
-  font-size: 13px;
-  line-height: 1.75;
+.gilded-ledger-root p {
   margin: 0;
-  overflow-x: auto;
-  padding: 20px 22px;
 }
 
-.gilded-ledger-root .gl-code code {
-  font-size: 13px;
+.gilded-ledger-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
 }
 
-.gilded-ledger-root .gl-code-line {
-  display: block;
-  white-space: pre;
+.gilded-ledger-root .tc-head h2 {
+  font-size: clamp(1.9rem, 2.85vw, 2.55rem);
+  max-width: 22ch;
 }
 
-.gilded-ledger-root .gl-tk-k {
-  color: var(--gl-oxblood);
-}
-
-.gilded-ledger-root .gl-tk-s {
-  color: var(--gl-gold-deep);
-}
-
-.gilded-ledger-root .gl-tk-t {
-  color: var(--gl-gold-deep);
-  font-weight: 600;
-}
-
-.gilded-ledger-root .gl-tk-f {
-  color: var(--gl-navy);
-  font-weight: 600;
-}
-
-.gilded-ledger-root .gl-tk-g {
-  color: var(--gl-navy);
-}
-
-.gilded-ledger-root .gl-render-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.gilded-ledger-root .gl-render-row {
-  align-items: baseline;
-  border-top: 1px solid var(--gl-hair-soft);
-  display: flex;
-  gap: 16px;
-  padding: 11px 0;
-}
-
-.gilded-ledger-root .gl-render-row:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-
-.gilded-ledger-root .gl-render-tag {
-  border: 1px solid var(--gl-hair);
-  color: var(--gl-gold-deep);
-  flex: none;
-  font-size: 9px;
-  padding: 3px 7px;
-}
-
-.gilded-ledger-root .gl-render-copy {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.gilded-ledger-root .gl-render-copy strong {
-  font-family: var(--font-gl-display), Georgia, serif;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-.gilded-ledger-root .gl-render-copy span {
-  color: var(--gl-ink-soft);
-  font-size: 13px;
-}
-
-/* the three ledger entries under the plate */
-.gilded-ledger-root .gl-entries {
-  border-bottom: 3px double var(--gl-hair);
-  border-top: 3px double var(--gl-hair);
-  display: grid;
-  gap: 32px;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: 56px;
-  padding: 30px 0;
-}
-
-.gilded-ledger-root .gl-entry-no {
-  color: var(--gl-gold-deep);
-  display: block;
-  font-size: 10px;
-  margin-bottom: 10px;
-}
-
-.gilded-ledger-root .gl-entry p {
-  color: var(--gl-ink-soft);
-  font-size: 14.5px;
-}
-
-/* -------------------------------------------------------------- colophon */
-
-.gilded-ledger-root .gl-scripts {
-  background: var(--gl-hair-soft);
-  border: 1px solid var(--gl-ink);
-  display: grid;
-  gap: 1px;
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.gilded-ledger-root .gl-script {
-  align-items: center;
-  background: var(--gl-paper-hi);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: center;
-  min-height: 158px;
-  padding: 22px 14px;
-  text-align: center;
-}
-
-.gilded-ledger-root .gl-script-no {
-  color: var(--gl-gold-deep);
-  font-size: 9px;
-}
-
-.gilded-ledger-root .gl-script-word {
-  font-family: var(--font-gl-display), Georgia, 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif', serif;
-  font-size: clamp(24px, 2.6vw, 32px);
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.gilded-ledger-root .gl-script-name {
-  color: var(--gl-ink-soft);
-  font-size: 9px;
-}
-
-.gilded-ledger-root .gl-variants {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 44px;
-  text-align: center;
-}
-
-.gilded-ledger-root .gl-variants p {
-  color: var(--gl-ink-soft);
+.gilded-ledger-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
   font-size: 15px;
-  max-width: 560px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
 }
 
-.gilded-ledger-root .gl-variant-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-}
-
-.gilded-ledger-root .gl-variant-row code {
-  border: 1px solid var(--gl-hair);
-  color: var(--gl-ink);
-  display: inline-block;
-  font-size: 12px;
-  padding: 4px 9px;
-}
-
-/* -------------------------------------------------------------- products */
-
-.gilded-ledger-root .gl-ledger {
-  border-bottom: 3px double var(--gl-hair);
-  border-top: 3px double var(--gl-hair);
-}
-
-.gilded-ledger-root .gl-ledger-row {
-  align-items: baseline;
-  display: grid;
-  gap: 8px 28px;
-  grid-template-columns: 44px 200px 1fr auto;
-  padding: 22px 8px;
-}
-
-.gilded-ledger-root .gl-ledger-row + .gl-ledger-row {
-  border-top: 1px solid var(--gl-hair-soft);
-}
-
-.gilded-ledger-root .gl-ledger-no {
-  color: var(--gl-gold-deep);
-  font-family: var(--font-gl-display), Georgia, serif;
-  font-size: 17px;
-}
-
-.gilded-ledger-root .gl-ledger-row h3 {
-  font-size: 22px;
-}
-
-.gilded-ledger-root .gl-ledger-row p {
-  color: var(--gl-ink-soft);
-  font-size: 14.5px;
-}
-
-.gilded-ledger-root .gl-ledger-kind {
-  color: var(--gl-gold-deep);
-  font-size: 9.5px;
-  justify-self: end;
-}
-
-/* --------------------------------------------------------------- pricing */
-
-/* the two-page ledger spread; the spine is a shared gradient gutter */
-.gilded-ledger-root .gl-spread {
-  background: var(--gl-paper-hi);
-  border: 1px solid var(--gl-ink);
-  box-shadow:
-    inset 0 0 0 5px var(--gl-paper-hi),
-    inset 0 0 0 6px var(--gl-gold);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 6px;
-  position: relative;
-}
-
-.gilded-ledger-root .gl-spread-page {
-  min-width: 0;
-  padding: 40px 44px 48px;
-  position: relative;
-}
-
-.gilded-ledger-root .gl-spread-page.is-right {
-  border-left: 1px solid var(--gl-hair-soft);
-}
-
-.gilded-ledger-root .gl-spread-page::after {
-  content: '';
-  inset: 0;
-  pointer-events: none;
-  position: absolute;
-}
-
-.gilded-ledger-root .gl-spread-page:not(.is-right)::after {
-  background: linear-gradient(270deg, rgba(34, 30, 19, 0.08), transparent 26px);
-}
-
-.gilded-ledger-root .gl-spread-page.is-right::after {
-  background: linear-gradient(90deg, rgba(34, 30, 19, 0.08), transparent 26px);
-}
-
-.gilded-ledger-root .gl-spread-head {
-  border-bottom: 3px double var(--gl-hair);
-  color: var(--gl-gold-deep);
-  margin-bottom: 22px;
-  padding-bottom: 12px;
-  text-align: center;
-}
-
-.gilded-ledger-root .gl-rates {
-  display: flex;
-  flex-direction: column;
-}
-
-.gilded-ledger-root .gl-rate {
-  display: flex;
-  padding: 9px 0;
-}
-
-.gilded-ledger-root .gl-rate + .gl-rate {
-  border-top: 1px solid var(--gl-hair-soft);
-}
-
-.gilded-ledger-root .gl-rate-name {
-  font-size: 14.5px;
-  font-weight: 500;
-}
-
-.gilded-ledger-root .gl-rate-value {
-  display: flex;
-  flex-direction: column;
-  font-size: 14.5px;
-  font-variant-numeric: tabular-nums;
-  max-width: 55%;
-  text-align: right;
-}
-
-.gilded-ledger-root .gl-rate-value small {
-  color: var(--gl-ink-soft);
+.gilded-ledger-root .tc-mono {
+  font-family: var(--tc-mono);
   font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
 }
 
-.gilded-ledger-root .gl-rates-foot {
-  border-top: 3px double var(--gl-gold);
-  color: var(--gl-ink-soft);
-  display: flex;
-  flex-direction: column;
-  font-size: 12.5px;
-  gap: 8px;
-  margin-top: 18px;
-  padding-top: 16px;
-}
+/* ---------- buttons ---------- */
 
-.gilded-ledger-root .gl-account {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 4px 0 30px;
-}
-
-.gilded-ledger-root .gl-account + .gl-account {
-  border-top: 1px solid var(--gl-hair-soft);
-  padding-top: 28px;
-}
-
-.gilded-ledger-root .gl-account-head {
-  align-items: baseline;
-  display: flex;
-  gap: 18px;
-  justify-content: space-between;
-}
-
-.gilded-ledger-root .gl-account-head h3 {
-  font-size: 24px;
-}
-
-.gilded-ledger-root .gl-account-price {
-  font-family: var(--font-gl-display), Georgia, serif;
-  font-size: 26px;
-  font-variant-numeric: tabular-nums;
+.gilded-ledger-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
   font-weight: 500;
+  letter-spacing: -0.005em;
   white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 
-.gilded-ledger-root .gl-account-price .gl-sc {
-  color: var(--gl-ink-soft);
-  font-size: 9px;
+.gilded-ledger-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: var(--tc-paper);
 }
 
-.gilded-ledger-root .gl-account > p {
-  color: var(--gl-ink-soft);
+.gilded-ledger-root .tc-btn-solid:hover {
+  background: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.gilded-ledger-root .tc-btn-line:hover {
+  border-color: var(--tc-ink-3);
+  background: var(--tc-hair-2);
+}
+
+.gilded-ledger-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.gilded-ledger-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+.gilded-ledger-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
   font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
-.gilded-ledger-root .gl-account-list {
+.gilded-ledger-root .tc-nav-links {
   display: flex;
-  flex-direction: column;
-  gap: 7px;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
 }
 
-.gilded-ledger-root .gl-account-list li {
-  align-items: baseline;
+.gilded-ledger-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .tc-nav-right {
+  margin-left: auto;
   display: flex;
-  font-size: 14px;
+  align-items: center;
   gap: 12px;
+  font-size: 13.5px;
 }
 
-.gilded-ledger-root .gl-account-list li::before {
-  background: var(--gl-gold);
-  content: '';
-  flex: none;
-  height: 5px;
-  transform: rotate(45deg) translateY(-1px);
-  width: 5px;
+.gilded-ledger-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
 }
 
-.gilded-ledger-root .gl-account .gl-btn {
-  align-self: flex-start;
-  margin-top: 6px;
-}
-
-/* ---------------------------------------------------------------- footer */
-
-.gilded-ledger-root .gl-footer {
-  border-top: 3px double var(--gl-hair);
-  margin-top: 104px;
-  padding-top: 56px;
-}
-
-.gilded-ledger-root .gl-footer-grid {
-  display: grid;
-  gap: 40px;
-  grid-template-columns: 1.4fr repeat(3, 1fr);
-}
-
-.gilded-ledger-root .gl-footer-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.gilded-ledger-root .gl-footer-brand p {
-  color: var(--gl-ink-soft);
-  font-size: 14px;
-  max-width: 260px;
-}
-
-.gilded-ledger-root .gl-footer-head {
-  color: var(--gl-gold-deep);
-  display: block;
-  font-size: 10px;
-  margin-bottom: 14px;
-}
-
-.gilded-ledger-root .gl-footer-col li + li {
-  margin-top: 8px;
-}
-
-.gilded-ledger-root .gl-footer-col a {
-  border-bottom: 1px solid transparent;
-  font-size: 14px;
-  transition: border-color 0.2s ease;
-}
-
-.gilded-ledger-root .gl-footer-col a:hover {
-  border-bottom-color: var(--gl-gold);
-}
-
-.gilded-ledger-root .gl-colophon {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 56px;
-  padding-bottom: 36px;
-  text-align: center;
-}
-
-.gilded-ledger-root .gl-colophon p {
-  color: var(--gl-ink-soft);
-  font-size: 9.5px;
-}
-
-/* ---------------------------------------------------------------- motion */
-
-@keyframes gl-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gilded-ledger-root .gl-titlepage {
-    animation: none;
-  }
-
-  .gilded-ledger-root .gl-btn.is-ink::after {
-    display: none;
-  }
-
-  .gilded-ledger-root .gl-btn,
-  .gilded-ledger-root .gl-mast-nav a,
-  .gilded-ledger-root .gl-footer-col a,
-  .gilded-ledger-root .gl-toc-title {
-    transition: none;
-  }
-}
-
-/* ------------------------------------------------------------ responsive */
-
-@media (max-width: 960px) {
-  .gilded-ledger-root .gl-mast-nav {
-    display: none;
-  }
-
-  .gilded-ledger-root .gl-scripts {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .gilded-ledger-root .gl-ledger-row {
-    grid-template-columns: 44px 1fr auto;
-  }
-
-  .gilded-ledger-root .gl-ledger-row p {
-    grid-column: 2 / -1;
-  }
-
-  .gilded-ledger-root .gl-footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+.gilded-ledger-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
 }
 
 @media (max-width: 860px) {
-  .gilded-ledger-root .gl-plate {
-    grid-template-columns: 1fr;
-  }
-
-  .gilded-ledger-root .gl-plate-pane.is-render {
-    border-left: 0;
-    border-top: 1px solid var(--gl-hair-soft);
-  }
-
-  .gilded-ledger-root .gl-spread {
-    grid-template-columns: 1fr;
-  }
-
-  .gilded-ledger-root .gl-spread-page.is-right {
-    border-left: 0;
-    border-top: 1px solid var(--gl-hair-soft);
-  }
-
-  .gilded-ledger-root .gl-spread-page::after {
+  .gilded-ledger-root .tc-nav-links,
+  .gilded-ledger-root .tc-nav-right > a:first-child {
     display: none;
-  }
-
-  .gilded-ledger-root .gl-entries {
-    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 640px) {
-  .gilded-ledger-root .gl-folio-mid {
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* Trimmed a step so the terminal owns more of the first viewport instead of
+   being cut at the fold. */
+.gilded-ledger-root .tc-hero {
+  text-align: center;
+  padding: clamp(44px, 5.6vw, 72px) var(--tc-gut) 0;
+}
+
+.gilded-ledger-root .tc-hero h1 {
+  font-size: clamp(2.05rem, 4.9vw, 3.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  max-width: 20ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.gilded-ledger-root .tc-hero h1 span {
+  display: block;
+}
+
+/* The emphasis is the brand's own device: the two threads, source and
+   translation at constant gauge, running under the morphing word. Here they
+   are the page's one accent spent as an active underline: gold leaf. */
+.gilded-ledger-root .tc-hero h1 em {
+  --thread-ink: var(--deco-accent);
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.gilded-ledger-root .tc-hero-sub {
+  margin: 20px auto 0;
+  max-width: 54ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-hero-acts {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gilded-ledger-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.gilded-ledger-root .tc-copy:hover {
+  border-color: var(--tc-ink-3);
+}
+
+.gilded-ledger-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.gilded-ledger-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.gilded-ledger-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.gilded-ledger-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.gilded-ledger-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.gilded-ledger-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.gilded-ledger-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.gilded-ledger-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.gilded-ledger-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.gilded-ledger-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.gilded-ledger-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+}
+
+.gilded-ledger-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.gilded-ledger-root .tc-caps {
+  flex: 1;
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.gilded-ledger-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-fw-run {
+  margin-top: 12px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.gilded-ledger-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.gilded-ledger-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.gilded-ledger-root .tc-fw-link {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.gilded-ledger-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.gilded-ledger-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 0;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.gilded-ledger-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#101010`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.gilded-ledger-root .tc-code {
+  border-radius: 0;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.gilded-ledger-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.gilded-ledger-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.gilded-ledger-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  /* the plate's signature line: the one gilt rule on the dark panel */
+  border-bottom: 1px solid var(--tc-panel-gilt);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.gilded-ledger-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.gilded-ledger-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.gilded-ledger-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.gilded-ledger-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.gilded-ledger-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set: the story's editor mock highlights on paper. */
+.gilded-ledger-root .tc-t-str {
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-t-kw {
+  color: rgba(7, 7, 7, 0.52);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.gilded-ledger-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.gilded-ledger-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.gilded-ledger-root .tc-t-num {
+  color: var(--tc-ink-2);
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the one syntax hue on the strings, because strings are the product:
+   the page's gold at its dark-ground lift (--tc-tok-str, logos-icons.css). */
+.gilded-ledger-root .tc-code .tc-t-str {
+  color: var(--tc-tok-str);
+}
+
+.gilded-ledger-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.gilded-ledger-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.gilded-ledger-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.gilded-ledger-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.gilded-ledger-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-row.is-lead,
+.gilded-ledger-root .tc-row.is-three,
+.gilded-ledger-root .tc-row.is-wide-left,
+.gilded-ledger-root .tc-row.is-tilt,
+.gilded-ledger-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.gilded-ledger-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.gilded-ledger-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.gilded-ledger-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.gilded-ledger-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.gilded-ledger-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.gilded-ledger-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.gilded-ledger-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.gilded-ledger-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.gilded-ledger-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.gilded-ledger-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.gilded-ledger-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.gilded-ledger-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.gilded-ledger-root .tc-cell > p,
+.gilded-ledger-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.gilded-ledger-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.gilded-ledger-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   The founder's corner grammar: a cell that carries something visual is a
+   MAT — the shell line colour, zero padding — and the card inside it is
+   radius-12 white, so the grey ground fills the corner notches. ONE ring,
+   never doubled edges. Text-only cells never get this — the contrast is the
+   whole point, and it is also why the vertical rule is dropped wherever a
+   mat provides the edge. */
+
+.gilded-ledger-root .tc-cell.is-framed {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: flex;
+}
+
+/* The ground behind the ivory cards is the gold mat, so a row of framed
+   cells reads as leaves ruled apart by 1px gold seams. */
+.gilded-ledger-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-mat);
+}
+
+.gilded-ledger-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+.gilded-ledger-root .tc-row > .is-framed + *,
+.gilded-ledger-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- the endpaper band (deco home C1.2) ----------
+   Bounded, content-free breathing room between subjects, kept from the base
+   as the page's one divider device. The diagonal hatch becomes a combed-
+   marble endpaper, drawn by sections/deco/MarbleBand.tsx as 1px gold
+   hairlines inside one SVG pattern. The band owns its boundary once: a top
+   and a bottom rule, and whatever follows draws no top rule of its own. */
+
+.gilded-ledger-root .tc-hatch {
+  position: relative;
+  z-index: 2;
+  height: clamp(34px, 4vw, 48px);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+  overflow: hidden;
+}
+
+.gilded-ledger-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* Between sections the previous section's bottom rule is the seam; at the
+   top of the second rail the dark band's closing rule is. */
+.gilded-ledger-root .tc-sec + .tc-hatch,
+.gilded-ledger-root .tc-rail > .tc-hatch:first-child {
+  border-top: 0;
+}
+
+.gilded-ledger-root .tc-hatch > svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: var(--deco-ornament);
+  opacity: 0.62;
+}
+
+.gilded-ledger-root .tc-hatch path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.gilded-ledger-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gilded-ledger-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.gilded-ledger-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.gilded-ledger-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.gilded-ledger-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars): the plate is
+   the card's own white now — the frame carries the edge work. */
+.gilded-ledger-root .tc-surface.is-plated {
+  margin-top: 12px;
+}
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.gilded-ledger-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.gilded-ledger-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.gilded-ledger-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.gilded-ledger-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.gilded-ledger-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.gilded-ledger-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.gilded-ledger-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.gilded-ledger-root .tc-bleed-art {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.gilded-ledger-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.gilded-ledger-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.gilded-ledger-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.gilded-ledger-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.gilded-ledger-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.gilded-ledger-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.gilded-ledger-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.gilded-ledger-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.gilded-ledger-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.gilded-ledger-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.gilded-ledger-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.gilded-ledger-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .tc-cell-act {
+  margin-top: 12px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.gilded-ledger-root .tc-stats {
+  flex: 1;
+  margin-top: 12px;
+  padding: 0;
+  display: grid;
+  align-content: space-between;
+}
+
+.gilded-ledger-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.gilded-ledger-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.gilded-ledger-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.gilded-ledger-root .tc-cell.is-panel .tc-code {
+  margin-top: 12px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.gilded-ledger-root .tc-lang {
+  flex: 1;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --lang-ground: var(--tc-white);
+}
+
+.gilded-ledger-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* In-diagram annotation floor on this fork: nothing mono renders under 12px.
+   The borrowed language diagrams bring an 11px caption with them; re-set it. */
+.gilded-ledger-root .lang-sw-note {
+  font-size: 12px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.gilded-ledger-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.gilded-ledger-root .tc-lang.is-lead .lang-sw-name,
+.gilded-ledger-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.gilded-ledger-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.gilded-ledger-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.gilded-ledger-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.gilded-ledger-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.gilded-ledger-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #ffffff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+.gilded-ledger-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.gilded-ledger-root .tc-band .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.gilded-ledger-root .tc-band .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.gilded-ledger-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.gilded-ledger-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.gilded-ledger-root .tc-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.gilded-ledger-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.gilded-ledger-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.gilded-ledger-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.gilded-ledger-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.gilded-ledger-root .tc-plan .tc-list {
+  margin-top: 20px;
+}
+
+.gilded-ledger-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.gilded-ledger-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.gilded-ledger-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.gilded-ledger-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.gilded-ledger-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gilded-ledger-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
+}
+
+.gilded-ledger-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.gilded-ledger-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.gilded-ledger-root .tc-foot-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.gilded-ledger-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.gilded-ledger-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+/* Under reduced motion the reveal hook never runs, so the markup pose is
+   the still; this only states the resting values. */
+@media (prefers-reduced-motion: reduce) {
+  .gilded-ledger-root [data-reveal] {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .gilded-ledger-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gilded-ledger-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .gilded-ledger-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .gilded-ledger-root .tc-fw,
+  .gilded-ledger-root .tc-row.is-split,
+  .gilded-ledger-root .tc-row.is-lead,
+  .gilded-ledger-root .tc-row.is-three,
+  .gilded-ledger-root .tc-row.is-wide-left,
+  .gilded-ledger-root .tc-row.is-wide-right,
+  .gilded-ledger-root .tc-row.is-even,
+  .gilded-ledger-root .tc-row.is-tilt,
+  .gilded-ledger-root .tc-row.is-grammar,
+  .gilded-ledger-root .tc-plans,
+  .gilded-ledger-root .tc-plain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gilded-ledger-root .tc-row > * + *,
+  .gilded-ledger-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .gilded-ledger-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .gilded-ledger-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .gilded-ledger-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .gilded-ledger-root .tc-row > .is-framed + *,
+  .gilded-ledger-root .tc-row > * + .is-framed,
+  .gilded-ledger-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .gilded-ledger-root .tc-cell.is-tall,
+  .gilded-ledger-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .gilded-ledger-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gilded-ledger-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .gilded-ledger-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .gilded-ledger-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .gilded-ledger-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .gilded-ledger-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gilded-ledger-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .gilded-ledger-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .gilded-ledger-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gilded-ledger-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .gilded-ledger-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .gilded-ledger-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .gilded-ledger-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .gilded-ledger-root .tc-rail,
+  .gilded-ledger-root .tc-nav-in,
+  .gilded-ledger-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .gilded-ledger-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gilded-ledger-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gilded-ledger-root .tc-term-body {
+    font-size: 11px;
+  }
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .gilded-ledger-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .gilded-ledger-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .gilded-ledger-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  .gilded-ledger-root .tc-hero-cell {
+    padding-inline: 12px;
+  }
+}
+
+/* (The hero's transmission plate styles live at the end of this sheet —
+   after the founder-stack block they override.) */
+
+/* ============================================================
+   DF — TRUST CARD (M03, glyph-masked)
+   The stack's third surface. The claim is the lead; the six
+   wordmarks are 1-bit fields from the same engine as the band
+   above them, in the ruled six-cell row.
+   ============================================================ */
+
+.gilded-ledger-root .df-wm {
+  font-family: var(--tc-disp);
+  color: var(--tc-ink);
+  opacity: 0.86;
+}
+
+/* ============================================================
+   DF — LOCALES (M13)
+   The expanding-variant table and the halftone atlas globe.
+   ============================================================ */
+
+.gilded-ledger-root .df-loc-table {
+  margin-top: 4px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .df-loc-row {
+  display: grid;
+  grid-template-columns: 56px 128px minmax(0, 1fr);
+  gap: 8px 14px;
+  align-items: baseline;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .df-loc-tag {
+  font-family: var(--tc-mono);
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .df-loc-name {
+  font-size: 15.5px;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .df-loc-name.is-muted,
+.gilded-ledger-root .df-loc-variants.is-muted {
+  color: var(--tc-ink-3);
+  font-size: 13.5px;
+}
+
+.gilded-ledger-root .df-loc-variants {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.gilded-ledger-root .df-loc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+}
+
+/* The two-second tell: zh-Hans and zh-Hant, adjacent, both real. The page's
+   one accent spent as a chip ring, and a step of weight. */
+.gilded-ledger-root .df-loc-chip.is-tell {
+  border-color: var(--deco-accent);
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.gilded-ledger-root .df-loc-tail {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.gilded-ledger-root .df-loc-count {
+  margin-top: 14px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+}
+
+/* The globe cell: the well is the card's whole depth, the canvas fills it,
+   and the aspect is measured at mount — the drawing stays circular. */
+.gilded-ledger-root .df-globe-well {
+  position: relative;
+  flex: 1;
+  min-height: 380px;
+}
+
+.gilded-ledger-root .df-globe {
+  position: absolute;
+  inset: 0;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .df-globe-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+/* ============================================================
+   DF — RATE LEDGER (M17)
+   The published rates as a ruled table. The beige second surface
+   marks the row most readers price first.
+   ============================================================ */
+
+.gilded-ledger-root .df-rates {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .df-rates-head,
+.gilded-ledger-root .df-rate {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.45fr) 120px;
+  gap: 18px;
+  padding: 12px var(--tc-gut);
+}
+
+.gilded-ledger-root .df-rates-head {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .df-rates-head span:nth-child(n + 2) {
+  text-align: right;
+}
+
+.gilded-ledger-root .df-rate {
+  padding-block: 13px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  align-items: baseline;
+}
+
+/* The row most readers price first. State is weight and ink — never a second
+   surface: this page's palette is ink and paper, full stop. */
+.gilded-ledger-root .df-rate.is-lead .df-rate-name {
+  font-weight: 500;
+}
+
+.gilded-ledger-root .df-rate-name {
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .df-rate-value,
+.gilded-ledger-root .df-rate-gt {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.gilded-ledger-root .df-rate-gt:empty::before,
+.gilded-ledger-root .df-rate-gt {
+  color: var(--tc-ink-2);
+}
+
+.gilded-ledger-root .df-rate.is-lead .df-rate-value,
+.gilded-ledger-root .df-rate.is-lead .df-rate-gt {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .df-rates-foot {
+  display: grid;
+  gap: 7px;
+  padding: 14px var(--tc-gut) 18px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+}
+
+.gilded-ledger-root .df-rates-foot code {
+  color: var(--tc-ink-2);
+}
+
+/* The plans sit directly under the ledger; the ledger owns the top rule. */
+.gilded-ledger-root .df-rates + .tc-plans {
+  border-top: 0;
+}
+
+/* ============================================================
+   DF — DARK BAND FLOOR (paper-on-ink)
+   The one loose dissolve on the page, mounted in the band's
+   bottom padding — a zone type can never enter.
+   ============================================================ */
+
+.gilded-ledger-root .df-band-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 84px;
+  display: block;
+  image-rendering: pixelated;
+  z-index: 0;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ============================================================
+   DF — RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .gilded-ledger-root .df-loc-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .gilded-ledger-root .df-loc-variants {
+    grid-column: 1 / -1;
+  }
+
+  .gilded-ledger-root .df-rates-head,
+  .gilded-ledger-root .df-rate {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) 64px;
+    gap: 10px;
+  }
+
+  .gilded-ledger-root .df-rate-value,
+  .gilded-ledger-root .df-rate-gt {
+    font-size: 11px;
+    white-space: normal;
+  }
+
+  .gilded-ledger-root .df-globe-well {
+    min-height: 300px;
+  }
+}
+
+
+/* ---- dark mode ----
+   The six charter tokens remap and everything downstream derives from them:
+   the paper family collapses onto ink black, ink flips to white, the
+   hairline rises so a 1px seam survives between two ink surfaces, and the
+   gold lifts a step so leaf still reads as leaf on black. The dark band's
+   plates and the #101010 panel never remap. */
+[data-theme='dark'] .gilded-ledger-root {
+  --deco-ground: #070707;
+  --deco-ink: #ffffff;
+  --deco-ink-2: rgba(255, 255, 255, 0.66);
+  --deco-hair: rgba(138, 143, 152, 0.38);
+  --deco-accent: #c9a24a;
+  --deco-ornament: #c9a24a;
+}
+
+/* The preview surface's window buttons fill with --tc-ink (white in the
+   dark); their label takes the paper token so it inverts with the theme. */
+[data-theme='dark'] .gilded-ledger-root .tcx-btn {
+  color: var(--tc-paper);
+}
+
+/* (The language diagrams' measured pills invert their labels with the theme
+   inside lang.css itself — color: var(--lang-ground) — no local override.) */
+
+
+
+
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.gilded-ledger-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.gilded-ledger-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ============================================================
+   ANCHOR: tc-curation-r1 — dark-grid diagram adaptations
+   (propagated from toolchain; rescoped) New classes only.
+   ============================================================ */
+
+/* -- (1) the <T> wrap thread --------------------------------------
+   The brand's two lines (THREAD_MOTIF — constant gauge, never merging)
+   run the sample's own left margin from <T> to </T>, feet turned toward
+   the code they bind. Panel-dim white, so the pair reads in light and
+   dark theme alike — the panel itself never remaps. */
+.gilded-ledger-root .tc-code-wrap {
+  position: relative;
+}
+
+.gilded-ledger-root .tc-code-wrap::before,
+.gilded-ledger-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.gilded-ledger-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.gilded-ledger-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .gilded-ledger-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .gilded-ledger-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+/* -- (2) glossary directives --------------------------------------
+   Per-locale style rules under the pinned entries. The group divider is
+   the page's stronger hairline against the hair-2 rules inside each half. */
+.gilded-ledger-root .tcx-dirs {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tcx-dirs li span {
+  font-size: 12.5px;
+}
+
+/* -- (6) the source/preview pane pair -----------------------------
+   Two panes on the dev window's own surface, split by the in-window
+   hairline. State is type weight on the live pane's tag. */
+.gilded-ledger-root .tcx-pane {
+  padding: 10px 11px 13px;
+}
+
+.gilded-ledger-root .tcx-pane + .tcx-pane {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.gilded-ledger-root .tcx-pane-tag {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.gilded-ledger-root .tcx-pane-tag.is-on {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of ground; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.gilded-ledger-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.gilded-ledger-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+/* ---- the dark band's bloom canvas ----
+   The v3 CLI cell's field, drawn by this page's own engine: the canvas takes
+   the shader's box (darkband-v3.css .tcb-cli-field) and adds the 1-bit
+   upscale discipline. Paper-on-ink, permanently dark — never remaps. */
+.gilded-ledger-root .tcb .tcb-cli-field.df-cli-bloom {
+  display: block;
+  image-rendering: pixelated;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ============================================================
+   GL — THE HERO STACK (the title leaf)
+   The split row (ivory copy leaf beside the transmission plate)
+   above the trust strip: three leaves on the gold mat, divided
+   by 1px gold seams, square corners. The section is the mat and
+   the leaves draw no borders of their own; the plate block at
+   the end of the sheet sets the split itself.
+   ============================================================ */
+
+.gilded-ledger-root .tc-sec.tch-hero-sec {
+  --tch-inset: clamp(10px, 1.1vw, 14px);
+  padding: 0;
+  background: var(--tc-mat);
+  background-clip: padding-box;
+}
+
+/* the ivory copy leaf */
+.gilded-ledger-root .tc-hero.tch-card {
+  border-radius: 0;
+  background: var(--tc-card);
+  padding: clamp(24px, 2.6vw, 34px) var(--tc-gut) clamp(20px, 2.2vw, 26px);
+}
+
+.gilded-ledger-root .tch-card .tc-hero-sub {
+  margin-top: 12px;
+}
+
+.gilded-ledger-root .tch-card .tc-hero-acts {
+  margin-top: 18px;
+}
+
+/* The trust strip completes the stack: the third leaf, one gold seam above
+   it. The section's own bottom rule closes it, so the strip draws none. */
+.gilded-ledger-root .tc-sec.tch-hero-sec > .tc-trust {
+  margin: 1px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+  overflow: hidden;
+}
+
+/* ---- the section head device (deco home C1.1) ----
+   A doubled gold rule above every h2, the chapter head rule of the report,
+   drawn once as the --thread-gauge / --thread-gap pair. The review section's
+   copy column carries the same rule. */
+.gilded-ledger-root .tc-head {
+  position: relative;
+}
+
+.gilded-ledger-root .tc-head::before,
+.gilded-ledger-root .tcr-copy::before {
+  content: '';
+  display: block;
+  width: 84px;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  margin-bottom: 22px;
+  border-top: var(--thread-gauge) solid var(--deco-ornament);
+  border-bottom: var(--thread-gauge) solid var(--deco-ornament);
+}
+
+/* ---- punch list: stats grid + guide headroom ----
+   Numeral above label, two per row, tabular figures on a shared baseline,
+   doubled-hairline separators; the old value-left/label-right stretch dies. */
+.gilded-ledger-root .tc-stats.is-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.gilded-ledger-root .tc-stats.is-grid .tc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 16px 16px;
+  border-top: 1px double var(--tc-hair);
+  border-top-width: 3px;
+  border-top-style: double;
+}
+
+.gilded-ledger-root .tc-stats.is-grid .tc-stat:nth-child(-n + 2) {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.gilded-ledger-root .tc-stats.is-grid .tc-stat:nth-child(2n) {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .tc-stats.is-grid .tc-stat-value {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.gilded-ledger-root .tc-stats.is-grid .tc-stat-label {
+  text-align: left;
+  color: var(--tc-ink-3);
+}
+
+.gilded-ledger-root .tc-eg {
+  top: -0.02em;
+}
+
+/* Founder: the quad's column rules touch the card's top and bottom edges.
+   The card's padding is a single token, so the rules extend by exactly it. */
+.gilded-ledger-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.gilded-ledger-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Nav theme switch, left of Sign in: token ink, quiet until hover. */
+.gilded-ledger-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.gilded-ledger-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand mark carries both variants; the theme picks one. */
+.gilded-ledger-root .tc-logo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .gilded-ledger-root .tc-logo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .gilded-ledger-root .tc-logo-light {
+  display: none;
+}
+
+/* The footer's Locadex mark is a drawn dark glyph, not currentColor ink —
+   dark mode flips it the way the story chip does. */
+[data-theme='dark'] .gilded-ledger-root .tc-foot-mark.is-locadex {
+  filter: invert(1);
+}
+
+/* The doubled rail continues through the full-bleed dark band: the band sits
+   outside the .tc-rail wrappers, so it draws the same column's line pairs
+   itself, the inner pair at the column edges (.tcb-in) and the outer pair at
+   the +-10px gauge here, both in the band's gold (deco home C1.5: the band
+   is gilt-edged, and dark in both themes). */
+.gilded-ledger-root .tc-band {
+  position: relative;
+}
+
+.gilded-ledger-root .tc-band::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(min(var(--tc-rail), 100%) + 20px);
+  transform: translateX(-50%);
+  border-inline: 1px solid var(--tcb-orn-hair);
+  pointer-events: none;
+}
+
+/* ============================================================
+   DF — THE TRANSMISSION PLATE (the hero's media panel)
+   The founder's directive, verbatim: the dither must FILL UP ITS
+   COMPONENT. So the hero splits: the copy card is calm paper on
+   the left, and the field owns ONE framed plate beside it — a
+   radius-12 card in the stack's mat grammar that the 1-bit
+   transmission fills edge to edge, dense and bold. The source
+   docks on the plate's left edge and radiates rightward; the
+   greetings materialise across the whole component.
+
+   The plate is 1-bit and theme-following: the canvas ink is its
+   computed `color` (var(--tc-ink), re-sampled on theme flip), so
+   dark mode prints light dust on the ink-black card — never a
+   white flash. One hairline wire passes under the field through
+   the dock, on the shell's rule grammar. Appended after the
+   founder stack so these compose over the tch-card defaults.
+   ============================================================ */
+
+.gilded-ledger-root .tch-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 1px;
+  align-items: stretch;
+}
+
+/* The copy leaf: the same ivory leaf, turned left-aligned and centred on its
+   own axis. The headline no longer has a field to sit in; it has a plate to
+   stand beside. */
+.gilded-ledger-root .tch-split .tc-hero.tch-copy {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(30px, 3.6vw, 52px) clamp(26px, 3.2vw, 48px);
+}
+
+.gilded-ledger-root .tch-copy h1 {
+  /* Bodoni's small x-height asks for a step more size than Inter did; the
+     line still clears the split column, and the plate carries the scale. */
+  font-size: clamp(2.35rem, 3.7vw, 3.25rem);
+  margin-inline: 0;
+}
+
+.gilded-ledger-root .tch-card.tch-copy .tc-hero-sub {
+  margin: 18px 0 0;
+  max-width: 44ch;
+}
+
+.gilded-ledger-root .tch-card.tch-copy .tc-hero-acts {
+  margin-top: 26px;
+  justify-content: flex-start;
+}
+
+/* The command chip joins the acts row at button gauge — same device, calm
+   paper, outside the plate. */
+.gilded-ledger-root .tch-copy .df-hero-cmd {
+  height: 38px;
+  padding: 0 14px;
+  gap: 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+/* The plate itself: one framed component, and the field is ALL of it. */
+.gilded-ledger-root .df-plate {
+  position: relative;
+  border-radius: 0;
+  /* the plate is PAPER: the ink is the field, and both follow the theme */
+  background: var(--tc-white);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: clamp(480px, 60vh, 620px);
+}
+
+.gilded-ledger-root .df-plate-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: var(--tc-ink);
+  pointer-events: none;
+}
+
+/* Dark mode: same two inks, flipped by themeInk; the exposure comes down a
+   step so the white dust reads as print, not glow. */
+[data-theme='dark'] .gilded-ledger-root .df-plate-field {
+  opacity: 0.85;
+}
+
+/* The one wire: a hairline through the source dock, under the field — the
+   shell's rule grammar passing through the plate's own composition. */
+.gilded-ledger-root .df-plate-wire {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--tc-hair);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Stacked: the plate keeps its fill under the copy, edge to edge. */
+@media (max-width: 900px) {
+  .gilded-ledger-root .tch-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gilded-ledger-root .df-plate {
+    min-height: clamp(340px, 52vh, 460px);
+  }
+}
+
+/* Every section closes with its bottom rule — the sheet grammar
+   (backported from toolchain: these junctions read bare without it). */
+.gilded-ledger-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+/* the band closes on its own gilt rule; the endpaper band under it draws
+   no top rule (see .tc-rail > .tc-hatch:first-child) */
+.gilded-ledger-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tcb-orn-hair);
+}
+
+/* one stroke per line (backported): these rows and mounts keep their
+   border-drawn seams, but the translucent ground must stop at the border —
+   stacked, every framed row's seam reads darker than the page's other
+   hairlines. Buttons likewise. */
+.gilded-ledger-root .tc-row:has(> .tc-cell.is-framed),
+.gilded-ledger-root .tc-mount,
+.gilded-ledger-root .tcs-mat,
+.gilded-ledger-root .tcr-mat,
+.gilded-ledger-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   GL — THE DECO LAYER
+   The gilded-ledger layer proper: the display type, the crown,
+   the inline wordmark and the ledger spread. Each rule names its
+   charter home. The marble bands live with the hatch spacer
+   above; the head rules live with the hero stack.
+   ============================================================ */
+
+/* ---- display type (C4): Bodoni Moda in the two heading slots ----
+   Weight 400: metal Bodoni at display size. The base h1/h2 metrics are
+   Inter's; this rule follows them in the sheet at the same specificity, so
+   it wins by order. Greek, Cyrillic, CJK, Arabic and Devanagari samples fall
+   through to Georgia and the system serif for their script. */
+.gilded-ledger-root h1,
+.gilded-ledger-root h2 {
+  font-family: var(--gilded-ledger-display), 'Bodoni Moda', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+}
+
+/* ---- the crown (C1.4): the monogram cartouche between doubled rules ---- */
+.gilded-ledger-root .gl-crown {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 320px);
+  margin: 0 0 26px;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .gl-crown-rule {
+  flex: 1 1 auto;
+  height: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  border-top: var(--thread-gauge) solid var(--deco-ornament);
+  border-bottom: var(--thread-gauge) solid var(--deco-ornament);
+}
+
+/* one owner draws the cartouche ring; the mark inside takes the page ink */
+.gilded-ledger-root .gl-cartouche {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 16px;
+  border: 1px solid var(--deco-ornament);
+  background: var(--tc-card);
+}
+
+/* ---- the inline wordmark (A12): monogram at cap height, name hidden ---- */
+.gilded-ledger-root .gl-wm {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: -0.16em;
+  margin-right: 0.28em;
+  color: var(--tc-ink);
+}
+
+.gilded-ledger-root .gl-vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- the ledger spread (A10 on C1.2's binding) ----
+   Two leaves: the rate ledger on the left, the two accounts on the right,
+   bound by one doubled gold rule that the right leaf's edge draws. The
+   spread owns the top rule; the ledger's own rules stay inside it. */
+.gilded-ledger-root .gl-spread {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
+  align-items: stretch;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.gilded-ledger-root .gl-spread-page {
+  position: relative;
+  min-width: 0;
+}
+
+.gilded-ledger-root .gl-spread-page.is-accounts {
+  padding-left: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+}
+
+.gilded-ledger-root .gl-spread-page.is-accounts::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(var(--thread-gauge) * 2 + var(--thread-gap));
+  border-inline: var(--thread-gauge) solid var(--deco-ornament);
+  pointer-events: none;
+}
+
+.gilded-ledger-root .gl-spread .df-rates {
+  border-top: 0;
+}
+
+.gilded-ledger-root .gl-spread .df-rates-foot {
+  border-bottom: 0;
+}
+
+/* the long surcharge rate wraps inside the narrower leaf */
+.gilded-ledger-root .gl-spread .df-rate-value {
+  white-space: normal;
+}
+
+/* the accounts stand one above the other, divided by the page hairline */
+.gilded-ledger-root .gl-spread .tc-plans {
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 0;
+}
+
+.gilded-ledger-root .gl-spread .tc-plans > * + * {
+  border-left: 0;
+  border-top: 1px solid var(--tc-hair);
+}
+
+@media (max-width: 1000px) {
+  .gilded-ledger-root .gl-spread {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* folded, the leaves stack and the page hairline replaces the binding */
+  .gilded-ledger-root .gl-spread-page.is-accounts {
+    padding-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .gilded-ledger-root .gl-spread-page.is-accounts::before {
     display: none;
   }
+}
 
-  .gilded-ledger-root .gl-mast-cta .gl-btn:not(.is-ink) {
-    display: none;
+/* ============================================================
+   GL — THE MOBILE LADDER (DESIGN.md section 12)
+   The sheet's last 720px block: the floors consume the --tcm-*
+   slots with the ladder's canonical px fallbacks.
+   ============================================================ */
+@media (max-width: 720px) {
+  .gilded-ledger-root .tc-head {
+    padding-top: var(--tcm-head-pt, 72px);
+    padding-bottom: var(--tcm-head-pb, 36px);
   }
 
-  .gilded-ledger-root .gl-mast-name {
-    font-size: 18px;
+  .gilded-ledger-root .tc-head h2,
+  .gilded-ledger-root .tcr-copy h2,
+  .gilded-ledger-root .tc-band h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
   }
 
-  .gilded-ledger-root .gl-titlepage {
-    padding: 56px 22px 44px;
+  .gilded-ledger-root .tc-head p,
+  .gilded-ledger-root .tcr-sub {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
   }
 
-  .gilded-ledger-root .gl-scripts {
-    grid-template-columns: repeat(2, 1fr);
+  .gilded-ledger-root .tc-cell h3,
+  .gilded-ledger-root .tc-plan h3 {
+    font-size: var(--tcm-h3, 1.375rem);
+    line-height: var(--tcm-h3-lh, 1.3);
   }
 
-  .gilded-ledger-root .gl-script {
-    min-height: 128px;
+  .gilded-ledger-root .tc-cell > p,
+  .gilded-ledger-root .tc-card > p,
+  .gilded-ledger-root .tc-plan p {
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
   }
 
-  .gilded-ledger-root .gl-plate-pane,
-  .gilded-ledger-root .gl-spread-page {
-    padding: 26px 20px 32px;
+  .gilded-ledger-root .tc-cell {
+    padding-top: var(--tcm-box-pt, 36px);
+    padding-bottom: var(--tcm-box-pb, 38px);
   }
 
-  .gilded-ledger-root .gl-account-head {
-    flex-direction: column;
-    gap: 4px;
+  .gilded-ledger-root .tc-cell.is-framed {
+    padding: 0;
   }
 
-  .gilded-ledger-root .gl-sec {
-    padding-top: 72px;
+  .gilded-ledger-root .tc-cell.is-framed > .tc-card {
+    padding: var(--tcm-cell-pad, 28px);
   }
 
-  .gilded-ledger-root .gl-hero {
-    padding-top: 48px;
+  .gilded-ledger-root .tc-card > .tc-lang,
+  .gilded-ledger-root .tc-card > .tc-surface {
+    margin-top: var(--tcm-box-gap, 28px);
   }
 }

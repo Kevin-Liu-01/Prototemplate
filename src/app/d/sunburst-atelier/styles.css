@@ -1,1068 +1,3366 @@
-/* ==================================================================
-   SUNBURST ATELIER: the Chrysler crown as a design system.
-   Black and champagne gold, strict symmetry, conic-gradient sunburst
-   fans crowning every section, chevron friezes between them, and one
-   cream paper band mid-page for relief. Every rule is scoped under
-   .sunburst-atelier-root.
-   ================================================================== */
-
+/* sunburst-atelier: the Chrysler crown as a design system on GT's rail. A warm
+   black ground, cream ink and champagne gold ornament; cream relief friezes
+   where the page used to hatch. The ruled column, the flag chips, the demos,
+   the diagrams and the copy stay GT.
+   Reference: the Chrysler Building crown and lobby (New York, 1930): stacked
+   radiating arches with triangular windows, stepped chevron friezes, nickel
+   roundels on black marble; Poiret-era geometric poster lettering.
+   Ornament homes: section heads (a quarter sunburst, one inline SVG of
+   hairline rays and arc rings around a gold hub, seated in the head's
+   bottom-right corner in the slot the lucide icon held); dividers (each
+   tc-hatch band is a cream stepped-chevron frieze, the
+   band owning its two rules); frames (the framed-row mat, the tc-mount edge,
+   the code bar rule and the dark band's seams and mat take a champagne
+   hairline, one owner each); the hero crown (five stacked arcs with their
+   windows above the h1, the GT monogram in a chrome roundel on the hub, and
+   the gold doubled thread under the morphing word); the dark band (the crown
+   again over the lede, gold seams and rail pair, the paper-on-ink floor).
+   Accent: champagne gold, spent as the active framework tab underline, the
+   doubled thread under the morphing word, the zh-Hans and zh-Hant tell ring,
+   and the lit route on the delivery globe.
+   Display face: Poiret One, used for h1 and h2 only; every other slot is Inter.
+   Gradients: none beyond the copied base's sanctioned devices. Every ornament
+   is line geometry at one gauge; tonal ramps stay dither tiers.
+   Dark mode remaps these six tokens and nothing else. Every derived alpha
+   below is mixed from them with color-mix, so the remap carries through. */
 .sunburst-atelier-root {
-  --sa-ink: #0b0906;
-  --sa-gold: #d4b36a;
-  --sa-gold-bright: #efdca6;
-  --sa-gold-dim: rgba(212, 179, 106, 0.45);
-  --sa-gold-faint: rgba(212, 179, 106, 0.18);
-  --sa-hairline: rgba(212, 179, 106, 0.28);
-  --sa-body-color: #cfc2a4;
-  --sa-cream: #f3ead6;
-  --sa-medallion: #0d0b08;
-  --sa-display: var(--font-poiret), 'Poiret One', 'Avenir Next', sans-serif;
-  --sa-serif: var(--font-cinzel), 'Cinzel', 'Times New Roman', serif;
-  --sa-sans: var(--font-inter), Inter, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Noto Sans', sans-serif;
-  --sa-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --deco-ground: #120f0b;
+  --deco-ink: #f1e7d2;
+  --deco-ink-2: rgba(241, 231, 210, 0.66);
+  --deco-hair: rgba(241, 231, 210, 0.2);
+  --deco-accent: #d4b46a;
+  --deco-ornament: #d4b46a;
 
-  min-height: 100vh;
-  background-color: var(--sa-ink);
-  background-image: radial-gradient(1100px 480px at 50% 0, rgba(212, 179, 106, 0.08), transparent 70%);
-  color: var(--sa-body-color);
-  font-family: var(--sa-sans);
-  font-size: 16px;
-  line-height: 1.6;
+  /* derived steps, mixed from the six */
+  --sba-ink-3: color-mix(in srgb, var(--deco-ink) 48%, transparent);
+  --sba-ink-4: color-mix(in srgb, var(--deco-ink) 30%, transparent);
+  --sba-hair-2: color-mix(in srgb, var(--deco-ink) 13%, transparent);
+  --sba-hair-strong: color-mix(in srgb, var(--deco-ink) 34%, transparent);
+  --sba-tint: color-mix(in srgb, var(--deco-ink) 4%, transparent);
+  --sba-gild: color-mix(in srgb, var(--deco-ornament) 34%, transparent);
+  --sba-gild-edge: color-mix(in srgb, var(--deco-ornament) 46%, transparent);
+  --sba-gild-faint: color-mix(in srgb, var(--deco-ornament) 20%, transparent);
+
+  /* language-diagram rules follow the shell's line colour */
+  --lang-rule-strong: var(--tc-hair);
+  --lang-rule: var(--tc-hair);
+
+  /* the rail system reads the palette through the tc tokens */
+  --tc-paper: var(--deco-ground);
+  --tc-sunk: var(--deco-ground);
+  --tc-white: var(--deco-ground);
+  --tc-card: var(--deco-ground);
+  --tc-plate: var(--deco-ground);
+  --tc-ink: var(--deco-ink);
+  --tc-ink-2: var(--deco-ink-2);
+  --tc-ink-3: var(--sba-ink-3);
+  --tc-ink-4: var(--sba-ink-4);
+  --tc-hair: var(--deco-hair);
+  --tc-hair-2: var(--sba-hair-2);
+  --tc-accent: var(--deco-accent);
+  --tc-dark: #070707;
+
+  /* The one inset artifact surface for code, config and diffs: a step lighter
+     than the ground so the panel reads as a panel; the mount ring does the
+     rest. Never remaps. */
+  --tc-panel: #1b1712;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame (C1.3): the mat behind framed cards, the mount edge and
+     the review mat are the champagne hairline. ONE ring, never doubled edges;
+     the card inside draws no border. */
+  --tc-mat: var(--sba-gild);
+  --tc-mat-edge: var(--sba-gild-edge);
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+  --tc-hatch: var(--sba-hair-2);
+
+  /* interface and caption face: Inter from <html>. The display face is set
+     on h1 and h2 only, in the type block below. */
+  --tc-disp: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* the isometric family inherits the page, not the other way round */
+  --iso-accent: var(--tc-accent);
+  --iso-ink: color-mix(in srgb, var(--deco-ink) 80%, transparent);
+  --iso-ink-soft: color-mix(in srgb, var(--deco-ink) 44%, transparent);
+  --iso-ink-hair: color-mix(in srgb, var(--deco-ink) 20%, transparent);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-.sunburst-atelier-root * {
+.sunburst-atelier-root *,
+.sunburst-atelier-root *::before,
+.sunburst-atelier-root *::after {
   box-sizing: border-box;
 }
 
-.sunburst-atelier-root ::selection {
-  background: var(--sa-gold);
-  color: #171208;
-}
-
-/* ---------------- top nav ---------------- */
-
-.sunburst-atelier-root .sa-nav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: clamp(16px, 3vw, 40px);
-  padding: 20px clamp(20px, 5vw, 56px);
-  border-bottom: 1px solid var(--sa-hairline);
-  position: relative;
-}
-
-/* the second line of the deco double rule */
-.sunburst-atelier-root .sa-nav::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4px;
-  border-bottom: 1px solid var(--sa-gold-faint);
-  pointer-events: none;
-}
-
-.sunburst-atelier-root .sa-nav-side {
-  display: flex;
-  gap: clamp(16px, 3vw, 44px);
-}
-
-.sunburst-atelier-root .sa-nav-side.is-left {
-  justify-content: flex-end;
-}
-
-.sunburst-atelier-root .sa-nav-side.is-right {
-  justify-content: flex-start;
-}
-
-.sunburst-atelier-root .sa-nav-side a {
-  font-family: var(--sa-serif);
-  font-weight: 600;
-  font-size: 0.74rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--sa-gold);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.sunburst-atelier-root .sa-nav-side a:hover,
-.sunburst-atelier-root .sa-nav-side a:focus-visible {
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-nav-mark {
-  display: inline-grid;
-  place-items: center;
+.sunburst-atelier-root a {
+  color: inherit;
   text-decoration: none;
 }
 
-/* ---------------- roundel ---------------- */
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
 
-.sunburst-atelier-root .sa-roundel {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
+.sunburst-atelier-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
 }
 
-.sunburst-atelier-root .sa-roundel::before {
-  content: '';
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  border: 1px solid var(--sa-gold-dim);
+.sunburst-atelier-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
 }
 
-.sunburst-atelier-root .sa-roundel-chrome {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(from 210deg, #6e5726, #ead9a6, #8a6f3a, #f5e9c8, #6e5726);
+.sunburst-atelier-root .tc-sec:last-child {
+  border-bottom: 0;
 }
 
-.sunburst-atelier-root .sa-roundel-core {
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: var(--sa-ink);
-  display: grid;
-  place-items: center;
-  font-family: var(--sa-display);
-  font-size: 3rem;
-  color: var(--sa-gold-bright);
-  letter-spacing: 0.08em;
-  text-indent: 0.08em;
-  box-shadow: inset 0 0 0 1px var(--sa-gold-faint);
+/* ---------- type ---------- */
+
+/* Weight cap 500: the display face never goes bolder, at any size. */
+.sunburst-atelier-root h1,
+.sunburst-atelier-root h2,
+.sunburst-atelier-root h3,
+.sunburst-atelier-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
 }
 
-.sunburst-atelier-root .sa-roundel.is-small {
-  width: 44px;
-  height: 44px;
+.sunburst-atelier-root p {
+  margin: 0;
 }
 
-.sunburst-atelier-root .sa-roundel.is-small::before {
-  inset: -4px;
+.sunburst-atelier-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
 }
 
-.sunburst-atelier-root .sa-roundel.is-small .sa-roundel-core {
-  inset: 2px;
-  font-size: 0.95rem;
+.sunburst-atelier-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
 }
 
-/* ---------------- hero ---------------- */
-
-.sunburst-atelier-root .sa-hero {
-  padding: clamp(36px, 6vh, 64px) 20px 72px;
-  text-align: center;
-  overflow: hidden;
-}
-
-.sunburst-atelier-root .sa-crown-wrap {
-  position: relative;
-  max-width: 980px;
-  margin: 0 auto;
-}
-
-.sunburst-atelier-root .sa-crown-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.sunburst-atelier-root .sa-crown-wrap .sa-roundel {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translate(-50%, 52%);
-}
-
-.sunburst-atelier-root .sa-wordmark {
-  margin: 108px 0 0;
-  font-family: var(--sa-serif);
-  font-size: 0.82rem;
-  letter-spacing: 0.5em;
-  text-indent: 0.5em;
-  text-transform: uppercase;
-  color: var(--sa-gold-dim);
-}
-
-.sunburst-atelier-root h1 {
-  margin: 16px auto 0;
-  max-width: 20ch;
-  font-family: var(--sa-display);
-  font-weight: 400;
-  font-size: clamp(2.3rem, 6vw, 4.4rem);
-  line-height: 1.12;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-lead {
-  max-width: 56ch;
-  margin: 20px auto 0;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: var(--sa-body-color);
-}
-
-.sunburst-atelier-root .sa-cta-row {
-  display: flex;
-  gap: 18px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 34px;
-}
-
-.sunburst-atelier-root .sa-hero-plaque {
-  margin: 44px auto 0;
-  display: inline-flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 15px 40px;
-  border: 1px solid var(--sa-hairline);
-  position: relative;
-}
-
-.sunburst-atelier-root .sa-hero-plaque::before,
-.sunburst-atelier-root .sa-hero-plaque::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 8px;
-  height: 8px;
-  background: var(--sa-ink);
-  border: 1px solid var(--sa-gold);
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.sunburst-atelier-root .sa-hero-plaque::before {
-  left: -5px;
-}
-
-.sunburst-atelier-root .sa-hero-plaque::after {
-  right: -5px;
-}
-
-.sunburst-atelier-root .sa-hero-plaque code {
-  font-family: var(--sa-mono);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-hero-plaque span {
-  font-size: 0.78rem;
-  color: var(--sa-body-color);
-}
-
-/* ---------------- buttons ---------------- */
-
-.sunburst-atelier-root .sa-btn {
-  display: inline-block;
-  font-family: var(--sa-serif);
-  font-weight: 600;
-  font-size: 0.76rem;
-  letter-spacing: 0.24em;
-  text-indent: 0.12em;
-  text-transform: uppercase;
-  color: var(--sa-gold-bright);
-  text-decoration: none;
-  border: 1px solid var(--sa-gold);
-  padding: 14px 32px;
-  position: relative;
-  background: transparent;
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
-
-.sunburst-atelier-root .sa-btn::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border: 1px solid var(--sa-gold-faint);
-  pointer-events: none;
-}
-
-.sunburst-atelier-root .sa-btn:hover {
-  color: #171208;
-  background-color: var(--sa-gold);
-}
-
-.sunburst-atelier-root .sa-btn:focus-visible {
-  outline: 2px solid var(--sa-gold-bright);
-  outline-offset: 3px;
-}
-
-.sunburst-atelier-root .sa-btn.is-solid {
-  background: linear-gradient(180deg, #ecd7a0, #c2a057);
-  color: #171208;
-  border-color: #ecd7a0;
-}
-
-.sunburst-atelier-root .sa-btn.is-solid::after {
-  border-color: rgba(23, 18, 8, 0.35);
-}
-
-.sunburst-atelier-root .sa-btn.is-solid:hover {
-  background: linear-gradient(180deg, #f7e8bd, #d2b169);
-}
-
-/* ---------------- chevron frieze ---------------- */
-
-.sunburst-atelier-root .sa-frieze {
-  position: relative;
-  height: 26px;
-  overflow: hidden;
-  background: var(--sa-ink);
-}
-
-.sunburst-atelier-root .sa-frieze svg {
-  display: block;
-  width: 100%;
-  height: 26px;
-  stroke: var(--sa-gold);
-}
-
-.sunburst-atelier-root .sa-frieze polyline {
-  stroke-width: 1.6;
-  opacity: 0.8;
-}
-
-.sunburst-atelier-root .sa-frieze line {
-  stroke-width: 1;
-  opacity: 0.35;
-}
-
-.sunburst-atelier-root .sa-frieze-gem {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 28px;
-  height: 26px;
-  transform: translate(-50%, -50%);
-  background: var(--sa-ink);
-  display: grid;
-  place-items: center;
-}
-
-.sunburst-atelier-root .sa-frieze-gem::before {
-  content: '';
-  width: 11px;
-  height: 11px;
-  border: 1.5px solid var(--sa-gold);
-  transform: rotate(45deg);
-}
-
-/* ---------------- sections ---------------- */
-
-.sunburst-atelier-root .sa-sec {
-  padding: clamp(64px, 9vw, 108px) clamp(20px, 5vw, 56px);
-  text-align: center;
-  scroll-margin-top: 20px;
-}
-
-.sunburst-atelier-root h2 {
-  margin: 0 0 18px;
-  font-family: var(--sa-display);
-  font-weight: 400;
-  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-sec-lead {
+.sunburst-atelier-root .tc-head p {
+  margin-top: 13px;
   max-width: 60ch;
-  margin: 0 auto;
-  font-size: 1.02rem;
-  line-height: 1.7;
-  color: var(--sa-body-color);
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
 }
 
-/* ---------------- conic-gradient section fan ---------------- */
+.sunburst-atelier-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
 
-.sunburst-atelier-root .sa-fan {
-  position: relative;
-  width: 190px;
-  height: 95px;
+/* ---------- buttons ---------- */
+
+.sunburst-atelier-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.sunburst-atelier-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: var(--deco-ground);
+}
+
+.sunburst-atelier-root .tc-btn-solid:hover {
+  background: color-mix(in srgb, var(--tc-ink) 84%, var(--deco-ground));
+}
+
+.sunburst-atelier-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.sunburst-atelier-root .tc-btn-line:hover {
+  border-color: var(--sba-hair-strong);
+  background: var(--sba-tint);
+}
+
+.sunburst-atelier-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.sunburst-atelier-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: var(--tc-gut);
+}
+
+.sunburst-atelier-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.sunburst-atelier-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .tc-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.sunburst-atelier-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
+}
+
+@media (max-width: 860px) {
+  .sunburst-atelier-root .tc-nav-links,
+  .sunburst-atelier-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* Trimmed a step so the terminal owns more of the first viewport instead of
+   being cut at the fold. */
+.sunburst-atelier-root .tc-hero {
+  text-align: center;
+  padding: clamp(44px, 5.6vw, 72px) var(--tc-gut) 0;
+}
+
+.sunburst-atelier-root .tc-hero-mark {
+  display: block;
   margin: 0 auto 26px;
-}
-
-.sunburst-atelier-root .sa-fan::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-conic-gradient(
-    from 269.1deg at 50% 100%,
-    var(--sa-gold) 0 1.8deg,
-    transparent 1.8deg 15deg
-  );
-  -webkit-mask: radial-gradient(circle at 50% 100%, transparent 0 30px, #000 31px 86px, transparent 87px);
-  mask: radial-gradient(circle at 50% 100%, transparent 0 30px, #000 31px 86px, transparent 87px);
-  opacity: 0.8;
-}
-
-.sunburst-atelier-root .sa-fan::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 176px;
-  height: 88px;
-  transform: translateX(-50%);
-  border: 1.5px solid var(--sa-gold);
-  border-bottom: none;
-  border-radius: 88px 88px 0 0;
   opacity: 0.9;
 }
 
-.sunburst-atelier-root .sa-fan i {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 62px;
-  height: 31px;
-  transform: translateX(-50%);
-  border: 1.5px solid var(--sa-gold);
-  border-bottom: none;
-  border-radius: 31px 31px 0 0;
-  opacity: 0.75;
+.sunburst-atelier-root .tc-hero h1 {
+  font-size: clamp(2.05rem, 4.9vw, 3.7rem);
+  line-height: 1.03;
+  letter-spacing: -0.038em;
+  max-width: 20ch;
+  margin-inline: auto;
+  text-wrap: balance;
 }
 
-.sunburst-atelier-root .sa-fan i::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -5px;
-  width: 9px;
-  height: 9px;
-  transform: translate(-50%, 0) rotate(45deg);
-  background: var(--sa-gold);
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.sunburst-atelier-root .tc-hero h1 span {
+  display: block;
 }
 
-.sunburst-atelier-root .sa-fan.is-small {
-  width: 120px;
-  height: 60px;
-  margin-bottom: 0;
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink. */
+.sunburst-atelier-root .tc-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
 }
 
-.sunburst-atelier-root .sa-fan.is-small::before {
-  -webkit-mask: radial-gradient(circle at 50% 100%, transparent 0 19px, #000 20px 54px, transparent 55px);
-  mask: radial-gradient(circle at 50% 100%, transparent 0 19px, #000 20px 54px, transparent 55px);
+.sunburst-atelier-root .tc-hero-sub {
+  margin: 20px auto 0;
+  max-width: 54ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
 }
 
-.sunburst-atelier-root .sa-fan.is-small::after {
-  width: 110px;
-  height: 55px;
-  border-radius: 55px 55px 0 0;
-}
-
-.sunburst-atelier-root .sa-fan.is-small i {
-  width: 40px;
-  height: 20px;
-  border-radius: 20px 20px 0 0;
-}
-
-.sunburst-atelier-root .sa-fan.is-small i::after {
-  width: 7px;
-  height: 7px;
-  bottom: -4px;
-}
-
-/* ---------------- cream paper band ---------------- */
-
-.sunburst-atelier-root .sa-cream {
-  background: var(--sa-cream);
-  border-top: 1px solid #241c0c;
-  border-bottom: 1px solid #241c0c;
-  --sa-gold: #7a5f26;
-  --sa-gold-bright: #3d2f10;
-  --sa-gold-dim: rgba(122, 95, 38, 0.55);
-  --sa-gold-faint: rgba(122, 95, 38, 0.22);
-  --sa-hairline: rgba(84, 66, 26, 0.4);
-  --sa-body-color: #4a3d22;
-}
-
-.sunburst-atelier-root .sa-cream h2 {
-  color: #2c2210;
-}
-
-/* ---------------- proof panels ---------------- */
-
-.sunburst-atelier-root .sa-proof {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(20px, 3vw, 40px);
-  max-width: 1060px;
-  margin: 44px auto 0;
-  text-align: left;
-  align-items: stretch;
-}
-
-.sunburst-atelier-root .sa-panel {
-  border: 1px solid #2b2211;
-  outline: 1px solid rgba(84, 66, 26, 0.3);
-  outline-offset: -5px;
-  padding: 22px;
-  background: rgba(255, 255, 255, 0.28);
+.sunburst-atelier-root .tc-hero-acts {
+  margin-top: 28px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.sunburst-atelier-root .sa-panel-label {
-  margin: 0 0 14px;
-  font-family: var(--sa-serif);
-  font-size: 0.72rem;
-  letter-spacing: 0.26em;
+.sunburst-atelier-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.sunburst-atelier-root .tc-copy:hover {
+  border-color: var(--sba-hair-strong);
+}
+
+.sunburst-atelier-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  text-align: center;
-  color: #55431a;
+  color: var(--tc-ink-4);
 }
 
-.sunburst-atelier-root .sa-code {
-  flex: 1;
-  margin: 0;
-  padding: 20px 22px;
-  background: #17120a;
-  border: 1px solid #3a2e15;
-  color: #e8dcbd;
-  font-family: var(--sa-mono);
-  font-size: 0.86rem;
-  line-height: 1.7;
+/* ---------- full-bleed hero visual cell ---------- */
+
+/* The terminal sits flush to the bottom of its band — a panel standing on the
+   section rule rather than an object floating in a wash. The band itself is
+   the page's first committed material: a dark plate carrying the prismatic
+   field, lit at the flanks and dark in the centre column under the transcript
+   (AESTHETIC_ADDENDUM 2b — content sits in the dark, the light owns the
+   edges), so the first viewport has the same mass the references open with. */
+.sunburst-atelier-root .tc-hero-cell {
+  position: relative;
+  margin-top: clamp(36px, 4.4vw, 54px);
+  border-top: 1px solid var(--tc-hair);
+  padding: clamp(28px, 3.8vw, 48px) clamp(14px, 3vw, 44px) 0;
+  background: var(--tc-dark);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sunburst-atelier-root .tc-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.92;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 10%,
+    rgba(0, 0, 0, 0.28) 30%,
+    rgba(0, 0, 0, 0.18) 50%,
+    rgba(0, 0, 0, 0.28) 70%,
+    #000 90%,
+    #000 100%
+  );
+  pointer-events: none;
+}
+
+/* The measured hero ring from the references: 1px white at .30, offset 2px. */
+.sunburst-atelier-root .tc-term {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin-inline: auto;
+  border-radius: 8px 8px 0 0;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  overflow: hidden;
+}
+
+.sunburst-atelier-root .tc-term-bar {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.sunburst-atelier-root .tc-term-body {
+  padding: 24px 28px 30px;
+  font-family: var(--tc-mono);
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.74);
   overflow-x: auto;
 }
 
-.sunburst-atelier-root .sa-k {
-  color: #d4b36a;
+.sunburst-atelier-root .tc-term-line {
+  white-space: pre;
 }
 
-.sunburst-atelier-root .sa-s {
-  color: #efe3bd;
-  font-style: italic;
+.sunburst-atelier-root .tc-term-line[data-tone='prompt'] {
+  color: #ffffff;
 }
 
-.sunburst-atelier-root .sa-t {
-  color: #c19a45;
+.sunburst-atelier-root .tc-term-line[data-tone='dim'] {
+  color: rgba(255, 255, 255, 0.42);
 }
 
-.sunburst-atelier-root .sa-outputs {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  flex: 1;
+.sunburst-atelier-root .tc-term-line[data-tone='gap'] {
+  height: 12px;
+}
+
+.sunburst-atelier-root .tc-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.sunburst-atelier-root .tc-swap {
+  display: grid;
+  grid-template-columns: minmax(0, auto) 18px minmax(0, 1fr);
+  gap: 0 8px;
+  white-space: nowrap;
+}
+
+.sunburst-atelier-root .tc-swap-src {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.sunburst-atelier-root .tc-swap-arrow {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.sunburst-atelier-root .tc-swap-out {
+  display: grid;
+}
+
+.sunburst-atelier-root .tc-swap-out > i {
+  grid-area: 1 / 1;
+  font-style: normal;
+  color: #ffffff;
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.sunburst-atelier-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.sunburst-atelier-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.sunburst-atelier-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.sunburst-atelier-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sunburst-atelier-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.sunburst-atelier-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.sunburst-atelier-root .tc-tab:hover {
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.sunburst-atelier-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.sunburst-atelier-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.sunburst-atelier-root .tc-fw-side {
+  padding: var(--tc-gut);
   display: flex;
   flex-direction: column;
 }
 
-.sunburst-atelier-root .sa-outputs li {
+.sunburst-atelier-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.sunburst-atelier-root .tc-caps {
+  flex: 1;
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.sunburst-atelier-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .tc-fw-run {
+  margin-top: 12px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.sunburst-atelier-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.sunburst-atelier-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.sunburst-atelier-root .tc-fw-link {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.sunburst-atelier-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.sunburst-atelier-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.sunburst-atelier-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#101010`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.sunburst-atelier-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.sunburst-atelier-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.sunburst-atelier-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.sunburst-atelier-root .tc-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
+}
+
+.sunburst-atelier-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.sunburst-atelier-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.sunburst-atelier-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.sunburst-atelier-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.sunburst-atelier-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set — the story's editor mock highlights on the page ground. */
+.sunburst-atelier-root .tc-t-str {
+  color: var(--tc-ink-3);
+}
+
+.sunburst-atelier-root .tc-t-kw {
+  color: var(--tc-ink-2);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.sunburst-atelier-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.sunburst-atelier-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.sunburst-atelier-root .tc-t-num {
+  color: var(--tc-ink-3);
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.sunburst-atelier-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sunburst-atelier-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.sunburst-atelier-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.sunburst-atelier-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.sunburst-atelier-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.sunburst-atelier-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-row.is-lead,
+.sunburst-atelier-root .tc-row.is-three,
+.sunburst-atelier-root .tc-row.is-wide-left,
+.sunburst-atelier-root .tc-row.is-tilt,
+.sunburst-atelier-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.sunburst-atelier-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.sunburst-atelier-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.sunburst-atelier-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.sunburst-atelier-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.sunburst-atelier-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.sunburst-atelier-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.sunburst-atelier-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.sunburst-atelier-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.sunburst-atelier-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.sunburst-atelier-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sunburst-atelier-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.sunburst-atelier-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.sunburst-atelier-root .tc-cell > p,
+.sunburst-atelier-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.sunburst-atelier-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.sunburst-atelier-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   The founder's corner grammar: a cell that carries something visual is a
+   MAT — the shell line colour, zero padding — and the card inside it is
+   radius-12 white, so the grey ground fills the corner notches. ONE ring,
+   never doubled edges. Text-only cells never get this — the contrast is the
+   whole point, and it is also why the vertical rule is dropped wherever a
+   mat provides the edge. */
+
+.sunburst-atelier-root .tc-cell.is-framed {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: flex;
+}
+
+/* The ground behind the cards is the frame mat (C1.3): a row of framed cells
+   reads as black cards seamed in champagne. One owner for the ring. */
+.sunburst-atelier-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-mat);
+}
+
+.sunburst-atelier-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border: 0;
+  border-radius: 12px;
+  background: var(--tc-card);
+}
+
+.sunburst-atelier-root .tc-row > .is-framed + *,
+.sunburst-atelier-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- the frieze band (C1.2) ----------
+   Bounded, content-free breathing room between specific rows, now the cream
+   relief band: the spacer keeps its two rules and its height, paints itself
+   cream, and mounts the stepped-chevron Frieze (sections/deco/Frieze.tsx),
+   which draws no border of its own. */
+
+.sunburst-atelier-root .tc-hatch {
+  position: relative;
+  height: 44px;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  background: var(--deco-ink);
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+.sunburst-atelier-root .sba-frieze {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* one center path stroked twice: ground over cream carves the doubled thread */
+.sunburst-atelier-root .sba-frieze-thread {
+  fill: none;
+  stroke: var(--deco-ground);
+  stroke-width: 4.5;
+  stroke-linejoin: miter;
+}
+
+.sunburst-atelier-root .sba-frieze-core {
+  fill: none;
+  stroke: var(--deco-ink);
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
+}
+
+.sunburst-atelier-root .sba-frieze-stud {
+  fill: var(--deco-ornament);
+}
+
+.sunburst-atelier-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.sunburst-atelier-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sunburst-atelier-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.sunburst-atelier-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.sunburst-atelier-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.sunburst-atelier-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars): the plate is
+   the card's own white now — the frame carries the edge work. */
+.sunburst-atelier-root .tc-surface.is-plated {
+  margin-top: 12px;
+}
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.sunburst-atelier-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.sunburst-atelier-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.sunburst-atelier-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.sunburst-atelier-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.sunburst-atelier-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.sunburst-atelier-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.sunburst-atelier-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.sunburst-atelier-root .tc-bleed-art {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.sunburst-atelier-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.sunburst-atelier-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.sunburst-atelier-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.sunburst-atelier-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.sunburst-atelier-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.sunburst-atelier-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.sunburst-atelier-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  /* the accent's fourth job: the one lit route on the delivery globe */
+  --iso-accent: var(--deco-accent);
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.sunburst-atelier-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.sunburst-atelier-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.sunburst-atelier-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.sunburst-atelier-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.sunburst-atelier-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .tc-cell-act {
+  margin-top: 12px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.sunburst-atelier-root .tc-stats {
+  flex: 1;
+  margin-top: 12px;
+  padding: 0;
+  display: grid;
+  align-content: space-between;
+}
+
+.sunburst-atelier-root .tc-stat {
   display: flex;
   align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.sunburst-atelier-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.sunburst-atelier-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.sunburst-atelier-root .tc-cell.is-panel .tc-code {
+  margin-top: 12px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.sunburst-atelier-root .tc-lang {
+  flex: 1;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --lang-ground: var(--tc-white);
+}
+
+.sunburst-atelier-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* In-diagram annotation floor on this fork: nothing mono renders under 12px.
+   The borrowed language diagrams bring an 11px caption with them; re-set it. */
+.sunburst-atelier-root .lang-sw-note {
+  font-size: 12px;
+}
+
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.sunburst-atelier-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
+}
+
+.sunburst-atelier-root .tc-lang.is-lead .lang-sw-name,
+.sunburst-atelier-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
+}
+
+/* plain text cell */
+.sunburst-atelier-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.sunburst-atelier-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
+}
+
+.sunburst-atelier-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
+
+.sunburst-atelier-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.sunburst-atelier-root .tc-band {
+  position: relative;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #ffffff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
+}
+
+.sunburst-atelier-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(120px, 12vw, 170px);
+}
+
+/* Lede left, texture panel right — full-height split. */
+.sunburst-atelier-root .tc-band-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  gap: clamp(32px, 4.4vw, 68px);
+  align-items: stretch;
+}
+
+.sunburst-atelier-root .tc-band-lede {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(6px, 1vw, 14px) 0 clamp(4px, 0.8vw, 10px);
+}
+
+/* the lede's foot: what "buildtime, runtime, and review" concretely are */
+.sunburst-atelier-root .tc-band-index {
+  margin-top: auto;
+  padding-top: clamp(26px, 3vw, 40px);
+}
+
+.sunburst-atelier-root .tc-band-index-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sunburst-atelier-root .tc-band-index-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sunburst-atelier-root .tc-band-index-row span {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.sunburst-atelier-root .tc-band-index-row b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* The band's one material moment: a full-height texture panel bleeding past
+   the band's top edge and out to the right rail — the halftone bloom, run
+   bright at the edges and held at ink in its core, with the status terminal
+   floating in that core. Same grammar as the references' light panel, drawn
+   by the Bayer engine. */
+.sunburst-atelier-root .tc-band-panel {
+  position: relative;
+  overflow: hidden;
+  margin-top: calc(-1 * clamp(66px, 8vw, 108px));
+  margin-right: calc(-1 * var(--tc-gut));
+  border-radius: 0 0 0 8px;
+  background: #070707;
+  min-height: clamp(430px, 42vw, 560px);
+  display: grid;
+  place-items: center;
+}
+
+.sunburst-atelier-root .df-panel-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  z-index: 0;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.sunburst-atelier-root .tc-band-panel .tc-band-term {
+  position: relative;
+  z-index: 1;
+  width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
+  margin: clamp(40px, 4.6vw, 64px) 0;
+  background: #070707;
+  outline-color: rgba(255, 255, 255, 0.3);
+}
+
+.sunburst-atelier-root .tc-band-term {
+  border-radius: 6px;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.sunburst-atelier-root .tc-band-term-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.sunburst-atelier-root .tc-band-term-body {
+  padding: 16px 18px 18px;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.sunburst-atelier-root .tc-band-term-body [data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.sunburst-atelier-root .tc-band-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.sunburst-atelier-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
+}
+
+.sunburst-atelier-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* One sheet, four different objects, one bottom line: no internal rules —
+   the four plates carry the mass, the shared top rule carries the structure. */
+.sunburst-atelier-root .tc-band-grid {
+  margin-top: clamp(46px, 5.4vw, 70px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: clamp(20px, 2.6vw, 34px);
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.sunburst-atelier-root .tc-band-grid > div {
+  padding: 26px 0 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sunburst-atelier-root .tc-band-grid h3 {
+  font-size: 15px;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+}
+
+.sunburst-atelier-root .tc-band-grid p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+/* ---- the four service minis: dark shells, flush content, no internal rules ---- */
+
+.sunburst-atelier-root .tcm {
+  margin-top: 18px;
+  border-radius: 6px;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  font-family: var(--tc-mono);
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 218px;
+}
+
+.sunburst-atelier-root .tcm-file {
+  padding: 11px 14px 0;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sunburst-atelier-root .tcm-pre {
+  margin: 8px 0 0;
+  padding: 0 14px;
+  font-size: 11.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.sunburst-atelier-root .tcm-dim {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.sunburst-atelier-root .tcm-kw {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.sunburst-atelier-root .tcm-str {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* GT's own API carries weight, not hue — same rule as every code panel. */
+.sunburst-atelier-root .tcm-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.sunburst-atelier-root .tcm-rows {
+  margin-top: 9px;
+  padding: 0 14px 13px;
+  display: grid;
+  gap: 5px;
+}
+
+.sunburst-atelier-root .tcm-rows.is-ledger {
+  margin-top: 10px;
+  gap: 9px;
+}
+
+.sunburst-atelier-root .tcm-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.sunburst-atelier-root .tcm-rows.is-ledger .tcm-row {
+  font-size: 12px;
+}
+
+.sunburst-atelier-root .tcm-row span {
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.sunburst-atelier-root .tcm-row b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+/* the pinned band every plate ends on — a tinted fill, not a rule */
+.sunburst-atelier-root .tcm-bottom {
+  margin-top: auto;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Code: an editor — tab strip on top, gutter numbers in the code */
+.sunburst-atelier-root .tcm-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.sunburst-atelier-root .tcm-tabs span {
+  padding: 10px 14px 8px;
+  color: rgba(255, 255, 255, 0.38);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.sunburst-atelier-root .tcm-tabs .is-on {
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.9);
+}
+
+.sunburst-atelier-root .tcm-ln {
+  display: inline-block;
+  width: 16px;
+  margin-right: 10px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.24);
+}
+
+/* Content: an exchange — request block, doubled thread, tinted response */
+.sunburst-atelier-root .tcm-tail {
+  margin-top: auto;
+}
+
+.sunburst-atelier-root .tcm-wire {
+  display: block;
+  margin: 2px 0 6px 26px;
+}
+
+.sunburst-atelier-root .tcm-wire path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: var(--thread-gauge, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+
+.sunburst-atelier-root .tcm-wire .tcm-wire-head {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: none;
+}
+
+.sunburst-atelier-root .tcm-resp {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 9px 0 12px;
+}
+
+.sunburst-atelier-root .tcm-resp-status {
+  padding: 0 14px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.sunburst-atelier-root .tcm-resp .tcm-pre {
+  margin-top: 4px;
+}
+
+.sunburst-atelier-root .tcm-resp b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Dashboard: product UI — lighter card, locale chip strip, publish footer */
+.sunburst-atelier-root .tcm.is-dash {
+  background: #101010;
+}
+
+.sunburst-atelier-root .tcm-dash-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.sunburst-atelier-root .tcm-dash-bar span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.sunburst-atelier-root .tcm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px 2px;
+}
+
+.sunburst-atelier-root .tcm-chips span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.sunburst-atelier-root .tcm.is-dash .tcm-rows.is-ledger {
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.sunburst-atelier-root .tcm-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.045);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
+.sunburst-atelier-root .tcm-foot b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.sunburst-atelier-root .tcm-foot span {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Locadex: a diff sheet — full-bleed tinted added lines under the hunk */
+.sunburst-atelier-root .tcm-diffbody {
+  padding: 0;
+  margin-top: 9px;
+}
+
+.sunburst-atelier-root .tcm-diffbody > div {
+  padding: 0 14px;
+}
+
+.sunburst-atelier-root .tcm-diffbody > .is-add {
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.sunburst-atelier-root .tcm-diffbody > .is-del {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.sunburst-atelier-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sunburst-atelier-root .tc-band .tc-btn-solid {
+  background: var(--deco-ink);
+  color: var(--tc-dark);
+}
+
+.sunburst-atelier-root .tc-band .tc-btn-solid:hover {
+  background: color-mix(in srgb, var(--deco-ink) 86%, var(--tc-dark));
+}
+
+.sunburst-atelier-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.sunburst-atelier-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.sunburst-atelier-root .tc-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.sunburst-atelier-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.sunburst-atelier-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.sunburst-atelier-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.sunburst-atelier-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.sunburst-atelier-root .tc-plan .tc-list {
+  margin-top: 20px;
+}
+
+.sunburst-atelier-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.sunburst-atelier-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.sunburst-atelier-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.sunburst-atelier-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.sunburst-atelier-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
   gap: 14px;
-  padding: 11px 4px;
-  border-bottom: 1px solid rgba(84, 66, 26, 0.25);
 }
 
-.sunburst-atelier-root .sa-outputs li:last-child {
-  border-bottom: none;
+.sunburst-atelier-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
 }
 
-.sunburst-atelier-root .sa-outputs li.is-source {
-  background: rgba(23, 18, 10, 0.07);
-  border-bottom: 1px solid #55431a;
+.sunburst-atelier-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
 }
 
-.sunburst-atelier-root .sa-outputs li.is-source .sa-out-text {
+.sunburst-atelier-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
+}
+
+.sunburst-atelier-root .tc-foot-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.sunburst-atelier-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .tc-foot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
+}
+
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
+
+.sunburst-atelier-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-mat-lite);
+  --gte-ws-shadow: none;
+  /* The mat's radius, because the workspace IS a mat now — see below. */
+  --gte-radius: 5px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 600;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
+}
+
+.sunburst-atelier-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
+}
+
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.sunburst-atelier-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.sunburst-atelier-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+.sunburst-atelier-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
+}
+
+.sunburst-atelier-root .tc-review .gte-notes {
+  margin-top: 22px;
+}
+
+/* ---------- the workspace, mounted ----------
+   This is the biggest product mock on the page and it was the one surface
+   outside the frame system: a single border at the page hairline rather than the
+   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
+   the most prominent thing in the section read as an import.
+
+   The borrowed markup has no card element to wrap, so the mat is the workspace
+   shell itself and the two blocks inside it carry the card: the bar takes the
+   top corners, the columns take the bottom, and because they are adjacent with
+   no gap the pair reads as one white card with a 2px reveal around it. Same
+   material, same radii, same 2px as every other mount here. */
+.sunburst-atelier-root .tc-review .gte-ws {
+  padding: 2px;
+  border-color: var(--tc-mat-lite-edge);
+}
+
+.sunburst-atelier-root .tc-review .gte-bar {
+  border-radius: 2px 2px 0 0;
+  background: var(--tc-card);
+}
+
+.sunburst-atelier-root .tc-review .gte-cols {
+  border-radius: 0 0 2px 2px;
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.sunburst-atelier-root [data-reveal] {
+  will-change: transform, opacity;
+}
+
+/* useQuietReveal never runs under reduced motion, so the markup pose is the
+   still; this only restates the resting values. */
+@media (prefers-reduced-motion: reduce) {
+  .sunburst-atelier-root [data-reveal] {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .sunburst-atelier-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sunburst-atelier-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .sunburst-atelier-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .sunburst-atelier-root .tc-fw,
+  .sunburst-atelier-root .tc-row.is-split,
+  .sunburst-atelier-root .tc-row.is-lead,
+  .sunburst-atelier-root .tc-row.is-three,
+  .sunburst-atelier-root .tc-row.is-wide-left,
+  .sunburst-atelier-root .tc-row.is-wide-right,
+  .sunburst-atelier-root .tc-row.is-even,
+  .sunburst-atelier-root .tc-row.is-tilt,
+  .sunburst-atelier-root .tc-row.is-grammar,
+  .sunburst-atelier-root .tc-plans,
+  .sunburst-atelier-root .tc-plain,
+  .sunburst-atelier-root .tc-band-top,
+  .sunburst-atelier-root .tc-band-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sunburst-atelier-root .tc-row > * + *,
+  .sunburst-atelier-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .sunburst-atelier-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .sunburst-atelier-root .tc-band-grid > div + div {
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  /* stacked, each cell needs its own foot before the next cell's top rule */
+  .sunburst-atelier-root .tc-band-grid > div {
+    padding-bottom: 26px;
+  }
+
+  .sunburst-atelier-root .tcm {
+    min-height: 0;
+  }
+
+  .sunburst-atelier-root .tc-band-panel {
+    margin-top: 6px;
+    margin-left: calc(-1 * var(--tc-gut));
+    border-radius: 0;
+    min-height: 420px;
+  }
+
+  .sunburst-atelier-root .tc-band-index-row b {
+    white-space: normal;
+    text-align: right;
+  }
+
+  .sunburst-atelier-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .sunburst-atelier-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .sunburst-atelier-root .tc-row > .is-framed + *,
+  .sunburst-atelier-root .tc-row > * + .is-framed,
+  .sunburst-atelier-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .sunburst-atelier-root .tc-cell.is-tall,
+  .sunburst-atelier-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .sunburst-atelier-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sunburst-atelier-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .sunburst-atelier-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sunburst-atelier-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .sunburst-atelier-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .sunburst-atelier-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sunburst-atelier-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .sunburst-atelier-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .sunburst-atelier-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sunburst-atelier-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .sunburst-atelier-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .sunburst-atelier-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .sunburst-atelier-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .sunburst-atelier-root .tc-rail,
+  .sunburst-atelier-root .tc-nav-in,
+  .sunburst-atelier-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .sunburst-atelier-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sunburst-atelier-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sunburst-atelier-root .tc-term-body {
+    font-size: 11px;
+  }
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .sunburst-atelier-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .sunburst-atelier-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .sunburst-atelier-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  .sunburst-atelier-root .tc-hero-cell {
+    padding-inline: 12px;
+  }
+}
+
+/* (The hero's transmission plate styles live at the end of this sheet —
+   after the founder-stack block they override.) */
+
+/* ============================================================
+   DF — TRUST CARD (M03, glyph-masked)
+   The stack's third surface. The claim is the lead; the six
+   wordmarks are 1-bit fields from the same engine as the band
+   above them, in the ruled six-cell row.
+   ============================================================ */
+
+.sunburst-atelier-root .df-wm {
+  font-family: var(--tc-disp);
+  color: var(--tc-ink);
+  opacity: 0.86;
+}
+
+/* ============================================================
+   DF — LOCALES (M13)
+   The expanding-variant table and the halftone atlas globe.
+   ============================================================ */
+
+.sunburst-atelier-root .df-loc-table {
+  margin-top: 4px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .df-loc-row {
+  display: grid;
+  grid-template-columns: 56px 128px minmax(0, 1fr);
+  gap: 8px 14px;
+  align-items: baseline;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .df-loc-tag {
+  font-family: var(--tc-mono);
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .df-loc-name {
+  font-size: 15.5px;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .df-loc-name.is-muted,
+.sunburst-atelier-root .df-loc-variants.is-muted {
+  color: var(--tc-ink-3);
+  font-size: 13.5px;
+}
+
+.sunburst-atelier-root .df-loc-variants {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.sunburst-atelier-root .df-loc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+}
+
+/* The two-second tell: zh-Hans and zh-Hant, adjacent, both real. The accent's
+   third job is this ring; the weight carries the rest. */
+.sunburst-atelier-root .df-loc-chip.is-tell {
+  border-color: var(--deco-accent);
+  color: var(--tc-ink);
   font-weight: 600;
 }
 
-.sunburst-atelier-root .sa-loc {
-  font-family: var(--sa-serif);
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  color: #7a5f26;
-  min-width: 34px;
+.sunburst-atelier-root .df-loc-tail {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
 }
 
-.sunburst-atelier-root .sa-out-text {
-  font-size: 0.95rem;
-  color: #241c0c;
+.sunburst-atelier-root .df-loc-count {
+  margin-top: 14px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
 }
 
-.sunburst-atelier-root .sa-out-text[dir='rtl'] {
-  margin-left: auto;
+/* The globe cell: the well is the card's whole depth, the canvas fills it,
+   and the aspect is measured at mount — the drawing stays circular. */
+.sunburst-atelier-root .df-globe-well {
+  position: relative;
+  flex: 1;
+  min-height: 380px;
+}
+
+.sunburst-atelier-root .df-globe {
+  position: absolute;
+  inset: 0;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .df-globe-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+/* ============================================================
+   DF — RATE LEDGER (M17)
+   The published rates as a ruled table. The beige second surface
+   marks the row most readers price first.
+   ============================================================ */
+
+.sunburst-atelier-root .df-rates {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .df-rates-head,
+.sunburst-atelier-root .df-rate {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.45fr) 120px;
+  gap: 18px;
+  padding: 12px var(--tc-gut);
+}
+
+.sunburst-atelier-root .df-rates-head {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .df-rates-head span:nth-child(n + 2) {
   text-align: right;
 }
 
-/* ---------------- steps ---------------- */
+.sunburst-atelier-root .df-rate {
+  padding-block: 13px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  align-items: baseline;
+}
 
-.sunburst-atelier-root .sa-steps {
+/* The row most readers price first. State is weight and ink — never a second
+   surface: this page's palette is ink and paper, full stop. */
+.sunburst-atelier-root .df-rate.is-lead .df-rate-name {
+  font-weight: 500;
+}
+
+.sunburst-atelier-root .df-rate-name {
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .df-rate-value,
+.sunburst-atelier-root .df-rate-gt {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.sunburst-atelier-root .df-rate-gt:empty::before,
+.sunburst-atelier-root .df-rate-gt {
+  color: var(--tc-ink-2);
+}
+
+.sunburst-atelier-root .df-rate.is-lead .df-rate-value,
+.sunburst-atelier-root .df-rate.is-lead .df-rate-gt {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .df-rates-foot {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(18px, 3vw, 36px);
-  max-width: 1000px;
-  margin: 54px auto 0;
+  gap: 7px;
+  padding: 14px var(--tc-gut) 18px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
 }
 
-.sunburst-atelier-root .sa-step {
+.sunburst-atelier-root .df-rates-foot code {
+  color: var(--tc-ink-2);
+}
+
+/* The plans sit directly under the ledger; the ledger owns the top rule. */
+.sunburst-atelier-root .df-rates + .tc-plans {
+  border-top: 0;
+}
+
+/* ============================================================
+   DF — DARK BAND FLOOR (paper-on-ink)
+   The one loose dissolve on the page, mounted in the band's
+   bottom padding — a zone type can never enter.
+   ============================================================ */
+
+.sunburst-atelier-root .df-band-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 84px;
+  display: block;
+  image-rendering: pixelated;
+  z-index: 0;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ============================================================
+   DF — RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .sunburst-atelier-root .df-loc-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .sunburst-atelier-root .df-loc-variants {
+    grid-column: 1 / -1;
+  }
+
+  .sunburst-atelier-root .df-rates-head,
+  .sunburst-atelier-root .df-rate {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) 64px;
+    gap: 10px;
+  }
+
+  .sunburst-atelier-root .df-rate-value,
+  .sunburst-atelier-root .df-rate-gt {
+    font-size: 11px;
+    white-space: normal;
+  }
+
+  .sunburst-atelier-root .df-globe-well {
+    min-height: 300px;
+  }
+}
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.sunburst-atelier-root .tc-rail {
   position: relative;
-  border-top: 1px solid rgba(84, 66, 26, 0.4);
-  padding-top: 24px;
+  border-inline: 1px solid var(--tc-hair);
 }
 
-.sunburst-atelier-root .sa-step::before {
+.sunburst-atelier-root .tc-rail::before {
   content: '';
   position: absolute;
-  top: -5px;
-  left: 50%;
-  width: 9px;
-  height: 9px;
-  transform: translateX(-50%) rotate(45deg);
-  background: var(--sa-cream);
-  border: 1.5px solid #55431a;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
 }
 
-.sunburst-atelier-root .sa-step-numeral {
+.sunburst-atelier-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ============================================================
+   DARK-GRID DIAGRAM ADAPTATIONS (propagated from toolchain; rescoped)
+   ============================================================ */
+
+/* -- the <T> wrap thread --------------------------------------
+   The brand's two lines (constant gauge, never merging) run the sample's own
+   left margin from <T> to </T>, feet turned toward the code they bind.
+   Panel-dim white, so the pair reads on the panel, which never remaps. */
+.sunburst-atelier-root .tc-code-wrap {
+  position: relative;
+}
+
+.sunburst-atelier-root .tc-code-wrap::before,
+.sunburst-atelier-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.sunburst-atelier-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.sunburst-atelier-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .sunburst-atelier-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .sunburst-atelier-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+/* -- glossary directives --------------------------------------
+   Per-locale style rules under the pinned entries. The group divider is
+   the page's stronger hairline against the hair-2 rules inside each half. */
+.sunburst-atelier-root .tcx-dirs {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tcx-dirs li span {
+  font-size: 12.5px;
+}
+
+/* -- the source/preview pane pair -----------------------------
+   Two panes on the dev window's own surface, split by the in-window
+   hairline. State is type weight on the live pane's tag. */
+.sunburst-atelier-root .tcx-pane {
+  padding: 10px 11px 13px;
+}
+
+.sunburst-atelier-root .tcx-pane + .tcx-pane {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.sunburst-atelier-root .tcx-pane-tag {
   display: block;
-  font-family: var(--sa-serif);
-  font-size: 1.5rem;
-  letter-spacing: 0.2em;
-  text-indent: 0.2em;
-  color: #7a5f26;
+  margin-bottom: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
 }
 
-.sunburst-atelier-root .sa-step h3 {
-  margin: 10px 0 8px;
-  font-family: var(--sa-display);
+.sunburst-atelier-root .tcx-pane-tag.is-on {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of mat; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.sunburst-atelier-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.sunburst-atelier-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+/* ---- the dark band's bloom canvas ----
+   The v3 CLI cell's field, drawn by this page's own engine: the canvas takes
+   the shader's box (darkband-v3.css .tcb-cli-field) and adds the 1-bit
+   upscale discipline. Paper-on-ink, permanently dark, never remaps. */
+.sunburst-atelier-root .tcb .tcb-cli-field.df-cli-bloom {
+  display: block;
+  image-rendering: pixelated;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ============================================================
+   TYPE — the display face in its two slots
+   Poiret One carries h1 and h2 at its one weight; Inter keeps every
+   other slot. Tracking opens a step because the geometric face was
+   cut for signage, not for the negative tracking Inter takes.
+   ============================================================ */
+
+.sunburst-atelier-root h1,
+.sunburst-atelier-root h2 {
+  font-family: var(--sunburst-atelier-display), var(--font-inter), 'Inter', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 1.12rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #2c2210;
+  letter-spacing: 0.008em;
+  line-height: 1.12;
 }
 
-.sunburst-atelier-root .sa-step p {
+.sunburst-atelier-root .tc-head h2,
+.sunburst-atelier-root .tcr-copy h2 {
+  font-size: clamp(1.78rem, 2.7vw, 2.4rem);
+}
+
+.sunburst-atelier-root .tc-band h2 {
+  font-size: clamp(1.95rem, 3.1vw, 2.75rem);
+}
+
+/* ============================================================
+   SECTION HEADS — the quarter sunburst (C1.1)
+   Seated in the head's bottom-right corner, in the slot the lucide
+   head icon held: a gold hub, three arc rings and eleven hairline
+   rays, drawn once as an inline SVG (sections/deco/Sunburst.tsx).
+   Every stroke is one gauge under non-scaling-stroke, and the fan
+   starts 7.5 degrees off both edges so no ray runs within 6px of
+   the rail or the row seam. Copy sits above it.
+   ============================================================ */
+
+.sunburst-atelier-root .tc-head {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sunburst-atelier-root .tc-head > h2,
+.sunburst-atelier-root .tc-head > p {
+  position: relative;
+  z-index: 1;
+}
+
+.sunburst-atelier-root .sba-sunburst {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 0;
+  width: 220px;
+  height: 220px;
+  pointer-events: none;
+}
+
+.sunburst-atelier-root .sba-sunburst-hub {
+  fill: var(--deco-ornament);
+}
+
+.sunburst-atelier-root .sba-sunburst-ring,
+.sunburst-atelier-root .sba-sunburst-ray {
+  fill: none;
+  stroke: var(--sba-gild-edge);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Hatch spacers: reveal tweens leave transforms on the framed cards above,
+   whose stacking contexts otherwise paint over the frieze's top rule. */
+.sunburst-atelier-root .tc-hatch {
+  z-index: 2;
+}
+
+/* ============================================================
+   FRAMES (C1.3) — the code bar rule joins the mat family
+   ============================================================ */
+
+.sunburst-atelier-root .tc-code-bar {
+  border-bottom-color: var(--sba-gild-faint);
+}
+
+/* ============================================================
+   PUNCH LIST — stats grid
+   Numeral above label, two per row, tabular figures on a shared baseline,
+   doubled-hairline separators. */
+.sunburst-atelier-root .tc-stats.is-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.sunburst-atelier-root .tc-stats.is-grid .tc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 16px 16px;
+  border-top: 3px double var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-stats.is-grid .tc-stat:nth-child(-n + 2) {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.sunburst-atelier-root .tc-stats.is-grid .tc-stat:nth-child(2n) {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.sunburst-atelier-root .tc-stats.is-grid .tc-stat-value {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.sunburst-atelier-root .tc-stats.is-grid .tc-stat-label {
+  text-align: left;
+  color: var(--tc-ink-3);
+}
+
+.sunburst-atelier-root .tc-eg {
+  top: -0.02em;
+}
+
+/* Founder: the quad's column rules touch the card's top and bottom edges.
+   The card's padding is a single token, so the rules extend by exactly it. */
+.sunburst-atelier-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.sunburst-atelier-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* Nav theme switch, left of Sign In: token ink, quiet until hover. */
+.sunburst-atelier-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.sunburst-atelier-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand marks: both variants ship; the black ground shows the drawn-for-dark
+   one in both themes. The footer's Locadex mark is a dark glyph and inverts. */
+.sunburst-atelier-root .tc-logo-light {
+  display: none;
+}
+
+.sunburst-atelier-root .tc-logo-dark {
+  display: block;
+}
+
+.sunburst-atelier-root .tc-foot-mark.is-locadex {
+  filter: invert(1);
+}
+
+/* ============================================================
+   THE DARK BAND (C1.5)
+   The doubled rail continues through the full-bleed band: it sits
+   outside the .tc-rail wrappers, so it draws the column's line
+   pairs itself, in the frame gold. The crown stands over the lede.
+   ============================================================ */
+
+.sunburst-atelier-root .tc-band {
+  position: relative;
+}
+
+.sunburst-atelier-root .tc-band::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(min(var(--tc-rail), 100%) + 20px);
+  transform: translateX(-50%);
+  border-inline: 1px solid var(--sba-gild);
+  pointer-events: none;
+}
+
+.sunburst-atelier-root .tcb .tcb-head.sba-band-head {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  text-align: center;
+}
+
+.sunburst-atelier-root .sba-band-crown {
+  width: min(100%, 440px);
+  height: auto;
+}
+
+.sunburst-atelier-root .tcb .tcb-head.sba-band-head h2 {
+  margin-top: 22px;
+  margin-inline: auto;
+}
+
+.sunburst-atelier-root .tcb .tcb-head.sba-band-head p {
+  margin-top: 12px;
+}
+
+/* ============================================================
+   THE HERO STACK (founder grammar, recut for the crown)
+   The split row (copy card beside the transmission plate) above
+   the trust card: black cards on the champagne mat, 1px seams,
+   radius-12 corners with the mat filling the notches. The crown
+   stands above the headline with the roundel on its hub.
+   ============================================================ */
+
+.sunburst-atelier-root .tc-sec.tch-hero-sec {
+  --tch-inset: clamp(10px, 1.1vw, 14px);
+  padding: 0;
+  background: var(--tc-mat);
+  background-clip: padding-box;
+}
+
+.sunburst-atelier-root .tch-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 1px;
+  align-items: stretch;
+}
+
+/* the copy card: centered on its own axis under the symmetric crown */
+.sunburst-atelier-root .tch-split > .tc-hero.tch-card {
+  margin: 0;
+  border: 0;
+  outline: 0;
+  border-radius: 12px;
+  background: var(--tc-card);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(30px, 3.6vw, 52px) clamp(26px, 3.2vw, 48px);
+}
+
+/* the crown (C1.4) */
+.sunburst-atelier-root .sba-crown-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 380px;
   margin: 0 auto;
-  max-width: 34ch;
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: #4a3d22;
 }
 
-/* ---------------- script wheel ---------------- */
-
-.sunburst-atelier-root .sa-wheel {
-  max-width: 1080px;
-  margin: 30px auto 0;
-}
-
-.sunburst-atelier-root .sa-wheel-svg {
+.sunburst-atelier-root .sba-crown {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.sunburst-atelier-root .sa-wheel-hello {
-  font-family: var(--sa-sans);
-  font-size: 30px;
-  fill: var(--sa-gold-bright);
+.sunburst-atelier-root .sba-crown-arcs path {
+  fill: none;
+  stroke: var(--deco-ornament);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
 }
 
-.sunburst-atelier-root .sa-wheel-tag {
-  font-family: var(--sa-serif);
-  font-size: 13px;
-  letter-spacing: 3px;
-  fill: var(--sa-gold-dim);
+.sunburst-atelier-root .sba-crown-windows path {
+  fill: var(--deco-ink);
+  opacity: 0.9;
 }
 
-.sunburst-atelier-root .sa-wheel-t {
-  font-family: var(--sa-display);
-  font-size: 58px;
-  fill: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-wheel-caption {
-  max-width: 58ch;
-  margin: 26px auto 0;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--sa-body-color);
-}
-
-.sunburst-atelier-root .sa-hello-chips {
-  display: none;
-  list-style: none;
-  margin: 34px auto 0;
-  padding: 0;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  max-width: 560px;
-}
-
-.sunburst-atelier-root .sa-hello-chips li {
-  border: 1px solid var(--sa-hairline);
-  padding: 10px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 96px;
-}
-
-.sunburst-atelier-root .sa-hello-chips span {
-  font-size: 1rem;
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-hello-chips small {
-  font-family: var(--sa-serif);
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  color: var(--sa-gold-dim);
-}
-
-/* ---------------- product cards ---------------- */
-
-.sunburst-atelier-root .sa-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(18px, 3vw, 36px);
-  max-width: 1080px;
-  margin: 50px auto 0;
-  align-items: start;
-}
-
-.sunburst-atelier-root .sa-card {
-  border: 1px solid var(--sa-hairline);
-  outline: 1px solid var(--sa-gold-faint);
-  outline-offset: -5px;
-  padding: 34px 26px 30px;
-  background: linear-gradient(180deg, rgba(212, 179, 106, 0.05), transparent 55%);
-}
-
-.sunburst-atelier-root .sa-card.is-mid {
-  margin-top: -18px;
-  padding-top: 46px;
-  border-color: var(--sa-gold-dim);
-}
-
-.sunburst-atelier-root .sa-card h3 {
-  margin: 14px 0 10px;
-  font-family: var(--sa-display);
-  font-weight: 400;
-  font-size: 1.2rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-card p {
-  margin: 0;
-  font-size: 0.93rem;
-  line-height: 1.7;
-  color: var(--sa-body-color);
-}
-
-/* ---------------- pricing ---------------- */
-
-.sunburst-atelier-root .sa-plans {
-  display: grid;
-  grid-template-columns: 1fr 72px 1fr;
-  max-width: 940px;
-  margin: 50px auto 0;
-  align-items: stretch;
-}
-
-.sunburst-atelier-root .sa-plan {
-  border: 1px solid var(--sa-hairline);
-  outline: 1px solid var(--sa-gold-faint);
-  outline-offset: -5px;
-  padding: 36px 30px 34px;
-  display: flex;
-  flex-direction: column;
+/* the chrome roundel on the hub: cream disc, the monogram in ground ink, the
+   doubled gold ring as border plus outline at the thread gauge and gap */
+.sunburst-atelier-root .sba-roundel {
+  display: inline-flex;
   align-items: center;
-}
-
-.sunburst-atelier-root .sa-plan h3 {
-  margin: 0;
-  font-family: var(--sa-display);
-  font-weight: 400;
-  font-size: 1.3rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-price {
-  margin: 14px 0 6px;
-  font-family: var(--sa-serif);
-  font-size: 2.1rem;
-  color: var(--sa-gold);
-}
-
-.sunburst-atelier-root .sa-price small {
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--sa-gold-dim);
-  margin-left: 8px;
-}
-
-.sunburst-atelier-root .sa-plan-body {
-  margin: 0 0 18px;
-  max-width: 40ch;
-  font-size: 0.93rem;
-  line-height: 1.65;
-  color: var(--sa-body-color);
-}
-
-.sunburst-atelier-root .sa-plan ul {
-  list-style: none;
-  margin: 0 0 26px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  flex: 1;
-}
-
-.sunburst-atelier-root .sa-plan li {
-  font-size: 0.9rem;
-  color: var(--sa-body-color);
-}
-
-.sunburst-atelier-root .sa-plan li::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 10px;
-  transform: rotate(45deg);
-  background: var(--sa-gold-dim);
-  vertical-align: 2px;
-}
-
-.sunburst-atelier-root .sa-plan-divider {
-  display: flex;
-  align-items: stretch;
   justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin-top: -29px;
+  border-radius: 50%;
+  background: var(--deco-ink);
+  color: var(--deco-ground);
+  border: var(--thread-gauge) solid var(--deco-ornament);
+  outline: var(--thread-gauge) solid var(--deco-ornament);
+  outline-offset: var(--thread-gap);
 }
 
-.sunburst-atelier-root .sa-plan-divider span {
-  position: relative;
-  width: 1px;
-  margin: 12px 0;
-  background: linear-gradient(180deg, transparent, var(--sa-gold-dim) 20%, var(--sa-gold-dim) 80%, transparent);
+.sunburst-atelier-root .tch-copy h1 {
+  margin-top: 28px;
+  margin-inline: auto;
+  font-size: clamp(2.2rem, 3.7vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: 0.004em;
+  max-width: 20ch;
 }
 
-.sunburst-atelier-root .sa-plan-divider span::after {
-  content: '';
+/* the accent's second job: the doubled thread under the morphing word */
+.sunburst-atelier-root .tc-hero h1 em {
+  --thread-ink: var(--deco-accent);
+}
+
+.sunburst-atelier-root .tch-card.tch-copy .tc-hero-sub {
+  margin: 18px auto 0;
+  max-width: 44ch;
+}
+
+/* the inline wordmark: hidden text node plus the monogram in full ink */
+.sunburst-atelier-root .sba-gtword {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: -0.2em;
+  color: var(--tc-ink);
+}
+
+.sunburst-atelier-root .sba-gtword-copy {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  transform: translate(-50%, -50%) rotate(45deg);
-  border: 1.5px solid var(--sa-gold);
-  background: var(--sa-ink);
-}
-
-.sunburst-atelier-root .sa-compare {
-  margin: 36px 0 0;
-}
-
-.sunburst-atelier-root .sa-compare a {
-  font-family: var(--sa-serif);
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--sa-gold);
-  text-decoration: none;
-  border-bottom: 1px solid var(--sa-gold-dim);
-  padding-bottom: 4px;
-  transition: color 0.2s ease;
-}
-
-.sunburst-atelier-root .sa-compare a:hover,
-.sunburst-atelier-root .sa-compare a:focus-visible {
-  color: var(--sa-gold-bright);
-}
-
-/* ---------------- footer ---------------- */
-
-.sunburst-atelier-root .sa-footer {
-  padding: clamp(60px, 8vw, 96px) clamp(20px, 5vw, 56px) 46px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.sunburst-atelier-root .sa-footer-name {
-  margin: 18px 0 6px;
-  font-family: var(--sa-display);
-  font-size: 1.25rem;
-  letter-spacing: 0.3em;
-  text-indent: 0.3em;
-  text-transform: uppercase;
-  color: var(--sa-gold-bright);
-}
-
-.sunburst-atelier-root .sa-footer-tag {
-  margin: 0;
-  font-size: 0.92rem;
-  color: var(--sa-body-color);
-}
-
-.sunburst-atelier-root .sa-footer-cols {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 160px));
-  justify-content: center;
-  gap: clamp(24px, 4vw, 60px);
-  margin-top: 44px;
-}
-
-.sunburst-atelier-root .sa-footer-col h4 {
-  margin: 0 0 12px;
-  font-family: var(--sa-serif);
-  font-weight: 400;
-  font-size: 0.68rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--sa-gold-dim);
-}
-
-.sunburst-atelier-root .sa-footer-col ul {
-  list-style: none;
-  margin: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
   padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sunburst-atelier-root .tch-card.tch-copy .tc-hero-acts {
+  margin-top: 26px;
+  justify-content: center;
+}
+
+/* The command chip joins the acts row at button gauge. */
+.sunburst-atelier-root .tch-copy .df-hero-cmd {
+  height: 38px;
+  padding: 0 14px;
+  gap: 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+/* The plate: one framed component, and the field is all of it. The plate is
+   the ground; the ink is the field, cream on black in both themes. */
+.sunburst-atelier-root .df-plate {
+  position: relative;
+  border-radius: 12px;
+  background: var(--tc-white);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: clamp(480px, 60vh, 620px);
+}
+
+.sunburst-atelier-root .df-plate-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: var(--tc-ink);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* The one wire: a hairline through the source dock, under the field. */
+.sunburst-atelier-root .df-plate-wire {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--tc-hair);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* the trust card completes the stack: third card, same seam, and it carries
+   the band's lower rule itself, over the section's own bottom rule */
+.sunburst-atelier-root .tc-sec.tch-hero-sec > .tc-trust {
+  margin: 1px 0 -1px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  border-bottom: 1px solid var(--tc-hair);
+  border-radius: 12px 12px 0 0;
+  background: var(--tc-card);
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+.sunburst-atelier-root .tc-sec.tch-hero-sec > .tc-trust .tc-trust-lead {
+  padding: 24px 36px 18px;
+}
+
+/* Stacked: the plate keeps its fill under the copy, edge to edge. */
+@media (max-width: 900px) {
+  .sunburst-atelier-root .tch-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sunburst-atelier-root .df-plate {
+    min-height: clamp(340px, 52vh, 460px);
+  }
+}
+
+/* ============================================================
+   THE ATLAS — the globe as the hub of one shared sunburst
+   A square well; the halftone globe fills it and draws its disc
+   at radius 0.31; eight leader rays run from the rim to eight
+   LocaleTag chips (diagrams/AtlasRays.tsx). Under 720px the
+   overlay hides and the same chips reflow as a row.
+   ============================================================ */
+
+.sunburst-atelier-root .df-globe-well {
+  position: relative;
+  flex: 1;
+  min-height: 0;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
 }
 
-.sunburst-atelier-root .sa-footer-col a {
-  font-size: 0.88rem;
-  color: var(--sa-body-color);
-  text-decoration: none;
-  transition: color 0.2s ease;
+.sunburst-atelier-root .sba-atlas {
+  position: relative;
+  width: min(100%, 460px);
+  aspect-ratio: 1;
 }
 
-.sunburst-atelier-root .sa-footer-col a:hover,
-.sunburst-atelier-root .sa-footer-col a:focus-visible {
-  color: var(--sa-gold-bright);
+.sunburst-atelier-root .sba-atlas-rays {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
-.sunburst-atelier-root .sa-footer-legal {
-  margin: 44px 0 0;
-  width: min(520px, 100%);
-  padding-top: 22px;
-  border-top: 1px solid var(--sa-gold-faint);
-  font-family: var(--sa-serif);
-  font-size: 0.68rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(207, 194, 164, 0.55);
+.sunburst-atelier-root .sba-atlas-rays line {
+  stroke: var(--deco-ornament);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
-/* ---------------- motion ---------------- */
-
-@keyframes sa-spin {
-  to {
-    transform: rotate(1turn);
-  }
+.sunburst-atelier-root .sba-ray-tag {
+  position: absolute;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px 3px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  background-clip: padding-box;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--tc-ink);
+  white-space: nowrap;
 }
 
-@keyframes sa-breathe {
-  0%,
-  100% {
-    opacity: 0.15;
-  }
-  50% {
-    opacity: 0.3;
-  }
+.sunburst-atelier-root .sba-atlas-list {
+  display: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .sunburst-atelier-root .sa-roundel-chrome {
-    animation: sa-spin 46s linear infinite;
-  }
+/* ============================================================
+   SECTION CLOSE (backported from toolchain)
+   ============================================================ */
 
-  .sunburst-atelier-root .sa-crown-spokes {
-    animation: sa-breathe 8s ease-in-out infinite;
-  }
+.sunburst-atelier-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
 }
 
-/* ---------------- responsive ---------------- */
-
-@media (max-width: 960px) {
-  .sunburst-atelier-root .sa-proof {
-    grid-template-columns: 1fr;
-  }
-
-  .sunburst-atelier-root .sa-cards {
-    grid-template-columns: 1fr;
-    max-width: 560px;
-  }
-
-  .sunburst-atelier-root .sa-card.is-mid {
-    margin-top: 0;
-    padding-top: 34px;
-  }
+.sunburst-atelier-root .tc-band.tcb {
+  border-bottom: 1px solid var(--sba-gild-edge);
 }
 
-@media (max-width: 760px) {
-  .sunburst-atelier-root .sa-nav {
-    grid-template-columns: 1fr;
-    justify-items: center;
+/* one stroke per line: these rows and mounts keep their border-drawn seams,
+   but the translucent ground must stop at the border, or a stacked seam reads
+   darker than the page's other hairlines. Buttons likewise. */
+.sunburst-atelier-root .tc-row:has(> .tc-cell.is-framed),
+.sunburst-atelier-root .tc-mount,
+.sunburst-atelier-root .tcs-mat,
+.sunburst-atelier-root .tcr-mat,
+.sunburst-atelier-root .tc-btn {
+  background-clip: padding-box;
+}
+
+/* ---- dark mode ----
+   The six charter tokens, and nothing else: the ground collapses onto the
+   dark band's family, the ink cools to white, the hairline steps up, and the
+   gold lifts a step for the deeper ground. Every derived alpha above follows
+   through color-mix. */
+[data-theme='dark'] .sunburst-atelier-root {
+  --deco-ground: #070707;
+  --deco-ink: #ffffff;
+  --deco-ink-2: rgba(255, 255, 255, 0.66);
+  --deco-hair: rgba(255, 255, 255, 0.22);
+  --deco-accent: #e0c27a;
+  --deco-ornament: #e0c27a;
+}
+
+/* ============================================================
+   THE MOBILE LADDER — the last 720px block consumes the --tcm-*
+   slots with px fallbacks (DESIGN.md section 12).
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .sunburst-atelier-root {
+    --tc-card-pad: var(--tcm-cell-pad, 18px);
   }
 
-  .sunburst-atelier-root .sa-nav-side {
+  .sunburst-atelier-root .tch-copy h1 {
+    font-size: var(--tcm-h1, 34px);
+    line-height: var(--tcm-h1-lh, 1.1);
+  }
+
+  .sunburst-atelier-root .tc-head h2,
+  .sunburst-atelier-root .tcr-copy h2,
+  .sunburst-atelier-root .tc-band h2 {
+    font-size: var(--tcm-h2, 28px);
+    line-height: var(--tcm-h2-lh, 1.14);
+  }
+
+  .sunburst-atelier-root .tc-head p,
+  .sunburst-atelier-root .tc-hero-sub,
+  .sunburst-atelier-root .tcr-sub,
+  .sunburst-atelier-root .tc-band-sub {
+    font-size: var(--tcm-lead, 15px);
+  }
+
+  .sunburst-atelier-root .tc-cell > p,
+  .sunburst-atelier-root .tc-card > p,
+  .sunburst-atelier-root .tc-bleed-head p,
+  .sunburst-atelier-root .tc-plan p,
+  .sunburst-atelier-root .tcs-beat p {
+    font-size: var(--tcm-body, 14px);
+  }
+
+  .sunburst-atelier-root .tc-cell {
+    padding: var(--tcm-cell-pad, 22px) var(--tc-gut) var(--tcm-cell-pad, 26px);
+  }
+
+  .sunburst-atelier-root .tc-head {
+    padding-top: var(--tcm-head-pt, 44px);
+    padding-bottom: var(--tcm-head-pb, 24px);
+  }
+
+  /* the quarter sunburst shrinks so the head copy stays first; the strokes
+     hold their gauge under non-scaling-stroke */
+  .sunburst-atelier-root .sba-sunburst {
+    width: 130px;
+    height: 130px;
+  }
+
+  .sunburst-atelier-root .sba-crown-wrap {
+    max-width: 300px;
+  }
+
+  /* 44px keeps the outer ring inside the innermost arc at the 300px crown */
+  .sunburst-atelier-root .sba-roundel {
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
+  }
+
+  /* the atlas rays fold into a row of the same chips under the globe */
+  .sunburst-atelier-root .sba-atlas {
+    width: min(100%, 320px);
+  }
+
+  .sunburst-atelier-root .sba-atlas-rays,
+  .sunburst-atelier-root .sba-atlas > .sba-ray-tag {
     display: none;
   }
 
-  .sunburst-atelier-root .sa-crown-wrap .sa-roundel {
-    width: 110px;
-    height: 110px;
-  }
-
-  .sunburst-atelier-root .sa-crown-wrap .sa-roundel .sa-roundel-core {
-    font-size: 2.1rem;
-  }
-
-  .sunburst-atelier-root .sa-wordmark {
-    margin-top: 84px;
-  }
-
-  .sunburst-atelier-root .sa-steps {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-  }
-
-  .sunburst-atelier-root .sa-wheel {
-    display: none;
-  }
-
-  .sunburst-atelier-root .sa-hello-chips {
+  .sunburst-atelier-root .sba-atlas-list {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
   }
 
-  .sunburst-atelier-root .sa-plans {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 460px;
+  .sunburst-atelier-root .sba-atlas-list .sba-ray-tag {
+    position: static;
+    transform: none;
   }
 
-  .sunburst-atelier-root .sa-plan-divider {
-    display: none;
-  }
-
-  .sunburst-atelier-root .sa-footer-cols {
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
-    width: 100%;
-    max-width: 420px;
+  .sunburst-atelier-root .tc-hatch {
+    height: 36px;
   }
 }

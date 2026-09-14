@@ -1,44 +1,114 @@
-/* ==========================================================================
-   DITHERED-SUNRISE — dither is the design language, deco is the structure.
-
-   One law: light is quantized. The hero sun is a live Bayer field (canvas),
-   the section openers are ordered-dither SVG arcs, and every CSS ornament on
-   this sheet is built from HARD-STOP gradients only: rows and lattices of
-   discrete gold squares. There is no smooth gradient anywhere in this file.
-   Gold on near-black; Poiret One display over Jost body.
-   ========================================================================== */
-
+/* dithered-sunrise: deco sunburst rays rendered entirely as ordered Bayer
+   dither, gold on a warm near-black ground, with light quantized everywhere
+   on the page and no smooth gradient anywhere.
+   Reference: the stepped sunburst of 1920s and 1930s deco (radiator grilles,
+   theatre marquees, the Chrysler Building's crown), cut through the house
+   halftone screen instead of cast in brass. Every falloff is first stepped
+   into flat bands, then screened into cells.
+   Ornament homes: C1.1 section heads (the DawnCrest half sun in the
+   tc-head-icon slot, and a three-tier quantized rule under every h2); C1.2
+   dividers (the tc-hatch spacer is a 4/16 Bayer lattice, BayerBand); C1.3
+   frames (a four-tier dawn line seated on the tc-code-bar, the review bar and
+   the band terminal bar); C1.4 the hero crown (the GT mark seated in a
+   dithered sun, SunCrown) and the hero plate (the heroSunrise field, edge to
+   edge); C1.5 the dark band (the sunburstFloor field in the band's bottom
+   padding and the dawnArcs field around the CLI terminal). Everywhere else
+   the page is GT's rail system unchanged.
+   Accent: gold, spent as edges only: the active tab underline, the hero
+   word's doubled underline, the zh-Hans and zh-Hant chip ring, the live step
+   of the story rail, the gutter mark of an added diff line, and the string
+   tokens in code (strings are the product). It never fills a surface, and
+   the SSOT diagrams keep their ink accent because their accent states tint
+   fills. The ornament color is the same gold, so the page carries one hue.
+   Display face: Jost, used for h1 and h2 only. The hero crown is the drawn
+   GT mark, so it takes no display type.
+   Dark mode remaps these six tokens and nothing else: the warm ground
+   collapses onto ink black, bone lifts to white, hairlines rise a step and
+   the gold lifts to hold on the colder ground. */
 .dithered-sunrise-root {
-  /* palette */
-  --ds-ground: #0d0a06;
-  --ds-panel: #171208;
-  --ds-panel-2: #1d1709;
-  --ds-line: #33290f;
-  --ds-gold: #d7a341;
-  --ds-gold-bright: #f6ce6f;
-  --ds-ember: #97702f;
-  --ds-paper: #f4ead6;
-  --ds-muted: #b6a685;
+  --deco-ground: #0b0a08;
+  --deco-ink: #f2e9d8;
+  --deco-ink-2: rgba(242, 233, 216, 0.66);
+  --deco-hair: rgba(138, 143, 152, 0.34);
+  --deco-accent: #d6a23f;
+  --deco-ornament: #d6a23f;
 
-  /* type */
-  --ds-display: var(--ds-font-display), 'Trebuchet MS', sans-serif;
-  --ds-body: var(--ds-font-body), 'Avenir Next', 'Segoe UI', sans-serif;
-  --ds-mono: var(--ds-font-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+  /* the rail system reads the palette through the tc tokens */
+  --tc-paper: var(--deco-ground);
+  --tc-sunk: var(--deco-ground);
+  --tc-white: var(--deco-ground);
+  --tc-card: var(--deco-ground);
+  --tc-plate: var(--deco-ground);
+  --tc-ink: var(--deco-ink);
+  --tc-ink-2: var(--deco-ink-2);
+  /* the quieter inks derive from the six, so the dark remap never restates them */
+  --tc-ink-3: color-mix(in srgb, var(--deco-ink) 46%, transparent);
+  --tc-ink-4: color-mix(in srgb, var(--deco-ink) 28%, transparent);
+  --tc-hair: var(--deco-hair);
+  --tc-hair-2: color-mix(in srgb, var(--deco-hair) 62%, transparent);
+  --tc-accent: var(--deco-accent);
+  /* the one dark band: a step below the page ground, and it never remaps */
+  --tc-dark: #070707;
+
+  /* The one artifact surface for code, config and diffs: one warm step above
+     the ground, so a code window still reads as a window on this dark page.
+     Its inks are the panel family and never remap. */
+  --tc-panel: #15130f;
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.42);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+
+  /* The brand's doubled line: two parallel strokes at constant gauge. Defined
+     once, spent wherever a structural stroke can be doubled. */
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+  --thread-ink: var(--tc-ink);
+
+  /* The nested frame: the mat IS the shell line colour, the card is the
+     ground on it, and the mat fills the corner notches. ONE ring. */
+  --tc-mat: var(--tc-hair);
+  --tc-mat-edge: var(--tc-hair);
+  --tc-mat-inset: clamp(4px, 0.5vw, 6px);
+  --tc-card-pad: clamp(17px, 1.9vw, 21px);
+  /* the hatch spacer is drawn by the BayerBand lattice; this names its ink */
+  --tc-hatch: var(--deco-ornament);
+
+  /* Inter is the body, interface and caption face; h1 and h2 take the display
+     face in their own rule at the end of this sheet */
+  --tc-disp: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --tc-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --tc-gut: clamp(20px, 3.1vw, 36px);
+  --tc-rail: 1170px;
+
+  /* language-diagram rules follow the shell's line colour */
+  --lang-rule-strong: var(--tc-hair);
+  --lang-rule: var(--tc-hair);
+
+  /* the isometric family inherits the page, not the other way round. Its
+     accent stays ink: the iso and lang sheets spend --iso-accent on tinted
+     fills as well as strokes, and the one hue on this page is an edge. */
+  --iso-accent: var(--tc-ink);
+  --iso-ink: color-mix(in srgb, var(--deco-ink) 80%, transparent);
+  --iso-ink-soft: color-mix(in srgb, var(--deco-ink) 44%, transparent);
+  --iso-ink-hair: color-mix(in srgb, var(--deco-ink) 20%, transparent);
+  --iso-mono: var(--tc-mono);
+  --iso-ui: var(--tc-sans);
+  --iso-display: var(--tc-disp);
 
   position: relative;
-  background: var(--ds-ground);
-  color: var(--ds-paper);
-  font-family: var(--ds-body);
-  font-weight: 300;
-  font-size: 17px;
-  line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: clip;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-.dithered-sunrise-root ::selection {
-  background: var(--ds-gold);
-  color: var(--ds-ground);
+.dithered-sunrise-root *,
+.dithered-sunrise-root *::before,
+.dithered-sunrise-root *::after {
+  box-sizing: border-box;
 }
 
 .dithered-sunrise-root a {
@@ -46,796 +116,3227 @@
   text-decoration: none;
 }
 
-.dithered-sunrise-root :focus-visible {
-  outline: 2px dashed var(--ds-gold);
-  outline-offset: 3px;
+/* ============================================================
+   THE RULED COLUMN
+   ============================================================ */
+
+.dithered-sunrise-root .tc-rail {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
 }
 
+.dithered-sunrise-root .tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-sec:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- type ---------- */
+
+/* Weight cap 500: the display face never goes bolder, at any size. */
 .dithered-sunrise-root h1,
 .dithered-sunrise-root h2,
-.dithered-sunrise-root h3 {
-  font-family: var(--ds-display);
-  font-weight: 400;
+.dithered-sunrise-root h3,
+.dithered-sunrise-root h4 {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
   margin: 0;
 }
 
-/* Deco chamfer: the page's one corner treatment. */
-.dithered-sunrise-root .ds-btn,
-.dithered-sunrise-root .ds-card,
-.dithered-sunrise-root .ds-panel,
-.dithered-sunrise-root .ds-plan,
-.dithered-sunrise-root .ds-brand-tile {
-  clip-path: polygon(
-    10px 0,
-    calc(100% - 10px) 0,
-    100% 10px,
-    100% calc(100% - 10px),
-    calc(100% - 10px) 100%,
-    10px 100%,
-    0 calc(100% - 10px),
-    0 10px
-  );
+.dithered-sunrise-root p {
+  margin: 0;
 }
 
-/* ------------------------------------------------------------------- nav */
+.dithered-sunrise-root .tc-head {
+  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
+}
 
-.dithered-sunrise-root .ds-nav {
-  position: absolute;
-  inset: 0 0 auto 0;
-  z-index: 4;
+.dithered-sunrise-root .tc-head h2 {
+  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  max-width: 22ch;
+}
+
+.dithered-sunrise-root .tc-head p {
+  margin-top: 13px;
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .tc-mono {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--tc-ink-3);
+}
+
+/* ---------- buttons ---------- */
+
+.dithered-sunrise-root .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 17px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+/* ink on ground in both themes: the label is the page ground, so the pair
+   inverts with the tokens and the dark remap needs no literal */
+.dithered-sunrise-root .tc-btn-solid {
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+}
+
+.dithered-sunrise-root .tc-btn-solid:hover {
+  background: color-mix(in srgb, var(--tc-ink) 84%, var(--tc-paper));
+}
+
+.dithered-sunrise-root .tc-btn-line {
+  border-color: var(--tc-hair);
+  color: var(--tc-ink);
+  background: transparent;
+}
+
+.dithered-sunrise-root .tc-btn-line:hover {
+  border-color: color-mix(in srgb, var(--tc-ink) 34%, transparent);
+  background: color-mix(in srgb, var(--tc-ink) 4%, transparent);
+}
+
+.dithered-sunrise-root .tc-btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 12.5px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+/* Opaque. The translucent blur read as a grey smear over content in every
+   mid-scroll still — the references all run clean, solid bars. */
+.dithered-sunrise-root .tc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-nav-in {
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid var(--tc-hair);
+  height: 58px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 22px clamp(20px, 4vw, 44px);
+  gap: 26px;
+  padding-inline: var(--tc-gut);
 }
 
-.dithered-sunrise-root .ds-brand {
+.dithered-sunrise-root .tc-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--tc-disp);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.dithered-sunrise-root .tc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .tc-nav-links a:hover {
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .tc-nav-right {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 12px;
+  font-size: 13.5px;
 }
 
-.dithered-sunrise-root .ds-brand-tile {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  font-family: var(--ds-display);
-  font-size: 15px;
-  color: var(--ds-gold-bright);
-  background-color: var(--ds-panel);
-  /* hard-stop dot lattice, not a glow */
-  background-image: radial-gradient(
-    circle at 2px 2px,
-    var(--ds-ember) 0 1.1px,
-    transparent 1.2px
-  );
-  background-size: 6px 6px;
+.dithered-sunrise-root .tc-nav-right > a:first-child {
+  color: var(--tc-ink-2);
 }
 
-.dithered-sunrise-root .ds-brand-name {
-  font-family: var(--ds-display);
-  font-size: 17px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.dithered-sunrise-root .tc-nav-right > a:first-child:hover {
+  color: var(--tc-ink);
 }
 
-.dithered-sunrise-root .ds-nav-links {
+@media (max-width: 860px) {
+  .dithered-sunrise-root .tc-nav-links,
+  .dithered-sunrise-root .tc-nav-right > a:first-child {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* Trimmed a step so the terminal owns more of the first viewport instead of
+   being cut at the fold. */
+.dithered-sunrise-root .tc-hero {
+  text-align: center;
+  padding: clamp(44px, 5.6vw, 72px) var(--tc-gut) 0;
+}
+
+.dithered-sunrise-root .tc-hero-mark {
+  display: block;
+  margin: 0 auto 26px;
+  opacity: 0.9;
+}
+
+.dithered-sunrise-root .tc-hero h1 {
+  font-size: clamp(2.05rem, 4.9vw, 3.7rem);
+  line-height: 1.03;
+  letter-spacing: -0.038em;
+  max-width: 20ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* The break is authored, so the rag is a decision rather than a measurement. */
+.dithered-sunrise-root .tc-hero h1 span {
+  display: block;
+}
+
+/* The accent never touches a heading. The emphasis is the brand's own device
+   instead: the two threads — source and translation at constant gauge —
+   running under the word, in ink. */
+.dithered-sunrise-root .tc-hero h1 em {
+  font-style: normal;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--thread-ink), var(--thread-ink)),
+    linear-gradient(var(--thread-ink), var(--thread-ink));
+  background-repeat: no-repeat;
+  background-size:
+    100% var(--thread-gauge),
+    100% var(--thread-gauge);
+  background-position:
+    0 calc(100% - var(--thread-gauge) - var(--thread-gap)),
+    0 100%;
+}
+
+.dithered-sunrise-root .tc-hero-sub {
+  margin: 20px auto 0;
+  max-width: 54ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .tc-hero-acts {
+  margin-top: 28px;
   display: flex;
-  gap: clamp(16px, 2.6vw, 34px);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.dithered-sunrise-root .ds-nav-links a {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
+.dithered-sunrise-root .tc-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-white);
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+
+.dithered-sunrise-root .tc-copy:hover {
+  border-color: color-mix(in srgb, var(--tc-ink) 32%, transparent);
+}
+
+.dithered-sunrise-root .tc-copy span:last-child {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ds-muted);
-  padding: 6px 2px;
+  color: var(--tc-ink-4);
+}
+
+/* ---------- full-bleed hero visual cell ---------- */
+
+/* The terminal sits flush to the bottom of its band — a panel standing on the
+   section rule rather than an object floating in a wash. The band itself is
+   the page's first committed material: a dark plate carrying the prismatic
+   field, lit at the flanks and dark in the centre column under the transcript
+   (AESTHETIC_ADDENDUM 2b — content sits in the dark, the light owns the
+   edges), so the first viewport has the same mass the references open with. */
+.dithered-sunrise-root .tc-hero-cell {
+  position: relative;
+  margin-top: clamp(36px, 4.4vw, 54px);
+  border-top: 1px solid var(--tc-hair);
+  padding: clamp(28px, 3.8vw, 48px) clamp(14px, 3vw, 44px) 0;
+  background: var(--tc-dark);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.dithered-sunrise-root .tc-hero-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.92;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 10%,
+    rgba(0, 0, 0, 0.28) 30%,
+    rgba(0, 0, 0, 0.18) 50%,
+    rgba(0, 0, 0, 0.28) 70%,
+    #000 90%,
+    #000 100%
+  );
+  pointer-events: none;
+}
+
+/* The measured hero ring from the references: 1px white at .30, offset 2px. */
+.dithered-sunrise-root .tc-term {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin-inline: auto;
+  border-radius: 8px 8px 0 0;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-term-bar {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dithered-sunrise-root .tc-term-body {
+  padding: 24px 28px 30px;
+  font-family: var(--tc-mono);
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.74);
+  overflow-x: auto;
+}
+
+.dithered-sunrise-root .tc-term-line {
+  white-space: pre;
+}
+
+.dithered-sunrise-root .tc-term-line[data-tone='prompt'] {
+  color: #ffffff;
+}
+
+.dithered-sunrise-root .tc-term-line[data-tone='dim'] {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.dithered-sunrise-root .tc-term-line[data-tone='gap'] {
+  height: 12px;
+}
+
+.dithered-sunrise-root .tc-term-key {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.dithered-sunrise-root .tc-swap {
+  display: grid;
+  grid-template-columns: minmax(0, auto) 18px minmax(0, 1fr);
+  gap: 0 8px;
+  white-space: nowrap;
+}
+
+.dithered-sunrise-root .tc-swap-src {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dithered-sunrise-root .tc-swap-arrow {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.dithered-sunrise-root .tc-swap-out {
+  display: grid;
+}
+
+.dithered-sunrise-root .tc-swap-out > i {
+  grid-area: 1 / 1;
+  font-style: normal;
+  color: #ffffff;
+}
+
+/* ---------- trusted-by ---------- */
+
+/* A ruled band, not a line of words. The caption sits on its own row, the six
+   marks below it are divided into cells by the same hairline the page uses
+   everywhere else, and the whole band is tall enough to be a section rather
+   than a caption wedged between two rules. */
+.dithered-sunrise-root .tc-trust {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+  font-size: 12.5px;
+  color: var(--tc-ink-3);
+}
+
+.dithered-sunrise-root .tc-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 10px 30px;
+}
+
+.dithered-sunrise-root .tc-trust-cell + .tc-trust-cell {
+  border-left: 1px solid var(--tc-hair-2);
+}
+
+/* Each mark is lettered rather than listed: the only variables are weight,
+   case, size and tracking, and both faces are the page's own. */
+/* ============================================================
+   FRAMEWORK TABS
+   ============================================================ */
+
+.dithered-sunrise-root .tc-tabs {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.dithered-sunrise-root .tc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.dithered-sunrise-root .tc-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 15px 14px 16px;
+  font-family: var(--tc-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  color: var(--tc-ink-3);
+  cursor: pointer;
   transition: color 0.18s ease;
 }
 
-.dithered-sunrise-root .ds-nav-links a:hover {
-  color: var(--ds-gold-bright);
+.dithered-sunrise-root .tc-tab:hover {
+  color: var(--tc-ink-2);
 }
 
-.dithered-sunrise-root .ds-nav-cta {
+.dithered-sunrise-root .tc-tab[data-on='true'] {
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .tc-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--tc-accent);
+  pointer-events: none;
+}
+
+.dithered-sunrise-root .tc-fw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.48fr) 1px minmax(0, 1fr);
+  align-items: start;
+}
+
+.dithered-sunrise-root .tc-fw-rule {
+  align-self: stretch;
+  background: var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-fw-code {
+  padding: var(--tc-gut);
+}
+
+.dithered-sunrise-root .tc-fw-side {
+  padding: var(--tc-gut);
+  display: flex;
+  flex-direction: column;
+}
+
+.dithered-sunrise-root .tc-fw-pkg {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .tc-fw-side p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* The capability table takes whatever depth the sample beside it sets: it is
+   the pane's toned surface, stretched, instead of paper left blank under the
+   reference link. Second-surface cells, shared hairlines. Each cell is a
+   name over a real output in mono — nine artifacts, not nine words. */
+.dithered-sunrise-root .tc-caps {
+  flex: 1;
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(52px, 1fr);
+  gap: 1px;
+  background: var(--tc-hair);
+  border: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-caps span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  background: var(--tc-plate);
+  padding: 9px 10px;
+  font-size: 12.5px;
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .tc-caps b {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.dithered-sunrise-root .tc-caps code {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .tc-fw-run {
+  margin-top: 12px;
+  display: grid;
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-fw-run span {
+  padding: 10px 0;
+  font-family: var(--tc-mono);
+  font-size: 12.5px;
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .tc-fw-run span + span {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.dithered-sunrise-root .tc-fw-run span::before {
+  content: '$ ';
+  color: var(--tc-ink-4);
+}
+
+/* The pane bottoms out with the code beside it rather than stopping short. */
+.dithered-sunrise-root .tc-fw-side {
+  align-self: stretch;
+}
+
+.dithered-sunrise-root .tc-fw-link {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  flex: none;
+}
+
+.dithered-sunrise-root .tc-fw-link:hover {
+  color: var(--tc-ink);
+  border-color: var(--tc-ink-3);
+}
+
+/* ---------- code surface ---------- */
+
+/* The frame is not only a property of bento cells. Every code and terminal
+   surface on the page is mounted — the config panel, both story stages — and
+   the sample above the fold is the last one that was not, which made a systemic
+   device look like a coincidence. `tc-mount` is the same mat and card as
+   `is-framed`, for a surface that is not a grid cell. */
+.dithered-sunrise-root .tc-mount {
+  padding: 0;
+  border: 1px solid var(--tc-mat-edge);
+  border-radius: 5px;
+  background: var(--tc-mat);
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-mount > .tc-card {
+  padding: 0;
+  border-radius: 0;
+  background: var(--tc-card);
+}
+
+/* ---------- the dark inset panel ----------
+   Code, config and diffs are the one artifact the references never leave on
+   paper: they sit on their own toned surface. Every `tc-code` sample is that
+   surface now — `#101010`, small radius, white 13.5/24 mono — so the page
+   carries a dark panel at every depth between the hero terminal and the band,
+   instead of pale marks on paper. Inside a mount the panel keeps its box: the
+   mat frames it, the panel carries the mass, and the two jobs stay distinct. */
+.dithered-sunrise-root .tc-code {
+  border-radius: 4px;
+  background: var(--tc-panel);
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-mount .tc-code {
+  border-radius: 0;
+}
+
+/* No gutter means no gutter: an empty 38px column left the JSON floating a
+   third of an inch off the card's left edge with nothing in the space. */
+.dithered-sunrise-root .tc-code[data-numbers='false'] .tc-code-line {
+  grid-template-columns: minmax(0, 1fr);
+  padding-left: 18px;
+}
+
+.dithered-sunrise-root .tc-code-bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  height: 38px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-panel-dim);
 }
 
-/* --------------------------------------------------------------- buttons */
-
-.dithered-sunrise-root .ds-btn {
-  display: inline-block;
-  font-family: var(--ds-body);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+.dithered-sunrise-root .tc-code-copy {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  padding: 14px 26px;
-  transition:
-    background-color 0.18s ease,
-    color 0.18s ease,
-    box-shadow 0.18s ease;
+  color: var(--tc-panel-faint);
+  cursor: pointer;
+  transition: color 0.18s ease;
 }
 
-.dithered-sunrise-root .ds-btn-sm {
-  padding: 9px 16px;
+.dithered-sunrise-root .tc-code-copy:hover {
+  color: var(--tc-panel-ink);
+}
+
+.dithered-sunrise-root .tc-code pre {
+  margin: 0;
+  padding: 15px 0 18px;
+  overflow-x: auto;
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--tc-panel-ink);
+  tab-size: 2;
+}
+
+.dithered-sunrise-root .tc-code-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-right: 18px;
+  white-space: pre;
+}
+
+.dithered-sunrise-root .tc-code-n {
+  text-align: right;
+  padding-right: 16px;
+  color: var(--tc-panel-faint);
+  user-select: none;
+}
+
+/* The light token set, for a sample that sits on the page ground. */
+.dithered-sunrise-root .tc-t-str {
+  color: var(--tc-ink-3);
+}
+
+.dithered-sunrise-root .tc-t-kw {
+  color: var(--tc-ink-2);
+}
+
+/* GT's API is emphasis, not hue: the accent's six places are all diagram
+   states, never syntax tokens. */
+.dithered-sunrise-root .tc-t-gt {
+  color: var(--tc-ink);
+  font-weight: 500;
+}
+
+.dithered-sunrise-root .tc-t-com {
+  color: var(--tc-ink-4);
+}
+
+.dithered-sunrise-root .tc-t-num {
+  color: var(--tc-ink-3);
+}
+
+/* Four tones on the dark panel: white for the code, two greys for structure,
+   and the accent spent once — on GT's own API. */
+.dithered-sunrise-root .tc-code .tc-t-str {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dithered-sunrise-root .tc-code .tc-t-kw {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.dithered-sunrise-root .tc-code .tc-t-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.dithered-sunrise-root .tc-code .tc-t-com {
+  color: var(--tc-panel-faint);
+}
+
+.dithered-sunrise-root .tc-code .tc-t-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   BENTO — the shells, which never repeat within a run
+   ============================================================ */
+
+/* ---------- where cells end ----------
+   One rule, and it is about edges rather than about content: a mat has a visible
+   bottom edge, a flat text cell does not.
+
+   So a row whose cells are ALL mounted shares a baseline — two or three drawn
+   edges stopping at three different heights reads as rag, not as composed
+   asymmetry, and that was true of every framed row on the page. A row that
+   pairs a mat with flat copy keeps its own heights, because there is no second
+   edge for the first one to disagree with; letting the copy end where the copy
+   ends is then a decision a reader can actually read.
+
+   The stretch is only safe because every mounted cell distributes its own slack:
+   `.tc-lang`, `.tc-art`, `.tc-art-center`, `.tc-surface` and `.tc-bleed-art` all
+   take `flex: 1` and centre, and `.tc-stats` spreads its rows. Nothing here ends
+   up as dead card under a block of content. */
+.dithered-sunrise-root .tc-row {
+  display: grid;
+  align-items: start;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-row.is-lead,
+.dithered-sunrise-root .tc-row.is-three,
+.dithered-sunrise-root .tc-row.is-wide-left,
+.dithered-sunrise-root .tc-row.is-tilt,
+.dithered-sunrise-root .tc-row.is-grammar {
+  align-items: stretch;
+}
+
+.dithered-sunrise-root .tc-row:first-of-type {
+  border-top: 0;
+}
+
+.dithered-sunrise-root .tc-row > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-row.is-split {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+}
+
+.dithered-sunrise-root .tc-row.is-lead {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+}
+
+/* Tipped, because the three diagrams in it are not the same width: the fork
+   needs the most room, the term ledger the least. */
+.dithered-sunrise-root .tc-row.is-three {
+  grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.93fr) minmax(0, 0.94fr);
+}
+
+.dithered-sunrise-root .tc-row.is-wide-left {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.dithered-sunrise-root .tc-row.is-wide-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.34fr);
+}
+
+.dithered-sunrise-root .tc-row.is-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A pair tipped off centre — the stat list needs less room than the script
+   field beside it, and saying so is cheaper than another 1:1. */
+.dithered-sunrise-root .tc-row.is-tilt {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+}
+
+/* The one pair that leans left-light. Both grammar diagrams need most of a half
+   to stay legible, so this row works the narrow band the page had left between
+   `is-tilt` and `is-split` rather than inventing a shape neither would fit. */
+.dithered-sunrise-root .tc-row.is-grammar {
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1fr);
+}
+
+.dithered-sunrise-root .tc-row.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.dithered-sunrise-root .tc-cell {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) clamp(30px, 3.4vw, 40px);
+}
+
+.dithered-sunrise-root .tc-cell h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.dithered-sunrise-root .tc-cell > p,
+.dithered-sunrise-root .tc-card > p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* A floor, not a lock. Enough that a sparse cell still reads as a panel; not so
+   much that the taller cell beside it dictates where the shorter one ends. */
+.dithered-sunrise-root .tc-cell.is-tall {
+  min-height: 300px;
+}
+
+.dithered-sunrise-root .tc-cell.is-short {
+  min-height: 244px;
+}
+
+/* ---------- the nested frame ----------
+   The founder's corner grammar: a cell that carries something visual is a
+   MAT — the shell line colour, zero padding — and the card inside it is
+   radius-12 white, so the grey ground fills the corner notches. ONE ring,
+   never doubled edges. Text-only cells never get this — the contrast is the
+   whole point, and it is also why the vertical rule is dropped wherever a
+   mat provides the edge. */
+
+.dithered-sunrise-root .tc-cell.is-framed {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: flex;
+}
+
+/* The ground behind the white cards is the shell line colour, so a row of
+   framed cells reads as white cards on the shell's own grey. */
+.dithered-sunrise-root .tc-row:has(> .tc-cell.is-framed) {
+  background: var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-cell.is-framed > .tc-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--tc-card-pad);
+  border: 0;
+  border-radius: 12px;
+  background: var(--tc-card);
+}
+
+.dithered-sunrise-root .tc-row > .is-framed + *,
+.dithered-sunrise-root .tc-row > * + .is-framed {
+  border-left: 0;
+}
+
+/* ---------- diagonal spacer band ----------
+   Bounded, content-free breathing room between specific rows. Not a field
+   behind content — a ruled strip between subjects. */
+
+/* C1.2: the spacer keeps its two hairlines and owns them once; the strip
+   between them is filled by the BayerBand lattice (sections/deco/BayerBand)
+   in the ornament gold, one flat 4/16 tier, never a gradient. */
+.dithered-sunrise-root .tc-hatch {
+  position: relative;
+  z-index: 2;
+  height: clamp(28px, 3.4vw, 40px);
+  border-top: 1px solid var(--tc-hair);
+  border-bottom: 1px solid var(--tc-hair);
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-hatch .ds-band {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dithered-sunrise-root .tc-hatch + .tc-row {
+  border-top: 0;
+}
+
+/* the visual half of a split row: centred, breathing, never cropped */
+.dithered-sunrise-root .tc-art {
+  flex: 1;
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dithered-sunrise-root .tc-art-center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* The SDK stack, which is the one drawing that labels every level of itself.
+   Its type is measured in viewBox units, so the size lives with the placement
+   that fixes the drawing's on-screen scale. */
+.dithered-sunrise-root .tc-art-w {
+  width: 100%;
+  max-width: 400px;
+  --iso-label-size: 7px;
+}
+
+.dithered-sunrise-root .tc-art-sm {
+  width: 100%;
+  max-width: 226px;
+}
+
+
+/* The four small surfaces. They are panels rather than objects, so they take
+   the width of the card instead of being centred as a drawing inside it. */
+.dithered-sunrise-root .tc-surface {
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A surface zone that holds light objects (the routing bars): the plate is
+   the card's own white now — the frame carries the edge work. */
+.dithered-sunrise-root .tc-surface.is-plated {
+  margin-top: 12px;
+}
+
+/* ---------- the ruled band ----------
+   Four short items across the column used to be four separate mounted cells,
+   and four cells of identical shape in a rank is the one thing this direction
+   cannot survive: the row read as a card grid and the frame stopped meaning
+   anything. So the four are one mount now, divided by the same hairline the
+   page uses between sections. It is a spec table rather than a row of cards —
+   a shell that appears once, and one border level shallower, because each
+   column is separated by a rule instead of by a box. */
+.dithered-sunrise-root .tc-quad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dithered-sunrise-root .tc-quad > * {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-right: clamp(14px, 1.7vw, 22px);
+}
+
+.dithered-sunrise-root .tc-quad > * + * {
+  padding-left: clamp(14px, 1.7vw, 22px);
+  border-left: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-quad h3 {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.dithered-sunrise-root .tc-quad p {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tc-ink-2);
+}
+
+/* Left-aligned to the column's own text edge. Centred, a panel narrower than a
+   folded column floats away from the heading it belongs to. */
+.dithered-sunrise-root .tc-quad .tc-surface {
+  justify-content: flex-start;
+}
+
+/* full-bleed visual cell — heading padded, artwork to the cell edge.
+   `:not(.is-framed)` is load-bearing, not defensive. This selector has the same
+   specificity as `.tc-cell.is-framed` and comes after it, so an unqualified
+   `padding: 0` here silently won the cascade on every `is-bleed is-framed` cell
+   and stripped the 2px mat off the two largest illustrations on the page — the
+   exact opposite of what the block below this one is written to do. */
+.dithered-sunrise-root .tc-cell.is-bleed:not(.is-framed) {
+  padding: 0;
+}
+
+.dithered-sunrise-root .tc-bleed-head {
+  padding: clamp(26px, 3vw, 36px) var(--tc-gut) 0;
+}
+
+.dithered-sunrise-root .tc-bleed-art {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px clamp(18px, 3vw, 40px) 34px;
+  background: var(--tc-plate);
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.dithered-sunrise-root .tc-bleed-art.is-only {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/* framed and full-bleed at once: the art still runs to an edge, but the edge
+   is now the card's, so the card clips it to the inner 2px radius */
+.dithered-sunrise-root .tc-cell.is-bleed.is-framed > .tc-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-cell.is-bleed.is-framed .tc-bleed-head {
+  padding: var(--tc-card-pad) var(--tc-card-pad) 0;
+}
+
+/* the art's own backdrop is lifted here so the mat still reveals against it —
+   a full-bleed cell has no card padding to show the reveal for it */
+.dithered-sunrise-root .tc-cell.is-bleed.is-framed .tc-bleed-art {
+  padding: 18px clamp(14px, 2vw, 26px) 22px;
+  background: var(--tc-plate);
+}
+
+/* Trimmed from 460. This drawing sets the height of the row it is in, and the
+   code panel beside it now ends level with it rather than half a card short. */
+.dithered-sunrise-root .tc-bleed-art .iso {
+  max-width: 412px;
+  --iso-label-size: 6px;
+}
+
+/* The globe used to be the page's second full-bleed cell, which made it the one
+   object in the family sitting on a tinted field instead of on the page's own
+   surface — and with the mat missing, that tint was doing the edge work the
+   frame should have been doing. It is a mounted drawing now, like every other
+   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
+   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
+   at a hairline on screen rather than a soft 3px grey. */
+.dithered-sunrise-root .tc-art-globe {
+  width: 100%;
+  max-width: 560px;
+  --iso-sw: 0.72;
+  /* ~11.5–13px on screen at this cell's rendered scale — the annotation floor. */
+  --iso-label-size: 8.5px;
+}
+
+/* ---------- the night cell ----------
+   The Delivery globe sits on the page's own dark panel: the cage is drawn in
+   white wire, the labels in white mono, and the cell carries a toned surface
+   the way every reference pairs an object with mass. Same mat, same 2px
+   reveal — only the card's surface changes. */
+.dithered-sunrise-root .tc-cell.is-night > .tc-card {
+  background: var(--tc-panel);
+  color: rgba(255, 255, 255, 0.88);
+
+  --iso-ink: rgba(255, 255, 255, 0.9);
+  --iso-ink-soft: rgba(255, 255, 255, 0.55);
+  --iso-ink-hair: rgba(255, 255, 255, 0.28);
+  --iso-accent: #ffffff;
+  --iso-label-color: rgba(255, 255, 255, 0.78);
+}
+
+/* Outranks the generic `.tc-card > p` ink rule. */
+.dithered-sunrise-root .tc-cell.is-night .tc-card > p.tc-night-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-panel-rule);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  max-width: none;
+  color: var(--tc-panel-dim);
+}
+
+.dithered-sunrise-root .tc-bleed-head p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 46ch;
+}
+
+/* checkmark list with inline code chips */
+.dithered-sunrise-root .tc-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.dithered-sunrise-root .tc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .tc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 6px;
+  width: 8px;
+  height: 5px;
+  border-left: 1.5px solid var(--tc-ink-3);
+  border-bottom: 1.5px solid var(--tc-ink-3);
+  transform: rotate(-45deg);
+}
+
+.dithered-sunrise-root code.tc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .tc-cell-act {
+  margin-top: 12px;
+}
+
+/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
+   used to sit beside these numbers carried zero data — the founder's ban on
+   ornamental icons, verbatim — so the rows are a table now: value in ink,
+   label muted, one hairline per row, the whole thing on the plate. The rows
+   spread over whatever height the script field beside them settles on. */
+.dithered-sunrise-root .tc-stats {
+  flex: 1;
+  margin-top: 12px;
+  padding: 0;
+  display: grid;
+  align-content: space-between;
+}
+
+.dithered-sunrise-root .tc-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.dithered-sunrise-root .tc-stat + .tc-stat {
+  margin-top: 15px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-stat-value {
+  font-family: var(--tc-disp);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.dithered-sunrise-root .tc-stat-label {
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--tc-ink-2);
+}
+
+/* inset panel cell — the frame now does what the sunk surface used to */
+.dithered-sunrise-root .tc-cell.is-panel .tc-code {
+  margin-top: 12px;
+}
+
+/* ---------- the animated language diagrams ----------
+   They are the content of the cells they sit in, so they get the room the
+   isometric objects get, centred and never cropped.
+
+   Every one of these zones is a plate now — the second surface, edge to edge,
+   with the page's hairline ring. The diagram is a real artifact ON a material,
+   never pale marks floating on the card's own paper; this is the single move
+   that separates the references' light cells from a wireframe. The diagrams'
+   own ground color follows the plate so sandwich strokes (the doubled thread's
+   core) cut against the right surface. */
+
+.dithered-sunrise-root .tc-lang {
+  flex: 1;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --lang-ground: var(--tc-white);
+}
+
+.dithered-sunrise-root .tc-lang.is-lead {
+  margin-top: 26px;
+}
+
+/* In-diagram annotation floor on this fork: nothing mono renders under 12px.
+   The borrowed language diagrams bring an 11px caption with them; re-set it. */
+.dithered-sunrise-root .lang-sw-note {
   font-size: 12px;
 }
 
-.dithered-sunrise-root .ds-btn-solid {
-  background: var(--ds-gold);
-  color: var(--ds-ground);
+/* The signature diagram takes the whole card here: it leads the bento, and a
+   ruler that stops short of both edges reads as an object floating in a cell
+   rather than as the scale the container is measured against. `--lang-sw-size`
+   is the nominal type size — the diagram measures German at it, then scales up
+   from it until the widest translation fills the room (capped), so the box, the
+   ruler and the percentages all stay browser-measured. */
+.dithered-sunrise-root .tc-lang.is-lead .lang-sw {
+  max-width: none;
+  --lang-sw-size: 23px;
 }
 
-.dithered-sunrise-root .ds-btn-solid:hover {
-  background: var(--ds-gold-bright);
+.dithered-sunrise-root .tc-lang.is-lead .lang-sw-name,
+.dithered-sunrise-root .tc-lang.is-lead .lang-sw-pct {
+  font-size: 13px;
 }
 
-.dithered-sunrise-root .ds-btn-line {
-  color: var(--ds-gold-bright);
-  box-shadow: inset 0 0 0 1px var(--ds-ember);
+/* plain text cell */
+.dithered-sunrise-root .tc-plain {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 64px);
 }
 
-.dithered-sunrise-root .ds-btn-line:hover {
-  box-shadow: inset 0 0 0 1px var(--ds-gold);
-  color: var(--ds-paper);
+.dithered-sunrise-root .tc-plain p {
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 34ch;
 }
 
-/* ------------------------------------------------------------------ hero */
+.dithered-sunrise-root .tc-plain ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+}
 
-.dithered-sunrise-root .ds-hero {
+.dithered-sunrise-root .tc-plain li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--tc-hair-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tc-ink-2);
+}
+
+/* ============================================================
+   THE ONE DARK BAND
+   ============================================================ */
+
+.dithered-sunrise-root .tc-band {
   position: relative;
-  min-height: 100svh;
-  display: flex;
+  background: var(--tc-dark);
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  isolation: isolate;
+
+  --iso-accent: #ffffff;
+  --iso-ink: rgba(255, 255, 255, 0.78);
+  --iso-ink-soft: rgba(255, 255, 255, 0.44);
+  --iso-ink-hair: rgba(255, 255, 255, 0.2);
 }
 
-.dithered-sunrise-root .ds-hero-canvas {
+.dithered-sunrise-root .tc-band-in {
+  position: relative;
+  z-index: 1;
+  width: min(var(--tc-rail), 100%);
+  margin-inline: auto;
+  border-inline: 1px solid rgba(255, 255, 255, 0.11);
+  padding: clamp(66px, 8vw, 108px) var(--tc-gut) clamp(120px, 12vw, 170px);
+}
+
+/* Lede left, texture panel right — full-height split. */
+.dithered-sunrise-root .tc-band-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  gap: clamp(32px, 4.4vw, 68px);
+  align-items: stretch;
+}
+
+.dithered-sunrise-root .tc-band-lede {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(6px, 1vw, 14px) 0 clamp(4px, 0.8vw, 10px);
+}
+
+/* the lede's foot: what "buildtime, runtime, and review" concretely are */
+.dithered-sunrise-root .tc-band-index {
+  margin-top: auto;
+  padding-top: clamp(26px, 3vw, 40px);
+}
+
+.dithered-sunrise-root .tc-band-index-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dithered-sunrise-root .tc-band-index-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dithered-sunrise-root .tc-band-index-row span {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.dithered-sunrise-root .tc-band-index-row b {
+  font-family: var(--tc-mono);
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* The band's one material moment: a full-height texture panel bleeding past
+   the band's top edge and out to the right rail — the halftone bloom, run
+   bright at the edges and held at ink in its core, with the status terminal
+   floating in that core. Same grammar as the references' light panel, drawn
+   by the Bayer engine. */
+.dithered-sunrise-root .tc-band-panel {
+  position: relative;
+  overflow: hidden;
+  margin-top: calc(-1 * clamp(66px, 8vw, 108px));
+  margin-right: calc(-1 * var(--tc-gut));
+  border-radius: 0 0 0 8px;
+  background: #070707;
+  min-height: clamp(430px, 42vw, 560px);
+  display: grid;
+  place-items: center;
+}
+
+.dithered-sunrise-root .df-panel-field {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
+  image-rendering: pixelated;
+  z-index: 0;
+  opacity: 0.92;
+  pointer-events: none;
 }
 
-.dithered-sunrise-root .ds-hero-inner {
+.dithered-sunrise-root .tc-band-panel .tc-band-term {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 880px;
-  margin: 0 auto;
-  text-align: center;
-  padding: clamp(120px, 16vh, 190px) 24px 46vh;
+  width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
+  margin: clamp(40px, 4.6vw, 64px) 0;
+  background: #070707;
+  outline-color: rgba(255, 255, 255, 0.3);
 }
 
-.dithered-sunrise-root .ds-hero-title {
-  font-size: clamp(46px, 7.6vw, 96px);
-  line-height: 1.04;
+.dithered-sunrise-root .tc-band-term {
+  border-radius: 6px;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.22);
+  outline-offset: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-band-term-bar {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
   letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
 }
 
-.dithered-sunrise-root .ds-hero-gold {
-  color: var(--ds-gold-bright);
-}
-
-.dithered-sunrise-root .ds-hero-lede {
-  max-width: 620px;
-  margin: 26px auto 0;
-  color: var(--ds-muted);
-}
-
-.dithered-sunrise-root .ds-cta-row {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 34px;
-}
-
-.dithered-sunrise-root .ds-chip-code {
-  display: inline-block;
-  margin-top: 22px;
-  font-family: var(--ds-mono);
+.dithered-sunrise-root .tc-band-term-body {
+  padding: 16px 18px 18px;
+  font-family: var(--tc-mono);
   font-size: 13px;
-  color: var(--ds-ember);
-  padding: 7px 14px;
-  /* dotted frame: discrete squares, no solid rule */
-  background-image:
-    repeating-linear-gradient(90deg, var(--ds-ember) 0 3px, transparent 3px 9px),
-    repeating-linear-gradient(90deg, var(--ds-ember) 0 3px, transparent 3px 9px);
-  background-repeat: repeat-x;
-  background-size: 100% 2px;
-  background-position:
-    0 0,
-    0 100%;
-}
-
-/* inline code token in body copy */
-.dithered-sunrise-root .ds-ic {
-  font-family: var(--ds-mono);
-  font-size: 0.86em;
-  color: var(--ds-gold-bright);
-}
-
-/* ----------------------------------------------------------- section shell */
-
-.dithered-sunrise-root .ds-sec {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: clamp(72px, 10vw, 120px) 24px;
-}
-
-.dithered-sunrise-root .ds-sechead {
-  text-align: center;
-  margin-bottom: clamp(40px, 6vw, 64px);
-}
-
-.dithered-sunrise-root .ds-arc {
-  display: block;
-  width: clamp(150px, 20vw, 210px);
-  height: auto;
-  margin: 0 auto 22px;
-}
-
-.dithered-sunrise-root .ds-sechead h2 {
-  font-size: clamp(34px, 4.8vw, 58px);
-  letter-spacing: 0.03em;
-}
-
-.dithered-sunrise-root .ds-lede {
-  max-width: 640px;
-  margin: 16px auto 0;
-  color: var(--ds-muted);
-}
-
-/* ----------------------------------------------------------------- proof */
-
-.dithered-sunrise-root .ds-proof-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-}
-
-.dithered-sunrise-root .ds-panel {
-  background: var(--ds-panel);
-  padding: 22px 24px 26px;
-}
-
-.dithered-sunrise-root .ds-panel-title {
-  font-family: var(--ds-mono);
-  font-size: 12px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ds-ember);
-  padding-bottom: 14px;
-  margin-bottom: 16px;
-  /* dotted rule */
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--ds-line) 0 3px,
-    transparent 3px 9px
-  );
-  background-repeat: repeat-x;
-  background-size: 100% 2px;
-  background-position: 0 100%;
-}
-
-.dithered-sunrise-root .ds-code {
-  margin: 0;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre;
   overflow-x: auto;
-  font-family: var(--ds-mono);
-  font-size: 13.5px;
-  line-height: 1.7;
-  color: var(--ds-paper);
 }
 
-.dithered-sunrise-root .ds-code .k {
-  color: var(--ds-gold);
+.dithered-sunrise-root .tc-band-term-body [data-tone='prompt'] {
+  color: #ffffff;
 }
 
-.dithered-sunrise-root .ds-code .f {
-  color: var(--ds-paper);
+.dithered-sunrise-root .tc-band-term-key {
+  color: rgba(255, 255, 255, 0.42);
 }
 
-.dithered-sunrise-root .ds-code .s {
-  color: var(--ds-gold-bright);
+.dithered-sunrise-root .tc-band h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  max-width: 18ch;
+  color: #ffffff;
 }
 
-.dithered-sunrise-root .ds-code .t {
-  color: var(--ds-gold-bright);
+.dithered-sunrise-root .tc-band-sub {
+  margin-top: 15px;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.dithered-sunrise-root .ds-code .p {
-  color: var(--ds-muted);
+/* One sheet, four different objects, one bottom line: no internal rules —
+   the four plates carry the mass, the shared top rule carries the structure. */
+.dithered-sunrise-root .tc-band-grid {
+  margin-top: clamp(46px, 5.4vw, 70px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: clamp(20px, 2.6vw, 34px);
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
 }
 
-.dithered-sunrise-root .ds-out {
+.dithered-sunrise-root .tc-band-grid > div {
+  padding: 26px 0 0;
   display: flex;
   flex-direction: column;
-}
-
-.dithered-sunrise-root .ds-out-row {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  padding: 11px 0;
-}
-
-.dithered-sunrise-root .ds-out-row + .ds-out-row {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--ds-line) 0 3px,
-    transparent 3px 9px
-  );
-  background-repeat: repeat-x;
-  background-size: 100% 2px;
-  background-position: 0 0;
-}
-
-.dithered-sunrise-root .ds-out-row[dir='rtl'] {
-  text-align: right;
-}
-
-.dithered-sunrise-root .ds-out-tag {
-  font-family: var(--ds-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ds-ground);
-  background: var(--ds-ember);
-  padding: 2px 7px;
-  flex: none;
-}
-
-.dithered-sunrise-root .ds-out-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
   min-width: 0;
 }
 
-.dithered-sunrise-root .ds-out-title {
-  font-weight: 500;
-  font-size: 16px;
-}
-
-.dithered-sunrise-root .ds-out-body {
-  color: var(--ds-muted);
-  font-size: 14.5px;
-}
-
-.dithered-sunrise-root .ds-proof-note {
-  text-align: center;
-  color: var(--ds-muted);
-  max-width: 560px;
-  margin: 30px auto 0;
-  font-size: 15.5px;
-}
-
-.dithered-sunrise-root .ds-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  margin-top: clamp(40px, 6vw, 60px);
-}
-
-.dithered-sunrise-root .ds-step {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  text-align: center;
-}
-
-.dithered-sunrise-root .ds-step-n {
-  font-family: var(--ds-display);
-  font-size: 42px;
-  color: var(--ds-gold);
-  line-height: 1;
-}
-
-.dithered-sunrise-root .ds-step-t {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.dithered-sunrise-root .ds-step-b {
-  color: var(--ds-muted);
+.dithered-sunrise-root .tc-band-grid h3 {
   font-size: 15px;
-  max-width: 280px;
-  margin: 0 auto;
+  letter-spacing: -0.012em;
+  color: #ffffff;
 }
 
-/* ----------------------------------------------------------------- atlas */
-
-.dithered-sunrise-root .ds-fan {
-  position: relative;
-  aspect-ratio: 2 / 1;
-  max-width: 960px;
-  margin: 0 auto;
+.dithered-sunrise-root .tc-band-grid p {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.56);
 }
 
-.dithered-sunrise-root .ds-ray {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: var(--len);
-  height: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transform-origin: left center;
-  transform: rotate(var(--a));
-}
+/* ---- the four service minis: dark shells, flush content, no internal rules ---- */
 
-.dithered-sunrise-root .ds-ray-line {
+.dithered-sunrise-root .tcm {
+  margin-top: 18px;
+  border-radius: 6px;
+  background: #101010;
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+  outline-offset: 2px;
+  font-family: var(--tc-mono);
+  overflow: hidden;
   flex: 1;
-  height: 3px;
-  margin-left: 104px;
-  /* a ray is a row of discrete gold squares */
-  background: repeating-linear-gradient(
-    90deg,
-    var(--ds-ember) 0 3px,
-    transparent 3px 10px
-  );
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 218px;
 }
 
-.dithered-sunrise-root .ds-ray-label {
-  transform: rotate(calc(-1 * var(--a)));
+.dithered-sunrise-root .tcm-file {
+  padding: 11px 14px 0;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.4);
   white-space: nowrap;
-  font-size: clamp(15px, 1.8vw, 21px);
-  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.dithered-sunrise-root .ds-ray-tag {
-  font-family: var(--ds-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ds-ember);
-  vertical-align: middle;
-  margin-inline-start: 4px;
+.dithered-sunrise-root .tcm-pre {
+  margin: 8px 0 0;
+  padding: 0 14px;
+  font-size: 11.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre;
+  overflow-x: auto;
 }
 
-.dithered-sunrise-root .ds-fan-hub {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 190px;
-  height: auto;
+.dithered-sunrise-root .tcm-dim {
+  color: rgba(255, 255, 255, 0.42);
 }
 
-.dithered-sunrise-root .ds-atlas-note {
-  text-align: center;
-  color: var(--ds-muted);
-  max-width: 560px;
-  margin: 40px auto 0;
-  font-size: 15.5px;
+.dithered-sunrise-root .tcm-kw {
+  color: rgba(255, 255, 255, 0.5);
 }
 
-/* -------------------------------------------------------------- products */
+.dithered-sunrise-root .tcm-str {
+  color: rgba(255, 255, 255, 0.62);
+}
 
-.dithered-sunrise-root .ds-cards {
+/* GT's own API carries weight, not hue — same rule as every code panel. */
+.dithered-sunrise-root .tcm-gt {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.dithered-sunrise-root .tcm-rows {
+  margin-top: 9px;
+  padding: 0 14px 13px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
+  gap: 5px;
 }
 
-.dithered-sunrise-root .ds-card {
-  background: var(--ds-panel);
-  padding: 0 22px 24px;
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.18s ease;
+.dithered-sunrise-root .tcm-rows.is-ledger {
+  margin-top: 10px;
+  gap: 9px;
 }
 
-.dithered-sunrise-root .ds-card:hover {
-  background: var(--ds-panel-2);
-}
-
-.dithered-sunrise-root .ds-dotband {
-  display: block;
-  height: 6px;
-  margin: 0 -22px 18px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--ds-gold) 0 3px,
-    transparent 3px 8px
-  );
-}
-
-.dithered-sunrise-root .ds-card-kind {
-  font-family: var(--ds-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ds-ember);
-}
-
-.dithered-sunrise-root .ds-card-name {
-  font-size: 26px;
-  margin-top: 8px;
-  letter-spacing: 0.03em;
-}
-
-.dithered-sunrise-root .ds-card-body {
-  color: var(--ds-muted);
-  font-size: 14.5px;
-  margin: 10px 0 0;
-}
-
-/* --------------------------------------------------------------- pricing */
-
-.dithered-sunrise-root .ds-rates {
-  max-width: 680px;
-  margin: 0 auto clamp(40px, 6vw, 56px);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.dithered-sunrise-root .ds-rate {
+.dithered-sunrise-root .tcm-row {
   display: flex;
   align-items: baseline;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
 }
 
-.dithered-sunrise-root .ds-rate-name {
+.dithered-sunrise-root .tcm-rows.is-ledger .tcm-row {
+  font-size: 12px;
+}
+
+.dithered-sunrise-root .tcm-row span {
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.dithered-sunrise-root .tcm-row b {
   font-weight: 500;
-  font-size: 15.5px;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
 }
 
-.dithered-sunrise-root .ds-rate-dots {
-  flex: 1;
-  align-self: center;
-  height: 3px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--ds-line) 0 3px,
-    transparent 3px 9px
-  );
+/* the pinned band every plate ends on — a tinted fill, not a rule */
+.dithered-sunrise-root .tcm-bottom {
+  margin-top: auto;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.dithered-sunrise-root .ds-rate-value {
-  font-family: var(--ds-mono);
-  font-size: 14px;
-  color: var(--ds-gold-bright);
+/* Code: an editor — tab strip on top, gutter numbers in the code */
+.dithered-sunrise-root .tcm-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
 }
 
-.dithered-sunrise-root .ds-plans {
+.dithered-sunrise-root .tcm-tabs span {
+  padding: 10px 14px 8px;
+  color: rgba(255, 255, 255, 0.38);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.dithered-sunrise-root .tcm-tabs .is-on {
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.9);
+}
+
+.dithered-sunrise-root .tcm-ln {
+  display: inline-block;
+  width: 16px;
+  margin-right: 10px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.24);
+}
+
+/* Content: an exchange — request block, doubled thread, tinted response */
+.dithered-sunrise-root .tcm-tail {
+  margin-top: auto;
+}
+
+.dithered-sunrise-root .tcm-wire {
+  display: block;
+  margin: 2px 0 6px 26px;
+}
+
+.dithered-sunrise-root .tcm-wire path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: var(--thread-gauge, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+
+.dithered-sunrise-root .tcm-wire .tcm-wire-head {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: none;
+}
+
+.dithered-sunrise-root .tcm-resp {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 9px 0 12px;
+}
+
+.dithered-sunrise-root .tcm-resp-status {
+  padding: 0 14px;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.dithered-sunrise-root .tcm-resp .tcm-pre {
+  margin-top: 4px;
+}
+
+.dithered-sunrise-root .tcm-resp b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Dashboard: product UI — lighter card, locale chip strip, publish footer */
+.dithered-sunrise-root .tcm.is-dash {
+  background: #101010;
+}
+
+.dithered-sunrise-root .tcm-dash-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dithered-sunrise-root .tcm-dash-bar span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dithered-sunrise-root .tcm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px 2px;
+}
+
+.dithered-sunrise-root .tcm-chips span {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.dithered-sunrise-root .tcm.is-dash .tcm-rows.is-ledger {
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.dithered-sunrise-root .tcm-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.045);
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+}
+
+.dithered-sunrise-root .tcm-foot b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dithered-sunrise-root .tcm-foot span {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Locadex: a diff sheet — full-bleed tinted added lines under the hunk */
+.dithered-sunrise-root .tcm-diffbody {
+  padding: 0;
+  margin-top: 9px;
+}
+
+.dithered-sunrise-root .tcm-diffbody > div {
+  padding: 0 14px;
+}
+
+.dithered-sunrise-root .tcm-diffbody > .is-add {
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dithered-sunrise-root .tcm-diffbody > .is-del {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.dithered-sunrise-root .tc-band-acts {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dithered-sunrise-root .tc-band .tc-btn-solid {
+  background: #ffffff;
+  color: var(--tc-dark);
+}
+
+.dithered-sunrise-root .tc-band .tc-btn-solid:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.dithered-sunrise-root .tc-band .tc-btn-line {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.dithered-sunrise-root .tc-band .tc-btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+
+.dithered-sunrise-root .tc-plans {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  max-width: 880px;
-  margin: 0 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--tc-hair);
 }
 
-.dithered-sunrise-root .ds-plan {
-  background: var(--ds-panel);
-  padding: 30px 28px 32px;
+.dithered-sunrise-root .tc-plans > * + * {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-plan {
+  padding: clamp(28px, 3.4vw, 42px) var(--tc-gut) clamp(32px, 3.6vw, 44px);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+}
+
+.dithered-sunrise-root .tc-plan h3 {
+  font-size: 1.15rem;
+}
+
+.dithered-sunrise-root .tc-plan-price {
+  margin-top: 16px;
+  font-family: var(--tc-disp);
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.dithered-sunrise-root .tc-plan-price small {
+  font-family: var(--tc-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tc-ink-3);
+  margin-left: 8px;
+}
+
+.dithered-sunrise-root .tc-plan p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--tc-ink-2);
+  max-width: 40ch;
+}
+
+.dithered-sunrise-root .tc-plan .tc-list {
+  margin-top: 20px;
+}
+
+.dithered-sunrise-root .tc-plan .tc-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+.dithered-sunrise-root .tc-compare {
+  padding: 20px var(--tc-gut);
+  border-top: 1px solid var(--tc-hair);
+  font-size: 13px;
+  color: var(--tc-ink-3);
+}
+
+.dithered-sunrise-root .tc-compare a {
+  color: var(--tc-ink-2);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-compare a:hover {
+  color: var(--tc-ink);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.dithered-sunrise-root .tc-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(44px, 5vw, 64px) var(--tc-gut) 34px;
+}
+
+.dithered-sunrise-root .tc-foot-brand {
+  display: flex;
+  flex-direction: column;
   gap: 14px;
 }
 
-.dithered-sunrise-root .ds-plan-name {
-  font-size: 24px;
-  letter-spacing: 0.06em;
+.dithered-sunrise-root .tc-foot-brand p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tc-ink-3);
+  max-width: 26ch;
 }
 
-.dithered-sunrise-root .ds-plan-price {
-  font-family: var(--ds-display);
-  font-size: 44px;
-  line-height: 1;
-  color: var(--ds-gold-bright);
+.dithered-sunrise-root .tc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
 }
 
-.dithered-sunrise-root .ds-plan-per {
-  font-family: var(--ds-body);
-  font-size: 13px;
-  letter-spacing: 0.12em;
+.dithered-sunrise-root .tc-foot-cols h4 {
+  font-family: var(--tc-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--ds-muted);
+  color: var(--tc-ink-4);
+  margin-bottom: 12px;
 }
 
-.dithered-sunrise-root .ds-plan-body {
-  color: var(--ds-muted);
-  font-size: 15px;
-  margin: 0;
-}
-
-.dithered-sunrise-root .ds-plan-list {
-  list-style: none;
+.dithered-sunrise-root .tc-foot-cols ul {
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 15px;
-}
-
-.dithered-sunrise-root .ds-plan-list li {
-  padding-left: 18px;
-  /* a single gold cell as the bullet */
-  background-image: radial-gradient(
-    circle at 3px 12px,
-    var(--ds-gold) 0 2px,
-    transparent 2.1px
-  );
-  background-repeat: no-repeat;
-}
-
-.dithered-sunrise-root .ds-plan .ds-btn {
-  margin-top: 10px;
-}
-
-.dithered-sunrise-root .ds-price-note {
-  text-align: center;
-  color: var(--ds-muted);
-  font-size: 14.5px;
-  margin: 34px auto 0;
-  max-width: 520px;
-}
-
-/* ---------------------------------------------------------------- footer */
-
-.dithered-sunrise-root .ds-footer {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 24px 48px;
-}
-
-.dithered-sunrise-root .ds-footer-arc {
-  display: block;
-  width: 190px;
-  height: auto;
-  margin: 0 auto 56px;
-  /* the sunset: the dawn arc hung upside down */
-  transform: scaleY(-1);
-}
-
-.dithered-sunrise-root .ds-footer-grid {
+  list-style: none;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 32px;
+  gap: 9px;
 }
 
-.dithered-sunrise-root .ds-footer-col {
+.dithered-sunrise-root .tc-foot-cols a {
+  font-size: 13px;
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .tc-foot-cols a:hover {
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .tc-foot-bar {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dithered-sunrise-root .ds-footer-col h4 {
-  font-family: var(--ds-body);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ds-ember);
-  margin: 0 0 4px;
-}
-
-.dithered-sunrise-root .ds-footer-col a {
-  color: var(--ds-muted);
-  font-size: 14.5px;
-  transition: color 0.18s ease;
-}
-
-.dithered-sunrise-root .ds-footer-col a:hover {
-  color: var(--ds-gold-bright);
-}
-
-.dithered-sunrise-root .ds-footer-brand p {
-  color: var(--ds-muted);
-  font-size: 14.5px;
-  margin: 6px 0 0;
-  max-width: 240px;
-}
-
-.dithered-sunrise-root .ds-footer-legal {
-  display: flex;
+  align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 48px;
-  padding-top: 22px;
-  color: var(--ds-ember);
-  font-size: 13px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--ds-line) 0 3px,
-    transparent 3px 9px
-  );
-  background-repeat: repeat-x;
-  background-size: 100% 2px;
-  background-position: 0 0;
+  padding: 16px var(--tc-gut) 78px;
+  border-top: 1px solid var(--tc-hair);
+  font-size: 12px;
+  color: var(--tc-ink-4);
 }
 
-/* ------------------------------------------------------------ responsive */
+/* ============================================================
+   SHARED COMPONENT SKIN — light, quiet, hairline
+   Only the review workspace is borrowed now; the story is authored
+   in `sections/story/` against this page's own tokens.
+   ============================================================ */
 
-@media (max-width: 960px) {
-  .dithered-sunrise-root .ds-footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+.dithered-sunrise-root .tc-review {
+  --gte-line: var(--tc-hair);
+  --gte-line-2: var(--tc-hair-2);
+  --gte-title: var(--tc-ink);
+  --gte-body: var(--tc-ink-2);
+  --gte-label: var(--tc-ink-3);
+  --gte-quiet: var(--tc-ink-4);
+  --gte-display: var(--tc-disp);
+  --gte-text: var(--tc-sans);
+  --gte-mono: var(--tc-mono);
+  --gte-ws-bg: var(--tc-mat-lite);
+  --gte-ws-shadow: none;
+  /* The mat's radius, because the workspace IS a mat now — see below. */
+  --gte-radius: 5px;
+  --gte-revised: var(--tc-ink);
+  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
+  --gte-head-weight: 600;
+  --gte-head-color: var(--tc-ink);
+  --gte-sub-size: 15px;
+  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
+  --gte-wrap: 100%;
 }
 
-@media (max-width: 880px) {
-  .dithered-sunrise-root .ds-proof-grid,
-  .dithered-sunrise-root .ds-plans {
-    grid-template-columns: 1fr;
-  }
+.dithered-sunrise-root .tc-review .gte-wrap {
+  width: 100%;
+  padding-inline: var(--tc-gut);
 }
 
-@media (max-width: 820px) {
-  .dithered-sunrise-root .ds-nav-links {
-    display: none;
-  }
+/* Top-aligned like every other row on the page, rather than the component's own
+   vertical centring, which floated the copy halfway down the workspace. */
+.dithered-sunrise-root .tc-review .gte-grid {
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
 }
 
-@media (max-width: 760px) {
-  /* The fan re-lays as a plain grid of greetings; same DOM, no rotation. */
-  .dithered-sunrise-root .ds-fan {
-    aspect-ratio: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 20px;
-  }
-
-  .dithered-sunrise-root .ds-ray {
-    position: static;
-    transform: none;
-    width: auto;
-    height: auto;
-  }
-
-  .dithered-sunrise-root .ds-ray-line {
-    display: none;
-  }
-
-  .dithered-sunrise-root .ds-ray-label {
-    transform: none;
-  }
-
-  .dithered-sunrise-root .ds-fan-hub {
-    display: none;
-  }
-
-  .dithered-sunrise-root .ds-steps {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .dithered-sunrise-root .ds-hero-inner {
-    padding-bottom: 52vh;
-  }
+/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
+   14px margin that measured about 7px of visible gap against the 24px every
+   `tc-head` on this page carries. Re-set to this page's values so the section
+   reads as part of the document instead of as an import. */
+.dithered-sunrise-root .tc-review .gte h2 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
 }
 
-@media (max-width: 560px) {
-  .dithered-sunrise-root .ds-brand-name {
-    display: none;
-  }
-
-  .dithered-sunrise-root .ds-footer-grid {
-    grid-template-columns: 1fr;
-  }
+.dithered-sunrise-root .tc-review .gte-sub {
+  margin-top: 13px;
+  max-width: 46ch;
+  line-height: 1.62;
 }
 
-/* -------------------------------------------------------- reduced motion */
+.dithered-sunrise-root .tc-review .gte-notes {
+  margin-top: 22px;
+}
+
+/* ---------- the workspace, mounted ----------
+   This is the biggest product mock on the page and it was the one surface
+   outside the frame system: a single border at the page hairline rather than the
+   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
+   the most prominent thing in the section read as an import.
+
+   The borrowed markup has no card element to wrap, so the mat is the workspace
+   shell itself and the two blocks inside it carry the card: the bar takes the
+   top corners, the columns take the bottom, and because they are adjacent with
+   no gap the pair reads as one white card with a 2px reveal around it. Same
+   material, same radii, same 2px as every other mount here. */
+.dithered-sunrise-root .tc-review .gte-ws {
+  padding: 2px;
+  border-color: var(--tc-mat-lite-edge);
+}
+
+.dithered-sunrise-root .tc-review .gte-bar {
+  border-radius: 2px 2px 0 0;
+  background: var(--tc-card);
+}
+
+.dithered-sunrise-root .tc-review .gte-cols {
+  border-radius: 0 0 2px 2px;
+  background: var(--tc-card);
+}
+
+/* ============================================================
+   MOTION — quiet reveals only
+   ============================================================ */
+
+.dithered-sunrise-root [data-reveal] {
+  will-change: transform, opacity;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .dithered-sunrise-root *,
-  .dithered-sunrise-root *::before,
-  .dithered-sunrise-root *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+  .dithered-sunrise-root [data-reveal] {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
   }
 }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The ruled band is the one shape that runs out of width before the page does,
+   so it folds a step earlier than everything else. Folded, the columns divide by
+   the same hairline horizontally that divided them vertically. */
+@media (max-width: 1120px) {
+  .dithered-sunrise-root .tc-quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dithered-sunrise-root .tc-quad > :nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .dithered-sunrise-root .tc-quad > :nth-child(n + 3) {
+    margin-top: clamp(18px, 2.2vw, 26px);
+    padding-top: clamp(18px, 2.2vw, 26px);
+    border-top: 1px solid var(--tc-hair);
+  }
+}
+
+@media (max-width: 1000px) {
+  .dithered-sunrise-root .tc-fw,
+  .dithered-sunrise-root .tc-row.is-split,
+  .dithered-sunrise-root .tc-row.is-lead,
+  .dithered-sunrise-root .tc-row.is-three,
+  .dithered-sunrise-root .tc-row.is-wide-left,
+  .dithered-sunrise-root .tc-row.is-wide-right,
+  .dithered-sunrise-root .tc-row.is-even,
+  .dithered-sunrise-root .tc-row.is-tilt,
+  .dithered-sunrise-root .tc-row.is-grammar,
+  .dithered-sunrise-root .tc-plans,
+  .dithered-sunrise-root .tc-plain,
+  .dithered-sunrise-root .tc-band-top,
+  .dithered-sunrise-root .tc-band-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dithered-sunrise-root .tc-row > * + *,
+  .dithered-sunrise-root .tc-plans > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  /* stacked, the split becomes a full-width rule between the two panes */
+  .dithered-sunrise-root .tc-fw-rule {
+    height: 1px;
+    align-self: auto;
+  }
+
+  .dithered-sunrise-root .tc-band-grid > div + div {
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  /* stacked, each cell needs its own foot before the next cell's top rule */
+  .dithered-sunrise-root .tc-band-grid > div {
+    padding-bottom: 26px;
+  }
+
+  .dithered-sunrise-root .tcm {
+    min-height: 0;
+  }
+
+  .dithered-sunrise-root .tc-band-panel {
+    margin-top: 6px;
+    margin-left: calc(-1 * var(--tc-gut));
+    border-radius: 0;
+    min-height: 420px;
+  }
+
+  .dithered-sunrise-root .tc-band-index-row b {
+    white-space: normal;
+    text-align: right;
+  }
+
+  .dithered-sunrise-root .tc-row.is-reverse > :first-child {
+    order: 2;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .dithered-sunrise-root .tc-row.is-reverse > :last-child {
+    order: 1;
+    border-top: 0;
+  }
+
+  /* a mat carries its own edge, so it never also needs the stacking rule */
+  .dithered-sunrise-root .tc-row > .is-framed + *,
+  .dithered-sunrise-root .tc-row > * + .is-framed,
+  .dithered-sunrise-root .tc-row.is-reverse > .is-framed:first-child {
+    border-top: 0;
+  }
+
+  .dithered-sunrise-root .tc-cell.is-tall,
+  .dithered-sunrise-root .tc-cell.is-short {
+    min-height: 0;
+  }
+
+  .dithered-sunrise-root .tc-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dithered-sunrise-root .tc-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Six marks in a row need about 130px each before the tracking on PROFOUND
+   starts colliding with its neighbours, so the band folds to two rows. */
+@media (max-width: 900px) {
+  .dithered-sunrise-root .tc-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dithered-sunrise-root .tc-trust-cell:nth-child(3n + 1) {
+    border-left: 0;
+  }
+
+  .dithered-sunrise-root .tc-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .dithered-sunrise-root .tc-quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dithered-sunrise-root .tc-quad > * {
+    padding-right: 0;
+  }
+
+  /* `nth-child` rather than `* + *` so this outranks the two-up rule above it
+     instead of losing to it on specificity. */
+  .dithered-sunrise-root .tc-quad > :nth-child(n + 2) {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--tc-hair);
+  }
+
+  .dithered-sunrise-root .tc-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dithered-sunrise-root .tc-trust-cell {
+    padding: 22px 10px 24px;
+  }
+
+  .dithered-sunrise-root .tc-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .dithered-sunrise-root .tc-trust-cell:nth-child(2n) {
+    border-left: 1px solid var(--tc-hair-2);
+  }
+
+  .dithered-sunrise-root .tc-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--tc-hair-2);
+  }
+
+  .dithered-sunrise-root .tc-rail,
+  .dithered-sunrise-root .tc-nav-in,
+  .dithered-sunrise-root .tc-band-in {
+    border-inline: 0;
+  }
+
+  .dithered-sunrise-root .tc-plain ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dithered-sunrise-root .tc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dithered-sunrise-root .tc-term-body {
+    font-size: 11px;
+  }
+
+  /* Mono does not reflow, so at 390px the panel has to set the sample smaller
+     rather than let a config line run out through the right edge. 11px is the
+     floor an artifact string is ever set at. */
+  .dithered-sunrise-root .tc-code pre {
+    font-size: 11px;
+  }
+
+  .dithered-sunrise-root .tc-code-line {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-right: 10px;
+  }
+
+  .dithered-sunrise-root .tc-code-n {
+    padding-right: 9px;
+  }
+
+  .dithered-sunrise-root .tc-hero-cell {
+    padding-inline: 12px;
+  }
+}
+
+/* (The hero's transmission plate styles live at the end of this sheet —
+   after the founder-stack block they override.) */
+
+/* ============================================================
+   DF — TRUST CARD (M03, glyph-masked)
+   The stack's third surface. The claim is the lead; the six
+   wordmarks are 1-bit fields from the same engine as the band
+   above them, in the ruled six-cell row.
+   ============================================================ */
+
+.dithered-sunrise-root .df-wm {
+  font-family: var(--tc-disp);
+  color: var(--tc-ink);
+  opacity: 0.86;
+}
+
+/* ============================================================
+   DF — LOCALES (M13)
+   The expanding-variant table and the halftone atlas globe.
+   ============================================================ */
+
+.dithered-sunrise-root .df-loc-table {
+  margin-top: 4px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .df-loc-row {
+  display: grid;
+  grid-template-columns: 56px 128px minmax(0, 1fr);
+  gap: 8px 14px;
+  align-items: baseline;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .df-loc-tag {
+  font-family: var(--tc-mono);
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .df-loc-name {
+  font-size: 15.5px;
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .df-loc-name.is-muted,
+.dithered-sunrise-root .df-loc-variants.is-muted {
+  color: var(--tc-ink-3);
+  font-size: 13.5px;
+}
+
+.dithered-sunrise-root .df-loc-variants {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.dithered-sunrise-root .df-loc-chip {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 8px 4px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-white);
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+}
+
+/* The two-second tell: zh-Hans and zh-Hant, adjacent, both real. The accent
+   is spent here as a chip ring, one of its few edges on the page. */
+.dithered-sunrise-root .df-loc-chip.is-tell {
+  border-color: var(--tc-accent);
+  color: var(--tc-ink);
+  font-weight: 600;
+}
+
+.dithered-sunrise-root .df-loc-tail {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.dithered-sunrise-root .df-loc-count {
+  margin-top: 14px;
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--tc-ink-3);
+}
+
+/* The globe cell: the well is the card's whole depth, the canvas fills it,
+   and the aspect is measured at mount — the drawing stays circular. */
+.dithered-sunrise-root .df-globe-well {
+  position: relative;
+  flex: 1;
+  min-height: 380px;
+}
+
+.dithered-sunrise-root .df-globe {
+  position: absolute;
+  inset: 0;
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .df-globe-note {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+/* ============================================================
+   DF — RATE LEDGER (M17)
+   The published rates as a ruled table. The beige second surface
+   marks the row most readers price first.
+   ============================================================ */
+
+.dithered-sunrise-root .df-rates {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .df-rates-head,
+.dithered-sunrise-root .df-rate {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.45fr) 120px;
+  gap: 18px;
+  padding: 12px var(--tc-gut);
+}
+
+.dithered-sunrise-root .df-rates-head {
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .df-rates-head span:nth-child(n + 2) {
+  text-align: right;
+}
+
+.dithered-sunrise-root .df-rate {
+  padding-block: 13px;
+  border-bottom: 1px solid var(--tc-hair-2);
+  align-items: baseline;
+}
+
+/* The row most readers price first. State is weight and ink — never a second
+   surface: this page's palette is ink and paper, full stop. */
+.dithered-sunrise-root .df-rate.is-lead .df-rate-name {
+  font-weight: 500;
+}
+
+.dithered-sunrise-root .df-rate-name {
+  font-size: 14px;
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .df-rate-value,
+.dithered-sunrise-root .df-rate-gt {
+  font-family: var(--tc-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.dithered-sunrise-root .df-rate-gt:empty::before,
+.dithered-sunrise-root .df-rate-gt {
+  color: var(--tc-ink-2);
+}
+
+.dithered-sunrise-root .df-rate.is-lead .df-rate-value,
+.dithered-sunrise-root .df-rate.is-lead .df-rate-gt {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.dithered-sunrise-root .df-rates-foot {
+  display: grid;
+  gap: 7px;
+  padding: 14px var(--tc-gut) 18px;
+  border-bottom: 1px solid var(--tc-hair);
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tc-ink-3);
+}
+
+.dithered-sunrise-root .df-rates-foot code {
+  color: var(--tc-ink-2);
+}
+
+/* The plans sit directly under the ledger; the ledger owns the top rule. */
+.dithered-sunrise-root .df-rates + .tc-plans {
+  border-top: 0;
+}
+
+/* ============================================================
+   DS — THE SUNBURST FLOOR (C1.5)
+   The band's fullest statement: the sunburstFloor field rising
+   from the band's bottom edge, full bleed, mounted in the bottom
+   padding below every line of type (darkband-v3.css .tcb-in). It
+   prints in the ornament gold; themeInk re-reads the color on a
+   theme flip. No alpha veil: the field's own tiers set its weight.
+   ============================================================ */
+
+.dithered-sunrise-root .df-band-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: clamp(150px, 15vw, 210px);
+  display: block;
+  image-rendering: pixelated;
+  z-index: 0;
+  color: var(--deco-ornament);
+  pointer-events: none;
+}
+
+/* ============================================================
+   DF — RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .dithered-sunrise-root .df-loc-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .dithered-sunrise-root .df-loc-variants {
+    grid-column: 1 / -1;
+  }
+
+  .dithered-sunrise-root .df-rates-head,
+  .dithered-sunrise-root .df-rate {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) 64px;
+    gap: 10px;
+  }
+
+  .dithered-sunrise-root .df-rate-value,
+  .dithered-sunrise-root .df-rate-gt {
+    font-size: 11px;
+    white-space: normal;
+  }
+
+  .dithered-sunrise-root .df-globe-well {
+    min-height: 300px;
+  }
+}
+
+
+/* ---- dark mode ----
+   The six charter tokens remap and nothing else: every tc token, every
+   derived ink and every ornament reads through them. The warm ground
+   collapses onto the dark band's ink black, bone lifts to white, the
+   hairlines rise a step, and the gold lifts to hold on the colder ground.
+   The dark band's plates never remap. */
+[data-theme='dark'] .dithered-sunrise-root {
+  --deco-ground: #070707;
+  --deco-ink: #ffffff;
+  --deco-ink-2: rgba(255, 255, 255, 0.66);
+  --deco-hair: rgba(138, 143, 152, 0.42);
+  --deco-accent: #e3b455;
+  --deco-ornament: #e3b455;
+}
+
+/* (The language diagrams' measured pills invert their labels with the theme
+   inside lang.css itself — color: var(--lang-ground) — no local override.) */
+
+
+
+
+
+
+/* ---- the doubled rail, zoom-proof ----
+   Both lines are true 1px borders (browsers round border widths to whole
+   device pixels at any zoom; background-filled boxes do not get that
+   rounding, which is why the first attempt smeared). The outer pair is one
+   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+.dithered-sunrise-root .tc-rail {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dithered-sunrise-root .tc-nav-in {
+  position: relative;
+  border-inline: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-nav-in::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  border-inline: 1px solid var(--tc-hair);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ============================================================
+   ANCHOR: tc-curation-r1 — dark-grid diagram adaptations
+   (propagated from toolchain; rescoped) New classes only.
+   ============================================================ */
+
+/* -- (1) the <T> wrap thread --------------------------------------
+   The brand's two lines (THREAD_MOTIF — constant gauge, never merging)
+   run the sample's own left margin from <T> to </T>, feet turned toward
+   the code they bind. Panel-dim white, so the pair reads in light and
+   dark theme alike — the panel itself never remaps. */
+.dithered-sunrise-root .tc-code-wrap {
+  position: relative;
+}
+
+.dithered-sunrise-root .tc-code-wrap::before,
+.dithered-sunrise-root .tc-code-wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: var(--thread-gauge) solid var(--tc-panel-dim);
+  border-right: 0;
+}
+
+.dithered-sunrise-root .tc-code-wrap::before {
+  left: 48px;
+  top: 3px;
+  bottom: 3px;
+  width: 10px;
+}
+
+.dithered-sunrise-root .tc-code-wrap::after {
+  left: calc(48px + var(--thread-gauge) + var(--thread-gap));
+  top: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  bottom: calc(3px + var(--thread-gauge) + var(--thread-gap));
+  width: calc(10px - var(--thread-gauge) - var(--thread-gap));
+}
+
+/* At the 620px cut the gutter narrows to 28px and the sample drops
+   to 11px mono, so the bracket moves with the code's margin. */
+@media (max-width: 620px) {
+  .dithered-sunrise-root .tc-code-wrap::before {
+    left: 30px;
+    width: 8px;
+  }
+
+  .dithered-sunrise-root .tc-code-wrap::after {
+    left: calc(30px + var(--thread-gauge) + var(--thread-gap));
+    width: calc(8px - var(--thread-gauge) - var(--thread-gap));
+  }
+}
+
+/* -- (2) glossary directives --------------------------------------
+   Per-locale style rules under the pinned entries. The group divider is
+   the page's stronger hairline against the hair-2 rules inside each half. */
+.dithered-sunrise-root .tcx-dirs {
+  border-top: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tcx-dirs li span {
+  font-size: 12.5px;
+}
+
+/* -- (6) the source/preview pane pair -----------------------------
+   Two panes on the dev window's own surface, split by the in-window
+   hairline. State is type weight on the live pane's tag. */
+.dithered-sunrise-root .tcx-pane {
+  padding: 10px 11px 13px;
+}
+
+.dithered-sunrise-root .tcx-pane + .tcx-pane {
+  border-top: 1px solid var(--tc-hair-2);
+}
+
+.dithered-sunrise-root .tcx-pane-tag {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--tc-mono);
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+}
+
+.dithered-sunrise-root .tcx-pane-tag.is-on {
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+/* ---- seams and collapse ----
+   Rows of framed cards separate with a literal 1px seam of ground; adjacent
+   horizontal rules collapse into each other so a boundary is never 2px. */
+.dithered-sunrise-root .tc-row:has(> .tc-cell.is-framed) {
+  gap: 1px;
+}
+
+.dithered-sunrise-root .tc-row:has(> .tc-cell.is-framed) > * + * {
+  border-left: 0;
+}
+
+/* ---- the dark band's arcs canvas (C1.5) ----
+   The CLI cell's field, drawn by this page's own engine: the canvas takes
+   the box darkband-v3.css gives .tcb-cli-field and adds the 1-bit upscale
+   discipline. It prints in the ornament gold on the permanently dark plate;
+   themeInk re-reads the color on a theme flip. */
+.dithered-sunrise-root .tcb .tcb-cli-field.df-cli-bloom {
+  display: block;
+  image-rendering: pixelated;
+  color: var(--deco-ornament);
+  pointer-events: none;
+}
+
+/* ============================================================
+   DS — DISPLAY TYPE (charter C4)
+   Jost for h1 and h2 only; every other slot stays Inter. A
+   geometric face wants a hair less negative tracking than Inter
+   and a step more size for the same optical weight.
+   ============================================================ */
+
+.dithered-sunrise-root h1,
+.dithered-sunrise-root h2 {
+  font-family: var(--dithered-sunrise-display), var(--font-inter), 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.014em;
+}
+
+.dithered-sunrise-root .tc-head h2,
+.dithered-sunrise-root .tcr-copy h2 {
+  font-size: clamp(1.75rem, 2.7vw, 2.4rem);
+}
+
+/* ============================================================
+   DS — THE HERO STACK
+   The split row (copy card beside the sunrise plate) above the
+   trust card: cards on the hairline mat, 1px seams, radius-12
+   corners with the mat filling the notches. One owner per line:
+   the mat seam is the only rule between cards, and the section's
+   bottom border is the only rule under the trust row.
+   ============================================================ */
+
+.dithered-sunrise-root .tc-sec.tch-hero-sec {
+  padding: 0;
+  background: var(--tc-hair);
+  background-clip: padding-box;
+}
+
+.dithered-sunrise-root .tch-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 1px;
+  align-items: stretch;
+}
+
+/* The copy card: left-aligned and centred on its own axis, standing beside
+   the plate rather than sitting in a field. */
+.dithered-sunrise-root .tch-split > .tc-hero.tch-card {
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: var(--tc-card);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(30px, 3.6vw, 52px) clamp(26px, 3.2vw, 48px);
+}
+
+/* C1.4 the crown: the GT mark seated in a dithered sun, above the h1. The
+   box is the SVG's own viewBox at 1:1 so the disc centre is a fixed point. */
+.dithered-sunrise-root .ds-crown {
+  position: relative;
+  display: block;
+  width: 160px;
+  height: 100px;
+  margin: 0 0 20px -6px;
+}
+
+.dithered-sunrise-root .ds-crown svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dithered-sunrise-root .ds-crown-mark {
+  position: absolute;
+  left: 50%;
+  top: 74%;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+}
+
+.dithered-sunrise-root .tch-copy h1 {
+  font-size: clamp(2.2rem, 3.7vw, 3.15rem);
+  letter-spacing: -0.02em;
+  margin-inline: 0;
+}
+
+/* the morphing word's doubled underline is the accent's hero spend: two
+   gold threads at constant gauge under the word that changes script */
+.dithered-sunrise-root .tc-hero h1 em {
+  --thread-ink: var(--tc-accent);
+}
+
+/* the morphing word carries no box of its own; the guides are the only frame */
+.dithered-sunrise-root .tc-hero h1 em[data-every] {
+  outline: 0;
+  border: 0;
+}
+
+.dithered-sunrise-root .tch-copy .tc-hero-sub {
+  margin: 18px 0 0;
+  max-width: 44ch;
+}
+
+/* the wordmark inline in the sub: name in the lead ink, monogram at cap
+   height beside it, both in currentColor (A12: one ink, never a second) */
+.dithered-sunrise-root .ds-wordmark {
+  font-weight: 500;
+  color: var(--tc-ink);
+  white-space: nowrap;
+}
+
+.dithered-sunrise-root .ds-wordmark-glyph {
+  display: inline-block;
+  vertical-align: -0.1em;
+  margin-right: 6px;
+}
+
+.dithered-sunrise-root .tch-copy .tc-hero-acts {
+  margin-top: 26px;
+  justify-content: flex-start;
+}
+
+/* The command chip joins the acts row at button gauge. */
+.dithered-sunrise-root .tch-copy .df-hero-cmd {
+  height: 38px;
+  padding: 0 14px;
+  gap: 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+/* The plate: one framed component, and the sunrise is all of it. */
+.dithered-sunrise-root .df-plate {
+  position: relative;
+  border-radius: 12px;
+  background: var(--tc-card);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: clamp(480px, 60vh, 620px);
+}
+
+/* The field prints in the ornament gold; themeInk re-reads this color on a
+   theme flip, so the dark theme gets the lifted gold and never a stale frame. */
+.dithered-sunrise-root .df-plate-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: var(--deco-ornament);
+  pointer-events: none;
+}
+
+/* The one wire: the horizon, a hairline under the field at the sun's
+   waterline (heroSunrise sets it at 72% of the plate). */
+.dithered-sunrise-root .df-plate-wire {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 72%;
+  height: 1px;
+  background: var(--tc-hair);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The trust card completes the stack: third card, same 1px seam above it,
+   and the section's own bottom border is the rule under it. */
+.dithered-sunrise-root .tch-hero-sec > .tc-trust {
+  margin-top: 1px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px 12px 0 0;
+  background: var(--tc-card);
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-trust .tc-trust-lead {
+  padding: 24px var(--tc-gut) 18px;
+}
+
+/* Stacked: the plate keeps its fill under the copy, edge to edge. */
+@media (max-width: 900px) {
+  .dithered-sunrise-root .tch-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dithered-sunrise-root .df-plate {
+    min-height: clamp(340px, 52vh, 460px);
+  }
+}
+
+/* ============================================================
+   DS — SECTION HEADS (C1.1)
+   The crest and the quantized rule. The lucide watermark's slot
+   is the DawnCrest's home: a half sun seated on the head's bottom
+   rule at the right edge. Under every h2, a 2px rule that thins
+   in three flat tiers (solid, half, quarter), drawn with hard
+   stops only.
+   ============================================================ */
+
+.dithered-sunrise-root .tc-head {
+  position: relative;
+  overflow: hidden;
+}
+
+.dithered-sunrise-root .tc-head-icon {
+  position: absolute;
+  right: var(--tc-gut);
+  bottom: -1px;
+  width: clamp(160px, 18vw, 232px);
+  height: auto;
+  aspect-ratio: 2 / 1;
+  pointer-events: none;
+}
+
+.dithered-sunrise-root .tc-head h2::after,
+.dithered-sunrise-root .tcr-copy h2::after,
+.dithered-sunrise-root .tcb .tcb-head h2::after {
+  content: '';
+  display: block;
+  width: 108px;
+  height: 2px;
+  margin-top: 14px;
+  background-image:
+    linear-gradient(var(--deco-ornament), var(--deco-ornament)),
+    repeating-linear-gradient(90deg, var(--deco-ornament) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(90deg, var(--deco-ornament) 0 2px, transparent 2px 8px);
+  background-size:
+    36px 2px,
+    36px 2px,
+    36px 2px;
+  background-position:
+    0 0,
+    36px 0,
+    72px 0;
+  background-repeat: no-repeat;
+}
+
+/* ============================================================
+   DS — FRAMES (C1.3)
+   The dawn line: a 1px terminal seated on the bar's bottom rule
+   at its left end, thinning in four flat tiers (solid, half,
+   quarter, eighth). The bar's border stays the rule's one owner;
+   this rides on it.
+   ============================================================ */
+
+.dithered-sunrise-root .tc-code-bar,
+.dithered-sunrise-root .tcr-bar,
+.dithered-sunrise-root .tcb .tcb-term-bar {
+  position: relative;
+}
+
+.dithered-sunrise-root .tc-code-bar::after,
+.dithered-sunrise-root .tcr-bar::after,
+.dithered-sunrise-root .tcb .tcb-term-bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 168px;
+  height: 1px;
+  background-image:
+    linear-gradient(var(--deco-ornament), var(--deco-ornament)),
+    repeating-linear-gradient(90deg, var(--deco-ornament) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(90deg, var(--deco-ornament) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, var(--deco-ornament) 0 1px, transparent 1px 8px);
+  background-size:
+    42px 1px,
+    42px 1px,
+    42px 1px,
+    42px 1px;
+  background-position:
+    0 0,
+    42px 0,
+    84px 0,
+    126px 0;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/* ============================================================
+   DS — THE ACCENT'S EDGES
+   The active tab underline already reads --tc-accent; the story
+   rail's live step takes the same gold on its top rule only, the
+   label stays ink.
+   ============================================================ */
+
+.dithered-sunrise-root .tcs-rail-step[data-on='true'] {
+  border-top-color: var(--tc-accent);
+}
+
+/* ============================================================
+   DS — STATS GRID, GUIDES, QUAD RULES, NAV, MARKS
+   (propagated from the base's tail; rescoped, no overrides)
+   ============================================================ */
+
+/* Numeral above label, two per row, tabular figures on a shared baseline,
+   doubled-hairline separators. */
+.dithered-sunrise-root .tc-stats.is-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.dithered-sunrise-root .tc-stats.is-grid .tc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 16px 16px;
+  border-top: 3px double var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-stats.is-grid .tc-stat:nth-child(-n + 2) {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.dithered-sunrise-root .tc-stats.is-grid .tc-stat:nth-child(2n) {
+  border-left: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-stats.is-grid .tc-stat-value {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.dithered-sunrise-root .tc-stats.is-grid .tc-stat-label {
+  text-align: left;
+  color: var(--tc-ink-3);
+}
+
+.dithered-sunrise-root .tc-eg {
+  top: -0.02em;
+}
+
+/* The quad's column rules touch the card's top and bottom edges: the card's
+   padding is a single token, so the rules extend by exactly it. */
+.dithered-sunrise-root .tc-quad > * + * {
+  position: relative;
+  border-left: 0;
+}
+
+.dithered-sunrise-root .tc-quad > * + *::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: calc(-1 * var(--tc-card-pad, 0px));
+  bottom: calc(-1 * var(--tc-card-pad, 0px));
+  border-left: 1px solid var(--tc-hair);
+  pointer-events: none;
+}
+
+/* folded two-up, the first column of each pair draws no rule; folded to one
+   column, none do (the top rules in the responsive block take over) */
+@media (max-width: 1120px) {
+  .dithered-sunrise-root .tc-quad > :nth-child(2n + 1)::before {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .dithered-sunrise-root .tc-quad > * + *::before {
+    display: none;
+  }
+}
+
+/* Nav theme switch, left of Sign In: token ink, quiet until hover. */
+.dithered-sunrise-root .tc-nav-theme {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--tc-ink-3);
+  cursor: pointer;
+}
+
+.dithered-sunrise-root .tc-nav-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+/* Brand mark: both drawings ship; the ground is dark in both themes, so the
+   light-ink drawing is the one that shows. */
+.dithered-sunrise-root .tc-logo-light {
+  display: none;
+}
+
+.dithered-sunrise-root .tc-logo-dark {
+  display: block;
+}
+
+/* The footer ships the same pair and follows the nav: one drawing shows. */
+.dithered-sunrise-root .tc-foot-logo.is-light {
+  display: none;
+}
+
+.dithered-sunrise-root .tc-foot-logo.is-dark {
+  display: block;
+}
+
+/* The footer's Locadex mark is a drawn dark glyph, not currentColor ink; on
+   this dark ground it is inverted in both themes (brand rule: invert). */
+.dithered-sunrise-root .tc-foot-mark.is-locadex {
+  filter: invert(1);
+}
+
+/* ============================================================
+   DS — RAILS THROUGH THE BAND, SEAMS, CLIPS
+   ============================================================ */
+
+/* The doubled rail continues through the full-bleed dark band: the band sits
+   outside the .tc-rail wrappers, so it draws the same column's line pairs
+   itself, in the band's own rule ink (the band is dark in both themes). */
+.dithered-sunrise-root .tc-band {
+  position: relative;
+}
+
+.dithered-sunrise-root .tc-band::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(min(var(--tc-rail), 100%) + 20px);
+  transform: translateX(-50%);
+  border-inline: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+/* Every section closes with its bottom rule. */
+.dithered-sunrise-root .tcr.tc-sec {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.dithered-sunrise-root .tc-band.tcb {
+  border-bottom: 1px solid var(--tcb-seam);
+}
+
+/* One stroke per line: these rows and mounts keep their border-drawn seams,
+   but the translucent ground must stop at the border, or every framed row's
+   seam reads darker than the page's other hairlines. Buttons likewise. */
+.dithered-sunrise-root .tc-row:has(> .tc-cell.is-framed),
+.dithered-sunrise-root .tc-mount,
+.dithered-sunrise-root .tcs-mat,
+.dithered-sunrise-root .tcr-mat,
+.dithered-sunrise-root .tc-btn,
+.dithered-sunrise-root .tc-sec:has(> .tc-hero) {
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   DS — THE MOBILE LADDER
+   The last 720px block on the sheet: every floor below consumes
+   the --tcm-* slots with px fallbacks (DESIGN.md section 12).
+   Same-specificity declarations here win by following the base.
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .dithered-sunrise-root {
+    --tcm-h2: 2.1rem;
+    --tcm-h2-lh: 1.14;
+    --tcm-h3: 1.3rem;
+    --tcm-h3-lh: 1.3;
+    --tcm-lead: 16.5px;
+    --tcm-lead-lh: 1.55;
+    --tcm-body: 15.5px;
+    --tcm-body-lh: 1.6;
+    --tcm-small: 14px;
+    --tcm-kick: 13px;
+    --tcm-head-pt: 64px;
+    --tcm-head-pb: 32px;
+    --tcm-gap-h2: 16px;
+    --tcm-cell-pad: 26px;
+    /* seam floor: card copy never sits under 20px off a hairline */
+    --tc-card-pad: 20px;
+  }
+
+  /* mobile heads carry no crest */
+  .dithered-sunrise-root .tc-head-icon {
+    display: none;
+  }
+
+  .dithered-sunrise-root .tc-head {
+    padding-block: var(--tcm-head-pt, 64px) var(--tcm-head-pb, 32px);
+  }
+
+  .dithered-sunrise-root .tc-head h2,
+  .dithered-sunrise-root .tcr-copy h2 {
+    font-size: var(--tcm-h2, 34px);
+    line-height: var(--tcm-h2-lh, 1.14);
+  }
+
+  .dithered-sunrise-root .tc-head p,
+  .dithered-sunrise-root .tcr-sub {
+    margin-top: var(--tcm-gap-h2, 16px);
+    font-size: var(--tcm-lead, 16.5px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .dithered-sunrise-root .tch-copy h1 {
+    font-size: 2.3rem;
+  }
+
+  .dithered-sunrise-root .tc-hero-sub {
+    font-size: var(--tcm-lead, 16.5px);
+  }
+
+  .dithered-sunrise-root .tc-trust-lead {
+    font-size: var(--tcm-kick, 13px);
+  }
+
+  .dithered-sunrise-root .ds-crown {
+    width: 128px;
+    height: 80px;
+    margin-left: -4px;
+  }
+
+  .dithered-sunrise-root .tc-cell {
+    padding: var(--tcm-cell-pad, 26px) var(--tc-gut) var(--tcm-cell-pad, 26px);
+  }
+
+  .dithered-sunrise-root .tc-cell h3,
+  .dithered-sunrise-root .tc-bleed-head h3,
+  .dithered-sunrise-root .tc-quad h3 {
+    font-size: var(--tcm-h3, 21px);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .dithered-sunrise-root .tc-cell > p,
+  .dithered-sunrise-root .tc-card > p,
+  .dithered-sunrise-root .tc-bleed-head p,
+  .dithered-sunrise-root .tc-quad p,
+  .dithered-sunrise-root .tc-plan p,
+  .dithered-sunrise-root .tcs-beat p,
+  .dithered-sunrise-root .tc-fw-side p {
+    font-size: var(--tcm-body, 15.5px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .dithered-sunrise-root .tc-list li,
+  .dithered-sunrise-root .tcr-notes li,
+  .dithered-sunrise-root .tc-fw-link,
+  .dithered-sunrise-root .tc-compare {
+    font-size: var(--tcm-small, 14px);
+  }
+
+  .dithered-sunrise-root .tc-btn {
+    height: 44px;
+    font-size: 15px;
+  }
+
+  /* after .tc-btn: same specificity, order keeps the sm sizes */
+  .dithered-sunrise-root .tc-btn-sm {
+    height: 38px;
+    font-size: 13.5px;
+  }
+
+  .dithered-sunrise-root .tc-copy,
+  .dithered-sunrise-root .tch-copy .df-hero-cmd {
+    height: 44px;
+    font-size: 13px;
+  }
+
+  .dithered-sunrise-root .tc-tab {
+    font-size: 14.5px;
+  }
+}
+

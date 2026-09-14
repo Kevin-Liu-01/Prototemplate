@@ -210,9 +210,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'sunburst-atelier',
     name: 'Sunburst Atelier',
     concept:
-      'Real art deco in black and champagne gold: the Chrysler Building crown becomes the design system, and the world-scripts section sets twelve real greetings on the rays of one shared sunburst so languages literally radiate from a single source component.',
+      'The Chrysler crown as a design system on GT\'s rail: a warm black ground, cream ink and champagne gold, with a stacked-arch crown and a chrome roundel over the hero headline and again over the dark band, a quarter sunburst in every section head, cream stepped-chevron friezes as the dividers, gold hairline frames, and the locales atlas set on the rays of one shared sunburst around the halftone globe.',
     tone: 'dark',
-    signature: 'A Chrysler-crown hero of five stacked gold arc bands with alternating filled and hollow triangular ray windows, with the GT monogram seated in a slowly rotating chrome roundel at the fan\'s origin.',
+    signature: 'Five gold arcs with cream triangular windows and the GT monogram in a chrome roundel on the hub, standing over the hero headline and repeated over the dark band lede.',
   },
   {
     n: 26,
@@ -220,9 +220,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'spire-setbacks',
     name: 'Spire Setbacks',
     concept:
-      'The page is a 1930 tower drawn in elevation on cream limestone: every section is a double-ruled setback that steps 84px narrower as you descend, the nav is the entrance canopy, a fixed elevator panel tracks your floor, the locales section is a brass floor directory with each language as a floor line in its own script, and the elevation terminates in a stepped finial and mast.',
+      'A 1930 tower elevation on cream limestone: GT\'s complete ruled-column system re-toned in ink, jade and brass, with doubled string courses that step one setback narrower down the page, a brass-framed locales directory, a stepped sunburst crown over the mark, a stepped frieze on the dark band, and a fixed elevator rail tracking the floor in view.',
     tone: 'light',
-    signature: 'The stepped-setback page silhouette itself: seven double-ruled sections each 84px narrower than the last, seamed by engraved floor-plate cartouches, so scrolling down the page reads as riding the tower up to the finial.',
+    signature: 'Every section head carries a brass doubled string course that steps one setback narrower down the page, with the section\'s pictogram seated on it as a cartouche, so the whole column reads as a stepped 1930 elevation while the rows below stay on the drafting grid.',
   },
   {
     n: 27,
@@ -230,9 +230,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'liner-timetable',
     name: 'Liner Timetable',
     concept:
-      '1930s ocean-liner timetable graphics, deep green and burgundy on warm cream with gold rules and engraved double borders, restating localization as scheduled passage between languages: a departure/arrival proof of the T component, a departures board dashboard, and luggage-label locale chips in twelve real scripts.',
+      'A 1930s ocean-liner and railway timetable laid over GT\'s ruled column: deep green and burgundy ink on warm cream, gold doubled rules, numbered plates, and the translation demo read as a departures and arrivals board.',
     tone: 'light',
-    signature: 'A code-drawn Art Deco liner poster inside the hero\'s engraved double frame, whose departure pane (real gt-next source) and arrival pane (the same card cycling through EN, ES, JA, and RTL AR) are joined by a gold route line with a rotated-diamond T badge.',
+    signature: 'Every section head carries a numbered plate, a Roman numeral inside a gold lozenge whose engraved double ring is the brand\'s DoubledLine, while the code window and the capability marquee beside it become a departures and arrivals board in cream mono on the green-black panel.',
   },
   {
     n: 28,
@@ -240,9 +240,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'cassandre-poster',
     name: 'Cassandre Poster',
     concept:
-      'The A.M. Cassandre poster school as a landing page: each section is a full-bleed midnight-vermilion-cream poster panel with one enormous geometric form and small precise caption type, and the T component is the monumental subject.',
-    tone: 'dark',
-    signature: 'The hero draws the T component as a head-on Normandie liner prow in inline SVG, with a vermilion boot-top waterline, cream bow waves, and a drifting sea band of twelve real world-script greetings beneath it.',
+      'The Cassandre poster school layered on GT\'s complete landing system: cream ground, midnight ink, vermilion as the one edge; the hero plate and the dark band are poster panels with one monumental geometric form each (the T component as a stepped monument, a Bayer-dithered fan of rays) and small mono captions, while everything between stays GT rail, flag chips, demos, bento and pricing.',
+    tone: 'light',
+    signature: 'The hero plate: the T component drawn as a stepped midnight monument in the brand\'s doubled line, standing on a dither-rendered fan of cream rays, with four mono captions pinned to the corners and a vermilion band along the plate\'s bottom edge.',
   },
   {
     n: 29,
@@ -250,9 +250,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'gilded-ledger',
     name: 'Gilded Ledger',
     concept:
-      'A 1928 annual report as a website: ivory paper, warm ink, gold-leaf rules, marbled endpaper bands, and double-rule frames turn GT\'s precision into fine bookmaking, with the T component as an engraved plate, the locales as a colophon of scripts, and pricing as a two-page ledger spread.',
+      'A bound 1920s annual report printed on GT\'s ruled column: ivory paper, warm ink, gold-leaf frame rings, combed-marble endpaper bands at the section seams, a monogram cartouche over a Bodoni title, and the pricing file laid out as a two-leaf ledger spread bound by a doubled gold rule.',
     tone: 'light',
-    signature: 'The pricing section is a bound two-page ledger spread inside one double-rule gold frame, with a spine-gutter shadow, dotted-leader rate rows, and a gold double-rule footnote block.',
+    signature: 'The .tc-hatch spacers become combed-marble endpaper bands (sections/deco/MarbleBand.tsx): parallel 1px gold hairline waves in one SVG pattern, placed after the hero, inside the bento, after the review and at the top of the pricing rail, so the page turns between sections like the leaves of a bound report.',
   },
   {
     n: 30,
@@ -260,9 +260,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'dithered-sunrise',
     name: 'Dithered Sunrise',
     concept:
-      'Art deco sunrise where every light ramp is ordered Bayer dither, gold cells on near-black, with a live quantized sun as the hero and dithered dawn arcs opening every section.',
+      'GT\'s complete rail-system landing page on a warm near-black ground, carrying the deco sunburst as one documented ornament layer rendered entirely in ordered Bayer dither: a half sun on the hero plate, a dawn crest on every section head, Bayer-lattice dividers, and a full-bleed sunburst floor in the dark band, all in one gold.',
     tone: 'dark',
-    signature: 'A full-viewport hero sun rendered live as 8x8 Bayer dither on canvas, solid gold metal at the disc resolving to sparse 3px dots at the ray tips, with concentric dawn arcs drifting slowly outward.',
+    signature: 'Light is quantized twice: every radial falloff is stepped into flat deco bands before the 8x8 Bayer screen turns each band into a lattice of gold cells, so the hero\'s half sun, the section crests and the dark band\'s floor share one stair-stepped sunburst and no smooth gradient exists anywhere on the page.',
   },
   {
     n: 31,
@@ -270,9 +270,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'bulb-marquee',
     name: 'Bulb Marquee',
     concept:
-      'A theatre marquee built entirely from dots: chasing bulb rows frame the sign, the headline is dot-matrix Limelight lettering, and the T component demo is the show now playing in twelve languages with each hello lit in sequence.',
+      'A theatre marquee in dots on GT\'s rail: the complete dither-field landing system in warm white and amber on charcoal, with Limelight headings seen through a round dot screen and amber bulb rows seated on the section heads, dividers, window bars, hero crown, board edge and dark band.',
     tone: 'dark',
-    signature: 'The hero headline is rendered as a grid of glowing amber bulbs clipped to Limelight glyphs (a radial-gradient dot field with background-clip: text over a faint solid underlay), so the type itself reads as a lit marquee sign.',
+    signature: 'The hero transmission plate becomes a letter board: a warm black fascia with a live-mark bar on top, bulb rows on all four edges (the top row chasing where motion is allowed), and the Bayer engine printing the greetings inside as the show now playing.',
   },
   {
     n: 32,
@@ -280,9 +280,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'bayer-frieze',
     name: 'Bayer Frieze',
     concept:
-      'The entire art deco ornament grammar (Greek-key meander, chevrons, stepped keys, sunrise fans, stripe borders) is generated from one Bayer 4x4 dither matrix at four stepped densities on cream and ink with a single jade accent.',
+      'GT\'s complete landing system on cream and ink, with the deco ornament grammar (chevron courses, sawtooth rows, Greek keys, a sunrise, stepped keys) generated from one 4x4 Bayer matrix at 1/16, 4/16, 8/16 and 12/16 and laid as CSS mask friezes on the rail system\'s section heads, dividers, frames, hero crown and dark band; one jade edge; Inter with Jost on h1 and h2.',
     tone: 'light',
-    signature: 'A full-width dithered Greek-key meander band that closes the hero and crawls one 48px unit at a time, inverted to cream-on-ink at the footer.',
+    signature: 'Every ornament on the page is a mask of unit cells thresholded from the same 4x4 Bayer matrix, so the Greek key on the transmission plate\'s edges, the sunrise around the mark, the beaded 4/16 mats on every mount and the five-row stepped divider bands read as one screen at four exposures, and the dark remap needs no second copy of any tile.',
   },
   {
     n: 33,
@@ -290,9 +290,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'quantized-temple',
     name: 'Quantized Temple',
     concept:
-      'Dither-focused art deco: stepped ziggurat tiers of silk orange-and-gold gradients that quantize into ordered-dither dots as they rise, with greetings in twelve scripts hung in the drapery folds.',
+      'GT\'s complete dither-field landing page recut as a stepped temple: a gold ziggurat whose smoke quantizes into ordered dither as it rises, gilt frames, stepped crests that gain a course each section, and a dark-band summit dissolving into dots, set in Cinzel capitals on warm black.',
     tone: 'dark',
-    signature: 'A CSS-stepped ziggurat monument engraved with the <T> glyph whose crown dissolves into a live Bayer-dithered smoke canvas of ember-to-gold squares.',
+    signature: 'The hero plate is a five-course ziggurat rendered by the Bayer engine in gold, its smoke printing solid at the base course and quantizing into loose dots at the summit, standing on a single orange ember line.',
   },
   {
     n: 34,
@@ -300,9 +300,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'glyph-mosaic',
     name: 'Glyph Mosaic',
     concept:
-      'Dither-focused art deco: the GT monogram set as a Chrysler-lobby floor mosaic whose tesserae are real glyphs from eight writing systems, on warm sand with terracotta, ink, and gold, with a legend that names each script by color.',
+      'Deco mosaic fields whose tesserae are real glyphs from seven scripts, laid at Bayer-screened densities into a hero sunburst, section-head crests and chevron friezes on GT\'s complete ruled-column landing system, in warm sand, warm ink, terracotta and gold.',
     tone: 'light',
-    signature: 'A single hero canvas that dithers roughly three thousand glyph tesserae from eight scripts into the GT monogram over a 24-wedge sunburst, gold border course, and elliptical medallion ring, revealed outward from the center.',
+    signature: 'The hero plate is a sunburst mosaic whose tesserae are real glyphs from seven scripts, laid only where a radial field clears the house 8x8 Bayer screen, alternate rays in gold and one course in terracotta around the disc, with a legend on the plate\'s edge that names each script and tags it with a LocaleTag chip.',
   },
   {
     n: 23,
