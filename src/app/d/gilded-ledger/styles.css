@@ -1,0 +1,1099 @@
+/* GILDED LEDGER — a 1928 annual report as a website. Ivory paper, warm ink,
+   gold-leaf rules, marbled endpaper bands, monogram cartouches, double-rule
+   frames. Every rule is scoped under .gilded-ledger-root. The only motion is
+   the title-page rise and a sheen sweep on the ink button; both are
+   disabled under prefers-reduced-motion. */
+
+.gilded-ledger-root {
+  /* paper */
+  --gl-paper: #f7f2e4;
+  --gl-paper-hi: #fcf8ec;
+  --gl-paper-lo: #efe7d2;
+  /* ink */
+  --gl-ink: #221e13;
+  --gl-ink-soft: #5a5340;
+  /* gold leaf */
+  --gl-gold: #a87e2f;
+  --gl-gold-deep: #7e5d1e;
+  --gl-gold-hi: #ecd394;
+  --gl-leaf: linear-gradient(100deg, #7e5d1e, #c49b4a 34%, #f0dfa8 50%, #b8893a 66%, #6f5119);
+  /* endpaper marbling */
+  --gl-navy: #26374f;
+  --gl-oxblood: #6e2f26;
+  /* rules */
+  --gl-hair: rgba(34, 30, 19, 0.34);
+  --gl-hair-soft: rgba(34, 30, 19, 0.14);
+
+  color-scheme: light;
+  background-color: var(--gl-paper);
+  background-image: radial-gradient(120% 90% at 50% 0%, var(--gl-paper-hi) 0%, var(--gl-paper) 58%);
+  color: var(--gl-ink);
+  font-family: var(--font-gl-body), 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gilded-ledger-root h1,
+.gilded-ledger-root h2,
+.gilded-ledger-root h3 {
+  font-family: var(--font-gl-display), Georgia, 'Times New Roman', serif;
+  font-weight: 500;
+  margin: 0;
+}
+
+.gilded-ledger-root p {
+  margin: 0;
+}
+
+.gilded-ledger-root ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gilded-ledger-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.gilded-ledger-root :focus-visible {
+  outline: 2px solid var(--gl-gold-deep);
+  outline-offset: 3px;
+}
+
+.gilded-ledger-root code {
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86em;
+}
+
+/* the shared measure */
+.gilded-ledger-root .gl-page {
+  margin: 0 auto;
+  max-width: 1060px;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.gilded-ledger-root .gl-page.is-wide {
+  max-width: 1180px;
+}
+
+/* small caps: uppercase letterspaced Inter, the report's labeling voice */
+.gilded-ledger-root .gl-sc {
+  font-family: var(--font-gl-body), 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------ ornaments */
+
+.gilded-ledger-root .gl-monogram {
+  align-items: center;
+  background: radial-gradient(circle at 32% 26%, var(--gl-paper-hi), var(--gl-paper-lo));
+  border: 1px solid var(--gl-ink);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 3px var(--gl-paper-hi),
+    inset 0 0 0 4px var(--gl-gold);
+  color: var(--gl-ink);
+  display: inline-flex;
+  flex: none;
+  font-family: var(--font-gl-display), Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  height: 42px;
+  justify-content: center;
+  letter-spacing: 0.06em;
+  width: 42px;
+}
+
+.gilded-ledger-root .gl-monogram.is-lg {
+  font-size: 22px;
+  height: 64px;
+  position: relative;
+  width: 64px;
+  z-index: 1;
+}
+
+.gilded-ledger-root .gl-orn {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.gilded-ledger-root .gl-orn i {
+  background: var(--gl-hair);
+  flex: 1;
+  height: 1px;
+  max-width: 96px;
+}
+
+.gilded-ledger-root .gl-orn b {
+  background: var(--gl-gold);
+  flex: none;
+  height: 7px;
+  transform: rotate(45deg);
+  width: 7px;
+}
+
+.gilded-ledger-root .gl-corner {
+  background: var(--gl-gold);
+  height: 9px;
+  position: absolute;
+  transform: rotate(45deg);
+  width: 9px;
+  z-index: 1;
+}
+
+.gilded-ledger-root .gl-corner.is-tl {
+  left: -5px;
+  top: -5px;
+}
+
+.gilded-ledger-root .gl-corner.is-tr {
+  right: -5px;
+  top: -5px;
+}
+
+.gilded-ledger-root .gl-corner.is-bl {
+  bottom: -5px;
+  left: -5px;
+}
+
+.gilded-ledger-root .gl-corner.is-br {
+  bottom: -5px;
+  right: -5px;
+}
+
+/* dotted ledger leader shared by the contents table and the rate table */
+.gilded-ledger-root .gl-lead {
+  align-self: flex-end;
+  border-bottom: 1px dotted var(--gl-hair);
+  flex: 1;
+  margin: 0 10px 5px;
+  min-width: 24px;
+}
+
+/* the marbled endpaper band: layered ring gradients from offset centers,
+   the interference between them reads as combed marbling */
+.gilded-ledger-root .gl-marble {
+  background-color: var(--gl-navy);
+  background-image:
+    repeating-radial-gradient(circle at 18% 130%, rgba(236, 211, 148, 0.8) 0 2px, transparent 2px 26px),
+    repeating-radial-gradient(circle at 82% -40%, rgba(110, 47, 38, 0.95) 0 8px, transparent 8px 34px),
+    repeating-radial-gradient(circle at 45% 170%, rgba(247, 242, 228, 0.5) 0 3px, transparent 3px 21px),
+    repeating-radial-gradient(circle at 63% -70%, rgba(38, 55, 79, 0.95) 0 10px, transparent 10px 27px),
+    repeating-radial-gradient(circle at 4% -30%, rgba(168, 126, 47, 0.6) 0 5px, transparent 5px 18px);
+  border-bottom: 1px solid var(--gl-gold-deep);
+  border-top: 1px solid var(--gl-gold-deep);
+  height: 72px;
+}
+
+/* buttons: ruled small-caps plates; the primary is ink with a gold keyline */
+.gilded-ledger-root .gl-btn {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--gl-ink);
+  color: var(--gl-ink);
+  display: inline-flex;
+  font-family: var(--font-gl-body), 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  justify-content: center;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  padding: 13px 22px;
+  text-transform: uppercase;
+  transition: background-color 0.25s ease;
+}
+
+.gilded-ledger-root .gl-btn:hover {
+  background-color: rgba(34, 30, 19, 0.07);
+}
+
+.gilded-ledger-root .gl-btn.is-ink {
+  background: var(--gl-ink);
+  box-shadow:
+    0 0 0 2px var(--gl-paper),
+    0 0 0 3px var(--gl-gold);
+  color: var(--gl-paper-hi);
+  overflow: hidden;
+  position: relative;
+}
+
+.gilded-ledger-root .gl-btn.is-ink:hover {
+  background-color: var(--gl-ink);
+}
+
+.gilded-ledger-root .gl-btn.is-ink::after {
+  background: linear-gradient(115deg, transparent 40%, rgba(236, 211, 148, 0.38) 50%, transparent 60%);
+  content: '';
+  inset: 0;
+  position: absolute;
+  transform: translateX(-130%);
+  transition: transform 0.7s ease;
+}
+
+.gilded-ledger-root .gl-btn.is-ink:hover::after {
+  transform: translateX(130%);
+}
+
+/* ------------------------------------------------------------- masthead */
+
+.gilded-ledger-root .gl-mast {
+  padding-top: 14px;
+}
+
+.gilded-ledger-root .gl-folio {
+  border-bottom: 1px solid var(--gl-hair-soft);
+  color: var(--gl-ink-soft);
+  display: flex;
+  font-size: 9.5px;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+
+.gilded-ledger-root .gl-mast-row {
+  align-items: center;
+  display: flex;
+  gap: 28px;
+  justify-content: space-between;
+  padding: 18px 0;
+}
+
+.gilded-ledger-root .gl-mast-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 14px;
+}
+
+.gilded-ledger-root .gl-mast-name {
+  font-family: var(--font-gl-display), Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.gilded-ledger-root .gl-mast-nav {
+  display: flex;
+  gap: 28px;
+}
+
+.gilded-ledger-root .gl-mast-nav a {
+  border-bottom: 1px solid transparent;
+  padding-bottom: 3px;
+  transition: border-color 0.2s ease;
+}
+
+.gilded-ledger-root .gl-mast-nav a:hover {
+  border-bottom-color: var(--gl-gold);
+}
+
+.gilded-ledger-root .gl-mast-cta {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+/* the masthead's thick-thin closing rule */
+.gilded-ledger-root .gl-mast-rule {
+  border-bottom: 1px solid var(--gl-ink);
+  border-top: 3px solid var(--gl-ink);
+  height: 3px;
+}
+
+/* ----------------------------------------------------------------- hero */
+
+.gilded-ledger-root .gl-hero {
+  padding: 72px 0 24px;
+}
+
+.gilded-ledger-root .gl-titlepage {
+  animation: gl-rise 0.9s ease-out both;
+  background: var(--gl-paper-hi);
+  border: 1px solid var(--gl-ink);
+  box-shadow:
+    inset 0 0 0 5px var(--gl-paper-hi),
+    inset 0 0 0 6px var(--gl-gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 76px 48px 60px;
+  position: relative;
+  text-align: center;
+}
+
+/* the deco sunburst: gold conic rays masked to a half annulus, seated
+   behind the monogram cartouche like an engraved title-page device */
+.gilded-ledger-root .gl-fan {
+  background: repeating-conic-gradient(
+    from 262deg at 50% 100%,
+    var(--gl-gold) 0deg 1.6deg,
+    transparent 1.6deg 8.2deg
+  );
+  border-radius: 220px 220px 0 0;
+  height: 104px;
+  margin-bottom: -34px;
+  -webkit-mask-image: radial-gradient(circle at 50% 100%, transparent 37px, #000 38px);
+  mask-image: radial-gradient(circle at 50% 100%, transparent 37px, #000 38px);
+  opacity: 0.65;
+  width: 208px;
+}
+
+.gilded-ledger-root .gl-kicker {
+  color: var(--gl-gold-deep);
+  margin-top: 26px;
+}
+
+.gilded-ledger-root .gl-titlepage h1 {
+  font-size: clamp(44px, 7vw, 84px);
+  letter-spacing: -0.015em;
+  line-height: 1.02;
+  margin-top: 18px;
+  max-width: 15ch;
+}
+
+.gilded-ledger-root .gl-titlepage h1 em {
+  background: var(--gl-leaf);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.gilded-ledger-root .gl-lede {
+  color: var(--gl-ink-soft);
+  font-size: 17px;
+  margin-top: 26px;
+  max-width: 620px;
+}
+
+.gilded-ledger-root .gl-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 34px;
+}
+
+/* the contents table, dotted leaders to plate references */
+.gilded-ledger-root .gl-toc {
+  border-top: 1px solid var(--gl-hair-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 48px;
+  max-width: 460px;
+  padding-top: 24px;
+  text-align: left;
+  width: 100%;
+}
+
+.gilded-ledger-root .gl-toc-head {
+  color: var(--gl-gold-deep);
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.gilded-ledger-root .gl-toc-row {
+  display: flex;
+  font-size: 15px;
+}
+
+.gilded-ledger-root .gl-toc-row:hover .gl-toc-title {
+  color: var(--gl-gold-deep);
+}
+
+.gilded-ledger-root .gl-toc-title {
+  transition: color 0.2s ease;
+}
+
+.gilded-ledger-root .gl-toc-no {
+  color: var(--gl-gold-deep);
+  display: inline-block;
+  font-family: var(--font-gl-display), Georgia, serif;
+  min-width: 26px;
+}
+
+.gilded-ledger-root .gl-toc-ref {
+  color: var(--gl-ink-soft);
+  font-size: 10px;
+  padding-bottom: 2px;
+}
+
+.gilded-ledger-root .gl-trust {
+  color: var(--gl-ink-soft);
+  margin-top: 48px;
+  text-align: center;
+}
+
+.gilded-ledger-root .gl-trust-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.gilded-ledger-root .gl-trust-row li {
+  align-items: center;
+  display: inline-flex;
+  font-family: var(--font-gl-display), Georgia, serif;
+  font-size: 19px;
+  font-weight: 500;
+  gap: 20px;
+  letter-spacing: 0.02em;
+}
+
+.gilded-ledger-root .gl-trust-row li + li::before {
+  background: var(--gl-gold);
+  content: '';
+  display: inline-block;
+  height: 5px;
+  transform: rotate(45deg);
+  width: 5px;
+}
+
+/* ------------------------------------------------------------- sections */
+
+.gilded-ledger-root .gl-sec {
+  padding: 96px 0 8px;
+}
+
+.gilded-ledger-root .gl-sechead {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 auto 52px;
+  max-width: 660px;
+  text-align: center;
+}
+
+.gilded-ledger-root .gl-sechead-no {
+  color: var(--gl-gold-deep);
+}
+
+.gilded-ledger-root .gl-sechead h2 {
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.1;
+}
+
+.gilded-ledger-root .gl-sechead p {
+  color: var(--gl-ink-soft);
+  font-size: 16px;
+}
+
+/* the engraved-plate figure grammar: double-rule frame, small-caps caption */
+.gilded-ledger-root .gl-figure {
+  margin: 0;
+}
+
+.gilded-ledger-root .gl-caption {
+  color: var(--gl-ink-soft);
+  font-size: 10px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------- plate I */
+
+.gilded-ledger-root .gl-plate {
+  background: var(--gl-paper-hi);
+  border: 1px solid var(--gl-ink);
+  box-shadow:
+    inset 0 0 0 5px var(--gl-paper-hi),
+    inset 0 0 0 6px var(--gl-gold);
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  padding: 6px;
+  position: relative;
+}
+
+.gilded-ledger-root .gl-plate-pane {
+  min-width: 0;
+  padding: 34px 34px 38px;
+}
+
+.gilded-ledger-root .gl-plate-pane.is-render {
+  border-left: 1px solid var(--gl-hair-soft);
+}
+
+.gilded-ledger-root .gl-pane-label {
+  color: var(--gl-gold-deep);
+  display: block;
+  font-size: 10px;
+  margin-bottom: 18px;
+}
+
+.gilded-ledger-root .gl-code {
+  background: var(--gl-paper-lo);
+  border: 1px solid var(--gl-hair-soft);
+  font-size: 13px;
+  line-height: 1.75;
+  margin: 0;
+  overflow-x: auto;
+  padding: 20px 22px;
+}
+
+.gilded-ledger-root .gl-code code {
+  font-size: 13px;
+}
+
+.gilded-ledger-root .gl-code-line {
+  display: block;
+  white-space: pre;
+}
+
+.gilded-ledger-root .gl-tk-k {
+  color: var(--gl-oxblood);
+}
+
+.gilded-ledger-root .gl-tk-s {
+  color: var(--gl-gold-deep);
+}
+
+.gilded-ledger-root .gl-tk-t {
+  color: var(--gl-gold-deep);
+  font-weight: 600;
+}
+
+.gilded-ledger-root .gl-tk-f {
+  color: var(--gl-navy);
+  font-weight: 600;
+}
+
+.gilded-ledger-root .gl-tk-g {
+  color: var(--gl-navy);
+}
+
+.gilded-ledger-root .gl-render-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.gilded-ledger-root .gl-render-row {
+  align-items: baseline;
+  border-top: 1px solid var(--gl-hair-soft);
+  display: flex;
+  gap: 16px;
+  padding: 11px 0;
+}
+
+.gilded-ledger-root .gl-render-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.gilded-ledger-root .gl-render-tag {
+  border: 1px solid var(--gl-hair);
+  color: var(--gl-gold-deep);
+  flex: none;
+  font-size: 9px;
+  padding: 3px 7px;
+}
+
+.gilded-ledger-root .gl-render-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gilded-ledger-root .gl-render-copy strong {
+  font-family: var(--font-gl-display), Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.gilded-ledger-root .gl-render-copy span {
+  color: var(--gl-ink-soft);
+  font-size: 13px;
+}
+
+/* the three ledger entries under the plate */
+.gilded-ledger-root .gl-entries {
+  border-bottom: 3px double var(--gl-hair);
+  border-top: 3px double var(--gl-hair);
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 56px;
+  padding: 30px 0;
+}
+
+.gilded-ledger-root .gl-entry-no {
+  color: var(--gl-gold-deep);
+  display: block;
+  font-size: 10px;
+  margin-bottom: 10px;
+}
+
+.gilded-ledger-root .gl-entry p {
+  color: var(--gl-ink-soft);
+  font-size: 14.5px;
+}
+
+/* -------------------------------------------------------------- colophon */
+
+.gilded-ledger-root .gl-scripts {
+  background: var(--gl-hair-soft);
+  border: 1px solid var(--gl-ink);
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.gilded-ledger-root .gl-script {
+  align-items: center;
+  background: var(--gl-paper-hi);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  min-height: 158px;
+  padding: 22px 14px;
+  text-align: center;
+}
+
+.gilded-ledger-root .gl-script-no {
+  color: var(--gl-gold-deep);
+  font-size: 9px;
+}
+
+.gilded-ledger-root .gl-script-word {
+  font-family: var(--font-gl-display), Georgia, 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif', serif;
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.gilded-ledger-root .gl-script-name {
+  color: var(--gl-ink-soft);
+  font-size: 9px;
+}
+
+.gilded-ledger-root .gl-variants {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 44px;
+  text-align: center;
+}
+
+.gilded-ledger-root .gl-variants p {
+  color: var(--gl-ink-soft);
+  font-size: 15px;
+  max-width: 560px;
+}
+
+.gilded-ledger-root .gl-variant-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.gilded-ledger-root .gl-variant-row code {
+  border: 1px solid var(--gl-hair);
+  color: var(--gl-ink);
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 9px;
+}
+
+/* -------------------------------------------------------------- products */
+
+.gilded-ledger-root .gl-ledger {
+  border-bottom: 3px double var(--gl-hair);
+  border-top: 3px double var(--gl-hair);
+}
+
+.gilded-ledger-root .gl-ledger-row {
+  align-items: baseline;
+  display: grid;
+  gap: 8px 28px;
+  grid-template-columns: 44px 200px 1fr auto;
+  padding: 22px 8px;
+}
+
+.gilded-ledger-root .gl-ledger-row + .gl-ledger-row {
+  border-top: 1px solid var(--gl-hair-soft);
+}
+
+.gilded-ledger-root .gl-ledger-no {
+  color: var(--gl-gold-deep);
+  font-family: var(--font-gl-display), Georgia, serif;
+  font-size: 17px;
+}
+
+.gilded-ledger-root .gl-ledger-row h3 {
+  font-size: 22px;
+}
+
+.gilded-ledger-root .gl-ledger-row p {
+  color: var(--gl-ink-soft);
+  font-size: 14.5px;
+}
+
+.gilded-ledger-root .gl-ledger-kind {
+  color: var(--gl-gold-deep);
+  font-size: 9.5px;
+  justify-self: end;
+}
+
+/* --------------------------------------------------------------- pricing */
+
+/* the two-page ledger spread; the spine is a shared gradient gutter */
+.gilded-ledger-root .gl-spread {
+  background: var(--gl-paper-hi);
+  border: 1px solid var(--gl-ink);
+  box-shadow:
+    inset 0 0 0 5px var(--gl-paper-hi),
+    inset 0 0 0 6px var(--gl-gold);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 6px;
+  position: relative;
+}
+
+.gilded-ledger-root .gl-spread-page {
+  min-width: 0;
+  padding: 40px 44px 48px;
+  position: relative;
+}
+
+.gilded-ledger-root .gl-spread-page.is-right {
+  border-left: 1px solid var(--gl-hair-soft);
+}
+
+.gilded-ledger-root .gl-spread-page::after {
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.gilded-ledger-root .gl-spread-page:not(.is-right)::after {
+  background: linear-gradient(270deg, rgba(34, 30, 19, 0.08), transparent 26px);
+}
+
+.gilded-ledger-root .gl-spread-page.is-right::after {
+  background: linear-gradient(90deg, rgba(34, 30, 19, 0.08), transparent 26px);
+}
+
+.gilded-ledger-root .gl-spread-head {
+  border-bottom: 3px double var(--gl-hair);
+  color: var(--gl-gold-deep);
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  text-align: center;
+}
+
+.gilded-ledger-root .gl-rates {
+  display: flex;
+  flex-direction: column;
+}
+
+.gilded-ledger-root .gl-rate {
+  display: flex;
+  padding: 9px 0;
+}
+
+.gilded-ledger-root .gl-rate + .gl-rate {
+  border-top: 1px solid var(--gl-hair-soft);
+}
+
+.gilded-ledger-root .gl-rate-name {
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.gilded-ledger-root .gl-rate-value {
+  display: flex;
+  flex-direction: column;
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+  max-width: 55%;
+  text-align: right;
+}
+
+.gilded-ledger-root .gl-rate-value small {
+  color: var(--gl-ink-soft);
+  font-size: 11.5px;
+}
+
+.gilded-ledger-root .gl-rates-foot {
+  border-top: 3px double var(--gl-gold);
+  color: var(--gl-ink-soft);
+  display: flex;
+  flex-direction: column;
+  font-size: 12.5px;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 16px;
+}
+
+.gilded-ledger-root .gl-account {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0 30px;
+}
+
+.gilded-ledger-root .gl-account + .gl-account {
+  border-top: 1px solid var(--gl-hair-soft);
+  padding-top: 28px;
+}
+
+.gilded-ledger-root .gl-account-head {
+  align-items: baseline;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+}
+
+.gilded-ledger-root .gl-account-head h3 {
+  font-size: 24px;
+}
+
+.gilded-ledger-root .gl-account-price {
+  font-family: var(--font-gl-display), Georgia, serif;
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.gilded-ledger-root .gl-account-price .gl-sc {
+  color: var(--gl-ink-soft);
+  font-size: 9px;
+}
+
+.gilded-ledger-root .gl-account > p {
+  color: var(--gl-ink-soft);
+  font-size: 14.5px;
+}
+
+.gilded-ledger-root .gl-account-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.gilded-ledger-root .gl-account-list li {
+  align-items: baseline;
+  display: flex;
+  font-size: 14px;
+  gap: 12px;
+}
+
+.gilded-ledger-root .gl-account-list li::before {
+  background: var(--gl-gold);
+  content: '';
+  flex: none;
+  height: 5px;
+  transform: rotate(45deg) translateY(-1px);
+  width: 5px;
+}
+
+.gilded-ledger-root .gl-account .gl-btn {
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.gilded-ledger-root .gl-footer {
+  border-top: 3px double var(--gl-hair);
+  margin-top: 104px;
+  padding-top: 56px;
+}
+
+.gilded-ledger-root .gl-footer-grid {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+}
+
+.gilded-ledger-root .gl-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.gilded-ledger-root .gl-footer-brand p {
+  color: var(--gl-ink-soft);
+  font-size: 14px;
+  max-width: 260px;
+}
+
+.gilded-ledger-root .gl-footer-head {
+  color: var(--gl-gold-deep);
+  display: block;
+  font-size: 10px;
+  margin-bottom: 14px;
+}
+
+.gilded-ledger-root .gl-footer-col li + li {
+  margin-top: 8px;
+}
+
+.gilded-ledger-root .gl-footer-col a {
+  border-bottom: 1px solid transparent;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.gilded-ledger-root .gl-footer-col a:hover {
+  border-bottom-color: var(--gl-gold);
+}
+
+.gilded-ledger-root .gl-colophon {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 56px;
+  padding-bottom: 36px;
+  text-align: center;
+}
+
+.gilded-ledger-root .gl-colophon p {
+  color: var(--gl-ink-soft);
+  font-size: 9.5px;
+}
+
+/* ---------------------------------------------------------------- motion */
+
+@keyframes gl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gilded-ledger-root .gl-titlepage {
+    animation: none;
+  }
+
+  .gilded-ledger-root .gl-btn.is-ink::after {
+    display: none;
+  }
+
+  .gilded-ledger-root .gl-btn,
+  .gilded-ledger-root .gl-mast-nav a,
+  .gilded-ledger-root .gl-footer-col a,
+  .gilded-ledger-root .gl-toc-title {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 960px) {
+  .gilded-ledger-root .gl-mast-nav {
+    display: none;
+  }
+
+  .gilded-ledger-root .gl-scripts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .gilded-ledger-root .gl-ledger-row {
+    grid-template-columns: 44px 1fr auto;
+  }
+
+  .gilded-ledger-root .gl-ledger-row p {
+    grid-column: 2 / -1;
+  }
+
+  .gilded-ledger-root .gl-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .gilded-ledger-root .gl-plate {
+    grid-template-columns: 1fr;
+  }
+
+  .gilded-ledger-root .gl-plate-pane.is-render {
+    border-left: 0;
+    border-top: 1px solid var(--gl-hair-soft);
+  }
+
+  .gilded-ledger-root .gl-spread {
+    grid-template-columns: 1fr;
+  }
+
+  .gilded-ledger-root .gl-spread-page.is-right {
+    border-left: 0;
+    border-top: 1px solid var(--gl-hair-soft);
+  }
+
+  .gilded-ledger-root .gl-spread-page::after {
+    display: none;
+  }
+
+  .gilded-ledger-root .gl-entries {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .gilded-ledger-root .gl-folio-mid {
+    display: none;
+  }
+
+  .gilded-ledger-root .gl-mast-cta .gl-btn:not(.is-ink) {
+    display: none;
+  }
+
+  .gilded-ledger-root .gl-mast-name {
+    font-size: 18px;
+  }
+
+  .gilded-ledger-root .gl-titlepage {
+    padding: 56px 22px 44px;
+  }
+
+  .gilded-ledger-root .gl-scripts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gilded-ledger-root .gl-script {
+    min-height: 128px;
+  }
+
+  .gilded-ledger-root .gl-plate-pane,
+  .gilded-ledger-root .gl-spread-page {
+    padding: 26px 20px 32px;
+  }
+
+  .gilded-ledger-root .gl-account-head {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .gilded-ledger-root .gl-sec {
+    padding-top: 72px;
+  }
+
+  .gilded-ledger-root .gl-hero {
+    padding-top: 48px;
+  }
+}

@@ -1,0 +1,1002 @@
+/* ==================================================================
+   CASSANDRE POSTER — midnight blue, vermilion, cream.
+   Every rule is scoped under .cassandre-poster-root. Keyframes are
+   prefixed cp- to stay out of other directions' way.
+
+   Palette notes (contrast checked against #0e1b30):
+   - cream #f2e7d3 on ink       ~13.9:1
+   - vermilion #ee5b33 on ink    ~5.1:1  (small text passes AA)
+   - deep vermilion #b23418 on cream ~5.1:1 (code accents)
+   ================================================================== */
+
+.cassandre-poster-root {
+  --cp-ink: #0e1b30;
+  --cp-deep: #081120;
+  --cp-navy: #16273f;
+  --cp-cream: #f2e7d3;
+  --cp-cream-dim: rgba(242, 231, 211, 0.66);
+  --cp-cream-faint: rgba(242, 231, 211, 0.18);
+  --cp-vermilion: #ee5b33;
+  --cp-vermilion-deep: #b23418;
+  --cp-steel: #8fa5c5;
+
+  --cp-display: var(--font-josefin), 'Josefin Sans', 'Avenir Next', sans-serif;
+  --cp-body: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --cp-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  position: relative;
+  background: var(--cp-ink);
+  color: var(--cp-cream);
+  font-family: var(--cp-body);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cassandre-poster-root ::selection {
+  background: var(--cp-vermilion);
+  color: var(--cp-deep);
+}
+
+.cassandre-poster-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ------------------------------------------------------------------
+   Shared type
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root h1,
+.cassandre-poster-root h2,
+.cassandre-poster-root h3 {
+  margin: 0;
+  font-family: var(--cp-display);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cassandre-poster-root .cp-head {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.cassandre-poster-root .cp-head h2 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  letter-spacing: 0.14em;
+  line-height: 1.12;
+}
+
+.cassandre-poster-root .cp-kicker {
+  margin: 0 0 18px;
+  font-family: var(--cp-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.42em;
+  color: var(--cp-vermilion);
+}
+
+.cassandre-poster-root .cp-kicker::before {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 3px;
+  margin: 0 auto 14px;
+  background: var(--cp-vermilion);
+}
+
+.cassandre-poster-root .cp-lead {
+  margin: 20px auto 0;
+  max-width: 560px;
+  font-size: 0.97rem;
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-caption {
+  margin: 26px auto 0;
+  max-width: 480px;
+  padding: 0 24px;
+  text-align: center;
+  font-size: 0.83rem;
+  letter-spacing: 0.02em;
+  color: var(--cp-cream-dim);
+}
+
+/* ------------------------------------------------------------------
+   Buttons
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-btn {
+  display: inline-block;
+  padding: 14px 28px 12px;
+  font-family: var(--cp-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: transform 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+
+.cassandre-poster-root .cp-btn:hover {
+  transform: translateY(-1px);
+}
+
+.cassandre-poster-root .cp-btn-sm {
+  padding: 10px 20px 8px;
+}
+
+.cassandre-poster-root .cp-btn-solid {
+  background: var(--cp-vermilion);
+  color: var(--cp-deep);
+}
+
+.cassandre-poster-root .cp-btn-solid:hover {
+  background: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-btn-line {
+  border: 2px solid var(--cp-cream);
+  color: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-btn-line:hover {
+  background: var(--cp-cream);
+  color: var(--cp-deep);
+}
+
+.cassandre-poster-root .cp-btn-ink {
+  background: var(--cp-ink);
+  color: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-btn-ink:hover {
+  background: var(--cp-vermilion-deep);
+}
+
+/* ------------------------------------------------------------------
+   Nav
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 26px 28px;
+}
+
+.cassandre-poster-root .cp-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--cp-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cassandre-poster-root .cp-brandmark {
+  width: 18px;
+  height: 18px;
+  color: var(--cp-vermilion);
+  flex: none;
+}
+
+.cassandre-poster-root .cp-nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.cassandre-poster-root .cp-nav-links a,
+.cassandre-poster-root .cp-nav-right > a:not(.cp-btn) {
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cp-cream-dim);
+  transition: color 140ms ease;
+}
+
+.cassandre-poster-root .cp-nav-links a:hover,
+.cassandre-poster-root .cp-nav-right > a:not(.cp-btn):hover {
+  color: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ------------------------------------------------------------------
+   Hero — the Normandie plate
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-hero {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  padding-top: 104px;
+  background:
+    radial-gradient(120% 60% at 50% 118%, rgba(143, 165, 197, 0.16), transparent 70%),
+    var(--cp-ink);
+}
+
+.cassandre-poster-root .cp-hero-line {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em; /* balances the tracking on the last glyph */
+  text-transform: uppercase;
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-hero-line::before,
+.cassandre-poster-root .cp-hero-line::after {
+  content: '';
+  width: clamp(24px, 6vw, 72px);
+  height: 1px;
+  background: var(--cp-cream-faint);
+}
+
+.cassandre-poster-root .cp-hero-artwrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 300px;
+  margin-top: 12px;
+}
+
+.cassandre-poster-root .cp-art {
+  display: block;
+  width: min(96vw, 960px);
+  height: auto;
+  max-height: min(58vh, 620px);
+}
+
+.cassandre-poster-root .cp-hull-t {
+  font-family: var(--cp-display);
+  font-weight: 700;
+  font-size: 132px;
+  letter-spacing: 0.04em;
+  fill: var(--cp-cream);
+}
+
+/* the sea band of world scripts */
+
+.cassandre-poster-root .cp-sea {
+  overflow: hidden;
+  padding: 16px 0 18px;
+  background: linear-gradient(180deg, #0a1526, #071020);
+}
+
+.cassandre-poster-root .cp-sea-track {
+  display: flex;
+  width: max-content;
+}
+
+.cassandre-poster-root .cp-sea-run {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.cassandre-poster-root .cp-sea-run span {
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-sea-run span::after {
+  content: '·';
+  margin: 0 22px;
+  color: var(--cp-vermilion);
+}
+
+/* the ship name */
+
+.cassandre-poster-root .cp-hero-name {
+  padding: 46px 24px 88px;
+  text-align: center;
+}
+
+.cassandre-poster-root .cp-route {
+  margin: 0 0 22px;
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-route em {
+  font-style: normal;
+  margin: 0 10px;
+  color: var(--cp-vermilion);
+}
+
+.cassandre-poster-root .cp-hero-name h1 {
+  font-size: clamp(2.1rem, 6.6vw, 5.9rem);
+  letter-spacing: 0.16em;
+  line-height: 1.08;
+}
+
+.cassandre-poster-root .cp-rule-double {
+  width: min(420px, 62vw);
+  margin: 26px auto 0;
+  height: 7px;
+  border-top: 4px solid var(--cp-vermilion);
+  border-bottom: 1px solid var(--cp-cream-faint);
+}
+
+.cassandre-poster-root .cp-hero-caption {
+  margin: 24px auto 0;
+  max-width: 540px;
+  font-size: 0.95rem;
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 34px;
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------------
+   Proof — the Étoile du Nord rails
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-proof {
+  padding: 130px 0 120px;
+  background:
+    radial-gradient(90% 46% at 50% 0%, rgba(143, 165, 197, 0.1), transparent 70%),
+    var(--cp-deep);
+}
+
+.cassandre-poster-root .cp-rails {
+  position: relative;
+  max-width: 880px;
+  margin: 64px auto 0;
+  padding: clamp(130px, 22vw, 200px) 28px 0;
+}
+
+.cassandre-poster-root .cp-rails-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cassandre-poster-root .cp-stations {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cassandre-poster-root .cp-stations li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.cassandre-poster-root .cp-station-code {
+  font-family: var(--cp-display);
+  font-weight: 700;
+  font-size: 0.66rem;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--cp-vermilion);
+}
+
+.cassandre-poster-root .cp-station-text {
+  font-family: var(--cp-display);
+  font-weight: 400;
+  color: var(--cp-cream);
+}
+
+/* linear taper toward the vanishing point: widths shrink with height,
+   so the rows' edges align with the converging rails */
+.cassandre-poster-root .cp-stations li:nth-child(1) {
+  width: 82%;
+  font-size: 1.18rem;
+}
+.cassandre-poster-root .cp-stations li:nth-child(2) {
+  width: 68%;
+  font-size: 1.06rem;
+  opacity: 0.92;
+}
+.cassandre-poster-root .cp-stations li:nth-child(3) {
+  width: 54%;
+  font-size: 0.95rem;
+  opacity: 0.84;
+}
+.cassandre-poster-root .cp-stations li:nth-child(4) {
+  width: 42%;
+  font-size: 0.86rem;
+  opacity: 0.76;
+}
+.cassandre-poster-root .cp-stations li:nth-child(5) {
+  width: 31%;
+  font-size: 0.78rem;
+  opacity: 0.68;
+}
+
+/* the departure platform: the source code plate */
+
+.cassandre-poster-root .cp-code {
+  position: relative;
+  width: min(100%, 560px);
+  margin: 40px auto 0;
+  padding: 26px 32px;
+  background: var(--cp-cream);
+  color: var(--cp-ink);
+  box-shadow: 10px 10px 0 rgba(178, 52, 24, 0.85);
+  font-family: var(--cp-mono);
+  font-size: 0.86rem;
+  line-height: 1.75;
+  overflow-x: auto;
+}
+
+.cassandre-poster-root .cp-code code {
+  font-family: inherit;
+}
+
+.cassandre-poster-root .cp-code-tag {
+  color: var(--cp-vermilion-deep);
+  font-weight: 700;
+}
+
+.cassandre-poster-root .cp-code-str {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------
+   Scripts — one enormous glyph, one precise ledger
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-scripts {
+  padding: 130px 0 130px;
+  background:
+    radial-gradient(70% 50% at 22% 58%, rgba(143, 165, 197, 0.14), transparent 68%),
+    var(--cp-ink);
+}
+
+.cassandre-poster-root .cp-scripts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(28px, 5vw, 72px);
+  max-width: 1160px;
+  margin: 56px auto 0;
+  padding: 0 28px;
+}
+
+.cassandre-poster-root .cp-glyph-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cassandre-poster-root .cp-glyph {
+  font-size: clamp(13rem, 26vw, 24rem);
+  line-height: 1;
+  font-weight: 600;
+  background: radial-gradient(circle at 32% 22%, #f2e7d3 0%, #a9bbd6 46%, #33507c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cassandre-poster-root .cp-glyph-label {
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-ledger {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: clamp(20px, 3vw, 48px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cassandre-poster-root .cp-ledger li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 2px 11px;
+  border-bottom: 1px solid rgba(238, 91, 51, 0.35);
+}
+
+.cassandre-poster-root .cp-ledger-word {
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.cassandre-poster-root .cp-ledger-meta {
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cp-cream-dim);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   Products — the triptych of plates
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-products {
+  padding: 130px 0 0;
+  background: var(--cp-deep);
+}
+
+.cassandre-poster-root .cp-triptych {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 64px;
+}
+
+.cassandre-poster-root .cp-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: clamp(48px, 6vw, 76px) clamp(28px, 4vw, 56px) clamp(52px, 6vw, 80px);
+  min-height: 380px;
+}
+
+.cassandre-poster-root .cp-emblem {
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+
+.cassandre-poster-root .cp-plate h3 {
+  margin-top: 30px;
+  font-size: 1.3rem;
+  letter-spacing: 0.16em;
+  line-height: 1.25;
+}
+
+.cassandre-poster-root .cp-plate p {
+  margin: 16px 0 0;
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+
+.cassandre-poster-root .cp-plate a {
+  margin-top: auto;
+  padding-top: 28px;
+  font-family: var(--cp-display);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cassandre-poster-root .cp-plate a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.cassandre-poster-root .cp-plate-cream {
+  background:
+    radial-gradient(120% 90% at 80% 0%, rgba(143, 165, 197, 0.28), transparent 60%),
+    var(--cp-cream);
+  color: var(--cp-ink);
+}
+
+.cassandre-poster-root .cp-plate-cream .cp-emblem {
+  color: var(--cp-vermilion-deep);
+}
+
+.cassandre-poster-root .cp-plate-cream p {
+  color: rgba(14, 27, 48, 0.78);
+}
+
+.cassandre-poster-root .cp-plate-verm {
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(242, 231, 211, 0.22), transparent 62%),
+    var(--cp-vermilion);
+  color: var(--cp-deep);
+}
+
+.cassandre-poster-root .cp-plate-verm .cp-emblem {
+  color: var(--cp-deep);
+}
+
+.cassandre-poster-root .cp-plate-navy {
+  background:
+    radial-gradient(120% 90% at 20% 0%, rgba(143, 165, 197, 0.2), transparent 62%),
+    var(--cp-navy);
+  color: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-plate-navy .cp-emblem {
+  color: var(--cp-vermilion);
+}
+
+.cassandre-poster-root .cp-plate-navy p {
+  color: var(--cp-cream-dim);
+}
+
+/* ------------------------------------------------------------------
+   Pricing — two ledger plates
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-pricing {
+  padding: 130px 24px 120px;
+  background:
+    radial-gradient(90% 50% at 50% 100%, rgba(143, 165, 197, 0.1), transparent 70%),
+    var(--cp-deep);
+}
+
+.cassandre-poster-root .cp-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  max-width: 940px;
+  margin: 56px auto 0;
+}
+
+.cassandre-poster-root .cp-plan {
+  display: flex;
+  flex-direction: column;
+  padding: 44px 40px 40px;
+}
+
+.cassandre-poster-root .cp-plan h3 {
+  font-size: 1.05rem;
+  letter-spacing: 0.22em;
+}
+
+.cassandre-poster-root .cp-price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 18px 0 0;
+}
+
+.cassandre-poster-root .cp-price strong {
+  font-family: var(--cp-display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 4.5vw, 3.6rem);
+  line-height: 1;
+}
+
+.cassandre-poster-root .cp-price span {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cassandre-poster-root .cp-plan-body {
+  margin: 16px 0 0;
+  font-size: 0.92rem;
+}
+
+.cassandre-poster-root .cp-plan ul {
+  margin: 22px 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.cassandre-poster-root .cp-plan li {
+  padding: 10px 0 9px;
+  font-size: 0.9rem;
+}
+
+.cassandre-poster-root .cp-plan .cp-btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.cassandre-poster-root .cp-plan-cream {
+  background: var(--cp-cream);
+  color: var(--cp-ink);
+  box-shadow: 10px 10px 0 rgba(178, 52, 24, 0.85);
+}
+
+.cassandre-poster-root .cp-plan-cream .cp-price strong {
+  color: var(--cp-vermilion-deep);
+}
+
+.cassandre-poster-root .cp-plan-cream .cp-price span,
+.cassandre-poster-root .cp-plan-cream .cp-plan-body {
+  color: rgba(14, 27, 48, 0.72);
+}
+
+.cassandre-poster-root .cp-plan-cream li {
+  border-bottom: 1px solid rgba(14, 27, 48, 0.16);
+}
+
+.cassandre-poster-root .cp-plan-navy {
+  background: var(--cp-navy);
+  border: 2px solid var(--cp-cream-faint);
+}
+
+.cassandre-poster-root .cp-plan-navy .cp-price strong {
+  color: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-plan-navy .cp-price span,
+.cassandre-poster-root .cp-plan-navy .cp-plan-body {
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-plan-navy li {
+  border-bottom: 1px solid rgba(242, 231, 211, 0.14);
+}
+
+.cassandre-poster-root .cp-compare {
+  margin: 40px auto 0;
+  text-align: center;
+}
+
+.cassandre-poster-root .cp-compare a {
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cp-cream-dim);
+  transition: color 140ms ease;
+}
+
+.cassandre-poster-root .cp-compare a:hover {
+  color: var(--cp-cream);
+}
+
+/* ------------------------------------------------------------------
+   Footer
+   ------------------------------------------------------------------ */
+
+.cassandre-poster-root .cp-footer {
+  background: var(--cp-deep);
+  padding: 0 28px 44px;
+}
+
+.cassandre-poster-root .cp-footer-rule {
+  max-width: 1160px;
+  margin: 0 auto;
+  height: 9px;
+  border-top: 4px solid var(--cp-vermilion);
+  border-bottom: 1px solid var(--cp-cream-faint);
+}
+
+.cassandre-poster-root .cp-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1160px;
+  margin: 56px auto 0;
+}
+
+.cassandre-poster-root .cp-footer-brand p {
+  margin: 0;
+  max-width: 320px;
+  font-size: 0.88rem;
+  color: var(--cp-cream-dim);
+}
+
+.cassandre-poster-root .cp-footer-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-family: var(--cp-display);
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-footer-grid nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cassandre-poster-root .cp-footer-grid h4 {
+  margin: 0 0 6px;
+  font-family: var(--cp-display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cp-vermilion);
+}
+
+.cassandre-poster-root .cp-footer-grid nav a {
+  font-size: 0.88rem;
+  color: var(--cp-cream-dim);
+  transition: color 140ms ease;
+}
+
+.cassandre-poster-root .cp-footer-grid nav a:hover {
+  color: var(--cp-cream);
+}
+
+.cassandre-poster-root .cp-footer-base {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  max-width: 1160px;
+  margin: 60px auto 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--cp-cream-faint);
+}
+
+.cassandre-poster-root .cp-footer-base p {
+  margin: 0;
+  font-family: var(--cp-display);
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cp-cream-dim);
+}
+
+/* ------------------------------------------------------------------
+   Motion — CSS only, gated behind prefers-reduced-motion
+   ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .cassandre-poster-root .cp-sea-track {
+    animation: cp-drift 80s linear infinite;
+  }
+
+  .cassandre-poster-root .cp-bowwave {
+    animation: cp-shimmer 6s ease-in-out infinite;
+  }
+
+  .cassandre-poster-root .cp-star-glow {
+    animation: cp-pulse 4.5s ease-in-out infinite;
+  }
+}
+
+@keyframes cp-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes cp-shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.72;
+  }
+}
+
+@keyframes cp-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Responsive
+   ------------------------------------------------------------------ */
+
+@media (max-width: 960px) {
+  .cassandre-poster-root .cp-scripts-grid {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+
+  .cassandre-poster-root .cp-ledger {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .cassandre-poster-root .cp-triptych {
+    grid-template-columns: 1fr;
+  }
+
+  .cassandre-poster-root .cp-plate {
+    min-height: 0;
+  }
+
+  .cassandre-poster-root .cp-plans {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  .cassandre-poster-root .cp-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .cassandre-poster-root .cp-nav {
+    padding: 20px 20px;
+  }
+
+  .cassandre-poster-root .cp-nav-links {
+    display: none;
+  }
+
+  .cassandre-poster-root .cp-hero {
+    padding-top: 92px;
+  }
+
+  .cassandre-poster-root .cp-hero-name h1 {
+    letter-spacing: 0.1em;
+  }
+
+  /* the perspective flattens on narrow screens so every string stays legible */
+  .cassandre-poster-root .cp-stations li:nth-child(1),
+  .cassandre-poster-root .cp-stations li:nth-child(2),
+  .cassandre-poster-root .cp-stations li:nth-child(3),
+  .cassandre-poster-root .cp-stations li:nth-child(4),
+  .cassandre-poster-root .cp-stations li:nth-child(5) {
+    width: min(100%, 420px);
+  }
+
+  .cassandre-poster-root .cp-code {
+    font-size: 0.78rem;
+    padding: 20px 22px;
+    box-shadow: 7px 7px 0 rgba(178, 52, 24, 0.85);
+  }
+
+  .cassandre-poster-root .cp-ledger-word {
+    white-space: normal;
+  }
+}

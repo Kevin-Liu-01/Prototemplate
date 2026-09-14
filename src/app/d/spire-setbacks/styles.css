@@ -1,0 +1,1219 @@
+/* ------------------------------------------------------------------ */
+/* SPIRE SETBACKS — a 1930 tower drawn in elevation.                   */
+/* Cream limestone ground, ink linework, jade and brass accents.       */
+/* Every section is a double-ruled setback; the page narrows as it     */
+/* descends, so scrolling down is riding the tower up. All ornament    */
+/* is CSS gradients and inline SVG; every rule is scoped to the root.  */
+/* ------------------------------------------------------------------ */
+
+.spire-setbacks-root {
+  /* stone and ink */
+  --ss-ground: #ece2c9;
+  --ss-cream: #f6f0df;
+  --ss-cream-2: #fbf6e9;
+  --ss-ink: #262219;
+  --ss-ink-soft: rgba(38, 34, 25, 0.74);
+  --ss-line: #2b271d;
+  --ss-hairline: rgba(38, 34, 25, 0.32);
+
+  /* jade and brass */
+  --ss-jade: #1e6f5b;
+  --ss-jade-deep: #114a3c;
+  --ss-jade-tint: #dcebe0;
+  --ss-brass: #a07d2c;
+  --ss-brass-deep: #7d621f;
+  --ss-brass-bright: #c8a557;
+
+  /* faces */
+  --ss-display: var(--font-spire-display), 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  --ss-plaque: var(--font-spire-plaque), 'Palatino', Georgia, serif;
+  --ss-body: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  --ss-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+
+  /* setback geometry: each floor pulls in by one more step */
+  --ss-inset-base: 28px;
+  --ss-inset-step: 34px;
+
+  min-height: 100vh;
+  color: var(--ss-ink);
+  font-family: var(--ss-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+
+  /* the sky of the drawing: warm ground with faint vertical fluting */
+  background:
+    repeating-linear-gradient(90deg, rgba(38, 34, 25, 0.03) 0 1px, transparent 1px 96px),
+    linear-gradient(180deg, #efe6cf 0%, var(--ss-ground) 55%, #e7dbbd 100%);
+}
+
+.spire-setbacks-root *,
+.spire-setbacks-root *::before,
+.spire-setbacks-root *::after {
+  box-sizing: border-box;
+}
+
+.spire-setbacks-root :focus-visible {
+  outline: 2px solid var(--ss-jade);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------- canopy nav */
+
+.spire-setbacks-root .ss-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--ss-cream-2);
+}
+
+/* the canopy's triple string course: ink, brass, ink */
+.spire-setbacks-root .ss-nav::after {
+  content: '';
+  display: block;
+  height: 7px;
+  background: linear-gradient(
+    var(--ss-line) 0 1px,
+    transparent 1px 3px,
+    var(--ss-brass) 3px 4px,
+    transparent 4px 6px,
+    var(--ss-line) 6px 7px
+  );
+}
+
+.spire-setbacks-root .ss-nav-in {
+  max-width: 1240px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 13px 24px;
+}
+
+.spire-setbacks-root .ss-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--ss-plaque);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--ss-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.spire-setbacks-root .ss-nav-links {
+  display: flex;
+  gap: 26px;
+  margin-inline: auto;
+}
+
+.spire-setbacks-root .ss-nav-links a {
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
+  color: var(--ss-ink-soft);
+  text-decoration: none;
+}
+
+.spire-setbacks-root .ss-nav-links a:hover {
+  color: var(--ss-jade-deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.spire-setbacks-root .ss-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+}
+
+.spire-setbacks-root .ss-nav-signin {
+  font-size: 13.5px;
+  color: var(--ss-ink-soft);
+  text-decoration: none;
+}
+
+.spire-setbacks-root .ss-nav-signin:hover {
+  color: var(--ss-jade-deep);
+}
+
+/* ------------------------------------------------------------ buttons */
+
+.spire-setbacks-root .ss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ss-plaque);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border: 1px solid var(--ss-line);
+  color: var(--ss-ink);
+  background: transparent;
+  text-decoration: none;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.spire-setbacks-root .ss-btn-solid {
+  background: var(--ss-jade);
+  border-color: var(--ss-jade-deep);
+  color: var(--ss-cream-2);
+  box-shadow: inset 0 0 0 2px rgba(251, 246, 233, 0.28);
+}
+
+.spire-setbacks-root .ss-btn-solid:hover {
+  background: var(--ss-jade-deep);
+}
+
+.spire-setbacks-root .ss-btn-line:hover {
+  color: var(--ss-jade-deep);
+  border-color: var(--ss-jade-deep);
+  box-shadow: inset 0 0 0 1px var(--ss-jade-deep);
+}
+
+.spire-setbacks-root .ss-btn-sm {
+  padding: 8px 16px;
+  font-size: 11.5px;
+}
+
+/* --------------------------------------------------- setback sections */
+
+.spire-setbacks-root .ss-elevation {
+  padding: 48px 0 84px;
+}
+
+.spire-setbacks-root .ss-sec {
+  --ssw: 1180px;
+  --step: 0;
+  position: relative;
+  width: min(var(--ssw), calc(100% - var(--ss-inset-base) - var(--step) * var(--ss-inset-step)));
+  margin-inline: auto;
+  border: 1px solid var(--ss-line);
+  background:
+    repeating-linear-gradient(0deg, rgba(38, 34, 25, 0.022) 0 1px, transparent 1px 72px),
+    var(--ss-cream);
+  padding: clamp(56px, 7vw, 92px) clamp(20px, 5vw, 64px) clamp(48px, 6vw, 78px);
+  scroll-margin-top: 78px;
+}
+
+/* the inner rule of every double frame */
+.spire-setbacks-root .ss-sec::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(38, 34, 25, 0.5);
+  pointer-events: none;
+}
+
+/* the seven floors, each 84px narrower than the one above it */
+.spire-setbacks-root .fl-0 {
+  --ssw: 1180px;
+  --step: 0;
+}
+.spire-setbacks-root .fl-1 {
+  --ssw: 1096px;
+  --step: 1;
+}
+.spire-setbacks-root .fl-2 {
+  --ssw: 1012px;
+  --step: 2;
+}
+.spire-setbacks-root .fl-3 {
+  --ssw: 928px;
+  --step: 3;
+}
+.spire-setbacks-root .fl-4 {
+  --ssw: 844px;
+  --step: 4;
+}
+.spire-setbacks-root .fl-5 {
+  --ssw: 760px;
+  --step: 5;
+}
+.spire-setbacks-root .fl-6 {
+  --ssw: 676px;
+  --step: 6;
+}
+
+/* ------------------------------------------------------- floor plates */
+
+.spire-setbacks-root .ss-plate {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 20px;
+  background: var(--ss-cream-2);
+  border: 1px solid var(--ss-line);
+  outline: 1px solid var(--ss-line);
+  outline-offset: 3px;
+  white-space: nowrap;
+}
+
+.spire-setbacks-root .ss-plate-floor {
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 750;
+  font-size: 16px;
+  color: var(--ss-brass-deep);
+  line-height: 1;
+}
+
+.spire-setbacks-root .ss-plate-name {
+  font-family: var(--ss-plaque);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding-top: 1px;
+}
+
+.spire-setbacks-root .ss-dia {
+  display: inline-block;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: var(--ss-brass);
+  transform: rotate(45deg);
+}
+
+/* ------------------------------------------------------------ headings */
+
+.spire-setbacks-root .ss-h2 {
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-size: clamp(34px, 4.6vw, 56px);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0;
+}
+
+.spire-setbacks-root .ss-sub {
+  max-width: 620px;
+  margin: 18px auto 0;
+  text-align: center;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ss-ink-soft);
+}
+
+/* ---------------------------------------------------------- the lobby */
+
+.spire-setbacks-root .ss-lobby {
+  text-align: center;
+}
+
+.spire-setbacks-root .ss-sunburst {
+  display: block;
+  width: min(680px, 92%);
+  height: auto;
+  margin: 0 auto;
+}
+
+.spire-setbacks-root .ss-rays-a {
+  animation: ss-breathe 5.5s ease-in-out infinite alternate;
+}
+
+.spire-setbacks-root .ss-rays-b {
+  animation: ss-breathe 5.5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes ss-breathe {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.spire-setbacks-root .ss-h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 26px 0 0;
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 750;
+  font-size: clamp(64px, 10.5vw, 148px);
+  line-height: 0.9;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+}
+
+.spire-setbacks-root .ss-h1-line {
+  display: block;
+}
+
+.spire-setbacks-root .ss-h1-mid {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  margin: 0.22em 0;
+  font-size: 0.26em;
+  font-weight: 500;
+  letter-spacing: 0.36em;
+  color: var(--ss-brass-deep);
+  padding-left: 0.36em; /* recenters the tracked line */
+}
+
+.spire-setbacks-root .ss-h1-rule {
+  display: inline-block;
+  width: clamp(34px, 6vw, 72px);
+  height: 1px;
+  background: var(--ss-line);
+}
+
+.spire-setbacks-root .ss-lede {
+  max-width: 560px;
+  margin: 26px auto 0;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.spire-setbacks-root .ss-cmd {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 28px auto 0;
+  padding: 10px 20px;
+  border: 1px solid var(--ss-hairline);
+  background: var(--ss-cream-2);
+  font-size: 13.5px;
+}
+
+.spire-setbacks-root .ss-cmd code {
+  font-family: var(--ss-mono);
+  letter-spacing: 0.02em;
+}
+
+.spire-setbacks-root .ss-cmd-prompt {
+  font-family: var(--ss-mono);
+  color: var(--ss-jade);
+}
+
+.spire-setbacks-root .ss-lobby-base {
+  width: min(560px, 100%);
+  margin: 36px auto 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--ss-hairline);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--ss-ink-soft);
+}
+
+/* --------------------------------------------------------- the tenants */
+
+.spire-setbacks-root .ss-tenants {
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 26px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 18px;
+  border-block: 1px solid var(--ss-line);
+}
+
+.spire-setbacks-root .ss-tenants li {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--ss-plaque);
+  font-size: clamp(14px, 1.9vw, 19px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.spire-setbacks-root .ss-tenants li:not(:first-child)::before {
+  content: '';
+  display: inline-block;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin: 0 clamp(14px, 2.4vw, 28px);
+  background: var(--ss-brass);
+  transform: rotate(45deg);
+}
+
+/* ---------------------------------------------------- the T component */
+
+.spire-setbacks-root .ss-proof-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 26px;
+  align-items: stretch;
+  margin-top: 44px;
+}
+
+/* the drafting panel: source code on deep jade, blueprint grid behind */
+.spire-setbacks-root .ss-draft {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ss-jade-deep);
+  background:
+    repeating-linear-gradient(0deg, rgba(251, 246, 233, 0.05) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, rgba(251, 246, 233, 0.05) 0 1px, transparent 1px 26px),
+    var(--ss-jade-deep);
+  box-shadow: inset 0 0 0 4px var(--ss-jade-deep), inset 0 0 0 5px rgba(251, 246, 233, 0.35);
+}
+
+.spire-setbacks-root .ss-panel-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  padding: 13px 20px;
+  border-bottom: 1px solid rgba(251, 246, 233, 0.3);
+  font-family: var(--ss-plaque);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ss-cream-2);
+}
+
+.spire-setbacks-root .ss-panel-label code {
+  font-family: var(--ss-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--ss-brass-bright);
+}
+
+.spire-setbacks-root .ss-panel-label.is-ink {
+  color: var(--ss-ink);
+  border-bottom: 1px solid var(--ss-hairline);
+  padding: 13px 2px;
+}
+
+.spire-setbacks-root .ss-code {
+  margin: 0;
+  padding: 20px 24px 24px;
+  overflow-x: auto;
+  font-family: var(--ss-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: #f0ead6;
+}
+
+.spire-setbacks-root .ss-code code {
+  font-family: inherit;
+}
+
+/* the rendered stack: the same card in five locales, its own setbacks */
+.spire-setbacks-root .ss-render {
+  display: flex;
+  flex-direction: column;
+}
+
+.spire-setbacks-root .ss-render-stack {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.spire-setbacks-root .ss-render-card {
+  --rc: 0;
+  width: calc(100% - var(--rc) * 7%);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  row-gap: 2px;
+  align-items: baseline;
+  padding: 12px 16px;
+  border: 1px solid var(--ss-line);
+  background: var(--ss-cream-2);
+}
+
+.spire-setbacks-root .ss-render-card.is-source {
+  border-color: var(--ss-jade-deep);
+  background: var(--ss-jade-tint);
+  box-shadow: inset 0 0 0 3px var(--ss-jade-tint), inset 0 0 0 4px rgba(17, 74, 60, 0.5);
+}
+
+.spire-setbacks-root .ss-render-tag {
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--ss-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ss-brass-deep);
+  border: 1px solid var(--ss-brass-deep);
+  padding: 3px 7px;
+}
+
+.spire-setbacks-root .ss-render-card strong {
+  font-size: 15.5px;
+  font-weight: 620;
+}
+
+.spire-setbacks-root .ss-render-body {
+  font-size: 13.5px;
+  color: var(--ss-ink-soft);
+}
+
+/* the terminal strip under the proof */
+.spire-setbacks-root .ss-terminal {
+  width: min(560px, 100%);
+  margin: 28px auto 0;
+  padding: 14px 20px;
+  border: 1px solid var(--ss-line);
+  background: var(--ss-ink);
+  color: #efe8d2;
+  font-family: var(--ss-mono);
+  font-size: 13px;
+}
+
+.spire-setbacks-root .ss-terminal p {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+}
+
+.spire-setbacks-root .ss-terminal code {
+  font-family: inherit;
+}
+
+.spire-setbacks-root .ss-terminal .ss-cmd-prompt {
+  color: var(--ss-brass-bright);
+}
+
+.spire-setbacks-root .ss-terminal-out {
+  margin-top: 6px;
+  color: #93c3ab;
+}
+
+/* three steps, one ruled row */
+.spire-setbacks-root .ss-steps {
+  list-style: none;
+  margin: 44px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--ss-line);
+  background: var(--ss-cream-2);
+}
+
+.spire-setbacks-root .ss-steps li {
+  padding: 26px 24px 30px;
+}
+
+.spire-setbacks-root .ss-steps li + li {
+  border-left: 1px solid var(--ss-line);
+}
+
+.spire-setbacks-root .ss-step-num {
+  display: block;
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--ss-brass);
+}
+
+.spire-setbacks-root .ss-steps h3 {
+  margin: 12px 0 10px;
+  font-family: var(--ss-plaque);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.spire-setbacks-root .ss-steps p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-step-cmd {
+  margin: 0 0 10px;
+}
+
+.spire-setbacks-root .ss-step-cmd code {
+  display: inline-block;
+  padding: 5px 9px;
+  border: 1px solid var(--ss-hairline);
+  background: var(--ss-cream);
+  font-family: var(--ss-mono);
+  font-size: 12.5px;
+  color: var(--ss-ink);
+}
+
+/* --------------------------------------------------- floor directory */
+
+.spire-setbacks-root .ss-dir {
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--ss-line);
+}
+
+.spire-setbacks-root .ss-dir-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 6px;
+  border-bottom: 1px solid var(--ss-hairline);
+}
+
+.spire-setbacks-root .ss-dir-row.is-ground {
+  background: var(--ss-jade-tint);
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.spire-setbacks-root .ss-dir-num {
+  flex: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  border-right: 1px solid var(--ss-hairline);
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 750;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--ss-brass);
+}
+
+.spire-setbacks-root .ss-dir-row.is-ground .ss-dir-num {
+  color: var(--ss-jade-deep);
+}
+
+.spire-setbacks-root .ss-dir-greet {
+  font-size: clamp(19px, 2.6vw, 29px);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.spire-setbacks-root .ss-dir-lead {
+  flex: 1;
+  min-width: 24px;
+  align-self: center;
+  border-bottom: 1px dotted rgba(38, 34, 25, 0.45);
+}
+
+.spire-setbacks-root .ss-dir-name {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--ss-plaque);
+  font-size: 12.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.spire-setbacks-root .ss-dir-note {
+  font-style: normal;
+  font-family: var(--ss-body);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--ss-jade-deep);
+  border: 1px solid var(--ss-jade);
+  padding: 1px 7px;
+}
+
+.spire-setbacks-root .ss-dir-tag {
+  flex: none;
+  width: 34px;
+  text-align: right;
+  font-family: var(--ss-mono);
+  font-size: 12px;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-dir-foot {
+  max-width: 540px;
+  margin: 24px auto 0;
+  text-align: center;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--ss-ink-soft);
+}
+
+/* --------------------------------------------------------- the platform */
+
+.spire-setbacks-root .ss-cols {
+  list-style: none;
+  margin: 44px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.spire-setbacks-root .ss-col {
+  border: 1px solid var(--ss-line);
+  background: var(--ss-cream-2);
+  padding: 0 24px 26px;
+}
+
+/* the fluted capital on each pilaster */
+.spire-setbacks-root .ss-col-cap {
+  display: block;
+  height: 14px;
+  margin: 0 -24px 20px;
+  border-bottom: 1px solid var(--ss-line);
+  background: repeating-linear-gradient(90deg, rgba(38, 34, 25, 0.45) 0 1px, transparent 1px 7px);
+}
+
+.spire-setbacks-root .ss-col-role {
+  margin: 0 0 6px;
+  font-family: var(--ss-plaque);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ss-brass-deep);
+}
+
+.spire-setbacks-root .ss-col h3 {
+  margin: 0 0 10px;
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.spire-setbacks-root .ss-col-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ss-ink-soft);
+}
+
+/* ------------------------------------------------------ published rates */
+
+.spire-setbacks-root .ss-rates {
+  margin: 40px 0 0;
+  border: 1px solid var(--ss-line);
+  background: var(--ss-cream-2);
+}
+
+.spire-setbacks-root .ss-rate {
+  display: grid;
+  grid-template-columns: 1.5fr 1.7fr 0.7fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(38, 34, 25, 0.24);
+  font-size: 13.5px;
+}
+
+.spire-setbacks-root .ss-rate:first-child {
+  border-top: 0;
+}
+
+.spire-setbacks-root .ss-rate.is-head {
+  background: var(--ss-cream);
+  font-family: var(--ss-plaque);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ss-brass-deep);
+}
+
+.spire-setbacks-root .ss-rate.is-head span:last-child {
+  text-align: right;
+}
+
+.spire-setbacks-root .ss-rate-name {
+  font-weight: 600;
+}
+
+.spire-setbacks-root .ss-rate-value {
+  font-family: var(--ss-mono);
+  font-size: 12.5px;
+}
+
+.spire-setbacks-root .ss-rate-gt {
+  font-family: var(--ss-mono);
+  font-size: 12.5px;
+  text-align: right;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 26px;
+}
+
+.spire-setbacks-root .ss-plan {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ss-line);
+  background: var(--ss-cream-2);
+  padding: 26px 26px 30px;
+}
+
+.spire-setbacks-root .ss-plan h3 {
+  margin: 0;
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spire-setbacks-root .ss-plan-price {
+  margin: 10px 0 6px;
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 750;
+  font-size: 44px;
+  line-height: 1;
+}
+
+.spire-setbacks-root .ss-plan-price small {
+  margin-left: 6px;
+  font-family: var(--ss-body);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-plan p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-plan-list {
+  list-style: none;
+  margin: 16px 0 22px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13.5px;
+}
+
+.spire-setbacks-root .ss-plan-list li::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 10px;
+  vertical-align: 2px;
+  background: var(--ss-jade);
+  transform: rotate(45deg);
+}
+
+.spire-setbacks-root .ss-plan .ss-btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.spire-setbacks-root .ss-rates-foot {
+  max-width: 640px;
+  margin: 24px auto 0;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-rates-foot code {
+  font-family: var(--ss-mono);
+  font-size: 11.5px;
+  padding: 1px 6px;
+  border: 1px solid var(--ss-hairline);
+  background: var(--ss-cream-2);
+  color: var(--ss-ink);
+}
+
+/* ------------------------------------------------------------- the roof */
+
+.spire-setbacks-root .ss-roof {
+  padding-top: clamp(48px, 6vw, 72px);
+  padding-bottom: 36px;
+}
+
+.spire-setbacks-root .ss-roof-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 26px;
+}
+
+.spire-setbacks-root .ss-roof-brand p {
+  margin: 10px 0 0;
+  font-family: var(--ss-plaque);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+
+.spire-setbacks-root .ss-roof-brand .ss-roof-tag {
+  font-family: var(--ss-body);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  color: var(--ss-ink-soft);
+  max-width: 220px;
+}
+
+.spire-setbacks-root .ss-roof-col {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.spire-setbacks-root .ss-roof-col h3 {
+  margin: 0 0 6px;
+  font-family: var(--ss-plaque);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ss-brass-deep);
+}
+
+.spire-setbacks-root .ss-roof-col a {
+  font-size: 13.5px;
+  color: var(--ss-ink-soft);
+  text-decoration: none;
+}
+
+.spire-setbacks-root .ss-roof-col a:hover {
+  color: var(--ss-jade-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.spire-setbacks-root .ss-roof-base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ss-hairline);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--ss-ink-soft);
+}
+
+.spire-setbacks-root .ss-roof-compliance {
+  font-family: var(--ss-plaque);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ss-brass-deep);
+}
+
+/* the mast and lamp that terminate the elevation */
+.spire-setbacks-root .ss-finial {
+  display: block;
+  width: 300px;
+  max-width: 72%;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* ------------------------------------------------------ elevator panel */
+
+.spire-setbacks-root .ss-rail {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 9px;
+  background: var(--ss-cream-2);
+  border: 1px solid var(--ss-line);
+  outline: 1px solid var(--ss-line);
+  outline-offset: 3px;
+}
+
+.spire-setbacks-root .ss-rail ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spire-setbacks-root .ss-rail-cap {
+  width: 100%;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, rgba(38, 34, 25, 0.6) 0 2px, transparent 2px 6px);
+}
+
+.spire-setbacks-root .ss-rail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--ss-line);
+  background: var(--ss-cream);
+  font-family: var(--ss-display);
+  font-optical-sizing: auto;
+  font-weight: 650;
+  font-size: 13px;
+  color: var(--ss-ink-soft);
+  text-decoration: none;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.spire-setbacks-root .ss-rail-btn:hover {
+  color: var(--ss-jade-deep);
+  border-color: var(--ss-jade-deep);
+}
+
+.spire-setbacks-root .ss-rail-btn.is-lit {
+  background: var(--ss-jade);
+  border-color: var(--ss-jade-deep);
+  color: var(--ss-cream-2);
+  box-shadow:
+    0 0 0 2px var(--ss-cream-2),
+    0 0 0 3px var(--ss-brass);
+  animation: ss-lamp 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes ss-lamp {
+  from {
+    box-shadow:
+      0 0 0 2px var(--ss-cream-2),
+      0 0 0 3px rgba(160, 125, 44, 0.45);
+  }
+  to {
+    box-shadow:
+      0 0 0 2px var(--ss-cream-2),
+      0 0 0 3px var(--ss-brass);
+  }
+}
+
+/* ---------------------------------------------------------- responsive */
+
+@media (max-width: 1140px) {
+  .spire-setbacks-root .ss-rail {
+    display: none;
+  }
+}
+
+@media (max-width: 960px) {
+  .spire-setbacks-root .ss-proof-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spire-setbacks-root .ss-roof-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .spire-setbacks-root {
+    --ss-inset-base: 12px;
+    --ss-inset-step: 12px;
+  }
+
+  .spire-setbacks-root .ss-nav-links,
+  .spire-setbacks-root .ss-nav-signin {
+    display: none;
+  }
+
+  .spire-setbacks-root .ss-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .spire-setbacks-root .ss-steps li + li {
+    border-left: 0;
+    border-top: 1px solid var(--ss-line);
+  }
+
+  .spire-setbacks-root .ss-cols,
+  .spire-setbacks-root .ss-plans,
+  .spire-setbacks-root .ss-roof-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spire-setbacks-root .ss-rate {
+    grid-template-columns: 1.2fr 1.6fr 0.5fr;
+    gap: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .spire-setbacks-root .ss-rate-value,
+  .spire-setbacks-root .ss-rate-gt {
+    font-size: 11px;
+  }
+
+  .spire-setbacks-root .ss-dir-row {
+    gap: 12px;
+  }
+
+  .spire-setbacks-root .ss-dir-name {
+    white-space: normal;
+  }
+
+  .spire-setbacks-root .ss-plate {
+    gap: 8px;
+    padding: 6px 12px;
+  }
+
+  .spire-setbacks-root .ss-plate-name {
+    letter-spacing: 0.16em;
+  }
+}
+
+/* ------------------------------------------------------ reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .spire-setbacks-root *,
+  .spire-setbacks-root *::before,
+  .spire-setbacks-root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

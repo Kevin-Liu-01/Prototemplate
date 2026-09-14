@@ -1,0 +1,841 @@
+/* ==========================================================================
+   DITHERED-SUNRISE — dither is the design language, deco is the structure.
+
+   One law: light is quantized. The hero sun is a live Bayer field (canvas),
+   the section openers are ordered-dither SVG arcs, and every CSS ornament on
+   this sheet is built from HARD-STOP gradients only: rows and lattices of
+   discrete gold squares. There is no smooth gradient anywhere in this file.
+   Gold on near-black; Poiret One display over Jost body.
+   ========================================================================== */
+
+.dithered-sunrise-root {
+  /* palette */
+  --ds-ground: #0d0a06;
+  --ds-panel: #171208;
+  --ds-panel-2: #1d1709;
+  --ds-line: #33290f;
+  --ds-gold: #d7a341;
+  --ds-gold-bright: #f6ce6f;
+  --ds-ember: #97702f;
+  --ds-paper: #f4ead6;
+  --ds-muted: #b6a685;
+
+  /* type */
+  --ds-display: var(--ds-font-display), 'Trebuchet MS', sans-serif;
+  --ds-body: var(--ds-font-body), 'Avenir Next', 'Segoe UI', sans-serif;
+  --ds-mono: var(--ds-font-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+
+  position: relative;
+  background: var(--ds-ground);
+  color: var(--ds-paper);
+  font-family: var(--ds-body);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.dithered-sunrise-root ::selection {
+  background: var(--ds-gold);
+  color: var(--ds-ground);
+}
+
+.dithered-sunrise-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.dithered-sunrise-root :focus-visible {
+  outline: 2px dashed var(--ds-gold);
+  outline-offset: 3px;
+}
+
+.dithered-sunrise-root h1,
+.dithered-sunrise-root h2,
+.dithered-sunrise-root h3 {
+  font-family: var(--ds-display);
+  font-weight: 400;
+  margin: 0;
+}
+
+/* Deco chamfer: the page's one corner treatment. */
+.dithered-sunrise-root .ds-btn,
+.dithered-sunrise-root .ds-card,
+.dithered-sunrise-root .ds-panel,
+.dithered-sunrise-root .ds-plan,
+.dithered-sunrise-root .ds-brand-tile {
+  clip-path: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 calc(100% - 10px),
+    0 10px
+  );
+}
+
+/* ------------------------------------------------------------------- nav */
+
+.dithered-sunrise-root .ds-nav {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px clamp(20px, 4vw, 44px);
+}
+
+.dithered-sunrise-root .ds-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dithered-sunrise-root .ds-brand-tile {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  font-family: var(--ds-display);
+  font-size: 15px;
+  color: var(--ds-gold-bright);
+  background-color: var(--ds-panel);
+  /* hard-stop dot lattice, not a glow */
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    var(--ds-ember) 0 1.1px,
+    transparent 1.2px
+  );
+  background-size: 6px 6px;
+}
+
+.dithered-sunrise-root .ds-brand-name {
+  font-family: var(--ds-display);
+  font-size: 17px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.dithered-sunrise-root .ds-nav-links {
+  display: flex;
+  gap: clamp(16px, 2.6vw, 34px);
+}
+
+.dithered-sunrise-root .ds-nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ds-muted);
+  padding: 6px 2px;
+  transition: color 0.18s ease;
+}
+
+.dithered-sunrise-root .ds-nav-links a:hover {
+  color: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --------------------------------------------------------------- buttons */
+
+.dithered-sunrise-root .ds-btn {
+  display: inline-block;
+  font-family: var(--ds-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 14px 26px;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.dithered-sunrise-root .ds-btn-sm {
+  padding: 9px 16px;
+  font-size: 12px;
+}
+
+.dithered-sunrise-root .ds-btn-solid {
+  background: var(--ds-gold);
+  color: var(--ds-ground);
+}
+
+.dithered-sunrise-root .ds-btn-solid:hover {
+  background: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-btn-line {
+  color: var(--ds-gold-bright);
+  box-shadow: inset 0 0 0 1px var(--ds-ember);
+}
+
+.dithered-sunrise-root .ds-btn-line:hover {
+  box-shadow: inset 0 0 0 1px var(--ds-gold);
+  color: var(--ds-paper);
+}
+
+/* ------------------------------------------------------------------ hero */
+
+.dithered-sunrise-root .ds-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+}
+
+.dithered-sunrise-root .ds-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dithered-sunrise-root .ds-hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+  padding: clamp(120px, 16vh, 190px) 24px 46vh;
+}
+
+.dithered-sunrise-root .ds-hero-title {
+  font-size: clamp(46px, 7.6vw, 96px);
+  line-height: 1.04;
+  letter-spacing: 0.02em;
+}
+
+.dithered-sunrise-root .ds-hero-gold {
+  color: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-hero-lede {
+  max-width: 620px;
+  margin: 26px auto 0;
+  color: var(--ds-muted);
+}
+
+.dithered-sunrise-root .ds-cta-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.dithered-sunrise-root .ds-chip-code {
+  display: inline-block;
+  margin-top: 22px;
+  font-family: var(--ds-mono);
+  font-size: 13px;
+  color: var(--ds-ember);
+  padding: 7px 14px;
+  /* dotted frame: discrete squares, no solid rule */
+  background-image:
+    repeating-linear-gradient(90deg, var(--ds-ember) 0 3px, transparent 3px 9px),
+    repeating-linear-gradient(90deg, var(--ds-ember) 0 3px, transparent 3px 9px);
+  background-repeat: repeat-x;
+  background-size: 100% 2px;
+  background-position:
+    0 0,
+    0 100%;
+}
+
+/* inline code token in body copy */
+.dithered-sunrise-root .ds-ic {
+  font-family: var(--ds-mono);
+  font-size: 0.86em;
+  color: var(--ds-gold-bright);
+}
+
+/* ----------------------------------------------------------- section shell */
+
+.dithered-sunrise-root .ds-sec {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(72px, 10vw, 120px) 24px;
+}
+
+.dithered-sunrise-root .ds-sechead {
+  text-align: center;
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+
+.dithered-sunrise-root .ds-arc {
+  display: block;
+  width: clamp(150px, 20vw, 210px);
+  height: auto;
+  margin: 0 auto 22px;
+}
+
+.dithered-sunrise-root .ds-sechead h2 {
+  font-size: clamp(34px, 4.8vw, 58px);
+  letter-spacing: 0.03em;
+}
+
+.dithered-sunrise-root .ds-lede {
+  max-width: 640px;
+  margin: 16px auto 0;
+  color: var(--ds-muted);
+}
+
+/* ----------------------------------------------------------------- proof */
+
+.dithered-sunrise-root .ds-proof-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.dithered-sunrise-root .ds-panel {
+  background: var(--ds-panel);
+  padding: 22px 24px 26px;
+}
+
+.dithered-sunrise-root .ds-panel-title {
+  font-family: var(--ds-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ds-ember);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  /* dotted rule */
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--ds-line) 0 3px,
+    transparent 3px 9px
+  );
+  background-repeat: repeat-x;
+  background-size: 100% 2px;
+  background-position: 0 100%;
+}
+
+.dithered-sunrise-root .ds-code {
+  margin: 0;
+  overflow-x: auto;
+  font-family: var(--ds-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--ds-paper);
+}
+
+.dithered-sunrise-root .ds-code .k {
+  color: var(--ds-gold);
+}
+
+.dithered-sunrise-root .ds-code .f {
+  color: var(--ds-paper);
+}
+
+.dithered-sunrise-root .ds-code .s {
+  color: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-code .t {
+  color: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-code .p {
+  color: var(--ds-muted);
+}
+
+.dithered-sunrise-root .ds-out {
+  display: flex;
+  flex-direction: column;
+}
+
+.dithered-sunrise-root .ds-out-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 11px 0;
+}
+
+.dithered-sunrise-root .ds-out-row + .ds-out-row {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--ds-line) 0 3px,
+    transparent 3px 9px
+  );
+  background-repeat: repeat-x;
+  background-size: 100% 2px;
+  background-position: 0 0;
+}
+
+.dithered-sunrise-root .ds-out-row[dir='rtl'] {
+  text-align: right;
+}
+
+.dithered-sunrise-root .ds-out-tag {
+  font-family: var(--ds-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ds-ground);
+  background: var(--ds-ember);
+  padding: 2px 7px;
+  flex: none;
+}
+
+.dithered-sunrise-root .ds-out-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dithered-sunrise-root .ds-out-title {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.dithered-sunrise-root .ds-out-body {
+  color: var(--ds-muted);
+  font-size: 14.5px;
+}
+
+.dithered-sunrise-root .ds-proof-note {
+  text-align: center;
+  color: var(--ds-muted);
+  max-width: 560px;
+  margin: 30px auto 0;
+  font-size: 15.5px;
+}
+
+.dithered-sunrise-root .ds-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-top: clamp(40px, 6vw, 60px);
+}
+
+.dithered-sunrise-root .ds-step {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.dithered-sunrise-root .ds-step-n {
+  font-family: var(--ds-display);
+  font-size: 42px;
+  color: var(--ds-gold);
+  line-height: 1;
+}
+
+.dithered-sunrise-root .ds-step-t {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.dithered-sunrise-root .ds-step-b {
+  color: var(--ds-muted);
+  font-size: 15px;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+/* ----------------------------------------------------------------- atlas */
+
+.dithered-sunrise-root .ds-fan {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.dithered-sunrise-root .ds-ray {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: var(--len);
+  height: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform-origin: left center;
+  transform: rotate(var(--a));
+}
+
+.dithered-sunrise-root .ds-ray-line {
+  flex: 1;
+  height: 3px;
+  margin-left: 104px;
+  /* a ray is a row of discrete gold squares */
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ds-ember) 0 3px,
+    transparent 3px 10px
+  );
+}
+
+.dithered-sunrise-root .ds-ray-label {
+  transform: rotate(calc(-1 * var(--a)));
+  white-space: nowrap;
+  font-size: clamp(15px, 1.8vw, 21px);
+  font-weight: 400;
+}
+
+.dithered-sunrise-root .ds-ray-tag {
+  font-family: var(--ds-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ds-ember);
+  vertical-align: middle;
+  margin-inline-start: 4px;
+}
+
+.dithered-sunrise-root .ds-fan-hub {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 190px;
+  height: auto;
+}
+
+.dithered-sunrise-root .ds-atlas-note {
+  text-align: center;
+  color: var(--ds-muted);
+  max-width: 560px;
+  margin: 40px auto 0;
+  font-size: 15.5px;
+}
+
+/* -------------------------------------------------------------- products */
+
+.dithered-sunrise-root .ds-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.dithered-sunrise-root .ds-card {
+  background: var(--ds-panel);
+  padding: 0 22px 24px;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.18s ease;
+}
+
+.dithered-sunrise-root .ds-card:hover {
+  background: var(--ds-panel-2);
+}
+
+.dithered-sunrise-root .ds-dotband {
+  display: block;
+  height: 6px;
+  margin: 0 -22px 18px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ds-gold) 0 3px,
+    transparent 3px 8px
+  );
+}
+
+.dithered-sunrise-root .ds-card-kind {
+  font-family: var(--ds-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ds-ember);
+}
+
+.dithered-sunrise-root .ds-card-name {
+  font-size: 26px;
+  margin-top: 8px;
+  letter-spacing: 0.03em;
+}
+
+.dithered-sunrise-root .ds-card-body {
+  color: var(--ds-muted);
+  font-size: 14.5px;
+  margin: 10px 0 0;
+}
+
+/* --------------------------------------------------------------- pricing */
+
+.dithered-sunrise-root .ds-rates {
+  max-width: 680px;
+  margin: 0 auto clamp(40px, 6vw, 56px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dithered-sunrise-root .ds-rate {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.dithered-sunrise-root .ds-rate-name {
+  font-weight: 500;
+  font-size: 15.5px;
+}
+
+.dithered-sunrise-root .ds-rate-dots {
+  flex: 1;
+  align-self: center;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ds-line) 0 3px,
+    transparent 3px 9px
+  );
+}
+
+.dithered-sunrise-root .ds-rate-value {
+  font-family: var(--ds-mono);
+  font-size: 14px;
+  color: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.dithered-sunrise-root .ds-plan {
+  background: var(--ds-panel);
+  padding: 30px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.dithered-sunrise-root .ds-plan-name {
+  font-size: 24px;
+  letter-spacing: 0.06em;
+}
+
+.dithered-sunrise-root .ds-plan-price {
+  font-family: var(--ds-display);
+  font-size: 44px;
+  line-height: 1;
+  color: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-plan-per {
+  font-family: var(--ds-body);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ds-muted);
+}
+
+.dithered-sunrise-root .ds-plan-body {
+  color: var(--ds-muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+.dithered-sunrise-root .ds-plan-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.dithered-sunrise-root .ds-plan-list li {
+  padding-left: 18px;
+  /* a single gold cell as the bullet */
+  background-image: radial-gradient(
+    circle at 3px 12px,
+    var(--ds-gold) 0 2px,
+    transparent 2.1px
+  );
+  background-repeat: no-repeat;
+}
+
+.dithered-sunrise-root .ds-plan .ds-btn {
+  margin-top: 10px;
+}
+
+.dithered-sunrise-root .ds-price-note {
+  text-align: center;
+  color: var(--ds-muted);
+  font-size: 14.5px;
+  margin: 34px auto 0;
+  max-width: 520px;
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.dithered-sunrise-root .ds-footer {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+.dithered-sunrise-root .ds-footer-arc {
+  display: block;
+  width: 190px;
+  height: auto;
+  margin: 0 auto 56px;
+  /* the sunset: the dawn arc hung upside down */
+  transform: scaleY(-1);
+}
+
+.dithered-sunrise-root .ds-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 32px;
+}
+
+.dithered-sunrise-root .ds-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dithered-sunrise-root .ds-footer-col h4 {
+  font-family: var(--ds-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ds-ember);
+  margin: 0 0 4px;
+}
+
+.dithered-sunrise-root .ds-footer-col a {
+  color: var(--ds-muted);
+  font-size: 14.5px;
+  transition: color 0.18s ease;
+}
+
+.dithered-sunrise-root .ds-footer-col a:hover {
+  color: var(--ds-gold-bright);
+}
+
+.dithered-sunrise-root .ds-footer-brand p {
+  color: var(--ds-muted);
+  font-size: 14.5px;
+  margin: 6px 0 0;
+  max-width: 240px;
+}
+
+.dithered-sunrise-root .ds-footer-legal {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 48px;
+  padding-top: 22px;
+  color: var(--ds-ember);
+  font-size: 13px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--ds-line) 0 3px,
+    transparent 3px 9px
+  );
+  background-repeat: repeat-x;
+  background-size: 100% 2px;
+  background-position: 0 0;
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 960px) {
+  .dithered-sunrise-root .ds-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 880px) {
+  .dithered-sunrise-root .ds-proof-grid,
+  .dithered-sunrise-root .ds-plans {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  .dithered-sunrise-root .ds-nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  /* The fan re-lays as a plain grid of greetings; same DOM, no rotation. */
+  .dithered-sunrise-root .ds-fan {
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+  }
+
+  .dithered-sunrise-root .ds-ray {
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+  }
+
+  .dithered-sunrise-root .ds-ray-line {
+    display: none;
+  }
+
+  .dithered-sunrise-root .ds-ray-label {
+    transform: none;
+  }
+
+  .dithered-sunrise-root .ds-fan-hub {
+    display: none;
+  }
+
+  .dithered-sunrise-root .ds-steps {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .dithered-sunrise-root .ds-hero-inner {
+    padding-bottom: 52vh;
+  }
+}
+
+@media (max-width: 560px) {
+  .dithered-sunrise-root .ds-brand-name {
+    display: none;
+  }
+
+  .dithered-sunrise-root .ds-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* -------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .dithered-sunrise-root *,
+  .dithered-sunrise-root *::before,
+  .dithered-sunrise-root *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

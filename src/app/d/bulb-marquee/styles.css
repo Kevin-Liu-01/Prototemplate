@@ -1,0 +1,983 @@
+/* ========================================================================
+   BULB MARQUEE: dither-focused art deco.
+   Every surface is dots: chasing bulb rows (repeating radial gradients),
+   a dot-matrix headline (a bulb grid clipped to Limelight glyphs), halftone
+   panel falloffs, and a twelve-language board lit cell by cell.
+   Palette: warm white + amber bulbs on deep charcoal, one vermilion accent.
+   All rules scoped under .bulb-marquee-root. No images. No JS animation.
+   ===================================================================== */
+
+.bulb-marquee-root {
+  /* Ground */
+  --bm-ink: #141109;
+  --bm-ink-2: #1b1710;
+  --bm-ink-3: #221c12;
+  --bm-line: #3a3120;
+  --bm-line-soft: #2b2416;
+
+  /* Bulbs */
+  --bm-warm: #ffe9bd;
+  --bm-amber: #f0a232;
+  --bm-amber-deep: #b97a1c;
+  --bm-verm: #de4a28;
+
+  /* Text */
+  --bm-text: #f4ecdb;
+  --bm-dim: #b5a88b;
+  --bm-faint: #80735a;
+
+  /* Bulb pitch shared by every row */
+  --bm-pitch: 24px;
+
+  background: var(--bm-ink);
+  color: var(--bm-text);
+  font-family: var(--bm-body), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bulb-marquee-root ::selection {
+  background: var(--bm-amber);
+  color: #231806;
+}
+
+.bulb-marquee-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.bulb-marquee-root :focus-visible {
+  outline: 2px solid var(--bm-amber);
+  outline-offset: 3px;
+}
+
+.bulb-marquee-root code {
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 0.92em;
+  color: var(--bm-warm);
+}
+
+.bulb-marquee-root .bm-wrap {
+  margin-inline: auto;
+  max-width: 1160px;
+  padding-inline: clamp(20px, 4vw, 44px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Bulb rows: one radial-gradient bulb (core, glass, halo) repeated.   */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-bulbs {
+  display: block;
+  flex: none;
+  pointer-events: none;
+}
+
+.bulb-marquee-root .bm-bulbs-h {
+  background-image: radial-gradient(
+    circle at calc(var(--bm-pitch) / 2) 8px,
+    var(--bm-warm) 2.4px,
+    var(--bm-amber) 3.2px,
+    rgba(240, 162, 50, 0.32) 5px,
+    transparent 7px
+  );
+  background-repeat: repeat-x;
+  background-size: var(--bm-pitch) 16px;
+  height: 16px;
+}
+
+.bulb-marquee-root .bm-bulbs-v {
+  background-image: radial-gradient(
+    circle at 8px calc(var(--bm-pitch) / 2),
+    var(--bm-warm) 2.4px,
+    var(--bm-amber) 3.2px,
+    rgba(240, 162, 50, 0.32) 5px,
+    transparent 7px
+  );
+  background-repeat: repeat-y;
+  background-size: 16px var(--bm-pitch);
+  width: 16px;
+}
+
+/* Unlit variant: dim glass beads used as hairlines on quiet edges. */
+.bulb-marquee-root .bm-bulbs-dim {
+  background-image: radial-gradient(
+    circle at calc(var(--bm-pitch) / 2) 8px,
+    rgba(240, 162, 50, 0.5) 1.6px,
+    rgba(185, 122, 28, 0.35) 2.4px,
+    transparent 4px
+  );
+}
+
+@keyframes bm-chase-x {
+  to {
+    background-position-x: calc(var(--bm-pitch) * 3);
+  }
+}
+
+@keyframes bm-chase-y {
+  to {
+    background-position-y: calc(var(--bm-pitch) * 3);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Top nav                                                             */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-nav {
+  background: var(--bm-ink);
+  border-bottom: 1px solid var(--bm-line-soft);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.bulb-marquee-root .bm-nav-in {
+  align-items: center;
+  display: flex;
+  gap: 28px;
+  min-height: 62px;
+}
+
+.bulb-marquee-root .bm-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+}
+
+.bulb-marquee-root .bm-brand-mark {
+  height: 22px;
+  width: 22px;
+}
+
+.bulb-marquee-root .bm-brand-word {
+  font-family: var(--bm-disp), serif;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+}
+
+.bulb-marquee-root .bm-nav-links {
+  display: flex;
+  gap: 22px;
+  margin-inline: auto;
+}
+
+.bulb-marquee-root .bm-nav-links a,
+.bulb-marquee-root .bm-nav-right > a:not(.bm-btn) {
+  color: var(--bm-dim);
+  font-size: 14px;
+  transition: color 140ms ease;
+}
+
+.bulb-marquee-root .bm-nav-links a:hover,
+.bulb-marquee-root .bm-nav-right > a:not(.bm-btn):hover {
+  color: var(--bm-warm);
+}
+
+.bulb-marquee-root .bm-nav-right {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+}
+
+.bulb-marquee-root .bm-nav-bulbs {
+  height: 10px;
+  opacity: 0.8;
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons                                                             */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-btn {
+  align-items: center;
+  border-radius: 3px;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 600;
+  justify-content: center;
+  letter-spacing: 0.02em;
+  padding: 12px 24px;
+  transition:
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+/* The lit button. Its ground holds on hover; only the glow widens. */
+.bulb-marquee-root .bm-btn-solid {
+  background: linear-gradient(180deg, #ffd992, var(--bm-amber));
+  box-shadow: 0 0 16px rgba(240, 162, 50, 0.3);
+  color: #231806;
+}
+
+.bulb-marquee-root .bm-btn-solid:hover {
+  box-shadow: 0 0 30px rgba(240, 162, 50, 0.55);
+}
+
+.bulb-marquee-root .bm-btn-line {
+  border: 1px solid var(--bm-line);
+  color: var(--bm-text);
+}
+
+.bulb-marquee-root .bm-btn-line:hover {
+  border-color: var(--bm-amber-deep);
+  color: var(--bm-warm);
+}
+
+.bulb-marquee-root .bm-btn-sm {
+  padding: 8px 16px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero: the marquee                                                   */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-hero {
+  padding-block: clamp(36px, 6vw, 72px) clamp(28px, 4vw, 48px);
+}
+
+.bulb-marquee-root .bm-marquee {
+  background: var(--bm-ink-2);
+  border: 1px solid var(--bm-line);
+  box-shadow:
+    inset 0 0 0 1px rgba(20, 17, 9, 0.9),
+    0 30px 80px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* The four chasing bulb edges of the sign. */
+.bulb-marquee-root .bm-edge-top,
+.bulb-marquee-root .bm-edge-bottom {
+  animation: bm-chase-x 1.05s steps(3) infinite;
+  left: 20px;
+  position: absolute;
+  right: 20px;
+}
+
+.bulb-marquee-root .bm-edge-top {
+  top: 8px;
+}
+
+.bulb-marquee-root .bm-edge-bottom {
+  bottom: 8px;
+}
+
+.bulb-marquee-root .bm-edge-left,
+.bulb-marquee-root .bm-edge-right {
+  animation: bm-chase-y 1.05s steps(3) infinite;
+  bottom: 26px;
+  position: absolute;
+  top: 26px;
+}
+
+.bulb-marquee-root .bm-edge-left {
+  left: 8px;
+}
+
+.bulb-marquee-root .bm-edge-right {
+  right: 8px;
+}
+
+/* Deco corner fans: quarter sunbursts drawn with a repeating conic. */
+.bulb-marquee-root .bm-fan {
+  height: 130px;
+  opacity: 0.22;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 130px;
+}
+
+.bulb-marquee-root .bm-fan-tl {
+  background: repeating-conic-gradient(
+    from 90deg at 0% 0%,
+    var(--bm-amber-deep) 0deg 3deg,
+    transparent 3deg 11deg
+  );
+  left: 0;
+}
+
+.bulb-marquee-root .bm-fan-tr {
+  background: repeating-conic-gradient(
+    from 180deg at 100% 0%,
+    var(--bm-amber-deep) 0deg 3deg,
+    transparent 3deg 11deg
+  );
+  right: 0;
+}
+
+.bulb-marquee-root .bm-marquee-in {
+  padding: clamp(56px, 8vw, 96px) clamp(28px, 6vw, 88px);
+  position: relative;
+  text-align: center;
+}
+
+/* Halftone falloff behind the headline: a dot field faded by a mask. */
+.bulb-marquee-root .bm-marquee-in::before {
+  background-image: radial-gradient(
+    circle at 4.5px 4.5px,
+    rgba(255, 233, 189, 0.13) 1.1px,
+    transparent 1.8px
+  );
+  background-size: 9px 9px;
+  content: '';
+  inset: 0;
+  -webkit-mask-image: radial-gradient(110% 80% at 50% 12%, #000 0%, transparent 68%);
+  mask-image: radial-gradient(110% 80% at 50% 12%, #000 0%, transparent 68%);
+  pointer-events: none;
+  position: absolute;
+}
+
+/* The sign strip above the title, set like signage rather than a label. */
+.bulb-marquee-root .bm-sign {
+  align-items: center;
+  color: var(--bm-verm);
+  display: inline-flex;
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  gap: 14px;
+  letter-spacing: 0.34em;
+  margin: 0 0 26px;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-sign-gem {
+  color: var(--bm-verm);
+  font-size: 9px;
+}
+
+/* Dot-matrix deco lettering: a bulb grid clipped to the glyphs, over a
+   faint solid underlay for legibility, with a bulb glow on the dots. */
+.bulb-marquee-root .bm-dothead {
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image:
+    radial-gradient(
+      circle at 3.5px 3.5px,
+      var(--bm-warm) 1.5px,
+      rgba(240, 162, 50, 0.9) 1.9px,
+      transparent 2.6px
+    ),
+    linear-gradient(rgba(240, 162, 50, 0.2), rgba(240, 162, 50, 0.2));
+  background-size:
+    7px 7px,
+    100% 100%;
+  color: transparent;
+  filter: drop-shadow(0 0 18px rgba(240, 162, 50, 0.35));
+  font-family: var(--bm-disp), serif;
+  font-size: clamp(46px, 8.6vw, 122px);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 1.02;
+  margin: 0 auto;
+  max-width: 20ch;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-lede {
+  color: var(--bm-dim);
+  font-size: 17px;
+  margin: 28px auto 0;
+  max-width: 58ch;
+  position: relative;
+}
+
+.bulb-marquee-root .bm-ctas {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 34px;
+  position: relative;
+}
+
+.bulb-marquee-root .bm-cmd {
+  align-items: center;
+  border: 1px dashed var(--bm-line);
+  border-radius: 3px;
+  color: var(--bm-dim);
+  display: inline-flex;
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 13.5px;
+  gap: 9px;
+  padding: 11px 18px;
+}
+
+.bulb-marquee-root .bm-cmd-prompt {
+  color: var(--bm-verm);
+}
+
+/* ------------------------------------------------------------------ */
+/* Section scaffolding                                                 */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-sec {
+  padding-block: clamp(56px, 8vw, 104px);
+}
+
+.bulb-marquee-root .bm-sec + .bm-sec {
+  border-top: 1px solid var(--bm-line-soft);
+}
+
+.bulb-marquee-root .bm-head {
+  margin-bottom: clamp(30px, 4vw, 48px);
+  max-width: 64ch;
+}
+
+.bulb-marquee-root .bm-head h2 {
+  font-family: var(--bm-disp), serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.12;
+  margin: 0 0 14px;
+}
+
+.bulb-marquee-root .bm-head p {
+  color: var(--bm-dim);
+  font-size: 16.5px;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Proof: before / after reel and the three acts                       */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-reel {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.bulb-marquee-root .bm-code {
+  background: var(--bm-ink-2);
+  border: 1px solid var(--bm-line-soft);
+  margin: 0;
+  overflow: hidden;
+}
+
+.bulb-marquee-root .bm-code.is-after {
+  border-color: var(--bm-amber-deep);
+  box-shadow: 0 0 26px rgba(240, 162, 50, 0.12);
+}
+
+.bulb-marquee-root .bm-code-bar {
+  align-items: center;
+  border-bottom: 1px solid var(--bm-line-soft);
+  display: flex;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+/* Three little marquee lamps in the card chrome. */
+.bulb-marquee-root .bm-code-lamps {
+  background-image: radial-gradient(
+    circle at 5px 5px,
+    rgba(240, 162, 50, 0.4) 2px,
+    transparent 3px
+  );
+  background-size: 14px 10px;
+  height: 10px;
+  width: 42px;
+}
+
+.bulb-marquee-root .bm-code-lamps.is-lit {
+  background-image: radial-gradient(
+    circle at 5px 5px,
+    var(--bm-warm) 2px,
+    rgba(240, 162, 50, 0.45) 3.4px,
+    transparent 4.6px
+  );
+}
+
+.bulb-marquee-root .bm-code-label {
+  color: var(--bm-faint);
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-code.is-after .bm-code-label {
+  color: var(--bm-amber);
+}
+
+.bulb-marquee-root .bm-code pre {
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin: 0;
+  overflow-x: auto;
+  padding: 20px 22px;
+}
+
+.bulb-marquee-root .bm-code pre code {
+  color: var(--bm-dim);
+  font-size: inherit;
+}
+
+.bulb-marquee-root .bm-code.is-after pre code {
+  color: var(--bm-text);
+}
+
+.bulb-marquee-root .bm-acts {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 14px;
+}
+
+.bulb-marquee-root .bm-act {
+  background: var(--bm-ink-2);
+  border: 1px solid var(--bm-line-soft);
+  padding: 24px 22px;
+}
+
+.bulb-marquee-root .bm-act h3 {
+  align-items: baseline;
+  display: flex;
+  font-family: var(--bm-disp), serif;
+  font-size: 20px;
+  font-weight: 400;
+  gap: 12px;
+  letter-spacing: 0.03em;
+  margin: 0 0 10px;
+}
+
+.bulb-marquee-root .bm-act-n {
+  color: var(--bm-verm);
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-act p {
+  color: var(--bm-dim);
+  font-size: 14.5px;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Program: the twelve-hello board, lit in sequence                    */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-board {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cycle: 12 cells x 0.8s. Each cell holds its bright window for ~10%
+   of the loop, then decays while the next cell takes over. */
+.bulb-marquee-root .bm-cell {
+  animation: bm-cell-lit 9.6s linear infinite;
+  animation-delay: calc(var(--i) * 0.8s);
+  background: var(--bm-ink-2);
+  border: 1px solid var(--bm-line-soft);
+  color: var(--bm-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: space-between;
+  min-height: 128px;
+  padding: 20px 18px 16px;
+  position: relative;
+}
+
+/* Pre-painted glow, revealed by opacity only (cheap to composite). */
+.bulb-marquee-root .bm-cell::after {
+  animation: bm-glow 9.6s linear infinite;
+  animation-delay: calc(var(--i) * 0.8s);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 162, 50, 0.75),
+    inset 0 0 30px rgba(240, 162, 50, 0.22);
+  content: '';
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* One bulb per cell, top corner, same schedule as the cell. */
+.bulb-marquee-root .bm-cell-bulb {
+  animation: bm-glow 9.6s linear infinite;
+  animation-delay: calc(var(--i) * 0.8s);
+  background: radial-gradient(
+    circle,
+    var(--bm-warm) 2.2px,
+    var(--bm-amber) 3px,
+    rgba(240, 162, 50, 0.3) 5px,
+    transparent 7px
+  );
+  height: 14px;
+  inset-block-start: 10px;
+  inset-inline-end: 10px;
+  opacity: 0;
+  position: absolute;
+  width: 14px;
+}
+
+.bulb-marquee-root .bm-cell-hello {
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 550;
+  line-height: 1.25;
+}
+
+.bulb-marquee-root .bm-cell-meta {
+  align-items: baseline;
+  display: flex;
+  gap: 10px;
+}
+
+.bulb-marquee-root .bm-cell-code {
+  color: var(--bm-amber);
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-cell-lang {
+  color: var(--bm-faint);
+  font-size: 12.5px;
+}
+
+@keyframes bm-cell-lit {
+  0%,
+  10% {
+    color: var(--bm-warm);
+  }
+  17%,
+  100% {
+    color: var(--bm-dim);
+  }
+}
+
+@keyframes bm-glow {
+  0%,
+  10% {
+    opacity: 1;
+  }
+  17%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.bulb-marquee-root .bm-board-note {
+  color: var(--bm-faint);
+  font-size: 13.5px;
+  margin: 18px 0 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Pricing                                                             */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-rates {
+  border: 1px solid var(--bm-line-soft);
+  margin-bottom: 26px;
+}
+
+.bulb-marquee-root .bm-rate {
+  border-top: 1px solid var(--bm-line-soft);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr auto;
+  padding: 13px 18px;
+}
+
+.bulb-marquee-root .bm-rate:first-child {
+  border-top: 0;
+}
+
+.bulb-marquee-root .bm-rate-head {
+  background: var(--bm-ink-2);
+  color: var(--bm-faint);
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-rate-name {
+  color: var(--bm-dim);
+  font-size: 14.5px;
+}
+
+.bulb-marquee-root .bm-rate-value {
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 13.5px;
+  text-align: right;
+}
+
+.bulb-marquee-root .bm-plans {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.bulb-marquee-root .bm-plan {
+  background: var(--bm-ink-2);
+  border: 1px solid var(--bm-line-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 26px 28px;
+}
+
+.bulb-marquee-root .bm-plan-bulbs {
+  height: 14px;
+  margin: 10px -12px 12px;
+}
+
+.bulb-marquee-root .bm-plan h3 {
+  font-family: var(--bm-disp), serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.bulb-marquee-root .bm-plan-price {
+  font-size: 34px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.bulb-marquee-root .bm-plan-price small {
+  color: var(--bm-faint);
+  font-size: 13px;
+  font-weight: 400;
+  margin-inline-start: 8px;
+}
+
+.bulb-marquee-root .bm-plan-copy {
+  color: var(--bm-dim);
+  font-size: 14.5px;
+  margin: 0;
+}
+
+.bulb-marquee-root .bm-plan-list {
+  color: var(--bm-dim);
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+.bulb-marquee-root .bm-plan-list li {
+  padding-inline-start: 20px;
+  position: relative;
+}
+
+.bulb-marquee-root .bm-plan-list li::before {
+  background: radial-gradient(circle, var(--bm-amber) 2.2px, transparent 3.4px);
+  content: '';
+  height: 10px;
+  inset-block-start: 7px;
+  inset-inline-start: 0;
+  position: absolute;
+  width: 10px;
+}
+
+.bulb-marquee-root .bm-plan .bm-btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* Footer                                                              */
+/* ------------------------------------------------------------------ */
+
+.bulb-marquee-root .bm-footer {
+  border-top: 1px solid var(--bm-line-soft);
+  padding-bottom: 56px;
+}
+
+.bulb-marquee-root .bm-footer-bulbs {
+  height: 12px;
+  margin-bottom: 44px;
+  opacity: 0.9;
+}
+
+.bulb-marquee-root .bm-foot-grid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1.6fr repeat(4, 1fr);
+}
+
+.bulb-marquee-root .bm-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bulb-marquee-root .bm-foot-brand p {
+  color: var(--bm-dim);
+  font-size: 14px;
+  margin: 0;
+  max-width: 26ch;
+}
+
+.bulb-marquee-root .bm-foot-col {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.bulb-marquee-root .bm-foot-col h4 {
+  color: var(--bm-faint);
+  font-family: var(--bm-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-foot-col a {
+  color: var(--bm-dim);
+  font-size: 14px;
+  transition: color 140ms ease;
+  width: fit-content;
+}
+
+.bulb-marquee-root .bm-foot-col a:hover {
+  color: var(--bm-warm);
+}
+
+/* The closing chip: FIN on its own tiny marquee. */
+.bulb-marquee-root .bm-fin {
+  display: flex;
+  justify-content: center;
+  margin-top: 56px;
+}
+
+.bulb-marquee-root .bm-fin-chip {
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image:
+    radial-gradient(
+      circle at 2.5px 2.5px,
+      var(--bm-warm) 1.1px,
+      rgba(240, 162, 50, 0.85) 1.4px,
+      transparent 1.9px
+    ),
+    linear-gradient(rgba(240, 162, 50, 0.22), rgba(240, 162, 50, 0.22));
+  background-size:
+    5px 5px,
+    100% 100%;
+  border-block: 1px solid var(--bm-line);
+  color: transparent;
+  filter: drop-shadow(0 0 10px rgba(240, 162, 50, 0.3));
+  font-family: var(--bm-disp), serif;
+  font-size: 26px;
+  letter-spacing: 0.3em;
+  padding: 8px 26px 8px 32px;
+  text-transform: uppercase;
+}
+
+.bulb-marquee-root .bm-foot-legal {
+  border-top: 1px solid var(--bm-line-soft);
+  color: var(--bm-faint);
+  font-size: 12.5px;
+  margin: 36px 0 0;
+  padding-top: 22px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 960px) {
+  .bulb-marquee-root .bm-nav-links {
+    display: none;
+  }
+
+  .bulb-marquee-root .bm-nav-right {
+    margin-inline-start: auto;
+  }
+
+  .bulb-marquee-root .bm-board {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .bulb-marquee-root .bm-reel,
+  .bulb-marquee-root .bm-acts,
+  .bulb-marquee-root .bm-plans {
+    grid-template-columns: 1fr;
+  }
+
+  .bulb-marquee-root .bm-foot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .bulb-marquee-root .bm-board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bulb-marquee-root .bm-sign {
+    letter-spacing: 0.2em;
+  }
+
+  .bulb-marquee-root .bm-edge-left,
+  .bulb-marquee-root .bm-edge-right {
+    display: none;
+  }
+
+  .bulb-marquee-root .bm-fan {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion: every bulb holds a static, fully lit state          */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .bulb-marquee-root .bm-edge-top,
+  .bulb-marquee-root .bm-edge-bottom,
+  .bulb-marquee-root .bm-edge-left,
+  .bulb-marquee-root .bm-edge-right {
+    animation: none;
+  }
+
+  .bulb-marquee-root .bm-cell,
+  .bulb-marquee-root .bm-cell::after,
+  .bulb-marquee-root .bm-cell-bulb {
+    animation: none;
+  }
+
+  .bulb-marquee-root .bm-cell {
+    color: var(--bm-warm);
+  }
+
+  .bulb-marquee-root .bm-cell::after {
+    opacity: 0.55;
+  }
+
+  .bulb-marquee-root .bm-cell-bulb {
+    opacity: 1;
+  }
+}

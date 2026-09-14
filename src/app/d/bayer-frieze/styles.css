@@ -1,0 +1,917 @@
+/* ============================================================
+   BAYER FRIEZE — dither-focused art deco.
+   One Bayer 4x4 matrix generates every ornament on the page at
+   four stepped densities (1/16, 4/16, 8/16, 12/16): the hero
+   meander, the chevron course, the sunrise fans, the stepped
+   keys, and every stripe frieze. Cream and ink carry the page;
+   jade is the one accent. The same tiles exist twice: as SVG
+   patterns (ornaments.tsx) and as the data-URI custom properties
+   below (CSS friezes, hovers, the paper grain).
+   ============================================================ */
+
+.bayer-frieze-root {
+  /* Palette */
+  --bf-cream: #f6efdd;
+  --bf-cream-2: #fcf7ea;
+  --bf-ink: #1c1710;
+  --bf-ink-70: rgba(28, 23, 16, 0.72);
+  --bf-ink-45: rgba(28, 23, 16, 0.48);
+  --bf-ink-25: rgba(28, 23, 16, 0.26);
+  --bf-jade: #0e7a5f;
+  --bf-jade-deep: #0a5a46;
+  --bf-jade-lt: #63c4a5;
+
+  /* Type stacks. The --bf-display / --bf-body variables are set on this
+     element by next/font; fallbacks cover the non-Latin scripts. */
+  --bf-display-stack: var(--bf-display), 'Josefin Sans', ui-sans-serif,
+    system-ui, sans-serif;
+  --bf-body-stack: var(--bf-body), 'Inter', ui-sans-serif, system-ui,
+    sans-serif;
+  --bf-mono-stack: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas,
+    monospace;
+
+  /* Bayer tiles as data URIs. Density steps 1/16, 4/16, 8/16, 12/16 on a
+     4x4 viewBox; background-size sets the cell scale (8px tile = 2px cell). */
+  --bf-t1: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1z' fill='%231C1710'/></svg>");
+  --bf-t4: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1z' fill='%231C1710'/></svg>");
+  --bf-t8: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1zM1 1h1v1h-1zM3 3h1v1h-1zM3 1h1v1h-1zM1 3h1v1h-1z' fill='%231C1710'/></svg>");
+  --bf-t12: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1zM1 1h1v1h-1zM3 3h1v1h-1zM3 1h1v1h-1zM1 3h1v1h-1zM1 0h1v1h-1zM3 2h1v1h-1zM3 0h1v1h-1zM1 2h1v1h-1z' fill='%231C1710'/></svg>");
+  --bf-tc1: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1z' fill='%23F6EFDD'/></svg>");
+  --bf-tc4: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1z' fill='%23F6EFDD'/></svg>");
+  --bf-tc12: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1zM1 1h1v1h-1zM3 3h1v1h-1zM3 1h1v1h-1zM1 3h1v1h-1zM1 0h1v1h-1zM3 2h1v1h-1zM3 0h1v1h-1zM1 2h1v1h-1z' fill='%23F6EFDD'/></svg>");
+  --bf-tj4: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1z' fill='%230E7A5F'/></svg>");
+  --bf-tj8: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1zM1 1h1v1h-1zM3 3h1v1h-1zM3 1h1v1h-1zM1 3h1v1h-1z' fill='%230E7A5F'/></svg>");
+  --bf-tj12: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1zM2 2h1v1h-1zM2 0h1v1h-1zM0 2h1v1h-1zM1 1h1v1h-1zM3 3h1v1h-1zM3 1h1v1h-1zM1 3h1v1h-1zM1 0h1v1h-1zM3 2h1v1h-1zM3 0h1v1h-1zM1 2h1v1h-1z' fill='%230E7A5F'/></svg>");
+  /* The paper grain: density 1/16 ink at 20% opacity over the cream ground. */
+  --bf-grain: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><path d='M0 0h1v1h-1z' fill='%231C1710' fill-opacity='0.2'/></svg>");
+
+  font-family: var(--bf-body-stack);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--bf-ink);
+  background-color: var(--bf-cream);
+  background-image: var(--bf-grain);
+  background-size: 6px 6px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Scoped resets ---------- */
+
+.bayer-frieze-root *,
+.bayer-frieze-root *::before,
+.bayer-frieze-root *::after {
+  box-sizing: border-box;
+}
+
+.bayer-frieze-root :is(h1, h2, h3, p, ul, figure, pre) {
+  margin: 0;
+}
+
+.bayer-frieze-root ::selection {
+  background: var(--bf-jade);
+  color: var(--bf-cream);
+}
+
+.bayer-frieze-root :is(a, button):focus-visible {
+  outline: 3px solid var(--bf-jade);
+  outline-offset: 2px;
+}
+
+.bayer-frieze-root [id] {
+  scroll-margin-top: 92px;
+}
+
+/* The shared pattern sheet: zero-size but rendered, so paint-server
+   references resolve everywhere. */
+.bayer-frieze-root .bf-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.bayer-frieze-root .bf-container {
+  width: min(1140px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+/* ---------- Stripe friezes (CSS dither) ---------- */
+
+.bayer-frieze-root .bf-frieze {
+  display: flex;
+  flex-direction: column;
+}
+
+.bayer-frieze-root .bf-f {
+  display: block;
+  height: 6px;
+  background-repeat: repeat;
+  background-size: 8px 8px;
+}
+
+.bayer-frieze-root .bf-f-1 {
+  background-image: var(--bf-t1);
+}
+.bayer-frieze-root .bf-f-4 {
+  background-image: var(--bf-t4);
+}
+.bayer-frieze-root .bf-f-8 {
+  background-image: var(--bf-t8);
+}
+.bayer-frieze-root .bf-f-12 {
+  background-image: var(--bf-t12);
+}
+.bayer-frieze-root .bf-f-16 {
+  background-color: var(--bf-ink);
+}
+.bayer-frieze-root .bf-f-j12 {
+  background-image: var(--bf-tj12);
+}
+
+.bayer-frieze-root .bf-frieze-cream .bf-f-1 {
+  background-image: var(--bf-tc1);
+}
+.bayer-frieze-root .bf-frieze-cream .bf-f-4 {
+  background-image: var(--bf-tc4);
+}
+.bayer-frieze-root .bf-frieze-cream .bf-f-12 {
+  background-image: var(--bf-tc12);
+}
+.bayer-frieze-root .bf-frieze-cream .bf-f-16 {
+  background-color: var(--bf-cream);
+}
+
+.bayer-frieze-root .bf-frieze-jade .bf-f-4 {
+  background-image: var(--bf-tj4);
+}
+.bayer-frieze-root .bf-frieze-jade .bf-f-8 {
+  background-image: var(--bf-tj8);
+}
+.bayer-frieze-root .bf-frieze-jade .bf-f-16 {
+  background-color: var(--bf-jade);
+}
+
+/* Vertical course between the proof cards. */
+.bayer-frieze-root .bf-vfrieze {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.bayer-frieze-root .bf-fv {
+  display: block;
+  width: 6px;
+  background-repeat: repeat;
+  background-size: 8px 8px;
+}
+
+/* ---------- Buttons ---------- */
+
+.bayer-frieze-root .bf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border: 2px solid var(--bf-ink);
+  background-color: var(--bf-cream-2);
+  color: var(--bf-ink);
+  font-family: var(--bf-body-stack);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  background-size: 8px 8px;
+}
+
+/* Hover adds dither texture; the ground color holds. */
+.bayer-frieze-root .bf-btn-jade {
+  background-color: var(--bf-jade);
+  border-color: var(--bf-jade-deep);
+  color: #fbf6e8;
+}
+.bayer-frieze-root .bf-btn-jade:hover {
+  background-image: var(--bf-tc4);
+}
+
+.bayer-frieze-root .bf-btn-line:hover {
+  background-image: var(--bf-t1);
+}
+
+.bayer-frieze-root .bf-btn-ghost {
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--bf-ink-70);
+}
+.bayer-frieze-root .bf-btn-ghost:hover {
+  color: var(--bf-jade);
+}
+
+.bayer-frieze-root .bf-btn-lg {
+  padding: 14px 26px;
+  font-size: 15px;
+}
+
+.bayer-frieze-root .bf-btn-block {
+  align-self: stretch;
+  margin-top: auto;
+}
+
+/* ---------- Nav ---------- */
+
+.bayer-frieze-root .bf-nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: var(--bf-cream);
+  border-bottom: 2px solid var(--bf-ink);
+}
+
+.bayer-frieze-root .bf-selvage .bf-f {
+  height: 3px;
+}
+
+.bayer-frieze-root .bf-nav {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  height: 64px;
+}
+
+.bayer-frieze-root .bf-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--bf-ink);
+}
+
+.bayer-frieze-root .bf-mark,
+.bayer-frieze-root .bf-tile,
+.bayer-frieze-root .bf-step {
+  display: block;
+  flex: none;
+}
+
+.bayer-frieze-root .bf-wordmark {
+  font-family: var(--bf-display-stack);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  /* Josefin sits high on its line; nudge to optical center. */
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.bayer-frieze-root .bf-links {
+  display: flex;
+  gap: 24px;
+}
+
+.bayer-frieze-root .bf-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--bf-ink-70);
+  text-decoration: none;
+}
+.bayer-frieze-root .bf-links a:hover {
+  color: var(--bf-jade);
+}
+
+.bayer-frieze-root .bf-nav-cta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- Hero ---------- */
+
+.bayer-frieze-root .bf-hero {
+  position: relative;
+}
+
+/* Sunrise fans rest on the meander band, one in each lower corner.
+   The container stops above the band (40px + two 3px borders). */
+.bayer-frieze-root .bf-hero-fans {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 46px;
+  pointer-events: none;
+}
+
+.bayer-frieze-root .bf-hero-fans .bf-fan {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: scaleY(-1);
+}
+
+.bayer-frieze-root .bf-hero-fans .bf-fan:last-child {
+  left: auto;
+  right: 0;
+  transform: scale(-1, -1);
+}
+
+.bayer-frieze-root .bf-hero-inner {
+  position: relative;
+  z-index: 1;
+  padding: 96px 0 24px;
+  text-align: center;
+}
+
+.bayer-frieze-root .bf-h1 {
+  font-family: var(--bf-display-stack);
+  font-weight: 700;
+  font-size: clamp(42px, 7vw, 82px);
+  line-height: 1.04;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 auto 24px;
+  max-width: 18ch;
+}
+
+.bayer-frieze-root .bf-lede {
+  max-width: 660px;
+  margin: 0 auto;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--bf-ink-70);
+}
+
+.bayer-frieze-root .bf-t-inline {
+  font-family: var(--bf-mono-stack);
+  font-weight: 600;
+  font-size: 0.95em;
+  color: var(--bf-jade);
+}
+
+.bayer-frieze-root .bf-cta-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.bayer-frieze-root .bf-install {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 28px 0 72px;
+}
+
+.bayer-frieze-root .bf-install code {
+  background-color: var(--bf-cream-2);
+  border: 1.5px solid var(--bf-ink-25);
+  padding: 8px 12px;
+  font-family: var(--bf-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-ink);
+}
+
+.bayer-frieze-root .bf-install-sep {
+  width: 26px;
+  height: 8px;
+  background-image: var(--bf-t8);
+  background-size: 8px 8px;
+}
+
+/* ---------- Meander band ---------- */
+
+.bayer-frieze-root .bf-meander-band {
+  height: 46px;
+  overflow: hidden;
+  border-block: 3px solid var(--bf-ink);
+  background-color: var(--bf-cream-2);
+}
+
+.bayer-frieze-root .bf-meander {
+  display: block;
+}
+
+/* The band crawls one 48px unit at a time; the extra hook in the svg backs
+   the loop. Compositor-only transform, disabled under reduced motion. */
+.bayer-frieze-root .bf-meander-track {
+  animation: bf-weave 9s linear infinite;
+}
+
+@keyframes bf-weave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-48px);
+  }
+}
+
+.bayer-frieze-root .bf-meander-band-ink {
+  background-color: var(--bf-ink);
+  border-color: var(--bf-jade);
+}
+
+/* ---------- Sections ---------- */
+
+.bayer-frieze-root .bf-section {
+  padding: 84px 0;
+}
+
+.bayer-frieze-root .bf-sec-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 46px;
+}
+
+.bayer-frieze-root .bf-sec-head .bf-step {
+  margin-top: 4px;
+}
+
+.bayer-frieze-root .bf-h2 {
+  font-family: var(--bf-display-stack);
+  font-weight: 600;
+  font-size: clamp(26px, 3.6vw, 40px);
+  line-height: 1.12;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.bayer-frieze-root .bf-sec-lede {
+  margin-top: 12px;
+  max-width: 580px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--bf-ink-70);
+}
+
+.bayer-frieze-root .bf-caption {
+  margin-top: 22px;
+  font-size: 13.5px;
+  color: var(--bf-ink-45);
+}
+
+/* ---------- Proof ---------- */
+
+.bayer-frieze-root .bf-proof {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.bayer-frieze-root .bf-card {
+  background-color: var(--bf-cream-2);
+  border: 2px solid var(--bf-ink);
+}
+
+.bayer-frieze-root .bf-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--bf-ink);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bf-ink-70);
+}
+
+.bayer-frieze-root .bf-card-file {
+  margin-left: auto;
+  font-family: var(--bf-mono-stack);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--bf-ink-45);
+}
+
+.bayer-frieze-root .bf-code {
+  padding: 20px 22px;
+  overflow-x: auto;
+  font-family: var(--bf-mono-stack);
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--bf-ink-70);
+}
+
+.bayer-frieze-root .tk-kw {
+  color: var(--bf-jade-deep);
+  font-weight: 600;
+}
+.bayer-frieze-root .tk-str,
+.bayer-frieze-root .tk-cmp {
+  color: var(--bf-jade);
+  font-weight: 600;
+}
+.bayer-frieze-root .tk-tag,
+.bayer-frieze-root .tk-fn {
+  color: var(--bf-ink);
+  font-weight: 600;
+}
+
+.bayer-frieze-root .bf-out-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.bayer-frieze-root .bf-out-card {
+  border: 1.5px solid var(--bf-ink-25);
+  background-color: var(--bf-cream-2);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bayer-frieze-root .bf-out-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bf-ink-70);
+}
+
+.bayer-frieze-root .bf-out-code {
+  margin-left: auto;
+  color: var(--bf-jade);
+}
+
+.bayer-frieze-root .bf-out-h {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.bayer-frieze-root .bf-out-p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--bf-ink-70);
+}
+
+/* ---------- Languages ---------- */
+
+.bayer-frieze-root .bf-langs {
+  padding-top: 0;
+}
+
+.bayer-frieze-root .bf-zig-band {
+  height: 24px;
+  overflow: hidden;
+  margin-bottom: 72px;
+}
+
+.bayer-frieze-root .bf-zigzag {
+  display: block;
+}
+
+/* The lattice: ink gridlines from the 2px gaps over an ink ground. */
+.bayer-frieze-root .bf-greet-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  background-color: var(--bf-ink);
+  border: 2px solid var(--bf-ink);
+}
+
+.bayer-frieze-root .bf-greet {
+  background-color: var(--bf-cream-2);
+  background-size: 8px 8px;
+  min-height: 150px;
+  padding: 26px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.bayer-frieze-root .bf-greet:hover {
+  background-image: var(--bf-t1);
+}
+
+.bayer-frieze-root .bf-greet:hover .bf-greet-word {
+  color: var(--bf-jade);
+}
+
+.bayer-frieze-root .bf-greet-word {
+  font-family: var(--bf-display-stack);
+  font-weight: 600;
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.2;
+}
+
+.bayer-frieze-root .bf-greet-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bf-ink-45);
+}
+
+/* ---------- Platform ---------- */
+
+.bayer-frieze-root .bf-prod-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.bayer-frieze-root .bf-prod {
+  border: 2px solid var(--bf-ink);
+  background-color: var(--bf-cream-2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each product opens with its density course: the strip is the tier. */
+.bayer-frieze-root .bf-prod > .bf-f {
+  height: 8px;
+  border-bottom: 2px solid var(--bf-ink);
+}
+
+.bayer-frieze-root .bf-prod-body {
+  padding: 20px 22px 24px;
+}
+
+.bayer-frieze-root .bf-prod-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--bf-display-stack);
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+.bayer-frieze-root .bf-prod-body p {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--bf-ink-70);
+}
+
+/* ---------- Pricing ---------- */
+
+.bayer-frieze-root .bf-pricing {
+  padding-top: 0;
+  padding-bottom: 96px;
+}
+
+.bayer-frieze-root .bf-divider {
+  margin-bottom: 76px;
+}
+
+.bayer-frieze-root .bf-plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.bayer-frieze-root .bf-plan {
+  border: 2px solid var(--bf-ink);
+  background-color: var(--bf-cream-2);
+  display: flex;
+  flex-direction: column;
+}
+
+.bayer-frieze-root .bf-plan-featured {
+  border-color: var(--bf-jade);
+  box-shadow: 0 0 0 2px var(--bf-jade);
+}
+
+.bayer-frieze-root .bf-plan > .bf-frieze {
+  border-bottom: 2px solid var(--bf-ink);
+}
+
+.bayer-frieze-root .bf-plan-featured > .bf-frieze {
+  border-bottom-color: var(--bf-jade);
+}
+
+.bayer-frieze-root .bf-plan-body {
+  padding: 24px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.bayer-frieze-root .bf-plan-name {
+  font-family: var(--bf-display-stack);
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bayer-frieze-root .bf-plan-price {
+  margin-top: 14px;
+  font-family: var(--bf-display-stack);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.bayer-frieze-root .bf-plan-per {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--bf-ink-45);
+}
+
+.bayer-frieze-root .bf-plan-copy {
+  margin: 16px 0 22px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--bf-ink-70);
+}
+
+/* ---------- Footer ---------- */
+
+.bayer-frieze-root .bf-footer {
+  background-color: var(--bf-ink);
+  color: rgba(246, 239, 221, 0.82);
+}
+
+.bayer-frieze-root .bf-foot-inner {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(4, 1fr);
+  gap: 32px;
+  padding: 56px 0 44px;
+}
+
+.bayer-frieze-root .bf-foot-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bayer-frieze-root .bf-footer .bf-wordmark {
+  color: var(--bf-cream);
+}
+
+.bayer-frieze-root .bf-foot-tag {
+  margin-top: 14px;
+  max-width: 300px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(246, 239, 221, 0.6);
+}
+
+.bayer-frieze-root .bf-foot-col h3 {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 221, 0.55);
+  margin-bottom: 14px;
+}
+
+.bayer-frieze-root .bf-foot-col ul {
+  list-style: none;
+  padding: 0;
+}
+
+.bayer-frieze-root .bf-foot-col li {
+  margin: 9px 0;
+}
+
+.bayer-frieze-root .bf-foot-col a {
+  font-size: 14px;
+  color: rgba(246, 239, 221, 0.85);
+  text-decoration: none;
+}
+
+.bayer-frieze-root .bf-foot-col a:hover {
+  color: var(--bf-jade-lt);
+  text-decoration: underline;
+}
+
+.bayer-frieze-root .bf-foot-bottom {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 20px 0 30px;
+  border-top: 1px solid rgba(246, 239, 221, 0.18);
+}
+
+.bayer-frieze-root .bf-foot-rule {
+  flex: 1;
+}
+
+.bayer-frieze-root .bf-foot-rule .bf-f {
+  height: 4px;
+}
+
+.bayer-frieze-root .bf-foot-bottom p {
+  font-size: 13px;
+  color: rgba(246, 239, 221, 0.6);
+  white-space: nowrap;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1080px) {
+  .bayer-frieze-root .bf-prod-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bayer-frieze-root .bf-greet-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .bayer-frieze-root .bf-foot-inner {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .bayer-frieze-root .bf-foot-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 960px) {
+  .bayer-frieze-root .bf-proof {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* The course turns horizontal between the stacked cards. */
+  .bayer-frieze-root .bf-vfrieze {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bayer-frieze-root .bf-fv {
+    width: 100%;
+    height: 6px;
+  }
+  .bayer-frieze-root .bf-hero-fans {
+    display: none;
+  }
+  .bayer-frieze-root .bf-plans {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .bayer-frieze-root .bf-links {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .bayer-frieze-root .bf-sec-head .bf-step {
+    display: none;
+  }
+  .bayer-frieze-root .bf-greet-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .bayer-frieze-root .bf-foot-inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bayer-frieze-root .bf-section {
+    padding: 64px 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .bayer-frieze-root .bf-greet-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bayer-frieze-root .bf-out-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bayer-frieze-root .bf-btn-ghost {
+    display: none;
+  }
+  .bayer-frieze-root .bf-prod-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bayer-frieze-root .bf-foot-bottom {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .bayer-frieze-root .bf-foot-bottom p {
+    white-space: normal;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .bayer-frieze-root .bf-meander-track {
+    animation: none;
+  }
+}

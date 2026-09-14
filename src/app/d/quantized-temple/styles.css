@@ -1,0 +1,1074 @@
+/* ============================================================
+   QUANTIZED TEMPLE: dither-focused art deco.
+   Stepped ziggurat forms, silk-smoke gradients that quantize
+   into ordered dither as they rise, orange and gold on warm
+   black. Cinzel display over Inter body. Every rule is scoped
+   under .quantized-temple-root.
+   ============================================================ */
+
+.quantized-temple-root {
+  /* Ground and inks */
+  --qt-black: #0b0705;
+  --qt-black-2: #140c07;
+  --qt-panel: #120a06;
+  --qt-ember: #b24216;
+  --qt-orange: #e06e28;
+  --qt-gold: #d9a24a;
+  --qt-gold-2: #eecd8f;
+  --qt-bone: #f4e9d6;
+  --qt-dim: rgba(244, 233, 214, 0.68);
+  --qt-faint: rgba(244, 233, 214, 0.44);
+  --qt-hair: rgba(217, 162, 74, 0.28);
+  --qt-hair-2: rgba(217, 162, 74, 0.14);
+
+  /* Faces */
+  --qt-disp: var(--qt-font-display), 'Cinzel', Georgia, 'Times New Roman', serif;
+  --qt-sans: var(--qt-font-body), 'Inter', system-ui, sans-serif;
+  --qt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  background: var(--qt-black);
+  color: var(--qt-bone);
+  font-family: var(--qt-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+.quantized-temple-root ::selection {
+  background: rgba(224, 110, 40, 0.55);
+  color: var(--qt-bone);
+}
+
+.quantized-temple-root .qt-rail {
+  max-width: 1140px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 40px);
+}
+
+.quantized-temple-root h1,
+.quantized-temple-root h2,
+.quantized-temple-root h3 {
+  font-family: var(--qt-disp);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--qt-gold-2);
+  margin: 0;
+}
+
+.quantized-temple-root h2 {
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.14;
+  max-width: 20ch;
+}
+
+.quantized-temple-root h3 {
+  font-size: 19px;
+  letter-spacing: 0.05em;
+}
+
+.quantized-temple-root p {
+  margin: 0;
+}
+
+.quantized-temple-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.quantized-temple-root .qt-lead {
+  color: var(--qt-dim);
+  font-size: 17px;
+  max-width: 58ch;
+  margin-top: 16px;
+}
+
+/* The inline <T> token, the page's recurring relic. */
+.quantized-temple-root .qt-t {
+  font-family: var(--qt-mono);
+  font-size: 0.86em;
+  color: var(--qt-gold-2);
+  background: rgba(217, 162, 74, 0.13);
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 3px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.quantized-temple-root .qt-t-h {
+  font-size: 0.8em;
+  vertical-align: 0.08em;
+}
+
+/* ---------------------------------------------------------- */
+/* Buttons                                                     */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--qt-sans);
+  font-size: 14px;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  padding: 9px 18px;
+  border-radius: 3px;
+  border: 1px solid var(--qt-hair);
+  transition: filter 160ms ease, border-color 160ms ease;
+}
+
+.quantized-temple-root .qt-btn-big {
+  padding: 12px 24px;
+  font-size: 15px;
+}
+
+.quantized-temple-root .qt-btn-solid {
+  background: linear-gradient(180deg, var(--qt-gold-2), var(--qt-gold));
+  border-color: rgba(238, 205, 143, 0.55);
+  color: #241206;
+}
+
+.quantized-temple-root .qt-btn-solid:hover {
+  filter: brightness(1.06);
+}
+
+.quantized-temple-root .qt-btn-line {
+  color: var(--qt-gold-2);
+  background: transparent;
+}
+
+.quantized-temple-root .qt-btn-line:hover {
+  border-color: var(--qt-gold);
+}
+
+/* ---------------------------------------------------------- */
+/* Top nav                                                     */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-nav {
+  border-bottom: 1px solid var(--qt-hair-2);
+  background: linear-gradient(180deg, rgba(20, 12, 7, 0.85), rgba(11, 7, 5, 0.6));
+}
+
+.quantized-temple-root .qt-nav-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 40px);
+  height: 68px;
+}
+
+.quantized-temple-root .qt-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.quantized-temple-root .qt-brand-mark {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
+.quantized-temple-root .qt-brand-name {
+  font-family: var(--qt-disp);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: var(--qt-gold-2);
+  white-space: nowrap;
+}
+
+.quantized-temple-root .qt-nav-links {
+  display: flex;
+  gap: clamp(14px, 2.4vw, 30px);
+  margin-inline: auto;
+}
+
+.quantized-temple-root .qt-nav-links a {
+  font-size: 14px;
+  color: var(--qt-dim);
+  transition: color 160ms ease;
+}
+
+.quantized-temple-root .qt-nav-links a:hover {
+  color: var(--qt-gold-2);
+}
+
+.quantized-temple-root .qt-nav-cta {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* ---------------------------------------------------------- */
+/* Hero                                                        */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-hero {
+  position: relative;
+  padding-block: clamp(56px, 8vw, 110px) 0;
+  border-bottom: 1px solid var(--qt-hair-2);
+  background:
+    radial-gradient(90% 70% at 72% 100%, rgba(178, 66, 22, 0.24), rgba(11, 7, 5, 0) 70%),
+    linear-gradient(180deg, var(--qt-black-2), var(--qt-black) 46%);
+}
+
+.quantized-temple-root .qt-hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(28px, 4vw, 60px);
+  align-items: end;
+}
+
+.quantized-temple-root .qt-hero-copy {
+  padding-bottom: clamp(48px, 6vw, 90px);
+}
+
+.quantized-temple-root .qt-hero h1 {
+  font-size: clamp(40px, 5.4vw, 66px);
+  line-height: 1.08;
+}
+
+.quantized-temple-root .qt-hero h1 span {
+  display: block;
+}
+
+.quantized-temple-root .qt-hero h1 span:last-child {
+  color: var(--qt-gold);
+}
+
+.quantized-temple-root .qt-hero-sub {
+  color: var(--qt-dim);
+  font-size: 17px;
+  max-width: 52ch;
+  margin-top: 22px;
+}
+
+.quantized-temple-root .qt-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.quantized-temple-root .qt-hero-cmd {
+  font-family: var(--qt-mono);
+  font-size: 13.5px;
+  color: var(--qt-gold-2);
+  background: var(--qt-panel);
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 3px;
+  display: inline-block;
+  padding: 9px 16px;
+  margin-top: 22px;
+}
+
+.quantized-temple-root .qt-cmd-prompt {
+  color: var(--qt-faint);
+}
+
+.quantized-temple-root .qt-hero-proofline {
+  font-size: 13.5px;
+  color: var(--qt-faint);
+  margin-top: 18px;
+}
+
+/* Entrance: one quiet rise, staggered down the copy stack. */
+.quantized-temple-root .qt-hero-copy > * {
+  animation: qtpl-rise 700ms cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+.quantized-temple-root .qt-hero-copy > *:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.quantized-temple-root .qt-hero-copy > *:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+.quantized-temple-root .qt-hero-copy > *:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.quantized-temple-root .qt-hero-copy > *:nth-child(5) {
+  animation-delay: 280ms;
+}
+
+@keyframes qtpl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------- Monument ----------------------- */
+
+.quantized-temple-root .qt-monument {
+  position: relative;
+  height: clamp(360px, 42vw, 540px);
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Deco sunburst: gold hairline rays fanning from the crown. */
+.quantized-temple-root .qt-monument::before {
+  content: '';
+  position: absolute;
+  inset: -6% -14% 0;
+  background: repeating-conic-gradient(
+    from -90deg at 50% 46%,
+    rgba(217, 162, 74, 0.13) 0deg 0.5deg,
+    rgba(217, 162, 74, 0) 0.5deg 7deg
+  );
+  -webkit-mask-image: radial-gradient(75% 62% at 50% 46%, black, transparent 72%);
+  mask-image: radial-gradient(75% 62% at 50% 46%, black, transparent 72%);
+}
+
+.quantized-temple-root .qt-monument-smoke {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 0;
+  height: 56%;
+  width: 88%;
+  image-rendering: pixelated;
+}
+
+.quantized-temple-root .qt-monument-body {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.quantized-temple-root .qt-tier {
+  position: relative;
+  margin-top: 3px;
+  border-top: 1px solid rgba(255, 224, 166, 0.55);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 224, 166, 0) 30%,
+      rgba(255, 224, 166, 0.3) 46%,
+      rgba(255, 224, 166, 0) 62%
+    ),
+    linear-gradient(180deg, #f0c078 0%, #e06e28 44%, #6d2a0e 100%);
+  background-size: 220% 100%, 100% 100%;
+  background-position: -60% 0, 0 0;
+  animation: qtpl-sheen 9s ease-in-out infinite alternate;
+}
+
+/* The silk quantizes: dark dot erosion, heaviest on the upper tiers. */
+.quantized-temple-root .qt-tier::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(11, 7, 5, 0.95) 1.1px, rgba(11, 7, 5, 0) 1.5px);
+  background-size: 5px 5px;
+  opacity: 0.2;
+}
+
+.quantized-temple-root .qt-tier-1 {
+  width: 26%;
+  height: clamp(20px, 2.4vw, 30px);
+}
+
+.quantized-temple-root .qt-tier-1::after {
+  opacity: 0.85;
+  background-size: 4px 4px;
+}
+
+.quantized-temple-root .qt-tier-2 {
+  width: 42%;
+  height: clamp(28px, 3.2vw, 40px);
+}
+
+.quantized-temple-root .qt-tier-2::after {
+  opacity: 0.55;
+}
+
+.quantized-temple-root .qt-tier-3 {
+  width: 58%;
+  height: clamp(40px, 4.4vw, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantized-temple-root .qt-tier-3::after {
+  opacity: 0.32;
+}
+
+.quantized-temple-root .qt-tier-glyph {
+  position: relative;
+  z-index: 1;
+  font-family: var(--qt-disp);
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(34, 15, 4, 0.88);
+}
+
+.quantized-temple-root .qt-tier-4 {
+  width: 76%;
+  height: clamp(48px, 5.4vw, 68px);
+}
+
+.quantized-temple-root .qt-tier-5 {
+  width: 94%;
+  height: clamp(58px, 6.4vw, 82px);
+}
+
+.quantized-temple-root .qt-tier-5::after {
+  opacity: 0.12;
+}
+
+@keyframes qtpl-sheen {
+  from {
+    background-position: -60% 0, 0 0;
+  }
+
+  to {
+    background-position: 160% 0, 0 0;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Sections and tier rules                                     */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-sec {
+  padding-block: clamp(64px, 8vw, 110px);
+  border-bottom: 1px solid var(--qt-hair-2);
+}
+
+.quantized-temple-root .qt-tierline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: clamp(26px, 3vw, 38px);
+}
+
+.quantized-temple-root .qt-tierline-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(217, 162, 74, 0), var(--qt-hair));
+}
+
+.quantized-temple-root .qt-tierline-rule:last-child {
+  background: linear-gradient(90deg, var(--qt-hair), rgba(217, 162, 74, 0));
+}
+
+.quantized-temple-root .qt-tierline-mark {
+  font-family: var(--qt-disp);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  color: var(--qt-gold);
+  border: 1px solid var(--qt-hair);
+  padding: 5px 11px;
+  box-shadow: 0 0 0 3px var(--qt-black), 0 0 0 4px var(--qt-hair-2);
+}
+
+/* ---------------------------------------------------------- */
+/* Proof: before / after and the rendered locales              */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-diff {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: clamp(30px, 4vw, 44px);
+}
+
+.quantized-temple-root .qt-code {
+  margin: 0;
+  background: var(--qt-panel);
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.quantized-temple-root .qt-code.is-after {
+  border-color: var(--qt-hair);
+}
+
+.quantized-temple-root .qt-code figcaption {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qt-faint);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--qt-hair-2);
+}
+
+.quantized-temple-root .qt-code.is-after figcaption {
+  color: var(--qt-gold);
+}
+
+.quantized-temple-root .qt-code pre {
+  margin: 0;
+  padding: 16px 18px;
+  font-family: var(--qt-mono);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--qt-dim);
+  overflow-x: auto;
+}
+
+.quantized-temple-root .qt-hl {
+  color: var(--qt-gold-2);
+  background: rgba(217, 162, 74, 0.14);
+}
+
+.quantized-temple-root .qt-proof-demo {
+  margin-top: clamp(30px, 4vw, 44px);
+}
+
+.quantized-temple-root .qt-proof-intro {
+  color: var(--qt-dim);
+  font-size: 15px;
+}
+
+.quantized-temple-root .qt-proof-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.quantized-temple-root .qt-proof-tab {
+  font-family: var(--qt-sans);
+  font-size: 13.5px;
+  color: var(--qt-dim);
+  background: transparent;
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 3px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.quantized-temple-root .qt-proof-tab:hover {
+  color: var(--qt-gold-2);
+  border-color: var(--qt-hair);
+}
+
+.quantized-temple-root .qt-proof-tab[aria-pressed='true'] {
+  color: #241206;
+  background: linear-gradient(180deg, var(--qt-gold-2), var(--qt-gold));
+  border-color: rgba(238, 205, 143, 0.55);
+}
+
+.quantized-temple-root .qt-proof-stage {
+  margin-top: 14px;
+  background: var(--qt-panel);
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 4px;
+  padding: clamp(26px, 3.4vw, 40px);
+  min-height: 158px;
+  display: flex;
+  align-items: center;
+}
+
+.quantized-temple-root .qt-proof-screen {
+  display: block;
+  width: 100%;
+  animation: qtpl-fade 420ms ease both;
+}
+
+.quantized-temple-root .qt-proof-chip {
+  display: inline-block;
+  font-family: var(--qt-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--qt-gold);
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 3px;
+  padding: 2px 8px;
+  margin-bottom: 14px;
+}
+
+.quantized-temple-root .qt-proof-h {
+  display: block;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--qt-bone);
+}
+
+.quantized-temple-root .qt-proof-p {
+  display: block;
+  color: var(--qt-dim);
+  margin-top: 6px;
+}
+
+@keyframes qtpl-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quantized-temple-root .qt-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: clamp(36px, 4.5vw, 56px);
+}
+
+.quantized-temple-root .qt-step {
+  border-top: 1px solid var(--qt-hair);
+  padding-top: 18px;
+}
+
+.quantized-temple-root .qt-step-mark {
+  width: 22px;
+  height: 22px;
+  color: var(--qt-orange);
+  display: block;
+}
+
+.quantized-temple-root .qt-step h3 {
+  margin-top: 12px;
+}
+
+.quantized-temple-root .qt-step p {
+  color: var(--qt-dim);
+  font-size: 15px;
+  margin-top: 8px;
+}
+
+/* ---------------------------------------------------------- */
+/* Scripts: greetings hung in the drapery folds                */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-scripts {
+  position: relative;
+  background: var(--qt-black-2);
+}
+
+.quantized-temple-root .qt-drape {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(rgba(217, 162, 74, 0.09) 1px, rgba(217, 162, 74, 0) 1.5px),
+    repeating-linear-gradient(
+      90deg,
+      rgba(224, 110, 40, 0.13) 0 10px,
+      rgba(224, 110, 40, 0.04) 10px 46px,
+      rgba(20, 12, 7, 0) 46px 104px,
+      rgba(224, 110, 40, 0.04) 104px 140px
+    ),
+    linear-gradient(180deg, rgba(178, 66, 22, 0.18), rgba(11, 7, 5, 0) 62%);
+  background-size: 7px 7px, auto, auto;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    black 110px,
+    black calc(100% - 70px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    black 110px,
+    black calc(100% - 70px),
+    transparent
+  );
+}
+
+.quantized-temple-root .qt-scripts-inner {
+  position: relative;
+}
+
+.quantized-temple-root .qt-hellos {
+  list-style: none;
+  margin: clamp(34px, 4.5vw, 52px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 18px;
+}
+
+/* Each greeting hangs on its own fold of silk. */
+.quantized-temple-root .qt-hello {
+  position: relative;
+  padding: 26px 18px 30px;
+  border-top: 1px solid var(--qt-hair);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(244, 233, 214, 0.05) 0 2px,
+      rgba(244, 233, 214, 0) 2px 19px
+    ),
+    linear-gradient(
+      180deg,
+      rgba(178, 66, 22, 0.32),
+      rgba(224, 110, 40, 0.1) 56%,
+      rgba(11, 7, 5, 0) 100%
+    );
+}
+
+/* The fold's lower edge dissolves into dots, like every form here. */
+.quantized-temple-root .qt-hello::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: -16px;
+  height: 24px;
+  background-image: radial-gradient(rgba(224, 110, 40, 0.7) 1.2px, rgba(224, 110, 40, 0) 1.7px);
+  background-size: 7px 7px;
+  -webkit-mask-image: linear-gradient(180deg, black, transparent);
+  mask-image: linear-gradient(180deg, black, transparent);
+}
+
+.quantized-temple-root .qt-hello-word {
+  display: block;
+  font-family: var(--qt-disp);
+  font-size: clamp(24px, 2.8vw, 36px);
+  line-height: 1.3;
+  color: var(--qt-gold-2);
+}
+
+.quantized-temple-root .qt-hello-name {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.13em;
+  color: var(--qt-faint);
+  margin-top: 10px;
+}
+
+.quantized-temple-root .qt-scripts-note {
+  color: var(--qt-dim);
+  font-size: 15px;
+  max-width: 58ch;
+  margin-top: clamp(34px, 4.5vw, 52px);
+}
+
+/* ---------------------------------------------------------- */
+/* Platform                                                    */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-plat {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: clamp(30px, 4vw, 44px);
+}
+
+.quantized-temple-root .qt-card {
+  background: var(--qt-panel);
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 4px;
+  padding: 22px 20px 26px;
+  transition: border-color 160ms ease;
+}
+
+.quantized-temple-root .qt-card:hover {
+  border-color: var(--qt-hair);
+}
+
+.quantized-temple-root .qt-card-mark {
+  width: 24px;
+  height: 24px;
+  color: var(--qt-gold);
+  display: block;
+}
+
+.quantized-temple-root .qt-card h3 {
+  margin-top: 14px;
+}
+
+.quantized-temple-root .qt-card p {
+  color: var(--qt-dim);
+  font-size: 14.5px;
+  margin-top: 10px;
+}
+
+/* ---------------------------------------------------------- */
+/* Pricing                                                     */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: clamp(30px, 4vw, 44px);
+}
+
+.quantized-temple-root .qt-plan {
+  background: var(--qt-panel);
+  border: 1px solid var(--qt-hair-2);
+  border-radius: 4px;
+  padding: clamp(24px, 3vw, 34px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.quantized-temple-root .qt-plan.is-enterprise {
+  border-color: var(--qt-hair);
+  background:
+    linear-gradient(180deg, rgba(178, 66, 22, 0.14), rgba(18, 10, 6, 0) 46%),
+    var(--qt-panel);
+}
+
+.quantized-temple-root .qt-price {
+  font-family: var(--qt-disp);
+  font-size: clamp(34px, 4vw, 46px);
+  font-weight: 500;
+  color: var(--qt-bone);
+  margin-top: 14px;
+}
+
+.quantized-temple-root .qt-price span {
+  font-family: var(--qt-sans);
+  font-size: 13.5px;
+  color: var(--qt-faint);
+  margin-left: 8px;
+}
+
+.quantized-temple-root .qt-plan-copy {
+  color: var(--qt-dim);
+  font-size: 15px;
+  margin-top: 12px;
+}
+
+.quantized-temple-root .qt-plan-list {
+  list-style: none;
+  margin: 18px 0 26px;
+  padding: 0;
+  color: var(--qt-dim);
+  font-size: 14.5px;
+  display: grid;
+  gap: 9px;
+}
+
+.quantized-temple-root .qt-plan-list li {
+  padding-left: 20px;
+  position: relative;
+}
+
+.quantized-temple-root .qt-plan-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--qt-orange);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.quantized-temple-root .qt-plan .qt-btn {
+  margin-top: auto;
+}
+
+/* ---------------------------------------------------------- */
+/* Dissolve band and footer                                    */
+/* ---------------------------------------------------------- */
+
+.quantized-temple-root .qt-dissolve {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  height: 72px;
+}
+
+.quantized-temple-root .qt-dissolve.is-flip {
+  transform: scaleY(-1);
+}
+
+.quantized-temple-root .qt-dissolve span {
+  background-image: radial-gradient(var(--qt-gold) var(--qtpl-dot), rgba(217, 162, 74, 0) calc(var(--qtpl-dot) + 0.5px));
+}
+
+.quantized-temple-root .qt-dissolve span:nth-child(1) {
+  --qtpl-dot: 0.7px;
+  background-size: 9px 9px;
+  opacity: 0.22;
+}
+
+.quantized-temple-root .qt-dissolve span:nth-child(2) {
+  --qtpl-dot: 1.1px;
+  background-size: 8px 8px;
+  opacity: 0.38;
+}
+
+.quantized-temple-root .qt-dissolve span:nth-child(3) {
+  --qtpl-dot: 1.5px;
+  background-size: 7px 7px;
+  opacity: 0.56;
+}
+
+.quantized-temple-root .qt-dissolve span:nth-child(4) {
+  --qtpl-dot: 1.9px;
+  background-size: 6px 6px;
+  opacity: 0.78;
+}
+
+.quantized-temple-root .qt-footer {
+  background: var(--qt-black-2);
+  padding-bottom: clamp(40px, 5vw, 64px);
+}
+
+.quantized-temple-root .qt-foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: clamp(22px, 3.5vw, 44px);
+  padding-top: clamp(40px, 5vw, 64px);
+}
+
+.quantized-temple-root .qt-foot-brand p {
+  color: var(--qt-faint);
+  font-size: 14px;
+  margin-top: 14px;
+  max-width: 26ch;
+}
+
+.quantized-temple-root .qt-foot-col h4 {
+  font-family: var(--qt-disp);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qt-gold);
+  margin: 0 0 14px;
+}
+
+.quantized-temple-root .qt-foot-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 9px;
+}
+
+.quantized-temple-root .qt-foot-col a {
+  font-size: 14px;
+  color: var(--qt-dim);
+  transition: color 160ms ease;
+}
+
+.quantized-temple-root .qt-foot-col a:hover {
+  color: var(--qt-gold-2);
+}
+
+.quantized-temple-root .qt-foot-legal {
+  margin-top: clamp(40px, 5vw, 60px);
+  padding-top: 20px;
+  border-top: 1px solid var(--qt-hair-2);
+  font-size: 13px;
+  color: var(--qt-faint);
+}
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                  */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 1020px) {
+  .quantized-temple-root .qt-hellos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .quantized-temple-root .qt-plat {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quantized-temple-root .qt-foot-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .quantized-temple-root .qt-foot-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 880px) {
+  .quantized-temple-root .qt-nav-links {
+    display: none;
+  }
+
+  .quantized-temple-root .qt-nav-cta {
+    margin-left: auto;
+  }
+
+  .quantized-temple-root .qt-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quantized-temple-root .qt-hero-copy {
+    padding-bottom: 0;
+  }
+
+  .quantized-temple-root .qt-monument {
+    height: clamp(280px, 52vw, 420px);
+    margin-top: 30px;
+  }
+
+  .quantized-temple-root .qt-diff {
+    grid-template-columns: 1fr;
+  }
+
+  .quantized-temple-root .qt-steps {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  .quantized-temple-root .qt-hellos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quantized-temple-root .qt-plat {
+    grid-template-columns: 1fr;
+  }
+
+  .quantized-temple-root .qt-plans {
+    grid-template-columns: 1fr;
+  }
+
+  .quantized-temple-root .qt-foot-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quantized-temple-root .qt-brand-name {
+    display: none;
+  }
+
+  .quantized-temple-root .qt-foot-brand .qt-brand-name {
+    display: inline;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/* Reduced motion: everything holds still                      */
+/* ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .quantized-temple-root .qt-hero-copy > *,
+  .quantized-temple-root .qt-tier,
+  .quantized-temple-root .qt-proof-screen {
+    animation: none;
+  }
+}

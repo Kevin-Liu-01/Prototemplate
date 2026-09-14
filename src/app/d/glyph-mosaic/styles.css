@@ -1,0 +1,864 @@
+/* ============================================================
+   GLYPH MOSAIC — dither-focused art deco.
+   The Chrysler lobby floor rebuilt from language: glyph tesserae
+   from eight writing systems set the GT monogram on a sunburst
+   ground. Warm sand, terracotta, ink, gold. Marcellus display,
+   Inter body. Every ornament is CSS geometry or the one canvas;
+   cut-corner octagon tiles are the recurring deco frame.
+   ============================================================ */
+
+.glyph-mosaic-root {
+  /* grounds */
+  --gm-sand: #f2e7d3;
+  --gm-sand-deep: #e9dcc2;
+  --gm-card: #faf3e4;
+
+  /* ink */
+  --gm-ink: #241b10;
+  --gm-ink-2: rgba(36, 27, 16, 0.72);
+  --gm-ink-3: rgba(36, 27, 16, 0.52);
+  --gm-hair: rgba(36, 27, 16, 0.16);
+  --gm-hair-soft: rgba(36, 27, 16, 0.08);
+
+  /* accents */
+  --gm-terra: #a8471f;
+  --gm-terra-deep: #7f3316;
+  --gm-terra-ink: #66280f;
+  --gm-gold: #9b7422;
+  --gm-goldline: rgba(155, 116, 34, 0.55);
+  --gm-gold-soft: rgba(155, 116, 34, 0.28);
+  --gm-gold-faint: rgba(155, 116, 34, 0.12);
+
+  /* the dark code plate, warm ink */
+  --gm-panel: #2a2013;
+  --gm-panel-ink: #f2e7d3;
+  --gm-panel-kw: #d89a5e;
+  --gm-panel-tag: #e5c477;
+  --gm-panel-str: #b9c99a;
+
+  /* tessera colors, one per writing system; the canvas and the
+     legend both read these, so the mosaic can never drift from
+     its own key */
+  --gm-s-latin: #a8471f;
+  --gm-s-greek: #a07a1e;
+  --gm-s-cyrillic: #6e4a1c;
+  --gm-s-arabic: #3f6b52;
+  --gm-s-devanagari: #7c2d24;
+  --gm-s-hangul: #2c2214;
+  --gm-s-kana: #44607e;
+  --gm-s-han: #b06b33;
+
+  /* type */
+  --gm-disp: var(--gm-font-display), 'Marcellus', Georgia, serif;
+  --gm-body: var(--gm-font-body), 'Inter', system-ui, sans-serif;
+  --gm-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* the octagon cut, the page's recurring deco corner */
+  --gm-cut: 12px;
+
+  position: relative;
+  background:
+    radial-gradient(rgba(155, 116, 34, 0.07) 1px, transparent 1px) 0 0 / 26px
+      26px,
+    var(--gm-sand);
+  color: var(--gm-ink);
+  font-family: var(--gm-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.glyph-mosaic-root *,
+.glyph-mosaic-root *::before,
+.glyph-mosaic-root *::after {
+  box-sizing: border-box;
+}
+
+.glyph-mosaic-root :where(h1, h2, h3, p, ul, ol, li, figure, figcaption, pre) {
+  margin: 0;
+  padding: 0;
+}
+
+.glyph-mosaic-root :where(ul, ol) {
+  list-style: none;
+}
+
+.glyph-mosaic-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.glyph-mosaic-root :where(a, canvas):focus-visible {
+  outline: 2px solid var(--gm-terra);
+  outline-offset: 3px;
+}
+
+.glyph-mosaic-root ::selection {
+  background: var(--gm-terra);
+  color: var(--gm-card);
+}
+
+.glyph-mosaic-root .gm-rail {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 36px);
+}
+
+/* ---------------- nav ---------------- */
+
+.glyph-mosaic-root .gm-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--gm-sand);
+  /* the doubled gold rule, both strokes from this one owner */
+  box-shadow:
+    0 1px 0 0 var(--gm-goldline),
+    0 4px 0 -2px var(--gm-gold-soft);
+}
+
+.glyph-mosaic-root .gm-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 62px;
+}
+
+.glyph-mosaic-root .gm-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.glyph-mosaic-root .gm-brand img {
+  display: block;
+}
+
+.glyph-mosaic-root .gm-brand span {
+  font-family: var(--gm-disp);
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.glyph-mosaic-root .gm-nav-links {
+  display: flex;
+  gap: 26px;
+  margin-left: auto;
+}
+
+.glyph-mosaic-root .gm-nav-links a,
+.glyph-mosaic-root .gm-signin {
+  font-size: 14px;
+  color: var(--gm-ink-2);
+  transition: color 0.15s ease;
+}
+
+.glyph-mosaic-root .gm-nav-links a:hover,
+.glyph-mosaic-root .gm-signin:hover {
+  color: var(--gm-terra-deep);
+}
+
+.glyph-mosaic-root .gm-nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ---------------- buttons ----------------
+   The cut-corner button: the anchor paints the edge color and is
+   clipped to the octagon; the inner span paints the fill, inset
+   1px and clipped again, so the 1px that shows through is the
+   border. Focus draws an inset ring, since an outline would be
+   clipped away with the corners. */
+
+.glyph-mosaic-root .gm-btn {
+  display: inline-flex;
+  background: var(--gm-goldline);
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
+}
+
+.glyph-mosaic-root .gm-btn > span {
+  display: inline-flex;
+  align-items: center;
+  margin: 1px;
+  padding: 12px 26px;
+  background: var(--gm-card);
+  color: var(--gm-ink);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  clip-path: polygon(
+    7px 0,
+    calc(100% - 7px) 0,
+    100% 7px,
+    100% calc(100% - 7px),
+    calc(100% - 7px) 100%,
+    7px 100%,
+    0 calc(100% - 7px),
+    0 7px
+  );
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.glyph-mosaic-root .gm-btn-solid {
+  background: var(--gm-terra-deep);
+}
+
+.glyph-mosaic-root .gm-btn-solid > span {
+  background: var(--gm-terra-deep);
+  color: var(--gm-card);
+}
+
+.glyph-mosaic-root .gm-btn-solid:hover > span {
+  background: var(--gm-terra-ink);
+}
+
+.glyph-mosaic-root .gm-btn-line:hover > span {
+  background: var(--gm-sand-deep);
+}
+
+.glyph-mosaic-root .gm-btn:focus-visible {
+  outline: none;
+}
+
+.glyph-mosaic-root .gm-btn:focus-visible > span {
+  box-shadow: inset 0 0 0 2px var(--gm-terra);
+}
+
+.glyph-mosaic-root .gm-btn-solid:focus-visible > span {
+  box-shadow: inset 0 0 0 2px var(--gm-card);
+}
+
+.glyph-mosaic-root .gm-btn-sm > span {
+  padding: 8px 18px;
+  font-size: 13px;
+}
+
+/* ---------------- hero ---------------- */
+
+.glyph-mosaic-root .gm-hero {
+  padding: clamp(56px, 8vw, 88px) 0 clamp(56px, 7vw, 80px);
+  text-align: center;
+}
+
+.glyph-mosaic-root .gm-hero h1 {
+  font-family: var(--gm-disp);
+  font-weight: 400;
+  font-size: clamp(44px, 7vw, 86px);
+  line-height: 1.05;
+  letter-spacing: 0.005em;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.glyph-mosaic-root .gm-hero-lead {
+  max-width: 640px;
+  margin: 22px auto 0;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--gm-ink-2);
+}
+
+.glyph-mosaic-root .gm-hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.glyph-mosaic-root .gm-mosaic {
+  max-width: 1010px;
+  margin: clamp(48px, 6vw, 72px) auto 0;
+}
+
+.glyph-mosaic-root .gm-mosaic-frame {
+  /* doubled gold frame, both strokes owned by this element */
+  border: 1px solid var(--gm-goldline);
+  outline: 1px solid var(--gm-gold-soft);
+  outline-offset: 5px;
+  background: linear-gradient(180deg, var(--gm-card), var(--gm-sand-deep));
+  padding: clamp(10px, 2vw, 22px);
+}
+
+.glyph-mosaic-root .gm-mosaic-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.glyph-mosaic-root .gm-mosaic-caption {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--gm-ink-3);
+}
+
+.glyph-mosaic-root .gm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 10px;
+  margin-top: 14px;
+}
+
+.glyph-mosaic-root .gm-legend-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.glyph-mosaic-root .gm-legend-glyph {
+  font-family: var(--gm-disp);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.glyph-mosaic-root .gm-legend-name {
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--gm-ink-2);
+}
+
+/* ---------------- frieze dividers ----------------
+   The zigzag chevron course between sections, drawn from four
+   gradient layers on one element and framed by its own hairlines. */
+
+.glyph-mosaic-root .gm-frieze {
+  height: 20px;
+  border-top: 1px solid var(--gm-hair-soft);
+  border-bottom: 1px solid var(--gm-hair-soft);
+  background-color: var(--gm-sand);
+  background-image:
+    linear-gradient(135deg, var(--gm-gold-faint) 25%, transparent 25%),
+    linear-gradient(225deg, var(--gm-gold-faint) 25%, transparent 25%),
+    linear-gradient(315deg, var(--gm-gold-faint) 25%, transparent 25%),
+    linear-gradient(45deg, var(--gm-gold-faint) 25%, transparent 25%);
+  background-position:
+    -9px 0,
+    -9px 0,
+    0 0,
+    0 0;
+  background-size: 18px 18px;
+  background-repeat: repeat;
+}
+
+/* ---------------- sections ---------------- */
+
+.glyph-mosaic-root .gm-sec {
+  padding: clamp(64px, 8vw, 100px) 0;
+}
+
+.glyph-mosaic-root .gm-sec-sunk {
+  background: var(--gm-sand-deep);
+}
+
+.glyph-mosaic-root .gm-head {
+  text-align: center;
+  margin-bottom: clamp(40px, 5vw, 60px);
+}
+
+.glyph-mosaic-root .gm-rulemark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.glyph-mosaic-root .gm-rulemark i {
+  display: block;
+  width: 64px;
+  height: 1px;
+  background: var(--gm-goldline);
+}
+
+.glyph-mosaic-root .gm-rulemark b {
+  display: block;
+  width: 7px;
+  height: 7px;
+  background: var(--gm-gold);
+  transform: rotate(45deg);
+}
+
+.glyph-mosaic-root .gm-head h2 {
+  font-family: var(--gm-disp);
+  font-weight: 400;
+  font-size: clamp(32px, 4.2vw, 50px);
+  line-height: 1.12;
+  letter-spacing: 0.01em;
+}
+
+.glyph-mosaic-root .gm-head p {
+  max-width: 660px;
+  margin: 16px auto 0;
+  font-size: 16px;
+  line-height: 1.68;
+  color: var(--gm-ink-2);
+}
+
+/* ---------------- deco tiles ----------------
+   Outer layer paints the gold edge, inner layer the fill; both
+   are clipped to the octagon so the corners stay cut. */
+
+.glyph-mosaic-root .gm-tile {
+  display: flex;
+  background: var(--gm-goldline);
+  clip-path: polygon(
+    var(--gm-cut) 0,
+    calc(100% - var(--gm-cut)) 0,
+    100% var(--gm-cut),
+    100% calc(100% - var(--gm-cut)),
+    calc(100% - var(--gm-cut)) 100%,
+    var(--gm-cut) 100%,
+    0 calc(100% - var(--gm-cut)),
+    0 var(--gm-cut)
+  );
+}
+
+.glyph-mosaic-root .gm-tile-in {
+  flex: 1;
+  min-width: 0;
+  margin: 1px;
+  background: var(--gm-card);
+  clip-path: polygon(
+    11px 0,
+    calc(100% - 11px) 0,
+    100% 11px,
+    100% calc(100% - 11px),
+    calc(100% - 11px) 100%,
+    11px 100%,
+    0 calc(100% - 11px),
+    0 11px
+  );
+}
+
+/* ---------------- proof: the T component ---------------- */
+
+.glyph-mosaic-root .gm-proof {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(18px, 3vw, 32px);
+  align-items: stretch;
+}
+
+.glyph-mosaic-root .gm-proof-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.glyph-mosaic-root .gm-proof-col .gm-tile {
+  flex: 1;
+}
+
+.glyph-mosaic-root .gm-proof-label {
+  font-family: var(--gm-disp);
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: 0.03em;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.glyph-mosaic-root .gm-code-tile .gm-tile-in {
+  background: var(--gm-panel);
+  padding: clamp(20px, 2.6vw, 30px);
+  display: flex;
+  align-items: center;
+}
+
+.glyph-mosaic-root .gm-code {
+  width: 100%;
+  overflow-x: auto;
+  font-family: var(--gm-mono);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--gm-panel-ink);
+}
+
+.glyph-mosaic-root .gm-tok-kw {
+  color: var(--gm-panel-kw);
+}
+
+.glyph-mosaic-root .gm-tok-tag {
+  color: var(--gm-panel-tag);
+}
+
+.glyph-mosaic-root .gm-tok-str {
+  color: var(--gm-panel-str);
+}
+
+.glyph-mosaic-root .gm-render-tile .gm-tile-in {
+  padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px);
+}
+
+.glyph-mosaic-root .gm-render-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gm-hair-soft);
+}
+
+.glyph-mosaic-root .gm-renderings .gm-render-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.glyph-mosaic-root .gm-render-row.is-source {
+  border-bottom: 1px solid var(--gm-hair);
+  padding-top: 0;
+}
+
+.glyph-mosaic-root .gm-render-row.is-source .gm-render-text {
+  font-weight: 600;
+}
+
+.glyph-mosaic-root .gm-render-code {
+  flex: none;
+  width: 2.4em;
+  font-family: var(--gm-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--gm-terra);
+}
+
+.glyph-mosaic-root .gm-render-text {
+  font-size: 15px;
+  line-height: 1.55;
+  min-width: 0;
+}
+
+.glyph-mosaic-root .gm-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(18px, 3vw, 32px);
+  margin-top: clamp(40px, 5vw, 56px);
+  counter-reset: gm-step;
+}
+
+.glyph-mosaic-root .gm-steps li {
+  counter-increment: gm-step;
+  border-top: 1px solid var(--gm-goldline);
+  padding-top: 16px;
+}
+
+.glyph-mosaic-root .gm-steps li::before {
+  content: counter(gm-step, upper-roman);
+  display: block;
+  font-family: var(--gm-disp);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: var(--gm-gold);
+  margin-bottom: 10px;
+}
+
+.glyph-mosaic-root .gm-step-cmd {
+  display: inline-block;
+  font-family: var(--gm-mono);
+  font-size: 13px;
+  padding: 6px 10px;
+  background: var(--gm-card);
+  border: 1px solid var(--gm-hair);
+  color: var(--gm-ink);
+}
+
+.glyph-mosaic-root .gm-steps p {
+  margin-top: 10px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--gm-ink-2);
+}
+
+/* ---------------- writing systems ---------------- */
+
+.glyph-mosaic-root .gm-greetings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.glyph-mosaic-root .gm-greet-tile .gm-tile-in {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 136px;
+  padding: 20px 18px 16px;
+}
+
+.glyph-mosaic-root .gm-greet-word {
+  font-family: var(--gm-disp);
+  font-size: clamp(26px, 2.6vw, 32px);
+  line-height: 1.25;
+}
+
+.glyph-mosaic-root .gm-greet-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--gm-hair-soft);
+  padding-top: 10px;
+}
+
+.glyph-mosaic-root .gm-greet-lang {
+  font-size: 13px;
+  color: var(--gm-ink-2);
+}
+
+.glyph-mosaic-root .gm-greet-script {
+  font-size: 12px;
+  color: var(--gm-terra);
+}
+
+/* ---------------- platform ---------------- */
+
+.glyph-mosaic-root .gm-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.glyph-mosaic-root .gm-product-tile .gm-tile-in {
+  display: flex;
+  flex-direction: column;
+  padding: 26px 22px;
+}
+
+.glyph-mosaic-root .gm-product-numeral {
+  font-family: var(--gm-disp);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--gm-gold);
+}
+
+.glyph-mosaic-root .gm-product-tile h3 {
+  font-family: var(--gm-disp);
+  font-weight: 400;
+  font-size: 22px;
+  margin: 12px 0 8px;
+}
+
+.glyph-mosaic-root .gm-product-tile p {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--gm-ink-2);
+}
+
+/* ---------------- pricing ---------------- */
+
+.glyph-mosaic-root .gm-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(18px, 3vw, 28px);
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.glyph-mosaic-root .gm-plan .gm-tile-in {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(26px, 3.4vw, 38px);
+}
+
+.glyph-mosaic-root .gm-plan h3 {
+  font-family: var(--gm-disp);
+  font-weight: 400;
+  font-size: 24px;
+}
+
+.glyph-mosaic-root .gm-plan-price {
+  font-family: var(--gm-disp);
+  font-size: 44px;
+  line-height: 1;
+}
+
+.glyph-mosaic-root .gm-plan-price small {
+  font-family: var(--gm-body);
+  font-size: 13px;
+  color: var(--gm-ink-3);
+  margin-left: 6px;
+}
+
+.glyph-mosaic-root .gm-plan > .gm-tile-in > p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--gm-ink-2);
+}
+
+.glyph-mosaic-root .gm-plan-list {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.glyph-mosaic-root .gm-plan-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--gm-ink-2);
+}
+
+.glyph-mosaic-root .gm-plan-list li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.52em;
+  width: 6px;
+  height: 6px;
+  background: var(--gm-gold);
+  transform: rotate(45deg);
+}
+
+.glyph-mosaic-root .gm-plan .gm-btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+/* ---------------- footer ---------------- */
+
+.glyph-mosaic-root .gm-footer {
+  background: var(--gm-sand-deep);
+  border-top: 1px solid var(--gm-goldline);
+}
+
+.glyph-mosaic-root .gm-footer-frieze {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: 30px;
+  row-gap: 4px;
+  padding: 26px clamp(20px, 4vw, 36px) 0;
+  font-family: var(--gm-disp);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.glyph-mosaic-root .gm-footer-frieze span {
+  unicode-bidi: isolate;
+}
+
+.glyph-mosaic-root .gm-footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(4, 1fr);
+  gap: 32px;
+  padding-top: 40px;
+  padding-bottom: 36px;
+}
+
+.glyph-mosaic-root .gm-footer-brand img {
+  display: block;
+}
+
+.glyph-mosaic-root .gm-footer-brand p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gm-ink-2);
+  max-width: 220px;
+}
+
+.glyph-mosaic-root .gm-footer-col h3 {
+  font-family: var(--gm-disp);
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.glyph-mosaic-root .gm-footer-col li {
+  margin: 8px 0;
+}
+
+.glyph-mosaic-root .gm-footer-col a {
+  font-size: 14px;
+  color: var(--gm-ink-2);
+  transition: color 0.15s ease;
+}
+
+.glyph-mosaic-root .gm-footer-col a:hover {
+  color: var(--gm-terra-deep);
+}
+
+.glyph-mosaic-root .gm-footer-base {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--gm-hair);
+  padding-top: 18px;
+  padding-bottom: 26px;
+  font-size: 12.5px;
+  color: var(--gm-ink-3);
+}
+
+/* ---------------- responsive ---------------- */
+
+@media (max-width: 960px) {
+  .glyph-mosaic-root .gm-proof {
+    grid-template-columns: 1fr;
+  }
+
+  .glyph-mosaic-root .gm-footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .glyph-mosaic-root .gm-footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .glyph-mosaic-root .gm-nav-links {
+    display: none;
+  }
+
+  .glyph-mosaic-root .gm-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .glyph-mosaic-root .gm-plans {
+    grid-template-columns: 1fr;
+  }
+
+  .glyph-mosaic-root .gm-hero-cta {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .glyph-mosaic-root .gm-signin {
+    display: none;
+  }
+
+  .glyph-mosaic-root .gm-brand span {
+    display: none;
+  }
+}
+
+/* ---------------- motion ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .glyph-mosaic-root *,
+  .glyph-mosaic-root *::before,
+  .glyph-mosaic-root *::after {
+    transition: none;
+    animation: none;
+  }
+}
