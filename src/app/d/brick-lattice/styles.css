@@ -680,8 +680,6 @@
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: -0.01em;
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
 }
 
 .brick-lattice-root .bl-tb-scr {
@@ -721,10 +719,6 @@
 
 .brick-lattice-root .bl-tb.is-fired .bl-tb-scr {
   display: none;
-}
-
-.brick-lattice-root .bl-tb.is-fired .bl-tb-text {
-  opacity: 1;
 }
 
 /* the source brick: the code face, lit by the accent ring */

@@ -14,8 +14,10 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 /**
  * The page's one entrance. Each band's cut elements ([data-cut]) settle in
  * from 12px below over 0.55s, once, when the band reaches the lower part
- * of the viewport. Under reduced motion nothing is set up and the markup
- * is the still.
+ * of the viewport. The motion is transform only: nothing is ever hidden,
+ * so the page reads in full before any script runs, in a full-page
+ * capture, and in the gallery still. Under reduced motion nothing is set
+ * up and the markup is the still.
  */
 export function Reveal({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
@@ -28,7 +30,6 @@ export function Reveal({ children }: { children: ReactNode }) {
         const cuts = band.querySelectorAll<HTMLElement>('[data-cut]');
         if (cuts.length === 0) return;
         gsap.from(cuts, {
-          autoAlpha: 0,
           y: 12,
           duration: 0.55,
           ease: 'power2.out',

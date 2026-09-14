@@ -8,11 +8,14 @@ import type { RefObject } from 'react';
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * The page's one entrance: bricks and medallions are laid course by course
- * when their wall scrolls in. Each item rises 10px to rest over half a
- * second with a short stagger, once. The timeline is created paused and
- * played by a ScrollTrigger at 80% of the viewport. Under reduced motion
- * nothing is set and the markup pose is the still.
+ * The page's one entrance: bricks and medallions settle course by course
+ * when their wall scrolls in. Every item is fully visible at rest; the
+ * motion is transform only, a 10px rise to seat over half a second with a
+ * short stagger, once. Opacity is never touched, so a no-JS render, a
+ * full-page capture and the gallery thumbnail all show the laid wall. The
+ * timeline is created paused and played by a ScrollTrigger at 80% of the
+ * viewport. Under reduced motion nothing is set and the markup pose is the
+ * still.
  */
 export function useLayReveal(root: RefObject<HTMLElement | null>, selector: string) {
   useGSAP(
@@ -24,10 +27,10 @@ export function useLayReveal(root: RefObject<HTMLElement | null>, selector: stri
       const items = gsap.utils.toArray<HTMLElement>(selector, host);
       if (items.length === 0) return;
 
-      gsap.set(items, { autoAlpha: 0, y: 10 });
+      gsap.set(items, { y: 10 });
       const tl = gsap
         .timeline({ paused: true })
-        .to(items, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.04, ease: 'power2.out' });
+        .to(items, { y: 0, duration: 0.5, stagger: 0.04, ease: 'power2.out' });
 
       const trigger = ScrollTrigger.create({
         trigger: host,

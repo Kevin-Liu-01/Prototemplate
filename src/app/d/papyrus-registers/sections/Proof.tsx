@@ -19,8 +19,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * source: the shipped Next.js sample with its strings and T tags in red,
  * the two install commands under it. Beside it, twelve ruled cells of
  * black ink carry the same string rendered per locale, each with its flag
- * chip as a marginal mark. When the register enters the viewport the cells
- * fill in one after another, once; under reduced motion they stand.
+ * chip as a marginal mark. The cells are visible at rest; when the register
+ * enters the viewport they settle up a few pixels one after another, once,
+ * and under reduced motion they stand.
  */
 export default function Proof() {
   const root = useRef<HTMLElement>(null);
@@ -31,13 +32,12 @@ export default function Proof() {
       if (prefersReducedMotion()) return;
       const cells = gsap.utils.toArray<HTMLElement>('.pr-hello', root.current);
       if (cells.length === 0 || !list.current) return;
-      gsap.set(cells, { autoAlpha: 0, y: 6 });
       ScrollTrigger.create({
         trigger: list.current,
         start: 'top 82%',
         once: true,
         onEnter: () => {
-          gsap.to(cells, { autoAlpha: 1, y: 0, duration: 0.42, stagger: 0.04, ease: 'power2.out' });
+          gsap.from(cells, { y: 6, duration: 0.42, stagger: 0.04, ease: 'power2.out' });
         },
       });
     },

@@ -14,9 +14,11 @@ export function reducedMotion(): boolean {
 
 /**
  * The page's one entrance: every `[data-rise]` descendant settles from 16px
- * below and transparent to rest over 0.62s, staggered by 0.055s, once, when
- * the register reaches 85 percent of the viewport. Under reduced motion the
- * markup pose is the still and nothing is scheduled.
+ * below to rest over 0.62s, staggered by 0.055s, once, when the register
+ * reaches 85 percent of the viewport. The motion is transform only: content
+ * is fully visible at rest, before any script runs and in a still capture,
+ * and the tween adds the settle on top of that visible pose. Under reduced
+ * motion the markup pose is the still and nothing is scheduled.
  */
 export function useRise(root: RefObject<HTMLElement | null>) {
   useGSAP(
@@ -27,7 +29,6 @@ export function useRise(root: RefObject<HTMLElement | null>) {
       if (items.length === 0) return;
       gsap.from(items, {
         y: 16,
-        autoAlpha: 0,
         duration: 0.62,
         ease: 'power2.out',
         stagger: 0.055,

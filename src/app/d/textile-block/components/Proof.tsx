@@ -22,9 +22,11 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * and one copy control; the string it wraps comes back in twelve languages,
  * each cast into the adjacent block of the same course with its locale tile
  * inset at the corner. Strings carry the only syntax hue, because strings
- * are the product. One paused timeline casts the translations in order while
- * the course is on screen; the resting markup is the finished wall, and
- * under prefers-reduced-motion nothing is built.
+ * are the product. Every translation is fully visible at rest, before any
+ * script runs; one paused timeline lifts them in order (a small translateY,
+ * never opacity) while the course is on screen, so the still, the no-JS
+ * render and the finished wall are the same markup. Under
+ * prefers-reduced-motion nothing moves.
  */
 
 type Kind = 'k' | 't' | 'T' | 's' | 'p';
@@ -111,13 +113,12 @@ export default function Proof() {
       const casts = gsap.utils.toArray<HTMLElement>('[data-cast]', scope);
       if (casts.length === 0) return;
 
+      // Additive only: every cast is fully legible at rest and the loop never
+      // touches opacity. Each string lifts 3px in order, holds, and settles
+      // back; the timeline starts and ends at the resting pose.
       const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 0.8 });
-      tl.fromTo(
-        casts,
-        { opacity: 0.14 },
-        { opacity: 1, duration: 0.5, ease: 'power2.out', stagger: 0.16 }
-      );
-      tl.to(casts, { opacity: 0.14, duration: 0.4, ease: 'power1.in', stagger: 0.05 }, '+=2.4');
+      tl.to(casts, { y: -3, duration: 0.5, ease: 'power2.out', stagger: 0.16 });
+      tl.to(casts, { y: 0, duration: 0.4, ease: 'power1.in', stagger: 0.05 }, '+=2.4');
 
       ScrollTrigger.create({
         trigger: scope,
@@ -125,7 +126,7 @@ export default function Proof() {
         end: 'bottom 20%',
         onToggle: (self) => {
           if (self.isActive) tl.play();
-          else tl.pause();
+          else tl.pause(0);
         },
       });
     },

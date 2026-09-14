@@ -24,9 +24,11 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * roster, under a glazed header course that holds its flag chip. When the
  * wall comes on screen the source lights and its neighbours fire in order
  * of distance: each brick's density steps through the four Bayer tiers of
- * the page's <defs> and lands on solid lapis, and only then does the
- * translation print. Density rises, nothing fades. The resting markup is
- * the fired wall, which is the still under reduced motion.
+ * the page's <defs> and lands on solid lapis. The translation is printed
+ * the whole time; the density ramp runs under it as ornament, so a no-JS
+ * render, a full-page capture, or a mid-loop frame always shows the copy.
+ * Density rises, nothing fades. The resting markup is the fired wall,
+ * which is the still under reduced motion.
  */
 type WallBrick = { code: string; d: number };
 
