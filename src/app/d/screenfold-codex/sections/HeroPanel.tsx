@@ -7,25 +7,31 @@ import { GtMark } from '@/components/viewer/GtMark';
 import BarDot from '../components/BarDot';
 import Claim from '../components/Claim';
 import CopyCommand from '../components/CopyCommand';
+import FoldMap from '../components/FoldMap';
 import GlyphBand from '../components/GlyphBand';
 import { useQuietReveal } from '../components/motion';
+import NumeralKey from '../components/NumeralKey';
 import { Panel, Register } from '../components/Panel';
-import { CUSTOMERS, DOCS, SIGN_IN } from '../data';
+import { DOCS, SIGN_IN, leaf } from '../data';
 
 /**
- * Leaf one. The upper register carries the claim as one shaped sentence,
- * the sub with the wordmark inline, the two acts and the install command.
- * The middle register is the band of dithered glyph blocks with the
- * language count in the margin, printed in bar and dot beside the figure.
- * The lower register is the trust strip: six customer marks in the ink.
+ * Leaf one, the claim. Four registers. The first carries the claim as one
+ * shaped sentence, the sub with the wordmark inline, the two acts and the
+ * install command. The second is the band of dithered glyph blocks with
+ * the language count in the margin, printed in bar and dot beside the
+ * figure and set in the display face: the hero crown. The third is the
+ * fold map, the whole strip in miniature as the table of contents. The
+ * fourth is the key to the numerals every later leaf uses.
  */
+const LEAF = leaf('hero');
+
 export default function HeroPanel() {
   const root = useRef<HTMLDivElement>(null);
   useQuietReveal(root);
 
   return (
     <div ref={root}>
-      <Panel index={1} fold='a' id='hero' className='is-hero'>
+      <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} id={LEAF.id} className='is-hero'>
         <Register className='is-head'>
           <h1 className='sfc-h1' data-reveal>
             <Claim />
@@ -59,17 +65,16 @@ export default function HeroPanel() {
           </div>
         </Register>
 
-        <Register className='is-trust'>
-          <p className='sfc-trust-lead' data-reveal>
-            Cursor, Ramp and Profound ship in over thirty languages
-          </p>
-          <ul className='sfc-trust' data-reveal>
-            {CUSTOMERS.map((customer) => (
-              <li key={customer.name}>
-                <span className={`sfc-wm is-${customer.file}`} role='img' aria-label={customer.name} />
-              </li>
-            ))}
-          </ul>
+        <Register className='is-map'>
+          <div data-reveal>
+            <FoldMap />
+          </div>
+        </Register>
+
+        <Register className='is-key'>
+          <div data-reveal>
+            <NumeralKey />
+          </div>
         </Register>
       </Panel>
     </div>

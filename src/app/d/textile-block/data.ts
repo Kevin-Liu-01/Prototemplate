@@ -2,11 +2,12 @@
  * textile-block: the content cast into the wall. Pure data, no JSX.
  *
  * Every string here is the shipped one or a transcription of a data file the
- * charter names (stacks.ts, Pricing.tsx RATES, Locales.tsx ROWS, fields.ts
- * HELLOS, Hero.tsx EVERY and CUSTOMERS, ReviewWorkspace.tsx ROWS,
- * pricing-links.ts, V0Footer link roster). Nothing is invented except the
- * "Hello, world!" localizations, which are the conventional renderings of
- * that sentence and are marked as product output samples.
+ * charter names (stacks.ts FRAMEWORKS and CAP_DEMOS, Pricing.tsx RATES,
+ * Locales.tsx ROWS, fields.ts HELLOS, Hero.tsx EVERY and CUSTOMERS,
+ * ReviewWorkspace.tsx ROWS, Bento.tsx CONFIG and TRANSLATE_RUN,
+ * pricing-links.ts, the V0Footer link roster). Nothing is invented except
+ * the "Hello, world!" localizations, which are the conventional renderings
+ * of that sentence and are marked as product output samples.
  */
 
 /* ------------------------------------------------------------------------ *
@@ -28,23 +29,24 @@ export const EVERY: readonly EveryWord[] = [
 ];
 
 /* ------------------------------------------------------------------------ *
- * Languages as material: one greeting per script (fields.ts HELLOS).
+ * Languages as material: one greeting per script (fields.ts HELLOS), with
+ * the name of the script the block is cast in.
  * ------------------------------------------------------------------------ */
 
-export type Greeting = { text: string; tag: string; rtl?: boolean };
+export type Greeting = { text: string; tag: string; script: string; rtl?: boolean };
 
 export const GREETINGS: readonly Greeting[] = [
-  { text: 'hello', tag: 'en' },
-  { text: 'hola', tag: 'es' },
-  { text: 'こんにちは', tag: 'ja' },
-  { text: 'bonjour', tag: 'fr' },
-  { text: '你好', tag: 'zh' },
-  { text: 'hallo', tag: 'de' },
-  { text: '안녕하세요', tag: 'ko' },
-  { text: 'مرحبا', tag: 'ar', rtl: true },
-  { text: 'привет', tag: 'ru' },
-  { text: 'नमस्ते', tag: 'hi' },
-  { text: 'olá', tag: 'pt' },
+  { text: 'hello', tag: 'en', script: 'Latin' },
+  { text: 'hola', tag: 'es', script: 'Latin' },
+  { text: 'こんにちは', tag: 'ja', script: 'Hiragana' },
+  { text: 'bonjour', tag: 'fr', script: 'Latin' },
+  { text: '你好', tag: 'zh', script: 'Han' },
+  { text: 'hallo', tag: 'de', script: 'Latin' },
+  { text: '안녕하세요', tag: 'ko', script: 'Hangul' },
+  { text: 'مرحبا', tag: 'ar', script: 'Arabic', rtl: true },
+  { text: 'привет', tag: 'ru', script: 'Cyrillic' },
+  { text: 'नमस्ते', tag: 'hi', script: 'Devanagari' },
+  { text: 'olá', tag: 'pt', script: 'Latin' },
 ];
 
 /* ------------------------------------------------------------------------ *
@@ -69,6 +71,17 @@ export const HELLO_WORLD: readonly CastString[] = [
   { text: 'नमस्ते, दुनिया!', tag: 'hi' },
   { text: 'Ciao, mondo!', tag: 'it' },
   { text: 'Hallo, wereld!', tag: 'nl' },
+];
+
+/* The formatted values the same tree renders per locale (stacks.ts
+   CAP_DEMOS, verbatim): the capability name, the locale, and the output. */
+export type Format = { cap: string; tag: string; out: string };
+
+export const FORMATS: readonly Format[] = [
+  { cap: 'Numbers', tag: 'de', out: '1.234.567,89' },
+  { cap: 'Currencies', tag: 'de', out: '1.280,00 €' },
+  { cap: 'Plurals', tag: 'pl', out: '1 plik · 4 pliki' },
+  { cap: 'Routing', tag: 'fr', out: '/fr/a-propos' },
 ];
 
 /* ------------------------------------------------------------------------ *
@@ -106,10 +119,55 @@ export const LIBRARIES: readonly Library[] = [
 ];
 
 export const SOURCE_FILE = 'app/page.tsx';
+export const SOURCE_PKG = 'gt-next';
+export const SOURCE_INSTALL: readonly [string, string] = ['npm i gt-next', 'npx gt@latest'];
 
-/* The CLI transcript's locales: the five chips the dark band's terminal
-   carries in the base, plus the source. */
+/* ------------------------------------------------------------------------ *
+ * The CLI object: the config the run reads (Bento.tsx CONFIG, verbatim, as
+ * marked tokens so the locale strings carry the string hue) and the run
+ * itself (Bento.tsx TRANSLATE_RUN, dashes rewritten as middle dots). The
+ * five locales the config names are the five chips the run writes.
+ * ------------------------------------------------------------------------ */
+
+export type ConfigKind = 'p' | 'k' | 's';
+export type ConfigToken = readonly [ConfigKind, string];
+
+export const CONFIG_FILE = 'gt.config.json';
+
+export const CONFIG: readonly (readonly ConfigToken[])[] = [
+  [['p', '{']],
+  [['p', '  '], ['k', '"defaultLocale"'], ['p', ': '], ['s', '"en"'], ['p', ',']],
+  [
+    ['p', '  '],
+    ['k', '"locales"'],
+    ['p', ': ['],
+    ['s', '"es"'],
+    ['p', ', '],
+    ['s', '"fr"'],
+    ['p', ', '],
+    ['s', '"ja"'],
+    ['p', ', '],
+    ['s', '"de"'],
+    ['p', ', '],
+    ['s', '"zh"'],
+    ['p', '],'],
+  ],
+  [['p', '  '], ['k', '"files"'], ['p', ': {']],
+  [['p', '    '], ['k', '"gt"'], ['p', ': {']],
+  [['p', '      '], ['k', '"output"'], ['p', ': '], ['s', '"public/_gt/[locale].json"']],
+  [['p', '    },']],
+  [['p', '    '], ['k', '"json"'], ['p', ': {']],
+  [['p', '      '], ['k', '"include"'], ['p', ': ['], ['s', '"content/[locale]/*.json"'], ['p', ']']],
+  [['p', '    }']],
+  [['p', '  }']],
+  [['p', '}']],
+];
+
+export const CLI_COMMAND = 'npx gt translate';
+export const CLI_SCAN = 'Scanning src · 128 strings found';
 export const CLI_LOCALES: readonly string[] = ['es', 'fr', 'ja', 'de', 'zh'];
+export const CLI_OUTPUT = (tag: string) => `public/_gt/${tag}.json`;
+export const CLI_DONE = 'Done · 640 translations · served from the edge';
 
 /* ------------------------------------------------------------------------ *
  * The review workspace rows (ReviewWorkspace.tsx ROWS).
@@ -144,6 +202,17 @@ export const REVIEW_ROWS: readonly ReviewRow[] = [
     translation: 'Al continuar, aceptas nuestros Términos de Servicio.',
     final: 'approved',
   },
+];
+
+export const WORKSPACE_BAR: readonly [string, string] = ['workspace · es-419', '4 strings'];
+export const WORKSPACE_FOOT: readonly string[] = ['⌘K search', 'history', 'download', 'agent · locadex'];
+
+/* The Locadex trace: one run, sharing PR #218 with the shipped band. */
+export const TRACE: readonly (readonly [string, string])[] = [
+  ['push', 'workflow'],
+  ['scan', 'app/page.tsx'],
+  ['edit', '<T> · <DateTime>'],
+  ['PR #218', '6 locales · merged'],
 ];
 
 /* ------------------------------------------------------------------------ *
@@ -326,8 +395,8 @@ export const FOOTER_COPYRIGHT = '© 2026 General Translation, Inc. All rights re
 export const FOOTER_COMPLIANCE = 'SOC 2 Type II · GDPR · ISO 27001';
 
 /* ------------------------------------------------------------------------ *
- * The ziggurat: the stack, bottom course to top platform. Each tier is one
- * product layer; the facts are the shipped ones.
+ * The shadowed course: the stack as a ziggurat, bottom course to top
+ * platform, and the shade the upper wall casts across the top of the course.
  * ------------------------------------------------------------------------ */
 
 export type Tier = { name: string; fact: string; cover: number };
@@ -340,4 +409,24 @@ export const TIERS: readonly Tier[] = [
   { name: 'Translations', fact: 'negotiated per request, edge-served', cover: 5 },
   { name: 'Context', fact: 'glossary, prompts, context groups', cover: 3 },
   { name: 'Libraries', fact: 'six first-party SDKs, one provider', cover: 2 },
+];
+
+/** The shade ramp, top strip first: Bayer coverage k/16, densest under the wall. */
+export const SHADE_STEPS: readonly number[] = [16, 14, 12, 10, 8, 6, 4, 2];
+
+/* ------------------------------------------------------------------------ *
+ * The materials legend: the five colors of the wall, each named for the
+ * material it stands for and the token that carries it.
+ * ------------------------------------------------------------------------ */
+
+export type MaterialId = 'ground' | 'face' | 'relief' | 'accent' | 'jade';
+
+export type Material = { id: MaterialId; name: string; token: string; role: string };
+
+export const MATERIALS: readonly Material[] = [
+  { id: 'ground', name: 'Cast concrete', token: '--deco-ground', role: 'The patterned face. The ground of the wall.' },
+  { id: 'face', name: 'Smooth face', token: '--tb-cast-face', role: 'The content face, cast one step lighter.' },
+  { id: 'relief', name: 'Moss', token: '--deco-ornament', role: 'The relief. Lichen in the recesses of the blocks.' },
+  { id: 'accent', name: 'Terracotta', token: '--deco-accent', role: 'The live string, and nothing else.' },
+  { id: 'jade', name: 'Jade', token: '--tb-dk-ground', role: 'The shadowed course. It does not remap.' },
 ];

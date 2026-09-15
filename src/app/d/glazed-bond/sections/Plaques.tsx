@@ -1,14 +1,18 @@
 import { ArrowUpRight } from 'lucide-react';
 
+import BondWall from '../components/Bond';
 import CourseHead from '../components/CourseHead';
+import { Parapet } from '../components/Rosette';
+import Sheen from '../components/Sheen';
 import { PLANS, RATES, RATE_NOTES, URLS } from '../data';
 
 /**
- * The pricing file as three glazed plaques set in the towers: the Starter
- * plaque in the left tower, the rate ledger in the center, the Enterprise
- * plaque in the right tower. Lapis glaze, rates in gold, labels in cream.
- * The two footnotes sit under the ledger and the compare link closes the
- * course. No number here is outside the published file.
+ * The pricing file as a gate in miniature. Two towers, each a stepped
+ * parapet over a battered bond face, carry the two plans as gold plaques
+ * set into the brick: Starter in the left tower, Enterprise in the right.
+ * Between them the rate ledger is the opening, a lapis tablet with the
+ * published rates in gold. The two footnotes sit under the ledger and the
+ * compare link closes the course. No number here is outside the file.
  */
 export default function Plaques() {
   const starter = PLANS[0];
@@ -23,10 +27,11 @@ export default function Plaques() {
           sub='The price of a translation is knowable before you run it.'
         />
 
-        <div className='gb-plaques'>
-          {starter ? <PlanPlaque plan={starter} /> : null}
+        <div className='gb-price-gate'>
+          {starter ? <PlanTower plan={starter} side='left' /> : null}
 
-          <article className='gb-plaque is-ledger' aria-label='Usage rates'>
+          <article className='gb-ledger-tablet' aria-label='Usage rates'>
+            <Sheen ink='turq' />
             <header className='gb-plaque-head'>
               <h3>Usage rates</h3>
             </header>
@@ -58,7 +63,7 @@ export default function Plaques() {
             </footer>
           </article>
 
-          {enterprise ? <PlanPlaque plan={enterprise} /> : null}
+          {enterprise ? <PlanTower plan={enterprise} side='right' /> : null}
         </div>
 
         <div className='gb-compare'>
@@ -72,25 +77,37 @@ export default function Plaques() {
   );
 }
 
-function PlanPlaque({ plan }: { plan: (typeof PLANS)[number] }) {
+type PlanTowerProps = { plan: (typeof PLANS)[number]; side: 'left' | 'right' };
+
+/** One tower of the pricing gate: parapet, battered bond face, the gold plaque set into it. */
+function PlanTower({ plan, side }: PlanTowerProps) {
   return (
-    <article className='gb-plaque is-plan' aria-label={`${plan.name} plan`}>
-      <header className='gb-plaque-head'>
-        <h3>{plan.name}</h3>
-      </header>
-      <div className='gb-plan-price'>
-        <strong>{plan.price}</strong>
-        <small>{plan.period}</small>
+    <div className={`gb-ptower is-${side}`}>
+      <Parapet />
+      <div className='gb-ptower-wall'>
+        <div className='gb-ptower-bond' aria-hidden='true'>
+          <BondWall />
+        </div>
+        <article className='gb-plaque' aria-label={`${plan.name} plan`}>
+          <Sheen ink='cream' />
+          <header className='gb-plaque-head'>
+            <h3>{plan.name}</h3>
+          </header>
+          <div className='gb-plan-price'>
+            <strong>{plan.price}</strong>
+            <small>{plan.period}</small>
+          </div>
+          <p className='gb-plan-body'>{plan.body}</p>
+          <ul className='gb-plan-list'>
+            {plan.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <a className={plan.solid ? 'gb-btn is-solid is-gold' : 'gb-btn is-line is-gold'} href={plan.href}>
+            {plan.cta}
+          </a>
+        </article>
       </div>
-      <p className='gb-plan-body'>{plan.body}</p>
-      <ul className='gb-plan-list'>
-        {plan.items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-      <a className={plan.solid ? 'gb-btn is-solid is-glazed' : 'gb-btn is-line is-glazed'} href={plan.href}>
-        {plan.cta}
-      </a>
-    </article>
+    </div>
   );
 }

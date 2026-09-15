@@ -77,8 +77,10 @@ export const WALL_TRANSLATIONS: readonly Shaped[] = WALL_LOCALES.flatMap((lang) 
 
 /* ------------------------------------------------------------------ *
  * Languages as material: one rosette medallion per locale, the endonym
- * from the shipped locales fixture at its center. Every code here has a
- * flag in the shared LocaleTag map, so the chips stay uniform.
+ * from the shipped locales fixture at its center, laid in three courses
+ * with the middle course offset by half a medallion. Every code here has
+ * a flag in the shared LocaleTag map, so the chips stay uniform; the
+ * twenty medallions are the twenty flagged codes.
  * ------------------------------------------------------------------ */
 
 export type Medallion = Shaped & { code: string; name: string };
@@ -100,6 +102,16 @@ export const MEDALLIONS_BOTTOM: readonly Medallion[] = [
   { code: 'es', name: 'Spanish', text: 'español', lang: 'es' },
   { code: 'fr', name: 'French', text: 'français', lang: 'fr' },
   { code: 'de', name: 'German', text: 'Deutsch', lang: 'de' },
+];
+
+export const MEDALLIONS_THIRD: readonly Medallion[] = [
+  { code: 'en', name: 'English', text: 'English', lang: 'en' },
+  { code: 'pt', name: 'Portuguese', text: 'português', lang: 'pt' },
+  { code: 'it', name: 'Italian', text: 'italiano', lang: 'it' },
+  { code: 'nl', name: 'Dutch', text: 'Nederlands', lang: 'nl' },
+  { code: 'pl', name: 'Polish', text: 'polski', lang: 'pl' },
+  { code: 'sv', name: 'Swedish', text: 'svenska', lang: 'sv' },
+  { code: 'id', name: 'Indonesian', text: 'Indonesia', lang: 'id' },
 ];
 
 /** The variants register (dither-field Locales ROWS): the tell is zh-Hans beside zh-Hant. */

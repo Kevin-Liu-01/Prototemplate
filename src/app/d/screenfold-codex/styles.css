@@ -6,19 +6,28 @@
    1. The Dresden Codex screenfold. Each page is a tall rectangle framed in
       red; red horizontal rules cut it into two to four registers; glyph
       blocks sit in the upper part of a register and read in paired
-      columns; numerals print in red beside the blocks. The panel frame,
-      the register rule, the paired-column glyph band, and the red numerals
-      here follow that page exactly. Adjacent leaves fold the other way:
-      the panel shear alternates sign.
-   2. Maya bar-and-dot numerals. A dot is one, a bar is five, an oval is
+      columns; numerals print in red beside the blocks. The leaf frame, the
+      register rule, the paired-column glyph band, and the red numerals
+      here follow that page exactly. The strip is an accordion: adjacent
+      leaves lean opposite ways, and the crease between them is a stepped
+      trough of the screen.
+   2. Maya bar-and-dot numerals. A dot is one, a bar is five, a shell is
       zero, and digits stack in base twenty. Every figure on the page
-      prints in this system beside its Arabic form (BarDot.tsx).
-   3. 450 Sutter, San Francisco (Timothy Pflueger, 1929). The lobby ceiling
-      is a field of stepped, chamfered relief blocks cast in one material;
-      the window spandrels repeat a stepped fret. The glyph blocks here are
-      that relief reduced to squares carved with one stepped motif each,
-      and the stepped pyramid on the dark leaf is the same profile drawn
-      by the dither engine.
+      prints in this system beside its Arabic form (BarDot.tsx, Fig.tsx),
+      with the key on leaf one.
+   3. Mitla, the Hall of Columns. The stepped frets (grecas) are set in
+      panels of stone mosaic, each fret a run of identical geometric
+      pieces. The twelve signs of this page are that mosaic reduced to
+      one carved motif per dithered square, and the sign key on the back
+      board reads them as the wall panels read, in ruled rows.
+   4. 450 Sutter, San Francisco (Timothy Pflueger, 1929). The lobby ceiling
+      is a field of stepped, chamfered relief blocks cast in one material.
+      The stepped pyramid on the dark leaf is that profile drawn by the
+      dither engine, and the parallelogram leaves borrow the spandrels'
+      lean.
+   5. The Rosetta Stone. One text in three registers, one script each. The
+      T proof is laid out that way: the source in the head register and
+      the same two strings once per locale in the registers below.
 
    Material palette, the Maya materials: bark-paper cream (the amate
    ground), carbon black (the ink), red oxide (hematite, the frames and
@@ -30,14 +39,15 @@
      accent   #0f5558  turquoise, deep enough to read as text (AA on the cream)
      ornament #9a2f1c  red oxide
 
-   Ornament homes: the panel frame and register rules (red oxide), the
-   folio cartouche in every corner, the glyph band in the hero, the fold
-   hinges between leaves (stepped Bayer ramps), the margins where the
-   numerals print, the corner mark on every script tile, and the dark
-   leaf's live plate.
+   Ornament homes: the leaf frame and register rules (red oxide), the folio
+   cartouche in every corner with the leaf's sign, the glyph band and the
+   fold map in the hero, the fold hinges between leaves (stepped Bayer
+   troughs), the margins where the numerals print, the sign at the head of
+   every tablet and step, the corner mark on every script tile, the dark
+   leaf's live plate, and the sign key on the back board.
    Accent: turquoise has one job, to mark the object each leaf is about:
-   the T bracket in the source, the zh-Hans and zh-Hant tell chips, and
-   the lead rate row.
+   the T bracket in the source, the added lines of the Locadex diff, the
+   zh-Hans and zh-Hant tell chips, and the lead rate row.
    Display face: Aboreto (geometric deco caps, one weight), used for h1,
    h2, and the hero crown figure (the language count in the margin) only.
    Inter is body, caption, chip, code, and every other figure.
@@ -76,10 +86,12 @@
   --sfc-night-orn: #c8442d;
   --sfc-night-accent: #4fc1bb;
 
+  /* the strip and the lean: how far each slanted edge runs, top to bottom */
   --sfc-strip: 1160px;
   --sfc-gut: clamp(18px, 3vw, 40px);
-  --sfc-shear: 1.15deg;
-  --sfc-pad-x: 36px;
+  --sfc-lean: 40px;
+  --sfc-frame: 2px;
+  --sfc-pad-x: calc(var(--sfc-lean) + 28px);
   --sfc-pad-y: 30px;
 
   --sfc-display: var(--screenfold-codex-display), var(--font-inter), 'Inter', system-ui, sans-serif;
@@ -101,7 +113,8 @@
   --deco-ink-2: rgba(240, 230, 210, 0.68);
   --deco-hair: rgba(240, 230, 210, 0.2);
   --deco-accent: #4fc1bb;
-  --deco-ornament: #c94a33;
+  /* lifted so the string tokens and diff deletions it colors hold AA on the dark ground */
+  --deco-ornament: #d9573f;
 }
 
 /* ------------------------------------------------------------------ *
@@ -211,35 +224,45 @@
   padding-top: 34px;
 }
 
-/* a leaf: the red frame is the only owner of the page edge; the whole
-   leaf shears along x, adjacent leaves the other way */
+/* a leaf: a parallelogram whose side edges run --sfc-lean across. The
+   section is the red frame (red ground clipped to the shape); the inner
+   leaf is the paper clipped to the same shape two pixels in; the red that
+   shows between the clips is the frame, one owner, along every edge */
 .screenfold-codex-root .sfc-panel {
   position: relative;
-  border: 2px solid var(--sfc-orn);
-  background: var(--sfc-ground);
-  transform: skewX(var(--sfc-shear));
+  padding: var(--sfc-frame);
+  background: var(--sfc-orn);
+  clip-path: var(--sfc-poly);
+}
+
+.screenfold-codex-root .sfc-panel.is-fold-a {
+  --sfc-poly: polygon(0 0, calc(100% - var(--sfc-lean)) 0, 100% 100%, var(--sfc-lean) 100%);
 }
 
 .screenfold-codex-root .sfc-panel.is-fold-b {
-  --sfc-shear: -1.15deg;
+  --sfc-poly: polygon(var(--sfc-lean) 0, 100% 0, calc(100% - var(--sfc-lean)) 100%, 0 100%);
 }
 
-/* a register: the rule between registers is its top border, spanning
-   frame to frame because the register itself is still sheared */
+.screenfold-codex-root .sfc-leaf {
+  position: relative;
+  background: var(--sfc-ground);
+  color: var(--sfc-ink);
+  clip-path: var(--sfc-poly);
+}
+
+/* a register: the rule between registers is its top border, level, cut
+   off at the slanted frame by the leaf's clip */
 .screenfold-codex-root .sfc-reg + .sfc-reg {
   border-top: 1px solid var(--sfc-orn);
 }
 
-/* the register's content counter-shears: level type, seated inside the
-   slanted frame at its own height */
 .screenfold-codex-root .sfc-reg-in {
   padding: var(--sfc-pad-y) var(--sfc-pad-x);
-  transform: skewX(calc(-1 * var(--sfc-shear)));
 }
 
 .screenfold-codex-root .sfc-reg.is-head .sfc-reg-in {
   padding-top: 38px;
-  padding-right: calc(var(--sfc-pad-x) + 110px);
+  padding-right: calc(var(--sfc-pad-x) + 120px);
 }
 
 .screenfold-codex-root .sfc-reg.is-foot .sfc-reg-in {
@@ -247,7 +270,14 @@
   padding-bottom: 22px;
 }
 
-/* the folio: the leaf's number in a cartouche, level in the corner */
+.screenfold-codex-root .sfc-reg.is-map .sfc-reg-in,
+.screenfold-codex-root .sfc-reg.is-key .sfc-reg-in {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+/* the folio: the leaf's sign and number in a cartouche, seated inside
+   the slanted corner */
 .screenfold-codex-root .sfc-folio {
   position: absolute;
   top: 14px;
@@ -256,13 +286,16 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  height: 28px;
+  height: 30px;
   padding: 0 10px;
   border: 1px solid var(--sfc-hair);
   border-radius: 4px;
   background-clip: padding-box;
   color: var(--sfc-orn);
-  transform: skewX(calc(-1 * var(--sfc-shear)));
+}
+
+.screenfold-codex-root .sfc-panel.is-fold-a .sfc-folio {
+  right: calc(var(--sfc-lean) + 18px);
 }
 
 .screenfold-codex-root .sfc-folio-n {
@@ -270,25 +303,39 @@
   color: var(--sfc-ink-2);
 }
 
-/* the fold: a stepped ramp of the screen between two frames */
+/* the fold: a stepped trough of the screen seated on the crease span */
 .screenfold-codex-root .sfc-hinge {
-  margin: 0 10px;
   padding: 0;
   line-height: 0;
+}
+
+.screenfold-codex-root .sfc-hinge.is-east {
+  margin-left: var(--sfc-lean);
+}
+
+.screenfold-codex-root .sfc-hinge.is-west {
+  margin-right: var(--sfc-lean);
 }
 
 .screenfold-codex-root .sfc-hinge-svg {
   display: block;
   width: 100%;
-  color: var(--sfc-ink);
 }
 
-/* the open spread: two plan leaves side by side, sheared toward each other */
+/* the crease: inked at a valley, bare paper at a mountain ridge */
+.screenfold-codex-root .sfc-hinge.is-valley .sfc-hinge-crease {
+  fill: var(--sfc-ink);
+}
+
+.screenfold-codex-root .sfc-hinge.is-mountain .sfc-hinge-crease {
+  fill: var(--sfc-ground);
+}
+
+/* the open spread: two plan leaves side by side, leaning apart */
 .screenfold-codex-root .sfc-spread {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  margin-top: 40px;
 }
 
 /* ------------------------------------------------------------------ *
@@ -324,6 +371,11 @@
   margin: 0 0 12px;
 }
 
+.screenfold-codex-root .sfc-reg-title {
+  font: 500 14px/1.3 var(--sfc-sans);
+  margin: 0 0 14px;
+}
+
 .screenfold-codex-root .sfc-lead {
   font: 400 15.5px/1.6 var(--sfc-sans);
   color: var(--sfc-ink-2);
@@ -348,6 +400,7 @@
 .screenfold-codex-root .sfc-kicker {
   font: 500 11px/1 var(--sfc-mono);
   color: var(--sfc-ink-2);
+  margin: 0;
 }
 
 /* the numerals print in red, as the codex prints them */
@@ -410,7 +463,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 12px 18px;
   margin-top: 24px;
 }
 
@@ -493,7 +546,28 @@
 }
 
 /* ------------------------------------------------------------------ *
- * Leaf one: the hero
+ * Glyph blocks: the sign vocabulary
+ * ------------------------------------------------------------------ */
+.screenfold-codex-root .sfc-glyph {
+  display: block;
+  flex: none;
+  color: var(--sfc-ink);
+}
+
+.screenfold-codex-root .sfc-glyph.is-orn {
+  color: var(--sfc-orn);
+}
+
+.screenfold-codex-root .sfc-glyph.is-night {
+  color: var(--sfc-night-ink);
+}
+
+.screenfold-codex-root .sfc-glyph-motif {
+  stroke: var(--sfc-ground);
+}
+
+/* ------------------------------------------------------------------ *
+ * Leaf one: the claim
  * ------------------------------------------------------------------ */
 .screenfold-codex-root .sfc-sub {
   display: block;
@@ -526,19 +600,6 @@
   height: auto;
 }
 
-.screenfold-codex-root .sfc-glyph {
-  display: block;
-  color: var(--sfc-ink);
-}
-
-.screenfold-codex-root .sfc-glyph.is-orn {
-  color: var(--sfc-orn);
-}
-
-.screenfold-codex-root .sfc-glyph-motif {
-  stroke: var(--sfc-ground);
-}
-
 /* the margin: the count in bar and dot, the figure, one caption */
 .screenfold-codex-root .sfc-margin {
   display: grid;
@@ -567,81 +628,132 @@
   max-width: 16ch;
 }
 
-/* the trust strip: six marks in the ink, seated by an alpha mask */
-.screenfold-codex-root .sfc-trust-lead {
-  font: 400 13.5px/1.5 var(--sfc-sans);
-  color: var(--sfc-ink-2);
-  margin: 0 0 22px;
-}
-
-.screenfold-codex-root .sfc-trust {
+/* the fold map: the strip in miniature, ten small leaves leaning in turn */
+.screenfold-codex-root .sfc-map {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 10px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.screenfold-codex-root .sfc-trust li {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.screenfold-codex-root .sfc-map-item {
+  --sfc-mini: 8px;
   min-width: 0;
 }
 
-.screenfold-codex-root .sfc-wm {
+.screenfold-codex-root .sfc-map-link {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-map-link:hover {
+  color: var(--sfc-ink);
+}
+
+.screenfold-codex-root .sfc-map-leaf {
   display: block;
   width: 100%;
-  max-width: 132px;
-  height: 22px;
-  background-color: var(--sfc-ink);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
+  padding: 1px;
+  background: var(--sfc-orn);
+  clip-path: var(--sfc-mini-poly);
 }
 
-.screenfold-codex-root .sfc-wm.is-cursor {
-  -webkit-mask-image: url('/logos/cursor.light.svg');
-  mask-image: url('/logos/cursor.light.svg');
+.screenfold-codex-root .sfc-map-item.is-fold-a .sfc-map-leaf {
+  --sfc-mini-poly: polygon(0 0, calc(100% - var(--sfc-mini)) 0, 100% 100%, var(--sfc-mini) 100%);
 }
 
-.screenfold-codex-root .sfc-wm.is-ramp {
-  -webkit-mask-image: url('/logos/ramp.light.svg');
-  mask-image: url('/logos/ramp.light.svg');
+.screenfold-codex-root .sfc-map-item.is-fold-b .sfc-map-leaf {
+  --sfc-mini-poly: polygon(var(--sfc-mini) 0, 100% 0, calc(100% - var(--sfc-mini)) 100%, 0 100%);
 }
 
-.screenfold-codex-root .sfc-wm.is-mintlify {
-  -webkit-mask-image: url('/logos/mintlify.light.svg');
-  mask-image: url('/logos/mintlify.light.svg');
+.screenfold-codex-root .sfc-map-link:hover .sfc-map-leaf {
+  background: var(--sfc-ink);
 }
 
-.screenfold-codex-root .sfc-wm.is-profound {
-  -webkit-mask-image: url('/logos/profound.light.svg');
-  mask-image: url('/logos/profound.light.svg');
+.screenfold-codex-root .sfc-map-face {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 14px 10px 12px;
+  background: var(--sfc-ground);
+  clip-path: var(--sfc-mini-poly);
 }
 
-.screenfold-codex-root .sfc-wm.is-partiful {
-  -webkit-mask-image: url('/logos/partiful.light.svg');
-  mask-image: url('/logos/partiful.light.svg');
+.screenfold-codex-root .sfc-map-label {
+  font: 500 11.5px/1.3 var(--sfc-sans);
+  text-align: center;
 }
 
-.screenfold-codex-root .sfc-wm.is-clickhouse {
-  -webkit-mask-image: url('/logos/clickhouse.light.svg');
-  mask-image: url('/logos/clickhouse.light.svg');
+/* the numeral key */
+.screenfold-codex-root .sfc-key {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 32px;
+}
+
+.screenfold-codex-root .sfc-key-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 30px;
+  margin: 0;
+}
+
+.screenfold-codex-root .sfc-key-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.screenfold-codex-root .sfc-key-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  margin: 0;
+}
+
+.screenfold-codex-root .sfc-key-label {
+  margin: 0;
+  font: 500 12.5px/1 var(--sfc-mono);
+  color: var(--sfc-ink);
+}
+
+.screenfold-codex-root .sfc-key-word {
+  margin-left: 4px;
+  font: 400 12.5px/1 var(--sfc-sans);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-key-cap {
+  margin: 0;
+  justify-self: end;
+  max-width: 46ch;
+  text-align: right;
+  font: 400 13px/1.5 var(--sfc-sans);
+  color: var(--sfc-ink-2);
 }
 
 /* ------------------------------------------------------------------ *
  * Leaf two: the T proof
  * ------------------------------------------------------------------ */
+.screenfold-codex-root .sfc-stele {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
 .screenfold-codex-root .sfc-code {
   border: 1px solid var(--sfc-hair);
   border-radius: 4px;
   background-clip: padding-box;
-  max-width: 720px;
+  min-width: 0;
 }
 
 .screenfold-codex-root .sfc-code-bar {
@@ -684,19 +796,44 @@
   font-weight: 600;
 }
 
+/* the sources beside the window */
+.screenfold-codex-root .sfc-sources {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding-top: 4px;
+}
+
+.screenfold-codex-root .sfc-source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .screenfold-codex-root .sfc-source-line {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 22px 0 0;
+  gap: 6px 14px;
+  padding: 12px 0;
+}
+
+.screenfold-codex-root .sfc-source-line + .sfc-source-line {
+  border-top: 1px solid var(--sfc-hair);
 }
 
 .screenfold-codex-root .sfc-source-text {
-  font: 500 15px/1.3 var(--sfc-sans);
+  font: 500 17px/1.3 var(--sfc-sans);
+  letter-spacing: -0.01em;
 }
 
-/* a translation row: ordinal, chip, the string in its script, its file */
+.screenfold-codex-root .sfc-source-from {
+  grid-column: 2;
+  font: 500 11.5px/1 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+}
+
+/* a translation row: ordinal, chip, both strings in the script, the file */
 .screenfold-codex-root .sfc-reg.is-row .sfc-reg-in {
   padding-top: 16px;
   padding-bottom: 16px;
@@ -704,18 +841,12 @@
 
 .screenfold-codex-root .sfc-trow {
   display: grid;
-  grid-template-columns: 96px auto 1fr auto;
+  grid-template-columns: 84px auto 1.15fr 1fr auto;
   align-items: center;
   gap: 18px;
 }
 
-.screenfold-codex-root .sfc-trow-num {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.screenfold-codex-root .sfc-trow-n {
+.screenfold-codex-root .sfc-trow-num .sfc-figure-text {
   font: 500 12px/1 var(--sfc-sans);
   color: var(--sfc-ink-2);
 }
@@ -726,8 +857,60 @@
   min-width: 0;
 }
 
+.screenfold-codex-root .sfc-trow-text.is-second {
+  font-size: clamp(15px, 1.3vw, 17px);
+  color: var(--sfc-ink-2);
+}
+
 .screenfold-codex-root .sfc-trow-file {
   font: 500 11.5px/1 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+}
+
+/* the other components: one shipped output each */
+.screenfold-codex-root .sfc-caps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--sfc-hair);
+  border: 1px solid var(--sfc-hair);
+}
+
+.screenfold-codex-root .sfc-cap {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-width: 0;
+  padding: 14px 14px 12px;
+  background: var(--sfc-ground);
+}
+
+.screenfold-codex-root .sfc-cap-api {
+  font: 500 11.5px/1.3 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.screenfold-codex-root .sfc-cap-out {
+  font: 500 16px/1.3 var(--sfc-sans);
+  letter-spacing: -0.01em;
+  min-height: 2.6em;
+  overflow-wrap: anywhere;
+}
+
+.screenfold-codex-root .sfc-cap-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.screenfold-codex-root .sfc-cap-what {
+  font: 400 11.5px/1.3 var(--sfc-sans);
   color: var(--sfc-ink-2);
 }
 
@@ -754,8 +937,11 @@
 .screenfold-codex-root .sfc-cell-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
+}
+
+.screenfold-codex-root .sfc-cell-head h3 {
+  margin-right: auto;
 }
 
 .screenfold-codex-root .sfc-ledger {
@@ -839,96 +1025,118 @@
   padding: 0 14px;
 }
 
-/* the review workspace */
-.screenfold-codex-root .sfc-review {
+.screenfold-codex-root .sfc-term-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--sfc-hair);
+}
+
+/* the dashboard as the context cascade: three setbacks */
+.screenfold-codex-root .sfc-cascade {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.screenfold-codex-root .sfc-cascade-level {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--sfc-hair);
+  background-clip: padding-box;
+}
+
+.screenfold-codex-root .sfc-cascade-level.is-l1 {
+  margin-left: 28px;
+}
+
+.screenfold-codex-root .sfc-cascade-level.is-l2 {
+  margin-left: 56px;
+}
+
+.screenfold-codex-root .sfc-cascade-name .sfc-figure-text {
+  font: 500 13px/1.3 var(--sfc-sans);
+  color: var(--sfc-ink);
+}
+
+.screenfold-codex-root .sfc-cascade-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font: 400 13px/1.4 var(--sfc-sans);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-cascade-items code {
+  color: var(--sfc-ink);
+}
+
+/* the agent's pull request as the diff it is */
+.screenfold-codex-root .sfc-locadex-mark {
+  display: block;
+  flex: none;
+}
+
+.screenfold-codex-root .sfc-locadex-mark.is-head {
+  width: 22px;
+  height: 22px;
+}
+
+.screenfold-codex-root .sfc-diff {
   border: 1px solid var(--sfc-hair);
   border-radius: 4px;
   background-clip: padding-box;
-  font-size: 12.5px;
 }
 
-.screenfold-codex-root .sfc-review-bar,
-.screenfold-codex-root .sfc-review-cols,
-.screenfold-codex-root .sfc-review-foot {
+.screenfold-codex-root .sfc-diff-bar {
   display: flex;
   justify-content: space-between;
   gap: 14px;
   padding: 8px 12px;
-  font: 500 11px/1 var(--sfc-mono);
-  color: var(--sfc-ink-2);
-}
-
-.screenfold-codex-root .sfc-review-bar,
-.screenfold-codex-root .sfc-review-cols {
   border-bottom: 1px solid var(--sfc-hair);
+  font: 500 11.5px/1 var(--sfc-mono);
+  color: var(--sfc-ink-2);
 }
 
-.screenfold-codex-root .sfc-review-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.screenfold-codex-root .sfc-review-foot {
-  justify-content: flex-start;
-  gap: 18px;
-  border-top: 1px solid var(--sfc-hair);
-}
-
-.screenfold-codex-root .sfc-review-rows {
-  list-style: none;
+.screenfold-codex-root .sfc-diff-pre {
   margin: 0;
-  padding: 0;
+  padding: 12px 14px;
+  font: 400 12.5px/1.6 var(--sfc-mono);
+  overflow-x: auto;
 }
 
-.screenfold-codex-root .sfc-review-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  padding: 10px 12px;
-  font: 400 12.5px/1.5 var(--sfc-sans);
+.screenfold-codex-root .sfc-diff-pre code {
+  font: inherit;
 }
 
-.screenfold-codex-root .sfc-review-row + .sfc-review-row {
-  border-top: 1px solid var(--sfc-hair);
-}
-
-.screenfold-codex-root .sfc-review-tr {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.screenfold-codex-root .sfc-review-prev {
-  color: var(--sfc-ink-2);
-}
-
-.screenfold-codex-root .sfc-stamp {
-  display: inline-block;
-  padding: 2px 6px;
-  border: 1px solid var(--sfc-hair);
-  border-radius: 3px;
-  background-clip: padding-box;
-  font: 500 10.5px/1.2 var(--sfc-mono);
-  color: var(--sfc-ink-2);
-}
-
-.screenfold-codex-root .sfc-stamp.is-edit {
-  border-style: dashed;
-}
-
-/* the agent */
-.screenfold-codex-root .sfc-locadex {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.screenfold-codex-root .sfc-locadex-mark {
+.screenfold-codex-root .sfc-diff-line {
   display: block;
-  width: 72px;
-  height: 72px;
+}
+
+.screenfold-codex-root .sfc-diff-line.is-ctx {
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-diff-line.is-del {
+  color: var(--sfc-orn);
+}
+
+.screenfold-codex-root .sfc-diff-line.is-add {
+  color: var(--sfc-accent);
+}
+
+.screenfold-codex-root .sfc-diff-sign {
+  display: inline-block;
+  width: 16px;
 }
 
 /* ------------------------------------------------------------------ *
@@ -1037,8 +1245,208 @@
   color: var(--sfc-ink-2);
 }
 
+/* the roster as a tablet grid */
+.screenfold-codex-root .sfc-roster {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--sfc-hair);
+  border: 1px solid var(--sfc-hair);
+}
+
+.screenfold-codex-root .sfc-roster-cell {
+  min-width: 0;
+  padding: 8px 6px;
+  text-align: center;
+  background: var(--sfc-ground);
+}
+
+.screenfold-codex-root .sfc-roster-cell code {
+  font: 500 11px/1 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-reg.is-roster .sfc-acts .sfc-note {
+  max-width: none;
+}
+
 /* ------------------------------------------------------------------ *
- * Leaf five: the dark leaf (its plate never remaps)
+ * Leaf five: the review
+ * ------------------------------------------------------------------ */
+.screenfold-codex-root .sfc-trust-lead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 22px;
+}
+
+.screenfold-codex-root .sfc-trust-lead p {
+  margin: 0;
+  font: 400 14px/1.5 var(--sfc-sans);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-trust {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.screenfold-codex-root .sfc-trust li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.screenfold-codex-root .sfc-trust a {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+/* the six marks in the ink, seated by an alpha mask */
+.screenfold-codex-root .sfc-wm {
+  display: block;
+  width: 100%;
+  max-width: 132px;
+  height: 22px;
+  background-color: var(--sfc-ink);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.screenfold-codex-root .sfc-wm.is-cursor {
+  -webkit-mask-image: url('/logos/cursor.light.svg');
+  mask-image: url('/logos/cursor.light.svg');
+}
+
+.screenfold-codex-root .sfc-wm.is-ramp {
+  -webkit-mask-image: url('/logos/ramp.light.svg');
+  mask-image: url('/logos/ramp.light.svg');
+}
+
+.screenfold-codex-root .sfc-wm.is-mintlify {
+  -webkit-mask-image: url('/logos/mintlify.light.svg');
+  mask-image: url('/logos/mintlify.light.svg');
+}
+
+.screenfold-codex-root .sfc-wm.is-profound {
+  -webkit-mask-image: url('/logos/profound.light.svg');
+  mask-image: url('/logos/profound.light.svg');
+}
+
+.screenfold-codex-root .sfc-wm.is-partiful {
+  -webkit-mask-image: url('/logos/partiful.light.svg');
+  mask-image: url('/logos/partiful.light.svg');
+}
+
+.screenfold-codex-root .sfc-wm.is-clickhouse {
+  -webkit-mask-image: url('/logos/clickhouse.light.svg');
+  mask-image: url('/logos/clickhouse.light.svg');
+}
+
+/* the review workspace at full width */
+.screenfold-codex-root .sfc-review {
+  border: 1px solid var(--sfc-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+}
+
+.screenfold-codex-root .sfc-review-bar,
+.screenfold-codex-root .sfc-review-cols,
+.screenfold-codex-root .sfc-review-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 14px;
+  font: 500 11px/1 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-review-bar,
+.screenfold-codex-root .sfc-review-cols {
+  border-bottom: 1px solid var(--sfc-hair);
+}
+
+.screenfold-codex-root .sfc-review-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.screenfold-codex-root .sfc-review-foot {
+  justify-content: flex-start;
+  gap: 20px;
+  border-top: 1px solid var(--sfc-hair);
+}
+
+.screenfold-codex-root .sfc-review-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.screenfold-codex-root .sfc-review-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 13px 14px;
+  font: 400 13.5px/1.5 var(--sfc-sans);
+}
+
+.screenfold-codex-root .sfc-review-row + .sfc-review-row {
+  border-top: 1px solid var(--sfc-hair);
+}
+
+.screenfold-codex-root .sfc-review-src {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 12px;
+}
+
+.screenfold-codex-root .sfc-review-src .sfc-num {
+  margin-top: 6px;
+}
+
+.screenfold-codex-root .sfc-review-tr {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.screenfold-codex-root .sfc-review-prev {
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-stamp {
+  display: inline-block;
+  padding: 2px 6px;
+  border: 1px solid var(--sfc-hair);
+  border-radius: 3px;
+  background-clip: padding-box;
+  font: 500 10.5px/1.2 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-stamp.is-edit {
+  border-style: dashed;
+}
+
+/* ------------------------------------------------------------------ *
+ * Leaf six: the dark leaf (its plate never remaps)
  * ------------------------------------------------------------------ */
 .screenfold-codex-root .sfc-panel.is-night {
   --sfc-ground: var(--sfc-night);
@@ -1100,7 +1508,7 @@
 
 .screenfold-codex-root .sfc-step {
   display: grid;
-  grid-template-columns: 56px 1fr;
+  grid-template-columns: 92px 1fr;
   gap: 16px;
   padding: 14px 0;
 }
@@ -1110,7 +1518,11 @@
 }
 
 .screenfold-codex-root .sfc-step-num {
-  padding-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 2px;
+  align-self: start;
 }
 
 .screenfold-codex-root .sfc-step-body {
@@ -1147,11 +1559,11 @@
 }
 
 /* ------------------------------------------------------------------ *
- * Leaves six to eight: the pricing file
+ * Leaves seven to ten: the pricing file
  * ------------------------------------------------------------------ */
 .screenfold-codex-root .sfc-rates-head,
 .screenfold-codex-root .sfc-ledger.is-rates .sfc-ledger-row {
-  grid-template-columns: 120px 1.1fr 1.7fr 0.7fr;
+  grid-template-columns: 120px 1.1fr 1.7fr 0.8fr;
 }
 
 .screenfold-codex-root .sfc-rates-head {
@@ -1185,13 +1597,13 @@
   color: var(--sfc-ink-2);
 }
 
-.screenfold-codex-root .sfc-rate-value,
-.screenfold-codex-root .sfc-rate-gt {
+.screenfold-codex-root .sfc-rate-value {
   font: 500 13px/1.4 var(--sfc-mono);
 }
 
-.screenfold-codex-root .sfc-rate-gt {
-  color: var(--sfc-ink-2);
+.screenfold-codex-root .sfc-rate-gt .sfc-figure-text {
+  font: 500 13px/1.4 var(--sfc-mono);
+  color: var(--sfc-ink);
 }
 
 .screenfold-codex-root .sfc-notes {
@@ -1252,14 +1664,96 @@
   transform: translateY(-3px);
 }
 
-.screenfold-codex-root .sfc-compare {
-  font: 500 13.5px/1 var(--sfc-sans);
+/* the comparison: the shipped feature grid, dot for yes, shell for no */
+.screenfold-codex-root .sfc-reg.is-cmp .sfc-reg-in {
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+
+.screenfold-codex-root .sfc-cmp-head,
+.screenfold-codex-root .sfc-cmp-row {
+  display: grid;
+  grid-template-columns: 1fr 150px 150px;
+  align-items: center;
+  gap: 16px;
+}
+
+.screenfold-codex-root .sfc-cmp-head {
+  padding-bottom: 10px;
+}
+
+.screenfold-codex-root .sfc-cmp-head .sfc-reg-title {
+  margin: 0;
+}
+
+.screenfold-codex-root .sfc-cmp-col {
+  font: 500 11px/1 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+  text-align: center;
+}
+
+.screenfold-codex-root .sfc-cmp-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.screenfold-codex-root .sfc-cmp-row {
+  padding: 11px 0;
+  border-top: 1px solid var(--sfc-hair);
+}
+
+.screenfold-codex-root .sfc-cmp-name {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.screenfold-codex-root .sfc-cmp-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 14px/1.3 var(--sfc-sans);
+}
+
+.screenfold-codex-root .sfc-cmp-new {
+  padding: 2px 5px;
+  border: 1px solid var(--sfc-hair);
+  border-radius: 3px;
+  background-clip: padding-box;
+  font: 500 10px/1 var(--sfc-mono);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-cmp-tip {
+  font: 400 12px/1.45 var(--sfc-sans);
+  color: var(--sfc-ink-2);
+  max-width: 56ch;
+}
+
+.screenfold-codex-root .sfc-cmp-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  font: 500 13px/1.3 var(--sfc-sans);
+  text-align: center;
+}
+
+.screenfold-codex-root .sfc-cmp-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screenfold-codex-root .sfc-cmp-link {
+  font: 500 13px/1 var(--sfc-sans);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: var(--sfc-hair);
 }
 
-.screenfold-codex-root .sfc-compare:hover {
+.screenfold-codex-root .sfc-cmp-link:hover {
   text-decoration-color: var(--sfc-ink);
 }
 
@@ -1268,21 +1762,18 @@
  * ------------------------------------------------------------------ */
 .screenfold-codex-root .sfc-foot {
   width: min(var(--sfc-strip), 100% - 2 * var(--sfc-gut));
-  margin: 64px auto 0;
+  margin: 48px auto 0;
   padding-bottom: 44px;
-}
-
-.screenfold-codex-root .sfc-foot-top {
   display: grid;
-  grid-template-columns: 1.5fr repeat(4, 1fr);
-  gap: 32px;
+  gap: 40px;
 }
 
 .screenfold-codex-root .sfc-foot-brand {
   display: grid;
-  gap: 16px;
-  align-content: start;
-  padding-right: 24px;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 18px;
+  max-width: 600px;
 }
 
 .screenfold-codex-root .sfc-foot-mark img {
@@ -1293,6 +1784,51 @@
 
 .screenfold-codex-root .sfc-foot-mark .is-dark {
   display: none;
+}
+
+.screenfold-codex-root .sfc-foot-signs h4 {
+  margin-bottom: 14px;
+}
+
+.screenfold-codex-root .sfc-signs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--sfc-hair);
+  border: 1px solid var(--sfc-hair);
+}
+
+.screenfold-codex-root .sfc-sign {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
+  padding: 14px 14px 12px;
+  background: var(--sfc-ground);
+}
+
+.screenfold-codex-root .sfc-sign-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.screenfold-codex-root .sfc-sign-label {
+  font: 500 13px/1.2 var(--sfc-sans);
+}
+
+.screenfold-codex-root .sfc-sign-note {
+  margin: 0;
+  font: 400 12.5px/1.45 var(--sfc-sans);
+  color: var(--sfc-ink-2);
+}
+
+.screenfold-codex-root .sfc-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
 }
 
 .screenfold-codex-root .sfc-foot-col ul {
@@ -1327,7 +1863,6 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 12px 24px;
-  margin-top: 48px;
   padding-top: 18px;
   border-top: 1px solid var(--sfc-hair);
   font: 400 12.5px/1.5 var(--sfc-sans);
@@ -1362,19 +1897,35 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .screenfold-codex-root .sfc-foot-top {
-    grid-template-columns: 1fr 1fr 1fr;
+  .screenfold-codex-root .sfc-caps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .screenfold-codex-root .sfc-foot-brand {
-    grid-column: 1 / -1;
-    padding-right: 0;
+  .screenfold-codex-root .sfc-roster {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .screenfold-codex-root .sfc-signs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .screenfold-codex-root .sfc-foot-cols {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 900px) {
+  .screenfold-codex-root {
+    --sfc-lean: 24px;
+  }
+
   .screenfold-codex-root .sfc-tablet {
     grid-template-columns: 1fr;
+  }
+
+  .screenfold-codex-root .sfc-stele {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 
   .screenfold-codex-root .sfc-story {
@@ -1399,6 +1950,20 @@
     gap: 28px;
   }
 
+  .screenfold-codex-root .sfc-map {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .screenfold-codex-root .sfc-key {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .screenfold-codex-root .sfc-key-cap {
+    justify-self: start;
+    text-align: left;
+  }
+
   .screenfold-codex-root .sfc-trust {
     grid-template-columns: repeat(3, 1fr);
     gap: 22px;
@@ -1408,26 +1973,44 @@
     gap: 16px;
   }
 
-  .screenfold-codex-root .sfc-rates-head,
-  .screenfold-codex-root .sfc-ledger.is-rates .sfc-ledger-row {
-    grid-template-columns: 110px 1fr 1.4fr;
+  .screenfold-codex-root .sfc-trow {
+    grid-template-columns: 84px auto 1fr;
+    row-gap: 10px;
   }
 
-  .screenfold-codex-root .sfc-rates-head span:last-child,
-  .screenfold-codex-root .sfc-rate-gt {
-    display: none;
+  .screenfold-codex-root .sfc-trow-text.is-second {
+    grid-column: 3;
+  }
+
+  .screenfold-codex-root .sfc-trow-file {
+    grid-column: 3;
+  }
+
+  .screenfold-codex-root .sfc-rates-head,
+  .screenfold-codex-root .sfc-ledger.is-rates .sfc-ledger-row {
+    grid-template-columns: 110px 1fr 1.4fr 90px;
+  }
+
+  .screenfold-codex-root .sfc-cmp-head,
+  .screenfold-codex-root .sfc-cmp-row {
+    grid-template-columns: 1fr 110px 110px;
+  }
+
+  .screenfold-codex-root .sfc-cascade-level {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .screenfold-codex-root .sfc-foot-cols {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 /* the mobile ladder: the last 720px block consumes the --tcm-* slots */
 @media (max-width: 720px) {
   .screenfold-codex-root {
-    --sfc-shear: 0.8deg;
-    --sfc-pad-x: 20px;
-  }
-
-  .screenfold-codex-root .sfc-panel.is-fold-b {
-    --sfc-shear: -0.8deg;
+    --sfc-lean: 8px;
+    --sfc-pad-x: 30px;
   }
 
   .screenfold-codex-root .sfc-reg-in {
@@ -1437,13 +2020,18 @@
 
   .screenfold-codex-root .sfc-reg.is-head .sfc-reg-in {
     padding-top: var(--tcm-box-pt, 36px);
-    padding-right: 20px;
+    padding-right: 30px;
   }
 
   .screenfold-codex-root .sfc-folio {
     top: 10px;
     right: 12px;
-    height: 24px;
+    height: 26px;
+    gap: 8px;
+  }
+
+  .screenfold-codex-root .sfc-panel.is-fold-a .sfc-folio {
+    right: calc(var(--sfc-lean) + 12px);
   }
 
   .screenfold-codex-root .sfc-h1 {
@@ -1476,24 +2064,16 @@
   }
 
   .screenfold-codex-root .sfc-note,
-  .screenfold-codex-root .sfc-trust-lead {
+  .screenfold-codex-root .sfc-trust-lead p,
+  .screenfold-codex-root .sfc-key-cap {
     font-size: var(--tcm-small, 14px);
     line-height: var(--tcm-small-lh, 1.55);
   }
 
-  .screenfold-codex-root .sfc-cell,
-  .screenfold-codex-root .sfc-script {
+  .screenfold-codex-root .sfc-cell {
     padding-top: var(--tcm-box-pt, 36px);
     padding-bottom: var(--tcm-box-pb, 38px);
-  }
-
-  .screenfold-codex-root .sfc-cell {
     gap: var(--tcm-box-gap, 28px);
-  }
-
-  .screenfold-codex-root .sfc-script {
-    padding-top: 16px;
-    padding-bottom: 14px;
   }
 
   .screenfold-codex-root .sfc-band {
@@ -1501,17 +2081,27 @@
     max-width: 320px;
   }
 
+  .screenfold-codex-root .sfc-map {
+    gap: 8px;
+  }
+
+  .screenfold-codex-root .sfc-map-face {
+    padding: 10px 6px 8px;
+  }
+
   .screenfold-codex-root .sfc-trow {
     grid-template-columns: auto 1fr;
     row-gap: 8px;
   }
 
-  .screenfold-codex-root .sfc-trow-text {
+  .screenfold-codex-root .sfc-trow-text,
+  .screenfold-codex-root .sfc-trow-text.is-second,
+  .screenfold-codex-root .sfc-trow-file {
     grid-column: 1 / -1;
   }
 
-  .screenfold-codex-root .sfc-trow-file {
-    grid-column: 1 / -1;
+  .screenfold-codex-root .sfc-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .screenfold-codex-root .sfc-ledger.is-sdks .sfc-ledger-row {
@@ -1522,12 +2112,24 @@
     grid-column: 1 / -1;
   }
 
+  .screenfold-codex-root .sfc-cascade-level.is-l1 {
+    margin-left: 14px;
+  }
+
+  .screenfold-codex-root .sfc-cascade-level.is-l2 {
+    margin-left: 28px;
+  }
+
   .screenfold-codex-root .sfc-ledger.is-variants .sfc-ledger-row {
     grid-template-columns: auto 1fr;
   }
 
   .screenfold-codex-root .sfc-ledger.is-variants .sfc-ledger-chips {
     grid-column: 1 / -1;
+  }
+
+  .screenfold-codex-root .sfc-roster {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .screenfold-codex-root .sfc-rates-head {
@@ -1539,12 +2141,23 @@
     row-gap: 6px;
   }
 
-  .screenfold-codex-root .sfc-rate-value {
+  .screenfold-codex-root .sfc-rate-value,
+  .screenfold-codex-root .sfc-rate-gt {
     grid-column: 1 / -1;
+  }
+
+  .screenfold-codex-root .sfc-rate-gt:empty {
+    display: contents;
   }
 
   .screenfold-codex-root .sfc-notes {
     grid-template-columns: 1fr;
+  }
+
+  .screenfold-codex-root .sfc-cmp-head,
+  .screenfold-codex-root .sfc-cmp-row {
+    grid-template-columns: 1fr 72px 72px;
+    gap: 10px;
   }
 
   .screenfold-codex-root .sfc-review-row,
@@ -1552,23 +2165,47 @@
     grid-template-columns: 1fr;
   }
 
-  .screenfold-codex-root .sfc-review-cols span:last-child {
-    display: none;
+  .screenfold-codex-root .sfc-review-cols {
+    gap: 6px;
   }
 
-  .screenfold-codex-root .sfc-locadex {
+  .screenfold-codex-root .sfc-step {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
-  .screenfold-codex-root .sfc-foot-top {
-    grid-template-columns: 1fr 1fr;
+  .screenfold-codex-root .sfc-signs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .screenfold-codex-root .sfc-foot-brand {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 560px) {
-  .screenfold-codex-root .sfc-nav-links,
+  /* the cover board wraps to two rows; every link stays on the page */
+  .screenfold-codex-root .sfc-nav-in {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 10px 0;
+  }
+
+  .screenfold-codex-root .sfc-nav-links {
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+    gap: 14px;
+    font-size: 13px;
+  }
+
+  .screenfold-codex-root .sfc-nav-acts {
+    gap: 10px;
+  }
+
   .screenfold-codex-root .sfc-nav-signin {
-    display: none;
+    font-size: 13px;
   }
 
   .screenfold-codex-root .sfc-scripts {
@@ -1583,7 +2220,7 @@
     grid-template-columns: 1fr;
   }
 
-  .screenfold-codex-root .sfc-hinge {
-    margin: 0 6px;
+  .screenfold-codex-root .sfc-foot-cols {
+    grid-template-columns: 1fr;
   }
 }

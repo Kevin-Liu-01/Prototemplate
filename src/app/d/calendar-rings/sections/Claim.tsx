@@ -5,9 +5,12 @@
  *
  * One shaped text node carries the headline and cycles through the
  * shipped roster of locales: the node's text, `lang` and `dir` change
- * together, never per character. The timeline is created paused and
- * played only while the hub is on screen; under reduced motion the
- * English still is all there is.
+ * together, never per character. The swap is a transform only: the word
+ * slides up out of the hub's line box and the next one slides in from
+ * below, so the resting pose is always a fully visible headline and no
+ * opacity is ever taken away. The timeline is created paused and played
+ * only while the hub is on screen; under reduced motion the English still
+ * is all there is.
  */
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -32,7 +35,7 @@ export function Claim() {
       if (!el) return;
       let idx = 0;
       const tl = gsap.timeline({ paused: true, repeat: -1 });
-      tl.to(el, { autoAlpha: 0, duration: 0.3, ease: 'power1.in' }, 3.2)
+      tl.to(el, { yPercent: -115, duration: 0.3, ease: 'power1.in' }, 3.2)
         .call(() => {
           idx = (idx + 1) % CLAIM_WORDS.length;
           const word = CLAIM_WORDS[idx] ?? FIRST;
@@ -40,7 +43,8 @@ export function Claim() {
           el.lang = word.lang;
           el.dir = word.dir;
         })
-        .to(el, { autoAlpha: 1, duration: 0.42, ease: 'power1.out' });
+        .set(el, { yPercent: 115 })
+        .to(el, { yPercent: 0, duration: 0.42, ease: 'power1.out' });
       const trigger = ScrollTrigger.create({
         trigger: el,
         start: 'top bottom',

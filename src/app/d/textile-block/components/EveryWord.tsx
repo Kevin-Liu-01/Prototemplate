@@ -11,11 +11,13 @@ import { EVERY } from '../data';
  * textile-block: the claim's one moving word.
  *
  * "language" recast across eight scripts. One shaped text node carrying its
- * own lang and dir; the swap is a short dip, not a per-character morph. The
- * resting markup is the English word, so the server render and the reduced
- * motion still are the same line. The loop follows the page's lifecycle
- * contract: it runs only while the word is on screen and the tab is
- * visible, and nothing runs under prefers-reduced-motion.
+ * own lang and dir; the swap is a short clip-path wipe, the way a cast face
+ * is slid out of its course and the next one slid in. Nothing fades: the
+ * word is fully painted at rest and the wipe only moves the edge of the
+ * clip. The resting markup is the English word, so the server render and
+ * the reduced motion still are the same line. The loop follows the page's
+ * lifecycle contract: it runs only while the word is on screen and the tab
+ * is visible, and nothing runs under prefers-reduced-motion.
  */
 
 const HOLD_MS = 2600;

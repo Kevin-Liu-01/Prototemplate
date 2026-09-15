@@ -1,14 +1,18 @@
 /**
  * calendar-rings: the hero.
  * The disk with the claim at its center, then the plinth: a stepped base
- * of three registers, the top step carrying the sub with the wordmark
- * inline, the two calls to action and the install command. Each step
- * draws its top and sides; the step below closes it.
+ * of three registers. The top step carries the sub with the wordmark
+ * inline, the two calls to action and the install command. The second
+ * step is the key to the instrument: one cell per ring from the center
+ * out, its count as a bar-and-dot numeral and what the ring reads. The
+ * third step is the base rule. Each step draws its top and sides; the step
+ * below closes it.
  */
 import { GtMark } from '@/components/viewer/GtMark';
 
-import { HREFS } from '../data';
+import { DISK_KEY, HREFS } from '../data';
 import { Disk } from '../diagrams/Disk';
+import { Numeral } from '../diagrams/Numeral';
 import { Claim } from './Claim';
 import { CopyCommand } from './CopyCommand';
 
@@ -38,7 +42,17 @@ export function Hero() {
               <CopyCommand />
             </div>
           </div>
-          <div className='cr-step is-2' aria-hidden='true' />
+          <ol className='cr-step is-2 cr-key' aria-label='How to read the disk'>
+            {DISK_KEY.map((row) => (
+              <li key={row.ring} className='cr-key-cell'>
+                <span className='cr-key-mark' aria-hidden='true'>
+                  {row.n > 0 ? <Numeral n={row.n} size={11} /> : <span className='cr-key-hub' />}
+                </span>
+                <span className='cr-key-ring'>{row.ring}</span>
+                <span className='cr-key-what'>{row.what}</span>
+              </li>
+            ))}
+          </ol>
           <div className='cr-step is-3' aria-hidden='true' />
         </div>
       </div>

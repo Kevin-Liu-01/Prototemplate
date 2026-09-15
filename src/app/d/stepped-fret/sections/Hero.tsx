@@ -10,7 +10,7 @@ import { GtMark } from '@/components/viewer/GtMark';
 
 import { CLAIMS, DOCS_HREF, HERO_SUB, INSTALL_COMMAND, SIGN_IN_HREF } from '../data';
 import { reducedMotion } from '../reveal';
-import BarDot from './deco/BarDot';
+import FretUnit from './deco/FretUnit';
 import HeroFret from './HeroFret';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -23,11 +23,15 @@ const HOLD = 3.4;
  * the bar runs the width of the rail, and the spiral coils at the right;
  * the claim is set in the open step the fret leaves between the stair and
  * the coil. The claim is one shaped text node that cycles through sixteen
- * locales with its `lang` and `dir` retagged on every swap (a fade of a
- * quarter second out and a third of a second in, on one paused timeline
- * that a ScrollTrigger plays while the hero is on screen). Under reduced
- * motion the English claim stands. Above the claim, the crown: 118 in
- * bar-and-dot geometry beside the same figure in the display face.
+ * locales with its `lang` and `dir` retagged on every swap. The swap is
+ * transform only, inside a clipped line box: the standing claim slides up
+ * and out, the next slides in from below, on one paused timeline that a
+ * ScrollTrigger plays while the hero is on screen. Nothing fades, so the
+ * claim is fully visible at rest and in any still. Under reduced motion the
+ * English claim stands. Above the claim, the crown: one small solid tile of
+ * the stepped fret in the ornament color beside the locale count in the
+ * display face, the hero's monumental figure restated at the size of a
+ * numeral.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -52,13 +56,13 @@ export default function Hero() {
       // the first hold lives inside the timeline, so it survives a late play()
       const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: HOLD });
       tl.to({}, { duration: HOLD })
-        .to(el, { autoAlpha: 0, y: -6, duration: 0.25, ease: 'power1.in' })
+        .to(el, { yPercent: -120, duration: 0.28, ease: 'power2.in' })
         .call(() => {
           index = (index + 1) % CLAIMS.length;
           apply(index);
         })
-        .set(el, { y: 8 })
-        .to(el, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' });
+        .set(el, { yPercent: 120 })
+        .to(el, { yPercent: 0, duration: 0.38, ease: 'power2.out' });
 
       ScrollTrigger.create({
         trigger: hero,
@@ -94,17 +98,17 @@ export default function Hero() {
         </div>
 
         <div className='sf-hero-copy'>
-          <div className='sf-crown' role='group' aria-label='118 locales ready today'>
-            <BarDot value={118} unit={8} className='sf-crown-bardot' />
-            <span className='sf-crown-figure' aria-hidden='true'>
-              118
-            </span>
+          <div className='sf-crown'>
+            <FretUnit cell={4} className='sf-crown-fret' />
+            <span className='sf-crown-figure'>118</span>
             <span className='sf-crown-cap'>locales ready today</span>
           </div>
 
           <h1 className='sf-h1'>
-            <span ref={claim} lang={first.lang} dir='ltr'>
-              {first.text}
+            <span className='sf-h1-clip'>
+              <span className='sf-h1-claim' ref={claim} lang={first.lang} dir='ltr'>
+                {first.text}
+              </span>
             </span>
           </h1>
 

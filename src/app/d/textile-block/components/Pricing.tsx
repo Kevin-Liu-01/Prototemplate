@@ -1,21 +1,22 @@
 import { DRY_RUN_COMMAND, DRY_RUN_NOTE, LINKS, PLANS, RATES, RATE_NOTES } from '../data';
-import { Block, Course, Relief } from './Wall';
+import { Block, Course, HEAD_RELIEF_SPAN, Plaque, Relief } from './Wall';
 
 /**
- * textile-block: the pricing file as three cast plaques.
+ * textile-block: the pricing file as flush cast plaques.
  *
- * Set flush in one course: the published rate ledger, the Starter plaque,
- * and the Enterprise plaque. Rates are the raised figures; nothing here
- * moves. The compare link closes the course in its own block.
+ * The pricing course is keyed to the Millard block. Set flush in one
+ * course: the published rate ledger with the figures raised, and the two
+ * plan plaques with the plan name set as a header brick and the price cast
+ * large under it. Nothing here moves. The compare link closes the course
+ * in its own block.
  */
 export default function Pricing() {
   return (
     <Course className='is-pricing' id='pricing' label='Pricing'>
-      <Block className='tb-head' span={{ c: 8, r: 2, cMd: 8, rMd: 2, cSm: 6, rSm: 3 }}>
-        <h2 className='tb-h2'>Start at $0. Pay per token.</h2>
-        <p>The price of a translation is knowable before you run it.</p>
-      </Block>
-      <Relief className='tb-lg-only' motif='cross' span={{ c: 4, r: 2 }} />
+      <Plaque label='Millard course' relief='millard' title='Start at $0. Pay per token.'>
+        The price of a translation is knowable before you run it.
+      </Plaque>
+      <Relief className='tb-lg-only' relief='millard' span={HEAD_RELIEF_SPAN} />
 
       {/* ---- the rate ledger ---- */}
       <Block className='tb-rates' span={{ c: 6, r: 5, cMd: 8, rMd: 5, cSm: 6, rSm: 8 }}>
@@ -46,7 +47,7 @@ export default function Pricing() {
       {/* ---- the two plan plaques ---- */}
       {PLANS.map((plan) => (
         <Block className='tb-plan' key={plan.id} span={{ c: 3, r: 5, cMd: 4, rMd: 5, cSm: 6, rSm: 6 }}>
-          <h3>{plan.name}</h3>
+          <h3 className='tb-brick'>{plan.name}</h3>
           <div className='tb-plan-price'>
             {plan.price}
             <small>{plan.cadence}</small>

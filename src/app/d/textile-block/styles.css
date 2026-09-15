@@ -1,60 +1,68 @@
 /* textile-block: the General Translation landing page as a relief block
    wall. A rigid grid of square cast-concrete blocks laid in horizontal
-   courses; most blocks carry a repeating geometric relief, and the content
-   sits on smooth block faces set into the same bond. Nothing floats. Every
-   surface on the page is a block, and every line on the page is a joint.
+   courses; most blocks carry a repeating geometric relief from a library of
+   six, and the content sits on smooth block faces set into the same bond.
+   Nothing floats. Every surface on the page is a block, every line on the
+   page is a joint, and every course is keyed to one relief.
 
    Lineage: the Mayan revival of Art Deco. Geometry only.
 
    References, and what each one gives the page concretely:
-   1. Frank Lloyd Wright, Millard House (La Miniatura, Pasadena, 1923) and
-      Ennis House (Los Angeles, 1924), the textile-block system. The unit is
-      the sixteen-inch square block, cast with a patterned face and laid in
-      courses with the steel knit into the joints. Here the module is one
+   1. Frank Lloyd Wright's four textile-block houses in Los Angeles and
+      Pasadena: the Millard House (La Miniatura), the Storer House, the
+      Freeman House, and the Ennis House. The system is one square cast
+      block with a patterned face, laid in courses with the steel knit into
+      the joints, and each house has its own block. Here the module is one
       square block (`--tb-block`), the courses are grid rows of that module,
       the joints are the hairlines drawn once at the module pitch, and the
       two block faces are the two surfaces: patterned (`--deco-ground` with
-      the motif in the ornament color) and smooth (`--tb-face`). The Millard
-      cruciform with its four corner squares is the `cross` motif and, cut
-      through as a hole, the `perf` module; the Ennis interlocking key is the
-      `fret` motif. Wright's perforated blocks with glass inserts are the
-      hero's lit modules: the Bayer field is the light behind the wall.
-   2. The Mayan Theater (Los Angeles, 1927, Morgan, Walls and Clements; relief
+      the relief in the ornament color) and smooth (`--tb-face`). The four
+      house blocks are the four reliefs of components/reliefs.ts: the Ennis
+      cruciform, cut through in its perforated variant; the Millard chevron
+      that runs across the course; the Storer bar between two columns of
+      slots, cut through in its perforated variant; the Freeman stepped
+      pyramid. Wright's perforated blocks with glass inserts are the lit
+      modules: the Bayer field is the light behind the wall.
+   2. The Mayan Theater (Los Angeles, Morgan, Walls and Clements; relief
       facade by Francisco Cornejo). The whole street face is relief panels
       stacked in register bands, each band one repeating unit, framed by
       plain courses. That is the page's rhythm: pattern courses (`.is-frieze`)
-      between content courses, one motif per band (chevron, meander, fret,
-      bond), and the nested-square `step` medallion as the stepped-pyramid
-      plan. Its concrete is left the color of concrete, so the ground here is
-      cast grey, not paper.
-   3. The Aztec Hotel (Monrovia, 1924, Robert Stacy-Judd). Stepped frets and
-      greca meanders run as continuous friezes across a battered wall, and
-      the openings are set deep into the mass. The `meander` and `chevron`
-      bands are that continuous run; the base course's five setbacks are
-      battered (clip-path trapezoids, slope in pixels not percent), and
-      the objects inside the smooth blocks sit one layer deeper on the
-      ground color, like a recess in the mass.
+      between content courses, one relief per band, and the section heads
+      cast as plaques set into the smooth face with the swatch of their
+      course's relief. Its concrete is left the color of concrete, so the
+      ground here is cast grey, not paper.
+   3. The Aztec Hotel (Monrovia, Robert Stacy-Judd). Stepped frets and greca
+      meanders run as continuous friezes across a battered wall, and the
+      openings are set deep into the mass. The `greca` band is that
+      continuous run; the shadowed course's five setbacks are battered
+      (clip-path trapezoids, slope in pixels not percent), the upper wall
+      casts a halftone shade across the top of the course, and the objects
+      inside the smooth blocks sit one layer deeper on the ground color,
+      like a recess in the mass.
 
    Material palette (H3): cast concrete grey for the ground, moss green for
    the relief (the lichen that stains the recesses of the Ennis blocks),
-   terracotta for the accent, jade for the dark base course.
+   terracotta for the accent, jade for the shadowed course. The legend
+   course names all five with the token that carries each.
 
    Ornament homes: the relief modules themselves, wherever the bond leaves a
    module without content (the hero's perforated field, the head courses'
    remainders, the friezes between courses, the fillers that close a row);
-   the cartouche frame inside each script block; the Bayer tiers on the
-   ziggurat faces. Ornament never sits on a smooth face except the cartouche.
+   the swatch on every section plaque; the cartouche and the patterned
+   ground of each script block; the Bayer tiers on the ziggurat faces and the
+   shade ramp. Hovering any relief inverts it, ground and relief swapping.
+   Ornament never sits on a smooth face except the plaque swatch.
 
    Accent: terracotta marks the live string and nothing else. String tokens
-   in the source block, and the ring on the one locale pair the atlas wants
-   noticed (zh-Hans beside zh-Hant).
+   in the source block and the config, and the ring on the one locale pair
+   the atlas wants noticed (zh-Hans beside zh-Hant).
 
    Display face: Marcellus (next/font/google, `--textile-block-display`),
-   used for h1 and h2 only. Inter is the body, interface, caption, ledger
-   and chip face; the mono voice is for code, tokens and paths.
+   used for h1 and h2 only. Inter is the body, interface, caption, ledger,
+   brick and chip face; the mono voice is for code, tokens and paths.
 
    Dark mode remaps the six deco tokens and the smooth face and nothing
-   else. The jade base course never remaps. */
+   else. The jade course never remaps. */
 .textile-block-root {
   --deco-ground: #d6d2c8;
   --deco-ink: #1b201d;
@@ -66,8 +74,9 @@
   /* the smooth cast face, one step lighter than the patterned ground */
   --tb-cast-face: #e9e5dc;
 
-  /* the jade base course: fixed in both themes */
+  /* the jade course: fixed in both themes */
   --tb-dk-ground: #14211d;
+  --tb-dk-shade: #080d0b;
   --tb-dk-face: #1a2b26;
   --tb-dk-relief: #2a4d43;
   --tb-dk-lit: #3f6b5e;
@@ -91,12 +100,13 @@
   --tb-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
   --tb-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* the bond: columns per course, the module, the gutter, the copy floor */
+  /* the bond: columns per course, the module, the gutter, the copy floor, the brick */
   --tb-cols: 12;
   --tb-block-max: 100px;
   --tb-gut: clamp(16px, 3vw, 40px);
   --tb-block: min(var(--tb-block-max), round(down, calc((100cqw - 1px) / var(--tb-cols)), 1px));
   --tb-pad: clamp(20px, 2.3vw, 30px);
+  --tb-brick: 26px;
 
   position: relative;
   min-height: 100svh;
@@ -139,7 +149,7 @@
   border-top: 1px solid var(--tb-hair);
 }
 
-/* the lower wall begins under the base course's own bottom joints */
+/* the lower wall begins under the shadowed course's own bottom joints */
 .textile-block-root .tb-wall.is-lower {
   border-top: 0;
 }
@@ -170,7 +180,7 @@
   background-clip: padding-box;
 }
 
-/* ---- the relief region ---- */
+/* ---- the relief region: the library sets --tb-motif (and --tb-perf) inline ---- */
 .textile-block-root .tb-relief {
   position: relative;
   overflow: hidden;
@@ -188,7 +198,7 @@
   background-color: var(--tb-light-paper);
 }
 
-/* the concrete layer of a perforated module: a square with the cruciform cut out */
+/* the concrete layer of a perforated module: the block's cut leaves the holes open */
 .textile-block-root .tb-relief-face {
   position: absolute;
   inset: 0;
@@ -236,48 +246,26 @@
   background-position: right bottom;
 }
 
-/* ---- the motifs, 100-unit tiles, geometry only ---- */
-
-/* Millard cruciform with four corner squares */
-.textile-block-root .tb-relief.is-cross {
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' d='M40 10h20v30h30v20H60v30H40V60H10V40h30zM10 10h16v16H10zM74 10h16v16H74zM10 74h16v16H10zM74 74h16v16H74z'/></svg>");
+/* ---- the swatch: one tile of a relief, off the grid ---- */
+.textile-block-root .tb-swatch {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  background: var(--tb-ground);
 }
 
-/* Ennis interlocking key: one square spiral per block */
-.textile-block-root .tb-relief.is-fret {
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='none' stroke='white' stroke-width='8' d='M14 86H86V14H30V70H70V30H46V54'/></svg>");
-}
-
-/* the stepped pyramid in plan: nested square rings */
-.textile-block-root .tb-relief.is-step {
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' fill-rule='evenodd' d='M10 10h80v80H10zM18 18v64h64V18zM28 28h44v44H28zM36 36v28h28V36zM44 44h12v12H44z'/></svg>");
-}
-
-/* the running chevron, continuous across the course */
-.textile-block-root .tb-relief.is-chevron {
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='none' stroke='white' stroke-width='9' d='M0 68L25 32L50 68L75 32L100 68'/></svg>");
-}
-
-/* the stepped meander: a crenellated line, continuous across the course */
-.textile-block-root .tb-relief.is-meander {
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='none' stroke='white' stroke-width='8' d='M0 64H20V36H40V64H60V36H80V64H100'/></svg>");
-}
-
-/* the rosette as a radial repeat: a ring and eight bars */
-.textile-block-root .tb-relief.is-rosette {
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='12' fill='none' stroke='white' stroke-width='6'/><g fill='white'><rect x='46.5' y='10' width='7' height='20'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(45 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(90 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(135 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(180 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(225 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(270 50 50)'/><rect x='46.5' y='10' width='7' height='20' transform='rotate(315 50 50)'/></g></svg>");
-}
-
-/* the running bond: three courses of brick inside the block */
-.textile-block-root .tb-relief.is-bond {
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' d='M8 8h84v18H8zM8 41h38v18H8zM54 41h38v18H54zM8 74h84v18H8z'/></svg>");
-}
-
-/* the perforated block: the concrete keeps the corner squares in relief and
-   loses the cruciform to the light */
-.textile-block-root .tb-relief.is-perf {
-  --tb-perf: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' fill-rule='evenodd' d='M0 0h100v100H0zM42 14h16v28h28v16H58v28H42V58H14V42h28z'/></svg>");
-  --tb-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='white' d='M10 10h16v16H10zM74 10h16v16H74zM10 74h16v16H10zM74 74h16v16H74z'/></svg>");
+.textile-block-root .tb-swatch-motif {
+  position: absolute;
+  inset: 0;
+  background: var(--tb-ornament);
+  -webkit-mask-image: var(--tb-motif);
+  mask-image: var(--tb-motif);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 /* ------------------------------------------------------------------------ *
@@ -333,20 +321,8 @@
   font-size: 0.92em;
 }
 
-.textile-block-root .tb-head {
-  justify-content: center;
-  gap: 8px;
-}
-
-.textile-block-root .tb-head p {
-  max-width: 60ch;
-  color: var(--tb-ink-2);
-  font-size: 15px;
-  line-height: 1.55;
-}
-
 /* ------------------------------------------------------------------------ *
- * Controls: buttons, the inset locale tile, the shared chip's box
+ * Controls: buttons, the header brick, the inset locale tile, the command
  * ------------------------------------------------------------------------ */
 
 .textile-block-root .tb-btn {
@@ -397,6 +373,30 @@
   outline-offset: 2px;
 }
 
+/* The header brick: a label set flush in a block's top-left corner. Like a
+   header in a running bond it shows its end, and it owns only its right and
+   bottom joint; the block's own edges are its top and left. One grammar
+   for every label on the wall: course names, plan names, locale tiles. */
+.textile-block-root .tb-brick {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  height: var(--tb-brick);
+  margin: 0;
+  padding: 0 9px;
+  border-right: 1px solid var(--tb-hair);
+  border-bottom: 1px solid var(--tb-hair);
+  background: var(--tb-ground);
+  background-clip: padding-box;
+  color: var(--tb-ink-2);
+  font: 500 11.5px/1 var(--tb-sans);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
 /* the inset tile: a recessed square-cornered chip in the ground color */
 .textile-block-root .tb-tile {
   display: inline-flex;
@@ -414,11 +414,13 @@
   border-color: var(--tb-accent);
 }
 
-.textile-block-root .tb-tile.is-corner {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 1;
+/* the tile as a header brick */
+.textile-block-root .tb-tile.tb-brick {
+  height: var(--tb-brick);
+  padding: 0 8px;
+  border-top: 0;
+  border-left: 0;
+  color: var(--tb-ink);
 }
 
 .textile-block-root .lct {
@@ -507,7 +509,7 @@
 }
 
 /* ------------------------------------------------------------------------ *
- * The hero course: the monumental block and the lit field
+ * The hero course: the monumental block and the lit Ennis field
  * ------------------------------------------------------------------------ */
 
 .textile-block-root .tb-claim {
@@ -523,6 +525,7 @@
 
 .textile-block-root .tb-every {
   display: inline-block;
+  clip-path: inset(-0.3em -0.1em -0.3em -0.1em);
 }
 
 .textile-block-root .tb-sub {
@@ -565,7 +568,8 @@
   font-size: 12.5px;
 }
 
-.textile-block-root .tb-cmd-prompt {
+.textile-block-root .tb-cmd-prompt,
+.textile-block-root .tb-term-prompt {
   color: var(--tb-ink-2);
 }
 
@@ -632,7 +636,40 @@
 }
 
 /* ------------------------------------------------------------------------ *
- * The T proof: the source block and the cast translations
+ * Section heads as cast plaques
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-head {
+  justify-content: center;
+  gap: 22px;
+  padding-top: calc(var(--tb-brick) + 20px);
+}
+
+/* the plaque: a tablet recessed into the face, one ring, the swatch at its left */
+.textile-block-root .tb-plaque {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  padding: 20px 22px;
+  background: var(--tb-ground);
+  box-shadow: inset 0 0 0 1px var(--tb-hair);
+}
+
+.textile-block-root .tb-plaque-text {
+  display: grid;
+  gap: 8px;
+}
+
+.textile-block-root .tb-head p {
+  max-width: 60ch;
+  color: var(--tb-ink-2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* ------------------------------------------------------------------------ *
+ * The T proof: the source block, the casts, the formats
  * ------------------------------------------------------------------------ */
 
 .textile-block-root .tb-source {
@@ -701,15 +738,55 @@
   color: var(--tb-accent);
 }
 
+/* the source block's foot: the two install commands */
+.textile-block-root .tb-source-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 11px var(--tb-pad) 12px;
+  border-top: 1px solid var(--tb-hair);
+  font: 500 12px/1 var(--tb-mono);
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-source-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.textile-block-root .tb-source-cmd code {
+  font-size: 12px;
+  color: var(--tb-ink);
+}
+
+/* a cast translation: the locale as a header brick, the string set low on the face */
 .textile-block-root .tb-cast {
   justify-content: flex-end;
-  padding: 44px 20px 20px;
+  padding: calc(var(--tb-brick) + 14px) 20px 18px;
 }
 
 .textile-block-root .tb-cast p {
   font-weight: 500;
   font-size: 15px;
   line-height: 1.3;
+}
+
+/* a formatted value: the capability named, the output in the mono voice */
+.textile-block-root .tb-format {
+  justify-content: flex-end;
+  gap: 3px;
+  padding: calc(var(--tb-brick) + 12px) 20px 16px;
+}
+
+.textile-block-root .tb-format-cap {
+  color: var(--tb-ink-2);
+  font-size: 12px;
+}
+
+.textile-block-root .tb-format-out {
+  font: 500 15px/1.3 var(--tb-mono);
+  color: var(--tb-ink);
 }
 
 /* ------------------------------------------------------------------------ *
@@ -762,7 +839,7 @@
   font-size: 12px;
 }
 
-/* ---- the CLI transcript, recessed into the ground ---- */
+/* ---- the CLI: the config it reads, then the run, recessed into the ground ---- */
 .textile-block-root .tb-term {
   padding: 14px 16px;
   border: 1px solid var(--tb-hair);
@@ -770,6 +847,39 @@
   background-clip: padding-box;
   font: 400 12.5px/1.75 var(--tb-mono);
   color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-term-file {
+  margin-bottom: 8px;
+  font: 500 11px/1 var(--tb-mono);
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-config {
+  margin: 0 0 12px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--tb-hair);
+  list-style: none;
+  overflow-x: auto;
+  font: 400 12px/1.6 var(--tb-mono);
+  color: var(--tb-ink);
+}
+
+.textile-block-root .tb-config li {
+  white-space: pre;
+}
+
+.textile-block-root .tb-config .is-p {
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-config .is-k {
+  color: var(--tb-ink);
+}
+
+/* the locale strings in the config are the product: the one hue */
+.textile-block-root .tb-config .is-s {
+  color: var(--tb-accent);
 }
 
 .textile-block-root .tb-term-line.is-cmd {
@@ -782,14 +892,18 @@
 
 .textile-block-root .tb-term-prompt {
   margin-right: 8px;
-  color: var(--tb-ink-2);
 }
 
-.textile-block-root .tb-term-chips {
+.textile-block-root .tb-term-line.is-out {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 6px 0 8px;
+  align-items: center;
+  gap: 8px;
+}
+
+.textile-block-root .tb-term-line.is-out code {
+  font-size: 12.5px;
+  color: var(--tb-ink);
 }
 
 .textile-block-root .tb-term .tb-tile {
@@ -900,20 +1014,29 @@
 }
 
 /* ------------------------------------------------------------------------ *
- * Languages as material
+ * Languages as material: one relief block per script
  * ------------------------------------------------------------------------ */
 
+/* the script block keeps the patterned ground; the greeting is its relief */
 .textile-block-root .tb-script {
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: calc(var(--tb-brick) + 8px) 14px 32px;
+  background: var(--tb-ground);
 }
 
+/* the header brick on a patterned ground shows the smooth face */
+.textile-block-root .tb-script .tb-tile {
+  background: var(--tb-face);
+}
+
+/* the cartouche: a two-step frame, stroked once, under the brick and above the foot */
 .textile-block-root .tb-cartouche {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: calc(var(--tb-brick) + 8px);
+  left: 14px;
+  width: calc(100% - 28px);
+  height: calc(100% - var(--tb-brick) - 40px);
   color: var(--tb-ornament);
 }
 
@@ -926,13 +1049,23 @@
 /* the sample is the relief: cast in the ornament color, its own lang and dir */
 .textile-block-root .tb-script p {
   position: relative;
-  padding: 0 24px;
+  padding: 0 22px;
   color: var(--tb-ornament);
   font-weight: 500;
   font-size: clamp(22px, 2.1vw, 30px);
   line-height: 1.25;
   text-align: center;
   text-wrap: balance;
+}
+
+/* the script the block is cast in, named in the foot */
+.textile-block-root .tb-script-name {
+  position: absolute;
+  right: 12px;
+  bottom: 9px;
+  color: var(--tb-ink-2);
+  font-size: 11.5px;
+  line-height: 1;
 }
 
 .textile-block-root .tb-count {
@@ -1021,16 +1154,34 @@
 }
 
 /* ------------------------------------------------------------------------ *
- * The base course: jade, fixed in both themes
+ * The shadowed course: jade, fixed in both themes
  * ------------------------------------------------------------------------ */
 
-.textile-block-root .tb-base {
+.textile-block-root .tb-shadow {
   margin-inline: calc(-1 * var(--tb-gut));
-  padding-inline: var(--tb-gut);
   background: var(--tb-dk-ground);
 }
 
-.textile-block-root .tb-base .tb-course {
+/* The shade the upper wall casts: eight strips of nested Bayer tiers,
+   densest under the wall, thinning to the jade ground. Tiers nest by
+   construction, so the ramp is exact and never a gradient. */
+.textile-block-root .tb-shade {
+  display: grid;
+}
+
+.textile-block-root .tb-shade span {
+  display: block;
+  height: 7px;
+  background: var(--tb-dk-shade);
+  -webkit-mask-image: var(--tile);
+  mask-image: var(--tile);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+.textile-block-root .tb-shadow .tb-course {
   --tb-ground: var(--tb-dk-ground);
   --tb-face: var(--tb-dk-face);
   --tb-ink: var(--tb-dk-ink);
@@ -1046,20 +1197,14 @@
   color: var(--tb-ink);
 }
 
-.textile-block-root .tb-dark-copy {
-  justify-content: center;
-  gap: 18px;
-}
-
-.textile-block-root .tb-dark-copy p {
-  max-width: 34ch;
-  color: var(--tb-ink-2);
-  font-size: 15px;
-  line-height: 1.55;
+/* the dark plaque is four modules wide: the swatch stacks above the title */
+.textile-block-root .tb-dark-copy .tb-plaque {
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .textile-block-root .tb-dark-copy .tb-acts {
-  margin-top: 6px;
+  margin-top: 0;
 }
 
 /* ---- the ziggurat: five battered setbacks ---- */
@@ -1197,8 +1342,10 @@
   line-height: 1.5;
 }
 
+/* a plan plaque: the name as the header brick, the price cast large under it */
 .textile-block-root .tb-plan {
   gap: 12px;
+  padding-top: calc(var(--tb-brick) + 22px);
 }
 
 .textile-block-root .tb-plan-price {
@@ -1261,7 +1408,94 @@
 }
 
 /* ------------------------------------------------------------------------ *
- * The footer course
+ * The materials legend
+ * ------------------------------------------------------------------------ */
+
+.textile-block-root .tb-legend-item {
+  justify-content: center;
+  gap: 5px;
+  padding: 22px;
+}
+
+.textile-block-root .tb-legend-item h3 {
+  font-size: 15px;
+}
+
+.textile-block-root .tb-legend-src {
+  color: var(--tb-ink-2);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.textile-block-root .tb-legend-geo {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.textile-block-root .tb-legend-use {
+  color: var(--tb-ink-2);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+/* a material: its color as the header brick, its name, its token, its role */
+.textile-block-root .tb-material {
+  justify-content: flex-end;
+  gap: 3px;
+  padding: calc(var(--tb-brick) + 12px) 18px 16px;
+}
+
+.textile-block-root .tb-material-chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--tb-brick);
+  height: var(--tb-brick);
+  border-right: 1px solid var(--tb-hair);
+  border-bottom: 1px solid var(--tb-hair);
+  background-clip: padding-box;
+}
+
+.textile-block-root .tb-material-chip.is-ground {
+  background-color: var(--tb-ground);
+}
+
+.textile-block-root .tb-material-chip.is-face {
+  background-color: var(--tb-face);
+}
+
+.textile-block-root .tb-material-chip.is-relief {
+  background-color: var(--tb-ornament);
+}
+
+.textile-block-root .tb-material-chip.is-accent {
+  background-color: var(--tb-accent);
+}
+
+.textile-block-root .tb-material-chip.is-jade {
+  background-color: var(--tb-dk-ground);
+}
+
+.textile-block-root .tb-material b {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.textile-block-root .tb-material code {
+  font-size: 11.5px;
+  color: var(--tb-ink-2);
+}
+
+.textile-block-root .tb-material-role {
+  color: var(--tb-ink-2);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+/* ------------------------------------------------------------------------ *
+ * The footer: the base course
  * ------------------------------------------------------------------------ */
 
 .textile-block-root .tb-foot-brand {
@@ -1337,11 +1571,9 @@
  * Breakpoint-only fillers
  * ------------------------------------------------------------------------ */
 
-.textile-block-root .tb-lg-only {
-  display: none;
-}
-
-.textile-block-root .tb-md-only {
+.textile-block-root .tb-lg-only,
+.textile-block-root .tb-md-only,
+.textile-block-root .tb-sm-only {
   display: none;
 }
 
@@ -1358,19 +1590,69 @@
 }
 
 /* ------------------------------------------------------------------------ *
+ * Hover: a relief reads inverted, ground and relief swapping. Additive
+ * only; nothing is hidden and nothing moves.
+ * ------------------------------------------------------------------------ */
+
+@media (hover: hover) {
+  .textile-block-root .tb-relief:hover {
+    background: var(--tb-ornament);
+  }
+
+  .textile-block-root .tb-relief:hover .tb-relief-face {
+    background: var(--tb-ornament);
+  }
+
+  .textile-block-root .tb-relief:hover .tb-relief-motif {
+    background: var(--tb-ground);
+  }
+
+  .textile-block-root .tb-head:hover .tb-swatch {
+    background: var(--tb-ornament);
+  }
+
+  .textile-block-root .tb-head:hover .tb-swatch-motif {
+    background: var(--tb-ground);
+  }
+
+  .textile-block-root .tb-script:hover {
+    background: var(--tb-ornament);
+  }
+
+  .textile-block-root .tb-script:hover p,
+  .textile-block-root .tb-script:hover .tb-cartouche,
+  .textile-block-root .tb-script:hover .tb-script-name {
+    color: var(--tb-ground);
+  }
+}
+
+/* ------------------------------------------------------------------------ *
  * Motion: gated. The resting markup is the still.
  * ------------------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: no-preference) {
+  /* the claim's word slides out of its course and the next slides in: a clip wipe, never a fade */
   .textile-block-root .tb-every {
-    transition:
-      opacity 0.26s ease,
-      transform 0.26s ease;
+    transition: clip-path 0.26s ease;
   }
 
   .textile-block-root .tb-every.is-out {
-    opacity: 0;
-    transform: translateY(5px);
+    clip-path: inset(-0.3em -0.1em -0.3em 110%);
+  }
+
+  .textile-block-root .tb-relief,
+  .textile-block-root .tb-relief-face,
+  .textile-block-root .tb-relief-motif,
+  .textile-block-root .tb-swatch,
+  .textile-block-root .tb-swatch-motif,
+  .textile-block-root .tb-script {
+    transition: background-color 0.18s ease;
+  }
+
+  .textile-block-root .tb-script p,
+  .textile-block-root .tb-cartouche,
+  .textile-block-root .tb-script-name {
+    transition: color 0.18s ease;
   }
 
   .textile-block-root .tb-btn,
@@ -1415,6 +1697,10 @@
     --tb-block-max: 96px;
   }
 
+  .textile-block-root .tb-sm-only {
+    display: block;
+  }
+
   .textile-block-root .tb-block,
   .textile-block-root .tb-relief {
     grid-column: span var(--c-sm, var(--c-md, var(--c, 1)));
@@ -1453,8 +1739,7 @@
   }
 
   .textile-block-root .tb-head p,
-  .textile-block-root .tb-sub,
-  .textile-block-root .tb-dark-copy p {
+  .textile-block-root .tb-sub {
     font-size: var(--tcm-lead, 17px);
     line-height: var(--tcm-lead-lh, 1.55);
   }
@@ -1462,7 +1747,8 @@
   .textile-block-root .tb-obj-lead,
   .textile-block-root .tb-plan p,
   .textile-block-root .tb-foot-brand p,
-  .textile-block-root .tb-atlas-name {
+  .textile-block-root .tb-atlas-name,
+  .textile-block-root .tb-legend-geo {
     font-size: var(--tcm-body, 16px);
     line-height: var(--tcm-body-lh, 1.6);
   }
@@ -1470,7 +1756,9 @@
   .textile-block-root .tb-rate,
   .textile-block-root .tb-plan ul,
   .textile-block-root .tb-ledger,
-  .textile-block-root .tb-foot-col a {
+  .textile-block-root .tb-foot-col a,
+  .textile-block-root .tb-legend-use,
+  .textile-block-root .tb-material-role {
     font-size: var(--tcm-small, 14px);
     line-height: var(--tcm-small-lh, 1.55);
   }
@@ -1484,9 +1772,26 @@
     gap: 18px;
   }
 
+  /* blocks with a header brick keep their brick clearance */
+  .textile-block-root .tb-head,
+  .textile-block-root .tb-plan {
+    padding-top: calc(var(--tb-brick) + 22px);
+  }
+
+  /* the plaque stacks: the swatch above the title */
+  .textile-block-root .tb-plaque {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .textile-block-root .tb-swatch {
+    width: 44px;
+    height: 44px;
+  }
+
   .textile-block-root .tb-source,
   .textile-block-root .tb-rates,
-  .textile-block-root .tb-script,
   .textile-block-root .tb-trust-cell {
     padding: 0;
   }
@@ -1503,12 +1808,24 @@
     font-size: 11.5px;
   }
 
+  .textile-block-root .tb-source-foot {
+    padding: 11px 20px 12px;
+  }
+
   .textile-block-root .tb-rates-foot {
     padding: 12px 20px 18px;
   }
 
   .textile-block-root .tb-cast {
-    padding: 44px 20px 20px;
+    padding: calc(var(--tb-brick) + 14px) 18px 16px;
+  }
+
+  .textile-block-root .tb-format {
+    padding: calc(var(--tb-brick) + 12px) 18px 14px;
+  }
+
+  .textile-block-root .tb-script {
+    padding: calc(var(--tb-brick) + 8px) 14px 32px;
   }
 
   .textile-block-root .tb-script p {
@@ -1545,14 +1862,15 @@
     grid-column: 1 / -1;
   }
 
+  /* the ledger keeps all three columns; the GT libraries figure stays visible */
   .textile-block-root .tb-rates-head,
   .textile-block-root .tb-rate {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1.3fr 0.5fr;
+    gap: 10px;
   }
 
-  .textile-block-root .tb-rates-head > :last-child,
-  .textile-block-root .tb-rate-gt {
-    display: none;
+  .textile-block-root .tb-rate {
+    font-size: 13px;
   }
 
   .textile-block-root .tb-tier {
@@ -1562,11 +1880,19 @@
   .textile-block-root .tb-zig-fact {
     grid-template-columns: 82px 1fr;
   }
+
+  .textile-block-root .tb-legend-item {
+    padding: 20px;
+  }
+
+  .textile-block-root .tb-material {
+    padding: calc(var(--tb-brick) + 12px) 16px 14px;
+  }
 }
 
 /* ------------------------------------------------------------------------ *
- * Dark mode: the six deco tokens and the smooth face remap. The jade base
- * course keeps its own material.
+ * Dark mode: the six deco tokens and the smooth face remap. The jade course
+ * keeps its own material.
  * ------------------------------------------------------------------------ */
 
 [data-theme='dark'] .textile-block-root {

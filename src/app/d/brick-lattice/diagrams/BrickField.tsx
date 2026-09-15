@@ -11,13 +11,16 @@ import type { FieldName, LatticeBox, LatticePalette } from './lattice';
  * brick-lattice · the section ground.
  *
  * Home: the first child of every section. A canvas filling the section's
- * box, painted by the lattice engine with the field the section names.
- * Everything it needs from the design is read from CSS at paint time: the
- * brick module from the --bl-brick token (through a zero-height probe, so a
- * clamp() resolves to pixels), the four glaze colors from the --bl-* tokens
- * on the nearest ancestor (the kiln overrides them), and the document offset
- * from the section's own box. `anchor` names an element inside the section
- * whose box the field may centre on; the hero passes its claim panel.
+ * box, painted by the lattice engine with the pattern the section names
+ * from the book. Everything it needs from the design is read from CSS at
+ * paint time: the brick module from the --bl-brick token (through a
+ * zero-height probe, so a clamp() resolves to pixels), the four glaze
+ * colors from the --bl-* tokens on the nearest ancestor (the kiln
+ * overrides them), and the document offset from the section's own box.
+ * `anchor` names an element inside the section whose box the field may
+ * centre on: the hero passes its claim panel, the wall its source brick.
+ * The host may write data-bl-drive (0..1) and the field reads it as `k`;
+ * the wall's timeline uses it to send the firing wave through the lattice.
  */
 export type BrickFieldProps = {
   field: FieldName;
@@ -60,6 +63,11 @@ export default function BrickField({ field, animate = false, anchor, fps = 12 }:
       return { x: a.left - b.left, y: a.top - b.top, w: a.width, h: a.height };
     };
 
+    const readDrive = () => {
+      const raw = Number.parseFloat(host.dataset.blDrive ?? '0');
+      return Number.isFinite(raw) ? raw : 0;
+    };
+
     const loop = createLatticeLoop(canvas, {
       field: FIELDS[field],
       animate,
@@ -68,6 +76,7 @@ export default function BrickField({ field, animate = false, anchor, fps = 12 }:
       readBrick,
       readDocTop,
       readAnchor,
+      readDrive,
     });
 
     /* webfont swaps move the anchor panel; one more still once they settle */

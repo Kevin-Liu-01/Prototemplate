@@ -8,25 +8,28 @@ import { useRef, useState } from 'react';
 import { prefersReducedMotion } from '@/lib/dither';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { HELLO_WORLD, SOURCE_FILE } from '../data';
+import { FORMATS, HELLO_WORLD, SOURCE_FILE, SOURCE_INSTALL, SOURCE_PKG } from '../data';
 import Tile from './Tile';
-import { Block, Course, Relief } from './Wall';
+import { Block, Course, HEAD_RELIEF_SPAN, Plaque, Relief } from './Wall';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * textile-block: the T proof, cast in relief.
+ * textile-block: the T proof, cast in relief across one course.
  *
- * The shipped Next.js sample (stacks.ts, verbatim) is cast into one smooth
- * block whose bar carries the file name, the package, the source locale tile
- * and one copy control; the string it wraps comes back in twelve languages,
- * each cast into the adjacent block of the same course with its locale tile
- * inset at the corner. Strings carry the only syntax hue, because strings
- * are the product. Every translation is fully visible at rest, before any
- * script runs; one paused timeline lifts them in order (a small translateY,
- * never opacity) while the course is on screen, so the still, the no-JS
- * render and the finished wall are the same markup. Under
- * prefers-reduced-motion nothing moves.
+ * The course is keyed to the Ennis block. The shipped Next.js sample
+ * (stacks.ts, verbatim) is cast into one smooth block whose bar carries the
+ * file name, the package, the source locale tile and one copy control, and
+ * whose foot carries the two install commands. The string it wraps comes
+ * back in twelve languages, each cast into the adjacent block of the same
+ * course with its locale tile set as a header brick in the corner. Under
+ * them, one row of formatted values: the numbers, currencies, plurals, and
+ * routes the same tree renders per locale, each with its locale brick.
+ * Strings carry the only syntax hue, because strings are the product.
+ * Every cast is fully visible at rest, before any script runs; one paused
+ * timeline lifts them in order (a small translateY, never opacity) while
+ * the course is on screen, so the still, the no-JS render and the finished
+ * wall are the same markup. Under prefers-reduced-motion nothing moves.
  */
 
 type Kind = 'k' | 't' | 'T' | 's' | 'p';
@@ -136,33 +139,55 @@ export default function Proof() {
   return (
     <div ref={root}>
       <Course className='is-proof' id='proof' label='The T component'>
-        <Block className='tb-head' span={{ c: 8, r: 2, cMd: 8, rMd: 2, cSm: 6, rSm: 3 }}>
-          <h2 className='tb-h2'>The T component</h2>
-          <p>Wrap the tree once. GT extracts every string, translates it, and ships each locale.</p>
-        </Block>
-        <Relief className='tb-lg-only' motif='fret' span={{ c: 4, r: 2 }} />
+        <Plaque label='Ennis course' relief='ennis' title='The T component'>
+          Wrap the tree once. GT extracts every string, translates it, and ships each locale.
+        </Plaque>
+        <Relief className='tb-lg-only' relief='ennis' span={HEAD_RELIEF_SPAN} />
 
+        {/* ---- the source block ---- */}
         <Block className='tb-source' span={{ c: 6, r: 5, cMd: 8, rMd: 5, cSm: 6, rSm: 7 }}>
           <div className='tb-source-bar'>
             <span className='tb-source-file'>{SOURCE_FILE}</span>
             <span className='tb-source-side'>
-              <span>gt-next</span>
+              <span>{SOURCE_PKG}</span>
               <Tile code='en' />
               <CopySource />
             </span>
           </div>
           <SourceCode />
+          <div className='tb-source-foot'>
+            {SOURCE_INSTALL.map((command) => (
+              <span className='tb-source-cmd' key={command}>
+                <span aria-hidden='true' className='tb-term-prompt'>
+                  $
+                </span>
+                <code>{command}</code>
+              </span>
+            ))}
+          </div>
         </Block>
 
+        {/* ---- the cast translations, one block each ---- */}
         {HELLO_WORLD.map((row) => (
-          <Block className='tb-cast' key={row.tag} span={{ c: 2, r: 1, cMd: 2, cSm: 3, rSm: 2 }}>
-            <Tile code={row.tag} corner />
+          <Block className='tb-cast' key={row.tag} span={{ c: 2, r: 1, cMd: 2, cSm: 3, rSm: 1 }}>
+            <Tile code={row.tag} header />
             <p data-cast dir={row.rtl ? 'rtl' : 'ltr'} lang={row.tag}>
               {row.text}
             </p>
           </Block>
         ))}
-        <Relief className='tb-lg-only' motif='cross' span={{ c: 6, r: 1 }} />
+        <Relief className='tb-lg-only' relief='ennis' span={{ c: 6, r: 1 }} />
+
+        {/* ---- the formatted values the same tree renders ---- */}
+        {FORMATS.map((format) => (
+          <Block className='tb-format' key={format.cap} span={{ c: 3, r: 1, cMd: 2, cSm: 3 }}>
+            <Tile code={format.tag} header />
+            <span className='tb-format-cap'>{format.cap}</span>
+            <code className='tb-format-out' lang={format.tag}>
+              {format.out}
+            </code>
+          </Block>
+        ))}
       </Course>
     </div>
   );

@@ -1,0 +1,1867 @@
+/* clay-tablet: the page is a museum case of clay tablets, and every section is
+   one tablet, a fired-clay slab with pillow corners ruled into registers and
+   columns; its tones, borders, and dividers are impressed wedges whose density
+   is an ordered Bayer dither.
+
+   References, designed from concretely and held to geometry only (H1):
+   1. The Behistun inscription. The same text cut in parallel registers, one
+      register per language, on one face of the rock, each register ruled
+      into lines. That is the T component proof's column grammar (source in
+      the first column, each locale in the next), the stele's seven stacked
+      registers, and the rule between every register on every tablet.
+   2. The Rosetta Stone. One slab of black granodiorite carrying one text in
+      three registers, the registers divided by the change of script and
+      nothing else, the slab's edge softened, the text set in from the edge.
+      That is the tablet as the page's one surface class (a slab with 12px
+      pillow corners, one lit edge, registers inside it), the stele's black
+      stone that never remaps, and the 20px floor between copy and any rule.
+   3. The Ishtar Gate reconstruction (Pergamon Museum). Fired brick as the
+      material, and the rosette border repeat: a row of lobed disks between
+      two register rules, the disk a radial repeat and never a figure. That
+      is the hero's frieze register (five eight-lobed rosettes in wedge
+      dither), the fired-clay ground, and the lapis of the seals.
+   Engine: the wedge as a dither cell. A cuneiform wedge is a triangular head
+   with a tail, the print of a reed stylus; here it is the cell of an ordered
+   dither and never a sign. The 8x8 Bayer matrix in src/lib/dither.ts decides
+   which cells take a wedge; a second pass against the transposed matrix lays
+   a crossed wedge above half tone. Tone is impression density, never a
+   gradient or an alpha veil. No sign, figure, or creature is drawn.
+
+   Material palette (Sumerian and Assyrian revival): fired clay for the tablet
+   face, wet clay dark for the case ground and the ink, cream slip for the code
+   and workspace panels, one lapis for the seals. Black granodiorite for the
+   one stele.
+
+   Ornament homes: the register divider under every tablet head (the wedge
+   rule), the column rules (the doubled thread, one owner, two strokes), the
+   hero frieze (a rosette repeat in wedge dither), the seals (a lapis disk
+   carrying the mark; flag chips as small clay seals), the ramp band at the foot
+   of the languages tablet, and the stele's field (the wedge dither in motion).
+
+   Accent: lapis, spent on the seal impressions, the one active column edge on
+   the proof tablet, and the zh-Hans / zh-Hant tell ring. Never a wash.
+
+   Display face: Forum (var(--clay-tablet-display)), used for h1, h2, and the
+   hero seal's numeral only. Inter is the body, interface, and caption face.
+
+   Dark mode remaps the token block below under [data-theme='dark'] and
+   nothing else: the tablets become wet clay, the ink becomes slip, the case
+   goes to #070707, the slip panels darken one step, lapis and the impression
+   lift. The stele's tokens are constants and never remap.
+
+   Line law: a shelf owns the one hairline at its foot; a tablet owns its own
+   edge; inside a tablet every register after the first owns its top rule,
+   columns after the first own their doubled thread, cells draw no border. */
+.clay-tablet-root {
+  --deco-ground: #cfa87b; /* fired clay: the tablet face */
+  --deco-ink: #2a1a10; /* wet clay dark */
+  --deco-ink-2: rgba(42, 26, 16, 0.76); /* 5.1:1 on fired clay: AA for the 14px body copy it carries */
+  --deco-hair: rgba(42, 26, 16, 0.22); /* ink at alpha: titanium does not read on clay */
+  --deco-accent: #2447a3; /* lapis */
+  --deco-ornament: #7d3f22; /* the impression: fired clay in its own shadow */
+
+  /* the case and its slip, remapped with the six above */
+  --clay-case: #1a120d; /* the dark case ground the tablets sit on */
+  --clay-case-ink: #efe4d0; /* type on the case: the nav, shelf heads, the plaque */
+  --clay-case-ink-2: rgba(239, 228, 208, 0.62);
+  --clay-shelf: rgba(239, 228, 208, 0.16); /* shelf lines and the tablet's lit edge */
+  --clay-slip: #efe4d0; /* cream slip: code and workspace panels */
+
+  /* the stele: black stone, constant in both themes */
+  --clay-stele: #0e0c0b;
+  --clay-stele-ink: #efe4d0;
+  --clay-stele-ink-2: rgba(239, 228, 208, 0.64);
+  --clay-stele-hair: rgba(239, 228, 208, 0.2);
+  --clay-stele-accent: #6f8fe8;
+
+  /* geometry */
+  --ct-rail: 1180px;
+  --ct-gut: clamp(16px, 3vw, 32px);
+  --ct-pad: clamp(20px, 3.2vw, 44px);
+  --ct-radius: 12px; /* the one structural radius: the tablet's pillow corner */
+  --thread-gauge: 1px;
+  --thread-gap: 3px;
+  --ct-thread: linear-gradient(var(--deco-hair), var(--deco-hair)),
+    linear-gradient(var(--deco-hair), var(--deco-hair));
+
+  /* type */
+  --ct-sans: var(--font-inter), Inter, system-ui, sans-serif;
+  --ct-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  background: var(--clay-case);
+  color: var(--clay-case-ink);
+  font-family: var(--ct-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+[data-theme='dark'] .clay-tablet-root {
+  --deco-ground: #1d1511; /* wet clay: the tablets at night */
+  --deco-ink: #efe4d0;
+  --deco-ink-2: rgba(239, 228, 208, 0.66);
+  --deco-hair: rgba(239, 228, 208, 0.24);
+  --deco-accent: #6f8fe8;
+  --deco-ornament: #c98457;
+  --clay-case: #070707;
+  --clay-shelf: rgba(239, 228, 208, 0.14);
+  --clay-slip: #28201a;
+}
+
+/* ---------- base ---------- */
+
+.clay-tablet-root *,
+.clay-tablet-root *::before,
+.clay-tablet-root *::after {
+  box-sizing: border-box;
+}
+
+.clay-tablet-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.clay-tablet-root :focus-visible {
+  outline: 2px solid var(--deco-accent);
+  outline-offset: 2px;
+}
+
+.clay-tablet-root h1,
+.clay-tablet-root h2,
+.clay-tablet-root h3,
+.clay-tablet-root h4,
+.clay-tablet-root p,
+.clay-tablet-root ul,
+.clay-tablet-root ol,
+.clay-tablet-root dl,
+.clay-tablet-root dd,
+.clay-tablet-root pre,
+.clay-tablet-root figure {
+  margin: 0;
+}
+
+.clay-tablet-root code,
+.clay-tablet-root pre {
+  font-family: var(--ct-mono);
+  font-size: 12px;
+}
+
+.clay-tablet-root img {
+  display: block;
+  max-width: 100%;
+}
+
+/* visually hidden: the wordmark's text and the empty ledger cell's name */
+.clay-tablet-root .ct-vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- the case label bar ---------- */
+
+.clay-tablet-root .ct-nav {
+  --deco-ground: var(--clay-case);
+  --deco-ink: var(--clay-case-ink);
+  --deco-ink-2: var(--clay-case-ink-2);
+  --deco-hair: var(--clay-shelf);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--clay-case);
+  border-bottom: 1px solid var(--clay-shelf);
+}
+
+.clay-tablet-root .ct-nav-in {
+  width: min(var(--ct-rail), 100%);
+  margin-inline: auto;
+  padding: 0 var(--ct-gut);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.clay-tablet-root .ct-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+
+.clay-tablet-root .ct-nav-links {
+  display: flex;
+  gap: 22px;
+  margin-left: 18px;
+  font-size: 14px;
+  color: var(--clay-case-ink-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.clay-tablet-root .ct-nav-links a:hover {
+  color: var(--clay-case-ink);
+}
+
+.clay-tablet-root .ct-nav-acts {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.clay-tablet-root .ct-nav-signin {
+  font-size: 14px;
+  color: var(--clay-case-ink-2);
+  white-space: nowrap;
+}
+
+.clay-tablet-root .ct-nav-signin:hover {
+  color: var(--clay-case-ink);
+}
+
+/* the shell's theme button on the case: its ink and its ring, nothing else */
+.clay-tablet-root .ct-theme {
+  color: var(--clay-case-ink);
+  border-color: var(--clay-shelf);
+  border-radius: 6px;
+}
+
+.clay-tablet-root .ct-theme:hover {
+  color: var(--clay-case-ink);
+  background: color-mix(in srgb, var(--clay-case-ink) 10%, transparent);
+}
+
+/* ---------- shelves, labels, heads on the case ---------- */
+
+.clay-tablet-root .ct-shelf {
+  padding: clamp(44px, 6vw, 84px) var(--ct-gut) clamp(30px, 4vw, 52px);
+  border-bottom: 1px solid var(--clay-shelf);
+}
+
+.clay-tablet-root .ct-shelf-in {
+  width: min(var(--ct-rail), 100%);
+  margin-inline: auto;
+}
+
+/* the museum label: a slip card under the tablet with the catalogue number, the name, one fact */
+.clay-tablet-root .ct-label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin-top: 18px;
+  padding: 10px 14px;
+  max-width: 62ch;
+  background: var(--clay-slip);
+  color: var(--deco-ink);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.clay-tablet-root .ct-label-n {
+  font-family: var(--ct-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-label-t {
+  font-weight: 500;
+}
+
+.clay-tablet-root .ct-label-s {
+  color: var(--deco-ink-2);
+  flex-basis: 100%;
+}
+
+.clay-tablet-root .ct-shelf-head {
+  --deco-ink: var(--clay-case-ink);
+  --deco-ink-2: var(--clay-case-ink-2);
+  padding: 0 0 34px;
+  max-width: 60ch;
+}
+
+.clay-tablet-root .ct-shelf-row {
+  display: grid;
+  gap: 22px;
+  align-items: start;
+}
+
+.clay-tablet-root .ct-shelf-row.is-three {
+  grid-template-columns: 1.45fr 1fr 1fr;
+}
+
+.clay-tablet-root .ct-compare {
+  --deco-ink: var(--clay-case-ink);
+  margin-top: 26px;
+  font-size: 14px;
+  color: var(--clay-case-ink-2);
+}
+
+.clay-tablet-root .ct-compare a {
+  color: var(--clay-case-ink);
+  border-bottom: 1px solid var(--clay-shelf);
+  padding-bottom: 2px;
+}
+
+/* ---------- the tablet ---------- */
+
+.clay-tablet-root .ct-tablet {
+  position: relative;
+  background: var(--deco-ground);
+  background-clip: padding-box;
+  color: var(--deco-ink);
+  border: 1px solid var(--clay-shelf); /* the slab's lit edge, drawn once; nothing inside parallels it */
+  border-radius: var(--ct-radius);
+  overflow: hidden;
+}
+
+/* every register after the first owns its top rule; the wedge rule and the register it precedes draw none */
+.clay-tablet-root .ct-tablet > * + * {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-tablet > .ct-wrule,
+.clay-tablet-root .ct-tablet > .ct-wrule + * {
+  border-top: 0;
+}
+
+.clay-tablet-root .ct-reg {
+  padding: var(--ct-pad);
+}
+
+.clay-tablet-root .ct-head {
+  padding-bottom: 24px;
+}
+
+.clay-tablet-root .ct-head p {
+  margin-top: 12px;
+  max-width: 60ch;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-head p code {
+  color: var(--deco-ink);
+}
+
+/* the wedge rule: one row of horizontal wedges, the ornament as a CSS mask tile */
+.clay-tablet-root .ct-wrule {
+  height: 10px;
+  margin: 0 var(--ct-pad) 4px;
+  background-color: var(--deco-ornament);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 1.6v6.8L4.6 5.9 12.6 5 4.6 4.1Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 1.6v6.8L4.6 5.9 12.6 5 4.6 4.1Z'/%3E%3C/svg%3E");
+  -webkit-mask-size: 14px 10px;
+  mask-size: 14px 10px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+}
+
+/* columns: the register after the first draws the doubled thread at its left edge */
+.clay-tablet-root .ct-cols {
+  display: grid;
+}
+
+.clay-tablet-root .ct-col {
+  min-width: 0;
+  padding: 26px var(--ct-pad) 30px;
+}
+
+.clay-tablet-root .ct-col + .ct-col {
+  background-image: var(--ct-thread);
+  background-size: var(--thread-gauge) 100%, var(--thread-gauge) 100%;
+  background-repeat: no-repeat;
+  background-position:
+    0 0,
+    calc(var(--thread-gauge) + var(--thread-gap)) 0;
+}
+
+.clay-tablet-root .ct-col h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+}
+
+.clay-tablet-root .ct-col > p {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.58;
+  color: var(--deco-ink-2);
+}
+
+/* ---------- type ---------- */
+
+.clay-tablet-root h1,
+.clay-tablet-root h2 {
+  font-family: var(--clay-tablet-display), var(--font-inter), serif;
+  font-weight: 400;
+  letter-spacing: 0.004em;
+}
+
+.clay-tablet-root h2 {
+  font-size: clamp(1.7rem, 2.6vw, 2.35rem);
+  line-height: 1.12;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+.clay-tablet-root h3 {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+}
+
+.clay-tablet-root h4 {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* the wedge dither stills: the first pass in the impression's own colour, the second a step deeper */
+.clay-tablet-root .ct-wedges {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.clay-tablet-root .ct-wedge-a {
+  fill: var(--deco-ornament);
+}
+
+.clay-tablet-root .ct-wedge-b {
+  fill: color-mix(in srgb, var(--deco-ornament) 72%, var(--deco-ink));
+}
+
+/* ---------- controls: buttons, the command, chips, stamps ---------- */
+
+.clay-tablet-root .ct-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font: 500 14px/1 var(--ct-sans);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.clay-tablet-root .ct-btn-solid {
+  background: var(--deco-ink);
+  color: var(--deco-ground);
+  border: 1px solid var(--deco-ink);
+}
+
+.clay-tablet-root .ct-btn-solid:hover {
+  background: color-mix(in srgb, var(--deco-ink) 88%, var(--deco-ground));
+}
+
+.clay-tablet-root .ct-btn-line {
+  border: 1px solid var(--deco-hair);
+  color: var(--deco-ink);
+  background-clip: padding-box;
+}
+
+.clay-tablet-root .ct-btn-line:hover {
+  border-color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-btn-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.clay-tablet-root .ct-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.clay-tablet-root .ct-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 0 4px 0 12px;
+  height: 36px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 6px;
+  background-clip: padding-box;
+}
+
+.clay-tablet-root .ct-cmd-text {
+  font-size: 12.5px;
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-cmd-text::before {
+  content: '$ ';
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-copy {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--deco-ink-2);
+  font: 500 12px/1 var(--ct-sans);
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clay-tablet-root .ct-copy:hover {
+  color: var(--deco-ink);
+  background: color-mix(in srgb, var(--deco-ink) 8%, transparent);
+}
+
+/* the locale chip: a small clay seal, flag print then code in mono (A3) */
+.clay-tablet-root .ct-lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--ct-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--deco-ink);
+  white-space: nowrap;
+}
+
+.clay-tablet-root .ct-vchip,
+.clay-tablet-root .ct-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.clay-tablet-root .ct-vchip.is-tell {
+  border-color: var(--deco-accent);
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-tag {
+  font-family: var(--ct-sans);
+  font-size: 12.5px;
+  height: 26px;
+  padding: 0 10px;
+}
+
+.clay-tablet-root .ct-stamp {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background-clip: padding-box;
+  font-family: var(--ct-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
+.clay-tablet-root .ct-stamp[data-kind='edited'] {
+  border-style: dashed;
+}
+
+/* ---------- Tablet I: the claim ---------- */
+
+.clay-tablet-root .ct-hero-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: start;
+  padding-top: clamp(40px, 5vw, 64px);
+  padding-bottom: clamp(36px, 4.5vw, 56px);
+}
+
+.clay-tablet-root .ct-hero-copy {
+  min-width: 0;
+  max-width: 760px;
+}
+
+.clay-tablet-root .ct-claim {
+  font-size: clamp(2.5rem, 5.6vw, 4.75rem);
+  line-height: 1.04;
+  min-height: 2.08em;
+  text-wrap: balance;
+}
+
+.clay-tablet-root .ct-claim-word {
+  display: inline-block;
+}
+
+.clay-tablet-root .ct-hero-sub {
+  margin-top: 22px;
+  max-width: 58ch;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-wordmark {
+  position: relative;
+  display: inline-block;
+  vertical-align: -3px;
+  color: var(--deco-ink);
+}
+
+/* the seal: a lapis disk ringed by wedges, the mark in slip, the numeral under it */
+.clay-tablet-root .ct-seal-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 132px;
+}
+
+.clay-tablet-root .ct-seal {
+  position: relative;
+  width: 108px;
+  height: 108px;
+  color: var(--clay-case-ink); /* the ring and the mark stay slip-coloured on lapis in both themes */
+}
+
+.clay-tablet-root .ct-seal-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.clay-tablet-root .ct-seal-ring circle {
+  fill: var(--deco-accent);
+}
+
+.clay-tablet-root .ct-seal-ring path {
+  fill: currentColor;
+}
+
+.clay-tablet-root .ct-seal-mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.clay-tablet-root .ct-seal-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+  text-align: center;
+}
+
+.clay-tablet-root .ct-seal-numeral {
+  font-family: var(--clay-tablet-display), var(--font-inter), serif;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-hero-frieze {
+  padding: 0;
+  height: clamp(168px, 24vw, 328px);
+}
+
+/* the colophon: one sentence, six marks in six cells, the marks in the page's ink through a mask */
+.clay-tablet-root .ct-colophon {
+  padding-top: 26px;
+  padding-bottom: 30px;
+}
+
+.clay-tablet-root .ct-colophon-lead {
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-marks {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.clay-tablet-root .ct-marks-cell {
+  display: grid;
+  place-items: center;
+  height: 40px;
+}
+
+.clay-tablet-root .ct-marks-cell + .ct-marks-cell {
+  background-image: var(--ct-thread);
+  background-size: var(--thread-gauge) 100%, var(--thread-gauge) 100%;
+  background-repeat: no-repeat;
+  background-position:
+    0 0,
+    calc(var(--thread-gauge) + var(--thread-gap)) 0;
+}
+
+.clay-tablet-root .ct-wm {
+  display: block;
+  width: min(100%, 124px);
+  height: 22px;
+  margin: 0 18px;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.clay-tablet-root .ct-wm.is-cursor {
+  -webkit-mask-image: url('/logos/cursor.light.svg');
+  mask-image: url('/logos/cursor.light.svg');
+}
+
+.clay-tablet-root .ct-wm.is-ramp {
+  -webkit-mask-image: url('/logos/ramp.light.svg');
+  mask-image: url('/logos/ramp.light.svg');
+}
+
+.clay-tablet-root .ct-wm.is-mintlify {
+  -webkit-mask-image: url('/logos/mintlify.light.svg');
+  mask-image: url('/logos/mintlify.light.svg');
+}
+
+.clay-tablet-root .ct-wm.is-profound {
+  -webkit-mask-image: url('/logos/profound.light.svg');
+  mask-image: url('/logos/profound.light.svg');
+}
+
+.clay-tablet-root .ct-wm.is-partiful {
+  -webkit-mask-image: url('/logos/partiful.light.svg');
+  mask-image: url('/logos/partiful.light.svg');
+}
+
+.clay-tablet-root .ct-wm.is-clickhouse {
+  -webkit-mask-image: url('/logos/clickhouse.light.svg');
+  mask-image: url('/logos/clickhouse.light.svg');
+}
+
+/* ---------- Tablet II: the T component ---------- */
+
+.clay-tablet-root .ct-proof-cols {
+  grid-template-columns: minmax(300px, 1.5fr) repeat(5, minmax(0, 1fr));
+}
+
+/* the slip panel: a cream register set into the clay, one ring, radius 0 */
+.clay-tablet-root .ct-slip {
+  background: var(--clay-slip);
+  border: 1px solid var(--deco-hair);
+  background-clip: padding-box;
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-code-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  padding: 0 6px 0 14px;
+  border-bottom: 1px solid var(--deco-hair);
+  font-family: var(--ct-mono);
+  font-size: 11.5px;
+}
+
+.clay-tablet-root .ct-code-file {
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-code-pkg {
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-code-bar .ct-copy {
+  margin-left: auto;
+}
+
+.clay-tablet-root .ct-code-body {
+  padding: 14px 14px 16px 0;
+  overflow-x: auto;
+  font-size: 12px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+.clay-tablet-root .ct-code-body code {
+  display: block;
+  font-size: inherit;
+}
+
+.clay-tablet-root .ct-code-line {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  white-space: pre;
+}
+
+.clay-tablet-root .ct-ln {
+  text-align: right;
+  padding-right: 12px;
+  color: var(--deco-ink-2);
+  user-select: none;
+}
+
+.clay-tablet-root .ct-tok-str {
+  color: var(--deco-ornament); /* strings are the product: the one syntax hue */
+}
+
+.clay-tablet-root .ct-tok-gt {
+  font-weight: 600;
+}
+
+.clay-tablet-root .ct-code-sm .ct-code-body {
+  padding-left: 14px;
+}
+
+.clay-tablet-root .ct-proof-loc {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.clay-tablet-root .ct-proof-seal {
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+/* the active column: its seal takes the lapis ring, the one accent edge on this tablet */
+.clay-tablet-root .ct-proof-loc[data-on='true'] .ct-lct {
+  border-color: var(--deco-accent);
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-proof-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.clay-tablet-root .ct-proof-row dt {
+  font-family: var(--ct-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-proof-row dd {
+  margin-top: 3px;
+  font-size: 15px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.clay-tablet-root .ct-run {
+  padding-top: 22px;
+  padding-bottom: 26px;
+}
+
+.clay-tablet-root .ct-run-lines {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 6px 28px;
+  font-family: var(--ct-mono);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.clay-tablet-root .ct-run-line[data-tone='dim'] {
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-run-key {
+  color: var(--deco-ink-2);
+}
+
+/* ---------- Tablet III: product surfaces ---------- */
+
+.clay-tablet-root .ct-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.clay-tablet-root .ct-stat + .ct-stat {
+  padding-left: 22px;
+  background-image: var(--ct-thread);
+  background-size: var(--thread-gauge) 100%, var(--thread-gauge) 100%;
+  background-repeat: no-repeat;
+  background-position:
+    0 0,
+    calc(var(--thread-gauge) + var(--thread-gap)) 0;
+}
+
+.clay-tablet-root .ct-stat dt {
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-stat dd {
+  margin-top: 2px;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.clay-tablet-root .ct-surf-cols {
+  grid-template-columns: 1.15fr 1.3fr 0.9fr 1.15fr;
+}
+
+.clay-tablet-root .ct-ledger {
+  list-style: none;
+  padding: 0;
+  margin-top: 18px;
+}
+
+.clay-tablet-root .ct-ledger-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 9px 0;
+  font-size: 12.5px;
+}
+
+.clay-tablet-root .ct-ledger-row + .ct-ledger-row {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-ledger-pkg {
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-ledger-name {
+  text-align: right;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-ledger-cmd {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-term {
+  margin-top: 18px;
+  padding: 14px 16px 16px;
+  font-family: var(--ct-mono);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.clay-tablet-root .ct-term-line[data-tone='cmd'] {
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-term-line {
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.clay-tablet-root .ct-code.ct-code-sm {
+  margin-top: 14px;
+}
+
+.clay-tablet-root .ct-tags {
+  list-style: none;
+  padding: 0;
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.clay-tablet-root .ct-lx-mark {
+  width: 22px;
+  height: 22px;
+}
+
+.clay-tablet-root .ct-trace {
+  list-style: none;
+  padding: 0;
+  margin-top: 18px;
+  counter-reset: trace;
+}
+
+.clay-tablet-root .ct-trace-line {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  padding: 9px 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  counter-increment: trace;
+}
+
+.clay-tablet-root .ct-trace-line::before {
+  content: counter(trace, upper-roman);
+  font-family: var(--ct-mono);
+  font-size: 10.5px;
+  color: var(--deco-ink-2);
+  padding-top: 1px;
+}
+
+.clay-tablet-root .ct-trace-line + .ct-trace-line {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-trace-line code {
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Tablet IV: languages as material ---------- */
+
+.clay-tablet-root .ct-cells {
+  list-style: none;
+  margin: 0;
+  padding: 6px var(--ct-pad) 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* the cell carries the thread's geometry and the wedge rule's drawing at all
+   widths; each breakpoint only decides which cells show them, by row position */
+.clay-tablet-root .ct-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 128px;
+  padding: 22px 18px 34px;
+  background-size: var(--thread-gauge) 100%, var(--thread-gauge) 100%;
+  background-repeat: no-repeat;
+  background-position:
+    0 0,
+    calc(var(--thread-gauge) + var(--thread-gap)) 0;
+}
+
+/* seams: every cell after the first in its row draws the doubled thread at its left */
+.clay-tablet-root .ct-cell:not(:nth-child(5n + 1)) {
+  background-image: var(--ct-thread);
+}
+
+/* every cell above the last row carries a wedge rule at its foot */
+.clay-tablet-root .ct-cell:not(:nth-last-child(-n + 5))::after {
+  content: '';
+}
+
+.clay-tablet-root .ct-cell::after {
+  content: none;
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 0;
+  height: 10px;
+  background-color: var(--deco-ornament);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 1.6v6.8L4.6 5.9 12.6 5 4.6 4.1Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 1.6v6.8L4.6 5.9 12.6 5 4.6 4.1Z'/%3E%3C/svg%3E");
+  -webkit-mask-size: 14px 10px;
+  mask-size: 14px 10px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+}
+
+.clay-tablet-root .ct-cell-native {
+  display: block;
+  font-size: clamp(22px, 2.2vw, 28px);
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.clay-tablet-root .ct-cell-native[dir='rtl'] {
+  text-align: right;
+}
+
+.clay-tablet-root .ct-cell-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 26px;
+  padding-bottom: 26px;
+}
+
+.clay-tablet-root .ct-var-row {
+  display: grid;
+  grid-template-columns: 64px 120px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.clay-tablet-root .ct-var-row + .ct-var-row {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-var-name {
+  font-size: 13.5px;
+}
+
+.clay-tablet-root .ct-var-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.clay-tablet-root .ct-var-tail {
+  margin-top: 10px;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-var-tail code {
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-ramp {
+  padding: 0;
+  height: 84px;
+}
+
+/* ---------- Tablet V: the review workspace ---------- */
+
+.clay-tablet-root .ct-ws-reg {
+  padding-top: 26px;
+}
+
+.clay-tablet-root .ct-ws-bar,
+.clay-tablet-root .ct-ws-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 38px;
+  padding: 0 16px;
+  font-family: var(--ct-mono);
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-ws-bar {
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-ws-title {
+  color: var(--deco-ink);
+}
+
+.clay-tablet-root .ct-ws-foot {
+  justify-content: flex-start;
+  gap: 22px;
+  border-top: 1px solid var(--deco-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.clay-tablet-root .ct-ws-foot span {
+  white-space: nowrap;
+}
+
+.clay-tablet-root .ct-ws-table {
+  padding: 0 16px;
+}
+
+.clay-tablet-root .ct-ws-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 96px;
+  gap: 24px;
+  padding: 14px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.clay-tablet-root .ct-ws-row + .ct-ws-row {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-ws-row.is-head {
+  padding: 12px 0;
+  font-family: var(--ct-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-ws-tr {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.clay-tablet-root .ct-ws-prev {
+  color: var(--deco-ink-2);
+  text-decoration-thickness: 1px;
+}
+
+.clay-tablet-root .ct-ws-state {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+/* the stylus caret at the end of the edited line: the one motion on this tablet */
+.clay-tablet-root .ct-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 3px;
+  vertical-align: -0.15em;
+  background-color: currentColor;
+  animation: clay-tablet-caret 1.1s steps(1, end) infinite;
+}
+
+@keyframes clay-tablet-caret {
+  0%,
+  49% {
+    background-color: currentColor;
+  }
+  50%,
+  100% {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clay-tablet-root .ct-caret {
+    animation: none;
+  }
+}
+
+/* ---------- Tablet VI: the stele ---------- */
+
+.clay-tablet-root .ct-stele {
+  --deco-ground: var(--clay-stele);
+  --deco-ink: var(--clay-stele-ink);
+  --deco-ink-2: var(--clay-stele-ink-2);
+  --deco-hair: var(--clay-stele-hair);
+  --deco-accent: var(--clay-stele-accent);
+  --deco-ornament: var(--clay-stele-ink-2);
+  border-color: var(--clay-stele-hair);
+}
+
+.clay-tablet-root .ct-planes {
+  list-style: none;
+  margin: 0;
+  padding: 8px var(--ct-pad) 10px;
+}
+
+.clay-tablet-root .ct-plane {
+  display: grid;
+  grid-template-columns: 44px 160px minmax(0, 1fr);
+  gap: 18px;
+  align-items: baseline;
+  padding: 15px 0;
+}
+
+.clay-tablet-root .ct-plane + .ct-plane {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-plane-n {
+  font-family: var(--ct-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-plane h3 {
+  font-size: 15.5px;
+}
+
+.clay-tablet-root .ct-plane p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-stele-cols {
+  grid-template-columns: 1fr 1fr;
+}
+
+.clay-tablet-root .ct-term.is-stone {
+  margin-top: 0;
+  padding: 0;
+}
+
+.clay-tablet-root .ct-stele-lead {
+  font-size: 17px;
+  line-height: 1.5;
+  max-width: 34ch;
+}
+
+.clay-tablet-root .ct-stele-acts .ct-acts {
+  margin-top: 20px;
+}
+
+.clay-tablet-root .ct-stele-field {
+  padding: 0;
+  height: clamp(150px, 20vw, 240px);
+  color: var(--clay-stele-ink-2); /* the canvas reads this as its ink */
+}
+
+.clay-tablet-root .ct-stele-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Tablets VII to IX: the pricing file ---------- */
+
+.clay-tablet-root .ct-rates h3,
+.clay-tablet-root .ct-plan h3 {
+  font-size: 15px;
+  color: var(--deco-ink-2);
+  font-weight: 500;
+}
+
+.clay-tablet-root .ct-rate-table {
+  width: 100%;
+  margin-top: 16px;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.clay-tablet-root .ct-rate-table th,
+.clay-tablet-root .ct-rate-table td {
+  padding: 10px 0;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.clay-tablet-root .ct-rate-table thead th {
+  padding-top: 0;
+  font-family: var(--ct-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-rate-table tbody tr th,
+.clay-tablet-root .ct-rate-table tbody tr td {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-rate-table th[scope='row'] {
+  padding-right: 14px;
+  width: 40%;
+}
+
+.clay-tablet-root .ct-rate-table td {
+  font-family: var(--ct-mono);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  padding-right: 12px;
+}
+
+.clay-tablet-root .ct-rate-table td:last-child {
+  padding-right: 0;
+  width: 84px;
+}
+
+.clay-tablet-root .ct-notes {
+  list-style: none;
+  padding: 0;
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-notes code {
+  color: var(--deco-ink);
+  font-size: 11.5px;
+}
+
+.clay-tablet-root .ct-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.clay-tablet-root .ct-price b {
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.clay-tablet-root .ct-price small {
+  font-size: 13px;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-plan-line {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.clay-tablet-root .ct-plan-items {
+  list-style: none;
+  padding: 0;
+  margin-top: 18px;
+  font-size: 13.5px;
+}
+
+.clay-tablet-root .ct-plan-items li {
+  padding: 8px 0;
+}
+
+.clay-tablet-root .ct-plan-items li + li {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.clay-tablet-root .ct-plan .ct-btn {
+  margin-top: 24px;
+}
+
+/* ---------- the plaque ---------- */
+
+.clay-tablet-root .ct-foot {
+  --deco-ink: var(--clay-case-ink);
+  --deco-ink-2: var(--clay-case-ink-2);
+  --deco-hair: var(--clay-shelf);
+  padding: clamp(48px, 6vw, 72px) var(--ct-gut) 0;
+  color: var(--clay-case-ink);
+}
+
+.clay-tablet-root .ct-foot-in {
+  width: min(var(--ct-rail), 100%);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr);
+  gap: 40px;
+}
+
+.clay-tablet-root .ct-foot-brand p {
+  margin-top: 16px;
+  max-width: 30ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--clay-case-ink-2);
+}
+
+/* both drawn marks ship; the plaque is dark in both themes, so the light-ink drawing is the one shown */
+.clay-tablet-root .ct-foot-mark.is-light {
+  display: none;
+}
+
+.clay-tablet-root .ct-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.clay-tablet-root .ct-foot-col h4 {
+  color: var(--clay-case-ink);
+}
+
+.clay-tablet-root .ct-foot-col ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--clay-case-ink-2);
+}
+
+.clay-tablet-root .ct-foot-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clay-tablet-root .ct-foot-col a:hover {
+  color: var(--clay-case-ink);
+}
+
+.clay-tablet-root .ct-foot-lx {
+  width: 14px;
+  height: 14px;
+  filter: invert(1); /* the lambda mark is drawn in ink; the plaque is dark */
+}
+
+.clay-tablet-root .ct-foot-bar {
+  margin-top: clamp(40px, 5vw, 64px);
+  padding: 18px var(--ct-gut) 22px;
+  border-top: 1px solid var(--clay-shelf);
+  font-size: 12.5px;
+  color: var(--clay-case-ink-2);
+}
+
+.clay-tablet-root .ct-foot-bar .ct-foot-in {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+
+/* the Locadex mark on the dark tablets: the drawing is ink, the slab is wet clay */
+[data-theme='dark'] .clay-tablet-root .ct-lx-mark {
+  filter: invert(1);
+}
+
+/* ---------- reflow ---------- */
+
+@media (max-width: 1100px) {
+  .clay-tablet-root .ct-proof-cols {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  .clay-tablet-root .ct-proof-src {
+    grid-column: 1 / -1;
+  }
+
+  .clay-tablet-root .ct-col.ct-proof-src + .ct-col {
+    background-image: none;
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .clay-tablet-root .ct-proof-loc {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .clay-tablet-root .ct-surf-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .clay-tablet-root .ct-surf-cols > .ct-col:nth-child(3) {
+    background-image: none;
+  }
+
+  .clay-tablet-root .ct-surf-cols > .ct-col:nth-child(n + 3) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .clay-tablet-root .ct-shelf-row.is-three {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .clay-tablet-root .ct-rates {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 980px) {
+  .clay-tablet-root .ct-cells {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-child(5n + 1)) {
+    background-image: none;
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-child(4n + 1)) {
+    background-image: var(--ct-thread);
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-last-child(-n + 5))::after {
+    content: none;
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-last-child(-n + 4))::after {
+    content: '';
+  }
+
+  .clay-tablet-root .ct-foot-in {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .clay-tablet-root .ct-stele-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .clay-tablet-root .ct-stele-cols > .ct-col + .ct-col {
+    background-image: none;
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .clay-tablet-root .ct-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 20px;
+  }
+
+  .clay-tablet-root .ct-stat:nth-child(3) {
+    padding-left: 0;
+    background-image: none;
+  }
+}
+
+@media (max-width: 760px) {
+  /* the bar wraps to two rows: brand and acts, then the links; nothing is hidden */
+  .clay-tablet-root .ct-nav-in {
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 10px 16px;
+  }
+
+  .clay-tablet-root .ct-nav-links {
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+    gap: 16px;
+  }
+
+  .clay-tablet-root .ct-hero-top {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .clay-tablet-root .ct-seal-figure {
+    order: -1;
+    flex-direction: row;
+    align-items: center;
+    width: auto;
+    gap: 14px;
+  }
+
+  .clay-tablet-root .ct-seal {
+    width: 72px;
+    height: 72px;
+  }
+
+  .clay-tablet-root .ct-seal-caption {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .clay-tablet-root .ct-marks {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 0;
+  }
+
+  .clay-tablet-root .ct-marks-cell:nth-child(3n + 1) {
+    background-image: none;
+  }
+
+  /* two across under the source: the source is child 1, so the left column holds the even children */
+  .clay-tablet-root .ct-proof-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .clay-tablet-root .ct-proof-loc:nth-child(2n) {
+    background-image: none;
+  }
+
+  .clay-tablet-root .ct-proof-loc:nth-child(2n + 1) {
+    background-image: var(--ct-thread);
+  }
+
+  .clay-tablet-root .ct-surf-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .clay-tablet-root .ct-surf-cols > .ct-col + .ct-col {
+    background-image: none;
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .clay-tablet-root .ct-var-row {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .clay-tablet-root .ct-var-chips {
+    grid-column: 1 / -1;
+  }
+
+  .clay-tablet-root .ct-ws-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  /* the column heads stay, read as one line above the stacked rows */
+  .clay-tablet-root .ct-ws-row.is-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+
+  .clay-tablet-root .ct-ws-state {
+    justify-content: flex-start;
+  }
+
+  .clay-tablet-root .ct-plane {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .clay-tablet-root .ct-plane p {
+    grid-column: 2;
+  }
+
+  .clay-tablet-root .ct-shelf-row.is-three {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* the mobile ladder: the last 720px block consumes the --tcm-* slots with their canonical px fallbacks */
+@media (max-width: 720px) {
+  .clay-tablet-root .ct-cells {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-child(4n + 1)) {
+    background-image: none;
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-child(2n + 1)) {
+    background-image: var(--ct-thread);
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-last-child(-n + 4))::after {
+    content: none;
+  }
+
+  .clay-tablet-root .ct-cell:not(:nth-last-child(-n + 2))::after {
+    content: '';
+  }
+
+  .clay-tablet-root .ct-claim {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+    min-height: calc(2 * var(--tcm-h2-lh, 1.18) * 1em);
+  }
+
+  .clay-tablet-root h2 {
+    font-size: var(--tcm-h2, 2.25rem);
+    line-height: var(--tcm-h2-lh, 1.18);
+  }
+
+  .clay-tablet-root h3,
+  .clay-tablet-root .ct-col h3 {
+    font-size: var(--tcm-h3, 1.375rem);
+    line-height: var(--tcm-h3-lh, 1.3);
+  }
+
+  .clay-tablet-root .ct-hero-sub,
+  .clay-tablet-root .ct-head p,
+  .clay-tablet-root .ct-stele-lead {
+    font-size: var(--tcm-lead, 17px);
+    line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .clay-tablet-root .ct-col > p,
+  .clay-tablet-root .ct-plane p,
+  .clay-tablet-root .ct-plan-line,
+  .clay-tablet-root .ct-ws-row {
+    font-size: var(--tcm-body, 16px);
+    line-height: var(--tcm-body-lh, 1.6);
+  }
+
+  .clay-tablet-root .ct-label,
+  .clay-tablet-root .ct-colophon-lead,
+  .clay-tablet-root .ct-var-tail,
+  .clay-tablet-root .ct-notes {
+    font-size: var(--tcm-small, 14px);
+    line-height: var(--tcm-small-lh, 1.55);
+  }
+
+  .clay-tablet-root .ct-reg,
+  .clay-tablet-root .ct-col {
+    padding: var(--tcm-cell-pad, 28px);
+  }
+
+  .clay-tablet-root .ct-head {
+    padding-top: var(--tcm-head-pt, 72px);
+    padding-bottom: var(--tcm-gap-h2, 18px);
+  }
+
+  .clay-tablet-root .ct-hero-top {
+    padding-top: var(--tcm-box-pt, 36px);
+    padding-bottom: var(--tcm-box-pb, 38px);
+  }
+
+  .clay-tablet-root .ct-hero-frieze,
+  .clay-tablet-root .ct-ramp,
+  .clay-tablet-root .ct-stele-field {
+    padding: 0;
+  }
+
+  .clay-tablet-root .ct-cells,
+  .clay-tablet-root .ct-planes {
+    padding-left: var(--tcm-cell-pad, 28px);
+    padding-right: var(--tcm-cell-pad, 28px);
+  }
+
+  .clay-tablet-root .ct-wrule {
+    margin-left: var(--tcm-cell-pad, 28px);
+    margin-right: var(--tcm-cell-pad, 28px);
+  }
+}

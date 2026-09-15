@@ -3,13 +3,18 @@
  * shipped hero's sixteen locales of "Scale to every language", the greetings
  * are the "Hello, world!" sample in eight languages (es, fr, de, ja and zh
  * are the shipped translation window's outputs; ko, ar and hi are the same
- * sentence in those languages, with their lang and dir), the rates are the
- * published ledger, the customer names are the six on the shipped trust
- * strip, and the footer links are the live site's destinations. The locale
- * rosettes read their native names from the generated locale table so
- * nothing is retyped.
+ * sentence in those languages, with their lang and dir), the capability
+ * outputs are read from the shipped stacks table, the script samples are the
+ * word for "language" as the toolchain's script sampler and the shipped hero
+ * print it, the width samples are the sentence-width diagram's rows, the
+ * rates are the published ledger, the customer names are the six on the
+ * shipped trust strip with their sites, the context cascade is the dark
+ * band's inheritance model, and the footer links are the live site's
+ * destinations. The locale rosettes read their native names from the
+ * generated locale table so nothing is retyped.
  */
 
+import { CAP_DEMOS } from '@/app/d/dither-field/sections/stacks';
 import { SUPPORTED_LOCALES } from '@/app/d/production/sections/locales-data';
 
 export type Claim = { text: string; lang: string; dir?: 'rtl' };
@@ -76,24 +81,35 @@ export const HELLO: readonly Greeting[] = [
   { code: 'hi', lang: 'hi', text: 'नमस्ते, दुनिया!' },
 ];
 
-export type Output = { cap: string; value: string; code: string };
+export type Output = { cap: string; value: string; code?: string };
 
-/** One real product output per capability, with the locale that produced it. */
-export const OUTPUTS: readonly Output[] = [
-  { cap: 'Numbers', value: '1.234.567,89', code: 'de' },
-  { cap: 'Currencies', value: '1.280,00 €', code: 'de' },
-  { cap: 'Dates', value: '29 juil. 2026', code: 'fr' },
-  { cap: 'Plurals', value: '1 plik · 4 pliki', code: 'pl' },
-  { cap: 'Routing', value: '/fr/a-propos', code: 'fr' },
+/**
+ * One real product output per capability, read from the shipped stacks
+ * table, with the locale that produced it where one did. Functions has no
+ * locale: the two hooks are the same in every language.
+ */
+const OUTPUT_CAPS: readonly { cap: string; code?: string }[] = [
+  { cap: 'Numbers', code: 'de' },
+  { cap: 'Currencies', code: 'de' },
+  { cap: 'Dates', code: 'fr' },
+  { cap: 'Plurals', code: 'pl' },
+  { cap: 'Routing', code: 'fr' },
+  { cap: 'Functions' },
 ];
 
-export const CUSTOMERS: readonly { name: string; file: string }[] = [
-  { name: 'Cursor', file: 'cursor' },
-  { name: 'Ramp', file: 'ramp' },
-  { name: 'Mintlify', file: 'mintlify' },
-  { name: 'Profound', file: 'profound' },
-  { name: 'Partiful', file: 'partiful' },
-  { name: 'ClickHouse', file: 'clickhouse' },
+export const OUTPUTS: readonly Output[] = OUTPUT_CAPS.flatMap((entry) => {
+  const value = CAP_DEMOS[entry.cap];
+  if (!value) return [];
+  return [{ cap: entry.cap, value, code: entry.code }];
+});
+
+export const CUSTOMERS: readonly { name: string; file: string; href: string }[] = [
+  { name: 'Cursor', file: 'cursor', href: 'https://cursor.com' },
+  { name: 'Ramp', file: 'ramp', href: 'https://ramp.com' },
+  { name: 'Mintlify', file: 'mintlify', href: 'https://mintlify.com' },
+  { name: 'Profound', file: 'profound', href: 'https://tryprofound.com' },
+  { name: 'Partiful', file: 'partiful', href: 'https://partiful.com' },
+  { name: 'ClickHouse', file: 'clickhouse', href: 'https://clickhouse.com' },
 ];
 
 export const TRUST_LEAD = 'Cursor, Ramp and Profound ship in over thirty languages';
@@ -146,6 +162,9 @@ export const REVIEW_ROWS: readonly ReviewRow[] = [
   },
 ];
 
+export const REVIEW_BAR = { workspace: 'workspace · es-419', count: `${REVIEW_ROWS.length} strings` } as const;
+export const REVIEW_FOOT: readonly string[] = ['⌘K search', 'history', 'download', 'agent · locadex'];
+
 /** What Locadex found on the changed file, and what it did about it. */
 export const LOCADEX_FINDINGS: readonly string[] = [
   'Copy that was never wrapped',
@@ -161,6 +180,64 @@ export const LOCADEX_TRACE: readonly string[] = [
   'unwrapped copy · hand-rolled date · unbuilt label',
   '+ <T> · + <DateTime> · − toLocaleDateString()',
   'PR #218 · 6 locales · merged',
+];
+
+/**
+ * The context cascade from the shipped dark band: glossary and directives
+ * set on the organization, context groups ranked on the project, one
+ * component-level context attribute and the word it changed.
+ */
+export const CASCADE = {
+  title: 'Context, defined once, inherited all the way down',
+  lead: 'Glossary and tone set at the top; every project and component below inherits them.',
+  organization: {
+    glossary: 'Locadex is the GT agent. Do not translate.',
+    directive: 'Active voice. Use formal Sie.',
+    directiveLocale: 'de',
+  },
+  project: {
+    groups: [
+      { rank: '1', name: 'brand-core', scope: 'org' },
+      { rank: '2', name: 'docs-style', scope: 'org' },
+      { rank: '3', name: 'checkout-copy', scope: 'project' },
+    ],
+    verdict: 'On overlap the top group wins: formal Sie holds, casual tone loses.',
+  },
+  component: {
+    attribute: '$context="popup, not bread"',
+    source: 'Click the toast to dismiss',
+    locale: 'es',
+    kept: 'la notificación',
+    dropped: 'la tostada',
+  },
+} as const;
+
+export type Script = { code: string; lang: string; script: string; text: string; dir?: 'rtl' };
+
+/**
+ * The word for "language" in nine scripts, as the toolchain's script sampler
+ * and the shipped hero's morphing word print it, with lang and dir.
+ */
+export const SCRIPTS: readonly Script[] = [
+  { code: 'en', lang: 'en', script: 'Latin', text: 'language' },
+  { code: 'el', lang: 'el', script: 'Greek', text: 'γλώσσα' },
+  { code: 'ru', lang: 'ru', script: 'Cyrillic', text: 'язык' },
+  { code: 'ar', lang: 'ar', script: 'Arabic', text: 'لغة', dir: 'rtl' },
+  { code: 'hi', lang: 'hi', script: 'Devanagari', text: 'भाषा' },
+  { code: 'th', lang: 'th', script: 'Thai', text: 'ภาษา' },
+  { code: 'zh', lang: 'zh', script: 'Han', text: '语言' },
+  { code: 'ja', lang: 'ja', script: 'Kanji', text: '言語' },
+  { code: 'ko', lang: 'ko', script: 'Hangul', text: '언어' },
+];
+
+export type WidthRow = { code: string; lang: string; text: string; hint: string; dir?: 'rtl' };
+
+/** The sentence-width diagram's rows: one button label, four widths. */
+export const WIDTHS: readonly WidthRow[] = [
+  { code: 'en', lang: 'en', text: 'Save changes', hint: 'baseline' },
+  { code: 'de', lang: 'de', text: 'Änderungen speichern', hint: '+63%' },
+  { code: 'ja', lang: 'ja', text: '変更を保存', hint: '−25%' },
+  { code: 'ar', lang: 'ar', text: 'حفظ التغييرات', hint: '−25%', dir: 'rtl' },
 ];
 
 /** The locales carved into the rosette band, one rosette each. */

@@ -1,46 +1,63 @@
-/* raking-relief: a bas-relief wall. Wide stone courses stacked under a
-   raking light from the left; every form is carved, and depth is read
-   from dither density, never from a gradient or a blurred shadow. A raised
-   panel catches a lit edge on its left and casts a Bayer-tier shadow to its
-   right; a sunk panel holds shadow inside its left edge and light on its
-   right. The rule is applied the same way to every panel on the page.
+/* raking-relief: a bas-relief stone wall under a raking light from the
+   left. Wide courses stacked down the page; every form on them is carved,
+   and depth is read from dither density and single lit lines, never from
+   a gradient or a blurred shadow. A raised tablet catches a lit edge on
+   its left and top and casts a stepped Bayer-tier shadow to its right
+   (dense beside the tablet, thinning outward) and, more thinly, below. A
+   sunk register holds the rim's shadow inside its left and top edges and
+   a lit inner wall on its right and bottom. Carved letters cast a
+   dithered shadow down and right; incised letters show the lit lip of
+   their cut one pixel down and right. The same light reads every panel,
+   control, and letter on the page, in the same direction.
 
    References, designed from concretely:
    1. The Ishtar Gate reconstruction (Pergamon Museum): wide horizontal
       courses of glazed brick divided by a single rule, framed by rosette
-      bands (a rosette, a square, a rosette) and palmette friezes in relief.
-      The course-and-band rhythm of this page is that register system, and
-      the rosette and palmette bands are its two repeats. Geometry only.
-   2. The Rosetta Stone: one dark slab, three registers of incised text,
-      read under raking light. The ground is the highest plane; the letter
-      is cut into it; the wall of the cut facing the light is bright and
-      the floor beside the far rim is in shadow. The sunk panels here follow
-      that reading, with the lit edge on the right and the shadow band
-      inside the left edge, and the black stele takes its three registers.
-   3. The Guardian Building, Detroit (Wirt Rowland, 1929): stepped setbacks
-      and the notched chevron tile bands of the exterior. The stele's stepped
-      crown and the chevron band are taken from its silhouette and tile
-      courses. The stepped fret is the greca of Mitla's Hall of Columns,
-      which the same builders quoted.
+      bands (a rosette, a square, a rosette) and palmette friezes in
+      relief. The course-and-band rhythm of this page is that register
+      system; the rosette, palmette and guilloche bands are its repeats,
+      and the lapis of its bricks is the one inlay. Geometry only.
+   2. The Rosetta Stone: one dark slab, registers of incised text read
+      under raking light. The ground is the highest plane; the letter is
+      cut into it; the wall of the cut facing the light is bright and the
+      floor beside the far rim is in shadow. The sunk registers here take
+      that reading (shadow inside the left rim, lit wall on the right),
+      the incised strings take the lit lip, and the recess holds a stele
+      of four registers: head, run and trace, cascade, acts.
+   3. The Guardian Building, Detroit (Wirt Rowland, 1929): stepped
+      setbacks and the notched chevron tile bands of the exterior. The
+      niche head over the recess, the ziggurat caps over the pricing
+      tablets and the chevron frames are taken from its silhouette and
+      tile courses. The stepped fret is the greca of Mitla's Hall of
+      Columns, which the same builders quoted; the sun-disk crown is the
+      Egyptian winged disk reduced to a circle, stepped bars and two arcs.
 
-   Material palette (Assyrian and Egyptian revival): alabaster for the wall
-   and every face (ground), warm shadow for the ink and the carved shade
-   (ink, ink-2), the same shadow at low alpha for the hairline (hair), lapis
-   for the one inlay (accent), and a warm mid-shadow for the carved bands
-   (ornament). The display face is Cinzel, inscriptional capitals, used for
-   the h1 and the h2 only; Inter carries everything else.
+   Material palette (Assyrian and Egyptian revival): alabaster for the
+   wall and every face (ground), warm shadow for the ink and the carved
+   shade (ink, ink-2), the same shadow at low alpha for the hairline
+   (hair), lapis for the one inlay (accent), and a warm mid-shadow for the
+   carved bands (ornament). The recess is black granodiorite with
+   alabaster ink and never remaps. The display face is Cinzel,
+   inscriptional capitals, used for the h1 and the h2 only; Inter carries
+   everything else.
 
    Ornament homes: the band courses between panels (rosette, palmette,
-   chevron, stepped fret), the course marks beside each heading (bar-and-dot
-   numerals), the niche strip under each customer cartouche, and the
-   rosettes the locales are carved into.
+   chevron, guilloche, stepped fret), the border frame inside every raised
+   tablet (fret on the hero, guilloche on the code, chevron on the four
+   product tablets, rosette and palmette on the pricing tablets), the
+   course marks beside each heading (bar-and-dot numerals), the sun-disk
+   crown over the claim, the ziggurat caps over the pricing tablets, the
+   niche strip under each customer cartouche, the stepped niche head over
+   the recess, and the three rosette carvings the locales sit in.
 
-   Accent: lapis marks the translated string wherever it appears. The
-   locale inlays are lapis blocks; string literals in the code tablet are
-   lapis text. Nothing else is blue.
+   Accent: lapis marks the translated string and the locale that produced
+   it, wherever either appears. Locale inlays are lapis blocks, string
+   literals in code are lapis text, the two script variants the atlas
+   singles out wear a lapis ring. Nothing else is blue; lapis is never a
+   decoration.
 
-   Dark mode remaps the material tokens below and nothing else; the stele's
-   own tokens are constants and never remap. */
+   Dark mode remaps the material tokens below and nothing else; the
+   recess's own tokens are constants and never remap. */
 .raking-relief-root {
   --deco-ground: #ede6d8;
   --deco-ink: #2a2017;
@@ -51,15 +68,19 @@
 
   /* the lit edge under raking light; remaps with the theme */
   --rr-lit: rgba(255, 255, 255, 0.82);
+  /* the carved shade every shadow tier is painted in; opaque so nested
+     tiers never double a translucent cell; remaps with the theme */
+  --rr-shade: var(--deco-ink);
   /* text set into a lapis inlay, in both themes */
   --rr-inlay-ink: #f6f0e6;
 
-  /* the stele: black stone, alabaster ink, its own seams; never remaps */
+  /* the recess: black stone, alabaster ink, its own seams; never remaps */
   --rr-stele-ground: #070707;
   --rr-stele-ink: #f2ede3;
   --rr-stele-ink-2: rgba(242, 237, 227, 0.66);
   --rr-stele-seam: rgba(255, 255, 255, 0.14);
   --rr-stele-lit: rgba(255, 255, 255, 0.24);
+  --rr-stele-shade: #7d7568;
   --rr-stele-accent: #2f63b4;
 
   /* the wall column and its gutter */
@@ -71,12 +92,27 @@
 
   /* Bayer 4x4 tiers as masks: coverage k/16 of the house screen, one path
      of squares per tile, black so the mask keeps the cells it draws. The
-     element's background is the shadow ink; the mask sets its density.
-     Tiles are 8px (2px cells) and every band on one panel is anchored at
-     the same corner, so nested tiers compose an exact ramp. */
-  --rr-t3: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM2 2h1v1h-1Z'/%3E%3C/svg%3E");
-  --rr-t6: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM1 1h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM3 3h1v1h-1Z'/%3E%3C/svg%3E");
+     element's background is the shade; the mask sets its density. Single
+     tiles are 4 units; at 8px they read as 2px cells. */
+  --rr-t2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 2h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-t4: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1Z'/%3E%3C/svg%3E");
   --rr-t8: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM1 1h1v1h-1ZM3 1h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM1 3h1v1h-1ZM3 3h1v1h-1Z'/%3E%3C/svg%3E");
+
+  /* Ramps: several tiers laid side by side in one tile, so one mask on
+     one pseudo-element paints an exact stepped fall-off with no cell
+     painted twice. Columns run dense to thin left to right (ramp-r: t12,
+     t8, t4; deep: t14, t12, t9, t6, t3) or thin to dense (ramp-l: t4, t8,
+     t12); rows run dense to thin top to bottom (ramp-b: t10, t4; deep:
+     t12, t8, t3) or thin to dense (ramp-t: t4, t10). The control ramps
+     are two columns at 1px cells for buttons and caps. */
+  --rr-ramp-r: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM1 0h1v1h-1ZM2 0h1v1h-1ZM3 0h1v1h-1ZM1 1h1v1h-1ZM3 1h1v1h-1ZM0 2h1v1h-1ZM1 2h1v1h-1ZM2 2h1v1h-1ZM3 2h1v1h-1ZM1 3h1v1h-1ZM3 3h1v1h-1ZM4 0h1v1h-1ZM6 0h1v1h-1ZM5 1h1v1h-1ZM7 1h1v1h-1ZM4 2h1v1h-1ZM6 2h1v1h-1ZM5 3h1v1h-1ZM7 3h1v1h-1ZM8 0h1v1h-1ZM10 0h1v1h-1ZM8 2h1v1h-1ZM10 2h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-ramp-r-deep: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM1 0h1v1h-1ZM2 0h1v1h-1ZM3 0h1v1h-1ZM0 1h1v1h-1ZM1 1h1v1h-1ZM3 1h1v1h-1ZM0 2h1v1h-1ZM1 2h1v1h-1ZM2 2h1v1h-1ZM3 2h1v1h-1ZM1 3h1v1h-1ZM2 3h1v1h-1ZM3 3h1v1h-1ZM4 0h1v1h-1ZM5 0h1v1h-1ZM6 0h1v1h-1ZM7 0h1v1h-1ZM5 1h1v1h-1ZM7 1h1v1h-1ZM4 2h1v1h-1ZM5 2h1v1h-1ZM6 2h1v1h-1ZM7 2h1v1h-1ZM5 3h1v1h-1ZM7 3h1v1h-1ZM8 0h1v1h-1ZM9 0h1v1h-1ZM10 0h1v1h-1ZM9 1h1v1h-1ZM11 1h1v1h-1ZM8 2h1v1h-1ZM10 2h1v1h-1ZM9 3h1v1h-1ZM11 3h1v1h-1ZM12 0h1v1h-1ZM14 0h1v1h-1ZM13 1h1v1h-1ZM12 2h1v1h-1ZM14 2h1v1h-1ZM15 3h1v1h-1ZM16 0h1v1h-1ZM18 0h1v1h-1ZM18 2h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-ramp-l: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM4 0h1v1h-1ZM6 0h1v1h-1ZM5 1h1v1h-1ZM7 1h1v1h-1ZM4 2h1v1h-1ZM6 2h1v1h-1ZM5 3h1v1h-1ZM7 3h1v1h-1ZM8 0h1v1h-1ZM9 0h1v1h-1ZM10 0h1v1h-1ZM11 0h1v1h-1ZM9 1h1v1h-1ZM11 1h1v1h-1ZM8 2h1v1h-1ZM9 2h1v1h-1ZM10 2h1v1h-1ZM11 2h1v1h-1ZM9 3h1v1h-1ZM11 3h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-ramp-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 8' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM1 0h1v1h-1ZM2 0h1v1h-1ZM1 1h1v1h-1ZM3 1h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM3 2h1v1h-1ZM1 3h1v1h-1ZM3 3h1v1h-1ZM0 4h1v1h-1ZM2 4h1v1h-1ZM0 6h1v1h-1ZM2 6h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-ramp-b-deep: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 12' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM1 0h1v1h-1ZM2 0h1v1h-1ZM3 0h1v1h-1ZM1 1h1v1h-1ZM3 1h1v1h-1ZM0 2h1v1h-1ZM1 2h1v1h-1ZM2 2h1v1h-1ZM3 2h1v1h-1ZM1 3h1v1h-1ZM3 3h1v1h-1ZM0 4h1v1h-1ZM2 4h1v1h-1ZM1 5h1v1h-1ZM3 5h1v1h-1ZM0 6h1v1h-1ZM2 6h1v1h-1ZM1 7h1v1h-1ZM3 7h1v1h-1ZM0 8h1v1h-1ZM2 8h1v1h-1ZM2 10h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-ramp-t: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 8' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM0 4h1v1h-1ZM1 4h1v1h-1ZM2 4h1v1h-1ZM1 5h1v1h-1ZM3 5h1v1h-1ZM0 6h1v1h-1ZM2 6h1v1h-1ZM3 6h1v1h-1ZM1 7h1v1h-1ZM3 7h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-ramp-ctl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM1 0h1v1h-1ZM2 0h1v1h-1ZM1 1h1v1h-1ZM3 1h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM3 2h1v1h-1ZM1 3h1v1h-1ZM3 3h1v1h-1ZM4 0h1v1h-1ZM6 0h1v1h-1ZM4 2h1v1h-1ZM6 2h1v1h-1Z'/%3E%3C/svg%3E");
+  --rr-ramp-ctl-l: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1ZM2 0h1v1h-1ZM0 2h1v1h-1ZM2 2h1v1h-1ZM4 0h1v1h-1ZM5 0h1v1h-1ZM6 0h1v1h-1ZM5 1h1v1h-1ZM7 1h1v1h-1ZM4 2h1v1h-1ZM6 2h1v1h-1ZM7 2h1v1h-1ZM5 3h1v1h-1ZM7 3h1v1h-1Z'/%3E%3C/svg%3E");
 
   min-height: 100vh;
   background: var(--deco-ground);
@@ -111,13 +147,26 @@
 
 /* ---------- the relief primitives ---------- */
 
-/* Raised: the face sits on the wall; the light from the left strikes its
-   left edge and top edge (one inset lit line each, zero blur); the shadow
-   it casts falls to the right and, thinly, below. Two nested tiers: t3 out
-   to 16px, t8 out to 8px, both anchored at the panel's top-left corner. */
+/* Raised: the tablet stands proud of the wall. The light from the left
+   strikes its left and top edges (one inset lit line each, zero blur).
+   The shadow it casts is two strips outside the box: down the right side,
+   starting a little below the top, and along the bottom, starting a
+   little in from the left, each one stepped ramp mask, dense beside the
+   tablet and thinning outward. The deep variant doubles the reach. */
 .raking-relief-root .rr-raised {
+  --rr-dx: 24px;
+  --rr-dy: 16px;
+  --rr-ramp-x: var(--rr-ramp-r);
+  --rr-ramp-y: var(--rr-ramp-b);
   position: relative;
   isolation: isolate;
+}
+
+.raking-relief-root .rr-raised.is-deep {
+  --rr-dx: 40px;
+  --rr-dy: 24px;
+  --rr-ramp-x: var(--rr-ramp-r-deep);
+  --rr-ramp-y: var(--rr-ramp-b-deep);
 }
 
 .raking-relief-root .rr-raised::before,
@@ -125,24 +174,26 @@
   content: '';
   position: absolute;
   z-index: 0;
-  background: var(--deco-ink);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
-  -webkit-mask-position: 0 0;
-  mask-position: 0 0;
+  background: var(--rr-shade);
   pointer-events: none;
 }
 
 .raking-relief-root .rr-raised::before {
-  inset: 0 -16px -8px 0;
-  -webkit-mask-image: var(--rr-t3);
-  mask-image: var(--rr-t3);
+  top: 8px;
+  right: calc(-1 * var(--rr-dx));
+  bottom: calc(-1 * var(--rr-dy));
+  width: var(--rr-dx);
+  -webkit-mask: var(--rr-ramp-x) 0 0 / var(--rr-dx) 8px repeat-y;
+  mask: var(--rr-ramp-x) 0 0 / var(--rr-dx) 8px repeat-y;
 }
 
 .raking-relief-root .rr-raised::after {
-  inset: 0 -8px -4px 0;
-  -webkit-mask-image: var(--rr-t8);
-  mask-image: var(--rr-t8);
+  left: 8px;
+  right: 0;
+  bottom: calc(-1 * var(--rr-dy));
+  height: var(--rr-dy);
+  -webkit-mask: var(--rr-ramp-y) 0 0 / 8px var(--rr-dy) repeat-x;
+  mask: var(--rr-ramp-y) 0 0 / 8px var(--rr-dy) repeat-x;
 }
 
 .raking-relief-root .rr-face {
@@ -154,9 +205,25 @@
     inset 0 1px 0 0 var(--rr-lit);
 }
 
+/* a framed face keeps its border band 8px in and its field 28px in */
+.raking-relief-root .rr-face.is-framed {
+  --rr-frame-in: 8px;
+  padding: 28px;
+}
+
+.raking-relief-root .rr-tablet-in {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
 /* Sunk: cut into the wall. The far rim shades the floor inside the left
-   edge (t3 to 16px, t8 to 8px) and thinly along the top (t6 to 8px); the
-   right and bottom inner walls face the light and carry the lit line. */
+   edge (one stepped ramp, dense at the rim) and, more thinly, along the
+   top; the right and bottom inner walls face the light and carry the lit
+   line. Content sits 48px from the left and 30px from the top. */
 .raking-relief-root .rr-sunk {
   position: relative;
   isolation: isolate;
@@ -170,31 +237,184 @@
   content: '';
   position: absolute;
   z-index: 0;
-  background: var(--deco-ink);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
-  -webkit-mask-position: 0 0;
-  mask-position: 0 0;
+  background: var(--rr-shade);
   pointer-events: none;
 }
 
 .raking-relief-root .rr-sunk::before {
-  inset: 0 auto 0 0;
-  width: 16px;
-  -webkit-mask-image: var(--rr-t3);
-  mask-image: var(--rr-t3);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 24px;
+  -webkit-mask: var(--rr-ramp-r) 0 0 / 24px 8px repeat-y;
+  mask: var(--rr-ramp-r) 0 0 / 24px 8px repeat-y;
 }
 
 .raking-relief-root .rr-sunk::after {
-  inset: 0 0 auto 0;
-  height: 8px;
-  -webkit-mask-image: var(--rr-t6);
-  mask-image: var(--rr-t6);
+  top: 0;
+  left: 24px;
+  right: 0;
+  height: 16px;
+  -webkit-mask: var(--rr-ramp-b) 0 0 / 8px 16px repeat-x;
+  mask: var(--rr-ramp-b) 0 0 / 8px 16px repeat-x;
 }
 
 .raking-relief-root .rr-sunk > * {
   position: relative;
   z-index: 1;
+}
+
+/* The border frame: four 12px strips of one geometric repeat seated
+   inside the face, one owner, no border on the field inside. */
+.raking-relief-root .rr-framing {
+  position: absolute;
+  inset: var(--rr-frame-in, 8px);
+  z-index: 1;
+  color: var(--deco-ornament);
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-frame {
+  position: absolute;
+  display: block;
+}
+
+.raking-relief-root .rr-frame.is-t {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+}
+
+.raking-relief-root .rr-frame.is-b {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+}
+
+.raking-relief-root .rr-frame.is-l {
+  top: 12px;
+  left: 0;
+  width: 12px;
+  height: calc(100% - 24px);
+}
+
+.raking-relief-root .rr-frame.is-r {
+  top: 12px;
+  right: 0;
+  width: 12px;
+  height: calc(100% - 24px);
+}
+
+/* Carved text: one text node; its cast shadow is its own ::before
+   printing the same text from data-text through the t8 mask, offset down
+   and right. Incised text: the same device prints the lit lip of the cut
+   one pixel down and right, and the text itself is the shadowed floor. */
+.raking-relief-root .rr-carved,
+.raking-relief-root .rr-cut {
+  position: relative;
+  display: block;
+  isolation: isolate;
+}
+
+.raking-relief-root .rr-carved::before,
+.raking-relief-root .rr-cut::before {
+  /* the empty alternative text keeps the printed copy out of the
+     accessibility tree, so the heading is read once */
+  content: attr(data-text) / '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-carved::before {
+  transform: translate(0.05em, 0.045em);
+  color: transparent;
+  background: var(--rr-shade);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-mask: var(--rr-t8) 0 0 / 8px 8px repeat;
+  mask: var(--rr-t8) 0 0 / 8px 8px repeat;
+}
+
+.raking-relief-root .rr-cut::before {
+  transform: translate(1px, 1px);
+  color: var(--rr-lit);
+}
+
+/* ---------- controls: carved too ---------- */
+
+.raking-relief-root .rr-btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-family: var(--rr-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* the solid act is a raised block: lit left and top, a short shadow to
+   the right and below at 1px cells */
+.raking-relief-root .rr-btn.is-solid {
+  background: var(--deco-ink);
+  color: var(--deco-ground);
+  box-shadow:
+    inset 1px 0 0 0 var(--rr-lit),
+    inset 0 1px 0 0 var(--rr-lit);
+}
+
+.raking-relief-root .rr-btn.is-solid::before,
+.raking-relief-root .rr-btn.is-solid::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  background: var(--rr-shade);
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-btn.is-solid::before {
+  top: 4px;
+  right: -8px;
+  bottom: -4px;
+  width: 8px;
+  -webkit-mask: var(--rr-ramp-ctl) 0 0 / 8px 4px repeat-y;
+  mask: var(--rr-ramp-ctl) 0 0 / 8px 4px repeat-y;
+}
+
+.raking-relief-root .rr-btn.is-solid::after {
+  left: 4px;
+  right: 0;
+  bottom: -4px;
+  height: 4px;
+  -webkit-mask: var(--rr-t8) 0 0 / 4px 4px repeat-x;
+  mask: var(--rr-t8) 0 0 / 4px 4px repeat-x;
+}
+
+/* the line act is cut in: the rim's hairline on its top and left, the
+   lit inner wall on its bottom and right, one owner, four single edges */
+.raking-relief-root .rr-btn.is-line {
+  color: var(--deco-ink);
+  box-shadow:
+    inset 1px 0 0 0 var(--deco-hair),
+    inset 0 1px 0 0 var(--deco-hair),
+    inset -1px 0 0 0 var(--rr-lit),
+    inset 0 -1px 0 0 var(--rr-lit);
+}
+
+.raking-relief-root .rr-btn.is-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
 }
 
 /* ---------- the wall column and its courses ---------- */
@@ -214,7 +434,7 @@
 }
 
 /* a band course owns its bottom rule; a band with ruled content directly
-   above it (the hero stage) also draws its top */
+   above it also draws its top */
 .raking-relief-root .rr-band {
   height: 28px;
   color: var(--deco-ornament);
@@ -240,7 +460,7 @@
   grid-template-columns: 56px minmax(0, 1fr);
   column-gap: 28px;
   align-items: start;
-  padding: 64px var(--rr-gut) 32px;
+  padding: 72px var(--rr-gut) 36px;
 }
 
 .raking-relief-root .rr-mark {
@@ -253,7 +473,7 @@
   margin: 0;
   font-family: var(--raking-relief-display), var(--rr-sans);
   font-weight: 400;
-  font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+  font-size: clamp(1.6rem, 2.5vw, 2.25rem);
   line-height: 1.18;
   letter-spacing: 0.03em;
   max-width: 26ch;
@@ -261,45 +481,11 @@
 }
 
 .raking-relief-root .rr-head p {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   font-size: 15px;
   line-height: 1.62;
   max-width: 60ch;
   color: var(--deco-ink-2);
-}
-
-/* ---------- buttons ---------- */
-
-.raking-relief-root .rr-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 38px;
-  padding: 0 16px;
-  border-radius: 4px;
-  font-family: var(--rr-sans);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.raking-relief-root .rr-btn.is-solid {
-  background: var(--deco-ink);
-  color: var(--deco-ground);
-}
-
-.raking-relief-root .rr-btn.is-line {
-  border: 1px solid var(--deco-hair);
-  color: var(--deco-ink);
-  background-clip: padding-box;
-}
-
-.raking-relief-root .rr-btn.is-sm {
-  height: 32px;
-  padding: 0 12px;
-  font-size: 13px;
 }
 
 /* ---------- nav ---------- */
@@ -363,11 +549,25 @@
   text-decoration: none;
 }
 
+/* the theme square reads the wall's ink, not the shell's; its rim is the
+   hairline and appears on hover only */
+.raking-relief-root .rr-theme.pt-ib {
+  color: var(--deco-ink-2);
+  border-color: transparent;
+  border-radius: 4px;
+}
+
+.raking-relief-root .rr-theme.pt-ib:hover,
+.raking-relief-root .rr-theme.pt-ib:focus-visible {
+  color: var(--deco-ink);
+  border-color: var(--deco-hair);
+}
+
 /* ---------- hero ---------- */
 
 .raking-relief-root .rr-hero-stage {
   position: relative;
-  padding: 56px var(--rr-gut) 64px;
+  padding: 64px calc(var(--rr-gut) + 40px) 88px var(--rr-gut);
 }
 
 .raking-relief-root .rr-hero-wall {
@@ -382,14 +582,38 @@
 }
 
 .raking-relief-root .rr-hero-face {
-  padding: 48px clamp(24px, 4.5vw, 72px) 52px;
+  --rr-frame-in: 10px;
+  padding: 64px clamp(40px, 6vw, 96px) 68px;
+}
+
+.raking-relief-root .rr-hero-in {
+  position: relative;
+  z-index: 2;
+}
+
+/* the crown: the course numeral and the sun disk, one ornament line */
+.raking-relief-root .rr-crown {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  color: var(--deco-ornament);
+}
+
+.raking-relief-root .rr-crown .rr-mark {
+  margin-top: 0;
+}
+
+.raking-relief-root .rr-sun {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .raking-relief-root .rr-claim {
-  margin: 22px 0 0;
+  margin: 34px 0 0;
   font-family: var(--raking-relief-display), var(--rr-sans);
   font-weight: 600;
-  font-size: clamp(2.1rem, 5vw, 4.4rem);
+  font-size: clamp(2.2rem, 5.4vw, 4.8rem);
   line-height: 1.08;
   letter-spacing: 0.012em;
   max-width: 19ch;
@@ -398,7 +622,9 @@
 }
 
 /* the one text node; its cast shadow is its own ::before printing the same
-   text from data-text through the t8 mask, offset to the right and down */
+   text from data-text through the t8 mask, offset to the right and down.
+   The chisel pass cuts from the left with two clip-path insets that rest
+   at zero, so the claim is whole at rest. */
 .raking-relief-root .rr-claim-face {
   --rr-cut-l: 0;
   --rr-cut-r: 0;
@@ -409,24 +635,22 @@
 }
 
 .raking-relief-root .rr-claim-face::before {
-  content: attr(data-text);
+  content: attr(data-text) / '';
   position: absolute;
   inset: 0;
   z-index: -1;
   transform: translate(0.05em, 0.045em);
   color: transparent;
-  background: var(--deco-ink);
+  background: var(--rr-shade);
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-mask-image: var(--rr-t8);
-  mask-image: var(--rr-t8);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask: var(--rr-t8) 0 0 / 8px 8px repeat;
+  mask: var(--rr-t8) 0 0 / 8px 8px repeat;
   pointer-events: none;
 }
 
 .raking-relief-root .rr-hero-sub {
-  margin: 24px 0 0;
+  margin: 26px 0 0;
   font-size: 17px;
   line-height: 1.55;
   max-width: 54ch;
@@ -443,17 +667,22 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 14px;
-  margin-top: 30px;
+  gap: 12px 18px;
+  margin-top: 32px;
 }
 
+/* the command box is cut in: rim hairline top and left, lit wall bottom
+   and right, the copy control divided off by one hairline */
 .raking-relief-root .rr-cmd {
   display: inline-flex;
   align-items: stretch;
   height: 38px;
-  border: 1px solid var(--deco-hair);
   border-radius: 4px;
-  background-clip: padding-box;
+  box-shadow:
+    inset 1px 0 0 0 var(--deco-hair),
+    inset 0 1px 0 0 var(--deco-hair),
+    inset -1px 0 0 0 var(--rr-lit),
+    inset 0 -1px 0 0 var(--rr-lit);
   font-family: var(--rr-mono);
   font-size: 13px;
   font-weight: 500;
@@ -484,10 +713,61 @@
   color: var(--deco-accent);
 }
 
+/* the claim frieze: the same sentence incised sixteen times, one register
+   that runs past the frame and scrolls inside its own cut */
+.raking-relief-root .rr-frieze-wrap {
+  padding: 0 var(--rr-gut) 56px;
+}
+
+.raking-relief-root .rr-frieze {
+  padding: 30px 0 0 48px;
+}
+
+.raking-relief-root .rr-frieze-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+  padding: 0 24px 14px 0;
+  font-family: var(--rr-mono);
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-frieze-row {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-frieze-row li {
+  display: grid;
+  flex: none;
+  align-content: start;
+  gap: 16px;
+  width: 262px;
+  padding: 20px 22px 24px 0;
+}
+
+.raking-relief-root .rr-frieze-row li + li {
+  padding-left: 22px;
+  border-left: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-frieze-text {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--deco-ink);
+}
+
 /* ---------- trust: six cartouches sunk into the wall ---------- */
 
 .raking-relief-root .rr-trust {
-  padding: 40px var(--rr-gut) 48px;
+  padding: 40px var(--rr-gut) 56px;
 }
 
 .raking-relief-root .rr-trust-lead {
@@ -499,7 +779,7 @@
 .raking-relief-root .rr-trust-row {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -508,7 +788,7 @@
 .raking-relief-root .rr-cartouche {
   display: flex;
   flex-direction: column;
-  padding: 22px 22px 0 30px;
+  padding: 28px 22px 0 40px;
   color: var(--deco-ornament);
 }
 
@@ -517,7 +797,7 @@
   align-items: center;
   justify-content: center;
   height: 28px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .raking-relief-root .rr-wordmark {
@@ -540,16 +820,17 @@
 
 .raking-relief-root .rr-proof-grid {
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 24px;
+  grid-template-columns: 1.15fr 72px 1fr;
+  column-gap: 8px;
   align-items: start;
-  padding: 8px var(--rr-gut) 24px;
+  padding: 8px var(--rr-gut) 32px;
 }
 
 /* a wide sample scrolls inside its own box and never widens its column */
 .raking-relief-root .rr-proof-grid > *,
 .raking-relief-root .rr-bond > *,
 .raking-relief-root .rr-tablets > *,
+.raking-relief-root .rr-lang-grid > *,
 .raking-relief-root .rr-ros-grid > * {
   min-width: 0;
 }
@@ -563,7 +844,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 0 0 0 18px;
+  padding: 0;
   border-bottom: 1px solid var(--deco-hair);
   font-family: var(--rr-mono);
   font-size: 12px;
@@ -589,7 +870,7 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0 18px;
   margin: 0;
-  padding: 20px 20px 22px;
+  padding: 20px 0 12px;
   font-family: var(--rr-mono);
   font-size: 12.5px;
   line-height: 1.65;
@@ -613,8 +894,59 @@
   color: var(--deco-accent);
 }
 
+/* the keystone between source and translations: the component itself,
+   a small raised block */
+.raking-relief-root .rr-keystone {
+  align-self: center;
+  justify-self: center;
+  padding: 0 0 0 4px;
+}
+
+.raking-relief-root .rr-keystone code {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 11px;
+  background: var(--deco-ground);
+  box-shadow:
+    inset 1px 0 0 0 var(--rr-lit),
+    inset 0 1px 0 0 var(--rr-lit);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-keystone code::before,
+.raking-relief-root .rr-keystone code::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  background: var(--rr-shade);
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-keystone code::before {
+  top: 4px;
+  right: -8px;
+  bottom: -4px;
+  width: 8px;
+  -webkit-mask: var(--rr-ramp-ctl) 0 0 / 8px 4px repeat-y;
+  mask: var(--rr-ramp-ctl) 0 0 / 8px 4px repeat-y;
+}
+
+.raking-relief-root .rr-keystone code::after {
+  left: 4px;
+  right: 0;
+  bottom: -4px;
+  height: 4px;
+  -webkit-mask: var(--rr-t8) 0 0 / 4px 4px repeat-x;
+  mask: var(--rr-t8) 0 0 / 4px 4px repeat-x;
+}
+
 .raking-relief-root .rr-incised {
-  padding: 22px 24px 8px 40px;
+  padding: 30px 24px 10px 48px;
 }
 
 .raking-relief-root .rr-incised-head {
@@ -627,7 +959,7 @@
 }
 
 .raking-relief-root .rr-incised-src {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 1.3;
 }
@@ -649,7 +981,7 @@
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 14px;
-  padding: 12px 0;
+  padding: 13px 0;
 }
 
 .raking-relief-root .rr-incised-rows li + li {
@@ -657,19 +989,19 @@
 }
 
 .raking-relief-root .rr-incised-text {
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.4;
   color: var(--deco-ink);
 }
 
 .raking-relief-root .rr-outputs {
-  margin: 0 var(--rr-gut) 60px;
-  padding: 18px 24px 18px 40px;
+  margin: 0 var(--rr-gut) 72px;
+  padding: 30px 24px 20px 48px;
 }
 
 .raking-relief-root .rr-outputs-row {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -680,11 +1012,11 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  padding: 6px 18px 6px 0;
+  padding: 6px 16px 6px 0;
 }
 
 .raking-relief-root .rr-outputs-row li + li {
-  padding-left: 18px;
+  padding-left: 16px;
   border-left: 1px solid var(--deco-hair);
 }
 
@@ -694,10 +1026,20 @@
 }
 
 .raking-relief-root .rr-outputs-val {
+  font-family: var(--rr-mono);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
   color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-outputs-any {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  font-family: var(--rr-mono);
+  font-size: 11px;
+  color: var(--deco-ink-2);
 }
 
 /* ---------- product surfaces: a running bond of tablets ---------- */
@@ -705,26 +1047,25 @@
 .raking-relief-root .rr-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 0 var(--rr-gut) 28px;
-  padding: 0;
+  margin: 0 var(--rr-gut) 40px;
+  padding: 30px 24px 22px 48px;
   list-style: none;
-  border-top: 1px solid var(--deco-hair);
-  border-bottom: 1px solid var(--deco-hair);
 }
 
 .raking-relief-root .rr-stats li {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 20px;
+  gap: 6px;
+  padding: 4px 20px 4px 0;
 }
 
 .raking-relief-root .rr-stats li + li {
+  padding-left: 20px;
   border-left: 1px solid var(--deco-hair);
 }
 
 .raking-relief-root .rr-stat-value {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -738,13 +1079,13 @@
 .raking-relief-root .rr-bond {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 24px;
-  padding: 0 var(--rr-gut) 24px;
+  gap: 32px;
+  padding: 0 var(--rr-gut) 32px;
 }
 
 .raking-relief-root .rr-bond.is-offset {
   grid-template-columns: 1fr 1.5fr;
-  padding-bottom: 64px;
+  padding-bottom: 80px;
 }
 
 .raking-relief-root .rr-tablet {
@@ -753,12 +1094,12 @@
 
 .raking-relief-root .rr-tablet .rr-face {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
 }
 
 .raking-relief-root .rr-tablet-head {
-  padding: 20px 24px;
+  padding: 2px 0 18px;
   border-bottom: 1px solid var(--deco-hair);
 }
 
@@ -778,7 +1119,7 @@
 
 .raking-relief-root .rr-ledger {
   margin: 0;
-  padding: 10px 24px 14px;
+  padding: 6px 0 0;
   list-style: none;
 }
 
@@ -810,7 +1151,7 @@
 
 .raking-relief-root .rr-term {
   flex: 1;
-  padding: 20px 24px 22px;
+  padding: 18px 0 4px;
   font-family: var(--rr-mono);
   font-size: 13px;
   line-height: 1.7;
@@ -837,7 +1178,7 @@
   grid-template-columns: 28px minmax(0, 1fr);
   gap: 12px 16px;
   align-items: start;
-  padding: 20px 24px 22px;
+  padding: 20px 0 4px;
 }
 
 .raking-relief-root .rr-lx {
@@ -865,15 +1206,15 @@
 
 .raking-relief-root .rr-review {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
 }
 
 .raking-relief-root .rr-review-bar,
 .raking-relief-root .rr-review-foot {
   display: flex;
   gap: 18px;
-  padding: 10px 24px;
+  padding: 10px 0;
   font-family: var(--rr-mono);
   font-size: 11.5px;
   color: var(--deco-ink-2);
@@ -886,12 +1227,13 @@
 
 .raking-relief-root .rr-review-foot {
   margin-top: auto;
+  padding-bottom: 0;
   border-top: 1px solid var(--deco-hair);
 }
 
 .raking-relief-root .rr-review-rows {
   margin: 0;
-  padding: 8px 24px;
+  padding: 4px 0;
   list-style: none;
 }
 
@@ -922,7 +1264,8 @@
   color: var(--deco-ink-2);
 }
 
-/* revision state by type: a solid ring is approved, a dashed ring is an edit */
+/* revision state by type: a solid rim is approved, a dashed rim is an
+   edit; the stamp is cut in like every small control */
 .raking-relief-root .rr-stamp {
   align-self: start;
   padding: 5px 7px;
@@ -940,14 +1283,52 @@
   border-style: dashed;
 }
 
-/* ---------- languages: the rosette band ---------- */
+/* ---------- languages: scripts, the rosette band, the registers ---------- */
+
+.raking-relief-root .rr-scripts-wrap {
+  padding: 0 var(--rr-gut) 8px;
+}
+
+.raking-relief-root .rr-scripts {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  margin: 0;
+  padding: 30px 24px 22px 48px;
+  list-style: none;
+}
+
+.raking-relief-root .rr-scripts li {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  align-content: start;
+  padding: 4px 14px 4px 0;
+}
+
+.raking-relief-root .rr-scripts li + li {
+  padding-left: 14px;
+  border-left: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-script-word {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-script-name {
+  font-family: var(--rr-mono);
+  font-size: 11.5px;
+  color: var(--deco-ink-2);
+}
 
 .raking-relief-root .rr-ros-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px 0;
   margin: 0;
-  padding: 8px var(--rr-gut) 28px;
+  padding: 24px var(--rr-gut) 32px;
   list-style: none;
 }
 
@@ -987,9 +1368,17 @@
   overflow-wrap: anywhere;
 }
 
-.raking-relief-root .rr-variants {
-  margin: 0 var(--rr-gut) 64px;
-  padding: 8px 24px 22px 40px;
+.raking-relief-root .rr-lang-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 32px;
+  align-items: start;
+  padding: 0 var(--rr-gut) 80px;
+}
+
+.raking-relief-root .rr-variants,
+.raking-relief-root .rr-widths {
+  padding: 30px 24px 22px 48px;
 }
 
 .raking-relief-root .rr-variants-rows {
@@ -1040,52 +1429,154 @@
   border-top: 1px solid var(--deco-hair);
 }
 
-.raking-relief-root .rr-variants-foot p {
+.raking-relief-root .rr-variants-foot p,
+.raking-relief-root .rr-widths-lead,
+.raking-relief-root .rr-widths-note {
   margin: 0;
   font-size: 13.5px;
   color: var(--deco-ink-2);
 }
 
-/* ---------- the stele: the one dark course ---------- */
+.raking-relief-root .rr-widths-lead {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--deco-hair);
+  color: var(--deco-ink);
+}
 
-.raking-relief-root .rr-stele {
+.raking-relief-root .rr-widths-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-widths-rows li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.raking-relief-root .rr-widths-rows li + li {
+  border-top: 1px solid var(--deco-hair);
+}
+
+/* the measured label, set as the raised button it is */
+.raking-relief-root .rr-widths-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 4px;
+  background: var(--deco-ink);
+  color: var(--deco-ground);
+  box-shadow:
+    inset 1px 0 0 0 var(--rr-lit),
+    inset 0 1px 0 0 var(--rr-lit);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.raking-relief-root .rr-widths-hint {
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-widths-note {
+  padding-top: 14px;
+  border-top: 1px solid var(--deco-hair);
+}
+
+/* ---------- the recess: the one dark course ---------- */
+
+/* Inside the recess the shade and the lit line are the recess's own
+   constants, so every carved control and heading reads by its light. */
+.raking-relief-root .rr-recess {
+  --rr-shade: var(--rr-stele-shade);
+  --rr-lit: var(--rr-stele-lit);
   position: relative;
+  width: min(var(--rr-col), 100%);
+  margin-inline: auto;
   color: var(--rr-stele-ink);
 }
 
-.raking-relief-root .rr-stele-crown {
+/* the stepped niche head: three setbacks narrowing upward, each a dark
+   opening whose right jamb faces the light */
+.raking-relief-root .rr-niche-head {
   display: grid;
   justify-items: center;
-  width: min(var(--rr-col), 100%);
-  margin-inline: auto;
 }
 
-.raking-relief-root .rr-step {
+.raking-relief-root .rr-niche-step {
+  position: relative;
   display: block;
-  height: 16px;
+  height: 18px;
   background: var(--rr-stele-ground);
 }
 
-.raking-relief-root .rr-step.is-3 {
-  width: 58%;
+.raking-relief-root .rr-niche-step::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  background: var(--rr-stele-ink);
+  -webkit-mask: var(--rr-ramp-ctl-l) 0 0 / 8px 4px repeat-y;
+  mask: var(--rr-ramp-ctl-l) 0 0 / 8px 4px repeat-y;
 }
 
-.raking-relief-root .rr-step.is-2 {
-  width: 72%;
+.raking-relief-root .rr-niche-step.is-3 {
+  width: 56%;
 }
 
-.raking-relief-root .rr-step.is-1 {
+.raking-relief-root .rr-niche-step.is-2 {
+  width: 71%;
+}
+
+.raking-relief-root .rr-niche-step.is-1 {
   width: 86%;
 }
 
-.raking-relief-root .rr-stele-slab {
+/* the floor: black stone; the inner wall on the right and the sill at
+   the bottom face the light and are dithered alabaster fading inward */
+.raking-relief-root .rr-recess-floor {
   position: relative;
   isolation: isolate;
-  padding: 44px 0 56px;
+  padding: 56px 0 72px;
   background: var(--rr-stele-ground);
 }
 
-.raking-relief-root .rr-stele-wall {
+.raking-relief-root .rr-recess-floor::before,
+.raking-relief-root .rr-recess-floor::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  background: var(--rr-stele-ink);
+  pointer-events: none;
+}
+
+.raking-relief-root .rr-recess-floor::before {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  -webkit-mask: var(--rr-ramp-l) 0 0 / 24px 8px repeat-y;
+  mask: var(--rr-ramp-l) 0 0 / 24px 8px repeat-y;
+}
+
+.raking-relief-root .rr-recess-floor::after {
+  left: 0;
+  right: 24px;
+  bottom: 0;
+  height: 16px;
+  -webkit-mask: var(--rr-ramp-t) 0 0 / 8px 16px repeat-x;
+  mask: var(--rr-ramp-t) 0 0 / 8px 16px repeat-x;
+}
+
+.raking-relief-root .rr-recess-canvas {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -1095,13 +1586,11 @@
 .raking-relief-root .rr-stele-in {
   position: relative;
   z-index: 1;
-  width: min(var(--rr-col), 100%);
-  margin-inline: auto;
-  padding: 0 var(--rr-gut);
+  padding: 0 calc(var(--rr-gut) + 24px) 0 var(--rr-gut);
 }
 
-/* the polished field: registers on opaque ground over the tooled border,
-   one lit edge on the left of the stack and on its top, seams between */
+/* the polished stele: registers on opaque ground over the floor, one lit
+   edge on the left of the stack and on its top, seams between */
 .raking-relief-root .rr-stele-reg {
   background: var(--rr-stele-ground);
   box-shadow: inset 1px 0 0 0 var(--rr-stele-lit);
@@ -1136,7 +1625,7 @@
   margin: 0;
   font-family: var(--raking-relief-display), var(--rr-sans);
   font-weight: 400;
-  font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+  font-size: clamp(1.6rem, 2.5vw, 2.25rem);
   line-height: 1.18;
   letter-spacing: 0.03em;
   color: var(--rr-stele-ink);
@@ -1177,6 +1666,7 @@
 }
 
 .raking-relief-root .rr-stele-label {
+  display: block;
   margin: 0 0 12px;
   font-family: var(--rr-mono);
   font-size: 11px;
@@ -1206,35 +1696,231 @@
   margin: 12px 0 0;
 }
 
-.raking-relief-root .rr-stele .rr-inlay {
+.raking-relief-root .rr-recess .rr-inlay {
   background: var(--rr-stele-accent);
+}
+
+.raking-relief-root .rr-recess .rr-tok-str {
+  color: var(--rr-stele-accent);
+}
+
+/* the context cascade: three setbacks descending left to right, each
+   step lit on its left face, the top of each a seam */
+.raking-relief-root .rr-cascade {
+  padding: 30px 40px 40px;
+}
+
+.raking-relief-root .rr-cascade-cap h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.raking-relief-root .rr-cascade-cap p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-cascade-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-cascade-step {
+  min-width: 0;
+  padding: 18px 22px 22px;
+  border-top: 1px solid var(--rr-stele-seam);
+  box-shadow: inset 1px 0 0 0 var(--rr-stele-lit);
+}
+
+.raking-relief-root .rr-cascade-step:nth-child(2) {
+  margin-top: 20px;
+}
+
+.raking-relief-root .rr-cascade-step:nth-child(3) {
+  margin-top: 40px;
+}
+
+.raking-relief-root .rr-cascade-kv {
+  margin: 0;
+}
+
+.raking-relief-root .rr-cascade-kv dt {
+  font-family: var(--rr-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-cascade-kv dd {
+  margin: 4px 0 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.raking-relief-root .rr-cascade-kv dd:last-child {
+  margin-bottom: 0;
+}
+
+.raking-relief-root .rr-cascade-groups {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.raking-relief-root .rr-cascade-groups li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13.5px;
+}
+
+.raking-relief-root .rr-cascade-groups b {
+  font-weight: 500;
+}
+
+.raking-relief-root .rr-cascade-rank {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  box-shadow: inset 0 0 0 1px var(--rr-stele-seam);
+  font-family: var(--rr-mono);
+  font-size: 11px;
+}
+
+.raking-relief-root .rr-cascade-scope {
+  font-family: var(--rr-mono);
+  font-size: 11px;
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-cascade-verdict {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--rr-stele-ink-2);
+}
+
+.raking-relief-root .rr-cascade-code {
+  margin: 0;
+  overflow-x: auto;
+  font-family: var(--rr-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--rr-stele-ink);
+}
+
+.raking-relief-root .rr-cascade-code code {
+  white-space: pre;
+}
+
+.raking-relief-root .rr-cascade-res {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 0;
+  font-size: 14px;
+}
+
+.raking-relief-root .rr-cascade-res b {
+  font-weight: 500;
+}
+
+.raking-relief-root .rr-cascade-res s {
+  color: var(--rr-stele-ink-2);
 }
 
 .raking-relief-root .rr-stele-acts {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 12px 18px;
   padding: 28px 40px 34px;
 }
 
-.raking-relief-root .rr-stele .rr-btn.is-solid {
+.raking-relief-root .rr-recess .rr-btn.is-solid {
   background: var(--rr-stele-ink);
   color: var(--rr-stele-ground);
 }
 
-.raking-relief-root .rr-stele .rr-btn.is-line {
-  border-color: var(--rr-stele-seam);
+.raking-relief-root .rr-recess .rr-btn.is-line {
   color: var(--rr-stele-ink);
+  box-shadow:
+    inset 1px 0 0 0 var(--rr-stele-seam),
+    inset 0 1px 0 0 var(--rr-stele-seam),
+    inset -1px 0 0 0 var(--rr-stele-lit),
+    inset 0 -1px 0 0 var(--rr-stele-lit);
 }
 
-/* ---------- pricing: three tablets ---------- */
+/* ---------- pricing: three inscribed tablets under ziggurat caps ---------- */
 
 .raking-relief-root .rr-tablets {
   display: grid;
   grid-template-columns: 1.7fr 1fr 1fr;
-  gap: 24px;
+  gap: 48px;
   align-items: stretch;
-  padding: 8px var(--rr-gut) 24px;
+  padding: 8px var(--rr-gut) 48px;
+}
+
+.raking-relief-root .rr-tablet-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.raking-relief-root .rr-tablet-stack .rr-tablet {
+  flex: 1;
+}
+
+/* the cap: three setbacks, each lit on its left and top and casting a
+   short shadow to its right */
+.raking-relief-root .rr-cap {
+  display: grid;
+  justify-items: center;
+}
+
+.raking-relief-root .rr-cap-step {
+  position: relative;
+  display: block;
+  height: 10px;
+  background: var(--deco-ground);
+  box-shadow:
+    inset 1px 0 0 0 var(--rr-lit),
+    inset 0 1px 0 0 var(--rr-lit);
+}
+
+.raking-relief-root .rr-cap-step::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: -8px;
+  bottom: 0;
+  width: 8px;
+  background: var(--rr-shade);
+  -webkit-mask: var(--rr-ramp-ctl) 0 0 / 8px 4px repeat-y;
+  mask: var(--rr-ramp-ctl) 0 0 / 8px 4px repeat-y;
+}
+
+.raking-relief-root .rr-cap-step.is-3 {
+  width: 40%;
+}
+
+.raking-relief-root .rr-cap-step.is-2 {
+  width: 62%;
+}
+
+.raking-relief-root .rr-cap-step.is-1 {
+  width: 84%;
 }
 
 .raking-relief-root .rr-rate-table {
@@ -1246,13 +1932,23 @@
 
 .raking-relief-root .rr-rate-table th,
 .raking-relief-root .rr-rate-table td {
-  padding: 11px 24px;
+  padding: 11px 14px;
   text-align: left;
   vertical-align: top;
 }
 
+.raking-relief-root .rr-rate-table th:first-child,
+.raking-relief-root .rr-rate-table td:first-child {
+  padding-left: 0;
+}
+
+.raking-relief-root .rr-rate-table th:last-child,
+.raking-relief-root .rr-rate-table td:last-child {
+  padding-right: 0;
+}
+
 .raking-relief-root .rr-rate-table thead th {
-  padding-top: 20px;
+  padding-top: 18px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--deco-hair);
   font-family: var(--rr-mono);
@@ -1282,7 +1978,7 @@
 
 .raking-relief-root .rr-rate-notes {
   margin: 0;
-  padding: 20px 24px;
+  padding: 18px 0 0;
   border-top: 1px solid var(--deco-hair);
   list-style: none;
   font-size: 12.5px;
@@ -1322,7 +2018,7 @@
   flex: 1;
   flex-direction: column;
   gap: 16px;
-  padding: 20px 24px 24px;
+  padding: 20px 0 4px;
 }
 
 .raking-relief-root .rr-plan-body > p {
@@ -1364,8 +2060,119 @@
   margin-top: auto;
 }
 
+/* the compare ledger, sunk under the tablets */
+.raking-relief-root .rr-compare-wrap {
+  padding: 0 var(--rr-gut) 80px;
+}
+
 .raking-relief-root .rr-compare {
-  padding: 8px var(--rr-gut) 64px;
+  padding: 30px 24px 28px 48px;
+}
+
+.raking-relief-root .rr-compare-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-compare-lead {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.raking-relief-root .rr-cmp-scroll {
+  overflow-x: auto;
+}
+
+.raking-relief-root .rr-cmp-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.raking-relief-root .rr-cmp-table th,
+.raking-relief-root .rr-cmp-table td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.raking-relief-root .rr-cmp-table th:first-child,
+.raking-relief-root .rr-cmp-table td:first-child {
+  padding-left: 0;
+}
+
+.raking-relief-root .rr-cmp-table thead th {
+  padding-top: 16px;
+  padding-bottom: 10px;
+  font-family: var(--rr-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--deco-ink-2);
+}
+
+.raking-relief-root .rr-cmp-table thead th:not(:first-child),
+.raking-relief-root .rr-cmp-table td {
+  width: 22%;
+}
+
+.raking-relief-root .rr-cmp-group th {
+  padding-top: 24px;
+  padding-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--deco-ink);
+}
+
+.raking-relief-root .rr-cmp-table tbody + tbody .rr-cmp-group th {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-cmp-table tbody tr + tr > * {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.raking-relief-root .rr-cmp-table tbody th[scope='row'] {
+  font-weight: 400;
+  color: var(--deco-ink);
+}
+
+/* a filled square is included, an open square is not; both carved */
+.raking-relief-root .rr-cmp-mark {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  vertical-align: middle;
+}
+
+.raking-relief-root .rr-cmp-mark.is-yes {
+  background: var(--deco-ink);
+}
+
+.raking-relief-root .rr-cmp-mark.is-no {
+  box-shadow: inset 0 0 0 1px var(--deco-hair);
+}
+
+.raking-relief-root .rr-cmp-text {
+  font-family: var(--rr-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.raking-relief-root .rr-cmp-link {
+  font-size: 13px;
+  color: var(--deco-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ---------- footer ---------- */
@@ -1485,6 +2292,7 @@
   --deco-accent: #2f63b4;
   --deco-ornament: #a08d72;
   --rr-lit: rgba(255, 255, 255, 0.24);
+  --rr-shade: #8f8677;
 }
 
 [data-theme='dark'] .raking-relief-root .rr-wordmark.is-light,
@@ -1511,30 +2319,62 @@
   .raking-relief-root .rr-ledger-cmd {
     grid-column: 1 / -1;
   }
+
+  .raking-relief-root .rr-scripts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 12px;
+  }
+
+  .raking-relief-root .rr-scripts li:nth-child(3n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .raking-relief-root .rr-scripts li:nth-child(n + 4) {
+    padding-top: 14px;
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .raking-relief-root .rr-tablets {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .raking-relief-root .rr-tablet-stack.rr-rates {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 960px) {
   .raking-relief-root .rr-proof-grid,
   .raking-relief-root .rr-bond,
   .raking-relief-root .rr-bond.is-offset,
-  .raking-relief-root .rr-tablets {
+  .raking-relief-root .rr-tablets,
+  .raking-relief-root .rr-lang-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .raking-relief-root .rr-proof-grid {
+    row-gap: 8px;
+  }
+
+  .raking-relief-root .rr-keystone {
+    padding: 20px 0 4px;
+  }
+
   .raking-relief-root .rr-outputs-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .raking-relief-root .rr-outputs-row li {
-    padding: 12px 18px 12px 0;
+    padding: 12px 16px 12px 0;
   }
 
-  .raking-relief-root .rr-outputs-row li:nth-child(odd) {
+  .raking-relief-root .rr-outputs-row li:nth-child(3n + 1) {
     padding-left: 0;
     border-left: 0;
   }
 
-  .raking-relief-root .rr-outputs-row li:nth-child(n + 3) {
+  .raking-relief-root .rr-outputs-row li:nth-child(n + 4) {
     border-top: 1px solid var(--deco-hair);
   }
 
@@ -1542,7 +2382,12 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .raking-relief-root .rr-stats li {
+    padding: 12px 20px 12px 0;
+  }
+
   .raking-relief-root .rr-stats li:nth-child(odd) {
+    padding-left: 0;
     border-left: 0;
   }
 
@@ -1566,13 +2411,27 @@
     grid-column: 1 / -1;
   }
 
-  .raking-relief-root .rr-stele-body {
+  .raking-relief-root .rr-stele-body,
+  .raking-relief-root .rr-cascade-steps {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .raking-relief-root .rr-stele-trace {
     border-left: 0;
     border-top: 1px solid var(--rr-stele-seam);
+  }
+
+  .raking-relief-root .rr-cascade-step:nth-child(2),
+  .raking-relief-root .rr-cascade-step:nth-child(3) {
+    margin-top: 0;
+  }
+
+  .raking-relief-root .rr-cascade-step:nth-child(2) {
+    margin-left: 24px;
+  }
+
+  .raking-relief-root .rr-cascade-step:nth-child(3) {
+    margin-left: 48px;
   }
 
   .raking-relief-root .rr-foot {
@@ -1596,6 +2455,19 @@
     display: none;
   }
 
+  /* the deep shadows fall back to the standard reach on a narrow wall */
+  .raking-relief-root .rr-raised.is-deep {
+    --rr-dx: 24px;
+    --rr-dy: 16px;
+    --rr-ramp-x: var(--rr-ramp-r);
+    --rr-ramp-y: var(--rr-ramp-b);
+  }
+
+  .raking-relief-root .rr-face.is-framed {
+    --rr-frame-in: 6px;
+    padding: 24px 22px;
+  }
+
   .raking-relief-root .rr-head {
     grid-template-columns: 40px minmax(0, 1fr);
     column-gap: 16px;
@@ -1616,14 +2488,24 @@
   }
 
   .raking-relief-root .rr-hero-stage {
-    padding: 28px var(--rr-gut) 40px;
+    padding: 28px calc(var(--rr-gut) + 24px) 56px var(--rr-gut);
   }
 
   .raking-relief-root .rr-hero-face {
-    padding: var(--tcm-box-pt, 36px) 22px var(--tcm-box-pb, 38px);
+    --rr-frame-in: 6px;
+    padding: var(--tcm-box-pt, 40px) 26px var(--tcm-box-pb, 40px);
+  }
+
+  .raking-relief-root .rr-crown {
+    gap: 16px;
+  }
+
+  .raking-relief-root .rr-sun {
+    width: 180px;
   }
 
   .raking-relief-root .rr-claim {
+    margin-top: 24px;
     font-size: clamp(2rem, 9.4vw, 2.6rem);
     max-width: none;
     min-height: 0;
@@ -1632,6 +2514,10 @@
   .raking-relief-root .rr-hero-sub {
     font-size: var(--tcm-lead, 17px);
     line-height: var(--tcm-lead-lh, 1.55);
+  }
+
+  .raking-relief-root .rr-frieze-row li {
+    width: 220px;
   }
 
   .raking-relief-root .rr-trust-row {
@@ -1647,19 +2533,68 @@
   .raking-relief-root .rr-review-bar,
   .raking-relief-root .rr-review-foot,
   .raking-relief-root .rr-rate-notes {
-    padding-inline: var(--tcm-cell-pad, 28px);
+    padding-inline: 0;
   }
 
   .raking-relief-root .rr-rate-table th,
   .raking-relief-root .rr-rate-table td {
-    padding-inline: 14px;
+    padding-inline: 10px;
   }
 
   .raking-relief-root .rr-incised,
   .raking-relief-root .rr-outputs,
-  .raking-relief-root .rr-variants {
+  .raking-relief-root .rr-stats,
+  .raking-relief-root .rr-scripts,
+  .raking-relief-root .rr-variants,
+  .raking-relief-root .rr-widths,
+  .raking-relief-root .rr-compare {
     padding-right: 20px;
-    padding-left: 36px;
+    padding-left: var(--tcm-cell-pad, 40px);
+  }
+
+  .raking-relief-root .rr-frieze {
+    padding-left: var(--tcm-cell-pad, 40px);
+  }
+
+  .raking-relief-root .rr-outputs-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-outputs-row li:nth-child(3n + 1) {
+    padding-left: 16px;
+    border-left: 1px solid var(--deco-hair);
+  }
+
+  .raking-relief-root .rr-outputs-row li:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .raking-relief-root .rr-outputs-row li:nth-child(n + 3) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .raking-relief-root .rr-scripts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .raking-relief-root .rr-scripts li:nth-child(3n + 1) {
+    padding-left: 14px;
+    border-left: 1px solid var(--deco-hair);
+  }
+
+  .raking-relief-root .rr-scripts li:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .raking-relief-root .rr-scripts li:nth-child(n + 3) {
+    padding-top: 14px;
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .raking-relief-root .rr-ros-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .raking-relief-root .rr-ros-name {
@@ -1675,6 +2610,10 @@
     grid-column: 1 / -1;
   }
 
+  .raking-relief-root .rr-stele-in {
+    padding-right: calc(var(--rr-gut) + 24px);
+  }
+
   .raking-relief-root .rr-stele-head {
     grid-template-columns: 40px minmax(0, 1fr);
     column-gap: 16px;
@@ -1683,8 +2622,17 @@
 
   .raking-relief-root .rr-stele-run,
   .raking-relief-root .rr-stele-trace,
-  .raking-relief-root .rr-stele-acts {
+  .raking-relief-root .rr-stele-acts,
+  .raking-relief-root .rr-cascade {
     padding: 24px;
+  }
+
+  .raking-relief-root .rr-cascade-step:nth-child(2) {
+    margin-left: 12px;
+  }
+
+  .raking-relief-root .rr-cascade-step:nth-child(3) {
+    margin-left: 24px;
   }
 
   .raking-relief-root .rr-code-body {

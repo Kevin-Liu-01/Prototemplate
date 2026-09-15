@@ -3,6 +3,7 @@ import { Cinzel } from 'next/font/google';
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
 import BondWall from './components/Bond';
+import GlazeDefs from './components/GlazeDefs';
 import { RosetteBand } from './components/Rosette';
 import BondCourse from './sections/BondCourse';
 import Foundation from './sections/Foundation';
@@ -39,12 +40,24 @@ const cinzel = Cinzel({
  * elevation's successive courses, content set as glazed panels into
  * running-bond brick, rosette bands running across the towers between
  * them. The materials are the Ishtar Gate's: lapis and turquoise glaze,
- * gold rosettes, fired brick, cream mortar. Geometry only.
+ * gold rosettes, fired brick, cream mortar. Every glazed surface catches
+ * light as ordered dither from one shared set of Bayer tiles. Geometry
+ * only.
+ *
+ * Courses, top to bottom: the lintel (navigation), the gate (the claim),
+ * the threshold (six customer marks as glazed tiles in the bond), the T
+ * proof (the source as a gold brick, its translations laid in Flemish bond
+ * with glazed lapis headers), the languages (three courses of rosette
+ * medallions and the variants register), the inner court (the four product
+ * surfaces on the one dark wall, under its own crenellation), the ziggurat
+ * (the story on three stepped tiers), the pricing gate (gold plaques set in
+ * two towers, the ledger as the opening), the foundation (the footer).
  */
 export default function GlazedBondPage() {
   return (
     <>
       <div className={`glazed-bond-root ${cinzel.variable}`}>
+        <GlazeDefs />
         <Lintel />
         <Gate />
 
@@ -69,9 +82,7 @@ export default function GlazedBondPage() {
           </div>
           <RosetteCourse />
 
-          <div className='gb-band' aria-hidden='true'>
-            <RosetteBand />
-          </div>
+          {/* no band here: the court's own crenellation is the seam above it */}
           <InnerCourt />
 
           <div className='gb-band' aria-hidden='true'>

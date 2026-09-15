@@ -4,22 +4,28 @@ import { useRef, type ReactNode } from 'react';
 
 import BarDot from '../components/BarDot';
 import Chip from '../components/Chip';
+import Fig from '../components/Fig';
+import GlyphBlock, { type Motif } from '../components/GlyphBlock';
 import { useQuietReveal } from '../components/motion';
 import { Panel, Register } from '../components/Panel';
 import TempleField from '../components/TempleField';
-import { CLI_LOCALES, DEMO, SIGN_IN } from '../data';
+import { CLI_LOCALES, DEMO, SIGN_IN, leaf } from '../data';
 
 /**
- * Leaf five, the dark leaf: black ground in both themes, the red frame
- * lifted for it. The left register is the live dither plate; the right is
- * the story of a string in five steps, each with its bar-and-dot ordinal
- * and its figures. The acts close the leaf.
+ * Leaf six, the dark leaf: black ground in both themes, the red frame
+ * lifted for it, the screen's tone swapped to cream. The left register is
+ * the live dither plate; the right is the story of a string in five
+ * steps, each with its ordinal in bar and dot, its sign from the
+ * vocabulary, and its figures. The acts close the leaf.
  */
-type Step = { n: number; title: string; body: ReactNode; figure?: { n: number; text: string } };
+const LEAF = leaf('story');
+
+type Step = { n: number; sign: Motif; title: string; body: ReactNode; figure?: { n: number; text: string } };
 
 const STEPS: readonly Step[] = [
   {
     n: 1,
+    sign: 'bond',
     title: 'The wrapped markup',
     body: (
       <>
@@ -30,6 +36,7 @@ const STEPS: readonly Step[] = [
   },
   {
     n: 2,
+    sign: 'fret',
     title: 'The build run',
     body: (
       <>
@@ -40,12 +47,14 @@ const STEPS: readonly Step[] = [
   },
   {
     n: 3,
+    sign: 'lozenge',
     title: 'The locale files',
     body: <>Each locale lands as a file the runtime can read without a network call.</>,
     figure: { n: 640, text: '6 locales · 640 translations' },
   },
   {
     n: 4,
+    sign: 'cross',
     title: 'Review and the pull request',
     body: (
       <>
@@ -57,6 +66,7 @@ const STEPS: readonly Step[] = [
   },
   {
     n: 5,
+    sign: 'step',
     title: 'Delivery from the edge',
     body: <>Updates reach every visitor over the air in under one second.</>,
     figure: { n: 1, text: '<1s' },
@@ -69,7 +79,7 @@ export default function NightPanel() {
 
   return (
     <div ref={root}>
-      <Panel index={5} fold='a' tone='night' id='story'>
+      <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} tone='night' id={LEAF.id}>
         <Register className='is-head'>
           <h2 className='sfc-h2' data-reveal>
             How a string becomes a shipped translation.
@@ -98,16 +108,16 @@ export default function NightPanel() {
               {STEPS.map((step) => (
                 <li className='sfc-step' key={step.n}>
                   <span className='sfc-step-num'>
+                    <GlyphBlock motif={step.sign} tier={6} size={26} tone='night' />
                     <BarDot n={step.n} layout='row' scale={0.9} />
                   </span>
                   <div className='sfc-step-body'>
                     <h3>{step.title}</h3>
                     <p className='sfc-p'>{step.body}</p>
                     {step.figure ? (
-                      <span className='sfc-figure'>
-                        <BarDot n={step.figure.n} layout='row' scale={0.8} />
+                      <Fig n={step.figure.n} scale={0.8}>
                         <code>{step.figure.text}</code>
-                      </span>
+                      </Fig>
                     ) : null}
                   </div>
                 </li>

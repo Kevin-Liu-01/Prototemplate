@@ -1,15 +1,21 @@
 /**
- * calendar-rings: a General Translation landing page as a concentric disk.
+ * calendar-rings: a General Translation landing page as a concentric disk
+ * that works as an instrument.
  *
- * The hero is one disk of nested rings, dither density stepping outward,
- * with the claim at its center and radial rules dividing the outer ring
- * into cells. Every section after it is one ring unrolled into a wide arc
- * band, so the page reads as rings peeled outward: the customers, the T
- * component, the negative ring with the stack, the languages, the pricing
- * file, and the flat base register of the footer. The lineage is the
- * Aztec and Maya revival of the 1920s, geometry only: rings, notches,
- * cells, radial rules, stepped registers and bar-and-dot numerals.
- * Material palette: obsidian, terracotta, jade, gold.
+ * The hero is one disk of nested rings, ground and dither alternating
+ * outward, and every ring reads something real: the claim in the hub, the
+ * name on the first ring, the four surfaces on the second, the seven usage
+ * rates on the third as bar-and-dot numerals, the twenty locales on the
+ * fourth as flag chips, and a rim notched once per locale. A key under the
+ * disk says how to read it. Every section after it unrolls one ring into a
+ * wide arc band with radial cells, notch ticks and seated numerals: the
+ * customers, the T component as a half disk around its source, the
+ * negative ring with the stack and the pipeline, floored by the disk
+ * itself inverted, the languages, the pricing file as rate segments, and
+ * the flat base register of the footer. The lineage is the Aztec and Maya
+ * revival of the 1920s, geometry only: rings, notches, cells, radial
+ * rules, stepped registers and bar-and-dot numerals. Material palette:
+ * obsidian, terracotta, jade, gold.
  */
 import { Cinzel } from 'next/font/google';
 

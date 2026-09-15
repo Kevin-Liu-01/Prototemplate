@@ -11,6 +11,8 @@ export const DEMO_HREF = 'https://generaltranslation.com/enterprise/contact';
 export const DOCS_HREF = 'https://generaltranslation.com/docs';
 export const STARTER_HREF = 'https://dash.generaltranslation.com/en-US/signin?selected_plan=tier1';
 export const USAGE_RATES_HREF = 'https://generaltranslation.com/pricing/usage';
+/** The full locale catalog. The real route is /supported-locales, not a docs path. */
+export const SUPPORTED_LOCALES_HREF = 'https://generaltranslation.com/supported-locales';
 
 export const NAV_LINKS: readonly { label: string; href: string }[] = [
   { label: 'Docs', href: DOCS_HREF },
@@ -84,17 +86,23 @@ export default function Home() {
 }`,
 };
 
-/** The source string of the sample rendered in six locales, one per step. */
+/**
+ * The source string of the sample rendered in five locales, one per step,
+ * in the order the shipped translation window serves them. These are the
+ * outputs the window shows; no translation here is written by hand.
+ */
 export type Step = { code: string; text: string; lang: string; rtl?: boolean };
 
 export const STEPS: readonly Step[] = [
   { code: 'es', text: '¡Hola, mundo!', lang: 'es' },
-  { code: 'fr', text: 'Bonjour, le monde !', lang: 'fr' },
+  { code: 'ja', text: 'こんにちは、世界！', lang: 'ja' },
   { code: 'de', text: 'Hallo, Welt!', lang: 'de' },
-  { code: 'ja', text: 'こんにちは世界！', lang: 'ja' },
-  { code: 'ko', text: '안녕, 세상!', lang: 'ko' },
-  { code: 'ar', text: 'مرحباً بالعالم!', lang: 'ar', rtl: true },
+  { code: 'fr', text: 'Bonjour le monde !', lang: 'fr' },
+  { code: 'zh', text: '你好，世界！', lang: 'zh' },
 ];
+
+/** Where the CLI writes each locale's translations, as the shipped window prints it. */
+export const SERVED_PATH = 'public/_gt/[locale].json';
 
 /** The six first-party stacks, package and install lines as shipped. */
 export type Stack = { name: string; pkg: string; install: string };
@@ -121,10 +129,15 @@ export const CAPABILITIES: readonly { name: string; demo: string }[] = [
 /** The CLI session's locales. */
 export const CLI_LOCALES: readonly string[] = ['es', 'fr', 'ja', 'de', 'zh', 'ko'];
 
-/** Greetings, the living material: real modern strings with their script. */
+/**
+ * Greetings, the living material: real modern strings with their script,
+ * the source language first. Twenty cells, so the meander runs in four
+ * courses of five on the wide page.
+ */
 export type Greeting = { code: string; text: string; lang: string; name: string; rtl?: boolean };
 
 export const GREETINGS: readonly Greeting[] = [
+  { code: 'en', text: 'Hello', lang: 'en', name: 'English' },
   { code: 'es', text: 'Hola', lang: 'es', name: 'español' },
   { code: 'fr', text: 'Bonjour', lang: 'fr', name: 'français' },
   { code: 'ja', text: 'こんにちは', lang: 'ja', name: '日本語' },
@@ -284,7 +297,7 @@ export const FOOTER_COLUMNS: readonly { title: string; links: readonly FooterLin
       { label: 'Documentation', href: DOCS_HREF },
       { label: 'Blog', href: 'https://generaltranslation.com/blog' },
       { label: 'Pricing', href: 'https://generaltranslation.com/pricing' },
-      { label: 'Supported Locales', href: 'https://generaltranslation.com/docs/reference/supported-locales' },
+      { label: 'Supported Locales', href: SUPPORTED_LOCALES_HREF },
     ],
   },
   {

@@ -210,9 +210,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'textile-block',
     name: 'Textile Block',
     concept:
-      'The General Translation landing page as a Frank Lloyd Wright textile-block wall: a rigid grid of square cast-concrete modules laid in courses, most carrying Mayan-revival geometric relief in moss green, with the claim, the T proof, the four product objects, the scripts, a jade plinth and three pricing plaques set as smooth blocks into the same bond.',
+      'The General Translation landing page as a Frank Lloyd Wright textile-block relief wall in horizontal courses. One square cast module is the grid; content sits on smooth cast faces, ornament is a library of six geometric reliefs (the Ennis cruciform, the Millard chevron, the Storer bar-and-slots, the Freeman stepped pyramid, the Aztec Hotel greca band, the running bond), and every course of the page is keyed to one relief. Light behind the perforated Ennis and Storer blocks is a live Bayer dither field; the shade the upper wall casts across the dark jade course is a static ramp of nested Bayer tiers. Every line on the page is a joint drawn once; every label on the wall is a header brick flush in a block\'s corner. A materials legend near the base names the six reliefs and the five materials from the same records that draw them.',
     tone: 'light',
-    signature: 'One monumental smooth block carries the claim while the Bayer field glows through the cruciform holes of the perforated blocks beside it, and every joint on the page is a hairline drawn once at the module pitch.',
+    signature: 'The relief library used as a system: a named Wright block per course (Ennis, Millard, Storer, Freeman), perforated variants lit by Bayer dither, section heads cast as plaques carrying their course\'s relief swatch, header-brick locale chips, and hover that inverts any relief, ground and moss swapping.',
   },
   {
     n: 27,
@@ -220,9 +220,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'stepped-fret',
     name: 'Stepped Fret',
     concept:
-      'Fret strata in the Zapotec and Mixtec revival: the page is a stack of horizontal registers, each bounded by a stepped-fret meander at its own scale, the content blocks step one fret step per register, and the hero is one monumental fret rendered in ordered dither with the claim set in the step it leaves open.',
+      'Mitla fret strata: the page is a stack of horizontal registers bounded by five distinct Zapotec frets (stepped fret with coil, hooked step, stepped chevron, stepped diamond, opposed pair) drawn at three scales and assigned by register; each register\'s content block steps one fret step right and back down the page with the gutter it leaves filled with graded Bayer stone, so the grid itself is a stair. The hero is one monumental fret in ordered dither with the claim set in the step it leaves open, and the dark band is the same figure inverted: the Mitla facade in cream on black, and the hero\'s stair returning as six solid cream plates carrying the platform tiers.',
     tone: 'light',
-    signature: 'The monumental hero fret is solid limestone-black at the base of its stair and thins to ordered Bayer grain by the end of its coil, with one knot of density travelling the path every twenty seconds while the claim in the open step cycles through sixteen locales.',
+    signature: 'The register stagger made material as a stair of graded Bayer stone descending the left margin, and the hero\'s monumental dither fret returning inverted in the dark band as a stair of cream plates under a three-course cream facade.',
   },
   {
     n: 29,
@@ -230,9 +230,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'glazed-bond',
     name: 'Glazed Bond',
     concept:
-      'General Translation as the Ishtar Gate\'s elevation: two battered brick towers with stepped parapets flank a corbelled arch that holds the claim, and every section below is one more course of lapis-glazed panels set into running bond, divided by gold rosette bands.',
+      'General Translation as an Ishtar Gate elevation in the Babylonian revival of Art Deco. Two battered towers with stepped, turquoise-capped parapets flank a corbelled arch that holds the claim; every section below is one more course of the elevation, its content set as glazed panels into running-bond brick, with gold rosette bands on lapis crossing the towers between courses. The T proof is laid as Flemish bond with glazed headers: a lapis header brick (the flag chip) beside every cream stretcher (the translation), the source string as the one gold brick. Languages are three courses of rosette medallions with the endonym at each center. The four product surfaces sit as tablets in a lapis inner court under its own two-step crenellation. The story is a three-tier ziggurat. Pricing is a gate in miniature: two towers carrying the plans as gold plaques, the rate ledger as the lapis opening. Every glazed surface catches light as ordered Bayer dither from one shared set of tiles; no gradient anywhere. Geometry only.',
     tone: 'light',
-    signature: 'The claim morphs through sixteen locales inside the arch while a dithered sun disc turns in its crown, and each course\'s bricks and medallions are laid one by one as their wall scrolls in.',
+    signature: 'Flemish bond with glazed lapis headers as the T proof, the source as a gold brick, and a Bayer-dither glaze sheen at the arris of every glazed surface, all set on a crenellated gate elevation.',
   },
   {
     n: 31,
@@ -240,9 +240,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'brick-lattice',
     name: 'Brick Lattice',
     concept:
-      'A Babylonian-revival landing page in which the entire surface is one running-bond brick wall, every brick an ordered-dither cell, and density alone draws the rosettes, chevrons, frets, palmettes and stepped parapets around glazed content panels cut out of the lattice.',
+      'The whole page is one glazed-brick wall in running bond, and every brick is an ordered-dither cell. Density on the Bayer screen draws the ornament from a six-pattern book, one pattern per section: a rosette field behind the claim, chevron courses behind the wall of translations, the inverted lattice of the kiln with ziggurat setbacks and merlons, meander registers around the medallions of the languages band, palmette fans under the glazed pricing panels, and the stepped foundation under the footer where the book itself is printed. Copy sits on smooth glazed panels with stepped parapet corners cut out of the lattice; every named panel carries a glazed header course the way the wall\'s bricks do. The T proof is one source brick lighting its neighbours, in the DOM bricks and in the lattice behind them at once. Everything is complete at rest; hover and motion only add.',
     tone: 'light',
-    signature: 'Dot density on a continuous brick bond resolves into one enormous twelve-petal rosette behind a stepped-corner claim panel, and every later ornament, from the wall of translations to the kiln\'s crenellations and the medallion band, is the same brick counted course by course.',
+    signature: 'One source brick fires and its neighbours light course by course through four Bayer tiers to solid lapis, while the same ring of density runs out through the chevron lattice behind the wall; at rest the wall stands fired and the source lit.',
   },
   {
     n: 32,
@@ -250,9 +250,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'screenfold-codex',
     name: 'Screenfold Codex',
     concept:
-      'The landing page as a Maya screenfold: one strip of bark-paper cream folded into eight red-framed leaves of horizontal registers, adjacent leaves sheared opposite ways, with Bayer dither as the writing (geometric glyph blocks, stepped fold ramps, a live stepped-pyramid plate on the black leaf) and every figure printed in bar-and-dot beside its Arabic form.',
+      'The landing page as a Maya screenfold: one strip of bark-paper cream folded into ten leaves, each a red-oxide-framed page cut into horizontal registers by red rules. Every leaf is a parallelogram whose side edges run a fixed 40px across from top to bottom, adjacent leaves running opposite ways, so every crease lines up exactly and the strip\'s silhouette zigzags down the page like an accordion pleat seen off its axis. The folds between leaves are stepped Bayer troughs (inked at a valley with a solid crease hairline, red oxide at a mountain with a bare-paper ridge). Dither is the writing: twelve geometric signs carved through dithered squares form a documented vocabulary, each standing for one product concept (strings, build, runtime, CLI, dashboard, review, locale, languages, routing, edge, context, tokens) and printed wherever that concept appears, with the key on the back board. Bar and dot is the counting: every figure prints in the Maya numeral beside its Arabic form, with the key on leaf one. The living material is the real product: the shipped Next.js sample, both TranslateWindow belt strings in five locales, the component outputs, the review rows, the 120-row locale roster, the published rate ledger, the shipped feature grid.',
     tone: 'light',
-    signature: 'While the hero is on screen, one glyph block at a time re-inks to the next Bayer density tier in the codex\'s paired-column reading order, a discrete step through the screen rather than a fade, so the band is a finished still at every frame.',
+    signature: 'Parallelogram leaves with a fixed lean that alternates per panel so every crease aligns; stepped-trough dither hinges seated on the crease span; a twelve-sign glyph-square vocabulary keyed on the back board; bar-and-dot numerals beside every count, price, ordinal, rate, and yes/no cell; the fold map, the whole strip in miniature as the hero\'s table of contents.',
   },
   {
     n: 33,
@@ -260,9 +260,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'raking-relief',
     name: 'Raking Relief',
     concept:
-      'A bas-relief wall of wide alabaster courses under a raking light from the left, where every panel is carved and shaded by Bayer dither density, geometric rosette, palmette, chevron and fret bands frame each course, and the product is inscribed text with one lapis inlay per locale.',
+      'A bas-relief alabaster wall under a raking light from the left, made monumental. Every form on the page is carved by one consistent light: raised tablets catch a lit edge on their left and top and cast a stepped Bayer-tier shadow to their right and below (dense beside the tablet, thinning outward, one exact ramp mask per strip); sunk registers hold the rim\'s shadow inside their left and top edges and a lit inner wall on their right and bottom; carved headings cast a dithered shadow and incised strings show the lit lip of their cut. Geometric relief bands from the Ishtar Gate, the Guardian Building and Mitla (rosette, palmette, chevron, guilloche, stepped fret) run between the courses and frame every raised tablet. The content is inscription: the claim in Cinzel capitals under a sun-disk crown, the same claim incised in its sixteen shipped locales, the Next.js source raised beside its eight translations cut into the wall with lapis locale inlays, the locales as a rosette band with the word for language in nine scripts, the agent on a stele inside a shadowed recess with a stepped niche head, the published rates on three tablets under ziggurat caps with the shipped compare ledger sunk beneath. Alabaster and warm shadow, one lapis inlay.',
     tone: 'light',
-    signature: 'The hero claim stands in inscriptional capitals casting a dithered shadow to the right, and cycles through sixteen locales as a chisel pass that cuts the old line away and reveals the new one from the left.',
+    signature: 'Stepped Bayer-ramp shadows that make every tablet, register, button, heading and string read as carved under the same left-hand light, framed by geometric relief bands.',
   },
   {
     n: 34,
@@ -270,9 +270,39 @@ export const DIRECTIONS: Direction[] = [
     slug: 'calendar-rings',
     name: 'Calendar Rings',
     concept:
-      'A concentric disk of Bayer-dithered rings holds the claim at its center, and every section below it is one ring unrolled into a wide arc band, so the page reads as rings peeled outward from the Sun Stone\'s geometry.',
+      'A General Translation landing page as one concentric disk that works as an instrument. Ground and dither rings alternate outward from the source at the center and every ring reads something real: the claim in the hub inside the jade source circle, the name inscribed on ring one, the four product surfaces labelled along ring two, the seven usage rates as bar-and-dot numerals knocked out of ring three, the twenty locales of the outer ring as flag chips on ring four, and a rim notched once per locale. A stepped plinth carries the sub, the CTAs and a six-cell key that says how to read the disk. Every later section unrolls one ring into a wide arc band with radial cells, notch ticks and numerals seated on the arc: the customers, the T component as a half disk around its source window, the stack and the nine-beat pipeline in the negative ring floored by the disk itself inverted, the languages in two bands of ten in the disk\'s own order with a variants register, and the pricing file as seven rate segments plus two plan segments. Lineage is the Aztec and Maya revival of 1920s deco, geometry only (Sun Stone, Dresden Codex numerals, Aztec Hotel registers); palette is obsidian, fired clay, jade and gold.',
     tone: 'light',
-    signature: 'The disk\'s two notched edges turn against each other like the wheels of the calendar round while the claim at the hub cycles through the shipped locales as one shaped text node.',
+    signature: 'The disk as a readable instrument: four surface labels on arc paths, seven knocked-out numerals, twenty flag chips on the outer ring, two notched edges turning against each other; then the same disk inverted, rising cut from the floor of the dark band.',
+  },
+  {
+    n: 35,
+    label: '27',
+    slug: 'talud-tablero',
+    name: 'Talud-Tablero',
+    concept:
+      'The General Translation landing page as a stepped platform in the Teotihuacan talud-tablero profile. Every section is one terrace module: a framed tablero (the rectangular content panel with a red oxide projecting frame and a hairline molding each side) over a sloped talud (a clip-path trapezoid of Bayer-tiled volcanic stone that carries the ornament, the stair, or a load of chips and cells). Each terrace is one step wider than the one above it (data-tier 6 down to 0), so the page silhouette is a pyramid in elevation: the claim on the top platform, a stair axis with treads and two red alfardas descending through every talud, a full-bleed volcanic-stone plaza at the foot (the dark moment), and a lower platform beyond it carrying the pricing file as three tableros of increasing frame depth and the footer as the base course. Language as the oldest technology, carried on a platform built in registers.',
+    tone: 'light',
+    signature: 'Stepped-pyramid page silhouette: red-framed cream tableros widening down the page, connected by sloped dotted stone bands, with one central stair of treads and red alfardas running through every band into a dark plaza. Hero plate is a Bayer-dithered talud-tablero platform in front of a shaded disc; the hero crown is a bar-and-dot 118.',
+  },
+  {
+    n: 36,
+    label: '28',
+    slug: 'apadana-grid',
+    name: 'Apadana Grid',
+    concept:
+      'The General Translation landing page as the floor plan of a hypostyle hall seen from above. Every section is a hall in plan: a strict square grid of column bases (three concentric rings, the middle one dashed so each dash is one flute) on every axis intersection, with the bays between the columns holding the content. The halls follow one another down the page with different column counts and the pitch is derived from each: the portico (6 by 2, pitch 200) holds the claim between its two rows with two sun-disk dither plates in the outer bays and double-volute capitals over the front row and mirrored under the back row; a 4 by 4 bay hall proves the T component with the source code window at the center and eight locale builds of "Scale to every language" in the surrounding bays, each flag chip seated beside its column base as a nameplate; the great hall (6 by 6, twenty-five bays) sets one locale per bay around the halftone globe, zh-Hans and zh-Hant flanking the center, with the four-row variants register beneath; the throne hall at night is the dark moment, a full-bleed black-basalt band with a gold-hairline 3 by 3 field whose four rooms are the product surfaces (six-stack code window, the gt translate terminal, the review workspace, the Locadex trace) over a dithered lamplight floor; the treasury sets the seven-row rate ledger and then frames Starter, the footnotes with the compare link, and Enterprise in three bays; the rear portico is the footer\'s four link columns. The page\'s rails are drawn as walls with thickness (two faces ten pixels apart with a hairline hatch between, the draughtsman\'s poché). Language is the oldest technology; the hall that received every embassy is the frame.',
+    tone: 'light',
+    signature: 'A page of circles on a square grid: column bases with fluted rings on every intersection, content in the bays between them, six halls of different column counts stacked down the page, the portico\'s double-volute capitals as pure arcs over the claim, and a black-basalt throne hall in gold hairline.',
+  },
+  {
+    n: 37,
+    label: '29',
+    slug: 'clay-tablet',
+    name: 'Clay Tablet',
+    concept:
+      'The page is a museum case of clay tablets. Every section is one tablet: a fired-clay slab with 12px pillow corners, ruled into registers and columns, sitting on a dark wet-clay case ground between hairline shelf lines, each with a museum label (catalogue numeral, name, one line of fact) under it. The signature device is the wedge dither: the cuneiform wedge (a triangular head with a tail, geometry only, never a sign) is the cell of an ordered Bayer dither. Every grid cell reads a scalar field and compares it against the 8x8 Bayer threshold from src/lib/dither.ts; a lit cell takes a vertical wedge, and above half tone a second pass against the transposed matrix lays a horizontal wedge across it, so tone is impression density and never a gradient. The hero is the largest tablet: the claim "Scale to every language" in Forum as one shaped text node with lang and dir, re-impressed through the sixteen shipped locales by a clip-path stylus wipe; a rosette frieze (five lobed disks, the Assyrian border repeat) in wedge dither below it, rendered server-side as SVG so it is complete before any script runs; a lapis seal at the corner (a disk ringed by eighteen radial wedges carrying the GT monogram in slip); and the colophon with the six customer marks masked into the page ink. The T component proof follows the Behistun inscription: the shipped gt-next sample in the first column, then one column per locale (es, ja, de, fr, zh) under its flag-chip seal, the three outputs of the sample (h1, DateTime, Num) impressed in each, the columns divided by doubled threads, the translate run as the bottom register. The one dark moment is a black-stone stele among the clay that stays black in both themes, with the stack in seven registers, the gt cli terminal with five LocaleTag chips, the closing acts, and the wedge dither in motion on a canvas at its foot. Pricing is three small tablets on one shelf: the seven-row rate ledger with both footnotes, Starter $0, Enterprise Custom. Palette: fired clay #cfa87b (tablet face), wet clay dark #2a1a10 (ink and case), cream slip #efe4d0 (code and workspace panels), one lapis #2447a3 (seals, the active column edge, the zh-Hans/zh-Hant tell ring). Dark mode turns the tablets to wet clay, the ink to slip, the case to #070707.',
+    tone: 'light',
+    signature: 'The wedge dither: a cuneiform wedge as the Bayer dither cell, with a second crossed-wedge pass above half tone. Seen in the hero\'s five-rosette frieze, the wedge rule under every tablet head, the wedge rules between the twenty script cells, the ramp band at the foot of the languages tablet, and the stele\'s rising canvas field. Secondary signatures: the lapis seal with the GT monogram, the doubled-thread column rules, and the slip museum labels under each tablet.',
   },
   {
     n: 23,

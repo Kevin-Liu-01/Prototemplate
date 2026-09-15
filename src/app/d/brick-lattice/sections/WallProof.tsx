@@ -5,10 +5,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
 import { prefersReducedMotion } from '@/lib/dither';
 
 import BrickField from '../diagrams/BrickField';
-import Rosette from '../diagrams/Rosette';
+import PatternSwatch from '../diagrams/PatternSwatch';
 import { LINKS, SOURCE_WORD, wordFor } from '../data';
 import LocaleChip from './LocaleChip';
 
@@ -19,18 +20,27 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  *
  * Home: the second section, the wall. Thirteen bricks in three courses of
  * running bond, the source brick in the middle of the middle course. The
- * source carries the `<T>` line as written in the shipped sample; every
- * other brick carries the same sentence in one locale of the shipped
- * roster, under a glazed header course that holds its flag chip. When the
- * wall comes on screen the source lights and its neighbours fire in order
- * of distance: each brick's density steps through the four Bayer tiers of
- * the page's <defs> and lands on solid lapis. The translation is printed
- * the whole time; the density ramp runs under it as ornament, so a no-JS
- * render, a full-page capture, or a mid-loop frame always shows the copy.
- * Density rises, nothing fades. The resting markup is the fired wall,
- * which is the still under reduced motion.
+ * source carries the `<T>` line as written in the shipped sample, under a
+ * header course naming its file (app/page.tsx, the shipped Next.js sample);
+ * every other brick carries the same sentence in one locale of the shipped
+ * roster, under a gold header course that holds its flag chip and the file
+ * the build serves it from (public/_gt/[locale].json).
+ *
+ * One source lights its neighbours. When the wall comes on screen the
+ * source lights and the bricks fire in order of distance: each steps
+ * through the four Bayer tiers of the page's <defs> and lands on solid
+ * lapis. At the same time the section writes a 0..1 drive onto itself and
+ * the chevron lattice behind the wall sends one ring of density out from
+ * the source brick, so the ground fires with the wall. The translation is
+ * printed the whole time; the density ramp runs under it as ornament, so a
+ * no-JS render, a full-page capture, or a mid-loop frame always shows the
+ * copy (charter I). Density rises, nothing fades. The resting markup is the
+ * fired wall, which is the still under reduced motion. Hovering a brick
+ * lights it with the accent ring, additively.
  */
 type WallBrick = { code: string; d: number };
+
+const FILE = FRAMEWORKS[0]!.file;
 
 /* half-brick unit positions along a course; the source sits at 5 in the middle course */
 const COURSES: readonly (readonly { code: string; cx: number }[])[] = [
@@ -55,17 +65,26 @@ const COURSES: readonly (readonly { code: string; cx: number }[])[] = [
   ],
 ];
 
+const FIRE_AT = 1.0;
+const FIRE_STEP = 0.55;
+const FIRE_DUR = 1.05;
+
 function distance(row: number, cx: number): number {
   const dx = (cx - 5) / 2;
   const dy = row - 1;
   return Math.hypot(dx, dy);
 }
 
+function served(code: string): string {
+  return `_gt/${code}.json`;
+}
+
 function SourceBrick() {
   return (
-    <div className='bl-tb bl-src' lang='en' dir='ltr'>
+    <div className='bl-tb bl-src is-lit' lang='en' dir='ltr'>
       <div className='bl-tb-head'>
         <span className='bl-src-tag'>source</span>
+        <code className='bl-tb-file'>{FILE}</code>
         <LocaleChip code='en' glazed />
       </div>
       <pre className='bl-src-code'>
@@ -85,6 +104,9 @@ function TranslationBrick({ code, d }: WallBrick) {
     <div className='bl-tb is-fired' data-tier='5' data-d={d.toFixed(2)} lang={word.lang} dir={word.dir}>
       <div className='bl-tb-head'>
         <LocaleChip code={code} glazed />
+        <code className='bl-tb-file' dir='ltr'>
+          {served(code)}
+        </code>
       </div>
       <p className='bl-tb-text'>{word.text}</p>
       <svg className='bl-tb-scr' aria-hidden='true' focusable='false'>
@@ -102,9 +124,17 @@ export default function WallProof() {
     () => {
       if (prefersReducedMotion()) return;
       const el = wall.current;
-      if (!el) return;
-      const bricks = Array.from(el.querySelectorAll<HTMLElement>('.bl-tb[data-d]'));
+      const host = root.current;
+      if (!el || !host) return;
+      const bricks = [...el.querySelectorAll<HTMLElement>('.bl-tb[data-d]')];
       const source = el.querySelector<HTMLElement>('.bl-src');
+      const farthest = bricks.reduce((m, b) => Math.max(m, Number(b.dataset.d ?? '1')), 1);
+
+      /* the drive the lattice reads: the ring's radius as a fraction of the section's reach */
+      const drive = { k: 0 };
+      const writeDrive = () => {
+        host.dataset.blDrive = drive.k.toFixed(3);
+      };
 
       const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 0.9 });
       /* the reset sits just off time zero so every repeat fires it */
@@ -115,12 +145,15 @@ export default function WallProof() {
             b.classList.remove('is-fired');
           });
           source?.classList.remove('is-lit');
+          drive.k = 0;
+          writeDrive();
         },
         undefined,
         0.02
       );
       tl.to({}, { duration: 0.7 }, 0.02);
       tl.call(() => source?.classList.add('is-lit'));
+      tl.to(drive, { k: 1, duration: 2.7, ease: 'none', onUpdate: writeDrive }, 0.72);
       bricks.forEach((b) => {
         const d = Number(b.dataset.d ?? '1');
         const proxy = { k: 0 };
@@ -128,7 +161,7 @@ export default function WallProof() {
           proxy,
           {
             k: 5,
-            duration: 1.05,
+            duration: FIRE_DUR,
             ease: 'none',
             snap: { k: 1 },
             onUpdate: () => {
@@ -137,10 +170,10 @@ export default function WallProof() {
               b.classList.toggle('is-fired', k >= 5);
             },
           },
-          1.0 + d * 0.55
+          FIRE_AT + d * FIRE_STEP
         );
       });
-      tl.to({}, { duration: 4.6 }, '>');
+      tl.to({}, { duration: 4.6 }, FIRE_AT + farthest * FIRE_STEP + FIRE_DUR);
 
       ScrollTrigger.create({
         trigger: el,
@@ -157,10 +190,10 @@ export default function WallProof() {
 
   return (
     <section className='bl-sec bl-wall-sec' id='t' ref={root}>
-      <BrickField field='chevron' />
+      <BrickField field='chevron' animate anchor='.bl-src' fps={12} />
       <div className='bl-in'>
         <header className='bl-head bl-panel'>
-          <Rosette size={40} brick={16} petals={8} core='gold' className='is-mark' />
+          <PatternSwatch field='chevron' size={40} brick={16} ground='none' className='is-mark' />
           <h2>The T component</h2>
           <p>
             Wrap the source once. GT extracts the string, translates it into every locale you list, and

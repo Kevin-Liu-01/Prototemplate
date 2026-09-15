@@ -3,10 +3,13 @@
  *
  * Every string here is shipped copy or shipped data: the headline roster
  * from the production home, the translated outputs from the hero window's
- * session, the review rows, the published rate ledger, the six customers
- * and the footer's destinations. Nothing is invented; the sections only
- * arrange these into rings.
+ * session, the review rows, the capability outputs of the frameworks
+ * window, the nine story beats, the published rate ledger, the six
+ * customers and the footer's destinations. Nothing is invented; the
+ * sections only arrange these into rings, and the disk's rings read them.
  */
+import { CAP_DEMOS } from '@/app/d/dither-field/sections/stacks';
+import { BEATS, RAIL } from '@/app/d/dither-field/sections/story/beats';
 import { SUPPORTED_LOCALES } from '@/app/d/production/sections/locales-data';
 import type { LocaleProperties } from '@/app/d/production/sections/locales-data';
 import { PLAN_CTAS } from '@/app/d/production/sections/pricing-links';
@@ -53,6 +56,46 @@ export const HREFS = {
 /** The command the hero offers to copy. */
 export const INSTALL_COMMAND = 'npx gt@latest';
 
+/* ------------------------------------------------------------------ *
+ * The disk's rings. Each ring of the instrument reads one of these lists,
+ * and one section later on the page unrolls it.
+ * ------------------------------------------------------------------ */
+
+/** Ring two: the four surfaces of the product, in the order the stack section shows them. */
+export type Surface = { id: 'libraries' | 'cli' | 'dashboard' | 'locadex'; label: string };
+
+export const SURFACES: readonly Surface[] = [
+  { id: 'libraries', label: 'libraries' },
+  { id: 'cli', label: 'gt cli' },
+  { id: 'dashboard', label: 'dashboard' },
+  { id: 'locadex', label: 'locadex' },
+];
+
+/** Ring four: the twenty locales of the outer ring, in two rows of ten. Each resolves to its endonym from the roster. */
+export const RING_LOCALES: readonly (readonly string[])[] = [
+  ['en', 'es', 'fr', 'de', 'pt', 'it', 'nl', 'pl', 'sv', 'tr'],
+  ['ru', 'el', 'ar', 'he', 'hi', 'th', 'id', 'ja', 'ko', 'zh'],
+];
+
+/** The outer ring flattened, in reading order from the top of the disk. */
+export const OUTER_RING: readonly string[] = RING_LOCALES.flat();
+
+/** How to read the disk, one row per ring from the center out. `n` is the ring's count as a bar-and-dot numeral; 0 is the hub. */
+export type KeyRow = { n: number; ring: string; what: string };
+
+export const DISK_KEY: readonly KeyRow[] = [
+  { n: 0, ring: 'Hub', what: 'the source string' },
+  { n: 1, ring: 'Ring one', what: 'the name' },
+  { n: SURFACES.length, ring: 'Ring two', what: 'the surfaces' },
+  { n: 7, ring: 'Ring three', what: 'the usage rates' },
+  { n: OUTER_RING.length, ring: 'Ring four', what: 'the locales' },
+  { n: OUTER_RING.length, ring: 'Rim', what: 'one notch per locale' },
+];
+
+/* ------------------------------------------------------------------ *
+ * The customers
+ * ------------------------------------------------------------------ */
+
 /**
  * The six customers of the trust strip, with the geometry of their wordmarks
  * (the SVG files under public/logos, cap-height aligned by height).
@@ -67,6 +110,10 @@ export const CUSTOMERS: readonly Customer[] = [
   { id: 'partiful', name: 'Partiful', href: 'https://partiful.com', height: 17.5, aspect: 204 / 46 },
   { id: 'clickhouse', name: 'ClickHouse', href: 'https://clickhouse.com', height: 18, aspect: 600 / 110 },
 ];
+
+/* ------------------------------------------------------------------ *
+ * The T component
+ * ------------------------------------------------------------------ */
 
 /** One translated output of the hero window's session, tagged with its locale. */
 export type Output = { loc: string; text: string };
@@ -109,6 +156,10 @@ export default function Home() {
   );
 }`;
 
+/* ------------------------------------------------------------------ *
+ * The stack: four surfaces as concrete objects, and the pipeline
+ * ------------------------------------------------------------------ */
+
 /** The four rows of the review workspace, source beside its Spanish translation. */
 export type ReviewRow = { source: string; translation: string };
 
@@ -137,17 +188,56 @@ export const LIBRARIES: readonly Library[] = [
   { name: 'Python', pkg: 'gt-fastapi', install: ['pip install gt-fastapi', 'gt init'] },
 ];
 
+/** Four capability outputs of the frameworks window, label and the real formatted output. */
+export type Capability = { label: string; output: string };
+
+export const CAPABILITIES: readonly Capability[] = (['Numbers', 'Currencies', 'Plurals', 'Routing'] as const).map(
+  (label) => ({ label: label.toLowerCase(), output: CAP_DEMOS[label] ?? '' })
+);
+
 /** The CLI session's locales, as the Node sample configures them. */
 export const CLI_LOCALES: readonly string[] = ['es', 'fr', 'ja', 'de', 'zh'];
 
-/** The twenty locales of the outer ring, in two rings of ten. Each resolves to its endonym from the locale roster. */
-export const RING_LOCALES: readonly (readonly string[])[] = [
-  ['en', 'es', 'fr', 'de', 'pt', 'it', 'nl', 'pl', 'sv', 'tr'],
-  ['ru', 'el', 'ar', 'he', 'hi', 'th', 'id', 'ja', 'ko', 'zh'],
+/** The config the session reads, as the CLI writes it. */
+export const CLI_CONFIG: readonly string[] = [
+  '"defaultLocale": "en",',
+  `"locales": [${CLI_LOCALES.map((code) => `"${code}"`).join(', ')}]`,
 ];
 
-/** The variants that prove the count is a technical claim. */
-export const VARIANT_LOCALES: readonly string[] = ['zh-Hans', 'zh-Hant'];
+/** The nine beats of the story, title and pipeline step only. */
+export type PipelineStep = { n: number; title: string; step: string };
+
+export const PIPELINE: readonly PipelineStep[] = BEATS.map((beat, i) => ({
+  n: i + 1,
+  title: beat.title,
+  step: RAIL[beat.step] ?? RAIL[0],
+}));
+
+/* ------------------------------------------------------------------ *
+ * Languages as material
+ * ------------------------------------------------------------------ */
+
+/** The base languages whose regional variants the register expands, in the shipped order. */
+const VARIANT_BASES = ['zh', 'ar', 'de', 'pt'] as const;
+
+export type VariantRow = { base: string; variants: readonly string[] };
+
+/** One row per base language: every variant the roster lists under it, in the roster's order. */
+export const VARIANT_ROWS: readonly VariantRow[] = VARIANT_BASES.map((base) => ({
+  base,
+  variants: SUPPORTED_LOCALES.filter((row) => row.languageCode === base && row.code !== base).map((row) => row.code),
+}));
+
+/** The two variants that prove the count is a technical claim. */
+export const TELL_LOCALES: readonly string[] = ['zh-Hans', 'zh-Hant'];
+
+/** The tail of the catalog: two languages named to show the count reaches past the large ones. */
+export type TailLocale = { code: string; name: string };
+
+export const TAIL_LOCALES: readonly TailLocale[] = [
+  { code: 'cnr', name: 'Montenegrin' },
+  { code: 'cy', name: 'Welsh' },
+];
 
 const RTL = new Set(['ar', 'he', 'fa', 'ur']);
 
@@ -165,6 +255,10 @@ export function localeName(code: string): string {
   return BY_CODE.get(code)?.name ?? code;
 }
 
+/* ------------------------------------------------------------------ *
+ * The pricing file
+ * ------------------------------------------------------------------ */
+
 /** The published rate ledger. These are the only rates that may appear anywhere. */
 export type Rate = { workflow: string; rate: string; libraries: string };
 
@@ -178,12 +272,18 @@ export const RATES: readonly Rate[] = [
   { workflow: 'Credits', rate: '$1 = 1,000,000 credits', libraries: '' },
 ];
 
+/** Ring three unrolled in two arcs: the first four rows, then the last three. */
+export const RATE_BANDS: readonly (readonly Rate[])[] = [RATES.slice(0, 4), RATES.slice(4)];
+
 export const RATE_NOTES: readonly string[] = [
   'A Usage Limit is a hard cap. It blocks billing even with auto-reload on.',
   'npx gt translate --dry-run prints what would be translated and bills 0 tokens.',
 ];
 
-/** The footer's four columns with their live destinations. */
+/* ------------------------------------------------------------------ *
+ * The footer
+ * ------------------------------------------------------------------ */
+
 export type FooterLink = { label: string; href: string };
 
 export const FOOTER_COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [

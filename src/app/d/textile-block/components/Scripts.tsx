@@ -1,43 +1,47 @@
 import { GREETINGS, LINKS, LOCALE_COUNT, LOCALE_ROWS, LOCALE_TAIL } from '../data';
 import Tile from './Tile';
-import { Block, Course, Relief } from './Wall';
+import { Block, Course, HEAD_RELIEF_SPAN, Plaque, Relief } from './Wall';
 
 /**
  * textile-block: languages as material.
  *
- * One relief block per script. The greeting is the relief motif, cast in
- * the ornament color inside a stepped cartouche frame, with the locale tile
- * inset at the corner. Each sample carries its own lang and dir. The
- * twelfth block is the count plaque, and the atlas ledger under the course
- * expands one language into its regional variants, with the zh-Hans and
- * zh-Hant pair ringed in the accent.
+ * The languages course is keyed to the Freeman block. One relief block per
+ * script: the block keeps the patterned ground, the greeting is the relief,
+ * cast in the ornament color inside a stepped cartouche that borrows the
+ * Freeman setback, the locale tile is set as a header brick, and the name
+ * of the script is cast in the foot. Each sample carries its own lang and
+ * dir. Hovering a script block inverts it, ground and relief swapping the
+ * way a cast face reads under raking light. The twelfth block is the count
+ * plaque, and the atlas ledger under the course expands one language into
+ * its regional variants, with the zh-Hans and zh-Hant pair ringed in the
+ * accent.
  */
 
-/** A square with stepped corners: the cartouche, stroked once. */
-const CARTOUCHE = 'M16 9H84V16H91V84H84V91H16V84H9V16H16Z';
+/** A square with two-step corners: the cartouche, stroked once. */
+const CARTOUCHE = 'M20 8H80V14H86V20H92V80H86V86H80V92H20V86H14V80H8V20H14V14H20Z';
 
 export default function Scripts() {
   return (
     <Course className='is-scripts' id='locales' label='Languages'>
-      <Block className='tb-head' span={{ c: 8, r: 2, cMd: 8, rMd: 2, cSm: 6, rSm: 3 }}>
-        <h2 className='tb-h2'>100+ languages, and the variants that matter</h2>
-        <p>zh-Hant is not zh-Hans. Both ship.</p>
-      </Block>
-      <Relief className='tb-lg-only' motif='rosette' span={{ c: 4, r: 2 }} />
+      <Plaque label='Freeman course' relief='freeman' title='100+ languages, and the variants that matter'>
+        zh-Hant is not zh-Hans. Both ship.
+      </Plaque>
+      <Relief className='tb-lg-only' relief='freeman' span={HEAD_RELIEF_SPAN} />
 
       {GREETINGS.map((greeting) => (
-        <Block className='tb-script' key={greeting.tag} span={{ c: 2, r: 2, cSm: 3, rSm: 3 }}>
-          <Tile code={greeting.tag} corner />
+        <Block className='tb-script' key={greeting.tag} span={{ c: 2, r: 2, cSm: 3, rSm: 2 }}>
+          <Tile code={greeting.tag} header />
           <svg aria-hidden='true' className='tb-cartouche' preserveAspectRatio='none' viewBox='0 0 100 100'>
             <path d={CARTOUCHE} vectorEffect='non-scaling-stroke' />
           </svg>
           <p dir={greeting.rtl ? 'rtl' : 'ltr'} lang={greeting.tag}>
             {greeting.text}
           </p>
+          <span className='tb-script-name'>{greeting.script}</span>
         </Block>
       ))}
 
-      <Block className='tb-count' span={{ c: 2, r: 2, cSm: 3, rSm: 3 }}>
+      <Block className='tb-count' span={{ c: 2, r: 2, cSm: 3, rSm: 2 }}>
         <b>100+</b>
         <span>languages</span>
         <small>{LOCALE_COUNT}</small>

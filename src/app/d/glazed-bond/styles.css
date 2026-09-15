@@ -9,14 +9,19 @@
    1. The Ishtar Gate reconstruction (Pergamon Museum): lapis-glazed brick in
       running bond with thin mortar seams, gold and white rosette friezes on
       the towers between register rules, stepped crenellations on the
-      parapets, battered tower faces. The page's bond pattern (72 by 28
-      stretchers, half-brick offset), its rosette bands (twelve-petal
-      rosettes on lapis between two gold rules), its parapets (three-step
-      merlons on a rail) and the 14px batter on each tower's inner face are
-      those forms at page scale. The rosette itself, a radial repeat of
-      identical rhombi around a disc, is the language medallion (sixteen
-      petals between two rings), the band rosette (twelve petals) and the
-      pricing bullet (one lozenge).
+      parapets, battered tower faces, and the alternation of glazed and
+      plain fired brick along the processional way. The page's bond pattern
+      (72 by 28 stretchers, half-brick offset), its rosette bands
+      (twelve-petal rosettes on lapis between two gold rules, turquoise at
+      the heart), its parapets (three-step merlons on a rail, the top step
+      turquoise) and the 14px batter on each tower's inner face are those
+      forms at page scale. The T proof lays that alternation as one course:
+      a glazed lapis header beside every cream stretcher, the source string
+      as the one gold brick. The trust course sets six glazed tiles into the
+      cream bond. The rosette itself, a radial repeat of identical rhombi
+      around a disc, is the language medallion (sixteen petals between a
+      turquoise ring and a gold ring, under a dithered glaze cap), the band
+      rosette (twelve petals) and the plan bullet (one lozenge).
    2. The Pythian Temple (New York, 1927): the Babylonian revival building,
       a stepped setback massing in polychrome glazed terracotta, each tier
       narrower than the one under it, glazed panels set into brick. The
@@ -31,20 +36,35 @@
       ruled registers with a mono tag column.
 
    Material palette (Babylonian revival): cream mortar as the ground,
-   black-lapis as the ink, lapis glaze on bands, plaques and the court,
-   turquoise glaze as the one accent, gold as the one ornament, fired brick
-   as a Bayer stipple on the walls.
+   black-lapis as the ink, lapis glaze on the headers, tiles, bands, the
+   ledger and the court, turquoise glaze as the second glaze (merlon caps,
+   medallion rings, the court's register rule and floor, the sheen on
+   lapis), gold leaf as the one ornament (rosettes, rates, the source brick
+   and the plan plaques), fired brick as a Bayer stipple on the walls.
 
-   Ornament homes: the towers and flanks (bond and stipple), the parapets,
-   the rosette bands between courses, the medallions, the course-number
-   bricks, the pricing plaques, the court's bond and dithered floor.
-   Accent: turquoise glaze, spent as a controlled edge only: the ring on a
-   told chip (the source brick's header, zh-Hans and zh-Hant), the focus
-   and hover underline, and the string hue on the court's code face.
+   Glaze materiality, all of it ordered dither: every glazed surface (brick,
+   header, tile, tablet, plaque, ledger, medallion dome, story tread)
+   carries a sheen at its upper arris, three non-overlapping tiers of the
+   house 4x4 screen at two-pixel cells (6, 3, 1 of 16) from the shared
+   tiles in GlazeDefs, in the ink the glaze catches: lapis on cream, cream
+   on gold and on the lapis headers, turquoise on lapis and on the court.
+   No gradient anywhere.
+
+   Ornament homes: the towers and flanks (bond and stipple), the parapets in
+   two rhythms (48-period three-step merlons on the gate and the pricing
+   towers, 36-period two-step merlons on the court), the rosette bands
+   between courses, the medallions, the course-number bricks, the glazed
+   headers of the T proof and its gold source brick, the six glazed tiles
+   of the trust course, the gold plaques and the lapis ledger, the court's
+   bond and dithered floor.
+   Accent: the deep turquoise, spent as a controlled edge only: the ring on
+   a told chip (the source brick's header, zh-Hans and zh-Hant), the focus
+   and hover underline, and the string hue on the court's code face. On
+   lapis the ring reads through the lighter glaze value of the same hue.
    Display face: Cinzel, used for h1, h2 and the crown cartouche only.
    Dark mode remaps these six tokens (and lifts the three material tokens
-   that sit on the ground) and nothing else; the court's glaze never
-   remaps. */
+   that sit on the ground) and nothing else; the glaze family, the gold
+   plaque ink and the court never remap. */
 .glazed-bond-root {
   --deco-ground: #efe6d2;
   --deco-ink: #14192b;
@@ -58,7 +78,7 @@
   --gb-lapis: #1a3a80;
   --gb-brick: rgba(162, 74, 46, 0.5);
 
-  /* the glaze family: fixed in both themes, cream on lapis */
+  /* the glaze family: fixed in both themes; cream on lapis, a dark ink on gold, turquoise as the second glaze */
   --gb-cream: #efe6d2;
   --gb-cream-2: rgba(239, 230, 210, 0.7);
   --gb-cream-3: rgba(239, 230, 210, 0.44);
@@ -66,8 +86,12 @@
   --gb-court: #17357a;
   --gb-court-2: #10285e;
   --gb-court-seam: rgba(239, 230, 210, 0.13);
-  --gb-court-accent: #5fc4bf;
+  --gb-turquoise: #58c0ba;
+  --gb-court-accent: var(--gb-turquoise);
   --gb-gold: var(--deco-ornament);
+  --gb-on-gold: #1b1a12;
+  --gb-on-gold-2: rgba(27, 26, 18, 0.7);
+  --gb-gold-hair: rgba(27, 26, 18, 0.22);
 
   /* the elevation: the content column, the flank towers, the hero piers */
   --gb-gate: 1000px;
@@ -213,6 +237,22 @@
   border-color: var(--gb-cream);
 }
 
+/* on a gold plaque the button inverts to the plaque's ink */
+.glazed-bond-root .gb-btn.is-gold.is-solid {
+  background: var(--gb-on-gold);
+  border-color: var(--gb-on-gold);
+  color: var(--gb-gold);
+}
+
+.glazed-bond-root .gb-btn.is-gold.is-line {
+  border-color: var(--gb-gold-hair);
+  color: var(--gb-on-gold);
+}
+
+.glazed-bond-root .gb-btn.is-gold.is-line:hover {
+  border-color: var(--gb-on-gold);
+}
+
 /* Chips: header bricks. A hairline box, the flag print, the code in mono. */
 .glazed-bond-root .gb-chip {
   display: inline-flex;
@@ -239,9 +279,14 @@
 }
 
 .glazed-bond-root .gb-court .gb-chip,
-.glazed-bond-root .gb-plaque .gb-chip {
+.glazed-bond-root .gb-brick-h .gb-chip {
   border-color: var(--gb-cream-hair);
   color: var(--gb-cream);
+}
+
+/* on lapis the told ring reads through the lighter glaze value of the accent hue */
+.glazed-bond-root .gb-brick-h .gb-chip.is-tell {
+  border-color: var(--gb-turquoise);
 }
 
 /* The bond: the SVG pattern fills its host; the sheet colors it. */
@@ -266,6 +311,45 @@
   fill: var(--gb-lapis);
 }
 
+.glazed-bond-root .gb-turq {
+  fill: var(--gb-turquoise);
+}
+
+.glazed-bond-root .gb-court-fill {
+  fill: var(--gb-court);
+}
+
+/* the shared glaze tiles: declared once at the root, referenced by id from every sheen */
+.glazed-bond-root .gb-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.glazed-bond-root .gb-sheen-lapis {
+  fill: var(--gb-lapis);
+}
+
+.glazed-bond-root .gb-sheen-cream {
+  fill: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-sheen-turq {
+  fill: var(--gb-turquoise);
+}
+
+/* the sheen sits along the top edge of its glazed host, under the content */
+.glazed-bond-root .gb-sheen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 12px;
+  pointer-events: none;
+}
+
 .glazed-bond-root .gb-ros-disc {
   fill: var(--gb-lapis);
 }
@@ -278,6 +362,12 @@
   fill: none;
   stroke: var(--gb-gold);
   stroke-width: 1;
+}
+
+.glazed-bond-root .gb-ros-glaze {
+  fill: none;
+  stroke: var(--gb-turquoise);
+  stroke-width: 2;
 }
 
 .glazed-bond-root .gb-band {
@@ -304,6 +394,12 @@
   fill: none;
   stroke: var(--gb-gold);
   stroke-width: 1;
+}
+
+.glazed-bond-root .gb-band-turq {
+  fill: none;
+  stroke: var(--gb-turquoise);
+  stroke-width: 1.2;
 }
 
 .glazed-bond-root .gb-wedge {
@@ -540,9 +636,10 @@
   text-wrap: balance;
 }
 
+/* the claim wipes on and off through clip-path; opacity is never touched */
 .glazed-bond-root .gb-claim span {
   display: inline-block;
-  will-change: transform, opacity;
+  will-change: clip-path;
 }
 
 .glazed-bond-root .gb-sub {
@@ -676,8 +773,9 @@
   color: var(--deco-ink-2);
 }
 
+/* on the court the course brick is gold, its wedges in the court's lapis */
 .glazed-bond-root .gb-head.is-glazed .gb-head-brick {
-  background: var(--gb-cream);
+  background: var(--gb-gold);
   color: var(--gb-court);
 }
 
@@ -704,34 +802,53 @@
   color: var(--deco-ink-2);
 }
 
-.glazed-bond-root .gb-marks {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--deco-hair);
-  border-bottom: 1px solid var(--deco-hair);
+/* the tile wall: one bordered stretch of the bond, a course of brick showing above and below the tiles.
+   The bond is shifted one pixel up and left so its edge seams fall under the wall's own border and
+   its next bed joint sits directly over the tiles; the bottom padding is shorter than a course so no
+   seam lands beside the bottom border. */
+.glazed-bond-root .gb-tile-wall {
+  position: relative;
+  padding: 28px 0 20px;
+  border: 1px solid var(--deco-hair);
+  overflow: hidden;
 }
 
-.glazed-bond-root .gb-mark-cell {
+.glazed-bond-root .gb-tile-bond {
+  position: absolute;
+  inset: -1px 0 0 -1px;
+}
+
+/* the tile course: six glazed stretchers on a one-pixel mortar mat */
+.glazed-bond-root .gb-tiles {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--deco-hair);
+}
+
+.glazed-bond-root .gb-tile {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 72px;
-  padding: 0 12px;
+  height: 84px;
+  padding: 0 18px;
+  background: var(--gb-lapis);
+  overflow: hidden;
 }
 
-.glazed-bond-root .gb-mark-cell + .gb-mark-cell {
-  border-left: 1px solid var(--deco-hair);
-}
-
-/* each mark is its own artwork used as a mask over the ink */
+/* each mark is its own artwork used as a mask over the tile's cream */
 .glazed-bond-root .gb-mark {
+  position: relative;
   display: block;
   height: 20px;
   max-width: 100%;
   background: currentColor;
-  color: var(--deco-ink);
+  color: var(--gb-cream);
   -webkit-mask: var(--gb-mark-src) center / contain no-repeat;
   mask: var(--gb-mark-src) center / contain no-repeat;
 }
@@ -783,6 +900,7 @@
 }
 
 .glazed-bond-root .gb-brick {
+  position: relative;
   display: flex;
   align-items: center;
   min-width: 0;
@@ -792,14 +910,35 @@
   color: var(--deco-ink);
   font-size: 14.5px;
   line-height: 1.45;
+  overflow: hidden;
   overflow-wrap: anywhere;
 }
 
+/* the content sits over the sheen */
+.glazed-bond-root .gb-brick > :not(.gb-sheen) {
+  position: relative;
+}
+
+/* the header: a glazed lapis brick carrying the locale chip. One column of the
+   sixteen is about 56px on the wide wall and about 52px on the mid wall at its
+   narrowest, so the brick keeps 2px of inline padding and the chip inside it
+   tightens to 5px, which fits the flag, the gap and a two-letter code with
+   its border intact at every width. */
 .glazed-bond-root .gb-brick-h {
   grid-row: var(--gb-wr);
   grid-column: var(--gb-wc) / span 1;
   justify-content: center;
-  padding: 12px 6px;
+  padding: 12px 2px;
+  background: var(--gb-lapis);
+  color: var(--gb-cream);
+}
+
+.glazed-bond-root .gb-brick-h .gb-chip {
+  padding: 0 5px;
+}
+
+.glazed-bond-root .gb-brick-h .gb-chip .lct {
+  gap: 5px;
 }
 
 .glazed-bond-root .gb-brick-s {
@@ -817,16 +956,17 @@
   display: none;
 }
 
+/* the source: the one gold brick in the wall, its text in the fixed gold ink */
 .glazed-bond-root .gb-brick.is-source {
   gap: 8px;
-  background: var(--gb-lapis);
-  color: var(--gb-cream);
+  background: var(--gb-gold);
+  color: var(--gb-on-gold);
   font-weight: 500;
 }
 
 .glazed-bond-root .gb-t {
   font: 500 12px/1 var(--gb-mono);
-  color: var(--gb-cream-2);
+  color: var(--gb-on-gold-2);
 }
 
 .glazed-bond-root .gb-wall-note {
@@ -848,7 +988,7 @@
 
 .glazed-bond-root .gb-frieze-in {
   display: grid;
-  gap: 28px;
+  gap: 22px;
   min-width: max-content;
   padding-inline: 2px;
 }
@@ -971,6 +1111,17 @@
 .glazed-bond-root .gb-court {
   position: relative;
   z-index: 1;
+}
+
+/* the second crenellation: the court's lapis rises into the ground above it */
+.glazed-bond-root .gb-court-parapet {
+  display: block;
+  width: 100%;
+  height: 24px;
+}
+
+.glazed-bond-root .gb-court-body {
+  position: relative;
   overflow: hidden;
   background: var(--gb-court);
   color: var(--gb-cream);
@@ -1011,12 +1162,18 @@
 }
 
 .glazed-bond-root .gb-tab {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
   border: 1px solid var(--gb-cream-hair);
   background: var(--gb-court-2);
   background-clip: padding-box;
+  overflow: hidden;
+}
+
+.glazed-bond-root .gb-tab > :not(.gb-sheen) {
+  position: relative;
 }
 
 .glazed-bond-root .gb-tab-bar {
@@ -1293,10 +1450,13 @@
   list-style: none;
 }
 
+/* each tier is a glazed tread with a lapis sheen at its arris */
 .glazed-bond-root .gb-tier {
+  position: relative;
   border-top: 1px solid var(--deco-hair);
   border-inline: 1px solid var(--deco-hair);
   background: var(--gb-plate);
+  overflow: hidden;
 }
 
 .glazed-bond-root .gb-tier.is-1 {
@@ -1312,6 +1472,7 @@
 }
 
 .glazed-bond-root .gb-tier-in {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 0;
@@ -1359,31 +1520,68 @@
  * The pricing plaques
  * ------------------------------------------------------------------ */
 
-.glazed-bond-root .gb-plaques {
+/* the pricing gate: two towers flank the ledger as the opening */
+.glazed-bond-root .gb-price-gate {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.45fr) minmax(0, 0.8fr);
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.36fr) minmax(0, 0.88fr);
   gap: 20px;
   align-items: start;
 }
 
-.glazed-bond-root .gb-plaque {
+.glazed-bond-root .gb-ptower {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: 1px solid var(--gb-cream-hair);
-  background: var(--gb-lapis);
-  background-clip: padding-box;
-  color: var(--gb-cream);
+}
+
+/* the tower face: the plate ground under the bond, a hairline on the outer face, the inner face
+   battered 14px like the gate's; the parapet's rail is the top edge */
+.glazed-bond-root .gb-ptower-wall {
+  position: relative;
+  padding: 26px 22px 30px;
+  border-bottom: 1px solid var(--deco-hair);
+  background: var(--gb-plate);
+  overflow: hidden;
+}
+
+.glazed-bond-root .gb-ptower.is-left .gb-ptower-wall {
+  border-left: 1px solid var(--deco-hair);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 100%, 0 100%);
+}
+
+.glazed-bond-root .gb-ptower.is-right .gb-ptower-wall {
+  border-right: 1px solid var(--deco-hair);
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.glazed-bond-root .gb-ptower-bond {
+  position: absolute;
+  inset: 0;
+}
+
+/* the plaque: gold leaf set into the tower face, its text in the fixed gold ink, a cream sheen at the arris */
+.glazed-bond-root .gb-plaque {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--gb-gold);
+  color: var(--gb-on-gold);
+  overflow: hidden;
+}
+
+.glazed-bond-root .gb-plaque > :not(.gb-sheen) {
+  position: relative;
 }
 
 .glazed-bond-root .gb-plaque-head {
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--gb-cream-hair);
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--gb-gold-hair);
 }
 
 .glazed-bond-root .gb-plaque-head h3 {
   font: 500 15px/1 var(--gb-sans);
-  color: var(--gb-cream);
+  color: inherit;
 }
 
 .glazed-bond-root .gb-plan-price {
@@ -1397,19 +1595,19 @@
   font: 500 40px/1 var(--gb-sans);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
-  color: var(--gb-gold);
+  color: var(--gb-on-gold);
 }
 
 .glazed-bond-root .gb-plan-price small {
   font-size: 12.5px;
-  color: var(--gb-cream-2);
+  color: var(--gb-on-gold-2);
 }
 
 .glazed-bond-root .gb-plan-body {
   padding: 0 18px;
   font-size: 13.5px;
   line-height: 1.58;
-  color: var(--gb-cream-2);
+  color: var(--gb-on-gold-2);
 }
 
 .glazed-bond-root .gb-plan-list {
@@ -1427,19 +1625,44 @@
   gap: 10px;
 }
 
-/* one gold lozenge per line */
+/* one lapis lozenge per line, set into the gold */
 .glazed-bond-root .gb-plan-list li::before {
   content: '';
   flex: none;
   width: 8px;
   height: 8px;
   margin-top: 6px;
-  background: var(--gb-gold);
+  background: var(--gb-lapis);
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 
-.glazed-bond-root .gb-plaque.is-plan .gb-btn {
+.glazed-bond-root .gb-plaque .gb-btn {
   margin: 22px 18px 18px;
+}
+
+/* the ledger: a lapis tablet in the opening, the rates in gold, a turquoise sheen at the arris */
+.glazed-bond-root .gb-ledger-tablet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--gb-cream-hair);
+  background: var(--gb-lapis);
+  background-clip: padding-box;
+  color: var(--gb-cream);
+  overflow: hidden;
+}
+
+.glazed-bond-root .gb-ledger-tablet > :not(.gb-sheen) {
+  position: relative;
+}
+
+.glazed-bond-root .gb-ledger-tablet .gb-plaque-head {
+  border-bottom-color: var(--gb-cream-hair);
+}
+
+.glazed-bond-root .gb-ledger-tablet .gb-plaque-head h3 {
+  color: var(--gb-cream);
 }
 
 .glazed-bond-root .gb-ledger-row {
@@ -1642,20 +1865,9 @@
 }
 
 @media (max-width: 900px) {
-  .glazed-bond-root .gb-marks {
+  /* the tiles lay in two courses of three */
+  .glazed-bond-root .gb-tiles {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .glazed-bond-root .gb-mark-cell + .gb-mark-cell {
-    border-left: 0;
-  }
-
-  .glazed-bond-root .gb-mark-cell:not(:nth-child(3n + 1)) {
-    border-left: 1px solid var(--deco-hair);
-  }
-
-  .glazed-bond-root .gb-mark-cell:nth-child(n + 4) {
-    border-top: 1px solid var(--deco-hair);
   }
 
   .glazed-bond-root .gb-tablets {
@@ -1679,8 +1891,15 @@
     border-left: 0;
   }
 
-  .glazed-bond-root .gb-plaques {
+  .glazed-bond-root .gb-price-gate {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* stacked, the towers stand straight with a hairline on both faces */
+  .glazed-bond-root .gb-ptower.is-left .gb-ptower-wall,
+  .glazed-bond-root .gb-ptower.is-right .gb-ptower-wall {
+    border-inline: 1px solid var(--deco-hair);
+    clip-path: none;
   }
 
   .glazed-bond-root .gb-reg-row {
@@ -1774,8 +1993,9 @@
     padding-bottom: var(--tcm-head-pt, 64px);
   }
 
-  .glazed-bond-root .gb-mark-cell {
-    height: 60px;
+  /* the tiles lay in three courses of two */
+  .glazed-bond-root .gb-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   /* the wall stacks: one pair per course, no closers */

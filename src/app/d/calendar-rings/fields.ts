@@ -1,49 +1,52 @@
 /**
- * calendar-rings: the two dither fields and the token readers.
+ * calendar-rings: the disk field and the token readers.
  *
- * The hero disk and the negative ring's floor are scalar fields rendered
- * through the house Bayer engine (src/lib/dither.ts): one device pixel per
- * cell, density as ordered dither, never a gradient. Both fields are pure
- * closures over the ring geometry below, so the SVG overlay in
- * diagrams/Disk.tsx reads the same radii and the rules land on the steps.
+ * The hero disk and its inverted twin in the negative ring are one scalar
+ * field rendered through the house Bayer engine (src/lib/dither.ts): one
+ * device pixel per cell, density as ordered dither, never a gradient. The
+ * field is a pure closure over the ring geometry below, so the SVG overlay
+ * and the HTML chips in diagrams/Disk.tsx read the same radii and every
+ * rule lands on its step.
  */
 import type { FieldFn } from '@/lib/dither';
 
 const TAU = Math.PI * 2;
 
 /**
- * The disk's radii as fractions of the plate's half-width. Six regions,
- * density stepping outward: the hub (ground), four rings, the rim.
+ * The disk's radii as fractions of the plate's half-width. Six regions
+ * alternate ground and dither from the center out, the way a calendar
+ * stone alternates its cell rings with its plain band rings:
  *
- *   hub      0     .. 0.36   ground; the claim sits here
- *   ring 1   0.36  .. 0.46   0.08, carries the crown text
- *   ring 2   0.46  .. 0.58   0.20, its inner edge notched 18 times, turning
- *   ring 3   0.58  .. 0.70   0.36
- *   ring 4   0.70  .. 0.86   0.58, thirteen cells with bar-and-dot numerals
- *   rim      0.86  .. 1.00   0.90, its outer edge notched 20 times, turning the other way
+ *   hub      0     .. 0.33   ground; the claim sits here, the source
+ *   ring 1   0.33  .. 0.42   0.10, carries the crown text
+ *   ring 2   0.42  .. 0.52   ground; four cells, the surfaces, labelled
+ *   ring 3   0.52  .. 0.63   0.34; seven cells, the usage rates, numbered;
+ *                            its inner edge notched twice per cell, turning
+ *   ring 4   0.63  .. 0.85   ground; twenty cells, the locales, as chips
+ *   rim      0.85  .. 1.00   0.90; twenty notches, one per locale, turning
+ *                            the other way
  *
- * The counts are the calendar's: thirteen numbers and twenty day positions
- * make the 260-day round; the two notched edges turn against each other
- * the way the two wheels of the round do.
+ * The two notched edges turn against each other the way the two wheels of
+ * the calendar round do. Every other boundary is fixed.
  */
 export const DISK = {
-  hub: 0.36,
-  r1: 0.46,
-  r2: 0.58,
-  r3: 0.7,
-  r4: 0.86,
-  cells: 13,
+  hub: 0.33,
+  r1: 0.42,
+  r2: 0.52,
+  r3: 0.63,
+  r4: 0.85,
+  surfaces: 4,
+  rates: 7,
+  locales: 20,
   rimNotches: 20,
-  ringNotches: 18,
+  ringNotches: 14,
   rimCut: 0.03,
   ringLift: 0.02,
 } as const;
 
 export const DENSITY = {
-  ring1: 0.08,
-  ring2: 0.2,
-  ring3: 0.36,
-  ring4: 0.58,
+  ring1: 0.1,
+  ring3: 0.34,
   rim: 0.9,
 } as const;
 
@@ -55,7 +58,9 @@ function notched(theta: number, count: number, phase: number): boolean {
 
 /**
  * The disk field. `t` turns the two notched edges; every other boundary is
- * fixed, so the overlay's rules never drift off their steps.
+ * fixed, so the overlay's rules never drift off their steps. Rendered with
+ * a transparent paper, so the ground rings show whatever surface the disk
+ * sits on: clay on the page, obsidian in the negative.
  */
 export function calendarDisk(): FieldFn {
   return (u, v, t) => {
@@ -68,42 +73,18 @@ export function calendarDisk(): FieldFn {
       const cut = notched(theta, DISK.rimNotches, t * 0.04) ? DISK.rimCut : 0;
       return r < 1 - cut ? DENSITY.rim : 0;
     }
-    if (r >= DISK.r3) return DENSITY.ring4;
-    if (r >= DISK.r2) return DENSITY.ring3;
-    if (r >= DISK.r1) {
+    if (r >= DISK.r3) return 0;
+    if (r >= DISK.r2) {
       const theta = Math.atan2(dy, dx);
       const lift = notched(theta, DISK.ringNotches, -t * 0.035) ? DISK.ringLift : 0;
-      return r >= DISK.r1 + lift ? DENSITY.ring2 : DENSITY.ring1;
+      return r >= DISK.r2 + lift ? DENSITY.ring3 : 0;
     }
+    if (r >= DISK.r1) return 0;
     return DENSITY.ring1;
   };
 }
 
-/**
- * The negative ring's floor: the bottom of a much larger ring, seen as
- * four arcs of stepping density along the band's lower edge. `aspect` is
- * the canvas's width over its height so the arcs stay circular.
- */
-export function ringFloor(aspect: number): FieldFn {
-  /* the ring's center sits far above the band; its rim touches the
-     canvas at the bottom center and climbs out of the top near the ends */
-  const cy = -9.5;
-  const rim = 10.5;
-  return (u, v) => {
-    const x = (u - 0.5) * aspect;
-    const y = v - cy;
-    const d = Math.sqrt(x * x + y * y);
-    const s = rim - d;
-    if (s < 0) return 0;
-    if (s < 0.3) return 0.34;
-    if (s < 0.6) return 0.2;
-    if (s < 0.9) return 0.11;
-    if (s < 1.2) return 0.05;
-    return 0;
-  };
-}
-
-/** The value of one CSS custom property on an element, resolved for the current theme. */
+/** The value of one CSS custom property as the element itself resolves it, for the current theme and scope. */
 export function readToken(el: Element, name: string): string {
   return getComputedStyle(el).getPropertyValue(name).trim();
 }

@@ -1,17 +1,20 @@
 /**
- * calendar-rings: the fourth ring, the negative.
+ * calendar-rings: the negative, ring two unrolled.
  *
- * The page's one high-contrast moment: the ring inverted, ground and ink
- * swapped. Four concrete objects in four cells of one arc band, each a
- * cartouche with a name bar, a face and a base line: the libraries, the
- * CLI session, the review workspace, Locadex. The floor is the second
- * dither surface, the bottom of a larger ring in stepping density.
+ * The page's one high-contrast moment: ground and ink swap, and the disk
+ * itself returns inverted as the band's floor, cut by the band's lower
+ * edge so its rings rise from it. Four concrete objects sit in four cells
+ * of one arc band, each a cartouche with a name bar, a face and a base
+ * line: the libraries with their real formatted outputs, the CLI session
+ * with its config, the review workspace, Locadex. Under them the nine
+ * beats of the pipeline run as a second, shallower arc, one numeral per
+ * beat.
  */
 import Image from 'next/image';
 
-import { CLI_LOCALES, HREFS, LIBRARIES, REVIEW_ROWS } from '../data';
+import { CAPABILITIES, CLI_CONFIG, CLI_LOCALES, HREFS, LIBRARIES, PIPELINE, REVIEW_ROWS, SURFACES } from '../data';
 import { ArcBand } from '../diagrams/ArcBand';
-import { NegativeFloor } from '../diagrams/NegativeFloor';
+import { Disk } from '../diagrams/Disk';
 import { Chip } from './Chip';
 import { SectionHead } from './SectionHead';
 
@@ -30,6 +33,17 @@ function Libraries() {
           </li>
         ))}
       </ul>
+      {/* the outputs the components format for the locale, as the frameworks window ships them */}
+      <dl className='cr-caps'>
+        {CAPABILITIES.map((cap) => (
+          <div key={cap.label} className='cr-caps-row'>
+            <dt>{cap.label}</dt>
+            <dd>
+              <code>{cap.output}</code>
+            </dd>
+          </div>
+        ))}
+      </dl>
       <div className='cr-object-foot'>
         <code>npm i gt-next</code>
         <code>npx gt@latest</code>
@@ -46,7 +60,14 @@ function Cli() {
         <span className='cr-object-meta'>gt.config.json</span>
       </div>
       <div className='cr-term'>
-        <div className='cr-term-line'>
+        <div className='cr-term-line is-dim'>{'{'}</div>
+        {CLI_CONFIG.map((line) => (
+          <div key={line} className='cr-term-line is-config'>
+            {line}
+          </div>
+        ))}
+        <div className='cr-term-line is-dim'>{'}'}</div>
+        <div className='cr-term-line is-cmd'>
           <span className='cr-term-prompt'>$</span> npx gt translate
         </div>
         <div className='cr-term-line is-dim'>128 strings · 3 new · 2 changed</div>
@@ -84,6 +105,7 @@ function Dashboard() {
         ))}
       </ol>
       <div className='cr-object-foot'>
+        <span>⌘K search</span>
         <span>history</span>
         <span>download</span>
         <span>agent · locadex</span>
@@ -121,21 +143,48 @@ function Locadex() {
   );
 }
 
+const OBJECTS = {
+  libraries: <Libraries key='libraries' />,
+  cli: <Cli key='cli' />,
+  dashboard: <Dashboard key='dashboard' />,
+  locadex: <Locadex key='locadex' />,
+} as const;
+
 export function Surfaces() {
   return (
     <section className='cr-negative' aria-labelledby='cr-stack-h'>
       <div className='cr-col cr-negative-in'>
         <SectionHead
-          n={4}
+          count={SURFACES.length}
+          ring='Ring two, unrolled'
           id='cr-stack-h'
           title='The stack'
           lead='Libraries in the app, a CLI in the build, a dashboard for review, and Locadex in the repository. One pipeline carries a string from the source file to the translated screen.'
         />
         <ArcBand
           sag={32}
+          numerals
+          subdivide={3}
           className='cr-stack-arc'
-          cells={[<Libraries key='lib' />, <Cli key='cli' />, <Dashboard key='dash' />, <Locadex key='agent' />]}
+          cells={SURFACES.map((surface) => OBJECTS[surface.id])}
         />
+
+        <p className='cr-band-cap'>How a string becomes a shipped translation.</p>
+        <ArcBand
+          sag={22}
+          numerals
+          subdivide={2}
+          as='ol'
+          label='The pipeline'
+          className='cr-pipe-arc'
+          cells={PIPELINE.map((beat) => (
+            <div key={beat.n} className='cr-beat'>
+              <h3>{beat.title}</h3>
+              <code>{beat.step}</code>
+            </div>
+          ))}
+        />
+
         <div className='cr-acts is-center'>
           <a className='cr-btn is-solid' href={HREFS.demo}>
             Get a Demo
@@ -144,8 +193,12 @@ export function Surfaces() {
             Read the Docs
           </a>
         </div>
+
+        {/* the floor: the disk inverted, cut by the band's lower edge */}
+        <div className='cr-floor'>
+          <Disk crown='General Translation' variant='floor' />
+        </div>
       </div>
-      <NegativeFloor />
     </section>
   );
 }

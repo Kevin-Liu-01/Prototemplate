@@ -1,33 +1,37 @@
 import { useId } from 'react';
 
-import { FRET_UNIT, FRET_UNIT_H, FRET_UNIT_W, polylinePath } from '../../fret';
+import { FRETS, SCALES, fretPath } from '../../fret';
+import type { FretId, Scale } from '../../fret';
 
 /**
- * Ornament home: the register boundaries. Every register on the page is
- * bounded above and below by one of these bands, each at its own cell size,
- * so the same fret reads at five scales down the page. The band owns both
- * of its hairlines (top and bottom); the registers it separates draw none.
+ * Ornament home: the register boundaries, the dark band's facade courses,
+ * and the pricing caps. A band is one fret from the greca system at one of
+ * the three scales, tiled across its full width and standing eight cells
+ * tall. The band owns both of its hairlines (top and bottom) unless a
+ * neighbour already owns that seam; the registers it separates draw none.
  *
- * The frieze is one SVG pattern of the 13 by 8 unit, stroked in the band's
- * `color`, so the tone is a class on the band (ink, ornament, or the dark
- * band's limestone) and never a literal here.
+ * The frieze is one SVG pattern stroked in the band's `color`, so the tone
+ * is a class on the band (ink, ornament, or the dark band's cream) and
+ * never a literal here.
  */
 export type FretBandProps = {
-  /** pixels per grid cell; the band stands eight cells tall */
-  cell: number;
+  fret: FretId;
+  scale: Scale;
   tone?: 'ink' | 'ornament' | 'paper';
   /** drop the top or bottom rule where a neighbour already owns that seam */
   edges?: 'both' | 'bottom' | 'top' | 'none';
   className?: string;
 };
 
-export default function FretBand({ cell, tone = 'ink', edges = 'both', className }: FretBandProps) {
+export default function FretBand({ fret, scale, tone = 'ink', edges = 'both', className }: FretBandProps) {
   const id = `sf-fret-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
-  const height = FRET_UNIT_H * cell;
-  const width = FRET_UNIT_W * cell;
+  const unit = FRETS[fret];
+  const cell = SCALES[scale];
+  const height = unit.h * cell;
+  const width = unit.w * cell;
   return (
     <div
-      className={['sf-band', `is-${tone}`, `is-edges-${edges}`, className].filter(Boolean).join(' ')}
+      className={['sf-band', `is-${tone}`, `is-edges-${edges}`, `is-${scale}`, className].filter(Boolean).join(' ')}
       style={{ height }}
       aria-hidden='true'
     >
@@ -35,7 +39,7 @@ export default function FretBand({ cell, tone = 'ink', edges = 'both', className
         <defs>
           <pattern id={id} patternUnits='userSpaceOnUse' width={width} height={height}>
             <path
-              d={polylinePath(FRET_UNIT, cell)}
+              d={fretPath(unit, cell)}
               fill='none'
               stroke='currentColor'
               strokeWidth={cell}

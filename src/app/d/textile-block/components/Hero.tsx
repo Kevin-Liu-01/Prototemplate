@@ -9,16 +9,20 @@ import Wordmark from './Wordmark';
 /**
  * textile-block: the hero course and the trust course.
  *
- * One wide course of the wall. The claim is cast into a single monumental
- * smooth block, eight modules wide and five high; the rest of the course is
- * perforated blocks, and the light behind them is the Bayer field showing
- * through the cruciform holes. Below it, the trust course: one lead line
- * across the wall and six customer marks, each cast into its own block.
+ * The claim course is keyed to the Ennis block. The claim is cast into a
+ * single monumental smooth block, eight modules wide and five high; the rest
+ * of the course is perforated Ennis blocks, and the light behind them is the
+ * Bayer field showing through the cruciform cuts. The thesis is visible
+ * here before a word is read: content is a smooth face, ornament is a
+ * patterned face, light is dither, and every line is a joint. Below it, the
+ * trust course: one lead line across the wall and six customer marks, each
+ * cast into its own block, with a Millard chevron closing the eight-column
+ * bond.
  */
 export default function Hero() {
   return (
     <>
-      <Course className='is-hero' label='The claim'>
+      <Course className='is-hero' id='claim' label='The claim'>
         <Block className='tb-claim' span={{ c: 8, r: 5, cMd: 8, rMd: 5, cSm: 6, rSm: 7 }}>
           <div aria-hidden='true' className='tb-crown'>
             <GtMark height={30} width={47} />
@@ -45,7 +49,7 @@ export default function Hero() {
           </div>
           <CopyCommand />
         </Block>
-        <Relief light='hero' motif='perf' span={{ c: 4, r: 5, cMd: 8, rMd: 1, cSm: 6, rSm: 1 }} />
+        <Relief light='hero' relief='ennis' span={{ c: 4, r: 5, cMd: 8, rMd: 1, cSm: 6, rSm: 1 }} />
       </Course>
 
       <Course className='is-trust' label='Customers'>
@@ -57,8 +61,8 @@ export default function Hero() {
             <Wordmark customer={customer} />
           </Block>
         ))}
-        {/* eight columns hold four marks a row; the second row closes with relief */}
-        <Relief className='tb-md-only' motif='cross' span={{ c: 4, r: 1 }} />
+        {/* eight columns hold four marks a row; the second row closes with the chevron */}
+        <Relief className='tb-md-only' relief='millard' span={{ c: 4, r: 1 }} />
       </Course>
     </>
   );

@@ -8,6 +8,7 @@ import { useLayReveal } from '../components/lay-reveal';
 import Rosette from '../components/Rosette';
 import {
   MEDALLIONS_BOTTOM,
+  MEDALLIONS_THIRD,
   MEDALLIONS_TOP,
   TELL_VARIANTS,
   URLS,
@@ -18,12 +19,13 @@ import {
 import type { Medallion } from '../data';
 
 /**
- * Languages as material. Two courses of rosette medallions in bond, the
- * second offset by half a medallion, each a lapis disc with sixteen gold
- * petals and the language's own name at its center with its `lang` and
- * `dir`, a flag chip and the English name under it. Under the frieze, the
- * variants register: one language expanded into the regional tags it
- * ships as, with zh-Hans beside zh-Hant as the tell.
+ * Languages as material. Three courses of rosette medallions in bond, the
+ * middle course offset by half a medallion, each a lapis disc under a
+ * dithered glaze cap with a turquoise ring, sixteen gold petals and the
+ * language's own name at its center with its `lang` and `dir`, a flag chip
+ * and the English name under it. Under the frieze, the variants register:
+ * one language expanded into the regional tags it ships as, with zh-Hans
+ * beside zh-Hant as the tell.
  */
 function Medal({ row }: { row: Medallion }) {
   return (
@@ -64,6 +66,11 @@ export default function RosetteCourse() {
             </div>
             <div className='gb-frieze-row is-offset'>
               {MEDALLIONS_BOTTOM.map((row) => (
+                <Medal row={row} key={row.code} />
+              ))}
+            </div>
+            <div className='gb-frieze-row'>
+              {MEDALLIONS_THIRD.map((row) => (
                 <Medal row={row} key={row.code} />
               ))}
             </div>

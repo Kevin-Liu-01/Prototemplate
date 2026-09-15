@@ -10,17 +10,17 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * textile-block: the light behind the perforated blocks.
  *
  * A Bayer field on a canvas under the concrete layer of a perforated Relief.
- * The concrete is masked with cruciform holes, so the field shows only
- * through them. Two placements: the hero, lit from the claim block's side
- * (or from above when the region is a strip), and the base course, lit
- * from the floor. Colors come from the canvas's own computed `color` and
- * `background-color`, which styles.css sets from the wall tokens, so the
- * field follows the theme without a hex literal here. The loop renders one
- * still under prefers-reduced-motion, pauses offscreen and on hidden tabs,
- * and is destroyed on unmount.
+ * The concrete is masked with the block's cut (the Ennis cruciform, the
+ * Storer slots), so the field shows only through the holes. Two placements:
+ * the hero, lit from the claim block's side (or from above when the region
+ * is a strip), and the shadowed course, lit from the floor. Colors come from
+ * the canvas's own computed `color` and `background-color`, which styles.css
+ * sets from the wall tokens, so the field follows the theme without a hex
+ * literal here. The loop renders one still under prefers-reduced-motion,
+ * pauses offscreen and on hidden tabs, and is destroyed on unmount.
  */
 
-export type LightCanvasProps = { kind: 'hero' | 'base' };
+export type LightCanvasProps = { kind: 'hero' | 'shadow' };
 
 type Box = { wide: boolean };
 
@@ -40,8 +40,8 @@ function heroField(box: Box): FieldFn {
   };
 }
 
-/** The floor glows: lit cells crowd the bottom and thin toward the lintel. */
-function baseField(): FieldFn {
+/** The floor glows: lit cells crowd the bottom and thin toward the shade. */
+function shadowField(): FieldFn {
   return (u, v, t) => {
     const base = 0.04 + 0.86 * smoothstep(0.12, 1, v);
     const drift = 0.05 * Math.sin(u * 6.3 + t * 0.4) + 0.03 * Math.sin(v * 9.7 + t * 0.27);
@@ -62,7 +62,7 @@ export default function LightCanvas({ kind }: LightCanvasProps) {
     if (!canvas) return;
 
     const box: Box = { wide: canvas.clientWidth > canvas.clientHeight * 2.2 };
-    const field = kind === 'hero' ? heroField(box) : baseField();
+    const field = kind === 'hero' ? heroField(box) : shadowField();
     const { ink, paper } = readInks(canvas);
 
     const loop: DitherLoopHandle = createDitherLoop(canvas, field, {

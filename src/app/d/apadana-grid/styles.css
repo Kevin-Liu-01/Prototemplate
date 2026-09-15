@@ -1,0 +1,1788 @@
+/* apadana-grid: the General Translation landing page as the floor plan of a
+   hypostyle hall seen from above. Every section is a hall in plan: a strict
+   square grid of column bases (circles with fluted rings) on every
+   intersection, and the bays between the columns hold the content. The
+   halls follow one another down the page with different column counts, the
+   portico (6 by 2), the bay hall of the T component (4 by 4), the great
+   hall of languages (6 by 6), the throne hall at night (3 by 3), the
+   treasury (4 by 2) and the rear portico of the footer (5 by 2), and each
+   is symmetric on both axes. Language is the oldest technology; the hall
+   that received every embassy is the frame.
+
+   Lineage: the Achaemenid revival inside 1920s Art Deco. Geometry only.
+
+   References, and what each one gives the page concretely:
+   1. The Apadana of Persepolis, in plan (Darius I, c. 515 BC). A square
+      hall of thirty-six columns, six by six, with porticos of two rows of
+      six on three sides, the columns standing half a bay in from the
+      walls. That is the page's grid law: the pitch is the rail divided by
+      the column count, the aisle is half a pitch, the bases sit on the
+      axes, and the axes are the only lines in the field. The bell-shaped
+      bases with their torus mouldings become the three concentric rings of
+      every base; the fluted shafts become the dashed ring, one dash per
+      flute. The double-volute capitals become the portico's crown: a bar,
+      two spirals of three semicircles each, and a stem, as pure arcs. The
+      rosette borders of the Apadana stair become the twelve-petal rosette
+      over every section head.
+   2. The Behistun inscription (Darius I, c. 520 BC): one text cut three
+      times on one rock face, Old Persian, Elamite and Babylonian, each in
+      its own ruled register at the same scale, the earliest multilingual
+      artifact of the same court that built the Apadana. That is the law of
+      the T proof and of the great hall: one source at the center and every
+      build around it in a bay of the same size, the script sample first,
+      the English name and the locale chip under it, and the review room's
+      two columns, source beside translation on one face. Nothing from the
+      relief above the text is drawn; only the register geometry is taken.
+   3. The Guardian Building, Detroit (Wirt Rowland, 1929): its lobby is a
+      hypostyle hall of Pewabic tile, and its floor and ceiling are read as
+      one continuous plan of squares and circles; its walls are drawn as
+      thick poché. Here the page's rails are walls with thickness, two
+      lines ten pixels apart with a hairline hatch between (the plan
+      draughtsman's poché), and the dark band is that lobby at night: gold
+      hairline on black basalt with the floor as dithered lamplight.
+
+   Material palette (H3, the Achaemenid materials): limestone for the
+   ground, black basalt for the ink and for the dark hall, lapis for the
+   one accent, gold for the one ornament color. The 1920s precedent for
+   lapis and gold drawn as lines on pale stone and black is Cartier's
+   Egyptian-revival jewels; the ornament here is reduced to circles, arcs
+   and rules at one gauge, and every hall is symmetric on both axes: the
+   plans flank the treasury's central bay, the plates flank the claim.
+
+   Ornament homes (G6, ornament as the layout): the plan itself (axes and
+   column bases in every hall), the portico's capitals, the rosette over
+   every section head, the poché of the walls, the sun-disk plates in the
+   portico's outer bays, the floor of the throne hall. Everything inside the
+   bays is GT: the code windows, the terminal, the review workspace, the
+   chips, the ledger, the plan cards, the footer columns, and all copy.
+
+   Accent: lapis has one job. It marks the source: the `en` chip and the
+   source string in the T proof, the `en` chip at the center of the great
+   hall, the source column of the review workspace, and string literals in
+   code, because strings are the product. Nothing else is blue.
+
+   Display face: Julius Sans One, geometric deco capitals, used for the h1
+   and the h2 only. Inter carries everything else, including the morphing
+   word inside the claim, which is the living material set against the
+   inscription. Dark mode remaps the six tokens below and the three surface
+   tokens read from them (the second hairline alpha, the card, the base ink);
+   the throne hall's tokens are fixed and never remap.
+
+   Line devices (C2): the walls' poché is a hairline hatch drawn with a
+   repeating linear gradient of one color, the sanctioned hatch device; the
+   customer marks take grayscale(1) and the Locadex mark on the dark plate
+   takes invert(1), the sanctioned brand-mark filters. No other gradient,
+   shadow or filter appears. Every tonal ramp on the page is a Bayer tier
+   on a canvas. */
+.apadana-grid-root {
+  --deco-ground: #ebe4d3;
+  --deco-ink: #15110c;
+  --deco-ink-2: rgba(21, 17, 12, 0.66);
+  --deco-hair: rgba(21, 17, 12, 0.2);
+  --deco-accent: #1e3f9b;
+  --deco-ornament: #a0771c;
+
+  /* the plan reads the palette through these */
+  --apg-hair-2: rgba(21, 17, 12, 0.11);
+  --apg-card: #f3eee3;
+  --apg-base-ink: rgba(21, 17, 12, 0.55);
+  --apg-rail: 1200px;
+  --apg-gut: clamp(20px, 3.1vw, 36px);
+  --apg-rail-w: min(var(--apg-rail), calc(100vw - 2 * var(--apg-gut)));
+  --apg-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --apg-display: var(--apadana-grid-display), var(--font-inter), 'Inter', system-ui, sans-serif;
+  --apg-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* the throne hall: black basalt, gold line, lamplight; fixed in both themes */
+  --apg-basalt: #0b0a08;
+  --apg-basalt-2: #13110d;
+  --apg-gold: #d4b04a;
+  --apg-gold-line: rgba(214, 178, 74, 0.38);
+  --apg-band-hair-2: rgba(214, 178, 74, 0.16);
+  --apg-band-ink: #ffffff;
+  --apg-band-ink-2: rgba(255, 255, 255, 0.66);
+  --apg-band-accent: #8eaaff;
+
+  background: var(--deco-ground);
+  color: var(--deco-ink);
+  font: 400 14px/1.55 var(--apg-sans);
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+[data-theme='dark'] .apadana-grid-root {
+  --deco-ground: #070707;
+  --deco-ink: #ffffff;
+  --deco-ink-2: rgba(255, 255, 255, 0.66);
+  --deco-hair: rgba(255, 255, 255, 0.24);
+  --deco-accent: #8eaaff;
+  --deco-ornament: #d4b04a;
+  --apg-hair-2: rgba(255, 255, 255, 0.12);
+  --apg-card: #101010;
+  --apg-base-ink: rgba(255, 255, 255, 0.6);
+}
+
+/* ------------------------------------------------------------- base */
+
+.apadana-grid-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.apadana-grid-root :focus-visible {
+  outline: 2px solid var(--deco-accent);
+  outline-offset: 2px;
+}
+
+.apadana-grid-root h1,
+.apadana-grid-root h2,
+.apadana-grid-root h3,
+.apadana-grid-root p {
+  margin: 0;
+}
+
+.apadana-grid-root code {
+  font: 400 0.92em/1.4 var(--apg-mono);
+}
+
+.apadana-grid-root p code,
+.apadana-grid-root li code {
+  padding: 1px 5px;
+  border: 1px solid var(--apg-hair-2);
+  border-radius: 3px;
+  background: var(--apg-card);
+  background-clip: padding-box;
+}
+
+.apadana-grid-root .apg-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ walls */
+
+/* The rail is a wall in plan: two faces ten pixels apart with the
+   draughtsman's hatch between. The strips own both faces; the rail itself
+   draws no border, so no line has two owners. */
+.apadana-grid-root .apg-rail {
+  position: relative;
+  width: var(--apg-rail-w);
+  margin-inline: auto;
+}
+
+.apadana-grid-root .apg-rail::before,
+.apadana-grid-root .apg-rail::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  border-inline: 1px solid var(--deco-hair);
+  background: repeating-linear-gradient(45deg, var(--apg-hair-2) 0 1px, transparent 1px 6px);
+  pointer-events: none;
+}
+
+.apadana-grid-root .apg-rail::before {
+  left: -10px;
+}
+
+.apadana-grid-root .apg-rail::after {
+  right: -10px;
+}
+
+/* -------------------------------------------------------------- nav */
+
+.apadana-grid-root .apg-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--deco-ground);
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.apadana-grid-root .apg-nav-in {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 58px;
+  padding: 0 24px;
+}
+
+.apadana-grid-root .apg-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-nav-links {
+  display: flex;
+  gap: 26px;
+  font-size: 13.5px;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-nav-links a:hover {
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-nav-acts {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 14px;
+}
+
+.apadana-grid-root .apg-nav-signin {
+  font-size: 13.5px;
+  color: var(--deco-ink);
+}
+
+/* ---------------------------------------------------------- buttons */
+
+.apadana-grid-root .apg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font: 500 13.5px/1 var(--apg-sans);
+  white-space: nowrap;
+}
+
+.apadana-grid-root .apg-btn.is-solid {
+  background: var(--deco-ink);
+  border-color: var(--deco-ink);
+  color: var(--deco-ground);
+}
+
+.apadana-grid-root .apg-btn.is-line {
+  border-color: var(--deco-hair);
+  color: var(--deco-ink);
+  background-clip: padding-box;
+}
+
+.apadana-grid-root .apg-btn.is-line:hover {
+  border-color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-btn.is-sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.apadana-grid-root .apg-acts {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------- the hall */
+
+/* A hall is one section; the previous hall's bottom rule is the seam. */
+.apadana-grid-root .apg-hall {
+  border-bottom: 1px solid var(--deco-hair);
+}
+
+.apadana-grid-root .apg-hall:last-child {
+  border-bottom: 0;
+}
+
+/* the doorway: the head over a hall, centered on the axis */
+.apadana-grid-root .apg-thresh {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 64px 24px 44px;
+  text-align: center;
+}
+
+.apadana-grid-root .apg-thresh.is-after {
+  padding: 36px 24px 60px;
+}
+
+.apadana-grid-root .apg-thresh h2 {
+  max-width: 28ch;
+  font: 400 clamp(1.45rem, 2.2vw, 1.95rem) / 1.18 var(--apg-display);
+  letter-spacing: 0.035em;
+  color: var(--deco-ink);
+  text-wrap: balance;
+}
+
+.apadana-grid-root .apg-thresh p {
+  max-width: 60ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-cap {
+  max-width: 64ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+  text-align: center;
+}
+
+.apadana-grid-root .apg-rosette {
+  display: block;
+  color: var(--deco-ornament);
+}
+
+.apadana-grid-root .apg-rosette circle {
+  stroke: currentColor;
+  stroke-width: 1;
+}
+
+.apadana-grid-root .apg-rosette .is-disc {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* the plan: aisle, field, aisle; the pitch is the rail over the column count */
+.apadana-grid-root .apg-plan {
+  --apg-pitch: calc(var(--apg-rail-w) / (var(--apg-c) + 2 * var(--apg-aisle, 0.5)));
+  position: relative;
+  padding: calc(var(--apg-pitch) * var(--apg-aisle, 0.5));
+}
+
+/* The field draws every axis once: the bays sit on the hairline color with
+   one pixel between them and one pixel around them. */
+.apadana-grid-root .apg-field {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 1px;
+  background: var(--deco-hair);
+}
+
+/* The row is one pitch tall, so the bays are square whenever their content
+   fits; a bay that needs more (the footer's four links, a code window at a
+   narrow rail) grows the whole row, so no content ever crosses an axis. */
+.apadana-grid-root .apg-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--apg-c), minmax(0, 1fr));
+  gap: 1px;
+  min-height: calc(var(--apg-pitch) - 1px);
+}
+
+.apadana-grid-root .apg-bay {
+  position: relative;
+  min-width: 0;
+  background: var(--deco-ground);
+}
+
+.apadana-grid-root .apg-bay.is-span-3 {
+  grid-column: span 3;
+}
+
+/* the column bases: one owner per intersection */
+.apadana-grid-root .apg-col {
+  position: absolute;
+  z-index: 3;
+  width: var(--apg-base);
+  height: var(--apg-base);
+  pointer-events: none;
+}
+
+.apadana-grid-root .apg-bay > .apg-col.is-tl {
+  top: -0.5px;
+  left: -0.5px;
+  transform: translate(-50%, -50%);
+}
+
+.apadana-grid-root .apg-bay > .apg-col.is-tr {
+  display: none;
+  top: -0.5px;
+  right: -0.5px;
+  transform: translate(50%, -50%);
+}
+
+.apadana-grid-root .apg-row > .apg-col.is-tr {
+  top: -0.5px;
+  right: -0.5px;
+  transform: translate(50%, -50%);
+}
+
+.apadana-grid-root .apg-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0;
+}
+
+.apadana-grid-root .apg-foot .apg-col {
+  top: -0.5px;
+  left: calc(var(--apg-k) * 100% / var(--apg-c));
+  transform: translate(-50%, -50%);
+}
+
+.apadana-grid-root .apg-colbase {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.apadana-grid-root .apg-torus {
+  fill: var(--deco-ground);
+  stroke: var(--apg-base-ink);
+  stroke-width: 1;
+}
+
+.apadana-grid-root .apg-flute {
+  fill: none;
+  stroke: var(--deco-ornament);
+  stroke-width: 1;
+}
+
+.apadana-grid-root .apg-shaft {
+  fill: none;
+  stroke: var(--apg-base-ink);
+  stroke-width: 1;
+}
+
+/* ---------------------------------------------------------- portico */
+
+.apadana-grid-root .apg-bay.is-claim {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 34px 28px;
+  text-align: center;
+}
+
+.apadana-grid-root .apg-bay.is-claim h1 {
+  max-width: 22ch;
+  font: 400 clamp(1.7rem, 3vw, 2.45rem) / 1.08 var(--apg-display);
+  letter-spacing: 0.03em;
+  color: var(--deco-ink);
+  text-wrap: balance;
+}
+
+/* the living word inside the inscription: Inter, so every script shapes in the body face */
+.apadana-grid-root .apg-word {
+  display: inline-block;
+  font: 500 0.94em/1 var(--apg-sans);
+  font-style: normal;
+  letter-spacing: -0.02em;
+  vertical-align: baseline;
+  unicode-bidi: isolate;
+}
+
+.apadana-grid-root .apg-plate {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--deco-ornament);
+}
+
+/* the capitals over the front row and under the back row */
+.apadana-grid-root .apg-capitals {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.apadana-grid-root .apg-capital {
+  position: absolute;
+  width: 56px;
+  height: 24px;
+  color: var(--deco-ornament);
+}
+
+.apadana-grid-root .apg-capital.is-top {
+  top: calc(var(--apg-pitch) * var(--apg-aisle, 0.5) - var(--apg-base) / 2 - 24px);
+  transform: translateX(-50%);
+}
+
+.apadana-grid-root .apg-capital.is-bottom {
+  bottom: calc(var(--apg-pitch) * var(--apg-aisle, 0.5) - var(--apg-base) / 2 - 24px);
+  transform: translateX(-50%) scaleY(-1);
+}
+
+.apadana-grid-root .apg-volute {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.apadana-grid-root .apg-volute path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+
+/* the install command in the back aisle, mirroring the capitals */
+.apadana-grid-root .apg-incant {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 4px 0 12px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 4px;
+  background: var(--apg-card);
+  background-clip: padding-box;
+  transform: translateX(-50%);
+}
+
+.apadana-grid-root .apg-incant code {
+  font-size: 12.5px;
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-thresh.is-hero {
+  padding: 44px 24px 40px;
+  gap: 22px;
+}
+
+.apadana-grid-root .apg-sub {
+  max-width: 58ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 500;
+  color: var(--deco-ink);
+  vertical-align: baseline;
+}
+
+/* the trust register: six marks ruled into six cells */
+.apadana-grid-root .apg-trust {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.apadana-grid-root .apg-trust-lead {
+  padding: 18px 24px 14px;
+  font-size: 13px;
+  color: var(--deco-ink-2);
+  text-align: center;
+}
+
+.apadana-grid-root .apg-trust-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--deco-hair);
+}
+
+.apadana-grid-root .apg-trust-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+}
+
+.apadana-grid-root .apg-trust-cell + .apg-trust-cell {
+  border-left: 1px solid var(--deco-hair);
+}
+
+/* the marks: one drawing per customer, monochrome, sized to one cap height */
+.apadana-grid-root .apg-wm {
+  display: block;
+  width: 96px;
+  height: 20px;
+  background: center / contain no-repeat;
+  filter: grayscale(1);
+}
+
+.apadana-grid-root .apg-wm.is-cursor {
+  background-image: url('/logos/cursor.light.svg');
+}
+
+.apadana-grid-root .apg-wm.is-ramp {
+  background-image: url('/logos/ramp.light.svg');
+}
+
+.apadana-grid-root .apg-wm.is-mintlify {
+  background-image: url('/logos/mintlify.light.svg');
+}
+
+.apadana-grid-root .apg-wm.is-profound {
+  width: 108px;
+  background-image: url('/logos/profound.light.svg');
+}
+
+.apadana-grid-root .apg-wm.is-partiful {
+  background-image: url('/logos/partiful.light.svg');
+}
+
+.apadana-grid-root .apg-wm.is-clickhouse {
+  background-image: url('/logos/clickhouse.light.svg');
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-wm.is-cursor {
+  background-image: url('/logos/cursor.dark.svg');
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-wm.is-ramp {
+  background-image: url('/logos/ramp.dark.svg');
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-wm.is-mintlify {
+  background-image: url('/logos/mintlify.dark.svg');
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-wm.is-profound {
+  background-image: url('/logos/profound.dark.svg');
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-wm.is-partiful {
+  background-image: url('/logos/partiful.dark.svg');
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-wm.is-clickhouse {
+  background-image: url('/logos/clickhouse.dark.svg');
+}
+
+/* ------------------------------------------------------------ chips */
+
+.apadana-grid-root .apg-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--deco-hair);
+  border-radius: 3px;
+  background: var(--deco-ground);
+  background-clip: padding-box;
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--deco-ink);
+  white-space: nowrap;
+}
+
+.apadana-grid-root .lct {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.apadana-grid-root .apg-chip.is-source {
+  border-color: var(--deco-accent);
+  color: var(--deco-accent);
+}
+
+.apadana-grid-root .apg-chip.is-tell .lct-code {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* ---------------------------------------------------------- windows */
+
+.apadana-grid-root .apg-win {
+  border: 1px solid var(--deco-hair);
+  background: var(--apg-card);
+  background-clip: padding-box;
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-win-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 6px 0 12px;
+  border-bottom: 1px solid var(--deco-hair);
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-win-file {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.apadana-grid-root .apg-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--deco-ink-2);
+  cursor: pointer;
+}
+
+.apadana-grid-root .apg-copy:hover {
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-code {
+  margin: 0;
+  padding: 12px 12px 14px;
+  overflow: auto;
+  font: 400 12px/1.6 var(--apg-mono);
+  color: var(--deco-ink);
+  tab-size: 2;
+}
+
+.apadana-grid-root .apg-line {
+  display: flex;
+  gap: 12px;
+  white-space: pre;
+}
+
+.apadana-grid-root .apg-ln {
+  flex: none;
+  min-width: 2ch;
+  text-align: right;
+  color: var(--deco-ink-2);
+  user-select: none;
+}
+
+.apadana-grid-root .apg-tok-str {
+  color: var(--deco-accent);
+}
+
+.apadana-grid-root .apg-tok-tag {
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------- proof */
+
+.apadana-grid-root .apg-bay.is-word {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 52px 36px 40px;
+}
+
+.apadana-grid-root .apg-chip.is-nameplate {
+  position: absolute;
+  top: 14px;
+  left: calc(var(--apg-base) / 2 + 10px);
+}
+
+.apadana-grid-root .apg-bay.is-word[dir='rtl'] .apg-chip.is-nameplate {
+  left: auto;
+  right: calc(var(--apg-base) / 2 + 10px);
+}
+
+.apadana-grid-root .apg-word-text {
+  font: 500 clamp(1.25rem, 1.9vw, 1.7rem) / 1.25 var(--apg-sans);
+  letter-spacing: -0.015em;
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-word-name {
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-bay.is-source {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 44px 30px;
+}
+
+.apadana-grid-root .apg-win.is-source-win .apg-code {
+  font-size: 11px;
+  padding: 14px 12px 16px;
+}
+
+.apadana-grid-root .apg-source-cap {
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--deco-accent);
+  text-align: center;
+}
+
+/* -------------------------------------------------------- great hall */
+
+.apadana-grid-root .apg-bay.is-locale {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  padding: 30px 28px 26px;
+}
+
+.apadana-grid-root .apg-script {
+  font: 500 clamp(1.15rem, 1.5vw, 1.45rem) / 1.3 var(--apg-sans);
+  letter-spacing: -0.01em;
+  color: var(--deco-ink);
+  overflow-wrap: anywhere;
+}
+
+.apadana-grid-root .apg-locale-name {
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-chip.is-seat {
+  margin-top: 4px;
+}
+
+.apadana-grid-root .apg-bay.is-globe {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 30px;
+}
+
+.apadana-grid-root .apg-globe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-bay.is-globe .apg-chip.is-seat {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+
+/* the variants register under the hall */
+.apadana-grid-root .apg-register {
+  border-top: 1px solid var(--deco-hair);
+}
+
+.apadana-grid-root .apg-reg-row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 13px 24px;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.apadana-grid-root .apg-reg-row:first-child {
+  border-top: 0;
+}
+
+.apadana-grid-root .apg-reg-lead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.apadana-grid-root .apg-reg-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.apadana-grid-root .apg-reg-variants {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.apadana-grid-root .apg-reg-note {
+  margin-right: 10px;
+  font-size: 13px;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-reg-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px 44px;
+  border-top: 1px solid var(--deco-hair);
+}
+
+.apadana-grid-root .apg-count {
+  font: 500 12.5px/1 var(--apg-mono);
+  color: var(--deco-ink-2);
+}
+
+/* ------------------------------------------------------- throne hall */
+
+.apadana-grid-root .apg-band {
+  background: var(--apg-basalt);
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-band-in {
+  position: relative;
+  width: var(--apg-rail-w);
+  margin-inline: auto;
+}
+
+.apadana-grid-root .apg-band-in::before,
+.apadana-grid-root .apg-band-in::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  border-inline: 1px solid var(--apg-gold-line);
+  background: repeating-linear-gradient(45deg, var(--apg-band-hair-2) 0 1px, transparent 1px 6px);
+  pointer-events: none;
+}
+
+.apadana-grid-root .apg-band-in::before {
+  left: -10px;
+}
+
+.apadana-grid-root .apg-band-in::after {
+  right: -10px;
+}
+
+.apadana-grid-root .apg-thresh.is-dark h2 {
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-thresh.is-dark p {
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-thresh.is-dark .apg-rosette {
+  color: var(--apg-gold);
+}
+
+.apadana-grid-root .apg-plan.is-throne .apg-field {
+  background: var(--apg-gold-line);
+}
+
+.apadana-grid-root .apg-plan.is-throne .apg-bay {
+  background: var(--apg-basalt);
+}
+
+.apadana-grid-root .apg-plan.is-throne .apg-torus {
+  fill: var(--apg-basalt);
+  stroke: var(--apg-gold-line);
+}
+
+.apadana-grid-root .apg-plan.is-throne .apg-flute {
+  stroke: var(--apg-gold);
+}
+
+.apadana-grid-root .apg-plan.is-throne .apg-shaft {
+  stroke: var(--apg-gold-line);
+}
+
+.apadana-grid-root .apg-floor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--apg-gold);
+}
+
+.apadana-grid-root .apg-bay.is-room {
+  padding: 46px 44px;
+}
+
+.apadana-grid-root .apg-room {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.apadana-grid-root .apg-room-h {
+  font: 500 13px/1 var(--apg-sans);
+  letter-spacing: 0.02em;
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-room-cap {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-room-cap code {
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-band p code {
+  border-color: var(--apg-band-hair-2);
+  background: var(--apg-basalt-2);
+}
+
+/* the six stacks: a strip of tabs, the active one underlined in gold */
+.apadana-grid-root .apg-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+  border-bottom: 1px solid var(--apg-band-hair-2);
+}
+
+.apadana-grid-root .apg-tab {
+  margin-bottom: -1px;
+  padding: 6px 0 8px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  font: 500 12px/1 var(--apg-sans);
+  color: var(--apg-band-ink-2);
+  cursor: pointer;
+}
+
+.apadana-grid-root .apg-tab.is-on {
+  color: var(--apg-band-ink);
+  border-bottom-color: var(--apg-gold);
+}
+
+.apadana-grid-root .apg-win.is-dark {
+  border-color: var(--apg-gold-line);
+  background: var(--apg-basalt-2);
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-win.is-dark .apg-win-bar {
+  border-color: var(--apg-gold-line);
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-win.is-dark .apg-code {
+  max-height: 238px;
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-win.is-dark .apg-ln,
+.apadana-grid-root .apg-win.is-dark .apg-copy {
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-win.is-dark .apg-copy:hover {
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-win.is-dark .apg-tok-str {
+  color: var(--apg-band-accent);
+}
+
+/* the terminal */
+.apadana-grid-root .apg-term {
+  border: 1px solid var(--apg-gold-line);
+  background: var(--apg-basalt-2);
+  background-clip: padding-box;
+}
+
+.apadana-grid-root .apg-term-bar {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--apg-gold-line);
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-term-body {
+  padding: 14px;
+  font: 400 12px/1.75 var(--apg-mono);
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-term-body [data-tone='prompt'] {
+  color: var(--apg-gold);
+}
+
+.apadana-grid-root .apg-term-body [data-tone='dim'] {
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-term-locs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 0;
+}
+
+.apadana-grid-root .apg-term-locs i {
+  margin-right: 4px;
+  font-style: normal;
+  color: var(--apg-gold);
+}
+
+.apadana-grid-root .apg-chip.is-term {
+  border-color: var(--apg-gold-line);
+  background: var(--apg-basalt-2);
+  color: var(--apg-band-ink);
+}
+
+/* the review workspace */
+.apadana-grid-root .apg-review {
+  border: 1px solid var(--apg-gold-line);
+  background: var(--apg-basalt-2);
+  background-clip: padding-box;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.apadana-grid-root .apg-review-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--apg-gold-line);
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-review-head {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--apg-band-hair-2);
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-review-head span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.apadana-grid-root .apg-review-head .is-source {
+  color: var(--apg-band-accent);
+}
+
+.apadana-grid-root .apg-review-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--apg-band-hair-2);
+}
+
+.apadana-grid-root .apg-review-row:first-of-type {
+  border-top: 0;
+}
+
+.apadana-grid-root .apg-review-src {
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-review-tr {
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-review-tr s {
+  display: block;
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-stamp {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 5px;
+  border: 1px solid var(--apg-gold-line);
+  border-radius: 3px;
+  font: 500 10px/1 var(--apg-mono);
+  color: var(--apg-band-ink-2);
+  vertical-align: 2px;
+}
+
+.apadana-grid-root .apg-stamp[data-kind='chip'] {
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-review-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--apg-gold-line);
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--apg-band-ink-2);
+}
+
+/* the agent */
+.apadana-grid-root .apg-agent {
+  border: 1px solid var(--apg-gold-line);
+  background: var(--apg-basalt-2);
+  background-clip: padding-box;
+}
+
+.apadana-grid-root .apg-agent-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--apg-gold-line);
+  font: 500 11px/1 var(--apg-mono);
+  color: var(--apg-band-ink-2);
+}
+
+.apadana-grid-root .apg-agent-mark {
+  width: 22px;
+  height: 22px;
+  filter: invert(1);
+}
+
+.apadana-grid-root .apg-trace {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.apadana-grid-root .apg-trace li {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--apg-band-hair-2);
+  font: 400 12px/1.55 var(--apg-mono);
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-trace li:first-child {
+  border-top: 0;
+}
+
+.apadana-grid-root .apg-trace-step {
+  color: var(--apg-gold);
+}
+
+.apadana-grid-root .apg-trace-text {
+  overflow-wrap: anywhere;
+}
+
+.apadana-grid-root .apg-btn.is-solid.is-onDark {
+  background: var(--apg-band-ink);
+  border-color: var(--apg-band-ink);
+  color: var(--apg-basalt);
+}
+
+.apadana-grid-root .apg-btn.is-line.is-onDark {
+  border-color: var(--apg-gold-line);
+  color: var(--apg-band-ink);
+}
+
+.apadana-grid-root .apg-btn.is-line.is-onDark:hover {
+  border-color: var(--apg-gold);
+}
+
+/* ---------------------------------------------------------- treasury */
+
+.apadana-grid-root .apg-ledger-wrap {
+  padding: 0 24px 12px;
+  overflow-x: auto;
+}
+
+.apadana-grid-root .apg-ledger {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.apadana-grid-root .apg-ledger th,
+.apadana-grid-root .apg-ledger td {
+  padding: 12px 14px;
+  border-top: 1px solid var(--deco-hair);
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.apadana-grid-root .apg-ledger thead th {
+  border-top: 0;
+  font: 500 11px/1 var(--apg-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-ledger tbody th {
+  font-weight: 400;
+}
+
+.apadana-grid-root .apg-ledger .is-rate,
+.apadana-grid-root .apg-ledger .is-libs {
+  text-align: right;
+  font-family: var(--apg-mono);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.apadana-grid-root .apg-ledger .is-libs {
+  width: 128px;
+}
+
+.apadana-grid-root .apg-ledger tr.is-lead th,
+.apadana-grid-root .apg-ledger tr.is-lead td {
+  font-weight: 500;
+}
+
+.apadana-grid-root .apg-bay.is-plan,
+.apadana-grid-root .apg-bay.is-notes {
+  display: flex;
+  padding: 42px 40px;
+}
+
+.apadana-grid-root .apg-plan-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.apadana-grid-root .apg-plan-card h3 {
+  font: 500 15px/1.2 var(--apg-sans);
+}
+
+.apadana-grid-root .apg-price {
+  margin: 10px 0 12px;
+  font: 500 clamp(1.6rem, 2vw, 2rem) / 1 var(--apg-sans);
+  letter-spacing: -0.02em;
+}
+
+.apadana-grid-root .apg-price small {
+  margin-left: 8px;
+  font: 400 12px/1 var(--apg-sans);
+  letter-spacing: 0;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-plan-body {
+  flex: 1;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-plan-card .apg-btn {
+  align-self: flex-start;
+  margin-top: 18px;
+}
+
+.apadana-grid-root .apg-notes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-compare {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  color: var(--deco-ink);
+}
+
+/* ------------------------------------------------------------ footer */
+
+.apadana-grid-root .apg-thresh.is-brand {
+  flex-direction: row;
+  justify-content: center;
+  gap: 14px;
+  padding: 48px 24px 40px;
+}
+
+.apadana-grid-root .apg-thresh.is-brand p {
+  font-size: 14px;
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-foot-marks {
+  display: inline-flex;
+}
+
+.apadana-grid-root .apg-foot-logo {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.apadana-grid-root .apg-foot-logo.is-dark {
+  display: none;
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-foot-logo.is-light {
+  display: none;
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-foot-logo.is-dark {
+  display: block;
+}
+
+.apadana-grid-root .apg-bay.is-links {
+  padding: 36px 34px;
+}
+
+.apadana-grid-root .apg-bay.is-links h3 {
+  margin-bottom: 12px;
+  font: 500 12px/1 var(--apg-sans);
+  color: var(--deco-ink-2);
+}
+
+.apadana-grid-root .apg-bay.is-links ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.apadana-grid-root .apg-bay.is-links li {
+  padding: 5px 0;
+}
+
+.apadana-grid-root .apg-bay.is-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--deco-ink);
+}
+
+.apadana-grid-root .apg-bay.is-links a:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.apadana-grid-root .apg-foot-locadex {
+  width: 14px;
+  height: 14px;
+}
+
+[data-theme='dark'] .apadana-grid-root .apg-foot-locadex {
+  filter: invert(1);
+}
+
+.apadana-grid-root .apg-closing {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--deco-hair);
+  font-size: 12px;
+  color: var(--deco-ink-2);
+}
+
+/* ------------------------------------------------------- narrow plans */
+
+/* Under the desktop plan width the rows wrap two bays to a line and the
+   bays leave the square; the capitals go, the command joins the flow, and
+   the closing bases pass to the wrapped bays so every intersection keeps
+   one owner. */
+@media (max-width: 1023px) {
+  .apadana-grid-root .apg-plan {
+    --apg-base: 48px;
+    padding: 30px var(--apg-gut);
+  }
+
+  .apadana-grid-root .apg-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 0;
+  }
+
+  .apadana-grid-root .apg-bay {
+    min-height: 180px;
+  }
+
+  .apadana-grid-root .apg-bay.is-span-3 {
+    grid-column: 1 / -1;
+  }
+
+  .apadana-grid-root .apg-bay:last-of-type:nth-of-type(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .apadana-grid-root .apg-row > .apg-col.is-tr {
+    display: none;
+  }
+
+  .apadana-grid-root .apg-bay:nth-of-type(2n) > .apg-col.is-tr,
+  .apadana-grid-root .apg-bay:last-of-type > .apg-col.is-tr {
+    display: block;
+  }
+
+  .apadana-grid-root .apg-foot {
+    --apg-c: 2;
+  }
+
+  .apadana-grid-root .apg-foot .apg-col:nth-child(n + 4) {
+    display: none;
+  }
+
+  /* the portico: the claim first at full width, the two plates under it */
+  .apadana-grid-root .apg-plan.is-portico .apg-bay.is-claim {
+    order: -1;
+    min-height: 220px;
+  }
+
+  .apadana-grid-root .apg-plan.is-portico .apg-bay.is-plate {
+    grid-column: auto;
+    min-height: 150px;
+  }
+
+  .apadana-grid-root .apg-capitals {
+    display: none;
+  }
+
+  .apadana-grid-root .apg-incant {
+    position: static;
+    margin: 26px auto 0;
+    transform: none;
+  }
+
+  .apadana-grid-root .apg-bay.is-word {
+    padding: 44px 32px 32px;
+  }
+
+  .apadana-grid-root .apg-bay.is-room {
+    min-height: 0;
+    padding: 40px 32px;
+  }
+
+  .apadana-grid-root .apg-bay.is-plan,
+  .apadana-grid-root .apg-bay.is-notes {
+    min-height: 0;
+    padding: 40px 32px;
+  }
+
+  .apadana-grid-root .apg-bay.is-links {
+    min-height: 0;
+    padding: 32px 30px;
+  }
+
+  .apadana-grid-root .apg-trust-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .apadana-grid-root .apg-trust-cell:nth-child(4) {
+    border-left: 0;
+  }
+
+  .apadana-grid-root .apg-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .apadana-grid-root .apg-reg-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Phones: one bay to a line, except the great hall, which keeps two so the
+   twenty-four locales stay a field. The type ladder reads the --tcm-*
+   slots with px fallbacks (DESIGN.md section 12). */
+@media (max-width: 720px) {
+  .apadana-grid-root {
+    font-size: var(--tcm-body, 14px);
+  }
+
+  .apadana-grid-root .apg-nav-in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    height: auto;
+    padding: 8px 16px 0;
+  }
+
+  .apadana-grid-root .apg-brand {
+    flex: 1;
+  }
+
+  .apadana-grid-root .apg-nav-links {
+    order: 3;
+    width: 100%;
+    gap: 18px;
+    padding: 8px 0 10px;
+    overflow-x: auto;
+  }
+
+  .apadana-grid-root .apg-nav-signin {
+    display: none;
+  }
+
+  .apadana-grid-root .apg-thresh {
+    padding: 44px var(--tcm-pad, 20px) 32px;
+  }
+
+  .apadana-grid-root .apg-thresh.is-after {
+    padding: 28px var(--tcm-pad, 20px) 44px;
+  }
+
+  .apadana-grid-root .apg-thresh h2 {
+    font-size: var(--tcm-h2, 24px);
+  }
+
+  .apadana-grid-root .apg-thresh p,
+  .apadana-grid-root .apg-sub {
+    font-size: var(--tcm-lead, 15px);
+  }
+
+  .apadana-grid-root .apg-plan {
+    --apg-base: 40px;
+    padding: 24px var(--apg-gut);
+  }
+
+  .apadana-grid-root .apg-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .apadana-grid-root .apg-bay {
+    min-height: 0;
+    padding: var(--tcm-pad, 20px);
+  }
+
+  .apadana-grid-root .apg-bay.is-span-3,
+  .apadana-grid-root .apg-bay:last-of-type:nth-of-type(odd) {
+    grid-column: auto;
+  }
+
+  .apadana-grid-root .apg-bay > .apg-col.is-tr {
+    display: block;
+  }
+
+  .apadana-grid-root .apg-foot {
+    --apg-c: 1;
+  }
+
+  .apadana-grid-root .apg-foot .apg-col:nth-child(n + 3) {
+    display: none;
+  }
+
+  /* the great hall stays two bays wide */
+  .apadana-grid-root .apg-plan.is-great .apg-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .apadana-grid-root .apg-plan.is-great .apg-bay:last-of-type:nth-of-type(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .apadana-grid-root .apg-plan.is-great .apg-bay:nth-of-type(2n + 1):not(:last-of-type) > .apg-col.is-tr {
+    display: none;
+  }
+
+  .apadana-grid-root .apg-plan.is-great .apg-foot {
+    --apg-c: 2;
+  }
+
+  .apadana-grid-root .apg-plan.is-great .apg-foot .apg-col:nth-child(3) {
+    display: block;
+  }
+
+  .apadana-grid-root .apg-bay.is-claim {
+    min-height: 0;
+    padding: 30px var(--tcm-pad, 20px);
+  }
+
+  .apadana-grid-root .apg-bay.is-claim h1 {
+    font-size: var(--tcm-h1, 30px);
+  }
+
+  .apadana-grid-root .apg-plan.is-portico .apg-bay.is-plate {
+    min-height: 120px;
+    padding: 0;
+  }
+
+  .apadana-grid-root .apg-bay.is-word {
+    padding: 40px var(--tcm-pad, 20px) 28px;
+  }
+
+  .apadana-grid-root .apg-chip.is-nameplate {
+    top: 10px;
+    left: calc(var(--apg-base) / 2 + 8px);
+  }
+
+  .apadana-grid-root .apg-bay.is-source {
+    padding: 36px var(--tcm-pad, 20px) 28px;
+  }
+
+  .apadana-grid-root .apg-bay.is-locale {
+    min-height: 132px;
+    padding: 26px var(--tcm-pad, 20px) 20px;
+  }
+
+  .apadana-grid-root .apg-bay.is-globe {
+    min-height: 160px;
+    padding: 0 0 20px;
+  }
+
+  .apadana-grid-root .apg-script {
+    font-size: 17px;
+  }
+
+  .apadana-grid-root .apg-bay.is-room {
+    padding: 34px var(--tcm-pad, 20px);
+  }
+
+  .apadana-grid-root .apg-bay.is-plan,
+  .apadana-grid-root .apg-bay.is-notes,
+  .apadana-grid-root .apg-bay.is-links {
+    padding: 34px var(--tcm-pad, 20px);
+  }
+
+  .apadana-grid-root .apg-thresh.is-brand {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .apadana-grid-root .apg-trust-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .apadana-grid-root .apg-trust-cell:nth-child(4) {
+    border-left: 1px solid var(--deco-hair);
+  }
+
+  .apadana-grid-root .apg-trust-cell:nth-child(2n + 1) {
+    border-left: 0;
+  }
+
+  .apadana-grid-root .apg-trust-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .apadana-grid-root .apg-trust-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--deco-hair);
+  }
+
+  .apadana-grid-root .apg-ledger-wrap,
+  .apadana-grid-root .apg-reg-row,
+  .apadana-grid-root .apg-reg-foot,
+  .apadana-grid-root .apg-closing,
+  .apadana-grid-root .apg-trust-lead {
+    padding-left: var(--tcm-pad, 20px);
+    padding-right: var(--tcm-pad, 20px);
+  }
+}

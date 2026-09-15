@@ -7,12 +7,12 @@ import type { DitherLoopOptions, FieldFn } from '@/lib/dither';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 /**
- * The two dithered stone surfaces: the hero wall and the stele face.
+ * The two dithered stone surfaces: the hero wall and the recess floor.
  * Both are Bayer fields from the shared engine, rendered in the canvas's
- * own computed color over a transparent paper so the wall shows through,
+ * own computed color over a transparent paper so the ground shows through,
  * one still under reduced motion, paused offscreen and on hidden tabs,
  * destroyed on unmount, and re-inked when the theme flips.
- * Home: the hero course ground and the dark stele's tooled border.
+ * Home: the hero course ground and the dark recess's floor.
  */
 
 type Options = Omit<DitherLoopOptions, 'ink' | 'paper'>;
@@ -56,22 +56,24 @@ export function HeroWall() {
   return <canvas className='rr-hero-wall' ref={ref} aria-hidden='true' />;
 }
 
-/* The stele's tooled border: chisel strata in alabaster ink on the black
-   stone, lit from the left and fading to the right. The inscribed
-   registers sit on polished ground over it. */
-const steleStrata = streakBands({
+/* The recess floor: chisel strata in alabaster ink on the black stone. The
+   light enters from the left over the rim, so the floor near the left rim
+   lies in the rim's shadow and the strata grow denser toward the lit wall
+   on the right. The strata field tapers rightward by design; reading it
+   at 1 - u turns that taper into the rise toward the light. */
+const floorStrata = streakBands({
   bands: 54,
   duty: 0.42,
   softness: 0.85,
   waviness: 0.03,
   waveFrequency: 1.1,
   turbulence: 0.45,
-  taper: 0.82,
+  taper: 0.86,
   speed: 0.02,
 });
-const steleWall: FieldFn = (u, v, t) => steleStrata(u, v, t) * 0.5;
+const recessFloor: FieldFn = (u, v, t) => floorStrata(1 - u, v, t) * 0.42;
 
-export function SteleWall() {
-  const ref = useReliefField(steleWall, { scale: 3, fps: 20, speed: 1 });
-  return <canvas className='rr-stele-wall' ref={ref} aria-hidden='true' />;
+export function RecessFloor() {
+  const ref = useReliefField(recessFloor, { scale: 3, fps: 20, speed: 1 });
+  return <canvas className='rr-recess-canvas' ref={ref} aria-hidden='true' />;
 }

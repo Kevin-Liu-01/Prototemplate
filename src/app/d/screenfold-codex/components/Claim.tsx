@@ -2,7 +2,7 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { prefersReducedMotion } from '@/lib/dither';
 
@@ -10,14 +10,17 @@ import { CLAIMS } from '../data';
 import { playWhileVisible } from './motion';
 
 /**
- * The claim as one shaped text node. The sentence holds for a beat, drops
- * out, and returns in the next locale with its own `lang` and `dir`; the
- * node is never split into characters. The loop is created paused and
- * played only while the hero is on screen. Under reduced motion the
- * English sentence stands.
+ * The claim as one shaped text node. The English sentence is in the
+ * markup and is what a still, a thumbnail, and a no-script render show.
+ * While the hero is on screen the sentence changes locale on a beat: the
+ * node's text, `lang`, and `dir` are swapped together and the new
+ * sentence settles up ten pixels into place. Nothing fades; the text is
+ * fully visible at every frame. The node is never split into characters.
+ * Under reduced motion the English sentence stands.
  */
+const FIRST = CLAIMS[0] ?? { text: 'Scale to every language', lang: 'en' };
+
 export default function Claim() {
-  const [index, setIndex] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
 
   useGSAP(
@@ -27,22 +30,27 @@ export default function Claim() {
       if (el === null) return;
       let cursor = 0;
       const tl = gsap.timeline({ repeat: -1, paused: true });
-      tl.to(el, { autoAlpha: 0, duration: 0.2, ease: 'power1.in' }, 3.1)
-        .call(() => {
+      tl.call(
+        () => {
           cursor = (cursor + 1) % CLAIMS.length;
-          setIndex(cursor);
-        })
-        .to(el, { autoAlpha: 1, duration: 0.26, ease: 'power1.out' });
+          const word = CLAIMS[cursor] ?? FIRST;
+          el.textContent = word.text;
+          el.lang = word.lang;
+          el.dir = word.dir ?? 'ltr';
+        },
+        [],
+        3.2
+      )
+        .set(el, { y: 10 })
+        .to(el, { y: 0, duration: 0.34, ease: 'power2.out' });
       playWhileVisible(el, tl);
     },
     { scope: ref }
   );
 
-  const word = CLAIMS[index] ?? CLAIMS[0];
-  if (word === undefined) return null;
   return (
-    <span ref={ref} className='sfc-claim' lang={word.lang} dir={word.dir ?? 'ltr'}>
-      {word.text}
+    <span ref={ref} className='sfc-claim' lang={FIRST.lang} dir={FIRST.dir ?? 'ltr'}>
+      {FIRST.text}
     </span>
   );
 }

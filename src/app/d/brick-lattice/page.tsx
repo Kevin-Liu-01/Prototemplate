@@ -31,13 +31,18 @@ const display = Cinzel({
  *
  * The entire page is one running-bond brick wall in which every brick is
  * an ordered-dither cell. Density, quantised on the Bayer screen, draws the
- * ornament: a twelve-petal rosette behind the hero's claim, chevron courses
- * behind the wall of translations, a crenellated parapet over the kiln,
- * meander frets around the languages band, palmette fans under the pricing
- * file, and a stepped foundation under the footer. There is no empty
- * ground; copy sits on smooth glazed panels with stepped parapet corners
- * cut out of the lattice. Flat, continuous, woven: an elevation of glazed
- * brick, not a gate.
+ * ornament, and each section has its own pattern from one book: a rosette
+ * field behind the hero's claim, chevron courses behind the wall of
+ * translations (which the source brick lights, in the DOM and in the
+ * lattice at once), the inverted lattice of the kiln with its ziggurat
+ * setbacks and merlons, meander frets around the medallions of the
+ * languages band, palmette fans under the glazed panels of the pricing
+ * file, and the stepped foundation under the footer, where the book itself
+ * is printed. There is no empty ground; copy sits on smooth glazed panels
+ * with stepped parapet corners cut out of the lattice, and hovering any
+ * brick or panel lights it with the accent ring, additively. Everything is
+ * visible at rest. Flat, continuous, woven: an elevation of glazed brick,
+ * not a gate.
  */
 export default function BrickLatticePage() {
   return (

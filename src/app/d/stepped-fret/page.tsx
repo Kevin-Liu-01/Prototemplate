@@ -31,15 +31,23 @@ export const metadata = {
 
 /**
  * STEPPED-FRET. The page is a sequence of horizontal registers in the
- * Zapotec and Mixtec revival of Art Deco: each register is bounded above and
- * below by a stepped-fret meander at its own scale, and the content block of
- * each register steps right by one fret step and back again down the page,
- * so the grid itself is the stair. The hero is one monumental fret rendered
- * in ordered dither, with the claim set in the step it leaves open. The
- * proof of the T component is a stair of translations, the languages are
- * the cells of a long meander, the platform is a ziggurat on black stone,
- * and the pricing file is three stepped plinths. Limestone cream, ochre,
- * red oxide and black; Inter with Aboreto for the display slots.
+ * Zapotec and Mixtec revival of Art Deco. Five distinct Mitla frets (the
+ * stepped fret with its coil, the hooked step, the stepped chevron, the
+ * stepped diamond, and the opposed pair) are drawn at three scales and
+ * assigned by register: every boundary on the cream page is one fret at
+ * the band scale, the pilasters and cornices are frets at the fine scale,
+ * and the dark band opens with the Mitla facade at all three. The content
+ * block of each register steps right by one fret step and back again down
+ * the page, and the gutter each step leaves is filled with a graded Bayer
+ * tier, so the grid itself is a stair of cut stone. The hero is one
+ * monumental fret in ordered dither with the claim set in the step it
+ * leaves open; the proof of the T component is a stair of translations with
+ * the flag chips on the risers and the coil as its terminal; the languages
+ * are pockets of one crenellated meander; the customer marks stand between
+ * fret pilasters; the platform is the hero's stair inverted, cream plates on
+ * black; the pricing file is three stepped plinths under setback caps.
+ * Limestone cream, ochre, red oxide and black; Inter with Aboreto for the
+ * display slots.
  */
 export default function SteppedFretPage() {
   return (
@@ -48,15 +56,15 @@ export default function SteppedFretPage() {
         <Nav />
         <main className='sf-rail'>
           <Hero />
-          <FretBand cell={4} tone='ink' />
+          <FretBand fret='spiral' scale='band' tone='ink' />
           <Trust />
-          <FretBand cell={6} tone='ornament' />
+          <FretBand fret='zigzag' scale='band' tone='ornament' />
           <Proof />
-          <FretBand cell={5} tone='ink' />
+          <FretBand fret='hook' scale='band' tone='ink' />
           <Surfaces />
-          <FretBand cell={7} tone='ornament' />
+          <FretBand fret='lozenge' scale='band' tone='ornament' />
           <Material />
-          <FretBand cell={4} tone='ink' />
+          <FretBand fret='zigzag' scale='band' tone='ink' />
           <Review />
         </main>
 
@@ -64,7 +72,7 @@ export default function SteppedFretPage() {
 
         <div className='sf-rail'>
           <Pricing />
-          <FretBand cell={3} tone='ornament' />
+          <FretBand fret='hook' scale='fine' tone='ink' />
           <Footer />
         </div>
       </div>

@@ -3,23 +3,23 @@
 import { useRef } from 'react';
 import type { CSSProperties } from 'react';
 
-import { DOCS_HREF, GREETINGS, LOCALE_COUNT, LOCALE_ROWS, LOCALE_TAIL } from '../data';
+import { GREETINGS, LOCALE_COUNT, LOCALE_ROWS, LOCALE_TAIL, SUPPORTED_LOCALES_HREF } from '../data';
 import { useRise } from '../reveal';
 import Chip from './Chip';
-import FretBand from './deco/FretBand';
 import Globe from './Globe';
 import Register from './deco/Register';
 
-/** The meander runs one fret unit per cell; at 10px cells a cell is 130px wide. */
-const MEANDER_CELL = 10;
-
 /**
- * Languages as material. A long meander runs the width of the register,
- * one fret unit over every cell, and each cell below it holds a greeting in
- * its own script with the language named in itself and its flag chip. The
- * strip scrolls inside its own box on narrow screens. Under it, the atlas:
- * the variants that matter as stepped rows, the long tail, the count, and
- * the halftone globe.
+ * Languages as material. One long meander runs across the register in
+ * courses: a crenellated fret one band cell thick in the ornament color,
+ * whose walls stand between every pair of cells and whose bars alternate
+ * top and bottom, so every other pocket hangs from the bar above it and
+ * every other stands on the bar below it. Each pocket holds one greeting in
+ * its own script with the language named in itself and its flag chip, the
+ * source language first. Every wall has one owner: a cell draws its left
+ * wall and its top or bottom bar, and the last cell of a course draws the
+ * right wall. Under it, the atlas: the variants that matter as stepped
+ * rows, the long tail, the count, and the halftone globe.
  */
 export default function Material() {
   const root = useRef<HTMLDivElement>(null);
@@ -37,26 +37,23 @@ export default function Material() {
           </p>
         </header>
 
-        <div className='sf-meander' data-rise>
-          <div className='sf-meander-scroll'>
-            <div className='sf-meander-track' style={{ '--cells': GREETINGS.length, '--mc': `${MEANDER_CELL}px` } as CSSProperties}>
-              <FretBand cell={MEANDER_CELL} tone='ornament' edges='bottom' className='sf-meander-band' />
-              <ul className='sf-mcells'>
-                {GREETINGS.map((g) => (
-                  <li className='sf-mcell' key={g.code}>
-                    <span className='sf-mcell-text' lang={g.lang} dir={g.rtl ? 'rtl' : 'ltr'}>
-                      {g.text}
-                    </span>
-                    <span className='sf-mcell-name' lang={g.lang} dir={g.rtl ? 'rtl' : 'ltr'}>
-                      {g.name}
-                    </span>
-                    <Chip code={g.code} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
+        <ol className='sf-meander' data-rise aria-label='A greeting in each language of the meander'>
+          {GREETINGS.map((g) => (
+            <li className='sf-pocket' key={g.code}>
+              <span className='sf-pocket-text' lang={g.lang} dir={g.rtl ? 'rtl' : 'ltr'}>
+                {g.text}
+              </span>
+              <span className='sf-pocket-name' lang={g.lang} dir={g.rtl ? 'rtl' : 'ltr'}>
+                {g.name}
+              </span>
+              <Chip code={g.code} />
+            </li>
+          ))}
+        </ol>
+        <p className='sf-meander-note' data-rise>
+          Every string carries its <code>lang</code>. Arabic and Hebrew carry <code>dir=&quot;rtl&quot;</code> and
+          the pocket sets them right to left.
+        </p>
 
         <div className='sf-atlas'>
           <div className='sf-atlas-table' data-rise>
@@ -88,7 +85,7 @@ export default function Material() {
               </span>
             </div>
             <p className='sf-atlas-count'>{LOCALE_COUNT}</p>
-            <a className='sf-btn sf-btn-line sf-btn-sm' href={`${DOCS_HREF}/reference/supported-locales`}>
+            <a className='sf-btn sf-btn-line sf-btn-sm' href={SUPPORTED_LOCALES_HREF}>
               Browse All Supported Locales
             </a>
           </div>

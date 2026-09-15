@@ -112,6 +112,12 @@ export const VARIANT_ROWS: readonly VariantRow[] = [
   { tag: 'pt', name: 'Portuguese', variants: ['pt-BR', 'pt-PT'] },
 ];
 
+/** The atlas's tail row: two single-tag languages after the variant rows (charter A7). */
+export const TAIL_ROWS: readonly { tag: string; name: string }[] = [
+  { tag: 'cnr', name: 'Montenegrin' },
+  { tag: 'cy', name: 'Welsh' },
+];
+
 export const LOCALE_COUNT_LINE = '78 base languages, 129 distinct locale tags.';
 
 /** The sixteen medallions of the languages band, in reading order. */

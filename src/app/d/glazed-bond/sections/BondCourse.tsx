@@ -7,17 +7,21 @@ import Chip from '../components/Chip';
 import CourseHead from '../components/CourseHead';
 import { useLayReveal } from '../components/lay-reveal';
 import Rosette from '../components/Rosette';
+import Sheen from '../components/Sheen';
 import { SOURCE_CLAIM, WALL_TRANSLATIONS } from '../data';
 import type { Shaped } from '../data';
 
 /**
- * The T proof as brickwork. A Flemish bond: every brick is a pair, a
- * header (the flag chip) beside a stretcher (the string), and alternate
- * courses start with a half-brick closer so no vertical joint runs through
- * two courses. The source string is the one glazed brick, lapis at the
- * center of the wall; the translations are laid in the bond around it with
- * their `lang` and `dir`. The grid places every brick explicitly at two
- * widths (sixteen columns, twelve columns) and stacks them under 720px.
+ * The T proof as brickwork. A Flemish bond with glazed headers: every
+ * brick is a pair, a lapis header (the flag chip) beside a cream stretcher
+ * (the string), and alternate courses start with a half-brick closer so no
+ * vertical joint runs through two courses. The source string is the one
+ * gold brick at the center of the wall, wrapped in its <T> tags; the
+ * translations are laid in the bond around it with their `lang` and `dir`.
+ * Every brick carries a glaze sheen at its upper arris in ordered dither:
+ * lapis on the cream stretchers, cream on the lapis headers and the gold
+ * source. The grid places every brick explicitly at two widths (sixteen
+ * columns, twelve columns) and stacks them under 720px.
  */
 
 type Slot = readonly [row: number, col: number];
@@ -100,6 +104,7 @@ export default function BondCourse() {
           {BRICKS.map((brick) => (
             <span className='gb-pair' role='listitem' key={brick.row.lang}>
               <span className='gb-brick gb-brick-h' style={place(brick.wide, brick.mid)}>
+                <Sheen ink='cream' />
                 <Chip code={brick.row.lang} tell={brick.source} />
               </span>
               <span
@@ -108,6 +113,7 @@ export default function BondCourse() {
                 lang={brick.row.lang}
                 dir={brick.row.dir ?? 'ltr'}
               >
+                <Sheen ink={brick.source ? 'cream' : 'lapis'} />
                 {brick.source ? (
                   <>
                     <code className='gb-t'>&lt;T&gt;</code>
@@ -115,7 +121,7 @@ export default function BondCourse() {
                     <code className='gb-t'>&lt;/T&gt;</code>
                   </>
                 ) : (
-                  brick.row.text
+                  <span>{brick.row.text}</span>
                 )}
               </span>
             </span>
@@ -127,17 +133,20 @@ export default function BondCourse() {
               style={place(closer.wide, closer.mid)}
               aria-hidden='true'
               key={i}
-            />
+            >
+              <Sheen ink='lapis' />
+            </span>
           ))}
 
           <span className='gb-brick gb-filler' style={place(undefined, FILLER)} aria-hidden='true'>
+            <Sheen ink='turq' />
             <Rosette size={40} />
           </span>
         </div>
 
         <p className='gb-wall-note'>
-          Every brick is one locale build. The header brick names it; the stretcher carries the
-          string as it ships.
+          Every brick is one locale build. The glazed header names it; the stretcher carries the
+          string as it ships. The gold brick is the source.
         </p>
       </div>
     </section>

@@ -2,13 +2,14 @@ import { Marcellus } from 'next/font/google';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
-import Base from './components/Base';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
+import Legend from './components/Legend';
 import Nav from './components/Nav';
 import Pricing from './components/Pricing';
 import Proof from './components/Proof';
 import Scripts from './components/Scripts';
+import Shadow from './components/Shadow';
 import Surfaces from './components/Surfaces';
 import { Frieze } from './components/Wall';
 
@@ -34,10 +35,12 @@ export const metadata = {
  * wall in the Mayan-revival line of Art Deco: Frank Lloyd Wright's textile
  * blocks, the Mayan Theater's stacked relief facade, the Aztec Hotel's
  * stepped friezes. A rigid grid of square cast blocks in horizontal
- * courses. Most blocks carry a geometric relief; content sits on smooth
- * faces set into the same bond. Nothing floats: the claim, the T proof,
- * the four product objects, the scripts, the dark plinth, the three
- * pricing plaques and the footer are all blocks in the wall.
+ * courses. Most blocks carry a geometric relief from a library of six
+ * (the Ennis, Millard, Storer, and Freeman blocks, the greca band, the
+ * running bond), and every course is keyed to one of them. Content sits on
+ * smooth faces set into the same bond. Nothing floats: the claim, the T
+ * proof, the four product objects, the scripts, the shadowed course, the
+ * pricing plaques, the legend and the footer are all blocks in the wall.
  */
 export default function TextileBlockPage() {
   return (
@@ -48,19 +51,20 @@ export default function TextileBlockPage() {
           <main className='tb-main'>
             <div className='tb-wall'>
               <Hero />
-              <Frieze motif='chevron' />
+              <Frieze relief='millard' />
               <Proof />
-              <Frieze motif='meander' />
+              <Frieze relief='greca' />
               <Surfaces />
-              <Frieze motif='fret' />
+              <Frieze relief='freeman' />
               <Scripts />
             </div>
 
-            <Base />
+            <Shadow />
 
             <div className='tb-wall is-lower'>
               <Pricing />
-              <Frieze motif='bond' />
+              <Frieze relief='greca' />
+              <Legend />
               <Footer />
             </div>
           </main>

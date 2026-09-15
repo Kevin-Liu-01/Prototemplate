@@ -1,6 +1,7 @@
 /* brick-lattice: the whole page is one glazed-brick wall in running bond, and
    every brick is an ordered-dither cell; density draws the ornament, copy
-   sits on smooth glazed panels cut out of the lattice.
+   sits on smooth glazed panels cut out of the lattice, and every section
+   carries its own bond pattern from one book.
 
    Lineage: the Assyrian and Babylonian revival inside 1920s Art Deco, drawn
    from three references and their geometry, not from the idea of deco.
@@ -10,41 +11,61 @@
       of chevrons, and a crenellated parapet of stepped merlons. Here the bond
       is the page's ground, the brick module is 2:1, and every ornament is a
       density field quantised onto the courses, so the ornament is literally
-      made of bricks: the hero's rosette, the chevron courses behind the
-      wall, the kiln's merlons and stepped foot, the footer's foundation.
+      made of bricks: the rosette field behind the claim, the chevron courses
+      behind the wall, the kiln's merlons and ziggurat setbacks, the footer's
+      foundation. The kiln is the gate's own coloring turned back on: a lapis
+      body with the ornament left unglazed.
    2. The Guardian Building (Wirt Rowland, Detroit, 1929): a whole elevation
       of one orange brick, with glazed Pewabic tile chevrons and stepped
       bands set flush into the body so the ornament and the wall are one
       material, and stepped setbacks at every edge. That flushness is the
       archetype here: no frame, no empty ground, the glazed panels are
       cut out of the same lattice and their corners step in three courses
-      (the .bl-panel polygon), and the chevron register behind the wall of
-      translations is the Guardian's tile chevron laid course by course.
-   3. Assyrian rosette and palmette repeats (the glazed friezes of Nimrud
-      and Khorsabad, the radial repeat the lineage names): a rosette of
-      eight or twelve petals around a disc, run in bands. The hero's field
-      resolves into one twelve-petal rosette; the languages band is a course
-      of sixteen eight-petal medallions, each with a glazed disc at its
-      core, the way the friezes seat a boss in each; the pricing register
-      is a row of palmette fans rising from its bottom course.
+      (the .bl-panel polygon), every panel that names something carries a
+      glazed header course the way the Guardian's bays carry a tile band,
+      and the chevron register behind the wall of translations is the
+      Guardian's tile chevron laid course by course.
+   3. The Pythian Temple (Thomas W. Lamb, New York, 1927): the Babylonian
+      revival building, a stepped setback massing faced in polychrome glazed
+      terracotta, its ornament run as bands of identical radial units along
+      each course (rosettes around a disc, palmette fans rising from a
+      register line), the bosses alternating two sizes along the band, and
+      every tier stepping in by one equal course. Here that grammar is the
+      radial repeat: the hero's field resolves into one twelve-petal rosette
+      with four eight-petal satellites; the languages band is a course of
+      sixteen medallions alternating eight and twelve petals, each with a
+      glazed disc at its core, the way the temple's bands seat a boss in each
+      unit; the pricing register is a row of palmette fans rising from its
+      bottom course; and the kiln's setbacks recede one equal step per four
+      courses, the temple's tiers counted in brick.
 
    Method: the house 4x4 and 8x8 Bayer screens from src/lib/dither.ts give
    every brick its threshold, so a wall of identical bricks carries a tonal
    ramp. Every ramp on this page, from the petal cores to the parapet's
    foot, is a Bayer tier and never an opacity fade or a gradient.
 
+   The pattern book (diagrams/lattice.ts): rosette field (the claim), chevron
+   course (the T component), stepped parapet (the platform, inverted),
+   meander register (languages), palmette band (pricing), foundation (the
+   footer). Each section's canvas runs one; each section head prints its own
+   pattern as its mark; the footer prints all six with their names.
+
    Material palette (Babylonian glaze): the ground is alabaster (the panels
    and the mortar), the ink is bitumen black, fired clay is the unglazed
    brick, lapis is the glaze that lights a brick, gold is the second glaze
-   and the ornament color, turquoise is the accent, brick red is the mortar
-   in the kiln's dark bond.
+   and the ornament color, turquoise is the accent, obsidian is the kiln's
+   unglazed brick.
 
    Ornament homes: everywhere the thesis needs it (charter G6): the lattice
    itself is the ornament layer; the stepped parapet corner on every panel;
-   the gold header course on every brick of the wall; the rosette mark on
-   every section head; the medallions of the languages band.
-   Accent: one job, strings. The source line in the wall, the quoted strings
-   in the code window, and the ring that lights when the source fires.
+   the glazed header course on every wall brick and every named panel; the
+   crown over the claim (two gold-cored rosettes on a register line about
+   the monogram, charter C1.4); the pattern mark on every section head; the
+   medallions of the languages band; the pattern book in the footer.
+   Accent: one job, the edge that lights. The quoted strings in the source
+   line and the code window, and the ring that lights a brick: the source
+   when it fires, and any brick, medallion or panel under the pointer. Hover
+   is additive; every brick is complete at rest (charter I).
    Display face: Cinzel (inscriptional capitals), h1 and h2 only; Inter is
    the body, interface and caption face from --font-inter on <html>.
    The one circle on the page is the medallion's core disc (the sun-disk of
@@ -70,7 +91,9 @@
 
   /* type on a glaze */
   --bl-glaze-ink: #f2e9d8;
+  --bl-glaze-ink-2: rgba(242, 233, 216, 0.74);
   --bl-ink-on-gold: #1a140c;
+  --bl-ink-on-gold-2: rgba(26, 20, 12, 0.72);
   --bl-ring-on-gold: rgba(26, 20, 12, 0.34);
   --bl-ink-raised: #2b2218;
   --bl-tok-str: var(--deco-accent);
@@ -100,7 +123,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* ---- dark mode: the six tokens and the four glazes remap ---- */
+/* ---- dark mode: the six tokens and the glazes remap ---- */
 [data-theme='dark'] .brick-lattice-root {
   --deco-ground: #0b0908;
   --deco-ink: #f2e9d8;
@@ -140,13 +163,15 @@
   pointer-events: none;
 }
 
+/* a zero-height, empty probe: the engine measures the brick token through
+   its width; it has no content and paints nothing */
 .brick-lattice-root .bl-brick-probe {
   position: absolute;
   left: 0;
   top: 0;
   width: var(--bl-brick);
   height: 0;
-  visibility: hidden;
+  overflow: hidden;
   pointer-events: none;
 }
 
@@ -203,7 +228,49 @@
   );
 }
 
-/* ---- section heads: a cartouche with the rosette mark ---- */
+/* ---- the glazed header course: a named panel's first course, gold by
+        default, lapis for the ledger; the label is Inter, the note mono ---- */
+.brick-lattice-root .bl-ch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+  padding: 0 var(--bl-pad);
+  background: var(--deco-ornament);
+  color: var(--bl-ink-on-gold);
+}
+
+.brick-lattice-root .bl-ch h3 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1;
+  color: inherit;
+}
+
+.brick-lattice-root .bl-ch-note {
+  margin-left: auto;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--bl-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--bl-ink-on-gold-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.brick-lattice-root .bl-ch.is-lapis {
+  background: var(--bl-lapis);
+  color: var(--bl-glaze-ink);
+}
+
+.brick-lattice-root .bl-ch.is-lapis .bl-ch-note {
+  color: var(--bl-glaze-ink-2);
+}
+
+/* ---- section heads: a cartouche with the section's pattern as its mark ---- */
 .brick-lattice-root .bl-head {
   display: grid;
   justify-items: start;
@@ -231,14 +298,26 @@
   max-width: 60ch;
 }
 
-.brick-lattice-root .bl-ros-svg.is-mark {
+/* ---- the pattern swatch: a field from the book at tile scale ---- */
+.brick-lattice-root .bl-swatch {
   display: block;
-  width: 40px;
-  height: 40px;
 }
 
-.brick-lattice-root .bl-ros-svg.is-mark .bl-ros-bond {
-  fill: transparent;
+.brick-lattice-root .bl-swatch-bond {
+  fill: url('#bl-bond');
+}
+
+.brick-lattice-root .bl-swatch-lapis {
+  fill: var(--bl-lapis);
+}
+
+.brick-lattice-root .bl-swatch-gold {
+  fill: var(--bl-gold);
+}
+
+.brick-lattice-root .bl-swatch.is-mark {
+  width: 40px;
+  height: 40px;
 }
 
 /* ============================================================
@@ -469,7 +548,7 @@
 }
 
 /* ============================================================
-   hero: the field, the claim panel, the trust course
+   hero: the rosette field, the claim panel, the trust course
    ============================================================ */
 
 .brick-lattice-root .bl-hero {
@@ -493,6 +572,33 @@
   text-align: center;
 }
 
+/* the crown: the monogram between two gold-cored rosettes on one register line */
+.brick-lattice-root .bl-crown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 22px;
+  color: var(--deco-ink);
+}
+
+.brick-lattice-root .bl-crown-bar {
+  display: block;
+  width: clamp(28px, 6vw, 72px);
+  height: 1px;
+  background: var(--deco-hair);
+}
+
+.brick-lattice-root .bl-ros-svg.is-crown {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.brick-lattice-root .bl-ros-svg.is-crown .bl-ros-bond {
+  fill: transparent;
+}
+
 .brick-lattice-root .bl-h1 {
   margin: 0;
   font-family: var(--bl-display);
@@ -505,8 +611,18 @@
   unicode-bidi: isolate;
 }
 
-.brick-lattice-root .bl-sub {
+/* the glaze course under the claim: whole at rest, the one thing that wipes when the claim swaps */
+.brick-lattice-root .bl-h1-course {
+  display: block;
+  width: min(220px, 40%);
+  height: 4px;
   margin: 18px auto 0;
+  background: var(--deco-ornament);
+  clip-path: inset(0px 0% 0px 0%);
+}
+
+.brick-lattice-root .bl-sub {
+  margin: 16px auto 0;
   max-width: 58ch;
   font-size: clamp(15px, 1.25vw, 17px);
   line-height: 1.6;
@@ -565,6 +681,15 @@
   place-items: center;
   min-height: 64px;
   padding: 0 16px;
+}
+
+/* a customer brick fires under the pointer: lapis glaze, the mark in alabaster */
+.brick-lattice-root .bl-trust-cell:hover {
+  background: var(--bl-lapis);
+}
+
+.brick-lattice-root .bl-trust-cell:hover .bl-wm {
+  background-color: var(--bl-glaze-ink);
 }
 
 .brick-lattice-root .bl-wm-link {
@@ -658,17 +783,33 @@
   unicode-bidi: isolate;
 }
 
+/* the header course: chip, served file; the last item sits at the far end */
 .brick-lattice-root .bl-tb-head {
   position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   height: 34px;
   padding: 0 12px;
   background: var(--deco-ornament);
   color: var(--bl-ink-on-gold);
+}
+
+.brick-lattice-root .bl-tb-head > :last-child {
+  margin-inline-start: auto;
+}
+
+.brick-lattice-root .bl-tb-file {
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--bl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--bl-ink-on-gold-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .brick-lattice-root .bl-tb-text {
@@ -721,7 +862,7 @@
   display: none;
 }
 
-/* the source brick: the code face, lit by the accent ring */
+/* the source brick: the code face under a file bar; lit, its course turns gold and the accent rings it */
 .brick-lattice-root .bl-src {
   background: var(--deco-ground);
 }
@@ -730,6 +871,10 @@
   background: var(--deco-ground);
   color: var(--deco-ink);
   border-bottom: 1px solid var(--deco-hair);
+}
+
+.brick-lattice-root .bl-src .bl-tb-file {
+  color: var(--deco-ink-2);
 }
 
 .brick-lattice-root .bl-src .bl-chip.is-glazed {
@@ -768,7 +913,25 @@
   color: var(--bl-tok-str);
 }
 
-.brick-lattice-root .bl-src.is-lit {
+.brick-lattice-root .bl-src.is-lit .bl-tb-head {
+  background: var(--deco-ornament);
+  color: var(--bl-ink-on-gold);
+  border-bottom-color: transparent;
+}
+
+.brick-lattice-root .bl-src.is-lit .bl-src-tag,
+.brick-lattice-root .bl-src.is-lit .bl-tb-file {
+  color: var(--bl-ink-on-gold-2);
+}
+
+.brick-lattice-root .bl-src.is-lit .bl-chip.is-glazed {
+  border-color: var(--bl-ring-on-gold);
+  color: var(--bl-ink-on-gold);
+}
+
+/* the lit ring: the source when it fires, any brick under the pointer */
+.brick-lattice-root .bl-src.is-lit,
+.brick-lattice-root .bl-tb:hover {
   box-shadow: inset 0 0 0 2px var(--deco-accent);
 }
 
@@ -790,24 +953,26 @@
 }
 
 /* ============================================================
-   the kiln: the dark moment, tokens fixed in both themes
+   the kiln: the dark moment, the lattice inverted, tokens fixed in both themes
    ============================================================ */
 
 .brick-lattice-root .bl-kiln {
-  --deco-ground: #17120e;
+  --deco-ground: #100d0b;
   --deco-ink: #f2e9d8;
   --deco-ink-2: rgba(242, 233, 216, 0.66);
   --deco-ink-3: rgba(242, 233, 216, 0.44);
   --deco-hair: rgba(242, 233, 216, 0.16);
+  --deco-accent: #5fc3cb;
   --deco-ornament: #d2a63a;
-  --bl-mortar: #3a1a12;
-  --bl-brick-face: #0d0a08;
-  --bl-lapis: #2a55b4;
+  /* the inversion: obsidian mortar and brick, the body glazed lapis by the field */
+  --bl-mortar: #05070c;
+  --bl-brick-face: #0c0f19;
+  --bl-lapis: #1a3579;
   --bl-gold: #d2a63a;
   --bl-ink-raised: #d9cfbd;
   --bl-tok-str: #8fd0d6;
-  --bl-panel-2: #0e0b09;
-  padding-block: calc(var(--bl-brick) * 4);
+  --bl-panel-2: #0a0807;
+  padding-block: calc(var(--bl-brick) * 5) calc(var(--bl-brick) * 4);
   color: var(--deco-ink);
 }
 
@@ -821,9 +986,8 @@
 .brick-lattice-root .bl-kp {
   display: flex;
   flex-direction: column;
-  gap: 18px;
   min-width: 0;
-  padding: var(--bl-pad);
+  padding: 0;
 }
 
 .brick-lattice-root .bl-kp.is-lib,
@@ -836,17 +1000,16 @@
   grid-column: span 5;
 }
 
-.brick-lattice-root .bl-kp-head {
-  display: grid;
-  gap: 8px;
+.brick-lattice-root .bl-kp-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: var(--bl-pad);
 }
 
-.brick-lattice-root .bl-kp h3 {
-  font-size: 17px;
-  line-height: 1.3;
-}
-
-.brick-lattice-root .bl-kp-head p {
+.brick-lattice-root .bl-kp-lead {
   margin: 0;
   max-width: 54ch;
   font-size: 14.5px;
@@ -854,8 +1017,14 @@
   color: var(--deco-ink-2);
 }
 
-.brick-lattice-root .bl-kp-head code {
+.brick-lattice-root .bl-kp-lead code {
   color: var(--deco-ink);
+}
+
+/* a panel lights under the pointer, additively */
+.brick-lattice-root .bl-kp:hover,
+.brick-lattice-root .bl-pp:hover {
+  box-shadow: inset 0 0 0 2px var(--deco-accent);
 }
 
 /* the windows inside the panels: one ring each, the second dark surface */
@@ -1048,19 +1217,17 @@
   color: var(--deco-ink-3);
 }
 
-/* locadex */
+/* locadex: the mark seated in the header course beside its name */
 .brick-lattice-root .bl-agent-mark {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .brick-lattice-root .bl-locadex-mark {
   display: block;
-  width: 36px;
-  height: 36px;
-  /* the mark is drawn in ink for a light ground; the kiln inverts it */
-  filter: invert(1);
+  width: 22px;
+  height: 22px;
 }
 
 .brick-lattice-root .bl-trace {
@@ -1137,6 +1304,15 @@
 
 .brick-lattice-root .bl-ros-gold {
   fill: var(--bl-gold);
+}
+
+/* a medallion fires under the pointer: petals to gold, the accent about the core */
+.brick-lattice-root .bl-ros:hover .bl-ros-lapis {
+  fill: var(--bl-gold);
+}
+
+.brick-lattice-root .bl-ros:hover .bl-ros-core {
+  box-shadow: inset 0 0 0 2px var(--deco-accent);
 }
 
 /* the core disc: the one circle on the page */
@@ -1234,6 +1410,19 @@
   border-color: var(--deco-ornament);
 }
 
+/* the tail row: two single-tag languages after the variant rows, the atlas's long tail */
+.brick-lattice-root .bl-var-table tr.is-tail .bl-var-name {
+  margin-left: 0;
+}
+
+.brick-lattice-root .bl-var-tail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--deco-ink-2);
+}
+
 .brick-lattice-root .bl-var-foot {
   display: flex;
   flex-wrap: wrap;
@@ -1252,7 +1441,7 @@
 }
 
 /* ============================================================
-   pricing: three glazed panels
+   pricing: three glazed panels under header courses, over palmette fans
    ============================================================ */
 
 .brick-lattice-root .bl-price-sec {
@@ -1266,18 +1455,20 @@
   margin-top: var(--bl-mortar-w);
 }
 
-.brick-lattice-root .bl-ledger,
-.brick-lattice-root .bl-plan {
+.brick-lattice-root .bl-pp {
   display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+}
+
+.brick-lattice-root .bl-pp-body {
+  display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 14px;
   min-width: 0;
   padding: var(--bl-pad);
-}
-
-.brick-lattice-root .bl-ledger h3,
-.brick-lattice-root .bl-plan h3 {
-  font-size: 15px;
 }
 
 .brick-lattice-root .bl-rates {
@@ -1343,15 +1534,6 @@
   letter-spacing: -0.02em;
 }
 
-.brick-lattice-root .bl-plan-price small {
-  display: block;
-  margin-top: 8px;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--deco-ink-2);
-}
-
 .brick-lattice-root .bl-plan-body {
   margin: 0;
   font-size: 14.5px;
@@ -1390,11 +1572,11 @@
 }
 
 /* ============================================================
-   footer: the foundation
+   footer: the lattice base
    ============================================================ */
 
 .brick-lattice-root .bl-foot-sec {
-  padding-bottom: calc(var(--bl-brick) * 6);
+  padding-bottom: calc(var(--bl-brick) * 7);
 }
 
 .brick-lattice-root .bl-foot {
@@ -1467,6 +1649,66 @@
   text-underline-offset: 3px;
 }
 
+/* the pattern book: the six fields at tile scale, each linking to the section it grounds */
+.brick-lattice-root .bl-book {
+  --bl-s: 4px;
+  display: grid;
+  gap: 14px;
+  margin-top: var(--bl-mortar-w);
+  padding: 18px var(--bl-pad) var(--bl-pad);
+}
+
+.brick-lattice-root .bl-book h4 {
+  font-size: 13px;
+}
+
+.brick-lattice-root .bl-book-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brick-lattice-root .bl-book-item {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 2px 12px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brick-lattice-root .bl-book-item .bl-swatch {
+  grid-row: 1 / span 2;
+}
+
+.brick-lattice-root .bl-book-name {
+  align-self: end;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.brick-lattice-root .bl-book-home {
+  align-self: start;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-book-item:hover .bl-book-name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* the book's swatch fires under the pointer like every other brick */
+.brick-lattice-root .bl-book-item:hover .bl-swatch-lapis {
+  fill: var(--bl-gold);
+}
+
+/* the plinth: the closing course, set out past the panels above it */
 .brick-lattice-root .bl-foot-bar {
   --bl-s: 4px;
   display: flex;
@@ -1477,6 +1719,12 @@
   padding: 14px var(--bl-pad);
   font-size: 12.5px;
   color: var(--deco-ink-2);
+}
+
+.brick-lattice-root .bl-foot-bar.is-plinth {
+  --bl-s: 6px;
+  margin-inline: calc(var(--bl-gut) * -0.5);
+  padding-inline: calc(var(--bl-pad) + var(--bl-gut) * 0.5);
 }
 
 /* ============================================================
@@ -1498,6 +1746,10 @@
   .brick-lattice-root .bl-kp.is-agent {
     grid-column: span 6;
   }
+
+  .brick-lattice-root .bl-book-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 900px) {
@@ -1510,10 +1762,6 @@
 
   .brick-lattice-root .bl-price-grid {
     grid-template-columns: 1fr;
-  }
-
-  .brick-lattice-root .bl-price-grid .bl-plan {
-    min-height: 0;
   }
 
   /* the wall flows two bricks a course; the bond stagger moves to the margins */
@@ -1597,6 +1845,10 @@
     padding: var(--tcm-box-pt, 36px) var(--tcm-cell-pad, 28px) var(--tcm-box-pb, 38px);
   }
 
+  .brick-lattice-root .bl-crown {
+    margin-bottom: 18px;
+  }
+
   .brick-lattice-root .bl-h1 {
     font-size: var(--tcm-h2, 36px);
     line-height: var(--tcm-h2-lh, 1.18);
@@ -1645,20 +1897,18 @@
     align-items: flex-start;
   }
 
-  .brick-lattice-root .bl-kp,
-  .brick-lattice-root .bl-ledger,
-  .brick-lattice-root .bl-plan,
+  .brick-lattice-root .bl-kp-body,
+  .brick-lattice-root .bl-pp-body,
   .brick-lattice-root .bl-variants,
   .brick-lattice-root .bl-foot {
     padding: var(--tcm-box-pt, 36px) var(--tcm-cell-pad, 28px) var(--tcm-box-pb, 38px);
   }
 
-  .brick-lattice-root .bl-kp h3 {
-    font-size: var(--tcm-h4, 18px);
-    line-height: var(--tcm-h4-lh, 1.35);
+  .brick-lattice-root .bl-ch {
+    padding-inline: var(--tcm-cell-pad, 28px);
   }
 
-  .brick-lattice-root .bl-kp-head p,
+  .brick-lattice-root .bl-kp-lead,
   .brick-lattice-root .bl-plan-body,
   .brick-lattice-root .bl-wall-foot p {
     font-size: var(--tcm-small, 14px);
@@ -1714,6 +1964,10 @@
   }
 
   .brick-lattice-root .bl-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brick-lattice-root .bl-book-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

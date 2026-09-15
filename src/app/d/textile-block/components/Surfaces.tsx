@@ -1,38 +1,42 @@
 import Image from 'next/image';
 
-import { CLI_LOCALES, LIBRARIES, REVIEW_ROWS } from '../data';
+import {
+  CLI_COMMAND,
+  CLI_DONE,
+  CLI_LOCALES,
+  CLI_OUTPUT,
+  CLI_SCAN,
+  CONFIG,
+  CONFIG_FILE,
+  LIBRARIES,
+  REVIEW_ROWS,
+  TRACE,
+  WORKSPACE_BAR,
+  WORKSPACE_FOOT,
+} from '../data';
 import Tile from './Tile';
-import { Block, Course, Relief } from './Wall';
+import { Block, Course, HEAD_RELIEF_SPAN, Plaque, Relief } from './Wall';
 
 /**
  * textile-block: the product surfaces as concrete objects.
  *
- * Four blocks in two courses: the libraries ledger, the CLI transcript, the
- * dashboard's review workspace, and the Locadex agent with its trace. Each
- * object is set flush into its smooth block; the recessed panels inside are
- * ground-colored, so an object reads as cast one layer deeper than its face.
+ * The platform course is keyed to the Storer block. Four objects in two
+ * rows: the libraries ledger, the CLI with the config it reads and the run
+ * it writes, the dashboard's review workspace, and the Locadex agent with
+ * its trace. Each object is set flush into its smooth block; the recessed
+ * panels inside are ground-colored, so an object reads as cast one layer
+ * deeper than its face, the way the Storer slots are cut into the block.
  */
-
-const TRACE: readonly (readonly [string, string])[] = [
-  ['push', 'workflow'],
-  ['scan', 'app/page.tsx'],
-  ['edit', '<T> · <DateTime>'],
-  ['PR #218', '6 locales · merged'],
-];
-
-const WORKSPACE_FOOT: readonly string[] = ['⌘K search', 'history', 'download', 'agent · locadex'];
-
 export default function Surfaces() {
   return (
     <Course className='is-surfaces' id='platform' label='The platform'>
-      <Block className='tb-head' span={{ c: 8, r: 2, cMd: 8, rMd: 2, cSm: 6, rSm: 3 }}>
-        <h2 className='tb-h2'>Everything localization needs.</h2>
-        <p>Libraries, a CLI, a dashboard, and an agent, set in one platform.</p>
-      </Block>
-      <Relief className='tb-lg-only' motif='step' span={{ c: 4, r: 2 }} />
+      <Plaque label='Storer course' relief='storer' title='Everything localization needs.'>
+        Libraries, a CLI, a dashboard, and an agent, set in one platform.
+      </Plaque>
+      <Relief className='tb-lg-only' relief='storer' span={HEAD_RELIEF_SPAN} />
 
       {/* ---- libraries: the six first-party SDKs as a ledger ---- */}
-      <Block className='tb-obj' span={{ c: 6, r: 4, cMd: 8, rMd: 4, cSm: 6, rSm: 6 }}>
+      <Block className='tb-obj' span={{ c: 6, r: 5, cMd: 8, rMd: 4, cSm: 6, rSm: 6 }}>
         <h3>Libraries</h3>
         <p className='tb-obj-lead'>Six first-party SDKs. One provider, one loader, the same components everywhere.</p>
         <div className='tb-ledger'>
@@ -51,25 +55,38 @@ export default function Surfaces() {
         </div>
       </Block>
 
-      {/* ---- CLI: one run of the translate command ---- */}
-      <Block className='tb-obj' span={{ c: 6, r: 4, cMd: 8, rMd: 4, cSm: 6, rSm: 6 }}>
+      {/* ---- CLI: the config, then one run of the translate command ---- */}
+      <Block className='tb-obj' span={{ c: 6, r: 5, cMd: 8, rMd: 6, cSm: 6, rSm: 8 }}>
         <h3>CLI</h3>
-        <p className='tb-obj-lead'>One command reads the config, translates what changed, and uploads every locale.</p>
+        <p className='tb-obj-lead'>One command reads the config, translates what changed, and writes one file per locale.</p>
         <div className='tb-term'>
+          <div className='tb-term-file'>{CONFIG_FILE}</div>
+          <ol className='tb-config'>
+            {CONFIG.map((line, i) => (
+              <li key={i}>
+                {line.map(([kind, text], j) => (
+                  <span className={`is-${kind}`} key={j}>
+                    {text}
+                  </span>
+                ))}
+              </li>
+            ))}
+          </ol>
           <div className='tb-term-line is-cmd'>
             <span aria-hidden='true' className='tb-term-prompt'>
               $
             </span>
-            <code>npx gt translate</code>
+            <code>{CLI_COMMAND}</code>
           </div>
-          <div className='tb-term-line'>reading gt.config.json</div>
-          <div className='tb-term-line'>128 strings · 3 new · 2 changed</div>
-          <div className='tb-term-chips'>
-            {CLI_LOCALES.map((code) => (
-              <Tile code={code} key={code} />
-            ))}
-          </div>
-          <div className='tb-term-line'>6 locales · uploaded · served from the edge</div>
+          <div className='tb-term-line'>{CLI_SCAN}</div>
+          {CLI_LOCALES.map((tag) => (
+            <div className='tb-term-line is-out' key={tag}>
+              <span>Wrote</span>
+              <code>{CLI_OUTPUT(tag)}</code>
+              <Tile code={tag} />
+            </div>
+          ))}
+          <div className='tb-term-line'>{CLI_DONE}</div>
         </div>
       </Block>
 
@@ -79,8 +96,8 @@ export default function Surfaces() {
         <p className='tb-obj-lead'>Source beside translation. Revision state is carried by type and chips.</p>
         <div className='tb-ws'>
           <div className='tb-ws-bar'>
-            <span>workspace · es-419</span>
-            <span>4 strings</span>
+            <span>{WORKSPACE_BAR[0]}</span>
+            <span>{WORKSPACE_BAR[1]}</span>
           </div>
           {REVIEW_ROWS.map((row) => (
             <div className='tb-ws-row' key={row.key}>

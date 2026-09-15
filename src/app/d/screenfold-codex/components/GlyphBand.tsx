@@ -6,16 +6,18 @@ import { useRef } from 'react';
 
 import { prefersReducedMotion } from '@/lib/dither';
 
+import { SIGNS } from '../data';
 import { patternId, type Tone } from './BayerDefs';
-import GlyphBlock, { MOTIFS, type Motif } from './GlyphBlock';
+import GlyphBlock, { type Motif } from './GlyphBlock';
 import { playWhileVisible } from './motion';
 
 /**
  * The hero's band of glyph blocks: two rows of eight dithered squares read
- * in paired columns, the codex's reading order. While the band is on
- * screen one block at a time re-inks to the next density tier, a discrete
- * step through the screen rather than a fade, so the band is always a
- * finished still. Under reduced motion the first tiers stand.
+ * in paired columns, the codex's reading order, carrying the twelve signs
+ * of the vocabulary in order and then the first four again. While the
+ * band is on screen one block at a time re-inks to the next density tier,
+ * a discrete step through the screen rather than a fade, so the band is
+ * always a finished still. Under reduced motion the first tiers stand.
  *
  * Ornament home: the hero's middle register.
  */
@@ -24,16 +26,6 @@ const ROWS = 2;
 const STEPS: readonly number[] = [2, 3, 4, 6, 8, 10, 8, 6, 4, 3];
 
 type Block = { motif: Motif; tone: Tone; phase: number };
-
-const BLOCKS: readonly Block[] = Array.from({ length: COLS * ROWS }, (_, i) => {
-  const row = Math.floor(i / COLS);
-  const col = i % COLS;
-  return {
-    motif: MOTIFS[(col * 3 + row * 5) % MOTIFS.length] ?? 'fret',
-    tone: i === 3 || i === 12 ? 'orn' : 'ink',
-    phase: (col * 2 + row * 3) % STEPS.length,
-  };
-});
 
 /** Paired-column reading order: two columns at a time, top to bottom. */
 const ORDER: readonly number[] = (() => {
@@ -46,6 +38,15 @@ const ORDER: readonly number[] = (() => {
   return order;
 })();
 
+const BLOCKS: readonly Block[] = [...Array(COLS * ROWS).keys()].map((i) => {
+  const readingIndex = ORDER.indexOf(i);
+  return {
+    motif: SIGNS[readingIndex % SIGNS.length]?.motif ?? 'fret',
+    tone: readingIndex === 3 || readingIndex === 12 ? 'orn' : 'ink',
+    phase: (readingIndex * 3) % STEPS.length,
+  };
+});
+
 export default function GlyphBand() {
   const root = useRef<HTMLDivElement>(null);
 
@@ -54,7 +55,7 @@ export default function GlyphBand() {
       if (prefersReducedMotion()) return;
       const el = root.current;
       if (el === null) return;
-      const fills = Array.from(el.querySelectorAll<SVGRectElement>('.sfc-glyph-fill'));
+      const fills = [...el.querySelectorAll<SVGRectElement>('.sfc-glyph-fill')];
       const phases = BLOCKS.map((b) => b.phase);
       let cursor = 0;
       const tl = gsap.timeline({ repeat: -1, paused: true });

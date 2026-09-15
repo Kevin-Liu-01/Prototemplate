@@ -5,14 +5,15 @@ import { SiDiscord, SiGithub, SiNextdotjs, SiReact } from '@icons-pack/react-sim
 
 import { FOOTER_COLUMNS, FOOTER_COMPLIANCE, FOOTER_COPYRIGHT, FOOTER_LEAD } from '../data';
 import type { FooterMark } from '../data';
-import { Block, Course } from './Wall';
+import { Block, Course, Relief } from './Wall';
 
 /**
- * textile-block: the footer course.
+ * textile-block: the footer as the wall's base course.
  *
- * The last course of the wall: the brand block with both drawn GT marks
- * (CSS shows the one the theme calls for) and one sentence, four link
- * blocks, and the closing bar with the copyright and the compliance line.
+ * The last course of the wall, keyed to the running bond: the brand block
+ * with both drawn GT marks (CSS shows the one the theme calls for) and one
+ * sentence, four link blocks, the closing bar with the copyright and the
+ * compliance line, and under it the bond course the whole wall stands on.
  * Brand marks appear only where a cell names a tool.
  */
 
@@ -79,6 +80,9 @@ export default function Footer() {
         <span>{FOOTER_COPYRIGHT}</span>
         <span>{FOOTER_COMPLIANCE}</span>
       </Block>
+
+      {/* the base course: the bond the wall stands on */}
+      <Relief relief='bond' span={{ c: 12, r: 1, cMd: 8, cSm: 6 }} />
     </Course>
   );
 }

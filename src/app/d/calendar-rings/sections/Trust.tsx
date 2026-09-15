@@ -1,7 +1,8 @@
 /**
- * calendar-rings: the second ring, the customers.
+ * calendar-rings: the customers.
  * Six wordmarks in six cells of one arc band, each the real SVG mark in
- * the page's ink, cap-height aligned by its own height.
+ * the page's ink, cap-height aligned by its own height. The band's arcs
+ * carry one notch tick at each cell's midpoint.
  */
 import type { CSSProperties } from 'react';
 
@@ -13,10 +14,17 @@ export function Trust() {
   return (
     <section className='cr-sec cr-trust' aria-labelledby='cr-trust-h'>
       <div className='cr-col'>
-        <SectionHead n={2} id='cr-trust-h' title="Trusted by the world's best companies" />
+        <SectionHead
+          count={CUSTOMERS.length}
+          id='cr-trust-h'
+          title='The customers'
+          lead='Cursor, Ramp and Profound ship in over thirty languages.'
+        />
         <ArcBand
           sag={44}
-          list
+          as='ul'
+          subdivide={2}
+          label='Customers'
           className='cr-trust-arc'
           cells={CUSTOMERS.map((customer) => (
             <a key={customer.id} className='cr-wm-link' href={customer.href} rel='noreferrer' target='_blank'>
