@@ -205,16 +205,6 @@ export const DIRECTIONS: Direction[] = [
     signature: 'Session and output, side by side in one window.',
   },
   {
-    n: 25,
-    label: '17',
-    slug: 'pylon-gate',
-    name: 'Pylon Gate',
-    concept:
-      'A monumental Egyptian-revival gateway: two battered Bayer-dithered pylon masses frame a central passage, and every section is a court passed through on one axis, the passage narrowing at each lintel from forecourt to hypostyle to inner court to a lapis sanctuary to the pricing plinths.',
-    tone: 'light',
-    signature: 'The claim morphs between twelve locales as one shaped text node under a dithered sun disk between two pairs of gold bars, framed by two battered pylons whose stone is four stepped tiers of ordered dither.',
-  },
-  {
     n: 26,
     label: '18',
     slug: 'textile-block',
@@ -235,16 +225,6 @@ export const DIRECTIONS: Direction[] = [
     signature: 'The monumental hero fret is solid limestone-black at the base of its stair and thins to ordered Bayer grain by the end of its coil, with one knot of density travelling the path every twenty seconds while the claim in the open step cycles through sixteen locales.',
   },
   {
-    n: 28,
-    label: '20',
-    slug: 'three-registers',
-    name: 'Three Registers',
-    concept:
-      'A stele of registers: one tall black-granodiorite slab on a dark ground where every section is a three-band register read top to bottom, after the stone that carried one text in three scripts.',
-    tone: 'dark',
-    signature: 'The hero is the upper register itself: the claim incised in Cinzel caps under a dithered gold sun disk, the same claim as one shaped living-script node in the second band, and the served interface with its locale chip in the third, all beneath a four-step cornice and above six more registers separated by chevron strips, one of them gilded end to end.',
-  },
-  {
     n: 29,
     label: '21',
     slug: 'glazed-bond',
@@ -253,16 +233,6 @@ export const DIRECTIONS: Direction[] = [
       'General Translation as the Ishtar Gate\'s elevation: two battered brick towers with stepped parapets flank a corbelled arch that holds the claim, and every section below is one more course of lapis-glazed panels set into running bond, divided by gold rosette bands.',
     tone: 'light',
     signature: 'The claim morphs through sixteen locales inside the arch while a dithered sun disc turns in its crown, and each course\'s bricks and medallions are laid one by one as their wall scrolls in.',
-  },
-  {
-    n: 30,
-    label: '22',
-    slug: 'papyrus-registers',
-    name: 'Papyrus Registers',
-    concept:
-      'A General Translation landing page set as a ruled papyrus scroll in the Egyptian revival lineage of Art Deco: one column eighteen canon squares wide between two hairline rails, every section a column of the scroll opened by a rubric in red ochre with a bar-and-dot numeral in the margin, with papyrus umbels reduced to radiating bars and rendered only as gold Bayer dither.',
-    tone: 'light',
-    signature: 'The opening column: a gold-dithered band of nine bar fans swaying over the visible 18-square canon grid, above the claim set as the first red rubric in Julius Sans One caps that turns through sixteen locales as one shaped text node.',
   },
   {
     n: 31,
