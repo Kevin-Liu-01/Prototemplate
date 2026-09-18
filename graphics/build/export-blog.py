@@ -17,7 +17,8 @@ ap = argparse.ArgumentParser(); ap.add_argument('--width', type=int, default=384
 a = ap.parse_args()
 DST = a.dest; DST.mkdir(parents=True, exist_ok=True)
 SKIP = {'F1-hit-list'}  # the hit list renders as text in the article; the poster was retired
-ids = a.ids or sorted(p.stem for p in OUT.glob('*.png') if not p.stem.startswith('_') and not p.stem.startswith('H') and p.stem not in SKIP)
+POST_COVERS = {'H0-cover-final'}  # cover renders the post embeds as ordinary figures, exported with the set
+ids = a.ids or sorted(p.stem for p in OUT.glob('*.png') if not p.stem.startswith('_') and (not p.stem.startswith('H') or p.stem in POST_COVERS) and p.stem not in SKIP)
 total = 0
 for i in ids:
     im = Image.open(OUT / f'{i}.png').convert('RGB')
