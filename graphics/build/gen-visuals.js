@@ -181,27 +181,30 @@ add('B5-header-strip', 'B', 'Header strip', 'silk2', 'Where the old top band’s
   return h;
 });
 // =============== AREA C ===============
-add('C1-nav-census', 'C', 'Navigation census', 'silk3', 'Every navigation or control surface numbered on both pages.', () => {
+add('C1-nav-census', 'C', 'Navigation census', 'silk3', 'Every navigation or control surface numbered on both pages: the old page’s six in red, the new page’s three in blue.', () => {
   let h = ''; const s = 0.5, Y = 216;
   h += badge(44, 136, 'Before'); h += badge(807, 136, 'After');
   h += crop('oldIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: 44, y: Y, s }); h += crop('newIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: 807, y: Y, s });
   const oL = org(44, Y, { x: 0, y: 0 }), oR = org(807, Y, { x: 0, y: 0 });
   // each marker sits on its own corner of the surface (l/r × t/m/b) so the 56px dots never touch
-  const mark = (ox, r, a, n) => dot(ox + (a[0] === 'l' ? r.x : r.x + r.w) * s, Y + (a[1] === 't' ? r.y : a[1] === 'b' ? r.y + r.h : r.y + r.h / 2) * s, n, 'blue', 56);
-  [[O.search, 1, 'rt'], [O.star, 2, 'lt'], [O.switcher, 3, 'rb'], [{ x: 19, y: 207, w: 254, h: 720 }, 4, 'lm'], [O.toc, 5, 'rt'], [O.prefs, 6, 'lb']].forEach(([r, n, a]) => { h += hl(oL, s, r, { pad: 2, style: 'border-width:1.5px;box-shadow:none' }); h += mark(44, r, a, n); });
-  [[N.sidebar, 1, 'rt'], [N.header, 2, 'rt'], [N.toc, 3, 'rb']].forEach(([r, n, a]) => { h += hl(oR, s, r, { pad: 2, style: 'border-width:1.5px;box-shadow:none' }); h += mark(807, r, a, n); });
+  // the old page's surfaces in red, the new page's in blue, as everywhere in the set
+  const mark = (ox, r, a, n, color) => dot(ox + (a[0] === 'l' ? r.x : r.x + r.w) * s, Y + (a[1] === 't' ? r.y : a[1] === 'b' ? r.y + r.h : r.y + r.h / 2) * s, n, color, 56);
+  [[O.search, 1, 'rt'], [O.star, 2, 'lt'], [O.switcher, 3, 'rb'], [{ x: 19, y: 207, w: 254, h: 720 }, 4, 'lm'], [O.toc, 5, 'rt'], [O.prefs, 6, 'lb']].forEach(([r, n, a]) => { h += hl(oL, s, r, { color: 'red', pad: 2, style: 'border-width:1.5px;box-shadow:none' }); h += mark(44, r, a, n, 'red'); });
+  [[N.sidebar, 1, 'rt'], [N.header, 2, 'rt'], [N.toc, 3, 'rb']].forEach(([r, n, a]) => { h += hl(oR, s, r, { pad: 2, style: 'border-width:1.5px;box-shadow:none' }); h += mark(807, r, a, n, 'blue'); });
   return h;
 });
 
 add('C2-accordion-anatomy', 'C', 'Accordion anatomy', 'silk4', 'The new sidebar enlarged with a label for each part, and the two levels that live beyond it: the sections in the open switcher, the headings in the contents rail.', () => {
   let h = ''; const s = 0.9, X = 120, Y = 45; const o = org(X, Y, { x: 0, y: 0 });
   h += crop('newIntro', N.sidebar, { x: X, y: Y, s });
-  const calls = [[N.switcher, 'Section switcher', 'squares-2x2'], [N.itemIntro, 'Active item', 'cursor-arrow-rays'], [N.groupFw, 'Group heading', 'bars-3'], [N.footerLinks, 'Footer links', 'link'], [N.prefs, 'Preferences', 'adjustments-horizontal']];
-  calls.forEach(([r, k, ic], i) => { const yy = Y + (r.y + r.h / 2) * s; const ty = 150 + i * 150; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none' }); h += elbow(X + (r.x + r.w) * s + 8, yy, 476, ty + 23, { mx: 420, color: 'rgba(96,165,250,.7)' }); h += iconLabel(490, ty, ic, k); });
+  // each leader leaves its box at the box's edge; the trunks sit at two x positions so no two vertical runs
+  // share a line (the active item's and the group heading's would otherwise overlap between y 303 and 323)
+  const calls = [[N.switcher, 'Section switcher', 'squares-2x2', 430], [N.itemIntro, 'Active item', 'cursor-arrow-rays', 430], [N.groupFw, 'Group heading', 'bars-3', 400], [N.footerLinks, 'Footer links', 'link', 430], [N.prefs, 'Preferences', 'adjustments-horizontal', 400]];
+  calls.forEach(([r, k, ic, mx], i) => { const yy = Y + (r.y + r.h / 2) * s; const ty = 150 + i * 150; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none' }); h += elbow(X + (r.x + r.w + 3) * s + 1, yy, 476, ty + 23, { mx, color: 'rgba(96,165,250,.7)' }); h += iconLabel(490, ty, ic, k); });
   // beyond the sidebar: the sections the switcher opens onto, and the headings the contents rail lists
   const sec = { x: 19, y: 71, w: 255, h: 480 }, sS = 0.62, SX = 1040, SY = 90;
   h += tag('Sections', 'squares-2x2', SX, SY - 62); h += crop('dropdown', sec, { x: SX, y: SY, s: sS });
-  h += elbow(860, 173, SX - 8, SY + 40, { mx: 960, color: 'rgba(96,165,250,.7)' });
+  h += elbow(840, 173, SX - 8, SY + 40, { mx: 960, color: 'rgba(96,165,250,.7)' });
   const tocS = 0.9, TY = SY + PH(sec, sS) + 110;
   h += tag('Headings', 'list-bullet', SX, TY - 62); h += crop('newIntro', N.toc, { x: SX, y: TY, s: tocS });
   return h;

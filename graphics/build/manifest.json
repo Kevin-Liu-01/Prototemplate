@@ -104,7 +104,7 @@
     "area": "C",
     "name": "Navigation census",
     "bg": "u37",
-    "why": "Every navigation or control surface numbered on both pages.",
+    "why": "Every navigation or control surface numbered on both pages: the old page’s six in red, the new page’s three in blue.",
     "w": 1600,
     "h": 900,
     "animated": false
