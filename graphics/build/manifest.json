@@ -114,7 +114,7 @@
     "area": "C",
     "name": "Accordion anatomy",
     "bg": "u39",
-    "why": "The new sidebar enlarged with a label for each part, and the two levels that live beyond it: the sections in the open switcher, the headings in the contents rail.",
+    "why": "The new sidebar enlarged with a label for each part, and the two levels that live beyond it: the sections in the open switcher, tied to the switcher, and the headings in the contents rail, tied to the group heading.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -324,7 +324,7 @@
     "area": "F",
     "name": "Poster",
     "bg": "u30",
-    "why": "The hit list regrouped into clutter, navigation and language, every item struck through in one weight; the group names are the set’s ordinary labels.",
+    "why": "The hit list regrouped into clutter, navigation and language, every item marked with the set’s red x; the group names are the set’s ordinary labels.",
     "w": 1600,
     "h": 900,
     "animated": false

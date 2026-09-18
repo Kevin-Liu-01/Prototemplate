@@ -194,19 +194,21 @@ add('C1-nav-census', 'C', 'Navigation census', 'silk3', 'Every navigation or con
   return h;
 });
 
-add('C2-accordion-anatomy', 'C', 'Accordion anatomy', 'silk4', 'The new sidebar enlarged with a label for each part, and the two levels that live beyond it: the sections in the open switcher, the headings in the contents rail.', () => {
+add('C2-accordion-anatomy', 'C', 'Accordion anatomy', 'silk4', 'The new sidebar enlarged with a label for each part, and the two levels that live beyond it: the sections in the open switcher, tied to the switcher, and the headings in the contents rail, tied to the group heading.', () => {
   let h = ''; const s = 0.9, X = 120, Y = 45; const o = org(X, Y, { x: 0, y: 0 });
   h += crop('newIntro', N.sidebar, { x: X, y: Y, s });
   // each leader leaves its box at the box's edge; the trunks sit at two x positions so no two vertical runs
   // share a line (the active item's and the group heading's would otherwise overlap between y 303 and 323)
   const calls = [[N.switcher, 'Section switcher', 'squares-2x2', 430], [N.itemIntro, 'Active item', 'cursor-arrow-rays', 430], [N.groupFw, 'Group heading', 'bars-3', 400], [N.footerLinks, 'Footer links', 'link', 430], [N.prefs, 'Preferences', 'adjustments-horizontal', 400]];
-  calls.forEach(([r, k, ic, mx], i) => { const yy = Y + (r.y + r.h / 2) * s; const ty = 150 + i * 150; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none' }); h += elbow(X + (r.x + r.w + 3) * s + 1, yy, 476, ty + 23, { mx, color: 'rgba(96,165,250,.7)' }); h += iconLabel(490, ty, ic, k); });
-  // beyond the sidebar: the sections the switcher opens onto, and the headings the contents rail lists
-  const sec = { x: 19, y: 71, w: 255, h: 480 }, sS = 0.62, SX = 1040, SY = 90;
+  calls.forEach(([r, , , mx], i) => { const yy = Y + (r.y + r.h / 2) * s; const ty = 150 + i * 150; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none' }); h += elbow(X + (r.x + r.w + 3) * s + 1, yy, 476, ty + 23, { mx, color: 'rgba(96,165,250,.7)' }); });
+  // beyond the sidebar: the sections the switcher opens onto, and the headings the contents rail lists. Their leaders
+  // start under the labels (drawn last, so they cover the start) and read as one line through the label whatever its width
+  const sec = { x: 19, y: 71, w: 255, h: 480 }, sS = 0.62, SX = 1040, SY = 90, tocS = 0.9, TY = SY + PH(sec, sS) + 110;
+  h += elbow(476, 173, SX - 8, SY + 40, { mx: 960, color: 'rgba(96,165,250,.7)' });
+  h += elbow(476, 473, SX - 8, TY + PH(N.toc, tocS) / 2, { mx: 960, color: 'rgba(96,165,250,.7)' });
   h += tag('Sections', 'squares-2x2', SX, SY - 62); h += crop('dropdown', sec, { x: SX, y: SY, s: sS });
-  h += elbow(840, 173, SX - 8, SY + 40, { mx: 960, color: 'rgba(96,165,250,.7)' });
-  const tocS = 0.9, TY = SY + PH(sec, sS) + 110;
   h += tag('Headings', 'list-bullet', SX, TY - 62); h += crop('newIntro', N.toc, { x: SX, y: TY, s: tocS });
+  calls.forEach(([, k, ic], i) => { h += iconLabel(490, 150 + i * 150, ic, k); });
   return h;
 });
 add('C3-persistence-strip', 'C', 'Persistence strip', 'silk1', 'Three consecutive pages; the sidebar stays, only the active marker moves.', () => {
@@ -228,7 +230,7 @@ add('C4-sidebars-side-by-side', 'C', 'Sidebars side by side', 'silk2', 'The two 
 add('C5-one-tree', 'C', 'One tree', 'silk3', 'The sidebar drawn as the tree it is, mapped onto the real crop.', () => {
   let h = ''; const s = 0.84, X = 1200, Y = 72; h += crop('newIntro', N.sidebar, { x: X, y: Y, s }); const o = org(X, Y, { x: 0, y: 0 });
   const groups = [['Get Started', 3, { x: 19, y: 145, w: 254, h: 115 }], ['Frameworks', 11, { x: 19, y: 277, w: 254, h: 360 }], ['Platform', 4, { x: 19, y: 654, w: 254, h: 146 }], ['Integrations', 5, { x: 19, y: 817, w: 254, h: 80 }]];
-  const rootX = 150, rootY = 450; h += `<div class="txt" style="left:${px(rootX - 60)};top:${px(rootY - 25)}"><div class="badge" style="position:static;height:50px;padding:0 18px;font:600 26px 'Inter';border-color:var(--blue);color:var(--text)">${ico('book-open', 24)}&nbsp;Docs</div></div>`;
+  const rootX = 150, rootY = 407; /* centred on the four branch lines (212 to 602) so the stub meets the trunk at its middle */ h += `<div class="txt" style="left:${px(rootX - 60)};top:${px(rootY - 25)}"><div class="badge" style="position:static;height:50px;padding:0 18px;font:600 26px 'Inter';border-color:var(--blue);color:var(--text)">${ico('book-open', 24)}&nbsp;Docs</div></div>`;
   groups.forEach(([k, n, r], i) => { const gy = 200 + i * 130; const gx = 420; h += elbow(rootX + 60, rootY, gx - 4, gy + 12, { mx: 320, color: 'rgba(96,165,250,.7)', end: true }); h += label(gx, gy - 11, `${k}&nbsp;<span style="font:500 26px 'Geist Mono';color:var(--muted);letter-spacing:.02em">${n} pages</span>`); for (let j = 0; j < n; j++) h += `<div class="wire bar dim" style="left:${px(gx + 380 + (j % 6) * 22)};top:${px(gy + 4 + Math.floor(j / 6) * 22)};width:14px;height:14px;border-radius:3px;background:rgba(96,165,250,.35)"></div>`; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none;border-width:2.5px' }); h += elbow(gx + 530, gy + 12, X + r.x * s - 6, Y + (r.y + r.h / 2) * s, { mx: 1100, color: 'rgba(96,165,250,.5)', end: true }); });
   return h;
 });
@@ -402,14 +404,13 @@ add('F4-bingo', 'F', 'The fix for each', 'silk3', 'The hit list as a 3×3 card w
     h += `<div style="position:absolute;left:${px(x)};top:${px(y)};width:${px(cw)};height:${px(ch)};border-radius:8px;background:rgba(9,9,11,.9);border:1px solid rgba(250,250,250,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 24px;text-align:center"><span style="font:500 28px/1.25 'Inter';color:rgba(250,250,250,.6);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2.5px">${bad}</span><span style="font:600 30px/1.2 'Inter';letter-spacing:-.01em;color:#fafafa">${good}</span></div>`; });
   return h;
 });
-add('F5-poster', 'F', 'Poster', 'silk5', 'The hit list regrouped into clutter, navigation and language, every item struck through in one weight; the group names are the set’s ordinary labels.', () => {
+add('F5-poster', 'F', 'Poster', 'silk5', 'The hit list regrouped into clutter, navigation and language, every item marked with the set’s red x; the group names are the set’s ordinary labels.', () => {
   let h = ''; const groups = [['Clutter', ['Eyebrow text', 'Random extraneous explanatory text', 'Over-rounded boxes', 'Non-solid icons', 'Variable spacing not attached to importance of content']], ['Navigation', ['Multiple navigation elements spread across the page', 'Sidebars that seem to expand infinitely', 'Sidebars that change when you click something', 'Sidebars where you lose your place']], ['Language', ['Non-localized docs']]];
-  const X0 = 64, CW = 470, G = 31, LINE = 41;
+  const X0 = 64, CW = 480, G = 24, LINE = 41, CHARS = 22; /* 34px Inter 600 fits about 22 characters in the 432px beside the mark */
   groups.forEach(([name, items], c) => { const x = X0 + c * (CW + G); h += tag(name, null, x, 96, 'dark'); let y = 190;
-    items.forEach((k) => { h += `<div class="txt" style="left:${px(x)};top:${px(y)};width:${px(CW)};white-space:normal;font:600 34px/1.2 'Inter';letter-spacing:-.02em;color:rgba(250,250,250,.94);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px">${k}</div>`; y += (k.length > 27 ? 2 : 1) * LINE + 22; }); });
+    items.forEach((k) => { h += `<div class="txt" style="left:${px(x)};top:${px(y)};width:${px(CW)};display:flex;align-items:flex-start;gap:12px;white-space:normal;font:600 34px/1.2 'Inter';letter-spacing:-.02em;color:rgba(250,250,250,.94)"><span style="display:inline-grid;place-items:center;flex:none;width:36px;height:36px;margin-top:2px;border-radius:50%;background:rgba(240,82,79,.16);color:#f0524f">${ico('x-mark', 20)}</span><span>${k}</span></div>`; y += Math.ceil(k.length / CHARS) * LINE + 22; }); });
   return h;
 }, { wash: .25 });
-
 // =============== COVERS (isometric wire, dashed) ===============
 const R = { page:{x:0,y:0,w:1440,h:900}, sidebar:{x:0,y:0,w:290,h:900}, content:{x:310,y:60,w:746,h:840}, header:{x:1068,y:12,w:356,h:46}, headerLight:{x:1081,y:12,w:343,h:46} /* the light capture's star pill is 13px narrower */, toc:{x:1090,y:74,w:330,h:130}, footer:{x:11,y:706,w:270,h:138}, prefs:{x:11,y:847,w:270,h:45}, switcher:{x:19,y:71,w:254,h:54}, h1:{x:310,y:80,w:420,h:37}, sub:{x:310,y:129,w:746,h:24}, meta:{x:310,y:169,w:746,h:49}, cards:{x:310,y:400,w:746,h:417} };
 const SIDE_ITEMS = [168,198,229,300,330,361,392,422,453,483,514,544,575,605,677,707,738,768].map(y => ({ x: 31, y, w: 160, h: 31 }));
