@@ -339,10 +339,11 @@ add('E5-localized', 'E', 'Localized', 'u56', 'The same Introduction page in Engl
 add('E7-quiet-scrollbar', 'E', 'Quiet scrollbar', 'silk4', 'The React reference sidebar with its scrollbar: a thin rounded thumb on a transparent track, enlarged beside it and measured; the same bar runs in code blocks and menus.', () => {
   let h = ''; const s = 0.9, X = 140, Y = 84; const o = org(X, Y, { x: 0, y: 0 });
   h += tag('Sidebar', 'bars-3', X, 20, 'dark'); h += crop('sidebarScroll', N.sidebar, { x: X, y: Y, s });
-  const thumb = { x: 280, y: 200, w: 10, h: 324 }; h += hl(o, s, thumb, { pad: 4, dashed: true, style: 'box-shadow:none;border-width:1.5px' });
+  // a solid, filled marker with the set's glow: a dashed hairline over the dark sidebar was too faint to find
+  const thumb = { x: 277, y: 198, w: 14, h: 328 }; h += hl(o, s, thumb, { pad: 6, fill: true, style: 'border-width:2.5px' });
   const D = 2.4, det = { x: 262, y: 236, w: 28, h: 250 }, DX = 560, DY = Y + (PH(N.sidebar, s, 0) - PH(det, D)) / 2;
   h += tag('The thumb at 240%', null, DX, 20, 'dark'); h += crop('sidebarScroll', det, { x: DX, y: DY, s: D, r: 8 });
-  h += line(X + (thumb.x + thumb.w) * s + 8, Y + (thumb.y + thumb.h / 2) * s, DX - 8, DY + PH(det, D) / 2, { color: 'rgba(96,165,250,.85)', w: 3, end: true });
+  h += line(X + (thumb.x + thumb.w + 6) * s + 4, Y + (thumb.y + thumb.h / 2) * s, DX - 8, DY + PH(det, D) / 2, { color: 'rgba(0,120,255,.95)', w: 3, start: true, end: true });
   // the thumb is 6 CSS px wide: a ruler across it at the enlargement, labelled
   const tx = DX + (283 - det.x + PAD) * D, ty = DY + PAD * D + 30, tw = 6 * D;
   h += `<div class="rulerh" style="left:${px(tx)};top:${px(ty)};width:${px(tw)}"></div>`; h += `<div class="measure" style="left:${px(DX + PW(det, D) + 16)};top:${px(ty + 6)}">6 px</div>`;
