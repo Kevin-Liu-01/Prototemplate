@@ -21,7 +21,7 @@ pnpm graphics:export -- --covers   # public/static/blogs (or --dest DIR)
 | `build/` | `gen-lib.js`, `gen-visuals.js`, `render.sh`, `export-blog.py`, `composite-videos.sh`, `capture-sidebar.sh`, `rewriting-covers.py`, `sheet.py`, `gen-gallery.js`, `manifest.json`, `icons/` |
 | `serve/` | the static server (`node serve/server.js [root]`) |
 | `glyph/` | glyphfield studio scripts and the project source (`load.js`) |
-| `bg/` | the glyphfield exports (lossless webp): `user/` the palette, `blue/` the cover variants |
+| `bg/` | a link to `public/graphics/bg/`, the glyphfield exports (lossless webp, pixel-identical to the PNG originals): `user/` the palette, `blue/` the cover variants; served, so `/graphics` shows them at native size |
 | `shots/hi/` | product captures at 3 to 5x (lossless webp) |
 | `fonts/` | Inter and Geist Mono variable |
 | `rec/` | the recordings the clips composite from |

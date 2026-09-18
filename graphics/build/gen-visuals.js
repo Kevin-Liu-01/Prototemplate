@@ -30,20 +30,18 @@ const V = [];
 const add = (id, area, name, bg, why, html, o = {}) => V.push({ id, area, name, bg, why, html, ...o });
 
 // =============== AREA A ===============
-add('A1-zones-overlay', 'A', 'Zones overlay', 'silk1', 'The real page with the four zones boxed and labelled; the reader verifies the claim against the product.', () => {
+add('A1-zones-overlay', 'A', 'Zones overlay', 'silk1', 'The real page with the four zones boxed and labelled: navigation, actions, links, preferences.', () => {
   const s = 0.86, X = 181, Y = 63, o = org(X, Y, { x: 0, y: 0 }); let h = '';
   h += crop('newIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: X, y: Y, s });
   h += hl(o, s, N.sidebar, { label: 'Navigation', icon: 'bars-3', labelPos: 'left', pad: 3 });
   h += hl(o, s, N.header, { label: 'Actions', icon: 'cursor-arrow-rays', labelPos: 'above' });
   h += hl(o, s, N.footerLinks, { label: 'Links', icon: 'link', labelPos: 'left' });
   h += hl(o, s, N.prefs, { label: 'Preferences', icon: 'adjustments-horizontal', labelPos: 'left' });
-  h += hl(o, s, N.themeTR, { color: 'white', dashed: true, pad: 3 });
-  h += hl(o, s, N.themeBL, { color: 'white', dashed: true, pad: 3, label: 'Theme toggle ×2', labelPos: 'below', labelDx: -60 });
-  return h.replace('<div class="tag white', '<div class="tag dark');
+  return h;
 });
 
-add('A2-wireframe-map', 'A', 'Wireframe map', 'silk2', 'The page as a wireframe with its levels of organization pulled out and tied to where they live: sections in the switcher, groups and pages in the sidebar, headings in the contents rail.', () => {
-  let h = ''; const p = 0.58, X = 420, Y = 190; h += wireframePage(X, Y, p, 1);
+add('A2-wireframe-map', 'A', 'Wireframe map', 'silk2', 'A reading page as a wireframe with its levels of organization pulled out and tied to where they live: sections in the switcher, groups and pages in the sidebar, headings in the contents rail.', () => {
+  let h = ''; const p = 0.58, X = 420, Y = 190; h += wireframePage(X, Y, p, 1, { prose: true, zones: ['sidebar', 'header'] });
   const wx = (x) => X + x * p, wy = (y) => Y + y * p;
   const lead = (pts, color = 'rgba(0,120,255,.85)') => `<svg class="ln" width="1600" height="900" viewBox="0 0 1600 900"><polyline points="${pts.map(q => q.map(v => Math.round(v * 10) / 10).join(',')).join(' ')}" fill="none" stroke="${color}" stroke-width="2.25"/><circle cx="${pts[pts.length - 1][0]}" cy="${pts[pts.length - 1][1]}" r="5" fill="${color}"/></svg>`;
   const LX = 64, TAG = 62;
@@ -116,27 +114,24 @@ add('A5-four-corners', 'A', 'Four corners', 'silk1', 'One crop per zone, labelle
   return h;
 });
 
-add('B1-redline-pass', 'B', 'Redline pass', 'silk2', 'The old page with every deleted element struck in red and numbered, and a legend beside it.', () => {
+add('B1-redline-pass', 'B', 'Redline pass', 'silk2', 'The old page with every deleted element struck in red and a legend beside it; the header rule is a line, and nothing touches.', () => {
   const s = 0.72, X = 64, Y = 117, o = org(X, Y, { x: 0, y: 0 }); let h = '';
   h += crop('oldIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: X, y: Y, s });
-  const items = [[O.search, 'Search → icon', 'magnifying-glass', 4], [O.star, 'GitHub banner', 'star', 4], [O.toggle, 'Collapse toggle', 'view-columns', 4], [O.headerLine, 'Header rule', 'minus', 2]];
+  h += hl(o, s, O.search, { color: 'red', fill: true, pad: 2 }); h += hl(o, s, O.star, { color: 'red', fill: true, pad: 2 }); h += hl(o, s, O.toggle, { color: 'red', fill: true, pad: 2 });
+  const ry = Y + (O.headerLine.y + O.headerLine.h / 2) * s; h += line(X + 300 * s, ry, X + 1436 * s, ry, { color: 'rgba(240,82,79,.95)', w: 3 });
+  const items = [['Search → icon', 'magnifying-glass'], ['GitHub banner', 'star'], ['Collapse toggle', 'view-columns'], ['Header rule', 'minus']];
   const LX = 1150, LY = 318;
-  items.forEach(([r, t, ic, pad], i) => {
-    h += hl(o, s, r, { color: 'red', fill: true, pad });
-    h += dot(X + (r.x + r.w) * s + 4, Y + (r.y + r.h / 2) * s, i + 1, 'red', 56);
-    h += tag(t, ic, LX, LY + i * 74, 'red', '', i + 1);
-  });
-  h += `<div class="badge" style="left:${px(LX)};top:${px(LY - 96)};border-color:rgba(240,82,79,.6);color:#f0524f">${ico('minus-circle', 24)} 4 removed above the fold</div>`;
+  items.forEach(([t, ic], i) => { h += tag(t, ic, LX, LY + i * 74, 'red'); });
+  h += `<div class="badge" style="left:${px(LX)};top:${px(LY - 96)};border-color:rgba(240,82,79,.6);color:#f0524f">${ico('minus-circle', 24)} Cut</div>`;
   return h;
 });
-
-
 add('B2-before-after-split', 'B', 'Before / after split', 'silk3', 'Old and new at the same scale; deletions in red, the replacement row in blue.', () => {
   const s = 0.52, Y = 216; let h = '';
   const oL = org(44, Y, { x: 0, y: 0 }), oR = org(807, Y, { x: 0, y: 0 });
   h += badge(44, 156, 'Before'); h += badge(807, 156, 'After');
   h += crop('oldIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: 44, y: Y, s }); h += crop('newIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: 807, y: Y, s });
-  h += hl(oL, s, O.search, { color: 'red', fill: true, pad: 3 }); h += hl(oL, s, O.star, { color: 'red', fill: true, pad: 2 }); h += hl(oL, s, O.toggle, { color: 'red', fill: true, pad: 3 }); h += hl(oL, s, O.headerLine, { color: 'red', fill: true, pad: 2 });
+  h += hl(oL, s, O.search, { color: 'red', fill: true, pad: 2 }); h += hl(oL, s, O.star, { color: 'red', fill: true, pad: 2 }); h += hl(oL, s, O.toggle, { color: 'red', fill: true, pad: 2 });
+  const ry = Y + (O.headerLine.y + O.headerLine.h / 2) * s; h += line(44 + 300 * s, ry, 44 + 1436 * s, ry, { color: 'rgba(240,82,79,.95)', w: 3 });
   h += hl(oR, s, N.header, { pad: 3, label: 'Five controls, one row', icon: 'cursor-arrow-rays', labelPos: 'below', labelDx: -240 });
   return h;
 });
@@ -157,8 +152,8 @@ add('B3-the-pile', 'B', 'The pile', 'silk4', 'The deleted pieces cut out of the 
   return h;
 });
 add('B4-peel-the-layers', 'B', 'Peel the layers', 'silk1', 'Extra lines, links and buttons as translucent layers lifted off the new page, each called out in red; the page itself in blue.', () => {
-  let h = ''; const s = 0.46;
-  const layers = [[640, 168, 'oldIntro', .28, '− extra lines'], [600, 218, 'oldIntro', .42, '− extra links'], [560, 268, 'oldIntro', .6, '− extra buttons'], [520, 318, 'newIntro', 1, '= the page']];
+  let h = ''; const s = 0.52;
+  const layers = [[640, 128, 'oldIntro', .28, '− extra lines'], [600, 178, 'oldIntro', .42, '− extra links'], [560, 228, 'oldIntro', .6, '− extra buttons'], [520, 278, 'newIntro', 1, '= the page']];
   layers.forEach(([x, y, shot, op]) => { h += crop(shot, { x: 0, y: 0, w: 1440, h: 900 }, { x, y, s, opacity: op }); });
   // right-aligned labels of one width, so every line starts at the same x and
   // meets its layer a fixed distance below that layer's top edge
@@ -174,7 +169,7 @@ add('B5-header-strip', 'B', 'Header strip', 'silk2', 'Where the old top band’s
   h += badge(X, y2 - 54, 'After'); h += crop('newIntro', band, { x: X, y: y2, s, pad: 0 });
   const o1 = org(X, y1, band), o2 = org(X, y2, band);
   const SEARCH_ICON = { x: 1072, y: 19, w: 32, h: 32 }, STAR = { x: 1156, y: 19, w: 78, h: 32 };
-  h += hl(o1, s, O.search, { color: 'red', fill: true, pad: 3 }); h += hl(o1, s, O.star, { color: 'red', fill: true, pad: 3 }); h += hl(o1, s, O.toggle, { color: 'red', fill: true, pad: 3 });
+  h += hl(o1, s, O.search, { color: 'red', fill: true, pad: 2 }); h += hl(o1, s, O.star, { color: 'red', fill: true, pad: 2 }); h += hl(o1, s, O.toggle, { color: 'red', fill: true, pad: 2 });
   h += hl(o2, s, SEARCH_ICON, { pad: 3 }); h += hl(o2, s, STAR, { pad: 3 });
   const c = 'rgba(96,165,250,.9)'; const P = (d) => `<svg class="ln" width="1600" height="900" viewBox="0 0 1600 900"><path d="${d}" stroke="${c}" stroke-width="2.25" fill="none"/></svg>`;
   const b1 = y1 + band.h * s + 6, t2 = y2 - 8, cx = (r) => X + (r.x + r.w / 2) * s;
@@ -188,7 +183,7 @@ add('B5-header-strip', 'B', 'Header strip', 'silk2', 'Where the old top band’s
 // =============== AREA C ===============
 add('C1-nav-census', 'C', 'Navigation census', 'silk3', 'Every navigation or control surface numbered on both pages.', () => {
   let h = ''; const s = 0.5, Y = 216;
-  h += badge(44, 136, 'Before · 6 surfaces'); h += badge(807, 136, 'After · 3 surfaces');
+  h += badge(44, 136, 'Before'); h += badge(807, 136, 'After');
   h += crop('oldIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: 44, y: Y, s }); h += crop('newIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: 807, y: Y, s });
   const oL = org(44, Y, { x: 0, y: 0 }), oR = org(807, Y, { x: 0, y: 0 });
   // each marker sits on its own corner of the surface (l/r × t/m/b) so the 56px dots never touch
@@ -198,14 +193,19 @@ add('C1-nav-census', 'C', 'Navigation census', 'silk3', 'Every navigation or con
   return h;
 });
 
-add('C2-accordion-anatomy', 'C', 'Accordion anatomy', 'silk4', 'The new sidebar enlarged with a label for each part.', () => {
-  let h = ''; const s = 0.9, X = 200, Y = 45; const o = org(X, Y, { x: 0, y: 0 });
+add('C2-accordion-anatomy', 'C', 'Accordion anatomy', 'silk4', 'The new sidebar enlarged with a label for each part, and the two levels that live beyond it: the sections in the open switcher, the headings in the contents rail.', () => {
+  let h = ''; const s = 0.9, X = 120, Y = 45; const o = org(X, Y, { x: 0, y: 0 });
   h += crop('newIntro', N.sidebar, { x: X, y: Y, s });
   const calls = [[N.switcher, 'Section switcher', 'squares-2x2'], [N.itemIntro, 'Active item', 'cursor-arrow-rays'], [N.groupFw, 'Group heading', 'bars-3'], [N.footerLinks, 'Footer links', 'link'], [N.prefs, 'Preferences', 'adjustments-horizontal']];
-  calls.forEach(([r, k, ic], i) => { const yy = Y + (r.y + r.h / 2) * s; const ty = 150 + i * 150; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none' }); h += elbow(X + (r.x + r.w) * s + 8, yy, 556, ty + 23, { mx: 500, color: 'rgba(96,165,250,.7)' }); h += iconLabel(570, ty, ic, k); });
+  calls.forEach(([r, k, ic], i) => { const yy = Y + (r.y + r.h / 2) * s; const ty = 150 + i * 150; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none' }); h += elbow(X + (r.x + r.w) * s + 8, yy, 476, ty + 23, { mx: 420, color: 'rgba(96,165,250,.7)' }); h += iconLabel(490, ty, ic, k); });
+  // beyond the sidebar: the sections the switcher opens onto, and the headings the contents rail lists
+  const sec = { x: 19, y: 71, w: 255, h: 480 }, sS = 0.62, SX = 1040, SY = 90;
+  h += tag('Sections', 'squares-2x2', SX, SY - 62); h += crop('dropdown', sec, { x: SX, y: SY, s: sS });
+  h += elbow(860, 173, SX - 8, SY + 40, { mx: 960, color: 'rgba(96,165,250,.7)' });
+  const tocS = 0.9, TY = SY + PH(sec, sS) + 110;
+  h += tag('Headings', 'list-bullet', SX, TY - 62); h += crop('newIntro', N.toc, { x: SX, y: TY, s: tocS });
   return h;
 });
-
 add('C3-persistence-strip', 'C', 'Persistence strip', 'silk1', 'Three consecutive pages; the sidebar stays, only the active marker moves.', () => {
   let h = ''; const s = 0.32, FW = PW({ w: 1440 }, s), FH = PH({ h: 900 }, s), G = 34, X0 = (1600 - (3 * FW + 2 * G)) / 2; const frames = [['newIntro', N.itemIntro, 'Introduction'], ['newKey', N.itemKey, 'Key concepts'], ['newAgents', N.itemAgents, 'Using coding agents']];
   frames.forEach(([k, r, cap], i) => { const X = X0 + i * (FW + G), Y = 297; h += crop(k, { x: 0, y: 0, w: 1440, h: 900 }, { x: X, y: Y, s }); const o = org(X, Y, { x: 0, y: 0 }); h += hl(o, s, N.sidebar, { color: 'white', dashed: true, pad: 1, style: 'box-shadow:none;border-width:1.5px;border-color:rgba(250,250,250,.5)' }); h += hl(o, s, r, { pad: 2, style: 'box-shadow:none' }); h += tag(cap, null, X, Y + FH + 16, 'dark'); if (i < 2) h += `<div class="txt" style="left:${px(X + FW + (G - 24) / 2)};top:${px(Y + FH / 2 - 12)};color:var(--blue2)">${ico('arrow-long-right', 24)}</div>`; });
@@ -230,6 +230,16 @@ add('C5-one-tree', 'C', 'One tree', 'silk3', 'The sidebar drawn as the tree it i
   return h;
 });
 
+add('C6-another-section', 'C', 'Another section', 'silk3', 'The same accordion in two sections: the Quickstarts sidebar, and the React reference one click away in the switcher, same shape, same footer, same place.', () => {
+  let h = ''; const s = 0.9, Y = 70, XL = 420, XR = 920; const cy = Y + (N.switcher.y + N.switcher.h / 2) * s;
+  h += tag('Quickstarts', 'squares-2x2', XL, 10, 'dark'); h += crop('newIntro', N.sidebar, { x: XL, y: Y, s });
+  h += tag('React reference', 'squares-2x2', XR, 10, 'dark'); h += crop('reactRef', N.sidebar, { x: XR, y: Y, s });
+  const oL = org(XL, Y, { x: 0, y: 0 }), oR = org(XR, Y, { x: 0, y: 0 });
+  h += hl(oL, s, N.switcher, { pad: 3, style: 'box-shadow:none' }); h += hl(oR, s, N.switcher, { pad: 3, style: 'box-shadow:none' });
+  h += line(XL + (N.switcher.x + N.switcher.w) * s + 10, cy, XR + N.switcher.x * s - 10, cy, { color: 'rgba(96,165,250,.9)', w: 3, end: true, start: true });
+  return h;
+});
+
 // =============== AREA D ===============
 add('D1-type-specimen', 'D', 'Type specimen', 'silk5', 'Real type from the page at 110–220%, labelled by role.', () => {
   let h = '';
@@ -249,15 +259,15 @@ add('D2-alignment', 'D', 'Alignment', 'silk4', 'Top-aligned rows against the rea
   return h;
 });
 
-add('D3-icons-not-lists', 'D', 'Icons, not lists', 'silk1', 'The old paragraph-and-links against the new eight-card grid.', () => {
+add('D3-icons-not-lists', 'D', 'Icons, not lists', 'silk1', 'The old paragraph-and-links against the About section’s three cards, each led by a solid icon.', () => {
   let h = '';
   h += badge(64, 307, 'Before'); h += crop('oldIntro', O.launch, { x: 64, y: 365, s: 0.9 });
-  h += badge(900, 217, 'After'); h += crop('newIntro', N.cards, { x: 900, y: 275, s: 0.84 });
+  h += badge(880, 217, 'After'); h += crop('newAbout', { x: 310, y: 302, w: 746, h: 320 }, { x: 880, y: 275, s: 0.82 });
   return h;
 });
 
 add('D4-rules-and-space', 'D', 'Rules and space', 'silk2', 'The two 1px rules and the measured spacing at the top of the page.', () => {
-  let h = ''; const s = 1.25, X = 330, Y = 243; h += crop('newIntro', N.contentTop, { x: X, y: Y, s }); const o = org(X, Y, N.contentTop);
+  let h = ''; const s = 1.4, X = 300, Y = 200; h += crop('newIntro', N.contentTop, { x: X, y: Y, s }); const o = org(X, Y, N.contentTop);
   h += hl(o, s, N.metaRule, { pad: 1, fill: true, style: 'box-shadow:none;border-width:1px', label: '1px rule', labelPos: 'left' });
   h += hl(o, s, N.h2Rule, { pad: 1, fill: true, style: 'box-shadow:none;border-width:1px', label: '1px rule', labelPos: 'left' });
   const rulers = [[117, 129, '12'], [153, 169, '16'], [218, 243, '25'], [290, 324, '34']];
@@ -290,22 +300,21 @@ add('E2-solid-vs-outline', 'E', 'Solid vs outline', 'silk1', 'The old outline gl
   return h;
 });
 
-add('E3-corners', 'E', 'Corners', 'silk2', 'Real buttons and fields at 160–220%, plus a radius scale with the pill struck out.', () => {
-  let h = '';
-  h += badge(100, 188, 'Before'); h += crop('oldIntro', O.demo, { x: 100, y: 246, s: 2.2, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)', pad: 8 }); h += crop('oldIntro', O.search, { x: 100 + PW(O.demo, 2.2) + 24, y: 246, s: 1.6, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)' });
-  h += badge(100, 408, 'After'); h += crop('newIntro', N.demo, { x: 100, y: 466, s: 2.2, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)', pad: 8 }); h += crop('newIntro', N.copy, { x: 100 + PW(N.demo, 2.2) + 24, y: 466, s: 1.6, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)' });
-  h += panel(880, 150, 656, 600, plabel('swatch', 'Radius'));
-  [[4, 'controls'], [6, 'buttons · fields'], [8, 'cards'], [12, 'panels'], [999, 'pills']].forEach(([r, k], i) => { const y = 150 + 78 + i * 88; const bad = r === 999; h += `<div style="position:absolute;left:920px;top:${px(y)};width:220px;height:66px;border-radius:${px(Math.min(r, 33))};border:1.5px solid ${bad ? '#f0524f' : 'var(--border2)'};background:${bad ? 'rgba(240,82,79,.08)' : '#0c0c0f'}"></div>`; h += `<div class="txt" style="left:1170px;top:${px(y + 6)}"><div class="mono" style="font-size:26px;color:${bad ? '#f0524f' : 'var(--text)'}">${bad ? '9999' : r} px</div><div style="font:500 26px 'Inter';color:var(--muted);margin-top:4px">${k}</div></div>`; if (bad) h += `<div class="txt" style="left:1350px;top:${px(y + 16)};color:#f0524f">${ico('x-circle', 26)}</div>`; });
+add('E3-corners', 'E', 'Corners', 'silk2', 'The old pill button and search field over the new button and copy control, at the same scale, beside the radius scale the new docs use with the pill struck out.', () => {
+  let h = ''; const S = 2.4, s2 = 1.8, X = 64;
+  h += badge(X, 150, 'Before'); h += crop('oldIntro', O.demo, { x: X, y: 214, s: S, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)', pad: 8 }); h += crop('oldIntro', O.search, { x: X + PW(O.demo, S, 8) + 24, y: 214 + (PH(O.demo, S, 8) - PH(O.search, s2)) / 2, s: s2, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)' });
+  h += badge(X, 500, 'After'); h += crop('newIntro', N.demo, { x: X, y: 564, s: S, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)', pad: 8 }); h += crop('newIntro', N.copy, { x: X + PW(N.demo, S, 8) + 24, y: 564 + (PH(N.demo, S, 8) - PH(N.copy, s2)) / 2, s: s2, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)' });
+  h += panel(940, 130, 596, 640, plabel('swatch', 'Radius'));
+  [[4, 'controls'], [6, 'buttons · fields'], [8, 'cards'], [12, 'panels'], [999, 'pills']].forEach(([r, k], i) => { const y = 130 + 84 + i * 104; const bad = r === 999; h += `<div style="position:absolute;left:980px;top:${px(y)};width:200px;height:76px;border-radius:${px(Math.min(r, 38))};border:2px solid ${bad ? '#f0524f' : 'var(--border2)'};background:${bad ? 'rgba(240,82,79,.08)' : '#0c0c0f'}"></div>`; h += `<div class="txt" style="left:1210px;top:${px(y + 6)}"><div class="mono" style="font-size:28px;color:${bad ? '#f0524f' : 'var(--text)'}">${bad ? '9999' : r} px</div><div style="font:500 26px 'Inter';color:var(--muted);margin-top:6px">${k}</div></div>`; if (bad) h += `<div class="txt" style="left:1440px;top:${px(y + 22)};color:#f0524f">${ico('x-circle', 32)}</div>`; });
   return h;
 });
-
 add('E4-micro-ui', 'E', 'Flags, not emojis', 'silk3', 'The language menu with its custom matte flag SVGs beside the same list drawn with emoji flags, which are glossy and change from platform to platform.', () => {
   let h = '';
   const names = ['English (GB)', 'English (US)', 'Español', 'Français', 'Italiano', 'Русский', '中文', '日本語'], flags = ['🇬🇧', '🇺🇸', '🇪🇸', '🇫🇷', '🇮🇹', '🇷🇺', '🇨🇳', '🇯🇵'];
-  const EX = 300, EY = 200;
+  const EX = 200, EY = 140;
   h += tag('Emoji', null, EX, EY - 62, 'dark');
-  h += `<div class="txt" style="left:${px(EX)};top:${px(EY)};width:340px;padding:10px;border-radius:12px;background:#0c0c0f;border:1px solid var(--border2)">${names.map((n, i) => `<div style="display:flex;align-items:center;gap:18px;height:54px;padding:0 14px;border-radius:8px;font:500 22px/1 'Inter';color:#fafafa;${i === 1 ? 'background:rgba(250,250,250,.08)' : ''}"><span style="font-size:32px;line-height:1">${flags[i]}</span><span>${n}</span></div>`).join('')}</div>`;
-  const MX = 820, mS = 1.5, menu = { x: 0, y: 548, w: 290, h: 352 };
+  h += `<div class="txt" style="left:${px(EX)};top:${px(EY)};width:430px;padding:12px;border-radius:14px;background:#0c0c0f;border:1px solid var(--border2)">${names.map((n, i) => `<div style="display:flex;align-items:center;gap:20px;height:70px;padding:0 18px;border-radius:9px;font:500 28px/1 'Inter';color:#fafafa;${i === 1 ? 'background:rgba(250,250,250,.08)' : ''}"><span style="font-size:40px;line-height:1">${flags[i]}</span><span>${n}</span></div>`).join('')}</div>`;
+  const MX = 820, mS = 1.85, menu = { x: 0, y: 548, w: 290, h: 352 };
   h += tag('Custom SVGs', null, MX, EY - 62);
   h += crop('langMenu', menu, { x: MX, y: EY, s: mS });
   return h;
@@ -316,11 +325,25 @@ add('E6-sidebar-mask', 'E', 'Sidebar mask (animated)', 'u58', 'The React referen
   return h;
 }, { animated: true });
 
-add('E5-localized', 'E', 'Localized', 'u56', 'The same Introduction page in English and Japanese at the same scale. Dashed guides run across both: title, first sidebar item, header actions and the language row sit on the same lines, so spacing, alignment and order hold across languages.', () => {
+add('E5-localized', 'E', 'Localized', 'u56', 'The same Introduction page in English and Chinese at the same scale. Dashed guides run across both: title, first sidebar item, header actions and the language row sit on the same lines, so spacing, alignment and order hold across languages.', () => {
   let h = ''; const s = 0.52, gap = 32; const x0 = (1600 - (1440 * s * 2 + gap)) / 2; const Y = (900 - 900 * s) / 2 + 10;
   h += tag('English (US)', 'language', x0, Y - 62, 'dark'); h += crop('newIntro', { x: 0, y: 0, w: 1440, h: 900 }, { x: x0, y: Y, s });
-  h += tag('日本語', 'language', x0 + 1440 * s + gap, Y - 62, 'dark'); h += crop('newIntroJa', { x: 0, y: 0, w: 1440, h: 900 }, { x: x0 + 1440 * s + gap, y: Y, s });
+  h += tag('中文', 'language', x0 + 1440 * s + gap, Y - 62, 'dark'); h += crop('newIntroZh', { x: 0, y: 0, w: 1440, h: 900 }, { x: x0 + 1440 * s + gap, y: Y, s });
   [35, 80, 168, 856].forEach((y) => { const yy = Y + y * s; h += `<div style="position:absolute;left:${px(x0 - 28)};top:${px(yy)};width:${px(1440 * s * 2 + gap + 56)};border-top:1px dashed rgba(0,120,255,.75)"></div>`; });
+  return h;
+});
+
+add('E7-quiet-scrollbar', 'E', 'Quiet scrollbar', 'silk4', 'The React reference sidebar with its scrollbar: a thin rounded thumb on a transparent track, enlarged beside it and measured; the same bar runs in code blocks and menus.', () => {
+  let h = ''; const s = 0.9, X = 140, Y = 84; const o = org(X, Y, { x: 0, y: 0 });
+  h += tag('Sidebar', 'bars-3', X, 20, 'dark'); h += crop('sidebarScroll', N.sidebar, { x: X, y: Y, s });
+  const thumb = { x: 280, y: 200, w: 10, h: 324 }; h += hl(o, s, thumb, { pad: 4, dashed: true, style: 'box-shadow:none;border-width:1.5px' });
+  const D = 2.4, det = { x: 262, y: 236, w: 28, h: 250 }, DX = 560, DY = Y + (PH(N.sidebar, s, 0) - PH(det, D)) / 2;
+  h += tag('The thumb at 240%', null, DX, 20, 'dark'); h += crop('sidebarScroll', det, { x: DX, y: DY, s: D, r: 8 });
+  h += line(X + (thumb.x + thumb.w) * s + 8, Y + (thumb.y + thumb.h / 2) * s, DX - 8, DY + PH(det, D) / 2, { color: 'rgba(96,165,250,.85)', w: 3, end: true });
+  // the thumb is 6 CSS px wide: a ruler across it at the enlargement, labelled
+  const tx = DX + (283 - det.x + PAD) * D, ty = DY + PAD * D + 30, tw = 6 * D;
+  h += `<div class="rulerh" style="left:${px(tx)};top:${px(ty)};width:${px(tw)}"></div>`; h += `<div class="measure" style="left:${px(DX + PW(det, D) + 16)};top:${px(ty + 6)}">6 px</div>`;
+  h += tag('Thin rounded thumb', null, 880, 300); h += tag('Transparent track', null, 880, 380); h += tag('Shared by the sidebar, code blocks and menus', null, 880, 460, 'dark');
   return h;
 });
 
@@ -370,11 +393,19 @@ add('F3-dont-do', 'F', 'Don’t / Do', 'silk2', 'Three real pairs cropped from o
 
 add('F4-bingo', 'F', 'The fix for each', 'silk3', 'The hit list as a 3×3 card where every anti-pattern is struck out and its replacement written under it.', () => {
   let h = ''; const pairs = [['Eyebrow text', 'Plain headings'], ['Extraneous explanatory text', 'One line each'], ['Over-rounded boxes', '6–8px corners'], ['Non-solid icons', 'Solid icons'], ['Non-localized docs', 'Localized docs'], ['Spacing unrelated to importance', 'Spacing that groups'], ['Navigation spread across the page', 'One accordion'], ['Sidebars that expand forever', 'A clear hierarchy'], ['Sidebars that lose your place', 'A sidebar that persists']];
-  const cw = 330, ch = 210, gap = 14, X0 = (1600 - (cw * 3 + gap * 2)) / 2, Y0 = (900 - (ch * 3 + gap * 2)) / 2;
+  const cw = 400, ch = 250, gap = 16, X0 = (1600 - (cw * 3 + gap * 2)) / 2, Y0 = (900 - (ch * 3 + gap * 2)) / 2;
   pairs.forEach(([bad, good], i) => { const c = i % 3, r = Math.floor(i / 3); const x = X0 + c * (cw + gap), y = Y0 + r * (ch + gap);
     h += `<div style="position:absolute;left:${px(x)};top:${px(y)};width:${px(cw)};height:${px(ch)};border-radius:8px;background:rgba(9,9,11,.9);border:1px solid rgba(250,250,250,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 24px;text-align:center"><span style="font:500 28px/1.25 'Inter';color:rgba(250,250,250,.6);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2.5px">${bad}</span><span style="font:600 30px/1.2 'Inter';letter-spacing:-.01em;color:#fafafa">${good}</span></div>`; });
   return h;
 });
+add('F5-poster', 'F', 'Poster', 'silk5', 'The hit list regrouped into clutter, navigation and language, every item struck through in one weight; the group names are the set’s ordinary labels.', () => {
+  let h = ''; const groups = [['Clutter', ['Eyebrow text', 'Random extraneous explanatory text', 'Over-rounded boxes', 'Non-solid icons', 'Variable spacing not attached to importance of content']], ['Navigation', ['Multiple navigation elements spread across the page', 'Sidebars that seem to expand infinitely', 'Sidebars that change when you click something', 'Sidebars where you lose your place']], ['Language', ['Non-localized docs']]];
+  const X0 = 64, CW = 470, G = 31, LINE = 41;
+  groups.forEach(([name, items], c) => { const x = X0 + c * (CW + G); h += tag(name, null, x, 96, 'dark'); let y = 190;
+    items.forEach((k) => { h += `<div class="txt" style="left:${px(x)};top:${px(y)};width:${px(CW)};white-space:normal;font:600 34px/1.2 'Inter';letter-spacing:-.02em;color:rgba(250,250,250,.94);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px">${k}</div>`; y += (k.length > 27 ? 2 : 1) * LINE + 22; }); });
+  return h;
+}, { wash: .25 });
+
 // =============== COVERS (isometric wire, dashed) ===============
 const R = { page:{x:0,y:0,w:1440,h:900}, sidebar:{x:0,y:0,w:290,h:900}, content:{x:310,y:60,w:746,h:840}, header:{x:1068,y:12,w:356,h:46}, headerLight:{x:1081,y:12,w:343,h:46} /* the light capture's star pill is 13px narrower */, toc:{x:1090,y:74,w:330,h:130}, footer:{x:11,y:706,w:270,h:138}, prefs:{x:11,y:847,w:270,h:45}, switcher:{x:19,y:71,w:254,h:54}, h1:{x:310,y:80,w:420,h:37}, sub:{x:310,y:129,w:746,h:24}, meta:{x:310,y:169,w:746,h:49}, cards:{x:310,y:400,w:746,h:417} };
 const SIDE_ITEMS = [168,198,229,300,330,361,392,422,453,483,514,544,575,605,677,707,738,768].map(y => ({ x: 31, y, w: 160, h: 31 }));
@@ -554,7 +585,7 @@ add('H1-cover-exploded-og-light', 'H', 'OpenGraph · exploded components, light 
 add('H1-cover-exploded-light', 'H', 'Cover · exploded components, light theme', 'blue25', 'The cover with the docs in their light theme: the same dark blue ground and scale as the header cover, the page panes and the wireframe they hover over in paper and ink.', () => coverExploded(1600, 900, { title: false, s: .9, cy: .52, dx: 0, light: true }), { wash: .1 });
 // ===== Fleshed-out wireframe of the real page (flat), with real crops tied to the zones =====
 function wireframePage(X, Y, p, k = 1, opts = {}) {
-  const ghost = !!opts.ghost, light = !!opts.light;
+  const ghost = !!opts.ghost, light = !!opts.light, prose = !!opts.prose; const zones = opts.zones || ['sidebar', 'header', 'footer', 'prefs'];
   const ink = light ? '9,9,11' : '250,250,250';
   const d = (x, y, w, h, st) => `<div style="position:absolute;left:${px(X + x * p)};top:${px(Y + y * p)};width:${px(w * p)};height:${px(h * p)};${st}"></div>`;
   const bar = (x, y, w, h, a = .4, r = 3, c = ink) => d(x, y, w, h, `background:rgba(${c},${a});border-radius:${px(Math.min(r, h * p / 2))}`);
@@ -580,13 +611,20 @@ function wireframePage(X, Y, p, k = 1, opts = {}) {
   h += bar(310, 82, 296, 30, .95, 4); h += bar(310, 132, 700, 13, .42); h += bar(310, 180, 134, 9, .32); h += box(909, 169, 147, 32, .3, 6); h += bar(924, 181, 12, 10, .55, 2); h += bar(944, 182, 60, 8, .6); h += bar(1030, 182, 8, 8, .35);
   h += bar(310, 218, 746, 1, .16, 0); h += bar(310, 245, 746, 10, .4); h += bar(310, 266, 512, 10, .4);
   h += bar(310, 324, 746, 1, .16, 0); h += bar(310, 340, 156, 18, .85, 4);
-  for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) { const x = 310 + c * 190, y = 400 + r * 208; h += box(x, y, 178, 195, .13, 8, `rgba(${ink},.02)`); h += bar(x + 18, y + 22, 22, 22, .6, 5); h += bar(x + 18, y + 62, [70, 46, 66, 64, 52, 42, 92, 70][r * 4 + c], 10, .85); h += bar(x + 18, y + 84, 132, 8, .34); h += bar(x + 18, y + 100, 118, 8, .34); h += bar(x + 18, y + 116, 84, 8, .34); }
+  if (prose) {
+    // a reading page: paragraphs, a heading, a code block, more paragraphs
+    [[400, 746], [421, 712], [442, 738], [463, 380]].forEach(([y, w]) => { h += bar(310, y, w, 10, .4); });
+    h += bar(310, 508, 210, 16, .85, 4);
+    [[548, 746], [569, 690], [590, 460]].forEach(([y, w]) => { h += bar(310, y, w, 10, .4); });
+    h += box(310, 626, 746, 118, .14, 6, `rgba(${ink},.03)`); [[650, 220], [672, 340], [694, 180]].forEach(([y, w]) => { h += bar(334, y, w, 9, .5, 2, '96,165,250'); });
+    [[770, 746], [791, 520]].forEach(([y, w]) => { h += bar(310, y, w, 10, .4); });
+  } else for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) { const x = 310 + c * 190, y = 400 + r * 208; h += box(x, y, 178, 195, .13, 8, `rgba(${ink},.02)`); h += bar(x + 18, y + 22, 22, 22, .6, 5); h += bar(x + 18, y + 62, [70, 46, 66, 64, 52, 42, 92, 70][r * 4 + c], 10, .85); h += bar(x + 18, y + 84, 132, 8, .34); h += bar(x + 18, y + 100, 118, 8, .34); h += bar(x + 18, y + 116, 84, 8, .34); }
   h += bar(310, 842, 452, 10, .34); h += bar(770, 842, 96, 10, .9, 3, '96,165,250'); h += bar(874, 842, 182, 10, .34);
   // toc
   h += bar(1096, 82, 12, 12, .45, 3); h += bar(1114, 84, 82, 9, .45); h += d(1097, 112, 1, 84, `background:rgba(${ink},.14)`); h += d(1097, 112, 2, 26, 'background:#0078FF'); h += bar(1107, 120, 92, 9, .95, 3, '96,165,250'); h += bar(1107, 148, 170, 9, .4); h += bar(1107, 180, 40, 9, .4);
   // zones
   const zone = (r, extra = '') => d(r.x, r.y, r.w, r.h, `border:1.5px solid #0078FF;border-radius:${px(6 * p * 1.4)};background:rgba(0,120,255,.10);box-shadow:0 0 0 3px rgba(0,120,255,.15);${extra}`);
-  if (!ghost) { h += zone({ x: 2, y: 2, w: 288, h: 896 }, 'border-radius:9px 0 0 9px'); h += zone(R.header); h += zone(R.footer); h += zone(R.prefs); }
+  if (!ghost) { if (zones.includes('sidebar')) h += zone({ x: 2, y: 2, w: 288, h: 896 }, 'border-radius:9px 0 0 9px'); if (zones.includes('header')) h += zone(R.header); if (zones.includes('footer')) h += zone(R.footer); if (zones.includes('prefs')) h += zone(R.prefs); }
   return h;
 }
 function coverWiremap(W, H, o = {}) {
@@ -618,7 +656,7 @@ add('H0-cover-final-og', 'H', 'OpenGraph · wireframe map, cleaned (1200×630)',
 add('H0-cover-final-og-light', 'H', 'OpenGraph · wireframe map, light theme (1200×630)', 'blue16', 'The wireframe of the real page alone in its light theme, the four zones in blue, on the blue-toned export.', () => coverWiremapClean(1200, 630, true), { wash: .25, w: 1200, h: 630 });
 // isometric explorations retired (kept in gen-visuals history)
 
-const ASSIGN = {"A1-zones-overlay": "u20", "A2-wireframe-map": "u11", "A3-exploded-layers": "u17", "A4-reading-path": "u19", "A5-four-corners": "u26", "B1-redline-pass": "u27", "B2-before-after-split": "u28", "B3-the-pile": "u33", "B4-peel-the-layers": "u34", "B5-header-strip": "u36", "C1-nav-census": "u37", "C2-accordion-anatomy": "u39", "C3-persistence-strip": "u40", "C4-sidebars-side-by-side": "u41", "C5-one-tree": "u44", "D1-type-specimen": "u45", "D2-alignment": "u47", "D3-icons-not-lists": "u48", "D4-rules-and-space": "u49", "D5-quickstart-pages": "u50", "E1-hover-mask": "u52", "E2-solid-vs-outline": "u53", "E3-corners": "u54", "E4-micro-ui": "u55", "E5-localized": "u56", "E6-sidebar-mask": "u58", "F1-hit-list": "u57", "F2-spot-the-antipatterns": "u18", "F3-dont-do": "u32", "F4-bingo": "u46", "H0-cover-final": "blue16", "H0-cover-final-og": "blue16", "H1-cover-exploded": "blue25", "H1-cover-exploded-og": "blue25", "H1-cover-exploded-light": "blue25", "H1-cover-exploded-og-light": "blue25", "H0-cover-final-light": "blue16", "H0-cover-final-og-light": "blue16"};
+const ASSIGN = {"A1-zones-overlay": "u20", "A2-wireframe-map": "u11", "A3-exploded-layers": "u17", "A4-reading-path": "u19", "A5-four-corners": "u26", "B1-redline-pass": "u27", "B2-before-after-split": "u28", "B3-the-pile": "u33", "B4-peel-the-layers": "u34", "B5-header-strip": "u36", "C1-nav-census": "u37", "C2-accordion-anatomy": "u39", "C3-persistence-strip": "u40", "C4-sidebars-side-by-side": "u41", "C5-one-tree": "u44", "D1-type-specimen": "u45", "D2-alignment": "u47", "D3-icons-not-lists": "u48", "D4-rules-and-space": "u49", "D5-quickstart-pages": "u50", "E1-hover-mask": "u52", "E2-solid-vs-outline": "u53", "E3-corners": "u54", "E4-micro-ui": "u55", "E5-localized": "u56", "E6-sidebar-mask": "u58", "F1-hit-list": "u57", "F2-spot-the-antipatterns": "u18", "F3-dont-do": "u32", "F4-bingo": "u46", "F5-poster": "u30", "C6-another-section": "u25", "E7-quiet-scrollbar": "u29", "H0-cover-final": "blue16", "H0-cover-final-og": "blue16", "H1-cover-exploded": "blue25", "H1-cover-exploded-og": "blue25", "H1-cover-exploded-light": "blue25", "H1-cover-exploded-og-light": "blue25", "H0-cover-final-light": "blue16", "H0-cover-final-og-light": "blue16"};
 const BG_WASH = 0.64; // background shown at 36% over #09090b
 V.forEach(v => { if (ASSIGN[v.id]) v.bg = ASSIGN[v.id]; if (!L.BG[v.bg]) throw new Error(`${v.id}: background ${v.bg} is not in BG; add the visual to ASSIGN`); if (v.area !== 'H') v.wash = Math.max(v.wash || 0, BG_WASH); }); // covers keep their own light wash
 // =============== write ===============

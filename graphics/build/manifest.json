@@ -4,7 +4,7 @@
     "area": "A",
     "name": "Zones overlay",
     "bg": "u20",
-    "why": "The real page with the four zones boxed and labelled; the reader verifies the claim against the product.",
+    "why": "The real page with the four zones boxed and labelled: navigation, actions, links, preferences.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -14,7 +14,7 @@
     "area": "A",
     "name": "Wireframe map",
     "bg": "u11",
-    "why": "The page as a wireframe with its levels of organization pulled out and tied to where they live: sections in the switcher, groups and pages in the sidebar, headings in the contents rail.",
+    "why": "A reading page as a wireframe with its levels of organization pulled out and tied to where they live: sections in the switcher, groups and pages in the sidebar, headings in the contents rail.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -54,7 +54,7 @@
     "area": "B",
     "name": "Redline pass",
     "bg": "u27",
-    "why": "The old page with every deleted element struck in red and numbered, and a legend beside it.",
+    "why": "The old page with every deleted element struck in red and a legend beside it; the header rule is a line, and nothing touches.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -114,7 +114,7 @@
     "area": "C",
     "name": "Accordion anatomy",
     "bg": "u39",
-    "why": "The new sidebar enlarged with a label for each part.",
+    "why": "The new sidebar enlarged with a label for each part, and the two levels that live beyond it: the sections in the open switcher, the headings in the contents rail.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -150,6 +150,16 @@
     "animated": false
   },
   {
+    "id": "C6-another-section",
+    "area": "C",
+    "name": "Another section",
+    "bg": "u25",
+    "why": "The same accordion in two sections: the Quickstarts sidebar, and the React reference one click away in the switcher, same shape, same footer, same place.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
     "id": "D1-type-specimen",
     "area": "D",
     "name": "Type specimen",
@@ -174,7 +184,7 @@
     "area": "D",
     "name": "Icons, not lists",
     "bg": "u48",
-    "why": "The old paragraph-and-links against the new eight-card grid.",
+    "why": "The old paragraph-and-links against the About section’s three cards, each led by a solid icon.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -224,7 +234,7 @@
     "area": "E",
     "name": "Corners",
     "bg": "u54",
-    "why": "Real buttons and fields at 160–220%, plus a radius scale with the pill struck out.",
+    "why": "The old pill button and search field over the new button and copy control, at the same scale, beside the radius scale the new docs use with the pill struck out.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -254,7 +264,17 @@
     "area": "E",
     "name": "Localized",
     "bg": "u56",
-    "why": "The same Introduction page in English and Japanese at the same scale. Dashed guides run across both: title, first sidebar item, header actions and the language row sit on the same lines, so spacing, alignment and order hold across languages.",
+    "why": "The same Introduction page in English and Chinese at the same scale. Dashed guides run across both: title, first sidebar item, header actions and the language row sit on the same lines, so spacing, alignment and order hold across languages.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "E7-quiet-scrollbar",
+    "area": "E",
+    "name": "Quiet scrollbar",
+    "bg": "u29",
+    "why": "The React reference sidebar with its scrollbar: a thin rounded thumb on a transparent track, enlarged beside it and measured; the same bar runs in code blocks and menus.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -295,6 +315,16 @@
     "name": "The fix for each",
     "bg": "u46",
     "why": "The hit list as a 3×3 card where every anti-pattern is struck out and its replacement written under it.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "F5-poster",
+    "area": "F",
+    "name": "Poster",
+    "bg": "u30",
+    "why": "The hit list regrouped into clutter, navigation and language, every item struck through in one weight; the group names are the set’s ordinary labels.",
     "w": 1600,
     "h": 900,
     "animated": false

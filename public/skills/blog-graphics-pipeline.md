@@ -26,7 +26,7 @@ export as the ground, rendered headlessly and downsampled.
 | `graphics/build/capture-sidebar.sh` | the stop-motion capture of the docs sidebar (see the stop-motion skill) |
 | `graphics/build/sheet.py` | contact sheets of `out/*.png` for review |
 | `graphics/serve/server.js` | the static server the renderer loads pages from (`http://127.0.0.1:8765`) |
-| `graphics/bg/` | the glyphfield exports, lossless webp; `bg/blue/` are the blue duotone and light variants for covers |
+| `graphics/bg/` | a link to `public/graphics/bg/`: the glyphfield exports as lossless webp, `blue/` the duotone and light variants for covers; the site serves them and `/graphics` lists them |
 | `graphics/shots/hi/` | the product captures at 3 to 5x (see the capture skill) |
 | `graphics/fonts/` | Inter and Geist Mono variable fonts, the type of the docs |
 | `graphics/rec/` | the recordings the clips composite from |
@@ -81,8 +81,11 @@ export as the ground, rendered headlessly and downsampled.
   and takes its labels with it. When the audit flags a visual, narrow the
   composition (smaller crops, shorter labels, one label column) before
   enlarging the type, or the fit undoes the change.
-- Draw the dither background at 2x the stage with smooth scaling. At 1x
-  each dot lands on less than a device pixel and aliases into noise.
+- Draw the dither background at 2x the stage height, aspect kept, with
+  square pixels: at 1x each dot lands on less than a device pixel and
+  aliases into noise; smoothed, it goes soft; at 2x with
+  `image-rendering: pixelated` every dot is a crisp 2px square and a
+  non-16:9 stage (the social card) is never stretched.
 - Dim article backgrounds (the `BG_WASH` of 0.64 leaves 36% of the export
   visible). Covers keep their full brightness.
 - Pad every cutout 12px inside its frame and clip where a neighbour would

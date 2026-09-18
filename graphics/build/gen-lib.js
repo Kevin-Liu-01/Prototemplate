@@ -37,6 +37,9 @@ const SHOTS = {
   oldIntro: { file: 'shots/hi/old-intro.webp', dpr: 5 },
   reactRef: { file: 'shots/hi/react-ref.webp', dpr: 4 },
   newIntroLight: { file: 'shots/hi/intro-light.webp', dpr: 4 },
+  newAbout: { file: 'shots/hi/intro-about.webp', dpr: 4 }, // the Introduction page scrolled 717px, so the About section's three cards sit at y 302
+  newIntroZh: { file: 'shots/hi/intro-zh.webp', dpr: 4 }, // the live site's Chinese Introduction, fully translated
+  sidebarScroll: { file: 'shots/hi/ref-sidebar-scroll.webp', dpr: 4 },
   dropdown: { file: 'shots/hi/sidebar-dropdown-open.webp', dpr: 4 },
   langMenu: { file: 'shots/hi/lang-menu.webp', dpr: 4 },
   oldIntroFull: { file: 'shots/old/old-intro-full.png', dpr: 2 },
@@ -153,9 +156,9 @@ const CSS = `
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#111216}
 body{width:var(--W);height:var(--H);overflow:hidden;font-family:'Inter',system-ui,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
-.stage{position:relative;width:var(--W);height:var(--H);overflow:hidden;background:#111216 center/calc(var(--W) * 2) calc(var(--H) * 2) no-repeat}
+.stage{position:relative;width:var(--W);height:var(--H);overflow:hidden;background:#111216 center/auto calc(var(--H) * 2) no-repeat;image-rendering:pixelated}
 .stage>*,.stage>.center>*{position:absolute}
-.stage{image-rendering:auto}
+/* the ground keeps its pixels square at 2x (the export is 1920 wide, drawn 3200 wide, so every dot is a crisp 2px square with its aspect kept); everything on it resamples smoothly */
 .stage *{image-rendering:auto}
 .stage .ln{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 .vignette{left:0;top:0;width:100%;height:100%;background:radial-gradient(120% 90% at 50% 40%,rgba(9,9,11,0) 40%,rgba(9,9,11,.55) 100%)}
@@ -224,7 +227,7 @@ body{width:var(--W);height:var(--H);overflow:hidden;font-family:'Inter',system-u
 .pill{display:inline-flex;align-items:center;gap:10px;padding:0 20px;height:52px;border-radius:999px;font:500 28px/1 'Inter'}
 `;
 
-const CENTER_SCRIPT = `<script>(function(){const st=document.querySelector('.stage');const W=st.clientWidth,H=st.clientHeight;const kids=[...st.children].filter(el=>!(el.classList.contains('vignette')||el.classList.contains('wash')));const wrap=document.createElement('div');wrap.className='center';wrap.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px';kids.forEach(k=>wrap.appendChild(k));st.appendChild(wrap);function isContent(el){const tag=el.tagName.toLowerCase();if(tag==='svg')return !el.classList.contains('ln');const insvg=el.closest('svg');if(insvg){return insvg.classList.contains('ln')&&el.parentElement===insvg;}const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||parseFloat(cs.opacity)===0)return false;return el.children.length===0||cs.backgroundImage!=='none'||cs.backgroundColor!=='rgba(0, 0, 0, 0)'||parseFloat(cs.borderTopWidth)>0||parseFloat(cs.borderLeftWidth)>0||cs.boxShadow!=='none'||cs.outlineStyle!=='none';}function run(){let l=1e9,t=1e9,r=-1e9,b=-1e9;wrap.querySelectorAll('*').forEach(el=>{if(!isContent(el))return;const rc=el.getBoundingClientRect();if(rc.width<=0||rc.height<=0)return;l=Math.min(l,rc.left);t=Math.min(t,rc.top);r=Math.max(r,rc.right);b=Math.max(b,rc.bottom);});if(r<l){window.__centered=true;return;}const sr=st.getBoundingClientRect();const bw=r-l,bh=b-t;const fit=parseFloat(st.dataset.fit||'0');let z=1;if(fit>0){z=Math.min(fit*W/bw,fit*H/bh);z=Math.max(0.8,Math.min(1.8,z));z=Math.round(z*1000)/1000;}const cx=(l+r)/2-sr.left,cy=(t+b)/2-sr.top;const dx=Math.round(W/2-z*cx),dy=Math.round(H/2-z*cy);wrap.style.transformOrigin='0 0';wrap.style.transform='translate('+dx+'px,'+dy+'px) scale('+z+')';window.__centerDelta={dx:dx,dy:dy,z:z,w:Math.round(bw),h:Math.round(bh)};window.__centered=true;}document.fonts.ready.then(run);})();</script>`;
+const CENTER_SCRIPT = `<script>(function(){const st=document.querySelector('.stage');const W=st.clientWidth,H=st.clientHeight;const kids=[...st.children].filter(el=>!(el.classList.contains('vignette')||el.classList.contains('wash')));const wrap=document.createElement('div');wrap.className='center';wrap.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px';kids.forEach(k=>wrap.appendChild(k));st.appendChild(wrap);function isContent(el){const tag=el.tagName.toLowerCase();if(tag==='svg')return !el.classList.contains('ln');const insvg=el.closest('svg');if(insvg){return insvg.classList.contains('ln')&&el.parentElement===insvg;}const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||parseFloat(cs.opacity)===0)return false;return el.children.length===0||cs.backgroundImage!=='none'||cs.backgroundColor!=='rgba(0, 0, 0, 0)'||parseFloat(cs.borderTopWidth)>0||parseFloat(cs.borderLeftWidth)>0||cs.boxShadow!=='none'||cs.outlineStyle!=='none';}function run(){let l=1e9,t=1e9,r=-1e9,b=-1e9;wrap.querySelectorAll('*').forEach(el=>{if(!isContent(el))return;const rc=el.getBoundingClientRect();if(rc.width<=0||rc.height<=0)return;l=Math.min(l,rc.left);t=Math.min(t,rc.top);r=Math.max(r,rc.right);b=Math.max(b,rc.bottom);});if(r<l){window.__centered=true;return;}const sr=st.getBoundingClientRect();const bw=r-l,bh=b-t;const fit=parseFloat(st.dataset.fit||'0');let z=1;if(fit>0){z=Math.min(fit*W/bw,fit*H/bh);z=Math.max(0.8,Math.min(1,z));z=Math.round(z*1000)/1000;}const cx=(l+r)/2-sr.left,cy=(t+b)/2-sr.top;const dx=Math.round(W/2-z*cx),dy=Math.round(H/2-z*cy);wrap.style.transformOrigin='0 0';wrap.style.transform='translate('+dx+'px,'+dy+'px) scale('+z+')';window.__centerDelta={dx:dx,dy:dy,z:z,w:Math.round(bw),h:Math.round(bh)};window.__centered=true;}document.fonts.ready.then(run);})();</script>`;
 function stage(bgKey, inner, o = {}) {
   const W = o.w || 1600, H = o.h || 900;
   const bgUrl = bgKey ? `/${BG[bgKey]}` : '';

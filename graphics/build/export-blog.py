@@ -16,7 +16,7 @@ VIDEOS = {'E1-hover-mask': 'designing-docs-toc-slide', 'E6-sidebar-mask': 'desig
 ap = argparse.ArgumentParser(); ap.add_argument('--width', type=int, default=3840); ap.add_argument('--quality', type=int, default=95); ap.add_argument('--covers', action='store_true', help='also export the header cover (3840 webp) and OG image (2400x1260 png)'); ap.add_argument('--dest', type=pathlib.Path, default=DEFAULT_DST, help='folder that serves /static/blogs (default: this repo\'s public/static/blogs)'); ap.add_argument('ids', nargs='*')
 a = ap.parse_args()
 DST = a.dest; DST.mkdir(parents=True, exist_ok=True)
-SKIP = {'F1-hit-list', 'F5-poster'}  # the hit list renders as text in the article; the poster was retired
+SKIP = {'F1-hit-list'}  # the hit list renders as text in the article; the poster was retired
 ids = a.ids or sorted(p.stem for p in OUT.glob('*.png') if not p.stem.startswith('_') and not p.stem.startswith('H') and p.stem not in SKIP)
 total = 0
 for i in ids:

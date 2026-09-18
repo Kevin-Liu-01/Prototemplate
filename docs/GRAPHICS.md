@@ -41,7 +41,7 @@ The article column is about 700 CSS px wide, so a 1600px stage is shown at
 | measurement label | 28px Geist Mono on a dark backing pill |
 | lines and rulers | 3px; ruler caps 18 by 3px |
 | crops | 1.2x or larger; a sparse composition is zoomed to fill 90% of the frame |
-| background | drawn at 2x the stage with smooth scaling, dimmed to 36% under article visuals, full strength under covers |
+| background | drawn at 2x the stage height with its own aspect and square pixels (`image-rendering: pixelated`), so a 1920 export shows as crisp 2px dots and a card is never stretched; dimmed to 36% under article visuals, full strength under covers |
 | export | 3840 wide webp, quality 95; covers 3840 webp in a dark and a light version; OG 2400 by 1260 PNG; clips as 1400 wide GIFs |
 | delivery | served through next/image at the column's device width (a dense `deviceSizes` ladder plus an accurate `sizes`), quality 95 |
 
@@ -70,7 +70,7 @@ rather than to enlarge the type. `MIN_TEXT` in `gen-lib.js` holds the floor.
 | `graphics/build/manifest.json` | the generated index of visuals: id, area, name, background, why, size, animated; `/graphics` reads it |
 | `graphics/serve/server.js` | the static server on 127.0.0.1:8765; also accepts POSTs into `inbox/` for the DOM-capture trick |
 | `graphics/glyph/` | the glyphfield studio scripts and Kevin's project source |
-| `graphics/bg/user/` | the forty-two glyphfield exports, lossless webp; `bg/blue/` the blue duotone and light variants |
+| `public/graphics/bg/` | the glyphfield exports, lossless webp identical to the PNG originals: `user/` the palette, `blue/` the blue duotone and light variants; `graphics/bg` links here so the toolchain and the site read one set |
 | `graphics/shots/hi/` | the product captures at 3 to 5x, lossless webp |
 | `graphics/fonts/` | Inter and Geist Mono variable |
 | `graphics/rec/` | the recordings the two clips composite from |
