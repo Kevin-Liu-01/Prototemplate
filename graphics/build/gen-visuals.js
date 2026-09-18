@@ -16,7 +16,7 @@ const N = { sidebar:{x:0,y:0,w:290,h:900}, logo:{x:19,y:20,w:172,h:30}, switcher
 const NQ = { tipNote:{x:310,y:446,w:746,h:116}, h2:{x:310,y:589,w:746,h:52}, toc:{x:1090,y:74,w:330,h:450} };
 const O = { sidebar:{x:0,y:0,w:290,h:900}, toggle:{x:243,y:17,w:30,h:30}, star:{x:3,y:64,w:286,h:40}, switcher:{x:19,y:117,w:254,h:58},
   itemIntro:{x:19,y:233,w:254,h:36}, prefs:{x:3,y:847,w:286,h:53}, search:{x:310,y:14,w:240,h:36}, demo:{x:1307,y:14,w:101,h:36},
-  headerLine:{x:290,y:56,w:1150,h:2}, headerStrip:{x:290,y:0,w:1150,h:60}, subtitleShort:{x:310,y:142,w:600,h:28},
+  headerLine:{x:290,y:63,w:1150,h:1} /* the 1px rule under the old header sits on row 63 of the capture */, headerStrip:{x:290,y:0,w:1150,h:60}, subtitleShort:{x:310,y:142,w:600,h:28},
   cardsRow2Right:{x:690,y:494,w:420,h:150}, launch:{x:310,y:692,w:820,h:190}, toc:{x:1160,y:105,w:270,h:135}, sidebarTop:{x:0,y:0,w:290,h:180}, ruleStrip:{x:640,y:44,w:420,h:24} };
 const OQ = { h2:{x:310,y:590,w:820,h:32}, toc:{x:1160,y:105,w:280,h:530} };
 const org = (x, y, rect) => ({ x, y, rx: rect.x, ry: rect.y });
