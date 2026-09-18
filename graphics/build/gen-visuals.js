@@ -246,14 +246,25 @@ add('C6-another-section', 'C', 'Another section', 'silk3', 'The same accordion i
 });
 
 // =============== AREA D ===============
-add('D1-type-specimen', 'D', 'Type specimen', 'silk5', 'Real type from the page at 110–220%, labelled by role.', () => {
+add('D1-type-specimen', 'D', 'Type specimen', 'silk5', 'Real type from the page at 110–220%, each sample tied by a leader to a label set in the weight and style it names, with the spec beside it in mono; the old docs’ one weight and one grey below for contrast.', () => {
   let h = '';
-  const rows = [[N.h1short, 1.6, 'Heading · 600'], [N.subtitle, 1.1, 'Summary · 400 muted'], [N.lastUpdated, 2.2, 'Meta · italic'], [N.italicNote, 1.1, 'Aside · italic'], [N.groupFw, 2, 'Group heading · 600 small', { b: 4 }]];
-  let y = 236; rows.forEach(([r, s, k, pd]) => { const hh = pd ? (r.h + PAD + (pd.b != null ? pd.b : PAD)) * s : PH(r, s); h += crop('newIntro', r, { x: 64, y, s, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)', pad: pd }); h += tag(k, null, 960, y + hh / 2 - 27, 'dark'); y += hh + 22; });
-  h += badge(64, y + 2, 'Before'); h += crop('oldIntro', O.subtitleShort, { x: 64, y: y + 54, s: 1.1, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)' }); h += tag('One weight, one grey', null, 960, y + 54 + PH(O.subtitleShort, 1.1) / 2 - 27, 'dark');
+  // a label: the role, set the way the page sets it, and its spec as a mono chip
+  const spec = (x, cy, role, css, chip) => `<div class="txt" style="left:${px(x)};top:${px(cy - 27)};display:flex;align-items:center;gap:14px;height:54px;white-space:nowrap"><span style="font:${css};letter-spacing:-.01em">${role}</span><span style="font:500 26px/1 'Geist Mono';letter-spacing:.03em;color:var(--blue2);padding:8px 10px;border-radius:6px;background:rgba(9,9,11,.85)">${chip}</span></div>`;
+  const LX = 960, lead = (x1, cy) => line(x1, cy, LX - 16, cy, { color: 'rgba(96,165,250,.7)', w: 3, end: true });
+  const rows = [
+    [N.h1short, 1.6, 'Heading', "600 30px 'Inter'", '600'],
+    [N.subtitle, 1.1, 'Summary', "400 30px 'Inter'", '400 · muted', 'var(--muted)'],
+    [N.lastUpdated, 2.2, 'Meta', "italic 400 30px 'Inter'", 'italic · muted', 'var(--muted)'],
+    [N.italicNote, 1.1, 'Aside', "italic 400 30px 'Inter'", 'italic'],
+    [N.groupFw, 2, 'Group heading', "600 26px 'Inter'", '600 · small', 'var(--text)', { b: 4 }],
+  ];
+  h += badge(64, 150, 'After');
+  let y = 236; rows.forEach(([r, s, role, css, chip, color, pd]) => { const hh = pd ? (r.h + PAD + (pd.b != null ? pd.b : PAD)) * s : PH(r, s); const cy = y + hh / 2;
+    h += crop('newIntro', r, { x: 64, y, s, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)', pad: pd }); h += lead(64 + PW(r, s) + 2, cy); h += spec(LX, cy, role, `${css};color:${color || 'var(--text)'}`, chip); y += hh + 22; });
+  h += badge(64, y + 2, 'Before'); const by = y + 54, bh = PH(O.subtitleShort, 1.1), bcy = by + bh / 2;
+  h += crop('oldIntro', O.subtitleShort, { x: 64, y: by, s: 1.1, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)' }); h += lead(64 + PW(O.subtitleShort, 1.1) + 2, bcy); h += spec(LX, bcy, 'Old docs', "400 30px 'Inter';color:var(--muted)", 'one weight · one grey');
   return h;
 });
-
 add('D2-alignment', 'D', 'Alignment', 'silk4', 'Top-aligned rows against the real centre-aligned switcher and footer rows.', () => {
   let h = '';
   h += panel(64, 150, 720, 600, plabel('x-circle', 'Top-aligned', true));
