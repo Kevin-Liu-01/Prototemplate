@@ -230,8 +230,8 @@ add('C4-sidebars-side-by-side', 'C', 'Sidebars side by side', 'silk2', 'The two 
 add('C5-one-tree', 'C', 'One tree', 'silk3', 'The sidebar drawn as the tree it is, mapped onto the real crop.', () => {
   let h = ''; const s = 0.84, X = 1200, Y = 72; h += crop('newIntro', N.sidebar, { x: X, y: Y, s }); const o = org(X, Y, { x: 0, y: 0 });
   const groups = [['Get Started', 3, { x: 19, y: 145, w: 254, h: 115 }], ['Frameworks', 11, { x: 19, y: 277, w: 254, h: 360 }], ['Platform', 4, { x: 19, y: 654, w: 254, h: 146 }], ['Integrations', 5, { x: 19, y: 817, w: 254, h: 80 }]];
-  const rootX = 150, rootY = 407; /* centred on the four branch lines (212 to 602) so the stub meets the trunk at its middle */ h += `<div class="txt" style="left:${px(rootX - 60)};top:${px(rootY - 25)}"><div class="badge" style="position:static;height:50px;padding:0 18px;font:600 26px 'Inter';border-color:var(--blue);color:var(--text)">${ico('book-open', 24)}&nbsp;Docs</div></div>`;
-  groups.forEach(([k, n, r], i) => { const gy = 200 + i * 130; const gx = 420; h += elbow(rootX + 60, rootY, gx - 4, gy + 12, { mx: 320, color: 'rgba(96,165,250,.7)', end: true }); h += label(gx, gy - 11, `${k}&nbsp;<span style="font:500 26px 'Geist Mono';color:var(--muted);letter-spacing:.02em">${n} pages</span>`); for (let j = 0; j < n; j++) h += `<div class="wire bar dim" style="left:${px(gx + 380 + (j % 6) * 22)};top:${px(gy + 4 + Math.floor(j / 6) * 22)};width:14px;height:14px;border-radius:3px;background:rgba(96,165,250,.35)"></div>`; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none;border-width:2.5px' }); h += elbow(gx + 530, gy + 12, X + r.x * s - 6, Y + (r.y + r.h / 2) * s, { mx: 1100, color: 'rgba(96,165,250,.5)', end: true }); });
+  const rootX = 150, rootY = 407; /* centred on the four branch lines (212 to 602) so the stub meets the trunk at its middle */ h += `<div class="txt" style="left:${px(rootX - 60)};top:${px(rootY - 25)}"><div class="badge" style="position:static;width:132px;justify-content:center;height:50px;padding:0;font:600 26px 'Inter';border-color:var(--blue);color:var(--text)">${ico('book-open', 24)}&nbsp;Docs</div></div>`;
+  groups.forEach(([k, n, r], i) => { const gy = 200 + i * 130; const gx = 420; h += elbow(rootX - 60 + 132 + 8, rootY, gx - 4, gy + 12, { mx: 320, color: 'rgba(96,165,250,.7)', end: true }); /* the badge is 132 wide from rootX - 60; the branch leaves 8px past its edge */ h += label(gx, gy - 11, `${k}&nbsp;<span style="font:500 26px 'Geist Mono';color:var(--muted);letter-spacing:.02em">${n} pages</span>`); for (let j = 0; j < n; j++) h += `<div class="wire bar dim" style="left:${px(gx + 380 + (j % 6) * 22)};top:${px(gy + 4 + Math.floor(j / 6) * 22)};width:14px;height:14px;border-radius:3px;background:rgba(96,165,250,.35)"></div>`; h += hl(o, s, r, { pad: 3, style: 'box-shadow:none;border-width:2.5px' }); h += elbow(gx + 530, gy + 12, X + r.x * s - 6, Y + (r.y + r.h / 2) * s, { mx: 1100, color: 'rgba(96,165,250,.5)', end: true }); });
   return h;
 });
 
@@ -246,23 +246,26 @@ add('C6-another-section', 'C', 'Another section', 'silk3', 'The same accordion i
 });
 
 // =============== AREA D ===============
-add('D1-type-specimen', 'D', 'Type specimen', 'silk5', 'Real type from the page at 110–220%, each sample tied by a leader to a label set in the weight and style it names, with the spec beside it in mono; the old docs’ one weight and one grey below for contrast.', () => {
-  let h = '';
+add('D1-type-specimen', 'D', 'Type specimen', 'silk5', 'Real type from the page at 110–220%, hung on one centre axis: the old docs’ single weight and grey first, then each new role, its sample right of nothing but the axis and its label set in the weight and style it names, with the spec beside it in mono.', () => {
+  let h = ''; const AXIS = 935, GAP = 24;
   // a label: the role, set the way the page sets it, and its spec as a mono chip
-  const spec = (x, cy, role, css, chip) => `<div class="txt" style="left:${px(x)};top:${px(cy - 27)};display:flex;align-items:center;gap:14px;height:54px;white-space:nowrap"><span style="font:${css};letter-spacing:-.01em">${role}</span><span style="font:500 26px/1 'Geist Mono';letter-spacing:.03em;color:var(--blue2);padding:8px 10px;border-radius:6px;background:rgba(9,9,11,.85)">${chip}</span></div>`;
-  const LX = 960, lead = (x1, cy) => line(x1, cy, LX - 16, cy, { color: 'rgba(96,165,250,.7)', w: 3, end: true });
+  const spec = (cy, role, css, chip) => `<div class="txt" style="left:${px(AXIS + 34)};top:${px(cy - 27)};display:flex;align-items:center;gap:14px;height:54px;white-space:nowrap"><span style="font:${css};letter-spacing:-.01em">${role}</span><span style="font:500 26px/1 'Geist Mono';letter-spacing:.03em;color:var(--blue2);padding:8px 10px;border-radius:6px;background:rgba(9,9,11,.85)">${chip}</span></div>`;
+  // the short tick across the axis that joins a sample to its label
+  const tick = (cy) => line(AXIS - 20, cy, AXIS + 20, cy, { color: 'rgba(96,165,250,.85)', w: 3, end: true });
+  // a badge right-aligned to the axis, over its group of samples
+  const side = (y, t) => `<div class="badge" style="left:auto;right:${px(1600 - (AXIS - GAP))};top:${px(y)}">${t}</div>`;
+  const row = (shot, r, sc, y, pd, role, css, chip) => { const hh = pd ? (r.h + PAD + (pd.b != null ? pd.b : PAD)) * sc : PH(r, sc); const cy = y + hh / 2; let o = crop(shot, r, { x: AXIS - GAP - PW(r, sc), y, s: sc, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)', pad: pd }); o += tick(cy); o += spec(cy, role, css, chip); return [o, y + hh + 22]; };
+  let y = 130; h += side(y, 'Before'); y += 60;
+  let out; [out, y] = row('oldIntro', O.subtitleShort, 1.1, y, undefined, 'Old docs', "400 30px 'Inter';color:var(--muted)", 'one weight · one grey'); h += out;
+  y += 10; h += side(y, 'After'); y += 60;
   const rows = [
-    [N.h1short, 1.6, 'Heading', "600 30px 'Inter'", '600'],
-    [N.subtitle, 1.1, 'Summary', "400 30px 'Inter'", '400 · muted', 'var(--muted)'],
-    [N.lastUpdated, 2.2, 'Meta', "italic 400 30px 'Inter'", 'italic · muted', 'var(--muted)'],
-    [N.italicNote, 1.1, 'Aside', "italic 400 30px 'Inter'", 'italic'],
-    [N.groupFw, 2, 'Group heading', "600 26px 'Inter'", '600 · small', 'var(--text)', { b: 4 }],
+    [N.h1short, 1.6, undefined, 'Heading', "600 30px 'Inter';color:var(--text)", '600'],
+    [N.subtitle, 1.1, undefined, 'Summary', "400 30px 'Inter';color:var(--muted)", '400 · muted'],
+    [N.lastUpdated, 2.2, undefined, 'Meta', "italic 400 30px 'Inter';color:var(--muted)", 'italic · muted'],
+    [N.italicNote, 1.1, undefined, 'Aside', "italic 400 30px 'Inter';color:var(--text)", 'italic'],
+    [N.groupFw, 2, { b: 4 }, 'Group heading', "600 26px 'Inter';color:var(--text)", '600 · small'],
   ];
-  h += badge(64, 150, 'After');
-  let y = 236; rows.forEach(([r, s, role, css, chip, color, pd]) => { const hh = pd ? (r.h + PAD + (pd.b != null ? pd.b : PAD)) * s : PH(r, s); const cy = y + hh / 2;
-    h += crop('newIntro', r, { x: 64, y, s, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)', pad: pd }); h += lead(64 + PW(r, s) + 2, cy); h += spec(LX, cy, role, `${css};color:${color || 'var(--text)'}`, chip); y += hh + 22; });
-  h += badge(64, y + 2, 'Before'); const by = y + 54, bh = PH(O.subtitleShort, 1.1), bcy = by + bh / 2;
-  h += crop('oldIntro', O.subtitleShort, { x: 64, y: by, s: 1.1, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)' }); h += lead(64 + PW(O.subtitleShort, 1.1) + 2, bcy); h += spec(LX, bcy, 'Old docs', "400 30px 'Inter';color:var(--muted)", 'one weight · one grey');
+  rows.forEach(([r, sc, pd, role, css, chip]) => { [out, y] = row('newIntro', r, sc, y, pd, role, css, chip); h += out; });
   return h;
 });
 add('D2-alignment', 'D', 'Alignment', 'silk4', 'Top-aligned rows against the real centre-aligned switcher and footer rows.', () => {
