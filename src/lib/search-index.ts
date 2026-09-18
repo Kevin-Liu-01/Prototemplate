@@ -100,6 +100,8 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   docs: 'document',
   skills: 'sparkles',
   marks: 'swatch',
+  blog: 'document',
+  graphics: 'gallery',
   archive: 'archive',
 };
 
@@ -111,7 +113,9 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   deck: 'brand deck slideshow slides identity summary book GT',
   present: 'presenter slides scoreboard',
   compare: 'side by side synced frames',
-  skills: 'agent skills SKILL.md engineering productivity general translation',
+  skills: 'agent skills SKILL.md engineering productivity general translation graphics',
+  blog: 'posts articles docs redesign rewriting fuma nama designing docs for humans carousel',
+  graphics: 'illustrations visuals covers carousel slides glyphfield exports pipeline manifest',
   marks: 'logo mark monogram GT explorations bilingual counterform reflection',
   archive: 'retired versions captures history',
 };
@@ -196,6 +200,17 @@ function docHref(slug: string): string {
 
 /** The h2 rows of each document, in reading order: [id, title]. The readme ends with the build log's six sections. */
 const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
+  graphics: [
+    ['what-a-visual-is', 'What a visual is'],
+    ['sizing', 'Sizing'],
+    ['the-files', 'The files'],
+    ['procedure', 'Procedure'],
+    ['capturing', 'Capturing'],
+    ['backgrounds', 'Backgrounds'],
+    ['clips', 'Clips'],
+    ['handing-off-to-a-post', 'Handing off to a post'],
+    ['where-it-went-wrong-and-the-fix', 'Where it went wrong, and the fix'],
+  ],
   readme: [
     ['run-it', 'Run it'],
     ['read-first', 'Read first'],

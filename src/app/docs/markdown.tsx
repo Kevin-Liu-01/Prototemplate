@@ -31,6 +31,7 @@ const DOC_LINKS: Record<string, string> = {
   'ARCHITECTURE.md': '/docs/architecture',
   'docs/SHIP-LOOP.md': '/docs/ship-loop',
   'docs/LIBRARIES.md': '/docs/libraries',
+  'docs/GRAPHICS.md': '/docs/graphics',
 };
 
 function resolveHref(href: string): string {

@@ -1,0 +1,382 @@
+[
+  {
+    "id": "A1-zones-overlay",
+    "area": "A",
+    "name": "Zones overlay",
+    "bg": "u20",
+    "why": "The real page with the four zones boxed and labelled; the reader verifies the claim against the product.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "A2-wireframe-map",
+    "area": "A",
+    "name": "Wireframe map",
+    "bg": "u11",
+    "why": "The page as a wireframe with its levels of organization pulled out and tied to where they live: sections in the switcher, groups and pages in the sidebar, headings in the contents rail.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "A3-exploded-layers",
+    "area": "A",
+    "name": "Exploded layers",
+    "bg": "u17",
+    "why": "The quiet details pulled out of the page and tied back to where they sit: the theme toggle in both places, the italic last-updated line, the split copy-page button, the star count and the language switcher.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "A4-reading-path",
+    "area": "A",
+    "name": "Reading path",
+    "bg": "u19",
+    "why": "A numbered path over the muted page: orient, navigate, read, choose, act.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "A5-four-corners",
+    "area": "A",
+    "name": "Four corners",
+    "bg": "u26",
+    "why": "One crop per zone, labelled by what you do there: navigate in the sidebar, act in the header, adjust or leave in the footer, read in the content column.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "B1-redline-pass",
+    "area": "B",
+    "name": "Redline pass",
+    "bg": "u27",
+    "why": "The old page with every deleted element struck in red and numbered, and a legend beside it.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "B2-before-after-split",
+    "area": "B",
+    "name": "Before / after split",
+    "bg": "u28",
+    "why": "Old and new at the same scale; deletions in red, the replacement row in blue.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "B3-the-pile",
+    "area": "B",
+    "name": "The pile",
+    "bg": "u33",
+    "why": "The deleted pieces cut out of the old page, braced together into the single row that replaced them.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "B4-peel-the-layers",
+    "area": "B",
+    "name": "Peel the layers",
+    "bg": "u34",
+    "why": "Extra lines, links and buttons as translucent layers lifted off the new page, each called out in red; the page itself in blue.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "B5-header-strip",
+    "area": "B",
+    "name": "Header strip",
+    "bg": "u36",
+    "why": "Where the old top band’s controls went: the search field became the ⌘K icon, the GitHub banner became the star pill, and the sidebar toggle went away because the sidebar now stays.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "C1-nav-census",
+    "area": "C",
+    "name": "Navigation census",
+    "bg": "u37",
+    "why": "Every navigation or control surface numbered on both pages.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "C2-accordion-anatomy",
+    "area": "C",
+    "name": "Accordion anatomy",
+    "bg": "u39",
+    "why": "The new sidebar enlarged with a label for each part.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "C3-persistence-strip",
+    "area": "C",
+    "name": "Persistence strip",
+    "bg": "u40",
+    "why": "Three consecutive pages; the sidebar stays, only the active marker moves.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "C4-sidebars-side-by-side",
+    "area": "C",
+    "name": "Sidebars side by side",
+    "bg": "u41",
+    "why": "The two sidebars at the same scale with bracketed labels.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "C5-one-tree",
+    "area": "C",
+    "name": "One tree",
+    "bg": "u44",
+    "why": "The sidebar drawn as the tree it is, mapped onto the real crop.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "D1-type-specimen",
+    "area": "D",
+    "name": "Type specimen",
+    "bg": "u45",
+    "why": "Real type from the page at 110–220%, labelled by role.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "D2-alignment",
+    "area": "D",
+    "name": "Alignment",
+    "bg": "u47",
+    "why": "Top-aligned rows against the real centre-aligned switcher and footer rows.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "D3-icons-not-lists",
+    "area": "D",
+    "name": "Icons, not lists",
+    "bg": "u48",
+    "why": "The old paragraph-and-links against the new eight-card grid.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "D4-rules-and-space",
+    "area": "D",
+    "name": "Rules and space",
+    "bg": "u49",
+    "why": "The two 1px rules and the measured spacing at the top of the page.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "D5-quickstart-pages",
+    "area": "D",
+    "name": "Intro Quickstarts, before and after",
+    "bg": "u50",
+    "why": "The Introduction page’s Quickstarts section, old and new, at the same scale: eight centred logo tiles under a command line, versus eight cards with a solid icon, a name and one line each.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "E1-hover-mask",
+    "area": "E",
+    "name": "TOC slide (animated)",
+    "bg": "u52",
+    "why": "The Fumadocs table of contents on the Next.js quickstart, recorded live while scrolling: the active marker slides down the rail, an SVG path applied as a CSS mask. Delivered as GIF and MP4 as well as a still.",
+    "w": 1600,
+    "h": 900,
+    "animated": true
+  },
+  {
+    "id": "E2-solid-vs-outline",
+    "area": "E",
+    "name": "Solid vs outline",
+    "bg": "u53",
+    "why": "The old outline glyphs beside the solid glyphs the new docs use.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "E3-corners",
+    "area": "E",
+    "name": "Corners",
+    "bg": "u54",
+    "why": "Real buttons and fields at 160–220%, plus a radius scale with the pill struck out.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "E4-micro-ui",
+    "area": "E",
+    "name": "Flags, not emojis",
+    "bg": "u55",
+    "why": "The language menu with its custom matte flag SVGs beside the same list drawn with emoji flags, which are glossy and change from platform to platform.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "E6-sidebar-mask",
+    "area": "E",
+    "name": "Sidebar mask (animated)",
+    "bg": "u58",
+    "why": "The React reference sidebar recorded live: clicking from Configuration down through the Components children, the blue thumb sliding along the rail and through the bend where the tree nests. Delivered as MP4 and GIF as well as a still.",
+    "w": 1600,
+    "h": 900,
+    "animated": true
+  },
+  {
+    "id": "E5-localized",
+    "area": "E",
+    "name": "Localized",
+    "bg": "u56",
+    "why": "The same Introduction page in English and Japanese at the same scale. Dashed guides run across both: title, first sidebar item, header actions and the language row sit on the same lines, so spacing, alignment and order hold across languages.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "F1-hit-list",
+    "area": "F",
+    "name": "Hit list",
+    "bg": "u57",
+    "why": "The ten anti-patterns as a two-column list with solid x-marks.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "F2-spot-the-antipatterns",
+    "area": "F",
+    "name": "Spot the anti-patterns",
+    "bg": "u18",
+    "why": "An illustrative generic mock with numbered red callouts; labelled as a mock.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "F3-dont-do",
+    "area": "F",
+    "name": "Don’t / Do",
+    "bg": "u32",
+    "why": "Three real pairs cropped from old and new.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "F4-bingo",
+    "area": "F",
+    "name": "The fix for each",
+    "bg": "u46",
+    "why": "The hit list as a 3×3 card where every anti-pattern is struck out and its replacement written under it.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "H1-cover-exploded",
+    "area": "H",
+    "name": "Cover · exploded components",
+    "bg": "blue25",
+    "why": "The page taken apart in a three-quarter perspective: the real content column, navigation, actions and contents rail, and the links and preferences rows each hover on their own glass pane above a ghost wireframe of the page, held at their true positions by dashed posts. Straight-on perspective, no text, blue background.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "H1-cover-exploded-og",
+    "area": "H",
+    "name": "Cover · exploded components (OpenGraph 1200×630)",
+    "bg": "blue25",
+    "why": "The exploded-components stack at OpenGraph size, straight on, on the blue-toned export.",
+    "w": 1200,
+    "h": 630,
+    "animated": false
+  },
+  {
+    "id": "H1-cover-exploded-og-light",
+    "area": "H",
+    "name": "OpenGraph · exploded components, light theme (1200×630)",
+    "bg": "blue25",
+    "why": "The OpenGraph image with the docs in their light theme, on the same ground as the dark one.",
+    "w": 1200,
+    "h": 630,
+    "animated": false
+  },
+  {
+    "id": "H1-cover-exploded-light",
+    "area": "H",
+    "name": "Cover · exploded components, light theme",
+    "bg": "blue25",
+    "why": "The cover with the docs in their light theme: the same dark blue ground and scale as the header cover, the page panes and the wireframe they hover over in paper and ink.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "H0-cover-final",
+    "area": "H",
+    "name": "Cover · wireframe map",
+    "bg": "blue16",
+    "why": "The wireframe-map direction with no text: the fleshed-out wireframe of the real page with the four zones in blue, and real crops of the live docs tied to their zones, on the blue-toned export.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "H0-cover-final-light",
+    "area": "H",
+    "name": "Cover · wireframe map, light theme",
+    "bg": "blue16",
+    "why": "The wireframe-map direction with the docs in their light theme: paper plate, ink bars, light crops, the same blue-toned export.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "H0-cover-final-og",
+    "area": "H",
+    "name": "OpenGraph · wireframe map, cleaned (1200×630)",
+    "bg": "blue16",
+    "why": "The OpenGraph image: the wireframe of the real page alone, no crops, no labels, no numbers, the four zones in blue, on the blue-toned export. Nothing but the diagram.",
+    "w": 1200,
+    "h": 630,
+    "animated": false
+  },
+  {
+    "id": "H0-cover-final-og-light",
+    "area": "H",
+    "name": "OpenGraph · wireframe map, light theme (1200×630)",
+    "bg": "blue16",
+    "why": "The wireframe of the real page alone in its light theme, the four zones in blue, on the blue-toned export.",
+    "w": 1200,
+    "h": 630,
+    "animated": false
+  }
+]

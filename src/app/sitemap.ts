@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next';
 import { DOCS } from '@/app/docs/registry';
 import { ARCHIVE } from '@/lib/archive';
 import { DIRECTION_PAGE_SLUGS, DIRECTIONS } from '@/lib/directions';
+import { getPosts } from '@/lib/blog';
 import { SKILLS, skillHref } from '@/lib/skills';
 
 const SITE_URL = 'https://prototemplate.vercel.app';
@@ -27,7 +28,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/docs`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/skills`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/marks`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/blog`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${SITE_URL}/graphics`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
   ];
+
+  for (const post of getPosts()) {
+    entries.push({
+      url: `${SITE_URL}/blog/${post.slug}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    });
+  }
 
   for (const doc of DOCS) {
     entries.push({

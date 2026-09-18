@@ -71,7 +71,8 @@ export function skillNumber(slug: string): string {
 
 /** The repository the SKILL.md lives in, short enough for the head's meta column. */
 export function sourceLabel(source: SkillSource): string {
-  return source === 'wiki' ? 'Kevin wiki' : 'gt-cloud';
+  if (source === 'wiki') return 'Kevin wiki';
+  return source === 'gt-cloud' ? 'gt-cloud' : 'Prototemplate';
 }
 
 /** The raw body file the page's toolbar opens. */

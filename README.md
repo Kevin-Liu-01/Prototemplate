@@ -19,6 +19,8 @@ page for page.
 - `/deck`: the General Translation brand deck, 52 slides in its own viewer
 - `/skills`: the agent skills that carry the brand and design rules into coding sessions
 - `/marks`: the mark explorations, every candidate drawn in one color
+- `/blog`: the docs-redesign series as General Translation published it, three posts with their sources under `content/`
+- `/graphics`: every illustration of the series, by area, with what it shows and the glyphfield export it sits on; made with the toolchain in `graphics/`
 - `/compare`: two directions side by side in scroll-synced frames
 - `/present`: the presenter, a full-screen walkthrough of the redesign with every prototype live
 - `/archive`: the retired directions, each kept as a full-page capture with the commit that last held its code
@@ -40,6 +42,8 @@ pnpm dev        # http://localhost:3006
 | [`docs/SHIP-LOOP.md`](./docs/SHIP-LOOP.md) | the verify/ship procedure every round runs (line audit, ratchet, tsc, filming, mirror build) |
 | [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index — the live version is `/craft` |
 | [`public/media/`](./public/media/README.md) | finished artwork made with the system: the Open Source announcement reel and the X banner, shown live in `/brand` |
+| [`docs/GRAPHICS.md`](./docs/GRAPHICS.md) | the graphics pipeline: how the blog illustrations are captured, composed, rendered, clipped and handed to a post — the live version is `/docs/graphics`, the set is `/graphics` |
+| [`graphics/`](./graphics/README.md) | the toolchain itself: the generator, the renderer, the exports, the captures and the recordings |
 
 Agent sessions: the same material is wired as skills under
 `.agents/skills/gt-redesign` (umbrella) and the focused `redesign-*` skills.

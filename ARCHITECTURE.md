@@ -17,6 +17,10 @@ src/
     d/_v0/                shared v0 sections (TranslateWindow, StackTower,
                           Locadex, FullStack, Deploy …) used by the
                           singularity-* homes
+    blog/                 the docs-redesign posts (content/blog) rendered with
+                          the landing site's MDX components
+    graphics/             the illustration catalogue, read from
+                          graphics/build/manifest.json
     prototemplate.css     the pt grammar (index + craft chrome)
     globals.css           the four color tokens
   components/
@@ -35,6 +39,9 @@ docs/
   harness/gallery-shoot.mjs   the gallery shooter (see "The gallery
                               pipeline" below; the rest of harness/ is
                               one-off probes)
+graphics/                 the blog-illustration toolchain (docs/GRAPHICS.md)
+content/                  the three docs-redesign posts and their authors
+.agents/skills/           the graphics skills, published on /skills
 ```
 
 ## The direction registry
@@ -134,6 +141,11 @@ and the file names are the contract between the two ends:
 - `DESIGN.md` — the visual canon (this repo's law book).
 - `docs/SHIP-LOOP.md` — the verify/ship procedure every round runs.
 - `docs/LIBRARIES.md` — the library index (defers to `/craft` for depth).
+- `docs/GRAPHICS.md` — the graphics pipeline: how the blog illustrations
+  are made with `graphics/`, and the rules that came out of review.
+- `.agents/skills/` — the graphics skills (pipeline, capture, glyphfield
+  export, stop-motion, blog MDX components, docs tokens), published on
+  `/skills` as the Graphics group and linked into `.claude/skills/`.
 - Agent guidance lives in `.agents/skills/gt-redesign` (umbrella) plus the
   focused `redesign-*` skills, symlinked into `.claude/skills/`.
 

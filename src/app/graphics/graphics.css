@@ -1,0 +1,137 @@
+/*
+ * /graphics: the illustration set as a ruled catalogue. A wide column of
+ * cards, each the export at the column width with its name, its point and
+ * its background under it; sections per area of the post.
+ */
+
+.gfx-root {
+  width: min(100% - 40px, 1120px);
+  margin: 0 auto;
+  padding: 72px 0 96px;
+  font-family: var(--pt-text);
+  color: var(--pt-ink);
+}
+
+.gfx-eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pt-titanium);
+}
+
+.gfx-root h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.gfx-lead {
+  max-width: 720px;
+  margin: 16px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+}
+
+.gfx-lead a,
+.gfx-area-head a {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.gfx-area {
+  margin-top: 72px;
+  padding-top: 32px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.gfx-area-head h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.gfx-area-head h2 a {
+  text-decoration: none;
+}
+
+.gfx-area-head h2 a:hover {
+  text-decoration: underline;
+}
+
+.gfx-area-head > p:last-child {
+  max-width: 640px;
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+}
+
+.gfx-grid {
+  display: grid;
+  gap: 40px 32px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 800px) {
+  .gfx-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.gfx-shot {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--pt-radius);
+  background: var(--pt-plate);
+}
+
+.gfx-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gfx-copy {
+  margin-top: 14px;
+}
+
+.gfx-index {
+  margin: 0;
+  font-family: var(--pt-mono);
+  font-size: 12px;
+  color: var(--pt-titanium);
+}
+
+.gfx-id {
+  margin-left: 6px;
+}
+
+.gfx-copy h3 {
+  margin: 6px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.gfx-copy > p:not(.gfx-index):not(.gfx-meta) {
+  margin: 6px 0 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+}
+
+.gfx-meta {
+  margin: 8px 0 0;
+  font-family: var(--pt-mono);
+  font-size: 12px;
+  color: var(--pt-titanium);
+}

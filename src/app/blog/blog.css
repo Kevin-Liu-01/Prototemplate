@@ -1,0 +1,719 @@
+/*
+ * The blog: the docs-redesign posts read in the site's tokens. One column
+ * of prose at the article measure, figures at the column width, the
+ * instruments (carousel, hit list, callout, spotlight) in the same grammar
+ * as the landing site's, drawn with --pt- tokens so both themes hold.
+ */
+
+.blog-root {
+  --blog-measure: 720px;
+  --blog-red: #f0524f;
+  --blog-blue: #0078ff;
+  width: min(100% - 40px, var(--blog-measure));
+  margin: 0 auto;
+  padding: 72px 0 96px;
+  font-family: var(--pt-text);
+  color: var(--pt-ink);
+}
+
+.blog-eyebrow {
+  margin: 0 0 14px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pt-titanium);
+}
+
+.blog-eyebrow a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-eyebrow a:hover {
+  color: var(--pt-ink);
+}
+
+.blog-root h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.blog-lead {
+  margin: 16px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+}
+
+.blog-lead a,
+.blog-body a,
+.blog-article-foot a {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.blog-lead a:hover,
+.blog-body a:hover,
+.blog-article-foot a:hover {
+  text-decoration-color: var(--pt-ink);
+}
+
+/* ---- byline ---- */
+
+.blog-byline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 0;
+  font-size: 14px;
+  color: var(--pt-ink-2);
+}
+
+.blog-byline-avatars {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.blog-byline-avatars img {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px var(--pt-paper);
+}
+
+.blog-byline-avatars img + img {
+  margin-left: -6px;
+}
+
+.blog-byline-dot {
+  color: var(--pt-titanium);
+}
+
+/* ---- index ---- */
+
+.blog-index-head {
+  margin-bottom: 48px;
+}
+
+.blog-index {
+  display: grid;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-card-cover {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--pt-radius);
+  background: var(--pt-plate);
+  aspect-ratio: 16 / 9;
+}
+
+.blog-card-copy {
+  margin-top: 18px;
+}
+
+.blog-card-copy h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.blog-card-copy h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-card-copy h2 a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.blog-card-copy > p {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+}
+
+/* ---- covers ---- */
+
+.blog-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--pt-radius);
+}
+
+.blog-article-head .blog-cover {
+  margin-top: 32px;
+}
+
+.blog-card-cover .blog-cover {
+  height: 100%;
+  border-radius: 0;
+  object-fit: cover;
+}
+
+/* a post with two covers shows the one for the theme; the other stays in the document, ready */
+.blog-cover-dark {
+  display: none;
+}
+
+:root[data-theme='dark'] .blog-cover-dark {
+  display: block;
+}
+
+:root[data-theme='dark'] .blog-cover-light {
+  display: none;
+}
+
+/* ---- article ---- */
+
+.blog-body {
+  margin-top: 40px;
+  font-size: 16.5px;
+  line-height: 1.65;
+}
+
+.blog-body > * + * {
+  margin-top: 1.1em;
+}
+
+.blog-body h2 {
+  margin-top: 2.2em;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.blog-body h3 {
+  margin-top: 1.8em;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.blog-body ul,
+.blog-body ol {
+  padding-left: 1.3em;
+}
+
+.blog-body li + li {
+  margin-top: 0.45em;
+}
+
+.blog-body code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--pt-plate);
+  font-family: var(--pt-mono);
+  font-size: 0.88em;
+}
+
+.blog-body strong {
+  font-weight: 600;
+}
+
+.blog-body em {
+  font-style: italic;
+}
+
+.blog-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 2em 0;
+  border-radius: var(--pt-radius);
+}
+
+.blog-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 2em 0;
+  border-radius: var(--pt-radius);
+}
+
+.blog-body p:has(> .blog-image:only-child) {
+  margin: 0;
+}
+
+.blog-body .lucide {
+  display: inline-block;
+  vertical-align: -3px;
+}
+
+.blog-article-foot {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--pt-hair-soft);
+  font-size: 15px;
+}
+
+/* ---- callout ---- */
+
+.blog-callout {
+  margin: 2em 0;
+  padding: 20px 22px;
+  border-radius: var(--pt-radius);
+  background: var(--pt-plate);
+  font-size: 15.5px;
+}
+
+.blog-callout > * + * {
+  margin-top: 0.8em;
+}
+
+.blog-callout-title {
+  font-weight: 600;
+}
+
+/* ---- GitHub chip ---- */
+
+.blog-github {
+  margin: 2em 0;
+}
+
+.blog-github a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.blog-github a:hover {
+  border-color: var(--pt-edge);
+}
+
+.blog-github-meta {
+  color: var(--pt-titanium);
+  font-weight: 400;
+}
+
+/* ---- author spotlight ---- */
+
+.blog-spotlight {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  min-height: 280px;
+  margin: 2em 0;
+  overflow: hidden;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius);
+}
+
+.blog-spotlight-portrait {
+  display: block;
+  background: var(--pt-plate);
+}
+
+.blog-spotlight-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.04);
+}
+
+.blog-spotlight-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+}
+
+.blog-spotlight-copy h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.blog-spotlight-copy p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--pt-ink-2);
+}
+
+.blog-spotlight-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.blog-spotlight-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius);
+  font-size: 13px;
+  color: var(--pt-ink);
+  text-decoration: none;
+}
+
+.blog-spotlight-links a:hover {
+  border-color: var(--pt-edge);
+}
+
+.blog-spotlight-links img {
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .blog-spotlight {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-spotlight-portrait {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* ---- hit list ---- */
+
+.blog-hit-list {
+  display: grid;
+  gap: 14px 40px;
+  margin: 1.6em 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .blog-hit-list {
+    grid-auto-flow: column;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--rows), auto);
+  }
+}
+
+.blog-hit-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.blog-hit-mark {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--blog-red) 16%, transparent);
+  color: var(--blog-red);
+}
+
+/* ---- carousel ---- */
+
+.blog-carousel {
+  margin: 2em 0;
+}
+
+.blog-carousel-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--pt-radius);
+}
+
+.blog-carousel-frame.is-multiple {
+  cursor: pointer;
+}
+
+.blog-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.blog-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.blog-carousel-track:focus-visible {
+  outline: 2px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.blog-carousel-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+}
+
+.blog-carousel-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.blog-carousel-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 16%;
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+  pointer-events: none;
+}
+
+.blog-carousel-edge.is-left {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.14) 60%, transparent);
+}
+
+.blog-carousel-edge.is-right {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.14) 60%, transparent);
+}
+
+.blog-carousel-edge.is-shown {
+  opacity: 1;
+}
+
+.blog-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  padding: 12px;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.92);
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.7));
+  transform: translateY(-50%);
+  transition:
+    translate 300ms ease-out,
+    opacity 300ms ease-out;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.blog-carousel-edge.is-left .blog-carousel-arrow {
+  left: 12px;
+  translate: -8px 0;
+}
+
+.blog-carousel-edge.is-right .blog-carousel-arrow {
+  right: 12px;
+  translate: 8px 0;
+}
+
+.blog-carousel-edge.is-shown .blog-carousel-arrow {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+}
+
+.blog-carousel-arrow:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+}
+
+.blog-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.blog-carousel-dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--pt-cross);
+  cursor: pointer;
+  transition:
+    background-color 200ms ease-out,
+    transform 200ms ease-out;
+}
+
+.blog-carousel-dot:hover {
+  background: var(--pt-edge);
+}
+
+.blog-carousel-dot.is-current {
+  background: var(--pt-ink);
+  transform: scale(1.25);
+}
+
+.blog-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-carousel-edge,
+  .blog-carousel-arrow,
+  .blog-carousel-dot {
+    transition: none;
+  }
+}
+
+/* ---- Fumadocs architecture ---- */
+
+.blog-fumadocs-architecture {
+  --fda-fg: var(--pt-ink);
+  --fda-muted-fg: var(--pt-ink-2);
+  --fda-card: var(--pt-plate);
+  --fda-popover: var(--pt-paper);
+  --fda-secondary: var(--pt-plate);
+  --fda-border: var(--pt-hair);
+  --fda-accent: var(--pt-hair-soft);
+  --fda-dash: var(--pt-cross);
+  margin: 2em 0;
+}
+
+.blog-fumadocs-architecture svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.blog-fumadocs-architecture .ft {
+  font: 600 13px var(--pt-text);
+  fill: var(--fda-fg);
+}
+
+.blog-fumadocs-architecture .fl {
+  font: 600 13.5px var(--pt-text);
+  fill: var(--fda-fg);
+}
+
+.blog-fumadocs-architecture .fs {
+  font: 400 11.5px var(--pt-text);
+  fill: var(--fda-muted-fg);
+}
+
+.blog-fumadocs-architecture .fm {
+  font: 500 12px var(--pt-mono);
+  fill: var(--fda-fg);
+}
+
+.blog-fumadocs-architecture .cardbox,
+.blog-fumadocs-architecture .cardband {
+  fill: var(--fda-card);
+  stroke: var(--fda-border);
+  stroke-width: 1;
+}
+
+.blog-fumadocs-architecture .popbox {
+  fill: var(--fda-popover);
+  stroke: var(--fda-border);
+  stroke-width: 1;
+}
+
+.blog-fumadocs-architecture .secband {
+  fill: var(--fda-secondary);
+  stroke: var(--fda-border);
+  stroke-width: 1;
+}
+
+.blog-fumadocs-architecture .secband.core {
+  fill: color-mix(in oklab, var(--blog-blue) 7%, var(--fda-secondary));
+  stroke: color-mix(in oklab, var(--blog-blue) 55%, transparent);
+  stroke-width: 1.25;
+}
+
+.blog-fumadocs-architecture .core-label {
+  fill: var(--blog-blue);
+}
+
+.blog-fumadocs-architecture .chip.core-chip {
+  fill: color-mix(in oklab, var(--blog-blue) 16%, transparent);
+}
+
+.blog-fumadocs-architecture .dashband {
+  fill: none;
+  stroke: var(--fda-dash);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.blog-fumadocs-architecture .chip {
+  fill: var(--fda-accent);
+}
+
+.blog-fumadocs-architecture .logo {
+  fill: var(--fda-fg);
+}
+
+.blog-fumadocs-architecture .lst {
+  stroke: var(--fda-fg);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.blog-fumadocs-architecture .arr {
+  stroke: var(--fda-muted-fg);
+  stroke-width: 1.5;
+}
+
+.blog-fumadocs-architecture .alg,
+.blog-fumadocs-architecture .tan,
+.blog-fumadocs-architecture .wak {
+  fill: var(--fda-fg);
+}
+
+.blog-fumadocs-architecture .stopP {
+  stop-color: var(--fda-fg);
+}
+
+.blog-fumadocs-architecture .stopPT {
+  stop-color: var(--fda-fg);
+  stop-opacity: 0;
+}
+
+/* third-party marks keep their brand colours; they are the only fixed colours on the page */
+.blog-fumadocs-architecture .brand-flexsearch-b {
+  fill: #30a4dc;
+}
+
+.blog-fumadocs-architecture .brand-vite {
+  fill: #7c3aed;
+}
+
+.blog-fumadocs-architecture .brand-react-router {
+  fill: #ca4245;
+}
+
+.blog-fumadocs-architecture .brand-graphql {
+  fill: #e10098;
+}
+
+.blog-fumadocs-architecture .brand-flexsearch-a {
+  fill: #f4641d;
+}

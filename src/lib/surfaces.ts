@@ -163,6 +163,20 @@ const KNOWLEDGE: readonly Surface[] = [
     thumb('marks')
   ),
   internal(
+    'blog',
+    'Blog',
+    '/blog',
+    'The docs-redesign series as General Translation published it: the content rewrite, the Fuma Nama interview, and designing docs for humans.',
+    'Knowledge'
+  ),
+  internal(
+    'graphics',
+    'Graphics',
+    '/graphics',
+    'Every illustration of the series by area, with what it shows and the glyphfield export it sits on.',
+    'Knowledge'
+  ),
+  internal(
     'archive',
     'Archive',
     `/archive/${ARCHIVE[0]?.slug ?? ''}`,

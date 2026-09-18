@@ -48,6 +48,13 @@ export const DOCS: readonly DocEntry[] = [
     blurb:
       'The index of the componentized instruments. The living version, with plates running, is the build log under the readme.',
   },
+  {
+    slug: 'graphics',
+    file: 'docs/GRAPHICS.md',
+    title: 'The graphics pipeline',
+    blurb:
+      'How the blog illustrations are made with the toolchain in graphics/: captures at 3 to 5x, labelled crops on glyphfield exports, the sizing rules, clips, export and hand-off to a post.',
+  },
 ] as const;
 
 export function getDoc(slug: string): DocEntry | undefined {

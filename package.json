@@ -14,7 +14,12 @@
     "build:thumbs": "node scripts/build-thumbs.mjs",
     "build:skills": "node scripts/build-skills.mjs",
     "capture:pages": "node scripts/capture-pages.mjs",
-    "lint:all": "pnpm lint:shell && pnpm lint:practices && pnpm lint:lines:shell"
+    "lint:all": "pnpm lint:shell && pnpm lint:practices && pnpm lint:lines:shell",
+    "graphics:serve": "node graphics/serve/server.js graphics",
+    "graphics:gen": "node graphics/build/gen-visuals.js",
+    "graphics:render": "graphics/build/render.sh",
+    "graphics:export": "python3 graphics/build/export-blog.py",
+    "graphics:audit": "node graphics/build/audit.js"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -42,6 +47,7 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@types/three": "^0.180.0",
+    "heroicons": "^2.2.0",
     "playwright-core": "^1.62.0",
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
