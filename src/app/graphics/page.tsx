@@ -13,6 +13,15 @@ export const metadata: Metadata = {
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
 };
 
+/** What ships beside the post: the social card in both themes, and the contact sheets the set was reviewed on. */
+const CARDS = [
+  { src: '/static/blogs/designing-docs-og.png', alt: 'The social card (Open Graph and Twitter), dark theme, 2400×1260', w: 2400, h: 1260 },
+  { src: '/static/blogs/designing-docs-og-light.png', alt: 'The social card, light theme, 2400×1260', w: 2400, h: 1260 },
+  { src: '/graphics/sheets/designing-docs-sheet0.png', alt: 'Contact sheet 1 of 3: areas A to D at thumbnail size', w: 2560, h: 1536 },
+  { src: '/graphics/sheets/designing-docs-sheet1.png', alt: 'Contact sheet 2 of 3: areas D to F', w: 2560, h: 1536 },
+  { src: '/graphics/sheets/designing-docs-sheet2.png', alt: 'Contact sheet 3 of 3: the covers', w: 2560, h: 768 },
+] as const;
+
 /** The two earlier posts whose figures the page lists, with the section that introduces them. */
 const EARLIER = [
   { slug: 'rewriting-our-docs', lead: 'Part one of the series: the content rewrite, illustrated with captures of the shipped docs.' },
@@ -82,12 +91,37 @@ export default function GraphicsPage() {
         </section>
       ))}
 
+      <section className='gfx-area' id='cards-and-sheets'>
+        <header className='gfx-area-head'>
+          <p className='gfx-eyebrow'>Cards and sheets · {CARDS.length}</p>
+          <h2>What ships beside the post</h2>
+          <p>
+            The social card the post's Open Graph and Twitter tags point at, in both themes, and the contact sheets the
+            finished set was reviewed on at the size a reader meets it.
+          </p>
+        </header>
+        <ol className='gfx-grid'>
+          {CARDS.map((card, i) => (
+            <li key={card.src} className='gfx-card'>
+              <a className='gfx-shot' href={card.src} rel='noreferrer' target='_blank'>
+                <img src={card.src} alt={card.alt} width={card.w} height={card.h} loading='lazy' decoding='async' />
+              </a>
+              <div className='gfx-copy'>
+                <p className='gfx-index'>{String(i + 1).padStart(2, '0')}</p>
+                <p>{card.alt}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       {EARLIER.map(({ slug, lead }) => {
         const post = getPost(slug);
         if (!post) return null;
         const figures = [
           ...(post.image ? [{ alt: 'The header cover, dark theme', src: post.image }] : []),
           ...(post.imageLight ? [{ alt: 'The header cover, light theme', src: post.imageLight }] : []),
+          ...(post.ogImage ? [{ alt: 'The social card (Open Graph and Twitter)', src: post.ogImage }] : []),
           ...postFigures(post.body),
         ];
         return (
