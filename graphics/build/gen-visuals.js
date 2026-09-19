@@ -246,15 +246,15 @@ add('C6-another-section', 'C', 'Another section', 'silk3', 'The same accordion i
 });
 
 // =============== AREA D ===============
-add('D1-type-specimen', 'D', 'Type specimen', 'silk5', 'Real type from the page at 110–220%, hung on one centre axis: the old docs’ single weight and grey first, then each new role, its sample right of nothing but the axis and its label set in the weight and style it names, with the spec beside it in mono.', () => {
-  let h = ''; const AXIS = 935, GAP = 24;
-  // a label: the role, set the way the page sets it, and its spec as a mono chip
-  const spec = (cy, role, css, chip) => `<div class="txt" style="left:${px(AXIS + 34)};top:${px(cy - 27)};display:flex;align-items:center;gap:14px;height:54px;white-space:nowrap"><span style="font:${css};letter-spacing:-.01em">${role}</span><span style="font:500 26px/1 'Geist Mono';letter-spacing:.03em;color:var(--blue2);padding:8px 10px;border-radius:6px;background:rgba(9,9,11,.85)">${chip}</span></div>`;
+add('D1-type-specimen', 'D', 'Type specimen', 'silk5', 'Real type from the page at 110–220%, hung on one centre axis: the old docs’ single weight and grey first, then each new role, its label (set in the weight and style it names, with the spec in mono) on the left of the axis and its sample on the right.', () => {
+  let h = ''; const AXIS = 620, GAP = 24;
+  // a label, right-aligned to the axis: the role, set the way the page sets it, and its spec as a mono chip
+  const spec = (cy, role, css, chip) => `<div class="txt" style="left:auto;right:${px(1600 - (AXIS - 34))};top:${px(cy - 27)};display:flex;justify-content:flex-end;align-items:center;gap:14px;height:54px;white-space:nowrap"><span style="font:${css};letter-spacing:-.01em">${role}</span><span style="font:500 26px/1 'Geist Mono';letter-spacing:.03em;color:var(--blue2);padding:8px 10px;border-radius:6px;background:rgba(9,9,11,.85)">${chip}</span></div>`;
   // the short tick across the axis that joins a sample to its label
-  const tick = (cy) => line(AXIS - 20, cy, AXIS + 20, cy, { color: 'rgba(96,165,250,.85)', w: 3, end: true });
+  const tick = (cy) => line(AXIS + 20, cy, AXIS - 20, cy, { color: 'rgba(96,165,250,.85)', w: 3, end: true });
   // a badge right-aligned to the axis, over its group of samples
-  const side = (y, t) => `<div class="badge" style="left:auto;right:${px(1600 - (AXIS - GAP))};top:${px(y)}">${t}</div>`;
-  const row = (shot, r, sc, y, pd, role, css, chip) => { const hh = pd ? (r.h + PAD + (pd.b != null ? pd.b : PAD)) * sc : PH(r, sc); const cy = y + hh / 2; let o = crop(shot, r, { x: AXIS - GAP - PW(r, sc), y, s: sc, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)', pad: pd }); o += tick(cy); o += spec(cy, role, css, chip); return [o, y + hh + 22]; };
+  const side = (y, t) => `<div class="badge" style="left:${px(AXIS + GAP)};top:${px(y)}">${t}</div>`;
+  const row = (shot, r, sc, y, pd, role, css, chip) => { const hh = pd ? (r.h + PAD + (pd.b != null ? pd.b : PAD)) * sc : PH(r, sc); const cy = y + hh / 2; let o = crop(shot, r, { x: AXIS + GAP, y, s: sc, cls: 'flat', style: 'border-color:rgba(63,63,70,.6)', pad: pd }); o += tick(cy); o += spec(cy, role, css, chip); return [o, y + hh + 22]; };
   let y = 130; h += side(y, 'Before'); y += 60;
   let out; [out, y] = row('oldIntro', O.subtitleShort, 1.1, y, undefined, 'Old docs', "400 30px 'Inter';color:var(--muted)", 'one weight · one grey'); h += out;
   y += 10; h += side(y, 'After'); y += 60;
@@ -324,7 +324,7 @@ add('E3-corners', 'E', 'Corners', 'silk2', 'The old pill button and search field
   h += badge(X, 150, 'Before'); h += crop('oldIntro', O.demo, { x: X, y: 214, s: S, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)', pad: 8 }); h += crop('oldIntro', O.search, { x: X + PW(O.demo, S, 8) + 24, y: 214 + (PH(O.demo, S, 8) - PH(O.search, s2)) / 2, s: s2, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)' });
   h += badge(X, 500, 'After'); h += crop('newIntro', N.demo, { x: X, y: 564, s: S, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)', pad: 8 }); h += crop('newIntro', N.copy, { x: X + PW(N.demo, S, 8) + 24, y: 564 + (PH(N.demo, S, 8) - PH(N.copy, s2)) / 2, s: s2, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)' });
   h += panel(940, 130, 596, 640, plabel('swatch', 'Radius'));
-  [[4, 'controls'], [6, 'buttons · fields'], [8, 'cards'], [12, 'panels'], [999, 'pills']].forEach(([r, k], i) => { const y = 130 + 84 + i * 104; const bad = r === 999; h += `<div style="position:absolute;left:980px;top:${px(y)};width:200px;height:76px;border-radius:${px(Math.min(r, 38))};border:2px solid ${bad ? '#f0524f' : 'var(--border2)'};background:${bad ? 'rgba(240,82,79,.08)' : '#0c0c0f'}"></div>`; h += `<div class="txt" style="left:1210px;top:${px(y + 6)}"><div class="mono" style="font-size:28px;color:${bad ? '#f0524f' : 'var(--text)'}">${bad ? '9999' : r} px</div><div style="font:500 26px 'Inter';color:var(--muted);margin-top:6px">${k}</div></div>`; if (bad) h += `<div class="txt" style="left:1440px;top:${px(y + 22)};color:#f0524f">${ico('x-circle', 32)}</div>`; });
+  [[4, 'controls'], [6, 'buttons · fields'], [8, 'cards'], [12, 'panels'], [999, 'pills']].forEach(([r, k], i) => { const y = 130 + 84 + i * 104; const bad = r === 999; h += `<div style="position:absolute;left:980px;top:${px(y)};width:200px;height:76px;border-radius:${px(Math.min(r, 38))};border:${bad ? '3px' : '2.5px'} solid ${bad ? '#f0524f' : 'rgba(250,250,250,.55)'};background:${bad ? 'rgba(240,82,79,.3)' : '#0c0c0f'}"></div>`; h += `<div class="txt" style="left:1210px;top:${px(y + 6)}"><div class="mono" style="font-size:28px;color:${bad ? '#f0524f' : 'var(--text)'}">${bad ? '9999' : r} px</div><div style="font:500 26px 'Inter';color:${bad ? 'var(--text)' : 'var(--muted)'};margin-top:6px">${k}</div></div>`; if (bad) h += `<div class="txt" style="left:1440px;top:${px(y + 16)};display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(240,82,79,.94);color:#fafafa;box-shadow:0 0 0 3px rgba(9,9,11,.6)">${ico('x-mark', 24)}</div>`; });
   return h;
 });
 add('E4-micro-ui', 'E', 'Flags, not emojis', 'silk3', 'The language menu with its custom matte flag SVGs beside the same list drawn with emoji flags, which are glossy and change from platform to platform.', () => {
