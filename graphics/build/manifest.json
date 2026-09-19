@@ -244,7 +244,7 @@
     "area": "E",
     "name": "Flags, not emojis",
     "bg": "u55",
-    "why": "The language menu with its custom matte flag SVGs beside the same list drawn with emoji flags, which are glossy and change from platform to platform.",
+    "why": "The language menu twice at the same size: the real one with its custom matte flag SVGs, and the same list drawn with emoji flags, which are glossy and change from platform to platform.",
     "w": 1600,
     "h": 900,
     "animated": false
@@ -294,7 +294,7 @@
     "area": "F",
     "name": "Spot the anti-patterns",
     "bg": "u18",
-    "why": "An illustrative generic mock with numbered red callouts; labelled as a mock.",
+    "why": "An illustrative generic mock with numbered red callouts.",
     "w": 1600,
     "h": 900,
     "animated": false

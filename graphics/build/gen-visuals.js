@@ -327,15 +327,16 @@ add('E3-corners', 'E', 'Corners', 'silk2', 'The old pill button and search field
   [[4, 'controls'], [6, 'buttons · fields'], [8, 'cards'], [12, 'panels'], [999, 'pills']].forEach(([r, k], i) => { const y = 130 + 84 + i * 104; const bad = r === 999; h += `<div style="position:absolute;left:980px;top:${px(y)};width:200px;height:76px;border-radius:${px(Math.min(r, 38))};border:${bad ? '3px' : '2.5px'} solid ${bad ? '#f0524f' : 'rgba(250,250,250,.55)'};background:${bad ? 'rgba(240,82,79,.3)' : '#0c0c0f'}"></div>`; h += `<div class="txt" style="left:1210px;top:${px(y + 6)}"><div class="mono" style="font-size:28px;color:${bad ? '#f0524f' : 'var(--text)'}">${bad ? '9999' : r} px</div><div style="font:500 26px 'Inter';color:${bad ? 'var(--text)' : 'var(--muted)'};margin-top:6px">${k}</div></div>`; if (bad) h += `<div class="txt" style="left:1440px;top:${px(y + 16)};display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(240,82,79,.94);color:#fafafa;box-shadow:0 0 0 3px rgba(9,9,11,.6)">${ico('x-mark', 24)}</div>`; });
   return h;
 });
-add('E4-micro-ui', 'E', 'Flags, not emojis', 'silk3', 'The language menu with its custom matte flag SVGs beside the same list drawn with emoji flags, which are glossy and change from platform to platform.', () => {
+add('E4-micro-ui', 'E', 'Flags, not emojis', 'silk3', 'The language menu twice at the same size: the real one with its custom matte flag SVGs, and the same list drawn with emoji flags, which are glossy and change from platform to platform.', () => {
   let h = '';
   const names = ['English (GB)', 'English (US)', 'Español', 'Français', 'Italiano', 'Русский', '中文', '日本語'], flags = ['🇬🇧', '🇺🇸', '🇪🇸', '🇫🇷', '🇮🇹', '🇷🇺', '🇨🇳', '🇯🇵'];
-  const EX = 200, EY = 140;
+  // the real popover card in the capture: 198 by 298 CSS px, eight 36px rows inset 5px, 7px of padding
+  const card = { x: 2, y: 554, w: 198, h: 298 }, mS = 1.85, W = card.w * mS, HH = card.h * mS, GAPX = 120, EY = 150;
+  const EX = (1600 - (2 * W + GAPX)) / 2, MX = EX + W + GAPX; const k = (v) => px(v * mS);
   h += tag('Emoji', null, EX, EY - 62, 'dark');
-  h += `<div class="txt" style="left:${px(EX)};top:${px(EY)};width:430px;padding:12px;border-radius:14px;background:#0c0c0f;border:1px solid var(--border2)">${names.map((n, i) => `<div style="display:flex;align-items:center;gap:20px;height:70px;padding:0 18px;border-radius:9px;font:500 28px/1 'Inter';color:#fafafa;${i === 1 ? 'background:rgba(250,250,250,.08)' : ''}"><span style="font-size:40px;line-height:1">${flags[i]}</span><span>${n}</span></div>`).join('')}</div>`;
-  const MX = 820, mS = 1.85, menu = { x: 0, y: 548, w: 290, h: 352 };
+  h += `<div class="txt" style="left:${px(EX)};top:${px(EY)};width:${px(W)};height:${px(HH)};box-sizing:border-box;padding:${k(7)} ${k(5)};border-radius:${k(8)};background:#0c0c0f;border:1px solid var(--border2)">${names.map((n, i) => `<div style="display:flex;align-items:center;gap:${k(12)};height:${k(36)};padding:0 ${k(10)};border-radius:${k(6)};font:400 ${k(15)}/1 'Inter';color:#fafafa;${i === 1 ? 'background:rgba(250,250,250,.08)' : ''}"><span style="font-size:${k(17)};line-height:1;width:${k(21)};text-align:center">${flags[i]}</span><span>${n}</span>${i === 1 ? `<span style="margin-left:auto;display:inline-flex;color:#fafafa">${ico('check', 15 * mS)}</span>` : ''}</div>`).join('')}</div>`;
   h += tag('Custom SVGs', null, MX, EY - 62);
-  h += crop('langMenu', menu, { x: MX, y: EY, s: mS });
+  h += crop('langMenu', card, { x: MX, y: EY, s: mS, pad: 0, border: false, shadow: false, r: 8 * mS });
   return h;
 });
 add('E6-sidebar-mask', 'E', 'Sidebar mask (animated)', 'u58', 'The React reference sidebar recorded live: clicking from Configuration down through the Components children, the blue thumb sliding along the rail and through the bend where the tree nests. Delivered as MP4 and GIF as well as a still.', () => {
@@ -376,7 +377,7 @@ add('F1-hit-list', 'F', 'Hit list', 'u57', 'The ten anti-patterns as a two-colum
   return h;
 });
 
-add('F2-spot-the-antipatterns', 'F', 'Spot the anti-patterns', 'silk1', 'An illustrative generic mock with numbered red callouts; labelled as a mock.', () => {
+add('F2-spot-the-antipatterns', 'F', 'Spot the anti-patterns', 'silk1', 'An illustrative generic mock with numbered red callouts.', () => {
   let h = ''; const X = 64, Y = 96, W = 800, H = 704;
   // the mock is drawn at label scale (nothing under 27px) and cropped to its hero so it still fits beside the legend
   h += `<div style="position:absolute;left:${px(X)};top:${px(Y)};width:${px(W)};height:${px(H)};border-radius:36px;background:linear-gradient(160deg,#141826,#0e1018);border:1px solid rgba(120,140,255,.35);box-shadow:0 0 0 1px rgba(120,140,255,.15),0 0 80px rgba(90,110,255,.25);overflow:hidden">
@@ -398,7 +399,6 @@ add('F2-spot-the-antipatterns', 'F', 'Spot the anti-patterns', 'silk1', 'An illu
   // callouts straddle the mock's left edge (or sit on the thing they point at) so none covers copy
   [[X - 10, Y + 53, 1], [X + 44, Y + 250, 2], [X + 405, Y + 348, 3], [X - 10, Y + 498, 4], [X - 10, Y + 196, 5]].forEach(([x, y, n]) => { h += dot(x, y, n, 'red', 56); });
   ['Eyebrow text', 'Over-rounded boxes', 'Non-solid icons', 'Extraneous explanatory text', 'Spacing unrelated to importance'].forEach((k, i) => { const y = 250 + i * 72; h += dot(904 + 28, y + 23, i + 1, 'red', 56); h += label(904 + 72, y, k); });
-  h += `<div class="txt mono" style="left:${px(X)};top:${px(Y + H + 20)};font-size:27px;color:var(--muted)">Illustrative mock — not a real product</div>`;
   return h;
 });
 add('F3-dont-do', 'F', 'Don’t / Do', 'silk2', 'Three real pairs cropped from old and new.', () => {
