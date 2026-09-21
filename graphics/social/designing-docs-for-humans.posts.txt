@@ -5,7 +5,7 @@ MAIN  [image: hero cover]
 
 agents read most docs these days, but it's the humans who open them who decide if a product is worth their time.
 
-so we redesigned our docs for humans. cut lines and buttons, one sidebar that keeps your place, type that guides the eye, and some lil details that feel like GT. w/ Taylor Fang
+we redesigned ours for humans. cut lines and buttons, one sidebar that keeps your place, type that guides the eye, some lil details that feel like GT. w/ Taylor Fang
 
 
 REPLY 1  [images: page map, before/after, nav census, hit list]
