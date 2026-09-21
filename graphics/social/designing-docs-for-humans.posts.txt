@@ -1,0 +1,44 @@
+X (main post + 3 replies)
+=========================
+
+MAIN  [image: hero cover]
+
+agents read most docs now. but it's humans who open them to decide if a product is worth their time.
+
+so we redesigned our docs for humans. cut a bunch of lines and buttons, one sidebar that keeps your place, type that guides the eye, and some lil details that feel like GT. w/ Taylor Fang
+
+
+REPLY 1  [images: page map, before/after, nav census, hit list]
+
+where stuff lives on the page, what we deleted, 6 nav surfaces -> 3, and our hit list of docs anti-patterns (eyebrow text, pills, sidebars that lose your place...)
+
+
+REPLY 2  [no image, the link unfurls the card]
+
+full post w/ every before and after: https://generaltranslation.com/blog/designing-docs-for-humans
+
+
+REPLY 3  [images: the 4 glyphfield grounds]
+
+every background in the post is a glyphfield export. the dither under each figure, the covers, the OG cards. https://glyphfield.com
+
+
+LINKEDIN  [images: cover, page map, before/after, nav census, sidebar anatomy, quickstarts, icons, flags, hit list]
+========
+
+We redesigned the General Translation docs. Taylor Fang and I wrote up how.
+
+The question we started with: agents read most docs now, so is design still worth it? We think more than ever. Humans still open docs to figure out if a product is worth their time, and they need an interface that gets out of the way.
+
+What we did:
+
+- Every area of the screen has one job. Nav on the left, actions top right, links and preferences bottom left.
+- Deleted a lot. A search field, a GitHub banner, a sidebar toggle and a header rule became one row of five controls.
+- Six navigation surfaces became three. One sidebar that keeps your place.
+- Hierarchy does the guiding: solid icons, separators between sections, italics for meta, a lighter weight for body text.
+- Small details that feel like us, like a thumb drawn as an SVG mask that slides along the table of contents and the sidebar rail.
+- Same spacing, alignment and order in every language.
+
+Plus a hit list of anti-patterns we kept running into: eyebrow text, over-rounded boxes, non-solid icons, sidebars that expand forever or change when you click.
+
+Built on Fumadocs. Full post: https://generaltranslation.com/blog/designing-docs-for-humans
