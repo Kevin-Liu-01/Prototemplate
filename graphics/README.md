@@ -17,6 +17,7 @@ pnpm graphics:export -- --covers   # public/static/blogs (or --dest DIR)
 
 | folder | holds |
 | --- | --- |
+| `social/` | the launch posts for each set (X thread, LinkedIn post) with the image each carries |
 | `../public/graphics/sheets/` | contact sheets of the finished set (`sheet.py` output copied there when a set ships), served on `/graphics` for review at thumbnail size |
 | `build/` | `gen-lib.js`, `gen-visuals.js`, `render.sh`, `export-blog.py`, `composite-videos.sh`, `capture-sidebar.sh`, `rewriting-covers.py`, `sheet.py`, `gen-gallery.js`, `manifest.json`, `icons/` |
 | `serve/` | the static server (`node serve/server.js [root]`) |
