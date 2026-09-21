@@ -3,7 +3,7 @@ X (main post + 3 replies)
 
 MAIN  [image: hero cover]
 
-agents read most docs now. but it's humans who open them to decide if a product is worth their time.
+agents read most docs these days, but it's the humans who open them who decide if a product is worth their time.
 
 so we redesigned our docs for humans. cut lines and buttons, one sidebar that keeps your place, type that guides the eye, and some lil details that feel like GT. w/ Taylor Fang
 
