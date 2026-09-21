@@ -74,3 +74,25 @@ We also kept a hit list of anti-patterns we kept running into: eyebrow text, ove
 Built on Fumadocs, with a debt to Linear's docs for the restraint.
 
 The full post: https://generaltranslation.com/blog/designing-docs-for-humans
+
+## X, short form
+
+One post and three replies, for when the thread is too much.
+
+1. Main. image: `designing-docs.webp` (the cover)
+
+   agents read most docs these days, but it's humans who open them to decide if a product is worth their time.
+
+   so we redesigned our docs for humans. one sidebar, fewer lines and buttons, hierarchy that guides the eye, and a few details that feel like us. with Taylor Fang.
+
+2. Reply 1. images: `designing-docs-H0-cover-final.webp`, `designing-docs-B2-before-after-split.webp`, `designing-docs-C1-nav-census.webp`, `designing-docs-F5-poster.webp`
+
+   where things live on the page, what we cut, six navigation surfaces down to three, and our hit list of docs anti-patterns.
+
+3. Reply 2.
+
+   the full post, with every before and after: https://generaltranslation.com/blog/designing-docs-for-humans
+
+4. Reply 3. images: four grounds from `public/graphics/bg` (`blue/u16-A`, `blue/u25-A`, `user/u20`, `user/u27`)
+
+   every background in the post is a glyphfield export: the dither ground under each figure, the covers, the OG cards. https://glyphfield.com
