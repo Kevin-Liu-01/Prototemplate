@@ -24,9 +24,16 @@ italics carry meta ("Last updated …") and asides.
 
 ## Shape and icons
 
-Radii 6 to 8px. Icons that carry meaning are Heroicons solid; utility
-icons (search, theme, chevrons, copy) stay Lucide outline. Flags are
-custom matte SVGs, never emoji. The theme toggle is a half-filled circle
+Radii 6 to 8px. Icons come in two tiers. An icon that carries meaning (a
+card, a feature, a link destination, a package or section mark) is
+Heroicons solid, `24/solid` sized by class (`16/solid` inline with text).
+A control (search, copy, chevrons, arrows, close, theme, language, the
+contents header) is Lucide outline. Brand marks (framework logos, the GT
+monogram, social icons) are their own class. The rule was made explicit
+on 2026-09-21 after review of the blog's icon slide: the docs' section
+switcher had three Lucide marks (Overview, CLI, Integrations) that moved
+to solid, and the blog's package, RSS and Explore marks followed. Flags
+are custom matte SVGs, never emoji. The theme toggle is a half-filled circle
 and appears top right and bottom left.
 
 ## Layout at 1440

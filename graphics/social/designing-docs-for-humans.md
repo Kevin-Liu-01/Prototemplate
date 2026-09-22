@@ -37,7 +37,7 @@ four images per post, a GIF on its own).
 8. the same mask runs down the sidebar. it steps in 12px per nesting level with a 45° bend, and the blue thumb follows you row by row.
    gif: `designing-docs-sidebar-mask.gif`
 
-9. small things that fight AI-design symptoms: solid icons instead of outlines, 6 to 8px corners instead of pills, custom matte flag SVGs instead of emoji, one scrollbar style everywhere.
+9. small things that fight AI-design symptoms: solid icons where an icon carries meaning and thin outlines only on controls, 6 to 8px corners instead of pills, custom matte flag SVGs instead of emoji, one scrollbar style everywhere.
    images: `designing-docs-E2-solid-vs-outline.webp`, `designing-docs-E3-corners.webp`, `designing-docs-E4-micro-ui.webp`
 
 10. and it has to hold in every language. same spacing, alignment and order in English and Chinese.

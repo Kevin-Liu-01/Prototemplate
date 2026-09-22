@@ -222,9 +222,9 @@
   {
     "id": "E2-solid-vs-outline",
     "area": "E",
-    "name": "Solid vs outline",
+    "name": "Two tiers of icons",
     "bg": "u53",
-    "why": "The old outline glyphs beside the solid glyphs the new docs use.",
+    "why": "The new docs’ icon rule, from real captures: controls (search, language, copy page, theme) keep thin outline glyphs; icons that carry meaning (the Core, CLI and Integrations cards, the Libraries feature, the Changelog and Contact links) are solid. Below, the old page did the reverse: a solid theme toggle over outline tiles.",
     "w": 1600,
     "h": 900,
     "animated": false

@@ -311,14 +311,18 @@ add('E1-hover-mask', 'E', 'TOC slide (animated)', 'u52', 'The Fumadocs table of 
   return h;
 }, { animated: true });
 
-add('E2-solid-vs-outline', 'E', 'Solid vs outline', 'silk1', 'The old outline glyphs beside the solid glyphs the new docs use.', () => {
-  let h = '';
-  const pairs = [['icons/old/02-outline-icon.svg', 'globe-alt', 'globe'], ['icons/old/08-outline-search-k.svg', 'magnifying-glass', 'search'], ['icons/old/04-outline-english-us.svg', 'language', 'language'], ['icons/old/09-outline-copy-page.svg', 'document-duplicate', 'copy'], ['icons/old/16-outline-icon.svg', 'code-bracket-square', 'code file'], ['icons/old/17-outline-icon.svg', 'code-bracket', 'braces'], ['icons/old/00-outline-collapse-sidebar.svg', 'view-columns', 'sidebar']];
-  h += panel(64, 150, 720, 600, plabel('x-circle', 'Outline', true)); h += panel(816, 150, 720, 600, plabel('check-circle', 'Solid'));
-  pairs.forEach(([oldf, newn, lab], i) => { const col = i % 4, row = Math.floor(i / 4); const by = 150 + 100 + row * 200; const bx = 112 + col * 156, nx = 864 + col * 156; h += `<div class="txt" style="left:${px(bx - 18)};top:${px(by)};width:156px;text-align:center"><div style="display:grid;place-items:center;margin:0 auto;width:120px;height:120px;border-radius:14px;border:1px solid var(--border2);background:#0c0c0f;color:#d4d4d8">${svgFile(oldf, 58)}</div><div style="margin-top:10px;font:400 28px 'Inter';color:var(--muted)">${lab}</div></div>`; h += `<div class="txt" style="left:${px(nx - 18)};top:${px(by)};width:156px;text-align:center"><div style="display:grid;place-items:center;margin:0 auto;width:120px;height:120px;border-radius:14px;border:1px solid var(--border2);background:#0c0c0f;color:#fafafa">${ico(newn, 46)}</div><div style="margin-top:10px;font:400 28px 'Inter';color:var(--muted)">${lab}</div></div>`; });
+add('E2-solid-vs-outline', 'E', 'Two tiers of icons', 'silk1', 'The new docs’ icon rule, from real captures: controls (search, language, copy page, theme) keep thin outline glyphs; icons that carry meaning (the Core, CLI and Integrations cards, the Libraries feature, the Changelog and Contact links) are solid. Below, the old page did the reverse: a solid theme toggle over outline tiles.', () => {
+  let h = ''; const NEW = 'icons/new-switcher/', OLD = 'icons/old/';
+  // a captured glyph on a card, its role under it; the old page's tiles are muted to read as past
+  const tile = (x, y, file, lab, muted = false) => `<div class="txt" style="left:${px(x)};top:${px(y)};width:170px;text-align:center"><div style="display:grid;place-items:center;margin:0 auto;width:100px;height:100px;border-radius:8px;border:1px solid var(--border2);background:#0c0c0f;color:${muted ? '#a1a1aa' : '#fafafa'}">${svgFile(file, 48)}</div><div style="margin-top:10px;font:500 26px/1.2 'Inter';letter-spacing:-.01em;color:${muted ? 'var(--muted)' : 'var(--text)'}">${lab}</div></div>`;
+  h += tag('Controls · outline', 'cursor-arrow-rays', 64, 110, 'dark');
+  [['10-outline-open-search.svg', 'Search'], ['06-outline-english-us.svg', 'Language'], ['12-outline-copy-page.svg', 'Copy page'], ['08-outline-toggle-theme.svg', 'Theme']].forEach(([f, lab], i) => { h += tile(64 + i * 170, 190, NEW + f, lab); });
+  h += tag('Meaning · solid', 'check-circle', 880, 110);
+  [['18-solid-icon.svg', 'Core'], ['19-solid-icon.svg', 'CLI'], ['20-solid-icon.svg', 'Integrations'], ['21-solid-open-source-i18n-librari.svg', 'Libraries'], ['03-solid-changelog.svg', 'Changelog'], ['05-solid-contact-us.svg', 'Contact']].forEach(([f, lab], i) => { h += tile(880 + (i % 3) * 200, 190 + Math.floor(i / 3) * 160, NEW + f, lab); });
+  h += badge(64, 580, 'Before · a solid theme toggle, outline on the tiles');
+  [['06-solid-toggle-theme.svg', 'Theme'], ['16-outline-icon.svg', 'Markdown'], ['17-outline-icon.svg', 'JSON'], ['20-outline-locadex-agent.svg', 'Nav item']].forEach(([f, lab], i) => { h += tile(64 + i * 170, 650, OLD + f, lab, true); }); // the same pitch as the controls row above, so the two left groups align
   return h;
 });
-
 add('E3-corners', 'E', 'Corners', 'silk2', 'The old pill button and search field over the new button and copy control, at the same scale, beside the radius scale the new docs use with the pill struck out.', () => {
   let h = ''; const S = 2.4, s2 = 1.8, X = 64;
   h += badge(X, 150, 'Before'); h += crop('oldIntro', O.demo, { x: X, y: 214, s: S, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)', pad: 8 }); h += crop('oldIntro', O.search, { x: X + PW(O.demo, S, 8) + 24, y: 214 + (PH(O.demo, S, 8) - PH(O.search, s2)) / 2, s: s2, cls: 'flat', r: 10, style: 'border-color:rgba(63,63,70,.6)' });
