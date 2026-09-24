@@ -77,7 +77,9 @@ function svgFile(rel, size = 16, cls = '') {
   const file = path.join(ROOT, rel);
   if (!fs.existsSync(file)) return ico('sparkles', size, cls);
   let svg = fs.readFileSync(file, 'utf8').trim();
-  svg = svg.replace(/\s(width|height)="[^"]*"/g, '').replace(/\sclass="[^"]*"/, '').replace(/\sstyle="[^"]*"/, '').replace('<svg', `<svg width="${size}" height="${size}" class="svgf ${cls}"`);
+  // resize through the root tag only: a captured Lucide glyph keeps its <rect width height> children
+  // (copy, sidebar), and stripping those left a lone corner path on the slide
+  svg = svg.replace(/^<svg\b[^>]*>/, (open) => open.replace(/\s(width|height)="[^"]*"/g, '').replace(/\sclass="[^"]*"/, '').replace(/\sstyle="[^"]*"/, '').replace('<svg', `<svg width="${size}" height="${size}" class="svgf ${cls}"`));
   return svg;
 }
 

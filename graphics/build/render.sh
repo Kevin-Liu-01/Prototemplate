@@ -12,6 +12,7 @@ for id in $IDS; do
   agent-browser wait --load networkidle >/dev/null 2>&1
   agent-browser wait --fn "document.fonts.status === 'loaded'" >/dev/null 2>&1
   agent-browser wait --fn "window.__centered === true" >/dev/null 2>&1
+  if [ "$(agent-browser eval "window.__centered === true" 2>/dev/null | tail -1)" != "true" ]; then echo "FAILED $id: page never centered (is the graphics server on 8765 up?)"; continue; fi
   echo "$id $(agent-browser eval "JSON.stringify(window.__centerDelta || null)" 2>/dev/null | tail -1)" >> "$SP/build/out/_center.log"
   agent-browser wait 350 >/dev/null 2>&1
   agent-browser screenshot "$SP/build/out/$id.png" 2>&1 | tail -1 | sed "s#$SP/build/out/##"

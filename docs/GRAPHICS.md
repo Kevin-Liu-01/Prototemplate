@@ -160,6 +160,12 @@ and their graphics under `public/static/blogs`, read by `/blog` and
 
 ## Where it went wrong, and the fix
 
+- A captured Lucide glyph is a `<rect>` plus a path (copy, sidebar). The
+  inliner used to strip `width`/`height` from every element, so the rect
+  collapsed and only a corner path drew. It now resizes the root tag only.
+- With the static server down, `render.sh` shot Chrome's error page and the
+  export shipped it. The render now skips a page that never centres.
+
 | symptom | cause | fix |
 | --- | --- | --- |
 | "pixelated" cover | 1x dither aliasing, plus the optimizer re-encoding at quality 75 | 2x smooth background; webp cover at quality 90 |
