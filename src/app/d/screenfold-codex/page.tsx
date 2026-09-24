@@ -1,4 +1,4 @@
-import { Aboreto } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
@@ -22,9 +22,10 @@ export const metadata = {
 };
 
 /** The one display face: geometric deco caps for h1, h2, and the hero crown figure. */
-const display = Aboreto({
-  weight: '400',
-  subsets: ['latin'],
+const display = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/aboreto-400.woff2', weight: '400', style: 'normal' },
+  ],
   variable: '--screenfold-codex-display',
   display: 'swap',
 });

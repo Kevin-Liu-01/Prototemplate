@@ -1,4 +1,4 @@
-import { Marcellus } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
@@ -17,11 +17,13 @@ import './styles.css';
 
 /* The one display face: Marcellus, inscriptional caps with a real lowercase,
    read by styles.css for h1 and h2 only. Inter stays on <html>. */
-const display = Marcellus({
-  weight: ['400'],
-  subsets: ['latin'],
-  display: 'swap',
+const display = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/marcellus-400.woff2', weight: '400', style: 'normal' },
+  ],
   variable: '--textile-block-display',
+  display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 });
 
 export const metadata = {

@@ -1,4 +1,4 @@
-import { Federo } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
@@ -17,9 +17,10 @@ import Trust from './sections/Trust';
 import './styles.css';
 
 /** The one display face: geometric deco caps for h1 and h2. Inter stays the body. */
-const display = Federo({
-  weight: '400',
-  subsets: ['latin'],
+const display = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/federo-400.woff2', weight: '400', style: 'normal' },
+  ],
   variable: '--talud-tablero-display',
   display: 'swap',
 });

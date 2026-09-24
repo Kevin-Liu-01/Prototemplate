@@ -1,4 +1,4 @@
-import { Cinzel } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
@@ -19,11 +19,14 @@ export const metadata = {
 };
 
 /* the one display face: inscriptional capitals for h1 and h2 only; Inter stays the body */
-const display = Cinzel({
-  weight: ['400', '500'],
-  subsets: ['latin'],
-  display: 'swap',
+const display = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/cinzel-400.woff2', weight: '400', style: 'normal' },
+    { path: '../../../../public/fonts/google/cinzel-500.woff2', weight: '500', style: 'normal' },
+  ],
   variable: '--brick-lattice-display',
+  display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 });
 
 /**

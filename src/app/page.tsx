@@ -1,4 +1,4 @@
-import { Fraunces, Space_Grotesk } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import AnatomyWall from './AnatomyWall';
 import GalleryViewer from './GalleryViewer';
@@ -11,8 +11,22 @@ import './prototemplate.css';
    is Inter, the brand face. The post below it runs TWK Lausanne when
    locally installed (the woff2s are not shipped), falling back to Inter.
    The shell around the article is Inter alone. */
-const fraunces = Fraunces({ subsets: ['latin'], weight: ['600'], variable: '--font-fraunces', display: 'swap' });
-const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-grotesk', display: 'swap' });
+const fraunces = localFont({
+  src: [
+    { path: '../../public/fonts/google/fraunces-600.woff2', weight: '600', style: 'normal' },
+  ],
+  variable: '--font-fraunces',
+  display: 'swap',
+  adjustFontFallback: 'Times New Roman',
+});
+const grotesk = localFont({
+  src: [
+    { path: '../../public/fonts/google/space-grotesk-500.woff2', weight: '500', style: 'normal' },
+    { path: '../../public/fonts/google/space-grotesk-700.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-grotesk',
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Prototemplate',

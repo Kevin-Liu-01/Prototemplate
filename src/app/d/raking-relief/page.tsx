@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Cinzel } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 
@@ -33,11 +33,14 @@ import './styles.css';
  * shadow, one lapis inlay.
  */
 
-const display = Cinzel({
-  weight: ['400', '600'],
-  subsets: ['latin'],
-  display: 'swap',
+const display = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/cinzel-400.woff2', weight: '400', style: 'normal' },
+    { path: '../../../../public/fonts/google/cinzel-600.woff2', weight: '600', style: 'normal' },
+  ],
   variable: '--raking-relief-display',
+  display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 });
 
 export const metadata: Metadata = {

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Forum } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
@@ -33,9 +33,10 @@ export const metadata: Metadata = {
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
-const forum = Forum({
-  subsets: ['latin'],
-  weight: '400',
+const forum = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/forum-400.woff2', weight: '400', style: 'normal' },
+  ],
   variable: '--clay-tablet-display',
   display: 'swap',
 });

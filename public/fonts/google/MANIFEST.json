@@ -1,0 +1,222 @@
+[
+  {
+    "file": "sora-300.woff2",
+    "family": "Sora",
+    "weight": 300,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/sora/v17/xMQOuFFYT72X5wkB_18qmnndmScMnk-NKQJDA8i1P4w.woff2",
+    "bytes": 14948,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "sora-400.woff2",
+    "family": "Sora",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/sora/v17/xMQOuFFYT72X5wkB_18qmnndmSdSnk-NKQJDA8i1P4w.woff2",
+    "bytes": 14752,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "sora-500.woff2",
+    "family": "Sora",
+    "weight": 500,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/sora/v17/xMQOuFFYT72X5wkB_18qmnndmSdgnk-NKQJDA8i1P4w.woff2",
+    "bytes": 15024,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "instrument-sans-400.woff2",
+    "family": "Instrument Sans",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npSTF-TfykywN2u7ZWwU.woff2",
+    "bytes": 16860,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "instrument-sans-500.woff2",
+    "family": "Instrument Sans",
+    "weight": 500,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npST3-TfykywN2u7ZWwU.woff2",
+    "bytes": 17324,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "instrument-sans-400-italic.woff2",
+    "family": "Instrument Sans",
+    "weight": 400,
+    "style": "italic",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/instrumentsans/v4/pxigypc9vsFDm051Uf6KVwgkfoSbSnNPooZAN0lInHGpCWNE27lgU-XJojENuu-2oy4H28zdQwQzNA.woff2",
+    "bytes": 17820,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "instrument-sans-500-italic.woff2",
+    "family": "Instrument Sans",
+    "weight": 500,
+    "style": "italic",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/instrumentsans/v4/pxigypc9vsFDm051Uf6KVwgkfoSbSnNPooZAN0lInHGpCWNE27lgU-XJojENut22oy4H28zdQwQzNA.woff2",
+    "bytes": 18320,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "fraunces-600.woff2",
+    "family": "Fraunces",
+    "weight": 600,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/fraunces/v38/6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIcaRyTCf7Tp05GNyXk.woff2",
+    "bytes": 18120,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "space-grotesk-500.woff2",
+    "family": "Space Grotesk",
+    "weight": 500,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUXskPMBBSSJLm2E.woff2",
+    "bytes": 13372,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "space-grotesk-700.woff2",
+    "family": "Space Grotesk",
+    "weight": 700,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMBBSSJLm2E.woff2",
+    "bytes": 12848,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "cinzel-400.woff2",
+    "family": "Cinzel",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/cinzel/v26/8vIU7ww63mVu7gtR-kwKxNvkNOjw-tbnfY3lDWxcZqTFUw.woff2",
+    "bytes": 14192,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "cinzel-500.woff2",
+    "family": "Cinzel",
+    "weight": 500,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/cinzel/v26/8vIU7ww63mVu7gtR-kwKxNvkNOjw-uTnfY3lDWxcZqTFUw.woff2",
+    "bytes": 15056,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "cinzel-600.woff2",
+    "family": "Cinzel",
+    "weight": 600,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/cinzel/v26/8vIU7ww63mVu7gtR-kwKxNvkNOjw-gjgfY3lDWxcZqTFUw.woff2",
+    "bytes": 15228,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "cinzel-400-latin-ext.woff2",
+    "family": "Cinzel",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin-ext",
+    "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
+    "source": "https://fonts.gstatic.com/s/cinzel/v26/8vIU7ww63mVu7gtR-kwKxNvkNOjw-tbnfYPlDWxcZqTFU3AS.woff2",
+    "bytes": 7876,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "cinzel-600-latin-ext.woff2",
+    "family": "Cinzel",
+    "weight": 600,
+    "style": "normal",
+    "subset": "latin-ext",
+    "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
+    "source": "https://fonts.gstatic.com/s/cinzel/v26/8vIU7ww63mVu7gtR-kwKxNvkNOjw-gjgfYPlDWxcZqTFU3AS.woff2",
+    "bytes": 8344,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "marcellus-400.woff2",
+    "family": "Marcellus",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/marcellus/v14/wEO_EBrOk8hQLDvIAF81VvoK_kgXiQ.woff2",
+    "bytes": 14272,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "aboreto-400.woff2",
+    "family": "Aboreto",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/aboreto/v2/5DCXAKLhwDDQ4N8bpKPUAk6t1Sc.woff2",
+    "bytes": 10636,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "julius-sans-one-400.woff2",
+    "family": "Julius Sans One",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/juliussansone/v20/1Pt2g8TAX_SGgBGUi0tGOYEga5WOwnsXy6KHHg.woff2",
+    "bytes": 10632,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "federo-400.woff2",
+    "family": "Federo",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/federo/v20/iJWFBX-cbD_ETsbWilmf-2fW7A.woff2",
+    "bytes": 13476,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "forum-400.woff2",
+    "family": "Forum",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/forum/v19/6aey4Ky-Vb8Ew8IROpI43XnS.woff2",
+    "bytes": 13684,
+    "license": "SIL Open Font License 1.1"
+  }
+]

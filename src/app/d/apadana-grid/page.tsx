@@ -15,7 +15,7 @@
  * Persepolis in plan, the double volute as arcs, the twelve-petal rosette.
  * Material palette: limestone, lapis, gold, black basalt.
  */
-import { Julius_Sans_One } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 
@@ -30,9 +30,10 @@ import { Treasury } from './sections/Treasury';
 import './styles.css';
 
 /* the one display face: geometric deco capitals for the h1 and the h2 only */
-const display = Julius_Sans_One({
-  subsets: ['latin'],
-  weight: ['400'],
+const display = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/julius-sans-one-400.woff2', weight: '400', style: 'normal' },
+  ],
   variable: '--apadana-grid-display',
   display: 'swap',
 });

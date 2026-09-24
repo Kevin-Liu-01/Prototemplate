@@ -167,17 +167,17 @@
 
 /* The display face: h1, h2, and the crown cartouche. Nowhere else. */
 .glazed-bond-root h1 {
-  font-family: var(--glazed-bond-display), var(--font-inter), 'Inter', serif;
+  font-family: var(--glazed-bond-display), var(--glazed-bond-display-ext), var(--font-inter), 'Inter', serif;
   font-weight: 400;
 }
 
 .glazed-bond-root h2 {
-  font-family: var(--glazed-bond-display), var(--font-inter), 'Inter', serif;
+  font-family: var(--glazed-bond-display), var(--glazed-bond-display-ext), var(--font-inter), 'Inter', serif;
   font-weight: 400;
 }
 
 .glazed-bond-root .gb-crown-word {
-  font-family: var(--glazed-bond-display), var(--font-inter), 'Inter', serif;
+  font-family: var(--glazed-bond-display), var(--glazed-bond-display-ext), var(--font-inter), 'Inter', serif;
   font-weight: 600;
   font-size: 11px;
   letter-spacing: 0.22em;

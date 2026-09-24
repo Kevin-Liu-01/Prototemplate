@@ -57,7 +57,7 @@
    in the source block and the config, and the ring on the one locale pair
    the atlas wants noticed (zh-Hans beside zh-Hant).
 
-   Display face: Marcellus (next/font/google, `--textile-block-display`),
+   Display face: Marcellus (next/font/local, `--textile-block-display`),
    used for h1 and h2 only. Inter is the body, interface, caption, ledger,
    brick and chip face; the mono voice is for code, tokens and paths.
 

@@ -17,7 +17,7 @@
  * rules, stepped registers and bar-and-dot numerals. Material palette:
  * obsidian, terracotta, jade, gold.
  */
-import { Cinzel } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 
@@ -33,11 +33,14 @@ import { Trust } from './sections/Trust';
 import './styles.css';
 
 /* the one display face: inscriptional capitals for h1, h2 and the crown */
-const display = Cinzel({
-  subsets: ['latin'],
-  weight: ['400', '500'],
+const display = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/cinzel-400.woff2', weight: '400', style: 'normal' },
+    { path: '../../../../public/fonts/google/cinzel-500.woff2', weight: '500', style: 'normal' },
+  ],
   variable: '--calendar-rings-display',
   display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 });
 
 export const metadata = {

@@ -1,4 +1,4 @@
-import { Cinzel } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 
@@ -26,11 +26,30 @@ export const metadata = {
    geometry, for h1, h2 and the crown cartouche only. Inter stays on <html>
    as --font-inter for everything else. Latin Extended is loaded so the
    Polish, Turkish and Portuguese claims set in the same face. */
-const cinzel = Cinzel({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '600'],
+const cinzel = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/cinzel-400.woff2', weight: '400', style: 'normal' },
+    { path: '../../../../public/fonts/google/cinzel-600.woff2', weight: '600', style: 'normal' },
+  ],
   variable: '--glazed-bond-display',
   display: 'swap',
+  adjustFontFallback: false,
+});
+
+/* The latin-ext glyphs (the Polish claim's ę, ś and ż) ship as a second face
+   that styles.css lists right after the latin one, so the browser takes those
+   characters from it the way Google's unicode-range pair used to. The metrics
+   fallback hangs off this face, not the latin one: otherwise it would sit
+   between the two and Times would supply the accented letters first. */
+const cinzelExt = localFont({
+  src: [
+    { path: '../../../../public/fonts/google/cinzel-400-latin-ext.woff2', weight: '400', style: 'normal' },
+    { path: '../../../../public/fonts/google/cinzel-600-latin-ext.woff2', weight: '600', style: 'normal' },
+  ],
+  variable: '--glazed-bond-display-ext',
+  display: 'swap',
+  adjustFontFallback: 'Times New Roman',
+  declarations: [{ prop: 'unicode-range', value: 'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF' }],
 });
 
 /**
@@ -56,7 +75,7 @@ const cinzel = Cinzel({
 export default function GlazedBondPage() {
   return (
     <>
-      <div className={`glazed-bond-root ${cinzel.variable}`}>
+      <div className={`glazed-bond-root ${cinzel.variable} ${cinzelExt.variable}`}>
         <GlazeDefs />
         <Lintel />
         <Gate />
