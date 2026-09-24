@@ -315,13 +315,13 @@ add('E2-solid-vs-outline', 'E', 'Two tiers of icons', 'silk1', 'The new docs’ 
   let h = ''; const NEW = 'icons/new-switcher/';
   const T = 200, GLYPH = 96, GAP = 44, LABEL = 56; // tile, glyph, gutter, label band
   const tile = (x, y, file, lab) => `<div class="txt" style="left:${px(x)};top:${px(y)};width:${px(T)};text-align:center"><div style="display:grid;place-items:center;width:${px(T)};height:${px(T)};border-radius:14px;border:1px solid var(--border2);background:#0c0c0f;color:#fafafa">${file.startsWith('glyph:') ? `<span style="font-size:${px(GLYPH * 1.05)};line-height:1">${file.slice(6)}</span>` : svgFile(file, GLYPH)}</div><div style="margin-top:14px;font:500 30px/1.2 'Inter';letter-spacing:-.01em;color:var(--text)">${lab}</div></div>`;
-  const grid = (x0, y0, cols, items) => items.forEach(([f, lab], i) => { h += tile(x0 + (i % cols) * (T + GAP), y0 + Math.floor(i / cols) * (T + LABEL + GAP), f.startsWith('glyph:') ? f : NEW + f, lab); });
+  const grid = (x0, y0, cols, items) => items.forEach(([f, lab], i) => { h += tile(x0 + (i % cols) * (T + GAP), y0 + Math.floor(i / cols) * (T + LABEL + GAP), f.startsWith('glyph:') || f.startsWith('icons/') ? f : NEW + f, lab); });
   // two groups hugging their grids (2 by 2 controls, 3 by 2 meaning), one header line, one tile baseline
   const LW = 2 * T + GAP, RW = 3 * T + 2 * GAP, GUT = 120; const X0 = (1600 - (LW + GUT + RW)) / 2, RX = X0 + LW + GUT; const HY = 118, GY = 210;
   h += panel(X0 - 18, HY, LW + 36, 60, plabel('cursor-arrow-rays', 'Controls · outline'));
   grid(X0, GY, 2, [['10-outline-open-search.svg', 'Search'], ['06-outline-english-us.svg', 'Language'], ['12-outline-copy-page.svg', 'Copy page'], ['glyph:◑', 'Theme']]);
   h += panel(RX - 18, HY, RW + 36, 60, plabel('check-circle', 'Meaning · solid'));
-  grid(RX, GY, 3, [['18-solid-icon.svg', 'Core'], ['19-solid-icon.svg', 'CLI'], ['20-solid-icon.svg', 'Integrations'], ['21-solid-open-source-i18n-librari.svg', 'Libraries'], ['03-solid-changelog.svg', 'Changelog'], ['05-solid-contact-us.svg', 'Contact']]);
+  grid(RX, GY, 3, [['18-solid-icon.svg', 'Core'], ['19-solid-icon.svg', 'CLI'], ['icons/gt-plug.svg', 'Integrations'] /* the house plug that replaced the puzzle piece */, ['21-solid-open-source-i18n-librari.svg', 'Libraries'], ['03-solid-changelog.svg', 'Changelog'], ['05-solid-contact-us.svg', 'Contact']]);
   return h;
 });
 add('E3-corners', 'E', 'Corners', 'silk2', 'The old pill button and search field over the new button and copy control, at the same scale, beside the radius scale the new docs use with the pill struck out.', () => {
