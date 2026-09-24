@@ -224,7 +224,7 @@
     "area": "E",
     "name": "Two tiers of icons",
     "bg": "u53",
-    "why": "The new docs’ icon rule, from real captures: controls (search, language, copy page, and the half-filled circle of the theme toggle) keep thin glyphs; icons that carry meaning (the Core, CLI and Integrations cards, the Libraries feature, the Changelog and Contact links) are solid. Below, the old page did the reverse: a solid theme toggle over outline tiles.",
+    "why": "The new docs’ icon rule, from real captures, as two groups: controls (search, language, copy page, the theme toggle’s half-filled circle) keep thin glyphs; icons that carry meaning (the Core, CLI and Integrations cards, the Libraries feature, the Changelog and Contact links) are solid.",
     "w": 1600,
     "h": 900,
     "animated": false
