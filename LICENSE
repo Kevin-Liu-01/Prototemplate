@@ -1,0 +1,55 @@
+Prototemplate License
+
+Copyright (c) 2026 General Translation, Inc. All rights reserved.
+
+This repository is public so that anyone can read it. It is not open source.
+It is not licensed under the MIT License or under any other open-source or
+Creative Commons license, and no such license should be inferred from the
+repository being public on GitHub.
+
+What you may do
+
+You may view the contents of this repository, clone it, and link to it in
+order to read, review, study, and evaluate the work. GitHub's Terms of
+Service let you fork and star it on GitHub, and this license does not
+restrict that.
+
+What you may not do without written permission from General Translation, Inc.
+
+- Copy, publish, host, distribute, or sublicense the contents, in whole or
+  in part, anywhere other than a fork on GitHub.
+- Use the writing, copy, names, marks, designs, layouts, typography,
+  illustrations, images, video, motion, or other creative work in your own
+  product, site, document, presentation, or marketing.
+- Use the source code, engines, pipelines, or scripts in your own software.
+- Make or publish derivative works of any of the above, including
+  translations and adaptations.
+
+If you would like to use something here, ask. General Translation, Inc. can
+be reached through generaltranslation.com.
+
+Third-party material
+
+Some files come from others and keep their own licenses, which control for
+those files:
+
+- The fonts under public/fonts are under the SIL Open Font License 1.1. See
+  public/fonts/README.md and public/fonts/google/MANIFEST.json.
+- Icons from Heroicons (MIT License, tailwindlabs/heroicons) and Lucide (ISC
+  License) appear in the brand deck and in the blog graphics.
+- Photographs and artworks in the brand deck that come from Wikimedia
+  Commons keep the public-domain or Creative Commons terms recorded with
+  their credits on the slides and in deck/shots/OPENERS.md.
+- Skills under public/skills that credit an upstream source keep that
+  source's license as noted in the file.
+- Dependencies installed from npm keep their own licenses.
+
+Open-source software from General Translation
+
+General Translation's libraries, including gt-next, gt-react, the gt CLI,
+and the rest of the gt monorepo, are separate projects released under the
+MIT License in their own repositories. This license does not change that.
+
+No warranty
+
+The contents are provided as is, without warranty of any kind.

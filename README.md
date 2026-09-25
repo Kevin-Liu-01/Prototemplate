@@ -61,3 +61,11 @@ index, presenter, and sitemap all follow it. The anatomy wall's tiles come
 from `docs/harness/gallery-shoot.mjs` under deterministic names
 (`ARCHITECTURE.md`, "The gallery pipeline") — a missing tile just drops
 from the wall.
+
+## License
+
+Prototemplate is public so that anyone can read it, but it is not open
+source. The code, the writing, the brand and the designs are copyright
+General Translation, Inc., all rights reserved, and no reuse is granted
+without written permission. Third-party fonts, icons, photographs and
+adapted skills keep their own licenses. See [LICENSE](./LICENSE).
