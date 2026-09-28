@@ -71,7 +71,7 @@ export default function Scoreboard() {
       data-slide='scoreboard'
     >
       <header className='pr-score-head'>
-        <h2 className='pr-score-title'>The verdict.</h2>
+        <h2 className='pr-score-title'>The verdict</h2>
         <button
           type='button'
           className='pr-score-theme'

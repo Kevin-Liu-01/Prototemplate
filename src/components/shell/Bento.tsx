@@ -14,27 +14,19 @@ import './shell.css';
  */
 
 /**
- * The page's doubled rail pair for full-bleed band sections that sit
- * OUTSIDE a .tc-rail wrapper. Sections inside a wrapper must render
- * nothing — the wrapper already owns the rails (drawing them twice is the
- * double-rail bug). The parent section must be `relative`.
+ * The page's rail pair for full-bleed band sections that sit OUTSIDE a
+ * .tc-rail wrapper: one hairline at each column edge, drawn once
+ * (DESIGN.md section 3). Sections inside a wrapper must render nothing,
+ * the wrapper already owns the rails (drawing them twice is the
+ * double-rail bug). The second pair outside the column is retired and has
+ * no prop. The parent section must be `relative`.
  */
-export function Rails({ outer = true }: { outer?: boolean }) {
-  const pair =
-    'pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 border-x border-(--tc-hair-band)';
+export function Rails() {
   return (
-    <>
-      <div aria-hidden className={cn(pair, 'w-[min(var(--tc-rail),100%)]')} />
-      {outer ? (
-        <div
-          aria-hidden
-          className={cn(
-            pair,
-            'w-[calc(min(var(--tc-rail),100%)+var(--tc-rail-outer,18px))]'
-          )}
-        />
-      ) : null}
-    </>
+    <div
+      aria-hidden
+      className='pointer-events-none absolute inset-y-0 left-1/2 w-[min(var(--tc-rail),100%)] -translate-x-1/2 border-x border-(--tc-hair-band)'
+    />
   );
 }
 

@@ -77,7 +77,7 @@ export default function StoryCodeScene() {
           <span className='gts-lmk' data-note='1'>
             <span>!</span>
             <span className='gts-tip'>
-              <b>Unwrapped copy.</b> The heading is a raw string — Locadex wraps the block in
+              <b>Unwrapped copy.</b> The heading is a raw string. Locadex wraps the block in
               &lt;T&gt; so every locale renders inline.
             </span>
           </span>
@@ -99,7 +99,7 @@ export default function StoryCodeScene() {
           <span className='gts-lmk' data-note='2'>
             <span>!</span>
             <span className='gts-tip'>
-              <b>Unlocalized date.</b> toLocaleDateString ignores the app locale — replaced with
+              <b>Unlocalized date.</b> toLocaleDateString ignores the app locale. Locadex replaces it with
               &lt;DateTime&gt; for correct formats.
             </span>
           </span>
@@ -156,7 +156,7 @@ export default function StoryCodeScene() {
           <span className='gts-lmk' data-note='3'>
             <span>!</span>
             <span className='gts-tip'>
-              <b>CTA copy.</b> The button label enters the context platform — the glossary pins
+              <b>CTA copy.</b> The button label enters the context platform. The glossary pins
               “Get started” to approved verbs per locale.
             </span>
           </span>

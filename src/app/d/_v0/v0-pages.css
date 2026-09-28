@@ -26,8 +26,9 @@
 }
 
 /* ============================================================
-   SINGLE RAIL + CORNER CROSSES. The doubled outer rail retires on
-   the five homes; in its place, registration crosses sit on every
+   SINGLE RAIL + CORNER CROSSES. The second rail pair at +-10px is
+   retired (first on these five homes, now site-wide: DESIGN.md
+   section 3); in its place, registration crosses sit on every
    section seam where it meets the rail verticals — subtle, but a
    real mark. One pseudo per section paints both of its bottom
    corners (the next section's top corners are the same points).
@@ -39,14 +40,6 @@
    container, so the story figures downstream stay sticky. */
 .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
   overflow-x: clip;
-}
-
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail::before {
-  content: none;
-}
-
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-nav-in::before {
-  content: none;
 }
 
 /* Registration crosses on every seam again (founder round-trip): each
@@ -321,15 +314,6 @@
    SEAM OWNERSHIP AT THE v0 JUNCTIONS — every boundary line
    drawn once, per the ledger's own rules.
    ============================================================ */
-
-/* The v0 flow mounts its dark bands INSIDE the page's .tc-rail wrapper,
-   and the band LAW (styles.css) says exactly this case must not draw the
-   band's own outer rail pair — the wrapper's ±10px pseudo already owns
-   it, and the band's +18px pair landed 1px inside it, the double-rail
-   bug for the full band height. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail .tc-band::after {
-  content: none;
-}
 
 /* Sections whose lower neighbour draws the seam yield their tc-sec
    bottom rule: Customers under the full-stack band's border-top, Global

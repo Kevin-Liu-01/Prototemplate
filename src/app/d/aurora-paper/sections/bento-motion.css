@@ -153,7 +153,7 @@
 }
 
 /* the trunk: two 1px lines at constant gauge, cropped by the group —
-   the same doubled-hairline device as the page rail's outer pair */
+   the thread device (DESIGN.md section 5), not a page rail */
 .aurorapaper-root .tcm-net::before {
   content: '';
   position: absolute;

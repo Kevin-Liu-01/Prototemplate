@@ -32,6 +32,40 @@ const found = {
   'any-type': [],
   'raw-hex-in-tsx': [],
   'important-in-css': [],
+  'outer-rail-pair': [],
+  'rail-outer-token': [],
+  'retired-rail-vocabulary': [],
+};
+
+/* DESIGN.md section 3: one rail each side, drawn once by the column's own
+   border-inline. Three checks keep the retired second pair from coming
+   back:
+   - outer-rail-pair: a ::before/::after that pushes an inline border pair
+     outside its box (negative left AND right, or a negative inset-inline),
+     or a centered pseudo widened past the column
+     (width: calc(min(var(--tc-rail), ...) + ...)); in TSX, the Tailwind
+     spelling of that widened width.
+   - rail-outer-token: --tc-rail-outer, the token that sized the pair.
+   - retired-rail-vocabulary: prose that still describes the pair as a
+     device (outer pair, outer rail, doubled outer, doubled rails). A line
+     that says it is retired is history, not a recommendation, and passes.
+     The doubled LINE (the thread, DESIGN.md section 5) is a different
+     device and its vocabulary is not matched. */
+const RETIRED_RAIL = /outer pair|outer rail|doubled outer|doubled rails/i;
+const NEG_LEFT = /(?:^|[;{\s])left\s*:\s*-\d/;
+const NEG_RIGHT = /(?:^|[;{\s])right\s*:\s*-\d/;
+const NEG_INSET = /(?:^|[;{\s])inset-inline\s*:\s*-\d/;
+// a non-zero inline border; `border-left: 0` on a full-bleed horizontal
+// seam (pricing-v2's stacked enterprise card) is one rule, not a pair
+const INLINE_BORDER = /(?:^|[;{\s])border-(?:inline|left|right|inline-start|inline-end)\s*:(?!\s*(?:0|none)\s*(?:;|$))/m;
+const WIDENED_COLUMN = /width\s*:\s*calc\(\s*min\(\s*var\(--tc-rail\)[^)]*\)\s*\+/;
+const isOuterRailBody = (body) =>
+  INLINE_BORDER.test(body) &&
+  ((NEG_LEFT.test(body) && NEG_RIGHT.test(body)) || NEG_INSET.test(body) || WIDENED_COLUMN.test(body));
+const railLineChecks = (rel, line, i) => {
+  if (line.includes('--tc-rail-outer')) found['rail-outer-token'].push(`${rel}:${i + 1}`);
+  if (RETIRED_RAIL.test(line) && !/retire/i.test(line))
+    found['retired-rail-vocabulary'].push(`${rel}:${i + 1}`);
 };
 
 for (const file of files) {
@@ -75,6 +109,8 @@ for (const file of files) {
         found['any-type'].push(`${rel}:${i + 1}`);
       if (/['"`(]#[0-9a-fA-F]{6}\b/.test(line))
         found['raw-hex-in-tsx'].push(`${rel}:${i + 1}`);
+      if (/calc\(min\(var\(--tc-rail\),\s*100%\)\s*\+/.test(line))
+        found['outer-rail-pair'].push(`${rel}:${i + 1}`);
     });
   }
 
@@ -83,7 +119,32 @@ for (const file of files) {
       if (line.includes('!important'))
         found['important-in-css'].push(`${rel}:${i + 1}`);
     });
+    // rule blocks with comments blanked (line count kept), so prose never
+    // matches and a nested @media rule parses the same as a top-level one
+    const bare = text.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
+    for (const m of bare.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      const selector = m[1].trim();
+      if (!/::?(?:before|after)\b/.test(selector)) continue;
+      if (!isOuterRailBody(m[2])) continue;
+      const at = m.index + m[1].search(/\S/);
+      found['outer-rail-pair'].push(`${rel}:${bare.slice(0, at).split('\n').length}`);
+    }
   }
+
+  lines.forEach((line, i) => railLineChecks(rel, line, i));
+}
+
+/* The design docs are the part that RECOMMENDS: the same vocabulary check
+   runs over them so the lab cannot drift back to describing a second pair. */
+const docs = [
+  ...['DESIGN.md', 'BRAND.md', 'ARCHITECTURE.md'].map((f) => join(ROOT, f)).filter(existsSync),
+  ...execSync(`find ${ROOT}/docs -type f -name '*.md'`).toString().trim().split('\n').filter(Boolean),
+];
+for (const file of docs) {
+  const rel = file.replace(`${ROOT}/`, '');
+  readFileSync(file, 'utf8')
+    .split('\n')
+    .forEach((line, i) => railLineChecks(rel, line, i));
 }
 
 if (UPDATE) {

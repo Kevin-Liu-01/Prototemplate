@@ -469,7 +469,6 @@ export default function TypeDetailSlide() {
               <span className='pr-wrong-inter'>
                 wrong <em className='pr-glitch-inter'>Inter</em>
               </span>
-              .
             </h2>
             <p className='pr-sub'>
               The Inter that Google Fonts serves is not quite the Inter that
@@ -536,7 +535,7 @@ export default function TypeDetailSlide() {
         </div>
 
         <div className='pr-detail-close'>
-          <h3>So I built 12.</h3>
+          <h3>So I built 12</h3>
           <div className='pr-close-gallery'>
             {DIRECTIONS.map((direction) => (
               <button

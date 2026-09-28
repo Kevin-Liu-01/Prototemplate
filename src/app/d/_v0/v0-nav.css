@@ -23,20 +23,6 @@
   padding-inline: var(--tc-gut);
 }
 
-/* The doubled rail's outer pair — one pseudo box at the same +-10px gauge as
-   the toolchain bar, so the nav's rails land on the page rails' pixels. */
-.toolchain-root .v0-nav-in::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--tc-hair);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .toolchain-root .v0-nav-brand {
   display: flex;
   align-items: center;

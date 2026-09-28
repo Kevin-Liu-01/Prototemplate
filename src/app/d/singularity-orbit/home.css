@@ -93,8 +93,8 @@
 /* The toolchain dark band mounts INSIDE the rail here, unlike its
    toolchain page-level seat (the v0-stack precedent): the section
    breaks out to full bleed and draws its own top and bottom rules;
-   .tcb-in re-draws the column rails in band ink, and v0-pages.css
-   already strips the band's outer pair inside a rail. */
+   .tcb-in re-draws the column rails in band ink, and no band draws a
+   second pair beside them (DESIGN.md section 3). */
 .toolchain-root.sgoh-root .tc-rail > .tc-band.tcb {
   margin-inline: calc(50% - 50vw);
   border-block: 1px solid var(--tc-hair);

@@ -22,16 +22,10 @@
   --tc-hair-2: rgba(138, 143, 152, 0.15);
   /* Hairlines on the ink bands (dark in both themes): ONE family at three
      weights. Bands must never invent their own per-section alphas — that is
-     how the outer rails ended up four different colors. */
+     how the band rails ended up four different colors. */
   --tc-hair-band: rgba(138, 143, 152, 0.34);
   --tc-hair-band-2: rgba(138, 143, 152, 0.22);
   --tc-hair-band-strong: rgba(138, 143, 152, 0.6);
-  /* The outer rail pair's TOTAL extra width beyond the column. The .tc-rail
-     wrapper gets this implicitly (its ::before insets -10px from the padding
-     box, which sits 1px inside the border ⇒ ±9px effective); every band
-     pseudo and the shell <Rails> component must use THIS so the outer rails
-     land on the same pixel at every junction. */
-  --tc-rail-outer: 18px;
   --tc-accent: #2f5ce0;
   --tc-dark: #070707;
 
@@ -2127,12 +2121,6 @@
     border-inline: 0;
   }
 
-  /* the outer rail pair stands down with the inner — an open phone sheet
-     must not be crossed by the ±10px verticals */
-  .toolchain-root .tc-nav-in::before {
-    display: none;
-  }
-
   .toolchain-root .tc-plain ul {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -3261,43 +3249,20 @@
 
 
 
-/* ---- the doubled rail, zoom-proof ----
-   Both lines are true 1px borders (browsers round border widths to whole
-   device pixels at any zoom; background-filled boxes do not get that
-   rounding, which is why the first attempt smeared). The outer pair is one
-   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+/* ---- the rail, zoom-proof ----
+   One hairline each side, drawn once by the column's own border-inline (a
+   true 1px border: browsers round border widths to whole device pixels at
+   any zoom; background-filled boxes do not get that rounding, which is why
+   the first attempt smeared). The second pair at +-10px is retired
+   (DESIGN.md section 3): one rail, one owner. */
 .toolchain-root .tc-rail {
   position: relative;
   border-inline: 1px solid var(--tc-hair);
 }
 
-.toolchain-root .tc-rail::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--tc-hair);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .toolchain-root .tc-nav-in {
   position: relative;
   border-inline: 1px solid var(--tc-hair);
-}
-
-.toolchain-root .tc-nav-in::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--tc-hair);
-  pointer-events: none;
-  z-index: 2;
 }
 
 
@@ -4597,30 +4562,15 @@
   filter: invert(1);
 }
 
-/* The doubled rail continues through EVERY full-bleed dark band: bands sit
-   outside the .tc-rail wrappers, so they draw the same column's line pairs
-   themselves — inner pair at the column edges, outer pair at the +-10px
-   gauge — all in the ONE band hairline. LAW: a section inside a .tc-rail
-   wrapper must NOT appear here — the wrapper already owns its rails, and a
-   second pair is the double-rail bug (pricing learned this the hard way). */
+/* The rail continues through EVERY full-bleed dark band: bands sit outside
+   the .tc-rail wrappers, so each band's own column (.tcb-in, .tc-band-in,
+   .tc-delivery-in) draws the pair once with border-inline, at the column
+   edges, in the ONE band hairline. LAW: a section inside a .tc-rail wrapper
+   must NOT draw side rails of its own: the wrapper already owns them, and a
+   second pair is the double-rail bug (pricing learned this the hard way).
+   Nothing here draws a pair beside the column (DESIGN.md section 3). */
 .toolchain-root .tc-band {
   position: relative;
-}
-
-/* Only the OUTER pair here: the inner pair is drawn exactly once, by the
-   band's own column (.tcb-in / .tc-band-in / .tc-delivery-in border-inline).
-   Drawing it twice stacked the alphas and the coincident segment rendered
-   brighter than every other rail. */
-.toolchain-root .tc-band::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: calc(min(var(--tc-rail), 100%) + var(--tc-rail-outer, 18px));
-  transform: translateX(-50%);
-  border-inline: 1px solid var(--tc-hair-band);
-  pointer-events: none;
 }
 
 /* (The old dark override that moved this row onto the panel family is
