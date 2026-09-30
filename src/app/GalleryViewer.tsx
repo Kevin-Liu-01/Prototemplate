@@ -325,7 +325,7 @@ type ArticleProps = {
 
 /**
  * The book: the gallery article as it was, full-bleed in the stage's scroll
- * region on its own 1170px rail with the doubled hairlines (directive 8.2),
+ * region on its own 1170px rail with one hairline at each edge (directive 8.2),
  * under .pt-root so it keeps its own token family (decision 6) and the
  * nameplate's two faces (decision 3). The old top nav is gone; the
  * shell's sidebar and index panel take its place. The sections that stand
