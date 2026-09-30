@@ -73,8 +73,8 @@ export default function AuditorFigure() {
       </svg>
       <figcaption>
         Two cells and a seam, as the auditor reconstructs them. It rebuilds every rendered
-        line from computed styles — borders, outlines, spread shadows, thin filled boxes,
-        pseudo rails, 1px ground reveals — then fails the round on any of the four classes.
+        line from computed styles (borders, outlines, spread shadows, thin filled boxes,
+        pseudo rails, 1px ground reveals), then fails the round on any of the four classes.
       </figcaption>
     </figure>
   );

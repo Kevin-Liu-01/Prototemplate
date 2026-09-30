@@ -49,7 +49,7 @@ export const DIRECTIONS: Direction[] = [
     concept:
       'The minimalist evolution of the current site: one ruled column, bento rows whose shells never repeat, and a family of isometric line-art diagrams.',
     tone: 'light',
-    signature: 'Structure from hairlines alone — no backgrounds, no ornament.',
+    signature: 'Structure from hairlines alone: no backgrounds, no ornament.',
   },
   {
     n: 22,
@@ -107,7 +107,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'lens-gate',
     name: 'Lens Gate',
     concept:
-      'The ruled paper itself passes through one breathing glass — components enter in English, refract, and exit translated on the far side.',
+      'The ruled paper itself passes through one breathing glass. Components enter in English, refract, and exit translated on the far side.',
     tone: 'light',
     signature: "The page's own rules bend through the lens and snap straight at the rim.",
   },
@@ -117,7 +117,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'paper-foundry',
     name: 'Paper Foundry',
     concept:
-      'The bento machined into paper — hairline cells set into a brushed-graphite sheet, finished in strict reading order.',
+      'The bento machined into paper: hairline cells set into a brushed-graphite sheet, finished in strict reading order.',
     tone: 'light',
     signature: 'One anisotropic sheen sweep over a reading-order cell cascade.',
   },
@@ -127,7 +127,7 @@ export const DIRECTIONS: Direction[] = [
     slug: 'terminus-board',
     name: 'Terminus Board',
     concept:
-      'A departure hall for locales — a split-flap headline over a flip-wave cell grid that lists languages the way a terminus lists trains.',
+      'A departure hall for locales: a split-flap headline over a flip-wave cell grid that lists languages the way a terminus lists trains.',
     tone: 'light',
     signature: 'The headline riffles through world scripts, settles into English, and cools through amber.',
   },
@@ -139,7 +139,7 @@ export const DIRECTIONS: Direction[] = [
     concept:
       'One analytic interference band crosses enormous quiet space, and the whole product story is set in the calm around it.',
     tone: 'light',
-    signature: 'A film still — fringes dissolve into the null that holds the gate and the headline.',
+    signature: 'A film still: fringes dissolve into the null that holds the gate and the headline.',
   },
   {
     n: 23,
@@ -147,9 +147,9 @@ export const DIRECTIONS: Direction[] = [
     slug: 'event-horizon',
     name: 'Event Horizon',
     concept:
-      'Component walls dive with curved perspective into a black-hole gate — English falls in, translations emerge, and flags orbit the horizon.',
+      'Component walls dive with curved perspective into a black-hole gate. English falls in, translations emerge, and flags orbit the horizon.',
     tone: 'light',
-    signature: 'Collinear pairs cross the horizon — in as English, out translated.',
+    signature: 'Collinear pairs cross the horizon: in as English, out translated.',
   },
   {
     n: 23,
@@ -311,7 +311,7 @@ export const DIRECTIONS: Direction[] = [
     concept:
       'What the directions produced: the site now live at generaltranslation.com, rebuilt here page for page.',
     tone: 'light',
-    signature: 'The one that shipped — the three below, resolved into a real codebase.',
+    signature: 'The one that shipped: the three below, resolved into a real codebase.',
     site: true,
     reference: true,
   },

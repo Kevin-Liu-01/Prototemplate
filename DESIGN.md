@@ -54,7 +54,8 @@ The auditor (`scripts/lint-lines.mjs`) enforces it mechanically — see
 ### Ownership
 
 - Exactly one thing draws the page rails for any section — a rails wrapper,
-  or the section's own full-bleed pair. Never both.
+  or the section's own full-bleed pair. Never both. The pair is the column's
+  inner pair only: one hairline at each column edge, nothing outside it.
 - The row owns every structural line; cells never draw borders that parallel
   a row seam. Framed cells expose the ground through a **1px padding reveal**
   instead of a border — the ground is the seam.
@@ -173,11 +174,21 @@ through, so a corner can never disagree with the seam that meets it.
 
 ## 3. The rails
 
-The page's spine is a ruled column with doubled rails: the inner pair drawn
-once by the column's own `border-inline`, the outer pair by one wrapper
-pseudo at ±10px (`--tc-rail-outer: 18px` accounts for the padding-box
-inset). A band's inner pair is drawn exactly once by its own `-in` column —
-a coincident second stroke stacks alphas and reads as a different color.
+The page's spine is a ruled column with ONE rail on each side.
+
+- The column wrapper draws the pair once, with its own `border-inline`.
+- A band mounted inside the wrapper draws no side rails of its own: the
+  wrapper already owns them.
+- A full-bleed band that sits outside the wrapper draws its own inner pair
+  once, at the column edges, from its own `-in` column, in the band's rule
+  ink. It never draws a pair beside the column.
+- Retired everywhere: the outer pair at ±10px that earlier directions drew
+  from a wrapper pseudo (the "doubled rail"). A second stroke beside a rail
+  is defect class 1 above, and a coincident second stroke stacks alphas and
+  reads as a different color.
+
+The doubled LINE of section 5 is a different device: one path stroked
+twice, a connector, never a page rail.
 
 ## 4. Typography and voices
 

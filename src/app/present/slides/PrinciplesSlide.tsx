@@ -402,7 +402,7 @@ export default function PrinciplesSlide() {
       <div ref={pin} className='pr-pin'>
         {/* Beat A */}
         <div className='pr-phase pr-need-head'>
-          <h2>First principles.</h2>
+          <h2>First principles</h2>
           <p className='pr-sub'>
             Before picking a look, pick the truths the site must serve.
           </p>
@@ -410,7 +410,7 @@ export default function PrinciplesSlide() {
 
         {/* Beat B — barbell + infrastructure */}
         <div className='pr-phase pr-need-b'>
-          <h3 className='pr-beat-title'>A barbell audience.</h3>
+          <h3 className='pr-beat-title'>A barbell audience</h3>
           <div className='pr-need-barbell'>
             <svg viewBox='0 0 680 250' aria-hidden>
               <defs>
@@ -499,7 +499,7 @@ export default function PrinciplesSlide() {
         {/* Beat C — challenger sale */}
         <div className='pr-phase pr-need-c'>
           <div className='pr-need-c-head'>
-            <h3 className='pr-beat-title'>Show, don’t define.</h3>
+            <h3 className='pr-beat-title'>Show, don’t define</h3>
             <p className='pr-sub'>
               Nobody arrives knowing localization vs. translation vs. i18n, and
               we never make them learn it. The site demonstrates the difference
@@ -580,7 +580,7 @@ export default function PrinciplesSlide() {
 
         {/* Beat D — the system, end to end, and Context Groups */}
         <div className='pr-phase pr-need-d'>
-          <h3 className='pr-beat-title'>End to end, or it doesn&rsquo;t hold.</h3>
+          <h3 className='pr-beat-title'>End to end, or it doesn&rsquo;t hold</h3>
           <p className='pr-sub'>
             Not a widget over the site: code, pipeline, context, review, and
             delivery are one framework.
@@ -622,7 +622,7 @@ export default function PrinciplesSlide() {
           <div className='pr-ctx'>
             <div className='pr-ctx-root'>
               <Icon name='layers' size={15} />
-              Context Group: Payments — glossary and tone every translation
+              Context Group: Payments. Glossary and tone every translation
               inherits. &ldquo;wallet&rdquo; means one thing.
             </div>
             <svg className='pr-ctx-tree' viewBox='0 0 600 80' aria-hidden>

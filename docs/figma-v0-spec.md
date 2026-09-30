@@ -476,10 +476,12 @@ is the arrangement (home.css header names it "landing non-terminal v0").
   (58%); arriving slabs settle from 64px above, bottom-up; they leave
   again scrolling back. The hot slab lifts 12px, takes top z + the
   accent edge; the copy rail's spotlight moves with it.
-- The connective rail: a doubled vertical (two 1px strokes at constant
-  gauge) at the plates' left; corner-radius leader taps land on each
-  plate's left vertex, mono labels at the leaders' ends; the rail
-  extends and retracts with the build (RAIL_SCALE).
+- The connective rail: the stack tower's leader rail, which is the
+  doubled-line THREAD device (DESIGN.md section 5: two 1px strokes at
+  constant gauge, drawn as one thing) and not a page rail. It stands at
+  the plates' left; corner-radius leader taps land on each plate's left
+  vertex, mono labels at the leaders' ends; the rail extends and
+  retracts with the build (RAIL_SCALE).
 - Top-face artifacts, one per beat: the <T>-block rhythm (code),
   glossary + directives chips (context), source string + the one accent
   payload chip (translations), the Locadex mark mask-rendered in the
@@ -488,8 +490,9 @@ is the arrangement (home.css header names it "landing non-terminal v0").
 
 ### System decisions (v0-pages.css, all five homes)
 - SINGLE RAIL: the doubled outer pair retires — .tc-rail::before and the
-  nav pseudo go; bands mounted inside the rail draw no outer pair of
-  their own.
+  nav pseudo go; bands mounted inside the rail draw no side rails of
+  their own. This is now the site-wide law (DESIGN.md section 3): one
+  rail each side, the column's inner pair, one owner.
 - Registration crosses ONLY on the dark feature bands (full stack,
   context, deploy — .tcb-in / .v0-dep-in), at all four rail corners;
   ordinary sections and the nav stay uncrossed.

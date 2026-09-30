@@ -137,7 +137,7 @@ export default function StoryDemoSite() {
 
       <div className='gts-site-foot'>
         <span>
-          © example.com — <Sw en='All rights reserved' es='Todos los derechos reservados' />
+          © example.com. <Sw en='All rights reserved' es='Todos los derechos reservados' />
         </span>
         <span>
           <Sw en='Privacy' es='Privacidad' /> · <Sw en='Terms' es='Términos' /> ·{' '}

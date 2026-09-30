@@ -10,7 +10,7 @@ export default function CornerFigure() {
     <figure
       className='ptc-fig ptc-corner'
       role='img'
-      aria-label='The second-surface kit: a diagram of two cards on the grey ground where the ground fills each rounded corner notch and the seam between the cards, a sample strip of the diagonal hatch spacer, and four labeled swatches — ink, raised ink, titanium, and paper.'
+      aria-label='The second-surface kit: a diagram of two cards on the grey ground where the ground fills each rounded corner notch and the seam between the cards, a sample strip of the diagonal hatch spacer, and four labeled swatches: ink, raised ink, titanium, and paper.'
     >
       <div className='ptc-corner-grid'>
         <svg viewBox='0 0 340 250' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'>
@@ -79,7 +79,7 @@ export default function CornerFigure() {
         </div>
       </div>
       <figcaption>
-        The corner is never drawn — the card&rsquo;s 12px radius lets the ground fill the
+        The corner is never drawn. The card&rsquo;s 12px radius lets the ground fill the
         notch, so a corner cannot disagree with the seam that meets it. The hatch strip is
         the exact recipe of the dividers on this page, and the four colors are the whole
         structural palette.

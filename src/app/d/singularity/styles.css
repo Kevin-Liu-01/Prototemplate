@@ -2693,12 +2693,6 @@
     border-inline: 0;
   }
 
-  /* the outer rail pair stands down with the inner — an open phone sheet
-     must not be crossed by the ±10px verticals */
-  .singularity-root .tc-nav-in::before {
-    display: none;
-  }
-
   .singularity-root .tc-plain ul {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -3837,43 +3831,20 @@
 
 
 
-/* ---- the doubled rail, zoom-proof ----
-   Both lines are true 1px borders (browsers round border widths to whole
-   device pixels at any zoom; background-filled boxes do not get that
-   rounding, which is why the first attempt smeared). The outer pair is one
-   pseudo box 5px wider than the rail, so the gap is 4px at constant gauge. */
+/* ---- the rail, zoom-proof ----
+   One hairline each side, drawn once by the column's own border-inline (a
+   true 1px border: browsers round border widths to whole device pixels at
+   any zoom; background-filled boxes do not get that rounding, which is why
+   the first attempt smeared). The second pair at +-10px is retired
+   (DESIGN.md section 3): one rail, one owner. */
 .singularity-root .tc-rail {
   position: relative;
   border-inline: 1px solid var(--tc-hair);
 }
 
-.singularity-root .tc-rail::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--tc-hair);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .singularity-root .tc-nav-in {
   position: relative;
   border-inline: 1px solid var(--tc-hair);
-}
-
-.singularity-root .tc-nav-in::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--tc-hair);
-  pointer-events: none;
-  z-index: 2;
 }
 
 

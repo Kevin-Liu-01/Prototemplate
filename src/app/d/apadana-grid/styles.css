@@ -165,33 +165,17 @@
 
 /* ------------------------------------------------------------ walls */
 
-/* The rail is a wall in plan: two faces ten pixels apart with the
-   draughtsman's hatch between. The strips own both faces; the rail itself
-   draws no border, so no line has two owners. */
+/* The rail: one hairline each side, drawn once by the column's own
+   border-inline (DESIGN.md section 3). The earlier wall in plan (two faces
+   ten pixels apart with the draughtsman's hatch between) was a second rail
+   pair and is retired. The hairlines sit outside the measured column
+   (content-box) so the pitch math derived from --apg-rail-w stays exact. */
 .apadana-grid-root .apg-rail {
   position: relative;
+  box-sizing: content-box;
   width: var(--apg-rail-w);
   margin-inline: auto;
-}
-
-.apadana-grid-root .apg-rail::before,
-.apadana-grid-root .apg-rail::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 10px;
   border-inline: 1px solid var(--deco-hair);
-  background: repeating-linear-gradient(45deg, var(--apg-hair-2) 0 1px, transparent 1px 6px);
-  pointer-events: none;
-}
-
-.apadana-grid-root .apg-rail::before {
-  left: -10px;
-}
-
-.apadana-grid-root .apg-rail::after {
-  right: -10px;
 }
 
 /* -------------------------------------------------------------- nav */
@@ -936,30 +920,14 @@
   color: var(--apg-band-ink);
 }
 
+/* The band's column draws its own pair once, in the band's gold line
+   (DESIGN.md section 3); the hatch walls are retired with the page rail's. */
 .apadana-grid-root .apg-band-in {
   position: relative;
+  box-sizing: content-box;
   width: var(--apg-rail-w);
   margin-inline: auto;
-}
-
-.apadana-grid-root .apg-band-in::before,
-.apadana-grid-root .apg-band-in::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 10px;
   border-inline: 1px solid var(--apg-gold-line);
-  background: repeating-linear-gradient(45deg, var(--apg-band-hair-2) 0 1px, transparent 1px 6px);
-  pointer-events: none;
-}
-
-.apadana-grid-root .apg-band-in::before {
-  left: -10px;
-}
-
-.apadana-grid-root .apg-band-in::after {
-  right: -10px;
 }
 
 .apadana-grid-root .apg-thresh.is-dark h2 {

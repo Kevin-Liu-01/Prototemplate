@@ -222,8 +222,7 @@ function satVars(
 function jumpToRow(id: string) {
   const row = document.getElementById(`try-cat-${id}`);
   if (!row) return;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  row.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+  row.scrollIntoView({ block: 'start' });
   row.focus({ preventScroll: true });
 }
 

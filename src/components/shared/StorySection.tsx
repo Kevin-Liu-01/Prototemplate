@@ -58,7 +58,7 @@ const DEFAULT_CAPTIONS = [
   'This is where Locadex comes in.',
   'Code is pushed. Locadex scans.',
   'Locadex maps what changed.',
-  'It edits code — and translates in context.',
+  'It edits code and translates in context.',
   '…and opens the PR. Review, merge, live.',
 ];
 
@@ -77,11 +77,11 @@ const DEFAULT_BEATS: StoryBeat[] = [
   },
   {
     title: 'With your own context.',
-    body: '<T context="Playful, upbeat marketing tone"> — GT reads your context and the translation lands with the right tone.',
+    body: '<T context="Playful, upbeat marketing tone">: GT reads your context and the translation lands with the right tone.',
   },
   {
     title: 'With your review.',
-    body: 'A node tagged “requires review” fires a webhook to legal counsel: “Review this translation!” — approve, and it ships.',
+    body: 'A node tagged “requires review” fires a webhook to legal counsel: “Review this translation!” Approve, and it ships.',
   },
   {
     title: 'This is where Locadex comes in.',
@@ -93,7 +93,7 @@ const DEFAULT_BEATS: StoryBeat[] = [
   },
   {
     title: 'Locadex maps what changed.',
-    body: 'Lint marks land on the exact lines that need i18n work — hover them to read the notes.',
+    body: 'Lint marks land on the exact lines that need i18n work. Hover them to read the notes.',
   },
   {
     title: 'It edits code.',
@@ -101,7 +101,7 @@ const DEFAULT_BEATS: StoryBeat[] = [
   },
   {
     title: 'It opens the PR.',
-    body: 'A diff window slides in and the Locadex cursor clicks “Open PR”. Merged — and the site returns fully translated.',
+    body: 'A diff window slides in and the Locadex cursor clicks “Open PR”. Merged, and the site returns fully translated.',
   },
 ];
 
@@ -803,7 +803,7 @@ export default function StorySection({
               <span className='gts-r-btn'>Edit</span>
             </div>
             <div className='gts-r-approved' data-approved>
-              Approved — shipped
+              Approved and shipped
             </div>
           </div>
 
@@ -817,7 +817,7 @@ export default function StorySection({
             id='btn'
             mode={sliderMode}
             file='app/page.tsx'
-            note='Wrap any component. GT reads the JSX, extracts the string, and renders the locale build in place — the button re-measures to fit its new label.'
+            note='Wrap any component. GT reads the JSX, extracts the string, and renders the locale build in place. The button re-measures to fit its new label.'
             artifact={
               <>
                 <div className='gts-gen-cap'>generated · public/_gt/</div>
@@ -879,7 +879,7 @@ export default function StorySection({
             id='tag'
             mode={sliderMode}
             file='app/page.tsx'
-            note='context="" is passed straight to the translation agent. Same string, different voice — the tone you wrote for is the tone that ships.'
+            note='context="" is passed straight to the translation agent. Same string, different voice. The tone you wrote for is the tone that ships.'
             artifact={
               <>
                 <div className='gts-gen-cap'>prompt · translation agent</div>

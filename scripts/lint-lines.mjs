@@ -6,10 +6,11 @@
 //   1. DOUBLE lines: two parallel 1-2px lines from DIFFERENT owners within
 //      1..4px of each other, overlapping most of their run — the double-
 //      border bug class. Same-owner pairs are exempt (the brand's doubled
-//      rail draws both strokes from one element on purpose), as are the
-//      named devices in ALLOW. A stroke another opaque box paints over is
-//      not drawn, so it cannot double anything: pairs are checked for
-//      visibility with elementsFromPoint before they count.
+//      line, the thread of DESIGN.md section 5, strokes one path twice from
+//      one element on purpose), as are the named devices in ALLOW. A stroke
+//      another opaque box paints over is not drawn, so it cannot double
+//      anything: pairs are checked for visibility with elementsFromPoint
+//      before they count.
 //   2. MISSING seams: adjacent top-level sections whose shared boundary has
 //      no horizontal line spanning the column within 3px (page mode only).
 //   3. JUNCTIONS: two owners drawing the same seam, coincident (gap under
@@ -91,9 +92,9 @@ const theme = flag('--theme') ?? 'dark';
  */
 const ALLOW = [
   'thread', // the doubled line (DESIGN.md §5): one path stroked twice carves two parallel hairlines by construction
-  'shell-rail', // the page rails (DESIGN.md §3): the column's inner pair plus one wrapper pseudo at ±10px, drawn by one owner
-  'stack-rail', // the dark band's stacked rails: the same doubled-rail device on the band's own root
-  'trace-rail', // the dark band's traced rails: the doubled rail with a traveling pulse between the strokes
+  'shell-rail', // the page rails (DESIGN.md section 3): the column's inner pair, one owner (the .shell-rail strip in shell.css is that one-owner rule applied to the constant-gauge thread, DESIGN.md section 5)
+  'stack-rail', // the dark band's stack tower leader rail: one element with two 1px borders, a doubled-line THREAD (DESIGN.md section 5), never a second page rail
+  'trace-rail', // the dark band's traced leader rail: the same THREAD with a traveling pulse between its two strokes, never a second page rail
   'tcpv-def', // toolchain pricing definitions: a ruled term column whose rule sits beside the row rule on purpose
   'tc-eg', // paper foundry's example plates: a frame inside a ruled cell, both strokes one figure
   'tc-hatch', // the diagonal-hatch spacer (DESIGN.md §2): a hatch band under one hairline reads as stripes, not lines

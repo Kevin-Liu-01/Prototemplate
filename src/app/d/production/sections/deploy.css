@@ -39,7 +39,7 @@
   pointer-events: none;
 }
 
-/* The rail-width column: its inline rules are the page's outer rails
+/* The rail-width column: its inline rules are the page rails
    carried across the dark plate, in the band hairline token — the same
    ink every house band draws its rails in. Perpendicular to the band's
    border-block, so no parallel-hairline collision at the corners. */

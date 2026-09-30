@@ -2262,44 +2262,20 @@
 
 
 
-/* ---- the doubled rail, zoom-proof ----
-   Both lines are true 1px borders (browsers round border widths to whole
-   device pixels at any zoom; background-filled boxes do not get that
-   rounding, which is why the first attempt smeared). The outer pair is one
-   pseudo box at the ±10px gauge (toolchain current), so the gap is 8px at
-   constant gauge. */
+/* ---- the rail, zoom-proof ----
+   One hairline each side, drawn once by the column's own border-inline (a
+   true 1px border: browsers round border widths to whole device pixels at
+   any zoom; background-filled boxes do not get that rounding, which is why
+   the first attempt smeared). The second pair at +-10px is retired
+   (DESIGN.md section 3): one rail, one owner. */
 .widerule-root .tc-rail {
   position: relative;
   border-inline: 1px solid var(--tc-hair);
 }
 
-.widerule-root .tc-rail::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--tc-hair);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .widerule-root .tc-nav-in {
   position: relative;
   border-inline: 1px solid var(--tc-hair);
-}
-
-.widerule-root .tc-nav-in::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--tc-hair);
-  pointer-events: none;
-  z-index: 2;
 }
 
 
@@ -2404,25 +2380,13 @@
    the disk stays lit (see the block above), so the ink mark stays legible
    and never inverts. */
 
-/* ---- the doubled rail continues through the full-bleed dark band ----
-   The band sits outside the .tc-rail wrappers, so it draws the same
-   column's line pairs itself — inner pair at the column edges, outer pair
-   at the ±10px gauge — in the band's own rule ink (the band is dark in
-   both themes). */
+/* The rail continues through the full-bleed dark band: the band sits
+   outside the .tc-rail wrappers, so its own column (.tc-band-in, .tcb-in,
+   .tc-delivery-in) draws the pair once with border-inline, at the column
+   edges, in the band's own rule ink. Nothing draws a second pair beside it
+   (DESIGN.md section 3). */
 .widerule-root .tc-band {
   position: relative;
-}
-
-.widerule-root .tc-band::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: calc(min(var(--tc-rail), 100%) + 20px);
-  transform: translateX(-50%);
-  border-inline: 1px solid rgba(255, 255, 255, 0.12);
-  pointer-events: none;
 }
 
 /* Every section closes with its bottom rule — the sheet grammar

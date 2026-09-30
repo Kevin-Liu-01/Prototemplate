@@ -170,8 +170,8 @@ uniform float uExposureScale;
 /* ---- cursor effects (all zero when no effect is engaged) ----
    uCursor lives in the same coordinate space getScreenCoordinates()
    produces; uEffectMode is 0 off · 1 lens · 2 dither · 3 chroma. The modes
-   compose WITH the burst above — bending its inputs or requantizing its
-   output — and every path is gated on uCursorStrength, so an idle field
+   compose WITH the burst above (bending its inputs or requantizing its
+   output), and every path is gated on uCursorStrength, so an idle field
    costs what it always did. uFxScale converts shader screen units to CSS
    pixels (res.y/2 ÷ dpr), which makes every effect a PHYSICAL size: the
    same gesture produces the same halo on a short plate and a 1400px band.
@@ -247,10 +247,10 @@ const float FX_RADIUS = 190.0;
  * Weak-lensing warp: space near the cursor rotates and contracts, like light
  * passing a mass. Formulated as a ROTATION about the cursor with a capped
  * angle (≈66° at dead center, gaussian falloff outward) plus a gentle radial
- * pinch — so displacement is θ·d, which vanishes at the center instead of
+ * pinch, so displacement is θ·d, which vanishes at the center instead of
  * winding into a pinwheel knot, and the outer falloff keeps the slow
  * gravity read. Applied to the screen position BEFORE the raymarch, so the
- * whole burst — streaks, beams, dark center — bends around the cursor
+ * whole burst (streaks, beams, dark center) bends around the cursor
  * rather than hosting an overlay. Chroma keeps a whisper of the swirl.
  */
 vec2 warpAroundCursor(vec2 screenPosition) {
@@ -289,7 +289,7 @@ float bayer8(vec2 cell) {
 
 /*
  * Ordered-dither halo: within a soft radius of the cursor the tone-mapped
- * field requantizes per channel through the Bayer matrix — the house 1-bit
+ * field requantizes per channel through the Bayer matrix, the house 1-bit
  * texture erupting out of the continuous field. The radius is physical
  * (CSS px, same on every mount) and the boundary breathes with cursor
  * velocity: a fast sweep blooms the halo open, a resting cursor lets it
@@ -308,7 +308,7 @@ vec3 applyDitherHalo(vec3 mappedColor) {
 
 /*
  * Chroma fringe: the light near the cursor re-prints through separated
- * spectral plates — concentric R/G/B separation riding an annulus that
+ * spectral plates: concentric R/G/B separation riding an annulus that
  * peaks halfway down the lens falloff and vanishes at the center. It is
  * multiplicative on the field's own light (dark stays dark), so it reads
  * as the burst splitting, not a decal.
@@ -324,7 +324,7 @@ vec3 applyChromaFringe(vec3 mappedColor) {
 /*
  * Beam carving. The raymarch produces a continuous streak field; this
  * collects that light into discrete radial beams that sweep slowly around
- * the dark center — three angular harmonics drifting against each other so
+ * the dark center: three angular harmonics drifting against each other so
  * the pattern never repeats readably. Each channel samples the profile at
  * a slightly rotated angle (dispersion grows with radius), which fringes
  * every beam edge with spectrum while the cores stay coherent.
@@ -344,7 +344,7 @@ vec3 applyBeams(vec3 hdrColor, vec2 screenPosition) {
   float t = uTime * 0.12;
   float dispersion = 0.035 + 0.05 * radius;
   /* Cursor effects ride the carve's own per-channel sampling: at the lens'
-     rim the spectrum fringes (weak-lensing chromatic aberration — the ring
+     rim the spectrum fringes (weak-lensing chromatic aberration, the ring
      term peaks halfway down the falloff), and in chroma mode the whole
      carve shears apart, each channel reading the profile at its own angle
      so the rays split into R/G/B copies around the cursor. */
@@ -357,7 +357,7 @@ vec3 applyBeams(vec3 hdrColor, vec2 screenPosition) {
   );
   // The rays stream from the SIDES: the carve fades to nothing toward
   // vertical, so no beam ever points down from the top or up from the
-  // bottom — those regions keep only the base field's calm.
+  // bottom. Those regions keep only the base field's calm.
   float horizontality = pow(max(cos(angle), 0.0), 2.4);
   // The center keeps its calm; the beams own everything outward of it.
   float radial = smoothstep(0.05, 0.6, radius) * horizontality;

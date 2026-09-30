@@ -71,9 +71,9 @@
   --tc-panel-faint: rgba(255, 255, 255, 0.26);
   --tc-panel-rule: rgba(255, 255, 255, 0.1);
   margin-inline: calc(50% - 50vw);
-  /* Above the rail's doubled-thread overlay (.tc-rail::before, z-index 2):
-     the threads pass BEHIND the full-bleed stage and resume below it —
-     no light hairline crosses the dark take while it is pinned. */
+  /* Above the page rails: the full-bleed stage paints over the column's
+     hairlines and they resume below it, so no light hairline crosses the
+     dark take while it is pinned. */
   position: relative;
   z-index: 3;
 }
@@ -167,9 +167,9 @@
 
 .toolchain-root .tc-cinema-v3 .tc-cinema-beat {
   /* The sheet's vertical margins live OUTSIDE the page rail. At widths
-     where 3.4vw would drift them onto the rail's outer pair (two 1px
-     verticals a few px apart for the whole cinema), the second term pins
-     them 26px outside the rail border instead — never closer. */
+     where 3.4vw would drift them onto the page rail (a second vertical a
+     few px from the rail for the whole cinema), the second term pins them
+     26px outside the rail border instead, never closer. */
   --sheet-x: min(clamp(30px, 3.4vw, 50px), max(16px, calc((100vw - min(var(--tc-rail), 100vw)) / 2 - 26px)));
   --sheet-head: clamp(56px, 7.6vh, 68px);
   --say-h: clamp(136px, 20.6vh, 186px);

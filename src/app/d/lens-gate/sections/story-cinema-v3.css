@@ -51,9 +51,9 @@
    under [data-theme='dark'], so both themes hold identically. */
 .lensgate-root .tc-cinema.tc-cinema-v3 {
   margin-inline: calc(50% - 50vw);
-  /* Above the rail's doubled-thread overlay (.tc-rail::before, z-index 2):
-     the threads pass BEHIND the full-bleed stage and resume below it —
-     no light hairline crosses the dark take while it is pinned. */
+  /* Above the page rails: the full-bleed stage paints over the column's
+     hairlines and they resume below it, so no light hairline crosses the
+     dark take while it is pinned. */
   position: relative;
   z-index: 3;
 }

@@ -134,14 +134,14 @@ export default function CraftSlide() {
     <section ref={root} className='pr-slide pr-craft' data-slide='craft'>
       <div ref={pin} className='pr-pin'>
         <div className='pr-craft-header'>
-          <h2>From guidelines to prototypes.</h2>
+          <h2>From guidelines to prototypes</h2>
         </div>
         <div ref={track} className='pr-craft-track'>
           <article className='pr-plate'>
             <span className='pr-plate-icon'>
               <Icon name='ruler' size={22} />
             </span>
-            <h3>Rules before pixels.</h3>
+            <h3>Rules before pixels</h3>
             <ul className='pr-craft-rules'>
               {GUIDELINES.map((rule) => (
                 <li key={rule} className='pr-craft-rule'>
@@ -155,7 +155,7 @@ export default function CraftSlide() {
             <span className='pr-plate-icon'>
               <Icon name='pencil' size={22} />
             </span>
-            <h3>Structure first, texture last.</h3>
+            <h3>Structure first, texture last</h3>
             <div className='pr-sketch-stage'>
             <svg viewBox='0 0 560 340' aria-hidden>
               {/* browser frame */}
@@ -185,7 +185,7 @@ export default function CraftSlide() {
             <span className='pr-plate-icon'>
               <Icon name='palette' size={22} />
             </span>
-            <h3>Color behaves like light, not paint.</h3>
+            <h3>Color behaves like light, not paint</h3>
             <div className='pr-swatch-row'>
               {SWATCHES.map((swatch) => (
                 <div key={swatch.name} className='pr-swatch'>
@@ -205,7 +205,7 @@ export default function CraftSlide() {
             <span className='pr-plate-icon'>
               <Icon name='type' size={22} />
             </span>
-            <h3>One family, every weight: Inter carries the voice.</h3>
+            <h3>One family, every weight: Inter carries the voice</h3>
             <div className='pr-weights'>
               {WEIGHTS.map((weight) => (
                 <div key={weight} className='pr-weight-row' style={{ fontWeight: weight }}>
@@ -219,7 +219,7 @@ export default function CraftSlide() {
             <span className='pr-plate-icon'>
               <Icon name='activity' size={22} />
             </span>
-            <h3>Every technique answers a question.</h3>
+            <h3>Every technique answers a question</h3>
             <p className='pr-plate-note'>
               What changed? Where did it go? What is automated? Motion is
               explanation, never ambience.

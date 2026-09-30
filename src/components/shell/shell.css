@@ -1,10 +1,10 @@
 /* ============================================================
    SHELL PRIMITIVES
    The bento grammar's shared bones: the cell head, equal-height
-   head rows, the hairline rule, the doubled rail, and corner
+   head rows, the hairline rule, the doubled line, and corner
    marks. Every stroke draws ONE color — var(--shell-hair),
    falling back to the page family's --tc-hair — so shells,
-   outer rails and section rules can never drift apart again.
+   page rails and section rules can never drift apart again.
 
    Token discipline is enforced by scripts/lint-shell.mjs
    (pnpm lint:shell): no raw color literals may appear in this
@@ -57,7 +57,8 @@
   background: var(--shell-hair, var(--tc-hair));
 }
 
-/* The brand's doubled rail at constant gauge, vertical by default. */
+/* The brand's doubled line (the thread device, DESIGN.md section 5) at
+   constant gauge, vertical by default: two strokes from one element. */
 .shell-rail {
   --rail-gauge: var(--shell-gauge, 1.5px);
   --rail-gap: var(--shell-gap, 3px);

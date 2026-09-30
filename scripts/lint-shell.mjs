@@ -1,7 +1,7 @@
 // Token discipline for the shell layer: no raw color literals — every
 // stroke and fill must draw a token (var(--shell-*), var(--tc-*), or a
 // local custom property defined at a root class). This is what keeps the
-// shell, the outer rails and every cell rule the SAME color in both
+// shell, the page rails and every cell rule the SAME color in both
 // themes. Add files to TARGETS as they migrate onto the shell primitives.
 //
 // Usage: pnpm lint:shell

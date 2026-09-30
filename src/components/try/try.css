@@ -43,14 +43,6 @@
 
 /* ---------- the hero section ---------- */
 
-/* ONE hairline pair frames the page: the engine's legacy doubled outer
-   rail (its .tc-rail::before pseudo) is retired site-wide by the skin
-   roots (v0-pages.css); this page rides the sgdh skin root, so the rule
-   stands only as a belt against a skinless mount. */
-.toolchain-root.try-root .try-rail::before {
-  content: none;
-}
-
 /* The hero always rules its own bottom edge: idle it closes the rail,
    and with the report shown the hatch below it draws no top rule. */
 .try-root .try-rail > .try-hero {

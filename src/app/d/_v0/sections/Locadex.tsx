@@ -539,8 +539,8 @@ const INT_SOURCES: readonly IntSource[] = [
 
 /**
  * One connector per source, each drawn once, flowing left → right INTO the
- * plate, all in ONE turn grammar: every arc is radius 12, the inner pair's
- * vertical gauge sits at x 320 and the outer pair's at x 344, and every
+ * plate, all in ONE turn grammar: every arc is radius 12, the inner connectors'
+ * vertical gauge sits at x 320 and the outermost connectors' at x 344, and every
  * matching feature repeats at that same 24 interval (turn-in at 308/332,
  * exit at 332/356). The inner pair's ±24 offset is exactly two radii, so
  * those turns resolve as clean tangent ogees rather than a cramped jog.

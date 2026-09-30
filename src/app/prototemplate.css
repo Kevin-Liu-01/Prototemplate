@@ -57,7 +57,7 @@
   text-decoration: none;
 }
 
-/* ---------- the ruled column, doubled rails ---------- */
+/* ---------- the ruled column, one rail each side ---------- */
 
 .pt-rail {
   position: relative;
@@ -65,17 +65,6 @@
   margin-inline: auto;
   border-inline: 1px solid var(--pt-hair);
   background: var(--pt-paper);
-}
-
-.pt-rail::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -10px;
-  right: -10px;
-  border-inline: 1px solid var(--pt-hair);
-  pointer-events: none;
 }
 
 .pt-sec {
