@@ -1,7 +1,7 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
-import type { MouseEvent, RefObject } from 'react';
+import type { CSSProperties, MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
 import { gtText } from '@/components/viewer/GtWord';
@@ -9,7 +9,16 @@ import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
-import { MARK_FAMILIES, MARK_SIZES, MARK_TESTS, MARKS, markFamily, REFERENCE_MARK } from '@/lib/marks';
+import {
+  MARK_FACES,
+  MARK_FAMILIES,
+  MARK_RULES,
+  MARK_SIZES,
+  MARKS,
+  markFamily,
+  REFERENCE_MARK,
+  WORDMARK_SIZES,
+} from '@/lib/marks';
 import type { Mark, MarkArt } from '@/lib/marks';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
@@ -18,23 +27,23 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 import './marks.css';
 
 const MARKS_TITLE = 'Marks';
-const BOOK_TITLE = 'Mark explorations';
+const BOOK_TITLE = 'The speed set';
 const MARKS_MODES: readonly ShellMode[] = ['book', 'grid'];
 
-const METHOD_ID = 'method';
+const REGISTER_ID = 'register';
 const PRESENTATION_ID = 'presentation';
 
 const BOOK_LEAD =
-  'New marks for General Translation, built on one principle: the picture lives in the letters. The G and the T carry a picture about translation in their counters, joins or reflections, and there is no separate icon. Every mark is one color, so it takes the ink of whatever it sits on, and every mark has to read at 16px as well as at 256px, on paper and on ink. Nine marks in three families follow, best first, each shown positive and reversed, at five sizes, as an app icon and a favicon, and with its construction. The current mark closes the page as the reference, not as a candidate.';
+  'Marks for General Translation in one register, taken from a race-type reference: wide letters, a forward slant, one horizontal cut through the letters, and speed bars that lead into the first letter. Every mark is black and white, one color, and takes the ink of whatever it sits on. Seven marks follow in that register, from the bar monogram to its ASCII rendering, then Two-way and Globe G, the two survivors of the earlier round, kept for comparison. Each mark is shown positive and reversed at a run of heights, the monograms also as an app icon and a favicon, and every file is linked. The current mark closes the page as the reference.';
 
-const METHOD_LEAD =
-  'Every mark on this page passes the same six tests. A mark that fails one is dropped, whatever its idea. The tests come from the brief and from the sizes a mark actually lives at: a browser tab, a phone home screen, a slide.';
+const REGISTER_LEAD =
+  'The speed set follows one register, taken from a race-type reference. The rules below name it, and a mark that keeps them belongs to the set. The two picture marks at the end of the page predate the register and stay for comparison.';
 
 const PRESENTATION_LEAD =
-  'The nine marks together at one size, positive and reversed, so the families can be compared as a set. The current doubled-line mark follows as the reference the explorations were measured against.';
+  'The nine marks together at one height, positive and reversed, so the set reads as a set and the two survivors can be compared with it. The current doubled-line mark follows as the reference.';
 
 const REFERENCE_CAPTION =
-  'The current mark, the doubled-line GT monogram. It is the reference the explorations were measured against, and it is not a candidate.';
+  'The current mark, the doubled-line GT monogram. It is the reference the marks are measured against, and it is not a candidate.';
 
 /** The name shown beside the favicon in the tab mock; the product name, not a claim. */
 const TAB_TITLE = 'General Translation';
@@ -43,6 +52,35 @@ const TAB_TITLE = 'General Translation';
 const APP_ICON_SHARE = 0.64;
 const APP_ICON_PX = 128;
 const APP_MARK_PX = Math.round(APP_ICON_PX * APP_ICON_SHARE);
+
+/**
+ * The flow sheet's reading column at the 1440 viewport with the sidebar
+ * open, the view the captures show: 1440 less the 208px sidebar
+ * (tokens.css), the sheet's 28px pads, the mat's 1px borders and the
+ * sheet's 56px side padding (Sheet.css). On a wider stage the column grows
+ * to 1168 and the plates gain room; a mark sized for this column never
+ * clips there, and marks.css clamps every instance on a narrower one.
+ */
+const COLUMN_W = 1440 - 208 - 2 * 28 - 2 - 2 * 56;
+
+/** A plate's border and side padding (marks.css: .mk-plate, .mk-strip, .mk-field). */
+const PLATE_SIDE = 1 + 32;
+
+/** The inner width of a full-width plate, and of one plate of a side-by-side pair (a 16px gap between them). */
+const PLATE_INNER = COLUMN_W - 2 * PLATE_SIDE;
+const HALF_INNER = (COLUMN_W - 16) / 2 - 2 * PLATE_SIDE;
+
+/** The height a mark is shown at on its plates, in CSS pixels; a mark too wide for it takes the plate's full width instead. */
+const HERO_PX = 224;
+
+/** The height every mark is shown at on the presentation field. */
+const FIELD_PX = 64;
+
+/** A mark whose viewBox is wider than this is laid out full width: its plates stack instead of pairing. */
+const WIDE = 1.5;
+
+/** The heights a wordmark can be shown at, smallest first; a wordmark takes the largest three that fit its plate. */
+const LADDER: readonly number[] = [16, 24, 32, ...WORDMARK_SIZES];
 
 /**
  * The read line. A section that crosses the top tenth of the sheet is the
@@ -54,13 +92,13 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 /** How long the spy waits for a programmatic scroll to reach its section before it reads the page again. */
 const SETTLE_MS = 1200;
 
-/** The route's list: Method, the nine marks by name, Presentation. The marks alone are paged, so digits 1 to 9 pick a mark. */
+/** The route's list: the register, the nine marks by name, Presentation. The marks alone are paged, so digits 1 to 9 pick a mark. */
 const SECTIONS: readonly ShellSection[] = [
   {
-    id: METHOD_ID,
-    label: 'Method',
+    id: REGISTER_ID,
+    label: 'Register',
     paged: false,
-    items: [{ id: METHOD_ID, n: '', title: 'The six tests', desc: 'The tests every mark has to pass.' }],
+    items: [{ id: REGISTER_ID, n: '', title: 'The register', desc: 'The rules the speed set follows.' }],
   },
   {
     id: 'marks',
@@ -81,7 +119,7 @@ const SECTIONS: readonly ShellSection[] = [
         id: PRESENTATION_ID,
         n: '',
         title: 'Nine marks together',
-        desc: 'The set on one field, positive and reversed, and the current mark for reference.',
+        desc: 'The set at one height, positive and reversed, and the current mark for reference.',
       },
     ],
   },
@@ -95,27 +133,53 @@ function scrollBehavior(): ScrollBehavior {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 }
 
+/** How a mark sits on a plate: at a height in CSS pixels, or across the plate's full width with the height following. */
+type PlateFit = number | 'full';
+
+/** At `max` height when that width fits the plate's inner width, else across the plate's full width. */
+function fitPlate(aspect: number, inner: number, max: number): PlateFit {
+  return max * aspect <= inner ? max : 'full';
+}
+
+/** The caption's size for a fit: the height, or the full width. */
+function fitLabel(fit: PlateFit): string {
+  return fit === 'full' ? 'full width' : `${fit}px`;
+}
+
+/**
+ * The run of heights a mark is shown at: a monogram takes the 16 to 128px
+ * row; a wordmark takes the largest three of the ladder whose width fits
+ * its plate, which is 48, 96 and 144 for every wordmark but the widest.
+ */
+function sizesFor(mark: Mark, aspect: number, inner: number): readonly number[] {
+  if (mark.kind === 'monogram') return MARK_SIZES;
+  return LADDER.filter((height) => height * aspect <= inner).slice(-WORDMARK_SIZES.length);
+}
+
 type ArtProps = {
   /** the SVG file's markup, read on the server */
   svg: string;
-  /** the rendered box in CSS pixels; the SVG fills it */
-  size: number;
+  /** the rendered height in CSS pixels, the width following the file's aspect; or the plate's full width, the height following */
+  height: PlateFit;
+  /** the file's viewBox aspect, width over height */
+  aspect: number;
   className?: string;
 };
 
 /**
  * One inlined SVG. The file is rendered as markup so its root keeps its own
- * attributes (the reflection overlays set their stroke on the root); the
- * wrapper sizes it and the plate's color reaches it as currentColor.
+ * attributes (the construction overlays set their stroke on the root); the
+ * wrapper is sized by height and the file's aspect (marks.css reads the
+ * two custom properties and clamps the width to the plate), and the
+ * plate's color reaches it as currentColor.
  */
-function Art({ svg, size, className }: ArtProps) {
+function Art({ svg, height, aspect, className }: ArtProps) {
+  const style = {
+    '--mk-w': height === 'full' ? '100%' : `${Math.round(height * aspect)}px`,
+    '--mk-aspect': String(aspect),
+  } as CSSProperties;
   return (
-    <span
-      className={cn('mk-svg', className)}
-      style={{ width: size, height: size }}
-      aria-hidden='true'
-      dangerouslySetInnerHTML={{ __html: svg }}
-    />
+    <span className={cn('mk-svg', className)} style={style} aria-hidden='true' dangerouslySetInnerHTML={{ __html: svg }} />
   );
 }
 
@@ -134,6 +198,12 @@ function ReferenceArt({ width }: { width: number }) {
   );
 }
 
+const GROUNDS = ['paper', 'ink'] as const;
+type Ground = (typeof GROUNDS)[number];
+
+const groundClass = (ground: Ground) => (ground === 'paper' ? 'is-paper' : 'is-ink');
+const groundName = (ground: Ground) => (ground === 'paper' ? 'Positive' : 'Reversed');
+
 type MarkSheetProps = {
   mark: Mark;
   n: string;
@@ -143,15 +213,28 @@ type MarkSheetProps = {
 
 /**
  * One mark, presented the way a logo reel presents a logo: the mark large,
- * positive and reversed; a row of sizes on both grounds; the app icon and
- * the favicon in a tab; the clean mark beside its construction; then the
- * thesis, the construction and the small-size note as ruled rows. The
- * notes arrive as strings from marks.ts, so they pass through gtText: the
- * standalone word GT renders as the mark, as everywhere in the site's copy.
+ * positive and reversed; a run of heights on both grounds; for a monogram
+ * the app icon and the favicon in a tab, and for the two picture marks the
+ * clean mark beside its construction; then the thesis, the construction,
+ * the use note and the files as ruled rows. Every instance is sized by
+ * height and the file's own aspect, so a wide mark (every speed mark) lays
+ * its plates out full width, one above the other, and a square mark keeps
+ * them side by side. The notes arrive as strings from marks.ts, so they
+ * pass through gtText: the standalone word GT renders as the mark, as
+ * everywhere in the site's copy.
  */
 function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
   const family = markFamily(mark);
   const headingId = `mk-${mark.id}`;
+  const wide = art.aspect > WIDE;
+  const inner = wide ? PLATE_INNER : HALF_INNER;
+  const hero = fitPlate(art.aspect, inner, HERO_PX);
+  const sizes = sizesFor(mark, art.aspect, inner);
+  const sizeRange = `${sizes[0]} to ${sizes[sizes.length - 1]}px`;
+  const monogram = mark.kind === 'monogram';
+  /* the app icon: the mark fitted to the tile's safe area, so a wide monogram is set by width */
+  const appHeight = art.aspect >= 1 ? APP_MARK_PX / art.aspect : APP_MARK_PX;
+  const files = [mark.file, mark.constructionFile, mark.textFile].filter((file): file is string => Boolean(file));
   return (
     <section
       className={cn('mk-sec', active && 'is-active')}
@@ -164,6 +247,7 @@ function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
         <small>
           <span>Mark {n}</span>
           <span>{family.label}</span>
+          <span>{mark.kind === 'monogram' ? 'Monogram' : 'Wordmark'}</span>
         </small>
         <div>
           <h2 id={headingId}>{mark.name}</h2>
@@ -171,56 +255,68 @@ function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
         </div>
       </div>
 
-      <div className='mk-pair'>
-        <figure className='mk-plate is-paper'>
-          <Art svg={art.clean} size={256} />
-          <figcaption>Positive, 256px</figcaption>
-        </figure>
-        <figure className='mk-plate is-ink'>
-          <Art svg={art.clean} size={256} />
-          <figcaption>Reversed, 256px</figcaption>
-        </figure>
-      </div>
-
-      <div className='mk-pair'>
-        {(['paper', 'ink'] as const).map((ground) => (
-          <figure key={ground} className={cn('mk-strip', ground === 'paper' ? 'is-paper' : 'is-ink')}>
-            <div className='mk-strip-row'>
-              {MARK_SIZES.map((size) => (
-                <span key={size} className='mk-size'>
-                  <Art svg={art.clean} size={size} />
-                  <small>{size}</small>
-                </span>
-              ))}
-            </div>
-            <figcaption>{ground === 'paper' ? 'Positive' : 'Reversed'}, 16 to 128px</figcaption>
+      <div className={cn('mk-pair', wide && 'is-stack')}>
+        {GROUNDS.map((ground) => (
+          <figure key={ground} className={cn('mk-plate', groundClass(ground))}>
+            <Art svg={art.clean} height={hero} aspect={art.aspect} />
+            <figcaption>
+              {groundName(ground)}, {fitLabel(hero)}
+            </figcaption>
           </figure>
         ))}
       </div>
 
-      <div className='mk-apps'>
-        <figure className='mk-app'>
-          <span className='mk-app-tile'>
-            <Art svg={art.clean} size={APP_MARK_PX} />
-          </span>
-          <figcaption>App icon, {APP_ICON_PX}px</figcaption>
-        </figure>
-        <figure className='mk-fav'>
-          <span className='mk-tab'>
-            <Art svg={art.clean} size={16} />
-            <span className='mk-tab-title'>{TAB_TITLE}</span>
-          </span>
-          <figcaption>Favicon, 16px</figcaption>
-        </figure>
-        <figure className='mk-plate is-paper is-build'>
-          <Art svg={art.clean} size={192} />
-          <figcaption>Clean</figcaption>
-        </figure>
-        <figure className='mk-plate is-paper is-build'>
-          <Art svg={art.construction} size={192} />
-          <figcaption>Construction</figcaption>
-        </figure>
+      <div className={cn('mk-pair', wide && 'is-stack')}>
+        {GROUNDS.map((ground) => (
+          <figure key={ground} className={cn('mk-strip', groundClass(ground))}>
+            <div className='mk-strip-row'>
+              {sizes.map((size) => (
+                <span key={size} className='mk-size'>
+                  <Art svg={art.clean} height={size} aspect={art.aspect} />
+                  <small>{size}</small>
+                </span>
+              ))}
+            </div>
+            <figcaption>
+              {groundName(ground)}, {sizeRange}
+            </figcaption>
+          </figure>
+        ))}
       </div>
+
+      {(monogram || art.construction) && (
+        <div className={cn('mk-apps', art.construction && 'has-build')}>
+          {monogram && (
+            <>
+              <figure className='mk-app'>
+                <span className='mk-app-tile'>
+                  <Art svg={art.clean} height={appHeight} aspect={art.aspect} />
+                </span>
+                <figcaption>App icon, {APP_ICON_PX}px</figcaption>
+              </figure>
+              <figure className='mk-fav'>
+                <span className='mk-tab'>
+                  <Art svg={art.clean} height={16} aspect={art.aspect} />
+                  <span className='mk-tab-title'>{TAB_TITLE}</span>
+                </span>
+                <figcaption>Favicon, 16px</figcaption>
+              </figure>
+            </>
+          )}
+          {art.construction && (
+            <>
+              <figure className='mk-plate is-paper is-build'>
+                <Art svg={art.clean} height={192} aspect={art.aspect} />
+                <figcaption>Clean</figcaption>
+              </figure>
+              <figure className='mk-plate is-paper is-build'>
+                <Art svg={art.construction} height={192} aspect={art.aspect} />
+                <figcaption>Construction</figcaption>
+              </figure>
+            </>
+          )}
+        </div>
+      )}
 
       <dl className='mk-notes'>
         <div className='mk-note'>
@@ -232,15 +328,18 @@ function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
           <dd>{gtText(mark.construction)}</dd>
         </div>
         <div className='mk-note'>
-          <dt>At 16px</dt>
-          <dd>{gtText(mark.small)}</dd>
+          <dt>In use</dt>
+          <dd>{gtText(mark.use)}</dd>
         </div>
         <div className='mk-note'>
           <dt>Files</dt>
           <dd>
-            <a href={mark.file}>{mark.file}</a>
-            <span className='mk-sep'>and</span>
-            <a href={mark.constructionFile}>{mark.constructionFile}</a>
+            {files.map((file, i) => (
+              <span key={file}>
+                {i > 0 && <span className='mk-sep'>and</span>}
+                <a href={file}>{file}</a>
+              </span>
+            ))}
           </dd>
         </div>
       </dl>
@@ -259,14 +358,14 @@ type MarksBookProps = {
 };
 
 /**
- * The book: a head, a contents list, the Method section, one section per
- * mark and the Presentation, top to bottom inside the flow sheet. Owns the
+ * The book: a head, a contents list, the register, one section per mark
+ * and the Presentation, top to bottom inside the flow sheet. Owns the
  * reading state the way the skills book does: an IntersectionObserver on
  * the sheet marks the section under the read line and selects it through
  * the shell (the list and the hash follow); a selection from anywhere else
  * scrolls the sheet to the section and mutes the spy until it arrives. A
  * deep link lands without motion; the spy never selects at the head, so
- * Method stays marked there.
+ * the register stays marked there.
  */
 function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
   const { active, ready, select } = usePtShell();
@@ -401,9 +500,9 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
       </header>
 
       <nav className='mk-toc' aria-label='Contents'>
-        <a href={`#${METHOD_ID}`} onClick={(e) => onContents(e, METHOD_ID)}>
-          <span>Method</span>
-          <small>Six tests</small>
+        <a href={`#${REGISTER_ID}`} onClick={(e) => onContents(e, REGISTER_ID)}>
+          <span>The register</span>
+          <small>{MARK_RULES.length} rules</small>
         </a>
         {MARKS.map((mark, i) => (
           <a key={mark.id} href={`#${mark.id}`} onClick={(e) => onContents(e, mark.id)}>
@@ -418,30 +517,30 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
       </nav>
 
       <section
-        className={cn('mk-sec', active === METHOD_ID && 'is-active')}
-        data-id={METHOD_ID}
-        aria-labelledby='mk-method'
-        aria-current={active === METHOD_ID ? 'true' : undefined}
+        className={cn('mk-sec', active === REGISTER_ID && 'is-active')}
+        data-id={REGISTER_ID}
+        aria-labelledby='mk-register'
+        aria-current={active === REGISTER_ID ? 'true' : undefined}
       >
         <div className='mk-div'>
           <small>
             <span>Section 1</span>
-            <span>{MARK_TESTS.length} tests</span>
+            <span>{MARK_RULES.length} rules</span>
           </small>
           <div>
-            <h2 id='mk-method'>Method</h2>
-            <p className='mk-thesis'>{METHOD_LEAD}</p>
+            <h2 id='mk-register'>The register</h2>
+            <p className='mk-thesis'>{REGISTER_LEAD}</p>
           </div>
         </div>
         <div className='mk-rows'>
-          {MARK_TESTS.map((test, i) => (
-            <article key={test.id} className='mk-row'>
+          {MARK_RULES.map((rule, i) => (
+            <article key={rule.id} className='mk-row'>
               <div className='mk-n'>
                 <b>{pad2(i + 1)}</b>
               </div>
               <div className='mk-body'>
-                <h3>{test.name}</h3>
-                <p>{test.text}</p>
+                <h3>{rule.name}</h3>
+                <p>{gtText(rule.text)}</p>
               </div>
             </article>
           ))}
@@ -449,11 +548,14 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
         <div className='mk-families'>
           {MARK_FAMILIES.map((family) => (
             <div key={family.id} className='mk-family'>
-              <b>{family.label}</b>
+              <b>
+                {family.label} {familyCount(family.id)}
+              </b>
               <p>{gtText(family.principle)}</p>
             </div>
           ))}
         </div>
+        <p className='mk-faces'>{MARK_FACES}</p>
       </section>
 
       {MARKS.map((mark, i) => {
@@ -478,15 +580,21 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
             <p className='mk-thesis'>{PRESENTATION_LEAD}</p>
           </div>
         </div>
-        {(['paper', 'ink'] as const).map((ground) => (
-          <figure key={ground} className={cn('mk-field', ground === 'paper' ? 'is-paper' : 'is-ink')}>
+        {GROUNDS.map((ground) => (
+          <figure key={ground} className={cn('mk-field', groundClass(ground))}>
             <div className='mk-field-row'>
               {MARKS.map((mark, i) => {
                 const files = art[mark.id];
                 if (!files) return null;
+                const fit = fitPlate(files.aspect, PLATE_INNER, FIELD_PX);
                 return (
-                  <a key={mark.id} className='mk-field-item' href={`#${mark.id}`} onClick={(e) => onContents(e, mark.id)}>
-                    <Art svg={files.clean} size={96} />
+                  <a
+                    key={mark.id}
+                    className={cn('mk-field-item', fit === 'full' && 'is-full')}
+                    href={`#${mark.id}`}
+                    onClick={(e) => onContents(e, mark.id)}
+                  >
+                    <Art svg={files.clean} height={fit} aspect={files.aspect} />
                     <small>
                       {pad2(i + 1)} {mark.name}
                     </small>
@@ -494,7 +602,9 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
                 );
               })}
             </div>
-            <figcaption>{ground === 'paper' ? 'Positive' : 'Reversed'}, the nine at 96px</figcaption>
+            <figcaption>
+              {groundName(ground)}, the nine at {FIELD_PX}px, the widest across the field
+            </figcaption>
           </figure>
         ))}
         <div className='mk-pair mk-ref'>
@@ -514,22 +624,22 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
 }
 
 export type MarksViewerProps = {
-  /** the two SVG files of every mark, by id, read on the server */
+  /** every mark's files and viewBox aspect, by id, read on the server */
   art: Readonly<Record<string, MarkArt>>;
 };
 
 /**
- * The mark explorations on the viewer shell: the list holds Method, the
- * nine marks by name and Presentation; the book presents each mark inside
- * the 1280px flow sheet; the grid shows every mark as a tile drawn from
- * its own file (marks.css masks the shell's rows with the SVGs). Flow
- * keys, so Space and the arrows scroll; digits 1 to 9 pick a mark. The
- * hash names the active section.
+ * The marks on the viewer shell: the list holds the register, the nine
+ * marks by name and Presentation; the book presents each mark inside the
+ * 1280px flow sheet; the grid shows every mark as a tile drawn from its
+ * own file (marks.css masks the shell's rows with the SVGs). Flow keys,
+ * so Space and the arrows scroll; digits 1 to 9 pick a mark. The hash
+ * names the active section.
  */
 export default function MarksViewer({ art }: MarksViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
-  const activeOut = useRef(METHOD_ID);
+  const activeOut = useRef(REGISTER_ID);
 
   return (
     <ViewerShell

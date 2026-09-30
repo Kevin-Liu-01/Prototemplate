@@ -218,5 +218,63 @@
     "source": "https://fonts.gstatic.com/s/forum/v19/6aey4Ky-Vb8Ew8IROpI43XnS.woff2",
     "bytes": 13684,
     "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "michroma-400.woff2",
+    "family": "Michroma",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/michroma/v21/PN_zRfy9qWD8fEagAPg9pTn5_PDb.woff2",
+    "bytes": 11620,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "orbitron-900.woff2",
+    "family": "Orbitron",
+    "weight": 900,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/orbitron/v35/yMJMMIlzdpvBhQQL_SC3X9yhF25-T1nysimBoWgzfDAlp7lk.woff2",
+    "bytes": 6432,
+    "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "anybody-150-900.woff2",
+    "family": "Anybody",
+    "weight": 900,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/anybody/v13/VuJbdNvK2Ib2ppdWYq311GH32hxIv0vD5wrncSUi2F_Wim4Jfmf_qc_C3HVfpMnY.woff2",
+    "bytes": 12884,
+    "license": "SIL Open Font License 1.1",
+    "axis": "ital,wdth,wght@0,150,900"
+  },
+  {
+    "file": "anybody-150-900-italic.woff2",
+    "family": "Anybody",
+    "weight": 900,
+    "style": "italic",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/anybody/v13/VuJddNvK2Ib2ppdWSKTHN4GOiYrmuF7VpCavQ9r6sTRMJGkcHyOO6v_A1nR9oNHZb-Q.woff2",
+    "bytes": 13920,
+    "license": "SIL Open Font License 1.1",
+    "axis": "ital,wdth,wght@1,150,900"
+  },
+  {
+    "file": "anybody-150-500-italic.woff2",
+    "family": "Anybody",
+    "weight": 500,
+    "style": "italic",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/anybody/v13/VuJddNvK2Ib2ppdWSKTHN4GOiYrmuF7VpCavQ9r6sTRMJGkcHyMV7f_A1nR9oNHZb-Q.woff2",
+    "bytes": 14108,
+    "license": "SIL Open Font License 1.1",
+    "axis": "ital,wdth,wght@1,150,500"
   }
 ]

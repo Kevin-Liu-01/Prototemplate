@@ -64,7 +64,7 @@ const flag = (name) => {
 const OUT_OVERRIDE = flag('--out');
 const OUT = OUT_OVERRIDE ?? join(ROOT, 'public/brand-deck.html');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
-const SLIDE_COUNT = 85;
+const SLIDE_COUNT = 92;
 const QUALITY = Number(flag('--quality') ?? 78);
 const MAX_WIDTH = Number(flag('--max-width') ?? 1280);
 /* the thumbnails pass through untouched unless a copy asks for them re-encoded */

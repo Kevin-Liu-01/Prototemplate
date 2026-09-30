@@ -158,7 +158,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'marks',
     'Marks',
     '/marks',
-    'Nine new General Translation marks in three families, each one color, with its construction.',
+    'The speed set of General Translation marks, seven in one register, and the two survivors of the earlier round, each one color.',
     'Knowledge',
     thumb('marks')
   ),

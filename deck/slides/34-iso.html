@@ -1,0 +1,21 @@
+    <!-- iso -->
+    <section class="slide s21"><style>.s21 svg.dia text { font-size: 22px; }</style><div class="in">
+      <div class="cols">
+        <div class="stack">
+          <h2>Isometric illustration</h2>
+          <p class="max-p">All illustrations use one isometric projection. The projection is axonometric at 30 degrees, and the light comes from the upper left. Three faces are visible, shaded at 4, 9, and 15 percent. The whole family uses square corners. Marks are rendered as alpha masks so they take the surface color, and the only animated effect is a Bayer-dithered highlight sweep.</p>
+          <p class="cap max-p">project(x, y, z) = [(x - y) cos 30, (x + y) sin 30 - z]</p>
+        </div>
+        <svg class="dia" viewBox="0 0 800 480" aria-label="An isometric plate with three shaded faces, each labeled with its shading percentage, and the mark seated in the top face">
+          <polygon points="400,58 659.8,208 400,358 140.2,208" fill="var(--ink)" fill-opacity="0.04"/>
+          <polygon points="659.8,208 400,358 400,418 659.8,268" fill="var(--ink)" fill-opacity="0.15"/>
+          <polygon points="140.2,208 400,358 400,418 140.2,268" fill="var(--ink)" fill-opacity="0.09"/>
+          <polygon points="400,58 659.8,208 659.8,268 400,418 140.2,268 140.2,208" fill="none" class="mid" stroke-width="1"/>
+          <path d="M140.2 208 L400 358 L659.8 208 M400 358 L400 418" fill="none" class="mid" stroke-width="1"/>
+          <g transform="translate(400 200) scale(1 0.5) rotate(45)"><svg width="180" height="115" x="-90" y="-57" fill="var(--ink)" fill-opacity="0.55"><use href="#gt-mark"/></svg></g>
+          <text x="400" y="40" text-anchor="middle">4%</text>
+          <text x="122" y="245" text-anchor="end">9%</text>
+          <text x="678" y="245">15%</text>
+        </svg>
+      </div>
+    </div></section>

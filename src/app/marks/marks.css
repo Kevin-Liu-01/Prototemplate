@@ -1,14 +1,18 @@
-/* Marks: the mark explorations on the viewer shell.
+/* Marks: the speed set on the viewer shell.
 
    The shell (src/components/viewer) draws the frame; this sheet draws the
-   book inside the flow sheet (the head, the contents, the Method rows, one
-   presentation per mark, the fields at the end) and lays the grid's rows
-   out as tiles that carry the marks themselves. Everything reads the
+   book inside the flow sheet (the head, the contents, the register's rows,
+   one presentation per mark, the fields at the end) and lays the grid's
+   rows out as tiles that carry the marks themselves. Everything reads the
    shell's --pt- tokens. The marks are one color by construction: every
    plate sets a ground and a color, and the inlined SVG takes the color as
    currentColor, so a positive plate is ink on paper and a reversed plate
-   is paper on ink, and the theme switch swaps both. Rules are --pt-hair
-   and --pt-hair-soft and never ink (directive 8.9); one hairline per rule,
+   is paper on ink, and the theme switch swaps both. Every mark is sized
+   by height and its file's own aspect (the viewer writes --mk-w and
+   --mk-aspect on each instance), never by a square box: a wide mark lays
+   its plates out full width, one above the other (.is-stack), and its
+   width is clamped to the plate so nothing clips. Rules are --pt-hair and
+   --pt-hair-soft and never ink (directive 8.9); one hairline per rule,
    radius 0 everywhere but the app icon tile, whose 22% radius is the
    platform's, not the shell's; no shadow. */
 
@@ -110,7 +114,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- a section: Method, one mark, Presentation ---------- */
+/* ---------- a section: the register, one mark, Presentation ---------- */
 
 .mk-sec {
   display: flex;
@@ -119,7 +123,7 @@
   scroll-margin-top: 20px;
 }
 
-/* divider: the number and the family in the gutter, the title and the thesis beside */
+/* divider: the number, the family and the kind in the gutter, the title and the principle beside */
 .mk-div {
   display: grid;
   grid-template-columns: 128px minmax(0, 1fr);
@@ -168,22 +172,38 @@
 
 /* ---------- the plates ---------- */
 
+/* one instance of a mark: --mk-w is height times aspect, and the width is
+   clamped to the plate; the height follows from the aspect, and the file
+   fills the box from the corners, so a clamped instance scales, never
+   clips. The clamp is max-width, never a percentage inside the width: a
+   size row's item is sized by its content, and a cyclic percentage there
+   resolves to zero, which shrank every instance to its label */
 .mk-svg {
+  position: relative;
   display: block;
   flex: 0 0 auto;
+  width: var(--mk-w);
+  max-width: 100%;
+  aspect-ratio: var(--mk-aspect);
 }
 
 .mk-svg > svg {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
 }
 
-/* two plates side by side: positive and reversed */
+/* two plates side by side: positive and reversed; stacked for a wide mark */
 .mk-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+}
+
+.mk-pair.is-stack {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* a plate: the mark centered on a ground, the caption in the corner */
@@ -203,6 +223,12 @@
   justify-content: center;
   min-height: 352px;
   padding: 48px 32px;
+}
+
+/* a full-width plate holds a wide mark: it sits on the mark's height with the caption clear below */
+.mk-pair.is-stack .mk-plate {
+  min-height: 0;
+  padding: 56px 32px 60px;
 }
 
 .mk-plate.is-build {
@@ -243,16 +269,19 @@
   opacity: 0.6;
 }
 
-/* the size row: five marks on one baseline with their pixel sizes under them */
+/* the size row: the run of heights on one baseline, each with its pixel
+   height under it, from the left; a run wider than the plate wraps, the
+   larger sizes on the next line */
 .mk-strip {
   padding: 40px 32px 52px;
 }
 
 .mk-strip-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
-  justify-content: center;
-  gap: 44px;
+  justify-content: flex-start;
+  gap: 28px 40px;
 }
 
 .mk-size {
@@ -260,6 +289,7 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  max-width: 100%;
 }
 
 .mk-size small,
@@ -271,11 +301,16 @@
   white-space: nowrap;
 }
 
-/* the applications: the app icon, the favicon in a tab, the clean mark beside its construction */
+/* the applications: the app icon and the favicon in a tab for a monogram;
+   the clean mark beside its construction for the two picture marks */
 .mk-apps {
   display: grid;
-  grid-template-columns: 208px minmax(0, 1fr) 272px 272px;
+  grid-template-columns: 208px minmax(0, 1fr);
   gap: 16px;
+}
+
+.mk-apps.has-build {
+  grid-template-columns: 208px minmax(0, 1fr) 272px 272px;
 }
 
 .mk-app,
@@ -323,7 +358,7 @@
   white-space: nowrap;
 }
 
-/* ---------- ruled rows: the tests, the notes ---------- */
+/* ---------- ruled rows: the rules, the notes ---------- */
 
 .mk-rows {
   display: flex;
@@ -416,10 +451,10 @@
   color: var(--pt-titanium);
 }
 
-/* the three families under the tests */
+/* the two families under the rules, and the faces note */
 .mk-families {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -445,17 +480,27 @@
   color: var(--pt-ink-2);
 }
 
+.mk-faces {
+  max-width: 78ch;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--pt-ink-2);
+}
+
 /* ---------- presentation: the nine on one field, then the reference ---------- */
 
 .mk-field {
   padding: 44px 32px 56px;
 }
 
+/* the nine at one height, wrapping from the left, each with its number and name under it */
 .mk-field-row {
-  display: grid;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
-  gap: 16px;
-  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 32px 40px;
 }
 
 .mk-field-item {
@@ -463,8 +508,14 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  max-width: 100%;
   color: inherit;
   text-decoration: none;
+}
+
+/* a mark too wide for the field's height takes the field's width, on a line of its own */
+.mk-field-item.is-full {
+  width: 100%;
 }
 
 .mk-field-item:hover small {
@@ -496,9 +547,11 @@
    is 'row'; under this route's grid the rows become bordered tiles with the
    frame grammar (a 1px --pt-edge border, ink on hover, ink plus the 2px
    offset outline when active). A mark's tile draws the mark itself: the
-   row's ::after is a square filled with ink and masked by the mark's own
-   file, so the tile stays one color and follows the theme like the book.
-   Scoped to the shell's id so no other route's grid changes. */
+   row's ::after is a box the tile's width filled with ink and masked by
+   the mark's own file, contained, so a wide file takes the width and a
+   square one the height, the tile stays one color and follows the theme
+   like the book. Scoped to the shell's id so no other route's grid
+   changes. */
 
 .pt-viewer[data-shell='marks'] .pt-grid .pt-thumbs {
   grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
@@ -561,61 +614,61 @@
   outline-offset: 2px;
 }
 
-/* the mark on its tile: a 128px square of ink masked by the file */
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bilingual-3']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bilingual-2']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bilingual-1']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='counterform-3']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='counterform-2']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='counterform-1']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='reflection-3']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='reflection-2']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='reflection-1']::after {
+/* the mark on its tile: a box the tile's width and 96px tall, ink masked by the file, contained */
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-lockup']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='plate-inverted']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='double-cut']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='livery-stack']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-dithered']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-ascii']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='two-way']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='globe-g']::after {
   content: '';
   order: -1;
   display: block;
-  width: 128px;
-  height: 128px;
-  margin: 12px auto 16px;
+  width: 100%;
+  height: 96px;
+  margin: 12px 0 16px;
   background: var(--pt-ink);
   -webkit-mask: var(--mk-mask) center / contain no-repeat;
   mask: var(--mk-mask) center / contain no-repeat;
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bilingual-3'] {
-  --mk-mask: url('/marks/bilingual-3.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram'] {
+  --mk-mask: url('/marks/bar-monogram.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bilingual-2'] {
-  --mk-mask: url('/marks/bilingual-2.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-lockup'] {
+  --mk-mask: url('/marks/bar-monogram-lockup.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bilingual-1'] {
-  --mk-mask: url('/marks/bilingual-1.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='plate-inverted'] {
+  --mk-mask: url('/marks/plate-inverted.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='counterform-3'] {
-  --mk-mask: url('/marks/counterform-3.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='double-cut'] {
+  --mk-mask: url('/marks/double-cut.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='counterform-2'] {
-  --mk-mask: url('/marks/counterform-2.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='livery-stack'] {
+  --mk-mask: url('/marks/livery-stack.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='counterform-1'] {
-  --mk-mask: url('/marks/counterform-1.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-dithered'] {
+  --mk-mask: url('/marks/bar-monogram-dithered.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='reflection-3'] {
-  --mk-mask: url('/marks/reflection-3.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-ascii'] {
+  --mk-mask: url('/marks/bar-monogram-ascii.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='reflection-2'] {
-  --mk-mask: url('/marks/reflection-2.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='two-way'] {
+  --mk-mask: url('/marks/two-way.svg');
 }
 
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='reflection-1'] {
-  --mk-mask: url('/marks/reflection-1.svg');
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='globe-g'] {
+  --mk-mask: url('/marks/globe-g.svg');
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -668,14 +721,10 @@
     grid-template-columns: 1fr;
   }
 
-  .mk-plate {
+  .mk-plate,
+  .mk-pair.is-stack .mk-plate {
     min-height: 0;
     padding: 40px 24px 44px;
-  }
-
-  .mk-plate .mk-svg {
-    width: 192px;
-    height: 192px;
   }
 
   .mk-strip {
@@ -683,11 +732,13 @@
   }
 
   .mk-strip-row {
-    gap: 20px;
+    gap: 20px 24px;
   }
 
-  .mk-apps {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* one application per row: the favicon's tab needs more than half the column */
+  .mk-apps,
+  .mk-apps.has-build {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .mk-field {
@@ -695,7 +746,6 @@
   }
 
   .mk-field-row {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px 12px;
+    gap: 24px 20px;
   }
 }

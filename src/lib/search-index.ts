@@ -116,7 +116,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   skills: 'agent skills SKILL.md engineering productivity general translation graphics',
   blog: 'posts articles docs redesign rewriting fuma nama designing docs for humans carousel',
   graphics: 'illustrations visuals covers carousel slides glyphfield exports pipeline manifest',
-  marks: 'logo mark monogram GT explorations bilingual counterform reflection',
+  marks: 'logo mark monogram wordmark lockup GT speed race bars cut plate livery ascii dither',
   archive: 'retired versions captures history',
 };
 
