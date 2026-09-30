@@ -99,9 +99,9 @@ export const BAYER_8: readonly (readonly number[])[] = [
 /**
  * The same matrix pre-divided into 0..1 thresholds and flattened.
  *
- * The inner loop indexes this with `(y & 7) << 3 | (x & 7)`, which replaces a
- * nested array deref, an integer add and a divide per pixel with a single
- * Float64Array load. At 144k cells a frame that is worth having.
+ * The inner loop indexes this with `((y + phaseY) & 7) << 3 | ((x + phaseX) & 7)`,
+ * which replaces a nested array deref, an integer add and a divide per pixel
+ * with a single Float64Array load. At 144k cells a frame that is worth having.
  */
 const BAYER_8_THRESHOLDS: Float64Array = (() => {
   const out = new Float64Array(64);
@@ -163,7 +163,22 @@ export type DitherOptions = {
    * caller styles the canvas itself. Default true.
    */
   applyStyles?: boolean;
+  /**
+   * Offset of the Bayer tile in cells, added to a cell's index before the
+   * index is reduced modulo 8. The tile is indexed by the buffer's own
+   * cells, so two canvases whose buffers start at different places on the
+   * page thread one tone through different thresholds at the same page
+   * cell unless their phases differ by their offset: a canvas whose top
+   * left cell sits `n` cells below another's needs phase.y `n % 8` to draw
+   * the same cells, because its cell `y` is the other's cell `y + n`.
+   * Rounded to whole cells; any integer, including a negative one, is
+   * reduced modulo 8. Default {x: 0, y: 0}.
+   */
+  phase?: DitherPhase;
 };
+
+/** A Bayer tile offset in cells. */
+export type DitherPhase = { x: number; y: number };
 
 export type DitherFrame = {
   /** Buffer dimensions in cells. */
@@ -338,9 +353,14 @@ export function ditherToCanvas(
     bias = 0,
     gamma = 1,
     applyStyles = true,
+    phase,
   } = opts;
 
   const cellSize = Math.max(1, scale);
+  // `& 7` reduces a negative integer modulo 8 as well (two's complement),
+  // so the phase only has to be whole.
+  const phaseX = Math.round(phase?.x ?? 0);
+  const phaseY = Math.round(phase?.y ?? 0);
 
   // Measured layout box, falling back to the attribute size before first
   // layout. getBoundingClientRect is the only DOM read in the hot path and it
@@ -384,13 +404,13 @@ export function ditherToCanvas(
 
   for (let y = 0; y < height; y++) {
     const v = y * vScale;
-    const row = (y & 7) << 3;
+    const row = ((y + phaseY) & 7) << 3;
     for (let x = 0; x < width; x++, i++) {
       let value = fn(x * uScale, v, time) + bias;
       if (applyGamma) {
         value = value <= 0 ? 0 : Math.pow(value, gamma);
       }
-      if (value > BAYER_8_THRESHOLDS[row | (x & 7)]!) {
+      if (value > BAYER_8_THRESHOLDS[row | ((x + phaseX) & 7)]!) {
         pixels[i] = inkPixel;
         lit++;
       } else {
