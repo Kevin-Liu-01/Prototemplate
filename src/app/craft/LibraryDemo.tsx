@@ -11,6 +11,7 @@ import PillsDemo from './PillsDemo';
 import ReassemblerDemo from './ReassemblerDemo';
 import SeamDemo from './SeamDemo';
 import ThreadsDemo from './ThreadsDemo';
+import TransitionDemo from './TransitionDemo';
 import PrismaticField from '@/components/shared/PrismaticField';
 import {
   createDitherLoop,
@@ -37,7 +38,8 @@ export type LibraryDemoKind =
   | 'globe'
   | 'pills'
   | 'seam'
-  | 'reassembler';
+  | 'reassembler'
+  | 'transition';
 
 /**
  * One live demo plate per library — the page's dark surface in both themes.
@@ -195,6 +197,10 @@ export default function LibraryDemo({
       ) : kind === 'reassembler' ? (
         armed ? (
           <ReassemblerDemo />
+        ) : null
+      ) : kind === 'transition' ? (
+        armed ? (
+          <TransitionDemo />
         ) : null
       ) : (
         <canvas className='ptc-plate-field' ref={canvasRef} aria-hidden='true' />

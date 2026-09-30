@@ -198,7 +198,7 @@ function docHref(slug: string): string {
   return slug === 'readme' ? '/docs' : `/docs/${slug}`;
 }
 
-/** The h2 rows of each document, in reading order: [id, title]. The readme ends with the build log's six sections. */
+/** The h2 rows of each document, in reading order: [id, title]. The readme ends with the build log's seven sections. */
 const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
   graphics: [
     ['what-a-visual-is', 'What a visual is'],
@@ -217,6 +217,7 @@ const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])
     ['the-one-paragraph-tour', 'The one-paragraph tour'],
     ['the-system-under-the-system', 'The system under the system'],
     ['the-line-law-and-the-auditors-that-hold-it', 'The line law, and the auditors that hold it'],
+    ['the-dither-transitions-and-the-grid-they-run-on', 'The dither transitions, and the grid they run on'],
     ['rails-grounds-and-seams', 'Rails, grounds, and seams'],
     ['corners-spacers-and-the-second-surface', 'Corners, spacers, and the second surface'],
     ['the-libraries', 'The libraries'],

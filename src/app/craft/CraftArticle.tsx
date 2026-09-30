@@ -5,7 +5,15 @@ import AuditorFigure from './AuditorFigure';
 import CodeBlock from './CodeBlock';
 import CornerFigure from './CornerFigure';
 import LibraryDemo from './LibraryDemo';
-import { AUDITS, BENTO_SNIPPET, LIBRARIES, LINT_SNIPPET, RAIL_RULES } from './libraries';
+import {
+  AUDITS,
+  BENTO_SNIPPET,
+  LIBRARIES,
+  LINT_SNIPPET,
+  RAIL_RULES,
+  TRANSITION_RULES,
+  TRANSITION_SNIPPET,
+} from './libraries';
 import RailFigure from './RailFigure';
 
 import './craft.css';
@@ -81,6 +89,71 @@ export const CRAFT_SECTIONS: readonly CraftSection[] = [
           counts button types, bare effects, any-types, raw hex in markup and !important in
           CSS, and refuses any commit that adds to the count.
         </p>
+      </>
+    ),
+  },
+  {
+    id: 'the-dither-transitions-and-the-grid-they-run-on',
+    title: 'The dither transitions, and the grid they run on',
+    body: (
+      <>
+        <h2>The dither transitions, and the grid they run on</h2>
+        <p>
+          A dithered field changes state by changing tone on one cell grid; nothing
+          crossfades in alpha, nothing wipes, nothing slides. Both states share the cell
+          size and the phase of the Bayer tile, anchored to one page cell, so the first
+          frame of a transition is the last frame of the state before it, cell for cell.
+          An unanchored tile re-dithers the same tone into different cells, and the eye
+          reads that as a flash even when no tone has moved.
+        </p>
+        <p>
+          The globe resolves into the Blue Marble on that grid. The globe&rsquo;s field and
+          the picture&rsquo;s tone are read at the same cells; one smoothstep over 350 ms
+          mixes the two tones, and the ink is interpolated from the globe&rsquo;s blue to the
+          picture&rsquo;s ink on the same curve. The picture&rsquo;s curve is solved so the mean
+          tone inside its disc equals the globe&rsquo;s, and brightness holds while the
+          texture changes. Measured on the dashboard build, the two states have identical
+          cells at t0 and the disc&rsquo;s lit ratio stays within one percent across the
+          resolve.
+        </p>
+        <p>
+          A step from one picture to the next is the same mix over 150 ms. An interrupted
+          mix restarts from the frame on screen, so a run of quick steps never returns to a
+          picture that has already gone. The system refuses alpha fades, wipes, masks that
+          move, content entrance animation, and any change of cell size inside a
+          transition. Under reduced motion the field shows the end state. Five rules cover
+          all of it:
+        </p>
+        <ul className='pt-post-rules'>
+          {TRANSITION_RULES.map((r) => (
+            <li key={r}>{r}</li>
+          ))}
+        </ul>
+        <p>
+          The plate below runs the loop live on the CPU renderer at 2px cells. The globe
+          turns for two seconds, resolves into the Blue Marble over 350 ms, holds for a
+          second and a half, steps into the Rosetta Stone over 150 ms, holds again, and
+          mixes back into the globe over 350 ms. Both pictures are two-tone grids of 800 by
+          450 cells cut from the deck&rsquo;s mood pictures, one grid cell per deck cell,
+          decoded in the browser through a canvas. The plate is 280px tall, so each picture
+          is scaled to cover it; a loop cell that covers one grid cell reads that cell, and
+          a loop cell that covers more reads their area average, so the screen re-dithers
+          the grid&rsquo;s density at its own cell. The globe is drawn on the disc the Blue
+          Marble occupies. As the resolve begins, the globe&rsquo;s tone is scaled to the
+          picture&rsquo;s mean over that disc, so the mix changes texture and ink and holds
+          brightness. Under reduced motion the plate shows the Blue Marble as a still.
+        </p>
+        <LibraryDemo
+          kind='transition'
+          label='Live demo: a dithered globe turning, resolving into the Blue Marble on the same cells, stepping into the Rosetta Stone, and mixing back to the globe, in a loop.'
+          tag='mixFields()'
+        />
+        <p>
+          The mix is one combinator in the dither module and one clock in the plate. The
+          clock sets the field and the ink together, and the loop draws whatever it holds
+          at its next frame:
+        </p>
+        <CodeBlock code={TRANSITION_SNIPPET} label='src/lib/dither.ts, the mix' />
       </>
     ),
   },

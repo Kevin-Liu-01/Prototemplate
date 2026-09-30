@@ -18,6 +18,14 @@ export const RAIL_RULES = [
   'Translucent fills never extend under translucent borders: backgrounds clip to the padding box, everywhere.',
 ] as const;
 
+export const TRANSITION_RULES = [
+  'One cell grid: both states are read at the same cells, at one cell size, and the size never changes inside a transition.',
+  'One anchored tile: the Bayer tile keeps its phase from one page cell, so the first frame of a transition is the last frame of the state before it.',
+  'One smoothstep: the tone is mixed on it, and the ink is interpolated on the same curve.',
+  'Brightness held across a resolve: the incoming picture’s curve is solved so its disc’s mean tone equals the outgoing field’s.',
+  'The end state under reduced motion: the field draws it once, as a still.',
+] as const;
+
 /* The auditor's real invocation, and a finding in its real output shape
    (JSON.stringify(out, null, 1), keyed by audit width). The round is staged —
    this page audits clean — but every field is the auditor's own. */
@@ -57,6 +65,21 @@ export const BENTO_SNIPPET = `import { BentoCell, BentoRow, Rails } from '@/comp
     </BentoCell>
   </BentoRow>
 </section>`;
+
+/* The mix as the dither module writes it, and the plate's clock as
+   TransitionDemo.tsx calls it: one smoothstep sets the field and the ink. */
+export const TRANSITION_SNIPPET = `/* src/lib/dither.ts: a linear blend of two fields at one amount */
+export function mixFields(a: FieldFn, b: FieldFn, amount: number): FieldFn {
+  return (u, v, t) => {
+    const av = a(u, v, t);
+    return av + (b(u, v, t) - av) * amount;
+  };
+}
+
+/* TransitionDemo.tsx: one smoothstep over 350 ms sets the field and the ink together */
+const k = smoothstep((now - t0) / RESOLVE_MS);
+loop.setField(mixFields(turning, earth, k));
+loop.setOptions({ ink: lerpInk(inks.globe, inks.picture, k) });`;
 
 const HORIZON_SNIPPET = `import { createHorizonField } from '@/lib/horizon-field';
 

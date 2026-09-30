@@ -705,3 +705,12 @@
   cursor: crosshair;
   touch-action: none;
 }
+
+/* ---------- the transition plate: the sign-in globe's blue, the picture's white ---------- */
+
+/* the plate sits in the reading body, so it takes the libs' width itself;
+   the globe prints in GT blue and the picture in the plate's --tc-ink */
+.ptc-plate.is-transition {
+  --ptc-globe-ink: #2f5ce0;
+  max-width: 860px;
+}
