@@ -28,6 +28,10 @@ src/
                           PrismaticField, HeroFieldSwitcher, TcMobileNav,
                           diagrams/ (DoubledLine, …)
     shell/                Bento primitives (Rails / BentoRow / BentoCell)
+    plate/                the dashboard's sign-in and onboarding system
+                          (frame, field, pages, fixtures) with its state
+                          console, served under /d/production/{signin,
+                          onboarding,consent,device,cli}
   lib/                    the engines: dither.ts, studio-field.ts,
                           glyph-field.ts, horizon-field.ts, prismatic-field.ts,
                           directions.ts (the direction registry)

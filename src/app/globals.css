@@ -1,4 +1,9 @@
 @import 'tailwindcss';
+/* The sign-in and onboarding gallery's Tailwind tokens (src/components/plate):
+   the theme tokens its utilities read, tw-animate-css and the dark variant
+   bound to data-theme. Right after tailwindcss so the utilities are emitted
+   into this sheet; the properties resolve on .plate-root (plate.css). */
+@import '../components/plate/plate-theme.css';
 
 @theme {
   /* The four-color system: Ink, Raised, Titanium, Paper. Structural color
@@ -18,8 +23,18 @@
  * Each direction owns its own look, so this file stays close to a reset.
  * Direction-specific type, color, and texture live in the direction's own
  * stylesheet under src/app/d/<slug>/.
+ *
+ * The reset is unlayered, so it beats every rule in Tailwind's layers,
+ * including the margin utilities (mt-*, space-y-*); the directions set
+ * their spacing in their own sheets and do not rely on those. The sign-in
+ * and onboarding gallery (src/components/plate) is the dashboard's code
+ * and does rely on them, so the reset stops at .plate-root: inside it
+ * Tailwind's preflight (base layer) zeroes the margins and the utilities
+ * win, as they do in the dashboard. :where() keeps the selector at zero
+ * specificity, the same as the bare * it replaces, so no direction sheet's
+ * element rule changes rank against it.
  */
-* {
+:where(*:not(.plate-root, .plate-root *)) {
   margin: 0;
   box-sizing: border-box;
 }

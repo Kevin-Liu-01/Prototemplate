@@ -245,7 +245,11 @@ const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
   ['/contact', 'Contact', 'The contact form.'],
   ['/try', 'Report card', 'The interactive localization report card.'],
   ['/supported-locales', 'Supported locales', 'The catalog of supported locales.'],
-  ['/signin', 'Sign in', 'The sign in page.'],
+  ['/signin', 'Sign in', 'Sign in and the auth pages, with the state console.'],
+  ['/onboarding', 'Onboarding', 'The four onboarding steps on the plate frame.'],
+  ['/consent', 'Consent', 'The OAuth consent page.'],
+  ['/device', 'Device code', 'The device code pages.'],
+  ['/cli', 'CLI', 'The CLI wizard, terminal and callback pages.'],
   ['/blog', 'Blog', 'Essays, devlogs and the changelog.'],
 ];
 

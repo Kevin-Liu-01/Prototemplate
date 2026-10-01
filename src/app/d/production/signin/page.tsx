@@ -1,73 +1,42 @@
+import PlateGallery from '@/components/plate/gallery/PlateGallery';
+import { initialDevStateId } from '@/components/plate/gallery/devStates';
 import DirectionCorner from '@/components/viewer/DirectionCorner';
-import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import SignInFooter from '../sections/SignInFooter';
-import SignInGlyphAside from '../sections/SignInGlyphAside';
-import SignInMark from '../sections/SignInMark';
-import SignInPanel from '../sections/SignInPanel';
+import '@/components/plate/plate.css';
 
-import '../../toolchain/styles.css';
-import '../sections/signin.css';
-
-/* Title and description are the real page's own: gt('Sign In') and
-   d('metadata.description'), which resolves to the dashboard dictionary's
-   tagline (apps/dashboard/src/dictionary.ts). */
+/* The title is the dashboard page's own; the description is the dashboard
+   dictionary's tagline (apps/dashboard/src/dictionary.ts,
+   metadata.description), as every auth page there carries it. */
 export const metadata = {
-  title: 'Sign In — Shipped — GT Redesign',
+  title: 'Sign in — Shipped — GT Redesign',
   description: "Full-stack localization for the world's best companies",
   icons: { icon: '/brand/no-bg-gt-logo-light.png' },
 };
 
+type PageProps = {
+  /** The address's query; `state` names the state to open on. */
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
 /**
- * SIGN IN — the shipped page, not a direction.
- *
- * The one route in this control that does not ship from the marketing app.
- * Sign-in lives in apps/dashboard (src/app/[locale]/signin/page.tsx, with
- * src/components/signin/sign-in-form.tsx, SignInGlyphAside.tsx and
- * SignInFooter.tsx), so it takes its chrome from there rather than from the
- * site frame: no navbar, no site footer — the mark alone at the top of the
- * form column, the halftone globe plate beside it from 768px up, and the
- * page's own slim footer carrying the copyright and the language selector.
- * That route has no layout.tsx, so nothing wraps it; V0Nav and V0Footer,
- * which the landing page and the marketing subpages mount, would both be
- * additions the real page does not have.
- *
- * The composition below mirrors it exactly: a min-h-svh flex column, a
- * two-column grid that collapses to one below md, the mark and the panel
- * sharing a single 400px measure so the logo sits over the form's left edge,
- * and the footer under the whole thing.
- *
- * What the real page does that this cannot: resolve a session and redirect,
- * sanitize a redirect_url, carry an invite token or a selected plan through,
- * read the signin_error_* cookies to seed an error and a default email, and
- * open straight into the SSO view when the error code is sso_required. Those
- * are all server-auth paths. The panel carries the default state instead —
- * the state a visitor arriving cold actually sees — and says plainly that
- * nothing submits.
+ * The dashboard's sign-in and onboarding system, opened at the
+ * `signin` state. The gallery (src/components/plate/gallery) renders
+ * every state of the journey on its real frame from fixtures, with the
+ * draggable console to page between them; ?state=<id> opens any state and
+ * ?chrome=0 hides the console and the corner for captures.
+ * The route reads ?state= on the server (searchParams), so the document
+ * carries the wanted state from its first byte and no default page paints
+ * first; the route renders per request for that, which is also why the
+ * corner mounts without its Suspense boundary (suspense={false}): it
+ * hydrates with the page, before a fixture's mount effect can open a
+ * dialog over it.
  */
-export default function ProductionSignInPage() {
+export default async function ProductionSignInPage({ searchParams }: PageProps) {
+  const { state } = await searchParams;
   return (
-    <SmoothScroll>
-      <div className='toolchain-root prod-root' id='top'>
-        <div className='psi-page'>
-          <div className='psi-split'>
-            {/* the left column carries the whole journey: mark and form */}
-            <section className='psi-col'>
-              <div className='psi-measure'>
-                <SignInMark />
-              </div>
-              <div className='psi-body'>
-                <div className='psi-measure'>
-                  <SignInPanel />
-                </div>
-              </div>
-            </section>
-            <SignInGlyphAside />
-          </div>
-          <SignInFooter />
-        </div>
-      </div>
-      <DirectionCorner slug='production' />
-    </SmoothScroll>
+    <>
+      <PlateGallery initial={initialDevStateId(state, 'signin')} />
+      <DirectionCorner slug='production' placement='right' suspense={false} />
+    </>
   );
 }

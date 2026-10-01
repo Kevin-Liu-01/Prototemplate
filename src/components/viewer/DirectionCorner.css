@@ -1,7 +1,9 @@
 /* DirectionCorner: the floating chrome on /d pages. A 32px tile with the
    Prototemplate mark (the link back to the gallery) over three labeled
    buttons (Search, List, Index), stacked in the top left corner and
-   sharing one hairline, on paper, so the stack reads as Prototemplate
+   sharing one hairline (a row in the top right under 768px on a page that
+   asks for placement='right', below), on paper, so the stack reads as
+   Prototemplate
    chrome and not as part of the prototype's own nav band; a fixed layer
    over the page holds the overlay list and the index panel above a 28
    percent ink scrim, and the search palette (Search.css) opens from the
@@ -97,6 +99,41 @@
 @media (max-width: 700px) {
   .pt-corner {
     top: 70px;
+  }
+}
+
+/* A page whose column starts at the left edge under the corner (the plate
+   pages: the mark at x 22 and the heading at x 36 on a 390 phone) sets
+   placement='right'. Under the plate frame's md cut, 767px, where the
+   gallery's console folds into its 44px handle at the top left, the corner
+   takes the top right as one row of 32px squares (the mark tile, Search,
+   List, Index: 125 by 32, from y 10 to 42), where nothing of the page sits:
+   the mark row starts at y 94 and the onboarding step counter that ends it
+   at the right starts at 108, so the column the corner was would have
+   covered the counter. It keeps the outer margin's top since there is no
+   nav band to step below. The seam turns with the layout: the left button
+   owns each hairline with its right edge and the right one's left edge is
+   transparent at rest, with the top edge back on the hairline. */
+@media (max-width: 767px) {
+  .pt-corner.is-right {
+    top: 10px;
+    left: auto;
+    right: 12px;
+    flex-direction: row;
+  }
+
+  .pt-corner.is-right .pt-ib ~ .pt-ib {
+    margin-top: 0;
+    margin-left: -1px;
+    border-top-color: var(--pt-hair);
+    border-left-color: transparent;
+  }
+
+  /* the seam rule above outweighs the hover and pressed rule, so the ink
+     edge is restored here at the same weight */
+  .pt-corner.is-right .pt-ib:hover,
+  .pt-corner.is-right .pt-ib.is-on {
+    border-color: var(--pt-ink);
   }
 }
 

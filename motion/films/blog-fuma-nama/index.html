@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Fuma Nama: The philosophy of an open-sourcerer</title>
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="kit/dither.js"></script>
+    <script src="kit/sheet.js"></script>
+    <script src="lib/iso.js"></script>
+    <script src="lib/swarm.js"></script>
+    <style>
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ink);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--ink);
+        color: var(--ink-text);
+      }
+      .layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        display: block;
+      }
+      #field,
+      #swarm {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        image-rendering: pixelated;
+      }
+      .txt {
+        position: absolute;
+        left: 160px;
+        margin: 0;
+      }
+      .tnum {
+        font-variant-numeric: tabular-nums;
+      }
+      .ln {
+        display: block;
+        white-space: nowrap;
+        width: max-content;
+      }
+      .ink {
+        color: var(--ink-text);
+      }
+      .body {
+        color: rgb(155, 155, 154);
+      }
+      .ti {
+        color: var(--titanium);
+      }
+      .lab {
+        position: absolute;
+        width: 520px;
+        height: 62px;
+        display: block;
+      }
+      .lab .nm {
+        display: block;
+        font-size: 26px;
+        line-height: 34px;
+        font-weight: 500;
+        letter-spacing: -0.005em;
+        color: var(--ink-text);
+      }
+      .lab .pk {
+        display: block;
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 400;
+        color: var(--titanium);
+      }
+      #cli {
+        position: absolute;
+        width: 300px;
+        height: 62px;
+        text-align: right;
+        display: block;
+      }
+      #cli .nm,
+      #cli .pk {
+        display: block;
+      }
+      #endmark {
+        position: absolute;
+        left: 160px;
+        top: 262px;
+        width: 72px;
+        height: 46px;
+        color: var(--ink-text);
+        display: block;
+      }
+      #endmark svg {
+        width: 72px;
+        height: 46px;
+        display: block;
+      }
+      .rail {
+        position: absolute;
+        background: rgba(242, 242, 240, 0.11);
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="24" data-width="1920" data-height="1080">
+      <!-- the dither field: the moon (title) and the moon as a horizon (end card) -->
+      <canvas id="field" width="1920" height="1080" data-layout-allow-overflow></canvas>
+
+      <!-- the architecture -->
+      <svg id="iso" class="layer" viewBox="0 0 1920 1080" width="1920" height="1080" data-layout-allow-overflow>
+        <g id="g-app"></g>
+        <g id="g-app-route"><path id="route-b" fill="none" stroke="#8a8f98" stroke-width="1" d="M0 0" /></g>
+        <g id="g-app-tiles"></g>
+        <g id="g-copy-low"></g>
+        <g id="g-ui"></g>
+        <g id="g-ui-route"><path id="route-a" fill="none" stroke="#8a8f98" stroke-width="1" d="M0 0" /></g>
+        <g id="g-ui-tiles"></g>
+        <g id="g-copy-high"></g>
+        <g id="g-core"></g>
+        <g id="g-core-tiles"></g>
+        <g id="g-content"></g>
+        <g id="g-content-tiles"></g>
+        <g id="g-threads"></g>
+      </svg>
+
+      <!-- the glyph cells of the moving type, under the text nodes they stand in for -->
+      <canvas id="swarm" width="1920" height="1080" data-layout-allow-overflow></canvas>
+
+      <!-- beat 3 and 4 labels -->
+      <div id="labels" class="layer">
+        <div class="lab" id="lab-content"><span class="nm">Content</span><span class="pk">fumadocs-mdx</span></div>
+        <div class="lab" id="lab-core"><span class="nm">Core</span><span class="pk">fumadocs-core</span></div>
+        <div class="lab" id="lab-ui"><span class="nm">UI</span><span class="pk">fumadocs-ui</span></div>
+        <div class="lab" id="lab-app"><span class="nm">React app</span><span class="pk">Next.js, React Router, TanStack Start, Waku</span></div>
+        <div class="lab" id="cli"><span class="nm">CLI</span><span class="pk">@fumadocs/cli</span></div>
+      </div>
+
+      <!-- beat 1: the title card -->
+      <div id="s1" class="txt" style="top: 312px">
+        <div class="t-h1 ln ink s1-t">Fuma Nama:</div>
+        <div class="t-h1 ln ink s1-t">The philosophy of</div>
+        <div class="t-h1 ln ink s1-t">an open-sourcerer</div>
+        <div class="t-lead ln body s1-s" style="margin-top: 40px">Taylor Fang</div>
+        <div class="t-lead ln ti s1-s tnum">September 3, 2026</div>
+      </div>
+
+      <!-- beat 2: the first quote -->
+      <div id="s2" class="txt" style="top: 392px; opacity: 0">
+        <div class="t-display ln ink s2-t hang" data-layout-allow-overflow>“I learned to code</div>
+        <div class="t-display ln ink s2-t">from files.”</div>
+        <div class="t-lead ln ti s2-s" style="margin-top: 36px">Fuma Nama</div>
+      </div>
+
+      <!-- beat 3 and 4 headings -->
+      <div id="h1" class="txt" style="top: 168px; opacity: 0"><div class="t-h2 ln ink">Less abstraction, less opinionated software</div></div>
+      <div id="h2" class="txt" style="top: 168px; opacity: 0"><div class="t-h2 ln ink">A black box and a compiler</div></div>
+
+      <!-- beat 5: the second quote -->
+      <div id="s5" class="txt" style="top: 338px; opacity: 0">
+        <div class="t-display ln ink s5-t hang" data-layout-allow-overflow>“Zero issues on my</div>
+        <div class="t-display ln ink s5-t">repositories, that’s</div>
+        <div class="t-display ln ink s5-t">kind of my goal.”</div>
+        <div class="t-lead ln ti s5-s" style="margin-top: 36px">Fuma Nama</div>
+      </div>
+
+      <!-- beat 6: the end card -->
+      <div id="endmark"></div>
+      <div id="s6" class="txt" style="top: 348px; opacity: 0">
+        <div class="t-h1 ln ink s6-t">Fuma Nama is</div>
+        <div class="t-h1 ln ink s6-t">General Translation’s first</div>
+        <div class="t-h1 ln ink s6-t">open-source grantee.</div>
+        <div class="t-lead ln ti s6-s" style="margin-top: 32px">generaltranslation.com/blog/fuma-nama</div>
+      </div>
+
+      <!-- the series frame -->
+      <div id="sheet"></div>
+      <div id="rails"></div>
+    </div>
+
+    <script>
+      (function () {
+        'use strict';
+        const root = document.getElementById('root');
+        const INK = [242, 242, 240];
+        const BODY = [155, 155, 154];
+        const TI = [138, 143, 152];
+        const ACCENT = '#86a8ff';
+        const CELL = 3;
+
+        /* ---------- the series frame ---------- */
+        const sheet = GTSheet.mount(document.getElementById('sheet'), { inset: 67 });
+        sheet.rails.forEach((r) => (r.style.display = 'none'));
+        sheet.mark.style.opacity = '0';
+        sheet.counter.style.opacity = '0';
+        const railHost = document.getElementById('rails');
+        const halves = [];
+        function half(style, origin) {
+          const d = document.createElement('div');
+          d.className = 'rail';
+          Object.assign(d.style, style, { transformOrigin: origin });
+          railHost.appendChild(d);
+          halves.push(d);
+          return d;
+        }
+        // Each rail is two halves, each scaling out of its own cross, so a rail
+        // draws outward from both of its crosses and meets itself mid frame.
+        [67, 1013].forEach((y) => {
+          half({ left: '0px', top: y + 'px', width: '960px', height: '1px' }, '67px 0px');
+          half({ left: '960px', top: y + 'px', width: '960px', height: '1px' }, '893px 0px');
+        });
+        [67, 1853].forEach((x) => {
+          half({ left: x + 'px', top: '0px', width: '1px', height: '540px' }, '0px 67px');
+          half({ left: x + 'px', top: '540px', width: '1px', height: '540px' }, '0px 473px');
+        });
+        const hHalves = halves.slice(0, 4);
+        const vHalves = halves.slice(4);
+        // The crosses sit above the rails.
+        sheet.crosses.forEach((c) => document.getElementById('rails').appendChild(c));
+
+        /* ---------- the end card's mark ---------- */
+        document.getElementById('endmark').innerHTML = GTSheet.MARK;
+
+        /* ---------- the architecture ---------- */
+        const F = 220; // plate footprint
+        const OX = 1150 - F * Math.cos(Math.PI / 6);
+        const OY = 723;
+        const iso = GTIso.make({ ox: OX, oy: OY });
+        const P = iso.p;
+        const T = 9; // plate thickness, 4 percent of the footprint
+        const TZ = { app: 0, ui: 141, core: 282, content: 423 }; // plate tops; 132 of air between plates
+        const RIM = { content: 'rgba(242,242,240,0.72)', core: 'rgba(242,242,240,0.64)', ui: 'rgba(242,242,240,0.56)', app: 'rgba(242,242,240,0.5)' };
+        const TILE_RIM = { content: 'rgba(242,242,240,0.52)', core: 'rgba(242,242,240,0.46)', ui: 'rgba(242,242,240,0.41)', app: 'rgba(242,242,240,0.37)' };
+        // cells back to front: (0,0) back, (1,0) right, (0,1) left, (1,1) front
+        const CELLS = [
+          [0, 0],
+          [1, 0],
+          [0, 1],
+          [1, 1],
+        ];
+        const TH = 10; // module height
+        const CELLW = F / 2;
+        const INSET = 15;
+        function tileBox(cx, cy, z) {
+          return { x: cx * CELLW + INSET, y: cy * CELLW + INSET, z: z, w: CELLW - 2 * INSET, d: CELLW - 2 * INSET, h: TH };
+        }
+        function plate(name) {
+          const g = document.getElementById('g-' + name);
+          const w = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          w.innerHTML = iso.box({ x: 0, y: 0, z: TZ[name] - T, w: F, d: F, h: T }, { stroke: RIM[name] });
+          g.appendChild(w);
+          const tg = document.getElementById('g-' + name + '-tiles');
+          const tiles = [];
+          CELLS.forEach(([cx, cy]) => {
+            if (name === 'app' && cx === 0 && cy === 1) {
+              // the empty slot: the module's footprint as one faint hairline on the plate
+              const b = tileBox(cx, cy, TZ[name]);
+              const q = [P(b.x, b.y, b.z), P(b.x + b.w, b.y, b.z), P(b.x + b.w, b.y + b.d, b.z), P(b.x, b.y + b.d, b.z)];
+              w.innerHTML += '<polygon points="' + q.map((v) => v[0].toFixed(2) + ',' + v[1].toFixed(2)).join(' ') + '" fill="none" stroke="rgba(242,242,240,0.26)" stroke-width="1"/>';
+              return;
+            }
+            const t = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            t.innerHTML = iso.box(tileBox(cx, cy, TZ[name]), { stroke: TILE_RIM[name] });
+            tg.appendChild(t);
+            tiles.push(t);
+          });
+          return { plate: w, tiles };
+        }
+        function order0() {
+          return ['content', 'core', 'ui', 'app'];
+        }
+        const plates = { content: plate('content'), core: plate('core'), ui: plate('ui'), app: plate('app') };
+
+        // The copy of the UI plate's left module, edged in the accent. Two
+        // instances, one drawn under the UI plate and one over it, so the copy
+        // is occluded correctly on each leg of its route.
+        function copyTile(host) {
+          const t = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          t.innerHTML = iso.box(tileBox(0, 1, TZ.ui), { stroke: ACCENT, width: 1.5 });
+          document.getElementById(host).appendChild(t);
+          return t;
+        }
+        const copyHigh = copyTile('g-copy-high');
+        const copyLow = copyTile('g-copy-low');
+
+        // The route: base centre of the left module, out along +y, down, and
+        // back along -y into the app's empty slot. Iso lengths are screen
+        // lengths along the axes: 150 out, 114 down, 150 in.
+        const RC = CELLW / 2;
+        const R0 = P(RC, CELLW + RC, TZ.ui);
+        const R1 = P(RC, CELLW + RC + 150, TZ.ui);
+        const R2 = P(RC, CELLW + RC + 150, TZ.app);
+        const R3 = P(RC, CELLW + RC, TZ.app);
+        const routeA = GTIso.polyline([R0, R1, R2]);
+        const routeB = GTIso.polyline([R2, R3]);
+        const ROUTE = routeA.length + routeB.length;
+        // labels beside each plate's right corner; the CLI label clear of the copy's lane
+        order0().forEach((name) => {
+          const c = P(F, 0, TZ[name]);
+          const el = document.getElementById('lab-' + name);
+          el.style.left = Math.round(c[0] + 40) + 'px';
+          el.style.top = Math.round(c[1] - 31) + 'px';
+        });
+        const tileHalfW = (CELLW - 2 * INSET) * Math.cos(Math.PI / 6);
+        const cliEl = document.getElementById('cli');
+        cliEl.style.left = Math.round(R1[0] - tileHalfW - 24 - 300) + 'px';
+        cliEl.style.top = Math.round((R1[1] + R2[1]) / 2 - 31) + 'px';
+        const LEG = { out: [R1[0] - R0[0], R1[1] - R0[1]], down: [R2[0] - R1[0], R2[1] - R1[1]], back: [R3[0] - R2[0], R3[1] - R2[1]] };
+
+        // The thread: a doubled line at the plates' right corners, one segment
+        // per gap, from the plate above out to the plate below.
+        const NS = 'http://www.w3.org/2000/svg';
+        const tg = document.getElementById('g-threads');
+        const order = ['content', 'core', 'ui', 'app'];
+        const segs = [];
+        for (let i = 0; i < 3; i++) {
+          const a = P(F, 0, TZ[order[i]] - T);
+          const b = P(F, 0, TZ[order[i + 1]]);
+          segs.push({ x: a[0], y0: a[1], y1: b[1] });
+        }
+        function mk(stroke, width) {
+          const pth = document.createElementNS(NS, 'path');
+          pth.setAttribute('fill', 'none');
+          pth.setAttribute('stroke', stroke);
+          pth.setAttribute('stroke-width', width);
+          pth.setAttribute('stroke-linecap', 'butt');
+          pth.setAttribute('d', 'M0 0');
+          return pth;
+        }
+        // layer order is load bearing: every outer stroke, then every pulse, then every core
+        // threads in the body tone (63 percent ink on the ground, solid), 2 px each with a 3 px carve
+        const outers = segs.map(() => tg.appendChild(mk('#9b9b9a', 7)));
+        const pulses = segs.map(() => tg.appendChild(mk(ACCENT, 7)));
+        const cores = segs.map(() => tg.appendChild(mk('#070707', 3)));
+        // the pulse runs along y over all three gaps (the plates' edges between them hide it)
+        const PY0 = segs[0].y0;
+        const PY1 = segs[2].y1;
+        const PULSE = 140;
+
+        /* ---------- proxies the timeline drives ---------- */
+        // One proxy object per channel, so no two tweens share a target.
+        const C = {};
+        [['moonA', 0], ['moonB', 0], ['turnA', 0], ['turnB', 0], ['d1', -1], ['d2', -1], ['d3', -1], ['seg0', 0], ['seg1', 0], ['seg2', 0], ['pulse', -1], ['route', 0]].forEach(([k, v]) => (C[k] = { v }));
+
+        /* ---------- the moon ---------- */
+        const field = document.getElementById('field');
+        const grid = GTDither.grid(field, CELL, { width: 1920, height: 1080 });
+        function moon(cx, cy, r, ang, amb) {
+          const lx0 = -0.62;
+          const ly0 = -0.5;
+          const ca = Math.cos(ang);
+          const sa = Math.sin(ang);
+          let lx = lx0 * ca - ly0 * sa;
+          let ly = lx0 * sa + ly0 * ca;
+          const lz = 0.6;
+          const n = Math.sqrt(lx * lx + ly * ly + lz * lz);
+          lx /= n;
+          ly /= n;
+          const lzn = lz / n;
+          const inv = 1 / r;
+          return function (i, x, y) {
+            const dx = (x * CELL + 1.5 - cx) * inv;
+            const dy = (y * CELL + 1.5 - cy) * inv;
+            const d2 = dx * dx + dy * dy;
+            if (d2 >= 1) return 0;
+            const nz = Math.sqrt(1 - d2);
+            let lam = dx * lx + dy * ly + nz * lzn;
+            if (lam < 0) lam = 0;
+            const rim = GTDither.smoothstep(1, 0.965, Math.sqrt(d2));
+            return (amb + (0.93 - amb) * GTDither.smoothstep(0.03, 0.95, lam)) * rim;
+          };
+        }
+        let fieldEmpty = false;
+        function drawField() {
+          if (C.moonA.v <= 0 && C.moonB.v <= 0) {
+            if (!fieldEmpty) grid.ctx.clearRect(0, 0, 1920, 1080);
+            fieldEmpty = true;
+            return;
+          }
+          fieldEmpty = false;
+          if (C.moonA.v > 0) {
+            const m = moon(1400, 520, 330, (C.turnA.v * Math.PI) / 180, 0.035);
+            const k = C.moonA.v;
+            GTDither.draw(grid, (i, x, y) => m(i, x, y) * k, { ink: '#f2f2f0' });
+          } else {
+            const m = moon(1300, 1250, 520, (C.turnB.v * Math.PI) / 180, 0.035);
+            const k = C.moonB.v;
+            GTDither.draw(grid, (i, x, y) => m(i, x, y) * k, { ink: '#f2f2f0' });
+          }
+        }
+
+        /* ---------- threads, pulse, route ---------- */
+        function drawThreads() {
+          const prog = [C.seg0.v, C.seg1.v, C.seg2.v];
+          segs.forEach((s, i) => {
+            const y1 = s.y0 + (s.y1 - s.y0) * prog[i];
+            const d = prog[i] > 0.001 ? 'M' + s.x + ' ' + s.y0 + 'L' + s.x + ' ' + y1.toFixed(2) : 'M0 0';
+            outers[i].setAttribute('d', d);
+            cores[i].setAttribute('d', d);
+            // the pulse window [head - PULSE, head], clipped to this segment
+            const head = PY0 + C.pulse.v * (PY1 - PY0 + PULSE);
+            const a = Math.max(s.y0, head - PULSE);
+            const b = Math.min(s.y1, head);
+            pulses[i].setAttribute('d', C.pulse.v >= 0 && b - a > 0.5 ? 'M' + s.x + ' ' + a.toFixed(2) + 'L' + s.x + ' ' + b.toFixed(2) : 'M0 0');
+          });
+          const L = C.route.v * ROUTE;
+          document.getElementById('route-a').setAttribute('d', L > 0.5 ? routeA.sub(0, Math.min(L, routeA.length)) : 'M0 0');
+          document.getElementById('route-b').setAttribute('d', L > routeA.length + 0.5 ? routeB.sub(0, L - routeA.length) : 'M0 0');
+        }
+
+        /* ---------- moving type ---------- */
+        const swarmCanvas = document.getElementById('swarm');
+        const sctx = swarmCanvas.getContext('2d');
+        const dissolves = [];
+        function drawSwarm() {
+          sctx.clearRect(0, 0, 1920, 1080);
+          dissolves.forEach((dz) => {
+            const p = C[dz.key].v;
+            if (p >= 0 && p < 1) GTSwarm.draw(sctx, dz.parts, p, { cell: CELL });
+          });
+        }
+
+        function counter(t) {
+          const n = t < 5 ? 1 : t < 8 ? 2 : t < 12 ? 3 : t < 15 ? 4 : t < 19.5 ? 5 : 6;
+          return '0' + n + ' / 06';
+        }
+
+        function build() {
+          // the hanging opening quotes: the mark sits in the margin, the letters on the 160 edge
+          document.querySelectorAll('.hang').forEach((el) => {
+            const c = document.createElement('canvas').getContext('2d');
+            const cs = getComputedStyle(el);
+            c.font = cs.fontWeight + ' ' + cs.fontSize + ' Inter';
+            c.letterSpacing = cs.letterSpacing;
+            const w = c.measureText('“I').width - c.measureText('I').width;
+            el.style.marginLeft = -Math.round(w) + 'px';
+          });
+          const g = (sel, color) => Array.from(document.querySelectorAll(sel)).map((el) => ({ el, color }));
+          const sample = (items) => GTSwarm.sample(items, root, { cell: CELL });
+          const s1t = sample(g('.s1-t', INK));
+          const s1s = sample([...g('.s1-s.body', BODY), ...g('.s1-s.ti', TI)]);
+          const s2t = sample(g('.s2-t', INK));
+          const s2s = sample(g('.s2-s', TI));
+          const h1 = sample(g('#h1 .ln', INK));
+          const h2 = sample(g('#h2 .ln', INK));
+          const s5t = sample(g('.s5-t', INK));
+          const s5s = sample(g('.s5-s', TI));
+          const s6t = sample(g('.s6-t', INK));
+          const s6s = sample(g('.s6-s', TI));
+          dissolves.push({ key: 'd1', parts: [...GTSwarm.pair(s1t, s2t, 11), ...GTSwarm.pair(s1s, s2s, 12)] });
+          dissolves.push({ key: 'd2', parts: GTSwarm.pair(h1, h2, 21) });
+          dissolves.push({ key: 'd3', parts: [...GTSwarm.pair(s5t, s6t, 31), ...GTSwarm.pair(s5s, s6s, 32)] });
+
+          const tl = gsap.timeline({
+            paused: true,
+            onUpdate: function () {
+              drawField();
+              drawThreads();
+              drawSwarm();
+              sheet.setCounter(counter(this.time()));
+            },
+          });
+
+          /* the series frame: rails out of their crosses */
+          tl.fromTo(hHalves, { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'expo.out' }, 0);
+          tl.fromTo(vHalves, { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: 'expo.out' }, 0);
+          tl.fromTo([sheet.mark, sheet.counter], { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1);
+
+          /* beat 1: the title card */
+          tl.fromTo(C.moonA, { v: 0 }, { v: 1, duration: 1.5, ease: 'power2.out' }, 0.2);
+          tl.fromTo(C.turnA, { v: 0 }, { v: 4, duration: 4.25, ease: 'none' }, 0);
+          tl.fromTo('.s1-t', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.06 }, 0);
+          tl.fromTo('.s1-s', { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.06 }, 0.3);
+          tl.set('#s1', { opacity: 0 }, 4.25);
+          tl.to(C.moonA, { v: 0, duration: 0.75, ease: 'power2.in' }, 4.25);
+          tl.fromTo(C.d1, { v: 0 }, { v: 1, duration: 0.75, ease: 'none', immediateRender: false }, 4.25);
+          tl.set(C.d1, { v: -1 }, 5.0);
+
+          /* beat 2: the first quote */
+          tl.set('#s2', { opacity: 1 }, 5.0);
+          tl.set('#s2', { opacity: 0 }, 8.0);
+
+          /* beat 3: less abstraction, less opinionated software */
+          tl.set('#h1', { opacity: 1 }, 8.0); // the cut lands on the heading
+          const beats = { content: 8.5, core: 9.0, ui: 9.5, app: 10.0 };
+          order.forEach((name, i) => {
+            const t0 = beats[name];
+            tl.fromTo(plates[name].plate, { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'expo.out' }, t0);
+            tl.fromTo(plates[name].tiles, { y: -24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: 'expo.out', stagger: 0.06 }, t0 + 0.12);
+            tl.fromTo('#lab-' + name, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }, t0 + 0.08);
+            if (i > 0) tl.fromTo(C['seg' + (i - 1)], { v: 0 }, { v: 1, duration: 0.4, ease: 'power3.out' }, t0 + 0.05);
+          });
+          tl.fromTo(C.pulse, { v: 0 }, { v: 1, duration: 0.75, ease: 'none', immediateRender: false }, 10.5);
+          tl.set(C.pulse, { v: -1 }, 11.25);
+          tl.set('#h1', { opacity: 0 }, 11.25);
+          tl.fromTo(C.d2, { v: 0 }, { v: 1, duration: 0.75, ease: 'none', immediateRender: false }, 11.25);
+          tl.set(C.d2, { v: -1 }, 12.0);
+
+          /* beat 4: a black box and a compiler */
+          tl.set('#h2', { opacity: 1 }, 12.0);
+          tl.fromTo('#cli', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }, 12.0);
+          tl.fromTo(C.route, { v: 0 }, { v: 1, duration: 0.5, ease: 'power3.out', immediateRender: false }, 12.0);
+          tl.set(copyHigh, { opacity: 0 }, 0);
+          tl.set(copyLow, { opacity: 0 }, 0);
+          tl.set(copyHigh, { opacity: 1 }, 12.5);
+          tl.fromTo([copyHigh, copyLow], { x: 0, y: 0 }, { x: LEG.out[0], y: LEG.out[1], duration: 0.5, ease: 'power2.inOut', immediateRender: false }, 12.5);
+          tl.to([copyHigh, copyLow], { x: LEG.out[0] + LEG.down[0], y: LEG.out[1] + LEG.down[1], duration: 0.5, ease: 'power2.inOut' }, 13.0);
+          tl.set(copyHigh, { opacity: 0 }, 13.5);
+          tl.set(copyLow, { opacity: 1 }, 13.5);
+          tl.to([copyHigh, copyLow], { x: 0, y: LEG.out[1] + LEG.down[1] + LEG.back[1], duration: 0.5, ease: 'power2.inOut' }, 13.5);
+
+          /* everything of beats 3 and 4 leaves on the cut at 15.0 */
+          tl.set(['#iso', '#labels', '#h2'], { opacity: 0 }, 15.0);
+
+          /* beat 5: the second quote */
+          tl.set('#s5', { opacity: 1 }, 15.0); // the cut lands on the quote
+          tl.set('#s5', { opacity: 0 }, 19.5);
+          tl.fromTo(C.d3, { v: 0 }, { v: 1, duration: 0.75, ease: 'none', immediateRender: false }, 19.5);
+          tl.set(C.d3, { v: -1 }, 20.25);
+
+          /* beat 6: the end card */
+          tl.fromTo(C.moonB, { v: 0 }, { v: 1, duration: 1.5, ease: 'power2.out', immediateRender: false }, 19.5);
+          tl.fromTo(C.turnB, { v: 0 }, { v: -3, duration: 4.5, ease: 'none', immediateRender: false }, 19.5);
+          tl.fromTo('#endmark', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'expo.out' }, 19.75);
+          tl.set('#s6', { opacity: 1 }, 20.25);
+          tl.set({}, {}, 24);
+
+          window.__timelines['main'] = tl;
+        }
+
+        Promise.all([document.fonts.load('500 106px Inter'), document.fonts.load('400 31px Inter'), document.fonts.load('500 26px Inter')])
+          .then(() => document.fonts.ready)
+          .then(build);
+      })();
+    </script>
+  </body>
+</html>

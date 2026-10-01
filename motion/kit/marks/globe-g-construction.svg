@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
+  <g opacity="0.3"><path fill-rule="evenodd" d="M 248 128 A 120 120 0 1 1 243.65 96 L 209.98 96 L 144 96 L 144 128 Z M 67.6 64 A 88 88 0 0 1 188.4 64 Z M 46.02 96 L 112 96 L 112 214.53 A 88 88 0 0 1 46.02 96 Z M 144 160 L 209.98 160 A 88 88 0 0 1 144 214.53 Z"/></g>
+  <g fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path opacity="0.18" d="M 0 0 V 256 M 0 0 H 256 M 16 0 V 256 M 0 16 H 256 M 32 0 V 256 M 0 32 H 256 M 48 0 V 256 M 0 48 H 256 M 64 0 V 256 M 0 64 H 256 M 80 0 V 256 M 0 80 H 256 M 96 0 V 256 M 0 96 H 256 M 112 0 V 256 M 0 112 H 256 M 128 0 V 256 M 0 128 H 256 M 144 0 V 256 M 0 144 H 256 M 160 0 V 256 M 0 160 H 256 M 176 0 V 256 M 0 176 H 256 M 192 0 V 256 M 0 192 H 256 M 208 0 V 256 M 0 208 H 256 M 224 0 V 256 M 0 224 H 256 M 240 0 V 256 M 0 240 H 256 M 256 0 V 256 M 0 256 H 256"/>
+    <path opacity="0.7" d="M 248 128 A 120 120 0 1 1 8 128 A 120 120 0 1 1 248 128"/>
+    <path opacity="0.7" d="M 216 128 A 88 88 0 1 1 40 128 A 88 88 0 1 1 216 128"/>
+    <path opacity="0.7" d="M 128 0 V 256 M 0 128 H 256"/>
+    <path opacity="0.7" d="M 0 128 H 256 M 0 160 H 256 M 0 64 H 256 M 0 96 H 256"/>
+    <path opacity="0.7" d="M 112 0 V 256 M 144 0 V 256"/>
+    <path opacity="0.7" d="M 128 128 L 243.65 96"/>
+  </g>
+  <g>
+    <circle cx="128" cy="128" r="2"/>
+    <circle cx="243.65" cy="96" r="2"/>
+    <circle cx="209.98" cy="96" r="2"/>
+    <circle cx="248" cy="128" r="2"/>
+    <circle cx="67.6" cy="64" r="2"/>
+    <circle cx="188.4" cy="64" r="2"/>
+    <circle cx="46.02" cy="96" r="2"/>
+    <circle cx="40" cy="128" r="2"/>
+    <circle cx="112" cy="214.53" r="2"/>
+    <circle cx="144" cy="214.53" r="2"/>
+    <circle cx="209.98" cy="160" r="2"/>
+  </g>
+</svg>

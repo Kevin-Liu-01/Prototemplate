@@ -9,7 +9,10 @@ mockup. The Dossier (`/d/singularity-dossier`) is the completed direction
 and the reference for the identity in application; Signal and Orbit are
 the two earlier site concepts, each keeping its own hero and the sections
 the Dossier retired; `/d/production` is the site that shipped, rebuilt
-page for page.
+page for page. Its Shipped section also carries the dashboard's sign-in
+and onboarding system, which lives under `src/components/plate` with its
+state console (`/d/production/signin`, `/onboarding`, `/consent`,
+`/device`, `/cli`; `?state=<id>` opens any state).
 
 ## What is here
 

@@ -1,0 +1,962 @@
+/*
+ * The dashboard's brand-tokens.css (apps/dashboard/src/app), ported for the
+ * Shipped section's sign-in and onboarding gallery under
+ * src/components/plate. The brand's absolutes as that file states them:
+ * paper #ffffff and ink #070707; text in three steps, ink, ink-2 (#3a3d44)
+ * for secondary copy and titanium (#8a8f98) for captions and counters;
+ * hairlines of ink at 18% (structure) and 9% (rows); one second surface, a
+ * plate of ink at 3.5%; dark mode a token remap, paper to ink, ink to
+ * #f2f2f0, hairline alphas raised; one accent (#2f5ce0, #86a8ff on ink) for
+ * links and focus; semantic hues on icons only; no shadows.
+ *
+ * Three changes from the source, and nothing else:
+ * 1. The token block that sat on :root sits on .plate-root, so the shadcn
+ *    names (--background, --border, ...) and the deck's raw names (--ink,
+ *    --hair, ...) resolve inside the frame and in the portaled popovers
+ *    that carry the class (ui/select, ui/dialog, ui/toast,
+ *    ui/LanguageSelector), and nowhere else on the site. Tailwind's
+ *    utilities for the tokens come from plate-theme.css, which globals.css
+ *    imports.
+ * 2. The dashboard's theme is a .dark class on <html>; Prototemplate's is
+ *    :root[data-theme='dark'], stamped before paint by src/app/layout.tsx.
+ *    Every .dark selector is rewritten to it, and html:not(.dark) to
+ *    :root:not([data-theme='dark']).
+ * 3. The document scrollbar rule is dropped (globals.css owns it here),
+ *    the element selectors (the weight cap, the shadow reset) are scoped
+ *    to the frame, and the rules the pages took from
+ *    packages/ui/src/css/shared.css sit at the end: the default border
+ *    colour, the ground helpers, the typo classes that sheet owned, the
+ *    pointer cursor and the thin scrollbar.
+ */
+
+.plate-root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 2.7%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 2.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 2.7%;
+  --primary: 0 0% 2.7%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 96.5%;
+  --secondary-foreground: 0 0% 2.7%;
+  --muted: 0 0% 96.5%;
+  --muted-foreground: 222 8% 25%;
+  --accent: 0 0% 96.5%;
+  --accent-foreground: 0 0% 2.7%;
+  --border: 0 0% 2.7% / 0.18;
+  --border-strong: 0 0% 2.7% / 0.38;
+  --input: 0 0% 2.7% / 0.18;
+  --ring: 0 0% 2.7%;
+  --emphasis: 224 74% 53%;
+  --emphasis-foreground: 0 0% 100%;
+  --destructive: 358 75% 59%;
+  --destructive-foreground: 0 0% 100%;
+  --status-success: 162 80% 35%;
+  --status-warning: 38 87% 53%;
+  --status-error: 358 75% 59%;
+  --status-in-progress: 38 87% 53%;
+  --chart-1: 224 74% 53%;
+  --chart-2: 0 0% 2.7% / 0.63;
+  --chart-3: 0 0% 2.7% / 0.45;
+  --chart-4: 0 0% 2.7% / 0.27;
+  --chart-5: 220 7% 57%;
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 0 0% 2.7%;
+  --sidebar-primary: 0 0% 2.7%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 96.5%;
+  --sidebar-accent-foreground: 0 0% 2.7%;
+  --sidebar-border: 0 0% 2.7% / 0.18;
+  --sidebar-ring: 0 0% 2.7%;
+
+  /* The deck's own names, as raw colors, for anything that draws with them. */
+  --ink: #070707;
+  --ink-2: #3a3d44;
+  --titanium: #8a8f98;
+  --paper: #ffffff;
+  --panel: #101010;
+  --hair: rgba(7, 7, 7, 0.18);
+  --hair-soft: rgba(7, 7, 7, 0.09);
+  --plate: rgba(7, 7, 7, 0.035);
+  --cross: rgba(7, 7, 7, 0.38);
+
+  /*
+   * The AI tool marks' brand colours (icons/*Logo.tsx), thesvg.org's file
+   * values: the practices ratchet counts hex literals in TSX, so the marks
+   * read them from here. Brand constants, so the dark remap leaves them.
+   */
+  --mark-claude: #d97757;
+  --mark-deepseek: #4d6bfe;
+  --mark-mistral-1: #ffd700;
+  --mark-mistral-2: #ffaf00;
+  --mark-mistral-3: #ff8205;
+  --mark-mistral-4: #fa500f;
+  --mark-mistral-5: #e10500;
+  --mark-gemini-mask: #3186ff;
+  --mark-gemini-blue: #3689ff;
+  --mark-gemini-gold: #f6c013;
+  --mark-gemini-red: #fa4340;
+  --mark-gemini-green: #14bb69;
+
+  /*
+   * The dashboard's body sets these on every page; here the frame's root
+   * sets them, so the plate's type is Inter in the foreground token
+   * whatever the page around it does.
+   */
+  color: hsl(var(--foreground));
+  font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+}
+
+:root[data-theme='dark'] .plate-root {
+  --background: 0 0% 2.7%;
+  --foreground: 60 7% 95%;
+  --card: 0 0% 2.7%;
+  --card-foreground: 60 7% 95%;
+  --popover: 0 0% 6.3%;
+  --popover-foreground: 60 7% 95%;
+  --primary: 60 7% 95%;
+  --primary-foreground: 0 0% 2.7%;
+  --secondary: 0 0% 8%;
+  --secondary-foreground: 60 7% 95%;
+  --muted: 0 0% 8%;
+  --muted-foreground: 222 8% 75%;
+  --accent: 0 0% 8%;
+  --accent-foreground: 60 7% 95%;
+  --border: 60 7% 95% / 0.22;
+  --border-strong: 60 7% 95% / 0.4;
+  --input: 60 7% 95% / 0.22;
+  --ring: 60 7% 95%;
+  --emphasis: 224 100% 76%;
+  --emphasis-foreground: 0 0% 2.7%;
+  --destructive: 358 75% 59%;
+  --destructive-foreground: 0 0% 100%;
+  --status-success: 162 80% 35%;
+  --status-warning: 38 87% 53%;
+  --status-error: 358 75% 59%;
+  --status-in-progress: 38 87% 53%;
+  --chart-1: 224 100% 76%;
+  --chart-2: 60 7% 95% / 0.66;
+  --chart-3: 60 7% 95% / 0.48;
+  --chart-4: 60 7% 95% / 0.3;
+  --chart-5: 222 5% 45%;
+  --sidebar-background: 0 0% 2.7%;
+  --sidebar-foreground: 60 7% 95%;
+  --sidebar-primary: 60 7% 95%;
+  --sidebar-primary-foreground: 0 0% 2.7%;
+  --sidebar-accent: 0 0% 8%;
+  --sidebar-accent-foreground: 60 7% 95%;
+  --sidebar-border: 60 7% 95% / 0.22;
+  --sidebar-ring: 60 7% 95%;
+
+  --ink: #f2f2f0;
+  --ink-2: #b9bcc3;
+  --titanium: #8a8f98;
+  --paper: #070707;
+  --panel: #101010;
+  --hair: rgba(242, 242, 240, 0.22);
+  --hair-soft: rgba(242, 242, 240, 0.1);
+  --plate: rgba(242, 242, 240, 0.05);
+  --cross: rgba(255, 255, 255, 0.34);
+}
+
+/*
+ * Weight cap 500: the display face never goes bolder, at any size. Bold
+ * utilities and <b> collapse to it as well, so no component can escape it.
+ * Scoped to the frame; the dashboard set it on the document.
+ */
+.plate-root :is(h1, h2, h3, h4, b, strong, .font-semibold, .font-bold) {
+  font-weight: 500;
+}
+
+/* Depth comes from lines and material. No surface in the frame casts a shadow. */
+:is(.plate-root, .plate-root *):is(
+    .shadow,
+    .shadow-xs,
+    .shadow-sm,
+    .shadow-md,
+    .shadow-lg,
+    .shadow-xl,
+    .shadow-2xl
+  ) {
+  box-shadow: none;
+}
+
+/*
+ * The type ladder. Tracking follows Inter's curve the way the deck and the
+ * landing set it: -0.025em at display sizes, -0.02em at 24px, -0.016em at
+ * 18px, a hair under zero on 14px interface labels and buttons, zero on
+ * running text, and a touch open on 13px captions and counters. Headings
+ * carry the deck's alternates (single-storey a, open digits).
+ */
+.typo-page-heading {
+  font-size: 1.875rem;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+.typo-section-heading {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.016em;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+.typo-figure {
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.typo-lede {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 58ch;
+}
+
+/* Interface labels: form labels, ledger keys, row titles. */
+.typo-label {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.006em;
+}
+
+/* The key column of a key/value ledger. */
+.typo-key {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--titanium);
+}
+
+.typo-caption {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--titanium);
+}
+
+.typo-counter {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fine print: the facts under a form, the smallest running text. */
+.typo-fine {
+  font-size: 0.75rem;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--ink-2);
+}
+
+/*
+ * Inline errors sit on the 13px rung, under the shared 14px. The colour is
+ * shared.css's (text-destructive); brand-tokens.css set the size over it.
+ */
+.typo-error {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: hsl(var(--destructive));
+}
+
+/* Inline code, ids and keys: shared.css's text-muted-foreground font-mono text-xs. */
+.typo-code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/*
+ * Interface text at 14px and 500 sits a hair tighter than running text, as
+ * the landing's buttons do. Buttons and form labels get it here so every
+ * screen agrees without per-component classes.
+ */
+.plate-root [data-slot='button'],
+.plate-root [data-slot='label'] {
+  letter-spacing: -0.006em;
+}
+
+/*
+ * Ledger: the deck's ruled table. A sentence-case caption head, one rule per
+ * row, no fills, no vertical lines. Primary cells at 14px/500 in ink,
+ * secondary cells at 14px in ink-2. Monospace only for ids and code.
+ */
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ledger th {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--titanium);
+  text-align: left;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.ledger td {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hair-soft);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  vertical-align: middle;
+  color: var(--ink-2);
+}
+
+.ledger tr:last-child td {
+  border-bottom-color: var(--hair);
+}
+
+.ledger td.is-primary {
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
+.ledger th + th,
+.ledger td + td {
+  padding-left: 20px;
+}
+
+/* Ruled rows: a list whose items are separated by one hairline each. */
+.ruled > * + * {
+  border-top: 1px solid var(--hair-soft);
+}
+
+/*
+ * The plate frame's geometry (PlateRoot, PlateFrame): three lengths the
+ * column, the foot row, the step counter's rule and the field's masks all
+ * read. --plate-edge is where the plate ends and the picture region
+ * starts: 56vw from 1200px up, so the region is 44vw and never a
+ * majority; 584px under that. --plate-column is the content width: 464
+ * up to 1497, 31vw to 2064, 640 from there; under 1200 it is 464 where
+ * that fits inside two 24px margins. --plate-pad is the margin on each
+ * side of the column, the same at the viewport's edge and at the plate
+ * edge: 171.2px at 1440, 250 at 2000, 60 under 1200. Under 768 the
+ * column is centred by its own utilities and the field is hidden, so none
+ * of this applies.
+ *
+ * The frame's vertical budget from md up, the seven lengths the column, the
+ * foot and the steps read: the gap under the mark, the column's top and
+ * bottom padding, a step's gap between its heading block, its questions
+ * and its actions, the gap between a step's questions, the gap between a
+ * step's heading and its lede, and the foot's bottom padding. At 880px
+ * tall and up they are the widths the utilities carried before: the open
+ * survey ends with its Submit at 749 and the foot row at 840 in a 900px
+ * viewport. Under 880px they compress so the same survey ends at 665 with
+ * the foot at 762 in an 814px viewport, with the foot in view and nothing
+ * to scroll. Under 768 the column's own utilities carry the phone values
+ * and the tokens are not read.
+ *
+ * The heading gap is the mark gap less the 14px the step counter's rule
+ * and its gap take out of it (StepCounter: gap-3 and h-0.5), so a step's
+ * heading sits as far above its lede as it sits below the rule: 26px at
+ * 880 tall and up, 16px under it (the compressed mark gap is 30px so the
+ * rule keeps the 16px the heading block always had under it; Kevin asked
+ * for the larger of the two spaces on both sides, not the smaller). Its
+ * box gaps are its visual gaps to a pixel, since the heading's cap sits
+ * 5px into its line box and the lede's 6px into its own.
+ */
+.plate-root {
+  --plate-edge: 584px;
+  --plate-column: min(464px, calc(100vw - 48px));
+  --plate-pad: calc((var(--plate-edge) - var(--plate-column)) / 2);
+  --plate-mark-gap: 40px;
+  --plate-column-pt: 48px;
+  --plate-column-pb: 48px;
+  --plate-section-gap: 40px;
+  --plate-question-gap: 16px;
+  --plate-heading-gap: calc(var(--plate-mark-gap) - 14px);
+  --plate-foot-pb: 24px;
+}
+
+@media (min-width: 1200px) {
+  .plate-root {
+    --plate-edge: 56vw;
+    --plate-column: clamp(464px, 31vw, 640px);
+  }
+}
+
+@media (max-height: 879px) and (min-width: 768px) {
+  .plate-root {
+    --plate-mark-gap: 30px;
+    --plate-column-pt: 32px;
+    --plate-column-pb: 24px;
+    --plate-section-gap: 24px;
+    --plate-question-gap: 12px;
+    --plate-foot-pb: 16px;
+  }
+}
+
+/*
+ * The plate column from md up: its width and left margin are the root's
+ * lengths, in place of the centring, the 560px cap and the padding its
+ * utilities give it under md. This sheet is unlayered, so these win over
+ * those utilities without a variant.
+ */
+@media (min-width: 768px) {
+  .plate-column {
+    width: var(--plate-column);
+    max-width: none;
+    margin-left: var(--plate-pad);
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/*
+ * A row of the plate's form opened after the step's first paint (the
+ * survey's questions, each following the answer before it): it rises 4px
+ * as it fades in over 180ms. A keyframe animation, not a transition, for
+ * the reason the picture fade below gives: a no-transition sheet cannot
+ * suppress it. Rows on the page at mount carry no class and so do not run
+ * it. Reduced motion takes the end state at once.
+ */
+.plate-row-in {
+  animation: plate-row-in 180ms ease-out;
+}
+
+@keyframes plate-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-row-in {
+    animation: none;
+  }
+}
+
+/*
+ * The brand field: the landing hero's material in the app. The host is an
+ * isolated layer so the canvas composites over nothing but itself; the
+ * canvas fills it at the hero's 0.55 and fades toward the side a plate sits
+ * on. Light mode inverts the canvas the way the hero does, so the clouds
+ * print pale blue on paper instead of on ink.
+ */
+.brand-field-host {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.brand-field {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+}
+
+/*
+ * The page ground: nothing to the left of the plate's edge (--plate-edge,
+ * set by the frame), then a long ramp to the right so the field dissolves
+ * into the paper the plate sits on, with no seam.
+ */
+.brand-field-ground {
+  /* The fallback lives in var(): a declaration here would shadow the frame's. */
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) var(--plate-edge, 44%),
+    rgba(0, 0, 0, 0.16) calc(var(--plate-edge, 44%) + 120px),
+    rgba(0, 0, 0, 0.55) calc(var(--plate-edge, 44%) + 320px),
+    #000 calc(var(--plate-edge, 44%) + 600px)
+  );
+}
+
+/*
+ * Under md the plate is centered and has no fill, so the field is a faint
+ * band at the top that is gone by mid-page: the content sits on solid
+ * paper and nothing reads as a box.
+ */
+@media (max-width: 767px) {
+  .brand-field-ground {
+    mask-image: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.45) 0,
+      rgba(0, 0, 0, 0.2) 22%,
+      rgba(0, 0, 0, 0) 46%
+    );
+  }
+}
+
+.brand-field-band {
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.12) 0%,
+    rgba(0, 0, 0, 0.4) 40%,
+    rgba(0, 0, 0, 0.85) 72%,
+    #000 100%
+  );
+}
+
+:root:not([data-theme='dark']) .brand-field {
+  filter: invert(1) hue-rotate(180deg) brightness(1.07) saturate(1.15);
+}
+
+/*
+ * Scene 1's host is pinned to the viewport, not to the frame's root: the
+ * root grows with a step that runs past the fold, and a field sized to it
+ * would centre the earth's disc below the fold and scale a cover picture
+ * to the document's height. The root sits under no transform or filter,
+ * so fixed resolves against the viewport; the height is 100svh, the unit
+ * the frame's paddings use, so the disc's vertical centre is the small
+ * viewport's. Scene 0 keeps the plain .brand-field-host, sized to the
+ * root, so the sign-in's globe sits where it did before the pictures.
+ */
+.brand-field-viewport {
+  position: fixed;
+  inset: 0;
+  height: 100svh;
+}
+
+/*
+ * The field stack: the auth and onboarding surfaces' field as canvas
+ * layers in one wrapper. --tc-ink is the sign-in material's ink, the
+ * deck's blue family: the working blue on paper, the chip blue on ink.
+ * --tc-picture-ink is the pictures' ink, the deck's two tones: ink black
+ * on paper, paper white on ink; --field-picture-opacity sits the picture
+ * canvas back behind the plate, lower on ink where lit cells carry more.
+ * The ramp runs from --plate-edge to the solid line --field-ramp-length
+ * past it: 0.42 of the picture region (100vw less the plate edge), 266px
+ * at 1440 and 370px at 2000, with the half stop --field-ramp-mid at its
+ * middle; scene 1 drops picture cells across it in the field, so every
+ * cell that is drawn is drawn whole. The wrapper also holds the globe
+ * box: a square 64px past the plate edge, centred on the viewport's
+ * height, its side the room from there to a 24px right margin (the 88px
+ * is 64 + 24), capped at 560 and at 64svh and rounded down to the 2px
+ * cell so the loop's cells stay whole: 544 at 1440, 560 from 1473 wide
+ * on a viewport at least 875 tall. The box starts inside the ramp, so
+ * the scene 0 mask hazes the first cells of the globe's lit limb (the
+ * light comes from the upper left): at the ramp's end the room would
+ * hold 342 at 1440 and the disc has to keep 480 there. Scene 0 draws the
+ * globe on a canvas of that box; scene 1 measures the ramp through a
+ * probe element to place the pictures on its canvas.
+ */
+.brand-field-stack {
+  position: absolute;
+  inset: 0;
+  --tc-ink: #2f5ce0;
+  --tc-picture-ink: #070707;
+  --field-picture-opacity: 0.7;
+  --field-ramp-start: var(--plate-edge, 44%);
+  --field-ramp-length: calc(0.42 * (100vw - var(--plate-edge, 44%)));
+  --field-ramp-mid: calc(var(--field-ramp-length) / 2);
+  --field-ramp-end: calc(var(--field-ramp-start) + var(--field-ramp-length));
+  --field-globe-left: calc(var(--plate-edge, 44%) + 64px);
+  --field-globe-side: round(
+    down,
+    min(560px, 64svh, calc(100vw - var(--plate-edge, 44%) - 88px)),
+    2px
+  );
+  --field-globe-top: calc(50% - var(--field-globe-side) / 2);
+}
+
+:root[data-theme='dark'] .brand-field-stack {
+  --tc-ink: #9db9ff;
+  --tc-picture-ink: #ffffff;
+  --field-picture-opacity: 0.62;
+}
+
+/*
+ * Scene 0: the ramp on the whole stack, its stops on the smoothstep curve
+ * the field eases the pictures with (FieldStack.tsx rampField: 0.156 and
+ * 0.844 at the quarter points), so the globe's limb, which starts 64px
+ * into the ramp, thins at the rate a picture would.
+ */
+.brand-field-stack[data-scene='0'] {
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) var(--field-ramp-start),
+    rgba(0, 0, 0, 0.156)
+      calc(var(--field-ramp-start) + var(--field-ramp-length) / 4),
+    rgba(0, 0, 0, 0.5) calc(var(--field-ramp-start) + var(--field-ramp-mid)),
+    rgba(0, 0, 0, 0.844)
+      calc(var(--field-ramp-start) + var(--field-ramp-length) * 3 / 4),
+    #000 var(--field-ramp-end)
+  );
+}
+
+/*
+ * Scene 1: a hard cut at the plate's edge. The picture's dissolve is in
+ * the field (FieldStack.tsx multiplies the tone by the ramp), so its cells
+ * are either drawn whole or not at all; a fading mask would print them
+ * at partial alpha.
+ */
+.brand-field-stack[data-scene='1'] {
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) var(--field-ramp-start),
+    #000 var(--field-ramp-start)
+  );
+}
+
+/* The ramp, on scene 1's measuring probe: left at its start, width its length. */
+.brand-field-ramp {
+  position: absolute;
+  inset: auto;
+  left: var(--field-ramp-start);
+  top: 0;
+  width: var(--field-ramp-length);
+  height: 0;
+}
+
+/*
+ * Every layer draws whole cells (2px on scene 0, 1px on scene 1);
+ * pixelated keeps their edges hard where the display scales them.
+ */
+.brand-field-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/*
+ * Scene 1's picture canvas covers only the region right of the plate's
+ * edge, full height: nothing is drawn left of the edge, and a canvas of
+ * that region holds about half the cells of a full-bleed one at the same
+ * cell size, which is what keeps a step mix's per-frame cost down.
+ * FieldStack.tsx measures the canvas's offset and places the pictures in
+ * the stack's coordinates, so the framing is that of a full-bleed canvas.
+ * The opacity is the canvas's: the mood plate over it stays fully opaque.
+ * The canvas is clear until the stack carries data-picture (the first
+ * tone drawn), then eases to the theme's opacity over 240ms, so a picture
+ * whose grid arrives after the paint fades in instead of appearing; a
+ * step mix keeps data-picture set and so keeps the opacity. The fade is
+ * stated twice: the transition, and a keyframe animation that runs when
+ * the rule starts to match, because a sheet that suppresses transitions
+ * during a theme sync would skip the transition while the first tone
+ * lands; an animation is not a transition and runs. While both run the
+ * transition takes the cascade and both draw the same curve. Reduced
+ * motion takes the end state at once.
+ */
+.brand-field-region {
+  inset: auto;
+  left: var(--field-ramp-start);
+  top: 0;
+  width: calc(100% - var(--field-ramp-start));
+  height: 100%;
+  opacity: 0;
+}
+
+.brand-field-stack[data-picture] .brand-field-region {
+  opacity: var(--field-picture-opacity);
+  transition: opacity 240ms ease-out;
+  animation: brand-field-picture-in 240ms ease-out;
+}
+
+@keyframes brand-field-picture-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-field-stack[data-picture] .brand-field-region {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* The globe box, scene 0's canvas. */
+.brand-field-globe {
+  position: absolute;
+  inset: auto;
+  width: var(--field-globe-side);
+  height: var(--field-globe-side);
+  left: var(--field-globe-left);
+  top: var(--field-globe-top);
+}
+
+/*
+ * Under 1200px --plate-edge is fixed at 584px (.plate-root), the ramp
+ * shortens to 96px with its half stop at 48, and the globe box keeps the
+ * rule above, 64px past the edge with the 24px right margin, so its side
+ * is 100vw - 672px, capped at 560 and floored at 200: 352px at 1024 and
+ * 526px at 1199.
+ */
+@media (max-width: 1199px) {
+  .brand-field-stack {
+    --field-ramp-length: 96px;
+    --field-ramp-mid: 48px;
+    --field-globe-side: round(
+      down,
+      clamp(
+        200px,
+        min(560px, 64svh, calc(100vw - var(--plate-edge, 44%) - 88px)),
+        560px
+      ),
+      2px
+    );
+  }
+}
+
+/*
+ * The floor above holds a 200px disc where the room is under 200px, which
+ * is every width under 872px (100vw - 672px < 200px). A disc that would
+ * not fit at 200px is not drawn: the side collapses to 0 and the sign-in
+ * globe is not placed. Scene 1 has no box; its pictures cover the region
+ * at every width.
+ */
+@media (max-width: 871px) {
+  .brand-field-stack {
+    --field-globe-side: 0px;
+  }
+}
+
+/* Under md the plate is centered on solid paper and no scene has a field. */
+@media (max-width: 767px) {
+  .brand-field-stack {
+    display: none;
+  }
+}
+
+/*
+ * The onboarding credits card: a physical card, so the one surface with a
+ * fill and, on paper, a shadow. The fill and the ink are literals so the
+ * theme cannot lighten the object; the light theme adds the shadow that
+ * seats it on white. The face is ISO/IEC 7810 ID-1 (85.60 by 53.98 mm).
+ * The stage holds the perspective the tilt rotates in; CreditsCard.tsx
+ * sets --tilt-x, --tilt-y, --sheen-x and --sheen-y from the pointer, and
+ * never under reduced motion, so at rest nothing here moves.
+ */
+.credits-card-stage {
+  perspective: 1200px;
+  /* The card is 400 by 252 at every column width, on the column's left edge. */
+  max-width: 400px;
+}
+
+.credits-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 85.6 / 53.98;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #171717, #0e0e0e);
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 500ms ease-out;
+}
+
+/* Following the pointer is quick; settling after it leaves is slow. */
+.credits-card:hover {
+  transition-duration: 120ms;
+}
+
+:root:not([data-theme='dark']) .credits-card {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 48px -24px rgba(0, 0, 0, 0.35);
+}
+
+/* The etched rings, a still dither over the fill, under everything else. */
+.credits-card-art {
+  position: absolute;
+  inset: 0;
+  opacity: 0.11;
+  pointer-events: none;
+}
+
+/* The large mark, bleeding past the lower right corner the way the old plate's did. */
+.credits-card-watermark {
+  position: absolute;
+  right: -20px;
+  bottom: -16px;
+  width: 150px;
+  color: #ffffff;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.credits-card-watermark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/*
+ * The specular bands at rest, a brushed plate without motion: the main
+ * band at 38 to 46 percent across, a softer one at 78 to 92. Under the
+ * pointer the bands halve so they do not stack with the sheen into one
+ * bright patch; that fade is motion, so reduced motion keeps them still.
+ */
+.credits-card-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    112deg,
+    transparent 24%,
+    rgba(255, 255, 255, 0.07) 38%,
+    rgba(255, 255, 255, 0.07) 46%,
+    transparent 58%,
+    transparent 78%,
+    rgba(255, 255, 255, 0.03) 85%,
+    transparent 92%
+  );
+  transition: opacity 500ms ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .credits-card:hover .credits-card-shine {
+    opacity: 0.5;
+    transition-duration: 120ms;
+  }
+}
+
+.credits-card-sheen {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 60% at var(--sheen-x, 50%) var(--sheen-y, 50%),
+    rgba(255, 255, 255, 0.09),
+    transparent
+  );
+  transition: opacity 500ms ease-out;
+}
+
+.credits-card:hover .credits-card-sheen {
+  transition-duration: 120ms;
+}
+
+.credits-card-chip {
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  width: 44px;
+  height: 32px;
+  margin-top: -16px;
+}
+
+.credits-card-mark {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+}
+
+.credits-card-figure {
+  position: absolute;
+  bottom: 22px;
+  left: 24px;
+}
+
+.credits-card-amount {
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.credits-card-caption {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.credits-card-amount + .credits-card-caption {
+  margin-top: 8px;
+}
+
+/*
+ * From packages/ui/src/css/shared.css: what the dashboard's pages took
+ * from the shared sheet. The default border colour sits in the base layer,
+ * as it does there, so a border-input or border-ring utility still wins;
+ * the dashboard's language trigger, which carries no border colour
+ * utility, reads rgba(7, 7, 7, 0.18) in light, and this is the rule that
+ * gives it that.
+ */
+@layer base {
+  .plate-root,
+  .plate-root *,
+  .plate-root ::before,
+  .plate-root ::after {
+    border-color: hsl(var(--border));
+  }
+}
+
+/* The ground helpers, as shared.css states them, inside the frame. */
+.plate-root.bg-background,
+.plate-root .bg-background {
+  background-color: hsl(var(--background));
+}
+
+.plate-root .bg-muted {
+  background-color: hsl(var(--muted));
+}
+
+/* Every live control in the frame takes the pointer cursor, as in shared.css. */
+.plate-root
+  :is(
+    a,
+    [role='button'],
+    button:not(:disabled),
+    [type='button']:not(:disabled),
+    [type='submit']:not(:disabled),
+    [type='reset']:not(:disabled)
+  ):hover {
+  cursor: pointer;
+}
+
+/*
+ * The site's scrollbar for the frame's own scroll areas (PlateFrame's
+ * main, the language list): a thin rounded thumb on the foreground
+ * token, no track. Modern engines take the standard properties; the
+ * -webkit- rules cover Safari versions that predate them.
+ */
+.gt-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--foreground) / 0.25) transparent;
+}
+
+.gt-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.gt-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.gt-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: hsl(var(--foreground) / 0.25);
+}
+
+.gt-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground) / 0.4);
+}

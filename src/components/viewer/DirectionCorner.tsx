@@ -44,7 +44,12 @@ import './DirectionCorner.css';
  * exhibit, the compare panes and every screenshot pass depend on. No
  * toolbar and no sheet: the page stays a full document with its own nav.
  * Replaces src/components/shared/DirectionDock.tsx with the same prop
- * shape, { slug }. The palette opens inside the corner's own stacking
+ * shape, { slug }, plus `placement`: 'right' puts the corner at the top
+ * right, as a row, under 768px (DirectionCorner.css), for a page whose
+ * column starts at the left edge under the corner, as the plate pages do,
+ * and `suspense`: false mounts the corner without its Suspense boundary on
+ * a route that renders per request, so it hydrates with the page. The
+ * palette opens inside the corner's own stacking
  * context (z-index 100), under the layer that holds the list, the index and
  * their scrim (101), so opening it from the button or from Cmd K closes the
  * list and the index first; the palette is then the one thing over the page.
@@ -60,7 +65,27 @@ import './DirectionCorner.css';
  * on close, stays mounted for the sidebar duration under .is-leaving so
  * DirectionCorner.css can slide it back out. Reduced motion commits at once.
  */
-export type DirectionCornerProps = { slug: string };
+export type DirectionCornerProps = {
+  slug: string;
+  /**
+   * Where the corner sits under 768px: the top left under the page's nav
+   * band (the default), or the top right as one row of squares, for a page
+   * whose column starts at the left edge under the corner.
+   */
+  placement?: 'left' | 'right';
+  /**
+   * Whether the corner mounts behind its Suspense boundary (the default).
+   * The boundary exists for the address read (useSearchParams), which a
+   * statically rendered route has to finish on the client; a route that
+   * renders per request, because it awaits searchParams on the server,
+   * reads the address on the server too, so it can pass false and the
+   * corner hydrates in the page's pass instead of in a later one. The
+   * plate pages do: a fixture there opens a modal dialog on mount, and the
+   * dialog stamps aria-hidden on every other child of the body, which a
+   * corner that had yet to hydrate then reported as a hydration mismatch.
+   */
+  suspense?: boolean;
+};
 
 /** The site map groups the list shows, in the shell's one order (Shipped after Pages, directive 8.10); the count names their rows. */
 const LIST_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Knowledge', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
@@ -129,7 +154,7 @@ function reducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-function Corner({ slug }: DirectionCornerProps) {
+function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
   const params = useSearchParams();
   const [list, setList] = useState(false);
   const [panel, setPanel] = useState(false);
@@ -233,7 +258,11 @@ function Corner({ slug }: DirectionCornerProps) {
 
   return (
     <>
-      <div className='pt-corner' role='group' aria-label='Prototemplate'>
+      <div
+        className={cn('pt-corner', placement === 'right' && 'is-right')}
+        role='group'
+        aria-label='Prototemplate'
+      >
         <Link
           className='pt-ib pt-icon pt-corner-mark'
           href='/'
@@ -302,8 +331,13 @@ function Corner({ slug }: DirectionCornerProps) {
   );
 }
 
-/** useSearchParams reads the address on the client, so the corner mounts behind a Suspense boundary, as the dock did. */
-export function DirectionCorner(props: DirectionCornerProps) {
+/**
+ * useSearchParams reads the address on the client on a static route, so the
+ * corner mounts behind a Suspense boundary there, as the dock did; a route
+ * that renders per request passes suspense={false} and mounts it directly.
+ */
+export function DirectionCorner({ suspense = true, ...props }: DirectionCornerProps) {
+  if (!suspense) return <Corner {...props} />;
   return (
     <Suspense fallback={null}>
       <Corner {...props} />
