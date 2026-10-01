@@ -9,3 +9,6 @@ next-env.d.ts
 # deck renders and private temp files from deck/shoot-slide.mjs
 deck/preview
 deck/tmp
+
+# the page check's captures and report (pnpm check:pages)
+.pagecheck/

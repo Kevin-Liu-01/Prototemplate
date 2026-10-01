@@ -34,6 +34,11 @@ src/
 scripts/
   lint-lines.mjs          the line auditor (see docs/SHIP-LOOP.md)
   lint-practices.mjs      the practices ratchet (+ baseline JSON)
+  pagecheck/              the page check: every page at ten viewports in
+                          both themes, layout shifts, interactions, a
+                          report (pnpm check:pages; its README explains)
+  site-pages.mjs          page discovery and the theme door, shared by
+                          capture-pages.mjs and pagecheck/
   shoot-route.mjs         screenshot harness (external playwright-core)
 docs/
   harness/gallery-shoot.mjs   the gallery shooter (see "The gallery
@@ -160,4 +165,4 @@ the changed files are copied into Prototemplate one at a time and
 `pnpm build` must pass before the commit. No bulk `rsync --delete` runs
 toward Prototemplate from any tree. Root docs (`BRAND.md`, `DESIGN.md`,
 `ARCHITECTURE.md`, `README.md`, `docs/`) are edited here first. See
-`docs/SHIP-LOOP.md` section 6 for the sequence.
+`docs/SHIP-LOOP.md` section 7 (the mirror step) for the sequence.

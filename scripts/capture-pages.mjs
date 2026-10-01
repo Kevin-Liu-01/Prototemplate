@@ -43,20 +43,30 @@
 // Needs the dev server running (pnpm dev) and the Chrome for Testing build
 // playwright-core expects; CHROME_PATH overrides the executable. --live
 // needs the network instead of the dev server.
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+//
+// Page discovery, the theme door and the executable path come from
+// scripts/site-pages.mjs, which scripts/pagecheck/ shares, so a new
+// production page or a moved registry is picked up by both tools from one
+// change.
+import { mkdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { chromium } from 'playwright-core';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const PRODUCTION = join(ROOT, 'src/app/d/production');
-const DIRECTIONS_SOURCE = join(ROOT, 'src/lib/directions.ts');
+import {
+  CHROME_PATH,
+  HIDE_DEV_UI_CSS,
+  ROOT,
+  firstExplorationSlug,
+  productionId,
+  productionPages,
+  productionPath,
+  seedTheme,
+} from './site-pages.mjs';
+
 const OUT = join(ROOT, 'public/shots/pages');
 
-const EXEC =
-  process.env.CHROME_PATH ??
-  '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
+const EXEC = CHROME_PATH;
 
 const WIDTH = 1440;
 const HEIGHT = 900;
@@ -99,56 +109,17 @@ const LIVE_PAGES = [
 /** The one live page whose response is a 404 on purpose. */
 const EXPECTED_404 = 'live-404';
 
-/**
- * The static pages under src/app/d/production, as [segments]: every folder
- * holding a page.tsx whose path has no bracketed segment, the root first,
- * then the rest in path order.
- */
-function productionPages() {
-  const found = [];
-  const walk = (dir, segments) => {
-    if (segments.some((s) => s.startsWith('['))) return;
-    if (existsSync(join(dir, 'page.tsx'))) found.push(segments);
-    for (const entry of readdirSync(dir).sort()) {
-      const abs = join(dir, entry);
-      if (statSync(abs).isDirectory()) walk(abs, [...segments, entry]);
-    }
-  };
-  walk(PRODUCTION, []);
-  return found;
-}
-
-/**
- * The slug of the first exploration in src/lib/directions.ts (the first
- * entry of DIRECTIONS without `site: true`), read from the source the way
- * scripts/lint-lines.mjs reads the archive's first slug, so the script
- * needs no TypeScript loader. /directions/<slug> is the direction page
- * captured under the `directions` id.
- */
-function firstExplorationSlug() {
-  const source = readFileSync(DIRECTIONS_SOURCE, 'utf8');
-  const start = source.indexOf('export const DIRECTIONS');
-  const end = source.indexOf('\n];', start);
-  if (start < 0 || end < 0) {
-    console.error('capture-pages: no DIRECTIONS array in src/lib/directions.ts');
-    process.exit(2);
-  }
-  for (const block of source.slice(start, end).split(/\n  \},?\n/)) {
-    const slug = block.match(/\bslug: '([^']+)'/)?.[1];
-    if (slug && !/\bsite: true\b/.test(block)) return slug;
-  }
-  console.error('capture-pages: no exploration found in src/lib/directions.ts');
-  process.exit(2);
-}
-
 /** [id, url] for every capture: the live pages under --live, the local pages otherwise. */
 function targets() {
   if (LIVE) return ONLY ? LIVE_PAGES.filter(([id]) => ONLY.includes(id)) : LIVE_PAGES;
-  const shipped = productionPages().map((segments) => {
-    const id = segments.length === 0 ? 'production' : `production-${segments.join('-')}`;
-    const path = ['/d/production', ...segments].join('/');
-    return [id, `${BASE}${path}?chrome=0`];
-  });
+  const shipped = productionPages().map((segments) => [productionId(segments), `${BASE}${productionPath(segments)}?chrome=0`]);
+  let exploration;
+  try {
+    exploration = firstExplorationSlug();
+  } catch (error) {
+    console.error(`capture-pages: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(2);
+  }
   const routes = [
     ['gallery', '/'],
     ['brand', '/brand'],
@@ -158,7 +129,7 @@ function targets() {
     ['deck', '/deck'],
     ['skills', '/skills'],
     ['marks', '/marks'],
-    ['directions', `/directions/${firstExplorationSlug()}`],
+    ['directions', `/directions/${exploration}`],
   ].map(([id, path]) => [id, `${BASE}${path}`]);
   const all = [...shipped, ...routes];
   return ONLY ? all.filter(([id]) => ONLY.includes(id)) : all;
@@ -185,7 +156,7 @@ for (const theme of THEMES) {
     colorScheme: theme,
     reducedMotion: 'reduce',
   });
-  await context.addInitScript((t) => localStorage.setItem('gt-theme', t), theme);
+  await seedTheme(context, theme);
   if (LIVE) {
     /* the live site reads `theme`; the cookie declines its consent banner */
     await context.addInitScript((t) => localStorage.setItem('theme', t), theme);
@@ -208,7 +179,7 @@ for (const theme of THEMES) {
         });
       }
       await page.evaluate(() => document.fonts.ready);
-      await page.addStyleTag({ content: 'nextjs-portal { display: none !important; }' });
+      await page.addStyleTag({ content: HIDE_DEV_UI_CSS });
       await page.waitForTimeout(LIVE ? LIVE_SETTLE_MS : SETTLE_MS);
       await page.screenshot({ path: target, type: 'jpeg', quality: QUALITY });
       written += 1;
