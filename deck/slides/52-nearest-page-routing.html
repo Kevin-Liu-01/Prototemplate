@@ -1,0 +1,70 @@
+    <!-- nearest page routing -->
+    <section class="slide s44r">
+      <style>
+        /* sprite icons inside the diagram are 24px, the display-list size; the arrow glyphs between rungs stay 20px and take the body text tone */
+        .s44r svg.dia .ic { width: 24px; height: 24px; }
+        .s44r svg.dia .ic.muted { width: 20px; height: 20px; }
+      </style>
+      <div class="in">
+      <div class="split">
+        <div class="head"><h2>Nearest-page routing</h2>
+          <p class="max-p">A mistyped docs URL resolves to the nearest page. The resolver, merged on September 8, tries four rungs in order and then shows suggestions. A difference in version numbers is never treated as a typo.</p></div>
+        <div class="body">
+          <div class="stack">
+            <svg class="dia" viewBox="0 0 1326 278" aria-label="Four matching rungs tried in order: exact path, segments, basename, parent folder. One match at any rung redirects to the page; no match at any rung shows up to five suggested pages">
+              <rect class="hair" fill="none" x="0.5" y="0.5" width="232" height="150" stroke-width="1"/>
+              <svg class="ic" x="18" y="18" width="24" height="24" aria-hidden="true"><use href="#i-magnifying-glass"/></svg>
+              <text class="lab" x="18" y="78">1 Exact path</text>
+              <text x="18" y="106">Separators folded</text>
+              <text x="18" y="132">to dashes</text>
+              <svg class="ic muted" x="243" y="20" width="20" height="20" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+
+              <rect class="hair" fill="none" x="273.5" y="0.5" width="232" height="150" stroke-width="1"/>
+              <svg class="ic" x="291" y="18" width="24" height="24" aria-hidden="true"><use href="#i-view-columns"/></svg>
+              <text class="lab" x="291" y="78">2 Segments</text>
+              <text x="291" y="106">One segment</text>
+              <text x="291" y="132">at a time</text>
+              <svg class="ic muted" x="516" y="20" width="20" height="20" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+
+              <rect class="hair" fill="none" x="546.5" y="0.5" width="232" height="150" stroke-width="1"/>
+              <svg class="ic" x="564" y="18" width="24" height="24" aria-hidden="true"><use href="#i-document-text"/></svg>
+              <text class="lab" x="564" y="78">3 Basename</text>
+              <text x="564" y="106">Last segment,</text>
+              <text x="564" y="132">any folder</text>
+              <svg class="ic muted" x="789" y="20" width="20" height="20" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+
+              <rect class="hair" fill="none" x="819.5" y="0.5" width="232" height="150" stroke-width="1"/>
+              <svg class="ic" x="837" y="18" width="24" height="24" aria-hidden="true"><use href="#i-folder"/></svg>
+              <text class="lab" x="837" y="78">4 Parent folder</text>
+              <text x="837" y="106">Deepest folder</text>
+              <text x="837" y="132">matched so far</text>
+
+              <line class="ink" x1="116.5" y1="150.5" x2="116.5" y2="169.5"/>
+              <line class="ink" x1="389.5" y1="150.5" x2="389.5" y2="169.5"/>
+              <line class="ink" x1="662.5" y1="150.5" x2="662.5" y2="169.5"/>
+              <line class="ink" x1="935.5" y1="150.5" x2="935.5" y2="169.5"/>
+              <line class="ink" x1="116.5" y1="169.5" x2="935.5" y2="169.5"/>
+              <line class="ink" x1="526.5" y1="169.5" x2="526.5" y2="188.5"/>
+              <rect x="521" y="177.5" width="11" height="11" fill="var(--ink)"/>
+
+              <line class="ink" x1="1052" y1="30.5" x2="1211.5" y2="30.5"/>
+              <line class="ink" x1="1211.5" y1="30.5" x2="1211.5" y2="188.5"/>
+              <rect x="1206" y="177.5" width="11" height="11" fill="var(--ink)"/>
+              <text x="1131.5" y="112" text-anchor="middle">No match</text>
+              <text x="1131.5" y="138" text-anchor="middle">at any rung</text>
+
+              <rect class="hair" fill="none" x="0.5" y="188.5" width="1051" height="88" stroke-width="1"/>
+              <svg class="ic ok" x="18" y="206" width="24" height="24" aria-hidden="true"><use href="#i-check-circle"/></svg>
+              <text class="lab" x="54" y="229">Redirect to the page</text>
+              <text x="18" y="259">One match at any rung redirects. Several page matches land on the closest folder they share.</text>
+
+              <rect class="hair" fill="none" x="1096.5" y="188.5" width="229" height="88" stroke-width="1"/>
+              <svg class="ic" x="1114" y="206" width="24" height="24" aria-hidden="true"><use href="#i-list-bullet"/></svg>
+              <text class="lab" x="1150" y="229">Suggestions</text>
+              <text x="1114" y="259">Up to five pages</text>
+            </svg>
+            <div class="panel">Requested&nbsp;&nbsp;/docs/react/referense/hooks/use-locale<br>Resolved&nbsp;&nbsp;&nbsp;/docs/react/reference/hooks/use-locale</div>
+          </div>
+        </div>
+      </div>
+    </div></section>

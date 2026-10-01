@@ -52,6 +52,10 @@ The deck is a single self-contained HTML file. Source lives in this directory:
 - Slides 16 to 22 present the seven speed marks. Each is the markup of one file under `public/marks` (bar-monogram, bar-monogram-lockup, plate-inverted, double-cut, livery-stack, bar-monogram-dithered, bar-monogram-ascii) pasted into the slide, with an explicit width and height in px on the root that keeps the file's aspect. The files are one color in currentColor, so a mark takes the slide's ink in both themes.
 - `pnpm build:marks` regenerates the files from `scripts/build-speed-marks.mjs`. A mark is never redrawn by hand in a slide: when the files change, paste the new markup over the old.
 
+## Dithered pages
+
+- Slide 34 (the dither transitions) shows the two 800 by 450 two-tone grids the craft article's transition demo runs on, `shots/mood-earth-cells.png` and `shots/mood-rosetta-cells.png`, copied from `public/craft`. Slides 60 and 61 show the docs redesign visuals: the two cover directions and four of the thirty visuals, `shots/docs-visuals-*.jpg`, taken from the published visuals artifact at 3200 by 1800. When the craft grids or the visuals are regenerated, copy the new files over and rebuild.
+
 ## Slide scoped CSS
 
 If a slide needs a rule that head.html does not have, put a `<style>` element as the first child inside that slide's `<section>` and scope every selector with a unique class you add to the section, for example `<section class="slide s08">` and `.s08 .track { ... }`. Never write unscoped rules.

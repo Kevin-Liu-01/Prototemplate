@@ -1,0 +1,26 @@
+    <!-- dither transitions -->
+    <section class="slide s34t"><style>
+      .s34t .split { gap: 48px; }
+      .s34t .head .row { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+      .s34t .head .row p { margin-top: 0; }
+      .s34t .head > .cap { margin-top: 14px; }
+      .s34t .pair { max-width: 1040px; margin: 0 auto; }
+      .s34t .pair img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+    </style><div class="in">
+      <div class="split">
+        <div class="head">
+          <h2>The dither transitions</h2>
+          <div class="row">
+            <p>A dithered field changes state by changing tone on one cell grid. No alpha crossfade, wipe or slide takes part. Both states share the cell size and the phase of the Bayer tile, anchored to one page cell, so the first frame of a transition is the last frame of the state before it, cell for cell.</p>
+            <p>The globe resolves into the Blue Marble on that grid: one smoothstep over 350 ms mixes the two tones, and the ink moves from the globe's blue to the picture's ink on the same curve. A step between pictures is the same mix over 150 ms, an interrupted mix restarts from the frame on screen, and under reduced motion the field shows the end state.</p>
+          </div>
+          <p class="cap">The picture's curve is solved so the mean tone inside the disc equals the globe's; measured on the dashboard build, the lit ratio stays within one percent across the resolve.</p>
+        </div>
+        <div class="body">
+          <div class="pair">
+            <figure><img src="shots/mood-earth-cells.png" alt="The Blue Marble as a two-tone grid of 800 by 450 cells"><figcaption>The Blue Marble as a two-tone grid of 800 by 450 cells, cut from the deck's mood picture, one grid cell per deck cell.</figcaption></figure>
+            <figure><img src="shots/mood-rosetta-cells.png" alt="The Rosetta Stone as a two-tone grid of 800 by 450 cells"><figcaption>The Rosetta Stone on the same grid. The step between the two pictures is one 150 ms mix of tones on these cells.</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </div></section>

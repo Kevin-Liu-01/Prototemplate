@@ -1,0 +1,40 @@
+    <!-- language as material -->
+    <section class="slide s22">
+      <style>
+        .s22 .rows > div { grid-template-columns: 150px 1fr; gap: 24px; }
+        .s22 .nb { white-space: nowrap; }
+      </style>
+      <div class="in">
+      <div class="cols even">
+        <div class="stack">
+          <h2>Animated text</h2>
+          <p class="max-p">Text is the primary animated element. The signature animations are built from characters. A headline breaks into individual glyphs and reassembles as the same sentence in the next language, using the same number of particles. A particle field of characters from eight writing systems resolves into the word for language in each script in turn.</p>
+          <svg class="dia" viewBox="0 0 600 140" aria-label="The word for language breaks into eight particles and reassembles as the Japanese word">
+            <text class="lab" x="100" y="80" text-anchor="middle">Language</text>
+            <g fill="var(--ink)">
+              <rect x="256" y="50" width="6" height="6"/>
+              <rect x="268" y="72" width="6" height="6"/>
+              <rect x="278" y="92" width="6" height="6"/>
+              <rect x="296" y="42" width="6" height="6"/>
+              <rect x="312" y="98" width="6" height="6"/>
+              <rect x="322" y="78" width="6" height="6"/>
+              <rect x="330" y="62" width="6" height="6"/>
+              <rect x="346" y="88" width="6" height="6"/>
+            </g>
+            <text class="lab" x="500" y="80" text-anchor="middle" lang="ja">言語</text>
+            <path d="M170 74 H230" fill="none" class="ink" stroke-width="6" vector-effect="non-scaling-stroke"/>
+            <path d="M370 74 H430" fill="none" class="ink" stroke-width="6" vector-effect="non-scaling-stroke"/>
+            <path d="M170 74 H230" fill="none" class="paper" stroke-width="3" vector-effect="non-scaling-stroke"/>
+            <path d="M370 74 H430" fill="none" class="paper" stroke-width="3" vector-effect="non-scaling-stroke"/>
+            <text x="100" y="130" text-anchor="middle">English</text>
+            <text x="300" y="130" text-anchor="middle">Same number of particles</text>
+            <text x="500" y="130" text-anchor="middle">Japanese</text>
+          </svg>
+        </div>
+        <div class="rows tight narrow">
+          <div><b><svg class="ic" aria-hidden="true"><use href="#i-language"/></svg>Text node</b><span>The morphing unit is one shaped text node. <span class="nb">Per-character</span> spans break Arabic joining.</span></div>
+          <div><b><svg class="ic" aria-hidden="true"><use href="#i-arrows-right-left"/></svg>Width</b><span>A hidden probe in the word's language sets the width. Only container width animates.</span></div>
+          <div><b><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Clock</b><span>The component has no timer. The host page drives it, so every animation shares one clock.</span></div>
+        </div>
+      </div>
+    </div></section>

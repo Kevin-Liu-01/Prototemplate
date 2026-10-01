@@ -80,7 +80,7 @@
   var i = 0, digits = '', digitTimer = null, mode = 'slide', reduced = false;
   try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
-  var SECTIONS = [[1, 'Brand'], [23, 'Design system'], [38, 'Website'], [49, 'Documentation'], [54, 'Blog and content'], [63, 'Developer experience'], [67, 'Prototemplate and Glyphfield'], [86, 'Status and plan']];
+  var SECTIONS = [[1, 'Brand'], [23, 'Design system'], [39, 'Website'], [50, 'Documentation'], [55, 'Blog and content'], [66, 'Developer experience'], [70, 'Prototemplate and Glyphfield'], [89, 'Status and plan']];
   function sectionOf(k) { var name = SECTIONS[0][1]; SECTIONS.forEach(function (s) { if (s[0] <= k + 1) name = s[1]; }); return name; }
   function sectionRange(idx) { return [SECTIONS[idx][0], idx + 1 < SECTIONS.length ? SECTIONS[idx + 1][0] - 1 : slides.length]; }
 
