@@ -251,19 +251,22 @@ function placeElement(detail, item) {
 
 /**
  * The fix for a tap target under 40px, from what the element is: a field
- * gets a 44px row, a dot or glyph a hit area around it, a square icon
- * control a 44px square, a text link a 44px line box, any other control
- * a 44px height. The drawing keeps its size in every case.
+ * gets a 44px row, a text link (wider than twice its height) a 44px line
+ * box, a dot or glyph a hit area around it, a square icon control a 44px
+ * square, any other control a 44px height. The drawing keeps its size in every case.
  */
 function tapFix(t) {
   if (!t || typeof t !== 'object') return 'give the control a 44px tap box under the 900px cut (min-height and min-width 44) while the drawing stays its size';
   const { tag } = parseDesc(t.el);
   const size = t.size ?? 0;
   if (tag === 'input') return 'give the field a 44px row under 900px (min-height 44); the type and the border stay';
+  if (tag === 'a' && t.w > 2 * t.h) return 'set the link inline-flex with min-height 44 and align-items center under 900px, or lift it into a 44px row; the type stays, the hit box grows';
   if (size < GLYPH_MAX) return `draw the ${size}px glyph inside a 44px hit area (padding, or a ::after box with a negative margin) so the layout keeps its spacing while the touch box reads 44`;
   if (Math.abs(t.w - t.h) <= 4) return `give the control a 44px square under the 900px cut (min-width and min-height 44, the ${size}px drawing centered through padding); the bar can keep its 52px row`;
-  if (tag === 'a' && t.w > 2 * t.h) return 'set the link inline-flex with min-height 44 and align-items center under 900px, or lift it into a 44px row; the type stays, the hit box grows';
-  return 'give the control min-height 44 under 900px (padding grows the box; the label and the drawing stay)';
+  /* the side under 40 is the one to grow: a tall narrow icon link needs width, a wide short button needs height */
+  return t.w < t.h
+    ? 'give the control min-width 44 under 900px (padding each side grows the box; the icon and the label stay)'
+    : 'give the control min-height 44 under 900px (padding grows the box; the label and the drawing stay)';
 }
 
 /** The file column and the fix for a cell's console errors: the lines that build or name each failed path. */

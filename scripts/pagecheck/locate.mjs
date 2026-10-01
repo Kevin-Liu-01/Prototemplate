@@ -33,6 +33,8 @@ const QUOTED = /(['"`])((?:\\.|(?!\1).)*)\1/g;
 const MIN_TEXT = 4;
 /** Below this length a text must sit at a JSX or string boundary to count. */
 const BOUNDARY_UNDER = 12;
+/** Below this length a rendered text hit is held until the nearest classed ancestor has been tried (a four-letter word renders on many pages). */
+const DECISIVE_TEXT = 6;
 /** A class that names a state of the element (is-on, has-ind) and so points at no stylesheet of its own. */
 const STATE_CLASS = /^(is|has)-/;
 
@@ -295,7 +297,7 @@ export function locateElement({ el, text, within }, sources, root) {
   for (const candidate of textCandidates(text)) {
     const hit = textHits(candidate, sources, root)[0];
     if (!hit) continue;
-    if (hit.rendered) return { where: ref(hit), via: `text "${candidate}"` };
+    if (hit.rendered && candidate.length >= DECISIVE_TEXT) return { where: ref(hit), via: `text "${candidate}"` };
     held ??= { where: ref(hit), via: `text "${candidate}"` };
   }
   if (within) {
