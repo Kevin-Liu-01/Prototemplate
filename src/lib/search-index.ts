@@ -290,7 +290,7 @@ const HEADINGS: readonly SearchEntry[] = Object.entries(DOC_HEADINGS).flatMap(([
   )
 );
 
-/** The 85 slide titles, in order: the first h1, h2 or .big of each deck/slides/NN-*.html; the nine mood slides carry no heading and are listed by their image. */
+/** The 95 slide titles, in order: the first h1, h2 or .big of each deck/slides/NN-*.html; the twelve mood slides carry no heading and are listed by their picture. Regenerate with the loop in the commit that added the mood pictures of writing when slides change. */
 const DECK_SLIDES: readonly string[] = [
   'Brand',
   'General Translation',
@@ -305,8 +305,16 @@ const DECK_SLIDES: readonly string[] = [
   'Brand personality',
   'Writing style',
   'Visual references',
+  'A proto-cuneiform tablet',
   'The name',
   'The mark',
+  'The bar monogram',
+  'The lockup',
+  'The plate',
+  'Double cut',
+  'Livery stack',
+  'The dithered monogram',
+  'The monogram in ASCII',
   'Design system',
   'Small sizes',
   'Color',
@@ -320,6 +328,7 @@ const DECK_SLIDES: readonly string[] = [
   'Dither',
   'Isometric illustration',
   'Animated text',
+  'Johnson\'s Dictionary',
   'Motion rules',
   'Anti-patterns',
   'Website',
@@ -336,7 +345,7 @@ const DECK_SLIDES: readonly string[] = [
   'Documentation',
   'The docs',
   'Nearest-page routing',
-  'The Compact Oxford English Dictionary',
+  'The Oxford English Dictionary',
   'Markdown twins',
   'Blog and content',
   'Blog index',
@@ -346,6 +355,7 @@ const DECK_SLIDES: readonly string[] = [
   'Blog content',
   'The copy test',
   'Site copy and founder posts',
+  'A marginal gloss',
   'Brand assets outside the site',
   'Developer experience',
   'Translation as a build step',

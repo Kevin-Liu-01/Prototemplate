@@ -49,7 +49,7 @@ The deck is a single self-contained HTML file. Source lives in this directory:
 
 ## Speed marks
 
-- Slides 16 to 22 present the seven speed marks. Each is the markup of one file under `public/marks` (bar-monogram, bar-monogram-lockup, plate-inverted, double-cut, livery-stack, bar-monogram-dithered, bar-monogram-ascii) pasted into the slide, with an explicit width and height in px on the root that keeps the file's aspect. The files are one color in currentColor, so a mark takes the slide's ink in both themes.
+- Slides 17 to 23 present the seven speed marks. Each is the markup of one file under `public/marks` (bar-monogram, bar-monogram-lockup, plate-inverted, double-cut, livery-stack, bar-monogram-dithered, bar-monogram-ascii) pasted into the slide, with an explicit width and height in px on the root that keeps the file's aspect. The files are one color in currentColor, so a mark takes the slide's ink in both themes.
 - `pnpm build:marks` regenerates the files from `scripts/build-speed-marks.mjs`. A mark is never redrawn by hand in a slide: when the files change, paste the new markup over the old.
 
 ## Slide scoped CSS
