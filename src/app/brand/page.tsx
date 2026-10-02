@@ -106,10 +106,10 @@ const GLOBES = [
   {
     stem: 'gt-globe-glyphs',
     ground: 'ink',
-    name: 'the glyph globe',
+    name: 'the glyph globe in dark',
     alt: 'A globe drawn in characters from many writing systems on near-black: land in large white and pale blue glyphs, ocean in small blue glyphs',
     caption:
-      'the glyph globe\u00a0· characters from twenty writing systems, land in #f2f2f0 and #86a8ff, ocean at half size in #2f5ce0',
+      'the glyph globe in dark\u00a0· characters from twenty writing systems, land in #f2f2f0 and #86a8ff, ocean at half size in #2f5ce0',
   },
   {
     stem: 'gt-globe-glyphs-light',
@@ -118,21 +118,6 @@ const GLOBES = [
     alt: 'The glyph globe on white: the same characters from many writing systems, land in black, ocean in blue, the glyphs growing toward the shadowed side',
     caption:
       'the glyph globe in light\u00a0· the same characters on paper, land in #070707, ocean in #2f5ce0 thinning to #86a8ff in the highlight, ink carrying the shadow',
-  },
-  {
-    stem: 'gt-globe-glyphs-gt-dark',
-    ground: 'ink',
-    name: 'the glyph globe with the mark carved out',
-    alt: 'The glyph globe on near-black with the doubled-line GT monogram cut out of its center; glyphs run in rings along the outline of the mark and in rows between its two lines',
-    caption:
-      'the glyph globe with the mark carved out\u00a0· the doubled-line monogram cut from the center at half the diameter, glyphs set along its outline and in its channels, 8\u00a0px clear of every edge',
-  },
-  {
-    stem: 'gt-globe-glyphs-gt-light',
-    ground: 'paper',
-    name: 'the carved glyph globe in light',
-    alt: 'The carved glyph globe on white: the GT monogram cut out of the center, black and blue glyphs set along its outline and in its channels',
-    caption: 'the carved glyph globe in light\u00a0· the same carve on paper, in the inks of the light globe',
   },
 ] as const;
 

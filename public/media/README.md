@@ -16,8 +16,6 @@ kept here as proof of what the identity does off the page.
 | `gt-globe-dithered-mark.png` | the same globe with the doubled-line GT mark at the center in `#f2f2f0` over a knocked-out halo, 2048x2048 on ink. |
 | `gt-globe-glyphs.png` | the glyph globe: the same sphere printed in characters from twenty writing systems, land large in `#f2f2f0` and `#86a8ff`, ocean at half size in `#2f5ce0`, the size of each glyph setting its brightness, 2048x2048 on ink. |
 | `gt-globe-glyphs-light.png` | the glyph globe in light, 2048x2048 on paper `#ffffff`: land in ink `#070707`, ocean in `#2f5ce0` thinning to `#86a8ff` in the highlight, the halftone run the other way so ink carries the shadow. |
-| `gt-globe-glyphs-gt-dark.png` | the glyph globe with the doubled-line GT mark carved out of its center at half the diameter: glyphs set in a ring along the mark's outline and in rows between its two lines, every glyph's ink 8 px or more from the outline, 2048x2048 on ink. |
-| `gt-globe-glyphs-gt-light.png` | the same carve in the light globe's inks, 2048x2048 on paper. |
 | `gt-globe-*-transparent.png` | each globe's twin: the same art on an alpha ground, for laying beside a partner's mark. A dark twin is for a dark ground and a light twin for a light one. |
 
 The films and the globes are shown live in `/brand` under Made with the
