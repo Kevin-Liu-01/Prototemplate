@@ -12,3 +12,6 @@ deck/tmp
 
 # the page check's captures and report (pnpm check:pages)
 .pagecheck/
+
+# Motion renders (MP4, MOV, posters, contact sheets) stay local; the films' sources live in motion/films.
+motion/out/

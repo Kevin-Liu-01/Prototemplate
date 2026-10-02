@@ -89,8 +89,11 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'made-with-the-system',
     title: 'Made with the system',
-    desc: 'Finished artwork produced with the toolchain and the glyphfield studio.',
-    headings: [],
+    desc: 'Finished artwork made with the system: the Open Source reel, the X banner, two blog films and three partnership globes.',
+    headings: [
+      heading('made-with-the-system', 'blog-films', 'Blog films'),
+      heading('made-with-the-system', 'partnership-globes', 'Partnership globes'),
+    ],
   },
   {
     id: 'context-for-partners',

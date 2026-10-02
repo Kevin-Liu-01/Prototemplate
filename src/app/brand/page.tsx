@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import ReassemblerDemo from '../craft/ReassemblerDemo';
 import AttributeScales, { AESTHETIC, PERSONALITY } from './AttributeScales';
+import BrandFilm from './BrandFilm';
 import BrandMarkFigure from './BrandMarkFigure';
 import type { BrandPage } from './BrandViewer';
 import BrandViewer from './BrandViewer';
@@ -53,6 +54,61 @@ const SWATCHES = [
 const INTER_WEIGHTS = [300, 400, 500, 600, 700, 800] as const;
 
 const PILL_LOCS = ['en-GB', 'es', 'ja', 'ar-EG', 'ko', 'zh-Hant', 'hi', 'pt'] as const;
+
+/**
+ * The blog films under public/media: each post's trailer, its poster, and the
+ * post on /blog with its authors as the blog prints them. All three videos in
+ * the section are 1920 by 1080; the width and height attributes reserve that
+ * box before the metadata arrives. The captions name no length, size or
+ * sound, because later cuts replace the files at the same paths. Each
+ * caption's separator follows a no-break space, so a wrapped caption never
+ * starts a line with the dot.
+ */
+const FILMS = [
+  {
+    file: 'fuma-nama-film.mp4',
+    poster: 'fuma-nama-poster.jpg',
+    post: '/blog/fuma-nama',
+    name: 'the Fuma Nama trailer',
+    authors: 'Taylor Fang',
+    caption:
+      'the trailer for “Fuma Nama: The philosophy of an open-sourcerer”\u00a0· fire gem smoke, #fe5b16, #f7ff61 and white on ink',
+  },
+  {
+    file: 'designing-docs-film.mp4',
+    poster: 'designing-docs-poster.jpg',
+    post: '/blog/designing-docs-for-humans',
+    name: 'the Designing docs for humans trailer',
+    authors: 'Kevin Liu and Taylor Fang',
+    caption:
+      'the trailer for “Designing docs for humans”\u00a0· blue gem smoke on navy, then white and #86a8ff on #2f5ce0, with the post’s blue dither',
+  },
+] as const;
+
+/** The partnership globes under public/media: 2048 by 2048 on ink, each with a -transparent twin; the captions set their separators as FILMS does. */
+const GLOBES = [
+  {
+    stem: 'gt-globe-dithered',
+    name: 'the dithered globe',
+    alt: 'A globe printed in pale blue Bayer dither on near-black, lit from the upper left, with land and sea told apart by the density of the dots',
+    caption:
+      'the dithered globe\u00a0· the dashboard sign-in globe through the 8x8 Bayer screen in #86a8ff on ink, 6\u00a0px cells',
+  },
+  {
+    stem: 'gt-globe-dithered-mark',
+    name: 'the globe with the mark',
+    alt: 'The dithered globe with the GT monogram, drawn in doubled white lines, at its center',
+    caption:
+      'the globe with the mark\u00a0· the same print with the doubled-line monogram at the center in #f2f2f0, over a knocked-out halo',
+  },
+  {
+    stem: 'gt-globe-glyphs',
+    name: 'the glyph globe',
+    alt: 'A globe drawn in characters from many writing systems on near-black: land in large white and pale blue glyphs, ocean in small blue glyphs',
+    caption:
+      'the glyph globe\u00a0· characters from twenty writing systems, land in #f2f2f0 and #86a8ff, ocean at half size in #2f5ce0',
+  },
+] as const;
 
 /** The opener: the head of the book, before the numbered sections. */
 const OPENER = (
@@ -411,36 +467,98 @@ const PAGES: readonly BrandPage[] = [
       <>
         <h2>Made with the system</h2>
         <p>
-          Finished artwork produced with this toolchain and the glyphfield studio,
+          Finished artwork produced with this toolchain and the Glyphfield studio,
           kept here as proof of what the identity does off the page. The whole
-          identity, this page included, is also summarized as an 85-slide
+          identity, this page included, is also summarized as a 95-slide
           slideshow at <Link href='/deck'>/deck</Link>.
         </p>
         <div className='ptb-media'>
           <figure className='ptb-shot'>
             <video
+              aria-label='the Open Source announcement reel'
               controls
+              height={1080}
               playsInline
               poster='/media/open-source-poster.jpg'
               preload='metadata'
               src='/media/open-source-reel.mp4'
+              width={1920}
             />
             <figcaption>
-              the Open Source announcement reel · twelve studio materials cut on the
+              the Open Source announcement reel&nbsp;· twelve studio materials cut on the
               beat in the brand blue, landing on the gem smoke composition
             </figcaption>
           </figure>
           <figure className='ptb-shot'>
             <img
               alt='The X profile banner: the halftone dither globe and glyph rain beside the customer logo grid'
+              height={1000}
               loading='lazy'
               src='/media/gt-banner-signin@2x.png'
+              width={3000}
             />
             <figcaption>
-              the X banner · the sign-in globe and glyph rain in the 1-bit language,
+              the X banner&nbsp;· the sign-in globe and glyph rain in the 1-bit language,
               the customer grid at right
             </figcaption>
           </figure>
+        </div>
+        <h3 id={headingId('made-with-the-system', 'blog-films')}>Blog films</h3>
+        <p>
+          Each film is a HyperFrames composition: HTML on a seekable timeline,
+          rendered frame by frame at 1920 by 1080 and 60&nbsp;fps. The smoke is the gem
+          smoke shader from Glyphfield, built on Paper Shaders&rsquo; Gem Smoke
+          (Apache-2.0), in the colors of the post&rsquo;s own cover.
+        </p>
+        <div className='ptb-media'>
+          {FILMS.map((film) => (
+            <div className='ptb-art' key={film.file}>
+              <figure className='ptb-shot'>
+                <BrandFilm name={film.name} poster={`/media/${film.poster}`} src={`/media/${film.file}`} />
+                <figcaption>{film.caption}</figcaption>
+              </figure>
+              <p className='pt-site-links ptb-send'>
+                <a aria-label={`download the MP4 of ${film.name}`} download href={`/media/${film.file}`}>
+                  download the MP4
+                </a>
+                <Link href={film.post}>read {film.authors}&rsquo;s post</Link>
+              </p>
+            </div>
+          ))}
+        </div>
+        <h3 id={headingId('made-with-the-system', 'partnership-globes')}>Partnership globes</h3>
+        <p>
+          The three globes are square graphics for laying beside a partner&rsquo;s
+          mark, each 2048 by 2048&nbsp;px. Each one comes on ink, #070707, and as a
+          transparent twin with the same art on an alpha ground.
+        </p>
+        <div className='ptb-globes'>
+          {GLOBES.map((globe) => (
+            <div className='ptb-art' key={globe.stem}>
+              <figure className='ptb-shot'>
+                <img
+                  alt={globe.alt}
+                  height={2048}
+                  loading='lazy'
+                  src={`/media/${globe.stem}.png`}
+                  width={2048}
+                />
+                <figcaption>{globe.caption}</figcaption>
+              </figure>
+              <p className='pt-site-links ptb-send'>
+                <a aria-label={`PNG on ink of ${globe.name}`} download href={`/media/${globe.stem}.png`}>
+                  PNG on ink
+                </a>
+                <a
+                  aria-label={`transparent PNG of ${globe.name}`}
+                  download
+                  href={`/media/${globe.stem}-transparent.png`}
+                >
+                  transparent PNG
+                </a>
+              </p>
+            </div>
+          ))}
         </div>
       </>
     ),

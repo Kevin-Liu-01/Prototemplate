@@ -371,7 +371,7 @@ const BRAND_SECTIONS: readonly Surface[] = [
   [
     'made-with-the-system',
     'Made with the system',
-    'Finished artwork produced with the toolchain and the glyphfield studio.',
+    'Finished artwork made with the system: the Open Source reel, the X banner, two blog films and three partnership globes.',
   ],
   [
     'context-for-partners',

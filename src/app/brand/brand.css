@@ -603,7 +603,8 @@
   margin: 0;
 }
 
-.ptb-shot img {
+/* the reference captures share one 16:10 crop; the artwork below keeps its own ratio */
+.ptb-shots .ptb-shot img {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -629,15 +630,132 @@
   margin-top: 20px;
 }
 
+/* Made with the system: every video and picture takes its ratio from its
+   width and height attributes (the browser maps them to aspect-ratio), so
+   the box is reserved before the poster, the metadata or the file arrives.
+   No rule here sets aspect-ratio, which would override that mapping. The
+   films and the banner are large surfaces and draw the structural hair. */
 .ptb-media .ptb-shot video,
 .ptb-media .ptb-shot img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: auto;
   object-fit: contain;
   border: 1px solid var(--pt-hair);
   background-clip: padding-box;
+}
+
+/* the films are on ink in both themes; the box shows ink until the poster paints */
+.ptb-media .ptb-shot video {
+  background-color: #070707;
+}
+
+/* a piece to send: the figure, then the line of links that download its
+   files. A column, so the link lines of one grid row share a baseline
+   when the captions above them run to different lengths. */
+.ptb-art {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ptb-art .ptb-shot {
+  flex: none;
+}
+
+/* the link line keeps the page's .pt-site-links type (the reading size,
+   as under the Dossier captures); its seat and its breaks change. It is a
+   wrapping row with a 10px gap, about the width of a spaced · separator,
+   where the line would set the dot, so a link that does not fit drops to
+   the next row whole and no dot is left at either end of a line. A globe
+   tile is about 150px wide at 1024, where its two links take two rows. At
+   768 the tile is 225px: the pair keeps one row, and the space between two
+   tiles' pairs (the 14px grid gap and the tile's spare width) stays about
+   twice the gap inside a pair. */
+.ptb-book .ptb-art .ptb-send {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* a film before its first play: the play button covers the frame inside
+   its hairline, so the whole poster shows (BrandFilm.tsx turns the native
+   controls on at the first press) */
+.ptb-film {
+  position: relative;
+}
+
+.ptb-film-play {
+  position: absolute;
+  inset: 1px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* the badge: a paper plate on the ink poster, the same in both themes */
+.ptb-film-badge {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  background: #f2f2f0;
+  color: #070707;
+}
+
+.ptb-film-badge svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.ptb-film-play:hover .ptb-film-badge {
+  background: #ffffff;
+}
+
+.ptb-film-play:focus-visible {
+  outline: none;
+}
+
+/* the focus ring: paper, the ring on an ink plate */
+.ptb-film-play:focus-visible .ptb-film-badge {
+  outline: 1px solid #f2f2f0;
+  outline-offset: 3px;
+}
+
+/* the section's captions wrap without leaving one word on a last line */
+.ptb-media .ptb-shot figcaption,
+.ptb-globes .ptb-shot figcaption {
+  text-wrap: pretty;
+}
+
+/* the globes: three square tiles on ink, framed in the tile edge */
+.ptb-globes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px 14px;
+  max-width: 1000px;
+  margin-top: 20px;
+}
+
+.ptb-globes .ptb-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--pt-edge);
+  background-color: #070707;
+  background-clip: padding-box;
+}
+
+/* the media headings open a new run of figures and take more air than a
+   heading under prose */
+.pt-post-sec .ptb-media + h3 {
+  margin-top: 44px;
 }
 
 /* ---------- the brief ---------- */
@@ -670,14 +788,40 @@
   .ptb-book .ptb-page .pt-post-sec {
     padding-top: 10px;
   }
+
+  /* the send links are tap targets: a 44px row each, the type unchanged;
+     the row's own air replaces the line's top padding */
+  .ptb-book .ptb-art .ptb-send {
+    padding-top: 0;
+  }
+
+  .ptb-art .ptb-send a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 760px) {
   .ptb-marks,
   .ptb-type,
   .ptb-shots,
+  .ptb-globes,
   .ptb-brief {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* a phone's film is about 185px tall; the smaller badge keeps clear of
+     the Fuma Nama title under it and the docs title over it. The whole
+     frame is the button, so the badge's size is not the tap target's. */
+  .ptb-film-badge {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ptb-film-badge svg {
+    width: 14px;
+    height: 14px;
   }
 
   .ptb-swatches {
