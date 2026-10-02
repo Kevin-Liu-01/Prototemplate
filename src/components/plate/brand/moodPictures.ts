@@ -143,9 +143,9 @@ export const MOOD_PICTURES: Record<PictureName, MoodPicture> = {
     placement: { kind: 'cover', focusX: 1, focusY: 0.5 },
     caption: {
       title: 'A Marginal Gloss',
-      note: 'Notes in the margin of a manuscript of about 1500, the step before the dictionary.',
+      note: 'Glosses beside and between the lines of an Alexandreis copied in France about 1250.',
       credit:
-        'MS Gen 1671, University of Glasgow Library, Archives and Special Collections',
+        'MS f Med. 23, Boston Public Library, public domain',
     },
   },
 };

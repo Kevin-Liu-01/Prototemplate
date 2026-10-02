@@ -92,16 +92,18 @@ const PICTURES = [
     invert: true,
   },
   {
-    // MS Gen 1671, University of Glasgow Library, Archives and Special
-    // Collections: a marginal gloss of about 1500, from the library's
-    // April 2007 Book of the Month on Johnson's Dictionary; the library's
-    // 384 by 350 image is the only copy online.
+    // Fol. 31r of the Boston Public Library's glossed Alexandreis (MS f Med. 23,
+    // France, about 1250, glossed between the lines and beside the verse in
+    // hands of the thirteenth to the fifteenth centuries), page 69 of the
+    // library's public domain scan on Wikimedia Commons at 6696 by 10057.
+    // The window takes two verse lines with their interlinear glosses, the
+    // commentary under them and the commentary column beside them.
     name: 'gloss',
-    source: 'gloss.jpg',
-    crop: { kind: 'box', box: [0, 0, 384, 216] },
-    blur: 0.4,
-    black: 60,
-    white: 170,
+    source: 'alexandreis-p69.jpg',
+    crop: { kind: 'box', box: [1300, 3471, 5081, 5598] },
+    blur: 0.6,
+    black: 40,
+    white: 178,
     gamma: 1,
     invert: true,
   },

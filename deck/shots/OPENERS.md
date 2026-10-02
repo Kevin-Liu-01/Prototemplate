@@ -135,7 +135,7 @@ The three pictures of writing and the Oxford page are cut by `scripts/mood-pictu
 | `81-mood-compass` | Current status | `mood-compass.jpg` | `mood-compass-light.jpg` | Bowen, A Circle of Winds, the mariner's compass, 1748 |
 | `14-mood-tablet` | Inspirations | `mood-tablet.jpg` | `mood-tablet-light.jpg` | The Metropolitan Museum of Art, a proto-cuneiform account of malt and barley, about 3100 BC |
 | `37-mood-johnson` | Language as material | `mood-johnson.jpg` | `mood-johnson-light.jpg` | Samuel Johnson, A Dictionary of the English Language, the grammar's page on O, 1755 |
-| `64-mood-gloss` | Two registers | `mood-gloss.jpg` | `mood-gloss-light.jpg` | MS Gen 1671, University of Glasgow Library, a marginal gloss of about 1500 |
+| `64-mood-gloss` | Two registers | `mood-gloss.jpg` | `mood-gloss-light.jpg` | MS f Med. 23, Boston Public Library, a glossed Alexandreis of about 1250 |
 
 All photographic sources are Wikimedia Commons files under a public domain or Creative Commons license. No mood slide shows a recognizable public figure and none is another designer's poster. Seven files are byte copies of the openers they replaced, five from the round six state (`mood-babel`, `mood-calligraphy`, `mood-lighthouse`, `mood-dictionary`, `mood-wave`) and two from commit 7d5c255 (`mood-devanagari`, `mood-cable`), so their crops and tone settings are the ones already reviewed. Round eight refit `mood-earth` (same tone, new crop box) and made `mood-compass` new.
 
