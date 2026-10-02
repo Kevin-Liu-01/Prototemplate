@@ -734,7 +734,7 @@
   text-wrap: pretty;
 }
 
-/* the globes: three square tiles on ink, framed in the tile edge */
+/* the globes: square tiles on ink or on paper, three across, framed in the tile edge */
 .ptb-globes {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -750,6 +750,11 @@
   border: 1px solid var(--pt-edge);
   background-color: #070707;
   background-clip: padding-box;
+}
+
+/* a light globe holds the paper ground while it loads */
+.ptb-globes .ptb-art-paper .ptb-shot img {
+  background-color: #ffffff;
 }
 
 /* the media headings open a new run of figures and take more air than a

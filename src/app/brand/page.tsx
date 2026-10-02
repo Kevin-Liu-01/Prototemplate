@@ -85,10 +85,11 @@ const FILMS = [
   },
 ] as const;
 
-/** The partnership globes under public/media: 2048 by 2048 on ink, each with a -transparent twin; the captions set their separators as FILMS does. */
+/** The partnership globes under public/media: 2048 by 2048 on ink or on paper (`ground`), each with a -transparent twin for a ground of its own kind; the captions set their separators as FILMS does. */
 const GLOBES = [
   {
     stem: 'gt-globe-dithered',
+    ground: 'ink',
     name: 'the dithered globe',
     alt: 'A globe printed in pale blue Bayer dither on near-black, lit from the upper left, with land and sea told apart by the density of the dots',
     caption:
@@ -96,6 +97,7 @@ const GLOBES = [
   },
   {
     stem: 'gt-globe-dithered-mark',
+    ground: 'ink',
     name: 'the globe with the mark',
     alt: 'The dithered globe with the GT monogram, drawn in doubled white lines, at its center',
     caption:
@@ -103,10 +105,34 @@ const GLOBES = [
   },
   {
     stem: 'gt-globe-glyphs',
+    ground: 'ink',
     name: 'the glyph globe',
     alt: 'A globe drawn in characters from many writing systems on near-black: land in large white and pale blue glyphs, ocean in small blue glyphs',
     caption:
       'the glyph globe\u00a0· characters from twenty writing systems, land in #f2f2f0 and #86a8ff, ocean at half size in #2f5ce0',
+  },
+  {
+    stem: 'gt-globe-glyphs-light',
+    ground: 'paper',
+    name: 'the glyph globe in light',
+    alt: 'The glyph globe on white: the same characters from many writing systems, land in black, ocean in blue, the glyphs growing toward the shadowed side',
+    caption:
+      'the glyph globe in light\u00a0· the same characters on paper, land in #070707, ocean in #2f5ce0 thinning to #86a8ff in the highlight, ink carrying the shadow',
+  },
+  {
+    stem: 'gt-globe-glyphs-gt-dark',
+    ground: 'ink',
+    name: 'the glyph globe with the mark carved out',
+    alt: 'The glyph globe on near-black with the doubled-line GT monogram cut out of its center; glyphs run in rings along the outline of the mark and in rows between its two lines',
+    caption:
+      'the glyph globe with the mark carved out\u00a0· the doubled-line monogram cut from the center at half the diameter, glyphs set along its outline and in its channels, 8\u00a0px clear of every edge',
+  },
+  {
+    stem: 'gt-globe-glyphs-gt-light',
+    ground: 'paper',
+    name: 'the carved glyph globe in light',
+    alt: 'The carved glyph globe on white: the GT monogram cut out of the center, black and blue glyphs set along its outline and in its channels',
+    caption: 'the carved glyph globe in light\u00a0· the same carve on paper, in the inks of the light globe',
   },
 ] as const;
 
@@ -528,13 +554,15 @@ const PAGES: readonly BrandPage[] = [
         </div>
         <h3 id={headingId('made-with-the-system', 'partnership-globes')}>Partnership globes</h3>
         <p>
-          The three globes are square graphics for laying beside a partner&rsquo;s
-          mark, each 2048 by 2048&nbsp;px. Each one comes on ink, #070707, and as a
-          transparent twin with the same art on an alpha ground.
+          The globes are square graphics for laying beside a partner&rsquo;s mark,
+          each 2048 by 2048&nbsp;px. The dark ones come on ink, #070707, and the light
+          ones on paper, #ffffff. Each also comes as a transparent twin with the same
+          art on an alpha ground: a dark twin is for a dark ground and a light twin
+          for a light one.
         </p>
         <div className='ptb-globes'>
           {GLOBES.map((globe) => (
-            <div className='ptb-art' key={globe.stem}>
+            <div className={globe.ground === 'paper' ? 'ptb-art ptb-art-paper' : 'ptb-art'} key={globe.stem}>
               <figure className='ptb-shot'>
                 <img
                   alt={globe.alt}
@@ -546,8 +574,8 @@ const PAGES: readonly BrandPage[] = [
                 <figcaption>{globe.caption}</figcaption>
               </figure>
               <p className='pt-site-links ptb-send'>
-                <a aria-label={`PNG on ink of ${globe.name}`} download href={`/media/${globe.stem}.png`}>
-                  PNG on ink
+                <a aria-label={`PNG on ${globe.ground} of ${globe.name}`} download href={`/media/${globe.stem}.png`}>
+                  PNG on {globe.ground}
                 </a>
                 <a
                   aria-label={`transparent PNG of ${globe.name}`}
