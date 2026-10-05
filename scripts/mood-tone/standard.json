@@ -71,11 +71,11 @@
       "artistic"
     ],
     "retired": {
-      "dictionary": "The Oxford English Dictionary page: plain English prose reads as copy, not as an artifact",
-      "johnson": "Johnson's Dictionary page: plain English prose reads as copy, not as an artifact",
-      "oed-volumes": "The Oxford English Dictionary volumes: the spines are plain English titles",
-      "oxford": "Any page or volume of the Oxford English Dictionary: plain English prose reads as copy, not as an artifact",
-      "oed": "The Oxford English Dictionary by its initials: plain English prose reads as copy, not as an artifact"
+      "dictionary": "The Oxford English Dictionary page is plain English prose, which distracts as copy",
+      "johnson": "Johnson's Dictionary page is plain English prose, which distracts as copy",
+      "oed-volumes": "The Oxford English Dictionary volumes carry plain English titles on their spines",
+      "oxford": "Pages and volumes of the Oxford English Dictionary are plain English prose",
+      "oed": "OED pages, by the dictionary's initials, are plain English prose"
     }
   }
 }

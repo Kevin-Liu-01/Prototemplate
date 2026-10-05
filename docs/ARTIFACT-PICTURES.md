@@ -274,13 +274,13 @@ cut again with the new standard.
 These names never return as picture names, files or registry keys. They are
 listed in `standard.json` under `writing.retired`, and the lint rejects them.
 
-| Name          | What it was                             | Why it was retired                                    |
-| ------------- | --------------------------------------- | ----------------------------------------------------- |
-| `dictionary`  | A page of the Oxford English Dictionary | Plain English prose reads as copy, not as an artifact |
-| `johnson`     | A page of Johnson's Dictionary          | Plain English prose reads as copy, not as an artifact |
-| `oed-volumes` | The Oxford English Dictionary volumes   | The spines are plain English titles                   |
-| `oxford`      | Any page or volume of the Oxford English Dictionary | Plain English prose reads as copy, not as an artifact |
-| `oed`         | The Oxford English Dictionary by its initials | Plain English prose reads as copy, not as an artifact |
+| Name          | What it was                                         | Why it was retired                    |
+| ------------- | --------------------------------------------------- | ------------------------------------- |
+| `dictionary`  | A page of the Oxford English Dictionary             | Plain English prose distracts as copy |
+| `johnson`     | A page of Johnson's Dictionary                      | Plain English prose distracts as copy |
+| `oed-volumes` | The Oxford English Dictionary volumes               | The spines carry plain English titles |
+| `oxford`      | Any page or volume of the Oxford English Dictionary | Its pages are plain English prose     |
+| `oed`         | The Oxford English Dictionary by its initials       | Its pages are plain English prose     |
 
 Retiring the first two deleted the deck's Design system and Documentation
 mood slides on 2026-10-05; the deck went from 95 to 93 slides.

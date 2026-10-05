@@ -619,12 +619,25 @@ function lintRetired(root, standard, built, problems) {
   }
 }
 
+/**
+ * The sha256 of standard.json, shared byte for byte with gt-cloud's
+ * apps/dashboard/scripts/mood-tone/standard.json. A change to the standard
+ * edits the file and this pin in the same commit, in both repositories, so an
+ * edit to the windows or the retired names alone fails.
+ */
+export const STANDARD_SHA256 = '2cffdb2ce624b5075a02e07fb8d2011039480f2b24d901afe8aa1e0fc896668e';
+
 /** Every problem found under `root`, as `path: message` lines; [] when the pictures meet the standard. */
 export function lintPictures(root) {
   const problems = [];
   const standardPath = join(root, PATHS.standard);
   if (!existsSync(standardPath)) return [`${PATHS.standard}: missing`];
-  const standard = JSON.parse(readFileSync(standardPath, 'utf8'));
+  const standardBytes = readFileSync(standardPath);
+  const standardSha256 = sha256(standardBytes);
+  if (standardSha256 !== STANDARD_SHA256) {
+    problems.push(`${PATHS.standard}: sha256 ${standardSha256}; the lint pins ${STANDARD_SHA256}. A change to the standard updates STANDARD_SHA256 in the same commit, and gt-cloud's copy in the same round`);
+  }
+  const standard = JSON.parse(standardBytes.toString('utf8'));
   const deck = lintManifest(root, PATHS.deckGrids, standard, problems) ?? { view: {}, pictures: [] };
   const plate = lintManifest(root, PATHS.plateGrids, standard, problems) ?? { view: {}, pictures: [] };
   if (existsSync(join(root, PATHS.registry))) lintRegistry(readFileSync(join(root, PATHS.registry), 'utf8'), plate, standard, problems);
