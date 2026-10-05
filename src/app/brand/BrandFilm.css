@@ -1,0 +1,68 @@
+/* BrandFilm's own rules (BrandFilm.tsx). They travel with the component,
+   so a page that plays a film (/brand's Made with the system, the roster on
+   /motion and the head of each /motion/<slug> package) gets the button and
+   the badge without importing that page's sheet. The host sizes and frames
+   the video itself (.ptb-media on /brand, .mo-film on /motion). */
+
+/* a film before its first play: the play button covers the frame inside
+   its hairline, so the whole poster shows (BrandFilm.tsx turns the native
+   controls on at the first press) */
+.ptb-film {
+  position: relative;
+}
+
+.ptb-film-play {
+  position: absolute;
+  inset: 1px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* the badge: a paper plate on the ink poster, the same in both themes */
+.ptb-film-badge {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  background: #f2f2f0;
+  color: #070707;
+}
+
+.ptb-film-badge svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.ptb-film-play:hover .ptb-film-badge {
+  background: #ffffff;
+}
+
+.ptb-film-play:focus-visible {
+  outline: none;
+}
+
+/* the focus ring: paper, the ring on an ink plate */
+.ptb-film-play:focus-visible .ptb-film-badge {
+  outline: 1px solid #f2f2f0;
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  /* a phone's film is about 185px tall; the smaller badge keeps clear of
+     the Fuma Nama title under it and the docs title over it. The whole
+     frame is the button, so the badge's size is not the tap target's. */
+  .ptb-film-badge {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ptb-film-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+}

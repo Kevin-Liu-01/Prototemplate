@@ -19,6 +19,7 @@
     "build:marks": "node scripts/build-speed-marks.mjs",
     "build:thumbs": "node scripts/build-thumbs.mjs",
     "build:skills": "node scripts/build-skills.mjs",
+    "build:motion": "node scripts/build-motion.mjs",
     "capture:pages": "node scripts/capture-pages.mjs",
     "check:pages": "node scripts/pagecheck/pagecheck.mjs",
     "lint:all": "pnpm lint:shell && pnpm lint:practices && pnpm lint:lines:shell && pnpm lint:code && pnpm lint:pictures && pnpm test:pictures",

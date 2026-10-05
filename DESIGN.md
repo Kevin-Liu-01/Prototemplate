@@ -148,8 +148,9 @@ Where two bordered components touch, exactly one draws the line:
 The auditor enforces this from computed CSS. `pnpm lint:lines:shell` walks
 `/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`,
 `/directions/<first slug>`, `/skills`, `/skills/<first slug>`,
-`/d/production` and `/deck` (the iframe's document) at 1440, 1280 and 390
-in both themes against the dev server on port 3005, with the list toggled,
+`/motion`, `/motion/<first package>`, `/d/production` and `/deck` (the
+iframe's document) at 1440, 1280 and 390 in both themes against the dev
+server on port 3005, with the list toggled,
 the index panel open, the search open, and the grid and book modes on `/`
 and `/deck`. It
 fails on any doubled line (two owners within 4px), any junction (two owners

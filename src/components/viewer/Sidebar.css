@@ -608,6 +608,15 @@ a.pt-sb-mark:focus-visible {
   padding-left: 10px;
 }
 
+/* the rows hung under an item of a group nested under a page row (the
+   sections of a research package under its film, Knowledge > Motion):
+   the number sits under the item's icon, one indent in from the nested
+   header, so the run reads as the item's own; one further indent would
+   leave the titles too little of the 207px column */
+.pt-sb .pt-thumbs:not(.is-shots) .pt-grp.is-under-row > .pt-sub .pt-row {
+  padding-left: 82px;
+}
+
 /* ================================================================
    The grid's list (ThumbList): labels and captured frames. GridView.css
    lays the list out as a grid and sizes the number column.

@@ -3,6 +3,8 @@
 import { useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import './BrandFilm.css';
+
 type BrandFilmProps = {
   /** the film under public/media, as a root path */
   src: string;

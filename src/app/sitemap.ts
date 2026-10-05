@@ -4,6 +4,7 @@ import { DOCS } from '@/app/docs/registry';
 import { ARCHIVE } from '@/lib/archive';
 import { DIRECTION_PAGE_SLUGS, DIRECTIONS } from '@/lib/directions';
 import { getPosts } from '@/lib/blog';
+import { MOTION_PACKAGE_SLUGS } from '@/lib/motion';
 import { SKILLS, skillHref } from '@/lib/skills';
 
 const SITE_URL = 'https://prototemplate.vercel.app';
@@ -12,10 +13,11 @@ const SITE_URL = 'https://prototemplate.vercel.app';
  * Every route on the site, derived from the registries the pages render
  * from so the sitemap tracks the lineup: the gallery, the presenter, the
  * deck, the brand book, the documents, the skills index and each skill's
- * page, the mark explorations, the compare rig, each direction's own page
- * and its prototype with each site concept's enterprise page, and the
- * archive of retired versions. /craft is a redirect to /docs and is not
- * listed.
+ * page, the mark explorations, the blog and its posts, the graphics, the
+ * motion roster and each research package of the translation series, the
+ * compare rig, each direction's own page and its prototype with each site
+ * concept's enterprise page, and the archive of retired versions. /craft
+ * is a redirect to /docs and is not listed.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
@@ -30,7 +32,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/marks`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/blog`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/graphics`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/motion`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
   ];
+
+  for (const slug of MOTION_PACKAGE_SLUGS) {
+    entries.push({
+      url: `${SITE_URL}/motion/${slug}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    });
+  }
 
   for (const post of getPosts()) {
     entries.push({

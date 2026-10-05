@@ -62,7 +62,15 @@ export function headingId(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-function renderInline(text: string, keyBase: string): ReactNode[] {
+/**
+ * How a caller renders the plain text between the inline tokens. The
+ * default is gtText; the /motion packages pass a hook that also sets
+ * single-star emphasis and gives each run of another script its lang and
+ * dir (src/app/motion/lang-text.tsx). Code spans and hrefs never reach it.
+ */
+export type RenderOptions = { text?: (text: string, key: string) => ReactNode };
+
+export function renderInline(text: string, keyBase: string, opts?: RenderOptions): ReactNode[] {
   const out: ReactNode[] = [];
   const parts = text.split(INLINE);
   parts.forEach((part, i) => {
@@ -73,7 +81,7 @@ function renderInline(text: string, keyBase: string): ReactNode[] {
       return;
     }
     if (part.startsWith('**') && part.endsWith('**')) {
-      out.push(<strong key={key}>{renderInline(part.slice(2, -2), key)}</strong>);
+      out.push(<strong key={key}>{renderInline(part.slice(2, -2), key, opts)}</strong>);
       return;
     }
     const link = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(part);
@@ -84,7 +92,7 @@ function renderInline(text: string, keyBase: string): ReactNode[] {
       if (href.startsWith('/docs') || href.startsWith('#')) {
         out.push(
           <a href={href} key={key}>
-            {renderInline(link[1], key)}
+            {renderInline(link[1], key, opts)}
           </a>
         );
         return;
@@ -92,19 +100,19 @@ function renderInline(text: string, keyBase: string): ReactNode[] {
       out.push(
         href.startsWith('/') ? (
           <Link href={href} key={key}>
-            {renderInline(link[1], key)}
+            {renderInline(link[1], key, opts)}
           </Link>
         ) : (
           <a href={href} key={key} rel='noreferrer' target='_blank'>
-            {renderInline(link[1], key)}
+            {renderInline(link[1], key, opts)}
           </a>
         )
       );
       return;
     }
     /* plain text: the standalone word GT becomes the mark; a run with none
-       comes back as the string it was */
-    out.push(gtText(part, key));
+       comes back as the string it was. A caller's hook replaces this. */
+    out.push(opts?.text ? opts.text(part, key) : gtText(part, key));
   });
   return out;
 }
@@ -119,7 +127,8 @@ export type Block =
   | HeadingBlock
   | { kind: 'p'; text: string }
   | { kind: 'ul'; items: string[] }
-  | { kind: 'ol'; items: string[] }
+  /** `start`: the number of the first item, when it is not 1. parseBlocks never sets it; a caller that splits one numbered run into several lists does (the /motion fact-check groups) */
+  | { kind: 'ol'; items: string[]; start?: number }
   | { kind: 'code'; lines: string[] }
   | { kind: 'table'; header: string[]; rows: string[][] }
   | { kind: 'hr' };
@@ -287,33 +296,43 @@ function Heading({ block, children }: { block: HeadingBlock; children: ReactNode
   return <h3 id={block.id}>{children}</h3>;
 }
 
-/** Blocks to elements, keyed under keyBase so several renders can share a parent. */
-export function renderBlocks(blocks: readonly Block[], keyBase = 'b'): ReactNode[] {
+/**
+ * Blocks to elements, keyed under keyBase so several renders can share a
+ * parent. `opts` reaches every inline render (RenderOptions); without it
+ * the output is the docs' own.
+ */
+export function renderBlocks(blocks: readonly Block[], keyBase = 'b', opts?: RenderOptions): ReactNode[] {
   return blocks.map((block, i) => {
     const key = `${keyBase}-${i}`;
     switch (block.kind) {
       case 'heading':
         return (
           <Heading block={block} key={key}>
-            {renderInline(block.text, key)}
+            {renderInline(block.text, key, opts)}
           </Heading>
         );
       case 'p':
-        return <p key={key}>{renderInline(block.text, key)}</p>;
+        return <p key={key}>{renderInline(block.text, key, opts)}</p>;
       case 'ul':
         return (
           <ul className='ptd-list' key={key}>
             {block.items.map((item, j) => (
-              <li key={`${key}-${j}`}>{renderInline(item, `${key}-${j}`)}</li>
+              <li key={`${key}-${j}`}>{renderInline(item, `${key}-${j}`, opts)}</li>
             ))}
           </ul>
         );
       case 'ol':
+        /* the CSS counter starts one below a given start, so the rows read on from the list before */
         return (
-          <ol className='ptd-list is-ordered' key={key}>
+          <ol
+            className='ptd-list is-ordered'
+            key={key}
+            start={block.start}
+            style={block.start ? { counterReset: `ptd-item ${block.start - 1}` } : undefined}
+          >
             {block.items.map((item, j) => (
               <li key={`${key}-${j}`}>
-                <span>{renderInline(item, `${key}-${j}`)}</span>
+                <span>{renderInline(item, `${key}-${j}`, opts)}</span>
               </li>
             ))}
           </ol>
@@ -331,7 +350,7 @@ export function renderBlocks(blocks: readonly Block[], keyBase = 'b'): ReactNode
               <thead>
                 <tr>
                   {block.header.map((cell, j) => (
-                    <th key={`${key}-h${j}`}>{renderInline(cell, `${key}-h${j}`)}</th>
+                    <th key={`${key}-h${j}`}>{renderInline(cell, `${key}-h${j}`, opts)}</th>
                   ))}
                 </tr>
               </thead>
@@ -339,7 +358,7 @@ export function renderBlocks(blocks: readonly Block[], keyBase = 'b'): ReactNode
                 {block.rows.map((row, r) => (
                   <tr key={`${key}-r${r}`}>
                     {row.map((cell, c) => (
-                      <td key={`${key}-r${r}c${c}`}>{renderInline(cell, `${key}-r${r}c${c}`)}</td>
+                      <td key={`${key}-r${r}c${c}`}>{renderInline(cell, `${key}-r${r}c${c}`, opts)}</td>
                     ))}
                   </tr>
                 ))}

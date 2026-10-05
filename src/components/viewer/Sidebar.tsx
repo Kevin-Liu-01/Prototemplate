@@ -89,6 +89,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   compare: 'compare',
   skills: 'sparkles',
   marks: 'swatch',
+  motion: 'film',
 };
 
 /* the sites, on their color tokens */
@@ -117,6 +118,8 @@ const SECTION_ICON: Readonly<Partial<Record<string, IconName>>> = {
   'brand-book': 'swatch',
   explorations: 'sparkles',
   archive: 'archive',
+  'motion-films': 'film',
+  'motion-series': 'film',
 };
 
 /** Which site a direction slug belongs to; a page under it (`singularity-dossier-enterprise`) belongs to the same one. */

@@ -18,9 +18,9 @@
 //             from 768 up (none here today; the fields exist for a page
 //             that only has one form)
 //
-// First slugs (the first doc, skill, post, archived version and
-// exploration) are read from the registries in src/lib and src/app with a
-// regex over the source, through scripts/site-pages.mjs, the way
+// First slugs (the first doc, skill, post, research package, archived
+// version and exploration) are read from the registries in src/lib and
+// src/app with a regex over the source, through scripts/site-pages.mjs, the way
 // scripts/lint-lines.mjs reads them: the list follows the data without a
 // TypeScript loader. The archived directions under src/app/d other than
 // production are not maintained and are not walked.
@@ -68,6 +68,7 @@ function newestPostSlug() {
 export function pages() {
   const doc = firstSlug('src/app/docs/registry.ts', /slug: '([^']+)'/, 'export const DOCS');
   const skill = firstSlug('src/lib/skills.ts', /id: '([^']+)'/, 'export const SKILLS');
+  const pkg = firstSlug('src/lib/motion.ts', /'([^']+)'/, 'export const MOTION_PACKAGE_SLUGS');
   const archive = firstSlug('src/lib/archive.ts', /entry\('([^']+)'/);
   const exploration = firstExplorationSlug();
   const post = newestPostSlug();
@@ -84,6 +85,8 @@ export function pages() {
     { id: 'skills', path: '/skills', source: ['src/app/skills'] },
     { id: `skills-${skill}`, path: `/skills/${skill}`, source: ['src/app/skills'] },
     { id: 'graphics', path: '/graphics', source: ['src/app/graphics'] },
+    { id: 'motion', path: '/motion', source: ['src/app/motion'] },
+    { id: `motion-${pkg}`, path: `/motion/${pkg}`, source: ['src/app/motion'] },
     { id: 'blog', path: '/blog', source: ['src/app/blog', 'src/components/blog', 'content/blog'] },
     { id: `blog-${post}`, path: `/blog/${post}`, source: ['src/app/blog', 'src/components/blog', 'content/blog'] },
     { id: `archive-${archive}`, path: `/archive/${archive}`, source: ['src/app/archive', 'src/app/*'] },

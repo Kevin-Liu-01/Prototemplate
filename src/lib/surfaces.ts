@@ -39,7 +39,9 @@ import type { ShellShot } from '@/lib/shell-data';
  * Knowledge holds what the site keeps as the General Translation knowledge
  * base: the brand book (/deck), the brand directives (/brand), the
  * repository documents (/docs), the agent skills (/skills), the mark
- * explorations (/marks) and the archive of retired versions. Shipped
+ * explorations (/marks), the blog, the graphics, the motion roster with
+ * the translation series' research packages (/motion) and the archive of
+ * retired versions. Shipped
  * (directive 8.10) holds the direction that shipped and its pages:
  * /d/production and the pages Kevin built under src/app/d/production, then
  * the pages of the live site as external rows (the sidebar folds those
@@ -143,7 +145,8 @@ const PAGES: readonly Surface[] = [
  * first folds, shot by scripts/capture-pages.mjs under their ids (the plate
  * with the initial stands in until the cuts exist); the archive row opens
  * the first retired version, since the archive has no index page of its
- * own. The sidebar hangs the skill categories under the Skills row.
+ * own. The sidebar hangs the skill categories under the Skills row, the
+ * graphics' areas under Graphics and the films under Motion.
  */
 const KNOWLEDGE: readonly Surface[] = [
   internal(
@@ -174,6 +177,13 @@ const KNOWLEDGE: readonly Surface[] = [
     'Graphics',
     '/graphics',
     'Every illustration of the series by area, with what it shows and the glyphfield export it sits on.',
+    'Knowledge'
+  ),
+  internal(
+    'motion',
+    'Motion',
+    '/motion',
+    'Every film on the motion roster with its status, and the research packages of the translation series.',
     'Knowledge'
   ),
   internal(

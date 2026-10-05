@@ -37,8 +37,9 @@
 //   node scripts/lint-lines.mjs --shell [--base http://localhost:3005]
 //     [--only /docs] [--width 1440] [--theme dark] [--jobs 3] [--report] [--json]
 //   Walks /, /docs, /brand, /compare, /archive/<first slug>,
-//   /directions/<first slug>, /skills, /skills/<first slug>, /d/production
-//   and /deck (the iframe's document) at 1440, 1280 and 390 in both themes
+//   /directions/<first slug>, /skills, /skills/<first slug>, /motion,
+//   /motion/<first package>, /d/production and /deck (the iframe's
+//   document) at 1440, 1280 and 390 in both themes
 //   against the dev server, and on each page audits the resting state, the
 //   list toggled ([), the index panel (R), the search (Cmd K), and on / and
 //   /deck the grid (G) and the book (B). Chrome is every element under a
@@ -703,7 +704,8 @@ async function runPageMode() {
  * list follows the data: the archive's first `entry('<slug>'`, the first
  * `slug: '<slug>'` of src/lib/directions.ts (the first exploration), the
  * first `id: '<slug>'` after the SKILLS array opens in the generated
- * src/lib/skills.ts (the categories above it carry ids of their own).
+ * src/lib/skills.ts (the categories above it carry ids of their own), the
+ * first package slug in the generated src/lib/motion.ts.
  */
 function firstSlug(file, pattern, from) {
   let text = readFileSync(join(ROOT, file), 'utf8');
@@ -727,12 +729,14 @@ function firstSlug(file, pattern, from) {
  * The routes directive 8.9 names, and the states each is driven through:
  * the gallery, the docs, the brand book, the compare rig, the first archived
  * version, the first exploration's page under /directions, the skills index
- * and the first skill's page, the shipped direction's corner, and the deck.
+ * and the first skill's page, the motion roster and the first research
+ * package, the shipped direction's corner, and the deck.
  */
 function shellRoutes() {
   const archive = firstSlug('src/lib/archive.ts', /entry\('([^']+)'/);
   const direction = firstSlug('src/lib/directions.ts', /slug: '([^']+)'/);
   const skill = firstSlug('src/lib/skills.ts', /id: '([^']+)'/, 'export const SKILLS');
+  const pkg = firstSlug('src/lib/motion.ts', /'([^']+)'/, 'export const MOTION_PACKAGE_SLUGS');
   return [
     { path: '/', states: ['list', 'index', 'search', 'grid', 'book'] },
     { path: '/docs', states: ['list', 'index', 'search'] },
@@ -742,6 +746,8 @@ function shellRoutes() {
     { path: `/directions/${direction}`, states: ['list', 'index', 'search'] },
     { path: '/skills', states: ['list', 'index', 'search'] },
     { path: `/skills/${skill}`, states: ['list', 'index', 'search'] },
+    { path: '/motion', states: ['list', 'index', 'search'] },
+    { path: `/motion/${pkg}`, states: ['list', 'index', 'search'] },
     { path: '/d/production', states: ['list', 'index'], corner: true },
     { path: '/deck', states: ['list', 'index', 'grid', 'book'], deck: true },
   ];

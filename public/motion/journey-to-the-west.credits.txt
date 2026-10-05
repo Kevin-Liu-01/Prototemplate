@@ -1,0 +1,35 @@
+Journey to the West 西遊記 (motion/films/journey-to-the-west), 100 s, 1920 x 1080.
+Ship this text with the film wherever it is published (the description field
+of the post or the video page). Each picture's credit is also on screen while
+the picture is shown.
+
+Images
+
+- 新刻出像官板大字西遊記, Shidetang 世德堂, Jinling (Nanjing), preface dated
+  壬辰, read as 1592: chapter 1 title column and naming passage, the contents,
+  Chen Yuanzhi's preface, the chapter 4 woodcut and text. National Central
+  Library (Taiwan) scan, call no. 08616, vol. 1, via Wikimedia Commons:
+  https://commons.wikimedia.org/wiki/File:NCL-08616_01_新刻出像官板大字西遊記.pdf
+  Public domain (a mechanical scan of a public domain original).
+- 天啓淮安府志, juan 19, printed 1626. National Library of China scan, via
+  Wikimedia Commons:
+  https://commons.wikimedia.org/wiki/File:NLC892-0618-208676_天啓淮安府志_第7冊.pdf
+  Public domain. The library's watermark is kept.
+- Hu Shih 胡適, Washington, September 1939. Photograph: Harris & Ewing,
+  Library of Congress (LCCN 2016876181). No known restrictions on publication.
+- Plates from Timothy Richard, A Mission to Heaven, Shanghai, 1913, after an
+  unnamed Chinese illustrated edition. Cornell University Library, via
+  Internet Archive (https://archive.org/details/cu31924074502034). No known
+  copyright restrictions in the United States.
+
+Books named on screen only as names, titles and short renderings set in the
+film's own type (all in copyright; no page, jacket or layout is shown):
+Arthur Waley, Monkey (London: George Allen & Unwin, 1942); Hu Shih's
+introduction to the American edition (New York: John Day, 1943), not quoted;
+Anthony C. Yu, The Journey to the West (1977 to 1983); W. J. F. Jenner,
+Journey to the West (Foreign Languages Press, from 1982); Julia Lovell,
+Monkey King: Journey to the West (Penguin, 2021).
+
+Type: Noto Serif CJK TC (Adobe) and Old Standard TT, SIL Open Font License 1.1.
+Voices: ElevenLabs (Clara, narrator; Yun, Mandarin reader). Music: ElevenLabs
+Music API. Effects: made from seeded noise with ffmpeg.

@@ -1,5 +1,6 @@
 import type { IconName } from '@/components/viewer/icons';
 import { DOCS } from '@/app/docs/registry';
+import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
 import { SKILL_GROUPS, skillHref } from '@/lib/skills';
 import { SITE_SURFACES } from '@/lib/surfaces';
 import type { Surface, SurfaceGroup } from '@/lib/surfaces';
@@ -9,7 +10,8 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * as one flat list the palette filters client-side. Restored from the
  * palette at 430e3c7 and rebuilt on the shell's registries so the rows
  * carry the same ids as the index panel and the sidebar: pages, the skill
- * pages, documents and their headings, the sites and explorations (each
+ * pages, the films on the motion roster with the sections of each research
+ * package, documents and their headings, the sites and explorations (each
  * opening its page under /directions), the archived versions, the brand
  * sections, the library anchors, and the 93 deck slides, each linking to
  * /deck#n. Pure data, no React, no DOM.
@@ -30,8 +32,8 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  */
 export type SearchSite = 'dossier' | 'orbit' | 'signal' | 'shipped';
 
-/** The site map groups from surfaces.ts plus the three groups only the search has. */
-export type SearchGroup = SurfaceGroup | 'Skills' | 'Headings' | 'Deck slides';
+/** The site map groups from surfaces.ts plus the four groups only the search has. */
+export type SearchGroup = SurfaceGroup | 'Skills' | 'Motion' | 'Headings' | 'Deck slides';
 
 export type SearchEntry = {
   /** unique across the index */
@@ -61,6 +63,7 @@ const GROUP_ORDER: readonly string[] = [
   'Pages',
   'Knowledge',
   'Skills',
+  'Motion',
   'Shipped',
   'Documents',
   'Headings',
@@ -102,6 +105,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   marks: 'swatch',
   blog: 'document',
   graphics: 'gallery',
+  motion: 'film',
   archive: 'archive',
 };
 
@@ -116,6 +120,8 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   skills: 'agent skills SKILL.md engineering productivity general translation graphics',
   blog: 'posts articles docs redesign rewriting fuma nama designing docs for humans carousel',
   graphics: 'illustrations visuals covers carousel slides glyphfield exports pipeline manifest',
+  motion:
+    'films videos hyperframes roster trailers translation series jihe yuanben euclid ricci journey to the west monkey waley hebrew ben-yehuda',
   marks: 'logo mark monogram wordmark lockup GT speed race bars cut plate livery ascii dither',
   archive: 'retired versions captures history',
 };
@@ -189,6 +195,55 @@ const SKILL_ROWS: readonly SearchEntry[] = SKILL_GROUPS.flatMap((group) =>
       icon: 'sparkles',
       keywords: `skill SKILL.md agent ${group.label}`,
       surface: 'skills',
+    })
+  )
+);
+
+/** The film's text without its inline markup. */
+function plainMarkdown(text: string): string {
+  return text.replace(/`([^`]+)`/g, '$1').replace(/\*/g, '');
+}
+
+/**
+ * One row per film on the motion roster (the generated src/lib/motion.ts),
+ * in page order: a series film opens its package page, every other film
+ * its row on /motion. The meta line names the section and the status; the
+ * keywords carry the length and, for a series film, its series line and
+ * section titles. All preview the Motion row.
+ */
+const MOTION_ROWS: readonly SearchEntry[] = MOTION_FILMS.map(
+  (film): SearchEntry => ({
+    id: `motion-${film.slug}`,
+    title: film.title,
+    href: motionHref(film),
+    group: 'Motion',
+    meta: `Motion / ${MOTION_SECTIONS.find((section) => section.id === film.section)?.label ?? 'Films'} / ${MOTION_STATUS_LABEL[film.status]}`,
+    icon: 'film',
+    keywords: [
+      'film video motion',
+      film.slug,
+      film.length,
+      film.pkg ? plainMarkdown(film.pkg.series) : '',
+      film.pkg ? film.pkg.sections.map((section) => section.title).join(' ') : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+    surface: 'motion',
+  })
+);
+
+/** The five sections of each research package, as heading rows that land on the section. */
+const MOTION_HEADINGS: readonly SearchEntry[] = MOTION_FILMS.flatMap((film) =>
+  (film.pkg?.sections ?? []).map(
+    (section): SearchEntry => ({
+      id: `heading-motion-${film.slug}-${section.id}`,
+      title: section.title,
+      href: `/motion/${film.slug}#${section.id}`,
+      group: 'Headings',
+      meta: `In ${film.title}`,
+      icon: 'film',
+      keywords: `${film.slug} research package section ${section.note}`,
+      surface: 'motion',
     })
   )
 );
@@ -404,11 +459,13 @@ function hayOf(entry: SearchEntry): string {
   return `${entry.title} ${entry.meta} ${entry.keywords ?? ''} ${entry.href} ${entry.group}`.toLowerCase();
 }
 
-/** Every site map row, then the skill pages, the headings and the slides, each with its haystack built: the panel groups and orders them. */
+/** Every site map row, then the skill pages, the films, the headings and the slides, each with its haystack built: the panel groups and orders them. */
 export const SEARCH_INDEX: readonly SearchEntry[] = [
   ...SITE_SURFACES.map(fromSurface),
   ...SKILL_ROWS,
+  ...MOTION_ROWS,
   ...HEADINGS,
+  ...MOTION_HEADINGS,
   ...SLIDES,
 ].map((entry) => ({ ...entry, hay: hayOf(entry) }));
 

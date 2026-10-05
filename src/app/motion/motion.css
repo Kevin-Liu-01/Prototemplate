@@ -1,0 +1,180 @@
+/* Motion: the film roster and the research packages on the viewer shell.
+
+   The roster (/motion) reuses the graphics book's row grammar (gx-, from
+   src/app/graphics/graphics.css) and a package page (/motion/<slug>) the
+   docs' prose grammar (ptd-, from src/app/docs/docs.css); this sheet holds
+   only what the two pages add, under the mo- prefix. Every value reads the
+   shell's --pt- tokens. Nothing here draws a line beside one that already
+   exists: the gx and ptd dividers own the section rules, BookHead owns the
+   head rule, the contents rows draw --pt-hair-soft, and the tables keep the
+   docs' th and td rules. The one frame added is the film's, in the frame
+   role (--pt-edge) every picture in the shell takes. */
+
+/* ---------- the roster ---------- */
+
+/* the film: BrandFilm (src/app/brand/BrandFilm.tsx) brings its play button
+   and badge; the video takes its size and frame here. The border sits on the
+   video, as on /brand, so the button's 1px inset fits inside it */
+.mo-film {
+  margin: 14px 0 0;
+}
+
+.mo-film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--pt-edge);
+  background: var(--pt-panel-ink);
+  background-clip: padding-box;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.gx-row.is-active .mo-film video {
+  border-color: var(--pt-ink);
+}
+
+/* the link to a package, in the reading size under the summary */
+.gx-body > p.mo-links {
+  margin-top: 10px;
+}
+
+.mo-links a {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.mo-links a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* the meta line: the status word in ink once the film is rendered; a
+   local path breaks rather than widen the column */
+.mo-status.is-rendered {
+  color: var(--pt-ink);
+}
+
+.gx-line code {
+  font-family: var(--pt-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- a package ---------- */
+
+/* the film at the head of the sheet: the roster's player and frame (.mo-film
+   above), first in the lead row, so it takes no air above it; the book's
+   32px gap already parts it from the head's rule */
+.mo-book .mo-head-film {
+  margin-top: 0;
+}
+
+/* the download link under the film: the docs' link at the caption size, in
+   the seat /brand gives the send line under each blog film */
+.mo-book .ptd-body p.mo-send {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mo-sec {
+  scroll-margin-top: 20px;
+}
+
+/* the film's credits under the status line: the Videos session's file word
+   for word, at the caption size so the package stays the page's reading */
+.mo-book .mo-credits {
+  margin-top: 24px;
+}
+
+.mo-book .ptd-body .mo-credits p,
+.mo-book .ptd-body .mo-credits li {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* the script's times stay on one line */
+.mo-script .ptd-table td:first-child {
+  white-space: nowrap;
+}
+
+/* the packages' tables run wider than the docs' 860px measure; the wide
+   ones (the script and the vocabulary) keep a minimum width and scroll
+   inside their wrap, so the page never scrolls sideways */
+.mo-book .ptd-table-wrap {
+  max-width: none;
+}
+
+.mo-wide .ptd-table {
+  min-width: 880px;
+}
+
+.mo-book .ptd-table td a,
+.mo-book .ptd-list a {
+  overflow-wrap: anywhere;
+}
+
+.mo-book [dir] {
+  unicode-bidi: isolate;
+}
+
+/* faces for the scripts Inter lacks, after Inter so Latin keeps the house
+   face. This is CSS, which the inter-only lint does not read; the stacks
+   name system faces only and load nothing. var(--font-inter) ends in
+   next/font's fallback face, local Arial with Inter's line metrics. Arial
+   has Hebrew with the points (niqqud), so Hebrew renders in it and its
+   lines keep the paragraph's leading (Arial Hebrew first adds 1 to 2px to
+   each line that holds Hebrew); the Hebrew faces after it serve a system
+   without Arial. Arial has no Han glyphs, so Han falls through to PingFang
+   or Hiragino. */
+.mo-book :lang(zh-Hant) {
+  font-family: var(--font-inter), 'Inter', 'PingFang TC', 'Hiragino Sans CNS', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+}
+
+.mo-book :lang(zh-Hans) {
+  font-family: var(--font-inter), 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+
+.mo-book :lang(ja) {
+  font-family: var(--font-inter), 'Inter', 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+}
+
+.mo-book :lang(he) {
+  font-family: var(--font-inter), 'Arial Hebrew', 'Noto Sans Hebrew', 'Times New Roman', Arial, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mo-film video {
+    transition: none;
+  }
+}
+
+/* the toolbar's raw package link: a tool button that is a link */
+.mo-raw {
+  text-decoration: none;
+}
+
+/* ---------- narrow ---------- */
+
+/* the contents links are tap targets on a phone: a 44px row each, the type unchanged */
+@media (max-width: 900px) {
+  .mo-book .gx-toc a,
+  .mo-book .ptd-toc a {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  /* the download link is a tap target too: a 44px row, the type unchanged;
+     the row's own air replaces the line's top margin */
+  .mo-book .ptd-body p.mo-send {
+    margin-top: 0;
+  }
+
+  .mo-send a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
