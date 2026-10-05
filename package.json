@@ -21,7 +21,7 @@
     "build:skills": "node scripts/build-skills.mjs",
     "capture:pages": "node scripts/capture-pages.mjs",
     "check:pages": "node scripts/pagecheck/pagecheck.mjs",
-    "lint:all": "pnpm lint:shell && pnpm lint:practices && pnpm lint:lines:shell && pnpm lint:code && pnpm lint:pictures",
+    "lint:all": "pnpm lint:shell && pnpm lint:practices && pnpm lint:lines:shell && pnpm lint:code && pnpm lint:pictures && pnpm test:pictures",
     "graphics:serve": "node graphics/serve/server.js graphics",
     "graphics:gen": "node graphics/build/gen-visuals.js",
     "graphics:render": "graphics/build/render.sh",

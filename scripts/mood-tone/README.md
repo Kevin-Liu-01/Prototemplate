@@ -6,13 +6,13 @@ manifests are committed. The sources are not.
 
 | Set               | Grids                                                  | Shown by                                                    |
 | ----------------- | ------------------------------------------------------ | ----------------------------------------------------------- |
-| `deck` (default)  | `deck/shots/tone/mood-*.jpg`, 10 covers at 1600 by 900 | the brand deck's mood slides, and two of them on `/craft`   |
+| `deck` (default)  | `deck/shots/tone/mood-*.jpg`, 10 covers at 1600 by 900 | the brand deck's mood slides, and two of them in the transition demo on /docs (`src/app/craft`) |
 | `plate`           | `public/brand/mood/mood-*.jpg`, 4 covers and 1 disc    | the plate port's field (`src/components/plate`)             |
 
 The rules for artifact pictures are in `docs/ARTIFACT-PICTURES.md`.
 `scripts/lint-pictures.mjs` holds the grids, the manifests, the registry, the
 deck slides and the screen constants to them. It runs before `next build` and
-in `pnpm lint:all`.
+in `pnpm lint:all`, which also runs its tests (`pnpm test:pictures`).
 
 Requires Node 20 or later and Python 3 with Pillow (`python3 -m pip install Pillow`).
 
@@ -51,9 +51,11 @@ checks each source's sha256 before it cuts and refuses a source that differs.
 A new or replaced source needs its row here and its entry in `SOURCES` in
 `mood-tone.mjs`.
 
-The credits shown with the pictures are on each deck slide's plate and in
-`src/components/plate/brand/moodPictures.ts`. `deck/shots/OPENERS.md` records
-each deck picture's subject, license and crop.
+The credits shown with the pictures are on each deck slide's plate, in
+`src/components/plate/brand/moodPictures.ts`, and in the credit line under
+the transition demo on /docs (`src/app/craft/CraftArticle.tsx`).
+`deck/shots/OPENERS.md` records each deck picture's subject, license and
+crop.
 
 ## Invocation
 

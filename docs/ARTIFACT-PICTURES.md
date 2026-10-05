@@ -8,7 +8,7 @@ places:
 | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
 | The plate port's field (`src/components/plate`) | earth, rosetta, calligraphy, tablet, gloss                                           |
 | The brand deck's mood slides (`deck/`)    | earth, rosetta, tablet, calligraphy, lighthouse, devanagari, gloss, cable, wave, compass   |
-| The /craft transition demo                | earth and rosetta, the deck's grids                                                        |
+| The transition demo on /docs (`src/app/craft`) | earth and rosetta, the deck's grids                                                 |
 
 On the plate port, the onboarding steps show earth, rosetta, calligraphy and
 tablet, the OAuth consent states show rosetta, the device flow shows
@@ -34,7 +34,8 @@ The same standard covers gt-cloud's dashboard sign-in and onboarding field
 | `deck/shots/tone/manifest.json`               | One entry per deck grid, written by the wrapper                 |
 | `public/brand/mood/mood-{name}.jpg`           | The plate's tone grids, the same bytes as gt-cloud's            |
 | `public/brand/mood/manifest.json`             | One entry per plate grid, written by the wrapper                |
-| `public/craft/mood-{earth,rosetta}.jpg`       | Byte copies of the deck's earth and rosetta grids for /craft    |
+| `public/craft/mood-{earth,rosetta}.jpg`       | Byte copies of the deck's earth and rosetta grids for the transition demo on /docs |
+| `src/app/craft/CraftArticle.tsx`              | The text around the transition demo, with the demo's credit line |
 | `src/components/plate/brand/moodPictures.ts`  | The plate registry: src, placement and caption per picture      |
 | `deck/slides/NN-mood-{name}.html`             | The deck's mood slides, one canvas per grid, with the credit    |
 | `deck/parts/tail.html`                        | The deck engine that screens the grids                          |
@@ -65,8 +66,12 @@ declaration against this rule. Plain English prose never qualifies.
 - Cut from the original scan or photograph. Never cut from a screened,
   two-tone or resized copy.
 - The license is public domain or Creative Commons.
-- The credit is shown with the picture: on the deck slide's plate, and in the
-  picture's caption in `moodPictures.ts`, which the plate port's field shows.
+- The credit is shown with the picture: on the deck slide's plate, in the
+  picture's caption in `moodPictures.ts`, which the plate port's field shows,
+  and in the credit line under the transition demo on /docs
+  (`CraftArticle.tsx`). The demo's line carries the deck slide's credit for
+  each picture the demo shows, without the label ("Image:", "Photograph:").
+  The lint checks the deck slides and the demo's line.
 - Sources are never committed. Each person keeps a sources directory and
   passes it to the wrapper. `scripts/mood-tone/README.md` lists each file's
   name, origin, pixel size and sha256, and the wrapper refuses a source whose
@@ -124,7 +129,7 @@ Where each surface states these:
 | ---------- | -------------------------------------- | --------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------- |
 | Plate port | `PICTURE_SCALE` in `FieldStack.tsx`    | `TONE_FLOOR` in `lib/picture-field.ts`  | `BAYER_8` in `lib/dither.ts`           | `--tc-picture-ink`, `--field-picture-opacity` in `plate.css`                    |
 | Deck       | `MOOD_CELL_PX` in `deck/parts/tail.html` | `MOOD_TONE_FLOOR` in `tail.html`      | `bayer8` in `tail.html`                | `--mood-ink`, `--mood-opacity` in `deck/parts/head.html`                        |
-| /craft     | `CELL` in `TransitionDemo.tsx`         | `TONE_FLOOR` in `TransitionDemo.tsx`    | `BAYER_8` in `src/lib/dither.ts`       | `--ptc-picture-ink`, `--ptc-picture-opacity` in `craft.css`, the dark values, because the plate is dark in both themes |
+| /docs demo | `CELL` in `TransitionDemo.tsx`         | `TONE_FLOOR` in `TransitionDemo.tsx`    | `BAYER_8` in `src/lib/dither.ts`       | `--ptc-picture-ink`, `--ptc-picture-opacity` in `craft.css`, the dark values, because the plate is dark in both themes |
 
 The deck engine sizes each mood canvas's backing store to its box on screen
 (`getBoundingClientRect`, because the stage is CSS-scaled), so a cell is 1
@@ -159,11 +164,14 @@ picture. The wrapper writes those entries to `manifest.json` and prints each
 picture's levels and stats. With `--preview`, the cutter also saves the 1 px
 screen of each grid at the view size as `preview-{name}.png`.
 
-The cutter is deterministic. A run on the same sources writes the same bytes,
-so a grid's `sha256` in the manifest proves it came from its recipe.
-`--check` cuts into a temporary folder and fails unless every grid and the
-manifest equal the committed files byte for byte. Never edit a grid or a
-manifest by hand.
+The cutter is deterministic: a run on the same sources writes the same
+bytes. A grid's `sha256` ties the file to its manifest entry, and the lint
+checks that. It does not show that the entry came from the recipe: an entry
+edited by hand next to an untouched grid passes the lint. Only `--check`,
+run with the sources, proves that. It cuts into a temporary folder and fails
+unless every grid and the manifest equal the committed files byte for byte.
+The lint cannot run it, because the sources are not committed. Never edit a
+grid or a manifest by hand.
 
 A recipe holds only: `name`, `source`, the size and cap from `standard.json`,
 `crop`, `channel`, `invert`, `kind`, `writing` and `placement`. It holds no
@@ -212,8 +220,8 @@ another picture.
 
 `scripts/lint-pictures.mjs` runs before `next build` (`pnpm build`), in
 `pnpm lint:all`, and on its own with `pnpm lint:pictures`. Its tests are in
-`scripts/lint-pictures.test.mjs`; run them with `pnpm test:pictures`. It
-fails when:
+`scripts/lint-pictures.test.mjs`. `pnpm lint:all` runs them after the lint,
+and `pnpm test:pictures` runs them alone. It fails when:
 
 - a grid file has no manifest entry, or an entry has no grid file;
 - a grid's sha256 or byte count differs from its entry;
@@ -223,8 +231,11 @@ fails when:
   picture has no slide, a slide shows a bitmap, a pre-screened `mood-*` file
   sits in `deck/shots`, or `public/brand-deck.html` inlines grids other than
   the manifest's (run `pnpm build:deck`);
-- the /craft grids are not byte copies of the deck's, or its disc differs
-  from the deck earth's fitted disc;
+- a deck mood slide's plate has no `<div class="credit">`, or the text
+  around the transition demo on /docs does not carry the deck credit of each
+  picture the demo shows;
+- the transition demo's grids are not byte copies of the deck's, or its disc
+  differs from the deck earth's fitted disc;
 - an entry's blur, gamma, autocontrast cutoff or quality is off the standard;
 - a grid's size is off its placement's size, or its bytes are over the cap;
 - an entry's region stats are outside its kind's window;
@@ -234,9 +245,23 @@ fails when:
   `mood-{name}` token under `deck/`, `src/` or the built deck, or a string
   literal in the picture code;
 - the screen constants differ from the standard on any of the three
-  surfaces: the 1 CSS px cell, the loop at gamma 1 and bias 0, tone floor
-  10, the Bayer matrix and threshold, and the picture ink and opacity per
-  theme.
+  surfaces, or in the built deck: the 1 CSS px cell, the loop at gamma 1
+  and bias 0, tone floor 10, the Bayer matrix and threshold, and the
+  picture ink and opacity per theme.
+
+The lint checks the screen constants by declaration. It strips comments
+first (Python `#` comments and docstrings, HTML `<!-- -->`, block comments
+and `//` comments), so a value quoted in a comment does not count. Each
+constant must be declared once and never assigned again. Each ink and
+opacity token may be set only in its own rules, and every declaration there
+must carry the standard's value: `.brand-field-stack` (light) and
+`:root[data-theme='dark'] .brand-field-stack` (dark) in `plate.css`, `:root`
+(light) and `:root[data-theme="dark"]` (dark) in the deck's sources and the
+built deck, and `.ptc-plate.is-transition` (dark) in `craft.css`. The lint does
+not follow how the code uses a constant: a draw call that divides by 2, or a
+loop that skips the floor, passes. The backstop is to look. Run the wrapper
+with `--preview` and compare the page with `preview-{name}.png`, the 1 px
+screen of the grid.
 
 ## Changing the standard
 
@@ -254,6 +279,8 @@ listed in `standard.json` under `writing.retired`, and the lint rejects them.
 | `dictionary`  | A page of the Oxford English Dictionary | Plain English prose reads as copy, not as an artifact |
 | `johnson`     | A page of Johnson's Dictionary          | Plain English prose reads as copy, not as an artifact |
 | `oed-volumes` | The Oxford English Dictionary volumes   | The spines are plain English titles                   |
+| `oxford`      | Any page or volume of the Oxford English Dictionary | Plain English prose reads as copy, not as an artifact |
+| `oed`         | The Oxford English Dictionary by its initials | Plain English prose reads as copy, not as an artifact |
 
 Retiring the first two deleted the deck's Design system and Documentation
 mood slides on 2026-10-05; the deck went from 95 to 93 slides.

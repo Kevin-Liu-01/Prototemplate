@@ -25,15 +25,27 @@
  *   - a deck mood slide does not name a manifest picture, a manifest
  *     picture has no slide, a slide shows a bitmap instead of its grid, or
  *     the built deck (public/brand-deck.html) inlines other bytes;
- *   - the /craft transition demo's grids, disc or screen differ from the
- *     deck's grids and the standard;
+ *   - a deck mood slide's plate has no credit, or the text around the
+ *     transition demo on /docs (src/app/craft) does not credit a picture
+ *     the demo shows;
+ *   - the transition demo's grids, disc or screen differ from the deck's
+ *     grids and the standard;
  *   - a retired name appears as a picture name, a file, a registry key, a
  *     mood token (mood-<name>) under deck/, src/ or the built deck, or a
  *     string literal in the picture code;
  *   - a screen constant differs from the standard: the picture cell 1, the
  *     tone floor 10, the loop's gamma 1 and bias 0, the 8x8 Bayer matrix and
  *     its threshold (m + 0.5) / 64, and the picture ink and opacity per
- *     theme, in the plate, the deck engine and the /craft demo.
+ *     theme, in the plate, the deck engine (its sources and the built deck)
+ *     and the transition demo.
+ *
+ * The screen constants are checked by declaration. Comments are stripped
+ * first (Python docstrings too), each constant must be declared once and
+ * never assigned again, and each ink or opacity token may be set only in
+ * its own rules (PLATE_RULES, DECK_RULES, DEMO_RULES). The lint does not
+ * follow how the code uses a constant: a draw call that divides by 2
+ * passes. The backstop is to look: the wrapper's --preview writes the 1 px
+ * screen of each grid, and the page must show the same cells.
  */
 
 import { createHash } from 'node:crypto';
@@ -58,6 +70,7 @@ export const PATHS = {
   plateCss: 'src/components/plate/plate.css',
   sharedDither: 'src/lib/dither.ts',
   craftDemo: 'src/app/craft/TransitionDemo.tsx',
+  craftArticle: 'src/app/craft/CraftArticle.tsx',
   craftCss: 'src/app/craft/craft.css',
   craftGrids: 'public/craft',
 };
@@ -120,33 +133,97 @@ export function jpegFrame(bytes) {
 }
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
-/** Source text without block comments and whole-line // comments, so a constant or a threshold quoted in a comment never passes for code. */
-export const stripComments = (text) => text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+
+/** Python source without # comments and triple-quoted strings (docstrings); one-line strings are kept. */
+function stripPython(text) {
+  let out = '';
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (c === '#') {
+      const end = text.indexOf('\n', i);
+      i = end < 0 ? text.length : end;
+    } else if (c === '"' || c === "'") {
+      const quote = text.startsWith(c.repeat(3), i) ? c.repeat(3) : c;
+      let j = i + quote.length;
+      while (j < text.length && !text.startsWith(quote, j) && (quote.length === 3 || text[j] !== '\n')) j += text[j] === '\\' ? 2 : 1;
+      j = Math.min(text.length, j + quote.length);
+      if (quote.length === 1) out += text.slice(i, j);
+      i = j;
+    } else {
+      out += c;
+      i += 1;
+    }
+  }
+  return out;
+}
+
+/** The comment syntax of a path: 'py', 'html' or 'js' (JS, TS and CSS). */
+const langOf = (rel) => (rel.endsWith('.py') ? 'py' : rel.endsWith('.html') ? 'html' : 'js');
+
+/**
+ * Source text without its comments, so a constant or a threshold quoted in a
+ * comment never passes for code: Python # comments and docstrings, HTML
+ * <!-- --> comments, block comments, and // comments that start a line or
+ * follow a space.
+ */
+export function stripComments(text, lang = 'js') {
+  if (lang === 'py') return stripPython(text);
+  const source = lang === 'html' ? text.replace(/<!--[\s\S]*?-->/g, '') : text;
+  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[ \t])\/\/.*$/gm, '$1');
+}
+
 const hex6 = (value) => {
   const v = String(value ?? '').trim().toLowerCase();
   return /^#[0-9a-f]{3}$/.test(v) ? `#${v[1]}${v[1]}${v[2]}${v[2]}${v[3]}${v[3]}` : v;
 };
 const near = (a, b) => typeof a === 'number' && typeof b === 'number' && Math.abs(a - b) < 1e-9;
 
-/** A numeric constant `name = <number or a / b>` in a JS, TS or Python source; undefined when absent. */
+/**
+ * A numeric constant `const|var|let name = <number or a / b>;` in a JS or TS
+ * source, and `writes`, the number of times the name is declared or
+ * assigned. `value` is the first numeric declaration's; undefined when there
+ * is none.
+ */
 export function constNumber(text, name) {
-  const m = text.match(new RegExp(`(?:const|var|let)\\s+${name}\\s*(?::[^=]+)?=\\s*(-?[\\d.]+)(?:\\s*\\/\\s*(-?[\\d.]+))?\\s*;`));
-  if (!m) return undefined;
-  return m[2] === undefined ? Number(m[1]) : Number(m[1]) / Number(m[2]);
+  const declarations = text.match(new RegExp(`\\b(?:const|var|let)\\s+${name}\\b`, 'g')) ?? [];
+  const assignments =
+    text.match(
+      new RegExp(
+        `(?<!\\b(?:const|var|let)\\s+)\\b${name}\\s*(?:[-+*/%&|^]|\\*\\*|<<|>>>?|&&|\\|\\||\\?\\?)?=(?![=>])|(?:\\+\\+|--)\\s*${name}\\b|\\b${name}\\s*(?:\\+\\+|--)`,
+        'g'
+      )
+    ) ?? [];
+  const m = text.match(new RegExp(`\\b(?:const|var|let)\\s+${name}\\s*(?::[^=;]+)?=\\s*(-?[\\d.]+)(?:\\s*\\/\\s*(-?[\\d.]+))?\\s*;`));
+  const value = m ? (m[2] === undefined ? Number(m[1]) : Number(m[1]) / Number(m[2])) : undefined;
+  return { value, writes: declarations.length + assignments.length };
 }
 
-/** The body of the first rule whose selector is exactly `selector`; '' when absent. */
-export function cssBlock(text, selector) {
-  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const m = new RegExp(`(^|\\n)\\s*${escaped}\\s*\\{([^}]*)\\}`).exec(text);
-  return m ? m[2] : '';
+/**
+ * Every declaration of the custom property `prop` in CSS, or in HTML that
+ * holds CSS, with the selector of the rule it sits in ('' when it sits in no
+ * rule, as in a style attribute).
+ */
+export function cssDeclarations(text, prop) {
+  const found = [];
+  for (const m of text.matchAll(new RegExp(`(?<![\\w-])${prop}\\s*:\\s*([^;}"]+)`, 'g'))) {
+    const open = text.lastIndexOf('{', m.index);
+    let selector = '';
+    if (open > text.lastIndexOf('}', m.index)) {
+      const start = Math.max(text.lastIndexOf('}', open - 1), text.lastIndexOf('{', open - 1), text.lastIndexOf(';', open - 1)) + 1;
+      selector = text
+        .slice(start, open)
+        .replace(/^[\s\S]*<style[^>]*>/, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    found.push({ selector, value: m[1].trim() });
+  }
+  return found;
 }
 
-/** A custom property's value in a rule body; undefined when absent. */
-export function cssVar(block, name) {
-  const m = block.match(new RegExp(`${name}\\s*:\\s*([^;]+);`));
-  return m ? m[1].trim() : undefined;
-}
+/** The /craft grid files the transition demo reads, from its `*_SRC` constants. */
+const demoGrids = (demo) => [...demo.matchAll(/const \w+_SRC = '\/craft\/([^']+)'/g)].map((m) => m[1]);
 
 /** The numbers of the array literal assigned to `name`; [] when absent. */
 function arrayNumbers(text, name, open = '[', close = ']') {
@@ -300,9 +377,10 @@ function lintRegistry(text, plate, standard, problems) {
   }
 }
 
-/** Lints the deck's mood slides against the deck manifest. */
-function lintSlides(root, deck, problems) {
+/** Lints the deck's mood slides against the deck manifest; returns each mood slide's credit by picture name. */
+function lintSlides(root, deck, built, problems) {
   const used = new Set();
+  const credits = {};
   const names = deck.pictures.map((e) => e.name);
   for (const rel of listFiles(root, PATHS.deckSlides)) {
     const text = readFileSync(join(root, rel), 'utf8');
@@ -318,6 +396,9 @@ function lintSlides(root, deck, problems) {
       else if (!text.includes(`<canvas class="mood-img" data-tone="shots/tone/mood-${slide[1]}.jpg"`)) {
         problems.push(`${rel}: needs <canvas class="mood-img" data-tone="shots/tone/mood-${slide[1]}.jpg">`);
       }
+      const credit = stripComments(text, 'html').match(/<div class="credit">([^<]*)<\/div>/)?.[1].trim();
+      if (credit) credits[slide[1]] = credit;
+      else problems.push(`${rel}: the plate has no credit; a mood slide credits its picture in <div class="credit"> (rule 2)`);
     }
   }
   for (const e of deck.pictures) {
@@ -334,20 +415,49 @@ function lintSlides(root, deck, problems) {
     if (/^deck\/shots\/mood-[^/]+\.(jpg|png)$/.test(rel)) problems.push(`${rel}: a pre-screened mood file; a mood picture is its tone grid under ${PATHS.deckGrids}`);
   }
   // the built deck inlines each grid with its bytes untouched
-  if (existsSync(join(root, PATHS.builtDeck))) {
-    const built = readFileSync(join(root, PATHS.builtDeck), 'utf8');
+  if (built !== null) {
     const inlined = [...built.matchAll(/data-tone="data:image\/jpeg;base64,([^"]+)"/g)].map((m) => sha256(Buffer.from(m[1], 'base64')));
     const unknown = inlined.filter((sha) => !deck.pictures.some((e) => e.sha256 === sha)).length;
     if (unknown || inlined.length !== used.size || /data-tone="shots\//.test(built)) {
       problems.push(`${PATHS.builtDeck}: its inlined tone grids differ from ${PATHS.deckGrids} (${inlined.length} inlined, ${unknown} unknown); run pnpm build:deck`);
     }
   }
+  return credits;
 }
 
-/** Lints the screen constants in the plate, the deck engine and the /craft demo. */
-function lintScreen(root, standard, plate, deck, problems) {
+/** Rule 2 on /docs: the text around the transition demo credits each picture the demo shows, as its deck slide does. */
+function lintDemoCredits(root, deck, credits, problems) {
+  if (!existsSync(join(root, PATHS.craftArticle))) {
+    problems.push(`${PATHS.craftArticle}: missing`);
+    return;
+  }
+  if (!existsSync(join(root, PATHS.craftDemo))) return;
+  const flat = (text) => text.normalize('NFC').replace(/\s+/g, ' ');
+  const article = flat(stripComments(readFileSync(join(root, PATHS.craftArticle), 'utf8')));
+  for (const file of demoGrids(stripComments(readFileSync(join(root, PATHS.craftDemo), 'utf8')))) {
+    const entry = deck.pictures.find((e) => e.file === file);
+    if (!entry || !credits[entry.name]) continue;
+    // the credit without its label ('Image: ', 'Photograph: '), so the article can name the picture instead
+    const owner = flat(credits[entry.name].replace(/^[^:]+:\s*/, ''));
+    if (!article.includes(owner)) {
+      problems.push(`${PATHS.craftArticle}: the transition demo on /docs shows ${entry.name}, and its text does not carry the credit "${owner}" (rule 2)`);
+    }
+  }
+}
+
+/** The rules that set the screen's ink and opacity tokens, by selector, with the theme each one carries. */
+const PLATE_RULES = { '.brand-field-stack': 'light', ":root[data-theme='dark'] .brand-field-stack": 'dark' };
+const DECK_RULES = { ':root': 'light', ':root[data-theme="dark"]': 'dark' };
+const DEMO_RULES = { '.ptc-plate.is-transition': 'dark' };
+const MOOD_TOKENS = { '--mood-ink': 'ink', '--mood-opacity': 'opacity' };
+
+/**
+ * Lints the screen constants in the plate, the deck engine (its sources and
+ * the built deck) and the transition demo on /docs (src/app/craft).
+ */
+function lintScreen(root, standard, plate, deck, built, problems) {
   const { screen } = standard;
-  const read = (rel) => (existsSync(join(root, rel)) ? stripComments(readFileSync(join(root, rel), 'utf8')) : null);
+  const read = (rel) => (existsSync(join(root, rel)) ? stripComments(readFileSync(join(root, rel), 'utf8'), langOf(rel)) : null);
   const need = (rel) => {
     const text = read(rel);
     if (text === null) problems.push(`${rel}: missing`);
@@ -356,86 +466,123 @@ function lintScreen(root, standard, plate, deck, problems) {
   const expect = (rel, what, got, want) => {
     if (typeof want === 'number' ? !near(got, want) : got !== want) problems.push(`${rel}: ${what} is ${got}, the standard is ${want}`);
   };
+  /** A name the standard reads is declared once and never assigned again, so the declaration the lint reads is the value the code runs. */
+  const once = (rel, text, name) => {
+    const { value, writes } = constNumber(text, name);
+    if (writes > 1) problems.push(`${rel}: ${name} is declared or assigned ${writes} times; declare it once and never reassign it`);
+    return value;
+  };
+  const constant = (rel, text, name, want) => expect(rel, name, once(rel, text, name), want);
   const canonical = bayer8();
-  const matrix = (rel, got, label) => {
-    if (got.length !== 64 || got.some((v, i) => v !== canonical[i])) problems.push(`${rel}: ${label} is not the 8x8 Bayer matrix`);
+  const matrix = (rel, text, name, open, close) => {
+    once(rel, text, name);
+    const got = arrayNumbers(text, name, open, close);
+    if (got.length !== 64 || got.some((v, i) => v !== canonical[i])) problems.push(`${rel}: ${name} is not the 8x8 Bayer matrix`);
   };
   const threshold = (rel, text, pattern) => {
     if (!pattern.test(text)) problems.push(`${rel}: the Bayer threshold (m + 0.5) / 64 is missing`);
   };
   const loopOptions = (rel, text) => {
+    once(rel, text, 'LOOP_OPTIONS');
     const block = (text.match(/const LOOP_OPTIONS[^=]*=\s*\{([^}]*)\}/) ?? [])[1] ?? '';
     expect(rel, 'LOOP_OPTIONS gamma', Number((block.match(/gamma:\s*([\d.]+)/) ?? [])[1]), 1);
     expect(rel, 'LOOP_OPTIONS bias', Number((block.match(/bias:\s*(-?[\d.]+)/) ?? [])[1]), 0);
   };
-  const ink = (rel, block, inkVar, opacityVar, theme, label) => {
-    expect(rel, `${label} ${inkVar}`, hex6(cssVar(block, inkVar)), hex6(screen[theme].ink));
-    expect(rel, `${label} ${opacityVar}`, Number(cssVar(block, opacityVar)), screen[theme].opacity);
+  /**
+   * Each declaration of a token (prop: 'ink', 'opacity' or 'ground') in one
+   * of `rules` carries that rule's theme value. With `only`, no other rule
+   * sets the token; with `required`, every rule in `rules` sets it.
+   */
+  const tokens = (rel, text, rules, props, { only = true, required = true } = {}) => {
+    const value = (key, raw) => (key === 'opacity' ? Number(raw) : hex6(raw));
+    for (const [prop, key] of Object.entries(props)) {
+      const found = cssDeclarations(text, prop);
+      for (const [selector, theme] of Object.entries(rules)) {
+        const here = found.filter((d) => d.selector === selector);
+        if (required && !here.length) problems.push(`${rel}: ${selector} does not set ${prop}`);
+        for (const d of here) expect(rel, `${theme} ${prop}`, value(key, d.value), value(key, screen[theme][key]));
+      }
+      if (!only) continue;
+      for (const d of found.filter((d) => !Object.hasOwn(rules, d.selector))) {
+        problems.push(`${rel}: ${prop} is set under ${d.selector || 'a style attribute'}; only ${Object.keys(rules).join(' and ')} set it`);
+      }
+    }
+  };
+  /** The deck engine's cell, floor, matrix and threshold. */
+  const deckEngine = (rel, text) => {
+    constant(rel, text, 'MOOD_CELL_PX', screen.cellCssPx);
+    constant(rel, text, 'MOOD_TONE_FLOOR', screen.toneFloor);
+    once(rel, text, 'B4');
+    once(rel, text, 'Q');
+    const b4 = arrayNumbers(text, 'B4');
+    const q = arrayNumbers(text, 'Q');
+    const engine = [];
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) engine.push(b4[(r % 4) * 4 + (c % 4)] * 4 + q[Math.floor(r / 4) * 2 + Math.floor(c / 4)]);
+    }
+    if (b4.length !== 16 || q.length !== 4 || engine.some((v, i) => v !== canonical[i])) problems.push(`${rel}: bayer8 (B4 and Q) is not the 8x8 Bayer matrix`);
+    threshold(rel, text, /\(bayer8\([^)]*\) \+ 0\.5\) \/ 64/);
   };
 
   // the plate's field
   const stack = need(PATHS.fieldStack);
-  expect(PATHS.fieldStack, 'PICTURE_SCALE', constNumber(stack, 'PICTURE_SCALE'), screen.cellCssPx);
+  constant(PATHS.fieldStack, stack, 'PICTURE_SCALE', screen.cellCssPx);
   loopOptions(PATHS.fieldStack, stack);
-  const ratio = constNumber(stack, 'DISC_DIAMETER_RATIO');
-  const share = constNumber(stack, 'DISC_LIMB_RAMP_SHARE');
+  const ratio = once(PATHS.fieldStack, stack, 'DISC_DIAMETER_RATIO');
+  const share = once(PATHS.fieldStack, stack, 'DISC_LIMB_RAMP_SHARE');
   if (!near(ratio * plate.view.height, plate.view.discDiameter) || !near(share, plate.view.discLimbShare)) {
     problems.push(`${PATHS.plateGrids}/manifest.json: the view's disc (${plate.view.discDiameter} across, limb at ${plate.view.discLimbShare}) differs from FieldStack's DISC_DIAMETER_RATIO and DISC_LIMB_RAMP_SHARE`);
   }
-  expect(PATHS.pictureField, 'TONE_FLOOR', constNumber(need(PATHS.pictureField), 'TONE_FLOOR'), screen.toneFloor);
-  const css = need(PATHS.plateCss);
-  ink(PATHS.plateCss, cssBlock(css, '.brand-field-stack'), '--tc-picture-ink', '--field-picture-opacity', 'light', 'light');
-  ink(PATHS.plateCss, cssBlock(css, ":root[data-theme='dark'] .brand-field-stack"), '--tc-picture-ink', '--field-picture-opacity', 'dark', 'dark');
+  constant(PATHS.pictureField, need(PATHS.pictureField), 'TONE_FLOOR', screen.toneFloor);
+  tokens(PATHS.plateCss, need(PATHS.plateCss), PLATE_RULES, { '--tc-picture-ink': 'ink', '--field-picture-opacity': 'opacity' });
   for (const rel of [PATHS.plateDither, PATHS.sharedDither]) {
     const text = need(rel);
-    matrix(rel, arrayNumbers(text, 'BAYER_8'), 'BAYER_8');
+    matrix(rel, text, 'BAYER_8');
     threshold(rel, text, /\(BAYER_8\[[^\]]+\]!?\[[^\]]+\]!? \+ 0\.5\) \/ 64/);
   }
   const cutter = need(PATHS.cutter);
-  matrix(PATHS.cutter, arrayNumbers(cutter, 'BAYER_8', '(', ')'), 'BAYER_8');
+  matrix(PATHS.cutter, cutter, 'BAYER_8', '(', ')');
   threshold(PATHS.cutter, cutter, /\(BAYER_8\[y\]\[x\] \+ 0\.5\) \* 255 \/ 64/);
-  const floorInCutter = /toneFloor/.test(cutter);
-  if (!floorInCutter) problems.push(`${PATHS.cutter}: the cutter does not read screen.toneFloor`);
+  if (!/toneFloor/.test(cutter)) problems.push(`${PATHS.cutter}: the cutter does not read screen.toneFloor`);
 
-  // the deck engine
-  const tail = need(PATHS.deckTail);
-  expect(PATHS.deckTail, 'MOOD_CELL_PX', constNumber(tail, 'MOOD_CELL_PX'), screen.cellCssPx);
-  expect(PATHS.deckTail, 'MOOD_TONE_FLOOR', constNumber(tail, 'MOOD_TONE_FLOOR'), screen.toneFloor);
-  const b4 = arrayNumbers(tail, 'B4');
-  const q = arrayNumbers(tail, 'Q');
-  const engine = [];
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) engine.push(b4[(r % 4) * 4 + (c % 4)] * 4 + q[Math.floor(r / 4) * 2 + Math.floor(c / 4)]);
-  }
-  matrix(PATHS.deckTail, b4.length === 16 && q.length === 4 ? engine : [], 'bayer8 (B4 and Q)');
-  threshold(PATHS.deckTail, tail, /\(bayer8\([^)]*\) \+ 0\.5\) \/ 64/);
+  // the deck engine: the sources, then the built deck that is served
+  deckEngine(PATHS.deckTail, need(PATHS.deckTail));
   const head = need(PATHS.deckHead);
-  ink(PATHS.deckHead, cssBlock(head, ':root'), '--mood-ink', '--mood-opacity', 'light', 'light');
-  ink(PATHS.deckHead, cssBlock(head, ':root[data-theme="dark"]'), '--mood-ink', '--mood-opacity', 'dark', 'dark');
-  expect(PATHS.deckHead, 'light --paper', hex6(cssVar(cssBlock(head, ':root'), '--paper')), hex6(screen.light.ground));
-  expect(PATHS.deckHead, 'dark --paper', hex6(cssVar(cssBlock(head, ':root[data-theme="dark"]'), '--paper')), hex6(screen.dark.ground));
-
-  // the /craft transition demo: the deck's grids on a plate that is dark in both themes
-  const demo = need(PATHS.craftDemo);
-  expect(PATHS.craftDemo, 'CELL', constNumber(demo, 'CELL'), screen.cellCssPx);
-  expect(PATHS.craftDemo, 'TONE_FLOOR', constNumber(demo, 'TONE_FLOOR'), screen.toneFloor);
-  expect(PATHS.craftDemo, 'PICTURE_OPACITY', constNumber(demo, 'PICTURE_OPACITY'), screen.dark.opacity);
-  loopOptions(PATHS.craftDemo, demo);
-  ink(PATHS.craftCss, cssBlock(need(PATHS.craftCss), '.ptc-plate.is-transition'), '--ptc-picture-ink', '--ptc-picture-opacity', 'dark', 'transition plate');
-  const used = new Set();
-  for (const m of demo.matchAll(/const \w+_SRC = '\/craft\/([^']+)'/g)) {
-    used.add(m[1]);
-    const entry = deck.pictures.find((e) => e.file === m[1]);
-    const rel = `${PATHS.craftGrids}/${m[1]}`;
-    if (!entry) problems.push(`${PATHS.craftDemo}: /craft/${m[1]} is not a deck grid in ${PATHS.deckGrids}/manifest.json`);
-    else if (!existsSync(join(root, rel))) problems.push(`${rel}: missing; copy it from ${PATHS.deckGrids}`);
-    else if (sha256(readFileSync(join(root, rel))) !== entry.sha256) problems.push(`${rel}: differs from ${PATHS.deckGrids}/${m[1]}; it is a byte copy`);
+  tokens(PATHS.deckHead, head, DECK_RULES, MOOD_TOKENS);
+  tokens(PATHS.deckHead, head, DECK_RULES, { '--paper': 'ground' }, { only: false });
+  for (const rel of [PATHS.deckTail, ...listFiles(root, PATHS.deckSlides)]) tokens(rel, read(rel) ?? '', DECK_RULES, MOOD_TOKENS, { required: false });
+  if (built !== null) {
+    const before = problems.length;
+    // the inlined images are base64 payloads with nothing to check; dropping them keeps the scan small
+    const code = stripComments(built.replace(/;base64,[A-Za-z0-9+/=]+/g, ';base64,'), 'html');
+    deckEngine(PATHS.builtDeck, code);
+    tokens(PATHS.builtDeck, code, DECK_RULES, MOOD_TOKENS);
+    tokens(PATHS.builtDeck, code, DECK_RULES, { '--paper': 'ground' }, { only: false });
+    for (let i = before; i < problems.length; i++) problems[i] += '; run pnpm build:deck after the fix in deck/';
   }
-  if (!used.size) problems.push(`${PATHS.craftDemo}: no /craft grid sources found`);
+
+  // the transition demo on /docs: the deck's grids on a plate that is dark in both themes
+  const demo = need(PATHS.craftDemo);
+  constant(PATHS.craftDemo, demo, 'CELL', screen.cellCssPx);
+  constant(PATHS.craftDemo, demo, 'TONE_FLOOR', screen.toneFloor);
+  constant(PATHS.craftDemo, demo, 'PICTURE_OPACITY', screen.dark.opacity);
+  loopOptions(PATHS.craftDemo, demo);
+  tokens(PATHS.craftCss, need(PATHS.craftCss), DEMO_RULES, { '--ptc-picture-ink': 'ink', '--ptc-picture-opacity': 'opacity' });
+  const used = new Set();
+  for (const file of demoGrids(demo)) {
+    used.add(file);
+    const entry = deck.pictures.find((e) => e.file === file);
+    const rel = `${PATHS.craftGrids}/${file}`;
+    if (!entry) problems.push(`${PATHS.craftDemo}: /craft/${file} is not a deck grid in ${PATHS.deckGrids}/manifest.json`);
+    else if (!existsSync(join(root, rel))) problems.push(`${rel}: missing; copy it from ${PATHS.deckGrids}`);
+    else if (sha256(readFileSync(join(root, rel))) !== entry.sha256) problems.push(`${rel}: differs from ${PATHS.deckGrids}/${file}; it is a byte copy`);
+  }
+  if (!used.size) problems.push(`${PATHS.craftDemo}: no grid sources under /craft/ found`);
   for (const rel of listFiles(root, PATHS.craftGrids)) {
     const name = rel.slice(PATHS.craftGrids.length + 1);
     if (/^mood-/.test(name) && !used.has(name)) problems.push(`${rel}: not a grid the transition demo reads`);
   }
+  once(PATHS.craftDemo, demo, 'DISC');
   const earth = deck.pictures.find((e) => e.name === 'earth');
   const disc = demo.match(/const DISC = \{\s*cx:\s*([\d.]+),\s*cy:\s*([\d.]+),\s*r:\s*([\d.]+)\s*\}/);
   if (!disc || !earth?.disc) problems.push(`${PATHS.craftDemo}: DISC or the deck earth's fitted disc is missing`);
@@ -445,7 +592,7 @@ function lintScreen(root, standard, plate, deck, problems) {
 }
 
 /** Lints the retired names: no file, mood token or picture-code literal carries one. */
-function lintRetired(root, standard, problems) {
+function lintRetired(root, standard, built, problems) {
   const retired = Object.keys(standard.writing.retired);
   if (!retired.length) return;
   const alt = retired.map((n) => n.replace(/[-]/g, '\\-')).join('|');
@@ -457,9 +604,9 @@ function lintRetired(root, standard, problems) {
     if (named.test(base)) problems.push(`${rel}: a retired picture's file`);
   }
   const scanned = [...new Set(TOKEN_SCAN.flatMap((dir) => listFiles(root, dir)))].filter((rel) => TEXT_FILE.test(rel));
-  if (existsSync(join(root, PATHS.builtDeck))) scanned.push(PATHS.builtDeck);
+  if (built !== null) scanned.push(PATHS.builtDeck);
   for (const rel of scanned) {
-    const text = readFileSync(join(root, rel), 'utf8');
+    const text = rel === PATHS.builtDeck ? built : readFileSync(join(root, rel), 'utf8');
     const hit = text.match(token);
     if (hit) {
       const line = text.slice(0, hit.index).split('\n').length;
@@ -482,9 +629,11 @@ export function lintPictures(root) {
   const plate = lintManifest(root, PATHS.plateGrids, standard, problems) ?? { view: {}, pictures: [] };
   if (existsSync(join(root, PATHS.registry))) lintRegistry(readFileSync(join(root, PATHS.registry), 'utf8'), plate, standard, problems);
   else problems.push(`${PATHS.registry}: missing`);
-  lintSlides(root, deck, problems);
-  lintScreen(root, standard, plate, deck, problems);
-  lintRetired(root, standard, problems);
+  const built = existsSync(join(root, PATHS.builtDeck)) ? readFileSync(join(root, PATHS.builtDeck), 'utf8') : null;
+  const credits = lintSlides(root, deck, built, problems);
+  lintDemoCredits(root, deck, credits, problems);
+  lintScreen(root, standard, plate, deck, built, problems);
+  lintRetired(root, standard, built, problems);
   return problems;
 }
 

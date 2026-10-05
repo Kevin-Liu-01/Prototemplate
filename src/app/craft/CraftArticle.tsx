@@ -144,11 +144,17 @@ export const CRAFT_SECTIONS: readonly CraftSection[] = [
           picture&rsquo;s mean over that disc, so the mix changes texture and ink and holds
           brightness. Under reduced motion the plate shows the Blue Marble as a still.
         </p>
-        <LibraryDemo
-          kind='transition'
-          label='Live demo: a dithered globe turning, resolving into the Blue Marble on the same cells, stepping into the Rosetta Stone, and mixing back to the globe, in a loop.'
-          tag='mixFields()'
-        />
+        <figure>
+          <LibraryDemo
+            kind='transition'
+            label='Live demo: a dithered globe turning, resolving into the Blue Marble on the same cells, stepping into the Rosetta Stone, and mixing back to the globe, in a loop.'
+            tag='mixFields()'
+          />
+          {/* rule 2 of docs/ARTIFACT-PICTURES.md: the credit sits with the pictures; scripts/lint-pictures.mjs checks it against the deck slides */}
+          <figcaption className='ptc-credit'>
+            The Blue Marble: NASA, Reto Stöckli, 2007, public domain. The Rosetta Stone: photograph by Hans Hillewaert, CC BY-SA 4.0.
+          </figcaption>
+        </figure>
         <p>
           The mix is one combinator in the dither module and one clock in the plate. The
           clock sets the field and the ink together, and the loop draws whatever it holds

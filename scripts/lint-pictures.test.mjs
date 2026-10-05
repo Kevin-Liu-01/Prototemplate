@@ -26,6 +26,7 @@ const FIXTURE_PATHS = [
   PATHS.plateCss,
   PATHS.sharedDither,
   PATHS.craftDemo,
+  PATHS.craftArticle,
   PATHS.craftCss,
   PATHS.craftGrids,
 ];
@@ -187,6 +188,9 @@ describe('retired names', () => {
     editManifest(root, PATHS.plateGrids, 'tablet', (e) => {
       e.name = 'dictionary';
     });
+    editManifest(root, PATHS.deckGrids, 'cable', (e) => {
+      e.name = 'oxford';
+    });
     cpSync(join(root, PATHS.plateGrids, 'mood-gloss.jpg'), join(root, PATHS.craftGrids, 'mood-johnson.jpg'));
     editText(root, PATHS.registry, '  gloss: {', "  'oed-volumes': {\n    src: '/brand/mood/mood-oed-volumes.jpg',\n    placement: { kind: 'cover', focusX: 1, focusY: 0.5 },\n  },\n  gloss: {");
     editText(root, `${PATHS.deckSlides}/06-mood-earth.html`, '<!-- mood earth -->', '<!-- mood earth, after mood-johnson -->');
@@ -194,6 +198,7 @@ describe('retired names', () => {
     writeFileSync(join(root, PATHS.builtDeck), '<section class="slide mood s-mood s-mood-dictionary"></section>');
     const problems = lintPictures(root);
     reports(problems, 'dictionary: a retired picture');
+    reports(problems, 'oxford: a retired picture');
     reports(problems, 'public/craft/mood-johnson.jpg', "retired picture's file");
     reports(problems, PATHS.registry, 'oed-volumes has no entry');
     reports(problems, '06-mood-earth.html', 'mood-johnson names a retired picture');
@@ -253,6 +258,17 @@ describe('the deck slides', () => {
   });
 });
 
+describe('credits', () => {
+  test('a mood slide with no credit, and a demo whose text drops a credit', () => {
+    const root = fixture();
+    editText(root, `${PATHS.deckSlides}/46-mood-lighthouse.html`, '<div class="credit">Photograph: Ken Heaton, CC BY-SA 4.0</div>', '');
+    editText(root, PATHS.craftArticle, 'photograph by Hans Hillewaert, CC BY-SA 4.0', 'photograph by Hans Hillewaert');
+    const problems = lintPictures(root);
+    reports(problems, '46-mood-lighthouse.html', 'no credit');
+    reports(problems, PATHS.craftArticle, 'shows rosetta', 'Hans Hillewaert, CC BY-SA 4.0');
+  });
+});
+
 describe('the screen constants', () => {
   test('the plate field', () => {
     const root = fixture();
@@ -293,7 +309,40 @@ describe('the screen constants', () => {
     reports(problems, PATHS.deckHead, 'light --mood-opacity is 1');
   });
 
-  test('the /craft transition demo', () => {
+  test('overrides, values quoted in comments, and second writes', () => {
+    const root = fixture();
+    writeFileSync(join(root, PATHS.plateCss), `${readFileSync(join(root, PATHS.plateCss), 'utf8')}\n.brand-field-stack { --tc-picture-ink: #ff0000; --field-picture-opacity: 1; }\n`);
+    editText(root, PATHS.deckHead, '  * { box-sizing: border-box; }', '  :root[data-theme="dark"] { --mood-opacity: 1; }\n  * { box-sizing: border-box; }');
+    editText(root, `${PATHS.deckSlides}/80-mood-wave.html`, '<style>', '<style>\n        .s-mood { --mood-ink: #ff0000; }');
+    editText(
+      root,
+      PATHS.cutter,
+      '[math.floor((BAYER_8[y][x] + 0.5) * 255 / 64)',
+      '[math.floor(BAYER_8[y][x] * 255 / 64)  # (BAYER_8[y][x] + 0.5) * 255 / 64\n        '
+    );
+    editText(root, PATHS.deckTail, 'var MOOD_TONE_FLOOR = 10;', 'var MOOD_TONE_FLOOR = 10;\n  MOOD_CELL_PX = 2;');
+    editText(root, PATHS.craftDemo, 'const CELL = 1;', "const NOTE = 'const CELL = 1;';\nconst CELL = 2;");
+    const problems = lintPictures(root);
+    reports(problems, PATHS.plateCss, 'light --tc-picture-ink is #ff0000');
+    reports(problems, PATHS.plateCss, 'light --field-picture-opacity is 1');
+    reports(problems, PATHS.deckHead, 'dark --mood-opacity is 1');
+    reports(problems, '80-mood-wave.html', '--mood-ink is set under .s-mood');
+    reports(problems, PATHS.cutter, 'threshold');
+    reports(problems, PATHS.deckTail, 'MOOD_CELL_PX is declared or assigned 2 times');
+    reports(problems, PATHS.craftDemo, 'CELL is declared or assigned 2 times');
+  });
+
+  test('the built deck that is served', () => {
+    const root = fixture();
+    cpSync(join(ROOT, PATHS.builtDeck), join(root, PATHS.builtDeck));
+    editText(root, PATHS.builtDeck, 'var MOOD_CELL_PX = 1;', 'var MOOD_CELL_PX = 2;');
+    editText(root, PATHS.builtDeck, '--mood-ink: #ffffff; --mood-opacity: 0.62;', '--mood-ink: #ffffff; --mood-opacity: 1;');
+    const problems = lintPictures(root);
+    reports(problems, PATHS.builtDeck, 'MOOD_CELL_PX is 2', 'run pnpm build:deck');
+    reports(problems, PATHS.builtDeck, 'dark --mood-opacity is 1', 'run pnpm build:deck');
+  });
+
+  test('the transition demo', () => {
     const root = fixture();
     editText(root, PATHS.craftDemo, 'const CELL = 1;', 'const CELL = 2;');
     editText(root, PATHS.craftDemo, 'const DISC = { cx: 420.1, cy: 450.1, r: 409.4 };', 'const DISC = { cx: 420, cy: 450, r: 410 };');

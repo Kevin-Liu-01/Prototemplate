@@ -719,3 +719,12 @@
   --ptc-picture-opacity: 0.62;
   max-width: 860px;
 }
+
+/* the credit line under the plate, in the figures' caption type */
+.ptc-credit {
+  margin-top: 10px;
+  max-width: 64ch;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--pt-ink-3);
+}
