@@ -75,12 +75,12 @@
   function $(id) { return document.getElementById(id); }
   var viewer = $('viewer'), sb = $('sb'), sheet = $('sheet'), stage = $('stage'), wrap = $('stagewrap'), grid = $('grid'), book = $('book'), bookIn = $('book-in'), thumbsEl = $('thumbs');
   var slides = Array.prototype.slice.call(stage.querySelectorAll('.slide'));
-  var backImg = document.querySelector('#backdrop img');
+  var backImg = document.querySelector('#backdrop img'), backTone = document.querySelector('#backdrop canvas');
   var counter = $('counter'), barTitle = $('bar-title'), barSec = $('bar-sec'), barN = $('bar-n'), barTotal = $('bar-total'), progress = $('progress'), help = $('help'), toast = $('toast'), panel = $('panel'), filter = $('surf-filter'), surfCount = $('surf-count');
   var i = 0, digits = '', digitTimer = null, mode = 'slide', reduced = false;
   try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
-  var SECTIONS = [[1, 'Brand'], [24, 'Design system'], [40, 'Website'], [51, 'Documentation'], [56, 'Blog and content'], [66, 'Developer experience'], [70, 'Prototemplate and Glyphfield'], [89, 'Status and plan']];
+  var SECTIONS = [[1, 'Brand'], [24, 'Design system'], [39, 'Website'], [50, 'Documentation'], [54, 'Blog and content'], [64, 'Developer experience'], [68, 'Prototemplate and Glyphfield'], [87, 'Status and plan']];
   function sectionOf(k) { var name = SECTIONS[0][1]; SECTIONS.forEach(function (s) { if (s[0] <= k + 1) name = s[1]; }); return name; }
   function sectionRange(idx) { return [SECTIONS[idx][0], idx + 1 < SECTIONS.length ? SECTIONS[idx + 1][0] - 1 : slides.length]; }
 
@@ -119,6 +119,120 @@
     if (mode === 'book') Array.prototype.forEach.call(bookIn.querySelectorAll('canvas.dither'), drawDither);
   }
 
+  /* the mood pictures, screened live to the standard in docs/ARTIFACT-PICTURES.md (scripts/mood-tone/standard.json).
+     A mood slide's canvas names its tone grid in data-tone: an 8-bit gray JPEG that scripts/mood-tone cut and
+     shots/tone/manifest.json records. The canvas's backing store is sized to its box on screen, read from
+     getBoundingClientRect because the stage is CSS-scaled, so one cell is one CSS px wherever the slide is drawn:
+     the sheet, a thumbnail, a book page or the backdrop. The grid is read at cover fit, centred: the grid cell under a
+     cell's centre, or the area average of the grid cells under a cell where the picture is drawn smaller than the grid.
+     The red channel is the tone, bytes at or under MOOD_TONE_FLOOR read as 0, and a cell is lit when its tone is over
+     the 8x8 Bayer threshold (m + 0.5) / 64, at gamma 1 and bias 0. A lit cell is --mood-ink at --mood-opacity over
+     --paper; an unlit cell is left clear. scripts/lint-pictures.mjs holds these constants to the standard. */
+  var MOOD_CELL_PX = 1;
+  var MOOD_TONE_FLOOR = 10;
+  /* the threshold per tile cell, on the 0..255 tone scale */
+  var MOOD_THRESHOLD = [];
+  for (var cell = 0; cell < 64; cell += 1) MOOD_THRESHOLD.push(((bayer8(cell >> 3, cell & 7) + 0.5) / 64) * 255);
+  var moodGrids = {};
+  var moodRaf = 0;
+  /* decodes a tone grid once: its red channel, with the floor applied */
+  function loadMoodGrid(src) {
+    if (!moodGrids[src]) {
+      moodGrids[src] = new Promise(function (resolve, reject) {
+        var im = new Image();
+        im.onload = function () {
+          try {
+            var w = im.naturalWidth, h = im.naturalHeight, c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            var ctx = c.getContext('2d', { willReadFrequently: true });
+            ctx.drawImage(im, 0, 0);
+            var data = ctx.getImageData(0, 0, w, h).data, tone = new Uint8Array(w * h);
+            for (var p = 0, q = 0; p < tone.length; p += 1, q += 4) tone[p] = data[q] <= MOOD_TONE_FLOOR ? 0 : data[q];
+            resolve({ w: w, h: h, tone: tone });
+          } catch (e) { reject(e); }
+        };
+        im.onerror = function () { reject(new Error('could not load a mood grid')); };
+        im.src = src;
+      });
+      moodGrids[src].catch(function () { delete moodGrids[src]; });
+    }
+    return moodGrids[src];
+  }
+  /* the theme's lit cell as [r, g, b, a] from --mood-ink and --mood-opacity; null when either is unreadable */
+  function moodInk() {
+    var st = getComputedStyle(document.documentElement);
+    var hex = st.getPropertyValue('--mood-ink').trim().replace(/^#/, ''), op = parseFloat(st.getPropertyValue('--mood-opacity'));
+    if (/^[0-9a-f]{3}$/i.test(hex)) hex = hex.replace(/./g, '$&$&');
+    if (!/^[0-9a-f]{6}$/i.test(hex) || !(op >= 0 && op <= 1)) return null;
+    return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16), Math.round(op * 255)];
+  }
+  /* per output cell on one axis: the grid cells it covers and their weights, for a grid of n cells drawn at s cells per grid cell from offset o */
+  function moodTaps(n, cells, s, o) {
+    var at = [0], idx = [], wt = [];
+    for (var x = 0; x < cells; x += 1) {
+      var a = (x - o) / s, b = (x + 1 - o) / s;
+      for (var k = Math.max(0, Math.floor(a)); k < Math.min(n, Math.ceil(b)); k += 1) { idx.push(k); wt.push((Math.min(b, k + 1) - Math.max(a, k)) / (b - a)); }
+      at.push(idx.length);
+    }
+    return { at: at, idx: idx, wt: wt };
+  }
+  function paintMood(canvas, g, W, H, ink) {
+    var s = Math.max(W / g.w, H / g.h), ox = (W - g.w * s) / 2, oy = (H - g.h * s) / 2;
+    var tone = new Float32Array(W * H), x, y, k;
+    if (s >= 1) {
+      var col = new Int32Array(W);
+      for (x = 0; x < W; x += 1) col[x] = Math.min(g.w - 1, Math.max(0, Math.floor((x + 0.5 - ox) / s)));
+      for (y = 0; y < H; y += 1) {
+        var row = Math.min(g.h - 1, Math.max(0, Math.floor((y + 0.5 - oy) / s))) * g.w;
+        for (x = 0; x < W; x += 1) tone[y * W + x] = g.tone[row + col[x]];
+      }
+    } else {
+      var tx = moodTaps(g.w, W, s, ox), ty = moodTaps(g.h, H, s, oy), across = new Float32Array(g.h * W);
+      for (y = 0; y < g.h; y += 1) for (x = 0; x < W; x += 1) {
+        var sum = 0;
+        for (k = tx.at[x]; k < tx.at[x + 1]; k += 1) sum += g.tone[y * g.w + tx.idx[k]] * tx.wt[k];
+        across[y * W + x] = sum;
+      }
+      for (y = 0; y < H; y += 1) for (k = ty.at[y]; k < ty.at[y + 1]; k += 1) {
+        var from = ty.idx[k] * W, wy = ty.wt[k];
+        for (x = 0; x < W; x += 1) tone[y * W + x] += across[from + x] * wy;
+      }
+    }
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d'), out = ctx.createImageData(W, H), px = out.data;
+    for (y = 0; y < H; y += 1) {
+      var tile = (y & 7) << 3;
+      for (x = 0; x < W; x += 1) {
+        if (tone[y * W + x] > MOOD_THRESHOLD[tile | (x & 7)]) { var i = (y * W + x) * 4; px[i] = ink[0]; px[i + 1] = ink[1]; px[i + 2] = ink[2]; px[i + 3] = ink[3]; }
+      }
+    }
+    ctx.putImageData(out, 0, 0);
+  }
+  /* draws one mood canvas at its size on screen in the current theme, unless it already shows that */
+  function drawMood(canvas) {
+    var src = canvas.getAttribute('data-tone');
+    if (!src) return;
+    var r = canvas.getBoundingClientRect();
+    var W = Math.round(r.width / MOOD_CELL_PX), H = Math.round(r.height / MOOD_CELL_PX);
+    if (W < 1 || H < 1 || getComputedStyle(canvas).visibility === 'hidden') return;
+    var ink = moodInk();
+    if (!ink) return;
+    var key = W + 'x' + H + ' ' + ink.join(',') + ' ' + src;
+    if (canvas.moodKey === key) return;
+    canvas.moodKey = key;
+    loadMoodGrid(src).then(function (g) {
+      if (canvas.moodKey === key) paintMood(canvas, g, W, H, ink);
+    }, function () {
+      if (canvas.moodKey === key) canvas.moodKey = '';
+    });
+  }
+  function drawMoods() { Array.prototype.forEach.call(document.querySelectorAll('canvas[data-tone]'), drawMood); }
+  /* one redraw pass per frame, after the layout that asked for it */
+  function scheduleMoods() {
+    if (moodRaf) return;
+    moodRaf = requestAnimationFrame(function () { moodRaf = 0; drawMoods(); });
+  }
+
   /* a live copy of a slide, with its frame, for the slide list and the book */
   function cloneSlide(k) {
     var mini = document.createElement('div'); mini.className = 'mini';
@@ -153,6 +267,7 @@
   }
   function scaleThumbs() {
     thumbs.forEach(function (t) { var f = t.querySelector('.thumb-frame'); var w = f.clientWidth; if (w) f.querySelector('.mini').style.setProperty('--k', (w - 2) / 1600); });
+    scheduleMoods();
   }
   function go(k) { if (mode === 'grid') setMode('slide'); show(k); if (narrow()) setSidebar(false); }
 
@@ -203,7 +318,7 @@
     }
     if (window.ResizeObserver) new ResizeObserver(scaleBook).observe(bookIn);
   }
-  function scaleBook() { var f = bookIn.querySelector('.page-frame'); if (f && f.clientWidth) bookIn.style.setProperty('--k', (f.clientWidth - 2) / 1600); }
+  function scaleBook() { var f = bookIn.querySelector('.page-frame'); if (f && f.clientWidth) bookIn.style.setProperty('--k', (f.clientWidth - 2) / 1600); scheduleMoods(); }
 
   /* the sheet: the 1600 x 900 stage scaled to the space left over */
   function fit() {
@@ -216,6 +331,7 @@
     sheet.style.width = W + 'px'; sheet.style.height = H + 'px';
     sheet.style.left = Math.round((aw - W) / 2) - 1 + 'px'; sheet.style.top = Math.round((ah - H) / 2) - 1 + 'px';
     stage.style.transform = 'scale(' + (W / 1600) + ')';
+    scheduleMoods();
   }
   function applyTheme() {
     var dark = isDark();
@@ -227,14 +343,21 @@
     });
     drawAllDither();
     syncBackdrop();
+    drawMoods();
   }
-  /* a full-picture slide fills the stage area: the backdrop takes the active slide's image in the current theme (slide mode only; the grid and the book show the sheet as it is) */
+  /* a full-picture slide fills the stage area: the backdrop takes the active slide's image in the current theme, or a mood slide's tone grid screened on the backdrop's canvas at the stage area's size (slide mode only; the grid and the book show the sheet as it is) */
   function syncBackdrop() {
     var cur = slides[i];
     var pic = cur ? cur.querySelector('.opener-img, .mood-img') : null;
     var on = !!pic && mode === 'slide';
+    var tone = on ? pic.getAttribute('data-tone') : null;
     wrap.classList.toggle('is-picture', on);
-    if (on && backImg) { var src = pic.getAttribute('src'); if (backImg.getAttribute('src') !== src) backImg.setAttribute('src', src); }
+    if (backImg) backImg.hidden = !!tone;
+    if (backTone) {
+      backTone.hidden = !tone;
+      if (tone) { if (backTone.getAttribute('data-tone') !== tone) backTone.setAttribute('data-tone', tone); drawMood(backTone); }
+    }
+    if (on && !tone && backImg) { var src = pic.getAttribute('src'); if (backImg.getAttribute('src') !== src) backImg.setAttribute('src', src); }
   }
   function show(n, opts) {
     opts = opts || {};
@@ -257,6 +380,7 @@
     }
     var c = slides[n].querySelector('canvas.dither');
     if (c && !c.dataset.drawn) { drawDither(c); c.dataset.drawn = '1'; }
+    scheduleMoods();
     if (mode !== 'grid') { var t = thumbs[n]; if (t) { try { t.scrollIntoView({ block: 'nearest' }); } catch (e) {} } }
     if (mode === 'book' && opts.scroll !== false) { var p = pages[n]; if (p) { try { p.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' }); } catch (e) { p.scrollIntoView(); } } }
   }

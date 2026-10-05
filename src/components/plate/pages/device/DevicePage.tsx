@@ -23,7 +23,7 @@ type DevicePageProps = {
  * picks the face from the result; here the result arrives as props: no
  * code shows the form, an error shows the form with its message, a pending
  * code with its client shows the approval screen. The gallery's frame
- * supplies the field (scene 1, the Johnson picture), the mark and the foot.
+ * supplies the field (scene 1, the calligraphy picture), the mark and the foot.
  */
 export default function DevicePage({
   userCode,

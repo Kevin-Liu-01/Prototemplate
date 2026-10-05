@@ -1,24 +1,18 @@
 import type { PicturePlacement } from '@/components/plate/lib/picture-field';
 
 /**
- * The pictures the scene 1 field can show: the Blue Marble and the
- * Rosetta Stone, whose subject is what the product does, and five
- * pictures of human writing across cultures (Karahisari's calligraphy, a
- * proto-cuneiform tablet, the Oxford English Dictionary open at its own
- * entry for the word, Johnson's Dictionary of 1755 at its grammar's
- * letter O, and a marginal gloss of about 1500, the step before any
- * dictionary), so the set carries language and culture without repeating
- * the two. The last two come from the University of Glasgow Library's
- * April 2007 Book of the Month on Johnson's Dictionary, which Kevin
- * named as more significant than a photograph of the volumes.
+ * The artifact pictures the scene 1 field can show (docs/ARTIFACT-PICTURES.md):
+ * the Blue Marble and the Rosetta Stone, whose subject is what the product
+ * does, and three pictures of writing as an artifact (Karahisari's
+ * calligraphy, a proto-cuneiform tablet, and a glossed Alexandreis of
+ * about 1250). A page of plain English prose is never one of them,
+ * because it reads as copy.
  */
 export type PictureName =
   | 'earth'
   | 'rosetta'
   | 'calligraphy'
   | 'tablet'
-  | 'dictionary'
-  | 'johnson'
   | 'gloss';
 
 /**
@@ -54,37 +48,34 @@ export type MoodPicture = {
 };
 
 /**
- * Each picture's file under public/ and where it lands. The files are the
- * tone grids apps/dashboard/scripts/mood-tone.mjs cuts from the source
- * photographs, 8-bit gray JPEGs at 1600 by 900, the earth at 2400 by 1350
- * because the field draws it at about 2x; the field screens them itself
- * at one CSS px per cell. Placements are in the 1600 by 900 file space.
- * The earth's disc is fitted to the limb on its grid and is the only disc:
- * the field puts its left limb five sevenths of the way along the ramp,
- * inside the ramp's last part, at 1.7 times the stack's height across, so
- * the ramp thins the limb and the rest bleeds off the top, right and
- * bottom (FieldStack DISC_LIMB_RAMP_SHARE). The other pictures cover the
- * field. The Rosetta Stone sits
- * right in its file with its right edge past the file's, so its cover is
- * pinned to the file's left edge (focus 0): the black pad on the left
- * sits under the plate and the region right of the ramp is inscription.
- * The tablet fills its file and is centred, so the crack and the right
- * piece's impressions sit right of the ramp. The calligraphy keeps its
- * focus on the side the plate leaves open, so the tall strokes stay in
- * view. The dictionary is a close crop of the OED's page whose cover is
- * pinned to the file's right edge (focus 1), so the headword always ends
- * inside the viewport and starts in the ramp's last part, whole at every
- * width, with the neighbouring column dissolving under the ramp
- * (mood-tone.mjs works the numbers). The
- * plate titles are the deck's in title case (Kevin: "Proto-Cuneiform
- * Tablet"), the credits the deck's; each note is one factual sentence
- * about the picture within NOTE_MAX_CHARS, so it holds two lines on the
- * plate.
+ * The artifact pictures: each one's tone grid, where it lands in the 1600
+ * by 900 file space, and its caption with the credit. The grids are byte
+ * copies of gt-cloud's (apps/dashboard/public/brand/mood), and
+ * scripts/mood-tone/mood-tone.mjs --set plate cuts the same bytes from the
+ * sources and writes public/brand/mood/manifest.json. They are 8-bit gray
+ * JPEGs at 1600 by 900, the earth at 2400 by 1350 because the field draws
+ * it at about 2x; the field screens them at one CSS px per cell. Each
+ * `src` and `placement` equals its manifest entry, and the earth's `cx`,
+ * `cy` and `r` equal the entry's `disc`, the circle fitted to the limb on
+ * its grid; scripts/lint-pictures.mjs holds them equal. The earth is the
+ * only disc: the field puts its left limb five sevenths of the way along
+ * the ramp at 1.7 times the stack's height across, so the ramp thins the
+ * limb and the rest bleeds off the top, right and bottom (FieldStack
+ * DISC_LIMB_RAMP_SHARE). The other pictures cover the field. The Rosetta
+ * Stone sits right in its file with its right edge past the file's, so
+ * its cover is pinned to the file's left edge (focus 0) and the region
+ * right of the ramp is inscription. The tablet fills its file and is
+ * centred. The calligraphy keeps its focus on the side the plate leaves
+ * open, so the tall strokes stay in view, and the gloss is pinned to the
+ * file's right edge (focus 1). The plate titles are the deck's in title
+ * case (Kevin: "Proto-Cuneiform Tablet"), the credits the deck's; each
+ * note is one factual sentence about the picture within NOTE_MAX_CHARS,
+ * so it holds two lines on the plate.
  */
 export const MOOD_PICTURES: Record<PictureName, MoodPicture> = {
   earth: {
     src: '/brand/mood/mood-earth.jpg',
-    placement: { kind: 'disc', cx: 450.1, cy: 450.1, r: 398.2 },
+    placement: { kind: 'disc', cx: 450.1, cy: 450.1, r: 399.5 },
     caption: {
       title: 'The Blue Marble',
       note: "NASA's composite of the western hemisphere, assembled from satellite passes in 2007.",
@@ -116,26 +107,6 @@ export const MOOD_PICTURES: Record<PictureName, MoodPicture> = {
       title: 'Proto-Cuneiform Tablet',
       note: 'Malt and barley accounted for in clay in Sumer about 3100 BCE, among the earliest writing.',
       credit: 'Photograph: The Metropolitan Museum of Art, public domain',
-    },
-  },
-  dictionary: {
-    src: '/brand/mood/mood-dictionary.jpg',
-    placement: { kind: 'cover', focusX: 1, focusY: 0.5 },
-    caption: {
-      title: 'The Oxford English Dictionary',
-      note: "The entry for dictionary in the first edition's third volume, printed at Oxford in 1897.",
-      credit:
-        'Oxford University Press, 1897, scanned by the Internet Archive, public domain',
-    },
-  },
-  johnson: {
-    src: '/brand/mood/mood-johnson.jpg',
-    placement: { kind: 'cover', focusX: 1, focusY: 0.1 },
-    caption: {
-      title: "Johnson's Dictionary",
-      note: 'The letter O from the grammar in A Dictionary of the English Language, London, 1755.',
-      credit:
-        'Samuel Johnson, 1755, scanned by the Wellcome Collection, public domain',
     },
   },
   gloss: {

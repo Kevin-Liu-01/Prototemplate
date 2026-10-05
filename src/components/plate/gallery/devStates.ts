@@ -199,7 +199,7 @@ export const devStates: DevState[] = [
     frame: 'auth',
     scene: 1,
     note: 'The browser page the CLI opens.',
-    picture: 'dictionary',
+    picture: 'rosetta',
   },
   {
     id: 'consent-untrusted',
@@ -207,7 +207,7 @@ export const devStates: DevState[] = [
     title: 'Consent, an unverified app',
     frame: 'auth',
     scene: 1,
-    picture: 'dictionary',
+    picture: 'rosetta',
   },
   {
     id: 'consent-invalid',
@@ -215,7 +215,7 @@ export const devStates: DevState[] = [
     title: 'Consent, invalid request',
     frame: 'auth',
     scene: 1,
-    picture: 'dictionary',
+    picture: 'rosetta',
   },
   {
     id: 'cli-callback-signed-in',
@@ -243,7 +243,7 @@ export const devStates: DevState[] = [
     frame: 'auth',
     scene: 1,
     note: 'gt login --no-browser, and SSH sessions.',
-    picture: 'johnson',
+    picture: 'calligraphy',
   },
   {
     id: 'device-invalid',
@@ -251,7 +251,7 @@ export const devStates: DevState[] = [
     title: 'Invalid code',
     frame: 'auth',
     scene: 1,
-    picture: 'johnson',
+    picture: 'calligraphy',
   },
   {
     id: 'device-expired',
@@ -259,7 +259,7 @@ export const devStates: DevState[] = [
     title: 'Expired code',
     frame: 'auth',
     scene: 1,
-    picture: 'johnson',
+    picture: 'calligraphy',
   },
   {
     id: 'device-processed',
@@ -267,7 +267,7 @@ export const devStates: DevState[] = [
     title: 'Code already used',
     frame: 'auth',
     scene: 1,
-    picture: 'johnson',
+    picture: 'calligraphy',
   },
   {
     id: 'device-approval',
@@ -275,7 +275,7 @@ export const devStates: DevState[] = [
     title: 'Approval',
     frame: 'auth',
     scene: 1,
-    picture: 'johnson',
+    picture: 'calligraphy',
   },
   {
     id: 'device-blocked',
@@ -283,7 +283,7 @@ export const devStates: DevState[] = [
     title: 'Network restricted',
     frame: 'auth',
     scene: 1,
-    picture: 'johnson',
+    picture: 'calligraphy',
   },
   {
     id: 'cli-wizard',

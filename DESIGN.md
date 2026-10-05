@@ -263,6 +263,7 @@ Density ramps render as ordered dither, never alpha veils.
 - Engines: `src/lib/dither.ts` (CPU, any scalar field, 1 device px per cell)
   and `src/lib/studio-field.ts` (GPU, the authentic `BAYER_PRESETS` roster of
   ten variants, one shared GL context, switch by remount).
+- Artifact pictures (the dithered photographs and scans on the plate's field, the deck's mood slides and the /craft demo) follow the Blue Marble standard in `docs/ARTIFACT-PICTURES.md`, held by `scripts/lint-pictures.mjs`.
 
 ## 8. The moving type law
 

@@ -24,7 +24,7 @@ type ConsentPageProps = {
  * server component verifies the signed query, looks the client up and
  * redirects a signed-out browser to the OAuth sign-in; here the outcome of
  * that work arrives as props and the page picks the face. The gallery's
- * frame supplies the field (scene 1, the dictionary picture), the mark and
+ * frame supplies the field (scene 1, the Rosetta Stone picture), the mark and
  * the foot.
  */
 export default function ConsentPage({

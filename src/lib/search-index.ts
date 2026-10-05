@@ -11,7 +11,7 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * carry the same ids as the index panel and the sidebar: pages, the skill
  * pages, documents and their headings, the sites and explorations (each
  * opening its page under /directions), the archived versions, the brand
- * sections, the library anchors, and the 85 deck slides, each linking to
+ * sections, the library anchors, and the 93 deck slides, each linking to
  * /deck#n. Pure data, no React, no DOM.
  *
  * The site rows come straight from src/lib/surfaces.ts, so a group added
@@ -290,7 +290,7 @@ const HEADINGS: readonly SearchEntry[] = Object.entries(DOC_HEADINGS).flatMap(([
   )
 );
 
-/** The 95 slide titles, in order: the first h1, h2 or .big of each deck/slides/NN-*.html; the twelve mood slides carry no heading and are listed by their picture. Regenerate with the loop in the commit that added the mood pictures of writing when slides change. */
+/** The 93 slide titles, in order: the first h1, h2 or .big of each deck/slides/NN-*.html; the ten mood slides carry no heading and are listed by their picture. Regenerate with the loop in the commit that added the mood pictures of writing when slides change. */
 const DECK_SLIDES: readonly string[] = [
   'Brand',
   'General Translation',
@@ -328,7 +328,6 @@ const DECK_SLIDES: readonly string[] = [
   'Dither',
   'Isometric illustration',
   'Animated text',
-  'Johnson\'s Dictionary',
   'Motion rules',
   'Anti-patterns',
   'Website',
@@ -345,7 +344,6 @@ const DECK_SLIDES: readonly string[] = [
   'Documentation',
   'The docs',
   'Nearest-page routing',
-  'The Oxford English Dictionary',
   'Markdown twins',
   'Blog and content',
   'Blog index',

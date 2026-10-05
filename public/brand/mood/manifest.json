@@ -1,0 +1,275 @@
+{
+  "view": {
+    "width": 1440,
+    "height": 900,
+    "rampStart": 806.4,
+    "rampEnd": 1072,
+    "discDiameter": 1530,
+    "discLimbShare": 0.7142857142857143
+  },
+  "pictures": [
+    {
+      "name": "earth",
+      "file": "mood-earth.jpg",
+      "sha256": "8038219e7406ce6eb006dda32b3323b031308c35ac37b4d78e61645db5cff21c",
+      "width": 2400,
+      "height": 1350,
+      "bytes": 301430,
+      "quality": 82,
+      "source": "earth.jpg",
+      "sourceBox": [
+        -65,
+        -65,
+        6785,
+        3788
+      ],
+      "crop": {
+        "kind": "disc",
+        "centre": [
+          675,
+          675
+        ],
+        "radius": 600,
+        "limbOver": 24
+      },
+      "channel": "red",
+      "invert": false,
+      "kind": "scene",
+      "placement": {
+        "kind": "disc"
+      },
+      "writing": "none",
+      "levels": {
+        "black": 80,
+        "white": 230
+      },
+      "house": {
+        "blur": 0,
+        "gamma": 1.2,
+        "autocontrastCutoff": 0.005
+      },
+      "region": {
+        "mean": 0.3602,
+        "std": 0.3423,
+        "whiteShare": 0.0763,
+        "blackShare": 0.3052,
+        "litShare": 0.3602
+      },
+      "textLines": 0,
+      "disc": {
+        "cx": 450.1,
+        "cy": 450.1,
+        "r": 399.5
+      }
+    },
+    {
+      "name": "rosetta",
+      "file": "mood-rosetta.jpg",
+      "sha256": "886bf934f74674382689dde506bb000e8e509c837522e1e633944093a1b97363",
+      "width": 1600,
+      "height": 900,
+      "bytes": 523425,
+      "quality": 82,
+      "source": "rosetta.jpg",
+      "sourceBox": [
+        -619,
+        715,
+        3047,
+        2778
+      ],
+      "crop": {
+        "kind": "box",
+        "onLongSide": 1800,
+        "box": [
+          -260,
+          300,
+          1279,
+          1166
+        ]
+      },
+      "channel": "gray",
+      "invert": false,
+      "kind": "scene",
+      "placement": {
+        "kind": "cover",
+        "focusX": 0,
+        "focusY": 0.5
+      },
+      "writing": "artistic",
+      "levels": {
+        "black": 70,
+        "white": 180
+      },
+      "house": {
+        "blur": 0,
+        "gamma": 1.2,
+        "autocontrastCutoff": 0.005
+      },
+      "region": {
+        "mean": 0.362,
+        "std": 0.3452,
+        "whiteShare": 0.1074,
+        "blackShare": 0.1822,
+        "litShare": 0.3626
+      },
+      "textLines": 34
+    },
+    {
+      "name": "calligraphy",
+      "file": "mood-calligraphy.jpg",
+      "sha256": "59223eb756bf3e43b3d19aad7063d4633dddff16c7353657b0480876d30f77ed",
+      "width": 1600,
+      "height": 900,
+      "bytes": 203730,
+      "quality": 82,
+      "source": "calligraphy.jpg",
+      "sourceBox": [
+        448,
+        686,
+        1488,
+        1272
+      ],
+      "crop": {
+        "kind": "box",
+        "onLongSide": 1800,
+        "box": [
+          310,
+          475,
+          1030,
+          880
+        ]
+      },
+      "channel": "gray",
+      "invert": true,
+      "kind": "marks",
+      "placement": {
+        "kind": "cover",
+        "focusX": 0.6,
+        "focusY": 0.5
+      },
+      "writing": "artistic",
+      "levels": {
+        "black": 127,
+        "white": 242
+      },
+      "house": {
+        "blur": 0,
+        "gamma": 1.2,
+        "autocontrastCutoff": 0.005
+      },
+      "region": {
+        "mean": 0.1906,
+        "std": 0.3371,
+        "whiteShare": 0.0322,
+        "blackShare": 0.7225,
+        "litShare": 0.1903
+      },
+      "textLines": 0
+    },
+    {
+      "name": "tablet",
+      "file": "mood-tablet.jpg",
+      "sha256": "153928af15bab42bd418d88dd253f6d1920287d3876c52b454519fc15d993ab8",
+      "width": 1600,
+      "height": 900,
+      "bytes": 538003,
+      "quality": 75,
+      "source": "met-327385-DP293245.jpg",
+      "sourceBox": [
+        503,
+        1425,
+        2509,
+        2553
+      ],
+      "crop": {
+        "kind": "subject",
+        "centreX": 0.5,
+        "centreY": 0.5,
+        "fillHeight": 1.25,
+        "mask": {
+          "bright": 150,
+          "saturation": 0.12,
+          "feather": 4
+        }
+      },
+      "channel": "gray",
+      "invert": false,
+      "kind": "scene",
+      "placement": {
+        "kind": "cover",
+        "focusX": 0.5,
+        "focusY": 0.5
+      },
+      "writing": "artistic",
+      "levels": {
+        "black": 125,
+        "white": 225
+      },
+      "house": {
+        "blur": 0,
+        "gamma": 1.2,
+        "autocontrastCutoff": 0.005
+      },
+      "region": {
+        "mean": 0.3645,
+        "std": 0.3353,
+        "whiteShare": 0.0652,
+        "blackShare": 0.2748,
+        "litShare": 0.365
+      },
+      "textLines": 0
+    },
+    {
+      "name": "gloss",
+      "file": "mood-gloss.jpg",
+      "sha256": "0963b6691c4bd9fd04f4ae972b14bcf5336d1270e0fb74f1f327ea9369087670",
+      "width": 1600,
+      "height": 900,
+      "bytes": 249972,
+      "quality": 82,
+      "source": "alexandreis-p69.jpg",
+      "sourceBox": [
+        2063,
+        5433,
+        5081,
+        7131
+      ],
+      "crop": {
+        "kind": "box",
+        "onLongSide": 10057,
+        "box": [
+          2063,
+          5433,
+          5081,
+          7131
+        ]
+      },
+      "channel": "gray",
+      "invert": true,
+      "kind": "marks",
+      "placement": {
+        "kind": "cover",
+        "focusX": 1,
+        "focusY": 0.5
+      },
+      "writing": "artistic",
+      "levels": {
+        "black": 109,
+        "white": 239
+      },
+      "house": {
+        "blur": 0,
+        "gamma": 1.2,
+        "autocontrastCutoff": 0.005
+      },
+      "region": {
+        "mean": 0.1408,
+        "std": 0.2875,
+        "whiteShare": 0.0216,
+        "blackShare": 0.7758,
+        "litShare": 0.1409
+      },
+      "textLines": 16
+    }
+  ]
+}

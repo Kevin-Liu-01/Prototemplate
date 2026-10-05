@@ -1,7 +1,8 @@
     <!-- mood cable -->
     <section class="slide mood s-mood s-mood-cable">
       <style>
-        .s-mood .mood-img { position: absolute; inset: -57px; z-index: -1; width: 1600px; height: 900px; object-fit: cover; display: block; }
+        /* the picture is its tone grid (shots/tone), screened live at 1 CSS px cells by the engine in parts/tail.html; docs/ARTIFACT-PICTURES.md holds the standard */
+        .s-mood .mood-img { position: absolute; inset: -57px; z-index: -1; width: 1600px; height: 900px; display: block; image-rendering: pixelated; }
         /* solid paper chips under the viewer's wordmark (stage 72,864, 28 by 18) and counter (right 72, bottom 22), the same plate treatment the openers use; scoped to the stage so thumbnails, which carry no chrome, stay clean */
         #stage > .s-mood::after { content: ''; position: absolute; inset: -57px; z-index: -1; pointer-events: none; background: linear-gradient(var(--paper), var(--paper)) 66px 858px / 40px 30px no-repeat, linear-gradient(var(--paper), var(--paper)) 1474px 856px / 60px 28px no-repeat; }
         /* the plate names the picture, says why it is in the deck, and credits it; lower right, so it never meets the openers' lower-left plate as a pattern */
@@ -10,7 +11,7 @@
         .s-mood .mood-plate p { margin-top: 12px; color: var(--ink); }
         .s-mood .mood-plate .credit { margin-top: 12px; font-size: 15px; line-height: 1.45; letter-spacing: 0.01em; color: var(--titanium); }
       </style>
-      <img class="mood-img" src="shots/mood-cable-light.jpg" data-dark="shots/mood-cable.jpg" alt="The Eastern Telegraph Company cable chart of 1901, rendered as a two-tone dither">
+      <canvas class="mood-img" data-tone="shots/tone/mood-cable.jpg" role="img" aria-label="The Eastern Telegraph Company cable chart of 1901"></canvas>
       <div class="in">
         <div class="mood-plate">
           <div class="big title">The Eastern Telegraph cable chart</div>

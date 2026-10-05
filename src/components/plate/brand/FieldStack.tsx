@@ -47,11 +47,11 @@ const PICTURE_INK = 'rgb(7 7 7)';
 const GLOBE_SCALE = 2;
 /**
  * The pictures' cell in CSS px. The tone grids are continuous tone, 1600
- * by 900 for the covers (scripts/mood-tone.mjs), so at one px per cell a
- * cover picture at 1440 wide reads one grid cell per loop cell and the
- * halftone is fine enough to read as a photograph. The loop draws only on
- * a step mix and its canvas covers only the region right of the plate, so
- * the grid stays inside the frame budget.
+ * by 900 for the covers (scripts/mood-tone/mood-tone.mjs), so at one px
+ * per cell a cover picture at 1440 wide reads one grid cell per loop cell
+ * and the halftone is fine enough to read as a photograph. The loop draws
+ * only on a step mix and its canvas covers only the region right of the
+ * plate, so the grid stays inside the frame budget.
  */
 const PICTURE_SCALE = 1;
 /** The gamma the sign-in globe is drawn with. */

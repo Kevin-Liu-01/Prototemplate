@@ -130,12 +130,13 @@ export const CRAFT_SECTIONS: readonly CraftSection[] = [
           ))}
         </ul>
         <p>
-          The plate below runs the loop live on the CPU renderer at 2px cells. The globe
+          The plate below runs the loop live on the CPU renderer at 1px cells. The globe
           turns for two seconds, resolves into the Blue Marble over 350 ms, holds for a
           second and a half, steps into the Rosetta Stone over 150 ms, holds again, and
-          mixes back into the globe over 350 ms. Both pictures are two-tone grids of 800 by
-          450 cells cut from the deck&rsquo;s mood pictures, one grid cell per deck cell,
-          decoded in the browser through a canvas. The plate is 280px tall, so each picture
+          mixes back into the globe over 350 ms. Both pictures are the tone grids of the
+          deck&rsquo;s mood slides, 1600 by 900 cells of continuous tone cut to the artifact
+          picture standard, decoded in the browser through a canvas, and their cells print
+          white at 0.62 over the plate&rsquo;s ground. The plate is 280px tall, so each picture
           is scaled to cover it; a loop cell that covers one grid cell reads that cell, and
           a loop cell that covers more reads their area average, so the screen re-dithers
           the grid&rsquo;s density at its own cell. The globe is drawn on the disc the Blue

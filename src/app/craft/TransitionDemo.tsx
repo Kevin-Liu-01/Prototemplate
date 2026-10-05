@@ -19,16 +19,26 @@ import './craft.css';
 
 gsap.registerPlugin(useGSAP);
 
-/** CSS px per loop cell: the deck's cell. */
-const CELL = 2;
+/**
+ * CSS px per loop cell: the artifact picture standard's 1 CSS px cell
+ * (docs/ARTIFACT-PICTURES.md). The globe turns on the same cells, so the
+ * cell never changes inside a transition.
+ */
+const CELL = 1;
 /** The sheet the tone grids stand for, in px. */
 const FILE_WIDTH = 1600;
 const FILE_HEIGHT = 900;
 /**
- * The Blue Marble's disc on the sheet in file px, measured from the cut:
- * 820 px across, centred at 420, 450 (deck/shots/OPENERS.md, mood-earth).
+ * The Blue Marble's disc on the sheet in file px: the circle the cutter
+ * fitted to the limb on the earth's grid (the entry's `disc` in
+ * deck/shots/tone/manifest.json).
  */
-const DISC = { cx: 420, cy: 450, r: 410 };
+const DISC = { cx: 420.1, cy: 450.1, r: 409.4 };
+/**
+ * Bytes at or under the tone floor read as 0, so the JPEG's ringing on the
+ * black ground prints no stray cells (the standard's screen.toneFloor).
+ */
+const TONE_FLOOR = 10;
 /** The loop's beats. */
 const TURN_MS = 2000;
 const RESOLVE_MS = 350;
@@ -38,12 +48,24 @@ const CYCLE_MS = TURN_MS + RESOLVE_MS + HOLD_MS + STEP_MS + HOLD_MS + RESOLVE_MS
 /** The sign-in globe's look and curve, so the plate turns the same globe. */
 const GLOBE_LOOK = { ambient: 0.14, rim: 0.16, graticule: 0, landmass: 0.42, spin: 0.14 };
 const GLOBE_GAMMA = 1.15;
-const EARTH_SRC = '/craft/mood-earth-cells.png';
-const ROSETTA_SRC = '/craft/mood-rosetta-cells.png';
-/** Ink fallbacks for a plate whose tokens are unresolved: GT blue and paper white. */
+/** The deck's tone grids for the two mood slides, byte copies of deck/shots/tone. */
+const EARTH_SRC = '/craft/mood-earth.jpg';
+const ROSETTA_SRC = '/craft/mood-rosetta.jpg';
+/**
+ * Ink fallbacks for a plate whose tokens are unresolved: GT blue, and the
+ * standard's dark screen, paper white at 0.62 over the plate's ground.
+ */
 const GLOBE_INK = 'rgb(47, 92, 224)';
 const PICTURE_INK = 'rgb(255, 255, 255)';
-const LOOP_OPTIONS: DitherLoopOptions = { scale: CELL, paper: 'transparent', fps: 30 };
+const PICTURE_OPACITY = 0.62;
+/** Gamma 1 and bias 0: the pictures' whole curve is in their grids. */
+const LOOP_OPTIONS: DitherLoopOptions = {
+  scale: CELL,
+  paper: 'transparent',
+  fps: 30,
+  gamma: 1,
+  bias: 0,
+};
 /** Paper only, for a plate with nothing to show yet. */
 const BLANK: FieldFn = () => 0;
 
@@ -53,7 +75,8 @@ type Inks = { globe: string; picture: string };
 type Fields = { turning: FieldFn; earth: FieldFn | null; rosetta: FieldFn | null };
 /** The globe's tone gain, and the loop time the globe was last read at (written on every cell). */
 type GlobeTone = { gain: number; t: number };
-type Rgb = readonly [number, number, number];
+/** Red, green and blue on 0..255 and alpha on 0..1. */
+type Rgba = readonly [number, number, number, number];
 
 function smoothstep(x: number): number {
   const k = x <= 0 ? 0 : x >= 1 ? 1 : x;
@@ -61,7 +84,7 @@ function smoothstep(x: number): number {
 }
 
 /** `#rgb`, `#rrggbb`, `rgb()` or `rgba()` to its channels; null for any other form. */
-function parseRgb(color: string): Rgb | null {
+function parseRgba(color: string): Rgba | null {
   const key = color.trim().toLowerCase();
   if (key.startsWith('#')) {
     const hex = key.slice(1);
@@ -70,6 +93,7 @@ function parseRgb(color: string): Rgb | null {
         parseInt(hex[0] + hex[0], 16),
         parseInt(hex[1] + hex[1], 16),
         parseInt(hex[2] + hex[2], 16),
+        1,
       ];
     }
     if (hex.length === 6) {
@@ -77,6 +101,7 @@ function parseRgb(color: string): Rgb | null {
         parseInt(hex.slice(0, 2), 16),
         parseInt(hex.slice(2, 4), 16),
         parseInt(hex.slice(4, 6), 16),
+        1,
       ];
     }
     return null;
@@ -88,27 +113,40 @@ function parseRgb(color: string): Rgb | null {
       .filter(Boolean)
       .map(Number);
     if (nums.length >= 3 && nums.every((n) => !Number.isNaN(n))) {
-      return [nums[0] ?? 0, nums[1] ?? 0, nums[2] ?? 0];
+      return [nums[0] ?? 0, nums[1] ?? 0, nums[2] ?? 0, nums[3] ?? 1];
     }
   }
   return null;
 }
 
+/** `color` at `opacity` as rgba(); a form parseRgba does not read is returned as it is. */
+function withOpacity(color: string, opacity: number): string {
+  const c = parseRgba(color);
+  if (!c) return color;
+  return `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${c[3] * opacity})`;
+}
+
 /**
- * The colour `k` of the way from `from` to `to`, per channel in sRGB.
- * Either end in a form parseRgb does not read switches at k 0.5.
+ * The colour `k` of the way from `from` to `to`, per channel in sRGB and
+ * in alpha, so the globe's opaque blue mixes into the picture ink's
+ * opacity on the same curve. Either end in a form parseRgba does not read
+ * switches at k 0.5.
  */
 function lerpInk(from: string, to: string, k: number): string {
   if (k <= 0) return from;
   if (k >= 1) return to;
-  const a = parseRgb(from);
-  const b = parseRgb(to);
+  const a = parseRgba(from);
+  const b = parseRgba(to);
   if (!a || !b) return k < 0.5 ? from : to;
   const channel = (i: 0 | 1 | 2) => Math.round(a[i] + (b[i] - a[i]) * k);
-  return `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
+  const alpha = a[3] + (b[3] - a[3]) * k;
+  return `rgba(${channel(0)}, ${channel(1)}, ${channel(2)}, ${alpha})`;
 }
 
-/** Decodes an 8-bit grid through a canvas; tone is the red channel over 255. */
+/**
+ * Decodes an 8-bit grid through a canvas; tone is the red channel over 255,
+ * read as 0 at and under TONE_FLOOR.
+ */
 function loadToneGrid(src: string): Promise<ToneGrid> {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -126,7 +164,10 @@ function loadToneGrid(src: string): Promise<ToneGrid> {
       ctx.drawImage(image, 0, 0);
       const { data } = ctx.getImageData(0, 0, width, height);
       const tone = new Float32Array(width * height);
-      for (let i = 0; i < tone.length; i++) tone[i] = (data[i * 4] ?? 0) / 255;
+      for (let i = 0; i < tone.length; i++) {
+        const byte = data[i * 4] ?? 0;
+        tone[i] = byte <= TONE_FLOOR ? 0 : byte / 255;
+      }
       resolve({ width, height, tone });
     };
     image.onerror = () => reject(new Error(`could not load ${src}`));
@@ -270,17 +311,22 @@ function readFrame(canvas: HTMLCanvasElement): Frame {
   return { width: rect.width || canvas.clientWidth || 1, height: rect.height || canvas.clientHeight || 1 };
 }
 
+/** The globe ink, and the picture ink at the picture opacity, from the plate's tokens. */
 function readInks(plate: Element): Inks {
   const style = getComputedStyle(plate);
+  const opacity = parseFloat(style.getPropertyValue('--ptc-picture-opacity'));
   return {
     globe: style.getPropertyValue('--ptc-globe-ink').trim() || GLOBE_INK,
-    picture: style.getPropertyValue('--tc-ink').trim() || PICTURE_INK,
+    picture: withOpacity(
+      style.getPropertyValue('--ptc-picture-ink').trim() || PICTURE_INK,
+      opacity >= 0 && opacity <= 1 ? opacity : PICTURE_OPACITY
+    ),
   };
 }
 
 /**
- * The transition plate: one dither loop at the deck's cell, its field and
- * ink set together by one clock. The globe turns, resolves into the Blue
+ * The transition plate: one dither loop at the standard's 1 CSS px cell,
+ * its field and ink set together by one clock. The globe turns, resolves into the Blue
  * Marble over 350 ms on the disc it occupies, holds, steps into the Rosetta
  * Stone over 150 ms, holds, and mixes back over 350 ms. Every mix is
  * mixFields on one smoothstep with the ink interpolated on the same curve;

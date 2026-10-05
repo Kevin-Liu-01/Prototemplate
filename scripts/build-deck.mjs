@@ -8,19 +8,22 @@
 //                           does, with the source's leading <title> stripped
 //                           (the wrapper below carries the document title)
 //   fonts/deck-fonts.css    inlined as a <style> in place of <!--FONTS-->
-//   shots/*                 every src="shots/..." and data-dark="shots/..."
-//                           becomes a data URI: photographs are resampled to
-//                           1280px wide at JPEG quality 78 through sips, except
-//                           the full-bleed openers and mood images (shots/opener-*,
-//                           shots/mood-*) and the 2x detail crops (shots/detail-*),
-//                           which keep their native size so they stay sharp on
-//                           the 1600px sheet: a two-tone dither (the screened
-//                           shader openers and the mood photographs) is stored
-//                           as a two-color PNG through Pillow, lossless and about
-//                           a fortieth of the JPEG, and a continuous-tone image
-//                           (the gem smoke openers, the detail crops) is
+//   shots/*                 every src="shots/...", data-dark="shots/..." and
+//                           data-tone="shots/..." becomes a data URI: photographs
+//                           are resampled to 1280px wide at JPEG quality 78 through
+//                           sips, except the full-bleed openers (shots/opener-*)
+//                           and the 2x detail crops (shots/detail-*), which keep
+//                           their native size so they stay sharp on the 1600px
+//                           sheet: a two-tone dither (the screened shader openers)
+//                           is stored as a two-color PNG through Pillow, lossless
+//                           and about a fortieth of the JPEG, and a continuous-tone
+//                           image (the gem smoke openers, the detail crops) is
 //                           re-encoded as JPEG at quality 88; shots/thumb/* files
-//                           pass through as they are
+//                           pass through as they are, and so do the mood slides'
+//                           tone grids (shots/tone/*), continuous-tone 8-bit gray
+//                           JPEGs that the engine in parts/tail.html screens live
+//                           at 1 CSS px cells, so their bytes stay the ones
+//                           shots/tone/manifest.json records
 //
 // The result is wrapped as a full document (doctype, charset, viewport, the
 // title, a noindex meta, and a style for color-scheme, which follows the
@@ -64,13 +67,13 @@ const flag = (name) => {
 const OUT_OVERRIDE = flag('--out');
 const OUT = OUT_OVERRIDE ?? join(ROOT, 'public/brand-deck.html');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
-const SLIDE_COUNT = 95;
+const SLIDE_COUNT = 93;
 const QUALITY = Number(flag('--quality') ?? 78);
 const MAX_WIDTH = Number(flag('--max-width') ?? 1280);
 /* the thumbnails pass through untouched unless a copy asks for them re-encoded */
 const THUMB_QUALITY = flag('--thumb-quality') ? Number(flag('--thumb-quality')) : undefined;
-/* full-bleed openers and mood images and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
-const NATIVE = /^(opener|mood|detail)-/;
+/* full-bleed openers and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
+const NATIVE = /^(opener|detail)-/;
 const NATIVE_QUALITY = Number(flag('--native-quality') ?? 88);
 /* the share of pixels at the two extremes above which a native image counts as a two-tone dither */
 const TWO_TONE_SHARE = 0.98;
@@ -116,7 +119,7 @@ function twoTonePng(abs, out) {
 }
 const TITLE = 'General Translation brand deck';
 const LEADING_TITLE = /^<title>[^<]*<\/title>\n/;
-const IMAGE_REF = /(src|data-dark)="(shots\/[^"]+)"/g;
+const IMAGE_REF = /(src|data-dark|data-tone)="(shots\/[^"]+)"/g;
 const IMAGE = /\.(jpg|jpeg|png|webp|gif)$/i;
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif' };
 
@@ -158,6 +161,7 @@ let photographs = 0;
 let natives = 0;
 let twoTones = 0;
 let thumbs = 0;
+let tones = 0;
 
 function toUri(abs, mime) {
   const bytes = readFileSync(abs);
@@ -165,11 +169,17 @@ function toUri(abs, mime) {
   return `data:${mime};base64,${bytes.toString('base64')}`;
 }
 
-/** The data URI for one shots/ path: a thumbnail as it is, a photograph resampled. */
+/** The data URI for one shots/ path: a thumbnail or a tone grid as it is, a photograph resampled. */
 function dataUri(rel) {
   const abs = join(DECK, rel);
   if (!existsSync(abs)) {
     throw new Error(`build-deck: the deck references deck/${rel}, which does not exist`);
+  }
+  if (rel.startsWith('shots/tone/')) {
+    /* a tone grid is screened in the browser, so a re-encode would change the picture */
+    if (!/\.jpg$/.test(rel)) throw new Error(`build-deck: deck/${rel} is not a tone grid JPEG`);
+    tones += 1;
+    return toUri(abs, 'image/jpeg');
   }
   if (rel.startsWith('shots/thumb/')) {
     const mime = MIME[extname(abs).toLowerCase()];
@@ -216,7 +226,7 @@ try {
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }
-if (/(src|data-dark)="shots\//.test(source)) {
+if (/(src|data-dark|data-tone)="shots\//.test(source)) {
   throw new Error('build-deck: an image path was not inlined');
 }
 
@@ -250,5 +260,5 @@ if (!OUT_OVERRIDE) {
 
 const mb = (n) => `${(n / 1024 / 1024).toFixed(2)}MB`;
 console.log(
-  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${twoTones} two-tone images as PNG, ${natives} continuous-tone images at native size, ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> ${OUT_OVERRIDE ?? 'public/brand-deck.html'} (${mb(Buffer.byteLength(html))})${OUT_OVERRIDE ? '' : `; ${copied} thumbnails -> public/shots/deck`}`
+  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${twoTones} two-tone images as PNG, ${natives} continuous-tone images at native size, ${tones} tone grids and ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> ${OUT_OVERRIDE ?? 'public/brand-deck.html'} (${mb(Buffer.byteLength(html))})${OUT_OVERRIDE ? '' : `; ${copied} thumbnails -> public/shots/deck`}`
 );

@@ -76,7 +76,8 @@ export function mixFields(a: FieldFn, b: FieldFn, amount: number): FieldFn {
   };
 }
 
-/* TransitionDemo.tsx: one smoothstep over 350 ms sets the field and the ink together */
+/* TransitionDemo.tsx: one smoothstep over 350 ms sets the field and the ink together;
+   the picture ink is the standard's dark screen, white at 0.62 */
 const k = smoothstep((now - t0) / RESOLVE_MS);
 loop.setField(mixFields(turning, earth, k));
 loop.setOptions({ ink: lerpInk(inks.globe, inks.picture, k) });`;

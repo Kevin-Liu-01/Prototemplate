@@ -1,0 +1,79 @@
+{
+  "reference": "The Blue Marble on the onboarding field, cut with no blur, levels 80 to 230 and gamma 1.2, measured over the part of its disc that is shown at 1440 by 900",
+  "screen": {
+    "matrix": "bayer-8",
+    "cellCssPx": 1,
+    "toneFloor": 10,
+    "dark": {
+      "ink": "#ffffff",
+      "opacity": 0.62,
+      "ground": "#070707"
+    },
+    "light": {
+      "ink": "#070707",
+      "opacity": 0.7,
+      "ground": "#ffffff"
+    }
+  },
+  "tone": {
+    "blur": 0,
+    "gamma": 1.2,
+    "autocontrastCutoff": 0.005,
+    "scene": {
+      "mean": 0.361,
+      "std": 0.342
+    },
+    "marks": {
+      "whitePercentile": 0.9
+    }
+  },
+  "file": {
+    "mode": "L",
+    "quality": 82,
+    "fallbackQuality": 75,
+    "sizes": {
+      "cover": [
+        1600,
+        900
+      ],
+      "disc": [
+        2400,
+        1350
+      ]
+    },
+    "capBytes": {
+      "cover": 573440,
+      "disc": 573440
+    }
+  },
+  "windows": {
+    "scene": {
+      "mean": [
+        0.3,
+        0.42
+      ],
+      "std": [
+        0.28,
+        0.44
+      ],
+      "whiteShareMin": 0.02,
+      "blackShareMin": 0.05
+    },
+    "marks": {
+      "meanMax": 0.35,
+      "blackShareMin": 0.5,
+      "whiteShareMin": 0.005
+    }
+  },
+  "writing": {
+    "allowed": [
+      "none",
+      "artistic"
+    ],
+    "retired": {
+      "dictionary": "The Oxford English Dictionary page: plain English prose reads as copy, not as an artifact",
+      "johnson": "Johnson's Dictionary page: plain English prose reads as copy, not as an artifact",
+      "oed-volumes": "The Oxford English Dictionary volumes: the spines are plain English titles"
+    }
+  }
+}
